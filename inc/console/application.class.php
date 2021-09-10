@@ -100,9 +100,9 @@ class Application extends BaseApplication {
       parent::__construct('GLPI CLI', GLPI_VERSION);
 
       $this->initApplication();
+      $this->initCache();
       $this->initDb();
       $this->initSession();
-      $this->initCache();
       $this->initConfig();
 
       $this->computeAndLoadOutputLang();

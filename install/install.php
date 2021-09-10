@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Cache\CacheManager;
 use Glpi\System\Requirement\DbConfiguration;
 
 define('GLPI_ROOT', realpath('..'));
@@ -37,11 +38,17 @@ define('GLPI_ROOT', realpath('..'));
 include_once (GLPI_ROOT . "/inc/based_config.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 
+global $GLPI, $GLPI_CACHE;
+
 $GLPI = new GLPI();
 $GLPI->initLogger();
 $GLPI->initErrorHandler();
 
 Config::detectRootDoc();
+
+$cache_manager = new CacheManager();
+$GLPI_CACHE = $cache_manager->getCoreCacheInstance();
+$GLPI_CACHE->clear(); // Force cache cleaning to prevent usage of unexpected cache data
 
 //Print a correct  Html header for application
 function header_html($etape) {
