@@ -846,6 +846,9 @@ class Auth extends CommonGLPI {
                      || $this->user->fields["authtype"] == $this::LDAP) {
 
                   if (Toolbox::canUseLdap()) {
+                     // Attempted to retrieve auths_id via login_name.
+                     // This allows the user to be authenticated against their LDAP directory
+                     // rather than testing all active LDAP directories in GLPI.
                      if ($this->user->fields["auths_id"] == 0) {
                         if ($this->user->getFromDBbyName(addslashes($login_name))) {
                            $this->user->fields["auths_id"] = $this->user->getField('auths_id');
