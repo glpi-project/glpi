@@ -48,8 +48,6 @@ The present file will list all changes made to the project; according to the
 - Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
 - Usage of `CommonDBTM::notificationqueueonaction` property
 - Usage of `NotificationTarget::html_tags` property
-- `Ajax::createSlidePanel()`
-- `Calendar::duplicate()`
 - `CommonDBTM::clone()`
 - `CommonDBTM::prepareInputForClone()`
 - `CommonDBTM::post_clone()`
@@ -57,20 +55,13 @@ The present file will list all changes made to the project; according to the
 - `Config::getCache()`
 - `DBmysql::getTableSchema()`
 - `Html::clean()`
-- `Html::displayImpersonateBanner()`
 - `Html::setSimpleTextContent()`
 - `Html::setRichTextContent()`
-- `Html::displayImpersonateBanner()`
-- `Html::weblink_extract()`
 - `RuleImportComputer` class
 - `RuleImportComputerCollection` class
 - `Toolbox::clean_cross_side_scripting_deep()`
-- `Toolbox::doubleEncodeEmails()`
 - `Toolbox::getHtmlToDisplay()`
-- `Toolbox::useCache()`
 - `Toolbox::unclean_cross_side_scripting_deep()`
-- `Toolbox::unclean_html_cross_side_scripting_deep()`
-- `Toolbox::sanitize()`
 
 #### Removed
 - Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
@@ -79,7 +70,9 @@ The present file will list all changes made to the project; according to the
 - `getAllDatasFromTable()`
 - `getRealQueryForTreeItem()`
 - `Ajax::createFixedModalWindow()`
+- `Ajax::createSlidePanel()`
 - `Calendar_Holiday::cloneCalendar()`
+- `Calendar::duplicate()`
 - `CalendarSegment::cloneCalendar()`
 - `Change::getCommonLeftJoin()`
 - `Change::getCommonSelect()`
@@ -125,12 +118,14 @@ The present file will list all changes made to the project; according to the
 - `DbUtils::getRealQueryForTreeItem()`
 - `DCBreadcrumb::showDcBreadcrumb()`
 - `Document_Item::cloneItem()`
+- `Html::displayImpersonateBanner()`
 - `Html::displayMainMenu()`
 - `Html::displayMenuAll()`
 - `Html::displayTopMenu()`
 - `Html::jsDisable()`
 - `Html::jsEnable()`
 - `Html::resume_name()`
+- `Html::weblink_extract()`
 - `Infocom::cloneItem()`
 - `Itil_Project::cloneItilProject()`
 - `ITILFollowup::showApprobationForm()`
@@ -171,6 +166,11 @@ The present file will list all changes made to the project; according to the
 - `TicketTemplate::getFromDBWithDatas()`
 - `Toolbox::canUseImapPop()`
 - `Toolbox::checkSELinux()`
+- `Toolbox::doubleEncodeEmails()`
+- `Toolbox::removeHtmlSpecialChars()`
+- `Toolbox::sanitize()`
+- `Toolbox::unclean_html_cross_side_scripting_deep()`
+- `Toolbox::useCache()`
 - `Toolbox::userErrorHandlerDebug()`
 - `Toolbox::userErrorHandlerNormal()`
 - `Transfer::transferComputerSoftwares()`
