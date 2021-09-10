@@ -144,25 +144,8 @@ class Software extends CommonDBTM {
       unset($input['id']);
       unset($input['withtemplate']);
 
-      //If category was not set by user (when manually adding a user)
-      if (!isset($input["softwarecategories_id"]) || !$input["softwarecategories_id"]) {
-         $softcatrule = new RuleSoftwareCategoryCollection();
-         $result      = $softcatrule->processAllRules(null, null, Toolbox::stripslashes_deep($input));
+      $this->handleCategoryRules($input);
 
-         if (!empty($result)) {
-            if (isset($result['_ignore_import'])) {
-               $input["softwarecategories_id"] = 0;
-            } else if (isset($result["softwarecategories_id"])) {
-               $input["softwarecategories_id"] = $result["softwarecategories_id"];
-            } else if (isset($result["_import_category"])) {
-               $softCat = new SoftwareCategory();
-               $input["softwarecategories_id"]
-                  = $softCat->importExternal($input["_system_category"]);
-            }
-         } else {
-            $input["softwarecategories_id"] = 0;
-         }
-      }
       return $input;
    }
 
@@ -1132,4 +1115,23 @@ class Software extends CommonDBTM {
       return "fas fa-cube";
    }
 
+   public function handleCategoryRules(array &$input) {
+      //If category was not set by user (when manually adding a user)
+      if (!isset($input["softwarecategories_id"]) || !$input["softwarecategories_id"]) {
+         $softcatrule = new RuleSoftwareCategoryCollection();
+         $result      = $softcatrule->processAllRules(null, null, Toolbox::stripslashes_deep($input));
+
+         if (!empty($result) && !isset($result['_ignore_import'])) {
+            if (isset($result["softwarecategories_id"])) {
+               $input["softwarecategories_id"] = $result["softwarecategories_id"];
+            } else if (isset($result["_import_category"])) {
+               $softCat = new SoftwareCategory();
+               $input["softwarecategories_id"]
+                  = $softCat->importExternal($input["_system_category"]);
+            }
+         } else {
+            $input["softwarecategories_id"] = 0;
+         }
+      }
+   }
 }
