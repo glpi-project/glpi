@@ -336,7 +336,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
    // Step 2
    if (test_connect()) {
       echo "<h3>".__('Database connection successful')."</h3>";
-      echo "<p class='center'>";
+      echo "<p class='text-center'>";
       $result = Config::displayCheckDbEngine(true);
       echo "</p>";
       if ($result > 0) {
@@ -358,7 +358,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
          if ($DB->tableExists($config_table)) {
             $current_version = Config::getCurrentDBVersion();
          }
-         echo "<div class='center'>";
+         echo "<div class='text-center'>";
          doUpdateDb();
          echo "</div>";
 
