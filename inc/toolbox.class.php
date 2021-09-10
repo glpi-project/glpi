@@ -382,53 +382,6 @@ class Toolbox {
       return Sanitizer::unsanitize($value);
    }
 
-
-   /**
-    *  Invert fonction from clean_cross_side_scripting_deep to display HTML striping XSS code
-    *
-    * @since 0.83.3
-    *
-    * @param array|string $value  item to unclean from clean_cross_side_scripting_deep
-    *
-    * @return array|string  unclean item
-    *
-    * @see clean_cross_side_scripting_deep()
-    *
-    * @deprecated 10.0.0
-   **/
-   static function unclean_html_cross_side_scripting_deep($value) {
-      Toolbox::deprecated();
-
-      if ((array) $value === $value) {
-         $value = array_map([__CLASS__, 'unclean_html_cross_side_scripting_deep'], $value);
-      } else {
-         $value = self::unclean_cross_side_scripting_deep($value);
-      }
-
-      // revert unclean inside <pre>
-      if (is_string($value)) {
-         $matches = [];
-         $count = preg_match_all('/(<pre[^>]*>)(.*?)(<\/pre>)/is', $value, $matches);
-         for ($i = 0; $i < $count; ++$i) {
-            $complete       = $matches[0][$i];
-            $cleaned        = self::clean_cross_side_scripting_deep($matches[2][$i]);
-            $cleancomplete  = $matches[1][$i].$cleaned.$matches[3][$i];
-            $value          = str_replace($complete, $cleancomplete, $value);
-         }
-
-         $value = htmLawed($value, self::getHtmLawedSafeConfig());
-
-         // Special case : remove the 'denied:' for base64 img in case the base64 have characters
-         // combinaison introduce false positive
-         foreach (['png', 'gif', 'jpg', 'jpeg'] as $imgtype) {
-            $value = str_replace('src="denied:data:image/'.$imgtype.';base64,',
-                  'src="data:image/'.$imgtype.';base64,', $value);
-         }
-      }
-
-      return $value;
-   }
-
    /**
     * Returns a safe configuration for htmLawed.
     *
@@ -2546,39 +2499,6 @@ class Toolbox {
    }
 
    /**
-    * Sanitize received values
-    *
-    * @param array $array
-    *
-    * @return array
-    *
-    * @deprecated 10.0.0
-    */
-   static public function sanitize($array) {
-      Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::unsanitize($value, true)"');
-      return Sanitizer::sanitize($array, true);
-   }
-
-   /**
-    * Remove accentued characters and return lower case string
-    *
-    * @param string $string String to handle
-    *
-    * @return string
-    */
-   public static function removeHtmlSpecialChars($string) {
-      $string = htmlentities($string, ENT_NOQUOTES, 'utf-8');
-      $string = preg_replace(
-         '#&([A-za-z])(?:acute|cedil|caron|circ|grave|orn|ring|slash|th|tilde|uml);#',
-         '\1',
-         $string
-      );
-      $string = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $string);
-      $string = preg_replace('#&[^;]+;#', '', $string);
-      return self::strtolower($string, 'UTF-8');
-   }
-
-   /**
     * Slugify
     *
     * @param string $string String to slugify
@@ -2965,20 +2885,6 @@ class Toolbox {
          return "http://".$link;
       }
       return $link;
-   }
-
-   /**
-    * Should cache be used
-    *
-    * @since 9.2
-    *
-    * @return boolean
-    *
-    * @deprecated 10.0.0
-    */
-   public static function useCache() {
-      Toolbox::deprecated();
-      return true;
    }
 
    /**
@@ -3376,29 +3282,6 @@ HTML;
          "/^(?:http[s]?:\/\/(?:[^\s`!(){};'\",<>«»“”‘’+]+|[^\s`!()\[\]{};:'\".,<>?«»“”‘’+]))$/iu",
          $url
       ) === 1);
-   }
-
-   /**
-    * Search for html encoded <email> (&lt;email&gt;) in the given string and
-    * encode them a second time
-    *
-    * @param string $string
-    *
-    * @return string
-    *
-    * @deprecated 10.0.0
-    */
-   public static function doubleEncodeEmails($string) {
-      Toolbox::deprecated();
-
-      // Search for strings that is an email surrounded by `<` and `>` but that cannot be an HTML tag:
-      // - absence of quotes indicate that values is not part of an HTML attribute,
-      // - absence of ; ensure that ending `&gt;` has not been reached.
-      $regex = "/((&lt;|&#60;)[^\"';]+?@[^\"';]+?(&gt;|&#62;))/";
-      $string = preg_replace_callback($regex, function($matches) {
-         return htmlentities($matches[1]);
-      }, $string);
-      return $string;
    }
 
    /**
