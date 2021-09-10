@@ -519,7 +519,10 @@ class Computer extends CommonDBTM {
                   _x('button', 'Connect'),
             'Item_SoftwareVersion'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'
                => "<i class='ma-icon fas fa-laptop-medical'></i>".
-                  _x('button', 'Install')
+                  _x('button', 'Install'),
+            'Item_SoftwareLicense'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'
+               => "<i class='ma-icon fas fa-key'></i>".
+                  _x('button', 'Add a license')
 
          ];
 
