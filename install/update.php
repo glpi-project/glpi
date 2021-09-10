@@ -267,9 +267,9 @@ function showSecurityKeyCheckForm() {
       $update->getExpectedSecurityKeyFilePath()
    );
    echo '</p>';
-   echo '<input type="submit" name="ignore" class="submit" value="' . __('Ignore warning') . '" />';
+   echo '<input type="submit" name="ignore" class="btn btn-primary" value="' . __('Ignore warning') . '" />';
    echo '&nbsp;&nbsp;';
-   echo '<input type="submit" name="retry" class="submit" value="' . __('Try again') . '" />';
+   echo '<input type="submit" name="retry" class="btn btn-primary" value="' . __('Try again') . '" />';
    echo '</form>';
 }
 
@@ -318,13 +318,13 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 
    } else {
       echo "<div class='center'>";
-      echo "<h3><span class='migred'>".sprintf(__('Caution! You will update the GLPI database named: %s'), $DB->dbdefault) ."</h3>";
+      echo "<h3 class='my-4'><span class='migred p-2'>".sprintf(__('Caution! You will update the GLPI database named: %s'), $DB->dbdefault) ."</h3>";
 
       echo "<form action='update.php' method='post'>";
       if (strlen(GLPI_SCHEMA_VERSION) > 40) {
          echo Config::agreeDevMessage();
       }
-      echo "<button type='submit' class='btn btn-primary'>
+      echo "<button type='submit' class='btn btn-primary' name='continuer'>
          ".__('Continue')."
          <i class='fas fa-chevron-right ms-1'></i>
       </button>";

@@ -147,6 +147,10 @@ h3 {
    margin: 20px auto;
 }
 
+.alert:not(.alert-important) {
+   color: #000
+}
+
 /** Tabler override for install **/
 .form-selectgroup-boxes .form-selectgroup-label {
    color: 000;
