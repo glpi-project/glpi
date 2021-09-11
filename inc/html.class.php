@@ -4334,10 +4334,11 @@ JAVASCRIPT
       $templateselection = $params["templateSelection"] ?? "templateSelection";
 
       $js = "$(function() {
-         $('#$id').select2({
+         const select2_el = $('#$id').select2({
             $placeholder
             width: '$width',
             dropdownAutoWidth: true,
+            dropdownParent: $('#$id').closest('div.modal, body'),
             quietMillis: 100,
             minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
             matcher: function(params, data) {
@@ -4425,6 +4426,7 @@ JAVASCRIPT
             $('#$id').val(value).trigger('change');
          })
          $('label[for=$id]').on('click', function(){ $('#$id').select2('open'); });
+         $(`.select2-search__field[aria-controls='select2-\${e.target.id}-results']`).focus();
       });";
       return Html::scriptBlock($js);
    }
@@ -4523,13 +4525,14 @@ JAVASCRIPT
       }
       $js.= "};
 
-         $('#$field_id').select2({
+         const select2_el = $('#$field_id').select2({
             width: '$width',
             placeholder: '$placeholder',
             allowClear: $allowclear,
             minimumInputLength: 0,
             quietMillis: 100,
             dropdownAutoWidth: true,
+            dropdownParent: $('#$field_id').closest('div.modal, body'),
             minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
             ajax: {
                url: '$url',
@@ -4598,6 +4601,7 @@ JAVASCRIPT
       }
 
       $js .= " $('label[for=$field_id]').on('click', function(){ $('#$field_id').select2('open'); });";
+      $js .= " $(`.select2-search__field[aria-controls='select2-\${e.target.id}-results']`).focus();";
 
       $output .= Html::scriptBlock('$(function() {' . $js . '});');
 
