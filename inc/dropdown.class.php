@@ -1060,13 +1060,23 @@ class Dropdown {
 
 
    /**
-    * Display a menu to select a itemtype which open the search form
+    * Display a menu to select an itemtype which open the search form (by default)
     *
-    * @param $title     string   title to display
-    * @param $optgroup  array    (group of dropdown) of array (itemtype => localized name)
-    * @param $value     string   URL of selected current value (default '')
+    * @param string     $title     title to display
+    * @param array      $optgroup  (group of dropdown) of array (itemtype => localized name)
+    * @param string     $value     URL of selected current value (default '')
+    * @param array      $options
+    *
+    * @return void
    **/
-   static function showItemTypeMenu($title, $optgroup, $value = '') {
+   static function showItemTypeMenu(string $title, array $optgroup, string $value = '', array $options = []): void {
+      $params = [
+         'on_change'             => "var _value = this.options[this.selectedIndex].value; if (_value != 0) {window.location.href=_value;}",
+         'width'                 => '300px',
+         'display_emptychoice'   => true,
+      ];
+      $params = array_replace($params, $options);
+
       echo "<div class='container-fluid text-start'>";
       echo "<div class='mb-3 row'>";
       echo "<label class='col-sm-1 col-form-label'>$title</label>";
@@ -1084,10 +1094,10 @@ class Dropdown {
       }
       echo "<div class='col-sm-11'>";
       Dropdown::showFromArray('dpmenu', $values, [
-         'on_change'           => "var _value = this.options[this.selectedIndex].value; if (_value != 0) {window.location.href=_value;}",
+         'on_change'           => $params['on_change'],
          'value'               => $selected,
-         'display_emptychoice' => true,
-         'width'               => '300px',
+         'display_emptychoice' => $params['display_emptychoice'],
+         'width'               => $params['width'],
       ]);
       echo "</div>";
       echo "</div>";
