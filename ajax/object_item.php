@@ -30,13 +30,14 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
 
-header("Content-Type: text/html; charset=UTF-8");
-Html::header_nocache();
-
-Session::checkLoginUser();
-$item_ticket = new Item_Ticket();
+// continue only if the object possible classes
+if( !is_subclass_of($item_obj, 'CommonItilObject_Item') || !is_subclass_of($obj, 'CommonDBTM')) {
+   die();
+}
 
 switch ($_GET['action']) {
    case 'add':
@@ -46,7 +47,7 @@ switch ($_GET['action']) {
       if (isset($_GET['items_id']) && isset($_GET['itemtype']) && !empty($_GET['items_id'])) {
          $_GET['params']['items_id'][$_GET['itemtype']][$_GET['items_id']] = $_GET['items_id'];
       }
-      Item_Ticket::itemAddForm(new Ticket(), $_GET['params']);
+      $item_obj::itemAddForm(new $obj(), $_GET['params']);
       break;
 
    case 'delete':
@@ -60,7 +61,7 @@ switch ($_GET['action']) {
          if ($deleted) {
             unset($_GET['params']['items_id'][$_GET['itemtype']][array_search($_GET['items_id'], $_GET['params']['items_id'][$_GET['itemtype']])]);
          }
-         Item_Ticket::itemAddForm(new Ticket(), $_GET['params']);
+         $item_obj::itemAddForm(new $obj(), $_GET['params']);
       }
 
       break;
