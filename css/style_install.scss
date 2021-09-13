@@ -30,9 +30,8 @@
  */
 
 $is-dark: false !default;
-$skip_base: true;
 
-@import "css/palettes/auror";
+@import "css/palettes/_defaults";
 @import "css/includes/base";
 @import "css/includes/global-variables";
 @import "css/includes/components/select2";
