@@ -1744,7 +1744,7 @@ $ADDTODISPLAYPREF['PCIVendor'] = [10, 11];
 $ADDTODISPLAYPREF['Agent'] = [2, 4, 10, 8, 11, 6];
 $ADDTODISPLAYPREF['Database'] = [2, 3, 6, 9, 10];
 $ADDTODISPLAYPREF['Socket'] = [5, 6, 9, 8, 7];
-$ADDTODISPLAYPREF['Cable'] = [4, 31, 6, 15, 24];
+$ADDTODISPLAYPREF['Cable'] = [4, 31, 6, 15, 24, 8, 10, 13, 14];
 
 foreach ($ADDTODISPLAYPREF as $type => $options) {
    $rank = 1;
