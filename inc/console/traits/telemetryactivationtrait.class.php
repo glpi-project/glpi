@@ -106,7 +106,7 @@ trait TelemetryActivationTrait {
          $enable_telemetry = $question_helper->ask(
             $input,
             $output,
-            new ConfirmationQuestion(__('Do you want to send "usage statistics" ?') . ' [Yes/no]', true)
+            new ConfirmationQuestion(__('Do you want to send "usage statistics"?') . ' [Yes/no]', true)
          );
       } else if ($input->getOption('no-telemetry')) {
          $disable_telemetry = true;
