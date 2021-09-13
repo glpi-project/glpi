@@ -172,7 +172,10 @@ class Transfer extends CommonDBTM {
                              'clean_cartridgeitem' => 0,
                              'keep_cartridge'      => 0,
 
-                             'keep_consumable'     => 0];
+                             'keep_consumable'     => 0,
+                           
+                             'keep_certificate'    => 0,
+                             'clean_certificate'   => 0];
 
       if ($to >= 0) {
          // Store to
@@ -205,6 +208,7 @@ class Transfer extends CommonDBTM {
                'Phone',
                'Printer',
                'SoftwareLicense',
+               'Certificate',
                'Contact',
                'Contract',
                'Document',
@@ -302,10 +306,10 @@ class Transfer extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       // Init types :
-      $types = ['Computer', 'CartridgeItem', 'Change', 'ConsumableItem', 'Contact', 'Contract',
-                     'Document', 'Link', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
-                     'Printer', 'Problem', 'Software', 'SoftwareLicense', 'SoftwareVersion',
-                     'Supplier', 'Ticket'];
+      $types = ['Computer', 'CartridgeItem', 'Change', 'ConsumableItem', 'Certificate', 'Contact',
+                     'Contract', 'Document', 'Link', 'Monitor', 'NetworkEquipment', 'Peripheral',
+                     'Phone', 'Printer', 'Problem', 'Software', 'SoftwareLicense', 
+                     'SoftwareVersion', 'Supplier', 'Ticket'];
       $types = array_merge($types, $CFG_GLPI['device_types']);
       $types = array_merge($types, Item_Devices::getDeviceTypes());
       foreach ($types as $t) {
@@ -587,6 +591,82 @@ class Transfer extends CommonDBTM {
                }
             }
          }
+      }
+
+      // Certificate : keep / delete + clean unused / keep unused
+      if ($this->options['keep_certificate']) {
+         //foreach ($CFG_GLPI["certificate_types"] as $itemtype) {
+            if (isset($this->needtobe_transfer[$itemtype]) && count($this->needtobe_transfer[$itemtype])) {
+               $itemtable = getTableForItemType($itemtype);
+
+               // Clean DB
+               $DB->delete(
+                  'glpi_certificates_items',
+                  [
+                     "$itemtable.id"                 => null,
+                     "glpi_certificates_items.itemtype" => $itemtype
+                  ],
+                  [
+                     'LEFT JOIN' => [
+                        $itemtable  => [
+                           'ON' => [
+                              'glpi_certificates_items'  => 'items_id',
+                              $itemtable              => 'id',
+                           ]
+                        ]
+                     ]
+                  ]
+               );
+
+               // Clean DB
+               $DB->delete(
+                  'glpi_certificates_items',
+                  [
+                     'glpi_certificates.id'  => null
+                  ],
+                  [
+                     'LEFT JOIN' => [
+                        'glpi_certificates'  => [
+                           'ON' => [
+                              'glpi_certificates_items'  => 'certificates_id',
+                              'glpi_certificates'        => 'id'
+                           ]
+                        ]
+                     ]
+                  ]
+               );
+
+               $iterator = $DB->request([
+                  'SELECT'    => [
+                     'certificates_id',
+                     'glpi_certificates.entities_id',
+                     'glpi_certificates.is_recursive'
+                  ],
+                  'FROM'      => 'glpi_certificates_items',
+                  'LEFT JOIN' => [
+                     'glpi_certificates' => [
+                        'ON' => [
+                           'glpi_certificates_items'  => 'certificates_id',
+                           'glpi_certificates'        => 'id'
+                        ]
+                     ]
+                  ],
+                  'WHERE'     => [
+                     'itemtype'  => $itemtype,
+                     'items_id'  => $this->needtobe_transfer[$itemtype]
+                  ]
+               ]);
+
+               while ($data = $iterator->next()) {
+                  if ($data['is_recursive']
+                        && in_array($data['entities_id'], $to_entity_ancestors)) {
+                     $this->addNotToBeTransfer('Certificate', $data['certificates_id']);
+                  } else {
+                     $this->addToBeTransfer('Certificate', $data['certificates_id']);
+                  }
+               }
+            }
+         //}
       }
 
       // Contract : keep / delete + clean unused / keep unused
@@ -1097,6 +1177,11 @@ class Transfer extends CommonDBTM {
             // Connected item is transfered
             if (in_array($itemtype, $CFG_GLPI["directconnect_types"])) {
                $this->manageConnectionComputer($itemtype, $ID);
+            }
+
+            // Certificate : keep / delete + clean unused / keep unused
+            if (in_array($itemtype, $CFG_GLPI["certificate_types"])) {
+               $this->transferCertificates($itemtype, $ID, $newID);
             }
 
             // Contract : keep / delete + clean unused / keep unused
@@ -1784,6 +1869,182 @@ class Transfer extends CommonDBTM {
 
    }
 
+   /**
+    * Transfer certificates
+    *
+    * @param $itemtype  original type of transfered item
+    * @param $ID        original ID of the certificate
+    * @param $newID     new ID of the certificate
+   **/
+   function transferCertificates($itemtype, $ID, $newID) {
+      global $DB;
+
+      $need_clean_process = false;
+
+      // if keep
+      if ($this->options['keep_certificate']) {
+         $certificate = new Certificate();
+         // Get certificates for the item
+         $certificates_items_query = [
+            'FROM'   => 'glpi_certificates_items',
+            'WHERE'  => [
+               'items_id'  => $ID,
+               'itemtype'  => $itemtype,
+            ]
+         ];
+         if (isset($this->noneedtobe_transfer['Certificate'])
+             && count($this->noneedtobe_transfer['Certificate']) > 0) {
+            $certificates_items_query['WHERE'][] = [
+               'NOT' => ['certificates_id' => $this->noneedtobe_transfer['Certificate']]
+            ];
+         }
+         $iterator = $DB->request($certificates_items_query);
+
+         // Foreach get item
+         while ($data = $iterator->next()) {
+            $need_clean_process = false;
+            $item_ID            = $data['certificates_id'];
+            $newcertificateID   = -1;
+
+            // is already transfer ?
+            if (isset($this->already_transfer['Certificate'][$item_ID])) {
+               $newcertificateID = $this->already_transfer['Certificate'][$item_ID];
+               if ($newcertificateID != $item_ID) {
+                  $need_clean_process = true;
+               }
+
+            } else {
+               // No
+               // Can be transfer without copy ? = all linked items need to be transfer (so not copy)
+               $canbetransfer = true;
+               $types_iterator = Certificate_Item::getDistinctTypes($item_ID);
+
+               while (($data_type = $types_iterator->next())
+                        && $canbetransfer) {
+                  $dtype = $data_type['itemtype'];
+
+                  if (isset($this->needtobe_transfer[$dtype]) && count($this->needtobe_transfer[$dtype])) {
+                     // No items to transfer -> exists links
+                     $result = $DB->request([
+                        'COUNT'  => 'cpt',
+                        'FROM'   => 'glpi_certificates_items',
+                        'WHERE'  => [
+                           'certificates_id' => $item_ID,
+                           'itemtype'        => $dtype,
+                           'NOT'             => ['items_id' => $this->needtobe_transfer[$dtype]]
+                        ]
+                     ])->next();
+
+                     if ($result['cpt'] > 0) {
+                        $canbetransfer = false;
+                     }
+                  } else {
+                     $canbetransfer = false;
+                  }
+
+               }
+
+               // Yes : transfer
+               if ($canbetransfer) {
+                  $this->transferItem('Certificate', $item_ID, $item_ID);
+                  $newcertificateID = $item_ID;
+
+               } else {
+                  $need_clean_process = true;
+                  $certificate->getFromDB($item_ID);
+                  // No : search certificate
+                  $certificate_iterator = $DB->request([
+                     'SELECT' => 'id',
+                     'FROM'   => 'glpi_certificates',
+                     'WHERE'  => [
+                        'entities_id'  => $this->to,
+                        'name'         => addslashes($certificate->fields['name'])
+                     ]
+                  ]);
+
+                  if (count($certificate_iterator)) {
+                     $result = $iterator->next();
+                     $newcertificateID = $result['id'];
+                     $this->addToAlreadyTransfer('Certificate', $item_ID, $newcertificateID);
+                  }
+
+                  // found : use it
+                  // not found : copy certificate
+                  if ($newcertificateID < 0) {
+                     // 1 - create new item
+                     unset($certificate->fields['id']);
+                     $input                = $certificate->fields;
+                     $input['entities_id'] = $this->to;
+                     unset($certificate->fields);
+                     $newcertificateID     = $certificate->add(Toolbox::addslashes_deep($input));
+                     // 2 - transfer as copy
+                     $this->transferItem('Certificate', $item_ID, $newcertificateID);
+                  }
+
+               }
+            }
+
+            // Update links
+            if ($ID == $newID) {
+               if ($item_ID != $newcertificateID) {
+                  $DB->update(
+                     'glpi_certificates_items', [
+                        'certificates_id' => $newcertificateID
+                     ], [
+                        'id' => $data['id']
+                     ]
+                  );
+               }
+            } else { // Same Item -> update links
+               // Copy Item -> copy links
+               if ($item_ID != $newcertificateID) {
+                  $DB->insert(
+                     'glpi_certificates_items', [
+                        'certificates_id' => $newcertificateID,
+                        'items_id'        => $newID,
+                        'itemtype'        => $itemtype
+                     ]
+                  );
+               } else { // same certificate for new item update link
+                  $DB->update(
+                     'glpi_certificates_items', [
+                        'items_id' => $newID
+                     ], [
+                        'id' => $data['id']
+                     ]
+                  );
+               }
+            }
+
+            // If clean and unused ->
+            if ($need_clean_process
+                  && $this->options['clean_certificate']) {
+               $remain = $DB->request([
+                  'COUNT'  => 'cpt',
+                  'FROM'   => 'glpi_certificates_items',
+                  'WHERE'  => ['certificates_id' => $item_ID]
+               ])->next();
+
+               if ($remain['cpt'] == 0) {
+                  if ($this->options['clean_certificate'] == 1) {
+                     $certificate->delete(['id' => $item_ID]);
+                  }
+                  if ($this->options['clean_certificate']==2) { // purge
+                     $certificate->delete(['id' => $item_ID], 1);
+                  }
+               }
+            }
+         }
+      } else {// else unlink
+         $DB->delete(
+            'glpi_certificates_items', [
+               'items_id'  => $ID,
+               'itemtype'  => $itemtype
+            ]
+         );
+      }
+   }
+
 
    /**
     * Transfer contracts
@@ -1798,18 +2059,23 @@ class Transfer extends CommonDBTM {
       $need_clean_process = false;
 
       // if keep
-      if ($this->options['keep_contract'] && isset($this->noneedtobe_transfer['Contract'])
-         && count($this->noneedtobe_transfer['Contract'])) {
+      if ($this->options['keep_contract']) {
          $contract = new Contract();
          // Get contracts for the item
-         $iterator = $DB->request([
+         $contracts_items_query = [
             'FROM'   => 'glpi_contracts_items',
             'WHERE'  => [
                'items_id'  => $ID,
                'itemtype'  => $itemtype,
-               'NOT'       => ['contracts_id' => $this->noneedtobe_transfer['Contract']]
             ]
-         ]);
+         ];
+         if (isset($this->noneedtobe_transfer['Contract'])
+             && count($this->noneedtobe_transfer['Contract']) > 0) {
+            $contracts_items_query['WHERE'][] = [
+               'NOT' => ['contracts_id' => $this->noneedtobe_transfer['Contract']]
+            ];
+         }
+         $iterator = $DB->request($contracts_items_query);
 
          // Foreach get item
          while ($data = $iterator->next()) {
@@ -3607,6 +3873,16 @@ class Transfer extends CommonDBTM {
       echo "<td>".__('If contracts are no longer used')."</td><td>";
       $params['value'] = $this->fields['clean_contract'];
       Dropdown::showFromArray('clean_contract', $clean, $params);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>"._n('Certificate', 'Certificates', Session::getPluralNumber())."</td><td>";
+      $params['value'] = $this->fields['keep_certificate'];
+      Dropdown::showFromArray('keep_certificate', $keep, $params);
+      echo "</td>";
+      echo "<td>".__('If certificates are no longer used')."</td><td>";
+      $params['value'] = $this->fields['clean_certificate'];
+      Dropdown::showFromArray('clean_certificate', $clean, $params);
       echo "</td></tr>";
 
       if ($edit_form) {

@@ -7271,6 +7271,8 @@ CREATE TABLE `glpi_transfers` (
   `date_creation` timestamp NULL DEFAULT NULL,
   `comment` text,
   `keep_disk` int NOT NULL DEFAULT '0',
+  `keep_certificate` int NOT NULL DEFAULT '0',
+  `clean_certificate` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
