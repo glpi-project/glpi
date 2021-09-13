@@ -159,3 +159,8 @@ h3 {
 .form-control:focus {
    color: rgb(32, 32, 32);
 }
+
+/** Select2 override for install **/
+.select2-container {
+   color: #444;
+}
