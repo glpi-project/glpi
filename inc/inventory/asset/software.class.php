@@ -237,6 +237,7 @@ class Software extends InventoryAsset
             'glpi_items_softwareversions.id as sid',
             'glpi_softwares.name',
             'glpi_softwareversions.name AS version',
+            'glpi_softwareversions.arch',
             'glpi_softwares.manufacturers_id',
             'glpi_softwareversions.entities_id',
             'glpi_softwareversions.operatingsystems_id',
@@ -335,14 +336,16 @@ class Software extends InventoryAsset
     *
     * @param string  $version             Version name
     * @param integer $softwares_id        Manufacturers id
+    * @param string  $arch                Architecture
     * @param integer $operatingsystems_id Operating system ID
     *
     * @return string
     */
-   protected function getVersionKey($version, $softwares_id, $operatingsystems_id): string {
+   protected function getVersionKey($version, $softwares_id, $arch, $operatingsystems_id): string {
       return $this->getCompareKey([
          strtolower($version),
          $softwares_id,
+         strtolower($arch),
          $operatingsystems_id
       ]);
    }
@@ -358,6 +361,7 @@ class Software extends InventoryAsset
       return $this->getCompareKey([
          strtolower($val->name),
          strtolower($val->version),
+         strtolower($val->arch ?? ''),
          $val->manufacturers_id,
          $val->entities_id,
          $this->getOsForKey($val)
@@ -461,11 +465,12 @@ class Software extends InventoryAsset
       }
 
       $criteria = [
-         'SELECT' => ['id', 'name', 'softwares_id', 'operatingsystems_id'],
+         'SELECT' => ['id', 'name', 'softwares_id', 'arch', 'operatingsystems_id'],
          'FROM'   => \SoftwareVersion::getTable(),
          'WHERE'  => [
             'entities_id'           => $entities_id,
             'name'                  => new QueryParam(),
+            'arch'                  => new QueryParam(),
             'softwares_id'          => new QueryParam(),
             'operatingsystems_id'   => new QueryParam()
          ]
@@ -491,6 +496,7 @@ class Software extends InventoryAsset
          $key = $this->getVersionKey(
             $val->version,
             $softwares_id,
+            $val->arch ?? '',
             $this->getOsForKey($val)
          );
 
@@ -500,9 +506,11 @@ class Software extends InventoryAsset
          }
 
          $osid = $this->getOsForKey($val);
+         $arch = $val->arch ?? '';
          $stmt->bind_param(
-            'sss',
+            'ssss',
             $val->version,
+            $arch,
             $softwares_id,
             $osid
          );
@@ -592,6 +600,7 @@ class Software extends InventoryAsset
          $vkey = $this->getVersionKey(
             $val->version,
             $softwares_id,
+            $val->arch ?? '',
             $this->getOsForKey($val)
          );
 
@@ -671,6 +680,7 @@ class Software extends InventoryAsset
          $vkey = $this->getVersionKey(
             $val->version,
             $softwares_id,
+            $val->arch ?? '',
             $this->getOsForKey($val)
          );
          $versions_id = $this->versions[$vkey];

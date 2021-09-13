@@ -29,6 +29,10 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
 
 // CleanSoftwareCron cron task
 CronTask::register(
@@ -44,3 +48,16 @@ CronTask::register(
    ]
 );
 // /CleanSoftwareCron cron task
+
+// Add architecture to software versions
+if (!$DB->fieldExists('glpi_softwareversions', 'arch', false)) {
+   $migration->addField(
+      'glpi_softwareversions',
+      'arch',
+      'string', [
+         'after' => 'name'
+      ]
+   );
+   $migration->addKey('glpi_softwareversions', 'arch');
+}
+// /Add architecture to software versions
