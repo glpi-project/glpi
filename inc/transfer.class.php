@@ -173,7 +173,7 @@ class Transfer extends CommonDBTM {
                              'keep_cartridge'      => 0,
 
                              'keep_consumable'     => 0,
-                           
+
                              'keep_certificate'    => 0,
                              'clean_certificate'   => 0];
 
@@ -308,7 +308,7 @@ class Transfer extends CommonDBTM {
       // Init types :
       $types = ['Computer', 'CartridgeItem', 'Change', 'ConsumableItem', 'Certificate', 'Contact',
                      'Contract', 'Document', 'Link', 'Monitor', 'NetworkEquipment', 'Peripheral',
-                     'Phone', 'Printer', 'Problem', 'Software', 'SoftwareLicense', 
+                     'Phone', 'Printer', 'Problem', 'Software', 'SoftwareLicense',
                      'SoftwareVersion', 'Supplier', 'Ticket'];
       $types = array_merge($types, $CFG_GLPI['device_types']);
       $types = array_merge($types, Item_Devices::getDeviceTypes());
@@ -595,7 +595,7 @@ class Transfer extends CommonDBTM {
 
       // Certificate : keep / delete + clean unused / keep unused
       if ($this->options['keep_certificate']) {
-         //foreach ($CFG_GLPI["certificate_types"] as $itemtype) {
+         foreach ($CFG_GLPI["certificate_types"] as $itemtype) {
             if (isset($this->needtobe_transfer[$itemtype]) && count($this->needtobe_transfer[$itemtype])) {
                $itemtable = getTableForItemType($itemtype);
 
@@ -666,7 +666,7 @@ class Transfer extends CommonDBTM {
                   }
                }
             }
-         //}
+         }
       }
 
       // Contract : keep / delete + clean unused / keep unused
