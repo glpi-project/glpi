@@ -40,10 +40,7 @@ $is-dark: false !default;
 
 body {
    background-color:#1B2F62;
-   font-family: Verdana;
-   color:#FFF;
 }
-
 
 #principal {
    width:760px;
@@ -52,6 +49,7 @@ body {
    text-align: center;
    margin: auto;
    padding: 40px 40px 40px 40px;
+   color:#FFF;
 }
 
 a {
@@ -157,9 +155,4 @@ h3 {
 
 .form-control:focus {
    color: rgb(32, 32, 32);
-}
-
-/** Select2 override for install **/
-.select2-container {
-   color: #444;
 }
