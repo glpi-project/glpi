@@ -125,7 +125,7 @@ class Cable extends CommonDBTM {
          'field'              => 'itemtype_endpoint_a',
          'name'               => sprintf(__('%s (%s)'), _n('Associated item type', 'Associated item types', 1), __('Endpoint A')),
          'datatype'           => 'itemtypename',
-         'itemtype_list'      => 'socket_link_types',
+         'itemtype_list'      => 'socket_types',
          'forcegroupby'       => true,
          'massiveaction'      => false
       ];
@@ -147,7 +147,7 @@ class Cable extends CommonDBTM {
          'field'              => 'itemtype_endpoint_b',
          'name'               => sprintf(__('%s (%s)'), _n('Associated item type', 'Associated item types', 1), __('Endpoint B')),
          'datatype'           => 'itemtypename',
-         'itemtype_list'      => 'socket_link_types',
+         'itemtype_list'      => 'socket_types',
          'forcegroupby'       => true,
          'massiveaction'      => false
       ];

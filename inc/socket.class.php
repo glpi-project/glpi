@@ -204,7 +204,7 @@ class Socket extends CommonDropdown {
    static function getSocketLinkTypes() {
       global $CFG_GLPI;
       $values = [];
-      foreach ($CFG_GLPI["socket_link_types"] as $itemtype) {
+      foreach ($CFG_GLPI["socket_types"] as $itemtype) {
          if ($item = getItemForItemtype($itemtype)) {
             $values[$itemtype] = $item->getTypeName();
          }
@@ -300,7 +300,7 @@ class Socket extends CommonDropdown {
          'field'              => 'itemtype',
          'name'               => _n('Associated item type', 'Associated item types', Session::getPluralNumber()),
          'datatype'           => 'itemtypename',
-         'itemtype_list'      => 'socket_link_types',
+         'itemtype_list'      => 'socket_types',
          'additionalfields'   => ['itemtype'],
          'joinparams'         => [
             'jointype'           => 'child'
@@ -524,7 +524,7 @@ class Socket extends CommonDropdown {
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
             default:
-               if (in_array($item->getType(), $CFG_GLPI['socket_link_types'])) {
+               if (in_array($item->getType(), $CFG_GLPI['socket_types'])) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $nb =  countElementsInTable($this->getTable(),
                                                  ['itemtype' => $item->getType(),
@@ -542,7 +542,7 @@ class Socket extends CommonDropdown {
       global $CFG_GLPI;
       if ($item->getType() == 'Location') {
          self::showForLocation($item);
-      } else if (in_array($item->getType(), $CFG_GLPI['socket_link_types'])) {
+      } else if (in_array($item->getType(), $CFG_GLPI['socket_types'])) {
          self::showListForItem($item);
       }
       return true;
