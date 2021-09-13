@@ -23,22 +23,21 @@
       __('Database connection successful'),
    ) }}
 
-   {% if dbversion_ok %}
-      {{ alerts.alert_success(
-         dbversion_message,
-      ) }}
-   {% else %}
+   {% if not engine_requirement.isValidated() %}
       {{ alerts.alert_danger(
-         dbversion_message,
+         __('Database engine is not supported.'),
+         engine_requirement.getValidationMessages()
       ) }}
    {% endif %}
 
-   {% if not config_valid %}
+   {% if not config_requirement.isValidated() %}
       {{ alerts.alert_danger(
-         __('Database configuration is not compatible with "utf8mb4" usage.'),
-         config_messages
+         __('Database configuration is not supported.'),
+         config_requirement.getValidationMessages()
       ) }}
-   {% else %}
+   {% endif %}
+
+   {% if engine_requirement.isValidated() and config_requirement.isValidated() %}
       <div class="container mt-4">
          <form action='install.php' method='post'>
             <div class="mb-3">

@@ -32,6 +32,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\System\Requirement\DbConfiguration;
+use Glpi\System\Requirement\DbEngine;
 use Glpi\System\RequirementsManager;
 
 define('GLPI_ROOT', realpath('..'));
@@ -145,11 +146,10 @@ function step3($host, $user, $password, $update) {
       $link = new mysqli($hostport[0], $user, $password, '', $hostport[1]);
    }
 
-   $dbversion_message = "";
-   $config_message    = "";
-   $dbversion         = "";
-   $config_valid      = false;
-   $dbversion_ok      = false;
+   $engine_requirement = null;
+   $config_requirement = null;
+   $databases = [];
+
    if (!$link->connect_error) {
       $_SESSION['db_access'] = [
          'host'     => $host,
@@ -157,34 +157,18 @@ function step3($host, $user, $password, $update) {
          'password' => $password
       ];
 
-      //get database raw version
-      $DB_ver = $link->query("SELECT version()");
-      $row = $DB_ver->fetch_array();
-      $result = Config::checkDbEngine($row[0]);
-      $dbversion = key($result);
-
-      if (!$dbversion) {
-         $dbversion_message = sprintf(__('Your database engine version seems too old: %s.'), $dbversion);
-      } else {
-         $dbversion_message = sprintf(__('Database version seems correct (%s) - Perfect!'), $dbversion);
-         $dbversion_ok      = true;
-      }
-
-      // Check DB config
       $db = new class($link) extends DBmysql {
          public function __construct($dbh) {
             $this->dbh = $dbh;
          }
       };
-      $config_requirement = new DbConfiguration($db);
-      $config_valid       = $config_requirement->isValidated();
-      $config_messages    = implode('<br />', $config_requirement->getValidationMessages());
-   }
 
-   // get databases
-   $databases = [];
-   if ($config_valid) {
-      if ($DB_list = $link->query("SHOW DATABASES")) {
+      $engine_requirement = new DbEngine($db);
+      $config_requirement = new DbConfiguration($db);
+
+      // get databases
+      if ($engine_requirement->isValidated() && $config_requirement->isValidated()
+          && $DB_list = $link->query("SHOW DATABASES")) {
          while ($row = $DB_list->fetch_array()) {
             if (!in_array($row['Database'], [
                "information_schema",
@@ -199,16 +183,13 @@ function step3($host, $user, $password, $update) {
 
    // display html
    TemplateRenderer::getInstance()->display('install/step3.html.twig', [
-      'update'            => $update,
-      'link'              => $link,
-      'host'              => $host,
-      'user'              => $user,
-      'dbversion'         => $dbversion,
-      'dbversion_ok'      => $dbversion_ok,
-      'dbversion_message' => $dbversion_message,
-      'config_valid'      => $config_valid,
-      'config_messages'   => $config_messages,
-      'databases'         => $databases,
+      'update'             => $update,
+      'link'               => $link,
+      'host'               => $host,
+      'user'               => $user,
+      'engine_requirement' => $engine_requirement,
+      'config_requirement' => $config_requirement,
+      'databases'          => $databases,
    ]);
 }
 
