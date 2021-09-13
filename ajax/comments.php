@@ -118,7 +118,7 @@ if (isset($_POST["itemtype"])
                //if item have a DC position (reload url to it's rack)
                if ($rack = $item->isRackPart($_POST['itemtype'], $_POST["value"], true)) {
                   echo Html::jsGetElementbyID($_POST['with_dc_position']).".
-                  append(\"&nbsp;<a class='fas fa-crosshairs' href='".$rack->getLinkURL()."'></a>\");";
+                  html(\"&nbsp;<a class='fas fa-crosshairs' href='".$rack->getLinkURL()."'></a>\");";
                } else {
                   //remove old dc position
                   echo Html::jsGetElementbyID($_POST['with_dc_position']).".empty();";
