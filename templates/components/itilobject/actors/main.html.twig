@@ -27,6 +27,7 @@
          'params': params,
          'canupdate': canupdate,
          'disable_assign_to_me': disable_assign_to_me ?? false,
+         'main_rand': main_rand,
       }, with_context = false) }}
    {% endset %}
    {% if display_labels %}
@@ -54,6 +55,7 @@
          'params': params,
          'canupdate': canupdate,
          'disable_assign_to_me': disable_assign_to_me ?? false,
+         'main_rand': main_rand,
       }, with_context = false) }}
    {% endset %}
    {% if display_labels %}
@@ -81,6 +83,7 @@
          'params': params,
          'canupdate': (canupdate or canassign),
          'disable_assign_to_me': disable_assign_to_me ?? false,
+         'main_rand': main_rand,
       }, with_context = false) }}
    {% endset %}
    {% if display_labels %}
