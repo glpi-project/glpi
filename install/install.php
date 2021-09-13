@@ -104,7 +104,7 @@ function choose_language() {
 
 function acceptLicense() {
    TemplateRenderer::getInstance()->display('install/accept_license.html.twig', [
-      'copying' => file_get_contents("../COPYING.txt"),
+      'copying' => file_get_contents(GLPI_ROOT . "/COPYING.txt"),
    ]);
 }
 
