@@ -87,6 +87,8 @@
             {% else %}
                <input type="hidden" name="install" value="update_1">
             {% endif %}
+
+            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
          </form>
       </div>
    {% endif %}
