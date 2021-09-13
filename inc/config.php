@@ -60,7 +60,7 @@ $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
 
 Config::detectRootDoc();
 
-if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
+if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    Session::loadLanguage('', false);
    // no translation
    if (!isCommandLine()) {
@@ -81,21 +81,22 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    die(1);
 
 } else {
-   include_once(GLPI_CONFIG_DIR . "/config_db.php");
-
-   //Database connection
-   DBConnection::establishDBConnection((isset($USEDBREPLICATE) ? $USEDBREPLICATE : 0),
-                                       (isset($DBCONNECTION_REQUIRED) ? $DBCONNECTION_REQUIRED : 0));
-
    // *************************** Statics config options **********************
    // ********************options d'installation statiques*********************
    // *************************************************************************
 
-   //Options from DB, do not touch this part.
+   if (!isset($skip_db_check)) {
+      include_once(GLPI_CONFIG_DIR . "/config_db.php");
 
-   if (!Config::loadLegacyConfiguration()) {
-      echo "Error accessing config table";
-      exit();
+      //Database connection
+      DBConnection::establishDBConnection((isset($USEDBREPLICATE) ? $USEDBREPLICATE : 0),
+                                          (isset($DBCONNECTION_REQUIRED) ? $DBCONNECTION_REQUIRED : 0));
+
+      //Options from DB, do not touch this part.
+      if (!Config::loadLegacyConfiguration()) {
+         echo "Error accessing config table";
+         exit();
+      }
    }
 
    if (isCommandLine()

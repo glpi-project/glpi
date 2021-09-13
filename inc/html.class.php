@@ -6428,20 +6428,16 @@ JAVASCRIPT;
    static function getCoreVariablesForJavascript(bool $full = false) {
       global $CFG_GLPI;
 
-      if (!isset($CFG_GLPI['gantt_date_format'])) {
-         $CFG_GLPI['gantt_date_format'] = Toolbox::getDateFormat('gantt');
-      }
-
       $cfg_glpi = "var CFG_GLPI  = {
          'url_base': '".(isset($CFG_GLPI['url_base']) ? $CFG_GLPI["url_base"] : '')."',
          'root_doc': '".$CFG_GLPI["root_doc"]."',
-         'gantt_date_format': '".$CFG_GLPI["gantt_date_format"]."',
       };";
 
       if ($full) {
          $debug = (isset($_SESSION['glpi_use_mode'])
                    && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? true : false);
          $cfg_glpi = "var CFG_GLPI  = ".json_encode(Config::getSafeConfig(true), $debug ? JSON_PRETTY_PRINT : 0).";";
+         $cfg_glpi .= "CFG_GLPI['gantt_date_format'] = " . json_encode(Toolbox::getDateFormat('gantt')) . ";";
       }
 
       $plugins_path = [];
