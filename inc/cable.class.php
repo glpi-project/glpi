@@ -567,9 +567,9 @@ class Cable extends CommonDBTM {
 
          //listener to refresh socket selector and breadcrumb
          $(document).on('change', '#dropdown_items_id_endpoint_a".$rand_items_id_endpoint_a."', function(e) {
-            items_id = $('#dropdown_items_id_endpoint_a".$rand_items_id_endpoint_a."').find(':selected').val();
-            itemtype = $('#dropdown_itemtype_endpoint_a".$rand_itemtype_endpoint_a."').find(':selected').val();
-            socketmodels_id = $('#dropdown_socketmodels_id_endpoint_a".$rand_socket_model_rear."').find(':selected').val();
+            var items_id = $('#dropdown_items_id_endpoint_a".$rand_items_id_endpoint_a."').find(':selected').val();
+            var itemtype = $('#dropdown_itemtype_endpoint_a".$rand_itemtype_endpoint_a."').find(':selected').val();
+            var socketmodels_id = $('#dropdown_socketmodels_id_endpoint_a".$rand_socket_model_rear."').find(':selected').val();
             refreshAssetBreadcrumb(itemtype, items_id, 'show_rear_asset_breadcrumb');
             refreshSocketDropdown(itemtype, items_id, socketmodels_id, 'sockets_id_endpoint_a', 'show_rear_sockets_field');
 
