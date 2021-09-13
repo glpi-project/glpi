@@ -45,20 +45,22 @@
                   {{ update == "no" ? __('Please select a database:') : __('Please select a database to update:') }}
                </h3>
                <div class="form-selectgroup form-selectgroup-boxes d-flex flex-column">
-                  <label class="form-selectgroup-item flex-fill">
-                     <input type="radio" name="databasename" value="0" class="form-selectgroup-input" checked="checked">
-                     <div class="form-selectgroup-label d-flex align-items-center p-3">
-                        <div class="me-3">
-                           <span class="form-selectgroup-check"></span>
+                  {% if update == "no" %}
+                     <label class="form-selectgroup-item flex-fill">
+                        <input type="radio" name="databasename" value="0" class="form-selectgroup-input" checked="checked">
+                        <div class="form-selectgroup-label d-flex align-items-center p-3">
+                           <div class="me-3">
+                              <span class="form-selectgroup-check"></span>
+                           </div>
+                           <div>
+                              <label for="new_db" class="form-label">
+                                 {{ __('Create a new database or use an existing one:') }}
+                              </label>
+                              <input type="text" name="newdatabasename" id="new_db" class="form-control" autofocus>
+                           </div>
                         </div>
-                        <div>
-                           <label for="new_db" class="form-label">
-                              {{ __('Create a new database or use an existing one:') }}
-                           </label>
-                           <input type="text" name="newdatabasename" id="new_db" class="form-control" autofocus>
-                        </div>
-                     </div>
-                  </label>
+                     </label>
+                  {% endif %}
 
                   {% for database in databases %}
                      <label class="form-selectgroup-item flex-fill">
