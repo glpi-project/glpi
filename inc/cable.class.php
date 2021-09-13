@@ -410,7 +410,7 @@ class Cable extends CommonDBTM {
       echo "<td>";
       User::dropdown(['name'  => 'users_id_tech',
                      'value'  => $this->fields["users_id_tech"]]);
-      echo "</td><td></td></tr>";
+      echo "</td><td colspan='2'></td></tr>";
 
       echo "<tr><td>".__('Comments')."</td>";
       echo "<td  colspan='3'>";
@@ -609,7 +609,7 @@ class Cable extends CommonDBTM {
 
       echo "</td></tr>";
 
-      $options['colspan'] = 4;
+      $options['colspan'] = 3;
       $this->showFormButtons($options);
       return true;
    }
