@@ -347,17 +347,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
          // Display missing security key file form if key file is missing
          // unless it has already been displayed and user clicks on "ignore" button.
          showSecurityKeyCheckForm();
-      } else if (!isset($_POST["update_location"])) {
-         $current_version = "0.31";
-         $config_table    = "glpi_config";
-
-         if ($DB->tableExists("glpi_configs")) {
-            $config_table = "glpi_configs";
-         }
-
-         if ($DB->tableExists($config_table)) {
-            $current_version = Config::getCurrentDBVersion();
-         }
+      } else {
          echo "<div class='text-center'>";
          doUpdateDb();
          echo "</div>";
