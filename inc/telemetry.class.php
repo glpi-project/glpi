@@ -343,14 +343,17 @@ class Telemetry extends CommonGLPI {
    public static function getViewLink() {
       global $CFG_GLPI;
 
-      $out = "<a id='view_telemetry' href='{$CFG_GLPI['root_doc']}/ajax/telemetry.php'>" . __('See what would be sent...') . "</a>";
+      $out = "<a id='view_telemetry' href='{$CFG_GLPI['root_doc']}/ajax/telemetry.php' class='btn btn-sm btn-info mt-2'>
+         ".__('See what would be sent...')."
+      </a>";
       $out .= Html::scriptBlock("
          $('#view_telemetry').on('click', function(e) {
             e.preventDefault();
 
             glpi_ajax_dialog({
                title: __('Telemetry data'),
-               url: $('#view_telemetry').attr('href')
+               url: $('#view_telemetry').attr('href'),
+               dialogclass: 'modal-lg'
             });
          });");
       return $out;
@@ -410,14 +413,18 @@ class Telemetry extends CommonGLPI {
     * @return string
     */
    public static function showTelemetry() {
-      $out = "<h4><input type='checkbox' checked='checked' value='1' name='send_stats' id='send_stats'/>";
-      $out .= "<label for='send_stats'>" . __('Send "usage statistics"')  . "</label></h4>";
-      $out .= "<p><strong>" . __("We need your help to improve GLPI and the plugins ecosystem!") ."</strong></p>";
-      $out .= "<p>" . __("Since GLPI 9.2, we’ve introduced a new statistics feature called “Telemetry”, that anonymously with your permission, sends data to our telemetry website.") . " ";
-      $out .= __("Once sent, usage statistics are aggregated and made available to a broad range of GLPI developers.") . "</p>";
-      $out .= "<p>" . __("Let us know your usage to improve future versions of GLPI and its plugins!") . "</p>";
+      $out = "<div class='form-check'>
+         <input type='checkbox' class='form-check-input' checked='checked' value='1' name='send_stats' id='send_stats'/>
+         <label for='send_stats' class='form-check-label'>
+            ".__('Send "usage statistics"')."
+         </label>
+      </div>";
+      $out .= "<strong>" . __("We need your help to improve GLPI and the plugins ecosystem!") ."</strong><br><br>";
+      $out .= __("Since GLPI 9.2, we’ve introduced a new statistics feature called “Telemetry”, that anonymously with your permission, sends data to our telemetry website.")."<br>";
+      $out .= __("Once sent, usage statistics are aggregated and made available to a broad range of GLPI developers.") . "<br><br>";
+      $out .= __("Let us know your usage to improve future versions of GLPI and its plugins!")."<br>";
 
-      $out .= "<p>" . self::getViewLink() . "</p>";
+      $out .= self::getViewLink();
       return $out;
    }
 
@@ -427,17 +434,19 @@ class Telemetry extends CommonGLPI {
     * @return string
     */
    public static function showReference() {
-      $out = "<hr/>";
-      $out .= "<h4>" . __('Reference your GLPI') . "</h4>";
-      $out .= "<p>" . sprintf(
+      $out = "<h3>" . __('Reference your GLPI') . "</h3>";
+      $out .= sprintf(
          __("Besides, if you appreciate GLPI and its community, ".
-         "please take a minute to reference your organization by filling %1\$s."),
+         "please take a minute to reference your organization by filling %1\$s"),
          sprintf(
             "<a href='" . GLPI_TELEMETRY_URI . "/reference?showmodal&uuid=" .
-            self::getRegistrationUuid() . "' target='_blank'>%1\$s</a>",
-            __('the following form')
+            self::getRegistrationUuid() . "' class='btn btn-sm btn-info' target='_blank'>
+               <i class='fas fa-pen-alt me-1'></i>
+               %1\$s
+            </a>",
+            __('the registration form')
          )
-      ) . "</p>";
+      );
       return $out;
    }
 }
