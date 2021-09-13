@@ -32,6 +32,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\System\Requirement\DbConfiguration;
+use Glpi\System\RequirementsManager;
 
 define('GLPI_ROOT', realpath('..'));
 
@@ -116,15 +117,11 @@ function step0() {
 
 //Step 1 checking some compatibility issue and some write tests.
 function step1($update) {
-   ob_start();
-   $error = Toolbox::commonCheckForUseGLPI(true);
-   $checks = ob_get_contents();
-   ob_end_clean();
+   $requiremements = (new RequirementsManager())->getCoreRequirementList();
 
    TemplateRenderer::getInstance()->display('install/step1.html.twig', [
-      'update' => $update,
-      'checks' => $checks,
-      'error'  => $error,
+      'update'       => $update,
+      'requirements' => $requiremements,
    ]);
 }
 

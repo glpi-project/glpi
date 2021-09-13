@@ -1,7 +1,30 @@
 <h3>{{ __("Checking of the compatibility of your environment with the execution of GLPI") }}</h3>
 
 <table class="table tab_check">
-   {{ checks|raw }}
+   <thead>
+      <tr>
+         <th>{{ __('Test done') }}</th>
+         <th>{{ __('Results') }}</th>
+      </tr>
+   </thead>
+   <tbody>
+      {% for requirement in requirements %}
+         {% if not requirement.isOutOfContext() %}
+            <tr class="tab_bg_1">
+               <td class="b left">{{ requirement.getTitle() }}</td>
+               <td class="{{ requirement.isMissing() and not requirement.isOptional() ? 'red' : '' }}">
+                  <i class="fas {{ requirement.isValidated() ? 'fa-check' : (requirement.isOptional() ? 'fa-exclamation-triangle' : 'fa-times') }}"
+                     title="{{ requirement.getValidationMessages()|join(' ') }}"></i>
+                  {% if not requirement.isValidated() %}
+                     {% for msg in requirement.getValidationMessages() %}
+                        {{ msg }}<br />
+                     {% endfor %}
+                  {% endif %}
+               </td>
+            </tr>
+         {% endif %}
+      {% endfor %}
+   </tbody>
 </table>
 
 {% set common_hiddens %}
@@ -34,13 +57,13 @@
    </form>
 {% endset %}
 
-{% if error == 0 %}
-   {{ continue_form }}
-{% elseif error == 1 %}
+{% if requirements.hasMissingMandatoryRequirements() %}
+   <h3>{{ __('Do you want to continue?') }}</h3>
+   {{ retry_form }}
+{% elseif requirements.hasMissingOptionalRequirements() %}
    <h3>{{ __('Do you want to continue?') }}</h3>
    {{ continue_form }}
    {{ retry_form }}
-{% elseif error == 2 %}
-   <h3>{{ __('Do you want to continue?') }}</h3>
-   {{ retry_form }}
+{% else %}
+   {{ continue_form }}
 {% endif %}
