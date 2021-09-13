@@ -588,7 +588,6 @@ class Cable extends CommonDBTM {
       }
       echo "</span>";
 
-
       //Listener to update breacrumb / socket
       echo Html::scriptBlock("
          //listener to remove socket selector and breadcrumb
@@ -607,7 +606,6 @@ class Cable extends CommonDBTM {
 
          });
       ");
-
 
       echo "</td></tr>";
 
