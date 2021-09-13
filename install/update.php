@@ -290,6 +290,8 @@ echo "<meta charset='utf-8'>";
 echo "<title>Setup GLPI</title>";
 //JS
 echo Html::script("public/lib/base.js");
+echo Html::script("public/lib/tabler.js");
+echo Html::script("js/glpi_dialog.js");
 // CSS
 echo Html::css('public/lib/base.css');
 echo Html::scss("css/style_install");
