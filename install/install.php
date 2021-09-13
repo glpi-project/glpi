@@ -362,7 +362,8 @@ function step6() {
 
 function step7() {
    TemplateRenderer::getInstance()->display('install/step7.html.twig', [
-      'glpinetwork' => GLPINetwork::showInstallMessage(),
+      'glpinetwork'     => GLPINetwork::showInstallMessage(),
+      'glpinetwork_url' => GLPI_NETWORK_SERVICES,
    ]);
 }
 
