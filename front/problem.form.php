@@ -144,12 +144,12 @@ if (isset($_POST["add"])) {
       }
    }
    Html::back();
-} else if (isset($_REQUEST['addme_as_actor'])) {
-   $id = (int) $_REQUEST['id'];
+} else if (isset($_POST['addme_as_actor'])) {
+   $id = (int) $_POST['id'];
    $problem->check($id, READ);
    $input = array_merge(Toolbox::addslashes_deep($problem->fields), [
       'id' => $id,
-      '_itil_'.$_REQUEST['actortype'] => [
+      '_itil_'.$_POST['actortype'] => [
          '_type' => "user",
          'users_id' => Session::getLoginUserID(),
          'use_notification' => 1,
