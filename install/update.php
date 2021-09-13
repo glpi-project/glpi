@@ -287,8 +287,6 @@ echo "<!DOCTYPE html>";
 echo "<html lang='fr'>";
 echo "<head>";
 echo "<meta charset='utf-8'>";
-echo "<meta http-equiv='Content-Script-Type' content='text/javascript'>";
-echo "<meta http-equiv='Content-Style-Type' content='text/css'>";
 echo "<title>Setup GLPI</title>";
 //JS
 echo Html::script("public/lib/base.js");

@@ -54,8 +54,6 @@ function header_html($etape) {
    echo "<html lang='fr'>";
    echo "<head>";
    echo "<meta charset='utf-8'>";
-   echo "<meta http-equiv='Content-Script-Type' content='text/javascript'> ";
-   echo "<meta http-equiv='Content-Style-Type' content='text/css'> ";
    echo "<title>Setup GLPI</title>";
 
    // CFG
