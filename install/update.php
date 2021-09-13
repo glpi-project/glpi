@@ -199,7 +199,6 @@ function doUpdateDb() {
    $currents            = $update->getCurrents();
    $current_version     = $currents['version'];
    $current_db_version  = $currents['dbversion'];
-   $glpilanguage        = $currents['language'];
 
    $migration = new Migration(GLPI_SCHEMA_VERSION);
    $update->setMigration($migration);
