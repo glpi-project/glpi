@@ -29,14 +29,18 @@
  * ---------------------------------------------------------------------
  */
 
+$is-dark: false !default;
+
+@import "css/palettes/_defaults";
+@import "css/includes/base";
+@import "css/includes/global-variables";
+@import "css/includes/components/select2";
+
 /*  ############# Definition des styles de l'install et de l'update ############# */
 
 body {
    background-color:#1B2F62;
-   font-family: Verdana;
-   color:#FFF;
 }
-
 
 #principal {
    width:760px;
@@ -45,6 +49,7 @@ body {
    text-align: center;
    margin: auto;
    padding: 40px 40px 40px 40px;
+   color:#FFF;
 }
 
 a {
@@ -71,47 +76,10 @@ a {
    background: url(../pics/login_logo_glpi.png)  no-repeat;
 }
 
-
-
-
 p {
    padding-left:20px;
    padding-right:20px;
 }
-
-
-.center {
-   text-align:center;
-}
-
-.left {
-   text-align:left;
-}
-
-.inline {
-   display:inline;
-}
-
-
-table {
-   text-align:center;
-   border: 0;
-   margin: 20px;
-   margin-left: auto;
-   margin-right: auto;
-   width: 90%;
-}
-
-th {
-   font-size: 12px;
-   font-weight: bold;
-   color: #FFA500;
-   vertical-align:bottom;
-}
-
-.tab_cadre {  }
-
-.tab_bg_1 {  }
 
 .tab_check {
    padding:10px;
@@ -164,62 +132,11 @@ h3 {
 }
 
 
-input {
-   border: 1px solid #ccc;
-}
-
-fieldset {
-   margin:40px;
-   padding: 20px;
-   background: #FFF;
-   border: none;
-   font-size: 12px;
-   font-weight:200;
-   position: relative;
-}
-
-fieldset legend {
-   color: #000;
-   font-weight: bold;
-   position: absolute;
-   top: 5px;
-}
-
 .block {
    display: inline-block;
    width:300px;
    color: #000;
 }
-
-fieldset label {
-   text-align: right;
-   margin-right: 5px
-}
-
-.submit {
-   text-align:center;
-}
-
-input.submit,
-span.vsubmit, a.vsubmit {
-   padding: 5px;
-   cursor:pointer;
-   height: auto;
-   font: bold 12px Arial, Helvetica;
-   color: #8f5a0a;
-   background-color: #FEC95C;
-   border: 0;
-}
-
-input.submit:hover,
-a.vsubmit:hover {
-   background-color: #fddb6f;
-   -moz-box-shadow: 0px 1px 1px #999;
-   -webkit-box-shadow: 0px 1px 1px #999;
-   box-shadow: 0px 1px 1px #999;
-
-}
-
 
 #license {
    text-align: left;
@@ -227,75 +144,15 @@ a.vsubmit:hover {
    margin: 20px auto;
 }
 
-
-.radio {
-   display: inline-block;
-   cursor: pointer;
-   line-height: 25px;
-   font-weight: bold;
-   margin-bottom: 5px;
+.alert:not(.alert-important) {
+   color: #000
 }
 
-.radio:hover .inner {
-   -webkit-transform: scale(0.5);
-   -ms-transform: scale(0.5);
-   transform: scale(0.5);
-   opacity: .5;
+/** Tabler override for install **/
+.form-selectgroup-boxes .form-selectgroup-label {
+   color: 000;
 }
 
-.radio input[type=radio] {
-   width: 1px;
-   height: 1px;
-   opacity: 0;
-}
-
-.radio input:checked + .outer .inner {
-   -webkit-transform: scale(1);
-   -ms-transform: scale(1);
-   transform: scale(1);
-   opacity: 1;
-}
-
-.radio input:checked + .outer { border: 3px solid #f08b3b; }
-
-.radio input:focus + .outer .inner {
-   -webkit-transform: scale(1);
-   -ms-transform: scale(1);
-   transform: scale(1);
-   opacity: 1;
-   background-color: #FEC95C;
-}
-
-.radio .outer {
-   width: 20px;
-   height: 20px;
-   display: block;
-   float: left;
-   border: 3px solid #1B2F62;
-   border-radius: 50%;
-   /*background-color: #fff;*/
-}
-
-.radio .inner {
-   -webkit-transition: all 0.25s ease-in-out;
-   transition: all 0.25s ease-in-out;
-   width: 16px;
-   height: 16px;
-   -webkit-transform: scale(0);
-   -ms-transform: scale(0);
-   transform: scale(0);
-   display: block;
-   margin: 2px;
-   border-radius: 50%;
-   background-color: #FEC95C;
-   opacity: 0;
-}
-
-.ui-widget {
-   font-size: 12px;
-}
-
-/* Language dropdown */
-.select2-container ul {
-    color: #000;
+.form-control:focus {
+   color: rgb(32, 32, 32);
 }

@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 
 if (!defined('GLPI_ROOT')) {
@@ -198,7 +199,6 @@ function doUpdateDb() {
    $currents            = $update->getCurrents();
    $current_version     = $currents['version'];
    $current_db_version  = $currents['dbversion'];
-   $glpilanguage        = $currents['language'];
 
    $migration = new Migration(GLPI_SCHEMA_VERSION);
    $update->setMigration($migration);
@@ -266,9 +266,9 @@ function showSecurityKeyCheckForm() {
       $update->getExpectedSecurityKeyFilePath()
    );
    echo '</p>';
-   echo '<input type="submit" name="ignore" class="submit" value="' . __('Ignore warning') . '" />';
+   echo '<input type="submit" name="ignore" class="btn btn-primary" value="' . __('Ignore warning') . '" />';
    echo '&nbsp;&nbsp;';
-   echo '<input type="submit" name="retry" class="submit" value="' . __('Try again') . '" />';
+   echo '<input type="submit" name="retry" class="btn btn-primary" value="' . __('Try again') . '" />';
    echo '</form>';
 }
 
@@ -286,14 +286,14 @@ echo "<!DOCTYPE html>";
 echo "<html lang='fr'>";
 echo "<head>";
 echo "<meta charset='utf-8'>";
-echo "<meta http-equiv='Content-Script-Type' content='text/javascript'>";
-echo "<meta http-equiv='Content-Style-Type' content='text/css'>";
 echo "<title>Setup GLPI</title>";
 //JS
 echo Html::script("public/lib/base.js");
+echo Html::script("public/lib/tabler.js");
+echo Html::script("js/glpi_dialog.js");
 // CSS
 echo Html::css('public/lib/base.css');
-echo Html::css('css/style_install.css');
+echo Html::scss("css/style_install");
 echo "</head>";
 echo "<body>";
 echo "<div id='principal'>";
@@ -310,18 +310,23 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
       echo "<div class='center'>";
       echo "<h3><span class='migred'>".__('Impossible to accomplish an update by this way!')."</span>";
       echo "<p>";
-      echo "<a class='vsubmit' href='../index.php'>".__('Go back to GLPI')."</a></p>";
+      echo "<a class='btn btn-primary' href='../index.php'>
+            ".__('Go back to GLPI')."
+         </a></p>";
       echo "</div>";
 
    } else {
       echo "<div class='center'>";
-      echo "<h3><span class='migred'>".sprintf(__('Caution! You will update the GLPI database named: %s'), $DB->dbdefault) ."</h3>";
+      echo "<h3 class='my-4'><span class='migred p-2'>".sprintf(__('Caution! You will update the GLPI database named: %s'), $DB->dbdefault) ."</h3>";
 
       echo "<form action='update.php' method='post'>";
       if (strlen(GLPI_SCHEMA_VERSION) > 40) {
          echo Config::agreeDevMessage();
       }
-      echo "<input type='submit' class='submit' name='continuer' value=\"".__('Continue')."\">";
+      echo "<button type='submit' class='btn btn-primary' name='continuer' value='1'>
+         ".__('Continue')."
+         <i class='fas fa-chevron-right ms-1'></i>
+      </button>";
       Html::closeForm();
       echo "</div>";
    }
@@ -330,7 +335,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
    // Step 2
    if (test_connect()) {
       echo "<h3>".__('Database connection successful')."</h3>";
-      echo "<p class='center'>";
+      echo "<p class='text-center'>";
       $result = Config::displayCheckDbEngine(true);
       echo "</p>";
       if ($result > 0) {
@@ -341,41 +346,18 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
          // Display missing security key file form if key file is missing
          // unless it has already been displayed and user clicks on "ignore" button.
          showSecurityKeyCheckForm();
-      } else if (!isset($_POST["update_location"])) {
-         $current_version = "0.31";
-         $config_table    = "glpi_config";
-
-         if ($DB->tableExists("glpi_configs")) {
-            $config_table = "glpi_configs";
-         }
-
-         if ($DB->tableExists($config_table)) {
-            $current_version = Config::getCurrentDBVersion();
-         }
-         echo "<div class='center'>";
+      } else {
+         echo "<div class='text-center'>";
          doUpdateDb();
-
-         echo "<form action='".$CFG_GLPI["root_doc"]."/install/update.php' method='post'>";
-         echo "<input type='hidden' name='update_end' value='1'/>";
-
-         echo "<hr />";
-         echo "<h2>".__('One last thing before starting')."</h2>";
-         echo "<p>";
-         echo GLPINetwork::showInstallMessage();
-         echo "</p>";
-         echo "<a href='".GLPI_NETWORK_SERVICES."' target='_blank' class='vsubmit'>".
-            __('Donate')."</a><br /><br />";
-
-         if (!Telemetry::isEnabled()) {
-            echo "<hr />";
-            echo Telemetry::showTelemetry();
-         }
-         echo Telemetry::showReference();
-
-         echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
-               __('Use GLPI')."'></p>";
-         Html::closeForm();
          echo "</div>";
+
+         TemplateRenderer::getInstance()->display('install/update.html.twig', [
+            'glpinetwork'       => GLPINetwork::showInstallMessage(),
+            'glpinetwork_url'   => GLPI_NETWORK_SERVICES,
+            'telemetry_enabled' => Telemetry::isEnabled(),
+            'telemetry_info'    => Telemetry::showTelemetry(),
+            'reference_info'    => Telemetry::showReference(),
+         ]);
       }
 
    } else {

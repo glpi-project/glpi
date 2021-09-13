@@ -2454,7 +2454,7 @@ class Config extends CommonDBTM {
     *
     * @param string $raw Raw version to check (mainly from install), defaults to null
     *
-    * @return boolean
+    * @return array
    **/
    static function checkDbEngine($raw = null) {
       if ($raw === null) {
@@ -2825,8 +2825,14 @@ class Config extends CommonDBTM {
     * @return void
     */
    public static function agreeDevMessage($bg = false) {
-      $msg = '<p class="'.($bg ? 'alert-important' : '') .' alert alert-warning"><strong>' . __('You are using a development version, be careful!') . '</strong><br/>';
-      $msg .= "<input type='checkbox' required='required' id='agree_dev' name='agree_dev'/><label for='agree_dev'>" . __('I know I am using a unstable version.') . "</label></p>";
+      $msg = '<div class="'.($bg ? 'alert-important' : '') .' alert alert-warning">
+         <strong>' . __('You are using a development version, be careful!') . '</strong>
+         <br/>';
+      $msg .= "<div class='form-check'>
+         <input type='checkbox' class='form-check-input' required='required' id='agree_dev' name='agree_dev'>
+         <label for='agree_dev' class='form-check-label'>" . __('I know I am using a unstable version.') . "</label>
+      </div>
+      </div>";
       $msg .= "<script type=text/javascript>
             $(function() {
                $('[name=from_update]').on('click', function(event){
@@ -2903,7 +2909,7 @@ class Config extends CommonDBTM {
       $themes_files = scandir(GLPI_ROOT."/css/palettes/");
       $themes = [];
       foreach ($themes_files as $file) {
-         if (strpos($file, ".scss") !== false) {
+         if (strpos($file, ".scss") !== false && $file !== '__defaults.scss') {
             $name     = substr($file, 1, -5);
             $themes[$name] = ucfirst($name);
          }
