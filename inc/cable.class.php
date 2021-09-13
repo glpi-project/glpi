@@ -559,16 +559,20 @@ class Cable extends CommonDBTM {
 
       //Listener to update breacrumb / socket
       echo Html::scriptBlock("
-         $(document).on('change', '.input_rear_listener', function(e) {
-            //wait a little to be sure that dropdown_items_id DOM is effectively refresh
-            //due to Ajax::updateItemOnSelectEvent
-            setTimeout(function(){
-               items_id = $('#dropdown_items_id_endpoint_a".$rand_items_id_endpoint_a."').find(':selected').val();
-               itemtype = $('#dropdown_itemtype_endpoint_a".$rand_itemtype_endpoint_a."').find(':selected').val();
-               socketmodels_id = $('#dropdown_socketmodels_id_endpoint_a".$rand_socket_model_rear."').find(':selected').val();
-               refreshAssetBreadcrumb(itemtype, items_id, 'show_rear_asset_breadcrumb');
-               refreshSocketDropdown(itemtype, items_id, socketmodels_id, 'sockets_id_endpoint_a', 'show_rear_sockets_field');
-            }, 50);
+         //listener to remove socket selector and breadcrumb
+         $(document).on('change', '#dropdown_itemtype_endpoint_a".$rand_itemtype_endpoint_a."', function(e) {
+            $('#show_rear_asset_breadcrumb').empty();
+            $('#show_rear_sockets_field').empty();
+         });
+
+         //listener to refresh socket selector and breadcrumb
+         $(document).on('change', '#dropdown_items_id_endpoint_a".$rand_items_id_endpoint_a."', function(e) {
+            items_id = $('#dropdown_items_id_endpoint_a".$rand_items_id_endpoint_a."').find(':selected').val();
+            itemtype = $('#dropdown_itemtype_endpoint_a".$rand_itemtype_endpoint_a."').find(':selected').val();
+            socketmodels_id = $('#dropdown_socketmodels_id_endpoint_a".$rand_socket_model_rear."').find(':selected').val();
+            refreshAssetBreadcrumb(itemtype, items_id, 'show_rear_asset_breadcrumb');
+            refreshSocketDropdown(itemtype, items_id, socketmodels_id, 'sockets_id_endpoint_a', 'show_rear_sockets_field');
+
          });
       ");
 
@@ -584,20 +588,27 @@ class Cable extends CommonDBTM {
       }
       echo "</span>";
 
+
       //Listener to update breacrumb / socket
       echo Html::scriptBlock("
-         $(document).on('change', '.input_front_listener', function(e) {
-            //wait a little to be sure that dropdown_items_id DOM is effectively refresh
-            //due to Ajax::updateItemOnSelectEvent
-            setTimeout(function(){
-               items_id = $('#dropdown_items_id_endpoint_b".$rand_items_id_endpoint_b."').find(':selected').val();
-               itemtype = $('#dropdown_itemtype_endpoint_b".$rand_itemtype_endpoint_b."').find(':selected').val();
-               socketmodels_id = $('#dropdown_socketmodels_id_endpoint_b".$rand_socket_model_front."').find(':selected').val();
-               refreshAssetBreadcrumb(itemtype, items_id, 'show_front_asset_breadcrumb');
-               refreshSocketDropdown(itemtype, items_id, socketmodels_id, 'sockets_id_endpoint_b', 'show_front_sockets_field');
-            }, 50);
+         //listener to remove socket selector and breadcrumb
+         $(document).on('change', '#dropdown_itemtype_endpoint_b".$rand_itemtype_endpoint_b."', function(e) {
+            $('#show_front_asset_breadcrumb').empty();
+            $('#show_front_sockets_field').empty();
+         });
+
+         //listener to refresh socket selector and breadcrumb
+         $(document).on('change', '#dropdown_items_id_endpoint_b".$rand_items_id_endpoint_b."', function(e) {
+            items_id = $('#dropdown_items_id_endpoint_b".$rand_items_id_endpoint_b."').find(':selected').val();
+            itemtype = $('#dropdown_itemtype_endpoint_b".$rand_itemtype_endpoint_b."').find(':selected').val();
+            socketmodels_id = $('#dropdown_socketmodels_id_endpoint_b".$rand_socket_model_front."').find(':selected').val();
+            refreshAssetBreadcrumb(itemtype, items_id, 'show_front_asset_breadcrumb');
+            refreshSocketDropdown(itemtype, items_id, socketmodels_id, 'sockets_id_endpoint_b', 'show_front_sockets_field');
+
          });
       ");
+
+
       echo "</td></tr>";
 
       $options['colspan'] = 4;
