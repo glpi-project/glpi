@@ -32,13 +32,13 @@
 
 namespace tests\units;
 
+use Certificate;
+use Certificate_Item;
 use Computer;
 use DbTestCase;
 use Item_SoftwareVersion;
 use Software;
 use SoftwareVersion;
-use Certificate;
-use Certificate_Item;
 
 /* Test for inc/transfer.class.php */
 
