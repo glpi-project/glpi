@@ -544,7 +544,7 @@ class Software extends InventoryAsset
             $stmt_columns = $this->cleanInputToPrepare((array)$val, $soft_fields);
 
             if ($stmt === null) {
-               $stmt_types = $types = str_repeat('s', count($stmt_columns));
+               $stmt_types = str_repeat('s', count($stmt_columns));
                $reference = array_replace(
                   $stmt_columns,
                   array_fill_keys(
