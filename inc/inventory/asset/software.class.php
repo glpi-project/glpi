@@ -64,10 +64,10 @@ class Software extends InventoryAsset
          'system_category' => '_system_category'
       ];
 
-      //Dictionnary for softwares
+      //Dictionary for software
       $rulecollection = new RuleDictionnarySoftwareCollection();
 
-      //Get the default entity for softwares, as defined in entity configuration
+      //Get the default entity for software, as defined in entity configuration
       $entities_id = $this->entities_id;
       $entities_id_software = Entity::getUsedConfig(
          'entities_id_software',
@@ -82,12 +82,12 @@ class Software extends InventoryAsset
          //inherit from main asset's entity
          $entities_id_software = $entities_id;
       } else if ($entities_id_software != $entities_id) {
-         //Software created in an different entity than main asset one
+         //Software created in a different entity than main asset one
          $is_recursive = 1;
       }
       $this->entities_id_software = $entities_id_software;
 
-      //Count the number of software dictionnary rules
+      //Count the number of software dictionary rules
       $count_rules = \countElementsInTable("glpi_rules",
          [
             'sub_type'  => 'RuleDictionnarySoftware',
@@ -117,7 +117,7 @@ class Software extends InventoryAsset
             $res_rule       = [];
 
             //Only play rules engine if there's at least one rule
-            //for software dictionnary
+            //for software dictionary
             if ($count_rules > 0) {
                $rule_input = [
                   "name"               => $val->name,
@@ -301,8 +301,8 @@ class Software extends InventoryAsset
       $this->disable_unicity_check = (count(FieldUnicity::getUnicityFieldsConfig("Software", $entities_id)) === 0);
 
       try {
-         $this->populateSoftwares();
-         $this->storeSoftwares();
+         $this->populateSoftware();
+         $this->storeSoftware();
          $this->populateVersions();
          $this->storeVersions();
          $this->storeAssetLink();
@@ -403,7 +403,7 @@ class Software extends InventoryAsset
     *
     * @return  void
     */
-   private function populateSoftwares() {
+   private function populateSoftware() {
       global $DB;
       $entities_id  = $this->entities_id_software;
 
@@ -531,7 +531,7 @@ class Software extends InventoryAsset
     *
     * @return void
     */
-   private function storeSoftwares() {
+   private function storeSoftware() {
       global $DB;
 
       $software = new GSoftware();
@@ -573,7 +573,7 @@ class Software extends InventoryAsset
    }
 
    /**
-    * Store softwares versions
+    * Store software versions
     *
     * @return void
     */
