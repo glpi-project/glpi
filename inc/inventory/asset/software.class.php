@@ -545,14 +545,10 @@ class Software extends InventoryAsset
 
             if ($stmt === null) {
                $stmt_types = str_repeat('s', count($stmt_columns));
-               $reference = array_replace(
-                  $stmt_columns,
-                  array_fill_keys(
-                     array_keys($stmt_columns),
-                     new QueryParam()
-                  )
+               $reference = array_fill_keys(
+                  array_keys($stmt_columns),
+                  new QueryParam()
                );
-
                $insert_query = $DB->buildInsert(
                   $software->getTable(),
                   $reference
@@ -611,14 +607,10 @@ class Software extends InventoryAsset
             $stmt_columns['softwares_id'] = $softwares_id;
             if ($stmt === null) {
                $stmt_types = $types = str_repeat('s', count($stmt_columns));
-               $reference = array_replace(
-                  $stmt_columns,
-                  array_fill_keys(
-                     array_keys($stmt_columns),
-                     new QueryParam()
-                  )
+               $reference = array_fill_keys(
+                  array_keys($stmt_columns),
+                  new QueryParam()
                );
-
                $insert_query = $DB->buildInsert(
                   $version->getTable(),
                   $reference
