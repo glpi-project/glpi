@@ -14,7 +14,7 @@
         "@fullcalendar/list": "^4.4.0",
         "@fullcalendar/rrule": "^4.4.0",
         "@fullcalendar/timegrid": "^4.4.0",
-        "@tabler/core": "^1.0.0-beta3",
+        "@tabler/core": "https://github.com/tabler/tabler/tarball/3d6cbe85a7475cb82144e6e265bcb37383ac2f21",
         "animate.css": "^4.1.1",
         "bootstrap": "^5.1.0",
         "chartist": "^0.11.4",
@@ -62,7 +62,6 @@
         "tinymce-i18n": "^20.4.4"
     },
     "scripts": {
-        "preinstall": "npx npm-force-resolutions",
         "build:patch_dependencies": "(patch -f -p1 -d node_modules/@tabler/core/ < tools/tabler-831.patch || echo 'Error applying patch')",
         "build:pack": "webpack --config webpack.config.js",
         "build": "npm run build:patch_dependencies && npm run build:pack"
@@ -83,8 +82,5 @@
         "terser": "^5.2.1",
         "webpack": "^5.3.2",
         "webpack-cli": "^4.1.0"
-    },
-    "resolutions": {
-        "bootstrap": "5.1.0"
     }
 }
