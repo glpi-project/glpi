@@ -32,7 +32,7 @@
 /* global glpi_alert */
 
 /*
- * Redefine 'window.alert' javascript function by a jquery-ui dialog equivalent (but prettier).
+ * Redefine 'window.alert' javascript function by a prettier dialog.
  */
 window.old_alert = window.alert;
 window.alert = function(message, caption) {
