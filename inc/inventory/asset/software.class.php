@@ -35,7 +35,6 @@ namespace Glpi\Inventory\Asset;
 use DBmysqlIterator;
 use Dropdown;
 use Entity;
-use FieldUnicity;
 use Glpi\Inventory\Conf;
 use QueryParam;
 use RuleDictionnarySoftwareCollection;
