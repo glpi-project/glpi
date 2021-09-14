@@ -49,7 +49,6 @@ class Software extends InventoryAsset
    private $softwares = [];
    private $versions = [];
    private $entities_id_software;
-   private $disable_unicity_check = false;
 
    /** @var array */
    protected $extra_data = [
@@ -296,9 +295,6 @@ class Software extends InventoryAsset
          //nothing to do!
          return;
       }
-
-      //check unicity
-      $this->disable_unicity_check = (count(FieldUnicity::getUnicityFieldsConfig("Software", $entities_id)) === 0);
 
       try {
          $this->populateSoftware();
