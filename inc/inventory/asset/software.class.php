@@ -602,7 +602,7 @@ class Software extends InventoryAsset
             $stmt_columns['name'] = $version_name;
             $stmt_columns['softwares_id'] = $softwares_id;
             if ($stmt === null) {
-               $stmt_types = $types = str_repeat('s', count($stmt_columns));
+               $stmt_types = str_repeat('s', count($stmt_columns));
                $reference = array_fill_keys(
                   array_keys($stmt_columns),
                   new QueryParam()
