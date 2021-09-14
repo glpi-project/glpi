@@ -1435,7 +1435,7 @@ class Inventory extends DbTestCase {
       //softwares
       $isoft = new \Item_SoftwareVersion();
       $iterator = $isoft->getFromItem($computer);
-      $this->integer(count($iterator))->isIdenticalTo(3005);
+      $this->integer(count($iterator))->isIdenticalTo(3033);
 
       //check for expected logs
       $nblogsnow = countElementsInTable(\Log::getTable());
@@ -1583,7 +1583,7 @@ class Inventory extends DbTestCase {
       //softwares
       $isoft = new \Item_SoftwareVersion();
       $iterator = $isoft->getFromItem($computer);
-      $this->integer(count($iterator))->isIdenticalTo(3005);
+      $this->integer(count($iterator))->isIdenticalTo(3033);
 
       //check for expected logs
       $nblogsnow = countElementsInTable(\Log::getTable());
@@ -1787,7 +1787,7 @@ class Inventory extends DbTestCase {
       //softwares
       $isoft = new \Item_SoftwareVersion();
       $iterator = $isoft->getFromItem($computer);
-      $this->integer(count($iterator))->isIdenticalTo(3155);
+      $this->integer(count($iterator))->isIdenticalTo(3184);
 
       //check for expected logs after update
       $logs = $DB->request([
