@@ -171,11 +171,6 @@ var filesToCopy = [
       from: 'themes/*.css',
    },
    {
-      package: 'jquery-ui',
-      context: 'ui',
-      from: 'i18n/*.js',
-   },
-   {
       package: 'select2',
       context: 'dist',
       from: 'js/i18n/*.js',
