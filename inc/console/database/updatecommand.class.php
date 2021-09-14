@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
+use Glpi\Console\Traits\TelemetryActivationTrait;
 use Migration;
 use Session;
 use Symfony\Component\Console\Helper\Table;
@@ -48,6 +49,8 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Update;
 
 class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionCommandInterface {
+
+   use TelemetryActivationTrait;
 
    /**
     * Error code returned when trying to update from an unstable version.
@@ -85,6 +88,8 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
          InputOption::VALUE_NONE,
          __('Force execution of update from v-1 version of GLPI even if schema did not changed')
       );
+
+      $this->registerTelemetryActivationOptions($this->getDefinition());
    }
 
    protected function initialize(InputInterface $input, OutputInterface $output) {
@@ -181,6 +186,8 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
 
       $update->doUpdates($current_version, $force);
       $output->writeln('<info>' . __('Migration done.') . '</info>');
+
+      $this->handTelemetryActivation($input, $output);
 
       return 0; // Success
    }

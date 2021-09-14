@@ -398,6 +398,20 @@ class Telemetry extends CommonGLPI {
    }
 
    /**
+    * Disable telemetry
+    *
+    * @return void
+    */
+   public static function disable(): void {
+      global $DB;
+      $DB->update(
+         'glpi_crontasks',
+         ['state' => 0],
+         ['name' => 'telemetry']
+      );
+   }
+
+   /**
     * Is telemetry currently enabled
     *
     * @return boolean
