@@ -62,7 +62,6 @@ function header_html($etape) {
 
     // LIBS
    echo Html::script("public/lib/base.js");
-   echo Html::script("public/lib/tabler.js");
    echo Html::script("public/lib/fuzzy.js");
    echo Html::script("js/common.js");
    echo Html::script("js/glpi_dialog.js");
