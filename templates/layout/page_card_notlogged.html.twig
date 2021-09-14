@@ -4,7 +4,7 @@
    {# TODO : load hight contrast css #}
 {% endif %}
 {% if js_files is not defined %}
-   {% set js_files = ['public/lib/base.js', 'public/lib/tabler.js', 'js/common.js'] %}
+   {% set js_files = ['public/lib/base.js', 'js/common.js'] %}
 {% endif %}
 
 {{ include('layout/parts/head.html.twig') }}

@@ -1106,8 +1106,6 @@ HTML;
          'js_files'  => [],
       ];
 
-      Html::requireJs('tabler');
-
       $tpl_vars['css_files'][] = 'public/lib/base.css';
 
       if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
@@ -1267,7 +1265,6 @@ HTML;
       }
       $tpl_vars['css_files'][] = 'css/palettes/' . $theme . '.scss';
 
-      // AJAX library
       $tpl_vars['js_files'][] = 'public/lib/base.js';
 
       // Search
@@ -6182,9 +6179,6 @@ JAVASCRIPT;
          return;
       }
       switch ($name) {
-         case 'tabler':
-            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/tabler.js';
-            break;
          case 'glpi_dialog':
             $_SESSION['glpi_js_toload'][$name][] = 'js/glpi_dialog.js';
             break;
