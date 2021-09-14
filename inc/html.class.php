@@ -5674,12 +5674,6 @@ JAVASCRIPT;
 
       if ($p['enable_richtext']) {
          $display .= Html::initEditorSystem($p['editor_id'], $p['rand'], false, false, $p['enable_images']);
-      } else {
-         $display .= Html::scriptBlock("
-                        $(document).ready(function() {
-                           $('#".$p['editor_id']."').autogrow();
-                        });
-                     ");
       }
       if (!$p['enable_fileupload'] && $p['enable_richtext'] && $p['enable_images']) {
          $p_rt = $p;
@@ -5948,7 +5942,7 @@ JAVASCRIPT;
 
    /**
     * In this function, we redefine 'window.alert' javascript function
-    * by a jquery-ui dialog equivalent (but prettier).
+    * by a prettier dialog.
     *
     * @since 9.1
    **/
@@ -6004,7 +5998,7 @@ JAVASCRIPT;
 
    /**
     * In this function, we redefine 'window.confirm' javascript function
-    * by a jquery-ui dialog equivalent (but prettier).
+    * by a prettier dialog.
     * This dialog is normally asynchronous and can't return a boolean like naive window.confirm.
     * We manage this behavior with a global variable 'confirmed' who watchs the acceptation of dialog.
     * In this case, we trigger a new click on element to return the value (and without display dialog)

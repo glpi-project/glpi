@@ -64,6 +64,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::unclean_cross_side_scripting_deep()`
 
 #### Removed
+- jQueryUI has been partially removed and remaining widgets will be removed in a near future.
 - Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
 - `$CFG_GLPI['layout_excluded_pages']` entry
 - `$LOADED_PLUGINS` global variable
