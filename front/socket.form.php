@@ -95,7 +95,7 @@ if (isset($_POST["add"])) {
             sprintf(__('%1$s adds several sockets'), $_SESSION["glpiname"]));
    Html::back();
 
-}  else if (isset($_POST["execute_single"])) {
+} else if (isset($_POST["execute_single"])) {
    $socket->check(-1, CREATE, $_POST);
 
    if ($socket->add($_POST)) {
@@ -120,15 +120,15 @@ if (isset($_POST["add"])) {
    }
 
    $options = [];
-   if(isset($_GET["id"])){
+   if (isset($_GET["id"])) {
       $options['id'] = $_GET["id"];
    }
 
-   if(isset($_GET["items_id"])){
+   if (isset($_GET["items_id"])) {
       $options['items_id'] = $_GET["items_id"];
    }
 
-   if(isset($itemtype)){
+   if (isset($itemtype)) {
       $options['itemtype'] = $itemtype;
    }
 
