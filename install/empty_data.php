@@ -8272,6 +8272,8 @@ $tables['glpi_transfers'] = [
       'keep_cartridge'      => 1,
       'keep_consumable'     => 1,
       'keep_disk'           => 1,
+      'keep_certificate'    => 1,
+      'clean_certificate'   => 1,
    ],
 ];
 
