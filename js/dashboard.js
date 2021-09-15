@@ -940,7 +940,7 @@ var Dashboard = {
 
       return $.ajax({
          url:CFG_GLPI.root_doc+"/ajax/dashboard.php",
-         method: 'POST',
+         method: 'GET',
          data: {
             'action': 'get_cards',
             data: JSON.stringify({ //Preserve integers
