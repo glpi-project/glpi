@@ -1360,6 +1360,10 @@ class Html {
          if (in_array('cable', $jslibs)) {
             Html::requireJs('cable');
          }
+
+         if (in_array('socket', $jslibs)) {
+            Html::requireJs('socket');
+         }
       }
 
       if (Session::getCurrentInterface() == "helpdesk") {
@@ -6746,6 +6750,7 @@ JAVASCRIPT;
             $_SESSION['glpi_js_toload'][$name][] = 'js/reservations.js';
             break;
          case 'cable':
+         case 'socket':
             $_SESSION['glpi_js_toload'][$name][] = 'js/cable.js';
             break;
          default:

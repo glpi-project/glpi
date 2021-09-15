@@ -37,8 +37,14 @@ if (!defined('GLPI_ROOT')) {
 use Glpi\Event;
 
 /// Socket class
-class Socket extends CommonDropdown {
+class Socket extends CommonDBChild {
 
+
+   // From CommonDBChild
+   static public $itemtype = 'itemtype';
+   static public $items_id = 'items_id';
+   static public $checkParentRights  = self::DONT_CHECK_ITEM_RIGHTS;
+   
    // From CommonDBTM
    public $dohistory          = true;
    static $rightname          = 'cable_management';
@@ -47,59 +53,20 @@ class Socket extends CommonDropdown {
    const REAR    = 1;
    const FRONT   = 2;
 
-   function getAdditionalFields() {
-      return [['name'  => 'position',
-               'label' => __('Position'),
-               'type'  => ' ',
-               'list'  => true],
-               ['name' => 'locations_id',
-               'label' => Location::getTypeName(1),
-               'type'  => 'dropdownValue',
-               'list'  => true],
-               ['name' => 'socketmodels_id',
-               'label' => SocketModel::getTypeName(1),
-               'type'  => 'dropdownValue',
-               'list'  => true],
-               ['name' => 'wiring_side',
-               'label' => __('Wiring side'),
-               'type'  => ' '],
-               ['name' => 'networkports_id',
-               'label' => _n('Network port', 'Network ports', Session::getPluralNumber()),
-               'type'  => ' '],
-               ['name' => '_virtual_datacenter_position',
-               'label' => __('Position'),
-               'type'  => ' ']];
+   function canCreateItem() {
+      return Session::haveRight(static::$rightname, CREATE);
    }
 
-   function displaySpecificTypeField($ID, $field = [], array $options = []) {
 
-      if ($field['name'] == 'position') {
-         $params = ['value' => $this->fields[$field['name']]];
-         $params['min'] = 0;
-         $params['step'] = 1;
-         $params['toadd'] = [-1 => __("Auto")];
-         Dropdown::showNumber($field['name'], $params);
-      }
+   function defineTabs($options = []) {
+      $ong = [];
+      $this->addDefaultFormTab($ong);
+      $this->addStandardTab('Notepad', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
-      if ($field['name'] == 'wiring_side') {
-         self::dropdownWiringSide($field['name'], ['value' => $this->fields['wiring_side']]);
-      }
-
-      if ($field['name'] == 'networkports_id') {
-         self::showNetworkPortForm($this->fields['itemtype'], $this->fields['items_id'], $this->fields['networkports_id'], $options);
-      }
-
-      if ($field['name'] == '_virtual_datacenter_position') {
-         //DC position
-         echo "<span id='show_asset_breadcrumb'>";
-         if (!empty($this->fields['itemtype']) && !empty($this->fields['items_id'])) {
-            if (method_exists($this->fields['itemtype'], 'getDcBreadcrumbSpecificValueToDisplay')) {
-               echo $this->fields['itemtype']::getDcBreadcrumbSpecificValueToDisplay($this->fields['items_id']);
-            }
-         }
-         echo "</span>";
-      }
+      return $ong;
    }
+
 
    /**
    * NetworkPort Form
@@ -108,6 +75,7 @@ class Socket extends CommonDropdown {
    static function showNetworkPortForm($itemtype, $items_id, $networkports_id = 0, $options = []) {
 
       global $CFG_GLPI;
+
 
       //if form is called from an item, retrive itemtype and items
       if (isset($options['_add_fromitem'])) {
@@ -150,20 +118,116 @@ class Socket extends CommonDropdown {
                                                        'itemtype' => $itemtype]]);
       echo "</span>";
 
-      //Listener to update breacrumb / networkport
-      // when itemtype / items_id dropdown are selected
+
+      //Listener to update breacrumb / socket
       echo Html::scriptBlock("
-         $(document).on('change', '.input_listener', function(e) {
-            //wait a little to be sure that dropdown_items_id DOM is effectively refresh
-            //due to Ajax::updateItemOnSelectEvent
-            setTimeout(function(){
-               items_id = $('#dropdown_items_id".$rand_items_id."').find(':selected').val();
-               itemtype = $('#dropdown_itemtype".$rand_itemtype."').find(':selected').val();
-               refreshAssetBreadcrumb(itemtype, items_id, 'show_asset_breadcrumb');
-               refreshNetworkPortDropdown(itemtype, items_id, 'show_networkport_field');
-            }, 40);
+         //listener to remove socket selector and breadcrumb
+         $(document).on('change', '#dropdown_itemtype".$rand_itemtype."', function(e) {
+            $('#show_front_asset_breadcrumb').empty();
+            $('#show_front_sockets_field').empty();
+         });
+
+         //listener to refresh socket selector and breadcrumb
+         $(document).on('change', '#dropdown_items_id".$rand_items_id."', function(e) {
+            var items_id = $('#dropdown_items_id".$rand_items_id."').find(':selected').val();
+            var itemtype = $('#dropdown_itemtype".$rand_itemtype."').find(':selected').val();
+            refreshAssetBreadcrumb(itemtype, items_id, 'show_asset_breadcrumb');
+            refreshNetworkPortDropdown(itemtype, items_id, 'show_networkport_field');
+
          });
       ");
+
+   }
+
+   /**
+    * Print the version form
+    *
+    * @param $ID        integer ID of the item
+    * @param $options   array
+    *     - target for the Form
+    *     - itemtype type of the item for add process
+    *     - items_id ID of the item for add process
+    *
+    * @return true if displayed  false if item not found or not right to display
+   **/
+   function showForm($ID, $options = []) {
+
+      $itemtype = null;
+      if (isset($options['itemtype']) && !empty($options['itemtype'])) {
+         $itemtype = $options['itemtype'];
+      } else if (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
+         $itemtype = $this->fields['itemtype'];
+      } else {
+         throw new \RuntimeException('Unable to retrieve itemtype');
+      }
+
+      $item = new $itemtype();
+      if ($ID > 0) {
+         $this->check($ID, READ);
+         $item->getFromDB($this->fields['items_id']);
+      } else {
+         $this->check(-1, CREATE, $options);
+         $item->getFromDB($options['items_id']);
+      }
+
+      $this->showFormHeader($options);
+
+      //if ($this->isNewID($ID)) {
+         echo "<input type='hidden' name='items_id' value='".$options['items_id']."'>";
+         echo "<input type='hidden' name='itemtype' value='".$options['itemtype']."'>";
+      //}
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Name')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($this, "name");
+      echo "</td>";
+      echo "<td>".__('Position')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($this, "position");
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Location')."</td>";
+      echo "<td>";
+      Location::dropdown(['value' => $this->fields['locations_id']]);
+      echo "</td>";
+      echo "<td>".SocketModel::getTypeName(1)."</td>";
+      echo "<td>";
+      SocketModel::dropdown(['value' => $this->fields['socketmodels_id']]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Wiring side')."</td>";
+      echo "<td>";
+      self::dropdownWiringSide('wiring_side', ['value' => $this->fields['wiring_side']]);
+      echo "</td>";
+      echo "<td>"._n('Network port', 'Network ports', Session::getPluralNumber())."</td>";
+      echo "<td>";
+      self::showNetworkPortForm($this->fields['itemtype'], $this->fields['items_id'], $this->fields['networkports_id'], $options);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Position')."</td>";
+      echo "<td>";
+      echo "<span id='show_asset_breadcrumb'>";
+      if (!empty($this->fields['itemtype']) && !empty($this->fields['items_id'])) {
+         if (method_exists($this->fields['itemtype'], 'getDcBreadcrumbSpecificValueToDisplay')) {
+            echo $this->fields['itemtype']::getDcBreadcrumbSpecificValueToDisplay($this->fields['items_id']);
+         }
+      }
+      echo "</span>";
+      echo "</td><td></td><td></td>";
+      echo "</tr>";
+
+      $options['canedit'] = Session::haveRight($itemtype::$rightname, UPDATE);
+      $this->showFormButtons($options);
+
+      return true;
 
    }
 
@@ -498,6 +562,31 @@ class Socket extends CommonDropdown {
          $changes[2] = addslashes($this->getNameID());
          Log::history($parent, 'Location', $changes, $this->getType(), Log::HISTORY_ADD_SUBITEM);
       }
+
+      $this->cleanIfStealNetworkPort();
+   }
+
+   function post_updateItem($history = 1) {
+      $this->cleanIfStealNetworkPort();
+   }
+
+   function cleanIfStealNetworkPort() {
+      global $DB;
+      //find other socket with same networkport and reset it
+      if ($this->fields['networkports_id'] > 0) {
+         $iter = $DB->request(['SELECT' => 'id',
+         'FROM'   => getTableForItemType(Socket::getType()),
+         'WHERE'  => [
+           'networkports_id' => $this->fields['networkports_id'],
+           'id' => ['<>', $this->fields['id']]
+        ]]);
+
+         foreach (Socket::getFromIter($iter) as $socket) {
+            $socket->fields['networkports_id'] = 0;
+            $socket->update($socket->fields);
+         }
+      }
+
    }
 
 
@@ -721,9 +810,15 @@ class Socket extends CommonDropdown {
          echo "</td>";
          echo "<td>".__('Wiring side')."</td><td>";
          Socket::dropdownWiringSide("wiring_side", []);
+         echo "</td>";
+         echo "<td>".__('Itemtype')."</td><td>";
+         Dropdown::showFromArray('itemtype', self::getSocketLinkTypes(),[]);
+         echo "</td>";
+
+
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
-         echo "<input type='hidden' name='locations_id' value='$ID'></td>";
-         echo "<td><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='hidden' name='locations_id' value='$ID'><td>";
+         echo "<td><input type='submit' name='execute_single' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>\n";
          echo "</table>\n";
          Html::closeForm();
@@ -750,11 +845,14 @@ class Socket extends CommonDropdown {
          echo "</td>";
          echo "<td>".__('Wiring side')."</td><td>";
          Socket::dropdownWiringSide("wiring_side", []);
+         echo "</td>";
+         echo "<td>".__('Itemtype')."</td><td>";
+         Dropdown::showFromArray('itemtype', self::getSocketLinkTypes(),[]);
+         echo "</td>";
 
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
-         echo "<input type='hidden' name='locations_id' value='$ID'>";
-         echo "<input type='hidden' name='_method' value='AddMulti'></td>";
-         echo "<td><input type='submit' name='execute' value=\""._sx('button', 'Add')."\"
+         echo "<input type='hidden' name='locations_id' value='$ID'></td>";
+         echo "<td><input type='submit' name='execute_multi' value=\""._sx('button', 'Add')."\"
                     class='submit'>";
          echo "</td></tr>\n";
          echo "</table>\n";
@@ -795,6 +893,10 @@ class Socket extends CommonDropdown {
          }
 
          echo "<th>".__('Name')."</th>"; // Name
+         echo "<th>".__('Socket Model')."</th>"; // socket Model
+         echo "<th>".__('Assets')."</th>"; // Asset
+         echo "<th>".__('NetworkPort')."</th>"; // NetworkPort
+         echo "<th>".__('Wiring side')."</th>"; // Wiring side
          echo "<th>".__('Comments')."</th>"; // Comment
          echo "</tr>\n";
 
@@ -815,9 +917,22 @@ class Socket extends CommonDropdown {
             if ($canedit) {
                echo "<td>".Html::getMassiveActionCheckBox(__CLASS__, $data["id"])."</td>";
             }
-
             echo "<td><a href='".$socket->getFormURL();
             echo '?id='.$data['id']."'>".$data['name']."</a></td>";
+
+            $socketmodel = new SocketModel();
+            $socketmodel->getFromDB($data['socketmodels_id']);
+            echo "<td>".$socketmodel->getLink()."</td>";
+
+            $asset = new $data['itemtype']();
+            $asset->getFromDB($data['items_id']);
+            echo "<td>".$asset->getLink()."</td>";
+
+            $networkport = new NetworkPort();
+            $networkport->getFromDB($data['networkports_id']);
+            echo "<td>".$networkport->getLink()."</td>";
+
+            echo "<td>".self::getSides()[$data['wiring_side']]."</td>";
             echo "<td>".$data['comment']."</td>";
             echo "</tr>\n";
          }

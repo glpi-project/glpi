@@ -170,15 +170,13 @@ if (!$DB->tableExists('glpi_sockets') && $DB->tableExists('glpi_netpoints')) {
          if ($networkport->getFromDB($values['networkports_id'])) {
             $sockets_id = $values['netpoints_id'];
             $socket = new Socket();
-            if ($socket->getFromDB($sockets_id)) {
-               $socket->update([
+               $socket->add([
                   'id'              => $sockets_id,
                   'position'        => $networkport->fields['logical_number'],
                   'itemtype'        => $networkport->fields['itemtype'],
                   'items_id'        => $networkport->fields['items_id'],
                   'networkports_id' => $networkport->getID()
                ]);
-            }
          }
       }
    }
