@@ -7,6 +7,12 @@ The present file will list all changes made to the project; according to the
 
 ### API changes
 
+#### Changed
+
+- All POST request made to `/ajax/` scripts are now requiring a valid CSRF token in their `X-Glpi-Csrf-Token` header.
+Requests done using jQuery are automatically including this header, from the moment that the page header is built using
+`Html::includeHeader()` method and the `js/common.js` script is loaded.
+
 #### Deprecated
 
 - Usage of "followups" option in `CommonITILObject::showShort()`

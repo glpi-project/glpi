@@ -1208,24 +1208,34 @@ class Session {
    /**
     * Get new CSRF token
     *
+    * @param bool $standalone
+    *    Generates a standalone token that will not be shared with other component of current request.
+    *
     * @since 0.83.3
     *
     * @return string
    **/
-   static public function getNewCSRFToken() {
+   static public function getNewCSRFToken(bool $standalone = false) {
       global $CURRENTCSRFTOKEN;
 
-      if (empty($CURRENTCSRFTOKEN)) {
+      $token = $standalone ? '' : $CURRENTCSRFTOKEN;
+
+      if (empty($token)) {
          do {
-            $CURRENTCSRFTOKEN = bin2hex(random_bytes(32));
-         } while ($CURRENTCSRFTOKEN == '');
+            $token = bin2hex(random_bytes(32));
+         } while ($token == '');
       }
 
       if (!isset($_SESSION['glpicsrftokens'])) {
          $_SESSION['glpicsrftokens'] = [];
       }
-      $_SESSION['glpicsrftokens'][$CURRENTCSRFTOKEN] = time() + GLPI_CSRF_EXPIRES;
-      return $CURRENTCSRFTOKEN;
+      $_SESSION['glpicsrftokens'][$token] = time() + GLPI_CSRF_EXPIRES;
+
+      if (!$standalone) {
+         $CURRENTCSRFTOKEN = $token;
+      }
+
+      return $token;
    }
 
 
@@ -1300,6 +1310,12 @@ class Session {
 
       if (GLPI_USE_CSRF_CHECK
           && (!Session::validateCSRF($data))) {
+         // Output JSON if requested by client
+         if (strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false) {
+            http_response_code(403);
+            die(json_encode(["message" => __("The action you have requested is not allowed.")]));
+         }
+
          Html::displayErrorAndDie(__("The action you have requested is not allowed."), true);
       }
    }

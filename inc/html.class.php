@@ -1231,6 +1231,11 @@ class Html {
       // auto desktop / mobile viewport
       echo "<meta name='viewport' content='width=device-width, initial-scale=1'>";
 
+      // CSRF token used for AJAX calls
+      // Ensure this token is not shared with the page, as result would be that some AJAX request will consume
+      // the token that would have been used by a form submitted from the same page.
+      echo '<meta property="glpi:csrf_token" content="' . Session::getNewCSRFToken(true) . '" />';
+
       //detect theme
       $theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
 

@@ -60,16 +60,16 @@ if (!empty($_POST["update"])) {
    $config->update($_POST);
    Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
-if (!empty($_GET['reset_opcache'])) {
+if (!empty($_POST['reset_opcache'])) {
    $config->checkGlobal(UPDATE);
    if (opcache_reset()) {
       Session::addMessageAfterRedirect(__('Cache reset successful'));
    }
    Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
-if (!empty($_GET['reset_cache'])) {
+if (!empty($_POST['reset_cache'])) {
    $config->checkGlobal(UPDATE);
-   $cache = isset($_GET['optname']) ? Config::getCache($_GET['optname']) : $GLPI_CACHE;
+   $cache = isset($_POST['optname']) ? Config::getCache($_POST['optname']) : $GLPI_CACHE;
    if ($cache->clear()) {
       Session::addMessageAfterRedirect(__('Cache reset successful'));
    }

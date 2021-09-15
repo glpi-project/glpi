@@ -40,8 +40,7 @@ function uploadFile(file, editor, input_name) {
    formdata.append('name', 'filename');
 
    // upload file with ajax
-   $.ajax({
-      type: 'POST',
+   $.post({
       url: CFG_GLPI.root_doc+'/ajax/fileupload.php',
       data: formdata,
       processData: false,

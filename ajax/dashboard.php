@@ -51,30 +51,30 @@ if (!isset($_REQUEST['embed']) || !$_REQUEST['embed']) {
 
 $dashboard = new Glpi\Dashboard\Dashboard($_REQUEST['dashboard'] ?? "");
 
-switch ($_REQUEST['action']) {
+switch ($_POST['action'] ?? null) {
    case 'save_new_dashboard':
       echo $dashboard->saveNew(
-         $_REQUEST['title']   ?? "",
-         $_REQUEST['context'] ?? ""
+         $_POST['title']   ?? "",
+         $_POST['context'] ?? ""
       );
       exit;
 
    case 'save_items':
-      $dashboard->saveitems($_REQUEST['items'] ?? []);
-      $dashboard->saveTitle($_REQUEST['title'] ?? "");
+      $dashboard->saveitems($_POST['items'] ?? []);
+      $dashboard->saveTitle($_POST['title'] ?? "");
       exit;
 
    case 'save_rights':
-      echo $dashboard->saveRights($_REQUEST['rights'] ?? []);
+      echo $dashboard->saveRights($_POST['rights'] ?? []);
       exit;
 
    case 'delete_dashboard':
-      echo $dashboard->delete(['key' => $_REQUEST['dashboard']]);
+      echo $dashboard->delete(['key' => $_POST['dashboard']]);
       exit;
 
    case 'set_last_dashboard':
-      $grid = new Grid($_REQUEST['dashboard'] ?? "");
-      echo $grid->setLastDashboard($_REQUEST['page'], $_REQUEST['dashboard']);
+      $grid = new Grid($_POST['dashboard'] ?? "");
+      echo $grid->setLastDashboard($_POST['page'], $_POST['dashboard']);
       exit;
 
    case 'clone_dashboard':

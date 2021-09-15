@@ -37,4 +37,4 @@
 include ('../inc/includes.php');
 
 Session::checkLoginUser();
-GLPIUploadHandler::uploadFiles($_REQUEST);
+GLPIUploadHandler::uploadFiles($_POST);
