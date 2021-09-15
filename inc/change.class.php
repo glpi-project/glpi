@@ -795,8 +795,6 @@ class Change extends CommonITILObject {
          }
       }
 
-
-
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -1198,9 +1196,6 @@ class Change extends CommonITILObject {
             }
          }
 
-
-
-
          $this->showFormButtons($options);
       } else {
          echo "</table>";
@@ -1257,7 +1252,6 @@ class Change extends CommonITILObject {
       echo "</td>";
       echo "</tr>";
 
-
       echo "<tr class='tab_bg_1'>";
       echo "<th>".$tt->getBeginHiddenFieldText('controlistcontent');
       printf(__('%1$s%2$s'), __('Control list'), $tt->getMandatoryMark('controlistcontent'));
@@ -1312,7 +1306,6 @@ class Change extends CommonITILObject {
             ($ID ? $this->fields['entities_id'] : $options['entities_id'])
          );
       }
-
 
       echo "<tr class='tab_bg_1'>";
       echo "<th>".$tt->getBeginHiddenFieldText('rolloutplancontent');
