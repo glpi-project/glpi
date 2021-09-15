@@ -591,8 +591,7 @@ class Auth extends CommonGLPI {
             }
             break;
          case self::COOKIE:
-            $cookie_name = session_name() . '_rememberme';
-            $cookie_path = ini_get('session.cookie_path');
+            $cookie_name   = session_name() . '_rememberme';
 
             if ($CFG_GLPI["login_remember_time"]) {
                $data = json_decode($_COOKIE[$cookie_name], true);
@@ -615,8 +614,7 @@ class Auth extends CommonGLPI {
             }
 
             //Remove cookie to allow new login
-            setcookie($cookie_name, '', time() - 3600, $cookie_path);
-            unset($_COOKIE[$cookie_name]);
+            Auth::setRememberMeCookie('');
             break;
       }
       return false;
@@ -971,19 +969,13 @@ class Auth extends CommonGLPI {
          $token = $this->user->getAuthToken('cookie_token', true);
 
          if ($token) {
-            //Cookie name (Allow multiple GLPI)
-            $cookie_name = session_name() . '_rememberme';
-            //Cookie session path
-            $cookie_path = ini_get('session.cookie_path');
-
             $data = json_encode([
                 $this->user->fields['id'],
                 $token,
             ]);
 
             //Send cookie to browser
-            setcookie($cookie_name, $data, time() + $CFG_GLPI['login_remember_time'], $cookie_path);
-            $_COOKIE[$cookie_name] = $data;
+            Auth::setRememberMeCookie($data);
          }
       }
 
@@ -1724,5 +1716,34 @@ class Auth extends CommonGLPI {
 
    static function getIcon() {
       return "fas fa-sign-in-alt";
+   }
+
+   /**
+    * Defines "rememberme" cookie.
+    *
+    * @param string $cookie_value
+    *
+    * @return void
+    */
+   public static function setRememberMeCookie(string $cookie_value): void {
+      global $CFG_GLPI;
+
+      $cookie_name     = session_name() . '_rememberme';
+      $cookie_lifetime = empty($cookie_value) ? time() - 3600 : time() + $CFG_GLPI['login_remember_time'];
+      $cookie_path     = ini_get('session.cookie_path');
+      $cookie_domain   = ini_get('session.cookie_domain');
+      $cookie_secure   = (bool)ini_get('session.cookie_secure');
+
+      if (empty($cookie_value) && !isset($_COOKIE[$cookie_name])) {
+         return;
+      }
+
+      setcookie($cookie_name, $cookie_value, $cookie_lifetime, $cookie_path, $cookie_domain, $cookie_secure, true);
+
+      if (empty($cookie_value)) {
+         unset($_COOKIE[$cookie_name]);
+      } else {
+         $_COOKIE[$cookie_name] = $cookie_value;
+      }
    }
 }
