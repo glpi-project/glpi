@@ -5,6 +5,10 @@ The present file will list all changes made to the project; according to the
 
 ## [9.5.6] unreleased
 
+### Changed
+
+- `X-Forwarded-For` header value is no longer used during API access controls, API requests passing through proxies may be refused for security reasons.
+
 ### API changes
 
 #### Changed
