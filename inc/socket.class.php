@@ -187,7 +187,7 @@ class Socket extends CommonDBChild {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Location')."</td>";
+      echo "<td>".Location::getTypeName(0)."</td>";
       echo "<td>";
       Location::dropdown(['value' => $this->fields['locations_id']]);
       echo "</td>";
