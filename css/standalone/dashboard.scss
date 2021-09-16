@@ -29,6 +29,8 @@
  * ---------------------------------------------------------------------
  */
 
+@import "css/includes/gridstack-grids";
+
 $item_margin: 3px;
 $toolbar_height: 40px;
 $filter_height: 62px;
@@ -585,15 +587,15 @@ $break_tablet: 1400px;
          }
 
          & > .ui-resizable-se {
-            bottom: 5px;
-            right: 5px;
+            bottom: 14px;
+            right: 3px;
          }
 
          & > .controls {
             display: none;
             position: absolute;
-            top: 5px;
-            right: 10px;
+            top: 7px;
+            right: 12px;
             z-index: 11;
             cursor: pointer;
 
@@ -624,8 +626,7 @@ $break_tablet: 1400px;
          }
 
          .empty-card {
-            height: calc(100% - 5px);
-            margin: $item_margin;
+            height: 100%;
             border-radius: 3px;
             border: 1px solid transparent;
 
@@ -686,8 +687,6 @@ $break_tablet: 1400px;
          }
 
          .grid-stack-item-content {
-            left: $item_margin;
-            right: $item_margin;
             cursor: default;
             touch-action: initial;
 
@@ -707,13 +706,14 @@ $break_tablet: 1400px;
       @include soft-shadow;
       text-align: left;
       padding: 5px;
-      height: calc(100% - 5px);
-      width: calc(100% - 5px);
+      height: 100%;
+      width: 100%;
       margin: 2px 0 0 2px;
       display: block;
       color: rgba(0, 0, 0, 0.7);
       border: 2px solid transparent;
       border-radius: 3px;
+      border-top-left-radius: 3px !important;
       position: relative;
       background-color: #DDD;
 
