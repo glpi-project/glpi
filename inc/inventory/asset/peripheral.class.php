@@ -154,7 +154,7 @@ class Peripheral extends InventoryAsset
                // add peripheral
                $val->is_dynamic = 1;
                $val->entities_id = $this->entities_id;
-               $items_id = $peripheral->add((array)$val, [], $this->withHistory());
+               $items_id = $peripheral->add(\Toolbox::addslashes_deep((array)$val), [], $this->withHistory());
             } else {
                $items_id = $data['found_inventories'][0];
             }
