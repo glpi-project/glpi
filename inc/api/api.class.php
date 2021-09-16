@@ -1565,7 +1565,7 @@ abstract class API {
       }
 
       $cleaned_data = ['totalcount' => $rawdata['data']['totalcount'],
-                            'count'      => count($rawdata['data']['rows']),
+                            'count'      => $rawdata['data']['count'],
                             'sort'       => $rawdata['search']['sort'],
                             'order'      => $rawdata['search']['order']];
 
