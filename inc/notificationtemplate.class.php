@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
  * NotificationTemplate Class
 **/
 class NotificationTemplate extends CommonDBTM {
+   use Glpi\Features\Clonable;
 
    // From CommonDBTM
    public $dohistory = true;
@@ -50,7 +51,11 @@ class NotificationTemplate extends CommonDBTM {
 
    static $rightname = 'config';
 
-
+   public function getCloneRelations() :array {
+      return [
+         NotificationTemplateTranslation::class
+      ];
+   }
 
    static function getTypeName($nb = 0) {
       return _n('Notification template', 'Notification templates', $nb);
@@ -581,29 +586,5 @@ class NotificationTemplate extends CommonDBTM {
       parent::prepareInputForClone($input);
       $input['name'] = $input['name'] . ' (clone)';
       return $input;
-   }
-
-   function post_clone($source, $history) {
-      global $DB;
-      parent::post_clone($source, $history);
-
-      $iterator = $DB->request([
-         'SELECT' => 'id',
-         'FROM'   => 'glpi_notificationtemplatetranslations',
-         'WHERE'  => [
-            'notificationtemplates_id' => $source->getField('id')
-         ]
-      ]);
-
-      $succeed = true;
-      $translation = new NotificationTemplateTranslation();
-      while ($data = $iterator->next()) {
-         $translation->getFromDB($data['id']);
-         $translation->fields['notificationtemplates_id'] = $this->getField('id');
-         if ($translation->clone() === false) {
-            $succeed = false;
-         }
-      }
-      return $succeed;
    }
 }
