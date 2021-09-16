@@ -131,27 +131,36 @@ if (!$DB->tableExists('glpi_cables')) {
 
 if (!$DB->tableExists('glpi_sockets') && $DB->tableExists('glpi_netpoints')) {
 
-   //Rename table
-   $migration->renameTable('glpi_netpoints', 'glpi_sockets');
+   //create socket table
+   $query = "CREATE TABLE `glpi_sockets` (
+      `id` int NOT NULL AUTO_INCREMENT,
+      `position` int NOT NULL DEFAULT '0',
+      `entities_id` int NOT NULL DEFAULT '0',
+      `is_recursive` tinyint NOT NULL DEFAULT '0',
+      `locations_id` int NOT NULL DEFAULT '0',
+      `name` varchar(255) DEFAULT NULL,
+      `socketmodels_id` int NOT NULL DEFAULT '0',
+      `wiring_side` tinyint DEFAULT '1',
+      `itemtype` varchar(255) DEFAULT NULL,
+      `items_id` int NOT NULL DEFAULT '0',
+      `networkports_id` int NOT NULL DEFAULT '0',
+      `comment` text,
+      `date_mod` timestamp NULL DEFAULT NULL,
+      `date_creation` timestamp NULL DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      KEY `name` (`name`),
+      KEY `socketmodels_id` (`socketmodels_id`),
+      KEY `complete` (`entities_id`,`locations_id`,`name`),
+      KEY `is_recursive` (`is_recursive`),
+      KEY `location_name` (`locations_id`,`name`),
+      KEY `item` (`itemtype`,`items_id`),
+      KEY `networkports_id` (`networkports_id`),
+      KEY `wiring_side` (`wiring_side`),
+      KEY `date_mod` (`date_mod`),
+      KEY `date_creation` (`date_creation`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;";
+   $DB->queryOrDie($query, "10.0 add table glpi_sockets");
 
-   //add missing fields / keys
-   $migration->addField('glpi_sockets', 'position', 'int', ['value' => '0', 'after' => 'name']);
-
-   $migration->addfield('glpi_sockets', 'is_recursive', 'bool', ['value' => '0', 'after' => 'entities_id']);
-   $migration->addKey('glpi_sockets', 'is_recursive');
-
-   $migration->addField('glpi_sockets', 'socketmodels_id', 'int', ['after' => 'name']);
-   $migration->addKey('glpi_sockets', 'socketmodels_id');
-
-   $migration->addField("glpi_sockets", "wiring_side", "tinyint DEFAULT 1", ['after' => 'socketmodels_id']);
-   $migration->addKey('glpi_sockets', 'wiring_side');
-
-   $migration->addField('glpi_sockets', 'itemtype', 'string', ['after' => 'wiring_side']);
-   $migration->addField('glpi_sockets', 'items_id', 'int', ['after' => 'itemtype']);
-   $migration->addKey("glpi_sockets", ['itemtype','items_id'], 'item');
-
-   $migration->addField('glpi_sockets', 'networkports_id', 'int', ['after' => 'items_id']);
-   $migration->addKey('glpi_sockets', 'networkports_id');
 
    //migrate link between NetworkPort and Socket
    // BEFORE : supported by NetworkPortEthernet / NetworkPortFiberchannel with 'sockets_id' foreign key
@@ -164,28 +173,24 @@ if (!$DB->tableExists('glpi_sockets') && $DB->tableExists('glpi_netpoints')) {
                             'netpoints_id'      => ['<>', 0]]);
 
       foreach ($datas as $id => $values) {
-
          //Load NetworkPort to get associated item
          $networkport = new NetworkPort();
          if ($networkport->getFromDB($values['networkports_id'])) {
             $sockets_id = $values['netpoints_id'];
             $socket = new Socket();
-               $socket->add([
-                  'id'              => $sockets_id,
-                  'position'        => $networkport->fields['logical_number'],
-                  'itemtype'        => $networkport->fields['itemtype'],
-                  'items_id'        => $networkport->fields['items_id'],
-                  'networkports_id' => $networkport->getID()
-               ]);
+            $socket->add([
+               'id'              => $sockets_id,
+               'position'        => $networkport->fields['logical_number'],
+               'itemtype'        => $networkport->fields['itemtype'],
+               'items_id'        => $networkport->fields['items_id'],
+               'networkports_id' => $networkport->getID()
+            ]);
          }
       }
    }
 
-   //remove "useless "netpoints_id" field
-   $migration->dropField('glpi_networkportethernets', 'netpoints_id');
-   $migration->dropField('glpi_networkportfiberchannels', 'netpoints_id');
-   $migration->dropKey('glpi_networkportethernets', 'netpoint');
-   $migration->dropKey('glpi_networkportfiberchannels', 'netpoint');
+   //drop table glpi_netpoints
+   $migration->dropTable('glpi_netpoints');
 }
 
 if (!$DB->tableExists('glpi_networkportfiberchanneltypes')) {
