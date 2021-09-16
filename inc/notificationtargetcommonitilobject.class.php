@@ -1553,7 +1553,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                // Check if the author need to be anonymized
                if (ITILFollowup::getById($timeline_data['item']['id'])->isFromSupportAgent()
                   && $is_self_service
-                  && !empty($anon_name = User::getAnonymizedName(
+                  && !empty($anon_name = User::getAnonymizedNameForUser(
                      $timeline_data['item']['users_id'],
                      $item->getField('entities_id')
                   ))
