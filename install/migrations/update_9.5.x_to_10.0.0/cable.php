@@ -189,6 +189,10 @@ if (!$DB->tableExists('glpi_sockets') && $DB->tableExists('glpi_netpoints')) {
       }
    }
 
+   //remove "useless "netpoints_id" field
+   $migration->dropKey('glpi_networkportethernets', 'netpoint');
+   $migration->dropKey('glpi_networkportfiberchannels', 'netpoint');
+
    //drop table glpi_netpoints
    $migration->dropTable('glpi_netpoints');
 }
