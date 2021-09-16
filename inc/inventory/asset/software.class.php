@@ -287,14 +287,13 @@ class Software extends InventoryAsset
          //operating system id is not known before handle(); set it in value
          $val->operatingsystems_id = $operatingsystems_id;
          $key = $this->getFullCompareKey($val);
-         $dedup_vkey = $this->getVersionKey($val, 0);
+         $dedup_vkey = $key . $this->getVersionKey($val, 0);
          if (isset($db_software[$key])) {
             //link already exists in database, drop it
             unset($this->data[$k]);
             unset($db_software[$key]);
             $this->current_versions[$dedup_vkey] = true;
          } else {
-            $dedup_vkey = $this->getVersionKey($val, 0);
             if (isset($this->current_versions[$dedup_vkey])) {
                unset($this->data[$k]);
             } else {
