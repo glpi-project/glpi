@@ -577,4 +577,33 @@ class NotificationTemplate extends CommonDBTM {
       $queued->deleteByCriteria(['notificationtemplates_id' => $this->fields['id']]);
    }
 
+   function prepareInputForClone($input) {
+      parent::prepareInputForClone($input);
+      $input['name'] = $input['name'] . ' (clone)';
+      return $input;
+   }
+
+   function post_clone($source, $history) {
+      global $DB;
+      parent::post_clone($source, $history);
+
+      $iterator = $DB->request([
+         'SELECT' => 'id',
+         'FROM'   => 'glpi_notificationtemplatetranslations',
+         'WHERE'  => [
+            'notificationtemplates_id' => $source->getField('id')
+         ]
+      ]);
+
+      $succeed = true;
+      $translation = new NotificationTemplateTranslation();
+      while ($data = $iterator->next()) {
+         $translation->getFromDB($data['id']);
+         $translation->fields['notificationtemplates_id'] = $this->getField('id');
+         if ($translation->clone() === false) {
+            $succeed = false;
+         }
+      }
+      return $succeed;
+   }
 }
