@@ -118,7 +118,7 @@ class Software extends InventoryAsset
 
          //If the software name exists and is defined
          if (property_exists($val, 'name') && $val->name != '') {
-            $val->name = trim(str_replace("\xc2\xa0", ' ', $val->name));
+            $val->name = trim(preg_replace('/\s+/', ' ', $val->name));
 
             $res_rule       = [];
 
