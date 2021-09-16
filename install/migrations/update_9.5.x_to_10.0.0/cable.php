@@ -158,7 +158,7 @@ if (!$DB->tableExists('glpi_sockets') && $DB->tableExists('glpi_netpoints')) {
       KEY `wiring_side` (`wiring_side`),
       KEY `date_mod` (`date_mod`),
       KEY `date_creation` (`date_creation`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;";
+    ) ENGINE=InnoDB DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC;";
    $DB->queryOrDie($query, "10.0 add table glpi_sockets");
 
 
