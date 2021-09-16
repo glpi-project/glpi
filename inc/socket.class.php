@@ -850,7 +850,7 @@ class Socket extends CommonDBChild {
          echo "<td>";
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'>";
-         echo "<input type='submit' name='execute_multi' value=\""._sx('button', 'Add')."\"class='submit'>";
+         echo "<input type='submit' name='execute_multi' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td>";
          echo "</tr>\n";
          echo "</table>\n";
