@@ -172,11 +172,9 @@ trait Inventoriable {
       $js = <<<JAVASCRIPT
          $(function() {
             $('#update-status').on('click', function() {
-               $.ajax({
-                  type: 'GET',
+               $.post({
                   url: '{$CFG_GLPI['root_doc']}/ajax/agent.php',
                   timeout: 3000, //3 seconds timeout
-                  dataType: 'json',
                   data: {'action': '{$status}', 'id': '{$agent->fields['id']}'},
                   success: function(json) {
                      $('#agent_status').html(json.answer);
@@ -185,11 +183,9 @@ trait Inventoriable {
             });
 
             $('#update-inventory').on('click', function() {
-               $.ajax({
-                  type: 'GET',
+               $.post({
                   url: '{$CFG_GLPI['root_doc']}/ajax/agent.php',
                   timeout: 3000, //3 seconds timeout
-                  dataType: 'json',
                   data: {'action': '{$inventory}', 'id': '{$agent->fields['id']}'},
                   success: function(json) {
                      $('#inventory_status').html(json.answer);
