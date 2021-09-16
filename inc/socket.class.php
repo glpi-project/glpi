@@ -575,8 +575,8 @@ class Socket extends CommonDBChild {
          $iter = $DB->request(['SELECT' => 'id',
          'FROM'  => getTableForItemType(Socket::getType()),
          'WHERE' => [
-           'networkports_id' => $this->fields['networkports_id'],
-           ['NOT' => ['id' => $this->fields['id']]]]]);
+            'networkports_id' => $this->fields['networkports_id'],
+            ['NOT' => ['id' => $this->fields['id']]]]]);
 
          foreach (Socket::getFromIter($iter) as $socket) {
             $socket->fields['networkports_id'] = 0;
