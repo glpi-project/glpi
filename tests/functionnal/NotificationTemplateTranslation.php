@@ -47,20 +47,19 @@ class NotificationTemplate extends DbTestCase {
          'LIMIT'  => 1
       ]);
 
-      if ($data = $iterator->next()) {
-         $translation = new \NotificationTemplateTranslation();
-         $translation->getFromDB($data['id']);
-         $added = $translation->clone();
-         $this->integer((int)$added)->isGreaterThan(0);
+      $data = $iterator->next();
+      $translation = new \NotificationTemplateTranslation();
+      $translation->getFromDB($data['id']);
+      $added = $translation->clone();
+      $this->integer((int)$added)->isGreaterThan(0);
 
-         $clonedTranslation = new \NotificationTemplateTranslation();
-         $this->boolean($clonedTranslation->getFromDB($added))->isTrue();
+      $clonedTranslation = new \NotificationTemplateTranslation();
+      $this->boolean($clonedTranslation->getFromDB($added))->isTrue();
 
-         unset($translation->fields['id']);
-         unset($clonedTranslation->fields['id']);
+      unset($translation->fields['id']);
+      unset($clonedTranslation->fields['id']);
 
-         $this->array($translation->fields)->isIdenticalTo($clonedTranslation->fields);
-      }
+      $this->array($translation->fields)->isIdenticalTo($clonedTranslation->fields);
    }
 
    public function testCloneFromTemplate() {
