@@ -310,17 +310,29 @@ var glpi_close_all_dialogs = function() {
 var toast_id = 0;
 
 /**
+ * @typedef {{delay: number, animated: boolean, animation: string, animation_extra_classes: string}} ToastOptions
+ */
+/**
  * Create and show a "toast" (https://getbootstrap.com/docs/5.0/components/toasts/)
  *
- * @param {string} title      Header of the toast
- * @param {string} message    Body of the toast
- * @param {string} css_class  Css class to apply to the toasts
+ * @param {string} title         Header of the toast
+ * @param {string} message       Body of the toast
+ * @param {string} css_class     Css class to apply to the toasts
+ * @param {ToastOptions} options Toast options
  */
-var glpi_toast = function(title, message, css_class) {
+const glpi_toast = (title, message, css_class, options = {}) => {
    toast_id++;
 
-   var html = `<div class='toast-container bottom-0 end-0 p-3 messages_after_redirect'>
-      <div id='toast_js_${toast_id}' class='toast ${css_class} animate__animated animate__tada animate__delay-2s animate__slow' role='alert' aria-live='assertive' aria-atomic='true'>
+   options = Object.assign({
+      delay: 10000,
+      animated: true,
+      animation: 'animate__tada',
+      animation_extra_classes: 'animate__delay-2s animate__slow'
+   }, options);
+
+   const animation_classes = options.animated ? `animate_animated ${options.animation} ${options.animation_extra_classes}` : '';
+   const html = `<div class='toast-container bottom-0 end-0 p-3 messages_after_redirect'>
+      <div id='toast_js_${toast_id}' class='toast ${css_class} ${animation_classes}' role='alert' aria-live='assertive' aria-atomic='true'>
          <div class='toast-header'>
             <strong class='me-auto'>${title}</strong>
             <button type='button' class='btn-close' data-bs-dismiss='toast' aria-label='${__('Close')}'></button>
@@ -332,36 +344,53 @@ var glpi_toast = function(title, message, css_class) {
    </div>`;
    $('body').append(html);
 
-   var toast = new bootstrap.Toast(document.querySelector('#toast_js_' + toast_id), {
-      delay: 10000,
+   const toast = new bootstrap.Toast(document.querySelector('#toast_js_' + toast_id), {
+      delay: options.delay,
    });
    toast.show();
 };
 
 /**
+ * Display a success message toast
+ *
+ * @param {string} message       Message to display
+ * @param {string} caption       Caption for the toast
+ * @param {ToastOptions} options Toast options
+ */
+const glpi_toast_success = (message, caption, options = {}) => {
+   glpi_toast(caption || __('Success'), message, 'bg-success text-white border-0', options);
+};
+
+/**
  * Display an information toast
  *
- * @param {string} message Message to display
+ * @param {string} message       Message to display
+ * @param {string} caption       Caption for the toast
+ * @param {ToastOptions} options Toast options
  */
-var glpi_toast_info = function(message) {
-   glpi_toast(_n("Information", "Informations", 1), message, 'bg-info text-white border-0');
+const glpi_toast_info = function(message, caption, options = {}) {
+   glpi_toast(caption || _n("Information", "Informations", 1), message, 'bg-info text-white border-0', options);
 };
 
 /**
  * Display a warning toast
  *
- * @param {string} message Message to display
+ * @param {string} message       Message to display
+ * @param {string} caption       Caption for the toast
+ * @param {ToastOptions} options Toast options
  */
-var glpi_toast_warning = function(message) {
-   glpi_toast(__("Warning"), message, 'bg-warning text-white border-0');
+const glpi_toast_warning = (message, caption, options = {}) => {
+   glpi_toast(caption || __('Warning'), message, 'bg-warning text-white border-0', options);
 };
 
 /**
  * Display an error toast
  *
- * @param {string} message Message to display
+ * @param {string} message       Message to display
+ * @param {string} caption       Caption for the toast
+ * @param {ToastOptions} options Toast options
  */
-var glpi_toast_error = function(message) {
-   glpi_toast(__("Error"), message, 'bg-danger text-white border-0');
+const glpi_toast_error = (message, caption, options = {}) => {
+   glpi_toast(caption || __('Error'), message, 'bg-danger text-white border-0', options);
 };
 
