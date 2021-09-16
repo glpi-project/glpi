@@ -573,10 +573,10 @@ class Socket extends CommonDBChild {
       //find other socket with same networkport and reset it
       if ($this->fields['networkports_id'] > 0) {
          $iter = $DB->request(['SELECT' => 'id',
-         'FROM'   => getTableForItemType(Socket::getType()),
-         'WHERE'  => [
+         'FROM'  => getTableForItemType(Socket::getType()),
+         'WHERE' => [
            'networkports_id' => $this->fields['networkports_id'],
-           'id' => ['<>', $this->fields['id']]]]);
+           ['NOT' => ['id' => $this->fields['id']]]]]);
 
          foreach (Socket::getFromIter($iter) as $socket) {
             $socket->fields['networkports_id'] = 0;
