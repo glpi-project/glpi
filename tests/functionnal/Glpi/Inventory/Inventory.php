@@ -1872,7 +1872,7 @@ class Inventory extends DbTestCase {
       $locations_id = $cloc['id'];
 
       //check created asset
-      $equipments = $DB->request(['FROM' => \NetworkEquipment::getTable()]);
+      $equipments = $DB->request(['FROM' => \NetworkEquipment::getTable(), 'WHERE' => ['is_dynamic' => 1]]);
       //no agent with deviceid equals to "foo"
       $this->integer(count($equipments))->isIdenticalTo(1);
       $equipments_id = $equipments->next()['id'];
@@ -2185,7 +2185,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       //check created equipments
       $expected_count = 5;
       $iterator = $DB->request([
-         'FROM'   => \NetworkEquipment::getTable()
+         'FROM'   => \NetworkEquipment::getTable(),
+         'WHERE'  => ['is_dynamic' => 1]
       ]);
       $this->integer(count($iterator))->isIdenticalTo($expected_count);
 
@@ -2645,7 +2646,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       //check created equipments
       $expected_count = 1;
       $iterator = $DB->request([
-         'FROM'   => \NetworkEquipment::getTable()
+         'FROM'   => \NetworkEquipment::getTable(),
+         'WHERE'  => ['is_dynamic' => 1]
       ]);
       $this->integer(count($iterator))->isIdenticalTo($expected_count);
 
@@ -3292,7 +3294,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       //check created equipments
       $expected_count = 302;
       $iterator = $DB->request([
-         'FROM'   => \NetworkEquipment::getTable()
+         'FROM'   => \NetworkEquipment::getTable(),
+         'WHERE'  => ['is_dynamic' => 1]
       ]);
       $this->integer(count($iterator))->isIdenticalTo($expected_count);
 
