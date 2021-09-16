@@ -1349,9 +1349,8 @@ class Search extends DbTestCase {
       \Search::constructData($data);
 
       $this->integer($data['data']['totalcount'])->isEqualTo(1);
-      $this->array($data)
-         ->array['data']
-         ->array['rows']
+      $this->array($data)->array['data'];
+      $this->array(iterator_to_array($data['data']['rows']))
          ->array[0]
          ->array['raw']
          ->string['ITEM_Problem_1']->isEqualTo('test problem visibility for tech');
@@ -1401,9 +1400,8 @@ class Search extends DbTestCase {
       \Search::constructData($data);
 
       $this->integer($data['data']['totalcount'])->isEqualTo(1);
-      $this->array($data)
-         ->array['data']
-         ->array['rows']
+      $this->array($data)->array['data'];
+      $this->array(iterator_to_array($data['data']['rows']))
          ->array[0]
          ->array['raw']
          ->string['ITEM_Change_1']->isEqualTo('test Change visibility for tech');
@@ -1762,14 +1760,13 @@ class Search extends DbTestCase {
     */
    private function checkSearchResult($result) {
       $this->array($result)->hasKey('data');
-      $this->array($result['data'])->hasKeys(['count', 'begin', 'end', 'totalcount', 'cols', 'rows', 'items']);
+      $this->array($result['data'])->hasKeys(['count', 'begin', 'end', 'totalcount', 'cols', 'rows']);
       $this->integer($result['data']['count']);
       $this->integer($result['data']['begin']);
       $this->integer($result['data']['end']);
       $this->integer($result['data']['totalcount']);
       $this->array($result['data']['cols']);
-      $this->array($result['data']['rows']);
-      $this->array($result['data']['items']);
+      $this->array(iterator_to_array($result['data']['rows']));
 
       // No errors
       $this->array($result)->hasKey('last_errors');

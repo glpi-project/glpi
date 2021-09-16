@@ -1473,109 +1473,123 @@ class Search {
          }
 
          // Get rows
-
-         $i = $data['data']['begin'];
          $data['data']['warning']
             = "For compatibility keep raw data  (ITEM_X, META_X) at the top for the moment. Will be drop in next version";
 
          $data['data']['rows']  = [];
-         $data['data']['items'] = [];
 
          self::$output_type = $data['display_type'];
 
-         while (($i < $data['data']['totalcount']) && ($i <= $data['data']['end'])) {
-            $row = $DBread->fetchAssoc($result);
-            $newrow        = [];
-            $newrow['raw'] = $row;
+         // Don't risk overflowing the memory limit by loading the entire
+         // resultset, use a generator
+         $data['data']['rows'] = self::yieldResults($data, $DBread, $result);
 
-            // Parse datas
-            foreach ($newrow['raw'] as $key => $val) {
-               if (preg_match('/ITEM(_(\w[^\d]+))?_(\d+)(_(.+))?/', $key, $matches)) {
-                  $j = $matches[3];
-                  if (isset($matches[2]) && !empty($matches[2])) {
-                     $j = $matches[2] . '_' . $matches[3];
+         // We have two variables for the same value here since the LIMIT changes.
+         // Should maybe be merged into one var but it may impact existing code.
+         $data['data']['count'] = $data['data']['totalcount'];
+      } else {
+         echo $DBread->error();
+      }
+   }
+
+   /**
+    * Generator used for fetching and parsing an entire resultset with no impact
+    * on used memory
+    *
+    * @param array $data
+    * @param DBmysql $DBread
+    * @param mysqli_result $result
+    *
+    * @return Generator
+    */
+   private static function yieldResults(
+      array $data,
+      DBmysql $DBread,
+      mysqli_result $result
+   ): Generator {
+      $i = $data['data']['begin'];
+
+      // Iterate over the resultset
+      while ($row = $DBread->fetchAssoc($result)) {
+         $newrow = [
+            'raw' => $row
+         ];
+
+         // Parse raw data
+         foreach ($newrow['raw'] as $key => $val) {
+            if (preg_match('/ITEM(_(\w[^\d]+))?_(\d+)(_(.+))?/', $key, $matches)) {
+               $j = $matches[3];
+               if (isset($matches[2]) && !empty($matches[2])) {
+                  $j = $matches[2] . '_' . $matches[3];
+               }
+               $fieldname = 'name';
+               if (isset($matches[5])) {
+                  $fieldname = $matches[5];
+               }
+
+               // No Group_concat case
+               if ($fieldname == 'content' || strpos($val, self::LONGSEP) === false) {
+                  $newrow[$j]['count'] = 1;
+
+                  $handled = false;
+                  if ($fieldname != 'content' && strpos($val, self::SHORTSEP) !== false) {
+                     $split2                    = self::explodeWithID(self::SHORTSEP, $val);
+                     if (is_numeric($split2[1])) {
+                        $newrow[$j][0][$fieldname] = $split2[0];
+                        $newrow[$j][0]['id']       = $split2[1];
+                        $handled = true;
+                     }
                   }
-                  $fieldname = 'name';
-                  if (isset($matches[5])) {
-                     $fieldname = $matches[5];
+
+                  if (!$handled) {
+                     if ($val === self::NULLVALUE) {
+                        $newrow[$j][0][$fieldname] = null;
+                     } else {
+                        $newrow[$j][0][$fieldname] = $val;
+                     }
                   }
-
-                  // No Group_concat case
-                  if ($fieldname == 'content' || strpos($val, self::LONGSEP) === false) {
-                     $newrow[$j]['count'] = 1;
-
+               } else {
+                  if (!isset($newrow[$j])) {
+                     $newrow[$j] = [];
+                  }
+                  $split               = explode(self::LONGSEP, $val);
+                  $newrow[$j]['count'] = count($split);
+                  foreach ($split as $key2 => $val2) {
                      $handled = false;
-                     if ($fieldname != 'content' && strpos($val, self::SHORTSEP) !== false) {
-                        $split2                    = self::explodeWithID(self::SHORTSEP, $val);
+                     if (strpos($val2, self::SHORTSEP) !== false) {
+                        $split2                  = self::explodeWithID(self::SHORTSEP, $val2);
                         if (is_numeric($split2[1])) {
-                           $newrow[$j][0][$fieldname] = $split2[0];
-                           $newrow[$j][0]['id']       = $split2[1];
+                           $newrow[$j][$key2]['id'] = $split2[1];
+                           if ($split2[0] == self::NULLVALUE) {
+                              $newrow[$j][$key2][$fieldname] = null;
+                           } else {
+                              $newrow[$j][$key2][$fieldname] = $split2[0];
+                           }
                            $handled = true;
                         }
                      }
 
                      if (!$handled) {
-                        if ($val === self::NULLVALUE) {
-                           $newrow[$j][0][$fieldname] = null;
-                        } else {
-                           $newrow[$j][0][$fieldname] = $val;
-                        }
-                     }
-                  } else {
-                     if (!isset($newrow[$j])) {
-                        $newrow[$j] = [];
-                     }
-                     $split               = explode(self::LONGSEP, $val);
-                     $newrow[$j]['count'] = count($split);
-                     foreach ($split as $key2 => $val2) {
-                        $handled = false;
-                        if (strpos($val2, self::SHORTSEP) !== false) {
-                           $split2                  = self::explodeWithID(self::SHORTSEP, $val2);
-                           if (is_numeric($split2[1])) {
-                              $newrow[$j][$key2]['id'] = $split2[1];
-                              if ($split2[0] == self::NULLVALUE) {
-                                 $newrow[$j][$key2][$fieldname] = null;
-                              } else {
-                                 $newrow[$j][$key2][$fieldname] = $split2[0];
-                              }
-                              $handled = true;
-                           }
-                        }
-
-                        if (!$handled) {
-                           $newrow[$j][$key2][$fieldname] = $val2;
-                        }
-                     }
-                  }
-               } else {
-                  if ($key == 'currentuser') {
-                     if (!isset($data['data']['currentuser'])) {
-                        $data['data']['currentuser'] = $val;
-                     }
-                  } else {
-                     $newrow[$key] = $val;
-                     // Add id to items list
-                     if ($key == 'id') {
-                        $data['data']['items'][$val] = $i;
+                        $newrow[$j][$key2][$fieldname] = $val2;
                      }
                   }
                }
+            } else {
+               if ($key != 'currentuser') {
+                  $newrow[$key] = $val;
+               }
             }
-            foreach ($data['data']['cols'] as $val) {
-               $newrow[$val['itemtype'] . '_' . $val['id']]['displayname'] = self::giveItem(
-                  $val['itemtype'],
-                  $val['id'],
-                  $newrow
-               );
-            }
-
-            $data['data']['rows'][$i] = $newrow;
-            $i++;
+         }
+         foreach ($data['data']['cols'] as $val) {
+            $newrow[$val['itemtype'] . '_' . $val['id']]['displayname'] = self::giveItem(
+               $val['itemtype'],
+               $val['id'],
+               $newrow
+            );
          }
 
-         $data['data']['count'] = count($data['data']['rows']);
-      } else {
-         echo $DBread->error();
+         yield $i => $newrow;
+         $i++;
       }
    }
 
