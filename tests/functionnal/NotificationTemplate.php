@@ -47,26 +47,25 @@ class NotificationTemplate extends DbTestCase {
          'LIMIT'  => 1
       ]);
 
-      if ($data = $iterator->next()) {
-         $template = new \NotificationTemplate();
-         $template->getFromDB($data['notificationtemplates_id']);
-         $added = $template->clone();
-         $this->integer((int)$added)->isGreaterThan(0);
+      $data = $iterator->next();
+      $template = new \NotificationTemplate();
+      $template->getFromDB($data['notificationtemplates_id']);
+      $added = $template->clone();
+      $this->integer((int)$added)->isGreaterThan(0);
 
-         $clonedTemplate = new \NotificationTemplate();
-         $this->boolean($clonedTemplate->getFromDB($added))->isTrue();
+      $clonedTemplate = new \NotificationTemplate();
+      $this->boolean($clonedTemplate->getFromDB($added))->isTrue();
 
-         unset($template->fields['id']);
-         unset($template->fields['name']);
-         unset($template->fields['date_creation']);
-         unset($template->fields['date_mod']);
+      unset($template->fields['id']);
+      unset($template->fields['name']);
+      unset($template->fields['date_creation']);
+      unset($template->fields['date_mod']);
 
-         unset($clonedTemplate->fields['id']);
-         unset($clonedTemplate->fields['name']);
-         unset($clonedTemplate->fields['date_creation']);
-         unset($clonedTemplate->fields['date_mod']);
+      unset($clonedTemplate->fields['id']);
+      unset($clonedTemplate->fields['name']);
+      unset($clonedTemplate->fields['date_creation']);
+      unset($clonedTemplate->fields['date_mod']);
 
-         $this->array($template->fields)->isIdenticalTo($clonedTemplate->fields);
-      }
+      $this->array($template->fields)->isIdenticalTo($clonedTemplate->fields);
    }
 }

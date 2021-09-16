@@ -75,22 +75,21 @@ class NotificationTemplate extends DbTestCase {
          'LIMIT'  => 1
       ]);
 
-      if ($data = $iterator->next()) {
-         $template = new \NotificationTemplate();
-         $template->getFromDB($data['notificationtemplates_id']);
-         $added = $template->clone();
+      $data = $iterator->next();
+      $template = new \NotificationTemplate();
+      $template->getFromDB($data['notificationtemplates_id']);
+      $added = $template->clone();
 
-         $translations = $DB->request([
-            'FROM'   => \NotificationTemplateTranslation::getTable(),
-            'WHERE'  => ['notificationtemplates_id' => $data['notificationtemplates_id']]
-         ]);
+      $translations = $DB->request([
+         'FROM'   => \NotificationTemplateTranslation::getTable(),
+         'WHERE'  => ['notificationtemplates_id' => $data['notificationtemplates_id']]
+      ]);
 
-         $clonedTranslations = $DB->request([
-            'FROM'   => \NotificationTemplateTranslation::getTable(),
-            'WHERE'  => ['notificationtemplates_id' => $added]
-         ]);
+      $clonedTranslations = $DB->request([
+         'FROM'   => \NotificationTemplateTranslation::getTable(),
+         'WHERE'  => ['notificationtemplates_id' => $added]
+      ]);
 
-         $this->integer(count($translations))->isIdenticalTo(count($clonedTranslations));
-      }
+      $this->integer(count($translations))->isIdenticalTo(count($clonedTranslations));
    }
 }
