@@ -34,9 +34,9 @@ namespace tests\units;
 
 use \DbTestCase;
 
-/* Test for inc/notificationtemplate.class.php */
+/* Test for inc/notificationtemplatetranslation.class.php */
 
-class NotificationTemplate extends DbTestCase {
+class NotificationTemplateTranslation extends DbTestCase {
 
    public function testClone() {
       global $DB;
