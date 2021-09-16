@@ -1,7 +1,7 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% set field_options = {
-   full_width: true,
+   'full_width': true,
 } %}
 
 {% set rand = random() %}
@@ -28,7 +28,9 @@
       card_id,
       list_cards,
       __('Data'),
-      field_options
+      field_options|merge({
+         'display_emptychoice': not edit
+      })
    ) }}
 
    {# display widget list #}
