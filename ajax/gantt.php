@@ -60,7 +60,7 @@ if (isset($_REQUEST['getData'])) {
    ];
    echo json_encode($result);
 
-} else if (isset($_REQUEST["addTask"])) {
+} else if (isset($_POST["addTask"])) {
    $result;
    try {
       $item = new Glpi\Gantt\Item();
@@ -84,7 +84,7 @@ if (isset($_REQUEST['getData'])) {
    }
    echo json_encode($result);
 
-} else if (isset($_REQUEST["updateTask"])) {
+} else if (isset($_POST["updateTask"])) {
    $result;
    try {
       $updated = false;
@@ -104,7 +104,7 @@ if (isset($_REQUEST['getData'])) {
    }
    echo json_encode($result);
 
-} else if (isset($_REQUEST["changeItemParent"])) {
+} else if (isset($_POST["changeItemParent"])) {
    $result;
    try {
       $p_item = $_POST["item"];
@@ -120,7 +120,6 @@ if (isset($_REQUEST['getData'])) {
       $target->populateFrom($p_target);
 
       $item->parent = $target->id;
-      $dao;
       if ($p_item["type"] == "project") {
          $dao = new \Glpi\Gantt\ProjectDAO();
       } else {
@@ -138,7 +137,7 @@ if (isset($_REQUEST['getData'])) {
       ];
    }
    echo json_encode($result);
-} else if (isset($_REQUEST["makeRootProject"])) {
+} else if (isset($_POST["makeRootProject"])) {
    $result;
    try {
       $p_item = $_POST["item"];
@@ -163,7 +162,7 @@ if (isset($_REQUEST['getData'])) {
       ];
    }
    echo json_encode($result);
-} else if (isset($_REQUEST["addProject"])) {
+} else if (isset($_POST["addProject"])) {
    $result;
    try {
       $item = new Glpi\Gantt\Item();
@@ -187,7 +186,7 @@ if (isset($_REQUEST['getData'])) {
    }
    echo json_encode($result);
 
-} else if (isset($_REQUEST["updateProject"])) {
+} else if (isset($_POST["updateProject"])) {
    $result;
    try {
       $updated = false;
@@ -207,7 +206,7 @@ if (isset($_REQUEST['getData'])) {
    }
    echo json_encode($result);
 
-} else if (isset($_REQUEST["addTaskLink"])) {
+} else if (isset($_POST["addTaskLink"])) {
    $result;
    try {
       $taskLink = new \ProjectTaskLink();
@@ -229,7 +228,7 @@ if (isset($_REQUEST['getData'])) {
    }
    echo json_encode($result);
 
-} else if (isset($_REQUEST["updateTaskLink"])) {
+} else if (isset($_POST["updateTaskLink"])) {
    $result;
    try {
       $taskLink = new \ProjectTaskLink();
@@ -245,7 +244,7 @@ if (isset($_REQUEST['getData'])) {
    }
    echo json_encode($result);
 
-} else if (isset($_REQUEST["deleteTaskLink"])) {
+} else if (isset($_POST["deleteTaskLink"])) {
    $result;
    try {
       $taskLink = new \ProjectTaskLink();

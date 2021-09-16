@@ -237,13 +237,13 @@ if (($_POST['action'] ?? null) === 'update') {
       http_response_code(403);
       return;
    }
-} else if ($_REQUEST['action'] === 'delete_item') {
+} else if (($_POST['action'] ?? null) === 'delete_item') {
    $checkParams(['items_id']);
-   $item->getFromDB($_REQUEST['items_id']);
+   $item->getFromDB($_POST['items_id']);
    // Check if the item can be trashed and if the request isn't forcing deletion (purge)
    $maybe_deleted = $item->maybeDeleted() && !($_REQUEST['force'] ?? false);
    if (($maybe_deleted && $item->canDeleteItem()) || (!$maybe_deleted && $item->canPurgeItem())) {
-      $item->delete(['id' => $_REQUEST['items_id']], !$maybe_deleted);
+      $item->delete(['id' => $_POST['items_id']], !$maybe_deleted);
    } else {
       http_response_code(403);
       return;

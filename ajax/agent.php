@@ -32,21 +32,21 @@
 
 $AJAX_INCLUDE = 1;
 include ('../inc/includes.php');
-header("Content-Type: text/html; charset=UTF-8");
+header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
 
 
-if (isset($_REQUEST['action']) && isset($_REQUEST['id'])) {
+if (isset($_POST['action']) && isset($_POST['id'])) {
    $agent = new Agent();
-   if (!$agent->getFromDB($_REQUEST['id'])) {
-      Toolbox::logWarning('Unable to load agent #' . $_REQUEST['id']);
+   if (!$agent->getFromDB($_POST['id'])) {
+      Toolbox::logWarning('Unable to load agent #' . $_POST['id']);
       return;
    };
    $answer = [];
 
-   switch ($_REQUEST['action']) {
+   switch ($_POST['action']) {
       case Agent::ACTION_INVENTORY:
          $answer = $agent->requestInventory();
          break;
