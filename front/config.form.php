@@ -62,14 +62,14 @@ if (!empty($_POST["update"])) {
    $config->update($_POST);
    Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
-if (!empty($_GET['reset_opcache'])) {
+if (!empty($_POST['reset_opcache'])) {
    $config->checkGlobal(UPDATE);
    if (opcache_reset()) {
       Session::addMessageAfterRedirect(__('PHP OPcache reset successful'));
    }
    Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
-if (!empty($_GET['reset_core_cache'])) {
+if (!empty($_POST['reset_core_cache'])) {
    $config->checkGlobal(UPDATE);
    $cache_manager = new CacheManager();
    if ($cache_manager->getCoreCacheInstance()->clear()) {
@@ -77,7 +77,7 @@ if (!empty($_GET['reset_core_cache'])) {
    }
    Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
-if (!empty($_GET['reset_translation_cache'])) {
+if (!empty($_POST['reset_translation_cache'])) {
    $config->checkGlobal(UPDATE);
    $cache = Config::getTranslationCacheInstance();
    if ($cache->clear()) {

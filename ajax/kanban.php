@@ -110,21 +110,21 @@ $checkParams = static function($required) {
 };
 
 // Action Processing
-if ($_REQUEST['action'] === 'update') {
+if (($_POST['action'] ?? null) === 'update') {
    $checkParams(['column_field', 'column_value']);
    // Update project or task based on changes made in the Kanban
    $item->update([
-      'id'                          => $_REQUEST['items_id'],
-      $_REQUEST['column_field']     => $_REQUEST['column_value']
+      'id'                   => $_POST['items_id'],
+      $_POST['column_field'] => $_POST['column_value']
    ]);
-} else if ($_REQUEST['action'] === 'add_item') {
+} else if (($_POST['action'] ?? null) === 'add_item') {
    $checkParams(['inputs']);
    $item = new $itemtype();
    $inputs = [];
    parse_str($_UPOST['inputs'], $inputs);
 
    $item->add(Sanitizer::sanitize($inputs));
-} else if ($_REQUEST['action'] === 'bulk_add_item') {
+} else if (($_POST['action'] ?? null) === 'bulk_add_item') {
    $checkParams(['inputs']);
    $item = new $itemtype();
    $inputs = [];
@@ -140,31 +140,30 @@ if ($_REQUEST['action'] === 'update') {
          }
       }
    }
-} else if ($_REQUEST['action'] === 'move_item') {
+} else if (($_POST['action'] ?? null) === 'move_item') {
    $checkParams(['card', 'column', 'position', 'kanban']);
    /** @var Kanban|CommonDBTM $kanban */
-   $kanban = new $_REQUEST['kanban']['itemtype'];
-   $can_move = $kanban->canOrderKanbanCard($_REQUEST['kanban']['items_id']);
+   $kanban = new $_POST['kanban']['itemtype'];
+   $can_move = $kanban->canOrderKanbanCard($_POST['kanban']['items_id']);
    if ($can_move) {
-      Item_Kanban::moveCard($_REQUEST['kanban']['itemtype'], $_REQUEST['kanban']['items_id'],
-         $_REQUEST['card'], $_REQUEST['column'], $_REQUEST['position']);
+      Item_Kanban::moveCard($_POST['kanban']['itemtype'], $_POST['kanban']['items_id'],
+         $_POST['card'], $_POST['column'], $_POST['position']);
    }
-} else if ($_REQUEST['action'] === 'show_column') {
+} else if (($_POST['action'] ?? null) === 'show_column') {
    $checkParams(['column', 'kanban']);
-   Item_Kanban::showColumn($_REQUEST['kanban']['itemtype'], $_REQUEST['kanban']['items_id'], $_REQUEST['column']);
-} else if ($_REQUEST['action'] === 'hide_column') {
+   Item_Kanban::showColumn($_POST['kanban']['itemtype'], $_POST['kanban']['items_id'], $_POST['column']);
+} else if (($_POST['action'] ?? null) === 'hide_column') {
    $checkParams(['column', 'kanban']);
-   Item_Kanban::hideColumn($_REQUEST['kanban']['itemtype'], $_REQUEST['kanban']['items_id'], $_REQUEST['column']);
-} else if ($_REQUEST['action'] === 'collapse_column') {
+   Item_Kanban::hideColumn($_POST['kanban']['itemtype'], $_POST['kanban']['items_id'], $_POST['column']);
+} else if (($_POST['action'] ?? null) === 'collapse_column') {
    $checkParams(['column', 'kanban']);
-   Item_Kanban::collapseColumn($_REQUEST['kanban']['itemtype'], $_REQUEST['kanban']['items_id'], $_REQUEST['column']);
-} else if ($_REQUEST['action'] === 'expand_column') {
+   Item_Kanban::collapseColumn($_POST['kanban']['itemtype'], $_POST['kanban']['items_id'], $_POST['column']);
+} else if (($_POST['action'] ?? null) === 'expand_column') {
    $checkParams(['column', 'kanban']);
-   Item_Kanban::expandColumn($_REQUEST['kanban']['itemtype'], $_REQUEST['kanban']['items_id'], $_REQUEST['column']);
-} else if ($_REQUEST['action'] === 'move_column') {
+   Item_Kanban::expandColumn($_POST['kanban']['itemtype'], $_POST['kanban']['items_id'], $_POST['column']);
+} else if (($_POST['action'] ?? null) === 'move_column') {
    $checkParams(['column', 'kanban', 'position']);
-   Item_Kanban::moveColumn($_REQUEST['kanban']['itemtype'], $_REQUEST['kanban']['items_id'],
-      $_REQUEST['column'], $_REQUEST['position']);
+   Item_Kanban::moveColumn($_POST['kanban']['itemtype'], $_POST['kanban']['items_id'], $_POST['column'], $_POST['position']);
 } else if ($_REQUEST['action'] === 'refresh') {
    $checkParams(['column_field']);
    // Get all columns to refresh the kanban
@@ -192,26 +191,26 @@ if ($_REQUEST['action'] === 'update') {
       return;
    }
    echo $itemtype::getFormURLWithID($_REQUEST['items_id'], true)."&forcetab={$tab_id}";
-} else if ($_REQUEST['action'] === 'create_column') {
+} else if (($_POST['action'] ?? null) === 'create_column') {
    $checkParams(['column_field', 'items_id', 'column_name']);
-   $column_field = $_REQUEST['column_field'];
+   $column_field = $_POST['column_field'];
    $column_itemtype = getItemtypeForForeignKeyField($column_field);
    if (!$column_itemtype::canCreate() || !$column_itemtype::canView()) {
       // Missing rights
       http_response_code(403);
       return;
    }
-   $params = $_REQUEST['params'] ?? [];
+   $params = $_POST['params'] ?? [];
    $column_item = new $column_itemtype();
    $column_id = $column_item->add([
-      'name'   => $_REQUEST['column_name']
+      'name'   => $_POST['column_name']
    ] + $params);
    header("Content-Type: application/json; charset=UTF-8", true);
-   $column = $itemtype::getKanbanColumns($_REQUEST['items_id'], $column_field, [$column_id]);
+   $column = $itemtype::getKanbanColumns($_POST['items_id'], $column_field, [$column_id]);
    echo json_encode($column);
-} else if ($_REQUEST['action'] === 'save_column_state') {
+} else if (($_POST['action'] ?? null) === 'save_column_state') {
    $checkParams(['items_id', 'state']);
-   Item_Kanban::saveStateForItem($_REQUEST['itemtype'], $_REQUEST['items_id'], $_REQUEST['state']);
+   Item_Kanban::saveStateForItem($_POST['itemtype'], $_POST['items_id'], $_POST['state']);
 } else if ($_REQUEST['action'] === 'load_column_state') {
    $checkParams(['items_id', 'last_load']);
    header("Content-Type: application/json; charset=UTF-8", true);

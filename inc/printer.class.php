@@ -490,6 +490,11 @@ class Printer  extends CommonDBTM {
       $actions = parent::getSpecificMassiveActions($checkitem);
       if (static::canUpdate()) {
          Computer_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
+         $actions += [
+            'Item_SoftwareLicense'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'
+               => "<i class='ma-icon fas fa-key'></i>".
+                  _x('button', 'Add a license')
+         ];
          KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
       }
 

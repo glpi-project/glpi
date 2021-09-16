@@ -356,11 +356,13 @@ class CommonDBTM extends CommonGLPI {
          $row = $iter->next();
          return $this->getFromDB($row['id']);
       } else if (count($iter) > 1) {
-         Toolbox::logWarning(
+         trigger_error(
             sprintf(
-               'getFromDBByCrit expects to get one result, %1$s found!',
-               count($iter)
-            )
+               'getFromDBByCrit expects to get one result, %1$s found in query "%2$s".',
+               count($iter),
+               $iter->getSql()
+            ),
+            E_USER_WARNING
          );
       }
       return false;

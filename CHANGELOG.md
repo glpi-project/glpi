@@ -136,7 +136,17 @@ The present file will list all changes made to the project; according to the
 
 ## [9.5.6] unreleased
 
+### Changed
+
+- `X-Forwarded-For` header value is no longer used during API access controls, API requests passing through proxies may be refused for security reasons.
+
 ### API changes
+
+#### Changed
+
+- All POST request made to `/ajax/` scripts are now requiring a valid CSRF token in their `X-Glpi-Csrf-Token` header.
+Requests done using jQuery are automatically including this header, from the moment that the page header is built using
+`Html::includeHeader()` method and the `js/common.js` script is loaded.
 
 #### Deprecated
 

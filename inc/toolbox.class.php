@@ -2849,9 +2849,7 @@ class Toolbox {
     * @return string the IP address
     */
    public static function getRemoteIpAddress() {
-      return (isset($_SERVER["HTTP_X_FORWARDED_FOR"]) ?
-         Sanitizer::sanitize($_SERVER["HTTP_X_FORWARDED_FOR"]):
-         $_SERVER["REMOTE_ADDR"]);
+      return $_SERVER["REMOTE_ADDR"];
    }
 
    /**

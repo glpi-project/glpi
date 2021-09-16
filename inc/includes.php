@@ -147,8 +147,14 @@ if (!defined('DO_NOT_CHECK_HTTP_REFERER')
 if (GLPI_USE_CSRF_CHECK
     && !isAPI()
     && isset($_POST) && is_array($_POST) && count($_POST)) {
-   // No ajax pages
-   if (!preg_match(':'.$CFG_GLPI['root_doc'].'(/(plugins|marketplace)/[^/]*|)/ajax/:', $_SERVER['REQUEST_URI'])) {
+   if (preg_match(':'.$CFG_GLPI['root_doc'].'(/(plugins|marketplace)/[^/]*|)/ajax/:', $_SERVER['REQUEST_URI']) === 1) {
+      // Keep CSRF token as many AJAX requests may be made at the same time.
+      // This is due to the fact that read operations are often made using POST method (see #277).
+      define('GLPI_KEEP_CSRF_TOKEN', true);
+
+      // For AJAX requests, check CSRF token located into "X-Glpi-Csrf-Token" header.
+      Session::checkCSRF(['_glpi_csrf_token' => $_SERVER['HTTP_X_GLPI_CSRF_TOKEN'] ?? '']);
+   } else {
       Session::checkCSRF($_POST);
    }
 }

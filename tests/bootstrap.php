@@ -159,6 +159,14 @@ function loadDataset() {
             'name'           => '_test_computermodel_2',
             'product_number' => 'CMP_567AEC68',
          ],
+      ], 'Monitor' => [
+         [
+            'name'           => '_test_monitor_1',
+            'entities_id' => '_test_root_entity',
+         ], [
+            'name'           => '_test_monitor_2',
+            'entities_id' => '_test_root_entity',
+         ],
       ], 'Software' => [
          [
             'name'         => '_test_soft',
@@ -186,6 +194,22 @@ function loadDataset() {
             'is_recursive' => 1,
             'softwares_id' => '_test_soft',
          ]
+      ], 'NetworkEquipment' => [
+         [
+            'name'           => '_test_networkequipment_1',
+            'entities_id' => '_test_root_entity',
+         ], [
+            'name'           => '_test_networkequipment_2',
+            'entities_id' => '_test_root_entity',
+         ],
+      ], 'Peripheral' => [
+         [
+            'name'           => '_test_peripheral_1',
+            'entities_id' => '_test_root_entity',
+         ], [
+            'name'           => '_test_peripheral_2',
+            'entities_id' => '_test_root_entity',
+         ],
       ], 'Printer' => [
          [
             'name'         => '_test_printer_all',
@@ -204,6 +228,14 @@ function loadDataset() {
             'entities_id'  => '_test_child_2',
             'is_recursive' => 0,
          ]
+      ], 'Phone' => [
+         [
+            'name'           => '_test_phone_1',
+            'entities_id' => '_test_root_entity',
+         ], [
+            'name'           => '_test_phone_2',
+            'entities_id' => '_test_root_entity',
+         ],
       ], 'User' => [
          [
             'name'          => TU_USER,

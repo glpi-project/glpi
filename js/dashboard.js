@@ -251,8 +251,7 @@ var Dashboard = {
          });
          is_private = button.closest('.display-rights-form').find('select[name="is_private"]').val();
 
-         $.ajax({
-            method: 'POST',
+         $.post({
             url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
             data: {
                action:     'save_rights',
@@ -546,8 +545,7 @@ var Dashboard = {
       var widget = Dashboard.addWidget(form_data);
 
       // get the html of the new card and save dashboard
-      $.ajax({
-         method: 'GET',
+      $.get({
          url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
          data: {
             action:    'get_card',
@@ -612,8 +610,7 @@ var Dashboard = {
       });
 
       // get the html of the new card and save dashboard
-      $.ajax({
-         method: 'GET',
+      $.get({
          url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
          data: {
             action:    'get_filter',
@@ -649,8 +646,7 @@ var Dashboard = {
    },
 
    setLastDashboard: function() {
-      $.ajax({
-         method: 'POST',
+      $.post({
          url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
          data: {
             dashboard: Dashboard.current_name,
@@ -705,8 +701,7 @@ var Dashboard = {
          } : null;
       });
 
-      $.ajax({
-         method: 'POST',
+      $.post({
          url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
          data: {
             action: 'save_items',

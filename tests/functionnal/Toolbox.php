@@ -159,15 +159,9 @@ class Toolbox extends DbTestCase {
       $saveServer = $_SERVER;
 
       // Test REMOTE_ADDR
-      unset($_SERVER['HTTP_X_FORWARDED_FOR']);
       $_SERVER['REMOTE_ADDR'] = '123.123.123.123';
       $ip = \Toolbox::getRemoteIpAddress();
       $this->variable($ip)->isEqualTo('123.123.123.123');
-
-      // Test HTTP_X_FORWARDED_FOR takes precedence over REMOTE_ADDR
-      $_SERVER['HTTP_X_FORWARDED_FOR'] = '231.231.231.231';
-      $ip = \Toolbox::getRemoteIpAddress();
-      $this->variable($ip)->isEqualTo('231.231.231.231');
 
       // Restore values
       $_SERVER = $saveServer;

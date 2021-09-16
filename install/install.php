@@ -503,6 +503,7 @@ function step6() {
    echo "<form action='install.php' method='post'>";
    echo "<input type='hidden' name='install' value='Etape_5'>";
 
+   $_SESSION['telemetry_from_install'] = true;
    echo Telemetry::showTelemetry();
    echo Telemetry::showReference();
 

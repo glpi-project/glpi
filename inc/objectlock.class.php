@@ -112,9 +112,9 @@ class ObjectLock extends CommonDBTM {
    **/
    private function autoLockMode() {
       // if !autolock mode then we are going to view the item with read-only profile
-      // if isset($_REQUEST['lockwrite']) then will behave like if automode was true but for this object only and for the lifetime of the session
+      // if isset($_POST['lockwrite']) then will behave like if automode was true but for this object only and for the lifetime of the session
       // look for lockwrite request
-      if (isset($_REQUEST['lockwrite'])) {
+      if (isset($_POST['lockwrite'])) {
          $_SESSION['glpilock_autolock_items'][ $this->itemtype ][$this->itemid] = 1;
       }
 
@@ -139,10 +139,15 @@ class ObjectLock extends CommonDBTM {
       $ret = Html::scriptBlock("
          function unlockIt(obj) {
             function callUnlock( ) {
-               $.ajax({
+               $.post({
                   url: '".$CFG_GLPI['root_doc']."/ajax/unlockobject.php',
                   cache: false,
-                  data: 'unlock=1&force=1&id=".$this->fields['id']."',
+                  data: {
+                     unlock: 1,
+                     force: 1,
+                     id: {$this->fields['id']}
+                  },
+                  dataType: 'json',
                   success: function( data, textStatus, jqXHR ) { ".
                         Html::jsConfirmCallback(__('Reload page?'), __('Item unlocked!'), "function() {
                               window.location.reload(true);
@@ -222,10 +227,14 @@ class ObjectLock extends CommonDBTM {
          $ret = Html::scriptBlock("
          function askUnlock() {
             ". Html::jsConfirmCallback( __('Ask for unlock this item?'), $this->itemtypename." #".$this->itemid, "function() {
-                  $.ajax({
+                  $.post({
                      url: '".$CFG_GLPI['root_doc']."/ajax/unlockobject.php',
                      cache: false,
-                     data: 'requestunlock=1&id=".$this->fields['id']."',
+                     data: {
+                        requestunlock: 1,
+                        id: {$this->fields['id']}
+                     },
+                     dataType: 'json',
                      success: function( data, textStatus, jqXHR ) {
                            ".Html::jsAlertCallback($userdata['name'], __('Request sent to') )."
                         }
@@ -242,7 +251,7 @@ class ObjectLock extends CommonDBTM {
             $('#alertMe').change(function( eventObject ){
                if( this.checked ) {
                   lockStatusTimer = setInterval( function() {
-                     $.ajax({
+                     $.get({
                            url: '".$CFG_GLPI['root_doc']."/ajax/unlockobject.php',
                            cache: false,
                            data: 'lockstatus=1&id=".$this->fields['id']."',
@@ -289,16 +298,15 @@ class ObjectLock extends CommonDBTM {
    **/
    private function setReadOnlyMessage() {
 
-      echo Html::scriptBlock("
-         function requestLock() {
-               window.location.assign( window.location.href + '&lockwrite=1');
-               }
-         ");
-
       $msg = "<span class=red style='padding-left:5px;'>";
       $msg .= __('Warning: read-only!')."</span>";
-      $msg .= "<a class='vsubmit' onclick='javascript:requestLock();'>".
-                __('Request write on ').$this->itemtypename." #".$this->itemid."</a>";
+      $msg .= '<form action="' . $_SERVER['REQUEST_URI'] . '" method="POST" style="display:inline;">';
+      $msg .= Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
+      $msg .= Html::hidden('lockwrite', ['value' => 1]);
+      $msg .= '<button type="submit" class="vsubmit">'.
+                __('Request write on ').$this->itemtypename." #".$this->itemid.'</button>';
+      $msg .= '</form>';
+
       $this->displayLockMessage($msg);
    }
 
@@ -323,17 +331,28 @@ class ObjectLock extends CommonDBTM {
          echo Html::scriptBlock( "$(function() {
             $(window).on('beforeunload', function() {
                var fallback_request = function() {
-                  $.ajax({
+                  $.post({
                      url: '".$CFG_GLPI['root_doc']."/ajax/unlockobject.php',
                      async: false,
                      cache: false,
-                     data: 'unlock=1&id=$id'
+                     data: {
+                        unlock: 1,
+                        id: $id
+                     },
+                     dataType: 'json'
                   });
                };
 
                if (typeof window.fetch !== 'undefined') {
-                  fetch('".$CFG_GLPI['root_doc']."/ajax/unlockobject.php?unlock=1&id=$id', {
+                  fetch('".$CFG_GLPI['root_doc']."/ajax/unlockobject.php', {
+                     method: 'POST',
                      cache: 'no-cache',
+                     headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'X-Glpi-Csrf-Token': getAjaxCsrfToken()
+                     },
+                     body: JSON.stringify({unlock: 1, id: {$id}})
                   }).catch(function(error) {
                      //fallback if fetch fails
                      fallback_request();

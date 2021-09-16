@@ -1036,6 +1036,18 @@ class SoftwareLicense extends CommonTreeDropdown {
    }
 
 
+   function getSpecificMassiveActions($checkitem = null) {
+
+      $actions = parent::getSpecificMassiveActions($checkitem);
+      if (static::canUpdate()) {
+         $prefix                       = 'Item_SoftwareLicense'.MassiveAction::CLASS_ACTION_SEPARATOR;
+         $actions[$prefix.'add_item']  = _x('button', 'Add an item');
+      }
+
+      return $actions;
+   }
+
+
    /**
     * Show Licenses of a software
     *

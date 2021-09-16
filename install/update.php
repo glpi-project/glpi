@@ -367,6 +367,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
             __('Donate')."</a><br /><br />";
 
          if (!Telemetry::isEnabled()) {
+            $_SESSION['telemetry_from_install'] = true;
             echo "<hr />";
             echo Telemetry::showTelemetry();
          }
