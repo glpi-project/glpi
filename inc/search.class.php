@@ -1373,6 +1373,7 @@ class Search {
          $data['data']['totalcount'] = 0;
          $result_num = $DBread->query($data['sql']['count']);
          $data['data']['totalcount'] += $DBread->result($result_num, 0, 0);
+         $data['data']['count'] = intval(min($data['data']['totalcount'], $data['search']['list_limit']));
 
          if ($onlycount) {
             //we just want to coutn results; no need to continue process
@@ -1483,10 +1484,6 @@ class Search {
          // Don't risk overflowing the memory limit by loading the entire
          // resultset, use a generator
          $data['data']['rows'] = self::yieldResults($data, $DBread, $result);
-
-         // We have two variables for the same value here since the LIMIT changes.
-         // Should maybe be merged into one var but it may impact existing code.
-         $data['data']['count'] = $data['data']['totalcount'];
       } else {
          echo $DBread->error();
       }
