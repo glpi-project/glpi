@@ -330,7 +330,7 @@ const glpi_toast = (title, message, css_class, options = {}) => {
       animation_extra_classes: 'animate__delay-2s animate__slow'
    }, options);
 
-   const animation_classes = option.animated ? `animate_animated ${options.animation} ${options.animation_extra_classes}` : '';
+   const animation_classes = options.animated ? `animate_animated ${options.animation} ${options.animation_extra_classes}` : '';
    const html = `<div class='toast-container bottom-0 end-0 p-3 messages_after_redirect'>
       <div id='toast_js_${toast_id}' class='toast ${css_class} ${animation_classes}' role='alert' aria-live='assertive' aria-atomic='true'>
          <div class='toast-header'>
@@ -359,7 +359,7 @@ const glpi_toast = (title, message, css_class, options = {}) => {
  */
 const glpi_toast_success = (message, caption, options = {}) => {
    glpi_toast(caption || __('Success'), message, 'bg-success text-white border-0', options);
-}
+};
 
 /**
  * Display an information toast
