@@ -50,7 +50,7 @@ if ($_REQUEST["action"] == "get_resources") {
    exit;
 }
 
-if ($_REQUEST["action"] == "update_event") {
+if (($_POST['action'] ?? null) === "update_event") {
    $result = Reservation::updateEvent($_REQUEST);
    echo json_encode(['result' => $result]);
    exit;
