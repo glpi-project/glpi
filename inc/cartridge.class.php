@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
  * @see CartridgeItem
  * @author Julien Dombre
  **/
-class Cartridge extends CommonDBChild {
+class Cartridge extends CommonDBRelation {
    use Glpi\Features\Clonable;
 
    // From CommonDBTM
@@ -48,9 +48,11 @@ class Cartridge extends CommonDBChild {
    public $dohistory                   = true;
    public $no_form_page                = true;
 
-   // From CommonDBChild
-   static public $itemtype             = 'CartridgeItem';
-   static public $items_id             = 'cartridgeitems_id';
+   static public $itemtype_1 = 'CartridgeItem';
+   static public $items_id_1 = 'cartridgeitems_id';
+
+   static public $itemtype_2 = 'Printer';
+   static public $items_id_2 = 'printers_id';
 
    public function getCloneRelations() :array {
       return [
@@ -94,7 +96,7 @@ class Cartridge extends CommonDBChild {
 
    function prepareInputForAdd($input) {
 
-      $item = static::getItemFromArray(static::$itemtype, static::$items_id, $input);
+      $item = static::getItemFromArray(CartridgeItem::class, CartridgeItem::getForeignKeyField(), $input);
       if ($item === false) {
          return false;
       }
