@@ -2575,10 +2575,6 @@ JAVASCRIPT;
                        || (($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED)
                            && !empty($this->fields["password"])));
 
-         // No autocopletion :
-         $save_autocompletion                 = $CFG_GLPI["use_ajax_autocompletion"];
-         $CFG_GLPI["use_ajax_autocompletion"] = false;
-
          echo "<div class='center'>";
          echo "<form method='post' name='user_manager' enctype='multipart/form-data' action='".$target."' autocomplete='off'>";
          echo "<table class='tab_cadre_fixe'>";
@@ -2918,7 +2914,6 @@ JAVASCRIPT;
          echo "</table>";
          Html::closeForm();
          echo "</div>";
-         $CFG_GLPI["use_ajax_autocompletion"] = $save_autocompletion;
          return true;
       }
       return false;

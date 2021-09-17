@@ -57,3 +57,5 @@ $migration->addField('glpi_users', 'richtext_layout', 'char(20) DEFAULT NULL', [
 $migration->displayMessage('drop content layout configuration / user preference');
 $migration->dropField('glpi_users', 'layout');
 Config::deleteConfigurationValues('core', ['layout']);
+
+Config::deleteConfigurationValues('core', ['use_ajax_autocompletion']);
