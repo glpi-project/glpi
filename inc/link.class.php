@@ -162,12 +162,12 @@ class Link extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
       echo "<td colspan='3'>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Link or filename')."</td>";
       echo "<td colspan='3'>";
-      Html::autocompletionTextField($this, "link", ['size' => 84]);
+      echo Html::input('link', ['value' => $this->fields['link'], 'size' => 84]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Open in a new window')."</td><td>";

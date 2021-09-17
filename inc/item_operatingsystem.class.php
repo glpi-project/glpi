@@ -340,12 +340,24 @@ class Item_OperatingSystem extends CommonDBRelation {
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='textfield_licenseid$rand'>".__('Product ID')."</label></td>";
       echo "<td >";
-      Html::autocompletionTextField($this, 'licenseid', ['rand' => $rand]);
+      echo Html::input(
+         'licenseid',
+         [
+            'value' => $this->fields['licenseid'],
+            'id'    => "textfield_licenseid$rand",
+         ]
+      );
       echo "</td>";
 
       echo "<td><label for='textfield_license_number$rand'>".__('Serial number')."</label></td>";
       echo "<td >";
-      Html::autocompletionTextField($this, 'license_number', ['rand' => $rand]);
+      echo Html::input(
+         'license_number',
+         [
+            'value' => $this->fields['license_number'],
+            'id'    => "textfield_license_number$rand",
+         ]
+      );
       echo "</td></tr>";
       $options['formfooter'] = false;
       $this->showFormButtons($options);

@@ -332,7 +332,7 @@ class Item_RemoteManagement extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Remote ID')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "remoteid");
+      echo Html::input('remoteid', ['value' => $this->fields['remoteid']]);
       echo "</td><td>"._n('Type', 'Types', 1)."</td>";
       $types = [
          self::TEAMVIEWER => 'TeamViewer',

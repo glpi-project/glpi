@@ -576,11 +576,6 @@ class Reminder extends CommonDBVisible implements
       $rand = mt_rand();
 
       // Show Reminder or blank form
-      $onfocus = "";
-      if (!$ID > 0) {
-         // Create item : do getempty before check right to set default values
-         $onfocus="onfocus=\"if (this.value=='".$this->fields['name']."') this.value='';\"";
-      }
 
       $canedit = $this->can($ID, UPDATE);
 
@@ -592,11 +587,13 @@ class Reminder extends CommonDBVisible implements
          echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>\n";
       }
       if ($canedit) {
-         Html::autocompletionTextField($this, "name",
-                                       ['size'   => '80',
-                                             'entity' => -1,
-                                             'user'   => $this->fields["users_id"],
-                                             'option' => $onfocus]);
+         echo Html::input(
+            'name',
+            [
+               'value'   => $this->fields['name'],
+               'size'    => '80',
+            ]
+         );
       } else {
          echo $this->fields['name'];
       }

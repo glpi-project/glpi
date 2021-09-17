@@ -260,7 +260,7 @@ class ProjectCost extends CommonDBChild {
       echo "<td>".__('Name')."</td>";
       echo "<td>";
       echo "<input type='hidden' name='projects_id' value='".$this->fields['projects_id']."'>";
-      Html::autocompletionTextField($this, 'name');
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
       echo "<td>"._n('Cost', 'Costs', 1)."</td>";
       echo "<td>";

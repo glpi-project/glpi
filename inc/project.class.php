@@ -1447,11 +1447,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, 'name');
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
       echo "<td>".__('Code')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, 'code');
+      echo Html::input('code', ['value' => $this->fields['code']]);
       echo "</td>";
       echo "</tr>";
 

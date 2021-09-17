@@ -181,7 +181,7 @@ class Agent extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='name'>".__('Name')."</label></td>";
       echo "<td class='center'>";
-      Html::autocompletionTextField($this, 'name', ['size' => 40]);
+      echo Html::input('name', ['value' => $this->fields['name'], 'size' => 40]);
       echo "</td>";
       echo "<td>".__('Locked')."</td>";
       echo "<td class='center'>";

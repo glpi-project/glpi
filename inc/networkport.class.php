@@ -1219,7 +1219,7 @@ class NetworkPort extends CommonDBChild {
       if (!$options['several']) {
          echo "<tr class='tab_bg_1'><td>". _n('Port number', 'Port numbers', 1) ."</td>\n";
          echo "<td>";
-         Html::autocompletionTextField($this, "logical_number", ['size' => 5]);
+         echo Html::input('logical_number', ['value' => $this->fields['logical_number'], 'size' => 5]);
          echo "</td></tr>\n";
 
       } else {
@@ -1236,7 +1236,7 @@ class NetworkPort extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>\n";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td></tr>\n";
 
       $instantiation = $this->getInstantiation();

@@ -399,7 +399,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
 
       echo "<tr><td class='tab_bg_1'>".__('Name')."</td>";
       echo "<td class='tab_bg_1'>";
-      Html::autocompletionTextField($this, "name", ['user' => $this->fields["users_id"]]);
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
       if (Session::haveRight("config", UPDATE)) {
          echo "<td class='tab_bg_1'>".__('Do count')."</td>".

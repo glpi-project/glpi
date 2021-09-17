@@ -256,7 +256,7 @@ class ComputerAntivirus extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
       echo "<td>".__('Active')."</td>";
       echo "<td>";
@@ -276,11 +276,11 @@ class ComputerAntivirus extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>". __('Antivirus version')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "antivirus_version");
+      echo Html::input('antivirus_version', ['value' => $this->fields['antivirus_version']]);
       echo "</td>";
       echo "<td>".__('Signature database version')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "signature_version");
+      echo Html::input('signature_version', ['value' => $this->fields['signature_version']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

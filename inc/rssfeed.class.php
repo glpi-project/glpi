@@ -675,9 +675,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
          echo "<tr class='tab_bg_2'>";
          echo "<td>".__('Name')."</td>";
          echo "<td>";
-         Html::autocompletionTextField($this, "name",
-                                       ['entity' => -1,
-                                             'user'   => $this->fields["users_id"]]);
+         echo Html::input('name', ['value' => $this->fields['name']]);
          echo "</td><td colspan ='2'>&nbsp;</td></tr>\n";
       }
 

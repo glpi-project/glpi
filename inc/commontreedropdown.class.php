@@ -481,7 +481,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          echo "<tr><th colspan='3'>".__('New child heading')."</th></tr>";
 
          echo "<tr class='tab_bg_1'><td>".__('Name')."</td><td>";
-         Html::autocompletionTextField($this, "name", ['value' => '']);
+         echo Html::input('name', ['value' => '']);
 
          if ($entity_assign
              && ($this->getForeignKeyField() != 'entities_id')) {

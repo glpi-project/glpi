@@ -344,7 +344,7 @@ class DomainRecord extends CommonDBChild {
 
       echo "<td>" . __('Name') . "</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
 
       echo "</tr>";

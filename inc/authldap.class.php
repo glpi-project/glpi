@@ -538,7 +538,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Domain name used by inventory tool for link the user')."</td>";
       echo "<td colspan='3'>";
-      Html::autocompletionTextField($this, "inventory_domain", ['size' => 100]);
+      echo Html::input('inventory_domain', ['value' => $this->fields['inventory_domain'], 'size' => 100]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

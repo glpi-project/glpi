@@ -232,10 +232,7 @@ class ReminderTranslation extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td colspan='3'>";
-      Html::autocompletionTextField($this, "name",
-                                    ['size'   => '80',
-                                     'entity' => -1,
-                                     'user'   => $this->fields["name"]]);
+      echo Html::input('name', ['value' => $this->fields['name'], 'size' => '80']);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";

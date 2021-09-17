@@ -171,7 +171,7 @@ abstract class LevelAgreement extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name", ['value' => $this->fields["name"]]);
+      echo Html::input("name", ['value' => $this->fields["name"]]);
       echo "<td rowspan='".$rowspan."'>".__('Comments')."</td>";
       echo "<td rowspan='".$rowspan."'>
             <textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";

@@ -4625,8 +4625,7 @@ class CommonDBTM extends CommonGLPI {
             case "string" :
             case "email" :
             case "weblink" :
-               $this->fields[$name] = $value;
-               return Html::autocompletionTextField($this, $name, $options);
+               return Html::input($name, ['value' => $value]);
 
             case "text" :
                $is_htmltext = isset($searchoptions['htmltext']) && $searchoptions['htmltext'];
@@ -4771,8 +4770,7 @@ class CommonDBTM extends CommonGLPI {
          }
       }
       // default case field text
-      $this->fields[$name] = $value;
-      return Html::autocompletionTextField($this, $name, $options);
+      return Html::input($name, ['value' => $value]);
    }
 
 

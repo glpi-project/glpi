@@ -397,7 +397,7 @@ class Document extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
       if ($ID > 0) {
          echo "<td>".__('Current file')."</td>";
@@ -427,7 +427,7 @@ class Document extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Web link')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "link");
+      echo Html::input('link', ['value' => $this->fields['link']]);
       echo "</td>";
       echo "<td rowspan='3' class='middle'>".__('Comments')."</td>";
       echo "<td class='middle' rowspan='3'>";
@@ -437,7 +437,7 @@ class Document extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('MIME type')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "mime");
+      echo Html::input('mime', ['value' => $this->fields['mime']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

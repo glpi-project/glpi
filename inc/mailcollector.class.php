@@ -227,7 +227,7 @@ class MailCollector  extends CommonDBTM {
       echo '&nbsp;';
       Html::showToolTip(__('If name is a valid email address, it will be automatically added to blacklisted senders.'));
       echo "</td><td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td></tr>";
 
       if ($this->fields['errors']) {
@@ -243,7 +243,7 @@ class MailCollector  extends CommonDBTM {
       $type = Toolbox::showMailServerConfig($this->fields["host"]);
 
       echo "<tr class='tab_bg_1'><td>".__('Login')."</td><td>";
-      Html::autocompletionTextField($this, "login");
+      echo Html::input('login', ['value' => $this->fields['login']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Password')."</td>";

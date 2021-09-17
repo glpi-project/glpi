@@ -484,10 +484,9 @@ class RuleAction extends CommonDBChild {
       }
 
       switch ($options["action_type"]) {
-         //If a regex value is used, then always display an autocompletiontextfield
          case "regex_result" :
          case "append_regex_result" :
-            Html::autocompletionTextField($this, "value", $param);
+            echo Html::input('value', ['value' => $param['value']]);
             break;
 
          case 'fromuser' :
@@ -648,7 +647,7 @@ class RuleAction extends CommonDBChild {
             }
 
             if (!$display) {
-               Html::autocompletionTextField($this, "value", $param);
+               echo Html::input('value', ['value' => $param['value']]);
             }
       }
    }

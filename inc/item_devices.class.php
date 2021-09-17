@@ -1392,10 +1392,14 @@ class Item_Devices extends CommonDBRelation {
                   break;
                default:
                   if (!$protected) {
-                     $out.= Html::autocompletionTextField($this, $field, ['value'    => $value,
-                                                                          'rand'     => $rand,
-                                                                          'size'     => $attributs['size'],
-                                                                          'display'  => false]);
+                     $out.= Html::input(
+                        $field,
+                        [
+                           'value' => $this->fields['name'],
+                           'id'    => "textfield_$field$rand",
+                           'size'  => $attributs['size'],
+                        ]
+                     );
                   } else {
                      $out.= '<input class="protected form-control" type="password" autocomplete="new-password" name="' . $field . '" ';
                      $out.= 'id="' . $field . $rand . '" value="' . $value . '">';
