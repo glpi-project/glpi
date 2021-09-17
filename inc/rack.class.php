@@ -492,35 +492,17 @@ class Rack extends CommonDBTM {
                $('#viewgraph').toggleClass('clear_grid');
             })
 
-         $('.grid-room .grid-stack').gridstack({
+         GridStack.init({
             column: $cols,
             maxRow: ($rows + 1),
             cellHeight: 39,
-            verticalMargin: 0,
+            margin: 0,
             float: true,
             disableOneColumnMode: true,
             animate: true,
             removeTimeout: 100,
             disableResize: true,
-            draggable: {
-              handle: '.grid-stack-item-content',
-              appendTo: 'body',
-              containment: '.grid-stack',
-              cursor: 'move',
-              scroll: true,
-            }
          });
-
-         var lockAll = function() {
-            // lock all item (prevent pushing down elements)
-            $('.grid-stack').each(function (idx, gsEl) {
-               $(gsEl).data('gridstack').locked('.grid-stack-item', true);
-            });
-
-            // add containment to items, this avoid bad collisions on the start of the grid
-            $('.grid-stack .grid-stack-item').draggable('option', 'containment', 'parent');
-         };
-         lockAll(); // call it immediatly
 
          // add indexes
          for (var x = 1; x <= $cols; x++) {
@@ -553,15 +535,18 @@ class Rack extends CommonDBTM {
                      id: item.id,
                      dcrooms_id: $room_id,
                      action: 'move_rack',
-                     x: item.x + 1,
-                     y: item.y + 1,
+                     x: $(item.el).attr('gs-x') + 1,
+                     y: $(item.el).attr('gs-y') + 1,
                   }, function(answer) {
                      var answer = jQuery.parseJSON(answer);
 
                      // revert to old position
                      if (!answer.status) {
                         dirty = true;
-                        grid.move(item.el, x_before_drag, y_before_drag);
+                        grid.update(item.el, {
+                           'x': x_before_drag,
+                           'y': y_before_drag
+                        });
                         dirty = false;
                         displayAjaxMessageAfterRedirect();
                      }
@@ -817,6 +802,7 @@ JAVASCRIPT;
       $fgcolor = Html::getInvertedColor($bgcolor);
       return "<div class='grid-stack-item room_orientation_".$cell['room_orientation']."'
                   gs-id='".$cell['id']."'
+                  gs-locked='true'
                   gs-h='1'
                   gs-w='1'
                   gs-x='".$cell['_x']."'
