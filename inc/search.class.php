@@ -1373,7 +1373,10 @@ class Search {
          $data['data']['totalcount'] = 0;
          $result_num = $DBread->query($data['sql']['count']);
          $data['data']['totalcount'] += $DBread->result($result_num, 0, 0);
-         $data['data']['count'] = intval(min($data['data']['totalcount'], $data['search']['list_limit']));
+         $data['data']['count'] = min(
+            $data['data']['totalcount'],
+            intval($data['search']['list_limit'])
+         );
 
          if ($onlycount) {
             //we just want to coutn results; no need to continue process
