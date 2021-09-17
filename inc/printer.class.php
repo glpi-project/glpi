@@ -61,7 +61,6 @@ class Printer  extends CommonDBTM {
          Document_Item::class,
          Computer_Item::class,
          KnowbaseItem_Item::class,
-         Cartridge::class
       ];
    }
 
