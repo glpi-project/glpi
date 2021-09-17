@@ -29,15 +29,16 @@
  * ---------------------------------------------------------------------
  */
 
-/* global grid_link_url, grid_rack_add_tip, grid_rack_id, grid_rack_units */
-/* global glpi_ajax_dialog */
+/* global grid_link_url, grid_rack_add_tip, grid_rack_id, grid_rack_units, GridStack */
+/* global glpi_ajax_dialog, displayAjaxMessageAfterRedirect */
+/* global grid_item_ajax_url */
 
 var x_before_drag = 0;
 var y_before_drag = 0;
 var dirty = false;
 
 var initRack = function() {
-   // grid events
+   // global grid events
    $(document)
       .on("click", "#sviewlist", function() {
          $('#viewlist').show();
@@ -78,46 +79,123 @@ var initRack = function() {
          });
       });
 
-   // use each to re-init options for each grid
-   $('.grid-stack').each(function() {
-      $(this).gridstack({
-         cellHeight: 20,
-         verticalMargin: 1,
-         float: true,
-         disableOneColumnMode: true,
-         animate: true,
-         removeTimeout: 100,
-         disableResize: true,
-         draggable: {
-            handle: '.grid-stack-item-content',
-            appendTo: 'body',
-            containment: '.grid-stack',
-            cursor: 'move',
-            scroll: true
-         }
-      });
+
+   // init all gridstack found in DOM
+   let grids = GridStack.initAll({
+      cellHeight: 21,
+      margin: 0,
+      marginBottom: 1,
+      float: true,
+      disableOneColumnMode: true,
+      animate: true,
+      removeTimeout: 100,
+      disableResize: true,
    });
 
-   $('.grid-stack')
-      .on('dragstart', function(event) {
-         var element = $(event.target);
-         var node    = element.data('_gridstack_node');
+   // iterate on each initialized grid to apply events
+   grids.forEach(function(grid) {
+      var is_pdu_grid = $(grid.el).hasClass('side_pdus_graph');
 
-         // store position before drag
-         x_before_drag = Number(node.x);
-         y_before_drag = Number(node.y);
+      grid
+         .on('dragstart', function(event) {
+            var element = $(event.target);
 
-         // disable qtip
-         element.qtip('hide', true);
-      })
-      .on('click', '.grid-stack-item', function(event) {
-         var element = $(event.target);
-         var el_url  = element.find('.itemrack_name').attr('href');
+            // store position before drag
+            x_before_drag = Number(element.attr('gs-x'));
+            y_before_drag = Number(element.attr('gs-y'));
 
-         if (el_url) {
-            window.location = el_url;
-         }
-      });
+            // disable qtip
+            element.qtip('hide', true);
+         })
+
+         // drag&drop scenario for item_rack:
+         // - we start by storing position before drag
+         // - we send position to db by ajax after drag stop event
+         // - if ajax answer return a fail, we restore item to the old position
+         //   and we display a message explaning the failure
+         // - else we move the other side of asset (if exists)
+         .on('change', function(event, items) {
+            if (dirty) {
+               return;
+            }
+            var is_rack_rear = $(grid.el).parents('.racks_col').hasClass('rack_rear');
+            $.each(items, function(index, item) {
+               var j_item       = $(item.el);
+               var is_half_rack = j_item.hasClass('half_rack');
+               var is_el_rear   = j_item.hasClass('rear');
+               var new_pos      = grid_rack_units
+                                  - j_item.attr('gs-y')
+                                  - j_item.attr('gs-h')
+                                  + 1;
+
+               $.post(grid_item_ajax_url, {
+                  'id': item.id,
+                  'action': is_pdu_grid ? 'move_pdu' : 'move_item',
+                  'position': new_pos,
+                  'hpos': getHpos(j_item.attr('gs-x'), is_half_rack, is_rack_rear),
+               }, function(answer) {
+                  answer = JSON.parse(answer);
+
+                  // reset to old position
+                  if (!answer.status) {
+                     dirty = true;
+                     grid.update(item.el, {
+                        'x': x_before_drag,
+                        'y': y_before_drag
+                     });
+                     dirty = false;
+                     displayAjaxMessageAfterRedirect();
+                  } else {
+                     // move other side if needed
+                     var other_side_cls = j_item.hasClass('item_rear')
+                        ? "item_front"
+                        : "item_rear";
+                     var other_side_el = $('.grid-stack-item.'+other_side_cls+'[gs-id='+j_item.attr('gs-id')+']');
+
+                     if (other_side_el.length) {
+                        //retrieve other side gridstack instance
+                        var other_side_grid = GridStack.init({}, $(other_side_el).closest('.grid-stack')[0]);
+
+                        // retrieve new coordinates
+                        var new_x = parseInt(j_item.attr('gs-x'));
+                        var new_y = parseInt(j_item.attr('gs-y'));
+                        if (j_item.attr('gs-w') == 1) {
+                           new_x = (j_item.attr('gs-x') == 0 ? 1 : 0);
+                        }
+                        dirty = true;
+
+                        // update other side element coordinates
+                        other_side_grid.update(other_side_el[0], {
+                           'x': new_x,
+                           'y': new_y
+                        });
+                        dirty = false;
+                     }
+                  }
+               }).fail(function() {
+                  // reset to old position
+                  dirty = true;
+                  grid.update(item.el, {
+                     'x': x_before_drag,
+                     'y': y_before_drag
+                  });
+                  dirty = false;
+                  displayAjaxMessageAfterRedirect();
+               });
+            });
+         })
+
+         // store coordinates before start dragging
+         .on('dragstart', function(event) {
+            var element = $(event.target);
+
+            x_before_drag = Number(element.attr('gs-x'));
+            y_before_drag = Number(element.attr('gs-y'));
+
+            // disable qtip
+            element.qtip('hide', true);
+         });
+   });
 
    $('#viewgraph .cell_add, #viewgraph .grid-stack-item').each(function() {
       var tipcontent = $(this).find('.tipcontent');
@@ -146,17 +224,6 @@ var initRack = function() {
          '<div class="cell_add"><span class="tipcontent">'+grid_rack_add_tip+'</span></div>'
       );
    }
-
-   // lock all item (prevent pushing down elements)
-   $('.grid-stack').each(function (idx, gsEl) {
-      $(gsEl)
-         .data('gridstack')
-         .locked('.grid-stack-item', true);
-   });
-
-   // add containment to items, this avoid bad collisions on the start of the grid
-   $('.grid-stack .grid-stack-item')
-      .draggable('option', 'containment', 'parent');
 };
 
 

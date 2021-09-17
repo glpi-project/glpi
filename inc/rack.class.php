@@ -409,8 +409,8 @@ class Rack extends CommonDBTM {
          $left  = $i * $w_prct;
          $width = ($i+1) * $w_prct;
          echo "
-         .grid-stack > .grid-stack-item[data-gs-x='$i'] { left: $left%;}
-         .grid-stack > .grid-stack-item[data-gs-width='".($i+1)."'] {
+         .grid-stack > .grid-stack-item[gs-x='$i'] { left: $left%;}
+         .grid-stack > .grid-stack-item[gs-w='".($i+1)."'] {
             min-width: $width%;
             width: $width%;
          }";
@@ -455,12 +455,12 @@ class Rack extends CommonDBTM {
 
       // add a locked element to bottom to display a full grid
       echo "<div class='grid-stack-item lock-bottom'
-                 data-gs-no-resize='true'
-                 data-gs-no-move='true'
-                 data-gs-height='1'
-                 data-gs-width='$cols'
-                 data-gs-x='0'
-                 data-gs-y='$rows'></div>";
+                 gs-no-resize='true'
+                 gs-no-move='true'
+                 gs-h='1'
+                 gs-w='$cols'
+                 gs-x='0'
+                 gs-y='$rows'></div>";
 
       echo "</div>"; //.grid-stack
       echo $blueprint;
@@ -816,11 +816,11 @@ JAVASCRIPT;
       $bgcolor = $rack->getField('bgcolor');
       $fgcolor = Html::getInvertedColor($bgcolor);
       return "<div class='grid-stack-item room_orientation_".$cell['room_orientation']."'
-                  data-gs-id='".$cell['id']."'
-                  data-gs-height='1'
-                  data-gs-width='1'
-                  data-gs-x='".$cell['_x']."'
-                  data-gs-y='".$cell['_y']."'>
+                  gs-id='".$cell['id']."'
+                  gs-h='1'
+                  gs-w='1'
+                  gs-x='".$cell['_x']."'
+                  gs-y='".$cell['_y']."'>
             <div class='grid-stack-item-content'
                   style='background-color: $bgcolor;
                         color: $fgcolor;'>

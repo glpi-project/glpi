@@ -534,12 +534,12 @@ JAVASCRIPT;
       if ($with_lock) {
          $this->items[] = <<<HTML
          <div class="grid-stack-item lock-bottom"
-            data-gs-no-resize="true"
-            data-gs-no-move="true"
-            data-gs-height="1"
-            data-gs-width="{$this->grid_cols}"
-            data-gs-x="0"
-            data-gs-y="{$this->grid_rows}"></div>
+            gs-no-resize="true"
+            gs-no-move="true"
+            gs-h="1"
+            gs-w="{$this->grid_cols}"
+            gs-x="0"
+            gs-y="{$this->grid_rows}"></div>
 HTML;
       }
 
