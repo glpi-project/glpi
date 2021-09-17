@@ -106,6 +106,21 @@ class Cartridge extends CommonDBRelation {
                    "date_in"           => date("Y-m-d")];
    }
 
+   function post_addItem() {
+
+      // inherit infocom
+      $infocoms = Infocom::getItemsAssociatedTo(CartridgeItem::getType(), $this->fields[CartridgeItem::getForeignKeyField()]);
+      if (count($infocoms)) {
+         $infocom = reset($infocoms);
+         $infocom->clone([
+            'itemtype'  => self::getType(),
+            'items_id'  => $this->getID()
+         ]);
+      }
+
+      parent::post_addItem();
+   }
+
 
    function post_updateItem($history = 1) {
 
