@@ -134,8 +134,6 @@ var initRack = function() {
                   'position': new_pos,
                   'hpos': getHpos(j_item.attr('gs-x'), is_half_rack, is_rack_rear),
                }, function(answer) {
-                  answer = JSON.parse(answer);
-
                   // reset to old position
                   if (!answer.status) {
                      dirty = true;
