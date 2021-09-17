@@ -35,9 +35,10 @@ namespace Glpi\Inventory\Asset;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\FilesToJSON;
 use NetworkPortType;
+use QueryParam;
 use RuleImportAssetCollection;
-use Unmanaged;
 use Toolbox;
+use Unmanaged;
 
 class NetworkPort extends InventoryAsset
 {
@@ -51,7 +52,8 @@ class NetworkPort extends InventoryAsset
    private $connection_ports = [];
    private $current_port;
    private $current_connection;
-
+   private $vlan_stmt;
+   private $pvlan_stmt;
 
    public function prepare() :array {
       $this->connections = [];
@@ -197,6 +199,8 @@ class NetworkPort extends InventoryAsset
                $vlan->$dest = $vlan->$origin;
             }
          }
+         unset($vlan->number);
+
          $results[$ifnumber][] = $vlan;
       }
 
@@ -364,7 +368,7 @@ class NetworkPort extends InventoryAsset
       if (count($db_vlans)) {
          foreach ($data as $key => $values) {
             foreach ($db_vlans as $keydb => $valuesdb) {
-               if ($values->name == $valuesdb['name']
+               if ($values->name ?? '' == $valuesdb['name']
                   && ($values->tag ?? 0) == $valuesdb['tag']
                   && ($values->tagged ?? 0) == $valuesdb['tagged']
                ) {
@@ -389,22 +393,70 @@ class NetworkPort extends InventoryAsset
       while ($row = $vlans_iterator->next()) {
          $db_vlans[$row['name'] . '|' . $row['tag']] = $row['id'];
       }
+
       //add new vlans
       foreach ($data as $vlan_data) {
          $vlan_key = ($vlan_data->name ?? '') . '|' . $vlan_data->tag;
          $exists = isset($db_vlans[$vlan_key]);
 
          if (!$exists) {
-            $vlans_id = $vlan->add(Toolbox::addslashes_deep((array)$vlan_data), [], $this->withHistory());
+            $stmt_columns = [
+               'name' => $vlan_data->name ?? '',
+               'tag'  => $vlan_data->tag
+            ];
+            $stmt_types = str_repeat('s', count($stmt_columns));
+
+            if ($this->vlan_stmt === null) {
+               $reference = array_fill_keys(
+                  array_keys($stmt_columns),
+                  new QueryParam()
+               );
+               $insert_query = $DB->buildInsert(
+                  $vlan->getTable(),
+                  $reference
+               );
+               if (!$this->vlan_stmt = $DB->prepare($insert_query)) {
+                  trigger_error("Error preparing query $insert_query", E_USER_ERROR);
+               }
+            }
+
+            $stmt_values = array_values($stmt_columns);
+            $this->vlan_stmt->bind_param($stmt_types, ...$stmt_values);
+            if (!$this->vlan_stmt->execute()) {
+               trigger_error($this->vlan_stmt->error, E_USER_ERROR);
+            }
+            $vlans_id = $DB->insertId();
+
             $db_vlans[$vlan_key] = $vlans_id;
          }
          $vlans_id = $db_vlans[$vlan_key];
 
-         $pvlan->add([
+         $pvlan_stmt_columns = [
             'networkports_id' => $netports_id,
             'vlans_id'        => $vlans_id,
             'tagged'          => $vlan_data->tagged ?? 0
-         ], [], false);
+         ];
+         $pvlan_stmt_types = str_repeat('s', count($pvlan_stmt_columns));
+
+         if ($this->pvlan_stmt === null) {
+            $reference = array_fill_keys(
+               array_keys($pvlan_stmt_columns),
+               new QueryParam()
+            );
+            $insert_query = $DB->buildInsert(
+               $pvlan->getTable(),
+               $reference
+            );
+            if (!$this->pvlan_stmt = $DB->prepare($insert_query)) {
+               trigger_error("Error preparing query $insert_query", E_USER_ERROR);
+            }
+         }
+
+         $pvlan_stmt_values = array_values($pvlan_stmt_columns);
+         $this->pvlan_stmt->bind_param($pvlan_stmt_types, ...$pvlan_stmt_values);
+         if (!$this->pvlan_stmt->execute()) {
+            trigger_error($this->pvlan_stmt->error, E_USER_ERROR);
+         }
       }
    }
 
