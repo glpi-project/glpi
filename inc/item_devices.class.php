@@ -202,9 +202,6 @@ class Item_Devices extends CommonDBRelation {
          if (isset($attributs['nodisplay'])) {
             $newtab['nodisplay'] = $attributs['nodisplay'];
          }
-         if (isset($attributs['autocomplete'])) {
-            $newtab['autocomplete'] = $attributs['autocomplete'];
-         }
          $tab[] = $newtab;
       }
 

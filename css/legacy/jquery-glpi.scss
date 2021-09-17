@@ -59,22 +59,6 @@
 
 .ui-progressbar .ui-progressbar-value { background-image: url('../pics/jquery/pbar-ani.gif'); }
 
-.ui-autocomplete {
-   max-height: 200px;
-   font-size: 11px;
-   overflow-y: auto;
-   /* prevent horizontal scrollbar */
-   overflow-x: hidden;
-}
-
-.ui-autocomplete a {
-   color : black;
-}
-
-html .ui-autocomplete {
-   max-height: 100px;
-}
-
 .ui-widget-content .error {
    -moz-border-radius: 10px;
    -webkit-border-radius: 10px;
