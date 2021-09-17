@@ -34,6 +34,7 @@ namespace Glpi\Inventory\Asset;
 
 use ComputerAntivirus;
 use Glpi\Inventory\Conf;
+use Toolbox;
 
 class Antivirus extends InventoryAsset
 {
@@ -108,7 +109,7 @@ class Antivirus extends InventoryAsset
                   'id'           => $keydb,
                   'is_dynamic'   => 1
                ];
-               $computerAntivirus->update($input, $this->withHistory());
+               $computerAntivirus->update(Toolbox::addslashes_deep($input), $this->withHistory());
                unset($value[$k]);
                unset($db_antivirus[$keydb]);
                break;
@@ -126,7 +127,7 @@ class Antivirus extends InventoryAsset
          foreach ($value as $val) {
             $val->computers_id = $this->item->fields['id'];
             $val->is_dynamic = 1;
-            $computerAntivirus->add((array)$val, [], $this->withHistory());
+            $computerAntivirus->add(Toolbox::addslashes_deep((array)$val), [], $this->withHistory());
          }
       }
    }

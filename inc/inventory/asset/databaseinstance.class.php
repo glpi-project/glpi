@@ -131,7 +131,7 @@ class DatabaseInstance extends InventoryAsset
 
                $instance->getFromDB($items_id);
                $input += ['id' => $instance->fields['id']];
-               $instance->update($input, $this->withHistory());
+               $instance->update(Toolbox::addslashes_deep($input), $this->withHistory());
 
                $existing_databases = $instance->getDatabases();
                //update databases, relying on name

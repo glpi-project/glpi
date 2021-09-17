@@ -34,6 +34,7 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Item_RemoteManagement;
+use Toolbox;
 
 class RemoteManagement extends InventoryAsset
 {
@@ -107,7 +108,7 @@ class RemoteManagement extends InventoryAsset
                   'id'           => $keydb,
                   'is_dynamic'   => 1
                ];
-               $mgmt->update($input, $this->withHistory());
+               $mgmt->update(Toolbox::addslashes_deep($input), $this->withHistory());
                unset($data[$k]);
                unset($db_mgmt[$keydb]);
                break;
@@ -125,7 +126,7 @@ class RemoteManagement extends InventoryAsset
          $val->itemtype = $this->item->getType();
          $val->items_id = $this->item->fields['id'];
          $val->is_dynamic = 1;
-         $mgmt->add((array)$val, [], $this->withHistory());
+         $mgmt->add(Toolbox::addslashes_deep((array)$val), [], $this->withHistory());
       }
    }
 

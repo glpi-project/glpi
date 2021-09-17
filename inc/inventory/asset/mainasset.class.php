@@ -522,7 +522,7 @@ abstract class MainAsset extends InventoryAsset
       }
 
       $refused = new \RefusedEquipment();
-      $refused->add($refused_input);
+      $refused->add(Toolbox::addslashes_deep($refused_input));
       $this->refused[] = $refused;
    }
 

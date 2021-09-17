@@ -34,6 +34,7 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Printer_CartridgeInfo;
+use Toolbox;
 
 class Cartridge extends InventoryAsset
 {
@@ -235,7 +236,7 @@ class Cartridge extends InventoryAsset
                $input = (array)$val + [
                   'id'           => $keydb
                ];
-               $cartinfo->update($input, $this->withHistory());
+               $cartinfo->update(Toolbox::addslashes_deep($input), $this->withHistory());
                unset($value->$k);
                unset($db_cartridges[$keydb]);
                break;
@@ -253,8 +254,8 @@ class Cartridge extends InventoryAsset
          $cartinfo->add(
             [
                 'printers_id' => $this->item->fields['id'],
-                'property' => $property,
-                'value' => $val
+                'property' => addslashes($property),
+                'value' => addslashes($val)
             ],
             [],
             $this->withHistory()

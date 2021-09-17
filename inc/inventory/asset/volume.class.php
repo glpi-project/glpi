@@ -34,6 +34,7 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Item_Disk;
+use Toolbox;
 
 class Volume extends InventoryAsset
 {
@@ -136,7 +137,7 @@ class Volume extends InventoryAsset
                $input = (array)$val + [
                   'id'           => $keydb,
                ];
-               $itemDisk->update(\Toolbox::addslashes_deep($input), $this->withHistory());
+               $itemDisk->update(Toolbox::addslashes_deep($input), $this->withHistory());
                unset($value[$key]);
                unset($db_itemdisk[$keydb]);
                break;
@@ -158,7 +159,7 @@ class Volume extends InventoryAsset
                'is_dynamic'   => 1
             ];
 
-            $itemDisk->add(\Toolbox::addslashes_deep($input), [], $this->withHistory());
+            $itemDisk->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
          }
       }
    }

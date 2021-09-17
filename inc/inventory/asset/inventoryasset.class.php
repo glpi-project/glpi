@@ -187,13 +187,13 @@ abstract class InventoryAsset
 
                $entities_id = $this->entities_id;
                if ($key == "locations_id") {
-                  $value->$key = Dropdown::importExternal('Location', $value->$key, $entities_id);
+                  $value->$key = Dropdown::importExternal('Location', addslashes($value->$key), $entities_id);
                } else if (preg_match('/^.+models_id/', $key)) {
                   // models that need manufacturer relation for dictionary import
                   // see CommonDCModelDropdown::$additional_fields_for_dictionnary
                   $value->$key = Dropdown::importExternal(
                      getItemtypeForForeignKeyField($key),
-                     $value->$key,
+                     addslashes($value->$key),
                      $entities_id,
                      ['manufacturer' => $manufacturer_name]
                   );

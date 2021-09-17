@@ -144,7 +144,7 @@ trait InventoryNetworkPort {
                   'itemtype'        => $this->itemtype,
                   'items_id'        => $this->items_id,
                   'is_dynamic'      => 1,
-                  'name'            => $port->name
+                  'name'            => addslashes($port->name)
                ];
 
                $networkport->update($input, $this->withHistory());
@@ -210,7 +210,7 @@ trait InventoryNetworkPort {
                'gateway'      => $port->gateway,
                'entities_id'  => $this->entities_id
             ];
-            $ipnetwork->add($input, [], $this->withHistory());
+            $ipnetwork->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
          }
       }
    }
@@ -289,7 +289,7 @@ trait InventoryNetworkPort {
          $input = [
             'items_id'     => $items_id,
             'itemtype'     => 'NetworkName',
-            'name'         => $ip,
+            'name'         => addslashes($ip),
             'is_dynamic'   => 1
          ];
          $ipaddress->add($input, [], $this->withHistory());
@@ -529,9 +529,9 @@ trait InventoryNetworkPort {
 
       //store instance
       if ($instance->isNewItem()) {
-         $instance->add($input, [], $this->withHistory());
+         $instance->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
       } else {
-         $instance->update($input, $this->withHistory());
+         $instance->update(Toolbox::addslashes_deep($input), $this->withHistory());
       }
    }
 

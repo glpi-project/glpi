@@ -37,6 +37,7 @@ use Glpi\Inventory\FilesToJSON;
 use NetworkPortType;
 use RuleImportAssetCollection;
 use Unmanaged;
+use Toolbox;
 
 class NetworkPort extends InventoryAsset
 {
@@ -394,7 +395,7 @@ class NetworkPort extends InventoryAsset
          $exists = isset($db_vlans[$vlan_key]);
 
          if (!$exists) {
-            $vlans_id = $vlan->add((array)$vlan_data, [], $this->withHistory());
+            $vlans_id = $vlan->add(Toolbox::addslashes_deep((array)$vlan_data), [], $this->withHistory());
             $db_vlans[$vlan_key] = $vlans_id;
          }
          $vlans_id = $db_vlans[$vlan_key];
@@ -508,7 +509,7 @@ class NetworkPort extends InventoryAsset
                $input['name'] = $name;
             }
          }
-         $items_id = $item->add($input, [], $this->withHistory());
+         $items_id = $item->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
 
          $rulesmatched = new \RuleMatchedLog();
          $agents_id = $this->agent->fields['id'];
@@ -558,7 +559,7 @@ class NetworkPort extends InventoryAsset
          if (property_exists($port, 'mac') && !empty($port->mac)) {
             $input['mac'] = $port->mac;
          }
-         $ports_id = $netport->add(\Toolbox::addslashes_deep($input), [], $this->withHistory());
+         $ports_id = $netport->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
       }
 
       if (!isset($this->connection_ports[$itemtype])) {
