@@ -1450,6 +1450,43 @@ class Search extends DbTestCase {
          ->contains("ORDER BY `ITEM_SearchTest\Computer_1` ASC");
    }
 
+   public function testGroupParamAfterMeta() {
+      // Try to run this query without warnings
+      $this->doSearch('Ticket', [
+         'reset'      => 'reset',
+         'is_deleted' => 0,
+         'start'      => 0,
+         'search'     => 'Search',
+         'criteria'   => [
+            [
+               'link'       => 'AND',
+               'field'      => 12,
+               'searchtype' => 'equals',
+               'value'      => 'notold',
+            ],
+            [
+               'link'       => 'AND',
+               'itemtype'   => 'Computer',
+               'meta'       => true,
+               'field'      => 1,
+               'searchtype' => 'contains',
+               'value'      => 'ù',
+            ],
+            [
+               'link' => 'AND',
+               'criteria' => [
+                  [
+                     'link'       => 'AND+NOT',
+                     'field'      => 'view',
+                     'searchtype' => 'contains',
+                     'value'      => '233',
+                  ]
+               ]
+            ]
+         ]
+      ]);
+   }
+
    /**
     * Check that search result is valid.
     *
