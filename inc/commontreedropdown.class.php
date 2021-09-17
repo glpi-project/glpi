@@ -686,7 +686,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          'field'             => 'name',
          'name'              => __('Name'),
          'datatype'          => 'itemlink',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

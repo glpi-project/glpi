@@ -197,7 +197,6 @@ class CartridgeItem extends CommonDBTM {
          'field'              => 'ref',
          'name'               => __('Reference'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

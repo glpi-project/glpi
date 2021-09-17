@@ -1205,7 +1205,6 @@ class AuthLDAP extends CommonDBTM {
          'name'               => __('Domain name used by inventory tool'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1219,7 +1218,6 @@ class AuthLDAP extends CommonDBTM {
          'toadd'              => [
             '0'                  => __('No timeout')
          ],
-         'autocomplete'       => true,
       ];
 
       return $tab;

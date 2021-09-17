@@ -674,7 +674,6 @@ class Rule extends CommonDBTM {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -701,7 +700,6 @@ class Rule extends CommonDBTM {
          'field'              => 'description',
          'name'               => __('Description'),
          'datatype'           => 'text',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

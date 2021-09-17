@@ -359,7 +359,6 @@ class Reminder extends CommonDBVisible implements
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
          'forcegroupby'       => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

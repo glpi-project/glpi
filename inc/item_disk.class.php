@@ -367,7 +367,6 @@ class Item_Disk extends CommonDBChild {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -377,7 +376,6 @@ class Item_Disk extends CommonDBChild {
          'name'               => __('Partition'),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -387,7 +385,6 @@ class Item_Disk extends CommonDBChild {
          'name'               => __('Mount point'),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -399,7 +396,6 @@ class Item_Disk extends CommonDBChild {
          'datatype'           => 'number',
          'width'              => 1000,
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -411,7 +407,6 @@ class Item_Disk extends CommonDBChild {
          'datatype'           => 'number',
          'width'              => 1000,
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       return $tab;

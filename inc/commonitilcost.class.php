@@ -101,7 +101,6 @@ abstract class CommonITILCost extends CommonDBChild {
          'searchtype'         => 'contains',
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

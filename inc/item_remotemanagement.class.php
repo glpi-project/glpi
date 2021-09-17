@@ -232,7 +232,6 @@ class Item_RemoteManagement extends CommonDBChild {
          'name'               => __('ID'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -242,7 +241,6 @@ class Item_RemoteManagement extends CommonDBChild {
          'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       return $tab;

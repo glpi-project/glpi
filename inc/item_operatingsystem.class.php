@@ -375,7 +375,6 @@ class Item_OperatingSystem extends CommonDBRelation {
          'name'               => __('Serial number'),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -385,7 +384,6 @@ class Item_OperatingSystem extends CommonDBRelation {
          'name'               => __('Product ID'),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       return $tab;

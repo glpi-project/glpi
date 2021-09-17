@@ -913,7 +913,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1085,7 +1084,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          'massiveaction'      => false,
          'nosearch'           => true,
          'nodisplay'          => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

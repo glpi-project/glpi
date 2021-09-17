@@ -80,7 +80,6 @@ class Agent extends CommonDBTM {
             'field'         => 'name',
             'name'          => __('Name'),
             'datatype'      => 'itemlink',
-            'autocomplete'  => true,
          ], [
             'id'            => '2',
             'table'         => Entity::getTable(),

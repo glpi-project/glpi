@@ -455,7 +455,6 @@ class MailCollector  extends CommonDBTM {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -482,7 +481,6 @@ class MailCollector  extends CommonDBTM {
          'name'               => __('Login'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

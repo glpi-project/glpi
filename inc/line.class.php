@@ -175,7 +175,6 @@ class Line extends CommonDBTM {
             'field'              => 'caller_num',
             'name'               => __('Caller number'),
             'datatype'           => 'string',
-            'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -184,7 +183,6 @@ class Line extends CommonDBTM {
             'field'              => 'caller_name',
             'name'               => __('Caller name'),
             'datatype'           => 'string',
-            'autocomplete'       => true,
       ];
 
       return $tab;

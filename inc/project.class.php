@@ -502,7 +502,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
          'forcegroupby'       => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -521,7 +520,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          'name'               => __('Code'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -700,7 +698,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          'massiveaction'      => false,
          'nosearch'           => true,
          'nodisplay'          => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

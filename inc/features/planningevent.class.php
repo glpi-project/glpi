@@ -892,7 +892,6 @@ trait PlanningEvent {
             'name'          => __('Name'),
             'datatype'      => 'itemlink',
             'massiveaction' => false,
-            'autocomplete'  => true,
          ], [
             'id'            => '2',
             'table'         => self::getTable(),

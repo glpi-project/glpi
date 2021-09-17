@@ -3065,7 +3065,6 @@ JAVASCRIPT;
          'field'              => 'realname',
          'name'               => __('Last name'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -3074,7 +3073,6 @@ JAVASCRIPT;
          'field'              => 'firstname',
          'name'               => __('First name'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -3107,7 +3105,6 @@ JAVASCRIPT;
          'name'               => __('Synchronization field'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
@@ -3126,7 +3123,6 @@ JAVASCRIPT;
          'field'              => 'phone',
          'name'               => Phone::getTypeName(1),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -3135,7 +3131,6 @@ JAVASCRIPT;
          'field'              => 'phone2',
          'name'               => __('Phone 2'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -3144,7 +3139,6 @@ JAVASCRIPT;
          'field'              => 'mobile',
          'name'               => __('Mobile phone'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -3283,7 +3277,6 @@ JAVASCRIPT;
          'field'              => 'registration_number',
          'name'               => __('Administrative number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

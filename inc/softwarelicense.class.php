@@ -316,7 +316,6 @@ class SoftwareLicense extends CommonTreeDropdown {
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
          'forcegroupby'       => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -337,7 +336,6 @@ class SoftwareLicense extends CommonTreeDropdown {
          'field'              => 'serial',
          'name'               => __('Serial number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -472,7 +470,6 @@ class SoftwareLicense extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'nodisplay'          => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -516,7 +513,6 @@ class SoftwareLicense extends CommonTreeDropdown {
          'name'               => __('Inventory number'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       // add objectlock search options

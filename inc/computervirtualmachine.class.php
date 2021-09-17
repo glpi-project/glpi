@@ -502,7 +502,6 @@ class ComputerVirtualMachine extends CommonDBChild {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -512,7 +511,6 @@ class ComputerVirtualMachine extends CommonDBChild {
          'name'               => __('UUID'),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -522,7 +520,6 @@ class ComputerVirtualMachine extends CommonDBChild {
          'name'               => _n('Memory', 'Memories', 1),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -532,7 +529,6 @@ class ComputerVirtualMachine extends CommonDBChild {
          'name'               => __('processor number'),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       return $tab;

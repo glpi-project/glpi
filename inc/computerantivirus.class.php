@@ -100,7 +100,6 @@ class ComputerAntivirus extends CommonDBChild {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -110,7 +109,6 @@ class ComputerAntivirus extends CommonDBChild {
          'name'               => _n('Version', 'Versions', 1),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -120,7 +118,6 @@ class ComputerAntivirus extends CommonDBChild {
          'name'               => __('Signature database version'),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       return $tab;

@@ -1352,7 +1352,6 @@ class NetworkPort extends CommonDBChild {
          'type'               => 'text',
          'massiveaction'      => false,
          'datatype'           => 'itemlink',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1370,7 +1369,6 @@ class NetworkPort extends CommonDBChild {
          'field'              => 'logical_number',
          'name'               => _n('Port number', 'Port numbers', 1),
          'datatype'           => 'integer',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1379,7 +1377,6 @@ class NetworkPort extends CommonDBChild {
          'field'              => 'mac',
          'name'               => __('MAC address'),
          'datatype'           => 'mac',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

@@ -93,7 +93,6 @@ abstract class LevelAgreementLevel extends RuleTicket {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

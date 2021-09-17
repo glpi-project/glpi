@@ -153,7 +153,6 @@ class Database extends CommonDBChild {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -191,7 +190,6 @@ class Database extends CommonDBChild {
          'datatype'           => 'number',
          'width'              => 1000,
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

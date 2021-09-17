@@ -84,7 +84,6 @@ class APIClient extends CommonDBTM {
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -139,7 +138,6 @@ class APIClient extends CommonDBTM {
          'field'              => 'ipv6',
          'name'               => __('IPv6 address'),
          'datatype'           => 'text',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -149,7 +147,6 @@ class APIClient extends CommonDBTM {
          'name'               => __('Application token'),
          'massiveaction'      => false,
          'datatype'           => 'text',
-         'autocomplete'       => true,
       ];
 
       return $tab;

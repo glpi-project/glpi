@@ -307,7 +307,6 @@ class NotificationTemplateTranslation extends CommonDBChild {
          'name'               => __('Subject'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

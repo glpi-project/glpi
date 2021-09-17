@@ -1226,7 +1226,6 @@ class Infocom extends CommonDBChild {
          'forcegroupby'       => true,
          'joinparams'         => $joinparams,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1308,7 +1307,6 @@ class Infocom extends CommonDBChild {
          'forcegroupby'       => true,
          'joinparams'         => $joinparams,
          'datatype'           => 'decimal',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1478,7 +1476,6 @@ class Infocom extends CommonDBChild {
          'field'              => 'order_number',
          'name'               => __('Order number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1487,7 +1484,6 @@ class Infocom extends CommonDBChild {
          'field'              => 'delivery_number',
          'name'               => __('Delivery form'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1496,7 +1492,6 @@ class Infocom extends CommonDBChild {
          'field'              => 'immo_number',
          'name'               => __('Immobilization number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1548,7 +1543,6 @@ class Infocom extends CommonDBChild {
          'field'              => 'bill',
          'name'               => __('Invoice number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

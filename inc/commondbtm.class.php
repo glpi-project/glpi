@@ -3570,7 +3570,6 @@ class CommonDBTM extends CommonGLPI {
             'name'          => __('Name'),
             'datatype'      => 'itemlink',
             'massiveaction' => false,
-            'autocomplete'  => true,
          ];
       }
 
