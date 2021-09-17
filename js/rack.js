@@ -122,7 +122,6 @@ var initRack = function() {
             $.each(items, function(index, item) {
                var j_item       = $(item.el);
                var is_half_rack = j_item.hasClass('half_rack');
-               var is_el_rear   = j_item.hasClass('rear');
                var new_pos      = grid_rack_units
                                   - j_item.attr('gs-y')
                                   - j_item.attr('gs-h')
