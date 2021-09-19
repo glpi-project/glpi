@@ -1087,4 +1087,32 @@ SCSS
          $this->array($values)->notHasKey($key);
       }
    }
+
+
+
+
+    public function testDropdownParent() {
+      //create data
+      $this->integer(
+         (int)$DB->insert( \State::getTable(),
+            [  'id' => '100', 'name' => '1.0','states_id' => '0']
+         ))->isGreaterThan(0);
+         $this->integer(
+            (int)$DB->insert( \State::getTable(),
+               [  'id' => '200', 'name' => '2.0','states_id' => '0']
+            ))->isGreaterThan(0);      
+         $this->integer(
+            (int)$DB->insert( \State::getTable(),
+               [  'id' => '101', 'name' => '1.1','states_id' => '100']
+            ))->isGreaterThan(0);      
+      
+      $st = new State();
+      $options = ['parentid' => '100',
+               'itemtype' => 	'State',
+               'entity_restrict'	=>'0'];
+      $values = json_decode(\Html::getDropdownValue($options, true), false);
+
+      $this->integer($values['count'])->isEqualTo(1);
+
+   }
 }
