@@ -70,7 +70,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
       return CommonITILObject::isPossibleToAssignType($itemtype);
    }
 
-
    /**
     * @since 0.84
    **/
@@ -164,7 +163,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
       }
       return true;
    }
-
 
    /**
     * Print the HTML ajax associated item add
@@ -518,7 +516,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
       echo "</div>";
    }
 
-
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
@@ -553,7 +550,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
       }
       return true;
    }
-
 
    /**
    * Display object for an item
@@ -633,7 +629,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                                     'items_id' => $item->getID()]);
          echo "</div>";
       }
-
 
       echo "<div>";
 
@@ -727,7 +722,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
    * @return void
    **/
    static function dropdownMyDevices($userID = 0, $entity_restrict = -1, $itemtype = 0, $items_id = 0, $options = []) {
-   global $DB, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $params = [static::$items_id_1 => 0,
                      'used'       => [],
@@ -1031,8 +1026,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
       }
    }
 
-
-
    /**
    * Make a select box with all glpi items
    *
@@ -1108,14 +1101,14 @@ abstract class CommonItilObject_Item extends CommonDBRelation
       return Dropdown::showFromArray($p['name'], $output, $p);
    }
 
-      /**
-    * Return used items for a ITIL object
-    *
-    * @param integer type $obj_id ITIL object on which the used item are attached
-    *
-    * @return array
-    */
-    static function getUsedItems($obj_id) {
+   /**
+   * Return used items for a ITIL object
+   *
+   * @param integer type $obj_id ITIL object on which the used item are attached
+   *
+   * @return array
+   */
+   static function getUsedItems($obj_id) {
 
       $data = getAllDataFromTable(static::getTable(), [static::$items_id_1 => $obj_id]);
       $used = [];
@@ -1336,8 +1329,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
       return $tab;
    }
 
-
-
       /**
        * Add a message on add action
       **/
@@ -1414,7 +1405,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
       }
    }
-
 
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
       if (!is_array($values)) {
