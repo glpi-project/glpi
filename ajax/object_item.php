@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 // continue only if the object possible classes
-if( !is_subclass_of($item_obj, 'CommonItilObject_Item') || !is_subclass_of($obj, 'CommonDBTM')) {
+if (!is_subclass_of($item_obj, 'CommonItilObject_Item') || !is_subclass_of($obj, 'CommonDBTM')) {
    die();
 }
 

@@ -51,11 +51,11 @@ class Item_Ticket extends CommonItilObject_Item {
    static public $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
    /**
-    * to add condition on the object 1 
+    * to add condition on the object 1
     *
     * @since 0.83
     *
-    * @param Ticket $ticket ticket 
+    * @param Ticket $ticket ticket
     * @param string $type of the object to add
     *
     * @return boolean
@@ -116,7 +116,7 @@ class Item_Ticket extends CommonItilObject_Item {
     *
     * @return void
    **/
-   static function itemAddForm( $ticket, $options = []) {
+   static function itemAddForm($ticket, $options = []) {
       if ($options['id'] ?? 0 > 0) {
          // Get requester
          $class        = new $ticket->userlinkclass();
@@ -140,7 +140,7 @@ class Item_Ticket extends CommonItilObject_Item {
     *
     * @return void
    **/
-   static function showForObject( $ticket, $options = []) {
+   static function showForObject($ticket, $options = []) {
       // Get requester
       $class        = new $ticket->userlinkclass();
       $tickets_user = $class->getActors($ticket->fields['id']);
