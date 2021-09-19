@@ -341,7 +341,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
    /**
     * Print the HTML ajax associated item add
     *
-    * @param static::$items_id_1  object id from item_ticket but it seems to be useless
+    * @param $items_id_1  object id from item_ticket but it seems to be useless
     * @param $itemtype   type of the item t show
     * @param $items_id   item id
     * @param $options   array of possible options:

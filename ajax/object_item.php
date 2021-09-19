@@ -54,7 +54,7 @@ switch ($_GET['action']) {
       if (isset($_GET['items_id']) && isset($_GET['itemtype']) && !empty($_GET['items_id'])) {
          $deleted = true;
          if ($_GET['params']['id'] > 0) {
-            $deleted = $item_ticket->deleteByCriteria(['tickets_id' => $_GET['params']['id'],
+            $deleted = $item_obj::deleteByCriteria(['tickets_id' => $_GET['params']['id'],
                                                             'items_id'   => $_GET['items_id'],
                                                             'itemtype'   => $_GET['itemtype']]);
          }
