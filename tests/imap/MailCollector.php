@@ -449,7 +449,7 @@ class MailCollector extends DbTestCase {
       $msg = $this->collector->collect($this->mailgate_id);
 
       $total_count                     = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
-      $expected_refused_count          = 2;
+      $expected_refused_count          = 3;
       $expected_error_count            = 2;
       $expected_blacklist_count        = 1;
       $expected_expected_already_seen  = 0;
@@ -520,7 +520,7 @@ class MailCollector extends DbTestCase {
             'users_id'      => $nuid,
             'actor_type'    => \CommonITILActor::REQUESTER,
             'tickets_names' => [
-               'Test import mail avec emoticons unicode',
+               'Test import mail avec emoticons :smiley: unicode',
                'Test images',
                'Test\'ed issue',
                'Test Email from Outlook',

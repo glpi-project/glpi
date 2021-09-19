@@ -496,11 +496,6 @@ class Update extends CommonGLPI {
             update955to956();
             break;
 
-         case "9.5.5":
-            include_once "{$updir}update_955_956.php";
-            update955to956();
-            break;
-
          case GLPI_VERSION:
          case GLPI_SCHEMA_VERSION:
             break;
@@ -537,11 +532,13 @@ class Update extends CommonGLPI {
          );
       }
 
-      // reset telemetry
-      $crontask_telemetry = new CronTask;
+      // Reset telemetry if its state is running, assuming it remained stuck due to telemetry service issue (see #7492).
+      $crontask_telemetry = new CronTask();
       $crontask_telemetry->getFromDBbyName("Telemetry", "telemetry");
-      $crontask_telemetry->resetDate();
-      $crontask_telemetry->resetState();
+      if ($crontask_telemetry->fields['state'] === CronTask::STATE_RUNNING) {
+         $crontask_telemetry->resetDate();
+         $crontask_telemetry->resetState();
+      }
 
       //generate security key if missing, and update db
       $glpikey = new GLPIKey();

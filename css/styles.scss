@@ -4195,6 +4195,8 @@ a.copyright {
 
 .edit_document, .delete_document {
    font-size: 1.5em !important;
+}
+.edit_document {
    margin-left: .5em;
 }
 
@@ -6590,6 +6592,9 @@ div.objectlockmessage {
    background-color: lightSalmon !important;
    flex-wrap: wrap;
    align-items: center;
+   position: sticky;
+   top: 0;
+   z-index: 1;
 }
 
 div.objectlockmessage a.vsubmit {

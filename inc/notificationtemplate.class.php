@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
  * NotificationTemplate Class
 **/
 class NotificationTemplate extends CommonDBTM {
+   use Glpi\Features\Clonable;
 
    // From CommonDBTM
    public $dohistory = true;
@@ -50,7 +51,11 @@ class NotificationTemplate extends CommonDBTM {
 
    static $rightname = 'config';
 
-
+   public function getCloneRelations() :array {
+      return [
+         NotificationTemplateTranslation::class
+      ];
+   }
 
    static function getTypeName($nb = 0) {
       return _n('Notification template', 'Notification templates', $nb);
@@ -577,4 +582,9 @@ class NotificationTemplate extends CommonDBTM {
       $queued->deleteByCriteria(['notificationtemplates_id' => $this->fields['id']]);
    }
 
+   function prepareInputForClone($input) {
+      parent::prepareInputForClone($input);
+      $input['name'] = $input['name'] . ' (clone)';
+      return $input;
+   }
 }

@@ -1215,6 +1215,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       $tkt['content'] = LitEmoji::encodeShortcode($tkt['content']);
+      $tkt['name']    = LitEmoji::encodeShortcode($tkt['name']);
 
       $tkt = Toolbox::addslashes_deep($tkt);
       return $tkt;
@@ -1407,10 +1408,6 @@ class MailCollector  extends CommonDBTM {
    function getHeaders(\Laminas\Mail\Storage\Message $message) {
 
       $sender_email = $this->getEmailFromHeader($message, 'from');
-
-      if (preg_match('/^(mailer-daemon|postmaster)@/i', $sender_email) === 1) {
-         return [];
-      }
 
       $to = $this->getEmailFromHeader($message, 'to');
 

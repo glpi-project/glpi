@@ -7431,11 +7431,16 @@ abstract class CommonITILObject extends CommonDBTM {
             $doc = new Document();
             $doc->getFromDB($item_i['id']);
             if ($doc->can($item_i['id'], UPDATE)) {
-               echo "<a href='".static::getFormURL().
-                     "?delete_document&documents_id=".$item_i['id'].
-                     "&$foreignKey=".$this->getID()."' class='delete_document fas fa-trash-alt pointer' title='".
-                     _sx("button", "Delete permanently")."'>";
-               echo "<span class='sr-only'>" . _sx('button', 'Delete permanently')  . "</span></a>";
+               echo '<form method="POST" action="' . static::getFormURL() . '" style="display:inline;">';
+               echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
+               echo Html::hidden('delete_document', ['value' => 1]);
+               echo Html::hidden('documents_id', ['value' => $item_i['id']]);
+               echo Html::hidden($foreignKey, ['value' => $this->getID()]);
+               echo '<button type="submit" class="unstyled">';
+               echo '<i class="delete_document fas fa-trash-alt pointer"
+                        title="' .  _sx("button", "Delete permanently") . '"></i>';
+               echo '<span class="sr-only">' . _sx('button', 'Delete permanently') . '</span></a>';
+               echo '</form>';
             }
             echo "</span>";
          }

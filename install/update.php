@@ -651,6 +651,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 
                   if (!Telemetry::isEnabled()) {
                      echo "<hr />";
+                     $_SESSION['telemetry_from_install'] = true;
                      echo Telemetry::showTelemetry();
                   }
                   echo Telemetry::showReference();

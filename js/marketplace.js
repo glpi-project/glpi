@@ -58,7 +58,7 @@ $(document).ready(function() {
       }
 
       ajax_done = false;
-      $.get(ajax_url, {
+      $.post(ajax_url, {
          'action': action,
          'key': plugin_key
       }).done(function(html) {

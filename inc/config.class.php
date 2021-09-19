@@ -1684,9 +1684,14 @@ class Config extends CommonDBTM {
 
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             echo "<tr><td></td><td colspan='3'>";
-            echo "<a class='vsubmit' href='config.form.php?reset_opcache=1'>";
+            echo '<form method="POST" action="' . static::getFormURL() . '" style="display:inline;">';
+            echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
+            echo Html::hidden('reset_opcache', ['value' => 1]);
+            echo '<button type="submit" class="vsubmit">';
             echo __('Reset');
-            echo "</a></td></tr>\n";
+            echo '</button>';
+            echo '</form>';
+            echo "</td></tr>";
          }
       } else {
          $msg = sprintf(__s('%s extension is not present'), $ext);
@@ -1730,9 +1735,15 @@ class Config extends CommonDBTM {
 
       if ($GLPI_CACHE instanceof FlushableInterface) {
          echo "<tr><td></td><td colspan='3'>";
-         echo "<a class='vsubmit' href='config.form.php?reset_cache=1&optname=cache_db'>";
+         echo '<form method="POST" action="' . static::getFormURL() . '" style="display:inline;">';
+         echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
+         echo Html::hidden('reset_cache', ['value' => 1]);
+         echo Html::hidden('optname', ['value' => 'cache_db']);
+         echo '<button type="submit" class="vsubmit">';
          echo __('Reset');
-         echo "</a></td></tr>\n";
+         echo '</button>';
+         echo '</form>';
+         echo "</td></tr>";
       }
 
       echo "<tr><th colspan='4'>" . __('Translation cache') . "</th></tr>";
@@ -1745,9 +1756,15 @@ class Config extends CommonDBTM {
 
       if ($translation_cache instanceof FlushableInterface) {
          echo "<tr><td></td><td colspan='3'>";
-         echo "<a class='vsubmit' href='config.form.php?reset_cache=1&optname=cache_trans'>";
+         echo '<form method="POST" action="' . static::getFormURL() . '" style="display:inline;">';
+         echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
+         echo Html::hidden('reset_cache', ['value' => 1]);
+         echo Html::hidden('optname', ['value' => 'cache_trans']);
+         echo '<button type="submit" class="vsubmit">';
          echo __('Reset');
-         echo "</a></td></tr>\n";
+         echo '</button>';
+         echo '</form>';
+         echo "</td></tr>";
       }
 
       echo "</table></div>\n";
