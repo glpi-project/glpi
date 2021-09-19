@@ -117,7 +117,7 @@ class Item_Ticket extends CommonItilObject_Item {
     * @return void
    **/
    static function itemAddForm( $ticket, $options = []) {
-      if ($options['id'] > 0) {
+      if ($options['id'] ?? 0 > 0) {
          // Get requester
          $class        = new $ticket->userlinkclass();
          $tickets_user = $class->getActors($options['id']);
