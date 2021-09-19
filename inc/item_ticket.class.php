@@ -60,7 +60,7 @@ class Item_Ticket extends CommonItilObject_Item {
     *
     * @return boolean
    **/
-   function canAddItem($ticket, $type = '') {
+   static function canAddRelatedItem($ticket, $type = '') {
 
       return !in_array($ticket->fields['status'], array_merge($ticket->getClosedStatusArray(),
       $ticket->getSolvedStatusArray()));
@@ -117,10 +117,10 @@ class Item_Ticket extends CommonItilObject_Item {
     * @return void
    **/
    static function itemAddForm( $ticket, $options = []) {
-      if ($params['id'] > 0) {
+      if ($options['id'] > 0) {
          // Get requester
          $class        = new $ticket->userlinkclass();
-         $tickets_user = $class->getActors($params['id']);
+         $tickets_user = $class->getActors($options['id']);
          if (isset($tickets_user[CommonITILActor::REQUESTER])
             && (count($tickets_user[CommonITILActor::REQUESTER]) == 1)) {
             foreach ($tickets_user[CommonITILActor::REQUESTER] as $user_id_single) {

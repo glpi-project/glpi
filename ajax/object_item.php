@@ -47,21 +47,21 @@ switch ($_GET['action']) {
       if (isset($_GET['items_id']) && isset($_GET['itemtype']) && !empty($_GET['items_id'])) {
          $_GET['params']['items_id'][$_GET['itemtype']][$_GET['items_id']] = $_GET['items_id'];
       }
-      $item_obj::itemAddForm(new $obj(), $_GET['params']);
+      $item_obj::itemAddForm(new $obj(), $_GET['params'] ?? []);
       break;
 
    case 'delete':
       if (isset($_GET['items_id']) && isset($_GET['itemtype']) && !empty($_GET['items_id'])) {
          $deleted = true;
          if ($_GET['params']['id'] > 0) {
-            $deleted = $item_obj::deleteByCriteria(['tickets_id' => $_GET['params']['id'],
+            $deleted = $item_obj::deleteByCriteria([strtolower($item_obj::$itemtype_1).'s_id' => $_GET['params']['id'],
                                                             'items_id'   => $_GET['items_id'],
                                                             'itemtype'   => $_GET['itemtype']]);
          }
          if ($deleted) {
             unset($_GET['params']['items_id'][$_GET['itemtype']][array_search($_GET['items_id'], $_GET['params']['items_id'][$_GET['itemtype']])]);
          }
-         $item_obj::itemAddForm(new $obj(), $_GET['params']);
+         $item_obj::itemAddForm(new $obj(), $_GET['params'] ?? []);
       }
 
       break;

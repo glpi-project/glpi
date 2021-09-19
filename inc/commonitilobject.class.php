@@ -6265,10 +6265,13 @@ abstract class CommonITILObject extends CommonDBTM {
 
          // Sixth Colum
          // Ticket : simple link to item
+         // extend to other ITIL object ? new Item_Ticket(); --> new Item_${self::class}();
          $sixth_col  = "";
          $is_deleted = false;
-         $item_ticket = new Item_Ticket();
-         $data = $item_ticket->find(['tickets_id' => $item->fields['id']]);
+         $classname = "Item_".static::class;
+         $item_ticket = new $classname();
+
+         $data = $item_ticket->find([strtolower(static::class).'s_id' => $item->fields['id']]);
 
          if ($item->getType() == 'Ticket') {
             if (!empty($data)) {
