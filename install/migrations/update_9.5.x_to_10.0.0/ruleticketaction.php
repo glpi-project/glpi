@@ -35,7 +35,7 @@
  */
 
 // Change action type for "itilfollowup_template" and "task_template"
-$DB->updateOrDie(
+$query = $DB->buildUpdate(
    "glpi_ruleactions",
    [
       "action_type" => "append"
@@ -48,3 +48,4 @@ $DB->updateOrDie(
       ]
    ]
 );
+$migration->addPostQuery($query);
