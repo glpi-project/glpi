@@ -6317,7 +6317,7 @@ JAVASCRIPT;
                      }
                      $count_display++;
                      $page  = $linkitemtype::getFormURLWithID($data[$ID][$k]['id']);
-                     $name  = Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit);
+                     $name  = $data[$ID][$k]['name'];
                      if ($_SESSION["glpiis_ids_visible"] || empty($data[$ID][$k]['name'])) {
                         $name = sprintf(__('%1$s (%2$s)'), $name, $data[$ID][$k]['id']);
                      }
@@ -6501,8 +6501,7 @@ JAVASCRIPT;
                         $out .= self::LBBR;
                      }
                      $count_display++;
-                     $out .= Dropdown::getValueWithUnit(Dropdown::getYesNo($data[$ID][$k]['name']),
-                                                        $unit);
+                     $out .= Dropdown::getYesNo($data[$ID][$k]['name']);
                   }
                }
                return $out;
@@ -6584,9 +6583,9 @@ JAVASCRIPT;
                   } else {
                      // Trans field exists
                      if (isset($data[$ID][$k]['trans']) && !empty($data[$ID][$k]['trans'])) {
-                        $out .=  Dropdown::getValueWithUnit($data[$ID][$k]['trans'], $unit);
+                        $out .= $data[$ID][$k]['trans'];
                      } else {
-                        $out .= Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit);
+                        $out .= $data[$ID][$k]['name'];
                      }
                   }
                }
