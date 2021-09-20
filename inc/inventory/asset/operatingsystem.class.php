@@ -35,6 +35,7 @@ namespace Glpi\Inventory\Asset;
 use Glpi\Inventory\Conf;
 use Item_OperatingSystem;
 use RuleDictionnaryOperatingSystemArchitectureCollection;
+use Toolbox;
 
 class OperatingSystem extends InventoryAsset
 {
@@ -129,10 +130,10 @@ class OperatingSystem extends InventoryAsset
             }
          }
          if ($same === false) {
-            $ios->update(['id' => $ios->getID()] + $input_os, $this->withHistory());
+            $ios->update(['id' => $ios->getID()] + Toolbox::addslashes_deep($input_os), $this->withHistory());
          }
       } else {
-         $ios->add($input_os, [], $this->withHistory());
+         $ios->add(Toolbox::addslashes_deep($input_os), [], $this->withHistory());
       }
 
       $val->operatingsystems_id = $ios->fields['id'];;

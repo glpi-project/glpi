@@ -40,6 +40,7 @@ use QueryParam;
 use RuleDictionnarySoftwareCollection;
 use Software as GSoftware;
 use SoftwareVersion;
+use Toolbox;
 
 class Software extends InventoryAsset
 {
@@ -47,6 +48,7 @@ class Software extends InventoryAsset
 
    private $softwares = [];
    private $versions = [];
+   private $current_versions = [];
    private $entities_id_software;
 
    /** @var array */
@@ -104,7 +106,11 @@ class Software extends InventoryAsset
             }
          }
 
-         if (!property_exists($val, 'name') || (property_exists($val, 'name') && $val->name == '')) {
+         if (!property_exists($val, 'name')
+            || ($val->name == ''
+               || Toolbox::startsWith(Toolbox::slugify($val->name), 'nok_')
+            )
+         ) {
             if (property_exists($val, 'guid') && $val->guid != '') {
                $val->name = $val->guid;
             }
@@ -112,6 +118,8 @@ class Software extends InventoryAsset
 
          //If the software name exists and is defined
          if (property_exists($val, 'name') && $val->name != '') {
+            $val->name = trim(preg_replace('/\s+/', ' ', $val->name));
+
             $res_rule       = [];
 
             //Only play rules engine if there's at least one rule
@@ -200,6 +208,11 @@ class Software extends InventoryAsset
                $with_manufacturer[$comp_key] = true;
             }
          }
+
+         //ensure all columns are present
+         if (!property_exists($val, 'comment')) {
+            $val->comment = null;
+         }
       }
 
       //NOTE: A same software may have a manufacturer or not. Keep the one with manufacturer.
@@ -274,10 +287,18 @@ class Software extends InventoryAsset
          //operating system id is not known before handle(); set it in value
          $val->operatingsystems_id = $operatingsystems_id;
          $key = $this->getFullCompareKey($val);
+         $dedup_vkey = $key . $this->getVersionKey($val, 0);
          if (isset($db_software[$key])) {
             //link already exists in database, drop it
             unset($this->data[$k]);
             unset($db_software[$key]);
+            $this->current_versions[$dedup_vkey] = true;
+         } else {
+            if (isset($this->current_versions[$dedup_vkey])) {
+               unset($this->data[$k]);
+            } else {
+               $this->current_versions[$dedup_vkey] = true;
+            }
          }
       }
 
@@ -323,25 +344,23 @@ class Software extends InventoryAsset
     * @return string
     */
    protected function getSoftwareKey($name, $manufacturers_id): string {
-      return $this->getCompareKey([$name, $manufacturers_id]);
+      return $this->getCompareKey([Toolbox::slugify($name), $manufacturers_id]);
    }
 
    /**
     * Get software version comparison key
     *
-    * @param string  $version             Version name
-    * @param integer $softwares_id        Manufacturers id
-    * @param string  $arch                Architecture
-    * @param integer $operatingsystems_id Operating system ID
+    * @param stdClass $val          Version name
+    * @param integer   $softwares_id Software id
     *
     * @return string
     */
-   protected function getVersionKey($version, $softwares_id, $arch, $operatingsystems_id): string {
+   protected function getVersionKey($val, $softwares_id): string {
       return $this->getCompareKey([
-         strtolower($version),
+         strtolower($val->version),
          $softwares_id,
-         strtolower($arch),
-         $operatingsystems_id
+         strtolower($val->arch ?? '%'),
+         $this->getOsForKey($val)
       ]);
    }
 
@@ -354,7 +373,7 @@ class Software extends InventoryAsset
     */
    protected function getFullCompareKey(\stdClass $val): string {
       return $this->getCompareKey([
-         strtolower($val->name),
+         Toolbox::slugify($val->name),
          strtolower($val->version),
          strtolower($val->arch ?? ''),
          $val->manufacturers_id,
@@ -364,7 +383,7 @@ class Software extends InventoryAsset
    }
 
    /**
-    * Get full comparison keys for a software (including manufacturer and operating system)
+    * Get full comparison keys for a software (including operating system but not manufacvturer)
     *
     * @param \stdClass $val Object values
     *
@@ -372,8 +391,9 @@ class Software extends InventoryAsset
     */
    protected function getSimpleCompareKey(\stdClass $val): string {
       return $this->getCompareKey([
-         strtolower($val->name),
+         Toolbox::slugify($val->name),
          strtolower($val->version),
+         strtolower($val->arch ?? ''),
          $val->entities_id,
          $this->getOsForKey($val)
       ]);
@@ -460,7 +480,7 @@ class Software extends InventoryAsset
       }
 
       $criteria = [
-         'SELECT' => ['id', 'name', 'softwares_id', 'arch', 'operatingsystems_id'],
+         'SELECT' => ['id', 'name', 'arch', 'softwares_id', 'operatingsystems_id'],
          'FROM'   => \SoftwareVersion::getTable(),
          'WHERE'  => [
             'entities_id'           => $entities_id,
@@ -489,10 +509,8 @@ class Software extends InventoryAsset
          $softwares_id = $this->softwares[$skey];
 
          $key = $this->getVersionKey(
-            $val->version,
-            $softwares_id,
-            $val->arch ?? '',
-            $this->getOsForKey($val)
+            $val,
+            $softwares_id
          );
 
          if (isset($this->versions[$key])) {
@@ -522,7 +540,7 @@ class Software extends InventoryAsset
    }
 
    /**
-    * Store softwares
+    * Store software
     *
     * @return void
     */
@@ -589,10 +607,8 @@ class Software extends InventoryAsset
          $input['name']          = $val->version;
 
          $vkey = $this->getVersionKey(
-            $val->version,
-            $softwares_id,
-            $val->arch ?? '',
-            $this->getOsForKey($val)
+            $val,
+            $softwares_id
          );
 
          if (!isset($this->versions[$vkey])) {
@@ -665,10 +681,8 @@ class Software extends InventoryAsset
          $softwares_id = $this->softwares[$skey];
 
          $vkey = $this->getVersionKey(
-            $val->version,
+            $val,
             $softwares_id,
-            $val->arch ?? '',
-            $this->getOsForKey($val)
          );
          $versions_id = $this->versions[$vkey];
 

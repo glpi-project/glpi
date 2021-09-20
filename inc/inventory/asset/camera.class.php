@@ -90,9 +90,9 @@ class Camera extends Device
          }
 
          $resolution = new \ImageResolution();
-         if (!$resolution->getFromDBByCrit(['name' => $rsl])) {
+         if (!$resolution->getFromDBByCrit(['name' => addslashes($rsl)])) {
             $resolution->add([
-               'name'         => $rsl,
+               'name'         => addslashes($rsl),
                'is_video'     => $is_video,
                'is_dynamic'   => 1
             ]);
@@ -121,9 +121,9 @@ class Camera extends Device
          if (empty($val)) {
             continue;
          }
-         if (!$format->getFromDBByCrit(['name' => $fmt])) {
+         if (!$format->getFromDBByCrit(['name' => addslashes($fmt)])) {
             $format->add([
-               'name' => $fmt,
+               'name' => addslashes($fmt),
                'is_dynamic' => 1
             ]);
          }

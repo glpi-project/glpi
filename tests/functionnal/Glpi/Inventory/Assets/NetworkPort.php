@@ -87,7 +87,7 @@ class NetworkPort extends AbstractInventoryAsset {
 </REQUEST>",
             'ports'        => ['{"ifdescr":"3","ifname":"3","ifnumber":3,"ifstatus":1,"iftype":6,"trunk":false,"mac":"b4:39:d6:3b:22:bd","instantiation_type":"NetworkPortEthernet","ipaddress":[],"name":"3","logical_number":3}'],
             'connections'  => '{"3":["00:40:9d:3b:7f:c4"]}',
-            'vlans'        => '{"3":[{"name":"VLAN160","number":"160","tag":"160"}]}',
+            'vlans'        => '{"3":[{"name":"VLAN160","tag":"160"}]}',
             'aggregates'   => '[]'
          ], [
             'xml'          => "<?xml version=\"1.0\"?>
@@ -311,7 +311,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                '{"ifalias":"net2.glpi-project.org","ifdescr":"GigabitEthernet8\/0\/45","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"30.69 seconds","ifmtu":9000,"ifname":"Gi8\/0\/45","ifnumber":13645,"ifouterrors":0,"ifportduplex":3,"ifspeed":1000000000,"ifstatus":1,"iftype":6,"mac":"00:14:a9:37:ee:2d","trunk":false,"instantiation_type":"NetworkPortEthernet","ipaddress":[],"name":"Gi8\/0\/45","logical_number":13645,"portduplex":3,"ifinbytes":40326934,"ifoutbytes":454911808}'
             ],
             'connections'  => '{"5006":["00:14:4f:f2:b7:fd","00:14:4f:f2:b7:fe"]}',
-            'vlans'        => '{"5006":[{"name":"san-replication","number":"206","tag":"206"}],"11646":[{"name":"san-replication","number":"206","tag":"206"}],"13645":[{"name":"san-replication","number":"206","tag":"206"}]}',
+            'vlans'        => '{"5006":[{"name":"san-replication","tag":"206"}],"11646":[{"name":"san-replication","tag":"206"}],"13645":[{"name":"san-replication","tag":"206"}]}',
             'aggregates'   => '{"5006":{"aggregates":{"11646":0,"13645":0}}}'
          ]
       ];

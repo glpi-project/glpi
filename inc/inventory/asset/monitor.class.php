@@ -36,6 +36,7 @@ use Computer_Item;
 use Glpi\Inventory\Conf;
 use Monitor as GMonitor;
 use RuleImportAssetCollection;
+use Toolbox;
 
 class Monitor extends InventoryAsset
 {
@@ -152,7 +153,7 @@ class Monitor extends InventoryAsset
                // add monitor
                $val->entities_id = $entities_id;
                $val->is_dynamic = 1;
-               $items_id = $monitor->add((array)$val, [], $this->withHistory());
+               $items_id = $monitor->add(Toolbox::addslashes_deep((array)$val), [], $this->withHistory());
             } else {
                $items_id = $data['found_inventories'][0];
             }
