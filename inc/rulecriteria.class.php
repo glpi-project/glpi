@@ -177,7 +177,6 @@ class RuleCriteria extends CommonDBChild {
          'massiveaction'      => false,
          'datatype'           => 'specific',
          'additionalfields'   => ['rules_id', 'criteria', 'condition'],
-         'autocomplete'       => true,
       ];
 
       return $tab;

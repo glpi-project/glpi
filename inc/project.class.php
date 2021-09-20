@@ -502,7 +502,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
          'forcegroupby'       => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -521,7 +520,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          'name'               => __('Code'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -700,7 +698,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          'massiveaction'      => false,
          'nosearch'           => true,
          'nodisplay'          => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1450,11 +1447,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, 'name');
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
       echo "<td>".__('Code')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, 'code');
+      echo Html::input('code', ['value' => $this->fields['code']]);
       echo "</td>";
       echo "</tr>";
 

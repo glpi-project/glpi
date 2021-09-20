@@ -674,7 +674,6 @@ class Rule extends CommonDBTM {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -701,7 +700,6 @@ class Rule extends CommonDBTM {
          'field'              => 'description',
          'name'               => __('Description'),
          'datatype'           => 'text',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -863,11 +861,11 @@ class Rule extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
       echo "<td>".__('Description')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "description");
+      echo Html::input('description', ['value' => $this->fields['description']]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -2407,9 +2405,7 @@ class Rule extends CommonDBTM {
 
       if (!$display
           && ($rc = getItemForItemtype($this->rulecriteriaclass))) {
-         Html::autocompletionTextField($rc, "pattern", ['name'  => $name,
-                                                             'value' => $value,
-                                                             'size'  => 70]);
+         echo Html::input($name, ['value' => $value, 'size' => '70']);
       }
    }
 
@@ -2824,11 +2820,9 @@ class Rule extends CommonDBTM {
       echo "<tr><th colspan='7'>" . $this->getTitle() . "</th></tr>\n";
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name') . "</td><td>";
-      Html::autocompletionTextField($this, "name", ['value' => '',
-                                                         'size'  => 33]);
+      echo Html::input('name', ['value' => '', 'size' => '33']);
       echo "</td><td>".__('Description') . "</td><td>";
-      Html::autocompletionTextField($this, "description", ['value' => '',
-                                                                'size'  => 33]);
+      echo Html::input('description', ['value' => '', 'size' => '33']);
       echo "</td><td>".__('Logical operator') . "</td><td>";
       $this->dropdownRulesMatch();
       echo "</td><td class='tab_bg_2 center'>";

@@ -89,7 +89,6 @@ class DeviceNetworkCard extends CommonDevice {
          'field'              => 'mac_default',
          'name'               => __('MAC address by default'),
          'datatype'           => 'mac',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -98,7 +97,6 @@ class DeviceNetworkCard extends CommonDevice {
          'field'              => 'bandwidth',
          'name'               => __('Flow'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

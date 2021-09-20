@@ -548,7 +548,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Website'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -558,7 +557,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => Phone::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -568,7 +566,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => _n('Email', 'Emails', 1),
          'datatype'           => 'email',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -578,7 +575,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Fax'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -587,7 +583,6 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'postcode',
          'name'               => __('Postal code'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -597,7 +592,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('City'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -607,7 +601,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => _x('location', 'State'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -617,7 +610,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Country'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -627,7 +619,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Latitude'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -637,7 +628,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Longitude'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -647,7 +637,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Altitude'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -693,7 +682,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('LDAP directory information attribute representing the entity'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -703,7 +691,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Information in inventory tool (TAG) representing the entity'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -722,7 +709,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Search filter (if needed)'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -732,7 +718,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Mail domain'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -772,7 +757,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Administrator email'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -782,7 +766,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Administrator reply-to email (if needed)'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -791,7 +774,6 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'notification_subject_tag',
          'name'               => __('Prefix for notifications'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -800,7 +782,6 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'admin_email_name',
          'name'               => __('Administrator name'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -809,7 +790,6 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'admin_reply_name',
          'name'               => __('Response address (if needed)'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1153,7 +1133,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('URL'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1425,7 +1404,7 @@ class Entity extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>". Phone::getTypeName(1)."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "phonenumber");
+      echo Html::input('phonenumber', ['value' => $entity->fields['phonenumber']]);
       echo "</td>";
       echo "<td rowspan='7'>".__('Address')."</td>";
       echo "<td rowspan='7'>";
@@ -1435,42 +1414,42 @@ class Entity extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Fax')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "fax");
+      echo Html::input('fax', ['value' => $entity->fields['fax']]);
       echo "</td></tr>";
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Website')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "website");
+      echo Html::input('website', ['value' => $entity->fields['website']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('Email', 'Emails', 1)."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "email");
+      echo Html::input('email', ['value' => $entity->fields['email']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Postal code')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "postcode", ['size' => 7]);
+      echo Html::input('postcode', ['value' => $entity->fields['postcode'], 'size' => 7]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('City')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "town", ['size' => 27]);
+      echo Html::input('town', ['value' => $entity->fields['town'], 'size' => 27]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('location', 'State')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "state");
+      echo Html::input('state', ['value' => $entity->fields['state']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Country')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "country");
+      echo Html::input('country', ['value' => $entity->fields['country']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -1487,19 +1466,19 @@ class Entity extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('location', 'Longitude')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "longitude");
+      echo Html::input('longitude', ['value' => $entity->fields['longitude']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('location', 'Latitude')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "latitude");
+      echo Html::input('latitude', ['value' => $entity->fields['latitude']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('location', 'Altitude')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "altitude");
+      echo Html::input('altitude', ['value' => $entity->fields['altitude']]);
       echo "</td></tr>";
 
       Plugin::doHook("post_item_form", ['item' => $entity, 'options' => []]);
@@ -1550,21 +1529,21 @@ class Entity extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Information in inventory tool (TAG) representing the entity')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "tag", ['size' => 100]);
+      echo Html::input('tag', ['value' => $entity->fields['tag'], 'size' => 100]);
       echo "</td></tr>";
 
       if (Toolbox::canUseLdap()) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('LDAP directory information attribute representing the entity')."</td>";
          echo "<td>";
-         Html::autocompletionTextField($entity, "ldap_dn", ['size' => 100]);
+         echo Html::input('ldap_dn', ['value' => $entity->fields['ldap_dn'], 'size' => 100]);
          echo "</td></tr>";
       }
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Mail domain surrogates entity')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "mail_domain", ['size' => 100]);
+      echo Html::input('mail_domain', ['value' => $entity->fields['mail_domain'], 'size' => 100]);
       echo "</td></tr>";
 
       if (Toolbox::canUseLdap()) {
@@ -1585,7 +1564,7 @@ class Entity extends CommonTreeDropdown {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('LDAP filter associated to the entity (if necessary)')."</td>";
          echo "<td>";
-         Html::autocompletionTextField($entity, 'entity_ldapfilter', ['size' => 100]);
+         echo Html::input('entity_ldapfilter', ['value' => $entity->fields['entity_ldapfilter'], 'size' => 100]);
          echo "</td></tr>";
       }
 
@@ -1833,14 +1812,14 @@ class Entity extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Administrator email')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "admin_email");
+      echo Html::input('admin_email', ['value' => $entity->fields['admin_email']]);
       if (strlen($entity->fields['admin_email']) == 0) {
          self::inheritedValue(self::getUsedConfig('admin_email', $ID, '', ''));
       }
       echo "</td>";
       echo "<td>" . __('Administrator name') . "</td><td>";
       // we inherit only if email inherit also
-      Html::autocompletionTextField($entity, "admin_email_name");
+      echo Html::input('admin_email_name', ['value' => $entity->fields['admin_email_name']]);
       // warning, we rely on email field to inherit name field
       if (strlen($entity->fields['admin_email']) == 0) {
          self::inheritedValue(self::getUsedConfig('admin_email_name', $ID, '', ''));
@@ -1850,13 +1829,13 @@ class Entity extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Administrator reply-to email (if needed)')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "admin_reply");
+      echo Html::input('admin_reply', ['value' => $entity->fields['admin_reply']]);
       if (strlen($entity->fields['admin_reply']) == 0) {
          self::inheritedValue(self::getUsedConfig('admin_reply', $ID, '', ''));
       }
       echo "</td>";
       echo "<td>" . __('Response address (if needed)') . "</td><td>";
-      Html::autocompletionTextField($entity, "admin_reply_name");
+      echo Html::input('admin_reply_name', ['value' => $entity->fields['admin_reply_name']]);
       // warning, we rely on email field to inherit name field
       if (strlen($entity->fields['admin_reply']) == 0) {
          self::inheritedValue(self::getUsedConfig('admin_reply_name', $ID, '', ''));
@@ -1866,7 +1845,7 @@ class Entity extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Prefix for notifications')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "notification_subject_tag");
+      echo Html::input('notification_subject_tag', ['value' => $entity->fields['notification_subject_tag']]);
       if (strlen($entity->fields['notification_subject_tag']) == 0) {
          self::inheritedValue(self::getUsedConfig('notification_subject_tag', $ID, '', ''));
       }

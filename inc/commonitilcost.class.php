@@ -101,7 +101,6 @@ abstract class CommonITILCost extends CommonDBChild {
          'searchtype'         => 'contains',
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -411,7 +410,7 @@ abstract class CommonITILCost extends CommonDBChild {
       echo "<td>";
       echo "<input type='hidden' name='".static::$items_id."' value='".$item->fields['id']."'>";
 
-      Html::autocompletionTextField($this, 'name');
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
       echo "<td>".__('Begin date')."</td>";
       echo "<td>";

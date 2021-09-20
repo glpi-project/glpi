@@ -203,7 +203,6 @@ class FQDN extends CommonDropdown {
          'field'              => 'fqdn',
          'name'               => __('FQDN'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       return $tab;

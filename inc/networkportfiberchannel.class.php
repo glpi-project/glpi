@@ -91,7 +91,7 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('World Wide Name') . "</td><td>\n";
-      Html::autocompletionTextField($this, 'wwn', ['value' => $this->fields['wwn']]);
+      echo Html::input('wwn', ['value' => $this->fields['wwn']]);
       echo "</td>";
       echo "<td>" . __('Fiber channel port speed') . "</td><td>\n";
 
@@ -193,7 +193,6 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
          'field'              => 'wwn',
          'name'               => __('World Wide Name'),
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

@@ -122,7 +122,7 @@ class NetworkAlias extends FQDNLabel {
       }
       $this->displayRecursiveItems($recursiveItems, "Link");
       echo "</td><td>" . __('Name') . "</td><td>\n";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";

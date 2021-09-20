@@ -403,7 +403,6 @@ class Software extends CommonDBTM {
          'massiveaction'      => false,
          'nosearch'           => true,
          'nodisplay'          => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

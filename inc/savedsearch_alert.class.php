@@ -139,7 +139,7 @@ class SavedSearch_Alert extends CommonDBChild {
       echo "</td>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

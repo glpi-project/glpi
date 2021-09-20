@@ -18,6 +18,7 @@ The present file will list all changes made to the project; according to the
 - Usage of XML-RPC API is deprecated.
 
 ### Removed
+- Autocomplete feature on text fields.
 - Usage of alternative DB connection encoding (`DB::$dbenc` property).
 
 ### API changes
@@ -67,6 +68,7 @@ The present file will list all changes made to the project; according to the
 - jQueryUI has been partially removed and remaining widgets will be removed in a near future.
 - Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
 - `$CFG_GLPI['layout_excluded_pages']` entry
+- `$CFG_GLPI['use_ajax_autocompletion']` entry
 - `$LOADED_PLUGINS` global variable
 - `getAllDatasFromTable()`
 - `getRealQueryForTreeItem()`
@@ -119,6 +121,7 @@ The present file will list all changes made to the project; according to the
 - `DbUtils::getRealQueryForTreeItem()`
 - `DCBreadcrumb::showDcBreadcrumb()`
 - `Document_Item::cloneItem()`
+- `Html::autocompletionTextField()`
 - `Html::displayImpersonateBanner()`
 - `Html::displayMainMenu()`
 - `Html::displayMenuAll()`

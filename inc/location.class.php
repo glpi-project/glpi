@@ -233,7 +233,6 @@ class Location extends CommonTreeDropdown {
          'field'              => 'building',
          'name'               => __('Building number'),
          'datatype'           => 'text',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -242,7 +241,6 @@ class Location extends CommonTreeDropdown {
          'field'              => 'room',
          'name'               => __('Room number'),
          'datatype'           => 'text',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -279,7 +277,6 @@ class Location extends CommonTreeDropdown {
          'name'               => __('Latitude'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -289,7 +286,6 @@ class Location extends CommonTreeDropdown {
          'name'               => __('Longitude'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -299,7 +295,6 @@ class Location extends CommonTreeDropdown {
          'name'               => __('Altitude'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -308,7 +303,6 @@ class Location extends CommonTreeDropdown {
          'field'              => 'address',
          'name'               => __('Address'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -317,7 +311,6 @@ class Location extends CommonTreeDropdown {
          'field'              => 'postcode',
          'name'               => __('Postal code'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -326,7 +319,6 @@ class Location extends CommonTreeDropdown {
          'field'              => 'town',
          'name'               => __('Town'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -335,7 +327,6 @@ class Location extends CommonTreeDropdown {
          'field'              => 'state',
          'name'               => _x('location', 'State'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -344,7 +335,6 @@ class Location extends CommonTreeDropdown {
          'field'              => 'country',
          'name'               => __('Country'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       return $tab;

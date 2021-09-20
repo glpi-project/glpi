@@ -78,7 +78,6 @@ class DeviceBattery extends CommonDevice {
          'field'              => 'capacity',
          'name'               => __('Capacity'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -87,7 +86,6 @@ class DeviceBattery extends CommonDevice {
          'field'              => 'voltage',
          'name'               => __('Voltage'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

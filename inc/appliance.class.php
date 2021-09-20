@@ -182,7 +182,6 @@ class Appliance extends CommonDBTM {
          'table'         => self::getTable(),
          'field'         => 'serial',
          'name'          => __('Serial number'),
-         'autocomplete'  => true
       ];
 
       $tab[] = [
@@ -190,7 +189,6 @@ class Appliance extends CommonDBTM {
          'table'         => self::getTable(),
          'field'         => 'otherserial',
          'name'          => __('Inventory number'),
-         'autocomplete'  => true
       ];
 
       $tab[] = [

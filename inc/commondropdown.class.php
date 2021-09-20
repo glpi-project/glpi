@@ -384,7 +384,6 @@ abstract class CommonDropdown extends CommonDBTM {
          'name'              => __('Name'),
          'datatype'          => 'itemlink',
          'massiveaction'     => false,
-         'autocomplete'      => true,
       ];
 
       $tab[] = [
@@ -402,7 +401,6 @@ abstract class CommonDropdown extends CommonDBTM {
             'table'  => $this->getTable(),
             'field'  => 'product_number',
             'name'   => __('Product number'),
-            'autocomplete' => true,
          ];
       }
 

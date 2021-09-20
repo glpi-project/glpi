@@ -145,7 +145,6 @@ class ConsumableItem extends CommonDBTM {
          'field'              => 'ref',
          'name'               => __('Reference'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -154,7 +153,6 @@ class ConsumableItem extends CommonDBTM {
          'field'              => 'otherserial',
          'name'               => __('Inventory number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

@@ -78,7 +78,6 @@ class PassiveDCEquipment extends CommonDBTM {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false, // implicit key==1
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -104,7 +103,6 @@ class PassiveDCEquipment extends CommonDBTM {
          'field'              => 'serial',
          'name'               => __('Serial number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -113,7 +111,6 @@ class PassiveDCEquipment extends CommonDBTM {
          'field'              => 'otherserial',
          'name'               => __('Inventory number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
@@ -181,7 +178,6 @@ class PassiveDCEquipment extends CommonDBTM {
          'massiveaction'      => false,
          'nosearch'           => true,
          'nodisplay'          => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

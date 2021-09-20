@@ -276,7 +276,6 @@ class Contract extends CommonDBTM {
          'massiveaction'      => false,
          'datatype'           => 'string',
          'joinparams'         => $joinparams,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -432,7 +431,6 @@ class Contract extends CommonDBTM {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -450,7 +448,6 @@ class Contract extends CommonDBTM {
          'field'              => 'num',
          'name'               => _x('phone', 'Number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -700,7 +697,6 @@ class Contract extends CommonDBTM {
          'massiveaction'      => false,
          'nosearch'           => true,
          'nodisplay'          => true,
-         'autocomplete'       => true,
       ];
 
       // add objectlock search options
