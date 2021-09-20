@@ -1,7 +1,7 @@
 name: 'Close stale issues'
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 */4 * * *'
 
 jobs:
   stale:
@@ -28,4 +28,4 @@ jobs:
           days-before-close: 10
           exempt-all-milestones: true # Do not check issues/PR with defined milestone.
           ascending: true # First check older issues/PR.
-          operations-per-run: 750 # Max API calls per run.
+          operations-per-run: 900 # Max API calls per run.
