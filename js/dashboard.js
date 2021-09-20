@@ -29,7 +29,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global GoInFullscreen, GoOutFullscreen, EasyMDE, getUuidV4, _, sortable */
+/* global GridStack, GoInFullscreen, GoOutFullscreen, EasyMDE, getUuidV4, _, sortable */
 /* global glpi_ajax_dialog, glpi_close_all_dialogs */
 
 var Dashboard = {
@@ -87,17 +87,16 @@ var Dashboard = {
       this.cols         = options.cols;
       this.cache_key    = options.cache_key || "";
 
-      $('#grid-stack-'+options.rand).gridstack({
+      Dashboard.grid = GridStack.init({
          column: options.cols,
          maxRow: (options.rows + 1), // +1 for a hidden item at bottom (to fix height)
-         verticalMargin: this.cell_margin,
+         margin : this.cell_margin,
          float: true, // widget can be placed anywhere on the grid, not only on top
          animate: false, // as we don't move widget automatically, we don't need animation
          draggable: { // override jquery ui draggable options
             'cancel': 'textarea' // avoid draggable on some child elements
          }
       });
-      Dashboard.grid = $('#grid-stack-'+options.rand).data('gridstack');
 
       // set grid in static to prevent edition (unless user click on edit button)
       // previously in option, but current version of gridstack has a bug with one column mode (responsive)
@@ -259,12 +258,12 @@ var Dashboard = {
       });
 
       // event: moving item
-      $('#grid-stack-'+options.rand).on('dragstop', function() {
+      Dashboard.grid.on('dragstop', function() {
          Dashboard.saveDashboard();
       });
 
       // event: resize item
-      $('#grid-stack-'+options.rand).on('gsresizestop', function(event, elem) {
+      Dashboard.grid.on('resizestop', function(event, elem) {
          Dashboard.saveDashboard();
 
          // resize also chart if exists
@@ -281,7 +280,7 @@ var Dashboard = {
       // delete item
       $(document).on('click', "#dashboard-"+options.rand+" .delete-item", function() {
          var del_ctrl = $(this);
-         var item = del_ctrl.closest('.grid-stack-item');
+         var item = del_ctrl.closest('.grid-stack-item')[0];
 
          Dashboard.grid.removeWidget(item);
          Dashboard.saveDashboard();
@@ -291,9 +290,9 @@ var Dashboard = {
       $(document).on('click', "#dashboard-"+options.rand+" .refresh-item", function() {
          var refresh_ctrl = $(this);
          var item = refresh_ctrl.closest('.grid-stack-item');
-         var id = item.data('gs-id');
+         var id = item.attr('gs-id');
 
-         Dashboard.getCardsAjax("[data-gs-id="+id+"]");
+         Dashboard.getCardsAjax("[gs-id="+id+"]");
       });
 
       // edit item
@@ -307,12 +306,12 @@ var Dashboard = {
             url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
             params: {
                action:       'display_edit_widget',
-               gridstack_id: item.data('gs-id'),
+               gridstack_id: item.attr('gs-id'),
                card_id:      card_opt.card_id,
-               x:            item.data('gs-x'),
-               y:            item.data('gs-y'),
-               width:        item.data('gs-width'),
-               height:       item.data('gs-height'),
+               x:            item.attr('gs-x'),
+               y:            item.attr('gs-y'),
+               width:        item.attr('gs-w'),
+               height:       item.attr('gs-h'),
                card_options: card_opt,
             },
          });
@@ -337,10 +336,7 @@ var Dashboard = {
       $(document).on('submit', '.display-widget-form ', function(event) {
          event.preventDefault();
 
-         var form = $(this);
-         var edit = form.has('.edit-widget').length > 0;
-
-         Dashboard.setWidgetFromForm(form, edit);
+         Dashboard.setWidgetFromForm($(this));
       });
 
       // add new filter
@@ -451,14 +447,13 @@ var Dashboard = {
    saveMarkdown:function(textarea) {
       var item = textarea.closest('.grid-stack-item');
       var content = textarea.val();
-      var gs_id = item.data('gs-id');
+      var gs_id = item.attr('gs-id');
 
       item.addClass('dirty');
       Dashboard.markdown_contents[gs_id] = content;
    },
 
-   setWidgetFromForm: function(form, edit_item) {
-      edit_item = edit_item || false;
+   setWidgetFromForm: function(form) {
 
       glpi_close_all_dialogs();
       var form_data  = {};
@@ -476,6 +471,8 @@ var Dashboard = {
       if (typeof form_data.card_options === "string") {
          form_data.card_options = JSON.parse(form_data.card_options);
       }
+
+      var edit_item = "old_id" in form_data && form_data.old_id.length > 0;
 
       // prepare options
       form_data.card_options.color        = form_data.color || null;
@@ -495,7 +492,7 @@ var Dashboard = {
          if (form_data.old_id === "0") {
             return false;
          }
-         var item = $('.grid-stack-item[data-gs-id='+form_data.old_id+']');
+         var item = $('.grid-stack-item[gs-id='+form_data.old_id+']')[0];
          Dashboard.grid.removeWidget(item);
       }
 
@@ -533,10 +530,10 @@ var Dashboard = {
 
    addWidget: function(p) {
       var gridstack_id = p.gridstack_id;
-      var x            = p.x || -1;
-      var y            = p.y || -1;
-      var width        = p.width || 2;
-      var height       = p.height || 2;
+      var x            = parseInt(p.x || -1);
+      var y            = parseInt(p.y || -1);
+      var width        = parseInt(p.width || 2);
+      var height       = parseInt(p.height || 2);
       var options      = p.card_options || {};
 
       var html = ' \
@@ -551,21 +548,19 @@ var Dashboard = {
       </div>';
 
       // add the widget to the grid
-      var widget = Dashboard.grid.addWidget(
-         html,
-         x,
-         y,
-         width,
-         height,
-         x < 0 || y < 0,
-         undefined, undefined, undefined, undefined, // min, max dimensions
-         gridstack_id
-      );
+      var widget = Dashboard.grid.addWidget(html, {
+         'x': x,
+         'y': y,
+         'w': width,
+         'h': height,
+         'autoPosition': x < 0 || y < 0,
+         'id': gridstack_id,
+      });
 
       // append options
-      widget.data('card-options', options);
+      $(widget).attr('data-card-options', JSON.stringify(options));
 
-      return widget;
+      return $(widget);
    },
 
    setFilterFromForm: function(form) {
@@ -603,7 +598,7 @@ var Dashboard = {
       }).done(function(html) {
          gridstack.prepend(html);
          gridstack.find('.grid-stack-item').each(function() {
-            Dashboard.grid.makeWidget($(this));
+            Dashboard.grid.makeWidget($(this)[0]);
          });
 
          if (Dashboard.ajax_cards) {
@@ -638,7 +633,7 @@ var Dashboard = {
       $('.dashboard .card.filter-'+filter_id).each(function () {
          var gridstack_item = $(this).closest(".grid-stack-item");
          var card_id = gridstack_item.data('gs-id');
-         Dashboard.getCardsAjax("[data-gs-id="+card_id+"]");
+         Dashboard.getCardsAjax("[gs-id="+card_id+"]");
       });
    },
 
@@ -648,22 +643,22 @@ var Dashboard = {
       var serializedData = $.makeArray(
          Dashboard.element.find('.grid-stack-item:visible:not(.grid-stack-placeholder)')
       ) .map(function (v) {
-         var n = $(v).data('_gridstack_node');
+         var gs_id = $(v).attr('gs-id');
          var options = $(v).data('card-options');
 
          // replace markdown content (this to avoid unwanted slashing)
          if (_.keys(Dashboard.markdown_contents).length > 0
-             && n.id in Dashboard.markdown_contents) {
-            options.markdown_content = Dashboard.markdown_contents[n.id];
+             && gs_id in Dashboard.markdown_contents) {
+            options.markdown_content = Dashboard.markdown_contents[gs_id];
          }
 
-         return n ? {
-            gridstack_id: n.id,
+         return gs_id ? {
+            gridstack_id: $(v).attr('gs-id'),
             card_id: options.card_id,
-            x: n.x,
-            y: n.y,
-            width: n.width,
-            height: n.height,
+            x: $(v).attr('gs-x'),
+            y: $(v).attr('gs-y'),
+            width: $(v).attr('gs-w'),
+            height: $(v).attr('gs-h'),
             card_options: options
          } : null;
       });
@@ -690,7 +685,7 @@ var Dashboard = {
 
       // responsive mode
       if (this.dash_width <= 700
-          || this.grid.container.hasClass('grid-stack-one-column-mode')) {
+          || $(this.grid.el).hasClass('grid-stack-one-column-mode')) {
          text_offset = 1.8;
       }
 
@@ -952,7 +947,7 @@ var Dashboard = {
       var dash_width    = Math.floor(this.element.width());
       var cell_length   = dash_width / this.cols;
       var cell_height   = cell_length;
-      var cell_fullsize = (dash_width / this.cols) + this.cell_margin;
+      var cell_fullsize = (dash_width / this.cols);
       var width_percent = 100 / this.cols;
 
       var style = " \
@@ -969,10 +964,10 @@ var Dashboard = {
          var left  = i * width_percent;
          var width = (i+1) * width_percent;
 
-         style+= this.elem_id+" .grid-stack > .grid-stack-item[data-gs-x='"+i+"'] { \
+         style+= this.elem_id+" .grid-stack > .grid-stack-item[gs-x='"+i+"'] { \
             left: "+left+"%; \
          } \
-         "+this.elem_id+" .grid-stack > .grid-stack-item[data-gs-width='"+(i+1)+"'] { \
+         "+this.elem_id+" .grid-stack > .grid-stack-item[gs-w='"+(i+1)+"'] { \
             min-width: "+width_percent+"%; \
             width: "+width+"%; \
          }";
