@@ -2593,12 +2593,12 @@ JAVASCRIPT;
             echo $this->fields["realname"];
          } else {
             echo Html::input(
-         'realname',
-         [
-            'value' => $this->fields['realname'],
-            'id'    => "textfield_realname$surnamerand",
-         ]
-      );
+               'realname',
+               [
+                  'value' => $this->fields['realname'],
+                  'id'    => "textfield_realname$surnamerand",
+               ]
+            );
          }
          echo "</td>";
 
