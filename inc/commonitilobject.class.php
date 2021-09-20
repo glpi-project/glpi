@@ -6147,11 +6147,12 @@ abstract class CommonITILObject extends CommonDBTM {
     * Retrieves all timeline items for this ITILObject
     *
     * @param array $options Possible options:
-    * - with_documents   : include documents elements
-    * - with_logs        : include log entries
-    * - with_validations : include validation elements
-    * - expose_private   : force presence of private items (followup/tasks), even if session does not allow it
-    * - bypass_rights    : bypass current session rights
+    * - with_documents    : include documents elements
+    * - with_logs         : include log entries
+    * - with_validations  : include validation elements
+    * - expose_private    : force presence of private items (followup/tasks), even if session does not allow it
+    * - bypass_rights     : bypass current session rights
+    * - sort_by_date_desc : false,
     * @since 9.4.0
     *
     * @param bool $with_logs include logs ?
@@ -6161,11 +6162,12 @@ abstract class CommonITILObject extends CommonDBTM {
    function getTimelineItems(array $options = []) {
 
       $params = [
-         'with_documents'   => true,
-         'with_logs'        => true,
-         'with_validations' => true,
-         'expose_private'   => false,
-         'bypass_rights'    => false,
+         'with_documents'    => true,
+         'with_logs'         => true,
+         'with_validations'  => true,
+         'expose_private'    => false,
+         'bypass_rights'     => false,
+         'sort_by_date_desc' => false,
       ];
 
       if (is_array($options) && count($options)) {
@@ -6394,9 +6396,11 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      //reverse sort timeline items by date
-      usort($timeline, function($a, $b) {
-         return strtotime($a['item']['date']) - strtotime($b['item']['date']);
+      //sort timeline items by date
+      $reverse = $params['sort_by_date_desc'];
+      usort($timeline, function($a, $b) use ($reverse) {
+         $diff = strtotime($a['item']['date']) - strtotime($b['item']['date']);
+         return $reverse ? 0 - $diff : $diff;
       });
 
       return $timeline;
