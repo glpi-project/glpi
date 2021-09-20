@@ -1109,7 +1109,7 @@ SCSS
       $options = ['parentid' => '100',
                'itemtype' => 'State',
                'entity_restrict' =>'0'];
-      $values = json_decode(\Html::getDropdownValue($options, true), false);
+      $values = json_decode(\Dropdown::getDropdownValue($options, true), false);
       $this->integer($values['count'])->isEqualTo(1);
    }
 }
