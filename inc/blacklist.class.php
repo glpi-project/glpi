@@ -106,7 +106,6 @@ class Blacklist extends CommonDropdown {
          'field'              => 'value',
          'name'               => __('Value'),
          'datatype'           => 'text',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

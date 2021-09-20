@@ -79,7 +79,6 @@ class DocumentType  extends CommonDropdown {
          'field'              => 'ext',
          'name'               => __('Extension'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -97,7 +96,6 @@ class DocumentType  extends CommonDropdown {
          'field'              => 'mime',
          'name'               => __('MIME type'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

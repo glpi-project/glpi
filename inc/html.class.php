@@ -3503,7 +3503,7 @@ JS;
     * @return void|string
    **/
    static function autocompletionTextField(CommonDBTM $item, $field, $options = []) {
-      global $CFG_GLPI;
+      Toolbox::deprecated('Autocompletion feature has been removed.');
 
       $params['name']   = $field;
       $params['value']  = '';
@@ -3511,12 +3511,6 @@ JS;
       if (array_key_exists($field, $item->fields)) {
          $params['value'] = $item->fields[$field];
       }
-      $params['entity'] = -1;
-
-      if (array_key_exists('entities_id', $item->fields)) {
-         $params['entity'] = $item->fields['entities_id'];
-      }
-      $params['user']   = -1;
       $params['option'] = '';
       $params['type']   = 'text';
       $params['required']  = false;
@@ -3530,49 +3524,9 @@ JS;
       $rand = (isset($params['rand']) ? $params['rand'] : mt_rand());
       $name    = "field_".$params['name'].$rand;
 
-      // Check if field is allowed
-      $field_so = $item->getSearchOptionByField('field', $field, $item->getTable());
-      $can_autocomplete = array_key_exists('autocomplete', $field_so) && $field_so['autocomplete'];
-
-      $output = '';
-      if ($can_autocomplete && $CFG_GLPI["use_ajax_autocompletion"]) {
-         $output .=  "<input ".$params['option']." id='text$name' type='{$params['type']}' name='".
-                       $params['name']."' value=\"".self::cleanInputText($params['value'])."\"
-                       class='autocompletion-text-field form-control'";
-
-         if ($params['required'] == true) {
-            $output .= " required='required'";
-         }
-
-         if (isset($params['attrs'])) {
-            foreach ($params['attrs'] as $attr => $value) {
-               $output .= " $attr='$value'";
-            }
-         }
-
-         $output .= ">";
-
-         $parameters['itemtype'] = $item->getType();
-         $parameters['field']    = $field;
-
-         if ($params['entity'] >= 0) {
-            $parameters['entity_restrict']    = $params['entity'];
-         }
-         if ($params['user'] >= 0) {
-            $parameters['user_restrict']    = $params['user'];
-         }
-
-         $js = "  $( '#text$name' ).autocomplete({
-                        source: '".$CFG_GLPI["root_doc"]."/ajax/autocompletion.php?".Toolbox::append_params($parameters, '&')."',
-                        minLength: 3,
-                        });";
-
-         $output .= Html::scriptBlock($js);
-
-      } else {
-         $output .=  "<input ".$params['option']." type='text' id='text$name' class='form-control' name='".$params['name']."'
-                value=\"".self::cleanInputText($params['value'])."\">\n";
-      }
+      $output = "<input ".$params['option']." type='text' id='text$name' class='form-control' name='".$params['name']."'
+                value=\"".self::cleanInputText($params['value'])."\"" .
+                ($params['required'] ? ' required="required"' : '') . ">";
 
       if (!isset($options['display']) || $options['display']) {
          echo $output;

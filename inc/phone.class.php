@@ -229,7 +229,6 @@ class Phone extends CommonDBTM {
          'field'              => 'serial',
          'name'               => __('Serial number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -238,7 +237,6 @@ class Phone extends CommonDBTM {
          'field'              => 'otherserial',
          'name'               => __('Inventory number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -247,7 +245,6 @@ class Phone extends CommonDBTM {
          'field'              => 'contact',
          'name'               => __('Alternate username'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -256,7 +253,6 @@ class Phone extends CommonDBTM {
          'field'              => 'contact_num',
          'name'               => __('Alternate username number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -265,7 +261,6 @@ class Phone extends CommonDBTM {
          'field'              => 'number_line',
          'name'               => _x('quantity', 'Number of lines'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -318,7 +313,6 @@ class Phone extends CommonDBTM {
          'field'              => 'brand',
          'name'               => __('Brand'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -402,7 +396,6 @@ class Phone extends CommonDBTM {
          'massiveaction'      => false,
          'nosearch'           => true,
          'nodisplay'          => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

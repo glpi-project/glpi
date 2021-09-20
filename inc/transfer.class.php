@@ -86,7 +86,6 @@ class Transfer extends CommonDBTM {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -3688,7 +3687,7 @@ class Transfer extends CommonDBTM {
       if ($edit_form) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Name')."</td><td>";
-         Html::autocompletionTextField($this, "name");
+         echo Html::input('name', ['value' => $this->fields['name']]);
          echo "</td>";
          echo "<td rowspan='3' class='middle right'>".__('Comments')."</td>";
          echo "<td class='center middle' rowspan='3'>

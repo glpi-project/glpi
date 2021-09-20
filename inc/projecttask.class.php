@@ -658,8 +658,14 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
       echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
       echo "<td colspan='3'>";
-      Html::autocompletionTextField($this, "name", ['size' => 80,
-                                                    'rand' => $rand_name]);
+      echo Html::input(
+         'name',
+         [
+            'value' => $this->fields['name'],
+            'id'    => "textfield_name$rand_name",
+            'size'  => '80',
+         ]
+      );
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -913,7 +919,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1085,7 +1090,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          'massiveaction'      => false,
          'nosearch'           => true,
          'nodisplay'          => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

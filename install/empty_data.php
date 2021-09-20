@@ -120,7 +120,6 @@ $default_prefs = [
    'dropdown_max'                            => '100',
    'ajax_wildcard'                           => '*',
    'ajax_limit_count'                        => '10',
-   'use_ajax_autocompletion'                 => '1',
    'is_users_auto_add'                       => '1',
    'date_format'                             => '0',
    'number_format'                           => '0',

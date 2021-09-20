@@ -77,7 +77,6 @@ class DeviceProcessor extends CommonDevice {
          'field'              => 'frequency_default',
          'name'               => __('Frequency by default'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -86,7 +85,6 @@ class DeviceProcessor extends CommonDevice {
          'field'              => 'frequence',
          'name'               => __('Frequency'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

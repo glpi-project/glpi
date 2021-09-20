@@ -214,12 +214,14 @@ JAVASCRIPT;
          echo Html::hidden('day', ['value' => $options['start']]);
       }
       if ($canedit) {
-         Html::autocompletionTextField($this, "name", [
-            'size'   => '80',
-            'entity' => -1,
-            'user'   => $this->fields["users_id"],
-            'rand'   => $rand
-         ]);
+         echo Html::input(
+            'name',
+            [
+               'value' => $this->fields['name'],
+               'id'    => "textfield_name$rand",
+               'size'  => '80',
+            ]
+         );
       } else {
          echo $this->fields['name'];
       }

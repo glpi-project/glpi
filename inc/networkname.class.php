@@ -120,7 +120,7 @@ class NetworkName extends FQDNLabel {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Name') . "</td><td>\n";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>\n";
 
       echo "<td>".FQDN::getTypeName(1)."</td><td>";
@@ -453,7 +453,7 @@ class NetworkName extends FQDNLabel {
       echo "</tr><tr class='tab_bg_1'>";
 
       echo "<td>" . self::getTypeName(1) . "</td><td>\n";
-      Html::autocompletionTextField($name, "name", ['name' => 'NetworkName_name']);
+      echo Html::input('NetworkName_name', ['value' => $name->fields['name']]);
       echo "</td>\n";
 
       echo "<td>".FQDN::getTypeName(1)."</td><td>";

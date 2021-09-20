@@ -138,7 +138,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td><td rowspan='4'>".__('Comments')."</td>";
       echo "<td rowspan='4'>";
       echo "<textarea cols='45' rows='6' name='comment' >".$this->fields["comment"]."</textarea>";
@@ -164,7 +164,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('UUID')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "uuid");
+      echo Html::input('uuid', ['value' => $this->fields['uuid']]);
       echo "</td>";
 
       echo "<td>".__('Machine')."</td>";
@@ -183,28 +183,24 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1), __('Mio'))."</td>";
       echo "<td>";
-      Html::autocompletionTextField(
-         $this,
+      echo Html::input(
          'ram',
          [
+            'value' => $this->fields['ram'],
             'type' => 'number',
-            'attrs' => [
-               'min'    => 0
-            ]
+            'min'    => 0,
          ]
       );
       echo "</td>";
 
       echo "<td>"._x('quantity', 'Processors number')."</td>";
       echo "<td>";
-      Html::autocompletionTextField(
-         $this,
+      echo Html::input(
          'vcpu',
          [
-            'type'   => 'number',
-            'attrs'  => [
-               'min' => 0
-            ]
+            'value' => $this->fields['vcpu'],
+            'type' => 'number',
+            'min'    => 0,
          ]
       );
       echo "</td></tr>";
@@ -502,7 +498,6 @@ class ComputerVirtualMachine extends CommonDBChild {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -512,7 +507,6 @@ class ComputerVirtualMachine extends CommonDBChild {
          'name'               => __('UUID'),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -522,7 +516,6 @@ class ComputerVirtualMachine extends CommonDBChild {
          'name'               => _n('Memory', 'Memories', 1),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -532,7 +525,6 @@ class ComputerVirtualMachine extends CommonDBChild {
          'name'               => __('processor number'),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       return $tab;

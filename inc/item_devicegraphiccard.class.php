@@ -52,7 +52,7 @@ class Item_DeviceGraphicCard extends Item_Devices {
                                      'short name' => _n('Memory', 'Memories', 1),
                                      'size'       => 10,
                                      'id'         => 20,
-                                     'autocomplete' => true,],
+                   ],
                    'serial' => parent::getSpecificities('serial'),
                    'otherserial' => parent::getSpecificities('otherserial'),
                    'locations_id' => parent::getSpecificities('locations_id'),
