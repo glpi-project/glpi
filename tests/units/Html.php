@@ -1106,7 +1106,6 @@ SCSS
             (int)$DB->insert( \State::getTable(),
                [  'id' => '101', 'name' => '1.1','states_id' => '100']
             ))->isGreaterThan(0);
-      $st = new State();
       $options = ['parentid' => '100',
                'itemtype' => 'State',
                'entity_restrict' =>'0'];
