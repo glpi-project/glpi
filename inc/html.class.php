@@ -1171,7 +1171,6 @@ HTML;
 
          if (in_array('dashboard', $jslibs)) {
             $tpl_vars['css_files'][] = 'css/standalone/dashboard.scss';
-            $tpl_vars['css_files'][] = 'css/standalone/gridstack-grids.scss';
             Html::requireJs('dashboard');
          }
 
@@ -1181,12 +1180,12 @@ HTML;
          }
 
          if (in_array('rack', $jslibs)) {
-            $tpl_vars['css_files'][] = 'css/standalone/gridstack-grids.scss';
             Html::requireJs('rack');
          }
 
          if (in_array('gridstack', $jslibs)) {
             $tpl_vars['css_files'][] = 'public/lib/gridstack.css';
+            $tpl_vars['css_files'][] = 'css/standalone/gridstack-grids.scss';
             Html::requireJs('gridstack');
          }
 
