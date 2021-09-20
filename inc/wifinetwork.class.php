@@ -128,7 +128,6 @@ class WifiNetwork extends CommonDropdown {
          'field'              => 'essid',
          'name'               => __('ESSID'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       return $tab;

@@ -76,7 +76,6 @@ class DeviceSimcard extends CommonDevice {
             'field'              => 'voltage',
             'name'               => __('Voltage'),
             'datatype'           => 'string',
-            'autocomplete'       => true,
       ];
 
       $tab[] = [

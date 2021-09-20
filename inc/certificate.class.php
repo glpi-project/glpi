@@ -90,7 +90,6 @@ class Certificate extends CommonDBTM {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false, // implicit key==1
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -108,7 +107,6 @@ class Certificate extends CommonDBTM {
          'field'              => 'serial',
          'name'               => __('Serial number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -117,7 +115,6 @@ class Certificate extends CommonDBTM {
          'field'              => 'otherserial',
          'name'               => __('Inventory number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
@@ -135,7 +132,6 @@ class Certificate extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'dns_suffix',
          'name'               => __('DNS suffix'),
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -205,7 +201,6 @@ class Certificate extends CommonDBTM {
          'field'              => 'contact',
          'name'               => __('Alternate username'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -214,7 +209,6 @@ class Certificate extends CommonDBTM {
          'field'              => 'contact_num',
          'name'               => __('Alternate username number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -222,7 +216,6 @@ class Certificate extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'dns_name',
          'name'               => __('DNS name'),
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -280,7 +273,6 @@ class Certificate extends CommonDBTM {
          'massiveaction'      => false,
          'nosearch'           => true,
          'nodisplay'          => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

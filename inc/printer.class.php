@@ -342,7 +342,6 @@ class Printer  extends CommonDBTM {
          'field'              => 'serial',
          'name'               => __('Serial number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -351,7 +350,6 @@ class Printer  extends CommonDBTM {
          'field'              => 'otherserial',
          'name'               => __('Inventory number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -360,7 +358,6 @@ class Printer  extends CommonDBTM {
          'field'              => 'contact',
          'name'               => __('Alternate username'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -369,7 +366,6 @@ class Printer  extends CommonDBTM {
          'field'              => 'contact_num',
          'name'               => __('Alternate username number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -462,7 +458,6 @@ class Printer  extends CommonDBTM {
          'field'              => 'memory_size',
          'name'               => _n('Memory', 'Memories', 1),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -472,7 +467,6 @@ class Printer  extends CommonDBTM {
          'name'               => __('Initial page counter'),
          'datatype'           => 'number',
          'nosearch'           => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -481,7 +475,6 @@ class Printer  extends CommonDBTM {
          'field'              => 'last_pages_counter',
          'name'               => __('Current counter of pages'),
          'datatype'           => 'number',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -572,7 +565,6 @@ class Printer  extends CommonDBTM {
          'massiveaction'      => false,
          'nosearch'           => true,
          'nodisplay'          => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

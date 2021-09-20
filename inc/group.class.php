@@ -215,7 +215,7 @@ class Group extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
       echo "<td rowspan='12' class='middle'>".__('Comments')."</td>";
       echo "<td class='middle' rowspan='12'>";
@@ -413,7 +413,6 @@ class Group extends CommonTreeDropdown {
             'field'              => 'ldap_field',
             'name'               => __('Attribute of the user containing its groups'),
             'datatype'           => 'string',
-            'autocomplete'       => true,
          ];
 
          $tab[] = [
@@ -422,7 +421,6 @@ class Group extends CommonTreeDropdown {
             'field'              => 'ldap_value',
             'name'               => __('Attribute value'),
             'datatype'           => 'text',
-            'autocomplete'       => true,
          ];
 
          $tab[] = [
@@ -431,7 +429,6 @@ class Group extends CommonTreeDropdown {
             'field'              => 'ldap_group_dn',
             'name'               => __('Group DN'),
             'datatype'           => 'text',
-            'autocomplete'       => true,
          ];
       }
 
@@ -555,13 +552,13 @@ class Group extends CommonTreeDropdown {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Attribute of the user containing its groups')."</td>";
          echo "<td>";
-         Html::autocompletionTextField($this, "ldap_field");
+         echo Html::input('ldap_field', ['value' => $this->fields['ldap_field']]);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Attribute value')."</td>";
          echo "<td>";
-         Html::autocompletionTextField($this, "ldap_value");
+         echo Html::input('ldap_value', ['value' => $this->fields['ldap_value']]);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
@@ -571,7 +568,7 @@ class Group extends CommonTreeDropdown {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Group DN')."</td>";
          echo "<td>";
-         Html::autocompletionTextField($this, "ldap_group_dn");
+         echo Html::input('ldap_group_dn', ['value' => $this->fields['ldap_group_dn']]);
          echo "</td></tr>";
       }
 

@@ -215,7 +215,6 @@ class Contact extends CommonDBTM{
          'name'               => __('Last name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -224,7 +223,6 @@ class Contact extends CommonDBTM{
          'field'              => 'firstname',
          'name'               => __('First name'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -242,7 +240,6 @@ class Contact extends CommonDBTM{
          'field'              => 'phone',
          'name'               => Phone::getTypeName(1),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -251,7 +248,6 @@ class Contact extends CommonDBTM{
          'field'              => 'phone2',
          'name'               => __('Phone 2'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -260,7 +256,6 @@ class Contact extends CommonDBTM{
          'field'              => 'mobile',
          'name'               => __('Mobile phone'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -269,7 +264,6 @@ class Contact extends CommonDBTM{
          'field'              => 'fax',
          'name'               => __('Fax'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -278,7 +272,6 @@ class Contact extends CommonDBTM{
          'field'              => 'email',
          'name'               => _n('Email', 'Emails', 1),
          'datatype'           => 'email',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -294,7 +287,6 @@ class Contact extends CommonDBTM{
          'table'              => $this->getTable(),
          'field'              => 'postcode',
          'name'               => __('Postal code'),
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -303,7 +295,6 @@ class Contact extends CommonDBTM{
          'field'              => 'town',
          'name'               => __('City'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -312,7 +303,6 @@ class Contact extends CommonDBTM{
          'field'              => 'state',
          'name'               => _x('location', 'State'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -321,7 +311,6 @@ class Contact extends CommonDBTM{
          'field'              => 'country',
          'name'               => __('Country'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

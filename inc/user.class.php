@@ -2175,7 +2175,13 @@ JAVASCRIPT;
          echo "<tr class='tab_bg_1'><td><label for='textfield_sync_field$syncrand'>" . __('Synchronization field') . "</label></td><td>";
          if (self::canUpdate()
              && (!$extauth || empty($ID))) {
-                Html::autocompletionTextField($this, "sync_field", ['rand' => $syncrand]);
+            echo Html::input(
+               'sync_field',
+               [
+                  'value' => $this->fields['sync_field'],
+                  'id'    => "textfield_sync_field$syncrand",
+               ]
+            );
          } else {
             if (empty($this->fields['sync_field'])) {
                echo Dropdown::EMPTY_VALUE;
@@ -2190,12 +2196,24 @@ JAVASCRIPT;
 
       $surnamerand = mt_rand();
       echo "<tr class='tab_bg_1'><td><label for='textfield_realname$surnamerand'>" . __('Surname') . "</label></td><td>";
-      Html::autocompletionTextField($this, "realname", ['rand' => $surnamerand]);
+      echo Html::input(
+         'realname',
+         [
+            'value' => $this->fields['realname'],
+            'id'    => "textfield_realname$surnamerand",
+         ]
+      );
       echo "</td></tr>";
 
       $firstnamerand = mt_rand();
       echo "<tr class='tab_bg_1'><td><label for='textfield_firstname$firstnamerand'>" . __('First name') . "</label></td><td>";
-      Html::autocompletionTextField($this, "firstname", ['rand' => $firstnamerand]);
+      echo Html::input(
+         'firstname',
+         [
+            'value' => $this->fields['firstname'],
+            'id'    => "textfield_firstname$firstnamerand",
+         ]
+      );
       echo "</td></tr>";
 
       //do some rights verification
@@ -2287,7 +2305,13 @@ JAVASCRIPT;
       $phonerand = mt_rand();
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='textfield_phone$phonerand'>" .  Phone::getTypeName(1) . "</label></td><td>";
-      Html::autocompletionTextField($this, "phone", ['rand' => $phonerand]);
+      echo Html::input(
+         'phone',
+         [
+            'value' => $this->fields['phone'],
+            'id'    => "textfield_phone$phonerand",
+         ]
+      );
       echo "</td>";
       //Authentications information : auth method used and server used
       //don't display is creation of a new user'
@@ -2321,7 +2345,13 @@ JAVASCRIPT;
       $mobilerand = mt_rand();
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='textfield_mobile$mobilerand'>" . __('Mobile phone') . "</label></td><td>";
-      Html::autocompletionTextField($this, "mobile", ['rand' => $mobilerand]);
+      echo Html::input(
+         'mobile',
+         [
+            'value' => $this->fields['mobile'],
+            'id'    => "textfield_mobile$mobilerand",
+         ]
+      );
       echo "</td>";
       $catrand = mt_rand();
       echo "<td><label for='dropdown_usercategories_id$catrand'>" . _n('Category', 'Categories', 1) . "</label></td><td>";
@@ -2331,7 +2361,13 @@ JAVASCRIPT;
       $phone2rand = mt_rand();
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='textfield_phone2$phone2rand'>" .  __('Phone 2') . "</label></td><td>";
-      Html::autocompletionTextField($this, "phone2", ['rand' => $phone2rand]);
+      echo Html::input(
+         'phone2',
+         [
+            'value' => $this->fields['phone2'],
+            'id'    => "textfield_phone2$phone2rand",
+         ]
+      );
       echo "</td>";
       echo "<td rowspan='4' class='middle'><label for='comment'>" . __('Comments') . "</label></td>";
       echo "<td class='center middle' rowspan='4'>";
@@ -2340,7 +2376,13 @@ JAVASCRIPT;
 
       $admnumrand = mt_rand();
       echo "<tr class='tab_bg_1'><td><label for='textfield_registration_number$admnumrand'>" . __('Administrative number') . "</label></td><td>";
-      Html::autocompletionTextField($this, "registration_number", ['rand' => $admnumrand]);
+      echo Html::input(
+         'registration_number',
+         [
+            'value' => $this->fields['registration_number'],
+            'id'    => "textfield_registration_number$admnumrand",
+         ]
+      );
       echo "</td></tr>";
 
       $titlerand = mt_rand();
@@ -2533,10 +2575,6 @@ JAVASCRIPT;
                        || (($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED)
                            && !empty($this->fields["password"])));
 
-         // No autocopletion :
-         $save_autocompletion                 = $CFG_GLPI["use_ajax_autocompletion"];
-         $CFG_GLPI["use_ajax_autocompletion"] = false;
-
          echo "<div class='center'>";
          echo "<form method='post' name='user_manager' enctype='multipart/form-data' action='".$target."' autocomplete='off'>";
          echo "<table class='tab_cadre_fixe'>";
@@ -2554,7 +2592,13 @@ JAVASCRIPT;
 
             echo $this->fields["realname"];
          } else {
-            Html::autocompletionTextField($this, "realname", ['rand' => $surnamerand]);
+            echo Html::input(
+               'realname',
+               [
+                  'value' => $this->fields['realname'],
+                  'id'    => "textfield_realname$surnamerand",
+               ]
+            );
          }
          echo "</td>";
 
@@ -2581,7 +2625,13 @@ JAVASCRIPT;
 
             echo $this->fields["firstname"];
          } else {
-            Html::autocompletionTextField($this, "firstname", ['rand' => $firstnamerand]);
+            echo Html::input(
+               'firstname',
+               [
+                  'value' => $this->fields['firstname'],
+                  'id'    => "textfield_firstname$firstnamerand",
+               ]
+            );
          }
          echo "</td></tr>";
 
@@ -2688,7 +2738,13 @@ JAVASCRIPT;
              && isset($authtype['phone_field']) && !empty($authtype['phone_field'])) {
             echo $this->fields["phone"];
          } else {
-            Html::autocompletionTextField($this, "phone", ['rand' => $phonerand]);
+            echo Html::input(
+               'phone',
+               [
+                  'value' => $this->fields['phone'],
+                  'id'    => "textfield_phone$phonerand",
+               ]
+            );
          }
          echo "</td>";
          echo "<td class='top'>" . _n('Email', 'Emails', Session::getPluralNumber());
@@ -2705,7 +2761,13 @@ JAVASCRIPT;
              && isset($authtype['mobile_field']) && !empty($authtype['mobile_field'])) {
             echo $this->fields["mobile"];
          } else {
-            Html::autocompletionTextField($this, "mobile", ['rand' => $mobilerand]);
+            echo Html::input(
+               'mobile',
+               [
+                  'value' => $this->fields['mobile'],
+                  'id'    => "textfield_mobile$mobilerand",
+               ]
+            );
          }
          echo "</td>";
 
@@ -2733,7 +2795,13 @@ JAVASCRIPT;
              && isset($authtype['phone2_field']) && !empty($authtype['phone2_field'])) {
             echo $this->fields["phone2"];
          } else {
-            Html::autocompletionTextField($this, "phone2", ['rand' => $phone2rand]);
+            echo Html::input(
+               'phone2',
+               [
+                  'value' => $this->fields['phone2'],
+                  'id'    => "textfield_phone2$phone2rand",
+               ]
+            );
          }
          echo "</td>";
 
@@ -2756,7 +2824,13 @@ JAVASCRIPT;
              && isset($authtype['registration_number_field']) && !empty($authtype['registration_number_field'])) {
             echo $this->fields["registration_number"];
          } else {
-            Html::autocompletionTextField($this, "registration_number", ['rand' => $admnumrand]);
+            echo Html::input(
+               'registration_number',
+               [
+                  'value' => $this->fields['registration_number'],
+                  'id'    => "textfield_registration_number$admnumrand",
+               ]
+            );
          }
          echo "</td><td colspan='2'></td></tr>";
 
@@ -2840,7 +2914,6 @@ JAVASCRIPT;
          echo "</table>";
          Html::closeForm();
          echo "</div>";
-         $CFG_GLPI["use_ajax_autocompletion"] = $save_autocompletion;
          return true;
       }
       return false;
@@ -3065,7 +3138,6 @@ JAVASCRIPT;
          'field'              => 'realname',
          'name'               => __('Last name'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -3074,7 +3146,6 @@ JAVASCRIPT;
          'field'              => 'firstname',
          'name'               => __('First name'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -3107,7 +3178,6 @@ JAVASCRIPT;
          'name'               => __('Synchronization field'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
@@ -3126,7 +3196,6 @@ JAVASCRIPT;
          'field'              => 'phone',
          'name'               => Phone::getTypeName(1),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -3135,7 +3204,6 @@ JAVASCRIPT;
          'field'              => 'phone2',
          'name'               => __('Phone 2'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -3144,7 +3212,6 @@ JAVASCRIPT;
          'field'              => 'mobile',
          'name'               => __('Mobile phone'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -3283,7 +3350,6 @@ JAVASCRIPT;
          'field'              => 'registration_number',
          'name'               => __('Administrative number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -5683,7 +5749,13 @@ JAVASCRIPT;
       $surnamerand = mt_rand();
       echo "<td><label for='textfield_realname$surnamerand'>" . __('Surname') . "</label></td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "realname", ['rand' => $surnamerand]);
+      echo Html::input(
+         'realname',
+         [
+            'value' => $this->fields['realname'],
+            'id'    => "textfield_realname$surnamerand",
+         ]
+      );
       echo "</td>";
 
       echo "<td rowspan='3'>" . __('Picture') . "</td>";
@@ -5697,7 +5769,13 @@ JAVASCRIPT;
 
       $firstnamerand = mt_rand();
       echo "<tr class='tab_bg_1'><td><label for='textfield_firstname$firstnamerand'>" . __('First name') . "</label></td><td>";
-      Html::autocompletionTextField($this, "firstname", ['rand' => $firstnamerand]);
+      echo Html::input(
+         'firstname',
+         [
+            'value' => $this->fields['firstname'],
+            'id'    => "textfield_firstname$firstnamerand",
+         ]
+      );
       echo "</td></tr>";
 
       echo "<tr><td colspan='2'>";

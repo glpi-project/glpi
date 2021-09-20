@@ -139,7 +139,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>" . __('Subject') . "</td>";
       echo "<td colspan='3'>";
-      Html::autocompletionTextField($this, 'subject', ['size' => 100]);
+      echo Html::input('subject', ['value' => $this->fields['subject'], 'size' => 100]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>";
@@ -307,7 +307,6 @@ class NotificationTemplateTranslation extends CommonDBChild {
          'name'               => __('Subject'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

@@ -81,7 +81,6 @@ class Unmanaged extends CommonDBTM {
          'table'        => $this->getTable(),
          'field'        => 'serial',
          'name'         => __('Serial Number'),
-         'autocomplete' => true,
       ];
 
       $tab[] = [
@@ -89,7 +88,6 @@ class Unmanaged extends CommonDBTM {
          'table'        => $this->getTable(),
          'field'        => 'otherserial',
          'name'         => __('Inventory number'),
-         'autocomplete' => true,
       ];
 
       $tab[] = [
@@ -97,7 +95,6 @@ class Unmanaged extends CommonDBTM {
          'table'        => $this->getTable(),
          'field'        => 'contact',
          'name'         => Contact::getTypeName(1),
-         'autocomplete' => true,
       ];
 
       $tab[] = [
@@ -163,7 +160,6 @@ class Unmanaged extends CommonDBTM {
          'table'        => $this->getTable(),
          'field'        => 'ip',
          'name'         => __('IP'),
-         'autocomplete' => true,
       ];
 
       return $tab;

@@ -386,9 +386,7 @@ class Config extends CommonDBTM {
                                             'max'   => 200,
                                             'rand'  => $rand]);
       echo "</td>";
-      echo "<td><label for='dropdown_use_ajax_autocompletion$rand'>" . __('Autocompletion of text fields') . "</label></td><td>";
-      Dropdown::showYesNo("use_ajax_autocompletion", $CFG_GLPI["use_ajax_autocompletion"], -1, ['rand' => $rand]);
-      echo "</td>";
+      echo "<td colspan='2'></td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";

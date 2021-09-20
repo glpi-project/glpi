@@ -54,6 +54,9 @@ $migration->displayMessage('Add tinymce toolbar configuration / user preference'
 Config::setConfigurationValues('core', ['richtext_layout' => 'inline']);
 $migration->addField('glpi_users', 'richtext_layout', 'char(20) DEFAULT NULL', ['after' => 'savedsearches_pinned']);
 
-$migration->displayMessage('drop content layout configuration / user preference');
+$migration->displayMessage('Drop content layout configuration / user preference');
 $migration->dropField('glpi_users', 'layout');
 Config::deleteConfigurationValues('core', ['layout']);
+
+$migration->displayMessage('Drop autocompletion configuration');
+Config::deleteConfigurationValues('core', ['use_ajax_autocompletion']);

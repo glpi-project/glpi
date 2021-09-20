@@ -77,7 +77,13 @@ class DCRoom extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='textfield_name$rand'>".__('Name')."</label></td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name", ['rand' => $rand]);
+      echo Html::input(
+         'name',
+         [
+            'value' => $this->fields['name'],
+            'id'    => "textfield_name$rand",
+         ]
+      );
       echo "</td>";
 
       echo "<td><label for='dropdown_locations_id$rand'>".Location::getTypeName(1)."</label></td>";
@@ -236,7 +242,6 @@ class DCRoom extends CommonDBTM {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false, // implicit key==1
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

@@ -75,12 +75,11 @@ class Database extends CommonDBChild {
 
       echo "<td><label for='textfield_name$rand'>".__('Name') . "</label></td>";
       echo "<td>";
-      Html::autocompletionTextField(
-         $this,
+      echo Html::input(
          'name',
          [
-            'value'     => $this->fields['name'],
-            'rand'      => $rand
+            'value' => $this->fields['name'],
+            'id'    => "textfield_name$rand",
          ]
       );
       echo "</td>";
@@ -153,7 +152,6 @@ class Database extends CommonDBChild {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -191,7 +189,6 @@ class Database extends CommonDBChild {
          'datatype'           => 'number',
          'width'              => 1000,
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
