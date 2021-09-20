@@ -4049,7 +4049,7 @@ JAVASCRIPT
       }
 
       // Print it
-      echo "<div><table class='tab_cadre_pager'>";
+      echo "<div><table class='table align-middle'>";
       echo "<tr>";
 
       if (strpos($target, '?') == false) {
@@ -4060,13 +4060,13 @@ JAVASCRIPT
       // Back and fast backward button
       if (!$start == 0) {
          echo "<th class='left'>";
-         echo "<a href='$fulltarget&amp;start=0'>";
-         echo "
-               <i class='fa fa-step-backward' title=\"".__s('Start')."\"></i>";
-         echo "</a></th>";
-         echo "<th class='left'>";
-         echo "<a href='$fulltarget&amp;start=$back'>";
-         echo "<i class='fa fa-chevron-left' title=\"".__s('Previous')."\"></i>";
+         echo "<a href='$fulltarget&amp;start=0' class='btn btn-sm btn-ghost-secondary me-2'
+                  title=\"".__s('Start')."\" data-bs-toggle='tooltip' data-bs-placement='top'>";
+         echo "<i class='fa fa-step-backward'></i>";
+         echo "</a>";
+         echo "<a href='$fulltarget&amp;start=$back' class='btn btn-sm btn-ghost-secondary me-2'
+                  title=\"".__s('Previous')."\" data-bs-toggle='tooltip' data-bs-placement='top'>";
+         echo "<i class='fa fa-chevron-left'></i>";
          echo "</a></th>";
       }
 
@@ -4113,22 +4113,23 @@ JAVASCRIPT
          echo "</td>";
       }
 
-      echo "<td width='20%' class='tab_bg_2 b'>";
+      echo "<td width='20%' class='b'>";
       //TRANS: %1$d, %2$d, %3$d are page numbers
       printf(__('From %1$d to %2$d of %3$d'), $current_start, $current_end, $numrows);
-      echo "</td>\n";
+      echo "</td>";
 
       // Forward and fast forward button
       if ($forward<$numrows) {
          echo "<th class='right'>";
-         echo "<a href='$fulltarget&amp;start=$forward'>
-               <i class='fa fa-chevron-right' title=\"".__s('Next')."\">";
-         echo "</a></th>\n";
-
-         echo "<th class='right'>";
-         echo "<a href='$fulltarget&amp;start=$end'>";
-         echo "<i class='fa fa-step-forward' title=\"".__s('End')."\"></i>";
-         echo "</a></th>\n";
+         echo "<a href='$fulltarget&amp;start=$forward' class='btn btn-sm btn-ghost-secondary'
+                  title=\"".__s('Next')."\" data-bs-toggle='tooltip' data-bs-placement='top'>
+               <i class='fa fa-chevron-right'></i>";
+         echo "</a>";
+         echo "<a href='$fulltarget&amp;start=$end' class='btn btn-sm btn-ghost-secondary'
+                  title=\"".__s('End')."\" data-bs-toggle='tooltip' data-bs-placement='top'>";
+         echo "<i class='fa fa-step-forward'></i>";
+         echo "</a>";
+         echo "</th>";
       }
       // End pager
       echo "</tr></table></div>";
