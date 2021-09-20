@@ -74,7 +74,6 @@ let config = {
                path.resolve(__dirname, 'node_modules/codemirror'),
                path.resolve(__dirname, 'node_modules/cystoscape'),
                path.resolve(__dirname, 'node_modules/cytoscape-context-menus'),
-               path.resolve(__dirname, 'node_modules/gridstack'),
                path.resolve(__dirname, 'node_modules/jquery-migrate'),
                path.resolve(__dirname, 'node_modules/jstree'),
                path.resolve(__dirname, 'node_modules/photoswipe'),

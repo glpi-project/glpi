@@ -409,8 +409,8 @@ class Rack extends CommonDBTM {
          $left  = $i * $w_prct;
          $width = ($i+1) * $w_prct;
          echo "
-         .grid-stack > .grid-stack-item[data-gs-x='$i'] { left: $left%;}
-         .grid-stack > .grid-stack-item[data-gs-width='".($i+1)."'] {
+         .grid-stack > .grid-stack-item[gs-x='$i'] { left: $left%;}
+         .grid-stack > .grid-stack-item[gs-w='".($i+1)."'] {
             min-width: $width%;
             width: $width%;
          }";
@@ -455,12 +455,12 @@ class Rack extends CommonDBTM {
 
       // add a locked element to bottom to display a full grid
       echo "<div class='grid-stack-item lock-bottom'
-                 data-gs-no-resize='true'
-                 data-gs-no-move='true'
-                 data-gs-height='1'
-                 data-gs-width='$cols'
-                 data-gs-x='0'
-                 data-gs-y='$rows'></div>";
+                 gs-no-resize='true'
+                 gs-no-move='true'
+                 gs-h='1'
+                 gs-w='$cols'
+                 gs-x='0'
+                 gs-y='$rows'></div>";
 
       echo "</div>"; //.grid-stack
       echo $blueprint;
@@ -492,35 +492,17 @@ class Rack extends CommonDBTM {
                $('#viewgraph').toggleClass('clear_grid');
             })
 
-         $('.grid-room .grid-stack').gridstack({
+         GridStack.init({
             column: $cols,
             maxRow: ($rows + 1),
             cellHeight: 39,
-            verticalMargin: 0,
+            margin: 0,
             float: true,
             disableOneColumnMode: true,
             animate: true,
             removeTimeout: 100,
             disableResize: true,
-            draggable: {
-              handle: '.grid-stack-item-content',
-              appendTo: 'body',
-              containment: '.grid-stack',
-              cursor: 'move',
-              scroll: true,
-            }
          });
-
-         var lockAll = function() {
-            // lock all item (prevent pushing down elements)
-            $('.grid-stack').each(function (idx, gsEl) {
-               $(gsEl).data('gridstack').locked('.grid-stack-item', true);
-            });
-
-            // add containment to items, this avoid bad collisions on the start of the grid
-            $('.grid-stack .grid-stack-item').draggable('option', 'containment', 'parent');
-         };
-         lockAll(); // call it immediatly
 
          // add indexes
          for (var x = 1; x <= $cols; x++) {
@@ -553,15 +535,18 @@ class Rack extends CommonDBTM {
                      id: item.id,
                      dcrooms_id: $room_id,
                      action: 'move_rack',
-                     x: item.x + 1,
-                     y: item.y + 1,
+                     x: $(item.el).attr('gs-x') + 1,
+                     y: $(item.el).attr('gs-y') + 1,
                   }, function(answer) {
                      var answer = jQuery.parseJSON(answer);
 
                      // revert to old position
                      if (!answer.status) {
                         dirty = true;
-                        grid.move(item.el, x_before_drag, y_before_drag);
+                        grid.update(item.el, {
+                           'x': x_before_drag,
+                           'y': y_before_drag
+                        });
                         dirty = false;
                         displayAjaxMessageAfterRedirect();
                      }
@@ -816,11 +801,12 @@ JAVASCRIPT;
       $bgcolor = $rack->getField('bgcolor');
       $fgcolor = Html::getInvertedColor($bgcolor);
       return "<div class='grid-stack-item room_orientation_".$cell['room_orientation']."'
-                  data-gs-id='".$cell['id']."'
-                  data-gs-height='1'
-                  data-gs-width='1'
-                  data-gs-x='".$cell['_x']."'
-                  data-gs-y='".$cell['_y']."'>
+                  gs-id='".$cell['id']."'
+                  gs-locked='true'
+                  gs-h='1'
+                  gs-w='1'
+                  gs-x='".$cell['_x']."'
+                  gs-y='".$cell['_y']."'>
             <div class='grid-stack-item-content'
                   style='background-color: $bgcolor;
                         color: $fgcolor;'>
