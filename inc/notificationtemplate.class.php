@@ -606,7 +606,6 @@ class NotificationTemplate extends CommonDBTM {
    }
 
    function prepareInputForClone($input) {
-      parent::prepareInputForClone($input);
       $input['name'] = $input['name'] . ' (clone)';
       return $input;
    }
