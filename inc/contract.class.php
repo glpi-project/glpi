@@ -1305,6 +1305,7 @@ class Contract extends CommonDBTM {
     *    - display       : boolean / display or return string (default true)
     *    - expired       : boolean / display expired contract (default false)
     *    - toadd         : array / array of specific values to add at the beginning
+    *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
     *
     * @return string|integer HTML output, or random part of dropdown ID.
    **/
@@ -1326,6 +1327,7 @@ class Contract extends CommonDBTM {
          'toadd'          => [],
          'class'          => "form-select",
          'width'          => "",
+         'hide_if_no_elements' => false,
       ];
 
       if (is_array($options) && count($options)) {
@@ -1376,6 +1378,10 @@ class Contract extends CommonDBTM {
             'glpi_contracts.begin_date DESC'
          ]
       ]);
+
+      if ($p['hide_if_no_elements'] && $iterator->count() === 0) {
+         return;
+      }
 
       $group  = '';
       $prev   = -1;

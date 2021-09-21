@@ -999,6 +999,7 @@ class Auth extends CommonGLPI {
     * - value : Selected value (default 0)
     * - display : If true, the dropdown is displayed instead of returned (default true)
     * - display_emptychoice : If true, an empty option is added (default true)
+    * - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
     *
     * @return void|string (Based on 'display' option)
     */
@@ -1010,6 +1011,7 @@ class Auth extends CommonGLPI {
          'value'               => 0,
          'display'             => true,
          'display_emptychoice' => true,
+         'hide_if_no_elements' => false,
       ];
 
       if (is_array($options) && count($options)) {

@@ -3986,6 +3986,7 @@ JAVASCRIPT;
     *    - url              : url of the ajax php code which should return the json data to show in
     *                         the dropdown (default /ajax/getDropdownUsers.php)
     *    - inactive_deleted : retreive also inactive or deleted users
+    *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
     *
     * @return integer|string Random value if displayed, string otherwise
     */
@@ -4018,6 +4019,7 @@ JAVASCRIPT;
          'inactive_deleted'    => 0,
          'with_no_right'       => 0,
          'toadd'               => [],
+         'hide_if_no_elements' => false,
       ];
 
       if (is_array($options) && count($options)) {
@@ -4096,6 +4098,13 @@ JAVASCRIPT;
             'entity_restrict' => $entity_restrict,
          ]),
       ];
+
+      if ($p['hide_if_no_elements']) {
+         $result = Dropdown::getDropdownUsers(['display_emptychoice' => false] + $param, false);
+         if ($result['count'] === 0) {
+            return;
+         }
+      }
 
       $output = Html::jsAjaxDropdown($p['name'], $field_id,
                                       $p['url'],

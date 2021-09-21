@@ -3787,6 +3787,7 @@ class CommonDBTM extends CommonGLPI {
     *                   (need value_fieldname, to_update, url (see Ajax::updateItemOnSelectEvent for information)
     *                   and may have moreparams)
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
+    *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
     *
     * @return string|void display the dropdown
    **/
