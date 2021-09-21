@@ -4100,7 +4100,10 @@ JAVASCRIPT;
       ];
 
       if ($p['hide_if_no_elements']) {
-         $result = Dropdown::getDropdownUsers(['display_emptychoice' => false] + $param, false);
+         $result = Dropdown::getDropdownUsers(
+            ['display_emptychoice' => false, 'page' => 1, 'page_limit' => 1] + $param,
+            false
+         );
          if ($result['count'] === 0) {
             return;
          }

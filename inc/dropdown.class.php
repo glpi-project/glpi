@@ -192,7 +192,10 @@ class Dropdown {
       ];
 
       if ($params['hide_if_no_elements']) {
-         $result = self::getDropdownValue(['display_emptychoice' => false] + $p, false);
+         $result = self::getDropdownValue(
+            ['display_emptychoice' => false, 'page' => 1, 'page_limit' => 1] + $p,
+            false
+         );
          if ($result['count'] === 0) {
             return;
          }
