@@ -208,3 +208,18 @@
       }
    }
 }
+
+@include media-breakpoint-down(md) {
+   .user-menu {
+      .dropstart {
+         .dropdown-menu {
+            position: static;
+            border-radius: unset;
+            box-shadow: unset;
+            background-color: rgba(0, 0, 0, 0.02);
+            border-style: inset;
+            border-width: 2px 0;
+         }
+      }
+   }
+}

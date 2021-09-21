@@ -1,3 +1,4 @@
+{% set rand = random() %}
 
 <div class="dropdown dropstart">
    <button class="dropdown-item dropdown-toggle" type="button" data-bs-toggle="dropdown"
@@ -5,7 +6,7 @@
       <i class="fas fa-user-check"></i>
       {{ (session('glpiactiveprofile')['name'] ?? '')|verbatim_value }}
    </button>
-   <div class="dropdown-menu">
+   <div class="dropdown-menu" data-bs-popper="none">
       <span class="dropdown-header">{{ __('Profiles') }}</span>
       {% for profile_id, profile in session('glpiprofiles') %}
       <a class="dropdown-item {{ profile_id == (session('glpiactiveprofile')['id'] ?? 0) ? 'active' : '' }}"
@@ -16,19 +17,19 @@
    </div>
 </div>
 
-<a href="#" class="dropdown-item show_entity_modal">
-   <i class="fa-fw fas fa-layer-group"></i>
-   {{ session('glpiactive_entity_name')|verbatim_value|u.truncate(35, '...') }}
-</a>
+<div class="dropdown dropstart">
+   <a href="#" class="dropdown-item dropdown-toggle show_entity_modal" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+      <i class="fa-fw fas fa-layer-group"></i>
+      {{ session('glpiactive_entity_name')|verbatim_value|u.truncate(35, '...') }}
+   </a>
+   <div class="dropdown-menu p-3" data-bs-popper="none">
+      <h3>{{ __('Select the desired entity') }}</h3>
+      <div id="entity_list_{{ rand }}"></div>
+   </div>
+</div>
 
 <script type="text/javascript">
 $(function() {
-   $('.show_entity_modal').click(function() {
-      glpi_ajax_dialog({
-         url: '{{ path('/ajax/entitytree.php') }}',
-         title: __('Select the desired entity'),
-         id: 'entity_modal',
-      });
-   });
+   $("#entity_list_{{ rand }}").load('{{ path("/ajax/entitytree.php") }}')
 });
 </script>

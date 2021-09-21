@@ -268,23 +268,6 @@
       top: 105px !important;
    }
 
-   .entity_tree.jstree {
-     .jstree-node:not(.jstree-leaf) {
-        position: relative;
-
-        > a > i:last-child {
-           content: ' ';
-           height: 10px;
-           width: 10px;
-           background: url("../pics/entity_all.png") no-repeat;
-           position: absolute;
-           top: 8px;
-           margin-left: 6px;
-           cursor: pointer;
-        }
-     }
-   }
-
    #kb_browse {
      display: flex;
      align-items: stretch;
