@@ -63,7 +63,9 @@
                </div>
 
                <div class="search-footer card-footer">
-                  {{ include('components/search/pager.html.twig', {
+                  {{ include('components/pager.html.twig', {
+                     'href': target ~ '?',
+                     'additional_params': 'sort=' ~ sort ~ '&order=' ~ order,
                      'count': count
                   }) }}
                </div>

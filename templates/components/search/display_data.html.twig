@@ -39,7 +39,7 @@
       {% if count > 0 %}
          {% if data['display_type'] != constant('Search::GLOBAL_SEARCH') and data['search']['as_map'] == 0 %}
             <div class="card-footer search-footer">
-               {{ include('components/search/pager.html.twig') }}
+               {{ include('components/pager.html.twig') }}
             </div>
          {% endif %}
       {% elseif data['search']['as_map'] == 1 %}
