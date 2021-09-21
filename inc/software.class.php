@@ -609,6 +609,20 @@ class Software extends CommonDBTM {
       ];
 
       $tab[] = [
+         'id'                 => '6',
+         'table'              => 'glpi_softwareversions',
+         'field'              => 'arch',
+         'name'               => _n('Architecture', 'Architectures', 1),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'displaywith'        => ['softwares_id'],
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ],
+         'datatype'           => 'dropdown'
+      ];
+
+      $tab[] = [
          'id'                 => '31',
          'table'              => 'glpi_states',
          'field'              => 'completename',
