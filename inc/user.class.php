@@ -3918,11 +3918,12 @@ JAVASCRIPT;
             );
             $WHERE[] = [
                'OR' => [
-                  'glpi_users.name'       => ['LIKE', $txt_search],
-                  'glpi_users.realname'   => ['LIKE', $txt_search],
-                  'glpi_users.firstname'  => ['LIKE', $txt_search],
-                  'glpi_users.phone'      => ['LIKE', $txt_search],
-                  'glpi_useremails.email' => ['LIKE', $txt_search],
+                  'glpi_users.name'                => ['LIKE', $txt_search],
+                  'glpi_users.realname'            => ['LIKE', $txt_search],
+                  'glpi_users.firstname'           => ['LIKE', $txt_search],
+                  'glpi_users.phone'               => ['LIKE', $txt_search],
+                  'glpi_users.registration_number' => ['LIKE', $txt_search],
+                  'glpi_useremails.email'          => ['LIKE', $txt_search],
                   $concat
                ]
             ];
