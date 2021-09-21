@@ -847,7 +847,7 @@ class RuleTicket extends DbTestCase {
       $rule_action_em = new RuleAction();
       $rule_action_id = $rule_action_em->add($act_input = [
          'rules_id'    => $rule_ticket_id,
-         'action_type' => 'assign',
+         'action_type' => 'append',
          'field'       => 'task_template',
          'value'       => $task_template_id,
       ]);
@@ -899,7 +899,45 @@ class RuleTicket extends DbTestCase {
       $this->array($ticket_tasks)->hasSize(1);
       $task_data = array_pop($ticket_tasks);
       $this->array($task_data)->hasKey('content');
-      $this->string($task_data['content'])->isEqualTo(Sanitizer::sanitize('<p>test content</p>'));
+      $this->string($task_data['content'])->isEqualTo(
+         Sanitizer::sanitize('<p>test content</p>')
+      );
+
+      // Add a second action to the rule (test multiple creation)
+      $this->createItem('TaskTemplate', [
+         'name'    => "template 2",
+         'content' => '<p>test content 2</p>',
+      ]);
+
+      $this->createItem('RuleAction', [
+         'rules_id'    => $rule_ticket_id,
+         'action_type' => 'append',
+         'field'       => 'task_template',
+         'value'       => getItemByTypeName("TaskTemplate", "template 2", true),
+      ]);
+
+      $this->createItem('Ticket', [
+         'name'     => 'test ticket with two tasks',
+         'content'  => 'test',
+         'priority' => 5,
+      ]);
+
+      $ticket_tasks = $ticket_task_em->find([
+         'tickets_id' => getItemByTypeName("Ticket", 'test ticket with two tasks', true),
+      ]);
+      $this->array($ticket_tasks)->hasSize(2);
+
+      $task_data = array_pop($ticket_tasks);
+      $this->array($task_data)->hasKey('content');
+      $this->string($task_data['content'])->isEqualTo(
+         Sanitizer::sanitize('<p>test content 2</p>')
+      );
+
+      $task_data = array_pop($ticket_tasks);
+      $this->array($task_data)->hasKey('content');
+      $this->string($task_data['content'])->isEqualTo(
+         Sanitizer::sanitize('<p>test content</p>')
+      );
    }
 
    public function testFollowupTemplateAssignFromRule() {
@@ -938,7 +976,7 @@ class RuleTicket extends DbTestCase {
       $rule_action = new RuleAction();
       $rule_action_id = $rule_action->add([
          'rules_id'    => $rule_ticket_id,
-         'action_type' => 'assign',
+         'action_type' => 'append',
          'field'       => 'itilfollowup_template',
          'value'       => $followup_template_id,
       ]);
@@ -962,7 +1000,9 @@ class RuleTicket extends DbTestCase {
       $this->array($ticket_followups)->hasSize(1);
       $ticket_followups_data = array_pop($ticket_followups);
       $this->array($ticket_followups_data)->hasKey('content');
-      $this->string($ticket_followups_data['content'])->isEqualTo(Sanitizer::sanitize('<p>test testFollowupTemplateAssignFromRule</p>'));
+      $this->string($ticket_followups_data['content'])->isEqualTo(
+         Sanitizer::sanitize('<p>test testFollowupTemplateAssignFromRule</p>')
+      );
 
       // Test on update
       $ticket = new \Ticket();
@@ -995,7 +1035,47 @@ class RuleTicket extends DbTestCase {
       $this->array($ticket_followups)->hasSize(1);
       $ticket_followups_data = array_pop($ticket_followups);
       $this->array($ticket_followups_data)->hasKey('content');
-      $this->string($ticket_followups_data['content'])->isEqualTo(Sanitizer::sanitize('<p>test testFollowupTemplateAssignFromRule</p>'));
+      $this->string($ticket_followups_data['content'])->isEqualTo(
+         Sanitizer::sanitize('<p>test testFollowupTemplateAssignFromRule</p>')
+      );
+
+      // Add a second action to the rule (test multiple creation)
+      $this->createItem('ITILFollowupTemplate', [
+         'name'    => "template 2",
+         'content' => '<p>test testFollowupTemplateAssignFromRule 2</p>',
+      ]);
+
+      $this->createItem('RuleAction', [
+         'rules_id'    => $rule_ticket_id,
+         'action_type' => 'append',
+         'field'       => 'itilfollowup_template',
+         'value'       => getItemByTypeName("ITILFollowupTemplate", "template 2", true),
+      ]);
+
+      $this->createItem('Ticket', [
+         'name'     => 'test ticket with two followups',
+         'content'  => 'test',
+         'priority' => 4,
+      ]);
+
+      $ticket_followups = new ITILFollowup();
+      $ticket_followups = $ticket_followups->find([
+         'items_id' => getItemByTypeName("Ticket", 'test ticket with two followups', true),
+         'itemtype' => "Ticket",
+      ]);
+      $this->array($ticket_followups)->hasSize(2);
+
+      $ticket_followups_data = array_pop($ticket_followups);
+      $this->array($ticket_followups_data)->hasKey('content');
+      $this->string($ticket_followups_data['content'])->isEqualTo(
+         Sanitizer::sanitize('<p>test testFollowupTemplateAssignFromRule 2</p>')
+      );
+
+      $ticket_followups_data = array_pop($ticket_followups);
+      $this->array($ticket_followups_data)->hasKey('content');
+      $this->string($ticket_followups_data['content'])->isEqualTo(
+         Sanitizer::sanitize('<p>test testFollowupTemplateAssignFromRule</p>')
+      );
    }
 
    public function testGroupRequesterAssignFromUserGroupsAndRegexOnUpdateTicketContent() {

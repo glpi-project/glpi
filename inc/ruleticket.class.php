@@ -251,24 +251,6 @@ class RuleTicket extends Rule {
                      }
                   }
 
-                  if ($action->fields["field"] == 'task_template') {
-                     $template = new TaskTemplate();
-                     if ($template->getFromDB($action->fields["value"])) {
-                        // Store template id in '_tasktemplates_id' special
-                        // input so it can be handled in
-                        // CommonItilObject::handleTaskTemplateInput
-                        $output["_tasktemplates_id"][] = $template->getId();
-                     }
-                  } else if ($action->fields["field"] == 'itilfollowup_template') {
-                     $template = new ITILFollowupTemplate();
-                     if ($template->getFromDB($action->fields["value"])) {
-                        // Store template id in '_tasktemplates_id' special
-                        // input so it can be handled in
-                        // CommonItilObject::handleITILFollowupTemplateInput
-                        $output["_itilfollowuptemplates_id"][] = $template->getId();
-                     }
-                  }
-
                   // special case of appliance
                   if ($action->fields["field"] == "assign_appliance") {
                      if (!array_key_exists("items_id", $output) || $output['items_id'] == '0') {
@@ -876,12 +858,16 @@ class RuleTicket extends Rule {
       $actions['task_template']['name']                      = _n('Task template', 'Task templates', 1);
       $actions['task_template']['type']                      = 'dropdown';
       $actions['task_template']['table']                     = TaskTemplate::getTable();
-      $actions['task_template']['force_actions']             = ['assign'];
+      $actions['task_template']['force_actions']             = ['append'];
+      $actions['task_template']['permitseveral']             = ['append'];
+      $actions['task_template']['appendto']                  = '_tasktemplates_id';
 
       $actions['itilfollowup_template']['name']              = ITILFollowupTemplate::getTypeName(1);
       $actions['itilfollowup_template']['type']              = 'dropdown';
       $actions['itilfollowup_template']['table']             = ITILFollowupTemplate::getTable();
-      $actions['itilfollowup_template']['force_actions']     = ['assign'];
+      $actions['itilfollowup_template']['force_actions']     = ['append'];
+      $actions['itilfollowup_template']['permitseveral']     = ['append'];
+      $actions['itilfollowup_template']['appendto']          = '_itilfollowuptemplates_id';
 
       $actions['global_validation']['name']                  = _n('Validation', 'Validations', 1);
       $actions['global_validation']['type']                  = 'dropdown_validation_status';
