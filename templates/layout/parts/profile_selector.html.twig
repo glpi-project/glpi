@@ -22,7 +22,7 @@
       <i class="fa-fw fas fa-layer-group"></i>
       {{ session('glpiactive_entity_name')|verbatim_value|u.truncate(35, '...') }}
    </a>
-   <div class="dropdown-menu p-3" data-bs-popper="none">
+   <div class="dropdown-menu p-3">
       <h3>{{ __('Select the desired entity') }}</h3>
       <div id="entity_list_{{ rand }}"></div>
    </div>
