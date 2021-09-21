@@ -194,6 +194,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
       });
 
       $(ajax_container).on('click', '.pagination .page-link', (e) => {
+         e.preventDefault();
          this.onPageChange(e.target);
       });
 

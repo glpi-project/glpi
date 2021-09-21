@@ -4,7 +4,7 @@
    </div>
 {% else %}
 
-   {{ include('components/search/pager.html.twig', {count: filtered_number}) }}
+   {{ include('components/pager.html.twig', {count: filtered_number}) }}
    <div class="table-responsive">
    <table class="table table-hover">
       <thead>
@@ -20,7 +20,7 @@
                      <i class="fas fa-filter"></i>
                      <span class="d-none d-xl-block">{{ __('Filter') }}</span>
                   </button>
-                  <a href="{{ csv_url }}" class="btn btn-sm btn-icon btn-outline-secondary">
+                  <button href="{{ csv_url }}" class="btn btn-sm btn-icon btn-outline-secondary">
                      <i class="fas fa-file-download"></i>
                      <span class="d-none d-xl-block">{{ __('Export') }}</span>
                   </button>

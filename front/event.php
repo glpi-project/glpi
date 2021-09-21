@@ -38,14 +38,6 @@ Session::checkRight("logs", READ);
 
 Html::header(Event::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "Glpi\\Event");
 
-// Show last events
-if (isset($_GET["order"])) {
-   if (!isset($_GET["start"])) {
-      $_GET["start"] = 0;
-   }
-   Event::showList($_SERVER['PHP_SELF'], $_GET["order"], $_GET["sort"], $_GET["start"]);
-} else {
-   Event::showList($_SERVER['PHP_SELF']);
-}
+Event::showList($_SERVER['PHP_SELF'], $_GET['order'] ?? 'DESC', $_GET['sort']  ?? 'date', $_GET['start'] ?? 0);
 
 Html::footer();
