@@ -143,45 +143,34 @@ class Telemetry extends CommonGLPI {
    static public function grabWebserverInfos() {
       global $CFG_GLPI;
 
-      $headers = false;
-      $engine  = '';
-      $version = '';
+      $server = [
+         'engine'  => '',
+         'version' => '',
+      ];
 
-      // check if host is present (do no throw php warning in contrary of get_headers)
-      if (filter_var(gethostbyname(parse_url($CFG_GLPI['url_base'], PHP_URL_HOST)),
-          FILTER_VALIDATE_IP)) {
-
-          // Issue #3180 - disable SSL certificate validation (wildcard, self-signed)
-          stream_context_set_default([
-            'ssl' => [
-                'verify_peer' => false,
-                'verify_peer_name' => false,
-                ]
-            ]);
-
-         $headers = get_headers($CFG_GLPI['url_base']);
+      if (!filter_var(gethostbyname(parse_url($CFG_GLPI['url_base'], PHP_URL_HOST)), FILTER_VALIDATE_IP)) {
+         // Do not try to get headers if hostname cannot be resolved
+         return $server;
       }
 
-      if (is_array($headers)) {
-         //BEGIN EXTRACTING SERVER DETAILS
-         $pattern = '#^Server:*#i';
-         $matches = preg_grep($pattern, $headers);
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $CFG_GLPI['url_base']);
+      curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($ch, CURLOPT_HEADER, 1);
 
-         if (count($matches)) {
-            $infos = current($matches);
-            $pattern = '#Server: ([^ ]+)/([^ ]+)#i';
-            preg_match($pattern, $infos, $srv_infos);
-            if (count($srv_infos) == 3) {
-               $engine  = $srv_infos[1];
-               $version = $srv_infos[2];
-            }
+      // Issue #3180 - disable SSL certificate validation (wildcard, self-signed)
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+      if ($response = curl_exec($ch)) {
+         $headers = substr($response, 0, curl_getinfo($ch, CURLINFO_HEADER_SIZE));
+         $header_matches = [];
+         if (preg_match('/^Server: (?<engine>[^ ]+)\/(?<version>[^ ]+)/im', $headers, $header_matches)) {
+            $server['engine']  = $header_matches['engine'];
+            $server['version'] = $header_matches['version'];
          }
       }
-
-      $server = [
-         'engine'    => $engine,
-         'version'   => $version
-      ];
 
       return $server;
    }

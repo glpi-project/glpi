@@ -962,7 +962,10 @@ class Search {
              && isset($criterion['itemtype'])) {
             $itemtype = $criterion['itemtype'];
             $meta = true;
-            $searchopt = &self::getOptions($itemtype);
+            $meta_searchopt = &self::getOptions($itemtype);
+         } else {
+            // Not a meta, use the same search option everywhere
+            $meta_searchopt = $searchopt;
          }
 
          // common search
@@ -991,7 +994,7 @@ class Search {
             }
 
             if (isset($criterion['criteria']) && count($criterion['criteria'])) {
-               $sub_sql = self::constructCriteriaSQL($criterion['criteria'], $data, $searchopt, $is_having);
+               $sub_sql = self::constructCriteriaSQL($criterion['criteria'], $data, $meta_searchopt, $is_having);
                if (strlen($sub_sql)) {
                   if ($NOT) {
                      $sql .= "$LINK NOT($sub_sql)";
@@ -999,7 +1002,7 @@ class Search {
                      $sql .= "$LINK ($sub_sql)";
                   }
                }
-            } else if (isset($searchopt[$criterion['field']]["usehaving"])
+            } else if (isset($meta_searchopt[$criterion['field']]["usehaving"])
                        || ($meta && "AND NOT" === $criterion['link'])) {
                if (!$is_having) {
                   // the having part will be managed in a second pass
@@ -6350,7 +6353,7 @@ JAVASCRIPT;
                      }
                      $count_display++;
                      $page  = $linkitemtype::getFormURLWithID($data[$ID][$k]['id']);
-                     $name  = Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit);
+                     $name  = $data[$ID][$k]['name'];
                      if ($_SESSION["glpiis_ids_visible"] || empty($data[$ID][$k]['name'])) {
                         $name = sprintf(__('%1$s (%2$s)'), $name, $data[$ID][$k]['id']);
                      }
@@ -6521,8 +6524,7 @@ JAVASCRIPT;
                         $out .= self::LBBR;
                      }
                      $count_display++;
-                     $out .= Dropdown::getValueWithUnit(Dropdown::getYesNo($data[$ID][$k]['name']),
-                                                        $unit);
+                     $out .= Dropdown::getYesNo($data[$ID][$k]['name']);
                   }
                }
                return $out;
@@ -6606,9 +6608,9 @@ JAVASCRIPT;
                } else {
                   // Trans field exists
                   if (isset($data[$ID][$k]['trans']) && !empty($data[$ID][$k]['trans'])) {
-                     $out .=  Dropdown::getValueWithUnit($data[$ID][$k]['trans'], $unit);
+                     $out .= $data[$ID][$k]['trans'];
                   } else {
-                     $out .= Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit);
+                     $out .= $data[$ID][$k]['name'];
                   }
                }
             }
