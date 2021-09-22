@@ -6877,6 +6877,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'with_validations' => true,
          'expose_private' => false,
          'bypass_rights' => false,
+         'is_self_service' => false,
       ];
 
       if (is_array($options) && count($options)) {
@@ -6914,6 +6915,12 @@ abstract class CommonITILObject extends CommonDBTM {
          ];
       }
 
+      if ($params['is_self_service']) {
+         $restrict_fup = [
+               'is_private'   => 0
+         ];
+      }
+
       $restrict_fup['itemtype'] = static::getType();
       $restrict_fup['items_id'] = $this->getID();
 
@@ -6925,6 +6932,12 @@ abstract class CommonITILObject extends CommonDBTM {
                                     ? Session::getLoginUserID()
                                     : 0
             ]
+         ];
+      }
+
+      if ($params['is_self_service']) {
+         $restrict_task = [
+               'is_private'   => 0
          ];
       }
 

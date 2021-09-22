@@ -246,7 +246,9 @@ class NotificationTargetTicket extends DbTestCase {
 
       $basic_options = [
          'additionnaloption' => [
-            'usertype' => ''
+            'usertype' => '2',
+            'is_self_service' => false,
+            'show_private'    => true,
          ]
       ];
 
@@ -306,13 +308,15 @@ class NotificationTargetTicket extends DbTestCase {
 
       $basic_options = [
          'additionnaloption' => [
-            'usertype' => ''
+            'usertype' => '1',
+            'is_self_service' => true,
+            'show_private'    => false,
          ]
       ];
 
       $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
 
-      //get only public task / followup (because is post_only)
+      //get only public task / followup / Solution (because is post_only)
       $expected = [
          [
             "##timelineitems.type##"        => "TicketTask",
