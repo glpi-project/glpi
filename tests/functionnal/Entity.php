@@ -622,7 +622,6 @@ class Entity extends DbTestCase {
       //and fails to recover the configuration of the anonymization
       $this->setEntity($entity->getID(), true);
 
-
       $ticket = new Ticket();
       $tickets_id = $ticket->add($input = [
          'name'             => 'test',
