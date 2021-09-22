@@ -34,6 +34,7 @@ namespace tests\units;
 
 use DbTestCase;
 use Glpi\Toolbox\Sanitizer;
+use NotificationTarget;
 
 /* Test for inc/notificationtargetticket.class.php */
 
@@ -246,7 +247,7 @@ class NotificationTargetTicket extends DbTestCase {
 
       $basic_options = [
          'additionnaloption' => [
-            'usertype' => '2',
+            'usertype' => NotificationTarget::GLPI_USER,
             'is_self_service' => false,
             'show_private'    => true,
          ]
@@ -308,7 +309,7 @@ class NotificationTargetTicket extends DbTestCase {
 
       $basic_options = [
          'additionnaloption' => [
-            'usertype' => '1',
+            'usertype' => NotificationTarget::GLPI_USER,
             'is_self_service' => true,
             'show_private'    => false,
          ]

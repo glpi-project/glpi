@@ -616,6 +616,13 @@ class Entity extends DbTestCase {
 
       // Build test ticket
       $this->login('tech', 'tech');
+
+      //force set entity because $_SESSION['glpiactive_entity'] contains 0 without
+      //and break test from NotificationTargetCommonITILObject::getDataForObject()
+      //and fails to recover the configuration of the anonymization
+      $this->setEntity($entity->getID(), true);
+
+
       $ticket = new Ticket();
       $tickets_id = $ticket->add($input = [
          'name'             => 'test',
