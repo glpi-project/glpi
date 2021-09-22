@@ -200,7 +200,10 @@ class CacheManager {
       if ($context === self::CONTEXT_TRANSLATIONS || $context === self::CONTEXT_INSTALLER) {
          // 'translations' and 'installer' contexts are not supposed to be configured
          // and should always use a filesystem adapter.
-         return new FilesystemAdapter($context, 0, GLPI_CACHE_DIR);
+         // Append GLPI version to namespace to ensure that these caches are not containing data
+         // from a previous version.
+         $namespace = $this->normalizeNamespace($context . '-' . GLPI_VERSION);
+         return new FilesystemAdapter($namespace, 0, GLPI_CACHE_DIR);
       }
 
       $raw_config = $this->getRawConfig();
