@@ -1319,16 +1319,16 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $tmp['##followup.isprivate##']   = Dropdown::getYesNo($followup['is_private']);
 
             // Check if the author need to be anonymized
-            if (ITILFollowup::getById($followup['id'])->isFromSupportAgent()
-               && $is_self_service && $need_anonymize
+            $tmp['##followup.author##'] = getUserName($followup['users_id']);
+            if ($is_self_service && $need_anonymize
                && !empty($anon_name = User::getAnonymizedName(
                   $followup['users_id'],
                   $item->getField('entities_id')
                ))
             ) {
-               $tmp['##followup.author##'] = $anon_name;
-            } else {
-               $tmp['##followup.author##'] = getUserName($followup['users_id']);
+               if (ITILFollowup::getById($followup['id'])->isFromSupportAgent()) {
+                  $tmp['##followup.author##'] = $anon_name;
+               }
             }
 
             $tmp['##followup.requesttype##'] = '';
@@ -1551,17 +1551,19 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
             if ($timeline_data['type'] == ITILFollowup::getType()) {
                // Check if the author need to be anonymized
-               if (ITILFollowup::getById($timeline_data['item']['id'])->isFromSupportAgent()
-                  && $is_self_service && $need_anonymize
+
+               $tmptimelineitem['##timelineitems.author##'] = getUserName($timeline_data['item']['users_id']);
+               if ($is_self_service && $need_anonymize
                   && !empty($anon_name = User::getAnonymizedName(
-                     $timeline_data['item']['users_id'],
+                     $followup['users_id'],
                      $item->getField('entities_id')
                   ))
                ) {
-                  $tmptimelineitem['##timelineitems.author##'] = $anon_name;
-               } else {
-                  $tmptimelineitem['##timelineitems.author##'] = getUserName($timeline_data['item']['users_id']);
+                  if (ITILFollowup::getById($timeline_data['item']['id'])->isFromSupportAgent()) {
+                     $tmptimelineitem['##timelineitems.author##'] = $anon_name;
+                  }
                }
+
             } else {
                $tmptimelineitem['##timelineitems.author##'] = getUserName($timeline_data['item']['users_id']);
             }
