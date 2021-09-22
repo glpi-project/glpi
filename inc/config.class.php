@@ -1776,7 +1776,7 @@ class Config extends CommonDBTM {
 
       echo "<tr><th colspan='4'>" . __('Translation cache') . "</th></tr>";
       $adapter_class = strtolower(get_class($cache_manager->getCacheStorageAdapter(CacheManager::CONTEXT_TRANSLATIONS)));
-      $adapter = substr($adapter_class, strrpos($adapter_class, '\\')+1);
+      $adapter = preg_replace('/^.*\\\([a-z]+?)(?:adapter)?$/', '$1', $adapter_class);
       $msg = sprintf(__s('"%s" cache system is used'), $adapter);
       echo "<tr><td colspan='3'>" . $msg . "</td>
             <td class='icons_block'><i class='fa fa-check-circle ok' title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
@@ -2079,14 +2079,10 @@ class Config extends CommonDBTM {
                  'check'   => 'Sabre\\Uri\\Version' ],
                [ 'name'    => 'sabre/vobject',
                  'check'   => 'Sabre\\VObject\\Component' ],
-               [ 'name'    => 'laminas/laminas-cache',
-                 'check'   => 'Laminas\\Cache\\Module' ],
-               [ 'name'    => 'laminas/laminas-cache-storage-adapter-filesystem',
-                 'check'   => 'Laminas\\Cache\\Storage\\Adapter\\Filesystem' ],
                [ 'name'    => 'laminas/laminas-i18n',
                  'check'   => 'Laminas\\I18n\\Module' ],
-               [ 'name'    => 'laminas/laminas-serializer',
-                 'check'   => 'Laminas\\Serializer\\Module' ],
+               [ 'name'    => 'laminas/laminas-servicemanager',
+                 'check'   => 'Laminas\\ServiceManager\\ServiceManager' ],
                [ 'name'    => 'monolog/monolog',
                  'check'   => 'Monolog\\Logger' ],
                [ 'name'    => 'sebastian/diff',
@@ -2861,7 +2857,7 @@ class Config extends CommonDBTM {
     * @param string  $context name of the configuration context (default 'core')
     * @param boolean $psr16   Whether to return a PSR16 compliant obkect or not (since Laminas Translator is NOT PSR16 compliant).
     *
-    * @return \Psr\SimpleCache\CacheInterface|\Psr\Cache\CacheItemPoolInterface|\Laminas\Cache\Psr\SimpleCache\SimpleCacheDecorator|\Laminas\Cache\Storage\StorageInterface
+    * @return \Psr\SimpleCache\CacheInterface|\Psr\Cache\CacheItemPoolInterface
     */
    public static function getCache($optname, $context = 'core', $psr16 = true) {
       Toolbox::deprecated();

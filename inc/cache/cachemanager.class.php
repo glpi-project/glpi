@@ -37,9 +37,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use DirectoryIterator;
-use Laminas\Cache\Psr\SimpleCache\SimpleCacheDecorator;
-use Laminas\Cache\Storage\Adapter\Filesystem;
-use Laminas\Cache\Storage\Plugin\Serializer;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
@@ -186,35 +184,23 @@ class CacheManager {
     * @return CacheInterface
     */
    public function getCacheInstance(string $context): CacheInterface {
-
-      if ($context === self::CONTEXT_TRANSLATIONS) {
-         // Translation cache has to use Laminas\Cache components as Laminas\I18n is not PSR compliant.
-         return new SimpleCacheDecorator($this->getTranslationsCacheStorage());
-      }
-
-      $storage = $this->getCacheStorageAdapter($context);
-
-      return new SimpleCache($storage);
+      return new SimpleCache($this->getCacheStorageAdapter($context));
    }
 
    /**
     * Get cache storage adapter for given context.
     *
-    * @return \Psr\Cache\CacheItemPoolInterface|Filesystem
+    * @return \Psr\Cache\CacheItemPoolInterface
     */
-   public function getCacheStorageAdapter(string $context)/*: CacheItemPoolInterface|Filesystem*/ {
+   public function getCacheStorageAdapter(string $context): CacheItemPoolInterface {
       if (!$this->isContextValid($context)) {
          throw new \InvalidArgumentException(sprintf('Invalid context: "%s".', $context));
       }
 
-      if ($context === self::CONTEXT_TRANSLATIONS) {
-         // Translation cache has to use Laminas\Cache components as Laminas\I18n is not PSR compliant.
-         return $this->getTranslationsCacheStorage();
-      }
-
-      if ($context === self::CONTEXT_INSTALLER) {
-         // Installer cache is not supposed to be configured and should always use the local filesystem.
-         return new FilesystemAdapter(self::CONTEXT_INSTALLER, 0, GLPI_CACHE_DIR);
+      if ($context === self::CONTEXT_TRANSLATIONS || $context === self::CONTEXT_INSTALLER) {
+         // 'translations' and 'installer' contexts are not supposed to be configured
+         // and should always use a filesystem adapter.
+         return new FilesystemAdapter($context, 0, GLPI_CACHE_DIR);
       }
 
       $raw_config = $this->getRawConfig();
@@ -281,28 +267,6 @@ class CacheManager {
     */
    public function getInstallerCacheInstance(): CacheInterface {
       return $this->getCacheInstance(self::CONTEXT_INSTALLER);
-   }
-
-   /**
-    * Get translations cache storage.
-    *
-    * @return Filesystem
-    */
-   private function getTranslationsCacheStorage(): Filesystem {
-      $cache_dir = GLPI_CACHE_DIR . DIRECTORY_SEPARATOR . 'cache_trans';
-
-      if (!is_dir($cache_dir)) {
-         mkdir($cache_dir);
-      }
-      $storage  = new Filesystem(
-         [
-            'cache_dir' => GLPI_CACHE_DIR . DIRECTORY_SEPARATOR . 'cache_trans',
-            'namespace' => 'glpi_cache_trans_' . GLPI_VERSION,
-         ]
-      );
-      $storage->addPlugin(new Serializer());
-
-      return $storage;
    }
 
    /**

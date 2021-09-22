@@ -32,7 +32,6 @@
 
 namespace tests\units\Glpi\Cache;
 
-use Laminas\Cache\Storage\Adapter\Filesystem;
 use org\bovigo\vfs\vfsStream;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
@@ -131,7 +130,7 @@ class CacheManager extends \GLPITestCase {
       // Test 'translations' context
       $this->object($this->testedInstance->getTranslationsCacheInstance())->isInstanceOf(CacheInterface::class);
       $this->object($this->testedInstance->getCacheInstance('translations'))->isInstanceOf(CacheInterface::class);
-      $this->object($this->testedInstance->getCacheStorageAdapter('translations'))->isInstanceOf(Filesystem::class);
+      $this->object($this->testedInstance->getCacheStorageAdapter('translations'))->isInstanceOf(FilesystemAdapter::class);
    }
 
    protected function configurationProvider(): iterable {
@@ -360,8 +359,7 @@ class CacheManager extends \GLPITestCase {
 
       $this->object($this->testedInstance->getCacheInstance($context))->isInstanceOf(CacheInterface::class);
 
-      $adapter = $context === 'translations' ? Filesystem::class : FilesystemAdapter::class;
-      $this->object($this->testedInstance->getCacheStorageAdapter($context))->isInstanceOf($adapter);
+      $this->object($this->testedInstance->getCacheStorageAdapter($context))->isInstanceOf(FilesystemAdapter::class);
 
       if ($context === 'core') {
          $this->object($this->testedInstance->getCoreCacheInstance())->isInstanceOf(CacheInterface::class);
