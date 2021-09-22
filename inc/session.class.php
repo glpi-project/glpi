@@ -642,7 +642,7 @@ class Session {
 
       $TRANSLATE->addTranslationFile('gettext', GLPI_I18N_DIR.$newfile, 'glpi', $trytoload);
 
-      $core_folders = scandir(GLPI_LOCAL_I18N_DIR);
+      $core_folders = is_dir(GLPI_LOCAL_I18N_DIR) ? scandir(GLPI_LOCAL_I18N_DIR) : [];
       $core_folders = array_filter($core_folders, function($dir) {
          if (!is_dir(GLPI_LOCAL_I18N_DIR . "/$dir")) {
             return false;

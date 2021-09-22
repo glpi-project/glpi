@@ -360,7 +360,7 @@ class Plugin extends CommonDBTM {
          );
       }
 
-      $plugin_folders = scandir(GLPI_LOCAL_I18N_DIR);
+      $plugin_folders = is_dir(GLPI_LOCAL_I18N_DIR) ? scandir(GLPI_LOCAL_I18N_DIR) : [];
       $plugin_folders = array_filter($plugin_folders, function($dir) use ($plugin_key) {
          if (!is_dir(GLPI_LOCAL_I18N_DIR . "/$dir")) {
             return false;
