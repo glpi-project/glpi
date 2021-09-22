@@ -1112,6 +1112,9 @@ HTML;
          Html::requireJs('notifications_ajax');
       }
 
+      $tpl_vars['css_files'][] = 'public/lib/jstree.css';
+      Html::requireJs('jstree');
+
       $tpl_vars['css_files'][] = 'public/lib/leaflet.css';
       Html::requireJs('leaflet');
 
@@ -6214,6 +6217,9 @@ JAVASCRIPT;
          case 'rack':
             $_SESSION['glpi_js_toload'][$name][] = 'js/rack.js';
             $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery.ui.touch-punch.js';
+            break;
+         case 'jstree':
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jstree.js';
             break;
          case 'leaflet':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/leaflet.js';
