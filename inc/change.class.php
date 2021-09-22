@@ -201,13 +201,8 @@ class Change extends CommonITILObject {
       if (static::canView()) {
          switch ($item->getType()) {
             case __CLASS__ :
-               $ong = [
-                  1 => __('Analysis'),
-                  3 => __('Plans')
-               ];
-
                if ($item->canUpdate()) {
-                  $ong[4] = __('Statistics');
+                  $ong[1] = __('Statistics');
                }
 
                return $ong;
@@ -223,14 +218,6 @@ class Change extends CommonITILObject {
          case __CLASS__ :
             switch ($tabnum) {
                case 1 :
-                  $item->showAnalysisForm();
-                  break;
-
-               case 3 :
-                  $item->showPlanForm();
-                  break;
-
-               case 4 :
                   $item->showStats();
                   break;
             }
@@ -830,98 +817,6 @@ class Change extends CommonITILObject {
       ]);
 
       return true;
-   }
-
-
-   /**
-    * Form to add an analysis to a change
-   **/
-   function showAnalysisForm() {
-
-      $this->check($this->getField('id'), READ);
-      $canedit = $this->canEdit($this->getField('id'));
-
-      $options            = [];
-      $options['canedit'] = false;
-      CommonDBTM::showFormHeader($options);
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Impacts')."</td><td colspan='3'>";
-      if ($canedit) {
-         echo "<textarea id='impactcontent' name='impactcontent' rows='6' cols='110'>";
-         echo $this->getField('impactcontent');
-         echo "</textarea>";
-      } else {
-         echo $this->getField('impactcontent');
-      }
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Control list')."</td><td colspan='3'>";
-      if ($canedit) {
-         echo "<textarea id='controlistcontent' name='controlistcontent' rows='6' cols='110'>";
-         echo $this->getField('controlistcontent');
-         echo "</textarea>";
-      } else {
-         echo $this->getField('controlistcontent');
-      }
-      echo "</td></tr>";
-
-      $options['candel']  = false;
-      $options['canedit'] = $canedit;
-      $this->showFormButtons($options);
-
-   }
-
-   /**
-    * Form to add an analysis to a change
-   **/
-   function showPlanForm() {
-
-      $this->check($this->getField('id'), READ);
-      $canedit            = $this->canEdit($this->getField('id'));
-
-      $options            = [];
-      $options['canedit'] = false;
-      CommonDBTM::showFormHeader($options);
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Deployment plan')."</td><td colspan='3'>";
-      if ($canedit) {
-         echo "<textarea id='rolloutplancontent' name='rolloutplancontent' rows='6' cols='110'>";
-         echo $this->getField('rolloutplancontent');
-         echo "</textarea>";
-      } else {
-         echo $this->getField('rolloutplancontent');
-      }
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Backup plan')."</td><td colspan='3'>";
-      if ($canedit) {
-         echo "<textarea id='backoutplancontent' name='backoutplancontent' rows='6' cols='110'>";
-         echo $this->getField('backoutplancontent');
-         echo "</textarea>";
-      } else {
-         echo $this->getField('backoutplancontent');
-      }
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Checklist')."</td><td colspan='3'>";
-      if ($canedit) {
-         echo "<textarea id='checklistcontent' name='checklistcontent' rows='6' cols='110'>";
-         echo $this->getField('checklistcontent');
-         echo "</textarea>";
-      } else {
-         echo $this->getField('checklistcontent');
-      }
-      echo "</td></tr>";
-
-      $options['candel']  = false;
-      $options['canedit'] = $canedit;
-      $this->showFormButtons($options);
-
    }
 
 
