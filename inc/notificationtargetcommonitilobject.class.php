@@ -1030,7 +1030,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       global $CFG_GLPI, $DB;
 
       $is_self_service = $options['additionnaloption']['is_self_service'] ?? true;
-      $need_anonymize = (Entity::getAnonymizeConfig($this->getEntity()) !== Entity::ANONYMIZE_DISABLED) ? true : false;
+      $need_anonymize = Entity::getAnonymizeConfig($this->getEntity()) !== Entity::ANONYMIZE_DISABLED;
       $objettype = strtolower($item->getType());
 
       $data["##$objettype.title##"]        = $item->getField('name');
