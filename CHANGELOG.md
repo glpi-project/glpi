@@ -53,7 +53,6 @@ The present file will list all changes made to the project; according to the
 - `CommonDBTM::prepareInputForClone()`
 - `CommonDBTM::post_clone()`
 - `CommonITILObject::getActorIcon()`
-- `Config::getCache()`
 - `DBmysql::getTableSchema()`
 - `Html::clean()`
 - `Html::setSimpleTextContent()`
@@ -106,6 +105,7 @@ The present file will list all changes made to the project; according to the
 - `ContractCost::cloneContract()`
 - `Config::checkWriteAccessToDirs()`
 - `Config::displayCheckExtensions()`
+- `Config::getCache()`
 - `DBMysql::affected_rows()`
 - `DBMysql::data_seek()`
 - `DBMysql::fetch_array()`

@@ -2851,29 +2851,6 @@ class Config extends CommonDBTM {
    }
 
    /**
-    * Get a cache adapter from configuration
-    *
-    * @param string  $optname name of the configuration field
-    * @param string  $context name of the configuration context (default 'core')
-    * @param boolean $psr16   Whether to return a PSR16 compliant obkect or not (since Laminas Translator is NOT PSR16 compliant).
-    *
-    * @return \Psr\SimpleCache\CacheInterface|\Psr\Cache\CacheItemPoolInterface
-    */
-   public static function getCache($optname, $context = 'core', $psr16 = true) {
-      Toolbox::deprecated();
-
-      $cache_manager = new CacheManager();
-
-      if ($optname === 'cache_trans') {
-         $context = CacheManager::CONTEXT_TRANSLATIONS;
-      }
-
-      return $psr16
-         ? $cache_manager->getCacheInstance($context)
-         : $cache_manager->getCacheStorageAdapter($context);
-   }
-
-   /**
     * Get available palettes
     *
     * @return array
