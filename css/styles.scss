@@ -511,7 +511,20 @@ input {
    box-shadow: none;
 }
 
+textarea {
+   &:required {
+      border: 1px rgba(255, 0, 0, 0.6) solid !important;
+      border-left-width: 3px !important;
+      padding-right: 0 !important;
+      box-shadow: none;
+   }
+}
+
 input:required:valid {
+   border: 1px solid rgb(211, 211, 211) !important;
+}
+
+textarea:required:valid {
    border: 1px solid rgb(211, 211, 211) !important;
 }
 
