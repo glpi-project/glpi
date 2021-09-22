@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Cache\CacheManager;
 use Glpi\Event;
 
 if (!defined('GLPI_ROOT')) {
@@ -641,7 +642,7 @@ class Session {
       }
 
       if (!defined('TU_USER')) {
-         $TRANSLATE->setCache(Config::getTranslationCacheInstance(false));
+         $TRANSLATE->setCache((new CacheManager())->getCacheStorageAdapter(CacheManager::CONTEXT_TRANSLATIONS));
       }
 
       $TRANSLATE->addTranslationFile('gettext', GLPI_I18N_DIR.$newfile, 'glpi', $trytoload);

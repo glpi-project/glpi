@@ -35,9 +35,6 @@ use Glpi\Dashboard\Grid;
 use Glpi\Exception\PasswordTooWeakException;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Sanitizer;
-use Laminas\Cache\Psr\SimpleCache\SimpleCacheDecorator;
-use Laminas\Cache\Storage\Adapter\Filesystem;
-use Laminas\Cache\Storage\Plugin\Serializer;
 use PHPMailer\PHPMailer\PHPMailer;
 
 if (!defined('GLPI_ROOT')) {
@@ -1667,8 +1664,6 @@ class Config extends CommonDBTM {
     * @since 9.1
    **/
    function showPerformanceInformations() {
-      global $GLPI_CACHE;
-
       if (!Config::canUpdate()) {
          return false;
       }
@@ -1754,7 +1749,8 @@ class Config extends CommonDBTM {
 
       echo "<tr><th colspan='4'>" . __('User data cache') . "</th></tr>";
       echo '<tr><td class="b">' . __('You can use "php bin/console cache:configure" command to configure cache system.') . '</td></tr>';
-      $ext = strtolower(get_class($GLPI_CACHE->getStorage()));
+      $cache_manager = new CacheManager();
+      $ext = strtolower(get_class($cache_manager->getCacheStorageAdapter(CacheManager::CONTEXT_CORE)));
       $ext = preg_replace('/^.*\\\([a-z]+?)(?:adapter)?$/', '$1', $ext);
       if (in_array($ext, ['memcached', 'redis'])) {
          $msg = sprintf(__s('The "%s" cache extension is installed'), $ext);
@@ -1779,8 +1775,7 @@ class Config extends CommonDBTM {
       }
 
       echo "<tr><th colspan='4'>" . __('Translation cache') . "</th></tr>";
-      $translation_cache = self::getTranslationCacheInstance(false);
-      $adapter_class = strtolower(get_class($translation_cache));
+      $adapter_class = strtolower(get_class($cache_manager->getCacheStorageAdapter(CacheManager::CONTEXT_TRANSLATIONS)));
       $adapter = substr($adapter_class, strrpos($adapter_class, '\\')+1);
       $msg = sprintf(__s('"%s" cache system is used'), $adapter);
       echo "<tr><td colspan='3'>" . $msg . "</td>
@@ -2871,46 +2866,15 @@ class Config extends CommonDBTM {
    public static function getCache($optname, $context = 'core', $psr16 = true) {
       Toolbox::deprecated();
 
-      if ($optname === 'cache_trans') {
-         return self::getTranslationCacheInstance($psr16);
-      }
-
       $cache_manager = new CacheManager();
-      $instance = $cache_manager->getCacheInstance($context);
-      if ($psr16) {
-         return $instance;
-      } else {
-         return $instance->getStorage();
-      }
-   }
 
-   /**
-    * Get translation cache instance.
-    *
-    * @param boolean $psr16   Whether to return a PSR16 compliant obkect or not (since Laminas Translator is NOT PSR16 compliant).
-    *
-    * @return \Laminas\Cache\Psr\SimpleCache\SimpleCacheDecorator|\Laminas\Cache\Storage\StorageInterface
-    */
-   public static function getTranslationCacheInstance(bool $psr16 = true) {
-      // Translation cache has to use Laminas\Cache components as Laminas\I18n is not PSR compliant.
-      $cache_dir = GLPI_CACHE_DIR . DIRECTORY_SEPARATOR . 'cache_trans';
-
-      if (!is_dir($cache_dir)) {
-         mkdir($cache_dir);
-      }
-      $storage  = new Filesystem(
-         [
-            'cache_dir' => GLPI_CACHE_DIR . DIRECTORY_SEPARATOR . 'cache_trans',
-            'namespace' => 'glpi_cache_trans_' . GLPI_VERSION,
-         ]
-      );
-      $storage->addPlugin(new Serializer());
-
-      if ($psr16) {
-         return new SimpleCacheDecorator($storage);
+      if ($optname === 'cache_trans') {
+         $context = CacheManager::CONTEXT_TRANSLATIONS;
       }
 
-      return $storage;
+      return $psr16
+         ? $cache_manager->getCacheInstance($context)
+         : $cache_manager->getCacheStorageAdapter($context);
    }
 
    /**

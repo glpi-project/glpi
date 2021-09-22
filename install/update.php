@@ -47,12 +47,7 @@ $GLPI = new GLPI();
 $GLPI->initLogger();
 $GLPI->initErrorHandler();
 
-$cache_manager = new CacheManager();
-$GLPI_CACHE = $cache_manager->getCoreCacheInstance();
-$GLPI_CACHE->clear(); // Force cache cleaning to prevent usage of outdated cache data
-
-$translation_cache = Config::getTranslationCacheInstance();
-$translation_cache->clear(); // Force cache cleaning to prevent usage of outdated cache data
+$GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
 
 Config::detectRootDoc();
 
@@ -194,7 +189,7 @@ function changeVarcharToID($table1, $table2, $chps) {
 
 //update database
 function doUpdateDb() {
-   global $GLPI_CACHE, $migration, $update;
+   global $migration, $update;
 
    $currents            = $update->getCurrents();
    $current_version     = $currents['version'];
@@ -210,7 +205,9 @@ function doUpdateDb() {
    }
 
    $update->doUpdates($current_version);
-   $GLPI_CACHE->clear();
+
+   // Force cache cleaning to ensure it will not contain stale data
+   (new CacheManager())->resetAllCaches();
 }
 
 

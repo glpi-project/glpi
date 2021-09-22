@@ -39,6 +39,7 @@ if (!defined('GLPI_ROOT')) {
 use DB;
 use DBConnection;
 use DBmysql;
+use Glpi\Cache\CacheManager;
 use Glpi\Console\Traits\TelemetryActivationTrait;
 use Glpi\System\Requirement\DbConfiguration;
 use GLPIKey;
@@ -114,6 +115,9 @@ class InstallCommand extends AbstractConfigureCommand {
    }
 
    protected function initialize(InputInterface $input, OutputInterface $output) {
+
+      global $GLPI_CACHE;
+      $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance(); // Use dedicated "installer" cache
 
       parent::initialize($input, $output);
 
@@ -326,6 +330,8 @@ class InstallCommand extends AbstractConfigureCommand {
       }
 
       $output->writeln('<info>' . __('Installation done.') . '</info>');
+
+      (new CacheManager())->resetAllCaches(); // Ensure cache will not use obsolete data
 
       $this->handTelemetryActivation($input, $output);
 

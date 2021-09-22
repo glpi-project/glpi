@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Cache\CacheManager;
 use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
 
@@ -718,8 +719,7 @@ class Plugin extends CommonDBTM {
 
       if ($this->getFromDB($ID)) {
          // Clear locale cache to prevent errors while reloading plugin locales
-         $translation_cache = Config::getTranslationCacheInstance();
-         $translation_cache->clear();
+         (new CacheManager())->getTranslationsCacheInstance()->clear();
 
          self::load($this->fields['directory'], true); // Load plugin hooks
 

@@ -32,8 +32,9 @@
 
 namespace tests\units\Glpi\Cache;
 
-use Glpi\Cache\SimpleCache;
+use Laminas\Cache\Storage\Adapter\Filesystem;
 use org\bovigo\vfs\vfsStream;
+use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
@@ -42,33 +43,46 @@ class CacheManager extends \GLPITestCase {
 
    protected function contextProvider(): iterable {
       yield [
-         'context'  => 'tempcache',
-         'is_valid' => false,
+         'context'         => 'tempcache',
+         'is_valid'        => false,
+         'is_configurable' => false,
       ];
       yield [
-         'context'  => 'core',
-         'is_valid' => true,
+         'context'         => 'core',
+         'is_valid'        => true,
+         'is_configurable' => true,
       ];
       yield [
-         'context'  => 'plugin:tester',
-         'is_valid' => true,
+         'context'         => 'translations',
+         'is_valid'        => true,
+         'is_configurable' => false,
+      ];
+      yield [
+         'context'         => 'installer',
+         'is_valid'        => true,
+         'is_configurable' => false,
+      ];
+      yield [
+         'context'         => 'plugin:tester',
+         'is_valid'        => true,
+         'is_configurable' => true,
       ];
    }
 
    /**
     * @dataProvider contextProvider
     */
-   public function testIsContextValid(string $context, bool $is_valid): void {
+   public function testIsContextValid(string $context, bool $is_valid, bool $is_configurable): void {
       vfsStream::setup('glpi', null, ['config' => []]);
 
       $this->newTestedInstance(vfsStream::url('glpi/config'));
 
-      $this->boolean($this->testedInstance->isContextValid($context))->isEqualTo($is_valid);
+      $this->boolean($this->testedInstance->isContextValid($context, false))->isEqualTo($is_valid);
+      $this->boolean($this->testedInstance->isContextValid($context, true))->isEqualTo($is_valid && $is_configurable);
 
       // Also test argument checks on other methods
-      if (!$is_valid) {
-         $exception_msg = sprintf('Invalid context: "%s".', $context);
-
+      if (!$is_configurable) {
+         $exception_msg = sprintf('Invalid or non configurable context: "%s".', $context);
          if (extension_loaded('memcached')) {
             $this->exception(
                function () use ($context) {
@@ -82,22 +96,42 @@ class CacheManager extends \GLPITestCase {
                $this->testedInstance->unsetConfiguration($context);
             }
          )->message->isEqualTo($exception_msg);
+      } else {
+         if (extension_loaded('memcached')) {
+            $this->boolean($this->testedInstance->setConfiguration($context, 'memcached://localhost'))->isTrue();
+         }
 
+         $this->boolean($this->testedInstance->unsetConfiguration($context))->isTrue();
+      }
+      if (!$is_valid) {
+         $exception_msg = sprintf('Invalid context: "%s".', $context);
          $this->exception(
             function () use ($context) {
                $this->testedInstance->getCacheInstance($context);
             }
          )->message->isEqualTo($exception_msg);
-
-         return;
+      } else {
+         $this->object($this->testedInstance->getCacheInstance($context))->isInstanceOf(CacheInterface::class);
       }
+   }
 
-      if (extension_loaded('memcached')) {
-         $this->boolean($this->testedInstance->setConfiguration($context, 'memcached://localhost'))->isTrue();
-      }
 
-      $this->boolean($this->testedInstance->unsetConfiguration($context))->isTrue();
-      $this->object($this->testedInstance->getCacheInstance($context))->isInstanceOf(SimpleCache::class);
+   public function testGetNonConfigurableCache(): void {
+
+      // Empty config dir
+      vfsStream::setup('glpi', null, ['config' => []]);
+
+      $this->newTestedInstance(vfsStream::url('glpi/config'));
+
+      // Test 'installer' context
+      $this->object($this->testedInstance->getInstallerCacheInstance())->isInstanceOf(CacheInterface::class);
+      $this->object($this->testedInstance->getCacheInstance('installer'))->isInstanceOf(CacheInterface::class);
+      $this->object($this->testedInstance->getCacheStorageAdapter('installer'))->isInstanceOf(FilesystemAdapter::class);
+
+      // Test 'translations' context
+      $this->object($this->testedInstance->getTranslationsCacheInstance())->isInstanceOf(CacheInterface::class);
+      $this->object($this->testedInstance->getCacheInstance('translations'))->isInstanceOf(CacheInterface::class);
+      $this->object($this->testedInstance->getCacheStorageAdapter('translations'))->isInstanceOf(Filesystem::class);
    }
 
    protected function configurationProvider(): iterable {
@@ -241,7 +275,7 @@ class CacheManager extends \GLPITestCase {
          function () {
             $this->testedInstance->unsetConfiguration('notavalidcontext');
          }
-      )->message->isEqualTo('Invalid context: "notavalidcontext".');
+      )->message->isEqualTo('Invalid or non configurable context: "notavalidcontext".');
       $this->boolean(file_exists($config_file))->isTrue();
       $this->array(include($config_file))->isEqualTo($expected_config);
 
@@ -261,7 +295,7 @@ class CacheManager extends \GLPITestCase {
    /**
     * @dataProvider configurationProvider
     */
-   public function testGetCacheInstance(
+   public function testGetConfigurableCache(
       string $context,
       $dsn,
       array $options,
@@ -302,22 +336,19 @@ class CacheManager extends \GLPITestCase {
          return;
       }
 
-      $cache_instance = $this->testedInstance->getCacheInstance($context);
-      $this->object($cache_instance)->isInstanceOf(SimpleCache::class);
-      $this->object($cache_instance->getStorage())->isInstanceOf($expected_adapter);
+      $this->object($this->testedInstance->getCacheInstance($context))->isInstanceOf(CacheInterface::class);
+      $this->object($this->testedInstance->getCacheStorageAdapter($context))->isInstanceOf($expected_adapter);
 
       if ($context === 'core') {
          // test CacheManager::getCoreCacheInstance()
-         $core_cache_instance = $this->testedInstance->getCoreCacheInstance();
-         $this->object($core_cache_instance)->isInstanceOf(SimpleCache::class);
-         $this->object($core_cache_instance->getStorage())->isInstanceOf($expected_adapter);
+         $this->object($this->testedInstance->getCoreCacheInstance())->isInstanceOf(CacheInterface::class);
       }
    }
 
    /**
     * @dataProvider contextProvider
     */
-   public function testGetCacheInstanceDefault(string $context, bool $is_valid): void {
+   public function testGetCacheInstanceDefault(string $context, bool $is_valid, bool $is_configurable): void {
       if (!$is_valid) {
          return;
       }
@@ -327,15 +358,19 @@ class CacheManager extends \GLPITestCase {
 
       $this->newTestedInstance(vfsStream::url('glpi/config'));
 
-      $cache_instance = $this->testedInstance->getCacheInstance($context);
-      $this->object($cache_instance)->isInstanceOf(SimpleCache::class);
-      $this->object($cache_instance->getStorage())->isInstanceOf(FilesystemAdapter::class);
+      $this->object($this->testedInstance->getCacheInstance($context))->isInstanceOf(CacheInterface::class);
+
+      $adapter = $context === 'translations' ? Filesystem::class : FilesystemAdapter::class;
+      $this->object($this->testedInstance->getCacheStorageAdapter($context))->isInstanceOf($adapter);
 
       if ($context === 'core') {
-         // test CacheManager::getCoreCacheInstance()
-         $core_cache_instance = $this->testedInstance->getCoreCacheInstance();
-         $this->object($core_cache_instance)->isInstanceOf(SimpleCache::class);
-         $this->object($core_cache_instance->getStorage())->isInstanceOf(FilesystemAdapter::class);
+         $this->object($this->testedInstance->getCoreCacheInstance())->isInstanceOf(CacheInterface::class);
+      }
+      if ($context === 'installer') {
+         $this->object($this->testedInstance->getInstallerCacheInstance())->isInstanceOf(CacheInterface::class);
+      }
+      if ($context === 'translations') {
+         $this->object($this->testedInstance->getTranslationsCacheInstance())->isInstanceOf(CacheInterface::class);
       }
    }
 

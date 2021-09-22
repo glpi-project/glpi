@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Cache\CacheManager;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Console\Traits\TelemetryActivationTrait;
@@ -93,6 +94,9 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
    }
 
    protected function initialize(InputInterface $input, OutputInterface $output) {
+
+      global $GLPI_CACHE;
+      $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance(); // Use dedicated "installer" cache
 
       parent::initialize($input, $output);
 
@@ -186,6 +190,8 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
 
       $update->doUpdates($current_version, $force);
       $output->writeln('<info>' . __('Migration done.') . '</info>');
+
+      (new CacheManager())->resetAllCaches(); // Ensure cache will not use obsolete data
 
       $this->handTelemetryActivation($input, $output);
 
