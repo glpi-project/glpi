@@ -1321,7 +1321,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             // Check if the author need to be anonymized
             $tmp['##followup.author##'] = getUserName($followup['users_id']);
             if ($is_self_service && $need_anonymize) {
-               if (ITILFollowup::getById($followup['id'])->isFromSupportAgent() 
+               if (ITILFollowup::getById($followup['id'])->isFromSupportAgent()
                && !empty($anon_name = User::getAnonymizedName(
                   $followup['users_id'],
                   $item->getField('entities_id')
