@@ -220,14 +220,27 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
    $options['id'] = $_GET["id"];
    $track->display($options);
 
+   $handled = false;
+   $url = KnowbaseItem::getFormURL() . '?_in_modal=1&item_itemtype=Ticket&item_items_id=' . $_GET['id'];
    if (isset($_GET['_sol_to_kb'])) {
-      Ajax::createIframeModalWindow('savetokb',
-                                    KnowbaseItem::getFormURL().
-                                     "?_in_modal=1&item_itemtype=Ticket&item_items_id=".
-                                     $_GET["id"],
-                                    ['title'         => __('Save solution to the knowledge base'),
-                                          'reloadonclose' => false]);
-      echo Html::scriptBlock('$(function() {' .Html::jsGetElementbyID('savetokb').".dialog('open'); });");
+      $handled = true;
+   } else if (isset($_GET['_fw_to_kb'])) {
+      $url .= '&fw_id=' . $_GET['_fw_to_kb'];
+      $handled = true;
+   } else if (isset($_GET['_task_to_kb'])) {
+      $url .= '&task_id=' . $_GET['_task_to_kb'];
+      $handled = true;
+   }
+   if ($handled) {
+      Ajax::createIframeModalWindow(
+         'savetokb',
+         $url,
+         [
+            'title'         => __('Save solution to the knowledge base'),
+            'reloadonclose' => false,
+         ]
+      );
+      echo Html::scriptBlock('$(function() {' . Html::jsGetElementbyID('savetokb') . '.dialog("open"); });');
    }
 
 } else {

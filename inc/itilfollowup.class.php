@@ -858,6 +858,19 @@ class ITILFollowup  extends CommonDBChild {
          $content_id = "content$rand";
 
          echo "<tr class='tab_bg_1'>";
+         echo "<td class='right'>";
+         echo __('Save and add to the knowledge base')." ";
+         Dropdown::showYesNo('_fw_to_kb', false);
+         echo "</td><td colspan=2>";
+         if (Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ])) {
+            echo "<a class='vsubmit' title=\"".__s('Search a solution')."\"
+                  href='".$CFG_GLPI['root_doc']."/front/knowbaseitem.php?item_itemtype=".
+                  $item->getType()."&amp;item_items_id=".$item->getID().
+                  "&amp;forcetab=Knowbase$1'>".__('Search a solution')."</a>";
+         }
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_1'>";
          echo "<td rowspan='3'>";
 
          Html::textarea(['name'              => 'content',

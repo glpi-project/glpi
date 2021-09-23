@@ -1346,6 +1346,19 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       $rand = mt_rand();
       $this->showFormHeader($options);
 
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='right' colspan=3>";
+      echo __('Save and add to the knowledge base')." ";
+      Dropdown::showYesNo('_task_to_kb', false);
+      echo "</td><td>";
+      if (Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ])) {
+         echo "<a class='vsubmit' title=\"".__s('Search a solution')."\"
+               href='".$CFG_GLPI['root_doc']."/front/knowbaseitem.php?item_itemtype=".
+               $item->getType()."&amp;item_items_id=".$item->getID().
+               "&amp;forcetab=Knowbase$1'>".__('Search a solution')."</a>";
+      }
+      echo "</td></tr>";
+
       $canplan = (!$item->isStatusExists(CommonITILObject::PLANNED)
                   || $item->isAllowedStatus($item->fields['status'], CommonITILObject::PLANNED));
 

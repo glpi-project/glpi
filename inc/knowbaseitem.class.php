@@ -699,15 +699,30 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          if ($item = getItemForItemtype($options['item_itemtype'])) {
             if ($item->getFromDB($options['item_items_id'])) {
                $this->fields['name']   = $item->getField('name');
-               $solution = new ITILSolution();
-               $solution->getFromDBByCrit([
-                  'itemtype'     => $item->getType(),
-                  'items_id'     => $item->getID(),
-                  [
-                     'NOT' => ['status'       => CommonITILValidation::REFUSED]
-                  ]
-               ]);
-               $this->fields['answer'] = $solution->getField('content');
+               if (isset($options['fw_id'])) {
+                  $fup = new ITILFollowup();
+                  $fup->getFromDBByCrit([
+                     'id'           => $options['fw_id'],
+                     'itemtype'     => $item->getType(),
+                     'items_id'     => $item->getID()
+                  ]);
+                  $this->fields['answer'] = $fup->getField('content');
+               } else if (isset($options['task_id'])) {
+                  $tasktype = $item->getType().'Task';
+                  $task = new $tasktype;
+                  $task->getFromDB($options['task_id']);
+                  $this->fields['answer'] = $task->getField('content');
+               } else {
+                  $solution = new ITILSolution();
+                  $solution->getFromDBByCrit([
+                     'itemtype'     => $item->getType(),
+                     'items_id'     => $item->getID(),
+                     [
+                        'NOT' => ['status'       => CommonITILValidation::REFUSED]
+                     ]
+                  ]);
+                  $this->fields['answer'] = $solution->getField('content');
+               }
                if ($item->isField('itilcategories_id')) {
                   $ic = new ITILCategory();
                   if ($ic->getFromDB($item->getField('itilcategories_id'))) {
