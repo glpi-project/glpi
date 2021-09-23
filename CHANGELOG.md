@@ -79,6 +79,8 @@ The present file will list all changes made to the project; according to the
 - `CalendarSegment::cloneCalendar()`
 - `Change::getCommonLeftJoin()`
 - `Change::getCommonSelect()`
+- `Change::showAnalysisForm()`
+- `Change::showPlanForm()`
 - `CommonDBTM::getRawName()`
 - `CommonDBTM::showDates()`
 - `CommonGLPI::isLayoutExcludedPage()`
@@ -156,6 +158,7 @@ The present file will list all changes made to the project; according to the
 - `Plugin::setUnloadedByName()`
 - `Problem::getCommonLeftJoin()`
 - `Problem::getCommonSelect()`
+- `Problem::showAnalysisForm()`
 - `ProjectCost::cloneProject()`
 - `ProjectTeam::cloneProjectTask()`
 - `ProjectTask::cloneProjectTeam()`
