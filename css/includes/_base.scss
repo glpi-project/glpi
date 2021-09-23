@@ -246,24 +246,45 @@ table {
    }
 }
 
-.entity_tree.jstree {
-   overflow-y: auto;
+.entity_tree{
    width: 450px;
    max-width: 85vw;
-   max-height: 40vh;
+   position: relative;
 
-   .jstree-node:not(.jstree-leaf) {
-      position: relative;
+   table {
+      width: 100%;
+   }
 
-      > a > i:last-child {
-         content: ' ';
-         height: 10px;
-         width: 10px;
-         background: url("../pics/entity_all.png") no-repeat;
-         position: absolute;
-         top: 8px;
-         margin-left: 6px;
-         cursor: pointer;
+   .fancytree-expander,
+   .fancytree-icon {
+      margin-top: 5px;
+   }
+
+   .fancytree-folder {
+      .fancytree-title {
+         font-weight: bold;
       }
    }
- }
+
+   .fancytree-selected {
+      background-color: $component-active-bg;
+   }
+
+   .plain-scrollbar {
+      &[data-scrollable="false"] {
+         visibility: hidden;
+      }
+
+      &.scrollbar-vertical {
+         width: 8px;
+      }
+
+      .arrow-up, .arrow-down {
+         display: none;
+      }
+      .slider-area {
+         top: 0 !important;
+         bottom: 0 !important;
+      }
+   }
+}

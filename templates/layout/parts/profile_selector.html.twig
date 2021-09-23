@@ -23,7 +23,7 @@
 {% endif %}
 
 <div class="dropdown dropstart">
-   <a href="#" class="dropdown-item dropdown-toggle show_entity_modal" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+   <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside">
       <i class="fa-fw fas fa-layer-group"></i>
       {{ session('glpiactive_entity_name')|verbatim_value|u.truncate(35, '...') }}
    </a>
@@ -33,8 +33,10 @@
       <div class="alert alert-info" role="alert">
          <i class="fas fa-info-circle"></i>
          <span class="ms-2">
-            <img src="{{ path('pics/entity_all.png') }}" alt="entity_all">
-            {{ __('to see the entity and its sub-entities') }}
+            {% set recursive_icon %}
+               <i class="fas fa-angle-double-down" title="{{ __('+ sub-entities') }}"></i>
+            {% endset %}
+            {{ __('Click on the %s icon to see the entity and its sub-entities')|format(recursive_icon)|raw }}
          </span>
       </div>
 
@@ -57,55 +59,94 @@
          </div>
       </form>
 
-      <div id="tree_projectcategory{{ rand }}" class="entity_tree" ></div>
+      <div class="fancytree-grid-container flexbox-item-grow entity_tree">
+         <table id="tree_projectcategory{{ rand }}">
+            <colgroup>
+               <col></col>
+            </colgroup>
+            <thead>
+               <tr>
+                  <th class="parent-path"></th>
+               </tr>
+            </thead>
+            <tbody>
+            </tbody>
+         </table>
+         <div id="verticalScrollbar-{{ rand }}" style="height:100%;"></div>
+      </div>
    </div>
 </div>
 
 <script type="text/javascript">
 $(function() {
-   $('#tree_projectcategory{{ rand }}').jstree({
-      'plugins': ['search', 'qload', 'conditionalselect'],
-      'search': {
-         'case_insensitive': true,
-         'show_only_matches': true,
-         'ajax': {
-            'type': 'POST',
-            'url': '{{ path("/ajax/entitytreesearch.php") }}'
-         }
+   $('#tree_projectcategory{{ rand }}').fancytree({
+      // load plugins
+      extensions: ['filter', 'glyph', 'grid'],
+
+      // Scroll node into visible area, when focused by keyboard
+      autoScroll: true,
+
+      // enable font-awesome icons
+      glyph: {
+         preset: "awesome5",
+         map: {}
       },
-      'qload': {
-         'prevLimit': 50,
-         'nextLimit': 30,
-         'moreText': '{{ __("Load more entities...") }}'
+
+      // enable virtual dom, it requires the grid (table extension) plugin
+      table: {
+         indentation: 20,       // indent 20px per node level
+         nodeColumnIdx: 0,      // render the node title into the 1st column
       },
-      'conditionalselect': function (node, event) {
-         if (node === false) {
-            return false;
-         }
-         var url = '{{ target }}?active_entity='+node.id;
-         if (event.target.tagName == 'I'
-               && event.target.className == '') {
-            url += '&is_recursive=1';
-         }
-         document.location.href = url;
-         return false;
+      viewport: {
+         enabled: true,
+         count: 15, // number of items to display at once
       },
-      'core': {
-         'animation': 0,
-         'data': {
-            'url': function(node) {
-               return node.id === '#' ?
-                  '{{ path("/ajax/entitytreesons.php") }}?node=-1' :
-                  '{{ path("/ajax/entitytreesons.php") }}?node='+node.id;
-            }
-         }
-      }
+
+      // load data by ajax
+      source: {
+         url:  '{{ path("/ajax/entitytreesons.php") }}',
+         cache: false
+      },
+
+      // filter plugin options
+      filter: {
+         mode: "hide", // remove unmatched nodes
+         autoExpand: true, // if results found in children, auto-expand parent
+         nodata: '{{ __("No entity found") }}', // message when no data found
+      },
+
+      // load 3rd party scrollbar extension for viewport mode
+      preInit: function(event, data) {
+         var tree = data.tree;
+
+         tree.verticalScrollbar = new PlainScrollbar({
+            alwaysVisible: true,
+            arrows: true,
+            orientation: "vertical",
+            onSet: function(numberOfItems) {
+               tree.setViewport({
+                  start: Math.round(numberOfItems.start),
+               });
+            },
+            scrollbarElement: document.getElementById("verticalScrollbar-{{ rand }}"),
+         });
+      },
+
+      // update scrollbar when viewport is updated
+      updateViewport: function(event, data) {
+         var tree = data.tree;
+
+         tree.verticalScrollbar.set({
+            start: tree.viewport.start,
+            total: tree.visibleNodeList.length,
+            visible: tree.viewport.count,
+         }, true);  // do not trigger `onSet`
+      },
    });
 
    var searchTree = function() {
-      $("#tree_projectcategory{{ rand }}")
-         .jstree('close_all')
-         .jstree('search', $("#entsearchtext{{ rand }}").val());
+      var search_text = $("#entsearchtext{{ rand }}").val();
+      $.ui.fancytree.getTree("#tree_projectcategory{{ rand }}").filterNodes(search_text);
    }
 
    $('#entsearchform{{ rand }}').submit(function(event) {

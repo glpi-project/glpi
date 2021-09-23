@@ -1242,11 +1242,10 @@ final class DbUtils {
       $found = [];
 
       // First request init the  variables
-      $iterator = $DB->request([
-         $table, [
-            'WHERE'  => [$parentIDfield => $IDf],
-            'ORDER'  => 'name'
-         ]
+      $iterator = $DB->request(
+      $table, [
+         'WHERE'  => [$parentIDfield => $IDf],
+         'ORDER'  => 'name'
       ]);
 
       while ($row = $iterator->next()) {
@@ -1258,11 +1257,9 @@ final class DbUtils {
       // Get the leafs of previous founded item
       while (count($found) > 0) {
          // Get next elements
-         $iterator = $DB->request([
-            $table, [
-               'WHERE'  => [$parentIDfield => $found],
-               'ORDER'  => 'name'
-            ]
+         $iterator = $DB->request($table, [
+            'WHERE'  => [$parentIDfield => $found],
+            'ORDER'  => 'name'
          ]);
 
          // CLear the found array
