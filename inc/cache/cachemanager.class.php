@@ -96,8 +96,16 @@ class CacheManager {
     */
    private $config_dir;
 
-   public function __construct(string $config_dir = GLPI_CONFIG_DIR) {
+   /**
+    * Cache directory.
+    *
+    * @var string
+    */
+   private $cache_dir;
+
+   public function __construct(string $config_dir = GLPI_CONFIG_DIR, string $cache_dir = GLPI_CACHE_DIR) {
       $this->config_dir = $config_dir;
+      $this->cache_dir = $cache_dir;
    }
 
    /**
@@ -203,14 +211,14 @@ class CacheManager {
          // Append GLPI version to namespace to ensure that these caches are not containing data
          // from a previous version.
          $namespace = $this->normalizeNamespace($context . '-' . GLPI_VERSION);
-         return new FilesystemAdapter($namespace, 0, GLPI_CACHE_DIR);
+         return new FilesystemAdapter($namespace, 0, $this->cache_dir);
       }
 
       $raw_config = $this->getRawConfig();
 
       if (!array_key_exists($context, $raw_config)) {
          // Default to filesystem, inside GLPI_CACHE_DIR/$context, with a generic namespace.
-         return new FilesystemAdapter($this->normalizeNamespace($context), 0, GLPI_CACHE_DIR);
+         return new FilesystemAdapter($this->normalizeNamespace($context), 0, $this->cache_dir);
       }
 
       $config = $raw_config[$context];
@@ -286,7 +294,7 @@ class CacheManager {
       }
 
       // Clear compiled templates
-      $tpl_cache_dir = GLPI_CACHE_DIR . '/templates';
+      $tpl_cache_dir = $this->cache_dir . '/templates';
       if (file_exists($tpl_cache_dir)) {
          array_map('unlink', glob($tpl_cache_dir . '/**/*.php'));
          array_map('rmdir', glob($tpl_cache_dir . '/*', GLOB_ONLYDIR));
@@ -313,7 +321,7 @@ class CacheManager {
 
       // Context found from cache directories.
       // These may not be find in configuration if they are using default configuration.
-      $directory_iterator = new DirectoryIterator(GLPI_CACHE_DIR);
+      $directory_iterator = new DirectoryIterator($this->cache_dir);
       foreach ($directory_iterator as $file) {
          if ($file->isDot() || !$file->isDir() || !preg_match('/^plugin_/', $file->getFilename())) {
             continue;
