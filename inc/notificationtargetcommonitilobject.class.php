@@ -1319,15 +1319,15 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $tmp['##followup.isprivate##']   = Dropdown::getYesNo($followup['is_private']);
 
             // Check if the author need to be anonymized
-            $tmp['##followup.author##'] = getUserName($followup['users_id']);
-            if ($is_self_service && $need_anonymize) {
-               if (ITILFollowup::getById($followup['id'])->isFromSupportAgent()
+            if ($is_self_service && $need_anonymize
+               && ITILFollowup::getById($followup['id'])->isFromSupportAgent()
                && !empty($anon_name = User::getAnonymizedName(
                   $followup['users_id'],
                   $item->getField('entities_id')
                ))) {
-                  $tmp['##followup.author##'] = $anon_name;
-               }
+               $tmp['##followup.author##'] = $anon_name;
+            } else {
+               $tmp['##followup.author##'] = getUserName($followup['users_id']);
             }
 
             $tmp['##followup.requesttype##'] = '';
@@ -1551,15 +1551,16 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             if ($timeline_data['type'] == ITILFollowup::getType()) {
                // Check if the author need to be anonymized
 
-               $tmptimelineitem['##timelineitems.author##'] = getUserName($timeline_data['item']['users_id']);
-               if ($is_self_service && $need_anonymize) {
-                  if (ITILFollowup::getById($timeline_data['item']['id'])->isFromSupportAgent()
+               if ($is_self_service && $need_anonymize
+                  && ITILFollowup::getById($timeline_data['item']['id'])->isFromSupportAgent()
                   && !empty($anon_name = User::getAnonymizedName(
                      $followup['users_id'],
                      $item->getField('entities_id')
                   ))) {
                      $tmptimelineitem['##timelineitems.author##'] = $anon_name;
-                  }
+
+               } else {
+                  $tmptimelineitem['##timelineitems.author##'] = getUserName($timeline_data['item']['users_id']);
                }
 
             } else {
