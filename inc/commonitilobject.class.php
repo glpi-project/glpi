@@ -855,6 +855,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
 
+      if (!$this->checkFieldsConsistency($input)) {
+         return false;
+      }
+
       // Add document if needed
       $this->getFromDB($input["id"]); // entities_id field required
 
@@ -1560,6 +1564,10 @@ abstract class CommonITILObject extends CommonDBTM {
    function prepareInputForAdd($input) {
       global $CFG_GLPI;
 
+      if (!$this->checkFieldsConsistency($input)) {
+         return false;
+      }
+
       // save value before clean;
       $title = ltrim($input['name']);
 
@@ -1733,6 +1741,23 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       return $input;
+   }
+
+   /**
+    * Check input fields consistency.
+    *
+    * @param array $input
+    *
+    * @return bool
+    */
+   private function checkFieldsConsistency(array $input): bool {
+      if (array_key_exists('date', $input) && !empty($input['date'])
+          && (!is_string($input['date']) || !preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $input['date']))) {
+         Session::addMessageAfterRedirect(__('Incorrect value for date field.'), false, ERROR);
+         return false;
+      }
+
+      return true;
    }
 
    /**
