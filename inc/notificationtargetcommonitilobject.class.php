@@ -1320,13 +1320,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
             // Check if the author need to be anonymized
             $tmp['##followup.author##'] = getUserName($followup['users_id']);
-            if ($is_self_service && $need_anonymize
+            if ($is_self_service && $need_anonymize) {
+               if (ITILFollowup::getById($followup['id'])->isFromSupportAgent() 
                && !empty($anon_name = User::getAnonymizedName(
                   $followup['users_id'],
                   $item->getField('entities_id')
-               ))
-            ) {
-               if (ITILFollowup::getById($followup['id'])->isFromSupportAgent()) {
+               ))) {
                   $tmp['##followup.author##'] = $anon_name;
                }
             }
@@ -1553,13 +1552,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                // Check if the author need to be anonymized
 
                $tmptimelineitem['##timelineitems.author##'] = getUserName($timeline_data['item']['users_id']);
-               if ($is_self_service && $need_anonymize
+               if ($is_self_service && $need_anonymize) {
+                  if (ITILFollowup::getById($timeline_data['item']['id'])->isFromSupportAgent()
                   && !empty($anon_name = User::getAnonymizedName(
                      $followup['users_id'],
                      $item->getField('entities_id')
-                  ))
-               ) {
-                  if (ITILFollowup::getById($timeline_data['item']['id'])->isFromSupportAgent()) {
+                  ))) {
                      $tmptimelineitem['##timelineitems.author##'] = $anon_name;
                   }
                }
