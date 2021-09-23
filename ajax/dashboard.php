@@ -120,7 +120,14 @@ switch ($_REQUEST['action']) {
       unset($request_data['cards']);
       $result = [];
       foreach ($cards as $card) {
-         $result[$card['card_id']] = $grid->getCardHtml($card['card_id'], array_merge($request_data, $card));
+         try {
+            $result[$card['card_id']] = $grid->getCardHtml($card['card_id'], array_merge($request_data, $card));
+         } catch (\Throwable $e) {
+            // Send exception to logger without actually exiting.
+            // Use quiet mode to not break JSON result.
+            global $GLPI;
+            $GLPI->getErrorHandler()->handleException($e, true);
+         }
       }
       echo json_encode($result);
       break;
