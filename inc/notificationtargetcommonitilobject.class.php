@@ -1554,7 +1554,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                if ($is_self_service && $need_anonymize
                   && ITILFollowup::getById($timeline_data['item']['id'])->isFromSupportAgent()
                   && !empty($anon_name = User::getAnonymizedName(
-                     $followup['users_id'],
+                     $timeline_data['item']['users_id'],
                      $item->getField('entities_id')
                   ))) {
                      $tmptimelineitem['##timelineitems.author##'] = $anon_name;
