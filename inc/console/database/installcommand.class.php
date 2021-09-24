@@ -133,7 +133,7 @@ class InstallCommand extends AbstractConfigureCommand {
             new ConfirmationQuestion(
                __('Command input contains configuration options that may override existing configuration.')
                   . PHP_EOL
-                  . __('Do you want to reconfigure database ?') . ' [Yes/no]',
+                  . __('Do you want to reconfigure database?') . ' [Yes/no]',
                true
             )
          );

@@ -957,7 +957,7 @@ HTML;
       // retrieve card
       $notfound_html = "<div class='empty-card card-warning '>
          <i class='fas fa-exclamation-triangle'></i>".
-         __('empty card !')."
+         __('empty card!')."
       </div>";
       $cards = $this->getAllDasboardCards();
       if (!isset($cards[$card_id])) {

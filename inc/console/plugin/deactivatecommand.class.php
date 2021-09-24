@@ -139,7 +139,7 @@ class DeactivateCommand extends AbstractPluginCommand {
 
    protected function getDirectoryChoiceQuestion() {
 
-      return __('Which plugin(s) do you want to deactivate (comma separated values) ?');
+      return __('Which plugin(s) do you want to deactivate (comma separated values)?');
    }
 
    protected function getDirectoryChoiceChoices() {

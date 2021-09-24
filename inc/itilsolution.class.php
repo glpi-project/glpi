@@ -305,7 +305,7 @@ JAVASCRIPT;
 
       // check itil object is not already solved
       if (in_array($this->item->fields["status"], $this->item->getSolvedStatusArray())) {
-         Session::addMessageAfterRedirect(__("The item is already solved, did anyone pushed a solution before you ?"),
+         Session::addMessageAfterRedirect(__("The item is already solved, did anyone pushed a solution before you?"),
                                           false, ERROR);
          return false;
       }

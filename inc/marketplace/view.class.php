@@ -705,7 +705,7 @@ HTML;
             </button>";
          } else if ($can_be_updated) {
             $update_title = sprintf(
-               __s("A new version (%s) is available, update ?", 'marketplace'),
+               __s("A new version (%s) is available, update?", 'marketplace'),
                $web_update_version
             );
             $buttons .="<button class='modify_plugin'
@@ -986,7 +986,7 @@ HTML;
          echo "<br><br>";
          echo __("GLPI provides a new marketplace to download and install plugins.");
          echo "<br><br>";
-         echo "<b>".__("Do you want to replace the plugins setup page by the new marketplace ?")."</b>";
+         echo "<b>".__("Do you want to replace the plugins setup page by the new marketplace?")."</b>";
          echo "<hr><br>";
          echo Html::submit("<i class='fa fa-check'></i>&nbsp;".__('Yes'), [
             'name' => 'marketplace_replace_plugins_yes'

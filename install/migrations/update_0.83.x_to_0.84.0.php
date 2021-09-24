@@ -120,7 +120,7 @@ function update083xto0840() {
    $DB->query($query);
 
    if ($DB->tableExists('glpi_networkportmigrations')) {
-      $migration->displayWarning("You should have a look at the \"migration cleaner\" tool !", true);
+      $migration->displayWarning("You should have a look at the \"migration cleaner\" tool!", true);
       $migration->displayWarning("With it, you should re-create the networks topologies and the links between the networks and the addresses",
                                  true);
    }
@@ -1797,7 +1797,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
             unset($ADDTODISPLAYPREF['NetworkPortMigration']);
          }
 
-         $migration->displayWarning('Network Framework already migrated: nothing to be done !',
+         $migration->displayWarning('Network Framework already migrated: nothing to be done!',
                                     false);
 
          return;

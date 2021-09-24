@@ -77,7 +77,7 @@ class ReplayDictionnaryRulesCommand extends AbstractCommand {
          /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
          $question_helper = $this->getHelper('question');
          $question = new ChoiceQuestion(
-            __('Which dictionnary do you want to replay ?'),
+            __('Which dictionnary do you want to replay?'),
             $this->getDictionnaryTypes()
          );
          $answer = $question_helper->ask(

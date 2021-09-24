@@ -223,7 +223,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface {
          $run = $question_helper->ask(
             $this->input,
             $this->output,
-            new ConfirmationQuestion(__('Do you want to continue ?') . ' [Yes/no]', true)
+            new ConfirmationQuestion(__('Do you want to continue?') . ' [Yes/no]', true)
          );
          if (!$run) {
             throw new \Glpi\Console\Exception\EarlyExitException(
