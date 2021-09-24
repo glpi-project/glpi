@@ -356,7 +356,7 @@ class Application extends BaseApplication {
    /**
     * Initialize GLPI cache.
     *
-    * @global Laminas\Cache\Storage\StorageInterface $GLPI_CACHE
+    * @global \Psr\SimpleCache\CacheInterface $GLPI_CACHE
     *
     * @return void
     */

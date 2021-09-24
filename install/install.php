@@ -49,9 +49,7 @@ $GLPI->initErrorHandler();
 
 Config::detectRootDoc();
 
-$cache_manager = new CacheManager();
-$GLPI_CACHE = $cache_manager->getCoreCacheInstance();
-$GLPI_CACHE->clear(); // Force cache cleaning to prevent usage of unexpected cache data
+$GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
 
 //Print a correct  Html header for application
 function header_html($etape) {
@@ -227,6 +225,7 @@ function step4 ($databasename, $newdatabasename) {
 
    //Display the form to go to the next page
    function next_form() {
+      (new CacheManager())->getInstallerCacheInstance();
 
       echo "<br><form action='install.php' method='post'>";
       echo "<input type='hidden' name='install' value='Etape_4'>";

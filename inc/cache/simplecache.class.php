@@ -36,21 +36,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use Psr\Cache\CacheItemPoolInterface;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Psr16Cache;
 
 class SimpleCache extends Psr16Cache implements CacheInterface {
-
-   /**
-    * @var CacheItemPoolInterface
-    */
-   private $pool;
-
-   public function __construct(CacheItemPoolInterface $pool) {
-      $this->pool = $pool;
-      parent::__construct($pool);
-   }
 
    public function get($key, $default = null) {
       $normalized_key = $this->getNormalizedKey($key);
@@ -109,14 +98,5 @@ class SimpleCache extends Psr16Cache implements CacheInterface {
     */
    private function getNormalizedKey(string $key): string {
       return sha1($key);
-   }
-
-   /**
-    * Return cache storage pool.
-    *
-    * @return \Psr\Cache\CacheItemPoolInterface
-    */
-   public function getStorage() {
-      return $this->pool;
    }
 }
