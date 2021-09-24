@@ -114,7 +114,7 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
       Session::initEntityProfiles(2);
       Session::changeProfile(4);
 
-      // Display current/future state informations
+      // Display current/future state information
       $currents            = $update->getCurrents();
       $current_version     = $currents['version'];
       $current_db_version  = $currents['dbversion'];

@@ -2079,7 +2079,7 @@ class MailCollector  extends CommonDBTM {
    }
 
    /**
-    * Get pattern that can be used to extract informations from a GLPI MessageId (uuid, itemtype and items_id).
+    * Get pattern that can be used to extract information from a GLPI MessageId (uuid, itemtype and items_id).
     *
     * @see NotificationTarget::getMessageID()
     *

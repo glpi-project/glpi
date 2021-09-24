@@ -381,7 +381,7 @@ class Dropdown {
          /// TODO getDropdownName need to return only name
          /// When needed to use comment use class instead : getComments function
          /// GetName of class already give Name !!
-         /// TODO CommonDBTM : review getComments to be recursive and add informations from class hierarchy
+         /// TODO CommonDBTM : review getComments to be recursive and add information from class hierarchy
          /// getUserName have the same system : clean it too
          /// Need to study the problem
          if (count($iterator)) {

@@ -184,7 +184,7 @@ class Cartridge extends InventoryAsset
 
       $tags += [
          'informations' => [
-            'name'   => __('Many informations grouped')
+            'name'   => __('Many information grouped')
          ],
          'staples'      => [
             'name'   => __('Staples')

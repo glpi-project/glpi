@@ -304,7 +304,7 @@ trait VobjectConverterTrait {
     * Return begin/end date from component as an array object containing:
     *  - 'begin': begin date in 'Y-m-d H:i:s' format;
     *  - 'end':   end date in 'Y-m-d H:i:s' format.
-    * If object does not contains plan informations, return null.
+    * If object does not contain plan information, return null.
     *
     * @param Component $vcomponent
     *

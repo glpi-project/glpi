@@ -612,7 +612,7 @@ class Plugin extends CommonDBTM {
 
          $informations = $this->getInformationsFromDirectory($plugin_directory->getFilename());
          if (array_key_exists('oldname', $informations) && $informations['oldname'] === $oldname) {
-            // Return informations if oldname specified in parsed directory matches passed value
+            // Return information if oldname specified in parsed directory matches passed value
             return [
                'directory'    => $plugin_directory->getFilename(),
                'informations' => $informations,

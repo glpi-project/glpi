@@ -361,7 +361,7 @@ class MassiveAction {
 
    /**
     * Destructor of the object
-    * It is used when reloading the page during process to store informations in $_SESSION.
+    * It is used when reloading the page during process to store information in $_SESSION.
    **/
    function __destruct() {
 
