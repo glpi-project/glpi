@@ -50,7 +50,6 @@ The present file will list all changes made to the project; according to the
 
 #### Deprecated
 - Usage of `NotificationTarget::html_tags` property
-- `DBmysql::getTableSchema()`
 - `Html::clean()`
 - `RuleImportComputer` class
 - `RuleImportComputerCollection` class
@@ -118,6 +117,7 @@ The present file will list all changes made to the project; according to the
 - `DBMysql::fetch_row()`
 - `DBMysql::field_name()`
 - `DBMysql::free_result()`
+- `DBmysql::getTableSchema()`
 - `DBMysql::insert_id()`
 - `DBMysql::isMySQLStrictMode()`
 - `DBMysql::list_fields()`
