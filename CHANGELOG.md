@@ -46,9 +46,9 @@ The present file will list all changes made to the project; according to the
 - `RuleMatchedLog::showForm()` renamed to `RuleMatchedLog::showItemForm()`.
 - `CommonDBTM::notificationqueueonaction` property has been removed in favor of `CommonDBTM::deduplicate_queued_notifications` property.
 - `CommonDBTM::clone()`, `CommonDBTM::prepareInputForClone()` and `CommonDBTM::post_clone()` has been removed. Clonable objects must now use `Glpi\Features\Clonable` trait.
+- `GLPI_FORCE_EMPTY_SQL_MODE` constant has been removed in favor of `GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE` usage.
 
 #### Deprecated
-- Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
 - Usage of `NotificationTarget::html_tags` property
 - `DBmysql::getTableSchema()`
 - `Html::clean()`
@@ -63,6 +63,7 @@ The present file will list all changes made to the project; according to the
 - Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
 - Usage of `table` parameter in requests made to `ajax/comments.php`
 - Usage of `CommonDBTM::notificationqueueonaction` property
+- Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
 - `$CFG_GLPI['layout_excluded_pages']` entry
 - `$CFG_GLPI['use_ajax_autocompletion']` entry
 - `$LOADED_PLUGINS` global variable
