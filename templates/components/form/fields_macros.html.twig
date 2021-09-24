@@ -540,7 +540,9 @@
       }|merge(options)) }}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
+   {% if field|trim is not empty %}
+      {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
+   {% endif %}
 {% endmacro %}
 
 {% macro htmlField(name, value, label = '', options = {}) %}

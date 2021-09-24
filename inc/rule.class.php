@@ -2655,13 +2655,15 @@ class Rule extends CommonDBTM {
     * @param $options   array of possible options:
     *    - name : string / name of the select (default is depending itemtype)
     *    - sub_type : integer / sub_type of rule
+    *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
    **/
    static function dropdown($options = []) {
       $p = [
          'sub_type'     => '',
          'name'         => 'rules_id',
          'entity'       => '',
-         'condition'    => 0
+         'condition'    => 0,
+         'hide_if_no_elements' => false,
       ];
 
       if (is_array($options) && count($options)) {

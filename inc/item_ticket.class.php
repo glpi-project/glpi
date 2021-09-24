@@ -876,6 +876,7 @@ class Item_Ticket extends CommonItilObject_Item {
     *    - on_change    : string / value to transmit to "onChange"
     *    - display      : boolean / display or get string (default true)
     *    - width        : specific width needed
+    *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
     *
    **/
    static function dropdown($options = []) {
@@ -894,6 +895,7 @@ class Item_Ticket extends CommonItilObject_Item {
       $p['toupdate']       = '';
       $p['rand']           = mt_rand();
       $p['display']        = true;
+      $p['hide_if_no_elements'] = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -922,6 +924,11 @@ class Item_Ticket extends CommonItilObject_Item {
       }
 
       $iterator = $DB->request(['FROM' => $union]);
+
+      if ($p['hide_if_no_elements'] && $iterator->count() === 0) {
+         return;
+      }
+
       $output = [];
       while ($data = $iterator->next()) {
          $item = getItemForItemtype($data['itemtype']);

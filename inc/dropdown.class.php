@@ -76,6 +76,7 @@ class Dropdown {
     *    - class                : class to pass to html select
     *    - url                  : url of the ajax php code which should return the json data to show in
     *                                       the dropdown
+    *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
     *
     * @return boolean : false if error and random id if OK
     *
@@ -115,6 +116,7 @@ class Dropdown {
       $params['specific_tags']        = [];
       $params['class']                = "form-select";
       $params['url']                  = $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php";
+      $params['hide_if_no_elements']  = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -188,6 +190,16 @@ class Dropdown {
             ]),
             'order'                => $params['order'] ?? null,
       ];
+
+      if ($params['hide_if_no_elements']) {
+         $result = self::getDropdownValue(
+            ['display_emptychoice' => false, 'page' => 1, 'page_limit' => 1] + $p,
+            false
+         );
+         if ($result['count'] === 0) {
+            return;
+         }
+      }
 
       $output.= Html::jsAjaxDropdown($params['name'], $field_id,
                                      $params['url'],
