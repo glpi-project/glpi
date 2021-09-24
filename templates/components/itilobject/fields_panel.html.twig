@@ -231,6 +231,94 @@
       </div>
    {% endif %}
 
+   {% if item.getType() in ['Problem', 'Change'] %}
+      {% set analysis_fields = {
+         'impactcontent': __('Impacts'),
+         'causecontent': __('Causes'),
+         'symptomcontent': __('Symptoms'),
+         'controlistcontent': __('Control list'),
+      } %}
+
+      {% set nb_analysis = 0 %}
+      {% for analysis_field, label in analysis_fields %}
+         {% if item.isField(analysis_field) and item.fields[analysis_field]|trim|length > 0 %}
+            {% set nb_analysis = nb_analysis + 1 %}
+         {% endif %}
+      {% endfor %}
+      <div class="accordion-item">
+         <h2 class="accordion-header" id="analysis-heading">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#analysis" aria-expanded="true" aria-controls="analysis">
+               <i class="fas fa-binoculars me-1"></i>
+               <span>{{ __("Analysis") }}</span>
+               {% if nb_analysis > 0 %}
+                  <span class="badge bg-secondary ms-2">{{ nb_analysis }}</span>
+               {% endif %}
+            </button>
+         </h2>
+         <div id="analysis" class="accordion-collapse collapse" aria-labelledby="analysis-heading">
+            <div class="accordion-body row m-0 mt-n2">
+               {% for analysis_field, label in analysis_fields %}
+                  {% if item.isField(analysis_field) %}
+                     {{ fields.textareaField(
+                        analysis_field,
+                        item.fields[analysis_field],
+                        label,
+                        field_options|merge({
+                           'enable_richtext': true,
+                           'is_horizontal': false,
+                        })
+                     ) }}
+                  {% endif %}
+               {% endfor %}
+            </div>
+         </div>
+      </div>
+   {% endif %}
+
+   {% if item.getType() == 'Change' %}
+      {% set plans_fields = {
+         'rolloutplancontent': __('Deployment plan'),
+         'backoutplancontent': __('Backup plan'),
+         'checklistcontent': __('Checklist'),
+      } %}
+
+      {% set nb_plans = 0 %}
+      {% for plans_field, label in plans_fields %}
+         {% if item.isField(plans_field) and item.fields[plans_field]|trim|length > 0 %}
+            {% set nb_plans = nb_plans + 1 %}
+         {% endif %}
+      {% endfor %}
+
+      <div class="accordion-item">
+         <h2 class="accordion-header" id="plans-heading">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#plans" aria-expanded="true" aria-controls="plans">
+               <i class="fas fa-tasks me-1"></i>
+               <span>{{ __("Plans") }}</span>
+               {% if nb_plans > 0 %}
+                  <span class="badge bg-secondary ms-2">{{ nb_plans }}</span>
+               {% endif %}
+            </button>
+         </h2>
+         <div id="plans" class="accordion-collapse collapse" aria-labelledby="plans-heading">
+            <div class="accordion-body row m-0 mt-n2">
+               {% for plans_field, label in plans_fields %}
+                  {% if item.isField(plans_field) %}
+                     {{ fields.textareaField(
+                        plans_field,
+                        item.fields[plans_field],
+                        label,
+                        field_options|merge({
+                           'enable_richtext': true,
+                           'is_horizontal': false,
+                        })
+                     ) }}
+                  {% endif %}
+               {% endfor %}
+            </div>
+         </div>
+      </div>
+   {% endif %}
+
    {% if ticket_ticket %}
       <div class="accordion-item">
          <h2 class="accordion-header" id="linked_tickets-heading">

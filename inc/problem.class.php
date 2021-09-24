@@ -164,12 +164,8 @@ class Problem extends CommonITILObject {
          switch ($item->getType()) {
             case __CLASS__ :
 
-               $ong = [
-                  1 => __('Analysis')
-               ];
-
                if ($item->canUpdate()) {
-                  $ong[4] = __('Statistics');
+                  $ong[1] = __('Statistics');
                }
 
                return $ong;
@@ -185,10 +181,6 @@ class Problem extends CommonITILObject {
          case __CLASS__ :
             switch ($tabnum) {
                case 1 :
-                  $item->showAnalysisForm();
-                  break;
-
-               case 4 :
                   $item->showStats();
                   break;
             }
@@ -1438,58 +1430,6 @@ class Problem extends CommonITILObject {
       ]);
 
       return true;
-   }
-
-
-   /**
-    * Form to add an analysis to a problem
-   **/
-   function showAnalysisForm() {
-
-      $this->check($this->getField('id'), READ);
-      $canedit = $this->canEdit($this->getField('id'));
-
-      $options            = [];
-      $options['canedit'] = false;
-      CommonDBTM::showFormHeader($options);
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Impacts')."</td><td colspan='3'>";
-      if ($canedit) {
-         echo "<textarea id='impactcontent' name='impactcontent' rows='6' cols='80'>";
-         echo $this->getField('impactcontent');
-         echo "</textarea>";
-      } else {
-         echo $this->getField('impactcontent');
-      }
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Causes')."</td><td colspan='3'>";
-      if ($canedit) {
-         echo "<textarea id='causecontent' name='causecontent' rows='6' cols='80'>";
-         echo $this->getField('causecontent');
-         echo "</textarea>";
-      } else {
-         echo $this->getField('causecontent');
-      }
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Symptoms')."</td><td colspan='3'>";
-      if ($canedit) {
-         echo "<textarea id='symptomcontent' name='symptomcontent' rows='6' cols='80'>";
-         echo $this->getField('symptomcontent');
-         echo "</textarea>";
-      } else {
-         echo $this->getField('symptomcontent');
-      }
-      echo "</td></tr>";
-
-      $options['candel']  = false;
-      $options['canedit'] = $canedit;
-      $this->showFormButtons($options);
-
    }
 
    /**

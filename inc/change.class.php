@@ -201,13 +201,8 @@ class Change extends CommonITILObject {
       if (static::canView()) {
          switch ($item->getType()) {
             case __CLASS__ :
-               $ong = [
-                  1 => __('Analysis'),
-                  3 => __('Plans')
-               ];
-
                if ($item->canUpdate()) {
-                  $ong[4] = __('Statistics');
+                  $ong[1] = __('Statistics');
                }
 
                return $ong;
@@ -223,14 +218,6 @@ class Change extends CommonITILObject {
          case __CLASS__ :
             switch ($tabnum) {
                case 1 :
-                  $item->showAnalysisForm($item->getID());
-                  break;
-
-               case 3 :
-                  $item->showPlanForm($item->getID());
-                  break;
-
-               case 4 :
                   $item->showStats();
                   break;
             }
@@ -830,169 +817,6 @@ class Change extends CommonITILObject {
       ]);
 
       return true;
-   }
-
-
-   /**
-    * Form to add an analysis to a change
-   **/
-   function showAnalysisForm($ID = false, $options = [], $tt = null) {
-
-      $this->check($this->getField('id'), READ);
-      $canedit = $this->canEdit($this->getField('id'));
-
-      if ($tt == null) {
-         if (!isset($options['template_preview'])) {
-            $options['template_preview'] = 0;
-         }
-
-         $tt = $this->getITILTemplateToUse(
-            $options['template_preview'],
-            $this->getType(),
-            ($ID ? $this->fields['itilcategories_id'] : $options['itilcategories_id']),
-            ($ID ? $this->fields['entities_id'] : $options['entities_id'])
-         );
-      }
-
-      if ($ID) {
-         $options            = [];
-         $options['canedit'] = false;
-         CommonDBTM::showFormHeader($options);
-      }
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th>".$tt->getBeginHiddenFieldText('impactcontent');
-      printf(__('%1$s%2$s'), __('Impacts'), $tt->getMandatoryMark('impactcontent'));
-      echo $tt->getEndHiddenFieldText('impactcontent')."</th>";
-      echo "<td colspan='3'>";
-      echo $tt->getBeginHiddenFieldValue('impactcontent');
-      if ($canedit) {
-         echo "<textarea ". ($tt->isMandatoryField('impactcontent') ? " required='required'" : '') .
-         " id='impactcontent' name='impactcontent' rows='6' cols='110'>";
-         echo $this->getField('impactcontent');
-         echo "</textarea>";
-      } else {
-         echo $this->getField('impactcontent');
-      }
-      echo $tt->getEndHiddenFieldValue('impactcontent', $this);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th>".$tt->getBeginHiddenFieldText('controlistcontent');
-      printf(__('%1$s%2$s'), __('Control list'), $tt->getMandatoryMark('controlistcontent'));
-      echo $tt->getEndHiddenFieldText('controlistcontent')."</th>";
-      echo "<td colspan='3'>";
-      echo $tt->getBeginHiddenFieldValue('controlistcontent');
-      if ($canedit) {
-         echo "<textarea ". ($tt->isMandatoryField('controlistcontent') ? " required='required'" : '') .
-         " id='controlistcontent' name='controlistcontent' rows='6' cols='110'>";
-         echo $this->getField('controlistcontent');
-         echo "</textarea>";
-      } else {
-         echo $this->getField('controlistcontent');
-      }
-      echo $tt->getEndHiddenFieldValue('controlistcontent', $this);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "</td></tr>";
-
-      if ($ID) {
-         $options['candel']  = false;
-         $options['canedit'] = $canedit;
-         $this->showFormButtons($options);
-      }
-
-   }
-
-   /**
-    * Form to add an analysis to a change
-   **/
-   function showPlanForm($ID = false, $options = [], $tt = null) {
-
-      $this->check($this->getField('id'), READ);
-      $canedit            = $this->canEdit($this->getField('id'));
-
-      if ($ID) {
-         $options            = [];
-         $options['canedit'] = false;
-         CommonDBTM::showFormHeader($options);
-      }
-
-      if ($tt == null) {
-         if (!isset($options['template_preview'])) {
-            $options['template_preview'] = 0;
-         }
-
-         $tt = $this->getITILTemplateToUse(
-            $options['template_preview'],
-            $this->getType(),
-            ($ID ? $this->fields['itilcategories_id'] : $options['itilcategories_id']),
-            ($ID ? $this->fields['entities_id'] : $options['entities_id'])
-         );
-      }
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th>".$tt->getBeginHiddenFieldText('rolloutplancontent');
-      printf(__('%1$s%2$s'), __('Deployment plan'), $tt->getMandatoryMark('rolloutplancontent'));
-      echo $tt->getEndHiddenFieldText('rolloutplancontent')."</th>";
-      echo "<td colspan='3'>";
-      echo $tt->getBeginHiddenFieldValue('rolloutplancontent');
-      if ($canedit) {
-         echo "<textarea ". ($tt->isMandatoryField('rolloutplancontent') ? " required='required'" : '') .
-         " id='rolloutplancontent' name='rolloutplancontent' rows='6' cols='110'>";
-         echo $this->getField('rolloutplancontent');
-         echo "</textarea>";
-      } else {
-         echo $this->getField('rolloutplancontent');
-      }
-      echo $tt->getEndHiddenFieldValue('rolloutplancontent', $this);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th>".$tt->getBeginHiddenFieldText('backoutplancontent');
-      printf(__('%1$s%2$s'), __('Backup plan'), $tt->getMandatoryMark('backoutplancontent'));
-      echo $tt->getEndHiddenFieldText('backoutplancontent')."</th>";
-      echo "<td colspan='3'>";
-      echo $tt->getBeginHiddenFieldValue('backoutplancontent');
-      if ($canedit) {
-         echo "<textarea ". ($tt->isMandatoryField('backoutplancontent') ? " required='required'" : '') .
-         " id='backoutplancontent' name='backoutplancontent' rows='6' cols='110'>";
-         echo $this->getField('backoutplancontent');
-         echo "</textarea>";
-      } else {
-         echo $this->getField('backoutplancontent');
-      }
-      echo $tt->getEndHiddenFieldValue('backoutplancontent', $this);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th>".$tt->getBeginHiddenFieldText('checklistcontent');
-      printf(__('%1$s%2$s'), __('Checklist'), $tt->getMandatoryMark('checklistcontent'));
-      echo $tt->getEndHiddenFieldText('checklistcontent')."</th>";
-      echo "<td colspan='3'>";
-      echo $tt->getBeginHiddenFieldValue('checklistcontent');
-      if ($canedit) {
-         echo "<textarea ". ($tt->isMandatoryField('checklistcontent') ? " required='required'" : '') .
-         " id='checklistcontent' name='checklistcontent' rows='6' cols='110'>";
-         echo $this->getField('checklistcontent');
-         echo "</textarea>";
-      } else {
-         echo $this->getField('checklistcontent');
-      }
-      echo $tt->getEndHiddenFieldValue('checklistcontent', $this);
-      echo "</td>";
-      echo "</tr>";
-
-      if ($ID) {
-         $options['candel']  = false;
-         $options['canedit'] = $canedit;
-         $this->showFormButtons($options);
-      }
-
    }
 
 
