@@ -49,7 +49,6 @@ The present file will list all changes made to the project; according to the
 - `GLPI_FORCE_EMPTY_SQL_MODE` constant has been removed in favor of `GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE` usage.
 
 #### Deprecated
-- Usage of `NotificationTarget::html_tags` property
 - `Html::clean()`
 - `RuleImportComputer` class
 - `RuleImportComputerCollection` class
@@ -61,12 +60,13 @@ The present file will list all changes made to the project; according to the
 - jQueryUI has been partially removed and remaining widgets will be removed in a near future.
 - Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
 - Usage of `table` parameter in requests made to `ajax/comments.php`
-- Usage of `CommonDBTM::notificationqueueonaction` property
 - Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
 - Support of `doc_types`, `helpdesk_types` and `netport_types` keys in `Plugin::registerClass()`
 - `$CFG_GLPI['layout_excluded_pages']` entry
 - `$CFG_GLPI['use_ajax_autocompletion']` entry
 - `$LOADED_PLUGINS` global variable
+- `CommonDBTM::notificationqueueonaction` property
+- `NotificationTarget::html_tags` property
 - `getAllDatasFromTable()`
 - `getRealQueryForTreeItem()`
 - `Ajax::createFixedModalWindow()`
