@@ -859,7 +859,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
 
    /**
-    * Cron action on softwares : alert on expired licences
+    * Cron action on software: alert on expired licences
     *
     * @param $task to log, if NULL display (default NULL)
     *
@@ -997,7 +997,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
 
    /**
-    * Get number of licensesof a software
+    * Get number of licenses of a software
     *
     * @param $softwares_id software ID
     *

@@ -947,7 +947,7 @@ $ curl -X GET \
       ```
 
   * *metacriteria* (optional): array of meta-criterion objects to filter search. Optional.
-                                 A meta search is a link with another itemtype (ex: Computer with softwares).
+                                 A meta search is a link with another itemtype (ex: Computer with software).
       **Deprecated: Now criteria support meta flag, you should use it instead direct metacriteria option.**
 
       Each meta-criterion object must provide:

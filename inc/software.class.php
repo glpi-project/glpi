@@ -919,7 +919,7 @@ class Software extends CommonDBTM {
 
 
    /**
-    * Show softwares candidates to be merged with the current
+    * Show software candidates to be merged with the current
     *
     * @return void
    **/
@@ -1004,7 +1004,7 @@ class Software extends CommonDBTM {
 
 
    /**
-    * Merge softwares with current
+    * Merge software with current
     *
     * @param $item array of software ID to be merged
     * @param boolean display html progress bar
