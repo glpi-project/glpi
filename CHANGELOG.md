@@ -64,6 +64,7 @@ The present file will list all changes made to the project; according to the
 #### Removed
 - jQueryUI has been partially removed and remaining widgets will be removed in a near future.
 - Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
+- Usage of `table` parameter in requests made to `ajax/comments.php`
 - `$CFG_GLPI['layout_excluded_pages']` entry
 - `$CFG_GLPI['use_ajax_autocompletion']` entry
 - `$LOADED_PLUGINS` global variable
