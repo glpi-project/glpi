@@ -184,7 +184,9 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::canUseImapPop()`
 - `Toolbox::checkSELinux()`
 - `Toolbox::convertImageToTag()`
+- `Toolbox::decrypt()`
 - `Toolbox::doubleEncodeEmails()`
+- `Toolbox::encrypt()`
 - `Toolbox::removeHtmlSpecialChars()`
 - `Toolbox::sanitize()`
 - `Toolbox::unclean_html_cross_side_scripting_deep()`

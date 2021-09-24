@@ -234,34 +234,6 @@ class Toolbox {
       return mb_convert_encoding($string, $to_charset, "UTF-8");
    }
 
-
-   /**
-    * Encrypt a string
-    *
-    * @param string $string  string to encrypt
-    * @param string $key     key used to encrypt
-    *
-    * @return string  encrypted string
-   **/
-   static function encrypt($string, $key = null) {
-      self::deprecated('Use sodiumEncrypt');
-
-      if ($key === null) {
-         $glpikey = new GLPIKey();
-         $key = $glpikey->getLegacyKey();
-      }
-
-      $result = '';
-      $strlen = strlen($string);
-      for ($i=0; $i < $strlen; $i++) {
-         $char    = substr($string, $i, 1);
-         $keychar = substr($key, ($i % strlen($key))-1, 1);
-         $char    = chr(ord($char)+ord($keychar));
-         $result .= $char;
-      }
-      return base64_encode($result);
-   }
-
    public static function sodiumEncrypt($content, $key = null) {
       if ($key === null) {
          $key = self::getGlpiSecKey();
@@ -313,26 +285,6 @@ class Toolbox {
          return '';
       }
       return $plaintext;
-   }
-
-   /**
-    * Decrypt a string
-    *
-    * @param string $string  string to decrypt
-    * @param string $key     key used to decrypt
-    *
-    * @return string  decrypted string
-   **/
-   static function decrypt($string, $key = null) {
-      self::deprecated('Use sodiumDecrypt');
-
-      $glpikey = new GLPIKey();
-
-      if ($key === null) {
-         $key = $glpikey->getLegacyKey();
-      }
-
-      return $glpikey->decryptUsingLegacyKey($string, $key);
    }
 
    /**
