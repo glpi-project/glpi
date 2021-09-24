@@ -45,13 +45,11 @@ The present file will list all changes made to the project; according to the
 - `NotificationSettingConfig::showForm()` renamed to `NotificationSettingConfig::showConfigForm()`.
 - `RuleMatchedLog::showForm()` renamed to `RuleMatchedLog::showItemForm()`.
 - `CommonDBTM::notificationqueueonaction` property has been removed in favor of `CommonDBTM::deduplicate_queued_notifications` property.
+- `CommonDBTM::clone()`, `CommonDBTM::prepareInputForClone()` and `CommonDBTM::post_clone()` has been removed. Clonable objects must now use `Glpi\Features\Clonable` trait.
 
 #### Deprecated
 - Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
 - Usage of `NotificationTarget::html_tags` property
-- `CommonDBTM::clone()`
-- `CommonDBTM::prepareInputForClone()`
-- `CommonDBTM::post_clone()`
 - `CommonITILObject::getActorIcon()`
 - `DBmysql::getTableSchema()`
 - `Html::clean()`
@@ -80,7 +78,10 @@ The present file will list all changes made to the project; according to the
 - `Change::getCommonSelect()`
 - `Change::showAnalysisForm()`
 - `Change::showPlanForm()`
+- `CommonDBTM::clone()`
 - `CommonDBTM::getRawName()`
+- `CommonDBTM::prepareInputForClone()`
+- `CommonDBTM::post_clone()`
 - `CommonDBTM::showDates()`
 - `CommonGLPI::isLayoutExcludedPage()`
 - `CommonGLPI::isLayoutWithMain()`

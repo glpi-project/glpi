@@ -1254,54 +1254,6 @@ class CommonDBTM extends CommonGLPI {
       return false;
    }
 
-   /**
-    * Clones the current item
-    *
-    * @since 9.5
-    *
-    * @param array $override_input custom input to override
-    * @param boolean $history do history log ? (true by default)
-    *
-    * @return integer the new ID of the clone (or false if fail)
-    * @deprecated 10.0.0 Use the {@link \Glpi\Features\Clonable} trait instead
-    */
-   function clone(array $override_input = [], bool $history = true) {
-      global $DB, $CFG_GLPI;
-
-      \Toolbox::deprecated();
-      if ($DB->isSlave()) {
-         return false;
-      }
-      $new_item = new static();
-      $input = Toolbox::addslashes_deep($this->fields);
-      foreach ($override_input as $key => $value) {
-         $input[$key] = $value;
-      }
-      $input = $new_item->prepareInputForClone($input);
-      if (isset($input['id'])) {
-         $input['_oldID'] =  $input['id'];
-         unset($input['id']);
-      }
-      unset($input['date_creation']);
-      unset($input['date_mod']);
-
-      if (isset($input['template_name'])) {
-         unset($input['template_name']);
-      }
-      if (isset($input['is_template'])) {
-         unset($input['is_template']);
-      }
-
-      $input['clone'] = true;
-      $newID = $new_item->add($input, [], $history);
-      // If the item needs post clone (recursive cloning for example)
-      $new_item->post_clone($this, $history);
-      if ($this instanceof CacheableListInterface) {
-         $this->invalidateListCache();
-      }
-      return $newID;
-   }
-
 
    /**
     * Get the link to an item
@@ -1435,24 +1387,6 @@ class CommonDBTM extends CommonGLPI {
       return $input;
    }
 
-    /**
-    * Prepare input datas for cloning the item
-    *
-    * @since 9.5
-    *
-    * @param array $input datas used to add the item
-    *
-    * @return array the modified $input array
-    * @deprecated 10.0.0 Use the {@link \Glpi\Features\Clonable} trait
-   **/
-   function prepareInputForClone($input) {
-      \Toolbox::deprecated();
-      unset($input['id']);
-      unset($input['date_mod']);
-      unset($input['date_creation']);
-      return $input;
-   }
-
 
    /**
     * Actions done after the ADD of the item in the database
@@ -1464,21 +1398,6 @@ class CommonDBTM extends CommonGLPI {
       if (Toolbox::hasTrait($this, \Glpi\Features\UserMention::class)) {
          $this->handleUserMentions();
       }
-   }
-
-   /**
-    * Actions done after the clone of the item in the database
-    *
-    * @since 9.5
-    *
-    * @param $source the item that is being cloned
-    * @param $history do history log ?
-    *
-    * @return void
-    * @deprecated 10.0.0 Use the {@link \Glpi\Features\Clonable} trait
-   **/
-   function post_clone($source, $history) {
-      \Toolbox::deprecated();
    }
 
 
