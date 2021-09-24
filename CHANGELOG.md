@@ -123,6 +123,7 @@ The present file will list all changes made to the project; according to the
 - `DbUtils::getRealQueryForTreeItem()`
 - `DCBreadcrumb::showDcBreadcrumb()`
 - `Document_Item::cloneItem()`
+- `Entity::showSelector()`
 - `Html::autocompletionTextField()`
 - `Html::displayImpersonateBanner()`
 - `Html::displayMainMenu()`
