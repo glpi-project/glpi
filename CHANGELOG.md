@@ -63,6 +63,7 @@ The present file will list all changes made to the project; according to the
 - Usage of `table` parameter in requests made to `ajax/comments.php`
 - Usage of `CommonDBTM::notificationqueueonaction` property
 - Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
+- Support of `doc_types`, `helpdesk_types` and `netport_types` keys in `Plugin::registerClass()`
 - `$CFG_GLPI['layout_excluded_pages']` entry
 - `$CFG_GLPI['use_ajax_autocompletion']` entry
 - `$LOADED_PLUGINS` global variable
