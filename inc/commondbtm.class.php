@@ -154,14 +154,6 @@ class CommonDBTM extends CommonGLPI {
    public $deduplicate_queued_notifications = true;
 
    /**
-    * Flag to determine whether or not notification queu should be flushed immediately when an
-    * action is performed on item.
-    *
-    * @var boolean
-    */
-   public $notificationqueueonaction = false;
-
-   /**
     * Computed/forced values of classes tables.
     * @var string[]
     */
@@ -1253,10 +1245,6 @@ class CommonDBTM extends CommonGLPI {
                if (isset($this->input['_add'])) {
                   $this->clearSavedInput();
                }
-               if ($this->notificationqueueonaction) {
-                  Toolbox::deprecated('$notificationqueueonaction property usage is deprecated');
-                  QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
-               }
                return $this->fields['id'];
             }
          }
@@ -1659,11 +1647,6 @@ class CommonDBTM extends CommonGLPI {
                $this->invalidateListCache();
             }
 
-            if ($this->notificationqueueonaction) {
-               Toolbox::deprecated('$notificationqueueonaction property usage is deprecated');
-               QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
-            }
-
             return true;
          }
       }
@@ -1965,10 +1948,6 @@ class CommonDBTM extends CommonGLPI {
                }
                Plugin::doHook("item_delete", $this);
             }
-            if ($this->notificationqueueonaction) {
-               Toolbox::deprecated('$notificationqueueonaction property usage is deprecated');
-               QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
-            }
 
             return true;
          }
@@ -2137,10 +2116,6 @@ class CommonDBTM extends CommonGLPI {
             $this->invalidateListCache();
          }
          Plugin::doHook("item_restore", $this);
-         if ($this->notificationqueueonaction) {
-            Toolbox::deprecated('$notificationqueueonaction property usage is deprecated');
-            QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
-         }
          return true;
       }
 

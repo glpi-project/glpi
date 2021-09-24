@@ -44,10 +44,10 @@ The present file will list all changes made to the project; according to the
 - `TicketSatisfaction::showForm()` renamed to `TicketSatisfaction::showSatisfactionForm()`.
 - `NotificationSettingConfig::showForm()` renamed to `NotificationSettingConfig::showConfigForm()`.
 - `RuleMatchedLog::showForm()` renamed to `RuleMatchedLog::showItemForm()`.
+- `CommonDBTM::notificationqueueonaction` property has been removed in favor of `CommonDBTM::deduplicate_queued_notifications` property.
 
 #### Deprecated
 - Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
-- Usage of `CommonDBTM::notificationqueueonaction` property
 - Usage of `NotificationTarget::html_tags` property
 - `CommonDBTM::clone()`
 - `CommonDBTM::prepareInputForClone()`
@@ -65,6 +65,7 @@ The present file will list all changes made to the project; according to the
 - jQueryUI has been partially removed and remaining widgets will be removed in a near future.
 - Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
 - Usage of `table` parameter in requests made to `ajax/comments.php`
+- Usage of `CommonDBTM::notificationqueueonaction` property
 - `$CFG_GLPI['layout_excluded_pages']` entry
 - `$CFG_GLPI['use_ajax_autocompletion']` entry
 - `$LOADED_PLUGINS` global variable
