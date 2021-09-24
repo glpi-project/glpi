@@ -454,7 +454,7 @@ class Computer extends CommonDBTM {
 
       echo "</td>";
 
-      // Display auto inventory informations
+      // Display auto inventory information
       $rowspan        = 3;
 
       echo "<td rowspan='$rowspan'><label for='comment'>".__('Comments')."</label></td>";

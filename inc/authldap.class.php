@@ -1226,7 +1226,7 @@ class AuthLDAP extends CommonDBTM {
    }
 
    /**
-    * Show system informations form
+    * Show system information form
     *
     * @param integer $width The number of characters at which the string will be wrapped.
     *
@@ -1689,7 +1689,7 @@ class AuthLDAP extends CommonDBTM {
     * @param string   $filter        search filter
     * @param array    $attrs         An array of the required attributes
     * @param boolean  $limitexceeded is limit exceeded
-    * @param array    $user_infos    user informations
+    * @param array    $user_infos    user information
     * @param array    $ldap_users    ldap users
     * @param object   $config_ldap   ldap configuration
     *

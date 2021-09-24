@@ -197,7 +197,7 @@ trait Inventoriable {
 JAVASCRIPT;
       echo Html::scriptBlock($js);
 
-      // Display auto inventory informations
+      // Display auto inventory information
       if (!empty($this->fields['id'])
           && $this->fields["is_dynamic"]) {
          echo "<tr class='tab_bg_1'><td colspan='4'>";

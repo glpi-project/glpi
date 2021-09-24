@@ -96,7 +96,7 @@ class CommonDBTM extends CommonGLPI {
    public $additional_fields_for_dictionnary = [];
 
    /**
-    * List of linked item types on which entities informations should be forwarded on update.
+    * List of linked item types on which entities information should be forwarded on update.
     *
     * @var string[]
     */
@@ -129,7 +129,7 @@ class CommonDBTM extends CommonGLPI {
    public $get_item_to_display_tab = true;
 
    /**
-    * List of linked item types from plugins on which entities informations should be forwarded on update.
+    * List of linked item types from plugins on which entities information should be forwarded on update.
     *
     * @var array
     */
@@ -5186,7 +5186,7 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Is entity informations forward To ?
+    * Is entity information forward To ?
     *
     * @since 0.84
     *

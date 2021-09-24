@@ -48,7 +48,7 @@ if (($_GET["action"] ?? null) == "get_dl_progress") {
 }
 
 if (in_array($_POST["action"] ?? null, ['download_plugin', 'update_plugin'])) {
-   // Do not load plugin that will be updated, to be able to load its new informations
+   // Do not load plugin that will be updated, to be able to load its new information
    // by redefining its plugin_version_ function after files replacement.
    $PLUGINS_EXCLUDED = [$_POST['key']];
 }

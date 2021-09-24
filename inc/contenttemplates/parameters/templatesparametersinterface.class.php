@@ -70,7 +70,7 @@ interface TemplatesParametersInterface
 
    /**
     * To be defined in each subclasses, define all available parameters for one or more itemtypes.
-    * These parameters informations are meant to be used for autocompletion on the client side.
+    * These parameters information are meant to be used for autocompletion on the client side.
     *
     * @return \Glpi\ContentTemplates\Parameters\ParametersTypes\ParameterTypeInterface[]
     */

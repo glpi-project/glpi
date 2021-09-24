@@ -190,7 +190,7 @@ class DatabaseSchemaIntegrityChecker {
          return $this->normalized[$cache_key];
       }
 
-      // Extract informations
+      // Extract information
       $matches = [];
       if (!preg_match('/^CREATE TABLE `(?<table>\w+)` \((?<structure>.+)\)(?<properties>[^\)]*)$/is', $create_table_sql, $matches)) {
          return $create_table_sql;// Unable to normalize
