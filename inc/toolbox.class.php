@@ -2657,33 +2657,6 @@ class Toolbox {
    }
 
    /**
-    * Convert image to tag
-    *
-    * @since 9.2
-    *
-    * @param string $content_html   html content of input
-    * @param boolean $force_update  force update of content in item
-    *
-    * @return string  html content
-   **/
-   static function convertImageToTag($content_html, $force_update = false) {
-
-      if (!empty($content_html)) {
-         $matches = [];
-         preg_match_all("/alt\s*=\s*['|\"](.+?)['|\"]/", $content_html, $matches, PREG_PATTERN_ORDER);
-         if (isset($matches[1]) && count($matches[1])) {
-            // Get all image src
-            foreach ($matches[1] as $src) {
-               // Set tag if image matches
-               $content_html = preg_replace(["/<img.*alt=['|\"]".$src."['|\"][^>]*\>/", "/<object.*alt=['|\"]".$src."['|\"][^>]*\>/"], Document::getImageTag($src), $content_html);
-            }
-         }
-
-         return $content_html;
-      }
-   }
-
-   /**
     * Delete tag or image from ticket content
     *
     * @since 9.2

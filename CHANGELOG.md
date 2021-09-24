@@ -55,8 +55,6 @@ The present file will list all changes made to the project; according to the
 - `CommonITILObject::getActorIcon()`
 - `DBmysql::getTableSchema()`
 - `Html::clean()`
-- `Html::setSimpleTextContent()`
-- `Html::setRichTextContent()`
 - `RuleImportComputer` class
 - `RuleImportComputerCollection` class
 - `Toolbox::clean_cross_side_scripting_deep()`
@@ -129,9 +127,15 @@ The present file will list all changes made to the project; according to the
 - `Html::displayMainMenu()`
 - `Html::displayMenuAll()`
 - `Html::displayTopMenu()`
+- `Html::fileForRichText()`
+- `Html::generateImageName()`
 - `Html::jsDisable()`
 - `Html::jsEnable()`
+- `Html::nl2br_deep()`
 - `Html::resume_name()`
+- `Html::setSimpleTextContent()`
+- `Html::setRichTextContent()`
+- `Html::showProfileSelecter()`
 - `Html::weblink_extract()`
 - `Infocom::cloneItem()`
 - `Itil_Project::cloneItilProject()`
@@ -174,6 +178,7 @@ The present file will list all changes made to the project; according to the
 - `TicketTemplate::getFromDBWithDatas()`
 - `Toolbox::canUseImapPop()`
 - `Toolbox::checkSELinux()`
+- `Toolbox::convertImageToTag()`
 - `Toolbox::doubleEncodeEmails()`
 - `Toolbox::removeHtmlSpecialChars()`
 - `Toolbox::sanitize()`
