@@ -533,7 +533,7 @@ abstract class API {
     *    - 'get_sha1':         Get a sha1 signature instead of the full answer. default: false. Optionnal
     *    - 'with_devices':  Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optionnal.
     *    - 'with_disks':       Only for Computer, retrieve the associated filesystems. Optionnal.
-    *    - 'with_softwares':   Only for Computer, retrieve the associated softwares installations. Optionnal.
+    *    - 'with_softwares':   Only for Computer, retrieve the associated software installations. Optionnal.
     *    - 'with_connections': Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optionnal.
     *    - 'with_networkports':Retrieve all network connections and advanced informations. Optionnal.
     *    - 'with_infocoms':    Retrieve financial and administrative informations. Optionnal.
@@ -1253,7 +1253,7 @@ abstract class API {
     *    - 'get_sha1':          Get a sha1 signature instead of the full answer. default: false. Optionnal
     *    - 'with_devices':   Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optionnal.
     *    - 'with_disks':        Only for Computer, retrieve the associated filesystems. Optionnal.
-    *    - 'with_softwares':    Only for Computer, retrieve the associated softwares installations. Optionnal.
+    *    - 'with_softwares':    Only for Computer, retrieve the associated software installations. Optionnal.
     *    - 'with_connections':  Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optionnal.
     *    - 'with_networkports': Retrieve all network connections and advanced informations. Optionnal.
     *    - 'with_infocoms':     Retrieve financial and administrative informations. Optionnal.
@@ -1435,7 +1435,7 @@ abstract class API {
     *    - 'metacriteria' (optionnal): array of metacriterion object to filter search.
     *                                  Optionnal.
     *                                  A meta search is a link with another itemtype
-    *                                  (ex: Computer with softwares).
+    *                                  (ex: Computer with software).
     *         Each metacriterion object must provide :
     *            - link: logical operator in [AND, OR, AND NOT, AND NOT]. Mandatory
     *            - itemtype: second itemtype to link.

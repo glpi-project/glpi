@@ -55,7 +55,7 @@ class ProcessSoftwareCategoryRulesCommand extends AbstractCommand {
          'all',
          'a',
          InputOption::VALUE_NONE,
-         __('Process rule for all softwares, even those having already a defined category')
+         __('Process rule for all software, even those having already a defined category')
       );
    }
 
@@ -124,7 +124,7 @@ class ProcessSoftwareCategoryRulesCommand extends AbstractCommand {
       $this->output->write(PHP_EOL);
 
       $output->writeln(
-         '<info>' .sprintf(__('Number of softwares processed: %d.'), $processed_count) . '</info>'
+         '<info>' .sprintf(__('Number of software processed: %d.'), $processed_count) . '</info>'
       );
 
       return 0; // Success

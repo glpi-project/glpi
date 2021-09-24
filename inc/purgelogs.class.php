@@ -72,7 +72,7 @@ class PurgeLogs extends CommonDBTM {
    }
 
    /**
-    * Purge softwares logs
+    * Purge software logs
     *
     * @return void
     */

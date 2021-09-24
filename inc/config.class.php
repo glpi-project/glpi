@@ -2984,7 +2984,7 @@ class Config extends CommonDBTM {
       self::showLogsInterval('purge_item_software_install',
                           $CFG_GLPI["purge_item_software_install"]);
       echo "</td>";
-      echo "<td>".__("Installation/uninstallation versions on softwares")."</td><td>";
+      echo "<td>".__("Installation/uninstallation versions on software")."</td><td>";
       self::showLogsInterval('purge_software_version_install',
                          $CFG_GLPI["purge_software_version_install"]);
       echo "</td>";
