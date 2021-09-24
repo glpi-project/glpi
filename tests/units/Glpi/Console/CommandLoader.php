@@ -103,7 +103,7 @@ PHP
             ,
 
             // Not a command case
-            'oldscript.php' => '<?php echo("Hi !");',
+            'oldscript.php' => '<?php echo("Hi!");',
          ],
          'plugins' => [
             'awesome' => [

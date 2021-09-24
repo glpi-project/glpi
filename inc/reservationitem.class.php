@@ -942,7 +942,7 @@ class ReservationItem extends CommonDBChild {
             ]
          ]);
          if ($result->count() == 0) {
-            echo __('No reservable item !');
+            echo __('No reservable item!');
          } else {
             $items = [];
             foreach ($result as $row) {

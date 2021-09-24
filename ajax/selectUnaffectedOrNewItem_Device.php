@@ -71,7 +71,7 @@ if ($_POST['items_id']
         __('and/or') . "</td><td>" . __('Add new devices') . '</td></tr>';
    echo "<tr><td>";
    if ($result->count() == 0) {
-      echo __('No unaffected device !');
+      echo __('No unaffected device!');
    } else {
       $devices = [];
       foreach ($result as $row) {

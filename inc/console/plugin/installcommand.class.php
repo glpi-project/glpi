@@ -157,7 +157,7 @@ class InstallCommand extends AbstractPluginCommand {
 
    protected function getDirectoryChoiceQuestion() {
 
-      return __('Which plugin(s) do you want to install (comma separated values) ?');
+      return __('Which plugin(s) do you want to install (comma separated values)?');
    }
 
    protected function getDirectoryChoiceChoices() {

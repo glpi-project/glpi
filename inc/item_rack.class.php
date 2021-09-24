@@ -714,7 +714,7 @@ JAVASCRIPT;
          ]
       );
       echo "</td>";
-      echo "<td><label for='dropdown_is_reserved$rand'>".__('Reserved position ?')."</label></td>";
+      echo "<td><label for='dropdown_is_reserved$rand'>".__('Reserved position?')."</label></td>";
       echo "<td>";
 
       echo Html::scriptBlock("

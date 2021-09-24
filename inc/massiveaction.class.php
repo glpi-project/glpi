@@ -143,8 +143,8 @@ class MassiveAction {
 
                case 'specialize' :
                   if (!isset($POST['action'])) {
-                     Toolbox::logError('Implementation error !');
-                     throw new \Exception(__('Implementation error !'));
+                     Toolbox::logError('Implementation error!');
+                     throw new \Exception(__('Implementation error!'));
                   }
                   if ($POST['action'] == -1) {
                      // Case when no action is choosen
@@ -153,8 +153,8 @@ class MassiveAction {
                   if (isset($POST['actions'])) {
                      // First, get the name of current action !
                      if (!isset($POST['actions'][$POST['action']])) {
-                        Toolbox::logError('Implementation error !');
-                        throw new \Exception(__('Implementation error !'));
+                        Toolbox::logError('Implementation error!');
+                        throw new \Exception(__('Implementation error!'));
                      }
                      $POST['action_name'] = $POST['actions'][$POST['action']];
                      $remove_from_post[]  = 'actions';
@@ -262,8 +262,8 @@ class MassiveAction {
       } else {
          if (($stage != 'process')
              || (!isset($_SESSION['current_massive_action'][$GET['identifier']]))) {
-            Toolbox::logError('Implementation error !');
-            throw new \Exception(__('Implementation error !'));
+            Toolbox::logError('Implementation error!');
+            throw new \Exception(__('Implementation error!'));
          }
          $identifier = $GET['identifier'];
          foreach ($_SESSION['current_massive_action'][$identifier] as $attribute => $value) {
@@ -853,7 +853,7 @@ class MassiveAction {
             if (!isset($ma->POST['common_options'])) {
                echo "<div class='center'><img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='".
                               __s('Warning')."'><br><br>";
-               echo "<span class='b'>".__('Implementation error !')."</span><br>";
+               echo "<span class='b'>".__('Implementation error!')."</span><br>";
                echo "</div>";
                exit();
             }
@@ -952,7 +952,7 @@ class MassiveAction {
 
             echo "<table width='100%'><tr>";
             echo "<td>";
-            echo __('How many copies do you want to create ?');
+            echo __('How many copies do you want to create?');
             echo "</td><tr>";
             echo "<td>".Html::input("nb_copy", [
                'id'     => "nb_copy$rand",

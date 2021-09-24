@@ -43,7 +43,7 @@ echo Html::css("public/lib/prismjs.css");
 echo Html::script("public/lib/prismjs.js");
 
 $infos = Telemetry::getTelemetryInfos();
-echo "<p>" . __("We only collect the following data : plugins usage, performance and responsiveness statistics about user interface features, memory, and hardware configuration.") . "</p>";
+echo "<p>" . __("We only collect the following data: plugins usage, performance and responsiveness statistics about user interface features, memory, and hardware configuration.") . "</p>";
 echo "<pre><code class='language-json'>";
 echo json_encode($infos, JSON_PRETTY_PRINT);
 echo "</code></pre>";

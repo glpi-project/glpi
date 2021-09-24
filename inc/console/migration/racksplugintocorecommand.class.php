@@ -224,7 +224,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             $input,
             $output,
             new ConfirmationQuestion(
-               '<comment>' . __('Do you want to launch migration ?') . ' [yes/No]</comment>',
+               '<comment>' . __('Do you want to launch migration?') . ' [yes/No]</comment>',
                false
             )
          );
@@ -545,7 +545,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
                $this->input,
                $this->output,
                new ChoiceQuestion(
-                  sprintf(__('Where do you want to import "%s" ?'), $model_label),
+                  sprintf(__('Where do you want to import "%s"?'), $model_label),
                   [
                      self::OTHER_TYPE_CHOICE_COMPUTER            => Computer::getTypeName(1),
                      self::OTHER_TYPE_CHOICE_NETWORKEQUIPEMENT   => NetworkEquipment::getTypeName(1),

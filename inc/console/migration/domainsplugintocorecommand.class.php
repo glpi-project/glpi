@@ -128,7 +128,7 @@ class DomainsPluginToCoreCommand extends AbstractCommand {
             $input,
             $output,
             new ConfirmationQuestion(
-               '<comment>' . __('Do you want to launch migration ?') . ' [yes/No]</comment>',
+               '<comment>' . __('Do you want to launch migration?') . ' [yes/No]</comment>',
                false
             )
          );
