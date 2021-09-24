@@ -50,7 +50,6 @@ The present file will list all changes made to the project; according to the
 #### Deprecated
 - Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
 - Usage of `NotificationTarget::html_tags` property
-- `CommonITILObject::getActorIcon()`
 - `DBmysql::getTableSchema()`
 - `Html::clean()`
 - `RuleImportComputer` class
@@ -88,6 +87,7 @@ The present file will list all changes made to the project; according to the
 - `CommonGLPI::showPrimaryForm()`
 - `CommonITILObject::displayHiddenItemsIdInput()`
 - `CommonITILObject::filterTimeline()`
+- `CommonITILObject::getActorIcon()`
 - `CommonITILObject::getSplittedSubmitButtonHtml()`
 - `CommonITILObject::showActorsPartForm()`
 - `CommonITILObject::showFormHeader()`
