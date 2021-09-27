@@ -79,10 +79,6 @@ $RELATION = [
        'glpi_appliances' => 'appliancetypes_id'
    ],
 
-   'glpi_databaseinstances'     => [
-      'glpi_databaseinstances_items' => 'databaseinstances_id'
-   ],
-
    'glpi_databaseinstancetypes' => [
       'glpi_databaseinstances' => 'databaseinstancetypes_id'
    ],
@@ -1427,7 +1423,7 @@ $RELATION = [
          'items_id',
          'itemtype',
       ],
-      'glpi_databaseinstances_items' => [
+      'glpi_databaseinstances' => [
          'items_id',
          'itemtype'
       ],

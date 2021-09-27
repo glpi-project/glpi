@@ -70,8 +70,8 @@ class DatabaseInstance extends CommonDBTM {
       $ong = [];
       $this->addDefaultFormTab($ong)
          ->addImpactTab($ong, $options)
+         ->addStandardTab('DatabaseInstance', $ong, $options)
          ->addStandardTab('Database', $ong, $options)
-         ->addStandardTab(DatabaseInstance_Item::class, $ong, $options)
          ->addStandardTab('Infocom', $ong, $options)
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
@@ -107,13 +107,65 @@ class DatabaseInstance extends CommonDBTM {
    }
 
    function showForm($ID, $options = []) {
+      global $CFG_GLPI;
+
       $rand = mt_rand();
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
 
-      $tplmark = $this->getAutofillMark('name', $options);
+      echo "<td><label for='dropdown_itemtype$rand'>".__('Item type') . "</label></td>";
+
+      $itemtype = $this->fields['itemtype'];
+      echo "<td>";
+      $rand = Dropdown::showItemTypes(
+         'itemtype',
+         $CFG_GLPI['databaseinstance_types'], [
+            'value' => $itemtype,
+            'rand'  => $rand
+         ]
+      );
+      echo "</td>";
+
+      echo "<td><label for='dropdown_items_id$rand'>"._n('Item', 'Items', 1)."</label></td>";
+
+      echo "<td>";
+      if ($itemtype) {
+         $p = [
+            'itemtype' => '__VALUE__',
+            'dom_rand' => $rand,
+            'dom_name' => "items_id",
+            'action' => 'get_items_from_itemtype'
+         ];
+         Ajax::updateItemOnSelectEvent(
+            "dropdown_itemtype$rand",
+            "items_id$rand",
+            $CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php",
+            $p
+         );
+
+         $itemtype::dropdown([
+            'name' => 'items_id',
+            'value' => $this->fields['items_id'],
+            'display_emptychoice' => true,
+            'rand' => $rand]);
+      } else {
+         $p = ['idtable'            => '__VALUE__',
+            'rand'                  => $rand,
+            'name'                  => "items_id",
+            'width'                 => 'unset'
+         ];
+
+         Ajax::updateItemOnSelectEvent(
+            "dropdown_itemtype$rand",
+            "results_itemtype$rand",
+            $CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php", $p);
+
+         echo "<span id='results_itemtype$rand'></span>";
+      }
+      echo "</td></tr>\n";
+
       echo "<td><label for='textfield_name$rand'>".__('Name') . "</label></td>";
       echo "<td>";
       Html::autocompletionTextField(
@@ -277,7 +329,7 @@ class DatabaseInstance extends CommonDBTM {
 
       $tab[] = [
          'id'            => '5',
-         'table'         =>  DatabaseInstance_Item::getTable(),
+         'table'         =>  DatabaseInstance::getTable(),
          'field'         => 'items_id',
          'name'               => _n('Associated item', 'Associated items', 2),
          'nosearch'           => true,
@@ -399,8 +451,7 @@ class DatabaseInstance extends CommonDBTM {
    function cleanDBonPurge() {
       $this->deleteChildrenAndRelationsFromDb(
          [
-            Database::class,
-            DatabaseInstance_Item::class
+            Database::class
          ]
       );
    }
@@ -409,4 +460,64 @@ class DatabaseInstance extends CommonDBTM {
       return true;
    }
 
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      if (!self::canView()) {
+         return '';
+      }
+
+      $nb = 0;
+      if (in_array($item->getType(), self::getTypes(true))) {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            $nb = countElementsInTable(self::getTable(), ['itemtype' => $item->getType(), 'items_id' => $item->fields['id']]);
+         }
+         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+      }
+   }
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+
+      switch ($item->getType()) {
+         default :
+            if (in_array($item->getType(), self::getTypes())) {
+               self::showInstances($item, $withtemplate);
+            }
+      }
+      return true;
+   }
+
+   public static function showInstances(CommonDBTM $item, $withtemplate) {
+      global $DB;
+
+      $instances = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'itemtype' => $item->getType(),
+            'items_id' => $item->fields['id']
+         ]
+      ]);
+
+      if (!count($instances)) {
+         echo "<table class='tab_cadre_fixe'><tr><th>".__('No instance found')."</th></tr>";
+         echo "</table>";
+      } else {
+         echo "<table class='tab_cadre_fixehov'>";
+         $header = "<tr>";
+         $header .= "<th>".__('Name')."</th>";
+         $header .= "<th></th>";
+         $header .= "</tr>";
+         echo $header;
+
+         while ($row = $instances->next()) {
+            $item = new self();
+            $item->getFromDB($row['id']);
+            echo "<tr lass='tab_bg_1'>";
+            echo "<td>" . $item->getLink() . "</td>";
+            $databases = $item->getDatabases();
+            echo "<td>" . sprintf(_n('%1$d database', '%1$d databases', count($databases)), count($databases)) . "</td>";
+            echo "</tr>";
+         }
+         echo $header;
+         echo "</table>";
+      }
+   }
 }

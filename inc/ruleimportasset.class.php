@@ -175,6 +175,13 @@ class RuleImportAsset extends Rule {
             'type'            => 'dropdown',
             'is_global'       => false,
          ],
+
+         'linked_item' => [
+            'name'            => __('Linked asset', 'Linked assets', 1),
+            'type'            => 'yesno',
+            'allow_condition' => [Rule::PATTERN_FIND]
+         ],
+
          'entityrestrict' => [
             'name'            => sprintf('%s > %s', __('General'), __('Restrict search in defined entity')),
             'allow_condition' => [self::PATTERN_ENTITY_RESTRICT],
@@ -205,7 +212,6 @@ class RuleImportAsset extends Rule {
          'partial' => [
             'name'   => __('Is partial'),
             'type'   => 'yesno',
-            'tabel'  => '',
             'allow_condition' => [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT]
          ]
       ];
@@ -837,6 +843,13 @@ class RuleImportAsset extends Rule {
                ];
                $it_criteria['WHERE'][] = [
                   'glpi_domains.name'  => $input['domains_id']
+               ];
+               break;
+
+            case 'linked_item':
+               $it_criteria['WHERE'][] = [
+                  'itemtype' => $input['linked_item']['itemtype'],
+                  'items_id' => $input['linked_item']['items_id']
                ];
                break;
          }
@@ -2174,6 +2187,11 @@ class RuleImportAsset extends Rule {
                'criteria'  => 'name',
                'condition' => Rule::PATTERN_FIND,
                'pattern'   => 1
+            ],
+            [
+               'criteria'  => 'linked_item',
+               'condition' => Rule::PATTERN_FIND,
+               'pattern'   => 1
             ]
          ],
          'action'    => '_link'
@@ -2350,6 +2368,7 @@ class RuleImportAsset extends Rule {
          'device_id',
          'itemtype',
          'domains_id',
+         'linked_item',
          'entity_restrict',
          'oscomment',
          'link_criteria_port',
