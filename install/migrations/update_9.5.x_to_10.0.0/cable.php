@@ -30,6 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
+
 $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 
@@ -166,53 +171,59 @@ if (!$DB->tableExists('glpi_sockets')) {
 if ($DB->tableExists('glpi_netpoints')) {
 
    //migrate link between NetworkPort and Socket
-   // BEFORE : supported by NetworkPortEthernet / NetworkPortFiberchannel with 'sockets_id' foreign key
+   // BEFORE : supported by NetworkPortEthernet / NetworkPortFiberchannel with 'netpoints_id' foreign key
    // AFTER  : supported by Socket with (itemtype, items_id, networkports_id)
    $classes = [NetworkPortEthernet::getType(), NetworkPortFiberchannel::getType()];
    foreach ($classes as $itemtype) {
-
+      if (!$DB->fieldExists($itemtype::getTable(), 'netpoints_id')) {
+         continue;
+      }
       $criteria = [
          'SELECT' => [
-            $itemtype:: getTable().".networkports_id",
-            $itemtype:: getTable() . ".netpoints_id",
-            //load NetPoint infos from SQL because Netpoint PHP class no longer exist (rename To Socket)
-            "glpi_netpoints.locations_id AS netpoint_locations_id",
-            "glpi_netpoints.name AS netpoint_name",
-            "glpi_netpoints.entites_id AS netpoint_entites_id"],
+            "glpi_networkports.id AS networkports_id",
+            "glpi_networkports.logical_number",
+            "glpi_networkports.itemtype",
+            "glpi_networkports.items_id",
+            "glpi_netpoints.locations_id",
+            "glpi_netpoints.name",
+            "glpi_netpoints.entities_id",
+            "glpi_netpoints.date_creation",
+            "glpi_netpoints.date_mod",
+         ],
          'FROM'      => $itemtype::getTable(),
-         'LEFT JOIN' => [
+         'INNER JOIN' => [
+            'glpi_networkports' => [
+               'FKEY' => [
+                  'glpi_networkports'     => 'id',
+                  $itemtype::getTable()   => 'networkports_id',
+               ]
+            ],
             'glpi_netpoints' => [
                'FKEY' => [
                   'glpi_netpoints'        => 'id',
                   $itemtype::getTable()   => 'netpoints_id',
                ]
-            ]
-         ],
-         'WHERE' => ['networkports_id'   => ['<>', 0],
-         'netpoints_id'      => ['<>', 0]]
+            ],
+         ]
       ];
 
       $iterator = $DB->request($criteria);
 
       while ($data = $iterator->next()) {
-         //Load NetworkPort to get associated item
-         $networkport = new NetworkPort();
-         if ($networkport->getFromDB($data['networkports_id'])) {
-            $socket = new Socket();
-            $input = [
-               'name'            => $data['netpoint_name'],
-               'entities_id'     => $data['netpoint_entites_id'],
-               'locations_id'    => $data['netpoint_locations_id'],
-               'position'        => $networkport->fields['logical_number'],
-               'itemtype'        => $networkport->fields['itemtype'],
-               'items_id'        => $networkport->fields['items_id'],
-               'networkports_id' => $networkport->getID()
-            ];
+         $socket = new Socket();
+         $input = [
+            'name'            => $data['name'],
+            'entities_id'     => $data['entities_id'],
+            'locations_id'    => $data['locations_id'],
+            'position'        => $data['logical_number'],
+            'itemtype'        => $data['itemtype'],
+            'items_id'        => $data['items_id'],
+            'networkports_id' => $data['networkports_id'],
+            'date_creation'   => $data['date_creation'],
+            'date_mod'        => $data['date_mod'],
+         ];
 
-            $socket->add($input);
-         }
-
-
+         $socket->add($input);
       }
    }
    //remove "useless "netpoints_id" field
