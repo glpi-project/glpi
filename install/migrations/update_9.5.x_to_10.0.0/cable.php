@@ -176,9 +176,9 @@ if ($DB->tableExists('glpi_netpoints')) {
             $itemtype:: getTable().".networkports_id",
             $itemtype:: getTable() . ".netpoints_id",
             //load NetPoint infos from SQL because Netpoint PHP class no longer exist (rename To Socket)
-            "glpi_netpoints.locations_id AS netpoint_locations_id,
-            glpi_netpoints.name AS netpoint_name,
-            glpi_netpoints.entites_id AS netpoint_entites_id"],
+            "glpi_netpoints.locations_id AS netpoint_locations_id",
+            "glpi_netpoints.name AS netpoint_name",
+            "glpi_netpoints.entites_id AS netpoint_entites_id"],
          'FROM'      => $itemtype::getTable(),
          'LEFT JOIN' => [
             'glpi_netpoints' => [
