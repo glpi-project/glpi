@@ -56,7 +56,7 @@ $WORKING_DIR/tools/locale/update_mo.pl
 
 echo "Remove dev files and directories"
 # Remove PHP dev dependencies that are not anymore used
-composer update nothing --ignore-platform-reqs --no-dev --working-dir=$WORKING_DIR
+composer update nothing --ignore-platform-reqs --no-dev --no-scripts --working-dir=$WORKING_DIR
 
 # Remove user generated files (i.e. cache and log from CLI commands ran during release)
 find $WORKING_DIR/files -depth -mindepth 2 ! -iname "remove.txt" -exec rm -rf {} \;
