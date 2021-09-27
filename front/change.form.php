@@ -140,18 +140,8 @@ if (isset($_POST["add"])) {
    $change->display($_REQUEST);
 
    if (isset($_GET['id']) && ($_GET['id'] > 0)) {
-      $handled = false;
-      $url = KnowbaseItem::getFormURL() . '?_in_modal=1&item_itemtype=Change&item_items_id=' . $_GET['id'];
-      if (isset($_GET['_sol_to_kb'])) {
-         $handled = true;
-      } else if (isset($_GET['_fw_to_kb'])) {
-         $url .= '&fw_id=' . $_GET['_fw_to_kb'];
-         $handled = true;
-      } else if (isset($_GET['_task_to_kb'])) {
-         $url .= '&task_id=' . $_GET['_task_to_kb'];
-         $handled = true;
-      }
-      if ($handled) {
+      $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Ticket&item_items_id=' . $_GET['id'];
+      if (strpos($url, '_to_kb=') !== false) {
          Ajax::createIframeModalWindow(
             'savetokb',
             $url,
