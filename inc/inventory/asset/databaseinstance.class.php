@@ -81,6 +81,8 @@ class DatabaseInstance extends InventoryAsset
          ],
          'FROM'   => GDatabaseInstance::getTable(),
          'WHERE'  => [
+            'itemtype'     => $this->item->getType(),
+            'items_id'     => $this->item->fields['id'],
             'is_dynamic'   => 1
          ]
       ]);
@@ -98,7 +100,6 @@ class DatabaseInstance extends InventoryAsset
       $rule = new RuleImportAssetCollection();
       $value = $this->data;
       $instance = new GDatabaseInstance();
-      $dbitem = new \DatabaseInstance_Item();
       $odatabase = new \Database();
 
       $db_instances = $this->getExisting();
@@ -109,7 +110,11 @@ class DatabaseInstance extends InventoryAsset
          $input = [
             'itemtype'     => 'DatabaseInstance',
             'name'         => $val->name ?? '',
-            'entities_id'  => $this->item->fields['entities_id']
+            'entities_id'  => $this->item->fields['entities_id'],
+            'linked_item' => [
+               'itemtype' => $this->item->getType(),
+               'items_id' => $this->item->fields['id']
+            ]
          ];
          $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
 
@@ -122,8 +127,12 @@ class DatabaseInstance extends InventoryAsset
             $itemtype = 'DatabaseInstance';
             if ($data['found_inventories'][0] == 0) {
                // add instance
-               $input['is_dynamic'] = 1;
-               $input['entities_id'] = $this->entities_id;
+               $input += [
+                  'is_dynamic'   => 1,
+                  'entities_id'  => $this->entities_id,
+                  'itemtype'     => $this->item->getType(),
+                  'items_id'     => $this->item->fields['id']
+               ];
                $items_id = $instance->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
             } else {
                $items_id = $data['found_inventories'][0];
@@ -203,20 +212,6 @@ class DatabaseInstance extends InventoryAsset
          //remove no longer existing databases
          foreach ($db_instances as $idtmp => $data) {
             $instance->delete(['id' => $idtmp]);
-         }
-      }
-
-      if (count($instances) && $this->item) {
-         foreach ($instances as $instances_id) {
-            //link with main item
-            $dbitem->add(
-               [
-                  'databaseinstances_id' => $instances_id,
-                  'itemtype' => $this->item->getType(),
-                  'items_id' => $this->item->fields['id']
-               ],
-               $this->withHistory()
-            );
          }
       }
    }
