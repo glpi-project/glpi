@@ -91,7 +91,7 @@ if (isset($_POST["add"])) {
 
 if ($handled) {
    if (isset($_POST['kb_linked_id'])) {
-      //if followup should be linked to selected KB entry
+      //if task should be linked to selected KB entry
       $params = [
          'knowbaseitems_id' => $_POST['kb_linked_id'],
          'itemtype'         => $itemtype,
@@ -109,7 +109,7 @@ if ($handled) {
 
    if ($track->can($task->getField($fk), READ)) {
       $toadd = '';
-      // Copy followup to KB redirect to KB
+      // Copy task to KB redirect to KB
       if (isset($_POST['_task_to_kb']) && $_POST['_task_to_kb']) {
          $toadd = "&_task_to_kb=".$task->getID();
       }

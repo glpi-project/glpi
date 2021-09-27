@@ -193,6 +193,26 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       return "$dir/front/helpdesk.faq.php";
    }
 
+   /**
+    * Get the form page URL for the current classe
+    *
+    * @param boolean $full  path or relative one
+   **/
+   static function getFormURLWithParam($params = [], $full = true) {
+      $url = self::getFormURL($full) . '?';
+
+      if (isset($params['_sol_to_kb'])) {
+         $url .= '&_sol_to_kb=' . $params['_sol_to_kb'];
+      }
+      if (isset($params['_fw_to_kb'])) {
+         $url .= '&_fw_to_kb=' . $params['_fw_to_kb'];
+      }
+      if (isset($params['_task_to_kb'])) {
+         $url .= '&_task_to_kb=' . $params['_task_to_kb'];
+      }
+      return $url;
+   }
+
    function defineTabs($options = []) {
 
       $ong = [];
@@ -699,18 +719,18 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          if ($item = getItemForItemtype($options['item_itemtype'])) {
             if ($item->getFromDB($options['item_items_id'])) {
                $this->fields['name']   = $item->getField('name');
-               if (isset($options['fw_id'])) {
+               if (isset($options['_fw_to_kb'])) {
                   $fup = new ITILFollowup();
                   $fup->getFromDBByCrit([
-                     'id'           => $options['fw_id'],
+                     'id'           => $options['_fw_to_kb'],
                      'itemtype'     => $item->getType(),
                      'items_id'     => $item->getID()
                   ]);
                   $this->fields['answer'] = $fup->getField('content');
-               } else if (isset($options['task_id'])) {
+               } else if (isset($options['_task_to_kb'])) {
                   $tasktype = $item->getType().'Task';
                   $task = new $tasktype;
-                  $task->getFromDB($options['task_id']);
+                  $task->getFromDB($options['_task_to_kb']);
                   $this->fields['answer'] = $task->getField('content');
                } else {
                   $solution = new ITILSolution();
