@@ -100,37 +100,6 @@ function displayMigrationMessage ($id, $msg = "") {
 }
 
 
-/**
- * Add a dropdown if not exists (used by pre 0.78 update script)
- * Only use for simple dropdown (no entity and not tree)
- *
- * @param $table string table name
- * @param $name string name of the imported dropdown
- *
- * @return integer (ID of the existing/new dropdown)
-**/
-function update_importDropdown ($table, $name) {
-   global $DB;
-
-   $query = "SELECT `ID`
-             FROM `".$table."`
-             WHERE `name` = '".addslashes($name)."'";
-
-   if ($result = $DB->query($query)) {
-      if ($DB->numrows($result) > 0) {
-         return $DB->result($result, 0, "ID");
-      }
-   }
-   $query = "INSERT INTO `".$table."`
-             (`name`)
-             VALUES ('".addslashes($name)."')";
-   if ($result = $DB->query($query)) {
-      return $DB->insertId();
-   }
-   return 0;
-}
-
-
 //test la connection a la base de donn???.
 function test_connect() {
    global $DB;
@@ -139,50 +108,6 @@ function test_connect() {
       return true;
    }
    return false;
-}
-
-
-//Change table2 from varchar to ID+varchar and update table1.chps with depends
-function changeVarcharToID($table1, $table2, $chps) {
-   global $DB;
-
-   if (!$DB->fieldExists($table2, "ID", false)) {
-      $query = " ALTER TABLE `$table2`
-                 ADD `ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST";
-      $DB->queryOrDie($query);
-   }
-
-   $query = "ALTER TABLE `$table1`
-             ADD `temp` INT";
-   $DB->queryOrDie($query);
-
-   $iterator = $DB->request([
-      'SELECT' => [
-         "$table1.ID AS row1",
-         "$table2.ID AS row2",
-      ],
-      'FROM'   => [$table1, $table2],
-      'WHERE'  => [
-         "$table2.name" => new \QueryExpression(DBmysql::quoteName("$table1.$chps"))
-      ]
-   ]);
-
-   while ($line = $iterator->next()) {
-      $DB->updateOrDie(
-         $table1,
-         ['temp' => $line['row2']],
-         ['ID' => $line['row1']]
-      );
-   }
-   $DB->freeResult($result);
-
-   $query = "ALTER TABLE `$table1`
-             DROP `$chps`";
-   $DB->queryOrDie($query);
-
-   $query = "ALTER TABLE `$table1`
-             CHANGE `temp` `$chps` INT";
-   $DB->queryOrDie($query);
 }
 
 
@@ -208,39 +133,6 @@ function doUpdateDb() {
 
    // Force cache cleaning to ensure it will not contain stale data
    (new CacheManager())->resetAllCaches();
-}
-
-
-function updateTreeDropdown() {
-   global $DB;
-
-   // Update Tree dropdown
-   if ($DB->tableExists("glpi_dropdown_locations")
-       && !$DB->fieldExists("glpi_dropdown_locations", "completename", false)) {
-      $query = "ALTER TABLE `glpi_dropdown_locations`
-                ADD `completename` TEXT NOT NULL ";
-      $DB->queryOrDie($query, "0.6 add completename in dropdown_locations");
-   }
-
-   if ($DB->tableExists("glpi_dropdown_kbcategories")
-       && !$DB->fieldExists("glpi_dropdown_kbcategories", "completename", false)) {
-      $query = "ALTER TABLE `glpi_dropdown_kbcategories`
-                ADD `completename` TEXT NOT NULL ";
-      $DB->queryOrDie($query, "0.6 add completename in dropdown_kbcategories");
-   }
-
-   if ($DB->tableExists("glpi_locations") && !$DB->fieldExists("glpi_locations", "completename", false)) {
-      $query = "ALTER TABLE `glpi_locations`
-                ADD `completename` TEXT NOT NULL ";
-      $DB->queryOrDie($query, "0.6 add completename in glpi_locations");
-   }
-
-   if ($DB->tableExists("glpi_knowbaseitemcategories")
-       && !$DB->fieldExists("glpi_knowbaseitemcategories", "completename", false)) {
-      $query = "ALTER TABLE `glpi_knowbaseitemcategories`
-                ADD `completename` TEXT NOT NULL ";
-      $DB->queryOrDie($query, "0.6 add completename in glpi_knowbaseitemcategories");
-   }
 }
 
 /**

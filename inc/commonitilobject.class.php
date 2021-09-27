@@ -4157,66 +4157,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Get Icon for Actor
-    *
-    * @param $user_group   string   'user or 'group'
-    * @param $type         integer  user/group type
-    *
-    * @return string
-    *
-    * @deprecated 10.0.0
-   **/
-   static function getActorIcon($user_group, $type) {
-      Toolbox::deprecated();
-
-      switch ($user_group) {
-         case 'user' :
-            $icontitle = addslashes(User::getTypeName(1)).' - '.$type; // should never be used
-            switch ($type) {
-               case CommonITILActor::REQUESTER :
-                  $icontitle = __s('Requester user');
-                  break;
-
-               case CommonITILActor::OBSERVER :
-                  $icontitle = __s('Watcher user');
-                  break;
-
-               case CommonITILActor::ASSIGN :
-                  $icontitle = __s('Technician');
-                  break;
-            }
-            return "<i class='fas fa-user' title='$icontitle'><span class='sr-only'>$icontitle</span></i>";
-
-         case 'group' :
-            $icontitle = Group::getTypeName(1);
-            switch ($type) {
-               case CommonITILActor::REQUESTER :
-                  $icontitle = _sn('Requester group', 'Requester groups', 1);
-                  break;
-
-               case CommonITILActor::OBSERVER :
-                  $icontitle = _sn('Watcher group', 'Watcher groups', 1);
-                  break;
-
-               case CommonITILActor::ASSIGN :
-                  $icontitle = __s('Group in charge of the ticket');
-                  break;
-            }
-
-            return "<i class='fas fa-users' title='$icontitle'>" .
-                "<span class='sr-only'>$icontitle</span></i>";
-
-         case 'supplier' :
-            $icontitle = Supplier::getTypeName(1);
-            return "<i class='fas fa-dolly' alt=\"$icontitle\" title=\"$icontitle\"></i>";
-
-      }
-      return '';
-
-   }
-
-
-   /**
     * show actor add div
     *
     * @param $type         string   actor type

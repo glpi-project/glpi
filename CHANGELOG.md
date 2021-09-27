@@ -44,19 +44,12 @@ The present file will list all changes made to the project; according to the
 - `TicketSatisfaction::showForm()` renamed to `TicketSatisfaction::showSatisfactionForm()`.
 - `NotificationSettingConfig::showForm()` renamed to `NotificationSettingConfig::showConfigForm()`.
 - `RuleMatchedLog::showForm()` renamed to `RuleMatchedLog::showItemForm()`.
+- `CommonDBTM::notificationqueueonaction` property has been removed in favor of `CommonDBTM::deduplicate_queued_notifications` property.
+- `CommonDBTM::clone()`, `CommonDBTM::prepareInputForClone()` and `CommonDBTM::post_clone()` has been removed. Clonable objects must now use `Glpi\Features\Clonable` trait.
+- `GLPI_FORCE_EMPTY_SQL_MODE` constant has been removed in favor of `GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE` usage.
 
 #### Deprecated
-- Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
-- Usage of `CommonDBTM::notificationqueueonaction` property
-- Usage of `NotificationTarget::html_tags` property
-- `CommonDBTM::clone()`
-- `CommonDBTM::prepareInputForClone()`
-- `CommonDBTM::post_clone()`
-- `CommonITILObject::getActorIcon()`
-- `DBmysql::getTableSchema()`
 - `Html::clean()`
-- `Html::setSimpleTextContent()`
-- `Html::setRichTextContent()`
 - `RuleImportComputer` class
 - `RuleImportComputerCollection` class
 - `Toolbox::clean_cross_side_scripting_deep()`
@@ -66,9 +59,14 @@ The present file will list all changes made to the project; according to the
 #### Removed
 - jQueryUI has been partially removed and remaining widgets will be removed in a near future.
 - Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
+- Usage of `table` parameter in requests made to `ajax/comments.php`
+- Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
+- Support of `doc_types`, `helpdesk_types` and `netport_types` keys in `Plugin::registerClass()`
 - `$CFG_GLPI['layout_excluded_pages']` entry
 - `$CFG_GLPI['use_ajax_autocompletion']` entry
 - `$LOADED_PLUGINS` global variable
+- `CommonDBTM::notificationqueueonaction` property
+- `NotificationTarget::html_tags` property
 - `getAllDatasFromTable()`
 - `getRealQueryForTreeItem()`
 - `Ajax::createFixedModalWindow()`
@@ -80,13 +78,17 @@ The present file will list all changes made to the project; according to the
 - `Change::getCommonSelect()`
 - `Change::showAnalysisForm()`
 - `Change::showPlanForm()`
+- `CommonDBTM::clone()`
 - `CommonDBTM::getRawName()`
+- `CommonDBTM::prepareInputForClone()`
+- `CommonDBTM::post_clone()`
 - `CommonDBTM::showDates()`
 - `CommonGLPI::isLayoutExcludedPage()`
 - `CommonGLPI::isLayoutWithMain()`
 - `CommonGLPI::showPrimaryForm()`
 - `CommonITILObject::displayHiddenItemsIdInput()`
 - `CommonITILObject::filterTimeline()`
+- `CommonITILObject::getActorIcon()`
 - `CommonITILObject::getSplittedSubmitButtonHtml()`
 - `CommonITILObject::showActorsPartForm()`
 - `CommonITILObject::showFormHeader()`
@@ -116,6 +118,7 @@ The present file will list all changes made to the project; according to the
 - `DBMysql::fetch_row()`
 - `DBMysql::field_name()`
 - `DBMysql::free_result()`
+- `DBmysql::getTableSchema()`
 - `DBMysql::insert_id()`
 - `DBMysql::isMySQLStrictMode()`
 - `DBMysql::list_fields()`
@@ -129,9 +132,15 @@ The present file will list all changes made to the project; according to the
 - `Html::displayMainMenu()`
 - `Html::displayMenuAll()`
 - `Html::displayTopMenu()`
+- `Html::fileForRichText()`
+- `Html::generateImageName()`
 - `Html::jsDisable()`
 - `Html::jsEnable()`
+- `Html::nl2br_deep()`
 - `Html::resume_name()`
+- `Html::setSimpleTextContent()`
+- `Html::setRichTextContent()`
+- `Html::showProfileSelecter()`
 - `Html::weblink_extract()`
 - `Infocom::cloneItem()`
 - `Itil_Project::cloneItilProject()`
@@ -174,7 +183,10 @@ The present file will list all changes made to the project; according to the
 - `TicketTemplate::getFromDBWithDatas()`
 - `Toolbox::canUseImapPop()`
 - `Toolbox::checkSELinux()`
+- `Toolbox::convertImageToTag()`
+- `Toolbox::decrypt()`
 - `Toolbox::doubleEncodeEmails()`
+- `Toolbox::encrypt()`
 - `Toolbox::removeHtmlSpecialChars()`
 - `Toolbox::sanitize()`
 - `Toolbox::unclean_html_cross_side_scripting_deep()`

@@ -243,23 +243,6 @@ class Html {
 
 
    /**
-    * Recursivly execute nl2br on an array
-    *
-    * @param string|array $value
-    *
-    * @return string|array
-    *
-    * @deprecated 10.0.0
-   **/
-   static function nl2br_deep($value) {
-      Toolbox::deprecated();
-
-      return (is_array($value) ? array_map([__CLASS__, 'nl2br_deep'], $value)
-                               : nl2br($value));
-   }
-
-
-   /**
     *  Resume text for followup
     *
     * @param string  $string  string to resume
@@ -3316,50 +3299,6 @@ JS;
 
 
    /**
-    * Print the form used to select profile if several are available
-    *
-    * @param string $target  target of the form
-    *
-    * @return void
-    *
-    * @deprecated 10.0.0
-   **/
-   static function showProfileSelecter($target) {
-      Toolbox::deprecated();
-
-      global $CFG_GLPI;
-
-      if (count($_SESSION["glpiprofiles"])>1) {
-         echo '<li class="profile-selector"><form name="form" method="post" action="'.$target.'">';
-         $values = [];
-         foreach ($_SESSION["glpiprofiles"] as $key => $val) {
-            $values[$key] = $val['name'];
-         }
-
-         Dropdown::showFromArray('newprofile', $values,
-                                 ['value'     => $_SESSION["glpiactiveprofile"]["id"],
-                                       'width'     => '150px',
-                                       'on_change' => 'submit()']);
-         Html::closeForm();
-         echo '</li>';
-      }
-
-      if (Session::isMultiEntitiesMode()) {
-         echo "<li class='profile-selector'>";
-         Ajax::createModalWindow('modal_entity_window', $CFG_GLPI['root_doc']."/ajax/entitytree.php",
-                                 ['title'       => __('Select the desired entity'),
-                                       'extraparams' => ['target' => $target]]);
-         echo "<a onclick='modal_entity_window.show();' href='#modal_entity_content' title=\"".
-                addslashes($_SESSION["glpiactive_entity_name"]).
-                "\" class='entity_select' id='global_entity_select'>".
-                $_SESSION["glpiactive_entity_shortname"]."</a>";
-
-         echo "</li>";
-      }
-   }
-
-
-   /**
     * Show a tooltip on an item
     *
     * @param $content   string   data to put in the tooltip
@@ -3785,64 +3724,6 @@ JAVASCRIPT
          );
 JAVASCRIPT
       );
-   }
-
-   /**
-    * Convert rich text content to simple text content
-    *
-    * @since 9.2
-    *
-    * @param $content : content to convert in html
-    *
-    * @return $content
-    *
-    * @deprecated 10.0.0
-   **/
-   static function setSimpleTextContent($content) {
-      Toolbox::deprecated();
-
-      $content = Html::entity_decode_deep($content);
-      $content = Toolbox::convertImageToTag($content);
-
-      // If is html content
-      if ($content != strip_tags($content)) {
-         $content = Toolbox::getHtmlToDisplay($content);
-      }
-
-      return $content;
-   }
-
-   /**
-    * Convert simple text content to rich text content and init html editor
-    *
-    * @since 9.2
-    *
-    * @param string  $name     name of textarea
-    * @param string  $content  content to convert in html
-    * @param string  $rand     used for randomize tinymce dom id
-    * @param boolean $readonly true will set editor in readonly mode
-    *
-    * @return $content
-    *
-    * @deprecated 10.0.0
-   **/
-   static function setRichTextContent($name, $content, $rand, $readonly = false) {
-
-      Toolbox::deprecated();
-
-      // Init html editor (if name of textarea is provided)
-      if (!empty($name)) {
-         Html::initEditorSystem($name, $rand, true, $readonly);
-      }
-
-      // Neutralize non valid HTML tags
-      $content = Html::clean($content, false, 1);
-
-      // If content does not contain <br> or <p> html tag, use nl2br
-      if (!preg_match("/<br\s?\/?>/", $content) && !preg_match("/<p>/", $content)) {
-         $content = nl2br($content);
-      }
-      return $content;
    }
 
 
@@ -5367,62 +5248,6 @@ JAVASCRIPT;
                      Html::parseAttributes($options));
    }
 
-   /**
-    * Display a div who reveive a list of uploaded file
-    *
-    * @since  version 9.2
-    *
-    * @param  array $options theses following keys:
-    *                          - editor_id the dom id of the tinymce editor
-    * @return string The Html
-    *
-    * @deprecated 10.0.0
-    */
-   static function fileForRichText($options = []) {
-      Toolbox::deprecated();
-
-      $p['editor_id']     = '';
-      $p['name']          = 'filename';
-      $p['filecontainer'] = 'fileupload_info';
-      $p['display']       = true;
-      $rand               = mt_rand();
-
-      if (is_array($options) && count($options)) {
-         foreach ($options as $key => $val) {
-            $p[$key] = $val;
-         }
-      }
-
-      $display = "";
-
-      // display file controls
-      $display .= __('Attach file by drag & drop or copy & paste in editor or ').
-                  "<a href='' id='upload_link$rand'>".__('selecting them')."</a>".
-                  "<input id='upload_rich_text$rand' class='upload_rich_text' type='file' />";
-
-      $display .= Html::scriptBlock("
-         var fileindex = 0;
-         $(function() {
-            $('#upload_link$rand').on('click', function(e){
-               e.preventDefault();
-               $('#upload_rich_text$rand:hidden').trigger('click');
-            });
-
-            $('#upload_rich_text$rand:hidden').change(function (event) {
-               uploadFile($('#upload_rich_text$rand:hidden')[0].files[0],
-                            tinyMCE.get('{$p['editor_id']}'),
-                            '{$p['name']}');
-            });
-         });
-      ");
-
-      if ($p['display']) {
-         echo $display;
-      } else {
-         return $display;
-      }
-   }
-
 
    /**
     * Creates an input file field. Send file names in _$name field as array.
@@ -5746,16 +5571,6 @@ JAVASCRIPT;
       } else {
          return $display;
       }
-   }
-
-
-   /**
-    * @since 0.85
-    *
-    * @return string
-   **/
-   static function generateImageName() {
-      return 'pastedImage'.str_replace('-', '', Html::convDateTime(date('Y-m-d', time())));
    }
 
 
