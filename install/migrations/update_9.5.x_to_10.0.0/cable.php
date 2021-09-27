@@ -192,7 +192,7 @@ if ($DB->tableExists('glpi_netpoints')) {
          'netpoints_id'      => ['<>', 0]]
       ];
 
-      $iterator = $DB->request($request);
+      $iterator = $DB->request($criteria);
 
       while ($data = $iterator->next()) {
          //Load NetworkPort to get associated item
