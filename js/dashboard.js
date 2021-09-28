@@ -723,20 +723,47 @@ var Dashboard = {
          text_offset = 1.8;
       }
 
-      parent_item
-         .find('.big-number')
-         .find('.formatted-number').fitText(text_offset);
+      var base_text_offset = text_offset;
+
+      // The fitText() function isn't very good on ultra wide card because we use
+      // it on multiple elements inside the same container.
+      // This function try to fix this by adjusting the "offset" param.
+      var fitTextImproved = function(item) {
+         var offset_to_use = base_text_offset;
+         var adjusted_offset = $(this).width() / $(this).parent().parent().height();
+
+         if (adjusted_offset > 1 && adjusted_offset <= 1.8) {
+            // Wide card, ajust the offset as little as possible using an "exponential" scale to 1.8.
+            offset_to_use = 1 + 0.8 * ((Math.pow(adjusted_offset, 8)) / Math.pow(1.8, 8));
+         } else if (adjusted_offset > 1.8) {
+            // Ultra wide card, use full offset
+            offset_to_use = adjusted_offset;
+         }
+
+         $(this).fitText(offset_to_use);
+      };
 
       parent_item
-         .find('.summary-numbers')
-         .find('.formatted-number').fitText(text_offset-0.65);
+         .find('.big-number')
+         .find('.formatted-number')
+         .each(fitTextImproved);
+
+      base_text_offset = text_offset - 0.65;
       parent_item
          .find('.summary-numbers')
-         .find('.line .label').fitText(text_offset-0.2);
+         .find('.formatted-number')
+         .each(fitTextImproved);
+
+      base_text_offset = text_offset - 0.2;
+      parent_item
+         .find('.summary-numbers')
+         .find('.line .label').
+         each(fitTextImproved);
 
       parent_item
          .find('.big-number')
-         .find('.label').fitText(text_offset - 0.2);
+         .find('.label')
+         .each(fitTextImproved);
    },
 
    animateNumbers: function(parent_item) {
