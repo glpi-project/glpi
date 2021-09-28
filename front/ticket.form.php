@@ -226,7 +226,7 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
          'savetokb',
          $url,
          [
-            'title'         => __('Save solution to the knowledge base'),
+            'title'         => __('Save and add to the knowledge base'),
             'reloadonclose' => false,
          ]
       );

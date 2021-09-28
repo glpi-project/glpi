@@ -146,7 +146,7 @@ if (isset($_POST["add"])) {
             'savetokb',
             $url,
             [
-               'title'         => __('Save solution to the knowledge base'),
+               'title'         => __('Save and add to the knowledge base'),
                'reloadonclose' => false,
             ]
          );
