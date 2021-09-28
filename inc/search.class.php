@@ -1578,6 +1578,7 @@ class Search {
          'start'               => $search['start'] ?? 0,
          'limit'               => $_SESSION['glpilist_limit'],
          'count'               => $data['data']['totalcount'] ?? 0,
+         'item'                => $item,
          'itemtype'            => $itemtype,
          'href'                => $href,
          'prehref'             => $prehref,
@@ -1595,8 +1596,8 @@ class Search {
             DisplayPreference::PERSONAL,
             DisplayPreference::GENERAL
          ]),
-         'may_be_deleted'      => $item && $item->maybeDeleted(),
-         'may_be_located'      => $item && $item->maybeLocated(),
+         'may_be_deleted'      => $item instanceof CommonDBTM && $item->maybeDeleted(),
+         'may_be_located'      => $item instanceof CommonDBTM && $item->maybeLocated(),
       ]);
 
       // Add items in item list
