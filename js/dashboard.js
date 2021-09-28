@@ -728,7 +728,7 @@ var Dashboard = {
       // The fitText() function isn't very good on ultra wide card because we use
       // it on multiple elements inside the same container.
       // This function try to fix this by adjusting the "offset" param.
-      var fitTextImproved = function(item) {
+      var fitTextImproved = function() {
          var offset_to_use = base_text_offset;
          var adjusted_offset = $(this).width() / $(this).parent().parent().height();
 
