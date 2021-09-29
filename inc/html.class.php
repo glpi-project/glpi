@@ -6446,6 +6446,10 @@ HTML;
    public static function compileScss($args) {
       global $CFG_GLPI, $GLPI_CACHE;
 
+      if (!isset($args['file']) || empty($args['file'])) {
+         throw new \InvalidArgumentException('"file" argument is required.');
+      }
+
       $ckey = 'css_';
       $ckey .= isset($args['v']) ? $args['v'] : GLPI_SCHEMA_VERSION;
 
@@ -6461,7 +6465,7 @@ HTML;
          );
       }
 
-      $file = isset($args['file']) ? $args['file'] : 'css/styles';
+      $file = $args['file'];
 
       $ckey .= '_' . $file;
 

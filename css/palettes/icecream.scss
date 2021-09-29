@@ -29,17 +29,17 @@
  * ---------------------------------------------------------------------
  */
 
-$primary: #FEC95C;
-$primary-fg: #8f5a0a;
-$secondary: #888373;
-$primary-fg: #8f5a0a;
+$primary: #D54F58;
+$primary-fg: #F3EDD3;
+$secondary: #113F59;
+$secondary-fg: #a9e3e4;
 
-$link-color: #659900;
+$link-color: #149294;
 
-$mainmenu_bg: #98A458;
-$mainmenu_fg: #000;
+$mainmenu_bg: #113F59;
+$mainmenu_fg: #F3EDD3;
 
 $logo: "../pics/logos/logo-GLPI-100-white.png";
 $logo_reduced: "../pics/logos/logo-G-100-white.png";
 
-@import "css/styles";
+@import "css/palettes/includes";

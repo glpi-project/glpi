@@ -29,5 +29,15 @@
  * ---------------------------------------------------------------------
  */
 
-@import "css/palettes/_defaults";
-@import "css/styles";
+$primary: #FB6356;
+$primary-fg: #FFF;
+
+$link-color: #C83226;
+
+$mainmenu_bg: #A2291F;
+$mainmenu_fg: #f3eae9;
+
+$logo: "../pics/logos/logo-GLPI-100-white.png";
+$logo_reduced: "../pics/logos/logo-G-100-white.png";
+
+@import "css/palettes/includes";

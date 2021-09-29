@@ -29,15 +29,15 @@
  * ---------------------------------------------------------------------
  */
 
-$primary: #f9201d;
-$primary-fg: #fff;
+$primary: #BCDA1A;
+$primary-fg: #353B17;
 
-$link-color: #bf0805;
+$link-color: #a958b9;
 
-$mainmenu_bg: #064260;
+$mainmenu_bg: #a958b9;
 $mainmenu_fg: #FFF;
 
 $logo: "../pics/logos/logo-GLPI-100-white.png";
 $logo_reduced: "../pics/logos/logo-G-100-white.png";
 
-@import "css/styles";
+@import "css/palettes/includes";
