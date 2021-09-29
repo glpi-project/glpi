@@ -336,7 +336,7 @@ class Ticket_Ticket extends CommonDBRelation {
 
       $result = $DB->request([
          'COUNT'        => 'cpt',
-         'FROM'         => $this->getTable() . ' AS links',
+         'FROM'         => self::getTable() . ' AS links',
          'INNER JOIN'   => [
             Ticket::getTable() . ' AS tickets' => [
                'ON' => [
