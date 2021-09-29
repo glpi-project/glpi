@@ -233,69 +233,22 @@ class Toolbox {
       return mb_convert_encoding($string, $to_charset, "UTF-8");
    }
 
+   /**
+    * @deprecated 10.0.0
+    */
    public static function sodiumEncrypt($content, $key = null) {
-      if ($key === null) {
-         $key = self::getGlpiSecKey();
-      }
-
-      $nonce = random_bytes(SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES); // NONCE = Number to be used ONCE, for each message
-      $encrypted = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt(
-         $content,
-         $nonce,
-         $nonce,
-         $key
-      );
-      return base64_encode($nonce . $encrypted);
-   }
-
-   public static function sodiumDecrypt($content, $key = null) {
-      if (empty($content)) {
-         // Avoid sodium exception for blank content. Just return the null/empty value.
-         return $content;
-      }
-      if ($key === null) {
-         $key = self::getGlpiSecKey();
-      }
-
-      $content = base64_decode($content);
-
-      $nonce = mb_substr($content, 0, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES, '8bit');
-      if (mb_strlen($nonce, '8bit') !== SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES) {
-         trigger_error(
-            'Unable to extract nonce from content. It may not have been crypted with sodium functions.',
-            E_USER_WARNING
-         );
-         return '';
-      }
-
-      $ciphertext = mb_substr($content, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES, null, '8bit');
-
-      $plaintext = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt(
-         $ciphertext,
-         $nonce,
-         $nonce,
-         $key
-      );
-      if ($plaintext === false) {
-         trigger_error(
-            'Unable to decrypt content. It may have been crypted with another key.',
-            E_USER_WARNING
-         );
-         return '';
-      }
-      return $plaintext;
+      Toolbox::deprecated('Use "GLPIKey::encrypt()"');
+      $glpikey = new GLPIKey();
+      return $glpikey->encrypt($content, $key);
    }
 
    /**
-    * Get GLPI security key used for decryptable passwords from file
-    *
-    * @throw \RuntimeException if key file is missing
-    *
-    * @return string
+    * @deprecated 10.0.0
     */
-   public static function getGlpiSecKey() {
+   public static function sodiumDecrypt($content, $key = null) {
+      Toolbox::deprecated('Use "GLPIKey::decrypt()"');
       $glpikey = new GLPIKey();
-      return $glpikey->get();
+      return $glpikey->decrypt($content, $key);
    }
 
 
@@ -1346,7 +1299,7 @@ class Toolbox {
          if (!empty($CFG_GLPI["proxy_user"])) {
             $opts += [
                CURLOPT_PROXYAUTH    => CURLAUTH_BASIC,
-               CURLOPT_PROXYUSERPWD => $CFG_GLPI["proxy_user"] . ":" . self::sodiumDecrypt($CFG_GLPI["proxy_passwd"]),
+               CURLOPT_PROXYUSERPWD => $CFG_GLPI["proxy_user"] . ":" . (new GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]),
             ];
          }
 

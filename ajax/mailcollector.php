@@ -62,7 +62,7 @@ if (isset($_REQUEST['action'])) {
             if (empty($input["passwd"])) {
                unset($input["passwd"]);
             } else {
-               $input["passwd"] = Toolbox::sodiumEncrypt($input["passwd"]);
+               $input["passwd"] = (new GLPIKey())->encrypt($input["passwd"]);
             }
          }
 

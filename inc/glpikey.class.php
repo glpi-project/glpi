@@ -79,9 +79,9 @@ class GLPIKey {
       ]
    ];
 
-   public function __construct() {
-      $this->keyfile = GLPI_CONFIG_DIR . '/glpicrypt.key';
-      $this->legacykeyfile = GLPI_CONFIG_DIR . '/glpi.key';
+   public function __construct(string $config_dir = GLPI_CONFIG_DIR) {
+      $this->keyfile = $config_dir . '/glpicrypt.key';
+      $this->legacykeyfile = $config_dir . '/glpi.key';
    }
 
    /**
@@ -108,22 +108,27 @@ class GLPIKey {
     * @return string
     */
    public function keyExists() {
-      return file_exists($this->keyfile) && !empty($this->get());
+      return file_exists($this->keyfile);
    }
 
    /**
     * Get GLPI security key used for decryptable passwords
     *
-    * @throw \RuntimeException if key file is missing
-    *
-    * @return string
+    * @return string|null
     */
-   public function get() {
+   public function get(): ?string {
       if (!file_exists($this->keyfile)) {
-         throw new \RuntimeException('You must create a security key, see glpi:security:change_key command.');
+         trigger_error('You must create a security key, see glpi:security:change_key command.', E_USER_WARNING);
+         return null;
       }
-      //load key from existing config file
-      $key = file_get_contents($this->keyfile);
+      if (!is_readable($this->keyfile) || ($key = file_get_contents($this->keyfile)) === false) {
+         trigger_error('Unable to get security key file contents.', E_USER_WARNING);
+         return null;
+      }
+      if (strlen($key) !== SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_KEYBYTES) {
+         trigger_error('Invalid security key file contents.', E_USER_WARNING);
+         return null;
+      }
       return $key;
    }
 
@@ -131,46 +136,61 @@ class GLPIKey {
     * Get GLPI security legacy key that was used for decryptable passwords.
     * Usage of this key should only be used during migration from GLPI < 9.5 to GLPI >= 9.5.0.
     *
-    * @return string
+    * @return string|null
     */
-   public function getLegacyKey() {
+   public function getLegacyKey(): ?string {
       if (!file_exists($this->legacykeyfile)) {
          return GLPIKEY;
       }
       //load key from existing config file
-      $key = file_get_contents($this->legacykeyfile);
+      if (!is_readable($this->legacykeyfile) || ($key = file_get_contents($this->legacykeyfile)) === false) {
+         trigger_error('Unable to get security legacy key file contents.', E_USER_WARNING);
+         return null;
+      }
       return $key;
    }
 
    /**
     * Generate GLPI security key used for decryptable passwords
     * and update values in DB if necessary.
-    * @return boolean
+    *
+    * @return bool
     */
-   public function generate() {
+   public function generate(): bool {
       global $DB;
 
+      // Check ability to create/update key file.
+      if ((file_exists($this->keyfile) && !is_writable($this->keyfile))
+          || (!file_exists($this->keyfile) && !is_writable(dirname($this->keyfile)))) {
+         trigger_error(sprintf('Security key file path (%s) is not writable.', $this->keyfile), E_USER_WARNING);
+         return false;
+      }
+
       // Fetch old key before generating the new one (but only if DB exists and there is something to migrate)
-      $sodium_key = null;
-      $old_key = false;
+      $previous_key = null;
       if ($DB instanceof DBmysql) {
-         try {
-            $sodium_key = $this->get();
-         } catch (\RuntimeException $e) {
-            $sodium_key = null;
-            $old_key = $this->getLegacyKey();
+         if ($this->keyExists()) {
+            $previous_key = $this->get();
+            if ($previous_key === null) {
+               // Do not continue if unable to get previous key.
+               // Detailed warning has already been triggered by `get()` method.
+               return false;
+            }
          }
       }
 
       $key = sodium_crypto_aead_chacha20poly1305_ietf_keygen();
-      $success = (bool)file_put_contents($this->keyfile, $key);
-      if (!$success) {
+      $written_bytes = file_put_contents($this->keyfile, $key);
+      if ($written_bytes !== strlen($key)) {
+         trigger_error('Unable to write security key file contents.', E_USER_WARNING);
          return false;
       }
 
       if ($DB instanceof DBmysql) {
-         return $this->migrateFieldsInDb($sodium_key, $old_key)
-            && $this->migrateConfigsInDb($sodium_key, $old_key);
+         if (!$this->migrateFieldsInDb($previous_key) || !$this->migrateConfigsInDb($previous_key)) {
+            trigger_error('Error during encrypted data update in database.', E_USER_WARNING);
+            return false;
+         }
       }
 
       return true;
@@ -232,12 +252,11 @@ class GLPIKey {
    /**
     * Migrate fields in database
     *
-    * @param string       $sodium_key Current key
-    * @param string|false $old_key     Old key, if any
+    * @param string|null   $sodium_key Previous key. If null, legacy key will be used.
     *
-    * @return void
+    * @return bool
     */
-   protected function migrateFieldsInDb($sodium_key, $old_key = false) {
+   protected function migrateFieldsInDb(?string $sodium_key): bool {
       global $DB;
 
       $success = true;
@@ -253,10 +272,10 @@ class GLPIKey {
 
          foreach ($iterator as $row) {
             $value = (string)$row[$column];
-            if ($old_key === false) {
-               $pass = Toolbox::sodiumEncrypt(Toolbox::sodiumDecrypt($value, $sodium_key));
+            if ($sodium_key !== null) {
+               $pass = $this->encrypt($this->decrypt($value, $sodium_key));
             } else {
-               $pass = Toolbox::sodiumEncrypt($this->decryptUsingLegacyKey($value, $old_key));
+               $pass = $this->encrypt($this->decryptUsingLegacyKey($value));
             }
             $success = $DB->update(
                $table,
@@ -276,12 +295,11 @@ class GLPIKey {
    /**
     * Migrate configurations in database
     *
-    * @param string       $sodium_key Current key
-    * @param string|false $old_key    Old key, if any
+    * @param string|null   $sodium_key Previous key. If null, legacy key will be used.
     *
-    * @return boolean
+    * @return bool
     */
-   protected function migrateConfigsInDb($sodium_key, $old_key = false) {
+   protected function migrateConfigsInDb($sodium_key): bool {
       global $DB;
 
       $success = true;
@@ -298,10 +316,10 @@ class GLPIKey {
 
          foreach ($iterator as $row) {
             $value = (string)$row['value'];
-            if ($old_key === false) {
-               $pass = Toolbox::sodiumEncrypt(Toolbox::sodiumDecrypt($value, $sodium_key));
+            if ($sodium_key !== null) {
+               $pass = $this->encrypt($this->decrypt($value, $sodium_key));
             } else {
-               $pass = Toolbox::sodiumEncrypt($this->decryptUsingLegacyKey($value, $old_key));
+               $pass = $this->encrypt($this->decryptUsingLegacyKey($value));
             }
             $success = $DB->update(
                Config::getTable(),
@@ -319,16 +337,105 @@ class GLPIKey {
    }
 
    /**
-    * Decrypt a string using a legacy key.
-    * This method does the same as deprecated Toolbox::decrypt() and is only here
-    * to handle migration from GLPI < 9.5 to GLPI >= 9.5.0.
+    * Encrypt a string.
     *
-    * @param string $string
-    * @param string $key
+    * @param string        $string  String to encrypt.
+    * @param string|null   $key     Key to use, fallback to default key if null.
     *
     * @return string
     */
-   public function decryptUsingLegacyKey(string $string, string $key): string {
+   public function encrypt(string $string, ?string $key = null): string {
+      if ($key === null) {
+         $key = $this->get();
+      }
+
+      if ($key === null) {
+         // Cannot encrypt string as key reading fails, returns a empty value
+         // to ensure sensitive data is not propagated unencrypted.
+         return '';
+      }
+
+      $nonce = random_bytes(SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES); // NONCE = Number to be used ONCE, for each message
+      $encrypted = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt(
+         $string,
+         $nonce,
+         $nonce,
+         $key
+      );
+      return base64_encode($nonce . $encrypted);
+   }
+
+   /**
+    * Descrypt a string.
+    *
+    * @param string|null   $string  String to decrypt.
+    * @param string|null   $key     Key to use, fallback to default key if null.
+    *
+    * @return string|null
+    */
+   public function decrypt(?string $string, $key = null): ?string {
+      if ($key === null) {
+         $key = $this->get();
+      }
+
+      if ($key === null) {
+         // Cannot decrypt string as key reading fails, returns encrypted value.
+         return $string;
+      }
+
+      if (empty($string)) {
+         // Avoid sodium exception for blank content. Just return the null/empty value.
+         return $string;
+      }
+
+      $string = base64_decode($string);
+
+      $nonce = mb_substr($string, 0, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES, '8bit');
+      if (mb_strlen($nonce, '8bit') !== SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES) {
+         trigger_error(
+            'Unable to extract nonce from string. It may not have been crypted with sodium functions.',
+            E_USER_WARNING
+         );
+         return '';
+      }
+
+      $ciphertext = mb_substr($string, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES, null, '8bit');
+
+      $plaintext = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt(
+         $ciphertext,
+         $nonce,
+         $nonce,
+         $key
+      );
+      if ($plaintext === false) {
+         trigger_error(
+            'Unable to decrypt string. It may have been crypted with another key.',
+            E_USER_WARNING
+         );
+         return '';
+      }
+      return $plaintext;
+   }
+
+   /**
+    * Decrypt a string using a legacy key.
+    * If key is not provided, the default legacy key will be used.
+    *
+    * @param string $string
+    * @param string|null $key
+    *
+    * @return string
+    */
+   public function decryptUsingLegacyKey(string $string, ?string $key = null): string {
+
+      if ($key === null) {
+         $key = $this->getLegacyKey();
+      }
+
+      if ($key === null) {
+         // Cannot decrypt string as key reading fails, returns encrypted value.
+         return $string;
+      }
 
       $result = '';
       $string = base64_decode($string);

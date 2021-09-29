@@ -195,7 +195,7 @@ class AuthLDAP extends CommonDBTM {
          if (empty($input["rootdn_passwd"])) {
             unset($input["rootdn_passwd"]);
          } else {
-            $input["rootdn_passwd"] = Toolbox::sodiumEncrypt($input["rootdn_passwd"]);
+            $input["rootdn_passwd"] = (new GLPIKey())->encrypt($input["rootdn_passwd"]);
          }
       }
 
@@ -1499,7 +1499,7 @@ class AuthLDAP extends CommonDBTM {
          $port = $config_ldap->fields['port'];
       }
       $ds = self::connectToServer($host, $port, $config_ldap->fields['rootdn'],
-                                  Toolbox::sodiumDecrypt($config_ldap->fields['rootdn_passwd']),
+                                  (new GLPIKey())->decrypt($config_ldap->fields['rootdn_passwd']),
                                   $config_ldap->fields['use_tls'],
                                   $config_ldap->fields['deref_option'],
                                   $config_ldap->fields['tls_certfile'],
@@ -2658,7 +2658,7 @@ class AuthLDAP extends CommonDBTM {
 
       return $this->connectToServer($this->fields['host'], $this->fields['port'],
                                     $this->fields['rootdn'],
-                                    Toolbox::sodiumDecrypt($this->fields['rootdn_passwd']),
+                                    (new GLPIKey())->decrypt($this->fields['rootdn_passwd']),
                                     $this->fields['use_tls'],
                                     $this->fields['deref_option'],
                                     $this->fields['tls_certfile'],
@@ -2743,7 +2743,7 @@ class AuthLDAP extends CommonDBTM {
       }
       $ds = self::connectToServer($ldap_method['host'], $ldap_method['port'],
                                   $ldap_method['rootdn'],
-                                  Toolbox::sodiumDecrypt($ldap_method['rootdn_passwd']),
+                                  (new GLPIKey())->decrypt($ldap_method['rootdn_passwd']),
                                   $ldap_method['use_tls'], $ldap_method['deref_option'],
                                   $ldap_method['tls_certfile'] ?? '',
                                   $ldap_method['tls_keyfile'] ?? '',
@@ -2768,7 +2768,7 @@ class AuthLDAP extends CommonDBTM {
          foreach (self::getAllReplicateForAMaster($ldap_method['id']) as $replicate) {
             $ds = self::connectToServer($replicate["host"], $replicate["port"],
                                         $ldap_method['rootdn'],
-                                        Toolbox::sodiumDecrypt($ldap_method['rootdn_passwd']),
+                                        (new GLPIKey())->decrypt($ldap_method['rootdn_passwd']),
                                         $ldap_method['use_tls'], $ldap_method['deref_option'],
                                         $ldap_method['tls_certfile'] ?? '',
                                         $ldap_method['tls_keyfile'] ?? '',
@@ -3576,7 +3576,7 @@ class AuthLDAP extends CommonDBTM {
 
       if (self::connectToServer($authldap->getField('host'), $authldap->getField('port'),
                                 $authldap->getField('rootdn'),
-                                Toolbox::sodiumDecrypt($authldap->getField('rootdn_passwd')),
+                                (new GLPIKey())->decrypt($authldap->getField('rootdn_passwd')),
                                 $authldap->getField('use_tls'),
                                 $authldap->getField('deref_option'),
                                 $authldap->getField('tls_certfile'),
@@ -3638,7 +3638,7 @@ class AuthLDAP extends CommonDBTM {
       }
 
       if (isset($input["rootdn_passwd"]) && !empty($input["rootdn_passwd"])) {
-         $input["rootdn_passwd"] = Toolbox::sodiumEncrypt($input["rootdn_passwd"]);
+         $input["rootdn_passwd"] = (new GLPIKey())->encrypt($input["rootdn_passwd"]);
       }
 
       $this->checkFilesExist($input);

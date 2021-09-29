@@ -2007,7 +2007,7 @@ HTML
          Config::setConfigurationValues(
             'core',
             [
-               'glpinetwork_registration_key' => Toolbox::sodiumEncrypt($CFG_GLPI['glpinetwork_registration_key'])
+               'glpinetwork_registration_key' => (new GLPIKey())->encrypt($CFG_GLPI['glpinetwork_registration_key'])
             ]
          );
       }

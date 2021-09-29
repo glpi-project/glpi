@@ -141,7 +141,7 @@ class MailCollector  extends CommonDBTM {
          if (empty($input["passwd"])) {
             unset($input["passwd"]);
          } else {
-            $input["passwd"] = Toolbox::sodiumEncrypt($input["passwd"]);
+            $input["passwd"] = (new GLPIKey())->encrypt($input["passwd"]);
          }
       }
 
@@ -1319,7 +1319,7 @@ class MailCollector  extends CommonDBTM {
       $params = [
          'host'      => $config['address'],
          'user'      => $this->fields['login'],
-         'password'  => Toolbox::sodiumDecrypt($this->fields['passwd']),
+         'password'  => (new GLPIKey())->decrypt($this->fields['passwd']),
          'port'      => $config['port']
       ];
 

@@ -65,6 +65,8 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::getHtmlToDisplay()`
 - `Toolbox::unclean_cross_side_scripting_deep()`
 - `Toolbox::startsWith()`
+- `Toolbox::sodiumDecrypt()`
+- `Toolbox::sodiumEncrypt()`
 
 #### Removed
 - jQueryUI has been partially removed and remaining widgets will be removed in a near future.
@@ -205,6 +207,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::decrypt()`
 - `Toolbox::doubleEncodeEmails()`
 - `Toolbox::encrypt()`
+- `Toolbox::getGlpiSecKey()`
 - `Toolbox::removeHtmlSpecialChars()`
 - `Toolbox::sanitize()`
 - `Toolbox::unclean_html_cross_side_scripting_deep()`

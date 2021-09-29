@@ -162,7 +162,7 @@ class GLPINetwork extends CommonGLPI {
     */
    public static function getRegistrationKey(): string {
       global $CFG_GLPI;
-      return Toolbox::sodiumDecrypt($CFG_GLPI['glpinetwork_registration_key'] ?? '');
+      return (new GLPIKey())->decrypt($CFG_GLPI['glpinetwork_registration_key'] ?? '');
    }
 
    /**

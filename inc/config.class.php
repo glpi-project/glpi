@@ -2778,7 +2778,7 @@ HTML;
       foreach ($values as $name => $value) {
          // Encrypt config values according to list declared to GLPIKey service
          if (!empty($value) && $glpikey->isConfigSecured($context, $name)) {
-            $value = Toolbox::sodiumEncrypt($value);
+            $value = $glpikey->encrypt($value);
          }
 
          if ($config->getFromDBByCrit([
