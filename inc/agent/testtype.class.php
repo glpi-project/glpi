@@ -38,7 +38,7 @@ class TestType extends CommonTask
       return __('My task configuration');
    }
 
-   public function showTaskTab()  {
+   public function showTaskTab() {
       echo "¡ACQUI!";
    }
 }
