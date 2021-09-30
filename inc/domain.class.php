@@ -691,8 +691,10 @@ class Domain extends CommonDropdown {
    static function getAdditionalMenuLinks() {
       $links = [];
       if (static::canView()) {
-         $rooms = "<i class=\"fa fa-clipboard-list pointer\" title=\"" . DomainRecord::getTypeName(Session::getPluralNumber()) .
-            "\"></i><span class=\"sr-only\">" . DomainRecord::getTypeName(Session::getPluralNumber()). "</span>";
+         $rooms = "<i class='fa fa-clipboard-list pointer' title=\"".DomainRecord::getTypeName(Session::getPluralNumber())."\"></i>
+            <span class='d-none d-xxl-block ps-1'>
+               ".DomainRecord::getTypeName(Session::getPluralNumber())."
+            </span>";
          $links[$rooms] = DomainRecord::getSearchURL(false);
 
       }

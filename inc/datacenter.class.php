@@ -155,8 +155,11 @@ class Datacenter extends CommonDBTM {
    static function getAdditionalMenuLinks() {
       $links = [];
       if (static::canView()) {
-         $rooms = "<i class=\"fas fa-building pointer\" title=\"" . DCRoom::getTypeName(Session::getPluralNumber()) .
-            "\"></i><span class=\"sr-only\">" . DCRoom::getTypeName(Session::getPluralNumber()). "</span>";
+         $rooms = "<i class='fas fa-building pointer'
+                      title=\"".DCRoom::getTypeName(Session::getPluralNumber())."\"></i>
+            <span class='d-none d-xxl-block ps-1'>
+               ".DCRoom::getTypeName(Session::getPluralNumber())."
+            </span>";
          $links[$rooms] = DCRoom::getSearchURL(false);
 
       }

@@ -145,11 +145,11 @@ class Plugin extends CommonDBTM {
       }
       $mp_icon     = MarketplaceView::getIcon();
       $mp_title    = MarketplaceView::getTypeName();
-      $marketplace = "<i class='$mp_icon pointer' title='$mp_title'></i><span class='sr-only'>$mp_title</span>";
+      $marketplace = "<i class='$mp_icon pointer' title='$mp_title'></i><span class='d-none d-xxl-block'>$mp_title</span>";
 
       $cl_icon     = Plugin::getIcon();
-      $cl_title    = Plugin::getTypeName();
-      $classic     = "<i class='$cl_icon pointer' title='$cl_title'></i><span class='sr-only'>$cl_title</span>";
+      $cl_title    = Plugin::getTypeName(Session::getPluralNumber());
+      $classic     = "<i class='$cl_icon pointer' title='$cl_title'></i><span class='d-none d-xxl-block'>$cl_title</span>";
 
       return [
          $marketplace => MarketplaceView::getSearchURL(false),

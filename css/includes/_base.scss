@@ -178,6 +178,13 @@ body.iframed {
       }
 
       &.btn-sm {
+         .fa-stack {
+            height: 1.2em;
+            line-height: 1.2em;
+            width: 1.8em;
+            margin-top: -4px;
+         }
+
          i.fas, i.far, i.fab {
             line-height: 1.2em;
          }

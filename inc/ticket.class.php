@@ -168,6 +168,9 @@ class Ticket extends CommonITILObject {
                 <i class="fas fa-check fa-stack-1x" style="top: 1px; left: -7px; font-size: 1.2em"></i>
                 <i class="far fa-clock fa-stack-1x" style="top: 6px; left: -3px"></i>
             </span>
+            <span class="d-none d-xxl-block">
+               '.__s('Ticket waiting for your approval').'
+            </span>
          ';
 
          $links[$pic_validate] = Ticket::getSearchURL(false) . '?'.Toolbox::append_params($opt, '&amp;');
