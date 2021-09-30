@@ -259,7 +259,7 @@ $CFG_GLPI["ticket_types"]                 = ['Computer', 'Monitor', 'NetworkEqui
                                                   'SoftwareLicense', 'Certificate',
                                                   'Line', 'DCRoom', 'Rack', 'Enclosure', 'Cluster', 'PDU',
                                                   'Domain', 'DomainRecord', 'Appliance', 'Item_DeviceSimcard', 'PassiveDCEquipment',
-                                                  'DatabaseInstance'];
+                                                  'DatabaseInstance', 'Database'];
 
 $CFG_GLPI["link_types"]                   = ['Budget', 'CartridgeItem', 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract', 'Monitor',
@@ -279,7 +279,7 @@ $CFG_GLPI["dictionnary_types"]            = ['ComputerModel', 'ComputerType', 'M
                                                   'OperatingSystemEdition', 'ImageResolution', 'ImageFormat',
                                                   'DatabaseInstanceType'];
 
-$CFG_GLPI["helpdesk_visible_types"]       = ['Software', 'Appliance', 'DatabaseInstance'];
+$CFG_GLPI["helpdesk_visible_types"]       = ['Software', 'Appliance', 'Database'];
 
 $CFG_GLPI["networkport_types"]            = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral',
                                                   'Phone', 'Printer', 'Enclosure', 'PDU', 'Cluster', 'Unmanaged'];
@@ -478,7 +478,7 @@ $CFG_GLPI['software_types']      = $CFG_GLPI['operatingsystem_types'];
 $CFG_GLPI['kanban_types']        = ['Project'];
 
 $CFG_GLPI['domain_types']        = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral',
-                                       'Phone', 'Printer', 'Software', 'Appliance', 'Certificate', 'DatabaseInstance'];
+                                       'Phone', 'Printer', 'Software', 'Appliance', 'Certificate', 'DatabaseInstance', 'Database'];
 
 $CFG_GLPI['appliance_types']     = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
                                        'Printer', 'Software', 'Cluster', 'DatabaseInstance'];
