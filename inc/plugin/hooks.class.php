@@ -118,7 +118,7 @@ class Hooks
     *
     * @return array
     */
-   public static function getFonctionnalHooks(): array {
+   public static function getFunctionalHooks(): array {
       return [
          self::CHANGE_ENTITY,
          self::CHANGE_PROFILE,
