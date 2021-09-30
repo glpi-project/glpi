@@ -66,7 +66,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
             'name'   => 'weight',
             'type'   => 'integer',
             'label'  => __('Weight'),
-            'max'    => 1000
+            'min'    => 0,
          ];
       }
 
@@ -91,7 +91,8 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
          $fields[] = [
             'name'   => 'power_connections',
             'type'   => 'integer',
-            'label'  => __('Power connections')
+            'label'  => __('Power connections'),
+            'min'    => 0,
          ];
       }
 
@@ -101,7 +102,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
             'type'   => 'integer',
             'label'  => __('Power consumption'),
             'unit'   => __('watts'),
-            'html'   => true
+            'min'    => 0,
          ];
       }
 
@@ -111,7 +112,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
             'type'   => 'integer',
             'label'  => __('Max. power (in watts)'),
             'unit'   => __('watts'),
-            'html'   => true
+            'min'    => 0,
          ];
       }
 

@@ -73,7 +73,9 @@
                      {% elseif type == 'textarea' %}
                         {{ fields.textareaField(field['name'], item.fields[field['name']], field['label'], params) }}
                      {% elseif type == 'integer' %}
-                        {% set params = {'value': item.fields[field['name']]} %}
+                        {% set params = {
+                           'value': item.fields[field['name']]
+                        } %}
                         {% if field['min'] is defined %}
                            {% set params = params|merge({'min': field['min']}) %}
                         {% endif %}
@@ -83,12 +85,9 @@
                         {% if field['max'] is defined %}
                            {% set params = params|merge({'max': field['max']}) %}
                         {% endif %}
-                        {% if field['html'] %}
-                           {% set params = params|merge({'type': 'number'}) %}
-                           {{ fields.numberField(field['name'], item.fields[field['name']], field['label'], params) }}
-                        {% else %}
-                           {{ fields.dropdownNumberField(field['name'], item.fields[field['name']], field['label'], params) }}
-                        {% endif %}
+
+                        {% set params = params|merge({'type': 'number'}) %}
+                        {{ fields.numberField(field['name'], item.fields[field['name']], field['label'], params) }}
                      {% elseif type == 'timestamp' %}
                         {% set params = {'value': item.fields[field['name']]} %}
                         {% if field['min'] is defined %}
