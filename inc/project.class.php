@@ -244,9 +244,12 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       if (static::canView()
           || Session::haveRight('projecttask', ProjectTask::READMY)) {
          $pic_validate = '
-            <span class="fa-stack" style="vertical-align: middle; font-size: 0.8em" title="'.__('My tasks').'">
-               <i class="fas fa-check fa-stack-1x" style="top: 1px; left: -7px; font-size: 1.2em"></i>
-               <i class="far fa-clock fa-stack-1x" style="top: 6px; left: -3px"></i>
+            <span class="fa-stack" title="'.__('My tasks').'">
+               <i class="fas fa-check fa-stack-1x" style="left: -7px; font-size: 1.2em"></i>
+               <i class="far fa-clock fa-stack-1x" style="top: 4px; left: -3px"></i>
+            </span>
+            <span class="d-none d-xxl-block">
+               '.__('My tasks').'
             </span>
          ';
 
