@@ -167,16 +167,19 @@ if (isset($_POST["add"])) {
       $change->display($_REQUEST);
    }
 
-   if (isset($_GET['id']) && ($_GET['id'] > 0) && isset($_GET['_sol_to_kb'])) {
-      Ajax::createIframeModalWindow(
-         'savetokb',
-         KnowbaseItem::getFormURL() . '?_in_modal=1&item_itemtype=Change&item_items_id=' . $_GET['id'],
-         [
-            'title'         => __('Save solution to the knowledge base'),
-            'reloadonclose' => false,
-            'autoopen'      => true,
-         ]
-      );
+   if (isset($_GET['id']) && ($_GET['id'] > 0)) {
+      $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Ticket&item_items_id=' . $_GET['id'];
+      if (strpos($url, '_to_kb=') !== false) {
+         Ajax::createIframeModalWindow(
+            'savetokb',
+            $url,
+            [
+               'title'         => __('Save and add to the knowledge base'),
+               'reloadonclose' => false,
+               'autoopen'      => true,
+            ]
+         );
+      }
    }
 
    Html::footer();

@@ -1,5 +1,9 @@
 {% extends 'components/itilobject/timeline/form_timeline_item.html.twig' %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% set candedit = item.maySolve() %}
+{% set can_read_kb = has_profile_right('knowbase', constant('READ')) or has_profile_right('knowbase', constant('KnowbaseItem::READFAQ')) %}
+{% set can_update_kb = has_profile_right('knowbase', constant('UPDATE')) %}
+{% set nokb = params['nokb'] is defined or params['nokb'] == true %}
 
 {% block timeline_card %}
    {% if form_mode == 'view' %}
@@ -110,6 +114,40 @@
                            'rand': rand,
                         }
                      ) }}
+
+                     {% if can_read_kb and kb_id_toload > 0 %}
+                        {% set link_kb_lbl %}
+                           <i class="fas fa-link fa-fw me-1" data-bs-toggle="tooltip" data-bs-placement="top"
+                              title="{{ __('Link to knowledge base entry #%id')|format('TODO kb id') }}"></i>
+                        {% endset %}
+                        {{ fields.sliderField(
+                           'kb_linked_id',
+                           kb_id_toload,
+                           link_kb_lbl,
+                           {
+                              'full_width': true,
+                              'icon_label': true,
+                              'rand': rand,
+                           }
+                        ) }}
+                     {% endif %}
+
+                     {% if candedit and can_update_kb and not nokb %}
+                        {% set fw_to_kb_lbl %}
+                           <i class="fas fa-save fa-fw me-1" title="{{ __('Save and add to the knowledge base') }}"
+                              data-bs-toggle="tooltip" data-bs-placement="top"></i>
+                        {% endset %}
+                        {{ fields.sliderField(
+                           '_fw_to_kb',
+                           0,
+                           fw_to_kb_lbl,
+                           {
+                              'full_width': true,
+                              'icon_label': true,
+                              'rand': rand,
+                           }
+                        ) }}
+                     {% endif %}
                   </div>
                </div>
             </div>

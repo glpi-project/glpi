@@ -193,6 +193,26 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       return "$dir/front/helpdesk.faq.php";
    }
 
+   /**
+    * Get the form page URL for the current classe
+    *
+    * @param boolean $full  path or relative one
+   **/
+   static function getFormURLWithParam($params = [], $full = true) {
+      $url = self::getFormURL($full) . '?';
+
+      if (isset($params['_sol_to_kb'])) {
+         $url .= '&_sol_to_kb=' . $params['_sol_to_kb'];
+      }
+      if (isset($params['_fw_to_kb'])) {
+         $url .= '&_fw_to_kb=' . $params['_fw_to_kb'];
+      }
+      if (isset($params['_task_to_kb'])) {
+         $url .= '&_task_to_kb=' . $params['_task_to_kb'];
+      }
+      return $url;
+   }
+
    function defineTabs($options = []) {
 
       $ong = [];
@@ -699,15 +719,30 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          if ($item = getItemForItemtype($options['item_itemtype'])) {
             if ($item->getFromDB($options['item_items_id'])) {
                $this->fields['name']   = $item->getField('name');
-               $solution = new ITILSolution();
-               $solution->getFromDBByCrit([
-                  'itemtype'     => $item->getType(),
-                  'items_id'     => $item->getID(),
-                  [
-                     'NOT' => ['status'       => CommonITILValidation::REFUSED]
-                  ]
-               ]);
-               $this->fields['answer'] = $solution->getField('content');
+               if (isset($options['_fw_to_kb'])) {
+                  $fup = new ITILFollowup();
+                  $fup->getFromDBByCrit([
+                     'id'           => $options['_fw_to_kb'],
+                     'itemtype'     => $item->getType(),
+                     'items_id'     => $item->getID()
+                  ]);
+                  $this->fields['answer'] = $fup->getField('content');
+               } else if (isset($options['_task_to_kb'])) {
+                  $tasktype = $item->getType().'Task';
+                  $task = new $tasktype;
+                  $task->getFromDB($options['_task_to_kb']);
+                  $this->fields['answer'] = $task->getField('content');
+               } else if (isset($options['_sol_to_kb'])) {
+                  $solution = new ITILSolution();
+                  $solution->getFromDBByCrit([
+                     'itemtype'     => $item->getType(),
+                     'items_id'     => $item->getID(),
+                     [
+                        'NOT' => ['status'       => CommonITILValidation::REFUSED]
+                     ]
+                  ]);
+                  $this->fields['answer'] = $solution->getField('content');
+               }
                if ($item->isField('itilcategories_id')) {
                   $ic = new ITILCategory();
                   if ($ic->getFromDB($item->getField('itilcategories_id'))) {
