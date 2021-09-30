@@ -39,33 +39,35 @@ use DbTestCase;
 class DatabaseInstance extends DbTestCase {
 
    public function testDelete() {
-      $db = new \DatabaseInstance();
+      $instance = new \DatabaseInstance();
 
-      $dbid = $db->add([
+      $instid = $instance->add([
          'name' => 'To be removed',
          'port' => 3306,
          'size' => 52000
       ]);
 
       //check DB is created, and load it
-      $this->integer($dbid)->isGreaterThan(0);
-      $this->boolean($db->getFromDB($dbid))->isTrue();
+      $this->integer($instid)->isGreaterThan(0);
+      $this->boolean($instance->getFromDB($instid))->isTrue();
 
-      //create link with computer
-      $item = new \DatabaseInstance_Item();
-      $this->integer(
-         $item->add([
-            'databaseinstances_id' => $dbid,
-            'itemtype' => 'Computer',
-            'items_id' => getItemByTypeName('Computer', '_test_pc01', true)
-         ])
-      )->isGreaterThan(0);
+      //create databases
+      for ($i = 0; $i < 5; ++$i) {
+         $database = new \Database();
+         $this->integer(
+            $database->add([
+               'name'                   => 'Database ' . $i,
+               'databaseinstances_id'   => $instid
+            ])
+         )->isGreaterThan(0);
+      }
+      $this->integer(countElementsInTable(\Database::getTable()))->isIdenticalTo(5);
 
       //test removal
-      $this->boolean($db->delete(['id' => $dbid], 1))->isTrue();
-      $this->boolean($db->getFromDB($dbid))->isFalse();
+      $this->boolean($instance->delete(['id' => $instid], 1))->isTrue();
+      $this->boolean($instance->getFromDB($instid))->isFalse();
 
-      //ensure instance has been dropped aswell
-      $this->integer(countElementsInTable(\DatabaseInstance_Item::getTable()))->isIdenticalTo(0);
+      //ensure databases has been dropped aswell
+      $this->integer(countElementsInTable(\Database::getTable()))->isIdenticalTo(0);
    }
 }

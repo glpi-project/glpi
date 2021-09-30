@@ -85,6 +85,8 @@ if (!$DB->tableExists('glpi_databaseinstances')) {
          `users_id_tech` int NOT NULL DEFAULT '0',
          `groups_id_tech` int NOT NULL DEFAULT '0',
          `states_id` int NOT NULL DEFAULT '0',
+         `itemtype` varchar(100) NOT NULL DEFAULT '',
+         `items_id` int NOT NULL DEFAULT '0',
          `is_onbackup` tinyint NOT NULL DEFAULT '0',
          `is_active` tinyint NOT NULL DEFAULT '0',
          `is_deleted` tinyint NOT NULL DEFAULT '0',
@@ -106,6 +108,7 @@ if (!$DB->tableExists('glpi_databaseinstances')) {
          KEY `users_id_tech` (`users_id_tech`),
          KEY `groups_id_tech` (`groups_id_tech`),
          KEY `states_id` (`states_id`),
+         KEY `item` (`itemtype`,`items_id`),
          KEY `is_active` (`is_active`),
          KEY `is_deleted` (`is_deleted`),
          KEY `date_creation` (`date_creation`),
@@ -116,17 +119,21 @@ if (!$DB->tableExists('glpi_databaseinstances')) {
    $DB->queryOrDie($query, "10.0 add table glpi_databaseinstances");
 }
 
-if (!$DB->tableExists('glpi_databaseinstances_items')) {
-   $query = "CREATE TABLE `glpi_databaseinstances_items` (
-           `id` int NOT NULL AUTO_INCREMENT,
-          `databaseinstances_id` int NOT NULL DEFAULT '0',
-          `items_id` int NOT NULL DEFAULT '0',
-          `itemtype` varchar(100) NOT NULL DEFAULT '',
-          PRIMARY KEY (`id`),
-          UNIQUE KEY `unicity` (`databaseinstances_id`,`items_id`,`itemtype`),
-          KEY `item` (`itemtype`,`items_id`)
-      ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_databaseinstances_items");
+// Create glpi_databaseinstances itemtype/items_id if they are not existing (datamodel changed during v10.0 development)
+if (!$DB->fieldExists('glpi_databaseinstances', 'itemtype') || !$DB->fieldExists('glpi_databaseinstances', 'items_id')) {
+   //1- migrate glpi_databaseinstances table
+   $migration->addField('glpi_databaseinstances', 'itemtype', 'string', [
+      'after' => 'states_id'
+   ]);
+   $migration->addField('glpi_databaseinstances', 'items_id', 'integer', [
+      'after' => 'itemtype'
+   ]);
+   $migration->addKey('glpi_databaseinstances', ['itemtype', 'items_id'], 'item');
+   $migration->migrationOneTable('glpi_databaseinstances');
+}
+// Delete old table
+if ($DB->tableExists('glpi_databaseinstances_items')) {
+   $migration->dropTable('glpi_databaseinstances_items');
 }
 
 if (!$DB->tableExists('glpi_databases')) {

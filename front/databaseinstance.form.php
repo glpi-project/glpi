@@ -48,7 +48,7 @@ if (isset($_POST["add"])) {
    $instance->check(-1, CREATE, $_POST);
 
    if ($newID = $instance->add($_POST)) {
-      Event::log($newid, "databaseinstance", 4, "management",
+      Event::log($newID, "databaseinstance", 4, "management",
                  //TRANS: %s is the user login
                  sprintf(__('%s adds a database instance'), $_SESSION["glpiname"]));
       if ($_SESSION['glpibackcreated']) {
@@ -96,7 +96,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(DatabaseInstance::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "database");
+   Html::header(DatabaseInstance::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "database", "databaseinstance");
    $options = [
       'id'           => $_GET['id'],
       'withtemplate' => $_GET['withtemplate']

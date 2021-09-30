@@ -661,19 +661,18 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $this->private_profiles[$data['profiles_id']] = $data['profiles_id'];
       }
 
-      if (Entity::getAnonymizeConfig($this->getEntity()) !== Entity::ANONYMIZE_DISABLED) {
-         $profiles_iterator = $DB->request([
-            'SELECT' => ['id'],
-            'FROM'   => Profile::getTable(),
-            'WHERE'  => [
-               'interface' => 'central',
-            ]
-         ]);
+      $profiles_iterator = $DB->request([
+         'SELECT' => ['id'],
+         'FROM'   => Profile::getTable(),
+         'WHERE'  => [
+            'interface' => 'central',
+         ]
+      ]);
 
-         while ($profiles_data = $profiles_iterator->next()) {
-            $this->central_profiles[$profiles_data['id']] = $profiles_data['id'];
-         }
+      while ($profiles_data = $profiles_iterator->next()) {
+         $this->central_profiles[$profiles_data['id']] = $profiles_data['id'];
       }
+
    }
 
 
@@ -1197,8 +1196,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
             if ($user_tmp->getFromDB($uid)) {
                // Check if the user need to be anonymized
-               if ($is_self_service
-                  && !empty($anon_name = User::getAnonymizedName(
+               if ($is_self_service && !empty($anon_name = User::getAnonymizedName(
                      $uid,
                      $item->getField('entities_id')
                   ))
@@ -1319,13 +1317,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $tmp['##followup.isprivate##']   = Dropdown::getYesNo($followup['is_private']);
 
             // Check if the author need to be anonymized
-            if (ITILFollowup::getById($followup['id'])->isFromSupportAgent()
-               && $is_self_service
+            if ($is_self_service && ITILFollowup::getById($followup['id'])->isFromSupportAgent()
                && !empty($anon_name = User::getAnonymizedName(
                   $followup['users_id'],
                   $item->getField('entities_id')
-               ))
-            ) {
+               ))) {
                $tmp['##followup.author##'] = $anon_name;
             } else {
                $tmp['##followup.author##'] = getUserName($followup['users_id']);
@@ -1530,6 +1526,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             'with_validations' => false,
             'expose_private' => $show_private,
             'bypass_rights' => true,
+            'is_self_service' => $is_self_service,
          ];
 
          $timeline = $item->getTimelineItems($options);
@@ -1550,17 +1547,18 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
             if ($timeline_data['type'] == ITILFollowup::getType()) {
                // Check if the author need to be anonymized
-               if (ITILFollowup::getById($timeline_data['item']['id'])->isFromSupportAgent()
-                  && $is_self_service
+
+               if ($is_self_service && ITILFollowup::getById($timeline_data['item']['id'])->isFromSupportAgent()
                   && !empty($anon_name = User::getAnonymizedName(
                      $timeline_data['item']['users_id'],
                      $item->getField('entities_id')
-                  ))
-               ) {
-                  $tmptimelineitem['##timelineitems.author##'] = $anon_name;
+                  ))) {
+                     $tmptimelineitem['##timelineitems.author##'] = $anon_name;
+
                } else {
                   $tmptimelineitem['##timelineitems.author##'] = getUserName($timeline_data['item']['users_id']);
                }
+
             } else {
                $tmptimelineitem['##timelineitems.author##'] = getUserName($timeline_data['item']['users_id']);
             }

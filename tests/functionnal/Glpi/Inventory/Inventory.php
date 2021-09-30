@@ -4437,7 +4437,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       //check created databases & instances
       $this->integer(countElementsInTable(\DatabaseInstance::getTable()))->isIdenticalTo(2);
       $this->integer(countElementsInTable(\DatabaseInstance::getTable(), ['is_dynamic' => 1]))->isIdenticalTo(2);
-      $this->integer(countElementsInTable(\DatabaseInstance_Item::getTable()))->isIdenticalTo(2);
       $this->integer(countElementsInTable(\Database::getTable()))->isIdenticalTo(3);
 
       //play an update - nothing should have changed
@@ -4458,7 +4457,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
       //check created databases & instances
       $this->integer(countElementsInTable(\DatabaseInstance::getTable()))->isIdenticalTo(2);
-      $this->integer(countElementsInTable(\DatabaseInstance_Item::getTable()))->isIdenticalTo(2);
       $this->integer(countElementsInTable(\Database::getTable()))->isIdenticalTo(3);
 
       //play an update with changes
@@ -4496,7 +4494,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       //check created databases & instances
       $this->integer(countElementsInTable(\DatabaseInstance::getTable(), ['is_deleted' => 0]))->isIdenticalTo(1);
       $this->integer(countElementsInTable(\DatabaseInstance::getTable(), ['is_deleted' => 1]))->isIdenticalTo(1);
-      $this->integer(countElementsInTable(\DatabaseInstance_Item::getTable()))->isIdenticalTo(2);
 
       //ensure database version has been updated
       $database = new \DatabaseInstance();

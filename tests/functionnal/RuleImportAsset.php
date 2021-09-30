@@ -871,7 +871,7 @@ class RuleImportAsset extends DbTestCase {
          ->if($this->newTestedInstance)
          ->then
             ->array($this->testedInstance->getCriterias())
-            ->hasSize(22);
+            ->hasSize(23);
    }
 
    public function testGetActions() {
