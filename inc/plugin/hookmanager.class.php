@@ -95,7 +95,7 @@ class HookManager
     * @param string $hook
     * @param string $file
     */
-   public function registerFunctionnalHook(
+   public function registerFunctionalHook(
       string $hook,
       callable $function
    ): void {
@@ -104,7 +104,7 @@ class HookManager
       // Check if the given hook is a valid functionnal hook
       $allowed_file_hooks = Hooks::getFonctionnalHooks();
       if (!isset($allowed_file_hooks[$hook])) {
-         trigger_error("Invalid functionnal hook: '$hook'", E_USER_ERROR);
+         trigger_error("Invalid functional hook: '$hook'", E_USER_ERROR);
       }
 
       $PLUGIN_HOOKS[$hook][$this->plugin] = $function;
