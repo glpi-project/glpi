@@ -191,7 +191,7 @@ if ($DB->tableExists('glpi_netpoints')) {
             'glpi_networkports' => [
                'FKEY' => [
                   'glpi_networkports'     => 'id',
-                  $$table   => 'networkports_id',
+                  $table   => 'networkports_id',
                ]
             ],
             'glpi_netpoints' => [
