@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Plugin\Hooks;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -873,7 +875,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       echo "<td>";
       if ($this->fields['id'] && $this->fields['is_dynamic']) {
          ob_start();
-         Plugin::doHook("autoinventory_information", $this);
+         Plugin::doHook(Hooks::AUTOINVENTORY_INFORMATION, $this);
          $info = ob_get_clean();
          if (empty($info)) {
             $info = __('Yes');

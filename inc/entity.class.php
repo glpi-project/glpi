@@ -31,6 +31,7 @@
  */
 
 use Glpi\Event;
+use Glpi\Plugin\Hooks;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -1409,7 +1410,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<table class='tab_cadre_fixe'>";
 
-      Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => []]);
+      Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
 
       echo "<tr><th colspan='4'>".__('Address')."</th></tr>";
 
@@ -1489,7 +1490,7 @@ class Entity extends CommonTreeDropdown {
       Html::autocompletionTextField($entity, "altitude");
       echo "</td></tr>";
 
-      Plugin::doHook("post_item_form", ['item' => $entity, 'options' => []]);
+      Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => []]);
       echo "</table>";
 
       if ($canedit) {
@@ -1525,7 +1526,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<table class='tab_cadre_fixe'>";
 
-      Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => []]);
+      Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
 
       echo "<tr><th colspan='2'>".__('Values for the generic rules for assignment to entities').
            "</th></tr>";
@@ -1576,7 +1577,7 @@ class Entity extends CommonTreeDropdown {
          echo "</td></tr>";
       }
 
-      Plugin::doHook("post_item_form", ['item' => $entity, 'options' => &$options]);
+      Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
 
       echo "</table>";
 
@@ -1612,7 +1613,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<table class='tab_cadre_fixe'>";
 
-      Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => []]);
+      Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
 
       echo "<tr><th colspan='4'>".__('Autofill dates for financial and administrative information').
            "</th></tr>";
@@ -1772,7 +1773,7 @@ class Entity extends CommonTreeDropdown {
       echo "</td>";
       echo "</td><td colspan='2'></td></tr>";
 
-      Plugin::doHook("post_item_form", ['item' => $entity, 'options' => &$options]);
+      Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
 
       echo "</table>";
 
@@ -1813,7 +1814,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<table class='tab_cadre_fixe'>";
 
-      Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => []]);
+      Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
 
       echo "<tr><th colspan='4'>".__('Notification options')."</th></tr>";
 
@@ -2196,7 +2197,7 @@ class Entity extends CommonTreeDropdown {
       }
       echo "</td></tr>";
 
-      Plugin::doHook("post_item_form", ['item' => $entity, 'options' => &$options]);
+      Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
 
       echo "</table>";
 
@@ -2244,7 +2245,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<table class='tab_cadre_fixe custom_css_configuration'>";
 
-      Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => []]);
+      Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
 
       $rand = mt_rand();
 
@@ -2295,7 +2296,7 @@ class Entity extends CommonTreeDropdown {
          ]
       );
 
-      Plugin::doHook("post_item_form", ['item' => $entity, 'options' => &$options]);
+      Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
 
       echo "</table>";
 
@@ -2448,7 +2449,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<table class='tab_cadre_fixe'>";
 
-      Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => []]);
+      Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
 
       echo "<tr><th colspan='4'>".__('Templates configuration')."</th></tr>";
 
@@ -2840,7 +2841,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "</td></tr>";
 
-      Plugin::doHook("post_item_form", ['item' => $entity, 'options' => &$options]);
+      Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
 
       echo "</table>";
 

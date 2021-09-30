@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Plugin\Hooks;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -323,7 +325,7 @@ class RuleImportEntity extends Rule {
                $hook_params["ruleid"]   = $this->fields["id"];
                $hook_params["input"]    = $input;
                $hook_params["output"]   = $output;
-               Plugin::doHook("rule_matched", $hook_params);
+               Plugin::doHook(Hooks::RULE_MATCHED, $hook_params);
                $output["_rule_process"] = true;
             }
          }

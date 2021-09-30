@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Plugin\Hooks;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -622,7 +624,7 @@ class CommonGLPI {
             $options['withtemplate'] = $withtemplate;
 
             if ($tabnum == 'main') {
-               Plugin::doHook('pre_show_item', ['item' => $item, 'options' => &$options]);
+               Plugin::doHook(Hooks::PRE_SHOW_ITEM, ['item' => $item, 'options' => &$options]);
                $ret = $item->showForm($item->getID(), $options);
 
                $lockedfield = new Lockedfield();
@@ -644,7 +646,7 @@ JAVASCRIPT;
                      echo Html::scriptBlock($locked_js);
                   }
                }
-               Plugin::doHook('post_show_item', ['item' => $item, 'options' => $options]);
+               Plugin::doHook(Hooks::POST_SHOW_ITEM, ['item' => $item, 'options' => $options]);
                return $ret;
             }
 
@@ -652,9 +654,9 @@ JAVASCRIPT;
                 && ($obj = getItemForItemtype($itemtype))) {
                $options['tabnum'] = $tabnum;
                $options['itemtype'] = $itemtype;
-               Plugin::doHook('pre_show_tab', [ 'item' => $item, 'options' => &$options]);
+               Plugin::doHook(Hooks::PRE_SHOW_TAB, [ 'item' => $item, 'options' => &$options]);
                $ret = $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
-               Plugin::doHook('post_show_tab', ['item' => $item, 'options' => $options]);
+               Plugin::doHook(Hooks::POST_SHOW_TAB, ['item' => $item, 'options' => $options]);
                return $ret;
             }
             break;
@@ -815,9 +817,9 @@ JAVASCRIPT;
       }
       echo "<div class='form_content'>";
       echo "<div class='$class'>";
-      Plugin::doHook('pre_show_item', ['item' => $this, 'options' => &$options]);
+      Plugin::doHook(Hooks::PRE_SHOW_ITEM, ['item' => $this, 'options' => &$options]);
       $this->showForm($options['id'], $options);
-      Plugin::doHook('post_show_item', ['item' => $this, 'options' => $options]);
+      Plugin::doHook(Hooks::POST_SHOW_ITEM, ['item' => $this, 'options' => $options]);
       echo "</div>";
       echo "</div>";
    }

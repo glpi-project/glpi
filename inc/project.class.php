@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\RichText;
 
 /**
@@ -2228,7 +2229,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          ];
 
          $content = "<div class='kanban-plugin-content'>";
-         $plugin_content_pre = Plugin::doHookFunction('pre_kanban_content', [
+         $plugin_content_pre = Plugin::doHookFunction(Hooks::PRE_KANBAN_CONTENT, [
             'itemtype' => $itemtype,
             'items_id' => $item['id'],
          ]);
@@ -2270,7 +2271,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
 
          $content .= "</div>";
          $content .= "<div class='kanban-plugin-content'>";
-         $plugin_content_post = Plugin::doHookFunction('post_kanban_content', [
+         $plugin_content_post = Plugin::doHookFunction(Hooks::POST_KANBAN_CONTENT, [
             'itemtype' => $itemtype,
             'items_id' => $item['id'],
          ]);

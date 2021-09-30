@@ -32,6 +32,7 @@
 
 use Glpi\Event;
 use Glpi\Features\CacheableListInterface;
+use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\RichText;
 
 if (!defined('GLPI_ROOT')) {
@@ -527,7 +528,7 @@ class CommonDBTM extends CommonGLPI {
       $this->post_getEmpty();
 
       // Call the plugin hook - $this->fields can be altered
-      Plugin::doHook("item_empty", $this);
+      Plugin::doHook(Hooks::ITEM_EMPTY, $this);
       return true;
    }
 
@@ -1137,7 +1138,7 @@ class CommonDBTM extends CommonGLPI {
 
       // Call the plugin hook - $this->input can be altered
       // This hook get the data from the form, not yet altered
-      Plugin::doHook("pre_item_add", $this);
+      Plugin::doHook(Hooks::PRE_ITEM_ADD, $this);
 
       if ($this->input && is_array($this->input)) {
 
@@ -1152,7 +1153,7 @@ class CommonDBTM extends CommonGLPI {
       if ($this->input && is_array($this->input)) {
          // Call the plugin hook - $this->input can be altered
          // This hook get the data altered by the object method
-         Plugin::doHook("post_prepareadd", $this);
+         Plugin::doHook(Hooks::POST_PREPAREADD, $this);
       }
 
       if ($this->input && is_array($this->input)) {
@@ -1224,7 +1225,7 @@ class CommonDBTM extends CommonGLPI {
                   //Check if we have to automatical fill dates
                   Infocom::manageDateOnStatusChange($this);
                }
-               Plugin::doHook("item_add", $this);
+               Plugin::doHook(Hooks::ITEM_ADD, $this);
 
                // As add have suceed, clean the old input value
                if (isset($this->input['_add'])) {
@@ -1505,7 +1506,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       // Plugin hook - $this->input can be altered
-      Plugin::doHook("pre_item_update", $this);
+      Plugin::doHook(Hooks::PRE_ITEM_UPDATE, $this);
       if ($this->input && is_array($this->input)) {
          $this->input = $this->prepareInputForUpdate($this->input);
 
@@ -1595,7 +1596,7 @@ class CommonDBTM extends CommonGLPI {
                                                                       : []))) {
                      $this->manageLocks();
                      $this->addMessageOnUpdateAction();
-                     Plugin::doHook("item_update", $this);
+                     Plugin::doHook(Hooks::ITEM_UPDATE, $this);
 
                      // As update have suceed, clean the old input value
                      if (isset($this->input['_update'])) {
@@ -1891,9 +1892,9 @@ class CommonDBTM extends CommonGLPI {
 
       // Purge
       if ($force) {
-         Plugin::doHook("pre_item_purge", $this);
+         Plugin::doHook(Hooks::PRE_ITEM_PURGE, $this);
       } else {
-         Plugin::doHook("pre_item_delete", $this);
+         Plugin::doHook(Hooks::PRE_ITEM_DELETE, $this);
       }
 
       if (!is_array($this->input)) {
@@ -1911,7 +1912,7 @@ class CommonDBTM extends CommonGLPI {
                if ($this instanceof CacheableListInterface) {
                   $this->invalidateListCache();
                }
-               Plugin::doHook("item_purge", $this);
+               Plugin::doHook(Hooks::ITEM_PURGE, $this);
                Impact::clean($this);
             } else {
                $this->addMessageOnDeleteAction();
@@ -1935,7 +1936,7 @@ class CommonDBTM extends CommonGLPI {
                if ($this instanceof CacheableListInterface) {
                   $this->invalidateListCache();
                }
-               Plugin::doHook("item_delete", $this);
+               Plugin::doHook(Hooks::ITEM_DELETE, $this);
             }
             if ($this->notificationqueueonaction) {
                Toolbox::deprecated('$notificationqueueonaction property usage is deprecated');
@@ -2081,7 +2082,7 @@ class CommonDBTM extends CommonGLPI {
 
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
-      Plugin::doHook("pre_item_restore", $this);
+      Plugin::doHook(Hooks::PRE_ITEM_RESTORE, $this);
       if (!is_array($this->input)) {
          // $input clear by a hook to cancel retore
          return false;
@@ -2108,7 +2109,7 @@ class CommonDBTM extends CommonGLPI {
          if ($this instanceof CacheableListInterface) {
             $this->invalidateListCache();
          }
-         Plugin::doHook("item_restore", $this);
+         Plugin::doHook(Hooks::ITEM_RESTORE, $this);
          if ($this->notificationqueueonaction) {
             Toolbox::deprecated('$notificationqueueonaction property usage is deprecated');
             QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
@@ -2569,7 +2570,7 @@ class CommonDBTM extends CommonGLPI {
          }
       }
 
-      Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$params]);
+      Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $this, 'options' => &$params]);
 
       if ($params['formfooter'] === null) {
           $this->showDates($params);
@@ -2909,7 +2910,7 @@ class CommonDBTM extends CommonGLPI {
          echo "</th></tr>\n";
       }
 
-      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => &$params]);
+      Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $this, 'options' => &$params]);
 
       // If in modal : do not display link on message after redirect
       if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
@@ -2998,7 +2999,7 @@ class CommonDBTM extends CommonGLPI {
 
       /* Hook to restrict user right on current item @since 9.2 */
       $this->right = $right;
-      Plugin::doHook("item_can", $this);
+      Plugin::doHook(Hooks::ITEM_CAN, $this);
       if ($this->right !== $right) {
          return false;
       }

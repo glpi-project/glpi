@@ -36,6 +36,7 @@ if (version_compare(PHP_VERSION, '7.4.0') < 0) {
    die('PHP >= 7.4.0 required');
 }
 
+use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\RichText;
 
 //Load GLPI constants
@@ -217,7 +218,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
 
    echo "<div id='display-login'>";
-   Plugin::doHook('display_login');
+   Plugin::doHook(Hooks::DISPLAY_LOGIN);
    echo "</div>";
 
 

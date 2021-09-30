@@ -31,6 +31,7 @@
  */
 
 use Glpi\Event;
+use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\Sanitizer;
 
 if (!defined('GLPI_ROOT')) {
@@ -265,7 +266,7 @@ class Auth extends CommonGLPI {
          if ($this->user_found && @ldap_bind($this->ldap_connection, $dn, $password)) {
 
             //Hook to implement to restrict access by checking the ldap directory
-            if (Plugin::doHookFunction("restrict_ldap_auth", $infos)) {
+            if (Plugin::doHookFunction(Hooks::RESTRICT_LDAP_AUTH, $infos)) {
                return $infos;
             }
             $this->addToError(__('User not authorized to connect in GLPI'));

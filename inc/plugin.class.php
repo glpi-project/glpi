@@ -40,6 +40,7 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
+use Glpi\Plugin\Hooks;
 
 class Plugin extends CommonDBTM {
 
@@ -227,7 +228,7 @@ class Plugin extends CommonDBTM {
             }
          }
          // For plugins which require action after all plugin init
-         Plugin::doHook("post_init");
+         Plugin::doHook(Hooks::POST_INIT);
       }
    }
 
@@ -779,8 +780,8 @@ class Plugin extends CommonDBTM {
          self::load($this->fields['directory'], true);
 
          // No activation if not CSRF compliant
-         if (!isset($PLUGIN_HOOKS['csrf_compliant'][$this->fields['directory']])
-             || !$PLUGIN_HOOKS['csrf_compliant'][$this->fields['directory']]) {
+         if (!isset($PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$this->fields['directory']])
+             || !$PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$this->fields['directory']]) {
             Session::addMessageAfterRedirect(
                sprintf(__('Plugin %1$s is not CSRF compliant!'), $this->fields['name']),
                true,
@@ -817,17 +818,17 @@ class Plugin extends CommonDBTM {
                            'state' => self::ACTIVATED]);
 
             // Initialize session for the plugin
-            if (isset($PLUGIN_HOOKS['init_session'][$this->fields['directory']])
-                && is_callable($PLUGIN_HOOKS['init_session'][$this->fields['directory']])) {
+            if (isset($PLUGIN_HOOKS[Hooks::INIT_SESSION][$this->fields['directory']])
+                && is_callable($PLUGIN_HOOKS[Hooks::INIT_SESSION][$this->fields['directory']])) {
 
-               call_user_func($PLUGIN_HOOKS['init_session'][$this->fields['directory']]);
+               call_user_func($PLUGIN_HOOKS[Hooks::INIT_SESSION][$this->fields['directory']]);
             }
 
             // Initialize profile for the plugin
-            if (isset($PLUGIN_HOOKS['change_profile'][$this->fields['directory']])
-                && is_callable($PLUGIN_HOOKS['change_profile'][$this->fields['directory']])) {
+            if (isset($PLUGIN_HOOKS[Hooks::CHANGE_PROFILE][$this->fields['directory']])
+                && is_callable($PLUGIN_HOOKS[Hooks::CHANGE_PROFILE][$this->fields['directory']])) {
 
-               call_user_func($PLUGIN_HOOKS['change_profile'][$this->fields['directory']]);
+               call_user_func($PLUGIN_HOOKS[Hooks::CHANGE_PROFILE][$this->fields['directory']]);
             }
             // reset menu
             if (isset($_SESSION['glpimenu'])) {
@@ -1108,7 +1109,7 @@ class Plugin extends CommonDBTM {
       );
 
       //Add plugins types
-      $typetoname = self::doHookFunction("migratetypes", $typetoname);
+      $typetoname = self::doHookFunction(Hooks::MIGRATE_TYPES, $typetoname);
 
       foreach ($types as $num => $name) {
          $typetoname[$num] = $name;
@@ -2253,8 +2254,8 @@ class Plugin extends CommonDBTM {
                }
                ob_end_clean();
                $function = 'plugin_' . $directory . '_check_prerequisites';
-               if (!isset($PLUGIN_HOOKS['csrf_compliant'][$directory])
-                   || !$PLUGIN_HOOKS['csrf_compliant'][$directory]) {
+               if (!isset($PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$directory])
+                   || !$PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$directory]) {
                   $output .= "<span class='error'>" . __('Not CSRF compliant') . "</span>";
                   $do_activate = false;
                } else if (function_exists($function) && $do_activate) {

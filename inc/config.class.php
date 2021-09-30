@@ -33,6 +33,7 @@
 use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
 use Glpi\Exception\PasswordTooWeakException;
+use Glpi\Plugin\Hooks;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Sanitizer;
 use Laminas\Cache\Psr\SimpleCache\SimpleCacheDecorator;
@@ -277,7 +278,7 @@ class Config extends CommonDBTM {
             && in_array($fields['name'], self::$undisclosedFields)) {
             unset($fields['value']);
          } else {
-            $fields = Plugin::doHookFunction('undiscloseConfigValue', $fields);
+            $fields = Plugin::doHookFunction(Hooks::UNDISCLOSED_CONFIG_VALUE, $fields);
          }
       }
    }

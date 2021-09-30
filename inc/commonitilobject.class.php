@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\RichText;
 use Glpi\Toolbox\Sanitizer;
 
@@ -5217,7 +5218,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       $this->showStatsDates();
-      Plugin::doHook('show_item_stats', $this);
+      Plugin::doHook(Hooks::SHOW_ITEM_STATS, $this);
       $this->showStatsTimes();
    }
 
@@ -6796,7 +6797,7 @@ abstract class CommonITILObject extends CommonDBTM {
               "javascript:viewAddSubitem".$this->fields['id']."$rand(\"Solution\");'>"
               ."<i class='fa fa-check'></i>"._n('Solution', 'Solutions', 1)."</li>";
       }
-      Plugin::doHook('timeline_actions', ['item' => $this, 'rand' => $rand]);
+      Plugin::doHook(Hooks::TIMELINE_ACTIONS, ['item' => $this, 'rand' => $rand]);
 
       echo "</ul>"; // timeline_choices
       echo "<div class='clear'>&nbsp;</div>";
@@ -7139,7 +7140,7 @@ abstract class CommonITILObject extends CommonDBTM {
          } else {
             $obj = $item;
          }
-         Plugin::doHook('pre_show_item', ['item' => $obj, 'options' => &$options]);
+         Plugin::doHook(Hooks::PRE_SHOW_ITEM, ['item' => $obj, 'options' => &$options]);
 
          if (is_array($obj)) {
             $item_i = $obj['item'];
@@ -7576,7 +7577,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          $timeline_index++;
 
-         Plugin::doHook('post_show_item', ['item' => $obj, 'options' => $options]);
+         Plugin::doHook(Hooks::POST_SHOW_ITEM, ['item' => $obj, 'options' => $options]);
 
       } // end foreach timeline
 
@@ -7756,7 +7757,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "</th>";
       echo "</tr>";
 
-      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => &$options]);
+      Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $this, 'options' => &$options]);
    }
 
    /**

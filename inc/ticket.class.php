@@ -34,6 +34,7 @@ use Glpi\ContentTemplates\Parameters\TicketParameters;
 use Glpi\ContentTemplates\ParametersPreset;
 use Glpi\ContentTemplates\TemplateManager;
 use Glpi\Event;
+use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\RichText;
 
 if (!defined('GLPI_ROOT')) {
@@ -4043,7 +4044,7 @@ JAVASCRIPT;
       echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
 
-      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => &$options]);
+      Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $this, 'options' => &$options]);
 
       echo "<tr><th>".__('Describe the incident or request')."</th><th>";
       if (Session::isMultiEntitiesMode()) {
@@ -4253,7 +4254,7 @@ JAVASCRIPT;
 
          echo "</td></tr>";
       }
-      Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$options]);
+      Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $this, 'options' => &$options]);
 
       if (!$ticket_template) {
          echo "<tr class='tab_bg_1'>";
@@ -5314,7 +5315,7 @@ JAVASCRIPT;
          echo "</tr>";
       }
 
-      Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$options]);
+      Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $this, 'options' => &$options]);
 
       echo "</table>";
 

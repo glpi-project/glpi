@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Plugin\Hooks;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -87,7 +89,7 @@ class Lock extends CommonGLPI {
       echo "<th>".__('Locked items')."</th></tr>";
 
       //Use a hook to allow external inventory tools to manage per field lock
-      $results =  Plugin::doHookFunction('display_locked_fields', ['item'   => $item,
+      $results =  Plugin::doHookFunction(Hooks::DISPLAY_LOCKED_FIELDS, ['item'   => $item,
                                                                         'header' => $header]);
       $header |= $results['header'];
 
