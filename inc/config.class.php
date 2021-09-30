@@ -2860,8 +2860,8 @@ class Config extends CommonDBTM {
       $themes_files = scandir(GLPI_ROOT."/css/palettes/");
       $themes = [];
       foreach ($themes_files as $file) {
-         if (strpos($file, ".scss") !== false && $file !== '__defaults.scss') {
-            $name     = substr($file, 1, -5);
+         if (preg_match('/^[^_].*\.scss$/', $file) === 1) {
+            $name          = basename($file, '.scss');
             $themes[$name] = ucfirst($name);
          }
       }
