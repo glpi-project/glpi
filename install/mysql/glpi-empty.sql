@@ -4255,7 +4255,6 @@ CREATE TABLE `glpi_sockets` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `socketmodels_id` (`socketmodels_id`),
-  KEY `complete` (`locations_id`,`name`),
   KEY `location_name` (`locations_id`,`name`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `networkports_id` (`networkports_id`),
