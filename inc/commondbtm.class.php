@@ -2875,7 +2875,7 @@ class CommonDBTM extends CommonGLPI {
                   if ($params['canedit']) {
                      if ($this instanceof CommonDBChild) {
                         echo Dropdown::getYesNo($this->isRecursive());
-                        if (isset($this->fields["is_recursive"])) {
+                        if (isset($this->fields["is_recursive"]) && !empty($this->fields["is_recursive"])) {
                            echo "<input type='hidden' name='is_recursive' value='".$this->fields["is_recursive"]."'>";
                         }
                         $comment = __("Can't change this attribute. It's inherited from its parent.");
