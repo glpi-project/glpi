@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\Sanitizer;
 use ScssPhp\ScssPhp\Compiler;
 
@@ -1389,9 +1390,9 @@ class Html {
              $CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
 
       // Add specific css for plugins
-      if (isset($PLUGIN_HOOKS['add_css']) && count($PLUGIN_HOOKS['add_css'])) {
+      if (isset($PLUGIN_HOOKS[Hooks::ADD_CSS]) && count($PLUGIN_HOOKS[Hooks::ADD_CSS])) {
 
-         foreach ($PLUGIN_HOOKS["add_css"] as $plugin => $files) {
+         foreach ($PLUGIN_HOOKS[Hooks::ADD_CSS] as $plugin => $files) {
             if (!Plugin::isPluginActive($plugin)) {
                continue;
             }
@@ -6818,8 +6819,8 @@ JAVASCRIPT;
       Html::displayAjaxMessageAfterRedirect();
 
       // Add specific javascript for plugins
-      if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
-         foreach ($PLUGIN_HOOKS["add_javascript"] as $plugin => $files) {
+      if (isset($PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]) && count($PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT])) {
+         foreach ($PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT] as $plugin => $files) {
             $plugin_root_dir = Plugin::getPhpDir($plugin, true);
             $plugin_web_dir  = Plugin::getWebDir($plugin, false);
             if (!Plugin::isPluginActive($plugin)) {
@@ -7211,7 +7212,7 @@ JAVASCRIPT;
          }
       }
 
-      $menu = Plugin::doHookFunction("redefine_menus", $menu);
+      $menu = Plugin::doHookFunction(Hooks::REDEFINE_MENUS, $menu);
 
       $already_used_shortcut = ['1'];
 

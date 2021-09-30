@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\Sanitizer;
 
 /**
@@ -184,8 +185,8 @@ class GLPIKey {
       global $PLUGIN_HOOKS;
 
       $fields = $this->fields;
-      if (isset($PLUGIN_HOOKS['secured_fields'])) {
-         foreach ($PLUGIN_HOOKS['secured_fields'] as $plugfields) {
+      if (isset($PLUGIN_HOOKS[Hooks::SECURED_FIELDS])) {
+         foreach ($PLUGIN_HOOKS[Hooks::SECURED_FIELDS] as $plugfields) {
             $fields = array_merge($fields, $plugfields);
          }
       }
@@ -203,8 +204,8 @@ class GLPIKey {
 
       $configs = $this->configs;
 
-      if (isset($PLUGIN_HOOKS['secured_configs'])) {
-         foreach ($PLUGIN_HOOKS['secured_configs'] as $plugin => $plugconfigs) {
+      if (isset($PLUGIN_HOOKS[Hooks::SECURED_CONFIGS])) {
+         foreach ($PLUGIN_HOOKS[Hooks::SECURED_CONFIGS] as $plugin => $plugconfigs) {
             $configs['plugin:' . $plugin] = $plugconfigs;
          }
       }

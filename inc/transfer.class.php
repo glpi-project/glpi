@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Plugin\Hooks;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -1267,7 +1269,7 @@ class Transfer extends CommonDBTM {
                $this->transferItemSoftwares($itemtype, $ID);
             }
 
-            Plugin::doHook("item_transfer", ['type'        => $itemtype,
+            Plugin::doHook(Hooks::ITEM_TRANSFER, ['type'        => $itemtype,
                                                   'id'          => $ID,
                                                   'newID'       => $newID,
                                                   'entities_id' => $this->to]);

@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Plugin\Hooks;
+
 include ('../inc/includes.php');
 
 // Change profile system
@@ -125,7 +127,7 @@ if (isset($_GET['create_ticket'])) {
    echo "<tr class='noHover'>";
    echo "<td class='top' width='50%'><br>";
    echo "<table class='central'>";
-   Plugin::doHook('display_central');
+   Plugin::doHook(Hooks::DISPLAY_CENTRAL);
    if (Session::haveRight('ticket', CREATE)) {
       echo "<tr class='noHover'><td class='top'>";
       Ticket::showCentralCount(true);

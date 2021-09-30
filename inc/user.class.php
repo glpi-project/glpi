@@ -35,6 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\Exception\ForgetPasswordException;
+use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\Sanitizer;
 use Sabre\VObject;
 
@@ -1588,7 +1589,7 @@ class User extends CommonDBTM {
          $fields  = AuthLDAP::getSyncFields($ldap_method);
 
          //Hook to allow plugin to request more attributes from ldap
-         $fields = Plugin::doHookFunction("retrieve_more_field_from_ldap", $fields);
+         $fields = Plugin::doHookFunction(Hooks::RETRIEVE_MORE_FIELD_FROM_LDAP, $fields);
 
          $fields  = array_filter($fields);
          $f       = self::getLdapFieldNames($fields);
@@ -1767,7 +1768,7 @@ class User extends CommonDBTM {
             $this->fields['_ldap_result'] = $v;
             $this->fields['_ldap_conn']   = $ldap_connection;
             //Hook to retrieve more information for ldap
-            $this->fields = Plugin::doHookFunction("retrieve_more_data_from_ldap", $this->fields);
+            $this->fields = Plugin::doHookFunction(Hooks::RETRIEVE_MORE_DATA_FROM_LDAP, $this->fields);
             unset($this->fields['_ldap_result']);
          }
          return true;
@@ -4288,7 +4289,7 @@ JAVASCRIPT;
       $vcard->add('TEL', $this->fields["mobile"], ['type' => 'WORK;CELL']);
 
       // Get more data from plugins such as an IM contact
-      $data = Plugin::doHook('vcard_data', ['item' => $this, 'data' => []])['data'];
+      $data = Plugin::doHook(Hooks::VCARD_DATA, ['item' => $this, 'data' => []])['data'];
       foreach ($data as $field => $additional_field) {
          $vcard->add($additional_field['name'], $additional_field['value'] ?? '', $additional_field['params'] ?? []);
       }

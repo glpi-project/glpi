@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Plugin\Hooks;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -275,7 +277,7 @@ class TicketTask extends CommonITILTask {
          echo "<input type='hidden' name='id' value='$ID'>";
       }
 
-      Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$params]);
+      Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $this, 'options' => &$params]);
 
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='".($params['colspan']*2)."'>";

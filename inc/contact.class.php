@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Plugin\Hooks;
 use Sabre\VObject;
 
 /**
@@ -519,7 +520,7 @@ class Contact extends CommonDBTM{
       }
 
       // Get more data from plugins such as an IM contact
-      $data = Plugin::doHook('vcard_data', ['item' => $this, 'data' => []])['data'];
+      $data = Plugin::doHook(Hooks::VCARD_DATA, ['item' => $this, 'data' => []])['data'];
       foreach ($data as $field => $additional_field) {
          $vcard->add($additional_field['name'], $additional_field['value'] ?? '', $additional_field['params'] ?? []);
       }

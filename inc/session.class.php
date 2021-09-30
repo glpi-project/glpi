@@ -31,6 +31,7 @@
  */
 
 use Glpi\Event;
+use Glpi\Plugin\Hooks;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -156,7 +157,7 @@ class Session {
                }
 
                // glpiprofiles -> other available profile with link to the associated entities
-               Plugin::doHook("init_session");
+               Plugin::doHook(Hooks::INIT_SESSION);
 
                self::initEntityProfiles(self::getLoginUserID());
 
@@ -414,7 +415,7 @@ class Session {
             }
          }
          self::loadGroups();
-         Plugin::doHook("change_entity");
+         Plugin::doHook(Hooks::CHANGE_ENTITY);
          return true;
       }
       return false;
@@ -460,7 +461,7 @@ class Session {
                   self::changeActiveEntities("all");
                }
             }
-            Plugin::doHook("change_profile");
+            Plugin::doHook(Hooks::CHANGE_PROFILE);
          }
       }
       // Clean specific datas

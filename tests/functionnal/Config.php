@@ -33,6 +33,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Plugin\Hooks;
 use Log;
 use PHPMailer\PHPMailer\PHPMailer;
 use Session;
@@ -753,7 +754,7 @@ class Config extends DbTestCase {
    protected function logConfigChangeProvider() {
       global $PLUGIN_HOOKS;
 
-      $PLUGIN_HOOKS['secured_configs']['tester'] = ['passwd'];
+      $PLUGIN_HOOKS[Hooks::SECURED_CONFIGS]['tester'] = ['passwd'];
 
       return [
          [

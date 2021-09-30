@@ -31,6 +31,7 @@
  */
 
 use Glpi\Event;
+use Glpi\Plugin\Hooks;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -109,7 +110,7 @@ class Central extends CommonGLPI {
 
    public function showGlobalDashboard() {
       echo "<table class='tab_cadre_central'>";
-      Plugin::doHook('display_central');
+      Plugin::doHook(Hooks::DISPLAY_CENTRAL);
       echo "</table>";
 
       self::showMessages();
@@ -173,7 +174,7 @@ class Central extends CommonGLPI {
 
       echo "<table class='tab_cadre_central'>";
 
-      Plugin::doHook('display_central');
+      Plugin::doHook(Hooks::DISPLAY_CENTRAL);
 
       echo "<tr><th colspan='2'>";
       self::showMessages();

@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Plugin\Hooks;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -130,7 +132,7 @@ class NotificationTarget extends CommonDBChild {
 
       // add new target by plugin
       unset($this->data);
-      Plugin::doHook('item_add_targets', $this);
+      Plugin::doHook(Hooks::ITEM_ADD_TARGETS, $this);
       asort($this->notification_targets);
    }
 
@@ -561,7 +563,7 @@ class NotificationTarget extends CommonDBChild {
             'itemtype' => User::class,
             'items_id' => $data['users_id'],
          ];
-         Plugin::doHook('add_recipient_to_target', $this);
+         Plugin::doHook(Hooks::ADD_RECIPIENT_TO_TARGET, $this);
          unset($this->recipient_data);
       }
    }
@@ -773,7 +775,7 @@ class NotificationTarget extends CommonDBChild {
             'itemtype' => Group::class,
             'items_id' => $group_id,
          ];
-         Plugin::doHook('add_recipient_to_target', $this);
+         Plugin::doHook(Hooks::ADD_RECIPIENT_TO_TARGET, $this);
          unset($this->recipient_data);
       }
    }
@@ -817,7 +819,7 @@ class NotificationTarget extends CommonDBChild {
 
       $this->events = $this->getEvents();
       //If plugin adds new events for an already defined type
-      Plugin::doHook('item_get_events', $this);
+      Plugin::doHook(Hooks::ITEM_GET_EVENTS, $this);
 
       return $this->events;
    }
@@ -1037,7 +1039,7 @@ class NotificationTarget extends CommonDBChild {
          'itemtype' => Profile::class,
          'items_id' => $profiles_id,
       ];
-      Plugin::doHook('add_recipient_to_target', $this);
+      Plugin::doHook(Hooks::ADD_RECIPIENT_TO_TARGET, $this);
       unset($this->recipient_data);
    }
 
@@ -1202,7 +1204,7 @@ class NotificationTarget extends CommonDBChild {
       }
       // action for target from plugin
       $this->data = $data;
-      Plugin::doHook('item_action_targets', $this);
+      Plugin::doHook(Hooks::ITEM_ACTION_TARGETS, $this);
 
    }
 
@@ -1276,7 +1278,7 @@ class NotificationTarget extends CommonDBChild {
 
       $this->addDataForTemplate($event, $options);
 
-      Plugin::doHook('item_get_datas', $this);
+      Plugin::doHook(Hooks::ITEM_GET_DATA, $this);
 
       return $this->data;
    }

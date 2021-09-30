@@ -38,6 +38,7 @@ use Computer;
 use Computer_Item;
 use DatabaseInstance;
 use Glpi\Inventory\Conf;
+use Glpi\Plugin\Hooks;
 use Html;
 use Plugin;
 use RefusedEquipment;
@@ -154,7 +155,7 @@ trait Inventoriable {
       if (!empty($this->fields['id'])
           && $this->fields["is_dynamic"]) {
          echo "<tr class='tab_bg_1'><td colspan='4'>";
-         Plugin::doHook("autoinventory_information", $this);
+         Plugin::doHook(Hooks::AUTOINVENTORY_INFORMATION, $this);
          echo "</td></tr>";
       }
    }
