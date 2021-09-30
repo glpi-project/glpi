@@ -4242,8 +4242,6 @@ DROP TABLE IF EXISTS `glpi_sockets`;
 CREATE TABLE `glpi_sockets` (
   `id` int NOT NULL AUTO_INCREMENT,
   `position` int NOT NULL DEFAULT '0',
-  `entities_id` int NOT NULL DEFAULT '0',
-  `is_recursive` tinyint NOT NULL DEFAULT '0',
   `locations_id` int NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `socketmodels_id` int NOT NULL DEFAULT '0',
@@ -4257,8 +4255,7 @@ CREATE TABLE `glpi_sockets` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `socketmodels_id` (`socketmodels_id`),
-  KEY `complete` (`entities_id`,`locations_id`,`name`),
-  KEY `is_recursive` (`is_recursive`),
+  KEY `complete` (`locations_id`,`name`),
   KEY `location_name` (`locations_id`,`name`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `networkports_id` (`networkports_id`),

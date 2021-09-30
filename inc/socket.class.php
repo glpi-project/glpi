@@ -525,7 +525,7 @@ class Socket extends CommonDBChild {
    /**
     * check if a socket already exists (before import)
     *
-    * @param $input array of value to import (name, locations_id, entities_id)
+    * @param $input array of value to import (name, locations_id)
     *
     * @return integer the ID of the new (or -1 if not found)
    **/
@@ -539,7 +539,7 @@ class Socket extends CommonDBChild {
             'WHERE'  => [
                'name'         => $input['name'],
                'locations_id' => $input["locations_id"] ?? 0
-            ] + getEntitiesRestrictCriteria($this->getTable(), $input['entities_id'], $this->maybeRecursive())
+            ]
          ]);
 
          // Check twin :
@@ -812,7 +812,6 @@ class Socket extends CommonDBChild {
          echo "</td>";
 
          echo "<td>";
-         echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'>";
          echo "<input type='submit' name='execute_single' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td>";
@@ -848,7 +847,6 @@ class Socket extends CommonDBChild {
          echo "</td>";
 
          echo "<td>";
-         echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'>";
          echo "<input type='submit' name='execute_multi' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td>";

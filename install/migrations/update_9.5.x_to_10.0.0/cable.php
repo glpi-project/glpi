@@ -140,8 +140,6 @@ if (!$DB->tableExists('glpi_sockets')) {
    $query = "CREATE TABLE `glpi_sockets` (
       `id` int NOT NULL AUTO_INCREMENT,
       `position` int NOT NULL DEFAULT '0',
-      `entities_id` int NOT NULL DEFAULT '0',
-      `is_recursive` tinyint NOT NULL DEFAULT '0',
       `locations_id` int NOT NULL DEFAULT '0',
       `name` varchar(255) DEFAULT NULL,
       `socketmodels_id` int NOT NULL DEFAULT '0',
@@ -155,8 +153,7 @@ if (!$DB->tableExists('glpi_sockets')) {
       PRIMARY KEY (`id`),
       KEY `name` (`name`),
       KEY `socketmodels_id` (`socketmodels_id`),
-      KEY `complete` (`entities_id`,`locations_id`,`name`),
-      KEY `is_recursive` (`is_recursive`),
+      KEY `complete` (`locations_id`,`name`),
       KEY `location_name` (`locations_id`,`name`),
       KEY `item` (`itemtype`,`items_id`),
       KEY `networkports_id` (`networkports_id`),
@@ -213,7 +210,6 @@ if ($DB->tableExists('glpi_netpoints')) {
          $socket = new Socket();
          $input = [
             'name'            => $data['name'],
-            'entities_id'     => $data['entities_id'],
             'locations_id'    => $data['locations_id'],
             'position'        => $data['logical_number'],
             'itemtype'        => $data['itemtype'],
