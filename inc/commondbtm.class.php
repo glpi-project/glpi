@@ -5319,6 +5319,16 @@ class CommonDBTM extends CommonGLPI {
             $entities_id = $input['_job']->fields['entities_id'];
          }
 
+         //retrieve is_recursive
+         $is_recursive = 0;
+         if (isset($this->fields["is_recursive"])) {
+            $is_recursive = $this->fields["is_recursive"];
+         } else if (isset($input['is_recursive'])) {
+            $is_recursive = $input['is_recursive'];
+         } else if (isset($input['_job']->fields['is_recursive'])) {
+            $is_recursive = $input['_job']->fields['is_recursive'];
+         }
+
          // Check for duplicate
          if ($doc->getDuplicateOf($entities_id, $filename)) {
             $docID = $doc->fields["id"];
@@ -5348,7 +5358,7 @@ class CommonDBTM extends CommonGLPI {
             }
 
             $input2["entities_id"]             = $entities_id;
-            $input2["is_recursive"]            = 1;
+            $input2["is_recursive"]            = $is_recursive;
             $input2["documentcategories_id"]   = $CFG_GLPI["documentcategories_id_forticket"];
             $input2["_only_if_upload_succeed"] = 1;
             $input2["_filename"]               = [$file];
