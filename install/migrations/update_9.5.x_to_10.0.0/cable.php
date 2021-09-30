@@ -173,9 +173,9 @@ if ($DB->tableExists('glpi_netpoints')) {
    //migrate link between NetworkPort and Socket
    // BEFORE : supported by NetworkPortEthernet / NetworkPortFiberchannel with 'netpoints_id' foreign key
    // AFTER  : supported by Socket with (itemtype, items_id, networkports_id)
-   $classes = [NetworkPortEthernet::getType(), NetworkPortFiberchannel::getType()];
-   foreach ($classes as $itemtype) {
-      if (!$DB->fieldExists($itemtype::getTable(), 'netpoints_id')) {
+   $tables_to_migration = ['glpi_networkportethernets', 'glpi_networkportfiberchannels'];
+   foreach ($tables_to_migration as $table) {
+      if (!$DB->fieldExists($table, 'netpoints_id')) {
          continue;
       }
       $criteria = [
@@ -190,18 +190,18 @@ if ($DB->tableExists('glpi_netpoints')) {
             "glpi_netpoints.date_creation",
             "glpi_netpoints.date_mod",
          ],
-         'FROM'      => $itemtype::getTable(),
+         'FROM'      => $table,
          'INNER JOIN' => [
             'glpi_networkports' => [
                'FKEY' => [
                   'glpi_networkports'     => 'id',
-                  $itemtype::getTable()   => 'networkports_id',
+                  $$table   => 'networkports_id',
                ]
             ],
             'glpi_netpoints' => [
                'FKEY' => [
                   'glpi_netpoints'        => 'id',
-                  $itemtype::getTable()   => 'netpoints_id',
+                  $table   => 'netpoints_id',
                ]
             ],
          ]
