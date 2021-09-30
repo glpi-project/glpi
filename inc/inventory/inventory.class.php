@@ -421,7 +421,7 @@ class Inventory
 
       $menu = [
          'title'  => __('Inventory'),
-         'page'   => '/ufront/inventory.conf.php',
+         'page'   => '/front/inventory.conf.php',
          'icon'   => static::getIcon(),
          'options'   => [
             'agent' => [
