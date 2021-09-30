@@ -102,7 +102,7 @@ class HookManager
       global $PLUGIN_HOOKS;
 
       // Check if the given hook is a valid functionnal hook
-      $allowed_file_hooks = Hooks::getFonctionnalHooks();
+      $allowed_file_hooks = Hooks::getFunctionalHooks();
       if (!isset($allowed_file_hooks[$hook])) {
          trigger_error("Invalid functional hook: '$hook'", E_USER_ERROR);
       }
