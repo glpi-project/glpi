@@ -105,7 +105,8 @@ class Transfer extends DbTestCase {
             'USBVendor',
             'PCIVendor',
             'PendingReasonCron',
-            'Database'
+            'Database',
+            'Socket'
          ]
       );
 
@@ -165,6 +166,10 @@ class Transfer extends DbTestCase {
          unset($_SESSION['glpitransfer_list']);
 
          $this->boolean($obj->getFromDB($id))->isTrue();
+
+         if(!isset($obj->fields['entities_id'])){
+            echo get_class($obj);
+         }
          $this->integer((int)$obj->fields['entities_id'])->isidenticalTo($dentity, "Transfer has failed on $itemtype");
 
          ++$count;

@@ -78,8 +78,6 @@ class Cable extends DbTestCase {
          'wiring_side'        => \Socket::FRONT, //default is REAR
          'items_id'           => $computer1->getID(),
          'itemtype'           => 'Computer',
-         'entities_id'        => $computer1->fields['entities_id'],
-         'is_recursive'       => 0,
          'socketmodels_id'    => $socketModel_id,
          'locations_id'       => 0,
          'comment'            => 'comment',
@@ -94,8 +92,6 @@ class Cable extends DbTestCase {
       unset($current_socket['date_creation']);
       $expected = [
          'position'           => 10,
-         'entities_id'        => $computer1->fields['entities_id'],
-         'is_recursive'       => 0,
          'locations_id'       => 0,
          'name'               => 'socket1',
          'socketmodels_id'    => $socketModel_id,
@@ -134,7 +130,6 @@ class Cable extends DbTestCase {
          'name'               => 'socket1',
          'wiring_side'        => \Socket::FRONT, //default is REAR
          'itemtype'           => '',
-         'is_recursive'       => 0,
          'socketmodels_id'    => $socketModel_id,
          'locations_id'       => 0,
          'comment'            => 'comment',
@@ -235,8 +230,6 @@ class Cable extends DbTestCase {
          'wiring_side'        => \Socket::FRONT, //default is REAR
          'items_id'           => $computer1->getID(),
          'itemtype'           => 'Computer',
-         'entities_id'        => $computer1->fields['entities_id'],
-         'is_recursive'       => 0,
          'socketmodels_id'    => $socketModel1_id,
          'locations_id'       => 0,
          'comment'            => 'comment',
@@ -252,8 +245,6 @@ class Cable extends DbTestCase {
 
       $expected = [
          'position'           => 10,
-         'entities_id'        => $computer1->fields['entities_id'],
-         'is_recursive'       => 0,
          'locations_id'       => 0,
          'name'               => 'socket1',
          'socketmodels_id'    => $socketModel1_id,
@@ -303,8 +294,6 @@ class Cable extends DbTestCase {
          'wiring_side'        => \Socket::FRONT, //default is REAR
          'items_id'           => $computer2->getID(),
          'itemtype'           => 'Computer',
-         'entities_id'        => $computer2->fields['entities_id'],
-         'is_recursive'       => 0,
          'socketmodels_id'    => $socketModel2_id,
          'locations_id'       => 0,
          'comment'            => 'comment',
@@ -319,8 +308,6 @@ class Cable extends DbTestCase {
       unset($current_socket['date_creation']);
       $expected = [
          'position'           => 10,
-         'entities_id'        => $computer2->fields['entities_id'],
-         'is_recursive'       => 0,
          'locations_id'       => 0,
          'name'               => 'socket2',
          'socketmodels_id'    => $socketModel2_id,

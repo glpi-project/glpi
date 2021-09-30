@@ -547,7 +547,6 @@ $RELATION = [
       '_glpi_slalevels'                  => 'entities_id',
       '_glpi_slas'                       => 'entities_id',
       'glpi_slms'                        => 'entities_id',
-      'glpi_sockets'                     => 'entities_id',
       'glpi_softwarelicenses'            => 'entities_id',
       'glpi_softwarelicensetypes'        => 'entities_id',
       'glpi_softwares'                   => 'entities_id',
