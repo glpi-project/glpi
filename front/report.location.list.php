@@ -54,24 +54,24 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
       'glpi_locations', //from
       ['PORT_1' => 'id', 'glpi_networkportethernets' => 'networkports_id'], //joincrit
       $where, //where
-      ['glpi_netpoints.name AS extra'], //select
+      ['glpi_sockets.name AS extra'], //select
       [], //left join
       [
-         'glpi_netpoints'  => [
+         'glpi_sockets'  => [
             'ON'  => [
-               'glpi_netpoints'  => 'locations_id',
+               'glpi_sockets'  => 'locations_id',
                'glpi_locations'  => 'id'
             ]
          ],
          'glpi_networkportethernets'   => [
             'ON'  => [
-               'glpi_networkportethernets'   => 'netpoints_id',
-               'glpi_netpoints'              => 'id'
+               'glpi_networkportethernets'   => 'sockets_id',
+               'glpi_sockets'              => 'id'
             ]
          ]
       ], //inner join
       ['glpi_locations.completename', 'PORT_1.name'], //order
-      Netpoint::getTypeName()
+      Socket::getTypeName()
    );
 
    Html::footer();

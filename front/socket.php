@@ -32,5 +32,10 @@
 
 include ('../inc/includes.php');
 
-$dropdown = new Netpoint();
-include (GLPI_ROOT . "/front/dropdown.common.form.php");
+Session::checkRight("cable_management", READ);
+
+Html::header(Socket::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "cable", "socket");
+Search::show('Socket');
+
+Html::footer();
+

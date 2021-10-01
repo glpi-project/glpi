@@ -105,7 +105,9 @@ class Transfer extends DbTestCase {
             'USBVendor',
             'PCIVendor',
             'PendingReasonCron',
-            'Database'
+            'Database',
+            'Socket',
+            'Netpoint'
          ]
       );
 

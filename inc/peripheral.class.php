@@ -95,6 +95,7 @@ class Peripheral extends CommonDBTM {
       $this->addStandardTab('Item_Devices', $ong, $options);
       $this->addStandardTab('Computer_Item', $ong, $options);
       $this->addStandardTab('NetworkPort', $ong, $options);
+      $this->addStandardTab('Socket', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
       $this->addStandardTab('Contract_Item', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
@@ -534,6 +535,7 @@ class Peripheral extends CommonDBTM {
 
       $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
 
+      $tab = array_merge($tab, Socket::rawSearchOptionsToAdd(get_class($this)));
       return $tab;
    }
 

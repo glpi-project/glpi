@@ -1357,6 +1357,11 @@ class Html {
             echo Html::css('public/lib/photoswipe.css');
             Html::requireJs('photoswipe');
          }
+
+         if (in_array('cable', $jslibs)) {
+            Html::requireJs('cable');
+         }
+
       }
 
       if (Session::getCurrentInterface() == "helpdesk") {
@@ -1516,7 +1521,7 @@ JAVASCRIPT;
             'types' => [
                'SoftwareLicense','Budget', 'Supplier', 'Contact', 'Contract',
                'Document', 'Line', 'Certificate', 'Datacenter', 'Cluster', 'Domain',
-               'Appliance', 'Database'
+               'Appliance', 'Database', 'Cable'
             ]
          ],
          'tools' => [
@@ -6741,6 +6746,9 @@ JAVASCRIPT;
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/photoswipe.js';
          case 'reservations':
             $_SESSION['glpi_js_toload'][$name][] = 'js/reservations.js';
+            break;
+         case 'cable':
+            $_SESSION['glpi_js_toload'][$name][] = 'js/cable.js';
             break;
          default:
             $found = false;

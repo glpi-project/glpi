@@ -74,6 +74,7 @@ class Dropdown {
     *    - specific_tags        : array of HTML5 tags to add the the field
     *    - url                  : url of the ajax php code which should return the json data to show in
     *                                       the dropdown
+    *    - diplay_dc_position   :  Display datacenter position  ? (default false)
     *
     * @return boolean : false if error and random id if OK
     *
@@ -112,6 +113,7 @@ class Dropdown {
       $params['addicon']              = true;
       $params['specific_tags']        = [];
       $params['url']                  = $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php";
+      $params['display_dc_position']  = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -194,6 +196,7 @@ class Dropdown {
          $comment_id      = Html::cleanId("comment_".$params['name'].$params['rand']);
          $link_id         = Html::cleanId("comment_link_".$params['name'].$params['rand']);
          $kblink_id       = Html::cleanId("kb_link_".$params['name'].$params['rand']);
+         $breadcrumb_id   = Html::cleanId("dc_breadcrumb_".$params['name'].$params['rand']);
          $options_tooltip = ['contentid' => $comment_id,
                                   'linkid'    => $link_id,
                                   'display'   => false];
@@ -247,6 +250,16 @@ class Dropdown {
             'itemtype'    => $itemtype,
             '_idor_token' => Session::getNewIDORToken($itemtype)
          ];
+
+         if ($params['display_dc_position']) {
+            if ($rack = $item->isRackPart($itemtype, $params['value'], true)) {
+               $output .= "<span id='".$breadcrumb_id."' title='".__s('Display on datacenter')."'>";
+               $output .= "&nbsp;<a class='fas fa-crosshairs' href='" . $rack->getLinkURL(). "'></a>";
+               $output .= "</span>";
+               $paramscomment['with_dc_position'] = $breadcrumb_id;
+            }
+         }
+
          if ($item->isField('knowbaseitemcategories_id')
              && Session::haveRight('knowbase', READ)) {
 
@@ -269,6 +282,7 @@ class Dropdown {
                                                   $CFG_GLPI["root_doc"]."/ajax/comments.php",
                                                   $paramscomment, false);
       }
+
       $output .= Ajax::commonDropdownUpdateItem($params, false);
       $output .= "</span>";
       if ($params['display']) {
@@ -452,7 +466,7 @@ class Dropdown {
                   }
                   break;
 
-               case "glpi_netpoints" :
+               case "glpi_sockets" :
                   $name = sprintf(__('%1$s (%2$s)'), $name,
                                     self::getDropdownName("glpi_locations",
                                                          $data["locations_id"], false, $translate));
@@ -946,14 +960,21 @@ class Dropdown {
 
              __('Networking') => [
                  'NetworkInterface' => null,
-                 'Netpoint' => null,
                  'Network' => null,
                  'NetworkPortType' => null,
                  'Vlan' => null,
                  'LineOperator' => null,
                  'DomainType' => null,
                  'DomainRelation' => null,
-                 'DomainRecordType' => null
+                 'DomainRecordType' => null,
+                 'NetworkPortFiberchannelType' => null,
+
+             ],
+
+             __('Cable management') => [
+               'CableType' => null,
+               'CableStrand' => null,
+               'SocketModel' => null,
              ],
 
              __('Internet') => [
@@ -3369,151 +3390,6 @@ class Dropdown {
             $results[] = [
                'id' => $data['id'],
                'text' => $output
-            ];
-            $count++;
-         }
-      }
-
-      $ret['count']   = $count;
-      $ret['results'] = $results;
-
-      return ($json === true) ? json_encode($ret) : $ret;
-   }
-
-   /**
-    * Get dropdown netpoint
-    *
-    * @param array   $post Posted values
-    * @param boolean $json Encode to JSON, default to true
-    *
-    * @return string|array
-    */
-   public static function getDropdownNetpoint($post, $json = true) {
-      global $DB, $CFG_GLPI;
-
-      // Make a select box with preselected values
-      $results           = [];
-      $location_restrict = false;
-
-      if (!isset($post['page'])) {
-         $post['page']       = 1;
-         $post['page_limit'] = $CFG_GLPI['dropdown_max'];
-      }
-
-      $start = intval(($post['page']-1)*$post['page_limit']);
-      $limit = intval($post['page_limit']);
-
-      $criteria = [
-         'SELECT'    => [
-            'glpi_netpoints.comment AS comment',
-            'glpi_netpoints.id',
-            'glpi_netpoints.name AS netpname',
-            'glpi_locations.completename AS loc'
-         ],
-         'FROM'      => 'glpi_netpoints',
-         'LEFT JOIN' => [
-            'glpi_locations'  => [
-               'ON' => [
-                  'glpi_netpoints'  => 'locations_id',
-                  'glpi_locations'  => 'id'
-               ]
-            ]
-         ],
-         'WHERE'     => [],
-         'ORDERBY'   => [
-            'glpi_locations.completename',
-            'glpi_netpoints.name'
-         ],
-         'START'     => $start,
-         'LIMIT'     => $limit
-      ];
-
-      if (!(isset($post["devtype"])
-            && ($post["devtype"] != 'NetworkEquipment')
-            && isset($post["locations_id"])
-            && ($post["locations_id"] > 0))) {
-
-         if (isset($post["entity_restrict"]) && ($post["entity_restrict"] >= 0)) {
-            $criteria['WHERE']['glpi_netpoints.entities_id'] = $post['entity_restrict'];
-         } else {
-            $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria('glpi_locations');
-         }
-      }
-
-      if (isset($post['searchText']) && strlen($post['searchText']) > 0) {
-         $criteria['WHERE']['OR'] = [
-            'glpi_netpoints.name'         => ['LIKE', Search::makeTextSearchValue($post['searchText'])],
-            'glpi_locations.completename' => ['LIKE', Search::makeTextSearchValue($post['searchText'])]
-         ];
-      }
-
-      if (isset($post["devtype"]) && !empty($post["devtype"])) {
-         $criteria['LEFT JOIN']['glpi_networkportethernets'] = [
-            'ON' => [
-               'glpi_networkportethernets'   => 'netpoints_id',
-               'glpi_netpoints'              => 'id'
-            ]
-         ];
-
-         $extra_and = [];
-         if ($post["devtype"] == 'NetworkEquipment') {
-            $extra_and['glpi_networkports.itemtype'] = 'NetworkEquipment';
-         } else {
-            $extra_and['NOT'] = ['glpi_networkports.itemtype' => 'NetworkEquipment'];
-            if (isset($post["locations_id"]) && ($post["locations_id"] >= 0)) {
-               $location_restrict = true;
-               $criteria['WHERE']['glpi_netpoints.locations_id'] = $post['locations_id'];
-            }
-         }
-
-         $criteria['LEFT JOIN']['glpi_networkports'] = [
-            'ON' => [
-               'glpi_networkportethernets'   => 'id',
-               'glpi_networkports'           => 'id', [
-                  'AND' => [
-                     'glpi_networkports.instantiation_type'    => 'NetworkPortEthernet',
-                  ] + $extra_and
-               ]
-            ]
-         ];
-         $criteria['WHERE']['glpi_networkportethernets.netpoints_id'] = null;
-      } else if (isset($post["locations_id"]) && ($post["locations_id"] >= 0)) {
-         $location_restrict = true;
-         $criteria['WHERE']['glpi_netpoints.locations_id'] = $post['locations_id'];
-      }
-
-      $iterator = $DB->request($criteria);
-
-      // Display first if no search
-      if (empty($post['searchText'])) {
-         if ($post['page'] == 1) {
-            $results[] = [
-               'id' => 0,
-               'text' => Dropdown::EMPTY_VALUE
-            ];
-         }
-      }
-
-      $count = 0;
-      if (count($iterator)) {
-         while ($data = $iterator->next()) {
-            $output     = $data['netpname'];
-            $loc        = $data['loc'];
-            $ID         = $data['id'];
-            $title      = $output;
-            if (isset($data["comment"])) {
-               //TRANS: %1$s is the location, %2$s is the comment
-               $title = sprintf(__('%1$s - %2$s'), $title, $loc);
-               $title = sprintf(__('%1$s - %2$s'), $title, $data["comment"]);
-            }
-            if (!$location_restrict) {
-               $output = sprintf(__('%1$s (%2$s)'), $output, $loc);
-            }
-
-            $results[] = [
-               'id' => $ID,
-               'text' => $output,
-               'title' => $title
             ];
             $count++;
          }

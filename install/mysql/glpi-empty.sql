@@ -4236,21 +4236,122 @@ CREATE TABLE `glpi_monitortypes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
-### Dump table glpi_netpoints
+### Dump table glpi_sockets
 
-DROP TABLE IF EXISTS `glpi_netpoints`;
-CREATE TABLE `glpi_netpoints` (
+DROP TABLE IF EXISTS `glpi_sockets`;
+CREATE TABLE `glpi_sockets` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `entities_id` int NOT NULL DEFAULT '0',
+  `position` int NOT NULL DEFAULT '0',
   `locations_id` int NOT NULL DEFAULT '0',
+  `name` varchar(255) DEFAULT NULL,
+  `socketmodels_id` int NOT NULL DEFAULT '0',
+  `wiring_side` tinyint DEFAULT '1',
+  `itemtype` varchar(255) DEFAULT NULL,
+  `items_id` int NOT NULL DEFAULT '0',
+  `networkports_id` int NOT NULL DEFAULT '0',
+  `comment` text,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `socketmodels_id` (`socketmodels_id`),
+  KEY `location_name` (`locations_id`,`name`),
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `networkports_id` (`networkports_id`),
+  KEY `wiring_side` (`wiring_side`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+
+### Dump table glpi_cables
+
+DROP TABLE IF EXISTS `glpi_cables`;
+CREATE TABLE `glpi_cables` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `entities_id` int NOT NULL DEFAULT '0',
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `itemtype_endpoint_a` varchar(255) DEFAULT NULL,
+  `itemtype_endpoint_b` varchar(255) DEFAULT NULL,
+  `items_id_endpoint_a` int NOT NULL DEFAULT '0',
+  `items_id_endpoint_b` int NOT NULL DEFAULT '0',
+  `socketmodels_id_endpoint_a` int NOT NULL DEFAULT '0',
+  `socketmodels_id_endpoint_b` int NOT NULL DEFAULT '0',
+  `sockets_id_endpoint_a` int NOT NULL DEFAULT '0',
+  `sockets_id_endpoint_b` int NOT NULL DEFAULT '0',
+  `cablestrands_id` int NOT NULL DEFAULT '0',
+  `color` varchar(255) DEFAULT NULL,
+  `otherserial` varchar(255) DEFAULT NULL,
+  `states_id` int NOT NULL DEFAULT '0',
+  `users_id_tech` int NOT NULL DEFAULT '0',
+  `cabletypes_id` int NOT NULL DEFAULT '0',
+  `comment` text,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `item_endpoint_a` (`itemtype_endpoint_a`,`items_id_endpoint_a`),
+  KEY `item_endpoint_b` (`itemtype_endpoint_b`,`items_id_endpoint_b`),
+  KEY `items_id_endpoint_b` (`items_id_endpoint_b`),
+  KEY `items_id_endpoint_a` (`items_id_endpoint_a`),
+  KEY `socketmodels_id_endpoint_a` (`socketmodels_id_endpoint_a`),
+  KEY `socketmodels_id_endpoint_b` (`socketmodels_id_endpoint_b`),
+  KEY `sockets_id_endpoint_a` (`sockets_id_endpoint_a`),
+  KEY `sockets_id_endpoint_b` (`sockets_id_endpoint_b`),
+  KEY `cablestrands_id` (`cablestrands_id`),
+  KEY `states_id` (`states_id`),
+  KEY `complete` (`entities_id`,`name`),
+  KEY `is_recursive` (`is_recursive`),
+  KEY `users_id_tech` (`users_id_tech`),
+  KEY `cabletypes_id` (`cabletypes_id`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+
+### Dump table glpi_cabletypes
+
+DROP TABLE IF EXISTS `glpi_cabletypes`;
+CREATE TABLE `glpi_cabletypes` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `complete` (`entities_id`,`locations_id`,`name`),
-  KEY `location_name` (`locations_id`,`name`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+
+### Dump table glpi_cablestrands
+
+DROP TABLE IF EXISTS `glpi_cablestrands`;
+CREATE TABLE `glpi_cablestrands` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+### Dump table glpi_socketmodels
+
+DROP TABLE IF EXISTS `glpi_socketmodels`;
+CREATE TABLE `glpi_socketmodels` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -4470,7 +4571,6 @@ CREATE TABLE `glpi_networkportethernets` (
   `id` int NOT NULL AUTO_INCREMENT,
   `networkports_id` int NOT NULL DEFAULT '0',
   `items_devicenetworkcards_id` int NOT NULL DEFAULT '0',
-  `netpoints_id` int NOT NULL DEFAULT '0',
   `type` varchar(10) DEFAULT '' COMMENT 'T, LX, SX',
   `speed` int NOT NULL DEFAULT '10' COMMENT 'Mbit/s: 10, 100, 1000, 10000',
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -4478,12 +4578,28 @@ CREATE TABLE `glpi_networkportethernets` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `networkports_id` (`networkports_id`),
   KEY `card` (`items_devicenetworkcards_id`),
-  KEY `netpoint` (`netpoints_id`),
   KEY `type` (`type`),
   KEY `speed` (`speed`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+
+### Dump table glpi_networkportbnctypes
+
+DROP TABLE IF EXISTS `glpi_networkportfiberchanneltypes`;
+CREATE TABLE `glpi_networkportfiberchanneltypes` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 
 ### Dump table glpi_networkportfiberchannels
 
@@ -4492,7 +4608,7 @@ CREATE TABLE `glpi_networkportfiberchannels` (
   `id` int NOT NULL AUTO_INCREMENT,
   `networkports_id` int NOT NULL DEFAULT '0',
   `items_devicenetworkcards_id` int NOT NULL DEFAULT '0',
-  `netpoints_id` int NOT NULL DEFAULT '0',
+  `networkportfiberchanneltypes_id` int NOT NULL DEFAULT '0',
   `wwn` varchar(16) DEFAULT '',
   `speed` int NOT NULL DEFAULT '10' COMMENT 'Mbit/s: 10, 100, 1000, 10000',
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -4500,12 +4616,13 @@ CREATE TABLE `glpi_networkportfiberchannels` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `networkports_id` (`networkports_id`),
   KEY `card` (`items_devicenetworkcards_id`),
-  KEY `netpoint` (`netpoints_id`),
+  KEY `type` (`networkportfiberchanneltypes_id`),
   KEY `wwn` (`wwn`),
   KEY `speed` (`speed`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 
 ### Dump table glpi_networkportlocals
 
@@ -6648,6 +6765,7 @@ CREATE TABLE `glpi_states` (
   `is_visible_contract` tinyint NOT NULL DEFAULT '1',
   `is_visible_appliance` tinyint NOT NULL DEFAULT '1',
   `is_visible_database` tinyint NOT NULL DEFAULT '1',
+  `is_visible_cable` tinyint NOT NULL DEFAULT '1',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -6673,6 +6791,7 @@ CREATE TABLE `glpi_states` (
   KEY `is_visible_contract` (`is_visible_contract`),
   KEY `is_visible_appliance` (`is_visible_appliance`),
   KEY `is_visible_database` (`is_visible_database`),
+  KEY `is_visible_cable` (`is_visible_cable`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

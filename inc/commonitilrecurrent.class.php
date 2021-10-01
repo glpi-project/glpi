@@ -196,7 +196,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
       ];
    }
 
-   public function displaySpecificTypeField($ID, $field = []) {
+   public function displaySpecificTypeField($ID, $field = [], array $options = []) {
       switch ($field['name']) {
          case 'periodicity':
             $this->displayPeriodicityInput();

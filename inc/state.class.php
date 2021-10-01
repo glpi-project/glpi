@@ -440,6 +440,15 @@ class State extends CommonTreeDropdown {
       $tab[] = [
          'id'                 => '38',
          'table'              => $this->getTable(),
+         'field'              => 'is_visible_cable',
+         'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'),
+                                    Cable::getTypeName(Session::getPluralNumber())),
+         'datatype'           => 'bool'
+      ];
+
+      $tab[] = [
+         'id'                 => '39',
+         'table'              => $this->getTable(),
          'field'              => 'is_visible_database',
          'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'),
                                     DatabaseInstance::getTypeName(Session::getPluralNumber())),

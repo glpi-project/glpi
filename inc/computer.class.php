@@ -100,6 +100,7 @@ class Computer extends CommonDBTM {
          ->addStandardTab('Item_SoftwareVersion', $ong, $options)
          ->addStandardTab('Computer_Item', $ong, $options)
          ->addStandardTab('NetworkPort', $ong, $options)
+         ->addStandardTab('Socket', $ong, $options)
          ->addStandardTab('Item_RemoteManagement', $ong, $options)
          ->addStandardTab('Infocom', $ong, $options)
          ->addStandardTab('Contract_Item', $ong, $options)
@@ -739,6 +740,8 @@ class Computer extends CommonDBTM {
       $tab = array_merge($tab, ComputerAntivirus::rawSearchOptionsToAdd());
 
       $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
+
+      $tab = array_merge($tab, Socket::rawSearchOptionsToAdd(get_class($this)));
 
       return $tab;
    }
