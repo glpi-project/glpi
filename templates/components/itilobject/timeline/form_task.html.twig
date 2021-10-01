@@ -206,6 +206,40 @@
                         }
                      ) }}
 
+                     {% if can_read_kb and kb_id_toload > 0 %}
+                        {% set link_kb_lbl %}
+                           <i class="fas fa-link fa-fw me-1" data-bs-toggle="tooltip" data-bs-placement="top"
+                              title="{{ __('Link to knowledge base entry #%id')|format('TODO kb id') }}"></i>
+                        {% endset %}
+                        {{ fields.sliderField(
+                           'kb_linked_id',
+                           kb_id_toload,
+                           link_kb_lbl,
+                           {
+                              'full_width': true,
+                              'icon_label': true,
+                              'rand': rand,
+                           }
+                        ) }}
+                     {% endif %}
+
+                     {% if candedit and can_update_kb and not nokb %}
+                        {% set task_to_kb_lbl %}
+                           <i class="fas fa-save fa-fw me-1" title="{{ __('Save and add to the knowledge base') }}"
+                              data-bs-toggle="tooltip" data-bs-placement="top"></i>
+                        {% endset %}
+                        {{ fields.sliderField(
+                           '_task_to_kb',
+                           0,
+                           task_to_kb_lbl,
+                           {
+                              'full_width': true,
+                              'icon_label': true,
+                              'rand': rand,
+                           }
+                        ) }}
+                     {% endif %}
+
                      {# Duration #}
                      {% set task_actiontime_lbl %}
                         <i class="fas fa-stopwatch fa-fw me-1" title="{{ __('Duration') }}"></i>
@@ -275,40 +309,6 @@
                         <span>{{ __('Plan this task') }}</span>
                      </button>
                      <div id="viewplan{{ rand }}"></div>
-
-                     {% if can_read_kb and kb_id_toload > 0 %}
-                        {% set link_kb_lbl %}
-                           <i class="fas fa-link fa-fw me-1" data-bs-toggle="tooltip" data-bs-placement="top"
-                              title="{{ __('Link to knowledge base entry #%id')|format('TODO kb id') }}"></i>
-                        {% endset %}
-                        {{ fields.sliderField(
-                           'kb_linked_id',
-                           kb_id_toload,
-                           link_kb_lbl,
-                           {
-                              'full_width': true,
-                              'icon_label': true,
-                              'rand': rand,
-                           }
-                        ) }}
-                     {% endif %}
-
-                     {% if candedit and can_update_kb and not nokb %}
-                        {% set task_to_kb_lbl %}
-                           <i class="fas fa-save fa-fw me-1" title="{{ __('Save and add to the knowledge base') }}"
-                              data-bs-toggle="tooltip" data-bs-placement="top"></i>
-                        {% endset %}
-                        {{ fields.sliderField(
-                           '_task_to_kb',
-                           0,
-                           task_to_kb_lbl,
-                           {
-                              'full_width': true,
-                              'icon_label': true,
-                              'rand': rand,
-                           }
-                        ) }}
-                     {% endif %}
                   </div>
                </div>
             </div>
