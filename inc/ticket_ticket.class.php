@@ -435,7 +435,7 @@ class Ticket_Ticket extends CommonDBRelation {
             $solution_data['items_id'] = $data['tickets_id'];
             $solution_data['_linked_ticket'] = true;
             $new_solution = new ITILSolution();
-            $new_solution->add($solution_data);
+            $new_solution->add(Toolbox::addslashes_deep($solution_data));
          }
       }
    }
