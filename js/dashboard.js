@@ -712,9 +712,63 @@ var Dashboard = {
       });
    },
 
+
+
+   /**
+    * FitText() doesn't take the height of an item into consideration,
+    * only the width.
+    * This means that if you keep increasing the width without also increasing
+    * the height then your text will overflow at some point.
+    *
+    * This function fix this by reducing the available width to ensure a decent
+    * height / width ratio will be used by fitText()
+    *
+    * @param {*} items
+    */
+   computeWidth: function(items) {
+      items.each(function() {
+         // Compute parent dimension
+         var parent_width = $(this).parent().parent().width();
+         var parent_height = $(this).parent().parent().height();
+
+         // Only for "wide" cards
+         if (parent_width > parent_height) {
+            // FitText "ideal" ratio to avoid any overflow
+            // This value was found by using fitText() on a ~1600px wide span and
+            // checking the resulting text height.
+            // It probably wont be the perfect ratio for every possible texts
+            // length but it is a safe ratio to use for our calculation
+            var target_ratio = 0.35;
+
+            // Compute what our desired height would be if we want to match the
+            // target ratio
+            var desired_width = parent_height / target_ratio;
+            var desired_width_percent = (desired_width / parent_width) * 100;
+
+            // Keep helf the space since have two items to display (value and label)
+            var desired_width_percent_half = desired_width_percent / 2;
+
+            // Apply the width
+            $(this).css('width', desired_width_percent_half + '%');
+         }
+      });
+   },
+
+   /**
+    * Remove the custom width as it should only be used temporarily to 'trick'
+    * fitText into using a different fontSize and should not be applied to the
+    * actual text
+    *
+    * @param {*} items
+    */
+   resetComputedWidth: function(items) {
+      items.each(function() {
+         $(this).css('width', '100%');
+      });
+   },
+
    fitNumbers: function(parent_item) {
       parent_item = parent_item || $('body');
-
       var text_offset = 0.96;
 
       // responsive mode
@@ -723,47 +777,32 @@ var Dashboard = {
          text_offset = 1.8;
       }
 
-      var base_text_offset = text_offset;
-
-      // The fitText() function isn't very good on ultra wide card because we use
-      // it on multiple elements inside the same container.
-      // This function try to fix this by adjusting the "offset" param.
-      var fitTextImproved = function() {
-         var offset_to_use = base_text_offset;
-         var adjusted_offset = $(this).width() / $(this).parent().parent().height();
-
-         if (adjusted_offset > 1 && adjusted_offset <= 1.8) {
-            // Wide card, ajust the offset as little as possible using an "exponential" scale to 1.8.
-            offset_to_use = 1 + 0.8 * ((Math.pow(adjusted_offset, 8)) / Math.pow(1.8, 8));
-         } else if (adjusted_offset > 1.8) {
-            // Ultra wide card, use full offset
-            offset_to_use = adjusted_offset;
-         }
-
-         $(this).fitText(offset_to_use);
-      };
+      // Set temporary max width to trick fitText and avoid overflow
+      this.computeWidth(parent_item.find('.big-number').find('.formatted-number'));
+      this.computeWidth(parent_item.find('.big-number').find('.label'));
 
       parent_item
          .find('.big-number')
-         .find('.formatted-number')
-         .each(fitTextImproved);
+         .find('.formatted-number').fitText(text_offset);
 
       base_text_offset = text_offset - 0.65;
       parent_item
          .find('.summary-numbers')
-         .find('.formatted-number')
-         .each(fitTextImproved);
+         .find('.formatted-number').fitText(text_offset-0.65);
 
       base_text_offset = text_offset - 0.2;
       parent_item
          .find('.summary-numbers')
-         .find('.line .label').
-         each(fitTextImproved);
+         .find('.line .label').fitText(text_offset-0.2);
 
       parent_item
          .find('.big-number')
-         .find('.label')
-         .each(fitTextImproved);
+         .find('.label').fitText(text_offset - 0.2);
+
+      // Remove temporary width
+      this.resetComputedWidth(parent_item.find('.big-number').find('.formatted-number'));
+      this.resetComputedWidth(parent_item.find('.big-number').find('.label'));
+
    },
 
    animateNumbers: function(parent_item) {
