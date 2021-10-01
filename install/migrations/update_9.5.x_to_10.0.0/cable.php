@@ -169,8 +169,8 @@ if ($DB->tableExists('glpi_netpoints')) {
    //migrate link between NetworkPort and Socket
    // BEFORE : supported by NetworkPortEthernet / NetworkPortFiberchannel with 'netpoints_id' foreign key
    // AFTER  : supported by Socket with (itemtype, items_id, networkports_id)
-   $tables_to_migration = ['glpi_networkportethernets', 'glpi_networkportfiberchannels'];
-   foreach ($tables_to_migration as $table) {
+   $tables_to_migrate = ['glpi_networkportethernets', 'glpi_networkportfiberchannels'];
+   foreach ($tables_to_migrate as $table) {
       if (!$DB->fieldExists($table, 'netpoints_id')) {
          continue;
       }
