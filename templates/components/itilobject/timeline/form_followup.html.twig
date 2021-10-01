@@ -133,14 +133,14 @@
                      {% endif %}
 
                      {% if candedit and can_update_kb and not nokb %}
-                        {% set fw_to_kb_lbl %}
+                        {% set fup_to_kb_lbl %}
                            <i class="fas fa-save fa-fw me-1" title="{{ __('Save and add to the knowledge base') }}"
                               data-bs-toggle="tooltip" data-bs-placement="top"></i>
                         {% endset %}
                         {{ fields.sliderField(
-                           '_fw_to_kb',
+                           '_fup_to_kb',
                            0,
-                           fw_to_kb_lbl,
+                           fup_to_kb_lbl,
                            {
                               'full_width': true,
                               'icon_label': true,

@@ -204,8 +204,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       if (isset($params['_sol_to_kb'])) {
          $url .= '&_sol_to_kb=' . $params['_sol_to_kb'];
       }
-      if (isset($params['_fw_to_kb'])) {
-         $url .= '&_fw_to_kb=' . $params['_fw_to_kb'];
+      if (isset($params['_fup_to_kb'])) {
+         $url .= '&_fup_to_kb=' . $params['_fup_to_kb'];
       }
       if (isset($params['_task_to_kb'])) {
          $url .= '&_task_to_kb=' . $params['_task_to_kb'];
@@ -719,10 +719,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          if ($item = getItemForItemtype($options['item_itemtype'])) {
             if ($item->getFromDB($options['item_items_id'])) {
                $this->fields['name']   = $item->getField('name');
-               if (isset($options['_fw_to_kb'])) {
+               if (isset($options['_fup_to_kb'])) {
                   $fup = new ITILFollowup();
                   $fup->getFromDBByCrit([
-                     'id'           => $options['_fw_to_kb'],
+                     'id'           => $options['_fup_to_kb'],
                      'itemtype'     => $item->getType(),
                      'items_id'     => $item->getID()
                   ]);

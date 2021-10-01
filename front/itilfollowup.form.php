@@ -108,8 +108,8 @@ if ($handled) {
    if ($track->can($_POST["items_id"], READ)) {
       $toadd = '';
       // Copy followup to KB redirect to KB
-      if (isset($_POST['_fw_to_kb']) && $_POST['_fw_to_kb']) {
-         $toadd = "&_fw_to_kb=".$fup->getID();
+      if (isset($_POST['_fup_to_kb']) && $_POST['_fup_to_kb']) {
+         $toadd = "&_fup_to_kb=".$fup->getID();
       }
       $redirect = $track->getLinkURL() . $toadd;
    } else {
