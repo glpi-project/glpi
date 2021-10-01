@@ -189,6 +189,11 @@ var filesToCopy = [
       to: scssOutputPath,
    },
    {
+      package: '@tabler/icons',
+      from: '{iconfont/fonts/*,iconfont/tabler-icons.scss}',
+      to: scssOutputPath,
+   },
+   {
       package: 'bootstrap',
       from: 'scss/**/*.scss',
       to: scssOutputPath,

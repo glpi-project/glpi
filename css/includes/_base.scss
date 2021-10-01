@@ -49,6 +49,9 @@ $logo_reduced: $logo-light-reduced;
    @import "~@tabler/core/src/scss/tabler";
 }
 
+$ti-font-path: '../css/lib/tabler/icons/iconfont/fonts';
+@import "~@tabler/icons/iconfont/tabler-icons";
+
 $mainmenu_bg: $dark !default;
 $mainmenu_fg: $light !default;
 
