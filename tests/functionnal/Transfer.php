@@ -106,7 +106,8 @@ class Transfer extends DbTestCase {
             'PCIVendor',
             'PendingReasonCron',
             'Database',
-            'Socket'
+            'Socket',
+            'Netpoint'
          ]
       );
 
