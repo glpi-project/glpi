@@ -34,7 +34,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("cable_management", READ);
 
-Html::header(Socket::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "cable", "socket");
+Html::header(Socket::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "cable", "socket");
 Search::show('Socket');
 
 Html::footer();

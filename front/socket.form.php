@@ -144,7 +144,7 @@ if (isset($_POST["add"])) {
       ];
    }
 
-   Html::header(Socket::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "cable", "socket");
+   Html::header(Socket::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "cable", "socket");
    $socket->display($options);
    Html::footer();
 }
