@@ -972,10 +972,8 @@ class Dropdown {
              ],
 
              __('Cable management') => [
-              'Cable' => null,
                'CableType' => null,
                'CableStrand' => null,
-               'Socket' => null,
                'SocketModel' => null,
              ],
 

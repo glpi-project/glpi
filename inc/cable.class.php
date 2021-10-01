@@ -67,6 +67,20 @@ class Cable extends CommonDBTM {
       $this->fields['itemtype_endpoint_b'] = 'Computer';
    }
 
+   static function getAdditionalMenuLinks() {
+      $links = [];
+      if (static::canView()) {
+         $insts = "<i class=\"ti ti-line pointer\" title=\"" . Socket::getTypeName(Session::getPluralNumber()) .
+            "\"></i><span class=\"sr-only\">" . Socket::getTypeName(Session::getPluralNumber()). "</span>";
+         $links[$insts] = Socket::getSearchURL(false);
+
+      }
+      if (count($links)) {
+         return $links;
+      }
+      return false;
+   }
+
    static function getAdditionalMenuOptions() {
       if (static::canView()) {
          return [
