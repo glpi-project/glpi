@@ -4427,7 +4427,12 @@ JAVASCRIPT
             $('#$id').val(value).trigger('change');
          })
          $('label[for=$id]').on('click', function(){ $('#$id').select2('open'); });
-         $(`.select2-search__field[aria-controls='select2-\${e.target.id}-results']`).focus();
+         $('#$id').on('select2:open', function(e){
+            const search_input = document.querySelector(`.select2-search__field[aria-controls='select2-\${e.target.id}-results']`);
+            if (search_input) {
+               search_input.focus();
+            }
+         });
       });";
       return Html::scriptBlock($js);
    }
@@ -4602,7 +4607,12 @@ JAVASCRIPT
       }
 
       $js .= " $('label[for=$field_id]').on('click', function(){ $('#$field_id').select2('open'); });";
-      $js .= " $(`.select2-search__field[aria-controls='select2-\${e.target.id}-results']`).focus();";
+      $js .= " $('#$field_id').on('select2:open', function(e){";
+      $js .= "    const search_input = document.querySelector(`.select2-search__field[aria-controls='select2-\${e.target.id}-results']`);";
+      $js .= "    if (search_input) {";
+      $js .= "       search_input.focus();";
+      $js .= "    }";
+      $js .= " });";
 
       $output .= Html::scriptBlock('$(function() {' . $js . '});');
 
