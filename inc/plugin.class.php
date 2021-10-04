@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Cache\CacheManager;
 use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
 use Glpi\Plugin\Hooks;
@@ -145,11 +146,11 @@ class Plugin extends CommonDBTM {
       }
       $mp_icon     = MarketplaceView::getIcon();
       $mp_title    = MarketplaceView::getTypeName();
-      $marketplace = "<i class='$mp_icon pointer' title='$mp_title'></i><span class='sr-only'>$mp_title</span>";
+      $marketplace = "<i class='$mp_icon pointer' title='$mp_title'></i><span class='d-none d-xxl-block'>$mp_title</span>";
 
       $cl_icon     = Plugin::getIcon();
-      $cl_title    = Plugin::getTypeName();
-      $classic     = "<i class='$cl_icon pointer' title='$cl_title'></i><span class='sr-only'>$cl_title</span>";
+      $cl_title    = Plugin::getTypeName(Session::getPluralNumber());
+      $classic     = "<i class='$cl_icon pointer' title='$cl_title'></i><span class='d-none d-xxl-block'>$cl_title</span>";
 
       return [
          $marketplace => MarketplaceView::getSearchURL(false),
@@ -719,8 +720,7 @@ class Plugin extends CommonDBTM {
 
       if ($this->getFromDB($ID)) {
          // Clear locale cache to prevent errors while reloading plugin locales
-         $translation_cache = Config::getTranslationCacheInstance();
-         $translation_cache->clear();
+         (new CacheManager())->getTranslationsCacheInstance()->clear();
 
          self::load($this->fields['directory'], true); // Load plugin hooks
 
@@ -1269,26 +1269,6 @@ class Plugin extends CommonDBTM {
 
       $all_types = preg_grep('/.+_types/', array_keys($CFG_GLPI));
       $all_types[] = 'networkport_instantiations';
-
-      $mapping = [
-         'doc_types'       => 'document_types',
-         'helpdesk_types'  => 'ticket_types',
-         'netport_types'   => 'networkport_types'
-      ];
-
-      foreach ($mapping as $orig => $fixed) {
-         if (isset($attrib[$orig])) {
-            \Toolbox::deprecated(
-               sprintf(
-                  '%1$s type is deprecated, use %2$s instead.',
-                  $orig,
-                  $fixed
-               )
-            );
-            $attrib[$fixed] = $attrib[$orig];
-            unset($attrib[$orig]);
-         }
-      }
 
       $blacklist = ['device_types'];
       foreach ($all_types as $att) {
@@ -2487,19 +2467,19 @@ class Plugin extends CommonDBTM {
 
       if (Session::getCurrentInterface() === 'central' && Config::canUpdate()) {
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'install']
-            = "<i class='ma-icon fas fa-code-branch'></i>".
+            = "<i class='fas fa-code-branch'></i>".
             __('Install');
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'uninstall']
-            = "<i class='ma-icon fas fa-code-branch'></i>".
+            = "<i class='fas fa-code-branch'></i>".
             __('Uninstall');
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'enable']
-            = "<i class='ma-icon fas fa-code-branch'></i>".
+            = "<i class='fas fa-code-branch'></i>".
             __('Enable');
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'disable']
-            = "<i class='ma-icon fas fa-code-branch'></i>".
+            = "<i class='fas fa-code-branch'></i>".
             __('Disable');
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'clean']
-            = "<i class='ma-icon fas fa-broom'></i>".
+            = "<i class='fas fa-broom'></i>".
             __('Clean');
       }
 
@@ -2511,7 +2491,7 @@ class Plugin extends CommonDBTM {
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       switch ($ma->getAction()) {
          case 'install' :
-            echo "<table class='center-h'><tr>";
+            echo "<table class='mx-auto'><tr>";
             echo "<td colspan='4'>";
             echo Html::submit(_x('button', 'Install'), [
                'name'      => 'install',
@@ -2519,7 +2499,7 @@ class Plugin extends CommonDBTM {
             echo "</td></tr></table>";
             return true;
          case 'uninstall' :
-            echo "<table class='center-h'><tr>";
+            echo "<table class='mx-auto'><tr>";
             echo "<td>".__('This will only affect plugins already installed')."</td><td colspan='3'>";
             echo Html::submit(_x('button', 'Uninstall'), [
                'name'      => 'uninstall',
@@ -2527,7 +2507,7 @@ class Plugin extends CommonDBTM {
             echo "</td></tr></table>";
             return true;
          case 'enable' :
-            echo "<table class='center-h'><tr>";
+            echo "<table class='mx-auto'><tr>";
             echo "<td>".__('This will only affect plugins already installed')."</td><td colspan='3'>";
             echo Html::submit(_x('button', 'Enable'), [
                'name'      => 'enable',
@@ -2535,7 +2515,7 @@ class Plugin extends CommonDBTM {
             echo "</td></tr></table>";
             return true;
          case 'disable' :
-            echo "<table class='center-h'><tr>";
+            echo "<table class='mx-auto'><tr>";
             echo "<td>".__('This will only affect plugins already enabled')."</td><td colspan='3'>";
             echo Html::submit(_x('button', 'Disable'), [
                'name'      => 'disable',
@@ -2543,7 +2523,7 @@ class Plugin extends CommonDBTM {
             echo "</td></tr></table>";
             return true;
          case 'clean':
-            echo "<table class='center-h'><tr>";
+            echo "<table class='mx-auto'><tr>";
             echo "<td>".__('This will only affect plugins ready to be cleaned')."</td><td colspan='3'>";
             echo Html::submit(_x('button', 'Clean'), [
                'name'      => 'clean',

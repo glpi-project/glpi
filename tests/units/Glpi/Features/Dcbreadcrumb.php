@@ -66,7 +66,7 @@ class DCBreadcrumb extends \DbTestCase {
    /**
    * Test DCBreadCrumb
    */
-   public function testDCBreadcrum() {
+   public function testDCBreadcrumb() {
       $this->login();
 
       //create DataCenter
@@ -115,7 +115,15 @@ class DCBreadcrumb extends \DbTestCase {
       $this->checkInput($Itemrack, $Itemrack_id, $Itemrack_input);
 
       $DCBreadcrumb = \Computer::getDcBreadcrumbSpecificValueToDisplay($computer1->getID());
-      $this->string($DCBreadcrumb)->isIdenticalTo($datacenter_name.' > '.$DCroom_name.' > '.$rack_name.'&nbsp;(U'.$rack_position.')');
+      $this->string($DCBreadcrumb)->isIdenticalTo(
+         sprintf(
+            "<i class='fas fa-warehouse'></i> %s &gt; <i class='fas fa-building'></i> %s &gt; <i class='fas fa-server'></i> %s&nbsp;(U%d)",
+            $datacenter_name,
+            $DCroom_name,
+            $rack_name,
+            $rack_position
+         )
+      );
 
       //load computer without Rack link
       $computer2 = getItemByTypeName('Computer', '_test_pc02');

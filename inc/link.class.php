@@ -162,12 +162,12 @@ class Link extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
       echo "<td colspan='3'>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Link or filename')."</td>";
       echo "<td colspan='3'>";
-      Html::autocompletionTextField($this, "link", ['size' => 84]);
+      echo Html::input('link', ['value' => $this->fields['link'], 'size' => 84]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Open in a new window')."</td><td>";
@@ -200,7 +200,6 @@ class Link extends CommonDBTM {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -218,7 +217,6 @@ class Link extends CommonDBTM {
          'field'              => 'link',
          'name'               => __('Link or filename'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -537,7 +535,7 @@ class Link extends CommonDBTM {
       echo "<th>".self::getTypeName(Session::getPluralNumber())."</th>";
       echo "<th class='right'>";
       if (self::canUpdate()) {
-         echo '<a class="vsubmit" href="' . self::getSearchURL() . '">';
+         echo '<a class="btn btn-primary" href="' . self::getSearchURL() . '">';
          echo '<i class="fas fa-cog"></i>&nbsp;';
          echo __('Configure');
          echo '</a>';

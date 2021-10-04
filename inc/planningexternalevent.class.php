@@ -214,12 +214,14 @@ JAVASCRIPT;
          echo Html::hidden('day', ['value' => $options['start']]);
       }
       if ($canedit) {
-         Html::autocompletionTextField($this, "name", [
-            'size'   => '80',
-            'entity' => -1,
-            'user'   => $this->fields["users_id"],
-            'rand'   => $rand
-         ]);
+         echo Html::input(
+            'name',
+            [
+               'value' => $this->fields['name'],
+               'id'    => "textfield_name$rand",
+               'size'  => '80',
+            ]
+         );
       } else {
          echo $this->fields['name'];
       }
@@ -341,8 +343,14 @@ JAVASCRIPT;
       if ($is_ajax && $is_rrule) {
          $options['candel'] = false;
          $options['addbuttons'] = [
-            'purge'          => "<i class='fas fa-trash-alt'></i>&nbsp;".__("Delete serie"),
-            'purge_instance' => "<i class='far fa-trash-alt'></i>&nbsp;".__("Delete instance"),
+            'purge'          => [
+               'text' => __("Delete serie"),
+               'icon' => 'fas fa-trash-alt',
+            ],
+            'purge_instance' => [
+               'text' => __("Delete instance"),
+               'icon' => 'far fa-trash-alt',
+            ],
          ];
       }
 

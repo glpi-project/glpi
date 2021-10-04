@@ -136,12 +136,12 @@ class SavedSearch_Alert extends CommonDBChild {
       echo "<td>";
       echo $search->getLink();
       if ($count !== null) {
-         echo "<span class='primary-bg primary-fg count nofloat'>$count</span></a>";
+         echo "<span class='primary-bg primary-fg count float-none'>$count</span></a>";
       }
       echo "</td>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -232,7 +232,7 @@ class SavedSearch_Alert extends CommonDBChild {
       if ($canedit
           && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='firstbloc'>".
-               "<a class='vsubmit' href='" . self::getFormURL() . "?savedsearches_id=$ID&amp;withtemplate=".
+               "<a class='btn btn-primary' href='" . self::getFormURL() . "?savedsearches_id=$ID&amp;withtemplate=".
                   $withtemplate."'>";
          echo __('Add an alert');
          echo "</a></div>\n";

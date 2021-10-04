@@ -151,16 +151,16 @@ class Item_Disk extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td><td>".__('Partition')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "device");
+      echo Html::input('device', ['value' => $this->fields['device']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Mount point')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "mountpoint");
+      echo Html::input('mountpoint', ['value' => $this->fields['mountpoint']]);
       echo "</td><td>".Filesystem::getTypeName(1)."</td>";
       echo "<td>";
       Filesystem::dropdown(['value' => $this->fields["filesystems_id"]]);
@@ -169,12 +169,12 @@ class Item_Disk extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Global size')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "totalsize");
+      echo Html::input('totalsize', ['value' => $this->fields['totalsize']]);
       echo "&nbsp;".__('Mio')."</td>";
 
       echo "<td>".__('Free size')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "freesize");
+      echo Html::input('freesize', ['value' => $this->fields['freesize']]);
       echo "&nbsp;".__('Mio')."</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -183,16 +183,16 @@ class Item_Disk extends CommonDBChild {
       echo self::getEncryptionStatusDropdown($this->fields['encryption_status']);
       echo "</td><td>".__('Encryption tool')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "encryption_tool");
+      echo Html::input('encryption_tool', ['value' => $this->fields['encryption_tool']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Encryption algorithm')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "encryption_algorithm");
+      echo Html::input('encryption_algorithm', ['value' => $this->fields['encryption_algorithm']]);
       echo "</td><td>".__('Encryption type')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "encryption_type");
+      echo Html::input('encryption_type', ['value' => $this->fields['encryption_type']]);
       echo "</td></tr>";
 
       $itemtype = $this->fields['itemtype'];
@@ -260,13 +260,13 @@ class Item_Disk extends CommonDBChild {
       if ($canedit
           && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='center firstbloc'>".
-               "<a class='vsubmit' href='".self::getFormURL()."?itemtype=$itemtype&items_id=$ID&amp;withtemplate=".
+               "<a class='btn btn-primary' href='".self::getFormURL()."?itemtype=$itemtype&items_id=$ID&amp;withtemplate=".
                   $withtemplate."'>";
          echo __('Add a volume');
          echo "</a></div>\n";
       }
 
-      echo "<div class='center'>";
+      echo "<div class='center table-responsive'>";
 
       $iterator = self::getFromItem($item);
       echo "<table class='tab_cadre_fixehov'>";
@@ -305,9 +305,9 @@ class Item_Disk extends CommonDBChild {
             echo "<td>".$data['fsname']."</td>";
             //TRANS: %s is a size
             $tmp = Toolbox::getSize($data['totalsize'] * 1024 * 1024);
-            echo "<td class='right'>$tmp<span class='small_space'></span></td>";
+            echo "<td>$tmp</td>";
             $tmp = Toolbox::getSize($data['freesize'] * 1024 * 1024);
-            echo "<td class='right'>$tmp<span class='small_space'></span></td>";
+            echo "<td>$tmp</td>";
             echo "<td>";
             $percent = 0;
             if ($data['totalsize'] > 0) {
@@ -367,7 +367,6 @@ class Item_Disk extends CommonDBChild {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -377,7 +376,6 @@ class Item_Disk extends CommonDBChild {
          'name'               => __('Partition'),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -387,7 +385,6 @@ class Item_Disk extends CommonDBChild {
          'name'               => __('Mount point'),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -399,7 +396,6 @@ class Item_Disk extends CommonDBChild {
          'datatype'           => 'number',
          'width'              => 1000,
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -411,7 +407,6 @@ class Item_Disk extends CommonDBChild {
          'datatype'           => 'number',
          'width'              => 1000,
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       return $tab;

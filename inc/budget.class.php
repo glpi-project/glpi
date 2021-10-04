@@ -127,7 +127,7 @@ class Budget extends CommonDropdown{
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
 
       echo "<td>"._n('Type', 'Types', 1)."</td>";
@@ -138,7 +138,7 @@ class Budget extends CommonDropdown{
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('price', 'Value')."</td>";
       echo "<td><input type='text' name='value' size='14'
-                 value='".Html::formatNumber($this->fields["value"], true)."'></td>";
+                 value='".Html::formatNumber($this->fields["value"], true)."' class='form-control'></td>";
 
                  echo "<td rowspan='$rowspan' class='middle right'>".__('Comments')."</td>";
                  echo "<td class='center middle' rowspan='$rowspan'>".
@@ -196,7 +196,6 @@ class Budget extends CommonDropdown{
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -275,7 +274,6 @@ class Budget extends CommonDropdown{
          'massiveaction'      => false,
          'nosearch'           => true,
          'nodisplay'          => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

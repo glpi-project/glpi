@@ -181,8 +181,10 @@ class ObjectLock extends CommonDBTM {
 
 
    private function getForceUnlockButton() {
-      $msg = "<a class='vsubmit floatright' onclick='javascript:unlockIt(this);'>"
-              .sprintf(__('Force unlock %1s #%2s'), $this->itemtypename, $this->itemid)."</a>";
+      $msg = "<a class='btn btn-sm btn-primary ms-2' onclick='javascript:unlockIt(this);'>
+               <i class='fas fa-unlock'></i>
+               <span>".sprintf(__('Force unlock %1s #%2s'), $this->itemtypename, $this->itemid)."</span>
+            </a>";
       return $msg;
    }
 
@@ -280,7 +282,10 @@ class ObjectLock extends CommonDBTM {
       $msg .= " -> " . Html::convDateTime($this->fields['date']);
       $msg .= "</strong>";
       if ($showAskUnlock) {
-         $msg .= "<a class='vsubmit' onclick='javascript:askUnlock();'>".__('Ask for unlock')."</a>";
+         $msg .= "<a class='btn btn-sm btn-primary ms-2' onclick='javascript:askUnlock();'>
+               <i class='fas fa-unlock'></i>
+               <span>".__('Ask for unlock')."</span>
+            </a>";
       }
       $msg .= "<label for='alertMe'>" . __('Alert me when unlocked') . "</label>";
       $msg .= Html::getCheckbox(['id' => 'alertMe']);
@@ -299,14 +304,15 @@ class ObjectLock extends CommonDBTM {
    private function setReadOnlyMessage() {
 
       $msg = "<span class=red style='padding-left:5px;'>";
-      $msg .= __('Warning: read-only!')."</span>";
+      $msg .= __('Warning: read-only!');
+      $msg .= "</span>";
       $msg .= '<form action="' . $_SERVER['REQUEST_URI'] . '" method="POST" style="display:inline;">';
       $msg .= Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
       $msg .= Html::hidden('lockwrite', ['value' => 1]);
-      $msg .= '<button type="submit" class="vsubmit">'.
-                __('Request write on ').$this->itemtypename." #".$this->itemid.'</button>';
+      $msg .= '<button type="submit" class="btn btn-sm btn-primary ms-2">';
+      $msg .= __('Request write on ').$this->itemtypename." #".$this->itemid;
+      $msg .= '</button>';
       $msg .= '</form>';
-
       $this->displayLockMessage($msg);
    }
 
@@ -514,7 +520,7 @@ class ObjectLock extends CommonDBTM {
    **/
    private function displayLockMessage($msg, $title = '') {
 
-      echo "<div id='message_after_lock' class='objectlockmessage' style='display:table;' >";
+      echo "<div id='message_after_lock' class='objectlockmessage' style='display:inline-block;' >";
       echo $msg;
       echo "</div>";
       echo Html::scriptBlock("$('#message_after_lock').hide();");

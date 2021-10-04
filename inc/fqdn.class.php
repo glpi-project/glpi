@@ -203,7 +203,6 @@ class FQDN extends CommonDropdown {
          'field'              => 'fqdn',
          'name'               => __('FQDN'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       return $tab;
@@ -227,5 +226,9 @@ class FQDN extends CommonDropdown {
          }
       }
       return true;
+   }
+
+   static function getIcon() {
+      return "fas fa-globe";
    }
 }

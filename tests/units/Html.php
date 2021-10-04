@@ -110,20 +110,6 @@ class Html extends \GLPITestCase {
       $this->string(\Html::resume_text($origin, 10))->isIdenticalTo($expected);
    }
 
-   public function testResume_name() {
-      $origin = 'This is a very long string which will be truncated by a dedicated method. ' .
-         'If the string is not truncated, well... We\'re wrong and got a very serious issue in our codebase!' .
-         'And if the string has been correctly truncated, well... All is ok then, let\'s show if all the other tests are OK :)';
-      $expected = 'This is a very long string which will be truncated by a dedicated method. ' .
-         'If the string is not truncated, well... We\'re wrong and got a very serious issue in our codebase!' .
-         'And if the string has been correctly truncated, well... All is ok then, let\'s show i...';
-      $this->string(\Html::resume_name($origin))->isIdenticalTo($expected);
-
-      $origin = 'A string that is longer than 10 characters.';
-      $expected = 'A string t...';
-      $this->string(\Html::resume_name($origin, 10))->isIdenticalTo($expected);
-   }
-
    public function testCleanPostForTextArea() {
       $origin = "A text that \\\"would\\\" be entered in a \\'textarea\\'\\nWith breakline\\r\\nand breaklines.";
       $expected = "A text that \"would\" be entered in a 'textarea'\nWith breakline\nand breaklines.";
@@ -148,14 +134,14 @@ class Html extends \GLPITestCase {
 
       $origin = '1207.3';
 
-      $expected = '1&nbsp;207.30';
+      $expected = '1 207.30';
       $this->string(\Html::formatNumber($origin))->isIdenticalTo($expected);
 
       $expected = '1207.30';
       $this->string(\Html::formatNumber($origin, true))->isIdenticalTo($expected);
 
       $origin = 124556.693;
-      $expected = '124&nbsp;556.69';
+      $expected = '124 556.69';
       $this->string(\Html::formatNumber($origin))->isIdenticalTo($expected);
 
       $origin = 120.123456789;
@@ -180,7 +166,7 @@ class Html extends \GLPITestCase {
       $_SESSION['glpinumber_format'] = 2;
 
       $origin = '1207.3';
-      $expected = '1&nbsp;207,30';
+      $expected = '1 207,30';
       $this->string(\Html::formatNumber($origin))->isIdenticalTo($expected);
 
       $_SESSION['glpinumber_format'] = 3;
@@ -659,8 +645,8 @@ class Html extends \GLPITestCase {
       // test modal
       $modal = \Html::FuzzySearch('getHtml');
       $this->string($modal)
-         ->contains("id='fuzzysearch'")
-         ->contains("class='results'");
+         ->contains('id="fuzzysearch"')
+         ->matches('/class="results[^"]*"/');
 
       // test retrieving entries
       $default = json_decode(\Html::FuzzySearch(), true);
@@ -707,8 +693,8 @@ class Html extends \GLPITestCase {
             \Html::displayMessageAfterRedirect();
          }
       )
-         ->contains('<div id="message_after_redirect_1" title="Error">Something went really wrong :(</div>')
-         ->contains('<div id="message_after_redirect_2" title="Warning">Oooops, I did it again!</div>');
+         ->matches('/class="[^"]*bg-danger[^"]*".*Error.*Something went really wrong :\(/s')
+         ->matches('/class="[^"]*bg-warning[^"]*".*Warning.*Oooops, I did it again!/s');
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
    }
@@ -831,7 +817,7 @@ class Html extends \GLPITestCase {
 
    public function testInput() {
       $name = 'in_put';
-      $expected = '<input type="text" name="in_put"  />';
+      $expected = '<input type="text" name="in_put" class="form-control" />';
       $this->string(\Html::input($name))->isIdenticalTo($expected);
 
       $options = [
@@ -847,7 +833,7 @@ class Html extends \GLPITestCase {
          'min'       => '10',
          'value'     => 'myval',
       ];
-      $expected = '<input type="number" name="in_put" min="10" value="myval" />';
+      $expected = '<input type="number" name="in_put" min="10" value="myval" class="form-control" />';
       $this->string(\Html::input($name, $options))->isIdenticalTo($expected);
 
    }

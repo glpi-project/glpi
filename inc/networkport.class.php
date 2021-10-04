@@ -613,7 +613,7 @@ class NetworkPort extends CommonDBChild {
          echo __('Add several ports');
          echo "&nbsp;<input type='checkbox' name='several' value='1'></td>\n";
          echo "<td>\n";
-         echo "<input type='submit' name='create' value=\""._sx('button', 'Add')."\" class='submit'>\n";
+         echo "<input type='submit' name='create' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>\n";
          echo "</td></tr></table></div>\n";
          Html::closeForm();
       }
@@ -657,6 +657,7 @@ class NetworkPort extends CommonDBChild {
          )
       );
 
+      echo "<div class='table-responsive'>";
       if ($showmassiveactions) {
          $massiveactionparams = [
             'num_displayed'  => min($_SESSION['glpilist_limit'], count($ports_iterator)),
@@ -670,7 +671,7 @@ class NetworkPort extends CommonDBChild {
       echo "<table class='tab_cadre_fixehov'>";
 
       echo "<thead><tr><td colspan='$colspan'>";
-      echo "<table class='legend'>";
+      echo "<table class='netport-legend'>";
       echo "<thead><tr><th colspan='4'>".__('Connections legend')."</th></tr></thead><tr>";
       echo "<td class='netport trunk'>".__('Equipment in trunk or tagged mode')."</td>";
       echo "<td class='netport hub'>".__('Hub ')."</td>";
@@ -721,6 +722,7 @@ class NetworkPort extends CommonDBChild {
       }
 
       echo "</table>";
+      echo "</div>";
 
       if ($showmassiveactions) {
          $massiveactionparams['ontop'] = false;
@@ -1217,7 +1219,7 @@ class NetworkPort extends CommonDBChild {
       if (!$options['several']) {
          echo "<tr class='tab_bg_1'><td>". _n('Port number', 'Port numbers', 1) ."</td>\n";
          echo "<td>";
-         Html::autocompletionTextField($this, "logical_number", ['size' => 5]);
+         echo Html::input('logical_number', ['value' => $this->fields['logical_number'], 'size' => 5]);
          echo "</td></tr>\n";
 
       } else {
@@ -1234,7 +1236,7 @@ class NetworkPort extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>\n";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td></tr>\n";
 
       $instantiation = $this->getInstantiation();
@@ -1350,7 +1352,6 @@ class NetworkPort extends CommonDBChild {
          'type'               => 'text',
          'massiveaction'      => false,
          'datatype'           => 'itemlink',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1368,7 +1369,6 @@ class NetworkPort extends CommonDBChild {
          'field'              => 'logical_number',
          'name'               => _n('Port number', 'Port numbers', 1),
          'datatype'           => 'integer',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1377,7 +1377,6 @@ class NetworkPort extends CommonDBChild {
          'field'              => 'mac',
          'name'               => __('MAC address'),
          'datatype'           => 'mac',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

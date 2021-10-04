@@ -658,8 +658,14 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
       echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
       echo "<td colspan='3'>";
-      Html::autocompletionTextField($this, "name", ['size' => 80,
-                                                    'rand' => $rand_name]);
+      echo Html::input(
+         'name',
+         [
+            'value' => $this->fields['name'],
+            'id'    => "textfield_name$rand_name",
+            'size'  => '80',
+         ]
+      );
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -699,7 +705,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          $auto_percent_done_params['checked'] = 'checked';
       }
       Html::showCheckbox($auto_percent_done_params);
-      echo "<span class='very_small_space'>";
+      echo "<span class='ms-3'>";
       Html::showToolTip(__('When automatic computation is active, percentage is computed based on the average of all child task percent done.'));
       echo "</span></td>";
 
@@ -913,7 +919,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1085,7 +1090,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          'massiveaction'      => false,
          'nosearch'           => true,
          'nodisplay'          => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1213,7 +1217,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
       if ($canedit) {
          echo "<div class='center firstbloc'>";
-         echo "<a class='vsubmit' href='".ProjectTask::getFormURL()."?projects_id=$ID'>".
+         echo "<a class='btn btn-primary' href='".ProjectTask::getFormURL()."?projects_id=$ID'>".
                 _x('button', 'Add a task')."</a>";
          echo "</div>";
       }
@@ -1410,7 +1414,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
          echo "</td>";
          echo "<td width='20%'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td>";
          echo "</tr>";
          echo "</table>";

@@ -79,8 +79,8 @@ if (!empty($_POST['reset_core_cache'])) {
 }
 if (!empty($_POST['reset_translation_cache'])) {
    $config->checkGlobal(UPDATE);
-   $cache = Config::getTranslationCacheInstance();
-   if ($cache->clear()) {
+   $cache_manager = new CacheManager();
+   if ($cache_manager->getTranslationsCacheInstance()->clear()) {
       Session::addMessageAfterRedirect(__('Translation cache reset successful'));
    }
    Html::redirect(Toolbox::getItemTypeFormURL('Config'));

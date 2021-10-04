@@ -1,0 +1,72 @@
+<input type="hidden" name="_link[tickets_id_1]" value="{{ item.fields['id'] }}" />
+
+{% set linked_tickets = ticket_ticket.getLinkedTicketsTo(item.fields['id']) %}
+{% if linked_tickets|length %}
+<div class="card">
+   <div class="list-group list-group-flush list-group-hoverable">
+      {% for id, linked in linked_tickets %}
+      {% set new_ticket = get_item('Ticket', linked['tickets_id']) %}
+      <div class="list-group-item">
+         <div class="row">
+            <div class="col-auto">
+               {{ call('Ticket_Ticket::getLinkName', [
+                  linked['link'],
+                  linked['tickets_id_1'] is defined,
+                  true
+               ])|raw }}
+            </div>
+            <div class="col text-truncate">
+               <a href="{{ 'Ticket'|itemtype_form_path(linked['tickets_id']) }}" class="col-9 overflow-hidden text-nowrap">
+                  {{ new_ticket.getStatusIcon(new_ticket.fields['status'])|raw }}
+                  <span title="{{ new_ticket.fields['name']|verbatim_value }}" data-bs-toggle="tooltip">
+                     {{ new_ticket.fields['name']|verbatim_value }}
+                  </span>
+                  ({{ new_ticket.fields['id'] }})
+               </a>
+            </div>
+
+            {% if canupdate %}
+               <div class="col-auto">
+                  <button type="submit"
+                          form="linked_tickets_{{ main_rand }}"
+                          name="id"
+                          value="{{ id }}"
+                          class="btn btn-sm btn-ghost-danger"
+                          title="{{ _x('button', 'Delete permanently') }}"
+                          data-bs-toggle="tooltip">
+                     <i class="fas fa-unlink"></i>
+                  </button>
+               </div>
+            {% endif %}
+         </div>
+      </div>
+      {% endfor %}
+   </div>
+</div>
+{% endif %}
+
+{% if canupdate and not params['template_preview'] %}
+   <div class="mt-2">
+      <button class="btn btn-sm btn-ghost-secondary" type="button"
+               data-bs-toggle="collapse" data-bs-target="#link_ticket_dropdowns"
+               aria-expanded="false" aria-controls="link_ticket_dropdowns">
+         <i class="fas fa-plus"></i>
+         <span>{{ __('Add') }}</span>
+      </button>
+
+      <span class="collapse {{ params['_link']['tickets_id_2']|length > 0 ? "show" : "" }}" id="link_ticket_dropdowns">
+         {{ ticket_ticket.dropdownLinks(
+            '_link[link]',
+            params['_link']['link'] ?? ''
+         ) }}
+
+         {{ item.dropdown({
+            'name': '_link[tickets_id_2]',
+            'used': [item.fields['id']],
+            'displaywith': ['id'],
+            'display': false,
+            'value': params['_link']['tickets_id_2'] ?? '',
+         })|raw }}
+      </span>
+   </div>
+{% endif %}

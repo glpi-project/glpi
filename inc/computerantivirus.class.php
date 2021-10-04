@@ -100,7 +100,6 @@ class ComputerAntivirus extends CommonDBChild {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -110,7 +109,6 @@ class ComputerAntivirus extends CommonDBChild {
          'name'               => _n('Version', 'Versions', 1),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -120,7 +118,6 @@ class ComputerAntivirus extends CommonDBChild {
          'name'               => __('Signature database version'),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       return $tab;
@@ -259,7 +256,7 @@ class ComputerAntivirus extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
       echo "<td>".__('Active')."</td>";
       echo "<td>";
@@ -279,11 +276,11 @@ class ComputerAntivirus extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>". __('Antivirus version')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "antivirus_version");
+      echo Html::input('antivirus_version', ['value' => $this->fields['antivirus_version']]);
       echo "</td>";
       echo "<td>".__('Signature database version')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "signature_version");
+      echo Html::input('signature_version', ['value' => $this->fields['signature_version']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -323,13 +320,13 @@ class ComputerAntivirus extends CommonDBChild {
       if ($canedit
           && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='center firstbloc'>".
-               "<a class='vsubmit' href='".ComputerAntivirus::getFormURL()."?computers_id=$ID&amp;withtemplate=".
+               "<a class='btn btn-primary' href='".ComputerAntivirus::getFormURL()."?computers_id=$ID&amp;withtemplate=".
                   $withtemplate."'>";
          echo __('Add an antivirus');
          echo "</a></div>\n";
       }
 
-      echo "<div class='spaced center'>";
+      echo "<div class='spaced center table-responsive'>";
 
       $result = $DB->request(
          [

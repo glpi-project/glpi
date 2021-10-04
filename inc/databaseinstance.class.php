@@ -168,12 +168,11 @@ class DatabaseInstance extends CommonDBTM {
 
       echo "<td><label for='textfield_name$rand'>".__('Name') . "</label></td>";
       echo "<td>";
-      Html::autocompletionTextField(
-         $this,
+      echo Html::input(
          'name',
          [
-            'value'     => $this->fields["name"],
-            'rand'      => $rand
+            'value' => $this->fields['name'],
+            'id'    => "textfield_name$rand",
          ]
       );
       echo "</td>";

@@ -594,7 +594,7 @@ class NetworkPortInstantiation extends CommonDBChild {
 
       // Show device MAC adresses
       echo "<td>" . __('MAC') ."</td>\n<td>";
-      Html::autocompletionTextField($netport, "mac");
+      echo Html::input('mac', ['value' => $netport->fields['mac']]);
       echo "</td>\n";
    }
 

@@ -112,7 +112,7 @@ class OlaLevel extends LevelAgreementLevel {
          echo "</td><td class='center'>".__('Active')."</td><td>";
          Dropdown::showYesNo("is_active", 1);
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>";
 
          echo "</table>";
@@ -225,7 +225,7 @@ class OlaLevel extends LevelAgreementLevel {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
       echo "<td>".__('Active')."</td>";
       echo "<td>";

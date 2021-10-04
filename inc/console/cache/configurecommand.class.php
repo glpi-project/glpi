@@ -137,7 +137,7 @@ class ConfigureCommand extends AbstractCommand {
       $dsn         = $input->getOption('dsn');
       $namespace   = $input->getOption('namespace');
 
-      if (!$this->cache_manager->isContextValid($context)) {
+      if (!$this->cache_manager->isContextValid($context, true)) {
          throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
             sprintf(__('Invalid cache context: "%s".'), $context)
          );

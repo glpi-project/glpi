@@ -280,14 +280,14 @@ class Contract_Item extends CommonDBRelation{
                                   'expired' => false]);
 
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
          echo "</div>";
       }
 
-      echo "<div class='spaced'>";
+      echo "<div class='spaced table-responsive'>";
       if ($withtemplate != 2) {
          if ($canedit && $number) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
@@ -533,7 +533,7 @@ class Contract_Item extends CommonDBRelation{
                                                      'used'
                                                        => $used]);
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "<input type='hidden' name='contracts_id' value='$instID'>";
          echo "</td></tr>";
          echo "</table>";

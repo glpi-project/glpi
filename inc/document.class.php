@@ -397,7 +397,7 @@ class Document extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
       if ($ID > 0) {
          echo "<td>".__('Current file')."</td>";
@@ -427,7 +427,7 @@ class Document extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Web link')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "link");
+      echo Html::input('link', ['value' => $this->fields['link']]);
       echo "</td>";
       echo "<td rowspan='3' class='middle'>".__('Comments')."</td>";
       echo "<td class='middle' rowspan='3'>";
@@ -437,7 +437,7 @@ class Document extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('MIME type')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "mime");
+      echo Html::input('mime', ['value' => $this->fields['mime']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -839,7 +839,6 @@ class Document extends CommonDBTM {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -866,7 +865,6 @@ class Document extends CommonDBTM {
          'field'              => 'link',
          'name'               => __('Web link'),
          'datatype'           => 'weblink',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -875,7 +873,6 @@ class Document extends CommonDBTM {
          'field'              => 'mime',
          'name'               => __('MIME type'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1368,6 +1365,7 @@ class Document extends CommonDBTM {
     *    - entity : integer or array / restrict to a defined entity or array of entities
     *                   (default -1 : no restriction)
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
+    *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
     *
     * @param $options array of possible options
     *
@@ -1382,6 +1380,7 @@ class Document extends CommonDBTM {
       $p['entity']  = '';
       $p['used']    = [];
       $p['display'] = true;
+      $p['hide_if_no_elements'] = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1410,6 +1409,10 @@ class Document extends CommonDBTM {
          'ORDER'  => 'name'
       ];
       $iterator = $DB->request($criteria);
+
+      if ($p['hide_if_no_elements'] && $iterator->count() === 0) {
+         return;
+      }
 
       $values = [];
       while ($data = $iterator->next()) {
@@ -1452,7 +1455,7 @@ class Document extends CommonDBTM {
 
       if (self::canApplyOn($itemtype)) {
          if (Document::canView()) {
-            $actions[$action_prefix.'add']    = "<i class='ma-icon far fa-file'></i>".
+            $actions[$action_prefix.'add']    = "<i class='far fa-file'></i>".
                                                 _x('button', 'Add a document');
             $actions[$action_prefix.'remove'] = _x('button', 'Remove a document');
          }

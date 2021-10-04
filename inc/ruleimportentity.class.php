@@ -372,4 +372,9 @@ class RuleImportEntity extends Rule {
       return $actions;
    }
 
+
+   static function getIcon() {
+      return Entity::getIcon();
+   }
+
 }

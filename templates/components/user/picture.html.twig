@@ -1,0 +1,24 @@
+{% set enable_anonymization = enable_anonymization ?? false %}
+{% set avatar_size = avatar_size ?? "avatar-md" %}
+{% set anonymized = enable_anonymization and entity_config('anonymize_support_agents') != constant('Entity::ANONYMIZE_DISABLED') %}
+{% set user = get_item('User', users_id) %}
+{% set user_thumbnail = user.getThumbnailPicturePath(enable_anonymization) %}
+
+{% if not anonymized %}
+   <a href="{{ user.getLinkURL() }}" class="d-flex align-items-center">
+{% endif %}
+
+<span class="avatar {{ avatar_size }} rounded"
+      style="{% if user_thumbnail is not null %}background-image: url({{ user_thumbnail }}); {% endif %}background-color: {{ user.getUserInitialsBgColor() }}">
+   {% if user_thumbnail is null %}
+         {{ user.getUserInitials(enable_anonymization) }}
+   {% endif %}
+</span>
+
+{% if not anonymized %}
+   {% if display_login %}
+      <span class="ms-2">{{ user.fields['name'] }}</span>
+   {% endif %}
+
+   </a>
+{% endif %}

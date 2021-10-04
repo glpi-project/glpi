@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 include ('../inc/includes.php');
 
 Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
@@ -41,16 +43,9 @@ if (isset($_SESSION["ldap_sortorder"])) {
 }
 
 AuthLDAP::manageValuesInSession([], true);
-echo "<div class='center'><table class='tab_cadre'>";
-echo "<tr><th>".__('Bulk import users from a LDAP directory')."</th></tr>";
 
-echo "<tr class='tab_bg_1'><td class='center b'>".
-     "<a href='ldap.import.php?mode=1&action=show'>". __('Synchronizing already imported users').
-     "</a></td></tr>";
-
-echo "<tr class='tab_bg_1'><td class='center b'>".
-     "<a href='ldap.import.php?mode=0&action=show'>". __('Import new users')."</a></td> </tr>";
-
-echo "</table></div>";
+echo TemplateRenderer::getInstance()->render(
+   'pages/admin/users_ldap.html.twig'
+);
 
 Html::footer();

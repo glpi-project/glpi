@@ -79,7 +79,6 @@ class DeviceDrive extends CommonDevice {
          'field'              => 'speed',
          'name'               => __('Speed'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

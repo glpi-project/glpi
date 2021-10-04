@@ -79,7 +79,6 @@ class DocumentType  extends CommonDropdown {
          'field'              => 'ext',
          'name'               => __('Extension'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -97,7 +96,6 @@ class DocumentType  extends CommonDropdown {
          'field'              => 'mime',
          'name'               => __('MIME type'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -168,8 +166,7 @@ class DocumentType  extends CommonDropdown {
       $p = array_merge($p, $options);
 
       $display = "&nbsp;";
-      $display .= "<a href='#' onClick=\"".Html::jsGetElementbyID('documenttypelist').
-                  ".dialog('open'); return false;\" class='fa fa-info pointer' title='" . __s('Help') . "' >";
+      $display .= "<a href='#' data-bs-toggle='modal' data-bs-target='#documenttypelist' class='fa fa-info pointer' title='" . __s('Help') . "' >";
       $display .= "<span class='sr-only'>".__s('Help')."></span>";
       $display .= "</a>";
       $display .= Ajax::createIframeModalWindow('documenttypelist',
@@ -214,5 +211,9 @@ class DocumentType  extends CommonDropdown {
       }
 
       return '/(' . implode('|', $valid_ext_patterns) . ')/i';
+   }
+
+   static function getIcon() {
+      return "far fa-file";
    }
 }

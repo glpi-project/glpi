@@ -177,7 +177,6 @@ class RuleCriteria extends CommonDBChild {
          'massiveaction'      => false,
          'datatype'           => 'specific',
          'additionalfields'   => ['rules_id', 'criteria', 'condition'],
-         'autocomplete'       => true,
       ];
 
       return $tab;
@@ -626,7 +625,7 @@ class RuleCriteria extends CommonDBChild {
       if ($rule->specific_parameters) {
          $itemtype = get_class($rule).'Parameter';
          echo "<span title=\"".__s('Add a criterion')."\" class='fa fa-plus pointer' " .
-                  " onClick=\"".Html::jsGetElementbyID('addcriterion'.$rand).".dialog('open');\">".
+                  " data-bs-toggle='modal' data-bs-target='#addcriterion$rand'>".
                   "<span class='sr-only'>" . __s('Add a criterion') . "</span></span>";
          Ajax::createIframeModalWindow('addcriterion'.$rand,
                                        $itemtype::getFormURL(),

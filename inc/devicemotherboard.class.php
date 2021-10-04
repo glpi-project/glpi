@@ -65,7 +65,6 @@ class DeviceMotherboard extends CommonDevice {
          'field'              => 'chipset',
          'name'               => __('Chipset'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

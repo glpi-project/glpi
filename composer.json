@@ -31,12 +31,10 @@
         "html2text/html2text": "^4.3",
         "htmlawed/htmlawed": "^1.2",
         "iamcal/lib_autolink": "^1.7",
-        "laminas/laminas-cache": "^2.10",
-        "laminas/laminas-cache-storage-adapter-filesystem": "^1.1",
         "laminas/laminas-i18n": "^2.10",
         "laminas/laminas-mail": "^2.12",
         "laminas/laminas-mime": "^2.7",
-        "laminas/laminas-serializer": "^2.8",
+        "laminas/laminas-servicemanager": "^3.10",
         "league/csv": "^9.5",
         "mexitek/phpcolors": "^1.0.1",
         "michelf/php-markdown": "^1.6",
@@ -60,33 +58,22 @@
         "symfony/console": "^5.0",
         "symfony/dom-crawler": "^5.3",
         "true/punycode": "^2.1",
+        "twig/string-extra": "^3.3",
         "twig/twig": "^3.3",
         "wapmorgan/unified-archive": "^1.0"
     },
     "require-dev": {
         "ext-xml": "*",
         "atoum/atoum": "^4.0",
+        "friendsoftwig/twigcs": "^5.1",
         "glpi-project/coding-standard": "^0.8",
         "glpi-project/tools": "^0.2",
         "maglnet/composer-require-checker": "^3.0",
         "mikey179/vfsstream": "^1.6",
-        "php-parallel-lint/php-parallel-lint": "^1.1"
+        "php-parallel-lint/php-parallel-lint": "^1.1",
+        "symfony/css-selector": "^5.3"
     },
     "replace": {
-        "laminas/laminas-cache-storage-adapter-apc": "*",
-        "laminas/laminas-cache-storage-adapter-apcu": "*",
-        "laminas/laminas-cache-storage-adapter-blackhole": "*",
-        "laminas/laminas-cache-storage-adapter-dba": "*",
-        "laminas/laminas-cache-storage-adapter-ext-mongodb": "*",
-        "laminas/laminas-cache-storage-adapter-memcache": "*",
-        "laminas/laminas-cache-storage-adapter-memcached": "*",
-        "laminas/laminas-cache-storage-adapter-memory": "*",
-        "laminas/laminas-cache-storage-adapter-mongodb": "*",
-        "laminas/laminas-cache-storage-adapter-redis": "*",
-        "laminas/laminas-cache-storage-adapter-session": "*",
-        "laminas/laminas-cache-storage-adapter-wincache": "*",
-        "laminas/laminas-cache-storage-adapter-xcache": "*",
-        "laminas/laminas-cache-storage-adapter-zend-server": "*",
         "paragonie/random_compat": "*",
         "symfony/polyfill-ctype": "*",
         "symfony/polyfill-intl-idn": "*",
@@ -104,7 +91,10 @@
         "sort-packages": true
     },
     "autoload-dev": {
-        "psr-4": { "GlpiTests\\": "tests/src/" }
+        "psr-4": {
+            "Glpi\\Tools\\": "tools/",
+            "GlpiTests\\": "tests/src/"
+        }
     },
     "scripts": {
         "testdb": "atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database",

@@ -68,6 +68,7 @@ class Hooks
    // Item hooks expecting an 'item' parameter
    const ADD_RECIPIENT_TO_TARGET   = 'add_recipient_to_target';
    const AUTOINVENTORY_INFORMATION = 'autoinventory_information';
+   const INFOCOM                   = 'infocom';
    const ITEM_ACTION_TARGETS       = 'item_action_targets';
    const ITEM_ADD                  = 'item_add';
    const ITEM_ADD_TARGETS          = 'item_add_targets';

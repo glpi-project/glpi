@@ -84,7 +84,6 @@ class APIClient extends CommonDBTM {
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -139,7 +138,6 @@ class APIClient extends CommonDBTM {
          'field'              => 'ipv6',
          'name'               => __('IPv6 address'),
          'datatype'           => 'text',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -149,7 +147,6 @@ class APIClient extends CommonDBTM {
          'name'               => __('Application token'),
          'massiveaction'      => false,
          'datatype'           => 'text',
-         'autocomplete'       => true,
       ];
 
       return $tab;
@@ -189,7 +186,7 @@ class APIClient extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
       echo "<td rowspan='3'>".__('Comments')."</td>";
       echo "<td rowspan='3'>";
@@ -235,7 +232,7 @@ class APIClient extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('IPv6 address')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "ipv6");
+      echo Html::input('ipv6', ['value' => $this->fields['ipv6']]);
       echo "</td>";
       echo "<td colspan='2'></td>";
       echo "</tr>";
@@ -243,7 +240,7 @@ class APIClient extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".sprintf(__('%1$s (%2$s)'), __('Application token'), "app_token")."</td>";
       echo "<td colspan='2'>";
-      Html::autocompletionTextField($this, "app_token");
+      echo Html::input('app_token', ['value' => $this->fields['app_token']]);
       echo "<br><input type='checkbox' name='_reset_app_token' id='app_token'>&nbsp;";
       echo "<label for='app_token'>".__('Regenerate')."</label>";
       echo "</td><td></td></tr>";

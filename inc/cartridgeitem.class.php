@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Features\AssetImage;
 
 /**
  * CartridgeItem Class
@@ -41,6 +42,7 @@ if (!defined('GLPI_ROOT')) {
  * \see Cartridge
 **/
 class CartridgeItem extends CommonDBTM {
+   use AssetImage;
 
    // From CommonDBTM
    static protected $forward_entity_to = ['Cartridge', 'Infocom'];
@@ -77,6 +79,15 @@ class CartridgeItem extends CommonDBTM {
       return '';
    }
 
+   function prepareInputForAdd($input) {
+      $input = parent::prepareInputForAdd($input);
+      return $this->managePictures($input);
+   }
+
+   function prepareInputForUpdate($input) {
+      $input = parent::prepareInputForUpdate($input);
+      return $this->managePictures($input);
+   }
 
    function cleanDBonPurge() {
 
@@ -168,89 +179,6 @@ class CartridgeItem extends CommonDBTM {
    }
 
 
-   /**
-    * Print the cartridge type form
-    *
-    * @param $ID        integer ID of the item
-    * @param $options   array os possible options:
-    *     - target for the Form
-    *     - withtemplate : 1 for newtemplate, 2 for newobject from template
-    *
-    * @return boolean
-   **/
-   function showForm($ID, $options = []) {
-
-      $this->initForm($ID, $options);
-      $this->showFormHeader($options);
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Name')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "name");
-      echo "</td>";
-      echo "<td>"._n('Type', 'Types', 1)."</td>";
-      echo "<td>";
-      CartridgeItemType::dropdown(['value' => $this->fields["cartridgeitemtypes_id"]]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Reference')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "ref");
-      echo "</td>";
-      echo "<td>".Manufacturer::getTypeName(1)."</td>";
-      echo "<td>";
-      Manufacturer::dropdown(['value' => $this->fields["manufacturers_id"]]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Technician in charge of the hardware')."</td>";
-      echo "<td>";
-      User::dropdown(['name'   => 'users_id_tech',
-                           'value'  => $this->fields["users_id_tech"],
-                           'right'  => 'own_ticket',
-                           'entity' => $this->fields["entities_id"]]);
-      echo "</td>";
-      echo "<td rowspan='4' class='middle'>".__('Comments')."</td>";
-      echo "<td class='middle' rowspan='4'>
-             <textarea cols='45' rows='9' name='comment'>".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Group in charge of the hardware')."</td>";
-      echo "<td>";
-      Group::dropdown([
-         'name'      => 'groups_id_tech',
-         'value'     => $this->fields['groups_id_tech'],
-         'entity'    => $this->fields['entities_id'],
-         'condition' => ['is_assign' => 1]
-      ]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Stock location')."</td>";
-      echo "<td>";
-      Location::dropdown(['value'  => $this->fields["locations_id"],
-                               'entity' => $this->fields["entities_id"]]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Alert threshold')."</td>";
-      echo "<td>";
-      Dropdown::showNumber('alarm_threshold', ['value' => $this->fields["alarm_threshold"],
-                                                    'min'   => 0,
-                                                    'max'   => 100,
-                                                    'step'  => 1,
-                                                    'toadd' => ['-1' => __('Never')]]);
-      Alert::displayLastAlert('CartridgeItem', $ID);
-      echo "</td></tr>";
-
-      $this->showFormButtons($options);
-
-      return true;
-   }
-
-
    function rawSearchOptions() {
       $tab = parent::rawSearchOptions();
 
@@ -269,7 +197,6 @@ class CartridgeItem extends CommonDBTM {
          'field'              => 'ref',
          'name'               => __('Reference'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

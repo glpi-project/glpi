@@ -338,7 +338,7 @@ class Document_Item extends CommonDBRelation{
                                                      'checkright'
                                                       => true]);
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "<input type='hidden' name='documents_id' value='$instID'>";
          echo "</td></tr>";
          echo "</table>";
@@ -346,7 +346,7 @@ class Document_Item extends CommonDBRelation{
          echo "</div>";
       }
 
-      echo "<div class='spaced'>";
+      echo "<div class='spaced table-responsive'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = ['container' => 'mass'.__CLASS__.$rand];
@@ -632,7 +632,7 @@ class Document_Item extends CommonDBRelation{
          echo "</td><td class='left'>(".Document::getMaxUploadSize().")&nbsp;</td>";
          echo "<td class='center' width='20%'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add a new file')."\"
-                class='submit'>";
+                class='btn btn-primary'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
@@ -656,7 +656,7 @@ class Document_Item extends CommonDBRelation{
                                      'used'   => $used]);
             echo "</td><td class='center' width='20%'>";
             echo "<input type='submit' name='add' value=\"".
-                     _sx('button', 'Associate an existing document')."\" class='submit'>";
+                     _sx('button', 'Associate an existing document')."\" class='btn btn-primary'>";
             echo "</td>";
             echo "</tr>";
             echo "</table>";
@@ -748,7 +748,7 @@ class Document_Item extends CommonDBRelation{
          $used[$data['id']]           = $data['id'];
       }
 
-      echo "<div class='spaced'>";
+      echo "<div class='spaced table-responsive'>";
       if ($canedit
           && $number
           && ($withtemplate < 2)) {
