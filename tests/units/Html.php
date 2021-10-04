@@ -275,6 +275,7 @@ class Html extends \GLPITestCase {
          'PDU',
          'PassiveDCEquipment',
          'Unmanaged',
+         'Cable',
          'Item_DeviceSimcard'
       ];
       $this->string($menu['assets']['title'])->isIdenticalTo('Assets');
@@ -305,8 +306,7 @@ class Html extends \GLPITestCase {
          'Cluster',
          'Domain',
          'Appliance',
-         'Database',
-         'Cable'
+         'Database'
       ];
       $this->string($menu['management']['title'])->isIdenticalTo('Management');
       $this->array($menu['management']['types'])->isIdenticalTo($expected);

@@ -83,7 +83,7 @@ if (isset($_POST["add"])) {
       Html::popFooter();
 
 } else {
-   Html::header(Cable::getTypeName(1), $_SERVER['PHP_SELF'], "management", "cable");
+   Html::header(Cable::getTypeName(1), $_SERVER['PHP_SELF'], "assets", "cable");
    $cable->display([
       'id'           => $_GET["id"],
       'withtemplate' => $_GET["withtemplate"],
