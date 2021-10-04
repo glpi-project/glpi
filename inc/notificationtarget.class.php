@@ -525,7 +525,7 @@ class NotificationTarget extends CommonDBChild {
       }
 
       // Pass user type as argument ? forced for specific cases
-      if (isset($data['usertype'])) {
+      if ($notificationoption['usertype'] == self::ANONYMOUS_USER && isset($data['usertype'])) {
          $notificationoption['usertype'] = $data['usertype'];
       }
 

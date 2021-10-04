@@ -91,7 +91,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
       ]);
 
       $admins = [];
-
+      $usr = new User();
       while ($row = $iterator->next()) {
          if (NotificationMailing::isUserAddressValid($row['admin_email'])) {
             $admins[] = [
@@ -99,6 +99,9 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                'email'     => $row['admin_email'],
                'name'      => $row['admin_email_name']
             ];
+            if ($usr->getFromDBbyEmail($row['admin_email'])) {
+               $admins[array_key_last($admins)]['users_id'] = $usr->getID();
+            };
          }
       }
 
