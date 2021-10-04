@@ -5996,9 +5996,6 @@ JAVASCRIPT;
                }
             }
             break;
-         case 'jstree':
-            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jstree.js';
-            break;
          case 'gantt':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/dhtmlx-gantt.js';
             $_SESSION['glpi_js_toload'][$name][] = 'js/gantt-helper.js';

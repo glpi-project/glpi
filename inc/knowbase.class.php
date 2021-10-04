@@ -217,7 +217,7 @@ JAVASCRIPT;
    }
 
    /**
-    * Get list of knowbase categories in jstree format.
+    * Get list of knowbase categories in fancytree format.
     *
     * @since 9.4
     *
