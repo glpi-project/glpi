@@ -137,7 +137,6 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
       $group->addHeader('speed', __('Fiber channel port speed'), $super, $header);
       $group->addHeader('wwn', __('World Wide Name'), $super, $header);
 
-      Socket::getHTMLTableHeader('NetworkPortFiberchannel', $group, $super, $header, $options);
 
       $group->addHeader('Socket', _n('Network socket', 'Network sockets', 1), $super, $header);
 

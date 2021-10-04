@@ -985,29 +985,6 @@ class Socket extends CommonDBChild {
                sprintf(__('%1$s adds several sockets'), $_SESSION["glpiname"]));
    }
 
-   /**
-    * @since 0.84
-    *
-    * @param $itemtype
-    * @param $base            HTMLTableBase object
-    * @param $super           HTMLTableSuperHeader object (default NULL
-    * @param $father          HTMLTableHeader object (default NULL)
-    * @param $options   array
-   **/
-   static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super = null,
-                                      HTMLTableHeader $father = null, array $options = []) {
-
-      $column_name = __CLASS__;
-
-      if (isset($options['dont_display'][$column_name])) {
-         return;
-      }
-
-      $base->addHeader($column_name, _n('Network socket', 'Network sockets', 1), $super, $father);
-
-   }
-
 
    /**
     * @since 0.84

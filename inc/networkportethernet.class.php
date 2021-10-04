@@ -134,8 +134,6 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       $group->addHeader('speed', __('Ethernet port speed'), $super, $header);
       $group->addHeader('type', __('Ethernet port type'), $super, $header);
 
-      Socket::getHTMLTableHeader('NetworkPortEthernet', $group, $super, $header, $options);
-
       $group->addHeader('Socket', _n('Network socket', 'Network sockets', 1), $super, $header);
 
       parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $header, $options);
