@@ -1,0 +1,163 @@
+/*!
+ * PlainScrollbar JavaScript Library v1.0.0-rc.0
+ * https://github.com/ewya/PlainScrollbar
+ *
+ * Copyright Kay Schewe <https://www.kayschewe.de>
+ * Released under the MIT license
+ * https://github.com/ewya/PlainScrollbar/blob/master/LICENSE
+ */
+
+/**
+ * .plain-scrollbar
+ */
+
+.plain-scrollbar {
+	box-sizing: border-box;
+	cursor: default;
+	position: absolute;
+	overflow: hidden;
+	height: 100%;
+	width: 100%;
+	background-color: transparent;
+	/*transition: all 0.5s ease;*/
+	transition: background 0.5s ease, border 0.5s ease;
+}
+
+.plain-scrollbar.scrollbar-horizontal {
+	bottom: 0;
+	height: 16px;
+}
+.plain-scrollbar.scrollbar-vertical {
+	top: 0;
+	right: 0;
+	width: 16px;
+}
+
+.plain-scrollbar[data-enabled="false"] {
+	opacity: 0.25;
+}
+.plain-scrollbar[data-scrollable="false"] {
+	/*visibility: hidden;*/
+}
+.plain-scrollbar[data-visible="true"] {
+	background-color: rgba(251, 251, 251, 0.5);
+}
+
+.plain-scrollbar .slider-area {
+	box-sizing: border-box;
+	position: absolute;
+	overflow: hidden;
+}
+.plain-scrollbar.scrollbar-horizontal .slider-area {
+	height: 100%;
+	left: 0;
+	right: 0;
+}
+.plain-scrollbar.scrollbar-vertical .slider-area {
+	width: 100%;
+	top: 0;
+	bottom: 0;
+}
+.plain-scrollbar.scrollbar-horizontal.has-arrows .slider-area {
+	left: 16px;
+	right: 16px;
+}
+.plain-scrollbar.scrollbar-vertical.has-arrows .slider-area {
+	top: 16px;
+	bottom: 16px;
+}
+
+.plain-scrollbar .slider {
+	position: absolute;
+	box-sizing: inherit;
+	background-color: rgba(0, 0, 0, 0);
+	margin: 0;
+	min-height: 1px;
+	min-width: 1px;
+	/*transition: all 0.5s ease;*/
+	transition: background 0.5s ease, border 0.5s ease;
+}
+.plain-scrollbar.scrollbar-horizontal .slider {
+	vertical-align: middle;
+	top: 0;
+	height: 16px;
+}
+.plain-scrollbar.scrollbar-vertical .slider {
+	left: 0;
+	width: 16px;
+}
+.plain-scrollbar:hover .slider,
+.plain-scrollbar[data-visible="true"] .slider {
+	background-color: rgba(165, 165, 165, 0.9);
+}
+
+.plain-scrollbar.scrollbar-vertical .arrow-up,
+.plain-scrollbar.scrollbar-vertical .arrow-down,
+.plain-scrollbar.scrollbar-horizontal .arrow-left,
+.plain-scrollbar.scrollbar-horizontal .arrow-right {
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	background-color: transparent;
+	transition: background 0.5s ease, border 0.5s ease;
+}
+.plain-scrollbar.scrollbar-vertical .arrow-down {
+	left: 0;
+	bottom: 0;
+}
+.plain-scrollbar.scrollbar-horizontal .arrow-left,
+.plain-scrollbar.scrollbar-horizontal .arrow-right {
+	top: 0;
+}
+.plain-scrollbar.scrollbar-horizontal .arrow-left {
+	left: 0;
+}
+.plain-scrollbar.scrollbar-horizontal .arrow-right {
+	right: 0;
+}
+
+.plain-scrollbar.scrollbar-vertical .arrow-up,
+.plain-scrollbar.scrollbar-vertical .arrow-down,
+.plain-scrollbar.scrollbar-horizontal .arrow-left,
+.plain-scrollbar.scrollbar-horizontal .arrow-right {
+	text-align: center;
+}
+.plain-scrollbar.scrollbar-vertical .arrow-up span,
+.plain-scrollbar.scrollbar-vertical .arrow-down span,
+.plain-scrollbar.scrollbar-horizontal .arrow-left span,
+.plain-scrollbar.scrollbar-horizontal .arrow-right span {
+	display: inline-block;
+	vertical-align: top;
+	font-family: Arial, sans-serif;
+	color: transparent;
+	font-size: 10px;
+	line-height: 10px;
+	margin-top: 3px;
+}
+
+.plain-scrollbar.scrollbar-vertical .arrow-up span::before {
+	content: "\25B2";
+}
+.plain-scrollbar.scrollbar-vertical .arrow-down span::before {
+	content: "\25BC";
+}
+
+.plain-scrollbar.scrollbar-horizontal .arrow-left span::before {
+	content: "\25C4";
+}
+.plain-scrollbar.scrollbar-horizontal .arrow-right span::before {
+	content: "\25BA";
+}
+
+.plain-scrollbar[data-visible="true"] .arrow-up,
+.plain-scrollbar[data-visible="true"] .arrow-down,
+.plain-scrollbar[data-visible="true"] .arrow-left,
+.plain-scrollbar[data-visible="true"] .arrow-right {
+	/*background-color: rgba(251, 251, 251, 0.6);*/
+}
+.plain-scrollbar[data-visible="true"] .arrow-up span,
+.plain-scrollbar[data-visible="true"] .arrow-down span,
+.plain-scrollbar[data-visible="true"] .arrow-left span,
+.plain-scrollbar[data-visible="true"] .arrow-right span {
+	color: rgba(0, 0, 0, 0.6);
+}

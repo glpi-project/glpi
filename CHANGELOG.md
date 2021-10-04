@@ -45,6 +45,7 @@ The present file will list all changes made to the project; according to the
 - `CommonDBTM::notificationqueueonaction` property has been removed in favor of `CommonDBTM::deduplicate_queued_notifications` property.
 - `CommonDropdown::displaySpecificTypeField()` has a new `$options` parameter.
 - `DBMysql::rollBack` supports a `name` parameter for rolling back to a savepoint.
+- `Knowbase::getJstreeCategoryList()` as been replaced by `Knowbase::getTreeCategoryList()`.
 - `NetworkPortInstantiation::showNetpointField()` has been renamed to `NetworkPortInstantiation::showSocketField()`.
 - `NotificationSettingConfig::showForm()` renamed to `NotificationSettingConfig::showConfigForm()`.
 - `RuleMatchedLog::showForm()` renamed to `RuleMatchedLog::showItemForm()`.

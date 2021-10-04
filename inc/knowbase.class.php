@@ -150,53 +150,42 @@ class Knowbase extends CommonGLPI {
                         ? $_REQUEST['start']
                         : 0;
 
-      $cat_id = 'false';
-      if (array_key_exists('knowbaseitemcategories_id', $_REQUEST)) {
-         $cat_id = $_REQUEST['knowbaseitemcategories_id'];
-      }
-
-      $category_list = json_encode(self::getJstreeCategoryList());
+      $category_list = json_encode(self::getTreeCategoryList());
+      $no_cat_found  = __("No category found");
 
       $JS = <<<JAVASCRIPT
          $(function() {
-            $('#tree_category$rand').jstree({
-               'plugins' : [
-                  'search',
-                  'wholerow',
-                  'state' // remember (on browser navigation) the last node open in tree
-               ],
-               'state' : {
-                  'key'    : "kb_tree_state",
-                  'filter' : function (state) {
-                     // Prevent restoring selected state if category is in URL
-                     if ($cat_id) {
-                        state.core.selected = [];
-                     }
-                     return state;
-                  }
+            $('#tree_category$rand').fancytree({
+               // load plugins
+               extensions: ['filter', 'glyph'],
+
+               // Scroll node into visible area, when focused by keyboard
+               autoScroll: true,
+
+               // enable font-awesome icons
+               glyph: {
+                  preset: "awesome5",
+                  map: {}
                },
-               'search': {
-                  'case_insensitive': true,
-                  'show_only_matches': true
+
+               // load json data
+               source: {$category_list},
+
+               // filter plugin options
+               filter: {
+                  mode: "hide", // remove unmatched nodes
+                  autoExpand: true, // if results found in children, auto-expand parent
+                  nodata: '{$no_cat_found}', // message when no data found
                },
-               'core': {
-                  'animation': 0,
-                  'data': $category_list
-               }
-            })
-            .on('ready.jstree', function(event, instance) {
-               if ($cat_id) {
-                  // force category if id found in URL parameters
-                  $('#tree_category$rand').jstree('select_node', $cat_id);
-                  $('#tree_category$rand').jstree('open_node', $cat_id);
-               } else if (instance.instance.restore_state() === false) {
-                  // if no state stored, select root node
-                  $('#tree_category$rand').jstree('select_node', 0);
-                  $('#tree_category$rand').jstree('open_node', 0);
-               }
-            })
-            .on('select_node.jstree', function(event, data) {
-               loadNode(data.selected[0]);
+
+               // events
+               activate: function(event, data) {
+                  var node = data.node;
+                  var key  = node.key;
+
+                  loadNode(key);
+               },
+
             });
 
             var loadingindicator  = $("<div class='loadingindicator'>$loading_txt</div>");
@@ -209,17 +198,11 @@ class Knowbase extends CommonGLPI {
                   'start': $start
                });
             };
+            loadNode(0);
 
             $(document).on('keyup', '#kb_tree_search$rand', function() {
-               $('#tree_category$rand').jstree('search', $(this).val());
-            });
-
-            $('#items_list$rand').on('click', 'a.kb-category', function(event) {
-               event.preventDefault();
-
-               var cat_id = $(event.target).data('category-id');
-               $('#tree_category$rand').jstree('select_node', cat_id);
-               $('#tree_category$rand').jstree('open_node', cat_id);
+               var search_text = $(this).val();
+               $.ui.fancytree.getTree("#tree_category$rand").filterNodes(search_text);
             });
          });
 JAVASCRIPT;
@@ -234,18 +217,18 @@ JAVASCRIPT;
    }
 
    /**
-    * Get list of knowbase categories in jstree format.
+    * Get list of knowbase categories in fancytree format.
     *
     * @since 9.4
     *
     * @return array
     */
-   static function getJstreeCategoryList() {
+   static function getTreeCategoryList() {
 
       global $DB;
 
       $cat_table = KnowbaseItemCategory::getTable();
-      $cat_fk  = KnowbaseItemCategory::getForeignKeyField();
+      $cat_fk    = KnowbaseItemCategory::getForeignKeyField();
 
       $kbitem_visibility_crit = KnowbaseItem::getVisibilityCriteria(true);
 
@@ -323,35 +306,53 @@ JAVASCRIPT;
          )
       )->next();
       $categories[] = [
-         'id'          => '0',
+         'id'          => 0,
          'name'        => __('Root category'),
-         $cat_fk       => '#',
          'items_count' => $root_items_count['cpt'],
       ];
 
-      // Tranform data into jstree format
+      // construct flat data
       $nodes   = [];
-
       foreach ($categories as $category) {
+         $cat_id = intval($category['id']);
          $node = [
-            'id'     => $category['id'],
-            'parent' => $category[$cat_fk],
-            'text'   => $category['name'],
+            'key'    => $cat_id,
+            'title'  => $category['name'],
+            'parent' => $category[$cat_fk] ?? null,
             'a_attr' => [
-               'data-id' => $category['id']
+               'data-id' => $cat_id
             ],
          ];
 
          if ($category['items_count'] > 0) {
-            $node['text'] .= ' <strong title="' . __('This category contains articles') . '">'
-               . '(' . $category['items_count'] . ')'
-               . '</strong>';
+            $node['title'] .= ' <span class="badge bg-azure-lt" title="' . __('This category contains articles') . '">'
+               . $category['items_count']
+               . '</span>';
          }
 
          $nodes[] = $node;
       }
 
-      return $nodes;
+      // recursive construct tree data
+      $buildtree = function(array &$elements, $parent = null) use (&$buildtree) {
+         $branch = [];
+
+         foreach ($elements as $index => $element) {
+            if ($element['parent'] === $parent) {
+               $children = $buildtree($elements, $element['key']);
+               if (count($children) > 0) {
+                  $element['children'] = $children;
+               }
+               $branch[] = $element;
+               unset($elements[$index]);
+            }
+         }
+         return $branch;
+      };
+
+      $newtree = $buildtree($nodes);
+
+      return $newtree;
    }
 
    /**

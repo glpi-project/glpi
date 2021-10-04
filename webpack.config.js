@@ -75,7 +75,6 @@ let config = {
                path.resolve(__dirname, 'node_modules/cystoscape'),
                path.resolve(__dirname, 'node_modules/cytoscape-context-menus'),
                path.resolve(__dirname, 'node_modules/jquery-migrate'),
-               path.resolve(__dirname, 'node_modules/jstree'),
                path.resolve(__dirname, 'node_modules/photoswipe'),
                path.resolve(__dirname, 'node_modules/rrule'),
                path.resolve(__dirname, 'vendor/blueimp/jquery-file-upload'),
@@ -228,17 +227,6 @@ for (let s = 0; s < filesToCopy.length; s++) {
 
    copyPatterns.push(copyParams);
 }
-
-// Replace jstree images
-copyPatterns.push(
-   {
-      context: path.resolve(__dirname, 'lib/jstree/themes/glpi'),
-      force:   true,
-      from:    '*.*',
-      to:      path.resolve(__dirname, libOutputPath + '/jstree/dist/themes/default'),
-      toType:  'dir',
-   }
-);
 
 config.plugins.push(new CopyWebpackPlugin({patterns:copyPatterns}));
 

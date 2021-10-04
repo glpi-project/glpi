@@ -477,6 +477,16 @@ class Entity extends CommonTreeDropdown {
       // Add right to current user - Hack to avoid login/logout
       $_SESSION['glpiactiveentities'][$this->fields['id']] = $this->fields['id'];
       $_SESSION['glpiactiveentities_string']              .= ",'".$this->fields['id']."'";
+
+      // clean entity tree cache
+      $this->cleanEntitySelectorCache();
+   }
+
+   function post_updateItem($history = 1) {
+      parent::post_updateItem($history);
+
+      // clean entity tree cache
+      $this->cleanEntitySelectorCache();
    }
 
 
@@ -496,6 +506,23 @@ class Entity extends CommonTreeDropdown {
             Entity_RSSFeed::class,
          ]
       );
+
+      // clean entity tree cache
+      $this->cleanEntitySelectorCache();
+   }
+
+
+   /**
+    * Clean caches related to entity selector.
+    *
+    * @since 10.0
+    *
+    * @return void
+    */
+   function cleanEntitySelectorCache() {
+      global $GLPI_CACHE;
+
+      $GLPI_CACHE->delete('entity_selector');
    }
 
    function rawSearchOptions() {

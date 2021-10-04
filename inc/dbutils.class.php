@@ -1243,10 +1243,9 @@ final class DbUtils {
 
       // First request init the  variables
       $iterator = $DB->request([
-         $table, [
-            'WHERE'  => [$parentIDfield => $IDf],
-            'ORDER'  => 'name'
-         ]
+         'FROM'   => $table,
+         'WHERE'  => [$parentIDfield => $IDf],
+         'ORDER'  => 'name'
       ]);
 
       while ($row = $iterator->next()) {
@@ -1259,10 +1258,9 @@ final class DbUtils {
       while (count($found) > 0) {
          // Get next elements
          $iterator = $DB->request([
-            $table, [
-               'WHERE'  => [$parentIDfield => $found],
-               'ORDER'  => 'name'
-            ]
+            'FROM'   => $table,
+            'WHERE'  => [$parentIDfield => $found],
+            'ORDER'  => 'name'
          ]);
 
          // CLear the found array

@@ -22,111 +22,159 @@
    {% set target = path("front/helpdesk.public.php") %}
 {% endif %}
 
-<div class="dropdown dropstart">
-   <a href="#" class="dropdown-item dropdown-toggle show_entity_modal" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+{% if session('glpi_multientitiesmode') == 0 %}
+   <span class="dropdown-item dropdown-item-text">
       <i class="fa-fw fas fa-layer-group"></i>
       {{ session('glpiactive_entity_name')|verbatim_value|u.truncate(35, '...') }}
-   </a>
-   <div class="dropdown-menu p-3">
-      <h3>{{ __('Select the desired entity') }}</h3>
+   </span>
+{% else %}
+   <div class="dropdown dropstart">
+      <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+         <i class="fa-fw fas fa-layer-group"></i>
+         {{ session('glpiactive_entity_name')|verbatim_value|u.truncate(35, '...') }}
+      </a>
+      <div class="dropdown-menu p-3">
+         <h3>{{ __('Select the desired entity') }}</h3>
 
-      <div class="alert alert-info" role="alert">
-         <i class="fas fa-info-circle"></i>
-         <span class="ms-2">
-            <img src="{{ path('pics/entity_all.png') }}" alt="entity_all">
-            {{ __('to see the entity and its sub-entities') }}
-         </span>
-      </div>
-
-      <form id="entsearchform{{ rand }}">
-         <div class="input-group">
-            <input type="text" class="form-control" name="entsearchtext" id="entsearchtext{{ rand }}"
-                   placeholder="{{ __('Search entity') }}" autocomplete="off">
-            <button type="submit" class="btn btn-icon btn-primary" title="{{ __('Search') }}"
-                    data-bs-toggle="tooltip" data-bs-placement="top">
-               <i class="fas fa-search"></i>
-            </button>
-            <a class="btn btn-icon btn-outline-secondary" href="#" id="entsearchtext{{ rand }}_clear"
-               title="{{ __("Clear search") }}" data-bs-toggle="tooltip" data-bs-placement="top">
-                  <i class="fas fa-times"></i>
-            </a>
-            <a href="{{ target }}?active_entity=all" class="btn btn-secondary"
-               title="{{ __('Select all') }}" data-bs-toggle="tooltip" data-bs-placement="top">
-               <i class="fas fa-eye"></i>
-            </a>
+         <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle"></i>
+            <span class="ms-2">
+               {% set recursive_icon %}
+                  <i class="fas fa-angle-double-down" title="{{ __('+ sub-entities') }}"></i>
+               {% endset %}
+               {{ __('Click on the %s icon to see the entity and its sub-entities')|format(recursive_icon)|raw }}
+            </span>
          </div>
-      </form>
 
-      <div id="tree_projectcategory{{ rand }}" class="entity_tree" ></div>
+         <form id="entsearchform{{ rand }}">
+            <div class="input-group">
+               <input type="text" class="form-control" name="entsearchtext" id="entsearchtext{{ rand }}"
+                     placeholder="{{ __('Search entity') }}" autocomplete="off">
+               <button type="submit" class="btn btn-icon btn-primary" title="{{ __('Search') }}"
+                     data-bs-toggle="tooltip" data-bs-placement="top">
+                  <i class="fas fa-search"></i>
+               </button>
+               <a class="btn btn-icon btn-outline-secondary" href="#" id="entsearchtext{{ rand }}_clear"
+                  title="{{ __("Clear search") }}" data-bs-toggle="tooltip" data-bs-placement="top">
+                     <i class="fas fa-times"></i>
+               </a>
+               <a href="{{ target }}?active_entity=all" class="btn btn-secondary"
+                  title="{{ __('Select all') }}" data-bs-toggle="tooltip" data-bs-placement="top">
+                  <i class="fas fa-eye"></i>
+               </a>
+            </div>
+         </form>
+
+         <div class="fancytree-grid-container flexbox-item-grow entity_tree">
+            <table id="tree_projectcategory{{ rand }}">
+               <colgroup>
+                  <col></col>
+               </colgroup>
+               <thead>
+                  <tr>
+                     <th class="parent-path"></th>
+                  </tr>
+               </thead>
+               <tbody>
+               </tbody>
+            </table>
+            <div id="verticalScrollbar-{{ rand }}" style="height:100%;"></div>
+         </div>
+      </div>
    </div>
-</div>
 
-<script type="text/javascript">
-$(function() {
-   $('#tree_projectcategory{{ rand }}').jstree({
-      'plugins': ['search', 'qload', 'conditionalselect'],
-      'search': {
-         'case_insensitive': true,
-         'show_only_matches': true,
-         'ajax': {
-            'type': 'POST',
-            'url': '{{ path("/ajax/entitytreesearch.php") }}'
-         }
-      },
-      'qload': {
-         'prevLimit': 50,
-         'nextLimit': 30,
-         'moreText': '{{ __("Load more entities...") }}'
-      },
-      'conditionalselect': function (node, event) {
-         if (node === false) {
-            return false;
-         }
-         var url = '{{ target }}?active_entity='+node.id;
-         if (event.target.tagName == 'I'
-               && event.target.className == '') {
-            url += '&is_recursive=1';
-         }
-         document.location.href = url;
-         return false;
-      },
-      'core': {
-         'animation': 0,
-         'data': {
-            'url': function(node) {
-               return node.id === '#' ?
-                  '{{ path("/ajax/entitytreesons.php") }}?node=-1' :
-                  '{{ path("/ajax/entitytreesons.php") }}?node='+node.id;
-            }
-         }
+   <script type="text/javascript">
+   $(function() {
+      $('#tree_projectcategory{{ rand }}').fancytree({
+         // load plugins
+         extensions: ['filter', 'glyph', 'grid'],
+
+         // Scroll node into visible area, when focused by keyboard
+         autoScroll: true,
+
+         // enable font-awesome icons
+         glyph: {
+            preset: "awesome5",
+            map: {}
+         },
+
+         // enable virtual dom, it requires the grid (table extension) plugin
+         table: {
+            indentation: 20,       // indent 20px per node level
+            nodeColumnIdx: 0,      // render the node title into the 1st column
+         },
+         viewport: {
+            enabled: true,
+            count: 15, // number of items to display at once
+         },
+
+         // load data by ajax
+         source: {
+            url:  '{{ path("/ajax/entitytreesons.php") }}',
+            cache: false
+         },
+
+         // filter plugin options
+         filter: {
+            mode: "hide", // remove unmatched nodes
+            autoExpand: true, // if results found in children, auto-expand parent
+            nodata: '{{ __("No entity found") }}', // message when no data found
+         },
+
+         // load 3rd party scrollbar extension for viewport mode
+         preInit: function(event, data) {
+            var tree = data.tree;
+
+            tree.verticalScrollbar = new PlainScrollbar({
+               alwaysVisible: true,
+               arrows: true,
+               orientation: "vertical",
+               onSet: function(numberOfItems) {
+                  tree.setViewport({
+                     start: Math.round(numberOfItems.start),
+                  });
+               },
+               scrollbarElement: document.getElementById("verticalScrollbar-{{ rand }}"),
+            });
+         },
+
+         // update scrollbar when viewport is updated
+         updateViewport: function(event, data) {
+            var tree = data.tree;
+
+            tree.verticalScrollbar.set({
+               start: tree.viewport.start,
+               total: tree.visibleNodeList.length,
+               visible: tree.viewport.count,
+            }, true);  // do not trigger `onSet`
+         },
+      });
+
+      var searchTree = function() {
+         var search_text = $("#entsearchtext{{ rand }}").val();
+         $.ui.fancytree.getTree("#tree_projectcategory{{ rand }}").filterNodes(search_text);
       }
+
+      $('#entsearchform{{ rand }}').submit(function(event) {
+         // cancel submit of entity search form
+         event.preventDefault();
+
+         searchTree();
+      });
+
+      $('#entsearchtext{{ rand }}').keyup(function () {
+         var inputsearch = $(this);
+         typewatch(function () {
+            if (inputsearch.val().length >= 3) {
+               searchTree();
+            }
+         }, 500);
+      }).focus();
+
+      $('#entsearchtext{{ rand }}_clear').click(function () {
+         $('#entsearchtext{{ rand }}').val('');
+         searchTree();
+      });
    });
-
-   var searchTree = function() {
-      $("#tree_projectcategory{{ rand }}")
-         .jstree('close_all')
-         .jstree('search', $("#entsearchtext{{ rand }}").val());
-   }
-
-   $('#entsearchform{{ rand }}').submit(function(event) {
-      // cancel submit of entity search form
-      event.preventDefault();
-
-      searchTree();
-   });
-
-   $('#entsearchtext{{ rand }}').keyup(function () {
-      var inputsearch = $(this);
-      typewatch(function () {
-         if (inputsearch.val().length >= 3) {
-            searchTree();
-         }
-      }, 500);
-   }).focus();
-
-   $('#entsearchtext{{ rand }}_clear').click(function () {
-      $('#entsearchtext{{ rand }}').val('');
-      searchTree();
-   });
-});
-</script>
+   </script>
+{% endif %}

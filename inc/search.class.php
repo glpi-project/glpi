@@ -7559,9 +7559,9 @@ JAVASCRIPT;
 
          default :
             if ($fixed) {
-               $out = "<div class='center'><table border='0' class='tab_cadre_fixehov'>\n";
+               $out = "<div class='center'><table border='0' class='table'>";
             } else {
-               $out = "<div class='center'><table border='0' class='tab_cadrehov'>\n";
+               $out = "<div class='center'><table border='0' class='table card-table table-hover'>";
             }
       }
       return $out;
