@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Socket;
+
 /// Location class
 class Location extends CommonTreeDropdown {
 
@@ -345,7 +347,7 @@ class Location extends CommonTreeDropdown {
 
       $ong = parent::defineTabs($options);
       $this->addImpactTab($ong, $options);
-      $this->addStandardTab('Socket', $ong, $options);
+      $this->addStandardTab(Socket::class, $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab(__CLASS__, $ong, $options);
 

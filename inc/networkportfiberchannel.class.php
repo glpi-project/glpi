@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
+use Glpi\Socket;
+
 /**
  * NetworkPortFiberchannel class : Fiberchannel instantiation of NetworkPort
  *

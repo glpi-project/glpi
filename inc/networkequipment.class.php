@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Socket;
+
 /**
  * Network equipment Class
 **/
@@ -135,7 +137,7 @@ class NetworkEquipment extends CommonDBTM {
          ->addStandardTab('Item_Disk', $ong, $options)
          ->addStandardTab('NetworkPort', $ong, $options)
          ->addStandardTab('NetworkName', $ong, $options)
-         ->addStandardTab('Socket', $ong, $options)
+         ->addStandardTab(Socket::class, $ong, $options)
          ->addStandardTab('Infocom', $ong, $options)
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)

@@ -31,6 +31,7 @@
  */
 
 use Glpi\Event;
+use Glpi\Socket;
 
 include ('../inc/includes.php');
 

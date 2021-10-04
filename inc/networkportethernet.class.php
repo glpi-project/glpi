@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Socket;
+
 /// NetworkPortEthernet class : Ethernet instantiation of NetworkPort
 /// @since 0.84
 class NetworkPortEthernet extends NetworkPortInstantiation {
