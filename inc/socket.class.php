@@ -30,11 +30,30 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
 use Glpi\Event;
+use Ajax;
+use Cable;
+use CommonDBChild;
+use CommonDBTM;
+use CommonGLPI;
+use Dropdown;
+use Html;
+use HtmlTableBase;
+use HTMLTableCell;
+use HTMLTableHeader;
+use HTMLTableSuperHeader;
+use HTMLTableRow;
+use Location;
+use Log;
+use NetworkPort;
+use Session;
+use SocketModel;
 
 /// Socket class
 class Socket extends CommonDBChild {
