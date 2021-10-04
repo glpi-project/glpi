@@ -1588,6 +1588,10 @@ class Search {
             );
          }
 
+         // Add items in item list
+         $current_type = (isset($newrow['TYPE']) ? $newrow['TYPE'] : $data['itemtype']);
+         Session::addToNavigateListItems($current_type, $newrow["id"]);
+
          yield $i => $newrow;
          $i++;
       }
@@ -1676,12 +1680,6 @@ class Search {
          'may_be_deleted'      => $item instanceof CommonDBTM && $item->maybeDeleted(),
          'may_be_located'      => $item instanceof CommonDBTM && $item->maybeLocated(),
       ]);
-
-      // Add items in item list
-      foreach ($data['data']['rows'] as $row) {
-         $current_type = (isset($row['TYPE']) ? $row['TYPE'] : $data['itemtype']);
-         Session::addToNavigateListItems($current_type, $row["id"]);
-      }
 
       // Clean previous selection
       $_SESSION['glpimassiveactionselected'] = [];
