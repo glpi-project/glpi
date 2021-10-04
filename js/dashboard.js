@@ -730,7 +730,7 @@ var Dashboard = {
 
 
    /**
-    * FitText() only the width of an item into consideration (and ignore the height).
+    * FitText() only use the width of an item into consideration (and ignore the height).
     * This means that if you keep increasing the width of a card without also
     * increasing the height then your text will overflow the card's height at
     * some point.
