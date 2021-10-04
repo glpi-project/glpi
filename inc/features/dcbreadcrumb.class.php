@@ -234,7 +234,7 @@ trait DCBreadcrumb {
       if ($item->getFromDB($items_id)) {
          $breadcrumb = $item->getDcBreadcrumb();
          if (count($breadcrumb) > 0) {
-            return implode(' > ', array_reverse($item->getDcBreadcrumb()));
+            return implode(' &gt; ', array_reverse($item->getDcBreadcrumb()));
          }
       }
 
