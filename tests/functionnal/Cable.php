@@ -39,6 +39,16 @@ use Glpi\Socket;
 
 class Cable extends DbTestCase {
 
+   public function testAddSocket(){
+
+      $socket = getItemByTypeName( Socket::class, '_socket01' );
+      $location = getItemByTypeName( 'Location', '_location01' );
+      $expected = $socket->getName()." (".$location->getName().")";
+      $ret = \Dropdown::getDropdownName( 'glpi_sockets', $socket->getID());
+      $this->string($ret)->isIdenticalTo($expected);
+
+   }
+
    public function testAddNetworkPortThenSocket() {
       $this->login();
 

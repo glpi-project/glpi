@@ -32,6 +32,7 @@
 
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\SimpleCache;
+use Glpi\Socket;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 ini_set('display_errors', 'On');
@@ -346,7 +347,7 @@ function loadDataset() {
             'name'         => '_location02',
             'comment'      => 'Comment for location _sublocation02'
          ]
-      ], 'Socket' => [
+      ], Socket::class => [
          [
             'name'         => '_socket01',
             'locations_id' => '_location01',

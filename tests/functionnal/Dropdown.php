@@ -219,14 +219,7 @@ class Dropdown extends DbTestCase {
       $ret = \Dropdown::getDropdownName( 'glpi_suppliers', $supplier->getID(), true, true, false );
       $this->array($ret)->isIdenticalTo($expected);
 
-      ///////////
-      // Socket
-      $socket = getItemByTypeName( 'Socket', '_socket01' );
-      $location = getItemByTypeName( 'Location', '_location01' );
-      $expected = $socket->getName()." (".$location->getName().")";
-      $ret = \Dropdown::getDropdownName( 'glpi_sockets', $socket->getID());
-      $this->string($ret)->isIdenticalTo($expected);
-
+      
       // test of return with comments
       $expected = ['name'    => $expected,
                         'comment' => "Comment for socket _socket01"];
