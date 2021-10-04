@@ -66,7 +66,6 @@ if (isset($_REQUEST['newprofile'])) {
 
 // Manage entity change
 if (isset($_GET["active_entity"])) {
-   $_GET["active_entity"] = rtrim($_GET["active_entity"], 'r');
    if (!isset($_GET["is_recursive"])) {
       $_GET["is_recursive"] = 0;
    }
