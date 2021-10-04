@@ -29,7 +29,8 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-use Glpi\Socket;
+
+ use Glpi\Socket;
 
 include ('../inc/includes.php');
 

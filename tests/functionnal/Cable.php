@@ -39,7 +39,7 @@ use Glpi\Socket;
 
 class Cable extends DbTestCase {
 
-   public function testAddSocket(){
+   public function testAddSocket() {
 
       $socket = getItemByTypeName( Socket::class, '_socket01' );
       $location = getItemByTypeName( 'Location', '_location01' );

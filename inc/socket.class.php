@@ -36,7 +36,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use Glpi\Event;
 use Ajax;
 use Cable;
 use CommonDBChild;
@@ -44,10 +43,7 @@ use CommonDBTM;
 use CommonGLPI;
 use Dropdown;
 use Html;
-use HtmlTableBase;
 use HTMLTableCell;
-use HTMLTableHeader;
-use HTMLTableSuperHeader;
 use HTMLTableRow;
 use Location;
 use Log;
@@ -975,14 +971,11 @@ class Socket extends CommonDBChild {
     * @param $input array of values
    **/
    function executeAddMulti(array $input) {
-
       $this->check(-1, CREATE, $input);
       for ($i=$input["_from"]; $i<=$input["_to"]; $i++) {
          $input["name"] = $input["_before"].$i.$input["_after"];
          $this->add($input);
       }
-      Event::log(0, "dropdown", 5, "setup",
-               sprintf(__('%1$s adds several sockets'), $_SESSION["glpiname"]));
    }
 
 

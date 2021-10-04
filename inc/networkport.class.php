@@ -35,6 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\Socket;
+
 /**
  * NetworkPort Class
  *
