@@ -77,11 +77,19 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
             return false;
         }
 
-        return [
-         'email'     => $CFG_GLPI['admin_email'],
-         'name'      => $CFG_GLPI['admin_email_name'],
-         'language'  => $CFG_GLPI['language']
+        $admin = [
+            'email'     => $CFG_GLPI['admin_email'],
+            'name'      => $CFG_GLPI['admin_email_name'],
+            'language'  => $CFG_GLPI['language']
         ];
+
+        $user = new User();
+        if ($user->getFromDBbyEmail($CFG_GLPI['admin_email'])) {
+            $admin['users_id'] = $user->getID();
+            $admin['usertype'] = $user->fields['usertype'];
+        }
+
+        return $admin;
     }
 
 
@@ -98,11 +106,18 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
 
         foreach ($iterator as $row) {
             if (NotificationMailing::isUserAddressValid($row['admin_email'])) {
-                $admins[] = [
+                $admin = [
                  'language'  => $CFG_GLPI['language'],
                  'email'     => $row['admin_email'],
                  'name'      => $row['admin_email_name']
                 ];
+
+                $user = new User();
+                if ($user->getFromDBbyEmail($row['admin_email'])) {
+                    $admin['users_id'] = $user->getID();
+                    $admin['usertype'] = $user->fields['usertype'];
+                }
+                $admins[] = $admin;
             }
         }
 
