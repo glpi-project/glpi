@@ -53,6 +53,7 @@ var Dashboard = {
    cache_key: "",
 
    display: function(params) {
+      var that = this;
 
       // get passed options and merge it with default ones
       var options = (typeof params !== 'undefined')
@@ -273,6 +274,11 @@ var Dashboard = {
             chart[0].__chartist__.update();
          }
 
+         // Used after "resize.fittext" event to reset our custom width "trick"
+         // See computeWidth() function for more info on the trick
+         that.resetComputedWidth($('body').find('.big-number').find('.formatted-number'));
+         that.resetComputedWidth($('body').find('.big-number').find('.label'));
+
          // animate the number
          Dashboard.fitNumbers($(elem));
          Dashboard.animateNumbers($(elem));
@@ -474,6 +480,15 @@ var Dashboard = {
       // markdown textarea edited
       $(document).on('input', '.card.markdown textarea.markdown_content', function() {
          Dashboard.saveMarkdown($(this));
+      });
+
+      // FitText() add an event listener that recompute the font size of all
+      // "fittexted" elements of the page.
+      // This means we need to apply our max-width "trick" on this event
+      // See computeWidth() function for more info on the trick
+      $(window).on('resize.fittext', function() {
+         that.computeWidth($('body').find('.big-number').find('.formatted-number'));
+         that.computeWidth($('body').find('.big-number').find('.label'));
       });
    },
 
@@ -715,13 +730,13 @@ var Dashboard = {
 
 
    /**
-    * FitText() doesn't take the height of an item into consideration,
-    * only the width.
-    * This means that if you keep increasing the width without also increasing
-    * the height then your text will overflow at some point.
+    * FitText() only the width of an item into consideration (and ignore the height).
+    * This means that if you keep increasing the width of a card without also
+    * increasing the height then your text will overflow the card's height at
+    * some point.
     *
-    * This function fix this by reducing the available width to ensure a decent
-    * height / width ratio will be used by fitText()
+    * This function fix this by reducing the available width of the parent DOM
+    * element to ensure a decent height / width ratio will be used by fitText()
     *
     * @param {*} items
     */
@@ -745,7 +760,7 @@ var Dashboard = {
             var desired_width = parent_height / target_ratio;
             var desired_width_percent = (desired_width / parent_width) * 100;
 
-            // Keep helf the space since have two items to display (value and label)
+            // Keep helf the space since we have two items to display (value and label)
             var desired_width_percent_half = desired_width_percent / 2;
 
             // Apply the width
@@ -785,12 +800,10 @@ var Dashboard = {
          .find('.big-number')
          .find('.formatted-number').fitText(text_offset);
 
-      base_text_offset = text_offset - 0.65;
       parent_item
          .find('.summary-numbers')
          .find('.formatted-number').fitText(text_offset-0.65);
 
-      base_text_offset = text_offset - 0.2;
       parent_item
          .find('.summary-numbers')
          .find('.line .label').fitText(text_offset-0.2);
