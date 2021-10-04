@@ -48,15 +48,10 @@ $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
 
 $ckey    = 'entitytree_cache';
 $subckey = sha1($_SESSION['glpiactiveentities_string']);
-if ($GLPI_CACHE->has($ckey)) {
-   $all_entitiestree = $GLPI_CACHE->get($ckey);
-   if ($all_entitiestree !== null) {
-      $entitiestree = $all_entitiestree[$subckey] ?? [];
-      if (count($entitiestree) > 0) {
-         echo json_encode($entitiestree);
-         exit;
-      }
-   }
+$all_entitiestree = $GLPI_CACHE->get($ckey, []);
+if (array_key_exists($subckey, $all_entitiestree)) {
+   echo json_encode($all_entitiestree[$subckey]);
+   exit;
 }
 
 $entitiestree = [];
@@ -101,10 +96,6 @@ foreach ($_SESSION['glpiactiveprofile']['entities'] as $default_entity) {
    $entitiestree = array_merge($entitiestree, $entitytree);
 }
 
-$all_entitiestree = $GLPI_CACHE->get($ckey);
-if ($all_entitiestree === null) {
-   $all_entitiestree = [];
-}
 $all_entitiestree[$subckey] = $entitiestree;
 $GLPI_CACHE->set($ckey, $all_entitiestree);
 
