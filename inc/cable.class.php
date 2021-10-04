@@ -70,7 +70,7 @@ class Cable extends CommonDBTM {
    static function getAdditionalMenuLinks() {
       $links = [];
       if (static::canView()) {
-         $insts = "<i class=\"ti ti-line pointer\" title=\"" . Socket::getTypeName(Session::getPluralNumber()) .
+         $insts = "<i class=\"fas fa-ethernet pointer\" title=\"" . Socket::getTypeName(Session::getPluralNumber()) .
             "\"></i><span class=\"sr-only\">" . Socket::getTypeName(Session::getPluralNumber()). "</span>";
          $links[$insts] = Socket::getSearchURL(false);
 
@@ -644,7 +644,7 @@ class Cable extends CommonDBTM {
    }
 
    static function getIcon() {
-      return "fas fa-ethernet";
+      return "ti ti-line";
    }
 
 }
