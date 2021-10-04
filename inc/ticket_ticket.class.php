@@ -331,7 +331,7 @@ class Ticket_Ticket extends CommonDBRelation {
     *
     * @return integer
     */
-   public function countOpenChildren($pid) {
+   static public function countOpenChildren($pid) {
       global $DB;
 
       $result = $DB->request([
