@@ -46,7 +46,7 @@ if (Session::getCurrentInterface() == 'helpdesk') {
 
 $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
 
-$ckey    = 'entitytree_cache';
+$ckey    = 'entity_selector';
 $subckey = sha1($_SESSION['glpiactiveentities_string']);
 $all_entitiestree = $GLPI_CACHE->get($ckey, []);
 if (array_key_exists($subckey, $all_entitiestree)) {

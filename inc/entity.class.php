@@ -479,14 +479,14 @@ class Entity extends CommonTreeDropdown {
       $_SESSION['glpiactiveentities_string']              .= ",'".$this->fields['id']."'";
 
       // clean entity tree cache
-      $this->cleanCache();
+      $this->cleanEntitySelectorCache();
    }
 
    function post_updateItem($history = 1) {
       parent::post_updateItem($history);
 
       // clean entity tree cache
-      $this->cleanCache();
+      $this->cleanEntitySelectorCache();
    }
 
 
@@ -508,21 +508,21 @@ class Entity extends CommonTreeDropdown {
       );
 
       // clean entity tree cache
-      $this->cleanCache();
+      $this->cleanEntitySelectorCache();
    }
 
 
    /**
-    * Clean caches related to entities
+    * Clean caches related to entity selector.
     *
     * @since 10.0
     *
     * @return void
     */
-   function cleanCache() {
+   function cleanEntitySelectorCache() {
       global $GLPI_CACHE;
 
-      $GLPI_CACHE->delete('entitytree_cache');
+      $GLPI_CACHE->delete('entity_selector');
    }
 
    function rawSearchOptions() {
