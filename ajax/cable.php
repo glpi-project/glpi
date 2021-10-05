@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
- use Glpi\Socket;
+use Glpi\Socket;
 
 include ('../inc/includes.php');
 
@@ -48,7 +48,8 @@ switch ($action) {
          $_POST['itemtype']::dropdown(['name'                => $_POST['dom_name'],
                                        'rand'                => $_POST['dom_rand'],
                                        'display_emptychoice' => true,
-                                       'display_dc_position'  => true,
+                                       'display_dc_position' => true,
+                                       'width'               => '100%',
          ]);
       }
       break;

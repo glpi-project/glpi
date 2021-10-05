@@ -62,7 +62,7 @@ function refreshNetworkPortDropdown(itemtype, items_id, dom_to_update) {
    });
 }
 
-function refreshSocketDropdown(itemtype, items_id, socketmodels_id, dom_name, dom_to_update) {
+function refreshSocketDropdown(itemtype, items_id, socketmodels_id, dom_name) {
    // get networkport dropdown
    $.ajax({
       method: 'GET',
@@ -75,7 +75,8 @@ function refreshSocketDropdown(itemtype, items_id, socketmodels_id, dom_name, do
          dom_name: dom_name
       }
    }).success(function(html_data) {
-      $('#' + dom_to_update).empty();
-      $('#' + dom_to_update).append(html_data);
+      var parent_dom = $('select[name="'+dom_name+'"]').parent().parent();
+      parent_dom.empty();
+      parent_dom.append(html_data);
    });
 }

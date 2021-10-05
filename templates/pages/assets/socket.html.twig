@@ -1,0 +1,68 @@
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+
+{% block more_fields %}
+   <input type="hidden" name="itemtype" value="{{ params["itemtype"] }}">
+   <input type="hidden" name="items_id" value="{{ params["items_id"] }}">
+
+   {{ fields.nullField() }}
+
+   {{ fields.numberField(
+      'position',
+      item.fields['position'],
+      __('Position')
+   ) }}
+
+   {{ fields.dropdownField(
+      'SocketModel',
+      'socketmodels_id',
+      item.fields['socketmodels_id'],
+      'SocketModel'|itemtype_name,
+   ) }}
+
+   {% set wiring_side %}
+      {% do call('Glpi\\Socket::dropdownWiringSide', [
+         'wiring_side',
+         {
+            'value': item.fields['wiring_side'],
+         }
+      ]) %}
+   {% endset %}
+   {{ fields.htmlField(
+      'wiring_side',
+      wiring_side,
+      __('Wiring side'),
+   ) }}
+
+   {% set networkports %}
+      {% do call('Glpi\\Socket::showNetworkPortForm', [
+         item.fields['itemtype'],
+         item.fields['items_id'],
+         item.fields['networkports_id'],
+         params
+      ]) %}
+   {% endset %}
+   {{ fields.htmlField(
+      'networkports_id',
+      networkports,
+      _n('Network port', 'Network ports', get_plural_number()),
+   ) }}
+
+   {% set asset_breadcrumb %}
+      <span id="show_asset_breadcrumb">
+      {% if item.fields['itemtype']|length > 0 and item.fields['items_id']|length %}
+         {% set breadcrumb = call(item.fields['itemtype'] ~ '::getDcBreadcrumbSpecificValueToDisplay', [
+            item.fields['items_id'],
+            params
+         ]) %}
+         {{ breadcrumb|raw }}
+      {% endif %}
+      </span>
+   {% endset %}
+   {{ fields.htmlField(
+      'items_id',
+      asset_breadcrumb,
+      __('Position'),
+   ) }}
+{% endblock %}

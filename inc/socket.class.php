@@ -42,6 +42,7 @@ use CommonDBChild;
 use CommonDBTM;
 use CommonGLPI;
 use Dropdown;
+use Glpi\Application\View\TemplateRenderer;
 use Html;
 use HTMLTableCell;
 use HTMLTableRow;
@@ -183,65 +184,11 @@ class Socket extends CommonDBChild {
          $item->getFromDB($options['items_id']);
       }
 
-      $this->showFormHeader($options);
-
-      //if ($this->isNewID($ID)) {
-         echo "<input type='hidden' name='items_id' value='".$options['items_id']."'>";
-         echo "<input type='hidden' name='itemtype' value='".$options['itemtype']."'>";
-      //}
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Name')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "name");
-      echo "</td>";
-      echo "<td>".__('Position')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "position");
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".Location::getTypeName(0)."</td>";
-      echo "<td>";
-      Location::dropdown(['value' => $this->fields['locations_id']]);
-      echo "</td>";
-      echo "<td>".SocketModel::getTypeName(1)."</td>";
-      echo "<td>";
-      SocketModel::dropdown(['value' => $this->fields['socketmodels_id']]);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Wiring side')."</td>";
-      echo "<td>";
-      self::dropdownWiringSide('wiring_side', ['value' => $this->fields['wiring_side']]);
-      echo "</td>";
-      echo "<td>"._n('Network port', 'Network ports', Session::getPluralNumber())."</td>";
-      echo "<td>";
-      self::showNetworkPortForm($this->fields['itemtype'], $this->fields['items_id'], $this->fields['networkports_id'], $options);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Position')."</td>";
-      echo "<td>";
-      echo "<span id='show_asset_breadcrumb'>";
-      if (!empty($this->fields['itemtype']) && !empty($this->fields['items_id'])) {
-         if (method_exists($this->fields['itemtype'], 'getDcBreadcrumbSpecificValueToDisplay')) {
-            echo $this->fields['itemtype']::getDcBreadcrumbSpecificValueToDisplay($this->fields['items_id']);
-         }
-      }
-      echo "</span>";
-      echo "</td><td></td><td></td>";
-      echo "</tr>";
-
-      $options['canedit'] = Session::haveRight($itemtype::$rightname, UPDATE);
-      $this->showFormButtons($options);
-
+      TemplateRenderer::getInstance()->display('pages/assets/socket.html.twig', [
+         'item'   => $this,
+         'params' => $options,
+      ]);
       return true;
-
    }
 
    function prepareInputForAdd($input) {
