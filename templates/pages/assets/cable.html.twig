@@ -68,7 +68,7 @@
                      'itemtype_endpoint_' ~ side,
                      item.fields['connectortypes_id_' ~ side],
                      call('Glpi\\Socket::getSocketLinkTypes'),
-                     __('Asset'),
+                     _n('Asset', 'Assets', 1),
                      side_options|merge({
                         'add_field_html': dropdown_item
                      })
