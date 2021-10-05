@@ -2032,7 +2032,7 @@ class GLPIKanbanRights {
        * @since 9.5.0
        */
       this.filter = function() {
-         $(self.element).trigger('kanban:pre_filter');
+         $(self.element).trigger('kanban:pre_filter', self.filters);
          // Unhide all items in case they are no longer filtered
          self.clearFiltered();
          // Filter using built-in text filter (Check title)
@@ -2056,7 +2056,7 @@ class GLPIKanbanRights {
          $(self.element + ' .kanban-column').each(function(i, column) {
             self.updateColumnCount(column);
          });
-         $(self.element).trigger('kanban:post_filter');
+         $(self.element).trigger('kanban:post_filter', self.filters);
       };
 
       /**
