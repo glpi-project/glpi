@@ -64,7 +64,7 @@
         "true/punycode": "^2.1",
         "twig/string-extra": "^3.3",
         "twig/twig": "^3.3",
-        "wapmorgan/unified-archive": "^1.0"
+        "wapmorgan/unified-archive": "dev-master as 1.1.4-dev"
     },
     "require-dev": {
         "ext-xml": "*",
