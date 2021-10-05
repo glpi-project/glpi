@@ -133,7 +133,7 @@ class AgentTask extends CommonDBChild {
 
       if ($canedit) {
          echo "<div class='center firstbloc'>".
-            "<a class='vsubmit' href='".self::getFormURL()."?agents_id=$ID'>";
+            "<a class='btn btn-primary' href='".self::getFormURL()."?agents_id=$ID'>";
          echo __('Add a task');
          echo "</a></div>\n";
       }
@@ -195,36 +195,42 @@ class AgentTask extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='name'>".__('Name')."</label></td>";
-      echo "<td align='center'>";
-      Html::autocompletionTextField($this, 'name', ['size' => 40]);
+      echo "<td>";
+      echo Html::input('name', ['size' => 40]);
       echo "</td>";
       echo "<td>".Agent::getTypeName(1)."</td>";
-      echo "<td align='center'>";
+      echo "<td>";
       Agent::dropdown([
-         'value' => $_GET['agents_id'] ?? $this->fields['agents_id'] ?? null
+         'value' => $options['agents_id'] ?? $this->fields['agents_id'] ?? null
       ]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='deviceid'>".__('Start date')."</label></td>";
-      echo "<td align='center'>";
+      echo "<td>";
       Html::showDateField("start_date", ['value' => $this->fields['start_date']]);
       echo "</td>";
       echo "<td>".__('End date')."</td>";
-      echo "<td align='center'>";
+      echo "<td>";
       Html::showDateField("end_date", ['value' => $this->fields['end_date']]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='periodicity'>".__('Periodicity')."</label></td>";
-      echo "<td align='center'>";
+      echo "<td>";
       Dropdown::showNumber('periodicity', ['value' => $this->fields['periodicity']]);
       echo "</td>";
       echo "<td><label for='task_type'>".__('Task type')."</label></td>";
-      echo "<td align='center'>";
-      Dropdown::showFromArray('task_type', array_combine($CFG_GLPI['agenttasks_types'], $CFG_GLPI['agenttasks_types']), ['value' => $this->fields['task_type']]);
+      echo "<td>";
+
+      $types = [];
+      foreach ($CFG_GLPI['agenttasks_types'] as $ttype) {
+         $types[$ttype] = $ttype::getTypeName(1);
+      }
+
+      Dropdown::showFromArray('task_type', $types, ['value' => $this->fields['task_type']]);
       echo "</td>";
       echo "</tr>";
 

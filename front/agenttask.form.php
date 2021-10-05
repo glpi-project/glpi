@@ -101,6 +101,8 @@ if (isset($_POST["add"])) {
    //show form to add
    $task->display([
       'id'           => $_GET["id"],
-      'withtemplate' => $_GET["withtemplate"]]);
+      'withtemplate' => $_GET["withtemplate"],
+      'agents_id'    => $_GET['agents_id'] ?? null
+   ]);
    Html::footer();
 }

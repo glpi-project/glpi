@@ -117,7 +117,7 @@ class AgentTask_Credential extends CommonDBRelation {
          Dropdown::show(AgentCredential::class);
          echo "</td><td class='center' class='tab_bg_1'>";
          echo "<input type='hidden' name='agenttasks_id' value='$instID'>";
-         echo "<input type='submit' name='linkitem' value=\"" . _sx('button', 'Link') . "\" class='submit'>";
+         echo "<input type='submit' name='linkitem' value=\"" . _sx('button', 'Link') . "\" class='btn btn-primary'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
@@ -141,7 +141,7 @@ class AgentTask_Credential extends CommonDBRelation {
          Dropdown::showFromArray('type', Glpi\Agent\Credentials\AbstractCredential::getLabelledTypes());
          echo "</td><td class='center' class='tab_bg_1'>";
          echo "<input type='hidden' name='agenttasks_id' value='$instID'>";
-         echo "<input type='submit' name='additem' value=\"" . _sx('button', 'Add') . "\" class='submit'>";
+         echo "<input type='submit' name='additem' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
