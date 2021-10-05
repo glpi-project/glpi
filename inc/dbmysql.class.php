@@ -178,6 +178,11 @@ class DBmysql {
     */
    function connect($choice = null) {
       $this->connected = false;
+
+      // Do not trigger errors nor throw exceptions at PHP level
+      // as we already extract error and log while fetching result.
+      mysqli_report(MYSQLI_REPORT_OFF);
+
       $this->dbh = @new mysqli();
       if ($this->dbssl) {
           $this->dbh->ssl_set(
