@@ -760,7 +760,7 @@ var Dashboard = {
             var desired_width = parent_height / target_ratio;
             var desired_width_percent = (desired_width / parent_width) * 100;
 
-            // Keep helf the space since we have two items to display (value and label)
+            // Keep half the space since we have two items to display (value and label)
             var desired_width_percent_half = desired_width_percent / 2;
 
             // Apply the width
