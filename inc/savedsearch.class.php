@@ -590,16 +590,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
     * @return void
    **/
    function load($ID) {
-      global $CFG_GLPI;
-
       if (($params = $this->getParameters($ID)) === false) {
          return;
       }
-      if ($this->fields['itemtype'] === 'AllAssets') {
-         $url = $CFG_GLPI['root_doc'].'/front/allassets.php';
-      } else {
-         $url = Toolbox::getItemTypeSearchURL($this->fields['itemtype']);
-      }
+
+      $url = Toolbox::getItemTypeSearchURL($this->fields['itemtype']);
       $url .= "?".Toolbox::append_params($params);
 
       // keep last loaded to set an active state on saved search panel
@@ -621,7 +616,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
       if ($this->getFromDB($ID) === false) {
          return false;
       }
-      if (!class_exists($this->fields['itemtype']) && $this->fields['itemtype'] !== 'AllAssets') {
+      if (!class_exists($this->fields['itemtype'])) {
          return false;
       }
 
@@ -1178,8 +1173,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
          parse_str($this->getField('query'), $query_tab);
 
          $params = null;
-         if (class_exists($this->getField('itemtype'))
-             || ($this->getField('itemtype') == 'AllAssets')) {
+         if (class_exists($this->getField('itemtype'))) {
             $params = $this->prepareQueryToUse($this->getField('type'), $query_tab);
          }
 

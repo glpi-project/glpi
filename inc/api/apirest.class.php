@@ -36,6 +36,7 @@
 
 namespace Glpi\Api;
 
+use AllAssets;
 use GLPIUploadHandler;
 use stdClass;
 use Toolbox;
@@ -358,7 +359,7 @@ class APIRest extends API {
    private function getItemtype($index = 0, $recursive = true, $all_assets = false) {
 
       if (isset($this->url_elements[$index])) {
-         $all_assets = $all_assets && $this->url_elements[$index] == "AllAssets";
+         $all_assets = $all_assets && $this->url_elements[$index] == AllAssets::getType();
          $valid_class = Toolbox::isCommonDBTM($this->url_elements[$index])
             || Toolbox::isAPIDeprecated($this->url_elements[$index]
          );
@@ -374,7 +375,7 @@ class APIRest extends API {
 
             // AllAssets
             if ($all_assets) {
-               return "AllAssets";
+               return AllAssets::getType();
             }
 
             // Load namespace for deprecated

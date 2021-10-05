@@ -197,7 +197,9 @@ class State extends CommonTreeDropdown {
                         'criteria' => ['0' => ['value' => '$$$$'.$data['id'],
                                                          'searchtype' => 'contains',
                                                          'field' => 31]]];
-            echo "<a href='".$CFG_GLPI['root_doc']."/front/allassets.php?".Toolbox::append_params($opt, '&amp;')."'>".$data["completename"]."</a></td>";
+
+            $url = AllAssets::getSearchURL();
+            echo "<a href='$url?".Toolbox::append_params($opt, '&amp;')."'>".$data["completename"]."</a></td>";
 
             foreach ($state_type as $itemtype) {
                echo "<td class='numeric'>";

@@ -35,6 +35,10 @@ class AllAssets extends CommonGLPI
    public static function canView() {
       return Session::getCurrentInterface() == "central";
    }
+
+   public static function getTypeName($nb = 0) {
+      return _n('Asset', 'Assets', $nb);
+   }
 }
 
 

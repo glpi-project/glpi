@@ -195,8 +195,7 @@ class Search {
          } else {
             $fulltarget = $target."&".$parameters;
          }
-         $typename = class_exists($itemtype) ? $itemtype::getTypeName($data['data']['totalcount']) :
-                        ($itemtype == 'AllAssets' ? __('assets') : $itemtype);
+         $typename = class_exists($itemtype) ? $itemtype::getTypeName($data['data']['totalcount']) : $itemtype;
 
          echo "<div class='card'>";
          echo "<div class='card-body' id='map_container'>";
@@ -452,7 +451,7 @@ class Search {
       // Instanciate an object to access method
       $data['item'] = null;
 
-      if ($itemtype != 'AllAssets') {
+      if ($itemtype != AllAssets::getType()) {
          $data['item'] = getItemForItemtype($itemtype);
       }
 
@@ -607,7 +606,7 @@ class Search {
          $itemtable = $orig_table;
       }
 
-      // hack for AllAssets
+      // hack for AllAssets and ReservationItem
       if (isset($CFG_GLPI['union_search_type'][$data['itemtype']])) {
          $entity_restrict = true;
       } else {
@@ -805,7 +804,7 @@ class Search {
                if (($citem = getItemForItemtype($ctype))
                    && $citem->canView()) {
                   // State case
-                  if ($data['itemtype'] == 'AllAssets') {
+                  if ($data['itemtype'] == AllAssets::getType()) {
                      $query_num  = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']],
                                                $ctable, $tmpquery);
                      $query_num  = str_replace($data['itemtype'], $ctype, $query_num);
@@ -886,7 +885,7 @@ class Search {
                }
                $tmpquery = "";
                // AllAssets case
-               if ($data['itemtype'] == 'AllAssets') {
+               if ($data['itemtype'] == AllAssets::getType()) {
                   $tmpquery = $SELECT.", '$ctype' AS TYPE ".
                               $FROM.
                               $WHERE;
@@ -915,7 +914,7 @@ class Search {
                   // Replace 'AllAssets' by itemtype
                   // Use quoted value to prevent replacement of AllAssets in column identifiers
                   $tmpquery = str_replace(
-                     $DB->quoteValue('AllAssets'),
+                     $DB->quoteValue(AllAssets::getType()),
                      $DB->quoteValue($ctype),
                      $tmpquery
                   );
@@ -1585,7 +1584,7 @@ class Search {
          'posthref'            => $globallinkto,
          'showmassiveactions'  => ($search['showmassiveactions'] ?? true)
                                   && $data['display_type'] != self::GLOBAL_SEARCH
-                                  && ($itemtype == 'AllAssets'
+                                  && ($itemtype == AllAssets::getType()
                                     || count(MassiveAction::getAllMassiveActions($item, $is_deleted))
                                   ),
          'massiveactionparams' => $data['search']['massiveactionparams'] + [
@@ -2428,7 +2427,7 @@ JAVASCRIPT;
              && $p['mainform']) {
             // Instanciate an object to access method
             $item = null;
-            if ($request["itemtype"] != 'AllAssets') {
+            if ($request["itemtype"] != AllAssets::getType()) {
                $item = getItemForItemtype($request["itemtype"]);
             }
             if ($item && $item->maybeDeleted()) {
@@ -2512,7 +2511,7 @@ JAVASCRIPT;
 
       $used_itemtype = $request["itemtype"];
       // Force Computer itemtype for AllAssets to permit to show specific items
-      if ($request["itemtype"] == 'AllAssets') {
+      if ($request["itemtype"] == AllAssets::getType()) {
          $used_itemtype = 'Computer';
       }
 
@@ -3335,7 +3334,7 @@ JAVASCRIPT;
       $item   = null;
       $entity_check = true;
 
-      if ($itemtype != 'AllAssets') {
+      if ($itemtype != AllAssets::getType()) {
          $item = getItemForItemtype($itemtype);
          $entity_check = $item->isEntityAssign();
       }
@@ -3372,7 +3371,7 @@ JAVASCRIPT;
       $itemtable = self::getOrigTableName($itemtype);
       $item      = null;
       $mayberecursive = false;
-      if ($itemtype != 'AllAssets') {
+      if ($itemtype != AllAssets::getType()) {
          $item           = getItemForItemtype($itemtype);
          $mayberecursive = $item->maybeRecursive();
       }
@@ -4683,7 +4682,7 @@ JAVASCRIPT;
 
          if ((!isset($searchopt[$ID]['searchequalsonfield'])
               || !$searchopt[$ID]['searchequalsonfield'])
-            && ($itemtype == 'AllAssets'
+            && ($itemtype == AllAssets::getType()
                 || $table != $itemtype::getTable())) {
             $out = " $link (`$table`.`id`".$SEARCH;
          } else {
@@ -5514,7 +5513,7 @@ JAVASCRIPT;
       global $CFG_GLPI;
 
       $searchopt = &self::getOptions($itemtype);
-      if ($itemtype == 'AllAssets' || isset($CFG_GLPI["union_search_type"][$itemtype])
+      if (isset($CFG_GLPI["union_search_type"][$itemtype])
           && ($CFG_GLPI["union_search_type"][$itemtype] == $searchopt[$ID]["table"])) {
 
          $oparams = [];
@@ -6593,8 +6592,7 @@ JAVASCRIPT;
       //                                  searchtype =>
       //                                  value =>   (contains)
 
-      if (($itemtype != 'AllAssets')
-          && class_exists($itemtype)) {
+      if ($itemtype != AllAssets::getType() && class_exists($itemtype)) {
 
          // retrieve default values for current itemtype
          $itemtype_default_values = [];
@@ -6821,7 +6819,7 @@ JAVASCRIPT;
                self::$search[$itemtype] += NetworkPort::getSearchOptionsToAdd('networkport_types');
                break;
 
-            case 'AllAssets' :
+            case AllAssets::getType() :
                self::$search[$itemtype]['common']            = __('Characteristics');
 
                self::$search[$itemtype][1]['table']          = 'asset_types';
@@ -6947,32 +6945,32 @@ JAVASCRIPT;
          }
 
          if (in_array($itemtype, $CFG_GLPI["networkport_types"])
-             || ($itemtype == 'AllAssets')) {
+             || ($itemtype == AllAssets::getType())) {
             self::$search[$itemtype] += NetworkPort::getSearchOptionsToAdd($itemtype);
          }
 
          if (in_array($itemtype, $CFG_GLPI["contract_types"])
-             || ($itemtype == 'AllAssets')) {
+             || ($itemtype == AllAssets::getType())) {
             self::$search[$itemtype] += Contract::getSearchOptionsToAdd();
          }
 
          if (Document::canApplyOn($itemtype)
-             || ($itemtype == 'AllAssets')) {
+             || ($itemtype == AllAssets::getType())) {
             self::$search[$itemtype] += Document::getSearchOptionsToAdd();
          }
 
          if (Infocom::canApplyOn($itemtype)
-             || ($itemtype == 'AllAssets')) {
+             || ($itemtype == AllAssets::getType())) {
             self::$search[$itemtype] += Infocom::getSearchOptionsToAdd($itemtype);
          }
 
          if (in_array($itemtype, $CFG_GLPI["domain_types"])
-             || ($itemtype == 'AllAssets')) {
+             || ($itemtype == AllAssets::getType())) {
             self::$search[$itemtype] += Domain::getSearchOptionsToAdd($itemtype);
          }
 
          if (in_array($itemtype, $CFG_GLPI["appliance_types"])
-             || ($itemtype == 'AllAssets')) {
+             || ($itemtype == AllAssets::getType())) {
             self::$search[$itemtype] += Appliance::getSearchOptionsToAdd($itemtype);
          }
 

@@ -94,7 +94,7 @@ if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
          }
       }
 
-      if ($itemtype == 'AllAssets') {
+      if ($itemtype == AllAssets::getType()) {
          $curtype = $row['TYPE'];
          if (isset($points[$idx]['types'][$curtype])) {
             $points[$idx]['types'][$curtype]['count']++;

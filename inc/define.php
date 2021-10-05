@@ -361,7 +361,7 @@ $CFG_GLPI["contract_types"]               = array_merge(['Computer', 'Monitor', 
 
 
 $CFG_GLPI["union_search_type"]            = ['ReservationItem' => "reservation_types",
-                                                  'AllAssets'       => "asset_types"];
+                                                  AllAssets::getType()       => "asset_types"];
 
 $CFG_GLPI["systeminformations_types"]     = ['AuthLDAP', 'DBConnection', 'MailCollector',
                                                   'Plugin'];
