@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cc9bab1cc10e6d335b8db64205120d7e",
+    "content-hash": "0b132e25673ad5dd3d87688753c6739c",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -4698,16 +4698,16 @@
         },
         {
             "name": "wapmorgan/unified-archive",
-            "version": "1.1.3",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wapmorgan/UnifiedArchive.git",
-                "reference": "c597807eb06e6ca6a7cf221c99b372d1c026c46d"
+                "reference": "db021b4ba85e49447d15f546f5046c594c3c8ba3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wapmorgan/UnifiedArchive/zipball/c597807eb06e6ca6a7cf221c99b372d1c026c46d",
-                "reference": "c597807eb06e6ca6a7cf221c99b372d1c026c46d",
+                "url": "https://api.github.com/repos/wapmorgan/UnifiedArchive/zipball/db021b4ba85e49447d15f546f5046c594c3c8ba3",
+                "reference": "db021b4ba85e49447d15f546f5046c594c3c8ba3",
                 "shasum": ""
             },
             "require": {
@@ -4736,6 +4736,7 @@
                 "phpclasses/php-iso-file": "ISO support",
                 "wapmorgan/cab-archive": "CAB support"
             },
+            "default-branch": true,
             "bin": [
                 "bin/cam"
             ],
@@ -4790,9 +4791,9 @@
             ],
             "support": {
                 "issues": "https://github.com/wapmorgan/UnifiedArchive/issues",
-                "source": "https://github.com/wapmorgan/UnifiedArchive/tree/1.1.3"
+                "source": "https://github.com/wapmorgan/UnifiedArchive/tree/master"
             },
-            "time": "2021-05-02T20:26:18+00:00"
+            "time": "2021-10-29T13:15:02+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -5857,9 +5858,18 @@
             "time": "2015-12-17T08:42:14+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "wapmorgan/unified-archive",
+            "version": "9999999-dev",
+            "alias": "1.1.4-dev",
+            "alias_normalized": "1.1.4.0-dev"
+        }
+    ],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "wapmorgan/unified-archive": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
