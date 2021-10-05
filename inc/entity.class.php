@@ -1315,7 +1315,7 @@ class Entity extends CommonTreeDropdown {
       echo "</td>";
       echo "<td rowspan='7'>".__('Address')."</td>";
       echo "<td rowspan='7'>";
-      echo "<textarea cols='45' rows='8' name='address'>". $entity->fields["address"]."</textarea>";
+      echo "<textarea cols='45' rows='8' name='address' class='form-control'>". $entity->fields["address"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
