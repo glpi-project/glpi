@@ -274,7 +274,7 @@ class SoftwareLicense extends CommonTreeDropdown {
       }
 
       $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('generic_show_form.html.twig', [
+      TemplateRenderer::getInstance()->display('pages/management/softwarelicense.html.twig', [
          'item'   => $this,
          'params' => $options,
       ]);
