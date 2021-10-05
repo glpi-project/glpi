@@ -3389,13 +3389,15 @@ class CommonDBTM extends CommonGLPI {
     * @see https://glpi-developer-documentation.rtfd.io/en/master/devapi/search.html
    **/
    public final function searchOptions() {
-      static $options;
+      static $options = [];
 
-      if (isset($options)) {
-         return $options;
+      $type = $this->getType();
+
+      if (isset($options[$type])) {
+         return $options[$type];
       }
 
-      $options = [];
+      $options[$type] = [];
 
       foreach ($this->rawSearchOptions() as $opt) {
          $missingFields = [];
@@ -3421,19 +3423,19 @@ class CommonDBTM extends CommonGLPI {
          $optid = $opt['id'];
          unset($opt['id']);
 
-         if (isset($options[$optid])) {
-            $message = "Duplicate key $optid ({$options[$optid]['name']}/{$opt['name']}) in ".
+         if (isset($options[$type][$optid])) {
+            $message = "Duplicate key $optid ({$options[$type][$optid]['name']}/{$opt['name']}) in ".
                   get_class($this) . " searchOptions!";
 
             Toolbox::logError($message);
          }
 
          foreach ($opt as $k => $v) {
-            $options[$optid][$k] = $v;
+            $options[$type][$optid][$k] = $v;
          }
       }
 
-      return $options;
+      return $options[$type];
    }
 
 
