@@ -1588,12 +1588,12 @@ class MailCollector  extends CommonDBTM {
             $basename = $info->getBaseName($extension == '' ? '' : '.' . $extension);
 
             //replace basename with basename_(num) by basename_(num+1)
-            $new_basename = preg_replace("/(.*)_([0-9])*$/", "$1_".$i, $basename);
-            if ($new_basename !== $basename) {
-               $basename = $new_basename;
-            } else {
-               //the previous regex didn't found _num pattern, so add it with this one
-               $basename.= "_$i";
+            $matches = [];
+            preg_match("/(.*)_([0-9]+)$/", $basename, $matches);
+
+            if (isset($matches[2])) {
+               //replace basename with basename_(num) by basename_(num+1)
+               $basename = $matches[1] . '_' . ((int)$matches[2] + 1);
             }
 
             if ($extension != '') {
