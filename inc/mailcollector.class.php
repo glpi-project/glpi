@@ -1581,7 +1581,6 @@ class MailCollector  extends CommonDBTM {
          $filename = Toolbox::filename($filename);
 
          //try to avoid conflict between inline image and attachment
-         $i = 2;
          while (in_array($filename, $this->files)) {
             $info = new SplFileInfo($filename);
             $extension  = $info->getExtension();
@@ -1599,8 +1598,6 @@ class MailCollector  extends CommonDBTM {
             if ($extension != '') {
                $basename .= ".$extension";
             }
-
-            $i++;
          }
 
          if ($part->getSize() > $maxsize) {
