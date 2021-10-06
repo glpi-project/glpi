@@ -72,9 +72,6 @@
                   {{ entity_name }}
                </span>
 
-               {% set is_dbchild = item is instanceof('CommonDBChild') %}
-               <input type="hidden" name="is_recursive"
-                     value="{{ is_dbchild ? item.fields['is_recursive'] : '0' }}" />
                {% if item.maybeRecursive() %}
                   <span class="badge entity-name mx-1 px-2 py-3">
                      <label class="form-check mt-1">
@@ -82,17 +79,13 @@
                         {% set checked  = item.fields['is_recursive'] ? true : false %}
                         {% set comment  = __('Change visibility in child entities.') %}
 
-                        {% if is_dbchild %}
+                        {% if item is instanceof('CommonDBChild') %}
                            {% set comment  = __('Can՛t change this attribute. It՛s inherited from its parent.') %}
                            {% set disabled = true %}
-                        {% endif %}
-
-                        {% if not item.can(id, 'recursive') %}
+                        {% elseif not item.can(id, 'recursive') %}
                            {% set comment  = __('You are not allowed to change the visibility flag for child entities.') %}
                            {% set disabled = true %}
-                        {% endif %}
-
-                        {% if not item.canUnrecurs() %}
+                        {% elseif not item.canUnrecurs() %}
                            {% set comment  = __('Flag change forbidden. Linked items found.') %}
                            {% set disabled = true %}
                         {% endif %}
