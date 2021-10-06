@@ -90,6 +90,18 @@ class Sanitizer extends \GLPITestCase {
          'sanitized_value' => [null, "&#60;strong&#62;text with slashable chars \' \\n \\\"&#60;/strong&#62;", 3.2, 'string', true, '&#60;p&#62;my&#60;/p&#62;', 9798],
          'add_slashes'     => true,
       ];
+
+      // Namespaced itemtypes should not be sanitized
+      yield [
+         'value'           => 'Glpi\Dashboard\Dashboard',
+         'sanitized_value' => 'Glpi\Dashboard\Dashboard',
+         'add_slashes'     => true,
+      ];
+      yield [
+         'value'           => ['itemtype' => 'Glpi\Dashboard\Dashboard'],
+         'sanitized_value' => ['itemtype' => 'Glpi\Dashboard\Dashboard'],
+         'add_slashes'     => true,
+      ];
    }
 
    /**

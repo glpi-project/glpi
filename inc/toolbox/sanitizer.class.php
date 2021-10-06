@@ -58,17 +58,20 @@ class Sanitizer {
     */
    public static function sanitize($value, bool $db_escape = false) {
       if (is_array($value)) {
-         foreach ($value as $key => $val) {
-            if (is_string($val) && preg_match('/^[a-zA-Z0-9_\\\]+$/', $val) && class_exists($val)) {
-               // Do not sanitize values that corresponds to an existing class, as classnames are considered safe
-               continue;
-            }
+         return array_map(
+            function ($val) use ($db_escape) {
+               return self::sanitize($val, $db_escape);
+            },
+            $value
+         );
+      }
 
-            $value[$key] = self::sanitize($val, $db_escape);
-         }
+      if (!is_string($value)) {
          return $value;
       }
-      if (!is_string($value)) {
+
+      if (preg_match('/^[a-zA-Z0-9_\\\]+$/', $value) && class_exists($value)) {
+         // Do not sanitize values that corresponds to an existing class, as classnames are considered safe
          return $value;
       }
 
