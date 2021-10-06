@@ -1595,8 +1595,9 @@ class MailCollector  extends CommonDBTM {
                $basename = $matches[1] . '_' . ((int)$matches[2] + 1);
             }
 
+            $filename = $basename;
             if ($extension != '') {
-               $basename .= ".$extension";
+               $filename .= ".$extension";
             }
          }
 
