@@ -271,16 +271,6 @@ function _nx($ctx, $sing, $plural, $nb, $domain = 'glpi') {
  */
 function glpi_autoload($classname) {
    global $DEBUG_AUTOLOAD;
-   static $notfound = ['xStates'    => true,
-                            'xAllAssets' => true, ];
-   // empty classname or non concerted plugin or classname containing dot (leaving GLPI main treee)
-   if (empty($classname) || is_numeric($classname) || (strpos($classname, '.') !== false)) {
-      trigger_error(
-         sprintf('Trying to load a forbidden class name "%1$s"', $classname),
-         E_USER_ERROR
-      );
-      return false;
-   }
 
    if ($classname === 'phpCAS'
        && file_exists(stream_resolve_include_path("CAS.php"))) {
@@ -353,11 +343,6 @@ function glpi_autoload($classname) {
           && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
          $DEBUG_AUTOLOAD[] = $classname;
       }
-
-   } else if (!isset($notfound["x$classname"])) {
-      // trigger an error to get a backtrace, but only once (use prefix 'x' to handle empty case)
-      // trigger_error("GLPI autoload : file $dir$item.class.php not founded trying to load class '$classname'");
-      $notfound["x$classname"] = true;
    }
 }
 
