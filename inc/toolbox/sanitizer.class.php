@@ -59,8 +59,8 @@ class Sanitizer {
    public static function sanitize($value, bool $db_escape = false) {
       if (is_array($value)) {
          foreach ($value as $key => $val) {
-            if (preg_match('/^itemtype/', $key) && class_exists($val)) {
-               continue; // Do not escape itemtype that corresponds to an existing class, as classnames are considered safe
+            if (is_string($val) && class_exists($val)) {
+               continue; // Do values that corresponds to an existing class, as classnames are considered safe
             }
             $value[$key] = self::sanitize($val, $db_escape);
          }
