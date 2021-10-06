@@ -60,7 +60,7 @@ class Sanitizer {
       if (is_array($value)) {
          foreach ($value as $key => $val) {
             if (is_string($val) && class_exists($val)) {
-               continue; // Do values that corresponds to an existing class, as classnames are considered safe
+               continue; // Do not sanitize values that corresponds to an existing class, as classnames are considered safe
             }
             $value[$key] = self::sanitize($val, $db_escape);
          }
