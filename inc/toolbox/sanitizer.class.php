@@ -59,9 +59,8 @@ class Sanitizer {
    public static function sanitize($value, bool $db_escape = false) {
       if (is_array($value)) {
          foreach ($value as $key => $val) {
-            if (is_string($val) && preg_match('/^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff\\\]*$/', $val) && class_exists($val)) {
-               // Do not sanitize values that corresponds to an existing class, as classnames are considered safe.
-               // Regex is documented here: https://www.php.net/manual/en/language.variables.basics.php
+            if (is_string($val) && preg_match('/^[a-zA-Z0-9_\\\]+$/', $val) && class_exists($val)) {
+               // Do not sanitize values that corresponds to an existing class, as classnames are considered safe
                continue;
             }
 
