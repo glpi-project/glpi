@@ -630,7 +630,7 @@ class AuthLDAP extends DbTestCase {
       $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
       $this->boolean(\AuthLDAP::testLDAPConnection($ldap->getID()))->isTrue();
 
-      $this->resource($ldap->connect())->isOfType('ldap link');
+      $this->checkLdapConnection($ldap->connect());
    }
 
    /**
@@ -787,7 +787,7 @@ class AuthLDAP extends DbTestCase {
       $ldap = $this->ldap;
 
       $connection = $ldap->connect();
-      $this->resource($connection)->isOfType('ldap link');
+      $this->checkLdapConnection($connection);
 
       $cn = \AuthLDAP::getGroupCNByDn($connection, 'ou=not,ou=exists,dc=glpi,dc=org');
       $this->boolean($cn)->isFalse();
@@ -1148,7 +1148,7 @@ class AuthLDAP extends DbTestCase {
          ->string['user_dn']->isIdenticalTo('uid=brazil6,ou=people,ou=ldap3,dc=glpi,dc=org');
       $this->boolean($auth->user_present)->isFalse();
       $this->boolean($auth->user_dn)->isFalse();
-      $this->resource($auth->ldap_connection)->isOfType('ldap link');
+      $this->checkLdapConnection($auth->ldap_connection);
 
       //import user; then try to login
       $ldap = $this->ldap;
@@ -1186,7 +1186,7 @@ class AuthLDAP extends DbTestCase {
 
       $this->boolean($auth->user_present)->isTrue();
       $this->string($auth->user_dn)->isIdenticalTo($user->fields['user_dn']);
-      $this->resource($auth->ldap_connection)->isOfType('ldap link');
+      $this->checkLdapConnection($auth->ldap_connection);
 
       //change user login, and try again. Existing user should be updated.
       $this->boolean(
@@ -1219,7 +1219,7 @@ class AuthLDAP extends DbTestCase {
          ->string['user_dn']->isIdenticalTo('uid=brazil7test,ou=people,ou=ldap3,dc=glpi,dc=org');
 
       $this->boolean($auth->user_present)->isTrue();
-      $this->resource($auth->ldap_connection)->isOfType('ldap link');
+      $this->checkLdapConnection($auth->ldap_connection);
 
       //ensure duplicated DN on different authldaps_id does not prevent login
       $this->boolean(
@@ -1937,5 +1937,13 @@ class AuthLDAP extends DbTestCase {
          'users_id' => $users_id,
       ]);
       $this->array($gus)->hasSize(1);
+   }
+
+   private function checkLdapConnection($ldap_connection) {
+      if (version_compare(phpversion(), '8.1.0-dev', '<')) {
+         $this->resource($ldap_connection)->isOfType('ldap link');
+      } else {
+         $this->object($ldap_connection)->isInstanceOf('\LDAP\Connection');
+      }
    }
 }
