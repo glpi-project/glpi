@@ -152,6 +152,8 @@ abstract class ITILTemplate extends CommonDropdown {
 
       static $allowed_fields = [];
 
+      $itiltype = str_replace('Template', '', static::getType());
+
       // For integer value for index
       if ($withtypeandcategory) {
          $withtypeandcategory = 1;
@@ -165,13 +167,12 @@ abstract class ITILTemplate extends CommonDropdown {
          $withitemtype = 0;
       }
 
-      if (!isset($allowed_fields[$withtypeandcategory][$withitemtype])) {
-         $itiltype = str_replace('Template', '', static::getType());
+      if (!isset($allowed_fields[$itiltype][$withtypeandcategory][$withitemtype])) {
          $itil_object = new $itiltype;
          $itemstable = $itil_object->getItemsTable();
 
          // SearchOption ID => name used for options
-         $allowed_fields[$withtypeandcategory][$withitemtype] = [
+         $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype] = [
                      $itil_object->getSearchOptionIDByField('field', 'name',
                                                        $itil_object->getTable())   => 'name',
                      $itil_object->getSearchOptionIDByField('field', 'content',
@@ -198,39 +199,39 @@ abstract class ITILTemplate extends CommonDropdown {
              ];
 
          if ($withtypeandcategory) {
-            $allowed_fields[$withtypeandcategory][$withitemtype]
+            $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype]
                [$itil_object->getSearchOptionIDByField('field', 'completename',
                                                   'glpi_itilcategories')]  = 'itilcategories_id';
          }
 
          if ($withitemtype) {
-            $allowed_fields[$withtypeandcategory][$withitemtype]
+            $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype]
                [$itil_object->getSearchOptionIDByField('field', 'itemtype',
                                                   $itemstable)] = 'itemtype';
          }
 
-         $allowed_fields[$withtypeandcategory][$withitemtype]
+         $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype]
             [$itil_object->getSearchOptionIDByField('field', 'items_id',
                                                $itemstable)] = 'items_id';
 
          // Add validation request
-         $allowed_fields[$withtypeandcategory][$withitemtype][-2] = '_add_validation';
+         $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype][-2] = '_add_validation';
 
          // Add document
-         $allowed_fields[$withtypeandcategory][$withitemtype]
+         $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype]
                [$itil_object->getSearchOptionIDByField('field', 'name',
                                                   'glpi_documents')] = '_documents_id';
 
          // Add ITILTask (from task templates)
-         $allowed_fields[$withtypeandcategory][$withitemtype]
+         $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype]
                [$itil_object->getSearchOptionIDByField('field', 'name',
                                                   TaskTemplate::getTable())] = '_tasktemplates_id';
 
          //add specific itil type fields
-         $allowed_fields[$withtypeandcategory][$withitemtype] += static::getExtraAllowedFields($withtypeandcategory, $withitemtype);
+         $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype] += static::getExtraAllowedFields($withtypeandcategory, $withitemtype);
       }
 
-      return $allowed_fields[$withtypeandcategory][$withitemtype];
+      return $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype];
    }
 
    /**
