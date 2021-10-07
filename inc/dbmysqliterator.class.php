@@ -47,11 +47,24 @@ class DBmysqlIterator implements Iterator, Countable {
    private $sql;
    // Current result
    private $res = false;
-   // Current row
+
+   /**
+    * Total number of rows.
+    * @var int
+    */
+   private $count;
+
+   /**
+    * Current row value.
+    * @var mixed
+    */
    private $row;
 
-   // Current position
-   private $position = 0;
+   /**
+    * Current pointer position.
+    * @var int
+    */
+   private $position = null;
 
    //Known query operators
    private $allowed_operators = [
@@ -93,7 +106,8 @@ class DBmysqlIterator implements Iterator, Countable {
    function execute ($table, $crit = "", $debug = false) {
       $this->buildQuery($table, $crit, $debug);
       $this->res = ($this->conn ? $this->conn->query($this->sql) : false);
-      $this->position = 0;
+      $this->setPosition(0);
+      $this->count = $this->res instanceof \mysqli_result ? $this->conn->numrows($this->res) : 0;
       return $this;
    }
 
@@ -695,20 +709,16 @@ class DBmysqlIterator implements Iterator, Countable {
    }
 
    /**
-    * Reset rows parsing (go to first offset) & provide first row
+    * Rewind the Iterator to the first element
     *
-    * @return string[]|null fetch_assoc() of first results row
+    * @return void
     */
-   public function rewind() {
-      if ($this->res && $this->conn->numrows($this->res)) {
-         $this->conn->dataSeek($this->res, 0);
-      }
-      $this->position = 0;
-      return $this->next();
+   public function rewind(): void {
+      $this->setPosition(0);
    }
 
    /**
-    * Provide actual row
+    * Return the current element
     *
     * @return mixed
     */
@@ -717,35 +727,30 @@ class DBmysqlIterator implements Iterator, Countable {
    }
 
    /**
-    * Get current key value
+    * Return the key of the current element
     *
     * @return mixed
     */
    public function key() {
-      return (isset($this->row["id"]) ? $this->row["id"] : $this->position - 1);
+      return $this->row["id"] ?? $this->position;
    }
 
    /**
-    * Return next row of query results
+    * Move forward to next element
     *
-    * @return string[]|null fetch_assoc() of first results row
+    * @return void
     */
-   public function next() {
-      if (!($this->res instanceof \mysqli_result)) {
-         return false;
-      }
-      $this->row = $this->conn->fetchAssoc($this->res);
-      ++$this->position;
-      return $this->row;
+   public function next(): void {
+      $this->setPosition($this->position + 1);
    }
 
    /**
-    * @todo phpdoc...
+    * Checks if current position is valid
     *
-    * @return boolean
+    * @return bool
     */
-   public function valid() {
-      return $this->res instanceof \mysqli_result && $this->row;
+   public function valid(): bool {
+      return $this->res instanceof \mysqli_result && $this->position < $this->count;
    }
 
    /**
@@ -754,7 +759,7 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return integer
     */
    public function numrows() {
-      return ($this->res instanceof \mysqli_result ? $this->conn->numrows($this->res) : 0);
+      return $this->count;
    }
 
    /**
@@ -762,10 +767,39 @@ class DBmysqlIterator implements Iterator, Countable {
     *
     * @since 9.2
     *
-    * @return integer
+    * @return int
     */
-   public function count() {
-      return ($this->res instanceof \mysqli_result ? $this->conn->numrows($this->res) : 0);
+   public function count(): int {
+      return $this->count;
+   }
+
+   /**
+    * Change pointer position, and fetch corresponding row value.
+    *
+    * @param int $position
+    *
+    * @return void
+    */
+   private function setPosition(int $position): void {
+      if (!($this->res instanceof \mysqli_result)) {
+         // Result is not valid, nothing to do.
+         return;
+      }
+
+      if ($position === $this->position) {
+         // Position does not changed, nothing to do
+         return;
+      }
+
+      if ($position === 0 && $this->position !== null || $position !== $this->position + 1) {
+         //    position is set to 0 and was set previously (rewind case)
+         // OR position is not moved to next element
+         // => seek to requested position
+         $this->conn->dataSeek($this->res, 0);
+      }
+
+      $this->position = $position;
+      $this->row = $this->conn->fetchAssoc($this->res);
    }
 
    /**
