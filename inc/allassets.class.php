@@ -40,5 +40,3 @@ class AllAssets extends CommonGLPI
       return _n('Asset', 'Assets', $nb);
    }
 }
-
-
