@@ -155,7 +155,7 @@ class APIXmlrpc extends API {
          }
          if (!class_exists($this->parameters['itemtype'])
              || !is_subclass_of($this->parameters['itemtype'], 'CommonDBTM')
-             && $this->parameters['itemtype'] != AllAssets::getType()) {
+         ) {
             $this->returnError(__("itemtype not found or not an instance of CommonDBTM"),
                                400,
                                "ERROR_ITEMTYPE_NOT_FOUND_NOR_COMMONDBTM");
