@@ -505,7 +505,7 @@ class Config extends CommonDBTM {
       echo "<div class='center' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='4'>" . AllAssets::getTypeName(2s) . "</th></tr>";
+      echo "<tr><th colspan='4'>" . AllAssets::getTypeName(2) . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td width='30%'><label for='dropdown_auto_create_infocoms$rand'>". __('Enable the financial and administrative information by default')."</label></td>";
