@@ -2681,7 +2681,7 @@ class AuthLDAP extends CommonDBTM {
     * @param string  $tls_keyfile   TLS KEY file name within config directory (default '')
     * @param boolean $use_bind      do we need to do an ldap_bind? (true by default)
     *
-    * @return resource link to the LDAP server : false if connection failed
+    * @return resource|false|\LDAP\Connection link to the LDAP server : false if connection failed
     */
    static function connectToServer($host, $port, $login = "", $password = "",
                                    $use_tls = false, $deref_options = 0,
