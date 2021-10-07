@@ -97,4 +97,3 @@ if (isset($_POST["update"])) {
    $item->display(['id' => $_GET["id"]]);
    Html::footer();
 }
-

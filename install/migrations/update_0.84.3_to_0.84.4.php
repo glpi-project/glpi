@@ -163,4 +163,3 @@ function update0843to0844() {
 
    return $updateresult;
 }
-

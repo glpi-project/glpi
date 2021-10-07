@@ -94,4 +94,3 @@ if (isset($_GET['_in_modal'])) {
    $alias->display($_GET);
    Html::footer();
 }
-

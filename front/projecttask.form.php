@@ -92,4 +92,3 @@ if (isset($_POST["add"])) {
    $task->display($_GET);
    Html::footer();
 }
-

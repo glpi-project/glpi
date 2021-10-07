@@ -146,4 +146,3 @@ if (isset($_REQUEST['users_id_assign']) && ($_REQUEST['users_id_assign'] > 0)) {
       </a>";
    }
 }
-

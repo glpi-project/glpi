@@ -104,4 +104,3 @@ if (isset($_POST["add"])) {
    $instance->display($options);
    Html::footer();
 }
-

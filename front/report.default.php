@@ -41,4 +41,3 @@ Report::title();
 Report::showDefaultReport();
 
 Html::footer();
-
