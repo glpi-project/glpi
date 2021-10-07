@@ -53,6 +53,7 @@ var Dashboard = {
    cache_key: "",
 
    display: function(params) {
+      var that = this;
 
       // get passed options and merge it with default ones
       var options = (typeof params !== 'undefined')
@@ -273,6 +274,11 @@ var Dashboard = {
             chart[0].__chartist__.update();
          }
 
+         // Used after "resize.fittext" event to reset our custom width "trick"
+         // See computeWidth() function for more info on the trick
+         that.resetComputedWidth($('body').find('.big-number').find('.formatted-number'));
+         that.resetComputedWidth($('body').find('.big-number').find('.label'));
+
          // animate the number
          Dashboard.fitNumbers($(elem));
          Dashboard.animateNumbers($(elem));
@@ -474,6 +480,15 @@ var Dashboard = {
       // markdown textarea edited
       $(document).on('input', '.card.markdown textarea.markdown_content', function() {
          Dashboard.saveMarkdown($(this));
+      });
+
+      // FitText() add an event listener that recompute the font size of all
+      // "fittexted" elements of the page.
+      // This means we need to apply our max-width "trick" on this event
+      // See computeWidth() function for more info on the trick
+      $(window).on('resize.fittext', function() {
+         that.computeWidth($('body').find('.big-number').find('.formatted-number'));
+         that.computeWidth($('body').find('.big-number').find('.label'));
       });
    },
 
@@ -712,9 +727,63 @@ var Dashboard = {
       });
    },
 
+
+
+   /**
+    * FitText() only use the width of an item into consideration (and ignore the height).
+    * This means that if you keep increasing the width of a card without also
+    * increasing the height then your text will overflow the card's height at
+    * some point.
+    *
+    * This function fix this by reducing the available width of the parent DOM
+    * element to ensure a decent height / width ratio will be used by fitText()
+    *
+    * @param {*} items
+    */
+   computeWidth: function(items) {
+      items.each(function() {
+         // Compute parent dimension
+         var parent_width = $(this).parent().parent().width();
+         var parent_height = $(this).parent().parent().height();
+
+         // Only for "wide" cards
+         if (parent_width > parent_height) {
+            // FitText "ideal" ratio to avoid any overflow
+            // This value was found by using fitText() on a ~1600px wide span and
+            // checking the resulting text height.
+            // It probably wont be the perfect ratio for every possible texts
+            // length but it is a safe ratio to use for our calculation
+            var target_ratio = 0.35;
+
+            // Compute what our desired height would be if we want to match the
+            // target ratio
+            var desired_width = parent_height / target_ratio;
+            var desired_width_percent = (desired_width / parent_width) * 100;
+
+            // Keep half the space since we have two items to display (value and label)
+            var desired_width_percent_half = desired_width_percent / 2;
+
+            // Apply the width
+            $(this).css('width', desired_width_percent_half + '%');
+         }
+      });
+   },
+
+   /**
+    * Remove the custom width as it should only be used temporarily to 'trick'
+    * fitText into using a different fontSize and should not be applied to the
+    * actual text
+    *
+    * @param {*} items
+    */
+   resetComputedWidth: function(items) {
+      items.each(function() {
+         $(this).css('width', '100%');
+      });
+   },
+
    fitNumbers: function(parent_item) {
       parent_item = parent_item || $('body');
-
       var text_offset = 0.96;
 
       // responsive mode
@@ -723,6 +792,10 @@ var Dashboard = {
          text_offset = 1.8;
       }
 
+      // Set temporary max width to trick fitText and avoid overflow
+      this.computeWidth(parent_item.find('.big-number').find('.formatted-number'));
+      this.computeWidth(parent_item.find('.big-number').find('.label'));
+
       parent_item
          .find('.big-number')
          .find('.formatted-number').fitText(text_offset);
@@ -730,6 +803,7 @@ var Dashboard = {
       parent_item
          .find('.summary-numbers')
          .find('.formatted-number').fitText(text_offset-0.65);
+
       parent_item
          .find('.summary-numbers')
          .find('.line .label').fitText(text_offset-0.2);
@@ -737,6 +811,11 @@ var Dashboard = {
       parent_item
          .find('.big-number')
          .find('.label').fitText(text_offset - 0.2);
+
+      // Remove temporary width
+      this.resetComputedWidth(parent_item.find('.big-number').find('.formatted-number'));
+      this.resetComputedWidth(parent_item.find('.big-number').find('.label'));
+
    },
 
    animateNumbers: function(parent_item) {
