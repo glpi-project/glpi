@@ -2501,4 +2501,3 @@ function migrateComputerDevice($deviceType, $new_specif = null, $new_specif_type
    }
    $migration->migrationOneTable($table);
 }
-

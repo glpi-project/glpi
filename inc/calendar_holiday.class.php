@@ -319,4 +319,3 @@ class Calendar_Holiday extends CommonDBRelation {
       return $GLPI_CACHE->delete($this->getCalendarHolidaysCacheKey($calendars_id));
    }
 }
-

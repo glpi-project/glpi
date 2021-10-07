@@ -86,4 +86,3 @@ if (isset($results['messages']) && is_array($results['messages']) && count($resu
 Html::redirect($results['redirect']);
 
 Html::popFooter();
-

@@ -87,4 +87,3 @@ if (isset($_POST["add"])) {
                         'computers_id' => $_GET["computers_id"]]);
    Html::footer();
 }
-

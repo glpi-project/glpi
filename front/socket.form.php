@@ -148,5 +148,3 @@ if (isset($_POST["add"])) {
    $socket->display($options);
    Html::footer();
 }
-
-

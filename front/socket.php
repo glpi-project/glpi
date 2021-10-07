@@ -38,4 +38,3 @@ Html::header(Socket::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF
 Search::show('Socket');
 
 Html::footer();
-

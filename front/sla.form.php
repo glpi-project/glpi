@@ -78,4 +78,3 @@ if (isset($_POST["add"])) {
    $sla->display(['id' => $_GET["id"]]);
    Html::footer();
 }
-

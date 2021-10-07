@@ -68,4 +68,3 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
 }
 
 Html::footer();
-

@@ -146,4 +146,3 @@ if (isset($_GET['create_ticket'])) {
 }
 
 Html::helpFooter();
-

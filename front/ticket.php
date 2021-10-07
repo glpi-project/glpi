@@ -49,4 +49,3 @@ if (Session::getCurrentInterface() == "helpdesk") {
 } else {
    Html::footer();
 }
-

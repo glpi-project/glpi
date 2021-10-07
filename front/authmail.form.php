@@ -74,4 +74,3 @@ Html::header(AuthMail::getTypeName(1), $_SERVER['PHP_SELF'], "config", "auth", "
 $config_mail->display(['id' => $_GET["id"]]);
 
 Html::footer();
-
