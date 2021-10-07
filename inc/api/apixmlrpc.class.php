@@ -32,7 +32,6 @@
 
 namespace Glpi\Api;
 
-use AllAssets;
 use Toolbox;
 
 class APIXmlrpc extends API {
