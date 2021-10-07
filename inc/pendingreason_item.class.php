@@ -48,7 +48,7 @@ class PendingReason_Item extends CommonDBRelation
       return _n('Item', 'Items', $nb);
    }
 
-   public static function getForItem(CommonDBTM $item) {
+   public static function getForItem(CommonDBTM $item, bool $get_empty = false) {
       $em = new self();
       $find = $em->find([
          'itemtype' => $item::getType(),
@@ -56,6 +56,11 @@ class PendingReason_Item extends CommonDBRelation
       ]);
 
       if (!count($find)) {
+         if ($get_empty) {
+            $pending_item = new self();
+            $pending_item->getEmpty();
+         }
+
          return false;
       }
 

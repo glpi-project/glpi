@@ -148,7 +148,7 @@ class PendingReason extends CommonDropdown
 
       if ($long_label) {
          // Long default value label for forms with icons instead of labels
-         $label = __("Automatic follow-up disabled");
+         $label = __("Automatic follow-up dDisabled");
       }
 
       if ($value) {
@@ -157,10 +157,11 @@ class PendingReason extends CommonDropdown
          }
       }
 
-      $options['value'] = $value;
-      $options['emptylabel'] = $label;
+      $options['value']               = $value;
+      $options['emptylabel']          = $label;
       $options['display_emptychoice'] = true;
-      $options['display'] = false;
+      $options['display']             = false;
+      $options['width']               = '95%';
 
       if (empty($name)) {
          $name = "followup_frequency";
@@ -216,10 +217,11 @@ class PendingReason extends CommonDropdown
          $name = "followups_before_resolution";
       }
 
-      $options['value'] = $value;
-      $options['emptylabel'] = $label;
+      $options['value']               = $value;
+      $options['emptylabel']          = $label;
       $options['display_emptychoice'] = true;
-      $options['display'] = false;
+      $options['display']             = false;
+      $options['width']               = '95%';
 
       return Dropdown::showFromArray($name, $values, $options);
    }
