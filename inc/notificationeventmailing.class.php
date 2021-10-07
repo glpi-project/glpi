@@ -100,7 +100,8 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                'name'      => $row['admin_email_name']
             ];
             if ($usr->getFromDBbyEmail($row['admin_email'])) {
-               $admins[array_key_last($admins)]['users_id'] = $usr->getID();
+               //$admins[array_key_last($admins)]['users_id'] = $usr->getID();
+               $admins[count($admins)-1]['users_id'] = $usr->getID();
             };
          }
       }
