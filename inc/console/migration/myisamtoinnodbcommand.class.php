@@ -95,7 +95,7 @@ class MyIsamToInnoDbCommand extends AbstractCommand {
          }
       }
 
-      while ($table = $myisam_tables->next()) {
+      foreach ($myisam_tables as $table) {
          $table_name = DB::quoteName($table['TABLE_NAME']);
          $output->writeln(
             '<comment>' . sprintf(__('Migrating table "%s"...'), $table_name) . '</comment>',

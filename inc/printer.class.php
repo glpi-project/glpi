@@ -176,7 +176,7 @@ class Printer  extends CommonDBTM {
          ];
 
          $iterator = $DB->request($criteria);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $itemtable = getTableForItemType($data["itemtype"]);
             if ($item = getItemForItemtype($data["itemtype"])) {
                // For each itemtype which are entity dependant
@@ -272,7 +272,7 @@ class Printer  extends CommonDBTM {
          ]
       ]);
       $tab = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $tab['Computer'][$data['computers_id']] = $data['computers_id'];
       }
       return $tab;

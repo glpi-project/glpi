@@ -224,7 +224,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                         'FROM'   => Group_User::getTable(),
                         'WHERE'  => ['groups_id' => $actor['items_id']]
                      ]);
-                     while ($row = $group_iterator->next()) {
+                     foreach ($group_iterator as $row) {
                         $users[$row['users_id']] = $row['users_id'];
                      }
                   }
@@ -451,7 +451,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          'ORDERBY'   => ['plan_start_date', 'real_start_date']
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $tasks[] = $data;
       }
       return $tasks;
@@ -477,7 +477,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          'ORDERBY'   => ['plan_start_date', 'real_start_date']
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $tasks[] = $data;
       }
       return $tasks;
@@ -511,7 +511,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
       ]);
 
       $tasks = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $tasks[] = $data['tickets_id'];
       }
       return $tasks;
@@ -874,7 +874,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          'WHERE'  => ['projects_id' => $projects_id]
       ]);
       $time = 0;
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $time += static::getTotalEffectiveDuration($data['id']);
       }
       return $time;
@@ -897,7 +897,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          'WHERE'  => ['projects_id' => $projects_id]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          return $data['duration'];
       }
       return 0;
@@ -1292,7 +1292,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          $header .= "</tr>\n";
          echo $header;
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             Session::addToNavigateListItems('ProjectTask', $data['id']);
             $rand = mt_rand();
             echo "<tr class='tab_bg_2'>";
@@ -1754,7 +1754,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
       $task   = new self();
 
       if (count($iterator)) {
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             if ($task->getFromDB($data["id"])) {
                if (isset($data['notp_date'])) {
                   $data['plan_start_date'] = $data['notp_date'];

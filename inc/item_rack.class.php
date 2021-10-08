@@ -414,7 +414,7 @@ JAVASCRIPT;
       ];
 
       $rel = new self;
-      while ($row = $items->next()) {
+      foreach ($items as $row) {
          $rel->getFromDB($row['id']);
 
          $item = new $row['itemtype'];
@@ -533,7 +533,7 @@ JAVASCRIPT;
       $iterator = $DB->request([
          'FROM' => $this->getTable()
       ]);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $used[$row['itemtype']][] = $row['items_id'];
       }
       // find used pdu (not racked)
@@ -547,7 +547,7 @@ JAVASCRIPT;
             'is_reserved' => true
          ]
       ]);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $used_reserved[$row['itemtype']][] = $row['items_id'];
       }
 
@@ -555,7 +555,7 @@ JAVASCRIPT;
       $iterator = $DB->request([
          'FROM'   => Item_Enclosure::getTable()
       ]);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $used[$row['itemtype']][] = $row['items_id'];
       }
       echo Html::hidden(

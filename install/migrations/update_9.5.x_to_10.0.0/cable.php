@@ -205,7 +205,7 @@ if ($DB->tableExists('glpi_netpoints')) {
 
       $iterator = $DB->request($criteria);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $socket = new Socket();
          $input = [
             'name'            => $data['name'],

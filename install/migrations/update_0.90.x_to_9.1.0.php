@@ -547,7 +547,7 @@ function update090xto910() {
 
       $items_to_update = [];
       if (count($iterator)) {
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             if ($data['num'] == $itemtype_num) {
                $items_to_update[$data['tickettemplates_id']]['itemtype']
                   = isset($data['value']) ? $data['value'] : 0;
@@ -722,7 +722,7 @@ function update090xto910() {
       ]);
 
       if (count($displaypreferencesIterator)) {
-         while ($data = $displaypreferencesIterator->next()) {
+         foreach ($displaypreferencesIterator as $data) {
             $rank = $DB->request([
                'SELECT'    => ['MAX' => "rank AS max_rank"],
                'DISTINCT'  => true,
@@ -795,7 +795,7 @@ function update090xto910() {
       // Sla migration
       $slasIterator = $DB->request("glpi_slas");
       if (count($slasIterator)) {
-         while ($data = $slasIterator->next()) {
+         foreach ($slasIterator as $data) {
             $DB->insertOrDie("glpi_slts", [
                   'id'                 => $data['id'],
                   'name'               => Toolbox::addslashes_deep($data['name']),

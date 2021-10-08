@@ -201,7 +201,7 @@ class RuleRightCollection extends RuleCollection {
          'WHERE'           => ['glpi_rules.sub_type' => 'RuleRight']
       ]);
 
-      while ($param = $iterator->next()) {
+      foreach ($iterator as $param) {
          //Dn is alwsays retreived from ldap : don't need to ask for it !
          if ($param["value"] != "dn") {
             $params[] = Toolbox::strtolower($param["value"]);

@@ -983,7 +983,7 @@ class Contract extends CommonDBTM {
          'WHERE'        => ['contracts_id' => $this->fields['id']]
       ]);
       $out    = "";
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $out .= Dropdown::getDropdownName("glpi_suppliers", $data['id'])."<br>";
       }
       return $out;
@@ -1386,7 +1386,7 @@ class Contract extends CommonDBTM {
       $group  = '';
       $prev   = -1;
       $values = $p['toadd'];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if ($p['nochecklimit']
              || ($data["max_links_allowed"] == 0)
              || ($data["max_links_allowed"] > countElementsInTable('glpi_contracts_items',

@@ -870,7 +870,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
                                         sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
                                                 $item->fields["name"]));
 
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             $canedit = $this->canEdit($row["id"]);
             Session::addToNavigateListItems($this->getType(), $row["id"]);
             $bgcolor = self::getStatusColor($row['status']);
@@ -1344,7 +1344,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $restrict   = [];
 
       $res = User::getSqlSearchResult(false, $params['right'], $params['entity']);
-      while ($data = $res->next()) {
+      foreach ($res as $data) {
          $list[] = $data['id'];
       }
       if (count($list) > 0) {

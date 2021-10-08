@@ -105,7 +105,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
 
       $used  = [];
       $datas = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $used[$data["id"]] = $data["id"];
          $datas[$data["linkid"]]  = $data;
       }

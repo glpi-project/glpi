@@ -213,7 +213,7 @@ class Cartridge extends InventoryAsset
          'WHERE'  => ['printers_id' => $this->item->fields['id']]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $idtmp = $data['id'];
          unset($data['id']);
          $data = array_map('strtolower', $data);

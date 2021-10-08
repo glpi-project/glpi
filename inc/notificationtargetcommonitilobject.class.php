@@ -168,7 +168,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $criteria['WHERE']["$userlinktable.type"] = $type;
 
       $iterator = $DB->request($criteria);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          //Add the user email and language in the notified users list
          if ($data['notif']) {
             $author_email = UserEmail::getDefaultForUser($data['users_id']);
@@ -209,7 +209,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             'type'               => $type
          ]
       ]);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if ($this->isMailMode()) {
             if (NotificationMailing::isUserAddressValid($data['alternative_email'])) {
                $this->addToRecipientsList([
@@ -246,7 +246,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          //Add the group in the notified users list
          $this->addForGroup(0, $data['groups_id']);
       }
@@ -278,7 +278,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          //Add the group in the notified users list
          $this->addForGroup(2, $data['groups_id']);
       }
@@ -307,7 +307,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          //Add the group in the notified users list
          $this->addForGroup(1, $data['groups_id']);
       }
@@ -413,7 +413,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             ]
          ]);
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $this->addToRecipientsList($data);
          }
       }
@@ -445,7 +445,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $criteria['WHERE']["$validationtable.id"] = $options['validation_id'];
 
          $iterator = $DB->request($criteria);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $this->addToRecipientsList($data);
          }
       }
@@ -476,7 +476,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $criteria['WHERE']["$validationtable.id"] = $options['validation_id'];
 
          $iterator = $DB->request($criteria);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $this->addToRecipientsList($data);
          }
       }
@@ -511,7 +511,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $criteria['WHERE']["$followuptable.id"] = $options['followup_id'];
 
          $iterator = $DB->request($criteria);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $this->addToRecipientsList($data);
          }
       }
@@ -535,7 +535,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $criteria['WHERE'][User::getTable() . '.id'] = $options['task_users_id'];
 
          $iterator = $DB->request($criteria);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $this->addToRecipientsList($data);
          }
       } else if (isset($options['task_id'])) {
@@ -556,7 +556,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $criteria['WHERE']["$tasktable.id"] = $options['task_id'];
 
          $iterator = $DB->request($criteria);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $this->addToRecipientsList($data);
          }
       }
@@ -580,7 +580,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $criteria['WHERE'][User::getTable() . '.id'] = $options['task_users_id_tech'];
 
          $iterator = $DB->request($criteria);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $this->addToRecipientsList($data);
          }
       } else if (isset($options['task_id'])) {
@@ -601,7 +601,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $criteria['WHERE']["$tasktable.id"] = $options['task_id'];
 
          $iterator = $DB->request($criteria);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $this->addToRecipientsList($data);
          }
       }
@@ -638,7 +638,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             ],
             'WHERE'        => ["$tasktable.id" => $options['task_id']]
          ]);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $this->addForGroup(0, $data['groups_id_tech']);
          }
       }
@@ -657,7 +657,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $this->private_profiles[$data['profiles_id']] = $data['profiles_id'];
       }
 
@@ -669,7 +669,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          ]
       ]);
 
-      while ($profiles_data = $profiles_iterator->next()) {
+      foreach ($profiles_iterator as $profiles_data) {
          $this->central_profiles[$profiles_data['id']] = $profiles_data['id'];
       }
 
@@ -1394,7 +1394,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          if ($item->getType() == 'Ticket') {
             $addtodownloadurl = "%2526tickets_id=".$item->fields['id'];
          }
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             $tmp                      = [];
             $tmp['##document.id##']   = $row['id'];
             $tmp['##document.name##'] = $row['name'];

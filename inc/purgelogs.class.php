@@ -316,7 +316,7 @@ class PurgeLogs extends CommonDBTM {
             'FROM' => RefusedEquipment::getTable()
          ] + $month);
 
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             //purge each one
             $refused->delete($row, true);
          }

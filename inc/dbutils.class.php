@@ -476,7 +476,7 @@ final class DbUtils {
 
       $iterator = $DB->request($table, $criteria);
 
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $data[$row['id']] = $row;
       }
 
@@ -759,7 +759,7 @@ final class DbUtils {
          ]);
 
          if (count($iterator) > 0) {
-            while ($row = $iterator->next()) {
+            foreach ($iterator as $row) {
                $sons[$row['id']]    = $row['id'];
                $found[$row['id']]   = $row['id'];
             }
@@ -779,7 +779,7 @@ final class DbUtils {
             $found = [];
 
             if (count($iterator) > 0) {
-               while ($row = $iterator->next()) {
+               foreach ($iterator as $row) {
                   if (!isset($sons[$row['id']])) {
                      $sons[$row['id']]    = $row['id'];
                      $found[$row['id']]   = $row['id'];
@@ -848,7 +848,7 @@ final class DbUtils {
             'WHERE'  => ['id' => $items_id]
          ]);
 
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             if ($row['id'] > 0) {
                $rancestors = $row['ancestors_cache'];
                $parent     = $row[$parentIDfield];
@@ -1248,7 +1248,7 @@ final class DbUtils {
          'ORDER'  => 'name'
       ]);
 
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $id_found[$row['id']]['parent'] = $IDf;
          $id_found[$row['id']]['name']   = $row['name'];
          $found[$row['id']]              = $row['id'];
@@ -1267,7 +1267,7 @@ final class DbUtils {
          unset($found);
          $found = [];
 
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             if (!isset($id_found[$row['id']])) {
                $id_found[$row['id']]['parent'] = $row[$parentIDfield];
                $id_found[$row['id']]['name']   = $row['name'];
@@ -1347,7 +1347,7 @@ final class DbUtils {
          'FROM'   => $table
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          list($name, $level) = $this->getTreeValueName($table, $data['id']);
          $DB->update(
             $table, [

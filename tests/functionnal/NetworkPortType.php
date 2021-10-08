@@ -98,7 +98,7 @@ class NetworkPortType extends DbTestCase {
          ]
       ];
 
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $expected = array_shift($expecteds);
          $expected += [
             'id' => $row['id'],

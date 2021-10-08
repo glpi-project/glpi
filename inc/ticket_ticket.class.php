@@ -146,7 +146,7 @@ class Ticket_Ticket extends CommonDBRelation {
       ]);
       $tickets = [];
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if ($data['tickets_id_1'] != $ID) {
             $tickets[$data['id']] = [
                'link'         => $data['link'],

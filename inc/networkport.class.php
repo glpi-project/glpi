@@ -542,14 +542,14 @@ class NetworkPort extends CommonDBChild {
       ]);
 
       $aggregated_ports = [];
-      while ($row = $aggegate_iterator->next()) {
+      foreach ($aggegate_iterator as $row) {
          $port_iterator = $DB->request([
             'FROM'   => 'glpi_networkportaggregates',
             'WHERE'  => ['networkports_id' => $row['id']],
             'LIMIT'  => 1
          ]);
 
-         while ($prow = $port_iterator->next()) {
+         foreach ($port_iterator as $prow) {
             $aggregated_ports = array_merge(
                $aggregated_ports,
                importArrayFromDB($prow['networkports_id_list'])
@@ -710,7 +710,7 @@ class NetworkPort extends CommonDBChild {
       if (!count($ports_iterator)) {
          echo "<tr><th colspan='$colspan'>".__('No network port found')."</th></tr>";
       }
-      while ($row = $ports_iterator->next()) {
+      foreach ($ports_iterator as $row) {
          echo $netport->showPort(
             $row,
             $dprefs,
@@ -777,7 +777,7 @@ class NetworkPort extends CommonDBChild {
          echo "</tr>";
 
          //display row contents
-         while ($row = $mports_iterator->next()) {
+         foreach ($mports_iterator as $row) {
             echo $netport->showPort(
                $row,
                $dprefs,
@@ -1081,7 +1081,7 @@ class NetworkPort extends CommonDBChild {
                      break;
                   case 126: //IP address
                      $ips_iterator = $this->getIpsForPort('NetworkPort', $port['id']);
-                     while ($iprow = $ips_iterator->next()) {
+                     foreach ($ips_iterator as $iprow) {
                         $output .= '<br/>' . $iprow['name'];
                      }
                      break;
@@ -1093,7 +1093,7 @@ class NetworkPort extends CommonDBChild {
                            'items_id'  => $port['id']
                         ]
                      ]);
-                     while ($namerow = $names_iterator->next()) {
+                     foreach ($names_iterator as $namerow) {
                         $netname = new NetworkName();
                         $netname->getFromDB($namerow['id']);
                         $output .= '<br/>' . $netname->getLink(1);
@@ -1149,7 +1149,7 @@ class NetworkPort extends CommonDBChild {
       $ips_iterator = $this->getIpsForPort($port->getType(), $port->getID());
 
       $ips = '';
-      while ($ipa = $ips_iterator->next()) {
+      foreach ($ips_iterator as $ipa) {
          $ips .= ' ' . $ipa['name'];
       }
       if (!empty($ips)) {

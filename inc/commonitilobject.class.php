@@ -4796,7 +4796,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $iterator = $DB->request($criteria);
       $tab    = [];
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          $tab[] = [
             'id'   => $line['users_id'],
             'link' => formatUserName(
@@ -4862,7 +4862,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $iterator = $DB->request($criteria);
       $tab    = [];
 
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          $tab[] = [
             'id'   => $line['user_id'],
             'link' => formatUserName(
@@ -4939,7 +4939,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $iterator = $DB->request($criteria);
       $tab    = [];
 
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          $tab[] = [
             'id'   => $line['id'],
             'link' => $line['completename'],
@@ -5017,7 +5017,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $iterator = $DB->request($criteria);
       $tab    = [];
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          $tab[] = [
             'id'   => $line[$field],
             'link' => Dropdown::getDropdownName($table, $line[$field]),
@@ -5060,7 +5060,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $iterator = $DB->request($criteria);
       $tab    = [];
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          $tab[] = [
             'id'   => $line['priority'],
             'link' => static::getPriorityName($line['priority']),
@@ -5104,7 +5104,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $iterator = $DB->request($criteria);
       $tab    = [];
 
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          $tab[] = [
             'id'   => $line['urgency'],
             'link' => static::getUrgencyName($line['urgency']),
@@ -5148,7 +5148,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $iterator = $DB->request($criteria);
       $tab    = [];
 
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          $tab[] = [
             'id'   => $line['impact'],
             'link' => static::getImpactName($line['impact']),
@@ -5191,7 +5191,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $iterator = $DB->request($criteria);
       $tab    = [];
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          $tab[] = [
             'id'   => $line['requesttypes_id'],
             'link' => Dropdown::getDropdownName('glpi_requesttypes', $line['requesttypes_id']),
@@ -5243,7 +5243,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $iterator = $DB->request($criteria);
       $tab    = [];
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          $tab[] = [
             'id'   => $line['solutiontypes_id'],
             'link' => Dropdown::getDropdownName('glpi_solutiontypes', $line['solutiontypes_id']),
@@ -5317,7 +5317,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $iterator = $DB->request($criteria);
       $tab    = [];
 
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          $tab[] = [
             'id'   => $line['users_id'],
             'link' => formatUserName($line['users_id'], $line['name'], $line['realname'], $line['firstname'], $showlink),
@@ -5408,7 +5408,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $iterator = $DB->request($criteria);
       $tab    = [];
 
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          $tab[] = [
             'id'   => $line['users_id'],
             'link' => formatUserName($line['users_id'], $line['name'], $line['realname'], $line['firstname'], $showlink),
@@ -5476,7 +5476,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $iterator = $DB->request($criteria);
       $tab    = [];
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          $tab[] = [
             'id'   => $line['suppliers_id_assign'],
             'link' => '<a href="' . Supplier::getFormURLWithID($line['suppliers_id_assign']) . '">' . $line['name'] . '</a>',
@@ -5544,7 +5544,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $iterator = $DB->request($criteria);
       $tab    = [];
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          $tab[] = [
             'id'   => $line['id'],
             'link' => $line['completename'],
@@ -6477,7 +6477,7 @@ abstract class CommonITILObject extends CommonDBTM {
       ]);
 
       $users_keys = [];
-      while ($current_tu = $iterator->next()) {
+      foreach ($iterator as $current_tu) {
          $users_keys[$current_tu['users_id']][] = $current_tu['type'];
       }
 
@@ -7395,7 +7395,7 @@ abstract class CommonITILObject extends CommonDBTM {
       ] + getEntitiesRestrictCriteria();
 
       $iterator = $DB->request($request);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          // Create a fake item to get just the actors without loading all other information about items.
          $temp_item = new static;
          $temp_item->fields['id'] = $data['id'];
@@ -7430,7 +7430,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   ]
                ]);
                $all_members[$itemtype] = [];
-               while ($member_data = $all_items->next()) {
+               foreach ($all_items as $member_data) {
                   $team[] = $member_data;
                }
             }
@@ -7484,7 +7484,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   ]
                ])
             ]);
-            while ($link_data = $link_iterator->next()) {
+            foreach ($link_iterator as $link_data) {
                $links[$link_data['tickets_id']] = $link_data;
             }
             if ($links) {

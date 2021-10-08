@@ -578,7 +578,7 @@ class Profile extends CommonDBTM {
          'WHERE'  => self::getUnderActiveProfileRestrictCriteria()
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $under_profiles[$data['id']] = $data['id'];
       }
 
@@ -2907,7 +2907,7 @@ class Profile extends CommonDBTM {
       ]);
 
       //New rule -> get the next free ranking
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $profiles[$data['id']] = $data['name'];
       }
       Dropdown::showFromArray($p['name'], $profiles,
@@ -3021,7 +3021,7 @@ class Profile extends CommonDBTM {
       ]);
 
       $types = [];
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $types[$row['id']] = $row['name'];
       }
       return $types;

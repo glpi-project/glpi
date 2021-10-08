@@ -99,7 +99,7 @@ class DatabaseInstance extends CommonDBTM {
          ]
       ]);
 
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $dbs[$row['id']] = $row;
       }
 
@@ -506,7 +506,7 @@ class DatabaseInstance extends CommonDBTM {
          $header .= "</tr>";
          echo $header;
 
-         while ($row = $instances->next()) {
+         foreach ($instances as $row) {
             $item = new self();
             $item->getFromDB($row['id']);
             echo "<tr lass='tab_bg_1'>";

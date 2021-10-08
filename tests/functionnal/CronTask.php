@@ -200,7 +200,7 @@ class CronTask extends DbTestCase {
 
       $iterator = $DB->request(['FROM' => \CronTask::getTable()]);
 
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $itemtype = $row['itemtype'];
          $this->boolean(class_exists($itemtype))->isTrue(
             sprintf(

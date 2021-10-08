@@ -64,7 +64,7 @@ class Profile_RSSFeed extends CommonDBRelation {
          'WHERE'  => ['rssfeeds_id' => $rssfeeds_id]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $prof[$data['profiles_id']][] = $data;
       }
       return $prof;

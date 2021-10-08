@@ -69,7 +69,7 @@ if ($_POST['softwares_id'] > 0) {
    $number = count($iterator);
 
    $values = [];
-   while ($data = $iterator->next()) {
+   foreach ($iterator as $data) {
       $ID = $data['id'];
       $output = $data['name'];
 

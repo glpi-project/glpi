@@ -172,7 +172,7 @@ class RuleMatchedLog extends CommonDBTM {
          'START'  => 30,
          'LIMIT'  => '50000'
       ]);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $this->delete(['id'=>$data['id']]);
       }
    }

@@ -166,7 +166,7 @@ class QueuedNotification extends CommonDBTM {
             ]
          ];
          $iterator = $DB->request($criteria);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $this->delete(['id' => $data['id']], 1);
          }
       }
@@ -527,7 +527,7 @@ class QueuedNotification extends CommonDBTM {
          $iterator = $DB->request($query);
          if ($iterator->numRows() > 0) {
             $pendings[$mode] = [];
-            while ($row = $iterator->next()) {
+            foreach ($iterator as $row) {
                $pendings[$mode][] = $row;
             }
          }

@@ -73,7 +73,7 @@ class UserEmail  extends CommonDBChild {
          'LIMIT'  => 1
       ]);
 
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          return $row['email'];
       }
 
@@ -100,7 +100,7 @@ class UserEmail  extends CommonDBChild {
          ]
       ]);
 
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $emails[] = $row['email'];
       }
 

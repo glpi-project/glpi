@@ -756,7 +756,7 @@ class NotificationTarget extends CommonDBChild {
       }
 
       $iterator = $DB->request($criteria);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $this->addToRecipientsList($data);
       }
 
@@ -858,7 +858,7 @@ class NotificationTarget extends CommonDBChild {
          'ORDER'  => 'name'
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          //Add group
          $this->addTarget($data["id"], sprintf(__('%1$s: %2$s'), Group::getTypeName(1), $data["name"]),
                           Notification::GROUP_TYPE);
@@ -962,7 +962,7 @@ class NotificationTarget extends CommonDBChild {
          $criteria['WHERE'][User::getTable() . '.id'] = $id;
          $iterator = $DB->request($criteria);
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             //Add the user email and language in the notified users list
             $this->addToRecipientsList($data);
          }
@@ -1022,7 +1022,7 @@ class NotificationTarget extends CommonDBChild {
       $criteria['WHERE'][Profile_User::getTable() . '.profiles_id'] = $profiles_id;
 
       $iterator = $DB->request($criteria);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $this->addToRecipientsList($data);
       }
 
@@ -1441,7 +1441,7 @@ class NotificationTarget extends CommonDBChild {
                                         sprintf(__('%1$s = %2$s'), Group::getTypeName(1),
                                                 $group->getName()));
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             Session::addToNavigateListItems('Notification', $data['id']);
 
             if ($notif->getFromDB($data['id'])) {

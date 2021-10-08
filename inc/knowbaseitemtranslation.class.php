@@ -404,7 +404,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
          'WHERE'  => ['knowbaseitems_id' => $item->getID()]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $tab[$data['language']] = $data['language'];
       }
       return $tab;

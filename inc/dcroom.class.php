@@ -105,7 +105,7 @@ class DCRoom extends CommonDBTM {
          'FROM'   => Datacenter::getTable()
       ]);
       $datacenters_list = [];
-      while ($row = $datacenters->next()) {
+      foreach ($datacenters as $row) {
          $datacenters_list[$row['id']] = $row['name'];
       }
       Dropdown::showFromArray(
@@ -405,7 +405,7 @@ class DCRoom extends CommonDBTM {
 
          $dcroom = new self();
          echo $header;
-         while ($room = $rooms->next()) {
+         foreach ($rooms as $room) {
             $dcroom->getFromResultSet($room);
             echo "<tr lass='tab_bg_1'>";
             if ($canedit) {
@@ -448,7 +448,7 @@ class DCRoom extends CommonDBTM {
       ]);
 
       $filled = [];
-      while ($rack = $iterator->next()) {
+      foreach ($iterator as $rack) {
          if (preg_match('/(\d+),\s?(\d+)/', $rack['position'])) {
             $position = $rack['position'];
             if (empty($current) || $current != $position) {

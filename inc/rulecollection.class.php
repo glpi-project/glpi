@@ -228,7 +228,7 @@ class RuleCollection extends CommonDBTM {
       $active_tab = Session::getActiveTab($this->getType());
       $can_sort = !(Toolbox::startsWith($this->getType() . '$', $active_tab));
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          //For each rule, get a Rule object with all the criterias and actions
          $tempRule               = $this->getRuleClass();
          $tempRule->fields       = $data;
@@ -266,7 +266,7 @@ class RuleCollection extends CommonDBTM {
             $active_tab = Session::getActiveTab($this->getType());
             $can_sort = !(Toolbox::startsWith($this->getType() . '$', $active_tab));
 
-            while ($rule = $iterator->next()) {
+            foreach ($iterator as $rule) {
                //For each rule, get a Rule object with all the criterias and actions
                $tempRule = $this->getRuleClass();
 
@@ -702,7 +702,7 @@ class RuleCollection extends CommonDBTM {
             if ($diff != 0) {
                // Move several rules
                $iterator3 = $DB->request($criteria);
-               while ($data = $iterator3->next()) {
+               foreach ($iterator3 as $data) {
                   $data['ranking'] += $diff;
                   $result = $rule->update($data);
                }
@@ -806,7 +806,7 @@ class RuleCollection extends CommonDBTM {
                ['ranking'  => ['<=', $rank]]
             ]
          ]);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $data['ranking']--;
             $result = $rule->update($data);
          }
@@ -826,7 +826,7 @@ class RuleCollection extends CommonDBTM {
                ['ranking'  => ['<', $old_rank]]
             ]
          ]);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $data['ranking']++;
             $result = $rule->update($data);
          }
@@ -1686,7 +1686,7 @@ class RuleCollection extends CommonDBTM {
          ] + $limit
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $input[] = $data["criteria"];
       }
       return $input;
@@ -1913,7 +1913,7 @@ class RuleCollection extends CommonDBTM {
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
              $params[] = Toolbox::strtolower($data["criteria"]);
       }
       return $params;

@@ -153,7 +153,7 @@ class NotificationTargetProject extends NotificationTarget {
          ]
       ]);
       $user = new User;
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if ($user->getFromDB($data['items_id'])) {
             $this->addToRecipientsList(['language' => $user->getField('language'),
                                             'users_id' => $user->getField('id')]);
@@ -181,7 +181,7 @@ class NotificationTargetProject extends NotificationTarget {
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $this->addForGroup($manager, $data['items_id']);
       }
    }
@@ -205,7 +205,7 @@ class NotificationTargetProject extends NotificationTarget {
       ]);
 
       $contact = new Contact();
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if ($contact->getFromDB($data['items_id'])) {
             $this->addToRecipientsList(["email"    => $contact->fields["email"],
                                             "name"     => $contact->getName(),
@@ -234,7 +234,7 @@ class NotificationTargetProject extends NotificationTarget {
       ]);
 
       $supplier = new Supplier();
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if ($supplier->getFromDB($data['items_id'])) {
             $this->addToRecipientsList(["email"    => $supplier->fields["email"],
                                             "name"     => $supplier->getName(),
@@ -491,7 +491,7 @@ class NotificationTargetProject extends NotificationTarget {
       ]);
 
       $this->data["documents"] = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $tmp                       = [];
          $tmp['##document.id##']    = $data['id'];
          $tmp['##document.name##']  = $data['name'];

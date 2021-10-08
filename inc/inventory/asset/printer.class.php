@@ -225,7 +225,7 @@ class Printer extends NetworkEquipment
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $idtmp = $data['link_id'];
          unset($data['link_id']);
          $db_printers[$idtmp] = $data['id'];

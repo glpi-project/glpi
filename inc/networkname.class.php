@@ -343,7 +343,7 @@ class NetworkName extends FQDNLabel {
          ]
       ]);
 
-      while ($networkNameID = $iterator->next()) {
+      foreach ($iterator as $networkNameID) {
          self::unaffectAddressByID($networkNameID['id']);
       }
    }
@@ -651,7 +651,7 @@ class NetworkName extends FQDNLabel {
       $address              = new self();
 
       $iterator = $DB->request($criteria);
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          if ($address->getFromDB($line["id"])) {
 
             if ($createRow) {

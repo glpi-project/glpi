@@ -298,7 +298,7 @@ class DropdownTranslation extends CommonDBChild {
             ]
          ]);
 
-         while ($tmp = $iterator->next()) {
+         foreach ($iterator as $tmp) {
             $input2 = $input;
             $input2['items_id'] = $tmp['id'];
             $this->generateCompletename($input2, $add);
@@ -368,7 +368,7 @@ class DropdownTranslation extends CommonDBChild {
          echo "<th>".__("Language")."</th>";
          echo "<th>"._n('Field', 'Fields', 1)."</th>";
          echo "<th>".__("Value")."</th></tr>";
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $onhover = '';
             if ($canedit) {
                $onhover = "style='cursor:pointer'
@@ -518,7 +518,7 @@ class DropdownTranslation extends CommonDBChild {
             ]
          ]);
          if (count($iterator) > 0) {
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $used[$data['field']] = $data['field'];
             }
          }
@@ -698,7 +698,7 @@ class DropdownTranslation extends CommonDBChild {
          ]
       ]);
       $data = [];
-      while ($tmp = $iterator->next()) {
+      foreach ($iterator as $tmp) {
          $data[$tmp['id']] = $tmp;
       }
 
@@ -752,7 +752,7 @@ class DropdownTranslation extends CommonDBChild {
             'FROM'            => self::getTable(),
             'WHERE'           => ['language' => $language]
          ]);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $tab[$data['itemtype']][$data['field']] = $data['field'];
          }
       }

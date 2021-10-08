@@ -116,7 +116,7 @@ if (isset($_POST["send"])) {
          'ORDER'           => ['name']
       ]);
 
-      while ($ligne = $iterator->next()) {
+      foreach ($iterator as $ligne) {
          $Comp_num = $ligne['id'];
          $Contact  = $ligne['contact'];
          $Computer = $ligne['name'];
@@ -145,7 +145,7 @@ if (isset($_POST["send"])) {
       'ORDER'  => ['name']
    ]);
 
-   while ($ligne = $iterator->next()) {
+   foreach ($iterator as $ligne) {
       $Comp_num = $ligne['id'];
       $Computer = $ligne['name'];
       echo " <tr class='tab_find' onClick=\"fillidfield('Software',".$Comp_num.")\">";

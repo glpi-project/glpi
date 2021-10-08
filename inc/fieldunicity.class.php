@@ -208,7 +208,7 @@ class FieldUnicity extends CommonDropdown {
 
       $current_entity = false;
       $return         = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          //First row processed
          if (!$current_entity) {
             $current_entity = $data['entities_id'];
@@ -572,7 +572,7 @@ class FieldUnicity extends CommonDropdown {
             'ORDERBY'   => 'cpt DESC'
          ]);
          $results = [];
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             if ($data['cpt'] > 1) {
                $results[] = $data;
 

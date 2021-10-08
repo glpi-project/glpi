@@ -101,7 +101,7 @@ class Calendar_Holiday extends CommonDBRelation {
       $numrows = count($iterator);
       $holidays = [];
       $used     = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $holidays[$data['id']] = $data;
          $used[$data['id']]     = $data['id'];
       }

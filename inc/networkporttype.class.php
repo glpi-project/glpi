@@ -167,7 +167,7 @@ class NetworkPortType extends CommonDropdown {
          ]);
 
          $import_types = [];
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             $import_types[$row['value_decimal']] = $row;
          }
          $GLPI_CACHE->set('glpi_inventory_ports_types', $import_types);

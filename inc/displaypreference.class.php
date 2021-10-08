@@ -127,7 +127,7 @@ class DisplayPreference extends CommonDBTM {
       $default_prefs = [];
       $user_prefs = [];
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if ($data["users_id"] != 0) {
             $user_prefs[] = $data["num"];
          } else {
@@ -160,7 +160,7 @@ class DisplayPreference extends CommonDBTM {
       ]);
 
       if (count($iterator)) {
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             unset($data["id"]);
             $data["users_id"] = $input["users_id"];
             $this->fields     = $data;
@@ -358,7 +358,7 @@ class DisplayPreference extends CommonDBTM {
 
          $i = 0;
          if ($numrows) {
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                if (($data["num"] !=1) && isset($searchopt[$data["num"]])) {
                   echo "<tr>";
                   echo "<td>";
@@ -511,7 +511,7 @@ class DisplayPreference extends CommonDBTM {
       $i = 0;
 
       if ($numrows) {
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
 
             if (($data["num"] != 1)
                 && isset($searchopt[$data["num"]])) {
@@ -620,7 +620,7 @@ class DisplayPreference extends CommonDBTM {
          echo Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          echo "</th>";
          echo "<th colspan='2'>"._n('Type', 'Types', 1)."</th></tr>";
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             echo "<tr class='tab_bg_1'><td width='10'>";
             Html::showMassiveActionCheckBox(__CLASS__, $data["itemtype"]);
             echo "</td>";

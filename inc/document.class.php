@@ -1348,7 +1348,7 @@ class Document extends CommonDBTM {
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if (preg_match(Sanitizer::unsanitize($data['ext'])."i", $ext, $results) > 0) {
             return Toolbox::strtoupper($ext);
          }
@@ -1415,7 +1415,7 @@ class Document extends CommonDBTM {
       }
 
       $values = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $values[$data['id']] = $data['name'];
       }
       $rand = mt_rand();
@@ -1622,7 +1622,7 @@ class Document extends CommonDBTM {
 
       $nb = 0;
       if (count($iterator)) {
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             $doc = new Document();
             $doc->delete(['id' => $row['id']], true);
             ++$nb;

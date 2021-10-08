@@ -50,7 +50,7 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget {
       ]);
 
       if ($iterator->numRows()) {
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             if (strpos($row['event'], 'alert_') !== false) {
                $search = new SavedSearch();
                $search->getFromDB(str_replace('alert_', '', $row['event']));

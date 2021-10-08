@@ -599,7 +599,7 @@ class MailCollector extends DbTestCase {
       $this->integer(count($iterator))->isIdenticalTo(count($not_imported_specs));
 
       $not_imported_values = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $not_imported_values[] = [
             'subject' => $data['subject'],
             'from'    => $data['from'],
@@ -710,7 +710,7 @@ PLAINTEXT,
          $this->integer(count($iterator))->isIdenticalTo(count($actor_specs['tickets_names']));
 
          $names = [];
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $name = $data['name'];
 
             if (array_key_exists($name, $tickets_contents)) {
@@ -762,7 +762,7 @@ PLAINTEXT,
       );
 
       $filenames = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $filenames[] = $data['filename'];
       }
       $this->array($filenames)->isIdenticalTo($expected_docs);

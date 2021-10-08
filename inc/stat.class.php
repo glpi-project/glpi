@@ -114,7 +114,7 @@ class Stat extends CommonGLPI {
             ]);
 
             $val    = [];
-            while ($line = $iterator->next()) {
+            foreach ($iterator as $line) {
                $val[] = [
                   'id'     => $line['id'],
                   'link'   => $line['name']
@@ -147,7 +147,7 @@ class Stat extends CommonGLPI {
             $iterator = $DB->request($criteria);
 
             $val    = [];
-            while ($line = $iterator->next()) {
+            foreach ($iterator as $line) {
                $val[] = [
                   'id'     => $line['id'],
                   'link'   => $line['category']
@@ -180,7 +180,7 @@ class Stat extends CommonGLPI {
             $iterator = $DB->request($criteria);
 
             $val    = [];
-            while ($line = $iterator->next()) {
+            foreach ($iterator as $line) {
                $val[] = [
                   'id'     => $line['id'],
                   'link'   => $line['location']
@@ -250,7 +250,7 @@ class Stat extends CommonGLPI {
                   'ORDER'  => 'designation'
                ]);
 
-               while ($line = $iterator->next()) {
+               foreach ($iterator as $line) {
                   $val[] = [
                      'id'     => $line['id'],
                      'link'   => $line['designation']
@@ -278,7 +278,7 @@ class Stat extends CommonGLPI {
                $iterator = $DB->request($criteria);
 
                $val    = [];
-               while ($line = $iterator->next()) {
+               foreach ($iterator as $line) {
                   $val[] = [
                      'id'     => $line['id'],
                      'link'   => $line[$field]
@@ -1322,7 +1322,7 @@ class Stat extends CommonGLPI {
       }
 
       $iterator = $DB->request($criteria);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $date             = $row['date_unix'];
          //$visites = round($row['total_visites']);
          $entrees["$date"] = $row['total_visites'];

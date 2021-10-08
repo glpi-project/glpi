@@ -262,7 +262,7 @@ class SoftwareVersion extends CommonDBChild {
       $iterator = $DB->request($criteria);
 
       $values = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $ID     = $data['id'];
          $output = $data['name'];
 

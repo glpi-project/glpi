@@ -405,7 +405,7 @@ class NetworkPortInstantiation extends CommonDBChild {
             'WHERE'  => ['mac' => $relation]
          ]);
 
-         while ($element = $iterator->next()) {
+         foreach ($iterator as $element) {
             if ($netport->getFromDB($element['id'])) {
                if ($netport instanceof CommonDBChild) {
                   $macItemWithItems[] = array_merge(
@@ -533,7 +533,7 @@ class NetworkPortInstantiation extends CommonDBChild {
    var deviceAttributs = [];\n";
 
             $deviceNames = [0 => ""]; // First option : no network card
-            while ($availableDevice = $iterator->next()) {
+            foreach ($iterator as $availableDevice) {
                $linkid               = $availableDevice['link_id'];
                $deviceNames[$linkid] = $availableDevice['name'];
                if (isset($availableDevice['mac'])) {
@@ -742,7 +742,7 @@ class NetworkPortInstantiation extends CommonDBChild {
                                                  count($iterator));
             $possible_ports[$array_element_name] = [];
 
-            while ($portEntry = $iterator->next()) {
+            foreach ($iterator as $portEntry) {
                $macAddresses[$portEntry['id']] = $portEntry['mac'];
                if (!empty($portEntry['mac'])) {
                   $portEntry['name'] = sprintf(__('%1$s - %2$s'), $portEntry['name'],

@@ -203,7 +203,7 @@ class Peripheral extends InventoryAsset
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $idtmp = $data['link_id'];
          unset($data['link_id']);
          $db_peripherals[$idtmp] = $data['id'];

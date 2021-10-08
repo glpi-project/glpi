@@ -186,7 +186,7 @@ if (count($all_criteria)) {
          echo "<th>".__('Start date')."</th>";
          echo "<th>".__('End date')."</th></tr>";
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             echo "<tr class='tab_bg_1'>";
             if ($data['itemname']) {
                echo "<td> ".$data['itemname']."</td>";

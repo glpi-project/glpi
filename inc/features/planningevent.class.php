@@ -516,7 +516,7 @@ trait PlanningEvent {
       $events_toadd = [];
 
       if (count($iterator)) {
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             if ($event_obj->getFromDB($data["id"]) && $event_obj->canViewItem()) {
                $key = $data["begin"].
                       "$$".$itemtype.

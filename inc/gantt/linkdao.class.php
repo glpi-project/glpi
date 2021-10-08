@@ -50,7 +50,7 @@ class LinkDAO {
 
       $ids = implode(',', $ids);
       $iterator = $tasklink->getFromDBForItemIDs($ids);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          array_push($links, $this->populateFromDB($data));
       }
 

@@ -222,7 +222,7 @@ class Lock extends CommonGLPI {
             }
          }
 
-         while ($row = $locked_iterator->next()) {
+         foreach ($locked_iterator as $row) {
             echo "<tr class='tab_bg_1'>";
             echo "<td class='center' width='10'>";
             if ($lockedfield->can($row['id'], UPDATE) || $lockedfield->can($row['id'], PURGE)) {
@@ -283,7 +283,7 @@ class Lock extends CommonGLPI {
       Html::showCheckbox(['criterion' => ['tag_for_massive' => 'select_'.Software::getType()]]);
       echo "</th>";
       echo "<th>".Software::getTypeName(Session::getPluralNumber())."</th></tr>\n";
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          echo "<tr class='tab_bg_1'>";
 
          echo "<td class='center' width='10'>";
@@ -335,7 +335,7 @@ class Lock extends CommonGLPI {
       Html::showCheckbox(['criterion' => ['tag_for_massive' => 'select_'.SoftwareLicense::getType()]]);
       echo "</th>";
       echo "<th>".SoftwareLicense::getTypeName(Session::getPluralNumber())."</th></tr>\n";
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          echo "<tr class='tab_bg_1'>";
 
          echo "<td class='center' width='10'>";
@@ -501,7 +501,7 @@ class Lock extends CommonGLPI {
                ]
             ]);
 
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                echo "<tr class='tab_bg_1'>";
 
                echo "<td class='center' width='10'>";

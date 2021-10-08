@@ -150,7 +150,7 @@ class OperatingSystem extends InventoryAsset
             ]
          ]);
 
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             $ios->delete($row['id'], true);
          }
       }

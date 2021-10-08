@@ -361,7 +361,7 @@ class NetworkPort extends InventoryAsset
          ]
       ]);
 
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $db_vlans[$row['id']] = $row;
       }
 
@@ -390,7 +390,7 @@ class NetworkPort extends InventoryAsset
       $vlans_iterator = $DB->request([
          'FROM'   => \Vlan::getTable()
       ]);
-      while ($row = $vlans_iterator->next()) {
+      foreach ($vlans_iterator as $row) {
          $db_vlans[$row['name'] . '|' . $row['tag']] = $row['id'];
       }
 

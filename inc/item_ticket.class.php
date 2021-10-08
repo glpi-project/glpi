@@ -441,7 +441,7 @@ class Item_Ticket extends CommonItilObject_Item {
       echo $header_begin.$header_top.$header_end;
 
       $totalnb = 0;
-      while ($row = $types_iterator->next()) {
+      foreach ($types_iterator as $row) {
          $itemtype = $row['itemtype'];
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
@@ -452,7 +452,7 @@ class Item_Ticket extends CommonItilObject_Item {
             $nb = count($iterator);
 
             $prem = true;
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $name = $data["name"];
                if ($_SESSION["glpiis_ids_visible"]
                    || empty($data["name"])) {
@@ -603,7 +603,7 @@ class Item_Ticket extends CommonItilObject_Item {
                if ($nb > 0) {
                   $type_name = $item->getTypeName($nb);
 
-                  while ($data = $iterator->next()) {
+                  foreach ($iterator as $data) {
                      if (!isset($already_add[$itemtype]) || !in_array($data["id"], $already_add[$itemtype])) {
                         $output = $data[$item->getNameField()];
                         if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
@@ -654,7 +654,7 @@ class Item_Ticket extends CommonItilObject_Item {
             $devices = [];
             $groups  = [];
             if (count($iterator)) {
-               while ($data = $iterator->next()) {
+               foreach ($iterator as $data) {
                   $a_groups                     = getAncestorsOf("glpi_groups", $data["groups_id"]);
                   $a_groups[$data["groups_id"]] = $data["groups_id"];
                   $groups = array_merge($groups, $a_groups);
@@ -685,7 +685,7 @@ class Item_Ticket extends CommonItilObject_Item {
                         if (!isset($already_add[$itemtype])) {
                            $already_add[$itemtype] = [];
                         }
-                        while ($data = $iterator->next()) {
+                        foreach ($iterator as $data) {
                            if (!in_array($data["id"], $already_add[$itemtype])) {
                               $output = '';
                               if (isset($data["name"])) {
@@ -756,7 +756,7 @@ class Item_Ticket extends CommonItilObject_Item {
                      if (!isset($already_add['Software'])) {
                         $already_add['Software'] = [];
                      }
-                     while ($data = $iterator->next()) {
+                     foreach ($iterator as $data) {
                         if (!in_array($data["id"], $already_add['Software'])) {
                            $output = sprintf(__('%1$s - %2$s'), $type_name, $data["name"]);
                            $output = sprintf(__('%1$s (%2$s)'), $output,
@@ -819,7 +819,7 @@ class Item_Ticket extends CommonItilObject_Item {
                   $iterator = $DB->request($criteria);
                   if (count($iterator)) {
                      $type_name = $item->getTypeName();
-                     while ($data = $iterator->next()) {
+                     foreach ($iterator as $data) {
                         if (!in_array($data["id"], $already_add[$itemtype])) {
                            $output = $data["name"];
                            if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
@@ -930,7 +930,7 @@ class Item_Ticket extends CommonItilObject_Item {
       }
 
       $output = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $item = getItemForItemtype($data['itemtype']);
          $output[$data['itemtype']."_".$data['id']] = $item->getTypeName()." - ".$data['name'];
       }

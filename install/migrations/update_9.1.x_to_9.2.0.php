@@ -1880,7 +1880,7 @@ Regards,',
       ]);
 
       $firmwares = [];
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          if (!isset($firmwares[$row['firmware']])) {
             $fw = new DeviceFirmware();
             if ($fw->getFromDBByCrit(['designation' => $DB->escape($row['firmware'])])) {
@@ -1910,7 +1910,7 @@ Regards,',
    if ($DB->tableExists('glpi_networkequipmentfirmwares')) {
       $mapping = [];
       $iterator = $DB->request('glpi_networkequipmentfirmwares');
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $fw = new DeviceFirmware();
          $id = $fw->add([
             'designation'              => $DB->escape($row['name']),
@@ -1923,7 +1923,7 @@ Regards,',
       }
 
       $iterator = $DB->request('glpi_networkequipments');
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          if (isset($mapping[$row['networkequipmentfirmwares_id']])) {
             $itemdevice = new Item_DeviceFirmware();
             $itemdevice->add([

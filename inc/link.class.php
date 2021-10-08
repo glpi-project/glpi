@@ -384,7 +384,7 @@ class Link extends CommonDBTM {
                   'glpi_networknames.itemtype'  => ['NetworkEquipment']
                ]
             ]);
-            while ($data2 = $iterator->next()) {
+            foreach ($iterator as $data2) {
                $ipmac['ip'.$data2['id']]['ip']  = $data2["ip"];
                $ipmac['ip'.$data2['id']]['mac'] = $item->getField('mac');
             }
@@ -434,7 +434,7 @@ class Link extends CommonDBTM {
                'glpi_networkports.itemtype'  => $item->getType()
             ]
          ]);
-         while ($data2 = $iterator->next()) {
+         foreach ($iterator as $data2) {
             $ipmac['ip'.$data2['id']]['ip']  = $data2["ip"];
             $ipmac['ip'.$data2['id']]['mac'] = $data2["mac"];
          }
@@ -471,7 +471,7 @@ class Link extends CommonDBTM {
          }
 
          $iterator = $DB->request($criteria);
-         while ($data2 = $iterator->next()) {
+         foreach ($iterator as $data2) {
             $ipmac['mac'.$data2['id']]['ip']  = '';
             $ipmac['mac'.$data2['id']]['mac'] = $data2["mac"];
          }
@@ -543,7 +543,7 @@ class Link extends CommonDBTM {
       echo "</th>";
       echo "</tr>";
       if (count($iterator)) {
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $links = self::getAllLinksFor($item, $data);
 
             foreach ($links as $link) {

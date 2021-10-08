@@ -1141,7 +1141,7 @@ class User extends CommonDBTM {
                ]);
 
                $groupuser = new Group_User();
-               while ($data =  $iterator->next()) {
+               foreach ($iterator as $data) {
 
                   if (in_array($data["groups_id"], $this->input["_groups"])) {
                      // Delete found item in order not to add it again
@@ -1359,7 +1359,7 @@ class User extends CommonDBTM {
                ]);
 
                $useremail = new UserEmail();
-               while ($data = $iterator->next()) {
+               foreach ($iterator as $data) {
                   // Do a case insensitive comparison as email may be stored with a different case
                   $i = array_search(strtolower($data["email"]), array_map('strtolower', $this->input["_emails"]));
                   if ($i !== false) {
@@ -1439,7 +1439,7 @@ class User extends CommonDBTM {
       ]);
       $group_fields = [];
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $group_fields[] = Toolbox::strtolower($data["ldap_field"]);
       }
       if (count($group_fields)) {
@@ -1469,7 +1469,7 @@ class User extends CommonDBTM {
                      'WHERE'  => ['ldap_group_dn' => Toolbox::addslashes_deep($v[$i]['ou'])]
                   ]);
 
-                  while ($group = $group_iterator->next()) {
+                  foreach ($group_iterator as $group) {
                      $this->fields["_groups"][] = $group['id'];
                   }
                }
@@ -1502,7 +1502,7 @@ class User extends CommonDBTM {
                      ]
                   ]);
 
-                  while ($group = $group_iterator->next()) {
+                  foreach ($group_iterator as $group) {
                      $this->fields["_groups"][] = $group['id'];
                   }
                }
@@ -1555,7 +1555,7 @@ class User extends CommonDBTM {
                'WHERE'  => ['ldap_group_dn' => Toolbox::addslashes_deep($result[$ldap_method["group_member_field"]])]
              ]);
 
-            while ($group = $iterator->next()) {
+            foreach ($iterator as $group) {
                $this->fields["_groups"][] = $group['id'];
             }
          }
@@ -3579,7 +3579,7 @@ JAVASCRIPT;
       ]);
 
       $groups = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $groups[$data['groups_id']] = $data['groups_id'];
       }
       return $groups;
@@ -3649,7 +3649,7 @@ JAVASCRIPT;
                      'glpi_groups_users.users_id'  => ['<>', Session::getLoginUserID()]
                   ]
                ]);
-               while ($data = $iterator->next()) {
+               foreach ($iterator as $data) {
                      $users[$data["id"]] = $data["id"];
                }
             }
@@ -3686,7 +3686,7 @@ JAVASCRIPT;
                      'glpi_groups_users.users_id'  => ['<>', Session::getLoginUserID()]
                   ]
                ]);
-               while ($data = $iterator->next()) {
+               foreach ($iterator as $data) {
                   $users[$data["id"]] = $data["id"];
                }
             }
@@ -4382,7 +4382,7 @@ JAVASCRIPT;
       $number = count($iterator);
 
       $group_where = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $group_where[$field_group][] = $data['groups_id'];
          $groups[$data["groups_id"]] = $data["name"];
       }
@@ -4419,7 +4419,7 @@ JAVASCRIPT;
 
             $type_name = $item->getTypeName();
 
-            while ($data = $item_iterator->next()) {
+            foreach ($item_iterator as $data) {
                $cansee = $item->can($data["id"], READ);
                $link   = $data["name"];
                if ($cansee) {
@@ -4499,7 +4499,7 @@ JAVASCRIPT;
 
                $type_name = $item->getTypeName();
 
-               while ($data = $group_iterator->next()) {
+               foreach ($group_iterator as $data) {
                   $nb++;
                   $cansee = $item->can($data["id"], READ);
                   $link   = $data["name"];

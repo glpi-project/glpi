@@ -155,7 +155,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
          $nb   = count($iterator) + $offset;
          $step = (($nb > 1000) ? 50 : (($nb > 20) ? floor(count($iterator) / 20) : 1));
 
-         while ($input = $iterator->next()) {
+         foreach ($iterator as $input) {
             if (!($i % $step)) {
                if (isCommandLine()) {
                   printf(__('%1$s - replay rules on existing database: %2$s/%3$s (%4$s Mio)')."\n",
@@ -197,7 +197,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
 
                if (count($same_iterator)) {
                   //Store all the software's IDs in an array
-                  while ($result = $same_iterator->next()) {
+                  foreach ($same_iterator as $result) {
                      $IDs[] = $result["id"];
                   }
                   //Replay dictionnary on all the software
@@ -373,7 +373,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
          'WHERE'  => ['softwares_id' => $ID]
       ]);
 
-      while ($version = $iterator->next()) {
+      foreach ($iterator as $version) {
          $input["version"] = addslashes($version["name"]);
          $old_version_name = $input["version"];
 
@@ -427,7 +427,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
          ]);
 
          $software = new Software();
-         while ($soft = $iterator->next()) {
+         foreach ($iterator as $soft) {
             $software->putInTrash($soft["id"], __('Software deleted by GLPI dictionary rules'));
          }
       }
@@ -486,7 +486,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                   'gcs_2.softwareversions_id'                           => $version_id
                ]
             ]);
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $DB->delete(
                   'glpi_items_softwareversions', [
                      'id' => $data['id']

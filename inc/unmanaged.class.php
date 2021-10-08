@@ -259,7 +259,7 @@ class Unmanaged extends CommonDBTM {
       ];
       $assets_id = $asset->add(Toolbox::addslashes_deep($asset_data));
 
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $row += [
             'items_id' => $assets_id,
             'itemtype' => $itemtype

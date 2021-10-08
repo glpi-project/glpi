@@ -159,7 +159,7 @@ class Peripheral extends CommonDBTM {
          ]
       ]);
       $tab = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $tab['Computer'][$data['computers_id']] = $data['computers_id'];
       }
       return $tab;

@@ -2805,7 +2805,7 @@ class Rule extends CommonDBTM {
 
       $iterator = $DB->request($query);
 
-      while ($rule = $iterator->next()) {
+      foreach ($iterator as $rule) {
          $affect_rule = new Rule();
          $affect_rule->getRuleWithCriteriasAndActions($rule["id"], 0, 1);
          $rules[]     = $affect_rule;
@@ -3031,7 +3031,7 @@ class Rule extends CommonDBTM {
          if (count($iterator) > 0) {
             $input['is_active'] = 0;
 
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $input['id'] = $data[$fieldid];
                $ruleitem->update($input);
             }

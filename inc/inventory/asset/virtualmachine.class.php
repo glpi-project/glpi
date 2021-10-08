@@ -192,7 +192,7 @@ class VirtualMachine extends InventoryAsset
          ]
       ]);
 
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $idtmp = $row['id'];
          unset($row['id']);
          $db_existing[$idtmp] = $row;
@@ -289,7 +289,7 @@ class VirtualMachine extends InventoryAsset
                'LIMIT'  => 1
             ]);
             $computers_vm_id = 0;
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $computers_vm_id = $data['id'];
             }
             if ($computers_vm_id == 0) {

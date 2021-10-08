@@ -651,7 +651,7 @@ class Software extends CommonDBTM {
       ]);
 
       $values = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $softwares_id          = $data["id"];
          $values[$softwares_id] = $data["name"];
       }
@@ -893,7 +893,7 @@ class Software extends CommonDBTM {
          echo "<th>"._n('Installation', 'Installations', Session::getPluralNumber())."</th>";
          echo "<th>".SoftwareLicense::getTypeName(Session::getPluralNumber())."</th></tr>";
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             echo "<tr class='tab_bg_2'>";
             echo "<td>".Html::getMassiveActionCheckBox(__CLASS__, $data["id"])."</td>";
             echo "<td><a href='".$link."?id=".$data["id"]."'>".$data["name"]."</a></td>";

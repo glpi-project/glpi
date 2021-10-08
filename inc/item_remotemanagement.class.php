@@ -164,7 +164,7 @@ class Item_RemoteManagement extends CommonDBChild {
          );
 
          $mgmt = new self();
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $mgmt->getFromResultSet($data);
             echo "<tr class='tab_bg_2'>";
 

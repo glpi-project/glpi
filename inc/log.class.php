@@ -337,7 +337,7 @@ class Log extends CommonDBTM {
       $iterator = $DBread->request($query);
 
       $changes = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $tmp = [];
 
          $tmp['display_history'] = true;
@@ -677,7 +677,7 @@ class Log extends CommonDBTM {
                      $oldval = $data["old_value"];
                   } else {
                      $old_iterator = $DBread->request('glpi_users', ['name' => $oldval_expl[0]]);
-                     while ($val = $old_iterator->next()) {
+                     foreach ($old_iterator as $val) {
                         $oldval = sprintf(__('%1$s %2$s'),
                               formatUserName($val['id'], $oldval_expl[0], $val['realname'],
                                     $val['firstname']),
@@ -689,7 +689,7 @@ class Log extends CommonDBTM {
                      $newval = $data["new_value"];
                   } else {
                      $new_iterator = $DBread->request('glpi_users', ['name' => $newval_expl[0]]);
-                     while ($val = $new_iterator->next()) {
+                     foreach ($new_iterator as $val) {
                         $newval = sprintf(__('%1$s %2$s'),
                               formatUserName($val['id'], $newval_expl[0], $val['realname'],
                                     $val['firstname']),
@@ -733,7 +733,7 @@ class Log extends CommonDBTM {
       ]);
 
       $values = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if (empty($data['user_name'])) {
             continue;
          }
@@ -775,7 +775,7 @@ class Log extends CommonDBTM {
       ]);
 
       $values = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $key = null;
          $value = null;
 
@@ -946,7 +946,7 @@ class Log extends CommonDBTM {
       ]);
 
       $values = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $key = $data["linked_action"];
          $value = null;
 

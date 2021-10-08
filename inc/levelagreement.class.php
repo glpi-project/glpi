@@ -967,7 +967,7 @@ abstract class LevelAgreement extends CommonDBChild {
             'WHERE'  => ['tickets_id' => $ticket->fields['id']]
          ]);
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $levelticket->delete(['id' => $data['id']]);
          }
       }
@@ -993,7 +993,7 @@ abstract class LevelAgreement extends CommonDBChild {
 
       if (count($iterator)) {
          $ticket = new Ticket();
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $ticket->deleteLevelAgreement($classname, $data['id'], $this->fields['type']);
          }
       }

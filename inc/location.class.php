@@ -473,7 +473,7 @@ class Location extends CommonTreeDropdown {
          echo "<th>".__('Inventory number')."</th>";
          echo "</tr>";
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $item = getItemForItemtype($data['type']);
             $item->getFromDB($data['id']);
             echo "<tr class='tab_bg_1'><td class='center top'>".$item->getTypeName()."</td>";

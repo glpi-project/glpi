@@ -113,7 +113,7 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface {
 
       $list = [];
       $iterator = $DB->request(['FROM' => $this->getTable()]);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $row_key = $row['vendorid'];
          if (!empty($row['deviceid'])) {
             $row_key .= '::' . $row['deviceid'];

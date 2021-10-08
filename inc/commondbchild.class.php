@@ -808,7 +808,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       $iterator = $DB->request($query);
       $count = 0;
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
 
          $current_item->fields = $data;
 

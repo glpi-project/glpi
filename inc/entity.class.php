@@ -1262,7 +1262,7 @@ class Entity extends CommonTreeDropdown {
          'ORDER'  => 'level ASC'
       ]);
 
-      while ($entitydata = $iterator->next()) {
+      foreach ($iterator as $entitydata) {
          if ((is_null($entitydata[$field])
               || ($entitydata[$field] == self::CONFIG_PARENT))
              && isset($entities[$entitydata['parent']])) {

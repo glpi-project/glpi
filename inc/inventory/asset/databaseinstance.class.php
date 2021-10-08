@@ -87,7 +87,7 @@ class DatabaseInstance extends InventoryAsset
          ]
       ]);
 
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $db_existing[$row['id']] = $row['id'];
       }
 

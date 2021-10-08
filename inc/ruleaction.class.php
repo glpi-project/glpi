@@ -300,7 +300,7 @@ class RuleAction extends CommonDBChild {
       ]);
 
       $rules_actions = [];
-      while ($rule = $iterator->next()) {
+      foreach ($iterator as $rule) {
          $tmp             = new self();
          $tmp->fields     = $rule;
          $rules_actions[] = $tmp;
@@ -456,7 +456,7 @@ class RuleAction extends CommonDBChild {
             'WHERE'  => [static::$items_id => $rules_id],
          ]);
 
-         while ($action = $iterator->next()) {
+         foreach ($iterator as $action) {
             if (isset($actions_options[$action["field"]])
                  && ($action["field"] != 'groups_id_validate')
                  && ($action["field"] != 'users_id_validate')

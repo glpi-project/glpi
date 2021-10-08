@@ -164,7 +164,7 @@ class FQDN extends CommonDropdown {
       ]);
 
       $fqdns_id_list = [];
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          $fqdns_id_list[] = $line['id'];
       }
 

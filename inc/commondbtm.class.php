@@ -496,7 +496,7 @@ class CommonDBTM extends CommonGLPI {
 
       $data = [];
       $iterator = $DB->request($criteria);
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          $data[$line['id']] = $line;
       }
 
@@ -815,7 +815,7 @@ class CommonDBTM extends CommonGLPI {
             ]
          ]);
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $cnt = countElementsInTable('glpi_items_tickets', ['tickets_id' => $data['tickets_id']]);
             $itemsticket->delete(["id" => $data["id"]]);
             if ($cnt == 1 && !$CFG_GLPI["keep_tickets_on_delete"]) {
@@ -1673,7 +1673,7 @@ class CommonDBTM extends CommonGLPI {
             }
 
             $iterator = $DB->request($query);
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $input['id'] = $data['id'];
                // No history for such update
                $item->update($input, 0);
@@ -2302,7 +2302,7 @@ class CommonDBTM extends CommonGLPI {
                         ]);
 
                         // Search linked device of each type
-                        while ($data = $iterator->next()) {
+                        foreach ($iterator as $data) {
                            $itemtype  = $data[$typefield];
                            $itemtable = getTableForItemType($itemtype);
                            $item      = new $itemtype();
@@ -4746,7 +4746,7 @@ class CommonDBTM extends CommonGLPI {
          echo "<th>".__('Templates')."</th></tr>";
       }
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $templname = $data["template_name"];
          if ($_SESSION["glpiis_ids_visible"] || empty($data["template_name"])) {
             $templname = sprintf(__('%1$s (%2$s)'), $templname, $data["id"]);

@@ -121,7 +121,7 @@ class Contract_Supplier extends CommonDBRelation {
 
       $contracts = [];
       $used      = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $contracts[$data['linkid']]   = $data;
          $used[$data['id']]            = $data['id'];
       }
@@ -247,7 +247,7 @@ class Contract_Supplier extends CommonDBRelation {
 
       $suppliers = [];
       $used      = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $suppliers[$data['linkid']]   = $data;
          $used[$data['id']]            = $data['id'];
       }

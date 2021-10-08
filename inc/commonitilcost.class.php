@@ -574,7 +574,7 @@ abstract class CommonITILCost extends CommonDBChild {
                                           sprintf(__('%1$s = %2$s'),
                                                 $item->getTypeName(1), $item->getName()));
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             echo "<tr class='tab_bg_2' ".
                      ($canedit
                      ? "style='cursor:pointer' onClick=\"viewEditCost".$data[static::$items_id]."_".

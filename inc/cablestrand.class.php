@@ -147,7 +147,7 @@ class CableStrand extends CommonDropdown {
          echo "<th>".sprintf(__('%s (%s)'), Socket::getTypeName(1), __('Endpoint A'))."</th>";
          echo "</tr>";
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             if (!$cable->getFromDB($data['id'])) {
                trigger_error(sprintf('Unable to load item %s (%s).', $cable->getType(), $data['id']), E_USER_WARNING);
                continue;

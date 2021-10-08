@@ -847,7 +847,7 @@ function update92xto930() {
 
    /** Clean item rack relation on deleted items */
    $iterator = $DB->request(['FROM' => Item_Rack::getTable()]);
-   while ($row = $iterator->next()) {
+   foreach ($iterator as $row) {
       $exists = $DB->request([
          'FROM'   => getTableForItemType($row['itemtype']),
          'WHERE'  => ['id' => $row['items_id']]

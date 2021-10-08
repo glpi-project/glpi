@@ -477,7 +477,7 @@ class ReservationItem extends CommonDBChild {
          ] + getEntitiesRestrictCriteria('glpi_reservationitems', 'entities_id', $_SESSION['glpiactiveentities'])
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $values[$data['itemtype']] = $data['itemtype']::getTypeName();
       }
 
@@ -509,7 +509,7 @@ class ReservationItem extends CommonDBChild {
          'ORDERBY'   => 'glpi_peripheraltypes.name'
       ]);
 
-      while ($ptype = $iterator->next()) {
+      foreach ($iterator as $ptype) {
          $id = $ptype['id'];
          $values["Peripheral#$id"] = $ptype['name'];
       }
@@ -624,7 +624,7 @@ class ReservationItem extends CommonDBChild {
          }
 
          $iterator = $DB->request($criteria);
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             echo "<tr><td>";
             echo Html::getCheckbox([
                'name'  => "item[".$row["id"]."]",
@@ -744,7 +744,7 @@ class ReservationItem extends CommonDBChild {
          ];
          $iterator = $DB->request($criteria);
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             if ($item_resa = getItemForItemtype($data['itemtype'])) {
                if ($item_resa->getFromDB($data["items_id"])) {
                   $data['item_name']                     = $item_resa->getName();

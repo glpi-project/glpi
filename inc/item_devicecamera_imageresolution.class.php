@@ -148,7 +148,7 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation {
          $header .= "</tr>";
 
          echo $header;
-         while ($row = $items->next()) {
+         foreach ($items as $row) {
             $item = new ImageResolution();
             $item->getFromDB($row['imageresolutions_id']);
             echo "<tr lass='tab_bg_1'>";

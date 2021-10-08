@@ -712,7 +712,7 @@ class Group extends CommonTreeDropdown {
             }
 
             $iterator = $DB->request($request);
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $res[] = ['itemtype' => $itemtype,
                               'items_id' => $data['id']];
                $max--;

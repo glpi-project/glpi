@@ -310,7 +310,7 @@ class Inventory extends DbTestCase {
 
       $i = 0;
       $netport = new \NetworkPort();
-      while ($port = $iterator->next()) {
+      foreach ($iterator as $port) {
          $ports_id = $port['id'];
          $this->boolean($netport->getFromDB($ports_id))->isTrue();
          $instantiation = $netport->getInstantiation();
@@ -394,7 +394,7 @@ class Inventory extends DbTestCase {
          $allcount += count($iterator);
          $components[$link_type] = [];
 
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             $lid = $row['id'];
             unset($row['id']);
             $components[$link_type][$lid] = $row;
@@ -1026,7 +1026,7 @@ class Inventory extends DbTestCase {
       ];
 
       $i = 0;
-      while ($volume = $iterator->next()) {
+      foreach ($iterator as $volume) {
          unset($volume['id'], $volume['date_mod'], $volume['date_creation']);
          $expected = $expecteds[$i];
          if (count($freesizes)) {
@@ -1083,7 +1083,7 @@ class Inventory extends DbTestCase {
       ];
 
       $i = 0;
-      while ($soft = $iterator->next()) {
+      foreach ($iterator as $soft) {
          $expected = $expecteds[$i];
          if (count($versions)) {
             $expected['version'] = $versions[$i];
@@ -1105,7 +1105,7 @@ class Inventory extends DbTestCase {
       $this->integer(count($iterator))->isIdenticalTo(1);
 
       $battery = [];
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          unset($row['id']);
          $battery = $row;
       }
@@ -1338,7 +1338,7 @@ class Inventory extends DbTestCase {
       ];
 
       $i = 0;
-      while ($volume = $iterator->next()) {
+      foreach ($iterator as $volume) {
          unset($volume['id']);
          unset($volume['date_mod']);
          unset($volume['date_creation']);
@@ -1377,7 +1377,7 @@ class Inventory extends DbTestCase {
          $allcount += count($iterator);
          $components[$link_type] = [];
 
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             $lid = $row['id'];
             unset($row['id']);
             $components[$link_type][$lid] = $row;
@@ -1454,7 +1454,7 @@ class Inventory extends DbTestCase {
       ];
 
       $types_count = [];
-      while ($row = $logs->next()) {
+      foreach ($logs as $row) {
          $this->string($row['user_name'])->isIdenticalTo('inventory', print_r($row, true));
          if (!isset($types_count[$row['linked_action']])) {
             $types_count[$row['linked_action']] = 0;
@@ -1520,7 +1520,7 @@ class Inventory extends DbTestCase {
       $this->integer(count($iterator))->isIdenticalTo(3);
 
       $i = 0;
-      while ($volume = $iterator->next()) {
+      foreach ($iterator as $volume) {
          unset($volume['id']);
          unset($volume['date_mod']);
          unset($volume['date_creation']);
@@ -1559,7 +1559,7 @@ class Inventory extends DbTestCase {
          $allcount += count($iterator);
          $components[$link_type] = [];
 
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             $lid = $row['id'];
             unset($row['id']);
             $components[$link_type][$lid] = $row;
@@ -1595,7 +1595,7 @@ class Inventory extends DbTestCase {
       $this->integer(count($logs))->isIdenticalTo(71);
 
       $types_count = [];
-      while ($row = $logs->next()) {
+      foreach ($logs as $row) {
          $this->string($row['user_name'])->isIdenticalTo('inventory', print_r($row, true));
          if (!isset($types_count[$row['linked_action']])) {
             $types_count[$row['linked_action']] = 0;
@@ -1711,7 +1711,7 @@ class Inventory extends DbTestCase {
       $expecteds_fs[2]['freesize'] = 68968;
 
       $i = 0;
-      while ($volume = $iterator->next()) {
+      foreach ($iterator as $volume) {
          unset($volume['id']);
          unset($volume['date_mod']);
          unset($volume['date_creation']);
@@ -1750,7 +1750,7 @@ class Inventory extends DbTestCase {
          $allcount += count($iterator);
          $components[$link_type] = [];
 
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             $lid = $row['id'];
             unset($row['id']);
             $components[$link_type][$lid] = $row;
@@ -1810,7 +1810,7 @@ class Inventory extends DbTestCase {
       ];
 
       $types_count = [];
-      while ($row = $logs->next()) {
+      foreach ($logs as $row) {
          $this->string($row['user_name'])->isIdenticalTo('inventory', print_r($row, true));
          if (!isset($types_count[$row['linked_action']])) {
             $types_count[$row['linked_action']] = 0;
@@ -1944,7 +1944,7 @@ class Inventory extends DbTestCase {
 
       $i = 0;
       $netport = new \NetworkPort();
-      while ($port = $iterator->next()) {
+      foreach ($iterator as $port) {
          $ports_id = $port['id'];
          $this->boolean($netport->getFromDB($ports_id))->isTrue();
          $instantiation = $netport->getInstantiation();
@@ -2020,7 +2020,7 @@ class Inventory extends DbTestCase {
 
          $this->integer(count($ip_iterator))->isIdenticalTo(count($ips[$port['name']] ?? []));
          if (isset($ips[$port['name']])) {
-            while ($ip = $ip_iterator->next()) {
+            foreach ($ip_iterator as $ip) {
                $this->array($ips[$port['name']])->contains($ip['name']);
             }
          }
@@ -2035,7 +2035,7 @@ class Inventory extends DbTestCase {
          $allcount += count($iterator);
          $components[$link_type] = [];
 
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             $lid = $row['id'];
             unset($row['id']);
             $components[$link_type][$lid] = $row;
@@ -2120,7 +2120,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          'n9k-2-pa3' => 'Cisco Nexus Operating System (NX-OS) Software, Version 7.0(3)I7(6)',
       ];
 
-      while ($unmanaged = $unmanageds->next()) {
+      foreach ($unmanageds as $unmanaged) {
          $this->boolean(in_array($unmanaged['name'], array_keys($expecteds)))->isTrue($unmanaged['name']);
          $this->string($unmanaged['sysdescr'])->isIdenticalTo($expecteds[$unmanaged['name']]);
       }
@@ -2247,7 +2247,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          ]
       ];
 
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $expected = $main_expected;
          $equipments_id = $row['id'];
          $expected['id'] = $equipments_id;
@@ -2326,7 +2326,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          $i = 0;
          $netport = new \NetworkPort();
          $all_ports_ids = [];
-         while ($port = $ports_iterator->next()) {
+         foreach ($ports_iterator as $port) {
             $ports_id = $port['id'];
             $all_ports_ids[] = $port['id'];
             $this->boolean($netport->getFromDB($ports_id))->isTrue();
@@ -2403,7 +2403,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
             $this->integer(count($ip_iterator))->isIdenticalTo(count($ips[$port['name']] ?? []));
             if (isset($ips[$port['name']])) {
-               while ($ip = $ip_iterator->next()) {
+               foreach ($ip_iterator as $ip) {
                   $this->array($ips[$port['name']])->contains($ip['name']);
                }
             }
@@ -2418,7 +2418,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $allcount += count($dev_iterator);
             $components[$link_type] = [];
 
-            while ($row = $dev_iterator->next()) {
+            foreach ($dev_iterator as $row) {
                $lid = $row['id'];
                unset($row['id']);
                $components[$link_type][$lid] = $row;
@@ -2538,7 +2538,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->integer(count($db_vlans))->isIdenticalTo(count($expected_names));
 
       $i = 0;
-      while ($row = $db_vlans->next()) {
+      foreach ($db_vlans as $row) {
          $this->string($row['name'])->isEqualTo($expected_names[$i]);
          ++$i;
       }
@@ -2579,7 +2579,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       ];
 
       $i = 0;
-      /*while ($unmanaged = $unmanageds->next()) {
+      /*foreach ($unmanageds as $unmanaged) {
          foreach ($expecteds[$i] as $key => $value) {
             $this->variable($unmanaged[$key])->isEqualTo($value);
          }
@@ -2685,7 +2685,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          'sysdescr' => null,
       ];
 
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $equipments_id = $row['id'];
          $expected['id'] = $equipments_id;
          $equipment = new \NetworkEquipment();
@@ -2731,7 +2731,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          $i = 0;
          $netport = new \NetworkPort();
          $all_ports_ids = [];
-         while ($port = $ports_iterator->next()) {
+         foreach ($ports_iterator as $port) {
             $ports_id = $port['id'];
             $all_ports_ids[] = $port['id'];
             $this->boolean($netport->getFromDB($ports_id))->isTrue();
@@ -2808,7 +2808,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
             $this->integer(count($ip_iterator))->isIdenticalTo(count($ips[$port['name']] ?? []));
             if (isset($ips[$port['name']])) {
-               while ($ip = $ip_iterator->next()) {
+               foreach ($ip_iterator as $ip) {
                   $this->array($ips[$port['name']])->contains($ip['name']);
                }
             }
@@ -2823,7 +2823,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $allcount += count($dev_iterator);
             $components[$link_type] = [];
 
-            while ($row = $dev_iterator->next()) {
+            foreach ($dev_iterator as $row) {
                $lid = $row['id'];
                unset($row['id']);
                $components[$link_type][$lid] = $row;
@@ -3227,7 +3227,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->integer(count($expecteds))->isIdenticalTo($unmanageds->count());
 
       $i = 0;
-      while ($unmanaged = $unmanageds->next()) {
+      foreach ($unmanageds as $unmanaged) {
          foreach ($expecteds[$i] as $key => $value) {
             $this->variable($unmanaged[$key])->isEqualTo($value);
          }
@@ -3334,7 +3334,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       ];
 
       $first = true;
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $equipments_id = $row['id'];
          $expected_eq['id'] = $equipments_id;
          $equipment = new \NetworkEquipment();
@@ -3392,7 +3392,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          $i = 0;
          $netport = new \NetworkPort();
          $all_ports_ids = [];
-         while ($port = $ports_iterator->next()) {
+         foreach ($ports_iterator as $port) {
             $ports_id = $port['id'];
             $all_ports_ids[] = $port['id'];
             $this->boolean($netport->getFromDB($ports_id))->isTrue();
@@ -3469,7 +3469,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
             //$this->integer(count($ip_iterator))->isIdenticalTo(count($ips[$port['name']] ?? ['one' => 'one']));
             if ($port['mac'] == '58:ac:78:59:45:fb') {
-               while ($ip = $ip_iterator->next()) {
+               foreach ($ip_iterator as $ip) {
                   $this->array($ips[$port['name']])->contains($ip['name']);
                }
             }
@@ -3484,7 +3484,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $allcount += count($dev_iterator);
             $components[$link_type] = [];
 
-            while ($row = $dev_iterator->next()) {
+            foreach ($dev_iterator as $row) {
                $lid = $row['id'];
                unset($row['id']);
                $components[$link_type][$lid] = $row;
@@ -3576,7 +3576,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       ];
 
       $i = 0;
-      while ($unmanaged = $unmanageds->next()) {
+      foreach ($unmanageds as $unmanaged) {
          foreach ($expecteds[$i] as $key => $value) {
             $this->variable($unmanaged[$key])->isEqualTo($value);
          }
@@ -3725,7 +3725,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
       $i = 0;
       $netport = new \NetworkPort();
-      while ($port = $iterator->next()) {
+      foreach ($iterator as $port) {
          $ports_id = $port['id'];
          $this->boolean($netport->getFromDB($ports_id))->isTrue();
          $instantiation = $netport->getInstantiation();
@@ -3801,7 +3801,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
          $this->integer(count($ip_iterator))->isIdenticalTo(count($ips[$port['name']] ?? []));
          if (isset($ips[$port['name']])) {
-            while ($ip = $ip_iterator->next()) {
+            foreach ($ip_iterator as $ip) {
                $this->array($ips[$port['name']])->contains($ip['name']);
             }
          }
@@ -3816,7 +3816,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          $allcount += count($iterator);
          $components[$link_type] = [];
 
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             $lid = $row['id'];
             unset($row['id']);
             $components[$link_type][$lid] = $row;
@@ -4651,7 +4651,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       ];
 
       $i = 0;
-      while ($volume = $iterator->next()) {
+      foreach ($iterator as $volume) {
          unset($volume['id']);
          unset($volume['date_mod']);
          unset($volume['date_creation']);
@@ -4705,7 +4705,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
       $i = 0;
       $netport = new \NetworkPort();
-      while ($port = $iterator->next()) {
+      foreach ($iterator as $port) {
          $ports_id = $port['id'];
          $this->boolean($netport->getFromDB($ports_id))->isTrue();
          $instantiation = $netport->getInstantiation();
@@ -4789,7 +4789,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          $allcount += count($iterator);
          $components[$link_type] = [];
 
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             $lid = $row['id'];
             unset($row['id']);
             $components[$link_type][$lid] = $row;
@@ -4996,7 +4996,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       ];
 
       $i = 0;
-      while ($soft = $iterator->next()) {
+      foreach ($iterator as $soft) {
          $expected = $expecteds[$i];
          $this->array([
             'softname'     => $soft['softname'],

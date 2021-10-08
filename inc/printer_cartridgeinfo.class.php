@@ -85,7 +85,7 @@ class Printer_CartridgeInfo extends CommonDBChild {
       ]);
 
       $info = [];
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $info[$row['id']] = $row;
       }
 

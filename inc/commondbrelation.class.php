@@ -1022,7 +1022,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       if ($criteria !== null) {
          $relation = new static();
          $iterator = $DB->request($criteria);
-         while ($line = $iterator->next()) {
+         foreach ($iterator as $line) {
             if ($line['is_1'] != $line['is_2']) {
                if ($line['is_1'] == 0) {
                   $options['items_id'] = $line['items_id_1'];
@@ -1493,7 +1493,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                $ok      = 0;
                $ko      = 0;
                $noright = 0;
-               while ($line = $request->next()) {
+               foreach ($request as $line) {
                   if ($link->can($line[static::getIndexName()], DELETE)) {
                      if ($link->delete(['id' => $line[static::getIndexName()]])) {
                         $ok++;
@@ -1788,7 +1788,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       $iterator = $DB->request($params);
 
       $cpt = 0;
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $cpt += $row['cpt'];
       }
 
@@ -1809,7 +1809,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       $nb = 0;
 
       $types_iterator = static::getDistinctTypes($item->fields['id'], $extra_types_where);
-      while ($data = $types_iterator->next()) {
+      foreach ($types_iterator as $data) {
          if (!getItemForItemtype($data['itemtype'])) {
             continue;
          }
@@ -1819,7 +1819,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $params['COUNT'] = 'cpt';
          $iterator = $DB->request($params);
 
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             $nb += $row['cpt'];
          }
       }

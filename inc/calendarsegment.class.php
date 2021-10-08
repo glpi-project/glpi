@@ -158,7 +158,7 @@ class CalendarSegment extends CommonDBChild {
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          list($hour, $minute ,$second) = explode(':', $data['TDIFF']);
          $sum += $hour*HOUR_TIMESTAMP+$minute*MINUTE_TIMESTAMP+$second;
       }
@@ -198,7 +198,7 @@ class CalendarSegment extends CommonDBChild {
          'ORDER'  => 'begin'
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          list($hour, $minute, $second) = explode(':', $data['TDIFF']);
          $tstamp = $hour*HOUR_TIMESTAMP+$minute*MINUTE_TIMESTAMP+$second;
 
@@ -369,7 +369,7 @@ class CalendarSegment extends CommonDBChild {
       $daysofweek = Toolbox::getDaysOfWeekArray();
 
       if ($numrows) {
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             echo "<tr class='tab_bg_1'>";
 
             if ($canedit) {

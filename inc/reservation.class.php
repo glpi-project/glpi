@@ -363,7 +363,7 @@ class Reservation extends CommonDBChild {
             ]
          ]);
          $rr = clone $this;
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $rr->delete(['id' => $data['id']]);
          }
       }
@@ -506,7 +506,7 @@ JAVASCRIPT;
       if (!count($iterator)) {
          return [];
       }
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $item = new $data['itemtype'];
          if (!$item->getFromDB($data['items_id'])) {
             continue;
@@ -568,7 +568,7 @@ JAVASCRIPT;
       if (!count($iterator)) {
          return [];
       }
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $item = new $data['itemtype'];
          if (!$item->getFromDB($data['items_id'])) {
             continue;
@@ -1061,7 +1061,7 @@ JAVASCRIPT;
          echo "<th>".__('By')."</th>";
          echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center'>".Html::convDateTime($data["begin"])."</td>";
             echo "<td class='center'>".Html::convDateTime($data["end"])."</td>";
@@ -1145,7 +1145,7 @@ JAVASCRIPT;
          echo "<th>".__('By')."</th>";
          echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             echo "<tr class='tab_bg_2'>";
             echo "<td>".Html::convDateTime($data["begin"])."</td>";
             echo "<td>".Html::convDateTime($data["end"])."</td>";

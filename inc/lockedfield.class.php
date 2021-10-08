@@ -146,7 +146,7 @@ class Lockedfield extends CommonDBTM {
       ]);
 
       $locks = [];
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $locks[] = $row['field'];
       }
       return $locks;

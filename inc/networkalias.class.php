@@ -217,7 +217,7 @@ class NetworkAlias extends FQDNLabel {
          'WHERE'  => ['networknames_id' => $item->getID()]
       ]);
 
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          if ($alias->getFromDB($line["id"])) {
 
             if ($createRow) {
@@ -259,7 +259,7 @@ class NetworkAlias extends FQDNLabel {
       $number = count($iterator);
 
       $aliases = [];
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          $aliases[$line["id"]] = $line;
       }
 
@@ -425,7 +425,7 @@ class NetworkAlias extends FQDNLabel {
             'START'     => $start
          ]);
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             Session::addToNavigateListItems($alias->getType(), $data["alias_id"]);
             if ($address->getFromDB($data["address_id"])) {
                echo "<tr class='tab_bg_1'>";
