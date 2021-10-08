@@ -1,0 +1,59 @@
+Return-Path: normal@glpi-project.org
+Received: by mail.glpi-project.org with local (envelope-from <unittests@glpi-project.org>)
+	id 1mY3E4-0000m3-1o
+	for unittests@glpi-project.org; Wed, 06 Oct 2021 12:28:36 +0300
+Received: by mail.glpi-project.org with HTTP;
+	Wed, 06 Oct 2021 12:28:35 +0300
+From: Normal User <normal@glpi-project.org>
+To: unittests@glpi-project.org
+Subject: =?UTF-8?B?dGVzdCAzIGF0dGFjaG1lbnRzIHdpdGggZmlsZW5hbWUgd2l0aG91dCBleHRl?=
+ =?UTF-8?B?bnNpb25z?=
+MIME-Version: 1.0
+X-Mailer: Mail.Ru Mailer 1.0
+X-SenderField-Remind: 0
+Date: Wed, 06 Oct 2021 12:28:35 +0300
+Reply-To: Tech Ni Cian <tech@glpi-project.org>
+X-Priority: 3 (Normal)
+Message-ID: <1633512515.935376498@f314.i.glpi-project.org>
+Content-Type: multipart/mixed;
+	boundary="----830d948E4F132F127Bf05d404C2420cC-6bgzLovPanysmu4y-1633512515"
+X-Mailru-Intl-Transport: d,edb490e
+
+
+------830d948E4F132F127Bf05d404C2420cC-6bgzLovPanysmu4y-1633512515
+Content-Type: multipart/alternative;
+	boundary="--ALT--830d948E4F132F127Bf05d404C2420cC1633512515"
+
+
+----ALT--830d948E4F132F127Bf05d404C2420cC1633512515
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+
+CsKgClRlc3QKwqA=
+----ALT--830d948E4F132F127Bf05d404C2420cC1633512515
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: base64
+
+CjxIVE1MPjxCT0RZPjxkaXY+Jm5ic3A7PC9kaXY+PGRpdj5UZXN0PC9kaXY+PGRpdj4mbmJzcDs8
+L2Rpdj48L0JPRFk+PC9IVE1MPgo=
+----ALT--830d948E4F132F127Bf05d404C2420cC1633512515--
+
+------830d948E4F132F127Bf05d404C2420cC-6bgzLovPanysmu4y-1633512515
+Content-Type: application/octet-stream; name="=?UTF-8?B?MTIzNDU2Nzg5MA==?="
+Content-Disposition: attachment; filename="=?UTF-8?B?MTIzNDU2Nzg5MA==?="
+Content-Transfer-Encoding: base64
+
+MTIzNDU2Nzg5MA==
+------830d948E4F132F127Bf05d404C2420cC-6bgzLovPanysmu4y-1633512515
+Content-Type: application/octet-stream; name="=?UTF-8?B?MTIzNDU2Nzg5MA==?="
+Content-Disposition: attachment; filename="=?UTF-8?B?MTIzNDU2Nzg5MA==?="
+Content-Transfer-Encoding: base64
+
+MTIzNDU2Nzg5MA==
+------830d948E4F132F127Bf05d404C2420cC-6bgzLovPanysmu4y-1633512515
+Content-Type: application/octet-stream; name="=?UTF-8?B?MTIzNDU2Nzg5MA==?="
+Content-Disposition: attachment; filename="=?UTF-8?B?MTIzNDU2Nzg5MA==?="
+Content-Transfer-Encoding: base64
+
+MTIzNDU2Nzg5MA==
+------830d948E4F132F127Bf05d404C2420cC-6bgzLovPanysmu4y-1633512515--
