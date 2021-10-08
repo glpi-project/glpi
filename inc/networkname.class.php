@@ -424,7 +424,7 @@ class NetworkName extends FQDNLabel {
 
          switch ($numrows) {
             case 1 :
-               $result = $iterator->next();
+               $result = $iterator->current();
                $name->getFromDB($result['id']);
                break;
 
@@ -895,7 +895,7 @@ class NetworkName extends FQDNLabel {
                   'glpi_networkports.is_deleted'   => 0,
                   'glpi_networknames.is_deleted'   => 0
                ]
-            ])->next();
+            ])->current();
 
             return (int)$result['cpt'];
       }

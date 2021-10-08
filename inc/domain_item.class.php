@@ -441,7 +441,7 @@ class Domain_Item extends CommonDBRelation {
             'FROM'   => Domain::getTable(),
             'WHERE'  => ['is_deleted' => 0] + getEntitiesRestrictCriteria(Domain::getTable(), '', $entities, true)
          ]);
-         $result = $domain_iterator->next();
+         $result = $domain_iterator->current();
          $nb     = $result['cpt'];
 
          echo "<div class='firstbloc'>";

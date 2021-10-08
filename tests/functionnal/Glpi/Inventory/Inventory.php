@@ -114,19 +114,19 @@ class Inventory extends DbTestCase {
       global $DB;
 
       //get computer models, manufacturer, ...
-      $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->next();
+      $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
       $this->array($autoupdatesystems);
       $autoupdatesystems_id = $autoupdatesystems['id'];
 
-      $cmodels = $DB->request(['FROM' => \ComputerModel::getTable(), 'WHERE' => ['name' => 'XPS 13 9350']])->next();
+      $cmodels = $DB->request(['FROM' => \ComputerModel::getTable(), 'WHERE' => ['name' => 'XPS 13 9350']])->current();
       $this->array($cmodels);
       $computermodels_id = $cmodels['id'];
 
-      $ctypes = $DB->request(['FROM' => \ComputerType::getTable(), 'WHERE' => ['name' => 'Laptop']])->next();
+      $ctypes = $DB->request(['FROM' => \ComputerType::getTable(), 'WHERE' => ['name' => 'Laptop']])->current();
       $this->array($ctypes);
       $computertypes_id = $ctypes['id'];
 
-      $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Dell Inc.']])->next();
+      $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Dell Inc.']])->current();
       $this->array($cmanuf);
       $manufacturers_id = $cmanuf['id'];
 
@@ -169,7 +169,7 @@ class Inventory extends DbTestCase {
       //operating system
       $ios = new \Item_OperatingSystem();
       $iterator = $ios->getFromItem($computer);
-      $record = $iterator->next();
+      $record = $iterator->current();
 
       $expected = [
          'assocID' => $record['assocID'],
@@ -184,7 +184,7 @@ class Inventory extends DbTestCase {
       $mgmt = new \Item_RemoteManagement();
       $iterator = $mgmt->getFromItem($computer);
       $this->integer(count($iterator))->isIdenticalTo(1);
-      $remote = $iterator->next();
+      $remote = $iterator->current();
       unset($remote['id']);
       $this->array($remote)->isIdenticalTo([
          'itemtype' => $computer->getType(),
@@ -197,11 +197,11 @@ class Inventory extends DbTestCase {
       //connections
       $iterator = \Computer_Item::getTypeItems($computers_id, 'Monitor');
       $this->integer(count($iterator))->isIdenticalTo(1);
-      $monitor_link = $iterator->next();
+      $monitor_link = $iterator->current();
       unset($monitor_link['date_mod']);
       unset($monitor_link['date_creation']);
 
-      $mmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Sharp Corporation']])->next();
+      $mmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Sharp Corporation']])->current();
       $this->array($mmanuf);
       $manufacturers_id = $mmanuf['id'];
 
@@ -379,7 +379,7 @@ class Inventory extends DbTestCase {
          $this->integer(count($ip_iterator))->isIdenticalTo(count($ips[$port['name']] ?? []));
          if (isset($ips[$port['name']])) {
             //FIXME: missing all ipv6 :(
-            $ip = $ip_iterator->next();
+            $ip = $ip_iterator->current();
             $this->integer((int)$ip['version'])->isIdenticalTo(4);
             $this->string($ip['name'])->isIdenticalTo($ips[$port['name']]['v4']);
          }
@@ -891,7 +891,7 @@ class Inventory extends DbTestCase {
       //check printer
       $iterator = \Computer_Item::getTypeItems($computers_id, 'Printer');
       $this->integer(count($iterator))->isIdenticalTo(1);
-      $printer_link = $iterator->next();
+      $printer_link = $iterator->current();
       unset($printer_link['date_mod'], $printer_link['date_creation']);
 
       $expected = [
@@ -1165,10 +1165,10 @@ class Inventory extends DbTestCase {
       $this->array($metadata['provider'])->hasSize(10);
 
       //check created agent
-      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->next();
+      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
       $agents = $DB->request(['FROM' => \Agent::getTable()]);
       $this->integer(count($agents))->isIdenticalTo(1);
-      $agent = $agents->next();
+      $agent = $agents->current();
       $this->array($agent)
          ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
          ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
@@ -1208,10 +1208,10 @@ class Inventory extends DbTestCase {
       $this->array($metadata['provider'])->hasSize(9);
 
       //check created agent
-      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->next();
+      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
       $agents = $DB->request(['FROM' => \Agent::getTable()]);
       $this->integer(count($agents))->isIdenticalTo(1);
-      $agent = $agents->next();
+      $agent = $agents->current();
       $this->array($agent)
          ->string['deviceid']->isIdenticalTo('LF014-2017-02-20-12-19-56')
          ->string['name']->isIdenticalTo('LF014-2017-02-20-12-19-56')
@@ -1220,19 +1220,19 @@ class Inventory extends DbTestCase {
          ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
 
       //get computer models, manufacturer, ...
-      $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->next();
+      $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
       $this->array($autoupdatesystems);
       $autoupdatesystems_id = $autoupdatesystems['id'];
 
-      $cmodels = $DB->request(['FROM' => \ComputerModel::getTable(), 'WHERE' => ['name' => 'PORTEGE Z30-A']])->next();
+      $cmodels = $DB->request(['FROM' => \ComputerModel::getTable(), 'WHERE' => ['name' => 'PORTEGE Z30-A']])->current();
       $this->array($cmodels);
       $computermodels_id = $cmodels['id'];
 
-      $ctypes = $DB->request(['FROM' => \ComputerType::getTable(), 'WHERE' => ['name' => 'Notebook']])->next();
+      $ctypes = $DB->request(['FROM' => \ComputerType::getTable(), 'WHERE' => ['name' => 'Notebook']])->current();
       $this->array($ctypes);
       $computertypes_id = $ctypes['id'];
 
-      $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Toshiba']])->next();
+      $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Toshiba']])->current();
       $this->array($cmanuf);
       $manufacturers_id = $cmanuf['id'];
 
@@ -1277,7 +1277,7 @@ class Inventory extends DbTestCase {
       //operating system
       $ios = new \Item_OperatingSystem();
       $iterator = $ios->getFromItem($computer);
-      $record = $iterator->next();
+      $record = $iterator->current();
 
       $expected = [
          'assocID' => $record['assocID'],
@@ -1503,7 +1503,7 @@ class Inventory extends DbTestCase {
       //operating system
       $ios = new \Item_OperatingSystem();
       $iterator = $ios->getFromItem($computer);
-      $record = $iterator->next();
+      $record = $iterator->current();
 
       $expected = [
          'assocID' => $record['assocID'],
@@ -1641,7 +1641,7 @@ class Inventory extends DbTestCase {
       //check created agent
       $agents = $DB->request(['FROM' => \Agent::getTable()]);
       $this->integer(count($agents))->isIdenticalTo(1);
-      $agent = $agents->next();
+      $agent = $agents->current();
       $this->array($agent)
          ->string['deviceid']->isIdenticalTo('LF014-2017-02-20-12-19-56')
          ->string['name']->isIdenticalTo('LF014-2017-02-20-12-19-56')
@@ -1688,7 +1688,7 @@ class Inventory extends DbTestCase {
       //operating system
       $ios = new \Item_OperatingSystem();
       $iterator = $ios->getFromItem($computer);
-      $record = $iterator->next();
+      $record = $iterator->current();
 
       $expected = [
          'assocID' => $record['assocID'],
@@ -1846,29 +1846,29 @@ class Inventory extends DbTestCase {
 
       global $DB;
       //check created agent
-      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->next();
+      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
       $agents = $DB->request(['FROM' => \Agent::getTable()]);
       //no agent with deviceid equals to "foo"
       $this->integer(count($agents))->isIdenticalTo(0);
 
       //get model, manufacturer, ...
-      $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->next();
+      $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
       $this->array($autoupdatesystems);
       $autoupdatesystems_id = $autoupdatesystems['id'];
 
-      $cmodels = $DB->request(['FROM' => \NetworkEquipmentModel::getTable(), 'WHERE' => ['name' => 'UCS 6248UP 48-Port']])->next();
+      $cmodels = $DB->request(['FROM' => \NetworkEquipmentModel::getTable(), 'WHERE' => ['name' => 'UCS 6248UP 48-Port']])->current();
       $this->array($cmodels);
       $models_id = $cmodels['id'];
 
-      $ctypes = $DB->request(['FROM' => \NetworkEquipmentType::getTable(), 'WHERE' => ['name' => 'Networking']])->next();
+      $ctypes = $DB->request(['FROM' => \NetworkEquipmentType::getTable(), 'WHERE' => ['name' => 'Networking']])->current();
       $this->array($ctypes);
       $types_id = $ctypes['id'];
 
-      $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Cisco']])->next();
+      $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Cisco']])->current();
       $this->array($cmanuf);
       $manufacturers_id = $cmanuf['id'];
 
-      $cloc = $DB->request(['FROM' => \Location::getTable(), 'WHERE' => ['name' => 'paris.pa3']])->next();
+      $cloc = $DB->request(['FROM' => \Location::getTable(), 'WHERE' => ['name' => 'paris.pa3']])->current();
       $this->array($cloc);
       $locations_id = $cloc['id'];
 
@@ -1876,7 +1876,7 @@ class Inventory extends DbTestCase {
       $equipments = $DB->request(['FROM' => \NetworkEquipment::getTable(), 'WHERE' => ['is_dynamic' => 1]]);
       //no agent with deviceid equals to "foo"
       $this->integer(count($equipments))->isIdenticalTo(1);
-      $equipments_id = $equipments->next()['id'];
+      $equipments_id = $equipments->current()['id'];
 
       $equipment = new \NetworkEquipment();
       $this->boolean($equipment->getFromDB($equipments_id))->isTrue();
@@ -2151,10 +2151,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
       global $DB;
       //check created agent
-      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->next();
+      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
       $agents = $DB->request(['FROM' => \Agent::getTable()]);
       $this->integer(count($agents))->isIdenticalTo(1);
-      $agent = $agents->next();
+      $agent = $agents->current();
       $this->array($agent)
          ->string['deviceid']->isIdenticalTo('3k-1-pa3.glpi-project.infra-2020-12-31-11-28-51')
          ->string['name']->isIdenticalTo('3k-1-pa3.glpi-project.infra-2020-12-31-11-28-51')
@@ -2163,23 +2163,23 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
 
       //get model, manufacturer, ...
-      $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->next();
+      $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
       $this->array($autoupdatesystems);
       $autoupdatesystems_id = $autoupdatesystems['id'];
 
-      $cmodels = $DB->request(['FROM' => \NetworkEquipmentModel::getTable(), 'WHERE' => ['name' => 'WS-C3750G-48TS-S']])->next();
+      $cmodels = $DB->request(['FROM' => \NetworkEquipmentModel::getTable(), 'WHERE' => ['name' => 'WS-C3750G-48TS-S']])->current();
       $this->array($cmodels);
       $models_id = $cmodels['id'];
 
-      $ctypes = $DB->request(['FROM' => \NetworkEquipmentType::getTable(), 'WHERE' => ['name' => 'Networking']])->next();
+      $ctypes = $DB->request(['FROM' => \NetworkEquipmentType::getTable(), 'WHERE' => ['name' => 'Networking']])->current();
       $this->array($ctypes);
       $types_id = $ctypes['id'];
 
-      $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Cisco']])->next();
+      $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Cisco']])->current();
       $this->array($cmanuf);
       $manufacturers_id = $cmanuf['id'];
 
-      $cloc = $DB->request(['FROM' => \Location::getTable(), 'WHERE' => ['name' => 'paris.pa3']])->next();
+      $cloc = $DB->request(['FROM' => \Location::getTable(), 'WHERE' => ['name' => 'paris.pa3']])->current();
       $this->array($cloc);
       $locations_id = $cloc['id'];
 
@@ -2612,10 +2612,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
       global $DB;
       //check created agent
-      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->next();
+      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
       $agents = $DB->request(['FROM' => \Agent::getTable()]);
       $this->integer(count($agents))->isIdenticalTo(1);
-      $agent = $agents->next();
+      $agent = $agents->current();
       $this->array($agent)
          ->string['deviceid']->isIdenticalTo('HP-2530-48G-2020-12-31-11-28-51')
          ->string['name']->isIdenticalTo('HP-2530-48G-2020-12-31-11-28-51')
@@ -2623,23 +2623,23 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
 
       //get model, manufacturer, ...
-      $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->next();
+      $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
       $this->array($autoupdatesystems);
       $autoupdatesystems_id = $autoupdatesystems['id'];
 
-      $cmodels = $DB->request(['FROM' => \NetworkEquipmentModel::getTable(), 'WHERE' => ['name' => '2530-48G']])->next();
+      $cmodels = $DB->request(['FROM' => \NetworkEquipmentModel::getTable(), 'WHERE' => ['name' => '2530-48G']])->current();
       $this->array($cmodels);
       $models_id = $cmodels['id'];
 
-      $ctypes = $DB->request(['FROM' => \NetworkEquipmentType::getTable(), 'WHERE' => ['name' => 'Networking']])->next();
+      $ctypes = $DB->request(['FROM' => \NetworkEquipmentType::getTable(), 'WHERE' => ['name' => 'Networking']])->current();
       $this->array($ctypes);
       $types_id = $ctypes['id'];
 
-      $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Hewlett-Packard']])->next();
+      $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Hewlett-Packard']])->current();
       $this->array($cmanuf);
       $manufacturers_id = $cmanuf['id'];
 
-      /*$cloc = $DB->request(['FROM' => \Location::getTable(), 'WHERE' => ['name' => 'paris.pa3']])->next();
+      /*$cloc = $DB->request(['FROM' => \Location::getTable(), 'WHERE' => ['name' => 'paris.pa3']])->current();
       $this->array($cloc);
       $locations_id = $cloc['id'];*/
       $locations_id = 0;
@@ -3260,10 +3260,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
       global $DB;
       //check created agent
-      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->next();
+      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
       $agents = $DB->request(['FROM' => \Agent::getTable()]);
       $this->integer(count($agents))->isIdenticalTo(1);
-      $agent = $agents->next();
+      $agent = $agents->current();
       $this->array($agent)
          ->string['deviceid']->isIdenticalTo('CH-GV1-DSI-WLC-INSID-1-2020-12-31-11-28-51')
          ->string['name']->isIdenticalTo('CH-GV1-DSI-WLC-INSID-1-2020-12-31-11-28-51')
@@ -3272,23 +3272,23 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
 
       //get model, manufacturer, ...
-      $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->next();
+      $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
       $this->array($autoupdatesystems);
       $autoupdatesystems_id = $autoupdatesystems['id'];
 
-      $cmodels = $DB->request(['FROM' => \NetworkEquipmentModel::getTable(), 'WHERE' => ['name' => 'CT5520']])->next();
+      $cmodels = $DB->request(['FROM' => \NetworkEquipmentModel::getTable(), 'WHERE' => ['name' => 'CT5520']])->current();
       $this->array($cmodels);
       $models_id = $cmodels['id'];
 
-      $ctypes = $DB->request(['FROM' => \NetworkEquipmentType::getTable(), 'WHERE' => ['name' => 'Networking']])->next();
+      $ctypes = $DB->request(['FROM' => \NetworkEquipmentType::getTable(), 'WHERE' => ['name' => 'Networking']])->current();
       $this->array($ctypes);
       $types_id = $ctypes['id'];
 
-      $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Cisco']])->next();
+      $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Cisco']])->current();
       $this->array($cmanuf);
       $manufacturers_id = $cmanuf['id'];
 
-      $cloc = $DB->request(['FROM' => \Location::getTable(), 'WHERE' => ['name' => 'MERY']])->next();
+      $cloc = $DB->request(['FROM' => \Location::getTable(), 'WHERE' => ['name' => 'MERY']])->current();
       $this->array($cloc);
       $locations_id = $cloc['id'];
 
@@ -3609,10 +3609,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
       global $DB;
       //check created agent
-      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->next();
+      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
       $agents = $DB->request(['FROM' => \Agent::getTable()]);
       $this->integer(count($agents))->isIdenticalTo(1);
-      $agent = $agents->next();
+      $agent = $agents->current();
       $this->array($agent)
          ->string['deviceid']->isIdenticalTo('DGS-3420-52T-2020-12-31-11-28-51')
          ->string['name']->isIdenticalTo('DGS-3420-52T-2020-12-31-11-28-51')
@@ -3621,23 +3621,23 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
 
       //get model, manufacturer, ...
-      $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->next();
+      $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
       $this->array($autoupdatesystems);
       $autoupdatesystems_id = $autoupdatesystems['id'];
 
-      $cmodels = $DB->request(['FROM' => \NetworkEquipmentModel::getTable(), 'WHERE' => ['name' => 'DGS-3420-52T']])->next();
+      $cmodels = $DB->request(['FROM' => \NetworkEquipmentModel::getTable(), 'WHERE' => ['name' => 'DGS-3420-52T']])->current();
       $this->array($cmodels);
       $models_id = $cmodels['id'];
 
-      $ctypes = $DB->request(['FROM' => \NetworkEquipmentType::getTable(), 'WHERE' => ['name' => 'Networking']])->next();
+      $ctypes = $DB->request(['FROM' => \NetworkEquipmentType::getTable(), 'WHERE' => ['name' => 'Networking']])->current();
       $this->array($ctypes);
       $types_id = $ctypes['id'];
 
-      $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'D-Link']])->next();
+      $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'D-Link']])->current();
       $this->array($cmanuf);
       $manufacturers_id = $cmanuf['id'];
 
-      $cloc = $DB->request(['FROM' => \Location::getTable(), 'WHERE' => ['name' => 'WOB Serverraum']])->next();
+      $cloc = $DB->request(['FROM' => \Location::getTable(), 'WHERE' => ['name' => 'WOB Serverraum']])->current();
       $this->array($cloc);
       $locations_id = $cloc['id'];
 
@@ -3957,10 +3957,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
       global $DB;
       //check created agent
-      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->next();
+      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
       $agents = $DB->request(['FROM' => \Agent::getTable()]);
       $this->integer(count($agents))->isIdenticalTo(1);
-      $agent = $agents->next();
+      $agent = $agents->current();
       $this->array($agent)
          ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
          ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
@@ -3976,7 +3976,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       ]);
       $this->integer(count($iterator))->isIdenticalTo(1);
 
-      $result = $iterator->next();
+      $result = $iterator->current();
       $expected = [
          'id' => $result['id'],
          'name' => 'glpixps',
@@ -4091,10 +4091,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
       global $DB;
       //check created agent
-      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->next();
+      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
       $agents = $DB->request(['FROM' => \Agent::getTable()]);
       $this->integer(count($agents))->isIdenticalTo(1);
-      $agent = $agents->next();
+      $agent = $agents->current();
       $this->array($agent)
          ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
          ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
@@ -4110,7 +4110,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       ]);
       $this->integer(count($iterator))->isIdenticalTo(1);
 
-      $result = $iterator->next();
+      $result = $iterator->current();
       $expected = [
          'id' => $result['id'],
          'name' => '',
@@ -4540,10 +4540,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->array($metadata['provider'])->hasSize(0);
 
       //check created agent
-      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->next();
+      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
       $agents = $DB->request(['FROM' => \Agent::getTable()]);
       $this->integer(count($agents))->isIdenticalTo(1);
-      $agent = $agents->next();
+      $agent = $agents->current();
       $this->array($agent)
          ->string['deviceid']->isIdenticalTo('Mi9TPro-TéléphoneM-2019-12-18-14-30-16')
          ->string['name']->isIdenticalTo('Mi9TPro-TéléphoneM-2019-12-18-14-30-16')
@@ -4551,19 +4551,19 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
 
       //get computer models, manufacturer, ...
-      $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->next();
+      $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
       $this->array($autoupdatesystems);
       $autoupdatesystems_id = $autoupdatesystems['id'];
 
-      $cmodels = $DB->request(['FROM' => \PhoneModel::getTable(), 'WHERE' => ['name' => 'Mi 9T Pro']])->next();
+      $cmodels = $DB->request(['FROM' => \PhoneModel::getTable(), 'WHERE' => ['name' => 'Mi 9T Pro']])->current();
       $this->array($cmodels);
       $computermodels_id = $cmodels['id'];
 
-      $ctypes = $DB->request(['FROM' => \PhoneType::getTable(), 'WHERE' => ['name' => 'Mi 9T Pro']])->next();
+      $ctypes = $DB->request(['FROM' => \PhoneType::getTable(), 'WHERE' => ['name' => 'Mi 9T Pro']])->current();
       $this->array($ctypes);
       $computertypes_id = $ctypes['id'];
 
-      $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Xiaomi']])->next();
+      $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Xiaomi']])->current();
       $this->array($cmanuf);
       $manufacturers_id = $cmanuf['id'];
 
@@ -4613,7 +4613,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       //operating system
       $ios = new \Item_OperatingSystem();
       $iterator = $ios->getFromItem($computer);
-      $record = $iterator->next();
+      $record = $iterator->current();
 
       $expected = [
          'assocID' => $record['assocID'],
@@ -4774,7 +4774,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          $this->integer(count($ip_iterator))->isIdenticalTo(count($ips[$port['name']] ?? []));
          if (isset($ips[$port['name']])) {
             //FIXME: missing all ipv6 :(
-            $ip = $ip_iterator->next();
+            $ip = $ip_iterator->current();
             $this->integer((int)$ip['version'])->isIdenticalTo(4);
             $this->string($ip['name'])->isIdenticalTo($ips[$port['name']]['v4']);
          }
@@ -5035,10 +5035,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          ->string['action']->isIdenticalTo('inventory');
 
       //check created agent
-      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->next();
+      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
       $agents = $DB->request(['FROM' => \Agent::getTable()]);
       $this->integer(count($agents))->isIdenticalTo(1);
-      $agent = $agents->next();
+      $agent = $agents->current();
       $this->array($agent)
          ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
          ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')

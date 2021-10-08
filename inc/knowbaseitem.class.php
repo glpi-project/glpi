@@ -1396,7 +1396,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
                   'WHERE'     => $search_where
                ];
                $search_iterator = $DB->request($search_criteria);
-               $numrows_search = $search_iterator->next()['cpt'];
+               $numrows_search = $search_iterator->current()['cpt'];
 
                if ($numrows_search <= 0) {// not result this fulltext try with alternate search
                   $search1 = [/* 1 */   '/\\\"/',

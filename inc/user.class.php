@@ -486,7 +486,7 @@ class User extends CommonDBTM {
 
       $iter = $DB->request($crit);
       if ($iter->numrows()==1) {
-         $row = $iter->next();
+         $row = $iter->current();
          return $this->getFromDB($row['id']);
       }
       return false;
@@ -4579,7 +4579,7 @@ JAVASCRIPT;
 
       //User still exists in DB
       if (count($iterator)) {
-         $result = $iterator->next();
+         $result = $iterator->current();
          return $result['id'];
       } else {
          if ($CFG_GLPI["is_users_auto_add"]) {
@@ -4713,7 +4713,7 @@ JAVASCRIPT;
       ]);
 
       if (count($iterator) == 1) {
-         $row = $iterator->next();
+         $row = $iterator->current();
          return (int)$row['id'];
       }
       return false;
@@ -5100,7 +5100,7 @@ JAVASCRIPT;
             'COUNT'  => 'cpt',
             'FROM'   => self::getTable(),
             'WHERE'  => [$field => $key]
-         ])->next();
+         ])->current();
 
          if ($row['cpt'] == 0) {
             return $key;
@@ -5469,7 +5469,7 @@ JAVASCRIPT;
                'COUNT'  => 'cpt',
             ]
          );
-         $to_notify_count = $DB->request($to_notify_count_request)->next()['cpt'];
+         $to_notify_count = $DB->request($to_notify_count_request)->current()['cpt'];
 
          $notification_data_request  = array_merge(
             $notification_request,

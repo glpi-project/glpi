@@ -445,7 +445,7 @@ class Location extends CommonTreeDropdown {
       unset($criteria['LIMIT']);
 
       $criteria['COUNT'] = 'total';
-      $number = $DB->request($criteria)->next()['total'];
+      $number = $DB->request($criteria)->current()['total'];
 
       // Mini Search engine
       echo "<table class='tab_cadre_fixe'>";

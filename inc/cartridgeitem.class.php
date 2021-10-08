@@ -147,7 +147,7 @@ class CartridgeItem extends CommonDBTM {
          'COUNT'  => 'cpt',
          'FROM'   => 'glpi_cartridges',
          'WHERE'  => ['cartridgeitems_id' => $id]
-      ])->next();
+      ])->current();
       return $result['cpt'];
    }
 

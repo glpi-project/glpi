@@ -65,7 +65,7 @@ class ImpactItem extends CommonDBTM {
          ]
       ]);
 
-      $res = $it->next();
+      $res = $it->current();
       $impact_item = new self();
 
       if ($res) {

@@ -216,7 +216,7 @@ class Reservation extends CommonDBChild {
                'reservationitems_id'   => $reservationitems_id,
                'group'                 => $rand
             ]
-         ])->next();
+         ])->current();
          $count = (int)$result['cpt'];
       } while ($count > 0);
 
@@ -251,7 +251,7 @@ class Reservation extends CommonDBChild {
             'end'                   => ['>', $this->fields['begin']],
             'begin'                 => ['<', $this->fields['end']]
          ]
-      ])->next();
+      ])->current();
       return $result['cpt'] > 0;
    }
 

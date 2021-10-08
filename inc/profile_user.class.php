@@ -863,7 +863,7 @@ class Profile_User extends CommonDBRelation {
             'users_id'     => $user_ID,
             'profiles_id'  => $profile_id
          ]
-      ])->next();
+      ])->current();
       return $result['cpt'];
    }
 
@@ -1001,7 +1001,7 @@ class Profile_User extends CommonDBRelation {
                            User::getTable() . '.is_deleted'    => 0,
                            $this->getTable() . '.entities_id'  => $item->getID()
                         ]
-                     ])->next();
+                     ])->current();
                      $nb        = $count['cpt'];
                   }
                   return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);

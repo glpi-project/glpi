@@ -731,7 +731,7 @@ function update090xto910() {
                   'users_id' => $data['users_id'],
                   'itemtype' => $type
                ]
-            ])->next();
+            ])->current();
             $rank = $rank ? $rank['max_rank']++ : 1;
 
             foreach ($tab as $newval) {

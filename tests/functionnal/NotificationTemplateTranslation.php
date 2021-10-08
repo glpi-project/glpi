@@ -47,7 +47,7 @@ class NotificationTemplateTranslation extends DbTestCase {
          'LIMIT'  => 1
       ]);
 
-      $data = $iterator->next();
+      $data = $iterator->current();
       $translation = new \NotificationTemplateTranslation();
       $translation->getFromDB($data['id']);
       $added = $translation->clone();
@@ -74,7 +74,7 @@ class NotificationTemplateTranslation extends DbTestCase {
          'LIMIT'  => 1
       ]);
 
-      $data = $iterator->next();
+      $data = $iterator->current();
       $template = new \NotificationTemplate();
       $template->getFromDB($data['notificationtemplates_id']);
       $added = $template->clone();

@@ -220,7 +220,7 @@ class ContractCost extends CommonDBChild {
          'WHERE'  => ['contracts_id' => $contracts_id],
          'ORDER'  => ['end_date DESC', 'id DESC']
       ]);
-      if ($result = $iterator->next()) {
+      if ($result = $iterator->current()) {
          return $result;
       }
 

@@ -1977,7 +1977,7 @@ class Rule extends CommonDBTM {
       ]);
 
       if (count($iterator)) {
-         $data = $iterator->next();
+         $data = $iterator->current();
          return $data["rank"] + 1;
       }
       return 0;

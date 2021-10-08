@@ -631,7 +631,7 @@ class RuleCollection extends CommonDBTM {
 
       $iterator = $DB->request($criteria);
       if (count($iterator) == 1) {
-         $result = $iterator->next();
+         $result = $iterator->current();
          $current_rank = $result['ranking'];
          // Search rules to switch
          $criteria = [
@@ -660,7 +660,7 @@ class RuleCollection extends CommonDBTM {
 
          $iterator2 = $DB->request($criteria);
          if (count($iterator2) == 1) {
-            $result2 = $iterator2->next();
+            $result2 = $iterator2->current();
             $other_ID = $result2['id'];
             $new_rank = $result2['ranking'];
             echo $current_rank.' '.$ID.'<br>';
@@ -779,7 +779,7 @@ class RuleCollection extends CommonDBTM {
             'SELECT' => ['MAX' => 'ranking AS maxi'],
             'FROM'   => 'glpi_rules',
             'WHERE'  => ['sub_type' => $this->getRuleClassName()]
-         ])->next();
+         ])->current();
          $rank   = $result['maxi'];
       } else {
          // Move before all

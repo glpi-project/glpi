@@ -542,7 +542,7 @@ class NotificationTemplate extends CommonDBTM {
          'LIMIT'  => 1
       ]);
       if (count($iterator)) {
-         return $iterator->next();
+         return $iterator->current();
       }
 
       //No template found at all!

@@ -101,7 +101,7 @@ class SavedSearch_User extends CommonDBRelation {
                             'WHERE'  => ['users_id' => $users_id,
                                          'itemtype' => $itemtype]]);
       if (count($iter)) {
-         $row = $iter->next();
+         $row = $iter->current();
          // Load default bookmark for this $itemtype
          $bookmark = new SavedSearch();
          // Only get data for bookmarks

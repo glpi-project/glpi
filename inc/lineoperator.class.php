@@ -102,7 +102,7 @@ class LineOperator extends CommonDropdown {
             'mcc' => $input['mcc'],
             'mnc' => $input['mnc']
          ]
-      ])->next();
+      ])->current();
 
       if ($result['cpt'] > 0) {
          Session::addMessageAfterRedirect(

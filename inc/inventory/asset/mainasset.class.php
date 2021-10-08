@@ -223,7 +223,7 @@ abstract class MainAsset extends InventoryAsset
             ]);
 
             if (count($iterator)) {
-               $result = $iterator->next();
+               $result = $iterator->current();
                $val->users_id = $result['id'];
             } else {
                $val->users_id = 0;
@@ -276,7 +276,7 @@ abstract class MainAsset extends InventoryAsset
                      ] + $where_add,
                      'LIMIT'  => 1
                   ]);
-                  if ($row = $iterator->next()) {
+                  if ($row = $iterator->current()) {
                      $val->users_id = $row['id'];
                   }
                }

@@ -111,7 +111,7 @@ class Provider {
       );
       $iterator = $DB->request($criteria);
 
-      $result   = $iterator->next();
+      $result   = $iterator->current();
       $nb_items = $result['cpt'];
 
       $search_criteria = [
@@ -400,7 +400,7 @@ class Provider {
       ]);
 
       $iterator   = $DBread->request($query_criteria);
-      $result     = $iterator->next();
+      $result     = $iterator->current();
       $nb_tickets = $result['cpt'];
 
       return [

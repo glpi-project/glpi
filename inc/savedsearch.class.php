@@ -655,7 +655,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
             ]
          ]);
 
-         if ($result = $iterator->next()) {
+         if ($result = $iterator->current()) {
             // already exists update it
             $updateID = $result['id'];
             $dd->update([
@@ -697,7 +697,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
             ]
          ]);
 
-         if ($result = $iterator->next()) {
+         if ($result = $iterator->current()) {
             // already exists delete it
             $deleteID = $result['id'];
             $dd->delete(['id' => $deleteID]);

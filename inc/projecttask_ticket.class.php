@@ -129,7 +129,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
          'WHERE'        => ['projecttasks_id' => $projecttasks_id]
       ]);
 
-      if ($row = $iterator->next()) {
+      if ($row = $iterator->current()) {
          return $row['duration'];
       }
       return 0;

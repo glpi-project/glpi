@@ -345,7 +345,7 @@ abstract class CommonITILCost extends CommonDBChild {
          'SELECT' => ['SUM' => 'actiontime AS sumtime'],
          'FROM'   => $this->getTable(),
          'WHERE'  => [static::$items_id => $items_id]
-      ])->next();
+      ])->current();
       return $result['sumtime'];
    }
 
@@ -367,7 +367,7 @@ abstract class CommonITILCost extends CommonDBChild {
             'end_date DESC',
             'id DESC'
          ]
-      ])->next();
+      ])->current();
       return $result;
    }
 

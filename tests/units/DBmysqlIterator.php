@@ -751,7 +751,7 @@ class DBmysqlIterator extends DbTestCase {
       $it = $DB->request('glpi_configs', ['context' => 'core', 'name' => 'version']);
       $this->integer($it->numrows())->isIdenticalTo(1);
       $this->integer(count($it))->isIdenticalTo(1);
-      $row = $it->next();
+      $row = $it->current();
       $key = $it->key();
       $this->integer($row['id'])->isIdenticalTo($key);
 

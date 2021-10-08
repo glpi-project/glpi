@@ -154,7 +154,7 @@ class Printer extends AbstractInventoryAsset {
       ]);
       $this->integer(count($iterator))->isIdenticalTo(1);
 
-      $result = $iterator->next();
+      $result = $iterator->current();
 
       unset($result['id']);
       unset($result['date']);

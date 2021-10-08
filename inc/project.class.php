@@ -1899,7 +1899,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
             'WHERE'     => ['id' => $current_id]
          ]);
          if ($iterator->count()) {
-            $data = $iterator->next();
+            $data = $iterator->current();
             $items[$data['id']] = $data['name'];
          }
       }
@@ -2419,7 +2419,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       ]);
 
       if ($iterator->count()) {
-         $avg = $iterator->next()['percent_done'];
+         $avg = $iterator->current()['percent_done'];
          $percent_done = is_null($avg) ? 0 : $avg;
       } else {
          $percent_done = 0;

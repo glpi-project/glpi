@@ -851,7 +851,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          'WHERE'     => [self::getTable() . '.id' => $projecttasks_id]
       ]);
 
-      if ($row = $iterator->next()) {
+      if ($row = $iterator->current()) {
          $time += $row['duration'];
       }
       return $time;
@@ -1925,7 +1925,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          ]
       ]);
       if ($iterator->count()) {
-         $percent_done = $iterator->next()['percent_done'];
+         $percent_done = $iterator->current()['percent_done'];
       } else {
          $percent_done = 0;
       }

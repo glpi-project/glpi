@@ -86,7 +86,7 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField {
             ]
          ]);
          if (count($iterator)) {
-            $result = $iterator->next();
+            $result = $iterator->current();
             $a = new static();
             $a->delete(['id' => $result['id']]);
          }

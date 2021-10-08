@@ -275,7 +275,7 @@ class Entity extends CommonTreeDropdown {
             'MAX('.$DB->quoteName('id').')+1 AS newID'
          ),
          'FROM'   => $this->getTable()
-      ])->next();
+      ])->current();
       $input['id'] = $result['newID'];
 
       $input['max_closedate'] = $_SESSION["glpi_currenttime"];
@@ -2254,7 +2254,7 @@ class Entity extends CommonTreeDropdown {
       ]);
 
       if (count($iterator) == 1) {
-         $result = $iterator->next();
+         $result = $iterator->current();
          return $result['id'];
       }
       return -1;

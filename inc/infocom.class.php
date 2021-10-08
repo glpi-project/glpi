@@ -714,7 +714,7 @@ class Infocom extends CommonDBChild {
             'itemtype'  => $itemtype,
             'items_id'  => $device_id
          ]
-      ])->next();
+      ])->current();
 
       $add    = "add";
       $text   = __('Add');

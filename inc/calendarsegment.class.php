@@ -238,7 +238,7 @@ class CalendarSegment extends CommonDBChild {
             'calendars_id' => $calendars_id,
             'day'          => $day
          ]
-      ])->next();
+      ])->current();
       return $result['minb'];
    }
 
@@ -262,7 +262,7 @@ class CalendarSegment extends CommonDBChild {
             'calendars_id' => $calendars_id,
             'day'          => $day
          ]
-      ])->next();
+      ])->current();
       return $result['mend'];
    }
 
@@ -289,7 +289,7 @@ class CalendarSegment extends CommonDBChild {
             'begin'        => ['<=', $hour],
             'end'          => ['>=', $hour]
          ]
-      ])->next();
+      ])->current();
       return $result['cpt'] > 0;
    }
 

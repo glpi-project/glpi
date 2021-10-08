@@ -145,7 +145,7 @@ class Auth extends CommonGLPI {
          return self::USER_DOESNT_EXIST;
       } else {
          // Get the first result...
-         $row = $result->next();
+         $row = $result->current();
 
          // Check if we have a password...
          if (empty($row['password'])) {
@@ -399,7 +399,7 @@ class Auth extends CommonGLPI {
 
       // Have we a result ?
       if ($result->numrows() == 1) {
-         $row = $result->next();
+         $row = $result->current();
          $password_db = $row['password'];
 
          if (self::checkPassword($password, $password_db)) {
@@ -1031,7 +1031,7 @@ class Auth extends CommonGLPI {
          'WHERE'  => [
             'is_active' => 1
          ]
-      ])->next();
+      ])->current();
 
       if ($result['cpt'] > 0) {
          $methods[self::LDAP]     = __('Authentication on a LDAP directory');
@@ -1044,7 +1044,7 @@ class Auth extends CommonGLPI {
          'WHERE'  => [
             'is_active' => 1
          ]
-      ])->next();
+      ])->current();
 
       if ($result['cpt'] > 0) {
          $methods[self::MAIL] = __('Authentication on mail server');

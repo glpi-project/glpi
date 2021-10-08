@@ -594,7 +594,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
             'status'             => self::WAITING,
             'users_id_validate'  => $users_id
          ]
-      ])->next();
+      ])->current();
 
       return $row['cpt'];
    }
@@ -616,7 +616,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
             static::$items_id => $items_id,
             'status'          => $status
          ]
-      ])->next();
+      ])->current();
 
       return $row['cpt'];
    }

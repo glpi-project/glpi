@@ -277,7 +277,7 @@ JAVASCRIPT;
          ]
       ]);
 
-      $settings = $dr_iterator->count() === 1 ? $dr_iterator->next()['filter'] : null;
+      $settings = $dr_iterator->count() === 1 ? $dr_iterator->current()['filter'] : null;
 
       return is_string($settings) ? $settings : '{}';
    }

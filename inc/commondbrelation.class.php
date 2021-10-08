@@ -196,7 +196,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       if ($criteria !== null) {
          $iterator = $DB->request($criteria);
          if (count($iterator) == 1) {
-            $line = $iterator->next();
+            $line = $iterator->current();
             if ($line['is_1'] == $line['is_2']) {
                return false;
             }

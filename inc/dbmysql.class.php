@@ -256,7 +256,7 @@ class DBmysql {
                   'context'   => 'core',
                   'name'      => 'timezone'
                 ]
-            ])->next();
+            ])->current();
          }
          $zone = !empty($conf_tz['value']) ? $conf_tz['value'] : date_default_timezone_get();
       }
@@ -835,7 +835,7 @@ class DBmysql {
       $ret = [];
       $req = $this->request("SELECT @@sql_mode as mode, @@version AS vers, @@version_comment AS stype");
 
-      if (($data = $req->next())) {
+      if (($data = $req->current())) {
          if ($data['stype']) {
             $ret['Server Software'] = $data['stype'];
          }
@@ -1379,7 +1379,7 @@ class DBmysql {
     * @return string
     */
    public function getVersion() {
-      $req = $this->request('SELECT version()')->next();
+      $req = $this->request('SELECT version()')->current();
       $raw = $req['version()'];
       return $raw;
    }
@@ -1486,7 +1486,7 @@ class DBmysql {
          'FROM'   => 'mysql.time_zone_name',
       ];
       $iterator = $this->request($criteria);
-      $result = $iterator->next();
+      $result = $iterator->current();
       if ($result['cpt'] == 0) {
          $msg = __('Timezones seems not loaded, see https://glpi-install.readthedocs.io/en/latest/timezones.html.');
          return false;
@@ -1558,7 +1558,7 @@ class DBmysql {
               'information_schema.columns.table_name'   => ['LIKE', 'glpi\_%'],
               'information_schema.columns.data_type'    => ['datetime']
            ]
-       ])->next();
+       ])->current();
        return (int)$result['cpt'];
    }
 

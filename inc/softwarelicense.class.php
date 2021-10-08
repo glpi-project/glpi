@@ -792,7 +792,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'WHERE'  => [
             'softwareversions_id_buy'  => $softwareversions_id
          ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', $entity)
-      ])->next();
+      ])->current();
 
       return $result['cpt'];
    }
@@ -818,7 +818,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', '', true)
       ]);
 
-      if ($line = $iterator->next()) {
+      if ($line = $iterator->current()) {
          if ($line['cpt'] > 0) {
             // At least 1 unlimited license, means unlimited
             return -1;
@@ -833,7 +833,7 @@ class SoftwareLicense extends CommonTreeDropdown {
             'is_template'  => 0,
             'number'       => ['>', 0]
          ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', '', true)
-      ])->next();
+      ])->current();
       return ($result['numsum'] ? $result['numsum'] : 0);
    }
 

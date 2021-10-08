@@ -104,7 +104,7 @@ class Dashboard extends \CommonDBTM {
          'LIMIT' => 1
       ]);
       if (count($iterator) == 1) {
-         $this->fields = $iterator->next();
+         $this->fields = $iterator->current();
          $this->key    = $ID;
          $this->post_getFromDB();
          return true;

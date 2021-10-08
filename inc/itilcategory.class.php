@@ -317,7 +317,7 @@ class ITILCategory extends CommonTreeDropdown {
       ]);
 
       if (count($iterator) == 1) {
-         $result = $iterator->next();
+         $result = $iterator->current();
          return $result['id'];
       }
       return -1;

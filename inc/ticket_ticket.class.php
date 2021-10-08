@@ -352,7 +352,7 @@ class Ticket_Ticket extends CommonDBRelation {
                'tickets.status'  => Ticket::getClosedStatusArray() + Ticket::getSolvedStatusArray()
             ]
          ]
-      ])->next();
+      ])->current();
       return (int)$result['cpt'];
    }
 

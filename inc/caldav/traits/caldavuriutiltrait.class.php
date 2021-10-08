@@ -226,7 +226,7 @@ trait CalDAVUriUtilTrait {
          return null;
       }
 
-      $item_specs = $items_iterator->next();
+      $item_specs = $items_iterator->current();
       if (!is_a($item_specs['itemtype'], CalDAVCompatibleItemInterface::class, true)) {
          return null;
       }

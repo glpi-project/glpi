@@ -2643,7 +2643,7 @@ class Config extends CommonDBTM {
          'SELECT' => [$select],
          'FROM'   => $table,
          'WHERE'  => $where
-      ])->next();
+      ])->current();
 
       return trim($row['version']);
    }
@@ -2700,7 +2700,7 @@ class Config extends CommonDBTM {
 
       if ($iterator->count() === 1) {
          // 1 row = 0.78 to 0.84 config table schema
-         $values = $iterator->next();
+         $values = $iterator->current();
       } else {
          // multiple rows = 0.85+ config
          $values = [];

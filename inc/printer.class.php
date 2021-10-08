@@ -620,7 +620,7 @@ class Printer  extends CommonDBTM {
 
       if (count($iterator) > 0) {
          //Printer already exists for this entity, get its ID
-         $data = $iterator->next();
+         $data = $iterator->current();
          $ID   = $data["id"];
 
          // restore software
@@ -667,7 +667,7 @@ class Printer  extends CommonDBTM {
          ] + getEntitiesRestrictCriteria(self::getTable, 'entities_id', $entity, true)
       ]);
 
-      if ($printer = $iterator->next()) {
+      if ($printer = $iterator->current()) {
          $id = $printer["id"];
       } else {
          $input["name"]             = $name;

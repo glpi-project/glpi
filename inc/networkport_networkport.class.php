@@ -151,7 +151,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
             'networkports_id_1'  => null
          ],
          'LIMIT'     => 1
-      ])->next();
+      ])->current();
 
       $free_id = $result['id'] ?? 0;
       if (!$free_id) {

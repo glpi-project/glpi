@@ -755,7 +755,7 @@ class Software extends CommonDBTM {
 
       if (count($iterator)) {
          //Software already exists for this entity, get his ID
-         $data = $iterator->next();
+         $data = $iterator->current();
          $ID   = $data["id"];
 
          // restore software

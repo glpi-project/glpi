@@ -4517,7 +4517,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'SELECT' => ['SUM' => 'actiontime as sumtime'],
          'FROM'   => $tasktable,
          'WHERE'  => [$this->getForeignKeyField() => $ID]
-      ])->next();
+      ])->current();
       $sum = $result['sumtime'];
       if (!is_null($sum)) {
          $tot += $sum;
@@ -6508,7 +6508,7 @@ abstract class CommonITILObject extends CommonDBTM {
             'itemtype'  => $this->getType(),
             'items_id'  => $this->fields['id']
          ] + $RESTRICT
-      ])->next();
+      ])->current();
 
       return $result['cpt'];
    }
@@ -6538,7 +6538,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'WHERE'  => [
             $this->getForeignKeyField()   => $this->fields['id']
          ] + $RESTRICT
-      ])->next();
+      ])->current();
       return (int)$row['cpt'];
    }
 
@@ -7689,7 +7689,7 @@ abstract class CommonITILObject extends CommonDBTM {
       ];
 
       $req = $DB->request($criteria);
-      if ($row = $req->next()) {
+      if ($row = $req->current()) {
          $stats['total_duration'] = $row['actiontime'];
       }
 
