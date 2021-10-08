@@ -1,23 +1,12 @@
-Return-Path: normal@glpi-project.org
-Received: by mail.glpi-project.org with local (envelope-from <unittests@glpi-project.org>)
-	id 1mY3E4-0000m3-1o
-	for unittests@glpi-project.org; Wed, 06 Oct 2021 12:28:36 +0300
-Received: by mail.glpi-project.org with HTTP;
-	Wed, 06 Oct 2021 12:28:35 +0300
-From: Normal User <normal@glpi-project.org>
-To: unittests@glpi-project.org
-Subject: =?UTF-8?B?dGVzdCAzIGF0dGFjaG1lbnRzIHdpdGggZmlsZW5hbWUgd2l0aG91dCBleHRl?=
- =?UTF-8?B?bnNpb25z?=
-MIME-Version: 1.0
-X-Mailer: Mail.Ru Mailer 1.0
-X-SenderField-Remind: 0
+
 Date: Wed, 06 Oct 2021 12:28:35 +0300
-Reply-To: Tech Ni Cian <tech@glpi-project.org>
-X-Priority: 3 (Normal)
-Message-ID: <1633512515.935376498@f314.i.glpi-project.org>
+From: Normal User <normal@glpi-project.org>
+To: GLPI debug <unittests@glpi-project.org>
+Message-ID: <1633512515.935376498.JavaMail.zimbra@glpi-project.org>
+Subject: 28 Multiple attachments no extension
+MIME-Version: 1.0
 Content-Type: multipart/mixed;
-	boundary="----830d948E4F132F127Bf05d404C2420cC-6bgzLovPanysmu4y-1633512515"
-X-Mailru-Intl-Transport: d,edb490e
+Content-Transfer-Encoding: base64
 
 
 ------830d948E4F132F127Bf05d404C2420cC-6bgzLovPanysmu4y-1633512515
