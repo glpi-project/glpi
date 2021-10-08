@@ -14,6 +14,16 @@ body:
         * Keep this tracker in ENGLISH. If you want support in your language, the [community forum](https://forum.glpi-project.org) is the best place.
 
         The GLPI team.
+  - type: markdown
+    attributes:
+      value: |
+        ## Professional Support
+
+        We do not guarantee any processing / resolution time for community issues.
+
+        If you need a quick fix or any guarantee, you should consider to buy a GLPI Network Subscription.
+
+        More information here: https://glpi-project.org/subscriptions/
   - type: checkboxes
     id: terms
     attributes:
