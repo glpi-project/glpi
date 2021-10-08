@@ -593,7 +593,8 @@ class Budget extends CommonDropdown{
                      "</td></tr>";
 
             } else if ($nb) {
-               for ($prem=true; $data = $iterator->next(); $prem=false) {
+               for ($prem=true; $iterator->valid(); $prem=false) {
+                  $data = $iterator->current();
                   $name = NOT_AVAILABLE;
                   if ($item->getFromDB($data["id"])) {
                      if ($item instanceof Item_Devices) {
@@ -625,6 +626,7 @@ class Budget extends CommonDropdown{
                                                 :"-");
 
                   echo "</td></tr>";
+                  $iterator->next();
                }
             }
             $num += $nb;

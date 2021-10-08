@@ -339,7 +339,8 @@ class SoftwareVersion extends CommonDBChild {
          echo "<th>".__('Comments')."</th>";
          echo "</tr>\n";
 
-         for ($tot = $nb = 0; $data = $iterator->next(); $tot += $nb) {
+         $tot = 0;
+         foreach ($iterator as $data) {
             Session::addToNavigateListItems('SoftwareVersion', $data['id']);
             $nb = Item_SoftwareVersion::countForVersion($data['id']);
 
@@ -352,6 +353,8 @@ class SoftwareVersion extends CommonDBChild {
             echo "</td>";
             echo "<td class='numeric'>$nb</td>";
             echo "<td>".nl2br($data['comment'])."</td></tr>\n";
+
+            $tot += $nb;
          }
 
          echo "<tr class='tab_bg_1 noHover'><td class='right b' colspan='3'>".__('Total')."</td>";

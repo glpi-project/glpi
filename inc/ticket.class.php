@@ -4939,7 +4939,7 @@ JAVASCRIPT;
          ];
 
          $i = 0;
-         while ($i < $displayed_row_count && ($data = $iterator->next())) {
+         foreach ($iterator as $data) {
             $showprivate = false;
             if (Session::haveRight('followup', ITILFollowup::SEEPRIVATE)) {
                $showprivate = true;
@@ -5021,8 +5021,12 @@ JAVASCRIPT;
                   ]
                ];
             }
-            $i++;
             $twig_params['rows'][] = $row;
+
+            $i++;
+            if ($i == $displayed_row_count) {
+               break;
+            }
          }
          $output = TemplateRenderer::getInstance()->render('components/table.html.twig', $twig_params);
          if ($display) {

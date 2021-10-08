@@ -954,7 +954,7 @@ class NetworkPort extends CommonDBChild {
                            count($vlans)
                         );
                      } else {
-                        while ($row = $vlans->next()) {
+                        foreach ($vlans as $row) {
                            $output .= $row['name'];
                            if (!empty($row['tag'])) {
                               $output .= ' [' . $row['tag'] . ']';
@@ -997,7 +997,7 @@ class NetworkPort extends CommonDBChild {
                            ]);
 
                            $list_ports = [];
-                           while ($hrow = $hub_ports->next()) {
+                           foreach ($hub_ports as $hrow) {
                               $npo = NetworkPort::getContact($hrow['id']);
                               $list_ports[] = $npo;
                            }
@@ -1029,7 +1029,7 @@ class NetworkPort extends CommonDBChild {
                                  count($hub_equipments)
                               ) . '</div>';
                            } else {
-                              while ($hrow = $hub_equipments->next()) {
+                              foreach ($hub_equipments as $hrow) {
                                  $hub = new Unmanaged();
                                  $hub->getFromDB($hrow['id']);
                                  $hub->fields['mac'] = $hrow['mac'];

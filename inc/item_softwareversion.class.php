@@ -773,7 +773,8 @@ class Item_SoftwareVersion extends CommonDBRelation {
             echo "<td>".Html::convDate($data['date_install'])."</td>";
             echo "</tr>\n";
 
-         } while ($data = $iterator->next());
+            $iterator->next();
+         } while ($data = $iterator->current());
 
          echo $header_begin.$header_bottom.$header_end;
 
@@ -1026,7 +1027,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
          $header_end .= "</tr>\n";
          echo $header_begin.$header_top.$header_end;
 
-         for ($row=0; $data = $iterator->next(); $row++) {
+         for ($row=0; $data = $iterator->current(); $row++) {
 
             if (($row >= $start) && ($row < ($start + $_SESSION['glpilist_limit']))) {
                $licids = self::softwareByCategory($data, $itemtype, $items_id, $withtemplate,
@@ -1041,6 +1042,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
                Session::addToNavigateListItems('SoftwareLicense', $licid);
                $installed[] = $licid;
             }
+            $iterator->next();
          }
 
          echo $header_begin.$header_bottom.$header_end;
