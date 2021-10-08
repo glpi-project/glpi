@@ -38,7 +38,11 @@ if (!isset($_REQUEST["action"])) {
    exit;
 }
 
-if (!isset($_REQUEST['embed']) || !$_REQUEST['embed']) {
+// Parse stringified JSON payload (Used to preserve integers)
+$request_data = array_merge($_REQUEST, json_decode($_UREQUEST['data'], true));
+unset($request_data['data']);
+
+if (!isset($request_data['embed']) || !$request_data['embed']) {
    Session::checkCentralAccess();
 
 } else if (!in_array($_REQUEST['action'], [
@@ -123,9 +127,6 @@ switch ($_REQUEST['action']) {
    case 'get_cards':
       session_write_close();
       header("Content-Type: application/json; charset=UTF-8");
-      // Parse stringified JSON payload (Used to preserve integers)
-      $request_data = array_merge($_REQUEST, json_decode($_UREQUEST['data'], true));
-      unset($request_data['data']);
       $cards = $request_data['cards'];
       unset($request_data['cards']);
       $result = [];
