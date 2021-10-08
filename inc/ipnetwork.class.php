@@ -615,7 +615,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       ]);
 
       $returnValues = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if (count($fields) > 1) {
             $returnValue = [];
             foreach ($fields as $field) {
@@ -886,7 +886,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
       $network = new self();
 
-      while ($network_entry = $iterator->next()) {
+      foreach ($iterator as $network_entry) {
          if ($network->getFromDB($network_entry['id'])) {
             $input = $network->fields;
             // ... update it by its own entries

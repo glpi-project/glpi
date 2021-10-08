@@ -110,7 +110,7 @@ class Volume extends InventoryAsset
             'is_dynamic'   => 1
          ]
       ]);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $dbid = $data['id'];
          unset($data['id']);
          $db_existing[$dbid] = array_map('strtolower', $data);

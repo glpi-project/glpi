@@ -63,7 +63,7 @@ class DataFactory {
                'is_deleted' => 0
             ] + getEntitiesRestrictCriteria('glpi_projects', '', '', true)
          ]);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $this->getItemsForProject($itemArray, $data['id']);
          }
       } else if ($project->getFromDB($id)) {
@@ -112,7 +112,7 @@ class DataFactory {
       global $DB;
       $iterator = $DB->request('glpi_projects', ['projects_id' => $projectId, 'is_template' => 0, 'is_deleted' => 0]);
 
-      while ($record = $iterator->next()) {
+      foreach ($iterator as $record) {
          $proj = new \Project();
          $proj->getFromDB($record["id"]);
 

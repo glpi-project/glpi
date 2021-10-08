@@ -2675,7 +2675,7 @@ class Config extends CommonDBTM {
 
       $iterator = $DB->request($query);
       $result = [];
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          $result[$line['name']] = $line['value'];
       }
       return $result;
@@ -2704,7 +2704,7 @@ class Config extends CommonDBTM {
       } else {
          // multiple rows = 0.85+ config
          $values = [];
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             if ('core' !== $row['context']) {
                continue;
             }

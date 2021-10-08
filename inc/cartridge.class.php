@@ -736,7 +736,7 @@ class Cartridge extends CommonDBRelation {
       $pages = [];
 
       if ($number) {
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $date_in  = Html::convDate($data["date_in"]);
             $date_use = Html::convDate($data["date_use"]);
             $date_out = Html::convDate($data["date_out"]);
@@ -1013,7 +1013,7 @@ class Cartridge extends CommonDBRelation {
       $pages_printed    = 0;
       $nb_pages_printed = 0;
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $cart_id    = $data["id"];
          $typename   = $data["typename"];
          $date_in    = Html::convDate($data["date_in"]);

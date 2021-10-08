@@ -64,7 +64,7 @@ class Entity_RSSFeed extends CommonDBRelation {
          'WHERE'  => ['rssfeeds_id' => $rssfeeds_id]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $ent[$data['entities_id']][] = $data;
       }
       return $ent;

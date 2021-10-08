@@ -299,7 +299,7 @@ class Event extends CommonDBTM {
          'rows'   => []
       ];
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $items_id = $data['items_id'];
          $type     = $data['type'];
          $date     = $data['date'];

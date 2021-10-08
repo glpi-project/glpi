@@ -172,7 +172,7 @@ class Appliance_Item_Relation extends CommonDBRelation {
       ]);
 
       $relations = [];
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $itemtype = $row['itemtype'];
          $item = new $itemtype;
          $item->getFromDB($row['items_id']);

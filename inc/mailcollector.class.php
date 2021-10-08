@@ -1820,7 +1820,7 @@ class MailCollector  extends CommonDBTM {
       ]);
 
       $items = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $items[$data['id']]  = $data;
       }
 

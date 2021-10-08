@@ -73,7 +73,7 @@ class Supplier_Ticket extends CommonITILActor {
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          return true;
       }
       return false;

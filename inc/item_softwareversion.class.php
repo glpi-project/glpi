@@ -279,7 +279,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
       ]);
 
       $target_types = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $target_types[] = $data['itemtype'];
       }
 
@@ -347,7 +347,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
       ]);
 
       $target_types = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $target_types[] = $data['itemtype'];
       }
 
@@ -825,7 +825,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
          'ORDER'  => ['completename']
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $nb = self::countForVersion($softwareversions_id, $data['id']);
          if ($nb > 0) {
             echo "<tr class='tab_bg_2'><td>" . $data["completename"] . "</td>";
@@ -1264,7 +1264,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
       ]);
 
       $licids = [];
-      while ($licdata = $iterator->next()) {
+      foreach ($iterator as $licdata) {
          $licids[]  = $licdata['id'];
          $licserial = $licdata['serial'];
 

@@ -1671,7 +1671,7 @@ class Auth extends CommonGLPI {
             ],
             'ORDER'  => ['name']
          ]);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $elements['ldap-'.$data['id']] = $data['name'];
             if ($data['is_default'] == 1) {
                $elements['_default'] = 'ldap-'.$data['id'];
@@ -1687,7 +1687,7 @@ class Auth extends CommonGLPI {
          ],
          'ORDER'  => ['name']
       ]);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $elements['mail-'.$data['id']] = $data['name'];
       }
 

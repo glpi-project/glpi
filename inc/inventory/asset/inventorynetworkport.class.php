@@ -316,7 +316,7 @@ trait InventoryNetworkPort {
             'is_dynamic'   => 1
          ]
       ]);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $id = $row['id'];
          unset($row['id']);
          if (is_null($row['mac'])) {
@@ -411,7 +411,7 @@ trait InventoryNetworkPort {
                   ]
                ]);
 
-               while ($db_data = $iterator->next()) {
+               foreach ($iterator as $db_data) {
                   $db_addresses[$db_data['id']] = $db_data['name'];
                }
 

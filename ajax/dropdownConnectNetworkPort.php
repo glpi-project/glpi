@@ -117,7 +117,7 @@ if (class_exists($_POST["itemtype"])
    echo "<br>";
 
    $values = [];
-   while ($data = $iterator->next()) {
+   foreach ($iterator as $data) {
       // Device name + port name
       $output = $output_long = $data['cname'];
 

@@ -158,7 +158,7 @@ class Notepad extends CommonDBChild {
          'ORDERBY'   => 'date_mod DESC'
       ]);
 
-      while ($note = $iterator->next()) {
+      foreach ($iterator as $note) {
          $data[] = $note;
       }
       return $data;

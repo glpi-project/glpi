@@ -123,7 +123,7 @@ class NotificationAjax implements NotificationInterface {
          ]);
 
          if ($iterator->numrows()) {
-            while ($row = $iterator->next()) {
+            foreach ($iterator as $row) {
                $url = null;
                if ($row['itemtype'] != 'NotificationAjax' &&
                   method_exists($row['itemtype'], 'getFormURL')

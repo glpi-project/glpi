@@ -366,7 +366,7 @@ class DB extends \GLPITestCase {
       $this->integer(count($list))->isGreaterThan(200);
 
       //check if each table has a corresponding itemtype
-      while ($line = $list->next()) {
+      foreach ($list as $line) {
          $this->array($line)
             ->hasSize(1);
          $table = $line['TABLE_NAME'];

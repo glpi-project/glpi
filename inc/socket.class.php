@@ -719,7 +719,7 @@ class Socket extends CommonDBChild {
                                      sprintf(__('%1$s = %2$s'),
                                              $item->getTypeName(1), $item->getName()));
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $socket = new Socket();
          $socket->getFromDB($data['id']);
          Session::addToNavigateListItems(get_class($socket), $socket->fields["id"]);

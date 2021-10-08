@@ -79,7 +79,7 @@ class Link_Itemtype extends CommonDBChild {
       $types  = [];
       $used   = [];
       $numrows = count($iterator);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $types[$data['id']]      = $data;
          $used[$data['itemtype']] = $data['itemtype'];
       }

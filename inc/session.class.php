@@ -512,7 +512,7 @@ class Session {
       ]);
 
       if (count($iterator)) {
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $key = $data['id'];
             $_SESSION['glpiprofiles'][$key]['name'] = $data['name'];
             $entities_iterator = $DB->request([
@@ -538,7 +538,7 @@ class Session {
                'ORDERBY'   => 'glpi_entities.completename'
             ]);
 
-            while ($data = $entities_iterator->next()) {
+            foreach ($entities_iterator as $data) {
                // Do not override existing entity if define as recursive
                if (!isset($_SESSION['glpiprofiles'][$key]['entities'][$data['eID']])
                   || $data['is_recursive']
@@ -586,7 +586,7 @@ class Session {
          )
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $_SESSION["glpigroups"][] = $data["groups_id"];
       }
    }

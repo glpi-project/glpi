@@ -138,7 +138,7 @@ class Item_DeviceCamera_ImageFormat extends CommonDBRelation {
          $header .= "</tr>";
 
          echo $header;
-         while ($row = $items->next()) {
+         foreach ($items as $row) {
             $item = new ImageFormat();
             $item->getFromDB($row['imageformats_id']);
             echo "<tr lass='tab_bg_1'>";

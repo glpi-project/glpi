@@ -623,7 +623,7 @@ class AuthLDAP extends CommonDBTM {
               "<th class='center'></th></tr>";
          echo $header_begin.$header_top.$header_end;
 
-         while ($ldap_replicate = $iterator->next()) {
+         foreach ($iterator as $ldap_replicate) {
             echo "<tr class='tab_bg_1'><td class='center' width='10'>";
             Html::showMassiveActionCheckBox('AuthLdapReplicate', $ldap_replicate["id"]);
             echo "</td>";
@@ -1905,7 +1905,7 @@ class AuthLDAP extends CommonDBTM {
 
       $iterator = $DB->request($select);
 
-      while ($user = $iterator->next()) {
+      foreach ($iterator as $user) {
          $tmpuser = new User();
 
          //Ldap add : fill the array with the login of the user
@@ -2187,7 +2187,7 @@ class AuthLDAP extends CommonDBTM {
             ]);
 
             //If the group exists in DB -> unset it from the LDAP groups
-            while ($group = $iterator->next()) {
+            foreach ($iterator as $group) {
                //use DN for next step
                //depending on the type of search when groups are imported
                //the DN may be in two separate fields
@@ -2359,7 +2359,7 @@ class AuthLDAP extends CommonDBTM {
                               ]
                            ]);
 
-                           while ($group = $iterator->next()) {
+                           foreach ($iterator as $group) {
                               $groups[$group['ldap_value']] = ["cn"          => $group['ldap_value'],
                                                                "search_type" => "users"];
                            }
@@ -3698,7 +3698,7 @@ class AuthLDAP extends CommonDBTM {
          ],
          'ORDER'  => ['is_default DESC']
       ]);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $ldaps[] = $data['id'];
       }
       return $ldaps;

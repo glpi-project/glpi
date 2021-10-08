@@ -918,7 +918,7 @@ class Reminder extends CommonDBVisible implements
       if ($nb) {
          $rand = mt_rand();
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
 
             $output.= "<tr><td>";
             $name = $data['name'];

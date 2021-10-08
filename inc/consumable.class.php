@@ -562,7 +562,7 @@ class Consumable extends CommonDBChild {
          $header_end .= "</tr>";
          echo $header_begin.$header_top.$header_end;
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $date_in  = Html::convDate($data["date_in"]);
             $date_out = Html::convDate($data["date_out"]);
 
@@ -635,7 +635,7 @@ class Consumable extends CommonDBChild {
       ]);
       $used = [];
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $used[$data['itemtype'].'####'.$data['items_id']][$data["consumableitems_id"]]
             = $data["count"];
       }
@@ -658,7 +658,7 @@ class Consumable extends CommonDBChild {
       ]);
       $new = [];
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $new[$data["consumableitems_id"]] = $data["count"];
       }
 
@@ -668,7 +668,7 @@ class Consumable extends CommonDBChild {
       ]);
       $types = [];
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $types[$data["id"]] = $data["name"];
       }
 

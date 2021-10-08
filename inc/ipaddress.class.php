@@ -927,7 +927,7 @@ class IPAddress extends CommonDBChild {
       }
       $iterator = $DB->request($criteria);
       $addressesWithItems = [];
-      while ($result = $iterator->next()) {
+      foreach ($iterator as $result) {
          if ($address->getFromDB($result['id'])) {
             $addressesWithItems[] = array_merge(array_reverse($address->recursivelyGetItems()),
                                                 [clone $address]);
@@ -1241,7 +1241,7 @@ class IPAddress extends CommonDBChild {
          $networkport = new NetworkPort();
 
          $item = null;
-         while ($line = $iterator->next()) {
+         foreach ($iterator as $line) {
             unset($row);
 
             if (($options['order'] == 'itemtype')
@@ -1328,7 +1328,7 @@ class IPAddress extends CommonDBChild {
          $options['createRow'] = false;
          $address              = new self();
 
-         while ($ipaddress = $iterator->next()) {
+         foreach ($iterator as $ipaddress) {
             if ($address->getFromDB($ipaddress['id'])) {
 
                if ($createRow) {

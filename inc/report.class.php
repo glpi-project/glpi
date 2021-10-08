@@ -232,7 +232,7 @@ class Report extends CommonGLPI{
          'GROUPBY'   => 'glpi_operatingsystems.name'
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if (empty($data['name'])) {
             $data['name'] = Dropdown::EMPTY_VALUE;
          }
@@ -289,7 +289,7 @@ class Report extends CommonGLPI{
          }
 
          $iterator = $DB->request($criteria);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             if (empty($data['name'])) {
                $data['name'] = Dropdown:: EMPTY_VALUE;
             }
@@ -466,7 +466,7 @@ class Report extends CommonGLPI{
          echo "<th>".__('Device name')."</th>";
          echo "</tr>\n";
 
-         while ($line = $iterator->next()) {
+         foreach ($iterator as $line) {
             echo "<tr class='tab_bg_1'>";
 
             // To ensure that the NetworkEquipment remain the first item, we test its type

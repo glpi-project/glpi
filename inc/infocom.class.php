@@ -488,7 +488,7 @@ class Infocom extends CommonDBChild {
             ]
          ]);
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             if ($item_infocom = getItemForItemtype($data["itemtype"])) {
                if ($item_infocom->getFromDB($data["items_id"])) {
                   $entity   = $data['entities_id'];

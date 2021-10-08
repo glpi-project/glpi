@@ -174,7 +174,7 @@ class Domain extends DbTestCase {
          'FROM'   => \DomainRecord::getTable(),
          'WHERE'  => ['domains_id' => $domains_id]
       ]);
-      while ($row = $records->next()) {
+      foreach ($records as $row) {
          $this->integer((int)$row['entities_id'])->isidenticalTo($entities_id);
       }
    }

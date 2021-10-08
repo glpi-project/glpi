@@ -205,7 +205,7 @@ class Item_Cluster extends CommonDBRelation {
       $iterator = $DB->request([
          'FROM'   => $this->getTable()
       ]);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $used [$row['itemtype']][] = $row['items_id'];
       }
 

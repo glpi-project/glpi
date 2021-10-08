@@ -172,7 +172,7 @@ class Item_OperatingSystem extends CommonDBRelation {
       $i      = 0;
 
       $os = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $os[$data['assocID']] = $data;
       }
 

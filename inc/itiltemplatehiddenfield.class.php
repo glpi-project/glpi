@@ -118,7 +118,7 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField {
       $allowed_fields = $tt->getAllowedFields($withtypeandcategory);
       $fields         = [];
 
-      while ($rule = $iterator->next()) {
+      foreach ($iterator as $rule) {
          if (isset($allowed_fields[$rule['num']])) {
             $fields[$allowed_fields[$rule['num']]] = $rule['num'];
          }
@@ -174,7 +174,7 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField {
 
       $hiddenfields = [];
       $used         = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $hiddenfields[$data['id']] = $data;
          $used[$data['num']]        = $data['num'];
       }

@@ -102,7 +102,7 @@ class Group_User extends CommonDBRelation{
          ] + $condition,
          'ORDER'        => 'glpi_groups.name'
       ]);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $groups[] = $row;
       }
 
@@ -148,7 +148,7 @@ class Group_User extends CommonDBRelation{
          ] + $condition,
          'ORDER'        => 'glpi_users.name'
       ]);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $users[] = $row;
       }
 
@@ -177,7 +177,7 @@ class Group_User extends CommonDBRelation{
       $groups = [];
       //$groups  = self::getUserGroups($ID);
       $used    = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $used[$data["id"]] = $data["id"];
          $groups[] = $data;
       }
@@ -419,7 +419,7 @@ class Group_User extends CommonDBRelation{
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          // Add to display list, according to criterion
          if (empty($crit) || $data[$crit]) {
             $members[] = $data;

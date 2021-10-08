@@ -399,7 +399,7 @@ class Supplier extends CommonDBTM {
       echo "</tr>";
 
       $num = 0;
-      while ($row = $types_iterator->next()) {
+      foreach ($types_iterator as $row) {
          $itemtype = $row['itemtype'];
 
          if (!($item = getItemForItemtype($itemtype))) {
@@ -508,7 +508,7 @@ class Supplier extends CommonDBTM {
 
             } else if ($nb) {
                $prem = true;
-               while ($data = $iterator->next()) {
+               foreach ($iterator as $data) {
                   $name = $data[$linktype::getNameField()];
                   if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                      $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);

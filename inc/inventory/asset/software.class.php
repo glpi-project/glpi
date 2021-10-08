@@ -275,7 +275,7 @@ class Software extends InventoryAsset
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $softid = $data['sid'];
          unset($data['sid']);
          $db_software[$this->getFullCompareKey((object)$data)] = $softid;

@@ -156,7 +156,7 @@ class Notification_NotificationTemplate extends CommonDBRelation {
                                           Notification::getTypeName(1), $notif->getName()));
 
          $notiftpl = new self();
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $notiftpl->getFromDB($data['id']);
             $tpl = new NotificationTemplate();
             $tpl->getFromDB($data['notificationtemplates_id']);
@@ -236,7 +236,7 @@ class Notification_NotificationTemplate extends CommonDBRelation {
             Notification::getTypeName(1), $template->getName())
          );
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $notification = new Notification();
             $notification->getFromDB($data['notifications_id']);
 

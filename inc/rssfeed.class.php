@@ -949,7 +949,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
       $nb = count($iterator);
       $items   = [];
       $rssfeed = new self();
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if ($rssfeed->getFromDB($data['id'])) {
             // Force fetching feeds
             if ($feed = self::getRSSFeed($data['url'], $data['refresh_rate'])) {

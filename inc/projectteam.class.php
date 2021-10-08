@@ -122,7 +122,7 @@ class ProjectTeam extends CommonDBRelation {
          'WHERE'  => ['projects_id' => $projects_id]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if (!isset($team[$data['itemtype']])) {
             $team[$data['itemtype']] = [];
          }

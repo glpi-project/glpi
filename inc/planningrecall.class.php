@@ -386,7 +386,7 @@ class PlanningRecall extends CommonDBChild {
       ]);
 
       $pr = new self();
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if ($pr->getFromDB($data['id']) && $pr->getItem()) {
 
             $options = [];

@@ -64,7 +64,7 @@ class RSSFeed_User extends CommonDBRelation {
          'WHERE'  => ['rssfeeds_id' => $rssfeeds_id]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $users[$data['users_id']][] = $data;
       }
       return $users;

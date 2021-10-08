@@ -120,7 +120,7 @@ class NetworkPortConnectionLog extends CommonDBChild {
          echo "<tr><td colspan='4' class='center'>" . __('No result found')  . "</td></tr>";
       }
 
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          echo "<tr>";
          echo "<td>";
 

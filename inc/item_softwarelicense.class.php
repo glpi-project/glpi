@@ -287,7 +287,7 @@ class Item_SoftwareLicense extends CommonDBRelation {
       if ($itemtype !== null) {
          $target_types = [$itemtype];
       } else {
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $target_types[] = $data['itemtype'];
          }
       }
@@ -362,7 +362,7 @@ class Item_SoftwareLicense extends CommonDBRelation {
       ]);
 
       $target_types = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $target_types[] = $data['itemtype'];
       }
 
@@ -442,7 +442,7 @@ class Item_SoftwareLicense extends CommonDBRelation {
       ]);
 
       $tab = "&nbsp;&nbsp;&nbsp;&nbsp;";
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $itemtype_iterator = $DB->request([
             'SELECT'    => ['itemtype'],
             'DISTINCT'  => true,
@@ -461,7 +461,7 @@ class Item_SoftwareLicense extends CommonDBRelation {
          ]);
 
          $target_types = [];
-         while ($type = $itemtype_iterator->next()) {
+         foreach ($itemtype_iterator as $type) {
             $target_types[] = $type['itemtype'];
          }
 
@@ -938,7 +938,7 @@ JAVASCRIPT;
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $lic[$data['id']] = $data;
       }
       return $lic;

@@ -241,7 +241,7 @@ class Blacklist extends CommonDropdown {
       $iterator = $DB->request(['FROM' => self::getTable()]);
 
       $blacklists = array_fill_keys(array_keys(self::getTypes()), []);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $blacklists[$row['type']][] = $row;
       }
 

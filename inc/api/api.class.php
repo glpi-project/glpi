@@ -642,7 +642,7 @@ abstract class API {
             ]
          ]);
          $fields['_disks'] = [];
-         while ($data = $fs_iterator->next()) {
+         foreach ($fs_iterator as $data) {
             unset($data['items_id']);
             unset($data['is_deleted']);
             $fields['_disks'][] = ['name' => $data];
@@ -691,7 +691,7 @@ abstract class API {
                   'glpi_softwareversions.name'
                ]
             ]);
-            while ($data = $soft_iterator->next()) {
+            foreach ($soft_iterator as $data) {
                $fields['_softwares'][] = $data;
             }
          }
@@ -730,7 +730,7 @@ abstract class API {
                      'glpi_computers_items.is_deleted'   => 0
                   ]
                ]);
-               while ($data = $iterator->next()) {
+               foreach ($iterator as $data) {
                   $fields['_connections'][$connect_type][] = $data;
                }
             }
@@ -786,7 +786,7 @@ abstract class API {
                ] + getEntitiesRestrictCriteria('glpi_contracts', '', '', true),
                'ORDERBY'   => 'glpi_contracts.name'
             ]);
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $fields['_contracts'][] = $data;
             }
          }
@@ -844,7 +844,7 @@ abstract class API {
                ],
                'WHERE'     => $doc_criteria,
             ]);
-            while ($data = $doc_iterator->next()) {
+            foreach ($doc_iterator as $data) {
                $fields['_documents'][] = $data;
             }
          }
@@ -863,7 +863,7 @@ abstract class API {
                'glpi_items_tickets.itemtype' => $itemtype
             ] + getEntitiesRestrictCriteria(Ticket::getTable());
             $iterator = $DB->request($criteria);
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $fields['_tickets'][] = $data;
             }
          }
@@ -882,7 +882,7 @@ abstract class API {
                'glpi_items_problems.itemtype' => $itemtype
             ] + getEntitiesRestrictCriteria(Problem::getTable());
             $iterator = $DB->request($criteria);
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $fields['_problems'][] = $data;
             }
          }
@@ -901,7 +901,7 @@ abstract class API {
                'glpi_changes_items.itemtype' => $itemtype
             ] + getEntitiesRestrictCriteria(Change::getTable());
             $iterator = $DB->request($criteria);
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $fields['_changes'][] = $data;
             }
          }
@@ -2709,7 +2709,7 @@ abstract class API {
                ]
             ]);
 
-            while ($data = $netp_iterator->next()) {
+            foreach ($netp_iterator as $data) {
                if (isset($data['netport_id'])) {
                   // append network name
                   $concat_expr = new QueryExpression(
@@ -2804,7 +2804,7 @@ abstract class API {
                               'ipadnet.ipaddresses_id'  => $ipadress[0]
                            ]
                         ]);
-                        while ($data_ipnet = $ipnet_iterator->next()) {
+                        foreach ($ipnet_iterator as $data_ipnet) {
                            $ipnetworks[] = $data_ipnet;
                         }
 

@@ -388,7 +388,7 @@ class Transfer extends CommonDBTM {
                ]
             ]);
 
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                if ($item->getFromDB($data['items_id'])
                      && $item->isRecursive()
                      && in_array($item->getEntityID(), $to_entity_ancestors)) {
@@ -472,7 +472,7 @@ class Transfer extends CommonDBTM {
                ]);
 
                if (count($iterator)) {
-                  while ($data = $iterator->next()) {
+                  foreach ($iterator as $data) {
                      if ($data['is_recursive']
                         && in_array($data['entities_id'], $to_entity_ancestors)) {
                         $this->addNotToBeTransfer('SoftwareVersion', $data['vID']);
@@ -494,7 +494,7 @@ class Transfer extends CommonDBTM {
             'WHERE'  => ['softwares_id' => $this->needtobe_transfer['Software']]
          ]);
 
-         while ($lic = $iterator->next()) {
+         foreach ($iterator as $lic) {
             $this->addToBeTransfer('SoftwareLicense', $lic['id']);
 
             // Force version transfer
@@ -539,7 +539,7 @@ class Transfer extends CommonDBTM {
                      ]
                   ]);
 
-                  while ($data = $iterator->next()) {
+                  foreach ($iterator as $data) {
                      if ($data['is_recursive']
                          && in_array($data['entities_id'], $to_entity_ancestors)) {
                         $this->addNotToBeTransfer($devicetype, $data[$fk]);
@@ -555,7 +555,7 @@ class Transfer extends CommonDBTM {
                                  'items_id'  => $this->needtobe_transfer[$itemtype]
                               ]
                            ]);
-                           while ($data2 = $iterator2->next()) {
+                           foreach ($iterator2 as $data2) {
                               $this->addToBeTransfer($itemdevicetype, $data2['id']);
                            }
                         }
@@ -587,7 +587,7 @@ class Transfer extends CommonDBTM {
                   ]
                ]);
 
-               while ($data = $iterator->next()) {
+               foreach ($iterator as $data) {
                   $this->addToBeTransfer('Ticket', $data['id']);
                }
             }
@@ -658,7 +658,7 @@ class Transfer extends CommonDBTM {
                   ]
                ]);
 
-               while ($data = $iterator->next()) {
+               foreach ($iterator as $data) {
                   if ($data['is_recursive']
                         && in_array($data['entities_id'], $to_entity_ancestors)) {
                      $this->addNotToBeTransfer('Certificate', $data['certificates_id']);
@@ -729,7 +729,7 @@ class Transfer extends CommonDBTM {
                   ]
                ]);
 
-               while ($data = $iterator->next()) {
+               foreach ($iterator as $data) {
                   if ($data['is_recursive']
                         && in_array($data['entities_id'], $to_entity_ancestors)) {
                      $this->addNotToBeTransfer('Contract', $data['contracts_id']);
@@ -789,7 +789,7 @@ class Transfer extends CommonDBTM {
                ]
             ]);
 
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                if ($data['is_recursive']
                      && in_array($data['entities_id'], $to_entity_ancestors)) {
                   $this->addNotToBeTransfer('Supplier', $data['suppliers_id']);
@@ -828,7 +828,7 @@ class Transfer extends CommonDBTM {
                ]
             ]);
 
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                if ($data['is_recursive']
                      && in_array($data['entities_id'], $to_entity_ancestors)) {
                   $this->addNotToBeTransfer('Supplier', $data['suppliers_id']);
@@ -868,7 +868,7 @@ class Transfer extends CommonDBTM {
                ]
             ]);
 
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                if ($data['is_recursive']
                      && in_array($data['entities_id'], $to_entity_ancestors)) {
                   $this->addNotToBeTransfer('Supplier', $data['suppliers_id']);
@@ -907,7 +907,7 @@ class Transfer extends CommonDBTM {
                ]
             ]);
 
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                if ($data['is_recursive']
                      && in_array($data['entities_id'], $to_entity_ancestors)) {
                   $this->addNotToBeTransfer('Supplier', $data['suppliers_id']);
@@ -964,7 +964,7 @@ class Transfer extends CommonDBTM {
                      ]
                   ]);
 
-                  while ($data = $iterator->next()) {
+                  foreach ($iterator as $data) {
                      if ($data['is_recursive']
                            && in_array($data['entities_id'], $to_entity_ancestors)) {
                         $this->addNotToBeTransfer('Supplier', $data['suppliers_id']);
@@ -1027,7 +1027,7 @@ class Transfer extends CommonDBTM {
                ]
             ]);
 
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                if ($data['is_recursive']
                      && in_array($data['entities_id'], $to_entity_ancestors)) {
                   $this->addNotToBeTransfer('Contact', $data['contacts_id']);
@@ -1086,7 +1086,7 @@ class Transfer extends CommonDBTM {
                   ]
                ]);
 
-               while ($data = $iterator->next()) {
+               foreach ($iterator as $data) {
                   if ($data['is_recursive']
                         && in_array($data['entities_id'], $to_entity_ancestors)) {
                      $this->addNotToBeTransfer('Document', $data['documents_id']);
@@ -1107,7 +1107,7 @@ class Transfer extends CommonDBTM {
                'WHERE'  => ['printers_id' => $this->needtobe_transfer['Printer']]
             ]);
 
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $this->addToBeTransfer('CartridgeItem', $data['cartridgeitems_id']);
             }
          }
@@ -1401,7 +1401,7 @@ class Transfer extends CommonDBTM {
          $cart     = new Cartridge();
          $carttype = new CartridgeItem();
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $need_clean_process = false;
 
             // Foreach cartridges
@@ -1675,7 +1675,7 @@ class Transfer extends CommonDBTM {
 
       $iterator = $DB->request($criteria);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if ($this->options['keep_software']) {
             $newversID = $this->copySingleVersion($data['softwareversions_id']);
 
@@ -1706,7 +1706,7 @@ class Transfer extends CommonDBTM {
                'itemtype'  => $itemtype
             ]
          ]);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $this->transferAffectedLicense($data['id']);
          }
       } else {
@@ -1812,7 +1812,7 @@ class Transfer extends CommonDBTM {
          'WHERE'  => ['softwares_id' => $ID]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $this->transferItem('SoftwareLicense', $data['id'], $data['id']);
       }
 
@@ -1822,7 +1822,7 @@ class Transfer extends CommonDBTM {
          'WHERE'  => ['softwares_id' => $ID]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          // Just Store the info.
          $this->addToAlreadyTransfer('SoftwareVersion', $data['id'], $data['id']);
       }
@@ -1902,7 +1902,7 @@ class Transfer extends CommonDBTM {
          $iterator = $DB->request($certificates_items_query);
 
          // Foreach get item
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $need_clean_process = false;
             $item_ID            = $data['certificates_id'];
             $newcertificateID   = -1;
@@ -2079,7 +2079,7 @@ class Transfer extends CommonDBTM {
          $iterator = $DB->request($contracts_items_query);
 
          // Foreach get item
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $need_clean_process = false;
             $item_ID            = $data['contracts_id'];
             $newcontractID      = -1;
@@ -2255,7 +2255,7 @@ class Transfer extends CommonDBTM {
          $iterator = $DB->request($documents_items_query);
 
          // Foreach get item
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $need_clean_process = false;
             $item_ID            = $data['documents_id'];
             $newdocID           = -1;
@@ -2469,7 +2469,7 @@ class Transfer extends CommonDBTM {
       $iterator = $DB->request($criteria);
 
       // Foreach get item
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $item_ID = $data['items_id'];
          if ($link_item->getFromDB($item_ID)) {
             // If global :
@@ -2650,7 +2650,7 @@ class Transfer extends CommonDBTM {
          // Foreach get item
          $conn = new Computer_Item();
          $comp = New Computer();
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $item_ID = $data['items_id'];
             if ($comp->getFromDB($item_ID)) {
                $conn->delete(['id' => $data['id']]);
@@ -2704,7 +2704,7 @@ class Transfer extends CommonDBTM {
             // Transfer
             case 2 :
                // Same Item / Copy Item -> update entity
-               while ($data = $iterator->next()) {
+               foreach ($iterator as $data) {
                   $input                = $this->transferHelpdeskAdditionalInformations($data);
                   $input['id']          = $data['id'];
                   $input['entities_id'] = $this->to;
@@ -2726,7 +2726,7 @@ class Transfer extends CommonDBTM {
             // Clean ref : keep ticket but clean link
             case 1 :
                // Same Item / Copy Item : keep and clean ref
-               while ($data = $iterator->next()) {
+               foreach ($iterator as $data) {
                   $rel->delete(['id'       => $data['relid']]);
                   $this->addToAlreadyTransfer('Ticket', $data['id'], $data['id']);
                }
@@ -2736,7 +2736,7 @@ class Transfer extends CommonDBTM {
             case 0 :
                // Same item -> delete
                if ($ID == $newID) {
-                  while ($data = $iterator->next()) {
+                  foreach ($iterator as $data) {
                      $job->delete(['id' => $data['id']]);
                   }
                }
@@ -2784,7 +2784,7 @@ class Transfer extends CommonDBTM {
          'WHERE'  => [$field => $ID]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $input = [];
 
          if ($data['suppliers_id'] > 0) {
@@ -2865,7 +2865,7 @@ class Transfer extends CommonDBTM {
          'WHERE'  => [$field => $ID]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $input = [];
 
          if ($data['taskcategories_id'] > 0) {
@@ -2963,7 +2963,7 @@ class Transfer extends CommonDBTM {
                   ]
                ]);
 
-               while ($data = $iterator->next()) {
+               foreach ($iterator as $data) {
                   unset($data['id']);
                   $data = Toolbox::addslashes_deep($data);
                   $data = [
@@ -2998,7 +2998,7 @@ class Transfer extends CommonDBTM {
          if (count($iterator)) {
             $cartitem = new CartridgeItem();
 
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $data = Toolbox::addslashes_deep($data);
                $cartitem->addCompatibleType($newID, $data["printermodels_id"]);
             }
@@ -3202,7 +3202,7 @@ class Transfer extends CommonDBTM {
          $iterator = $DB->request($criteria);
 
          // Foreach get item
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $need_clean_process = false;
             $item_ID            = $data['contacts_id'];
             $newcontactID       = -1;
@@ -3427,7 +3427,7 @@ class Transfer extends CommonDBTM {
 
                if (count($iterator)) {
                   // Foreach get item
-                  while ($data = $iterator->next()) {
+                  foreach ($iterator as $data) {
                      $item_ID     = $data[$fk];
                      $newdeviceID = -1;
 
@@ -3582,7 +3582,7 @@ class Transfer extends CommonDBTM {
             case 0 :
                // Not a copy -> delete
                if ($ID == $newID) {
-                  while ($data = $iterator->next()) {
+                  foreach ($iterator as $data) {
                      $np->delete(['id' => $data['id']]);
                   }
                }
@@ -3593,7 +3593,7 @@ class Transfer extends CommonDBTM {
             case 1 :
                // Not a copy -> disconnect
                if ($ID == $newID) {
-                  while ($data = $iterator->next()) {
+                  foreach ($iterator as $data) {
                      if ($nn->getFromDBForNetworkPort($data['id'])) {
                         $nn->delete($data);
                      }
@@ -3610,7 +3610,7 @@ class Transfer extends CommonDBTM {
                      }
                   }
                } else { // Copy -> copy netports
-                  while ($data = $iterator->next()) {
+                  foreach ($iterator as $data) {
                      $data             = Toolbox::addslashes_deep($data);
                      $socket = new Socket();
                      if ($socket->getFromDBByCrit(["networkports_id" => $data['id']])) {
@@ -3630,7 +3630,7 @@ class Transfer extends CommonDBTM {
             default :
                // Copy -> Copy sockets (do not keep links)
                if ($ID != $newID) {
-                  while ($data = $iterator->next()) {
+                  foreach ($iterator as $data) {
 
                      $socket = new Socket();
                      if ($socket->getFromDBByCrit(["networkports_id" => $data['id']])) {
@@ -3644,7 +3644,7 @@ class Transfer extends CommonDBTM {
                      $np->add(Toolbox::addslashes_deep($data));
                   }
                } else {
-                  while ($data = $iterator->next()) {
+                  foreach ($iterator as $data) {
                      // Not a copy -> only update socket
                      if ($data['sockets_id']) {
                         $socket = new Socket();
@@ -3963,7 +3963,7 @@ class Transfer extends CommonDBTM {
 
                if (count($iterator)) {
                   echo '<h3>'.$item->getTypeName().'</h3>';
-                  while ($data = $iterator->next()) {
+                  foreach ($iterator as $data) {
                      if ($entID != $data['entID']) {
                         if ($entID != -1) {
                            echo '<br>';

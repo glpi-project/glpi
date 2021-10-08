@@ -326,7 +326,7 @@ class DomainsPluginToCoreCommand extends AbstractCommand {
          'SELECT' => ['id', 'name'],
          'FROM'   => DomainType::getTable()
       ]);
-      while ($row = $coret_iterator->next()) {
+      foreach ($coret_iterator as $row) {
          $core_types[$row['name']] = $row['id'];
       }
 
@@ -432,7 +432,7 @@ class DomainsPluginToCoreCommand extends AbstractCommand {
          'SELECT' => ['id', 'name'],
          'FROM'   => Domain::getTable()
       ]);
-      while ($row = $cored_iterator->next()) {
+      foreach ($cored_iterator as $row) {
          $core_domains[$row['name']] = $row['id'];
       }
 
@@ -580,7 +580,7 @@ class DomainsPluginToCoreCommand extends AbstractCommand {
       $coreitems_iterator = $this->db->request([
          'FROM'   => Domain_Item::getTable()
       ]);
-      while ($row = $coreitems_iterator->next()) {
+      foreach ($coreitems_iterator as $row) {
          $core_items[$row['domains_id'].$row['itemtype'].$row['items_id']] = $row['id'];
       }
 

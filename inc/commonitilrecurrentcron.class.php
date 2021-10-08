@@ -79,7 +79,7 @@ class CommonITILRecurrentCron extends CommonDBTM
             ]
          ]);
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             /** @var CommonITILRecurrent */
             $item = new $itemtype();
             $item->fields = $data;

@@ -295,7 +295,7 @@ class Item_Disk extends CommonDBChild {
                                                 $item::getTypeName(1), $item->getName()));
 
          $disk = new self();
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $disk->getFromResultSet($data);
             echo "<tr class='tab_bg_2" .(isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'")."'>";
             echo "<td>".$disk->getLink()."</td>";

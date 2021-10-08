@@ -422,7 +422,7 @@ class ITILCategory extends CommonTreeDropdown {
          echo "<th>".Problem::getTypeName(1)."</th>";
          echo "</tr>";
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             echo "<tr class='tab_bg_2'>";
             $itilcategory->getFromDB($data['id']);
             echo "<td>".$itilcategory->getLink(['comments' => true])."</td>";

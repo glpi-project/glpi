@@ -155,7 +155,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
 
       $tickets = [];
       $used    = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $tickets[$data['id']] = $data;
          $used[$data['id']]    = $data['id'];
       }
@@ -263,7 +263,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
 
       $pjtasks = [];
       $used    = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $pjtasks[$data['id']] = $data;
          $used[$data['id']]    = $data['id'];
       }
@@ -479,7 +479,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
             $header .= "</tr>\n";
             echo $header;
 
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                Session::addToNavigateListItems('ProjectTask', $data['id']);
                $rand = mt_rand();
                echo "<tr class='tab_bg_2'>";

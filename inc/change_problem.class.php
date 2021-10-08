@@ -144,7 +144,7 @@ class Change_Problem extends CommonDBRelation{
       $changes = [];
       $used    = [];
       $numrows = count($iterator);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $changes[$data['id']] = $data;
          $used[$data['id']]    = $data['id'];
       }
@@ -260,7 +260,7 @@ class Change_Problem extends CommonDBRelation{
       $problems = [];
       $used     = [];
       $numrows = count($iterator);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $problems[$data['id']] = $data;
          $used[$data['id']]     = $data['id'];
       }

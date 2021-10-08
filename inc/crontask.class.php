@@ -171,7 +171,7 @@ class CronTask extends CommonDBTM{
          'DISTINCT'        => true,
          'FROM'            => 'glpi_crontasks'
       ]);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $types[] = $data['itemtype'];
       }
       return $types;
@@ -1076,7 +1076,7 @@ class CronTask extends CommonDBTM{
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if (!$temp->delete($data)) {
             $ret = false;
          }
@@ -1263,7 +1263,7 @@ class CronTask extends CommonDBTM{
          $header .= "</tr>\n";
          echo $header;
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             echo "<tr class='tab_bg_2'>";
             echo "<td><a href='javascript:reloadTab(\"crontasklogs_id=".
                         $data['crontasklogs_id']."\");'>".Html::convDateTime($data['date']).
@@ -1324,7 +1324,7 @@ class CronTask extends CommonDBTM{
          echo "</tr>\n";
 
          $first = true;
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center'>".($first ? Html::convDateTime($data['date'])
                                                 : "&nbsp;")."</a></td>";
@@ -1872,7 +1872,7 @@ class CronTask extends CommonDBTM{
          ]
       ]);
       $crontasks = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $crontasks[$data['id']] = $data;
       }
 

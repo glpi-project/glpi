@@ -270,7 +270,7 @@ class Computer_Item extends CommonDBRelation{
 
          if (count($iterator) > 0) {
             $ok = true;
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                if ($this->can($data["id"], UPDATE)) {
                   $ok &= $this->delete($data);
                }
@@ -305,7 +305,7 @@ class Computer_Item extends CommonDBRelation{
          if ($item->canView()) {
             $iterator = self::getTypeItems($ID, $itemtype);
 
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $data['assoc_itemtype'] = $itemtype;
                $datas[]           = $data;
                $used[$itemtype][] = $data['id'];
@@ -586,7 +586,7 @@ class Computer_Item extends CommonDBRelation{
          ]);
 
          $first = true;
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             if ($first) {
                $first = false;
                unset($input['id']);
@@ -777,7 +777,7 @@ class Computer_Item extends CommonDBRelation{
          'GROUP'  => 'itemtype'
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if (countElementsInTable("glpi_computers",
                                     ['id' => $data["computers_id"],
                                     'NOT' => ['entities_id' => $entities]]) > 0) {

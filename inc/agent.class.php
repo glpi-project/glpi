@@ -422,7 +422,7 @@ class Agent extends CommonDBTM {
                ]
             ]
          ]);
-         while ($row = $ports_iterator->next()) {
+         foreach ($ports_iterator as $row) {
             if (!in_array($row['name'], $adresses)) {
                $adresses[] = $row['name'];
             }
@@ -446,7 +446,7 @@ class Agent extends CommonDBTM {
             ]
          ]);
 
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             $adresses[] = sprintf('%s.%s', $item_name, $row['name']);
          }
       }

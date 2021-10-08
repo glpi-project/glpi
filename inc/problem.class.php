@@ -329,7 +329,7 @@ class Problem extends CommonITILObject {
                ]
             ]);
             $assoc = new Item_Problem;
-            while ($row = $iterator->next()) {
+            foreach ($iterator as $row) {
                unset($row['tickets_id']);
                unset($row['id']);
                $row['problems_id'] = $this->fields['id'];
@@ -1127,12 +1127,12 @@ class Problem extends CommonITILObject {
          $status[$key] = 0;
       }
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $status[$data["status"]] = $data["COUNT"];
       }
 
       $number_deleted = 0;
-      while ($data = $deleted_iterator->next()) {
+      foreach ($deleted_iterator as $data) {
          $number_deleted += $data["COUNT"];
       }
 
@@ -1575,7 +1575,7 @@ class Problem extends CommonITILObject {
       if ($number > 0) {
          self::commonListHeader(Search::HTML_OUTPUT);
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             Session::addToNavigateListItems('Problem', $data["id"]);
             self::showShort($data["id"]);
          }
@@ -1610,7 +1610,7 @@ class Problem extends CommonITILObject {
          if ($number > 0) {
             self::commonListHeader(Search::HTML_OUTPUT);
 
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                // Session::addToNavigateListItems(TRACKING_TYPE,$data["id"]);
                self::showShort($data["id"]);
             }

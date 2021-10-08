@@ -172,7 +172,7 @@ abstract class FQDNLabel extends CommonDBChild {
          }
 
          $iterator = $DB->request($criteria);
-         while ($element = $iterator->next()) {
+         foreach ($iterator as $element) {
             $IDs[$class][] = $element['id'];
          }
       }

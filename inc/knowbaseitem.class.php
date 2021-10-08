@@ -1595,7 +1595,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
 
          // Num of the row (1=header_line)
          $row_num = 1;
-         while ($data = $main_iterator->next()) {
+         foreach ($main_iterator as $data) {
             Session::addToNavigateListItems('KnowbaseItem', $data["id"]);
             // Column num
             $item_num = 1;
@@ -1690,7 +1690,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
                      'itemtype'  => 'KnowbaseItem'
                   ] + getEntitiesRestrictCriteria()
                ]);
-               while ($docs = $iterator->next()) {
+               foreach ($iterator as $docs) {
                   $doc = new Document();
                   $doc->getFromDB($docs["documents_id"]);
                   echo $doc->getDownloadLink();
@@ -1839,7 +1839,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       if (count($iterator)) {
          $output.= "<table class='tab_cadrehov'>";
          $output.= "<tr class='noHover'><th>".$title."</th></tr>";
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $name = $data['name'];
 
             if (isset($data['transname']) && !empty($data['transname'])) {

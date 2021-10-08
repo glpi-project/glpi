@@ -351,7 +351,7 @@ class Budget extends CommonDropdown{
 
       $num       = 0;
       $itemtypes = [];
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $itemtypes[] = $row['itemtype'];
       }
       $itemtypes[] = 'Contract';
@@ -669,7 +669,7 @@ class Budget extends CommonDropdown{
       $entitiestype_values = [];
       $found_types         = [];
 
-      while ($types = $types_iterator->next()) {
+      foreach ($types_iterator as $types) {
          $itemtypes[] = $types['itemtype'];
       }
 
@@ -802,7 +802,7 @@ class Budget extends CommonDropdown{
             $found_types[$itemtype]  = $item->getTypeName(1);
             $totalbytypes[$itemtype] = 0;
             //Store, for each entity, the budget spent
-            while ($values = $iterator->next()) {
+            foreach ($iterator as $values) {
 
                if (!isset($entities_values[$values['entities_id']])) {
                   $entities_values[$values['entities_id']] = 0;

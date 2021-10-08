@@ -238,7 +238,7 @@ class Domain_Item extends CommonDBRelation {
       echo "<th>" . __('Inventory number') . "</th>";
       echo "</tr>";
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $itemtype = $data['itemtype'];
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
@@ -285,7 +285,7 @@ class Domain_Item extends CommonDBRelation {
             if (count($linked_iterator)) {
                Session::initNavigateListItems($itemtype, Domain::getTypeName(2) . " = " . $domain->fields['name']);
 
-               while ($data = $linked_iterator->next()) {
+               foreach ($linked_iterator as $data) {
 
                   $item->getFromDB($data["id"]);
 
@@ -413,7 +413,7 @@ class Domain_Item extends CommonDBRelation {
       $domains = [];
       $domain  = new Domain();
       $used    = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $domains[$data['assocID']] = $data;
          $used[$data['id']]         = $data['id'];
       }

@@ -92,7 +92,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
 
       $admins = [];
 
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          if (NotificationMailing::isUserAddressValid($row['admin_email'])) {
             $admins[] = [
                'language'  => $CFG_GLPI['language'],

@@ -151,7 +151,7 @@ class Change_Item extends CommonItilObject_Item {
       $header_end .= "<th>".__('Inventory number')."</th></tr>";
       echo $header_begin.$header_top.$header_end;
 
-      while ($type_row = $types_iterator->next()) {
+      foreach ($types_iterator as $type_row) {
          $itemtype = $type_row['itemtype'];
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
@@ -161,7 +161,7 @@ class Change_Item extends CommonItilObject_Item {
             $nb = count($iterator);
 
             $prem = true;
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $link     = $itemtype::getFormURLWithID($data['id']);
                $linkname = $data["name"];
                if ($_SESSION["glpiis_ids_visible"]

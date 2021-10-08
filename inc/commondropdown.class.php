@@ -241,7 +241,7 @@ abstract class CommonDropdown extends CommonDBTM {
                'id' => $input['locations_id']
             ]
          ]);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $input['entities_id'] = $data['entities_id'];
          }
       }

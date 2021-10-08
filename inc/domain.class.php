@@ -81,7 +81,7 @@ class Domain extends CommonDropdown {
             'domains_id'   => $this->fields['id']
          ]
       ]);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $row['_linked_purge'] = 1;//flag call when we remove a record from a domain
          $record->delete($row, true);
       }
@@ -357,7 +357,7 @@ class Domain extends CommonDropdown {
       ]);
 
       $values = [0 => Dropdown::EMPTY_VALUE];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $values[$data['id']] = $data['name'];
       }
 
@@ -586,7 +586,7 @@ class Domain extends CommonDropdown {
          foreach ($querys as $type => $query) {
             $domain_infos[$type] = [];
             $iterator = $DB->request($query);
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $message                        = $data["name"] . ": " .
                                                 Html::convDate($data["date_expiration"]) . "<br>\n";
                $domain_infos[$type][$entity][] = $data;
@@ -682,7 +682,7 @@ class Domain extends CommonDropdown {
       ]);
 
       $used = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $used[$data['id']] = $data['id'];
       }
       return $used;

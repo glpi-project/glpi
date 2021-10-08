@@ -132,7 +132,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
          ];
 
          $iterator = $DB->request($criteria);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $input[$this->getIndexName()] = $data[$this->getIndexName()];
             $this->delete($input, 1);
          }
@@ -175,7 +175,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
       $res = [];
       $iterator = static::getItemsAssociationRequest($itemtype, $items_id);
 
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $input = Toolbox::addslashes_deep($row);
          $item = new static();
          $item->getFromDB($input[static::getIndexName()]);

@@ -199,7 +199,7 @@ class Item_Enclosure extends CommonDBRelation {
       $iterator = $DB->request([
          'FROM'   => $this->getTable()
       ]);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $used [$row['itemtype']][] = $row['items_id'];
       }
 
@@ -210,7 +210,7 @@ class Item_Enclosure extends CommonDBRelation {
             'is_reserved' => 0
          ]
       ]);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $used [$row['itemtype']][] = $row['items_id'];
       }
 

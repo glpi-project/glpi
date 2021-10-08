@@ -67,7 +67,7 @@ class Entity_KnowbaseItem extends CommonDBRelation {
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $ent[$data['entities_id']][] = $data;
       }
       return $ent;

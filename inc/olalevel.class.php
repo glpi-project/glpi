@@ -149,7 +149,7 @@ class OlaLevel extends LevelAgreementLevel {
                                      sprintf(__('%1$s = %2$s'), OLA::getTypeName(1),
                                              $ola->getName()));
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          Session::addToNavigateListItems('OlaLevel', $data["id"]);
 
          echo "<tr class='tab_bg_2'>";

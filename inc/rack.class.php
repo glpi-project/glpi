@@ -703,7 +703,7 @@ JAVASCRIPT;
       ]);
 
       $filled = [];
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $item = new $row['itemtype'];
          if (!$item->getFromDB($row['items_id'])) {
             continue;

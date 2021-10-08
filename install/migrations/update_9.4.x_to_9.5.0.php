@@ -1138,7 +1138,7 @@ function update94xto950() {
          if (count($iterator)) {
             //migrate existing data
             $migration->migrationOneTable('glpi_domains_items');
-            while ($row = $iterator->next()) {
+            foreach ($iterator as $row) {
                $DB->insert("glpi_domains_items", [
                   'domains_id'   => $row['domains_id'],
                   'itemtype'     => $itemtype,

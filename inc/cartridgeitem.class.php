@@ -523,7 +523,7 @@ class CartridgeItem extends CommonDBTM {
       ]);
 
       $results = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $text = sprintf(__('%1$s - %2$s'), $data["name"], $data["ref"]);
          $text = sprintf(__('%1$s (%2$s)'), $text, $data["cpt"]);
          $text = sprintf(__('%1$s - %2$s'), $text, $data["location"]);

@@ -66,7 +66,7 @@ class Profile_Reminder extends CommonDBRelation {
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $prof[$data['profiles_id']][] = $data;
       }
       return $prof;

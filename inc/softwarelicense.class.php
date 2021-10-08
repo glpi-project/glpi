@@ -724,7 +724,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          $message = "";
          $items   = [];
 
-         while ($license = $iterator->next()) {
+         foreach ($iterator as $license) {
             $name     = $license['softname'].' - '.$license['name'].' - '.$license['serial'];
             //TRANS: %1$s the license name, %2$s is the expiration date
             $message .= sprintf(__('License %1$s expired on %2$s'),
@@ -1021,7 +1021,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
          $tot_assoc = 0;
          $tot       = 0;
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             Session::addToNavigateListItems('SoftwareLicense', $data['id']);
             $expired = true;
             if (is_null($data['expire'])

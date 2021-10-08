@@ -2178,7 +2178,7 @@ class Ticket extends CommonITILObject {
          ]
       ]);
 
-      while ($tick = $iterator->next()) {
+      foreach ($iterator as $tick) {
          $result[$tick['id']] = $tick['name'];
       }
 
@@ -3765,7 +3765,7 @@ JAVASCRIPT;
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $totalcost += TicketCost::computeTotalCost(
             $data["actiontime"],
             $data["cost_time"],
@@ -5121,12 +5121,12 @@ JAVASCRIPT;
          $status[$key] = 0;
       }
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $status[$data["status"]] = $data["COUNT"];
       }
 
       $number_deleted = 0;
-      while ($data = $deleted_iterator->next()) {
+      foreach ($deleted_iterator as $data) {
          $number_deleted += $data["COUNT"];
       }
 
@@ -5246,7 +5246,7 @@ JAVASCRIPT;
 
          self::commonListHeader(Search::HTML_OUTPUT);
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             Session::addToNavigateListItems('Ticket', $data["id"]);
             self::showShort($data["id"]);
          }
@@ -5467,7 +5467,7 @@ JAVASCRIPT;
       if ($number > 0) {
          self::commonListHeader(Search::HTML_OUTPUT);
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             Session::addToNavigateListItems('Ticket', $data["id"]);
             self::showShort($data["id"]);
          }
@@ -5501,7 +5501,7 @@ JAVASCRIPT;
          echo "</th></tr>";
          if ($number > 0) {
             self::commonListHeader(Search::HTML_OUTPUT);
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                // Session::addToNavigateListItems(TRACKING_TYPE,$data["id"]);
                self::showShort($data["id"]);
             }
@@ -5733,7 +5733,7 @@ JAVASCRIPT;
 
             $nb = 0;
             $iterator = $DB->request($criteria);
-            while ($tick = $iterator->next()) {
+            foreach ($iterator as $tick) {
                $ticket->update([
                   'id'           => $tick['id'],
                   'status'       => self::CLOSED,
@@ -5786,7 +5786,7 @@ JAVASCRIPT;
             ]
          ]);
          $tickets = [];
-         while ($tick = $iterator->next()) {
+         foreach ($iterator as $tick) {
             $tickets[] = $tick;
          }
 
@@ -5882,7 +5882,7 @@ JAVASCRIPT;
          $nb            = 0;
          $max_closedate = '';
 
-         while ($tick = $iterator->next()) {
+         foreach ($iterator as $tick) {
             $max_closedate = $tick['closedate'];
             if (mt_rand(1, 100) <= $rate) {
                if ($inquest->add(['tickets_id'  => $tick['id'],

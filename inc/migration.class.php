@@ -865,7 +865,7 @@ class Migration {
             ]);
 
             if (count($iterator) > 0) {
-               while ($data = $iterator->next()) {
+               foreach ($iterator as $data) {
                   $query = "SELECT MAX(`rank`)
                               FROM `glpi_displaypreferences`
                               WHERE `users_id` = '".$data['users_id']."'
@@ -1098,7 +1098,7 @@ class Migration {
          ];
       }
 
-      while ($profile = $prof_iterator->next()) {
+      foreach ($prof_iterator as $profile) {
          if (empty($requiredrights)) {
             $reqmet = true;
          } else {

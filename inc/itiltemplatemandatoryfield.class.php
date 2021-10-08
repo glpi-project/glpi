@@ -118,7 +118,7 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField {
       $allowed_fields = $tt->getAllowedFields($withtypeandcategory);
       $fields         = [];
 
-      while ($rule = $iterator->next()) {
+      foreach ($iterator as $rule) {
          if (isset($allowed_fields[$rule['num']])) {
             $fields[$allowed_fields[$rule['num']]] = $rule['num'];
          }
@@ -176,7 +176,7 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField {
 
       $mandatoryfields = [];
       $used            = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $mandatoryfields[$data['id']] = $data;
          $used[$data['num']]           = $data['num'];
       }

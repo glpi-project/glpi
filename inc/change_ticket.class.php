@@ -246,7 +246,7 @@ class Change_Ticket extends CommonDBRelation{
       $used    = [];
       $numrows = count($iterator);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $tickets[$data['id']] = $data;
          $used[$data['id']]    = $data['id'];
       }
@@ -375,7 +375,7 @@ class Change_Ticket extends CommonDBRelation{
       $used    = [];
       $numrows = count($iterator);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $changes[$data['id']] = $data;
          $used[$data['id']]    = $data['id'];
       }

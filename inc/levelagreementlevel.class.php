@@ -347,7 +347,7 @@ abstract class LevelAgreementLevel extends RuleTicket {
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $result[$data['execution_time']] = $data['execution_time'];
       }
       return $result;

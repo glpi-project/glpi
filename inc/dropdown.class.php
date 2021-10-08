@@ -578,7 +578,7 @@ class Dropdown {
                'WHERE'  => ['id' => $ids]
             ]);
 
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $tabs[$data['id']] = $data[$field];
             }
          }
@@ -665,7 +665,7 @@ class Dropdown {
       ]);
 
       $tabs = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $tabs[$data[$p['field']]] = $data[$p['field']];
       }
       return self::showItemTypes($name, $tabs, ['value' => $p['value']]);
@@ -2563,7 +2563,7 @@ class Dropdown {
             $prev             = -1;
             $firstitem_entity = -1;
 
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $ID    = $data['id'];
                $level = $data['level'];
 
@@ -2960,7 +2960,7 @@ class Dropdown {
          if (count($iterator)) {
             $prev = -1;
 
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                if ($multi
                   && ($data["entities_id"] != $prev)) {
                   if ($prev >= 0) {
@@ -3202,7 +3202,7 @@ class Dropdown {
          $prev       = -1;
          $datatoadd = [];
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             if ($multi && ($data["entities_id"] != $prev)) {
                if (count($datatoadd)) {
                   $results[] = [
@@ -3363,7 +3363,7 @@ class Dropdown {
       }
       $count = 0;
       if (count($iterator)) {
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $output = $data[$item->getNameField()];
 
             if (isset($data['contact']) && !empty($data['contact'])) {
@@ -3573,7 +3573,7 @@ class Dropdown {
       // Count real items returned
       $count = 0;
       if (count($result)) {
-         while ($data = $result->next()) {
+         foreach ($result as $data) {
             $users[$data["id"]] = formatUserName($data["id"], $data["name"], $data["realname"],
                                                 $data["firstname"]);
             $logins[$data["id"]] = $data["name"];

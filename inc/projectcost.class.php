@@ -359,7 +359,7 @@ class ProjectCost extends CommonDBChild {
                                        sprintf(__('%1$s = %2$s'),
                                              Project::getTypeName(1), $project->getName()));
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             echo "<tr class='tab_bg_2' ".
                   ($canedit
                      ? "style='cursor:pointer' onClick=\"viewEditCost".$data['projects_id']."_".

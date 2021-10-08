@@ -374,7 +374,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
 
       $linked_items = [];
       $results = $DB->request($criteria);
-      while ($data = $results->next()) {
+      foreach ($results as $data) {
          if ($used === false) {
             $linked_items[] = $data;
          } else {

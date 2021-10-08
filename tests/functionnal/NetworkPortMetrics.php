@@ -119,7 +119,7 @@ class NetworkPortMetrics extends DbTestCase {
       ]);
 
       $this->integer(count($iterator))->isIdenticalTo(2);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $this->integer($row['id_search_option'])
             ->isNotEqualTo(34) //ifinbytes SO from NetworkPort
             ->isNotEqualTo(35); //ifinerrors SO from NetworkPort

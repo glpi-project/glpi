@@ -54,7 +54,7 @@ if (isset($_POST["rubdoc"])) {
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $used[$data['id']] = $data['id'];
       }
    }

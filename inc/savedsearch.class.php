@@ -785,7 +785,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
       }
 
       $iterator = $DB->request($criteria);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
 
          if ($_SESSION['glpishow_count_on_tabs']) {
             $this->fields = $data;
@@ -918,7 +918,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
          'DISTINCT'        => true,
          'FROM'            => static::getTable()
       ]);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $types[] = $data['itemtype'];
       }
       return $types;
@@ -1124,7 +1124,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
             if (!$in_transaction) {
                $DB->beginTransaction();
             }
-            while ($row = $iterator->next()) {
+            foreach ($iterator as $row) {
                try {
                   $self->fields = $row;
                   if ($data = $self->execute(true)) {

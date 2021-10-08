@@ -82,7 +82,7 @@ class RemoteManagement extends InventoryAsset
             'items_id' => $this->item->fields['id']
          ]
       ]);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $idtmp = $data['id'];
          unset($data['id']);
          $data = array_map('strtolower', $data);

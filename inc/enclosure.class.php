@@ -223,7 +223,7 @@ class Enclosure extends CommonDBTM {
       ]);
 
       $filled = [];
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          if (empty($itemtype) || empty($items_id)
             || $itemtype != $row['itemtype'] || $items_id != $row['items_id']
          ) {

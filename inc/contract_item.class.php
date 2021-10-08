@@ -175,14 +175,14 @@ class Contract_Item extends CommonDBRelation{
 
       $types_iterator = self::getDistinctTypes($contract_id);
 
-      while ($type_row = $types_iterator->next()) {
+      foreach ($types_iterator as $type_row) {
          $itemtype = $type_row['itemtype'];
          if (!getItemForItemtype($itemtype)) {
             continue;
          }
 
          $iterator = self::getTypeItems($contract_id, $itemtype);
-         while ($objdata = $iterator->next()) {
+         foreach ($iterator as $objdata) {
             $items[$itemtype][$objdata['id']] = $objdata;
          }
       }
@@ -260,7 +260,7 @@ class Contract_Item extends CommonDBRelation{
 
       $contracts = [];
       $used      = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $contracts[$data['id']] = $data;
          $used[$data['id']]      = $data['id'];
       }
@@ -409,7 +409,7 @@ class Contract_Item extends CommonDBRelation{
       $data    = [];
       $totalnb = 0;
       $used    = [];
-      while ($type_row = $types_iterator->next()) {
+      foreach ($types_iterator as $type_row) {
          $itemtype = $type_row['itemtype'];
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
@@ -500,7 +500,7 @@ class Contract_Item extends CommonDBRelation{
                                         'link'     => $link];
             } else if ($nb > 0) {
                $data[$itemtype] = [];
-               while ($objdata = $iterator->next()) {
+               foreach ($iterator as $objdata) {
                   $data[$itemtype][$objdata['id']] = $objdata;
                   $used[$itemtype][$objdata['id']] = $objdata['id'];
                }

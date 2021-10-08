@@ -214,7 +214,7 @@ class SavedSearch_Alert extends CommonDBChild {
       } else {
          echo _n('Notification used:', 'Notifications used:', $iterator->numRows()) . "&nbsp;";
          $first = true;
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             if (!$first) {
                echo ', ';
             }
@@ -258,7 +258,7 @@ class SavedSearch_Alert extends CommonDBChild {
          echo $header;
 
          $alert = new self();
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $alert->getFromDB($data['id']);
             echo "<tr class='tab_bg_2'>";
             echo "<td>".$alert->getLink()."</td>";
@@ -362,7 +362,7 @@ class SavedSearch_Alert extends CommonDBChild {
          // Will save $_SESSION and $CFG_GLPI cron context into an array
          $context = self::saveContext();
 
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             //execute saved search to get results
             try {
                $savedsearch->getFromDB($row['savedsearches_id']);

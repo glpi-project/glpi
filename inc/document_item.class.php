@@ -374,7 +374,7 @@ class Document_Item extends CommonDBRelation{
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;
 
-      while ($type_row = $types_iterator->next()) {
+      foreach ($types_iterator as $type_row) {
          $itemtype = $type_row['itemtype'];
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
@@ -387,7 +387,7 @@ class Document_Item extends CommonDBRelation{
                $soft = new Software();
             }
 
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $linkname_extra = "";
                if ($item instanceof ITILFollowup || $item instanceof ITILSolution) {
                   $linkname_extra = "(" . $item::getTypeName(1) . ")";
@@ -743,7 +743,7 @@ class Document_Item extends CommonDBRelation{
 
       $documents = [];
       $used      = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $documents[$data['assocID']] = $data;
          $used[$data['id']]           = $data['id'];
       }

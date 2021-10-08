@@ -93,7 +93,7 @@ class DeleteOrphanLogsCommand extends AbstractCommand {
       $listTable = $this->db->listTables();
       $dry_run = $input->getOption('dry-run');
 
-      while ($table = $listTable->next()) {
+      foreach ($listTable as $table) {
          $tablename = $table['TABLE_NAME'];
 
          $itemtype = getItemTypeForTable($tablename);

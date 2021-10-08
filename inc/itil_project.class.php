@@ -163,7 +163,7 @@ class Itil_Project extends CommonDBRelation {
 
          $items = [];
          $used  = [];
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $items[$data['id']] = $data;
             $used[$data['id']]  = $data['id'];
          }
@@ -308,7 +308,7 @@ class Itil_Project extends CommonDBRelation {
 
       $projects = [];
       $used     = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $projects[$data['id']] = $data;
          $used[$data['id']]     = $data['id'];
       }

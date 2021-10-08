@@ -250,7 +250,7 @@ class Appliance_Item extends CommonDBRelation {
 
       $appliances = [];
       $used      = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $appliances[$data['id']] = $data;
          $used[$data['id']]      = $data['id'];
       }

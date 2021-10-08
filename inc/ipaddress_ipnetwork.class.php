@@ -67,7 +67,7 @@ class IPAddress_IPNetwork extends CommonDBRelation {
          'FROM'   => $linkTable,
          'WHERE'  => ['ipnetworks_id' => $ipnetworks_id]
       ]);
-      while ($link = $iterator->next()) {
+      foreach ($iterator as $link) {
          $linkObject->delete(['id' => $link['id']]);
       }
 
@@ -81,7 +81,7 @@ class IPAddress_IPNetwork extends CommonDBRelation {
          'WHERE'  => $network->getCriteriaForMatchingElement('glpi_ipaddresses', 'binary', 'version'),
          'GROUP'  => 'id'
       ]);
-      while ($link = $iterator->next()) {
+      foreach ($iterator as $link) {
          $linkObject->add($link);
       }
    }

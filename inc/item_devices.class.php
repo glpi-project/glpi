@@ -507,7 +507,7 @@ class Item_Devices extends CommonDBRelation {
             ]
          ]);
 
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             $input = Toolbox::addslashes_deep($row);
             $item = new $link_type();
             $item->getFromDB($input['id']);
@@ -854,7 +854,7 @@ class Item_Devices extends CommonDBRelation {
       }
 
       $iterator = $DB->request($criteria);
-      while ($link = $iterator->next()) {
+      foreach ($iterator as $link) {
 
          Session::addToNavigateListItems(static::getType(), $link["id"]);
          $this->getFromDB($link['id']);
@@ -970,7 +970,7 @@ class Item_Devices extends CommonDBRelation {
             'ORDER'  => 'itemtype'
          ]);
          $document = new Document();
-         while ($document_link = $doc_iterator->next()) {
+         foreach ($doc_iterator as $document_link) {
             if ($document->can($document_link['documents_id'], READ)) {
                $content[] = $document->getLink();
             }

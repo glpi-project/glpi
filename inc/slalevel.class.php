@@ -147,7 +147,7 @@ class SlaLevel extends LevelAgreementLevel {
                                      sprintf(__('%1$s = %2$s'), SLA::getTypeName(1),
                                              $sla->getName()));
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          Session::addToNavigateListItems('SlaLevel', $data["id"]);
 
          echo "<tr class='tab_bg_2'>";

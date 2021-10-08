@@ -522,7 +522,7 @@ JAVASCRIPT;
          ]);
 
          $used = [];
-         while ($row = $used_iterator->next()) {
+         foreach ($used_iterator as $row) {
             $used[$row['id']] = $row['id'];
          }
 
@@ -578,7 +578,7 @@ JAVASCRIPT;
       echo "<th>" . _n('Target', 'Targets', 1) . "</th>";
       echo "</tr>";
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          Session::addToNavigateListItems('DomainRecord', $data['id']);
          Session::addToNavigateListItems('Domain', $domain->fields['id']);
 

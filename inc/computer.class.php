@@ -304,7 +304,7 @@ class Computer extends CommonDBTM {
       ]);
 
       $tab = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $tab[$data['itemtype']][$data['items_id']] = $data['items_id'];
       }
       return $tab;

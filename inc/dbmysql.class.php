@@ -916,7 +916,7 @@ class DBmysql {
 
       $result = $this->listTables($retrieve_all ? 'glpi\_%' : $tablename);
       $found_tables = [];
-      while ($data = $result->next()) {
+      foreach ($result as $data) {
          $found_tables[] = $data['TABLE_NAME'];
       }
 
@@ -1532,7 +1532,7 @@ class DBmysql {
          'WHERE'  => ['Name' => $from_php]
       ]);
 
-      while ($from_mysql = $iterator->next()) {
+      foreach ($iterator as $from_mysql) {
          $now->setTimezone(new \DateTimeZone($from_mysql['Name']));
          $list[$from_mysql['Name']] = $from_mysql['Name'] . $now->format(" (T P)");
       }

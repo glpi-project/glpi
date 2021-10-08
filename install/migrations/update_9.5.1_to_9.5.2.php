@@ -72,7 +72,7 @@ function update951to952() {
          ]
       ]);
 
-      while ($data = $result->next()) {
+      foreach ($result as $data) {
          preg_match_all('/document\\.send\\.php\\?docid=([0-9]+)/', $data[$field], $matches);
 
          // No inline documents found in this item, skip to next
@@ -158,7 +158,7 @@ function update951to952() {
             ]
          ]
       ]);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
 
          $itemtype = null;
          switch ($row['relationtype']) {

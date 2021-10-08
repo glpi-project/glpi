@@ -1215,7 +1215,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                'FROM'   => 'glpi_projectstates',
                'WHERE'  => ['id' => $item->fields['projectstates_id']]
             ]);
-            while ($colorrow = $iterator->next()) {
+            foreach ($iterator as $colorrow) {
                $color = $colorrow['color'];
             }
             $first_col = Dropdown::getDropdownName('glpi_projectstates', $item->fields["projectstates_id"]);
@@ -1403,7 +1403,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                                                  $this->fields["name"]));
 
          $i = 0;
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             Session::addToNavigateListItems('Project', $data["id"]);
             Project::showShort($data['id'], ['row_num' => $i]);
             $i++;
@@ -1884,7 +1884,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          'LEFT JOIN' => $joins,
          'WHERE'     => $criteria
          ], self::getVisibilityCriteria()));
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $items[$data['id']] = $data['name'];
       }
 
@@ -1961,7 +1961,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
 
       $iterator = $DB->request($request);
       $projects = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $projects[$data['id']] = $data;
       }
       $project_ids = array_map(function($e) {
@@ -2012,7 +2012,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                ]
             ]);
             $all_members[$itemtype] = [];
-            while ($data = $all_items->next()) {
+            foreach ($all_items as $data) {
                $all_members[$itemtype][] = $data;
             }
          } else {
