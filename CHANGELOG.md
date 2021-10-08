@@ -28,6 +28,7 @@ The present file will list all changes made to the project; according to the
 - Added `CommonDBTM::showForm` to have a generic showForm for asset (based on a twig template).
 
 #### Changes
+- `DBmysqlIterator` class compliancy with `Iterator` has been fixed (i.e. `DBmysqlIterator::next()` does not return current row anymore).
 - Format of `Message-Id` header sent in Tickets notifications changed to match format used by other items.
 - Added `DB::truncate()` to replace raw SQL queries
 - Impact context `positions` field type changed from `TEXT` to `MEDIUMTEXT`
