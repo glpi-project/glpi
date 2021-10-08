@@ -631,7 +631,7 @@ class Config extends DbTestCase {
          'SELECT' => 'value',
          'FROM'   => $conf->getTable(),
          'WHERE'  => ['name' => 'devices_in_menu']
-      ])->next();
+      ])->current();
       $this->array($res)->isIdenticalTo(
          ['value' => exportArrayToDB(['Item_DeviceSimcard', 'Item_DeviceBattery'])]
       );

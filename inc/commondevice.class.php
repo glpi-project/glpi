@@ -448,7 +448,7 @@ abstract class CommonDevice extends CommonDropdown {
       ]);
 
       if (count($iterator) > 0) {
-         $line = $iterator->next();
+         $line = $iterator->current();
          return $line['id'];
       }
 

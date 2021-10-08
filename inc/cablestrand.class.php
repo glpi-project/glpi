@@ -130,7 +130,7 @@ class CableStrand extends CommonDropdown {
       unset($criteria['LIMIT']);
 
       $criteria['COUNT'] = 'total';
-      $number = $DB->request($criteria)->next()['total'];
+      $number = $DB->request($criteria)->current()['total'];
 
       if ($number) {
          echo "<div class='spaced'>";

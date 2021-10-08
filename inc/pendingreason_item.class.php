@@ -388,7 +388,7 @@ class PendingReason_Item extends CommonDBRelation
          return false;
       }
 
-      $row = $data->next();
+      $row = $data->current();
       $pending_item = self::getById($row['max_id']);
 
       return $pending_item->fields['items_id'] == $timeline_item->fields['id'] && $pending_item->fields['itemtype'] == $timeline_item::getType();
@@ -451,7 +451,7 @@ class PendingReason_Item extends CommonDBRelation
          return false;
       }
 
-      $row = $data->next();
+      $row = $data->current();
 
       return $row['max_date_creation'] == $timeline_item->fields['date_creation'];
    }

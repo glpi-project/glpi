@@ -287,7 +287,7 @@ class SlaLevel extends LevelAgreementLevel {
          'LIMIT'  => 1
       ]);
 
-      if ($result = $iterator->next()) {
+      if ($result = $iterator->current()) {
          return $result['id'];
       }
       return 0;
@@ -311,7 +311,7 @@ class SlaLevel extends LevelAgreementLevel {
          'WHERE'  => ['id' => $slalevels_id]
       ]);
 
-      if ($result = $iterator->next()) {
+      if ($result = $iterator->current()) {
          $execution_time = $result['execution_time'];
 
          $lvl_iterator = $DB->request([
@@ -327,7 +327,7 @@ class SlaLevel extends LevelAgreementLevel {
             'LIMIT'  => 1
          ]);
 
-         if ($result = $lvl_iterator->next()) {
+         if ($result = $lvl_iterator->current()) {
             return $result['id'];
          }
       }

@@ -206,7 +206,7 @@ class RuleMatchedLog extends CommonDBTM {
          'COUNT'  => 'cpt'
       ];
       $iterator = $DB->request($params);
-      $number   = $iterator->next()['cpt'];
+      $number   = $iterator->current()['cpt'];
 
       // Display the pager
       Html::printAjaxPager(self::getTypeName(2), $start, $number);

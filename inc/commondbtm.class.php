@@ -277,7 +277,7 @@ class CommonDBTM extends CommonGLPI {
       ]);
 
       if (count($iterator) == 1) {
-         $this->fields = $iterator->next();
+         $this->fields = $iterator->current();
          $this->post_getFromDB();
          return true;
       } else if (count($iterator) > 1) {
@@ -348,7 +348,7 @@ class CommonDBTM extends CommonGLPI {
 
       $iter = $DB->request($crit);
       if (count($iter) == 1) {
-         $row = $iter->next();
+         $row = $iter->current();
          return $this->getFromDB($row['id']);
       } else if (count($iter) > 1) {
          trigger_error(
@@ -391,7 +391,7 @@ class CommonDBTM extends CommonGLPI {
 
       $iterator = $DB->request($request);
       if (count($iterator) == 1) {
-         $this->fields = $iterator->next();
+         $this->fields = $iterator->current();
          $this->post_getFromDB();
          return true;
       } else if (count($iterator) > 1) {
@@ -5176,7 +5176,7 @@ class CommonDBTM extends CommonGLPI {
             'WHERE'  => ['id' => $next_parent]
          ]);
          if ($iterator->count()) {
-            $next_parent = $iterator->next()[$fk];
+            $next_parent = $iterator->current()[$fk];
          } else {
             // Invalid parent
             return false;

@@ -148,7 +148,7 @@ class Antivirus extends AbstractInventoryAsset {
       //handle
       $asset->handleLinks();
 
-      $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Microsoft Corporation']])->next();
+      $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Microsoft Corporation']])->current();
       $this->array($cmanuf);
       $manufacturers_id = $cmanuf['id'];
 

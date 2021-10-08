@@ -3098,7 +3098,7 @@ class Profile extends CommonDBTM {
          ]
       );
 
-      if (!$data = $result->next()) {
+      if (!$data = $result->current()) {
          return false;
       }
 

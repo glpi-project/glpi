@@ -517,7 +517,7 @@ abstract class CommonDropdown extends CommonDBTM {
                      'FROM'   => $tablename,
                      'COUNT'  => 'cpt',
                      'WHERE'  => [$field => $ID]
-                  ])->next();
+                  ])->current();
                   if ($row['cpt'] > 0) {
                      return true;
                   }
@@ -528,7 +528,7 @@ abstract class CommonDropdown extends CommonDBTM {
                         'FROM'   => $tablename,
                         'COUNT'  => 'cpt',
                         'WHERE'  => [$f => $ID]
-                     ])->next();
+                     ])->current();
                      if ($row['cpt'] > 0) {
                         return true;
                      }
@@ -654,7 +654,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
          // Check twin :
          if (count($iterator) > 0) {
-            $result = $iterator->next();
+            $result = $iterator->current();
             return $result['id'];
          }
       }

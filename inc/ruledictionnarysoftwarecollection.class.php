@@ -270,7 +270,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
          ]);
 
          if (count($iterator)) {
-            $soft = $iterator->next();
+            $soft = $iterator->current();
             //For each software
             $this->replayDictionnaryOnOneSoftware(
                $new_softs,
@@ -576,7 +576,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
          ]
       ]);
       if (count($iterator)) {
-         $current = $iterator->next();
+         $current = $iterator->current();
          return $current['id'];
       }
       return -1;

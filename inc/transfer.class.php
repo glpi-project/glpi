@@ -1361,7 +1361,7 @@ class Transfer extends CommonDBTM {
 
             if (count($iterator)) {
                // Found : -> use it
-               $row = $iterator->next();
+               $row = $iterator->current();
                $newID = $row['id'];
                $this->addToAlreadyTransfer('sockets_id', $sockets_id, $newID);
                return $newID;
@@ -1431,7 +1431,7 @@ class Transfer extends CommonDBTM {
                         ]
                      ];
 
-                     $result = $DB->request($ccriteria)->next();
+                     $result = $DB->request($ccriteria)->current();
 
                      // Is the carttype will be completly transfer ?
                      if ($result['cpt'] == 0) {
@@ -1455,7 +1455,7 @@ class Transfer extends CommonDBTM {
                         ]);
 
                         if (count($items_iterator)) {
-                           $row = $items_iterator->next();
+                           $row = $items_iterator->current();
                            $newcarttypeID = $row['id'];
                         }
 
@@ -1504,7 +1504,7 @@ class Transfer extends CommonDBTM {
                   'WHERE'  => [
                      'cartridgeitems_id'  => $data['cartridgeitems_id']
                   ]
-               ])->next();
+               ])->current();
 
                if ($result['cpt'] == 0) {
                   if ($this->options['clean_cartridgeitem'] == 1) { // delete
@@ -1559,7 +1559,7 @@ class Transfer extends CommonDBTM {
                ] + $manufacturer
             ]);
 
-            if ($data = $iterator->next()) {
+            if ($data = $iterator->current()) {
                $newsoftID = $data["id"];
 
             } else {
@@ -1613,7 +1613,7 @@ class Transfer extends CommonDBTM {
                ]
             ]);
 
-            if ($data = $iterator->next()) {
+            if ($data = $iterator->current()) {
                $newversID = $data["id"];
 
             } else {
@@ -1760,7 +1760,7 @@ class Transfer extends CommonDBTM {
                $newlicID = -1;
                //// If exists : increment number by 1
                if (count($iterator)) {
-                  $data     = $iterator->next();
+                  $data     = $iterator->current();
                   $newlicID = $data['id'];
                   $license->update(['id'     => $data['id'],
                                           'number' => $data['number']+1]);
@@ -1934,7 +1934,7 @@ class Transfer extends CommonDBTM {
                            'itemtype'        => $dtype,
                            'NOT'             => ['items_id' => $this->needtobe_transfer[$dtype]]
                         ]
-                     ])->next();
+                     ])->current();
 
                      if ($result['cpt'] > 0) {
                         $canbetransfer = false;
@@ -1964,7 +1964,7 @@ class Transfer extends CommonDBTM {
                   ]);
 
                   if (count($certificate_iterator)) {
-                     $result = $iterator->next();
+                     $result = $iterator->current();
                      $newcertificateID = $result['id'];
                      $this->addToAlreadyTransfer('Certificate', $item_ID, $newcertificateID);
                   }
@@ -2024,7 +2024,7 @@ class Transfer extends CommonDBTM {
                   'COUNT'  => 'cpt',
                   'FROM'   => 'glpi_certificates_items',
                   'WHERE'  => ['certificates_id' => $item_ID]
-               ])->next();
+               ])->current();
 
                if ($remain['cpt'] == 0) {
                   if ($this->options['clean_certificate'] == 1) {
@@ -2111,7 +2111,7 @@ class Transfer extends CommonDBTM {
                            'itemtype'     => $dtype,
                            'NOT'          => ['items_id' => $this->needtobe_transfer[$dtype]]
                         ]
-                     ])->next();
+                     ])->current();
 
                      if ($result['cpt'] > 0) {
                         $canbetransfer = false;
@@ -2141,7 +2141,7 @@ class Transfer extends CommonDBTM {
                   ]);
 
                   if (count($contract_iterator)) {
-                     $result = $iterator->next();
+                     $result = $iterator->current();
                      $newcontractID = $result['id'];
                      $this->addToAlreadyTransfer('Contract', $item_ID, $newcontractID);
                   }
@@ -2201,7 +2201,7 @@ class Transfer extends CommonDBTM {
                   'COUNT'  => 'cpt',
                   'FROM'   => 'glpi_contracts_items',
                   'WHERE'  => ['contracts_id' => $item_ID]
-               ])->next();
+               ])->current();
 
                if ($remain['cpt'] == 0) {
                   if ($this->options['clean_contract'] == 1) {
@@ -2297,7 +2297,7 @@ class Transfer extends CommonDBTM {
                         'COUNT'  => 'cpt',
                         'FROM'   => 'glpi_documents_items',
                         'WHERE'  => $where
-                     ])->next();
+                     ])->current();
 
                      if ($result['cpt'] > 0) {
                         $canbetransfer = false;
@@ -2325,7 +2325,7 @@ class Transfer extends CommonDBTM {
                   ]);
 
                   if (count($doc_iterator)) {
-                     $result = $doc_iterator->next();
+                     $result = $doc_iterator->current();
                      $newdocID = $result['id'];
                      $this->addToAlreadyTransfer('Document', $item_ID, $newdocID);
                   }
@@ -2388,7 +2388,7 @@ class Transfer extends CommonDBTM {
                   'WHERE'  => [
                      'documents_id' => $item_ID
                   ]
-               ])->next();
+               ])->current();
 
                if ($remain['cpt'] == 0) {
                   if ($this->options['clean_document'] == 1) {
@@ -2501,7 +2501,7 @@ class Transfer extends CommonDBTM {
                      if (count($this->needtobe_transfer['Computer'])) {
                         $comp_criteria['WHERE']['NOT'] = ['computers_id' => $this->needtobe_transfer['Computer']];
                      }
-                     $result = $DB->request($comp_criteria)->next();
+                     $result = $DB->request($comp_criteria)->current();
 
                      // All linked computers need to be transfer -> use unique transfer system
                      if ($result['cpt'] == 0) {
@@ -2523,7 +2523,7 @@ class Transfer extends CommonDBTM {
                         ]);
 
                         if (count($type_iterator)) {
-                           $result = $type_iterator->next();
+                           $result = $type_iterator->current();
                            $newID = $result['id'];
                            $this->addToAlreadyTransfer($link_type, $item_ID, $newID);
                         }
@@ -2575,7 +2575,7 @@ class Transfer extends CommonDBTM {
                         'items_id'  => $item_ID,
                         'itemtype'  => $link_type
                      ]
-                  ])->next();
+                  ])->current();
 
                   if ($result['cpt'] == 0) {
                      if ($clean == 1) {
@@ -2802,7 +2802,7 @@ class Transfer extends CommonDBTM {
                ]);
 
                if (count($iterator)) {
-                  $result = $iterator->next();
+                  $result = $iterator->current();
                   $newID = $result['id'];
                }
                if ($newID < 0) {
@@ -3108,7 +3108,7 @@ class Transfer extends CommonDBTM {
             $criteria['WHERE']['NOT'] = ['contracts_id' => $this->needtobe_transfer['Contract']];
          }
 
-         $result = $DB->request($criteria)->next();
+         $result = $DB->request($criteria)->current();
          $links_remaining = $result['cpt'];
 
          if ($links_remaining == 0) {
@@ -3128,7 +3128,7 @@ class Transfer extends CommonDBTM {
                         $icriteria['WHERE']['NOT'] = ['items_id' => $this->needtobe_transfer[$itemtype]];
                      }
 
-                     $result = $DB->request($icriteria)->next();
+                     $result = $DB->request($icriteria)->current();
                      $links_remaining += $result['cpt'];
                   }
                }
@@ -3151,7 +3151,7 @@ class Transfer extends CommonDBTM {
             ]);
 
             if (count($iterator)) {
-               $result = $iterator->next();
+               $result = $iterator->current();
                $newID = $result['id'];
                $this->addToAlreadyTransfer('Supplier', $ID, $newID);
             }
@@ -3231,7 +3231,7 @@ class Transfer extends CommonDBTM {
                      $scriteria['WHERE']['NOT'] = ['suppliers_id' => $this->needtobe_transfer['Supplier'] + $this->noneedtobe_transfer['Supplier']];
                   }
 
-                  $result = $DB->request($scriteria)->next();
+                  $result = $DB->request($scriteria)->current();
                   if ($result['cpt'] > 0) {
                      $canbetransfer = false;
                   }
@@ -3257,7 +3257,7 @@ class Transfer extends CommonDBTM {
                   ]);
 
                   if (count($contact_iterator)) {
-                     $result = $contact_iterator->next();
+                     $result = $contact_iterator->current();
                      $newcontactID = $result['id'];
                      $this->addToAlreadyTransfer('Contact', $item_ID, $newcontactID);
                   }
@@ -3317,7 +3317,7 @@ class Transfer extends CommonDBTM {
                   'COUNT'  => 'cpt',
                   'FROM'   => 'glpi_contacts_suppliers',
                   'WHERE'  => ['contacts_id' => $item_ID]
-               ])->next();
+               ])->current();
 
                if ($remain['cpt'] == 0) {
                   if ($this->options['clean_contact'] == 1) {
@@ -3464,7 +3464,7 @@ class Transfer extends CommonDBTM {
                                  ]
                               ];
 
-                              $result = $DB->request($dcriteria)->next();
+                              $result = $DB->request($dcriteria)->current();
 
                               if ($result['cpt'] > 0) {
                                  $canbetransfer = false;
@@ -3499,7 +3499,7 @@ class Transfer extends CommonDBTM {
                            ]);
 
                            if (count($device_iterator)) {
-                              $result = $device_iterator->next();
+                              $result = $device_iterator->current();
                               $newdeviceID = $result['id'];
                               $this->addToAlreadyTransfer($devicetype, $item_ID, $newdeviceID);
                            }

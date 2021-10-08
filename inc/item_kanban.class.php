@@ -123,7 +123,7 @@ class Item_Kanban extends CommonDBRelation {
       ]);
 
       if (count($iterator)) {
-         $data = $iterator->next();
+         $data = $iterator->current();
          if ($timestamp !== null) {
             if (strtotime($timestamp) < strtotime($data['date_mod'])) {
                return json_decode($data['state'], true);

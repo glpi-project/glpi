@@ -504,7 +504,7 @@ class State extends CommonTreeDropdown {
          'COUNT'  => 'cpt',
          'WHERE'  => $where
       ];
-      $row = $DB->request($query)->next();
+      $row = $DB->request($query)->current();
       return (int)$row['cpt'] == 0;
    }
 

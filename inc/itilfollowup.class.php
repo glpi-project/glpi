@@ -1010,7 +1010,7 @@ class ITILFollowup  extends CommonDBChild {
             return false;
          }
 
-         return $central_profiles->next()['total'] > 0;
+         return $central_profiles->current()['total'] > 0;
       } else if (in_array(CommonITILActor::REQUESTER, $roles)) {
          // The author is a requester -> not from support agent
          return false;

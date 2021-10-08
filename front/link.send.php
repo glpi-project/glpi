@@ -44,7 +44,7 @@ if (isset($_GET["lID"])) {
    ]);
 
    if (count($iterator) == 1) {
-      $current = $iterator->next();
+      $current = $iterator->current();
       $file = $current['data'];
       $link = $current['link'];
 

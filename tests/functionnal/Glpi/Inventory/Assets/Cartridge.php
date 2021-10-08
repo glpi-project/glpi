@@ -134,7 +134,7 @@ class Cartridge extends AbstractInventoryAsset {
       ]);
       $this->integer(count($iterator))->isIdenticalTo(1);
 
-      $result = $iterator->next();
+      $result = $iterator->current();
       $this->array($result)
          ->string['property']->isIdenticalTo('tonerblack')
          ->string['value']->isIdenticalTo('71');

@@ -357,7 +357,7 @@ class KnowbaseItem_Revision extends CommonDBTM {
             'knowbaseitems_id'   => $this->fields['knowbaseitems_id'],
             'language'           => $this->fields['language']
          ]
-      ])->next();
+      ])->current();
 
       $rev = $result['revision'];
       if ($rev === null) {

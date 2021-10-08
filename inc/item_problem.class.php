@@ -229,7 +229,7 @@ class Item_Problem extends CommonItilObject_Item {
                      'WHERE'  => [
                         $item->getForeignKeyField()   => $item->fields['id']
                      ]
-                  ])->next();
+                  ])->current();
                   $nb = $result['cpt'];
                }
                return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);

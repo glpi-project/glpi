@@ -66,7 +66,7 @@ function update940to941() {
             'users_id'  => '0',
          ]
       ]
-   )->next();
+   )->current();
    $migration->addPostQuery(
       $DB->buildInsert(
          'glpi_displaypreferences',

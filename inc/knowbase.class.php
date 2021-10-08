@@ -304,7 +304,7 @@ JAVASCRIPT;
             ],
             $kbitem_visibility_crit
          )
-      )->next();
+      )->current();
       $categories[] = [
          'id'          => 0,
          'name'        => __('Root category'),

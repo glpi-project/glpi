@@ -599,7 +599,7 @@ class Document_Item extends CommonDBRelation{
             'WHERE'     => [
                'is_deleted' => 0
             ] + getEntitiesRestrictCriteria('glpi_documents', '', $entities, true)
-         ])->next();
+         ])->current();
          $nb = $count['cpt'];
 
          if ($item->getType() == 'Document') {

@@ -90,10 +90,10 @@ class Agent extends DbTestCase {
 
       global $DB;
       //check created agent
-      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->next();
+      $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
       $agents = $DB->request(['FROM' => \Agent::getTable()]);
       $this->integer(count($agents))->isIdenticalTo(1);
-      $agent = $agents->next();
+      $agent = $agents->current();
       $this->array($agent)
          ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
          ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')

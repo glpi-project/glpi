@@ -62,7 +62,7 @@ function update954to955() {
             ],
          ]
       );
-      $type = $type_result->next()['DATA_TYPE'];
+      $type = $type_result->current()['DATA_TYPE'];
       $migration->changeField($table, 'date', 'date', $type . ' NOT NULL DEFAULT CURRENT_TIMESTAMP');
    }
    /* /Add `DEFAULT CURRENT_TIMESTAMP` to some date fields */

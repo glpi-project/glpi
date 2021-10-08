@@ -2405,7 +2405,7 @@ class AuthLDAP extends CommonDBTM {
 
       if (count($iterator) == 1) {
          //If only one server, do not show the choose ldap server window
-         $ldap                    = $iterator->next();
+         $ldap                    = $iterator->current();
          $_SESSION["ldap_server"] = $ldap["id"];
          Html::redirect($_SERVER['PHP_SELF']);
       }

@@ -83,7 +83,7 @@ class OlaLevel_Ticket extends CommonDBTM {
          'LIMIT'        => 1
       ]);
       if (count($iterator) == 1) {
-         $row = $iterator->next();
+         $row = $iterator->current();
          return $this->getFromDB($row['id']);
       }
       return false;
@@ -338,7 +338,7 @@ class OlaLevel_Ticket extends CommonDBTM {
          $iterator = $DB->request($criteria);
          $number = count($iterator);
          if ($number == 1) {
-            $data = $iterator->next();
+            $data = $iterator->current();
             self::doLevelForTicket($data, $olaType);
          }
       } while ($number == 1);

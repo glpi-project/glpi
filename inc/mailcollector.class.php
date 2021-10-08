@@ -1952,7 +1952,7 @@ class MailCollector  extends CommonDBTM {
          $criteria['WHERE'] = ['is_active' => 1];
       }
 
-      $result = $DB->request($criteria)->next();
+      $result = $DB->request($criteria)->current();
 
       return (int)$result['cpt'];
    }

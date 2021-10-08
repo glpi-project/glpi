@@ -374,7 +374,7 @@ class Fieldblacklist extends CommonDropdown {
             'field'     => $field,
             'value'     => $value
          ] + getEntitiesRestrictCriteria('glpi_fieldblacklists', 'entities_id', $entities_id, true)
-      ])->next();
+      ])->current();
       return $result['cpt'] > 0;
    }
 

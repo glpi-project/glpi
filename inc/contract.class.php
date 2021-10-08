@@ -828,7 +828,7 @@ class Contract extends CommonDBTM {
             new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration").' MONTH),CURDATE())>-30'),
             new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration").' MONTH),CURDATE())<0')
          ] + getEntitiesRestrictCriteria($table)
-      ])->next();
+      ])->current();
       $contract0 = $result['cpt'];
 
       // contrats  echeance j-7
@@ -840,7 +840,7 @@ class Contract extends CommonDBTM {
             new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration").' MONTH),CURDATE())>0'),
             new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration").' MONTH),CURDATE())<=7')
          ] + getEntitiesRestrictCriteria($table)
-      ])->next();
+      ])->current();
       $contract7 = $result['cpt'];
 
       // contrats echeance j -30
@@ -852,7 +852,7 @@ class Contract extends CommonDBTM {
             new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration").' MONTH),CURDATE())>7'),
             new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration").' MONTH),CURDATE())<30')
          ] + getEntitiesRestrictCriteria($table)
-      ])->next();
+      ])->current();
       $contract30 = $result['cpt'];
 
       // contrats avec pr??avis echeance j-7
@@ -865,7 +865,7 @@ class Contract extends CommonDBTM {
             new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL (' . $DB->quoteName("duration").'-' . $DB->quoteName('notice') . ') MONTH),CURDATE())>0'),
             new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL (' . $DB->quoteName("duration").'-' . $DB->quoteName('notice') . ') MONTH),CURDATE())<=7')
          ] + getEntitiesRestrictCriteria($table)
-      ])->next();
+      ])->current();
       $contractpre7 = $result['cpt'];
 
       // contrats avec pr??avis echeance j -30
@@ -878,7 +878,7 @@ class Contract extends CommonDBTM {
             new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL (' . $DB->quoteName("duration").'-' . $DB->quoteName('notice') . ') MONTH),CURDATE())>7'),
             new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL (' . $DB->quoteName("duration").'-' . $DB->quoteName('notice') . ') MONTH),CURDATE())<30')
          ] + getEntitiesRestrictCriteria($table)
-      ])->next();
+      ])->current();
       $contractpre30 = $result['cpt'];
 
       $twig_params = [

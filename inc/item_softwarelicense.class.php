@@ -325,7 +325,7 @@ class Item_SoftwareLicense extends CommonDBRelation {
          if ($item->maybeTemplate()) {
             $request['WHERE']["$itemtable.is_template"] = 0;
          }
-         $count += $DB->request($request)->next()['cpt'];
+         $count += $DB->request($request)->current()['cpt'];
       }
       return $count;
    }
@@ -402,7 +402,7 @@ class Item_SoftwareLicense extends CommonDBRelation {
          if ($item->maybeTemplate()) {
             $request['WHERE']["$itemtable.is_template"] = 0;
          }
-         $count += $DB->request($request)->next()['cpt'];
+         $count += $DB->request($request)->current()['cpt'];
       }
       return $count;
    }
@@ -748,7 +748,7 @@ JAVASCRIPT;
 
       $rand = mt_rand();
 
-      if ($data = $iterator->next()) {
+      if ($data = $iterator->current()) {
          if ($canedit) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], count($iterator)),
@@ -999,7 +999,7 @@ JAVASCRIPT;
          'WHERE'  => [
             'softwares_id' => $softwares_id
          ] + getEntitiesRestrictCriteria('glpi_softwarelicenses')
-      ])->next();
+      ])->current();
       return $result['cpt'];
    }
 }

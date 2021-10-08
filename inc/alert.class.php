@@ -210,7 +210,7 @@ class Alert extends CommonDBTM {
          return false;
       }
       $iter = $DB->request(self::getTable(), ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]);
-      if ($row = $iter->next()) {
+      if ($row = $iter->current()) {
          return $row['id'];
       }
       return false;
@@ -236,7 +236,7 @@ class Alert extends CommonDBTM {
          return false;
       }
       $iter = $DB->request(self::getTable(), ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]);
-      if ($row = $iter->next()) {
+      if ($row = $iter->current()) {
          return $row['date'];
       }
       return false;
@@ -260,7 +260,7 @@ class Alert extends CommonDBTM {
                                                  'LIMIT'    => 1,
                                                  'itemtype' => $itemtype,
                                                  'items_id' => $items_id]);
-         if ($row = $iter->next()) {
+         if ($row = $iter->current()) {
             //TRANS: %s is the date
             echo sprintf(__('Alert sent on %s'), Html::convDateTime($row['date']));
          }

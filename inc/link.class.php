@@ -320,7 +320,7 @@ class Link extends CommonDBTM {
             'WHERE'     => ['items_id' => $item->getID()]
          ]);
          if ($iterator->count()) {
-            $link = str_replace("[DOMAIN]", $iterator->next()['name'], $link);
+            $link = str_replace("[DOMAIN]", $iterator->current()['name'], $link);
          }
       }
       if (strstr($link, "[NETWORK]")

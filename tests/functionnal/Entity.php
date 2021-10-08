@@ -822,7 +822,7 @@ class Entity extends DbTestCase {
 
       $links = $ticket_contract::getListForItem($ticket);
       $this->integer(count($links))->isEqualTo(1);
-      $link = $links->next();
+      $link = $links->current();
       $this->integer($link['id'])->isEqualTo($contracts_id_1);
 
       // Case 2: contract specified, should not change
@@ -837,7 +837,7 @@ class Entity extends DbTestCase {
 
       $links = $ticket_contract::getListForItem($ticket);
       $this->integer(count($links))->isEqualTo(1);
-      $link = $links->next();
+      $link = $links->current();
       $this->integer($link['id'])->isEqualTo($contracts_id_2);
 
       // Test 3: Use contract in current entity
@@ -870,7 +870,7 @@ class Entity extends DbTestCase {
 
       $links = $ticket_contract::getListForItem($ticket);
       $this->integer(count($links))->isEqualTo(1);
-      $link = $links->next();
+      $link = $links->current();
       $this->integer($link['id'])->isEqualTo($contracts_id_2);
 
       // Case 3: contract specified, should not change
@@ -885,7 +885,7 @@ class Entity extends DbTestCase {
 
       $links = $ticket_contract::getListForItem($ticket);
       $this->integer(count($links))->isEqualTo(1);
-      $link = $links->next();
+      $link = $links->current();
       $this->integer($link['id'])->isEqualTo($contracts_id_1);
    }
 }

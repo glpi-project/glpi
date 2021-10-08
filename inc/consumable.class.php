@@ -271,7 +271,7 @@ class Consumable extends CommonDBChild {
          'COUNT'  => 'cpt',
          'FROM'   => 'glpi_consumables',
          'WHERE'  => ['consumableitems_id' => $tID]
-      ])->next();
+      ])->current();
       return (int)$result['cpt'];
    }
 
@@ -293,7 +293,7 @@ class Consumable extends CommonDBChild {
             'consumableitems_id' => $tID,
             'NOT'                => ['date_out' => null]
          ]
-      ])->next();
+      ])->current();
       return (int)$result['cpt'];
    }
 
@@ -315,7 +315,7 @@ class Consumable extends CommonDBChild {
             'consumableitems_id' => $tID,
             'date_out'           => null
          ]
-      ])->next();
+      ])->current();
       return(int) $result['cpt'];
    }
 
@@ -377,7 +377,7 @@ class Consumable extends CommonDBChild {
             'id'        => $cID,
             'date_out'  => null
          ]
-      ])->next();
+      ])->current();
       return $result['cpt'] == 1;
    }
 
@@ -399,7 +399,7 @@ class Consumable extends CommonDBChild {
             'id'     => $cID,
             'NOT'   => ['date_out' => null]
          ]
-      ])->next();
+      ])->current();
       return $result['cpt'] == 1;
    }
 

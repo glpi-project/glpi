@@ -239,7 +239,7 @@ switch ($_GET["type"]) {
                'id' => $_GET['id']
             ]
          ]);
-         $current = $iterator->next();
+         $current = $iterator->current();
 
          $title  = sprintf(__('%1$s: %2$s'),
                            $item->getTypeName(), $current['designation']);

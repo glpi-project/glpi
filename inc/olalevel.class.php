@@ -284,7 +284,7 @@ class OlaLevel extends LevelAgreementLevel {
       ]);
 
       if (count($iterator)) {
-         $result = $iterator->next();
+         $result = $iterator->current();
          return $result['id'];
       }
       return 0;
@@ -309,7 +309,7 @@ class OlaLevel extends LevelAgreementLevel {
       ]);
 
       if (count($iterator)) {
-         $result = $iterator->next();
+         $result = $iterator->current();
          $execution_time = $result['execution_time'];
 
          $iterator = $DB->request([
@@ -326,7 +326,7 @@ class OlaLevel extends LevelAgreementLevel {
          ]);
 
          if (count($iterator)) {
-            $result = $iterator->next();
+            $result = $iterator->current();
             return $result['id'];
          }
       }

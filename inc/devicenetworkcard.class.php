@@ -138,7 +138,7 @@ class DeviceNetworkCard extends CommonDevice {
       $iterator = $DB->request($criteria);
 
       if (count($iterator) > 0) {
-         $line = $iterator->next();
+         $line = $iterator->current();
          return $line['id'];
       }
       return $this->add($input);

@@ -815,7 +815,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          // Check twin :
          $iterator = $DB->request($criteria);
          if (count($iterator)) {
-            $result = $iterator->next();
+            $result = $iterator->current();
             return $result['id'];
          }
       } else if (isset($input['name']) && !empty($input['name'])) {
@@ -840,7 +840,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          // Check twin :
          $iterator = $DB->request($criteria);
          if (count($iterator)) {
-            $result = $iterator->next();
+            $result = $iterator->current();
             return $result['id'];
          }
       }

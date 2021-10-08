@@ -537,7 +537,7 @@ class Document extends CommonDBTM {
          ]);
 
          if (count($iterator) > 0) {
-            $result = $iterator->next();
+            $result = $iterator->current();
             $icon = $result['icon'];
             if (!file_exists(GLPI_ROOT."/pics/icones/$icon")) {
                $icon = "defaut-dist.png";
@@ -590,7 +590,7 @@ class Document extends CommonDBTM {
          return false;
       }
 
-      $doc_data = $doc_iterator->next();
+      $doc_data = $doc_iterator->current();
       return $this->getFromDB($doc_data['id']);
    }
 
@@ -704,7 +704,7 @@ class Document extends CommonDBTM {
          Reminder::getVisibilityCriteria()
       );
 
-      $result = $DB->request($criteria)->next();
+      $result = $DB->request($criteria)->current();
       return $result['cpt'] > 0;
    }
 
@@ -756,7 +756,7 @@ class Document extends CommonDBTM {
          $request['WHERE'] += $visibilityCriteria['WHERE'];
       }
 
-      $result = $DB->request($request)->next();
+      $result = $DB->request($request)->current();
 
       return $result['cpt'] > 0;
    }
@@ -793,7 +793,7 @@ class Document extends CommonDBTM {
             $itil->getAssociatedDocumentsCriteria(),
             'documents_id' => $this->fields['id']
          ]
-      ])->next();
+      ])->current();
 
       return $result['cpt'] > 0;
    }

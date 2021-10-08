@@ -697,7 +697,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             'users_id'     => $data['users_id'],
             'profiles_id'  => $this->private_profiles
          ] + getEntitiesRestrictCriteria('glpi_profiles_users', 'entities_id', $this->getEntity(), true)
-      ])->next();
+      ])->current();
 
       if ($result['cpt']) {
          return true;
@@ -719,7 +719,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             'users_id'     => $data['users_id'],
             'profiles_id'  => $this->central_profiles
          ] + getEntitiesRestrictCriteria(Profile_User::getTable(), 'entities_id', $this->getEntity(), true)
-      ])->next();
+      ])->current();
 
       if ($result['cpt']) {
          return false;

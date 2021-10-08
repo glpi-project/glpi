@@ -318,8 +318,8 @@ class DBConnection extends CommonDBTM {
                   // nobreak;
 
                case 1 : // If synced (all changes)
-                  $slave  = $DBread->request($sql)->next();
-                  $master = $DB->request($sql)->next();
+                  $slave  = $DBread->request($sql)->current();
+                  $master = $DB->request($sql)->current();
                   if (isset($slave['maxid']) && isset($master['maxid'])
                       && ($slave['maxid'] == $master['maxid'])) {
                      // Latest Master change available on Slave
@@ -332,7 +332,7 @@ class DBConnection extends CommonDBTM {
                      // No change yet
                      return $DBread;
                   }
-                  $slave  = $DBread->request($sql)->next();
+                  $slave  = $DBread->request($sql)->current();
                   if (isset($slave['maxid'])
                       && ($slave['maxid'] >= $_SESSION['glpi_maxhistory'])) {
                      // Latest current user change avaiable on Slave

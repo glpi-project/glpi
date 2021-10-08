@@ -90,7 +90,7 @@ class KnowbaseItem_Revision extends DbTestCase {
       $data = $DB->request([
          'SELECT' => ['MIN' => 'id as id'],
          'FROM'   => 'glpi_knowbaseitems_revisions'
-      ])->next();
+      ])->current();
       $rev_id = $data['id'];
 
       $kb1->getFromDB($kb1->getID());
@@ -131,7 +131,7 @@ class KnowbaseItem_Revision extends DbTestCase {
       $data = $DB->request([
          'SELECT' => new \QueryExpression('MAX(id) AS id'),
          'FROM'   => 'glpi_knowbaseitems_revisions'
-      ])->next();
+      ])->current();
       $nrev_id = $data['id'];
 
       $this->boolean($kb1->getFromDB($kb1->getID()))->isTrue();

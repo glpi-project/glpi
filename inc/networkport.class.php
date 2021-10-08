@@ -1633,7 +1633,7 @@ class NetworkPort extends CommonDBChild {
       ]);
 
       if ($iterator->count()) {
-         return sprintf(__('%1$s on %2$s'), parent::computeFriendlyName(), $iterator->next()['name']);
+         return sprintf(__('%1$s on %2$s'), parent::computeFriendlyName(), $iterator->current()['name']);
       }
 
       return parent::computeFriendlyName();
@@ -1675,7 +1675,7 @@ class NetworkPort extends CommonDBChild {
             'hub' => 1,
             $this->getTable() . '.id' => $opposite
          ]
-      ])->next();
+      ])->current();
 
       return ($result['cpt'] > 0);
    }

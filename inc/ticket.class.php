@@ -2220,7 +2220,7 @@ class Ticket extends CommonITILObject {
                )
             ]
          ]
-      ])->next();
+      ])->current();
       return $result['cpt'];
    }
 
@@ -2307,7 +2307,7 @@ class Ticket extends CommonITILObject {
                $this->getTable() . '.solvedate' => null
             ]
          ]
-      ])->next();
+      ])->current();
       return $result['cpt'];
    }
 

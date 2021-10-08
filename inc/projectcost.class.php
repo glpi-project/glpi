@@ -232,7 +232,7 @@ class ProjectCost extends CommonDBChild {
       ]);
 
       if (count($iterator)) {
-         return $iterator->next();
+         return $iterator->current();
       }
 
       return [];

@@ -233,7 +233,7 @@ class Change_Item extends CommonItilObject_Item {
                      'WHERE'  => [
                         $item->getForeignKeyField()   => $item->fields['id']
                      ]
-                  ])->next();
+                  ])->current();
                   $nb = $result['cpt'];
                }
                return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);

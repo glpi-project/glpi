@@ -544,7 +544,7 @@ class Socket extends CommonDBChild {
 
          // Check twin :
          if (count($iterator)) {
-            $result = $iterator->next();
+            $result = $iterator->current();
             return $result['id'];
          }
       }

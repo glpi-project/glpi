@@ -241,7 +241,7 @@ JAVASCRIPT;
       $has_agent = false;
       if (count($iterator)) {
          $has_agent = true;
-         $agent->getFromDB($iterator->next()['id']);
+         $agent->getFromDB($iterator->current()['id']);
       }
 
       //if no agent has been found, check if there is a linked item for databases

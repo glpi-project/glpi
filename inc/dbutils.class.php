@@ -368,7 +368,7 @@ final class DbUtils {
       }
       $condition['COUNT'] = 'cpt';
 
-      $row = $DB->request($table, $condition)->next();
+      $row = $DB->request($table, $condition)->current();
       return ($row ? (int)$row['cpt'] : 0);
    }
 
@@ -738,7 +738,7 @@ final class DbUtils {
          ]);
 
          if (count($iterator) > 0) {
-            $db_sons = trim($iterator->next()['sons_cache']);
+            $db_sons = trim($iterator->current()['sons_cache']);
             if (!empty($db_sons)) {
                $sons = $this->importArrayFromDB($db_sons, true);
             }
@@ -897,7 +897,7 @@ final class DbUtils {
                ]);
 
                if (count($iterator) > 0) {
-                  $result = $iterator->next();
+                  $result = $iterator->current();
                   $IDf = $result[$parentIDfield];
                } else {
                   $IDf = 0;
@@ -1002,7 +1002,7 @@ final class DbUtils {
          'WHERE'  => ["$table.id" => $ID]
       ] + $JOIN;
       $iterator = $DB->request($criteria);
-      $result = $iterator->next();
+      $result = $iterator->current();
 
       if (count($iterator) == 1) {
          $transname = $result['transname'];
@@ -1114,7 +1114,7 @@ final class DbUtils {
       }
 
       $iterator = $DB->request($criteria);
-      $result = $iterator->next();
+      $result = $iterator->current();
 
       if (count($iterator) == 1) {
          $transname = $result['transname'];
@@ -1207,7 +1207,7 @@ final class DbUtils {
       $name = "";
 
       if (count($iterator) > 0) {
-         $row      = $iterator->next();
+         $row      = $iterator->current();
          $parentID = $row[$parentIDfield];
 
          if ($wholename == "") {
@@ -1468,7 +1468,7 @@ final class DbUtils {
          }
 
          if (count($iterator) == 1) {
-            $data     = $iterator->next();
+            $data     = $iterator->current();
 
             $anon_name = $ID != ($_SESSION['glpiID'] ?? 0) && Session::getCurrentInterface() == 'helpdesk' ? User::getAnonymizedNameForUser($ID) : null;
             if ($anon_name !== null) {
@@ -1654,7 +1654,7 @@ final class DbUtils {
       ]);
 
       if (count($iterator)) {
-         $result = $iterator->next();
+         $result = $iterator->current();
          $newNo = $result['lastNo'] + 1;
       } else {
          $newNo = 0;

@@ -239,7 +239,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
                'COUNT'  => 'cpt',
                'FROM'   => $model_table,
                'WHERE'  => [$model_field => $ID]
-            ])->next();
+            ])->current();
 
             $deletecartmodel  = false;
 

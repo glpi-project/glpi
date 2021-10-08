@@ -104,7 +104,7 @@ class Update {
          $result = $DB->request([
             'SELECT' => ['version', 'language'],
             'FROM'   => 'glpi_config'
-         ])->next();
+         ])->current();
 
          $currents['version']    = trim($result['version']);
          $currents['dbversion']  = $currents['version'];
@@ -115,7 +115,7 @@ class Update {
          $result = $DB->request([
             'SELECT' => ['version', 'language'],
             'FROM'   => 'glpi_configs'
-         ])->next();
+         ])->current();
 
          $currents['version']    = trim($result['version']);
          $currents['dbversion']  = $currents['version'];

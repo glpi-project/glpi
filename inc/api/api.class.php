@@ -2771,7 +2771,7 @@ abstract class API {
                   ]);
 
                   if (count($netn_iterator)) {
-                     $data_netn = $netn_iterator->next();
+                     $data_netn = $netn_iterator->current();
 
                      $raw_ipadresses = explode(Search::LONGSEP, $data_netn['ipadresses']);
                      $ipadresses = [];

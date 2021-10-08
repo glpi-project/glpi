@@ -107,7 +107,7 @@ class NotificationEventAjax extends DbTestCase {
          ]
       ]);
       $this->integer($iterator->numRows())->isIdenticalTo(1);
-      $row = $iterator->next();
+      $row = $iterator->current();
       $notif_id = $row['id'];
 
       $iterator = $DB->request([
@@ -118,7 +118,7 @@ class NotificationEventAjax extends DbTestCase {
          ]
       ]);
       $this->integer($iterator->numRows())->isIdenticalTo(1);
-      $row = $iterator->next();
+      $row = $iterator->current();
       unset($row['id']);
       $row['mode'] = \Notification_NotificationTemplate::MODE_AJAX;
       $notiftpltpl = new \Notification_NotificationTemplate();

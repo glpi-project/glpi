@@ -265,7 +265,7 @@ class Cartridge extends CommonDBRelation {
       ]);
 
       if (count($iterator)) {
-         $result = $iterator->next();
+         $result = $iterator->current();
          $cID = $result['id'];
          // Update cartridge taking care of multiple insertion
          $result = $DB->update(
@@ -453,7 +453,7 @@ class Cartridge extends CommonDBRelation {
          'FROM'   => self::getTable(),
          'COUNT'  => 'cpt',
          'WHERE'  => ['cartridgeitems_id' => $tID]
-      ])->next();
+      ])->current();
       return $row['cpt'];
    }
 
@@ -474,7 +474,7 @@ class Cartridge extends CommonDBRelation {
          'FROM'   => self::getTable(),
          'COUNT'  => 'cpt',
          'WHERE'  => ['printers_id' => $pID]
-      ])->next();
+      ])->current();
       return (int)$row['cpt'];
    }
 
@@ -500,7 +500,7 @@ class Cartridge extends CommonDBRelation {
                'date_use'  => null
             ]
          ]
-      ])->next();
+      ])->current();
       return (int)$row['cpt'];
    }
 
@@ -525,7 +525,7 @@ class Cartridge extends CommonDBRelation {
             'date_out'     => null,
             'NOT'          => ['date_use' => null]
          ]
-      ])->next();
+      ])->current();
       return $result['cpt'];
    }
 
@@ -547,7 +547,7 @@ class Cartridge extends CommonDBRelation {
             'cartridgeitems_id'  => $tID,
             'NOT'                => ['date_out' => null]
          ]
-      ])->next();
+      ])->current();
       return $result['cpt'];
    }
 
@@ -571,7 +571,7 @@ class Cartridge extends CommonDBRelation {
             'printers_id'  => $pID,
             'NOT'          => ['date_out' => null]
          ]
-      ])->next();
+      ])->current();
       return $result['cpt'];
    }
 
@@ -593,7 +593,7 @@ class Cartridge extends CommonDBRelation {
             'cartridgeitems_id'  => $tID,
             'date_use'           => null
          ]
-      ])->next();
+      ])->current();
       return $result['cpt'];
    }
 
@@ -1206,7 +1206,7 @@ class Cartridge extends CommonDBRelation {
          return $CFG_GLPI['cartridges_alert_repeat'];
 
       } else {
-         $data = $iterator->next();
+         $data = $iterator->current();
          //This entity uses global parameters -> return global config
          if ($data['cartridges_alert_repeat'] == -1) {
             return $CFG_GLPI['cartridges_alert_repeat'];

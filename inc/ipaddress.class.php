@@ -306,7 +306,7 @@ class IPAddress extends CommonDBChild {
                'WHERE'  => [
                   'ipnetworks_id'   => $item->getID()
                ]
-            ])->next();
+            ])->current();
             return $result['cpt'];
       }
    }
@@ -574,7 +574,7 @@ class IPAddress extends CommonDBChild {
          ]);
 
          if (count($iterator) == 1) {
-            $line = $iterator->next();
+            $line = $iterator->current();
             if ($this->getFromDB($line["id"])) {
                return true;
             }
@@ -755,7 +755,7 @@ class IPAddress extends CommonDBChild {
          ]);
 
          if (count($iterator) == 1) {
-            $line = $iterator->next();
+            $line = $iterator->current();
             if ($this->getFromDB($line["id"])) {
                return true;
             }

@@ -570,7 +570,7 @@ class DropdownTranslation extends CommonDBChild {
             ]);
             //The field is already translated in this language
             if (count($iterator)) {
-               $current = $iterator->next();
+               $current = $iterator->current();
                return $current['value'];
             }
          }
@@ -581,7 +581,7 @@ class DropdownTranslation extends CommonDBChild {
             'WHERE'  => ['id' => $ID]
          ]);
          if (count($iterator)) {
-            $current = $iterator->next();
+            $current = $iterator->current();
             return $current[$field];
          }
       }
@@ -614,7 +614,7 @@ class DropdownTranslation extends CommonDBChild {
          ]
       ]);
       if (count($iterator)) {
-         $current = $iterator->next();
+         $current = $iterator->current();
          return $current['id'];
       }
       return 0;
@@ -670,7 +670,7 @@ class DropdownTranslation extends CommonDBChild {
          ]
       ]);
       if (count($iterator) > 0) {
-         $current = $iterator->next();
+         $current = $iterator->current();
          return self::getTranslatedValue($current['id'], $itemtype, $field,
                                          $_SESSION['glpilanguage'], $value);
       }

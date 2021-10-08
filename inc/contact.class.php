@@ -122,7 +122,7 @@ class Contact extends CommonDBTM{
          'WHERE'        => ['contacts_id' => $this->fields['id']]
       ]);
 
-      if ($data = $iterator->next()) {
+      if ($data = $iterator->current()) {
          return $data;
       }
    }
@@ -152,7 +152,7 @@ class Contact extends CommonDBTM{
          'WHERE'        => ['contacts_id' => $this->fields['id']]
       ]);
 
-      if ($data = $iterator->next()) {
+      if ($data = $iterator->current()) {
          return $data['website'];
       }
       return '';

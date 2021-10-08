@@ -313,7 +313,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
          if ($item->maybeTemplate()) {
             $request['WHERE']["$itemtable.is_template"] = 0;
          }
-         $count += $DB->request($request)->next()['cpt'];
+         $count += $DB->request($request)->current()['cpt'];
       }
       return $count;
    }
@@ -387,7 +387,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
          if ($item->maybeTemplate()) {
             $request['WHERE']["$itemtable.is_template"] = 0;
          }
-         $count += $DB->request($request)->next()['cpt'];
+         $count += $DB->request($request)->current()['cpt'];
       }
       return $count;
    }
@@ -639,7 +639,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
 
       $rand = mt_rand();
 
-      if ($data = $iterator->next()) {
+      if ($data = $iterator->current()) {
          $softwares_id  = $data['sID'];
          $soft          = new Software();
          $showEntity    = ($soft->getFromDB($softwares_id) && $soft->isRecursive());
@@ -1471,6 +1471,6 @@ class Item_SoftwareVersion extends CommonDBRelation {
       unset($params['SELECT'], $params['ORDER']);
       $params['COUNT'] = 'cpt';
       $iterator = $DB->request($params);
-      return $iterator->next()['cpt'];
+      return $iterator->current()['cpt'];
    }
 }

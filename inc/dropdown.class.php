@@ -431,7 +431,7 @@ class Dropdown {
          /// getUserName have the same system : clean it too
          /// Need to study the problem
          if (count($iterator)) {
-            $data = $iterator->next();
+            $data = $iterator->current();
             if ($translate && !empty($data['transname'])) {
                $name = $data['transname'];
             } else {

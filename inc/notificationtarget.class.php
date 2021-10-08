@@ -1382,7 +1382,7 @@ class NotificationTarget extends CommonDBChild {
             ],
             'items_id'  => $group->getID()
          ] + getEntitiesRestrictCriteria(Notification::getTable(), '', '', true)
-      ])->next();
+      ])->current();
       return $count['cpt'];
    }
 

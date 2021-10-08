@@ -63,7 +63,7 @@ class DisplayPreference extends CommonDBTM {
             'itemtype'  => $input['itemtype'],
             'users_id'  => $input['users_id']
          ]
-      ])->next();
+      ])->current();
       $input['rank'] = $result['maxrank'] + 1;
       return $input;
    }
@@ -206,7 +206,7 @@ class DisplayPreference extends CommonDBTM {
          'SELECT' => 'rank',
          'FROM'   => $this->getTable(),
          'WHERE'  => ['id' => $input['id']]
-      ])->next();
+      ])->current();
       $rank1  = $result['rank'];
 
       // Get previous or next item
@@ -236,7 +236,7 @@ class DisplayPreference extends CommonDBTM {
          ] + $where,
          'ORDER'  => $order,
          'LIMIT'  => 1
-      ])->next();
+      ])->current();
 
       $rank2  = $result['rank'];
       $ID2    = $result['id'];

@@ -453,7 +453,7 @@ class CronTask extends CommonDBTM{
       ]);
 
       if (count($iterator)) {
-         $this->fields = $iterator->next();
+         $this->fields = $iterator->current();
          return true;
       }
       return false;
@@ -1150,7 +1150,7 @@ class CronTask extends CommonDBTM{
                'crontasks_id' => $this->fields['id'],
                'state'        => CronTaskLog::STATE_STOP
             ]
-         ])->next();
+         ])->current();
 
          echo "<tr class='tab_bg_1'><td>".__('Start date')."</td>";
          echo "<td class='right'>".Html::convDateTime($data['datemin'])."</td></tr>";
