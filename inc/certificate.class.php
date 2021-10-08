@@ -739,22 +739,7 @@ class Certificate extends CommonDBTM {
                   'glpi_certificates.*',
                ],
                'FROM'      => self::getTable(),
-               'LEFT JOIN' => [
-                  'glpi_alerts' => [
-                     'FKEY'   => [
-                        'glpi_alerts'       => 'items_id',
-                        'glpi_certificates' => 'id',
-                        [
-                           'AND' => [
-                              'glpi_alerts.itemtype' => __CLASS__,
-                              'glpi_alerts.type'     => Alert::END,
-                           ],
-                        ],
-                     ]
-                  ]
-               ],
                'WHERE'     => [
-                  'glpi_alerts.date'              => null,
                   'glpi_certificates.is_deleted'  => 0,
                   'glpi_certificates.is_template' => 0,
                   [
@@ -782,7 +767,6 @@ class Certificate extends CommonDBTM {
          }
 
          if (!empty($items)) {
-            $alert   = new Alert();
             $options = [
                'entities_id'  => $entity,
                'certificates' => $items,
@@ -798,19 +782,6 @@ class Certificate extends CommonDBTM {
                   Session::addMessageAfterRedirect(sprintf(__('%1$s: %2$s'),
                                                            $entityname, $message));
                }
-
-               $input = [
-                  'type'     => Alert::END,
-                  'itemtype' => __CLASS__,
-               ];
-
-               // add alerts
-               foreach ($items as $ID => $certificate) {
-                  $input["items_id"] = $ID;
-                  $alert->add($input);
-                  unset($alert->fields['id']);
-               }
-
             } else {
                $entityname = Dropdown::getDropdownName('glpi_entities', $entity);
                //TRANS: %s is entity name
