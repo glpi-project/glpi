@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  *  Database iterator class for Mysql
 **/
-class DBmysqlIterator implements Iterator, Countable {
+class DBmysqlIterator implements SeekableIterator, Countable {
    /**
     * DBmysql object
     * @var DBmysql
@@ -106,8 +106,8 @@ class DBmysqlIterator implements Iterator, Countable {
    function execute ($table, $crit = "", $debug = false) {
       $this->buildQuery($table, $crit, $debug);
       $this->res = ($this->conn ? $this->conn->query($this->sql) : false);
-      $this->setPosition(0);
       $this->count = $this->res instanceof \mysqli_result ? $this->conn->numrows($this->res) : 0;
+      $this->setPosition(0);
       return $this;
    }
 
@@ -771,6 +771,13 @@ class DBmysqlIterator implements Iterator, Countable {
     */
    public function count(): int {
       return $this->count;
+   }
+
+   public function seek(int $position): void {
+      if ($position < 0 || $position + 1 > $this->count) {
+         throw new \OutOfBoundsException();
+      }
+      $this->setPosition($position);
    }
 
    /**
