@@ -18,10 +18,11 @@ body:
     id: terms
     attributes:
       label: Code of Conduct
-      description: By submitting this issue, you agree to follow hereinabove rules and [COntribution guide](https://github.com/glpi-project/glpi/blob/master/CONTRIBUTING.md)
+      description: By submitting this issue, you agree to follow hereinabove rules and [Contribution guide](https://github.com/glpi-project/glpi/blob/master/CONTRIBUTING.md)
       options:
         - label: I agree to follow this project's Code of Conduct
-          required: true
+    validations:
+      required: true
   - type: checkboxes
     attributes:
       label: Is there an existing issue for this?
