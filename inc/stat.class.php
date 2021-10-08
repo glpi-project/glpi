@@ -1434,10 +1434,10 @@ class Stat extends CommonGLPI {
             $start = 0;
          }
 
-         for ($i=$start; ($i<$numrows) && ($i<$end_display); $i++) {
+         $i = $start;
+         foreach ($iterator as $data) {
             $item_num = 1;
             // Get data and increment loop variables
-            $data = $iterator->next();
             if (!($item = getItemForItemtype($data["itemtype"]))) {
                continue;
             }
@@ -1458,6 +1458,11 @@ class Stat extends CommonGLPI {
                echo Search::showItem($output_type, $data["NB"], $item_num, $i-$start+1,
                                      "class='center'"." ".($item->isDeleted()?" class='deleted' "
                                                                              :""));
+            }
+
+            $i++;
+            if ($i == $end_display) {
+               break;
             }
          }
 

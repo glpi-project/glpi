@@ -850,7 +850,8 @@ JAVASCRIPT;
                                        $data['userfirstname'], $linkUser)."</td>";
             echo "</tr>\n";
 
-         } while ($data = $iterator->next());
+            $iterator->next();
+         } while ($data = $iterator->current());
          echo $header_begin.$header_bottom.$header_end;
          echo "</table>\n";
          if ($canedit) {

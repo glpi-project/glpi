@@ -1920,8 +1920,7 @@ class Transfer extends CommonDBTM {
                $canbetransfer = true;
                $types_iterator = Certificate_Item::getDistinctTypes($item_ID);
 
-               while (($data_type = $types_iterator->next())
-                        && $canbetransfer) {
+               foreach ($types_iterator as $data_type) {
                   $dtype = $data_type['itemtype'];
 
                   if (isset($this->needtobe_transfer[$dtype]) && count($this->needtobe_transfer[$dtype])) {
@@ -1943,6 +1942,9 @@ class Transfer extends CommonDBTM {
                      $canbetransfer = false;
                   }
 
+                  if (!$canbetransfer) {
+                     break;
+                  }
                }
 
                // Yes : transfer
@@ -2097,8 +2099,7 @@ class Transfer extends CommonDBTM {
                $canbetransfer = true;
                $types_iterator = Contract_Item::getDistinctTypes($item_ID);
 
-               while (($data_type = $types_iterator->next())
-                        && $canbetransfer) {
+               foreach ($types_iterator as $data_type) {
                   $dtype = $data_type['itemtype'];
 
                   if (isset($this->needtobe_transfer[$dtype]) && count($this->needtobe_transfer[$dtype])) {
@@ -2120,6 +2121,9 @@ class Transfer extends CommonDBTM {
                      $canbetransfer = false;
                   }
 
+                  if (!$canbetransfer) {
+                     break;
+                  }
                }
 
                // Yes : transfer
@@ -2273,8 +2277,7 @@ class Transfer extends CommonDBTM {
                $canbetransfer = true;
                $types_iterator = Document_Item::getDistinctTypes($item_ID);
 
-               while (($data_type = $types_iterator->next())
-                        && $canbetransfer) {
+               foreach ($types_iterator as $data_type) {
                   $dtype = $data_type['itemtype'];
                   if (isset($this->needtobe_transfer[$dtype])) {
                      // No items to transfer -> exists links
@@ -2303,6 +2306,10 @@ class Transfer extends CommonDBTM {
                         $canbetransfer = false;
                      }
 
+                  }
+
+                  if (!$canbetransfer) {
+                     break;
                   }
                }
 
@@ -3446,8 +3453,7 @@ class Transfer extends CommonDBTM {
                            'WHERE'           => [$fk => $item_ID]
                         ]);
 
-                        while (($data_type = $type_iterator->next())
-                                 && $canbetransfer) {
+                        foreach ($type_iterator as $data_type) {
                            $dtype = $data_type['itemtype'];
 
                            if (isset($this->needtobe_transfer[$dtype]) && count($this->needtobe_transfer[$dtype])) {
@@ -3474,6 +3480,9 @@ class Transfer extends CommonDBTM {
                               $canbetransfer = false;
                            }
 
+                           if (!$canbetransfer) {
+                              break;
+                           }
                         }
 
                         // Yes : transfer

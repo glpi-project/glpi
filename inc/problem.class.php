@@ -984,7 +984,7 @@ class Problem extends CommonITILObject {
          ];
 
          $i = 0;
-         while ($i < $displayed_row_count && ($data = $iterator->next())) {
+         foreach ($iterator as $data) {
             $problem   = new self();
             $rand      = mt_rand();
             $row = [
@@ -1046,8 +1046,12 @@ class Problem extends CommonITILObject {
                   ]
                ];
             }
-            $i++;
             $twig_params['rows'][] = $row;
+
+            $i++;
+            if ($i == $displayed_row_count) {
+               break;
+            }
          }
          TemplateRenderer::getInstance()->display('components/table.html.twig', $twig_params);
       }

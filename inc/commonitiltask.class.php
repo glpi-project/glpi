@@ -1517,9 +1517,13 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          echo "<th>".__('Description')."</th>";
          echo "</tr>";
          $i = 0;
-         while ($i < $displayed_row_count && ($data = $iterator->next())) {
+         foreach ($iterator as $data) {
             self::showVeryShort($data['id'], $itemtype);
+
             $i++;
+            if ($i == $displayed_row_count) {
+               break;
+            }
          }
          echo "</table>";
       }

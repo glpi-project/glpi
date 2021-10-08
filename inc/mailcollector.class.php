@@ -1757,8 +1757,7 @@ class MailCollector  extends CommonDBTM {
       if (count($iterator) > 0) {
          $mc = new self();
 
-         while (($max > 0)
-                  && ($data = $iterator->next())) {
+         foreach ($iterator as $data) {
             $mc->maxfetch_emails = $max;
 
             $task->log("Collect mails from ".$data["name"]." (".$data["host"].")\n");
@@ -1768,6 +1767,10 @@ class MailCollector  extends CommonDBTM {
             $task->log("$message\n");
 
             $max -= $mc->fetch_emails;
+
+            if ($max === 0) {
+               break;
+            }
          }
       }
 
