@@ -172,6 +172,11 @@ jobs:
         if: env.skip != 'true'
         run: |
           docker-compose exec -T app .github/actions/test_tests-units.sh
+      - name: "IMAP tests"
+        if: env.skip != 'true'
+        run: |
+          .github/actions/init_initialize-imap-fixtures.sh
+          docker-compose exec -T app .github/actions/test_tests-imap.sh
       - name: "Functionnal tests"
         if: env.skip != 'true'
         run: |
@@ -181,11 +186,6 @@ jobs:
         run: |
           .github/actions/init_initialize-ldap-fixtures.sh
           docker-compose exec -T app .github/actions/test_tests-ldap.sh
-      - name: "IMAP tests"
-        if: env.skip != 'true'
-        run: |
-          .github/actions/init_initialize-imap-fixtures.sh
-          docker-compose exec -T app .github/actions/test_tests-imap.sh
       - name: "WEB tests"
         if: env.skip != 'true'
         run: |
