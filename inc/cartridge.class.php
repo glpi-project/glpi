@@ -53,6 +53,7 @@ class Cartridge extends CommonDBRelation {
 
    static public $itemtype_2 = 'Printer';
    static public $items_id_2 = 'printers_id';
+   static public $mustBeAttached_2 = false;
 
    public function getCloneRelations() :array {
       return [
@@ -683,7 +684,7 @@ class Cartridge extends CommonDBRelation {
       if ($canedit && $number) {
          $rand = mt_rand();
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $actions = ['delete' => _x('button', 'Delete permanently'),
+         $actions = ['purge' => _x('button', 'Delete permanently'),
                      'Infocom'.MassiveAction::CLASS_ACTION_SEPARATOR.'activate'
                               => __('Enable the financial and administrative information')
                           ];
