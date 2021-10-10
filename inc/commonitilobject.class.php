@@ -1815,14 +1815,16 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      // No Auto set Import for external source
-      if (($uid = Session::getLoginUserID())
-          && !isset($input['_auto_import'])) {
-         $input["users_id_recipient"] = $uid;
-      } else if (isset($input["_users_id_requester"]) && $input["_users_id_requester"]
-                 && !isset($input["users_id_recipient"])) {
-         if (!is_array($input['_users_id_requester'])) {
-            $input["users_id_recipient"] = $input["_users_id_requester"];
+      if (!isset($input['_skip_auto_assign']) || $input['_skip_auto_assign'] === false) {
+         // No Auto set Import for external source
+         if (($uid = Session::getLoginUserID())
+            && !isset($input['_auto_import'])) {
+            $input["users_id_recipient"] = $uid;
+         } else if (isset($input["_users_id_requester"]) && $input["_users_id_requester"]
+            && !isset($input["users_id_recipient"])) {
+            if (!is_array($input['_users_id_requester'])) {
+               $input["users_id_recipient"] = $input["_users_id_requester"];
+            }
          }
       }
 
