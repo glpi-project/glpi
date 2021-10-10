@@ -40,6 +40,8 @@ $itemtype = $_GET['itemtype']   ?? null;
 $id       = $_GET['id']         ?? null;
 $filter   = $_GET['filter']     ?? [];
 
+Session::checkRight(Log::$rightname, READ);
+
 // Validate itemtype
 if (!is_a($itemtype, CommonDBTM::class, true)) {
     Toolbox::throwError(400, "Invalid itemtype", "string");
