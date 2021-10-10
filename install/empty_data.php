@@ -4285,6 +4285,8 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 ##lang.consumable.reference## : ##consumable.reference##
 
 ##lang.consumable.remaining## : ##consumable.remaining##
+##lang.consumable.stock_target## : ##consumable.stock_target##
+##lang.consumable.to_order## : ##consumable.to_order##
 
 ##consumable.url##
 
@@ -4295,6 +4297,8 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 &lt;br /&gt;##lang.consumable.item## : ##consumable.item##&lt;br /&gt;
 &lt;br /&gt;##lang.consumable.reference## : ##consumable.reference##&lt;br /&gt;
 ##lang.consumable.remaining## : ##consumable.remaining##&lt;br /&gt;
+##lang.consumable.stock_target## : ##consumable.stock_target##&lt;br /&gt;
+##lang.consumable.to_order## : ##consumable.to_order##&lt;br /&gt;
 &lt;a href="##consumable.url##"&gt; ##consumable.url##&lt;/a&gt;&lt;br /&gt;
    ##ENDFOREACHconsumables##&lt;/p&gt;',
    ], [
@@ -4312,6 +4316,8 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 ##lang.cartridge.reference## : ##cartridge.reference##
 
 ##lang.cartridge.remaining## : ##cartridge.remaining##
+##lang.cartridge.stock_target## : ##cartridge.stock_target##
+##lang.cartridge.to_order## : ##cartridge.to_order##
 
 ##cartridge.url##
  ##ENDFOREACHcartridges##',
@@ -4323,6 +4329,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 ##cartridge.reference##&lt;br /&gt;
 ##lang.cartridge.remaining## :
 ##cartridge.remaining##&lt;br /&gt;
+##lang.cartridge.stock_target## :
+##cartridge.stock_target##&lt;br /&gt;
+##lang.cartridge.to_order## :
+##cartridge.to_order##&lt;br /&gt;
 &lt;a href="##cartridge.url##"&gt;
 ##cartridge.url##&lt;/a&gt;&lt;br /&gt;
 ##ENDFOREACHcartridges##&lt;/p&gt;',
