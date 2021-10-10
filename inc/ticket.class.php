@@ -1644,6 +1644,7 @@ class Ticket extends CommonITILObject {
 
       // fill auto-assign when no tech defined (only for tech)
       if (!isset($input['_auto_import'])
+          && (!isset($input['_skip_auto_assign']) || $input['_skip_auto_assign'] === false)
           && isset($_SESSION['glpiset_default_tech']) && $_SESSION['glpiset_default_tech']
           && Session::getCurrentInterface() == 'central'
           && (!isset($input['_users_id_assign']) || $input['_users_id_assign'] == 0)
@@ -1658,7 +1659,8 @@ class Ticket extends CommonITILObject {
       }
 
       // Set default contract if not specified
-      if (!isset($input['_contracts_id'])) {
+      if (!isset($input['_contracts_id']) &&
+         (!isset($input['_skip_default_contract']) || $input['_skip_default_contract'] === false)) {
          $input['_contracts_id'] = Entity::getDefaultContract($this->input['entities_id'] ?? 0);
       }
 
@@ -1672,42 +1674,44 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      // Process Business Rules
-      $this->fillInputForBusinessRules($input);
+      if (!isset($input['_skip_rules']) || $input['_skip_rules'] === false) {
+         // Process Business Rules
+         $this->fillInputForBusinessRules($input);
 
-      $rules = new RuleTicketCollection($input['entities_id']);
+         $rules = new RuleTicketCollection($input['entities_id']);
 
-      // Set unset variables with are needed
-      $tmprequester = 0;
-      $user = new User();
-      if (isset($input["_users_id_requester"])) {
-         if (!is_array($input["_users_id_requester"])
-             && $user->getFromDB($input["_users_id_requester"])) {
-            $input['_locations_id_of_requester'] = $user->fields['locations_id'];
-            $input['users_default_groups'] = $user->fields['groups_id'];
-            $tmprequester = $input["_users_id_requester"];
-         } else if (is_array($input["_users_id_requester"]) && ($user_id = reset($input["_users_id_requester"])) !== false) {
-            if ($user->getFromDB($user_id)) {
+         // Set unset variables with are needed
+         $tmprequester = 0;
+         $user = new User();
+         if (isset($input["_users_id_requester"])) {
+            if (!is_array($input["_users_id_requester"])
+               && $user->getFromDB($input["_users_id_requester"])) {
                $input['_locations_id_of_requester'] = $user->fields['locations_id'];
                $input['users_default_groups'] = $user->fields['groups_id'];
+               $tmprequester = $input["_users_id_requester"];
+            } else if (is_array($input["_users_id_requester"]) && ($user_id = reset($input["_users_id_requester"])) !== false) {
+               if ($user->getFromDB($user_id)) {
+                  $input['_locations_id_of_requester'] = $user->fields['locations_id'];
+                  $input['users_default_groups'] = $user->fields['groups_id'];
+               }
             }
          }
+
+         // Clean new lines before passing to rules
+         if (isset($input["content"])) {
+            $input["content"] = preg_replace('/\\\\r\\\\n/', "\\n", $input['content']);
+            $input["content"] = preg_replace('/\\\\n/', "\\n", $input['content']);
+         }
+
+         $input = $rules->processAllRules($input,
+            $input,
+            ['recursive' => true],
+            ['condition' => RuleTicket::ONADD]);
+         $input = Toolbox::stripslashes_deep($input);
+
+         // Recompute default values based on values computed by rules
+         $input = $this->computeDefaultValuesForAdd($input);
       }
-
-      // Clean new lines before passing to rules
-      if (isset($input["content"])) {
-         $input["content"] = preg_replace('/\\\\r\\\\n/', "\\n", $input['content']);
-         $input["content"] = preg_replace('/\\\\n/', "\\n", $input['content']);
-      }
-
-      $input = $rules->processAllRules($input,
-                                       $input,
-                                       ['recursive' => true],
-                                       ['condition' => RuleTicket::ONADD]);
-      $input = Toolbox::stripslashes_deep($input);
-
-      // Recompute default values based on values computed by rules
-      $input = $this->computeDefaultValuesForAdd($input);
 
       if (isset($input['_users_id_requester'])
           && !is_array($input['_users_id_requester'])
@@ -1730,36 +1734,40 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      // Manage auto assign
-      $auto_assign_mode = Entity::getUsedConfig('auto_assign_mode', $input['entities_id']);
+      if (!isset($input['_skip_auto_assign']) || $input['_skip_auto_assign'] === false) {
+         // Manage auto assign
+         $auto_assign_mode = Entity::getUsedConfig('auto_assign_mode', $input['entities_id']);
 
-      switch ($auto_assign_mode) {
-         case Entity::CONFIG_NEVER :
-            break;
+         switch ($auto_assign_mode) {
+            case Entity::CONFIG_NEVER :
+               break;
 
-         case Entity::AUTO_ASSIGN_HARDWARE_CATEGORY :
-            // Auto assign tech/group from hardware
-            $input = $this->setTechAndGroupFromHardware($input, $item);
-            // Auto assign tech/group from Category
-            $input = $this->setTechAndGroupFromItilCategory($input);
-            break;
+            case Entity::AUTO_ASSIGN_HARDWARE_CATEGORY :
+               // Auto assign tech/group from hardware
+               $input = $this->setTechAndGroupFromHardware($input, $item);
+               // Auto assign tech/group from Category
+               $input = $this->setTechAndGroupFromItilCategory($input);
+               break;
 
-         case Entity::AUTO_ASSIGN_CATEGORY_HARDWARE :
-            // Auto assign tech/group from Category
-            $input = $this->setTechAndGroupFromItilCategory($input);
-            // Auto assign tech/group from hardware
-            $input = $this->setTechAndGroupFromHardware($input, $item);
-            break;
+            case Entity::AUTO_ASSIGN_CATEGORY_HARDWARE :
+               // Auto assign tech/group from Category
+               $input = $this->setTechAndGroupFromItilCategory($input);
+               // Auto assign tech/group from hardware
+               $input = $this->setTechAndGroupFromHardware($input, $item);
+               break;
+         }
+
+         $input = $this->assign($input);
       }
 
-      $input = $this->assign($input);
-
-      // Manage SLA / OLA asignment
-      // Manual SLA / OLA defined : reset due date
-      // No manual SLA / OLA and due date defined : reset auto SLA / OLA
-      foreach ([SLM::TTR, SLM::TTO] as $slmType) {
-         $this->slaAffect($slmType, $input, $manual_slas_id);
-         $this->olaAffect($slmType, $input, $manual_olas_id);
+      if (!isset($input['_skip_sla_assign']) || $input['_skip_sla_assign'] === false) {
+         // Manage SLA / OLA asignment
+         // Manual SLA / OLA defined : reset due date
+         // No manual SLA / OLA and due date defined : reset auto SLA / OLA
+         foreach ([SLM::TTR, SLM::TTO] as $slmType) {
+            $this->slaAffect($slmType, $input, $manual_slas_id);
+            $this->olaAffect($slmType, $input, $manual_olas_id);
+         }
       }
 
       // auto set type if not set
