@@ -29,6 +29,7 @@
  * ---------------------------------------------------------------------
  */
 
+import SearchTokenizer from "../SearchTokenizer.js";
 /* global sortable */
 
 /**
@@ -248,6 +249,8 @@ class GLPIKanbanRights {
       this.filters = {
          _text: ''
       };
+
+      this.filter_tokenizer = new SearchTokenizer();
 
       /**
        * The ID of the add column form.
@@ -511,14 +514,35 @@ class GLPIKanbanRights {
             let add_column = "<buttom rome='button' class='kanban-add-column btn btn-outline-secondary ms-1'>" + __('Add column') + "</button>";
             toolbar.append(add_column);
          }
-         filter_input.on('input', function() {
-            let text = $(this).val();
+
+         const debounce = (fn) => {
+            let timerId;
+            return function (...args) {
+               if (timerId) {
+                  clearTimeout(timerId);
+               }
+               timerId = setTimeout(() => {
+                  fn(...args);
+                  timerId = null;
+               }, 200);
+            };
+         };
+
+         filter_input.on('input', debounce((e) => {
+            let text = $(e.target).val();
             if (text === null) {
                text = '';
             }
-            self.filters._text = text;
+
+            const result = self.filter_tokenizer.tokenize(text);
+
+            self.filters = {
+               _text: ''
+            };
+            self.filters._text = result.getFullPhrase();
+            result.getTaggedTerms().forEach(t => self.filters[t.tag] = t.term);
             self.filter();
-         });
+         }));
          $(self.element).trigger('kanban:post_build_toolbar');
       };
 
@@ -2071,7 +2095,7 @@ class GLPIKanbanRights {
          self.clearFiltered();
          // Filter using built-in text filter (Check title)
          $(self.element + ' .kanban-item').each(function(i, item) {
-            const title = $(item).find(".kanban-item-header a").text();
+            const title = $(item).find(".kanban-item-title span").text();
             try {
                if (!title.match(new RegExp(self.filters._text, 'i'))) {
                   $(item).addClass('filtered-out');
