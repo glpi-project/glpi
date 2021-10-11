@@ -39,8 +39,23 @@
          ) }}
          <script>
             $('#dropdown_pendingreasons_id{{ rand }}').change(function() {
-               if ($(this).val() > 0) {
+               var pending_val = $(this).val();
+               if (pending_val > 0) {
                   $('#pending-reasons-more_options_{{ rand }}').addClass('show');
+                  $.ajax({
+                     url: '{{ path("ajax/pendingreason.php") }}',
+                     type: 'POST',
+                     data: {
+                        pendingreasons_id: pending_val
+                     }
+                  }).done(function(data) {
+                     $('#dropdown_followup_frequency{{ rand }}')
+                        .val(data.followup_frequency)
+                        .trigger('change');
+                     $('#dropdown_followups_before_resolution{{ rand }}')
+                        .val(data.followups_before_resolution)
+                        .trigger('change');
+                  });
                } else {
                   $('#pending-reasons-more_options_{{ rand }}').removeClass('show');
                }
@@ -55,7 +70,9 @@
                {% set pendingreasons_frequency_field = call('PendingReason::displayFollowupFrequencyfield', [
                   pending_item.fields["followup_frequency"],
                   "",
-                  [],
+                  {
+                     'rand': rand
+                  },
                   false
                ]) %}
                {% set pendingreasons_frequency_lbl %}
@@ -79,7 +96,9 @@
                {% set pendingreasons_resolution_field = call('PendingReason::displayFollowupsNumberBeforeResolutionField', [
                      pending_item.fields["followups_before_resolution"],
                      "",
-                     [],
+                     {
+                        'rand': rand
+                     },
                      false
                ]) %}
                {% set pendingreasons_resolution_lbl %}
