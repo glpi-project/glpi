@@ -199,41 +199,6 @@ class PendingReason_Item extends CommonDBRelation
    }
 
    /**
-    * Display pending informations in the main tab of a given CommonITILObject
-    *
-    * @param CommonITILObject $item
-    */
-   public static function displayStatusTooltip(CommonITILObject $item): void {
-      $pending_item = self::getForItem($item);
-      if ($pending_item) {
-         $pending_reason = PendingReason::getById($pending_item->fields['pendingreasons_id']);
-
-         if (!$pending_reason) {
-            return;
-         }
-
-         echo '<div class="pending_detail">' . $pending_reason->getLink();
-         $tooltip = "";
-
-         $next_bump = $pending_item->getNextFollowupDate();
-         if ($next_bump) {
-            $tooltip .= sprintf(__("Next automatic follow-up scheduled on %s"), Html::convDate($next_bump)) . ".<br>";
-         }
-
-         $resolve = $pending_item->getAutoResolvedate();
-         if ($resolve) {
-            $tooltip .= sprintf(__("Automatic resolution scheduled on %s"), Html::convDate($resolve)) . ".<br>";
-         }
-
-         if (!empty($tooltip)) {
-            Html::showToolTip($tooltip);
-         }
-
-         echo "</div>";
-      }
-   }
-
-   /**
     * Check that the given timeline event is the lastest "pending" action for
     * the given item
     *
