@@ -732,7 +732,7 @@ class DBmysqlIterator implements SeekableIterator, Countable {
     * @return mixed
     */
    public function key() {
-      return $this->row["id"] ?? $this->position;
+      return $this->row !== null ? ($this->row["id"] ?? $this->position) : null;
    }
 
    /**
@@ -802,7 +802,7 @@ class DBmysqlIterator implements SeekableIterator, Countable {
          //    position is set to 0 and was set previously (rewind case)
          // OR position is not moved to next element
          // => seek to requested position
-         $this->conn->dataSeek($this->res, 0);
+         $this->conn->dataSeek($this->res, $position);
       }
 
       $this->position = $position;
