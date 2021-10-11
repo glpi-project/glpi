@@ -551,10 +551,30 @@ class MailCollector extends DbTestCase {
          ])
       )->isGreaterThan(0);
 
+      // Hack to allow documents named "1234567890", "1234567890_2", ... (cf 28-multiple-attachments-no-extension.eml)
+      $doctype = new \DocumentType();
+      $this->integer(
+         $doctype->add([
+            'name'   => 'Type test',
+            'ext'    => '/^1234567890(_\\\d+)?$/'
+         ])
+      )->isGreaterThan(0);
+
       // Collect all mails
       $this->doConnect();
       $this->collector->maxfetch_emails = 1000; // Be sure to fetch all mails from test suite
       $msg = $this->collector->collect($this->mailgate_id);
+
+      // Check error log and clean it (to prevent test failure, see GLPITestCase::afterTestMethod()).
+      global $PHP_LOG_HANDLER;
+      $records  = $PHP_LOG_HANDLER->getRecords();
+      $messages = array_column($records, 'message');
+      $this->array($messages)->hasSize(2);
+      // 05-empty-from.eml
+      $this->string($messages[0])->contains('The input is not a valid email address. Use the basic format local-part@hostname');
+      // 17-malformed-email.eml
+      $this->string($messages[1])->contains('Header with Name date or date not found');
+      $PHP_LOG_HANDLER->clear();
 
       $total_count                     = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
       $expected_refused_count          = 3;
@@ -645,6 +665,7 @@ class MailCollector extends DbTestCase {
                '24.2 Test attachment with short multibyte filename',
                '25 - Test attachment with invalid chars for OS',
                '26 Illegal char in body',
+               '28 Multiple attachments no extension',
             ]
          ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -687,6 +708,10 @@ HTML,
          '26 Illegal char in body' => <<<PLAINTEXT
 这是很坏的Minus C Blabla
 PLAINTEXT,
+         '28 Multiple attachments no extension' => <<<HTML
+
+<HTML><BODY><div>&nbsp;</div><div>Test</div><div>&nbsp;</div></BODY></HTML>
+HTML,
       ];
 
       foreach ($actors_specs as $actor_specs) {
@@ -738,6 +763,9 @@ PLAINTEXT,
          '24.1-zhang-wen-jian-ming-jiang-dao-zhi-nei-rong-chu-zhi-biao-tou-zhong-de-lian-xu-xing.txt',
          '24.2-zhong-guo-zi-fu.txt',
          '25-new-text-document.txt',
+         '1234567890',
+         '1234567890_2',
+         '1234567890_3',
       ];
 
       $iterator = $DB->request(
@@ -801,17 +829,6 @@ PLAINTEXT,
       foreach ($expected_followups as $expected_followup) {
          $this->integer(countElementsInTable(ITILFollowup::getTable(), Sanitizer::sanitize($expected_followup, true)))->isEqualTo(1);
       }
-
-      // Check error log and clean it (to prevent test failure, see GLPITestCase::afterTestMethod()).
-      global $PHP_LOG_HANDLER;
-      $records  = $PHP_LOG_HANDLER->getRecords();
-      $messages = array_column($records, 'message');
-      $this->array($messages)->hasSize(2);
-      // 05-empty-from.eml
-      $this->string($messages[0])->contains('The input is not a valid email address. Use the basic format local-part@hostname');
-      // 17-malformed-email.eml
-      $this->string($messages[1])->contains('Header with Name date or date not found');
-      $PHP_LOG_HANDLER->clear();
    }
 
    protected function mailServerProtocolsProvider() {

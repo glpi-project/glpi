@@ -1583,17 +1583,23 @@ class MailCollector  extends CommonDBTM {
          $filename = Toolbox::filename($filename);
 
          //try to avoid conflict between inline image and attachment
-         $i = 2;
          while (in_array($filename, $this->files)) {
-            //replace filename with name_(num).EXT by name_(num+1).EXT
-            $new_filename = preg_replace("/(.*)_([0-9])*(\.[a-zA-Z0-9]*)$/", "$1_".$i."$3", $filename);
-            if ($new_filename !== $filename) {
-               $filename = $new_filename;
+            $info = new SplFileInfo($filename);
+            $extension  = $info->getExtension();
+            $basename = $info->getBaseName($extension == '' ? '' : '.' . $extension);
+
+            //replace basename with basename_(num) by basename_(num+1)
+            $matches = [];
+            if (preg_match("/(.*)_([0-9]+)$/", $basename, $matches)) {
+               //replace basename with basename_(num) by basename_(num+1)
+               $filename = $matches[1] . '_' . ((int)$matches[2] + 1);
             } else {
-               //the previous regex didn't found _num pattern, so add it with this one
-               $filename = preg_replace("/(.*)(\.[a-zA-Z0-9]*)$/", "$1_".$i."$2", $filename);
+               $filename .= '_2';
             }
-            $i++;
+
+            if ($extension != '') {
+               $filename .= ".$extension";
+            }
          }
 
          if ($part->getSize() > $maxsize) {
