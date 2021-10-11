@@ -162,12 +162,13 @@
                      </button>
                      <span class="input-group-text bg-yellow-lt py-0 pe-0" id="pending-reasons-control-{{ rand }}">
                         <span class="d-inline-flex align-items-center" title="{{ __("Set the status to pending") }}"
-                              data-bs-toggle="tooltip" data-bs-placement="top">
+                              data-bs-toggle="tooltip" data-bs-placement="top" role="button">
                            <i class="fas fa-pause me-2"></i>
                            <label class="form-check form-switch pt-2">
                               <input type="hidden"   name="pending" value="0" />
                               <input type="checkbox" name="pending" value="1" class="form-check-input"
                                     id="enable-pending-reasons-{{ rand }}"
+                                    role="button"
                                     data-bs-toggle="collapse" data-bs-target="#pending-reasons-setup-{{ rand }}" />
                            </label>
                         </span>
