@@ -148,7 +148,7 @@ class PendingReason extends CommonDropdown
 
       if ($long_label) {
          // Long default value label for forms with icons instead of labels
-         $label = __("Automatic follow-up dDisabled");
+         $label = __("Automatic follow-up disabled");
       }
 
       if ($value) {
