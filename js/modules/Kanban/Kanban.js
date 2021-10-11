@@ -2093,21 +2093,41 @@ class GLPIKanbanRights {
          $(self.element).trigger('kanban:pre_filter', self.filters);
          // Unhide all items in case they are no longer filtered
          self.clearFiltered();
-         // Filter using built-in text filter (Check title)
+
          $(self.element + ' .kanban-item').each(function(i, item) {
-            const title = $(item).find(".kanban-item-title span").text();
-            try {
-               if (!title.match(new RegExp(self.filters._text, 'i'))) {
-                  $(item).addClass('filtered-out');
-               }
-            } catch (err) {
-               // Probably not a valid regular expression. Use simple contains matching.
-               if (!title.toLowerCase().includes(self.filters._text.toLowerCase())) {
-                  $(item).addClass('filtered-out');
+            const card = $(item);
+            let shown = true;
+            const title = card.find(".kanban-item-title span").text();
+            if (self.filters._text) {
+               try {
+                  if (!title.match(new RegExp(self.filters._text, 'i'))) {
+                     shown = false;
+                  }
+               } catch (err) {
+                  // Probably not a valid regular expression. Use simple contains matching.
+                  if (!title.toLowerCase().includes(self.filters._text.toLowerCase())) {
+                     shown = false;
+                  }
                }
             }
+
+            if (self.filters.title !== undefined) {
+               if (!title.toLowerCase().includes(self.filters.title.toLowerCase())) {
+                  shown = false;
+               }
+            }
+
+            if (self.filters.type !== undefined) {
+               if (card.attr('id').split('-')[0].toLowerCase() !== self.filters.type.toLowerCase()) {
+                  shown = false;
+               }
+            }
+
+            if (!shown) {
+               card.addClass('filtered-out');
+            }
          });
-         // Check specialized filters (By column item property).
+
          $(self.element).trigger('kanban:filter', self.filters);
 
          // Update column counters
