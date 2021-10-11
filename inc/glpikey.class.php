@@ -296,7 +296,7 @@ class GLPIKey {
             ]
          ]);
 
-         while ($success && $row = $iterator->current()) {
+         foreach ($iterator as $row) {
             $value = (string)$row['value'];
             if ($old_key === false) {
                $pass = Toolbox::sodiumEncrypt(Toolbox::sodiumDecrypt($value, $sodium_key));
@@ -308,6 +308,10 @@ class GLPIKey {
                ['value' => $pass],
                ['id'    => $row['id']]
             );
+
+            if (!$success) {
+               break;
+            }
          }
       }
 
