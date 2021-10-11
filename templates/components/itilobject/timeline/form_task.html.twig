@@ -84,6 +84,8 @@
                   {{ __('Promoted to Ticket %1$s')|format(promoted_badge)|raw }}
                </span>
             {% endif %}
+
+            {{ include('components/itilobject/timeline/pending_reasons_messages.html.twig') }}
          </div>
       </div>
 
