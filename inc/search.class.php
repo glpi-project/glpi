@@ -866,7 +866,7 @@ class Search {
                      $GROUPBY.
                      $HAVING;
 
-                  if (empty(trim($GROUPBY)) && empty(trim($HAVING))) {
+                  if (empty(trim($HAVING))) {
                      // No HAVING clause: we can keep a simple query
                      $count_tmpquery = self::buildSimpleCountQuery(
                         $COUNT_FROM,
@@ -1026,7 +1026,7 @@ class Search {
                   $ORDER.
                   $LIMIT;
 
-         if (empty(trim($GROUPBY)) && empty(trim($HAVING))) {
+         if (empty(trim($HAVING))) {
             // No HAVING clause: we can keep a simple query
             $COUNT_QUERY = self::buildSimpleCountQuery($COUNT_FROM, $WHERE);
          } else {
