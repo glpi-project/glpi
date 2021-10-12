@@ -29,6 +29,8 @@
  * ---------------------------------------------------------------------
  */
 
+/* global sortable */
+
 /**
  * Kanban rights structure
  * @since 10.0.0
@@ -324,6 +326,10 @@ class GLPIKanbanRights {
        */
       this.is_sorting_active = false;
 
+      this.sort_data = undefined;
+
+      this.mutation_observer = null;
+
       /**
        * Parse arguments and assign them to the object's properties
        * @since 9.5.0
@@ -367,12 +373,58 @@ class GLPIKanbanRights {
          self.filter();
       };
 
+      const initMutationObserver = function() {
+         self.mutation_observer = new MutationObserver((records) => {
+            records.forEach(r => {
+               if (r.addedNodes.length > 0) {
+                  if (self.is_sorting_active) {
+                     const sortable_placeholders = [...r.addedNodes].filter(n => n.classList.contains('sortable-placeholder'));
+                     if (sortable_placeholders.length > 0) {
+                        const placeholder = $(sortable_placeholders[0]);
+
+                        const current_column = placeholder.closest('.kanban-column').attr('id');
+
+                        // Compute current position based on list of sortable elements without current card.
+                        // Indeed, current card is still in DOM (but invisible), making placeholder index in DOM
+                        // not always corresponding to its position inside list of visible elements.
+                        const sortable_elements = $('#' + current_column + ' ul.kanban-body > li:not([id="' + self.sort_data.card_id + '"])');
+                        const current_position = sortable_elements.index(placeholder.get(0));
+                        const card = $('#' + self.sort_data.card_id);
+                        card.data('current-pos', current_position);
+
+                        if (!self.rights.canOrderCard()) {
+                           if (current_column === self.sort_data.source_column) {
+                              if (current_position !== self.sort_data.source_position) {
+                                 placeholder.addClass('invalid-position');
+                              } else {
+                                 placeholder.removeClass('invalid-position');
+                              }
+                           } else {
+                              if (!$(placeholder).is(':last-child')) {
+                                 placeholder.addClass('invalid-position');
+                              } else {
+                                 placeholder.removeClass('invalid-position');
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+            });
+         });
+         self.mutation_observer.observe($(self.element).get(0), {
+            subtree: true,
+            childList: true
+         });
+      };
+
       /**
        * Build DOM elements and defer registering event listeners for when the document is ready.
        * @since 9.5.0
       **/
       const build = function() {
          $(self.element).trigger('kanban:pre_build');
+         initMutationObserver();
          if (self.show_toolbar) {
             buildToolbar();
          }
@@ -974,45 +1026,20 @@ class GLPIKanbanRights {
             // Track the column and position the card was picked up from
             const current_column = card.closest('.kanban-column').attr('id');
             card.data('source-col', current_column);
-            card.data('source-pos', card.index());
+            card.data('source-pos', e.detail.origin.index);
+
+            self.sort_data = {
+               card_id: card.attr('id'),
+               source_column: current_column,
+               source_position: e.detail.origin.index
+            };
          });
 
          $(self.element + ' .kanban-body').off('sortupdate');
          $(self.element + ' .kanban-body').on('sortupdate', function(e) {
-            if (this === $(e.detail.item).parent()[0]) {
+            const card = e.detail.item;
+            if (this === $(card).parent()[0]) {
                return self.onKanbanCardSort(e, this);
-            }
-         });
-
-         $(self.element).on('sortchange', '.kanban-item', (event, ui) => {
-            //TODO sortchange is not an event used by html5sortable. Need to find a way to mimick
-            //jquery-ui sortable's change event.
-            const card = ui.item;
-            const source_column = card.data('source-col');
-            const source_position = card.data('source-pos');
-            const current_column = ui.placeholder.closest('.kanban-column').attr('id');
-
-            // Compute current position based on list of sortable elements without current card.
-            // Indeed, current card is still in DOM (but invisible), making placeholder index in DOM
-            // not always corresponding to its position inside list of visible ements.
-            const sortable_elements = $('#' + current_column + ' ul.ui-sortable > li:not([id="' + card.attr('id') + '"])');
-            const current_position = sortable_elements.index(ui.placeholder);
-            card.data('current-pos', current_position);
-
-            if (!self.rights.canOrderCard()) {
-               if (current_column === source_column) {
-                  if (current_position !== source_position) {
-                     ui.placeholder.addClass('invalid-position');
-                  } else {
-                     ui.placeholder.removeClass('invalid-position');
-                  }
-               } else {
-                  if (!$(ui.placeholder).is(':last-child')) {
-                     ui.placeholder.addClass('invalid-position');
-                  } else {
-                     ui.placeholder.removeClass('invalid-position');
-                  }
-               }
             }
          });
 
