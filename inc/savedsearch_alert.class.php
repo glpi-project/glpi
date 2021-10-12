@@ -171,8 +171,7 @@ class SavedSearch_Alert extends CommonDBChild {
          'items_id'  => $this->fields['savedsearches_id'],
          'itemptype' => SavedSearch::getType(),
       ]);
-      $crontask = new CronTask();
-      $crontask->dropdownFrequency('frequency', $this->fields["frequency"]);
+      Dropdown::showFrequency('frequency', $this->fields["frequency"]);
       echo "</td></tr>";
       $this->showFormButtons($options);
 
