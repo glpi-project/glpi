@@ -95,7 +95,7 @@ class DomainRelation extends CommonDropdown {
 
       echo "<td>" . __('Comments')."</td>";
       echo "<td>
-      <textarea cols='45' rows='10' name='comment' >".$this->fields["comment"]."</textarea>";
+      <textarea class='form-control' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
       $this->showFormButtons($options);

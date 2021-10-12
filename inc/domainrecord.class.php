@@ -454,7 +454,7 @@ JAVASCRIPT;
       echo "<td>";
       echo __('Comments') . "</td>";
       echo "<td colspan='3' class='center'>";
-      echo "<textarea cols='115' rows='5' name='comment' >" . $this->fields["comment"] . "</textarea>";
+      echo "<textarea class='form-control' name='comment' >" . $this->fields["comment"] . "</textarea>";
       echo "</td>";
 
       echo "</tr>";

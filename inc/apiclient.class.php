@@ -190,7 +190,7 @@ class APIClient extends CommonDBTM {
       echo "</td>";
       echo "<td rowspan='3'>".__('Comments')."</td>";
       echo "<td rowspan='3'>";
-      echo "<textarea name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "<textarea name='comment' class='form-control' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -221,10 +221,10 @@ class APIClient extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('IPv4 address range')."</td>";
       echo "<td colspan='3'>";
-      echo "<input type='text' name='ipv4_range_start' value='".
+      echo "<input type='text' class='form-control' name='ipv4_range_start' value='".
             ($this->fields["ipv4_range_start"] ? long2ip($this->fields["ipv4_range_start"]) : '') .
             "' size='17'> - ";
-      echo "<input type='text' name='ipv4_range_end' value='" .
+      echo "<input type='text' class='form-control' name='ipv4_range_end' value='" .
             ($this->fields["ipv4_range_end"] ? long2ip($this->fields["ipv4_range_end"]) : '') .
             "' size='17'>";
       echo "</td></tr>";

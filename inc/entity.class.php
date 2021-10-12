@@ -1315,7 +1315,7 @@ class Entity extends CommonTreeDropdown {
       echo "</td>";
       echo "<td rowspan='7'>".__('Address')."</td>";
       echo "<td rowspan='7'>";
-      echo "<textarea cols='45' rows='8' name='address' class='form-control'>". $entity->fields["address"]."</textarea>";
+      echo "<textarea name='address' class='form-control'>". $entity->fields["address"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -1793,9 +1793,9 @@ class Entity extends CommonTreeDropdown {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='middle right'>" . __('Email signature') . "</td>";
+      echo "<td>" . __('Email signature') . "</td>";
       echo "<td colspan='3'>";
-      echo "<textarea cols='60' rows='5' name='mailing_signature' class='form-control'>".
+      echo "<textarea rows='5' name='mailing_signature' class='form-control'>".
              $entity->fields["mailing_signature"]."</textarea>";
       if (strlen($entity->fields['mailing_signature']) == 0) {
          self::inheritedValue(self::getUsedConfig('mailing_signature', $ID, '', ''));

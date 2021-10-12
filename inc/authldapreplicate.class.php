@@ -85,9 +85,9 @@ class AuthLdapReplicate extends CommonDBTM {
       echo "<td class='center'>"._n('Port', 'Ports', 1)."</td>";
       echo "<td class='center'>".__('Timeout')."</td><td></td></tr>";
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='center'><input type='text' name='name'></td>";
-      echo "<td class='center'><input type='text' name='host'></td>";
-      echo "<td class='center'><input type='text' name='port'></td>";
+      echo "<td class='center'><input type='text' class='form-control' name='name'></td>";
+      echo "<td class='center'><input type='text' class='form-control' name='host'></td>";
+      echo "<td class='center'><input type='text' class='form-control' name='port'></td>";
       echo "<td class='center'>";
       Dropdown::showNumber('timeout', ['value'  => 10,
                                        'min'    => 1,

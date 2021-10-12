@@ -5463,7 +5463,7 @@ JAVASCRIPT;
 
       $required = $p['required'] ? 'required="required"' : '';
       $display = '';
-      $display .= "<textarea name='".$p['name']."' id='".$p['editor_id']."'
+      $display .= "<textarea class='form-control' name='".$p['name']."' id='".$p['editor_id']."'
                              rows='".$p['rows']."' cols='".$p['cols']."' $required>".
                   $p['value']."</textarea>";
 

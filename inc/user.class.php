@@ -2372,7 +2372,7 @@ JAVASCRIPT;
       echo "</td>";
       echo "<td rowspan='4' class='middle'><label for='comment'>" . __('Comments') . "</label></td>";
       echo "<td class='center middle' rowspan='4'>";
-      echo "<textarea cols='45' rows='6' id='comment' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "<textarea class='form-control' id='comment' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
       $admnumrand = mt_rand();
@@ -4209,7 +4209,7 @@ JAVASCRIPT;
       echo "<tr><th colspan='4'>".__('Automatically add a user of an external source')."</th></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".__('Login')."</td>\n";
-      echo "<td><input type='text' name='login'></td></tr>";
+      echo "<td><input type='text' name='login' class='form-control'></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='tab_bg_2 center' colspan='2'>\n";

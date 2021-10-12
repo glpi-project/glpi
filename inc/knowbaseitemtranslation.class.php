@@ -297,7 +297,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Subject')."</td>";
       echo "<td colspan='3'>";
-      echo "<textarea cols='100' rows='1' name='name'>".$this->fields["name"]."</textarea>";
+      echo "<textarea class='form-control' name='name'>".$this->fields["name"]."</textarea>";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";

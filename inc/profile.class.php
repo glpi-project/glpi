@@ -651,7 +651,7 @@ class Profile extends CommonDBTM {
       echo "<td><input type='text' name='name' class='form-control' value=\"".$this->fields["name"]."\" $onfocus></td>";
       echo "<td rowspan='$rowspan' class='middle right'>".__('Comments')."</td>";
       echo "<td class='center middle' rowspan='$rowspan'>";
-      echo "<textarea cols='45' rows='4' name='comment' class='form-control'>".$this->fields["comment"]."</textarea>";
+      echo "<textarea class='form-control' rows='4' name='comment' class='form-control'>".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Default profile')."</td><td>";
