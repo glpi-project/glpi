@@ -7416,7 +7416,7 @@ abstract class CommonITILObject extends CommonDBTM {
             if (!empty($item_i['mime'])) {
                echo "&nbsp;";
                echo Html::showToolTip(
-                  sprintf(__('File size: %s'), Toolbox::getSize(filesize(GLPI_VAR_DIR . "/" . $item_i['filepath']))) . '<br>'
+                  sprintf(__('File size: %s'), Toolbox::getSize(filesize(GLPI_DOC_DIR . "/" . $item_i['filepath']))) . '<br>'
                   . sprintf(__('MIME type: %s'), $item_i['mime'])
                );
             }
