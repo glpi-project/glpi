@@ -164,7 +164,7 @@ class SavedSearch_Alert extends CommonDBChild {
       echo "<td>" . __('Active') . "</td>";
       echo "<td>";
       Dropdown::showYesNo('is_active', $this->getField('is_active'));
-      echo "</td><td>".__('Run frequency')."</td>";
+      echo "</td><td>".__('Notification frequency')."</td>";
       echo "<td>";
       $alert = new Alert();
       $alert->getFromDBByCrit([
@@ -373,7 +373,8 @@ class SavedSearch_Alert extends CommonDBChild {
             'glpi_savedsearches_alerts.is_active' => true,
             'OR' => [
                ['glpi_alerts.date' => null],
-               ['glpi_alerts.date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL glpi_savedsearches_alerts.frequency second')]],
+               ['glpi_alerts.date' => ['<', new QueryExpression(printf('CURRENT_TIMESTAMP() - INTERVAL %s second', 
+                                       $DB->quoteName('glpi_savedsearches_alerts.frequency')))]],
             ]
          ]
       ]);
