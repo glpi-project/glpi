@@ -372,7 +372,7 @@ class GLPIKanbanRights {
        * @since 9.5.0
       **/
       const build = function() {
-         self.element.trigger('kanban:pre_build');
+         $(self.element).trigger('kanban:pre_build');
          if (self.show_toolbar) {
             buildToolbar();
          }
@@ -447,11 +447,11 @@ class GLPIKanbanRights {
                buildCreateColumnForm();
             }
          }
-         self.element.trigger('kanban:post_build');
+         $(self.element).trigger('kanban:post_build');
       };
 
       const buildToolbar = function() {
-         self.element.trigger('kanban:pre_build_toolbar');
+         $(self.element).trigger('kanban:pre_build_toolbar');
          let toolbar = $("<div class='kanban-toolbar card flex-row'></div>").appendTo(self.element);
          $("<select name='kanban-board-switcher'></select>").appendTo(toolbar);
          let filter_input = $("<input name='filter' class='form-control ms-1' type='text' placeholder='" + __('Search or filter results') + "'/>").appendTo(toolbar);
@@ -467,7 +467,7 @@ class GLPIKanbanRights {
             self.filters._text = text;
             self.filter();
          });
-         self.element.trigger('kanban:post_build_toolbar');
+         $(self.element).trigger('kanban:post_build_toolbar');
       };
 
       const getColumnElementFromID = function(column_id) {
@@ -951,7 +951,7 @@ class GLPIKanbanRights {
        * @since 9.5.0
        */
       const refreshSortables = function() {
-         self.element.trigger('kanban:refresh_sortables');
+         $(self.element).trigger('kanban:refresh_sortables');
          // Make sure all items in the columns can be sorted
          const bodies = $(self.element + ' .kanban-body');
          $.each(bodies, function(b) {
@@ -2217,7 +2217,7 @@ class GLPIKanbanRights {
        * @since 9.5.0
        */
       const loadState = function(callback) {
-         self.element.trigger('kanban:pre_load_state');
+         $(self.element).trigger('kanban:pre_load_state');
          $.ajax({
             type: "GET",
             url: (self.ajax_root + "kanban.php"),
@@ -2256,7 +2256,7 @@ class GLPIKanbanRights {
 
             if (callback) {
                callback(true);
-               self.element.trigger('kanban:post_load_state');
+               $(self.element).trigger('kanban:post_load_state');
             }
          });
       };
@@ -2275,7 +2275,7 @@ class GLPIKanbanRights {
        * @param {function} always Callback that is called regardless of the success of the save.
        */
       const saveState = function(rebuild_state, force_save, success, fail, always) {
-         self.element.trigger('kanban:pre_save_state');
+         $(self.element).trigger('kanban:pre_save_state');
          rebuild_state = rebuild_state !== undefined ? rebuild_state : false;
          if (!force_save && !self.user_state.is_dirty) {
             if (always) {
@@ -2307,7 +2307,7 @@ class GLPIKanbanRights {
             self.user_state.is_dirty = false;
             if (success) {
                success(data, textStatus, jqXHR);
-               self.element.trigger('kanban:post_save_state');
+               $(self.element).trigger('kanban:post_save_state');
             }
          }).fail(function(jqXHR, textStatus, errorThrown) {
             if (fail) {
@@ -2350,7 +2350,7 @@ class GLPIKanbanRights {
        * @since 9.5.0
        */
       this.init = function() {
-         self.element.trigger('kanban:pre_init');
+         $(self.element).trigger('kanban:pre_init');
          loadState(function() {
             build();
             $(document).ready(function() {
@@ -2371,7 +2371,7 @@ class GLPIKanbanRights {
                backgroundRefresh();
             });
          });
-         self.element.trigger('kanban:post_init');
+         $(self.element).trigger('kanban:post_init');
       };
 
       initParams(arguments);
