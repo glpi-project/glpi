@@ -256,6 +256,16 @@ class Plugin extends CommonDBTM {
             $plugin_directory = "$base_dir/$plugin_key";
             include_once("$plugin_directory/setup.php");
             if (!in_array($plugin_key, self::$loaded_plugins)) {
+               // Register PSR-4 autoloader
+               $psr4_dir = GLPI_ROOT . $plugin_directory . '/src';
+               if (is_dir($psr4_dir)) {
+                  $psr4_autoloader = new \Composer\Autoload\ClassLoader();
+                  $psr4_autoloader->addPsr4(NS_PLUG . ucfirst($plugin_key) . '\\', $psr4_dir);
+                  $psr4_autoloader->addPsr4('', $psr4_dir);
+                  $psr4_autoloader->register();
+               }
+
+               // Init plugin
                self::$loaded_plugins[] = $plugin_key;
                $init_function = "plugin_init_$plugin_key";
                if (function_exists($init_function)) {

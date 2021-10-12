@@ -5,7 +5,8 @@
 STABLE_REGEX="^[0-9]+\.[0-9]+\.[0-9]+$"
 
 # Validate composer config
-composer validate --strict
+# Cannot use `--strict` mode due to following warning: "Defining autoload.psr-4 with an empty namespace prefix is a bad idea for performance"
+composer validate
 if [[ "$PHP_VERSION" =~ $STABLE_REGEX ]]; then
   composer check-platform-reqs;
 fi

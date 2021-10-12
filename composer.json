@@ -97,6 +97,12 @@
         },
         "sort-packages": true
     },
+    "autoload": {
+        "psr-4": {
+            "Glpi\\": "src/",
+            "": "src/"
+        }
+    },
     "autoload-dev": {
         "psr-4": {
             "Glpi\\Tools\\": "tools/src/",

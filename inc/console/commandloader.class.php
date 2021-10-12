@@ -152,7 +152,7 @@ class CommandLoader implements CommandLoaderInterface {
     */
    private function findCoreCommands() {
 
-      $basedir = $this->rootdir . DIRECTORY_SEPARATOR . 'inc';
+      $basedir = $this->rootdir . DIRECTORY_SEPARATOR . 'src';
 
       $core_files = new RecursiveIteratorIterator(
          new RecursiveDirectoryIterator($basedir),
@@ -213,35 +213,43 @@ class CommandLoader implements CommandLoaderInterface {
             continue; // Do not load commands of disabled plugins
          }
 
-         $plugin_basedir = $plugin_directory->getPathname() . DIRECTORY_SEPARATOR . 'inc';
-         if (!is_readable($plugin_basedir) || !is_dir($plugin_basedir)) {
-            continue;
-         }
-
-         $plugin_files = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($plugin_basedir),
-            RecursiveIteratorIterator::SELF_FIRST
-         );
-         /** @var SplFileInfo $file */
-         foreach ($plugin_files as $file) {
-            if (!$file->isReadable() || !$file->isFile()) {
+         foreach (['inc', 'src'] as $source_dir) {
+            $plugin_basedir = $plugin_directory->getPathname() . DIRECTORY_SEPARATOR . $source_dir;
+            if (!is_readable($plugin_basedir) || !is_dir($plugin_basedir)) {
                continue;
             }
 
-            $class = $this->getCommandClassnameFromFile(
-               $file,
-               $plugin_basedir,
-               [
-                  NS_PLUG . ucfirst($plugin_key) . '\\',
-                  'Plugin' . ucfirst($plugin_key),
-               ]
+            $plugin_files = new RecursiveIteratorIterator(
+               new RecursiveDirectoryIterator($plugin_basedir),
+               RecursiveIteratorIterator::SELF_FIRST
             );
 
-            if (null === $class) {
-               continue;
-            }
+            /** @var SplFileInfo $file */
+            foreach ($plugin_files as $file) {
+               if (!$file->isReadable() || !$file->isFile()) {
+                  continue;
+               }
 
-            $this->registerCommand(new $class());
+               // Prefixes can be:
+               // - GlpiPlugin\Myplugin if class is namespaced
+               // - PluginMyplugin if class is not namespaced nor PSR-4 compliant
+               // - empty if class is not namespaced but PSR-4 compliant
+               $class = $this->getCommandClassnameFromFile(
+                  $file,
+                  $plugin_basedir,
+                  [
+                     NS_PLUG . ucfirst($plugin_directory->getFilename()) . '\\',
+                     'Plugin' . ucfirst($plugin_directory->getFilename()),
+                     '',
+                  ]
+               );
+
+               if (null === $class) {
+                  continue;
+               }
+
+               $this->registerCommand(new $class());
+            }
          }
 
          $already_loaded[] = $plugin_key;
@@ -309,17 +317,21 @@ class CommandLoader implements CommandLoaderInterface {
     */
    private function getCommandClassnameFromFile(SplFileInfo $file, $basedir, array $prefixes = []) {
 
-      // Check if file is readable and contained classname finishes by "command"
-      if (!$file->isReadable() || !$file->isFile()
-         || !preg_match('/^(.*)command\.class\.php$/', $file->getFilename())) {
+      // Check if file is readable
+      if (!$file->isReadable() || !$file->isFile()) {
          return null;
       }
 
-      // Extract expected classname from filename.
+      // Check if is a class file and finishes by "command"
+      if (!preg_match('/^(.*)command\.class\.php$/', $file->getFilename())
+          && !preg_match('/^(.*)Command\.php$/', $file->getFilename())) {
+         return null;
+      }
+
       // Classname will be lowercased, but it is ok for PHP.
       $classname = str_replace(
-         ['.class.php', DIRECTORY_SEPARATOR],
-         ['', '\\'],
+         ['.class.php', '.php', DIRECTORY_SEPARATOR],
+         ['', '', '\\'],
          $this->getRelativePath($basedir, $file->getPathname())
       );
 

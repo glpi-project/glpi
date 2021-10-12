@@ -264,18 +264,36 @@ final class DbUtils {
             $table = Toolbox::ucfirst($this->getSingular($table));
          }
 
-         $itemtype = $prefix.$table;
-         // Get real existence of itemtype
-         if ($item = $this->getItemForItemtype($itemtype)) {
-            $itemtype                                   = get_class($item);
-            $CFG_GLPI['glpiitemtypetables'][$inittable] = $itemtype;
-            $CFG_GLPI['glpitablesitemtype'][$itemtype]  = $inittable;
-            return $itemtype;
+         $base_itemtype = $this->fixItemtypeCase($prefix . $table);
+         $namespaced_itemtype = $this->fixItemtypeCase($pref2 . str_replace('_', '\\', $table));
+
+         // Both potential itemtype (with or without namespace) are pointing to the same file, so it will trigger a
+         // "Cannot declare class XXX, because the name is already in use" error if the "wrong" version is
+         // required by the autoloader when the good version is already loaded.
+         // i.e. `class_exists('Glpi\Computer')` will load `src/Computer.php` which may redeclare the `Computer class`
+         //
+         // To prevent this, we check existence of both without allowing the autoloader to be used.
+         // If none exists yet, we trigger the autoloader to ensure the class file is loaded and the class is defined.
+         //
+         // Then we check again existence of both without allowing the autoloader to be used,
+         // in order to find the good class to use.
+         if (!class_exists($base_itemtype, false) && !class_exists($namespaced_itemtype, false)) {
+            // Try to trigger loading of base itemtype
+            class_exists($base_itemtype);
+            if (!class_exists($namespaced_itemtype, false) && preg_match('/_/', $table) === 1) {
+               // Namespace itemtype file will be different from base itemtype file if `_` in table corresponds to a namespace separator.
+               class_exists($namespaced_itemtype); // Try to trigger loading of namespaced itemtype
+            }
          }
 
-         // Namespaced item
-         $itemtype = $pref2 . str_replace('_', '\\', $table);
-         if ($item = $this->getItemForItemtype($itemtype)) {
+         $itemtype = null;
+         if (class_exists($base_itemtype, false)) {
+            $itemtype = $base_itemtype;
+         } else if (class_exists($namespaced_itemtype, false)) {
+            $itemtype = $namespaced_itemtype;
+         }
+
+         if ($itemtype !== null && $item = $this->getItemForItemtype($itemtype)) {
             $itemtype                                   = get_class($item);
             $CFG_GLPI['glpiitemtypetables'][$inittable] = $itemtype;
             $CFG_GLPI['glpitablesitemtype'][$itemtype]  = $inittable;
@@ -284,6 +302,83 @@ final class DbUtils {
 
          return "UNKNOWN";
       }
+   }
+
+   /**
+    * Try to fix itemtype case.
+    * PSR-4 loading requires classnames to be used with their correct case.
+    *
+    * @param string $itemtype
+    * @param string $root_dir
+    *
+    * @return string
+    */
+   public function fixItemtypeCase(string $itemtype, $root_dir = GLPI_ROOT) {
+
+      // If a class exists for this itemtype, just return the declared class name.
+      $matches = preg_grep('/^' . preg_quote($itemtype) . '$/i', get_declared_classes());
+      if (count($matches) === 1) {
+         return current($matches);
+      }
+
+      static $files = [];
+
+      $context = 'glpi-core';
+      $plugin_matches = [];
+      if (preg_match('/^Plugin(?<plugin>[A-Z][a-z]+)(?<class>[A-Z][a-z]+)/', $itemtype, $plugin_matches)) {
+         // Nota: plugin classes that does not use any namespace cannot be completely case insensitive
+         // indeed, we must be able to separate plugin name (directory) from class name (file)
+         // so pattern must be the one provided by getItemTypeForTable: PluginDirectorynameClassname
+         $context = strtolower($plugin_matches['plugin']);
+      } else if (preg_match('/^' . preg_quote(NS_PLUG) . '(?<plugin>[a-z]+)\\\/i', $itemtype, $plugin_matches)) {
+         $context = strtolower($plugin_matches['plugin']);
+      }
+
+      if (!array_key_exists($context, $files)) {
+         // Fetch filenames from "src" directory of context (GLPI core or given plugin).
+         $files[$context] = [];
+
+         $srcdir = $root_dir . ($context === 'glpi-core' ? '' : '/plugins/' . $context) . '/src';
+         if (!is_dir($srcdir)) {
+            // Cannot search in files if dir not exists (can correspond to a deleted plugin)
+            return $itemtype;
+         }
+         $files_iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($srcdir),
+            RecursiveIteratorIterator::SELF_FIRST
+         );
+         /** @var SplFileInfo $file */
+         foreach ($files_iterator as $file) {
+            if (!$file->isReadable() || !$file->isFile() || '.php' === !$file->getExtension()) {
+               continue;
+            }
+            $relative_path = str_replace($srcdir . DIRECTORY_SEPARATOR, '', $file->getPathname());
+
+            // Sore into files list:
+            // - key is the lowercased filename;
+            // - value is the classname with correct case.
+            $files[$context][strtolower($relative_path)] = str_replace(
+               [DIRECTORY_SEPARATOR, '.php'],
+               ['\\',                ''],
+               $relative_path
+            );
+         }
+      }
+
+      $namespace      = $context === 'glpi-core' ? NS_GLPI : NS_PLUG . ucfirst($context) . '\\';
+      $uses_namespace = preg_match('/^(' . preg_quote($namespace) . ')/i', $itemtype);
+
+      $expected_lc_path = str_ireplace(
+         [$namespace, '\\'],
+         [''        , DIRECTORY_SEPARATOR],
+         strtolower($itemtype) . '.php'
+      );
+
+      if (array_key_exists($expected_lc_path, $files[$context])) {
+         $itemtype = ($uses_namespace ? $namespace : '') . $files[$context][$expected_lc_path];
+      }
+
+      return $itemtype;
    }
 
 
