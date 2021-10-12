@@ -279,6 +279,7 @@ CREATE TABLE `glpi_savedsearches_alerts` (
   `value` int NOT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
+  `frequency` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`savedsearches_id`,`operator`,`value`),
   KEY `name` (`name`),
