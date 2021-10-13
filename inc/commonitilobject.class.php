@@ -6306,7 +6306,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   $timeline[$timeline_key]['documents'] = [];
                }
 
-               $docpath = GLPI_VAR_DIR."/".$item['filepath'];
+               $docpath = GLPI_DOC_DIR."/".$item['filepath'];
                $is_image = Document::isImage($docpath);
                $sub_document = [
                   'type' => 'Document_Item',

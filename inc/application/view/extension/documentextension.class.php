@@ -64,14 +64,14 @@ class DocumentExtension extends AbstractExtension {
    }
 
    /**
-    * Returns human readable size of file matching given path (relative to GLPI_VAR_DIR).
+    * Returns human readable size of file matching given path (relative to GLPI_DOC_DIR).
     *
     * @param string $filepath
     *
     * @return null|string
     */
    public function getDocumentSize(string $filepath): ?string {
-      $fullpath = GLPI_VAR_DIR . '/' . $filepath;
+      $fullpath = GLPI_DOC_DIR . '/' . $filepath;
 
       return is_readable($fullpath) ? Toolbox::getSize(filesize($fullpath)) : null;
    }
