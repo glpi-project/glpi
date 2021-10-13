@@ -35,7 +35,7 @@ namespace Glpi\Inventory\Asset;
 use CommonDBTM;
 use Glpi\Inventory\Conf;
 
-class Soundcard extends Device
+class SoundCard extends Device
 {
    protected $ignored = ['controllers' => null];
 

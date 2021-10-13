@@ -36,7 +36,7 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/controller.class.php */
 
-class Soundcard extends AbstractInventoryAsset {
+class SoundCard extends AbstractInventoryAsset {
 
    protected function assetProvider() :array {
       return [
@@ -68,7 +68,7 @@ class Soundcard extends AbstractInventoryAsset {
       $json = json_decode($data);
 
       $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\Soundcard($computer, $json->content->sounds);
+      $asset = new \Glpi\Inventory\Asset\SoundCard($computer, $json->content->sounds);
       $asset->setExtraData((array)$json->content);
       $result = $asset->prepare();
       $this->object($result[0])->isEqualTo(json_decode($expected));
@@ -90,7 +90,7 @@ class Soundcard extends AbstractInventoryAsset {
       $json = json_decode($data);
 
       $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\Soundcard($computer, $json->content->sounds);
+      $asset = new \Glpi\Inventory\Asset\SoundCard($computer, $json->content->sounds);
       $asset->setExtraData((array)$json->content);
       $result = $asset->prepare();
       $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
