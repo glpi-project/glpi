@@ -20,7 +20,7 @@
                      <div class="form-check form-switch">
                         <input name="use_notifications" type="hidden" value="0" />
                         <input name="use_notifications" id="use_notifications"
-                              class="form-check-input" type="checkbox"
+                              class="form-check-input" type="checkbox" value="1"
                               {{ use_notifications ? 'checked="checked"' : '' }} />
                         <label class="form-check-label" for="use_notifications">
                            {{ __('Enable followup') }}
@@ -33,7 +33,7 @@
                         <div class="form-check form-switch">
                            <input name="notifications_{{ mode_key }}" type="hidden" value="0" />
                            <input name="notifications_{{ mode_key }}" id="notifications_{{ mode_key }}"
-                                 class="form-check-input" type="checkbox"
+                                 class="form-check-input" type="checkbox" value="1"
                                  {{ mode['is_active'] ? 'checked="checked"' : '' }}
                                  {{ mode_disabled ? 'disabled' : '' }} />
                            <label class="form-check-label" for="notifications_{{ mode_key }}">
