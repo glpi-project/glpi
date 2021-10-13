@@ -2069,7 +2069,13 @@ class GLPIKanbanRights {
             }
          }
          card_el += "</div></li>";
-         $(card_el).appendTo(col_body).data('form_link', card['_form_link'] || undefined);
+         const card_obj = $(card_el).appendTo(col_body);
+         card_obj.data('form_link', card['_form_link'] || undefined);
+         if (card['_metadata']) {
+            $.each(card['_metadata'], (k, v) => {
+               card_obj.data(k, v);
+            });
+         }
          self.updateColumnCount(column_el);
       };
 
@@ -2119,6 +2125,19 @@ class GLPIKanbanRights {
 
             if (self.filters.type !== undefined) {
                if (card.attr('id').split('-')[0].toLowerCase() !== self.filters.type.toLowerCase()) {
+                  shown = false;
+               }
+            }
+
+            if (self.filters.milestone !== undefined) {
+               const milestone_val = (self.filters.milestone == '0' || self.filters.milestone == 'false') ? 0 : 1;
+               if (card.data('is_milestone') != milestone_val) {
+                  shown = false;
+               }
+            }
+
+            if (self.filters.content !== undefined) {
+               if (card.data('content').toLowerCase() !== self.filters.content.toLowerCase()) {
                   shown = false;
                }
             }
