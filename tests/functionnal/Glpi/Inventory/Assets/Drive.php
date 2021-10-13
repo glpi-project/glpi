@@ -110,7 +110,7 @@ class Drive extends AbstractInventoryAsset {
 
       //first, check there are no controller linked to this computer
       $idd = new \Item_DeviceDrive();
-      $idh = new \Item_DevicehardDrive();
+      $idh = new \Item_DeviceHardDrive();
       $this->boolean($idd->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isFalse('A drive is already linked to computer!');
       $this->boolean($idh->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
