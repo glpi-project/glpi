@@ -34,8 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class DeviceMotherBoardModel
-class DeviceMotherBoardModel extends CommonDeviceModel {
+/// Class DeviceMotherboardModel
+class DeviceMotherboardModel extends CommonDeviceModel {
 
    var $additional_fields_for_dictionnary = ['manufacturer'];
 

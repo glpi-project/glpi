@@ -55,3 +55,12 @@ $migration->addPostQuery(
    )
 );
 /** /Fix olaticket crontask frequency */
+
+/** Fix mixed classes case in DB */
+$mixed_case_classes = [
+   'DeviceMotherBoardModel' => 'DeviceMotherboardModel',
+];
+foreach ($mixed_case_classes as $bad_case_classname => $classname) {
+   $migration->renameItemtype($bad_case_classname, $classname, false);
+}
+/** /Fix mixed classes case in DB */
