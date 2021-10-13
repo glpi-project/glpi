@@ -270,7 +270,6 @@ function _nx($ctx, $sing, $plural, $nb, $domain = 'glpi') {
  * @return void|boolean
  */
 function glpi_autoload($classname) {
-   global $DEBUG_AUTOLOAD;
 
    if ($classname === 'phpCAS'
        && file_exists(stream_resolve_include_path("CAS.php"))) {
@@ -339,10 +338,6 @@ function glpi_autoload($classname) {
 
    if (file_exists("$dir$item.class.php")) {
       include_once("$dir$item.class.php");
-      if (isset($_SESSION['glpi_use_mode'])
-          && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
-         $DEBUG_AUTOLOAD[] = $classname;
-      }
    }
 }
 

@@ -63,7 +63,6 @@ if (isset($_SESSION['glpi_use_mode'])
       'errors'  => [],
       'times'   => [],
    ];
-   $DEBUG_AUTOLOAD       = [];
 }
 
 // Security system

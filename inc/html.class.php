@@ -646,7 +646,7 @@ class Html {
     * @return void
    **/
    static function displayDebugInfos($with_session = true, $ajax = false, $rand = null) {
-      global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $DEBUG_AUTOLOAD, $TIMER_DEBUG;
+      global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $TIMER_DEBUG;
 
       // Only for debug mode so not need to be translated
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
@@ -661,7 +661,6 @@ class Html {
             echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debugsql$rand'>SQL REQUEST</a></li>";
          }
          if ($CFG_GLPI["debug_vars"]) {
-            echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debugautoload$rand'>AUTOLOAD</a></li>";
             echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debugpost$rand'>POST VARIABLE</a></li>";
             echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debugget$rand'>GET VARIABLE</a></li>";
             if ($with_session) {
@@ -718,7 +717,6 @@ class Html {
             echo "</div>";
          }
          if ($CFG_GLPI["debug_vars"]) {
-            echo "<div id='debugautoload$rand' class='tab-pane" . (!$CFG_GLPI["debug_sql"] ? 'active' : '') . "'>".implode(', ', $DEBUG_AUTOLOAD)."</div>";
             echo "<div id='debugpost$rand' class='tab-pane'>";
             self::printCleanArray($_POST, 0, true);
             echo "</div>";
