@@ -512,7 +512,8 @@ abstract class MainAsset extends InventoryAsset
         'mac'          => $input['mac'] ?? '',
         'uuid'         => $input['uuid'] ?? '',
         'rules_id'     => $input['rules_id'],
-        'entities_id'  => $input['entities_id']
+        'entities_id'  => $input['entities_id'],
+        'autoupdatesystems_id' => $input['autoupdatesystems_id']
       ];
 
       foreach (['ip', 'mac'] as $array) {
