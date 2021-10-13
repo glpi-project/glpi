@@ -421,11 +421,13 @@ if (!$DB->tableExists('glpi_refusedequipments')) {
          `serial` varchar(255) DEFAULT NULL,
          `uuid` varchar(255) DEFAULT NULL,
          `agents_id` int NOT NULL DEFAULT '0',
+         `autoupdatesystems_id` int NOT NULL DEFAULT '0',
          `date_creation` timestamp NULL DEFAULT NULL,
          `date_mod` timestamp NULL DEFAULT NULL,
          PRIMARY KEY (`id`),
          KEY `entities_id` (`entities_id`),
          KEY `agents_id` (`agents_id`),
+         KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
          KEY `rules_id` (`rules_id`),
          KEY `date_creation` (`date_creation`),
          KEY `date_mod` (`date_mod`)
@@ -437,6 +439,15 @@ if (!$DB->tableExists('glpi_refusedequipments')) {
    $migration->addKey('glpi_refusedequipments', 'rules_id');
    $migration->addKey('glpi_refusedequipments', 'date_creation');
    $migration->addKey('glpi_refusedequipments', 'date_mod');
+   if (!$DB->fieldExists('glpi_refusedequipments', 'autoupdatesystems_id')) {
+      $migration->addField(
+         'glpi_networkequipments',
+         'autoupdatesystems_id',
+         'int', [
+            'after' => 'agents_id'
+         ]
+      );
+   }
 }
 
 $migration->addConfig(['purge_refusedequipment' => 0]);
