@@ -32,18 +32,18 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-class UsercategoryParameters extends AbstractParameters
+class UserTitleParameters extends AbstractParameters
 {
    public function testGetValues(): void {
-      $this->createItem('Usercategory', [
-         'name' => 'usercategory_testGetValues',
+      $this->createItem('UserTitle', [
+         'name' => 'usertitle_testGetValues',
       ]);
 
       $parameters = $this->newTestedInstance();
-      $values = $parameters->getValues(getItemByTypeName('Usercategory', 'usercategory_testGetValues'));
+      $values = $parameters->getValues(getItemByTypeName('UserTitle', 'usertitle_testGetValues'));
       $this->array($values)->isEqualTo([
-         'id'   => getItemByTypeName('Usercategory', 'usercategory_testGetValues', true),
-         'name' => 'usercategory_testGetValues',
+         'id'   => getItemByTypeName('UserTitle', 'usertitle_testGetValues', true),
+         'name' => 'usertitle_testGetValues',
       ]);
 
       $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());

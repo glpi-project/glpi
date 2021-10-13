@@ -35,7 +35,7 @@ namespace tests\units\Glpi\Dashboard;
 
 use DbTestCase;
 use Group;
-use Sla;
+use SLA;
 use Slm;
 use Ticket;
 
@@ -51,7 +51,7 @@ class Provider extends DbTestCase {
          'name' => 'SLM',
       ]);
 
-      $slaTto = new Sla();
+      $slaTto = new SLA();
       $slaTto->add([
          'name' => 'sla tto',
          'type' => '1', // TTO
@@ -60,7 +60,7 @@ class Provider extends DbTestCase {
          'slms_id' => $slm->getID(),
       ]);
 
-      $slaTtr = new Sla();
+      $slaTtr = new SLA();
       $slaTtr->add([
          'name' => 'sla ttr',
          'type' => '0', // TTR
@@ -181,7 +181,7 @@ class Provider extends DbTestCase {
          'name' => 'SLM',
       ]);
 
-      $slaTto = new Sla();
+      $slaTto = new SLA();
       $slaTto->add([
          'name' => 'sla tto',
          'type' => '1', // TTO
@@ -190,7 +190,7 @@ class Provider extends DbTestCase {
          'slms_id' => $slm->getID(),
       ]);
 
-      $slaTtr = new Sla();
+      $slaTtr = new SLA();
       $slaTtr->add([
          'name' => 'sla ttr',
          'type' => '0', // TTR
