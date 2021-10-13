@@ -35,11 +35,11 @@ include ('../inc/includes.php');
 Session::checkRight("config", UPDATE);
 $notificationmail = new NotificationMailingSetting();
 
-if (!empty($_POST["test_smtp_send"])) {
+if (isset($_POST["test_smtp_send"])) {
    NotificationMailing::testNotification();
    Html::back();
 
-} else if (!empty($_POST["update"])) {
+} else if (isset($_POST["update"])) {
    $config = new Config();
    $config->update($_POST);
    Html::back();
