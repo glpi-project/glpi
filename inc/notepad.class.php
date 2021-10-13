@@ -284,11 +284,11 @@ class Notepad extends CommonDBChild {
          echo Html::hidden('items_id', ['value' => $item->getID()]);
 
          echo "<div class='boxnotecontent'>";
-         echo "<textarea name='content' rows=5 cols=100></textarea>";
+         echo "<textarea name='content' class='form-control' rows='7'></textarea>";
          echo "</div>"; // box notecontent
 
          echo "<div class='boxnoteright'><br>";
-         echo Html::submit(_x('button', 'Add'), ['name' => 'add']);
+         echo Html::submit(_x('button', 'Add'), ['name' => 'add', 'class' => 'btn btn-primary']);
          echo "</div>";
 
          Html::closeForm();

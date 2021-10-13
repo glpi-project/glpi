@@ -424,10 +424,10 @@ class ReservationItem extends CommonDBChild {
                   <i class='far fa-calendar'></i>&nbsp;
                   ".__("View calendar for all items")."
                </a>
-               <a class='btn btn-secondary' onClick=\"javascript:showHideDiv('viewresasearch','','','');".
+               <a class='btn btn-secondary mw-100 d-inline-block text-truncate' onClick=\"javascript:showHideDiv('viewresasearch','','','');".
                 "showHideDiv('makesearch','','','')\">
                <i class='fas fa-search'></i>&nbsp;";
-         echo __('Find a free item in a specific period')."</a></div>\n";
+         echo __('Find a free item in a specific period')."</a></div>";
 
          echo "<div id='viewresasearch' style=\"display:none;\" class='center'>";
          $begin_time                 = time();
@@ -528,6 +528,7 @@ class ReservationItem extends CommonDBChild {
       // GET method passed to form creation
       echo "<div id='nosearch' class='card'>";
       echo "<form name='form' method='GET' action='".Reservation::getFormURL()."'>";
+      echo "<div class='table-responsive'>";
       echo "<table class='card-table table table-hover'>";
       echo "<tr>";
       echo "<th style='width: 30px;'>".Html::getCheckAllAsCheckbox('nosearch')."</th>";
@@ -670,6 +671,7 @@ class ReservationItem extends CommonDBChild {
 
       }
       echo "</table>";
+      echo "</div>";
       echo "<input type='hidden' name='id' value=''>";
       echo "</form>";// No CSRF token needed
       echo "</div>";

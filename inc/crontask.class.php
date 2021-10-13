@@ -557,7 +557,7 @@ class CronTask extends CommonDBTM{
       echo $name."</td>";
       echo "<td rowspan='6' class='middle right'>".__('Comments')."</td>";
       echo "<td class='center middle' rowspan='6'>";
-      echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "<textarea class='form-control' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Description')."</td><td>";

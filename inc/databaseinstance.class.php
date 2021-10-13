@@ -239,7 +239,7 @@ class DatabaseInstance extends CommonDBTM {
       echo "<td rowspan='$rowspan'><label for='comment'>".__('Comments')."</label></td>";
       echo "<td rowspan='$rowspan' class='middle'>";
 
-      echo "<textarea cols='45' rows='".($rowspan+2)."' id='comment' name='comment' >".
+      echo "<textarea class='form-control' id='comment' name='comment' >".
          $this->fields["comment"];
       echo "</textarea></td></tr>";
 

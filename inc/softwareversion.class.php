@@ -120,13 +120,13 @@ class SoftwareVersion extends CommonDBChild {
       echo "</td>";
       echo "<td rowspan='4' class='middle'>".__('Comments')."</td>";
       echo "<td class='center middle' rowspan='4'>";
-      echo "<textarea cols='45' rows='3' name='comment' >".$this->fields["comment"];
-      echo "</textarea></td></tr>\n";
+      echo "<textarea class='form-control' rows='3' name='comment' >".$this->fields["comment"];
+      echo "</textarea></td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
       echo "<td>";
       echo Html::input('name', ['value' => $this->fields['name']]);
-      echo "</td></tr>\n";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . OperatingSystem::getTypeName(1) . "</td><td>";
       OperatingSystem::dropdown(['value' => $this->fields["operatingsystems_id"]]);

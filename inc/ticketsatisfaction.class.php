@@ -130,7 +130,7 @@ class TicketSatisfaction extends CommonDBTM {
          }
          echo "</select>";
          echo "<div class='rateit' id='stars'></div>";
-         echo  "<script type='text/javascript'>\n";
+         echo  "<script type='text/javascript'>";
          echo "$(function() {";
          echo "$('#stars').rateit({value: ".$this->fields["satisfaction"].",
                                    min : 0,
@@ -146,8 +146,8 @@ class TicketSatisfaction extends CommonDBTM {
          echo "<tr class='tab_bg_2'>";
          echo "<td rowspan='1'>".__('Comments')."</td>";
          echo "<td rowspan='1' class='middle'>";
-         echo "<textarea cols='45' rows='7' name='comment' >".$this->fields["comment"]."</textarea>";
-         echo "</td></tr>\n";
+         echo "<textarea class='form-control' rows='7' name='comment'>".$this->fields["comment"]."</textarea>";
+         echo "</td></tr>";
 
          if ($this->fields["date_answered"] > 0) {
             echo "<tr class='tab_bg_2'>";

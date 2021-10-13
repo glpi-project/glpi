@@ -141,7 +141,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td><td rowspan='4'>".__('Comments')."</td>";
       echo "<td rowspan='4'>";
-      echo "<textarea cols='45' rows='6' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "<textarea class='form-control' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

@@ -85,6 +85,10 @@ var GlpiGantt = (function() {
          gantt.config.show_progress = true;
          gantt.config.sort = true;
 
+         if (window.innerWidth < 600) {
+            gantt.config.show_grid = false;
+         }
+
          gantt.config.lightbox.project_sections = [
             { name: "description", height: 70, map_to: "text", type: "textarea", focus: true },
          ];

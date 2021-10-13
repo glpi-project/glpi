@@ -591,7 +591,7 @@ class Html {
    **/
    static function displayTitle($ref_pic_link = "", $ref_pic_text = "", $ref_title = "", $ref_btts = "") {
 
-      echo "<div class='btn-group mb-3'>";
+      echo "<div class='btn-group flex-wrap mb-3'>";
       if ($ref_pic_link!="") {
          $ref_pic_text = Toolbox::stripTags($ref_pic_text);
          echo Html::image($ref_pic_link, ['alt' => $ref_pic_text]);
@@ -5463,7 +5463,7 @@ JAVASCRIPT;
 
       $required = $p['required'] ? 'required="required"' : '';
       $display = '';
-      $display .= "<textarea name='".$p['name']."' id='".$p['editor_id']."'
+      $display .= "<textarea class='form-control' name='".$p['name']."' id='".$p['editor_id']."'
                              rows='".$p['rows']."' cols='".$p['cols']."' $required>".
                   $p['value']."</textarea>";
 

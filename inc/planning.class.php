@@ -2293,6 +2293,7 @@ class Planning extends CommonGLPI {
          return false;
       }
 
+      echo "<div class='table-responsive card-table'>";
       echo "<table class='table'>";
       echo "<thead>";
       echo "<tr class='noHover'><th>";
@@ -2305,6 +2306,7 @@ class Planning extends CommonGLPI {
       self::showPlanning(false);
       echo "</td></tr>";
       echo "</table>";
+      echo "</div>";
    }
 
 

@@ -432,26 +432,26 @@ abstract class CommonITILCost extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Time cost')."</td><td>";
-      echo "<input type='text' size='15' name='cost_time' value='".
+      echo "<input type='text' class='form-control' size='15' name='cost_time' value='".
              Html::formatNumber($this->fields["cost_time"], true)."'>";
       echo "</td>";
       $rowspan = 4;
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
       echo "<td rowspan='$rowspan' class='middle'>";
-      echo "<textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"].
+      echo "<textarea class='form-control' name='comment' >".$this->fields["comment"].
            "</textarea>";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Fixed cost')."</td><td>";
-      echo "<input type='text' size='15' name='cost_fixed' value='".
+      echo "<input type='text' class='form-control' size='15' name='cost_fixed' value='".
              Html::formatNumber($this->fields["cost_fixed"], true)."'>";
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Material cost')."</td><td>";
-      echo "<input type='text' size='15' name='cost_material' value='".
+      echo "<input type='text' class='form-control' size='15' name='cost_material' value='".
              Html::formatNumber($this->fields["cost_material"], true)."'>";
       echo "</td>";
       echo "</tr>";

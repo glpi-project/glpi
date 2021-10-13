@@ -465,9 +465,12 @@ $break_s_screen: 1400px;
          .plugin {
             min-height: 84px;
             margin-bottom: 5px;
+            flex-direction: row;
+            flex-wrap: wrap;
 
             .main {
                height: 100%;
+               width: 100%;
 
                .details {
                   flex: 1;

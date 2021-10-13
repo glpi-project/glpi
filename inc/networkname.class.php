@@ -140,7 +140,7 @@ class NetworkName extends FQDNLabel {
       echo "</td>\n";
 
       echo "<td rowspan='3'>".__('Comments')."</td>";
-      echo "<td rowspan='3'><textarea cols='45' rows='4' name='comment' >".$this->fields["comment"];
+      echo "<td rowspan='3'><textarea class='form-control' rows='4' name='comment' >".$this->fields["comment"];
       echo "</textarea></td>\n";
       echo "</tr>";
 

@@ -304,13 +304,13 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('General setup') . "</th></tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='url_base'>" . __('URL of the application') . "</label></td>";
-      echo "<td colspan='3'><input type='text' name='url_base' id='url_base' size='80' value='".$CFG_GLPI["url_base"]."' class='form-control'>";
+      echo "<td colspan='3'><input type='url' name='url_base' id='url_base' value='".$CFG_GLPI["url_base"]."' class='form-control'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='text_login'>" . __('Text in the login box (HTML tags supported)') . "</label></td>";
       echo "<td colspan='3'>";
-      echo "<textarea cols='70' rows='4' name='text_login' id='text_login'>".$CFG_GLPI["text_login"]."</textarea>";
+      echo "<textarea class='form-control' name='text_login' id='text_login'>".$CFG_GLPI["text_login"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -803,7 +803,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='url_base_api'>" . __('URL of the API') . "</label></td>";
-      echo "<td colspan='3'><input type='text' name='url_base_api' id='url_base_api' size='80' value='".$CFG_GLPI["url_base_api"]."' class='form-control'></td>";
+      echo "<td colspan='3'><input type='url' name='url_base_api' id='url_base_api' value='".$CFG_GLPI["url_base_api"]."' class='form-control'></td>";
       echo "</tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='dropdown_enable_api$rand'>" . __("Enable Rest API") . "</label></td>";
@@ -1854,7 +1854,7 @@ class Config extends CommonDBTM {
       //TRANS: Proxy port
       echo "<td><label for='maintenance_text'>" . __('Maintenance text') . "</label></td>";
       echo "<td>";
-      echo "<textarea cols='70' rows='4' name='maintenance_text' id='maintenance_text'>".$CFG_GLPI["maintenance_text"];
+      echo "<textarea class='form-control' name='maintenance_text' id='maintenance_text'>".$CFG_GLPI["maintenance_text"];
       echo "</textarea>";
       echo "</td></tr>";
 

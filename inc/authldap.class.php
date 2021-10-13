@@ -386,7 +386,7 @@ class AuthLDAP extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td><label for='condition'>" . __('Connection filter') . "</label></td>";
          echo "<td colspan='3'>";
-         echo "<textarea cols='100' rows='1' id='condition' name='condition'>".$this->fields["condition"];
+         echo "<textarea class='form-control' id='condition' name='condition'>".$this->fields["condition"];
          echo "</textarea>";
          echo "</td></tr>";
 
@@ -415,7 +415,7 @@ class AuthLDAP extends CommonDBTM {
          echo "</td>";
          echo "<td rowspan='3'><label for='comment'>".__('Comments')."</label></td>";
          echo "<td rowspan='3' class='middle'>";
-         echo "<textarea cols='40' rows='4' name='comment' id='comment'>".$this->fields["comment"]."</textarea>";
+         echo "<textarea class='form-control' name='comment' id='comment'>".$this->fields["comment"]."</textarea>";
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
@@ -543,10 +543,10 @@ class AuthLDAP extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('TLS Certfile') . "</td><td>";
-      echo "<input type='text' name='tls_certfile' id='tls_certfile' value='".$this->fields["tls_certfile"]."'>";
+      echo "<input type='text' name='tls_certfile' class='form-control' id='tls_certfile' value='".$this->fields["tls_certfile"]."'>";
       echo "</td>";
       echo "<td>" . __('TLS Keyfile') . "</td><td>";
-      echo "<input type='text' name='tls_keyfile' id='tls_keyfile' value='".$this->fields["tls_keyfile"]."'>";
+      echo "<input type='text' name='tls_keyfile' class='form-control' id='tls_keyfile' value='".$this->fields["tls_keyfile"]."'>";
       echo "</td>";
       echo "</tr>";
 
@@ -721,16 +721,16 @@ class AuthLDAP extends CommonDBTM {
       self::dropdownGroupSearchType(['value' => $this->fields["group_search_type"]]);
       echo "</td>";
       echo "<td>" . __('User attribute containing its groups') . "</td>";
-      echo "<td><input type='text' name='group_field' value='".$this->fields["group_field"]."'>";
+      echo "<td><input type='text' name='group_field' class='form-control' value='".$this->fields["group_field"]."'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . __('Filter to search in groups')."</td><td colspan='3'>";
-      echo "<textarea cols='100' rows='1' name='group_condition'>".$this->fields["group_condition"];
+      echo "<textarea class='form-control' name='group_condition'>".$this->fields["group_condition"];
       echo "</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . __('Group attribute containing its users') . "</td>";
-      echo "<td><input type='text' name='group_member_field' value='".
+      echo "<td><input type='text' class='form-control' name='group_member_field' value='".
                  $this->fields["group_member_field"]."'></td>";
       echo "<td>" . __('Use DN in the search') . "</td>";
       echo "<td>";
@@ -796,67 +796,67 @@ class AuthLDAP extends CommonDBTM {
       echo "<th class='center' colspan='4'>" . __('Binding to the LDAP directory') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . __('Surname') . "</td>";
-      echo "<td><input type='text' name='realname_field' value='".
+      echo "<td><input type='text' class='form-control' name='realname_field' value='".
                  $this->fields["realname_field"]."'></td>";
       echo "<td>" . __('First name') . "</td>";
-      echo "<td><input type='text' name='firstname_field' value='".
+      echo "<td><input type='text' class='form-control' name='firstname_field' value='".
                  $this->fields["firstname_field"]."'></td></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . __('Comments') . "</td>";
-      echo "<td><input type='text' name='comment_field' value='".$this->fields["comment_field"]."'>";
+      echo "<td><input type='text' class='form-control' name='comment_field' value='".$this->fields["comment_field"]."'>";
       echo "</td>";
       echo "<td>" . __('Administrative number') . "</td>";
       echo "<td>";
-      echo "<input type='text' name='registration_number_field' value='".
+      echo "<input type='text' class='form-control' name='registration_number_field' value='".
              $this->fields["registration_number_field"]."'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . _n('Email', 'Emails', 1) . "</td>";
-      echo "<td><input type='text' name='email1_field' value='".$this->fields["email1_field"]."'>";
+      echo "<td><input type='text' class='form-control' name='email1_field' value='".$this->fields["email1_field"]."'>";
       echo "</td>";
       echo "<td>" . sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '2') . "</td>";
-      echo "<td><input type='text' name='email2_field' value='".$this->fields["email2_field"]."'>";
+      echo "<td><input type='text' class='form-control' name='email2_field' value='".$this->fields["email2_field"]."'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '3') . "</td>";
-      echo "<td><input type='text' name='email3_field' value='".$this->fields["email3_field"]."'>";
+      echo "<td><input type='text' class='form-control' name='email3_field' value='".$this->fields["email3_field"]."'>";
       echo "</td>";
       echo "<td>" . sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '4') . "</td>";
-      echo "<td><input type='text' name='email4_field' value='".$this->fields["email4_field"]."'>";
+      echo "<td><input type='text' class='form-control' name='email4_field' value='".$this->fields["email4_field"]."'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . _x('ldap', 'Phone') . "</td>";
-      echo "<td><input type='text' name='phone_field'value='".$this->fields["phone_field"]."'>";
+      echo "<td><input type='text' class='form-control' name='phone_field'value='".$this->fields["phone_field"]."'>";
       echo "</td>";
       echo "<td>" .  __('Phone 2') . "</td>";
-      echo "<td><input type='text' name='phone2_field'value='".$this->fields["phone2_field"]."'>";
+      echo "<td><input type='text' class='form-control' name='phone2_field'value='".$this->fields["phone2_field"]."'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . __('Mobile phone') . "</td>";
-      echo "<td><input type='text' name='mobile_field'value='".$this->fields["mobile_field"]."'>";
+      echo "<td><input type='text' class='form-control' name='mobile_field'value='".$this->fields["mobile_field"]."'>";
       echo "</td>";
       echo "<td>" . _x('person', 'Title') . "</td>";
-      echo "<td><input type='text' name='title_field' value='".$this->fields["title_field"]."'>";
+      echo "<td><input type='text' class='form-control' name='title_field' value='".$this->fields["title_field"]."'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . _n('Category', 'Categories', 1) . "</td>";
-      echo "<td><input type='text' name='category_field' value='".
+      echo "<td><input type='text' class='form-control' name='category_field' value='".
                  $this->fields["category_field"]."'></td>";
       echo "<td>" . __('Language') . "</td>";
-      echo "<td><input type='text' name='language_field' value='".
+      echo "<td><input type='text' class='form-control' name='language_field' value='".
                  $this->fields["language_field"]."'></td></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . _n('Picture', 'Pictures', 1) . "</td>";
-      echo "<td><input type='text' name='picture_field' value='".
+      echo "<td><input type='text' class='form-control' name='picture_field' value='".
                  $this->fields["picture_field"]."'></td>";
       echo "<td>" . Location::getTypeName(1) . "</td>";
-      echo "<td><input type='text' name='location_field' value='".$this->fields["location_field"]."'>";
+      echo "<td><input type='text' class='form-control' name='location_field' value='".$this->fields["location_field"]."'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . __('Responsible') . "</td>";
-      echo "<td><input type='text' name='responsible_field' value='".
+      echo "<td><input type='text' class='form-control' name='responsible_field' value='".
            $this->fields["responsible_field"]."'></td>";
       echo "<td colspan='2'></td></tr>";
 
