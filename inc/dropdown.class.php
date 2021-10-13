@@ -942,7 +942,7 @@ class Dropdown {
                   'DeviceGraphicCardModel' => null,
                   'DeviceHardDriveModel' => null,
                   'DeviceMemoryModel' => null,
-                  'DeviceMotherBoardModel' => null,
+                  'DeviceMotherboardModel' => null,
                   'DeviceNetworkCardModel' => null,
                   'DevicePciModel' => null,
                   'DevicePowerSupplyModel' => null,

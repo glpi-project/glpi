@@ -1344,7 +1344,7 @@ function update083xto0840() {
    migrateComputerDevice('DeviceGraphicCard', 'memory', 'integer');
    migrateComputerDevice('DeviceNetworkCard', 'mac', 'string');
    migrateComputerDevice('DeviceSoundCard');
-   migrateComputerDevice('DeviceMotherBoard');
+   migrateComputerDevice('DeviceMotherboard');
    migrateComputerDevice('DeviceDrive');
    migrateComputerDevice('DeviceControl');
    migrateComputerDevice('DevicePci');
