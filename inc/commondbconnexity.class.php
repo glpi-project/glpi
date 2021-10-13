@@ -36,17 +36,6 @@ if (!defined('GLPI_ROOT')) {
 
 
 /**
- * @since 0.84
-**/
-class CommonDBConnexityItemNotFound extends \Exception {
-
-}
-
-
-
-
-
-/**
  * Common DataBase Connexity Table Manager Class
  * This class factorize code for CommonDBChild and CommonDBRelation. Both classes themselves
  * factorize and normalize the behaviour of all Child and Relations.
