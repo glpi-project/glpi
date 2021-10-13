@@ -1,0 +1,37 @@
+.icon {
+  width: $font-size-base * $line-height-base;
+  height: $font-size-base * $line-height-base;
+  font-size: $font-size-base * $line-height-base;
+  vertical-align: bottom;
+
+  @if $icon-stroke-width {
+    stroke-width: $icon-stroke-width;
+  }
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.icon-inline {
+  width: 1em;
+  height: 1em;
+  font-size: divide(16, 14) * 1em;
+  vertical-align: -0.2em;
+}
+
+.icon-filled {
+  fill: currentColor;
+}
+
+.icon-md {
+  width: 2.5rem;
+  height: 2.5rem;
+  stroke-width: 1;
+}
+
+.icon-lg {
+  width: 3.5rem;
+  height: 3.5rem;
+  stroke-width: 1;
+}
