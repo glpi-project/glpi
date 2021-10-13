@@ -34,6 +34,7 @@ namespace Glpi\Inventory\Asset;
 
 use Auth;
 use CommonDBTM;
+use Dropdown;
 use Glpi\Inventory\Conf;
 use RefusedEquipment;
 use RuleImportAssetCollection;
@@ -370,6 +371,9 @@ abstract class MainAsset extends InventoryAsset
       if (property_exists($val, 'uuid') && !empty($val->uuid)) {
          $input['uuid'] = $val->uuid;
       }
+      if (property_exists($val, 'autoupdatesystems_id') && !empty($val->autoupdatesystems_id)) {
+         $input['autoupdatesystems_id'] = $val->autoupdatesystems_id;
+      }
 
       if (isset($this->extra_data['\Glpi\Inventory\Asset\NetworkCard'])) {
          foreach ($this->extra_data['\Glpi\Inventory\Asset\NetworkCard'] as $networkcard) {
@@ -521,6 +525,15 @@ abstract class MainAsset extends InventoryAsset
             $refused_input[$array] = exportArrayToDB($refused_input[$array]);
          }
       }
+
+      if (!is_numeric($input['autoupdatesystems_id'])) {
+         $input['autoupdatesystems_id'] = Dropdown::importExternal(
+            getItemtypeForForeignKeyField('autoupdatesystems_id'),
+            addslashes($input['autoupdatesystems_id']),
+            $input['entities_id']
+         );
+      }
+      $refused_input['autoupdatesystems_id'] = $input['autoupdatesystems_id'];
 
       $refused = new \RefusedEquipment();
       $refused->add(Toolbox::addslashes_deep($refused_input));

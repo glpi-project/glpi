@@ -3990,8 +3990,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          'uuid' => '4c4c4544-0034-3010-8048-b6c04f503732',
          'agents_id' => 0,
          'date_creation' => $result['date_creation'],
-         'date_mod' => $result['date_mod']
-
+         'date_mod' => $result['date_mod'],
+         'autoupdatesystems_id' => $result['autoupdatesystems_id']
       ];
 
       $this->array($result)->isEqualTo($expected);
@@ -4124,8 +4124,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          'uuid' => '4c4c4544-0034-3010-8048-b6c04f503732',
          'agents_id' => 0,
          'date_creation' => $result['date_creation'],
-         'date_mod' => $result['date_mod']
-
+         'date_mod' => $result['date_mod'],
+         'autoupdatesystems_id' => $result['autoupdatesystems_id']
       ];
 
       $this->array($result)->isEqualTo($expected);
