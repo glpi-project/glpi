@@ -44,11 +44,11 @@ define(
 
 include_once(GLPI_ROOT . '/inc/based_config.php');
 
-\GlpiTests\BootstrapUtils::initVarDirectories();
+\Glpi\Tests\BootstrapUtils::initVarDirectories();
 
 include_once(GLPI_ROOT . '/inc/includes.php');
 
-$command = new \GlpiTests\Command\TestUpdatedDataCommand();
+$command = new \Glpi\Tests\Command\TestUpdatedDataCommand();
 
 $app = new \Symfony\Component\Console\Application('Test empty data', GLPI_VERSION);
 $app->add($command);

@@ -30,76 +30,60 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests\Web\Deprecated;
+namespace Glpi\Tests\Api\Deprecated;
 
-/**
- * @ignore
- */
-class Computer_SoftwareLicense implements DeprecatedInterface {
+class TicketFollowup implements DeprecatedInterface {
 
    public static function getDeprecatedType(): string {
-      return "Computer_SoftwareLicense";
+      return "TicketFollowup";
    }
 
    public static function getCurrentType(): string {
-      return "Item_SoftwareLicense";
+      return "ITILFollowup";
    }
 
    public static function getDeprecatedFields(): array {
       return [
-        "id", "computers_id", "softwarelicenses_id", "is_deleted", "is_dynamic",
-        "links"
+         "id", "tickets_id", "date", "users_id", "users_id_editor", "content",
+         "is_private", "requesttypes_id", "date_mod", "date_creation",
+         "timeline_position", "links"
       ];
    }
 
    public static function getCurrentAddInput(): array {
       return [
-         "itemtype" => "Computer",
-         "items_id" => getItemByTypeName(
-            'Computer',
-            '_test_pc01',
-            true
-         ),
-         "softwarelicenses_id" => getItemByTypeName(
-            'SoftwareLicense',
-            '_test_softlic_1',
-            true
-         ),
+         "users_id" => getItemByTypeName('User', TU_USER, true),
+         "itemtype" => "Ticket",
+         "items_id" => getItemByTypeName('Ticket', '_ticket01', true),
+         "content"  => "New followup"
       ];
    }
 
    public static function getDeprecatedAddInput(): array {
       return [
-         "computers_id" => getItemByTypeName(
-            'Computer',
-            '_test_pc01',
-            true
-         ),
-         "softwarelicenses_id" => getItemByTypeName(
-            'SoftwareLicense',
-            '_test_softlic_1',
-            true
-         ),
+         'tickets_id' => getItemByTypeName('Ticket', '_ticket01', true),
+         'users_id'   => getItemByTypeName('User', TU_USER, true),
+         'content'    => "Test insert deprecated",
       ];
    }
 
    public static function getDeprecatedUpdateInput(): array {
       return [
-         'computers_id' => getItemByTypeName('Computer', '_test_pc02', true),
+         'tickets_id' => getItemByTypeName('Ticket', '_ticket02', true),
       ];
    }
 
    public static function getExpectedAfterInsert(): array {
       return [
-         "itemtype" => "Computer",
-         "items_id" => getItemByTypeName('Computer', '_test_pc01', true),
+         "itemtype" => "Ticket",
+         "items_id" => getItemByTypeName('Ticket', '_ticket01', true),
       ];
    }
 
    public static function getExpectedAfterUpdate(): array {
       return [
-         "itemtype" => "Computer",
-         "items_id" => getItemByTypeName('Computer', '_test_pc02', true),
+         "itemtype" => "Ticket",
+         "items_id" => getItemByTypeName('Ticket', '_ticket02', true),
       ];
    }
 
@@ -108,6 +92,6 @@ class Computer_SoftwareLicense implements DeprecatedInterface {
    }
 
    public static function getCurrentSearchQuery(): string {
-      return "forcedisplay[0]=2&criteria[0][field]=6&criteria[0][searchtype]=equals&criteria[0][value]=Computer&rawdata=1";
+      return "forcedisplay[0]=2&criteria[0][field]=6&criteria[0][searchtype]=equals&criteria[0][value]=Ticket&rawdata=1";
    }
 }

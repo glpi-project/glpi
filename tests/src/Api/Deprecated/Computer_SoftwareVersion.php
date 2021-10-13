@@ -30,63 +30,86 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests\Web\Deprecated;
+namespace Glpi\Tests\Api\Deprecated;
 
-/**
- * @ignore
- */
-class TicketFollowup implements DeprecatedInterface {
+class Computer_SoftwareVersion implements DeprecatedInterface {
 
    public static function getDeprecatedType(): string {
-      return "TicketFollowup";
+      return "Computer_SoftwareVersion";
    }
 
    public static function getCurrentType(): string {
-      return "ITILFollowup";
+      return "Item_SoftwareVersion";
    }
 
    public static function getDeprecatedFields(): array {
       return [
-         "id", "tickets_id", "date", "users_id", "users_id_editor", "content",
-         "is_private", "requesttypes_id", "date_mod", "date_creation",
-         "timeline_position", "links"
+        "id", "computers_id", "softwareversions_id", "is_deleted_computer",
+        "is_template_computer", "entities_id", "is_deleted", "is_dynamic",
+        "date_install", "links"
       ];
    }
 
    public static function getCurrentAddInput(): array {
       return [
-         "users_id" => getItemByTypeName('User', TU_USER, true),
-         "itemtype" => "Ticket",
-         "items_id" => getItemByTypeName('Ticket', '_ticket01', true),
-         "content"  => "New followup"
+         "users_id" => TU_USER,
+         "itemtype" => "Computer",
+         "items_id" => getItemByTypeName(
+            'Computer',
+            '_test_pc01',
+            true
+         ),
+         "softwareversions_id" => getItemByTypeName(
+            'SoftwareVersion',
+            '_test_softver_1',
+            true
+         ),
+         "entities_id" => getItemByTypeName(
+            'Entity',
+            '_test_root_entity',
+            true
+         ),
       ];
    }
 
    public static function getDeprecatedAddInput(): array {
       return [
-         'tickets_id' => getItemByTypeName('Ticket', '_ticket01', true),
-         'users_id'   => getItemByTypeName('User', TU_USER, true),
-         'content'    => "Test insert deprecated",
+         "users_id" => TU_USER,
+         "computers_id" => getItemByTypeName(
+            'Computer',
+            '_test_pc01',
+            true
+         ),
+         "softwareversions_id" => getItemByTypeName(
+            'SoftwareVersion',
+            '_test_softver_1',
+            true
+         ),
+         "entities_id" => getItemByTypeName(
+            'Entity',
+            '_test_root_entity',
+            true
+         ),
       ];
    }
 
    public static function getDeprecatedUpdateInput(): array {
       return [
-         'tickets_id' => getItemByTypeName('Ticket', '_ticket02', true),
+         'computers_id' => getItemByTypeName('Computer', '_test_pc02', true),
       ];
    }
 
    public static function getExpectedAfterInsert(): array {
       return [
-         "itemtype" => "Ticket",
-         "items_id" => getItemByTypeName('Ticket', '_ticket01', true),
+         "itemtype" => "Computer",
+         "items_id" => getItemByTypeName('Computer', '_test_pc01', true),
       ];
    }
 
    public static function getExpectedAfterUpdate(): array {
       return [
-         "itemtype" => "Ticket",
-         "items_id" => getItemByTypeName('Ticket', '_ticket02', true),
+         "itemtype" => "Computer",
+         "items_id" => getItemByTypeName('Computer', '_test_pc02', true),
       ];
    }
 
@@ -95,6 +118,6 @@ class TicketFollowup implements DeprecatedInterface {
    }
 
    public static function getCurrentSearchQuery(): string {
-      return "forcedisplay[0]=2&criteria[0][field]=6&criteria[0][searchtype]=equals&criteria[0][value]=Ticket&rawdata=1";
+      return "forcedisplay[0]=2&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=Computer&rawdata=1";
    }
 }
