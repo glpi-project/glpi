@@ -71,6 +71,7 @@ The present file will list all changes made to the project; according to the
 - Support of `doc_types`, `helpdesk_types` and `netport_types` keys in `Plugin::registerClass()`
 - `$CFG_GLPI['layout_excluded_pages']` entry
 - `$CFG_GLPI['use_ajax_autocompletion']` entry
+- `$DEBUG_AUTOLOAD` global variable
 - `$LOADED_PLUGINS` global variable
 - `CommonDBTM::notificationqueueonaction` property
 - `NotificationTarget::html_tags` property
