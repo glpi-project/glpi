@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Socket;
+
 /// NetworkPortEthernet class : Ethernet instantiation of NetworkPort
 /// @since 0.84
 class NetworkPortEthernet extends NetworkPortInstantiation {
@@ -131,8 +133,6 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       $group->addHeader('speed', __('Ethernet port speed'), $super, $header);
       $group->addHeader('type', __('Ethernet port type'), $super, $header);
-
-      Socket::getHTMLTableHeader('NetworkPortEthernet', $group, $super, $header, $options);
 
       $group->addHeader('Socket', _n('Network socket', 'Network sockets', 1), $super, $header);
 

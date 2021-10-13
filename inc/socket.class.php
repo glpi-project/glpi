@@ -30,11 +30,26 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use Glpi\Event;
+use Ajax;
+use Cable;
+use CommonDBChild;
+use CommonDBTM;
+use CommonGLPI;
+use Dropdown;
+use Html;
+use HTMLTableCell;
+use HTMLTableRow;
+use Location;
+use Log;
+use NetworkPort;
+use Session;
+use SocketModel;
 
 /// Socket class
 class Socket extends CommonDBChild {
@@ -956,37 +971,11 @@ class Socket extends CommonDBChild {
     * @param $input array of values
    **/
    function executeAddMulti(array $input) {
-
       $this->check(-1, CREATE, $input);
       for ($i=$input["_from"]; $i<=$input["_to"]; $i++) {
          $input["name"] = $input["_before"].$i.$input["_after"];
          $this->add($input);
       }
-      Event::log(0, "dropdown", 5, "setup",
-               sprintf(__('%1$s adds several sockets'), $_SESSION["glpiname"]));
-   }
-
-   /**
-    * @since 0.84
-    *
-    * @param $itemtype
-    * @param $base            HTMLTableBase object
-    * @param $super           HTMLTableSuperHeader object (default NULL
-    * @param $father          HTMLTableHeader object (default NULL)
-    * @param $options   array
-   **/
-   static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super = null,
-                                      HTMLTableHeader $father = null, array $options = []) {
-
-      $column_name = __CLASS__;
-
-      if (isset($options['dont_display'][$column_name])) {
-         return;
-      }
-
-      $base->addHeader($column_name, _n('Network socket', 'Network sockets', 1), $super, $father);
-
    }
 
 

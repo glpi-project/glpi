@@ -34,6 +34,8 @@
  * Show choices for network reports
  */
 
+use Glpi\Socket;
+
 include ('../inc/includes.php');
 
 Session::checkRight("reports", READ);

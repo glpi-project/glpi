@@ -220,24 +220,6 @@ class Dropdown extends DbTestCase {
       $this->array($ret)->isIdenticalTo($expected);
 
       ///////////
-      // Socket
-      $socket = getItemByTypeName( 'Socket', '_socket01' );
-      $location = getItemByTypeName( 'Location', '_location01' );
-      $expected = $socket->getName()." (".$location->getName().")";
-      $ret = \Dropdown::getDropdownName( 'glpi_sockets', $socket->getID());
-      $this->string($ret)->isIdenticalTo($expected);
-
-      // test of return with comments
-      $expected = ['name'    => $expected,
-                        'comment' => "Comment for socket _socket01"];
-      $ret = \Dropdown::getDropdownName( 'glpi_sockets', $socket->getID(), true );
-      $this->array($ret)->isIdenticalTo($expected);
-
-      // test of return without $tooltip
-      $ret = \Dropdown::getDropdownName( 'glpi_sockets', $socket->getID(), true, true, false );
-      $this->array($ret)->isIdenticalTo($expected);
-
-      ///////////
       // Budget
       $budget = getItemByTypeName( 'Budget', '_budget01' );
       $expected = $budget->getName();

@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Socket;
+
 include ('../inc/includes.php');
 
 Session::checkRight("reports", READ);

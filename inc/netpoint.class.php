@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Socket;
+
 /**
  * Manage Netpoint.
  * @deprecated 9.5.0 Use Socket

@@ -33,10 +33,31 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Socket;
 
 /* Test for inc/networkport.class.php */
 
 class Cable extends DbTestCase {
+
+   public function testAddSocket() {
+
+      $socket = getItemByTypeName( Socket::class, '_socket01' );
+      $location = getItemByTypeName( 'Location', '_location01' );
+      $expected = $socket->getName()." (".$location->getName().")";
+      $ret = \Dropdown::getDropdownName( 'glpi_sockets', $socket->getID());
+      $this->string($ret)->isIdenticalTo($expected);
+
+      // test of return with comments
+      $expected = ['name'    => $expected,
+                  'comment' => "Comment for socket _socket01"];
+      $ret = \Dropdown::getDropdownName( 'glpi_sockets', $socket->getID(), true );
+      $this->array($ret)->isIdenticalTo($expected);
+
+      // test of return without $tooltip
+      $ret = \Dropdown::getDropdownName( 'glpi_sockets', $socket->getID(), true, true, false );
+      $this->array($ret)->isIdenticalTo($expected);
+
+   }
 
    public function testAddNetworkPortThenSocket() {
       $this->login();
@@ -70,12 +91,12 @@ class Cable extends DbTestCase {
       $this->integer((int)$socketModel_id)->isGreaterThan(0);
       $this->integer((int)countElementsInTable('glpi_logs'))->isGreaterThan($nb_log);
 
-      $socket = new \Socket();
+      $socket = new Socket();
       $socket_id = $socket->add([
          'name'               => 'socket1',
          'position'           => 10,
          'networkports_id'    => $new_id,
-         'wiring_side'        => \Socket::FRONT, //default is REAR
+         'wiring_side'        => Socket::FRONT, //default is REAR
          'items_id'           => $computer1->getID(),
          'itemtype'           => 'Computer',
          'socketmodels_id'    => $socketModel_id,
@@ -95,7 +116,7 @@ class Cable extends DbTestCase {
          'locations_id'       => 0,
          'name'               => 'socket1',
          'socketmodels_id'    => $socketModel_id,
-         'wiring_side'        => \Socket::FRONT, //default is REAR
+         'wiring_side'        => Socket::FRONT, //default is REAR
          'itemtype'           => 'Computer',
          'items_id'           => $computer1->getID(),
          'networkports_id'    => $new_id,
@@ -124,11 +145,11 @@ class Cable extends DbTestCase {
       $this->integer((int)$socketModel_id)->isGreaterThan(0);
       $this->integer((int)countElementsInTable('glpi_logs'))->isGreaterThan($nb_log);
 
-      $socket = new \Socket();
+      $socket = new Socket();
       $nb_log = (int)countElementsInTable('glpi_logs');
       $socket_id = $socket->add([
          'name'               => 'socket1',
-         'wiring_side'        => \Socket::FRONT, //default is REAR
+         'wiring_side'        => Socket::FRONT, //default is REAR
          'itemtype'           => '',
          'socketmodels_id'    => $socketModel_id,
          'locations_id'       => 0,
@@ -222,12 +243,12 @@ class Cable extends DbTestCase {
       $this->integer((int)countElementsInTable('glpi_logs'))->isGreaterThan($nb_log);
 
       //add socket
-      $socket1 = new \Socket();
+      $socket1 = new Socket();
       $socket1_id = $socket1->add([
          'name'               => 'socket1',
          'position'           => 10,
          'networkports_id'    => $new1_id,
-         'wiring_side'        => \Socket::FRONT, //default is REAR
+         'wiring_side'        => Socket::FRONT, //default is REAR
          'items_id'           => $computer1->getID(),
          'itemtype'           => 'Computer',
          'socketmodels_id'    => $socketModel1_id,
@@ -248,7 +269,7 @@ class Cable extends DbTestCase {
          'locations_id'       => 0,
          'name'               => 'socket1',
          'socketmodels_id'    => $socketModel1_id,
-         'wiring_side'        => \Socket::FRONT, //default is REAR
+         'wiring_side'        => Socket::FRONT, //default is REAR
          'itemtype'           => 'Computer',
          'items_id'           => $computer1->getID(),
          'networkports_id'    => $new1_id,
@@ -286,12 +307,12 @@ class Cable extends DbTestCase {
       $this->integer((int)countElementsInTable('glpi_logs'))->isGreaterThan($nb_log);
 
       //add socket
-      $socket2 = new \Socket();
+      $socket2 = new Socket();
       $socket2_id = $socket2->add([
          'name'               => 'socket2',
          'position'           => 10,
          'networkports_id'    => $new2_id,
-         'wiring_side'        => \Socket::FRONT, //default is REAR
+         'wiring_side'        => Socket::FRONT, //default is REAR
          'items_id'           => $computer2->getID(),
          'itemtype'           => 'Computer',
          'socketmodels_id'    => $socketModel2_id,
@@ -311,7 +332,7 @@ class Cable extends DbTestCase {
          'locations_id'       => 0,
          'name'               => 'socket2',
          'socketmodels_id'    => $socketModel2_id,
-         'wiring_side'        => \Socket::FRONT, //default is REAR
+         'wiring_side'        => Socket::FRONT, //default is REAR
          'itemtype'           => 'Computer',
          'items_id'           => $computer2->getID(),
          'networkports_id'    => $new2_id,

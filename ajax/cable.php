@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+ use Glpi\Socket;
+
 include ('../inc/includes.php');
 
 // Send UTF8 Headers
