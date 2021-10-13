@@ -34,9 +34,9 @@ namespace tests\units\Glpi\Api;
 
 use APIBaseClass;
 use Computer;
-use Glpi\Tests\Web\Deprecated\Computer_SoftwareLicense;
-use Glpi\Tests\Web\Deprecated\Computer_SoftwareVersion;
-use Glpi\Tests\Web\Deprecated\TicketFollowup;
+use Glpi\Tests\Api\Deprecated\Computer_SoftwareLicense;
+use Glpi\Tests\Api\Deprecated\Computer_SoftwareVersion;
+use Glpi\Tests\Api\Deprecated\TicketFollowup;
 use GuzzleHttp;
 use Notepad;
 

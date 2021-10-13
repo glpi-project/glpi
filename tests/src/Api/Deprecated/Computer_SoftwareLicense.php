@@ -30,46 +30,36 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests\Web\Deprecated;
+namespace Glpi\Tests\Api\Deprecated;
 
-/**
- * @ignore
- */
-class Computer_SoftwareVersion implements DeprecatedInterface {
+class Computer_SoftwareLicense implements DeprecatedInterface {
 
    public static function getDeprecatedType(): string {
-      return "Computer_SoftwareVersion";
+      return "Computer_SoftwareLicense";
    }
 
    public static function getCurrentType(): string {
-      return "Item_SoftwareVersion";
+      return "Item_SoftwareLicense";
    }
 
    public static function getDeprecatedFields(): array {
       return [
-        "id", "computers_id", "softwareversions_id", "is_deleted_computer",
-        "is_template_computer", "entities_id", "is_deleted", "is_dynamic",
-        "date_install", "links"
+        "id", "computers_id", "softwarelicenses_id", "is_deleted", "is_dynamic",
+        "links"
       ];
    }
 
    public static function getCurrentAddInput(): array {
       return [
-         "users_id" => TU_USER,
          "itemtype" => "Computer",
          "items_id" => getItemByTypeName(
             'Computer',
             '_test_pc01',
             true
          ),
-         "softwareversions_id" => getItemByTypeName(
-            'SoftwareVersion',
-            '_test_softver_1',
-            true
-         ),
-         "entities_id" => getItemByTypeName(
-            'Entity',
-            '_test_root_entity',
+         "softwarelicenses_id" => getItemByTypeName(
+            'SoftwareLicense',
+            '_test_softlic_1',
             true
          ),
       ];
@@ -77,20 +67,14 @@ class Computer_SoftwareVersion implements DeprecatedInterface {
 
    public static function getDeprecatedAddInput(): array {
       return [
-         "users_id" => TU_USER,
          "computers_id" => getItemByTypeName(
             'Computer',
             '_test_pc01',
             true
          ),
-         "softwareversions_id" => getItemByTypeName(
-            'SoftwareVersion',
-            '_test_softver_1',
-            true
-         ),
-         "entities_id" => getItemByTypeName(
-            'Entity',
-            '_test_root_entity',
+         "softwarelicenses_id" => getItemByTypeName(
+            'SoftwareLicense',
+            '_test_softlic_1',
             true
          ),
       ];
@@ -121,6 +105,6 @@ class Computer_SoftwareVersion implements DeprecatedInterface {
    }
 
    public static function getCurrentSearchQuery(): string {
-      return "forcedisplay[0]=2&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=Computer&rawdata=1";
+      return "forcedisplay[0]=2&criteria[0][field]=6&criteria[0][searchtype]=equals&criteria[0][value]=Computer&rawdata=1";
    }
 }

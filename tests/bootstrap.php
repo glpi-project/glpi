@@ -62,7 +62,7 @@ if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
    die("\nConfiguration file for tests not found\n\nrun: bin/console glpi:database:install --config-dir=" . GLPI_CONFIG_DIR . " ...\n\n");
 }
 
-\GlpiTests\BootstrapUtils::initVarDirectories();
+\Glpi\Tests\BootstrapUtils::initVarDirectories();
 
 //init cache
 if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FILENAME)) {

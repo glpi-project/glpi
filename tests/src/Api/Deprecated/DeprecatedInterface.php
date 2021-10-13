@@ -30,11 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests\Web\Deprecated;
+namespace Glpi\Tests\Api\Deprecated;
 
-/**
- * @ignore
- */
 interface DeprecatedInterface {
 
    /**

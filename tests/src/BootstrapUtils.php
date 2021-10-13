@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace GlpiTests;
+namespace Glpi\Tests;
 
 class BootstrapUtils {
 

@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace GlpiTests\Command;
+namespace Glpi\Tests\Command;
 
 use DBmysql;
 use Symfony\Component\Console\Command\Command;
