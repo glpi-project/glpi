@@ -1056,6 +1056,7 @@ class GLPIKanbanRights {
                appendTo: '.kanban-container',
                items: '.kanban-column:not(.kanban-protected)',
                handle: '.kanban-column-header',
+               orientation: 'horizontal',
             });
             $(self.element + ' .kanban-columns .kanban-column:not(.kanban-protected) .kanban-column-header').addClass('grab');
          }
