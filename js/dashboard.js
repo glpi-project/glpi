@@ -640,6 +640,9 @@ var Dashboard = {
       filters[filter_id] = value;
       Dashboard.setFiltersInDB(filters);
 
+      // refresh sortable
+      sortable('.filters', 'reload');
+
       // refresh all card impacted by the changed filter
       Dashboard.refreshCardsImpactedByFilter(filter_id);
    },
