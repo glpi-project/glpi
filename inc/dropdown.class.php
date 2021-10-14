@@ -2456,7 +2456,7 @@ class Dropdown {
 
          // Empty search text : display first
          if ($post['page'] == 1 && empty($post['searchText'])) {
-            if ($post['display_emptychoice']) {
+            if (isset($post['display_emptychoice']) && $post['display_emptychoice']) {
                $datas[] = [
                   'id' => 0,
                   'text' => $post['emptylabel']

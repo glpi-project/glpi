@@ -1352,4 +1352,27 @@ class Dropdown extends DbTestCase {
       }
       return \Session::getNewIDORToken(($params['itemtype'] ?? ''), $idor_add_params);
    }
+
+   public function testDropdownParent() {
+      global $DB;
+      //create data
+      $this->integer(
+         (int)$DB->insert( \State::getTable(),
+            [  'id' => '100', 'name' => '1.0','states_id' => '0']
+         ))->isGreaterThan(0);
+         $this->integer(
+            (int)$DB->insert( \State::getTable(),
+               [  'id' => '200', 'name' => '2.0','states_id' => '0']
+            ))->isGreaterThan(0);
+         $this->integer(
+            (int)$DB->insert( \State::getTable(),
+               [  'id' => '101', 'name' => '1.1','states_id' => '100']
+            ))->isGreaterThan(0);
+      $options = ['parentid' => '100',
+               'itemtype' => \State::getType(),
+               'entity_restrict' =>'0',
+               '_idor_token' => \Session::getNewIDORToken(\State::getType())];
+      $values = \Dropdown::getDropdownValue($options, false);
+      $this->integer($values['count'])->isEqualTo(1);
+   }
 }
