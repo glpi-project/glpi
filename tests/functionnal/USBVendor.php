@@ -65,6 +65,8 @@ class USBVendor extends DbTestCase {
 
       $this->boolean($vendors->getManufacturer('one that does not exists'))->isFalse();
       $this->string($vendors->getManufacturer('0001'))->isIdenticalTo("Fry's Electronics");
+      $this->string($vendors->getManufacturer('17e9'))->isIdenticalTo("DisplayLink");
+      $this->string($vendors->getManufacturer('17E9'))->isIdenticalTo("DisplayLink");
 
       //override
       $this->integer(
