@@ -84,7 +84,7 @@ class USBVendor extends DbTestCase {
       $this->boolean($vendors->getProductName('vendor does not exists', '7778'))->isFalse();
       $this->boolean($vendors->getProductName('0001', 'device does not exists'))->isFalse();
       $this->string($vendors->getProductName('0001', '7778'))->isIdenticalTo('Counterfeit flash drive [Kingston]');
-      $this->string($vendors->getProductName('1926', '0bdb'))->isIdenticalTo('H5321 gw Mobile Broadband Module');
+      $this->string($vendors->getProductName('0bdb', '1926'))->isIdenticalTo('H5321 gw Mobile Broadband Module');
 
       //override
       $this->integer(
