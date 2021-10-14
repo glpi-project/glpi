@@ -3342,7 +3342,7 @@ class CommonDBTM extends CommonGLPI {
       $p = [
          'forceid'  => false,
          'comments' => false,
-         'icon'     => true,
+         'icon'     => false,
       ];
 
       if (is_array($options)) {
