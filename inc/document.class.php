@@ -31,6 +31,7 @@
  */
 
 use Glpi\Event;
+use Glpi\Toolbox\Sanitizer;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -396,7 +397,7 @@ class Document extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
       if ($ID > 0) {
          echo "<td>".__('Current file')."</td>";
@@ -426,17 +427,17 @@ class Document extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Web link')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "link");
+      echo Html::input('link', ['value' => $this->fields['link']]);
       echo "</td>";
       echo "<td rowspan='3' class='middle'>".__('Comments')."</td>";
       echo "<td class='middle' rowspan='3'>";
-      echo "<textarea cols='45' rows='6' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "<textarea class='form-control' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('MIME type')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "mime");
+      echo Html::input('mime', ['value' => $this->fields['mime']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -466,11 +467,10 @@ class Document extends CommonDBTM {
     * Get max upload size from php config
    **/
    static function getMaxUploadSize() {
+      global $CFG_GLPI;
 
-      $max_size  = Toolbox::return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
-      $max_size /= 1024*1024;
       //TRANS: %s is a size
-      return sprintf(__('%s Mio max'), round($max_size, 1));
+      return sprintf(__('%s Mio max'), $CFG_GLPI['document_max_size']);
    }
 
 
@@ -537,7 +537,7 @@ class Document extends CommonDBTM {
          ]);
 
          if (count($iterator) > 0) {
-            $result = $iterator->next();
+            $result = $iterator->current();
             $icon = $result['icon'];
             if (!file_exists(GLPI_ROOT."/pics/icones/$icon")) {
                $icon = "defaut-dist.png";
@@ -590,7 +590,7 @@ class Document extends CommonDBTM {
          return false;
       }
 
-      $doc_data = $doc_iterator->next();
+      $doc_data = $doc_iterator->current();
       return $this->getFromDB($doc_data['id']);
    }
 
@@ -704,7 +704,7 @@ class Document extends CommonDBTM {
          Reminder::getVisibilityCriteria()
       );
 
-      $result = $DB->request($criteria)->next();
+      $result = $DB->request($criteria)->current();
       return $result['cpt'] > 0;
    }
 
@@ -756,7 +756,7 @@ class Document extends CommonDBTM {
          $request['WHERE'] += $visibilityCriteria['WHERE'];
       }
 
-      $result = $DB->request($request)->next();
+      $result = $DB->request($request)->current();
 
       return $result['cpt'] > 0;
    }
@@ -793,7 +793,7 @@ class Document extends CommonDBTM {
             $itil->getAssociatedDocumentsCriteria(),
             'documents_id' => $this->fields['id']
          ]
-      ])->next();
+      ])->current();
 
       return $result['cpt'] > 0;
    }
@@ -839,7 +839,6 @@ class Document extends CommonDBTM {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -866,7 +865,6 @@ class Document extends CommonDBTM {
          'field'              => 'link',
          'name'               => __('Web link'),
          'datatype'           => 'weblink',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -875,7 +873,6 @@ class Document extends CommonDBTM {
          'field'              => 'mime',
          'name'               => __('MIME type'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1351,9 +1348,8 @@ class Document extends CommonDBTM {
          ]
       ]);
 
-      while ($data = $iterator->next()) {
-         if (preg_match(Toolbox::unclean_cross_side_scripting_deep($data['ext'])."i",
-                        $ext, $results) > 0) {
+      foreach ($iterator as $data) {
+         if (preg_match(Sanitizer::unsanitize($data['ext'])."i", $ext, $results) > 0) {
             return Toolbox::strtoupper($ext);
          }
       }
@@ -1369,6 +1365,7 @@ class Document extends CommonDBTM {
     *    - entity : integer or array / restrict to a defined entity or array of entities
     *                   (default -1 : no restriction)
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
+    *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
     *
     * @param $options array of possible options
     *
@@ -1383,6 +1380,7 @@ class Document extends CommonDBTM {
       $p['entity']  = '';
       $p['used']    = [];
       $p['display'] = true;
+      $p['hide_if_no_elements'] = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1412,8 +1410,12 @@ class Document extends CommonDBTM {
       ];
       $iterator = $DB->request($criteria);
 
+      if ($p['hide_if_no_elements'] && $iterator->count() === 0) {
+         return;
+      }
+
       $values = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $values[$data['id']] = $data['name'];
       }
       $rand = mt_rand();
@@ -1453,7 +1455,7 @@ class Document extends CommonDBTM {
 
       if (self::canApplyOn($itemtype)) {
          if (Document::canView()) {
-            $actions[$action_prefix.'add']    = "<i class='ma-icon far fa-file'></i>".
+            $actions[$action_prefix.'add']    = "<i class='far fa-file'></i>".
                                                 _x('button', 'Add a document');
             $actions[$action_prefix.'remove'] = _x('button', 'Remove a document');
          }
@@ -1601,7 +1603,7 @@ class Document extends CommonDBTM {
 
       $dtable = static::getTable();
       $ditable = Document_Item::getTable();
-      //documents tht are nt present in Document_Item are oprhan
+      //documents that are not present in Document_Item are oprhan
       $iterator = $DB->request([
          'SELECT'    => ["$dtable.id"],
          'FROM'      => $dtable,
@@ -1620,7 +1622,7 @@ class Document extends CommonDBTM {
 
       $nb = 0;
       if (count($iterator)) {
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             $doc = new Document();
             $doc->delete(['id' => $row['id']], true);
             ++$nb;
@@ -1638,5 +1640,26 @@ class Document extends CommonDBTM {
 
    static function getIcon() {
       return "far fa-file";
+   }
+
+
+   /**
+    * find and load a document which is a duplicate of a file, with respect of blacklisting
+    *
+    * @param integer $entity    entity of the document
+    * @param string  $path      path of the searched file
+    *
+    * @return boolean
+    */
+   public function getDuplicateOf(int $entities_id, string $filename): bool {
+      if (!$this->getFromDBbyContent($entities_id, $filename)) {
+         return false;
+      }
+
+      if ($this->fields['is_blacklisted']) {
+         return false;
+      }
+
+      return true;
    }
 }

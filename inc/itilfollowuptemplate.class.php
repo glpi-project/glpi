@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
  * Template for followups
  * @since 9.5
 **/
-class ITILFollowupTemplate extends CommonDropdown {
+class ITILFollowupTemplate extends AbstractITILChildTemplate {
 
    // From CommonDBTM
    public $dohistory          = true;
@@ -53,9 +53,15 @@ class ITILFollowupTemplate extends CommonDropdown {
    function getAdditionalFields() {
       return [
          [
-            'name'  => 'content',
-            'label' => __('Content'),
-            'type'  => 'tinymce',
+            'name'           => 'content',
+            'label'          => __('Content'),
+            'type'           => 'tinymce',
+            // As content copying from template is not using the image pasting process, these images
+            // are not correctly processed. Indeed, document item corresponding to the destination item is not created and
+            // image src is not containing the ITIL item foreign key, so image will not be visible for helpdesk profiles.
+            // As fixing it is really complex (requires lot of refactoring in images handling, both on JS and PHP side),
+            // it is preferable to disable usage of images in templates.
+            'disable_images' => true,
          ], [
             'name'  => 'requesttypes_id',
             'label' => __('Source of followup'),
@@ -99,5 +105,9 @@ class ITILFollowupTemplate extends CommonDropdown {
       ];
 
       return $tab;
+   }
+
+   static function getIcon() {
+      return "fas fa-layer-group";
    }
 }

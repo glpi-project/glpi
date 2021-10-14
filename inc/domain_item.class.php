@@ -54,22 +54,20 @@ class Domain_Item extends CommonDBRelation {
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      if (!$withtemplate) {
-         if ($item->getType() == 'Domain'
-             && count(Domain::getTypes(false))
-         ) {
-            if ($_SESSION['glpishow_count_on_tabs']) {
-               return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), self::countForDomain($item));
-            }
-            return _n('Associated item', 'Associated items', Session::getPluralNumber());
-         } else if ($item->getType()== 'DomainRelation' || in_array($item->getType(), Domain::getTypes(true))
-                    && Session::haveRight('domain', READ)
-         ) {
-            if ($_SESSION['glpishow_count_on_tabs']) {
-               return self::createTabEntry(Domain::getTypeName(Session::getPluralNumber()), self::countForItem($item));
-            }
-            return Domain::getTypeName(2);
+      if ($item->getType() == 'Domain'
+            && count(Domain::getTypes(false))
+      ) {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), self::countForDomain($item));
          }
+         return _n('Associated item', 'Associated items', Session::getPluralNumber());
+      } else if ($item->getType()== 'DomainRelation' || in_array($item->getType(), Domain::getTypes(true))
+                  && Session::haveRight('domain', READ)
+      ) {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry(Domain::getTypeName(Session::getPluralNumber()), self::countForItem($item));
+         }
+         return Domain::getTypeName(2);
       }
       return '';
    }
@@ -210,7 +208,7 @@ class Domain_Item extends CommonDBRelation {
          );
          echo "</td><td colspan='2' class='center' class='tab_bg_1'>";
          echo "<input type='hidden' name='domains_id' value='$instID'>";
-         echo "<input type='submit' name='additem' value=\"" . _sx('button', 'Add') . "\" class='submit'>";
+         echo "<input type='submit' name='additem' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
@@ -240,7 +238,7 @@ class Domain_Item extends CommonDBRelation {
       echo "<th>" . __('Inventory number') . "</th>";
       echo "</tr>";
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $itemtype = $data['itemtype'];
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
@@ -287,7 +285,7 @@ class Domain_Item extends CommonDBRelation {
             if (count($linked_iterator)) {
                Session::initNavigateListItems($itemtype, Domain::getTypeName(2) . " = " . $domain->fields['name']);
 
-               while ($data = $linked_iterator->next()) {
+               foreach ($linked_iterator as $data) {
 
                   $item->getFromDB($data["id"]);
 
@@ -415,7 +413,7 @@ class Domain_Item extends CommonDBRelation {
       $domains = [];
       $domain  = new Domain();
       $used    = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $domains[$data['assocID']] = $data;
          $used[$data['id']]         = $data['id'];
       }
@@ -443,7 +441,7 @@ class Domain_Item extends CommonDBRelation {
             'FROM'   => Domain::getTable(),
             'WHERE'  => ['is_deleted' => 0] + getEntitiesRestrictCriteria(Domain::getTable(), '', $entities, true)
          ]);
-         $result = $domain_iterator->next();
+         $result = $domain_iterator->current();
          $nb     = $result['cpt'];
 
          echo "<div class='firstbloc'>";
@@ -479,7 +477,7 @@ class Domain_Item extends CommonDBRelation {
 
             echo "</td><td class='center' width='20%'>";
             echo "<input type='submit' name='additem' value=\"" .
-                 __('Associate a domain') . "\" class='submit'>";
+                 __('Associate a domain') . "\" class='btn btn-primary'>";
             echo "</td>";
             echo "</tr>";
             echo "</table>";

@@ -144,7 +144,7 @@ class Change_Problem extends CommonDBRelation{
       $changes = [];
       $used    = [];
       $numrows = count($iterator);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $changes[$data['id']] = $data;
          $used[$data['id']]    = $data['id'];
       }
@@ -167,7 +167,7 @@ class Change_Problem extends CommonDBRelation{
             'condition'   => Change::getOpenCriteria(),
          ]);
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td><td>";
          if (Session::haveRight('change', CREATE)) {
             echo "<a href='".Toolbox::getItemTypeFormURL('Change')."?problems_id=$ID'>";
@@ -260,7 +260,7 @@ class Change_Problem extends CommonDBRelation{
       $problems = [];
       $used     = [];
       $numrows = count($iterator);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $problems[$data['id']] = $data;
          $used[$data['id']]     = $data['id'];
       }
@@ -282,7 +282,7 @@ class Change_Problem extends CommonDBRelation{
             'condition' => Problem::getOpenCriteria()
          ]);
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr></table>";
          Html::closeForm();
          echo "</div>";

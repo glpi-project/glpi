@@ -28,7 +28,7 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 /**
  * Represent an IPv4 or an IPv6 address. Both textual (ie. human readable)
@@ -306,7 +306,7 @@ class IPAddress extends CommonDBChild {
                'WHERE'  => [
                   'ipnetworks_id'   => $item->getID()
                ]
-            ])->next();
+            ])->current();
             return $result['cpt'];
       }
    }
@@ -574,7 +574,7 @@ class IPAddress extends CommonDBChild {
          ]);
 
          if (count($iterator) == 1) {
-            $line = $iterator->next();
+            $line = $iterator->current();
             if ($this->getFromDB($line["id"])) {
                return true;
             }
@@ -755,7 +755,7 @@ class IPAddress extends CommonDBChild {
          ]);
 
          if (count($iterator) == 1) {
-            $line = $iterator->next();
+            $line = $iterator->current();
             if ($this->getFromDB($line["id"])) {
                return true;
             }
@@ -927,7 +927,7 @@ class IPAddress extends CommonDBChild {
       }
       $iterator = $DB->request($criteria);
       $addressesWithItems = [];
-      while ($result = $iterator->next()) {
+      foreach ($iterator as $result) {
          if ($address->getFromDB($result['id'])) {
             $addressesWithItems[] = array_merge(array_reverse($address->recursivelyGetItems()),
                                                 [clone $address]);
@@ -1241,7 +1241,7 @@ class IPAddress extends CommonDBChild {
          $networkport = new NetworkPort();
 
          $item = null;
-         while ($line = $iterator->next()) {
+         foreach ($iterator as $line) {
             unset($row);
 
             if (($options['order'] == 'itemtype')
@@ -1328,7 +1328,7 @@ class IPAddress extends CommonDBChild {
          $options['createRow'] = false;
          $address              = new self();
 
-         while ($ipaddress = $iterator->next()) {
+         foreach ($iterator as $ipaddress) {
             if ($address->getFromDB($ipaddress['id'])) {
 
                if ($createRow) {

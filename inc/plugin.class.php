@@ -38,9 +38,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use Psr\SimpleCache\CacheInterface;
-use Glpi\Marketplace\View as MarketplaceView;
+use Glpi\Cache\CacheManager;
 use Glpi\Marketplace\Controller as MarketplaceController;
+use Glpi\Marketplace\View as MarketplaceView;
+use Glpi\Plugin\Hooks;
 
 class Plugin extends CommonDBTM {
 
@@ -145,11 +146,11 @@ class Plugin extends CommonDBTM {
       }
       $mp_icon     = MarketplaceView::getIcon();
       $mp_title    = MarketplaceView::getTypeName();
-      $marketplace = "<i class='$mp_icon pointer' title='$mp_title'></i><span class='sr-only'>$mp_title</span>";
+      $marketplace = "<i class='$mp_icon pointer' title='$mp_title'></i><span class='d-none d-xxl-block'>$mp_title</span>";
 
       $cl_icon     = Plugin::getIcon();
-      $cl_title    = Plugin::getTypeName();
-      $classic     = "<i class='$cl_icon pointer' title='$cl_title'></i><span class='sr-only'>$cl_title</span>";
+      $cl_title    = Plugin::getTypeName(Session::getPluralNumber());
+      $classic     = "<i class='$cl_icon pointer' title='$cl_title'></i><span class='d-none d-xxl-block'>$cl_title</span>";
 
       return [
          $marketplace => MarketplaceView::getSearchURL(false),
@@ -228,7 +229,7 @@ class Plugin extends CommonDBTM {
             }
          }
          // For plugins which require action after all plugin init
-         Plugin::doHook("post_init");
+         Plugin::doHook(Hooks::POST_INIT);
       }
    }
 
@@ -243,8 +244,6 @@ class Plugin extends CommonDBTM {
     * @return void
    **/
    static function load($plugin_key, $withhook = false) {
-      global $LOADED_PLUGINS;
-
       $loaded = false;
       foreach (PLUGINS_DIRECTORIES as $base_dir) {
          if (!is_dir($base_dir)) {
@@ -260,7 +259,6 @@ class Plugin extends CommonDBTM {
                $init_function = "plugin_init_$plugin_key";
                if (function_exists($init_function)) {
                   $init_function();
-                  $LOADED_PLUGINS[$plugin_key] = $plugin_directory;
                   self::loadLang($plugin_key);
                }
             }
@@ -283,18 +281,12 @@ class Plugin extends CommonDBTM {
     * @return void
     */
    private function unload($plugin_key) {
-      global $LOADED_PLUGINS;
-
       if (($key = array_search($plugin_key, self::$activated_plugins)) !== false) {
          unset(self::$activated_plugins[$key]);
       }
 
       if (($key = array_search($plugin_key, self::$loaded_plugins)) !== false) {
          unset(self::$loaded_plugins[$key]);
-      }
-
-      if (isset($LOADED_PLUGINS[$plugin_key])) {
-         unset($LOADED_PLUGINS[$plugin_key]);
       }
    }
 
@@ -360,7 +352,7 @@ class Plugin extends CommonDBTM {
          );
       }
 
-      $plugin_folders = scandir(GLPI_LOCAL_I18N_DIR);
+      $plugin_folders = is_dir(GLPI_LOCAL_I18N_DIR) ? scandir(GLPI_LOCAL_I18N_DIR) : [];
       $plugin_folders = array_filter($plugin_folders, function($dir) use ($plugin_key) {
          if (!is_dir(GLPI_LOCAL_I18N_DIR . "/$dir")) {
             return false;
@@ -622,7 +614,7 @@ class Plugin extends CommonDBTM {
 
          $informations = $this->getInformationsFromDirectory($plugin_directory->getFilename());
          if (array_key_exists('oldname', $informations) && $informations['oldname'] === $oldname) {
-            // Return informations if oldname specified in parsed directory matches passed value
+            // Return information if oldname specified in parsed directory matches passed value
             return [
                'directory'    => $plugin_directory->getFilename(),
                'informations' => $informations,
@@ -728,10 +720,7 @@ class Plugin extends CommonDBTM {
 
       if ($this->getFromDB($ID)) {
          // Clear locale cache to prevent errors while reloading plugin locales
-         $translation_cache = Config::getCache('cache_trans', 'core', true);
-         if ($translation_cache instanceof CacheInterface) {
-            $translation_cache->clear();
-         }
+         (new CacheManager())->getTranslationsCacheInstance()->clear();
 
          self::load($this->fields['directory'], true); // Load plugin hooks
 
@@ -791,8 +780,8 @@ class Plugin extends CommonDBTM {
          self::load($this->fields['directory'], true);
 
          // No activation if not CSRF compliant
-         if (!isset($PLUGIN_HOOKS['csrf_compliant'][$this->fields['directory']])
-             || !$PLUGIN_HOOKS['csrf_compliant'][$this->fields['directory']]) {
+         if (!isset($PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$this->fields['directory']])
+             || !$PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$this->fields['directory']]) {
             Session::addMessageAfterRedirect(
                sprintf(__('Plugin %1$s is not CSRF compliant!'), $this->fields['name']),
                true,
@@ -829,17 +818,17 @@ class Plugin extends CommonDBTM {
                            'state' => self::ACTIVATED]);
 
             // Initialize session for the plugin
-            if (isset($PLUGIN_HOOKS['init_session'][$this->fields['directory']])
-                && is_callable($PLUGIN_HOOKS['init_session'][$this->fields['directory']])) {
+            if (isset($PLUGIN_HOOKS[Hooks::INIT_SESSION][$this->fields['directory']])
+                && is_callable($PLUGIN_HOOKS[Hooks::INIT_SESSION][$this->fields['directory']])) {
 
-               call_user_func($PLUGIN_HOOKS['init_session'][$this->fields['directory']]);
+               call_user_func($PLUGIN_HOOKS[Hooks::INIT_SESSION][$this->fields['directory']]);
             }
 
             // Initialize profile for the plugin
-            if (isset($PLUGIN_HOOKS['change_profile'][$this->fields['directory']])
-                && is_callable($PLUGIN_HOOKS['change_profile'][$this->fields['directory']])) {
+            if (isset($PLUGIN_HOOKS[Hooks::CHANGE_PROFILE][$this->fields['directory']])
+                && is_callable($PLUGIN_HOOKS[Hooks::CHANGE_PROFILE][$this->fields['directory']])) {
 
-               call_user_func($PLUGIN_HOOKS['change_profile'][$this->fields['directory']]);
+               call_user_func($PLUGIN_HOOKS[Hooks::CHANGE_PROFILE][$this->fields['directory']]);
             }
             // reset menu
             if (isset($_SESSION['glpimenu'])) {
@@ -1120,7 +1109,7 @@ class Plugin extends CommonDBTM {
       );
 
       //Add plugins types
-      $typetoname = self::doHookFunction("migratetypes", $typetoname);
+      $typetoname = self::doHookFunction(Hooks::MIGRATE_TYPES, $typetoname);
 
       foreach ($types as $num => $name) {
          $typetoname[$num] = $name;
@@ -1244,8 +1233,8 @@ class Plugin extends CommonDBTM {
       $plug     = new Plugin();
       $pluglist = $plug->find([], "name, directory");
       foreach ($pluglist as $plugin) {
-         $name = Html::clean($plugin['name']);
-         $version = Html::clean($plugin['version']);
+         $name = Toolbox::stripTags($plugin['name']);
+         $version = Toolbox::stripTags($plugin['version']);
 
          $msg  = substr(str_pad($plugin['directory'], 30), 0, 20).
                  " Name: ".Toolbox::substr(str_pad($name, 40), 0, 30).
@@ -1281,26 +1270,6 @@ class Plugin extends CommonDBTM {
       $all_types = preg_grep('/.+_types/', array_keys($CFG_GLPI));
       $all_types[] = 'networkport_instantiations';
 
-      $mapping = [
-         'doc_types'       => 'document_types',
-         'helpdesk_types'  => 'ticket_types',
-         'netport_types'   => 'networkport_types'
-      ];
-
-      foreach ($mapping as $orig => $fixed) {
-         if (isset($attrib[$orig])) {
-            \Toolbox::deprecated(
-               sprintf(
-                  '%1$s type is deprecated, use %2$s instead.',
-                  $orig,
-                  $fixed
-               )
-            );
-            $attrib[$fixed] = $attrib[$orig];
-            unset($attrib[$orig]);
-         }
-      }
-
       $blacklist = ['device_types'];
       foreach ($all_types as $att) {
          if (!in_array($att, $blacklist) && isset($attrib[$att]) && $attrib[$att]) {
@@ -1315,7 +1284,7 @@ class Plugin extends CommonDBTM {
          if (class_exists($itemtype::getItem_DeviceType())) {
             $CFG_GLPI['device_types'][] = $itemtype;
          }
-         unset($attrib[$att]);
+         unset($attrib['device_types']);
       }
 
       if (isset($attrib['addtabon'])) {
@@ -1325,11 +1294,38 @@ class Plugin extends CommonDBTM {
          foreach ($attrib['addtabon'] as $form) {
             CommonGLPI::registerStandardTab($form, $itemtype);
          }
+         unset($attrib['addtabon']);
       }
 
       //Manage entity forward from a source itemtype to this itemtype
       if (isset($attrib['forwardentityfrom'])) {
          CommonDBTM::addForwardEntity($attrib['forwardentityfrom'], $itemtype);
+         unset($attrib['forwardentityfrom']);
+      }
+
+      // Handle plugins specific configurations
+      foreach ($attrib as $key => $value) {
+         if (preg_match('/^plugin[a-z]+_types$/', $key)) {
+            if ($value) {
+               if (!array_key_exists($key, $CFG_GLPI)) {
+                  $CFG_GLPI[$key] = [];
+               }
+               $CFG_GLPI[$key][] = $itemtype;
+            }
+            unset($attrib[$key]);
+         }
+      }
+
+      // Warn for unmanaged keys
+      if (!empty($attrib)) {
+         trigger_error(
+            sprintf(
+               'Unknown attributes "%s" used in "%s" class registration',
+               implode('", "', array_keys($attrib)),
+               $itemtype
+            ),
+            E_USER_WARNING
+         );
       }
 
       return true;
@@ -1790,7 +1786,7 @@ class Plugin extends CommonDBTM {
     */
    public function checkGlpiVersion($infos) {
       if (!isset($infos['min']) && !isset($infos['max'])) {
-         throw new LogicException('Either "min" or "max" is required for GLPI requirements!');
+         throw new \LogicException('Either "min" or "max" is required for GLPI requirements!');
       }
 
       $glpiVersion = $this->isGlpiPrever() ? $this->getGlpiPrever() : $this->getGlpiVersion();
@@ -1836,7 +1832,7 @@ class Plugin extends CommonDBTM {
       } else if (isset($infos['max'])) {
          $compat = !(version_compare($this->getPhpVersion(), $infos['max'], 'ge'));
       } else {
-         throw new LogicException('Either "min" or "max" is required for PHP requirements!');
+         throw new \LogicException('Either "min" or "max" is required for PHP requirements!');
       }
 
       if (!$compat) {
@@ -2094,59 +2090,6 @@ class Plugin extends CommonDBTM {
       return $plugin->isActivated($plugin_key);
    }
 
-   /**
-    * Set plugin loaded
-    *
-    * @since 9.3.2
-    * @deprecated 9.5.0
-    *
-    * @param integer $id   Plugin id
-    * @param string  $name Plugin name
-    *
-    * @return void
-    */
-   public static function setLoaded($id, $name) {
-      Toolbox::deprecated();
-      if (!in_array($name, self::$loaded_plugins)) {
-         self::$loaded_plugins[] = $name;
-      }
-   }
-
-   /**
-    * Set plugin unloaded
-    *
-    * @since 9.3.2
-    * @deprecated 9.5.0
-    *
-    * @param integer $id Plugin id
-    *
-    * @return void
-    */
-   public static function setUnloaded($id) {
-      Toolbox::deprecated();
-
-      $plugin = new self();
-      $plugin->getFromDB($id);
-      $plugin->unload($plugin->fields['directory']);
-   }
-
-   /**
-    * Set plugin unloaded from its name
-    *
-    * @since 9.3.2
-    * @deprecated 9.5.0
-    *
-    * @param integer $name System name (Plugin directory)
-    *
-    * @return void
-    */
-   public static function setUnloadedByName($name) {
-      Toolbox::deprecated();
-
-      $plugin = new self();
-      $plugin->unload($name);
-   }
-
    function rawSearchOptions() {
       $tab = [];
 
@@ -2291,8 +2234,8 @@ class Plugin extends CommonDBTM {
                }
                ob_end_clean();
                $function = 'plugin_' . $directory . '_check_prerequisites';
-               if (!isset($PLUGIN_HOOKS['csrf_compliant'][$directory])
-                   || !$PLUGIN_HOOKS['csrf_compliant'][$directory]) {
+               if (!isset($PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$directory])
+                   || !$PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$directory]) {
                   $output .= "<span class='error'>" . __('Not CSRF compliant') . "</span>";
                   $do_activate = false;
                } else if (function_exists($function) && $do_activate) {
@@ -2403,7 +2346,7 @@ class Plugin extends CommonDBTM {
             return "&nbsp;";
             break;
          case 'name':
-            $value = Html::clean($values[$field]);
+            $value = Toolbox::stripTags($values[$field]);
             $state = $values['state'];
             $directory = $values['directory'];
             self::load($directory); // Load plugin to give it ability to define its config_page hook
@@ -2418,11 +2361,9 @@ class Plugin extends CommonDBTM {
             }
             break;
          case 'author':
-            return $value = Html::clean($values[$field], false);
-            break;
          case 'license':
          case 'version':
-            return $value = Html::clean($values[$field]);
+            return $value = Toolbox::stripTags($values[$field]);
             break;
       }
 
@@ -2518,5 +2459,158 @@ class Plugin extends CommonDBTM {
 
    static function getIcon() {
       return "fas fa-puzzle-piece";
+   }
+
+   function getSpecificMassiveActions($checkitem = null) {
+
+      $actions = [];
+
+      if (Session::getCurrentInterface() === 'central' && Config::canUpdate()) {
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'install']
+            = "<i class='fas fa-code-branch'></i>".
+            __('Install');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'uninstall']
+            = "<i class='fas fa-code-branch'></i>".
+            __('Uninstall');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'enable']
+            = "<i class='fas fa-code-branch'></i>".
+            __('Enable');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'disable']
+            = "<i class='fas fa-code-branch'></i>".
+            __('Disable');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'clean']
+            = "<i class='fas fa-broom'></i>".
+            __('Clean');
+      }
+
+      $actions += parent::getSpecificMassiveActions($checkitem);
+
+      return $actions;
+   }
+
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+      switch ($ma->getAction()) {
+         case 'install' :
+            echo "<table class='mx-auto'><tr>";
+            echo "<td colspan='4'>";
+            echo Html::submit(_x('button', 'Install'), [
+               'name'      => 'install',
+            ]);
+            echo "</td></tr></table>";
+            return true;
+         case 'uninstall' :
+            echo "<table class='mx-auto'><tr>";
+            echo "<td>".__('This will only affect plugins already installed')."</td><td colspan='3'>";
+            echo Html::submit(_x('button', 'Uninstall'), [
+               'name'      => 'uninstall',
+            ]);
+            echo "</td></tr></table>";
+            return true;
+         case 'enable' :
+            echo "<table class='mx-auto'><tr>";
+            echo "<td>".__('This will only affect plugins already installed')."</td><td colspan='3'>";
+            echo Html::submit(_x('button', 'Enable'), [
+               'name'      => 'enable',
+            ]);
+            echo "</td></tr></table>";
+            return true;
+         case 'disable' :
+            echo "<table class='mx-auto'><tr>";
+            echo "<td>".__('This will only affect plugins already enabled')."</td><td colspan='3'>";
+            echo Html::submit(_x('button', 'Disable'), [
+               'name'      => 'disable',
+            ]);
+            echo "</td></tr></table>";
+            return true;
+         case 'clean':
+            echo "<table class='mx-auto'><tr>";
+            echo "<td>".__('This will only affect plugins ready to be cleaned')."</td><td colspan='3'>";
+            echo Html::submit(_x('button', 'Clean'), [
+               'name'      => 'clean',
+            ]);
+            echo "</td></tr></table>";
+            return true;
+      }
+      return parent::showMassiveActionsSubForm($ma);
+   }
+
+
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+      $plugin = new self();
+      switch ($ma->getAction()) {
+         case 'install' :
+            foreach ($ids as $id) {
+               $plugin->getFromDB($id);
+               if (!$plugin->isInstalled($plugin->fields['directory'])) {
+                  $plugin->install($id);
+                  if ($plugin->isInstalled($plugin->fields['directory'])) {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+               }
+            }
+            return;
+         case 'uninstall' :
+            foreach ($ids as $id) {
+               $plugin->getFromDB($id);
+               if ($plugin->isInstalled($plugin->fields['directory'])) {
+                  $plugin->uninstall($id);
+                  if (!$plugin->isInstalled($plugin->fields['directory'])) {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+               }
+            }
+            return;
+         case 'enable' :
+            foreach ($ids as $id) {
+               $plugin->getFromDB($id);
+               if ($plugin->isInstalled($plugin->fields['directory']) && !$plugin->isActivated($plugin->fields['directory'])) {
+                  $plugin->activate($id);
+                  if ($plugin->isActivated($plugin->fields['directory'])) {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+               }
+            }
+            return;
+         case 'disable' :
+            foreach ($ids as $id) {
+               $plugin->getFromDB($id);
+               if ($plugin->isActivated($plugin->fields['directory'])) {
+                  $plugin->unactivate($id);
+                  if (!$plugin->isActivated($plugin->fields['directory'])) {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+               }
+            }
+            return;
+         case 'clean':
+            foreach ($ids as $id) {
+               $plugin->getFromDB($id);
+               if (!$plugin->isLoadable($plugin->fields['directory'])) {
+                  $plugin->clean($id);
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+               }
+            }
+            return;
+      }
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 }

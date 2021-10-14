@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
+
 if (!defined('GLPI_ROOT')) {
    define('GLPI_ROOT', dirname(__DIR__));
 }
@@ -61,7 +63,6 @@ if (isset($_SESSION['glpi_use_mode'])
       'errors'  => [],
       'times'   => [],
    ];
-   $DEBUG_AUTOLOAD       = [];
 }
 
 // Security system
@@ -70,21 +71,20 @@ if (isset($_POST)) {
    if (isset($_POST['_glpi_simple_form'])) {
       $_POST = array_map('urldecode', $_POST);
    }
-   $_POST = Toolbox::sanitize($_POST);
+   $_POST = Sanitizer::sanitize($_POST, true);
 }
 if (isset($_GET)) {
    $_UGET = $_GET; //keep raw, as a workaround
-   $_GET  = Toolbox::sanitize($_GET);
+   $_GET  = Sanitizer::sanitize($_GET, true);
 }
 if (isset($_REQUEST)) {
    $_UREQUEST = $_REQUEST; //keep raw, as a workaround
-   $_REQUEST  = Toolbox::sanitize($_REQUEST);
+   $_REQUEST  = Sanitizer::sanitize($_REQUEST, true);
 }
 if (isset($_FILES)) {
    $_UFILES = $_FILES; //keep raw, as a workaround
    foreach ($_FILES as &$file) {
-      $file['name'] = Toolbox::addslashes_deep($file['name']);
-      $file['name'] = Toolbox::clean_cross_side_scripting_deep($file['name']);
+      $file['name'] = Sanitizer::sanitize($file['name'], true);
    }
 }
 unset($file);
@@ -101,8 +101,7 @@ if (!isset($PLUGINS_INCLUDED)) {
    // PLugin already included
    $PLUGINS_INCLUDED = 1;
    $PLUGINS_EXCLUDED = isset($PLUGINS_EXCLUDED) ? $PLUGINS_EXCLUDED : [];
-   $LOADED_PLUGINS   = [];
-   $plugin           = new Plugin();
+   $plugin = new Plugin();
    $plugin->init(true, $PLUGINS_EXCLUDED);
 }
 
@@ -147,8 +146,14 @@ if (!defined('DO_NOT_CHECK_HTTP_REFERER')
 if (GLPI_USE_CSRF_CHECK
     && !isAPI()
     && isset($_POST) && is_array($_POST) && count($_POST)) {
-   // No ajax pages
-   if (!preg_match(':'.$CFG_GLPI['root_doc'].'(/(plugins|marketplace)/[^/]*|)/ajax/:', $_SERVER['REQUEST_URI'])) {
+   if (preg_match(':'.$CFG_GLPI['root_doc'].'(/(plugins|marketplace)/[^/]*|)/ajax/:', $_SERVER['REQUEST_URI']) === 1) {
+      // Keep CSRF token as many AJAX requests may be made at the same time.
+      // This is due to the fact that read operations are often made using POST method (see #277).
+      define('GLPI_KEEP_CSRF_TOKEN', true);
+
+      // For AJAX requests, check CSRF token located into "X-Glpi-Csrf-Token" header.
+      Session::checkCSRF(['_glpi_csrf_token' => $_SERVER['HTTP_X_GLPI_CSRF_TOKEN'] ?? '']);
+   } else {
       Session::checkCSRF($_POST);
    }
 }

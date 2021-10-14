@@ -76,7 +76,7 @@ class DeleteOrphanLogsCommand extends AbstractCommand {
             $input,
             $output,
             new ConfirmationQuestion(
-               '<comment>' . __('Do you want to launch operation ?') . ' [yes/No]</comment>',
+               '<comment>' . __('Do you want to launch operation?') . ' [yes/No]</comment>',
                false
             )
          );
@@ -93,7 +93,7 @@ class DeleteOrphanLogsCommand extends AbstractCommand {
       $listTable = $this->db->listTables();
       $dry_run = $input->getOption('dry-run');
 
-      while ($table = $listTable->next()) {
+      foreach ($listTable as $table) {
          $tablename = $table['TABLE_NAME'];
 
          $itemtype = getItemTypeForTable($tablename);

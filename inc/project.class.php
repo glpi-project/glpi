@@ -34,6 +34,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Plugin\Hooks;
+use Glpi\Toolbox\RichText;
+
 /**
  * Project Class
  *
@@ -240,8 +244,15 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       $links = [];
       if (static::canView()
           || Session::haveRight('projecttask', ProjectTask::READMY)) {
-         $pic_validate = "<img title=\"".__s('My tasks')."\" alt=\"".__('My tasks')."\" src='".
-                           $CFG_GLPI["root_doc"]."/pics/menu_showall.png' class='pointer'>";
+         $pic_validate = '
+            <span class="fa-stack" title="'.__('My tasks').'">
+               <i class="fas fa-check fa-stack-1x" style="left: -7px; font-size: 1.2em"></i>
+               <i class="far fa-clock fa-stack-1x" style="top: 4px; left: -3px"></i>
+            </span>
+            <span class="d-none d-xxl-block">
+               '.__('My tasks').'
+            </span>
+         ';
 
          $links[$pic_validate] = ProjectTask::getSearchURL(false);
 
@@ -495,7 +506,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
          'forcegroupby'       => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -514,7 +524,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          'name'               => __('Code'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -525,7 +534,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
          'joinparams'         => [
-            'condition'          => 'AND 1=1'
+            'condition'       => [new QueryExpression('1=1')]
          ]
       ];
 
@@ -559,7 +568,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          'id'                 => '12',
          'table'              => 'glpi_projectstates',
          'field'              => 'name',
-         'name'               => __('State'),
+         'name'               => _n('State', 'States', 1),
          'datatype'           => 'dropdown',
          'additionalfields'   => ['color'],
       ];
@@ -693,7 +702,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          'massiveaction'      => false,
          'nosearch'           => true,
          'nodisplay'          => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -733,7 +741,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          'joinparams'         => [
             'jointype'           => 'child',
             'specific_itemtype'  => 'ProjectCost',
-            'condition'          => 'AND NEWTABLE.`projects_id` = REFTABLE.`id`',
+            'condition'          => ['NEWTABLE.projects_id' => new QueryExpression($DB->quoteName('REFTABLE.id'))],
             'beforejoin'         => [
                'table'        => $this->getTable(),
                'joinparams'   => [
@@ -928,8 +936,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       $tab[] = [
          'id'                 => '115',
          'table'              => ProjectTask::getTable(),
-         'field'              => 'date',
-         'name'               => __('Opening date'),
+         'field'              => 'date_creation',
+         'name'               => __('Creation date'),
          'datatype'           => 'datetime',
          'massiveaction'      => false,
          'forcegroupby'       => true,
@@ -1207,7 +1215,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                'FROM'   => 'glpi_projectstates',
                'WHERE'  => ['id' => $item->fields['projectstates_id']]
             ]);
-            while ($colorrow = $iterator->next()) {
+            foreach ($iterator as $colorrow) {
                $color = $colorrow['color'];
             }
             $first_col = Dropdown::getDropdownName('glpi_projectstates', $item->fields["projectstates_id"]);
@@ -1395,7 +1403,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                                                  $this->fields["name"]));
 
          $i = 0;
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             Session::addToNavigateListItems('Project', $data["id"]);
             Project::showShort($data['id'], ['row_num' => $i]);
             $i++;
@@ -1443,11 +1451,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, 'name');
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
       echo "<td>".__('Code')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, 'code');
+      echo Html::input('code', ['value' => $this->fields['code']]);
       echo "</td>";
       echo "</tr>";
 
@@ -1493,7 +1501,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          $auto_percent_done_params['checked'] = 'checked';
       }
       Html::showCheckbox($auto_percent_done_params);
-      echo "<span class='very_small_space'>";
+      echo "<span class='ms-3'>";
       Html::showToolTip(__('When automatic computation is active, percentage is computed based on the average of all child project and task percent done.'));
       echo "</span></td>";
       echo "</tr>";
@@ -1661,7 +1669,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          echo "</td>";
          echo "<td width='20%'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\"
-               class='submit'>";
+               class='btn btn-primary'>";
          echo "</td>";
          echo "</tr>";
          echo "</table>";
@@ -1827,135 +1835,14 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       return $todisplay;
    }
 
-
-   /** show GANTT diagram for a project or for all
-    *
-   * @param $ID ID of the project or -1 for all projects
+   /**
+     * Show GANTT diagram for a project
+     * @param $ID ID of the project
    */
    static function showGantt($ID) {
-      global $DB;
-
-      if ($ID > 0) {
-         $project = new Project();
-         if ($project->getFromDB($ID) && $project->canView()) {
-            $todisplay = static::getDataToDisplayOnGantt($ID);
-         } else {
-            return false;
-         }
-      } else {
-         $todisplay = [];
-         // Get all root projects
-         $iterator = $DB->request([
-            'FROM'   => 'glpi_projects',
-            'WHERE'  => [
-               'projects_id'           => 0,
-               'show_on_global_gantt'  => 1,
-               'is_template'           => 0
-            ] + getEntitiesRestrictCriteria('glpi_projects', '', '', true)
-         ]);
-         while ($data = $iterator->next()) {
-            $todisplay += static::getDataToDisplayOnGantt($data['id'], false);
-         }
-         ksort($todisplay);
-      }
-
-      $data    = [];
-      $invalid = [];
-      if (count($todisplay)) {
-
-         // Prepare for display
-         foreach ($todisplay as $val) {
-            if (!empty($val['from']) && !empty($val['to'])) {
-               $temp  = [];
-               $color = 'ganttRed';
-               if ($val['percent'] > 50) {
-                  $color = 'ganttOrange';
-               }
-               if ($val['percent'] == 100) {
-                  $color = 'ganttGreen';
-               }
-               switch ($val['type']) {
-                  case 'project' :
-                     $temp = ['name'   => $val['link'],
-                                   'desc'   => '',
-                                   'values' => [['from'
-                                                            => "/Date(".strtotime($val['from'])."000)/",
-                                                           'to'
-                                                            => "/Date(".strtotime($val['to'])."000)/",
-                                                           'desc'
-                                                            => $val['desc'],
-                                                         'label'
-                                                            => $val['percent']."%",
-                                                         'customClass'
-                                                            => $color]]
-                                 ];
-                     break;
-
-                  case 'task' :
-                     if (isset($val['is_milestone']) && $val['is_milestone']) {
-                        $color = 'ganttMilestone';
-                     }
-                     $temp = ['name'   => ' ',
-                                   'desc'   => str_repeat('-', $val['parents']).$val['link'],
-                                   'values' => [['from'
-                                                            => "/Date(".strtotime($val['from'])."000)/",
-                                                           'to'
-                                                            => "/Date(".strtotime($val['to'])."000)/",
-                                                           'desc'
-                                                            => $val['desc'],
-                                                           'label'
-                                                            => strlen($val['percent']==0)?'':$val['percent']."%",
-                                                           'customClass'
-                                                            => $color]]
-                                 ];
-                     break;
-               }
-               $data[] = $temp;
-            } else {
-               $invalid[] = $val['link'];
-            }
-         }
-         // Html::printCleanArray($data);
-      }
-
-      if (count($invalid)) {
-         echo sprintf(__('Invalid items (no start or end date): %s'), implode(',', $invalid));
-         echo "<br><br>";
-      }
-
-      if (count($data)) {
-         $months = [__('January'), __('February'), __('March'), __('April'), __('May'),
-                         __('June'), __('July'), __('August'), __('September'),
-                         __('October'), __('November'), __('December')];
-
-         $dow    = [Toolbox::substr(__('Sunday'), 0, 1), Toolbox::substr(__('Monday'), 0, 1),
-                         Toolbox::substr(__('Tuesday'), 0, 1), Toolbox::substr(__('Wednesday'), 0, 1),
-                         Toolbox::substr(__('Thursday'), 0, 1), Toolbox::substr(__('Friday'), 0, 1),
-                         Toolbox::substr(__('Saturday'), 0, 1)
-                     ];
-
-         echo "<div class='gantt'></div>";
-         $js = "
-                           $(function() {
-                              $('.gantt').gantt({
-                                    source: ".json_encode($data).",
-                                    navigate: 'scroll',
-                                    maxScale: 'months',
-                                    itemsPerPage: 20,
-                                    months: ".json_encode($months).",
-                                    dow: ".json_encode($dow).",
-                                    onItemClick: function(data) {
-                                    //    alert('Item clicked - show some details');
-                                    },
-                                    onAddClick: function(dt, rowId) {
-                                    //    alert('Empty space clicked - add an item!');
-                                    },
-                              });
-                           });";
-         echo Html::scriptBlock($js);
-      } else {
-         echo __('No item to display');
-      }
+      TemplateRenderer::getInstance()->display('pages/tools/project/gantt.html.twig', [
+         'id' => $ID,
+      ]);
    }
 
    static function getAllForKanban($active = true, $current_id = -1) {
@@ -1997,7 +1884,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          'LEFT JOIN' => $joins,
          'WHERE'     => $criteria
          ], self::getVisibilityCriteria()));
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $items[$data['id']] = $data['name'];
       }
 
@@ -2012,7 +1899,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
             'WHERE'     => ['id' => $current_id]
          ]);
          if ($iterator->count()) {
-            $data = $iterator->next();
+            $data = $iterator->current();
             $items[$data['id']] = $data['name'];
          }
       }
@@ -2030,8 +1917,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          $allstates = $projectstate->find($restrict, ['is_finished ASC', 'id']);
          foreach ($allstates as $state) {
             $columns['projectstates_id'][$state['id']] = [
-               'name'         => $state['name'],
-               'header_color' => $state['color']
+               'name'            => $state['name'],
+               'header_color'    => $state['color'],
+               'header_fg_color' => Toolbox::getFgColor($state['color'], 50),
             ];
          }
          return $columns['projectstates_id'];
@@ -2041,7 +1929,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
    }
 
    static function getDataToDisplayOnKanban($ID, $criteria = []) {
-      global $DB;
+      global $DB, $CFG_GLPI;
 
       $items      = [];
 
@@ -2064,7 +1952,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                ]
             ]
          ] + $project_visibility['LEFT JOIN'],
-         'WHERE'     => $project_visibility['WHERE']
+         'WHERE'     => $project_visibility['WHERE'],
       ];
       if ($ID > 0) {
          $request['WHERE']['glpi_projects.projects_id'] = $ID;
@@ -2073,7 +1961,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
 
       $iterator = $DB->request($request);
       $projects = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $projects[$data['id']] = $data;
       }
       $project_ids = array_map(function($e) {
@@ -2124,7 +2012,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                ]
             ]);
             $all_members[$itemtype] = [];
-            while ($data = $all_items->next()) {
+            foreach ($all_items as $data) {
                $all_members[$itemtype][] = $data;
             }
          } else {
@@ -2269,12 +2157,14 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          }
          $itemtype = $item['_itemtype'];
          $card = [
-            'id'        => "{$itemtype}-{$item['id']}",
-            'title'     => Html::link($item['name'], $itemtype::getFormURLWithID($item['id']))
+            'id'              => "{$itemtype}-{$item['id']}",
+            'title'           => '<span class="pointer">'.$item['name'].'</span>',
+            'title_tooltip'   => Html::resume_text(RichText::getTextFromHtml($item['content'] ?? "", false, true, true), 100),
+            'is_deleted'      => $item['is_deleted'] ?? false,
          ];
 
          $content = "<div class='kanban-plugin-content'>";
-         $plugin_content_pre = Plugin::doHookFunction('pre_kanban_content', [
+         $plugin_content_pre = Plugin::doHookFunction(Hooks::PRE_KANBAN_CONTENT, [
             'itemtype' => $itemtype,
             'items_id' => $item['id'],
          ]);
@@ -2316,7 +2206,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
 
          $content .= "</div>";
          $content .= "<div class='kanban-plugin-content'>";
-         $plugin_content_post = Plugin::doHookFunction('post_kanban_content', [
+         $plugin_content_post = Plugin::doHookFunction(Hooks::POST_KANBAN_CONTENT, [
             'itemtype' => $itemtype,
             'items_id' => $item['id'],
          ]);
@@ -2328,6 +2218,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          $card['content'] = $content;
          $card['_team'] = $item['_team'];
          $card['_readonly'] = $item['_readonly'];
+         $card['_form_link'] = $itemtype::getFormUrlWithID($item['id']);
          $columns[$item['projectstates_id']]['items'][] = $card;
       }
 
@@ -2368,7 +2259,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       $supported_itemtypes = [];
       if (Project::canCreate()) {
          $supported_itemtypes['Project'] = [
-            'name' => Project::getTypeName(1),
+            'name'   => Project::getTypeName(1),
+            'icon'   => Project::getIcon(),
             'fields' => [
                'projects_id'  => [
                   'type'   => 'hidden',
@@ -2399,7 +2291,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
 
       if (ProjectTask::canCreate()) {
          $supported_itemtypes['ProjectTask'] = [
-            'name' => ProjectTask::getTypeName(1),
+            'name'   => ProjectTask::getTypeName(1),
+            'icon'   => ProjectTask::getIcon(),
             'fields' => [
                'projects_id'  => [
                   'type'   => 'hidden',
@@ -2445,42 +2338,28 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
             ]
          ]
       ];
-      $supported_itemtypes = json_encode($supported_itemtypes, JSON_FORCE_OBJECT);
-      $column_field = json_encode($column_field, JSON_FORCE_OBJECT);
 
-      echo "<div id='kanban' class='kanban'></div>";
-      $darkmode = ($_SESSION['glpipalette'] === 'darker') ? 'true' : 'false';
-      $canadd_item = json_encode($ID > 0 ? $project->canEdit($ID) && $project->can($ID, UPDATE) : self::canCreate() || ProjectTask::canCreate());
-      $canmodify_view = json_encode(($ID == 0 || $project->canModifyGlobalState()));
-      $cancreate_column = json_encode((bool)ProjectState::canCreate());
-      $limit_addcard_columns = $canmodify_view !== 'false' ? '[]' : json_encode([0]);
-      $can_order_item = json_encode((bool)$project->canOrderKanbanCard($ID));
+      $canmodify_view = ($ID == 0 || $project->canModifyGlobalState());
+      $rights = [
+         'create_item'                    => self::canCreate() || ProjectTask::canCreate(),
+         'delete_item'                    => self::canDelete() || ProjectTask::canDelete(),
+         'create_column'                  => (bool)ProjectState::canCreate(),
+         'modify_view'                    => $ID == 0 || $project->canModifyGlobalState(),
+         'order_card'                     => (bool)$project->canOrderKanbanCard($ID),
+         'create_card_limited_columns'    => $canmodify_view ? [] : [0]
+      ];
 
-      $js = <<<JAVASCRIPT
-         $(function(){
-            // Create Kanban
-            var kanban = new GLPIKanban({
-               element: "#kanban",
-               allow_add_item: $canadd_item,
-               allow_modify_view: $canmodify_view,
-               allow_create_column: $cancreate_column,
-               limit_addcard_columns: $limit_addcard_columns,
-               allow_order_card: $can_order_item,
-               supported_itemtypes: $supported_itemtypes,
-               dark_theme: {$darkmode},
-               max_team_images: 3,
-               column_field: $column_field,
-               background_refresh_interval: {$_SESSION['glpirefresh_views']},
-               item: {
-                  itemtype: 'Project',
-                  items_id: $ID
-               }
-            });
-            // Create kanban elements and add data
-            kanban.init();
-         });
-JAVASCRIPT;
-      echo Html::scriptBlock($js);
+      TemplateRenderer::getInstance()->display('components/kanban/kanban.html.twig', [
+         'kanban_id'                   => 'kanban',
+         'rights'                      => $rights,
+         'supported_itemtypes'         => $supported_itemtypes,
+         'max_team_images'             => 3,
+         'column_field'                => $column_field,
+         'item'                        => [
+            'itemtype'  => 'Project',
+            'items_id'  => $ID
+         ]
+      ]);
    }
 
    public function canOrderKanbanCard($ID) {
@@ -2540,7 +2419,7 @@ JAVASCRIPT;
       ]);
 
       if ($iterator->count()) {
-         $avg = $iterator->next()['percent_done'];
+         $avg = $iterator->current()['percent_done'];
          $percent_done = is_null($avg) ? 0 : $avg;
       } else {
          $percent_done = 0;

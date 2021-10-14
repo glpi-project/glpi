@@ -131,6 +131,8 @@ class Notification extends CommonDBTM {
    const TASK_ASSIGN_GROUP                   = 37;
    //Notification to planning event's guests
    const PLANNING_EVENT_GUESTS               = 38;
+   //Notification to the mentionned user
+   const MENTIONNED_USER                     = 39;
 
    // From CommonDBTM
    public $dohistory = true;
@@ -200,11 +202,11 @@ class Notification extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
 
       echo "<td rowspan='4' class='middle right'>".__('Comments')."</td>";
-      echo "<td class='center middle' rowspan='4'><textarea cols='45' rows='9' name='comment' >".
+      echo "<td class='center middle' rowspan='4'><textarea class='form-control' rows='9' name='comment' >".
              $this->fields["comment"]."</textarea></td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . __('Active') . "</td>";
@@ -340,7 +342,6 @@ class Notification extends CommonDBTM {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

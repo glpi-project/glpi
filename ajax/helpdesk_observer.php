@@ -28,7 +28,7 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 $AJAX_INCLUDE = 1;
 include ("../inc/includes.php");

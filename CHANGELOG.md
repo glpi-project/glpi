@@ -3,9 +3,222 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [9.5.6] unreleased
+## [10.0.0] unreleased
+
+### Added
+- Added UUID to all other itemtypes that are related to Operating Systems (Phones, Printers, etc)
+
+### Changed
+- APCu and WinCache are not anymore use by GLPI, use `php bin/console cache:configure` command to configure cache system.
+- PDF export library has been changed from `TCPDF` to `mPDF`.
+- The search engine and search results page now support sorting by multiple fields.
+- The search result lists now refresh/update without triggering a full page reload.
+
+### Deprecated
+- Usage of XML-RPC API is deprecated.
+
+### Removed
+- Autocomplete feature on text fields.
+- Usage of alternative DB connection encoding (`DB::$dbenc` property).
 
 ### API changes
+
+#### Added
+- Added `DBMysql::setSavepoint` to create savepoints within a transaction.
+- Added `CommonDBTM::showForm` to have a generic showForm for asset (based on a twig template).
+
+#### Changes
+- `DBmysqlIterator` class compliancy with `Iterator` has been fixed (i.e. `DBmysqlIterator::next()` does not return current row anymore).
+- Format of `Message-Id` header sent in Tickets notifications changed to match format used by other items.
+- Added `DB::truncate()` to replace raw SQL queries
+- Impact context `positions` field type changed from `TEXT` to `MEDIUMTEXT`
+- Field `date` of KnowbaseItem has been renamed to `date_creation`.
+- Field `date_creation` of KnowbaseItem_Revision has been renamed to `date`.
+- Field `date_creation` of NetworkPortConnectionLog has been renamed to `date`.
+- Field `date_creation` of NetworkPortMetrics has been renamed to `date`.
+- Field `date` of Notepad has been renamed to `date_creation`.
+- Field `date_mod` of ObjectLock has been renamed to `date`.
+- Field `date_creation` of PrinterLog has been renamed to `date`.
+- Field `date` of ProjectTask has been renamed to `date_creation`.
+- Table `glpi_netpoints` has been renamed to `glpi_sockets`.
+- `GLPI_FORCE_EMPTY_SQL_MODE` constant has been removed in favor of `GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE` usage.
+- `CommonDBTM::clone()`, `CommonDBTM::prepareInputForClone()` and `CommonDBTM::post_clone()` has been removed. Clonable objects must now use `Glpi\Features\Clonable` trait.
+- `CommonDBTM::notificationqueueonaction` property has been removed in favor of `CommonDBTM::deduplicate_queued_notifications` property.
+- `CommonDropdown::displaySpecificTypeField()` has a new `$options` parameter.
+- `DBMysql::rollBack` supports a `name` parameter for rolling back to a savepoint.
+- `Knowbase::getJstreeCategoryList()` as been replaced by `Knowbase::getTreeCategoryList()`.
+- `NetworkPortInstantiation::showNetpointField()` has been renamed to `NetworkPortInstantiation::showSocketField()`.
+- `NotificationSettingConfig::showForm()` renamed to `NotificationSettingConfig::showConfigForm()`.
+- `RuleMatchedLog::showForm()` renamed to `RuleMatchedLog::showItemForm()`.
+- `Search::addOrderBy()` signature changed.
+- `TicketSatisfaction::showForm()` renamed to `TicketSatisfaction::showSatisfactionForm()`.
+- `Transfer::transferDropdownNetpoint()` has been renamed to `Transfer::transferDropdownSocket()`.
+
+#### Deprecated
+- `Netpoint` has been deprecated and replaced by `Socket`
+- `Html::clean()`
+- `RuleImportComputer` class
+- `RuleImportComputerCollection` class
+- `Toolbox::clean_cross_side_scripting_deep()`
+- `Toolbox::getHtmlToDisplay()`
+- `Toolbox::unclean_cross_side_scripting_deep()`
+
+#### Removed
+- jQueryUI has been partially removed and remaining widgets will be removed in a near future.
+- Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
+- Usage of `table` parameter in requests made to `ajax/comments.php`
+- Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
+- Support of `doc_types`, `helpdesk_types` and `netport_types` keys in `Plugin::registerClass()`
+- `$CFG_GLPI['layout_excluded_pages']` entry
+- `$CFG_GLPI['use_ajax_autocompletion']` entry
+- `$DEBUG_AUTOLOAD` global variable
+- `$LOADED_PLUGINS` global variable
+- `CommonDBTM::notificationqueueonaction` property
+- `NotificationTarget::html_tags` property
+- `getAllDatasFromTable()`
+- `getRealQueryForTreeItem()`
+- `Ajax::createFixedModalWindow()`
+- `Ajax::createSlidePanel()`
+- `Calendar_Holiday::cloneCalendar()`
+- `Calendar::duplicate()`
+- `CalendarSegment::cloneCalendar()`
+- `Change::getCommonLeftJoin()`
+- `Change::getCommonSelect()`
+- `Change::showAnalysisForm()`
+- `Change::showPlanForm()`
+- `CommonDBTM::clone()`
+- `CommonDBTM::getRawName()`
+- `CommonDBTM::prepareInputForClone()`
+- `CommonDBTM::post_clone()`
+- `CommonDBTM::showDates()`
+- `CommonGLPI::isLayoutExcludedPage()`
+- `CommonGLPI::isLayoutWithMain()`
+- `CommonGLPI::showPrimaryForm()`
+- `CommonITILObject::displayHiddenItemsIdInput()`
+- `CommonITILObject::filterTimeline()`
+- `CommonITILObject::getActorIcon()`
+- `CommonITILObject::getSplittedSubmitButtonHtml()`
+- `CommonITILObject::showActorsPartForm()`
+- `CommonITILObject::showFormHeader()`
+- `CommonITILObject::showGroupsAssociated()`
+- `CommonITILObject::showSupplierAddFormOnCreate()`
+- `CommonITILObject::showSuppliersAssociated()`
+- `CommonITILObject::showTimeline()`
+- `CommonITILObject::showTimelineForm()`
+- `CommonITILObject::showTimelineHeader()`
+- `CommonITILObject::showUsersAssociated()`
+- `Computer_Item::cloneComputer()`
+- `Computer_Item::cloneItem()`
+- `Computer_SoftwareLicense` class
+- `Computer_SoftwareVersion` class
+- `ComputerAntivirus::cloneComputer()`
+- `Contract::cloneItem()`
+- `Contract_Item::cloneItem()`
+- `ContractCost::cloneContract()`
+- `Config::checkWriteAccessToDirs()`
+- `Config::displayCheckExtensions()`
+- `Config::getCache()`
+- `DBMysql::affected_rows()`
+- `DBMysql::data_seek()`
+- `DBMysql::fetch_array()`
+- `DBMysql::fetch_assoc()`
+- `DBMysql::fetch_object()`
+- `DBMysql::fetch_row()`
+- `DBMysql::field_name()`
+- `DBMysql::free_result()`
+- `DBmysql::getTableSchema()`
+- `DBMysql::insert_id()`
+- `DBMysql::isMySQLStrictMode()`
+- `DBMysql::list_fields()`
+- `DBMysql::num_fields()`
+- `DbUtils::getRealQueryForTreeItem()`
+- `Dropdown::getDropdownNetpoint()`
+- `DCBreadcrumb::showDcBreadcrumb()`
+- `Document_Item::cloneItem()`
+- `Entity::showSelector()`
+- `Html::autocompletionTextField()`
+- `Html::displayImpersonateBanner()`
+- `Html::displayMainMenu()`
+- `Html::displayMenuAll()`
+- `Html::displayTopMenu()`
+- `Html::fileForRichText()`
+- `Html::generateImageName()`
+- `Html::jsDisable()`
+- `Html::jsEnable()`
+- `Html::nl2br_deep()`
+- `Html::resume_name()`
+- `Html::setSimpleTextContent()`
+- `Html::setRichTextContent()`
+- `Html::showProfileSelecter()`
+- `Html::weblink_extract()`
+- `Infocom::cloneItem()`
+- `Itil_Project::cloneItilProject()`
+- `ITILFollowup::showApprobationForm()`
+- `ITILTemplate::getBeginHiddenFieldText()`
+- `ITILTemplate::getBeginHiddenFieldValue()`
+- `ITILTemplate::getEndHiddenFieldText()`
+- `ITILTemplate::getEndHiddenFieldValue()`
+- `Item_Devices::cloneItem()`
+- `Item_Disk::cloneItem()`
+- `Item_OperatingSystem::cloneItem()`
+- `Item_SoftwareLicense::cloneComputer()`
+- `Item_SoftwareLicense::cloneItem()`
+- `Item_SoftwareVersion::cloneComputer()`
+- `Item_SoftwareVersion::cloneItem()`
+- `Item_SoftwareVersion::showForComputer()`
+- `Item_SoftwareVersion::updateDatasForComputer()`
+- `KnowbaseItem_Item::cloneItem()`
+- `LevelAgreement::showForTicket()`
+- `NetworkPort::cloneItem()`
+- `Notepad::cloneItem()`
+- `NotificationTargetTicket::isAuthorMailingActivatedForHelpdesk()`
+- `Plugin::setLoaded()`
+- `Plugin::setUnloaded()`
+- `Plugin::setUnloadedByName()`
+- `Problem::getCommonLeftJoin()`
+- `Problem::getCommonSelect()`
+- `Problem::showAnalysisForm()`
+- `ProjectCost::cloneProject()`
+- `ProjectTeam::cloneProjectTask()`
+- `ProjectTask::cloneProjectTeam()`
+- `Reservation::displayReservationDay()`
+- `Reservation::displayReservationsForAnItem()`
+- `Search::isDeletedSwitch()`
+- `Ticket::getCommonLeftJoin()`
+- `Ticket::getCommonSelect()`
+- `Ticket::getTicketTemplateToUse()`
+- `Ticket::showDocumentAddButton()`
+- `Ticket_Ticket::displayLinkedTicketsTo()`
+- `TicketTemplate::getFromDBWithDatas()`
+- `Toolbox::canUseImapPop()`
+- `Toolbox::checkSELinux()`
+- `Toolbox::convertImageToTag()`
+- `Toolbox::decrypt()`
+- `Toolbox::doubleEncodeEmails()`
+- `Toolbox::encrypt()`
+- `Toolbox::removeHtmlSpecialChars()`
+- `Toolbox::sanitize()`
+- `Toolbox::unclean_html_cross_side_scripting_deep()`
+- `Toolbox::useCache()`
+- `Toolbox::userErrorHandlerDebug()`
+- `Toolbox::userErrorHandlerNormal()`
+- `Transfer::transferComputerSoftwares()`
+- `Update::declareOldItems()`
+- `User::showPersonalInformation()`
+
+## [9.5.6] unreleased
+
+### Changed
+
+- `X-Forwarded-For` header value is no longer used during API access controls, API requests passing through proxies may be refused for security reasons.
+
+### API changes
+
+#### Changed
+
+- All POST request made to `/ajax/` scripts are now requiring a valid CSRF token in their `X-Glpi-Csrf-Token` header.
+Requests done using jQuery are automatically including this header, from the moment that the page header is built using
+`Html::includeHeader()` method and the `js/common.js` script is loaded.
 
 #### Deprecated
 
@@ -169,7 +382,7 @@ The present file will list all changes made to the project; according to the
 - `ProjectTeam::cloneProjectTask()`
 - `ProjectTask::cloneProjectTeam()`
 - Usage of `GLPIKEY` constant
-- `Toolbox::encrypt()` and `Toolbox::decrypt()` because they use the old encryption aglogithm
+- `Toolbox::encrypt()` and `Toolbox::decrypt()` because they use the old encryption algorithm
 
 #### Removed
 
@@ -619,7 +832,7 @@ new whole window
 - `RuleDictionnarySoftwareCollection::versionExists()` signature has changed
 - `NotificationTemplate::getDataToSend()` signature has changed
 - `QueuedMail` has been renamed to `QueuedNotification`
-- `CommonDBTM::mailqueueonaction()` has been renamed to `CommonDBTM::notificationqueueonaction()`
+- `CommonDBTM::mailqueueonaction` has been renamed to `CommonDBTM::notificationqueueonaction`
 - `NotificationTarget::getSender()` no longer takes any parameters (was not used)
 - `TableExists()` has been moved to `DBMysql::tableExists()`
 - `FieldExists()` has been moved to `DBMysql::fieldExists()`

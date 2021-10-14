@@ -129,7 +129,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
       ]);
 
       $user = new User;
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if ($user->getFromDB($data['items_id'])) {
             $this->addToRecipientsList(['language' => $user->getField('language'),
                                             'users_id' => $user->getField('id')]);
@@ -157,7 +157,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $this->addForGroup($manager, $data['items_id']);
       }
    }
@@ -181,7 +181,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
       ]);
 
       $contact = new Contact();
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if ($contact->getFromDB($data['items_id'])) {
             $this->addToRecipientsList(["email"    => $contact->fields["email"],
                                             "name"     => $contact->getName(),
@@ -210,7 +210,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
       ]);
 
       $supplier = new Supplier();
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if ($supplier->getFromDB($data['items_id'])) {
             $this->addToRecipientsList(["email"    => $supplier->fields["email"],
                                             "name"     => $supplier->getName(),
@@ -245,7 +245,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
       $this->data["##projecttask.comments##"]
                   = $item->getField('comment');
       $this->data["##projecttask.creationdate##"]
-                  = Html::convDateTime($item->getField('date'));
+                  = Html::convDateTime($item->getField('date_creation'));
       $this->data["##projecttask.lastupdatedate##"]
                   = Html::convDateTime($item->getField('date_mod'));
       $this->data["##projecttask.percent##"]
@@ -309,7 +309,6 @@ class NotificationTargetProjectTask extends NotificationTarget {
 
       // Team infos
       $restrict = ['projecttasks_id' => $item->getField('id')];
-      $order    = ['date DESC', 'id ASC'];
       $items    = getAllDataFromTable('glpi_projecttaskteams', $restrict);
 
       $this->data['teammembers'] = [];
@@ -332,7 +331,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
       $tasks                = getAllDataFromTable(
          'glpi_projecttasks', [
             'WHERE'  => $restrict,
-            'ORDER'  => $order
+            'ORDER'  => ['date_creation DESC', 'id ASC']
          ]
       );
       $this->data['tasks'] = [];
@@ -344,10 +343,14 @@ class NotificationTargetProjectTask extends NotificationTarget {
          $tmp['##task.description##']    = $task['content'];
          $tmp['##task.comments##']       = $task['comment'];
 
-         $tmp['##task.state##']          = Dropdown::getDropdownName('glpi_projectstates',
-                                                                     $task['projectstates_id']);
-         $tmp['##task.type##']           = Dropdown::getDropdownName('glpi_projecttasktypes',
-                                                                     $task['projecttasktypes_id']);
+         $tmp['##task.state##']          = '';
+         if ($task['projectstates_id']) {
+            $tmp['##task.state##'] = Dropdown::getDropdownName('glpi_projectstates', $task['projectstates_id']);
+         }
+         $tmp['##task.type##']           = '';
+         if ($task['projecttasktypes_id']) {
+            $tmp['##task.type##'] = Dropdown::getDropdownName('glpi_projecttasktypes', $task['projecttasktypes_id']);
+         }
          $tmp['##task.percent##']        = Dropdown::getValueWithUnit($task['percent_done'], "%");
 
          $this->data["##task.planstartdate##"]    = '';
@@ -432,7 +435,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
       ]);
 
       $this->data["documents"] = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $tmp                      = [];
          $tmp['##document.id##']   = $data['id'];
          $tmp['##document.name##'] = $data['name'];
@@ -446,9 +449,10 @@ class NotificationTargetProjectTask extends NotificationTarget {
          $tmp['##document.downloadurl##']
                                     = $this->formatURL($options['additionnaloption']['usertype'],
                                                       $downloadurl);
-         $tmp['##document.heading##']
-                                    = Dropdown::getDropdownName('glpi_documentcategories',
-                                                               $data['documentcategories_id']);
+         $tmp['##document.heading##'] = '';
+         if ($data['documentcategories_id']) {
+            $tmp['##document.heading##'] = Dropdown::getDropdownName('glpi_documentcategories', $data['documentcategories_id']);
+         }
 
          $tmp['##document.filename##']
                                     = $data['filename'];

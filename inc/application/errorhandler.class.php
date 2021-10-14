@@ -39,6 +39,7 @@ if (!defined('GLPI_ROOT')) {
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\Output\OutputInterface;
+use Twig\Error\Error;
 
 /**
  * @since 9.5.0
@@ -139,7 +140,7 @@ class ErrorHandler {
     *
     * @return void
     */
-   public function setOutputHandler(OutputInterface $output_handler) {
+   public function setOutputHandler(OutputInterface $output_handler): void {
       $this->output_handler = $output_handler;
    }
 
@@ -148,7 +149,7 @@ class ErrorHandler {
     *
     * @return void
     */
-   public function register() {
+   public function register(): void {
       set_error_handler([$this, 'handleError']);
       set_exception_handler([$this, 'handleException']);
       register_shutdown_function([$this, 'handleFatalError']);
@@ -165,7 +166,7 @@ class ErrorHandler {
     *
     * @return boolean
     */
-   public function handleError($error_code, $error_message, $filename, $line_number) {
+   public function handleError(int $error_code, string $error_message, string $filename, int $line_number) {
 
       // Have to false to forward to PHP internal error handler.
       $return = !$this->forward_to_internal_handler;
@@ -209,9 +210,38 @@ class ErrorHandler {
    }
 
    /**
+    * Twig error handler.
+    *
+    * This handler is manually called by application when an error occured during Twig template rendering.
+    *
+    * @param \Twig\Error\Error $error
+    *
+    * @return void
+    */
+   public function handleTwigError(Error $error): void {
+      $context = $error->getSourceContext();
+
+      $error_type = sprintf(
+         'Twig Error (%s)',
+         get_class($error)
+      );
+      $error_description = sprintf(
+         '"%s" in %s at line %s',
+         $error->getRawMessage(),
+         $context !== null ? sprintf('template "%s"', $context->getPath()) : 'unknown template',
+         $error->getTemplateLine()
+      );
+      $error_trace = $this->getTraceAsString($error->getTrace());
+      $log_level = self::ERROR_LEVEL_MAP[E_ERROR];
+
+      $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
+      $this->outputDebugMessage($error_type, $error_description, $log_level, isCommandLine());
+   }
+
+   /**
     * SQL error handler.
     *
-    * This handler is manually by application when a SQL error occured.
+    * This handler is manually called by application when a SQL error occured.
     *
     * @param integer $error_code
     * @param string  $error_message
@@ -219,12 +249,30 @@ class ErrorHandler {
     *
     * @return void
     */
-   public function handleSqlError($error_code, $error_message, $query) {
+   public function handleSqlError(int $error_code, string $error_message, string $query) {
       $this->outputDebugMessage(
          sprintf('SQL Error "%s"', $error_code),
-         sprintf('%s in query "%s"', $error_message, $query),
+         sprintf('%s in query "%s"', $error_message, preg_replace('/\\n/', ' ', $query)),
          self::ERROR_LEVEL_MAP[E_USER_ERROR],
          isCommandLine()
+      );
+   }
+
+   /**
+    * SQL warnings handler.
+    *
+    * This handler is manually called by application when warnings are triggered by a SQL query.
+    *
+    * @param string[] $warnings
+    * @param string   $query
+    *
+    * @return void
+    */
+   public function handleSqlWarnings(array $warnings, string $query) {
+      $this->outputDebugMessage(
+         'SQL Warnings',
+         "\n" . implode("\n", $warnings) . "\n" . sprintf('in query "%s"', $query),
+         self::ERROR_LEVEL_MAP[E_USER_WARNING]
       );
    }
 
@@ -237,7 +285,7 @@ class ErrorHandler {
     *
     * @return void
     */
-   public function handleException(\Throwable $exception) {
+   public function handleException(\Throwable $exception): void {
       $this->exit_code = 255;
 
       $error_type = sprintf(
@@ -263,7 +311,7 @@ class ErrorHandler {
     *
     * @retun void
     */
-   public function handleFatalError() {
+   public function handleFatalError(): void {
       // Free reserved memory to be able to handle "out of memory" errors
       $this->reserved_memory = null;
 
@@ -299,7 +347,7 @@ class ErrorHandler {
          $exit_code = $this->exit_code;
          register_shutdown_function(
             'register_shutdown_function',
-            function () use ($exit_code) { exit($exit_code); }
+            static function () use ($exit_code) { exit($exit_code); }
          );
       }
    }
@@ -311,7 +359,7 @@ class ErrorHandler {
     *
     * @return void
     */
-   public function setForwardToInternalHandler(bool $forward_to_internal_handler) {
+   public function setForwardToInternalHandler(bool $forward_to_internal_handler): void {
       $this->forward_to_internal_handler = $forward_to_internal_handler;
    }
 
@@ -325,7 +373,7 @@ class ErrorHandler {
     *
     * @return void
     */
-   private function logErrorMessage(string $type, string $description, string $trace, string $log_level) {
+   private function logErrorMessage(string $type, string $description, string $trace, string $log_level): void {
       if (!($this->logger instanceof LoggerInterface)) {
          return;
       }
@@ -346,10 +394,12 @@ class ErrorHandler {
     *
     * @return void
     */
-   private function outputDebugMessage(string $error_type, string $message, string $log_level, bool $force = false) {
+   private function outputDebugMessage(string $error_type, string $message, string $log_level, bool $force = false): void {
 
-      if ((!$force
-          && (!isset($_SESSION['glpi_use_mode']) || $_SESSION['glpi_use_mode'] != \Session::DEBUG_MODE)) || isAPI()) {
+      $is_debug_mode = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == \Session::DEBUG_MODE;
+      $is_console_context = $this->output_handler instanceof OutputInterface;
+
+      if ((!$force && !$is_debug_mode && !$is_console_context) || isAPI()) {
          return;
       }
 
@@ -381,7 +431,7 @@ class ErrorHandler {
          }
          $this->output_handler->writeln($message, $verbosity);
       } else if (!isCommandLine()) {
-         echo '<div style="position:float-left; background-color:red; z-index:10000">'
+         echo '<div class="alert alert-important alert-danger" style="z-index:10000">'
             . '<span class="b">' . $error_type . ': </span>' . $message . '</div>';
       } else {
          echo $error_type . ': ' . $message . "\n";

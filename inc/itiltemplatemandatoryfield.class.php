@@ -86,7 +86,7 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField {
             ]
          ]);
          if (count($iterator)) {
-            $result = $iterator->next();
+            $result = $iterator->current();
             $a = new static();
             $a->delete(['id' => $result['id']]);
          }
@@ -118,7 +118,7 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField {
       $allowed_fields = $tt->getAllowedFields($withtypeandcategory);
       $fields         = [];
 
-      while ($rule = $iterator->next()) {
+      foreach ($iterator as $rule) {
          if (isset($allowed_fields[$rule['num']])) {
             $fields[$allowed_fields[$rule['num']]] = $rule['num'];
          }
@@ -176,7 +176,7 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField {
 
       $mandatoryfields = [];
       $used            = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $mandatoryfields[$data['id']] = $data;
          $used[$data['num']]           = $data['num'];
       }
@@ -207,7 +207,7 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField {
          Dropdown::showFromArray('num', $select_fields, ['used' => $used]);
          echo "</td><td class='center'>";
          echo "&nbsp;<input type='submit' name='add' value=\""._sx('button', 'Add').
-                        "\" class='submit'>";
+                        "\" class='btn btn-primary'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();

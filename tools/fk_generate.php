@@ -92,4 +92,3 @@ foreach ($query as $table => $constraints) {
 }
 
 $DB->query("SET FOREIGN_KEY_CHECKS = 1;");
-

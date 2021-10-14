@@ -6,7 +6,18 @@ mkdir -p $(dirname "$LOG_FILE")
 # Execute install
 bin/console glpi:database:install \
   --config-dir=./tests/config --ansi --no-interaction \
-  --reconfigure --db-name=glpi --db-host=db --db-user=root --force
+  --force \
+  --reconfigure --db-name=glpi --db-host=db --db-user=root \
+  --log-deprecation-warnings \
+  | tee $LOG_FILE
+if [[ -n $(grep "Warning" $LOG_FILE) ]];
+  then echo "glpi:database:install command FAILED" && exit 1;
+fi
+
+# Check DB
+bin/console glpi:database:check_schema_integrity --config-dir=./tests/config --ansi --no-interaction --strict
+bin/console glpi:tools:check_database_keys --config-dir=./tests/config --ansi --no-interaction --detect-useless-keys
+bin/console glpi:tools:check_database_schema_consistency --config-dir=./tests/config --ansi --no-interaction
 
 # Execute update
 ## Should do nothing.

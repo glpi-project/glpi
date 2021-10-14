@@ -32,7 +32,7 @@
 
 namespace tests\units;
 
-use \DbTestCase;
+use DbTestCase;
 
 /* Test for inc/software.class.php */
 
@@ -414,10 +414,10 @@ class Software extends DbTestCase {
    public function testGetSearchOptionsNew() {
       $software = new \Software();
       $result   = $software->rawSearchOptions();
-      $this->array($result)->hasSize(41);
+      $this->array($result)->hasSize(42);
 
       $this->login();
       $result   = $software->rawSearchOptions();
-      $this->array($result)->hasSize(50);
+      $this->array($result)->hasSize(51);
    }
 }

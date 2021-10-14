@@ -79,7 +79,6 @@ class DocumentType  extends CommonDropdown {
          'field'              => 'ext',
          'name'               => __('Extension'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -97,7 +96,6 @@ class DocumentType  extends CommonDropdown {
          'field'              => 'mime',
          'name'               => __('MIME type'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -168,8 +166,7 @@ class DocumentType  extends CommonDropdown {
       $p = array_merge($p, $options);
 
       $display = "&nbsp;";
-      $display .= "<a href='#' onClick=\"".Html::jsGetElementbyID('documenttypelist').
-                  ".dialog('open'); return false;\" class='fa fa-info pointer' title='" . __s('Help') . "' >";
+      $display .= "<a href='#' data-bs-toggle='modal' data-bs-target='#documenttypelist' class='fa fa-info pointer' title='" . __s('Help') . "' >";
       $display .= "<span class='sr-only'>".__s('Help')."></span>";
       $display .= "</a>";
       $display .= Ajax::createIframeModalWindow('documenttypelist',
@@ -182,5 +179,41 @@ class DocumentType  extends CommonDropdown {
       } else {
          return $display;
       }
+   }
+
+   /**
+    * Return pattern that can be used to validate that name of an uploaded file matches accepted extensions.
+    *
+    * @return string
+    */
+   public static function getUploadableFilePattern(): string {
+      global $DB;
+
+      $valid_type_iterator = $DB->request([
+         'FROM'   => 'glpi_documenttypes',
+         'WHERE'  => [
+            'is_uploadable'   => 1
+         ]
+      ]);
+
+      $valid_ext_patterns = [];
+      foreach ($valid_type_iterator as $valid_type) {
+         $valid_ext = $valid_type['ext'];
+         if (preg_match('/\/.+\//', $valid_ext)) {
+            // Filename matches pattern
+            // Remove surrounding '/' as it will be included in a larger pattern
+            // and protect by surrounding parenthesis to prevent conflict with other patterns
+            $valid_ext_patterns[] = '(' . substr($valid_ext, 1, -1) . ')';
+         } else {
+            // Filename ends with allowed ext
+            $valid_ext_patterns[] = '\.' . preg_quote($valid_type['ext'], '/') . '$';
+         }
+      }
+
+      return '/(' . implode('|', $valid_ext_patterns) . ')/i';
+   }
+
+   static function getIcon() {
+      return "far fa-file";
    }
 }

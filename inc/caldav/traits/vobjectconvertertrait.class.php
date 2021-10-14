@@ -32,6 +32,8 @@
 
 namespace Glpi\CalDAV\Traits;
 
+use Glpi\Toolbox\RichText;
+use Glpi\Toolbox\Sanitizer;
 use RRule\RRule;
 use Sabre\VObject\Component;
 use Sabre\VObject\Component\VCalendar;
@@ -95,7 +97,7 @@ trait VobjectConverterTrait {
          $vcomp = $vcalendar->add($component_type);
       }
 
-      $fields = \Html::entity_decode_deep($item->fields);
+      $fields = Sanitizer::unsanitize($item->fields);
       $utc_tz = new \DateTimeZone('UTC');
 
       if (array_key_exists('uuid', $fields)) {
@@ -117,10 +119,15 @@ trait VobjectConverterTrait {
          $vcomp->SUMMARY = $fields['name'];
       }
 
+      $description = null;
       if (array_key_exists('content', $fields)) {
-         $vcomp->DESCRIPTION = $fields['content'];
+         $description = $fields['content'];
       } else if (array_key_exists('text', $fields)) {
-         $vcomp->DESCRIPTION = $fields['text'];
+         $description = $fields['text'];
+      }
+      if ($description !== null) {
+         // Transform HTML text to plain text
+         $vcomp->DESCRIPTION = RichText::getTextFromHtml($description, true);
       }
 
       $vcomp->URL = $CFG_GLPI['url_base'] . $this->getFormURLWithID($fields['id'], false);
@@ -243,6 +250,9 @@ trait VobjectConverterTrait {
       }
 
       $input['rrule'] = $this->getRRuleInputFromVComponent($vcomponent);
+      if ($input['rrule'] === null) {
+         $input['rrule'] = 'NULL'; // Ensure rrule is set to null on update.
+      }
 
       $state = $this->getStateInputFromVComponent($vcomponent);
       if ($state !== null) {
@@ -267,8 +277,11 @@ trait VobjectConverterTrait {
       }
 
       $content = $vcomponent->DESCRIPTION->getValue();
-      $content = nl2br($content);
-      $content = str_replace(["\n", "\r"], ['', ''], $content);
+
+      // Content is handled as plain text in CalDAV client and will be handled as rich text on GLPI side,
+      // so special chars have to be encoded in html entities.
+      $content = \Html::entities_deep($content);
+
       return $content;
    }
 
@@ -291,7 +304,7 @@ trait VobjectConverterTrait {
     * Return begin/end date from component as an array object containing:
     *  - 'begin': begin date in 'Y-m-d H:i:s' format;
     *  - 'end':   end date in 'Y-m-d H:i:s' format.
-    * If object does not contains plan informations, return null.
+    * If object does not contain plan information, return null.
     *
     * @param Component $vcomponent
     *

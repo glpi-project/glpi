@@ -42,33 +42,33 @@ use ComputerModel;
 use Datacenter;
 use DB;
 use DCRoom;
+use Glpi\Console\AbstractCommand;
+use Glpi\Toolbox\Sanitizer;
 use Item_Rack;
 use Monitor;
 use MonitorModel;
 use NetworkEquipment;
 use NetworkEquipmentModel;
+use PassiveDCEquipment;
+use PassiveDCEquipmentModel;
+use PDU;
+use PDUModel;
 use Peripheral;
 use PeripheralModel;
 use Plugin;
-use PDU;
-use PDUModel;
 use Rack;
 use RackModel;
 use RackType;
 use State;
-use Toolbox;
-use Glpi\Console\AbstractCommand;
-use PassiveDCEquipment;
-use PassiveDCEquipmentModel;
-use Symfony\Component\Console\Helper\QuestionHelper;
-use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Exception\LogicException;
 use Symfony\Component\Console\Exception\RuntimeException;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class RacksPluginToCoreCommand extends AbstractCommand {
 
@@ -224,7 +224,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             $input,
             $output,
             new ConfirmationQuestion(
-               '<comment>' . __('Do you want to launch migration ?') . ' [yes/No]</comment>',
+               '<comment>' . __('Do you want to launch migration?') . ' [yes/No]</comment>',
                false
             )
          );
@@ -362,7 +362,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
          );
          if (!$is_state_ok) {
             // Should not happens as installation should put plugin in awaited state
-            throw new LogicException('Unexpected plugin state.');
+            throw new \Symfony\Component\Console\Exception\LogicException('Unexpected plugin state.');
          }
       }
 
@@ -422,7 +422,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
          $result = $this->db->query('TRUNCATE ' . DB::quoteName($table));
 
          if (!$result) {
-            throw new RuntimeException(
+            throw new \Symfony\Component\Console\Exception\RuntimeException(
                sprintf('Unable to truncate table "%s"', $table)
             );
          }
@@ -545,7 +545,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
                $this->input,
                $this->output,
                new ChoiceQuestion(
-                  sprintf(__('Where do you want to import "%s" ?'), $model_label),
+                  sprintf(__('Where do you want to import "%s"?'), $model_label),
                   [
                      self::OTHER_TYPE_CHOICE_COMPUTER            => Computer::getTypeName(1),
                      self::OTHER_TYPE_CHOICE_NETWORKEQUIPEMENT   => NetworkEquipment::getTypeName(1),
@@ -593,16 +593,16 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             }
 
             if (null === $new_model_itemtype) {
-               throw new LogicException(
+               throw new \Symfony\Component\Console\Exception\LogicException(
                   sprintf('Answer "%s" has no corresponding itemtype.', $answer)
                );
             }
 
             $new_model = new $new_model_itemtype();
-            $new_model_fields = Toolbox::sanitize([
+            $new_model_fields = Sanitizer::sanitize([
                'name'    => $othermodel['name'],
                'comment' => $othermodel['comment'],
-            ]);
+            ], true);
 
             if (!($new_model_id = $new_model->getFromDBByCrit($new_model_fields))
                 && !($new_model_id = $new_model->add($new_model_fields))) {
@@ -649,13 +649,13 @@ class RacksPluginToCoreCommand extends AbstractCommand {
                foreach ($otheritems_iterator as $otheritem) {
                   $progress_bar->advance(1);
 
-                  $new_item_fields = Toolbox::sanitize([
+                  $new_item_fields = Sanitizer::sanitize([
                      'name'        => strlen($otheritem['name'])
                                        ? $otheritem['name']
                                        : $otheritem['id'],
                      'entities_id' => $otheritem['entities_id'],
                      $fk_new_model => $new_model_id
-                  ]);
+                  ], true);
 
                   $new_item = new $new_itemtype();
 
@@ -827,11 +827,12 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             );
 
             $rackmodel = new RackModel();
-            $rackmodel_fields = Toolbox::sanitize(
+            $rackmodel_fields = Sanitizer::sanitize(
                [
                   'name'    => $old_model['name'],
                   'comment' => $old_model['comment'],
-               ]
+               ],
+               true
             );
 
             if (!($rackmodel_id = $rackmodel->getFromDBByCrit($rackmodel_fields))
@@ -905,13 +906,14 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             );
 
             $racktype = new RackType();
-            $racktype_fields = Toolbox::sanitize(
+            $racktype_fields = Sanitizer::sanitize(
                [
                   'name'         => $old_type['name'],
                   'entities_id'  => $old_type['entities_id'],
                   'is_recursive' => $old_type['is_recursive'],
                   'comment'      => $old_type['comment'],
-               ]
+               ],
+               true
             );
 
             if (!($racktype_id = $racktype->getFromDBByCrit($racktype_fields))
@@ -985,11 +987,12 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             );
 
             $state = new State();
-            $state_fields = Toolbox::sanitize(
+            $state_fields = Sanitizer::sanitize(
                [
                   'name'      => $old_state['name'],
                   'states_id' => 0,
-               ]
+               ],
+               true
             );
 
             if (!($state_id = $state->getFromDBByCrit($state_fields))) {
@@ -1068,7 +1071,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             );
 
             $room = new DCRoom();
-            $room_fields = Toolbox::sanitize(
+            $room_fields = Sanitizer::sanitize(
                [
                   'name'           => $old_room['completename'],
                   'entities_id'    => $old_room['entities_id'],
@@ -1076,7 +1079,8 @@ class RacksPluginToCoreCommand extends AbstractCommand {
                   'datacenters_id' => $this->datacenter_id,
                   'vis_cols'       => 10,
                   'vis_rows'       => 10,
-               ]
+               ],
+               true
             );
 
             if (!($room_id = $room->getFromDBByCrit($room_fields))
@@ -1177,7 +1181,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             }
 
             $rack = new Rack();
-            $rack_fields = Toolbox::sanitize(
+            $rack_fields = Sanitizer::sanitize(
                [
                   'name'             => $old_rack['name'],
                   'comment'          => "Imported from rack plugin",
@@ -1201,7 +1205,8 @@ class RacksPluginToCoreCommand extends AbstractCommand {
                   'is_deleted'       => $old_rack['is_deleted'],
                   'dcrooms_id'       => $room_id,
                   'bgcolor'          => "#FEC95C",
-               ]
+               ],
+               true
             );
 
             if (!($rack_id = $rack->getFromDBByCrit($rack_fields))) {

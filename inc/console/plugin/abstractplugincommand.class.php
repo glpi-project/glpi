@@ -38,8 +38,6 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
-
-use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -78,7 +76,7 @@ abstract class AbstractPluginCommand extends AbstractCommand implements ForceNoP
       $directories = $input->getArgument('directory');
 
       if ($all && !empty($directories)) {
-         throw new InvalidArgumentException(
+         throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
             __('Option --all is not compatible with usage of directory argument.')
          );
       }

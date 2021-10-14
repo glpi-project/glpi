@@ -43,22 +43,20 @@ if (isset($_SERVER['argv'])) {
 
 // Handle specific dependencies update command that cannot be made upon symfony console
 if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SERVER['argv'], 1, 2)) {
-   $composer_command = 'composer install --ansi --no-interaction';
-   $npm_command = 'npm install';
-
-   if (array_key_exists('composer-options', $options) && is_string($options['composer-options'])) {
-      $composer_command .= ' ' . $options['composer-options'];
-   }
-
    chdir(dirname(__FILE__, 2));
 
    $exit_code = 0;
 
+   $composer_command = 'composer install --ansi --no-interaction';
+   if (array_key_exists('composer-options', $options) && is_string($options['composer-options'])) {
+      $composer_command .= ' ' . $options['composer-options'];
+   }
    passthru($composer_command, $exit_code);
    if ($exit_code > 0) {
       exit($exit_code);
    }
 
+   $npm_command = 'npm install --no-save';
    passthru($npm_command, $exit_code);
    if ($exit_code > 0) {
       exit($exit_code);
@@ -67,6 +65,25 @@ if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SER
    file_put_contents('.package.hash', sha1_file('package-lock.json'));
 
    passthru('npm run-script build', $exit_code);
+   exit($exit_code);
+}
+
+// Handle specific "locales:compile" command that cannot be made upon symfony console
+if (isset($_SERVER['argv']) && ($_SERVER['argv'][1] ?? '') === 'locales:compile') {
+   chdir(dirname(__FILE__, 2));
+
+   $exit_code = 0;
+
+   $po_files = preg_grep('/\.po$/', scandir('./locales'));
+   foreach ($po_files as $po_file) {
+      $mo_file = preg_replace('/\.po$/', '.mo', $po_file);
+      echo("Processing {$po_file}\n");
+      passthru("cd ./locales && msgfmt -f -o {$mo_file} {$po_file}", $exit_code);
+      if ($exit_code > 0) {
+         exit($exit_code);
+      }
+   }
+
    exit($exit_code);
 }
 

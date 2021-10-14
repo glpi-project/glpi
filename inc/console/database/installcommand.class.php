@@ -37,16 +37,21 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use DB;
+use DBConnection;
+use DBmysql;
+use Glpi\Cache\CacheManager;
+use Glpi\Console\Traits\TelemetryActivationTrait;
+use Glpi\System\Requirement\DbConfiguration;
 use GLPIKey;
-use Toolbox;
-
-use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Toolbox;
 
 class InstallCommand extends AbstractConfigureCommand {
+
+   use TelemetryActivationTrait;
 
    /**
     * Error code returned when failing to create database.
@@ -76,6 +81,13 @@ class InstallCommand extends AbstractConfigureCommand {
     */
    const ERROR_CANNOT_CREATE_ENCRYPTION_KEY_FILE = 8;
 
+   /**
+    * Error code returned if DB configuration is not compatible with large indexes.
+    *
+    * @var integer
+    */
+   const ERROR_INCOMPATIBLE_DB_CONFIG = 9;
+
    protected function configure() {
 
       parent::configure();
@@ -98,9 +110,14 @@ class InstallCommand extends AbstractConfigureCommand {
          InputOption::VALUE_NONE,
          __('Force execution of installation, overriding existing database')
       );
+
+      $this->registerTelemetryActivationOptions($this->getDefinition());
    }
 
    protected function initialize(InputInterface $input, OutputInterface $output) {
+
+      global $GLPI_CACHE;
+      $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance(); // Use dedicated "installer" cache
 
       parent::initialize($input, $output);
 
@@ -120,7 +137,7 @@ class InstallCommand extends AbstractConfigureCommand {
             new ConfirmationQuestion(
                __('Command input contains configuration options that may override existing configuration.')
                   . PHP_EOL
-                  . __('Do you want to reconfigure database ?') . ' [Yes/no]',
+                  . __('Do you want to reconfigure database?') . ' [Yes/no]',
                true
             )
          );
@@ -151,7 +168,7 @@ class InstallCommand extends AbstractConfigureCommand {
       }
 
       if (!$this->isDbAlreadyConfigured() || $input->getOption('reconfigure')) {
-         $result = $this->configureDatabase($input, $output);
+         $result = $this->configureDatabase($input, $output, true);
 
          if (self::ABORTED_BY_USER === $result) {
             return 0; // Considered as success
@@ -228,6 +245,23 @@ class InstallCommand extends AbstractConfigureCommand {
          return self::ERROR_DB_CONNECTION_FAILED;
       }
 
+      // Check for compatibility with utf8mb4 usage.
+      $db = new class($mysqli) extends DBmysql {
+         public function __construct($dbh) {
+            $this->dbh = $dbh;
+         }
+      };
+      $config_requirement = new DbConfiguration($db);
+      if (!$config_requirement->isValidated()) {
+         $msg = '<error>' . __('Database configuration is not compatible with "utf8mb4" usage.') . '</error>';
+         foreach ($config_requirement->getValidationMessages() as $validation_message) {
+            $msg .= "\n" . '<error> - ' . $validation_message . '</error>';
+         }
+         throw new \Glpi\Console\Exception\EarlyExitException($msg, self::ERROR_INCOMPATIBLE_DB_CONFIG);
+      }
+
+      DBConnection::setConnectionCharset($mysqli, true);
+
       // Create database or select existing one
       $output->writeln(
          '<comment>' . __('Creating the database...') . '</comment>',
@@ -253,7 +287,7 @@ class InstallCommand extends AbstractConfigureCommand {
              AND table_name LIKE 'glpi\_%'"
       );
       if (!$tables_result) {
-         throw new RuntimeException('Unable to check GLPI tables existence.');
+         throw new \Symfony\Component\Console\Exception\RuntimeException('Unable to check GLPI tables existence.');
       }
       if ($tables_result->fetch_array()[0] > 0 && !$force) {
          $output->writeln(
@@ -262,15 +296,17 @@ class InstallCommand extends AbstractConfigureCommand {
          return self::ERROR_DB_ALREADY_CONTAINS_TABLES;
       }
 
-      if ($DB instanceof DB) {
+      if ($DB instanceof DBmysql) {
          // If global $DB is set at this point, it means that configuration file has been loaded
          // prior to reconfiguration.
          // As configuration is part of a class, it cannot be reloaded and class properties
          // have to be updated manually in order to make `Toolbox::createSchema()` work correctly.
-         $DB->dbhost     = $db_hostport;
-         $DB->dbuser     = $db_user;
-         $DB->dbpassword = rawurlencode($db_pass);
-         $DB->dbdefault  = $db_name;
+         $DB->dbhost      = $db_hostport;
+         $DB->dbuser      = $db_user;
+         $DB->dbpassword  = rawurlencode($db_pass);
+         $DB->dbdefault   = $db_name;
+         $DB->use_utf8mb4 = true;
+         $DB->log_deprecation_warnings = $input->getOption('log-deprecation-warnings');
          $DB->clearSchemaCache();
          $DB->connect();
 
@@ -294,6 +330,10 @@ class InstallCommand extends AbstractConfigureCommand {
       }
 
       $output->writeln('<info>' . __('Installation done.') . '</info>');
+
+      (new CacheManager())->resetAllCaches(); // Ensure cache will not use obsolete data
+
+      $this->handTelemetryActivation($input, $output);
 
       return 0; // Success
    }

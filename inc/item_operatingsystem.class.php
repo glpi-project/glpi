@@ -1,9 +1,4 @@
 <?php
-
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
-}
-
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,7 +28,12 @@ if (!defined('GLPI_ROOT')) {
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-**/
+ */
+
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
+}
+
 class Item_OperatingSystem extends CommonDBRelation {
 
    static public $itemtype_1 = 'OperatingSystem';
@@ -172,7 +172,7 @@ class Item_OperatingSystem extends CommonDBRelation {
       $i      = 0;
 
       $os = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $os[$data['assocID']] = $data;
       }
 
@@ -182,7 +182,7 @@ class Item_OperatingSystem extends CommonDBRelation {
       /*if ($canedit && $number >= 1
           && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='center firstbloc'>".
-            "<a class='vsubmit' href='" . Toolbox::getItemTypeFormURL(self::getType()) . "?items_id=" . $item->getID() .
+            "<a class='btn btn-primary' href='" . Toolbox::getItemTypeFormURL(self::getType()) . "?items_id=" . $item->getID() .
             "&amp;itemtype=" . $item->getType() . "&amp;withtemplate=" . $withtemplate."'>";
          echo __('Add an operating system');
          echo "</a></div>\n";
@@ -280,19 +280,6 @@ class Item_OperatingSystem extends CommonDBRelation {
       return parent::getConnexityItem($itemtype, $items_id, $getFromDB, $getEmpty, $getFromDBOrEmpty);
    }
 
-   function showPrimaryForm($options = []) {
-      //overrided to set expected values for new item
-      $fields = $options;
-      if (isset($fields['id']) && $fields['id'] == 0) {
-         unset($fields['id']);
-      }
-      foreach ($fields as $field => $value) {
-         $this->fields[$field] = $value;
-      }
-      parent::showPrimaryForm($options);
-   }
-
-
    function showForm($ID, $options = []) {
       $colspan = 4;
 
@@ -353,12 +340,24 @@ class Item_OperatingSystem extends CommonDBRelation {
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='textfield_licenseid$rand'>".__('Product ID')."</label></td>";
       echo "<td >";
-      Html::autocompletionTextField($this, 'licenseid', ['rand' => $rand]);
+      echo Html::input(
+         'licenseid',
+         [
+            'value' => $this->fields['licenseid'],
+            'id'    => "textfield_licenseid$rand",
+         ]
+      );
       echo "</td>";
 
       echo "<td><label for='textfield_license_number$rand'>".__('Serial number')."</label></td>";
       echo "<td >";
-      Html::autocompletionTextField($this, 'license_number', ['rand' => $rand]);
+      echo Html::input(
+         'license_number',
+         [
+            'value' => $this->fields['license_number'],
+            'id'    => "textfield_license_number$rand",
+         ]
+      );
       echo "</td></tr>";
       $options['formfooter'] = false;
       $this->showFormButtons($options);
@@ -370,45 +369,6 @@ class Item_OperatingSystem extends CommonDBRelation {
       $name = $item->getTypeName(1) . ' ' . $item->getName();
 
       return $name;
-   }
-
-
-   /**
-    * Duplicate operating system from an item template to its clone
-    *
-    * @deprecated 9.5
-    *
-    * @param string  $itemtype    itemtype of the item
-    * @param integer $oldid       ID of the item to clone
-    * @param integer $newid       ID of the item cloned
-    * @param string  $newitemtype itemtype of the new item (= $itemtype if empty) (default '')
-    *
-    * @return void
-    */
-   static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'itemtype'  => $itemtype,
-            'items_id'  => $oldid
-         ]
-      ]);
-
-      while ($row = $iterator->next()) {
-         $input             = Toolbox::addslashes_deep($row);
-         $input['items_id'] = $newid;
-         if (!empty($newitemtype)) {
-            $input['itemtype'] = $newitemtype;
-         }
-         unset ($input["id"]);
-         unset ($input["date_mod"]);
-         unset ($input["date_creation"]);
-         $ios = new self();
-         $ios->add($input);
-      }
    }
 
    function rawSearchOptions() {
@@ -427,7 +387,6 @@ class Item_OperatingSystem extends CommonDBRelation {
          'name'               => __('Serial number'),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -437,7 +396,6 @@ class Item_OperatingSystem extends CommonDBRelation {
          'name'               => __('Product ID'),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       return $tab;

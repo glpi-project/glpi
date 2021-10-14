@@ -163,7 +163,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
             ]);
          }
          echo "</td><td>";
-         echo "<input type=\"submit\" name=\"add\" value=\""._sx('button', 'Add')."\" class=\"submit\">";
+         echo "<input type=\"submit\" name=\"add\" value=\""._sx('button', 'Add')."\" class=\"btn btn-primary\">";
          echo "</td></tr>";
          echo "</table>";
          if ($item_type == KnowbaseItem::getType()) {
@@ -199,7 +199,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
       Html::printAjaxPager($type_name, $start, $number);
 
       // Output events
-      echo "<div class='center'>";
+      echo "<div class='center table-responsive'>";
 
       if ($canedit) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
@@ -374,7 +374,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
 
       $linked_items = [];
       $results = $DB->request($criteria);
-      while ($data = $results->next()) {
+      foreach ($results as $data) {
          if ($used === false) {
             $linked_items[] = $data;
          } else {
@@ -383,42 +383,6 @@ class KnowbaseItem_Item extends CommonDBRelation {
          }
       }
       return $linked_items;
-   }
-
-   /**
-    * Duplicate KB links from an item template to its clone
-    *
-    * @deprecated 9.5
-    * @since 9.2
-    *
-    * @param string  $itemtype     itemtype of the item
-    * @param integer $oldid        ID of the item to clone
-    * @param integer $newid        ID of the item cloned
-    * @param string  $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
-   **/
-   static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      if (empty($newitemtype)) {
-         $newitemtype = $itemtype;
-      }
-
-      $iterator = $DB->request([
-         'FROM'   => 'glpi_knowbaseitems_items',
-         'FIELDS' => 'knowbaseitems_id',
-         'WHERE'  => [
-            'items_id'  => $oldid,
-            'itemtype'  => $itemtype
-         ]
-      ]);
-
-      while ($data = $iterator->next()) {
-         $kb_link = new self();
-         $kb_link->add(['knowbaseitems_id' => $data['knowbaseitems_id'],
-                                  'itemtype'    => $newitemtype,
-                                  'items_id'    => $newid]);
-      }
    }
 
    function getForbiddenStandardMassiveAction() {
@@ -436,7 +400,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
          $action_prefix = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
 
          $actions[$action_prefix.'add']
-            = "<i class='ma-icon fas fa-book'></i>".
+            = "<i class='fas fa-book'></i>".
               _x('button', 'Link knowledgebase article');
       }
 

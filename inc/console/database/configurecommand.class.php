@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ConfigureCommand extends AbstractConfigureCommand {
@@ -48,11 +49,18 @@ class ConfigureCommand extends AbstractConfigureCommand {
       $this->setName('glpi:database:configure');
       $this->setAliases(['db:configure']);
       $this->setDescription('Define database configuration');
+
+      $this->addOption(
+         'use-utf8mb4',
+         null,
+         InputOption::VALUE_NONE,
+         __('Use utf8mb4 character set')
+      );
    }
 
    protected function execute(InputInterface $input, OutputInterface $output) {
 
-      $result = $this->configureDatabase($input, $output);
+      $result = $this->configureDatabase($input, $output, $input->getOption('use-utf8mb4'));
 
       if (self::ABORTED_BY_USER === $result) {
          return 0; // Considered as success

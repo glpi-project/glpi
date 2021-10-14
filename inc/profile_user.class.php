@@ -141,7 +141,7 @@ class Profile_User extends CommonDBRelation {
          echo "</td><td>".__('Recursive')."</td><td>";
          Dropdown::showYesNo("is_recursive", 0);
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>";
 
          echo "</table>";
@@ -179,7 +179,7 @@ class Profile_User extends CommonDBRelation {
          $header_end .= "</th></tr>";
          echo $header_begin.$header_top.$header_end;
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                echo "<td width='10'>";
@@ -284,7 +284,7 @@ class Profile_User extends CommonDBRelation {
          echo "</td><td class='tab_bg_2 center'>".__('Recursive')."</td><td>";
          Dropdown::showYesNo("is_recursive", 0);
          echo "</td><td class='tab_bg_2 center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
@@ -362,7 +362,7 @@ class Profile_User extends CommonDBRelation {
          );
 
          $current_pid = null;
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             if ($data['pid'] != $current_pid) {
                echo "<tbody><tr class='noHover'>";
                $reduce_header = 0;
@@ -505,7 +505,7 @@ class Profile_User extends CommonDBRelation {
       if ($nb) {
          $temp = -1;
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             if ($data["entity"] != $temp) {
 
                while (($i%$nb_per_line) != 0) {
@@ -632,7 +632,7 @@ class Profile_User extends CommonDBRelation {
       ]);
       $entities = [];
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if ($data['is_recursive'] && $is_recursive) {
             $tab      = getSonsOf('glpi_entities', $data['entities_id']);
             $entities = array_merge($tab, $entities);
@@ -707,7 +707,7 @@ class Profile_User extends CommonDBRelation {
       if (count($iterator) > 0) {
          $entities = [];
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             if ($data['is_recursive'] && $is_recursive) {
                $tab      = getSonsOf('glpi_entities', $data['entities_id']);
                $entities = array_merge($tab, $entities);
@@ -750,7 +750,7 @@ class Profile_User extends CommonDBRelation {
          'WHERE'           => $where
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $profiles[$data['profiles_id']] = $data['profiles_id'];
       }
 
@@ -781,7 +781,7 @@ class Profile_User extends CommonDBRelation {
       ]);
 
       $entities = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if ($child
              && $data['is_recursive']) {
             foreach (getSonsOf('glpi_entities', $data['entities_id']) as $id) {
@@ -816,7 +816,7 @@ class Profile_User extends CommonDBRelation {
       ]);
 
       $entities = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if ($child
              && $data['is_recursive']) {
             foreach (getSonsOf('glpi_entities', $data['entities_id']) as $id) {
@@ -863,7 +863,7 @@ class Profile_User extends CommonDBRelation {
             'users_id'     => $user_ID,
             'profiles_id'  => $profile_id
          ]
-      ])->next();
+      ])->current();
       return $result['cpt'];
    }
 
@@ -1001,7 +1001,7 @@ class Profile_User extends CommonDBRelation {
                            User::getTable() . '.is_deleted'    => 0,
                            $this->getTable() . '.entities_id'  => $item->getID()
                         ]
-                     ])->next();
+                     ])->current();
                      $nb        = $count['cpt'];
                   }
                   return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);

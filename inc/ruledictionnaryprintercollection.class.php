@@ -113,7 +113,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
       $nb   = count($iterator) + $offset;
       $step = (($nb > 1000) ? 50 : (($nb > 20) ? floor(count($iterator) / 20) : 1));
 
-      while ($input = $iterator->next()) {
+      foreach ($iterator as $input) {
          if (!($i % $step)) {
             if (isCommandLine()) {
                //TRANS: %1$s is a date, %2$s is a row, %3$s is total row, %4$s is memory
@@ -149,7 +149,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
 
             if (count($print_iterator)) {
                //Store all the printer's IDs in an array
-               while ($result = $print_iterator->next()) {
+               foreach ($print_iterator as $result) {
                   $IDs[] = $result["id"];
                }
                //Replay dictionnary on all the printers
@@ -232,7 +232,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
          ]
       ]);
 
-      while ($printer = $iterator->next()) {
+      foreach ($iterator as $printer) {
          //For each printer
          $this->replayDictionnaryOnOnePrinter($new_printers, $res_rule, $printer, $delete_ids);
       }

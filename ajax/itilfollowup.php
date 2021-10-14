@@ -34,6 +34,7 @@
  * @since 9.5
  */
 
+
 $AJAX_INCLUDE = 1;
 
 include ('../inc/includes.php');
@@ -42,11 +43,44 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (isset($_POST['itilfollowuptemplates_id'])
-    && $_POST['itilfollowuptemplates_id'] > 0) {
-   $template = new ITILFollowupTemplate();
-   $template->getFromDB($_POST['itilfollowuptemplates_id']);
-
-   $template->fields = array_map('html_entity_decode', $template->fields);
-   echo json_encode($template->fields);
+// Mandatory parameter: itilfollowuptemplates_id
+$itilfollowuptemplates_id = $_POST['itilfollowuptemplates_id'] ?? null;
+if ($itilfollowuptemplates_id === null) {
+   Toolbox::throwError(400, "Missing or invalid parameter: 'itilfollowuptemplates_id'");
+} else if ($itilfollowuptemplates_id == 0) {
+   // Reset form
+   echo json_encode([
+      'content' => ""
+   ]);
+   die;
 }
+
+// Mandatory parameter: items_id
+$parents_id = $_POST['items_id'] ?? 0;
+if (!$parents_id) {
+   Toolbox::throwError(400, "Missing or invalid parameter: 'items_id'");
+}
+
+// Mandatory parameter: itemtype
+$parents_itemtype = $_POST['itemtype'] ?? '';
+if (empty($parents_itemtype) || !is_subclass_of($parents_itemtype, CommonITILObject::class)) {
+   Toolbox::throwError(400, "Missing or invalid parameter: 'itemtype'");
+}
+
+// Load followup template
+$template = new ITILFollowupTemplate();
+if (!$template->getFromDB($itilfollowuptemplates_id)) {
+   Toolbox::throwError(400, "Unable to load template: $itilfollowuptemplates_id");
+}
+
+// Load parent item
+$parent = new $parents_itemtype();
+if (!$parent->getFromDB($parents_id)) {
+   Toolbox::throwError(400, "Unable to load parent item: $parents_itemtype $parents_id");
+}
+
+// Render template content using twig
+$template->fields['content'] = $template->getRenderedContent($parent);
+
+// Return json response with the template fields
+echo json_encode($template->fields);

@@ -30,115 +30,90 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 include ('../inc/includes.php');
 
 Session::checkLoginUser();
 
-if (!isset($_REQUEST['action'])) {
-   exit;
-}
-
-if ($_REQUEST['action'] == 'change_task_state') {
+if (($_POST['action'] ?? null) === 'change_task_state') {
    header("Content-Type: application/json; charset=UTF-8");
-} else {
-   header("Content-Type: text/html; charset=UTF-8");
-}
 
-$objType = $_REQUEST['parenttype']::getType();
-$foreignKey = $_REQUEST['parenttype']::getForeignKeyField();
+   if (!isset($_POST['tasks_id'])
+       || !isset($_POST['parenttype']) || ($parent = getItemForItemtype($_POST['parenttype'])) === false) {
+      exit();
+   }
 
-switch ($_REQUEST['action']) {
-   case "change_task_state":
-      if (!isset($_REQUEST['tasks_id'])) {
-         exit();
+   $taskClass = $parent->getType()."Task";
+   $task = new $taskClass;
+   $task->getFromDB(intval($_POST['tasks_id']));
+   if (!in_array($task->fields['state'], [0, Planning::INFO])) {
+      $new_state = ($task->fields['state'] == Planning::DONE)
+                        ? Planning::TODO
+                        : Planning::DONE;
+      $new_label = Planning::getState($new_state);
+      echo json_encode([
+         'state'  => $new_state,
+         'label'  => $new_label
+      ]);
+
+      $foreignKey = $parent->getForeignKeyField();
+      $task->update([
+         'id'        => intval($_POST['tasks_id']),
+         $foreignKey => intval($_POST[$foreignKey]),
+         'state'     => $new_state
+      ]);
+   }
+} else if (($_REQUEST['action'] ?? null) === 'viewsubitem') {
+   header("Content-Type: text/html; charset=UTF-8");      Html::header_nocache();
+   if (!isset($_REQUEST['type'])) {
+      exit();
+   }
+   if (!isset($_REQUEST['parenttype'])) {
+      exit();
+   }
+
+   $item = getItemForItemtype($_REQUEST['type']);
+   $parent = getItemForItemtype($_REQUEST['parenttype']);
+
+   $twig = TemplateRenderer::getInstance();
+   $template = null;
+   if (isset($_REQUEST[$parent::getForeignKeyField()])) {
+      $parent->getFromDB($_REQUEST[$parent::getForeignKeyField()]);
+   }
+   $id = isset($_REQUEST['id']) && (int)$_REQUEST['id'] > 0 ? $_REQUEST['id'] : null;
+   if ($id) {
+      $item->getFromDB($id);
+   }
+   $params = [
+      'item'      => $parent,
+      'subitem'   => $item
+   ];
+
+   if ($_REQUEST['type'] === ITILFollowup::class) {
+      $template = 'form_followup';
+   } else if ($_REQUEST['type'] === ITILSolution::class) {
+      $template = 'form_solution';
+      $params['kb_id_toload'] = $_REQUEST['load_kb_sol'] ?? 0;
+   } else if (is_subclass_of($_REQUEST['type'], CommonITILTask::class)) {
+      $template = 'form_task';
+   } else if (is_subclass_of($_REQUEST['type'], CommonITILValidation::class)) {
+      $template = 'form_validation';
+   } else if ($id !== null && $parent->getID() >= 0) {
+      $ol = ObjectLock::isLocked( $_REQUEST['parenttype'], $parent->getID() );
+      if ($ol && (Session::getLoginUserID() != $ol->fields['users_id'])) {
+         ObjectLock::setReadOnlyProfile();
       }
-
-      $taskClass = $objType."Task";
-      $task = new $taskClass;
-      $task->getFromDB(intval($_REQUEST['tasks_id']));
-      if (!in_array($task->fields['state'], [0, Planning::INFO])) {
-         $new_state = ($task->fields['state'] == Planning::DONE)
-                           ? Planning::TODO
-                           : Planning::DONE;
-         $new_label = Planning::getState($new_state);
-         echo json_encode([
-            'state'  => $new_state,
-            'label'  => $new_label
-         ]);
-
-         $task->update([
-            'id'         => intval($_REQUEST['tasks_id']),
-            $foreignKey => intval($_REQUEST[$foreignKey]),
-            'state'      => $new_state
-         ]);
-      }
-      break;
-   case "viewsubitem":
-      Html::header_nocache();
-      if (!isset($_REQUEST['type'])) {
-         exit();
-      }
-      if (!isset($_REQUEST['parenttype'])) {
-         exit();
-      }
-
-      $item = getItemForItemtype($_REQUEST['type']);
-      $parent = getItemForItemtype($_REQUEST['parenttype']);
-
-      if ($_REQUEST['type'] == "Solution") {
-         $parent->getFromDB($_REQUEST[$parent->getForeignKeyField()]);
-
-         if (!isset($_REQUEST['load_kb_sol'])) {
-            $_REQUEST['load_kb_sol'] = 0;
-         }
-
-         $sol_params = [
-            'item'         => $parent,
-            'kb_id_toload' => $_REQUEST['load_kb_sol']
-         ];
-
-         $solution = new ITILSolution();
-         $id = isset($_REQUEST['id']) && (int)$_REQUEST['id'] > 0 ? $_REQUEST['id'] : null;
-         if ($id) {
-            $solution->getFromDB($id);
-         }
-         $solution->showForm($id, $sol_params);
-      } else if ($_REQUEST['type'] == "ITILFollowup") {
-         $parent->getFromDB($_REQUEST[$parent->getForeignKeyField()]);
-
-         $fup_params = [
-            'item'      => $parent
-         ];
-
-         $fup = new ITILFollowup();
-         $id = isset($_REQUEST['id']) && (int)$_REQUEST['id'] > 0 ? $_REQUEST['id'] : null;
-         if ($id) {
-            $fup->getFromDB($id);
-         }
-         $fup->showForm($id, $fup_params);
-      } else if (substr_compare($_REQUEST['type'], 'Validation', -10) === 0) {
-         $parent->getFromDB($_REQUEST[$parent->getForeignKeyField()]);
-         $validation = new $_REQUEST['type']();
-         $id = isset($_REQUEST['id']) && (int)$_REQUEST['id'] > 0 ? $_REQUEST['id'] : null;
-         if ($id) {
-            $validation->getFromDB($id);
-         }
-         $validation->showForm($id, ['parent' => $parent]);
-      } else if (isset($_REQUEST[$parent->getForeignKeyField()])
-            && isset($_REQUEST["id"])
-            && $parent->getFromDB($_REQUEST[$parent->getForeignKeyField()])) {
-
-         $ol = ObjectLock::isLocked( $_REQUEST['parenttype'], $parent->getID() );
-         if ($ol && (Session::getLoginUserID() != $ol->fields['users_id'])) {
-            ObjectLock::setReadOnlyProfile( );
-         }
-
-         $parent::showSubForm($item, $_REQUEST["id"], ['parent' => $parent,
-                                                      $foreignKey => $_REQUEST[$foreignKey]]);
-      } else {
-         echo __('Access denied');
-      }
-
+      $foreignKey = $parent->getForeignKeyField();
+      $params[$foreignKey] = $_REQUEST[$foreignKey];
+      $parent::showSubForm($item, $_REQUEST["id"], ['parent' => $parent, $foreignKey => $_REQUEST[$foreignKey]]);
       Html::ajaxFooter();
-      break;
+      exit();
+   }
+   if ($template === null) {
+      echo __('Access denied');
+      Html::ajaxFooter();
+      exit();
+   }
+   $twig->display("components/itilobject/timeline/{$template}.html.twig", $params);
 }

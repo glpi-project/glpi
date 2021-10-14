@@ -40,19 +40,19 @@ namespace Glpi\Api;
 use APIClient;
 use Auth;
 use Change;
+use CommonDBTM;
 use CommonDevice;
-use CommonGLPI;
 use CommonITILObject;
 use Config;
 use Contract;
 use Document;
 use Dropdown;
-use Glpi\Exception\ForgetPasswordException;
-use Glpi\Exception\PasswordTooWeakException;
+use Glpi\Toolbox\Sanitizer;
 use Html;
 use Infocom;
 use Item_Devices;
 use Log;
+use MassiveAction;
 use Michelf\MarkdownExtra;
 use NetworkEquipment;
 use NetworkPort;
@@ -63,11 +63,12 @@ use SavedSearch;
 use Search;
 use Session;
 use Software;
+use Symfony\Component\DomCrawler\Crawler;
 use Ticket;
 use Toolbox;
 use User;
 
-abstract class API extends CommonGLPI {
+abstract class API {
 
    // permit writing to $_SESSION
    protected $session_write = false;
@@ -269,7 +270,7 @@ abstract class API extends CommonGLPI {
 
       // login on glpi
       if (!$auth->login($params['login'], $params['password'], $noAuto, false, $params['auth'])) {
-         $err = Html::clean($auth->getErr());
+         $err = Toolbox::stripTags($auth->getErr());
          if (isset($params['user_token'])
              && !empty($params['user_token'])) {
             return $this->returnError(__("parameter user_token seems invalid"), 401, "ERROR_GLPI_LOGIN_USER_TOKEN", false);
@@ -532,9 +533,9 @@ abstract class API extends CommonGLPI {
     *    - 'get_sha1':         Get a sha1 signature instead of the full answer. default: false. Optionnal
     *    - 'with_devices':  Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optionnal.
     *    - 'with_disks':       Only for Computer, retrieve the associated filesystems. Optionnal.
-    *    - 'with_softwares':   Only for Computer, retrieve the associated softwares installations. Optionnal.
+    *    - 'with_softwares':   Only for Computer, retrieve the associated software installations. Optionnal.
     *    - 'with_connections': Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optionnal.
-    *    - 'with_networkports':Retrieve all network connections and advanced network informations. Optionnal.
+    *    - 'with_networkports':Retrieve all network connections and advanced informations. Optionnal.
     *    - 'with_infocoms':    Retrieve financial and administrative informations. Optionnal.
     *    - 'with_contracts':   Retrieve associated contracts. Optionnal.
     *    - 'with_documents':   Retrieve associated external documents. Optionnal.
@@ -641,7 +642,7 @@ abstract class API extends CommonGLPI {
             ]
          ]);
          $fields['_disks'] = [];
-         while ($data = $fs_iterator->next()) {
+         foreach ($fs_iterator as $data) {
             unset($data['items_id']);
             unset($data['is_deleted']);
             $fields['_disks'][] = ['name' => $data];
@@ -690,7 +691,7 @@ abstract class API extends CommonGLPI {
                   'glpi_softwareversions.name'
                ]
             ]);
-            while ($data = $soft_iterator->next()) {
+            foreach ($soft_iterator as $data) {
                $fields['_softwares'][] = $data;
             }
          }
@@ -729,7 +730,7 @@ abstract class API extends CommonGLPI {
                      'glpi_computers_items.is_deleted'   => 0
                   ]
                ]);
-               while ($data = $iterator->next()) {
+               foreach ($iterator as $data) {
                   $fields['_connections'][$connect_type][] = $data;
                }
             }
@@ -737,167 +738,8 @@ abstract class API extends CommonGLPI {
       }
 
       // retrieve item networkports
-      if (isset($params['with_networkports'])
-          && $params['with_networkports']) {
-         $fields['_networkports'] = [];
-         if (!NetworkEquipment::canView()) {
-            $fields['_networkports'] = $this->arrayRightError();
-         } else {
-            foreach (NetworkPort::getNetworkPortInstantiations() as $networkport_type) {
-               $netport_table = $networkport_type::getTable();
-               $netp_iterator = $DB->request([
-                  'SELECT'    => [
-                     'netp.id AS netport_id',
-                     'netp.entities_id',
-                     'netp.is_recursive',
-                     'netp.logical_number',
-                     'netp.name',
-                     'netp.mac',
-                     'netp.comment',
-                     'netp.is_dynamic',
-                     'netp_subtable.*'
-                  ],
-                  'FROM'      => 'glpi_networkports AS netp',
-                  'LEFT JOIN' => [
-                     "$netport_table AS netp_subtable" => [
-                        'ON' => [
-                           'netp_subtable'   => 'networkports_id',
-                           'netp'            => 'id'
-                        ]
-                     ]
-                  ],
-                  'WHERE'     => [
-                     'netp.instantiation_type'  => $networkport_type,
-                     'netp.items_id'            => $id,
-                     'netp.itemtype'            => $itemtype,
-                     'netp.is_deleted'          => 0
-                  ]
-               ]);
-
-               while ($data = $netp_iterator->next()) {
-                  if (isset($data['netport_id'])) {
-                     // append network name
-                     $concat_expr = new QueryExpression(
-                        "GROUP_CONCAT(CONCAT(".$DB->quoteName('ipadr.id').", ".$DB->quoteValue(Search::SHORTSEP)." , ".$DB->quoteName('ipadr.name').")
-                        SEPARATOR ".$DB->quoteValue(Search::LONGSEP).") AS ".$DB->quoteName('ipadresses')
-                     );
-                     $netn_iterator = $DB->request([
-                        'SELECT'    => [
-                           $concat_expr,
-                           'netn.id AS networknames_id',
-                           'netn.name AS networkname',
-                           'netn.fqdns_id',
-                           'fqdn.name AS fqdn_name',
-                           'fqdn.fqdn'
-                        ],
-                        'FROM'      => [
-                           'glpi_networknames AS netn'
-                        ],
-                        'LEFT JOIN' => [
-                           'glpi_ipaddresses AS ipadr'               => [
-                              'ON' => [
-                                 'ipadr'  => 'items_id',
-                                 'netn'   => 'id',
-                                 [
-                                    'AND' => ['ipadr.itemtype' => 'NetworkName']
-                                 ]
-                              ]
-                           ],
-                           'glpi_fqdns AS fqdn'                      => [
-                              'ON' => [
-                                 'fqdn'   => 'id',
-                                 'netn'   => 'fqdns_id'
-                              ]
-                           ],
-                           'glpi_ipaddresses_ipnetworks AS ipadnet'  => [
-                              'ON' => [
-                                 'ipadnet'   => 'ipaddresses_id',
-                                 'ipadr'     => 'id'
-                              ]
-                           ],
-                           'glpi_ipnetworks AS ipnet'                => [
-                              'ON' => [
-                                 'ipnet'     => 'id',
-                                 'ipadnet'   => 'ipnetworks_id'
-                              ]
-                           ]
-                        ],
-                        'WHERE'     => [
-                           'netn.itemtype'   => 'NetworkPort',
-                           'netn.items_id'   => $data['netport_id']
-                        ],
-                        'GROUPBY'   => [
-                           'netn.id',
-                           'netn.name',
-                           'netn.fqdns_id',
-                           'fqdn.name',
-                           'fqdn.fqdn'
-                        ]
-                     ]);
-
-                     if (count($netn_iterator)) {
-                        $data_netn = $netn_iterator->next();
-
-                        $raw_ipadresses = explode(Search::LONGSEP, $data_netn['ipadresses']);
-                        $ipadresses = [];
-                        foreach ($raw_ipadresses as $ipadress) {
-                           $ipadress = explode(Search::SHORTSEP, $ipadress);
-
-                           //find ip network attached to these ip
-                           $ipnetworks = [];
-                           $ipnet_iterator = $DB->request([
-                              'SELECT'       => [
-                                 'ipnet.id',
-                                 'ipnet.completename',
-                                 'ipnet.name',
-                                 'ipnet.address',
-                                 'ipnet.netmask',
-                                 'ipnet.gateway',
-                                 'ipnet.ipnetworks_id',
-                                 'ipnet.comment'
-                              ],
-                              'FROM'         => 'glpi_ipnetworks AS ipnet',
-                              'INNER JOIN'   => [
-                                 'glpi_ipaddresses_ipnetworks AS ipadnet' => [
-                                    'ON' => [
-                                       'ipadnet'   => 'ipnetworks_id',
-                                       'ipnet'     => 'id'
-                                    ]
-                                 ]
-                              ],
-                              'WHERE'        => [
-                                 'ipadnet.ipaddresses_id'  => $ipadress[0]
-                              ]
-                           ]);
-                           while ($data_ipnet = $ipnet_iterator->next()) {
-                              $ipnetworks[] = $data_ipnet;
-                           }
-
-                           $ipadresses[] = [
-                              'id'        => $ipadress[0],
-                              'name'      => $ipadress[1],
-                              'IPNetwork' => $ipnetworks
-                           ];
-                        }
-
-                        $data['NetworkName'] = [
-                           'id'         => $data_netn['networknames_id'],
-                           'name'       => $data_netn['networkname'],
-                           'fqdns_id'   => $data_netn['fqdns_id'],
-                           'FQDN'       => [
-                              'id'   => $data_netn['fqdns_id'],
-                              'name' => $data_netn['fqdn_name'],
-                              'fqdn' => $data_netn['fqdn']
-                           ],
-                           'IPAddress' => $ipadresses
-                        ];
-                     }
-                  }
-
-                  $fields['_networkports'][$networkport_type][] = $data;
-               }
-            }
-         }
+      if (isset($params['with_networkports']) && $params['with_networkports']) {
+         $fields['_networkports'] = $this->getNetworkPorts($id, $itemtype);
       }
 
       // retrieve item infocoms
@@ -944,7 +786,7 @@ abstract class API extends CommonGLPI {
                ] + getEntitiesRestrictCriteria('glpi_contracts', '', '', true),
                'ORDERBY'   => 'glpi_contracts.name'
             ]);
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $fields['_contracts'][] = $data;
             }
          }
@@ -1002,7 +844,7 @@ abstract class API extends CommonGLPI {
                ],
                'WHERE'     => $doc_criteria,
             ]);
-            while ($data = $doc_iterator->next()) {
+            foreach ($doc_iterator as $data) {
                $fields['_documents'][] = $data;
             }
          }
@@ -1021,7 +863,7 @@ abstract class API extends CommonGLPI {
                'glpi_items_tickets.itemtype' => $itemtype
             ] + getEntitiesRestrictCriteria(Ticket::getTable());
             $iterator = $DB->request($criteria);
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $fields['_tickets'][] = $data;
             }
          }
@@ -1040,7 +882,7 @@ abstract class API extends CommonGLPI {
                'glpi_items_problems.itemtype' => $itemtype
             ] + getEntitiesRestrictCriteria(Problem::getTable());
             $iterator = $DB->request($criteria);
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $fields['_problems'][] = $data;
             }
          }
@@ -1059,7 +901,7 @@ abstract class API extends CommonGLPI {
                'glpi_changes_items.itemtype' => $itemtype
             ] + getEntitiesRestrictCriteria(Change::getTable());
             $iterator = $DB->request($criteria);
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $fields['_changes'][] = $data;
             }
          }
@@ -1161,6 +1003,7 @@ abstract class API extends CommonGLPI {
     * - 'searchText'       (default: NULL): array of filters to pass on the query (with key = field and value the search)
     * - 'is_deleted'       (default: false): show trashbin. Optionnal
     * - 'add_keys_names'   (default: []): insert raw name(s) for given itemtype(s) and fkey(s)
+    * - 'with_networkports'(default: false): Retrieve all network connections and advanced informations. Optional.
     * @param integer $totalcount output parameter who receive the total count of the query resulat.
     *                            As this function paginate results (with a mysql LIMIT),
     *                            we can have the full range. (default 0)
@@ -1175,14 +1018,15 @@ abstract class API extends CommonGLPI {
 
       // default params
       $default = ['expand_dropdowns' => false,
-                       'get_hateoas'      => true,
-                       'only_id'          => false,
-                       'range'            => "0-".$_SESSION['glpilist_limit'],
-                       'sort'             => "id",
-                       'order'            => "ASC",
-                       'searchText'       => null,
-                       'is_deleted'       => false,
-                       'add_keys_names'   => [],
+                       'get_hateoas'       => true,
+                       'only_id'           => false,
+                       'range'             => "0-".$_SESSION['glpilist_limit'],
+                       'sort'              => "id",
+                       'order'             => "ASC",
+                       'searchText'        => null,
+                       'is_deleted'        => false,
+                       'add_keys_names'    => [],
+                       'with_networkports' => false,
       ];
       $params = array_merge($default, $params);
 
@@ -1222,6 +1066,7 @@ abstract class API extends CommonGLPI {
       $already_linked_table = [];
       $join = Search::addDefaultJoin($itemtype, $table, $already_linked_table);
       $where = Search::addDefaultWhere($itemtype);
+
       if ($where == '') {
          $where = "1=1 ";
       }
@@ -1339,6 +1184,10 @@ abstract class API extends CommonGLPI {
                );
             }
 
+            if (isset($params['with_networkports']) && $params['with_networkports']) {
+               $data['_networkports'] = $this->getNetworkPorts($data['id'], $itemtype);
+            }
+
             $found[] = $data;
          }
       }
@@ -1404,9 +1253,9 @@ abstract class API extends CommonGLPI {
     *    - 'get_sha1':          Get a sha1 signature instead of the full answer. default: false. Optionnal
     *    - 'with_devices':   Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optionnal.
     *    - 'with_disks':        Only for Computer, retrieve the associated filesystems. Optionnal.
-    *    - 'with_softwares':    Only for Computer, retrieve the associated softwares installations. Optionnal.
+    *    - 'with_softwares':    Only for Computer, retrieve the associated software installations. Optionnal.
     *    - 'with_connections':  Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optionnal.
-    *    - 'with_networkports': Retrieve all network connections and advanced network informations. Optionnal.
+    *    - 'with_networkports': Retrieve all network connections and advanced informations. Optionnal.
     *    - 'with_infocoms':     Retrieve financial and administrative informations. Optionnal.
     *    - 'with_contracts':    Retrieve associated contracts. Optionnal.
     *    - 'with_documents':    Retrieve associated external documents. Optionnal.
@@ -1586,7 +1435,7 @@ abstract class API extends CommonGLPI {
     *    - 'metacriteria' (optionnal): array of metacriterion object to filter search.
     *                                  Optionnal.
     *                                  A meta search is a link with another itemtype
-    *                                  (ex: Computer with softwares).
+    *                                  (ex: Computer with software).
     *         Each metacriterion object must provide :
     *            - link: logical operator in [AND, OR, AND NOT, AND NOT]. Mandatory
     *            - itemtype: second itemtype to link.
@@ -1878,7 +1727,7 @@ abstract class API extends CommonGLPI {
                $object["_add"] = true;
 
                //add current item
-               $object = Toolbox::sanitize($object);
+               $object = Sanitizer::sanitize($object, true);
                $new_id = $item->add($object);
                if ($new_id === false) {
                   $failed++;
@@ -2005,7 +1854,7 @@ abstract class API extends CommonGLPI {
                   }
 
                   //update item
-                  $object = Toolbox::sanitize((array)$object);
+                  $object = Sanitizer::sanitize((array)$object, true);
                   $update_return = $item->update($object);
                   if ($update_return === false) {
                      $failed++;
@@ -2174,7 +2023,7 @@ abstract class API extends CommonGLPI {
          $email = Toolbox::addslashes_deep($params['email']);
          try {
             $user->forgetPassword($email);
-         } catch (ForgetPasswordException $e) {
+         } catch (\Glpi\Exception\ForgetPasswordException $e) {
             return $this->returnError($e->getMessage());
          }
          return $this->returnResponse([
@@ -2191,9 +2040,9 @@ abstract class API extends CommonGLPI {
          try {
             $user->updateForgottenPassword($input);
             return $this->returnResponse([__("Reset password successful.")]);
-         } catch (ForgetPasswordException $e) {
+         } catch (\Glpi\Exception\ForgetPasswordException $e) {
             return $this->returnError($e->getMessage());
-         } catch (PasswordTooWeakException $e) {
+         } catch (\Glpi\Exception\PasswordTooWeakException $e) {
             implode('\n', $e->getMessages());
             return $this->returnError(implode('\n', $e->getMessages()));
          }
@@ -2347,7 +2196,7 @@ abstract class API extends CommonGLPI {
       // clean html
       foreach ($messages_after_redirect as $messages) {
          foreach ($messages as $message) {
-            $all_messages[] = Html::clean($message);
+            $all_messages[] = Toolbox::stripTags($message);
          }
       }
 
@@ -2496,11 +2345,7 @@ abstract class API extends CommonGLPI {
 
                // expand dropdown
                if ($params['expand_dropdowns']) {
-                  $value = Dropdown::getDropdownName($tablename, $value);
-                  // fix value for inexistent items
-                  if ($value == "&nbsp;") {
-                     $value = "";
-                  }
+                  $value = Dropdown::getDropdownName($tablename, $value, false, true, false, '');
                }
             }
          }
@@ -2812,6 +2657,187 @@ abstract class API extends CommonGLPI {
    }
 
    /**
+    * Get network ports
+    *
+    * @since 10.0.0
+    *
+    * @param int    $id         Id of the source item
+    * @param string  $itemtype  Type of the source item
+    *
+    * @return array
+    */
+   protected function getNetworkPorts(
+      int $id,
+      string $itemtype
+   ): array {
+      global $DB;
+
+      $_networkports = [];
+
+      if (!NetworkEquipment::canView()) {
+         $_networkports = $this->arrayRightError();
+      } else {
+         $networkport_types = NetworkPort::getNetworkPortInstantiations();
+         foreach ($networkport_types as $networkport_type) {
+            $netport_table = $networkport_type::getTable();
+            $netp_iterator = $DB->request([
+               'SELECT'    => [
+                  'netp.id AS netport_id',
+                  'netp.entities_id',
+                  'netp.is_recursive',
+                  'netp.logical_number',
+                  'netp.name',
+                  'netp.mac',
+                  'netp.comment',
+                  'netp.is_dynamic',
+                  'netp_subtable.*'
+               ],
+               'FROM'      => 'glpi_networkports AS netp',
+               'LEFT JOIN' => [
+                  "$netport_table AS netp_subtable" => [
+                     'ON' => [
+                        'netp_subtable'   => 'networkports_id',
+                        'netp'            => 'id'
+                     ]
+                  ]
+               ],
+               'WHERE'     => [
+                  'netp.instantiation_type'  => $networkport_type,
+                  'netp.items_id'            => $id,
+                  'netp.itemtype'            => $itemtype,
+                  'netp.is_deleted'          => 0
+               ]
+            ]);
+
+            foreach ($netp_iterator as $data) {
+               if (isset($data['netport_id'])) {
+                  // append network name
+                  $concat_expr = new QueryExpression(
+                     "GROUP_CONCAT(CONCAT(".$DB->quoteName('ipadr.id').", ".$DB->quoteValue(Search::SHORTSEP)." , ".$DB->quoteName('ipadr.name').")
+                     SEPARATOR ".$DB->quoteValue(Search::LONGSEP).") AS ".$DB->quoteName('ipadresses')
+                  );
+                  $netn_iterator = $DB->request([
+                     'SELECT'    => [
+                        $concat_expr,
+                        'netn.id AS networknames_id',
+                        'netn.name AS networkname',
+                        'netn.fqdns_id',
+                        'fqdn.name AS fqdn_name',
+                        'fqdn.fqdn'
+                     ],
+                     'FROM'      => [
+                        'glpi_networknames AS netn'
+                     ],
+                     'LEFT JOIN' => [
+                        'glpi_ipaddresses AS ipadr'               => [
+                           'ON' => [
+                              'ipadr'  => 'items_id',
+                              'netn'   => 'id',
+                              [
+                                 'AND' => ['ipadr.itemtype' => 'NetworkName']
+                              ]
+                           ]
+                        ],
+                        'glpi_fqdns AS fqdn'                      => [
+                           'ON' => [
+                              'fqdn'   => 'id',
+                              'netn'   => 'fqdns_id'
+                           ]
+                        ],
+                        'glpi_ipaddresses_ipnetworks AS ipadnet'  => [
+                           'ON' => [
+                              'ipadnet'   => 'ipaddresses_id',
+                              'ipadr'     => 'id'
+                           ]
+                        ],
+                        'glpi_ipnetworks AS ipnet'                => [
+                           'ON' => [
+                              'ipnet'     => 'id',
+                              'ipadnet'   => 'ipnetworks_id'
+                           ]
+                        ]
+                     ],
+                     'WHERE'     => [
+                        'netn.itemtype'   => 'NetworkPort',
+                        'netn.items_id'   => $data['netport_id']
+                     ],
+                     'GROUPBY'   => [
+                        'netn.id',
+                        'netn.name',
+                        'netn.fqdns_id',
+                        'fqdn.name',
+                        'fqdn.fqdn'
+                     ]
+                  ]);
+
+                  if (count($netn_iterator)) {
+                     $data_netn = $netn_iterator->current();
+
+                     $raw_ipadresses = explode(Search::LONGSEP, $data_netn['ipadresses']);
+                     $ipadresses = [];
+                     foreach ($raw_ipadresses as $ipadress) {
+                        $ipadress = explode(Search::SHORTSEP, $ipadress);
+
+                        //find ip network attached to these ip
+                        $ipnetworks = [];
+                        $ipnet_iterator = $DB->request([
+                           'SELECT'       => [
+                              'ipnet.id',
+                              'ipnet.completename',
+                              'ipnet.name',
+                              'ipnet.address',
+                              'ipnet.netmask',
+                              'ipnet.gateway',
+                              'ipnet.ipnetworks_id',
+                              'ipnet.comment'
+                           ],
+                           'FROM'         => 'glpi_ipnetworks AS ipnet',
+                           'INNER JOIN'   => [
+                              'glpi_ipaddresses_ipnetworks AS ipadnet' => [
+                                 'ON' => [
+                                    'ipadnet'   => 'ipnetworks_id',
+                                    'ipnet'     => 'id'
+                                 ]
+                              ]
+                           ],
+                           'WHERE'        => [
+                              'ipadnet.ipaddresses_id'  => $ipadress[0]
+                           ]
+                        ]);
+                        foreach ($ipnet_iterator as $data_ipnet) {
+                           $ipnetworks[] = $data_ipnet;
+                        }
+
+                        $ipadresses[] = [
+                           'id'        => $ipadress[0],
+                           'name'      => $ipadress[1],
+                           'IPNetwork' => $ipnetworks
+                        ];
+                     }
+
+                     $data['NetworkName'] = [
+                        'id'         => $data_netn['networknames_id'],
+                        'name'       => $data_netn['networkname'],
+                        'fqdns_id'   => $data_netn['fqdns_id'],
+                        'FQDN'       => [
+                           'id'   => $data_netn['fqdns_id'],
+                           'name' => $data_netn['fqdn_name'],
+                           'fqdn' => $data_netn['fqdn']
+                        ],
+                        'IPAddress' => $ipadresses
+                     ];
+                  }
+               }
+
+               $_networkports[$networkport_type][] = $data;
+            }
+         }
+      }
+
+      return $_networkports;
+   }
+
+   /**
     * Get the profile picture of the given user
     *
     * @since 9.5
@@ -2868,5 +2894,224 @@ abstract class API extends CommonGLPI {
     */
    public function isDeprecated(): bool {
       return $this->deprecated_item !== null;
+   }
+
+   /**
+    * "getMassiveActions" endpoint.
+    * Return possible massive actions for a given item or itemtype.
+    *
+    * @param string $itemtype    Itemtype for which to show possible massive actions
+    * @param int    $id          If >0, will load given item and restrict massive actions to this item
+    * @param bool   $is_deleted  Should we show massive action in "deleted" mode ?
+    * @return array
+    */
+   public function getMassiveActions(
+      string $itemtype,
+      ?int $id = null,
+      bool $is_deleted = false
+   ) {
+      if (is_null($id)) {
+         // No id supplied, show massive actions for the given itemtype
+         $actions = $this->getMassiveActionsForItemtype(
+            $itemtype,
+            $is_deleted
+         );
+      } else {
+         $item = new $itemtype();
+         if (!$item->getFromDB($id)) {
+            // Id was supplied but item can't be loaded -> error
+            return $this->returnError(
+               "Failed to load item (itemtype = '$itemtype', id = '$id')",
+               400,
+               "ERROR_ITEM_NOT_FOUND"
+            );
+         }
+
+         // Id supplied and item was loaded, show massive action for this
+         // specific item
+         $actions = $this->getMassiveActionsForItem($item);
+      }
+
+      // Build response array
+      $response = [];
+      foreach ($actions as $key => $label) {
+         $response[] = [
+            'key'   => $key,
+            'label' => $label,
+         ];
+      }
+      $this->returnResponse($response);
+   }
+
+   /**
+    * Return possible massive actions for a given itemtype.
+    *
+    * @param string $itemtype    Itemtype for which to show possible massive actions
+    * @param bool   $is_deleted  Should we show massive action in "deleted" mode ?
+    * @return array
+    */
+   public function getMassiveActionsForItemtype(
+      string $itemtype,
+      bool $is_deleted = false
+   ): array {
+      // Return massive actions for a given itemtype
+      return MassiveAction::getAllMassiveActions($itemtype, $is_deleted);
+   }
+
+   /**
+    * Return possible massive actions for a given item.
+    *
+    * @param CommonDBTM $item    Item for which to show possible massive actions
+    * @return array
+    */
+   public function getMassiveActionsForItem(CommonDBTM $item): array {
+      // Return massive actions for a given item
+      return MassiveAction::getAllMassiveActions(
+         $item::getType(),
+         $item->isDeleted(),
+         $item,
+         true
+      );
+   }
+
+   /**
+    * "getMassiveActionParameters" endpoint.
+    * Return required parameters for a given massive action key.
+    *
+    * @param string        $itemtype      Target itemtype
+    * @param string|null   $action_key    Target massive action
+    * @param bool          $is_deleted    Is this massive action to be used on items in the trashbin ?
+    * @return array
+    */
+   public function getMassiveActionParameters(
+      string $itemtype,
+      ?string $action_key,
+      bool $is_deleted
+   ) {
+      if (is_null($action_key)) {
+         return $this->returnError(
+            "Missing action key, run 'getMassiveActions' endpoint to see available keys",
+            400,
+            "ERROR_MASSIVEACTION_KEY"
+         );
+      }
+
+      $action = explode(':', $action_key);
+      if (($action[1] ?? "") == 'update') {
+         // Specific case, update form call "exit" function so we don't want to run the actual code
+         return $this->returnResponse([]);
+      }
+
+      $actions = MassiveAction::getAllMassiveActions($itemtype, false, null, $is_deleted);
+      if (!isset($actions[$action_key])) {
+         return $this->returnError(
+            "Invalid action key parameter, run 'getMassiveActions' endpoint to see available keys",
+            400,
+            "ERROR_MASSIVEACTION_KEY"
+         );
+      }
+
+      // Get massive action for the given key
+      $ma = new MassiveAction([
+         'action'     => $action_key,
+         'actions'    => $actions,
+         'items'      => [],
+         'is_deleted' => $is_deleted
+      ], [], 'specialize');
+
+      // Capture form display
+      ob_start();
+      $ma->showSubForm();
+      $html = ob_get_clean();
+
+      // Parse html to find all non hidden inputs, textareas and select
+      $inputs = [];
+      $crawler = new Crawler($html);
+      $crawler->filterXPath('//input')->each(function (Crawler $node, $i) use (&$inputs) {
+         if ($node->attr('type') != "hidden") {
+            $inputs[] = [
+               'name' => $node->attr('name'),
+               'type' => $node->attr('type'),
+            ];
+         }
+      });
+      $crawler->filterXPath('//select')->each(function (Crawler $node, $i) use (&$inputs) {
+         $type = 'select';
+         if (Toolbox::startsWith($node->attr('id'), 'dropdown_')) {
+            $type = 'dropdown';
+         }
+         $inputs[] = [
+            'name' => $node->attr('name'),
+            'type' => $type,
+         ];
+      });
+      $crawler->filterXPath('//textarea')->each(function (Crawler $node, $i) use (&$inputs) {
+         $inputs[] = [
+            'name' => $node->attr('name'),
+            'type' => 'text',
+         ];
+      });
+
+      return $this->returnResponse($inputs);
+   }
+
+
+   /**
+    * "applyMassiveAction" endpoint.
+    * Execute the given massive action
+    *
+    * @param string        $itemtype      Target itemtype
+    * @param string|null   $action_key    Target massive action
+    * @param array         $ids           Ids of items to execute the action on
+    * @param array         $params        Action parameters
+    * @return array
+    */
+   public function applyMassiveAction(
+      string $itemtype,
+      ?string $action_key,
+      array $ids,
+      array $params
+   ) {
+      if (is_null($action_key)) {
+         return $this->returnError(
+            "Missing action key, run 'getMassiveActions' endpoint to see available keys",
+            400,
+            "ERROR_MASSIVEACTION_KEY"
+         );
+      }
+
+      // Get processor
+      $action = explode(':', $action_key);
+      $processor = $action[0];
+
+      $ma = new MassiveAction([
+         'action'      => $action[1],
+         'action_name' => $action_key,
+         'items'       => [$itemtype => $ids],
+         'processor'   => $processor,
+      ] + $params, [], 'process');
+
+      $results = $ma->process();
+      unset($results['redirect']);
+
+      if ($results['ok'] == 0 && $results['ko'] == 0 && $results['noright'] == 0) {
+         // No items were processed, invalid action key -> 400
+         return $this->returnError(
+            "Invalid action key parameter, run 'getMassiveActions' endpoint to see available keys",
+            400,
+            "ERROR_MASSIVEACTION_KEY"
+         );
+      } else if ($results['ok'] > 0 && $results['ko'] == 0) {
+         // Success -> 200
+         $code = 200;
+      } else if ($results['ko'] > 0 && $results['ok'] > 0) {
+         // Failure AND success -> 207
+         $code = 207;
+      } else {
+         // Failure -> 422
+         $code = 422;
+      }
+
+      return $this->returnResponse($results, $code);
    }
 }

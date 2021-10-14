@@ -101,7 +101,6 @@ abstract class CommonITILCost extends CommonDBChild {
          'searchtype'         => 'contains',
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -346,7 +345,7 @@ abstract class CommonITILCost extends CommonDBChild {
          'SELECT' => ['SUM' => 'actiontime AS sumtime'],
          'FROM'   => $this->getTable(),
          'WHERE'  => [static::$items_id => $items_id]
-      ])->next();
+      ])->current();
       return $result['sumtime'];
    }
 
@@ -368,7 +367,7 @@ abstract class CommonITILCost extends CommonDBChild {
             'end_date DESC',
             'id DESC'
          ]
-      ])->next();
+      ])->current();
       return $result;
    }
 
@@ -411,7 +410,7 @@ abstract class CommonITILCost extends CommonDBChild {
       echo "<td>";
       echo "<input type='hidden' name='".static::$items_id."' value='".$item->fields['id']."'>";
 
-      Html::autocompletionTextField($this, 'name');
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
       echo "<td>".__('Begin date')."</td>";
       echo "<td>";
@@ -433,26 +432,26 @@ abstract class CommonITILCost extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Time cost')."</td><td>";
-      echo "<input type='text' size='15' name='cost_time' value='".
+      echo "<input type='text' class='form-control' size='15' name='cost_time' value='".
              Html::formatNumber($this->fields["cost_time"], true)."'>";
       echo "</td>";
       $rowspan = 4;
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
       echo "<td rowspan='$rowspan' class='middle'>";
-      echo "<textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"].
+      echo "<textarea class='form-control' name='comment' >".$this->fields["comment"].
            "</textarea>";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Fixed cost')."</td><td>";
-      echo "<input type='text' size='15' name='cost_fixed' value='".
+      echo "<input type='text' class='form-control' size='15' name='cost_fixed' value='".
              Html::formatNumber($this->fields["cost_fixed"], true)."'>";
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Material cost')."</td><td>";
-      echo "<input type='text' size='15' name='cost_material' value='".
+      echo "<input type='text' class='form-control' size='15' name='cost_material' value='".
              Html::formatNumber($this->fields["cost_material"], true)."'>";
       echo "</td>";
       echo "</tr>";
@@ -530,7 +529,7 @@ abstract class CommonITILCost extends CommonDBChild {
          echo "</script>\n";
          if (static::canCreate()) {
             echo "<div class='center firstbloc'>".
-                   "<a class='vsubmit' href='javascript:viewAddCost".$ID."_$rand();'>";
+                   "<a class='btn btn-primary' href='javascript:viewAddCost".$ID."_$rand();'>";
             echo __('Add a new cost')."</a></div>\n";
          }
       }
@@ -575,7 +574,7 @@ abstract class CommonITILCost extends CommonDBChild {
                                           sprintf(__('%1$s = %2$s'),
                                                 $item->getTypeName(1), $item->getName()));
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             echo "<tr class='tab_bg_2' ".
                      ($canedit
                      ? "style='cursor:pointer' onClick=\"viewEditCost".$data[static::$items_id]."_".

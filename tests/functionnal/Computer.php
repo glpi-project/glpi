@@ -28,7 +28,7 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 namespace tests\units;
 
@@ -350,11 +350,14 @@ class Computer extends DbTestCase {
       $this->boolean($comp->getFromDBByCrit(['name' => '_test_pc01']))->isTrue();
       $this->string($comp->getField('name'))->isIdenticalTo('_test_pc01');
 
-      $this->exception(
+      $this->when(
          function () use ($comp) {
             $this->boolean($comp->getFromDBByCrit(['name' => ['LIKE', '_test%']]))->isFalse();
          }
-      )->message->contains('getFromDBByCrit expects to get one result, 8 found!');
+      )->error()
+         ->withType(E_USER_WARNING)
+         ->withMessage('getFromDBByCrit expects to get one result, 8 found in query "SELECT `id` FROM `glpi_computers` WHERE `name` LIKE \'_test%\'".')
+         ->exists();
    }
 
    public function testClone() {

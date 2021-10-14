@@ -34,14 +34,14 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\RichText;
 use RRule\RRule;
 use Sabre\VObject\Component\VCalendar;
-use Sabre\VObject\Property\FlatText;
-use Sabre\VObject\Reader;
-use Sabre\VObject\ParseException;
 use Sabre\VObject\Component\VEvent;
 use Sabre\VObject\Component\VTodo;
+use Sabre\VObject\Property\FlatText;
 use Sabre\VObject\Property\ICalendar\Recur;
+use Sabre\VObject\Reader;
 
 /**
  * Planning Class
@@ -435,7 +435,7 @@ class Planning extends CommonGLPI {
       echo "<td class='center'>";
       echo "<input type='hidden' name='".$item->getForeignKeyField()."' value=\"".$item->getID()."\">";
       echo "<input type='hidden' name='itemtype' value=\"".$item->getType()."\">";
-      echo "<input type='submit' class='submit' name='checkavailability' value=\"".
+      echo "<input type='submit' class='btn btn-primary' name='checkavailability' value=\"".
              _sx('button', 'Search') ."\">";
       echo "</td>\n";
 
@@ -606,7 +606,7 @@ class Planning extends CommonGLPI {
       // see https://fullcalendar.io/license
       $scheduler_key = Plugin::doHookFunction('planning_scheduler_key');
 
-      echo "<div" . ($fullview ? " id='planning_container'" : "") . ">";
+      echo "<div" . ($fullview ? " id='planning_container'" : "") . " class='d-flex flex-wrap flex-sm-nowrap'>";
 
       // define options for current page
       $rand = '';
@@ -834,7 +834,7 @@ class Planning extends CommonGLPI {
          if ($filter_heading == "plannings") {
              echo "<a class='planning_link planning_add_filter' href='".$CFG_GLPI['root_doc'].
             '/ajax/planning.php?action=add_planning_form'."'>";
-            echo "<img class='pointer' src='".$CFG_GLPI['root_doc']."/pics/add_dark.png'>";
+            echo "<i class='fas fa-plus-circle'></i>";
             echo "</a>";
          }
          echo "</h3>";
@@ -847,8 +847,8 @@ class Planning extends CommonGLPI {
          echo "</ul>";
          echo "</div>";
       }
-      echo "</div>";
-      echo "</div>";
+      echo "</div>"; // #planning_filter_content
+      echo "</div>"; // #planning_filter
    }
 
 
@@ -866,6 +866,11 @@ class Planning extends CommonGLPI {
     */
    static function showSingleLinePlanningFilter($filter_key, $filter_data, $options = []) {
       global $CFG_GLPI;
+
+      // Invalid data, skip
+      if (!isset($filter_data['type'])) {
+         return;
+      }
 
       $params['show_delete']        = true;
       $params['filter_color_index'] = 0;
@@ -912,10 +917,13 @@ class Planning extends CommonGLPI {
       echo "<li event_type='".$filter_data['type']."'
                event_name='$filter_key'
                class='".$filter_data['type']."'>";
-      Html::showCheckbox(['name'          => 'filters[]',
-                               'value'         => $filter_key,
-                               'title'         => $title,
-                               'checked'       => $filter_data['display']]);
+      Html::showCheckbox([
+         'name'          => 'filters[]',
+         'value'         => $filter_key,
+         'id'            => $filter_key,
+         'title'         => $title,
+         'checked'       => $filter_data['display']
+      ]);
 
       if ($filter_data['type'] != 'event_filter') {
          $exploded = explode('_', $filter_data['type']);
@@ -936,12 +944,25 @@ class Planning extends CommonGLPI {
          $color = self::getPaletteColor('bg', $params['filter_color_index']);
       }
 
+      echo "<span class='ms-auto d-flex align-items-center'>";
+      // colors not for groups
+      if ($filter_data['type'] != 'group_users' && $filter_key != 'OnlyBgEvents') {
+         echo "<span class='color_input'>";
+         Html::showColorField($filter_key."_color",
+                              ['value' => $color]);
+         echo "</span>";
+      }
+
+      if ($filter_data['type'] == 'group_users') {
+         echo "<span class='toggle pointer'></span>";
+      }
+
       if ($filter_data['type'] != 'event_filter') {
-         echo "<span class='filter_option'>";
-         echo "<img class='pointer' src='".$CFG_GLPI['root_doc']."/pics/down.png' />";
-         echo "<ul>";
+         echo "<span class='filter_option dropstart'>";
+         echo "<i class='fas fa-ellipsis-v'></i>";
+         echo "<ul class='dropdown-menu '>";
          if ($params['show_delete']) {
-            echo "<li class='delete_planning' value='$filter_key'>".__("Delete")."</li>";
+            echo "<li class='delete_planning dropdown-item' value='$filter_key'>".__("Delete")."</li>";
          }
          if ($filter_data['type'] != 'group_users' && $filter_data['type'] != 'external') {
             $url = parse_url($CFG_GLPI["url_base"]);
@@ -960,14 +981,14 @@ class Planning extends CommonGLPI {
                        "&is_recursive=".$_SESSION["glpiactive_entity_recursive"].
                        "&token=".$loginUser->getAuthToken();
 
-            echo "<li><a target='_blank' href='".$CFG_GLPI["root_doc"]."$cal_url'>".
+            echo "<li class='dropdown-item'><a target='_blank' href='".$CFG_GLPI["root_doc"]."$cal_url'>".
                  _sx("button", "Export")." - ".__("Ical")."</a></li>";
 
-            echo "<li><a target='_blank' href='webcal://".$url['host'].":$port".
+            echo "<li class='dropdown-item'><a target='_blank' href='webcal://".$url['host'].":$port".
                  (isset($url['path'])?$url['path']:'')."$cal_url'>".
                  _sx("button", "Export")." - ".__("Webcal")."</a></li>";
 
-            echo "<li><a target='_blank' href='".$CFG_GLPI['root_doc'].
+            echo "<li class='dropdown-item'><a target='_blank' href='".$CFG_GLPI['root_doc'].
                  "/front/planningcsv.php?uID=".$uID."&gID=".$gID."'>".
                  _sx("button", "Export")." - ".__("CSV")."</a></li>";
 
@@ -977,24 +998,14 @@ class Planning extends CommonGLPI {
             $copy_js = 'copyTextToClipboard("' . $caldav_url . '");'
                . ' alert("' . __s('CalDAV URL has been copied to clipboard') . '");'
                . ' return false;';
-            echo "<li><a target='_blank' href='#'
+            echo "<li class='dropdown-item'><a target='_blank' href='#'
                  onclick='$copy_js'>".
                  __s("Copy CalDAV URL to clipboard")."</a></li>";
          }
          echo "</ul>";
          echo "</span>";
       }
-
-      // colors not for groups
-      if ($filter_data['type'] != 'group_users' && $filter_key != 'OnlyBgEvents') {
-         echo "<span class='color_input'>";
-         Html::showColorField($filter_key."_color",
-                              ['value' => $color]);
-         echo "</span>";
-      }
-      if ($filter_data['type'] == 'group_users') {
-         echo "<span class='toggle pointer'></span>";
-      }
+      echo "</span>";
 
       if ($filter_data['type'] == 'group_users') {
          echo "<ul class='group_listofusers filters'>";
@@ -1188,7 +1199,7 @@ class Planning extends CommonGLPI {
          }
          $item = getItemForItemtype($params['itemtype']);
          $item->showForm(intval($params['id']), $options);
-         $callback = "$('.ui-dialog-content').dialog('close');
+         $callback = "glpi_close_all_dialogs();
                       GLPIPlanning.refresh();
                       displayAjaxMessageAfterRedirect();";
          Html::ajaxForm("#edit_event_form$rand", $callback);
@@ -1362,7 +1373,7 @@ class Planning extends CommonGLPI {
             'res_items_id'       => $params['res_items_id'],
             'formoptions'        => "id='ajax_reminder$rand'"
          ]);
-         $callback = "$('.ui-dialog-content').dialog('close');
+         $callback = "glpi_close_all_dialogs();
                       GLPIPlanning.refresh();
                       displayAjaxMessageAfterRedirect();";
          Html::ajaxForm("#ajax_reminder$rand", $callback);
@@ -1421,7 +1432,7 @@ class Planning extends CommonGLPI {
          $end = date("Y-m-d H:i:s", strtotime($begin)+HOUR_TIMESTAMP);
       }
 
-      echo "<table class='card'>";
+      echo "<table class='planning_classic_card'>";
 
       if ($display_dates) {
          echo "<tr class='tab_bg_2'><td>".__('Start date')."</td><td>";
@@ -2011,7 +2022,7 @@ class Planning extends CommonGLPI {
          }
          try {
             $vcalendar = Reader::read($calendar_data);
-         } catch (ParseException $exception) {
+         } catch (\Sabre\VObject\ParseException $exception) {
             Toolbox::logError(sprintf('Unable to parse calendar data from URL "%s"', $planning_params['url']));
             continue;
          }
@@ -2282,16 +2293,20 @@ class Planning extends CommonGLPI {
          return false;
       }
 
-      echo "<table class='tab_cadrehov'>";
+      echo "<div class='table-responsive card-table'>";
+      echo "<table class='table'>";
+      echo "<thead>";
       echo "<tr class='noHover'><th>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php'>".__('Your planning')."</a>";
       echo "</th></tr>";
+      echo "</thead>";
 
       echo "<tr class='noHover'>";
       echo "<td class='planning_on_central'>";
       self::showPlanning(false);
       echo "</td></tr>";
       echo "</table>";
+      echo "</div>";
    }
 
 
@@ -2382,21 +2397,12 @@ class Planning extends CommonGLPI {
 
             if (isset($val["content"])) {
                $description = $val["content"];
-               // be sure to replace nl by \r\n
-               $description = preg_replace("/<br( [^>]*)?".">/i", "\r\n", $description);
-               $description = Html::clean($description);
             } else if (isset($val["text"])) {
                $description = $val["text"];
-               // be sure to replace nl by \r\n
-               $description = preg_replace("/<br( [^>]*)?".">/i", "\r\n", $description);
-               $description = Html::clean($description);
             } else if (isset($val["name"])) {
                $description = $val["name"];
-               // be sure to replace nl by \r\n
-               $description = preg_replace("/<br( [^>]*)?".">/i", "\r\n", $description);
-               $description = Html::clean($description);
             }
-            $vevent['DESCRIPTION'] = $description;
+            $vevent['DESCRIPTION'] = RichText::getTextFromHtml($description);
 
             if (isset($val["url"])) {
                $vevent['URL'] = $val["url"];

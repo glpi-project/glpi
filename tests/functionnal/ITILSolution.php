@@ -32,7 +32,7 @@
 
 namespace tests\units;
 
-use \DbTestCase;
+use DbTestCase;
 use Ticket;
 
 /* Test for inc/itilsolution.class.php */
@@ -187,7 +187,7 @@ class ITILSolution extends DbTestCase {
       ]))->isGreaterThan(0);
 
       $this->boolean($change->isNewItem())->isFalse();
-      $this->variable($change->getField('status'))->isIdenticalTo($change::INCOMING);
+      $this->variable($change->getField('status'))->isIdenticalTo($change::ASSIGNED);
 
       $solution = new \ITILSolution();
       $this->integer(
@@ -294,7 +294,7 @@ class ITILSolution extends DbTestCase {
             'content'   => '2nd solution, should be refused!'
          ])
       )->isFalse();
-      $this->hasSessionMessages(ERROR, ['The item is already solved, did anyone pushed a solution before you ?']);
+      $this->hasSessionMessages(ERROR, ['The item is already solved, did anyone pushed a solution before you?']);
    }
 
    public function testScreenshotConvertedIntoDocument() {
@@ -334,7 +334,7 @@ class ITILSolution extends DbTestCase {
 
       $instance->add($input);
       $this->boolean($instance->isNewItem())->isFalse();
-      $expected = 'a href=&quot;/front/document.send.php?docid=';
+      $expected = 'a href="/front/document.send.php?docid=';
       $this->string($instance->fields['content'])->contains($expected);
 
       // Test uploads for item update
@@ -356,7 +356,7 @@ class ITILSolution extends DbTestCase {
          ]
       ]);
       $this->boolean($success)->isTrue();
-      $expected = 'a href=&quot;/front/document.send.php?docid=';
+      $expected = 'a href="/front/document.send.php?docid=';
       $this->string($instance->fields['content'])->contains($expected);
    }
 

@@ -41,41 +41,40 @@ class Server extends DbTestCase {
    protected function propfindMainEndpointsProvider() {
       $dataset = [];
 
-      $group = new \Group();
-      $group_1_id = (int)$group->add([
-         'name' => 'Test group 1'
-      ]);
-      $this->integer($group_1_id)->isGreaterThan(0);
-      $group_2_id = (int)$group->add([
-         'name' => 'Test group 2'
-      ]);
-      $this->integer($group_2_id)->isGreaterThan(0);
+      $all_groups_id = array_keys(getAllDataFromTable('glpi_groups', ['is_task' => 1]));
+      $group_1_id = getItemByTypeName('Group', '_test_group_1', true);
+      $group_2_id = getItemByTypeName('Group', '_test_group_2', true);
 
       $users = [
          getItemByTypeName('User', 'glpi', true) => [
             'name'   => 'glpi',
             'pass'   => 'glpi',
             'groups' => [$group_1_id, $group_2_id],
+            'seeall' => false,
          ],
          getItemByTypeName('User', 'tech', true) => [
             'name'   => 'tech',
             'pass'   => 'tech',
             'groups' => [$group_1_id],
+            'seeall' => false,
          ],
          getItemByTypeName('User', 'normal', true) => [
             'name'   => 'normal',
             'pass'   => 'normal',
             'groups' => [$group_2_id],
+            'seeall' => false,
          ],
          getItemByTypeName('User', 'post-only', true) => [
             'name'   => 'post-only',
             'pass'   => 'postonly',
             'groups' => [],
+            'seeall' => false,
          ],
          getItemByTypeName('User', TU_USER, true) => [
             'name'   => TU_USER,
             'pass'   => TU_PASS,
             'groups' => [],
+            'seeall' => true,
          ],
       ];
 
@@ -157,7 +156,7 @@ class Server extends DbTestCase {
       }
 
       // All users should be able to get "groups" principals properties
-      // but result will only contains data for user groups.
+      // but result will only contains data for user groups (or all groups if user has enough rights).
       foreach ($users as $user_data) {
          $groups_expected_results = [
             [
@@ -165,7 +164,8 @@ class Server extends DbTestCase {
                'resourcetype' => 'd:collection',
             ],
          ];
-         foreach ($user_data['groups'] as $group_id) {
+         $groups = $user_data['seeall'] ? $all_groups_id : $user_data['groups'];
+         foreach ($groups as $group_id) {
             // Group principal should be listed in 'principals/groups/' result
             $groups_expected_results[] = [
                'href'         => 'principals/groups/' . $group_id . '/',
@@ -310,7 +310,7 @@ class Server extends DbTestCase {
       }
 
       // All users should be able to get "groups" calendars properties
-      // but result will only contains data for user groups.
+      // but result will only contains data for user groups (or all groups if user has enough rights).
       foreach ($users as $user_data) {
          $groups_expected_results = [
             [
@@ -318,7 +318,8 @@ class Server extends DbTestCase {
                'resourcetype' => 'd:collection',
             ],
          ];
-         foreach ($user_data['groups'] as $group_id) {
+         $groups = $user_data['seeall'] ? $all_groups_id : $user_data['groups'];
+         foreach ($groups as $group_id) {
             // Group principal should be listed in 'calendars/groups/' result
             $groups_expected_results[] = [
                'href'         => 'calendars/groups/' . $group_id . '/',
@@ -560,6 +561,7 @@ class Server extends DbTestCase {
       $event = new \PlanningExternalEvent();
       $event_id = (int)$event->add([
          'name'        => 'Test event created in GLPI',
+         'text'        => 'Evt description',
          'entities_id' => $_SESSION['glpiactive_entity'],
          'plan'        => [
             'begin' => '2019-06-15 13:00:00',
@@ -645,8 +647,8 @@ VCALENDAR
       $this->boolean($updated_event->getFromDBByCrit(['uuid' => $event->fields['uuid']]))->isTrue();
       $this->array($updated_event->fields)
          ->string['name']->isEqualTo('Test event updated from external source')
-         ->string['begin']->isEqualTo('2019-10-10 11:30:00')
-         ->string['rrule']->isEqualTo(''); // Validate that RRULE has been removed
+         ->string['begin']->isEqualTo('2019-10-10 11:30:00');
+      $this->variable($updated_event->fields['rrule'])->isNull(); // Validate that RRULE has been removed
 
       // Validate DELETE method
       $server = $this->getServerInstance('DELETE', $event_path);
@@ -950,8 +952,8 @@ VCALENDAR
          ->string['text']->isEqualTo('Description of the task.')
          ->integer['state']->isEqualTo(\Planning::TODO)
          ->string['begin']->isEqualTo('2019-11-01 08:00:00') // 1 hour offset between Europe/Paris and UTC
-         ->string['end']->isEqualTo('2019-11-01 08:15:00') // 1 hour offset between Europe/Paris and UTC
-         ->string['rrule']->isEqualTo('');
+         ->string['end']->isEqualTo('2019-11-01 08:15:00'); // 1 hour offset between Europe/Paris and UTC
+      $this->variable($event->fields['rrule'])->isNull();
 
       // Create done and not planned task
       $event_uuid = \Ramsey\Uuid\Uuid::uuid4()->toString();
@@ -991,8 +993,8 @@ VCALENDAR
          ->string['text']->isEqualTo('Description of the task.')
          ->integer['state']->isEqualTo(\Planning::DONE)
          ->variable['begin']->isEqualTo(null)
-         ->variable['end']->isEqualTo(null)
-         ->string['rrule']->isEqualTo('');
+         ->variable['end']->isEqualTo(null);
+      $this->variable($event->fields['rrule'])->isNull();
    }
 
    /**
@@ -1087,8 +1089,8 @@ VCALENDAR
          ->string['text']->isEqualTo('Description of the note.')
          ->integer['state']->isEqualTo(\Planning::INFO)
          ->variable['begin']->isEqualTo(null)
-         ->variable['end']->isEqualTo(null)
-         ->string['rrule']->isEqualTo('');
+         ->variable['end']->isEqualTo(null);
+      $this->variable($event->fields['rrule'])->isNull();
    }
 
    /**
@@ -1407,7 +1409,7 @@ VCALENDAR
       ]);
       $this->integer($project_task_team_id)->isGreaterThan(0);
 
-      $creation_date = $project_task->fields['date'];
+      $creation_date = $project_task->fields['date_creation'];
 
       $project_task_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $project_task->fields['uuid'] . '.ics';
 
@@ -1458,7 +1460,7 @@ VCALENDAR
       $this->boolean($project_task->getFromDBByCrit(['uuid' => $project_task->fields['uuid']]))->isTrue();
       $this->array($project_task->fields)
          ->string['uuid']->isEqualTo($project_task->fields['uuid'])
-         ->string['date']->isEqualTo($creation_date) // be sure that creation date is not overrided
+         ->string['date_creation']->isEqualTo($creation_date) // be sure that creation date is not overrided
          ->string['content']->isEqualTo('Updated description.')
          ->integer['percent_done']->isEqualTo(35);
 
@@ -1493,7 +1495,7 @@ VCALENDAR
       $this->boolean($project_task->getFromDBByCrit(['uuid' => $project_task->fields['uuid']]))->isTrue();
       $this->array($project_task->fields)
          ->string['uuid']->isEqualTo($project_task->fields['uuid'])
-         ->string['date']->isEqualTo($creation_date) // be sure that creation date is not overrided
+         ->string['date_creation']->isEqualTo($creation_date) // be sure that creation date is not overrided
          ->string['content']->isEqualTo('Updated description.')
          ->integer['percent_done']->isEqualTo(100)
          ->string['plan_start_date']->isEqualTo('2019-11-01 08:00:00') // 1 hour offset between Europe/Paris and UTC

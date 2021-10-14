@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\Sanitizer;
+
 /**
  * RuleRight Class
  *
@@ -57,11 +59,9 @@ class RuleRight extends Rule {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name') . "</td><td>";
-      Html::autocompletionTextField($this, "name", ['value' => '',
-                                                         'size'  => 33]);
+      echo Html::input('name', ['value' => '', 'size' => '33']);
       echo '</td><td>'.__('Description') . "</td><td>";
-      Html::autocompletionTextField($this, "description", ['value' => '',
-                                                                'size'  => 33]);
+      echo Html::input('description', ['value' => '', 'size' => '33']);
       echo "</td><td>".__('Logical operator') . "</td><td>";
       $this->dropdownRulesMatch();
       echo "</td><td rowspan='2' class='tab_bg_2 center middle'>";
@@ -69,13 +69,13 @@ class RuleRight extends Rule {
       echo "<input type=hidden name='entities_id' value='-1'>";
       echo "<input type=hidden name='affectentity' value='$ID'>";
       echo "<input type=hidden name='_method' value='AddRule'>";
-      echo "<input type='submit' name='execute' value=\""._sx('button', 'Add')."\" class='submit'>";
+      echo "<input type='submit' name='execute' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='center'>"._n('Profile', 'Profiles', 1) . "</td><td>";
       Profile::dropdown();
-      echo "</td><td><span class='small_space'>".__('Recursive') . "</span></td><td colspan='3'>";
+      echo "</td><td>".__('Recursive') . "</td><td colspan='3'>";
       Dropdown::showYesNo("is_recursive", 0);
       echo "</td></tr>\n";
 
@@ -169,7 +169,7 @@ class RuleRight extends Rule {
                                     break;
 
                                  case "_affect_entity_by_completename" :
-                                    $res          = Toolbox::unclean_cross_side_scripting_deep($res);
+                                    $res          = Sanitizer::unsanitize($res);
                                     $entity_found = Entity::getEntityIDByCompletename(addslashes($res));
                                     break;
 
@@ -416,6 +416,10 @@ class RuleRight extends Rule {
          $criteria[$data["value"]]['linkfield'] = '';
          $criteria[$data["value"]]['table']     = '';
       }
+   }
+
+   static function getIcon() {
+      return Profile::getIcon();
    }
 
 }

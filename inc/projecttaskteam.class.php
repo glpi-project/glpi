@@ -138,7 +138,7 @@ class ProjectTaskTeam extends CommonDBRelation {
          'WHERE'  => ['projecttasks_id' => $tasks_id]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $team[$data['itemtype']][] = $data;
       }
 
@@ -192,7 +192,7 @@ class ProjectTaskTeam extends CommonDBRelation {
                'FROM'   => Group_User::getTable(),
                'WHERE'  => ['groups_id' => $input['items_id']]
             ]);
-            while ($row = $group_iterator->next()) {
+            foreach ($group_iterator as $row) {
                Planning::checkAlreadyPlanned(
                   $row['users_id'],
                   $task->fields['plan_start_date'],

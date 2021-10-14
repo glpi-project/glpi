@@ -30,6 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Csv\CsvResponse;
+use Glpi\Csv\PlanningCsv;
+
 include ('../inc/includes.php');
 
 if (!isset($_GET['genical'])) {
@@ -104,6 +107,5 @@ if (!$ismine) {
 }
 
 if ($ismine || $canview) {
-   $csv = new PlanningCsv($users_id, $groups_id, $limititemtype);
-   $csv->output();
+   CsvResponse::output(new PlanningCsv($users_id, $groups_id, $limititemtype));
 }

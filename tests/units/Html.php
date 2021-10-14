@@ -28,7 +28,7 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 namespace tests\units;
 
@@ -96,22 +96,6 @@ class Html extends \GLPITestCase {
       $this->string(\Html::cleanParametersURL($url))->isIdenticalTo($expected);
    }
 
-   public function testNl2br_deep() {
-      $origin = "A string\nwith breakline.";
-      $expected = "A string<br />\nwith breakline.";
-      $this->string(\Html::nl2br_deep($origin))->isIdenticalTo($expected);
-
-      $origin = [
-         "Another string\nwith breakline.",
-         "And another\none"
-      ];
-      $expected = [
-         "Another string<br />\nwith breakline.",
-         "And another<br />\none"
-      ];
-      $this->array(\Html::nl2br_deep($origin))->isIdenticalTo($expected);
-   }
-
    public function testResume_text() {
       $origin = 'This is a very long string which will be truncated by a dedicated method. ' .
          'If the string is not truncated, well... We\'re wrong and got a very serious issue in our codebase!' .
@@ -124,20 +108,6 @@ class Html extends \GLPITestCase {
       $origin = 'A string that is longer than 10 characters.';
       $expected = 'A string t&nbsp;(...)';
       $this->string(\Html::resume_text($origin, 10))->isIdenticalTo($expected);
-   }
-
-   public function testResume_name() {
-      $origin = 'This is a very long string which will be truncated by a dedicated method. ' .
-         'If the string is not truncated, well... We\'re wrong and got a very serious issue in our codebase!' .
-         'And if the string has been correctly truncated, well... All is ok then, let\'s show if all the other tests are OK :)';
-      $expected = 'This is a very long string which will be truncated by a dedicated method. ' .
-         'If the string is not truncated, well... We\'re wrong and got a very serious issue in our codebase!' .
-         'And if the string has been correctly truncated, well... All is ok then, let\'s show i...';
-      $this->string(\Html::resume_name($origin))->isIdenticalTo($expected);
-
-      $origin = 'A string that is longer than 10 characters.';
-      $expected = 'A string t...';
-      $this->string(\Html::resume_name($origin, 10))->isIdenticalTo($expected);
    }
 
    public function testCleanPostForTextArea() {
@@ -156,42 +126,6 @@ class Html extends \GLPITestCase {
       $this->array(\Html::cleanPostForTextArea($aorigin))->isIdenticalTo($aexpected);
    }
 
-   public function providerClean() {
-      return [
-         // script is not allowed
-         ['<p>Hello<script type="text/javascript">alert("Damn!");</script></p>', 'Hello', '<p>Hello</p>'],
-         // nested list should be preserved
-         ['<ul><li>one<ul><li>nested</li></ul></li><li>two</li></ul>', 'onenestedtwo', '<ul><li>one<ul><li>nested</li></ul></li><li>two</li></ul>'],
-         // on* attributes are not allowed
-         ['<img src="test.png" onerror="javascript:alert(document.cookie);" alt="test image" />', '', '<img src="test.png" alt="test image" />'],
-         ['<img src="test.png" onload="javascript:alert(document.cookie);" alt="test image" />', '', '<img src="test.png" alt="test image" />'],
-         // iframes should not be preserved by default
-         ['Here is an iframe: <iframe src="http://glpi-project.org/"></iframe>', 'Here is an iframe:', 'Here is an iframe:'],
-         // HTML comments should be removed
-         ['<p>Legit<!-- This is an HTML comment --> text</p>', 'Legit text', '<p>Legit text</p>'],
-         // CDATA should be removed
-         ['<p><![CDATA[Some CDATA]]>Legit text</p>', 'Legit text', '<p>Legit text</p>'],
-         // <email@domain.com> should be twice encoded
-         ['From: Test User <test@glpi-project.org>', 'From: Test User test@glpi-project.org', 'From: Test User test@glpi-project.org'],
-         // <a href="mailto:email@domain.com"> should be preserved
-         ['Email me @: <a href="mailto:email@domain.com">email@domain.com</a>', 'Email me @: email@domain.com', 'Email me @: <a href="mailto:email@domain.com">email@domain.com</a>'],
-      ];
-   }
-
-   /**
-    * @dataProvider providerClean
-    */
-   public function testCleanDropTags($in, $outnotag, $outtag) {
-      $this->string(\Html::clean($in, true))->isIdenticalTo($outnotag);
-   }
-
-   /**
-    * @dataProvider providerClean
-    */
-   public function testCleanKeepTags($in, $outnotag, $outtag) {
-      $this->string(\Html::clean($in, false))->isIdenticalTo($outtag);
-   }
-
    public function testFormatNumber() {
       $_SESSION['glpinumber_format'] = 0;
       $origin = '';
@@ -200,14 +134,14 @@ class Html extends \GLPITestCase {
 
       $origin = '1207.3';
 
-      $expected = '1&nbsp;207.30';
+      $expected = '1 207.30';
       $this->string(\Html::formatNumber($origin))->isIdenticalTo($expected);
 
       $expected = '1207.30';
       $this->string(\Html::formatNumber($origin, true))->isIdenticalTo($expected);
 
       $origin = 124556.693;
-      $expected = '124&nbsp;556.69';
+      $expected = '124 556.69';
       $this->string(\Html::formatNumber($origin))->isIdenticalTo($expected);
 
       $origin = 120.123456789;
@@ -232,7 +166,7 @@ class Html extends \GLPITestCase {
       $_SESSION['glpinumber_format'] = 2;
 
       $origin = '1207.3';
-      $expected = '1&nbsp;207,30';
+      $expected = '1 207,30';
       $this->string(\Html::formatNumber($origin))->isIdenticalTo($expected);
 
       $_SESSION['glpinumber_format'] = 3;
@@ -294,25 +228,6 @@ class Html extends \GLPITestCase {
       $this->string(\Html::timestampToString($tstamp, false, false))->isIdenticalTo($expected);
    }
 
-   public function testWeblink_extract() {
-      $origin = '<a href="http://glpi-project.org" class="example">THE GLPI Project!</a>';
-      $expected = 'http://glpi-project.org';
-      $this->string($expected, \Html::weblink_extract($origin))->isIdenticalTo($expected);
-
-      $origin = '<a href="http://glpi-project.org/?one=two">THE GLPI Project!</a>';
-      $expected = 'http://glpi-project.org/?one=two';
-      $this->string(\Html::weblink_extract($origin))->isIdenticalTo($expected);
-
-      //These ones does not work, but probably should...
-      $origin = '<a class="example" href="http://glpi-project.org">THE GLPI Project!</a>';
-      $expected = $origin;
-      $this->string(\Html::weblink_extract($origin))->isIdenticalTo($expected);
-
-      $origin = '<a href="http://glpi-project.org" class="example">THE <span>GLPI</span> Project!</a>';
-      $expected = $origin;
-      $this->string(\Html::weblink_extract($origin))->isIdenticalTo($expected);
-   }
-
    public function testGetMenuInfos() {
       $menu = \Html::getMenuInfos();
       $this->integer(count($menu))->isIdenticalTo(8);
@@ -345,6 +260,8 @@ class Html extends \GLPITestCase {
          'Enclosure',
          'PDU',
          'PassiveDCEquipment',
+         'Unmanaged',
+         'Cable',
          'Item_DeviceSimcard'
       ];
       $this->string($menu['assets']['title'])->isIdenticalTo('Assets');
@@ -356,7 +273,8 @@ class Html extends \GLPITestCase {
          'Change',
          'Planning',
          'Stat',
-         'TicketRecurrent'
+         'TicketRecurrent',
+         'RecurrentChange',
       ];
       $this->string($menu['helpdesk']['title'])->isIdenticalTo('Assistance');
       $this->array($menu['helpdesk']['types'])->isIdenticalTo($expected);
@@ -373,7 +291,8 @@ class Html extends \GLPITestCase {
          'Datacenter',
          'Cluster',
          'Domain',
-         'Appliance'
+         'Appliance',
+         'Database'
       ];
       $this->string($menu['management']['title'])->isIdenticalTo('Management');
       $this->array($menu['management']['types'])->isIdenticalTo($expected);
@@ -403,7 +322,8 @@ class Html extends \GLPITestCase {
          'Rule',
          'Profile',
          'QueuedNotification',
-         'Glpi\\Event'
+         'Glpi\\Event',
+         'Glpi\Inventory\Inventory'
       ];
       $this->string($menu['admin']['title'])->isIdenticalTo('Administration');
       $this->array($menu['admin']['types'])->isIdenticalTo($expected);
@@ -434,6 +354,11 @@ class Html extends \GLPITestCase {
       $this->string($message)
          ->contains(GLPI_VERSION)
          ->contains(GLPI_YEAR);
+
+      $message = \Html::getCopyrightMessage(false);
+      $this->string($message)
+         ->notContains(GLPI_VERSION)
+         ->contains(GLPI_YEAR);
    }
 
    public function testCss() {
@@ -453,7 +378,7 @@ class Html extends \GLPITestCase {
 
       //create test files
       foreach ($fake_files as $fake_file) {
-         touch(GLPI_TMP_DIR . '/' . $fake_file);
+         $this->boolean(touch(GLPI_TMP_DIR . '/' . $fake_file))->isTrue();
       }
 
       //expect minified file
@@ -720,8 +645,8 @@ class Html extends \GLPITestCase {
       // test modal
       $modal = \Html::FuzzySearch('getHtml');
       $this->string($modal)
-         ->contains("id='fuzzysearch'")
-         ->contains("class='results'");
+         ->contains('id="fuzzysearch"')
+         ->matches('/class="results[^"]*"/');
 
       // test retrieving entries
       $default = json_decode(\Html::FuzzySearch(), true);
@@ -768,8 +693,8 @@ class Html extends \GLPITestCase {
             \Html::displayMessageAfterRedirect();
          }
       )
-         ->contains('<div id="message_after_redirect_1" title="Error">Something went really wrong :(</div>')
-         ->contains('<div id="message_after_redirect_2" title="Warning">Oooops, I did it again!</div>');
+         ->matches('/class="[^"]*bg-danger[^"]*".*Error.*Something went really wrong :\(/s')
+         ->matches('/class="[^"]*bg-warning[^"]*".*Warning.*Oooops, I did it again!/s');
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
    }
@@ -813,8 +738,6 @@ class Html extends \GLPITestCase {
    public function testJsFunctions() {
       $this->string(\Html::jsHide('myid'))->isIdenticalTo("$('#myid').hide();\n");
       $this->string(\Html::jsShow('myid'))->isIdenticalTo("$('#myid').show();\n");
-      $this->string(\Html::jsEnable('myid'))->isIdenticalTo("$('#myid').removeAttr('disabled');\n");
-      $this->string(\Html::jsDisable('myid'))->isIdenticalTo("$('#myid').attr('disabled', 'disabled');\n");
       $this->string(\Html::jsGetElementbyID('myid'))->isIdenticalTo("$('#myid')");
       $this->string(\Html::jsSetDropdownValue('myid', 'myval'))->isIdenticalTo("$('#myid').trigger('setValue', 'myval');");
       $this->string(\Html::jsGetDropdownValue('myid'))->isIdenticalTo("$('#myid').val()");
@@ -894,7 +817,7 @@ class Html extends \GLPITestCase {
 
    public function testInput() {
       $name = 'in_put';
-      $expected = '<input type="text" name="in_put"  />';
+      $expected = '<input type="text" name="in_put" class="form-control" />';
       $this->string(\Html::input($name))->isIdenticalTo($expected);
 
       $options = [
@@ -910,7 +833,7 @@ class Html extends \GLPITestCase {
          'min'       => '10',
          'value'     => 'myval',
       ];
-      $expected = '<input type="number" name="in_put" min="10" value="myval" />';
+      $expected = '<input type="number" name="in_put" min="10" value="myval" class="form-control" />';
       $this->string(\Html::input($name, $options))->isIdenticalTo($expected);
 
    }

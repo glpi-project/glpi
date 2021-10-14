@@ -12,12 +12,7 @@ vendor/bin/parallel-lint \
   .
 
 echo "Check for missing dependencies / bad symbols"
-# Alpine linux does not implement GLOB_BRACE.
-# We have to define it to 0 to prevent "Warning: Use of undefined constant GLOB_BRACE - assumed 'GLOB_BRACE'" error.
-# This is not a problem as long as we do not use braces in "scan-files" section of the config file.
-php -d memory_limit=1G \
-  -r 'define("GLOB_BRACE", 0); include "./vendor/maglnet/composer-require-checker/bin/composer-require-checker.php";' \
-  check --config-file=.composer-require-checker.config.json
+php -d memory_limit=1G vendor/bin/composer-require-checker check --config-file=.composer-require-checker.config.json
 
 echo "Check for coding standards violations"
 touch ~/phpcs.cache
@@ -27,5 +22,5 @@ vendor/bin/phpcs \
   -p \
   --extensions=php \
   --standard=vendor/glpi-project/coding-standard/GlpiStandard/ \
-  --ignore="/.git/,^$ROOT_DIR/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/" \
+  --ignore="/.git/,^$ROOT_DIR/(config|files|lib|marketplace|node_modules|plugins|tests/config|tests/files|vendor)/" \
   .

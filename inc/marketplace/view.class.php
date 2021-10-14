@@ -36,14 +36,13 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
+use CommonGLPI;
+use Config;
 use Glpi\Marketplace\Api\Plugins as PluginsApi;
-use Glpi\Marketplace\Controller  as Controller;
-use \Html;
-use \Plugin;
-use \Config;
-use \CommonGLPI;
-use \GLPINetwork;
-use \Toolbox;
+use GLPINetwork;
+use Html;
+use Plugin;
+use Toolbox;
 
 class View extends CommonGLPI {
    static $rightname = 'config';
@@ -175,10 +174,9 @@ class View extends CommonGLPI {
       }
 
       if (count($messages)) {
-         echo "<div class='warning'>";
-         echo "<i class='fa fa-exclamation-triangle fa-5x'></i>";
+         echo "<div class='alert alert-important alert-warning d-flex'>";
+         echo "<i class='fas fa-3x fa-exclamation-triangle '></i>";
          echo "<ul><li>" . implode('</li><li>', $messages) . "</li></ul>";
-         echo "<div class='sep'></div>";
          echo "</div>";
       }
 
@@ -338,7 +336,7 @@ class View extends CommonGLPI {
       if (!$only_lis) {
          // check writable state
          if (!Controller::hasWriteAccess()) {
-            echo "<div class='warning'>
+            echo "<div class='alert alert-warning'>
                <i class='fa fa-exclamation-triangle fa-5x'></i>".
                sprintf(__("We can't write on the markeplace directory (%s)."), GLPI_MARKETPLACE_DIR)."<br>".
                __("If you want to ease the plugins download, please check permissions and ownership of this directory.")."<br>".
@@ -355,7 +353,7 @@ class View extends CommonGLPI {
          $sort_controls = "";
          if ($tab === "discover") {
             $sort_controls = "
-            <select class='sort-control'>
+            <select class='sort-control form-select form-select-sm'>
                <option value='sort-alpha-asc'
                        ".($sort == "sort-alpha-asc" ? "selected" : "")."
                        data-icon='fas fa-lg fa-sort-alpha-down'>
@@ -399,7 +397,7 @@ class View extends CommonGLPI {
             {$tags_list}
             <div class='right-panel'>
                <div class='top-panel'>
-                  <input type='search' class='filter-list' placeholder='{$search_label}'>
+                  <input type='search' class='filter-list form-control' placeholder='{$search_label}'>
                   <div class='controls'>
                      $sort_controls
                      <i class='fas fa-sync-alt refresh-plugin-list'
@@ -464,21 +462,21 @@ JS;
       $plugin_state = Plugin::getStateKey($plugin_inst->fields['state'] ?? -1);
       $buttons      = self::getButtons($plugin_key);
 
-      $name = Html::clean($plugin['name']);
-      $description = Html::clean($plugin['description']);
+      $name = Toolbox::stripTags($plugin['name']);
+      $description = Toolbox::stripTags($plugin['description']);
 
-      $authors = Html::clean(implode(', ', array_column($plugin['authors'] ?? [], 'name', 'id')), false);
-      $authors_title = Html::clean($authors);
+      $authors = Toolbox::stripTags(implode(', ', array_column($plugin['authors'] ?? [], 'name', 'id')));
+      $authors_title = Html::entities_deep($authors);
       $authors = strlen($authors)
          ? "<i class='fas fa-fw fa-user-friends'></i>{$authors}"
          : "";
 
-      $licence = Html::clean($plugin['license'] ?? '');
+      $licence = Toolbox::stripTags($plugin['license'] ?? '');
       $licence = strlen($licence)
          ? "<i class='fas fa-fw fa-balance-scale'></i>{$licence}"
          : "";
 
-      $version = Html::clean($plugin['version'] ?? '');
+      $version = Toolbox::stripTags($plugin['version'] ?? '');
       $version = strlen($version)
          ? "<i class='fas fa-fw fa-code-branch'></i>{$version}"
          : "";
@@ -657,11 +655,17 @@ HTML;
       }
 
       if ($must_be_cleaned) {
-         $buttons .="<button class='modify_plugin'
-                             data-action='clean_plugin'
-                             title='".__s("Clean")."'>
-            <i class='fas fa-broom'></i>
-         </button>";
+         $buttons .="
+            <button class='modify_plugin'
+                    data-action='clean_plugin'
+                    title='".__s("Clean")."'>
+               <i class='fas fa-broom'></i>
+            </button>
+            <button class='modify_plugin'
+                    data-action='download_plugin'
+                    title='".__s("Download again")."'>
+               <i class='fas fa-cloud-download-alt'></i>
+            </button>";
       } else if (!$is_available) {
          if (!$can_run_local_install) {
             $rand = mt_rand();
@@ -706,7 +710,7 @@ HTML;
             </button>";
          } else if ($can_be_updated) {
             $update_title = sprintf(
-               __s("A new version (%s) is available, update ?", 'marketplace'),
+               __s("A new version (%s) is available, update?", 'marketplace'),
                $web_update_version
             );
             $buttons .="<button class='modify_plugin'
@@ -798,7 +802,7 @@ HTML;
       if (strlen($logo_url)) {
          $icon = "<img src='{$logo_url}'>";
       } else {
-         $words = explode(" ", Html::clean($plugin['name']));
+         $words = explode(" ", Toolbox::stripTags($plugin['name']));
          $initials = "";
          for ($i = 0; $i < 2; $i++) {
             if (isset($words[$i])) {
@@ -838,7 +842,7 @@ HTML;
                <i class='fas fa-star'></i>GLPI Network
             </a>
             <a href='".GLPI_NETWORK_SERVICES."' target='_blank'
-               class='badge $offerkey'
+               class='badge bg-azure $offerkey'
                title='".sprintf(__s("You need at least the %s subscription level to get this plugin"), $offerlabel)."'>
                $offerlabel
             </a>
@@ -980,6 +984,9 @@ HTML;
       if (Controller::getPluginPageConfig() == Controller::MP_REPLACE_ASK
           && !isset($_SESSION['skip_marketplace_invitation'])
           && GLPI_INSTALL_MODE !== 'CLOUD') {
+         echo "<div class='card mb-4'>";
+         echo "<div class='card-header card-title'>".__("Switch to marketplace")."</div>";
+         echo "<div class='card-body'>";
          echo "<form id='marketplace_dialog' method='POST'>";
          echo Html::image($CFG_GLPI['root_doc']."/pics/screenshots/marketplace.png", [
             'style' => 'width: 600px',
@@ -987,32 +994,26 @@ HTML;
          echo "<br><br>";
          echo __("GLPI provides a new marketplace to download and install plugins.");
          echo "<br><br>";
-         echo "<b>".__("Do you want to replace the plugins setup page by the new marketplace ?")."</b>";
-         echo "<hr><br>";
+         echo "<b>".__("Do you want to replace the plugins setup page by the new marketplace?")."</b>";
+         echo "</div>";
+         echo "<div class='card-footer'>";
          echo Html::submit("<i class='fa fa-check'></i>&nbsp;".__('Yes'), [
-            'name' => 'marketplace_replace_plugins_yes'
+            'name' => 'marketplace_replace_plugins_yes',
+            'class' => 'btn btn-primary'
          ]);
          echo "&nbsp;";
          echo Html::submit("<i class='fa fa-times'></i>&nbsp;".__('No'), [
             'name' => 'marketplace_replace_plugins_never',
-            'class' => 'secondary'
             ]);
          echo "&nbsp;";
          echo Html::submit("<i class='fa fa-clock'></i>&nbsp;".__('Later'), [
             'name'  => 'marketplace_replace_plugins_later',
-            'class' => 'secondary'
          ]);
+         echo "</div>";
          echo Html::hidden('marketplace_replace');
 
          Html::closeForm();
-
-         echo Html::scriptBlock("$(document).ready(function() {
-            $('#marketplace_dialog').dialog({
-               'modal': true,
-               'width': 'auto',
-               'title': \"".__s("Switch to marketplace")."\"
-            });
-         });");
+         echo "</div>";
       }
    }
 

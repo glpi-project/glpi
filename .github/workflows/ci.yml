@@ -30,7 +30,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {php-version: "7.2"} # Lint on lower PHP version to detected too early usage of new syntaxes
+          - {php-version: "7.4"} # Lint on lower PHP version to detected too early usage of new syntaxes
           - {php-version: "8.0"} # Lint on higher PHP version to detected deprecated elements usage
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
@@ -74,12 +74,15 @@ jobs:
       - name: "Show versions"
         run: |
           .github/actions/init_show-versions.sh
-      - name: "Install dependencies"
+      - name: "Build dependencies / translations"
         run: |
-          docker-compose exec -T app .github/actions/init_install-dependencies.sh
+          docker-compose exec -T app .github/actions/init_build.sh
       - name: "PHP lint"
         run: |
           docker-compose exec -T app .github/actions/lint_php-lint.sh
+      - name: "Twig lint"
+        run: |
+          docker-compose exec -T app .github/actions/lint_twig-lint.sh
       - name: "JS lint"
         run: |
           docker-compose exec -T app .github/actions/lint_js-lint.sh
@@ -101,16 +104,14 @@ jobs:
       matrix:
         include:
           # test higher PHP version with higher MariaDB and MySQL versions
-          - {php-version: "8.0", db-image: "mariadb:10.5", always: true}
+          - {php-version: "8.0", db-image: "mariadb:10.6", always: true}
           - {php-version: "8.0", db-image: "mysql:8.0", always: true}
           # test other PHP versions
-          - {php-version: "7.2", db-image: "mariadb:10.5", always: false}
-          - {php-version: "7.3", db-image: "mariadb:10.5", always: false}
-          - {php-version: "7.4", db-image: "mariadb:10.5", always: false}
+          - {php-version: "7.4", db-image: "mariadb:10.6", always: false}
           # test other DB servers/versions
-          - {php-version: "8.0", db-image: "mariadb:10.1", always: false}
-          - {php-version: "8.0", db-image: "mysql:5.6", always: false}
-          - {php-version: "8.0", db-image: "percona:5.6", always: false}
+          - {php-version: "8.0", db-image: "mariadb:10.2", always: false}
+          - {php-version: "8.0", db-image: "mysql:5.7", always: false}
+          - {php-version: "8.0", db-image: "percona:5.7", always: false}
           - {php-version: "8.0", db-image: "percona:8.0", always: false}
     env:
       # Skip jobs that should not be always run on pull requests or on push on tier repository (to limit workers usage).
@@ -155,19 +156,24 @@ jobs:
         if: env.skip != 'true'
         run: |
           .github/actions/init_show-versions.sh
-      - name: "Install dependencies"
+      - name: "Build dependencies / translations"
         if: env.skip != 'true'
         run: |
-          docker-compose exec -T app .github/actions/init_install-dependencies.sh
+          docker-compose exec -T app .github/actions/init_build.sh
       - name: "Install DB tests"
         if: env.skip != 'true'
         run: |
           docker-compose exec -T app .github/actions/test_install.sh
-      - name: "Update DB tests"
+      - name: "Update DB tests (from 0.80, not using utf8mb4)"
         if: env.skip != 'true'
         run: |
-          .github/actions/init_initialize-old-dbs.sh
+          .github/actions/init_initialize-0.80-db.sh
           docker-compose exec -T app .github/actions/test_update-from-older-version.sh
+      - name: "Update DB tests (from 9.5.3, using utf8mb4)"
+        if: env.skip != 'true'
+        run: |
+          .github/actions/init_initialize-9.5.3-db.sh
+          docker-compose exec -T app .github/actions/test_update-from-9.5.sh
       - name: "Unit tests"
         if: env.skip != 'true'
         run: |
@@ -176,6 +182,10 @@ jobs:
         if: env.skip != 'true'
         run: |
           docker-compose exec -T app .github/actions/test_tests-functionnal.sh
+      - name: "Cache tests"
+        if: env.skip != 'true'
+        run: |
+          docker-compose exec -T app .github/actions/test_tests-cache.sh
       - name: "LDAP tests"
         if: env.skip != 'true'
         run: |

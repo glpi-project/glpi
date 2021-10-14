@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
+
 // Generic test classe, to be extended for CommonDBTM Object
 
 class DbTestCase extends \GLPITestCase {
@@ -104,7 +106,12 @@ class DbTestCase extends \GLPITestCase {
 
       if (count($input)) {
          foreach ($input as $k => $v) {
-            $this->variable($object->getField($k))->isEqualTo($v);
+            $this->variable($object->fields[$k])->isEqualTo(
+               $v,
+               "
+                '$k' key current value '{$object->fields[$k]}' (".gettype($object->fields[$k]).")
+                is not equal to '$v' (".gettype($v).")"
+            );
          }
       }
    }
@@ -123,7 +130,7 @@ class DbTestCase extends \GLPITestCase {
          $excludes,
          [
             'TicketFollowup', // Deprecated
-            '/^Computer_Software.*/', // Deprecated
+            '/^RuleImportComputer.*/', // Deprecated
          ]
       );
 
@@ -166,6 +173,51 @@ class DbTestCase extends \GLPITestCase {
    }
 
    /**
+    * Create an item of the given class
+    *
+    * @param string $itemtype
+    * @param array $input
+    *
+    * @return CommonDBTM
+    */
+   protected function createItem($itemtype, $input): CommonDBTM {
+      $item = new $itemtype();
+      $input = Sanitizer::sanitize($input, true);
+      $id = $item->add($input);
+      $this->integer($id)->isGreaterThan(0);
+
+      // Remove special fields
+      $input = array_filter($input, function($key) {
+         return strpos($key, '_') !== 0;
+      }, ARRAY_FILTER_USE_KEY);
+
+      $this->checkInput($item, $id, $input);
+
+      return $item;
+   }
+
+   /**
+    * Create an item of the given class
+    *
+    * @param string $itemtype
+    * @param array $input
+    */
+   protected function updateItem($itemtype, $id, $input) {
+      $item = new $itemtype();
+      $input['id'] = $id;
+      $input = Sanitizer::sanitize($input, true);
+      $success = $item->update($input);
+      $this->boolean($success)->isTrue();
+
+      // Remove special fields
+      $input = array_filter($input, function($key) {
+         return strpos($key, '_') !== 0;
+      }, ARRAY_FILTER_USE_KEY);
+
+      $this->checkInput($item, $id, $input);
+   }
+
+   /**
     * Create multiples items of the given class
     *
     * @param string $itemtype
@@ -173,10 +225,7 @@ class DbTestCase extends \GLPITestCase {
     */
    protected function createItems($itemtype, $inputs) {
       foreach ($inputs as $input) {
-         $item = new $itemtype();
-         $id = $item->add($input);
-         $this->integer($id)->isGreaterThan(0);
-         $this->checkInput($item, $id, $input);
+         $this->createItem($itemtype, $input);
       }
    }
 }

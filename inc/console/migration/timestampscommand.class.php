@@ -106,7 +106,7 @@ class TimestampsCommand extends AbstractCommand {
          $run = $question_helper->ask(
             $input,
             $output,
-            new ConfirmationQuestion(__('Do you want to continue ?') . ' [Yes/no]', true)
+            new ConfirmationQuestion(__('Do you want to continue?') . ' [Yes/no]', true)
          );
          if (!$run) {
             $output->writeln(
@@ -120,7 +120,7 @@ class TimestampsCommand extends AbstractCommand {
       $progress_bar = new ProgressBar($output, $tbl_iterator->count());
       $progress_bar->start();
 
-      while ($table = $tbl_iterator->next()) {
+      foreach ($tbl_iterator as $table) {
          $progress_bar->advance(1);
 
          $tablealter = ''; // init by default
@@ -142,7 +142,7 @@ class TimestampsCommand extends AbstractCommand {
             ]
          ]);
 
-         while ($column = $col_iterator->next()) {
+         foreach ($col_iterator as $column) {
             $nullable = false;
             $default = null;
             //check if nullable

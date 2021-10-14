@@ -35,6 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// OCS Rules class
+// @deprecated 10.0.0 @see RuleImportAsset
 class RuleImportComputer extends Rule {
 
    const RULE_ACTION_LINK_OR_IMPORT    = 0;
@@ -380,7 +381,7 @@ class RuleImportComputer extends Rule {
       $result_glpi = $DB->request($it_criteria);
 
       if (count($result_glpi)) {
-         while ($data = $result_glpi->next()) {
+         foreach ($result_glpi as $data) {
             $this->criterias_results['found_computers'][] = $data['id'];
          }
          return true;

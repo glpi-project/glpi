@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\RichText;
+
 /**
  * ProjectTask_Ticket Class
  *
@@ -127,7 +129,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
          'WHERE'        => ['projecttasks_id' => $projecttasks_id]
       ]);
 
-      if ($row = $iterator->next()) {
+      if ($row = $iterator->current()) {
          return $row['duration'];
       }
       return 0;
@@ -153,7 +155,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
 
       $tickets = [];
       $used    = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $tickets[$data['id']] = $data;
          $used[$data['id']]    = $data['id'];
       }
@@ -189,7 +191,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
          echo __('Create a ticket from this task');
          echo "</a>";
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>";
 
          echo "</table>";
@@ -261,7 +263,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
 
       $pjtasks = [];
       $used    = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $pjtasks[$data['id']] = $data;
          $used[$data['id']]    = $data['id'];
       }
@@ -477,7 +479,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
             $header .= "</tr>\n";
             echo $header;
 
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                Session::addToNavigateListItems('ProjectTask', $data['id']);
                $rand = mt_rand();
                echo "<tr class='tab_bg_2'>";
@@ -495,7 +497,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
                            ProjectTask::getFormURLWithID($data['id'])."'>".$data['name'].
                            (empty($data['name'])?"(".$data['id'].")":"")."</a>";
                echo sprintf(__('%1$s %2$s'), $link,
-                              Html::showToolTip($data['content'],
+                              Html::showToolTip(RichText::getSafeHtml($data['content'], true),
                                                 ['display' => false,
                                                       'applyto' => "ProjectTask".$data["id"].$rand]));
                echo "</td>";

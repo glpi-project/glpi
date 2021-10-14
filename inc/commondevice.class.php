@@ -133,12 +133,7 @@ abstract class CommonDevice extends CommonDropdown {
       return false;
    }
 
-
-   /**
-    * @since 0.85
-    * @see CommonDropdown::displaySpecificTypeField()
-   **/
-   function displaySpecificTypeField($ID, $field = []) {
+   function displaySpecificTypeField($ID, $field = [], array $options = []) {
 
       switch ($field['type']) {
          case 'registeredIDChooser' :
@@ -232,7 +227,6 @@ abstract class CommonDevice extends CommonDropdown {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -454,7 +448,7 @@ abstract class CommonDevice extends CommonDropdown {
       ]);
 
       if (count($iterator) > 0) {
-         $line = $iterator->next();
+         $line = $iterator->current();
          return $line['id'];
       }
 

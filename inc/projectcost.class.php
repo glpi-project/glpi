@@ -126,7 +126,6 @@ class ProjectCost extends CommonDBChild {
          'searchtype'         => 'contains',
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -192,34 +191,6 @@ class ProjectCost extends CommonDBChild {
 
 
    /**
-    * Duplicate all costs from a project template to its clone
-    *
-    * @deprecated 9.5
-    * @since 0.84
-    *
-    * @param $oldid
-    * @param $newid
-   **/
-   static function cloneProject ($oldid, $newid) {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => ['projects_id'=> $oldid]
-      ]);
-      while ($data = $iterator->next()) {
-         $cd                   = new self();
-         unset($data['id']);
-         $data['projects_id'] = $newid;
-         $data = self::checkTemplateEntity($data, $data['projects_id'], Project::class);
-         $data                 = Toolbox::addslashes_deep($data);
-         $cd->add($data);
-      }
-   }
-
-
-   /**
     * Init cost for creation based on previous cost
    **/
    function initBasedOnPrevious() {
@@ -261,7 +232,7 @@ class ProjectCost extends CommonDBChild {
       ]);
 
       if (count($iterator)) {
-         return $iterator->next();
+         return $iterator->current();
       }
 
       return [];
@@ -289,7 +260,7 @@ class ProjectCost extends CommonDBChild {
       echo "<td>".__('Name')."</td>";
       echo "<td>";
       echo "<input type='hidden' name='projects_id' value='".$this->fields['projects_id']."'>";
-      Html::autocompletionTextField($this, 'name');
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
       echo "<td>"._n('Cost', 'Costs', 1)."</td>";
       echo "<td>";
@@ -304,9 +275,9 @@ class ProjectCost extends CommonDBChild {
       $rowspan = 3;
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
       echo "<td rowspan='$rowspan' class='middle'>";
-      echo "<textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"].
+      echo "<textarea class='form-control' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"].
            "</textarea>";
-      echo "</td></tr>\n";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('End date')."</td>";
       echo "<td>";
@@ -366,7 +337,7 @@ class ProjectCost extends CommonDBChild {
          echo "};";
          echo "</script>\n";
          echo "<div class='center firstbloc'>".
-               "<a class='vsubmit' href='javascript:viewAddCost".$ID."_$rand();'>";
+               "<a class='btn btn-primary' href='javascript:viewAddCost".$ID."_$rand();'>";
          echo __('Add a new cost')."</a></div>\n";
       }
       $total = 0;
@@ -388,7 +359,7 @@ class ProjectCost extends CommonDBChild {
                                        sprintf(__('%1$s = %2$s'),
                                              Project::getTypeName(1), $project->getName()));
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             echo "<tr class='tab_bg_2' ".
                   ($canedit
                      ? "style='cursor:pointer' onClick=\"viewEditCost".$data['projects_id']."_".

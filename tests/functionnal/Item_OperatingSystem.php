@@ -28,11 +28,11 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 namespace tests\units;
 
-use \DbTestCase;
+use DbTestCase;
 
 /* Test for inc/item_operatingsystem.class.php */
 
@@ -87,7 +87,7 @@ class Item_OperatingSystem extends DbTestCase {
       $this->boolean($ios->getFromDB($ios->getID()))->isTrue();
 
       $this->string($ios->getTabNameForItem($computer))
-         ->isIdenticalTo("Operating systems <sup class='tab_nb'>1</sup>");
+         ->isIdenticalTo("Operating systems <span class='badge'>1</span>");
       $this->integer(
          (int)\Item_OperatingSystem::countForItem($computer)
       )->isIdenticalTo(1);
@@ -123,7 +123,7 @@ class Item_OperatingSystem extends DbTestCase {
       $this->boolean($ios->getFromDB($ios->getID()))->isTrue();
 
       $this->string($ios->getTabNameForItem($computer))
-         ->isIdenticalTo("Operating systems <sup class='tab_nb'>2</sup>");
+         ->isIdenticalTo("Operating systems <span class='badge'>2</span>");
       $this->integer(
          (int)\Item_OperatingSystem::countForItem($computer)
       )->isIdenticalTo(2);

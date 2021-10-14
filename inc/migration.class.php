@@ -30,8 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Symfony\Component\Console\Output\OutputInterface;
 use Glpi\Console\Application;
+use Symfony\Component\Console\Output\OutputInterface;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -237,10 +237,11 @@ class Migration {
    private function fieldFormat($type, $default_value, $nodefault = false) {
 
       $format = '';
+      $collate = DBConnection::getDefaultCollation();
       switch ($type) {
          case 'bool' :
          case 'boolean' :
-            $format = "TINYINT(1) NOT NULL";
+            $format = "TINYINT NOT NULL";
             if (!$nodefault) {
                if (is_null($default_value)) {
                   $format .= " DEFAULT '0'";
@@ -266,7 +267,7 @@ class Migration {
 
          case 'str' :
          case 'string' :
-            $format = "VARCHAR(255) COLLATE utf8_unicode_ci";
+            $format = "VARCHAR(255) COLLATE $collate";
             if (!$nodefault) {
                if (is_null($default_value)) {
                   $format .= " DEFAULT NULL";
@@ -278,7 +279,7 @@ class Migration {
 
          case 'int' :
          case 'integer' :
-            $format = "INT(11) NOT NULL";
+            $format = "INT NOT NULL";
             if (!$nodefault) {
                if (is_null($default_value)) {
                   $format .= " DEFAULT '0'";
@@ -301,6 +302,17 @@ class Migration {
             }
             break;
 
+         case 'time':
+            $format = "TIME";
+            if (!$nodefault) {
+               if (is_null($default_value)) {
+                  $format.= " DEFAULT NULL";
+               } else {
+                  $format.= " NOT NULL DEFAULT '$default_value'";
+               }
+            }
+            break;
+
          case 'timestamp':
          case 'datetime':
             $format = "TIMESTAMP";
@@ -314,30 +326,25 @@ class Migration {
             break;
 
          case 'text' :
-            $format = "TEXT COLLATE utf8_unicode_ci";
-            if (!$nodefault) {
-               if (is_null($default_value)) {
-                  $format.= " DEFAULT NULL";
-               } else {
-                  $format.= " NOT NULL DEFAULT '$default_value'";
-               }
-            }
-            break;
-
+         case 'mediumtext' :
          case 'longtext' :
-            $format = "LONGTEXT COLLATE utf8_unicode_ci";
+            $format = sprintf('%s COLLATE %s', strtoupper($type), $collate);
             if (!$nodefault) {
                if (is_null($default_value)) {
                   $format .= " DEFAULT NULL";
                } else {
-                  $format .= " NOT NULL DEFAULT '$default_value'";
+                  if (empty($default_value)) {
+                     $format .= " NOT NULL";
+                  } else {
+                     $format .= " NOT NULL DEFAULT '$default_value'";
+                  }
                }
             }
             break;
 
          // for plugins
          case 'autoincrement' :
-            $format = "INT(11) NOT NULL AUTO_INCREMENT";
+            $format = "INT NOT NULL AUTO_INCREMENT";
             break;
 
          default :
@@ -426,9 +433,9 @@ class Migration {
     * @param string $table    Table name
     * @param string $oldfield Old name of the field
     * @param string $newfield New name of the field
-    * @param string $type     Field type, @see Migration::fieldFormat()
+    * @param string $type     Field type, {@see Migration::fieldFormat()}
     * @param array  $options  Options:
-    *                         - default_value new field's default value, if a specific default value needs to be used
+    *                         - value     : new field's default value, if a specific default value needs to be used
     *                         - first     : add the new field at first column
     *                         - after     : where adding the new field
     *                         - null      : value could be NULL (default false)
@@ -644,10 +651,11 @@ class Migration {
     *
     * @param string $oldtable The name of the table already inside the database
     * @param string $newtable The copy of the old table
+    * @param bool   $insert   Copy content ? True by default
     *
     * @return void
    **/
-   function copyTable($oldtable, $newtable) {
+   function copyTable($oldtable, $newtable, bool $insert = true) {
       global $DB;
 
       if (!$DB->tableExists($newtable)
@@ -660,11 +668,11 @@ class Migration {
          $query = "CREATE TABLE `$newtable` LIKE `$oldtable`";
          $DB->queryOrDie($query, $this->version." create $newtable");
 
-         //nedds DB::insert to support subqeries to get migrated
-         $query = "INSERT INTO `$newtable`
-                          (SELECT *
-                           FROM `$oldtable`)";
-         $DB->queryOrDie($query, $this->version." copy from $oldtable to $newtable");
+         if ($insert) {
+            //needs DB::insert to support subqueries to get migrated
+            $query = "INSERT INTO `$newtable` (SELECT * FROM `$oldtable`)";
+            $DB->queryOrDie($query, $this->version." copy from $oldtable to $newtable");
+         }
       }
    }
 
@@ -857,7 +865,7 @@ class Migration {
             ]);
 
             if (count($iterator) > 0) {
-               while ($data = $iterator->next()) {
+               foreach ($iterator as $data) {
                   $query = "SELECT MAX(`rank`)
                               FROM `glpi_displaypreferences`
                               WHERE `users_id` = '".$data['users_id']."'
@@ -1090,7 +1098,7 @@ class Migration {
          ];
       }
 
-      while ($profile = $prof_iterator->next()) {
+      foreach ($prof_iterator as $profile) {
          if (empty($requiredrights)) {
             $reqmet = true;
          } else {
@@ -1169,17 +1177,17 @@ class Migration {
          case 'warning':
             $msg       = str_pad("** {$msg}", 100);
             $format    = 'comment';
-            $verbosity = OutputInterface::VERBOSITY_VERBOSE;
+            $verbosity = OutputInterface::VERBOSITY_NORMAL;
             break;
          case 'strong':
             $msg       = str_pad($msg, 100);
             $format    = 'comment';
-            $verbosity = OutputInterface::VERBOSITY_VERBOSE;
+            $verbosity = OutputInterface::VERBOSITY_NORMAL;
             break;
          default:
             $msg       = str_pad($msg, 100);
             $format    = 'comment';
-            $verbosity = OutputInterface::VERBOSITY_VERY_VERBOSE;
+            $verbosity = OutputInterface::VERBOSITY_VERBOSE;
             break;
       }
 

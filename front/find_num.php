@@ -46,12 +46,11 @@ echo "<html lang=\"{$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]}\">";
     <title>GLPI</title>
 
 <?php
-echo Html::scss('css/styles');
-if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
-   echo Html::scss('css/highcontrast');
-}
 $theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
 echo Html::scss('css/palettes/' . $theme);
+if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
+   echo Html::scss('css/legacy/highcontrast');
+}
 echo Html::script($CFG_GLPI["root_doc"].'/script.js');
 ?>
 
@@ -117,7 +116,7 @@ if (isset($_POST["send"])) {
          'ORDER'           => ['name']
       ]);
 
-      while ($ligne = $iterator->next()) {
+      foreach ($iterator as $ligne) {
          $Comp_num = $ligne['id'];
          $Contact  = $ligne['contact'];
          $Computer = $ligne['name'];
@@ -146,7 +145,7 @@ if (isset($_POST["send"])) {
       'ORDER'  => ['name']
    ]);
 
-   while ($ligne = $iterator->next()) {
+   foreach ($iterator as $ligne) {
       $Comp_num = $ligne['id'];
       $Computer = $ligne['name'];
       echo " <tr class='tab_find' onClick=\"fillidfield('Software',".$Comp_num.")\">";

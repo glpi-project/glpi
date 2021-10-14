@@ -28,7 +28,7 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 use Glpi\Event;
 
@@ -94,4 +94,3 @@ if (isset($_GET['_in_modal'])) {
    $alias->display($_GET);
    Html::footer();
 }
-

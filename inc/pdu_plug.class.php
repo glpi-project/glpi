@@ -1,9 +1,4 @@
 <?php
-
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
-}
-
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,7 +28,11 @@ if (!defined('GLPI_ROOT')) {
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-**/
+ */
+
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
+}
 
 class Pdu_Plug extends CommonDBRelation {
 
@@ -133,7 +132,7 @@ class Pdu_Plug extends CommonDBRelation {
             ]
          );
          echo "</td><td>";
-         echo "<input type='submit' class='submit' name='add' value='"._sx('button', 'Add')."'>";
+         echo "<input type='submit' class='btn btn-primary' name='add' value='"._sx('button', 'Add')."'>";
          echo "</td></tr></table>";
          Html::closeForm();
       }

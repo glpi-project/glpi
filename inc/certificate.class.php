@@ -34,6 +34,7 @@
  * @since 9.2
  */
 
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -89,7 +90,6 @@ class Certificate extends CommonDBTM {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false, // implicit key==1
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -107,7 +107,6 @@ class Certificate extends CommonDBTM {
          'field'              => 'serial',
          'name'               => __('Serial number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -116,7 +115,6 @@ class Certificate extends CommonDBTM {
          'field'              => 'otherserial',
          'name'               => __('Inventory number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
@@ -134,7 +132,6 @@ class Certificate extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'dns_suffix',
          'name'               => __('DNS suffix'),
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -204,7 +201,6 @@ class Certificate extends CommonDBTM {
          'field'              => 'contact',
          'name'               => __('Alternate username'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -213,7 +209,6 @@ class Certificate extends CommonDBTM {
          'field'              => 'contact_num',
          'name'               => __('Alternate username number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -221,7 +216,6 @@ class Certificate extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'dns_name',
          'name'               => __('DNS name'),
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -279,7 +273,6 @@ class Certificate extends CommonDBTM {
          'massiveaction'      => false,
          'nosearch'           => true,
          'nodisplay'          => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -363,7 +356,7 @@ class Certificate extends CommonDBTM {
          ->addStandardTab('Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
-         ->addStandardTab('Link', $ong, $options)
+         ->addStandardTab('ManualLink', $ong, $options)
          ->addStandardTab('Lock', $ong, $options)
          ->addStandardTab('Notepad', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
@@ -382,178 +375,6 @@ class Certificate extends CommonDBTM {
       return $input;
    }
 
-
-   /**
-    * @param $ID
-    * @param array $options
-    * @return bool
-    */
-   function showForm($ID, $options = []) {
-
-      $this->initForm($ID, $options);
-      $this->showFormHeader($options);
-
-      echo "<tr class='tab_bg_1'>";
-      //TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
-      echo "<td>".sprintf(__('%1$s%2$s'), __('Name'),
-                          (isset($options['withtemplate'])
-                             && $options['withtemplate']?"*":"")).
-           "</td>";
-      echo "<td>";
-      $objectName = autoName($this->fields["name"], "name",
-                             (isset($options['withtemplate'])
-                                && ( $options['withtemplate']== 2)),
-                             $this->getType(), $this->fields["entities_id"]);
-      Html::autocompletionTextField($this, 'name', ['value' => $objectName]);
-      echo "</td>";
-      echo "<td>".__('Status')."</td>";
-      echo "<td>";
-      State::dropdown([
-         'value'     => $this->fields["states_id"],
-         'entity'    => $this->fields["entities_id"],
-         'condition' => ['is_visible_certificate' => 1]
-      ]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".Location::getTypeName(1)."</td>";
-      echo "<td>";
-      Location::dropdown(['value'  => $this->fields["locations_id"],
-                          'entity' => $this->fields["entities_id"]]);
-      echo "</td>";
-      echo "<td>"._n('Type', 'Types', 1)."</td>";
-      echo "<td>";
-      Dropdown::show('CertificateType',
-                     ['name'   => "certificatetypes_id",
-                      'value'  => $this->fields["certificatetypes_id"],
-                      'entity' => $this->fields["entities_id"]
-                     ]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Technician in charge of the hardware')."</td>";
-      echo "<td>";
-      User::dropdown(['name'   => 'users_id_tech',
-                      'value'  => $this->fields["users_id_tech"],
-                      'right'  => 'own_ticket',
-                      'entity' => $this->fields["entities_id"]]);
-      echo "</td>";
-      echo "<td>".Manufacturer::getTypeName(1)." (" . __('Root CA') . ")";
-      echo "<td>";
-      Manufacturer::dropdown(['value' => $this->fields["manufacturers_id"]]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Serial number')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, 'serial');
-      echo "<td>".sprintf(__('%1$s%2$s'), __('Inventory number'),
-                          (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
-           "</td>";
-      echo "<td>";
-      $objectName = autoName($this->fields["otherserial"], "otherserial",
-                             (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
-                             $this->getType(), $this->fields["entities_id"]);
-      Html::autocompletionTextField($this, 'otherserial', ['value' => $objectName]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Group in charge of the hardware')."</td>";
-      echo "<td>";
-      Group::dropdown([
-         'name'      => 'groups_id_tech',
-         'value'     => $this->fields['groups_id_tech'],
-         'entity'    => $this->fields['entities_id'],
-         'condition' => ['is_assign' => 1]
-      ]);
-
-      echo "</td><td colspan='2'></td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".User::getTypeName(1)."</td>";
-      echo "<td>";
-      User::dropdown(['value'  => $this->fields["users_id"],
-                      'entity' => $this->fields["entities_id"],
-                      'right'  => 'all']);
-      echo "</td>";
-      echo "<td>".Group::getTypeName(1)."</td>";
-      echo "<td>";
-      Group::dropdown([
-         'value'     => $this->fields["groups_id"],
-         'entity'    => $this->fields["entities_id"],
-         'condition' => ['is_itemgroup' => 1]
-      ]);
-
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Alternate username number')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "contact_num");
-      echo "</td>";
-      echo "<td>".__('Alternate username')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "contact");
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Self-signed') . "</td>";
-      echo "<td>";
-      Dropdown::showYesNo('is_autosign', $this->fields["is_autosign"]);
-      echo "<td rowspan='4'>".__('Comments')."</td>";
-      echo "<td rowspan='4' class='middle'>";
-      echo "<textarea cols='45' rows='4' name='comment' >".
-           $this->fields["comment"];
-      echo "</textarea></td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('DNS name') . "</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "dns_name");
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('DNS suffix') . "</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "dns_suffix");
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Expiration date');
-      echo "&nbsp;";
-      Html::showToolTip(nl2br(__('Empty for infinite')));
-      echo "&nbsp;</td>";
-      echo "<td>";
-      Html::showDateField('date_expiration', ['value' => $this->fields["date_expiration"]]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('Command used') . "</td>";
-      echo "<td colspan='3'>";
-      echo "<textarea cols='100%' rows='4' name='command' >";
-      echo $this->fields["command"] . "</textarea>";
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('Certificate request (CSR)') . "</td>";
-      echo "<td colspan='3'>";
-      echo "<textarea cols='100%' rows='4' name='certificate_request' >";
-      echo $this->fields["certificate_request"] . "</textarea>";
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>". self::getTypeName(1) . "</td>";
-      echo "<td colspan='3'>";
-      echo "<textarea cols='100%' rows='4' name='certificate_item' >";
-      echo $this->fields["certificate_item"] . "</textarea>";
-      echo "</td></tr>";
-
-      $this->showFormButtons($options);
-
-      return true;
-   }
 
    /**
     * @since 0.85
@@ -775,7 +596,7 @@ class Certificate extends CommonDBTM {
 
          foreach ($result as $certificate) {
             $name     = $certificate['name'].' - '.$certificate['serial'];
-            //TRANS: %1$s the license name, %2$s is the expiration date
+            //TRANS: %1$s the certificate name, %2$s is the expiration date
             $message .= sprintf(__('Certificate %1$s expired on %2$s'),
                                 Html::convDate($certificate["date_expiration"]), $name)."<br>\n";
             $items[$certificate['id']] = $certificate;

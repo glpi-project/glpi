@@ -49,8 +49,8 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
 ## Prerequisites
 
 * A web server (Apache, Nginx, IIS, etc.)
-* MariaDB >= 10.0 or MySQL >= 5.6
-* PHP 7.2 or higher
+* MariaDB >= 10.2 or MySQL >= 5.7
+* PHP 7.4 or higher
 * Mandatory PHP extensions:
     - ctype
     - curl
@@ -84,7 +84,6 @@ Please, consider using browsers on editor's supported version
 
 See :
 * [releases](https://github.com/glpi-project/glpi/releases) for tarball packages.
-* [Remi's RPM repository](http://rpms.remirepo.net/) for RPM packages (Fedora, RHEL, CentOS)
 
 
 ## Documentation
@@ -104,7 +103,6 @@ We are working on a [markdown version](https://github.com/glpi-project/doc)
 * [Issues](https://github.com/glpi-project/glpi/issues)
 * [Suggestions](http://suggest.glpi-project.org)
 * [Forum](http://forum.glpi-project.org)
-* IRC : irc://irc.freenode.org/glpi
 * [Development documentation](http://glpi-developer-documentation.readthedocs.io/en/master/)
 * [Plugin directory](http://plugins.glpi-project.org)
 * [Plugin development documentation](http://glpi-developer-documentation.readthedocs.io/en/master/plugins/index.html)

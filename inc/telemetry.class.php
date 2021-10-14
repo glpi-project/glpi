@@ -122,7 +122,7 @@ class Telemetry extends CommonGLPI {
          'SELECT' => new \QueryExpression("ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) AS dbsize"),
          'FROM'   => 'information_schema.tables',
          'WHERE'  => ['table_schema' => $DB->dbdefault]
-      ])->next();
+      ])->current();
 
       $db = [
          'engine'    => $dbinfos['Server Software'],
@@ -143,45 +143,34 @@ class Telemetry extends CommonGLPI {
    static public function grabWebserverInfos() {
       global $CFG_GLPI;
 
-      $headers = false;
-      $engine  = '';
-      $version = '';
+      $server = [
+         'engine'  => '',
+         'version' => '',
+      ];
 
-      // check if host is present (do no throw php warning in contrary of get_headers)
-      if (filter_var(gethostbyname(parse_url($CFG_GLPI['url_base'], PHP_URL_HOST)),
-          FILTER_VALIDATE_IP)) {
-
-          // Issue #3180 - disable SSL certificate validation (wildcard, self-signed)
-          stream_context_set_default([
-            'ssl' => [
-                'verify_peer' => false,
-                'verify_peer_name' => false,
-                ]
-            ]);
-
-         $headers = get_headers($CFG_GLPI['url_base']);
+      if (!filter_var(gethostbyname(parse_url($CFG_GLPI['url_base'], PHP_URL_HOST)), FILTER_VALIDATE_IP)) {
+         // Do not try to get headers if hostname cannot be resolved
+         return $server;
       }
 
-      if (is_array($headers)) {
-         //BEGIN EXTRACTING SERVER DETAILS
-         $pattern = '#^Server:*#i';
-         $matches = preg_grep($pattern, $headers);
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $CFG_GLPI['url_base']);
+      curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($ch, CURLOPT_HEADER, 1);
 
-         if (count($matches)) {
-            $infos = current($matches);
-            $pattern = '#Server: ([^ ]+)/([^ ]+)#i';
-            preg_match($pattern, $infos, $srv_infos);
-            if (count($srv_infos) == 3) {
-               $engine  = $srv_infos[1];
-               $version = $srv_infos[2];
-            }
+      // Issue #3180 - disable SSL certificate validation (wildcard, self-signed)
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+      if ($response = curl_exec($ch)) {
+         $headers = substr($response, 0, curl_getinfo($ch, CURLINFO_HEADER_SIZE));
+         $header_matches = [];
+         if (preg_match('/^Server: (?<engine>[^ ]+)\/(?<version>[^ ]+)/im', $headers, $header_matches)) {
+            $server['engine']  = $header_matches['engine'];
+            $server['version'] = $header_matches['version'];
          }
       }
-
-      $server = [
-         'engine'    => $engine,
-         'version'   => $version
-      ];
 
       return $server;
    }
@@ -343,41 +332,17 @@ class Telemetry extends CommonGLPI {
    public static function getViewLink() {
       global $CFG_GLPI;
 
-      $out = "<a id='view_telemetry' href='{$CFG_GLPI['root_doc']}/ajax/telemetry.php'>" . __('See what would be sent...') . "</a>";
+      $out = "<a id='view_telemetry' href='{$CFG_GLPI['root_doc']}/ajax/telemetry.php' class='btn btn-sm btn-info mt-2'>
+         ".__('See what would be sent...')."
+      </a>";
       $out .= Html::scriptBlock("
          $('#view_telemetry').on('click', function(e) {
             e.preventDefault();
 
-            $.ajax({
-               url:  $(this).attr('href'),
-               success: function(data) {
-                  var _elt = $('<div></div>');
-                  _elt.append(data);
-                  $('body').append(_elt);
-
-                  _elt.dialog({
-                     title: '" . addslashes(__('Telemetry data')) . "',
-                     buttons: {
-                        ".addslashes(__('OK')).": function() {
-                           $(this).dialog('close');
-                        }
-                     },
-                     dialogClass: 'glpi_modal',
-                     maxHeight: $(window).height(),
-                     open: function(event, ui) {
-                        $(this).dialog('option', 'maxHeight', $(window).height());
-                        $(this).parent().prev('.ui-widget-overlay').addClass('glpi_modal');
-                     },
-                     close: function(){
-                        $(this).remove();
-                     },
-                     draggable: true,
-                     modal: true,
-                     resizable: true,
-                     width: '50%'
-                  });
-               }
-
+            glpi_ajax_dialog({
+               title: __('Telemetry data'),
+               url: $('#view_telemetry').attr('href'),
+               dialogclass: 'modal-lg'
             });
          });");
       return $out;
@@ -393,6 +358,20 @@ class Telemetry extends CommonGLPI {
       $DB->update(
          'glpi_crontasks',
          ['state' => 1],
+         ['name' => 'telemetry']
+      );
+   }
+
+   /**
+    * Disable telemetry
+    *
+    * @return void
+    */
+   public static function disable(): void {
+      global $DB;
+      $DB->update(
+         'glpi_crontasks',
+         ['state' => 0],
          ['name' => 'telemetry']
       );
    }
@@ -423,14 +402,18 @@ class Telemetry extends CommonGLPI {
     * @return string
     */
    public static function showTelemetry() {
-      $out = "<h4><input type='checkbox' checked='checked' value='1' name='send_stats' id='send_stats'/>";
-      $out .= "<label for='send_stats'>" . __('Send "usage statistics"')  . "</label></h4>";
-      $out .= "<p><strong>" . __("We need your help to improve GLPI and the plugins ecosystem!") ."</strong></p>";
-      $out .= "<p>" . __("Since GLPI 9.2, we’ve introduced a new statistics feature called “Telemetry”, that anonymously with your permission, sends data to our telemetry website.") . " ";
-      $out .= __("Once sent, usage statistics are aggregated and made available to a broad range of GLPI developers.") . "</p>";
-      $out .= "<p>" . __("Let us know your usage to improve future versions of GLPI and its plugins!") . "</p>";
+      $out = "<div class='form-check'>
+         <input type='checkbox' class='form-check-input' checked='checked' value='1' name='send_stats' id='send_stats'/>
+         <label for='send_stats' class='form-check-label'>
+            ".__('Send "usage statistics"')."
+         </label>
+      </div>";
+      $out .= "<strong>" . __("We need your help to improve GLPI and the plugins ecosystem!") ."</strong><br><br>";
+      $out .= __("Since GLPI 9.2, we’ve introduced a new statistics feature called “Telemetry”, that anonymously with your permission, sends data to our telemetry website.")."<br>";
+      $out .= __("Once sent, usage statistics are aggregated and made available to a broad range of GLPI developers.") . "<br><br>";
+      $out .= __("Let us know your usage to improve future versions of GLPI and its plugins!")."<br>";
 
-      $out .= "<p>" . self::getViewLink() . "</p>";
+      $out .= self::getViewLink();
       return $out;
    }
 
@@ -440,17 +423,19 @@ class Telemetry extends CommonGLPI {
     * @return string
     */
    public static function showReference() {
-      $out = "<hr/>";
-      $out .= "<h4>" . __('Reference your GLPI') . "</h4>";
-      $out .= "<p>" . sprintf(
+      $out = "<h3>" . __('Reference your GLPI') . "</h3>";
+      $out .= sprintf(
          __("Besides, if you appreciate GLPI and its community, ".
-         "please take a minute to reference your organization by filling %1\$s."),
+         "please take a minute to reference your organization by filling %1\$s"),
          sprintf(
             "<a href='" . GLPI_TELEMETRY_URI . "/reference?showmodal&uuid=" .
-            self::getRegistrationUuid() . "' target='_blank'>%1\$s</a>",
-            __('the following form')
+            self::getRegistrationUuid() . "' class='btn btn-sm btn-info' target='_blank'>
+               <i class='fas fa-pen-alt me-1'></i>
+               %1\$s
+            </a>",
+            __('the registration form')
          )
-      ) . "</p>";
+      );
       return $out;
    }
 }

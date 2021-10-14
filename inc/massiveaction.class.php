@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Clonable;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -132,7 +134,7 @@ class MassiveAction {
                      }
                   }
                   if (empty($POST['actions']) && false === $single) {
-                     throw new Exception(__('No action available'));
+                     throw new \Exception(__('No action available'));
                   }
                   // Initial items is used to define $_SESSION['glpimassiveactionselected']
                   $POST['initial_items'] = $POST['items'];
@@ -141,8 +143,8 @@ class MassiveAction {
 
                case 'specialize' :
                   if (!isset($POST['action'])) {
-                     Toolbox::logError('Implementation error !');
-                     throw new Exception(__('Implementation error !'));
+                     Toolbox::logError('Implementation error!');
+                     throw new \Exception(__('Implementation error!'));
                   }
                   if ($POST['action'] == -1) {
                      // Case when no action is choosen
@@ -151,8 +153,8 @@ class MassiveAction {
                   if (isset($POST['actions'])) {
                      // First, get the name of current action !
                      if (!isset($POST['actions'][$POST['action']])) {
-                        Toolbox::logError('Implementation error !');
-                        throw new Exception(__('Implementation error !'));
+                        Toolbox::logError('Implementation error!');
+                        throw new \Exception(__('Implementation error!'));
                      }
                      $POST['action_name'] = $POST['actions'][$POST['action']];
                      $remove_from_post[]  = 'actions';
@@ -253,15 +255,15 @@ class MassiveAction {
                }
             }
          }
-         if ($this->nb_items == 0) {
-            throw new Exception(__('No selected items'));
+         if ($this->nb_items == 0 && !isAPI()) {
+            throw new \Exception(__('No selected items'));
          }
 
       } else {
          if (($stage != 'process')
              || (!isset($_SESSION['current_massive_action'][$GET['identifier']]))) {
-            Toolbox::logError('Implementation error !');
-            throw new Exception(__('Implementation error !'));
+            Toolbox::logError('Implementation error!');
+            throw new \Exception(__('Implementation error!'));
          }
          $identifier = $GET['identifier'];
          foreach ($_SESSION['current_massive_action'][$identifier] as $attribute => $value) {
@@ -276,7 +278,6 @@ class MassiveAction {
 
       // Add process elements
       if ($stage == 'process') {
-
          if (!isset($this->remainings)) {
             $this->remainings = $this->items;
          }
@@ -360,7 +361,7 @@ class MassiveAction {
 
    /**
     * Destructor of the object
-    * It is used when reloading the page during process to store informations in $_SESSION.
+    * It is used when reloading the page during process to store information in $_SESSION.
    **/
    function __destruct() {
 
@@ -477,7 +478,7 @@ class MassiveAction {
       if (Session::haveRight('transfer', READ)
           && Session::isMultiEntitiesMode()) {
          $actions[__CLASS__.self::CLASS_ACTION_SEPARATOR.'add_transfer_list']
-                  = "<i class='ma-icon fas fa-level-up-alt'></i>".
+                  = "<i class='fas fa-level-up-alt'></i>".
                     _x('button', 'Add to transfer list');
       }
 
@@ -543,7 +544,9 @@ class MassiveAction {
             //TRANS: select action 'update' (before doing it)
             $actions[$self_pref.'update'] = _x('button', 'Update');
 
-            $actions[$self_pref.'clone'] = _x('button', 'Clone');
+            if (Toolbox::hasTrait($itemtype, Clonable::class)) {
+               $actions[$self_pref . 'clone'] = "<i class='far fa-clone'></i>"._x('button', 'Clone');
+            }
          }
 
          Infocom::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
@@ -578,12 +581,12 @@ class MassiveAction {
          // Amend comment for objects with a 'comment' field
          $item->getEmpty();
          if ($canupdate && isset($item->fields['comment'])) {
-            $actions[$self_pref.'amend_comment'] = __("Amend comment");
+            $actions[$self_pref.'amend_comment'] = "<i class='far fa-comment'></i>".__("Amend comment");
          }
 
          // Add a note for objects with the UPDATENOTE rights
          if (Session::haveRight($item::$rightname, UPDATENOTE)) {
-            $actions[$self_pref.'add_note'] = __("Add note");
+            $actions[$self_pref.'add_note'] = "<i class='far fa-sticky-note'></i>".__("Add note");
          }
 
          // Plugin Specific actions
@@ -605,7 +608,7 @@ class MassiveAction {
 
       // Manage forbidden actions : try complete action name or MassiveAction:action_name
       $forbidden_actions = $item->getForbiddenStandardMassiveAction();
-      if (false !== $single) {
+      if ($single !== false && !isAPI()) { // Do no filter single actions for API
          $item->getFromDB($single);
          $forbidden_actions = array_merge(
             $forbidden_actions,
@@ -647,8 +650,8 @@ class MassiveAction {
          }
       }
 
-      // Remove icons as they are not displayed in list view
-      if (!$single) {
+      // Remove icons for outputs that doesn't expect html
+      if (!$single || isAPI()) {
          $actions = array_map(function($action) {
             return strip_tags($action);
          }, $actions);
@@ -680,7 +683,10 @@ class MassiveAction {
     * @return void
    **/
    function showDefaultSubForm() {
-      echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
+      echo Html::submit("<i class='fas fa-save'></i><span>"._x('button', 'Post')."</span>", [
+         'name'  => 'massiveaction',
+         'class' => 'btn btn-sm btn-primary',
+      ]);
    }
 
 
@@ -780,7 +786,7 @@ class MassiveAction {
                   $common_options  = false;
                   $choose_itemtype = false;
                }
-               $choose_field = (count($options) >= 1);
+               $choose_field = is_countable($options) ? (count($options) >= 1) : false;
 
                // Beware: "class='tab_cadre_fixe'" induce side effects ...
                echo "<table width='100%'><tr>";
@@ -850,7 +856,7 @@ class MassiveAction {
             if (!isset($ma->POST['common_options'])) {
                echo "<div class='center'><img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='".
                               __s('Warning')."'><br><br>";
-               echo "<span class='b'>".__('Implementation error !')."</span><br>";
+               echo "<span class='b'>".__('Implementation error!')."</span><br>";
                echo "</div>";
                exit();
             }
@@ -936,11 +942,14 @@ class MassiveAction {
             echo Html::hidden('field', ['value' => $fieldname]);
             echo "<br>\n";
 
-            $submitname = _sx('button', 'Post');
+            $submitname = "<i class='fas fa-save'></i><span>"._sx('button', 'Post')."</span>";
             if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
                $submitname= stripslashes($ma->POST['submitname']);
             }
-            echo Html::submit($submitname, ['name' => 'massiveaction']);
+            echo Html::submit($submitname, [
+               'name'  => 'massiveaction',
+               'class' => 'btn btn-sm btn-primary',
+            ]);
 
             return true;
 
@@ -949,7 +958,7 @@ class MassiveAction {
 
             echo "<table width='100%'><tr>";
             echo "<td>";
-            echo __('How many copies do you want to create ?');
+            echo __('How many copies do you want to create?');
             echo "</td><tr>";
             echo "<td>".Html::input("nb_copy", [
                'id'     => "nb_copy$rand",
@@ -962,11 +971,14 @@ class MassiveAction {
 
             echo "<br>\n";
 
-            $submitname = _sx('button', 'Post');
+            $submitname = "<i class='fas fa-save'></i><span>"._sx('button', 'Post')."</span>";
             if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
                $submitname= stripslashes($ma->POST['submitname']);
             }
-            echo Html::submit($submitname, ['name' => 'massiveaction']);
+            echo Html::submit($submitname, [
+               'name'  => 'massiveaction',
+               'class' => 'btn btn-sm btn-primary',
+            ]);
 
             return true;
 
@@ -975,7 +987,10 @@ class MassiveAction {
                     "Are you sure you want to add these items to transfer list?",
                     count($ma->items, COUNT_RECURSIVE) - count($ma->items));
             echo "<br><br>";
-            echo Html::submit(_x('button', 'Add'), ['name' => 'massiveaction']);
+            echo Html::submit("<i class='fas fa-plus'></i><span>"._x('button', 'Add')."</span>", [
+               'name'  => 'massiveaction',
+               'class' => 'btn btn-sm btn-primary',
+            ]);
 
             return true;
 
@@ -986,8 +1001,9 @@ class MassiveAction {
                'name' => 'amendment'
             ]);
             echo ("<br><br>");
-            echo Html::submit(__('Update'), [
-               'name' => 'massiveaction'
+            echo Html::submit("<i class='fas fa-save'></i><span>".__('Update')."</span>", [
+               'name'  => 'massiveaction',
+               'class' => 'btn btn-sm btn-primary',
             ]);
 
             return true;
@@ -999,8 +1015,9 @@ class MassiveAction {
                'name' => 'add_note'
             ]);
             echo ("<br><br>");
-            echo Html::submit(_sx('button', 'Add'), [
-               'name' => 'massiveaction'
+            echo Html::submit("<i class='fas fa-plus'></i><span>"._sx('button', 'Add')."</span>", [
+               'name'  => 'massiveaction',
+               'class' => 'btn btn-sm btn-primary',
             ]);
 
             return true;
@@ -1373,7 +1390,6 @@ class MassiveAction {
                }
 
                $comment = $item->fields['comment'];
-
                if (is_null($comment) || $comment == "") {
                   // If the comment was empty, use directly the amendment
                   $comment = $amendment;

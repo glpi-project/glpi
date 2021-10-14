@@ -31,6 +31,7 @@
  */
 
 use Glpi\Features\Kanban;
+use Glpi\Toolbox\Sanitizer;
 
 $AJAX_INCLUDE = 1;
 
@@ -48,10 +49,9 @@ if (!isset($_REQUEST['action'])) {
 }
 $action = $_REQUEST['action'];
 
-$nonkanban_actions = ['update', 'bulk_add_item', 'add_item', 'move_item'];
+$nonkanban_actions = ['update', 'bulk_add_item', 'add_item', 'move_item', 'show_card_edit_form', 'delete_item'];
 if (isset($_REQUEST['itemtype'])) {
-   $traits = class_uses($_REQUEST['itemtype'], true);
-   if (!in_array($_REQUEST['action'], $nonkanban_actions) && (!$traits || !in_array(Kanban::class, $traits, true))) {
+   if (!in_array($_REQUEST['action'], $nonkanban_actions) && !Toolbox::hasTrait($_REQUEST['itemtype'], Kanban::class)) {
       // Bad request
       // For all actions, except those in $nonkanban_actions, we expect to be manipulating the Kanban itself.
       Toolbox::logError("Invalid itemtype parameter");
@@ -87,10 +87,18 @@ if (isset($itemtype)) {
          return;
       }
    }
+   if (in_array($action, ['delete_item'])) {
+      $maybe_deleted = $item->maybeDeleted();
+      if (($maybe_deleted && !$item::canDelete()) && (!$maybe_deleted && $item::canPurge())) {
+         // Missing rights
+         http_response_code(403);
+         return;
+      }
+   }
 }
 
 // Helper to check required parameters
-$checkParams = function($required) {
+$checkParams = static function($required) {
    foreach ($required as $param) {
       if (!isset($_REQUEST[$param])) {
          Toolbox::logError("Missing $param parameter");
@@ -101,25 +109,25 @@ $checkParams = function($required) {
 };
 
 // Action Processing
-if ($_REQUEST['action'] == 'update') {
+if (($_POST['action'] ?? null) === 'update') {
    $checkParams(['column_field', 'column_value']);
    // Update project or task based on changes made in the Kanban
    $item->update([
-      'id'                          => $_REQUEST['items_id'],
-      $_REQUEST['column_field']     => $_REQUEST['column_value']
+      'id'                   => $_POST['items_id'],
+      $_POST['column_field'] => $_POST['column_value']
    ]);
-} else if ($_REQUEST['action'] == 'add_item') {
+} else if (($_POST['action'] ?? null) === 'add_item') {
    $checkParams(['inputs']);
    $item = new $itemtype();
    $inputs = [];
-   parse_str($_REQUEST['inputs'], $inputs);
+   parse_str($_UPOST['inputs'], $inputs);
 
-   $item->add(Toolbox::clean_cross_side_scripting_deep($inputs));
-} else if ($_REQUEST['action'] == 'bulk_add_item') {
+   $item->add(Sanitizer::sanitize($inputs));
+} else if (($_POST['action'] ?? null) === 'bulk_add_item') {
    $checkParams(['inputs']);
    $item = new $itemtype();
    $inputs = [];
-   parse_str($_REQUEST['inputs'], $inputs);
+   parse_str($_UPOST['inputs'], $inputs);
 
    $bulk_item_list = preg_split('/\r\n|[\r\n]/', $inputs['bulk_item_list']);
    if (!empty($bulk_item_list)) {
@@ -127,48 +135,47 @@ if ($_REQUEST['action'] == 'update') {
       foreach ($bulk_item_list as $item_entry) {
          $item_entry = trim($item_entry);
          if (!empty($item_entry)) {
-            $item->add(Toolbox::clean_cross_side_scripting_deep($inputs + ['name' => $item_entry]));
+            $item->add(Sanitizer::sanitize($inputs + ['name' => $item_entry, 'content' => '']));
          }
       }
    }
-} else if ($_REQUEST['action'] == 'move_item') {
+} else if (($_POST['action'] ?? null) === 'move_item') {
    $checkParams(['card', 'column', 'position', 'kanban']);
    /** @var Kanban|CommonDBTM $kanban */
-   $kanban = new $_REQUEST['kanban']['itemtype'];
-   $can_move = $kanban->canOrderKanbanCard($_REQUEST['kanban']['items_id']);
+   $kanban = new $_POST['kanban']['itemtype'];
+   $can_move = $kanban->canOrderKanbanCard($_POST['kanban']['items_id']);
    if ($can_move) {
-      Item_Kanban::moveCard($_REQUEST['kanban']['itemtype'], $_REQUEST['kanban']['items_id'],
-         $_REQUEST['card'], $_REQUEST['column'], $_REQUEST['position']);
+      Item_Kanban::moveCard($_POST['kanban']['itemtype'], $_POST['kanban']['items_id'],
+         $_POST['card'], $_POST['column'], $_POST['position']);
    }
-} else if ($_REQUEST['action'] == 'show_column') {
+} else if (($_POST['action'] ?? null) === 'show_column') {
    $checkParams(['column', 'kanban']);
-   Item_Kanban::showColumn($_REQUEST['kanban']['itemtype'], $_REQUEST['kanban']['items_id'], $_REQUEST['column']);
-} else if ($_REQUEST['action'] == 'hide_column') {
+   Item_Kanban::showColumn($_POST['kanban']['itemtype'], $_POST['kanban']['items_id'], $_POST['column']);
+} else if (($_POST['action'] ?? null) === 'hide_column') {
    $checkParams(['column', 'kanban']);
-   Item_Kanban::hideColumn($_REQUEST['kanban']['itemtype'], $_REQUEST['kanban']['items_id'], $_REQUEST['column']);
-} else if ($_REQUEST['action'] == 'collapse_column') {
+   Item_Kanban::hideColumn($_POST['kanban']['itemtype'], $_POST['kanban']['items_id'], $_POST['column']);
+} else if (($_POST['action'] ?? null) === 'collapse_column') {
    $checkParams(['column', 'kanban']);
-   Item_Kanban::collapseColumn($_REQUEST['kanban']['itemtype'], $_REQUEST['kanban']['items_id'], $_REQUEST['column']);
-} else if ($_REQUEST['action'] == 'expand_column') {
+   Item_Kanban::collapseColumn($_POST['kanban']['itemtype'], $_POST['kanban']['items_id'], $_POST['column']);
+} else if (($_POST['action'] ?? null) === 'expand_column') {
    $checkParams(['column', 'kanban']);
-   Item_Kanban::expandColumn($_REQUEST['kanban']['itemtype'], $_REQUEST['kanban']['items_id'], $_REQUEST['column']);
-} else if ($_REQUEST['action'] == 'move_column') {
+   Item_Kanban::expandColumn($_POST['kanban']['itemtype'], $_POST['kanban']['items_id'], $_POST['column']);
+} else if (($_POST['action'] ?? null) === 'move_column') {
    $checkParams(['column', 'kanban', 'position']);
-   Item_Kanban::moveColumn($_REQUEST['kanban']['itemtype'], $_REQUEST['kanban']['items_id'],
-      $_REQUEST['column'], $_REQUEST['position']);
-} else if ($_REQUEST['action'] == 'refresh') {
+   Item_Kanban::moveColumn($_POST['kanban']['itemtype'], $_POST['kanban']['items_id'], $_POST['column'], $_POST['position']);
+} else if ($_REQUEST['action'] === 'refresh') {
    $checkParams(['column_field']);
    // Get all columns to refresh the kanban
    header("Content-Type: application/json; charset=UTF-8", true);
    $force_columns = Item_Kanban::getAllShownColumns($itemtype, $_REQUEST['items_id']);
    $columns = $itemtype::getKanbanColumns($_REQUEST['items_id'], $_REQUEST['column_field'], $force_columns, true);
    echo json_encode($columns, JSON_FORCE_OBJECT);
-} else if ($_REQUEST['action'] == 'get_switcher_dropdown') {
+} else if ($_REQUEST['action'] === 'get_switcher_dropdown') {
    $values = $itemtype::getAllForKanban();
    Dropdown::showFromArray('kanban-board-switcher', $values, [
-      'value'  => isset($_REQUEST['items_id']) ? $_REQUEST['items_id'] : ''
+      'value'  => $_REQUEST['items_id'] ?? ''
    ]);
-} else if ($_REQUEST['action'] == 'get_url') {
+} else if ($_REQUEST['action'] === 'get_url') {
    $checkParams(['items_id']);
    if ($_REQUEST['items_id'] == -1) {
       echo $itemtype::getFormURL(true).'?showglobalkanban=1';
@@ -177,33 +184,33 @@ if ($_REQUEST['action'] == 'update') {
    $item->getFromDB($_REQUEST['items_id']);
    $tabs = $item->defineTabs();
    $tab_id = array_search(__('Kanban'), $tabs);
-   if (is_null($tab_id) || false === $tab_id) {
+   if (false === $tab_id || is_null($tab_id)) {
       Toolbox::logError("Itemtype does not have a Kanban tab!");
       http_response_code(400);
       return;
    }
    echo $itemtype::getFormURLWithID($_REQUEST['items_id'], true)."&forcetab={$tab_id}";
-} else if ($_REQUEST['action'] == 'create_column') {
+} else if (($_POST['action'] ?? null) === 'create_column') {
    $checkParams(['column_field', 'items_id', 'column_name']);
-   $column_field = $_REQUEST['column_field'];
+   $column_field = $_POST['column_field'];
    $column_itemtype = getItemtypeForForeignKeyField($column_field);
    if (!$column_itemtype::canCreate() || !$column_itemtype::canView()) {
       // Missing rights
       http_response_code(403);
       return;
    }
-   $params = $_REQUEST['params'] ?? [];
+   $params = $_POST['params'] ?? [];
    $column_item = new $column_itemtype();
    $column_id = $column_item->add([
-      'name'   => $_REQUEST['column_name']
+      'name'   => $_POST['column_name']
    ] + $params);
    header("Content-Type: application/json; charset=UTF-8", true);
-   $column = $itemtype::getKanbanColumns($_REQUEST['items_id'], $column_field, [$column_id]);
+   $column = $itemtype::getKanbanColumns($_POST['items_id'], $column_field, [$column_id]);
    echo json_encode($column);
-} else if ($_REQUEST['action'] == 'save_column_state') {
+} else if (($_POST['action'] ?? null) === 'save_column_state') {
    $checkParams(['items_id', 'state']);
-   Item_Kanban::saveStateForItem($_REQUEST['itemtype'], $_REQUEST['items_id'], $_REQUEST['state']);
-} else if ($_REQUEST['action'] == 'load_column_state') {
+   Item_Kanban::saveStateForItem($_POST['itemtype'], $_POST['items_id'], $_POST['state']);
+} else if ($_REQUEST['action'] === 'load_column_state') {
    $checkParams(['items_id', 'last_load']);
    header("Content-Type: application/json; charset=UTF-8", true);
    $response = [
@@ -211,13 +218,33 @@ if ($_REQUEST['action'] == 'update') {
       'timestamp' => $_SESSION['glpi_currenttime']
    ];
    echo json_encode($response, JSON_FORCE_OBJECT);
-} else if ($_REQUEST['action'] == 'list_columns') {
+} else if ($_REQUEST['action'] === 'list_columns') {
    $checkParams(['column_field']);
    header("Content-Type: application/json; charset=UTF-8", true);
    echo json_encode($itemtype::getAllKanbanColumns($_REQUEST['column_field']));
-} else if ($_REQUEST['action'] == 'get_column') {
+} else if ($_REQUEST['action'] === 'get_column') {
    $checkParams(['column_id', 'column_field', 'items_id']);
    header("Content-Type: application/json; charset=UTF-8", true);
    $column = $itemtype::getKanbanColumns($_REQUEST['items_id'], $_REQUEST['column_field'], [$_REQUEST['column_id']]);
    echo json_encode($column, JSON_FORCE_OBJECT);
+} else if ($_REQUEST['action'] === 'show_card_edit_form') {
+   $checkParams(['card']);
+   $item->getFromDB($_REQUEST['card']);
+   if ($item->canViewItem() && $item->canUpdateItem()) {
+      $item->showForm($_REQUEST['card']);
+   } else {
+      http_response_code(403);
+      return;
+   }
+} else if (($_POST['action'] ?? null) === 'delete_item') {
+   $checkParams(['items_id']);
+   $item->getFromDB($_POST['items_id']);
+   // Check if the item can be trashed and if the request isn't forcing deletion (purge)
+   $maybe_deleted = $item->maybeDeleted() && !($_REQUEST['force'] ?? false);
+   if (($maybe_deleted && $item->canDeleteItem()) || (!$maybe_deleted && $item->canPurgeItem())) {
+      $item->delete(['id' => $_POST['items_id']], !$maybe_deleted);
+   } else {
+      http_response_code(403);
+      return;
+   }
 }

@@ -45,29 +45,16 @@ $tables['glpi_apiclients'] = [
    ],
 ];
 
-$tables['glpi_blacklists'] = [
-   [
-      'id'    => 1,
-      'type'  => 1,
-      'name'  => 'empty IP',
-      'value' => '',
-   ], [
-      'id'    => 2,
-      'type'  => 1,
-      'name'  => 'localhost',
-      'value' => '127.0.0.1',
-   ], [
-      'id'    => 3,
-      'type'  => 1,
-      'name'  => 'zero IP',
-      'value' => '0.0.0.0',
-   ], [
-      'id'    => 4,
-      'type'  => 2,
-      'name'  => 'empty MAC',
-      'value' => '',
-   ],
-];
+foreach (Blacklist::getDefaults() as $type => $values) {
+   foreach ($values as $value) {
+      $tables['glpi_blacklists'][] = [
+         'type' => $type,
+          'name'    => $value['name'],
+         'value'   => $value['value'],
+      ];
+   }
+}
+
 
 $tables['glpi_calendars'] = [
    [
@@ -133,7 +120,6 @@ $default_prefs = [
    'dropdown_max'                            => '100',
    'ajax_wildcard'                           => '*',
    'ajax_limit_count'                        => '10',
-   'use_ajax_autocompletion'                 => '1',
    'is_users_auto_add'                       => '1',
    'date_format'                             => '0',
    'number_format'                           => '0',
@@ -242,8 +228,12 @@ $default_prefs = [
    'attach_ticket_documents_to_mail'         => '0',
    'backcreated'                             => '0',
    'task_state'                              => '1',
-   'layout'                                  => 'lefttab',
    'palette'                                 => 'auror',
+   'page_layout'                             => 'vertical',
+   'fold_menu'                               => '0',
+   'fold_search'                             => '0',
+   'savedsearches_pinned'                    => '0',
+   'richtext_layout'                         => 'inline',
    'lock_use_lock_item'                      => '0',
    'lock_autolock_mode'                      => '1',
    'lock_directunlock_notification'          => '0',
@@ -251,6 +241,7 @@ $default_prefs = [
    'lock_lockprofile_id'                     => '8',
    'set_default_requester'                   => '1',
    'highcontrast_css'                        => '0',
+   'default_central_tab'                     => '0',
    'smtp_check_certificate'                  => '1',
    'enable_api'                              => '0',
    'enable_api_login_credentials'            => '0',
@@ -294,6 +285,7 @@ $default_prefs = [
    'purge_all'                               => '0',
    'purge_user_auth_changes'                 => '0',
    'purge_plugins'                           => '0',
+   'purge_refusedequipment'                  => '0',
    'display_login_source'                    => '1',
    'devices_in_menu'                         => '["Item_DeviceSimcard"]',
    'password_expiration_delay'               => '-1',
@@ -305,7 +297,11 @@ $default_prefs = [
    'default_dashboard_mini_ticket'           => 'mini_tickets',
    'admin_email_noreply'                     => '',
    'admin_email_noreply_name'                => '',
-   Impact::CONF_ENABLED                      => exportArrayToDB(Impact::getDefaultItemtypes())
+   Impact::CONF_ENABLED                      => exportArrayToDB(Impact::getDefaultItemtypes()),
+   // Default size corresponds to the 'upload_max_filesize' directive in Mio (rounded down) or 1 Mio if 'upload_max_filesize' is too low.
+   'document_max_size'                       => max(1, floor(Toolbox::return_bytes_from_ini_vars(ini_get('upload_max_filesize')) / 1024 / 1024)),
+   'planning_work_days'                      => exportArrayToDB([0, 1, 2, 3, 4, 5, 6]),
+   'system_user'                             => '',
 ];
 
 $tables['glpi_configs'] = [];
@@ -316,6 +312,15 @@ foreach ($default_prefs as $name => $value) {
       'value'   => $value,
    ];
 }
+
+foreach (\Glpi\Inventory\Conf::$defaults as $name => $value) {
+   $tables['glpi_configs'][] = [
+      'context' => 'inventory',
+      'name'    => $name,
+      'value'   => $value,
+   ];
+}
+
 $tables['glpi_crontasks'] = [
    [
       'id'            => 2,
@@ -355,7 +360,7 @@ $tables['glpi_crontasks'] = [
       'param'         => null,
       'state'         => 1,
       'mode'          => 1,
-      'lastrun'       => '2010-05-06 09:31:02',
+      'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
       'id'            => 6,
@@ -365,7 +370,7 @@ $tables['glpi_crontasks'] = [
       'param'         => null,
       'state'         => 1,
       'mode'          => 1,
-      'lastrun'       => '2011-01-18 11:40:43',
+      'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
       'id'            => 7,
@@ -385,7 +390,7 @@ $tables['glpi_crontasks'] = [
       'param'         => '10',
       'state'         => 1,
       'mode'          => 1,
-      'lastrun'       => '2011-06-28 11:34:37',
+      'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
       'id'            => 10,
@@ -415,7 +420,7 @@ $tables['glpi_crontasks'] = [
       'param'         => null,
       'state'         => 1,
       'mode'          => 1,
-      'lastrun'       => '2011-08-30 08:22:27',
+      'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
       'id'            => 13,
@@ -425,7 +430,7 @@ $tables['glpi_crontasks'] = [
       'param'         => null,
       'state'         => 1,
       'mode'          => 1,
-      'lastrun'       => '2011-12-06 09:48:42',
+      'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
       'id'            => 14,
@@ -435,7 +440,7 @@ $tables['glpi_crontasks'] = [
       'param'         => null,
       'state'         => 1,
       'mode'          => 1,
-      'lastrun'       => '2012-04-05 20:31:57',
+      'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
       'id'            => 15,
@@ -445,7 +450,7 @@ $tables['glpi_crontasks'] = [
       'param'         => null,
       'state'         => 1,
       'mode'          => 1,
-      'lastrun'       => '2012-04-05 20:31:57',
+      'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
       'id'            => 16,
@@ -455,7 +460,7 @@ $tables['glpi_crontasks'] = [
       'param'         => null,
       'state'         => 1,
       'mode'          => 1,
-      'lastrun'       => '2014-04-16 15:32:00',
+      'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
       'id'            => 17,
@@ -465,7 +470,7 @@ $tables['glpi_crontasks'] = [
       'param'         => null,
       'state'         => 1,
       'mode'          => 1,
-      'lastrun'       => '2014-06-18 08:02:00',
+      'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
       'id'            => 18,
@@ -489,8 +494,8 @@ $tables['glpi_crontasks'] = [
       'logs_lifetime' => 30,
    ], [
       'id'            => 20,
-      'itemtype'      => 'TicketRecurrent',
-      'name'          => 'ticketrecurrent',
+      'itemtype'      => 'CommonITILRecurrentCron',
+      'name'          => 'RecurrentItems',
       'frequency'     => 3600,
       'param'         => null,
       'state'         => 1,
@@ -576,7 +581,7 @@ $tables['glpi_crontasks'] = [
       'state'         => 0,
       'mode'          => 1,
       'lastrun'       => null,
-      'logs_lifetime' => 10,
+      'logs_lifetime' => 30,
    ], [
       'id'            => 29,
       'itemtype'      => 'SavedSearch_Alert',
@@ -586,7 +591,7 @@ $tables['glpi_crontasks'] = [
       'state'         => 0,
       'mode'          => 1,
       'lastrun'       => null,
-      'logs_lifetime' => 10,
+      'logs_lifetime' => 30,
    ], [
       'id'            => 30,
       'itemtype'      => 'Telemetry',
@@ -596,17 +601,17 @@ $tables['glpi_crontasks'] = [
       'state'         => 0,
       'mode'          => 1,
       'lastrun'       => null,
-      'logs_lifetime' => 10,
+      'logs_lifetime' => 30,
    ], [
       'id'            => 31,
       'itemtype'      => 'Certificate',
       'name'          => 'certificate',
       'frequency'     => 86400,
       'param'         => null,
-      'state'         => 0,
+      'state'         => 1,
       'mode'          => 1,
       'lastrun'       => null,
-      'logs_lifetime' => 10,
+      'logs_lifetime' => 30,
    ], [
       'id'            => 32,
       'itemtype'      => 'OlaLevel_Ticket',
@@ -615,7 +620,7 @@ $tables['glpi_crontasks'] = [
       'param'         => null,
       'state'         => 1,
       'mode'          => 1,
-      'lastrun'       => '2014-06-18 08:02:00',
+      'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
       'id'            => 33,
@@ -631,20 +636,20 @@ $tables['glpi_crontasks'] = [
       'id'            => 34,
       'itemtype'      => 'Ticket',
       'name'          => 'purgeticket',
-      'frequency'     => 43200,
+      'frequency'     => 604800,
       'param'         => null,
       'state'         => 0,
-      'mode'          => 1,
+      'mode'          => 2,
       'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
       'id'            => 35,
       'itemtype'      => 'Document',
       'name'          => 'cleanorphans',
-      'frequency'     => 43200,
+      'frequency'     => 604800,
       'param'         => null,
       'state'         => 0,
-      'mode'          => 1,
+      'mode'          => 2,
       'lastrun'       => null,
       'logs_lifetime' => 30,
    ], [
@@ -669,6 +674,16 @@ $tables['glpi_crontasks'] = [
       'logs_lifetime' => 30,
    ], [
       'id'            => 38,
+      'itemtype'      => CleanSoftwareCron::getType(),
+      'name'          => CleanSoftwareCron::TASK_NAME,
+      'frequency'     => MONTH_TIMESTAMP,
+      'param'         => 1000,
+      'state'         => 0,
+      'mode'          => 2,
+      'lastrun'       => null,
+      'logs_lifetime' => 300,
+   ], [
+      'id'            => 39,
       'itemtype'      => 'Domain',
       'name'          => 'DomainsAlert',
       'frequency'     => 86400,
@@ -677,10 +692,40 @@ $tables['glpi_crontasks'] = [
       'mode'          => 2,
       'lastrun'       => null,
       'logs_lifetime' => 30,
+   ], [
+      'id'            => 42,
+      'itemtype'      => PendingReasonCron::getType(),
+      'name'          => PendingReasonCron::TASK_NAME,
+      'frequency'     => 30 * MINUTE_TIMESTAMP,
+      'param'         => null,
+      'state'         => 1,
+      'mode'          => 2,
+      'lastrun'       => null,
+      'logs_lifetime' => 60,
+   ], [
+      'id'            => 40,
+      'itemtype'      => 'Glpi\Inventory\Inventory',
+      'name'          => 'cleantemp',
+      'frequency'     => 86400,
+      'param'         => null,
+      'state'         => 0,
+      'mode'          => 2,
+      'lastrun'       => null,
+      'logs_lifetime' => 30,
+   ], [
+      'id'            => 41,
+      'itemtype'      => 'Glpi\Inventory\Inventory',
+      'name'          => 'cleanorphans',
+      'frequency'     => 604800,
+      'param'         => null,
+      'state'         => 1,
+      'mode'          => 2,
+      'lastrun'       => null,
+      'logs_lifetime' => 30,
    ],
 ];
 
-$dashboards_data = include_once __DIR__."/update_94_95/dashboards.php";
+$dashboards_data = include_once __DIR__."/migrations/update_9.4.x_to_9.5.0/dashboards.php";
 $tables['glpi_dashboards_dashboards'] = [];
 $tables['glpi_dashboards_items'] = [];
 $i = $j = 1;
@@ -1693,6 +1738,16 @@ $ADDTODISPLAYPREF['Cluster'] = [31, 19];
 $ADDTODISPLAYPREF['Domain'] = [3, 4, 2, 6, 7];
 $ADDTODISPLAYPREF['DomainRecord'] = [2, 3];
 $ADDTODISPLAYPREF['Appliance'] = [2, 3, 4, 5];
+$ADDTODISPLAYPREF['Lockedfield'] = [3, 13, 5];
+$ADDTODISPLAYPREF['Unmanaged'] = [2, 4, 3, 5, 7, 10, 18, 14, 15, 9];
+$ADDTODISPLAYPREF['NetworkPortType'] = [10, 11, 12];
+$ADDTODISPLAYPREF['NetworkPort'] = [3, 30, 31, 32, 33, 34, 35, 36, 38, 39, 40];
+$ADDTODISPLAYPREF['USBVendor'] = [10, 11];
+$ADDTODISPLAYPREF['PCIVendor'] = [10, 11];
+$ADDTODISPLAYPREF['Agent'] = [2, 4, 10, 8, 11, 6];
+$ADDTODISPLAYPREF['Database'] = [2, 3, 6, 9, 10];
+$ADDTODISPLAYPREF['Socket'] = [5, 6, 9, 8, 7];
+$ADDTODISPLAYPREF['Cable'] = [4, 31, 6, 15, 24, 8, 10, 13, 14];
 
 foreach ($ADDTODISPLAYPREF as $type => $options) {
    $rank = 1;
@@ -2115,6 +2170,7 @@ $tables['glpi_entities'] = [
       'suppliers_as_private'                 => 0,
       'enable_custom_css'                    => 0,
       'anonymize_support_agents'             => 0,
+      'contracts_id_default'                 => 0,
    ],
 ];
 
@@ -2738,6 +2794,13 @@ $tables['glpi_notifications'] = [
       'event'        => 'checkpluginsupdate',
       'is_recursive' => 1,
       'is_active'    => 1,
+   ], [
+      'id'           => 72,
+      'name'         => 'New user mentionned',
+      'itemtype'     => 'Ticket',
+      'event'        => 'user_mention',
+      'is_recursive' => 1,
+      'is_active'    => 1,
    ],
 ];
 
@@ -3097,6 +3160,11 @@ $tables['glpi_notifications_notificationtemplates'] = [
       'notifications_id'         =>  '71',
       'mode'                     =>  'mailing',
       'notificationtemplates_id' =>  28,
+   ], [
+      'id'                       => 72,
+      'notifications_id'         => '72',
+      'mode'                     => 'mailing',
+      'notificationtemplates_id' => 4,
    ],
 ];
 
@@ -3786,6 +3854,11 @@ $tables['glpi_notificationtargets'] = [
       'items_id'         => '1',
       'type'             => '1',
       'notifications_id' => '71',
+   ], [
+      'id'               => '140',
+      'items_id'         => '39',
+      'type'             => '1',
+      'notifications_id' => '72',
    ],
 ];
 
@@ -3996,28 +4069,19 @@ $tables['glpi_notificationtemplatetranslations'] = [
  ##lang.ticket.solution.type## : ##ticket.solution.type##
  ##lang.ticket.solution.description## : ##ticket.solution.description##
  ##ENDIFticket.storestatus##
- ##lang.ticket.numberoffollowups## : ##ticket.numberoffollowups##
 
-##FOREACHfollowups##
+##FOREACHtimelineitems##
+[##timelineitems.date##]
+##lang.timelineitems.author## ##timelineitems.author##
+##lang.timelineitems.description## ##timelineitems.description##
+##lang.timelineitems.date## ##timelineitems.date##
+##lang.timelineitems.position## ##timelineitems.position##
+##lang.timelineitems.type## ##timelineitems.type##
+##lang.timelineitems.typename## ##timelineitems.typename##
+##ENDFOREACHtimelineitems##
 
- [##followup.date##] ##lang.followup.isprivate## : ##followup.isprivate##
- ##lang.followup.author## ##followup.author##
- ##lang.followup.description## ##followup.description##
- ##lang.followup.date## ##followup.date##
- ##lang.followup.requesttype## ##followup.requesttype##
-
-##ENDFOREACHfollowups##
- ##lang.ticket.numberoftasks## : ##ticket.numberoftasks##
-
-##FOREACHtasks##
-
- [##task.date##] ##lang.task.isprivate## : ##task.isprivate##
- ##lang.task.author## ##task.author##
- ##lang.task.description## ##task.description##
- ##lang.task.time## ##task.time##
- ##lang.task.category## ##task.category##
-
-##ENDFOREACHtasks##',
+##lang.ticket.numberoffollowups## : ##ticket.numberoffollowups##
+##lang.ticket.numberoftasks## : ##ticket.numberoftasks##',
       'content_html'             => '<!-- description{ color: inherit; background: #ebebeb; border-style: solid;border-color: #8d8d8d; border-width: 0px 1px 1px 0px; }    -->
 <div>##IFticket.storestatus=5##</div>
 <div>##lang.ticket.url## : <a href="##ticket.urlapprove##">##ticket.urlapprove##</a> <strong>&#160;</strong></div>
@@ -4032,14 +4096,13 @@ $tables['glpi_notificationtemplatetranslations'] = [
 <p>##ENDFOREACHitems##</p>
 ##IFticket.assigntousers## <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.ticket.assigntousers##</span>&#160;: ##ticket.assigntousers## ##ENDIFticket.assigntousers##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">##lang.ticket.status## </span>&#160;: ##ticket.status##<br /> ##IFticket.assigntogroups## <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.ticket.assigntogroups##</span>&#160;: ##ticket.assigntogroups## ##ENDIFticket.assigntogroups##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.ticket.urgency##</span>&#160;: ##ticket.urgency##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.ticket.impact##</span>&#160;: ##ticket.impact##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.ticket.priority##</span>&#160;: ##ticket.priority## <br /> ##IFticket.user.email##<span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.ticket.user.email##</span>&#160;: ##ticket.user.email ##ENDIFticket.user.email##    <br /> ##IFticket.category##<span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">##lang.ticket.category## </span>&#160;:##ticket.category## ##ENDIFticket.category## ##ELSEticket.category## ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##    <br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.ticket.content##</span>&#160;: ##ticket.content##</p>
 <br />##IFticket.storestatus=6##<br /><span style="text-decoration: underline;"><strong><span style="color: #888888;">##lang.ticket.solvedate##</span></strong></span> : ##ticket.solvedate##<br /><span style="color: #888888;"><strong><span style="text-decoration: underline;">##lang.ticket.solution.type##</span></strong></span> : ##ticket.solution.type##<br /><span style="text-decoration: underline; color: #888888;"><strong>##lang.ticket.solution.description##</strong></span> : ##ticket.solution.description##<br />##ENDIFticket.storestatus##</p>
+<p>##ENDFOREACHtimelineitems##</p>
+<div class="description b"><br /><strong> [##timelineitems.date##]</strong><br /><span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.timelineitems.author## </span> ##<span style="color: #000000; font-weight: bold; text-decoration: underline; background-color: #ffffff;">timelineitems</span>.author##<br /><span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.timelineitems.description## </span> ##<span style="color: #000000; font-weight: bold; text-decoration: underline;">timelineitems</span>.description##<br /><span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.timelineitems.date## </span> ##<span style="color: #000000; font-weight: bold; text-decoration: underline;">timelineitems</span>.date##<br /><span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">##lang.timelineitems.position## </span><span style="color: #000000;"> ##<span style="font-weight: bold; text-decoration: underline;">timelineitems</span>.<span style="font-weight: bold; text-decoration: underline;">position</span>##</span></div>
+<div class="description b"><span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">##lang.timelineitems.type## </span> ##<span style="color: #000000;"><span style="font-weight: bold; text-decoration: underline;">timelineitems</span>.<span style="font-weight: bold; text-decoration: underline;">type</span>##</span></div>
+<div class="description b"><span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">##lang.timelineitems.typename## </span> #<span style="color: #000000;">#<span style="font-weight: bold; text-decoration: underline;">timelineitems</span>.<span style="font-weight: bold; text-decoration: underline;">typename</span>##</span></div>
+<p>##ENDFOREACHtimelineitems##</p>
 <div class="description b">##lang.ticket.numberoffollowups##&#160;: ##ticket.numberoffollowups##</div>
-<p>##FOREACHfollowups##</p>
-<div class="description b"><br /> <strong> [##followup.date##] <em>##lang.followup.isprivate## : ##followup.isprivate## </em></strong><br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.followup.author## </span> ##followup.author##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.followup.description## </span> ##followup.description##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.followup.date## </span> ##followup.date##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.followup.requesttype## </span> ##followup.requesttype##</div>
-<p>##ENDFOREACHfollowups##</p>
-<div class="description b">##lang.ticket.numberoftasks##&#160;: ##ticket.numberoftasks##</div>
-<p>##FOREACHtasks##</p>
-<div class="description b"><br /> <strong> [##task.date##] <em>##lang.task.isprivate## : ##task.isprivate## </em></strong><br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.task.author##</span> ##task.author##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.task.description##</span> ##task.description##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.task.time##</span> ##task.time##<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> ##lang.task.category##</span> ##task.category##</div>
-<p>##ENDFOREACHtasks##</p>',
+<div class="description b">##lang.ticket.numberoftasks##&#160;: ##ticket.numberoftasks##</div>',
    ], [
       'id'                       => '5',
       'notificationtemplates_id' => '12',
@@ -5007,7 +5070,7 @@ $tables['glpi_profilerights'] = [
       'rights'      => '0',
    ], [
       'profiles_id' => '2',
-      'name'        => 'netpoint',
+      'name'        => 'cable_management',
       'rights'      => '0',
    ], [
       'profiles_id' => '4',
@@ -5287,7 +5350,7 @@ $tables['glpi_profilerights'] = [
       'rights'      => '1057',
    ], [
       'profiles_id' => '1',
-      'name'        => 'netpoint',
+      'name'        => 'cable_management',
       'rights'      => '0',
    ], [
       'profiles_id' => '3',
@@ -5515,7 +5578,7 @@ $tables['glpi_profilerights'] = [
       'rights'      => '23',
    ], [
       'profiles_id' => '7',
-      'name'        => 'netpoint',
+      'name'        => 'cable_management',
       'rights'      => '23',
    ], [
       'profiles_id' => '3',
@@ -5795,7 +5858,7 @@ $tables['glpi_profilerights'] = [
       'rights'      => '0',
    ], [
       'profiles_id' => '6',
-      'name'        => 'netpoint',
+      'name'        => 'cable_management',
       'rights'      => '0',
    ], [
       'profiles_id' => '4',
@@ -6079,7 +6142,7 @@ $tables['glpi_profilerights'] = [
       'rights'      => '0',
    ], [
       'profiles_id' => '5',
-      'name'        => 'netpoint',
+      'name'        => 'cable_management',
       'rights'      => '0',
    ], [
       'profiles_id' => '5',
@@ -6359,7 +6422,7 @@ $tables['glpi_profilerights'] = [
       'rights'      => '23',
    ], [
       'profiles_id' => '4',
-      'name'        => 'netpoint',
+      'name'        => 'cable_management',
       'rights'      => '23',
    ], [
       'profiles_id' => '6',
@@ -6635,7 +6698,7 @@ $tables['glpi_profilerights'] = [
       'rights'      => '23',
    ], [
       'profiles_id' => '3',
-      'name'        => 'netpoint',
+      'name'        => 'cable_management',
       'rights'      => '23',
    ], [
       'profiles_id' => '7',
@@ -6847,7 +6910,7 @@ $tables['glpi_profilerights'] = [
       'rights'      => '33',
    ], [
       'profiles_id' => '8',
-      'name'        => 'netpoint',
+      'name'        => 'cable_management',
       'rights'      => '1',
    ], [
       'profiles_id' => '8',
@@ -7425,6 +7488,102 @@ $tables['glpi_profilerights'] = [
       'profiles_id' => '8',
       'name'        => 'appliance',
       'rights'      => 1,
+   ], [
+      'profiles_id' => '1',
+      'name'        => 'inventory',
+      'rights'      => 0,
+   ], [
+      'profiles_id' => '2',
+      'name'        => 'inventory',
+      'rights'      => 0,
+   ], [
+      'profiles_id' => '3',
+      'name'        => 'inventory',
+      'rights'      => 1,
+   ], [
+      'profiles_id' => '4',
+      'name'        => 'inventory',
+      'rights'      => 1,
+   ], [
+      'profiles_id' => '5',
+      'name'        => 'inventory',
+      'rights'      => 0,
+   ], [
+      'profiles_id' => '6',
+      'name'        => 'inventory',
+      'rights'      => 0,
+   ], [
+      'profiles_id' => '7',
+      'name'        => 'inventory',
+      'rights'      => 0,
+   ], [
+      'profiles_id' => '8',
+      'name'        => 'inventory',
+      'rights'      => 0,
+   ], [
+      'profiles_id' => '1',
+      'name'        => 'pendingreason',
+      'rights'      => 0,
+   ], [
+      'profiles_id' => '2',
+      'name'        => 'pendingreason',
+      'rights'      => 0,
+   ], [
+      'profiles_id' => '3',
+      'name'        => 'pendingreason',
+      'rights'      => 31,
+   ], [
+      'profiles_id' => '4',
+      'name'        => 'pendingreason',
+      'rights'      => 31,
+   ], [
+      'profiles_id' => '5',
+      'name'        => 'pendingreason',
+      'rights'      => 1,
+   ], [
+      'profiles_id' => '6',
+      'name'        => 'pendingreason',
+      'rights'      => 1,
+   ], [
+      'profiles_id' => '7',
+      'name'        => 'pendingreason',
+      'rights'      => 1,
+   ], [
+      'profiles_id' => '8',
+      'name'        => 'pendingreason',
+      'rights'      => 1,
+   ], [
+      'profiles_id' => '1',
+      'name'        => 'database',
+      'rights'      => 0,
+   ], [
+      'profiles_id' => '2',
+      'name'        => 'database',
+      'rights'      => 1,
+   ], [
+      'profiles_id' => '3',
+      'name'        => 'database',
+      'rights'      => 31,
+   ], [
+      'profiles_id' => '4',
+      'name'        => 'database',
+      'rights'      => 31,
+   ], [
+      'profiles_id' => '5',
+      'name'        => 'database',
+      'rights'      => 0,
+   ], [
+      'profiles_id' => '6',
+      'name'        => 'database',
+      'rights'      => 31,
+   ], [
+      'profiles_id' => '7',
+      'name'        => 'database',
+      'rights'      => 31,
+   ], [
+      'profiles_id' => '8',
+      'name'        => 'database',
+      'rights'      => 1,
    ],
 ];
 
@@ -7436,7 +7595,7 @@ $tables['glpi_profiles'] = [
       'interface'              => 'helpdesk',
       'is_default'             => '1',
       'helpdesk_hardware'      => '1',
-      'helpdesk_item_type'     => '["Computer","Monitor","NetworkEquipment","Peripheral","Phone","Printer","Software", "DCRoom", "Rack", "Enclosure"]',
+      'helpdesk_item_type'     => '["Computer","Monitor","NetworkEquipment","Peripheral","Phone","Printer","Software", "DCRoom", "Rack", "Enclosure", "Database"]',
       'ticket_status'          => '{"1":{"2":0,"3":0,"4":0,"5":0,"6":0},"2":{"1":0,"3":0,"4":0,"5":0,"6":0},"3":{"1":0,"2":0,"4":0,"5":0,"6":0},"4":{"1":0,"2":0,"3":0,"5":0,"6":0},"5":{"1":0,"2":0,"3":0,"4":0},"6":{"1":0,"2":0,"3":0,"4":0,"5":0}}',
       'comment'                => '',
       'problem_status'         => '[]',
@@ -7450,7 +7609,7 @@ $tables['glpi_profiles'] = [
       'interface'              => 'central',
       'is_default'             => '0',
       'helpdesk_hardware'      => '1',
-      'helpdesk_item_type'     => '["Computer","Monitor","NetworkEquipment","Peripheral","Phone","Printer","Software", "DCRoom", "Rack", "Enclosure"]',
+      'helpdesk_item_type'     => '["Computer","Monitor","NetworkEquipment","Peripheral","Phone","Printer","Software", "DCRoom", "Rack", "Enclosure", "Database"]',
       'ticket_status'          => '[]',
       'comment'                => '',
       'problem_status'         => '[]',
@@ -7464,7 +7623,7 @@ $tables['glpi_profiles'] = [
       'interface'              => 'central',
       'is_default'             => '0',
       'helpdesk_hardware'      => '3',
-      'helpdesk_item_type'     => '["Computer","Monitor","NetworkEquipment","Peripheral","Phone","Printer","Software", "DCRoom", "Rack", "Enclosure"]',
+      'helpdesk_item_type'     => '["Computer","Monitor","NetworkEquipment","Peripheral","Phone","Printer","Software", "DCRoom", "Rack", "Enclosure", "Database"]',
       'ticket_status'          => '[]',
       'comment'                => '',
       'problem_status'         => '[]',
@@ -7478,7 +7637,7 @@ $tables['glpi_profiles'] = [
       'interface'              => 'central',
       'is_default'             => '0',
       'helpdesk_hardware'      => '3',
-      'helpdesk_item_type'     => '["Computer","Monitor","NetworkEquipment","Peripheral","Phone","Printer","Software", "DCRoom", "Rack", "Enclosure"]',
+      'helpdesk_item_type'     => '["Computer","Monitor","NetworkEquipment","Peripheral","Phone","Printer","Software", "DCRoom", "Rack", "Enclosure", "Database"]',
       'ticket_status'          => '[]',
       'comment'                => '',
       'problem_status'         => '[]',
@@ -7492,7 +7651,7 @@ $tables['glpi_profiles'] = [
       'interface'              => 'central',
       'is_default'             => '0',
       'helpdesk_hardware'      => '3',
-      'helpdesk_item_type'     => '["Computer","Monitor","NetworkEquipment","Peripheral","Phone","Printer","Software", "DCRoom", "Rack", "Enclosure"]',
+      'helpdesk_item_type'     => '["Computer","Monitor","NetworkEquipment","Peripheral","Phone","Printer","Software", "DCRoom", "Rack", "Enclosure", "Database"]',
       'ticket_status'          => '[]',
       'comment'                => '',
       'problem_status'         => '[]',
@@ -7506,7 +7665,7 @@ $tables['glpi_profiles'] = [
       'interface'              => 'central',
       'is_default'             => '0',
       'helpdesk_hardware'      => '3',
-      'helpdesk_item_type'     => '["Computer","Monitor","NetworkEquipment","Peripheral","Phone","Printer","Software", "DCRoom", "Rack", "Enclosure"]',
+      'helpdesk_item_type'     => '["Computer","Monitor","NetworkEquipment","Peripheral","Phone","Printer","Software", "DCRoom", "Rack", "Enclosure", "Database"]',
       'ticket_status'          => '[]',
       'comment'                => '',
       'problem_status'         => '[]',
@@ -7520,7 +7679,7 @@ $tables['glpi_profiles'] = [
       'interface'              => 'central',
       'is_default'             => '0',
       'helpdesk_hardware'      => '3',
-      'helpdesk_item_type'     => '["Computer","Monitor","NetworkEquipment","Peripheral","Phone","Printer","Software", "DCRoom", "Rack", "Enclosure"]',
+      'helpdesk_item_type'     => '["Computer","Monitor","NetworkEquipment","Peripheral","Phone","Printer","Software", "DCRoom", "Rack", "Enclosure", "Database"]',
       'ticket_status'          => '[]',
       'comment'                => '',
       'problem_status'         => '[]',
@@ -7997,8 +8156,8 @@ $tables['glpi_rules'] = [
 $tables['glpi_softwarecategories'] = [
    [
       'id'           => '1',
-      'name'         => 'FUSION',
-      'completename' => 'FUSION',
+      'name'         => 'Inventoried',
+      'completename' => 'Software from inventories',
       'level'        => '1',
    ],
 ];
@@ -8118,6 +8277,8 @@ $tables['glpi_transfers'] = [
       'keep_cartridge'      => 1,
       'keep_consumable'     => 1,
       'keep_disk'           => 1,
+      'keep_certificate'    => 1,
+      'clean_certificate'   => 1,
    ],
 ];
 
@@ -8170,5 +8331,13 @@ $tables['glpi_devicefirmwaretypes'] = [
 
 $tables[DomainRecordType::getTable()] = DomainRecordType::getDefaults();
 $tables[DomainRelation::getTable()] = DomainRelation::getDefaults();
+$tables[NetworkPortType::getTable()] = NetworkPortType::getDefaults();
+
+$tables['glpi_agenttypes'] = [
+   [
+      'id'     => 1,
+      'name'   => 'Core'
+   ]
+];
 
 return $tables;

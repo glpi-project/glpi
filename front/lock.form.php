@@ -28,7 +28,9 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
+
+use Glpi\Plugin\Hooks;
 
 /**
  * @since 0.84
@@ -69,7 +71,7 @@ if (isset($_POST['itemtype'])) {
          }
 
          //Execute hook to unlock fields managed by a plugin, if needed
-         Plugin::doHookFunction('unlock_fields', $_POST);
+         Plugin::doHookFunction(Hooks::UNLOCK_FIELDS, $_POST);
 
       } else if (isset($_POST["purge"])) {
          foreach ($actions as $type) {

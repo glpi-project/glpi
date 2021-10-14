@@ -28,11 +28,11 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 namespace tests\units;
 
-use \DbTestCase;
+use DbTestCase;
 
 /* Test for inc/notificationsettingconfig.class.php */
 
@@ -83,14 +83,14 @@ class NotificationSettingConfig extends DbTestCase {
       $settingconfig = new \NotificationSettingConfig();
       $options = ['display' => false];
 
-      $output = $settingconfig->showForm($options);
+      $output = $settingconfig->showConfigForm($options);
       $this->string($output)->isEmpty();
 
       $this->login();
 
       $this->output(
          function () use ($settingconfig) {
-            $settingconfig->showForm();
+            $settingconfig->showConfigForm();
          }
       )
          ->contains('Notifications configuration')
@@ -100,7 +100,7 @@ class NotificationSettingConfig extends DbTestCase {
 
       $this->output(
          function () use ($settingconfig) {
-            $settingconfig->showForm();
+            $settingconfig->showConfigForm();
          }
       )
          ->contains('Notifications configuration')
@@ -110,7 +110,7 @@ class NotificationSettingConfig extends DbTestCase {
 
       $this->output(
          function () use ($settingconfig) {
-            $settingconfig->showForm();
+            $settingconfig->showConfigForm();
          }
       )
          ->contains('Notifications configuration')
@@ -122,7 +122,7 @@ class NotificationSettingConfig extends DbTestCase {
 
       $this->output(
          function () use ($settingconfig) {
-            $settingconfig->showForm();
+            $settingconfig->showConfigForm();
          }
       )
          ->contains('Notifications configuration')

@@ -132,27 +132,16 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".Computer::getTypeName(1)."</td>";
       echo "<td>".$comp->getLink()."</td>";
-      if (Plugin::haveImport()) {
-         echo "<td>".__('Automatic inventory')."</td>";
-         echo "<td>";
-         if ($ID && $this->fields['is_dynamic']) {
-            Plugin::doHook("autoinventory_information", $this);
-         } else {
-            echo __('No');
-         }
-         echo "</td>";
-      } else {
-         echo "<td colspan='2'></td>";
-      }
+      $this->autoinventoryInformation();
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td><td rowspan='4'>".__('Comments')."</td>";
       echo "<td rowspan='4'>";
-      echo "<textarea cols='45' rows='6' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "<textarea class='form-control' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -175,7 +164,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('UUID')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "uuid");
+      echo Html::input('uuid', ['value' => $this->fields['uuid']]);
       echo "</td>";
 
       echo "<td>".__('Machine')."</td>";
@@ -194,28 +183,24 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1), __('Mio'))."</td>";
       echo "<td>";
-      Html::autocompletionTextField(
-         $this,
+      echo Html::input(
          'ram',
          [
+            'value' => $this->fields['ram'],
             'type' => 'number',
-            'attrs' => [
-               'min'    => 0
-            ]
+            'min'    => 0,
          ]
       );
       echo "</td>";
 
       echo "<td>"._x('quantity', 'Processors number')."</td>";
       echo "<td>";
-      Html::autocompletionTextField(
-         $this,
+      echo Html::input(
          'vcpu',
          [
-            'type'   => 'number',
-            'attrs'  => [
-               'min' => 0
-            ]
+            'value' => $this->fields['vcpu'],
+            'type' => 'number',
+            'min'    => 0,
          ]
       );
       echo "</td></tr>";
@@ -316,12 +301,12 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       if ($canedit) {
          echo "<div class='center firstbloc'>".
-                "<a class='vsubmit' href='".ComputerVirtualMachine::getFormURL()."?computers_id=$ID'>";
+                "<a class='btn btn-primary' href='".ComputerVirtualMachine::getFormURL()."?computers_id=$ID'>";
          echo __('Add a virtual machine');
          echo "</a></div>\n";
       }
 
-      echo "<div class='center'>";
+      echo "<div class='center table-responsive'>";
 
       $virtualmachines = getAllDataFromTable(
          self::getTable(), [
@@ -347,12 +332,10 @@ class ComputerVirtualMachine extends CommonDBChild {
 
          $header = "<tr><th>".__('Name')."</th>";
          $header .= "<th>"._n('Comment', 'Comments', 1)."</th>";
-         if (Plugin::haveImport()) {
-            $header .= "<th>".__('Automatic inventory')."</th>";
-         }
+         $header .= "<th>".__('Automatic inventory')."</th>";
          $header .= "<th>".VirtualMachineType::getTypeName(1)."</th>";
          $header .= "<th>".VirtualMachineSystem::getTypeName(1)."</th>";
-         $header .= "<th>".__('State')."</th>";
+         $header .= "<th>"._n('State', 'States', 1)."</th>";
          $header .= "<th>".__('UUID')."</th>";
          $header .= "<th>"._x('quantity', 'Processors number')."</th>";
          $header .= "<th>".sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1), __('Mio'))."</th>";
@@ -366,9 +349,7 @@ class ComputerVirtualMachine extends CommonDBChild {
             echo "<tr class='tab_bg_2'>";
             echo "<td>".$vm->getLink()."</td>";
             echo "<td>".$virtualmachine['comment']."</td>";
-            if (Plugin::haveImport()) {
-               echo "<td>".Dropdown::getYesNo($vm->isDynamic())."</td>";
-            }
+            echo "<td>".Dropdown::getYesNo($vm->isDynamic())."</td>";
             echo "<td>";
             echo Dropdown::getDropdownName('glpi_virtualmachinetypes',
                                            $virtualmachine['virtualmachinetypes_id']);
@@ -487,7 +468,7 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       //Virtual machine found, return ID
       if (count($iterator) == 1) {
-         $result = $iterator->next();
+         $result = $iterator->current();
          return $result['id'];
       } else if (count($iterator) > 1) {
          Toolbox::logWarning(
@@ -517,7 +498,6 @@ class ComputerVirtualMachine extends CommonDBChild {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -527,7 +507,6 @@ class ComputerVirtualMachine extends CommonDBChild {
          'name'               => __('UUID'),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -537,7 +516,6 @@ class ComputerVirtualMachine extends CommonDBChild {
          'name'               => _n('Memory', 'Memories', 1),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -547,7 +525,6 @@ class ComputerVirtualMachine extends CommonDBChild {
          'name'               => __('processor number'),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       return $tab;
@@ -579,7 +556,7 @@ class ComputerVirtualMachine extends CommonDBChild {
          'id'                 => '161',
          'table'              => 'glpi_virtualmachinestates',
          'field'              => 'name',
-         'name'               => __('State'),
+         'name'               => _n('State', 'States', 1),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'dropdown',

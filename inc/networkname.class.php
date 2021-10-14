@@ -28,7 +28,7 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-* */
+ */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -120,7 +120,7 @@ class NetworkName extends FQDNLabel {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Name') . "</td><td>\n";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>\n";
 
       echo "<td>".FQDN::getTypeName(1)."</td><td>";
@@ -140,7 +140,7 @@ class NetworkName extends FQDNLabel {
       echo "</td>\n";
 
       echo "<td rowspan='3'>".__('Comments')."</td>";
-      echo "<td rowspan='3'><textarea cols='45' rows='4' name='comment' >".$this->fields["comment"];
+      echo "<td rowspan='3'><textarea class='form-control' rows='4' name='comment' >".$this->fields["comment"];
       echo "</textarea></td>\n";
       echo "</tr>";
 
@@ -218,7 +218,7 @@ class NetworkName extends FQDNLabel {
          'massiveaction'      => false,
          'joinparams'         => [
             'jointype'  => 'mainitemtype_mainitem',
-            'condition' => 'AND NEWTABLE.`is_deleted` = 0'
+            'condition' => ['NEWTABLE.is_deleted' => 0]
          ]
       ];
 
@@ -343,7 +343,7 @@ class NetworkName extends FQDNLabel {
          ]
       ]);
 
-      while ($networkNameID = $iterator->next()) {
+      foreach ($iterator as $networkNameID) {
          self::unaffectAddressByID($networkNameID['id']);
       }
    }
@@ -424,7 +424,7 @@ class NetworkName extends FQDNLabel {
 
          switch ($numrows) {
             case 1 :
-               $result = $iterator->next();
+               $result = $iterator->current();
                $name->getFromDB($result['id']);
                break;
 
@@ -453,7 +453,7 @@ class NetworkName extends FQDNLabel {
       echo "</tr><tr class='tab_bg_1'>";
 
       echo "<td>" . self::getTypeName(1) . "</td><td>\n";
-      Html::autocompletionTextField($name, "name", ['name' => 'NetworkName_name']);
+      echo Html::input('NetworkName_name', ['value' => $name->fields['name']]);
       echo "</td>\n";
 
       echo "<td>".FQDN::getTypeName(1)."</td><td>";
@@ -651,7 +651,7 @@ class NetworkName extends FQDNLabel {
       $address              = new self();
 
       $iterator = $DB->request($criteria);
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          if ($address->getFromDB($line["id"])) {
 
             if ($createRow) {
@@ -739,7 +739,7 @@ class NetworkName extends FQDNLabel {
          ]);
          echo "</td><td class='left'>";
          echo "<input type='submit' name='assign_address' value='"._sx('button', 'Associate').
-                "' class='submit'>";
+                "' class='btn btn-primary'>";
          echo "</td>";
          if (static::canCreate()) {
             echo "<td class='right' width='30%'>";
@@ -895,7 +895,7 @@ class NetworkName extends FQDNLabel {
                   'glpi_networkports.is_deleted'   => 0,
                   'glpi_networknames.is_deleted'   => 0
                ]
-            ])->next();
+            ])->current();
 
             return (int)$result['cpt'];
       }

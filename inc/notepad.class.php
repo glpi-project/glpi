@@ -84,7 +84,6 @@ class Notepad extends CommonDBChild {
 
       $input['users_id']             = Session::getLoginUserID();
       $input['users_id_lastupdater'] = Session::getLoginUserID();
-      $input['date']                 = $_SESSION['glpi_currenttime'];
       return $input;
    }
 
@@ -93,37 +92,6 @@ class Notepad extends CommonDBChild {
 
       $input['users_id_lastupdater'] = Session::getLoginUserID();
       return $input;
-   }
-
-   /**
-    * Duplicate all notepads from a item template to his clone
-    *
-    * @deprecated 9.5
-    * @since 9.2
-    *
-    * @param string $itemtype      itemtype of the item
-    * @param integer $oldid        ID of the item to clone
-    * @param integer $newid        ID of the item cloned
-    **/
-   static function cloneItem ($itemtype, $oldid, $newid) {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'items_id'  => $oldid,
-            'itemtype'  => $itemtype
-         ]
-      ]);
-
-      while ($data = $iterator->next()) {
-         $cd               = new self();
-         unset($data['id']);
-         $data['items_id'] = $newid;
-         $data             = Toolbox::addslashes_deep($data);
-         $cd->add($data);
-      }
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
@@ -190,7 +158,7 @@ class Notepad extends CommonDBChild {
          'ORDERBY'   => 'date_mod DESC'
       ]);
 
-      while ($note = $iterator->next()) {
+      foreach ($iterator as $note) {
          $data[] = $note;
       }
       return $data;
@@ -223,7 +191,7 @@ class Notepad extends CommonDBChild {
       $tab[] = [
          'id'                 => '201',
          'table'              => 'glpi_notepads',
-         'field'              => 'date',
+         'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
          'joinparams'         => [
@@ -316,11 +284,11 @@ class Notepad extends CommonDBChild {
          echo Html::hidden('items_id', ['value' => $item->getID()]);
 
          echo "<div class='boxnotecontent'>";
-         echo "<textarea name='content' rows=5 cols=100></textarea>";
+         echo "<textarea name='content' class='form-control' rows='7'></textarea>";
          echo "</div>"; // box notecontent
 
          echo "<div class='boxnoteright'><br>";
-         echo Html::submit(_x('button', 'Add'), ['name' => 'add']);
+         echo Html::submit(_x('button', 'Add'), ['name' => 'add', 'class' => 'btn btn-primary']);
          echo "</div>";
 
          Html::closeForm();
@@ -337,7 +305,7 @@ class Notepad extends CommonDBChild {
             echo "<div class='boxnote' id='view$id'>";
 
             echo "<div class='boxnoteleft'>";
-            echo "<img class='user_picture_verysmall' alt=\"".__s('Picture')."\" src='".
+            echo "<img class='user_picture_verysmall' alt=\""._sn('Picture', 'Pictures', 1)."\" src='".
                 User::getThumbnailURLForPicture($note['picture'])."'>";
             echo "</div>"; // boxnoteleft
 
@@ -355,7 +323,7 @@ class Notepad extends CommonDBChild {
                $username = getUserName($note['users_id'], $showuserlink);
             }
             $create = sprintf(__('Create by %1$s on %2$s'), $username,
-                              Html::convDateTime($note['date']));
+                              Html::convDateTime($note['date_creation']));
             printf(__('%1$s / %2$s'), $update, $create);
             echo "</div>"; // floatright
 

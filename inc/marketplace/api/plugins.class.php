@@ -36,13 +36,12 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7;
+use GLPINetwork;
+use GuzzleHttp\Client as Guzzle_Client;
+use GuzzleHttp\Psr7\Message;
 use GuzzleHttp\Psr7\Response;
-use \GuzzleHttp\Client as Guzzle_Client;
-use \GLPINetwork;
-use \Toolbox;
-use \Session;
+use Session;
+use Toolbox;
 
 class Plugins {
    protected $httpClient  = null;
@@ -108,14 +107,14 @@ class Plugins {
       try {
          $response = $this->httpClient->request($method, $endpoint, $options);
 
-      } catch (RequestException $e) {
+      } catch (\GuzzleHttp\Exception\RequestException $e) {
          $this->last_error = [
             'title'     => "Plugins API error",
             'exception' => $e->getMessage(),
-            'request'   => Psr7\str($e->getRequest()),
+            'request'   => Message::toString($e->getRequest()),
          ];
          if ($e->hasResponse()) {
-             $this->last_error['response'] = Psr7\str($e->getResponse());
+             $this->last_error['response'] = Message::toString($e->getResponse());
          }
 
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {

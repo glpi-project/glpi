@@ -102,39 +102,6 @@ class Item_Disk extends CommonDBChild {
 
 
    /**
-    * Duplicate all disks from an item template to his clone
-    *
-    * @deprecated 9.5
-    * @since 0.84
-    *
-    * @param string  $type  Item type
-    * @param integer $oldid Old ID
-    * @param integer $newid New id
-    *
-    * @return void
-   **/
-   static function cloneItem($type, $oldid, $newid) {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'itemtype'  => $type,
-            'items_id'  => $oldid
-         ]
-      ]);
-      while ($data = $iterator->next()) {
-         $cd                  = new self();
-         unset($data['id']);
-         $data['items_id']    = $newid;
-         $data                = Toolbox::addslashes_deep($data);
-         $cd->add($data);
-      }
-   }
-
-
-   /**
     * Print the version form
     *
     * @param $ID        integer ID of the item
@@ -178,33 +145,22 @@ class Item_Disk extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('Item', 'Items', 1)."</td>";
       echo "<td>".$item->getLink()."</td>";
-      if (Plugin::haveImport()) {
-         echo "<td>".__('Automatic inventory')."</td>";
-         echo "<td>";
-         if ($ID && $this->fields['is_dynamic']) {
-            Plugin::doHook("autoinventory_information", $this);
-         } else {
-            echo __('No');
-         }
-         echo "</td>";
-      } else {
-         echo "<td colspan='2'></td>";
-      }
+      $this->autoinventoryInformation();
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td><td>".__('Partition')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "device");
+      echo Html::input('device', ['value' => $this->fields['device']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Mount point')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "mountpoint");
+      echo Html::input('mountpoint', ['value' => $this->fields['mountpoint']]);
       echo "</td><td>".Filesystem::getTypeName(1)."</td>";
       echo "<td>";
       Filesystem::dropdown(['value' => $this->fields["filesystems_id"]]);
@@ -213,12 +169,12 @@ class Item_Disk extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Global size')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "totalsize");
+      echo Html::input('totalsize', ['value' => $this->fields['totalsize']]);
       echo "&nbsp;".__('Mio')."</td>";
 
       echo "<td>".__('Free size')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "freesize");
+      echo Html::input('freesize', ['value' => $this->fields['freesize']]);
       echo "&nbsp;".__('Mio')."</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -227,16 +183,16 @@ class Item_Disk extends CommonDBChild {
       echo self::getEncryptionStatusDropdown($this->fields['encryption_status']);
       echo "</td><td>".__('Encryption tool')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "encryption_tool");
+      echo Html::input('encryption_tool', ['value' => $this->fields['encryption_tool']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Encryption algorithm')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "encryption_algorithm");
+      echo Html::input('encryption_algorithm', ['value' => $this->fields['encryption_algorithm']]);
       echo "</td><td>".__('Encryption type')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "encryption_type");
+      echo Html::input('encryption_type', ['value' => $this->fields['encryption_type']]);
       echo "</td></tr>";
 
       $itemtype = $this->fields['itemtype'];
@@ -304,29 +260,24 @@ class Item_Disk extends CommonDBChild {
       if ($canedit
           && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='center firstbloc'>".
-               "<a class='vsubmit' href='".self::getFormURL()."?itemtype=$itemtype&items_id=$ID&amp;withtemplate=".
+               "<a class='btn btn-primary' href='".self::getFormURL()."?itemtype=$itemtype&items_id=$ID&amp;withtemplate=".
                   $withtemplate."'>";
          echo __('Add a volume');
          echo "</a></div>\n";
       }
 
-      echo "<div class='center'>";
+      echo "<div class='center table-responsive'>";
 
       $iterator = self::getFromItem($item);
       echo "<table class='tab_cadre_fixehov'>";
-      $colspan = 8;
-      if (Plugin::haveImport()) {
-         $colspan++;
-      }
+      $colspan = 9;
       echo "<tr class='noHover'><th colspan='$colspan'>".self::getTypeName(count($iterator)).
             "</th></tr>";
 
       if (count($iterator)) {
 
          $header = "<tr><th>".__('Name')."</th>";
-         if (Plugin::haveImport()) {
-            $header .= "<th>".__('Automatic inventory')."</th>";
-         }
+         $header .= "<th>".__('Automatic inventory')."</th>";
          $header .= "<th>".__('Partition')."</th>";
          $header .= "<th>".__('Mount point')."</th>";
          $header .= "<th>".Filesystem::getTypeName(1)."</th>";
@@ -344,21 +295,19 @@ class Item_Disk extends CommonDBChild {
                                                 $item::getTypeName(1), $item->getName()));
 
          $disk = new self();
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $disk->getFromResultSet($data);
             echo "<tr class='tab_bg_2" .(isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'")."'>";
             echo "<td>".$disk->getLink()."</td>";
-            if (Plugin::haveImport()) {
-               echo "<td>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
-            }
+            echo "<td>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
             echo "<td>".$data['device']."</td>";
             echo "<td>".$data['mountpoint']."</td>";
             echo "<td>".$data['fsname']."</td>";
             //TRANS: %s is a size
             $tmp = Toolbox::getSize($data['totalsize'] * 1024 * 1024);
-            echo "<td class='right'>$tmp<span class='small_space'></span></td>";
+            echo "<td>$tmp</td>";
             $tmp = Toolbox::getSize($data['freesize'] * 1024 * 1024);
-            echo "<td class='right'>$tmp<span class='small_space'></span></td>";
+            echo "<td>$tmp</td>";
             echo "<td>";
             $percent = 0;
             if ($data['totalsize'] > 0) {
@@ -418,7 +367,6 @@ class Item_Disk extends CommonDBChild {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -428,7 +376,6 @@ class Item_Disk extends CommonDBChild {
          'name'               => __('Partition'),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -438,7 +385,6 @@ class Item_Disk extends CommonDBChild {
          'name'               => __('Mount point'),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -450,7 +396,6 @@ class Item_Disk extends CommonDBChild {
          'datatype'           => 'number',
          'width'              => 1000,
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -462,7 +407,6 @@ class Item_Disk extends CommonDBChild {
          'datatype'           => 'number',
          'width'              => 1000,
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       return $tab;
@@ -529,7 +473,8 @@ class Item_Disk extends CommonDBChild {
          'forcegroupby'       => true,
          'datatype'           => 'progressbar',
          'width'              => 2,
-         'computation'        => 'ROUND(100*TABLE.freesize/TABLE.totalsize)',
+         // NULLIF -> avoid divizion by zero by replacing it by null (division by null return null without warning)
+         'computation'        => 'ROUND(100*TABLE.freesize/NULLIF(TABLE.totalsize, 0))',
          'computationgroupby' => true,
          'unit'               => '%',
          'massiveaction'      => false,

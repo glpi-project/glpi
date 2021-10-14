@@ -48,13 +48,11 @@ class DomainRecord extends CommonDBChild {
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      if (!$withtemplate) {
-         if ($item->getType() == 'Domain') {
-            if ($_SESSION['glpishow_count_on_tabs']) {
-               return self::createTabEntry(_n('Record', 'Records', Session::getPluralNumber()), self::countForDomain($item));
-            }
-            return _n('Record', 'Records', Session::getPluralNumber());
+      if ($item->getType() == 'Domain') {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry(_n('Record', 'Records', Session::getPluralNumber()), self::countForDomain($item));
          }
+         return _n('Record', 'Records', Session::getPluralNumber());
       }
       return '';
    }
@@ -228,7 +226,7 @@ class DomainRecord extends CommonDBChild {
       $this->addStandardTab('Ticket', $ong, $options);
       $this->addStandardTab('Item_Problem', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
-      $this->addStandardTab('Link', $ong, $options);
+      $this->addStandardTab('ManualLink', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
@@ -300,7 +298,22 @@ class DomainRecord extends CommonDBChild {
       return $this->prepareInput($input);
    }
 
+   function pre_updateInDB() {
+
+      if ((in_array('data', $this->updates) || in_array('domainrecordtypes_id', $this->updates))
+          && !array_key_exists('data_obj', $this->input)) {
+         // Remove data stored as obj if "data" or "record type" changed" and "data_obj" is not part of input.
+         // It ensure that updates that "data_obj" will not contains obsolete values.
+         $this->fields['data_obj'] = 'NULL';
+         $this->updates[]          = 'data_obj';
+      }
+   }
+
    function showForm($ID, $options = []) {
+      global $CFG_GLPI;
+
+      $rand = mt_rand();
+
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
 
@@ -308,18 +321,30 @@ class DomainRecord extends CommonDBChild {
 
       echo "<td>" . Domain::getTypeName(1) . "</td>";
       echo "<td>";
-      Dropdown::show(
-         'Domain', [
-            'name'   => "domains_id",
-            'value'  => $this->fields["domains_id"],
-            'entity' => $this->fields["entities_id"]
-         ]
-      );
+      $domain = new Domain();
+      $domain->getFromDB($this->fields['domains_id']);
+      if ($domain->isTemplate()) {
+         echo Html::input('domains_id', [
+            'type'   => 'hidden',
+            'value'  => $this->fields['domains_id']
+         ]);
+         // TRANS: first parameter is the template name
+         echo sprintf(_n('%1$s template', '%1$s templates', 1), $domain->fields['template_name']);
+      } else {
+         Dropdown::show(
+            'Domain', [
+               'name'   => "domains_id",
+               'value'  => $this->fields["domains_id"],
+               'entity' => $this->fields["entities_id"],
+               'rand'   => $rand,
+            ]
+         );
+      }
       echo "</td>";
 
       echo "<td>" . __('Name') . "</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
 
       echo "</tr>";
@@ -340,7 +365,8 @@ class DomainRecord extends CommonDBChild {
             'name'      => "domainrecordtypes_id",
             'value'     => $this->fields["domainrecordtypes_id"],
             'entity'    => $this->fields["entities_id"],
-            'condition' => $condition
+            'condition' => $condition,
+            'rand'      => $rand,
          ]
       );
       echo "</td>";
@@ -353,7 +379,50 @@ class DomainRecord extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Data') . "</td>";
       echo "<td colspan='3'>";
-      Html::autocompletionTextField($this, "data");
+      echo "<input type='hidden' id='data_obj{$rand}' name='data_obj' value=\"".Html::cleanInputText($this->fields["data_obj"])."\">";
+      echo "<input type='text' id='data{$rand}' name='data' value=\"".Html::cleanInputText($this->fields["data"])."\" style='width: 95%'>";
+      echo " <a href='#' title='".__s('Open helper form')."'>";
+      echo "<i class='far fa-edit'></i>";
+      echo "<span class='sr-only'>".__('Open helper form')."</span>";
+      echo "</a>";
+
+      $js = <<<JAVASCRIPT
+         $(
+            function () {
+               $('#data{$rand}, #dropdown_domainrecordtypes_id{$rand}').change(
+                  function (event) {
+                     $('#data_obj{$rand}').val(''); // empty "data_obj" value if "data" or "record type" changed
+                  }
+               );
+               $('#data{$rand} + a').click(
+                  function (event) {
+                     event.preventDefault();
+
+                     var select = $(this).closest('form').find('[name="domainrecordtypes_id"]');
+                     var domainrecordtypes_id = select.val();
+                     var title = domainrecordtypes_id > 0 ? select.find('option:selected').html() : '';
+
+                     glpi_ajax_dialog({
+                        id: 'modal_{$rand}',
+                        title: title,
+                        url: '{$CFG_GLPI["root_doc"]}/ajax/domainrecord_data_form.php',
+                        params: {
+                           domainrecordtypes_id: domainrecordtypes_id,
+                           str_input_id: 'data{$rand}',
+                           obj_input_id: 'data_obj{$rand}'
+                        },
+                        done: function() {
+                           $('#modal_{$rand}').find('form').on('submit', function(event) {
+                              $('#modal_{$rand} + .modal-backdrop, #modal_{$rand}').remove();
+                           });
+                        }
+                     })
+                  }
+               );
+            }
+         );
+JAVASCRIPT;
+      echo Html::scriptBlock($js);
       echo "</td>";
       echo "</tr>";
 
@@ -385,7 +454,7 @@ class DomainRecord extends CommonDBChild {
       echo "<td>";
       echo __('Comments') . "</td>";
       echo "<td colspan='3' class='center'>";
-      echo "<textarea cols='115' rows='5' name='comment' >" . $this->fields["comment"] . "</textarea>";
+      echo "<textarea class='form-control' name='comment' >" . $this->fields["comment"] . "</textarea>";
       echo "</td>";
 
       echo "</tr>";
@@ -453,7 +522,7 @@ class DomainRecord extends CommonDBChild {
          ]);
 
          $used = [];
-         while ($row = $used_iterator->next()) {
+         foreach ($used_iterator as $row) {
             $used[$row['id']] = $row['id'];
          }
 
@@ -465,7 +534,7 @@ class DomainRecord extends CommonDBChild {
          );
 
          echo "<span class='fa fa-plus-circle pointer' title=\"".__s('Add')."\"
-                        onClick=\"".Html::jsGetElementbyID('add_dropdowndomainrecords_id').".dialog('open');\"
+                     data-bs-toggle='modal' data-bs-target='#add_dropdowndomainrecords_id'
                      ><span class='sr-only'>" . __s('Add') . "</span></span>";
          echo Ajax::createIframeModalWindow(
             'add_dropdowndomainrecords_id',
@@ -475,7 +544,7 @@ class DomainRecord extends CommonDBChild {
 
          echo "</td><td class='center' class='tab_bg_1'>";
          echo "<input type='hidden' name='domains_id' value='$instID'>";
-         echo "<input type='submit' name='addrecord' value=\"" . _sx('button', 'Add') . "\" class='submit'>";
+         echo "<input type='submit' name='addrecord' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
@@ -509,7 +578,7 @@ class DomainRecord extends CommonDBChild {
       echo "<th>" . _n('Target', 'Targets', 1) . "</th>";
       echo "</tr>";
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          Session::addToNavigateListItems('DomainRecord', $data['id']);
          Session::addToNavigateListItems('Domain', $domain->fields['id']);
 

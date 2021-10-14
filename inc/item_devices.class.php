@@ -202,9 +202,6 @@ class Item_Devices extends CommonDBRelation {
          if (isset($attributs['nodisplay'])) {
             $newtab['nodisplay'] = $attributs['nodisplay'];
          }
-         if (isset($attributs['autocomplete'])) {
-            $newtab['autocomplete'] = $attributs['autocomplete'];
-         }
          $tab[] = $newtab;
       }
 
@@ -231,8 +228,15 @@ class Item_Devices extends CommonDBRelation {
       ];
 
       foreach ($device_types as $device_type) {
-         if (isset($CFG_GLPI['item' . strtolower($device_type) . '_types'])) {
-            $itemtypes = $CFG_GLPI['item' . strtolower($device_type) . '_types'];
+         $cfg_key = 'item' . strtolower($device_type) . '_types';
+         if ($plug = isPluginItemType($device_type)) {
+            // For plugins, 'item' prefix should be placed between plugin name and class name.
+            // Nota: 'self::itemAffinity()' and 'self::getConcernedItems()' also expect this order in config key.
+            $cfg_key = strtolower('plugin' . $plug['plugin'] . 'item' . $plug['class']) . '_types';
+         }
+
+         if (isset($CFG_GLPI[$cfg_key])) {
+            $itemtypes = $CFG_GLPI[$cfg_key];
             if ($itemtypes == '*' || in_array($itemtype, $itemtypes)) {
                if (method_exists($device_type, 'rawSearchOptionsToAdd')) {
                   $options = array_merge(
@@ -329,22 +333,19 @@ class Item_Devices extends CommonDBRelation {
             return ['long name'  => __('Serial number'),
                          'short name' => __('Serial number'),
                          'size'       => 20,
-                         'id'         => 10,
-                         'autocomplete' => true,];
+                         'id'         => 10,];
 
          case 'busID' :
             return ['long name'  => __('Position of the device on its bus'),
                          'short name' => __('bus ID'),
                          'size'       => 10,
-                         'id'         => 11,
-                         'autocomplete' => true,];
+                         'id'         => 11,];
 
          case 'otherserial':
             return ['long name'  => __('Inventory number'),
                          'short name' => __('Inventory number'),
                          'size'       => 20,
-                         'id'         => 12,
-                         'autocomplete' => true,];
+                         'id'         => 12,];
 
          case 'locations_id':
             return ['long name'  => Location::getTypeName(1),
@@ -506,7 +507,7 @@ class Item_Devices extends CommonDBRelation {
             ]
          ]);
 
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             $input = Toolbox::addslashes_deep($row);
             $item = new $link_type();
             $item->getFromDB($input['id']);
@@ -514,38 +515,6 @@ class Item_Devices extends CommonDBRelation {
          }
       }
       return $res;
-   }
-
-   /**
-    *
-    * @deprecated 9.5
-    *
-   **/
-   static function cloneItem($itemtype, $oldid, $newid) {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      foreach (self::getItemAffinities($itemtype) as $link_type) {
-         $table = $link_type::getTable();
-         $olds = $DB->request([
-            'FROM'   => $table,
-            'WHERE'  => [
-               'itemtype'  => $itemtype,
-               'items_id'  => $oldid
-            ]
-         ]);
-
-         while ($data = $olds->next()) {
-            $link = new $link_type();
-            unset($data['id']);
-            $data['items_id']     = $newid;
-            $data['_itemtype']    = $itemtype;
-            $data['_no_history']  = true;
-            $data                 = Toolbox::addslashes_deep($data);
-
-            $link->add($data);
-         }
-      }
    }
 
 
@@ -603,7 +572,7 @@ class Item_Devices extends CommonDBRelation {
       $canedit = (($withtemplate != 2)
                   && $item->canEdit($ID)
                   && Session::haveRightsOr('device', [UPDATE, PURGE]));
-      echo "<div class='spaced'>";
+      echo "<div class='spaced table-responsive'>";
       $rand = mt_rand();
       if ($canedit) {
          echo "\n<form id='form_device_add$rand' name='form_device_add$rand'
@@ -693,7 +662,7 @@ class Item_Devices extends CommonDBRelation {
                                                                  .'/ajax/selectUnaffectedOrNewItem_Device.php']);
          }
          echo "</td><td>";
-         echo "<input type='submit' class='submit' name='add' value='"._sx('button', 'Add')."'>";
+         echo "<input type='submit' class='btn btn-primary' name='add' value='"._sx('button', 'Add')."'>";
          echo "</td></tr></table>";
          Html::closeForm();
       }
@@ -709,7 +678,7 @@ class Item_Devices extends CommonDBRelation {
                             'display_title_for_each_group' => false]);
 
       if ($canedit) {
-          echo "<input type='submit' class='submit' name='updateall' value='" .
+          echo "<input type='submit' class='btn btn-primary' name='updateall' value='" .
                _sx('button', 'Save')."'>";
 
          Html::closeForm();
@@ -885,7 +854,7 @@ class Item_Devices extends CommonDBRelation {
       }
 
       $iterator = $DB->request($criteria);
-      while ($link = $iterator->next()) {
+      foreach ($iterator as $link) {
 
          Session::addToNavigateListItems(static::getType(), $link["id"]);
          $this->getFromDB($link['id']);
@@ -950,6 +919,19 @@ class Item_Devices extends CommonDBRelation {
                         $content = Dropdown::getDropdownName($dropdownType::getTable(), $link[$field]);
                         break;
 
+                     case 'progressbar':
+                        $percent = 0;
+                        if ($peer->fields[$attributs['max']] > 0) {
+                           $percent = round(100 * $this->fields[$field] / $peer->fields[$attributs['max']]);
+                        }
+                        $content = Html::progressBar("percent" . mt_rand(), [
+                           'create'  => true,
+                           'percent' => $percent,
+                           'message' => sprintf(__('%1$s (%2$d%%) '), html_entity_decode(Html::formatNumber($this->fields[$field], false, 0)), $percent),
+                           'display' => false
+                        ]);
+                        break;
+
                      default:
                         $content = $link[$field];
                   }
@@ -988,7 +970,7 @@ class Item_Devices extends CommonDBRelation {
             'ORDER'  => 'itemtype'
          ]);
          $document = new Document();
-         while ($document_link = $doc_iterator->next()) {
+         foreach ($doc_iterator as $document_link) {
             if ($document->can($document_link['documents_id'], READ)) {
                $content[] = $document->getLink();
             }
@@ -1294,7 +1276,9 @@ class Item_Devices extends CommonDBRelation {
       }
       $this->showFormHeader($options);
 
+      /** @var CommonDBTM  */
       $item   = $this->getOnePeer(0);
+      /** @var CommonDBTM  */
       $device = $this->getOnePeer(1);
 
       echo "<tr class='tab_bg_1'><td>"._n('Item', 'Items', 1)."</td>";
@@ -1371,10 +1355,12 @@ class Item_Devices extends CommonDBRelation {
          }
          echo "</td><td>";
 
+         echo "<div class='btn-group btn-group-sm' role='group'>";
+
          // Do the field needs a user action to display ?
          if (isset($attributs['protected']) && $attributs['protected']) {
             $protected = true;
-            $out.= '<span class="disclosablefield">';
+            $out.= '<span class="disclosablefield btn-group btn-group-sm">';
          } else {
             $protected = false;
          }
@@ -1403,12 +1389,16 @@ class Item_Devices extends CommonDBRelation {
                   break;
                default:
                   if (!$protected) {
-                     $out.= Html::autocompletionTextField($this, $field, ['value'    => $value,
-                                                                          'rand'     => $rand,
-                                                                          'size'     => $attributs['size'],
-                                                                          'display'  => false]);
+                     $out.= Html::input(
+                        $field,
+                        [
+                           'value' => $this->fields['name'],
+                           'id'    => "textfield_$field$rand",
+                           'size'  => $attributs['size'],
+                        ]
+                     );
                   } else {
-                     $out.= '<input class="protected" type="password" autocomplete="new-password" name="' . $field . '" ';
+                     $out.= '<input class="protected form-control" type="password" autocomplete="new-password" name="' . $field . '" ';
                      $out.= 'id="' . $field . $rand . '" value="' . $value . '">';
                   }
             }
@@ -1421,19 +1411,19 @@ class Item_Devices extends CommonDBRelation {
                $out.= '&nbsp;'.Html::showToolTip($tooltip, $options_tooltip);
             }
             if ($protected) {
-               $out.= '<span><i class="far fa-eye pointer disclose" ';
+               $out.= '<div class="btn btn-outline-secondary"><i class="far fa-eye pointer disclose" ';
                $out.= 'onmousedown="showField(\'' . $field . $rand . '\')" ';
                $out.= 'onmouseup="hideField(\'' . $field . $rand . '\')" ';
-               $out.= 'onmouseout="hideField(\'' . $field . $rand . '\')"></i>';
-               $out.= '<i class="fa fa-paste pointer disclose" ';
+               $out.= 'onmouseout="hideField(\'' . $field . $rand . '\')"></i></div>';
+               $out.= '<div class="btn btn-outline-secondary"><i class="fa fa-paste pointer disclose" ';
                $out.= 'onclick="copyToClipboard(\'' . $field . $rand . '\')"></i>';
-               $out.= '</span>';
+               $out.= '</div>';
             }
             echo $out;
          } else {
             echo NOT_AVAILABLE;
          }
-         echo "</td>";
+         echo "</div></td>";
          $even ++;
          if (($even == $nb) && (($nb % 2) != 0) && $nb > 1) {
             echo "<td></td><td></td></tr>";

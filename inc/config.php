@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Cache\CacheManager;
+
 // Be sure to use global objects if this file is included outside normal process
 global $CFG_GLPI, $GLPI, $GLPI_CACHE;
 
@@ -53,11 +55,12 @@ $GLPI->initLogger();
 $GLPI->initErrorHandler();
 
 //init cache
-$GLPI_CACHE = Config::getCache('cache_db');
+$cache_manager = new CacheManager();
+$GLPI_CACHE = $cache_manager->getCoreCacheInstance();
 
 Config::detectRootDoc();
 
-if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
+if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    Session::loadLanguage('', false);
    // no translation
    if (!isCommandLine()) {
@@ -78,30 +81,22 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    die(1);
 
 } else {
-   include_once(GLPI_CONFIG_DIR . "/config_db.php");
-
-   //Database connection
-   DBConnection::establishDBConnection((isset($USEDBREPLICATE) ? $USEDBREPLICATE : 0),
-                                       (isset($DBCONNECTION_REQUIRED) ? $DBCONNECTION_REQUIRED : 0));
-
    // *************************** Statics config options **********************
    // ********************options d'installation statiques*********************
    // *************************************************************************
 
-   //Options from DB, do not touch this part.
+   if (!isset($skip_db_check)) {
+      include_once(GLPI_CONFIG_DIR . "/config_db.php");
 
-   $older_to_latest = !isset($_GET['donotcheckversion']) // use normal config table on restore process
-       && (isset($TRY_OLD_CONFIG_FIRST) // index case
-       || (isset($_SESSION['TRY_OLD_CONFIG_FIRST']) && $_SESSION['TRY_OLD_CONFIG_FIRST'])); // backup case
+      //Database connection
+      DBConnection::establishDBConnection((isset($USEDBREPLICATE) ? $USEDBREPLICATE : 0),
+                                          (isset($DBCONNECTION_REQUIRED) ? $DBCONNECTION_REQUIRED : 0));
 
-
-   if (isset($_SESSION['TRY_OLD_CONFIG_FIRST'])) {
-      unset($_SESSION['TRY_OLD_CONFIG_FIRST']);
-   }
-
-   if (!Config::loadLegacyConfiguration($older_to_latest)) {
-      echo "Error accessing config table";
-      exit();
+      //Options from DB, do not touch this part.
+      if (!Config::loadLegacyConfiguration()) {
+         echo "Error accessing config table";
+         exit();
+      }
    }
 
    if (isCommandLine()
@@ -146,17 +141,10 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             echo "\n";
 
          } else {
-            Html::nullHeader("MAINTENANCE MODE", $CFG_GLPI["root_doc"]);
-            echo "<div class='center'>";
-
-            echo "<p class='red'>";
-            echo __('Service is down for maintenance. It will be back shortly.');
-            echo "</p>";
-            if (isset($CFG_GLPI["maintenance_text"]) && !empty($CFG_GLPI["maintenance_text"])) {
-               echo "<p>".$CFG_GLPI["maintenance_text"]."</p>";
-            }
-            echo "</div>";
-            Html::nullFooter();
+            Glpi\Application\View\TemplateRenderer::getInstance()->display('maintenance.html.twig', [
+               'title'            => "MAINTENANCE MODE",
+               'maintenance_text' => $CFG_GLPI["maintenance_text"] ?? "",
+            ]);
          }
          exit();
       }
@@ -173,14 +161,20 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
       } else {
          Html::nullHeader("UPDATE NEEDED", $CFG_GLPI["root_doc"]);
-         echo "<div class='center'>";
-         echo "<table class='tab_cadre tab_check'>";
+         echo "<div class='container-fluid mb-4'>";
+         echo "<div class='row justify-content-evenly'>";
+         echo "<div class='col-12 col-xxl-4'>";
+         echo "<div class='card text-center mb-4'>";
+         echo "<table class='table table-card'>";
          $error = Toolbox::commonCheckForUseGLPI();
          echo "</table><br>";
 
          if ($error) {
             echo "<form action='".$CFG_GLPI["root_doc"]."/index.php' method='post'>";
-            echo "<input type='submit' name='submit' class='submit' value=\"".__s('Try again')."\">";
+            echo Html::submit(__s('Try again'), [
+               'class' => "btn btn-primary",
+               'icon'  => "fas fa-redo",
+            ]);
             Html::closeForm();
          }
          if ($error < 2) {
@@ -221,25 +215,29 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                if ($dev === true) {
                   echo Config::agreeDevMessage();
                }
-               echo "<p class='red'>";
+               echo "<p class='mt-2 mb-n2 alert alert-important alert-warning'>";
                echo __('The version of the database is not compatible with the version of the installed files. An update is necessary.')."</p>";
-               echo "<input type='submit' name='from_update' value=\""._sx('button', 'Upgrade')."\"
-                      class='submit'>";
+               echo Html::submit(_sx('button', 'Upgrade'), [
+                  'name'  => 'from_update',
+                  'class' => "btn btn-primary",
+                  'icon'  => "fas fa-check",
+               ]);
                Html::closeForm();
             } else if ($newer === true) {
-               echo "<p class='red'>".
+               echo "<p class='mt-2 mb-n2 alert alert-important alert-warning'>".
                      __('You are trying to use GLPI with outdated files compared to the version of the database. Please install the correct GLPI files corresponding to the version of your database.')."</p>";
             } else if ($dev === true) {
-               echo "<p class='red'><strong>".
+               echo "<p class='mt-2 mb-n2 alert alert-important alert-warning'>".
                      __('You are trying to update to a development version from a development version. This is not supported.')."</strong></p>";
             }
          }
 
          echo "</div>";
+         echo "</div>";
+         echo "</div>";
+         echo "</div>";
          Html::nullFooter();
       }
       exit();
    }
-
-   $GLPI_CACHE = Config::getCache('cache_db');
 }

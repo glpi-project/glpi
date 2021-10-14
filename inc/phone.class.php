@@ -34,12 +34,14 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Socket;
 
 /**
  * Phone Class
 **/
 class Phone extends CommonDBTM {
    use Glpi\Features\Clonable;
+   use Glpi\Features\Inventoriable;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -55,11 +57,15 @@ class Phone extends CommonDBTM {
          Item_OperatingSystem::class,
          Item_Devices::class,
          Infocom::class,
-         NetworkPort::class,
+         Item_Disk::class,
+         Item_SoftwareVersion::class,
+         Item_SoftwareLicense::class,
          Contract_Item::class,
          Document_Item::class,
+         NetworkPort::class,
          Computer_Item::class,
-         KnowbaseItem_Item::class
+         KnowbaseItem_Item::class,
+         Item_RemoteManagement::class
       ];
    }
 
@@ -90,6 +96,8 @@ class Phone extends CommonDBTM {
       $this->addStandardTab('Item_Disk', $ong, $options);
       $this->addStandardTab('Computer_Item', $ong, $options);
       $this->addStandardTab('NetworkPort', $ong, $options);
+      $this->addStandardTab(Socket::class, $ong, $options);
+      $this->addStandardTab('Item_RemoteManagement', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
       $this->addStandardTab('Contract_Item', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
@@ -97,7 +105,7 @@ class Phone extends CommonDBTM {
       $this->addStandardTab('Ticket', $ong, $options);
       $this->addStandardTab('Item_Problem', $ong, $options);
       $this->addStandardTab('Change_Item', $ong, $options);
-      $this->addStandardTab('Link', $ong, $options);
+      $this->addStandardTab('ManualLink', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Reservation', $ong, $options);
       $this->addStandardTab('Domain_Item', $ong, $options);
@@ -135,186 +143,6 @@ class Phone extends CommonDBTM {
 
 
    /**
-    * Print the phone form
-    *
-    * @param $ID integer ID of the item
-    * @param $options array
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    * @return boolean item found
-   **/
-   function showForm($ID, $options = []) {
-      global $CFG_GLPI;
-
-      $target       = $this->getFormURL();
-      $withtemplate = $this->initForm($ID, $options);
-      $this->showFormHeader($options);
-
-      $tplmark = $this->getAutofillMark('name', $options);
-      echo "<tr class='tab_bg_1'>";
-      //TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
-      echo "<td>".sprintf(__('%1$s%2$s'), __('Name'), $tplmark).
-           "</td>";
-      echo "<td>";
-      $objectName = autoName($this->fields["name"], "name",
-                             (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
-                             $this->getType(), $this->fields["entities_id"]);
-      Html::autocompletionTextField($this, 'name', ['value' => $objectName]);
-      echo "</td>";
-      echo "<td>".__('Status')."</td>";
-      echo "<td>";
-      State::dropdown([
-         'value'     => $this->fields["states_id"],
-         'entity'    => $this->fields["entities_id"],
-         'condition' => ['is_visible_phone' => 1]
-      ]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".Location::getTypeName(1)."</td>";
-      echo "<td>";
-      Location::dropdown(['value'  => $this->fields["locations_id"],
-                               'entity' => $this->fields["entities_id"]]);
-      echo "</td>";
-      echo "<td>"._n('Type', 'Types', 1)."</td>";
-      echo "<td>";
-      PhoneType::dropdown(['value' => $this->fields["phonetypes_id"]]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Technician in charge of the hardware')."</td>";
-      echo "<td>";
-      User::dropdown(['name'   => 'users_id_tech',
-                           'value'  => $this->fields["users_id_tech"],
-                           'right'  => 'own_ticket',
-                           'entity' => $this->fields["entities_id"]]);
-      echo "</td>";
-      echo "<td>".Manufacturer::getTypeName(1)."</td>";
-      echo "<td>";
-      Manufacturer::dropdown(['value' => $this->fields["manufacturers_id"]]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Group in charge of the hardware')."</td>";
-      echo "<td>";
-      Group::dropdown([
-         'name'      => 'groups_id_tech',
-         'value'     => $this->fields['groups_id_tech'],
-         'entity'    => $this->fields['entities_id'],
-         'condition' => ['is_assign' => 1]
-      ]);
-      echo "</td>";
-      echo "<td>"._n('Model', 'Models', 1)."</td>";
-      echo "<td>";
-      PhoneModel::dropdown(['value' => $this->fields["phonemodels_id"]]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Alternate username number')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "contact_num");
-      echo "</td>";
-      echo "<td>".__('Serial number')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "serial");
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Alternate username')."</td><td>";
-      Html::autocompletionTextField($this, "contact");
-      echo "</td>";
-
-      $tplmark = $this->getAutofillMark('otherserial', $options);
-      echo "<td>".sprintf(__('%1$s%2$s'), __('Inventory number'), $tplmark).
-           "</td>";
-      echo "<td>";
-      $objectName = autoName($this->fields["otherserial"], "otherserial",
-                             (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
-                             $this->getType(), $this->fields["entities_id"]);
-      Html::autocompletionTextField($this, 'otherserial', ['value' => $objectName]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".User::getTypeName(1)."</td>";
-      echo "<td>";
-      User::dropdown(['value'  => $this->fields["users_id"],
-                           'entity' => $this->fields["entities_id"],
-                           'right'  => 'all']);
-      echo "</td>";
-      echo "<td>".__('Management type')."</td>";
-      echo "<td>";
-      Dropdown::showGlobalSwitch($this->fields["id"],
-                                 ['withtemplate' => $withtemplate,
-                                       'value'        => $this->fields["is_global"],
-                                       'management_restrict'
-                                                      => $CFG_GLPI["phones_management_restrict"],
-                                       'target'       => $target]);
-      echo "</td></tr>\n";
-
-      $rowspan        = 5;
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".Group::getTypeName(1)."</td>";
-      echo "<td>";
-      Group::dropdown([
-         'value'     => $this->fields["groups_id"],
-         'entity'    => $this->fields["entities_id"],
-         'condition' => ['is_itemgroup' => 1]
-      ]);
-      echo "</td>";
-      echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
-      echo "<td rowspan='$rowspan'>
-            <textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"];
-      echo "</textarea></td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Brand')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "brand");
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".DevicePowerSupply::getTypeName(1)."</td>";
-      echo "<td>";
-      PhonePowerSupply::dropdown(['value' => $this->fields["phonepowersupplies_id"]]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>"._x('quantity', 'Number of lines')."</td><td>";
-      Html::autocompletionTextField($this, "number_line");
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Flags')."</td>";
-      echo "<td>";
-      // micro?
-      echo "\n<table><tr><td>".__('Headset')."</td>";
-      echo "<td>&nbsp;";
-      Dropdown::showYesNo("have_headset", $this->fields["have_headset"]);
-      echo "</td></tr>";
-      // hp?
-      echo "<tr><td>".__('Speaker')."</td>";
-      echo "<td>&nbsp;";
-      Dropdown::showYesNo("have_hp", $this->fields["have_hp"]);
-      echo "</td></tr></table>\n";
-      echo "</td>";
-
-      echo "</tr>\n";
-
-      if (!empty($ID)
-         && $this->fields["is_dynamic"]) {
-         echo "<tr class='tab_bg_1'><td colspan='4'>";
-         Plugin::doHook("autoinventory_information", $this);
-         echo "</td></tr>";
-      }
-
-      $this->showFormButtons($options);
-
-      return true;
-   }
-
-
-   /**
     * Return the linked items (in computers_items)
     *
     * @return an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
@@ -332,7 +160,7 @@ class Phone extends CommonDBTM {
          ]
       ]);
       $tab = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $tab['Computer'][$data['computers_id']] = $data['computers_id'];
       }
       return $tab;
@@ -347,6 +175,11 @@ class Phone extends CommonDBTM {
       $actions = parent::getSpecificMassiveActions($checkitem);
       if (static::canUpdate()) {
          Computer_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
+         $actions += [
+            'Item_SoftwareLicense'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'
+               => "<i class='ma-icon fas fa-key'></i>".
+                  _x('button', 'Add a license')
+         ];
          KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
       }
 
@@ -399,7 +232,6 @@ class Phone extends CommonDBTM {
          'field'              => 'serial',
          'name'               => __('Serial number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -408,7 +240,6 @@ class Phone extends CommonDBTM {
          'field'              => 'otherserial',
          'name'               => __('Inventory number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -417,7 +248,6 @@ class Phone extends CommonDBTM {
          'field'              => 'contact',
          'name'               => __('Alternate username'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -426,7 +256,6 @@ class Phone extends CommonDBTM {
          'field'              => 'contact_num',
          'name'               => __('Alternate username number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -435,7 +264,6 @@ class Phone extends CommonDBTM {
          'field'              => 'number_line',
          'name'               => _x('quantity', 'Number of lines'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -488,7 +316,6 @@ class Phone extends CommonDBTM {
          'field'              => 'brand',
          'name'               => __('Brand'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -572,7 +399,6 @@ class Phone extends CommonDBTM {
          'massiveaction'      => false,
          'nosearch'           => true,
          'nodisplay'          => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -594,6 +420,8 @@ class Phone extends CommonDBTM {
       ];
 
       $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
+
+      $tab = array_merge($tab, Socket::rawSearchOptionsToAdd(get_class($this)));
 
       return $tab;
    }

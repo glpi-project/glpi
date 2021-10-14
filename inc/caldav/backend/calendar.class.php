@@ -39,6 +39,7 @@ if (!defined('GLPI_ROOT')) {
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Node\Property;
 use Glpi\CalDAV\Traits\CalDAVUriUtilTrait;
+use Glpi\Toolbox\Sanitizer;
 use Ramsey\Uuid\Uuid;
 use Sabre\CalDAV\Backend\AbstractBackend;
 use Sabre\CalDAV\Xml\Property\SupportedCalendarComponentSet;
@@ -323,8 +324,7 @@ class Calendar extends AbstractBackend {
          $input['uuid'] = Uuid::uuid4();
       }
 
-      $input = \Html::entities_deep($input);
-      $input = \Toolbox::addslashes_deep($input);
+      $input = Sanitizer::sanitize($input, true);
 
       if ($item->isNewItem()) {
          // Auto set entities_id if exists and not set

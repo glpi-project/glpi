@@ -28,7 +28,7 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-* */
+ */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -93,7 +93,6 @@ class IPNetwork extends CommonImplicitTreeDropdown {
          'name'               => __('Gateway'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -616,7 +615,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       ]);
 
       $returnValues = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if (count($fields) > 1) {
             $returnValue = [];
             foreach ($fields as $field) {
@@ -887,7 +886,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
       $network = new self();
 
-      while ($network_entry = $iterator->next()) {
+      foreach ($iterator as $network_entry) {
          if ($network->getFromDB($network_entry['id'])) {
             $input = $network->fields;
             // ... update it by its own entries

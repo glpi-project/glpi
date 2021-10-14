@@ -113,7 +113,7 @@ class Item_Project extends CommonDBRelation{
                                                                      $project->fields['entities_id'])
                                                           :$project->fields['entities_id'])]);
          echo "</td><td class='center' width='30%'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "<input type='hidden' name='projects_id' value='$instID'>";
          echo "</td></tr>";
          echo "</table>";
@@ -146,7 +146,7 @@ class Item_Project extends CommonDBRelation{
       echo $header_begin.$header_top.$header_end;
 
       $totalnb = 0;
-      while ($row = $types_iterator->next()) {
+      foreach ($types_iterator as $row) {
          $itemtype = $row['itemtype'];
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
@@ -157,7 +157,7 @@ class Item_Project extends CommonDBRelation{
             $nb = count($iterator);
 
             $prem = true;
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $name = $data[$itemtype::getNameField()];
                if ($_SESSION["glpiis_ids_visible"]
                    || empty($data[$itemtype::getNameField()])) {

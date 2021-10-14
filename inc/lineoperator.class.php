@@ -69,7 +69,6 @@ class LineOperator extends CommonDropdown {
             'field'              => 'mcc',
             'name'               => __('Mobile Country Code'),
             'datatype'           => 'text',
-            'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -78,7 +77,6 @@ class LineOperator extends CommonDropdown {
             'field'              => 'mnc',
             'name'               => __('Mobile Network Code'),
             'datatype'           => 'text',
-            'autocomplete'       => true,
       ];
 
       return $tab;
@@ -104,7 +102,7 @@ class LineOperator extends CommonDropdown {
             'mcc' => $input['mcc'],
             'mnc' => $input['mnc']
          ]
-      ])->next();
+      ])->current();
 
       if ($result['cpt'] > 0) {
          Session::addMessageAfterRedirect(

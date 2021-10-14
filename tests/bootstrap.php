@@ -30,13 +30,18 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Cache\CacheManager;
+use Glpi\Cache\SimpleCache;
+use Glpi\Socket;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
+
 ini_set('display_errors', 'On');
 error_reporting(E_ALL);
 
 define('GLPI_ROOT', __DIR__ . '/../');
-define('GLPI_CONFIG_DIR', __DIR__ . '/config');
-define('GLPI_VAR_DIR', __DIR__ . '/files');
-define('GLPI_URI', (getenv('GLPI_URI') ?: 'http://localhost:8088'));
+define('GLPI_CONFIG_DIR', getenv('GLPI_CONFIG_DIR') ?: __DIR__ . '/config');
+define('GLPI_VAR_DIR', getenv('GLPI_VAR_DIR') ?: __DIR__ . '/files');
+define('GLPI_URI', getenv('GLPI_URI') ?: 'http://localhost:8088');
 
 define(
    'PLUGINS_DIRECTORIES',
@@ -54,40 +59,44 @@ global $CFG_GLPI, $GLPI_CACHE;
 include (GLPI_ROOT . "/inc/based_config.php");
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
-   die("\nConfiguration file for tests not found\n\nrun: bin/console glpi:database:install --config-dir=./tests/config ...\n\n");
+   die("\nConfiguration file for tests not found\n\nrun: bin/console glpi:database:install --config-dir=" . GLPI_CONFIG_DIR . " ...\n\n");
 }
 
-// Create subdirectories of GLPI_VAR_DIR based on defined constants
-foreach (get_defined_constants() as $constant_name => $constant_value) {
-   if (preg_match('/^GLPI_[\w]+_DIR$/', $constant_name)
-       && preg_match('/^' . preg_quote(GLPI_VAR_DIR, '/') . '\//', $constant_value)) {
-      is_dir($constant_value) or mkdir($constant_value, 0755, true);
-   }
-}
+\Glpi\Tests\BootstrapUtils::initVarDirectories();
 
 //init cache
-$GLPI_CACHE = Config::getCache('cache_db');
+if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FILENAME)) {
+   // Use configured cache for cache tests
+   $cache_manager = new CacheManager();
+   $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
+} else {
+   // Use "in-memory" cache for other tests
+   $GLPI_CACHE = new SimpleCache(new ArrayAdapter());
+}
 
 include_once __DIR__ . '/../inc/includes.php';
 include_once __DIR__ . '/GLPITestCase.php';
 include_once __DIR__ . '/DbTestCase.php';
+include_once __DIR__ . '/CsvTestCase.php';
 include_once __DIR__ . '/APIBaseClass.php';
+include_once __DIR__ . '/functionnal/CommonITILRecurrent.php';
+include_once __DIR__ . '/functionnal/Glpi/ContentTemplates/Parameters/AbstractParameters.php';
 
 // check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes
 if (file_exists(__DIR__ . '/../vendor/autoload.php') && !file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')) {
    die("\nDevelopment dependencies not found\n\nrun: composer install -o\n\n");
 }
 
-class GlpitestPHPerror extends Exception
+class GlpitestPHPerror extends \Exception
 {
 }
-class GlpitestPHPwarning extends Exception
+class GlpitestPHPwarning extends \Exception
 {
 }
-class GlpitestPHPnotice extends Exception
+class GlpitestPHPnotice extends \Exception
 {
 }
-class GlpitestSQLError extends Exception
+class GlpitestSQLError extends \Exception
 {
 }
 
@@ -97,7 +106,7 @@ function loadDataset() {
    // Unit test data definition
    $data = [
       // bump this version to force reload of the full dataset, when content change
-      '_version' => '4.6',
+      '_version' => '4.7',
 
       // Type => array of entries
       'Entity' => [
@@ -151,6 +160,14 @@ function loadDataset() {
             'name'           => '_test_computermodel_2',
             'product_number' => 'CMP_567AEC68',
          ],
+      ], 'Monitor' => [
+         [
+            'name'           => '_test_monitor_1',
+            'entities_id' => '_test_root_entity',
+         ], [
+            'name'           => '_test_monitor_2',
+            'entities_id' => '_test_root_entity',
+         ],
       ], 'Software' => [
          [
             'name'         => '_test_soft',
@@ -178,6 +195,22 @@ function loadDataset() {
             'is_recursive' => 1,
             'softwares_id' => '_test_soft',
          ]
+      ], 'NetworkEquipment' => [
+         [
+            'name'           => '_test_networkequipment_1',
+            'entities_id' => '_test_root_entity',
+         ], [
+            'name'           => '_test_networkequipment_2',
+            'entities_id' => '_test_root_entity',
+         ],
+      ], 'Peripheral' => [
+         [
+            'name'           => '_test_peripheral_1',
+            'entities_id' => '_test_root_entity',
+         ], [
+            'name'           => '_test_peripheral_2',
+            'entities_id' => '_test_root_entity',
+         ],
       ], 'Printer' => [
          [
             'name'         => '_test_printer_all',
@@ -196,6 +229,14 @@ function loadDataset() {
             'entities_id'  => '_test_child_2',
             'is_recursive' => 0,
          ]
+      ], 'Phone' => [
+         [
+            'name'           => '_test_phone_1',
+            'entities_id' => '_test_root_entity',
+         ], [
+            'name'           => '_test_phone_2',
+            'entities_id' => '_test_root_entity',
+         ],
       ], 'User' => [
          [
             'name'          => TU_USER,
@@ -207,6 +248,26 @@ function loadDataset() {
             '_profiles_id'  => 4,
             '_is_recursive' => 1,
          ]
+      ], 'Group'   => [
+         [
+            'name'         => '_test_group_1',
+            'entities_id'  => '_test_root_entity',
+            'is_recursive' => 1,
+            'is_usergroup' => 1,
+            'is_requester' => 1,
+            'is_watcher'   => 1,
+            'is_assign'    => 1,
+         ],
+         [
+            'name'         => '_test_group_2',
+            'entities_id'  => '_test_root_entity',
+            'groups_id'    => '_test_group_1',
+            'is_recursive' => 1,
+            'is_usergroup' => 1,
+            'is_requester' => 1,
+            'is_watcher'   => 1,
+            'is_assign'    => 1,
+         ],
       ], 'TaskCategory' => [
          [
             'is_recursive' => 1,
@@ -286,11 +347,11 @@ function loadDataset() {
             'name'         => '_location02',
             'comment'      => 'Comment for location _sublocation02'
          ]
-      ], 'Netpoint' => [
+      ], Socket::class => [
          [
-            'name'         => '_netpoint01',
+            'name'         => '_socket01',
             'locations_id' => '_location01',
-            'comment'      => 'Comment for netpoint _netpoint01'
+            'comment'      => 'Comment for socket _socket01'
          ]
       ], 'BudgetType' => [
          [
@@ -656,6 +717,7 @@ function loadDataset() {
                   }
                }
             }
+
             if (isset($input['name']) && $item = getItemByTypeName($type, $input['name'])) {
                $input['id'] = $ids[$type][$input['name']] = $item->getField('id');
                $item->update($input);
@@ -678,6 +740,10 @@ function loadDataset() {
    $DB->commit();
 
    $_SESSION = $session_bak; // Unset force session variables
+
+   // Ensure cache is clear after dataset reload
+   global $GLPI_CACHE;
+   $GLPI_CACHE->clear();
 }
 
 /**

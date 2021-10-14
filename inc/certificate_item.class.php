@@ -249,7 +249,7 @@ class Certificate_Item extends CommonDBRelation {
       echo "<th>" . __('Inventory number') . "</th>";
       echo "</tr>";
 
-      while ($type_row = $types_iterator->next()) {
+      foreach ($types_iterator as $type_row) {
          $itemtype = $type_row['itemtype'];
 
          if (!($item = getItemForItemtype($itemtype))) {
@@ -261,7 +261,7 @@ class Certificate_Item extends CommonDBRelation {
 
             if (count($iterator)) {
                Session::initNavigateListItems($itemtype, Certificate::getTypeName(2) . " = " . $certificate->fields['name']);
-               while ($data = $iterator->next()) {
+               foreach ($iterator as $data) {
                   $item->getFromDB($data["id"]);
                   Session::addToNavigateListItems($itemtype, $data["id"]);
                   $ID = "";
@@ -405,7 +405,7 @@ class Certificate_Item extends CommonDBRelation {
          echo "</div>";
       }
 
-      echo "<div class='spaced'>";
+      echo "<div class='spaced table-responsive'>";
       if ($canedit && $number && ($withtemplate < 2)) {
          $massiveactionparams = ['num_displayed' => $number];
          Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);

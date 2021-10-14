@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\Sanitizer;
 
 /** QueuedNotification class
  *
@@ -146,7 +147,8 @@ class QueuedNotification extends CommonDBTM {
       }
 
       // Drop existing mails in queue for the same event and item  and recipient
-      if (isset($input['itemtype']) && !empty($input['itemtype'])
+      $item = isset($input['itemtype']) ? getItemForItemtype($input['itemtype']) : false;
+      if ($item instanceof CommonDBTM && $item->deduplicate_queued_notifications
           && isset($input['entities_id']) && ($input['entities_id'] >= 0)
           && isset($input['items_id']) && ($input['items_id'] >= 0)
           && isset($input['notificationtemplates_id']) && !empty($input['notificationtemplates_id'])
@@ -164,7 +166,7 @@ class QueuedNotification extends CommonDBTM {
             ]
          ];
          $iterator = $DB->request($criteria);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $this->delete(['id' => $data['id']], 1);
          }
       }
@@ -435,6 +437,8 @@ class QueuedNotification extends CommonDBTM {
     */
    public function sendById($ID) {
       if ($this->getFromDB($ID)) {
+         $this->fields = Sanitizer::unsanitize($this->fields);
+
          $mode = $this->getField('mode');
          $eventclass = 'NotificationEvent' . ucfirst($mode);
          $conf = Notification_NotificationTemplate::getMode($mode);
@@ -523,7 +527,7 @@ class QueuedNotification extends CommonDBTM {
          $iterator = $DB->request($query);
          if ($iterator->numRows() > 0) {
             $pendings[$mode] = [];
-            while ($row = $iterator->next()) {
+            foreach ($iterator as $row) {
                $pendings[$mode][] = $row;
             }
          }
@@ -555,6 +559,8 @@ class QueuedNotification extends CommonDBTM {
       );
 
       foreach ($pendings as $mode => $data) {
+         $data = Sanitizer::unsanitize($data);
+
          $eventclass = 'NotificationEvent' . ucfirst($mode);
          $conf = Notification_NotificationTemplate::getMode($mode);
          if ($conf['from'] != 'core') {
@@ -626,6 +632,8 @@ class QueuedNotification extends CommonDBTM {
          );
 
          foreach ($pendings as $mode => $data) {
+            $data = Sanitizer::unsanitize($data);
+
             $eventclass = Notification_NotificationTemplate::getModeClass($mode, 'event');
             $eventclass::send($data);
          }
@@ -737,7 +745,9 @@ class QueuedNotification extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1 top' >";
-      echo "<td colspan='2' class='queuemail_preview'>".self::cleanHtml($this->fields['body_html'])."</td>";
+      echo "<td colspan='2' class='queuemail_preview'>";
+      echo self::cleanHtml(Sanitizer::unsanitize($this->fields['body_html']));
+      echo "</td>";
       echo "<td colspan='2'>".nl2br($this->fields['body_text'], false)."</td>";
       echo "</tr>";
 
@@ -779,7 +789,7 @@ class QueuedNotification extends CommonDBTM {
             }
          }
       }
-      return nl2br($newstring, false);
+      return $newstring;
    }
 
 

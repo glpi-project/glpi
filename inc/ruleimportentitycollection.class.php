@@ -43,20 +43,11 @@ class RuleImportEntityCollection extends RuleCollection {
    public $menu_option         = 'importentity';
 
 
-   /**
-    * @see RuleCollection::canList()
-   **/
    function canList() {
-      if (Plugin::haveImport()) {
-         return static::canView();
-      }
-      return false;
+      return static::canView();
    }
 
 
-   /**
-    * @see RuleCollection::getTitle()
-   **/
    function getTitle() {
       return __('Rules for assigning an item to an entity');
    }

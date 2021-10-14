@@ -28,7 +28,7 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 namespace tests\units;
 
@@ -725,4 +725,5 @@ class Log extends DbTestCase {
    public function testConvertFiltersValuesToSqlCriteria($filters_values, $expected_result) {
       $this->array(\Log::convertFiltersValuesToSqlCriteria($filters_values))->isIdenticalTo($expected_result);
    }
+
 }

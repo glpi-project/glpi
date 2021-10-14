@@ -28,12 +28,15 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 namespace tests\units;
 
-use \CommonDBTM;
-use \DbTestCase;
+use CommonDBTM;
+use CommonITILActor;
+use DBConnection;
+use DbTestCase;
+use Ticket;
 
 /* Test for inc/search.class.php */
 
@@ -80,6 +83,37 @@ class Search extends DbTestCase {
 
       return $data;
    }
+
+   public function testMetaComputerOS() {
+      $search_params = ['is_deleted'   => 0,
+                        'start'        => 0,
+                        'criteria'     => [0 => ['field'      => 'view',
+                                                 'searchtype' => 'contains',
+                                                 'value'      => '']],
+                        'metacriteria' => [0 => ['link'       => 'AND',
+                                                 'itemtype'   => 'OperatingSystem',
+                                                 'field'      => 1, //name
+                                                 'searchtype' => 'contains',
+                                                 'value'      => 'windows']]];
+
+      $data = $this->doSearch('Computer', $search_params);
+
+      //try to find LEFT JOIN clauses
+      $this->string($data['sql']['search'])
+         ->matches("/"
+         ."LEFT\s*JOIN\s*`glpi_items_operatingsystems`\s*AS\s*`glpi_items_operatingsystems_OperatingSystem`\s*"
+         ."ON\s*\(`glpi_items_operatingsystems_OperatingSystem`\.`items_id`\s*=\s*`glpi_computers`\.`id`\s*"
+         ."AND `glpi_items_operatingsystems_OperatingSystem`\.`itemtype`\s*=\s*'Computer'\s*"
+         ."AND `glpi_items_operatingsystems_OperatingSystem`\.`is_deleted`\s*=\s*0\s*\)\s*"
+         ."LEFT\s*JOIN\s*`glpi_operatingsystems`\s*"
+         ."ON\s*\(`glpi_items_operatingsystems_OperatingSystem`\.`operatingsystems_id`\s*=\s*`glpi_operatingsystems`\.`id`\s*\)"
+         ."/im");
+
+      //try to match WHERE clause
+      $this->string($data['sql']['search'])
+         ->matches("/(\(`glpi_operatingsystems`\.`name`\s*LIKE\s*'%windows%'\s*\)\s*\))/im");
+   }
+
 
    public function testMetaComputerSoftwareLicense() {
       $search_params = ['is_deleted'   => 0,
@@ -386,6 +420,8 @@ class Search extends DbTestCase {
          ]
       ]);
 
+      $default_charset = DBConnection::getDefaultCharset();
+
       $this->string($data['sql']['search'])
          ->contains("`glpi_computers`.`is_deleted` = 0")
          ->contains("AND `glpi_computers`.`is_template` = 0")
@@ -400,7 +436,7 @@ class Search extends DbTestCase {
          ->matches("/OR\s*\(`glpi_computertypes`\.`name`\s*LIKE '%test%'\s*\)/")
          ->matches("/OR\s*\(`glpi_computermodels`\.`name`\s*LIKE '%test%'\s*\)/")
          ->matches("/OR\s*\(`glpi_locations`\.`completename`\s*LIKE '%test%'\s*\)/")
-         ->matches("/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING utf8\)\s*LIKE '%test%'\s*\)\)/");
+         ->matches("/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING {$default_charset}\)\s*LIKE '%test%'\s*\)\)/");
    }
 
    public function testSearchOnRelationTable() {
@@ -965,6 +1001,269 @@ class Search extends DbTestCase {
            ->isEqualTo($this->cleanSQL($lj_provider['sql']));
    }
 
+   protected function addOrderByBCProvider(): array {
+      return [
+         // Generic examples
+         [
+            'Computer', 5, 'ASC',
+            ' ORDER BY `ITEM_Computer_5` ASC '
+         ],
+         [
+            'Computer', 5, 'DESC',
+            ' ORDER BY `ITEM_Computer_5` DESC '
+         ],
+         [
+            'Computer', 5, 'INVALID',
+            ' ORDER BY `ITEM_Computer_5` DESC '
+         ],
+         // Simple Hard-coded cases
+         [
+            'IPAddress', 1, 'ASC',
+            ' ORDER BY INET_ATON(`glpi_ipaddresses`.`name`) ASC '
+         ],
+         [
+            'IPAddress', 1, 'DESC',
+            ' ORDER BY INET_ATON(`glpi_ipaddresses`.`name`) DESC '
+         ],
+         [
+            'User', 1, 'ASC',
+            ' ORDER BY `glpi_users`.`name` ASC '
+         ],
+         [
+            'User', 1, 'DESC',
+            ' ORDER BY `glpi_users`.`name` DESC '
+         ],
+      ];
+   }
+
+   protected function addOrderByProvider(): array {
+      return [
+         // Generic examples
+         [
+            'Computer',
+            [
+               [
+                  'searchopt_id' => 5,
+                  'order'        => 'ASC'
+               ]
+            ], ' ORDER BY `ITEM_Computer_5` ASC '
+         ],
+         [
+            'Computer',
+            [
+               [
+                  'searchopt_id' => 5,
+                  'order'        => 'DESC'
+               ]
+            ], ' ORDER BY `ITEM_Computer_5` DESC '
+         ],
+         [
+            'Computer',
+            [
+               [
+                  'searchopt_id' => 5,
+                  'order'        => 'INVALID'
+               ]
+            ], ' ORDER BY `ITEM_Computer_5` DESC '
+         ],
+         [
+            'Computer',
+            [
+               [
+                  'searchopt_id' => 5,
+               ]
+            ], ' ORDER BY `ITEM_Computer_5` ASC '
+         ],
+         // Simple Hard-coded cases
+         [
+            'IPAddress',
+            [
+               [
+                  'searchopt_id' => 1,
+                  'order'        => 'ASC'
+               ]
+            ], ' ORDER BY INET_ATON(`glpi_ipaddresses`.`name`) ASC '
+         ],
+         [
+            'IPAddress',
+            [
+               [
+                  'searchopt_id' => 1,
+                  'order'        => 'DESC'
+               ]
+            ], ' ORDER BY INET_ATON(`glpi_ipaddresses`.`name`) DESC '
+         ],
+         [
+            'User',
+            [
+               [
+                  'searchopt_id' => 1,
+                  'order'        => 'ASC'
+               ]
+            ], ' ORDER BY `glpi_users`.`name` ASC '
+         ],
+         [
+            'User',
+            [
+               [
+                  'searchopt_id' => 1,
+                  'order'        => 'DESC'
+               ]
+            ], ' ORDER BY `glpi_users`.`name` DESC '
+         ],
+         // Multiple sort cases
+         [
+            'Computer',
+            [
+               [
+                  'searchopt_id' => 5,
+                  'order'        => 'ASC'
+               ],
+               [
+                  'searchopt_id' => 6,
+                  'order'        => 'ASC'
+               ],
+            ], ' ORDER BY `ITEM_Computer_5` ASC, `ITEM_Computer_6` ASC '
+         ],
+         [
+            'Computer',
+            [
+               [
+                  'searchopt_id' => 5,
+                  'order'        => 'ASC'
+               ],
+               [
+                  'searchopt_id' => 6,
+                  'order'        => 'DESC'
+               ],
+            ], ' ORDER BY `ITEM_Computer_5` ASC, `ITEM_Computer_6` DESC '
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider addOrderByBCProvider
+    */
+   public function testAddOrderByBC($itemtype, $id, $order, $expected) {
+      $result = null;
+      $this->when(
+         function () use (&$result, $itemtype, $id, $order) {
+            $result = \Search::addOrderBy($itemtype, $id, $order);
+         }
+      )->error()
+         ->withType(E_USER_DEPRECATED)
+         ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
+            ->exists();
+      $this->string($result)->isEqualTo($expected);
+
+      // Complex cases
+      $table_addtable = 'glpi_users_af1042e23ce6565cfe58c6db91f84692';
+
+      $_SESSION['glpinames_format'] = \User::FIRSTNAME_BEFORE;
+      $user_order_1 = null;
+      $this->when(
+         function () use (&$user_order_1) {
+            $user_order_1 = \Search::addOrderBy('Ticket', 4, 'ASC');
+         }
+      )->error()
+         ->withType(E_USER_DEPRECATED)
+         ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
+            ->exists();
+      $this->string($user_order_1)->isEqualTo(" ORDER BY `$table_addtable`.`firstname` ASC,
+                                 `$table_addtable`.`realname` ASC,
+                                 `$table_addtable`.`name` ASC ");
+
+      $user_order_2 = null;
+      $this->when(
+         function () use (&$user_order_2) {
+            $user_order_2 = \Search::addOrderBy('Ticket', 4, 'DESC');
+         }
+      )->error()
+         ->withType(E_USER_DEPRECATED)
+         ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
+            ->exists();
+      $this->string($user_order_2)->isEqualTo(" ORDER BY `$table_addtable`.`firstname` DESC,
+                                 `$table_addtable`.`realname` DESC,
+                                 `$table_addtable`.`name` DESC ");
+
+      $_SESSION['glpinames_format'] = \User::REALNAME_BEFORE;
+      $user_order_3 = null;
+      $this->when(
+         function () use (&$user_order_3) {
+            $user_order_3 = \Search::addOrderBy('Ticket', 4, 'ASC');
+         }
+      )->error()
+         ->withType(E_USER_DEPRECATED)
+         ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
+            ->exists();
+      $this->string($user_order_3)->isEqualTo(" ORDER BY `$table_addtable`.`realname` ASC,
+                                 `$table_addtable`.`firstname` ASC,
+                                 `$table_addtable`.`name` ASC ");
+      $user_order_4 = null;
+      $this->when(
+         function () use (&$user_order_4) {
+            $user_order_4 = \Search::addOrderBy('Ticket', 4, 'DESC');
+         }
+      )->error()
+         ->withType(E_USER_DEPRECATED)
+         ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
+            ->exists();
+      $this->string($user_order_4)->isEqualTo(" ORDER BY `$table_addtable`.`realname` DESC,
+                                 `$table_addtable`.`firstname` DESC,
+                                 `$table_addtable`.`name` DESC ");
+   }
+
+   /**
+    * @dataProvider addOrderByProvider
+    */
+   public function testAddOrderBy($itemtype, $sort_fields, $expected) {
+      $result = \Search::addOrderBy($itemtype, $sort_fields);
+      $this->string($result)->isEqualTo($expected);
+
+      // Complex cases
+      $table_addtable = 'glpi_users_af1042e23ce6565cfe58c6db91f84692';
+
+      $_SESSION['glpinames_format'] = \User::FIRSTNAME_BEFORE;
+      $user_order_1 = \Search::addOrderBy('Ticket', [
+         [
+            'searchopt_id' => 4,
+            'order'        => 'ASC'
+         ]
+      ]);
+      $this->string($user_order_1)->isEqualTo(" ORDER BY `$table_addtable`.`firstname` ASC,
+                                 `$table_addtable`.`realname` ASC,
+                                 `$table_addtable`.`name` ASC ");
+      $user_order_2 = \Search::addOrderBy('Ticket', [
+         [
+            'searchopt_id' => 4,
+            'order'        => 'DESC'
+         ]
+      ]);
+      $this->string($user_order_2)->isEqualTo(" ORDER BY `$table_addtable`.`firstname` DESC,
+                                 `$table_addtable`.`realname` DESC,
+                                 `$table_addtable`.`name` DESC ");
+
+      $_SESSION['glpinames_format'] = \User::REALNAME_BEFORE;
+      $user_order_3 = \Search::addOrderBy('Ticket', [
+         [
+            'searchopt_id' => 4,
+            'order'        => 'ASC'
+         ]
+      ]);
+      $this->string($user_order_3)->isEqualTo(" ORDER BY `$table_addtable`.`realname` ASC,
+                                 `$table_addtable`.`firstname` ASC,
+                                 `$table_addtable`.`name` ASC ");
+      $user_order_4 = \Search::addOrderBy('Ticket', [
+         [
+            'searchopt_id' => 4,
+            'order'        => 'DESC'
+         ]
+      ]);
+      $this->string($user_order_4)->isEqualTo(" ORDER BY `$table_addtable`.`realname` DESC,
+                                 `$table_addtable`.`firstname` DESC,
+                                 `$table_addtable`.`name` DESC ");
+   }
+
    private function cleanSQL($sql) {
       $sql = str_replace("\r\n", ' ', $sql);
       $sql = str_replace("\n", ' ', $sql);
@@ -1419,6 +1718,43 @@ class Search extends DbTestCase {
          ->contains("ORDER BY `ITEM_SearchTest\Computer_1` ASC");
    }
 
+   public function testGroupParamAfterMeta() {
+      // Try to run this query without warnings
+      $this->doSearch('Ticket', [
+         'reset'      => 'reset',
+         'is_deleted' => 0,
+         'start'      => 0,
+         'search'     => 'Search',
+         'criteria'   => [
+            [
+               'link'       => 'AND',
+               'field'      => 12,
+               'searchtype' => 'equals',
+               'value'      => 'notold',
+            ],
+            [
+               'link'       => 'AND',
+               'itemtype'   => 'Computer',
+               'meta'       => true,
+               'field'      => 1,
+               'searchtype' => 'contains',
+               'value'      => 'ù',
+            ],
+            [
+               'link' => 'AND',
+               'criteria' => [
+                  [
+                     'link'       => 'AND+NOT',
+                     'field'      => 'view',
+                     'searchtype' => 'contains',
+                     'value'      => '233',
+                  ]
+               ]
+            ]
+         ]
+      ]);
+   }
+
    /**
     * Check that search result is valid.
     *
@@ -1457,6 +1793,7 @@ class Search extends DbTestCase {
             'NetworkPortInstantiation', // Should be abstract (or have $notable = true)
             'NetworkPortMigration', // Tables only exists in specific cases
             'NotificationSettingConfig', // Stores its data in glpi_configs, does not acts as a CommonDBTM
+            'PendingReasonCron'
          ]
       );
       $searchable_classes = [];
@@ -1472,6 +1809,187 @@ class Search extends DbTestCase {
       sort($searchable_classes);
 
       return $searchable_classes;
+   }
+
+   protected function testNamesOutputProvider(): array {
+      return [
+         [
+            'params' => [
+               'display_type' => \Search::NAMES_OUTPUT,
+               'export_all'   => 1,
+               'criteria'     => [],
+               'item_type'    => 'Ticket',
+               'is_deleted'   => 0,
+               'as_map'       => 0,
+            ],
+            'expected' => [
+               '_ticket01',
+               '_ticket02',
+               '_ticket03',
+               '_ticket100',
+               '_ticket101',
+            ]
+         ],
+         [
+            'params' => [
+               'display_type' => \Search::NAMES_OUTPUT,
+               'export_all'   => 1,
+               'criteria'     => [],
+               'item_type'    => 'Computer',
+               'is_deleted'   => 0,
+               'as_map'       => 0,
+            ],
+            'expected' => [
+               '_test_pc01',
+               '_test_pc02',
+               '_test_pc03',
+               '_test_pc11',
+               '_test_pc12',
+               '_test_pc13',
+               '_test_pc21',
+               '_test_pc22',
+            ]
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider testNamesOutputProvider
+    */
+   public function testNamesOutput(array $params, array $expected) {
+      $this->login();
+
+      // Run search and capture results
+      ob_start();
+      \Search::showList($params['item_type'], $params);
+      $names = ob_get_contents();
+      ob_end_clean();
+
+      // Convert results to array and remove last row (always empty)
+      $names = explode("\n", $names);
+      array_pop($names);
+
+      // Check results
+      $this->array($names)->isEqualTo($expected);
+   }
+
+   protected function testMyselfSearchCriteriaProvider(): array {
+      $TU_USER_users_id = getItemByTypeName('User', TU_USER, true);
+      $tech_users_id = getItemByTypeName('User', 'tech', true);
+      $root_entity = getItemByTypeName('Entity', '_test_root_entity', true);
+
+      // Create test data
+      $to_create = [
+         [
+            'name' => 'testMyselfSearchCriteriaProvider 1',
+            'observer' => $TU_USER_users_id,
+         ],
+         [
+            'name' => 'testMyselfSearchCriteriaProvider 2',
+            'observer' => $TU_USER_users_id,
+         ],
+         [
+            'name' => 'testMyselfSearchCriteriaProvider 3',
+            'observer' => $TU_USER_users_id,
+         ],
+         [
+            'name' => 'testMyselfSearchCriteriaProvider 4',
+            'observer' => $tech_users_id,
+         ],
+      ];
+
+      foreach ($to_create as $params) {
+         $ticket = new Ticket();
+         $tickets_id = $ticket->add([
+            'name'               => $params['name'],
+            'content'            => 'testMyselfSearchCriteriaProvider',
+            '_users_id_observer' => $params['observer'],
+            'entities_id'        => $root_entity,
+         ]);
+         $this->integer($tickets_id)->isGreaterThan(0);
+         $actors = $ticket->getITILActors();
+         $this->integer($actors[$params['observer']][0])->isEqualTo(CommonITILActor::OBSERVER);
+      }
+
+      return [
+         // Case 1: Search for tickets where 'TU_USER' is an observer
+         [
+            'criteria' => [
+               [
+                  'link'       => 'AND',
+                  'field'      => 66, // Observer search option
+                  'searchtype' => 'equals',
+                  'value'      => $TU_USER_users_id,
+               ]
+            ],
+            'expected' => [
+               'testMyselfSearchCriteriaProvider 1',
+               'testMyselfSearchCriteriaProvider 2',
+               'testMyselfSearchCriteriaProvider 3',
+            ]
+         ],
+         // Case 2: Search for tickets where 'tech' is an observer
+         [
+            'criteria' => [
+               [
+                  'link'       => 'AND',
+                  'field'      => 66, // Observer search option
+                  'searchtype' => 'equals',
+                  'value'      => $tech_users_id,
+               ]
+            ],
+            'expected' => [
+               'testMyselfSearchCriteriaProvider 4',
+            ]
+         ],
+         // Case 3: Search for tickets where the current user (TU_USER) is an observer
+         [
+            'criteria' => [
+               [
+                  'link'       => 'AND',
+                  'field'      => 66, // Observer search option
+                  'searchtype' => 'equals',
+                  'value'      => 'myself',
+               ]
+            ],
+            'expected' => [
+               'testMyselfSearchCriteriaProvider 1',
+               'testMyselfSearchCriteriaProvider 2',
+               'testMyselfSearchCriteriaProvider 3',
+            ]
+         ],
+      ];
+   }
+
+   /**
+    * Functionnal test for the 'myself' search criteria.
+    * We use the output type "Search::NAMES_OUTPUT" during the test as it make
+    * it easy to parse the results.
+    *
+    * @dataProvider testMyselfSearchCriteriaProvider
+    */
+   public function testMyselfSearchCriteria(array $criteria, array $expected) {
+      $this->login();
+
+      // Run search and capture results
+      ob_start();
+      \Search::showList('Ticket', [
+         'display_type' => \Search::NAMES_OUTPUT,
+         'export_all'   => 1,
+         'criteria'     => $criteria,
+         'item_type'    => 'Ticket',
+         'is_deleted'   => 0,
+         'as_map'       => 0,
+      ]);
+      $names = ob_get_contents();
+      ob_end_clean();
+
+      // Convert results to array and remove last row (always empty for NAMES_OUTPUT)
+      $names = explode("\n", $names);
+      array_pop($names);
+
+      // Check results
+      $this->array($names)->isEqualTo($expected);
    }
 }
 
@@ -1493,6 +2011,7 @@ class DupSearchOpt extends \CommonDBTM {
    }
 }
 
+// phpcs:ignore SlevomatCodingStandard.Namespaces
 namespace SearchTest;
 
 class Computer extends \Computer {

@@ -200,25 +200,28 @@ class ProjectTaskTemplate extends CommonDropdown {
    }
 
 
-   function displaySpecificTypeField($ID, $field = []) {
+   function displaySpecificTypeField($ID, $field = [], array $options = []) {
 
       switch ($field['type']) {
          case 'percent_done' :
-            Dropdown::showNumber("percent_done", ['value' => $this->fields['percent_done'],
-                                                  'min'   => 0,
-                                                  'max'   => 100,
-                                                  'step'  => 5,
-                                                  'unit'  => '%']);
-            break;
+            Dropdown::showNumber("percent_done", [
+               'value'     => $this->fields['percent_done'],
+               'min'       => 0,
+               'max'       => 100,
+               'step'      => 5,
+               'unit'      => '%',
+               'width'     => '100%',
+            ]);
          case 'actiontime' :
-            Dropdown::showTimeStamp($field["name"],
-                                    ['min'             => 0,
-                                     'max'             => 100 * HOUR_TIMESTAMP,
-                                     'step'            => HOUR_TIMESTAMP,
-                                     'value'           => $this->fields[$field["name"]],
-                                     'addfirstminutes' => true,
-                                     'inhours'         => true]);
-            break;
+            Dropdown::showTimeStamp($field["name"], [
+               'min'             => 0,
+               'max'             => 100 * HOUR_TIMESTAMP,
+               'step'            => HOUR_TIMESTAMP,
+               'value'           => $this->fields[$field["name"]],
+               'addfirstminutes' => true,
+               'inhours'         => true,
+               'width'           => '100%',
+            ]);
       }
    }
 
@@ -243,6 +246,10 @@ class ProjectTaskTemplate extends CommonDropdown {
       $this->addStandardTab('Document_Item', $ong, $options);
 
       return $ong;
+   }
+
+   static function getIcon() {
+      return "fas fa-layer-group";
    }
 
 }

@@ -112,7 +112,7 @@ class OlaLevel extends LevelAgreementLevel {
          echo "</td><td class='center'>".__('Active')."</td><td>";
          Dropdown::showYesNo("is_active", 1);
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>";
 
          echo "</table>";
@@ -149,7 +149,7 @@ class OlaLevel extends LevelAgreementLevel {
                                      sprintf(__('%1$s = %2$s'), OLA::getTypeName(1),
                                              $ola->getName()));
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          Session::addToNavigateListItems('OlaLevel', $data["id"]);
 
          echo "<tr class='tab_bg_2'>";
@@ -225,7 +225,7 @@ class OlaLevel extends LevelAgreementLevel {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
       echo "<td>".__('Active')."</td>";
       echo "<td>";
@@ -284,7 +284,7 @@ class OlaLevel extends LevelAgreementLevel {
       ]);
 
       if (count($iterator)) {
-         $result = $iterator->next();
+         $result = $iterator->current();
          return $result['id'];
       }
       return 0;
@@ -309,7 +309,7 @@ class OlaLevel extends LevelAgreementLevel {
       ]);
 
       if (count($iterator)) {
-         $result = $iterator->next();
+         $result = $iterator->current();
          $execution_time = $result['execution_time'];
 
          $iterator = $DB->request([
@@ -326,7 +326,7 @@ class OlaLevel extends LevelAgreementLevel {
          ]);
 
          if (count($iterator)) {
-            $result = $iterator->next();
+            $result = $iterator->current();
             return $result['id'];
          }
       }

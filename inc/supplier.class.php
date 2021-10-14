@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\AssetImage;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -38,6 +40,7 @@ if (!defined('GLPI_ROOT')) {
  * Supplier class (suppliers)
 **/
 class Supplier extends CommonDBTM {
+   use AssetImage;
 
    // From CommonDBTM
    public $dohistory           = true;
@@ -56,6 +59,15 @@ class Supplier extends CommonDBTM {
       return _n('Supplier', 'Suppliers', $nb);
    }
 
+   function prepareInputForAdd($input) {
+      $input = parent::prepareInputForAdd($input);
+      return $this->managePictures($input);
+   }
+
+   function prepareInputForUpdate($input) {
+      $input = parent::prepareInputForUpdate($input);
+      return $this->managePictures($input);
+   }
 
    function cleanDBonPurge() {
 
@@ -87,7 +99,7 @@ class Supplier extends CommonDBTM {
       $this->addStandardTab('Ticket', $ong, $options);
       $this->addStandardTab('Item_Problem', $ong, $options);
       $this->addStandardTab('Change_Item', $ong, $options);
-      $this->addStandardTab('Link', $ong, $options);
+      $this->addStandardTab('ManualLink', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
@@ -95,96 +107,6 @@ class Supplier extends CommonDBTM {
       return $ong;
    }
 
-
-   /**
-    * Print the enterprise form
-    *
-    * @param $ID Integer : Id of the computer or the template to print
-    * @param $options array
-    *     - target form target
-    *     - withtemplate boolean : template or basic item
-    *
-    *@return void
-   **/
-   function showForm($ID, $options = []) {
-
-      $this->initForm($ID, $options);
-      $this->showFormHeader($options);
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Name')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "name");
-      echo "</td>";
-      echo "<td>".SupplierType::getTypeName(1)."</td>";
-      echo "<td>";
-      SupplierType::dropdown(['value' => $this->fields["suppliertypes_id"]]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>". Phone::getTypeName(1)."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "phonenumber");
-      echo "</td>";
-      echo "<td rowspan='7' class='middle'>".__('Comments')."</td>";
-      echo "<td class='middle' rowspan='7'>";
-      echo "<textarea cols='45' rows='13' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Fax')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "fax");
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Website')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "website");
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Email', 'Emails', 1)."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "email");
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='middle'>".__('Address')."</td>";
-      echo "<td class='middle'>";
-      echo "<textarea cols='37' rows='3' name='address'>".$this->fields["address"]."</textarea>";
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1' style='white-space: nowrap'>";
-      echo "<td>".__('Postal code')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "postcode", ['size' => 10]);
-      echo "&nbsp;&nbsp;". __('City'). "&nbsp;";
-      Html::autocompletionTextField($this, "town", ['size' => 23]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>"._x('location', 'State')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "state");
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Country')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "country");
-      echo "</td>";
-
-      echo "<td>".__('Active')."</td>";
-      echo "<td>";
-      Dropdown::showYesNo('is_active', $this->fields['is_active']);
-      echo "</td></tr>";
-
-      $this->showFormButtons($options);
-
-      return true;
-
-   }
 
    static function dropdown($options = []) {
       $condition = ['is_active' => true];
@@ -223,7 +145,6 @@ class Supplier extends CommonDBTM {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -249,7 +170,6 @@ class Supplier extends CommonDBTM {
          'field'              => 'fax',
          'name'               => __('Fax'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -258,7 +178,6 @@ class Supplier extends CommonDBTM {
          'field'              => 'town',
          'name'               => __('City'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -267,7 +186,6 @@ class Supplier extends CommonDBTM {
          'field'              => 'postcode',
          'name'               => __('Postal code'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -276,7 +194,6 @@ class Supplier extends CommonDBTM {
          'field'              => 'state',
          'name'               => _x('location', 'State'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -285,7 +202,6 @@ class Supplier extends CommonDBTM {
          'field'              => 'country',
          'name'               => __('Country'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -294,7 +210,6 @@ class Supplier extends CommonDBTM {
          'field'              => 'website',
          'name'               => __('Website'),
          'datatype'           => 'weblink',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -303,7 +218,6 @@ class Supplier extends CommonDBTM {
          'field'              => 'phonenumber',
          'name'               => Phone::getTypeName(1),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -312,7 +226,6 @@ class Supplier extends CommonDBTM {
          'field'              => 'email',
          'name'               => _n('Email', 'Emails', 1),
          'datatype'           => 'email',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -486,7 +399,7 @@ class Supplier extends CommonDBTM {
       echo "</tr>";
 
       $num = 0;
-      while ($row = $types_iterator->next()) {
+      foreach ($types_iterator as $row) {
          $itemtype = $row['itemtype'];
 
          if (!($item = getItemForItemtype($itemtype))) {
@@ -595,7 +508,7 @@ class Supplier extends CommonDBTM {
 
             } else if ($nb) {
                $prem = true;
-               while ($data = $iterator->next()) {
+               foreach ($iterator as $data) {
                   $name = $data[$linktype::getNameField()];
                   if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                      $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);

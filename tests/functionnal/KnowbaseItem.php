@@ -28,11 +28,11 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 namespace test\units;
 
-use \DbTestCase;
+use DbTestCase;
 
 /* Test for inc/knowbaseitem.class.php */
 
@@ -205,7 +205,7 @@ class KnowbaseItem extends DbTestCase {
       copy(__DIR__ . '/../fixtures/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
       $instance->add($input);
       $this->boolean($instance->isNewItem())->isFalse();
-      $expected = 'a href=&quot;/front/document.send.php?docid=';
+      $expected = 'a href="/front/document.send.php?docid=';
       $this->string($instance->fields['answer'])->contains($expected);
 
       // Test uploads for item update
@@ -229,7 +229,7 @@ class KnowbaseItem extends DbTestCase {
       ]);
       $this->boolean($success)->isTrue();
       // Ensure there is an anchor to the uploaded document
-      $expected = 'a href=&quot;/front/document.send.php?docid=';
+      $expected = 'a href="/front/document.send.php?docid=';
       $this->string($instance->fields['answer'])->contains($expected);
    }
 

@@ -28,7 +28,7 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 namespace tests\units\Glpi\Console;
 
@@ -103,7 +103,7 @@ PHP
             ,
 
             // Not a command case
-            'oldscript.php' => '<?php echo("Hi !");',
+            'oldscript.php' => '<?php echo("Hi!");',
          ],
          'plugins' => [
             'awesome' => [

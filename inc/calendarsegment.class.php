@@ -75,38 +75,6 @@ class CalendarSegment extends CommonDBChild {
       return parent::prepareInputForAdd($input);
    }
 
-   /**
-    * Duplicate all segments from a calendar to his clone
-    *
-    * @deprecated 9.5
-    *
-    * @param $oldid
-    * @param $newid
-   **/
-   static function cloneCalendar($oldid, $newid) {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      $result = $DB->request(
-         [
-            'FROM'   => self::getTable(),
-            'WHERE'  => [
-               'calendars_id' => $oldid,
-            ]
-         ]
-      );
-
-      foreach ($result as $data) {
-         $c                    = new self();
-         unset($data['id']);
-         $data['calendars_id'] = $newid;
-         $data['_no_history']  = true;
-
-         $c->add($data);
-      }
-   }
-
-
    function post_addItem() {
 
       // Update calendar cache
@@ -190,7 +158,7 @@ class CalendarSegment extends CommonDBChild {
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          list($hour, $minute ,$second) = explode(':', $data['TDIFF']);
          $sum += $hour*HOUR_TIMESTAMP+$minute*MINUTE_TIMESTAMP+$second;
       }
@@ -230,7 +198,7 @@ class CalendarSegment extends CommonDBChild {
          'ORDER'  => 'begin'
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          list($hour, $minute, $second) = explode(':', $data['TDIFF']);
          $tstamp = $hour*HOUR_TIMESTAMP+$minute*MINUTE_TIMESTAMP+$second;
 
@@ -270,7 +238,7 @@ class CalendarSegment extends CommonDBChild {
             'calendars_id' => $calendars_id,
             'day'          => $day
          ]
-      ])->next();
+      ])->current();
       return $result['minb'];
    }
 
@@ -294,7 +262,7 @@ class CalendarSegment extends CommonDBChild {
             'calendars_id' => $calendars_id,
             'day'          => $day
          ]
-      ])->next();
+      ])->current();
       return $result['mend'];
    }
 
@@ -321,7 +289,7 @@ class CalendarSegment extends CommonDBChild {
             'begin'        => ['<=', $hour],
             'end'          => ['>=', $hour]
          ]
-      ])->next();
+      ])->current();
       return $result['cpt'] > 0;
    }
 
@@ -371,7 +339,7 @@ class CalendarSegment extends CommonDBChild {
          echo "</td><td class='center'>".__('End').'</td><td>';
          Dropdown::showHours("end", ['value' => (date('H')+1).":00"]);
          echo "</td><td class='center'>";
-            echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+            echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>";
 
          echo "</table>";
@@ -401,7 +369,7 @@ class CalendarSegment extends CommonDBChild {
       $daysofweek = Toolbox::getDaysOfWeekArray();
 
       if ($numrows) {
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             echo "<tr class='tab_bg_1'>";
 
             if ($canedit) {

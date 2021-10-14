@@ -36,17 +36,6 @@ if (!defined('GLPI_ROOT')) {
 
 
 /**
- * @since 0.84
-**/
-class CommonDBConnexityItemNotFound extends Exception {
-
-}
-
-
-
-
-
-/**
  * Common DataBase Connexity Table Manager Class
  * This class factorize code for CommonDBChild and CommonDBRelation. Both classes themselves
  * factorize and normalize the behaviour of all Child and Relations.
@@ -81,6 +70,8 @@ class CommonDBConnexityItemNotFound extends Exception {
 **/
 abstract class CommonDBConnexity extends CommonDBTM {
 
+   use Glpi\Features\Clonable;
+
    const DONT_CHECK_ITEM_RIGHTS  = 1; // Don't check the parent => always can*Child
    const HAVE_VIEW_RIGHT_ON_ITEM = 2; // canXXXChild = true if parent::canView == true
    const HAVE_SAME_RIGHT_ON_ITEM = 3; // canXXXChild = true if parent::canXXX == true
@@ -89,6 +80,11 @@ abstract class CommonDBConnexity extends CommonDBTM {
    /// Disable auto forwarding information about entities ?
    static public $disableAutoEntityForwarding   = false;
 
+
+   public function getCloneRelations() :array {
+      return [
+      ];
+   }
 
    /**
     * Return the SQL request to get all the connexities corresponding to $itemtype[$items_id]
@@ -125,7 +121,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
          ];
 
          $iterator = $DB->request($criteria);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $input[$this->getIndexName()] = $data[$this->getIndexName()];
             $this->delete($input, 1);
          }
@@ -168,10 +164,10 @@ abstract class CommonDBConnexity extends CommonDBTM {
       $res = [];
       $iterator = static::getItemsAssociationRequest($itemtype, $items_id);
 
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $input = Toolbox::addslashes_deep($row);
          $item = new static();
-         $item->getFromDB($input['id']);
+         $item->getFromDB($input[static::getIndexName()]);
          $res[] = $item;
       }
       return $res;
@@ -617,7 +613,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
             }
             $peertypes = array_unique($peertypes);
             if (count($peertypes) == 0) {
-               echo __('Unable to reaffect given elements !');
+               echo __('Unable to reaffect given elements!');
                exit();
             }
             $options = [];

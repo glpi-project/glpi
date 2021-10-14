@@ -28,11 +28,11 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 namespace tests\units;
 
-use \DbTestCase;
+use DbTestCase;
 use ReflectionClass;
 
 /* Test for inc/rule.class.php */
@@ -159,22 +159,22 @@ class Rule extends DbTestCase {
       $rule    = new \Rule();
       $actions = $rule->getSpecificMassiveActions();
       $this->array($actions)->isIdenticalTo([
-         'Rule:export'     => '<i class=\'ma-icon fas fa-file-download\'></i>Export'
+         'Rule:export'     => '<i class=\'fas fa-file-download\'></i>Export'
       ]);
 
       $_SESSION['glpiactiveprofile']['rule_dictionnary_software'] = ALLSTANDARDRIGHT;
       $rule    = new \RuleDictionnarySoftware();
       $actions = $rule->getSpecificMassiveActions();
       $this->array($actions)->isIdenticalTo([
-         'Rule:move_rule' => '<i class=\'ma-icon fas fa-arrows-alt-v\'></i>Move',
-         'Rule:export'     => '<i class=\'ma-icon fas fa-file-download\'></i>Export'
+         'Rule:move_rule' => '<i class=\'fas fa-arrows-alt-v\'></i>Move',
+         'Rule:export'     => '<i class=\'fas fa-file-download\'></i>Export'
       ]);
 
       $_SESSION['glpiactiveprofile']['rule_dictionnary_software'] = READ;
       $rule    = new \RuleDictionnarySoftware();
       $actions = $rule->getSpecificMassiveActions();
       $this->array($actions)->isIdenticalTo([
-         'Rule:export'     => '<i class=\'ma-icon fas fa-file-download\'></i>Export'
+         'Rule:export'     => '<i class=\'fas fa-file-download\'></i>Export'
       ]);
    }
 
@@ -241,7 +241,7 @@ class Rule extends DbTestCase {
       $this->integer($rule->maxActionsCount())->isIdenticalTo(0);
 
       $rule = new \RuleTicket();
-      $this->integer($rule->maxActionsCount())->isIdenticalTo(29);
+      $this->integer($rule->maxActionsCount())->isIdenticalTo(33);
 
       $rule = new \RuleDictionnarySoftware();
       $this->integer($rule->maxActionsCount())->isIdenticalTo(4);
@@ -281,7 +281,7 @@ class Rule extends DbTestCase {
          [\Location::getTypeName(1)               , 'locations_id'],
          ["&nbsp;"                     , 'location'],
          [_n('Type', 'Types', 1)                   , 'type'],
-         [__('Category')               , 'itilcategories_id'],
+         [_n('Category', 'Categories', 1)               , 'itilcategories_id'],
          [_n('Requester', 'Requesters', 1)              , '_users_id_requester'],
          [_n('Requester group', 'Requester groups', 1)        , '_groups_id_requester'],
          [__('Technician')             , '_users_id_assign'],
@@ -497,7 +497,7 @@ class Rule extends DbTestCase {
                 'value' => 1
                ];
       $result = $rule->getMinimalActionText($input);
-      $expected = "<td >Category</td><td >Assign</td><td >FUSION</td>";
+      $expected = "<td >Category</td><td >Assign</td><td >Software from inventories</td>";
       $this->string($result)->isIdenticalTo($expected);
 
       $input = ['field' => '_import_category',

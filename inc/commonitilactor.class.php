@@ -98,7 +98,7 @@ abstract class CommonITILActor extends CommonDBRelation {
          'WHERE'  => [static::getItilObjectForeignKey() => $items_id],
          'ORDER'  => 'id ASC'
       ]);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $users[$data['type']][] = $data;
       }
       return $users;
@@ -212,7 +212,7 @@ abstract class CommonITILActor extends CommonDBRelation {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='2'>";
-      echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
+      echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary'>";
       echo "<input type='hidden' name='id' value='$ID'>";
       echo "</td></tr>";
 
@@ -275,7 +275,7 @@ abstract class CommonITILActor extends CommonDBRelation {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='2'>";
-      echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
+      echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary'>";
       echo "<input type='hidden' name='id' value='$ID'>";
       echo "</td></tr>";
 

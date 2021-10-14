@@ -28,13 +28,14 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 namespace tests\units;
 
-use PHPMailer\PHPMailer\PHPMailer;
-use \DbTestCase;
+use DbTestCase;
+use Glpi\Plugin\Hooks;
 use Log;
+use PHPMailer\PHPMailer\PHPMailer;
 use Session;
 
 /* Test for inc/config.class.php */
@@ -85,6 +86,7 @@ class Config extends DbTestCase {
          'Config$2'      => 'Default values',
          'Config$3'      => 'Assets',
          'Config$4'      => 'Assistance',
+         'Config$12'     => 'Management',
          'GLPINetwork$1' => 'GLPI Network',
          'Log$1'         => 'Historical',
       ];
@@ -110,6 +112,7 @@ class Config extends DbTestCase {
          'Config$2'      => 'Default values',
          'Config$3'      => 'Assets',
          'Config$4'      => 'Assistance',
+         'Config$12'     => 'Management',
          'Config$9'      => 'Logs purge',
          'Config$5'      => 'System',
          'Config$10'     => 'Security',
@@ -410,6 +413,7 @@ class Config extends DbTestCase {
       $expected = [
          'aerialgreen'     => 'Aerialgreen',
          'auror'           => 'Auror',
+         'auror_dark'      => 'Auror_dark',
          'automn'          => 'Automn',
          'classic'         => 'Classic',
          'clockworkorange' => 'Clockworkorange',
@@ -420,10 +424,11 @@ class Config extends DbTestCase {
          'hipster'         => 'Hipster',
          'icecream'        => 'Icecream',
          'lightblue'       => 'Lightblue',
+         'midnight'        => 'Midnight',
          'premiumred'      => 'Premiumred',
          'purplehaze'      => 'Purplehaze',
          'teclib'          => 'Teclib',
-         'vintage'         => 'Vintage'
+         'vintage'         => 'Vintage',
       ];
       $this
          ->if($this->newTestedInstance)
@@ -441,30 +446,38 @@ class Config extends DbTestCase {
    protected function dbEngineProvider() {
       return [
          [
+            'raw'       => '10.1.48-MariaDB',
+            'version'   => '10.1.48',
+            'compat'    => false
+         ], [
             'raw'       => '10.2.14-MariaDB',
             'version'   => '10.2.14',
             'compat'    => true
          ], [
-            'raw'       => '5.5.10-MariaDB',
-            'version'   => '5.5.10',
-            'compat'    => false
+            'raw'       => '10.3.28-MariaDB',
+            'version'   => '10.3.28',
+            'compat'    => true
+         ], [
+            'raw'       => '10.4.8-MariaDB-1:10.4.8+maria~bionic',
+            'version'   => '10.4.8',
+            'compat'    => true
+         ], [
+            'raw'       => '10.5.9-MariaDB',
+            'version'   => '10.5.9',
+            'compat'    => true
          ], [
             'raw'       => '5.6.38-log',
             'version'   => '5.6.38',
-            'compat'    => true
-         ], [
-            'raw'       => '5-5-57',
-            'version'   => '5',
             'compat'    => false
-         ], [
-            'raw'       => '5-6-31',
-            'version'   => '5',
-            'compat'    => false // since version is 5, this is not compat.
-         ], [
-            'raw'       => '10-2-35',
-            'version'   => '10',
+         ],  [
+            'raw'       => '5.7.50-log',
+            'version'   => '5.7.50',
             'compat'    => true
-         ]
+         ], [
+            'raw'       => '8.0.23-standard',
+            'version'   => '8.0.23',
+            'compat'    => true
+         ],
       ];
    }
 
@@ -618,7 +631,7 @@ class Config extends DbTestCase {
          'SELECT' => 'value',
          'FROM'   => $conf->getTable(),
          'WHERE'  => ['name' => 'devices_in_menu']
-      ])->next();
+      ])->current();
       $this->array($res)->isIdenticalTo(
          ['value' => exportArrayToDB(['Item_DeviceSimcard', 'Item_DeviceBattery'])]
       );
@@ -743,7 +756,7 @@ class Config extends DbTestCase {
    protected function logConfigChangeProvider() {
       global $PLUGIN_HOOKS;
 
-      $PLUGIN_HOOKS['secured_configs']['tester'] = ['passwd'];
+      $PLUGIN_HOOKS[Hooks::SECURED_CONFIGS]['tester'] = ['passwd'];
 
       return [
          [

@@ -58,6 +58,13 @@ class Item_Kanban extends CommonDBRelation {
       $oldstate = self::loadStateForItem($itemtype, $items_id);
       $users_id = $force_global ? 0 : Session::getLoginUserID();
       $state = $item->prepareKanbanStateForUpdate($oldstate, $state, $users_id);
+      $all_columns = $item->getAllKanbanColumns();
+      foreach ($state as $column_i => $column) {
+         if ($all_columns[$column['column']]['drop_only']) {
+            unset($state[$column_i]);
+         }
+      }
+
       if ($state === null || $state === 'null' || $state === false) {
          // Save was probably denied in prepareKanbanStateForUpdate or an invalid state was given
          return false;
@@ -116,7 +123,7 @@ class Item_Kanban extends CommonDBRelation {
       ]);
 
       if (count($iterator)) {
-         $data = $iterator->next();
+         $data = $iterator->current();
          if ($timestamp !== null) {
             if (strtotime($timestamp) < strtotime($data['date_mod'])) {
                return json_decode($data['state'], true);

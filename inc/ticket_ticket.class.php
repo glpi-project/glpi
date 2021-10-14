@@ -53,6 +53,11 @@ class Ticket_Ticket extends CommonDBRelation {
    const PARENT_OF      = 4;
 
 
+   static function getTypeName($nb = 0) {
+      return _n('Linked ticket', 'Linked tickets', $nb);
+   }
+
+
    /**
     * @since 0.85
     *
@@ -66,7 +71,7 @@ class Ticket_Ticket extends CommonDBRelation {
             printf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('ID'));
             echo "&nbsp;<input type='text' name='tickets_id_1' value='' size='10'>\n";
             echo "<br><br>";
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+            echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='".
                            _sx('button', 'Post')."'>";
             return true;
       }
@@ -141,7 +146,7 @@ class Ticket_Ticket extends CommonDBRelation {
       ]);
       $tickets = [];
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if ($data['tickets_id_1'] != $ID) {
             $tickets[$data['id']] = [
                'link'         => $data['link'],
@@ -158,45 +163,6 @@ class Ticket_Ticket extends CommonDBRelation {
 
       ksort($tickets);
       return $tickets;
-   }
-
-
-   /**
-    * Display linked tickets to a ticket
-    *
-    * @param $ID ID of the ticket id
-    *
-    * @return void
-   **/
-   static function displayLinkedTicketsTo ($ID) {
-      $tickets   = self::getLinkedTicketsTo($ID);
-      $canupdate = Session::haveRight('ticket', UPDATE);
-
-      $ticket    = new Ticket();
-      $tick      = new Ticket();
-      if (is_array($tickets) && count($tickets)) {
-         foreach ($tickets as $linkid => $data) {
-            if ($ticket->getFromDB($data['tickets_id'])) {
-               $icons =  Ticket::getStatusIcon($ticket->fields['status']);
-               if ($canupdate) {
-                  if ($tick->getFromDB($ID)
-                      && ($tick->fields['status'] != CommonITILObject::CLOSED)) {
-                     $icons .= '&nbsp;'.Html::getSimpleForm(static::getFormURL(), 'purge',
-                                                            _x('button', 'Delete permanently'),
-                                                         ['id'         => $linkid,
-                                                          'tickets_id' => $ID],
-                                                         'fa-times-circle');
-                  }
-               }
-               $inverted = (isset($data['tickets_id_1']));
-               $text = sprintf(__('%1$s %2$s'), self::getLinkName($data['link'], $inverted),
-                               $ticket->getLink(['forceid' => true]));
-               printf(__('%1$s %2$s'), $text, $icons);
-
-            }
-            echo '<br>';
-         }
-      }
    }
 
 
@@ -221,12 +187,13 @@ class Ticket_Ticket extends CommonDBRelation {
    /**
     * Get Link Name
     *
-    * @param integer $value    Current value
-    * @param boolean $inverted Whether to invert label
+    * @param integer $value     Current value
+    * @param boolean $inverted  Whether to invert label
+    * @param boolean $with_icon prefix label with an icon
     *
     * @return string
    **/
-   static function getLinkName($value, $inverted = false) {
+   static function getLinkName($value, bool $inverted = false, bool $with_icon = false):string {
       $tmp = [];
 
       if (!$inverted) {
@@ -239,6 +206,16 @@ class Ticket_Ticket extends CommonDBRelation {
          $tmp[self::DUPLICATE_WITH] = __('Duplicated by');
          $tmp[self::SON_OF]         = __('Parent of');
          $tmp[self::PARENT_OF]      = __('Son of');
+      }
+
+      if ($with_icon) {
+         $icon_tag = '<i class="fas %1$s me-1" title="%2$s" data-bs-toggle="tooltip"></i>%2$s';
+         $tmp[self::LINK_TO]        = sprintf($icon_tag, "fa-link", $tmp[self::LINK_TO]);
+         $tmp[self::DUPLICATE_WITH] = sprintf($icon_tag, "fa-clone", $tmp[self::DUPLICATE_WITH]);
+         $icon_son                  = $inverted ? "fa-level-down-alt" : "fa-level-up-alt fa-flip-horizontal";
+         $tmp[self::SON_OF]         = sprintf($icon_tag, $icon_son, $tmp[self::SON_OF]);
+         $icon_parent               = $inverted ? "fa-level-down-alt" : "fa-level-up-alt";
+         $tmp[self::PARENT_OF]      = sprintf($icon_tag, $icon_parent, $tmp[self::PARENT_OF]);
       }
 
       if (isset($tmp[$value])) {
@@ -354,12 +331,12 @@ class Ticket_Ticket extends CommonDBRelation {
     *
     * @return integer
     */
-   public function countOpenChildren($pid) {
+   static public function countOpenChildren($pid) {
       global $DB;
 
       $result = $DB->request([
          'COUNT'        => 'cpt',
-         'FROM'         => $this->getTable() . ' AS links',
+         'FROM'         => self::getTable() . ' AS links',
          'INNER JOIN'   => [
             Ticket::getTable() . ' AS tickets' => [
                'ON' => [
@@ -375,7 +352,7 @@ class Ticket_Ticket extends CommonDBRelation {
                'tickets.status'  => Ticket::getClosedStatusArray() + Ticket::getSolvedStatusArray()
             ]
          ]
-      ])->next();
+      ])->current();
       return (int)$result['cpt'];
    }
 
@@ -435,7 +412,7 @@ class Ticket_Ticket extends CommonDBRelation {
             $solution_data['items_id'] = $data['tickets_id'];
             $solution_data['_linked_ticket'] = true;
             $new_solution = new ITILSolution();
-            $new_solution->add($solution_data);
+            $new_solution->add(Toolbox::addslashes_deep($solution_data));
          }
       }
    }

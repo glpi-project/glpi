@@ -37,17 +37,14 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use AuthLDAP;
-use User;
 use Glpi\Console\AbstractCommand;
-
-use Symfony\Component\Console\Exception\InvalidArgumentException;
-use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use User;
 
 class SynchronizeUsersCommand extends AbstractCommand {
 
@@ -227,7 +224,7 @@ class SynchronizeUsersCommand extends AbstractCommand {
          $run = $question_helper->ask(
             $input,
             $output,
-            new ConfirmationQuestion(__('Do you want to continue ?') . ' [Yes/no]', true)
+            new ConfirmationQuestion(__('Do you want to continue?') . ' [Yes/no]', true)
          );
          if (!$run) {
             $output->writeln(
@@ -241,7 +238,7 @@ class SynchronizeUsersCommand extends AbstractCommand {
       foreach ($servers_id as $server_id) {
          $server = new AuthLDAP();
          if (!$server->getFromDB($server_id)) {
-            throw new RuntimeException(__('Unable to load LDAP server information.'));
+            throw new \Symfony\Component\Console\Exception\RuntimeException(__('Unable to load LDAP server information.'));
          }
          if (!$server->isActive()) {
             // Can happen if id is specified in command call
@@ -425,7 +422,7 @@ class SynchronizeUsersCommand extends AbstractCommand {
       $only_create = $input->getOption('only-create-new');
       $only_update = $input->getOption('only-update-existing');
       if (false !== $only_create && false !== $only_update) {
-         throw new InvalidArgumentException(
+         throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
             __('Option --only-create-new is not compatible with option --only-update-existing.')
          );
       }
@@ -434,7 +431,7 @@ class SynchronizeUsersCommand extends AbstractCommand {
       $server = new AuthLDAP();
       foreach ($servers_id as $server_id) {
          if (!$server->getFromDB($server_id)) {
-            throw new InvalidArgumentException(
+            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
                sprintf(__('--ldap-server-id value "%s" is not a valid LDAP server id.'), $server_id)
             );
          }
@@ -447,7 +444,7 @@ class SynchronizeUsersCommand extends AbstractCommand {
          if (null !== $date) {
             $parsed_date = strtotime($date);
             if (false === $parsed_date) {
-               throw new InvalidArgumentException(
+               throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
                   sprintf(__('Unable to parse --%1$s value "%2$s".'), $option_name, $date)
                );
             }
@@ -463,7 +460,7 @@ class SynchronizeUsersCommand extends AbstractCommand {
          );
       }
       if ($begin_date > $end_date) {
-         throw new InvalidArgumentException(
+         throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
             __('Option --begin-date value has to be lower than option --end-date value.')
          );
       }
@@ -472,7 +469,7 @@ class SynchronizeUsersCommand extends AbstractCommand {
       if (null !== $deleted_user_strategy) {
          $strategies = AuthLDAP::getLdapDeletedUserActionOptions();
          if (!in_array($deleted_user_strategy, array_keys($strategies))) {
-            throw new InvalidArgumentException(
+            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
                sprintf(
                   __('--deleted-user-strategy value "%s" is not valid.'),
                   $deleted_user_strategy

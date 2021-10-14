@@ -100,6 +100,21 @@ class Consumable extends CommonDBChild {
       return [];
    }
 
+   function post_addItem() {
+
+      // inherit infocom
+      $infocoms = Infocom::getItemsAssociatedTo(ConsumableItem::getType(), $this->fields[ConsumableItem::getForeignKeyField()]);
+      if (count($infocoms)) {
+         $infocom = reset($infocoms);
+         $infocom->clone([
+            'itemtype'  => self::getType(),
+            'items_id'  => $this->getID()
+         ]);
+      }
+
+      parent::post_addItem();
+   }
+
 
    /**
     * send back to stock
@@ -256,7 +271,7 @@ class Consumable extends CommonDBChild {
          'COUNT'  => 'cpt',
          'FROM'   => 'glpi_consumables',
          'WHERE'  => ['consumableitems_id' => $tID]
-      ])->next();
+      ])->current();
       return (int)$result['cpt'];
    }
 
@@ -278,7 +293,7 @@ class Consumable extends CommonDBChild {
             'consumableitems_id' => $tID,
             'NOT'                => ['date_out' => null]
          ]
-      ])->next();
+      ])->current();
       return (int)$result['cpt'];
    }
 
@@ -300,7 +315,7 @@ class Consumable extends CommonDBChild {
             'consumableitems_id' => $tID,
             'date_out'           => null
          ]
-      ])->next();
+      ])->current();
       return(int) $result['cpt'];
    }
 
@@ -362,7 +377,7 @@ class Consumable extends CommonDBChild {
             'id'        => $cID,
             'date_out'  => null
          ]
-      ])->next();
+      ])->current();
       return $result['cpt'] == 1;
    }
 
@@ -384,7 +399,7 @@ class Consumable extends CommonDBChild {
             'id'     => $cID,
             'NOT'   => ['date_out' => null]
          ]
-      ])->next();
+      ])->current();
       return $result['cpt'] == 1;
    }
 
@@ -432,7 +447,7 @@ class Consumable extends CommonDBChild {
                                               'min'   => 1,
                                               'max'   => 100]);
          echo " <input type='submit' name='add_several' value=\""._sx('button', 'Add consumables')."\"
-                class='submit'>";
+                class='btn btn-primary'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
@@ -547,7 +562,7 @@ class Consumable extends CommonDBChild {
          $header_end .= "</tr>";
          echo $header_begin.$header_top.$header_end;
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $date_in  = Html::convDate($data["date_in"]);
             $date_out = Html::convDate($data["date_out"]);
 
@@ -620,7 +635,7 @@ class Consumable extends CommonDBChild {
       ]);
       $used = [];
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $used[$data['itemtype'].'####'.$data['items_id']][$data["consumableitems_id"]]
             = $data["count"];
       }
@@ -643,7 +658,7 @@ class Consumable extends CommonDBChild {
       ]);
       $new = [];
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $new[$data["consumableitems_id"]] = $data["count"];
       }
 
@@ -653,7 +668,7 @@ class Consumable extends CommonDBChild {
       ]);
       $types = [];
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $types[$data["id"]] = $data["name"];
       }
 

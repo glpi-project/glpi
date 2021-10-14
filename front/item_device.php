@@ -53,4 +53,3 @@ if (in_array($itemDevice->getType(), $CFG_GLPI['devices_in_menu'])) {
 Search::show($_GET['itemtype']);
 
 Html::footer();
-

@@ -58,7 +58,7 @@ $(document).ready(function() {
       }
 
       ajax_done = false;
-      $.get(ajax_url, {
+      $.post(ajax_url, {
          'action': action,
          'key': plugin_key
       }).done(function(html) {
@@ -100,11 +100,6 @@ $(document).ready(function() {
       $(this).addClass('active');
       filterPluginList();
    });
-
-   // case insentive :contains selector -> ":icontains"
-   jQuery.expr.filters.icontains = function(elem, i, m) {
-      return (elem.innerText || elem.textContent || "").toLowerCase().indexOf(m[3].toLowerCase()) > -1;
-   };
 
    // filter plugin list when something typed in search input
    var chrono;

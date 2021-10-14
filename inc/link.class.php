@@ -162,12 +162,12 @@ class Link extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
       echo "<td colspan='3'>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Link or filename')."</td>";
       echo "<td colspan='3'>";
-      Html::autocompletionTextField($this, "link", ['size' => 84]);
+      echo Html::input('link', ['value' => $this->fields['link'], 'size' => 84]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Open in a new window')."</td><td>";
@@ -200,7 +200,6 @@ class Link extends CommonDBTM {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -218,7 +217,6 @@ class Link extends CommonDBTM {
          'field'              => 'link',
          'name'               => __('Link or filename'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -322,7 +320,7 @@ class Link extends CommonDBTM {
             'WHERE'     => ['items_id' => $item->getID()]
          ]);
          if ($iterator->count()) {
-            $link = str_replace("[DOMAIN]", $iterator->next()['name'], $link);
+            $link = str_replace("[DOMAIN]", $iterator->current()['name'], $link);
          }
       }
       if (strstr($link, "[NETWORK]")
@@ -386,7 +384,7 @@ class Link extends CommonDBTM {
                   'glpi_networknames.itemtype'  => ['NetworkEquipment']
                ]
             ]);
-            while ($data2 = $iterator->next()) {
+            foreach ($iterator as $data2) {
                $ipmac['ip'.$data2['id']]['ip']  = $data2["ip"];
                $ipmac['ip'.$data2['id']]['mac'] = $item->getField('mac');
             }
@@ -436,7 +434,7 @@ class Link extends CommonDBTM {
                'glpi_networkports.itemtype'  => $item->getType()
             ]
          ]);
-         while ($data2 = $iterator->next()) {
+         foreach ($iterator as $data2) {
             $ipmac['ip'.$data2['id']]['ip']  = $data2["ip"];
             $ipmac['ip'.$data2['id']]['mac'] = $data2["mac"];
          }
@@ -473,7 +471,7 @@ class Link extends CommonDBTM {
          }
 
          $iterator = $DB->request($criteria);
-         while ($data2 = $iterator->next()) {
+         foreach ($iterator as $data2) {
             $ipmac['mac'.$data2['id']]['ip']  = '';
             $ipmac['mac'.$data2['id']]['mac'] = $data2["mac"];
          }
@@ -531,25 +529,32 @@ class Link extends CommonDBTM {
 
       $iterator = self::getLinksDataForItem($item);
 
-      echo "<div class='spaced'><table class='tab_cadre_fixe'>";
+      echo "<div class='spaced'><table class='tab_cadrehov'>";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<th>".self::getTypeName(Session::getPluralNumber())."</th>";
+      echo "<th class='right'>";
+      if (self::canUpdate()) {
+         echo '<a class="btn btn-primary" href="' . self::getSearchURL() . '">';
+         echo '<i class="fas fa-cog"></i>&nbsp;';
+         echo __('Configure');
+         echo '</a>';
+      }
+      echo "</th>";
+      echo "</tr>";
       if (count($iterator)) {
-         echo "<tr><th>".self::getTypeName(Session::getPluralNumber())."</th></tr>";
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $links = self::getAllLinksFor($item, $data);
 
             foreach ($links as $link) {
                echo "<tr class='tab_bg_2'>";
-               echo "<td class='center'>$link</td></tr>";
+               echo "<td colspan='2'>$link</td></tr>";
             }
          }
-         echo "</table></div>";
-
       } else {
-         echo "<tr class='tab_bg_2'><th>".self::getTypeName(Session::getPluralNumber())."</th></tr>";
-         echo "<tr class='tab_bg_2'><td class='center b'>".__('No link defined')."</td></tr>";
-         echo "</table></div>";
+         echo "<tr class='tab_bg_2'><td>".__('No link defined')."</td></tr>";
       }
+      echo "</table></div>";
    }
 
    /**
@@ -618,6 +623,7 @@ class Link extends CommonDBTM {
                                  "&amp;itemtype=".$item->getType().
                                  "&amp;id=".$item->getID()."&amp;rank=$key";
             $newlink         = "<a href='$url' target='_blank'>";
+            $newlink        .= "<i class='fa-lg fa-fw fas fa-link'></i>&nbsp;";
             $linkname        = sprintf(__('%1$s #%2$s'), $name, $i);
             $newlink        .= sprintf(__('%1$s: %2$s'), $linkname, $val);
             $newlink        .= "</a>";

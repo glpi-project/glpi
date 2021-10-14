@@ -34,6 +34,8 @@
  * @since 0.85
  */
 
+use Glpi\Toolbox\Sanitizer;
+
 include ('../inc/includes.php');
 
 
@@ -55,7 +57,7 @@ if (isset($_SESSION['namfield']) && isset($_POST[$_SESSION['namfield']])) {
    $login = '';
 }
 if (isset($_SESSION['pwdfield']) && isset($_POST[$_SESSION['pwdfield']])) {
-   $password = Toolbox::unclean_cross_side_scripting_deep($_POST[$_SESSION['pwdfield']]);
+   $password = Sanitizer::unsanitize($_POST[$_SESSION['pwdfield']]);
 } else {
    $password = '';
 }

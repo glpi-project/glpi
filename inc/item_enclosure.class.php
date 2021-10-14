@@ -1,9 +1,4 @@
 <?php
-
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
-}
-
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,7 +28,12 @@ if (!defined('GLPI_ROOT')) {
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-**/
+ */
+
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
+}
+
 class Item_Enclosure extends CommonDBRelation {
 
    static public $itemtype_1 = 'Enclosure';
@@ -199,7 +199,7 @@ class Item_Enclosure extends CommonDBRelation {
       $iterator = $DB->request([
          'FROM'   => $this->getTable()
       ]);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $used [$row['itemtype']][] = $row['items_id'];
       }
 
@@ -210,7 +210,7 @@ class Item_Enclosure extends CommonDBRelation {
             'is_reserved' => 0
          ]
       ]);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $used [$row['itemtype']][] = $row['items_id'];
       }
 

@@ -44,23 +44,23 @@ if ($_REQUEST["action"] == "get_events") {
    exit;
 }
 
-if ($_REQUEST["action"] == "update_event_times") {
-   echo Planning::updateEventTimes($_REQUEST);
+if (($_POST["action"] ?? null) == "update_event_times") {
+   echo Planning::updateEventTimes($_POST);
    exit;
 }
 
-if ($_REQUEST["action"] == "view_changed") {
-   echo Planning::viewChanged($_REQUEST['view']);
+if (($_POST["action"] ?? null) == "view_changed") {
+   echo Planning::viewChanged($_POST['view']);
    exit;
 }
 
-if ($_REQUEST["action"] == "clone_event") {
-   echo Planning::cloneEvent($_REQUEST['event']);
+if (($_POST["action"] ?? null) == "clone_event") {
+   echo Planning::cloneEvent($_POST['event']);
    exit;
 }
 
-if ($_REQUEST["action"] == "delete_event") {
-   echo Planning::deleteEvent($_REQUEST['event']);
+if (($_POST["action"] ?? null) == "delete_event") {
+   echo Planning::deleteEvent($_POST['event']);
    exit;
 }
 
@@ -122,16 +122,16 @@ if ($_REQUEST["action"] == "get_filters_form") {
    Planning::showPlanningFilter();
 }
 
-if ($_REQUEST["action"] == "toggle_filter") {
-   Planning::toggleFilter($_REQUEST);
+if (($_POST["action"] ?? null) == "toggle_filter") {
+   Planning::toggleFilter($_POST);
 }
 
-if ($_REQUEST["action"] == "color_filter") {
-   Planning::colorFilter($_REQUEST);
+if (($_POST["action"] ?? null) == "color_filter") {
+   Planning::colorFilter($_POST);
 }
 
-if ($_REQUEST["action"] == "delete_filter") {
-   Planning::deleteFilter($_REQUEST);
+if (($_POST["action"] ?? null) == "delete_filter") {
+   Planning::deleteFilter($_POST);
 }
 
 Html::ajaxFooter();

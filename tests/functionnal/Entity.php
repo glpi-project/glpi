@@ -32,15 +32,21 @@
 
 namespace tests\units;
 
-use \DbTestCase;
+use CommonITILActor;
+use Contract;
+use DbTestCase;
+use ITILFollowup;
+use ITILSolution;
+use NotificationTarget;
+use NotificationTargetTicket;
 use Profile_User;
+use Ticket;
+use Ticket_Contract;
+use Ticket_User;
 
 /* Test for inc/entity.class.php */
 
 class Entity extends DbTestCase {
-   protected $cached_methods = [
-      'testChangeEntityParentCached'
-   ];
 
    public function testSonsAncestors() {
       $ent0 = getItemByTypeName('Entity', '_test_root_entity');
@@ -120,7 +126,7 @@ class Entity extends DbTestCase {
     *
     * @return void
     */
-   public function runChangeEntityParent($cache = false, $hit = false) {
+   private function runChangeEntityParent($cache = false, $hit = false) {
       global $GLPI_CACHE;
 
       $this->login();
@@ -240,7 +246,7 @@ class Entity extends DbTestCase {
    }
 
    /**
-    * @extensions apcu
+    * @tags cache
     */
    public function testChangeEntityParentCached() {
       //run with cache
@@ -250,6 +256,43 @@ class Entity extends DbTestCase {
       //second run: cache hit expected
       $this->checkParentsSonsAreReset();
       $this->runChangeEntityParent(true);
+   }
+
+   public function testInheritGeolocation() {
+      $this->login();
+      $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
+      $ent1 = new \Entity();
+      $ent1_id = $ent1->add([
+         'entities_id'  => $ent0,
+         'name'         => 'inherit_geo_test_parent',
+         'latitude'     => '48.8566',
+         'longitude'    => '2.3522',
+         'altitude'     => '115'
+      ]);
+      $this->integer((int) $ent1_id)->isGreaterThan(0);
+      $ent2 = new \Entity();
+      $ent2_id = $ent2->add([
+         'entities_id'  => $ent1_id,
+         'name'         => 'inherit_geo_test_child',
+      ]);
+      $this->integer((int) $ent2_id)->isGreaterThan(0);
+      $this->string($ent2->fields['latitude'])->isEqualTo($ent1->fields['latitude']);
+      $this->string($ent2->fields['longitude'])->isEqualTo($ent1->fields['longitude']);
+      $this->string($ent2->fields['altitude'])->isEqualTo($ent1->fields['altitude']);
+
+      // Make sure we don't overwrite data a user sets
+      $ent3 = new \Entity();
+      $ent3_id = $ent3->add([
+         'entities_id'  => $ent1_id,
+         'name'         => 'inherit_geo_test_child2',
+         'latitude'     => '41.3851',
+         'longitude'    => '2.1734',
+         'altitude'     => '39'
+      ]);
+      $this->integer((int) $ent3_id)->isGreaterThan(0);
+      $this->string($ent3->fields['latitude'])->isEqualTo('41.3851');
+      $this->string($ent3->fields['longitude'])->isEqualTo('2.1734');
+      $this->string($ent3->fields['altitude'])->isEqualTo('39');
    }
 
    public function testDeleteEntity() {
@@ -482,5 +525,367 @@ class Entity extends DbTestCase {
       // Validate method result
       $this->boolean($entity->getFromDB($entity_id))->isTrue();
       $this->string($entity->getCustomCssTag())->isEqualTo($expected);
+   }
+
+   protected function testAnonymizeSettingProvider(): array {
+      return [
+         [
+            'interface' => 'central',
+            'setting'   => \Entity::ANONYMIZE_DISABLED,
+            'expected'  => 'test_anon_user',
+         ],
+         [
+            'interface' => 'helpdesk',
+            'setting'   => \Entity::ANONYMIZE_DISABLED,
+            'expected'  => 'test_anon_user',
+         ],
+         [
+            'interface' => 'central',
+            'setting'   => \Entity::ANONYMIZE_USE_GENERIC,
+            'expected'  => 'test_anon_user',
+         ],
+         [
+            'interface' => 'helpdesk',
+            'setting'   => \Entity::ANONYMIZE_USE_GENERIC,
+            'expected'  => "Helpdesk user",
+         ],
+         [
+            'interface' => 'central',
+            'setting'   => \Entity::ANONYMIZE_USE_NICKNAME,
+            'expected'  => 'test_anon_user',
+            'user_nick' => 'user_nick_6436345654'
+         ],
+         [
+            'interface' => 'helpdesk',
+            'setting'   => \Entity::ANONYMIZE_USE_NICKNAME,
+            'expected'  => 'user_nick_6436345654',
+            'user_nick' => 'user_nick_6436345654'
+         ],
+      ];
+   }
+
+   /**
+    * @dataProvider testAnonymizeSettingProvider
+    */
+   public function testAnonymizeSetting(
+      string $interface,
+      int $setting,
+      string $expected,
+      string $user_nick = ""
+   ) {
+      global $DB;
+
+      $this->login();
+      $possible_values = ['test_anon_user', 'user_nick_6436345654', "Helpdesk user"];
+
+      // Set entity setting
+      $entity = getItemByTypeName("Entity", "_test_root_entity");
+      $update = $entity->update([
+         'id'                       => $entity->getID(),
+         'anonymize_support_agents' => $setting,
+      ]);
+      $this->boolean($update)->isTrue();
+
+      // create a user for this test (avoid using current logged user as we don't anonymize him)
+      $user_obj = new \User();
+      $user_obj->add([
+         'name'     => 'test_anon_user',
+         'password' => 'test_anon_user'
+      ]);
+
+      // // Set user nickname
+      $user = getItemByTypeName('User', 'test_anon_user');
+
+      if ($user_nick == "" && $user->fields['nickname'] == null) {
+         // Special case, glpi wont update null to "" so we need to set
+         // another value first
+         $update = $user->update([
+            'id'       => $user->getID(),
+            'nickname' => 'TMP',
+         ]);
+         $this->boolean($update)->isTrue();
+         $this->boolean($user->getFromDB($user->getID()))->isTrue();
+         $this->string($user->fields['nickname'])->isEqualTo('TMP');
+      }
+
+      $update = $user->update([
+         'id'       => $user->getID(),
+         'nickname' => $user_nick,
+      ]);
+      $this->boolean($update)->isTrue();
+      $this->boolean($user->getFromDB($user->getID()))->isTrue();
+      $this->string($user->fields['nickname'])->isEqualTo($user_nick);
+
+      // Build test ticket
+      $this->login('tech', 'tech');
+
+      //force set entity because $_SESSION['glpiactive_entity'] contains 0 without
+      //and break test from NotificationTargetCommonITILObject::getDataForObject()
+      //and fails to recover the configuration of the anonymization
+      $this->setEntity($entity->getID(), true);
+
+      $ticket = new Ticket();
+      $tickets_id = $ticket->add($input = [
+         'name'                 => 'test',
+         'content'              => 'test',
+         '_users_id_assign'     => getItemByTypeName('User', 'test_anon_user', true),
+         '_users_id_requester'  => getItemByTypeName('User', 'post-only', true),
+         'entities_id'          => $entity->getID(),
+         'users_id_recipient'   => getItemByTypeName('User', 'tech', true),
+         'users_id_lastupdater' => getItemByTypeName('User', 'tech', true),
+         // The default requesttype is "Helpdesk" and will mess up our tests,
+         // we need another one to be sure the "Helpdesk" string will only be
+         // printed by the anonymization code
+         'requesttypes_id'      => 4,
+      ]);
+      $this->integer($tickets_id)->isGreaterThan(0);
+
+      // Unset temporary fields that will not be found in tickets table
+      unset($input['_users_id_assign']);
+      unset($input['_users_id_requester']);
+
+      // Check expected fields and reload object from DB
+      $this->checkInput($ticket, $tickets_id, $input);
+
+      // Check linked users
+      $ticket_users = $DB->request([
+         'SELECT' => ['tickets_id', 'users_id', 'type'],
+         'FROM'   => Ticket_User::getTable(),
+         'WHERE'  => ['tickets_id' => $tickets_id],
+      ]);
+      $this->array(iterator_to_array($ticket_users))->isEqualTo([
+         0 => [
+            'tickets_id' => $tickets_id,
+            'users_id'   => getItemByTypeName('User', 'post-only', true),
+            'type'       => CommonITILActor::REQUESTER,
+         ],
+         1 => [
+            'tickets_id' => $tickets_id,
+            'users_id'   => getItemByTypeName('User', 'test_anon_user', true),
+            'type'       => CommonITILActor::ASSIGN,
+         ],
+      ]);
+
+      // Add followup to test ticket
+      $fup = new ITILFollowup();
+      $fup_id = $fup->add([
+         'content' => 'test',
+         'users_id' => getItemByTypeName('User', 'test_anon_user', true),
+         'users_id_editor' => getItemByTypeName('User', 'test_anon_user', true),
+         'itemtype' => 'Ticket',
+         'items_id' => $tickets_id,
+      ]);
+      $this->integer($fup_id)->isGreaterThan(0);
+
+      // Add solution to test ticket
+      $solution = new ITILSolution();
+      $solutions_id = $solution->add([
+         'content' => 'test',
+         'users_id' => getItemByTypeName('User', 'test_anon_user', true),
+         'users_id_editor' => getItemByTypeName('User', 'test_anon_user', true),
+         'itemtype' => 'Ticket',
+         'items_id' => $tickets_id,
+      ]);
+      $this->integer($solutions_id)->isGreaterThan(0);
+
+      // Save and replace session data
+      $old_interface = $_SESSION['glpiactiveprofile']['interface'];
+      $_SESSION['glpiactiveprofile']['interface'] = $interface;
+
+      // Case 1: removed (test values recovered from CommonITILObject::showUsersAssociated())
+
+      // Case 2: test values recovered from CommonITILObject:::showShort()
+      ob_start();
+      Ticket::showShort($tickets_id);
+      $html = ob_get_clean();
+
+      foreach ($possible_values as $value) {
+         if ($value == $expected) {
+            $this->string($html)->contains(
+               $value,
+               "Ticket showShort must contains '$value' in interface '$interface' with settings '$setting'"
+            );
+         } else {
+            $this->string($html)->notContains(
+               $value,
+               "Ticket form must not contains '$value' (expected '$expected') in interface '$interface' with settings '$setting'"
+            );
+         }
+      }
+
+      // Case 3: removed (timeline merged with main form)
+
+      // Case 4: test values recovered from NotificationTargetCommonITILObject::getDataForObject()
+      $notification = new NotificationTargetTicket();
+      $notif_data = $notification->getDataForObject($ticket, [
+         'additionnaloption' => [
+            'usertype' => NotificationTarget::GLPI_USER,
+            // Workaround to "simulate" different notification target and test
+            // this part more easily
+            'is_self_service' => $interface == 'helpdesk',
+         ]
+      ]);
+      foreach ($notif_data['followups'] as $n_fup) {
+         foreach ($possible_values as $value) {
+            if ($value == $expected) {
+               $this->string($n_fup['##followup.author##'])->contains($value);
+            } else {
+               $this->string($n_fup['##followup.author##'])->notContains($value);
+            }
+         }
+      }
+
+      // Case 5: test values recovered from Ticket::showForm()
+      ob_start();
+      $ticket->showForm($tickets_id);
+      $html = ob_get_clean();
+      // Drop answers form, as new validation form contains current user name
+      $html = preg_replace('/<div id="new-itilobject-form".*$/s', '', $html);
+
+      foreach ($possible_values as $value) {
+         if ($value == $expected) {
+            $this->string($html)->contains(
+               $value,
+               "Ticket form must contains '$value' in interface '$interface' with settings '$setting'"
+            );
+         } else {
+            $this->string($html)->notContains(
+               $value,
+               "Ticket form must not contains '$value' (expected '$expected') in interface '$interface' with settings '$setting'"
+            );
+         }
+      }
+
+      // Reset session
+      $_SESSION['glpiactiveprofile']['interface'] = $old_interface;
+   }
+
+   public function testDefaultContractConfig() {
+      $this->login();
+
+      $entity = new \Entity();
+      $ticket = new Ticket();
+      $ticket_contract = new Ticket_Contract();
+      $contract = new Contract();
+
+      // Create test entity
+      $entities_id = $entity->add([
+         'name'        => 'Test',
+         'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+      ]);
+      $this->integer($entities_id)->isGreaterThan(0);
+
+      // Create test contracts
+      $contracts_id_1 = $contract->add([
+         'name'        => 'test1',
+         'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+         'renewal'    => Contract::RENEWAL_TACIT,
+      ]);
+      $this->integer($contracts_id_1)->isGreaterThan(0);
+
+      $contracts_id_2 = $contract->add([
+         'name'        => 'test2',
+         'entities_id' => $entities_id,
+         'renewal'    => Contract::RENEWAL_TACIT,
+      ]);
+      $this->integer($contracts_id_2)->isGreaterThan(0);
+
+      // Test 1: no config
+      $tickets_id = $ticket->add([
+         'name'        => 'Test ticket 1',
+         'content'     => 'Test ticket 1',
+         'entities_id' => $entities_id,
+      ]);
+      $this->integer($tickets_id)->isGreaterThan(0);
+
+      // Case 1: no entity specified, no contract expected
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+
+      $links = $ticket_contract::getListForItem($ticket);
+      $this->integer(count($links))->isEqualTo(0);
+
+      // Test 2: Use specific contract
+      $res = $entity->update([
+         'id' => $entities_id,
+         'contracts_id_default' => $contracts_id_1,
+      ]);
+      $this->boolean($res)->isTrue();
+
+      // Case 1: no contract specified, specific default expected
+      $tickets_id = $ticket->add([
+         'name'        => 'Test ticket 1',
+         'content'     => 'Test ticket 1',
+         'entities_id' => $entities_id,
+      ]);
+      $this->integer($tickets_id)->isGreaterThan(0);
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+
+      $links = $ticket_contract::getListForItem($ticket);
+      $this->integer(count($links))->isEqualTo(1);
+      $link = $links->current();
+      $this->integer($link['id'])->isEqualTo($contracts_id_1);
+
+      // Case 2: contract specified, should not change
+      $tickets_id = $ticket->add([
+         'name'          => 'Test ticket 1',
+         'content'       => 'Test ticket 1',
+         'entities_id'   => $entities_id,
+         '_contracts_id' => $contracts_id_2,
+      ]);
+      $this->integer($tickets_id)->isGreaterThan(0);
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+
+      $links = $ticket_contract::getListForItem($ticket);
+      $this->integer(count($links))->isEqualTo(1);
+      $link = $links->current();
+      $this->integer($link['id'])->isEqualTo($contracts_id_2);
+
+      // Test 3: Use contract in current entity
+      $res = $entity->update([
+         'id' => $entities_id,
+         'contracts_id_default' => '-1',
+      ]);
+      $this->boolean($res)->isTrue();
+
+      // Case 1: root entity, expect no contract (no config for this entity)
+      $tickets_id_2 = $ticket->add([
+         'name'        => 'Test ticket 1',
+         'content'     => 'Test ticket 1',
+         'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+      ]);
+      $this->integer($tickets_id_2)->isGreaterThan(0);
+      $this->boolean($ticket->getFromDB($tickets_id_2))->isTrue();
+
+      $links = $ticket_contract::getListForItem($ticket);
+      $this->integer(count($links))->isEqualTo(0);
+
+      // Case 2: sub entity, expect contract 2
+      $tickets_id = $ticket->add([
+         'name'        => 'Test ticket 1',
+         'content'     => 'Test ticket 1',
+         'entities_id' => $entities_id,
+      ]);
+      $this->integer($tickets_id)->isGreaterThan(0);
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+
+      $links = $ticket_contract::getListForItem($ticket);
+      $this->integer(count($links))->isEqualTo(1);
+      $link = $links->current();
+      $this->integer($link['id'])->isEqualTo($contracts_id_2);
+
+      // Case 3: contract specified, should not change
+      $tickets_id = $ticket->add([
+         'name'          => 'Test ticket 1',
+         'content'       => 'Test ticket 1',
+         'entities_id'   => $entities_id,
+         '_contracts_id' => $contracts_id_1,
+      ]);
+      $this->integer($tickets_id)->isGreaterThan(0);
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+
+      $links = $ticket_contract::getListForItem($ticket);
+      $this->integer(count($links))->isEqualTo(1);
+      $link = $links->current();
+      $this->integer($link['id'])->isEqualTo($contracts_id_1);
    }
 }

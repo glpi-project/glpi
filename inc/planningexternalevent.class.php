@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
+use Glpi\Toolbox\RichText;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VTodo;
 
@@ -213,12 +214,14 @@ JAVASCRIPT;
          echo Html::hidden('day', ['value' => $options['start']]);
       }
       if ($canedit) {
-         Html::autocompletionTextField($this, "name", [
-            'size'   => '80',
-            'entity' => -1,
-            'user'   => $this->fields["users_id"],
-            'rand'   => $rand
-         ]);
+         echo Html::input(
+            'name',
+            [
+               'value' => $this->fields['name'],
+               'id'    => "textfield_name$rand",
+               'size'  => '80',
+            ]
+         );
       } else {
          echo $this->fields['name'];
       }
@@ -269,7 +272,7 @@ JAVASCRIPT;
 
       echo "<tr class='tab_bg_2'>";
       echo "<tr class='tab_bg_2'>";
-      echo "<td colspan='2'>".__('Category')."</td>";
+      echo "<td colspan='2'>"._n('Category', 'Categories', 1)."</td>";
       echo "<td colspan='2'>";
       if ($canedit) {
          PlanningEventCategory::dropdown([
@@ -323,15 +326,15 @@ JAVASCRIPT;
       if ($canedit) {
          Html::textarea([
             'name'              => 'text',
-            'value'             => $this->fields["text"],
+            'value'             => RichText::getSafeHtml($this->fields["text"], true, true),
             'enable_richtext'   => true,
             'enable_fileupload' => true,
             'rand'              => $rand,
             'editor_id'         => 'text'.$rand,
          ]);
       } else {
-         echo "<div>";
-         echo Toolbox::unclean_html_cross_side_scripting_deep($this->fields["text"]);
+         echo "<div class='rich_text_container'>";
+         echo RichText::getSafeHtml($this->fields["text"], true);
          echo "</div>";
       }
 
@@ -340,8 +343,14 @@ JAVASCRIPT;
       if ($is_ajax && $is_rrule) {
          $options['candel'] = false;
          $options['addbuttons'] = [
-            'purge'          => "<i class='fas fa-trash-alt'></i>&nbsp;".__("Delete serie"),
-            'purge_instance' => "<i class='far fa-trash-alt'></i>&nbsp;".__("Delete instance"),
+            'purge'          => [
+               'text' => __("Delete serie"),
+               'icon' => 'fas fa-trash-alt',
+            ],
+            'purge_instance' => [
+               'text' => __("Delete instance"),
+               'icon' => 'far fa-trash-alt',
+            ],
          ];
       }
 
@@ -418,13 +427,6 @@ JAVASCRIPT;
       if (!$this->canViewItem()) {
          return null;
       }
-
-      // Transform HTML text to plain text
-      $this->fields['text'] = Html::clean(
-         Toolbox::unclean_cross_side_scripting_deep(
-            $this->fields['text']
-         )
-      );
 
       $is_task = in_array($this->fields['state'], [Planning::DONE, Planning::TODO]);
       $is_planned = !empty($this->fields['begin']) && !empty($this->fields['end']);

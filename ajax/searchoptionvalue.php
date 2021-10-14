@@ -77,6 +77,15 @@ if (isset($_POST['searchtype'])) {
                   $searchopt['toadd'] = ['mygroups' => __('My groups')];
                   break;
 
+               case "glpi_users.name" :
+                  $searchopt['toadd'] = [
+                     [
+                        'id'    => 'myself',
+                        'text'  => __('Myself'),
+                     ]
+                  ];
+                  break;
+
                case "glpi_changes.status" :
                case "glpi_changes.impact" :
                case "glpi_changes.urgency" :

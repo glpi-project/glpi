@@ -49,8 +49,13 @@ class DBmysql {
    public $dbpassword         = "";
    //! Default Database
    public $dbdefault          = "";
-   //! Database Handler
-   private $dbh;
+
+   /**
+    * The database handler
+    * @var mysqli
+    */
+   protected $dbh;
+
    //! Database Error
    public $error              = 0;
 
@@ -105,6 +110,22 @@ class DBmysql {
     * @var string|null
     */
    public $dbsslcacipher      = null;
+
+   /**
+    * Determine if utf8mb4 should be used for DB connection and tables altering operations.
+    * Defaults to false to keep backward compatibility with old DB.
+    *
+    * @var bool
+    */
+   public $use_utf8mb4 = false;
+
+   /**
+    * Determine if warnings related to MySQL deprecations should be logged too.
+    * Defaults to false as this option should only on development/test environment.
+    *
+    * @var bool
+    */
+   public $log_deprecation_warnings = false;
 
 
    /** Is it a first connection ?
@@ -198,28 +219,12 @@ class DBmysql {
          $this->connected = false;
          $this->error     = 2;
       } else {
-         if (isset($this->dbenc)) {
-            Toolbox::deprecated('Usage of alternative DB connection encoding (`DB::$dbenc` property) is deprecated.');
-         }
-         $dbenc = isset($this->dbenc) ? $this->dbenc : "utf8";
-         $this->dbh->set_charset($dbenc);
-         if ($dbenc === "utf8") {
-            // The mysqli::set_charset function will make COLLATE to be defined to the default one for used charset.
-            //
-            // For 'utf8' charset, default one is 'utf8_general_ci',
-            // so we have to redefine it to 'utf8_unicode_ci'.
-            //
-            // If encoding used by connection is not the default one (i.e utf8), then we assume
-            // that we cannot be sure of used COLLATE and that using the default one is the best option.
-            $this->dbh->query("SET NAMES 'utf8' COLLATE 'utf8_unicode_ci';");
-         }
+         $this->setConnectionCharset();
 
          // force mysqlnd to return int and float types correctly (not as strings)
          $this->dbh->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
 
-         if (GLPI_FORCE_EMPTY_SQL_MODE) {
-            $this->dbh->query("SET SESSION sql_mode = ''");
-         }
+         $this->dbh->query("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
 
          $this->connected = true;
 
@@ -251,7 +256,7 @@ class DBmysql {
                   'context'   => 'core',
                   'name'      => 'timezone'
                 ]
-            ])->next();
+            ])->current();
          }
          $zone = !empty($conf_tz['value']) ? $conf_tz['value'] : date_default_timezone_get();
       }
@@ -299,6 +304,29 @@ class DBmysql {
          $TIMER->start();
       }
 
+      if (preg_match('/(ALTER|CREATE)\s+TABLE\s+/', $query)) {
+         $matches = [];
+         if ($this->use_utf8mb4 && preg_match('/(?<invalid>(utf8(_[^\';\s]+)?))[\';\s]/', $query, $matches)) {
+            trigger_error(
+               sprintf(
+                  'Usage of "%s" charset/collation detected, should be "%s"',
+                  $matches['invalid'],
+                  str_replace('utf8', 'utf8mb4', $matches['invalid'])
+               ),
+               E_USER_WARNING
+            );
+         } else if (!$this->use_utf8mb4 && preg_match('/(?<invalid>(utf8mb4(_[^\';\s]+)?))[\';\s]/', $query, $matches)) {
+            trigger_error(
+               sprintf(
+                  'Usage of "%s" charset/collation detected, should be "%s"',
+                  $matches['invalid'],
+                  str_replace('utf8mb4', 'utf8', $matches['invalid'])
+               ),
+               E_USER_WARNING
+            );
+         }
+      }
+
       $res = $this->dbh->query($query);
       if (!$res) {
          // no translation for error logs
@@ -323,6 +351,22 @@ class DBmysql {
          $DEBUG_SQL["times"][$SQL_TOTAL_REQUEST] = $TIME;
          $DEBUG_SQL['rows'][$SQL_TOTAL_REQUEST] = $this->affectedRows();
       }
+
+      if (!empty($warnings = $this->getWarnings())) {
+         // Output warnings in SQL log
+         $message = sprintf(
+            "  *** MySQL query warnings:\n  SQL: %s\n  Warnings: \n%s\n",
+            $query,
+            implode("\n", $warnings)
+         );
+         $message .= Toolbox::backtrace(false, 'DBmysql->query()', ['Toolbox::backtrace()']);
+         Toolbox::logSqlWarning($message);
+
+         if (($error_handler = $GLPI->getErrorHandler()) instanceof ErrorHandler) {
+            $error_handler->handleSqlWarnings($warnings, $query);
+         }
+      }
+
       if ($this->execution_time === true) {
          $this->execution_time = $TIMER->getTime(0, true);
       }
@@ -381,7 +425,7 @@ class DBmysql {
 
          Toolbox::logInFile("sql-errors", $error);
          if (class_exists('GlpitestSQLError')) { // For unit test
-            throw new GlpitestSQLError($error);
+            throw new \GlpitestSQLError($error);
          }
 
          if (isset($_SESSION['glpi_use_mode'])
@@ -430,21 +474,6 @@ class DBmysql {
     * @param mysqli_result $result MySQL result handler
     *
     * @return string[]|null array results
-    *
-    * @deprecated 9.5.0
-    */
-   function fetch_array($result) {
-      Toolbox::deprecated('Use DBmysql::fetchArray()');
-      return $this->fetchArray($result);
-   }
-
-   /**
-    * Fetch array of the next row of a Mysql query
-    * Please prefer fetchRow or fetchAssoc
-    *
-    * @param mysqli_result $result MySQL result handler
-    *
-    * @return string[]|null array results
     */
    function fetchArray($result) {
       return $result->fetch_array();
@@ -456,37 +485,9 @@ class DBmysql {
     * @param mysqli_result $result MySQL result handler
     *
     * @return mixed|null result row
-    *
-    * @deprecated 9.5.0
-    */
-   function fetch_row($result) {
-      Toolbox::deprecated('Use DBmysql::fetchRow()');
-      return $this->fetchRow($result);
-   }
-
-   /**
-    * Fetch row of the next row of a Mysql query
-    *
-    * @param mysqli_result $result MySQL result handler
-    *
-    * @return mixed|null result row
     */
    function fetchRow($result) {
       return $result->fetch_row();
-   }
-
-   /**
-    * Fetch assoc of the next row of a Mysql query
-    *
-    * @param mysqli_result $result MySQL result handler
-    *
-    * @return string[]|null result associative array
-    *
-    * @deprecated 9.5.0
-    */
-   function fetch_assoc($result) {
-      Toolbox::deprecated('Use DBmysql::fetchAssoc()');
-      return $this->fetchAssoc($result);
    }
 
    /**
@@ -507,35 +508,8 @@ class DBmysql {
     *
     * @return object|null
     */
-   function fetch_object($result) {
-      Toolbox::deprecated('Use DBmysql::fetchObject()');
-      return $this->fetchObject();
-   }
-
-   /**
-    * Fetch object of the next row of an SQL query
-    *
-    * @param mysqli_result $result MySQL result handler
-    *
-    * @return object|null
-    */
    function fetchObject($result) {
       return $result->fetch_object();
-   }
-
-   /**
-    * Move current pointer of a Mysql result to the specific row
-    *
-    * @deprecated 9.5.0
-    *
-    * @param mysqli_result $result MySQL result handler
-    * @param integer       $num    Row to move current pointer
-    *
-    * @return boolean
-    */
-   function data_seek($result, $num) {
-      Toolbox::deprecated('Use DBmysql::dataSeek()');
-      return $this->dataSeek($result, $num);
    }
 
    /**
@@ -550,19 +524,6 @@ class DBmysql {
       return $result->data_seek($num);
    }
 
-
-   /**
-    * Give ID of the last inserted item by Mysql
-    *
-    * @return mixed
-    *
-    * @deprecated 9.5.0
-    */
-   function insert_id() {
-      Toolbox::deprecated('Use DBmysql::insertId()');
-      return $this->insertId();
-   }
-
    /**
     * Give ID of the last inserted item by Mysql
     *
@@ -570,20 +531,6 @@ class DBmysql {
     */
    function insertId() {
       return $this->dbh->insert_id;
-   }
-
-   /**
-    * Give number of fields of a Mysql result
-    *
-    * @deprecated 9.5.0
-    *
-    * @param mysqli_result $result MySQL result handler
-    *
-    * @return int number of fields
-    */
-   function num_fields($result) {
-      Toolbox::deprecated('Use DBmysql::numFields()');
-      return $this->numFields($result);
    }
 
    /**
@@ -597,7 +544,6 @@ class DBmysql {
       return $result->field_count;
    }
 
-
    /**
     * Give name of a field of a Mysql result
     *
@@ -605,23 +551,6 @@ class DBmysql {
     * @param integer       $nb     ID of the field
     *
     * @return string name of the field
-    *
-    * @deprecated 9.5.0
-    */
-   function field_name($result, $nb) {
-      Toolbox::deprecated('Use DBmysql::fieldName()');
-      return $this->fieldName($result, $nb);
-   }
-
-   /**
-    * Give name of a field of a Mysql result
-    *
-    * @param mysqli_result $result MySQL result handler
-    * @param integer       $nb     ID of the field
-    *
-    * @return string name of the field
-    *
-    * @deprecated 9.5.0
     */
    function fieldName($result, $nb) {
       $finfo = $result->fetch_fields();
@@ -661,18 +590,61 @@ class DBmysql {
    }
 
    /**
-    * List fields of a table
+    * Returns tables not using "utf8mb4_unicode_ci" collation.
     *
-    * @param string  $table    Table name condition
-    * @param boolean $usecache If use field list cache (default true)
-    *
-    * @return mixed list of fields
-    *
-    * @deprecated 9.5.0
+    * @return DBmysqlIterator
     */
-   function list_fields($table, $usecache = true) {
-       Toolbox::deprecated('Use DBmysql::listFields()');
-      return $this->listFields($table, $usecache);
+   public function getNonUtf8mb4Tables(): DBmysqlIterator {
+
+      // Find tables that does not use utf8mb4 collation
+      $tables_query = [
+         'SELECT'     => ['information_schema.tables.table_name as TABLE_NAME'],
+         'DISTINCT'   => true,
+         'FROM'       => 'information_schema.tables',
+         'WHERE'     => [
+            'information_schema.tables.table_schema' => $this->dbdefault,
+            'information_schema.tables.table_name'   => ['LIKE', 'glpi\_%'],
+            'information_schema.tables.table_type'    => 'BASE TABLE',
+            ['NOT' => ['information_schema.tables.table_collation' => 'utf8mb4_unicode_ci']],
+         ],
+      ];
+
+      // Find columns that does not use utf8mb4 collation
+      $columns_query = [
+         'SELECT'     => ['information_schema.columns.table_name as TABLE_NAME'],
+         'DISTINCT'   => true,
+         'FROM'       => 'information_schema.columns',
+         'INNER JOIN' => [
+            'information_schema.tables' => [
+               'FKEY' => [
+                  'information_schema.tables'  => 'table_name',
+                  'information_schema.columns' => 'table_name',
+                  [
+                     'AND' => [
+                        'information_schema.tables.table_schema' => new QueryExpression(
+                           $this->quoteName('information_schema.columns.table_schema')
+                        ),
+                     ]
+                  ],
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'information_schema.tables.table_schema' => $this->dbdefault,
+            'information_schema.tables.table_name'   => ['LIKE', 'glpi\_%'],
+            'information_schema.tables.table_type'    => 'BASE TABLE',
+            ['NOT' => ['information_schema.columns.collation_name' => null]],
+            ['NOT' => ['information_schema.columns.collation_name' => 'utf8mb4_unicode_ci']]
+         ],
+      ];
+
+      $iterator = $this->request([
+         'SELECT'   => ['TABLE_NAME'],
+         'DISTINCT' => true,
+         'FROM'     => new QueryUnion([$tables_query, $columns_query], true),
+      ]);
+
+      return $iterator;
    }
 
    /**
@@ -721,36 +693,9 @@ class DBmysql {
     * Get number of affected rows in previous MySQL operation
     *
     * @return int number of affected rows on success, and -1 if the last query failed.
-    *
-    * @deprecated 9.5.0
-    */
-   function affected_rows() {
-      Toolbox::deprecated('Use DBmysql::affectedRows()');
-      return $this->affectedRows();
-   }
-
-   /**
-    * Get number of affected rows in previous MySQL operation
-    *
-    * @return int number of affected rows on success, and -1 if the last query failed.
     */
    function affectedRows() {
       return $this->dbh->affected_rows;
-   }
-
-
-   /**
-    * Free result memory
-    *
-    * @param mysqli_result $result MySQL result handler
-    *
-    * @return boolean
-    *
-    * @deprecated 9.5.0
-    */
-   function free_result($result) {
-      Toolbox::deprecated('Use DBmysql::freeResult()');
-      return $this->freeResult($result);
    }
 
    /**
@@ -890,7 +835,7 @@ class DBmysql {
       $ret = [];
       $req = $this->request("SELECT @@sql_mode as mode, @@version AS vers, @@version_comment AS stype");
 
-      if (($data = $req->next())) {
+      if (($data = $req->current())) {
          if ($data['stype']) {
             $ret['Server Software'] = $data['stype'];
          }
@@ -909,32 +854,6 @@ class DBmysql {
       $ret['Host info']  = $this->dbh->host_info;
 
       return $ret;
-   }
-
-   /**
-    * Is MySQL strict mode ?
-    *
-    * @var DB $DB
-    *
-    * @param string $msg Mode
-    *
-    * @return boolean
-    *
-    * @since 0.90
-    * @deprecated 9.5.0
-    */
-   static public function isMySQLStrictMode(&$msg) {
-      Toolbox::deprecated();
-      global $DB;
-
-      $msg = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ZERO_DATE,NO_ZERO_IN_DATE,ONLY_FULL_GROUP_BY,NO_AUTO_CREATE_USER';
-      $req = $DB->request("SELECT @@sql_mode as mode");
-      if (($data = $req->next())) {
-         return (preg_match("/STRICT_TRANS/", $data['mode'])
-                 && preg_match("/NO_ZERO_/", $data['mode'])
-                 && preg_match("/ONLY_FULL_GROUP_BY/", $data['mode']));
-      }
-      return false;
    }
 
    /**
@@ -997,7 +916,7 @@ class DBmysql {
 
       $result = $this->listTables($retrieve_all ? 'glpi\_%' : $tablename);
       $found_tables = [];
-      while ($data = $result->next()) {
+      foreach ($result as $data) {
          $found_tables[] = $data['TABLE_NAME'];
       }
 
@@ -1410,94 +1329,48 @@ class DBmysql {
 
 
    /**
-    * Get table schema
+    * Truncate table in the database
     *
-    * @param string $table Table name,
-    * @param string|null $structure Raw table structure
+    * @since 10.0.0
     *
-    * @return array
+    * @param string $table  Table name
+    *
+    * @return mysqli_result|boolean Query result handler
     */
-   public function getTableSchema($table, $structure = null) {
-      if ($structure === null) {
-         $structure = $this->query("SHOW CREATE TABLE `$table`")->fetch_row();
-         $structure = $structure[1];
-      }
+   public function truncate($table) {
+      $table_name = $this::quoteName($table);
+      return $this->query("TRUNCATE $table_name");
+   }
 
-      //get table index
-      $index = preg_grep(
-         "/^\s\s+?KEY/",
-         array_map(
-            function($idx) { return rtrim($idx, ','); },
-            explode("\n", $structure)
-         )
-      );
-      //get table schema, without index, without AUTO_INCREMENT
-      $structure = preg_replace(
-         [
-            "/\s\s+KEY .*/",
-            "/AUTO_INCREMENT=\d+ /"
-         ],
-         "",
-         $structure
-      );
-      $structure = preg_replace('/,(\s)?$/m', '', $structure);
-      $structure = preg_replace('/ COMMENT \'(.+)\'/', '', $structure);
-
-      $structure = str_replace(
-         [
-            " COLLATE utf8_unicode_ci",
-            " CHARACTER SET utf8",
-            ', ',
-         ], [
-            '',
-            '',
-            ',',
-         ],
-         trim($structure)
-      );
-
-      //do not check engine nor collation
-      $structure = preg_replace(
-         '/\) ENGINE.*$/',
-         '',
-         $structure
-      );
-
-      //Mariadb 10.2 will return current_timestamp()
-      //while older retuns CURRENT_TIMESTAMP...
-      $structure = preg_replace(
-         '/ CURRENT_TIMESTAMP\(\)/i',
-         ' CURRENT_TIMESTAMP',
-         $structure
-      );
-
-      //Mariadb 10.2 allow default values on longblob, text and longtext
-      $defaults = [];
-      preg_match_all(
-         '/^.+ (longblob|text|longtext) .+$/m',
-         $structure,
-         $defaults
-      );
-      if (count($defaults[0])) {
-         foreach ($defaults[0] as $line) {
-               $structure = str_replace(
-                  $line,
-                  str_replace(' DEFAULT NULL', '', $line),
-                  $structure
-               );
+   /**
+    * Truncate table in the database or die
+    * (optionally with a message) if it fails
+    *
+    * @since 10.0.0
+    *
+    * @param string $table   Table name
+    * @param string $message Explanation of query (default '')
+    *
+    * @return mysqli_result|boolean Query result handler
+    */
+   function truncateOrDie($table, $message = '') {
+      $table_name = $this::quoteName($table);
+      $res = $this->query("TRUNCATE $table_name");
+      if (!$res) {
+         //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
+         $message = sprintf(
+            __('%1$s - Error during the database query: %2$s - Error is %3$s'),
+            $message,
+            "TRUNCATE $table",
+            $this->error()
+         );
+         if (isCommandLine()) {
+            throw new \RuntimeException($message);
          }
+         echo $message . "\n";
+         die(1);
       }
-
-      $structure = preg_replace("/(DEFAULT) ([-|+]?\d+)(\.\d+)?/", "$1 '$2$3'", $structure);
-      //$structure = preg_replace("/(DEFAULT) (')?([-|+]?\d+)(\.\d+)(')?/", "$1 '$3'", $structure);
-      $structure = preg_replace('/(BIGINT)\(\d+\)/i', '$1', $structure);
-      $structure = preg_replace('/(TINYINT) /i', '$1(4) ', $structure);
-
-      return [
-         'schema' => strtolower($structure),
-         'index'  => $index
-      ];
-
+      return $res;
    }
 
    /**
@@ -1506,7 +1379,7 @@ class DBmysql {
     * @return string
     */
    public function getVersion() {
-      $req = $this->request('SELECT version()')->next();
+      $req = $this->request('SELECT version()')->current();
       $raw = $req['version()'];
       return $raw;
    }
@@ -1517,8 +1390,23 @@ class DBmysql {
     * @return boolean
     */
    public function beginTransaction() {
+      if ($this->in_transaction === true) {
+         Toolbox::logError('A database transaction has already been started!');
+      }
       $this->in_transaction = true;
       return $this->dbh->begin_transaction();
+   }
+
+   public function setSavepoint(string $name, $force = false) {
+      if (!$this->in_transaction && $force) {
+         $this->beginTransaction();
+      }
+      if ($this->in_transaction) {
+         $this->dbh->savepoint($name);
+      } else {
+         // Not already in transaction or failed to start one now
+         Toolbox::logError('Unable to set DB savepoint because no transaction was started');
+      }
    }
 
    /**
@@ -1532,13 +1420,22 @@ class DBmysql {
    }
 
    /**
-    * Rollbacks a transaction
+    * Rollbacks a transaction completely or to a specified savepoint
     *
     * @return boolean
     */
-   public function rollBack() {
-      $this->in_transaction = false;
-      return $this->dbh->rollback();
+   public function rollBack($savepoint = null) {
+      if (!$savepoint) {
+         $this->in_transaction = false;
+         $this->dbh->rollback();
+      } else {
+         $this->rollbackTo($savepoint);
+      }
+   }
+
+   protected function rollbackTo($name) {
+      // No proper rollback to savepoint support in mysqli extension?
+      $this->query('ROLLBACK TO '.self::quoteName($name));
    }
 
    /**
@@ -1560,6 +1457,13 @@ class DBmysql {
     * @since 9.5.0
     */
    public function areTimezonesAvailable(string &$msg = '') {
+      global $GLPI_CACHE;
+
+      if ($GLPI_CACHE->has('are_timezones_available')) {
+         return $GLPI_CACHE->get('are_timezones_available');
+      }
+      $GLPI_CACHE->set('are_timezones_available', false, DAY_TIMESTAMP);
+
       $mysql_db_res = $this->request('SHOW DATABASES LIKE ' . $this->quoteValue('mysql'));
       if ($mysql_db_res->count() === 0) {
          $msg = __('Access to timezone database (mysql) is not allowed.');
@@ -1582,12 +1486,13 @@ class DBmysql {
          'FROM'   => 'mysql.time_zone_name',
       ];
       $iterator = $this->request($criteria);
-      $result = $iterator->next();
+      $result = $iterator->current();
       if ($result['cpt'] == 0) {
          $msg = __('Timezones seems not loaded, see https://glpi-install.readthedocs.io/en/latest/timezones.html.');
          return false;
       }
 
+      $GLPI_CACHE->set('are_timezones_available', true);
       return true;
    }
 
@@ -1627,7 +1532,7 @@ class DBmysql {
          'WHERE'  => ['Name' => $from_php]
       ]);
 
-      while ($from_mysql = $iterator->next()) {
+      foreach ($iterator as $from_mysql) {
          $now->setTimezone(new \DateTimeZone($from_mysql['Name']));
          $list[$from_mysql['Name']] = $from_mysql['Name'] . $now->format(" (T P)");
       }
@@ -1653,7 +1558,7 @@ class DBmysql {
               'information_schema.columns.table_name'   => ['LIKE', 'glpi\_%'],
               'information_schema.columns.data_type'    => ['datetime']
            ]
-       ])->next();
+       ])->current();
        return (int)$result['cpt'];
    }
 
@@ -1776,5 +1681,49 @@ class DBmysql {
          }
       }
       return trim($this->removeSqlComments($output));
+   }
+
+   /**
+    * Get MySQL warnings.
+    *
+    * @return string[]
+    */
+   private function getWarnings() {
+      $warnings = [];
+
+      if ($this->dbh->warning_count > 0 && $warnings_result = $this->dbh->query('SHOW WARNINGS')) {
+         // Warnings to exclude
+         $excludes = [];
+
+         if (!$this->use_utf8mb4 || !$this->log_deprecation_warnings) {
+            // Exclude warnings related to usage of "utf8mb3" charset, as database has not been migrated yet.
+            $excludes[] = 1287; // 'utf8mb3' is deprecated and will be removed in a future release. Please use utf8mb4 instead.
+            $excludes[] = 3719; // 'utf8' is currently an alias for the character set UTF8MB3, but will be an alias for UTF8MB4 in a future release. Please consider using UTF8MB4 in order to be unambiguous.
+            $excludes[] = 3778; // 'utf8_unicode_ci' is a collation of the deprecated character set UTF8MB3. Please consider using UTF8MB4 with an appropriate collation instead.
+         }
+         if (!$this->log_deprecation_warnings) {
+            // Mute deprecations related to elements that are heavilly used in old migrations and in plugins
+            // as it may require a lot of work to fix them.
+            $excludes[] = 1681; // Integer display width is deprecated and will be removed in a future release.
+         }
+
+         while ($warning = $warnings_result->fetch_assoc()) {
+            if ($warning['Level'] === 'Note' || in_array($warning['Code'], $excludes)) {
+               continue;
+            }
+            $warnings[] = sprintf('%s: %s', $warning['Code'], $warning['Message']);
+         }
+      }
+
+      return $warnings;
+   }
+
+   /**
+    * Set charset to use for DB connection.
+    *
+    * @return void
+    */
+   public function setConnectionCharset(): void {
+      DBConnection::setConnectionCharset($this->dbh, $this->use_utf8mb4);
    }
 }

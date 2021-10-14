@@ -59,7 +59,7 @@ class DCRoom extends CommonDBTM {
          ->addStandardTab('Infocom', $ong, $options)
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
-         ->addStandardTab('Link', $ong, $options)
+         ->addStandardTab('ManualLink', $ong, $options)
          ->addStandardTab('Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
@@ -77,7 +77,13 @@ class DCRoom extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='textfield_name$rand'>".__('Name')."</label></td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name", ['rand' => $rand]);
+      echo Html::input(
+         'name',
+         [
+            'value' => $this->fields['name'],
+            'id'    => "textfield_name$rand",
+         ]
+      );
       echo "</td>";
 
       echo "<td><label for='dropdown_locations_id$rand'>".Location::getTypeName(1)."</label></td>";
@@ -99,7 +105,7 @@ class DCRoom extends CommonDBTM {
          'FROM'   => Datacenter::getTable()
       ]);
       $datacenters_list = [];
-      while ($row = $datacenters->next()) {
+      foreach ($datacenters as $row) {
          $datacenters_list[$row['id']] = $row['name'];
       }
       Dropdown::showFromArray(
@@ -236,7 +242,6 @@ class DCRoom extends CommonDBTM {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false, // implicit key==1
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -400,7 +405,7 @@ class DCRoom extends CommonDBTM {
 
          $dcroom = new self();
          echo $header;
-         while ($room = $rooms->next()) {
+         foreach ($rooms as $room) {
             $dcroom->getFromResultSet($room);
             echo "<tr lass='tab_bg_1'>";
             if ($canedit) {
@@ -443,7 +448,7 @@ class DCRoom extends CommonDBTM {
       ]);
 
       $filled = [];
-      while ($rack = $iterator->next()) {
+      foreach ($iterator as $rack) {
          if (preg_match('/(\d+),\s?(\d+)/', $rack['position'])) {
             $position = $rack['position'];
             if (empty($current) || $current != $position) {
@@ -472,5 +477,9 @@ class DCRoom extends CommonDBTM {
          }
       }
       return $positions;
+   }
+
+   static function getIcon() {
+      return "fas fa-building";
    }
 }

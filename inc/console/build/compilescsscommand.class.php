@@ -95,7 +95,9 @@ class CompileScssCommand extends Command {
          );
          /** @var \SplFileInfo $file */
          foreach ($css_dir_iterator as $file) {
-            if (!$file->isReadable() || !$file->isFile() || $file->getExtension() !== 'scss') {
+            if (!$file->isReadable() || !$file->isFile() || $file->getExtension() !== 'scss'
+                || preg_match('/^' . preg_quote(GLPI_ROOT . '/css/lib/', '/') . '/', $file->getPath()) === 1
+                || preg_match('/^_/', $file->getBasename()) === 1) {
                continue;
             }
 
@@ -104,6 +106,8 @@ class CompileScssCommand extends Command {
                . preg_replace('/^_?(.*)\.scss$/', '$1', $file->getBasename());
          }
       }
+
+      $lincence_header = $this->getLicenceHeaderString();
 
       foreach ($files as $file) {
          $output->writeln(
@@ -118,6 +122,8 @@ class CompileScssCommand extends Command {
                'nocache' => true,
             ]
          );
+
+         $css = $lincence_header . $css;
 
          if (strlen($css) === @file_put_contents($compiled_path, $css)) {
             $message = sprintf('"%s" compiled successfully in "%s".', $file, $compiled_path);
@@ -136,5 +142,29 @@ class CompileScssCommand extends Command {
       }
 
       return 0; // Success
+   }
+
+   /**
+    * Get lincence header string.
+    *
+    * @return string
+    */
+   private function getLicenceHeaderString(): string {
+      // Extract header lines
+      $lines = file(GLPI_ROOT . '/tools/HEADER');
+
+      // Add * prefix on all lines
+      $lines = array_map(
+         function ($line) {
+            $line_prefix = ' * ';
+            return (preg_match('/^\s+$/', $line) ? rtrim($line_prefix) : $line_prefix) . $line;
+         },
+         $lines
+      );
+
+      // Surround by opening and closing lines
+      $lines = array_merge(["/**\n"], $lines, [" */\n\n"]);
+
+      return implode($lines);
    }
 }

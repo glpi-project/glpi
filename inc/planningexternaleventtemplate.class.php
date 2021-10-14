@@ -63,7 +63,7 @@ class PlanningExternalEventTemplate extends CommonDropdown {
             'type'  => 'planningstate',
          ], [
             'name'  => 'planningeventcategories_id',
-            'label' => __('Category'),
+            'label' => _n('Category', 'Categories', 1),
             'type'  => 'dropdownValue',
             'list'  => true
          ], [
@@ -87,11 +87,13 @@ class PlanningExternalEventTemplate extends CommonDropdown {
    }
 
 
-   function displaySpecificTypeField($ID, $field = []) {
+   function displaySpecificTypeField($ID, $field = [], array $options = []) {
 
       switch ($field['type']) {
          case 'planningstate' :
-            Planning::dropdownState("state", $this->fields["state"]);
+            Planning::dropdownState("state", $this->fields["state"], false, [
+               'width' => '100%',
+            ]);
             break;
 
          case 'plan' :
@@ -171,5 +173,9 @@ class PlanningExternalEventTemplate extends CommonDropdown {
 
    function rawSearchOptions() {
       return $this->trait_rawSearchOptions();
+   }
+
+   static function getIcon() {
+      return "fas fa-layer-group";
    }
 }

@@ -39,13 +39,12 @@ if (!defined('GLPI_ROOT')) {
 use Auth;
 use Plugin;
 use Session;
-use User;
-
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
+use User;
 
 class InstallCommand extends AbstractPluginCommand {
 
@@ -158,7 +157,7 @@ class InstallCommand extends AbstractPluginCommand {
 
    protected function getDirectoryChoiceQuestion() {
 
-      return __('Which plugin(s) do you want to install (comma separated values) ?');
+      return __('Which plugin(s) do you want to install (comma separated values)?');
    }
 
    protected function getDirectoryChoiceChoices() {
@@ -230,7 +229,7 @@ class InstallCommand extends AbstractPluginCommand {
          $_SESSION['glpi_use_mode'] = $session_use_mode;
          Session::loadLanguage();
       } else {
-         throw new InvalidArgumentException(
+         throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
             __('User name defined by --username option is invalid.')
          );
       }

@@ -31,7 +31,7 @@
  */
 
 define('GLPI_CONFIG_DIR', __DIR__ . '/config');
-define('GLPI_PICTURE_DIR', __DIR__ . '/files/_pictures');
+define('GLPI_VAR_DIR', __DIR__ . '/files');
 
 define(
    'PLUGINS_DIRECTORIES',

@@ -75,7 +75,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
          $send              = [];
          $send["tablename"] = $this->item_table;
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             if (!($i % $step)) {
                if (isCommandLine()) {
                   //TRANS: %1$s is a row, %2$s is total rows
@@ -184,7 +184,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
          $step    = (($nb > 20) ? floor($nb/20) : 1);
          $tocheck = [];
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             if (!($i % $step)) {
 
                if (isCommandLine()) {
@@ -239,7 +239,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
                'COUNT'  => 'cpt',
                'FROM'   => $model_table,
                'WHERE'  => [$model_field => $ID]
-            ])->next();
+            ])->current();
 
             $deletecartmodel  = false;
 
@@ -264,7 +264,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
                if (count($iterator2)) {
                   // Get compatible cartridge type
                   $carttype = [];
-                  while ($data = $iterator2->next()) {
+                  foreach ($iterator2 as $data) {
                      $carttype[] = $data['cartridgeitems_id'];
                   }
                   // Delete cartrodges_assoc

@@ -28,7 +28,7 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-* */
+ */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -122,7 +122,7 @@ class NetworkAlias extends FQDNLabel {
       }
       $this->displayRecursiveItems($recursiveItems, "Link");
       echo "</td><td>" . __('Name') . "</td><td>\n";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -134,7 +134,7 @@ class NetworkAlias extends FQDNLabel {
                            'displaywith'  => ['view']]);
       echo "</td>";
       echo "<td>".__('Comments')."</td>";
-      echo "<td><textarea cols='45' rows='4' name='comment' >".$this->fields["comment"];
+      echo "<td><textarea class='form-control' rows='4' name='comment' >".$this->fields["comment"];
       echo "</textarea></td>\n";
       echo "</tr>\n";
 
@@ -217,7 +217,7 @@ class NetworkAlias extends FQDNLabel {
          'WHERE'  => ['networknames_id' => $item->getID()]
       ]);
 
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          if ($alias->getFromDB($line["id"])) {
 
             if ($createRow) {
@@ -259,7 +259,7 @@ class NetworkAlias extends FQDNLabel {
       $number = count($iterator);
 
       $aliases = [];
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          $aliases[$line["id"]] = $line;
       }
 
@@ -275,7 +275,7 @@ class NetworkAlias extends FQDNLabel {
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
          echo "</script>";
-         echo "<a class='vsubmit' href='javascript:viewAddAlias$rand();'>";
+         echo "<a class='btn btn-primary' href='javascript:viewAddAlias$rand();'>";
          echo __('Add a network alias')."</a>\n";
          echo "</div>\n";
       }
@@ -425,7 +425,7 @@ class NetworkAlias extends FQDNLabel {
             'START'     => $start
          ]);
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             Session::addToNavigateListItems($alias->getType(), $data["alias_id"]);
             if ($address->getFromDB($data["address_id"])) {
                echo "<tr class='tab_bg_1'>";

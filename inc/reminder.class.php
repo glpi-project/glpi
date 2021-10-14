@@ -36,8 +36,8 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
+use Glpi\Toolbox\RichText;
 use Sabre\VObject\Component\VCalendar;
-use Sabre\VObject\Component\VJournal;
 use Sabre\VObject\Component\VTodo;
 
 /**
@@ -359,7 +359,6 @@ class Reminder extends CommonDBVisible implements
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
          'forcegroupby'       => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -577,11 +576,6 @@ class Reminder extends CommonDBVisible implements
       $rand = mt_rand();
 
       // Show Reminder or blank form
-      $onfocus = "";
-      if (!$ID > 0) {
-         // Create item : do getempty before check right to set default values
-         $onfocus="onfocus=\"if (this.value=='".$this->fields['name']."') this.value='';\"";
-      }
 
       $canedit = $this->can($ID, UPDATE);
 
@@ -593,11 +587,13 @@ class Reminder extends CommonDBVisible implements
          echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>\n";
       }
       if ($canedit) {
-         Html::autocompletionTextField($this, "name",
-                                       ['size'   => '80',
-                                             'entity' => -1,
-                                             'user'   => $this->fields["users_id"],
-                                             'option' => $onfocus]);
+         echo Html::input(
+            'name',
+            [
+               'value'   => $this->fields['name'],
+               'size'    => '80',
+            ]
+         );
       } else {
          echo $this->fields['name'];
       }
@@ -681,7 +677,7 @@ class Reminder extends CommonDBVisible implements
                                                         Planning::READALL])) {
 
                echo "<div id='plan$rand' onClick='showPlan$rand()'>\n";
-               echo "<a href='#' class='vsubmit'>".__('Add to schedule')."</a>";
+               echo "<a href='#' class='btn btn-primary'>".__('Add to schedule')."</a>";
             }
 
          } else {
@@ -725,12 +721,12 @@ class Reminder extends CommonDBVisible implements
 
       if ($canedit) {
          Html::textarea(['name'              => 'text',
-                         'value'             => $this->fields["text"],
+                         'value'             => RichText::getSafeHtml($this->fields["text"], true, true),
                          'enable_richtext'   => true,
                          'enable_fileupload' => true]);
       } else {
-         echo "<div  id='kbanswer'>";
-         echo Toolbox::unclean_html_cross_side_scripting_deep($this->fields["text"]);
+         echo "<div class='rich_text_container'>";
+         echo RichText::getSafeHtml($this->fields["text"], true);
          echo "</div>";
       }
 
@@ -804,11 +800,12 @@ class Reminder extends CommonDBVisible implements
    /**
     * Show list for central view
     *
-    * @param $personal boolean : display reminders created by me ? (true by default)
+    * @param $personal boolean  : display reminders created by me ?
+    * @param $personal $display : if false return html
     *
     * @return void
     **/
-   static function showListForCentral($personal = true) {
+   static function showListForCentral(bool $personal = true, bool $display = true) {
       global $DB, $CFG_GLPI;
 
       $users_id = Session::getLoginUserID();
@@ -902,25 +899,28 @@ class Reminder extends CommonDBVisible implements
       $iterator = $DB->request($criteria);
       $nb = count($iterator);
 
-      echo "<br><table class='tab_cadrehov'>";
-      echo "<tr class='noHover'><th><div class='relative'><span>$titre</span>";
+      $output = "";
+      $output.= "<table class='table table-striped card-table table-hover'>";
+      $output.= "<thead>";
+      $output.= "<tr class='noHover'><th><div class='relative'><span>$titre</span>";
+      $output.= "</thead>";
 
       if (($personal && self::canCreate())
         || (!$personal && Session::haveRight(self::$rightname, CREATE))) {
-         echo "<span class='floatright'>";
-         echo "<a href='".Reminder::getFormURL()."'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."'
+         $output.=  "<span class='float-end'>";
+         $output.=  "<a href='".Reminder::getFormURL()."'>";
+         $output.=  "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."'
                 title=\"". __s('Add')."\"></a></span>";
       }
 
-      echo "</div></th></tr>\n";
+      $output.= "</div></th></tr>";
 
       if ($nb) {
          $rand = mt_rand();
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
 
-            echo "<tr class='tab_bg_2'><td>";
+            $output.= "<tr><td>";
             $name = $data['name'];
 
             if (isset($data['transname']) && !empty($data['transname'])) {
@@ -933,29 +933,34 @@ class Reminder extends CommonDBVisible implements
             if (isset($data['transtext']) && !empty($data['transtext'])) {
                $text = $data['transtext'];
             }
-            $tooltip = Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($text),
+            $tooltip = Html::showToolTip(RichText::getSafeHtml($text, true),
                                          ['applyto' => "content_reminder_".$data["id"].$rand,
                                           'display' => false]);
-            printf(__('%1$s %2$s'), $link, $tooltip);
+            $output.= sprintf(__('%1$s %2$s'), $link, $tooltip);
 
             if ($data["is_planned"]) {
                $tab      = explode(" ", $data["begin"]);
                $date_url = $tab[0];
-               echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url.
-                     "&amp;type=day' class='pointer floatright' title=\"".sprintf(__s('From %1$s to %2$s'),
+               $output.=  "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url.
+                     "&amp;type=day' class='pointer float-end' title=\"".sprintf(__s('From %1$s to %2$s'),
                                            Html::convDateTime($data["begin"]),
                                            Html::convDateTime($data["end"]))."\">";
-               echo "<i class='fa fa-bell'></i>";
-               echo "<pan class='sr-only'>" . __s('Planning') . "</span>";
-               echo "</a>";
+               $output.= "<i class='fa fa-bell'></i>";
+               $output.= "<pan class='sr-only'>" . __s('Planning') . "</span>";
+               $output.= "</a>";
             }
 
-            echo "</td></tr>\n";
+            $output.= "</td></tr>";
          }
 
       }
-      echo "</table>\n";
+      $output.= "</table>";
 
+      if ($display) {
+         echo $output;
+      } else {
+         return $output;
+      }
    }
 
    /**
@@ -1037,13 +1042,6 @@ class Reminder extends CommonDBVisible implements
       if (!$this->canViewItem()) {
          return null;
       }
-
-      // Transform HTML text to plain text
-      $this->fields['text'] = Html::clean(
-         Toolbox::unclean_cross_side_scripting_deep(
-            $this->fields['text']
-         )
-      );
 
       $is_task = in_array($this->fields['state'], [Planning::DONE, Planning::TODO]);
       $is_planned = !empty($this->fields['begin']) && !empty($this->fields['end']);

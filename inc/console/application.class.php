@@ -40,24 +40,23 @@ use Config;
 use DB;
 use GLPI;
 use Glpi\Application\ErrorHandler;
+use Glpi\Cache\CacheManager;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Console\Command\GlpiCommandInterface;
 use Glpi\System\RequirementsManager;
 use Plugin;
 use Session;
-use Toolbox;
-
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Exception\CommandNotFoundException;
-use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Output\OutputInterface;
+use Toolbox;
 
 class Application extends BaseApplication {
 
@@ -101,9 +100,9 @@ class Application extends BaseApplication {
       parent::__construct('GLPI CLI', GLPI_VERSION);
 
       $this->initApplication();
+      $this->initCache();
       $this->initDb();
       $this->initSession();
-      $this->initCache();
       $this->initConfig();
 
       $this->computeAndLoadOutputLang();
@@ -208,7 +207,7 @@ class Application extends BaseApplication {
       // Trigger error on invalid lang. This is not done before as error handler would not be set.
       $lang = $input->getParameterOption('--lang', null, true);
       if (null !== $lang && !array_key_exists($lang, $CFG_GLPI['languages'])) {
-         throw new RuntimeException(
+         throw new \Symfony\Component\Console\Exception\RuntimeException(
             sprintf(__('Invalid "--lang" option value "%s".'), $lang)
          );
       }
@@ -246,7 +245,12 @@ class Application extends BaseApplication {
          return self::ERROR_MISSING_REQUIREMENTS;
       }
 
-      $result = parent::doRunCommand($command, $input, $output);
+      try {
+         $result = parent::doRunCommand($command, $input, $output);
+      } catch (\Glpi\Console\Exception\EarlyExitException $e) {
+         $result = $e->getCode();
+         $output->writeln($e->getMessage(), OutputInterface::VERBOSITY_QUIET);
+      }
 
       if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE) {
          $output->writeln(
@@ -321,7 +325,7 @@ class Application extends BaseApplication {
       $checkdb = Config::displayCheckDbEngine();
       $message = ob_get_clean();
       if ($checkdb > 0) {
-         throw new RuntimeException($message);
+         throw new \Symfony\Component\Console\Exception\RuntimeException($message);
       }
    }
 
@@ -336,7 +340,7 @@ class Application extends BaseApplication {
    private function initSession() {
 
       if (!is_writable(GLPI_SESSION_DIR)) {
-         throw new RuntimeException(
+         throw new \Symfony\Component\Console\Exception\RuntimeException(
             sprintf(__('Cannot write in "%s" directory.'), GLPI_SESSION_DIR)
          );
       }
@@ -352,14 +356,15 @@ class Application extends BaseApplication {
    /**
     * Initialize GLPI cache.
     *
-    * @global Laminas\Cache\Storage\StorageInterface $GLPI_CACHE
+    * @global \Psr\SimpleCache\CacheInterface $GLPI_CACHE
     *
     * @return void
     */
    private function initCache() {
 
       global $GLPI_CACHE;
-      $GLPI_CACHE = Config::getCache('cache_db');
+      $cache_manager = new CacheManager();
+      $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
    }
 
    /**
@@ -378,7 +383,7 @@ class Application extends BaseApplication {
          return;
       }
 
-      Config::loadLegacyConfiguration(false);
+      Config::loadLegacyConfiguration();
    }
 
    /**
@@ -441,11 +446,11 @@ class Application extends BaseApplication {
       $input = new ArgvInput();
 
       try {
-         $command = $this->find($this->getCommandName($input));
+         $command = $this->find($this->getCommandName($input) ?? '');
          if ($command instanceof ForceNoPluginsOptionCommandInterface) {
             return !$command->getNoPluginsOptionValue();
          }
-      } catch (CommandNotFoundException $e) {
+      } catch (\Symfony\Component\Console\Exception\CommandNotFoundException $e) {
          // Command will not be found at this point if it is a plugin command
          $command = null; // Say hello to CS checker
       }

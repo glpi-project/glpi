@@ -1,34 +1,34 @@
 #!/bin/bash -e
-# /**
-#  * ---------------------------------------------------------------------
-#  * GLPI - Gestionnaire Libre de Parc Informatique
-#  * Copyright (C) 2015-2021 Teclib' and contributors.
-#  *
-#  * http://glpi-project.org
-#  *
-#  * based on GLPI - Gestionnaire Libre de Parc Informatique
-#  * Copyright (C) 2003-2014 by the INDEPNET Development Team.
-#  *
-#  * ---------------------------------------------------------------------
-#  *
-#  * LICENSE
-#  *
-#  * This file is part of GLPI.
-#  *
-#  * GLPI is free software; you can redistribute it and/or modify
-#  * it under the terms of the GNU General Public License as published by
-#  * the Free Software Foundation; either version 2 of the License, or
-#  * (at your option) any later version.
-#  *
-#  * GLPI is distributed in the hope that it will be useful,
-#  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  * GNU General Public License for more details.
-#  *
-#  * You should have received a copy of the GNU General Public License
-#  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
-#  * ---------------------------------------------------------------------
-# */
+#
+# ---------------------------------------------------------------------
+# GLPI - Gestionnaire Libre de Parc Informatique
+# Copyright (C) 2015-2021 Teclib' and contributors.
+#
+# http://glpi-project.org
+#
+# based on GLPI - Gestionnaire Libre de Parc Informatique
+# Copyright (C) 2003-2014 by the INDEPNET Development Team.
+#
+# ---------------------------------------------------------------------
+#
+# LICENSE
+#
+# This file is part of GLPI.
+#
+# GLPI is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# GLPI is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+# ---------------------------------------------------------------------
+#
 
 WORKING_DIR=$(readlink -f "$(dirname $0)")
 
@@ -39,6 +39,7 @@ TESTS_SUITES=(
   "update"
   "units"
   "functionnal"
+  "cache"
   "ldap"
   "imap"
   "web"
@@ -103,6 +104,7 @@ Available tests suites:
  - update
  - units
  - functionnal
+ - cache
  - ldap
  - imap
  - web
@@ -126,7 +128,7 @@ fi
 APPLICATION_ROOT=$(readlink -f "$WORKING_DIR/..")
 [[ ! -z "$APP_CONTAINER_HOME" ]] || APP_CONTAINER_HOME=$(mktemp -d -t glpi-tests-home-XXXXXXXXXX)
 [[ ! -z "$DB_IMAGE" ]] || DB_IMAGE=githubactions-mysql:8.0
-[[ ! -z "$PHP_IMAGE" ]] || PHP_IMAGE=githubactions-php:7.2
+[[ ! -z "$PHP_IMAGE" ]] || PHP_IMAGE=githubactions-php:7.4
 
 # Backup configuration files
 BACKUP_DIR=$(mktemp -d -t glpi-tests-backup-XXXXXXXXXX)
@@ -144,7 +146,7 @@ $APPLICATION_ROOT/.github/actions/init_containers-start.sh
 $APPLICATION_ROOT/.github/actions/init_show-versions.sh
 
 # Install dependencies if required
-[[ -z "$BUILD" ]] || docker-compose exec -T app .github/actions/init_install-dependencies.sh
+[[ -z "$BUILD" ]] || docker-compose exec -T app .github/actions/init_build.sh
 
 # Run tests
 for TEST_SUITE in "${TESTS_TO_RUN[@]}";
@@ -158,6 +160,7 @@ do
       # TODO Add ability to simulate locales extact and SCSS compilation without actually modifying locale files.
          docker-compose exec -T app .github/actions/lint_php-lint.sh \
       && docker-compose exec -T app .github/actions/lint_js-lint.sh \
+      && docker-compose exec -T app .github/actions/lint_twig-lint.sh \
       || LAST_EXIT_CODE=$?
       ;;
     "install")
@@ -165,8 +168,10 @@ do
       || LAST_EXIT_CODE=$?
       ;;
     "update")
-         $APPLICATION_ROOT/.github/actions/init_initialize-old-dbs.sh \
+         $APPLICATION_ROOT/.github/actions/init_initialize-0.80-db.sh \
+      && $APPLICATION_ROOT/.github/actions/init_initialize-9.5.3-db.sh \
       && docker-compose exec -T app .github/actions/test_update-from-older-version.sh \
+      && docker-compose exec -T app .github/actions/test_update-from-9.5.sh \
       || LAST_EXIT_CODE=$?
       ;;
     "units")
@@ -175,6 +180,10 @@ do
       ;;
     "functionnal")
          docker-compose exec -T app .github/actions/test_tests-functionnal.sh \
+      || LAST_EXIT_CODE=$?
+      ;;
+    "cache")
+         docker-compose exec -T app .github/actions/test_tests-cache.sh \
       || LAST_EXIT_CODE=$?
       ;;
     "ldap")

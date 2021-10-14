@@ -204,14 +204,7 @@ class Fieldblacklist extends CommonDropdown {
       return $input;
    }
 
-
-   /**
-    * Display specific fields for FieldUnicity
-    *
-    * @param integer $ID     Unused
-    * @param array   $field  Array of fields
-   **/
-   function displaySpecificTypeField($ID, $field = []) {
+   function displaySpecificTypeField($ID, $field = [], array $options = []) {
 
       switch ($field['type']) {
          case 'blacklist_itemtype' :
@@ -381,7 +374,7 @@ class Fieldblacklist extends CommonDropdown {
             'field'     => $field,
             'value'     => $value
          ] + getEntitiesRestrictCriteria('glpi_fieldblacklists', 'entities_id', $entities_id, true)
-      ])->next();
+      ])->current();
       return $result['cpt'] > 0;
    }
 

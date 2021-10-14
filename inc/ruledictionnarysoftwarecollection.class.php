@@ -94,7 +94,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
 
       echo "<tr><td class='tab_bg_2 center' colspan='2'>";
       echo "<input type='submit' name='replay_rule' value=\""._sx('button', 'Post')."\"
-             class='submit'>";
+             class='btn btn-primary'>";
       echo "<input type='hidden' name='replay_confirm' value='replay_confirm'>";
       echo "</td></tr>";
       echo "</table>\n";
@@ -155,7 +155,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
          $nb   = count($iterator) + $offset;
          $step = (($nb > 1000) ? 50 : (($nb > 20) ? floor(count($iterator) / 20) : 1));
 
-         while ($input = $iterator->next()) {
+         foreach ($iterator as $input) {
             if (!($i % $step)) {
                if (isCommandLine()) {
                   printf(__('%1$s - replay rules on existing database: %2$s/%3$s (%4$s Mio)')."\n",
@@ -185,7 +185,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                     && ($res_rule['softwarecategories_id'] != $input['softwarecategories_id']))) {
 
                $IDs = [];
-               //Find all the softwares in the database with the same name and manufacturer
+               //Find all the software in the database with the same name and manufacturer
                $same_iterator = $DB->request([
                   'SELECT' => 'id',
                   'FROM'   => 'glpi_softwares',
@@ -197,10 +197,10 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
 
                if (count($same_iterator)) {
                   //Store all the software's IDs in an array
-                  while ($result = $same_iterator->next()) {
+                  foreach ($same_iterator as $result) {
                      $IDs[] = $result["id"];
                   }
-                  //Replay dictionnary on all the softwares
+                  //Replay dictionnary on all the software
                   $this->replayDictionnaryOnSoftwaresByID($IDs, $res_rule);
                }
             }
@@ -233,7 +233,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
 
 
    /**
-    * Replay dictionnary on several softwares
+    * Replay dictionary on several software
     *
     * @param $IDs       array of software IDs to replay
     * @param $res_rule  array of rule results
@@ -270,7 +270,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
          ]);
 
          if (count($iterator)) {
-            $soft = $iterator->next();
+            $soft = $iterator->current();
             //For each software
             $this->replayDictionnaryOnOneSoftware(
                $new_softs,
@@ -294,7 +294,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
    /**
     * Replay dictionnary on one software
     *
-    * @param &$new_softs      array containing new softwares already computed
+    * @param &$new_softs      array containing new software already computed
     * @param $res_rule        array of rule results
     * @param $ID                    ID of the software
     * @param $entity                working entity ID
@@ -373,7 +373,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
          'WHERE'  => ['softwares_id' => $ID]
       ]);
 
-      while ($version = $iterator->next()) {
+      foreach ($iterator as $version) {
          $input["version"] = addslashes($version["name"]);
          $old_version_name = $input["version"];
 
@@ -394,7 +394,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
 
 
    /**
-    * Delete a list of softwares
+    * Delete a list of software
     *
     * @param $soft_ids array containing replay software need to be put in trashbin
    **/
@@ -427,7 +427,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
          ]);
 
          $software = new Software();
-         while ($soft = $iterator->next()) {
+         foreach ($iterator as $soft) {
             $software->putInTrash($soft["id"], __('Software deleted by GLPI dictionary rules'));
          }
       }
@@ -486,7 +486,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                   'gcs_2.softwareversions_id'                           => $version_id
                ]
             ]);
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $DB->delete(
                   'glpi_items_softwareversions', [
                      'id' => $data['id']
@@ -538,7 +538,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
    function moveLicenses($old_software_id, $new_software_id) {
       global $DB;
 
-      //Return false if one of the 2 softwares doesn't exists
+      //Return false if one of the 2 software doesn't exists
       if (!countElementsInTable('glpi_softwares', ['id' => $old_software_id])
          || !countElementsInTable('glpi_softwares', ['id' => $new_software_id])) {
          return false;
@@ -576,7 +576,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
          ]
       ]);
       if (count($iterator)) {
-         $current = $iterator->next();
+         $current = $iterator->current();
          return $current['id'];
       }
       return -1;

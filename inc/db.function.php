@@ -221,25 +221,6 @@ function countElementsInTableForEntity($table, $entity, $condition = [], $recurs
    return $dbu->countElementsInTableForEntity($table, $entity, $condition, $recursive);
 }
 
-
-/**
- * Get data from a table in an array :
- * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
- *
- * @param string  $table     table name
- * @param array   $condition condition to use (default [])
- * @param boolean $usecache  Use cache (false by default)
- * @param string  $order     result order (default '')
- *
- * @return array containing all the datas
- *
- * @deprecated 9.5.0
-**/
-function getAllDatasFromTable($table, $condition = [], $usecache = false, $order = '') {
-   Toolbox::deprecated('Use getAllDataFromTable()');
-   return getAllDataFromTable($table, $condition, $usecache, $order);
-}
-
 /**
  * Get data from a table in an array :
  * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
@@ -278,19 +259,20 @@ function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = tr
 /**
  * Get completename of a Dropdown Tree table
  *
- * @param $table        string   Dropdown Tree table
- * @param $ID           integer  ID of the element
- * @param $withcomment  boolean  1 if you want to give the array with the comments (false by default)
- * @param $translate    boolean  (true by default)
- * @param $tooltip      boolean  (true by default) returns a tooltip, else returns only 'comment'
+ * @param string  $table          Dropdown Tree table
+ * @param integer $ID            ID of the element
+ * @param boolean $withcomment   1 if you want to give the array with the comments (false by default)
+ * @param boolean $translate     (true by default)
+ * @param boolean $tooltip       (true by default) returns a tooltip, else returns only 'comment'
+ * @param string  $default       default value returned when item not exists
  *
  * @return string : completename of the element
  *
  * @see getTreeLeafValueName()
 **/
-function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true) {
+function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true, string $default = '&nbsp;') {
    $dbu = new DbUtils();
-   return $dbu->getTreeValueCompleteName($table, $ID, $withcomment, $translate, $tooltip);
+   return $dbu->getTreeValueCompleteName($table, $ID, $withcomment, $translate, $tooltip, $default);
 }
 
 
@@ -394,23 +376,6 @@ function contructTreeFromList($list, $root) {
 function contructListFromTree($tree, $parent = 0) {
    $dbu = new DbUtils();
    return $dbu->constructListFromTree($tree, $parent);
-}
-
-
-/**
- * Get the equivalent search query using ID of soons that the search of the father's ID argument
- *
- * @param $table     string   table name
- * @param $IDf       integer  The ID of the father
- * @param $reallink  string   real field to link ($table.id if not set) (default ='')
- *
- * @return string the query
- *
- * @deprecated 9.5.0
-**/
-function getRealQueryForTreeItem($table, $IDf, $reallink = "") {
-   $dbu = new DbUtils();
-   return $dbu->getRealQueryForTreeItem($table, $IDf, $reallink);
 }
 
 

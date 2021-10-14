@@ -30,25 +30,25 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Csv\CsvResponse;
+use Glpi\Csv\StatCsvExport;
+use Glpi\Stat\StatData;
+
 include ('../inc/includes.php');
 
-Session ::checkLoginUser();
+// Check rights
+Session::checkRight("statistic", READ);
 
-if (isset($_GET["switchto"])) {
-   $_SESSION['glpigraphtype'] = $_GET["switchto"];
-   Html::back();
+// Read params
+$statdata_itemtype = $_UGET['statdata_itemtype'] ?? null;
+
+// Validate stats itemtype
+if (!is_a($statdata_itemtype, StatData::class, true)) {
+    Toolbox::throwError(400, "Invalid stats itemtype", "string");
 }
 
-if (($uid = Session::getLoginUserID(false))
-    && isset($_GET["file"])) {
-
-   list($userID,$filename) = explode("_", $_GET["file"]);
-   if (($userID == $uid)
-       && file_exists(GLPI_GRAPH_DIR."/".$_GET["file"])) {
-
-      list($fname,$extension)=explode(".", $filename);
-      Toolbox::sendFile(GLPI_GRAPH_DIR."/".$_GET["file"], 'glpi.'.$extension);
-   } else {
-      Html::displayErrorAndDie(__('Unauthorized access to this file'), true);
-   }
-}
+// Get data and output csv
+$graph_data = new $statdata_itemtype($_GET);
+CsvResponse::output(
+    new StatCsvExport($graph_data->getSeries(), $graph_data->getOptions())
+);

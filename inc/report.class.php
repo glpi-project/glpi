@@ -166,16 +166,15 @@ class Report extends CommonGLPI{
     * @since 0.84
    **/
    static function showDefaultReport() {
-      global $DB;
+      global $DB, $CFG_GLPI;
 
       // Title
       echo "<span class='big b'>GLPI ".Report::getTypeName(Session::getPluralNumber())."</span><br><br>";
 
       // 1. Get counts of itemtype
-      $items     = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
-                         'Printer', 'Software'];
+      $items     = $CFG_GLPI["asset_types"];
 
-      $linkitems = ['Monitor', 'Peripheral', 'Phone', 'Printer'];
+      $linkitems = $CFG_GLPI['directconnect_types'];
 
       echo "<table class='tab_cadrehov'>";
 
@@ -205,7 +204,7 @@ class Report extends CommonGLPI{
             ];
          }
 
-         $result = $DB->request($criteria)->next();
+         $result = $DB->request($criteria)->current();
          $number = (int)$result['cpt'];
 
          echo "<tr class='tab_bg_2'><td>".$itemtype::getTypeName(Session::getPluralNumber())."</td>";
@@ -233,7 +232,7 @@ class Report extends CommonGLPI{
          'GROUPBY'   => 'glpi_operatingsystems.name'
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if (empty($data['name'])) {
             $data['name'] = Dropdown::EMPTY_VALUE;
          }
@@ -244,7 +243,6 @@ class Report extends CommonGLPI{
       // Get counts of types
 
       $val   = array_flip($items);
-      unset($val["Software"]);
       $items = array_flip($val);
 
       foreach ($items as $itemtype) {
@@ -291,7 +289,7 @@ class Report extends CommonGLPI{
          }
 
          $iterator = $DB->request($criteria);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             if (empty($data['name'])) {
                $data['name'] = Dropdown:: EMPTY_VALUE;
             }
@@ -468,7 +466,7 @@ class Report extends CommonGLPI{
          echo "<th>".__('Device name')."</th>";
          echo "</tr>\n";
 
-         while ($line = $iterator->next()) {
+         foreach ($iterator as $line) {
             echo "<tr class='tab_bg_1'>";
 
             // To ensure that the NetworkEquipment remain the first item, we test its type

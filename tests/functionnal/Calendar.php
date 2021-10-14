@@ -186,8 +186,9 @@ class Calendar extends DbTestCase {
    public function testIsHoliday() {
       $calendar = new \Calendar();
       // get Default calendar
-      $default_id = getItemByTypeName('Calendar', 'Default', true);
-      $this->boolean($calendar->getFromDB($default_id))->isTrue();
+      $this->boolean($calendar->getFromDB(getItemByTypeName('Calendar', 'Default', true)))->isTrue();
+
+      $this->addXmas($calendar);
 
       $dates= [
          '2019-05-01'   => true,
@@ -201,11 +202,7 @@ class Calendar extends DbTestCase {
          $this->boolean($calendar->isHoliday($date))->isFalse;
       }
 
-      //Clone calendar and add holidays
-      $clone_id = $calendar->clone();
-      $this->integer($clone_id)->isGreaterThan($default_id);
-      $this->boolean($calendar->getFromDB($clone_id))->isTrue();
-
+      //Add holidays
       $calendar_holiday = new \Calendar_Holiday();
       $holiday = new \Holiday();
       $hid = (int)$holiday->add([
@@ -264,10 +261,7 @@ class Calendar extends DbTestCase {
       $calendar = new \Calendar();
       $this->boolean($calendar->getFromDB($id))->isTrue();
 
-      $this->boolean($calendar->duplicate())->isTrue();
-      $other_id = $calendar->fields['id'];
-      $this->integer($other_id)->isGreaterThan($id);
-      $this->boolean($calendar->getFromDB($other_id))->isTrue();
+      $this->integer($calendar->clone())->isGreaterThan($id);
       //should have been duplicated too.
       $this->checkXmas($calendar);
 

@@ -31,6 +31,7 @@
  */
 
 use Glpi\Event;
+use Glpi\Plugin\Hooks;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -60,6 +61,13 @@ class Entity extends CommonTreeDropdown {
 
    const AUTO_ASSIGN_HARDWARE_CATEGORY  = 1;
    const AUTO_ASSIGN_CATEGORY_HARDWARE  = 2;
+
+   /**
+    * Possible values for "anonymize_support_agents" setting
+    */
+   const ANONYMIZE_DISABLED     = 0;
+   const ANONYMIZE_USE_GENERIC  = 1;
+   const ANONYMIZE_USE_NICKNAME = 2;
 
    // Array of "right required to update" => array of fields allowed
    // Missing field here couldn't be update (no right)
@@ -113,7 +121,8 @@ class Entity extends CommonTreeDropdown {
          'inquest_duration','inquest_URL',
          'max_closedate', 'tickettemplates_id',
          'changetemplates_id', 'problemtemplates_id',
-         'suppliers_as_private', 'autopurge_delay', 'anonymize_support_agents'
+         'suppliers_as_private', 'autopurge_delay', 'anonymize_support_agents',
+         'contracts_id_default'
       ],
       // Configuration
       'config' => ['enable_custom_css', 'custom_css_code']
@@ -143,10 +152,9 @@ class Entity extends CommonTreeDropdown {
 
       //Cleaning sons calls getAncestorsOf and thus... Re-create cache. Call it before clean.
       $this->cleanParentsSons();
-      if (Toolbox::useCache()) {
-         $ckey = 'ancestors_cache_' . $this->getTable() . '_' . $this->getID();
-         $GLPI_CACHE->delete($ckey);
-      }
+      $ckey = 'ancestors_cache_' . $this->getTable() . '_' . $this->getID();
+      $GLPI_CACHE->delete($ckey);
+
       return true;
    }
 
@@ -267,10 +275,19 @@ class Entity extends CommonTreeDropdown {
             'MAX('.$DB->quoteName('id').')+1 AS newID'
          ),
          'FROM'   => $this->getTable()
-      ])->next();
+      ])->current();
       $input['id'] = $result['newID'];
 
       $input['max_closedate'] = $_SESSION["glpi_currenttime"];
+
+      if (empty($input['latitude']) && empty($input['longitude']) && empty($input['altitude']) &&
+         !empty($input[static::getForeignKeyField()])) {
+         $parent = new static();
+         $parent->getFromDB($input[static::getForeignKeyField()]);
+         $input['latitude'] = $parent->fields['latitude'];
+         $input['longitude'] = $parent->fields['longitude'];
+         $input['altitude'] = $parent->fields['altitude'];
+      }
 
       if (!Session::isCron()) { // Filter input for connected
          $input = $this->checkRightDatas($input);
@@ -460,6 +477,16 @@ class Entity extends CommonTreeDropdown {
       // Add right to current user - Hack to avoid login/logout
       $_SESSION['glpiactiveentities'][$this->fields['id']] = $this->fields['id'];
       $_SESSION['glpiactiveentities_string']              .= ",'".$this->fields['id']."'";
+
+      // clean entity tree cache
+      $this->cleanEntitySelectorCache();
+   }
+
+   function post_updateItem($history = 1) {
+      parent::post_updateItem($history);
+
+      // clean entity tree cache
+      $this->cleanEntitySelectorCache();
    }
 
 
@@ -479,6 +506,23 @@ class Entity extends CommonTreeDropdown {
             Entity_RSSFeed::class,
          ]
       );
+
+      // clean entity tree cache
+      $this->cleanEntitySelectorCache();
+   }
+
+
+   /**
+    * Clean caches related to entity selector.
+    *
+    * @since 10.0
+    *
+    * @return void
+    */
+   function cleanEntitySelectorCache() {
+      global $GLPI_CACHE;
+
+      $GLPI_CACHE->delete('entity_selector');
    }
 
    function rawSearchOptions() {
@@ -532,7 +576,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Website'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -542,7 +585,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => Phone::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -552,7 +594,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => _n('Email', 'Emails', 1),
          'datatype'           => 'email',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -562,7 +603,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Fax'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -571,7 +611,6 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'postcode',
          'name'               => __('Postal code'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -581,7 +620,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('City'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -591,7 +629,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => _x('location', 'State'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -601,7 +638,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Country'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -611,7 +647,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Latitude'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -621,7 +656,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Longitude'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -631,7 +665,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Altitude'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -677,7 +710,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('LDAP directory information attribute representing the entity'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -687,7 +719,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Information in inventory tool (TAG) representing the entity'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -706,7 +737,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Search filter (if needed)'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -716,7 +746,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Mail domain'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -756,7 +785,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Administrator email'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -766,7 +794,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Administrator reply-to email (if needed)'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -775,7 +802,6 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'notification_subject_tag',
          'name'               => __('Prefix for notifications'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -784,7 +810,6 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'admin_email_name',
          'name'               => __('Administrator name'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -793,7 +818,6 @@ class Entity extends CommonTreeDropdown {
          'field'              => 'admin_reply_name',
          'name'               => __('Response address (if needed)'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1137,7 +1161,6 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('URL'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -1163,118 +1186,6 @@ class Entity extends CommonTreeDropdown {
       ];
 
       return $tab;
-   }
-
-
-   /**
-    * Display entities of the loaded profile
-    *
-    * @param string $target target for entity change action
-    * @param string $myname select name
-   **/
-   static function showSelector($target, $myname) {
-      global $CFG_GLPI;
-
-      $rand = mt_rand();
-
-      if (Session::getCurrentInterface() == 'helpdesk') {
-         $actionurl = $CFG_GLPI["root_doc"]."/front/helpdesk.public.php?active_entity=";
-      } else {
-         $actionurl = $CFG_GLPI["root_doc"]."/front/central.php?active_entity=";
-      }
-
-      echo "<div class='center'>";
-      echo "<span class='b'>".__('Select the desired entity')."<br>( <img src='".$CFG_GLPI["root_doc"].
-            "/pics/entity_all.png' alt=''> ".__s('to see the entity and its sub-entities').")</span>".
-            "<br>";
-      echo "<a style='font-size:14px;' href='".$target."?active_entity=all' title=\"".
-             __s('Show all')."\">".str_replace(" ", "&nbsp;", __('Show all'))."</a></div>";
-
-      echo "<div class='left' style='width:100%'>";
-      echo "<form id='entsearchform'>";
-      echo Html::input('entsearchtext', ['id' => 'entsearchtext']);
-      echo Html::submit(__('Search'), ['id' => 'entsearch']);
-      echo "</form>";
-
-      echo "<script type='text/javascript'>";
-      echo "   $(function() {
-                  $.getScript('{$CFG_GLPI["root_doc"]}/public/lib/jstree.js').done(function(data, textStatus, jqxhr) {
-                     $('#tree_projectcategory$rand')
-                     // call `.jstree` with the options object
-                     .jstree({
-                        // the `plugins` array allows you to configure the active plugins on this instance
-                        'plugins' : ['search', 'qload', 'conditionalselect'],
-                        'search': {
-                           'case_insensitive': true,
-                           'show_only_matches': true,
-                           'ajax': {
-                              'type': 'POST',
-                              'url': '".$CFG_GLPI["root_doc"]."/ajax/entitytreesearch.php'
-                           }
-                        },
-                        'qload': {
-                           'prevLimit': 50,
-                           'nextLimit': 30,
-                           'moreText': '".__s('Load more entities...')."'
-                        },
-                        'conditionalselect': function (node, event) {
-                           if (node === false) {
-                              return false;
-                           }
-                           var url = '$actionurl'+node.id;
-                           if (event.target.tagName == 'I'
-                               && event.target.className == '') {
-                              url += '&is_recursive=1';
-                           }
-                           document.location.href = url;
-                           return false;
-                        },
-                        'core': {
-                           'themes': {
-                              'name': 'glpi'
-                           },
-                           'animation': 0,
-                           'data': {
-                              'url': function(node) {
-                                 return node.id === '#' ?
-                                    '".$CFG_GLPI["root_doc"]."/ajax/entitytreesons.php?node=-1' :
-                                    '".$CFG_GLPI["root_doc"]."/ajax/entitytreesons.php?node='+node.id;
-                              }
-                           }
-                        }
-                     });
-
-                     var searchTree = function() {
-                        ".Html::jsGetElementbyID("tree_projectcategory$rand").".jstree('close_all');;
-                        ".Html::jsGetElementbyID("tree_projectcategory$rand").
-                        ".jstree('search',".Html::jsGetDropdownValue('entsearchtext').");
-                     }
-
-                     $('#entsearchform').submit(function( event ) {
-                        // cancel submit of entity search form
-                        event.preventDefault();
-
-                        // search
-                        searchTree();
-                     });
-
-                     // autosearch on keypress (delayed and with min length)
-                     $('#entsearchtext').keyup(function () {
-                        var inputsearch = $(this);
-                        typewatch(function () {
-                           if (inputsearch.val().length >= 3) {
-                              searchTree();
-                           }
-                        }, 500);
-                     })
-                     .focus();
-                  });
-               });";
-
-      echo "</script>";
-
-      echo "<div id='tree_projectcategory$rand' class='entity_tree' ></div>";
-      echo "</div>";
    }
 
 
@@ -1351,7 +1262,7 @@ class Entity extends CommonTreeDropdown {
          'ORDER'  => 'level ASC'
       ]);
 
-      while ($entitydata = $iterator->next()) {
+      foreach ($iterator as $entitydata) {
          if ((is_null($entitydata[$field])
               || ($entitydata[$field] == self::CONFIG_PARENT))
              && isset($entities[$entitydata['parent']])) {
@@ -1393,55 +1304,59 @@ class Entity extends CommonTreeDropdown {
 
       echo "<table class='tab_cadre_fixe'>";
 
-      Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => []]);
+      Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
 
       echo "<tr><th colspan='4'>".__('Address')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>". Phone::getTypeName(1)."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "phonenumber");
+      echo Html::input('phonenumber', ['value' => $entity->fields['phonenumber']]);
       echo "</td>";
       echo "<td rowspan='7'>".__('Address')."</td>";
       echo "<td rowspan='7'>";
-      echo "<textarea cols='45' rows='8' name='address'>". $entity->fields["address"]."</textarea>";
+      echo "<textarea name='address' class='form-control'>". $entity->fields["address"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Fax')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "fax");
+      echo Html::input('fax', ['value' => $entity->fields['fax']]);
       echo "</td></tr>";
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Website')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "website");
+      echo Html::input('website', ['value' => $entity->fields['website']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('Email', 'Emails', 1)."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "email");
+      echo Html::input('email', ['value' => $entity->fields['email']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Postal code')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "postcode", ['size' => 7]);
-      echo "&nbsp;&nbsp;". __('City'). "&nbsp;";
-      Html::autocompletionTextField($entity, "town", ['size' => 27]);
+      echo Html::input('postcode', ['value' => $entity->fields['postcode'], 'size' => 7]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('City')."</td>";
+      echo "<td>";
+      echo Html::input('town', ['value' => $entity->fields['town'], 'size' => 27]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('location', 'State')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "state");
+      echo Html::input('state', ['value' => $entity->fields['state']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Country')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "country");
+      echo Html::input('country', ['value' => $entity->fields['country']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -1458,28 +1373,28 @@ class Entity extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('location', 'Longitude')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "longitude");
+      echo Html::input('longitude', ['value' => $entity->fields['longitude']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('location', 'Latitude')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "latitude");
+      echo Html::input('latitude', ['value' => $entity->fields['latitude']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('location', 'Altitude')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "altitude");
+      echo Html::input('altitude', ['value' => $entity->fields['altitude']]);
       echo "</td></tr>";
 
-      Plugin::doHook("post_item_form", ['item' => $entity, 'options' => []]);
+      Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => []]);
       echo "</table>";
 
       if ($canedit) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary'>";
          echo "</div>";
          Html::closeForm();
       }
@@ -1509,7 +1424,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<table class='tab_cadre_fixe'>";
 
-      Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => []]);
+      Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
 
       echo "<tr><th colspan='2'>".__('Values for the generic rules for assignment to entities').
            "</th></tr>";
@@ -1521,21 +1436,21 @@ class Entity extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Information in inventory tool (TAG) representing the entity')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "tag", ['size' => 100]);
+      echo Html::input('tag', ['value' => $entity->fields['tag'], 'size' => 100]);
       echo "</td></tr>";
 
       if (Toolbox::canUseLdap()) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('LDAP directory information attribute representing the entity')."</td>";
          echo "<td>";
-         Html::autocompletionTextField($entity, "ldap_dn", ['size' => 100]);
+         echo Html::input('ldap_dn', ['value' => $entity->fields['ldap_dn'], 'size' => 100]);
          echo "</td></tr>";
       }
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Mail domain surrogates entity')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "mail_domain", ['size' => 100]);
+      echo Html::input('mail_domain', ['value' => $entity->fields['mail_domain'], 'size' => 100]);
       echo "</td></tr>";
 
       if (Toolbox::canUseLdap()) {
@@ -1556,18 +1471,18 @@ class Entity extends CommonTreeDropdown {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('LDAP filter associated to the entity (if necessary)')."</td>";
          echo "<td>";
-         Html::autocompletionTextField($entity, 'entity_ldapfilter', ['size' => 100]);
+         echo Html::input('entity_ldapfilter', ['value' => $entity->fields['entity_ldapfilter'], 'size' => 100]);
          echo "</td></tr>";
       }
 
-      Plugin::doHook("post_item_form", ['item' => $entity, 'options' => &$options]);
+      Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
 
       echo "</table>";
 
       if ($canedit) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary'>";
          echo "</div>";
          Html::closeForm();
       }
@@ -1596,7 +1511,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<table class='tab_cadre_fixe'>";
 
-      Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => []]);
+      Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
 
       echo "<tr><th colspan='4'>".__('Autofill dates for financial and administrative information').
            "</th></tr>";
@@ -1738,14 +1653,32 @@ class Entity extends CommonTreeDropdown {
       }
       echo "</td><td colspan='2'></td></tr>";
 
-      Plugin::doHook("post_item_form", ['item' => $entity, 'options' => &$options]);
+      echo "<tr><th colspan='4'>" . __('Transfer') . "</th></tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>";
+      echo __('Model for automatic entity transfer on inventories');
+      echo "</td>";
+      echo "<td>";
+      $params = [
+          'name'       => 'transfers_id',
+          'value'      => $entity->fields['transfers_id'],
+          'emptylabel' => __('No automatic transfer')
+      ];
+      if ($entity->fields['id'] > 0) {
+         $params['toadd'] = ['-1' => __('Inheritance of the parent entity')];
+      }
+      Dropdown::show('Transfer', $params);
+      echo "</td>";
+      echo "</td><td colspan='2'></td></tr>";
+
+      Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
 
       echo "</table>";
 
       if ($canedit) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary'>";
          echo "</div>";
          Html::closeForm();
       }
@@ -1779,21 +1712,21 @@ class Entity extends CommonTreeDropdown {
 
       echo "<table class='tab_cadre_fixe'>";
 
-      Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => []]);
+      Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
 
       echo "<tr><th colspan='4'>".__('Notification options')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Administrator email')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "admin_email");
+      echo Html::input('admin_email', ['value' => $entity->fields['admin_email']]);
       if (strlen($entity->fields['admin_email']) == 0) {
          self::inheritedValue(self::getUsedConfig('admin_email', $ID, '', ''));
       }
       echo "</td>";
       echo "<td>" . __('Administrator name') . "</td><td>";
       // we inherit only if email inherit also
-      Html::autocompletionTextField($entity, "admin_email_name");
+      echo Html::input('admin_email_name', ['value' => $entity->fields['admin_email_name']]);
       // warning, we rely on email field to inherit name field
       if (strlen($entity->fields['admin_email']) == 0) {
          self::inheritedValue(self::getUsedConfig('admin_email_name', $ID, '', ''));
@@ -1803,13 +1736,13 @@ class Entity extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Administrator reply-to email (if needed)')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "admin_reply");
+      echo Html::input('admin_reply', ['value' => $entity->fields['admin_reply']]);
       if (strlen($entity->fields['admin_reply']) == 0) {
          self::inheritedValue(self::getUsedConfig('admin_reply', $ID, '', ''));
       }
       echo "</td>";
       echo "<td>" . __('Response address (if needed)') . "</td><td>";
-      Html::autocompletionTextField($entity, "admin_reply_name");
+      echo Html::input('admin_reply_name', ['value' => $entity->fields['admin_reply_name']]);
       // warning, we rely on email field to inherit name field
       if (strlen($entity->fields['admin_reply']) == 0) {
          self::inheritedValue(self::getUsedConfig('admin_reply_name', $ID, '', ''));
@@ -1819,7 +1752,7 @@ class Entity extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Prefix for notifications')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity, "notification_subject_tag");
+      echo Html::input('notification_subject_tag', ['value' => $entity->fields['notification_subject_tag']]);
       if (strlen($entity->fields['notification_subject_tag']) == 0) {
          self::inheritedValue(self::getUsedConfig('notification_subject_tag', $ID, '', ''));
       }
@@ -1860,9 +1793,9 @@ class Entity extends CommonTreeDropdown {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='middle right'>" . __('Email signature') . "</td>";
+      echo "<td>" . __('Email signature') . "</td>";
       echo "<td colspan='3'>";
-      echo "<textarea cols='60' rows='5' name='mailing_signature'>".
+      echo "<textarea rows='5' name='mailing_signature' class='form-control'>".
              $entity->fields["mailing_signature"]."</textarea>";
       if (strlen($entity->fields['mailing_signature']) == 0) {
          self::inheritedValue(self::getUsedConfig('mailing_signature', $ID, '', ''));
@@ -2162,14 +2095,14 @@ class Entity extends CommonTreeDropdown {
       }
       echo "</td></tr>";
 
-      Plugin::doHook("post_item_form", ['item' => $entity, 'options' => &$options]);
+      Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
 
       echo "</table>";
 
       if ($canedit) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary'>";
          echo "</div>";
          Html::closeForm();
       }
@@ -2210,7 +2143,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<table class='tab_cadre_fixe custom_css_configuration'>";
 
-      Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => []]);
+      Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
 
       $rand = mt_rand();
 
@@ -2261,14 +2194,14 @@ class Entity extends CommonTreeDropdown {
          ]
       );
 
-      Plugin::doHook("post_item_form", ['item' => $entity, 'options' => &$options]);
+      Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
 
       echo "</table>";
 
       if ($canedit) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary'>";
          echo "</div>";
          Html::closeForm();
       }
@@ -2321,7 +2254,7 @@ class Entity extends CommonTreeDropdown {
       ]);
 
       if (count($iterator) == 1) {
-         $result = $iterator->next();
+         $result = $iterator->current();
          return $result['id'];
       }
       return -1;
@@ -2414,7 +2347,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<table class='tab_cadre_fixe'>";
 
-      Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => []]);
+      Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
 
       echo "<tr><th colspan='4'>".__('Templates configuration')."</th></tr>";
 
@@ -2538,7 +2471,8 @@ class Entity extends CommonTreeDropdown {
       }
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Automatic assignment of tickets')."</td>";
+      // Auto assign mode
+      echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Automatic assignment of tickets, changes and problems')."</td>";
       echo "<td colspan='2'>";
       $autoassign = self::getAutoAssignMode();
 
@@ -2583,26 +2517,67 @@ class Entity extends CommonTreeDropdown {
 
       echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Anonymize support agents')."</td>";
       echo "<td colspan='2'>";
-      $anonymizeValues = self::getAnonymizeSupportAgentsValues();
-      $currentAnonymizeValue = $entity->fields['anonymize_support_agents'];
+      $anonymize_values = self::getAnonymizeSupportAgentsValues();
+      $current_anonymize_value = $entity->fields['anonymize_support_agents'];
 
       if ($ID == 0) { // Remove parent option for root entity
-         unset($anonymizeValues[self::CONFIG_PARENT]);
+         unset($anonymize_values[self::CONFIG_PARENT]);
       }
 
       Dropdown::showFromArray(
          'anonymize_support_agents',
-         $anonymizeValues,
-         ['value' => $currentAnonymizeValue]
+         $anonymize_values,
+         ['value' => $current_anonymize_value]
       );
 
       // If the entity is using it's parent value, print it
-      if ($currentAnonymizeValue == self::CONFIG_PARENT && $ID != 0) {
-         $parentHelpdeskValue = self::getUsedConfig(
+      if ($current_anonymize_value == self::CONFIG_PARENT && $ID != 0) {
+         $parent_helpdesk_value = self::getUsedConfig(
             'anonymize_support_agents',
             $entity->fields['entities_id']
          );
-         self::inheritedValue($anonymizeValues[$parentHelpdeskValue], true);
+         self::inheritedValue($anonymize_values[$parent_helpdesk_value], true);
+      }
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Default contract')."</td>";
+      echo "<td colspan='2'>";
+      $current_default_contract_value = $entity->fields['contracts_id_default'];
+
+      $toadd = [
+         self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+         -1 => __('Contract in ticket entity'),
+      ];
+
+      if ($ID == 0) { // Remove parent option for root entity
+         unset($toadd[self::CONFIG_PARENT]);
+      }
+
+      Contract::dropdown([
+         'name'      => 'contracts_id_default',
+         'condition' => Contract::getExpiredCriteria(),
+         'entity'    => $entity->getID(),
+         'toadd'     => $toadd,
+         'value'     => $current_default_contract_value,
+      ]);
+
+      // If the entity is using it's parent value, print it
+      if ($current_default_contract_value == self::CONFIG_PARENT && $ID != 0) {
+         $parent_default_contract_value = self::getUsedConfig(
+            'contracts_id_default',
+            $entity->fields['entities_id']
+         );
+         if (!$parent_default_contract_value) {
+            $display_value = Dropdown::EMPTY_VALUE;
+         } else if ($parent_default_contract_value == -1) {
+            $display_value = __('Contract in ticket entity');
+         } else {
+            $contract = new Contract();
+            $contract->getFromDB($parent_default_contract_value);
+            $display_value = $contract->fields['name'];
+         }
+
+         self::inheritedValue($display_value, true);
       }
       echo "</td></tr>";
 
@@ -2764,7 +2739,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "</td></tr>";
 
-      Plugin::doHook("post_item_form", ['item' => $entity, 'options' => &$options]);
+      Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
 
       echo "</table>";
 
@@ -2772,7 +2747,7 @@ class Entity extends CommonTreeDropdown {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
          echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\"
-                  class='submit'>";
+                  class='btn btn-primary'>";
          echo "</div>";
          Html::closeForm();
       }
@@ -2966,10 +2941,12 @@ class Entity extends CommonTreeDropdown {
    **/
    static function getAutoAssignMode($val = null) {
 
-      $tab = [self::CONFIG_PARENT                  => __('Inheritance of the parent entity'),
-                   self::CONFIG_NEVER                   => __('No'),
-                   self::AUTO_ASSIGN_HARDWARE_CATEGORY  => __('Based on the item then the category'),
-                   self::AUTO_ASSIGN_CATEGORY_HARDWARE  => __('Based on the category then the item')];
+      $tab = [
+         self::CONFIG_PARENT                  => __('Inheritance of the parent entity'),
+         self::CONFIG_NEVER                   => __('No'),
+         self::AUTO_ASSIGN_HARDWARE_CATEGORY  => __('Based on the item then the category'),
+         self::AUTO_ASSIGN_CATEGORY_HARDWARE  => __('Based on the category then the item'),
+      ];
 
       if (is_null($val)) {
          return $tab;
@@ -3009,8 +2986,9 @@ class Entity extends CommonTreeDropdown {
 
       return [
          self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-         0 => __('No'),
-         1 => __('Yes'),
+         self::ANONYMIZE_DISABLED => __('Disabled'),
+         self::ANONYMIZE_USE_GENERIC => __("Replace the agent's name with a generic name"),
+         self::ANONYMIZE_USE_NICKNAME => __("Replace the agent's name with a customisable nickname"),
       ];
    }
 
@@ -3345,7 +3323,7 @@ class Entity extends CommonTreeDropdown {
       return $values;
    }
 
-   function displaySpecificTypeField($ID, $field = []) {
+   function displaySpecificTypeField($ID, $field = [], array $options = []) {
       switch ($field['type']) {
          case 'setlocation':
             $this->showMap();
@@ -3360,9 +3338,10 @@ class Entity extends CommonTreeDropdown {
          return "";
       }
 
-      $out = "<div class='inherited ".($inline ? "inline" : "")."'
-                   title='".__("Value inherited from a parent entity")."'>
-         <i class='fas fa-level-down-alt'></i>
+      $out = "<div class='badge bg-azure-lt m-1 py-3 ".($inline ? "inline" : "")."'
+                   title='".__("Value inherited from a parent entity")."'
+                   data-bs-toggle='tooltip'>
+         <i class='fas fa-level-down-alt me-1'></i>
          $value
       </div>";
 
@@ -3377,4 +3356,61 @@ class Entity extends CommonTreeDropdown {
    static function getIcon() {
       return "fas fa-layer-group";
    }
+
+   /**
+    * Get values for contracts_id_default field
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   public static function getDefaultContractValues($entities_id): array {
+      $values = [
+         self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+         -1 => __('First found valid contract in ticket entity'),
+      ];
+
+      $contract = new Contract();
+      $criteria = getEntitiesRestrictCriteria('', '', $entities_id, true);
+      $criteria[] = Contract::getExpiredCriteria();
+      $contracts = $contract->find($criteria);
+
+      foreach ($contracts as $contract) {
+         $values[$contract['id']] = $contract['name'];
+      }
+
+      return $values;
+   }
+
+   public static function getAnonymizeConfig(?int $entities_id = null) {
+      return Entity::getUsedConfig('anonymize_support_agents', $entities_id);
+   }
+
+   public static function getDefaultContract(int $entities_id): int {
+      $entity_default_contract = self::getUsedConfig('contracts_id_default', $entities_id);
+      if ($entity_default_contract == 0) {
+         // No default contract set
+         return 0;
+      }
+
+      if ($entity_default_contract == -1) {
+         // Contract in current entity
+         $contract = new Contract();
+         $criteria = ['entities_id' => $entities_id];
+         $criteria[] = Contract::getExpiredCriteria();
+         $contracts = $contract->find($criteria);
+
+         if ($contracts) {
+            // Return first contract found
+            return current($contracts)['id'];
+         } else {
+            // No contract found for this entity
+            return 0;
+         }
+      }
+
+      // Default contract defined in entity
+      return $entity_default_contract;
+   }
+
 }

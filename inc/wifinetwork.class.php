@@ -28,7 +28,7 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -107,12 +107,14 @@ class WifiNetwork extends CommonDropdown {
    }
 
 
-   function displaySpecificTypeField($ID, $field = []) {
+   function displaySpecificTypeField($ID, $field = [], array $options = []) {
 
       if ($field['type'] == 'wifi_mode') {
          Dropdown::showFromArray($field['name'], self::getWifiNetworkModes(),
-                                 ['value' => $this->fields[$field['name']]]);
-
+            [
+               'value' => $this->fields[$field['name']],
+               'width' => '100%',
+            ]);
       }
    }
 
@@ -126,9 +128,12 @@ class WifiNetwork extends CommonDropdown {
          'field'              => 'essid',
          'name'               => __('ESSID'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       return $tab;
+   }
+
+   static function getIcon() {
+      return "fas fa-wifi";
    }
 }

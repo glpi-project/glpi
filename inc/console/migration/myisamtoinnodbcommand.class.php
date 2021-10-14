@@ -38,7 +38,6 @@ if (!defined('GLPI_ROOT')) {
 
 use DB;
 use Glpi\Console\AbstractCommand;
-
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -85,7 +84,7 @@ class MyIsamToInnoDbCommand extends AbstractCommand {
          $run = $question_helper->ask(
             $input,
             $output,
-            new ConfirmationQuestion(__('Do you want to continue ?') . ' [Yes/no]', true)
+            new ConfirmationQuestion(__('Do you want to continue?') . ' [Yes/no]', true)
          );
          if (!$run) {
             $output->writeln(
@@ -96,7 +95,7 @@ class MyIsamToInnoDbCommand extends AbstractCommand {
          }
       }
 
-      while ($table = $myisam_tables->next()) {
+      foreach ($myisam_tables as $table) {
          $table_name = DB::quoteName($table['TABLE_NAME']);
          $output->writeln(
             '<comment>' . sprintf(__('Migrating table "%s"...'), $table_name) . '</comment>',

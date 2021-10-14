@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\Sanitizer;
 
 class RuleTicket extends Rule {
 
@@ -228,14 +229,34 @@ class RuleTicket extends Rule {
                      //load template
                      $template = new SolutionTemplate();
                      if ($template->getFromDB($action->fields["value"]) && $output['id'] != null) {
+                        // Load parent item
+                        $parent = new Ticket();
+                        if (!$parent->getFromDB($output['id'])) {
+                           break;
+                        }
+
+                        // Parse twig template
+                        $solution_content = $template->getRenderedContent($parent);
+
+                        // Sanitize generated HTML before adding it in DB
+                        $solution_content = Sanitizer::sanitize($solution_content, true);
+
                         $solution = new ITILSolution();
                         $solution->add([
                            "itemtype" => "Ticket",
                            "solutiontypes_id" => $template->getField("solutiontypes_id"),
-                           "content" => Toolbox::addslashes_deep($template->getField('content')),
+                           "content" => $solution_content,
                            "status" => CommonITILValidation::WAITING,
                            "items_id" => $output['id']]);
                      }
+                  }
+
+                  // special case of appliance
+                  if ($action->fields["field"] == "assign_appliance") {
+                     if (!array_key_exists("items_id", $output) || $output['items_id'] == '0') {
+                        $output["items_id"] = [];
+                     }
+                     $output["items_id"][Appliance::getType()][] = $action->fields["value"];
                   }
 
                   // Remove values that may have been added by any "append" rule action on same actor field.
@@ -259,7 +280,16 @@ class RuleTicket extends Rule {
                      $value[$actions[$action->fields["field"]]["appendtoarrayfield"]]
                             = $action->fields["value"];
                   }
-                  $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
+
+                  // special case of appliance
+                  if ($action->fields["field"] === "assign_appliance") {
+                     if (!array_key_exists("items_id", $output) || $output['items_id'] == '0') {
+                        $output["items_id"] = [];
+                     }
+                     $output["items_id"][Appliance::getType()][] = $value;
+                  } else {
+                     $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
+                  }
 
                   // Special case of users_id_requester
                   if ($action->fields["field"] === '_users_id_requester') {
@@ -271,7 +301,6 @@ class RuleTicket extends Rule {
                         $output['_groups_id_of_requester'][$g['id']] = $g['id'];
                      }
                   }
-
                   break;
 
                case 'fromuser' :
@@ -366,6 +395,38 @@ class RuleTicket extends Rule {
                            $output["itilcategories_id"] = $target_itilcategory;
                         }
                      }
+                  } else if ($action->fields["field"] == "_groups_id_requester") {
+                     foreach ($this->regex_results as $regex_result) {
+                        $regexvalue          = RuleAction::getRegexResultById($action->fields["value"],
+                                                                     $regex_result);
+                        $group = new Group();
+                        if ($group->getFromDBByCrit(["name" => $regexvalue,
+                                                      "is_requester" => true])) {
+                           $output['_additional_groups_requesters'][$group->getID()] = $group->getID();
+                        }
+                     }
+                  }
+
+                  if ($action->fields["field"] == "assign_appliance") {
+                     if (isset($this->regex_results[0])) {
+                        $regexvalue = RuleAction::getRegexResultById($action->fields["value"],
+                                                                     $this->regex_results[0]);
+                     } else {
+                        $regexvalue = $action->fields["value"];
+                     }
+
+                     if (!is_null($regexvalue)) {
+                        $appliances = new Appliance();
+                        $target_appliances = $appliances->find(["name" => $regexvalue, "is_helpdesk_visible" => true]);
+
+                        if ((!array_key_exists("items_id", $output) || $output['items_id'] == '0') && count($target_appliances) > 0) {
+                           $output["items_id"] = [];
+                        }
+
+                        foreach ($target_appliances as $value) {
+                           $output["items_id"][Appliance::getType()][] = $value['id'];
+                        }
+                     }
                   }
                   break;
             }
@@ -410,13 +471,13 @@ class RuleTicket extends Rule {
 
       $criterias['itilcategories_id']['table']              = 'glpi_itilcategories';
       $criterias['itilcategories_id']['field']              = 'name';
-      $criterias['itilcategories_id']['name']               = __('Category')." - ".__('Name');
+      $criterias['itilcategories_id']['name']               = _n('Category', 'Categories', 1)." - ".__('Name');
       $criterias['itilcategories_id']['linkfield']          = 'itilcategories_id';
       $criterias['itilcategories_id']['type']               = 'dropdown';
 
       $criterias['itilcategories_id_cn']['table']           = 'glpi_itilcategories';
       $criterias['itilcategories_id_cn']['field']           = 'completename';
-      $criterias['itilcategories_id_cn']['name']            = __('Category').' - '.__('Complete name');
+      $criterias['itilcategories_id_cn']['name']            = _n('Category', 'Categories', 1).' - '.__('Complete name');
       $criterias['itilcategories_id_cn']['linkfield']       = 'itilcategories_id';
       $criterias['itilcategories_id_cn']['type']            = 'dropdown';
 
@@ -588,6 +649,14 @@ class RuleTicket extends Rule {
       $criterias['olas_id_tto']['type']                     = 'dropdown';
       $criterias['olas_id_tto']['condition']                = ['glpi_olas.type' => SLM::TTO];
 
+      $criterias['_contract_types']['table']                = ContractType::getTable();
+      $criterias['_contract_types']['field']                = 'name';
+      $criterias['_contract_types']['name']                 = ContractType::getTypeName(1);
+      $criterias['_contract_types']['type']                 = 'dropdown';
+
+      $criterias['global_validation']['name']               = _n('Validation', 'Validations', 1);
+      $criterias['global_validation']['type']               = 'dropdown_validation_status';
+
       $criterias['_date_creation_calendars_id'] = [
          'name'            => __("Creation date is a working hour in calendar"),
          'table'           => Calendar::getTable(),
@@ -604,7 +673,7 @@ class RuleTicket extends Rule {
 
       $actions                                              = [];
 
-      $actions['itilcategories_id']['name']                 = __('Category');
+      $actions['itilcategories_id']['name']                 = _n('Category', 'Categories', 1);
       $actions['itilcategories_id']['type']                 = 'dropdown';
       $actions['itilcategories_id']['table']                = 'glpi_itilcategories';
 
@@ -628,7 +697,7 @@ class RuleTicket extends Rule {
       $actions['_groups_id_requester']['type']              = 'dropdown';
       $actions['_groups_id_requester']['table']             = 'glpi_groups';
       $actions['_groups_id_requester']['condition']         = ['is_requester' => 1];
-      $actions['_groups_id_requester']['force_actions']     = ['assign', 'append', 'fromitem', 'defaultfromuser'];
+      $actions['_groups_id_requester']['force_actions']     = ['assign', 'append', 'fromitem', 'defaultfromuser','regex_result'];
       $actions['_groups_id_requester']['permitseveral']     = ['append'];
       $actions['_groups_id_requester']['appendto']          = '_additional_groups_requesters';
 
@@ -690,6 +759,14 @@ class RuleTicket extends Rule {
       $actions['affectobject']['type']                      = 'text';
       $actions['affectobject']['force_actions']             = ['affectbyip', 'affectbyfqdn',
                                                                     'affectbymac'];
+
+      $actions['assign_appliance']['name']                  = _n('Associated element', 'Associated elements', Session::getPluralNumber())." : ".Appliance::getTypeName(1);
+      $actions['assign_appliance']['type']                  = 'dropdown';
+      $actions['assign_appliance']['table']                 = 'glpi_appliances';
+      $actions['assign_appliance']['condition']             = ['is_helpdesk_visible' => 1];
+      $actions['assign_appliance']['permitseveral']         = ['append'];
+      $actions['assign_appliance']['force_actions']         = ['assign','regex_result', 'append'];
+      $actions['assign_appliance']['appendto']              = 'items_id';
 
       $actions['slas_id_ttr']['table']                      = 'glpi_slas';
       $actions['slas_id_ttr']['field']                      = 'name';
@@ -778,6 +855,23 @@ class RuleTicket extends Rule {
       $actions['solution_template']['table']                 = 'glpi_solutiontemplates';
       $actions['solution_template']['force_actions']         = ['assign'];
 
+      $actions['task_template']['name']                      = _n('Task template', 'Task templates', 1);
+      $actions['task_template']['type']                      = 'dropdown';
+      $actions['task_template']['table']                     = TaskTemplate::getTable();
+      $actions['task_template']['force_actions']             = ['append'];
+      $actions['task_template']['permitseveral']             = ['append'];
+      $actions['task_template']['appendto']                  = '_tasktemplates_id';
+
+      $actions['itilfollowup_template']['name']              = ITILFollowupTemplate::getTypeName(1);
+      $actions['itilfollowup_template']['type']              = 'dropdown';
+      $actions['itilfollowup_template']['table']             = ITILFollowupTemplate::getTable();
+      $actions['itilfollowup_template']['force_actions']     = ['append'];
+      $actions['itilfollowup_template']['permitseveral']     = ['append'];
+      $actions['itilfollowup_template']['appendto']          = '_itilfollowuptemplates_id';
+
+      $actions['global_validation']['name']                  = _n('Validation', 'Validations', 1);
+      $actions['global_validation']['type']                  = 'dropdown_validation_status';
+
       return $actions;
    }
 
@@ -795,6 +889,11 @@ class RuleTicket extends Rule {
                                     'long'  => __('Business rules for ticket (entity parent)')];
 
       return $values;
+   }
+
+
+   static function getIcon() {
+      return Ticket::getIcon();
    }
 
 }

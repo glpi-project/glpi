@@ -34,4 +34,3 @@ include ('../inc/includes.php');
 
 $dropdown = new Holiday();
 include (GLPI_ROOT . "/front/dropdown.common.form.php");
-

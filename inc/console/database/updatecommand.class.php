@@ -36,19 +36,22 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Cache\CacheManager;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
+use Glpi\Console\Traits\TelemetryActivationTrait;
 use Migration;
 use Session;
-use Update;
-
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Update;
 
 class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionCommandInterface {
+
+   use TelemetryActivationTrait;
 
    /**
     * Error code returned when trying to update from an unstable version.
@@ -86,9 +89,14 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
          InputOption::VALUE_NONE,
          __('Force execution of update from v-1 version of GLPI even if schema did not changed')
       );
+
+      $this->registerTelemetryActivationOptions($this->getDefinition());
    }
 
    protected function initialize(InputInterface $input, OutputInterface $output) {
+
+      global $GLPI_CACHE;
+      $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance(); // Use dedicated "installer" cache
 
       parent::initialize($input, $output);
 
@@ -110,7 +118,7 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
       Session::initEntityProfiles(2);
       Session::changeProfile(4);
 
-      // Display current/future state informations
+      // Display current/future state information
       $currents            = $update->getCurrents();
       $current_version     = $currents['version'];
       $current_db_version  = $currents['dbversion'];
@@ -169,7 +177,7 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
          $run = $question_helper->ask(
             $input,
             $output,
-            new ConfirmationQuestion(__('Do you want to continue ?') . ' [Yes/no]', true)
+            new ConfirmationQuestion(__('Do you want to continue?') . ' [Yes/no]', true)
          );
          if (!$run) {
             $output->writeln(
@@ -180,20 +188,12 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
          }
       }
 
-      $update->doUpdates($current_version);
+      $update->doUpdates($current_version, $force);
+      $output->writeln('<info>' . __('Migration done.') . '</info>');
 
-      if (version_compare($current_db_version, GLPI_SCHEMA_VERSION, 'ne')) {
-         // Migration is considered as done as Update class has the responsibility
-         // to run updates if schema has changed (even for "pre-versions".
-         $output->writeln('<info>' . __('Migration done.') . '</info>');
-      } else if ($force) {
-         // Replay last update script even if there is no schema change.
-         // It can be used in dev environment when update script has been updated/fixed.
-         include_once(GLPI_ROOT . '/install/update_955_956.php');
-         update955to956();
+      (new CacheManager())->resetAllCaches(); // Ensure cache will not use obsolete data
 
-         $output->writeln('<info>' . __('Last migration replayed.') . '</info>');
-      }
+      $this->handTelemetryActivation($input, $output);
 
       return 0; // Success
    }

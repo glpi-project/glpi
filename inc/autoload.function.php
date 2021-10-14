@@ -270,17 +270,6 @@ function _nx($ctx, $sing, $plural, $nb, $domain = 'glpi') {
  * @return void|boolean
  */
 function glpi_autoload($classname) {
-   global $DEBUG_AUTOLOAD;
-   static $notfound = ['xStates'    => true,
-                            'xAllAssets' => true, ];
-   // empty classname or non concerted plugin or classname containing dot (leaving GLPI main treee)
-   if (empty($classname) || is_numeric($classname) || (strpos($classname, '.') !== false)) {
-      trigger_error(
-         sprintf('Trying to load a forbidden class name "%1$s"', $classname),
-         E_USER_ERROR
-      );
-      return false;
-   }
 
    if ($classname === 'phpCAS'
        && file_exists(stream_resolve_include_path("CAS.php"))) {
@@ -290,12 +279,15 @@ function glpi_autoload($classname) {
 
    $dir = GLPI_ROOT . "/inc/";
 
-   // Deprecation warn for Computer_Software* classes
-   if ($classname === 'Computer_SoftwareLicense') {
-      Toolbox::deprecated('Computer_SoftwareLicense has been replaced by Item_SoftwareLicense.');
-   }
-   if ($classname === 'Computer_SoftwareVersion') {
-      Toolbox::deprecated('Computer_SoftwareVersion has been replaced by Item_SoftwareVersion.');
+   // Deprecation warn for RuleImportComputer* classes
+   if (in_array($classname, ['RuleImportComputer', 'RuleImportComputerCollection'])) {
+      Toolbox::deprecated(
+         sprintf(
+            '%s has been replaced by %s.',
+            $classname,
+            str_replace('Computer', 'Asset', $classname)
+         )
+      );
    }
 
    if ($plug = isPluginItemType($classname)) {
@@ -346,15 +338,6 @@ function glpi_autoload($classname) {
 
    if (file_exists("$dir$item.class.php")) {
       include_once("$dir$item.class.php");
-      if (isset($_SESSION['glpi_use_mode'])
-          && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
-         $DEBUG_AUTOLOAD[] = $classname;
-      }
-
-   } else if (!isset($notfound["x$classname"])) {
-      // trigger an error to get a backtrace, but only once (use prefix 'x' to handle empty case)
-      // trigger_error("GLPI autoload : file $dir$item.class.php not founded trying to load class '$classname'");
-      $notfound["x$classname"] = true;
    }
 }
 
@@ -396,6 +379,35 @@ if ($needrun) {
       echo $deps_install_msg;
    } else {
       echo nl2br($deps_install_msg);
+   }
+   die(1);
+}
+
+// Check if locales are compiled.
+$need_mo_compile = false;
+$locales_files = scandir(GLPI_ROOT . '/locales');
+$po_files = preg_grep('/\.po$/', $locales_files);
+$mo_files = preg_grep('/\.mo$/', $locales_files);
+if (count($mo_files) < count($po_files)) {
+   $need_mo_compile = true;
+} else if (file_exists(GLPI_ROOT . '/locales/glpi.pot')) {
+   // Assume that `locales/glpi.pot` file only exists when installation mode is GIT
+   foreach ($po_files as $po_file) {
+      $po_file = GLPI_ROOT . '/locales/' . $po_file;
+      $mo_file = preg_replace('/\.po$/', '.mo', $po_file);
+      if (!file_exists($mo_file) || filemtime($mo_file) < filemtime($po_file)) {
+         $need_mo_compile = true;
+         break; // No need to scan the whole dir
+      }
+   }
+}
+if ($need_mo_compile) {
+   $mo_compile_msg = 'Application locales have to be compiled.' . PHP_EOL
+      . 'Run "php bin/console locales:compile" in the glpi tree to fix this.' . PHP_EOL;
+   if (isCommandLine()) {
+      echo $mo_compile_msg;
+   } else {
+      echo nl2br($mo_compile_msg);
    }
    die(1);
 }

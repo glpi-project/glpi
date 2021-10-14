@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -86,7 +88,7 @@ class NotificationAjax implements NotificationInterface {
 
       $queue = new QueuedNotification();
 
-      if (!$queue->add(Toolbox::addslashes_deep($data))) {
+      if (!$queue->add(Sanitizer::sanitize($data, true))) {
          Session::addMessageAfterRedirect(__('Error inserting browser notification to queue'), true, ERROR);
          return false;
       } else {
@@ -121,7 +123,7 @@ class NotificationAjax implements NotificationInterface {
          ]);
 
          if ($iterator->numrows()) {
-            while ($row = $iterator->next()) {
+            foreach ($iterator as $row) {
                $url = null;
                if ($row['itemtype'] != 'NotificationAjax' &&
                   method_exists($row['itemtype'], 'getFormURL')

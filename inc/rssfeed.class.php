@@ -30,9 +30,13 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Toolbox\RichText;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
+
 // $feed = new SimplePie();
 // $feed->set_cache_location('../files/_rss');
 // $feed->set_cache_duration(3600);
@@ -410,7 +414,6 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
          'forcegroupby'       => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -672,15 +675,13 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
          echo "<tr class='tab_bg_2'>";
          echo "<td>".__('Name')."</td>";
          echo "<td>";
-         Html::autocompletionTextField($this, "name",
-                                       ['entity' => -1,
-                                             'user'   => $this->fields["users_id"]]);
+         echo Html::input('name', ['value' => $this->fields['name']]);
          echo "</td><td colspan ='2'>&nbsp;</td></tr>\n";
       }
 
       echo "<tr class='tab_bg_1'><td>" . __('URL') . "</td>";
       echo "<td colspan='3'>";
-      echo "<input type='text' name='url' size='100' value='".$this->fields["url"]."'>";
+      echo "<input type='text' name='url' size='100' value='".$this->fields["url"]."' class='form-control'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -691,9 +692,9 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
       echo "</td>";
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
       echo "<td rowspan='$rowspan' class='middle'>";
-      echo "<textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"].
+      echo "<textarea  class='form-control' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"].
            "</textarea>";
-      echo "</td></tr>\n";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Active')."</td>";
@@ -781,39 +782,29 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
          return false;
       }
       $feed = self::getRSSFeed($this->fields['url'], $this->fields['refresh_rate']);
+      $rss_feed = [
+         'items'  => []
+      ];
       echo "<div class='firstbloc'>";
       if (!$feed || $feed->error()) {
-         echo __('Error retrieving RSS feed');
+         $rss_feed['error'] = !$feed ? __('Error retrieving RSS feed') : $feed->error();
          $this->setError(true);
       } else {
          $this->setError(false);
-         echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr><th colspan='3'>".$feed->get_title()."</th>";
+         $rss_feed['title'] = $feed->get_title();
          foreach ($feed->get_items(0, $this->fields['max_items']) as $item) {
-            $link = $item->get_permalink();
-            echo "<tr class='tab_bg_1'><td>";
-            echo Html::convDateTime($item->get_date('Y-m-d H:i:s'));
-            echo "</td><td>";
-            if (!is_null($link)) {
-               echo "<a target='_blank' href='$link'>".$item->get_title().'</a>';
-            } else {
-               $item->get_title();
-            }
-            echo "</td><td>";
-            $rand = mt_rand();
-            echo "<span id='rssitem$rand' class='pointer'>";
-            echo Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($item->get_content())),
-                                   1000);
-            echo "</span>";
-            Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($item->get_content()),
-                               ['applyto' => "rssitem$rand",
-                                     'display' => true]);
-            echo "</td></tr>";
+            $rss_feed['items'][] = [
+               'title'     => $item->get_title(),
+               'link'      => $item->get_permalink(),
+               'timestamp' => Html::convDateTime($item->get_date('Y-m-d H:i:s')),
+               'content'   => $item->get_content()
+            ];
          }
-         echo "</table>";
-
       }
-      echo "</div>";
+
+      TemplateRenderer::getInstance()->display('components/rss_feed.html.twig', [
+         'rss_feed'  => $rss_feed
+      ]);
    }
 
 
@@ -902,11 +893,12 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
    /**
     * Show list for central view
     *
-    * @param $personal boolean   display rssfeeds created by me ? (true by default)
+    * @param $personal boolean   display rssfeeds created by me ?
+    * @param $personal $display  if false, return html
     *
     * @return void
     **/
-   static function showListForCentral($personal = true) {
+   static function showListForCentral(bool $personal = true, bool $display = true) {
       global $DB, $CFG_GLPI;
 
       $users_id             = Session::getLoginUserID();
@@ -957,7 +949,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
       $nb = count($iterator);
       $items   = [];
       $rssfeed = new self();
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if ($rssfeed->getFromDB($data['id'])) {
             // Force fetching feeds
             if ($feed = self::getRSSFeed($data['url'], $data['refresh_rate'])) {
@@ -970,55 +962,60 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
          }
       }
 
-      echo "<br><table class='tab_cadrehov'>";
-      echo "<tr class='noHover'><th colspan='2'><div class='relative'><span>$titre</span>";
+      $output = "";
+      $output.= "<table class='table table-striped table-hover card-table'>";
+      $output.= "<thead>";
+      $output.= "<tr class='noHover'><th colspan='2'><div class='relative'><span>$titre</span>";
 
       if (($personal && self::canCreate())
             || (!$personal && Session::haveRight('rssfeed_public', CREATE))) {
-         echo "<span class='floatright'>";
-         echo "<a href='".RSSFeed::getFormURL()."'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."' title=\"".
+         $output.= "<span class='float-end'>";
+         $output.= "<a href='".RSSFeed::getFormURL()."'>";
+         $output.= "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."' title=\"".
                 __s('Add')."\"></a></span>";
       }
 
-      echo "</div></th></tr>\n";
+      $output.= "</div></th></tr>";
+      $output.= "</thead>";
 
       if ($nb) {
          usort($items, ['SimplePie', 'sort_items']);
          foreach ($items as $item) {
-            echo "<tr class='tab_bg_1'><td>";
-            echo Html::convDateTime($item->get_date('Y-m-d H:i:s'));
-            echo "</td><td>";
+            $output.= "<tr class='tab_bg_1'><td>";
+            $output.= Html::convDateTime($item->get_date('Y-m-d H:i:s'));
+            $output.= "</td><td>";
             $link = $item->feed->get_permalink();
             if (empty($link)) {
-               echo $item->feed->get_title();
+               $output.= $item->feed->get_title();
             } else {
-               echo "<a target='_blank' href='$link'>".$item->feed->get_title().'</a>';
+               $output.= "<a target='_blank' href='$link'>".$item->feed->get_title().'</a>';
             }
             $link = $item->get_permalink();
-            // echo "<br>";
-            // echo $item->get_title();
-            // echo "</td><td>";
 
             $rand = mt_rand();
-            echo "<div id='rssitem$rand' class='pointer rss'>";
+            $output.= "<div id='rssitem$rand'>";
             if (!is_null($link)) {
-               echo "<a target='_blank' href='$link'>";
+               $output.= "<a target='_blank' href='$link'>";
             }
-            echo $item->get_title();
-            // echo Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($item->get_content())), 300);
+            $output.= $item->get_title();
             if (!is_null($link)) {
-               echo "</a>";
+               $output.= "</a>";
             }
-            echo "</div>";
-            Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($item->get_content()),
-                                                                        ['applyto' => "rssitem$rand",
-                                                                              'display' => true]);
-            echo "</td></tr>";
+            $output.= "</div>";
+            $output.= Html::showToolTip(RichText::getSafeHtml($item->get_content()), [
+               'applyto' => "rssitem$rand",
+               'display' => false
+            ]);
+            $output.= "</td></tr>";
          }
       }
-      echo "</table>\n";
+      $output.= "</table>";
 
+      if ($display) {
+         echo $output;
+      } else {
+         return $output;
+      }
    }
 
    /**

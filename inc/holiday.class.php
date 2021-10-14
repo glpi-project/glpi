@@ -122,4 +122,40 @@ class Holiday extends CommonDropdown {
       return $input;
    }
 
+   function post_updateItem($history = 1) {
+
+      $this->invalidateCalendarHolidayCache();
+
+      parent::post_updateItem($history);
+   }
+
+   function post_deleteFromDB() {
+
+      $this->invalidateCalendarHolidayCache();
+
+      parent::post_deleteFromDB();
+   }
+
+   function cleanDBonPurge() {
+
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Calendar_Holiday::class,
+         ]
+      );
+   }
+
+   /**
+    * Invalidate holidays cache on linked calendars.
+    *
+    * @return void
+    */
+   private function invalidateCalendarHolidayCache(): void {
+      $calendar_holiday = new Calendar_Holiday();
+      $calendar_holiday->invalidateHolidayCache($this->fields['id']);
+   }
+
+   static function getIcon() {
+      return "far fa-calendar-times";
+   }
 }

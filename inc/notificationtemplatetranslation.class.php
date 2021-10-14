@@ -34,6 +34,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\RichText;
+use Glpi\Toolbox\Sanitizer;
+
 /**
  * NotificationTemplateTranslation Class
 **/
@@ -85,7 +88,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
    }
 
 
-   function showForm($ID, $options) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       if (!Config::canUpdate()) {
@@ -104,8 +107,6 @@ class NotificationTemplateTranslation extends CommonDBChild {
       $template = new NotificationTemplate();
       $template->getFromDB($notificationtemplates_id);
 
-      Html::initEditorSystem('content_html');
-
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -117,7 +118,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       Ajax::createIframeModalWindow("tags".$rand,
                                     $CFG_GLPI['root_doc']."/front/notification.tags.php?sub_type=".
                                        addslashes($template->getField('itemtype')));
-      echo "<a class='vsubmit' href='#' onClick=\"".Html::jsGetElementbyID("tags".$rand).".dialog('open'); return false;\">".__('Show list of available tags')."</a>";
+      echo "<a class='btn btn-primary' href='#' data-bs-toggle='modal' data-bs-target='#tags$rand'>".__('Show list of available tags')."</a>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -138,7 +139,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>" . __('Subject') . "</td>";
       echo "<td colspan='3'>";
-      Html::autocompletionTextField($this, 'subject', ['size' => 100]);
+      echo Html::input('subject', ['value' => $this->fields['subject'], 'size' => 100]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>";
@@ -152,8 +153,16 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "<td>";
       echo __('Email HTML body');
       echo "</td><td colspan='3'>";
-      echo "<textarea cols='100' rows='15' name='content_html'>".$this->fields["content_html"];
-      echo "</textarea>";
+      $content_id = "content$rand";
+      Html::textarea(['name'              => 'content_html',
+                         'value'             => RichText::getSafeHtml($this->fields['content_html'], true, true),
+                         'rand'              => $rand,
+                         'editor_id'         => $content_id,
+                         'enable_fileupload' => false,
+                         'enable_richtext'   => true,
+                         'cols'              => 100,
+                         'rows'              => 15]);
+
       echo "<input type='hidden' name='notificationtemplates_id' value='".
              $template->getField('id')."'>";
       echo "</td></tr>";
@@ -174,7 +183,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       if ($canedit) {
          echo "<div class='center'>".
-              "<a class='vsubmit' href='".Toolbox::getItemTypeFormURL('NotificationTemplateTranslation').
+              "<a class='btn btn-primary' href='".Toolbox::getItemTypeFormURL('NotificationTemplateTranslation').
                 "?notificationtemplates_id=".$nID."'>". __('Add a new translation')."</a></div><br>";
       }
 
@@ -243,8 +252,14 @@ class NotificationTemplateTranslation extends CommonDBChild {
    */
    static function cleanContentHtml(array $input) {
 
-      $txt = Html::clean(Toolbox::unclean_cross_side_scripting_deep($input['content_html']));
-      $txt = trim(html_entity_decode($txt, 0, 'UTF-8'));
+      // Unsanitize
+      $txt = Sanitizer::unsanitize($input['content_html'], true);
+
+      // Get as text plain text
+      $txt = RichText::getTextFromHtml($txt, true);
+
+      // Sanitize result
+      $txt = Sanitizer::sanitize($txt, true);
 
       if (!$txt) {
          // No HTML (nothing to display)
@@ -292,7 +307,6 @@ class NotificationTemplateTranslation extends CommonDBChild {
          'name'               => __('Subject'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [

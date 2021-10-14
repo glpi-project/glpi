@@ -163,7 +163,7 @@ class Itil_Project extends CommonDBRelation {
 
          $items = [];
          $used  = [];
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $items[$data['id']] = $data;
             $used[$data['id']]  = $data['id'];
          }
@@ -203,7 +203,7 @@ class Itil_Project extends CommonDBRelation {
             );
             echo '</td>';
             echo '<td class="center">';
-            echo '<input type="submit" name="add" value="' . _sx('button', 'Add') . '" class="submit" />';
+            echo '<input type="submit" name="add" value="' . _sx('button', 'Add') . '" class="btn btn-primary" />';
             echo '</td>';
             echo '</tr>';
             echo '</table>';
@@ -308,7 +308,7 @@ class Itil_Project extends CommonDBRelation {
 
       $projects = [];
       $used     = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $projects[$data['id']] = $data;
          $used[$data['id']]     = $data['id'];
       }
@@ -336,7 +336,7 @@ class Itil_Project extends CommonDBRelation {
          );
          echo '</td>';
          echo '<td class="center">';
-         echo '<input type="submit" name="add" value=" ' . _sx('button', 'Add') . '" class="submit" />';
+         echo '<input type="submit" name="add" value=" ' . _sx('button', 'Add') . '" class="btn btn-primary" />';
          echo '</td>';
          echo '</tr>';
          echo '</table>';
@@ -391,30 +391,5 @@ class Itil_Project extends CommonDBRelation {
          Html::closeForm();
       }
       echo '</div>';
-   }
-
-   /**
-    * Duplicate all itil items from a project template to his clone.
-    *
-    * @deprecated 9.5
-    *
-    * @param integer $oldid  ID of the item to clone
-    * @param integer $newid  ID of the item cloned
-    *
-    * @return void
-    **/
-   static function cloneItilProject($oldid, $newid) {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      $itil_items = $DB->request(self::getTable(), ['WHERE'  => ['projects_id' => $oldid]]);
-      foreach ($itil_items as $data) {
-         unset($data['id']);
-         $data['projects_id'] = $newid;
-         $data                = Toolbox::addslashes_deep($data);
-
-         $itil_project = new Itil_Project();
-         $itil_project->add($data);
-      }
    }
 }

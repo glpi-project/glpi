@@ -99,7 +99,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField {
          ]);
 
          if (count($iterator)) {
-            $result = $iterator->next();
+            $result = $iterator->current();
             $a = new static();
             $a->delete(['id' => $result['id']]);
          }
@@ -154,7 +154,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField {
       $allowed_fields = $tt->getAllowedFields($withtypeandcategory, true);
       $fields         = [];
       $multiple       = self::getMultiplePredefinedValues();
-      while ($rule = $iterator->next()) {
+      foreach ($iterator as $rule) {
          if (isset($allowed_fields[$rule['num']])) {
             if (in_array($rule['num'], $multiple)) {
                if ($allowed_fields[$rule['num']] == 'items_id') {
@@ -262,7 +262,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField {
       $predeffields = [];
       $used         = [];
       $numrows      = count($iterator);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $predeffields[$data['id']] = $data;
          $used[$data['num']] = $data['num'];
       }

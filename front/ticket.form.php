@@ -57,6 +57,12 @@ foreach ($date_fields as $date_field) {
    }
 }
 
+// as _actors virtual field stores json, bypass automatic escaping
+if (isset($_UPOST['_actors'])) {
+   $_POST['_actors'] = json_decode($_UPOST['_actors'], true);
+   $_REQUEST['_actors'] = $_POST['_actors'];
+}
+
 if (isset($_POST["add"])) {
    $track->check(-1, CREATE, $_POST);
 
@@ -91,7 +97,6 @@ if (isset($_POST["add"])) {
    Event::log($_POST["id"], "ticket", 4, "tracking",
               //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
-
 
    if ($track->can($_POST["id"], READ)) {
       $toadd = '';
@@ -131,7 +136,7 @@ if (isset($_POST["add"])) {
                  //TRANS: %s is the user login
                  sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
    }
-   $track->redirectToList();
+   Html::back();
 
 } else if (isset($_POST['sla_delete'])) {
    $track->check($_POST["id"], UPDATE);
@@ -153,41 +158,27 @@ if (isset($_POST["add"])) {
 
    Html::redirect(Ticket::getFormURLWithID($_POST["id"]));
 
-} else if (isset($_POST['addme_observer'])) {
-   $track->check($_POST['tickets_id'], READ);
+} else if (isset($_POST['addme_as_actor'])) {
+   $id = (int) $_POST['id'];
+   $track->check($id, READ);
    $input = array_merge(Toolbox::addslashes_deep($track->fields), [
-      'id' => $_POST['tickets_id'],
-      '_itil_observer' => [
+      'id' => $id,
+      '_itil_'.$_POST['actortype'] => [
          '_type' => "user",
          'users_id' => Session::getLoginUserID(),
          'use_notification' => 1,
       ]
    ]);
    $track->update($input);
-   Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
+   Event::log($id, "ticket", 4, "tracking",
               //TRANS: %s is the user login
               sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
-   Html::redirect(Ticket::getFormURLWithID($_POST['tickets_id']));
+   Html::redirect(Ticket::getFormURLWithID($id));
 
-} else if (isset($_POST['addme_assign'])) {
-   $track->check($_POST['tickets_id'], READ);
-   $input = array_merge(Toolbox::addslashes_deep($track->fields), [
-      'id' => $_POST['tickets_id'],
-      '_itil_assign' => [
-         '_type' => "user",
-         'users_id' => Session::getLoginUserID(),
-         'use_notification' => 1,
-      ]
-   ]);
-   $track->update($input);
-   Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
-              //TRANS: %s is the user login
-              sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
-   Html::redirect(Ticket::getFormURLWithID($_POST['tickets_id']));
-} else if (isset($_REQUEST['delete_document'])) {
-   $track->getFromDB((int)$_REQUEST['tickets_id']);
+} else if (isset($_POST['delete_document'])) {
+   $track->getFromDB((int)$_POST['tickets_id']);
    $doc = new Document();
-   $doc->getFromDB(intval($_REQUEST['documents_id']));
+   $doc->getFromDB(intval($_POST['documents_id']));
    if ($doc->can($doc->getID(), UPDATE)) {
       $document_item = new Document_Item;
       $found_document_items = $document_item->find([
@@ -220,14 +211,17 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
    $options['id'] = $_GET["id"];
    $track->display($options);
 
-   if (isset($_GET['_sol_to_kb'])) {
-      Ajax::createIframeModalWindow('savetokb',
-                                    KnowbaseItem::getFormURL().
-                                     "?_in_modal=1&item_itemtype=Ticket&item_items_id=".
-                                     $_GET["id"],
-                                    ['title'         => __('Save solution to the knowledge base'),
-                                          'reloadonclose' => false]);
-      echo Html::scriptBlock('$(function() {' .Html::jsGetElementbyID('savetokb').".dialog('open'); });");
+   $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Ticket&item_items_id=' . $_GET['id'];
+   if (strpos($url, '_to_kb=') !== false) {
+      Ajax::createIframeModalWindow(
+         'savetokb',
+         $url,
+         [
+            'title'         => __('Save and add to the knowledge base'),
+            'reloadonclose' => false,
+            'autoopen'      => true,
+         ]
+      );
    }
 
 } else {
@@ -236,7 +230,6 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
       die;
    }
 
-   Html::header(__('New ticket'), '', "helpdesk", "ticket");
    unset($_REQUEST['id']);
    unset($_GET['id']);
    unset($_POST['id']);
@@ -252,7 +245,14 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
        && isset($_REQUEST['items_id'])) {
       $_REQUEST['items_id'] = [$_REQUEST['itemtype'] => [$_REQUEST['items_id']]];
    }
-   $track->display($_REQUEST);
+
+   if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
+      Html::header(sprintf(__('%s Kanban'), Ticket::getTypeName(1)), '', "helpdesk", "ticket");
+      $track::showKanban(0);
+   } else {
+      Html::header(__('New ticket'), '', "helpdesk", "ticket");
+      $track->display($_REQUEST);
+   }
 }
 
 

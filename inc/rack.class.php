@@ -79,262 +79,6 @@ class Rack extends CommonDBTM {
    }
 
 
-   function showForm($ID, $options = []) {
-      global $DB, $CFG_GLPI;
-      $rand = mt_rand();
-      $tplmark = $this->getAutofillMark('name', $options);
-
-      $this->initForm($ID, $options);
-      $this->showFormHeader($options);
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='textfield_name$rand'>".__('Name')."</label></td>";
-      echo "<td>";
-      $objectName = autoName(
-         $this->fields["name"],
-         "name",
-         (isset($options['withtemplate']) && ( $options['withtemplate']== 2)),
-         $this->getType(),
-         $this->fields["entities_id"]
-      );
-      Html::autocompletionTextField(
-         $this,
-         'name',
-         [
-            'value'     => $objectName,
-            'rand'      => $rand
-         ]
-      );
-      echo "</td>";
-
-      echo "<td><label for='dropdown_states_id$rand'>".__('Status')."</label></td>";
-      echo "<td>";
-      State::dropdown([
-         'value'     => $this->fields["states_id"],
-         'entity'    => $this->fields["entities_id"],
-         'condition' => ['is_visible_rack' => 1],
-         'rand'      => $rand]
-      );
-      echo "</td></tr>\n";
-
-      $this->showDcBreadcrumb();
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_locations_id$rand'>".Location::getTypeName(1)."</label></td>";
-      echo "<td>";
-      Location::dropdown([
-         'value'  => $this->fields["locations_id"],
-         'entity' => $this->fields["entities_id"],
-         'rand'   => $rand
-      ]);
-      echo "</td>";
-      echo "<td><label for='dropdown_racktypes_id$rand'>"._n('Type', 'Types', 1)."</label></td>";
-      echo "<td>";
-      RackType::dropdown([
-         'value'  => $this->fields["racktypes_id"],
-         'rand'   => $rand
-      ]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_users_id_tech$rand'>".__('Technician in charge of the hardware')."</label></td>";
-      echo "<td>";
-      User::dropdown([
-         'name'   => 'users_id_tech',
-         'value'  => $this->fields["users_id_tech"],
-         'right'  => 'own_ticket',
-         'entity' => $this->fields["entities_id"],
-         'rand'   => $rand
-      ]);
-      echo "</td>";
-      echo "<td><label for='dropdown_manufacturers_id$rand'>".Manufacturer::getTypeName(1)."</label></td>";
-      echo "<td>";
-      Manufacturer::dropdown([
-         'value' => $this->fields["manufacturers_id"],
-         'rand' => $rand
-      ]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_groups_id_tech$rand'>".__('Group in charge of the hardware')."</label></td>";
-      echo "<td>";
-      Group::dropdown([
-         'name'      => 'groups_id_tech',
-         'value'     => $this->fields['groups_id_tech'],
-         'entity'    => $this->fields['entities_id'],
-         'condition' => ['is_assign' => 1],
-         'rand'      => $rand
-      ]);
-
-      echo "</td>";
-      echo "<td><label for='dropdown_rackmodels_id$rand'>"._n('Model', 'Models', 1)."</label></td>";
-      echo "<td>";
-      RackModel::dropdown([
-         'value'  => $this->fields["rackmodels_id"],
-         'rand'   => $rand
-      ]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='textfield_serial$rand'>".__('Serial number')."</label></td>";
-      echo "<td >";
-      Html::autocompletionTextField($this, 'serial', ['rand' => $rand]);
-      echo "</td>";
-
-      echo "<td><label for='textfield_otherserial$rand'>".sprintf(__('%1$s%2$s'), __('Inventory number'), $tplmark).
-           "</label></td>";
-      echo "<td>";
-
-      $objectName = autoName($this->fields["otherserial"], "otherserial",
-                             (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
-                             $this->getType(), $this->fields["entities_id"]);
-      Html::autocompletionTextField(
-         $this,
-         'otherserial',
-         [
-            'value'     => $objectName,
-            'rand'      => $rand
-         ]
-      );
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_dcrooms_id$rand'>".DCRoom::getTypeName(1)."</label></td>";
-      echo "<td>";
-      $rooms = $DB->request([
-         'SELECT' => ['id', 'name'],
-         'FROM'   => DCRoom::getTable()
-      ]);
-      $rooms_list = [];
-      while ($row = $rooms->next()) {
-         $rooms_list[$row['id']] = $row['name'];
-      }
-      Dropdown::showFromArray(
-         "dcrooms_id",
-         $rooms_list, [
-            'value'                 => $this->fields["dcrooms_id"],
-            'rand'                  => $rand,
-            'display_emptychoice'   => true
-         ]
-      );
-      $current = $this->fields['position'];
-
-      Ajax::updateItemOnSelectEvent(
-         "dropdown_dcrooms_id$rand",
-         "room_positions",
-         $CFG_GLPI["root_doc"]."/ajax/dcroom_size.php",
-         ['id' => '__VALUE__', 'current' => $current, 'rand' => $rand]
-      );
-      Ajax::updateItemOnSelectEvent(
-         "dropdown_dcrooms_id$rand",
-         "dropdown_locations_id$rand",
-         $CFG_GLPI["root_doc"]."/ajax/dropdownLocation.php", [
-            'items_id' => '__VALUE__',
-            'itemtype' => 'DCRoom'
-         ]
-      );
-
-      echo "</td>";
-
-      echo "<td><label for='dropdown_position$rand'>".__('Position in room')."</label></td>";
-      echo "<td id='room_positions'>";
-      $dcroom = new DCRoom();
-      $positions = [];
-      $used = [];
-      if ((int)$this->fields['dcrooms_id'] > 0 && $dcroom->getFromDB($this->fields['dcrooms_id'])) {
-         $used = $dcroom->getFilled($current);
-         $positions = $dcroom->getAllPositions();
-         Dropdown::showFromArray(
-            'position',
-            $positions, [
-               'value'                 => $current,
-               'rand'                  => $rand,
-               'display_emptychoice'   => true,
-               'used'                  => $used
-            ]
-         );
-      } else {
-         echo __('No room found or selected');
-      }
-
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_room_orientation$rand'>".__('Door orientation in room')."</label></td>";
-      echo "<td>";
-      Dropdown::showFromArray(
-         "room_orientation",
-         [
-            self::ROOM_O_NORTH => __('North'),
-            self::ROOM_O_EAST  => __('East'),
-            self::ROOM_O_SOUTH => __('South'),
-            self::ROOM_O_WEST  => __('West'),
-         ], [
-            'value'                 => $this->fields["room_orientation"],
-            'rand'                  => $rand,
-            'display_emptychoice'   => true
-         ]
-      );
-      echo "</td>";
-      echo "<td colspan='2'></td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_number_units$rand'>" . __('Number of units') . "</label></td><td>";
-      Dropdown::showNumber(
-         "number_units", [
-            'value'  => $this->fields["number_units"],
-            'min'    => 1,
-            'max'    => 100,
-            'step'   => 1,
-            'rand'   => $rand
-         ]
-      );
-      echo "&nbsp;".__('U')."</td>";
-
-      echo "<td><label for='width$rand'>".__('Width')."</label></td>";
-      echo "<td>".Html::input("width", ['id' => "width$rand", 'value' => $this->fields["width"]]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='height$rand'>".__('Height')."</label></td>";
-      echo "<td>".Html::input("height", ['id' => "height$rand", 'value' => $this->fields["height"]]);
-      echo "<td><label for='depth$rand'>".__('Depth')."</label></td>";
-      echo "<td>".Html::input("depth", ['id' => "depth$rand", 'value' => $this->fields["depth"]]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='max_power$rand'>".__('Max. power (in watts)')."</label></td>";
-      echo "<td>".Html::input("max_power", ['id' => "max_power$rand", 'value' => $this->fields["max_power"]]);
-      echo "<td><label for='mesured_power$rand'>".__('Measured power (in watts)')."</label></td>";
-      echo "<td>".Html::input("mesured_power", ['id' => "mesured_power$rand", 'value' => $this->fields["mesured_power"]]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='max_weight$rand'>".__('Max. weight')."</label></td>";
-      echo "<td>".Html::input("max_weight", ['id' => "max_weight$rand", 'value' => $this->fields["max_weight"]]);
-      echo "<td><label for='bgcolor$rand'>".__('Background color')."</label></td>";
-      echo "<td>";
-      Html::showColorField(
-         'bgcolor', [
-            'value'  => $this->fields['bgcolor'],
-            'rand'   => $rand
-         ]
-      );
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='comment'>".__('Comments')."</label></td>";
-      echo "<td colspan='3' class='middle'>";
-
-      echo "<textarea cols='45' rows='3' id='comment' name='comment' >".
-           $this->fields["comment"];
-      echo "</textarea></td></tr>";
-
-      $this->showFormButtons($options);
-      return true;
-   }
-
    function rawSearchOptions() {
       $tab = parent::rawSearchOptions();
 
@@ -380,7 +124,6 @@ class Rack extends CommonDBTM {
          'field'              => 'serial',
          'name'               => __('Serial number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -389,7 +132,6 @@ class Rack extends CommonDBTM {
          'field'              => 'otherserial',
          'name'               => __('Inventory number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -471,7 +213,6 @@ class Rack extends CommonDBTM {
          'massiveaction'      => false,
          'nosearch'           => true,
          'nodisplay'          => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -668,8 +409,8 @@ class Rack extends CommonDBTM {
          $left  = $i * $w_prct;
          $width = ($i+1) * $w_prct;
          echo "
-         .grid-stack > .grid-stack-item[data-gs-x='$i'] { left: $left%;}
-         .grid-stack > .grid-stack-item[data-gs-width='".($i+1)."'] {
+         .grid-stack > .grid-stack-item[gs-x='$i'] { left: $left%;}
+         .grid-stack > .grid-stack-item[gs-w='".($i+1)."'] {
             min-width: $width%;
             width: $width%;
          }";
@@ -694,7 +435,7 @@ class Rack extends CommonDBTM {
             $blueprint_ctrl
             <span class='mini_toggle active'
                   id='toggle_grid'>".__('Grid')."</span>
-            <div class='sep'></div>
+            <div class='clearfix'></div>
          </span>
          <ul class='indexes indexes-x'></ul>
          <ul class='indexes indexes-y'></ul>";
@@ -714,18 +455,16 @@ class Rack extends CommonDBTM {
 
       // add a locked element to bottom to display a full grid
       echo "<div class='grid-stack-item lock-bottom'
-                 data-gs-no-resize='true'
-                 data-gs-no-move='true'
-                 data-gs-height='1'
-                 data-gs-width='$cols'
-                 data-gs-x='0'
-                 data-gs-y='$rows'></div>";
+                 gs-no-resize='true'
+                 gs-no-move='true'
+                 gs-h='1'
+                 gs-w='$cols'
+                 gs-x='0'
+                 gs-y='$rows'></div>";
 
       echo "</div>"; //.grid-stack
       echo $blueprint;
       echo "</div>"; //.grid-room
-      echo "<div class='sep'></div>";
-      echo "<div id='grid-dialog'></div>";
       echo "</div>"; // #viewgraph
 
       $rack_add_tip = __s('Insert a rack here');
@@ -753,35 +492,17 @@ class Rack extends CommonDBTM {
                $('#viewgraph').toggleClass('clear_grid');
             })
 
-         $('.grid-room .grid-stack').gridstack({
+         GridStack.init({
             column: $cols,
             maxRow: ($rows + 1),
             cellHeight: 39,
-            verticalMargin: 0,
+            margin: 0,
             float: true,
             disableOneColumnMode: true,
             animate: true,
             removeTimeout: 100,
             disableResize: true,
-            draggable: {
-              handle: '.grid-stack-item-content',
-              appendTo: 'body',
-              containment: '.grid-stack',
-              cursor: 'move',
-              scroll: true,
-            }
          });
-
-         var lockAll = function() {
-            // lock all item (prevent pushing down elements)
-            $('.grid-stack').each(function (idx, gsEl) {
-               $(gsEl).data('gridstack').locked('.grid-stack-item', true);
-            });
-
-            // add containment to items, this avoid bad collisions on the start of the grid
-            $('.grid-stack .grid-stack-item').draggable('option', 'containment', 'parent');
-         };
-         lockAll(); // call it immediatly
 
          // add indexes
          for (var x = 1; x <= $cols; x++) {
@@ -814,15 +535,18 @@ class Rack extends CommonDBTM {
                      id: item.id,
                      dcrooms_id: $room_id,
                      action: 'move_rack',
-                     x: item.x + 1,
-                     y: item.y + 1,
+                     x: $(item.el).attr('gs-x') + 1,
+                     y: $(item.el).attr('gs-y') + 1,
                   }, function(answer) {
                      var answer = jQuery.parseJSON(answer);
 
                      // revert to old position
                      if (!answer.status) {
                         dirty = true;
-                        grid.move(item.el, x_before_drag, y_before_drag);
+                        grid.update(item.el, {
+                           'x': x_before_drag,
+                           'y': y_before_drag
+                        });
                         dirty = false;
                         displayAjaxMessageAfterRedirect();
                      }
@@ -857,20 +581,12 @@ class Rack extends CommonDBTM {
                var _x = _this.data('x');
                var _y = _this.data('y');
 
-               $.ajax({
+               glpi_ajax_dialog({
                   url : "{$rack->getFormURL()}",
-                  data: {
+                  params: {
                      room: $room_id,
                      position: _x + ',' + _y,
                      ajax: true
-                  },
-                  success: function(data) {
-                     $('#grid-dialog')
-                        .html(data)
-                        .dialog({
-                           modal: true,
-                           width: 'auto'
-                        });
                   }
                });
             }
@@ -987,7 +703,7 @@ JAVASCRIPT;
       ]);
 
       $filled = [];
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $item = new $row['itemtype'];
          if (!$item->getFromDB($row['items_id'])) {
             continue;
@@ -1085,11 +801,12 @@ JAVASCRIPT;
       $bgcolor = $rack->getField('bgcolor');
       $fgcolor = Html::getInvertedColor($bgcolor);
       return "<div class='grid-stack-item room_orientation_".$cell['room_orientation']."'
-                  data-gs-id='".$cell['id']."'
-                  data-gs-height='1'
-                  data-gs-width='1'
-                  data-gs-x='".$cell['_x']."'
-                  data-gs-y='".$cell['_y']."'>
+                  gs-id='".$cell['id']."'
+                  gs-locked='true'
+                  gs-h='1'
+                  gs-w='1'
+                  gs-x='".$cell['_x']."'
+                  gs-y='".$cell['_y']."'>
             <div class='grid-stack-item-content'
                   style='background-color: $bgcolor;
                         color: $fgcolor;'>

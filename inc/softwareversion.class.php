@@ -120,13 +120,13 @@ class SoftwareVersion extends CommonDBChild {
       echo "</td>";
       echo "<td rowspan='4' class='middle'>".__('Comments')."</td>";
       echo "<td class='center middle' rowspan='4'>";
-      echo "<textarea cols='45' rows='3' name='comment' >".$this->fields["comment"];
-      echo "</textarea></td></tr>\n";
+      echo "<textarea class='form-control' rows='3' name='comment' >".$this->fields["comment"];
+      echo "</textarea></td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
-      echo "</td></tr>\n";
+      echo Html::input('name', ['value' => $this->fields['name']]);
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . OperatingSystem::getTypeName(1) . "</td><td>";
       OperatingSystem::dropdown(['value' => $this->fields["operatingsystems_id"]]);
@@ -164,7 +164,6 @@ class SoftwareVersion extends CommonDBChild {
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -263,7 +262,7 @@ class SoftwareVersion extends CommonDBChild {
       $iterator = $DB->request($criteria);
 
       $values = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $ID     = $data['id'];
          $output = $data['name'];
 
@@ -300,7 +299,7 @@ class SoftwareVersion extends CommonDBChild {
 
       if ($canedit) {
          echo "<div class='center firstbloc'>";
-         echo "<a class='vsubmit' href='".SoftwareVersion::getFormURL()."?softwares_id=$softwares_id'>".
+         echo "<a class='btn btn-primary' href='".SoftwareVersion::getFormURL()."?softwares_id=$softwares_id'>".
                 _x('button', 'Add a version')."</a>";
          echo "</div>";
       }
@@ -340,7 +339,8 @@ class SoftwareVersion extends CommonDBChild {
          echo "<th>".__('Comments')."</th>";
          echo "</tr>\n";
 
-         for ($tot = $nb = 0; $data = $iterator->next(); $tot += $nb) {
+         $tot = 0;
+         foreach ($iterator as $data) {
             Session::addToNavigateListItems('SoftwareVersion', $data['id']);
             $nb = Item_SoftwareVersion::countForVersion($data['id']);
 
@@ -353,6 +353,8 @@ class SoftwareVersion extends CommonDBChild {
             echo "</td>";
             echo "<td class='numeric'>$nb</td>";
             echo "<td>".nl2br($data['comment'])."</td></tr>\n";
+
+            $tot += $nb;
          }
 
          echo "<tr class='tab_bg_1 noHover'><td class='right b' colspan='3'>".__('Total')."</td>";

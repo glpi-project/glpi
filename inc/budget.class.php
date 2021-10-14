@@ -66,7 +66,7 @@ class Budget extends CommonDropdown{
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
-      $this->addStandardTab('Link', $ong, $options);
+      $this->addStandardTab('ManualLink', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
@@ -127,7 +127,7 @@ class Budget extends CommonDropdown{
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
 
       echo "<td>"._n('Type', 'Types', 1)."</td>";
@@ -138,11 +138,11 @@ class Budget extends CommonDropdown{
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('price', 'Value')."</td>";
       echo "<td><input type='text' name='value' size='14'
-                 value='".Html::formatNumber($this->fields["value"], true)."'></td>";
+                 value='".Html::formatNumber($this->fields["value"], true)."' class='form-control'></td>";
 
                  echo "<td rowspan='$rowspan' class='middle right'>".__('Comments')."</td>";
                  echo "<td class='center middle' rowspan='$rowspan'>".
-                      "<textarea cols='45' rows='4' name='comment' >".$this->fields["comment"]."</textarea>".
+                      "<textarea class='form-control' name='comment' >".$this->fields["comment"]."</textarea>".
                       "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -196,7 +196,6 @@ class Budget extends CommonDropdown{
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -275,7 +274,6 @@ class Budget extends CommonDropdown{
          'massiveaction'      => false,
          'nosearch'           => true,
          'nodisplay'          => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -353,7 +351,7 @@ class Budget extends CommonDropdown{
 
       $num       = 0;
       $itemtypes = [];
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $itemtypes[] = $row['itemtype'];
       }
       $itemtypes[] = 'Contract';
@@ -595,7 +593,8 @@ class Budget extends CommonDropdown{
                      "</td></tr>";
 
             } else if ($nb) {
-               for ($prem=true; $data = $iterator->next(); $prem=false) {
+               for ($prem=true; $iterator->valid(); $prem=false) {
+                  $data = $iterator->current();
                   $name = NOT_AVAILABLE;
                   if ($item->getFromDB($data["id"])) {
                      if ($item instanceof Item_Devices) {
@@ -627,6 +626,7 @@ class Budget extends CommonDropdown{
                                                 :"-");
 
                   echo "</td></tr>";
+                  $iterator->next();
                }
             }
             $num += $nb;
@@ -671,7 +671,7 @@ class Budget extends CommonDropdown{
       $entitiestype_values = [];
       $found_types         = [];
 
-      while ($types = $types_iterator->next()) {
+      foreach ($types_iterator as $types) {
          $itemtypes[] = $types['itemtype'];
       }
 
@@ -804,7 +804,7 @@ class Budget extends CommonDropdown{
             $found_types[$itemtype]  = $item->getTypeName(1);
             $totalbytypes[$itemtype] = 0;
             //Store, for each entity, the budget spent
-            while ($values = $iterator->next()) {
+            foreach ($iterator as $values) {
 
                if (!isset($entities_values[$values['entities_id']])) {
                   $entities_values[$values['entities_id']] = 0;

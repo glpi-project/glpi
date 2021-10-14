@@ -57,7 +57,14 @@ class Item_DeviceBattery extends Item_Devices {
             'size'       => 10,
             'datatype'   => 'date',
             'id'         => 20,
-            'autocomplete' => true,
+         ],
+         'real_capacity' => [
+            'long name' => __('Real capacity (mWh)'),
+            'short name' => __('Real capacity'),
+            'size'       => 10,
+            'id'         => 21,
+            'datatype'   => 'progressbar',
+            'max'       => 'capacity',    // Field used to represent 100% capacity value
          ]
       ];
    }

@@ -1,9 +1,4 @@
 <?php
-
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
-}
-
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,7 +28,12 @@ if (!defined('GLPI_ROOT')) {
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-**/
+ */
+
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
+}
+
 class Item_Rack extends CommonDBRelation {
 
    static public $itemtype_1 = 'Rack';
@@ -302,7 +302,7 @@ class Item_Rack extends CommonDBRelation {
                   id="toggle_images">'.__('images').'</span>
             <span class="mini_toggle active"
                   id="toggle_text">'.__('texts').'</span>
-            <div class="sep"></div>
+            <div class="clearfix"></div>
          </span>
          <div class="racks_col">
          <h2>'.__('Front').'</h2>
@@ -314,8 +314,8 @@ class Item_Rack extends CommonDBRelation {
       echo '<ul class="indexes"></ul>
             <div class="grid-stack grid-stack-2 grid-rack"
                  id="grid-front"
-                 data-gs-column="2"
-                 data-gs-max-row="'.($rack->fields['number_units'] + 1).'">';
+                 gs-column="2"
+                 gs-max-row="'.($rack->fields['number_units'] + 1).'">';
 
       if ($link->canCreate()) {
          echo '<div class="racks_add"></div>';
@@ -325,8 +325,8 @@ class Item_Rack extends CommonDBRelation {
          echo self::getCell($current_item, !$canedit);
       }
       echo '   <div class="grid-stack-item lock-bottom"
-                    data-gs-no-resize="true" data-gs-no-move="true"
-                    data-gs-height="1" data-gs-width="2" data-gs-x="0" data-gs-y="'.$rack->fields['number_units'].'"></div>
+                    gs-no-resize="true" gs-no-move="true"
+                    gs-h="1" gs-w="2" gs-x="0" gs-y="'.$rack->fields['number_units'].'"></div>
             </div>
             <ul class="indexes"></ul>';
       // append some spaces on bottom for having symetrical view between front and rear
@@ -343,8 +343,8 @@ class Item_Rack extends CommonDBRelation {
       echo '<ul class="indexes"></ul>
             <div class="grid-stack grid-stack-2 grid-rack"
                  id="grid2-rear"
-                 data-gs-column="2"
-                 data-gs-max-row="'.($rack->fields['number_units'] + 1).'">';
+                 gs-column="2"
+                 gs-max-row="'.($rack->fields['number_units'] + 1).'">';
 
       if ($link->canCreate()) {
          echo '<div class="racks_add"></div>';
@@ -354,8 +354,8 @@ class Item_Rack extends CommonDBRelation {
          echo self::getCell($current_item, !$canedit);
       }
       echo '   <div class="grid-stack-item lock-bottom"
-                    data-gs-no-resize="true" data-gs-no-move="true"
-                    data-gs-height="1" data-gs-width="2" data-gs-x="0" data-gs-y="'.$rack->fields['number_units'].'">
+                    gs-no-resize="true" gs-no-move="true"
+                    gs-h="1" gs-w="2" gs-x="0" gs-y="'.$rack->fields['number_units'].'">
                </div>
             </div>
             <ul class="indexes"></ul>';
@@ -369,7 +369,6 @@ class Item_Rack extends CommonDBRelation {
       PDU_Rack::showStatsForRack($rack);
       echo '</div>'; // .racks_col
       echo '</div>'; // .racks_row
-      echo '<div class="sep"></div>';
       echo "<div id='grid-dialog'></div>";
       echo "</div>"; // #viewgraph
 
@@ -387,65 +386,6 @@ class Item_Rack extends CommonDBRelation {
       $(function() {
          // initialize grid with function defined in js/rack.js
          initRack();
-
-         // drag&drop scenario for item_rack:
-         // - we start by storing position before drag
-         // - we send position to db by ajax after drag stop event
-         // - if ajax answer return a fail, we restore item to the old position
-         //   and we display a message explaning the failure
-         // - else we move the other side of asset (if exists)
-         $('.grid-stack.grid-rack')
-            .on('change', function(event, items) {
-               if (dirty) {
-                  return;
-               }
-               var grid = $(event.target).data('gridstack');
-               var is_rack_rear = $(grid.container).parents('.racks_col').hasClass('rack_rear');
-               $.each(items, function(index, item) {
-                  var is_half_rack = item.el.hasClass('half_rack');
-                  var is_el_rear   = item.el.hasClass('rear');
-                  var new_pos      = grid_rack_units - item.y - item.height + 1;
-                  $.post(grid_item_ajax_url, {
-                     id: item.id,
-                     action: 'move_item',
-                     position: new_pos,
-                     hpos: getHpos(item.x, is_half_rack, is_rack_rear),
-                  }, function(answer) {
-                     var answer = jQuery.parseJSON(answer);
-
-                     // revert to old position
-                     if (!answer.status) {
-                        dirty = true;
-                        grid.move(item.el, x_before_drag, y_before_drag);
-                        dirty = false;
-                        displayAjaxMessageAfterRedirect();
-                     } else {
-                        // move other side if needed
-                        var other_side_cls = $(item.el).hasClass('item_rear')
-                           ? "item_front"
-                           : "item_rear";
-                        var other_side_el = $('.grid-stack-item.'+other_side_cls+'[data-gs-id='+item.id+']');
-
-                        if (other_side_el.length) {
-                           var other_side_grid = $(other_side_el).parent().data('gridstack');
-                           new_x = item.x;
-                           new_y = item.y;
-                           if (item.width == 1) {
-                              new_x = (item.x == 0 ? 1 : 0);
-                           }
-                           dirty = true;
-                           other_side_grid.move(other_side_el, new_x, new_y);
-                           dirty = false;
-                        }
-                     }
-                  }).fail(function() {
-                     dirty = true;
-                     grid.move(item.el, x_before_drag, y_before_drag);
-                     dirty = false;
-                     displayAjaxMessageAfterRedirect();
-                  });
-               });
-            })
       });
 JAVASCRIPT;
       echo Html::scriptBlock($js);
@@ -474,7 +414,7 @@ JAVASCRIPT;
       ];
 
       $rel = new self;
-      while ($row = $items->next()) {
+      foreach ($items as $row) {
          $rel->getFromDB($row['id']);
 
          $item = new $row['itemtype'];
@@ -593,7 +533,7 @@ JAVASCRIPT;
       $iterator = $DB->request([
          'FROM' => $this->getTable()
       ]);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $used[$row['itemtype']][] = $row['items_id'];
       }
       // find used pdu (not racked)
@@ -607,7 +547,7 @@ JAVASCRIPT;
             'is_reserved' => true
          ]
       ]);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $used_reserved[$row['itemtype']][] = $row['items_id'];
       }
 
@@ -615,7 +555,7 @@ JAVASCRIPT;
       $iterator = $DB->request([
          'FROM'   => Item_Enclosure::getTable()
       ]);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $used[$row['itemtype']][] = $row['items_id'];
       }
       echo Html::hidden(
@@ -714,7 +654,7 @@ JAVASCRIPT;
          ]
       );
       echo "</td>";
-      echo "<td><label for='dropdown_is_reserved$rand'>".__('Reserved position ?')."</label></td>";
+      echo "<td><label for='dropdown_is_reserved$rand'>".__('Reserved position?')."</label></td>";
       echo "<td>";
 
       echo Html::scriptBlock("
@@ -866,12 +806,12 @@ JAVASCRIPT;
 
          $tip.= "</span>";
 
-         $readonly_attr = $readonly ? 'data-gs-no-move="true"' : '';
+         $readonly_attr = $readonly ? 'gs-no-move="true"' : '';
          return "
-         <div class='grid-stack-item $back_class $half_class $reserved_cl $img_class'
-               data-gs-width='{$gs_item['width']}' data-gs-height='{$gs_item['height']}'
-               data-gs-x='{$gs_item['x']}' data-gs-y='{$gs_item['y']}'
-               data-gs-id='{$gs_item['id']}' {$readonly_attr}
+         <div class='grid-stack-item pdu-grid {$back_class} {$half_class} {$reserved_cl} {$img_class}'
+               gs-w='{$gs_item['width']}' gs-h='{$gs_item['height']}'
+               gs-x='{$gs_item['x']}'     gs-y='{$gs_item['y']}'
+               gs-id='{$gs_item['id']}'   gs-locked='true' {$readonly_attr}
                style='background-color: $bg_color; color: $fg_color;'>
             <div class='grid-stack-item-content' style='$fg_color_s $img_s'>
                $icon".

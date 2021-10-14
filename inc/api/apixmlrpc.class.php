@@ -69,6 +69,8 @@ class APIXmlrpc extends API {
     * @return mixed xmlrpc response
     */
    public function call() {
+      Toolbox::logInfo('Deprecated: Usage of XML-RPC has been deprecated. Please use REST API.');
+
       $resource = $this->parseIncomingParams();
 
       // retrieve session (if exist)

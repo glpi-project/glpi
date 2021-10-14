@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Plugin\Hooks;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -51,9 +53,6 @@ class NotificationTarget extends CommonDBChild {
    public $notification_targets        = [];
    public $notification_targets_labels = [];
    public $notificationoptions         = 0;
-
-   // Tags which have data in HTML : do not try to clean them
-   public $html_tags                   = [];
 
    // Data from the objet which can be used by the template
    // See https://forge.indepnet.net/projects/5/wiki/NotificationTemplatesTags
@@ -124,7 +123,7 @@ class NotificationTarget extends CommonDBChild {
 
       // add new target by plugin
       unset($this->data);
-      Plugin::doHook('item_add_targets', $this);
+      Plugin::doHook(Hooks::ITEM_ADD_TARGETS, $this);
       asort($this->notification_targets);
    }
 
@@ -243,7 +242,8 @@ class NotificationTarget extends CommonDBChild {
    function getMessageID() {
       if ($this->obj instanceof CommonDBTM) {
          return sprintf(
-            'GLPI-%s-%s.%s.%s@%s',
+            'GLPI_%s-%s-%s.%s.%s@%s',
+            Config::getUuid('notification'),
             $this->obj->getType(),
             $this->obj->getField('id'),
             time(),
@@ -253,7 +253,8 @@ class NotificationTarget extends CommonDBChild {
       }
 
       return sprintf(
-         'GLPI.%s.%s@%s',
+         'GLPI_%s.%s.%s@%s',
+         Config::getUuid('notification'),
          time(),
          rand(),
          php_uname('n')
@@ -385,7 +386,7 @@ class NotificationTarget extends CommonDBChild {
          echo "</td>";
          if ($canedit) {
             echo "<td width='20%'>";
-            echo "<input type='submit' class='submit' name='update' value=\""._x('button', 'Update')."\">";
+            echo "<input type='submit' class='btn btn-primary' name='update' value=\""._x('button', 'Update')."\">";
             echo "</td>";
 
          }
@@ -553,7 +554,7 @@ class NotificationTarget extends CommonDBChild {
             'itemtype' => User::class,
             'items_id' => $data['users_id'],
          ];
-         Plugin::doHook('add_recipient_to_target', $this);
+         Plugin::doHook(Hooks::ADD_RECIPIENT_TO_TARGET, $this);
          unset($this->recipient_data);
       }
    }
@@ -755,7 +756,7 @@ class NotificationTarget extends CommonDBChild {
       }
 
       $iterator = $DB->request($criteria);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $this->addToRecipientsList($data);
       }
 
@@ -765,7 +766,7 @@ class NotificationTarget extends CommonDBChild {
             'itemtype' => Group::class,
             'items_id' => $group_id,
          ];
-         Plugin::doHook('add_recipient_to_target', $this);
+         Plugin::doHook(Hooks::ADD_RECIPIENT_TO_TARGET, $this);
          unset($this->recipient_data);
       }
    }
@@ -809,7 +810,7 @@ class NotificationTarget extends CommonDBChild {
 
       $this->events = $this->getEvents();
       //If plugin adds new events for an already defined type
-      Plugin::doHook('item_get_events', $this);
+      Plugin::doHook(Hooks::ITEM_GET_EVENTS, $this);
 
       return $this->events;
    }
@@ -857,7 +858,7 @@ class NotificationTarget extends CommonDBChild {
          'ORDER'  => 'name'
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          //Add group
          $this->addTarget($data["id"], sprintf(__('%1$s: %2$s'), Group::getTypeName(1), $data["name"]),
                           Notification::GROUP_TYPE);
@@ -961,7 +962,7 @@ class NotificationTarget extends CommonDBChild {
          $criteria['WHERE'][User::getTable() . '.id'] = $id;
          $iterator = $DB->request($criteria);
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             //Add the user email and language in the notified users list
             $this->addToRecipientsList($data);
          }
@@ -1021,7 +1022,7 @@ class NotificationTarget extends CommonDBChild {
       $criteria['WHERE'][Profile_User::getTable() . '.profiles_id'] = $profiles_id;
 
       $iterator = $DB->request($criteria);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $this->addToRecipientsList($data);
       }
 
@@ -1029,7 +1030,7 @@ class NotificationTarget extends CommonDBChild {
          'itemtype' => Profile::class,
          'items_id' => $profiles_id,
       ];
-      Plugin::doHook('add_recipient_to_target', $this);
+      Plugin::doHook(Hooks::ADD_RECIPIENT_TO_TARGET, $this);
       unset($this->recipient_data);
    }
 
@@ -1194,7 +1195,7 @@ class NotificationTarget extends CommonDBChild {
       }
       // action for target from plugin
       $this->data = $data;
-      Plugin::doHook('item_action_targets', $this);
+      Plugin::doHook(Hooks::ITEM_ACTION_TARGETS, $this);
 
    }
 
@@ -1268,7 +1269,7 @@ class NotificationTarget extends CommonDBChild {
 
       $this->addDataForTemplate($event, $options);
 
-      Plugin::doHook('item_get_datas', $this);
+      Plugin::doHook(Hooks::ITEM_GET_DATA, $this);
 
       return $this->data;
    }
@@ -1381,7 +1382,7 @@ class NotificationTarget extends CommonDBChild {
             ],
             'items_id'  => $group->getID()
          ] + getEntitiesRestrictCriteria(Notification::getTable(), '', '', true)
-      ])->next();
+      ])->current();
       return $count['cpt'];
    }
 
@@ -1440,7 +1441,7 @@ class NotificationTarget extends CommonDBChild {
                                         sprintf(__('%1$s = %2$s'), Group::getTypeName(1),
                                                 $group->getName()));
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             Session::addToNavigateListItems('Notification', $data['id']);
 
             if ($notif->getFromDB($data['id'])) {

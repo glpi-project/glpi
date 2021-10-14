@@ -215,11 +215,11 @@ class Group extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
       echo "<td rowspan='12' class='middle'>".__('Comments')."</td>";
       echo "<td class='middle' rowspan='12'>";
-      echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "<textarea class='form-control' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -324,11 +324,11 @@ class Group extends CommonTreeDropdown {
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $prefix                            = 'Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR;
-         $actions[$prefix.'add']            = "<i class='ma-icon fas fa-user-plus'></i>".
+         $actions[$prefix.'add']            = "<i class='fas fa-user-plus'></i>".
                                               _x('button', 'Add a user');
-         $actions[$prefix.'add_supervisor'] = "<i class='ma-icon fas fa-user-tie'></i>".
+         $actions[$prefix.'add_supervisor'] = "<i class='fas fa-user-tie'></i>".
                                               _x('button', 'Add a manager');
-         $actions[$prefix.'add_delegatee']  = "<i class='ma-icon fas fa-user-check'></i>".
+         $actions[$prefix.'add_delegatee']  = "<i class='fas fa-user-check'></i>".
                                               _x('button', 'Add a delegatee');
          $actions[$prefix.'remove']         = _x('button', 'Remove a user');
       }
@@ -359,7 +359,7 @@ class Group extends CommonTreeDropdown {
                         'used'      => [$group->fields["id"]],
                         'condition' => $condition
                      ]);
-                     echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                     echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='".
                                     _sx('button', 'Move')."'>";
                      return true;
                   }
@@ -413,7 +413,6 @@ class Group extends CommonTreeDropdown {
             'field'              => 'ldap_field',
             'name'               => __('Attribute of the user containing its groups'),
             'datatype'           => 'string',
-            'autocomplete'       => true,
          ];
 
          $tab[] = [
@@ -422,7 +421,6 @@ class Group extends CommonTreeDropdown {
             'field'              => 'ldap_value',
             'name'               => __('Attribute value'),
             'datatype'           => 'text',
-            'autocomplete'       => true,
          ];
 
          $tab[] = [
@@ -431,7 +429,6 @@ class Group extends CommonTreeDropdown {
             'field'              => 'ldap_group_dn',
             'name'               => __('Group DN'),
             'datatype'           => 'text',
-            'autocomplete'       => true,
          ];
       }
 
@@ -497,7 +494,7 @@ class Group extends CommonTreeDropdown {
                'table'              => 'glpi_groups_users',
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`is_manager` = 1'
+                  'condition'          => ['NEWTABLE.is_manager' => 1]
                ]
             ]
          ]
@@ -517,7 +514,7 @@ class Group extends CommonTreeDropdown {
                'table'              => 'glpi_groups_users',
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`is_userdelegate` = 1'
+                  'condition'          => ['NEWTABLE.is_userdelegate' => 1]
                ]
             ]
          ]
@@ -555,13 +552,13 @@ class Group extends CommonTreeDropdown {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Attribute of the user containing its groups')."</td>";
          echo "<td>";
-         Html::autocompletionTextField($this, "ldap_field");
+         echo Html::input('ldap_field', ['value' => $this->fields['ldap_field']]);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Attribute value')."</td>";
          echo "<td>";
-         Html::autocompletionTextField($this, "ldap_value");
+         echo Html::input('ldap_value', ['value' => $this->fields['ldap_value']]);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
@@ -571,7 +568,7 @@ class Group extends CommonTreeDropdown {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Group DN')."</td>";
          echo "<td>";
-         Html::autocompletionTextField($this, "ldap_group_dn");
+         echo Html::input('ldap_group_dn', ['value' => $this->fields['ldap_group_dn']]);
          echo "</td></tr>";
       }
 
@@ -715,7 +712,7 @@ class Group extends CommonTreeDropdown {
             }
 
             $iterator = $DB->request($request);
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $res[] = ['itemtype' => $itemtype,
                               'items_id' => $data['id']];
                $max--;
@@ -952,8 +949,56 @@ class Group extends CommonTreeDropdown {
       ) > 0;
    }
 
+   function getName($options = []) {
+      if (Session::getCurrentInterface() == 'helpdesk'
+          && ($anon = self::getAnonymizedName()) !== "") {
+         return $anon;
+      }
+
+      return parent::getName($options);
+   }
+
+
+   function getRawCompleteName() {
+      if (Session::getCurrentInterface() == 'helpdesk'
+         && ($anon = $this->getAnonymizedName()) !== null) {
+         return $anon;
+      }
+
+      return parent::getRawCompleteName();
+   }
+
+
+   public static function getAnonymizedName(?int $entities_id = null): string {
+      switch (Entity::getAnonymizeConfig($entities_id)) {
+         default:
+         case Entity::ANONYMIZE_DISABLED:
+            return "";
+
+         case Entity::ANONYMIZE_USE_GENERIC:
+         case Entity::ANONYMIZE_USE_NICKNAME:
+            return __("Helpdesk group");
+      }
+   }
 
    static function getIcon() {
       return "fas fa-users";
+   }
+
+   /**
+    * Get group link.
+    *
+    * @param bool $enable_anonymization
+    *
+    * @return string
+    */
+   public function getGroupLink(bool $enable_anonymization = false): string {
+
+      if ($enable_anonymization && Session::getCurrentInterface() == 'helpdesk' && ($anon = $this->getAnonymizedName()) !== null) {
+         // if anonymized name active, return only the anonymized name
+         return $anon;
+      }
+
+      return $this->getLink();
    }
 }

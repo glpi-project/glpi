@@ -67,7 +67,7 @@ class KnowbaseItem_Profile extends CommonDBRelation {
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $prof[$data['profiles_id']][] = $data;
       }
       return $prof;

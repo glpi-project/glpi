@@ -86,7 +86,7 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField {
             ]
          ]);
          if (count($iterator)) {
-            $result = $iterator->next();
+            $result = $iterator->current();
             $a = new static();
             $a->delete(['id' => $result['id']]);
          }
@@ -118,7 +118,7 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField {
       $allowed_fields = $tt->getAllowedFields($withtypeandcategory);
       $fields         = [];
 
-      while ($rule = $iterator->next()) {
+      foreach ($iterator as $rule) {
          if (isset($allowed_fields[$rule['num']])) {
             $fields[$allowed_fields[$rule['num']]] = $rule['num'];
          }
@@ -174,7 +174,7 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField {
 
       $hiddenfields = [];
       $used         = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $hiddenfields[$data['id']] = $data;
          $used[$data['num']]        = $data['num'];
       }
@@ -191,7 +191,7 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField {
          Dropdown::showFromArray('num', $fields, ['used'=> $used]);
          echo "</td><td class='center'>";
          echo "&nbsp;<input type='submit' name='add' value=\""._sx('button', 'Add').
-                        "\" class='submit'>";
+                        "\" class='btn btn-primary'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();

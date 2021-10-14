@@ -1,0 +1,37 @@
+{% import 'components/alerts_macros.html.twig' as alerts %}
+
+<div class="container text-center">
+   <div class="text-start">
+      {% set alert_messages %}
+         {{ __("Choose 'Install' for a completely new installation of GLPI.") }}<br>
+         {{ __("Select 'Upgrade' to update your version of GLPI from an earlier version") }}
+      {% endset %}
+
+      {{ alerts.alert_info(
+         __('Installation or update of GLPI'),
+         alert_messages
+      ) }}
+   </div>
+
+   <form action="install.php" method="post" class="d-inline">
+      <button type="submit" name="submit" class="btn btn-primary">
+         {{ _x("button", "Install") }}
+         <i class="fas fa-download ms-1"></i>
+      </button>
+
+      <input type="hidden" name="update" value="no">
+      <input type="hidden" name="install" value="Etape_0">
+      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+   </form>
+
+   <form action="install.php" method="post" class="d-inline">
+      <button type="submit" name="submit" class="btn btn-primary">
+         {{ _x("button", "Upgrade") }}
+         <i class="fas fa-caret-square-up ms-1"></i>
+      </button>
+
+      <input type="hidden" name="update" value="yes">
+      <input type="hidden" name="install" value="Etape_0">
+      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+   </form>
+</div>

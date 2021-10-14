@@ -53,7 +53,7 @@ trait DCBreadcrumb {
     *
     * @return array
     */
-   protected function getDcBreadcrumb() {
+   public function getDcBreadcrumb() {
       global $CFG_GLPI;
 
       $item = $this;
@@ -66,8 +66,12 @@ trait DCBreadcrumb {
       if (in_array($item->getType(), $enclosure_types)) {
          //check if asset is part of an enclosure
          if ($enclosure = $this->isEnclosurePart($item->getType(), $item->getID(), true)) {
-            $options = ['linkoption' => $enclosure->isDeleted() ? 'class="target-deleted"' : ''];
-            $breadcrumb[] = $enclosure->getLink($options);
+            $options = [
+               'linkoption' => $enclosure->isDeleted() ? 'class="target-deleted"' : '',
+               'icon'       => true
+            ];
+            $position = $this->getItemEnclosurePosition($item->getType(), $item->getID());
+            $breadcrumb[] = $enclosure->getLink($options) . $position;
             $item = $enclosure;
          }
       }
@@ -75,8 +79,12 @@ trait DCBreadcrumb {
       if (in_array($item->getType(), $types)) {
          //check if asset (or its enclosure) is part of a rack
          if ($rack = $this->isRackPart($item->getType(), $item->getID(), true)) {
-            $options = ['linkoption' => $rack->isDeleted() ? 'class="target-deleted"' : ''];
-            $breadcrumb[] = $rack->getLink($options);
+            $options = [
+               'linkoption' => $rack->isDeleted() ? 'class="target-deleted"' : '',
+               'icon'       => true
+            ];
+            $position = $this->getItemRackPosition($item->getType(), $item->getID());
+            $breadcrumb[] = $rack->getLink($options) . $position;
             $item = $rack;
          }
       }
@@ -85,7 +93,10 @@ trait DCBreadcrumb {
          if ($item->fields['dcrooms_id'] > 0) {
             $dcroom = new DCRoom();
             if ($dcroom->getFromDB($item->fields['dcrooms_id'])) {
-               $options = ['linkoption' => $dcroom->isDeleted() ? 'class="target-deleted"' : ''];
+               $options = [
+                  'linkoption' => $dcroom->isDeleted() ? 'class="target-deleted"' : '',
+                  'icon'       => true
+               ];
                $breadcrumb[] = $dcroom->getLink($options);
                $item = $dcroom;
             }
@@ -96,30 +107,16 @@ trait DCBreadcrumb {
          if ($item->fields['datacenters_id'] > 0) {
             $datacenter = new Datacenter();
             if ($datacenter->getFromDB($item->fields['datacenters_id'])) {
-               $options = ['linkoption' => $datacenter->isDeleted() ? 'class="target-deleted"' : ''];
+               $options = [
+                  'linkoption' => $datacenter->isDeleted() ? 'class="target-deleted"' : '',
+                  'icon'       => true
+               ];
                $breadcrumb[] = $datacenter->getLink($options);
             }
          }
       }
 
       return $breadcrumb;
-   }
-
-   /**
-    * Display datacenter element breadcrumb
-    * @see CommonGLPI::showNavigationHeader()
-    *
-    * @return void
-    */
-   protected function showDcBreadcrumb() {
-      $breadcrumb = $this->getDcBreadcrumb();
-
-      if (count($breadcrumb)) {
-         echo "<tr class='tab_bg_1'>
-                  <td>" . __('Data center position') . "</td>
-                  <td colspan='3'>" . implode(' > ', array_reverse($breadcrumb)) . "</td>
-               </tr>";
-      }
    }
 
    /**
@@ -149,6 +146,52 @@ trait DCBreadcrumb {
       }
 
       return $found;
+   }
+
+   /**
+    * get item position from Enclosure
+    *
+    * @param string  $itemtype Item type
+    * @param integer $items_id Item ID
+    *
+    * @return string
+    */
+   private function getItemEnclosurePosition($itemtype, $items_id) {
+      $position = 0;
+      $ien = new Item_Enclosure();
+
+      if ($ien->getFromDBByCrit([
+         'itemtype'  => $itemtype,
+         'items_id'  => $items_id
+      ])) {
+         $position = $ien->getField('position');
+      }
+
+      $position = "&nbsp;".sprintf(__('(U%1$u)'), $position);
+      return $position;
+   }
+
+   /**
+    * get item position from Rack
+    *
+    * @param string  $itemtype Item type
+    * @param integer $items_id Item ID
+    *
+    * @return string
+    */
+   private function getItemRackPosition($itemtype, $items_id) {
+      $position = 0;
+      $ira = new Item_Rack();
+
+      if ($ira->getFromDBByCrit([
+         'itemtype'  => $itemtype,
+         'items_id'  => $items_id
+      ])) {
+         $position = $ira->getField('position');
+      }
+
+      $position = "&nbsp;".sprintf(__('(U%1$u)'), $position);
+      return $position;
    }
 
    /**
@@ -184,14 +227,14 @@ trait DCBreadcrumb {
     *
     * @return array
     */
-   protected static function getDcBreadcrumbSpecificValueToDisplay($items_id) {
+   public static function getDcBreadcrumbSpecificValueToDisplay($items_id) {
 
       $item = new static();
 
       if ($item->getFromDB($items_id)) {
          $breadcrumb = $item->getDcBreadcrumb();
          if (count($breadcrumb) > 0) {
-            return implode(' > ', array_reverse($item->getDcBreadcrumb()));
+            return implode(' &gt; ', array_reverse($item->getDcBreadcrumb()));
          }
       }
 

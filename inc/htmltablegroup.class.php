@@ -95,7 +95,7 @@ class HTMLTableGroup extends HTMLTableBase {
    function tryAddHeader() {
 
       if (isset($this->ordered_headers)) {
-         throw new Exception('Implementation error: must define all headers before any row');
+         throw new \Exception('Implementation error: must define all headers before any row');
       }
    }
 

@@ -84,34 +84,6 @@ class ComputerAntivirus extends CommonDBChild {
       return $ong;
    }
 
-
-   /**
-    * Duplicate all antirivuses from a computer template to his clone
-    *
-    * @deprecated 9.5
-    *
-    * @param $oldid
-    * @param $newid
-   **/
-   static function cloneComputer($oldid, $newid) {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      $result = $DB->request(
-         [
-            'FROM'  => ComputerAntivirus::getTable(),
-            'WHERE' => ['computers_id' => $oldid],
-         ]
-      );
-      foreach ($result as $data) {
-         $antirivus            = new self();
-         unset($data['id']);
-         $data['computers_id'] = $newid;
-         $data                 = Toolbox::addslashes_deep($data);
-         $antirivus->add($data);
-      }
-   }
-
    function rawSearchOptions() {
 
       $tab = [];
@@ -128,7 +100,6 @@ class ComputerAntivirus extends CommonDBChild {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -138,7 +109,6 @@ class ComputerAntivirus extends CommonDBChild {
          'name'               => _n('Version', 'Versions', 1),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -148,7 +118,6 @@ class ComputerAntivirus extends CommonDBChild {
          'name'               => __('Signature database version'),
          'datatype'           => 'string',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       return $tab;
@@ -281,24 +250,13 @@ class ComputerAntivirus extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".Computer::getTypeName(1)."</td>";
       echo "<td>".$comp->getLink()."</td>";
-      if (Plugin::haveImport()) {
-         echo "<td>".__('Automatic inventory')."</td>";
-         echo "<td>";
-         if ($ID && $this->fields['is_dynamic']) {
-            Plugin::doHook("autoinventory_information", $this);
-         } else {
-            echo __('No');
-         }
-         echo "</td>";
-      } else {
-         echo "<td colspan='2'></td>";
-      }
+      $this->autoinventoryInformation();
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
       echo "<td>".__('Active')."</td>";
       echo "<td>";
@@ -318,11 +276,11 @@ class ComputerAntivirus extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>". __('Antivirus version')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "antivirus_version");
+      echo Html::input('antivirus_version', ['value' => $this->fields['antivirus_version']]);
       echo "</td>";
       echo "<td>".__('Signature database version')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "signature_version");
+      echo Html::input('signature_version', ['value' => $this->fields['signature_version']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -362,13 +320,13 @@ class ComputerAntivirus extends CommonDBChild {
       if ($canedit
           && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='center firstbloc'>".
-               "<a class='vsubmit' href='".ComputerAntivirus::getFormURL()."?computers_id=$ID&amp;withtemplate=".
+               "<a class='btn btn-primary' href='".ComputerAntivirus::getFormURL()."?computers_id=$ID&amp;withtemplate=".
                   $withtemplate."'>";
          echo __('Add an antivirus');
          echo "</a></div>\n";
       }
 
-      echo "<div class='spaced center'>";
+      echo "<div class='spaced center table-responsive'>";
 
       $result = $DB->request(
          [
@@ -381,19 +339,14 @@ class ComputerAntivirus extends CommonDBChild {
       );
 
       echo "<table class='tab_cadre_fixehov'>";
-      $colspan = 7;
-      if (Plugin::haveImport()) {
-         $colspan++;
-      }
+      $colspan = 8;
       echo "<tr class='noHover'><th colspan='$colspan'>".self::getTypeName($result->numrows()).
            "</th></tr>";
 
       if ($result->numrows() != 0) {
 
          $header = "<tr><th>".__('Name')."</th>";
-         if (Plugin::haveImport()) {
-            $header .= "<th>".__('Automatic inventory')."</th>";
-         }
+         $header .= "<th>".__('Automatic inventory')."</th>";
          $header .= "<th>".Manufacturer::getTypeName(1)."</th>";
          $header .= "<th>".__('Antivirus version')."</th>";
          $header .= "<th>".__('Signature database version')."</th>";
@@ -414,9 +367,7 @@ class ComputerAntivirus extends CommonDBChild {
             $antivirus->getFromDB($data['id']);
             echo "<tr class='tab_bg_2'>";
             echo "<td>".$antivirus->getLink()."</td>";
-            if (Plugin::haveImport()) {
-               echo "<td>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
-            }
+            echo "<td>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
             echo "<td>";
             if ($data['manufacturers_id']) {
                echo Dropdown::getDropdownName('glpi_manufacturers',

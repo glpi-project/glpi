@@ -32,7 +32,7 @@
 
 namespace tests\units;
 
-use \DbTestCase;
+use DbTestCase;
 
 /* Test for inc/document.class.php */
 
@@ -726,5 +726,48 @@ class Document extends DbTestCase {
       $this->boolean($doc->getFromDB($did1))->isFalse();
       $this->boolean($doc->getFromDB($did2))->isFalse();
       $this->boolean($doc->getFromDB($did3))->isTrue();
+   }
+
+   public function testGetDuplicateOf() {
+      $instance = $this->newTestedInstance();
+
+      // Test when the file is not in the DB
+      $output = $instance->getDuplicateOf(0, __DIR__ . '/../fixtures/uploads/foo.png');
+      $this->boolean($output)->isFalse();
+
+      $filename = 'foo.png';
+      copy(__DIR__ . '/../fixtures/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
+      $tag = \Rule::getUuid();
+      $input = [
+         'filename' => 'foo.png',
+         '_filename' => [
+            $filename,
+         ],
+         '_tag_filename' => [
+            $tag,
+         ],
+         '_prefix_filename' => [
+            '5e5e92ffd9bd91.11111111',
+         ]
+      ];
+      $document = new \Document();
+      $document->add($input);
+      $this->boolean($document->isnewItem())->isFalse();
+
+      // Check the file is found in the FB
+      $instance = $this->newTestedInstance();
+      $output = $instance->getDuplicateOf(0, __DIR__ . '/../fixtures/uploads/foo.png');
+      $this->boolean($output)->isTrue();
+
+      // togle the blackisted flag
+      $success = $instance->update([
+         'id'             => $instance->getID(),
+         'is_blacklisted' => '1'
+      ]);
+      $this->boolean($success)->isTrue();
+
+      // Test when the document exists and is blacklisted
+      $output = $instance->getDuplicateOf(0, __DIR__ . '/../fixtures/uploads/foo.png');
+      $this->boolean($output)->isFalse();
    }
 }

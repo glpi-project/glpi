@@ -40,7 +40,6 @@ use Config;
 use DBConnection;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
-
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -146,6 +145,13 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          InputOption::VALUE_NONE,
          __('Reconfigure database, override configuration file if it already exists')
       );
+
+      $this->addOption(
+         'log-deprecation-warnings',
+         null,
+         InputOption::VALUE_NONE,
+         __('Indicated if deprecation warnings sent by database server should be logged')
+      );
    }
 
    protected function interact(InputInterface $input, OutputInterface $output) {
@@ -177,10 +183,13 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
     *
     * @param InputInterface $input
     * @param OutputInterface $output
+    * @param bool $use_utf8mb4
+    *
     * @throws InvalidArgumentException
+    *
     * @return string
     */
-   protected function configureDatabase(InputInterface $input, OutputInterface $output) {
+   protected function configureDatabase(InputInterface $input, OutputInterface $output, bool $use_utf8mb4) {
 
       $db_pass     = $input->getOption('db-password');
       $db_host     = $input->getOption('db-host');
@@ -190,6 +199,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
       $db_hostport = $db_host . (!empty($db_port) ? ':' . $db_port : '');
 
       $reconfigure    = $input->getOption('reconfigure');
+      $log_deprecation_warnings = $input->getOption('log-deprecation-warnings');
 
       if (file_exists(GLPI_CONFIG_DIR . '/config_db.php') && !$reconfigure) {
          // Prevent overriding of existing DB
@@ -235,6 +245,8 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          return self::ERROR_DB_CONNECTION_FAILED;
       }
 
+      DBConnection::setConnectionCharset($mysqli, $use_utf8mb4);
+
       ob_start();
       $db_version_data = $mysqli->query('SELECT version()')->fetch_array();
       $checkdb = Config::displayCheckDbEngine(false, $db_version_data[0]);
@@ -250,7 +262,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          '<comment>' . __('Saving configuration file...') . '</comment>',
          OutputInterface::VERBOSITY_VERBOSE
       );
-      if (!DBConnection::createMainConfig($db_hostport, $db_user, $db_pass, $db_name)) {
+      if (!DBConnection::createMainConfig($db_hostport, $db_user, $db_pass, $db_name, $use_utf8mb4, $log_deprecation_warnings)) {
          $message = sprintf(
             __('Cannot write configuration file "%s".'),
             GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'config_db.php'
@@ -294,20 +306,20 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
       $db_pass = $input->getOption('db-password');
 
       if (empty($db_name)) {
-         throw new InvalidArgumentException(
+         throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
             __('Database name defined by --db-name option cannot be empty.')
          );
       }
 
       if (empty($db_user)) {
-         throw new InvalidArgumentException(
+         throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
             __('Database user defined by --db-user option cannot be empty.')
          );
       }
 
       if (null === $db_pass) {
          // Will be null if option used without value and without interaction
-         throw new InvalidArgumentException(
+         throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
             __('--db-password option value cannot be null.')
          );
       }
@@ -347,7 +359,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
       return $question_helper->ask(
          $input,
          $output,
-         new ConfirmationQuestion(__('Do you want to continue ?') . ' [Yes/no]', true)
+         new ConfirmationQuestion(__('Do you want to continue?') . ' [Yes/no]', true)
       );
    }
 }

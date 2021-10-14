@@ -28,11 +28,11 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 namespace tests\units;
 
-use \DbTestCase;
+use DbTestCase;
 
 /* Test for inc/knowbaseitem_revision.class.php */
 
@@ -90,7 +90,7 @@ class KnowbaseItem_Revision extends DbTestCase {
       $data = $DB->request([
          'SELECT' => ['MIN' => 'id as id'],
          'FROM'   => 'glpi_knowbaseitems_revisions'
-      ])->next();
+      ])->current();
       $rev_id = $data['id'];
 
       $kb1->getFromDB($kb1->getID());
@@ -131,7 +131,7 @@ class KnowbaseItem_Revision extends DbTestCase {
       $data = $DB->request([
          'SELECT' => new \QueryExpression('MAX(id) AS id'),
          'FROM'   => 'glpi_knowbaseitems_revisions'
-      ])->next();
+      ])->current();
       $nrev_id = $data['id'];
 
       $this->boolean($kb1->getFromDB($kb1->getID()))->isTrue();
@@ -173,7 +173,7 @@ class KnowbaseItem_Revision extends DbTestCase {
 
       $_SESSION['glpishow_count_on_tabs'] = 1;
       $name = $kb_rev->getTabNameForItem($kb1);
-      $this->string($name)->isIdenticalTo('Revision <sup class=\'tab_nb\'>1</sup>');
+      $this->string($name)->isIdenticalTo('Revision <span class=\'badge\'>1</span>');
 
       $this->boolean(
          $kb1->update(
@@ -185,7 +185,7 @@ class KnowbaseItem_Revision extends DbTestCase {
       )->isTrue();
 
       $name = $kb_rev->getTabNameForItem($kb1);
-      $this->string($name)->isIdenticalTo('Revisions <sup class=\'tab_nb\'>2</sup>');
+      $this->string($name)->isIdenticalTo('Revisions <span class=\'badge\'>2</span>');
 
       $_SESSION['glpishow_count_on_tabs'] = 0;
       $name = $kb_rev->getTabNameForItem($kb1);

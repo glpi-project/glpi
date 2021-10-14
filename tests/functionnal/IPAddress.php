@@ -28,7 +28,7 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 namespace tests\units;
 
@@ -44,7 +44,7 @@ class IPAddress extends DbTestCase {
 
       //first create NetworkName
       $networkName = new \NetworkName();
-      $networkName_id = $networkName->add(["name" => "test"]);
+      $networkName_id = $networkName->add(["name" => "test", "itemtype" => ""]);
       $this->integer($networkName_id)->isGreaterThan(0);
 
       $IPV4ShouldWork = [];
@@ -173,7 +173,7 @@ class IPAddress extends DbTestCase {
 
       //first create NetworkName
       $networkName = new \NetworkName();
-      $networkName_id = $networkName->add(["name" => "test"]);
+      $networkName_id = $networkName->add(["name" => "test", "itemtype" => ""]);
       $this->integer($networkName_id)->isGreaterThan(0);
 
       $IPV6ShouldWork = [];

@@ -220,7 +220,33 @@ class APIRest extends API {
             return $this->returnError(__("Only HTTP verb PUT is allowed"));
          }
          return $this->returnResponse($this->lostPassword($this->parameters));
+      } else if ($resource == 'getMassiveActions') {
+         return $this->getMassiveActions(
+            $this->getItemtype(1, false, false),
+            $this->url_elements[2] ?? null,
+            json_decode(json_encode($this->parameters), true)['is_deleted'] ?? false,
+         );
+      } else if ($resource == "getMassiveActionParameters") {
+         return $this->getMassiveActionParameters(
+            $this->getItemtype(1, false, false),
+            $this->url_elements[2] ?? null,
+            json_decode(json_encode($this->parameters), true)['is_deleted'] ?? false,
+         );
+      } else if ($resource == "applyMassiveAction") {
+         // Parse parameters
+         $params = json_decode(json_encode($this->parameters), true);
+         $ids = $params['ids'] ?? [];
 
+         if (empty($ids)) {
+            $this->returnError("No ids supplied", 400, "ERROR_MASSIVEACTION_NO_IDS");
+         }
+
+         return $this->applyMassiveAction(
+            $this->getItemtype(1, false, false),
+            $this->url_elements[2] ?? null,
+            $ids,
+            $params['input'] ?? []
+         );
       } else if (preg_match('%user/(\d+)/picture%i', $path_info, $matches)) {
          $this->userPicture($matches[1]);
       } else {

@@ -30,15 +30,18 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\ContentTemplates\TemplateManager;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
-
 
 /**
  * ITILSolution Class
 **/
 class ITILSolution extends CommonDBChild {
+   use \Glpi\Features\UserMention;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -115,33 +118,9 @@ class ITILSolution extends CommonDBChild {
     * @return boolean item found
    **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
-
       if ($this->isNewItem()) {
          $this->getEmpty();
       }
-
-      if (!isset($options['item']) && isset($options['parent'])) {
-         //when we came from aja/viewsubitem.php
-         $options['item'] = $options['parent'];
-      }
-      $options['formoptions'] = ($options['formoptions'] ?? '') . ' data-track-changes=true';
-
-      $item = $options['item'];
-      $this->item = $item;
-      $item->check($item->getID(), READ);
-
-      $entities_id = isset($options['entities_id']) ? $options['entities_id'] : $item->getEntityID();
-
-      if ($item instanceof Ticket && $this->isNewItem()) {
-         $ti = new Ticket_Ticket();
-         $open_child = $ti->countOpenChildren($item->getID());
-         if ($open_child > 0) {
-            echo "<div class='tab_cadre_fixe warning'>" . __('Warning: non closed children tickets depends on current ticket. Are you sure you want to close it?')  . "</div>";
-         }
-      }
-
-      $canedit = $item->maySolve();
 
       if (isset($options['kb_id_toload']) && $options['kb_id_toload'] > 0) {
          $kb = new KnowbaseItem();
@@ -150,113 +129,12 @@ class ITILSolution extends CommonDBChild {
          }
       }
 
-      // Alert if validation waiting
-      $validationtype = $item->getType().'Validation';
-      if (method_exists($validationtype, 'alertValidation') && $this->isNewItem()) {
-         $validationtype::alertValidation($item, 'solution');
-      }
-
-      if (!isset($options['noform'])) {
-         $this->showFormHeader($options);
-      }
-
-      $show_template = $canedit;
-      $rand_template = mt_rand();
-      $rand_text     = $rand_type = 0;
-      if ($canedit) {
-         $rand_text = mt_rand();
-         $rand_type = mt_rand();
-      }
-      if ($show_template) {
-         echo "<tr class='tab_bg_2'>";
-         echo "<td>"._n('Solution template', 'Solution templates', 1)."</td><td>";
-
-         SolutionTemplate::dropdown([
-            'value'    => 0,
-            'entity'   => $entities_id,
-            'rand'     => $rand_template,
-            // Load type and solution from bookmark
-            'toupdate' => [
-               'value_fieldname' => 'value',
-               'to_update'       => 'solution'.$rand_text,
-               'url'             => $CFG_GLPI["root_doc"]. "/ajax/solution.php",
-               'moreparams' => [
-                  'type_id' => 'dropdown_solutiontypes_id'.$rand_type
-               ]
-            ]
-         ]);
-
-         echo "</td><td colspan='2'>";
-         if (Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ])) {
-            echo "<a class='vsubmit' title=\"".__s('Search a solution')."\"
-                   href='".$CFG_GLPI['root_doc']."/front/knowbaseitem.php?item_itemtype=".
-                   $item->getType()."&amp;item_items_id=".$item->getID().
-                   "&amp;forcetab=Knowbase$1'>".__('Search a solution')."</a>";
-         }
-         echo "</td></tr>";
-      }
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".SolutionType::getTypeName(1)."</td><td>";
-
-      echo Html::hidden('itemtype', ['value' => $item->getType()]);
-      echo Html::hidden('items_id', ['value' => $item->getID()]);
-      echo Html::hidden('_no_message_link', ['value' => 1]);
-
-      // Settings a solution will set status to solved
-      if ($canedit) {
-         SolutionType::dropdown(['value'  => $this->getField('solutiontypes_id'),
-                                 'rand'   => $rand_type,
-                                 'entity' => $entities_id]);
-      } else {
-         echo Dropdown::getDropdownName('glpi_solutiontypes',
-                                        $this->getField('solutiontypes_id'));
-      }
-      echo "</td><td colspan='2'>";
-
-      if (Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ]) && isset($options['kb_id_toload']) && $options['kb_id_toload'] != 0) {
-         echo '<br/><input type="checkbox" name="kb_linked_id" id="kb_linked_id" value="' . $kb->getID() . '" checked="checked">';
-         echo ' <label for="kb_linked_id">' . str_replace('%id', $kb->getID(), __('Link to knowledge base entry #%id')) . '</label>';
-      } else {
-         echo '&nbsp;';
-      }
-      echo "</td></tr>";
-      if ($canedit && Session::haveRight('knowbase', UPDATE) && !isset($options['nokb'])) {
-         echo "<tr class='tab_bg_2'><td>".__('Save and add to the knowledge base')."</td><td>";
-         Dropdown::showYesNo('_sol_to_kb', false);
-         echo "</td><td colspan='2'>&nbsp;</td></tr>";
-      }
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Description')."</td><td colspan='3'>";
-
-      if ($canedit) {
-         $rand = mt_rand();
-         Html::initEditorSystem("content$rand");
-
-         echo "<div id='solution$rand_text'>";
-         echo "<textarea id='content$rand' name='content' rows='12' cols='80'>".
-                $this->getField('content')."</textarea></div>";
-
-         // Hide file input to handle only images pasted in text editor
-         echo '<div style="display:none;">';
-         Html::file(['editor_id' => "content$rand",
-                     'filecontainer' => "filecontainer$rand",
-                     'onlyimages' => true,
-                     'showtitle' => false,
-                     'multiple' => true]);
-         echo '</div>';
-      } else {
-         echo Toolbox::unclean_cross_side_scripting_deep($this->getField('content'));
-      }
-      echo "</td></tr>";
-
-      if (!isset($options['noform'])) {
-         $options['candel']   = false;
-         $options['canedit']  = $canedit;
-         $this->showFormButtons($options);
-      }
+      TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_solution.html.twig', [
+         'item'    => $options['parent'] ?? null,
+         'subitem' => $this,
+         'params'  => $options,
+      ]);
    }
-
 
    /**
     * Count solutions for specific item
@@ -278,7 +156,9 @@ class ITILSolution extends CommonDBChild {
    }
 
    function prepareInputForAdd($input) {
-      $input['users_id'] = Session::getLoginUserID();
+      if (!isset($input['users_id']) && !(Session::isCron() || strpos($_SERVER['REQUEST_URI'], 'crontask.form.php') !== false)) {
+         $input['users_id'] = Session::getLoginUserID();
+      }
 
       if ($this->item == null
          || (isset($input['itemtype']) && isset($input['items_id']))
@@ -289,7 +169,7 @@ class ITILSolution extends CommonDBChild {
 
       // check itil object is not already solved
       if (in_array($this->item->fields["status"], $this->item->getSolvedStatusArray())) {
-         Session::addMessageAfterRedirect(__("The item is already solved, did anyone pushed a solution before you ?"),
+         Session::addMessageAfterRedirect(__("The item is already solved, did anyone pushed a solution before you?"),
                                           false, ERROR);
          return false;
       }
@@ -319,6 +199,22 @@ class ITILSolution extends CommonDBChild {
       }
 
       $input['status'] = $status;
+
+      // Render twig content, needed for massives action where we the content
+      // can't be rendered directly in the form
+      if (($input['_render_twig'] ?? false) && isset($input['content'])) {
+         $html = TemplateManager::renderContentForCommonITIL(
+            $this->item,
+            $input['content']
+         );
+
+         // Invalid template
+         if (!$html) {
+            return false;
+         }
+
+         $input['content'] = $html;
+      }
 
       return $input;
    }
@@ -397,6 +293,8 @@ class ITILSolution extends CommonDBChild {
          'content_field' => 'content',
       ];
       $this->input = $this->addFiles($this->input, $options);
+
+      parent::post_updateItem($history);
    }
 
 
@@ -452,8 +350,12 @@ class ITILSolution extends CommonDBChild {
    static function getStatuses() {
       return [
          CommonITILValidation::WAITING  => __('Waiting for approval'),
-         CommonITILValidation::REFUSED  => __('Refused'),
+         CommonITILValidation::REFUSED  => _x('solution', 'Refused'),
          CommonITILValidation::ACCEPTED => __('Accepted'),
       ];
+   }
+
+   static function getIcon() {
+      return "fas fa-check";
    }
 }

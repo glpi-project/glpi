@@ -28,11 +28,11 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 namespace tests\units;
 
-use \DbTestCase;
+use DbTestCase;
 
 /* Test for inc/networkport.class.php */
 
@@ -66,17 +66,32 @@ class NetworkPort extends DbTestCase {
       unset($current_networkport['date_mod']);
       unset($current_networkport['date_creation']);
       $expected = [
-          'items_id'           => $computer1->getID(),
-          'itemtype'           => 'Computer',
-          'entities_id'        => $computer1->fields['entities_id'],
-          'is_recursive'       => 0,
-          'logical_number'     => 1,
-          'name'               => 'eth1',
-          'instantiation_type' => 'NetworkPortEthernet',
-          'mac'                => '00:24:81:eb:c6:d0',
-          'comment'            => null,
-          'is_deleted'         => 0,
-          'is_dynamic'         => 0,
+         'items_id' => $computer1->getID(),
+         'itemtype' => 'Computer',
+         'entities_id' => $computer1->fields['entities_id'],
+         'is_recursive' => 0,
+         'logical_number' => 1,
+         'name' => 'eth1',
+         'instantiation_type' => 'NetworkPortEthernet',
+         'mac' => '00:24:81:eb:c6:d0',
+         'comment' => null,
+         'is_deleted' => 0,
+         'is_dynamic' => 0,
+         'ifmtu' => 0,
+         'ifspeed' => 0,
+         'ifinternalstatus' => null,
+         'ifconnectionstatus' => 0,
+         'iflastchange' => null,
+         'ifinbytes' => 0,
+         'ifinerrors' => 0,
+         'ifoutbytes' => 0,
+         'ifouterrors' => 0,
+         'ifstatus' => null,
+         'ifdescr' => null,
+         'ifalias' => null,
+         'portduplex' => null,
+         'trunk' => 0,
+         'lastup' => null
       ];
       $this->array($current_networkport)->isIdenticalTo($expected);
 
@@ -118,7 +133,6 @@ class NetworkPort extends DbTestCase {
          'instantiation_type'          => 'NetworkPortEthernet',
          'name'                        => 'em3',
          'comment'                     => 'Comment me!',
-         'netpoints_id'                => 0,
          'items_devicenetworkcards_id' => 0,
          'type'                        => 'T',
          'speed'                       => 1000,
@@ -142,7 +156,6 @@ class NetworkPort extends DbTestCase {
       $expected = [
           'networkports_id'             => $new_id,
           'items_devicenetworkcards_id' => 0,
-          'netpoints_id'                => 0,
           'type'                        => 'T',
           'speed'                       => 1000,
       ];
@@ -202,7 +215,7 @@ class NetworkPort extends DbTestCase {
          'instantiation_type'          => 'NetworkPortEthernet',
          'name'                        => 'em4',
          'comment'                     => 'Comment me!',
-         'netpoints_id'                => 0,
+         'sockets_id'                => 0,
          'items_devicenetworkcards_id' => 0,
          'type'                        => 'T',
          'speed'                       => 1000,
@@ -238,7 +251,7 @@ class NetworkPort extends DbTestCase {
          'instantiation_type'          => 'NetworkPortEthernet',
          'name'                        => 'em3',
          'comment'                     => 'Comment me!',
-         'netpoints_id'                => 0,
+         'sockets_id'                => 0,
          'items_devicenetworkcards_id' => 0,
          'type'                        => 'T',
          'speed'                       => 1000,

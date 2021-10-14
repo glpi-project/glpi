@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Socket;
+
 /**
  * NetworkPortInstantiation class
  *
@@ -100,11 +102,36 @@ class NetworkPortInstantiation extends CommonDBChild {
       return parent::prepareInputForAdd($this->prepareInput($input));
    }
 
-
    function prepareInputForUpdate($input) {
       return parent::prepareInputForUpdate($this->prepareInput($input));
    }
 
+   function post_addItem() {
+      $this->manageSocket();
+   }
+
+   function post_updateItem($history = 1) {
+      $this->manageSocket();
+   }
+
+   function manageSocket() {
+      //add link to define
+      if (isset($this->input['sockets_id']) && $this->input['sockets_id'] > 0) {
+         $networkport = new NetworkPort();
+         if ($networkport->getFromDB($this->fields['networkports_id'])) {
+            $socket = new Socket();
+            $socket->getFromDB($this->input['sockets_id']);
+            $socket->update([
+               "id"              => $socket->getID(),
+               "itemtype"        => $networkport->fields['itemtype'],
+               "name"            => $socket->fields['name'],
+               "position"        => $networkport->fields['logical_number'],
+               "items_id"        => $networkport->fields['items_id'],
+               "networkports_id" => $this->fields['networkports_id'],
+            ]);
+         }
+      }
+   }
 
    /**
     * Get all the instantiation specific options to display
@@ -380,7 +407,7 @@ class NetworkPortInstantiation extends CommonDBChild {
             'WHERE'  => ['mac' => $relation]
          ]);
 
-         while ($element = $iterator->next()) {
+         foreach ($iterator as $element) {
             if ($netport->getFromDB($element['id'])) {
                if ($netport instanceof CommonDBChild) {
                   $macItemWithItems[] = array_merge(
@@ -508,7 +535,7 @@ class NetworkPortInstantiation extends CommonDBChild {
    var deviceAttributs = [];\n";
 
             $deviceNames = [0 => ""]; // First option : no network card
-            while ($availableDevice = $iterator->next()) {
+            foreach ($iterator as $availableDevice) {
                $linkid               = $availableDevice['link_id'];
                $deviceNames[$linkid] = $availableDevice['name'];
                if (isset($availableDevice['mac'])) {
@@ -569,28 +596,37 @@ class NetworkPortInstantiation extends CommonDBChild {
 
       // Show device MAC adresses
       echo "<td>" . __('MAC') ."</td>\n<td>";
-      Html::autocompletionTextField($netport, "mac");
+      echo Html::input('mac', ['value' => $netport->fields['mac']]);
       echo "</td>\n";
    }
 
 
    /**
-    * Display the Netpoint field. Used by Ethernet, and Migration
+    * Display the Socket field. Used by Ethernet, and Migration
     *
     * @param NetworkPort $netport         NetworkPort object :the port that owns this instantiation
     *                                     (usefull, for instance to get network port attributs
     * @param array       $options         array of options given to NetworkPort::showForm
     * @param array       $recursiveItems  list of the items on which this port is attached
    **/
-   function showNetpointField(NetworkPort $netport, $options = [], $recursiveItems = []) {
+   function showSocketField(NetworkPort $netport, $options = [], $recursiveItems = []) {
 
-      echo "<td>" . _n('Network outlet', 'Network outlets', 1) . "</td>\n";
+      echo "<td>" . _n('Network socket', 'Network sockets', 1) . "</td>\n";
       echo "<td>";
       if (count($recursiveItems) > 0) {
          $lastItem = $recursiveItems[count($recursiveItems) - 1];
-         Netpoint::dropdownNetpoint("netpoints_id", $this->fields["netpoints_id"],
-                                    $lastItem->fields['locations_id'] ?? -1, 1, $lastItem->getEntityID(),
-                                    $netport->fields["itemtype"]);
+
+         //find socket attached to NetworkPortEthernet
+         $socket = new Socket();
+         $value = 0;
+         if ($netport->getID() && $socket->getFromDBByCrit(["networkports_id" => $netport->getID()])) {
+            $value = $socket->getID();
+         }
+
+         Socket::dropdown(['name'      => 'sockets_id',
+                           'value'     => $value,
+                           'entity'    => $lastItem->getEntityID(),
+                           ]);
       } else {
          echo __('item not linked to an object');
       }
@@ -708,7 +744,7 @@ class NetworkPortInstantiation extends CommonDBChild {
                                                  count($iterator));
             $possible_ports[$array_element_name] = [];
 
-            while ($portEntry = $iterator->next()) {
+            foreach ($iterator as $portEntry) {
                $macAddresses[$portEntry['id']] = $portEntry['mac'];
                if (!empty($portEntry['mac'])) {
                   $portEntry['name'] = sprintf(__('%1$s - %2$s'), $portEntry['name'],

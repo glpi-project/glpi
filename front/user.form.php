@@ -100,6 +100,13 @@ if (isset($_GET['getvcard'])) {
    AuthLDAP::forceOneUserSynchronization($user);
    Html::back();
 
+} else if (isset($_POST["clean_ldap_fields"])) {
+   Session::checkRight('user', User::UPDATEAUTHENT);
+
+   $user->getFromDB($_POST["id"]);
+   AuthLDAP::forceOneUserSynchronization($user, true);
+   Html::back();
+
 } else if (isset($_POST["update"])) {
    $user->check($_POST['id'], UPDATE);
    $user->update($_POST);

@@ -112,7 +112,7 @@ class Item_Problem extends CommonItilObject_Item {
                                                                      $problem->fields['entities_id'])
                                                           :$problem->fields['entities_id'])]);
          echo "</td><td class='center' width='30%'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "<input type='hidden' name='problems_id' value='$instID'>";
          echo "</td></tr>";
          echo "</table>";
@@ -145,7 +145,7 @@ class Item_Problem extends CommonItilObject_Item {
       echo $header_begin.$header_top.$header_end;
 
       $totalnb = 0;
-      while ($row = $types_iterator->next()) {
+      foreach ($types_iterator as $row) {
          $itemtype = $row['itemtype'];
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
@@ -156,7 +156,7 @@ class Item_Problem extends CommonItilObject_Item {
             $nb = count($iterator);
 
             $prem = true;
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $name = $data["name"];
                if ($_SESSION["glpiis_ids_visible"]
                    || empty($data["name"])) {
@@ -229,7 +229,7 @@ class Item_Problem extends CommonItilObject_Item {
                      'WHERE'  => [
                         $item->getForeignKeyField()   => $item->fields['id']
                      ]
-                  ])->next();
+                  ])->current();
                   $nb = $result['cpt'];
                }
                return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);

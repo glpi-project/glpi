@@ -32,10 +32,10 @@
 
 namespace Glpi\System;
 
+use Glpi\System\Requirement\DbEngine;
+use Glpi\System\Requirement\DbTimezones;
 use Glpi\System\Requirement\DirectoryWriteAccess;
 use Glpi\System\Requirement\Extension;
-use Glpi\System\Requirement\ExtensionClass;
-use Glpi\System\Requirement\ExtensionFunction;
 use Glpi\System\Requirement\LogsWriteAccess;
 use Glpi\System\Requirement\MemoryLimit;
 use Glpi\System\Requirement\MysqliMysqlnd;
@@ -43,8 +43,6 @@ use Glpi\System\Requirement\PhpVersion;
 use Glpi\System\Requirement\ProtectedWebAccess;
 use Glpi\System\Requirement\SeLinux;
 use Glpi\System\Requirement\SessionsConfiguration;
-use Glpi\System\Requirement\DbEngine;
-use Glpi\System\Requirement\DbTimezones;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -81,11 +79,11 @@ class RequirementsManager {
       $requirements[] = new Extension('curl');
       $requirements[] = new Extension('gd');
       $requirements[] = new Extension('simplexml');
+      $requirements[] = new Extension('dom');
+      $requirements[] = new Extension('libxml');
       $requirements[] = new Extension('intl');
       $requirements[] = new Extension('ldap', true); // to sync/connect from LDAP
-      $requirements[] = new Extension('apcu', true); // to enhance perfs
       $requirements[] = new Extension('Zend OPcache', true); // to enhance perfs
-      $requirements[] = new Extension('xmlrpc', true); // for XMLRPC API
       $requirements[] = new Extension('exif', true); // for security reasons (images checks)
       $requirements[] = new Extension('zip', true); // to handle zip packages on marketplace
       $requirements[] = new Extension('bz2', true); // to handle bz2 packages on marketplace

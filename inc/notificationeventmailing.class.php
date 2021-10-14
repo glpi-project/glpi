@@ -92,7 +92,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
 
       $admins = [];
 
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          if (NotificationMailing::isUserAddressValid($row['admin_email'])) {
             $admins[] = [
                'language'  => $CFG_GLPI['language'],
@@ -129,8 +129,21 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
          }
 
          // Add custom header for mail grouping in reader
-         $mmail->AddCustomHeader("In-Reply-To: <GLPI-".$current->fields["itemtype"]."-".
-                                 $current->fields["items_id"].">");
+         $mmail->AddCustomHeader(
+            str_replace(
+               [
+                  '%uuid',
+                  '%itemtype',
+                  '%items_id'
+               ],
+               [
+                  Config::getUuid('notification'),
+                  $current->fields['itemtype'],
+                  $current->fields['items_id']
+               ],
+               "In-Reply-To: <GLPI-%uuid-%itemtype-%items_id>"
+            )
+         );
 
          $mmail->SetFrom($current->fields['sender'], $current->fields['sendername']);
 
@@ -181,9 +194,6 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
             $documents_to_attach = $documents_ids; // Attach all documents
          } else {
             $mmail->Body = '';
-            $current->fields['body_html'] = Toolbox::doubleEncodeEmails($current->fields['body_html']);
-            $current->fields['body_html'] = Html::entity_decode_deep($current->fields['body_html']);
-
             $inline_docs = [];
             $doc = new Document();
             foreach ($documents_ids as $document_id) {

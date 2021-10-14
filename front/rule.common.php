@@ -49,8 +49,21 @@ if (isset($_POST["action"])) {
    $rulecollection->checkGlobal(UPDATE);
    $rulecollection->changeRuleOrder($_POST["id"], $_POST["action"], $_POST['condition']);
    Html::back();
-   // POST and GET needed to manage reload
+} else if (isset($_POST["reinit"]) || isset($_GET['reinit'])) {
+   //reinitialize current rules
+   $ruleclass = $rulecollection->getRuleClass();
+   if ($ruleclass::initRules($reset = true, $with_plugins = true)) {
+      Session::addMessageAfterRedirect(
+         sprintf(
+            //TRANS: first parameter is the rule type name
+            __('%1$s has been reset.'),
+            $rulecollection->getTitle()
+         )
+      );
+   }
+   Html::back();
 } else if (isset($_POST["replay_rule"]) || isset($_GET["replay_rule"])) {
+   // POST and GET needed to manage reload
    $rulecollection->checkGlobal(UPDATE);
 
    // Current time

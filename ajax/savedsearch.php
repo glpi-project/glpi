@@ -69,12 +69,15 @@ if (isset($_GET['mark_default'])
    } else if ($_GET["mark_default"] == 0) {
       $savedsearch->unmarkDefault($_GET["id"]);
    }
-   //to refresh slidepanel
-   $_GET['action'] = 'show';
 }
 
 if (!isset($_GET['action'])) {
    return;
+}
+
+if ($_GET['action'] == 'display_mine') {
+   header("Content-Type: text/html; charset=UTF-8");
+   $savedsearch->displayMine($_GET["itemtype"], (bool) ($_GET["inverse"] ?? false));
 }
 
 if ($_GET['action'] == 'reorder') {
@@ -83,6 +86,7 @@ if ($_GET['action'] == 'reorder') {
    echo json_encode(['res' => true]);
 }
 
+// Create or update a saved search
 if ($_GET['action'] == 'create') {
    header("Content-Type: text/html; charset=UTF-8");
 
@@ -92,8 +96,23 @@ if ($_GET['action'] == 'create') {
       $_GET['type']  =(int)$_GET['type'];
    }
 
+   $id = 0;
+   $saved_search = new SavedSearch();
+
+   // If an id was supplied in the query and that the matching saved search
+   // is private OR the current user is allowed to edit public searches, then
+   // pass the id to showForm
+   if (($requested_id = $_GET['id'] ?? 0) > 0 && $saved_search->getFromDB($requested_id)) {
+      $is_private = $saved_search->fields['is_private'];
+      $can_update_public = Session::haveRight(SavedSearch::$rightname, UPDATE);
+
+      if ($is_private || $can_update_public) {
+         $id = $saved_search->getID();
+      }
+   }
+
    $savedsearch->showForm(
-      0, [
+      $id, [
          'type'      => $_GET['type'],
          'url'       => rawurldecode($_GET["url"]),
          'itemtype'  => $_GET["itemtype"],
@@ -101,9 +120,4 @@ if ($_GET['action'] == 'create') {
       ]
    );
    return;
-}
-
-if ($_GET['action'] == 'show') {
-   header("Content-Type: text/html; charset=UTF-8");
-   $savedsearch->displayMine();
 }

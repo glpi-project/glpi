@@ -34,6 +34,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Plugin\Hooks;
+use Glpi\Toolbox\Sanitizer;
+
 /**
  *  GLPI security key
 **/
@@ -182,8 +185,8 @@ class GLPIKey {
       global $PLUGIN_HOOKS;
 
       $fields = $this->fields;
-      if (isset($PLUGIN_HOOKS['secured_fields'])) {
-         foreach ($PLUGIN_HOOKS['secured_fields'] as $plugfields) {
+      if (isset($PLUGIN_HOOKS[Hooks::SECURED_FIELDS])) {
+         foreach ($PLUGIN_HOOKS[Hooks::SECURED_FIELDS] as $plugfields) {
             $fields = array_merge($fields, $plugfields);
          }
       }
@@ -201,8 +204,8 @@ class GLPIKey {
 
       $configs = $this->configs;
 
-      if (isset($PLUGIN_HOOKS['secured_configs'])) {
-         foreach ($PLUGIN_HOOKS['secured_configs'] as $plugin => $plugconfigs) {
+      if (isset($PLUGIN_HOOKS[Hooks::SECURED_CONFIGS])) {
+         foreach ($PLUGIN_HOOKS[Hooks::SECURED_CONFIGS] as $plugin => $plugconfigs) {
             $configs['plugin:' . $plugin] = $plugconfigs;
          }
       }
@@ -248,7 +251,7 @@ class GLPIKey {
             ['NOT' => [$column => null]],
          ]);
 
-         while ($success && $row = $iterator->next()) {
+         foreach ($iterator as $row) {
             $value = (string)$row[$column];
             if ($old_key === false) {
                $pass = Toolbox::sodiumEncrypt(Toolbox::sodiumDecrypt($value, $sodium_key));
@@ -260,6 +263,10 @@ class GLPIKey {
                [$field  => $pass],
                ['id'    => $row['id']]
             );
+
+            if (!$success) {
+               break;
+            }
          }
       }
 
@@ -289,7 +296,7 @@ class GLPIKey {
             ]
          ]);
 
-         while ($success && $row = $iterator->next()) {
+         foreach ($iterator as $row) {
             $value = (string)$row['value'];
             if ($old_key === false) {
                $pass = Toolbox::sodiumEncrypt(Toolbox::sodiumDecrypt($value, $sodium_key));
@@ -301,6 +308,10 @@ class GLPIKey {
                ['value' => $pass],
                ['id'    => $row['id']]
             );
+
+            if (!$success) {
+               break;
+            }
          }
       }
 
@@ -329,6 +340,6 @@ class GLPIKey {
          $result .= $char;
       }
 
-      return Toolbox::unclean_cross_side_scripting_deep($result);
+      return Sanitizer::unsanitize($result);
    }
 }

@@ -28,11 +28,12 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 namespace tests\units;
 
-use \DbTestCase;
+use DbTestCase;
+use Glpi\Toolbox\Sanitizer;
 
 /* Test for inc/dropdown.class.php */
 
@@ -122,7 +123,7 @@ class Dropdown extends DbTestCase {
    public function testGetDropdownName() {
       global $CFG_GLPI;
 
-      $encoded_sep = \Toolbox::clean_cross_side_scripting_deep(' > ');
+      $encoded_sep = Sanitizer::sanitize(' > ');
 
       $ret = \Dropdown::getDropdownName('not_a_known_table', 1);
       $this->string($ret)->isIdenticalTo('&nbsp;');
@@ -219,24 +220,6 @@ class Dropdown extends DbTestCase {
       $this->array($ret)->isIdenticalTo($expected);
 
       ///////////
-      // Netpoint
-      $netpoint = getItemByTypeName( 'Netpoint', '_netpoint01' );
-      $location = getItemByTypeName( 'Location', '_location01' );
-      $expected = $netpoint->getName()." (".$location->getName().")";
-      $ret = \Dropdown::getDropdownName( 'glpi_netpoints', $netpoint->getID());
-      $this->string($ret)->isIdenticalTo($expected);
-
-      // test of return with comments
-      $expected = ['name'    => $expected,
-                        'comment' => "Comment for netpoint _netpoint01"];
-      $ret = \Dropdown::getDropdownName( 'glpi_netpoints', $netpoint->getID(), true );
-      $this->array($ret)->isIdenticalTo($expected);
-
-      // test of return without $tooltip
-      $ret = \Dropdown::getDropdownName( 'glpi_netpoints', $netpoint->getID(), true, true, false );
-      $this->array($ret)->isIdenticalTo($expected);
-
-      ///////////
       // Budget
       $budget = getItemByTypeName( 'Budget', '_budget01' );
       $expected = $budget->getName();
@@ -256,23 +239,6 @@ class Dropdown extends DbTestCase {
                         'comment' => $budget->fields['comment']];
       $ret = \Dropdown::getDropdownName( 'glpi_budgets', $budget->getID(), true, true, false );
       $this->array($ret)->isIdenticalTo($expected);
-   }
-
-   public function testGetDropdownNetpoint() {
-      $netpoint = getItemByTypeName( 'Netpoint', '_netpoint01' );
-      $location = getItemByTypeName( 'Location', '_location01' );
-      $ret = \Dropdown::getDropdownNetpoint([], false);
-      $this->array($ret)->hasKeys(['count', 'results'])->integer['count']->isIdenticalTo(1);
-      $this->array($ret['results'])->isIdenticalTo([
-         [
-            'id'     => 0,
-            'text'   => '-----'
-         ], [
-            'id'     => $netpoint->fields['id'],
-            'text'   => $netpoint->getName() . ' (' . $location->getName() . ')',
-            'title'  =>  $netpoint->getName() . ' - ' . $location->getName() . ' - ' . $netpoint->fields['comment']
-         ]
-      ]);
    }
 
    public function dataGetValueWithUnit() {
@@ -302,7 +268,7 @@ class Dropdown extends DbTestCase {
             [3.3597, '%',           0,    '3%'],
             [3.3597, '%',           2,    '3.36%'],
             [3.3597, '%',           6,    '3.359700%'],
-            [3579,   'day',         0,    '3&nbsp;579 days'],
+            [3579,   'day',         0,    '3 579 days'],
       ];
    }
 
@@ -342,7 +308,8 @@ class Dropdown extends DbTestCase {
                            'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                            'selection_text' => '_cat_1 > _subcat_1',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count' => 2
@@ -371,7 +338,8 @@ class Dropdown extends DbTestCase {
                            'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                            'selection_text' => '_cat_1 > _subcat_1',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count' => 1
@@ -405,7 +373,8 @@ class Dropdown extends DbTestCase {
                            'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                            'selection_text' => '_cat_1 > _subcat_1',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count' => 2
@@ -434,7 +403,8 @@ class Dropdown extends DbTestCase {
                            'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                            'selection_text' => '_cat_1 > _subcat_1',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count' => 1
@@ -460,7 +430,8 @@ class Dropdown extends DbTestCase {
                            'text'   => '_test_pc22',
                            'title'  => '_test_pc22',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count'     => 2
@@ -486,7 +457,8 @@ class Dropdown extends DbTestCase {
                            'text'   => '_test_pc22',
                            'title'  => '_test_pc22',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count'     => 2
@@ -508,7 +480,8 @@ class Dropdown extends DbTestCase {
                            'text'   => '_test_pc22',
                            'title'  => '_test_pc22',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count'     => 1
@@ -542,7 +515,8 @@ class Dropdown extends DbTestCase {
                            'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                            'selection_text' => '_cat_1 > _subcat_1',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count' => 1
@@ -565,7 +539,8 @@ class Dropdown extends DbTestCase {
                            'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                            'selection_text' => '_cat_1 > _subcat_1',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count' => 1
@@ -597,7 +572,8 @@ class Dropdown extends DbTestCase {
                            'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                            'selection_text' => '_cat_1 > _subcat_1',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count' => 2
@@ -631,7 +607,8 @@ class Dropdown extends DbTestCase {
                            'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                            'selection_text' => '_cat_1 > _subcat_1',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count' => 1
@@ -676,7 +653,8 @@ class Dropdown extends DbTestCase {
                            'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                            'selection_text' => '_cat_1 > _subcat_1',
                         ]
-                     ]
+                     ],
+                     'itemtype' => 'Entity'
                   ]
                ],
                'count' => 1
@@ -795,7 +773,7 @@ class Dropdown extends DbTestCase {
    }
 
    protected function getDropdownConnectProvider() {
-      $encoded_sep = \Toolbox::clean_cross_side_scripting_deep('>');
+      $encoded_sep = Sanitizer::sanitize('>');
 
       return [
          [
@@ -1263,8 +1241,9 @@ class Dropdown extends DbTestCase {
 
       $list_results = (array)$results[1];
       $this->array($list_results)
-         ->hasSize(2)
-         ->string['text']->isIdenticalTo('Root entity');
+         ->hasSize(3)
+         ->string['text']->isIdenticalTo('Root entity')
+         ->string['itemtype']->isIdenticalTo('Entity');
 
       $children = (array)$list_results['children'];
       $this->array($children)->hasSize(10);

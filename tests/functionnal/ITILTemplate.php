@@ -32,7 +32,7 @@
 
 namespace tests\units;
 
-use \DbTestCase;
+use DbTestCase;
 
 /* Test for inc/itiltemplate.class.php */
 class ITILTemplate extends DbTestCase {
@@ -220,6 +220,7 @@ class ITILTemplate extends DbTestCase {
                185 => 'Internal time to own',
                45 => 'Total duration',
                52 => 'Approval',
+               193 => 'Contract',
                14 => 'Type',
             ]
          ], [

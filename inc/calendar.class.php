@@ -121,7 +121,7 @@ class Calendar extends CommonDropdown {
 
       switch ($ma->getAction()) {
          case 'duplicate' : // For calendar duplicate in another entity
-            if (method_exists($item, 'duplicate')) {
+            if (Toolbox::hasTrait($item, \Glpi\Features\Clonable::class)) {
                $input = $ma->getInput();
                $options = [];
                if ($item->isEntityAssign()) {
@@ -132,7 +132,7 @@ class Calendar extends CommonDropdown {
                      if (!$item->isEntityAssign()
                          || ($input['entities_id'] != $item->getEntityID())) {
                         if ($item->can(-1, CREATE, $options)) {
-                           if ($item->duplicate($options)) {
+                           if ($item->clone($options)) {
                               $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                            } else {
                               $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -192,32 +192,11 @@ class Calendar extends CommonDropdown {
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
-
    /**
-    * Clone a calendar to another entity : name is updated
-    *
-    * @param $options array of new values to set
-    * @return boolean True on success
+    * @see Glpi\Features\Clonable::post_clone
     */
-   function duplicate($options = []) {
-
-      $input = Toolbox::addslashes_deep($this->fields);
-      unset($input['id']);
-
-      if (is_array($options) && count($options)) {
-         foreach ($options as $key => $val) {
-            if (isset($this->fields[$key])) {
-               $input[$key] = $val;
-            }
-         }
-      }
-
-      if ($newID = $this->clone($input)) {
-         $this->updateDurationCache($newID);
-         return true;
-      }
-
-      return false;
+   public function post_clone($source, $history) {
+      $this->updateDurationCache($this->getID());
    }
 
 
@@ -239,52 +218,28 @@ class Calendar extends CommonDropdown {
     * @return boolean
    **/
    function isHoliday($date) {
-      global $DB;
+      $calendar_holiday = new Calendar_Holiday();
+      $holidays = $calendar_holiday->getHolidaysForCalendar($this->fields['id']);
 
-      // Use a static cache to improve performances when multiple elements requires a computation
-      // on same calendars/dates.
-      static $result_cache = [];
-      $cache_key = $this->fields['id'] . '-' . date('Y-m-d', strtotime($date));
-      if (array_key_exists($cache_key, $result_cache)) {
-         return $result_cache[$cache_key];
+      foreach ($holidays as $holiday) {
+         if ($holiday['is_perpetual']) {
+            // Compare only month and day for holidays that occurs every year.
+            $date_to_compare = date('m-d', strtotime($date));
+            $begin_date      = date('m-d', strtotime($holiday['begin_date']));
+            $end_date        = date('m-d', strtotime($holiday['end_date']));
+         } else {
+            // Normalize dates to Y-m-d
+            $date_to_compare = date('Y-m-d', strtotime($date));
+            $begin_date      = date('Y-m-d', strtotime($holiday['begin_date']));
+            $end_date        = date('Y-m-d', strtotime($holiday['end_date']));
+         }
+
+         if ($begin_date <= $date_to_compare && $date_to_compare <= $end_date) {
+            return true;
+         }
       }
 
-      $result = $DB->request([
-         'COUNT'        => 'cpt',
-         'FROM'         => 'glpi_calendars_holidays',
-         'INNER JOIN'   => [
-            'glpi_holidays'   => [
-               'ON' => [
-                  'glpi_calendars_holidays'  => 'holidays_id',
-                  'glpi_holidays'            => 'id'
-               ]
-            ]
-         ],
-         'WHERE'        => [
-            'glpi_calendars_holidays.calendars_id' => $this->fields['id'],
-            'OR'                                   => [
-               [
-                  'AND' => [
-                     'glpi_holidays.end_date'            => ['>=', $date],
-                     'glpi_holidays.begin_date'          => ['<=', $date]
-                  ]
-               ],
-               [
-                  'AND' => [
-                     'glpi_holidays.is_perpetual'  => 1,
-                     new \QueryExpression("MONTH(".$DB->quoteName('end_date').")*100 + DAY(".$DB->quoteName('end_date').") >= ".date('nd', strtotime($date))),
-                     new \QueryExpression("MONTH(".$DB->quoteName('begin_date').")*100 + DAY(".$DB->quoteName('begin_date').") <= ".date('nd', strtotime($date)))
-                  ]
-               ]
-            ]
-         ]
-      ])->next();
-
-      $is_holiday = (int)$result['cpt'] > 0;
-
-      $result_cache[$cache_key] = $is_holiday;
-
-      return $is_holiday;
+      return false;
    }
 
 
@@ -665,5 +620,9 @@ class Calendar extends CommonDropdown {
     */
    static function getDayNumberInWeek($date) {
       return (int)date('w', $date);
+   }
+
+   static function getIcon() {
+      return "far fa-calendar-alt";
    }
 }

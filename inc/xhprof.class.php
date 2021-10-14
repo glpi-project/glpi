@@ -83,7 +83,12 @@ class XHProf {
 
       if (!self::$run
           && function_exists('xhprof_enable')) {
-         xhprof_enable();
+         xhprof_enable(
+            XHPROF_FLAGS_NO_BUILTINS
+            | XHPROF_FLAGS_CPU
+            | XHPROF_FLAGS_MEMORY
+         );
+
          if (class_exists('Toolbox')) {
             Toolbox::logDebug("Start profiling with XHProf", $msg);
          }

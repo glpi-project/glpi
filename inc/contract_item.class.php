@@ -175,14 +175,14 @@ class Contract_Item extends CommonDBRelation{
 
       $types_iterator = self::getDistinctTypes($contract_id);
 
-      while ($type_row = $types_iterator->next()) {
+      foreach ($types_iterator as $type_row) {
          $itemtype = $type_row['itemtype'];
          if (!getItemForItemtype($itemtype)) {
             continue;
          }
 
          $iterator = self::getTypeItems($contract_id, $itemtype);
-         while ($objdata = $iterator->next()) {
+         foreach ($iterator as $objdata) {
             $items[$itemtype][$objdata['id']] = $objdata;
          }
       }
@@ -233,46 +233,6 @@ class Contract_Item extends CommonDBRelation{
 
 
    /**
-    * Duplicate contracts from an item template to its clone
-    *
-    * @deprecated 9.5
-    * @since 0.84
-    *
-    * @param string  $itemtype     itemtype of the item
-    * @param integer $oldid        ID of the item to clone
-    * @param integer $newid        ID of the item cloned
-    * @param string  $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
-    *
-    * @return void
-   **/
-   static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      if (empty($newitemtype)) {
-         $newitemtype = $itemtype;
-      }
-
-      $result = $DB->request(
-         [
-            'SELECT' => 'contracts_id',
-            'FROM'   => self::getTable(),
-            'WHERE'  => [
-               'items_id' => $oldid,
-               'itemtype' => $itemtype,
-            ],
-         ]
-      );
-      foreach ($result as $data) {
-         $contractitem = new self();
-         $contractitem->add(['contracts_id' => $data["contracts_id"],
-                                  'itemtype'     => $newitemtype,
-                                  'items_id'     => $newid]);
-      }
-   }
-
-
-   /**
     * Print an HTML array of contract associated to an object
     *
     * @since 0.84
@@ -300,7 +260,7 @@ class Contract_Item extends CommonDBRelation{
 
       $contracts = [];
       $used      = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $contracts[$data['id']] = $data;
          $used[$data['id']]      = $data['id'];
       }
@@ -320,14 +280,14 @@ class Contract_Item extends CommonDBRelation{
                                   'expired' => false]);
 
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
          echo "</div>";
       }
 
-      echo "<div class='spaced'>";
+      echo "<div class='spaced table-responsive'>";
       if ($withtemplate != 2) {
          if ($canedit && $number) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
@@ -449,7 +409,7 @@ class Contract_Item extends CommonDBRelation{
       $data    = [];
       $totalnb = 0;
       $used    = [];
-      while ($type_row = $types_iterator->next()) {
+      foreach ($types_iterator as $type_row) {
          $itemtype = $type_row['itemtype'];
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
@@ -540,7 +500,7 @@ class Contract_Item extends CommonDBRelation{
                                         'link'     => $link];
             } else if ($nb > 0) {
                $data[$itemtype] = [];
-               while ($objdata = $iterator->next()) {
+               foreach ($iterator as $objdata) {
                   $data[$itemtype][$objdata['id']] = $objdata;
                   $used[$itemtype][$objdata['id']] = $objdata['id'];
                }
@@ -573,7 +533,7 @@ class Contract_Item extends CommonDBRelation{
                                                      'used'
                                                        => $used]);
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "<input type='hidden' name='contracts_id' value='$instID'>";
          echo "</td></tr>";
          echo "</table>";

@@ -32,7 +32,7 @@
 
 namespace tests\units;
 
-use \DbTestCase;
+use DbTestCase;
 
 class Appliance extends DbTestCase {
 
@@ -40,7 +40,8 @@ class Appliance extends DbTestCase {
       $expected = [
          'Appliance$main'     => 'Appliance',
          'Impact$1'           => 'Impact analysis',
-         'Log$1'              => 'Historical'
+         'ManualLink$1'       => 'Links',
+         'Log$1'              => 'Historical',
       ];
       $this
          ->given($this->newTestedInstance)

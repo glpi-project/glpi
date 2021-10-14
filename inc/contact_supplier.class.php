@@ -115,7 +115,7 @@ class Contact_Supplier extends CommonDBRelation{
 
       $suppliers = [];
       $used = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $suppliers[$data['linkid']] = $data;
          $used[$data['id']] = $data['id'];
       }
@@ -134,7 +134,7 @@ class Contact_Supplier extends CommonDBRelation{
                                   'entity'      => $contact->fields["entities_id"],
                                   'entity_sons' => $contact->fields["is_recursive"]]);
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>";
 
          echo "</table>";
@@ -240,7 +240,7 @@ class Contact_Supplier extends CommonDBRelation{
 
       $contacts = [];
       $used = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $contacts[$data['linkid']] = $data;
          $used[$data['id']] = $data['id'];
       }
@@ -261,7 +261,7 @@ class Contact_Supplier extends CommonDBRelation{
                                  'entity_sons' => $supplier->fields["is_recursive"]]);
 
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>";
 
          echo "</table>";

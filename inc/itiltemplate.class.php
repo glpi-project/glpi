@@ -152,6 +152,8 @@ abstract class ITILTemplate extends CommonDropdown {
 
       static $allowed_fields = [];
 
+      $itiltype = str_replace('Template', '', static::getType());
+
       // For integer value for index
       if ($withtypeandcategory) {
          $withtypeandcategory = 1;
@@ -165,13 +167,12 @@ abstract class ITILTemplate extends CommonDropdown {
          $withitemtype = 0;
       }
 
-      if (!isset($allowed_fields[$withtypeandcategory][$withitemtype])) {
-         $itiltype = str_replace('Template', '', static::getType());
+      if (!isset($allowed_fields[$itiltype][$withtypeandcategory][$withitemtype])) {
          $itil_object = new $itiltype;
          $itemstable = $itil_object->getItemsTable();
 
          // SearchOption ID => name used for options
-         $allowed_fields[$withtypeandcategory][$withitemtype] = [
+         $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype] = [
                      $itil_object->getSearchOptionIDByField('field', 'name',
                                                        $itil_object->getTable())   => 'name',
                      $itil_object->getSearchOptionIDByField('field', 'content',
@@ -198,39 +199,39 @@ abstract class ITILTemplate extends CommonDropdown {
              ];
 
          if ($withtypeandcategory) {
-            $allowed_fields[$withtypeandcategory][$withitemtype]
+            $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype]
                [$itil_object->getSearchOptionIDByField('field', 'completename',
                                                   'glpi_itilcategories')]  = 'itilcategories_id';
          }
 
          if ($withitemtype) {
-            $allowed_fields[$withtypeandcategory][$withitemtype]
+            $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype]
                [$itil_object->getSearchOptionIDByField('field', 'itemtype',
                                                   $itemstable)] = 'itemtype';
          }
 
-         $allowed_fields[$withtypeandcategory][$withitemtype]
+         $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype]
             [$itil_object->getSearchOptionIDByField('field', 'items_id',
                                                $itemstable)] = 'items_id';
 
          // Add validation request
-         $allowed_fields[$withtypeandcategory][$withitemtype][-2] = '_add_validation';
+         $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype][-2] = '_add_validation';
 
          // Add document
-         $allowed_fields[$withtypeandcategory][$withitemtype]
+         $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype]
                [$itil_object->getSearchOptionIDByField('field', 'name',
                                                   'glpi_documents')] = '_documents_id';
 
          // Add ITILTask (from task templates)
-         $allowed_fields[$withtypeandcategory][$withitemtype]
+         $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype]
                [$itil_object->getSearchOptionIDByField('field', 'name',
                                                   TaskTemplate::getTable())] = '_tasktemplates_id';
 
          //add specific itil type fields
-         $allowed_fields[$withtypeandcategory][$withitemtype] += static::getExtraAllowedFields($withtypeandcategory, $withitemtype);
+         $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype] += static::getExtraAllowedFields($withtypeandcategory, $withitemtype);
       }
 
-      return $allowed_fields[$withtypeandcategory][$withitemtype];
+      return $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype];
    }
 
    /**
@@ -363,102 +364,6 @@ abstract class ITILTemplate extends CommonDropdown {
          return "<span class='required'>*</span>";
       }
       return '';
-   }
-
-
-   /**
-    * Get hidden field begin enclosure for text
-    *
-    * @since 0.83
-    *
-    * @param $field string field
-    *
-    * @return string to display
-   **/
-   function getBeginHiddenFieldText($field) {
-
-      if ($this->isHiddenField($field) && !$this->isPredefinedField($field)) {
-         return "<span id='hiddentext$field' style='display:none'>";
-      }
-      return '';
-   }
-
-
-   /**
-    * Get hidden field end enclosure for text
-    *
-    * @since 0.83
-    *
-    * @param $field string field
-    *
-    * @return string to display
-   **/
-   function getEndHiddenFieldText($field) {
-
-      if ($this->isHiddenField($field) && !$this->isPredefinedField($field)) {
-         return "</span>";
-      }
-      return '';
-   }
-
-
-   /**
-    * Get hidden field begin enclosure for value
-    *
-    * @since 0.83
-    *
-    * @param $field string field
-    *
-    * @return string to display
-   **/
-   function getBeginHiddenFieldValue($field) {
-
-      if ($this->isHiddenField($field)) {
-         return "<span id='hiddenvalue$field' style='display:none'>";
-      }
-      return '';
-   }
-
-
-   /**
-    * Get hidden field end enclosure with hidden value
-    *
-    * @since 0.83
-    *
-    * @param $field  string   field
-    * @param $ticket          ticket object (default NULL)
-    *
-    * @return string to display
-   **/
-   function getEndHiddenFieldValue($field, &$ticket = null) {
-
-      $output = '';
-      if ($this->isHiddenField($field)) {
-         $output .= "</span>";
-         if ($ticket && isset($ticket->fields[$field])) {
-            $output .= "<input type='hidden' name='$field' value=\"".$ticket->fields[$field]."\">";
-         }
-         if ($this->isPredefinedField($field)
-             && !is_null($ticket)) {
-            if ($num = array_search($field, $this->getAllowedFields())) {
-               $display_options = ['comments' => true,
-                                        'html'     => true];
-               $output .= $ticket->getValueToDisplay($num, $ticket->fields[$field], $display_options);
-
-               /// Display items_id
-               if ($field == 'itemtype') {
-                  $output .= "<input type='hidden' name='items_id' value=\"".
-                               $ticket->fields['items_id']."\">";
-                  if ($num = array_search('items_id', $this->getAllowedFields())) {
-                     $output = sprintf(__('%1$s - %2$s'), $output,
-                                       $ticket->getValueToDisplay($num, $ticket->fields,
-                                                                  $display_options));
-                  }
-               }
-            }
-         }
-      }
-      return $output;
    }
 
 

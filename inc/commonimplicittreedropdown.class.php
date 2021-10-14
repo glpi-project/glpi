@@ -155,7 +155,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
             ]
          ]);
          $oldSons = [];
-         while ($oldSon = $iterator->next()) {
+         foreach ($iterator as $oldSon) {
             $oldSons[] = $oldSon["id"];
          }
          if (count($oldSons) > 0) { // Then make them pointing to old parent
@@ -184,7 +184,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
             ]
          ]);
          $newSons = [];
-         while ($newSon = $iterator->next()) {
+         foreach ($iterator as $newSon) {
             $newSons[] = $newSon["id"];
          }
          if (count($newSons) > 0) { // Then make them pointing to me

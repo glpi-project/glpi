@@ -32,9 +32,8 @@
 
 namespace tests\units;
 
-use \DbTestCase;
+use DbTestCase;
 use SoftwareVersion;
-use TicketTask;
 
 /* Test for inc/commondbtm.class.php */
 
@@ -156,7 +155,7 @@ class CommonDBTM extends DbTestCase {
       $result = $DB->request([
          'FROM'   => \Computer::getTable(),
          'LIMIT'  =>1
-      ])->next();
+      ])->current();
 
       $this->array($result)->hasKeys(['name', 'uuid']);
 
@@ -269,7 +268,7 @@ class CommonDBTM extends DbTestCase {
       $check = $DB->request([
          'FROM'   => \Computer::getTable(),
          'WHERE'  => ['name' => 'serial-to-change']
-      ])->next();
+      ])->current();
       $this->array($check)
          ->string['serial']->isIdenticalTo('serial-one');
 
@@ -287,7 +286,7 @@ class CommonDBTM extends DbTestCase {
       $check = $DB->request([
          'FROM'   => \Computer::getTable(),
          'WHERE'  => ['name' => 'serial-to-change']
-      ])->next();
+      ])->current();
       $this->array($check)
          ->string['serial']->isIdenticalTo('serial-changed');
 
@@ -341,7 +340,7 @@ class CommonDBTM extends DbTestCase {
       $check = $DB->request([
          'FROM'   => \Computer::getTable(),
          'WHERE'  => ['name' => 'serial-to-change']
-      ])->next();
+      ])->current();
       $this->array($check)
          ->string['serial']->isIdenticalTo('serial-one');
 
@@ -358,7 +357,7 @@ class CommonDBTM extends DbTestCase {
       $check = $DB->request([
          'FROM'   => \Computer::getTable(),
          'WHERE'  => ['name' => 'serial-to-change']
-      ])->next();
+      ])->current();
       $this->array($check)
          ->string['serial']->isIdenticalTo('serial-changed');
 
@@ -1116,6 +1115,10 @@ class CommonDBTM extends DbTestCase {
 
    public function testGetById() {
       $itemtype = \Computer::class;
+
+      // test null ID
+      $output = $itemtype::getById(null);
+      $this->boolean($output)->isFalse();
 
       // test existing item
       $instance = new $itemtype();

@@ -120,7 +120,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
       $vlans  = [];
       $used   = [];
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          $used[$line["id"]]       = $line["id"];
          $vlans[$line["assocID"]] = $line;
       }
@@ -138,7 +138,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
          echo "<td class='right'>".__('Tagged')."</td>";
          echo "<td class='left'><input type='checkbox' name='tagged' value='1'></td>";
          echo "<td><input type='submit' name='add' value='"._sx('button', 'Associate').
-                    "' class='submit'>";
+                    "' class='btn btn-primary'>";
          echo "</td></tr>\n";
 
          echo "</table>\n";
@@ -239,7 +239,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
       $vlans  = [];
       $used   = [];
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          $used[$line["id"]]       = $line["id"];
          $vlans[$line["assocID"]] = $line;
       }
@@ -312,7 +312,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
          'WHERE'  => ['networkports_id' => $portID]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $vlans[$data['vlans_id']] = $data['vlans_id'];
       }
 

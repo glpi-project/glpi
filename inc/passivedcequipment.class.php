@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Socket;
+
 /**
  * PassiveDCEquipment Class
 **/
@@ -52,6 +54,7 @@ class PassiveDCEquipment extends CommonDBTM {
       $ong = [];
       $this->addDefaultFormTab($ong)
          ->addImpactTab($ong, $options)
+         ->addStandardTab(Socket::class, $ong, $options)
          ->addStandardTab('Infocom', $ong, $options)
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
@@ -62,135 +65,6 @@ class PassiveDCEquipment extends CommonDBTM {
       return $ong;
    }
 
-   function showForm($ID, $options = []) {
-      $rand = mt_rand();
-      $tplmark = $this->getAutofillMark('name', $options);
-
-      $this->initForm($ID, $options);
-      $this->showFormHeader($options);
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='textfield_name$rand'>".__('Name')."</label></td>";
-      echo "<td>";
-      $objectName = autoName(
-         $this->fields["name"],
-         "name",
-         (isset($options['withtemplate']) && ( $options['withtemplate']== 2)),
-         $this->getType(),
-         $this->fields["entities_id"]
-      );
-      Html::autocompletionTextField(
-         $this,
-         'name',
-         [
-            'value'     => $objectName,
-            'rand'      => $rand
-         ]
-      );
-      echo "</td>";
-
-      echo "<td><label for='dropdown_states_id$rand'>".__('Status')."</label></td>";
-      echo "<td>";
-      State::dropdown([
-         'value'     => $this->fields["states_id"],
-         'entity'    => $this->fields["entities_id"],
-         'condition' => ['is_visible_passivedcequipment' => 1],
-         'rand'      => $rand]
-      );
-      echo "</td></tr>\n";
-
-      $this->showDcBreadcrumb();
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_locations_id$rand'>".Location::getTypeName(1)."</label></td>";
-      echo "<td>";
-      Location::dropdown([
-         'value'  => $this->fields["locations_id"],
-         'entity' => $this->fields["entities_id"],
-         'rand'   => $rand
-      ]);
-      echo "</td>";
-      echo "<td><label for='dropdown_passivedcequipmenttypes_id$rand'>"._n('Type', 'Types', 1)."</label></td>";
-      echo "<td>";
-      PassiveDCEquipmentType::dropdown([
-         'value'  => $this->fields["passivedcequipmenttypes_id"],
-         'rand'   => $rand
-      ]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_users_id_tech$rand'>".__('Technician in charge of the hardware')."</label></td>";
-      echo "<td>";
-      User::dropdown([
-         'name'   => 'users_id_tech',
-         'value'  => $this->fields["users_id_tech"],
-         'right'  => 'own_ticket',
-         'entity' => $this->fields["entities_id"],
-         'rand'   => $rand
-      ]);
-      echo "</td>";
-      echo "<td><label for='dropdown_manufacturers_id$rand'>".Manufacturer::getTypeName(1)."</label></td>";
-      echo "<td>";
-      Manufacturer::dropdown([
-         'value' => $this->fields["manufacturers_id"],
-         'rand' => $rand
-      ]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_groups_id_tech$rand'>".__('Group in charge of the hardware')."</label></td>";
-      echo "<td>";
-      Group::dropdown([
-         'name'      => 'groups_id_tech',
-         'value'     => $this->fields['groups_id_tech'],
-         'entity'    => $this->fields['entities_id'],
-         'condition' => ['is_assign' => 1],
-         'rand'      => $rand
-      ]);
-
-      echo "</td>";
-      echo "<td><label for='dropdown_passivedcequipmentmodels_id$rand'>"._n('Model', 'Models', 1)."</label></td>";
-      echo "<td>";
-      PassiveDCEquipmentModel::dropdown([
-         'value'  => $this->fields["passivedcequipmentmodels_id"],
-         'rand'   => $rand
-      ]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='textfield_serial$rand'>".__('Serial number')."</label></td>";
-      echo "<td >";
-      Html::autocompletionTextField($this, 'serial', ['rand' => $rand]);
-      echo "</td>";
-
-      echo "<td><label for='textfield_otherserial$rand'>".sprintf(__('%1$s%2$s'), __('Inventory number'), $tplmark).
-           "</label></td>";
-      echo "<td>";
-
-      $objectName = autoName($this->fields["otherserial"], "otherserial",
-                             (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
-                             $this->getType(), $this->fields["entities_id"]);
-      Html::autocompletionTextField(
-         $this,
-         'otherserial',
-         [
-            'value'     => $objectName,
-            'rand'      => $rand
-         ]
-      );
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='comment'>".__('Comments')."</label></td>";
-      echo "<td colspan='3' class='middle'>";
-
-      echo "<textarea cols='45' rows='3' id='comment' name='comment' >".
-           $this->fields["comment"];
-      echo "</textarea></td></tr>";
-
-      $this->showFormButtons($options);
-      return true;
-   }
 
    function rawSearchOptions() {
       $tab = [];
@@ -207,7 +81,6 @@ class PassiveDCEquipment extends CommonDBTM {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false, // implicit key==1
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -233,7 +106,6 @@ class PassiveDCEquipment extends CommonDBTM {
          'field'              => 'serial',
          'name'               => __('Serial number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -242,7 +114,6 @@ class PassiveDCEquipment extends CommonDBTM {
          'field'              => 'otherserial',
          'name'               => __('Inventory number'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
@@ -310,7 +181,6 @@ class PassiveDCEquipment extends CommonDBTM {
          'massiveaction'      => false,
          'nosearch'           => true,
          'nodisplay'          => true,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -331,6 +201,8 @@ class PassiveDCEquipment extends CommonDBTM {
       ];
 
       $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
+
+      $tab = array_merge($tab, Socket::rawSearchOptionsToAdd(get_class($this)));
 
       return $tab;
    }

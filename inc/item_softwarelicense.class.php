@@ -131,6 +131,37 @@ class Item_SoftwareLicense extends CommonDBRelation {
                }
             }
             return false;
+
+         case 'add' :
+            Software::dropdownLicenseToInstall('peer_softwarelicenses_id',
+                                                $_SESSION["glpiactive_entity"]);
+            echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction'])."</span>";
+            return true;
+
+         case 'add_item' :
+            global $CFG_GLPI;
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr class='tab_bg_2 center'>";
+            echo "<td>";
+            $rand = Dropdown::showItemTypes('itemtype', $CFG_GLPI['software_types'], [
+               'width'                 => 'unset'
+            ]);
+
+            $p = ['idtable'            => '__VALUE__',
+               'rand'                  => $rand,
+               'name'                  => "items_id",
+               'width'                 => 'unset'
+            ];
+
+            Ajax::updateItemOnSelectEvent("dropdown_itemtype$rand", "results_itemtype$rand",
+               $CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php", $p);
+
+            echo "<span id='results_itemtype$rand'>\n";
+            echo "</td><td>";
+            echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction'])."</span>";
+            echo "</td></tr>";
+
+            return true;
       }
       return parent::showMassiveActionsSubForm($ma);
    }
@@ -204,6 +235,27 @@ class Item_SoftwareLicense extends CommonDBRelation {
                }
             }
             return;
+
+         case 'add_item':
+            $item_licence = new Item_SoftwareLicense();
+            $input = $ma->getInput();
+            foreach ($ids as $id) {
+               $input = [
+                  'softwarelicenses_id'   => $id,
+                  'items_id'        => $input['items_id'],
+                  'itemtype'        => $input['itemtype']
+               ];
+               if ($item_licence->can(-1, UPDATE, $input)) {
+                  if ($item_licence->add($input)) {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+               }
+            }
+            return;
       }
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
@@ -235,7 +287,7 @@ class Item_SoftwareLicense extends CommonDBRelation {
       if ($itemtype !== null) {
          $target_types = [$itemtype];
       } else {
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $target_types[] = $data['itemtype'];
          }
       }
@@ -273,7 +325,7 @@ class Item_SoftwareLicense extends CommonDBRelation {
          if ($item->maybeTemplate()) {
             $request['WHERE']["$itemtable.is_template"] = 0;
          }
-         $count += $DB->request($request)->next()['cpt'];
+         $count += $DB->request($request)->current()['cpt'];
       }
       return $count;
    }
@@ -310,7 +362,7 @@ class Item_SoftwareLicense extends CommonDBRelation {
       ]);
 
       $target_types = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $target_types[] = $data['itemtype'];
       }
 
@@ -350,7 +402,7 @@ class Item_SoftwareLicense extends CommonDBRelation {
          if ($item->maybeTemplate()) {
             $request['WHERE']["$itemtable.is_template"] = 0;
          }
-         $count += $DB->request($request)->next()['cpt'];
+         $count += $DB->request($request)->current()['cpt'];
       }
       return $count;
    }
@@ -390,7 +442,7 @@ class Item_SoftwareLicense extends CommonDBRelation {
       ]);
 
       $tab = "&nbsp;&nbsp;&nbsp;&nbsp;";
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $itemtype_iterator = $DB->request([
             'SELECT'    => ['itemtype'],
             'DISTINCT'  => true,
@@ -409,7 +461,7 @@ class Item_SoftwareLicense extends CommonDBRelation {
          ]);
 
          $target_types = [];
-         while ($type = $itemtype_iterator->next()) {
+         foreach ($itemtype_iterator as $type) {
             $target_types[] = $type['itemtype'];
          }
 
@@ -520,7 +572,7 @@ JAVASCRIPT;
 
          echo "<span id='results_itemtype$rand'>\n";
          echo "</td>";
-         echo "<td><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<td><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>";
 
          echo "</table>";
@@ -696,7 +748,7 @@ JAVASCRIPT;
 
       $rand = mt_rand();
 
-      if ($data = $iterator->next()) {
+      if ($data = $iterator->current()) {
          if ($canedit) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], count($iterator)),
@@ -798,7 +850,8 @@ JAVASCRIPT;
                                        $data['userfirstname'], $linkUser)."</td>";
             echo "</tr>\n";
 
-         } while ($data = $iterator->next());
+            $iterator->next();
+         } while ($data = $iterator->current());
          echo $header_begin.$header_bottom.$header_end;
          echo "</table>\n";
          if ($canedit) {
@@ -886,61 +939,10 @@ JAVASCRIPT;
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $lic[$data['id']] = $data;
       }
       return $lic;
-   }
-
-
-   /**
-    * Duplicate all software licenses from a computer template to its clone
-    *
-    * @deprecated 9.5
-    *
-    * @param integer $oldid ID of the computer to clone
-    * @param integer $newid ID of the computer cloned
-    *
-    * @return void
-   **/
-   static function cloneComputer($oldid, $newid) {
-      Toolbox::deprecated('Use clone');
-      self::cloneItem('Computer', $oldid, $newid);
-   }
-
-
-   /**
-    * Duplicate all software licenses from an item template to its clone
-    *
-    * @deprecated 9.5
-    *
-    * @param string  $itemtype Type of the item
-    * @param integer $oldid ID of the item to clone
-    * @param integer $newid ID of the item cloned
-    *
-    * @return void
-    **/
-   static function cloneItem($itemtype, $oldid, $newid) {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      $iterator = $DB->request([
-         'FROM' => 'glpi_items_softwarelicenses',
-         'WHERE' => [
-            'items_id' => $oldid,
-            'itemtype' => $itemtype
-         ]
-      ]);
-
-      while ($data = $iterator->next()) {
-         $csl = new self();
-         unset($data['id']);
-         $data['items_id'] = $newid;
-         $data['itemtype'] = $itemtype;
-         $data['_no_history'] = true;
-
-         $csl->add($data);
-      }
    }
 
 
@@ -998,7 +1000,7 @@ JAVASCRIPT;
          'WHERE'  => [
             'softwares_id' => $softwares_id
          ] + getEntitiesRestrictCriteria('glpi_softwarelicenses')
-      ])->next();
+      ])->current();
       return $result['cpt'];
    }
 }

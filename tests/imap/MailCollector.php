@@ -28,11 +28,13 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 namespace tests\units;
 
-use \DbTestCase;
+use Config;
+use DbTestCase;
+use Glpi\Toolbox\Sanitizer;
 use ITILFollowup;
 use Laminas\Mail\Storage\Message;
 use NotificationTarget;
@@ -84,7 +86,7 @@ class MailCollector extends DbTestCase {
             'expected'  => "With a \ncarriage return"
          ], [
             'raw'       => 'We have a problem, <strong>URGENT</strong>',
-            'expected'  => 'We have a problem, &lt;strong&gt;URGENT&lt;/strong&gt;'
+            'expected'  => 'We have a problem, &#60;strong&#62;URGENT&#60;/strong&#62;'
          ], [ //dunno why...
             'raw'       => 'Subject with =20 character',
             'expected'  => "Subject with \n character"
@@ -203,6 +205,12 @@ class MailCollector extends DbTestCase {
       $soft_notif = new NotificationTargetSoftwareLicense($root_ent_id, 'test_event', getItemByTypeName('SoftwareLicense', '_test_softlic_1'));
       $base_notif = new NotificationTarget();
 
+      $uuid = Config::getUuid('notification');
+
+      $time = time();
+      $rand = rand();
+      $uname = 'localhost';
+
       return [
          [
             'headers'  => [],
@@ -216,7 +224,25 @@ class MailCollector extends DbTestCase {
          ],
          [
             'headers'  => [
-               'message-id' => $ticket_notif->getMessageID(), // ticket format
+               'message-id' => "GLPI-1.{$time}.{$rand}@{$uname}", // old ticket format
+            ],
+            'expected' => true,
+         ],
+         [
+            'headers'  => [
+               'message-id' => "GLPI-SoftwareLicence-1.{$time}.{$rand}@{$uname}", // old format with object relation
+            ],
+            'expected' => true,
+         ],
+         [
+            'headers'  => [
+               'message-id' => "GLPI.{$time}.{$rand}@{$uname}", // old format without object relation
+            ],
+            'expected' => true,
+         ],
+         [
+            'headers'  => [
+               'message-id' => $ticket_notif->getMessageID(), // new format for ticket
             ],
             'expected' => true,
          ],
@@ -231,6 +257,18 @@ class MailCollector extends DbTestCase {
                'message-id' => $base_notif->getMessageID(), // new format without object relation
             ],
             'expected' => true,
+         ],
+         [
+            'headers'  => [
+               'message-id' => "GLPI_notmyuuid-Ticket-1.{$time}.{$rand}@{$uname}", // new format with object relation
+            ],
+            'expected' => false,
+         ],
+         [
+            'headers'  => [
+               'message-id' => "GLPI_notmyuuid.{$time}.{$rand}@{$uname}", // new format without object relation
+            ],
+            'expected' => false,
          ],
       ];
    }
@@ -260,6 +298,8 @@ class MailCollector extends DbTestCase {
       $soft_id   = getItemByTypeName('SoftwareLicense', '_test_softlic_1', true);
       $soft_notif = new NotificationTargetSoftwareLicense($root_ent_id, 'test_event', getItemByTypeName('SoftwareLicense', '_test_softlic_1'));
 
+      $uuid = Config::getUuid('notification');
+
       $time1 = time() - 548;
       $time2 = $time1 - 1567;
       $rand1 = rand();
@@ -278,10 +318,10 @@ class MailCollector extends DbTestCase {
             'expected_items_id' => null,
             'accepted'          => true,
          ],
-         // ticket header format - found item
+         // old ticket format - found item
          [
             'headers'           => [
-               'in-reply-to' => $ticket_notif->getMessageID(),
+               'in-reply-to' => "GLPI-{$ticket_id}.{$time1}.{$rand1}@{$uname1}",
             ],
             'expected_itemtype' => Ticket::class,
             'expected_items_id' => $ticket_id,
@@ -289,13 +329,13 @@ class MailCollector extends DbTestCase {
          ],
          [
             'headers'           => [
-               'references'  => $ticket_notif->getMessageID(),
+               'references'  => "GLPI-{$ticket_id}.{$time1}.{$rand1}@{$uname2}",
             ],
             'expected_itemtype' => Ticket::class,
             'expected_items_id' => $ticket_id,
             'accepted'          => true,
          ],
-         // ticket header format - invalid items_id
+         // old ticket format - invalid items_id
          [
             'headers'           => [
                'in-reply-to' => "GLPI-9999999.{$time2}.{$rand2}@{$uname1}",
@@ -304,13 +344,40 @@ class MailCollector extends DbTestCase {
             'expected_items_id' => null,
             'accepted'          => true,
          ],
-         // other items header format - found item
+         // old items header format - found item
          [
             'headers'           => [
-               'in-reply-to' => $soft_notif->getMessageID(),
+               'in-reply-to' => "GLPI-SoftwareLicense-{$soft_id}.{$time1}.{$rand2}@{$uname2}",
             ],
             'expected_itemtype' => SoftwareLicense::class,
             'expected_items_id' => $soft_id,
+            'accepted'          => true,
+         ],
+         // old items header format - invalid itemtype
+         [
+            'headers'           => [
+               'references'  => "GLPI-UnknownType-{$soft_id}.{$time2}.{$rand2}@{$uname1}",
+            ],
+            'expected_itemtype' => null,
+            'expected_items_id' => null,
+            'accepted'          => true,
+         ],
+         // old items header format - invalid items_id
+         [
+            'headers'           => [
+               'references'  => "GLPI-SoftwareLicense-9999999.{$time1}.{$rand1}@{$uname2}",
+            ],
+            'expected_itemtype' => null,
+            'expected_items_id' => null,
+            'accepted'          => true,
+         ],
+         // new header format - found item
+         [
+            'headers'           => [
+               'in-reply-to' => $ticket_notif->getMessageID(),
+            ],
+            'expected_itemtype' => Ticket::class,
+            'expected_items_id' => $ticket_id,
             'accepted'          => true,
          ],
          [
@@ -339,23 +406,40 @@ class MailCollector extends DbTestCase {
             'expected_items_id' => $soft_id,
             'accepted'          => true,
          ],
-         // other items header format - invalid itemtype
+         // new header format - invalid itemtype
          [
             'headers'           => [
-               'references'  => "GLPI-UnknownType-{$soft_id}.{$time2}.{$rand2}@{$uname1}",
+               'references'  => "GLPI_{$uuid}-UnknownType-{$ticket_id}.{$time2}.{$rand2}@{$uname1}",
             ],
             'expected_itemtype' => null,
             'expected_items_id' => null,
             'accepted'          => true,
          ],
-         // other items header format - invalid items_id
+         // new header format - invalid items_id
          [
             'headers'           => [
-               'references'  => "GLPI-SoftwareLicense-9999999.{$time1}.{$rand1}@{$uname2}",
+               'references'  => "GLPI_{$uuid}-Ticket-9999999.{$time1}.{$rand1}@{$uname1}",
             ],
             'expected_itemtype' => null,
             'expected_items_id' => null,
             'accepted'          => true,
+         ],
+         // new header format - uuid from another GLPI instance
+         [
+            'headers'           => [
+               'in-reply-to' => "GLPI_notmyuuid-Ticket-{$ticket_id}.{$time1}.{$rand1}@{$uname2}",
+            ],
+            'expected_itemtype' => null,
+            'expected_items_id' => null,
+            'accepted'          => false,
+         ],
+         [
+            'headers'           => [
+               'references'  => "GLPI_notmyuuid-Ticket-{$ticket_id}.{$time2}.{$rand2}@{$uname1}",
+            ],
+            'expected_itemtype' => null,
+            'expected_items_id' => null,
+            'accepted'          => false,
          ],
       ];
    }
@@ -386,6 +470,27 @@ class MailCollector extends DbTestCase {
          $this->object($item)->isInstanceOf($expected_itemtype);
          $this->integer($item->getId())->isEqualTo($expected_items_id);
       }
+   }
+
+   /**
+    * @dataProvider itemReferenceHeaderProvider
+    */
+   public function testIsResponseToMessageSentByAnotherGlpi(
+      array $headers,
+      ?string $expected_itemtype,
+      ?int $expected_items_id,
+      bool $accepted
+   ) {
+      $this->newTestedInstance();
+
+      $message = new Message(
+         [
+            'headers' => $headers,
+            'content' => 'Message contents...',
+         ]
+      );
+
+      $this->boolean($this->testedInstance->isResponseToMessageSentByAnotherGlpi($message))->isEqualTo(!$accepted);
    }
 
    private function doConnect() {
@@ -424,6 +529,9 @@ class MailCollector extends DbTestCase {
       global $DB;
       $_SESSION['glpicronuserrunning'] = 'cron_phpunit';
 
+      // Force notification_uuid
+      Config::setConfigurationValues('core', ['notification_uuid' => 't3StN0t1f1c4tiOnUUID']);
+
       //assign email to user
       $nuid = getItemByTypeName('User', 'normal', true);
       $uemail = new \UserEmail();
@@ -443,15 +551,35 @@ class MailCollector extends DbTestCase {
          ])
       )->isGreaterThan(0);
 
+      // Hack to allow documents named "1234567890", "1234567890_2", ... (cf 28-multiple-attachments-no-extension.eml)
+      $doctype = new \DocumentType();
+      $this->integer(
+         $doctype->add([
+            'name'   => 'Type test',
+            'ext'    => '/^1234567890(_\\\d+)?$/'
+         ])
+      )->isGreaterThan(0);
+
       // Collect all mails
       $this->doConnect();
       $this->collector->maxfetch_emails = 1000; // Be sure to fetch all mails from test suite
       $msg = $this->collector->collect($this->mailgate_id);
 
+      // Check error log and clean it (to prevent test failure, see GLPITestCase::afterTestMethod()).
+      global $PHP_LOG_HANDLER;
+      $records  = $PHP_LOG_HANDLER->getRecords();
+      $messages = array_column($records, 'message');
+      $this->array($messages)->hasSize(2);
+      // 05-empty-from.eml
+      $this->string($messages[0])->contains('The input is not a valid email address. Use the basic format local-part@hostname');
+      // 17-malformed-email.eml
+      $this->string($messages[1])->contains('Header with Name date or date not found');
+      $PHP_LOG_HANDLER->clear();
+
       $total_count                     = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
-      $expected_refused_count          = 2;
+      $expected_refused_count          = 3;
       $expected_error_count            = 2;
-      $expected_blacklist_count        = 1;
+      $expected_blacklist_count        = 3;
       $expected_expected_already_seen  = 0;
 
       $this->variable($msg)->isIdenticalTo(
@@ -491,7 +619,7 @@ class MailCollector extends DbTestCase {
       $this->integer(count($iterator))->isIdenticalTo(count($not_imported_specs));
 
       $not_imported_values = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $not_imported_values[] = [
             'subject' => $data['subject'],
             'from'    => $data['from'],
@@ -520,7 +648,7 @@ class MailCollector extends DbTestCase {
             'users_id'      => $nuid,
             'actor_type'    => \CommonITILActor::REQUESTER,
             'tickets_names' => [
-               'Test import mail avec emoticons unicode',
+               'Test import mail avec emoticons :smiley: unicode',
                'Test images',
                'Test\'ed issue',
                'Test Email from Outlook',
@@ -537,6 +665,7 @@ class MailCollector extends DbTestCase {
                '24.2 Test attachment with short multibyte filename',
                '25 - Test attachment with invalid chars for OS',
                '26 Illegal char in body',
+               '28 Multiple attachments no extension',
             ]
          ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -552,11 +681,37 @@ class MailCollector extends DbTestCase {
       // Tickets on which content should be checked (key is ticket name)
       $tickets_contents = [
          // Plain text on mono-part email
-         'PHP fatal error' => 'On some cases, doing the following:&lt;br /&gt;# blahblah&lt;br /&gt;&lt;br /&gt;Will cause a PHP fatal error:&lt;br /&gt;# blahblah&lt;br /&gt;&lt;br /&gt;Best regards,',
+         'PHP fatal error' => <<<PLAINTEXT
+On some cases, doing the following:
+# blahblah
+
+Will cause a PHP fatal error:
+# blahblah
+
+Best regards,
+PLAINTEXT,
          // HTML on multi-part email
-         'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine' => '&lt;p&gt;This message have reply to header, requester should be get from this header.&lt;/p&gt;',
-         'Mono-part HTML message' => '&lt;p&gt;This HTML message does not use &lt;strong&gt;"multipart/alternative"&lt;/strong&gt; format.&lt;/p&gt;',
-         '26 Illegal char in body' => '这是很坏的Minus C Blabla',
+         'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine' => <<<HTML
+<html>
+<body>
+<p>This message have reply to header, requester should be get from this header.</p>
+</body>
+</html>
+HTML,
+         'Mono-part HTML message' => <<<HTML
+<html>
+<body>
+<p>This HTML message does not use <strong>"multipart/alternative"</strong> format.</p>
+</body>
+</html>
+HTML,
+         '26 Illegal char in body' => <<<PLAINTEXT
+这是很坏的Minus C Blabla
+PLAINTEXT,
+         '28 Multiple attachments no extension' => <<<HTML
+
+<HTML><BODY><div>&nbsp;</div><div>Test</div><div>&nbsp;</div></BODY></HTML>
+HTML,
       ];
 
       foreach ($actors_specs as $actor_specs) {
@@ -580,11 +735,11 @@ class MailCollector extends DbTestCase {
          $this->integer(count($iterator))->isIdenticalTo(count($actor_specs['tickets_names']));
 
          $names = [];
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $name = $data['name'];
 
             if (array_key_exists($name, $tickets_contents)) {
-               $this->string($data['content'])->isEqualTo($tickets_contents[$name]);
+               $this->string(Sanitizer::unsanitize($data['content']))->isEqualTo($tickets_contents[$name]);
             }
 
             $this->string($data['content'])->notContains('cid:'); // check that image were correctly imported
@@ -608,6 +763,9 @@ class MailCollector extends DbTestCase {
          '24.1-zhang-wen-jian-ming-jiang-dao-zhi-nei-rong-chu-zhi-biao-tou-zhong-de-lian-xu-xing.txt',
          '24.2-zhong-guo-zi-fu.txt',
          '25-new-text-document.txt',
+         '1234567890',
+         '1234567890_2',
+         '1234567890_3',
       ];
 
       $iterator = $DB->request(
@@ -632,7 +790,7 @@ class MailCollector extends DbTestCase {
       );
 
       $filenames = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $filenames[] = $data['filename'];
       }
       $this->array($filenames)->isIdenticalTo($expected_docs);
@@ -644,34 +802,33 @@ class MailCollector extends DbTestCase {
          [
             'items_id' => 100,
             'users_id' => $tuid,
-            'content'  => 'This is a reply that references Ticket 100 in In-Reply-To header.&lt;br /&gt;It should be added as followup.',
+            'content'  => 'This is a reply that references Ticket 100 in In-Reply-To header (old format).'. "\r\n" . 'It should be added as followup.',
          ],
          [
             'items_id' => 100,
             'users_id' => $tuid,
-            'content'  => 'This is a reply that references Ticket 100 in References header.&lt;br /&gt;It should be added as followup.',
+            'content'  => 'This is a reply that references Ticket 100 in References header (old format).'. "\r\n" . 'It should be added as followup.',
          ],
          [
             'items_id' => 101,
             'users_id' => $tuid,
-            'content'  => 'This is a reply that references Ticket 101 in its subject.&lt;br /&gt;It should be added as followup.',
-         ]
+            'content'  => 'This is a reply that references Ticket 101 in its subject.'. "\r\n" . 'It should be added as followup.',
+         ],
+         [
+            'items_id' => 100,
+            'users_id' => $tuid,
+            'content'  => 'This is a reply that references Ticket 100 in In-Reply-To header (new format).'. "\r\n" . 'It should be added as followup.',
+         ],
+         [
+            'items_id' => 100,
+            'users_id' => $tuid,
+            'content'  => 'This is a reply that references Ticket 100 in References header (new format).'. "\r\n" . 'It should be added as followup.',
+         ],
       ];
 
       foreach ($expected_followups as $expected_followup) {
-         $this->integer(countElementsInTable(ITILFollowup::getTable(), $expected_followup))->isEqualTo(1);
+         $this->integer(countElementsInTable(ITILFollowup::getTable(), Sanitizer::sanitize($expected_followup, true)))->isEqualTo(1);
       }
-
-      // Check error log and clean it (to prevent test failure, see GLPITestCase::afterTestMethod()).
-      global $PHP_LOG_HANDLER;
-      $records  = $PHP_LOG_HANDLER->getRecords();
-      $messages = array_column($records, 'message');
-      $this->array($messages)->hasSize(2);
-      // 05-empty-from.eml
-      $this->string($messages[0])->contains('The input is not a valid email address. Use the basic format local-part@hostname');
-      // 17-malformed-email.eml
-      $this->string($messages[1])->contains('Header with Name date or date not found');
-      $PHP_LOG_HANDLER->clear();
    }
 
    protected function mailServerProtocolsProvider() {

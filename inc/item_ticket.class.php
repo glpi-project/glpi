@@ -243,7 +243,6 @@ class Item_Ticket extends CommonItilObject_Item {
 
       // Show associated item dropdowns
       if ($canedit) {
-         echo "<div style='float:left'>";
          $p = ['used'       => $params['items_id'],
                     'rand'       => $rand,
                     'tickets_id' => $params['id']];
@@ -253,16 +252,15 @@ class Item_Ticket extends CommonItilObject_Item {
          }
          // Global search
          Item_Ticket::dropdownAllDevices("itemtype", $params['itemtype'], 0, 1, $params['_users_id_requester'], $ticket->fields["entities_id"], $p);
-         echo "<span id='item_ticket_selection_information$rand'></span>";
-         echo "</div>";
 
          // Add button
-         echo "<a href='javascript:itemAction$rand(\"add\");' class='vsubmit' style='float:left'>"._sx('button', 'Add')."</a>";
+         echo "<a href='javascript:itemAction$rand(\"add\");' class='btn btn-sm btn-outline-secondary'>
+               <i class='fas fa-plus'></i>
+               <span>"._sx('button', 'Add')."</span>
+            </a>";
       }
 
       // Display list
-      echo "<div style='clear:both;'>";
-
       if (!empty($params['items_id'])) {
          // No delete if mandatory and only one item
          $delete = $ticket->canAddItem(__CLASS__);
@@ -325,7 +323,6 @@ class Item_Ticket extends CommonItilObject_Item {
       $js .= "    });";
       $js .= " }";
       echo Html::scriptBlock($js);
-      echo "</div>";
    }
 
 
@@ -349,7 +346,7 @@ class Item_Ticket extends CommonItilObject_Item {
             $result .= $item->getTypeName(1)." : ".$item->getLink(['comments' => true]);
             $result .= Html::hidden("items_id[$itemtype][$items_id]", ['value' => $items_id]);
             if ($params['delete']) {
-               $result .= " <span class='fa fa-times-circle pointer' onclick=\"itemAction".$params['rand']."('delete', '$itemtype', '$items_id');\"></span>";
+               $result .= " <i class='fas fa-times-circle pointer' onclick=\"itemAction".$params['rand']."('delete', '$itemtype', '$items_id');\"></i>";
             }
             $result .= "</div>";
          } else {
@@ -410,7 +407,7 @@ class Item_Ticket extends CommonItilObject_Item {
          self::dropdownAllDevices("itemtype", null, 0, 1, $dev_user_id, $ticket->fields["entities_id"], ['tickets_id' => $instID, 'used' => $used, 'rand' => $rand]);
          echo "<span id='item_ticket_selection_information$rand'></span>";
          echo "</td><td class='center' width='30%'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "<input type='hidden' name='tickets_id' value='$instID'>";
          echo "</td></tr>";
          echo "</table>";
@@ -444,7 +441,7 @@ class Item_Ticket extends CommonItilObject_Item {
       echo $header_begin.$header_top.$header_end;
 
       $totalnb = 0;
-      while ($row = $types_iterator->next()) {
+      foreach ($types_iterator as $row) {
          $itemtype = $row['itemtype'];
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
@@ -455,7 +452,7 @@ class Item_Ticket extends CommonItilObject_Item {
             $nb = count($iterator);
 
             $prem = true;
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $name = $data["name"];
                if ($_SESSION["glpiis_ids_visible"]
                    || empty($data["name"])) {
@@ -606,7 +603,7 @@ class Item_Ticket extends CommonItilObject_Item {
                if ($nb > 0) {
                   $type_name = $item->getTypeName($nb);
 
-                  while ($data = $iterator->next()) {
+                  foreach ($iterator as $data) {
                      if (!isset($already_add[$itemtype]) || !in_array($data["id"], $already_add[$itemtype])) {
                         $output = $data[$item->getNameField()];
                         if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
@@ -657,7 +654,7 @@ class Item_Ticket extends CommonItilObject_Item {
             $devices = [];
             $groups  = [];
             if (count($iterator)) {
-               while ($data = $iterator->next()) {
+               foreach ($iterator as $data) {
                   $a_groups                     = getAncestorsOf("glpi_groups", $data["groups_id"]);
                   $a_groups[$data["groups_id"]] = $data["groups_id"];
                   $groups = array_merge($groups, $a_groups);
@@ -688,7 +685,7 @@ class Item_Ticket extends CommonItilObject_Item {
                         if (!isset($already_add[$itemtype])) {
                            $already_add[$itemtype] = [];
                         }
-                        while ($data = $iterator->next()) {
+                        foreach ($iterator as $data) {
                            if (!in_array($data["id"], $already_add[$itemtype])) {
                               $output = '';
                               if (isset($data["name"])) {
@@ -759,7 +756,7 @@ class Item_Ticket extends CommonItilObject_Item {
                      if (!isset($already_add['Software'])) {
                         $already_add['Software'] = [];
                      }
-                     while ($data = $iterator->next()) {
+                     foreach ($iterator as $data) {
                         if (!in_array($data["id"], $already_add['Software'])) {
                            $output = sprintf(__('%1$s - %2$s'), $type_name, $data["name"]);
                            $output = sprintf(__('%1$s (%2$s)'), $output,
@@ -822,7 +819,7 @@ class Item_Ticket extends CommonItilObject_Item {
                   $iterator = $DB->request($criteria);
                   if (count($iterator)) {
                      $type_name = $item->getTypeName();
-                     while ($data = $iterator->next()) {
+                     foreach ($iterator as $data) {
                         if (!in_array($data["id"], $already_add[$itemtype])) {
                            $output = $data["name"];
                            if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
@@ -844,9 +841,10 @@ class Item_Ticket extends CommonItilObject_Item {
                $my_devices[__('Connected devices')] = $devices;
             }
          }
-         echo "<div id='tracking_my_devices'>";
-         echo __('My devices')."&nbsp;";
+         echo "<div id='tracking_my_devices' class='input-group mb-1'>";
+         echo "<span class='input-group-text'>".__('My devices')."</span>";
          Dropdown::showFromArray('my_items', $my_devices, ['rand' => $rand]);
+         echo "<span id='item_ticket_selection_information$rand' class='ms-1'></span>";
          echo "</div>";
 
          // Auto update summary of active or just solved tickets
@@ -877,7 +875,8 @@ class Item_Ticket extends CommonItilObject_Item {
     *    - used         : array / Already used items ID: not to display in dropdown (default empty)
     *    - on_change    : string / value to transmit to "onChange"
     *    - display      : boolean / display or get string (default true)
-    *    - width        : specific width needed (default 80%)
+    *    - width        : specific width needed
+    *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
     *
    **/
    static function dropdown($options = []) {
@@ -889,13 +888,14 @@ class Item_Ticket extends CommonItilObject_Item {
       $p['all']            = 0;
       $p['on_change']      = '';
       $p['comments']       = 1;
-      $p['width']          = '80%';
+      $p['width']          = '';
       $p['entity']         = -1;
       $p['entity_sons']    = false;
       $p['used']           = [];
       $p['toupdate']       = '';
       $p['rand']           = mt_rand();
       $p['display']        = true;
+      $p['hide_if_no_elements'] = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -924,8 +924,13 @@ class Item_Ticket extends CommonItilObject_Item {
       }
 
       $iterator = $DB->request(['FROM' => $union]);
+
+      if ($p['hide_if_no_elements'] && $iterator->count() === 0) {
+         return;
+      }
+
       $output = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $item = getItemForItemtype($data['itemtype']);
          $output[$data['itemtype']."_".$data['id']] = $item->getTypeName()." - ".$data['name'];
       }
@@ -967,7 +972,7 @@ class Item_Ticket extends CommonItilObject_Item {
                                                    'checkright'      => true,
                                                    'entity_restrict' => $_SESSION['glpiactive_entity']
                                                   ]);
-            echo "<br><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+            echo "<br><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
             break;
 
          case 'delete_item' :
@@ -978,7 +983,7 @@ class Item_Ticket extends CommonItilObject_Item {
                                                    'entity_restrict' => $_SESSION['glpiactive_entity']
                                                   ]);
 
-            echo "<br><input type='submit' name='delete' value=\"".__('Delete permanently')."\" class='submit'>";
+            echo "<br><input type='submit' name='delete' value=\"".__('Delete permanently')."\" class='btn btn-primary'>";
             break;
       }
 

@@ -100,4 +100,3 @@ if (isset($_POST["add"])) {
    ]);
    Html::footer();
 }
-

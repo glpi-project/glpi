@@ -32,15 +32,11 @@
 
 namespace tests\units;
 
-use \DbTestCase;
+use DbTestCase;
 
 /* Test for inc/dbutils.class.php */
 
 class DbUtils extends DbTestCase {
-   protected $cached_methods = [
-      'testGetAncestorsOfCached',
-      'testGetSonsOfCached'
-   ];
 
    public function setUp() {
       global $CFG_GLPI;
@@ -111,6 +107,10 @@ class DbUtils extends DbTestCase {
       $this->boolean(isForeignKeyField('id_Another_Fake_Id'))->isFalse();
       $this->boolean(isForeignKeyField('users_id_tech'))->isTrue();
       $this->boolean(isForeignKeyField('_id'))->isFalse();
+      $this->boolean(isForeignKeyField(''))->isFalse();
+      $this->boolean(isForeignKeyField(null))->isFalse();
+      $this->boolean(isForeignKeyField(false))->isFalse();
+      $this->boolean(isForeignKeyField(42))->isFalse();
    }
 
 
@@ -271,7 +271,8 @@ class DbUtils extends DbTestCase {
          ['machine', 'machines'],
          ['memory', 'memories'],
          ['licence', 'licences'],
-         ['pdu', 'pdus']
+         ['pdu', 'pdus'],
+         ['metrics', 'metrics']
       ];
    }
 
@@ -345,8 +346,8 @@ class DbUtils extends DbTestCase {
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_configs', 'id'))->isGreaterThan(0)
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_configs', 'context'))->isGreaterThan(0)
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_tickets', 'entities_id'))->isIdenticalTo(2)
-            ->integer($this->testedInstance->countDistinctElementsInTable('glpi_crontasks', 'itemtype', ['frequency' => '86400']))->isIdenticalTo(15)
-            ->integer($this->testedInstance->countDistinctElementsInTable('glpi_crontasks', 'id', ['frequency' => '86400']))->isIdenticalTo(18)
+            ->integer($this->testedInstance->countDistinctElementsInTable('glpi_crontasks', 'itemtype', ['frequency' => '86400']))->isIdenticalTo(16)
+            ->integer($this->testedInstance->countDistinctElementsInTable('glpi_crontasks', 'id', ['frequency' => '86400']))->isIdenticalTo(19)
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_configs', 'context', ['name' => 'version']))->isIdenticalTo(1)
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_configs', 'id', ['context' => 'fakecontext']))->isIdenticalTo(0);
 
@@ -442,7 +443,7 @@ class DbUtils extends DbTestCase {
       $this->integer(countElementsInTableForEntity($table, $eid, $condition))->isIdenticalTo($count);
    }
 
-   public function testGetAllDatasFromTable() {
+   public function testGetAllDataFromTable() {
       $this
          ->if($this->newTestedInstance)
          ->then
@@ -491,7 +492,7 @@ class DbUtils extends DbTestCase {
          ->if($this->newTestedInstance)
          ->then
             ->boolean($this->testedInstance->isIndex('glpi_configs', 'fakeField'))->isFalse()
-            ->boolean($this->testedInstance->isIndex('glpi_configs', 'name'))->isFalse()
+            ->boolean($this->testedInstance->isIndex('glpi_configs', 'name'))->isTrue()
             ->boolean($this->testedInstance->isIndex('glpi_configs', 'value'))->isFalse()
             ->boolean($this->testedInstance->isIndex('glpi_users', 'locations_id'))->isTrue()
             ->boolean($this->testedInstance->isIndex('glpi_users', 'unicityloginauth'))->isTrue()
@@ -505,7 +506,7 @@ class DbUtils extends DbTestCase {
 
       //keep testing old method from db.function
       $this->boolean(isIndex('glpi_configs', 'fakeField'))->isFalse();
-      $this->boolean(isIndex('glpi_configs', 'name'))->isFalse();
+      $this->boolean(isIndex('glpi_configs', 'name'))->isTrue();
       $this->boolean(isIndex('glpi_users', 'locations_id'))->isTrue();
       $this->boolean(isIndex('glpi_users', 'unicityloginauth'))->isTrue();
 
@@ -738,7 +739,7 @@ class DbUtils extends DbTestCase {
 
       //test with new sub entity
       //Cache tests:
-      //APCu cache is updated on entity creation; so even if we do not expect $hit; we got it.
+      //Cache is updated on entity creation; so even if we do not expect $hit; we got it.
       $new_id = getItemByTypeName('Entity', 'Sub child entity', true);
       if (!$new_id) {
          $entity = new \Entity();
@@ -821,7 +822,7 @@ class DbUtils extends DbTestCase {
    }
 
    /**
-    * @extensions apcu
+    * @tags cache
     */
    public function testGetAncestorsOfCached() {
       $this->login();
@@ -909,7 +910,7 @@ class DbUtils extends DbTestCase {
 
       //test with new sub entity
       //Cache tests:
-      //APCu cache is updated on entity creation; so even if we do not expect $hit; we got it.
+      //Cache is updated on entity creation; so even if we do not expect $hit; we got it.
       $new_id = getItemByTypeName('Entity', 'Sub child entity', true);
       if (!$new_id) {
          $entity = new \Entity();
@@ -988,7 +989,7 @@ class DbUtils extends DbTestCase {
    }
 
    /**
-    * @extensions apcu
+    * @tags cache
     */
    public function testGetSonsOfCached() {
       $this->login();
@@ -1164,7 +1165,39 @@ class DbUtils extends DbTestCase {
             'itemtype'     => 'Computer',
             'entities_id'  => 2,
             'expected'     => '_test_pc14'
-         ]
+         ], [
+            // existing on entity, new XSS clean output
+            'name'         => '&#60;_test_pc##&#62;',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => 2,
+            'expected'     => '_test_pc14'
+         ], [
+            // existing on entity, not sanitized
+            'name'         => '<_test_pc##>',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => 2,
+            'expected'     => '_test_pc14'
+         ], [
+            // not existing on entity, new XSS clean output, and containing a special char
+            'name'         => '&#60;pc_&#60;_##&#62;',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => 2,
+            'expected'     => 'pc_&#60;_01'
+         ], [
+            // not existing on entity, not sanitized, and containing a special char
+            'name'         => '<pc_>_##>',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => 2,
+            'expected'     => 'pc_>_01'
+         ],
       ];
    }
 

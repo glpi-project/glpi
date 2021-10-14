@@ -66,7 +66,7 @@ class Group_Reminder extends CommonDBRelation {
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $groups[$data['groups_id']][] = $data;
       }
       return $groups;

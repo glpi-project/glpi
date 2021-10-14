@@ -53,6 +53,7 @@ class PurgeLogs extends CommonDBTM {
          self::purgeDevices();
          self::purgeRelations();
          self::purgeItems();
+         self::purgeRefusedLogs();
          self::purgeOthers();
          self::purgePlugins();
          self::purgeAll();
@@ -71,7 +72,7 @@ class PurgeLogs extends CommonDBTM {
    }
 
    /**
-    * Purge softwares logs
+    * Purge software logs
     *
     * @return void
     */
@@ -298,6 +299,30 @@ class PurgeLogs extends CommonDBTM {
       }
 
    }
+
+   /**
+    * Purge refused equipments logs
+    *
+    * @return void
+    */
+   static function purgeRefusedLogs() {
+      global $DB, $CFG_GLPI;
+
+      $month = self::getDateModRestriction($CFG_GLPI['purge_refusedequipment']);
+      if ($month) {
+         $refused = new RefusedEquipment();
+         $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM' => RefusedEquipment::getTable()
+         ] + $month);
+
+         foreach ($iterator as $row) {
+            //purge each one
+            $refused->delete($row, true);
+         }
+      }
+   }
+
 
    /**
     * Purge othr logs

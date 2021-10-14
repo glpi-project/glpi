@@ -94,4 +94,3 @@ if (isset($_POST["add"])) {
    $mailgate->display(['id' =>$_GET["id"]]);
    Html::footer();
 }
-

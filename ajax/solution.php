@@ -30,31 +30,63 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\RichText;
+
 $AJAX_INCLUDE = 1;
 
 include ('../inc/includes.php');
-header("Content-Type: text/html; charset=UTF-8");
+header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
 
-$rand = mt_rand();
+// Mandatory parameter: solutiontemplates_id
+$solutiontemplates_id = $_POST['solutiontemplates_id'] ?? null;
+if ($solutiontemplates_id === null) {
+   Toolbox::throwError(400, "Missing or invalid parameter: 'solutiontemplates_id'");
+} else if ($solutiontemplates_id == 0) {
+   // Reset form
+   echo json_encode([
+      'content' => ""
+   ]);
+   die;
+}
 
-Html::initEditorSystem("content$rand");
+// We can't render the twig template at this state for some cases (e.g. massive
+// actions: we don't have one but multiple items so it net possible to parse the
+// values yet).
+$apply_twig = true;
 
-if (isset($_POST['value']) && ($_POST['value'] > 0)) {
-   $template = new SolutionTemplate();
+// Mandatory parameter: items_id
+$parents_id = $_POST['items_id'] ?? 0;
+if ($parents_id == 0) {
+   $apply_twig  = false;
+}
 
-   if ($template->getFromDB($_POST['value'])) {
-      echo "<textarea id='content$rand' name='content' rows='12' cols='80'>";
-      echo $template->getField('content');
-      echo "</textarea>\n";
-      echo "<script type='text/javascript'>".
-               Html::jsSetDropdownValue($_POST["type_id"],
-                                        $template->getField('solutiontypes_id')).
-           "</script>";
+// Mandatory parameter: itemtype
+$parents_itemtype = $_POST['itemtype'] ?? '';
+if (empty($parents_itemtype) || !is_subclass_of($parents_itemtype, CommonITILObject::class)) {
+   $apply_twig  = false;
+}
+
+// Load solution template
+$template = new SolutionTemplate();
+if (!$template->getFromDB($solutiontemplates_id)) {
+   Toolbox::throwError(400, "Unable to load template: $solutiontemplates_id");
+}
+
+if ($apply_twig) {
+   // Load parent item
+   $parent = new $parents_itemtype();
+   if (!$parent->getFromDB($parents_id)) {
+      Toolbox::throwError(400, "Unable to load parent item: $parents_itemtype $parents_id");
    }
 
+   // Render template content using twig
+   $template->fields['content'] = $template->getRenderedContent($parent);
 } else {
-      echo "<textarea id='content$rand' name='content' rows='12' cols='80'></textarea>";
+   $template->fields['content'] = RichText::getSafeHtml($template->fields['content'], true);
 }
+
+// Return json response with the template fields
+echo json_encode($template->fields);

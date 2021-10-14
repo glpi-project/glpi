@@ -196,7 +196,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       if ($criteria !== null) {
          $iterator = $DB->request($criteria);
          if (count($iterator) == 1) {
-            $line = $iterator->next();
+            $line = $iterator->current();
             if ($line['is_1'] == $line['is_2']) {
                return false;
             }
@@ -1022,7 +1022,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       if ($criteria !== null) {
          $relation = new static();
          $iterator = $DB->request($criteria);
-         while ($line = $iterator->next()) {
+         foreach ($iterator as $line) {
             if ($line['is_1'] != $line['is_2']) {
                if ($line['is_1'] == 0) {
                   $options['items_id'] = $line['items_id_1'];
@@ -1493,7 +1493,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                $ok      = 0;
                $ko      = 0;
                $noright = 0;
-               while ($line = $request->next()) {
+               foreach ($request as $line) {
                   if ($link->can($line[static::getIndexName()], DELETE)) {
                      if ($link->delete(['id' => $line[static::getIndexName()]])) {
                         $ok++;
@@ -1528,7 +1528,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @since 9.3.1
     *
     * @param CommonDBTM $item  Item instance
-    * @param boolean    $noent Flag to not compute entity informations (see Document_Item::getListForItemParams)
+    * @param boolean    $noent Flag to not compute entity information (see Document_Item::getListForItemParams)
     *
     * @return array
     */
@@ -1688,7 +1688,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @param integer $items_id Object id to restrict on
     * @param string  $itemtype Type for items to retrieve
-    * @param boolean $noent    Flag to not compute entity informations (see Document_Item::getTypeItemsQueryParams)
+    * @param boolean $noent    Flag to not compute entity information (see Document_Item::getTypeItemsQueryParams)
     * @param array   $where    Inital WHERE clause. Defaults to []
     *
     * @return array
@@ -1703,7 +1703,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $order_col = "designation";
       } else if ($item instanceof Item_Devices) {
          $order_col = "itemtype";
-      } else if ($itemtype == 'Ticket') {
+      } else if ($item instanceof Ticket || $item instanceof CommonITILValidation) {
          $order_col = 'id';
       }
 
@@ -1788,7 +1788,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       $iterator = $DB->request($params);
 
       $cpt = 0;
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $cpt += $row['cpt'];
       }
 
@@ -1809,7 +1809,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       $nb = 0;
 
       $types_iterator = static::getDistinctTypes($item->fields['id'], $extra_types_where);
-      while ($data = $types_iterator->next()) {
+      foreach ($types_iterator as $data) {
          if (!getItemForItemtype($data['itemtype'])) {
             continue;
          }
@@ -1819,7 +1819,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $params['COUNT'] = 'cpt';
          $iterator = $DB->request($params);
 
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             $nb += $row['cpt'];
          }
       }

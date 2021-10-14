@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Plugin\Hooks;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -134,12 +136,12 @@ class SavedSearch_Alert extends CommonDBChild {
       echo "<td>";
       echo $search->getLink();
       if ($count !== null) {
-         echo "<span class='primary-bg primary-fg count nofloat'>$count</span></a>";
+         echo "<span class='primary-bg primary-fg count float-none'>$count</span></a>";
       }
       echo "</td>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -162,9 +164,15 @@ class SavedSearch_Alert extends CommonDBChild {
       echo "<td>" . __('Active') . "</td>";
       echo "<td>";
       Dropdown::showYesNo('is_active', $this->getField('is_active'));
-      echo "</td>";
-      echo "<td colspan='2'></td>";
-      echo "</tr>";
+      echo "</td><td>".__('Notification frequency')."</td>";
+      echo "<td>";
+      $alert = new Alert();
+      $alert->getFromDBByCrit([
+         'items_id'  => $this->fields['savedsearches_id'],
+         'itemptype' => SavedSearch::getType(),
+      ]);
+      Dropdown::showFrequency('frequency', $this->fields["frequency"]);
+      echo "</td></tr>";
       $this->showFormButtons($options);
 
       return true;
@@ -212,7 +220,7 @@ class SavedSearch_Alert extends CommonDBChild {
       } else {
          echo _n('Notification used:', 'Notifications used:', $iterator->numRows()) . "&nbsp;";
          $first = true;
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             if (!$first) {
                echo ', ';
             }
@@ -230,7 +238,7 @@ class SavedSearch_Alert extends CommonDBChild {
       if ($canedit
           && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='firstbloc'>".
-               "<a class='vsubmit' href='" . self::getFormURL() . "?savedsearches_id=$ID&amp;withtemplate=".
+               "<a class='btn btn-primary' href='" . self::getFormURL() . "?savedsearches_id=$ID&amp;withtemplate=".
                   $withtemplate."'>";
          echo __('Add an alert');
          echo "</a></div>\n";
@@ -256,7 +264,7 @@ class SavedSearch_Alert extends CommonDBChild {
          echo $header;
 
          $alert = new self();
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $alert->getFromDB($data['id']);
             echo "<tr class='tab_bg_2'>";
             echo "<td>".$alert->getLink()."</td>";
@@ -331,7 +339,7 @@ class SavedSearch_Alert extends CommonDBChild {
       $_SESSION = $context['$_SESSION'];
       $CFG_GLPI = $context['$CFG_GLPI'];
       Session::loadLanguage();
-      Plugin::doHook("init_session");
+      Plugin::doHook(Hooks::INIT_SESSION);
    }
 
    /**
@@ -346,7 +354,28 @@ class SavedSearch_Alert extends CommonDBChild {
 
       $iterator = $DB->request([
          'FROM'   => self::getTable(),
-         'WHERE'  => ['is_active' => true]
+         'LEFT JOIN' => [
+            'glpi_alerts' => [
+               'FKEY'   => [
+                  'glpi_alerts'                => 'items_id',
+                  'glpi_savedsearches_alerts'  => 'id',
+                  [
+                     'AND' => [
+                        'glpi_alerts.itemtype' => SavedSearch_Alert::class,
+                        'glpi_alerts.type'     => Alert::PERIODICITY,
+                     ],
+                  ],
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_savedsearches_alerts.is_active' => true,
+            'OR' => [
+               ['glpi_alerts.date' => null],
+               ['glpi_alerts.date' => ['<', new QueryExpression(sprintf('CURRENT_TIMESTAMP() - INTERVAL %s second',
+                                       $DB->quoteName('glpi_savedsearches_alerts.frequency')))]],
+            ]
+         ]
       ]);
 
       if ($iterator->numrows()) {
@@ -360,7 +389,7 @@ class SavedSearch_Alert extends CommonDBChild {
          // Will save $_SESSION and $CFG_GLPI cron context into an array
          $context = self::saveContext();
 
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             //execute saved search to get results
             try {
                $savedsearch->getFromDB($row['savedsearches_id']);
@@ -428,11 +457,22 @@ class SavedSearch_Alert extends CommonDBChild {
 
                if ($notify) {
                   $event = 'alert' . ($savedsearch->getField('is_private') ? '' : '_' . $savedsearch->getID());
-                  $alert = new self();
-                  $alert->getFromDB($row['id']);
+                  $savedsearch_alert = new self();
+                  $savedsearch_alert->getFromDB($row['id']);
                   $data['savedsearch'] = $savedsearch;
-                  NotificationEvent::raiseEvent($event, $alert, $data);
+                  NotificationEvent::raiseEvent($event, $savedsearch_alert, $data);
                   $task->addVolume(1);
+
+                  $alert = new Alert();
+                  $alert->deleteByCriteria([
+                     'itemtype' => SavedSearch_Alert::class,
+                     'items_id' => $row['savedsearches_id'],
+                  ], 1);
+                  $alert->add([
+                     'type'     => Alert::PERIODICITY,
+                     'itemtype' => SavedSearch_Alert::class,
+                     'items_id' => $row['savedsearches_id'],
+                  ]);
                }
             } catch (\Exception $e) {
                self::restoreContext($context);

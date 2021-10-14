@@ -119,7 +119,7 @@ class ImpactRelation extends CommonDBRelation {
       ]);
 
       if (count($it)) {
-         return $it->next()['id'];
+         return $it->current()['id'];
       }
 
       return false;

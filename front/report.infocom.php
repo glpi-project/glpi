@@ -54,7 +54,8 @@ if (!empty($_POST["date1"])
 $stat = new Stat();
 $chart_opts =  [
    'width'  => '90%',
-   'legend' => false
+   'legend' => false,
+   'title'  => __('Value'),
 ];
 
 Report::title();
@@ -64,7 +65,7 @@ echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td class='right'>".__('Start date')."</td><td>";
 Html::showDateField("date1", ['value' => $_POST["date1"]]);
 echo "</td><td rowspan='2' class='center'>";
-echo "<input type='submit' class='submit' name='submit' value=\"".__s('Display report')."\"></td>".
+echo "<input type='submit' class='btn btn-primary' name='submit' value=\"".__s('Display report')."\"></td>".
      "</tr>";
 echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
 Html::showDateField("date2", ['value' => $_POST["date2"]]);
@@ -90,6 +91,10 @@ function display_infocoms_report($itemtype, $begin, $end) {
    global $DB, $valeurtot, $valeurnettetot, $valeurnettegraphtot, $valeurgraphtot, $CFG_GLPI, $stat, $chart_opts;
 
    $itemtable = getTableForItemType($itemtype);
+   // report need name and ticket_tco, many asset type don't have it therefore are not compatible
+   if (!$DB->fieldExists($itemtable, "ticket_tco", false)) {
+      return false;
+   }
    $criteria = [
       'SELECT'       => [
          'glpi_infocoms.*',
@@ -164,7 +169,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
       $valeurnettegraph   = [];
       $valeurgraph        = [];
 
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          if (isset($line["is_global"]) && $line["is_global"]
              && $item->getFromDB($line["items_id"])) {
             $line["value"] *= Computer_Item::countForItem($item);
@@ -287,7 +292,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
    return false;
 }
 
-$types = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer'];
+$types = $CFG_GLPI["infocom_types"];
 
 $i = 0;
 echo "<table><tr><td class='top'>";

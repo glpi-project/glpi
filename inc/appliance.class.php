@@ -74,159 +74,12 @@ class Appliance extends CommonDBTM {
          ->addStandardTab('Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
-         ->addStandardTab('Link', $ong, $options)
+         ->addStandardTab('ManualLink', $ong, $options)
+         ->addStandardTab('DatabaseInstance', $ong, $options)
          ->addStandardTab('Notepad', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
 
       return $ong;
-   }
-
-
-   function showForm($ID, $options = []) {
-      $rand = mt_rand();
-
-      $this->initForm($ID, $options);
-      $this->showFormHeader($options);
-
-      echo "<tr class='tab_bg_1'>";
-
-      $tplmark = $this->getAutofillMark('name', $options);
-
-      //TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
-      echo "<td><label for='textfield_name$rand'>".sprintf(__('%1$s%2$s'), __('Name'), $tplmark) .
-           "</label></td>";
-      echo "<td>";
-      $objectName = autoName($this->fields["name"], "name",
-                             (isset($options['withtemplate']) && ( $options['withtemplate']== 2)),
-                             $this->getType(), $this->fields["entities_id"]);
-      Html::autocompletionTextField(
-         $this,
-         'name',
-         [
-            'value'     => $objectName,
-            'rand'      => $rand
-         ]
-      );
-      echo "</td>";
-      $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_states_id$randDropdown'>".__('Status')."</label></td>";
-      echo "<td>";
-      State::dropdown([
-         'value'     => $this->fields["states_id"],
-         'entity'    => $this->fields["entities_id"],
-         'condition' => ['is_visible_appliance' => 1],
-         'rand'      => $randDropdown
-      ]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_locations_id$randDropdown'>".Location::getTypeName(1)."</label></td>";
-      echo "<td>";
-      Location::dropdown(['value'  => $this->fields["locations_id"],
-                               'entity' => $this->fields["entities_id"],
-                               'rand' => $randDropdown]);
-      echo "</td>";
-      $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_appliancetypes_id$randDropdown'>".ApplianceType::getTypeName(1)."</label></td>";
-      echo "<td>";
-      ApplianceType::dropdown(['value' => $this->fields["appliancetypes_id"], 'rand' => $randDropdown]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_users_id_tech$randDropdown'>".__('Technician in charge of the appliance')."</label></td>";
-      echo "<td>";
-      User::dropdown(['name'   => 'users_id_tech',
-                           'value'  => $this->fields["users_id_tech"],
-                           'right'  => 'own_ticket',
-                           'entity' => $this->fields["entities_id"],
-                           'rand'   => $randDropdown]);
-      echo "</td>";
-      $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_manufacturers_id$randDropdown'>"._n('Manufacturer', 'Manufacturers', 1)."</label></td>";
-      echo "<td>";
-      Manufacturer::dropdown(['value' => $this->fields["manufacturers_id"], 'rand' => $randDropdown]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_groups_id_tech$randDropdown'>".__('Group in charge of the appliance')."</label></td>";
-      echo "<td>";
-      Group::dropdown([
-         'name'      => 'groups_id_tech',
-         'value'     => $this->fields['groups_id_tech'],
-         'entity'    => $this->fields['entities_id'],
-         'condition' => ['is_assign' => 1],
-         'rand' => $randDropdown
-      ]);
-
-      echo "</td>";
-      echo "<td><label for='dropdown_applianceenvironments_id$randDropdown'>".ApplianceEnvironment::getTypeName(1)."</label></td>";
-      echo "<td>";
-      ApplianceEnvironment::dropdown(['value' => $this->fields["applianceenvironments_id"], 'rand' => $randDropdown]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='textfield_serial$rand'>".__('Serial number')."</label></td>";
-      echo "<td >";
-      Html::autocompletionTextField($this, 'serial', ['rand' => $rand]);
-      echo "</td>";
-
-      echo "<td><label for='textfield_otherserial$rand'>".sprintf(__('%1$s%2$s'), __('Inventory number'), $tplmark).
-           "</label></td>";
-      echo "<td>";
-
-      $objectName = autoName($this->fields["otherserial"], "otherserial",
-                             (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
-                             $this->getType(), $this->fields["entities_id"]);
-      Html::autocompletionTextField(
-         $this,
-         'otherserial',
-         [
-            'value'     => $objectName,
-            'rand'      => $rand
-         ]
-      );
-
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_users_id$randDropdown'>".User::getTypeName(1)."</label></td>";
-      echo "<td>";
-      User::dropdown(['value'  => $this->fields["users_id"],
-                           'entity' => $this->fields["entities_id"],
-                           'right'  => 'all',
-                           'rand'   => $randDropdown]);
-      echo "</td>";
-
-      $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_groups_id$randDropdown'>".Group::getTypeName(1)."</label></td>";
-      echo "<td>";
-      Group::dropdown([
-         'value'     => $this->fields["groups_id"],
-         'entity'    => $this->fields["entities_id"],
-         'condition' => ['is_itemgroup' => 1],
-         'rand'      => $randDropdown
-      ]);
-
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Associable to a ticket') . "</td><td>";
-      Dropdown::showYesNo('is_helpdesk_visible', $this->fields['is_helpdesk_visible']);
-      echo "</td>\n";
-
-      echo "<td><label for='comment'>".__('Comments')."</label></td>";
-      echo "<td class='middle'>";
-
-      echo "<textarea cols='45' rows='5' id='comment' name='comment' >".
-           $this->fields["comment"];
-      echo "</textarea></td></tr>";
-
-      $this->showFormButtons($options);
-      return true;
    }
 
    function rawSearchOptions() {
@@ -329,7 +182,6 @@ class Appliance extends CommonDBTM {
          'table'         => self::getTable(),
          'field'         => 'serial',
          'name'          => __('Serial number'),
-         'autocomplete'  => true
       ];
 
       $tab[] = [
@@ -337,7 +189,6 @@ class Appliance extends CommonDBTM {
          'table'         => self::getTable(),
          'field'         => 'otherserial',
          'name'          => __('Inventory number'),
-         'autocomplete'  => true
       ];
 
       $tab[] = [
@@ -548,7 +399,7 @@ class Appliance extends CommonDBTM {
       if (in_array($itemtype, self::getTypes())) {
          if (self::canUpdate()) {
             $action_prefix                    = 'Appliance_Item'.MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$action_prefix.'add']    = "<i class='ma-icon fas fa-file-contract'></i>".
+            $actions[$action_prefix.'add']    = "<i class='fas fa-file-contract'></i>".
                                                 _x('button', 'Add to an appliance');
             $actions[$action_prefix.'remove'] = _x('button', 'Remove from an appliance');
          }
@@ -560,7 +411,7 @@ class Appliance extends CommonDBTM {
       switch ($ma->getAction()) {
          case 'add_item' :
             Appliance::dropdown([
-               'entity'  => $_POST['entity_restrict']
+               'entity'  => $_POST['entity_restrict'] ?? 0
             ]);
             echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
             return true;

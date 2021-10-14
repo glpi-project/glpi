@@ -32,7 +32,6 @@
 
 include ('../inc/includes.php');
 
-use Glpi\Exception\PasswordTooWeakException;
 
 Session::checkLoginUser();
 
@@ -77,7 +76,7 @@ if (array_key_exists('update', $_POST)) {
             } else {
                $error_messages = [__('An error occured during password update')];
             }
-         } catch (PasswordTooWeakException $exception) {
+         } catch (\Glpi\Exception\PasswordTooWeakException $exception) {
             $error_messages = $exception->getMessages();
          }
       }

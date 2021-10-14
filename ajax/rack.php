@@ -41,10 +41,16 @@ if (!Session::haveRight('datacenter', UPDATE)) {
    http_response_code(403);
    die;
 }
-if (isset($_REQUEST['action'])) {
-   $answer = [];
+if (!isset($_REQUEST['action'])) {
+   exit();
+}
 
-   switch ($_REQUEST['action']) {
+$answer = [];
+if (($_GET['action'] ?? null) === 'show_pdu_form') {
+   PDU_Rack::showFirstForm((int) $_GET['racks_id']);
+} else if (isset($_POST['action'])) {
+   header("Content-Type: application/json; charset=UTF-8", true);
+   switch ($_POST['action']) {
       case 'move_item':
          $item_rack = new Item_Rack;
          $item_rack->getFromDB((int) $_POST['id']);
@@ -73,10 +79,6 @@ if (isset($_REQUEST['action'])) {
             'position'   => (int) $_POST['x'].",".(int) $_POST['y'],
          ]);
          break;
-
-      case 'show_pdu_form':
-         PDU_Rack::showFirstForm((int) $_REQUEST['racks_id']);
-         exit;
    }
 
    echo json_encode($answer);

@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
  * Template for task
  * @since 9.1
 **/
-class TaskTemplate extends CommonDropdown {
+class TaskTemplate extends AbstractITILChildTemplate {
 
    // From CommonDBTM
    public $dohistory          = true;
@@ -151,7 +151,6 @@ class TaskTemplate extends CommonDropdown {
       return $tab;
    }
 
-
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -180,14 +179,13 @@ class TaskTemplate extends CommonDropdown {
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
-   /**
-    * @see CommonDropdown::displaySpecificTypeField()
-   **/
-   function displaySpecificTypeField($ID, $field = []) {
+   function displaySpecificTypeField($ID, $field = [], array $options = []) {
 
       switch ($field['type']) {
          case 'state' :
-            Planning::dropdownState("state", $this->fields["state"]);
+            Planning::dropdownState("state", $this->fields["state"], false, [
+               'width'     => '100%',
+            ]);
             break;
          case 'users_id_tech' :
             User::dropdown([
@@ -195,6 +193,7 @@ class TaskTemplate extends CommonDropdown {
                'right'  => "own_ticket",
                'value'  => $this->fields["users_id_tech"],
                'entity' => $this->fields["entities_id"],
+               'width'  => '100%',
             ]);
             break;
          case 'groups_id_tech' :
@@ -203,6 +202,7 @@ class TaskTemplate extends CommonDropdown {
                'condition' => ['is_task' => 1],
                'value'     => $this->fields["groups_id_tech"],
                'entity'    => $this->fields["entities_id"],
+               'width'     => '100%',
             ]);
             break;
          case 'actiontime' :
@@ -217,10 +217,15 @@ class TaskTemplate extends CommonDropdown {
                   'value'           => $this->fields["actiontime"],
                   'addfirstminutes' => true,
                   'inhours'         => true,
-                  'toadd'           => $toadd
+                  'toadd'           => $toadd,
+                  'width'           => '100%',
                ]
             );
             break;
       }
+   }
+
+   static function getIcon() {
+      return "fas fa-layer-group";
    }
 }

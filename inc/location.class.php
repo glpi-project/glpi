@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Socket;
+
 /// Location class
 class Location extends CommonTreeDropdown {
 
@@ -233,7 +235,6 @@ class Location extends CommonTreeDropdown {
          'field'              => 'building',
          'name'               => __('Building number'),
          'datatype'           => 'text',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -242,7 +243,6 @@ class Location extends CommonTreeDropdown {
          'field'              => 'room',
          'name'               => __('Room number'),
          'datatype'           => 'text',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -279,7 +279,6 @@ class Location extends CommonTreeDropdown {
          'name'               => __('Latitude'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -289,7 +288,6 @@ class Location extends CommonTreeDropdown {
          'name'               => __('Longitude'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -299,7 +297,6 @@ class Location extends CommonTreeDropdown {
          'name'               => __('Altitude'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -308,7 +305,6 @@ class Location extends CommonTreeDropdown {
          'field'              => 'address',
          'name'               => __('Address'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -317,7 +313,6 @@ class Location extends CommonTreeDropdown {
          'field'              => 'postcode',
          'name'               => __('Postal code'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -326,7 +321,6 @@ class Location extends CommonTreeDropdown {
          'field'              => 'town',
          'name'               => __('Town'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -335,7 +329,6 @@ class Location extends CommonTreeDropdown {
          'field'              => 'state',
          'name'               => _x('location', 'State'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -344,7 +337,6 @@ class Location extends CommonTreeDropdown {
          'field'              => 'country',
          'name'               => __('Country'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       return $tab;
@@ -355,7 +347,7 @@ class Location extends CommonTreeDropdown {
 
       $ong = parent::defineTabs($options);
       $this->addImpactTab($ong, $options);
-      $this->addStandardTab('Netpoint', $ong, $options);
+      $this->addStandardTab(Socket::class, $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab(__CLASS__, $ong, $options);
 
@@ -455,7 +447,7 @@ class Location extends CommonTreeDropdown {
       unset($criteria['LIMIT']);
 
       $criteria['COUNT'] = 'total';
-      $number = $DB->request($criteria)->next()['total'];
+      $number = $DB->request($criteria)->current()['total'];
 
       // Mini Search engine
       echo "<table class='tab_cadre_fixe'>";
@@ -483,7 +475,7 @@ class Location extends CommonTreeDropdown {
          echo "<th>".__('Inventory number')."</th>";
          echo "</tr>";
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $item = getItemForItemtype($data['type']);
             $item->getFromDB($data['id']);
             echo "<tr class='tab_bg_1'><td class='center top'>".$item->getTypeName()."</td>";
@@ -504,7 +496,7 @@ class Location extends CommonTreeDropdown {
 
    }
 
-   function displaySpecificTypeField($ID, $field = []) {
+   function displaySpecificTypeField($ID, $field = [], array $options = []) {
       switch ($field['type']) {
          case 'setlocation':
             $this->showMap();
@@ -516,5 +508,18 @@ class Location extends CommonTreeDropdown {
 
    static function getIcon() {
       return "fas fa-map-marker-alt";
+   }
+
+   public function prepareInputForAdd($input) {
+      $input = parent::prepareInputForAdd($input);
+      if (empty($input['latitude']) && empty($input['longitude']) && empty($input['altitude']) &&
+         !empty($input[static::getForeignKeyField()])) {
+         $parent = new static();
+         $parent->getFromDB($input[static::getForeignKeyField()]);
+         $input['latitude'] = $parent->fields['latitude'];
+         $input['longitude'] = $parent->fields['longitude'];
+         $input['altitude'] = $parent->fields['altitude'];
+      }
+      return $input;
    }
 }

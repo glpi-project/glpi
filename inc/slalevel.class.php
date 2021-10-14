@@ -108,7 +108,7 @@ class SlaLevel extends LevelAgreementLevel {
          echo "</td><td class='center'>".__('Active')."</td><td>";
          Dropdown::showYesNo("is_active", 1);
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>";
 
          echo "</table>";
@@ -147,7 +147,7 @@ class SlaLevel extends LevelAgreementLevel {
                                      sprintf(__('%1$s = %2$s'), SLA::getTypeName(1),
                                              $sla->getName()));
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          Session::addToNavigateListItems('SlaLevel', $data["id"]);
 
          echo "<tr class='tab_bg_2'>";
@@ -225,7 +225,7 @@ class SlaLevel extends LevelAgreementLevel {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input('name', ['value' => $this->fields['name']]);
       echo "</td>";
       echo "<td>".__('Active')."</td>";
       echo "<td>";
@@ -287,7 +287,7 @@ class SlaLevel extends LevelAgreementLevel {
          'LIMIT'  => 1
       ]);
 
-      if ($result = $iterator->next()) {
+      if ($result = $iterator->current()) {
          return $result['id'];
       }
       return 0;
@@ -311,7 +311,7 @@ class SlaLevel extends LevelAgreementLevel {
          'WHERE'  => ['id' => $slalevels_id]
       ]);
 
-      if ($result = $iterator->next()) {
+      if ($result = $iterator->current()) {
          $execution_time = $result['execution_time'];
 
          $lvl_iterator = $DB->request([
@@ -327,7 +327,7 @@ class SlaLevel extends LevelAgreementLevel {
             'LIMIT'  => 1
          ]);
 
-         if ($result = $lvl_iterator->next()) {
+         if ($result = $lvl_iterator->current()) {
             return $result['id'];
          }
       }

@@ -92,7 +92,7 @@ class RuleAction extends CommonDBChild {
    protected function computeFriendlyName() {
 
       if ($rule = getItemForItemtype(static::$itemtype)) {
-         return Html::clean($rule->getMinimalActionText($this->fields));
+         return Toolbox::stripTags($rule->getMinimalActionText($this->fields));
       }
       return '';
    }
@@ -172,7 +172,6 @@ class RuleAction extends CommonDBChild {
          'massiveaction'      => false,
          'datatype'           => 'specific',
          'additionalfields'   => ['rules_id'],
-         'autocomplete'       => true,
       ];
 
       return $tab;
@@ -301,7 +300,7 @@ class RuleAction extends CommonDBChild {
       ]);
 
       $rules_actions = [];
-      while ($rule = $iterator->next()) {
+      foreach ($iterator as $rule) {
          $tmp             = new self();
          $tmp->fields     = $rule;
          $rules_actions[] = $tmp;
@@ -389,19 +388,20 @@ class RuleAction extends CommonDBChild {
    static function getActions() {
 
       return ['assign'              => __('Assign'),
-                   'append'              => __('Add'),
-                   'regex_result'        => __('Assign the value from regular expression'),
-                   'append_regex_result' => __('Add the result of regular expression'),
-                   'affectbyip'          => __('Assign: equipment by IP address'),
-                   'affectbyfqdn'        => __('Assign: equipment by name + domain'),
-                   'affectbymac'         => __('Assign: equipment by MAC address'),
-                   'compute'             => __('Recalculate'),
-                   'do_not_compute'      => __('Do not calculate'),
-                   'send'                => __('Send'),
-                   'add_validation'      => __('Send'),
-                   'fromuser'            => __('Copy from user'),
-                   'defaultfromuser'     => __('Copy default from user'),
-                   'fromitem'            => __('Copy from item')];
+              'append'              => __('Add'),
+              'regex_result'        => __('Assign the value from regular expression'),
+              'append_regex_result' => __('Add the result of regular expression'),
+              'affectbyip'          => __('Assign: equipment by IP address'),
+              'affectbyfqdn'        => __('Assign: equipment by name + domain'),
+              'affectbymac'         => __('Assign: equipment by MAC address'),
+              'compute'             => __('Recalculate'),
+              'do_not_compute'      => __('Do not calculate'),
+              'send'                => __('Send'),
+              'add_validation'      => __('Send'),
+              'fromuser'            => __('Copy from user'),
+              'defaultfromuser'     => __('Copy default from user'),
+              'firstgroupfromuser'  => __('Copy first group from user'),
+              'fromitem'            => __('Copy from item')];
    }
 
 
@@ -456,7 +456,7 @@ class RuleAction extends CommonDBChild {
             'WHERE'  => [static::$items_id => $rules_id],
          ]);
 
-         while ($action = $iterator->next()) {
+         foreach ($iterator as $action) {
             if (isset($actions_options[$action["field"]])
                  && ($action["field"] != 'groups_id_validate')
                  && ($action["field"] != 'users_id_validate')
@@ -484,15 +484,15 @@ class RuleAction extends CommonDBChild {
       }
 
       switch ($options["action_type"]) {
-         //If a regex value is used, then always display an autocompletiontextfield
          case "regex_result" :
          case "append_regex_result" :
-            Html::autocompletionTextField($this, "value", $param);
+            echo Html::input('value', ['value' => $param['value']]);
             break;
 
          case 'fromuser' :
          case 'defaultfromuser' :
          case 'fromitem' :
+         case 'firstgroupfromuser' :
             Dropdown::showYesNo("value", $param['value'], 0);
             $display = true;
             break;
@@ -630,6 +630,14 @@ class RuleAction extends CommonDBChild {
                      $display       = true;
                      break;
 
+                  case "dropdown_validation_status":
+                     TicketValidation::dropdownStatus('value', [
+                        'global' => true,
+                        'value' => $param['value'],
+                     ]);
+                     $display = true;
+                     break;
+
                   default :
                      if ($rule = getItemForItemtype($options["sub_type"])) {
                         $display = $rule->displayAdditionalRuleAction($actions[$options["field"]], $param['value']);
@@ -639,7 +647,7 @@ class RuleAction extends CommonDBChild {
             }
 
             if (!$display) {
-               Html::autocompletionTextField($this, "value", $param);
+               echo Html::input('value', ['value' => $param['value']]);
             }
       }
    }

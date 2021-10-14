@@ -28,7 +28,7 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 /**
  * Create an abstration layer for any kind of internet label
@@ -172,7 +172,7 @@ abstract class FQDNLabel extends CommonDBChild {
          }
 
          $iterator = $DB->request($criteria);
-         while ($element = $iterator->next()) {
+         foreach ($iterator as $element) {
             $IDs[$class][] = $element['id'];
          }
       }

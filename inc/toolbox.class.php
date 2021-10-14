@@ -34,10 +34,10 @@ use Glpi\Console\Application;
 use Glpi\Event;
 use Glpi\Mail\Protocol\ProtocolInterface;
 use Glpi\System\RequirementsManager;
+use Glpi\Toolbox\Sanitizer;
 use Laminas\Mail\Storage\AbstractStorage;
-use Monolog\Logger;
 use Mexitek\PHPColors\Color;
-use Psr\Log\InvalidArgumentException;
+use Monolog\Logger;
 use Symfony\Component\Console\Output\OutputInterface;
 
 if (!defined('GLPI_ROOT')) {
@@ -234,34 +234,6 @@ class Toolbox {
       return mb_convert_encoding($string, $to_charset, "UTF-8");
    }
 
-
-   /**
-    * Encrypt a string
-    *
-    * @param string $string  string to encrypt
-    * @param string $key     key used to encrypt
-    *
-    * @return string  encrypted string
-   **/
-   static function encrypt($string, $key = null) {
-      self::deprecated('Use sodiumEncrypt');
-
-      if ($key === null) {
-         $glpikey = new GLPIKey();
-         $key = $glpikey->getLegacyKey();
-      }
-
-      $result = '';
-      $strlen = strlen($string);
-      for ($i=0; $i < $strlen; $i++) {
-         $char    = substr($string, $i, 1);
-         $keychar = substr($key, ($i % strlen($key))-1, 1);
-         $char    = chr(ord($char)+ord($keychar));
-         $result .= $char;
-      }
-      return base64_encode($result);
-   }
-
    public static function sodiumEncrypt($content, $key = null) {
       if ($key === null) {
          $key = self::getGlpiSecKey();
@@ -316,26 +288,6 @@ class Toolbox {
    }
 
    /**
-    * Decrypt a string
-    *
-    * @param string $string  string to decrypt
-    * @param string $key     key used to decrypt
-    *
-    * @return string  decrypted string
-   **/
-   static function decrypt($string, $key = null) {
-      self::deprecated('Use sodiumDecrypt');
-
-      $glpikey = new GLPIKey();
-
-      if ($key === null) {
-         $key = $glpikey->getLegacyKey();
-      }
-
-      return $glpikey->decryptUsingLegacyKey($string, $key);
-   }
-
-   /**
     * Get GLPI security key used for decryptable passwords from file
     *
     * @throw \RuntimeException if key file is missing
@@ -357,20 +309,12 @@ class Toolbox {
     * @return array|string  clean item
     *
     * @see unclean_cross_side_scripting_deep*
+    *
+    * @deprecated 10.0.0
    **/
    static function clean_cross_side_scripting_deep($value) {
-
-      if ((array) $value === $value) {
-         return array_map([__CLASS__, 'clean_cross_side_scripting_deep'], $value);
-      }
-
-      if (!is_string($value)) {
-         return $value;
-      }
-
-      $in  = ['<', '>'];
-      $out = ['&lt;', '&gt;'];
-      return str_replace($in, $out, $value);
+      Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::sanitize()"');
+      return Sanitizer::sanitize($value);
    }
 
 
@@ -382,64 +326,12 @@ class Toolbox {
     * @return array|string  unclean item
     *
     * @see clean_cross_side_scripting_deep()
+    *
+    * @deprecated 10.0.0
    **/
    static function unclean_cross_side_scripting_deep($value) {
-
-      if ((array) $value === $value) {
-         return array_map([__CLASS__, 'unclean_cross_side_scripting_deep'], $value);
-      }
-
-      if (!is_string($value)) {
-         return $value;
-      }
-
-      $in  = ['<', '>'];
-      $out = ['&lt;', '&gt;'];
-      return str_replace($out, $in, $value);
-   }
-
-
-   /**
-    *  Invert fonction from clean_cross_side_scripting_deep to display HTML striping XSS code
-    *
-    * @since 0.83.3
-    *
-    * @param array|string $value  item to unclean from clean_cross_side_scripting_deep
-    *
-    * @return array|string  unclean item
-    *
-    * @see clean_cross_side_scripting_deep()
-   **/
-   static function unclean_html_cross_side_scripting_deep($value) {
-
-      if ((array) $value === $value) {
-         $value = array_map([__CLASS__, 'unclean_html_cross_side_scripting_deep'], $value);
-      } else {
-         $value = self::unclean_cross_side_scripting_deep($value);
-      }
-
-      // revert unclean inside <pre>
-      if (is_string($value)) {
-         $matches = [];
-         $count = preg_match_all('/(<pre[^>]*>)(.*?)(<\/pre>)/is', $value, $matches);
-         for ($i = 0; $i < $count; ++$i) {
-            $complete       = $matches[0][$i];
-            $cleaned        = self::clean_cross_side_scripting_deep($matches[2][$i]);
-            $cleancomplete  = $matches[1][$i].$cleaned.$matches[3][$i];
-            $value          = str_replace($complete, $cleancomplete, $value);
-         }
-
-         $value = htmLawed($value, self::getHtmLawedSafeConfig());
-
-         // Special case : remove the 'denied:' for base64 img in case the base64 have characters
-         // combinaison introduce false positive
-         foreach (['png', 'gif', 'jpg', 'jpeg'] as $imgtype) {
-            $value = str_replace('src="denied:data:image/'.$imgtype.';base64,',
-                  'src="data:image/'.$imgtype.';base64,', $value);
-         }
-      }
-
-      return $value;
+      Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::unsanitize()"');
+      return Sanitizer::unsanitize($value);
    }
 
    /**
@@ -451,7 +343,7 @@ class Toolbox {
     */
    public static function getHtmLawedSafeConfig(): array {
       $config = [
-         'elements'         => '* -applet -canvas -embed -object -script',
+         'elements'         => '* -applet -canvas -embed -form -object -script',
          'deny_attribute'   => 'on*, srcdoc',
          'comment'          => 1, // 1: remove HTML comments (and do not display their contents)
          'cdata'            => 1, // 1: remove CDATA sections (and do not display their contents)
@@ -534,7 +426,10 @@ class Toolbox {
          error_log($e);
       }
 
-      if (isCommandLine() && $level >= Logger::WARNING) {
+      global $SQLLOGGER;
+      if (isCommandLine() && $level >= Logger::WARNING && $logger !== $SQLLOGGER) {
+         // Do not output related messages to $SQLLOGGER as they are redundant with
+         // output made by "ErrorHandler::handleSql*()" methods.
          echo $msg;
       }
    }
@@ -544,6 +439,13 @@ class Toolbox {
     */
    static function logDebug() {
       self::log(null, Logger::DEBUG, func_get_args());
+   }
+
+   /**
+    * PHP notice log
+    */
+   static function logNotice() {
+      self::log(null, Logger::NOTICE, func_get_args());
    }
 
    /**
@@ -568,12 +470,21 @@ class Toolbox {
    }
 
    /**
-    * SQL error log
+    * SQL debug log
     */
    static function logSqlDebug() {
       global $SQLLOGGER;
       $args = func_get_args();
       self::log($SQLLOGGER, Logger::DEBUG, $args);
+   }
+
+   /**
+    * SQL warning log
+    */
+   static function logSqlWarning() {
+      global $SQLLOGGER;
+      $args = func_get_args();
+      self::log($SQLLOGGER, Logger::WARNING, $args);
    }
 
    /**
@@ -688,108 +599,6 @@ class Toolbox {
          fclose($stderr);
       }
       return $ok;
-   }
-
-
-   /**
-    * Specific error handler in Normal mode
-    *
-    * @param integer $errno     level of the error raised.
-    * @param string  $errmsg    error message.
-    * @param string  $filename  filename that the error was raised in.
-    * @param integer $linenum   line number the error was raised at.
-    *
-    * @return string  Error type
-    *
-    * @deprecated 9.5.0
-   **/
-   static function userErrorHandlerNormal($errno, $errmsg, $filename, $linenum) {
-
-      Toolbox::deprecated();
-
-      $errortype = [E_ERROR             => 'Error',
-                         E_WARNING           => 'Warning',
-                         E_PARSE             => 'Parsing Error',
-                         E_NOTICE            => 'Notice',
-                         E_CORE_ERROR        => 'Core Error',
-                         E_CORE_WARNING      => 'Core Warning',
-                         E_COMPILE_ERROR     => 'Compile Error',
-                         E_COMPILE_WARNING   => 'Compile Warning',
-                         E_USER_ERROR        => 'User Error',
-                         E_USER_WARNING      => 'User Warning',
-                         E_USER_NOTICE       => 'User Notice',
-                         E_STRICT            => 'Runtime Notice',
-                         E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
-                         E_DEPRECATED        => 'Deprecated function',
-                         E_USER_DEPRECATED   => 'User deprecated function'];
-
-      $err = '  *** PHP '.$errortype[$errno] . "($errno): $errmsg\n";
-
-      $skip = ['Toolbox::backtrace()'];
-      if (isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-         $hide   = "Toolbox::userErrorHandlerDebug()";
-         $skip[] = "Toolbox::userErrorHandlerNormal()";
-      } else {
-         $hide = "Toolbox::userErrorHandlerNormal()";
-      }
-
-      $err .= self::backtrace(false, $hide, $skip);
-
-      // For unit test
-      if (class_exists('GlpitestPHPerror')) {
-         if (in_array($errno, [E_ERROR, E_USER_ERROR])) {
-            throw new GlpitestPHPerror($err);
-         }
-         /* for tuture usage
-         if (in_array($errno, [E_STRICT, E_WARNING, E_CORE_WARNING, E_USER_WARNING, E_DEPRECATED, E_USER_DEPRECATED])) {
-             throw new GlpitestPHPwarning($err);
-         }
-         if (in_array($errno, [E_NOTICE, E_USER_NOTICE])) {
-            throw new GlpitestPHPnotice($err);
-         }
-         */
-      }
-
-      // Save error
-      static::logError($err);
-
-      return $errortype[$errno];
-   }
-
-
-   /**
-    * Specific error handler in Debug mode
-    *
-    * @param integer $errno     level of the error raised.
-    * @param string  $errmsg    error message.
-    * @param string  $filename  filename that the error was raised in.
-    * @param integer $linenum   line number the error was raised at.
-    *
-    * @return void
-    *
-    * @deprecated 9.5.0
-   **/
-   static function userErrorHandlerDebug($errno, $errmsg, $filename, $linenum) {
-
-      Toolbox::deprecated();
-
-      // For file record
-      $type = self::userErrorHandlerNormal($errno, $errmsg, $filename, $linenum);
-
-      if (0 === error_reporting()) {
-         // Do not display error message if '@' operator is used on errored expression
-         // see https://www.php.net/manual/en/language.operators.errorcontrol.php
-         return;
-      }
-
-      // Display
-      if (!isCommandLine()) {
-         echo '<div style="position:float-left; background-color:red; z-index:10000">'.
-              '<span class="b">PHP '.$type.': </span>';
-         echo $errmsg.' in '.$filename.' at line '.$linenum.'</div>';
-      } else {
-         echo 'PHP '.$type.': '.$errmsg.' in '.$filename.' at line '.$linenum."\n";
-      }
    }
 
 
@@ -1065,7 +874,7 @@ class Toolbox {
    static function commonCheckForUseGLPI($isInstall = false) {
       global $DB;
 
-      echo "<tr><th>".__('Test done')."</th><th >".__('Results')."</th></tr>";
+      echo "<thead><tr><th>".__('Test done')."</th><th >".__('Results')."</th></tr></thead>";
 
       $core_requirements = (new RequirementsManager())->getCoreRequirementList($isInstall ? null : $DB);
       /* @var \Glpi\System\Requirement\RequirementInterface $requirement */
@@ -1099,107 +908,6 @@ class Toolbox {
       } else {
          return 0;
       }
-   }
-
-
-   /**
-    * Check SELinux configuration
-    *
-    * @since 0.84
-    *
-    * @param boolean $fordebug  true is displayed in system information
-    *
-    * @return integer 0: OK, 1:Warning, 2:Error
-    *
-    * @deprecated 9.5.0
-   **/
-   static function checkSELinux($fordebug = false) {
-      Toolbox::deprecated();
-
-      global $CFG_GLPI;
-
-      if ((DIRECTORY_SEPARATOR != '/')
-          || !file_exists('/usr/sbin/getenforce')) {
-         // This is not a SELinux system
-         return 0;
-      }
-      if (function_exists('selinux_getenforce')) { // Use https://pecl.php.net/package/selinux
-         $mode = selinux_getenforce();
-         // Make it human readable, with same output as the command
-         if ($mode > 0) {
-            $mode = 'Enforcing';
-         } else if ($mode < 0) {
-            $mode = 'Disabled';
-         } else {
-            $mode = 'Permissive';
-         }
-      } else {
-         $mode = exec("/usr/sbin/getenforce");
-         if (empty($mode)) {
-            $mode = "Unknown";
-         }
-      }
-      //TRANS: %s is mode name (Permissive, Enforcing of Disabled)
-      $msg  = sprintf(__('SELinux mode is %s'), $mode);
-      if ($fordebug) {
-         echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"" . __s('OK') . "\">$msg\n";
-      } else {
-         echo "<tr class='tab_bg_1'><td class='left b'>$msg</td>";
-         // All modes should be ok
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt='$mode' title='$msg'></td></tr>";
-      }
-      if (!strcasecmp($mode, 'Disabled')) {
-         // Other test are not useful
-         return 0;
-      }
-
-      $err = 0;
-
-      // No need to check file context as checkWriteAccessToDirs will show issues
-
-      // Enforcing mode will block some feature (notif, ...)
-      // Permissive mode will write lot of stuff in audit.log
-
-      $bools = ['httpd_can_network_connect', 'httpd_can_network_connect_db',
-                     'httpd_can_sendmail'];
-      $msg2 = __s('Some features may require this to be on');
-      foreach ($bools as $bool) {
-         if (function_exists('selinux_get_boolean_active')) {
-            $state = selinux_get_boolean_active($bool);
-            // Make it human readable, with same output as the command
-            $state = "$bool --> " . ($state ? 'on' : 'off');
-         } else {
-            $state = exec('/usr/sbin/getsebool '.$bool);
-            if (empty($state)) {
-               $state = "$bool --> unknown";
-            }
-         }
-         //TRANS: %s is an option name
-         $msg = sprintf(__('SELinux boolean configuration for %s'), $state);
-         if ($fordebug) {
-            if (substr($state, -2) == 'on') {
-               echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"". __s('OK') .
-               "\" title=\"" . __s('OK') . "\">$msg\n";
-            } else {
-               echo "<img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png' alt=\"". $msg2 .
-               "\" title=\"$msg2\">$msg ($msg2)\n";
-            }
-         } else {
-            if (substr($state, -2) == 'on') {
-               echo "<tr class='tab_bg_1'><td class='left b'>$msg</td>";
-               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt='$state' title='$state'>".
-                    "</td>";
-            } else {
-               echo "<tr class='tab_bg_1'><td class='left b'>$msg ($msg2)</td>";
-               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png' alt='$msg2' title='$msg2'>".
-                    "</td>";
-               $err = 1;
-            }
-            echo "</tr>";
-         }
-      }
-
-      return $err;
    }
 
 
@@ -1425,19 +1133,6 @@ class Toolbox {
          }
       }
       return 1;
-   }
-
-
-   /**
-    * Determine if Imap/Pop is usable checking extension existence
-    *
-    * @return boolean
-    *
-    * @deprecated 9.5.0
-   **/
-   static function canUseImapPop() {
-      Toolbox::deprecated('No longer usefull');
-      return true;
    }
 
 
@@ -1978,6 +1673,19 @@ class Toolbox {
       return $val;
    }
 
+
+   /**
+    * Get max upload size from php config.
+    *
+    * @return int
+    */
+   static function getPhpUploadSizeLimit(): int {
+      $post_max   = Toolbox::return_bytes_from_ini_vars(ini_get("post_max_size"));
+      $upload_max = Toolbox::return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
+      $max_size   = $post_max > 0 ? min($post_max, $upload_max) : $upload_max;
+      return $max_size;
+   }
+
    /**
     * Parse imap open connect string
     *
@@ -2081,7 +1789,7 @@ class Toolbox {
       $tab = Toolbox::parseMailServerConnectString($value);
 
       echo "<tr class='tab_bg_1'><td>" . __('Server') . "</td>";
-      echo "<td><input size='30' type='text' name='mail_server' value=\"" .$tab['address']. "\">";
+      echo "<td><input size='30' class='form-control' type='text' name='mail_server' value=\"" .$tab['address']. "\">";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . __('Connection options') . "</td><td>";
@@ -2173,14 +1881,17 @@ class Toolbox {
       if ($tab['type'] != 'pop') {
          echo "<tr class='tab_bg_1'><td>". __('Incoming mail folder (optional, often INBOX)')."</td>";
          echo "<td>";
-         echo "<input size='30' type='text' id='server_mailbox' name='server_mailbox' value=\"" . $tab['mailbox'] . "\" >";
+         echo "<div class='btn-group btn-group-sm'>";
+         echo "<input size='30' class='form-control' type='text' id='server_mailbox' name='server_mailbox' value=\"" . $tab['mailbox'] . "\" >";
+         echo "<div class='btn btn-outline-secondary'>";
          echo "<i class='fa fa-list pointer get-imap-folder'></i>";
-         echo "</td></tr>\n";
+         echo "</div>";
+         echo "</div></td></tr>\n";
       }
 
       //TRANS: for mail connection system
       echo "<tr class='tab_bg_1'><td>" . __('Port (optional)') . "</td>";
-      echo "<td><input size='10' type='text' name='server_port' value='".$tab['port']."'></td></tr>\n";
+      echo "<td><input size='10' class='form-control' type='text' name='server_port' value='".$tab['port']."'></td></tr>\n";
       if (empty($value)) {
          $value = "&nbsp;";
       }
@@ -2538,6 +2249,9 @@ class Toolbox {
             }
          }
 
+         //rules
+         RuleImportAsset::initRules();
+
          // update default language
          Config::setConfigurationValues(
             'core',
@@ -2545,7 +2259,6 @@ class Toolbox {
                'language'      => $lang,
                'version'       => GLPI_VERSION,
                'dbversion'     => GLPI_SCHEMA_VERSION,
-               'use_timezones' => $DB->areTimezonesAvailable()
             ]
          );
 
@@ -2570,14 +2283,15 @@ class Toolbox {
     *
     * @since 0.84
     *
-    * @param string $name     config file name
-    * @param string $content  config file content
+    * @param string $name        config file name
+    * @param string $content     config file content
+    * @param string $config_dir  configuration directory to write on
     *
     * @return boolean
    **/
-   static function writeConfig($name, $content) {
+   static function writeConfig($name, $content, string $config_dir = GLPI_CONFIG_DIR) {
 
-      $name = GLPI_CONFIG_DIR . '/'.$name;
+      $name = $config_dir . '/'.$name;
       $fp   = fopen($name, 'wt');
       if ($fp) {
          $fw = fwrite($fp, $content);
@@ -2737,38 +2451,6 @@ class Toolbox {
    }
 
    /**
-    * Sanitize received values
-    *
-    * @param array $array
-    *
-    * @return array
-    */
-   static public function sanitize($array) {
-      $array = array_map('Toolbox::addslashes_deep', $array);
-      $array = array_map('Toolbox::clean_cross_side_scripting_deep', $array);
-      return $array;
-   }
-
-   /**
-    * Remove accentued characters and return lower case string
-    *
-    * @param string $string String to handle
-    *
-    * @return string
-    */
-   public static function removeHtmlSpecialChars($string) {
-      $string = htmlentities($string, ENT_NOQUOTES, 'utf-8');
-      $string = preg_replace(
-         '#&([A-za-z])(?:acute|cedil|caron|circ|grave|orn|ring|slash|th|tilde|uml);#',
-         '\1',
-         $string
-      );
-      $string = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $string);
-      $string = preg_replace('#&[^;]+;#', '', $string);
-      return self::strtolower($string, 'UTF-8');
-   }
-
-   /**
     * Slugify
     *
     * @param string $string String to slugify
@@ -2793,6 +2475,25 @@ class Toolbox {
    }
 
    /**
+    * Find documents data matching the tags found in the string
+    * Tags are deduplicated
+    *
+    * @param string $content_text String to search tags from
+    *
+    * @return array data from documents having tags found
+    */
+   static function getDocumentsFromTag(string $content_text): array {
+      preg_match_all('/'.Document::getImageTag('(([a-z0-9]+|[\.\-]?)+)').'/', $content_text,
+                     $matches, PREG_PATTERN_ORDER);
+      if (!isset($matches[1]) || count($matches[1]) == 0) {
+         return [];
+      }
+
+      $document = new Document();
+      return $document->find(['tag' => array_unique($matches[1])]);
+   }
+
+   /**
     * Convert tag to image
     *
     * @since 9.2
@@ -2810,11 +2511,7 @@ class Toolbox {
       $matches  = [];
       // If no doc data available we match all tags in content
       if (!count($doc_data)) {
-         preg_match_all('/'.Document::getImageTag('(([a-z0-9]+|[\.\-]?)+)').'/', $content_text,
-                        $matches, PREG_PATTERN_ORDER);
-         if (isset($matches[1]) && count($matches[1])) {
-            $doc_data = $document->find(['tag' => array_unique($matches[1])]);
-         }
+         $doc_data = Toolbox::getDocumentsFromTag($content_text);
       }
 
       if (count($doc_data)) {
@@ -2844,11 +2541,11 @@ class Toolbox {
 
                   // 1 - Replace direct tag (with prefix and suffix) by the image
                   $content_text = preg_replace('/'.Document::getImageTag($image['tag']).'/',
-                                               Html::entities_deep($img), $content_text);
+                                               Sanitizer::sanitize($img), $content_text);
 
                   // 2 - Replace img with tag in id attribute by the image
                   $regex = '/<img[^>]+' . preg_quote($image['tag'], '/') . '[^<]+>/im';
-                  preg_match_all($regex, Html::entity_decode_deep($content_text), $matches);
+                  preg_match_all($regex, Sanitizer::unsanitize($content_text), $matches);
                   foreach ($matches[0] as $match_img) {
                      //retrieve dimensions
                      $width = $height = null;
@@ -2882,14 +2579,10 @@ class Toolbox {
                      $content_text = str_replace(
                         $match_img,
                         $new_image,
-                        Html::entity_decode_deep($content_text)
+                        Sanitizer::unsanitize($content_text)
                      );
-                     $content_text = Html::entities_deep($content_text);
+                     $content_text = Sanitizer::sanitize($content_text);
                   }
-
-                  // Replace <br> TinyMce bug
-                  $content_text = str_replace(['&gt;rn&lt;','&gt;\r\n&lt;','&gt;\r&lt;','&gt;\n&lt;'],
-                                              '&gt;&lt;', $content_text);
 
                   // If the tag is from another ticket : link document to ticket
                   if ($item instanceof Ticket
@@ -2916,33 +2609,6 @@ class Toolbox {
    }
 
    /**
-    * Convert image to tag
-    *
-    * @since 9.2
-    *
-    * @param string $content_html   html content of input
-    * @param boolean $force_update  force update of content in item
-    *
-    * @return string  html content
-   **/
-   static function convertImageToTag($content_html, $force_update = false) {
-
-      if (!empty($content_html)) {
-         $matches = [];
-         preg_match_all("/alt\s*=\s*['|\"](.+?)['|\"]/", $content_html, $matches, PREG_PATTERN_ORDER);
-         if (isset($matches[1]) && count($matches[1])) {
-            // Get all image src
-            foreach ($matches[1] as $src) {
-               // Set tag if image matches
-               $content_html = preg_replace(["/<img.*alt=['|\"]".$src."['|\"][^>]*\>/", "/<object.*alt=['|\"]".$src."['|\"][^>]*\>/"], Document::getImageTag($src), $content_html);
-            }
-         }
-
-         return $content_html;
-      }
-   }
-
-   /**
     * Delete tag or image from ticket content
     *
     * @since 9.2
@@ -2953,12 +2619,13 @@ class Toolbox {
     * @return string  html content
    **/
    static function cleanTagOrImage($content, array $tags) {
-      // RICH TEXT : delete img tag
-      $content = Html::entity_decode_deep($content);
+      $content = Sanitizer::unsanitize($content);
 
       foreach ($tags as $tag) {
          $content = preg_replace("/<img.*alt=['|\"]".$tag."['|\"][^>]*\>/", "<p></p>", $content);
       }
+
+      $content = Sanitizer::sanitize($content);
 
       return $content;
    }
@@ -3030,9 +2697,7 @@ class Toolbox {
     * @return string the IP address
     */
    public static function getRemoteIpAddress() {
-      return (isset($_SERVER["HTTP_X_FORWARDED_FOR"]) ?
-         self::clean_cross_side_scripting_deep($_SERVER["HTTP_X_FORWARDED_FOR"]):
-         $_SERVER["REMOTE_ADDR"]);
+      return $_SERVER["REMOTE_ADDR"];
    }
 
    /**
@@ -3061,6 +2726,13 @@ class Toolbox {
                2 => __('MM-DD-YYYY')
             ];
             break;
+         case 'gantt':
+            $formats = [
+               0 => '%Y-%m-%d',
+               1 => '%d-%m-%Y',
+               2 => '%m-%d-%Y'
+            ];
+            break;
          default:
             throw new \RuntimeException("Unknown type $type to get date formats.");
       }
@@ -3072,7 +2744,7 @@ class Toolbox {
     *
     * @since 9.2
     *
-    * @param string $type Type for (either 'php' or 'js')
+    * @param string $type Type for (either 'php', 'js' or 'gantt')
     *
     * @return string
     */
@@ -3141,19 +2813,6 @@ class Toolbox {
    }
 
    /**
-    * Should cache be used
-    *
-    * @since 9.2
-    *
-    * @return boolean
-    */
-   public static function useCache() {
-      global $GLPI_CACHE;
-      return $GLPI_CACHE != null
-         && (!defined('TU_USER') || defined('CACHED_TESTS'));
-   }
-
-   /**
     * Convert a integer index into an excel like alpha index (A, B, ..., AA, AB, ...)
     * @since 9.3
     * @param  integer $index the numeric index
@@ -3177,15 +2836,46 @@ class Toolbox {
     * @param string $content Content to display
     *
     * @return string
+    *
+    * @deprecated 10.0.0
     */
    public static function getHtmlToDisplay($content) {
+      Toolbox::deprecated('Use Glpi\Toolbox\RichText::getSafeHtml()');
+
       $content = Toolbox::unclean_cross_side_scripting_deep(
-         Html::entity_decode_deep(
-            $content
-         )
+         $content
       );
-      $content = nl2br(Html::clean($content, false, 1));
+
+      $content = Html::clean($content, false, 1);
+
+      // If content does not contain <br> or <p> html tag, use nl2br
+      // Required to correctly render linebreaks from "simple text mode" from GLPI prior to 9.4.0.
+      if (!preg_match('/<br\s?\/?>/', $content) && !preg_match('/<p>/', $content)) {
+         $content = nl2br($content);
+      }
+
       return $content;
+   }
+
+   /**
+    * Strip HTML tags from a string.
+    *
+    * @since 10.0.0
+    *
+    * @param string  $str              String to strip tags on
+    * @param boolean $sanitized_input  Indicates whether the input has been transformed by GLPI sanitize process
+    *
+    * @return string
+    *
+    * @TODO Unit test
+    */
+   public static function stripTags(string $str, bool $sanitized_input = false): string {
+
+      if ($sanitized_input) {
+         $str = Sanitizer::unsanitize($str);
+      }
+
+      return strip_tags($str);
    }
 
    /**
@@ -3262,12 +2952,13 @@ class Toolbox {
     * Get picture URL.
     *
     * @param string $path
+    * @param bool  bool get full path
     *
     * @return null|string
     *
     * @since 9.5.0
     */
-   static function getPictureUrl($path) {
+   static function getPictureUrl($path, $full = true) {
       global $CFG_GLPI;
 
       $path = Html::cleanInputText($path); // prevent xss
@@ -3276,7 +2967,7 @@ class Toolbox {
          return null;
       }
 
-      return $CFG_GLPI["root_doc"] . '/front/document.send.php?file=_pictures/' . $path;
+      return ($full ? $CFG_GLPI["root_doc"] : "") . '/front/document.send.php?file=_pictures/' . $path;
    }
 
    /**
@@ -3397,7 +3088,7 @@ HTML;
       }
 
       //get Hsl
-      $base_L = $base_S = [0.35, 0.5, 0.65];
+      $base_L = $base_S = [0.6, 0.65, 0.7];
       $H = $hash % 359;
       $hash = intval($hash / 360);
       $S = $base_S[$hash % count($base_S)];
@@ -3421,12 +3112,26 @@ HTML;
     *
     * @param string $color the background color in hexadecimal notation (ex #FFFFFF) to compute
     * @param int $offset how much we need to darken/lighten the color
+    * @param bool $inherit_if_transparent if color contains an opacity value, and if this value is too transparent return 'inherit'
     *
     * @return string hexadecimal fg color (ex #FFFFFF)
     */
-   static function getFgColor(string $color = "", int $offset = 40): string {
+   static function getFgColor(string $color = "", int $offset = 40, bool $inherit_if_transparent = false): string {
       $fg_color = "FFFFFF";
       if ($color !== "") {
+         $color = str_replace("#", "", $color);
+
+         // if transparency present, get only the color part
+         if (strlen($color) === 8 && preg_match('/^[a-fA-F0-9]+$/', $color)) {
+            $tmp = $color;
+            $alpha = hexdec(substr($tmp, 6, 2));
+            $color = substr($color, 0, 6);
+
+            if ($alpha <= 100) {
+               return "inherit";
+            }
+         }
+
          $color_inst = new Color($color);
 
          // adapt luminance part
@@ -3505,25 +3210,26 @@ HTML;
    }
 
    /**
-    * Search for html encoded <email> (&lt;email&gt;) in the given string and
-    * encode them a second time
-    *
-    * @param string $string
-    *
-    * @return string
+    * Checks if the given class or object has the specified trait.
+    * This function checks the class itself and all parent classes for the trait.
+    * @since 10.0.0
+    * @param string|object $class The class or object
+    * @param string $trait The trait
+    * @return bool True if the class or its parents have the specified trait
     */
-   public static function doubleEncodeEmails($string) {
-      // Search for strings that is an email surrounded by `<` and `>` but that cannot be an HTML tag:
-      // - absence of quotes indicate that values is not part of an HTML attribute,
-      // - absence of ; ensure that ending `&gt;` has not been reached.
-      $regex = "/(&lt;[^\"';]+?@[^\"';]+?&gt;)/";
-      $string = preg_replace_callback($regex, function($matches) {
-         return htmlentities($matches[1]);
-      }, $string);
-      return $string;
+   public static function hasTrait($class, string $trait): bool {
+      // Get traits of all parent classes
+      do {
+         $traits = class_uses($class, true);
+         if (in_array($trait, $traits, true)) {
+            return true;
+         }
+      } while ($class = get_parent_class($class));
+
+      return false;
    }
 
-   /**
+   /*
     * Normalizes file name
     *
     * @param string filename

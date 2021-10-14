@@ -28,7 +28,7 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-* */
+ */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -164,7 +164,7 @@ class FQDN extends CommonDropdown {
       ]);
 
       $fqdns_id_list = [];
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          $fqdns_id_list[] = $line['id'];
       }
 
@@ -203,7 +203,6 @@ class FQDN extends CommonDropdown {
          'field'              => 'fqdn',
          'name'               => __('FQDN'),
          'datatype'           => 'string',
-         'autocomplete'       => true,
       ];
 
       return $tab;
@@ -227,5 +226,9 @@ class FQDN extends CommonDropdown {
          }
       }
       return true;
+   }
+
+   static function getIcon() {
+      return "fas fa-globe";
    }
 }

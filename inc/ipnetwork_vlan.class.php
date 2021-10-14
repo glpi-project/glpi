@@ -119,7 +119,7 @@ class IPNetwork_Vlan extends CommonDBRelation {
       $vlans  = [];
       $used   = [];
       $number = count($iterator);
-      while ($line = $iterator->next()) {
+      foreach ($iterator as $line) {
          $used[$line["id"]]       = $line["id"];
          $vlans[$line["assocID"]] = $line;
       }
@@ -134,7 +134,7 @@ class IPNetwork_Vlan extends CommonDBRelation {
          echo "<input type='hidden' name='ipnetworks_id' value='$ID'>";
          Vlan::dropdown(['used' => $used]);
          echo "&nbsp;<input type='submit' name='add' value='"._sx('button', 'Associate').
-                      "' class='submit'>";
+                      "' class='btn btn-primary'>";
          echo "</td></tr>\n";
 
          echo "</table>\n";
@@ -213,7 +213,7 @@ class IPNetwork_Vlan extends CommonDBRelation {
          'FROM'   => self::getTable(),
          'WHERE'  => ['ipnetworks_id' => $portID]
       ]);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $vlans[$data['vlans_id']] = $data['vlans_id'];
       }
 

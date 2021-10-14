@@ -31,6 +31,8 @@
  */
 
 use Glpi\Event;
+use Glpi\Plugin\Hooks;
+use Glpi\Toolbox\Sanitizer;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -40,8 +42,6 @@ if (!defined('GLPI_ROOT')) {
  *  Identification class used to login
  */
 class Auth extends CommonGLPI {
-
-   static $rightname = 'config';
 
    /** @var array Array of errors */
    private $errors = [];
@@ -145,7 +145,7 @@ class Auth extends CommonGLPI {
          return self::USER_DOESNT_EXIST;
       } else {
          // Get the first result...
-         $row = $result->next();
+         $row = $result->current();
 
          // Check if we have a password...
          if (empty($row['password'])) {
@@ -266,7 +266,7 @@ class Auth extends CommonGLPI {
          if ($this->user_found && @ldap_bind($this->ldap_connection, $dn, $password)) {
 
             //Hook to implement to restrict access by checking the ldap directory
-            if (Plugin::doHookFunction("restrict_ldap_auth", $infos)) {
+            if (Plugin::doHookFunction(Hooks::RESTRICT_LDAP_AUTH, $infos)) {
                return $infos;
             }
             $this->addToError(__('User not authorized to connect in GLPI'));
@@ -399,7 +399,7 @@ class Auth extends CommonGLPI {
 
       // Have we a result ?
       if ($result->numrows() == 1) {
-         $row = $result->next();
+         $row = $result->current();
          $password_db = $row['password'];
 
          if (self::checkPassword($password, $password_db)) {
@@ -591,8 +591,7 @@ class Auth extends CommonGLPI {
             }
             break;
          case self::COOKIE:
-            $cookie_name = session_name() . '_rememberme';
-            $cookie_path = ini_get('session.cookie_path');
+            $cookie_name   = session_name() . '_rememberme';
 
             if ($CFG_GLPI["login_remember_time"]) {
                $data = json_decode($_COOKIE[$cookie_name], true);
@@ -615,8 +614,7 @@ class Auth extends CommonGLPI {
             }
 
             //Remove cookie to allow new login
-            setcookie($cookie_name, '', time() - 3600, $cookie_path);
-            unset($_COOKIE[$cookie_name]);
+            Auth::setRememberMeCookie('');
             break;
       }
       return false;
@@ -760,7 +758,11 @@ class Auth extends CommonGLPI {
                                                   $ldap_method["rootdn"],
                                                   Toolbox::sodiumDecrypt($ldap_method["rootdn_passwd"]),
                                                   $ldap_method["use_tls"],
-                                                  $ldap_method["deref_option"]);
+                                                  $ldap_method["deref_option"],
+                                                  $ldap_method["tls_certfile"],
+                                                  $ldap_method["tls_keyfile"],
+                                                  $ldap_method["use_bind"],
+                                                  $ldap_method["timeout"]);
 
                   if ($ds) {
                      $ldapservers_status = true;
@@ -936,7 +938,7 @@ class Auth extends CommonGLPI {
       if (!$DB->isSlave()) {
          // GET THE IP OF THE CLIENT
          $ip = getenv("HTTP_X_FORWARDED_FOR")?
-            Toolbox::clean_cross_side_scripting_deep(getenv("HTTP_X_FORWARDED_FOR")):
+            Sanitizer::sanitize(getenv("HTTP_X_FORWARDED_FOR")):
             getenv("REMOTE_ADDR");
 
          if ($this->auth_succeded) {
@@ -971,19 +973,13 @@ class Auth extends CommonGLPI {
          $token = $this->user->getAuthToken('cookie_token', true);
 
          if ($token) {
-            //Cookie name (Allow multiple GLPI)
-            $cookie_name = session_name() . '_rememberme';
-            //Cookie session path
-            $cookie_path = ini_get('session.cookie_path');
-
             $data = json_encode([
                 $this->user->fields['id'],
                 $token,
             ]);
 
             //Send cookie to browser
-            setcookie($cookie_name, $data, time() + $CFG_GLPI['login_remember_time'], $cookie_path);
-            $_COOKIE[$cookie_name] = $data;
+            Auth::setRememberMeCookie($data);
          }
       }
 
@@ -1004,6 +1000,7 @@ class Auth extends CommonGLPI {
     * - value : Selected value (default 0)
     * - display : If true, the dropdown is displayed instead of returned (default true)
     * - display_emptychoice : If true, an empty option is added (default true)
+    * - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
     *
     * @return void|string (Based on 'display' option)
     */
@@ -1015,6 +1012,7 @@ class Auth extends CommonGLPI {
          'value'               => 0,
          'display'             => true,
          'display_emptychoice' => true,
+         'hide_if_no_elements' => false,
       ];
 
       if (is_array($options) && count($options)) {
@@ -1033,7 +1031,7 @@ class Auth extends CommonGLPI {
          'WHERE'  => [
             'is_active' => 1
          ]
-      ])->next();
+      ])->current();
 
       if ($result['cpt'] > 0) {
          $methods[self::LDAP]     = __('Authentication on a LDAP directory');
@@ -1046,7 +1044,7 @@ class Auth extends CommonGLPI {
          'WHERE'  => [
             'is_active' => 1
          ]
-      ])->next();
+      ])->current();
 
       if ($result['cpt'] > 0) {
          $methods[self::MAIL] = __('Authentication on mail server');
@@ -1359,6 +1357,7 @@ class Auth extends CommonGLPI {
       if (Session::haveRight("user", User::UPDATEAUTHENT)) {
          echo "<form method='post' action='".Toolbox::getItemTypeFormURL('User')."'>";
          echo "<div class='firstbloc'>";
+         echo "<input type='hidden' name='id' value='".$user->getID()."'>";
 
          switch ($user->getField('authtype')) {
             case self::CAS :
@@ -1367,19 +1366,20 @@ class Auth extends CommonGLPI {
             case self::LDAP :
                //Look it the auth server still exists !
                // <- Bad idea : id not exists unable to change anything
-               // SQL query
-               $result = $DB->request([
-                   'SELECT' => 'name',
-                   'FROM' => 'glpi_authldaps',
-                   'WHERE' => ['id' => $user->getField('auths_id'), 'is_active' => 1],
-               ]);
+               $authldap = new AuthLDAP;
+               if ($authldap->getFromDBByCrit([
+                  'id'        => $user->getField('auths_id'),
+                  'is_active' => 1,
+               ])) {
+                  echo Html::submit("<i class='fas fa-sync-alt'></i><span>".__s('Force synchronization')."</span>", [
+                     'name' => 'force_ldap_resynch'
+                  ]);
 
-               if ($result->numrows() > 0) {
-                  echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
-                  echo "<input type='hidden' name='id' value='".$user->getID()."'>";
-                  echo "<input class=submit type='submit' name='force_ldap_resynch' value='" .
-                         __s('Force synchronization') . "'>";
-                  echo "</td></tr></table>";
+                  if (strlen($authldap->fields['sync_field']) > 0) {
+                     echo Html::submit("<i class='fas fa-broom'></i><span>".__s('Clean LDAP fields and force synchronisation')."</span>", [
+                        'name' => 'clean_ldap_fields'
+                     ]);
+                  }
                }
                break;
 
@@ -1387,21 +1387,18 @@ class Auth extends CommonGLPI {
             case self::MAIL :
                break;
          }
+
          echo "</div>";
 
          echo "<div class='spaced'>";
-         echo "<table class='tab_cadre'>";
-         echo "<tr><th>".__('Change of the authentication method')."</th></tr>";
-         echo "<tr class='tab_bg_2'><td class='center'>";
+         echo "<h3>".__('Change of the authentication method')."</h3>";
          $rand             = self::dropdown(['name' => 'authtype']);
          $paramsmassaction = ['authtype' => '__VALUE__',
                                    'name'     => 'change_auth_method'];
          Ajax::updateItemOnSelectEvent("dropdown_authtype$rand", "show_massiveaction_field",
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionAuthMethods.php",
                                        $paramsmassaction);
-         echo "<input type='hidden' name='id' value='" . $user->getID() . "'>";
          echo "<span id='show_massiveaction_field'></span>";
-         echo "</td></tr></table>";
          echo "</div>";
          Html::closeForm();
       }
@@ -1463,7 +1460,7 @@ class Auth extends CommonGLPI {
          return false;
       }
       echo "<form name=cas action='".$CFG_GLPI['root_doc']."/front/auth.others.php' method='post'>";
-      echo "<div class='center'>";
+      echo "<div class='card'>";
       echo "<table class='tab_cadre_fixe'>";
 
       // CAS config
@@ -1634,7 +1631,7 @@ class Auth extends CommonGLPI {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>" . __('Category') . "</td>";
+      echo "<td class='center'>" . _n('Category', 'Categories', 1) . "</td>";
       echo "<td><input type='text' name='category_ssofield' value='".
                  $CFG_GLPI['category_ssofield']."'></td>";
       echo "</tr>\n";
@@ -1645,7 +1642,7 @@ class Auth extends CommonGLPI {
                  $CFG_GLPI['language_ssofield']."'></td></tr>";
 
       echo "<tr class='tab_bg_1'><td class='center' colspan='2'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".__s('Save')."\" >";
+      echo "<input type='submit' name='update' class='btn btn-primary' value=\"".__s('Save')."\" >";
       echo "</td></tr>\n";
 
       echo "</table></div>\n";
@@ -1674,7 +1671,7 @@ class Auth extends CommonGLPI {
             ],
             'ORDER'  => ['name']
          ]);
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $elements['ldap-'.$data['id']] = $data['name'];
             if ($data['is_default'] == 1) {
                $elements['_default'] = 'ldap-'.$data['id'];
@@ -1690,7 +1687,7 @@ class Auth extends CommonGLPI {
          ],
          'ORDER'  => ['name']
       ]);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $elements['mail-'.$data['id']] = $data['name'];
       }
 
@@ -1700,29 +1697,58 @@ class Auth extends CommonGLPI {
    /**
     * Display the authentication source dropdown for login form
     */
-   static function dropdownLogin() {
+   static function dropdownLogin(bool $display = true) {
+      $out = "";
       $elements = self::getLoginAuthMethods();
       $default = $elements['_default'];
       unset($elements['_default']);
       // show dropdown of login src only when multiple src
-      if (count($elements) > 1) {
-         echo '<p class="login_input" id="login_input_src">';
-         Dropdown::showFromArray('auth', $elements, [
-            'rand'      => '1',
-            'value'     => $default,
-            'width'     => '100%'
-         ]);
-         echo '</p>';
-      } else if (count($elements) == 1) {
-         // when one src, don't display it, pass it with hidden input
-         echo Html::hidden('auth', [
-            'value' => key($elements)
-         ]);
+      $out.= Dropdown::showFromArray('auth', $elements, [
+         'display'   => false,
+         'rand'      => '1',
+         'value'     => $default,
+         'width'     => '100%'
+      ]);
+
+      if ($display) {
+         echo $out;
+         return "";
       }
+
+      return $out;
    }
 
 
    static function getIcon() {
       return "fas fa-sign-in-alt";
+   }
+
+   /**
+    * Defines "rememberme" cookie.
+    *
+    * @param string $cookie_value
+    *
+    * @return void
+    */
+   public static function setRememberMeCookie(string $cookie_value): void {
+      global $CFG_GLPI;
+
+      $cookie_name     = session_name() . '_rememberme';
+      $cookie_lifetime = empty($cookie_value) ? time() - 3600 : time() + $CFG_GLPI['login_remember_time'];
+      $cookie_path     = ini_get('session.cookie_path');
+      $cookie_domain   = ini_get('session.cookie_domain');
+      $cookie_secure   = (bool)ini_get('session.cookie_secure');
+
+      if (empty($cookie_value) && !isset($_COOKIE[$cookie_name])) {
+         return;
+      }
+
+      setcookie($cookie_name, $cookie_value, $cookie_lifetime, $cookie_path, $cookie_domain, $cookie_secure, true);
+
+      if (empty($cookie_value)) {
+         unset($_COOKIE[$cookie_name]);
+      } else {
+         $_COOKIE[$cookie_name] = $cookie_value;
+      }
    }
 }

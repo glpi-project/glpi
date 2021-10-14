@@ -102,7 +102,7 @@ class Group_User extends CommonDBRelation{
          ] + $condition,
          'ORDER'        => 'glpi_groups.name'
       ]);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $groups[] = $row;
       }
 
@@ -148,7 +148,7 @@ class Group_User extends CommonDBRelation{
          ] + $condition,
          'ORDER'        => 'glpi_users.name'
       ]);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $users[] = $row;
       }
 
@@ -177,7 +177,7 @@ class Group_User extends CommonDBRelation{
       $groups = [];
       //$groups  = self::getUserGroups($ID);
       $used    = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $used[$data["id"]] = $data["id"];
          $groups[] = $data;
       }
@@ -207,7 +207,7 @@ class Group_User extends CommonDBRelation{
 
          echo "</td><td class='tab_bg_2 center'>";
          echo "<input type='submit' name='addgroup' value=\""._sx('button', 'Add')."\"
-                class='submit'>";
+                class='btn btn-primary'>";
 
          echo "</td></tr>";
          echo "</table>";
@@ -336,7 +336,7 @@ class Group_User extends CommonDBRelation{
 
          echo "</td><td class='tab_bg_2 center'>";
          echo "<input type='hidden' name'is_dynamic' value='0'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>";
          echo "</table></div>";
          Html::closeForm();
@@ -419,7 +419,7 @@ class Group_User extends CommonDBRelation{
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          // Add to display list, according to criterion
          if (empty($crit) || $data[$crit]) {
             $members[] = $data;
@@ -770,7 +770,7 @@ class Group_User extends CommonDBRelation{
     * @since 9.3.1
     *
     * @param CommonDBTM $item  Item instance
-    * @param boolean    $noent Flag to not compute entity informations (see Document_Item::getListForItemParams)
+    * @param boolean    $noent Flag to not compute entity information (see Document_Item::getListForItemParams)
     *
     * @return array
     */

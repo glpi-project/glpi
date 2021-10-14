@@ -32,7 +32,7 @@
 
 namespace tests\units;
 
-use \DbTestCase;
+use DbTestCase;
 
 /* Test for inc/ticket_ticket.class.php */
 
@@ -168,7 +168,7 @@ class Ticket_Ticket extends DbTestCase {
       )->isGreaterThan(0);
 
       //not a SON_OF => no child
-      $this->integer($link->countOpenChildren($link->getID()))->isIdenticalTo(0);
+      $this->integer(\Ticket_Ticket::countOpenChildren($link->getID()))->isIdenticalTo(0);
 
       $this->boolean(
          $link->update([
@@ -176,7 +176,7 @@ class Ticket_Ticket extends DbTestCase {
             'link'   => \Ticket_Ticket::SON_OF
          ])
       )->isTrue();
-      $this->integer($link->countOpenChildren($ttwo->getID()))->isIdenticalTo(1);
+      $this->integer(\Ticket_Ticket::countOpenChildren($ttwo->getID()))->isIdenticalTo(1);
 
       $this->boolean(
          $tone->update([
@@ -184,6 +184,6 @@ class Ticket_Ticket extends DbTestCase {
             'status' => \Ticket::CLOSED
          ])
       )->isTrue();
-      $this->integer($link->countOpenChildren($ttwo->getID()))->isIdenticalTo(0);
+      $this->integer(\Ticket_Ticket::countOpenChildren($ttwo->getID()))->isIdenticalTo(0);
    }
 }

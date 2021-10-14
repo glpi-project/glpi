@@ -1,8 +1,10 @@
+/config/cache.php
 /config/config_db*
 /config/glpi.key
 /config/glpicrypt.key
 /config/local_define.php
 /tests/config_db*
+/tests/cache.php
 /marketplace/
 /plugins/
 /files/
@@ -30,10 +32,12 @@ phpunit.xml
 /**/*.min.css
 /css_compiled/
 /css/compiled/
-!/css/tiny_mce/**/*.min.css
+/css/lib/
 /**/*.min.js
 /node_modules/
 .package.hash
 /public/build/
 /public/lib/
 /tests/web/error.log
+/inventory-vendors/*.json
+/locales/*.mo

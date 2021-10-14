@@ -28,11 +28,11 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 namespace tests\units;
 
-use \DbTestCase;
+use DbTestCase;
 
 /* Test for inc/knowbaseitem_comment.class.php */
 
@@ -133,11 +133,11 @@ class KnowbaseItem_Comment extends DbTestCase {
       $kbcom = new \KnowbaseItem_Comment();
 
       $name = $kbcom->getTabNameForItem($kb1, true);
-      $this->string($name)->isIdenticalTo('Comments <sup class=\'tab_nb\'>5</sup>');
+      $this->string($name)->isIdenticalTo('Comments <span class=\'badge\'>5</span>');
 
       $_SESSION['glpishow_count_on_tabs'] = 1;
       $name = $kbcom->getTabNameForItem($kb1);
-      $this->string($name)->isIdenticalTo('Comments <sup class=\'tab_nb\'>5</sup>');
+      $this->string($name)->isIdenticalTo('Comments <span class=\'badge\'>5</span>');
 
       $_SESSION['glpishow_count_on_tabs'] = 0;
       $name = $kbcom->getTabNameForItem($kb1);

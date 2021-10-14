@@ -120,7 +120,7 @@ class GLPIUploadHandler extends UploadHandler {
 
    static function uploadFiles($params = []) {
 
-      global $DB;
+      global $CFG_GLPI, $DB;
 
       $default_params = [
          'name'           => '',
@@ -135,37 +135,17 @@ class GLPIUploadHandler extends UploadHandler {
          $name = $rand_name . $name;
       }
 
-      $valid_type_iterator = $DB->request([
-         'FROM'   => 'glpi_documenttypes',
-         'WHERE'  => [
-            'is_uploadable'   => 1
-         ]
-      ]);
-
-      $valid_ext_patterns = [];
-      foreach ($valid_type_iterator as $valid_type) {
-         $valid_ext = $valid_type['ext'];
-         if (preg_match('/\/.+\//', $valid_ext)) {
-            // Filename matches pattern
-            // Remove surrounding '/' as it will be included in a larger pattern
-            // and protect by surrounding parenthesis to prevent conflict with other patterns
-            $valid_ext_patterns[] = '(' . substr($valid_ext, 1, -1) . ')';
-         } else {
-            // Filename ends with allowed ext
-            $valid_ext_patterns[] = '\.' . preg_quote($valid_type['ext'], '/') . '$';
-         }
-      }
-
       $upload_dir     = GLPI_TMP_DIR.'/';
       $upload_handler = new self(
          [
-            'accept_file_types'         => '/(' . implode('|', $valid_ext_patterns) . ')/i',
+            'accept_file_types'         => DocumentType::getUploadableFilePattern(),
             'image_versions'            => [
                'auto_orient' => false,
             ],
             'param_name'                => $pname,
             'replace_dots_in_filenames' => false,
             'upload_dir'                => $upload_dir,
+            'max_file_size'             => $CFG_GLPI['document_max_size'] * 1024 * 1024,
          ],
          false
       );

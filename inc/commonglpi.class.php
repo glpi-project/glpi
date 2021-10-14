@@ -30,6 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Plugin\Hooks;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -382,11 +385,7 @@ class CommonGLPI {
    **/
    function addDefaultFormTab(array &$ong) {
 
-      if (self::isLayoutExcludedPage()
-          || !self::isLayoutWithMain()
-          || !method_exists($this, "showForm")) {
-         $ong[$this->getType().'$main'] = $this->getTypeName(1);
-      }
+      $ong[$this->getType().'$main'] = $this->getTypeName(1);
       return $this;
    }
 
@@ -412,6 +411,7 @@ class CommonGLPI {
             $menu['shortcut']        = static::getMenuShorcut();
             $menu['page']            = static::getSearchURL(false);
             $menu['links']['search'] = static::getSearchURL(false);
+            $menu['links']['lists']  = "";
             $menu['icon']            = static::getIcon();
 
             if (!in_array('add', $forbidden)
@@ -419,10 +419,10 @@ class CommonGLPI {
 
                if ($item->maybeTemplate()) {
                   $menu['links']['add'] = '/front/setup.templates.php?'.'itemtype='.$type.
-                                          '&amp;add=1';
+                                          '&add=1';
                   if (!in_array('template', $forbidden)) {
                      $menu['links']['template'] = '/front/setup.templates.php?'.'itemtype='.$type.
-                                                  '&amp;add=0';
+                                                  '&add=0';
                   }
                } else {
                   $menu['links']['add'] = static::getFormURL(false);
@@ -585,17 +585,11 @@ class CommonGLPI {
     * @return boolean true
    **/
    static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate = 0, $options = []) {
-
       switch ($tab) {
          // All tab
          case -1 :
             // get tabs and loop over
             $ong = $item->defineAllTabs(['withtemplate' => $withtemplate]);
-
-            if (!self::isLayoutExcludedPage() && self::isLayoutWithMain()) {
-               //on classical and vertical split; the main tab is always displayed
-               array_shift($ong);
-            }
 
             if (count($ong)) {
                foreach ($ong as $key => $val) {
@@ -623,9 +617,29 @@ class CommonGLPI {
             $options['withtemplate'] = $withtemplate;
 
             if ($tabnum == 'main') {
-               Plugin::doHook('pre_show_item', ['item' => $item, 'options' => &$options]);
+               Plugin::doHook(Hooks::PRE_SHOW_ITEM, ['item' => $item, 'options' => &$options]);
                $ret = $item->showForm($item->getID(), $options);
-               Plugin::doHook('post_show_item', ['item' => $item, 'options' => $options]);
+
+               $lockedfield = new Lockedfield();
+               if (!$item->isNewItem() && $lockedfield->isHandled($item)) {
+                  $locks = $lockedfield->getLocks($item->getType(), $item->fields['id']);
+                  if (count($locks)) {
+                     $js_expr = '[name='.implode('], [name=', $locks).']';
+                     $lockedtitle = __s('Field will not be updated from inventory');
+
+                     $locked_js = <<<JAVASCRIPT
+                        $(function() {
+                            $("{$js_expr}").closest("td").prev()
+                            .append("<i class=\"fas fa-lock\" title=\"{$lockedtitle}\"></i>")
+                            .toggleClass("lockedfield", true)
+                            .removeClass("lockfield") //to drop duplicated fusion icon
+                            ;
+                        });
+JAVASCRIPT;
+                     echo Html::scriptBlock($locked_js);
+                  }
+               }
+               Plugin::doHook(Hooks::POST_SHOW_ITEM, ['item' => $item, 'options' => $options]);
                return $ret;
             }
 
@@ -633,9 +647,9 @@ class CommonGLPI {
                 && ($obj = getItemForItemtype($itemtype))) {
                $options['tabnum'] = $tabnum;
                $options['itemtype'] = $itemtype;
-               Plugin::doHook('pre_show_tab', [ 'item' => $item, 'options' => &$options]);
+               Plugin::doHook(Hooks::PRE_SHOW_TAB, [ 'item' => $item, 'options' => &$options]);
                $ret = $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
-               Plugin::doHook('post_show_tab', ['item' => $item, 'options' => $options]);
+               Plugin::doHook(Hooks::POST_SHOW_TAB, ['item' => $item, 'options' => $options]);
                return $ret;
             }
             break;
@@ -657,7 +671,7 @@ class CommonGLPI {
 
       if ($nb) {
          //TRANS: %1$s is the name of the tab, $2$d is number of items in the tab between ()
-         $text = sprintf(__('%1$s %2$s'), $text, "<sup class='tab_nb'>$nb</sup>");
+         $text = sprintf(__('%1$s %2$s'), $text, "<span class='badge'>$nb</span>");
       }
       return $text;
    }
@@ -769,42 +783,6 @@ class CommonGLPI {
 
 
    /**
-    * Show primary form
-    *
-    * @since 0.90
-    *
-    * @param array $options Options
-    *
-    * @return boolean
-   **/
-   function showPrimaryForm($options = []) {
-
-      if (!method_exists($this, "showForm")) {
-         return false;
-      }
-
-      $ong   = $this->defineAllTabs();
-      $class = "main_form";
-      if (count($ong) == 0) {
-         $class .= " no_tab";
-      }
-      if (!isset($_GET['id'])
-          || (($_GET['id'] <= 0) && !$this instanceof Entity )) {
-         $class .= " create_form";
-      } else {
-         $class .= " modify_form";
-      }
-      echo "<div class='form_content'>";
-      echo "<div class='$class'>";
-      Plugin::doHook('pre_show_item', ['item' => $this, 'options' => &$options]);
-      $this->showForm($options['id'], $options);
-      Plugin::doHook('post_show_item', ['item' => $this, 'options' => $options]);
-      echo "</div>";
-      echo "</div>";
-   }
-
-
-   /**
     * Show tabs content
     *
     * @since 0.85
@@ -854,8 +832,7 @@ class CommonGLPI {
 
          $extraparamhtml = "&amp;".Toolbox::append_params($cleaned_options, '&amp;');
       }
-      echo "<div class='glpi_tabs ".($this->isNewID($ID)?"new_form_tabs":"")."'>";
-      echo "<div id='tabspanel' class='center-h'></div>";
+
       $onglets     = $this->defineAllTabs($options);
       $display_all = true;
       if (isset($onglets['no_all_tab'])) {
@@ -887,7 +864,6 @@ class CommonGLPI {
          Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType(), $ID,
                           $this->taborientation, $options);
       }
-      echo "</div>";
    }
 
 
@@ -977,16 +953,18 @@ class CommonGLPI {
 
          if ($first >= 0) {
             echo "<a href='$cleantarget?id=$first$extraparamhtml'
-                     class='navicon left'>
-                     <i class='fas fa-angle-double-left pointer' title=\"".__s('First')."\"></i>
+                     class='btn btn-sm btn-icon btn-ghost-secondary' title=\"".__s('First')."\"
+                     data-bs-toggle='tooltip' data-bs-placement='bottom'>
+                     <i class='fas fa-lg fa-angle-double-left'></i>
                   </a>";
          }
 
          if ($prev >= 0) {
             echo "<a href='$cleantarget?id=$prev$extraparamhtml'
                      id='previouspage'
-                     class='navicon left'>
-                     <i class='fas fa-angle-left pointer' title=\"".__s('Previous')."\"></i>
+                     class='btn btn-sm btn-icon btn-ghost-secondary' title=\"".__s('Previous')."\"
+                     data-bs-toggle='tooltip' data-bs-placement='bottom'>
+                     <i class='fas fa-lg fa-angle-left'></i>
                   </a>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
@@ -1002,8 +980,9 @@ class CommonGLPI {
             $glpilisttitle = __s('List');
          }
          echo "<a href='$glpilisturl' title=\"$glpilisttitle\"
-                  class='navicon left'>
-                  <i class='far fa-list-alt pointer'></i>
+                  class='btn btn-sm btn-icon btn-ghost-secondary'
+                  data-bs-toggle='tooltip' data-bs-placement='bottom'>
+                  <i class='far fa-lg fa-list-alt'></i>
                </a>";
 
          $name = '';
@@ -1024,108 +1003,25 @@ class CommonGLPI {
 
          }
          echo "<span class='center nav_title'>&nbsp;";
-         if (!self::isLayoutWithMain() || self::isLayoutExcludedPage()) {
-            if ($this instanceof CommonITILObject) {
-               echo "<span class='status'>";
-               echo $this->getStatusIcon($this->fields['status']);
-               echo "</span>";
-            }
-            echo $name;
+         if ($this instanceof CommonITILObject) {
+            echo "<span class='status'>";
+            echo $this->getStatusIcon($this->fields['status']);
+            echo "</span>";
          }
+         echo $name;
          echo "</span>";
 
-         $ma = new MassiveAction([
-               'item' => [
-                  $this->getType() => [
-                     $this->fields['id'] => 1
-                  ]
-               ]
-            ],
-            $_GET,
-            'initial',
-            $this->fields['id']
-         );
-         $actions = $ma->getInput()['actions'];
-         $input   = $ma->getInput();
-
-         if ($this->isEntityAssign()) {
-            $input['entity_restrict'] = $this->getEntityID();
-         }
-
-         if (count($actions)) {
-            $rand          = mt_rand();
-
-            if (count($actions)) {
-               echo "<span class='single-actions'>";
-               echo "<button type='button' class='btn btn-secondary moreactions'>
-                        ".__("Actions")."
-                        <i class='fas fa-caret-down'></i>
-                     </button>";
-
-               echo "<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'>";
-               foreach ($actions as $key => $action) {
-                  echo "<a class='dropdown-item' data-action='$key' href='#'>$action</a>";
-               }
-               echo "</div>";
-               echo "</span>";
-            }
-
-            Html::openMassiveActionsForm();
-            echo "<div id='dialog_container_$rand'></div>";
-            // Force 'checkbox-zero-on-empty', because some massive actions can use checkboxes
-            $CFG_GLPI['checkbox-zero-on-empty'] = true;
-            Html::closeForm();
-            //restore
-            unset($CFG_GLPI['checkbox-zero-on-empty']);
-
-            echo Html::scriptBlock( "$(function() {
-               var ma = ".json_encode($input).";
-
-               $(document).on('click', '.moreactions', function() {
-                  $('.moreactions + .dropdown-menu').toggle();
-               });
-
-               $(document).on('click', function(event) {
-                  var target = $(event.target);
-                  var parent = target.parent();
-
-                  if(!target.hasClass('moreactions')
-                     && !parent.hasClass('moreactions')) {
-                     $('.moreactions + .dropdown-menu').hide();
-                  }
-               });
-
-               $(document).on('click', '[data-action]', function() {
-                  $('.moreactions + .dropdown-menu').hide();
-
-                  var current_action = $(this).data('action');
-
-                  $('<div></div>').dialog({
-                     title: ma.actions[current_action],
-                     width: 500,
-                     height: 'auto',
-                     modal: true,
-                     appendTo: '#dialog_container_$rand'
-                  }).load(
-                     '".$CFG_GLPI['root_doc']. "/ajax/dropdownMassiveAction.php',
-                     Object.assign(
-                        {action: current_action},
-                        ma
-                     )
-                  );
-               });
-            });");
-         }
-
          if ($current !== false) {
-            echo "<span class='right navicon'>" . ($current + 1) . "/" . count($glpilistitems) . "</span>";
+            echo "<span class='m-1 ms-3'>" . ($current + 1) . "/" . count($glpilistitems) . "</span>";
          }
 
          if ($next >= 0) {
             echo "<a href='$cleantarget?id=$next$extraparamhtml'
                      id='nextpage'
-                     class='navicon right'>" .
-               "<i class='fas fa-angle-right pointer' title=\"".__s('Next')."\"></i>
+                     class='btn btn-sm btn-icon btn-ghost-secondary'
+                     title=\"".__s('Next')."\"
+                     data-bs-toggle='tooltip' data-bs-placement='bottom'>" .
+               "<i class='fas fa-lg fa-angle-right'></i>
                     </a>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
@@ -1139,45 +1035,14 @@ class CommonGLPI {
 
          if ($last >= 0) {
             echo "<a href='$cleantarget?id=$last $extraparamhtml'
-                     class='navicon right'>" .
-               "<i class='fas fa-angle-double-right pointer' title=\"" . __s('Last') . "\"></i></a>";
+                     class='btn btn-sm btn-icon btn-ghost-secondary'
+                     title=\"".__s('Last')."\"
+                     data-bs-toggle='tooltip' data-bs-placement='bottom'>" .
+               "<i class='fas fa-lg fa-angle-double-right'></i></a>";
          }
 
          echo "</div>"; // .navigationheader
       }
-   }
-
-
-   /**
-    * check if main is always display in current Layout
-    *
-    * @since 0.90
-    *
-    * @return boolean
-    */
-   public static function isLayoutWithMain() {
-      return (isset($_SESSION['glpilayout']) && in_array($_SESSION['glpilayout'], ['classic', 'vsplit']));
-   }
-
-
-   /**
-    * check if page is excluded for splitted layouts
-    *
-    * @since 0.90
-    *
-    * @return boolean
-    */
-   public static function isLayoutExcludedPage() {
-      global $CFG_GLPI;
-
-      if (basename($_SERVER['SCRIPT_NAME']) == "updatecurrenttab.php") {
-         $base_referer = basename($_SERVER['HTTP_REFERER']);
-         $base_referer = explode("?", $base_referer);
-         $base_referer = $base_referer[0];
-         return in_array($base_referer, $CFG_GLPI['layout_excluded_pages']);
-      }
-
-      return in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages']);
    }
 
 
@@ -1218,16 +1083,23 @@ class CommonGLPI {
       // $options must contains the id of the object, and if locked by manageObjectLock will contains 'locked' => 1
       ObjectLock::manageObjectLock(get_class($this), $options);
 
-      $this->showNavigationHeader($options);
-      if (!self::isLayoutExcludedPage() && self::isLayoutWithMain()) {
-
-         if (!isset($options['id'])) {
-            $options['id'] = 0;
-         }
-         $this->showPrimaryForm($options);
+      // manage custom options passed to tabs
+      if (isset($_REQUEST['tab_params']) && is_array($_REQUEST['tab_params'])) {
+         $options += $_REQUEST['tab_params'];
       }
 
+      echo "<div class='d-flex flex-column'>";
+      echo "<div class='row'>";
+      if ($this instanceof CommonDBTM) {
+         TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
+            'itemtype' => $this->getType(),
+         ]);
+      }
+      echo "<div class='col'>";
+      $this->showNavigationHeader($options);
       $this->showTabsContent($options);
+      echo "</div>";
+      echo "</div>";
    }
 
 
@@ -1388,7 +1260,7 @@ class CommonGLPI {
          echo "<table class='tab_cadre'>";
          echo "<tr><th colspan='2'>".__s('Display options')."</th></tr>\n";
          echo "<tr><td colspan='2'>";
-         echo "<input type='submit' class='submit' name='reset' value=\"".
+         echo "<input type='submit' class='btn btn-primary' name='reset' value=\"".
                 __('Reset display options')."\">";
          echo "</td></tr>\n";
 
@@ -1407,7 +1279,7 @@ class CommonGLPI {
             }
          }
          echo "<tr><td colspan='2' class='center'>";
-         echo "<input type='submit' class='submit' name='update' value=\""._sx('button', 'Save')."\">";
+         echo "<input type='submit' class='btn btn-primary' name='update' value=\""._sx('button', 'Save')."\">";
          echo "</td></tr>\n";
          echo "</table>";
          echo "</form>";
@@ -1445,7 +1317,7 @@ class CommonGLPI {
 
       $link ="<span class='fa fa-wrench pointer' title=\"";
       $link .= __s('Display options')."\" ";
-      $link .= " onClick=\"".Html::jsGetElementbyID("displayoptions".$rand).".dialog('open');\"";
+      $link .= " data-bs-toggle='modal' data-bs-target='#displayoptions$rand'";
       $link .= "><span class='sr-only'>" . __s('Display options') . "</span></span>";
       $link .= Ajax::createIframeModalWindow("displayoptions".$rand,
                                              $CFG_GLPI['root_doc'].

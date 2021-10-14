@@ -37,25 +37,27 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use CommonDBVisible;
+use CommonITILTask;
+use DateInterval;
+use DateTime;
+use DateTimeZone;
+use Dropdown;
+use Entity;
+use Glpi\Toolbox\RichText;
+use Glpi\Toolbox\Sanitizer;
+use Group_User;
+use Html;
+use Planning;
+use PlanningEventCategory;
+use PlanningRecall;
+use QueryExpression;
+use Reminder;
 use RRule\RRule;
 use RRule\RSet;
 use Session;
 use Toolbox;
-use Planning;
-use PlanningRecall;
-use CommonDBVisible;
-use Group_User;
-use QueryExpression;
-use PlanningEventCategory;
-use Html;
-use DateTime;
-use DateTimeZone;
-use Reminder;
-use Dropdown;
-use CommonITILTask;
 use User;
-use DateInterval;
-use Entity;
 
 trait PlanningEvent {
 
@@ -514,7 +516,7 @@ trait PlanningEvent {
       $events_toadd = [];
 
       if (count($iterator)) {
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             if ($event_obj->getFromDB($data["id"]) && $event_obj->canViewItem()) {
                $key = $data["begin"].
                       "$$".$itemtype.
@@ -542,9 +544,10 @@ trait PlanningEvent {
                   'users_id'         => $data["users_id"],
                   'state'            => $data["state"],
                   'background'       => $has_bg ? $data['background'] : false,
-                  'name'             => Html::clean(Html::resume_text($data["name"], $CFG_GLPI["cut"])),
-                  'text'             => Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($data["text"])),
-                  $CFG_GLPI["cut"]),
+                  'name'             => Sanitizer::unsanitize($data['name']), // name is re-encoded on JS side
+                  'text'             => $data['text'] !== null
+                     ? RichText::getSafeHtml($data['text'], true)
+                     : '',
                   'ajaxurl'          => $CFG_GLPI["root_doc"]."/ajax/planning.php".
                                         "?action=edit_event_form".
                                         "&itemtype=$itemtype".
@@ -653,12 +656,14 @@ trait PlanningEvent {
          }
       }
 
+      // $val["text"] has already been sanitized and decoded by self::populatePlanning()
+      $content = $val["text"].$recall;
+
       if ($complete) {
          $html.= "<span>".Planning::getState($val["state"])."</span><br>";
-         $html.= "<div class='event-description rich_text_container'>".$val["text"].$recall."</div>";
+         $html.= "<div class='event-description rich_text_container'>".$content."</div>";
       } else {
-         $html.= Html::showToolTip("<span class='b'>".Planning::getState($val["state"])."</span><br>
-                                   ".$val["text"].$recall,
+         $html.= Html::showToolTip("<span class='b'>".Planning::getState($val["state"])."</span><br>".$content,
                                    ['applyto' => "reminder_".$val[$item_fk].$rand,
                                          'display' => false]);
       }
@@ -716,7 +721,7 @@ trait PlanningEvent {
                         ? "none" : "table";
 
       $out.= "<span id='toggle_ar' style='display: $display_tar'>";
-      $out.= "<a class='vsubmit'
+      $out.= "<a class='btn btn-primary'
                  title='".__("Personalization")."'
                  onclick='$(\"#advanced_repetition$rand\").toggle()'>
                  <i class='fas fa-cog'></i>
@@ -887,7 +892,6 @@ trait PlanningEvent {
             'name'          => __('Name'),
             'datatype'      => 'itemlink',
             'massiveaction' => false,
-            'autocomplete'  => true,
          ], [
             'id'            => '2',
             'table'         => self::getTable(),

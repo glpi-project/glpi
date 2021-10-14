@@ -101,7 +101,7 @@ class Calendar_Holiday extends CommonDBRelation {
       $numrows = count($iterator);
       $holidays = [];
       $used     = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $holidays[$data['id']] = $data;
          $used[$data['id']]     = $data['id'];
       }
@@ -118,7 +118,7 @@ class Calendar_Holiday extends CommonDBRelation {
          Holiday::dropdown(['used'   => $used,
                                  'entity' => $calendar->fields["entities_id"]]);
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
@@ -181,37 +181,6 @@ class Calendar_Holiday extends CommonDBRelation {
       echo "</div>";
    }
 
-   /**
-    * Duplicate all holidays from a calendar to its clone
-    *
-    * @deprecated 9.5
-    *
-    * @param integer $oldid The ID of the calendar to copy from.
-    * @param integer $newid The ID of the calendar to copy to.
-   **/
-   static function cloneCalendar($oldid, $newid) {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      $result = $DB->request(
-         [
-            'FROM'   => self::getTable(),
-            'WHERE'  => [
-               'calendars_id' => $oldid,
-            ]
-         ]
-      );
-
-      foreach ($result as $data) {
-         $ch                   = new self();
-         unset($data['id']);
-         $data['calendars_id'] = $newid;
-         $data['_no_history']  = true;
-
-         $ch->add($data);
-      }
-   }
-
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
@@ -237,5 +206,116 @@ class Calendar_Holiday extends CommonDBRelation {
       }
       return true;
    }
-}
 
+   function post_addItem() {
+
+      $this->invalidateCalendarCache($this->fields['calendars_id']);
+
+      parent::post_addItem();
+   }
+
+   function post_updateItem($history = 1) {
+
+      if (in_array('calendars_id', $this->updates)) {
+         $this->invalidateCalendarCache($this->oldvalues['calendars_id']);
+      }
+
+      $this->invalidateCalendarCache($this->fields['calendars_id']);
+
+      parent::post_updateItem($history);
+   }
+
+   function post_deleteFromDB() {
+
+      $this->invalidateCalendarCache($this->fields['calendars_id']);
+
+      parent::post_deleteFromDB();
+   }
+
+   /**
+    * Return holidays related to given calendar.
+    *
+    * @param int $calendars_id
+    *
+    * @return array
+    */
+   public function getHolidaysForCalendar(int $calendars_id): array {
+      global $DB, $GLPI_CACHE;
+
+      $cache_key = $this->getCalendarHolidaysCacheKey($calendars_id);
+      if (($holidays = $GLPI_CACHE->get($cache_key)) === null) {
+         $holidays_iterator = $DB->request(
+            [
+               'SELECT'     => ['begin_date', 'end_date', 'is_perpetual'],
+               'FROM'       => Holiday::getTable(),
+               'INNER JOIN' => [
+                  Calendar_Holiday::getTable() => [
+                     'FKEY'   => [
+                        Calendar_Holiday::getTable() => Holiday::getForeignKeyField(),
+                        Holiday::getTable()          => 'id',
+                     ],
+                  ],
+               ],
+               'WHERE'      => [
+                  Calendar_Holiday::getTableField(Calendar::getForeignKeyField()) => $calendars_id,
+               ],
+            ]
+         );
+         $holidays = iterator_to_array($holidays_iterator);
+         $GLPI_CACHE->set($cache_key, $holidays);
+      }
+
+      return $holidays;
+   }
+
+   /**
+    * Invalidate cache for given holiday.
+    *
+    * @param int $holidays_id
+    *
+    * @return bool
+    */
+   public function invalidateHolidayCache(int $holidays_id): bool {
+      global $DB;
+
+      $success = true;
+
+      $iterator = $DB->request(
+         [
+            'SELECT'     => [Calendar::getForeignKeyField()],
+            'FROM'       => self::getTable(),
+            'WHERE'      => [
+               Holiday::getForeignKeyField() => $holidays_id,
+            ],
+         ]
+      );
+      foreach ($iterator as $link) {
+         $success = $success && $this->invalidateCalendarCache($link[Calendar::getForeignKeyField()]);
+      }
+
+      return $success;
+   }
+
+   /**
+    * Get cache key of cache entry containing holidays of given calendar.
+    *
+    * @param int $calendars_id
+    *
+    * @return string
+    */
+   private function getCalendarHolidaysCacheKey(int $calendars_id): string {
+      return sprintf('calendar-%s-holidays', $calendars_id);
+   }
+
+   /**
+    * Invalidate holidays cache of given calendar.
+    *
+    * @param int $calendars_id
+    *
+    * @return bool
+    */
+   private function invalidateCalendarCache(int $calendars_id): bool {
+      global $GLPI_CACHE;
+      return $GLPI_CACHE->delete($this->getCalendarHolidaysCacheKey($calendars_id));
+   }
+}

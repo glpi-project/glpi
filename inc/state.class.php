@@ -99,7 +99,7 @@ class State extends CommonTreeDropdown {
          'ORDER'  => 'name'
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $elements[$data["id"]] = sprintf(__('Set status: %s'), $data["name"]);
       }
       Dropdown::showFromArray($name, $elements, ['value' => $value]);
@@ -137,7 +137,7 @@ class State extends CommonTreeDropdown {
                   'GROUP'  => 'states_id'
                ]);
 
-               while ($data = $iterator->next()) {
+               foreach ($iterator as $data) {
                   $states[$data["states_id"]][$itemtype] = $data["cpt"];
                }
             }
@@ -187,7 +187,7 @@ class State extends CommonTreeDropdown {
          }
          echo "<td class='numeric b'>$tot</td></tr>";
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $tot = 0;
             echo "<tr class='tab_bg_2'><td class='b'>";
 
@@ -437,6 +437,24 @@ class State extends CommonTreeDropdown {
          'datatype'           => 'bool'
       ];
 
+      $tab[] = [
+         'id'                 => '38',
+         'table'              => $this->getTable(),
+         'field'              => 'is_visible_cable',
+         'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'),
+                                    Cable::getTypeName(Session::getPluralNumber())),
+         'datatype'           => 'bool'
+      ];
+
+      $tab[] = [
+         'id'                 => '39',
+         'table'              => $this->getTable(),
+         'field'              => 'is_visible_database',
+         'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'),
+                                    DatabaseInstance::getTypeName(Session::getPluralNumber())),
+         'datatype'           => 'bool'
+      ];
+
       return $tab;
    }
 
@@ -486,7 +504,7 @@ class State extends CommonTreeDropdown {
          'COUNT'  => 'cpt',
          'WHERE'  => $where
       ];
-      $row = $DB->request($query)->next();
+      $row = $DB->request($query)->current();
       return (int)$row['cpt'] == 0;
    }
 

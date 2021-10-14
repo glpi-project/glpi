@@ -1,0 +1,127 @@
+<?php
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2021 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+namespace tests\units\Glpi\Inventory\Asset;
+
+include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
+
+/* Test for inc/inventory/asset/firmware.class.php */
+
+class Bios extends AbstractInventoryAsset {
+
+   protected function assetProvider() :array {
+      return [
+         [
+            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <BIOS>
+      <ASSETTAG />  <BDATE>06/02/2016</BDATE>
+      <BMANUFACTURER>Dell Inc.</BMANUFACTURER>
+      <BVERSION>1.4.3</BVERSION>
+      <MMANUFACTURER>Dell Inc.</MMANUFACTURER>
+      <MMODEL>07TYC2</MMODEL>
+      <MSN>/640HP72/CN129636460078/</MSN>
+      <SKUNUMBER>0704</SKUNUMBER>
+      <SMANUFACTURER>Dell Inc.</SMANUFACTURER>
+      <SMODEL>XPS 13 9350</SMODEL>
+      <SSN>640HP72</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+  </REQUEST>",
+            'expected'  => '{"bdate": "2016-02-06", "bmanufacturer": "Dell Inc.", "bversion": "1.4.3", "mmanufacturer": "Dell Inc.", "mmodel": "07TYC2", "msn": "/640HP72/CN129636460078/", "skunumber": "0704", "smanufacturer": "Dell Inc.", "smodel": "XPS 13 9350", "ssn": "640HP72", "date": "2016-02-06", "version": "1.4.3", "manufacturers_id": "Dell Inc.", "designation": "Dell Inc. BIOS", "devicefirmwaretypes_id": 1}'
+         ], [
+            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <BIOS>
+      <BVERSION>IM51.0090.B09</BVERSION>
+      <SMANUFACTURER>Apple Computer, Inc.</SMANUFACTURER>
+      <SMODEL>iMac5,1</SMODEL>
+      <SSN>W87051UGVUV</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+  </REQUEST>",
+            'expected'  => '{"bversion": "IM51.0090.B09", "smanufacturer": "Apple Computer, Inc.", "smodel": "iMac5,1", "ssn": "W87051UGVUV", "version": "IM51.0090.B09", "designation": " BIOS", "devicefirmwaretypes_id": 1}'
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider assetProvider
+    */
+   public function testPrepare($xml, $expected) {
+      $converter = new \Glpi\Inventory\Converter;
+      $data = $converter->convert($xml);
+      $json = json_decode($data);
+
+      $computer = getItemByTypeName('Computer', '_test_pc01');
+      $asset = new \Glpi\Inventory\Asset\Bios($computer, (array)$json->content->bios);
+      $asset->setExtraData((array)$json->content);
+      $result = $asset->prepare();
+      $this->object($result[0])->isEqualTo(json_decode($expected));
+   }
+
+   public function testHandle() {
+      $computer = getItemByTypeName('Computer', '_test_pc01');
+
+      //first, check there are no controller linked to this computer
+      $idf = new \Item_DeviceFirmware();
+      $this->boolean($idf->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+           ->isFalse('A firmware is already linked to computer!');
+
+      //convert data
+      $expected = $this->assetProvider()[0];
+
+      $converter = new \Glpi\Inventory\Converter;
+      $data = $converter->convert($expected['xml']);
+      $json = json_decode($data);
+
+      $computer = getItemByTypeName('Computer', '_test_pc01');
+      $asset = new \Glpi\Inventory\Asset\Bios($computer, (array)$json->content->bios);
+      $asset->setExtraData((array)$json->content);
+      $result = $asset->prepare();
+      $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
+
+      //handle
+      $asset->handleLinks();
+      $asset->handle();
+      $this->boolean($idf->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+           ->isTrue('Firmware has not been linked to computer :(');
+   }
+}

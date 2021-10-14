@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 Session::checkLoginUser();
 
 if (!isset($_GET["reservationitems_id"])) {
-   $_GET["reservationitems_id"] = '';
+   $_GET["reservationitems_id"] = 0;
 }
 
 if (Session::getCurrentInterface() == "helpdesk") {
@@ -44,7 +44,7 @@ if (Session::getCurrentInterface() == "helpdesk") {
    Html::header(Reservation::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "reservationitem");
 }
 
-Reservation::showCalendar($_GET["reservationitems_id"]);
+Reservation::showCalendar((int) $_GET["reservationitems_id"], $_REQUEST);
 
 if (Session::getCurrentInterface() == "helpdesk") {
    Html::helpFooter();

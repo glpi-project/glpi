@@ -37,7 +37,6 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use DB;
-
 use Glpi\Console\Command\GlpiCommandInterface;
 use Glpi\System\RequirementsManager;
 use Symfony\Component\Console\Command\Command;
@@ -45,6 +44,7 @@ use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 abstract class AbstractCommand extends Command implements GlpiCommandInterface {
 
@@ -97,7 +97,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface {
       global $DB;
 
       if ($this->requires_db && (!($DB instanceof DB) || !$DB->connected)) {
-         throw new RuntimeException(__('Unable to connect to database.'));
+         throw new \Symfony\Component\Console\Exception\RuntimeException(__('Unable to connect to database.'));
       }
 
       $this->db = $DB;
@@ -210,5 +210,27 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface {
    public function requiresUpToDateDb(): bool {
 
       return $this->requires_db && $this->requires_db_up_to_date;
+   }
+
+   /**
+    * Ask for user confirmation before continuing command execution.
+    *
+    * @return void
+    */
+   protected function askForConfirmation(): void {
+      if (!$this->input->getOption('no-interaction')) {
+         $question_helper = $this->getHelper('question');
+         $run = $question_helper->ask(
+            $this->input,
+            $this->output,
+            new ConfirmationQuestion(__('Do you want to continue?') . ' [Yes/no]', true)
+         );
+         if (!$run) {
+            throw new \Glpi\Console\Exception\EarlyExitException(
+               '<comment>' . __('Aborted.') . '</comment>',
+               0 // Success code
+            );
+         }
+      }
    }
 }

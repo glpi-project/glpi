@@ -171,7 +171,7 @@ class CronTask extends CommonDBTM{
          'DISTINCT'        => true,
          'FROM'            => 'glpi_crontasks'
       ]);
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $types[] = $data['itemtype'];
       }
       return $types;
@@ -453,7 +453,7 @@ class CronTask extends CommonDBTM{
       ]);
 
       if (count($iterator)) {
-         $this->fields = $iterator->next();
+         $this->fields = $iterator->current();
          return true;
       }
       return false;
@@ -557,7 +557,7 @@ class CronTask extends CommonDBTM{
       echo $name."</td>";
       echo "<td rowspan='6' class='middle right'>".__('Comments')."</td>";
       echo "<td class='center middle' rowspan='6'>";
-      echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "<textarea class='form-control' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Description')."</td><td>";
@@ -565,7 +565,7 @@ class CronTask extends CommonDBTM{
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Run frequency')."</td><td>";
-      $this->dropdownFrequency('frequency', $this->fields["frequency"]);
+      Dropdown::showFrequency('frequency', $this->fields["frequency"]);
       echo "</td></tr>";
 
       $tmpstate = $this->fields["state"];
@@ -638,7 +638,7 @@ class CronTask extends CommonDBTM{
          echo $label."&nbsp;</td><td>";
          Dropdown::showNumber('param', ['value' => $this->fields['param'],
                                              'min'   => 0,
-                                             'max'   => 400]);
+                                             'max'   => 10000]);
       }
       echo "</td><td>".__('Next run')."</td><td>";
 
@@ -1076,7 +1076,7 @@ class CronTask extends CommonDBTM{
          ]
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          if (!$temp->delete($data)) {
             $ret = false;
          }
@@ -1150,7 +1150,7 @@ class CronTask extends CommonDBTM{
                'crontasks_id' => $this->fields['id'],
                'state'        => CronTaskLog::STATE_STOP
             ]
-         ])->next();
+         ])->current();
 
          echo "<tr class='tab_bg_1'><td>".__('Start date')."</td>";
          echo "<td class='right'>".Html::convDateTime($data['datemin'])."</td></tr>";
@@ -1263,7 +1263,7 @@ class CronTask extends CommonDBTM{
          $header .= "</tr>\n";
          echo $header;
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             echo "<tr class='tab_bg_2'>";
             echo "<td><a href='javascript:reloadTab(\"crontasklogs_id=".
                         $data['crontasklogs_id']."\");'>".Html::convDateTime($data['date']).
@@ -1324,7 +1324,7 @@ class CronTask extends CommonDBTM{
          echo "</tr>\n";
 
          $first = true;
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center'>".($first ? Html::convDateTime($data['date'])
                                                 : "&nbsp;")."</a></td>";
@@ -1872,7 +1872,7 @@ class CronTask extends CommonDBTM{
          ]
       ]);
       $crontasks = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $crontasks[$data['id']] = $data;
       }
 
@@ -1923,43 +1923,6 @@ class CronTask extends CommonDBTM{
             return ['description' => __("Archives log files and deletes aging ones"),
                          'parameter'   => __("Number of days to keep archived logs")];
       }
-   }
-
-
-   /**
-    * Dropdown for frequency (interval between 2 actions)
-    *
-    * @param string  $name   select name
-    * @param integer $value  default value (default 0)
-    *
-    * @return string|integer HTML output, or random part of dropdown ID.
-   **/
-   function dropdownFrequency($name, $value = 0) {
-
-      $tab = [];
-
-      $tab[MINUTE_TIMESTAMP] = sprintf(_n('%d minute', '%d minutes', 1), 1);
-
-      // Minutes
-      for ($i=5; $i<60; $i+=5) {
-         $tab[$i*MINUTE_TIMESTAMP] = sprintf(_n('%d minute', '%d minutes', $i), $i);
-      }
-
-      // Heures
-      for ($i=1; $i<24; $i++) {
-         $tab[$i*HOUR_TIMESTAMP] = sprintf(_n('%d hour', '%d hours', $i), $i);
-      }
-
-      // Jours
-      $tab[DAY_TIMESTAMP] = __('Each day');
-      for ($i=2; $i<7; $i++) {
-         $tab[$i*DAY_TIMESTAMP] = sprintf(_n('%d day', '%d days', $i), $i);
-      }
-
-      $tab[WEEK_TIMESTAMP]  = __('Each week');
-      $tab[MONTH_TIMESTAMP] = __('Each month');
-
-      Dropdown::showFromArray($name, $tab, ['value' => $value]);
    }
 
 

@@ -37,10 +37,10 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\Console\AbstractCommand;
+use GLPIKey;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-use GLPIKey;
 
 class ChangekeyCommand extends AbstractCommand {
    /**
@@ -81,7 +81,7 @@ class ChangekeyCommand extends AbstractCommand {
          $run = $question_helper->ask(
             $input,
             $output,
-            new ConfirmationQuestion(__('Do you want to continue ?') . ' [Yes/no]', true)
+            new ConfirmationQuestion(__('Do you want to continue?') . ' [Yes/no]', true)
          );
          if (!$run) {
             $output->writeln(

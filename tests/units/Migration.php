@@ -28,7 +28,7 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
 namespace tests\units;
 
@@ -283,7 +283,7 @@ class Migration extends \GLPITestCase {
 
       $this->array($this->queries)->isIdenticalTo([
          "ALTER TABLE `change_table` DROP `id`  ,\n" .
-         "CHANGE `ID` `id` INT(11) NOT NULL DEFAULT '0'   FIRST  ",
+         "CHANGE `ID` `id` INT NOT NULL DEFAULT '0'   FIRST  ",
       ]);
 
       // Test change field with move to after an other column
@@ -297,9 +297,10 @@ class Migration extends \GLPITestCase {
          }
       )->isIdenticalTo("Change of the database layout - change_tableTask completed.");
 
+      $collate = $DB->use_utf8mb4 ? 'utf8mb4_unicode_ci' : 'utf8_unicode_ci';
       $this->array($this->queries)->isIdenticalTo([
          "ALTER TABLE `change_table` DROP `name`  ,\n" .
-         "CHANGE `NAME` `name` VARCHAR(255) COLLATE utf8_unicode_ci DEFAULT NULL   AFTER `id` ",
+         "CHANGE `NAME` `name` VARCHAR(255) COLLATE $collate DEFAULT NULL   AFTER `id` ",
       ]);
    }
 
@@ -310,13 +311,13 @@ class Migration extends \GLPITestCase {
             'field'     => 'my_field',
             'format'    => 'bool',
             'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TINYINT(1) NOT NULL DEFAULT '0'   "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TINYINT NOT NULL DEFAULT '0'   "
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'bool',
             'options'   => ['value' => 1],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TINYINT(1) NOT NULL DEFAULT '1'   "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TINYINT NOT NULL DEFAULT '1'   "
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
@@ -334,25 +335,39 @@ class Migration extends \GLPITestCase {
             'field'     => 'my_field',
             'format'    => 'string',
             'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8_unicode_ci DEFAULT NULL   "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8_unicode_ci DEFAULT NULL   ",
+            'utf8mb4'   => false,
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'string',
+            'options'   => [],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL   ",
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'string',
             'options'   => ['value' => 'a string'],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'a string'   "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'a string'   ",
+            'utf8mb4'   => false,
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'string',
+            'options'   => ['value' => 'a string'],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'a string'   ",
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'integer',
             'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT(11) NOT NULL DEFAULT '0'   "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '0'   "
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'integer',
             'options'   => ['value' => 2],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT(11) NOT NULL DEFAULT '2'   "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '2'   "
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
@@ -382,62 +397,116 @@ class Migration extends \GLPITestCase {
             'field'     => 'my_field',
             'format'    => 'text',
             'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8_unicode_ci DEFAULT NULL   "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8_unicode_ci DEFAULT NULL   ",
+            'utf8mb4'   => false,
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'text',
+            'options'   => [],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8mb4_unicode_ci DEFAULT NULL   ",
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'text',
             'options'   => ['value' => 'A text'],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A text'   "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A text'   ",
+            'utf8mb4'   => false,
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'text',
+            'options'   => ['value' => 'A text'],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'A text'   ",
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'mediumtext',
+            'options'   => [],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` MEDIUMTEXT COLLATE utf8_unicode_ci DEFAULT NULL   ",
+            'utf8mb4'   => false,
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'mediumtext',
+            'options'   => [],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` MEDIUMTEXT COLLATE utf8mb4_unicode_ci DEFAULT NULL   ",
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'mediumtext',
+            'options'   => ['value' => 'A medium text'],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` MEDIUMTEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A medium text'   ",
+            'utf8mb4'   => false,
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'mediumtext',
+            'options'   => ['value' => 'A medium text'],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` MEDIUMTEXT COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'A medium text'   ",
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'longtext',
             'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8_unicode_ci DEFAULT NULL   "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8_unicode_ci DEFAULT NULL   ",
+            'utf8mb4'   => false,
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'longtext',
+            'options'   => [],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8mb4_unicode_ci DEFAULT NULL   ",
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'longtext',
             'options'   => ['value' => 'A long text'],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A long text'   "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A long text'   ",
+            'utf8mb4'   => false,
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'longtext',
+            'options'   => ['value' => 'A long text'],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'A long text'   ",
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'autoincrement',
             'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT(11) NOT NULL AUTO_INCREMENT   "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL AUTO_INCREMENT   "
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
-            'format'    => "INT(3) NOT NULL DEFAULT '42'",
+            'format'    => "INT NOT NULL DEFAULT '42'",
             'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT(3) NOT NULL DEFAULT '42'   "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '42'   "
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'integer',
             'options'   => ['comment' => 'a comment'],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT(11) NOT NULL DEFAULT '0'  COMMENT 'a comment'  "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '0'  COMMENT 'a comment'  "
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'integer',
             'options'   => ['after' => 'other_field'],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT(11) NOT NULL DEFAULT '0'   AFTER `other_field` "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '0'   AFTER `other_field` "
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'integer',
             'options'   => ['first' => true],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT(11) NOT NULL DEFAULT '0'   FIRST  "
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '0'   FIRST  "
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'integer',
             'options'   => ['value' => '-2', 'update' => '0', 'condition' => 'WHERE `id` = 0'],
             'sql'       => [
-               "ALTER TABLE `my_table` ADD `my_field` INT(11) NOT NULL DEFAULT '-2'   ",
+               "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '-2'   ",
                "UPDATE `my_table`
                         SET `my_field` = 0 WHERE `id` = 0",
             ]
@@ -448,9 +517,10 @@ class Migration extends \GLPITestCase {
    /**
     * @dataProvider fieldsFormatsProvider
     */
-   public function testAddField($table, $field, $format, $options, $sql) {
+   public function testAddField($table, $field, $format, $options, $sql, bool $utf8mb4 = true) {
       global $DB;
       $DB = $this->db;
+      $DB->use_utf8mb4 = $utf8mb4;
       $this->calling($this->db)->fieldExists = false;
       $this->queries = [];
 
@@ -621,7 +691,7 @@ class Migration extends \GLPITestCase {
 
       $this->array($this->queries)->isIdenticalTo(
          [
-            "ALTER TABLE `glpi_oldtable` ADD `bool_field` TINYINT(1) NOT NULL DEFAULT '0'   ",
+            "ALTER TABLE `glpi_oldtable` ADD `bool_field` TINYINT NOT NULL DEFAULT '0'   ",
             "ALTER TABLE `glpi_oldtable` ADD FULLTEXT `fulltext_key` (`fulltext_key`)",
             "ALTER TABLE `glpi_oldtable` ADD UNIQUE `id` (`id`)",
             "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`",
@@ -640,7 +710,7 @@ class Migration extends \GLPITestCase {
       $this->array($this->queries)->isIdenticalTo(
          [
             "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`",
-            "ALTER TABLE `glpi_newtable` ADD `bool_field` TINYINT(1) NOT NULL DEFAULT '0'   ",
+            "ALTER TABLE `glpi_newtable` ADD `bool_field` TINYINT NOT NULL DEFAULT '0'   ",
             "ALTER TABLE `glpi_newtable` ADD FULLTEXT `fulltext_key` (`fulltext_key`)",
             "ALTER TABLE `glpi_newtable` ADD UNIQUE `id` (`id`)",
          ]
@@ -773,9 +843,9 @@ class Migration extends \GLPITestCase {
 
       $this->array($this->queries)->isIdenticalTo([
          "RENAME TABLE `glpi_someoldtypes` TO `glpi_newnames`",
-         "ALTER TABLE `glpi_oneitem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` INT(11) NOT NULL DEFAULT '0'   ",
-         "ALTER TABLE `glpi_anotheritem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` INT(11) NOT NULL DEFAULT '0'   ,\n"
-         . "CHANGE `someoldtypes_id_tech` `newnames_id_tech` INT(11) NOT NULL DEFAULT '0'   ",
+         "ALTER TABLE `glpi_oneitem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` INT NOT NULL DEFAULT '0'   ",
+         "ALTER TABLE `glpi_anotheritem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` INT NOT NULL DEFAULT '0'   ,\n"
+         . "CHANGE `someoldtypes_id_tech` `newnames_id_tech` INT NOT NULL DEFAULT '0'   ",
          "UPDATE `glpi_computers` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
          "UPDATE `glpi_users` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
          "UPDATE `glpi_stuffs` SET `itemtype_source` = 'NewName' WHERE `itemtype_source` = 'SomeOldType'",

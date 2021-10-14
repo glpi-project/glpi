@@ -39,13 +39,6 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-// depreciation behavior
-if (!isset($_POST["itemtype"]) && isset($_POST['table'])
-    && $DB->tableExists($_POST['table'])) {
-   Toolbox::deprecated();
-   $_POST["itemtype"] = getItemTypeForTable($_POST['table']);
-}
-
 if (isset($_POST["itemtype"])
     && isset($_POST["value"])) {
    // Security
@@ -93,15 +86,36 @@ if (isset($_POST["itemtype"])
                exit();
             }
 
-            $table = getTableForItemType($_POST['itemtype']);
+            $itemtype = $_POST['itemtype'];
+            if (is_subclass_of($itemtype, 'Rule')) {
+               $table = Rule::getTable();
+            } else {
+               $table = getTableForItemType($_POST['itemtype']);
+            }
             $tmpname = Dropdown::getDropdownName($table, $_POST["value"], 1);
             if (is_array($tmpname) && isset($tmpname["comment"])) {
                 echo $tmpname["comment"];
             }
+
             if (isset($_POST['withlink'])) {
                echo "<script type='text/javascript' >\n";
                echo Html::jsGetElementbyID($_POST['withlink']).".
                     attr('href', '".$_POST['itemtype']::getFormURLWithID($_POST["value"])."');";
+               echo "</script>\n";
+            }
+
+            if (isset($_POST['with_dc_position'])) {
+               $item = new $_POST['itemtype']();
+               echo "<script type='text/javascript' >\n";
+
+               //if item have a DC position (reload url to it's rack)
+               if ($rack = $item->isRackPart($_POST['itemtype'], $_POST["value"], true)) {
+                  echo Html::jsGetElementbyID($_POST['with_dc_position']).".
+                  html(\"&nbsp;<a class='fas fa-crosshairs' href='".$rack->getLinkURL()."'></a>\");";
+               } else {
+                  //remove old dc position
+                  echo Html::jsGetElementbyID($_POST['with_dc_position']).".empty();";
+               }
                echo "</script>\n";
             }
          }

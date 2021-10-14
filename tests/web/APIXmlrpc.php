@@ -32,9 +32,8 @@
 
 namespace tests\units\Glpi\Api;
 
-use \GuzzleHttp\Exception\ClientException;
-use \GuzzleHttp;
-use \APIBaseClass;
+use APIBaseClass;
+use GuzzleHttp;
 
 /* Test for inc/api/apixmlrpc.class.php */
 

@@ -37,7 +37,6 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Plugin;
-
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -140,7 +139,7 @@ class DeactivateCommand extends AbstractPluginCommand {
 
    protected function getDirectoryChoiceQuestion() {
 
-      return __('Which plugin(s) do you want to deactivate (comma separated values) ?');
+      return __('Which plugin(s) do you want to deactivate (comma separated values)?');
    }
 
    protected function getDirectoryChoiceChoices() {

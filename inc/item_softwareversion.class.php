@@ -238,16 +238,6 @@ class Item_SoftwareVersion extends CommonDBRelation {
    }
 
 
-   /**
-    * @param $computers_id
-   **/
-   function updateDatasForComputer($computers_id) {
-
-      Toolbox::deprecated('Use updateDatasForItem()');
-      return $this->updateDatasForItem('Computer', $computers_id);
-   }
-
-
    function updateDatasForItem($itemtype, $items_id) {
       global $DB;
 
@@ -289,7 +279,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
       ]);
 
       $target_types = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $target_types[] = $data['itemtype'];
       }
 
@@ -323,7 +313,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
          if ($item->maybeTemplate()) {
             $request['WHERE']["$itemtable.is_template"] = 0;
          }
-         $count += $DB->request($request)->next()['cpt'];
+         $count += $DB->request($request)->current()['cpt'];
       }
       return $count;
    }
@@ -357,7 +347,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
       ]);
 
       $target_types = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $target_types[] = $data['itemtype'];
       }
 
@@ -397,7 +387,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
          if ($item->maybeTemplate()) {
             $request['WHERE']["$itemtable.is_template"] = 0;
          }
-         $count += $DB->request($request)->next()['cpt'];
+         $count += $DB->request($request)->current()['cpt'];
       }
       return $count;
    }
@@ -649,7 +639,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
 
       $rand = mt_rand();
 
-      if ($data = $iterator->next()) {
+      if ($data = $iterator->current()) {
          $softwares_id  = $data['sID'];
          $soft          = new Software();
          $showEntity    = ($soft->getFromDB($softwares_id) && $soft->isRecursive());
@@ -689,6 +679,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
             Html::showMassiveActions($massiveactionparams);
          }
 
+         echo "<div class='table-responsive'>";
          echo "<table class='tab_cadre_fixehov'>";
 
          $header_begin  = "<tr>";
@@ -782,11 +773,13 @@ class Item_SoftwareVersion extends CommonDBRelation {
             echo "<td>".Html::convDate($data['date_install'])."</td>";
             echo "</tr>\n";
 
-         } while ($data = $iterator->next());
+            $iterator->next();
+         } while ($data = $iterator->current());
 
          echo $header_begin.$header_bottom.$header_end;
 
-         echo "</table>\n";
+         echo "</table>";
+         echo "</div>";
          if ($canedit) {
             $massiveactionparams['ontop'] =false;
             Html::showMassiveActions($massiveactionparams);
@@ -798,7 +791,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
       }
       Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);
 
-      echo "</div>\n";
+      echo "</div>";
    }
 
 
@@ -833,7 +826,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
          'ORDER'  => ['completename']
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $nb = self::countForVersion($softwareversions_id, $data['id']);
          if ($nb > 0) {
             echo "<tr class='tab_bg_2'><td>" . $data["completename"] . "</td>";
@@ -853,22 +846,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
 
 
    /**
-    * Show software installed on a computer
-    *
-    * @param Computer $comp         Computer object
-    * @param boolean  $withtemplate template case of the view process
-    *
-    * @return void
-   **/
-   static function showForComputer(Computer $comp, $withtemplate = 0) {
-
-      Toolbox::deprecated('Use showForItem()');
-      self::showForItem($comp, $withtemplate);
-   }
-
-
-   /**
-    * Get softwares related to a given item
+    * Get software related to a given item
     *
     * @param CommonDBTM $item  Item instance
     * @param string     $sort  Field to sort on
@@ -890,12 +868,9 @@ class Item_SoftwareVersion extends CommonDBRelation {
          'glpi_softwareversions.softwares_id',
          'glpi_softwareversions.name AS version',
          'glpi_softwares.is_valid AS softvalid',
-         'glpi_items_softwareversions.date_install AS dateinstall'
+         'glpi_items_softwareversions.date_install AS dateinstall',
+         "$selftable.is_dynamic"
       ];
-
-      if (Plugin::haveImport()) {
-         $select[] = "{$selftable}.is_dynamic";
-      }
 
       $request = [
          'SELECT'    => $select,
@@ -976,7 +951,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
          Software::dropdownSoftwareToInstall("softwareversions_id", $entities_id);
          echo "</td><td width='20%'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Install')."\"
-                class='submit'>";
+                class='btn btn-primary'>";
          echo "</td>";
          echo "</tr>\n";
          echo "</table></div>\n";
@@ -999,7 +974,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'><th colspan='2'>".Software::getTypeName(Session::getPluralNumber())."</th></tr>";
       echo "<tr class='tab_bg_1'><td>";
-      echo __('Category')."</td><td>";
+      echo _n('Category', 'Categories', 1)."</td><td>";
       SoftwareCategory::dropdown(['value'      => $crit,
                                        'toadd'      => ['-1' =>  __('All categories')],
                                        'emptylabel' => __('Uncategorized software'),
@@ -1017,6 +992,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
          echo "<div class='spaced'>";
          Html::printAjaxPager('', $start, $number);
 
+         echo "<div class='table-responsive'>";
          if ($canedit) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
@@ -1045,15 +1021,13 @@ class Item_SoftwareVersion extends CommonDBRelation {
          $header_end .= "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
          $header_end .= "<th>" ._n('Version', 'Versions', 1)."</th><th>" . SoftwareLicense::getTypeName(1) . "</th>";
          $header_end .="<th>" . __('Installation date') . "</th>";
-         if (Plugin::haveImport()) {
-            $header_end .= "<th>".__('Automatic inventory')."</th>";
-         }
+         $header_end .= "<th>".__('Automatic inventory')."</th>";
          $header_end .= "<th>".SoftwareCategory::getTypeName(1)."</th>";
          $header_end .= "<th>".__('Valid license')."</th>";
          $header_end .= "</tr>\n";
          echo $header_begin.$header_top.$header_end;
 
-         for ($row=0; $data = $iterator->next(); $row++) {
+         for ($row=0; $data = $iterator->current(); $row++) {
 
             if (($row >= $start) && ($row < ($start + $_SESSION['glpilist_limit']))) {
                $licids = self::softwareByCategory($data, $itemtype, $items_id, $withtemplate,
@@ -1068,10 +1042,12 @@ class Item_SoftwareVersion extends CommonDBRelation {
                Session::addToNavigateListItems('SoftwareLicense', $licid);
                $installed[] = $licid;
             }
+            $iterator->next();
          }
 
          echo $header_begin.$header_bottom.$header_end;
          echo "</table>";
+         echo "</div>";
          if ($canedit) {
             $massiveactionparams['ontop'] =false;
             Html::showMassiveActions($massiveactionparams);
@@ -1093,7 +1069,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
          echo "<input type='hidden' name='items_id' value='$items_id'>";
          Software::dropdownLicenseToInstall("softwarelicenses_id", $entities_id);
          echo "</td><td width='20%'>";
-         echo "<input type='submit' name='add' value=\"" ._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"" ._sx('button', 'Add')."\" class='btn btn-primary'>";
          echo "</td></tr>\n";
          echo "</table></div>\n";
          Html::closeForm();
@@ -1220,24 +1196,6 @@ class Item_SoftwareVersion extends CommonDBRelation {
     * Display a installed software for a category
     *
     * @param array   $data         data used to display
-    * @param integer $computers_id ID of the computer
-    * @param boolean $withtemplate template case of the view process
-    * @param boolean $canedit      user can edit software ?
-    * @param boolean $display      display and calculte if true or juste calculate
-    *
-    * @return integer[] Found licenses ids
-   **/
-   private static function softsByCategory($data, $computers_id, $withtemplate, $canedit,
-                                           $display) {
-      Toolbox::deprecated('Use softwareByCategory()');
-      return self::softwareByCategory($data, 'Computer', $computers_id, $withtemplate, $canedit, $display);
-   }
-
-
-   /**
-    * Display a installed software for a category
-    *
-    * @param array   $data         data used to display
     * @param string  $itemtype     Type of the item
     * @param integer $items_id     ID of the item
     * @param boolean $withtemplate template case of the view process
@@ -1308,7 +1266,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
       ]);
 
       $licids = [];
-      while ($licdata = $iterator->next()) {
+      foreach ($iterator as $licdata) {
          $licids[]  = $licdata['id'];
          $licserial = $licdata['serial'];
 
@@ -1352,23 +1310,6 @@ class Item_SoftwareVersion extends CommonDBRelation {
       }
 
       return $licids;
-   }
-
-
-   /**
-    * Display a software for a License (not installed)
-    *
-    * @param array   $data         data used to display
-    * @param integer $computers_id ID of the computer
-    * @param boolean $withtemplate template case of the view process
-    * @param boolean $canedit      user can edit software ?
-    *
-    * @return void
-   */
-   private static function displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit) {
-
-      Toolbox::deprecated('Use displaySoftwareByLicense()');
-      return self::displaySoftwareByLicense($data, $withtemplate, $canedit);
    }
 
 
@@ -1445,54 +1386,6 @@ class Item_SoftwareVersion extends CommonDBRelation {
             'items_id'              => $items_id,
             'softwareversions_id'   => $softwareversions_id
          ]);
-      }
-   }
-
-
-   /**
-    * Duplicate all software from a computer template to its clone
-    *
-    * @deprecated 9.5
-    *
-    * @param integer $oldid ID of the computer to clone
-    * @param integer $newid ID of the computer cloned
-   **/
-   static function cloneComputer($oldid, $newid) {
-
-      Toolbox::deprecated('Use clone');
-      return self::cloneItem('Computer', $oldid, $newid);
-   }
-
-
-   /**
-    * Duplicate all software from a item template to its clone
-    *
-    * @deprecated 9.5
-    *
-    * @param string  $itemtype Itemtype of the item to clone
-    * @param integer $oldid ID of the item to clone
-    * @param integer $newid ID of the item cloned
-   **/
-   static function cloneItem($itemtype, $oldid, $newid) {
-      global $DB;
-
-      Toolbox::deprecated('Use clone');
-      $iterator = $DB->request([
-         'FROM'   => 'glpi_items_softwareversions',
-         'WHERE'  => [
-            'items_id' => $oldid,
-            'itemtype' => $itemtype
-         ]
-      ]);
-
-      while ($data = $iterator->next()) {
-         $csv                  = new self();
-         unset($data['id']);
-         $data['itemtype'] = $itemtype;
-         $data['items_id'] = $newid;
-         $data['_no_history']  = true;
-
-         $csv->add($data);
       }
    }
 
@@ -1580,6 +1473,6 @@ class Item_SoftwareVersion extends CommonDBRelation {
       unset($params['SELECT'], $params['ORDER']);
       $params['COUNT'] = 'cpt';
       $iterator = $DB->request($params);
-      return $iterator->next()['cpt'];
+      return $iterator->current()['cpt'];
    }
 }

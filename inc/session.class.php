@@ -30,7 +30,10 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Cache\CacheManager;
+use Glpi\Cache\I18nCache;
 use Glpi\Event;
+use Glpi\Plugin\Hooks;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -124,6 +127,7 @@ class Session {
                // Default tab
                // $_SESSION['glpi_tab']=1;
                $_SESSION['glpi_tabs']           = [];
+
                $auth->user->computePreferences();
                foreach ($CFG_GLPI['user_pref_field'] as $field) {
                   if ($field == 'language' && isset($_POST['language']) && $_POST['language'] != '') {
@@ -131,6 +135,10 @@ class Session {
                   } else if (isset($auth->user->fields[$field])) {
                      $_SESSION["glpi$field"] = $auth->user->fields[$field];
                   }
+               }
+
+               if (isset($_SESSION['glpidefault_central_tab']) && $_SESSION['glpidefault_central_tab']) {
+                  Session::setActiveTab("central", "Central$". $_SESSION['glpidefault_central_tab']);
                }
                // Do it here : do not reset on each page, cause export issue
                if ($_SESSION["glpilist_limit"] > $CFG_GLPI['list_limit_max']) {
@@ -151,7 +159,7 @@ class Session {
                }
 
                // glpiprofiles -> other available profile with link to the associated entities
-               Plugin::doHook("init_session");
+               Plugin::doHook(Hooks::INIT_SESSION);
 
                self::initEntityProfiles(self::getLoginUserID());
 
@@ -203,7 +211,12 @@ class Session {
    static function start() {
 
       if (session_status() === PHP_SESSION_NONE) {
+         // Force session to use cookies and prevent JS scripts to access to them
+         ini_set('session.cookie_httponly', '1');
+         ini_set('session.use_only_cookies', '1');
+
          session_name("glpi_".md5(realpath(GLPI_ROOT)));
+
          @session_start();
       }
       // Define current time for sync of action timing
@@ -404,7 +417,7 @@ class Session {
             }
          }
          self::loadGroups();
-         Plugin::doHook("change_entity");
+         Plugin::doHook(Hooks::CHANGE_ENTITY);
          return true;
       }
       return false;
@@ -450,7 +463,7 @@ class Session {
                   self::changeActiveEntities("all");
                }
             }
-            Plugin::doHook("change_profile");
+            Plugin::doHook(Hooks::CHANGE_PROFILE);
          }
       }
       // Clean specific datas
@@ -499,7 +512,7 @@ class Session {
       ]);
 
       if (count($iterator)) {
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $key = $data['id'];
             $_SESSION['glpiprofiles'][$key]['name'] = $data['name'];
             $entities_iterator = $DB->request([
@@ -525,7 +538,7 @@ class Session {
                'ORDERBY'   => 'glpi_entities.completename'
             ]);
 
-            while ($data = $entities_iterator->next()) {
+            foreach ($entities_iterator as $data) {
                // Do not override existing entity if define as recursive
                if (!isset($_SESSION['glpiprofiles'][$key]['entities'][$data['eID']])
                   || $data['is_recursive']
@@ -573,7 +586,7 @@ class Session {
          )
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $_SESSION["glpigroups"][] = $data["groups_id"];
       }
    }
@@ -619,7 +632,15 @@ class Session {
       if (isset($CFG_GLPI["languages"][$trytoload][5])) {
          $_SESSION['glpipluralnumber'] = $CFG_GLPI["languages"][$trytoload][5];
       }
-      $TRANSLATE = new Laminas\I18n\Translator\Translator;
+
+      // Redefine Translator caching logic to be able to drop laminas/laminas-cache dependency.
+      $i18n_cache = !defined('TU_USER') ? new I18nCache((new CacheManager())->getTranslationsCacheInstance()) : null;
+      $TRANSLATE = new class ($i18n_cache) extends Laminas\I18n\Translator\Translator {
+         public function __construct(?I18nCache $cache) {
+            $this->cache = $cache;
+         }
+      };
+
       $TRANSLATE->setLocale($trytoload);
 
       if (class_exists('Locale')) {
@@ -630,14 +651,9 @@ class Session {
          Toolbox::logWarning('Missing required intl PHP extension');
       }
 
-      $cache = Config::getCache('cache_trans', 'core', false);
-      if ($cache !== false && !defined('TU_USER')) {
-         $TRANSLATE->setCache($cache);
-      }
-
       $TRANSLATE->addTranslationFile('gettext', GLPI_I18N_DIR.$newfile, 'glpi', $trytoload);
 
-      $core_folders = scandir(GLPI_LOCAL_I18N_DIR);
+      $core_folders = is_dir(GLPI_LOCAL_I18N_DIR) ? scandir(GLPI_LOCAL_I18N_DIR) : [];
       $core_folders = array_filter($core_folders, function($dir) {
          if (!is_dir(GLPI_LOCAL_I18N_DIR . "/$dir")) {
             return false;
@@ -736,11 +752,21 @@ class Session {
    **/
    static function isCron() {
 
-      return (isset($_SESSION["glpicronuserrunning"])
+      return (self::isInventory() || isset($_SESSION["glpicronuserrunning"])
               && (isCommandLine()
                   || strpos($_SERVER['PHP_SELF'], '/cron.php')));
    }
 
+   /**
+    * Detect inventory mode
+    *
+    * @return boolean
+   **/
+   static function isInventory(): bool {
+
+      return (isset($_SESSION["glpiinventoryuserrunning"])
+              && (strpos($_SERVER['PHP_SELF'], '/inventory.php') || defined('TU_USER')));
+   }
 
    /**
     * Get the Login User ID or return cron user ID for cron jobs
@@ -751,10 +777,13 @@ class Session {
     *                          int for user id, string for cron jobs
    **/
    static function getLoginUserID($force_human = true) {
+      if (self::isInventory()) { // Check inventory
+         return $_SESSION["glpiinventoryuserrunning"];
+      }
 
       if (!$force_human
           && self::isCron()) { // Check cron jobs
-         return $_SESSION["glpicronuserrunning"];
+         return $_SESSION["glpicronuserrunning"] ?? $_SESSION['glpiinventoryuserrunning'];
       }
 
       if (isset($_SESSION["glpiID"])) {
@@ -1208,24 +1237,34 @@ class Session {
    /**
     * Get new CSRF token
     *
+    * @param bool $standalone
+    *    Generates a standalone token that will not be shared with other component of current request.
+    *
     * @since 0.83.3
     *
     * @return string
    **/
-   static public function getNewCSRFToken() {
+   static public function getNewCSRFToken(bool $standalone = false) {
       global $CURRENTCSRFTOKEN;
 
-      if (empty($CURRENTCSRFTOKEN)) {
+      $token = $standalone ? '' : $CURRENTCSRFTOKEN;
+
+      if (empty($token)) {
          do {
-            $CURRENTCSRFTOKEN = bin2hex(random_bytes(32));
-         } while ($CURRENTCSRFTOKEN == '');
+            $token = bin2hex(random_bytes(32));
+         } while ($token == '');
       }
 
       if (!isset($_SESSION['glpicsrftokens'])) {
          $_SESSION['glpicsrftokens'] = [];
       }
-      $_SESSION['glpicsrftokens'][$CURRENTCSRFTOKEN] = time() + GLPI_CSRF_EXPIRES;
-      return $CURRENTCSRFTOKEN;
+      $_SESSION['glpicsrftokens'][$token] = time() + GLPI_CSRF_EXPIRES;
+
+      if (!$standalone) {
+         $CURRENTCSRFTOKEN = $token;
+      }
+
+      return $token;
    }
 
 
@@ -1300,6 +1339,12 @@ class Session {
 
       if (GLPI_USE_CSRF_CHECK
           && (!Session::validateCSRF($data))) {
+         // Output JSON if requested by client
+         if (strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false) {
+            http_response_code(403);
+            die(json_encode(["message" => __("The action you have requested is not allowed.")]));
+         }
+
          Html::displayErrorAndDie(__("The action you have requested is not allowed."), true);
       }
    }

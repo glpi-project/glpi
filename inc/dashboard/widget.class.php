@@ -32,14 +32,14 @@
 
 namespace Glpi\Dashboard;
 
-use Mexitek\PHPColors\Color;
-use ScssPhp\ScssPhp\Compiler;
-use Michelf\MarkdownExtra;
-use CommonGLPI;
-use Toolbox;
-use Plugin;
+use Glpi\Toolbox\RichText;
 use Html;
+use Mexitek\PHPColors\Color;
+use Michelf\MarkdownExtra;
+use Plugin;
+use ScssPhp\ScssPhp\Compiler;
 use Search;
+use Toolbox;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -48,7 +48,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Widget class
 **/
-class Widget extends CommonGLPI {
+class Widget {
    static $animation_duration = 1000; // in millseconds
 
 
@@ -157,10 +157,30 @@ class Widget extends CommonGLPI {
             'width'    => 5,
             'height'   => 3,
          ],
+         'hBars' => [
+            'label'    => __("Multiple horizontal bars"),
+            'function' => 'Glpi\\Dashboard\\Widget::multipleHBars',
+            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/hbar.png',
+            'gradient' => true,
+            'limit'    => true,
+            'pointlbl' => true,
+            'width'    => 5,
+            'height'   => 3,
+         ],
          'stackedbars' => [
             'label'    => __("Stacked bars"),
             'function' => 'Glpi\\Dashboard\\Widget::StackedBars',
             'image'    => $CFG_GLPI['root_doc'].'/pics/charts/stacked.png',
+            'gradient' => true,
+            'limit'    => true,
+            'pointlbl' => true,
+            'width'    => 4,
+            'height'   => 3,
+         ],
+         'stackedHBars' => [
+            'label'    => __("Horizontal stacked bars"),
+            'function' => 'Glpi\\Dashboard\\Widget::stackedHBars',
+            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/hstacked.png',
             'gradient' => true,
             'limit'    => true,
             'pointlbl' => true,
@@ -285,6 +305,17 @@ class Widget extends CommonGLPI {
             background-color: {$fg_hover_color};
             border: 1px solid {$fg_hover_border};
          }
+
+         .theme-dark #{$p['id']} {
+            background-color: {$fg_color};
+            color: {$p['color']};
+         }
+
+         .theme-dark #{$p['id']}:hover {
+            background-color: {$fg_hover_color};
+            color: {$fg_color};
+            border: 1px solid {$fg_hover_border};
+         }
       </style>
       <a {$href}
          id="{$p['id']}"
@@ -292,7 +323,7 @@ class Widget extends CommonGLPI {
          title="{$p['alt']}">
          <span class="content">$formatted_number</span>
          <div class="label" title="{$label}">{$label}</div>
-         <i class="main-icon {$p['icon']}" style="color: {$fg_color}"></i>
+         <i class="main-icon {$p['icon']}"></i>
       </a>
 HTML;
 
@@ -423,12 +454,21 @@ HTML;
       $html = <<<HTML
       <style>
          {$palette_style}
+
+         #chart-{$p['rand']} {
+            background-color: {$p['color']};
+            color: {$fg_color};
+         }
+
+         .theme-dark #chart-{$p['rand']} {
+            background-color: {$fg_color};
+            color: {$p['color']};
+         }
       </style>
 
       <div class="card $class"
            id="chart-{$p['rand']}"
-           title="{$p['alt']}"
-           style="background-color: {$p['color']}; color: {$fg_color}">
+           title="{$p['alt']}">
          <div class='scrollable'>
             <div class='table'>
             {$numbers_html}
@@ -490,7 +530,10 @@ HTML;
       array_splice($p['data'], $nb_slices);
 
       $nodata   = isset($p['data']['nodata']) && $p['data']['nodata'];
-      $fg_color = Toolbox::getFgColor($p['color']);
+
+      $fg_color      = Toolbox::getFgColor($p['color']);
+      $dark_bg_color = Toolbox::getFgColor($p['color'], 80);
+      $dark_fg_color = Toolbox::getFgColor($p['color'], 40);
 
       $class = "pie";
       $class.= $p['half'] ? " half": "";
@@ -518,15 +561,30 @@ HTML;
 
       $html = <<<HTML
       <style>
+         #chart-{$p['rand']} {
+            background-color: {$p['color']};
+            color: {$fg_color}
+         }
+
+         .theme-dark #chart-{$p['rand']} {
+            background-color: {$dark_bg_color};
+            color: {$dark_fg_color};
+         }
+
          #chart-{$p['rand']} .ct-label {
             fill: {$fg_color};
             color: {$fg_color};
          }
+
+         .theme-dark #chart-{$p['rand']} .ct-label {
+            fill: {$dark_fg_color};
+            color: {$dark_fg_color};
+         }
+
          {$palette_style}
       </style>
       <div class="card g-chart {$class}"
-           id="chart-{$p['rand']}"
-           style="background-color: {$p['color']}; color: {$fg_color}">
+           id="chart-{$p['rand']}">
          <div class="chart ct-chart">{$no_data_html}</div>
          <span class="main-label">{$p['label']}</span>
          <i class="main-icon {$p['icon']}"></i>
@@ -847,6 +905,32 @@ JAVASCRIPT;
 
 
    /**
+    * Display a widget with a horizontal stacked multiple bars chart
+    * @see self::getBarsGraph for params
+    *
+    * @return string html
+    */
+   public static function stackedHBars(array $params = []): string {
+      return self::StackedBars(array_merge($params, [
+         'horizontal' => true,
+      ]));
+   }
+
+
+   /**
+    * Display a widget with a horizontal multiple bars chart
+    * @see self::getBarsGraph for params
+    *
+    * @return string html
+    */
+   public static function multipleHBars(array $params = []): string {
+      return self::multipleBars(array_merge($params, [
+         'horizontal' => true,
+      ]));
+   }
+
+
+   /**
     * Display a widget with a bars chart
     *
     * @param array $params contains these keys:
@@ -919,8 +1003,11 @@ JAVASCRIPT;
       $json_labels = json_encode($labels);
       $json_series = json_encode($series);
 
-      $fg_color   = Toolbox::getFgColor($p['color']);
-      $line_color = Toolbox::getFgColor($p['color'], 10);
+      $fg_color        = Toolbox::getFgColor($p['color']);
+      $line_color      = Toolbox::getFgColor($p['color'], 10);
+      $dark_bg_color   = Toolbox::getFgColor($p['color'], 80);
+      $dark_fg_color   = Toolbox::getFgColor($p['color'], 40);
+      $dark_line_color = Toolbox::getFgColor($p['color'], 90);
 
       $animation_duration = self::$animation_duration;
 
@@ -956,11 +1043,30 @@ JAVASCRIPT;
 
       $html = <<<HTML
       <style>
+      #chart-{$p['rand']} {
+         background-color: {$p['color']};
+         color: {$fg_color}
+      }
+
+      .theme-dark #chart-{$p['rand']} {
+         background-color: {$dark_bg_color};
+         color: {$dark_fg_color};
+      }
+
       #chart-{$p['rand']} .ct-label {
          color: {$fg_color};
       }
+
+      .theme-dark #chart-{$p['rand']} .ct-label {
+         color: {$dark_fg_color};
+      }
+
       #chart-{$p['rand']} .ct-grid {
          stroke: {$line_color};
+      }
+
+      .theme-dark #chart-{$p['rand']} .ct-grid {
+         stroke: {$dark_line_color};
       }
 
       /** fix chrome resizing height when animating svg (don't know why) **/
@@ -971,8 +1077,7 @@ JAVASCRIPT;
       </style>
 
       <div class="card g-chart $class"
-            id="chart-{$p['rand']}"
-            style="background-color: {$p['color']}; color: {$fg_color}">
+            id="chart-{$p['rand']}">
          <div class="chart ct-chart">$no_data_html</div>
          <span class="main-label">{$p['label']}</span>
          <i class="main-icon {$p['icon']}"></i>
@@ -1149,8 +1254,14 @@ HTML;
                   labelY = data.y2 + 15;
 
                   // don't display label if height too short
-                  if (data.y1 - data.y2 < 15) {
-                     display_labels = false;
+                  if (is_horizontal) {
+                     if (data.x2 - data.x1 < 15) {
+                        display_labels = false;
+                     }
+                  } else {
+                     if (data.y1 - data.y2 < 15) {
+                        display_labels = false;
+                     }
                   }
                }
 
@@ -1330,8 +1441,12 @@ JAVASCRIPT;
       $json_labels = json_encode($labels);
       $json_series = json_encode($series);
 
-      $fg_color   = Toolbox::getFgColor($p['color']);
-      $line_color = Toolbox::getFgColor($p['color'], 10);
+      $fg_color        = Toolbox::getFgColor($p['color']);
+      $line_color      = Toolbox::getFgColor($p['color'], 10);
+      $dark_bg_color   = Toolbox::getFgColor($p['color'], 80);
+      $dark_fg_color   = Toolbox::getFgColor($p['color'], 40);
+      $dark_line_color = Toolbox::getFgColor($p['color'], 90);
+
       $class = "line";
       $class.= $p['area'] ? " area": "";
       $class.= $p['multiple'] ? " multiple": "";
@@ -1372,12 +1487,31 @@ JAVASCRIPT;
       #chart-{$p['rand']} .ct-chart-line {
          min-height: $height;
       }
+
+      #chart-{$p['rand']} {
+         background-color: {$p['color']};
+         color: {$fg_color}
+      }
+
+      .theme-dark #chart-{$p['rand']} {
+         background-color: {$dark_bg_color};
+         color: {$dark_fg_color};
+      }
+
       #chart-{$p['rand']} .ct-label {
          color: {$fg_color};
       }
 
+      .theme-dark #chart-{$p['rand']} .ct-label {
+         color: {$dark_fg_color};
+      }
+
       #chart-{$p['rand']} .ct-grid {
          stroke: {$line_color};
+      }
+
+      .theme-dark #chart-{$p['rand']} .ct-grid {
+         stroke: {$dark_line_color};
       }
 
       #chart-{$p['rand']} .ct-circle {
@@ -1391,8 +1525,7 @@ JAVASCRIPT;
       </style>
 
       <div class="card g-chart $class"
-           id="chart-{$p['rand']}"
-           style="background-color: {$p['color']}; color: {$fg_color}">
+           id="chart-{$p['rand']}">
          <div class="chart ct-chart"></div>
          <span class="main-label">{$p['label']}</span>
          <i class="main-icon {$p['icon']}"></i>
@@ -1683,7 +1816,7 @@ HTML;
 
          $content_size = strlen($entry['content']);
          $content = strlen($entry['content'])
-            ? Toolbox::getHtmlToDisplay($entry['content']).
+            ? RichText::getSafeHtml($entry['content'], true).
               ($content_size > 300
                ? "<p class='read_more'><span class='read_more_button'>...</span></p>"
                : ""
@@ -1843,10 +1976,17 @@ JAVASCRIPT;
       string $css_dom_parent = "",
       bool $revert = true
    ) {
+      global $GLPI_CACHE;
+
       $palette = self::getGradientPalette($bgcolor, $nb_series, $revert);
 
       $series_names  = implode(',', $palette['names']);
       $series_colors = implode(',', $palette['colors']);
+
+      $hash = sha1($series_names.$series_colors);
+      if (($palette_css = $GLPI_CACHE->get($hash)) !== null) {
+         return $palette_css;
+      }
 
       $scss = new Compiler();
       $scss->addImportPath(GLPI_ROOT);
@@ -1855,8 +1995,10 @@ JAVASCRIPT;
          \$ct-series-names: ({$series_names});
          \$ct-series-colors: ({$series_colors});
 
-         @import 'css/chartist/generate';
+         @import 'css/includes/components/chartist/generate';
       }");
+
+      $GLPI_CACHE->set($hash, $palette_css);
 
       return $palette_css;
    }

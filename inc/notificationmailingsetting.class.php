@@ -72,21 +72,21 @@ class NotificationMailingSetting extends NotificationSetting {
       if ($CFG_GLPI['notifications_mailing']) {
          $out .= "<tr class='tab_bg_2'>";
          $out .= "<td><label for='admin_email'>" . __('Administrator email') . "</label></td>";
-         $out .= "<td><input type='text' name='admin_email' id='admin_email' size='40' value='".
+         $out .= "<td><input type='text' class='form-control' name='admin_email' id='admin_email' value='".
                     $CFG_GLPI["admin_email"]."'>";
          if (!NotificationMailing::isUserAddressValid($CFG_GLPI["admin_email"])) {
              $out .= "<br/><span class='red'>&nbsp;".__('Invalid email address')."</span>";
          }
          $out .= "</td>";
          $out .= "<td><label for='admin_email_name'>" . __('Administrator name') . "</label></td>";
-         $out .= "<td><input type='text' name='admin_email_name' id='admin_email_name' size='40' value='" .
+         $out .= "<td><input type='text' class='form-control' name='admin_email_name' id='admin_email_name' value='" .
                     $CFG_GLPI["admin_email_name"] . "'>";
          $out .= " </td></tr>";
 
          $out .= "<tr class='tab_bg_2'>";
          $out .= "<td><label for='from_email'>" . __('From email') . " <i class='pointer fa fa-info' title='" .
             __s('Address to use in from for sent emails.') . "\n" . __s('If not set, main or entity administrator email will be used.')  . "'></i></label></td>";
-         $out .= "<td><input type='text' name='from_email' id='from_email' size='40' value='".
+         $out .= "<td><input type='text' class='form-control' name='from_email' id='from_email' value='".
                     $CFG_GLPI["from_email"]."'>";
          if (!empty($CFG_GLPI['from_email']) &&!NotificationMailing::isUserAddressValid($CFG_GLPI["from_email"])) {
              $out .= "<br/><span class='red'>&nbsp;".__('Invalid email address')."</span>";
@@ -95,14 +95,14 @@ class NotificationMailingSetting extends NotificationSetting {
          $out .= "<td><label for='from_email_name'>" . __('From name') . " <i class='pointer fa fa-info' title='" .
             __s('Name to use in from for sent emails.') . "\n" . __s('If not set, main or entity administrator name will be used.')
             ."'><i></label></td>";
-         $out .= "<td><input type='text' name='from_email_name' id='from_email_name' size='40' value='" .
+         $out .= "<td><input type='text' class='form-control' name='from_email_name' id='from_email_name' value='" .
                     $CFG_GLPI["from_email_name"] . "'>";
          $out .= " </td></tr>";
 
          $out .= "<tr class='tab_bg_2'>";
          $out .= "<td><label for='admin_reply'>" . __('Reply-to address') . " <i class='pointer fa fa-info' title='" .
             __s('Optionnal reply to address.') . "\n" . __s('If not set, main administrator email will be used.') . "'></i></label></td>";
-         $out .= "<td><input type='text' name='admin_reply' id='admin_reply' size='40' value='" .
+         $out .= "<td><input type='text' class='form-control' name='admin_reply' id='admin_reply' value='" .
                     $CFG_GLPI["admin_reply"] . "'>";
          if (!empty($CFG_GLPI['admin_reply'])
              && !NotificationMailing::isUserAddressValid($CFG_GLPI["admin_reply"])) {
@@ -111,14 +111,14 @@ class NotificationMailingSetting extends NotificationSetting {
          $out .= " </td>";
          $out .= "<td><label for='admin_reply_name'>" . __('Reply-to name') . " <i class='pointer fa fa-info' title='" .
             __s('Optionnal reply to name.') . "\n" . __s('If not set, main administrator name will be used.'). "'></i></label></td>";
-         $out .= "<td><input type='text' name='admin_reply_name' id='admin_reply_name' size='40' value='" .
+         $out .= "<td><input type='text' class='form-control' name='admin_reply_name' id='admin_reply_name' value='" .
                     $CFG_GLPI["admin_reply_name"] . "'>";
          $out .= " </td></tr>";
 
          $out .= "<tr class='tab_bg_2'>";
          $out .= "<td><label for='admin_email_noreply'>" . __('No-Reply address') . " <i class='pointer fa fa-info' title='" .
             __s('Optionnal No-Reply address.') . "\n" . __s('If set, it will be used for notifications that doesn\'t expect a reply.') . "'></i></label></td>";
-         $out .= "<td><input type='text' name='admin_email_noreply' id='admin_email_noreply' size='40' value='" .
+         $out .= "<td><input type='text' class='form-control' name='admin_email_noreply' id='admin_email_noreply' value='" .
                     $CFG_GLPI["admin_email_noreply"] . "'>";
          if (!empty($CFG_GLPI['admin_email_noreply'])
              && !NotificationMailing::isUserAddressValid($CFG_GLPI["admin_email_noreply"])) {
@@ -127,7 +127,7 @@ class NotificationMailingSetting extends NotificationSetting {
          $out .= " </td>";
          $out .= "<td><label for='admin_email_noreply_name'>" . __('No-Reply name') . " <i class='pointer fa fa-info' title='" .
             __s('Optionnal No-Reply name.') . "\n" . __s('If not set, main administrator name will be used.'). "'></i></label></td>";
-            $out .= "<td><input type='text' name='admin_email_noreply_name' id='admin_email_noreply_name' size='40' value='" .
+            $out .= "<td><input type='text' class='form-control' name='admin_email_noreply_name' id='admin_email_noreply_name' value='" .
                     $CFG_GLPI["admin_email_noreply_name"] . "'>";
          $out .= " </td></tr>";
          $out .= "</tr>";
@@ -147,7 +147,7 @@ class NotificationMailingSetting extends NotificationSetting {
 
          $out .= "<tr class='tab_bg_2'>";
          $out .= "<td><label for='mailing_signature'>" . __('Email signature') . "</label></td>";
-         $out .= "<td colspan='3'><textarea cols='60' rows='3' name='mailing_signature' id='mailing_signature'>".
+         $out .= "<td colspan='3'><textarea class='form-control' rows='3' name='mailing_signature' id='mailing_signature'>".
                                 $CFG_GLPI["mailing_signature"]."</textarea></td></tr>";
 
          $out .= "<tr class='tab_bg_2'>";
@@ -189,21 +189,16 @@ class NotificationMailingSetting extends NotificationSetting {
          $out .= "</td>";
 
          $out .= "<td><label for='smtp_max_retries'>" . __('Max. delivery retries') . "</label></td>";
-         $out .= "<td><input type='text' name='smtp_max_retries' id='smtp_max_retries' size='5' value='" .
+         $out .= "<td><input type='number' class='form-control' name='smtp_max_retries' id='smtp_max_retries' size='5' value='" .
                        $CFG_GLPI["smtp_max_retries"] . "'></td>";
          $out .= "</tr>";
 
          $out .= "<tr class='tab_bg_2'>";
          $out .= "<td><label for='smtp_max_retries'>" . __('Try to deliver again in (minutes)') . "</label></td>";
-         $out .= "<td>";
-         $out .= Dropdown::showNumber('smtp_retry_time', [
-                     'value'    => $CFG_GLPI["smtp_retry_time"],
-                     'min'      => 0,
-                     'max'      => 60,
-                     'step'     => 1,
-                     'display'  => false,
-                 ]);
-         $out .= "</td><td colspan='2'></td>";
+
+         $out .= "<td><input type='number' class='form-control' name='smtp_retry_time' id='smtp_retry_time' size='5' min='0' max='60' step='1' value='" .
+         $CFG_GLPI["smtp_retry_time"] . "'></td>";
+         $out .= "<td colspan='2'></td>";
 
          $out .= "</table>";
 
@@ -227,21 +222,21 @@ class NotificationMailingSetting extends NotificationSetting {
          $out .= "</tr>";
 
          $out .= "<tr class='tab_bg_2'><td><label for='smtp_host'>" . __('SMTP host') . "</label></td>";
-         $out .= "<td><input type='text' name='smtp_host' id='smtp_host' size='40' value='".$CFG_GLPI["smtp_host"]."'>";
+         $out .= "<td><input type='text' class='form-control' name='smtp_host' id='smtp_host' value='".$CFG_GLPI["smtp_host"]."'>";
          $out.= "</td>";
          //TRANS: SMTP port
          $out .= "<td><label for='smtp_port'>" . _n('Port', 'Ports', 1) . "</label></td>";
-         $out .= "<td><input type='text' name='smtp_port' id='smtp_port' size='5' value='".$CFG_GLPI["smtp_port"]."'>";
+         $out .= "<td><input type='number' class='form-control' name='smtp_port' id='smtp_port' size='5' value='".$CFG_GLPI["smtp_port"]."'>";
          $out .= "</td>";
          $out .= "</tr>";
 
          $out .= "<tr class='tab_bg_2'>";
          $out .= "<td><label for='smtp_username'>" . __('SMTP login (optional)') . "</label></td>";
-         $out .= "<td><input type='text' name='smtp_username' id='smtp_username' size='40' value='" .
+         $out .= "<td><input type='text' class='form-control' name='smtp_username' id='smtp_username' value='" .
                     $CFG_GLPI["smtp_username"] . "'></td>";
 
          $out .= "<td><label for='smtp_passwd'>" . __('SMTP password (optional)') . "</label></td>";
-         $out .= "<td><input type='password' name='smtp_passwd' id='smtp_passwd' size='40' value='' autocomplete='new-password'>";
+         $out .= "<td><input type='password' class='form-control' name='smtp_passwd' id='smtp_passwd' value='' autocomplete='new-password'>";
          $out .= "<br><input type='checkbox' name='_blank_smtp_passwd'i id='_blank_smtp_passwd'>&nbsp;<label for='_blank_smtp_passwd'>".__('Clear') . "</label>";
 
          $out .= "</td></tr>";
@@ -249,7 +244,7 @@ class NotificationMailingSetting extends NotificationSetting {
          $out .= "<tr class='tab_bg_2'>";
          $out .= "<td><label for='smtp_sender'>" . __('Email sender') . " <i class='pointer fa fa-info' title='" .
             __s('May be required for some mails providers.') . "\n" . __s('If not set, main administrator email will be used.') . "'></i></span></label></td>";
-         $out .= "<td colspan='3'</td><input type='text' name='smtp_sender' id='smtp_sender' value='{$CFG_GLPI['smtp_sender']}' /></tr>";
+         $out .= "<td colspan='3'</td><input type='text' class='form-control' name='smtp_sender' id='smtp_sender' value='{$CFG_GLPI['smtp_sender']}' /></tr>";
 
          $out .= "</tr>";
          $out .= "</table>";
@@ -267,6 +262,10 @@ class NotificationMailingSetting extends NotificationSetting {
       echo $out;
       $this->showFormButtons($options);
 
+   }
+
+   static function getIcon() {
+      return "far fa-envelope";
    }
 
 }

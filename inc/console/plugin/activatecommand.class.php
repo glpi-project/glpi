@@ -37,7 +37,6 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Plugin;
-
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -148,7 +147,7 @@ class ActivateCommand extends AbstractPluginCommand {
 
    protected function getDirectoryChoiceQuestion() {
 
-      return __('Which plugin(s) do you want to activate (comma separated values) ?');
+      return __('Which plugin(s) do you want to activate (comma separated values)?');
    }
 
    protected function getDirectoryChoiceChoices() {

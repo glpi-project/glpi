@@ -49,10 +49,10 @@ if (class_exists($_POST["itemtype"])
    $table = getTableForItemType($_POST["itemtype"]);
 
    $joins = [];
-   $name_field = new QueryExpression("'' AS " . $DB->quoteName('npname'));
+   $name_field = new QueryExpression("'' AS " . $DB->quoteName('socketname'));
 
    if ($_POST['instantiation_type'] == 'NetworkPortEthernet') {
-      $name_field = 'glpi_netpoints.name AS npname';
+      $name_field = 'glpi_sockets.name AS socketname';
       $joins = [
          'glpi_networkportethernets'   => [
             'ON'  => [
@@ -60,10 +60,10 @@ if (class_exists($_POST["itemtype"])
                'glpi_networkports'           => 'id'
             ]
          ],
-         'glpi_netpoints'              => [
+         'glpi_sockets'              => [
             'ON'  => [
-               'glpi_networkportethernets'   => 'netpoints_id',
-               'glpi_netpoints'              => 'id'
+               'glpi_networkports'   => 'id',
+               'glpi_sockets'        => 'networkports_id'
             ]
          ]
       ];
@@ -117,7 +117,7 @@ if (class_exists($_POST["itemtype"])
    echo "<br>";
 
    $values = [];
-   while ($data = $iterator->next()) {
+   foreach ($iterator as $data) {
       // Device name + port name
       $output = $output_long = $data['cname'];
 
@@ -128,10 +128,10 @@ if (class_exists($_POST["itemtype"])
       }
 
       // display netpoint (which will be copied)
-      if (!empty($data['npname'])) {
-         $output      = sprintf(__('%1$s - %2$s'), $output, $data['npname']);
+      if (!empty($data['socketname'])) {
+         $output      = sprintf(__('%1$s - %2$s'), $output, $data['socketname']);
          //TRANS: %1$s is a string (device name - port name...), %2$s is network outlet name
-         $output_long = sprintf(__('%1$s - Network outlet %2$s'), $output_long, $data['npname']);
+         $output_long = sprintf(__('%1$s - Network outlet %2$s'), $output_long, $data['socketname']);
       }
       $ID = $data['did'];
 

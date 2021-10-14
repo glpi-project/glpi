@@ -145,10 +145,8 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
                      $tmp['##item.model##']       = '';
 
                      //Object location
-                     if ($item2->getField('locations_id') != NOT_AVAILABLE) {
-                        $tmp['##item.location##']
-                                       = Dropdown::getDropdownName('glpi_locations',
-                                                                   $item2->getField('locations_id'));
+                     if ($item2->isField('locations_id') && $item_loc_id = $item2->getField('locations_id')) {
+                        $tmp['##item.location##'] = Dropdown::getDropdownName('glpi_locations', $item_loc_id);
                      }
 
                      //Object user

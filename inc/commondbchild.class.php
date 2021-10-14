@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Plugin\Hooks;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -452,31 +454,15 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @return void
    **/
    function post_addItem() {
-      global $CFG_GLPI;
-
-      if ((isset($this->input['_no_history']) && $this->input['_no_history'])
-          || !static::$logs_for_parent) {
-         return;
-      }
 
       $item = $this->getItem();
       if ($item === false) {
          return;
       }
 
-      if (in_array(static::class, $CFG_GLPI["infocom_types"], true) && in_array(static::$itemtype, $CFG_GLPI["infocom_types"], true)) {
-         // inherit infocom
-         $infocoms = Infocom::getItemsAssociatedTo(static::$itemtype::getType(), $this->fields[static::$itemtype::getForeignKeyField()]);
-         if (count($infocoms)) {
-            $infocom = reset($infocoms);
-            $infocom->clone([
-               'itemtype'  => self::getType(),
-               'items_id'  => $this->getID()
-            ]);
-         }
-      }
-
-      if ($item->dohistory) {
+      if ($item->dohistory
+          && !(isset($this->input['_no_history']) && $this->input['_no_history'])
+          && static::$logs_for_parent) {
          $changes = [
             '0',
             '',
@@ -485,6 +471,8 @@ abstract class CommonDBChild extends CommonDBConnexity {
          Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
                       static::$log_history_add);
       }
+
+      parent::post_addItem();
    }
 
 
@@ -499,54 +487,54 @@ abstract class CommonDBChild extends CommonDBConnexity {
    **/
    function post_updateItem($history = 1) {
 
-      if ((isset($this->input['_no_history']) && $this->input['_no_history'])
-          || !static::$logs_for_parent) {
-         return;
-      }
+      if (!((isset($this->input['_no_history']) && $this->input['_no_history']))
+          && static::$logs_for_parent) {
+         $items_for_log = $this->getItemsForLog(static::$itemtype, static::$items_id);
 
-      $items_for_log = $this->getItemsForLog(static::$itemtype, static::$items_id);
-
-      // Whatever case : we log the changes
-      $oldvalues = $this->oldvalues;
-      unset($oldvalues[static::$itemtype]);
-      unset($oldvalues[static::$items_id]);
-      $item      = $items_for_log['new'];
-      if (($item !== false)
-          && $item->dohistory) {
-         foreach (array_keys($oldvalues) as $field) {
-            $changes = $this->getHistoryChangeWhenUpdateField($field);
-            if ((!is_array($changes)) || (count($changes) != 3)) {
-               continue;
+         // Whatever case : we log the changes
+         $oldvalues = $this->oldvalues;
+         unset($oldvalues[static::$itemtype]);
+         unset($oldvalues[static::$items_id]);
+         $item      = $items_for_log['new'];
+         if (($item !== false)
+             && $item->dohistory) {
+            foreach (array_keys($oldvalues) as $field) {
+               $changes = $this->getHistoryChangeWhenUpdateField($field);
+               if ((!is_array($changes)) || (count($changes) != 3)) {
+                  continue;
+               }
+               Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
+                            static::$log_history_update);
             }
-            Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
-                         static::$log_history_update);
+         }
+
+         if (isset($items_for_log['previous'])) {
+            // Have updated the connexity relation
+
+            $prevItem = $items_for_log['previous'];
+            $newItem  = $items_for_log['new'];
+
+            if (($prevItem !== false)
+                && $prevItem->dohistory) {
+               $changes[0] = '0';
+               $changes[1] = addslashes($this->getHistoryNameForItem($prevItem, 'update item previous'));
+               $changes[2] = '';
+               Log::history($prevItem->getID(), $prevItem->getType(), $changes, $this->getType(),
+                            static::$log_history_delete);
+            }
+
+            if (($newItem !== false)
+                && $newItem->dohistory) {
+               $changes[0] = '0';
+               $changes[1] = '';
+               $changes[2] = addslashes($this->getHistoryNameForItem($newItem, 'update item next'));
+               Log::history($newItem->getID(), $newItem->getType(), $changes, $this->getType(),
+                            static::$log_history_add);
+            }
          }
       }
 
-      if (isset($items_for_log['previous'])) {
-         // Have updated the connexity relation
-
-         $prevItem = $items_for_log['previous'];
-         $newItem  = $items_for_log['new'];
-
-         if (($prevItem !== false)
-             && $prevItem->dohistory) {
-            $changes[0] = '0';
-            $changes[1] = addslashes($this->getHistoryNameForItem($prevItem, 'update item previous'));
-            $changes[2] = '';
-            Log::history($prevItem->getID(), $prevItem->getType(), $changes, $this->getType(),
-                         static::$log_history_delete);
-         }
-
-         if (($newItem !== false)
-             && $newItem->dohistory) {
-            $changes[0] = '0';
-            $changes[1] = '';
-            $changes[2] = addslashes($this->getHistoryNameForItem($newItem, 'update item next'));
-            Log::history($newItem->getID(), $newItem->getType(), $changes, $this->getType(),
-                         static::$log_history_add);
-         }
-      }
+      parent::post_updateItem($history);
    }
 
    /**
@@ -687,7 +675,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
       $field_name = $field_name."[$id]";
       if ($canedit) {
-         echo "<input type='text' size='40' name='$field_name' value='$value'>";
+         echo "<input type='text' size='40' name='$field_name' value='$value' class='form-select'>";
       } else {
          echo "<input type='hidden' name='$field_name' value='$value'>$value";
       }
@@ -820,7 +808,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       $iterator = $DB->request($query);
       $count = 0;
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
 
          $current_item->fields = $data;
 
@@ -880,5 +868,22 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
 
       throw new \RuntimeException('Cannot guess field for itemtype ' . $itemtype . ' on ' . static::class);
+   }
+
+   protected function autoinventoryInformation() {
+      echo "<td>".__('Automatic inventory')."</td>";
+      echo "<td>";
+      if ($this->fields['id'] && $this->fields['is_dynamic']) {
+         ob_start();
+         Plugin::doHook(Hooks::AUTOINVENTORY_INFORMATION, $this);
+         $info = ob_get_clean();
+         if (empty($info)) {
+            $info = __('Yes');
+         }
+         echo $info;
+      } else {
+         echo __('No');
+      }
+      echo "</td>";
    }
 }

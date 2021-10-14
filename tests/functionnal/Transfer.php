@@ -32,8 +32,10 @@
 
 namespace tests\units;
 
+use Certificate;
+use Certificate_Item;
 use Computer;
-use \DbTestCase;
+use DbTestCase;
 use Item_SoftwareVersion;
 use Software;
 use SoftwareVersion;
@@ -96,7 +98,16 @@ class Transfer extends DbTestCase {
             'Consumable',
             'Infocom',
             'ComputerAntivirus',
-            'TicketRecurrent'
+            'TicketRecurrent',
+            'Agent',
+            'Printer_CartridgeInfo',
+            'PrinterLog',
+            'USBVendor',
+            'PCIVendor',
+            'PendingReasonCron',
+            'Database',
+            'Socket',
+            'Netpoint'
          ]
       );
 
@@ -160,12 +171,6 @@ class Transfer extends DbTestCase {
 
          ++$count;
       }
-      $this->dump(
-         sprintf(
-            '%1$s itemtypes tested',
-            $count
-         )
-      );
    }
 
    public function testDomainTransfer() {
@@ -274,7 +279,7 @@ class Transfer extends DbTestCase {
          $this->integer($computers_id)->isGreaterThan(0);
       }
 
-      // Create test softwares
+      // Create test software
       $softwares_to_create = [
          'test_transfer_software_1',
          'test_transfer_software_2',
@@ -392,6 +397,126 @@ class Transfer extends DbTestCase {
             ]);
             $found_ids = array_column($data, 'id');
             $this->array($found_ids)->isEqualTo($expected_softwares_after_transfer[$itemtype][$id]);
+         }
+      }
+   }
+
+
+   protected function testKeepCertificateOptionProvider(): array {
+      $test_entity = getItemByTypeName('Entity', '_test_root_entity', true);
+
+      // Create test computers
+      $computers_to_create = [
+         'test_transfer_pc_1',
+         'test_transfer_pc_2',
+         'test_transfer_pc_3',
+         'test_transfer_pc_4',
+      ];
+      foreach ($computers_to_create as $computer_name) {
+         $computer = new Computer();
+         $computers_id = $computer->add([
+            'name'        => $computer_name,
+            'entities_id' => $test_entity,
+         ]);
+         $this->integer($computers_id)->isGreaterThan(0);
+      }
+
+      // Create test certificates
+      $certificates_to_create = [
+         'test_transfer_certificate_1',
+         'test_transfer_certificate_2',
+         'test_transfer_certificate_3',
+         'test_transfer_certificate_4',
+      ];
+      foreach ($certificates_to_create as $certificate_name) {
+         $certificate = new Certificate();
+         $certificates_id = $certificate->add([
+            'name'        => $certificate_name,
+            'entities_id' => $test_entity,
+         ]);
+         $this->integer($certificates_id)->isGreaterThan(0);
+      }
+
+      // Link certificates and computers
+      $certificate_item_ids = [];
+      $certificate_item_to_create = [
+         'test_transfer_pc_1' => 'test_transfer_certificate_1',
+         'test_transfer_pc_2' => 'test_transfer_certificate_2',
+         'test_transfer_pc_3' => 'test_transfer_certificate_3',
+         'test_transfer_pc_4' => 'test_transfer_certificate_4',
+      ];
+      foreach ($certificate_item_to_create as $computer_name => $certificate) {
+         $certificate_item = new Certificate_Item();
+         $certificate_items_id = $certificate_item->add([
+            'items_id'     => getItemByTypeName('Computer', $computer_name, true),
+            'itemtype'     => 'Computer',
+            'certificates_id' => getItemByTypeName('Certificate', $certificate, true)
+         ]);
+         $this->integer($certificate_items_id)->isGreaterThan(0);
+         $certificate_item_ids[] = $certificate_items_id;
+      }
+
+      return [
+         [
+            'items' => [
+               'Computer' => [
+                  getItemByTypeName('Computer', 'test_transfer_pc_1', true),
+                  getItemByTypeName('Computer', 'test_transfer_pc_2', true),
+               ]
+            ],
+            'entities_id_destination' => $test_entity,
+            'transfer_options'        => ['keep_certificate' => 1],
+            'expected_certificates_after_transfer' => [
+               'Computer' => [
+                  getItemByTypeName('Computer', 'test_transfer_pc_1', true) => [
+                     $certificate_item_ids[0]
+                  ],
+                  getItemByTypeName('Computer', 'test_transfer_pc_2', true) => [
+                     $certificate_item_ids[1]
+                  ],
+               ]
+            ]
+         ],
+         [
+            'items' => [
+               'Computer' => [
+                  getItemByTypeName('Computer', 'test_transfer_pc_3', true),
+                  getItemByTypeName('Computer', 'test_transfer_pc_4', true),
+               ]
+            ],
+            'entities_id_destination' => $test_entity,
+            'transfer_options'        => ['keep_certificate' => 0],
+            'expected_certificates_after_transfer' => [
+               'Computer' => [
+                  getItemByTypeName('Computer', 'test_transfer_pc_3', true) => [],
+                  getItemByTypeName('Computer', 'test_transfer_pc_4', true) => [],
+               ]
+            ]
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider testKeepCertificateOptionProvider
+    */
+   public function testKeepCertificateOption(
+      array $items,
+      int $entities_id_destination,
+      array $transfer_options,
+      array $expected_certificates_after_transfer
+   ): void {
+      $tranfer = new \Transfer();
+      $tranfer->moveItems($items, $entities_id_destination, $transfer_options);
+
+      foreach ($items as $itemtype => $ids) {
+         foreach ($ids as $id) {
+            $certificate_item = new Certificate_Item();
+            $data = $certificate_item->find([
+               'items_id' => $id,
+               'itemtype' => $itemtype
+            ]);
+            $found_ids = array_column($data, 'id');
+            $this->array($found_ids)->isEqualTo($expected_certificates_after_transfer[$itemtype][$id]);
          }
       }
    }

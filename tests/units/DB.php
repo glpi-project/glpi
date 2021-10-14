@@ -160,6 +160,7 @@ class DB extends \GLPITestCase {
             ], [
                'id'  => 1
             ],
+            [],
             'UPDATE `table` SET `field` = \'value\', `other` = \'doe\' WHERE `id` = \'1\''
          ], [
             'table', [
@@ -167,6 +168,7 @@ class DB extends \GLPITestCase {
             ], [
                'id'  => [1, 2]
             ],
+            [],
             'UPDATE `table` SET `field` = \'value\' WHERE `id` IN (\'1\', \'2\')'
          ], [
             'table', [
@@ -174,6 +176,7 @@ class DB extends \GLPITestCase {
             ], [
                'NOT'  => ['id' => [1, 2]]
             ],
+            [],
             'UPDATE `table` SET `field` = \'value\' WHERE  NOT (`id` IN (\'1\', \'2\'))'
          ], [
             'table', [
@@ -181,6 +184,7 @@ class DB extends \GLPITestCase {
             ], [
                'NOT' => ['id' => [new \QueryParam(), new \QueryParam()]]
             ],
+            [],
             'UPDATE `table` SET `field` = ? WHERE  NOT (`id` IN (?, ?))'
          ], [
             'table', [
@@ -188,6 +192,7 @@ class DB extends \GLPITestCase {
             ], [
                'NOT' => ['id' => [new \QueryParam('idone'), new \QueryParam('idtwo')]]
             ],
+            [],
             'UPDATE `table` SET `field` = :field WHERE  NOT (`id` IN (:idone, :idtwo))'
          ], [
             'table', [
@@ -195,7 +200,42 @@ class DB extends \GLPITestCase {
             ], [
                'id'  => [1, 2]
             ],
+            [],
             'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')'
+         ], [
+            'table', [
+               'field'  => new \QueryExpression(\DB::quoteName('field') . ' + 1')
+            ], [
+               'id'  => [1, 2]
+            ],
+            [],
+            'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')'
+         ], [
+            'table', [
+               'field'  => 'value'
+            ], [
+               'id'  => [1, 2]
+            ],
+            [
+               'LEFT JOIN' => [
+                  'another_table' => [
+                     'ON' => [
+                        'table'         => 'foreign_id',
+                        'another_table' => 'id'
+                     ]
+                  ],
+                  'table_3' => [
+                     'ON' => [
+                        'another_table' => 'some_id',
+                        'table_3'       => 'id'
+                     ]
+                  ]
+               ]
+            ],
+            'UPDATE `table`'
+            . ' LEFT JOIN `another_table` ON (`table`.`foreign_id` = `another_table`.`id`)'
+            . ' LEFT JOIN `table_3` ON (`another_table`.`some_id` = `table_3`.`id`)'
+            . ' SET `field` = \'value\' WHERE `id` IN (\'1\', \'2\')'
          ]
       ];
    }
@@ -203,11 +243,11 @@ class DB extends \GLPITestCase {
    /**
     * @dataProvider dataUpdate
     */
-   public function testBuildUpdate($table, $values, $where, $expected) {
+   public function testBuildUpdate($table, $values, $where, array $joins, $expected) {
        $this
          ->if($this->newTestedInstance)
          ->then
-            ->string($this->testedInstance->buildUpdate($table, $values, $where))->isIdenticalTo($expected);
+            ->string($this->testedInstance->buildUpdate($table, $values, $where, $joins))->isIdenticalTo($expected);
    }
 
    public function testBuildUpdateWException() {
@@ -227,39 +267,68 @@ class DB extends \GLPITestCase {
             'table', [
                'id'  => 1
             ],
+            [],
             'DELETE `table` FROM `table` WHERE `id` = \'1\''
          ], [
             'table', [
                'id'  => [1, 2]
             ],
+            [],
             'DELETE `table` FROM `table` WHERE `id` IN (\'1\', \'2\')'
          ], [
             'table', [
                'NOT'  => ['id' => [1, 2]]
             ],
+            [],
             'DELETE `table` FROM `table` WHERE  NOT (`id` IN (\'1\', \'2\'))'
          ], [
             'table', [
                'NOT'  => ['id' => [new \QueryParam(), new \QueryParam()]]
             ],
+            [],
             'DELETE `table` FROM `table` WHERE  NOT (`id` IN (?, ?))'
          ], [
             'table', [
                'NOT'  => ['id' => [new \QueryParam('idone'), new \QueryParam('idtwo')]]
             ],
+            [],
             'DELETE `table` FROM `table` WHERE  NOT (`id` IN (:idone, :idtwo))'
-         ]
+         ], [
+            'table', [
+               'id'  => 1
+            ],
+            [
+               'LEFT JOIN' => [
+                  'another_table' => [
+                     'ON' => [
+                        'table'         => 'foreign_id',
+                        'another_table' => 'id'
+                     ]
+                  ],
+                  'table_3' => [
+                     'ON' => [
+                        'another_table' => 'some_id',
+                        'table_3'       => 'id'
+                     ]
+                  ]
+               ]
+            ],
+            'DELETE `table` FROM `table`'
+            . ' LEFT JOIN `another_table` ON (`table`.`foreign_id` = `another_table`.`id`)'
+            . ' LEFT JOIN `table_3` ON (`another_table`.`some_id` = `table_3`.`id`)'
+            . ' WHERE `id` = \'1\''
+         ],
       ];
    }
 
    /**
     * @dataProvider dataDelete
     */
-   public function testBuildDelete($table, $where, $expected) {
+   public function testBuildDelete($table, $where, array $joins, $expected) {
        $this
          ->if($this->newTestedInstance)
          ->then
-            ->string($this->testedInstance->buildDelete($table, $where))->isIdenticalTo($expected);
+            ->string($this->testedInstance->buildDelete($table, $where, $joins))->isIdenticalTo($expected);
    }
 
    public function testBuildDeleteWException() {
@@ -297,7 +366,7 @@ class DB extends \GLPITestCase {
       $this->integer(count($list))->isGreaterThan(200);
 
       //check if each table has a corresponding itemtype
-      while ($line = $list->next()) {
+      foreach ($list as $line) {
          $this->array($line)
             ->hasSize(1);
          $table = $line['TABLE_NAME'];
@@ -306,6 +375,7 @@ class DB extends \GLPITestCase {
             continue;
          }
          $type = $dbu->getItemTypeForTable($table);
+         $this->string($type)->isNotEqualTo('UNKNOWN', "$table does not have corresponding item");
 
          $this->string($type)->isNotEqualTo('UNKNOWN', 'Cannot find type for table ' . $table);
          $this->object($item = $dbu->getItemForItemtype($type))->isInstanceOf('CommonDBTM', $table);
@@ -369,5 +439,93 @@ OTHER EXPRESSION;"
          ->if($this->newTestedInstance)
          ->then
             ->string($this->testedInstance->removeSqlRemarks($sql))->isIdenticalTo($expected);
+   }
+
+   public function testCollationWarnings() {
+      $db = new \mock\DB();
+
+      $create_query_template = <<<SQL
+         CREATE TABLE `%s` (
+            `id` int NOT NULL AUTO_INCREMENT,
+            `itemtype` varchar(100) NOT NULL,
+            `items_id` int NOT NULL DEFAULT '0',
+            PRIMARY KEY (`id`)
+         ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = %s COLLATE = %s
+SQL;
+      $drop_query_template = 'DROP TABLE `%s`';
+
+      $db->use_utf8mb4 = false;
+
+      $this->when(
+         function () use ($db, $create_query_template, $drop_query_template) {
+            $table = sprintf('glpitests_%s', uniqid());
+            $db->query(sprintf($create_query_template, $table, 'utf8', 'utf8_unicode_ci'));
+            $db->query(sprintf($drop_query_template, $table));
+         }
+      )->error()->notExists();
+
+      $this->when(
+         function () use ($db, $create_query_template, $drop_query_template) {
+            $table = sprintf('glpitests_%s', uniqid());
+            $db->query(sprintf($create_query_template, $table, 'utf8mb4', 'utf8mb4_unicode_ci'));
+            $db->query(sprintf($drop_query_template, $table));
+         }
+      )->error()
+         ->withType(E_USER_WARNING)
+         ->withMessage('Usage of "utf8mb4" charset/collation detected, should be "utf8"')
+            ->exists();
+
+      $db->use_utf8mb4 = true;
+      $db->log_deprecation_warnings = false;
+
+      $this->when(
+         function () use ($db, $create_query_template, $drop_query_template) {
+            $table = sprintf('glpitests_%s', uniqid());
+            $db->query(sprintf($create_query_template, $table, 'utf8', 'utf8_unicode_ci'));
+            $db->query(sprintf($drop_query_template, $table));
+         }
+      )->error()
+         ->withType(E_USER_WARNING)
+         ->withMessage('Usage of "utf8" charset/collation detected, should be "utf8mb4"')
+            ->exists();
+
+      $this->when(
+         function () use ($db, $create_query_template, $drop_query_template) {
+            $table = sprintf('glpitests_%s', uniqid());
+            $db->query(sprintf($create_query_template, $table, 'utf8mb4', 'utf8mb4_unicode_ci'));
+            $db->query(sprintf($drop_query_template, $table));
+         }
+      )->error()->notExists();
+   }
+
+   public function testSavepoints() {
+      global $DB;
+
+      $DB->beginTransaction();
+
+      $computer = new \Computer();
+      $DB->setSavepoint('save0', false);
+      $computers_id_0 = $computer->add([
+         'name'        => 'computer0',
+         'entities_id' => 0
+      ]);
+      $this->integer($computers_id_0)->isGreaterThan(0);
+      $DB->setSavepoint('save1', false);
+      $computers_id_1 = $computer->add([
+         'name'        => 'computer1',
+         'entities_id' => 0
+      ]);
+      $this->integer($computers_id_1)->isGreaterThan(0);
+      $this->boolean($computer->getFromDB($computers_id_1))->isTrue();
+
+      $DB->rollBack('save1');
+      $this->boolean($computer->getFromDB($computers_id_1))->isFalse();
+      $this->boolean($computer->getFromDB($computers_id_0))->isTrue();
+
+      $DB->rollBack('save0');
+      $this->boolean($computer->getFromDB($computers_id_1))->isFalse();
+      $this->boolean($computer->getFromDB($computers_id_0))->isFalse();
+
+      $DB->rollBack();
    }
 }

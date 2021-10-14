@@ -30,6 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Toolbox\Sanitizer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -65,7 +68,8 @@ final class DbUtils {
     * @return boolean
     */
    public function isForeignKeyField($field) {
-      return preg_match("/._id$/", $field) || preg_match("/._id_/", $field);
+      //check empty, then strpos, then regexp; for performances
+      return !empty($field) && strpos($field, '_id', 1) !== false && preg_match("/._id(_.+)?$/", $field);
    }
 
 
@@ -143,6 +147,7 @@ final class DbUtils {
       $rules = [
          //'plural'           => 'singular'
          'pdus$'              => 'pdu', // special case for acronym pdu (to avoid us rule)
+         'metrics$'           => 'metrics',// Special case
          'ches$'              => 'ch',
          'ch$'                => 'ch',
          'shes$'              => 'sh',
@@ -363,7 +368,7 @@ final class DbUtils {
       }
       $condition['COUNT'] = 'cpt';
 
-      $row = $DB->request($table, $condition)->next();
+      $row = $DB->request($table, $condition)->current();
       return ($row ? (int)$row['cpt'] : 0);
    }
 
@@ -471,7 +476,7 @@ final class DbUtils {
 
       $iterator = $DB->request($table, $criteria);
 
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $data[$row['id']] = $row;
       }
 
@@ -713,12 +718,10 @@ final class DbUtils {
       $ckey = 'sons_cache_' . $table . '_' . $IDf;
       $sons = false;
 
-      if (Toolbox::useCache()) {
-         if ($GLPI_CACHE->has($ckey)) {
-            $sons = $GLPI_CACHE->get($ckey);
-            if ($sons !== null) {
-               return $sons;
-            }
+      if ($GLPI_CACHE->has($ckey)) {
+         $sons = $GLPI_CACHE->get($ckey);
+         if ($sons !== null) {
+            return $sons;
          }
       }
 
@@ -735,7 +738,7 @@ final class DbUtils {
          ]);
 
          if (count($iterator) > 0) {
-            $db_sons = trim($iterator->next()['sons_cache']);
+            $db_sons = trim($iterator->current()['sons_cache']);
             if (!empty($db_sons)) {
                $sons = $this->importArrayFromDB($db_sons, true);
             }
@@ -756,7 +759,7 @@ final class DbUtils {
          ]);
 
          if (count($iterator) > 0) {
-            while ($row = $iterator->next()) {
+            foreach ($iterator as $row) {
                $sons[$row['id']]    = $row['id'];
                $found[$row['id']]   = $row['id'];
             }
@@ -776,7 +779,7 @@ final class DbUtils {
             $found = [];
 
             if (count($iterator) > 0) {
-               while ($row = $iterator->next()) {
+               foreach ($iterator as $row) {
                   if (!isset($sons[$row['id']])) {
                      $sons[$row['id']]    = $row['id'];
                      $found[$row['id']]   = $row['id'];
@@ -799,9 +802,7 @@ final class DbUtils {
          }
       }
 
-      if (Toolbox::useCache()) {
-         $GLPI_CACHE->set($ckey, $sons);
-      }
+      $GLPI_CACHE->set($ckey, $sons);
 
       return $sons;
    }
@@ -825,12 +826,10 @@ final class DbUtils {
       }
       $ancestors = [];
 
-      if (Toolbox::useCache()) {
-         if ($GLPI_CACHE->has($ckey)) {
-            $ancestors = $GLPI_CACHE->get($ckey);
-            if ($ancestors !== null) {
-               return $ancestors;
-            }
+      if ($GLPI_CACHE->has($ckey)) {
+         $ancestors = $GLPI_CACHE->get($ckey);
+         if ($ancestors !== null) {
+            return $ancestors;
          }
       }
 
@@ -849,7 +848,7 @@ final class DbUtils {
             'WHERE'  => ['id' => $items_id]
          ]);
 
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             if ($row['id'] > 0) {
                $rancestors = $row['ancestors_cache'];
                $parent     = $row[$parentIDfield];
@@ -898,7 +897,7 @@ final class DbUtils {
                ]);
 
                if (count($iterator) > 0) {
-                  $result = $iterator->next();
+                  $result = $iterator->current();
                   $IDf = $result[$parentIDfield];
                } else {
                   $IDf = 0;
@@ -914,9 +913,7 @@ final class DbUtils {
          }
       }
 
-      if (Toolbox::useCache()) {
-         $GLPI_CACHE->set($ckey, $ancestors);
-      }
+      $GLPI_CACHE->set($ckey, $ancestors);
 
       return $ancestors;
    }
@@ -1005,7 +1002,7 @@ final class DbUtils {
          'WHERE'  => ["$table.id" => $ID]
       ] + $JOIN;
       $iterator = $DB->request($criteria);
-      $result = $iterator->next();
+      $result = $iterator->current();
 
       if (count($iterator) == 1) {
          $transname = $result['transname'];
@@ -1042,12 +1039,13 @@ final class DbUtils {
     * @param boolean $withcomment 1 if you want to give the array with the comments (false by default)
     * @param boolean $translate   (true by default)
     * @param boolean $tooltip     (true by default) returns a tooltip, else returns only 'comment'
+    * @param string  $default     default value returned when item not exists
     *
     * @return string completename of the element
     *
     * @see DbUtils::getTreeLeafValueName
     */
-   public function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true) {
+   public function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true, string $default = '&nbsp;') {
       global $DB;
 
       $name    = "";
@@ -1116,7 +1114,7 @@ final class DbUtils {
       }
 
       $iterator = $DB->request($criteria);
-      $result = $iterator->next();
+      $result = $iterator->current();
 
       if (count($iterator) == 1) {
          $transname = $result['transname'];
@@ -1129,7 +1127,7 @@ final class DbUtils {
          // Separator is not encoded in DB, and it could not be changed as this is mandatory to be able to split tree
          // correctly even if some tree elements are containing ">" char in their name (this one will be encoded).
          $separator = ' > ';
-         $name = implode(Toolbox::clean_cross_side_scripting_deep($separator), explode($separator, $name));
+         $name = implode(Sanitizer::sanitize($separator), explode($separator, $name));
 
          if ($tooltip) {
             $comment  = sprintf(__('%1$s: %2$s')."<br>",
@@ -1172,7 +1170,7 @@ final class DbUtils {
       }
 
       if (empty($name)) {
-         $name = "&nbsp;";
+         $name = $default;
       }
 
       if ($withcomment) {
@@ -1209,7 +1207,7 @@ final class DbUtils {
       $name = "";
 
       if (count($iterator) > 0) {
-         $row      = $iterator->next();
+         $row      = $iterator->current();
          $parentID = $row[$parentIDfield];
 
          if ($wholename == "") {
@@ -1245,13 +1243,12 @@ final class DbUtils {
 
       // First request init the  variables
       $iterator = $DB->request([
-         $table, [
-            'WHERE'  => [$parentIDfield => $IDf],
-            'ORDER'  => 'name'
-         ]
+         'FROM'   => $table,
+         'WHERE'  => [$parentIDfield => $IDf],
+         'ORDER'  => 'name'
       ]);
 
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $id_found[$row['id']]['parent'] = $IDf;
          $id_found[$row['id']]['name']   = $row['name'];
          $found[$row['id']]              = $row['id'];
@@ -1261,17 +1258,16 @@ final class DbUtils {
       while (count($found) > 0) {
          // Get next elements
          $iterator = $DB->request([
-            $table, [
-               'WHERE'  => [$parentIDfield => $found],
-               'ORDER'  => 'name'
-            ]
+            'FROM'   => $table,
+            'WHERE'  => [$parentIDfield => $found],
+            'ORDER'  => 'name'
          ]);
 
          // CLear the found array
          unset($found);
          $found = [];
 
-         while ($row = $iterator->next()) {
+         foreach ($iterator as $row) {
             if (!isset($id_found[$row['id']])) {
                $id_found[$row['id']]['parent'] = $row[$parentIDfield];
                $id_found[$row['id']]['name']   = $row['name'];
@@ -1337,35 +1333,6 @@ final class DbUtils {
 
 
    /**
-    * Get the equivalent search query using ID of soons that the search of the father's ID argument
-    *
-    * @param string  $table    table name
-    * @param integer $IDf      The ID of the father
-    * @param string  $reallink real field to link ($table.id if not set) (default ='')
-    *
-    * @return string the query
-    *
-    * @Deprecated 9.5.0
-    */
-   public function getRealQueryForTreeItem($table, $IDf, $reallink = "") {
-      Toolbox::deprecated();
-
-      if (empty($IDf)) {
-         return "";
-      }
-
-      if (empty($reallink)) {
-         $reallink = "`".$table."`.`id`";
-      }
-
-      $id_found = $this->getSonsOf($table, $IDf);
-
-      // Construct the final request
-      return $reallink." IN ('".implode("','", $id_found)."')";
-   }
-
-
-   /**
     * Compute all completenames of Dropdown Tree table
     *
     * @param string $table dropdown tree table to compute
@@ -1380,7 +1347,7 @@ final class DbUtils {
          'FROM'   => $table
       ]);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          list($name, $level) = $this->getTreeValueName($table, $data['id']);
          $DB->update(
             $table, [
@@ -1463,7 +1430,7 @@ final class DbUtils {
    /**
     * Get name of the user with ID=$ID (optional with link to user.form.php)
     *
-    * @param integer $ID   ID of the user.
+    * @param integer|string $ID   ID of the user.
     * @param integer $link 1 = Show link to user.form.php 2 = return array with comments and link
     *                      (default =0)
     *
@@ -1479,7 +1446,15 @@ final class DbUtils {
                   "comment" => ""];
       }
 
-      if ($ID) {
+      if ($ID == 'myself') {
+         $name = __('Myself');
+         if (isset($user['name'])) {
+            $user['name'] = $name;
+         } else {
+            $user = $name;
+         }
+
+      } else if ($ID) {
          $iterator = $DB->request(
             'glpi_users', [
                'WHERE' => ['id' => $ID]
@@ -1493,71 +1468,46 @@ final class DbUtils {
          }
 
          if (count($iterator) == 1) {
-            $data     = $iterator->next();
-            $username = $this->formatUserName($data["id"], $data["name"], $data["realname"],
-                                       $data["firstname"], $link);
+            $data     = $iterator->current();
+
+            $anon_name = $ID != ($_SESSION['glpiID'] ?? 0) && Session::getCurrentInterface() == 'helpdesk' ? User::getAnonymizedNameForUser($ID) : null;
+            if ($anon_name !== null) {
+               $username = $anon_name;
+            } else {
+               $username = $this->formatUserName($data["id"], $data["name"], $data["realname"],
+                                          $data["firstname"], $link);
+            }
 
             if ($link == 2) {
                $user["name"]    = $username;
                $user["link"]    = User::getFormURLWithID($ID);
                $user['comment'] = '';
 
-               $comments        = [];
-               $comments[]      = ['name'  => __('Name'),
-                                   'value' => $username];
-               // Ident only if you have right to read user
-               if (Session::haveRight('user', READ)) {
-                  $comments[]      = ['name'  => __('Login'),
-                                      'value' => $data["name"]];
-               }
+               $user_params = [
+                  'id'                 => $ID,
+                  'user_name'          => $username,
+               ];
 
-               $email           = UserEmail::getDefaultForUser($ID);
-               if (!empty($email)) {
-                  $comments[] = ['name'  => _n('Email', 'Emails', 1),
-                                 'value' => $email];
-               }
+               if ($anon_name === null) {
+                  $user_params = array_merge($user_params, [
+                     'email'              => UserEmail::getDefaultForUser($ID),
+                     'phone'              => $data["phone"],
+                     'mobile'             => $data["mobile"],
+                     'locations_id'       => $data['locations_id'],
+                     'usertitles_id'      => $data['usertitles_id'],
+                     'usercategories_id'  => $data['usercategories_id'],
+                  ]);
 
-               if (!empty($data["phone"])) {
-                  $comments[] = ['name'  => Phone::getTypeName(1),
-                                 'value' => $data["phone"]];
-               }
-
-               if (!empty($data["mobile"])) {
-                  $comments[] = ['name'  => __('Mobile phone'),
-                                 'value' => $data["mobile"]];
-               }
-
-               if ($data["locations_id"] > 0) {
-                  $comments[] = ['name'  => Location::getTypeName(1),
-                                 'value' => Dropdown::getDropdownName("glpi_locations",
-                                                                           $data["locations_id"])];
-               }
-
-               if ($data["usertitles_id"] > 0) {
-                  $comments[] = ['name'  => _x('person', 'Title'),
-                                 'value' => Dropdown::getDropdownName("glpi_usertitles",
-                                                                           $data["usertitles_id"])];
-               }
-
-               if ($data["usercategories_id"] > 0) {
-                  $comments[] = ['name'  => __('Category'),
-                                 'value' => Dropdown::getDropdownName("glpi_usercategories",
-                                                                           $data["usercategories_id"])];
-               }
-               if (count($comments)) {
-                  foreach ($comments as $datas) {
-                     // Do not use SPAN here
-                     $user['comment'] .= sprintf(__('%1$s: %2$s')."<br>",
-                                                "<strong>".$datas['name']."</strong>",
-                                                $datas['value']);
+                  if (Session::haveRight('user', READ)) {
+                     $user_params['login'] = $data['name'];
                   }
-               }
-
-               if (!empty($data['picture'])) {
-                  $user['comment'] = "<div class='tooltip_picture_border'>".
-                                    "<img  class='tooltip_picture' src='".
-                                       User::getThumbnailURLForPicture($data['picture'])."' /></div>".
-                                    "<div class='tooltip_text'>".$user['comment']."</div>";
+                  if (!empty($data["groups_id"])) {
+                     $user_params['groups_id'] = $data["groups_id"];
+                  }
+                  $user['comment'] = TemplateRenderer::getInstance()->render('components/user/info_card.html.twig', [
+                     'user'                 => $user_params,
+                     'enable_anonymization' => Session::getCurrentInterface() == 'helpdesk',
+                  ]);
                }
             } else {
                $user = $username;
@@ -1581,143 +1531,152 @@ final class DbUtils {
    public function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1) {
       global $DB, $CFG_GLPI;
 
-      $len = Toolbox::strlen($objectName);
+      if (!$isTemplate) {
+         return $objectName;
+      }
 
-      if ($isTemplate
-         && ($len > 8)
-         && (Toolbox::substr($objectName, 0, 4) === '&lt;')
-         && (Toolbox::substr($objectName, $len - 4, 4) === '&gt;')) {
+      $base_name = $objectName;
 
-         $autoNum = Toolbox::substr($objectName, 4, $len - 8);
-         $mask    = '';
+      $is_sanitized = Sanitizer::isSanitized($objectName);
+      if ($is_sanitized) {
+         $objectName = Sanitizer::unsanitize($objectName);
+      }
 
-         if (preg_match( "/\\#{1,10}/", $autoNum, $mask)) {
-            $global  = ((strpos($autoNum, '\\g') !== false) && ($itemtype != 'Infocom')) ? 1 : 0;
+      $matches = [];
+      if (mb_ereg('^<[^#]*(#{1,10})[^#]*>$', $objectName, $matches) === false) {
+         return $base_name;
+      }
 
-            //do not add extra escapements for now
-            //substring position would be wrong if name contains "_"
-            $autoNum = str_replace(
-               [
-                  '\\y',
-                  '\\Y',
-                  '\\m',
-                  '\\d',
-                  '\\g'
-               ], [
-                  date('y'),
-                  date('Y'),
-                  date('m'),
-                  date('d'),
-                  ''
-               ],
-               $autoNum
-            );
+      $autoNum = Toolbox::substr($objectName, 1, Toolbox::strlen($objectName) - 2);
+      $mask    = $matches[1];
+      $global  = ((strpos($autoNum, '\\g') !== false) && ($itemtype != 'Infocom')) ? 1 : 0;
 
-            $mask = $mask[0];
-            $pos  = strpos($autoNum, $mask) + 1;
+      //do not add extra escapements for now
+      //substring position would be wrong if name contains "_"
+      $autoNum = str_replace(
+         [
+            '\\y',
+            '\\Y',
+            '\\m',
+            '\\d',
+            '\\g'
+         ], [
+            date('y'),
+            date('Y'),
+            date('m'),
+            date('d'),
+            ''
+         ],
+         $autoNum
+      );
 
-            //got substring position, add extra escapements
-            $autoNum = str_replace(
-               ['_', '%'],
-               ['\\_', '\\%'],
-               $autoNum
-            );
-            $len  = Toolbox::strlen($mask);
-            $like = str_replace('#', '_', $autoNum);
+      $pos  = strpos($autoNum, $mask) + 1;
 
-            if ($global == 1) {
-               $types = [
-                  'Computer',
-                  'Monitor',
-                  'NetworkEquipment',
-                  'Peripheral',
-                  'Phone',
-                  'Printer'
-               ];
+      //got substring position, add extra escapements
+      $autoNum = str_replace(
+         ['_', '%'],
+         ['\\_', '\\%'],
+         $autoNum
+      );
+      $len  = Toolbox::strlen($mask);
+      $like = str_replace('#', '_', $autoNum);
 
-               $subqueries = [];
-               foreach ($types as $t) {
-                  $table = $this->getTableForItemType($t);
-                  $criteria = [
-                     'SELECT' => ["$field AS code"],
-                     'FROM'   => $table,
-                     'WHERE'  => [
-                        $field         => ['LIKE', $like],
-                        'is_deleted'   => 0,
-                        'is_template'  => 0
-                     ]
-                  ];
+      if ($global == 1) {
+         $types = [
+            'Computer',
+            'Monitor',
+            'NetworkEquipment',
+            'Peripheral',
+            'Phone',
+            'Printer'
+         ];
 
-                  if ($CFG_GLPI["use_autoname_by_entity"]
-                     && ($entities_id >= 0)) {
-                     $criteria['WHERE']['entities_id'] = $entities_id;
-                  }
+         $subqueries = [];
+         foreach ($types as $t) {
+            $table = $this->getTableForItemType($t);
+            $criteria = [
+               'SELECT' => ["$field AS code"],
+               'FROM'   => $table,
+               'WHERE'  => [
+                  $field         => ['LIKE', $like],
+                  'is_deleted'   => 0,
+                  'is_template'  => 0
+               ]
+            ];
 
-                  $subqueries[] = new \QuerySubQuery($criteria);
-               }
-
-               $criteria = [
-                  'SELECT' => [
-                     new \QueryExpression(
-                        "CAST(SUBSTRING(".$DB->quoteName('code').", $pos, $len) AS " .
-                        "unsigned) AS " . $DB->quoteName('no')
-                     )
-                  ],
-                  'FROM'   => new \QueryUnion($subqueries, false, 'codes')
-               ];
-            } else {
-               $table = $this->getTableForItemType($itemtype);
-               $criteria = [
-                  'SELECT' => [
-                     new \QueryExpression(
-                        "CAST(SUBSTRING(".$DB->quoteName($field).", $pos, $len) AS " .
-                        "unsigned) AS " . $DB->quoteName('no')
-                     )
-                  ],
-                  'FROM'   => $table,
-                  'WHERE'  => [
-                     $field   => ['LIKE', $like]
-                  ]
-               ];
-
-               if ($itemtype != 'Infocom') {
-                  $criteria['WHERE']['is_deleted'] = 0;
-                  $criteria['WHERE']['is_template'] = 0;
-
-                  if ($CFG_GLPI["use_autoname_by_entity"]
-                     && ($entities_id >= 0)) {
-                     $criteria['WHERE']['entities_id'] = $entities_id;
-                  }
-               }
+            if ($CFG_GLPI["use_autoname_by_entity"]
+               && ($entities_id >= 0)) {
+               $criteria['WHERE']['entities_id'] = $entities_id;
             }
 
-            $subquery = new \QuerySubQuery($criteria, 'Num');
-            $iterator = $DB->request([
-               'SELECT' => ['MAX' => 'Num.no AS lastNo'],
-               'FROM'   => $subquery
-            ]);
+            $subqueries[] = new \QuerySubQuery($criteria);
+         }
 
-            if (count($iterator)) {
-               $result = $iterator->next();
-               $newNo = $result['lastNo'] + 1;
-            } else {
-               $newNo = 0;
+         $criteria = [
+            'SELECT' => [
+               new \QueryExpression(
+                  "CAST(SUBSTRING(".$DB->quoteName('code').", $pos, $len) AS " .
+                  "unsigned) AS " . $DB->quoteName('no')
+               )
+            ],
+            'FROM'   => new \QueryUnion($subqueries, false, 'codes')
+         ];
+      } else {
+         $table = $this->getTableForItemType($itemtype);
+         $criteria = [
+            'SELECT' => [
+               new \QueryExpression(
+                  "CAST(SUBSTRING(".$DB->quoteName($field).", $pos, $len) AS " .
+                  "unsigned) AS " . $DB->quoteName('no')
+               )
+            ],
+            'FROM'   => $table,
+            'WHERE'  => [
+               $field   => ['LIKE', $like]
+            ]
+         ];
+
+         if ($itemtype != 'Infocom') {
+            $criteria['WHERE']['is_deleted'] = 0;
+            $criteria['WHERE']['is_template'] = 0;
+
+            if ($CFG_GLPI["use_autoname_by_entity"]
+               && ($entities_id >= 0)) {
+               $criteria['WHERE']['entities_id'] = $entities_id;
             }
-
-            $objectName = str_replace(
-               [
-                  $mask,
-                  '\\_',
-                  '\\%'
-               ], [
-                  Toolbox::str_pad($newNo, $len, '0', STR_PAD_LEFT),
-                  '_',
-                  '%'
-               ],
-               $autoNum
-            );
          }
       }
+
+      $subquery = new \QuerySubQuery($criteria, 'Num');
+      $iterator = $DB->request([
+         'SELECT' => ['MAX' => 'Num.no AS lastNo'],
+         'FROM'   => $subquery
+      ]);
+
+      if (count($iterator)) {
+         $result = $iterator->current();
+         $newNo = $result['lastNo'] + 1;
+      } else {
+         $newNo = 0;
+      }
+
+      $objectName = str_replace(
+         [
+            $mask,
+            '\\_',
+            '\\%'
+         ], [
+            Toolbox::str_pad($newNo, $len, '0', STR_PAD_LEFT),
+            '_',
+            '%'
+         ],
+         $autoNum
+      );
+
+      if ($is_sanitized) {
+         $objectName = Sanitizer::sanitize($objectName);
+      }
+
       return $objectName;
    }
 

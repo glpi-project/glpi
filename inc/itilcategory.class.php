@@ -317,7 +317,7 @@ class ITILCategory extends CommonTreeDropdown {
       ]);
 
       if (count($iterator) == 1) {
-         $result = $iterator->next();
+         $result = $iterator->current();
          return $result['id'];
       }
       return -1;
@@ -422,7 +422,7 @@ class ITILCategory extends CommonTreeDropdown {
          echo "<th>".Problem::getTypeName(1)."</th>";
          echo "</tr>";
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             echo "<tr class='tab_bg_2'>";
             $itilcategory->getFromDB($data['id']);
             echo "<td>".$itilcategory->getLink(['comments' => true])."</td>";

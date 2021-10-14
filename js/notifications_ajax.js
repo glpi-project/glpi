@@ -1,21 +1,4 @@
-// Ajax notifications
-//
-// Inspired from BrowserNotification plugin by
-// Edgard Lorraine Messias
-//
-// License: BSD 3 clause
-
-(function (window, $) {
-   function GLPINotificationsAjax(options) {
-
-      var _this = this;
-      var _queue = $('<div></div>');
-      var _queue_audio = $('<div></div>');
-
-      this.options = $.extend({}, GLPINotificationsAjax.default, options);
-
-      this.showNotification = function(id, title, body, url) {
-         /**
+/**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
  * Copyright (C) 2015-2021 Teclib' and contributors.
@@ -44,7 +27,25 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-          */
+ */
+
+// Ajax notifications
+//
+// Inspired from BrowserNotification plugin by
+// Edgard Lorraine Messias
+//
+// License: BSD 3 clause
+
+(function (window, $) {
+   function GLPINotificationsAjax(options) {
+
+      var _this = this;
+      var _queue = $('<div></div>');
+      var _queue_audio = $('<div></div>');
+
+      this.options = $.extend({}, GLPINotificationsAjax.default, options);
+
+      this.showNotification = function(id, title, body, url) {
          _queue.queue(function () {
             var queue = this;
 

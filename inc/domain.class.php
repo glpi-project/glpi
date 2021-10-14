@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 /// Class Domain
 class Domain extends CommonDropdown {
+   use Glpi\Features\Clonable;
 
    static $rightname = 'domain';
    static protected $forward_entity_to = ['DomainRecord'];
@@ -46,6 +47,20 @@ class Domain extends CommonDropdown {
    protected $usenotepadrights = true;
    protected $usenotepad       = true;
    static    $tags             = '[DOMAIN_NAME]';
+
+   public function getCloneRelations() :array {
+      return [
+         DomainRecord::class,
+         Domain_Item::class,
+         Infocom::class,
+         Item_Ticket::class,
+         Item_Problem::class,
+         Change_Item::class,
+         Contract_Item::class,
+         Document_Item::class,
+         Notepad::class,
+      ];
+   }
 
    static function getTypeName($nb = 0) {
       return _n('Domain', 'Domains', $nb);
@@ -66,7 +81,7 @@ class Domain extends CommonDropdown {
             'domains_id'   => $this->fields['id']
          ]
       ]);
-      while ($row = $iterator->next()) {
+      foreach ($iterator as $row) {
          $row['_linked_purge'] = 1;//flag call when we remove a record from a domain
          $record->delete($row, true);
       }
@@ -144,13 +159,6 @@ class Domain extends CommonDropdown {
       ];
 
       $tab[] = [
-         'id'                 => '9',
-         'table'              => $this->getTable(),
-         'field'              => 'others',
-         'name'               => __('Others')
-      ];
-
-      $tab[] = [
          'id'                 => '10',
          'table'              => 'glpi_groups',
          'field'              => 'name',
@@ -183,6 +191,14 @@ class Domain extends CommonDropdown {
          'field'              => 'id',
          'name'               => __('ID'),
          'datatype'           => 'number'
+      ];
+
+      $tab[] = [
+         'id'                 => '31',
+         'table'              => $this->getTable(),
+         'field'              => 'is_active',
+         'name'               => __('Active'),
+         'datatype'           => 'bool'
       ];
 
       $tab[] = [
@@ -269,7 +285,7 @@ class Domain extends CommonDropdown {
       $this->addStandardTab('Contract_Item', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Certificate_Item', $ong, $options);
-      $this->addStandardTab('Link', $ong, $options);
+      $this->addStandardTab('ManualLink', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
@@ -295,77 +311,6 @@ class Domain extends CommonDropdown {
       return $this->prepareInput($input);
    }
 
-   function showForm($ID, $options = []) {
-      $this->initForm($ID, $options);
-      $this->showFormHeader($options);
-
-      echo "<tr class='tab_bg_1'>";
-
-      echo "<td>" . __('Name') . "</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "name");
-      echo "</td>";
-
-      echo "<td>" . __('Others') . "</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "others");
-      echo "</td>";
-
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Creation date') . "</td>";
-      echo "<td>";
-      Html::showDateField("date_creation", ['value' => $this->fields["date_creation"]]);
-      echo "</td>";
-
-      echo "<td>" . _n('Type', 'Types', 1) . "</td><td>";
-      Dropdown::show('DomainType', ['name'   => "domaintypes_id",
-                                                      'value'  => $this->fields["domaintypes_id"],
-                                                      'entity' => $this->fields["entities_id"]]);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Expiration date');
-      echo "&nbsp;";
-      Html::showToolTip(nl2br(__('Empty for infinite')));
-      echo "</td>";
-      echo "<td>";
-      Html::showDateField("date_expiration", ['value' => $this->fields["date_expiration"]]);
-      echo "</td>";
-
-      echo "<td>" . __('Technician in charge') . "</td><td>";
-      User::dropdown(['name'   => "users_id_tech",
-                           'value'  => $this->fields["users_id_tech"],
-                           'entity' => $this->fields["entities_id"],
-                           'right'  => 'interface']);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Group in charge') . "</td>";
-      echo "<td colspan='3'>";
-      Dropdown::show('Group', ['name'      => "groups_id_tech",
-                                    'value'     => $this->fields["groups_id_tech"],
-                                    'entity'    => $this->fields["entities_id"],
-                                    'condition' => ['is_assign' => 1]]);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('Comments') . "</td>";
-      echo "<td colspan = '3' class='center'>";
-      echo "<textarea cols='115' rows='5' name='comment' >" . $this->fields["comment"] . "</textarea>";
-      echo "</td>";
-
-      echo "</tr>";
-
-      $this->showFormButtons($options);
-
-      return true;
-   }
 
    /**
     * Make a select box for link domains
@@ -412,7 +357,7 @@ class Domain extends CommonDropdown {
       ]);
 
       $values = [0 => Dropdown::EMPTY_VALUE];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $values[$data['id']] = $data['name'];
       }
 
@@ -641,7 +586,7 @@ class Domain extends CommonDropdown {
          foreach ($querys as $type => $query) {
             $domain_infos[$type] = [];
             $iterator = $DB->request($query);
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                $message                        = $data["name"] . ": " .
                                                 Html::convDate($data["date_expiration"]) . "<br>\n";
                $domain_infos[$type][$entity][] = $data;
@@ -737,7 +682,7 @@ class Domain extends CommonDropdown {
       ]);
 
       $used = [];
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $used[$data['id']] = $data['id'];
       }
       return $used;
@@ -746,8 +691,10 @@ class Domain extends CommonDropdown {
    static function getAdditionalMenuLinks() {
       $links = [];
       if (static::canView()) {
-         $rooms = "<i class=\"fa fa-clipboard-list pointer\" title=\"" . DomainRecord::getTypeName(Session::getPluralNumber()) .
-            "\"></i><span class=\"sr-only\">" . DomainRecord::getTypeName(Session::getPluralNumber()). "</span>";
+         $rooms = "<i class='fa fa-clipboard-list pointer' title=\"".DomainRecord::getTypeName(Session::getPluralNumber())."\"></i>
+            <span class='d-none d-xxl-block ps-1'>
+               ".DomainRecord::getTypeName(Session::getPluralNumber())."
+            </span>";
          $links[$rooms] = DomainRecord::getSearchURL(false);
 
       }
@@ -774,6 +721,10 @@ class Domain extends CommonDropdown {
 
    public function getCanonicalName() {
       return rtrim($this->fields['name'], '.') . '.';
+   }
+
+   function post_getEmpty() {
+      $this->fields['is_active'] = $this->fields['is_template'] ? 0 : 1;
    }
 
    static function getIcon() {

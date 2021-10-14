@@ -33,8 +33,8 @@
 namespace tests\units;
 
 use DbTestCase;
-use Monolog\Logger;
 use Monolog\Handler\TestHandler;
+use Monolog\Logger;
 
 // Generic test classe, to be extended for CommonDBTM Object
 
@@ -636,6 +636,9 @@ class DBmysqlIterator extends DbTestCase {
 
       $it = $this->it->execute('foo', ['START' => 5, 'LIMIT' => 10]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LIMIT 10 OFFSET 5');
+
+      $it = $this->it->execute('foo', ['OFFSET' => 5, 'LIMIT' => 10]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LIMIT 10 OFFSET 5');
    }
 
 
@@ -743,12 +746,12 @@ class DBmysqlIterator extends DbTestCase {
       $it = $this->it->execute('foo');
       $this->integer($it->numrows())->isIdenticalTo(0);
       $this->integer(count($it))->isIdenticalTo(0);
-      $this->boolean($it->next())->isFalse();
+      $this->variable($it->current())->isNull();
 
       $it = $DB->request('glpi_configs', ['context' => 'core', 'name' => 'version']);
       $this->integer($it->numrows())->isIdenticalTo(1);
       $this->integer(count($it))->isIdenticalTo(1);
-      $row = $it->next();
+      $row = $it->current();
       $key = $it->key();
       $this->integer($row['id'])->isIdenticalTo($key);
 
@@ -756,24 +759,6 @@ class DBmysqlIterator extends DbTestCase {
       $this->integer($it->numrows())->isGreaterThan(100);
       $this->integer(count($it))->isGreaterThan(100);
       $this->boolean($it->numrows() == count($it))->isTrue();
-   }
-
-   public function testKey() {
-      global $DB;
-
-      // test keys with absence of 'id' in select
-      // we should use a incremented position in the first case
-      // see https://github.com/glpi-project/glpi/pull/3401
-      // previously, the first query returned only one result
-      $users_list = iterator_to_array($DB->request([
-         'SELECT' => 'name',
-         'FROM'   => 'glpi_users']));
-      $users_list2 = iterator_to_array($DB->request([
-         'SELECT' =>  ['id', 'name'],
-         'FROM'   => 'glpi_users']));
-      $nb  = count($users_list);
-      $nb2 = count($users_list2);
-      $this->integer($nb)->isEqualTo($nb2);
    }
 
    public function testAlias() {
@@ -1247,5 +1232,164 @@ class DBmysqlIterator extends DbTestCase {
          'WHERE'  => ['groups_id' => new \QueryExpression('glpi_groups.id')]
       ])];
       $this->string($this->it->analyseCrit($crit))->isIdenticalTo("(SELECT COUNT(`users_id`) FROM `glpi_groups_users` WHERE `groups_id` = glpi_groups.id)");
+   }
+
+   public function testIteratorKeyWithId() {
+      global $DB;
+
+      // Select "id" field, keys will correspond to ids
+      $iterator = $DB->request(
+         [
+            'SELECT' => ['id', 'name'],
+            'FROM'   => $this->getUsersFakeTable()
+         ]
+      );
+
+      $this->integer($iterator->key())->isEqualTo($iterator->current()['id']);
+      $this->integer($iterator->key())->isEqualTo($iterator->current()['id']); // Calling key() twice should produce the same result (does not move the pointer)
+      $iterator->next();
+      $this->integer($iterator->key())->isEqualTo($iterator->current()['id']);
+      $iterator->next();
+      $this->integer($iterator->key())->isEqualTo($iterator->current()['id']);
+      $iterator->next();
+      $this->variable($iterator->key())->isEqualTo(null); // Out of bounds, returns null
+   }
+
+   public function testIteratorKeyWithoutId() {
+      global $DB;
+
+      // Do not select "id" field, keys will be numeric, starting at 0
+      $iterator = $DB->request(
+         [
+            'SELECT' => 'name',
+            'FROM'   => $this->getUsersFakeTable()
+         ]
+      );
+
+      $this->integer($iterator->key())->isEqualTo(0);
+      $this->integer($iterator->key())->isEqualTo(0); // Calling key() twice should produce the same result (does not move the pointer)
+      $iterator->next();
+      $this->integer($iterator->key())->isEqualTo(1);
+      $iterator->next();
+      $this->integer($iterator->key())->isEqualTo(2);
+      $iterator->next();
+      $this->variable($iterator->key())->isEqualTo(null); // Out of bounds, returns null
+   }
+
+   public function testIteratorCurrent() {
+      global $DB;
+
+      $iterator = $DB->request(
+         [
+            'SELECT' => ['id', 'name'],
+            'FROM'   => $this->getUsersFakeTable()
+         ]
+      );
+
+      $this->array($iterator->current())->isEqualTo(['id' => 2, 'name' => 'jdoe']);
+      $this->array($iterator->current())->isEqualTo(['id' => 2, 'name' => 'jdoe']); // Calling current() twice should produce the same result (does not move the pointer)
+      $iterator->next();
+      $this->array($iterator->current())->isEqualTo(['id' => 5, 'name' => 'psmith']);
+      $iterator->next();
+      $this->array($iterator->current())->isEqualTo(['id' => 6, 'name' => 'acain']);
+      $iterator->next();
+      $this->variable($iterator->current())->isEqualTo(null); // Out of bounds, returns null
+   }
+
+   public function testIteratorCount() {
+      global $DB;
+
+      $iterator = $DB->request(
+         [
+            'SELECT' => ['name'],
+            'FROM'   => $this->getUsersFakeTable()
+         ]
+      );
+
+      $this->integer($iterator->count())->isEqualTo(3);
+   }
+
+   public function testIteratorValid() {
+      global $DB;
+
+      $iterator = $DB->request(
+         [
+            'SELECT' => ['name'],
+            'FROM'   => $this->getUsersFakeTable()
+         ]
+      );
+
+      for ($i = 0; $i < $iterator->count(); $i++) {
+         $this->boolean($iterator->valid())->isTrue();
+         $iterator->next(); // Iterate until out of bounds
+      }
+      $this->boolean($iterator->valid())->isFalse();
+
+      $iterator->rewind();
+      $this->boolean($iterator->valid())->isTrue();
+   }
+
+   public function testIteratorRewind() {
+      global $DB;
+
+      $iterator = $DB->request(
+         [
+            'SELECT' => ['name'],
+            'FROM'   => $this->getUsersFakeTable()
+         ]
+      );
+
+      for ($i = 0; $i < $iterator->count(); $i++) {
+         $this->integer($iterator->key())->isEqualTo($i);
+         $iterator->next(); // Iterate until out of bounds
+      }
+      $this->variable($iterator->key())->isNull();
+
+      $iterator->rewind();
+      $this->integer($iterator->key())->isEqualTo(0);
+   }
+
+   public function testIteratorSeek() {
+      global $DB;
+
+      $iterator = $DB->request(
+         [
+            'SELECT' => ['id', 'name'],
+            'FROM'   => $this->getUsersFakeTable()
+         ]
+      );
+
+      $iterator->seek(2);
+      $this->array($iterator->current())->isEqualTo(['id' => 6, 'name' => 'acain']);
+
+      $iterator->seek(0);
+      $this->array($iterator->current())->isEqualTo(['id' => 2, 'name' => 'jdoe']);
+
+      $iterator->seek(1);
+      $this->array($iterator->current())->isEqualTo(['id' => 5, 'name' => 'psmith']);
+
+      $this->exception(
+         function () use ($iterator) {
+            $iterator->seek(3);
+         }
+      )->isInstanceOf('OutOfBoundsException');
+   }
+
+   /**
+    * Returns a fake users table that can be used to test iterator.
+    *
+    * @return \QueryExpression
+    */
+   private function getUsersFakeTable(): \QueryExpression {
+      global $DB;
+
+      $user_pattern = '(SELECT %1$d AS %2$s, %3$s as %4$s)';
+      $users_table = [
+         sprintf($user_pattern, 2, $DB->quoteName('id'), $DB->quoteValue('jdoe'), $DB->quoteName('name')),
+         sprintf($user_pattern, 5, $DB->quoteName('id'), $DB->quoteValue('psmith'), $DB->quoteName('name')),
+         sprintf($user_pattern, 6, $DB->quoteName('id'), $DB->quoteValue('acain'), $DB->quoteName('name')),
+      ];
+
+      return new \QueryExpression('(' . implode(' UNION ALL ', $users_table) . ') AS users');
    }
 }

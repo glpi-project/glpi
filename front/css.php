@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 
 $_GET["donotcheckversion"]   = true;
 $dont_check_maintenance_mode = true;
+$skip_db_check               = true;
 
 //std cache, with DB connection
 include_once GLPI_ROOT . "/inc/db.function.php";

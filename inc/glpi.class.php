@@ -31,10 +31,10 @@
  */
 
 use Glpi\Application\ErrorHandler;
-use Monolog\Logger;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\TestHandler;
-use Monolog\Formatter\LineFormatter;
+use Monolog\Logger;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");

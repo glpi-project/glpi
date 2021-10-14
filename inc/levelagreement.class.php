@@ -48,6 +48,11 @@ abstract class LevelAgreement extends CommonDBChild {
    static public $itemtype = 'SLM';
    static public $items_id = 'slms_id';
 
+   static protected $prefix            = '';
+   static protected $prefixticket      = '';
+   static protected $levelclass        = '';
+   static protected $levelticketclass  = '';
+
 
    /**
     * Display a specific OLA or SLA warning.
@@ -166,10 +171,10 @@ abstract class LevelAgreement extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name", ['value' => $this->fields["name"]]);
+      echo Html::input("name", ['value' => $this->fields["name"]]);
       echo "<td rowspan='".$rowspan."'>".__('Comments')."</td>";
       echo "<td rowspan='".$rowspan."'>
-            <textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
+            <textarea class='form-control' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -197,15 +202,14 @@ abstract class LevelAgreement extends CommonDBChild {
       echo "<td>";
       Dropdown::showNumber("number_time", ['value' => $this->fields["number_time"],
                                            'min'   => 0]);
-      $possible_values = ['minute' => _n('Minute', 'Minutes', Session::getPluralNumber()),
-                          'hour'   => _n('Hour', 'Hours', Session::getPluralNumber()),
-                          'day'    => _n('Day', 'Days', Session::getPluralNumber())];
+      $possible_values = self::getDefinitionTimeValues();
       $rand = Dropdown::showFromArray('definition_time', $possible_values,
                                       ['value'     => $this->fields["definition_time"],
                                        'on_change' => 'appearhideendofworking()']);
       echo "\n<script type='text/javascript' >\n";
       echo "function appearhideendofworking() {\n";
-      echo "if ($('#dropdown_definition_time$rand option:selected').val() == 'day') {
+      echo "if ($('#dropdown_definition_time$rand option:selected').val() == 'day'
+                  || $('#dropdown_definition_time$rand option:selected').val() == 'month') {
                $('#title_endworkingday').show();
                $('#dropdown_endworkingday').show();
             } else {
@@ -234,164 +238,77 @@ abstract class LevelAgreement extends CommonDBChild {
       return true;
    }
 
+   /**
+    * Get possibles keys and labels for the definition_time field
+    *
+    * @return string
+    *
+    * @since 10.0.0
+    */
+   public static function getDefinitionTimeValues(): array {
+      return [
+         'minute' => _n('Minute', 'Minutes', Session::getPluralNumber()),
+         'hour'   => _n('Hour', 'Hours', Session::getPluralNumber()),
+         'day'    => _n('Day', 'Days', Session::getPluralNumber()),
+         'month'  => _n('Month', 'Months', Session::getPluralNumber())
+      ];
+   }
 
    /**
-    * Show for ticket
+    * Get the matching label for a given key (definition_time field)
     *
-    * @param  Ticket         $ticket Ticket item
-    * @param  integer        $type
-    * @param  ITILTemplate $tt ticket template object
-    * @param  bool           $canupdate update right
+    * @param string $value
+    *
+    * @return string
+    *
+    * @since 10.0.0
     */
-   function showForTicket(Ticket $ticket, $type, $tt, $canupdate) {
-      list($dateField, $laField) = static::getFieldNames($type);
-      $rand = mt_rand();
+   public static function getDefinitionTimeLabel(string $value): string {
+      return self::getDefinitionTimeValues()[$value] ?? "";
+   }
+
+
+   /**
+    * Get a level for a given action
+    *
+    * since 10.0
+    *
+    * @param mixed $nextaction
+    *
+    * @return false|LevelAgreementLevel
+    */
+   function getLevelFromAction($nextaction) {
+      if ($nextaction === false) {
+         return false;
+      }
+
       $pre  = static::$prefix;
-      echo "<table width='100%'>";
-      echo "<tr class='tab_bg_1'>";
-
-      if (!isset($ticket->fields[$dateField]) || $ticket->fields[$dateField] == 'NULL') {
-         $ticket->fields[$dateField]='';
+      $nextlevel  = new static::$levelclass();
+      if (!$nextlevel->getFromDB($nextaction->fields[$pre.'levels_id'])) {
+         return false;
       }
 
-      if ($ticket->fields['id']) {
-         if ($this->getDataForTicket($ticket->fields['id'], $type)) {
-            echo "<td style='width: 105px'>";
-            echo $tt->getBeginHiddenFieldValue($dateField);
-            echo Html::convDateTime($ticket->fields[$dateField]);
-            echo $tt->getEndHiddenFieldValue($dateField, $ticket);
-            echo "</td>";
-            echo "<td>";
-            echo $tt->getBeginHiddenFieldText($laField);
-            echo "<i class='fas fa-stopwatch slt'></i>";
-            echo Dropdown::getDropdownName(static::getTable(),
-                                           $ticket->fields[$laField])."&nbsp;";
-            echo Html::hidden($laField, ['value' => $ticket->fields[$laField]]);
-            $obj = new static();
-            $obj->getFromDB($ticket->fields[$laField]);
-            $comment = isset($obj->fields['comment']) ? $obj->fields['comment'] : '';
-            $level      = new static::$levelclass();
-            $nextaction = new static::$levelticketclass();
-            if ($nextaction->getFromDBForTicket($ticket->fields["id"], $type)) {
-               $comment .= '<br/><span class="b spaced">'.
-                             sprintf(__('Next escalation: %s'),
-                                     Html::convDateTime($nextaction->fields['date'])).
-                           '</span><br>';
-               if ($level->getFromDB($nextaction->fields[$pre.'levels_id'])) {
-                  $comment .= '<span class="b spaced">'.
-                                sprintf(__('%1$s: %2$s'), _n('Escalation level', 'Escalation levels', 1),
-                                        $level->getName()).
-                              '</span>';
-               }
-            }
+      return $nextlevel;
+   }
 
-            $options = [];
-            if (Session::haveRight('slm', READ)) {
-               $options['link'] = $this->getLinkURL();
-            }
-            Html::showToolTip($comment, $options);
-            if ($canupdate) {
-               $delete_field = strtolower(get_called_class())."_delete";
-               $fields = [$delete_field       => $delete_field,
-                          'id'                => $ticket->getID(),
-                          'type'              => $type,
-                          '_glpi_csrf_token'  => Session::getNewCSRFToken(),
-                          '_glpi_simple_form' => 1];
-               $ticket_url = $ticket->getFormURL();
-               echo Html::scriptBlock("
-               function delete_date$type$rand(e) {
-                  e.preventDefault();
 
-                  if (nativeConfirm('".addslashes(__('Also delete date?'))."')) {
-                     submitGetLink('$ticket_url',
-                                   ".json_encode(array_merge($fields, ['delete_date' => 1])).");
-                  } else {
-                     submitGetLink('$ticket_url',
-                                   ".json_encode(array_merge($fields, ['delete_date' => 0])).");
-                  }
-               }");
-               echo "<a class='fa fa-times-circle pointer'
-                        onclick='delete_date$type$rand(event)'
-                        title='"._sx('button', 'Delete permanently')."'>";
-               echo "<span class='sr-only'>"._x('button', 'Delete permanently')."</span>";
-               echo "</a>";
-            }
-            echo $tt->getEndHiddenFieldText($laField);
-            echo "</td>";
-
-         } else {
-            echo "<td width='200px'>";
-            echo $tt->getBeginHiddenFieldValue($dateField);
-            echo "<span class='assign_la'>";
-            if ($canupdate) {
-               Html::showDateTimeField($dateField, ['value'      => $ticket->fields[$dateField],
-                                                    'maybeempty' => true]);
-            } else {
-               echo Html::convDateTime($ticket->fields[$dateField]);
-            }
-            echo "</span>";
-            echo $tt->getEndHiddenFieldValue($dateField, $ticket);
-            $data     = $this->find(
-               ['type' => $type] + getEntitiesRestrictCriteria('', '', $ticket->fields['entities_id'], true)
-            );
-            if ($canupdate
-                && !empty($data)) {
-               echo $tt->getBeginHiddenFieldText($laField);
-               echo "<span id='la_action$type$rand' class='assign_la'>";
-               echo "<a ".Html::addConfirmationOnAction($this->getAddConfirmation(),
-                        "cleanhide('la_action$type$rand');cleandisplay('la_choice$type$rand');").
-                    " class='pointer' title='".static::getTypeName()."'>
-                    <i class='fas fa-stopwatch slt'></i></a>";
-               echo "</span>";
-               echo "<span id='la_choice$type$rand' style='display:none' class='assign_la'>";
-               echo "<i class='fas fa-stopwatch slt'></i>";
-               echo "<span class='b'>".static::getTypeName()."</span>&nbsp;";
-               static::dropdown([
-                  'name'      => $laField,
-                  'entity'    => $ticket->fields["entities_id"],
-                  'condition' => ['type' => $type]
-               ]);
-               echo "</span>";
-               echo $tt->getEndHiddenFieldText($laField);
-            }
-            echo "</td>";
-         }
-
-      } else { // New Ticket
-         echo "<td>";
-         echo $tt->getBeginHiddenFieldValue($dateField);
-         Html::showDateTimeField($dateField, ['value'      => $ticket->fields[$dateField],
-                                              'maybeempty' => false,
-                                              'canedit'    => $canupdate,
-                                              'required'   => $tt->isMandatoryField($dateField)]);
-         echo $tt->getEndHiddenFieldValue($dateField, $ticket);
-         echo "</td>";
-         $data     = $this->find(
-            ['type' => $type] + getEntitiesRestrictCriteria('', '', $ticket->fields['entities_id'], true)
-         );
-         if ($canupdate
-             && !empty($data)) {
-            echo $tt->getBeginHiddenFieldText($laField);
-            if (!$tt->isHiddenField($laField) || $tt->isPredefinedField($laField)) {
-               echo "<th>".sprintf(__('%1$s%2$s'),
-                                   static::getTypeName(),
-                                   $tt->getMandatoryMark($laField))."</th>";
-            }
-            echo $tt->getEndHiddenFieldText($laField);
-            echo "<td class='nopadding'>".$tt->getBeginHiddenFieldValue($laField);
-            static::dropdown([
-               'name'      => $laField,
-               'entity'    => $ticket->fields["entities_id"],
-               'value'     => isset($ticket->fields[$laField]) ? $ticket->fields[$laField] : 0,
-               'condition' => ['type' => $type]
-            ]);
-            echo $tt->getEndHiddenFieldValue($laField, $ticket);
-            echo "</td>";
-         }
+   /**
+    * Get then next levelagreement action for a given ticket and "LA" type
+    *
+    * since 10.0
+    *
+    * @param Ticket $ticket
+    * @param int $type
+    *
+    * @return false|OlaLevel_Ticket|SlaLevel_Ticket
+    */
+   function getNextActionForTicket(Ticket $ticket, int $type) {
+      $nextaction = new static::$levelticketclass();
+      if (!$nextaction->getFromDBForTicket($ticket->fields["id"], $type)) {
+         return false;
       }
 
-      echo "</tr>";
-      echo "</table>";
+      return $nextaction;
    }
 
 
@@ -428,7 +345,7 @@ abstract class LevelAgreement extends CommonDBChild {
          echo "}";
          echo "</script>";
          echo "<div class='center firstbloc'>".
-               "<a class='vsubmit' href='javascript:viewAddLa$instID$rand();'>";
+               "<a class='btn btn-primary' href='javascript:viewAddLa$instID$rand();'>";
          echo __('Add a new item')."</a></div>\n";
       }
 
@@ -683,7 +600,6 @@ abstract class LevelAgreement extends CommonDBChild {
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-         'autocomplete'       => true,
       ];
 
       $tab[] = [
@@ -814,6 +730,9 @@ abstract class LevelAgreement extends CommonDBChild {
          if ($this->fields['definition_time'] == "day") {
             return $this->fields['number_time'] * DAY_TIMESTAMP;
          }
+         if ($this->fields['definition_time'] == "month") {
+            return $this->fields['number_time'] * MONTH_TIMESTAMP;
+         }
       }
       return 0;
    }
@@ -868,7 +787,7 @@ abstract class LevelAgreement extends CommonDBChild {
          // Based on a calendar
          if ($this->fields['calendars_id'] > 0) {
             $cal          = new Calendar();
-            $work_in_days = ($this->fields['definition_time'] == 'day');
+            $work_in_days = ($this->fields['definition_time'] == 'day' || $this->fields['definition_time'] == 'month');
 
             if ($cal->getFromDB($this->fields['calendars_id']) && $cal->hasAWorkingDay()) {
                return $cal->computeEndDate($start_date, $delay,
@@ -906,7 +825,7 @@ abstract class LevelAgreement extends CommonDBChild {
 
          if ($level->getFromDB($levels_id)) { // level exists
             if ($level->fields[$fk] == $this->fields['id']) { // correct level
-               $work_in_days = ($this->fields['definition_time'] == 'day');
+               $work_in_days = ($this->fields['definition_time'] == 'day' || $this->fields['definition_time'] == 'month');
                $delay        = $this->getTime();
 
                // Based on a calendar
@@ -979,7 +898,8 @@ abstract class LevelAgreement extends CommonDBChild {
 
    function prepareInputForAdd($input) {
 
-      if ($input['definition_time'] != 'day') {
+      if ($input['definition_time'] != 'day'
+            && $input['definition_time'] != 'month') {
          $input['end_of_working_day'] = 0;
       }
       return $input;
@@ -988,7 +908,8 @@ abstract class LevelAgreement extends CommonDBChild {
 
    function prepareInputForUpdate($input) {
 
-      if (isset($input['definition_time']) && $input['definition_time'] != 'day') {
+      if (isset($input['definition_time']) && ($input['definition_time'] != 'day'
+            && $input['definition_time'] != 'month')) {
          $input['end_of_working_day'] = 0;
       }
       return $input;
@@ -1046,7 +967,7 @@ abstract class LevelAgreement extends CommonDBChild {
             'WHERE'  => ['tickets_id' => $ticket->fields['id']]
          ]);
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $levelticket->delete(['id' => $data['id']]);
          }
       }
@@ -1072,7 +993,7 @@ abstract class LevelAgreement extends CommonDBChild {
 
       if (count($iterator)) {
          $ticket = new Ticket();
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             $ticket->deleteLevelAgreement($classname, $data['id'], $this->fields['type']);
          }
       }

@@ -65,7 +65,7 @@ class ProfileRight extends CommonDBChild {
             'DISTINCT'        => true,
             'FROM'            => self::getTable()
          ]);
-         while ($right = $iterator->next()) {
+         foreach ($iterator as $right) {
             // By default, all rights are NULL ...
             $rights[$right['name']] = '';
          }
@@ -103,7 +103,7 @@ class ProfileRight extends CommonDBChild {
       }
       $iterator = $DB->request($query);
       $rights = [];
-      while ($right = $iterator->next()) {
+      foreach ($iterator as $right) {
          $rights[$right['name']] = $right['rights'];
       }
       return $rights;
@@ -126,7 +126,7 @@ class ProfileRight extends CommonDBChild {
           'FROM'     => Profile::getTable()
       ]);
 
-      while ($profile = $iterator->next()) {
+      foreach ($iterator as $profile) {
          $profiles_id = $profile['id'];
          foreach ($rights as $name) {
             $res = $DB->insert(
@@ -221,7 +221,7 @@ class ProfileRight extends CommonDBChild {
       ];
       $iterator = $DB->request($criteria);
 
-      while ($data = $iterator->next()) {
+      foreach ($iterator as $data) {
          $profiles[$data['profiles_id']] = $data['rights'];
       }
       if (count($profiles)) {
@@ -278,7 +278,7 @@ class ProfileRight extends CommonDBChild {
          ]
       );
       $stmt = $DB->prepare($query);
-      while ($right = $iterator->next()) {
+      foreach ($iterator as $right) {
          $stmt->bind_param('ss', $profiles_id, $right['NAME']);
          $stmt->execute();
       }
