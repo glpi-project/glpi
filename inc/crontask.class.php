@@ -565,7 +565,7 @@ class CronTask extends CommonDBTM{
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Run frequency')."</td><td>";
-      $this->dropdownFrequency('frequency', $this->fields["frequency"]);
+      Dropdown::showFrequency('frequency', $this->fields["frequency"]);
       echo "</td></tr>";
 
       $tmpstate = $this->fields["state"];
@@ -1923,43 +1923,6 @@ class CronTask extends CommonDBTM{
             return ['description' => __("Archives log files and deletes aging ones"),
                          'parameter'   => __("Number of days to keep archived logs")];
       }
-   }
-
-
-   /**
-    * Dropdown for frequency (interval between 2 actions)
-    *
-    * @param string  $name   select name
-    * @param integer $value  default value (default 0)
-    *
-    * @return string|integer HTML output, or random part of dropdown ID.
-   **/
-   function dropdownFrequency($name, $value = 0) {
-
-      $tab = [];
-
-      $tab[MINUTE_TIMESTAMP] = sprintf(_n('%d minute', '%d minutes', 1), 1);
-
-      // Minutes
-      for ($i=5; $i<60; $i+=5) {
-         $tab[$i*MINUTE_TIMESTAMP] = sprintf(_n('%d minute', '%d minutes', $i), $i);
-      }
-
-      // Heures
-      for ($i=1; $i<24; $i++) {
-         $tab[$i*HOUR_TIMESTAMP] = sprintf(_n('%d hour', '%d hours', $i), $i);
-      }
-
-      // Jours
-      $tab[DAY_TIMESTAMP] = __('Each day');
-      for ($i=2; $i<7; $i++) {
-         $tab[$i*DAY_TIMESTAMP] = sprintf(_n('%d day', '%d days', $i), $i);
-      }
-
-      $tab[WEEK_TIMESTAMP]  = __('Each week');
-      $tab[MONTH_TIMESTAMP] = __('Each month');
-
-      Dropdown::showFromArray($name, $tab, ['value' => $value]);
    }
 
 

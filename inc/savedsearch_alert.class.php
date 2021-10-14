@@ -164,9 +164,15 @@ class SavedSearch_Alert extends CommonDBChild {
       echo "<td>" . __('Active') . "</td>";
       echo "<td>";
       Dropdown::showYesNo('is_active', $this->getField('is_active'));
-      echo "</td>";
-      echo "<td colspan='2'></td>";
-      echo "</tr>";
+      echo "</td><td>".__('Notification frequency')."</td>";
+      echo "<td>";
+      $alert = new Alert();
+      $alert->getFromDBByCrit([
+         'items_id'  => $this->fields['savedsearches_id'],
+         'itemptype' => SavedSearch::getType(),
+      ]);
+      Dropdown::showFrequency('frequency', $this->fields["frequency"]);
+      echo "</td></tr>";
       $this->showFormButtons($options);
 
       return true;
@@ -348,7 +354,28 @@ class SavedSearch_Alert extends CommonDBChild {
 
       $iterator = $DB->request([
          'FROM'   => self::getTable(),
-         'WHERE'  => ['is_active' => true]
+         'LEFT JOIN' => [
+            'glpi_alerts' => [
+               'FKEY'   => [
+                  'glpi_alerts'                => 'items_id',
+                  'glpi_savedsearches_alerts'  => 'id',
+                  [
+                     'AND' => [
+                        'glpi_alerts.itemtype' => SavedSearch_Alert::class,
+                        'glpi_alerts.type'     => Alert::PERIODICITY,
+                     ],
+                  ],
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_savedsearches_alerts.is_active' => true,
+            'OR' => [
+               ['glpi_alerts.date' => null],
+               ['glpi_alerts.date' => ['<', new QueryExpression(sprintf('CURRENT_TIMESTAMP() - INTERVAL %s second',
+                                       $DB->quoteName('glpi_savedsearches_alerts.frequency')))]],
+            ]
+         ]
       ]);
 
       if ($iterator->numrows()) {
@@ -430,11 +457,22 @@ class SavedSearch_Alert extends CommonDBChild {
 
                if ($notify) {
                   $event = 'alert' . ($savedsearch->getField('is_private') ? '' : '_' . $savedsearch->getID());
-                  $alert = new self();
-                  $alert->getFromDB($row['id']);
+                  $savedsearch_alert = new self();
+                  $savedsearch_alert->getFromDB($row['id']);
                   $data['savedsearch'] = $savedsearch;
-                  NotificationEvent::raiseEvent($event, $alert, $data);
+                  NotificationEvent::raiseEvent($event, $savedsearch_alert, $data);
                   $task->addVolume(1);
+
+                  $alert = new Alert();
+                  $alert->deleteByCriteria([
+                     'itemtype' => SavedSearch_Alert::class,
+                     'items_id' => $row['savedsearches_id'],
+                  ], 1);
+                  $alert->add([
+                     'type'     => Alert::PERIODICITY,
+                     'itemtype' => SavedSearch_Alert::class,
+                     'items_id' => $row['savedsearches_id'],
+                  ]);
                }
             } catch (\Exception $e) {
                self::restoreContext($context);
