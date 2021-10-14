@@ -1108,7 +1108,8 @@ SCSS
             ))->isGreaterThan(0);
       $options = ['parentid' => '100',
                'itemtype' => 'State',
-               'entity_restrict' =>'0'];
+               'entity_restrict' =>'0',
+               '_idor_token' => \Session::getNewIDORToken('State')];
       $values = \Dropdown::getDropdownValue($options, false);
       $this->integer($values['count'])->isEqualTo(1);
    }
