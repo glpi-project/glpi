@@ -1373,6 +1373,7 @@ class Dropdown extends DbTestCase {
                'entity_restrict' =>'0',
                '_idor_token' => \Session::getNewIDORToken(\State::getType())];
       $values = \Dropdown::getDropdownValue($options, false);
-      $this->integer($values['count'])->isEqualTo(1);
+      // 2 because the parent is also part of the result
+      $this->integer($values['count'])->isEqualTo(2);
    }
 }
