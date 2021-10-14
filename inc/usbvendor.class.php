@@ -98,6 +98,7 @@ class USBVendor extends CommonDropdown implements CacheableListInterface {
       $file_usbids = json_decode(file_get_contents($jsonfile->getJsonFilePath('usbid')), true);
       $db_usbids = $vendors->getDbList();
       $usbids = $db_usbids + $file_usbids;
+      $usbids = array_change_key_case($usbids, CASE_LOWER);
       $GLPI_CACHE->set($vendors->cache_key, $usbids);
 
       return $usbids;
@@ -151,6 +152,8 @@ class USBVendor extends CommonDropdown implements CacheableListInterface {
    public function getManufacturer($vendorid) {
       $usbids = $this->getList();
 
+      $vendorid = strtolower($vendorid);
+
       if (isset($usbids[$vendorid])) {
          $usb_manufacturer = preg_replace('/&(?!\w+;)/', '&amp;', $usbids[$vendorid]);
          if (!empty($usb_manufacturer)) {
@@ -162,7 +165,7 @@ class USBVendor extends CommonDropdown implements CacheableListInterface {
    }
 
    /**
-    * Get product name from  vendoreid and deviceid
+    * Get product name from  vendorid and deviceid
     *
     * @param string $vendorid Vendor ID to look for
     * @param string $deviceid Device ID to look for
@@ -171,6 +174,9 @@ class USBVendor extends CommonDropdown implements CacheableListInterface {
     */
    public function getProductName($vendorid, $deviceid) {
       $usbids = $this->getList();
+
+      $vendorid = strtolower($vendorid);
+      $deviceid = strtolower($deviceid);
 
       if (isset($usbids[$vendorid . '::' . $deviceid])) {
          $usb_product = preg_replace('/&(?!\w+;)/', '&amp;', $usbids[$vendorid . '::' . $deviceid]);
