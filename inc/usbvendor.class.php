@@ -151,6 +151,14 @@ class USBVendor extends CommonDropdown implements CacheableListInterface {
    public function getManufacturer($vendorid) {
       $usbids = $this->getList();
 
+      if (!isset($usbids[$vendorid])) {
+         if (isset($usbids[strtolower($vendorid)])) {
+            $vendorid = strtolower($vendorid);
+         } else if (isset($usbids[strtoupper($vendorid)])) {
+            $vendorid = strtoupper($vendorid);
+         }
+      }
+
       if (isset($usbids[$vendorid])) {
          $usb_manufacturer = preg_replace('/&(?!\w+;)/', '&amp;', $usbids[$vendorid]);
          if (!empty($usb_manufacturer)) {
@@ -162,7 +170,7 @@ class USBVendor extends CommonDropdown implements CacheableListInterface {
    }
 
    /**
-    * Get product name from  vendoreid and deviceid
+    * Get product name from  vendorid and deviceid
     *
     * @param string $vendorid Vendor ID to look for
     * @param string $deviceid Device ID to look for
