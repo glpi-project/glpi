@@ -103,7 +103,9 @@ class Right extends \CommonDBChild {
                $itemtype,
                $items_id
             );
-            $stmt->execute();
+            if (!$stmt->execute()) {
+               trigger_error($stmt->error, E_USER_ERROR);
+            }
          }
       }
    }

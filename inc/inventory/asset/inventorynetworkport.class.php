@@ -133,7 +133,9 @@ trait InventoryNetworkPort {
                's',
                $port->mac
             );
-            $stmt->execute();
+            if (!$stmt->execute()) {
+               trigger_error($stmt->error, E_USER_ERROR);
+            }
             $results = $stmt->get_result();
 
             if ($results->num_rows > 0) {
@@ -197,7 +199,9 @@ trait InventoryNetworkPort {
             $port->netmask,
             $port->gateway
          );
-         $stmt->execute();
+         if (!$stmt->execute()) {
+            trigger_error($stmt->error, E_USER_ERROR);
+         }
          $results = $stmt->get_result();
 
          $row = $results->fetch_object();
@@ -390,7 +394,9 @@ trait InventoryNetworkPort {
                   's',
                   $keydb
                );
-               $netname_stmt->execute();
+               if (!$netname_stmt->execute()) {
+                  trigger_error($stmt->error, E_USER_ERROR);
+               }
                $results = $netname_stmt->get_result();
 
                if ($results->num_rows) {
@@ -518,7 +524,9 @@ trait InventoryNetworkPort {
             's',
             $data->mac
          );
-         $stmt->execute();
+         if (!$stmt->execute()) {
+            trigger_error($stmt->error, E_USER_ERROR);
+         }
          $results = $stmt->get_result();
 
          if ($results->num_rows > 0) {
