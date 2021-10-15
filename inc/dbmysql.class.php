@@ -1734,7 +1734,7 @@ class DBmysql {
     *
     * @return void
     */
-   public function executeStatemnt(mysqli_stmt $stmt) {
+   public function executeStatemnt(mysqli_stmt $stmt): void {
       if (!$stmt->execute()) {
          trigger_error($stmt->error, E_USER_ERROR);
       }
