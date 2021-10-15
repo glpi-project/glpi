@@ -828,9 +828,7 @@ class Group_User extends CommonDBRelation{
          // save the planning completed to db
          $json_plannings = exportArrayToDB($plannings);
          $stmt->bind_param('si', $json_plannings, $users_id);
-         if (!$stmt->execute()) {
-            trigger_error($stmt->error, E_USER_ERROR);
-         }
+         $DB->executeStatement($stmt);
       }
 
       if (!$in_transaction) {
@@ -881,7 +879,7 @@ class Group_User extends CommonDBRelation{
          // save the planning completed to db
          $json_plannings = exportArrayToDB($plannings);
          $stmt->bind_param('si', $json_plannings, $users_id);
-         $stmt->execute();
+         $DB->executeStatement($stmt);
       }
 
       if (!$in_transaction) {

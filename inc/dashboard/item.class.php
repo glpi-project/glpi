@@ -129,9 +129,7 @@ class Item extends \CommonDBChild {
             $item['height'],
             $card_options
          );
-         if (!$stmt->execute()) {
-            trigger_error($stmt->error, E_USER_ERROR);
-         }
+         $DB->executeStatement($stmt);
       }
    }
 }

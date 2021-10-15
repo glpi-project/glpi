@@ -1726,4 +1726,17 @@ class DBmysql {
    public function setConnectionCharset(): void {
       DBConnection::setConnectionCharset($this->dbh, $this->use_utf8mb4);
    }
+
+   /**
+    * Executes a prepared statement
+    *
+    * @param mysqli_stmt $stmt STatement to execute
+    *
+    * @return void
+    */
+   public function executeStatemnt(mysqli_stmt $stmt) {
+      if (!$stmt->execute()) {
+         trigger_error($stmt->error, E_USER_ERROR);
+      }
+   }
 }

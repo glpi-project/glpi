@@ -280,9 +280,7 @@ class ProfileRight extends CommonDBChild {
       $stmt = $DB->prepare($query);
       foreach ($iterator as $right) {
          $stmt->bind_param('ss', $profiles_id, $right['NAME']);
-         if (!$stmt->execute()) {
-            trigger_error($stmt->error, E_USER_ERROR);
-         }
+         $DB->executeStatement($stmt);
       }
    }
 
