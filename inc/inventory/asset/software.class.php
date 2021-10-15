@@ -453,9 +453,7 @@ class Software extends InventoryAsset
             $val->name,
             $val->manufacturers_id
          );
-         if (!$stmt->execute()) {
-            trigger_error($stmt->error, E_USER_ERROR);
-         }
+         $DB->executeStatement($stmt);
          $results = $stmt->get_result();
 
          while ($row = $results->fetch_object()) {
@@ -527,9 +525,7 @@ class Software extends InventoryAsset
             $softwares_id,
             $osid
          );
-         if (!$stmt->execute()) {
-            trigger_error($stmt->error, E_USER_ERROR);
-         }
+         $DB->executeStatement($stmt);
          $results = $stmt->get_result();
 
          while ($row = $results->fetch_object()) {
@@ -572,9 +568,7 @@ class Software extends InventoryAsset
             $software->handleCategoryRules($stmt_columns);
             $stmt_values = array_values($stmt_columns);
             $stmt->bind_param($stmt_types, ...$stmt_values);
-            if (!$stmt->execute()) {
-               trigger_error($stmt->error, E_USER_ERROR);
-            }
+            $DB->executeStatement($stmt);
             $softwares_id = $DB->insertId();
             $this->softwares[$skey] = $softwares_id;
          }
@@ -631,9 +625,7 @@ class Software extends InventoryAsset
 
             $stmt_values = array_values($stmt_columns);
             $stmt->bind_param($stmt_types, ...$stmt_values);
-            if (!$stmt->execute()) {
-               trigger_error($stmt->error, E_USER_ERROR);
-            }
+            $DB->executeStatement($stmt);
             $versions_id = $DB->insertId();
             $this->versions[$vkey] = $versions_id;
          }
@@ -714,9 +706,7 @@ class Software extends InventoryAsset
             $input['entities_id'],
             $input['date_install']
          );
-         if (!$stmt->execute()) {
-            trigger_error($stmt->error, E_USER_ERROR);
-         }
+         $DB->executeStatement($stmt);
       }
    }
 
