@@ -153,3 +153,8 @@ body .modal-content, body .modal-header {
       --logo: url(#{$logo-light}) !important;
    }
 }
+
+.qtip-bootstrap {
+   background-color: $dark-mode-lighten !important;
+   color: var(--light) !important;
+}
