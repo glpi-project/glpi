@@ -3263,27 +3263,19 @@ JS;
 
       ksort($options['dates']);
 
-      $out = "";
-      $out.= "<div class='dates_timelines'>";
-
-      // add title
-      if (strlen($options['title'])) {
-         $out.= "<h2 class='header'>".$options['title']."</h2>";
+      // format dates
+      foreach ($options['dates'] as &$data) {
+         $data['date'] = date("Y-m-d H:i:s", $data['timestamp']);
       }
 
-      // construct timeline
-      $out.= "<ul>";
-      foreach ($options['dates'] as $key => $data) {
-         if ($data['timestamp'] != 0) {
-            $out.= "<li class='".$data['class']."'>&nbsp;";
-            $out.= "<time>".Html::convDateTime(date("Y-m-d H:i:s", $data['timestamp']))."</time>";
-            $out.= "<span class='dot'></span>";
-            $out.= "<label>".$data['label']."</label>";
-            $out.= "</li>";
-         }
-      }
-      $out.= "</ul>";
-      $out.= "</div>";
+      // get Html
+      $out = TemplateRenderer::getInstance()->render(
+         'components/dates_timeline.html.twig',
+         [
+            'title' => $options['title'],
+            'dates' => $options['dates'],
+         ]
+      );
 
       if ($options['display']) {
          echo $out;
