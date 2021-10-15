@@ -302,6 +302,19 @@ class Migration extends \GLPITestCase {
          "ALTER TABLE `change_table` DROP `name`  ,\n" .
          "CHANGE `NAME` `name` VARCHAR(255) COLLATE $collate DEFAULT NULL   AFTER `id` ",
       ]);
+
+      // Test change field with move to after an other column
+      $this->queries = [];
+      $this->calling($this->db)->fieldExists = true;
+      $this->output(
+         function () {
+            $this->migration->changeField('change_table', 'is_active', 'is_active', 'bool', ['value' => null]);
+            $this->migration->executeMigration();
+         }
+      )->isIdenticalTo("Change of the database layout - change_tableTask completed.");
+
+
+      $this->array($this->queries)->isIdenticalTo([]);
    }
 
    protected function fieldsFormatsProvider() {
