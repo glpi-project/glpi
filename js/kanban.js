@@ -29,6 +29,8 @@
  * ---------------------------------------------------------------------
  */
 
+/* global sortable */
+
 /**
  * Kanban rights structure
  * @since 10.0.0
@@ -324,6 +326,10 @@ class GLPIKanbanRights {
        */
       this.is_sorting_active = false;
 
+      this.sort_data = undefined;
+
+      this.mutation_observer = null;
+
       /**
        * Parse arguments and assign them to the object's properties
        * @since 9.5.0
@@ -367,12 +373,58 @@ class GLPIKanbanRights {
          self.filter();
       };
 
+      const initMutationObserver = function() {
+         self.mutation_observer = new MutationObserver((records) => {
+            records.forEach(r => {
+               if (r.addedNodes.length > 0) {
+                  if (self.is_sorting_active) {
+                     const sortable_placeholders = [...r.addedNodes].filter(n => n.classList.contains('sortable-placeholder'));
+                     if (sortable_placeholders.length > 0) {
+                        const placeholder = $(sortable_placeholders[0]);
+
+                        const current_column = placeholder.closest('.kanban-column').attr('id');
+
+                        // Compute current position based on list of sortable elements without current card.
+                        // Indeed, current card is still in DOM (but invisible), making placeholder index in DOM
+                        // not always corresponding to its position inside list of visible elements.
+                        const sortable_elements = $('#' + current_column + ' ul.kanban-body > li:not([id="' + self.sort_data.card_id + '"])');
+                        const current_position = sortable_elements.index(placeholder.get(0));
+                        const card = $('#' + self.sort_data.card_id);
+                        card.data('current-pos', current_position);
+
+                        if (!self.rights.canOrderCard()) {
+                           if (current_column === self.sort_data.source_column) {
+                              if (current_position !== self.sort_data.source_position) {
+                                 placeholder.addClass('invalid-position');
+                              } else {
+                                 placeholder.removeClass('invalid-position');
+                              }
+                           } else {
+                              if (!$(placeholder).is(':last-child')) {
+                                 placeholder.addClass('invalid-position');
+                              } else {
+                                 placeholder.removeClass('invalid-position');
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+            });
+         });
+         self.mutation_observer.observe($(self.element).get(0), {
+            subtree: true,
+            childList: true
+         });
+      };
+
       /**
        * Build DOM elements and defer registering event listeners for when the document is ready.
        * @since 9.5.0
       **/
       const build = function() {
-         self.element.trigger('kanban:pre_build');
+         $(self.element).trigger('kanban:pre_build');
+         initMutationObserver();
          if (self.show_toolbar) {
             buildToolbar();
          }
@@ -447,11 +499,11 @@ class GLPIKanbanRights {
                buildCreateColumnForm();
             }
          }
-         self.element.trigger('kanban:post_build');
+         $(self.element).trigger('kanban:post_build');
       };
 
       const buildToolbar = function() {
-         self.element.trigger('kanban:pre_build_toolbar');
+         $(self.element).trigger('kanban:pre_build_toolbar');
          let toolbar = $("<div class='kanban-toolbar card flex-row'></div>").appendTo(self.element);
          $("<select name='kanban-board-switcher'></select>").appendTo(toolbar);
          let filter_input = $("<input name='filter' class='form-control ms-1' type='text' placeholder='" + __('Search or filter results') + "'/>").appendTo(toolbar);
@@ -467,7 +519,7 @@ class GLPIKanbanRights {
             self.filters._text = text;
             self.filter();
          });
-         self.element.trigger('kanban:post_build_toolbar');
+         $(self.element).trigger('kanban:post_build_toolbar');
       };
 
       const getColumnElementFromID = function(column_id) {
@@ -951,87 +1003,69 @@ class GLPIKanbanRights {
        * @since 9.5.0
        */
       const refreshSortables = function() {
-         self.element.trigger('kanban:refresh_sortables');
+         $(self.element).trigger('kanban:refresh_sortables');
          // Make sure all items in the columns can be sorted
          const bodies = $(self.element + ' .kanban-body');
          $.each(bodies, function(b) {
             const body = $(b);
             if (body.data('sortable')) {
-               body.sortable('destroy');
+               sortable(b, 'destroy');
             }
          });
 
-         bodies.sortable({
-            connectWith: '.kanban-body',
-            containment: '.kanban-container',
-            appendTo: '.kanban-container',
+         sortable(self.element + ' .kanban-body', {
+            acceptFrom: '.kanban-body',
             items: '.kanban-item:not(.readonly):not(.temporarily-readonly)',
-            placeholder: "sortable-placeholder",
-            start: function(event, ui) {
-               self.is_sorting_active = true;
+         });
 
-               const card = ui.item;
-               // Track the column and position the card was picked up from
-               const current_column = card.closest('.kanban-column').attr('id');
-               card.data('source-col', current_column);
-               card.data('source-pos', card.index());
-            },
-            update: function(event, ui) {
-               if (this === ui.item.parent()[0]) {
-                  return self.onKanbanCardSort(ui, this);
-               }
-            },
-            change: function(event, ui) {
-               const card = ui.item;
-               const source_column = card.data('source-col');
-               const source_position = card.data('source-pos');
-               const current_column = ui.placeholder.closest('.kanban-column').attr('id');
+         $(self.element + ' .kanban-body').off('sortstart');
+         $(self.element + ' .kanban-body').on('sortstart', (e) => {
+            self.is_sorting_active = true;
 
-               // Compute current position based on list of sortable elements without current card.
-               // Indeed, current card is still in DOM (but invisible), making placeholder index in DOM
-               // not always corresponding to its position inside list of visible ements.
-               const sortable_elements = $('#' + current_column + ' ul.ui-sortable > li:not([id="' + card.attr('id') + '"])');
-               const current_position = sortable_elements.index(ui.placeholder);
-               card.data('current-pos', current_position);
+            const card = $(e.detail.item);
+            // Track the column and position the card was picked up from
+            const current_column = card.closest('.kanban-column').attr('id');
+            card.data('source-col', current_column);
+            card.data('source-pos', e.detail.origin.index);
 
-               if (!self.rights.canOrderCard()) {
-                  if (current_column === source_column) {
-                     if (current_position !== source_position) {
-                        ui.placeholder.addClass('invalid-position');
-                     } else {
-                        ui.placeholder.removeClass('invalid-position');
-                     }
-                  } else {
-                     if (!$(ui.placeholder).is(':last-child')) {
-                        ui.placeholder.addClass('invalid-position');
-                     } else {
-                        ui.placeholder.removeClass('invalid-position');
-                     }
-                  }
-               }
-            },
-            stop: function(event, ui) {
-               self.is_sorting_active = false;
-               ui.item.closest('.kanban-column').trigger('mouseenter'); // force readonly states refresh
+            self.sort_data = {
+               card_id: card.attr('id'),
+               source_column: current_column,
+               source_position: e.detail.origin.index
+            };
+         });
+
+         $(self.element + ' .kanban-body').off('sortupdate');
+         $(self.element + ' .kanban-body').on('sortupdate', function(e) {
+            const card = e.detail.item;
+            if (this === $(card).parent()[0]) {
+               return self.onKanbanCardSort(e, this);
             }
+         });
+
+         $(self.element + ' .kanban-body').off('sortstop');
+         $(self.element + ' .kanban-body').on('sortstop', (e) => {
+            self.is_sorting_active = false;
+            $(e.detail.item).closest('.kanban-column').trigger('mouseenter'); // force readonly states refresh
          });
 
          if (self.rights.canModifyView()) {
             // Enable column sorting
-            $(self.element + ' .kanban-columns').sortable({
-               connectWith: self.element + ' .kanban-columns',
+            sortable(self.element + ' .kanban-columns', {
+               acceptFrom: self.element + ' .kanban-columns',
                appendTo: '.kanban-container',
                items: '.kanban-column:not(.kanban-protected)',
-               placeholder: "sortable-placeholder",
                handle: '.kanban-column-header',
-               tolerance: 'pointer',
-               stop: function(event, ui) {
-                  const column = $(ui.item[0]);
-                  updateColumnPosition(getColumnIDFromElement(ui.item[0]), column.index());
-               }
+               orientation: 'horizontal',
             });
             $(self.element + ' .kanban-columns .kanban-column:not(.kanban-protected) .kanban-column-header').addClass('grab');
          }
+
+         $(self.element + ' .kanban-columns').off('sortstop');
+         $(self.element + ' .kanban-columns').on('sortstop', (e) => {
+            const column = e.detail.item;
+            updateColumnPosition(getColumnIDFromElement(column), $(column).index());
+         });
       };
 
       /**
@@ -1078,14 +1112,14 @@ class GLPIKanbanRights {
       /**
        * Callback function for when a kanban item is moved.
        * @since 9.5.0
-       * @param {Object}  ui       ui value directly from JQuery sortable function.
+       * @param {Object}  e      Event.
        * @param {Element} sortable Sortable object
        * @returns {Boolean}       Returns false if the sort was cancelled.
       **/
-      this.onKanbanCardSort = function(ui, sortable) {
+      this.onKanbanCardSort = function(e, sortable) {
          const target = sortable.parentElement;
-         const source = $(ui.sender);
-         const card = $(ui.item[0]);
+         const source = $(e.detail.origin.container);
+         const card = $(e.detail.item);
          const el_params = card.attr('id').split('-');
          const target_params = $(target).attr('id').split('-');
          const column_id = target_params[target_params.length - 1];
@@ -1102,7 +1136,7 @@ class GLPIKanbanRights {
                   column_value: column_id
                },
                error: function() {
-                  $(sortable).sortable('cancel');
+                  window.sortable(sortable, 'cancel');
                   return false;
                },
                success: function() {
@@ -1120,7 +1154,7 @@ class GLPIKanbanRights {
                }
             });
          } else {
-            $(sortable).sortable('cancel');
+            window.sortable(sortable, 'cancel');
             return false;
          }
       };
@@ -2211,7 +2245,7 @@ class GLPIKanbanRights {
        * @since 9.5.0
        */
       const loadState = function(callback) {
-         self.element.trigger('kanban:pre_load_state');
+         $(self.element).trigger('kanban:pre_load_state');
          $.ajax({
             type: "GET",
             url: (self.ajax_root + "kanban.php"),
@@ -2250,7 +2284,7 @@ class GLPIKanbanRights {
 
             if (callback) {
                callback(true);
-               self.element.trigger('kanban:post_load_state');
+               $(self.element).trigger('kanban:post_load_state');
             }
          });
       };
@@ -2269,7 +2303,7 @@ class GLPIKanbanRights {
        * @param {function} always Callback that is called regardless of the success of the save.
        */
       const saveState = function(rebuild_state, force_save, success, fail, always) {
-         self.element.trigger('kanban:pre_save_state');
+         $(self.element).trigger('kanban:pre_save_state');
          rebuild_state = rebuild_state !== undefined ? rebuild_state : false;
          if (!force_save && !self.user_state.is_dirty) {
             if (always) {
@@ -2301,7 +2335,7 @@ class GLPIKanbanRights {
             self.user_state.is_dirty = false;
             if (success) {
                success(data, textStatus, jqXHR);
-               self.element.trigger('kanban:post_save_state');
+               $(self.element).trigger('kanban:post_save_state');
             }
          }).fail(function(jqXHR, textStatus, errorThrown) {
             if (fail) {
@@ -2344,7 +2378,7 @@ class GLPIKanbanRights {
        * @since 9.5.0
        */
       this.init = function() {
-         self.element.trigger('kanban:pre_init');
+         $(self.element).trigger('kanban:pre_init');
          loadState(function() {
             build();
             $(document).ready(function() {
@@ -2365,7 +2399,7 @@ class GLPIKanbanRights {
                backgroundRefresh();
             });
          });
-         self.element.trigger('kanban:post_init');
+         $(self.element).trigger('kanban:post_init');
       };
 
       initParams(arguments);
