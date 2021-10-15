@@ -640,6 +640,9 @@ var Dashboard = {
       filters[filter_id] = value;
       Dashboard.setFiltersInDB(filters);
 
+      // refresh sortable
+      sortable('.filters', 'reload');
+
       // refresh all card impacted by the changed filter
       Dashboard.refreshCardsImpactedByFilter(filter_id);
    },
@@ -1105,6 +1108,7 @@ var Dashboard = {
          // we will enable it when edit mode will be toggled on
          sortable('.filters', {
             placeholderClass: 'filter-placeholder',
+            orientation: 'horizontal',
          })[0].addEventListener('sortupdate', function(e) {
             // after drag, save the order of filters in storage
             var items_after = $(e.detail.destination.items).filter('.filter');

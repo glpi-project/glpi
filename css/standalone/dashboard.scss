@@ -203,8 +203,8 @@ $break_tablet: 1400px;
                }
                border-color: #f0f0f0 !important;
 
-               input, .flatpickr, .select2 {
-                  display: none;
+               input, .flatpickr, .select2, .btn-group {
+                  display: none !important;
                }
 
                .delete-filter {
@@ -213,7 +213,16 @@ $break_tablet: 1400px;
 
                legend {
                   display: inline-block;
+                  cursor: move; // fallback
                   cursor: grab;
+                  cursor: -moz-grab;
+                  cursor: -webkit-grab;
+
+                  &:active {
+                     cursor: -webkit-grabbing;
+                     cursor:    -moz-grabbing;
+                     cursor:         grabbing;
+                  }
                }
 
                &:hover {
@@ -227,8 +236,7 @@ $break_tablet: 1400px;
                padding: 1em 1em 0.8em;
                margin-top: 1em;
                border-radius: 4px;
-               height: 10px;
-               width: 50px;
+               width: 100px;
             }
          }
 
@@ -347,6 +355,7 @@ $break_tablet: 1400px;
          display: inline-flex;
          flex-wrap: wrap;
          line-height: 14px;
+         align-items: stretch;
 
          fieldset.filter {
             border: 2px solid var(--input-border);
