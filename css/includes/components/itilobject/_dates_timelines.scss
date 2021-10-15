@@ -32,7 +32,6 @@
 .dates_timelines {
    width: 100%;
    max-width: 950px;
-   font-size: 11px;
    margin: 0 auto;
    text-align: left;
 
@@ -42,16 +41,16 @@
       &:before {
          content: '';
          position: absolute;
-         top: 0;
-         bottom: 0;
-         left: 163px;
+         top: 23px;
+         bottom: 23px;
+         left: 170px;
          width: 3px;
          background-color: #A8A8A8;
       }
    }
 
    li {
-      margin: 5px 0 25px 0;
+      margin: 35px 0;
       display: block;
    }
 
@@ -66,10 +65,10 @@
 
    .dot {
       position: absolute;
-      left: 156px;
+      left: 160px;
       display: inline-block;
-      width: 14px;
-      height: 14px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
       background-color: #FFF;
       border: 2px solid #696969;
@@ -78,7 +77,7 @@
       &:before {
          color: #929292;
          font-family: 'Font Awesome\ 5 Free';
-         padding-left: 2px;
+         padding-left: 3px;
       }
    }
 
@@ -101,7 +100,7 @@
       border: 0;
       font-size: 15px;
       height: 18px;
-      left: 155px;
+      left: 161px;
 
       &:before {
          content: '\f069';
@@ -121,7 +120,7 @@
 
          &:before {
             content: '\f12a';
-            padding-left: 5px;
+            padding-left: 8px;
             color: #E54E5A;
             font-weight: 900;
          }
@@ -130,13 +129,13 @@
 
    .checked .dot:before {
       content: '\f00c';
-      padding-left: 2px;
       font-weight: 900;
    }
 
    .end .dot {
       border: 0;
       font-size: 15px;
+      left: 163px;
 
       &:before {
          content: '\f024';
@@ -146,7 +145,7 @@
 
    label {
       position: absolute;
-      left: 180px;
+      left: 190px;
       text-align: right;
    }
 }
