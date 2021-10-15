@@ -13,7 +13,7 @@
                   {{ data['date']|relative_datetime }}
                </time>
                <span class="dot"></span>
-               <label>{{ data['label']|safe_html }}</label>
+               <label>{{ data['label']|raw }}</label>
             </li>
          {% endif %}
       {% endfor %}
