@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssetImage;
 
 /** Software Class
@@ -194,6 +195,26 @@ class Software extends CommonDBTM {
                                'is_valid' => $valid]);
          }
       }
+   }
+
+
+   /**
+    * Print the software form
+    *
+    * @param $ID integer ID of the item
+    * @param $options array
+    *     - target filename : where to go when done.
+    *     - withtemplate boolean : template or basic item
+    *
+    * @return boolean item found
+   **/
+   function showForm($ID, array $options = []) {
+      $this->initForm($ID, $options);
+      TemplateRenderer::getInstance()->display('pages/assets/software.html.twig', [
+         'item'   => $this,
+         'params' => $options,
+      ]);
+      return true;
    }
 
 

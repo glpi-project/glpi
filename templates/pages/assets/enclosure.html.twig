@@ -1,0 +1,11 @@
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+
+{% block more_fields %}
+   {{ fields.numberField('power_supplies', max(item.fields['power_supplies'], 1), 'DevicePowerSupply'|itemtype_name(get_plural_number()), {
+      'min': 1,
+      'max': 6,
+      'step': 1
+   }) }}
+{% endblock %}

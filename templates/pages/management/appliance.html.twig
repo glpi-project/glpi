@@ -1,0 +1,12 @@
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+
+{% block more_fields %}
+   {{ fields.dropdownField(
+      'ApplianceEnvironment',
+      'applianceenvironments_id',
+      item.fields['applianceenvironments_id'],
+      'ApplianceEnvironment'|itemtype_name
+   ) }}
+{% endblock %}

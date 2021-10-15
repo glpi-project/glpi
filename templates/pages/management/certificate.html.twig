@@ -1,0 +1,31 @@
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+
+{% block more_fields %}
+   {{ fields.dropdownYesNo('is_autosign', item.fields['is_autosign'], __('Self-signed')) }}
+
+   {{ fields.autoNameField(
+      'dns_name',
+      item,
+      __('DNS name'),
+      withtemplate
+   ) }}
+
+   {{ fields.autoNameField(
+      'dns_suffix',
+      item,
+      __('DNS suffix'),
+      withtemplate
+   ) }}
+
+   {{ fields.datetimeField('expire', item.fields['expire'], __('Expiration'), {
+      'helper': __('On search engine, use "Expiration contains NULL" to search licenses with no expiration date')
+   }) }}
+
+   {{ fields.textareaField('command', item.fields['command'], __('Command used')) }}
+
+   {{ fields.textareaField('certificate_request', item.fields['certificate_request'], __('Certificate request (CSR)')) }}
+
+   {{ fields.textareaField('certificate_item', item.fields['certificate_item'], 'Certificate'|itemtype_name) }}
+{% endblock %}

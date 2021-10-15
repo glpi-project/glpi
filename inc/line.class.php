@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * @since 9.2
  */
@@ -73,6 +75,26 @@ class Line extends CommonDBTM {
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
+   }
+
+
+   /**
+    * Print the line form
+    *
+    * @param $ID integer ID of the item
+    * @param $options array
+    *     - target filename : where to go when done.
+    *     - withtemplate boolean : template or basic item
+    *
+    * @return boolean item found
+   **/
+   function showForm($ID, array $options = []) {
+      $this->initForm($ID, $options);
+      TemplateRenderer::getInstance()->display('pages/management/line.html.twig', [
+         'item'   => $this,
+         'params' => $options,
+      ]);
+      return true;
    }
 
 
