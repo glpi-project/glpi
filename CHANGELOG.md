@@ -194,6 +194,7 @@ The present file will list all changes made to the project; according to the
 - `TicketTemplate::getFromDBWithDatas()`
 - `Toolbox::canUseImapPop()`
 - `Toolbox::checkSELinux()`
+- `Toolbox::commonCheckForUseGLPI()`
 - `Toolbox::convertImageToTag()`
 - `Toolbox::decrypt()`
 - `Toolbox::doubleEncodeEmails()`

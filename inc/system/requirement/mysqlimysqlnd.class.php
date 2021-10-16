@@ -41,8 +41,6 @@ if (!defined('GLPI_ROOT')) {
  */
 class MysqliMysqlnd extends Extension {
 
-   /**
-    */
    public function __construct() {
       parent::__construct('mysqli');
    }
@@ -56,11 +54,11 @@ class MysqliMysqlnd extends Extension {
       $this->validated = $extension_loaded && $driver_is_mysqlnd;
 
       if ($extension_loaded && $driver_is_mysqlnd) {
-         $this->validation_messages[] = sprintf(__('%s extension is installed'), $this->name);
+         $this->validation_messages[] = sprintf(__('%s extension is installed.'), $this->name);
       } else if ($extension_loaded && !$driver_is_mysqlnd) {
-         $this->validation_messages[] = sprintf(__('%s extension is installed but is not using mysqlnd driver'), $this->name);
+         $this->validation_messages[] = sprintf(__('%s extension is installed but is not using mysqlnd driver.'), $this->name);
       } else {
-         $this->validation_messages[] = sprintf(__('%s extension is missing'), $this->name);
+         $this->validation_messages[] = sprintf(__('%s extension is missing.'), $this->name);
       }
    }
 }

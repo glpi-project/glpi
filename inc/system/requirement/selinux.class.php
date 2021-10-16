@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
 class SeLinux extends AbstractRequirement {
 
    public function __construct() {
-      $this->title = __('Check SELinux configuration');
+      $this->title = __('SELinux configuration');
       $this->optional = true;
    }
 

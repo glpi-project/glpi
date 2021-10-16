@@ -41,7 +41,7 @@ class MysqliMysqlnd extends \GLPITestCase {
       $this->function->defined = true;
       $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
       $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['mysqli extension is installed']);
+         ->isEqualTo(['mysqli extension is installed.']);
    }
 
    public function testCheckUsingAlternativeDriver() {
@@ -51,7 +51,7 @@ class MysqliMysqlnd extends \GLPITestCase {
       $this->function->defined = false;
       $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
       $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['mysqli extension is installed but is not using mysqlnd driver']);
+         ->isEqualTo(['mysqli extension is installed but is not using mysqlnd driver.']);
    }
 
    public function testCheckOnMissingExtension() {
@@ -60,6 +60,6 @@ class MysqliMysqlnd extends \GLPITestCase {
       $this->function->extension_loaded = false;
       $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
       $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['mysqli extension is missing']);
+         ->isEqualTo(['mysqli extension is missing.']);
    }
 }

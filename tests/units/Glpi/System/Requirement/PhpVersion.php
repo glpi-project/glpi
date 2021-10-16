@@ -39,7 +39,7 @@ class PhpVersion extends \GLPITestCase {
       $this->newTestedInstance(GLPI_MIN_PHP);
       $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
       $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['PHP version is at least ' . GLPI_MIN_PHP . ' - Perfect!']);
+         ->isEqualTo(['PHP version (' . PHP_VERSION . ') is supported.']);
    }
 
    public function testCheckOutdatedVersion() {
@@ -49,7 +49,7 @@ class PhpVersion extends \GLPITestCase {
       $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(
             [
-               'You must install at least PHP 20.7.'
+               'PHP version must be at least 20.7.'
             ]
          );
    }

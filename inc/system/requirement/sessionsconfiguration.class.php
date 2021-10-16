@@ -42,14 +42,14 @@ if (!defined('GLPI_ROOT')) {
 class SessionsConfiguration extends AbstractRequirement {
 
    public function __construct() {
-      $this->title = __('Sessions test');
+      $this->title = __('Sessions configuration');
    }
 
    protected function check() {
       // Check session extension
       if (!extension_loaded('session')) {
          $this->validated = false;
-         $this->validation_messages[] = __('Your parser PHP is not installed with sessions support!');
+         $this->validation_messages[] = __('session extension is not installed.');
          return;
       }
 
@@ -74,7 +74,7 @@ class SessionsConfiguration extends AbstractRequirement {
       }
 
       $this->validated = true;
-      $this->validation_messages[] = __s('Sessions support is available - Perfect!');
+      $this->validation_messages[] = __s('Sessions configuration is OK.');
    }
 
 }

@@ -34,7 +34,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
+use Glpi\System\RequirementsManager;
 
 // Be sure to use global objects if this file is included outside normal process
 global $CFG_GLPI, $GLPI, $GLPI_CACHE;
@@ -163,13 +165,19 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
          Html::nullHeader("UPDATE NEEDED", $CFG_GLPI["root_doc"]);
          echo "<div class='container-fluid mb-4'>";
          echo "<div class='row justify-content-evenly'>";
-         echo "<div class='col-12 col-xxl-4'>";
+         echo "<div class='col-12 col-xxl-6'>";
          echo "<div class='card text-center mb-4'>";
-         echo "<table class='table table-card'>";
-         $error = Toolbox::commonCheckForUseGLPI();
-         echo "</table><br>";
 
-         if ($error) {
+         global $DB;
+         $core_requirements = (new RequirementsManager())->getCoreRequirementList($DB);
+         TemplateRenderer::getInstance()->display(
+            'install/blocks/requirements_table.html.twig',
+            [
+               'requirements' => $core_requirements,
+            ]
+         );
+
+         if ($core_requirements->hasMissingMandatoryRequirements() || $core_requirements->hasMissingOptionalRequirements()) {
             echo "<form action='".$CFG_GLPI["root_doc"]."/index.php' method='post'>";
             echo Html::submit(__s('Try again'), [
                'class' => "btn btn-primary",
@@ -177,7 +185,7 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
             ]);
             Html::closeForm();
          }
-         if ($error < 2) {
+         if (!$core_requirements->hasMissingMandatoryRequirements()) {
             $older = false;
             $newer = false;
             $dev   = false;

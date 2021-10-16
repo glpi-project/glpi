@@ -1,31 +1,6 @@
 <h3>{{ __("Checking of the compatibility of your environment with the execution of GLPI") }}</h3>
 
-<table class="table tab_check">
-   <thead>
-      <tr>
-         <th>{{ __('Test done') }}</th>
-         <th>{{ __('Results') }}</th>
-      </tr>
-   </thead>
-   <tbody>
-      {% for requirement in requirements %}
-         {% if not requirement.isOutOfContext() %}
-            <tr class="tab_bg_1">
-               <td class="b left">{{ requirement.getTitle() }}</td>
-               <td class="{{ requirement.isMissing() and not requirement.isOptional() ? 'red' : '' }}">
-                  <i class="fas {{ requirement.isValidated() ? 'fa-check' : (requirement.isOptional() ? 'fa-exclamation-triangle' : 'fa-times') }}"
-                     title="{{ requirement.getValidationMessages()|join(' ') }}"></i>
-                  {% if not requirement.isValidated() %}
-                     {% for msg in requirement.getValidationMessages() %}
-                        {{ msg }}<br />
-                     {% endfor %}
-                  {% endif %}
-               </td>
-            </tr>
-         {% endif %}
-      {% endfor %}
-   </tbody>
-</table>
+{{ include('install/blocks/requirements_table.html.twig', {requirements: requirements}, with_context = false) }}
 
 {% set common_hiddens %}
    <input type="hidden" name="language" value="{{ session('glpilanguage') }}">
@@ -59,11 +34,17 @@
 
 {% if requirements.hasMissingMandatoryRequirements() %}
    <h3>{{ __('Do you want to continue?') }}</h3>
-   {{ retry_form }}
+   <div class="text-center">
+      {{ retry_form }}
+   </div>
 {% elseif requirements.hasMissingOptionalRequirements() %}
    <h3>{{ __('Do you want to continue?') }}</h3>
-   {{ continue_form }}
-   {{ retry_form }}
+   <div class="text-center">
+      {{ continue_form }}
+      {{ retry_form }}
+   </div>
 {% else %}
-   {{ continue_form }}
+   <div class="text-center">
+      {{ continue_form }}
+   </div>
 {% endif %}

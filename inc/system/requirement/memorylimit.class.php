@@ -52,7 +52,7 @@ class MemoryLimit extends AbstractRequirement {
     * @param int $min  Minimal allocated memory.
     */
    public function __construct(int $min) {
-      $this->title = __('Allocated memory test');
+      $this->title = __('Allocated memory');
       $this->min = $min;
    }
 
@@ -67,8 +67,8 @@ class MemoryLimit extends AbstractRequirement {
       if ($limit == -1 || $limit >= $this->min) {
          $this->validated = true;
          $this->validation_messages[] = $limit > 0
-            ? sprintf(__('Allocated memory > %s - Perfect!'), \Toolbox::getSize($this->min))
-            : __('Unlimited memory - Perfect!');
+            ? sprintf(__('Allocated memory is sufficient.'), \Toolbox::getSize($this->min))
+            : __('Allocated memory is unlimited.');
       } else {
          $this->validated = false;
          $this->validation_messages[] = sprintf( __('%1$s: %2$s'), __('Allocated memory'), \Toolbox::getSize($limit));

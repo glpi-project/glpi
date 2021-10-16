@@ -32,37 +32,39 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class ExtensionClass extends \GLPITestCase {
+class ExtensionGroup extends \GLPITestCase {
 
-   public function testCheckOnExistingExtensionByClass() {
+   public function testCheckOnExistingExtension() {
 
-      $this->newTestedInstance('psr-log', 'Psr\\Log\\NullLogger');
+      $this->newTestedInstance('test', ['curl', 'zlib']);
       $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
       $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['psr-log extension is installed.']);
-   }
-
-   public function testCheckOnExistingExtensionByInterface() {
-
-      $this->newTestedInstance('psr-simplecache', 'Psr\\SimpleCache\\CacheInterface');
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-      $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['psr-simplecache extension is installed.']);
+         ->isEqualTo(['Following extensions are installed: curl, zlib.']);
    }
 
    public function testCheckOnMissingMandatoryExtension() {
 
-      $this->newTestedInstance('fake_ext', 'Fake\\FakeExtension');
+      $this->newTestedInstance('test', ['curl', 'fake_ext']);
       $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
       $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['fake_ext extension is missing.']);
+         ->isEqualTo(
+            [
+               'Following extensions are installed: curl.',
+               'Following extensions are missing: fake_ext.'
+            ]
+         );
    }
 
    public function testCheckOnMissingOptionalExtension() {
 
-      $this->newTestedInstance('fake_ext', 'Fake\\FakeExtension', true);
+      $this->newTestedInstance('test', ['curl', 'fake_ext'], true);
       $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
       $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['fake_ext extension is not present.']);
+         ->isEqualTo(
+            [
+               'Following extensions are installed: curl.',
+               'Following extensions are not present: fake_ext.'
+            ]
+         );
    }
 }

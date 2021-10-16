@@ -44,8 +44,6 @@ body {
 
 #principal {
    width:760px;
-   font-family: Verdana;
-   font-size:12px;
    text-align: center;
    margin: auto;
    padding: 40px 40px 40px 40px;
@@ -94,7 +92,7 @@ p {
 }
 
 .tab_check td {
-   font-size:11px;
+   font-size:12px;
    border-bottom:1px solid #bbbbbb;
 }
 
@@ -155,4 +153,9 @@ h3 {
 
 .form-control:focus {
    color: rgb(32, 32, 32);
+}
+
+.popover.validation-messages {
+   max-width: none;
+   white-space: nowrap;
 }

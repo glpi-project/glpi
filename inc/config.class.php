@@ -2135,6 +2135,12 @@ class Config extends CommonDBTM {
                  'check'   => 'Twig\\Environment' ],
                [ 'name'    => 'twig/string-extra',
                  'check'   => 'Twig\\Extra\\String\\StringExtension' ],
+               [ 'name'    => 'symfony/polyfill-ctype',
+                 'check'   => 'ctype_digit' ],
+               [ 'name'    => 'symfony/polyfill-iconv',
+                 'check'   => 'iconv' ],
+               [ 'name'    => 'symfony/polyfill-mbstring',
+                 'check'   => 'mb_list_encodings' ],
                [ 'name'    => 'symfony/polyfill-php80',
                  'check'   => 'str_contains' ],
       ];
@@ -2502,10 +2508,6 @@ class Config extends CommonDBTM {
             'mysqli'   => [
                'required'  => true
             ],
-            'ctype'    => [
-               'required'  => true,
-               'function'  => 'ctype_digit',
-            ],
             'fileinfo' => [
                'required'  => true,
                'class'     => 'finfo'
@@ -2513,12 +2515,6 @@ class Config extends CommonDBTM {
             'json'     => [
                'required'  => true,
                'function'  => 'json_encode'
-            ],
-            'mbstring' => [
-               'required'  => true,
-            ],
-            'iconv'    => [
-               'required'  => true,
             ],
             'zlib'     => [
                'required'  => true,

@@ -2,9 +2,9 @@
   "php-core-extensions": [
     "core", "standard",
 
-    "ctype", "dom", "date", "fileinfo", "filter", "iconv", "json", "libxml", "pcre", "reflection", "session", "simplexml", "spl", "xml",
+    "dom", "date", "fileinfo", "filter", "json", "libxml", "pcre", "reflection", "session", "simplexml", "spl", "xml",
 
-    "curl", "gd", "intl", "mbstring", "mysqli", "zlib",
+    "curl", "gd", "intl", "mysqli", "zlib",
 
     "exif", "ldap", "pcntl", "xmlrpc", "zip"
   ],

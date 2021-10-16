@@ -57,6 +57,9 @@
         "symfony/cache": "^5.2",
         "symfony/console": "^5.0",
         "symfony/dom-crawler": "^5.3",
+        "symfony/polyfill-ctype": "^1.23",
+        "symfony/polyfill-iconv": "^1.23",
+        "symfony/polyfill-mbstring": "^1.23",
         "symfony/polyfill-php80": "^1.23",
         "true/punycode": "^2.1",
         "twig/string-extra": "^3.3",
@@ -76,7 +79,6 @@
     },
     "replace": {
         "paragonie/random_compat": "*",
-        "symfony/polyfill-ctype": "*",
         "symfony/polyfill-intl-grapheme": "*",
         "symfony/polyfill-intl-idn": "*",
         "symfony/polyfill-intl-normalizer": "*",

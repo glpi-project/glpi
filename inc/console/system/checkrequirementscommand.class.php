@@ -80,13 +80,26 @@ class CheckRequirementsCommand extends AbstractCommand {
             $status = sprintf('<%s>[%s]</>', 'fg=black;bg=green', __('OK'));
          } else {
             $status = $requirement->isOptional()
-               ? sprintf('<%s>[%s]</> ', 'fg=white;bg=yellow', __('WARNING'))
+               ? sprintf('<%s>[%s]</> ', 'fg=white;bg=yellow', __('INFO'))
                : sprintf('<%s>[%s]</> ', 'fg=white;bg=red', __('ERROR'));
+         }
+
+         $badge = $requirement->isOptional()
+            ? sprintf('<%s>[%s]</> ', 'fg=black;bg=bright-blue', mb_strtoupper(__('Suggested')))
+            : sprintf('<%s>[%s]</> ', 'fg=black;bg=bright-yellow', mb_strtoupper(__('Required')));
+         $title = $badge . '<options=bold>' . $requirement->getTitle() . '</>';
+         if (!empty($description = $requirement->getDescription())) {
+            // wordwrap to to keep table width acceptable
+            $wrapped = wordwrap($description, 70, '-----');
+            $lines = explode('-----', $wrapped);
+            foreach ($lines as $line) {
+               $title .= "\n\e[2m\e[3m" . $line . "\e[0m";
+            }
          }
 
          $informations->addRow(
             [
-               $requirement->getTitle(),
+               $title,
                $status,
                $requirement->isValidated() ? '' : implode("\n", $requirement->getValidationMessages())
             ]

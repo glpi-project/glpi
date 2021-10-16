@@ -39,7 +39,7 @@ class MemoryLimit extends \GLPITestCase {
       $this->newTestedInstance(32 * 1024 * 1024);
       $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
       $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['Allocated memory > 32 Mio - Perfect!']);
+         ->isEqualTo(['Allocated memory is sufficient.']);
    }
 
    public function testCheckWithNotEnoughMemory() {

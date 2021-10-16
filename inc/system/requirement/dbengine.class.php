@@ -49,7 +49,7 @@ class DbEngine extends AbstractRequirement {
    private $db;
 
    public function __construct(\DBmysql $db) {
-      $this->title = __('Testing DB engine version');
+      $this->title = __('DB engine version');
       $this->db = $db;
    }
 
@@ -66,13 +66,13 @@ class DbEngine extends AbstractRequirement {
       if ($is_supported) {
          $this->validated = true;
          $this->validation_messages[] = sprintf(
-            __('Database version seems correct (%s) - Perfect!'),
+            __('Database engine version (%s) is supported.'),
             $version
          );
       } else {
          $this->validated = false;
          $this->validation_messages[] = sprintf(
-            __('Your database engine version seems too old: %s.'),
+            __('Database engine version (%s) is not supported.'),
             $version
          );
       }
