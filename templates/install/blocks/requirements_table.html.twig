@@ -1,0 +1,34 @@
+<table class="table tab_check">
+   <thead>
+      <tr>
+         <th>{{ __('Test done') }}</th>
+         <th>{{ __('Results') }}</th>
+      </tr>
+   </thead>
+   <tbody>
+      {% for requirement in requirements %}
+         {% if not requirement.isOutOfContext() %}
+            <tr class="tab_bg_1">
+               <td class="text-start">
+                  {% if requirement.isOptional() %}
+                     <span class="badge bg-secondary">{{ __('Suggested') }}</span>
+                  {% else %}
+                     <span class="badge bg-warning">{{ __('Required') }}</span>
+                  {% endif %}
+                  <strong>{{ requirement.getTitle() }}</strong><br />
+                  <em>{{ requirement.getDescription() }}</em>
+               </td>
+               <td class="{{ requirement.isMissing() and not requirement.isOptional() ? 'red' : '' }}">
+                  <span data-bs-toggle="popover"
+                        data-bs-placement="right"
+                        data-bs-html="true"
+                        data-bs-custom-class="validation-messages"
+                        data-bs-content="{{ requirement.getValidationMessages()|join('<br />') }}">
+                     <i class="fas {{ requirement.isValidated() ? 'fa-check' : (requirement.isOptional() ? 'fa-exclamation-triangle' : 'fa-times') }}"></i>
+                  </span>
+               </td>
+            </tr>
+         {% endif %}
+      {% endfor %}
+   </tbody>
+</table>

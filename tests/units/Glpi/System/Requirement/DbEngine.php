@@ -39,47 +39,47 @@ class DbEngine extends \GLPITestCase {
          [
             'version'   => '5.5.38-0ubuntu0.14.04.1',
             'validated' => false,
-            'messages'  => ['Your database engine version seems too old: 5.5.38.'],
+            'messages'  => ['Database engine version (5.5.38) is not supported.'],
          ],
          [
             'version'   => '5.6.46-log',
             'validated' => false,
-            'messages'  => ['Your database engine version seems too old: 5.6.46.'],
+            'messages'  => ['Database engine version (5.6.46) is not supported.'],
          ],
          [
             'version'   => '5.7.50-log',
             'validated' => true,
-            'messages'  => ['Database version seems correct (5.7.50) - Perfect!'],
+            'messages'  => ['Database engine version (5.7.50) is supported.'],
          ],
          [
             'version'   => '8.0.23-standard',
             'validated' => true,
-            'messages'  => ['Database version seems correct (8.0.23) - Perfect!'],
+            'messages'  => ['Database engine version (8.0.23) is supported.'],
          ],
          [
             'version'   => '10.1.48-MariaDB',
             'validated' => false,
-            'messages'  => ['Your database engine version seems too old: 10.1.48.'],
+            'messages'  => ['Database engine version (10.1.48) is not supported.'],
          ],
          [
             'version'   => '10.2.36-MariaDB',
             'validated' => true,
-            'messages'  => ['Database version seems correct (10.2.36) - Perfect!'],
+            'messages'  => ['Database engine version (10.2.36) is supported.'],
          ],
          [
             'version'   => '10.3.28-MariaDB',
             'validated' => true,
-            'messages'  => ['Database version seems correct (10.3.28) - Perfect!'],
+            'messages'  => ['Database engine version (10.3.28) is supported.'],
          ],
          [
             'version'   => '10.4.8-MariaDB-1:10.4.8+maria~bionic',
             'validated' => true,
-            'messages'  => ['Database version seems correct (10.4.8) - Perfect!'],
+            'messages'  => ['Database engine version (10.4.8) is supported.'],
          ],
          [
             'version'   => '10.5.9-MariaDB',
             'validated' => true,
-            'messages'  => ['Database version seems correct (10.5.9) - Perfect!'],
+            'messages'  => ['Database engine version (10.5.9) is supported.'],
          ],
       ];
    }

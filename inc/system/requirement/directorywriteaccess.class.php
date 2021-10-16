@@ -49,58 +49,60 @@ class DirectoryWriteAccess extends AbstractRequirement {
    private $path;
 
    /**
-    * @param string $path    Directory path.
-    * @param bool $optional  Indicated if write access is optional.
+    * @param string      $path         Directory path.
+    * @param bool        $optional     Indicated if write access is optional.
+    * @param string|null $description  Requirement description.
     */
-   public function __construct(string $path, bool $optional = false) {
+   public function __construct(string $path, bool $optional = false, ?string $description = null) {
       $this->path = $path;
       $this->optional = $optional;
+      $this->description = $description;
 
       switch (realpath($this->path)) {
          case realpath(GLPI_CACHE_DIR):
-            $this->title = __('Checking write permissions for cache files');
+            $this->title = __('Permissions for cache files');
             break;
          case realpath(GLPI_CONFIG_DIR):
-            $this->title = __('Checking write permissions for setting files');
+            $this->title = __('Permissions for setting files');
             break;
          case realpath(GLPI_CRON_DIR):
-            $this->title = __('Checking write permissions for automatic actions files');
+            $this->title = __('Permissions for automatic actions files');
             break;
          case realpath(GLPI_DOC_DIR):
-            $this->title = __('Checking write permissions for document files');
+            $this->title = __('Permissions for document files');
             break;
          case realpath(GLPI_DUMP_DIR):
-            $this->title = __('Checking write permissions for dump files');
+            $this->title = __('Permissions for dump files');
             break;
          case realpath(GLPI_GRAPH_DIR):
-            $this->title = __('Checking write permissions for graphic files');
+            $this->title = __('Permissions for graphic files');
             break;
          case realpath(GLPI_LOCK_DIR):
-            $this->title = __('Checking write permissions for lock files');
+            $this->title = __('Permissions for lock files');
             break;
          case realpath(GLPI_MARKETPLACE_DIR):
-            $this->title = __('Checking write permissions for marketplace plugins directory');
+            $this->title = __('Permissions for marketplace directory');
             break;
          case realpath(GLPI_PLUGIN_DOC_DIR):
-            $this->title = __('Checking write permissions for plugins document files');
+            $this->title = __('Permissions for plugins document files');
             break;
          case realpath(GLPI_PICTURE_DIR):
-            $this->title = __('Checking write permissions for pictures files');
+            $this->title = __('Permissions for pictures files');
             break;
          case realpath(GLPI_RSS_DIR):
-            $this->title = __('Checking write permissions for rss files');
+            $this->title = __('Permissions for rss files');
             break;
          case realpath(GLPI_SESSION_DIR):
-            $this->title = __('Checking write permissions for session files');
+            $this->title = __('Permissions for session files');
             break;
          case realpath(GLPI_TMP_DIR):
-            $this->title = __('Checking write permissions for temporary files');
+            $this->title = __('Permissions for temporary files');
             break;
          case realpath(GLPI_UPLOAD_DIR):
-            $this->title = __('Checking write permissions for upload files');
+            $this->title = __('Permissions for upload files');
             break;
          default:
-            $this->title = sprintf(__('Checking write permissions for directory %s'), $this->path);
+            $this->title = sprintf(__('Permissions for directory %s'), $this->path);
             break;
       }
    }

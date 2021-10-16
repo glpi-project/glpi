@@ -54,7 +54,8 @@ class ProtectedWebAccess extends AbstractRequirement {
     * @param array $directories  Paths of directories to check.
     */
    public function __construct(array $directories) {
-      $this->title = __('Web access to files directory is protected');
+      $this->title = __('Protected access to files directory');
+      $this->description = __('Web access to GLPI var directories should be disabled to prevent unauthorized access to them.');
       $this->optional = true;
 
       $this->directories = $directories;

@@ -56,7 +56,7 @@ class LogsWriteAccess extends AbstractRequirement {
     */
    public function __construct(LoggerInterface $logger) {
       $this->logger = $logger;
-      $this->title = __('Checking write permissions for log files');
+      $this->title = __('Permissions for log files');
    }
 
    protected function check() {

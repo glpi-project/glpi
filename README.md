@@ -52,24 +52,18 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
 * MariaDB >= 10.2 or MySQL >= 5.7
 * PHP 7.4 or higher
 * Mandatory PHP extensions:
-    - ctype
-    - curl
-    - gd (picture generation)
-    - iconv
-    - intl
-    - json
-    - mbstring
-    - mysqli
-    - session
-    - simplexml
-    - zlib
+    - dom, fileinfo, json, session, simplexml (these are defaultly enabled in PHP)
+    - curl (access to remote resoueces, like inventory agents, marketplace API, RSS feeds, ...)
+    - gd (pictures handling)
+    - intl (internationalization)
+    - libxml (XML handling)
+    - mysqli (communication with database server)
+    - zlib (handling of compressed communication with inventory agents, installation of gzip packages from marketplace, PDF generation)
 
-* Recommended PHP extensions (to enable optional features)
+* Suggested PHP extensions
     - exif (security enhancement on images validation)
-    - imap (mail collector and users authentication)
-    - ldap (users authentication)
-    - openssl (encrypted communication)
-    - sodium (performances enhancement on sensitive data encryption/decryption)
+    - ldap (usage of authentication through remote LDAP server)
+    - openssl (email sending using SSL/TLS)
     - zip and bz2 (installation of zip and bz2 packages from marketplace)
 
  * Supported browsers:

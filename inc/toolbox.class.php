@@ -33,7 +33,6 @@
 use Glpi\Console\Application;
 use Glpi\Event;
 use Glpi\Mail\Protocol\ProtocolInterface;
-use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Sanitizer;
 use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
@@ -858,56 +857,6 @@ class Toolbox {
          return 2;
       }
       return 3;
-   }
-
-
-   /**
-    * Check GLPI system requirement.
-    *
-    * @param boolean $isInstall Is the check run on a install process (don't check DB as not configured yet)
-    *
-    * @return integer
-    *    2 = missing mandatory requirement
-    *    1 = missing optional requirement
-    *    0 = OK
-    */
-   static function commonCheckForUseGLPI($isInstall = false) {
-      global $DB;
-
-      echo "<thead><tr><th>".__('Test done')."</th><th >".__('Results')."</th></tr></thead>";
-
-      $core_requirements = (new RequirementsManager())->getCoreRequirementList($isInstall ? null : $DB);
-      /* @var \Glpi\System\Requirement\RequirementInterface $requirement */
-      foreach ($core_requirements as $requirement) {
-         if ($requirement->isOutOfContext()) {
-            continue; // skip requirement if not relevant
-         }
-
-         echo '<tr class="tab_bg_1">';
-         echo '<td class="b left">' . $requirement->getTitle() . '</td>';
-
-         $class = $requirement->isMissing() && !$requirement->isOptional() ? 'red' : '';
-         $pict  = $requirement->isValidated()
-            ? 'fas fa-check'
-            : ($requirement->isOptional() ? 'fas fa-exclamation-triangle' : 'fas fa-times');
-         $messages = Html::entities_deep($requirement->getValidationMessages());
-
-         echo '<td class="' . $class . '">';
-         echo '<i class="' . $pict . '" title="' . implode(' ', $messages) . '"> </i>';
-         if (!$requirement->isValidated()) {
-            echo implode('<br />', $messages);
-         }
-         echo '</td>';
-         echo '</tr>';
-      }
-
-      if ($core_requirements->hasMissingMandatoryRequirements()) {
-         return 2;
-      } else if ($core_requirements->hasMissingOptionalRequirements()) {
-         return 1;
-      } else {
-         return 0;
-      }
    }
 
 

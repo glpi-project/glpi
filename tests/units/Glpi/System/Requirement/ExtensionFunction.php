@@ -39,7 +39,7 @@ class ExtensionFunction extends \GLPITestCase {
       $this->newTestedInstance('xml', 'utf8_decode');
       $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
       $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['xml extension is installed']);
+         ->isEqualTo(['xml extension is installed.']);
    }
 
    public function testCheckOnMissingMandatoryExtension() {
@@ -47,7 +47,7 @@ class ExtensionFunction extends \GLPITestCase {
       $this->newTestedInstance('fake_ext', 'fake_extension_function');
       $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
       $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['fake_ext extension is missing']);
+         ->isEqualTo(['fake_ext extension is missing.']);
    }
 
    public function testCheckOnMissingOptionalExtension() {
@@ -55,6 +55,6 @@ class ExtensionFunction extends \GLPITestCase {
       $this->newTestedInstance('fake_ext', 'fake_extension_function', true);
       $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
       $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['fake_ext extension is not present']);
+         ->isEqualTo(['fake_ext extension is not present.']);
    }
 }

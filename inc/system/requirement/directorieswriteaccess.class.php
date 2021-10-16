@@ -37,58 +37,37 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * @since 9.5.0
+ * @since 10.0.0
  */
-interface RequirementInterface {
+class DirectoriesWriteAccess extends AbstractRequirement {
 
    /**
-    * Get the title of the requirement.
+    * Directories paths.
     *
-    * @return string
+    * @var string[]
     */
-   public function getTitle(): string;
+   private $paths;
 
    /**
-    * Get the description of the requirement.
-    *
-    * @return null|string
+    * @param string   $title     Requirement title.
+    * @param string[] $paths     Directories paths.
+    * @param bool     $optional  Indicated if write access is optional.
     */
-   public function getDescription(): ?string;
+   public function __construct(string $title, array $paths, bool $optional = false) {
+      $this->title = $title;
+      $this->paths = $paths;
+      $this->optional = $optional;
+   }
 
-   /**
-    * Get the validation messages of the requirement.
-    *
-    * @return string[]
-    */
-   public function getValidationMessages(): array;
+   protected function check() {
 
-   /**
-    * Indicates if requirement is missing on system.
-    *
-    * @return bool
-    */
-   public function isMissing(): bool;
+      $this->validated = true;
 
-   /**
-    * Indicates if requirement is considered as optional.
-    *
-    * @return bool
-    */
-   public function isOptional(): bool;
-
-   /**
-    * Indicates if requirement is considered as out of context
-    * (i.e. system is not compatible).
-    *
-    * @return bool
-    */
-   public function isOutOfContext(): bool;
-
-   /**
-    * Indicates if requirement is validated on system.
-    *
-    * @return bool
-    */
-   public function isValidated(): bool;
+      foreach ($this->paths as $path) {
+         $directory_write_access = new DirectoryWriteAccess($path);
+         $this->validated = $this->validated && $directory_write_access->isValidated();
+         $this->validation_messages = array_merge($this->validation_messages, $directory_write_access->getValidationMessages());
+      }
+   }
 
 }

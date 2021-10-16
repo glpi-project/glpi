@@ -39,7 +39,7 @@ class SessionsConfiguration extends \GLPITestCase {
       $this->newTestedInstance();
       $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
       $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['Sessions support is available - Perfect!']);
+         ->isEqualTo(['Sessions configuration is OK.']);
    }
 
    public function testCheckWithMissingExtension() {
@@ -49,7 +49,7 @@ class SessionsConfiguration extends \GLPITestCase {
       $this->newTestedInstance();
       $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
       $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['Your parser PHP is not installed with sessions support!']);
+         ->isEqualTo(['session extension is not installed.']);
    }
 
    public function testCheckWithAutostart() {

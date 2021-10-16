@@ -52,7 +52,7 @@ class PhpVersion extends AbstractRequirement {
     * @param string $min_version  Minimal required PHP version
     */
    public function __construct(string $min_version) {
-      $this->title = __('Testing PHP Parser');
+      $this->title = __('PHP Parser');
       $this->min_version = $min_version;
    }
 
@@ -60,8 +60,8 @@ class PhpVersion extends AbstractRequirement {
       $this->validated = version_compare(PHP_VERSION, $this->min_version, '>=');
 
       $this->validation_messages[] = $this->validated
-         ? sprintf(__('PHP version is at least %s - Perfect!'), $this->min_version)
-         : sprintf(__('You must install at least PHP %s.'), $this->min_version);
+         ? sprintf(__('PHP version (%s) is supported.'), PHP_VERSION)
+         : sprintf(__('PHP version must be at least %s.'), $this->min_version);
    }
 
 }

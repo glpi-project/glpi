@@ -70,6 +70,13 @@ abstract class AbstractRequirement implements RequirementInterface {
    protected $title;
 
    /**
+    * Requirement description.
+    *
+    * @var string
+    */
+   protected $description;
+
+   /**
     * Flag that indicates if requirement is validated on system.
     *
     * @var bool
@@ -109,6 +116,12 @@ abstract class AbstractRequirement implements RequirementInterface {
       $this->doCheck();
 
       return $this->title;
+   }
+
+   public function getDescription(): ?string {
+      $this->doCheck();
+
+      return $this->description;
    }
 
    public function getValidationMessages(): array {
