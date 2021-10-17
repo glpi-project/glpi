@@ -109,6 +109,12 @@ $input-border: $dark-mode-text !default;
    .card {
       border: 1px solid $input-border;
    }
+
+   // Manually applied patch from unmerged PR tabler/tabler#855
+   .alert {
+      background-color: $dark;
+      color: inherit;
+   }
 }
 
 input[type="color"] {
