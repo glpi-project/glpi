@@ -293,3 +293,10 @@ table {
    background-color: $color-contrast-light;
    color: $dark;
 }
+
+.list-group .list-group-item {
+   color: inherit;
+   &:hover {
+      background-color: $hover-bg;
+   }
+}
