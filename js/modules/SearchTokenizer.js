@@ -73,7 +73,7 @@ export default class SearchTokenizer {
       let tag = null;
 
       while ((token = this.token_pattern.exec(input)) !== null) {
-         const prefix = token[1];
+         let prefix = token[1];
          let term = token[2].trim();
 
          if (/^".+"$/.test(term)) {
@@ -86,6 +86,7 @@ export default class SearchTokenizer {
          if (prefix) {
             if (prefix === this.EXCLUSION_PREFIX) {
                is_exclusion = true;
+               [tag, term] = term.split(':', 2);
             } else {
                // Prefix without the separator
                tag = prefix.slice(0, -1);
@@ -95,7 +96,6 @@ export default class SearchTokenizer {
          if (this.isAllowedTag(tag)) {
             result.tokens.push(new Token(term, tag, is_exclusion));
          } else if (!this.drop_unallowed_tags) {
-            console.log('Not allowed tag: ' + tag);
             result.tokens.push(new Token(token[0], null, false));
          }
       }

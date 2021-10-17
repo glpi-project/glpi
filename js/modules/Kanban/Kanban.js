@@ -540,7 +540,10 @@ class GLPIKanbanRights {
                _text: ''
             };
             self.filters._text = result.getFullPhrase();
-            result.getTaggedTerms().forEach(t => self.filters[t.tag] = t.term);
+            result.getTaggedTerms().forEach(t => self.filters[t.tag] = {
+               term: t.term || '',
+               exclusion: t.exclusion || false
+            });
             self.filter();
          }));
          $(self.element).trigger('kanban:post_build_toolbar');
@@ -2105,6 +2108,32 @@ class GLPIKanbanRights {
             const card = $(item);
             let shown = true;
             const title = card.find(".kanban-item-title span").text();
+
+            const filter_include = (filter_data, haystack) => {
+               if ((!haystack.toLowerCase().includes(filter_data.term.toLowerCase())) !== filter_data.exclusion) {
+                  shown = false;
+               }
+            };
+
+            const filter_equal = (filter_data, target) => {
+               if ((target != filter_data.term) !== filter_data.exclusion) {
+                  shown = false;
+               }
+            };
+
+            const filter_teammember = (filter_data, itemtype) => {
+               const team_members = card.data('_team');
+               let has_matching_member = false;
+               $.each(team_members, (i, m) => {
+                  if (m.itemtype === itemtype && (m.name.toLowerCase().includes(filter_data.term.toLowerCase()) !== filter_data.exclusion)) {
+                     has_matching_member = true;
+                  }
+               });
+               if (!has_matching_member) {
+                  shown = false;
+               }
+            };
+
             if (self.filters._text) {
                try {
                   if (!title.match(new RegExp(self.filters._text, 'i'))) {
@@ -2119,32 +2148,24 @@ class GLPIKanbanRights {
             }
 
             if (self.filters.title !== undefined) {
-               if (!title.toLowerCase().includes(self.filters.title.toLowerCase())) {
-                  shown = false;
-               }
+               filter_include(self.filters.title, title);
             }
 
             if (self.filters.type !== undefined) {
-               if (card.attr('id').split('-')[0].toLowerCase() !== self.filters.type.toLowerCase()) {
-                  shown = false;
-               }
+               filter_equal(self.filters.type, card.attr('id').split('-')[0]);
             }
 
             if (self.filters.milestone !== undefined) {
-               const milestone_val = (self.filters.milestone == '0' || self.filters.milestone == 'false') ? 0 : 1;
-               if (card.data('is_milestone') != milestone_val) {
-                  shown = false;
-               }
+               self.filters.milestone.term = (self.filters.milestone.term == '0' || self.filters.milestone.term == 'false') ? 0 : 1;
+               filter_equal(self.filters.milestone, card.data('is_milestone'));
             }
 
             if (self.filters.content !== undefined) {
-               if (!card.data('content').toLowerCase().includes(self.filters.content.toLowerCase())) {
-                  shown = false;
-               }
+               filter_include(self.filters.content, card.data('content'));
             }
 
             if (self.filters.team !== undefined) {
-               const team_search = self.filters.team.toLowerCase();
+               const team_search = self.filters.team.term.toLowerCase();
                const team_members = card.data('_team');
                let has_matching_member = false;
                $.each(team_members, (i, m) => {
@@ -2157,33 +2178,20 @@ class GLPIKanbanRights {
                }
             }
 
-            const search_teammember = (itemtype, term) => {
-               const team_members = card.data('_team');
-               let has_matching_member = false;
-               $.each(team_members, (i, m) => {
-                  if (m.itemtype === itemtype && m.name.toLowerCase().includes(term)) {
-                     has_matching_member = true;
-                  }
-               });
-               if (!has_matching_member) {
-                  shown = false;
-               }
-            };
-
             if (self.filters.user !== undefined) {
-               search_teammember('User', self.filters.user.toLowerCase());
+               filter_teammember(self.filters.user, 'User');
             }
 
             if (self.filters.group !== undefined) {
-               search_teammember('Group', self.filters.group.toLowerCase());
+               filter_teammember(self.filters.group, 'Group');
             }
 
             if (self.filters.supplier !== undefined) {
-               search_teammember('Supplier', self.filters.supplier.toLowerCase());
+               filter_teammember(self.filters.supplier, 'Supplier');
             }
 
             if (self.filters.contact !== undefined) {
-               search_teammember('Contact', self.filters.contact.toLowerCase());
+               filter_teammember(self.filters.contact, 'Contact');
             }
 
             if (!shown) {
