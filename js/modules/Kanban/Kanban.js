@@ -2076,6 +2076,7 @@ class GLPIKanbanRights {
                card_obj.data(k, v);
             });
          }
+         card_obj.data('_team', card['_team']);
          self.updateColumnCount(column_el);
       };
 
@@ -2137,9 +2138,52 @@ class GLPIKanbanRights {
             }
 
             if (self.filters.content !== undefined) {
-               if (card.data('content').toLowerCase() !== self.filters.content.toLowerCase()) {
+               if (!card.data('content').toLowerCase().includes(self.filters.content.toLowerCase())) {
                   shown = false;
                }
+            }
+
+            if (self.filters.team !== undefined) {
+               const team_search = self.filters.team.toLowerCase();
+               const team_members = card.data('_team');
+               let has_matching_member = false;
+               $.each(team_members, (i, m) => {
+                  if (m.name.toLowerCase().includes(team_search)) {
+                     has_matching_member = true;
+                  }
+               });
+               if (!has_matching_member) {
+                  shown = false;
+               }
+            }
+
+            const search_teammember = (itemtype, term) => {
+               const team_members = card.data('_team');
+               let has_matching_member = false;
+               $.each(team_members, (i, m) => {
+                  if (m.itemtype === itemtype && m.name.toLowerCase().includes(term)) {
+                     has_matching_member = true;
+                  }
+               });
+               if (!has_matching_member) {
+                  shown = false;
+               }
+            };
+
+            if (self.filters.user !== undefined) {
+               search_teammember('User', self.filters.user.toLowerCase());
+            }
+
+            if (self.filters.group !== undefined) {
+               search_teammember('Group', self.filters.group.toLowerCase());
+            }
+
+            if (self.filters.supplier !== undefined) {
+               search_teammember('Supplier', self.filters.supplier.toLowerCase());
+            }
+
+            if (self.filters.contact !== undefined) {
+               search_teammember('Contact', self.filters.contact.toLowerCase());
             }
 
             if (!shown) {
