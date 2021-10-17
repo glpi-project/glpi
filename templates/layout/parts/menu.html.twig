@@ -32,7 +32,7 @@
                {% if sublevel['page'] is defined %}
                <a class="dropdown-item {{ menu_active == sublevel['title'] ? 'active' : '' }}"
                   href="{{ path(sublevel['page']) }}"
-                  accesskey="{{ sublevel['shortcut'] ?? '' }}">
+                  accesskey="{{ sublevel['shortcut'] ?? '' }}" title="{{ sublevel['title'] }}">
                   <i class="fa-fw {{ sublevel['icon'] ?? '' }}"></i>
                   {{ sublevel['title']|shortcut(sublevel['shortcut'] ?? '') }}
                </a>
