@@ -73,8 +73,14 @@ class Socket extends CommonDBChild {
       return Session::haveRight(static::$rightname, CREATE);
    }
 
+
    function canPurgeItem() {
       return Session::haveRight(static::$rightname, PURGE);
+   }
+
+
+   function isEntityAssign() {
+      return false;
    }
 
 
