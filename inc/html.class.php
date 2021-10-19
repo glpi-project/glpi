@@ -6467,7 +6467,7 @@ HTML;
 
       $ckey .= '_' . $file;
 
-      if (!Toolbox::endsWith($file, '.scss')) {
+      if (!str_ends_with($file, '.scss')) {
          // Prevent include of file if ext is not .scss
          $file .= '.scss';
       }
@@ -6490,7 +6490,7 @@ HTML;
 
       // Prevent import of a file from ouside GLPI dir
       $path = realpath($path);
-      if (!Toolbox::startsWith($path, realpath(GLPI_ROOT))) {
+      if (!str_starts_with($path, realpath(GLPI_ROOT))) {
          Toolbox::logWarning('Requested file ' . $path . ' is outside GLPI file tree.');
          return '';
       }

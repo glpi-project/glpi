@@ -198,7 +198,7 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
                   }
                } else if (isset($CFG_GLPI['dbversion']) && strlen($CFG_GLPI['dbversion']) > 40) {
                   //got a dev version in database, but current stable
-                  if (Toolbox::startsWith($CFG_GLPI['dbversion'], GLPI_SCHEMA_VERSION)) {
+                  if (str_starts_with($CFG_GLPI['dbversion'], GLPI_SCHEMA_VERSION)) {
                      $older = true;
                   } else {
                      $newer = true;

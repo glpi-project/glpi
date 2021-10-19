@@ -2135,6 +2135,8 @@ class Config extends CommonDBTM {
                  'check'   => 'Twig\\Environment' ],
                [ 'name'    => 'twig/string-extra',
                  'check'   => 'Twig\\Extra\\String\\StringExtension' ],
+               [ 'name'    => 'symfony/polyfill-php80',
+                 'check'   => 'str_contains' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [

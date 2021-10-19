@@ -2668,10 +2668,12 @@ class Toolbox {
     * @param string $needle   String to find
     *
     * @return boolean
+    *
+    * @deprecated 10.0.0
     */
    static public function startsWith($haystack, $needle) {
-      $length = strlen($needle);
-      return (substr($haystack, 0, $length) === $needle);
+      Toolbox::deprecated('Use native str_starts_with() function.');
+      return str_starts_with($haystack, $needle);
    }
 
    /**
@@ -2683,10 +2685,12 @@ class Toolbox {
     * @param string $needle   String to find
     *
     * @return boolean
+    *
+    * @deprecated 10.0.0
     */
    static public function endsWith($haystack, $needle) {
-      $length = strlen($needle);
-      return $length === 0 || (substr($haystack, -$length) === $needle);
+      Toolbox::deprecated('Use native str_ends_with() function.');
+      return str_ends_with($haystack, $needle);
    }
 
    /**
@@ -2939,7 +2943,7 @@ class Toolbox {
       }
 
       $fullpath = realpath($fullpath);
-      if (!Toolbox::startsWith($fullpath, realpath(GLPI_PICTURE_DIR))) {
+      if (!str_starts_with($fullpath, realpath(GLPI_PICTURE_DIR))) {
          // Prevent deletion of a file ouside pictures directory
          return false;
       }

@@ -108,7 +108,7 @@ class Software extends InventoryAsset
 
          if (!property_exists($val, 'name')
             || ($val->name == ''
-               || Toolbox::startsWith(Toolbox::slugify($val->name), 'nok_')
+               || str_starts_with(Toolbox::slugify($val->name), 'nok_')
             )
          ) {
             if (property_exists($val, 'guid') && $val->guid != '') {

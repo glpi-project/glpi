@@ -626,8 +626,8 @@ class Migration {
             unset($this->uniques[$oldtable]);
          }
       } else {
-         if (Toolbox::startsWith($oldtable, 'glpi_plugin_')
-            || Toolbox::startsWith($newtable, 'glpi_plugin_')
+         if (str_starts_with($oldtable, 'glpi_plugin_')
+            || str_starts_with($newtable, 'glpi_plugin_')
          ) {
             return;
          }

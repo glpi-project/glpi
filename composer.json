@@ -57,6 +57,7 @@
         "symfony/cache": "^5.2",
         "symfony/console": "^5.0",
         "symfony/dom-crawler": "^5.3",
+        "symfony/polyfill-php80": "^1.23",
         "true/punycode": "^2.1",
         "twig/string-extra": "^3.3",
         "twig/twig": "^3.3",
@@ -76,8 +77,12 @@
     "replace": {
         "paragonie/random_compat": "*",
         "symfony/polyfill-ctype": "*",
+        "symfony/polyfill-intl-grapheme": "*",
         "symfony/polyfill-intl-idn": "*",
-        "symfony/polyfill-php72": "*"
+        "symfony/polyfill-intl-normalizer": "*",
+        "symfony/polyfill-php72": "*",
+        "symfony/polyfill-php73": "*",
+        "symfony/polyfill-php74": "*"
     },
     "suggest": {
         "ext-ldap": "Used to provide LDAP authentication and synchronization",
