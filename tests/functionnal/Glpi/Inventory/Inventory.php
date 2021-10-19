@@ -64,7 +64,7 @@ class Inventory extends DbTestCase {
       global $DB;
 
       parent::afterTestMethod($method);
-      if (\Toolbox::startsWith($method, 'testImport')) {
+      if (str_starts_with($method, 'testImport')) {
          //$this->dump('Checking for unexpected logs');
          $nblogsnow = countElementsInTable(\Log::getTable());
          $logs = $DB->request([
@@ -85,7 +85,7 @@ class Inventory extends DbTestCase {
          $this->integer(count($logs))->isIdenticalTo(0, print_r(iterator_to_array($logs), true));
       }
 
-      if (\Toolbox::startsWith($method, 'testUpdate')) {
+      if (str_starts_with($method, 'testUpdate')) {
          $nblogsnow = countElementsInTable(\Log::getTable());
          $logs = $DB->request([
             'FROM' => \Log::getTable(),

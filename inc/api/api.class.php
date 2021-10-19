@@ -3037,7 +3037,7 @@ abstract class API {
       });
       $crawler->filterXPath('//select')->each(function (Crawler $node, $i) use (&$inputs) {
          $type = 'select';
-         if (Toolbox::startsWith($node->attr('id'), 'dropdown_')) {
+         if (str_starts_with($node->attr('id'), 'dropdown_')) {
             $type = 'dropdown';
          }
          $inputs[] = [

@@ -174,7 +174,7 @@ class ITILTemplate extends DbTestCase {
    private function checkField($itiltype, $field) {
       global $DB;
 
-      if (!\Toolbox::startsWith($field, '_') && 'items_id' != $field) {
+      if (!str_starts_with($field, '_') && 'items_id' != $field) {
          $this->boolean(
             $DB->fieldExists($itiltype::getTable(), $field)
          )->isTrue("$field in $itiltype");

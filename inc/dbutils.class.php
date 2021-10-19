@@ -53,7 +53,7 @@ final class DbUtils {
     * @return string field name used for a foreign key to the parameter table
     */
    public function getForeignKeyFieldForTable($table) {
-      if (!Toolbox::startsWith($table, 'glpi_')) {
+      if (!str_starts_with($table, 'glpi_')) {
          return "";
       }
       return substr($table, 5)."_id";
@@ -86,7 +86,7 @@ final class DbUtils {
       }
 
       // If $fkname begin with _ strip it
-      if (Toolbox::startsWith($fkname, '_')) {
+      if (str_starts_with($fkname, '_')) {
          $fkname = substr($fkname, 1);
       }
 

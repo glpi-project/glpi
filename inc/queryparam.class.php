@@ -49,7 +49,7 @@ class QueryParam  {
       if ($value == null || trim($value) == '') {
          $value = '?';
       }
-      if ($value != '?' && !Toolbox::startsWith($value, ':')) {
+      if ($value != '?' && !str_starts_with($value, ':')) {
          $value = ':' . $value;
       }
       $this->value = $value;
