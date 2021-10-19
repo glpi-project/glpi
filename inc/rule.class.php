@@ -1859,10 +1859,8 @@ class Rule extends CommonDBTM {
     * @param $active_condition   active condition used (default 0)
    **/
    function showMinimalForm($target, $first = false, $last = false, $display_entities = false, $active_condition = 0) {
-      global $CFG_GLPI;
-
       $canedit = (self::canUpdate() && !$display_entities);
-      echo "<tr class='tab_bg_1'>";
+      echo "<tr class='tab_bg_1' data-rule-id='".$this->fields['id']."'>";
 
       if ($canedit) {
          echo "<td width='10'>";
@@ -1903,31 +1901,9 @@ class Rule extends CommonDBTM {
       }
 
       if ($this->can_sort && $canedit) {
-         if (!$first) {
-            echo "<td>";
-            Html::showSimpleForm($target, ['action' => 'up',
-                                                'condition' => $active_condition], '',
-                                 ['type' => $this->fields["sub_type"],
-                                       'id'   => $this->fields["id"],],
-                                 'fa-caret-up');
-            echo "</td>";
-         } else {
-            echo "<td>&nbsp;</td>";
-         }
-
-         if (!$last) {
-            echo "<td>";
-            Html::showSimpleForm($target, ['action' => 'down',
-                                                'condition' => $active_condition], '',
-                                 ['type' => $this->fields["sub_type"],
-                                       'id'   => $this->fields["id"]],
-                                 'fa-caret-down');
-            echo "</td>";
-         } else {
-            echo "<td>&nbsp;</td>";
-         }
+         echo "<td colspan='2'><i class='fas fa-grip-horizontal grip-rule'></i></td>";
       }
-      echo "</tr>\n";
+      echo "</tr>";
    }
 
 
