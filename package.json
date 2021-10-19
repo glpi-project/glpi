@@ -62,10 +62,16 @@
     "scripts": {
         "build:patch_dependencies": "(patch -f -p1 -d node_modules/@tabler/core/ < tools/tabler-831.patch || echo 'Error applying patch')",
         "build:pack": "webpack --config webpack.config.js",
-        "build": "npm run build:patch_dependencies && npm run build:pack"
+        "build": "npm run build:patch_dependencies && npm run build:pack",
+        "test": "jest --config tests/js/jest.config.js ./tests/js/**"
     },
     "devDependencies": {
+        "@babel/core": "^7.15.0",
+        "@babel/plugin-transform-modules-commonjs": "^7.15.0",
+        "@babel/plugin-transform-runtime": "^7.15.0",
+        "@babel/preset-env": "^7.15.0",
         "assert": "^2.0.0",
+        "babel-jest": "^27.3.0",
         "buffer": "^6.0.3",
         "clean-webpack-plugin": "^4.0.0",
         "copy-webpack-plugin": "^9.0.0",
@@ -73,6 +79,8 @@
         "csso-cli": "^3.0.0",
         "eslint": "^7.1.0",
         "glob": "^7.1.6",
+        "jest": "^27.3.0",
+        "jest-extended": "^0.11.5",
         "mini-css-extract-plugin": "^2.0.0",
         "process": "^0.11.10",
         "script-loader": "^0.7.2",
