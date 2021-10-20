@@ -67,6 +67,9 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::clean_cross_side_scripting_deep()`
 - `Toolbox::endsWith()`
 - `Toolbox::getHtmlToDisplay()`
+- `Toolbox::logError()`
+- `Toolbox::logNotice()`
+- `Toolbox::logWarning()`
 - `Toolbox::unclean_cross_side_scripting_deep()`
 - `Toolbox::startsWith()`
 - `Toolbox::sodiumDecrypt()`
