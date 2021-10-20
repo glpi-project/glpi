@@ -189,6 +189,10 @@ class Software extends InventoryAsset
             if (!property_exists($val, 'version')) {
                $val->version = '';
             }
+            //arch is undefined, set it to blankk
+            if (!property_exists($val, 'arch')) {
+               $val->arch = '';
+            }
 
             //not a template, not deleted, ...
             $val->is_template_item = 0;
