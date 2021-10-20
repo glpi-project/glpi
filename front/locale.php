@@ -53,7 +53,7 @@ if ($is_cacheable) {
 
 global $CFG_GLPI, $TRANSLATE;
 
-// Default respoinse to send if locales cannot be loaded.
+// Default response to send if locales cannot be loaded.
 // Prevent JS error for plugins that does not provide any translation files
 $default_response = json_encode(
    [
@@ -83,7 +83,7 @@ $po_file_handle = fopen(
    'rb'
 );
 if (false === $po_file_handle) {
-   Toolbox::logError(sprintf('Unable to extract locales data from "%s".', $po_file));
+   trigger_error(sprintf('Unable to extract locales data from "%s".', $po_file), E_USER_WARNING);
    exit($default_response);
 }
 $in_headers = false;
@@ -107,7 +107,7 @@ while (false !== ($line = fgets($po_file_handle))) {
    }
 }
 if (count(array_diff($header_keys, array_keys($headers))) > 0) {
-   Toolbox::logError(sprintf('Missing mandatory locale headers in "%s".', $po_file));
+   trigger_error(sprintf('Missing mandatory locale headers in "%s".', $po_file), E_USER_WARNING);
    exit($default_response);
 }
 

@@ -42,7 +42,6 @@ use Glpi\Plugin\Hooks;
 use Html;
 use Plugin;
 use RefusedEquipment;
-use Toolbox;
 
 trait Inventoriable {
    /** @var CommonDBTM|null */
@@ -84,7 +83,7 @@ trait Inventoriable {
       if (!file_exists($inventory_dir_path . $filename)) {
          $filename = $conf->buildInventoryFileName($itemtype, $items_id, 'json');
          if (!file_exists($inventory_dir_path . $filename)) {
-            Toolbox::logWarning('Inventory file missing: ' . $filename);
+            trigger_error('Inventory file missing: ' . $filename, E_USER_WARNING);
             return null;
          }
       }

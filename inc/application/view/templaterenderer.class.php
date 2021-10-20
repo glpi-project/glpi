@@ -53,7 +53,6 @@ use Glpi\Application\View\Extension\TeamExtension;
 use Plugin;
 use Session;
 use Twig\Environment;
-use Twig\Error\Error;
 use Twig\Extension\DebugExtension;
 use Twig\Extra\String\StringExtension;
 use Twig\Loader\FilesystemLoader;
@@ -147,7 +146,7 @@ class TemplateRenderer {
       try {
          return $this->environment->load($template)->render($variables);
       } catch (\Twig\Error\Error $e) {
-         $this->handleError($e, $template);
+         ErrorHandler::getInstance()->handleTwigError($e);
       }
       return '';
    }
@@ -164,23 +163,7 @@ class TemplateRenderer {
       try {
          $this->environment->load($template)->display($variables);
       } catch (\Twig\Error\Error $e) {
-         $this->handleError($e, $template);
-      }
-   }
-
-   /**
-    * Log Twig error using GLPI error handler.
-    *
-    * @param \Twig\Error\Error $error
-    *
-    * @param string $template
-    */
-   private function handleError(Error $error, string $template): void {
-      global $GLPI;
-
-      $error_handler = $GLPI->getErrorHandler();
-      if ($error_handler instanceof ErrorHandler) {
-         $error_handler->handleTwigError($error, $template);
+         ErrorHandler::getInstance()->handleTwigError($e);
       }
    }
 }

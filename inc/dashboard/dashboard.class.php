@@ -109,11 +109,9 @@ class Dashboard extends \CommonDBTM {
          $this->post_getFromDB();
          return true;
       } else if (count($iterator) > 1) {
-         \Toolbox::logWarning(
-            sprintf(
-               'getFromDB expects to get one result, %1$s found!',
-               count($iterator)
-            )
+         trigger_error(
+            sprintf('getFromDB expects to get one result, %1$s found!', count($iterator)),
+            E_USER_WARNING
          );
       }
 

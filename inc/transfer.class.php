@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\ErrorHandler;
 use Glpi\Plugin\Hooks;
 use Glpi\Socket;
 
@@ -254,7 +255,7 @@ class Transfer extends CommonDBTM {
             if (!$intransaction && $DB->inTransaction()) {
                $DB->rollBack();
             }
-            Toolbox::logError($e->getMessage());
+            ErrorHandler::getInstance()->handleException($e);
          }
       } // $to >= 0
    }

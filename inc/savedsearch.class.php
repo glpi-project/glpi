@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 
 /**
@@ -798,7 +799,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
             try {
                $search_data = $this->execute(false, $enable_partial_warnings);
             } catch (\RuntimeException $e) {
-               Toolbox::logError($e);
+               ErrorHandler::getInstance()->handleException($e);
                $search_data = false;
             }
             if (isset($search_data['data']['totalcount'])) {
@@ -1138,7 +1139,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
                      $DB->executeStatement($stmt);
                   }
                } catch (\Exception $e) {
-                  Toolbox::logError($e);
+                  ErrorHandler::getInstance()->handleException($e);
                }
             }
 
@@ -1150,7 +1151,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
             $cron_status = 1;
          }
       } else {
-         Toolbox::logWarning('Count on tabs has been disabled; crontask is inefficient.');
+         trigger_error('Count on tabs has been disabled; crontask is inefficient.', E_USER_WARNING);
       }
 
       return $cron_status;

@@ -112,6 +112,13 @@ class ErrorHandler {
    private $last_fatal_trace;
 
    /**
+    * Indicates wether output is disabled.
+    *
+    * @var bool
+    */
+   private $output_disabled = false;
+
+   /**
     * Output handler to use. If not set, output will be directly echoed on a format depending on
     * execution context (Web VS CLI).
     *
@@ -131,6 +138,40 @@ class ErrorHandler {
     */
    public function __construct(LoggerInterface $logger = null) {
       $this->logger = $logger;
+   }
+
+   /**
+    * Return singleton instance of self.
+    *
+    * @return ErrorHandler
+    */
+   public static function getInstance(): ErrorHandler {
+      static $instance = null;
+
+      if ($instance === null) {
+         global $PHPLOGGER;
+         $instance = new static($PHPLOGGER);
+      }
+
+      return $instance;
+   }
+
+   /**
+    * Enable output.
+    *
+    * @return void
+    */
+   public function enableOutput(): void {
+      $this->output_disabled = false;
+   }
+
+   /**
+    * Disable output.
+    *
+    * @return void
+    */
+   public function disableOutput(): void {
+      $this->output_disabled = true;
    }
 
    /**
@@ -279,7 +320,8 @@ class ErrorHandler {
    /**
     * Exception handler.
     *
-    * This handler is called by PHP prior to exiting, when an Exception is not catched.
+    * This handler is called by PHP prior to exiting, when an Exception is not catched,
+    * or manually called by the application to log exception details.
     *
     * @param \Throwable $exception
     * @param bool $quiet
@@ -398,6 +440,10 @@ class ErrorHandler {
     * @return void
     */
    private function outputDebugMessage(string $error_type, string $message, string $log_level, bool $force = false): void {
+
+      if ($this->output_disabled) {
+         return;
+      }
 
       $is_debug_mode = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == \Session::DEBUG_MODE;
       $is_console_context = $this->output_handler instanceof OutputInterface;

@@ -625,7 +625,7 @@ class Conf extends CommonGLPI
             __('Some properties are not known: %1$s'),
             implode(', ', array_keys($unknown))
          );
-         Toolbox::logWarning($msg);
+         trigger_error($msg, E_USER_WARNING);
          Session::addMessageAfterRedirect(
             $msg,
             false,
@@ -663,7 +663,7 @@ class Conf extends CommonGLPI
             __('Property %1$s does not exists!'),
             $name
          );
-         Toolbox::logWarning($msg);
+         trigger_error($msg, E_USER_WARNING);
          Session::addMessageAfterRedirect(
             $msg,
             false,

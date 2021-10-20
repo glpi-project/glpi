@@ -2023,11 +2023,17 @@ class Planning extends CommonGLPI {
          try {
             $vcalendar = Reader::read($calendar_data);
          } catch (\Sabre\VObject\ParseException $exception) {
-            Toolbox::logError(sprintf('Unable to parse calendar data from URL "%s"', $planning_params['url']));
+            trigger_error(
+               sprintf('Unable to parse calendar data from URL "%s"', $planning_params['url']),
+               E_USER_WARNING
+            );
             continue;
          }
          if (!$vcalendar instanceof VCalendar) {
-            Toolbox::logError(sprintf('No VCalendar object found at URL "%s"', $planning_params['url']));
+            trigger_error(
+               sprintf('No VCalendar object found at URL "%s"', $planning_params['url']),
+               E_USER_WARNING
+            );
             continue;
          }
          foreach ($vcalendar->getComponents() as $vcomp) {

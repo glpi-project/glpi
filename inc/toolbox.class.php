@@ -1335,7 +1335,7 @@ class Toolbox {
          $msgerr = __('No data available on the web site');
       }
       if (!empty($msgerr)) {
-         Toolbox::logError($msgerr);
+         trigger_error($msgerr, E_USER_WARNING);
       }
       return $content;
    }

@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\ErrorHandler;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\Sanitizer;
@@ -256,7 +257,7 @@ class Auth extends CommonGLPI {
                'user_dn'           => $this->user_dn
             ]);
          } catch (\Throwable $e) {
-            Toolbox::logError($e->getMessage());
+            ErrorHandler::getInstance()->handleException($e);
             $this->addToError(__('Unable to connect to the LDAP directory'));
             return false;
          }
@@ -475,7 +476,7 @@ class Auth extends CommonGLPI {
       switch ($authtype) {
          case self::CAS :
             if (!Toolbox::canUseCAS()) {
-               Toolbox::logError("CAS lib not installed");
+               trigger_error("CAS lib not installed", E_USER_WARNING);
                return false;
             }
 
@@ -784,7 +785,7 @@ class Auth extends CommonGLPI {
                            ],
                         ]);
                      } catch (\RuntimeException $e) {
-                        Toolbox::logError($e->getMessage());
+                        ErrorHandler::getInstance()->handleException($e);
                         $user_dn = false;
                      }
                      if ($user_dn) {

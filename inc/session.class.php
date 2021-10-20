@@ -652,7 +652,7 @@ class Session {
          // In this case, we may still want to be able to load translations (for instance for requirements checks).
          \Locale::setDefault($trytoload);
       } else {
-         Toolbox::logWarning('Missing required intl PHP extension');
+         trigger_error('Missing required intl PHP extension', E_USER_WARNING);
       }
 
       $TRANSLATE->addTranslationFile('gettext', GLPI_I18N_DIR.$newfile, 'glpi', $trytoload);

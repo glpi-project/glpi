@@ -605,10 +605,11 @@ class Item_Disk extends CommonDBChild {
    static function getEncryptionStatus($status) {
       $all = self::getAllEncryptionStatus();
       if (!isset($all[$status])) {
-         Toolbox::logWarning(
+         trigger_error(
             sprintf(
-               'Encryption status %1$s does not exixts!', $status
-            )
+               'Encryption status %1$s does not exists!', $status
+            ),
+            E_USER_WARNING
          );
          return NOT_AVAILABLE;
       }

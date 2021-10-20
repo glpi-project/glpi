@@ -165,13 +165,14 @@ class User extends \DbTestCase {
       $this->boolean($user2->getFromDBbyToken($token))->isTrue();
       $this->array($user2->fields)->isIdenticalTo($user->fields);
 
-      $this->exception(
+      $this->when(
          function () use ($uid) {
             $this->testedInstance->getFromDBbyToken($uid, 'my_field');
          }
-      )
-         ->isInstanceOf('RuntimeException')
-         ->message->contains('User::getFromDBbyToken() can only be called with $field parameter with theses values: \'personal_token\', \'api_token\'');
+      )->error
+         ->withType(E_USER_WARNING)
+         ->withMessage('User::getFromDBbyToken() can only be called with $field parameter with theses values: \'personal_token\', \'api_token\'')
+         ->exists();
    }
 
    public function testPrepareInputForAdd() {

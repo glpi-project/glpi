@@ -47,6 +47,7 @@ $DEBUG_SQL = [
     'times'   => [],
 ];
 
+ini_set("display_errors", "Off");
 ini_set("error_log", "tests/web/error.log");
 
 return false;

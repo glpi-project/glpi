@@ -93,11 +93,12 @@ trait Clonable {
       $clone_relations = $this->getCloneRelations();
       foreach ($clone_relations as $classname) {
          if (!is_a($classname, CommonDBConnexity::class, true)) {
-            Toolbox::logWarning(
+            trigger_error(
                sprintf(
                   'Unable to clone elements of class %s as it does not extends "CommonDBConnexity"',
                   $classname
-               )
+               ),
+               E_USER_WARNING
             );
             continue;
          }

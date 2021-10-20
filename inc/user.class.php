@@ -549,7 +549,10 @@ class User extends CommonDBTM {
    function getFromDBbyToken($token, $field = 'personal_token') {
       $fields = ['personal_token', 'api_token'];
       if (!in_array($field, $fields)) {
-         Toolbox::logWarning('User::getFromDBbyToken() can only be called with $field parameter with theses values: \'' . implode('\', \'', $fields) . '\'');
+         trigger_error(
+            'User::getFromDBbyToken() can only be called with $field parameter with theses values: \'' . implode('\', \'', $fields) . '\'',
+            E_USER_WARNING
+         );
          return false;
       }
 

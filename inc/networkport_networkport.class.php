@@ -260,7 +260,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
    public function prepareInputForAdd($input) {
 
       if ($this->getFromDBForNetworkPort([$input['networkports_id_1'], $input['networkports_id_2']])) {
-         Toolbox::logWarning('Wired non unique!');
+         trigger_error('Wired non unique!', E_USER_WARNING);
          return false;
       }
 

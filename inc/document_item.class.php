@@ -79,30 +79,30 @@ class Document_Item extends CommonDBRelation{
    function prepareInputForAdd($input) {
 
       if (empty($input['itemtype'])) {
-         Toolbox::logError('Item type is mandatory');
+         trigger_error('Item type is mandatory', E_USER_WARNING);
          return false;
       }
 
       if (!class_exists($input['itemtype'])) {
-         Toolbox::logError(sprintf('No class found for type %s', $input['itemtype']));
+         trigger_error(sprintf('No class found for type %s', $input['itemtype']), E_USER_WARNING);
          return false;
       }
 
       if ((empty($input['items_id']))
           && ($input['itemtype'] != 'Entity')) {
-         Toolbox::logError('Item ID is mandatory');
+         trigger_error('Item ID is mandatory', E_USER_WARNING);
          return false;
       }
 
       if (empty($input['documents_id'])) {
-         Toolbox::logError('Document ID is mandatory');
+         trigger_error('Document ID is mandatory', E_USER_WARNING);
          return false;
       }
 
       // Do not insert circular link for document
       if (($input['itemtype'] == 'Document')
           && ($input['items_id'] == $input['documents_id'])) {
-         Toolbox::logError('Cannot link document to itself');
+         trigger_error('Cannot link document to itself', E_USER_WARNING);
          return false;
       }
 
@@ -122,7 +122,7 @@ class Document_Item extends CommonDBRelation{
 
       // Avoid duplicate entry
       if ($this->alreadyExists($input)) {
-         Toolbox::logError('Duplicated document item relation');
+         trigger_error('Duplicated document item relation', E_USER_WARNING);
          return false;
       }
 

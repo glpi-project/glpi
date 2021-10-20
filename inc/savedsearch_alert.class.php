@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\ErrorHandler;
 use Glpi\Plugin\Hooks;
 
 if (!defined('GLPI_ROOT')) {
@@ -122,7 +123,7 @@ class SavedSearch_Alert extends CommonDBChild {
             $count = $data['data']['totalcount'];
          }
       } catch (\RuntimeException $e) {
-         Toolbox::logError($e);
+         ErrorHandler::getInstance()->handleException($e);
       }
 
       $this->showFormHeader($options);
@@ -479,7 +480,7 @@ class SavedSearch_Alert extends CommonDBChild {
                }
             } catch (\Exception $e) {
                self::restoreContext($context);
-               Toolbox::logError($e);
+               ErrorHandler::getInstance()->handleException($e);
             }
          }
          return 1;

@@ -136,15 +136,18 @@ class CommonDBTM extends DbTestCase {
       $this->boolean($instance->isNewItem())->isFalse();
 
       $instance = new \Computer();
-      $this->exception(
-         function() use ($instance) {
-            $instance->getFromDbByRequest([
+      $result = null;
+      $this->when(
+         function() use ($instance, &$result) {
+            $result = $instance->getFromDbByRequest([
                'WHERE' => ['contact' => 'johndoe'],
             ]);
          }
-      )->isInstanceOf(\RuntimeException::class)
-      ->message
-      ->contains('getFromDBByRequest expects to get one result, 2 found!');
+      )->error
+         ->withType(E_USER_WARNING)
+         ->withMessage('getFromDBByRequest expects to get one result, 2 found in query "SELECT `glpi_computers`.* FROM `glpi_computers` WHERE `contact` = \'johndoe\'".')
+         ->exists();
+      $this->boolean($result)->isFalse();
 
       // the instance must not be populated
       $this->boolean($instance->isNewItem())->isTrue();
@@ -298,7 +301,7 @@ class CommonDBTM extends DbTestCase {
       )->isGreaterThan(0);
 
       //multiple update case
-      $this->exception(
+      $this->when(
          function () use ($DB) {
             $res = $DB->updateOrInsert(
                \Computer::getTable(), [
@@ -308,8 +311,12 @@ class CommonDBTM extends DbTestCase {
                   'name'   => 'serial-to-change'
                ]
             );
+            $this->boolean($res)->isFalse();
          }
-      )->message->contains('Update would change too many rows!');
+      )->error
+         ->withType(E_USER_WARNING)
+         ->withMessage('Update would change too many rows!')
+         ->exists();
 
       //allow multiples
       $res = $DB->updateOrInsert(
@@ -369,7 +376,7 @@ class CommonDBTM extends DbTestCase {
       )->isGreaterThan(0);
 
       //multiple update case
-      $this->exception(
+      $this->when(
          function () use ($DB) {
             $res = $DB->updateOrInsert(
                \Computer::getTable(), [
@@ -378,8 +385,12 @@ class CommonDBTM extends DbTestCase {
                   'name'   => 'serial-to-change'
                ]
             );
+            $this->boolean($res)->isFalse();
          }
-      )->message->contains('Update would change too many rows!');
+      )->error
+         ->withType(E_USER_WARNING)
+         ->withMessage('Update would change too many rows!')
+         ->exists();
 
       //allow multiples
       $res = $DB->updateOrInsert(

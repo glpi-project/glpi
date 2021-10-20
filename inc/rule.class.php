@@ -1920,14 +1920,14 @@ class Rule extends CommonDBTM {
       }
 
       if ($this->getType() == 'Rule' && !isset($input['sub_type'])) {
-          \Toolbox::logError('Sub type not specified creating a new rule');
-          return false;
+         trigger_error('Sub type not specified creating a new rule', E_USER_WARNING);
+         return false;
       }
 
       if (!isset($input['sub_type'])) {
          $input['sub_type'] = $this->getType();
       } else if ($this->getType() != 'Rule' && $input['sub_type'] != $this->getType()) {
-         \Toolbox::logWarning(
+         Toolbox::logDebug(
             sprintf(
                'Creating a %s rule with %s subtype.',
                $this->getType(),

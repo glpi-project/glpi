@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\ErrorHandler;
 use Glpi\Toolbox\Sanitizer;
 use Laminas\Mail\Address;
 use Laminas\Mail\Header\AbstractAddressList;
@@ -370,12 +371,7 @@ class MailCollector  extends CommonDBTM {
       try {
          $this->connect();
       } catch (\Throwable $e) {
-         Toolbox::logError(
-            'An error occured trying to connect to collector.',
-            $e->getMessage(),
-            "\n",
-            $e->getTraceAsString()
-         );
+         ErrorHandler::getInstance()->handleException($e);
          echo __('An error occured trying to connect to collector.');
          return;
       }
@@ -582,12 +578,7 @@ class MailCollector  extends CommonDBTM {
             try {
                $collector->connect();
             } catch (\Throwable $e) {
-               Toolbox::logError(
-                  'An error occured trying to connect to collector.',
-                  $e->getMessage(),
-                  "\n",
-                  $e->getTraceAsString()
-               );
+               ErrorHandler::getInstance()->handleException($e);
                continue;
             }
 
@@ -680,12 +671,7 @@ class MailCollector  extends CommonDBTM {
          try {
             $this->connect();
          } catch (\Throwable $e) {
-            Toolbox::logError(
-               'An error occured trying to connect to collector.',
-               $e->getMessage(),
-               "\n",
-               $e->getTraceAsString()
-            );
+            ErrorHandler::getInstance()->handleException($e);
             Session::addMessageAfterRedirect(
                __('An error occured trying to connect to collector.') . "<br/>" . $e->getMessage(),
                false,

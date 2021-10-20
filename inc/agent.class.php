@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\ErrorHandler;
 use GuzzleHttp\Client as Guzzle_Client;
 use GuzzleHttp\Psr7\Response;
 
@@ -588,7 +589,7 @@ class Agent extends CommonDBTM {
          $this->requestAgent('now');
          return $this->handleAgentResponse(new Response(), self::ACTION_INVENTORY);
       } catch (\GuzzleHttp\Exception\ClientException $e) {
-         Toolbox::logError($e->getMessage());
+         ErrorHandler::getInstance()->handleException($e);
          //not authorized
          return ['answer' => __('Not allowed')];
       }

@@ -216,11 +216,12 @@ trait CalDAVUriUtilTrait {
          if ($items_iterator->count() > 1) {
             // Ambiguous response, unable to return matching element.
             // Should never happens as UID has very very low probability to not be unique.
-            \Toolbox::logError(
+            trigger_error(
                sprintf(
                   'Multiple calendar items found with uuid %s. Unable to determine which item should be returned.',
                   $uid
-               )
+               ),
+               E_USER_WARNING
             );
          }
          return null;

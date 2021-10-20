@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Console\Application;
 use Glpi\Plugin\Hooks;
@@ -184,7 +185,7 @@ class Html {
       try {
          $date = new \DateTime($time);
       } catch (\Exception $e) {
-         Toolbox::logWarning("Invalid date $time!");
+         ErrorHandler::getInstance()->handleException($e);
          Session::addMessageAfterRedirect(
             sprintf(
                __('%1$s %2$s'),
@@ -1610,7 +1611,7 @@ HTML;
                if (file_exists($plugin_root_dir."/{$file}")) {
                   $tpl_vars['js_files'][] = $plugin_web_dir."/{$file}";
                } else {
-                  Toolbox::logWarning("{$file} file not found from plugin $plugin!");
+                  trigger_error("{$file} file not found from plugin $plugin!", E_USER_WARNING);
                }
             }
          }
@@ -1630,7 +1631,7 @@ HTML;
                if (file_exists($plugin_root_dir."/{$file}")) {
                   $tpl_vars['js_modules'][] = $plugin_web_dir."/{$file}";
                } else {
-                  Toolbox::logWarning("{$file} file not found from plugin $plugin!");
+                  trigger_error("{$file} file not found from plugin $plugin!", E_USER_WARNING);
                }
             }
          }
@@ -6086,7 +6087,7 @@ JAVASCRIPT;
                }
             }
             if (!$found) {
-               Toolbox::logError("JS lib $name is not known!");
+               trigger_error("JS lib $name is not known!", E_USER_WARNING);
             }
       }
    }
@@ -6168,7 +6169,7 @@ JAVASCRIPT;
                      'type'      => 'text/javascript'
                   ]);
                } else {
-                  Toolbox::logWarning("{$file} file not found from plugin {$plugin}!");
+                  trigger_error("{$file} file not found from plugin {$plugin}!", E_USER_WARNING);
                }
             }
          }
@@ -6192,7 +6193,7 @@ JAVASCRIPT;
                      'type'      => 'module'
                   ]);
                } else {
-                  Toolbox::logWarning("{$file} file not found from plugin {$plugin}!");
+                  trigger_error("{$file} file not found from plugin {$plugin}!", E_USER_WARNING);
                }
             }
          }
@@ -6506,7 +6507,7 @@ HTML;
       $pathalt = GLPI_ROOT . '/' . implode('/', $pathargs);
 
       if (!file_exists($path) && !file_exists($pathalt)) {
-         Toolbox::logWarning('Requested file ' . $path . ' does not exists.');
+         trigger_error('Requested file ' . $path . ' does not exists.', E_USER_WARNING);
          return '';
       }
       if (!file_exists($path)) {
@@ -6516,7 +6517,7 @@ HTML;
       // Prevent import of a file from ouside GLPI dir
       $path = realpath($path);
       if (!str_starts_with($path, realpath(GLPI_ROOT))) {
-         Toolbox::logWarning('Requested file ' . $path . ' is outside GLPI file tree.');
+         trigger_error('Requested file ' . $path . ' is outside GLPI file tree.', E_USER_WARNING);
          return '';
       }
 
