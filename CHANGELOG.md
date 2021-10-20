@@ -216,6 +216,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::getGlpiSecKey()`
 - `Toolbox::removeHtmlSpecialChars()`
 - `Toolbox::sanitize()`
+- `Toolbox::throwError()`
 - `Toolbox::unclean_html_cross_side_scripting_deep()`
 - `Toolbox::useCache()`
 - `Toolbox::userErrorHandlerDebug()`

@@ -2879,34 +2879,6 @@ class Toolbox {
    }
 
    /**
-    * Send the given HTTP code then die with the error message in the given format
-    *
-    * @param int     $code    HTTP code to set for the response
-    * @param string  $message Error message to display
-    * @param string  $format  Output format (json or string)
-    */
-   public static function throwError(
-      int $code,
-      string $message,
-      string $format = "json"
-   ) {
-      switch ($format) {
-         case 'json':
-            $output = json_encode(["message" => $message]);
-            break;
-
-         case 'string':
-         default:
-            $output = $message;
-            break;
-      }
-
-      http_response_code($code);
-      Toolbox::logWarning($message);
-      die($output);
-   }
-
-   /**
     * Return a shortened number with a suffix (K, M, B, T)
     *
     * @param int $number to shorten

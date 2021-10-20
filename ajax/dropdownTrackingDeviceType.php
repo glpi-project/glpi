@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Http\Response;
+
 include ('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -42,8 +44,7 @@ $itemtype = $_POST["itemtype"] ?? '';
 
 // Check for required params
 if (empty($itemtype)) {
-   http_response_code(400);
-   Toolbox::logWarning("Bad request: itemtype cannot be empty");
+   Response::sendError(400, "Bad request: itemtype cannot be empty", Response::CONTENT_TYPE_TEXT_HTML);
    die;
 }
 

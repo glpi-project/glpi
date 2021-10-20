@@ -34,6 +34,8 @@
  * @since 9.1
  */
 
+use Glpi\Http\Response;
+
 $AJAX_INCLUDE = 1;
 
 include ('../inc/includes.php');
@@ -45,7 +47,7 @@ Session::checkLoginUser();
 // Mandatory parameter: tasktemplates_id
 $tasktemplates_id = $_POST['tasktemplates_id'] ?? null;
 if ($tasktemplates_id === null) {
-   Toolbox::throwError(400, "Missing or invalid parameter: 'tasktemplates_id'");
+   Response::sendError(400, "Missing or invalid parameter: 'tasktemplates_id'");
 } else if ($tasktemplates_id == 0) {
    // Reset form
    echo json_encode([
@@ -57,25 +59,25 @@ if ($tasktemplates_id === null) {
 // Mandatory parameter: items_id
 $parents_id = $_POST['items_id'] ?? 0;
 if (!$parents_id) {
-   Toolbox::throwError(400, "Missing or invalid parameter: 'items_id'");
+   Response::sendError(400, "Missing or invalid parameter: 'items_id'");
 }
 
 // Mandatory parameter: itemtype
 $parents_itemtype = $_POST['itemtype'] ?? '';
 if (empty($parents_itemtype) || !is_subclass_of($parents_itemtype, CommonITILObject::class)) {
-   Toolbox::throwError(400, "Missing or invalid parameter: 'itemtype'");
+   Response::sendError(400, "Missing or invalid parameter: 'itemtype'");
 }
 
 // Load task template
 $template = new TaskTemplate();
 if (!$template->getFromDB($tasktemplates_id)) {
-   Toolbox::throwError(400, "Unable to load template: $tasktemplates_id");
+   Response::sendError(400, "Unable to load template: $tasktemplates_id");
 }
 
 // Load parent item
 $parent = new $parents_itemtype();
 if (!$parent->getFromDB($parents_id)) {
-   Toolbox::throwError(400, "Unable to load parent item: $parents_itemtype $parents_id");
+   Response::sendError(400, "Unable to load parent item: $parents_itemtype $parents_id");
 }
 
 // Render template content using twig
