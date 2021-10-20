@@ -2741,7 +2741,7 @@ JS;
          ? " disabled='disabled'"
          : "";
       $clear    = $p['maybeempty'] && $p['canedit']
-         ? "<i class='input-group-text fa fa-times-circle fa-lg pointer' data-clear role='button' title='".__s('Clear')."'>"
+         ? "<i class='input-group-text fa fa-times-circle fa-lg pointer' data-clear role='button' title='".__s('Clear')."'></i>"
          : "";
 
       $output = <<<HTML
