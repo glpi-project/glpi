@@ -540,7 +540,7 @@ $CFG_GLPI['javascript'] = [
          'marketplace' => ['marketplace']
       ]
    ],
-   'admin'        => ['clipboard'],
+   'admin'        => ['clipboard', 'sortable'],
    'preference'   => ['clipboard'],
    'self-service' => array_merge(['tinymce'], $reservations_libs)
 ];
