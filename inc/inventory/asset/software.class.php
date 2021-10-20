@@ -194,7 +194,6 @@ class Software extends InventoryAsset
                $val->arch = '';
             }
 
-
             //not a template, not deleted, ...
             $val->is_template_item = 0;
             $val->is_deleted_item = 0;
