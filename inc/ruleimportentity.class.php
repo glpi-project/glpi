@@ -120,14 +120,6 @@ class RuleImportEntity extends Rule {
             'field' => 'name',
             'name' => __('Serial number')
          ],
-         'oscomment' => [
-            'field' => 'name',
-            'name' => sprintf(
-               '%s / %s',
-               OperatingSystem::getTypeName(1),
-               __('Comments')
-            )
-         ],
          '_source' => [
             'table' => '',
             'field' => '_source',

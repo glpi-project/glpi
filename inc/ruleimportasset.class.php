@@ -186,19 +186,6 @@ class RuleImportAsset extends Rule {
             'name'            => sprintf('%s > %s', __('General'), __('Restrict search in defined entity')),
             'allow_condition' => [self::PATTERN_ENTITY_RESTRICT],
          ],
-         'oscomment' => [
-            'name'            => sprintf('%s > %s / %s', __('Asset'), OperatingSystem::getTypeName(1), __('Comments')),
-            'allow_condition' => [
-               Rule::PATTERN_IS,
-               Rule::PATTERN_IS_NOT,
-               Rule::PATTERN_CONTAIN,
-               Rule::PATTERN_NOT_CONTAIN,
-               Rule::PATTERN_BEGIN,
-               Rule::PATTERN_END,
-               Rule::REGEX_MATCH,
-               Rule::REGEX_NOT_MATCH
-            ],
-         ],
          'link_criteria_port' => [
             'name'            => sprintf('%s > %s', __('General'), __('Restrict criteria to same network port')),
             'allow_condition' => [self::PATTERN_NETWORK_PORT_RESTRICT],
@@ -2370,7 +2357,6 @@ class RuleImportAsset extends Rule {
          'domains_id',
          'linked_item',
          'entity_restrict',
-         'oscomment',
          'link_criteria_port',
          'only_these_criteria'
       ], $this->getNetportCriteria());
