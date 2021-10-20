@@ -1070,10 +1070,9 @@ class Software extends CommonDBTM {
          if (!empty($result) && !isset($result['_ignore_import'])) {
             if (isset($result["softwarecategories_id"])) {
                $input["softwarecategories_id"] = $result["softwarecategories_id"];
-            } else if (isset($result["_import_category"])) {
+            } else if (isset($result["_import_category"]) && isset($input['_system_category'])) {
                $softCat = new SoftwareCategory();
-               $input["softwarecategories_id"]
-                  = $softCat->importExternal($input["_system_category"]);
+               $input["softwarecategories_id"] = $softCat->importExternal($input["_system_category"]);
             }
          } else {
             $input["softwarecategories_id"] = 0;
