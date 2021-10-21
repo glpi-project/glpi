@@ -76,13 +76,6 @@ export default class SearchTokenizer {
          let prefix = token[1];
          let term = token[2].trim();
 
-         if (/^".+"$/.test(term)) {
-            term = term.trim().replace(/^"/, '').replace(/"$/, '').trim();
-         }
-         if (/^'.+'$/.test(term)) {
-            term = term.trim().replace(/^'/, '').replace(/'$/, '').trim();
-         }
-
          if (prefix) {
             if (prefix === this.EXCLUSION_PREFIX) {
                is_exclusion = true;
@@ -91,6 +84,13 @@ export default class SearchTokenizer {
                // Prefix without the separator
                tag = prefix.slice(0, -1);
             }
+         }
+
+         if (/^".+"$/.test(term)) {
+            term = term.trim().replace(/^"/, '').replace(/"$/, '').trim();
+         }
+         if (/^'.+'$/.test(term)) {
+            term = term.trim().replace(/^'/, '').replace(/'$/, '').trim();
          }
 
          if (this.isAllowedTag(tag)) {
