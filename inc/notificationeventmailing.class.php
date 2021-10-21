@@ -94,15 +94,15 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
       $usr = new User();
       while ($row = $iterator->next()) {
          if (NotificationMailing::isUserAddressValid($row['admin_email'])) {
-            $admins[] = [
+            $admin = [
                'language'  => $CFG_GLPI['language'],
                'email'     => $row['admin_email'],
                'name'      => $row['admin_email_name']
             ];
             if ($usr->getFromDBbyEmail($row['admin_email'])) {
-               //$admins[array_key_last($admins)]['users_id'] = $usr->getID();
-               $admins[count($admins)-1]['users_id'] = $usr->getID();
-            };
+               $admin['users_id'] = $usr->getID();
+            }
+            $admins[] = $admin;
          }
       }
 
