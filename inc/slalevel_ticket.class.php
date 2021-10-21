@@ -326,16 +326,10 @@ class SlaLevel_Ticket extends CommonDBTM {
             'glpi_slas.type'                    => $slaType
          ]
       ];
-
-      $number = 0;
-      do {
-         $iterator = $DB->request($criteria);
-         $number = count($iterator);
-         if ($number == 1) {
-            $data = $iterator->next();
-            self::doLevelForTicket($data, $slaType);
-         }
-      } while ($number == 1);
+      $iterator = $DB->request($criteria);
+      while ($row = $iterator->next()) {
+         self::doLevelForTicket($row, $slaType);
+      }
    }
 
 }
