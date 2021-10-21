@@ -622,7 +622,7 @@ class MassiveAction {
             if (isset($actions[$actiontodel])) {
                unset($actions[$actiontodel]);
             } else {
-               if (Toolbox::startsWith($actiontodel, '*:')) {
+               if (str_starts_with($actiontodel, '*:')) {
                   foreach (array_keys($actions) as $action) {
                      if (preg_match('/[^:]+:' . str_replace('*:', '', $actiontodel . '/'), $action)
                         && !in_array($action, $whitedlisted_actions)
@@ -631,7 +631,7 @@ class MassiveAction {
                      }
                   }
                }
-               if (Toolbox::endsWith($actiontodel, ':*')) {
+               if (str_ends_with($actiontodel, ':*')) {
                   foreach (array_keys($actions) as $action) {
                      if (preg_match('/' . str_replace(':*', '', $actiontodel . ':.+/'), $action)
                         && !in_array($action, $whitedlisted_actions)

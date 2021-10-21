@@ -43,6 +43,7 @@ TESTS_SUITES=(
   "ldap"
   "imap"
   "web"
+  "javascript"
 )
 
 # Extract named options
@@ -55,6 +56,9 @@ while [[ $# -gt 0 ]]; do
     break
   fi
 done
+
+# Flag to indicate wether services containers are usefull
+USE_SERVICES_CONTAINERS=0
 
 # Extract list of tests suites to run
 TESTS_TO_RUN=()
@@ -73,13 +77,21 @@ if [[ $# -gt 0 ]]; then
     echo -e "\e[1;30;43m/!\ Invalid \"$KEY\" test suite \e[0m"
   done
 
-  # Ensure install test is executed if something else than "lint" is executed
-  # This is mandatory as database is initialized by this test suite
-  if [[ !${#TESTS_TO_RUN[@]} -eq 0 && "${TESTS_TO_RUN[@]}" != "lint" && ! "${TESTS_TO_RUN[@]}" =~ "install" ]]; then
-    TESTS_TO_RUN=("install" "${TESTS_TO_RUN[@]}")
-  fi
+  # Ensure install test is executed if something else than "lint" or "javascript" is executed.
+  # This is mandatory as database is initialized by this test suite.
+  # Also, check wether services containes are usefull.
+  for TEST_SUITE in "${TESTS_TO_RUN[@]}"; do
+    if [[ ! " lint javascript " =~ " ${TEST_SUITE} " ]]; then
+      if [[ ! "${TESTS_TO_RUN[@]}" =~ "install" ]]; then
+        TESTS_TO_RUN=("install" "${TESTS_TO_RUN[@]}")
+      fi
+      USE_SERVICES_CONTAINERS=1
+      break
+    fi
+  done
 elif [[ "$ALL" = true ]]; then
   TESTS_TO_RUN=("${TESTS_SUITES[@]}")
+  USE_SERVICES_CONTAINERS=1
 fi
 
 # Display help if user asks for it, or if it does not provide which test suite has to be executed
@@ -108,6 +120,7 @@ Available tests suites:
  - ldap
  - imap
  - web
+ - javascript
 EOF
 
   exit 0
@@ -136,7 +149,7 @@ find "$APPLICATION_ROOT/tests/config" -mindepth 1 ! -iname ".gitignore" -exec mv
 
 # Export variables to env (required for docker-compose) and start containers
 export COMPOSE_FILE="$APPLICATION_ROOT/.github/actions/docker-compose-app.yml"
-[[ "${TESTS_TO_RUN[@]}" == "lint" ]] || export COMPOSE_FILE="$COMPOSE_FILE:$APPLICATION_ROOT/.github/actions/docker-compose-services.yml"
+[[ $USE_SERVICES_CONTAINERS ]] || export COMPOSE_FILE="$COMPOSE_FILE:$APPLICATION_ROOT/.github/actions/docker-compose-services.yml"
 export APPLICATION_ROOT
 export APP_CONTAINER_HOME
 export DB_IMAGE
@@ -198,6 +211,10 @@ do
       ;;
     "web")
          docker-compose exec -T app .github/actions/test_tests-web.sh \
+      || LAST_EXIT_CODE=$?
+      ;;
+    "javascript")
+         docker-compose exec -T app .github/actions/test_javascript.sh \
       || LAST_EXIT_CODE=$?
       ;;
   esac

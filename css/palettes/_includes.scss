@@ -49,6 +49,7 @@ $is-dark: false !default;
 @import "css/includes/components/pictures";
 @import "css/includes/components/racks";
 @import "css/includes/components/richtext";
+@import "css/includes/components/rules";
 @import "css/includes/components/saved-searches";
 @import "css/includes/components/scrollbars";
 @import "css/includes/components/select2";
@@ -57,6 +58,7 @@ $is-dark: false !default;
 @import "css/includes/components/itilobject/layout";
 @import "css/includes/components/itilobject/timeline";
 @import "css/includes/components/itilobject/actors";
+@import "css/includes/components/itilobject/dates_timelines";
 @import "css/includes/components/itilobject/status";
 @import "css/includes/components/setup/dropdowns_list.scss";
 

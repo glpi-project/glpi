@@ -94,7 +94,7 @@ class RuleCollection extends CommonDBTM {
     * @param boolean $recursive (true by default)
     * @param integer $condition (0 by default)
     *
-    * @return : number of rules
+    * @return integer number of rules
    **/
    function getCollectionSize($recursive = true, $condition = 0) {
       global $DB;
@@ -226,7 +226,7 @@ class RuleCollection extends CommonDBTM {
       $iterator   = $DB->request($criteria);
 
       $active_tab = Session::getActiveTab($this->getType());
-      $can_sort = !(Toolbox::startsWith($this->getType() . '$', $active_tab));
+      $can_sort = !(str_starts_with($this->getType() . '$', $active_tab));
 
       foreach ($iterator as $data) {
          //For each rule, get a Rule object with all the criterias and actions
@@ -264,7 +264,7 @@ class RuleCollection extends CommonDBTM {
          if (count($iterator)) {
             $this->RuleList->list = [];
             $active_tab = Session::getActiveTab($this->getType());
-            $can_sort = !(Toolbox::startsWith($this->getType() . '$', $active_tab));
+            $can_sort = !(str_starts_with($this->getType() . '$', $active_tab));
 
             foreach ($iterator as $rule) {
                //For each rule, get a Rule object with all the criterias and actions
@@ -496,7 +496,7 @@ class RuleCollection extends CommonDBTM {
          Html::showMassiveActions($massiveactionparams);
       }
 
-      echo "<table class='tab_cadre_fixehov'>";
+      echo "<table class='table table-striped table-hover card-table'>";
       $colspan = 4;
 
       if ($display_entities) {
@@ -517,7 +517,7 @@ class RuleCollection extends CommonDBTM {
          $colspan += 2;
       }
 
-      echo "<tr><th colspan='$colspan'>" . $this->getTitle() ."</th></tr>\n";
+      echo "<tr><th colspan='$colspan'>" . $this->getTitle() ."</th></tr>";
       $header_row = "<tr>";
       $header_row.= "<th>";
       if ($canedit) {
@@ -532,24 +532,60 @@ class RuleCollection extends CommonDBTM {
       $header_row .= "<th>".__('Active')."</th>";
 
       if ($display_entities) {
-         $header_row .= "<th>".Entity::getTypeName(1)."</th>\n";
+         $header_row .= "<th>".Entity::getTypeName(1)."</th>";
       }
       if ($nb && $canedit && $can_sort) {
          $header_row .= "<th></th><th></th>";
       }
-      $header_row .= "</tr>\n";
+      $header_row .= "</tr>";
       echo $header_row;
 
+      echo "<tbody class='sortable-rules'>";
       for ($i=$p['start'],$j=0; isset($this->RuleList->list[$j]); $i++,$j++) {
          $this->RuleList->list[$j]->showMinimalForm($target, $i==0, $i==$nb-1, $display_entities, $p['condition']);
          Session::addToNavigateListItems($ruletype, $this->RuleList->list[$j]->fields['id']);
       }
+      echo "</tbody>";
+
       if ($nb) {
          echo $header_row;
       }
-      echo "</table>\n";
+      echo "</table>";
 
       if ($canedit && $nb) {
+         $collection_classname = $this->getType();
+         $js = <<<JAVASCRIPT
+         $(function() {
+            sortable('.sortable-rules', {
+               handle: '.grip-rule',
+               placeholder: '<tr><td colspan="7" class="sortable-placeholder">&nbsp;</td></tr>'
+            })[0].addEventListener('sortupdate', function(e) {
+               var sort_detail          = e.detail;
+               var rule_id              = sort_detail.item.dataset.ruleId;
+               var collection_classname = "{$collection_classname}";
+               var new_index            = sort_detail.destination.index;
+               var old_index            = sort_detail.origin.index;
+               var ref_id               = sort_detail.destination.itemsBeforeUpdate[new_index].dataset.ruleId;
+               var sort_action          = 'after';
+
+               if (old_index > new_index) {
+                  sort_action = 'before';
+               }
+
+               $.post(CFG_GLPI['root_doc']+'/ajax/rule.php', {
+                  'action': 'move_rule',
+                  'rule_id': rule_id,
+                  'collection_classname': collection_classname,
+                  'sort_action': sort_action,
+                  'ref_id': ref_id,
+               });
+
+               displayAjaxMessageAfterRedirect();
+            });
+         });
+JAVASCRIPT;
+         echo Html::scriptBlock($js);
+
          $massiveactionparams['ontop'] = false;
          Html::showMassiveActions($massiveactionparams);
       }

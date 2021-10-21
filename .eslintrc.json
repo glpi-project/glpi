@@ -81,6 +81,16 @@
             "env": {
                 "node": true
             }
+        },
+        {
+            "files": ["tests/js/**"],
+            "env": {
+                "node": true,
+                "jest": true
+            },
+            "parserOptions": {
+                "sourceType": "module"
+            }
         }
     ]
 }

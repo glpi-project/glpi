@@ -98,8 +98,7 @@ class Dashboard extends DbTestCase {
             ],
          ], [
             [
-               'itemtype' => 'Entity',
-               'items_id' => 0,
+               'entities_id' => 0,
             ]
          ]
       ))->isEqualTo("new-dashboard");
@@ -236,8 +235,7 @@ class Dashboard extends DbTestCase {
             ],
             'rights'  => [
                [
-                  'itemtype' => 'Entity',
-                  'items_id' => 0,
+                  'entities_id' => 0
                ]
             ],
          ]

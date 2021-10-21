@@ -129,7 +129,7 @@ class Item extends \CommonDBChild {
             $item['height'],
             $card_options
          );
-         $stmt->execute();
+         $DB->executeStatement($stmt);
       }
    }
 }

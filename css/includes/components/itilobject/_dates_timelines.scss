@@ -1,0 +1,151 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2021 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+.dates_timelines {
+   width: 100%;
+   max-width: 950px;
+   margin: 0 auto;
+   text-align: left;
+
+   ul {
+      position: relative;
+
+      &:before {
+         content: '';
+         position: absolute;
+         top: 23px;
+         bottom: 23px;
+         left: 170px;
+         width: 3px;
+         background-color: #A8A8A8;
+      }
+   }
+
+   li {
+      margin: 35px 0;
+      display: block;
+   }
+
+   time {
+      height: 30px;
+      position: absolute;
+      left: 0;
+      text-align: right;
+      width: 145px;
+      color: #999;
+   }
+
+   .dot {
+      position: absolute;
+      left: 160px;
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: #FFF;
+      border: 2px solid #696969;
+      box-sizing: content-box;
+
+      &:before {
+         color: #929292;
+         font-family: 'Font Awesome\ 5 Free';
+         padding-left: 3px;
+      }
+   }
+
+   .now {
+      font-weight: bold;
+      color: inherit !important;
+
+      time {
+         font-weight: bold;
+         color: inherit !important;
+      }
+
+      .dot {
+         background-color: #49BAF6;
+         border-color: #4A9BC5;
+      }
+   }
+
+   .creation .dot {
+      border: 0;
+      font-size: 15px;
+      height: 18px;
+      left: 161px;
+
+      &:before {
+         content: '\f069';
+         font-weight: 900;
+      }
+   }
+
+   .passed {
+      time, label {
+         border-color: #FF0014;
+         color: #FF0014;
+      }
+
+      .dot {
+         border-color: #FF0014;
+         color: #FF0014;
+
+         &:before {
+            content: '\f12a';
+            padding-left: 8px;
+            color: #E54E5A;
+            font-weight: 900;
+         }
+      }
+   }
+
+   .checked .dot:before {
+      content: '\f00c';
+      font-weight: 900;
+   }
+
+   .end .dot {
+      border: 0;
+      font-size: 15px;
+      left: 163px;
+
+      &:before {
+         content: '\f024';
+         font-weight: 900;
+      }
+   }
+
+   label {
+      position: absolute;
+      left: 190px;
+      text-align: right;
+   }
+}

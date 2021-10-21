@@ -353,6 +353,9 @@ class SavedSearch_Alert extends CommonDBChild {
       global $DB;
 
       $iterator = $DB->request([
+         'SELECT' => [
+            'glpi_savedsearches_alerts.*'
+         ],
          'FROM'   => self::getTable(),
          'LEFT JOIN' => [
             'glpi_alerts' => [

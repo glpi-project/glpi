@@ -72,7 +72,7 @@ class ProtectedWebAccess extends AbstractRequirement {
 
       $check_access = false;
       foreach ($this->directories as $dir) {
-         if (\Toolbox::startsWith($dir, GLPI_ROOT)) {
+         if (str_starts_with($dir, GLPI_ROOT)) {
             // Only check access if one of the data directories is under GLPI document root.
             $check_access = true;
             break;

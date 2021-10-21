@@ -60,8 +60,10 @@ The present file will list all changes made to the project; according to the
 - `RuleImportComputer` class
 - `RuleImportComputerCollection` class
 - `Toolbox::clean_cross_side_scripting_deep()`
+- `Toolbox::endsWith()`
 - `Toolbox::getHtmlToDisplay()`
 - `Toolbox::unclean_cross_side_scripting_deep()`
+- `Toolbox::startsWith()`
 
 #### Removed
 - jQueryUI has been partially removed and remaining widgets will be removed in a near future.

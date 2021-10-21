@@ -283,22 +283,33 @@ class CacheManager {
    /**
     * Reset all caches.
     *
-    * @return void
+    * @return bool
     */
-   public function resetAllCaches(): void {
+   public function resetAllCaches(): bool {
+
+      $success = true;
 
       // Clear all cache contexts
       $known_contexts = $this->getKnownContexts();
       foreach ($known_contexts as $context) {
-         $this->getCacheInstance($context)->clear();
+         $success = $this->getCacheInstance($context)->clear() && $success;
       }
 
       // Clear compiled templates
       $tpl_cache_dir = $this->cache_dir . '/templates';
       if (file_exists($tpl_cache_dir)) {
-         array_map('unlink', glob($tpl_cache_dir . '/**/*.php'));
-         array_map('rmdir', glob($tpl_cache_dir . '/*', GLOB_ONLYDIR));
+         $tpl_files = glob($tpl_cache_dir . '/**/*.php');
+         foreach ($tpl_files as $tpl_file) {
+            $success = unlink($tpl_file) && $success;
+         }
+
+         $tpl_dirs = glob($tpl_cache_dir . '/*', GLOB_ONLYDIR);
+         foreach ($tpl_dirs as $tpl_dir) {
+            $success = rmdir($tpl_dir) && $success;
+         }
       }
+
+      return $success;
    }
 
    /**

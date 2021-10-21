@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -54,6 +56,26 @@ class Unmanaged extends CommonDBTM {
          ->addStandardTab('NetworkPort', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
       return $ong;
+   }
+
+
+   /**
+    * Print the unmanagemed form
+    *
+    * @param $ID integer ID of the item
+    * @param $options array
+    *     - target filename : where to go when done.
+    *     - withtemplate boolean : template or basic item
+    *
+    * @return boolean item found
+   **/
+   function showForm($ID, array $options = []) {
+      $this->initForm($ID, $options);
+      TemplateRenderer::getInstance()->display('pages/assets/unmanaged.html.twig', [
+         'item'   => $this,
+         'params' => $options,
+      ]);
+      return true;
    }
 
 

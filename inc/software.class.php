@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssetImage;
 
 /** Software Class
@@ -194,6 +195,26 @@ class Software extends CommonDBTM {
                                'is_valid' => $valid]);
          }
       }
+   }
+
+
+   /**
+    * Print the software form
+    *
+    * @param $ID integer ID of the item
+    * @param $options array
+    *     - target filename : where to go when done.
+    *     - withtemplate boolean : template or basic item
+    *
+    * @return boolean item found
+   **/
+   function showForm($ID, array $options = []) {
+      $this->initForm($ID, $options);
+      TemplateRenderer::getInstance()->display('pages/assets/software.html.twig', [
+         'item'   => $this,
+         'params' => $options,
+      ]);
+      return true;
    }
 
 
@@ -1049,10 +1070,9 @@ class Software extends CommonDBTM {
          if (!empty($result) && !isset($result['_ignore_import'])) {
             if (isset($result["softwarecategories_id"])) {
                $input["softwarecategories_id"] = $result["softwarecategories_id"];
-            } else if (isset($result["_import_category"])) {
+            } else if (isset($result["_import_category"]) && isset($input['_system_category'])) {
                $softCat = new SoftwareCategory();
-               $input["softwarecategories_id"]
-                  = $softCat->importExternal($input["_system_category"]);
+               $input["softwarecategories_id"] = $softCat->importExternal($input["_system_category"]);
             }
          } else {
             $input["softwarecategories_id"] = 0;

@@ -30,35 +30,16 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Console\System;
+$AJAX_INCLUDE = 1;
+include ('../inc/includes.php');
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
+Session::checkLoginUser();
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class ClearCacheCommand extends Command {
-
-   protected $requires_db_up_to_date = false;
-
-   protected function configure() {
-      parent::configure();
-
-      $this->setName('glpi:system:clear_cache');
-      $this->setAliases(['system:clear_cache']);
-      $this->setDescription('Clear GLPI cache.');
-   }
-
-   protected function execute(InputInterface $input, OutputInterface $output) {
-
-      global $GLPI_CACHE;
-      $GLPI_CACHE->clear();
-
-      $output->writeln('<info>'. __('Cache reset successful') . '</info>');
-
-      return 0; // Success
-   }
+switch ($_REQUEST['action']) {
+   case "move_rule":
+      if (is_subclass_of($_POST['collection_classname'], RuleCollection::getType())) {
+         $rule_collection = new $_POST['collection_classname'];
+         $rule_collection->moveRule((int) $_POST['rule_id'], (int) $_POST['ref_id'], $_POST['sort_action']);
+      }
+      break;
 }

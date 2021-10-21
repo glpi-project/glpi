@@ -2741,7 +2741,7 @@ JS;
          ? " disabled='disabled'"
          : "";
       $clear    = $p['maybeempty'] && $p['canedit']
-         ? "<i class='input-group-text fa fa-times-circle fa-lg pointer' data-clear role='button' title='".__s('Clear')."'>"
+         ? "<i class='input-group-text fa fa-times-circle fa-lg pointer' data-clear role='button' title='".__s('Clear')."'></i>"
          : "";
 
       $output = <<<HTML
@@ -3263,27 +3263,19 @@ JS;
 
       ksort($options['dates']);
 
-      $out = "";
-      $out.= "<div class='dates_timelines'>";
-
-      // add title
-      if (strlen($options['title'])) {
-         $out.= "<h2 class='header'>".$options['title']."</h2>";
+      // format dates
+      foreach ($options['dates'] as &$data) {
+         $data['date'] = date("Y-m-d H:i:s", $data['timestamp']);
       }
 
-      // construct timeline
-      $out.= "<ul>";
-      foreach ($options['dates'] as $key => $data) {
-         if ($data['timestamp'] != 0) {
-            $out.= "<li class='".$data['class']."'>&nbsp;";
-            $out.= "<time>".Html::convDateTime(date("Y-m-d H:i:s", $data['timestamp']))."</time>";
-            $out.= "<span class='dot'></span>";
-            $out.= "<label>".$data['label']."</label>";
-            $out.= "</li>";
-         }
-      }
-      $out.= "</ul>";
-      $out.= "</div>";
+      // get Html
+      $out = TemplateRenderer::getInstance()->render(
+         'components/dates_timeline.html.twig',
+         [
+            'title' => $options['title'],
+            'dates' => $options['dates'],
+         ]
+      );
 
       if ($options['display']) {
          echo $out;
@@ -6482,7 +6474,7 @@ HTML;
 
       $ckey .= '_' . $file;
 
-      if (!Toolbox::endsWith($file, '.scss')) {
+      if (!str_ends_with($file, '.scss')) {
          // Prevent include of file if ext is not .scss
          $file .= '.scss';
       }
@@ -6505,7 +6497,7 @@ HTML;
 
       // Prevent import of a file from ouside GLPI dir
       $path = realpath($path);
-      if (!Toolbox::startsWith($path, realpath(GLPI_ROOT))) {
+      if (!str_starts_with($path, realpath(GLPI_ROOT))) {
          Toolbox::logWarning('Requested file ' . $path . ' is outside GLPI file tree.');
          return '';
       }

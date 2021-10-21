@@ -663,7 +663,7 @@ class Session {
             return true;
          }
 
-         return Toolbox::startsWith($dir, 'core_');
+         return str_starts_with($dir, 'core_');
       });
 
       foreach ($core_folders as $core_folder) {

@@ -118,9 +118,9 @@ class Filter extends \CommonDBChild {
          }
       };
 JAVASCRIPT;
-      $js = Html::scriptBlock($js);
+      $field.= Html::scriptBlock($js);
 
-      return $js.self::field($fieldname, $field, $label, is_array($values) && count($values) > 0);
+      return self::field($fieldname, $field, $label, is_array($values) && count($values) > 0);
    }
 
    /**
@@ -200,9 +200,9 @@ JAVASCRIPT;
       };
 
 JAVASCRIPT;
-      $js = Html::scriptBlock($js);
+      $field.= Html::scriptBlock($js);
 
-      return $js.self::field($fieldname, $field, $label, $value > 0);
+      return self::field($fieldname, $field, $label, $value > 0);
    }
 
    /**
@@ -224,13 +224,6 @@ JAVASCRIPT;
 
       $rand  = mt_rand();
       $class = $filled ? "filled" : "";
-      $html  = <<<HTML
-      <fieldset id='filter-{$rand}' class='filter $class' data-filter-id='{$id}'>
-         $field
-         <legend>$label</legend>
-         <i class='btn btn-sm btn-icon btn-ghost-secondary fas fa-trash delete-filter'></i>
-      </fieldset>
-HTML;
 
       $js = <<<JAVASCRIPT
       $(function () {
@@ -256,7 +249,16 @@ HTML;
 JAVASCRIPT;
       $js = Html::scriptBlock($js);
 
-      return $html.$js;
+      $html  = <<<HTML
+      <fieldset id='filter-{$rand}' class='filter $class' data-filter-id='{$id}'>
+         $field
+         <legend>$label</legend>
+         <i class='btn btn-sm btn-icon btn-ghost-secondary fas fa-trash delete-filter'></i>
+         {$js}
+      </fieldset>
+HTML;
+
+      return $html;
    }
 
    /**

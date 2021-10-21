@@ -512,7 +512,7 @@ $CFG_GLPI['javascript'] = [
       'stat'      => ['charts']
    ],
    'tools'     => [
-      'project'                 => ['gantt', 'kanban', 'tinymce'],
+      'project'                 => ['gantt', 'kanban', 'tinymce', 'sortable'],
       'knowbaseitem'            => ['tinymce'],
       'knowbaseitemtranslation' => ['tinymce'],
       'reminder'                => ['tinymce'],
@@ -540,7 +540,7 @@ $CFG_GLPI['javascript'] = [
          'marketplace' => ['marketplace']
       ]
    ],
-   'admin'        => ['clipboard'],
+   'admin'        => ['clipboard', 'sortable'],
    'preference'   => ['clipboard'],
    'self-service' => array_merge(['tinymce'], $reservations_libs)
 ];

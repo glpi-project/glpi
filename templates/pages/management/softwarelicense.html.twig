@@ -1,0 +1,51 @@
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+
+{% block more_fields %}
+   {% set field %}
+      {% do call('SoftwareVersion::dropdownForOneSoftware', [{
+         'name': 'softwareversions_id_use',
+         'softwares_id': item.fields['softwares_id'],
+         'value': item.fields['softwareversions_id_use'],
+         'width': '100%',
+      }]) %}
+   {% endset %}
+   {{ fields.field('softwareversions_id_use', field, __('Version in use')) }}
+
+   {% set field %}
+      {% do call('SoftwareVersion::dropdownForOneSoftware', [{
+      'name': 'softwareversions_id_buy',
+      'softwares_id': item.fields['softwares_id'],
+      'value': item.fields['softwareversions_id_buy'],
+      'width': '100%',
+      }]) %}
+   {% endset %}
+   {{ fields.field('softwareversions_id_buy', field, __('Purchase version')) }}
+
+   {% set validity_msg = null %}
+   {% if item_type == 'SoftwareLicense' %}
+      {% set validity_msg %}
+         {% if item.fields['is_valid'] %}
+            <span class="green">{{ _x('adjective', 'Valid') }}</span>
+         {% elseif not item.fields['is_valid'] and item.fields['allow_overquota'] %}
+            <span class="green">{{ _x('adjective', 'Valid (Over Quota)') }}</span>
+         {% else %}
+            <span class="red">{{ _x('adjective', 'Invalid') }}</span>
+         {% endif %}
+      {% endset %}
+   {% endif %}
+   {{ fields.numberField('number', item.fields['number'], _x('quantity', 'Number'), {
+      'min': 1,
+      'max': 10000,
+      'step': 1,
+      'toadd': {'-1': __('Unlimited')},
+      'add_field_html': validity_msg
+   }) }}
+
+   {{ fields.dropdownYesNo('allow_overquota', item.fields['allow_overquota'], __('Allow Over-Quota')) }}
+
+   {{ fields.datetimeField('expire', item.fields['expire'], __('Expiration'), {
+      'helper': __('On search engine, use "Expiration contains NULL" to search licenses with no expiration date')
+   }) }}
+{% endblock %}

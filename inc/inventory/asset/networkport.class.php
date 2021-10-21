@@ -422,9 +422,7 @@ class NetworkPort extends InventoryAsset
 
             $stmt_values = array_values($stmt_columns);
             $this->vlan_stmt->bind_param($stmt_types, ...$stmt_values);
-            if (!$this->vlan_stmt->execute()) {
-               trigger_error($this->vlan_stmt->error, E_USER_ERROR);
-            }
+            $DB->executeStatement($this->vlan_stmt);
             $vlans_id = $DB->insertId();
 
             $db_vlans[$vlan_key] = $vlans_id;
@@ -454,9 +452,7 @@ class NetworkPort extends InventoryAsset
 
          $pvlan_stmt_values = array_values($pvlan_stmt_columns);
          $this->pvlan_stmt->bind_param($pvlan_stmt_types, ...$pvlan_stmt_values);
-         if (!$this->pvlan_stmt->execute()) {
-            trigger_error($this->pvlan_stmt->error, E_USER_ERROR);
-         }
+         $DB->executeStatement($this->pvlan_stmt);
       }
    }
 

@@ -103,7 +103,7 @@ class Right extends \CommonDBChild {
                $itemtype,
                $items_id
             );
-            $stmt->execute();
+            $DB->executeStatement($stmt);
          }
       }
    }

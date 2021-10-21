@@ -108,7 +108,7 @@ class Software extends InventoryAsset
 
          if (!property_exists($val, 'name')
             || ($val->name == ''
-               || Toolbox::startsWith(Toolbox::slugify($val->name), 'nok_')
+               || str_starts_with(Toolbox::slugify($val->name), 'nok_')
             )
          ) {
             if (property_exists($val, 'guid') && $val->guid != '') {
@@ -189,6 +189,10 @@ class Software extends InventoryAsset
             if (!property_exists($val, 'version')) {
                $val->version = '';
             }
+            //arch is undefined, set it to blankk
+            if (!property_exists($val, 'arch')) {
+               $val->arch = '';
+            }
 
             //not a template, not deleted, ...
             $val->is_template_item = 0;
@@ -234,8 +238,8 @@ class Software extends InventoryAsset
       //Get operating system
       $operatingsystems_id = 0;
 
-      if (isset($this->extra_data['\Glpi\Inventory\Asset\OperatingSystem'])) {
-         $os = $this->extra_data['\Glpi\Inventory\Asset\OperatingSystem'][0];
+      if (isset($this->extra_data[OperatingSystem::class])) {
+         $os = $this->extra_data[OperatingSystem::class];
          $operatingsystems_id = $os->getId();
       }
 
@@ -453,9 +457,7 @@ class Software extends InventoryAsset
             $val->name,
             $val->manufacturers_id
          );
-         if (!$stmt->execute()) {
-            trigger_error($stmt->error, E_USER_ERROR);
-         }
+         $DB->executeStatement($stmt);
          $results = $stmt->get_result();
 
          while ($row = $results->fetch_object()) {
@@ -527,9 +529,7 @@ class Software extends InventoryAsset
             $softwares_id,
             $osid
          );
-         if (!$stmt->execute()) {
-            trigger_error($stmt->error, E_USER_ERROR);
-         }
+         $DB->executeStatement($stmt);
          $results = $stmt->get_result();
 
          while ($row = $results->fetch_object()) {
@@ -572,9 +572,7 @@ class Software extends InventoryAsset
             $software->handleCategoryRules($stmt_columns);
             $stmt_values = array_values($stmt_columns);
             $stmt->bind_param($stmt_types, ...$stmt_values);
-            if (!$stmt->execute()) {
-               trigger_error($stmt->error, E_USER_ERROR);
-            }
+            $DB->executeStatement($stmt);
             $softwares_id = $DB->insertId();
             $this->softwares[$skey] = $softwares_id;
          }
@@ -631,9 +629,7 @@ class Software extends InventoryAsset
 
             $stmt_values = array_values($stmt_columns);
             $stmt->bind_param($stmt_types, ...$stmt_values);
-            if (!$stmt->execute()) {
-               trigger_error($stmt->error, E_USER_ERROR);
-            }
+            $DB->executeStatement($stmt);
             $versions_id = $DB->insertId();
             $this->versions[$vkey] = $versions_id;
          }
@@ -714,9 +710,7 @@ class Software extends InventoryAsset
             $input['entities_id'],
             $input['date_install']
          );
-         if (!$stmt->execute()) {
-            trigger_error($stmt->error, E_USER_ERROR);
-         }
+         $DB->executeStatement($stmt);
       }
    }
 

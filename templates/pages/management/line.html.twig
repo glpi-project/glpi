@@ -1,0 +1,29 @@
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+
+{% block more_fields %}
+   {{ fields.autoNameField(
+      'caller_num',
+      item,
+      __('Caller number'),
+      withtemplate
+   ) }}
+
+   {{ fields.autoNameField(
+      'caller_name',
+      item,
+      __('Caller name'),
+      withtemplate
+   ) }}
+
+   {{ fields.dropdownField(
+      'LineOperator',
+      'lineoperators_id',
+      item.fields['lineoperators_id'],
+      'LineOperator'|itemtype_name,
+      {
+         'entity': item.fields['entities_id'],
+      }
+   ) }}
+{% endblock %}

@@ -195,7 +195,7 @@ body.iframed {
 
    &.btn-icon {
 
-      i.fas, i.far, i.fab, i.it {
+      i.fas, i.far, i.fab, i.ti {
          margin-right: 0;
          line-height: 1.5em;
       }
@@ -208,7 +208,7 @@ body.iframed {
             margin-top: -4px;
          }
 
-         i.fas, i.far, i.fab, i.it {
+         i.fas, i.far, i.fab, i.ti {
             line-height: 1.2em;
          }
       }
@@ -286,5 +286,17 @@ table {
          top: 0 !important;
          bottom: 0 !important;
       }
+   }
+}
+
+.qtip-bootstrap {
+   background-color: $color-contrast-light;
+   color: $dark;
+}
+
+.list-group .list-group-item {
+   color: inherit;
+   &:hover {
+      background-color: $hover-bg;
    }
 }
