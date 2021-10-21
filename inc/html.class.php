@@ -1282,7 +1282,7 @@ HTML;
 
       $menu = [
          'assets' => [
-            'title' => AllAssets::getTypeName(2),
+            'title' => AllAssets::getTypeName(Session::getPluralNumber()),
             'types' => array_merge([
                'Computer', 'Monitor', 'Software',
                'NetworkEquipment', 'Peripheral', 'Printer',
