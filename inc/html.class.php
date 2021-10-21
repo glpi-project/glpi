@@ -3480,7 +3480,7 @@ JS;
     *    string if param display=false (HTML code)
    **/
    static function initEditorSystem($name, $rand = '', $display = true, $readonly = false, $enable_images = true) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       // load tinymce lib
       Html::requireJs('tinymce');
@@ -3523,6 +3523,9 @@ JS;
          $plugins[] = 'image';
          $plugins[] = 'glpi_upload_doc';
       }
+      if ($DB->use_utf8mb4) {
+         $plugins[] = 'emoticons';
+      }
       $pluginsjs = json_encode($plugins);
 
       // init tinymce
@@ -3556,15 +3559,15 @@ JS;
                // inline toolbar configuration
                menubar: false,
                toolbar: richtext_layout == 'classic'
-                  ? 'styleselect | bold italic | forecolor backcolor | bullist numlist outdent indent | table link image | code fullscreen'
+                  ? 'styleselect | bold italic | forecolor backcolor | bullist numlist outdent indent | emoticons table link image | code fullscreen'
                   : false,
                quickbars_insert_toolbar: richtext_layout == 'inline'
-                  ? 'quicktable quickimage quicklink | bullist numlist | outdent indent'
+                  ? 'emoticons quicktable quickimage quicklink | bullist numlist | outdent indent '
                   : false,
                quickbars_selection_toolbar: richtext_layout == 'inline'
                   ? 'bold italic | styleselect | forecolor backcolor '
                   : false,
-               contextmenu: 'table image link | undo redo | code fullscreen',
+               contextmenu: 'emoticons table image link | undo redo | code fullscreen',
 
                // Content settings
                entity_encoding: 'raw',
