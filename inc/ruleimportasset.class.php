@@ -118,46 +118,46 @@ class RuleImportAsset extends Rule {
             'name'            => __("Item name")
          ],
          'model' => [
-            'name'            => sprintf('%s > %s', AllAssets::getTypeName(1), _n('Model', 'Models', 1)),
+            'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), _n('Model', 'Models', 1)),
          ],
          'manufacturer' => [ // Manufacturer as Text to allow text criteria (contains, regex, ...)
             'name'            => Manufacturer::getTypeName(1)
          ],
          'mac' => [
-            'name'            => sprintf('%s > %s > %s', AllAssets::getTypeName(1), NetworkPort::getTypename(1), __('MAC')),
+            'name'            => sprintf('%s > %s > %s', _n('Asset', 'Assets', 1), NetworkPort::getTypename(1), __('MAC')),
          ],
          'ip' => [
-            'name'            => sprintf('%s > %s > %s', AllAssets::getTypeName(1), NetworkPort::getTypename(1), __('IP')),
+            'name'            => sprintf('%s > %s > %s', _n('Asset', 'Assets', 1), NetworkPort::getTypename(1), __('IP')),
          ],
          'ifdescr' => [
-            'name'            => sprintf('%s > %s > %s', AllAssets::getTypeName(1), NetworkPort::getTypename(1), __('Port description'))
+            'name'            => sprintf('%s > %s > %s', _n('Asset', 'Assets', 1), NetworkPort::getTypename(1), __('Port description'))
          ],
          'ifnumber' => [
-            'name'            => sprintf('%s > %s > %s', AllAssets::getTypeName(1), NetworkPort::getTypename(1), _n('Port number', 'Ports number', 1)),
+            'name'            => sprintf('%s > %s > %s', _n('Asset', 'Assets', 1), NetworkPort::getTypename(1), _n('Port number', 'Ports number', 1)),
          ],
          'serial' => [
-            'name'            => sprintf('%s > %s', AllAssets::getTypeName(1), __('Serial number')),
+            'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), __('Serial number')),
          ],
          'uuid' => [
-            'name'            => sprintf('%s > %s', AllAssets::getTypeName(1), __('UUID')),
+            'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), __('UUID')),
          ],
          'device_id' => [
             'name'            => sprintf('%s > %s', Agent::getTypeName(1), __('Device_id')),
          ],
          'mskey' => [
-            'name'            => sprintf('%s > %s', AllAssets::getTypeName(1), __('Serial of the operating system')),
+            'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), __('Serial of the operating system')),
          ],
          'name' => [
-            'name'            => sprintf('%s > %s', AllAssets::getTypeName(1), __('Name')),
+            'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), __('Name')),
          ],
          'tag' => [
             'name'            => sprintf('%s > %s', Agent::getTypeName(1), __('Inventory tag')),
          ],
          'osname' => [
-            'name'            => sprintf('%s > %s', AllAssets::getTypeName(1), OperatingSystem::getTypeName(1)),
+            'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), OperatingSystem::getTypeName(1)),
          ],
          'itemtype' => [
-            'name'            => sprintf('%s > %s', AllAssets::getTypeName(1), __('Item type')),
+            'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), __('Item type')),
             'type'            => 'dropdown_inventory_itemtype',
             'is_global'       => false,
             'allow_condition' => [
@@ -170,7 +170,7 @@ class RuleImportAsset extends Rule {
          'domains_id' => [
             'table'           => 'glpi_domains',
             'field'           => 'name',
-            'name'            => sprintf('%s > %s', AllAssets::getTypeName(1), Domain::getTypeName(1)),
+            'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), Domain::getTypeName(1)),
             'linkfield'       => 'domain',
             'type'            => 'dropdown',
             'is_global'       => false,

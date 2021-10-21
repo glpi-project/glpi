@@ -32,7 +32,6 @@
 
 namespace Glpi\Dashboard;
 
-use AllAssets;
 use DBConnection;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
@@ -1135,7 +1134,7 @@ HTML;
                $cards["count_" . $itemtype . "_" . $fk_itemtype] = [
                   'widgettype' => ['summaryNumbers', 'multipleNumber', 'pie', 'donut', 'halfpie', 'halfdonut', 'bar', 'hbar'],
                   'itemtype'   => "\\Computer",
-                  'group'      => AllAssets::getTypeName(Session::getPluralNumber()),
+                  'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
                   'label'      => $label,
                   'provider'   => "Glpi\\Dashboard\\Provider::multipleNumber" . $itemtype . "By" . $fk_itemtype,
                   'filters'    => array_merge([

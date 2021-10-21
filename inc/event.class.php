@@ -33,7 +33,6 @@
 namespace Glpi;
 
 use Ajax;
-use AllAssets;
 use CommonDBTM;
 use CronTask;
 use DBConnection;
@@ -155,7 +154,7 @@ class Event extends CommonDBTM {
                            'dropdown'    => _n('Dropdown', 'Dropdowns', Session::getPluralNumber()),
                            'rules'       => _n('Rule', 'Rules', Session::getPluralNumber())];
 
-      $logService = ['inventory'    => AllAssets::getTypeName(Session::getPluralNumber()),
+      $logService = ['inventory'    => _n('Asset', 'Assets', Session::getPluralNumber()),
                           'tracking'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
                           'maintain'     => __('Assistance'),
                           'planning'     => __('Planning'),

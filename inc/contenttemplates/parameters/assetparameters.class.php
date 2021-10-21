@@ -32,7 +32,6 @@
 
 namespace Glpi\ContentTemplates\Parameters;
 
-use AllAssets;
 use CommonDBTM;
 use Entity;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
@@ -55,7 +54,7 @@ class AssetParameters extends AbstractParameters
    }
 
    public static function getObjectLabel(): string {
-      return AllAssets::getTypeName(1);
+      return _n('Asset', 'Assets', 1);
    }
 
    protected function getTargetClasses(): array {

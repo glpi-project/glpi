@@ -365,7 +365,7 @@ class Entity extends CommonTreeDropdown {
                                          [self::READHELPDESK, self::UPDATEHELPDESK])) {
                   $ong[5] = __('Assistance');
                }
-               $ong[6] = AllAssets::getTypeName(Session::getPluralNumber());
+               $ong[6] = _n('Asset', 'Assets', Session::getPluralNumber());
                if (Session::haveRight(Config::$rightname, UPDATE)) {
                   $ong[7] = __('UI customization');
                }
@@ -1073,7 +1073,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => 'assets',
-         'name'               => AllAssets::getTypeName(Session::getPluralNumber())
+         'name'               => _n('Asset', 'Assets', Session::getPluralNumber())
       ];
 
       $tab[] = [

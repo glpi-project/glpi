@@ -111,7 +111,7 @@ class Profile extends CommonDBTM {
                   $ong[6] = __('Tools');
                   $ong[8] = __('Setup');
                } else {
-                  $ong[2] = AllAssets::getTypeName(Session::getPluralNumber());
+                  $ong[2] = _n('Asset', 'Assets', Session::getPluralNumber());
                   $ong[3] = __('Assistance');
                   $ong[4] = __('Life cycles');
                   $ong[5] = __('Management');
@@ -926,7 +926,7 @@ class Profile extends CommonDBTM {
 
       $this->displayRightsChoiceMatrix($rights, ['canedit'       => $canedit,
                                                       'default_class' => 'tab_bg_2',
-                                                      'title'         => AllAssets::getTypeName(Session::getPluralNumber())]);
+                                                      'title'         => _n('Asset', 'Assets', Session::getPluralNumber())]);
 
       if ($canedit
           && $closeform) {
@@ -1879,7 +1879,7 @@ class Profile extends CommonDBTM {
 
       $tab[] = [
          'id'                 => 'inventory',
-         'name'               => AllAssets::getTypeName(Session::getPluralNumber())
+         'name'               => _n('Asset', 'Assets', Session::getPluralNumber())
       ];
 
       $tab[] = [
