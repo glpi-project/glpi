@@ -2423,9 +2423,10 @@ class Dropdown {
       if ($item instanceof CommonTreeDropdown) {
          if (isset($post['parentid']) && $post['parentid'] != '') {
             $sons = getSonsOf($table, $post['parentid']);
-            if (count($sons) > 0) {
-               $where[] = [new \QueryExpression("$table.id IN (".implode(', ', $sons).")" )];
-            }
+            $where[] = [
+               ["$table.id" => $sons],
+               ["NOT" => ["$table.id" => $post['parentid']]],
+            ];
          }
          if ($one_item >= 0) {
             $where["$table.id"] = $one_item;
