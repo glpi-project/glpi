@@ -126,18 +126,6 @@
      cursor: grab;
    }
 
-   .pager_controls {
-     margin-left: .5em;
-
-     .fa.pointer {
-        font-size: 1.5em;
-     }
-
-     label span.fa {
-        margin-right: 1em;
-     }
-   }
-
    .invisible, .tooltip-invisible {
      display: none;
    }
@@ -1062,110 +1050,6 @@
       }
    }
 
-   /** SWITCHS **/
-   /* Adadpted from http://materializecss.com/ */
-
-   .switch {
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -khtml-user-select: none;
-      -ms-user-select: none;
-
-      * {
-         -webkit-user-select: none;
-         -moz-user-select: none;
-         -khtml-user-select: none;
-         -ms-user-select: none;
-      }
-
-      padding: 4px;
-      display: inline-block;
-
-      img {
-         padding-right: 10px;
-      }
-   }
-
-   .switch label {
-      cursor: pointer;
-
-      input[type=checkbox] {
-         display: none;
-         opacity: 0;
-         width: 0;
-         height: 0;
-
-         &:checked ~ {
-            .lever {
-               background-color: #E8AEAE;
-            }
-
-            .fa {
-               color: #E8AEAE;
-            }
-
-            .lever:after {
-               background-color: #cf9b9b;
-            }
-         }
-      }
-
-      .lever {
-         content: "";
-         display: inline-block;
-         position: relative;
-         width: 15px;
-         height: 10px;
-         background-color: #B8B8B8;
-         border-radius: 15px;
-         margin-right: 5px;
-         transition: background 0.3s ease;
-      }
-
-      img {
-         vertical-align: middle;
-      }
-
-      .lever:after {
-         content: "";
-         position: absolute;
-         display: inline-block;
-         width: 14px;
-         height: 14px;
-         background-color: #F1F1F1;
-         border-radius: 21px;
-         box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4);
-         left: -7px;
-         top: -2px;
-         transition: left 0.3s ease, background .3s ease, box-shadow 0.3s ease;
-      }
-   }
-
-   input[type=checkbox] {
-      &:checked:not(:disabled) ~ .lever:active:after {
-         box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4), 0 0 0 15px rgba(89, 89, 89, 0.08627);
-      }
-
-      &:not(:disabled) ~ .lever:active:after {
-         box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4), 0 0 0 15px rgba(0, 0, 0, 0.08);
-      }
-   }
-
-   .switch {
-      label input[type=checkbox]:checked ~ .lever:after {
-         left: 8px;
-      }
-
-      input[type=checkbox][disabled] ~ .lever {
-         cursor: default;
-      }
-
-      label input[type=checkbox][disabled] {
-         + .lever:after, &:checked + .lever:after {
-            background-color: #BDBDBD;
-         }
-      }
-   }
 
    /** QUEUEMAIL **/
 
@@ -1796,15 +1680,6 @@
       border: none;
       height: 24px;
       width: 24px;
-   }
-
-   .pending_detail{
-      margin-top: 6px;
-      margin-left: 2px;
-
-      .fas {
-         margin-left: 5px;
-      }
    }
 }
 

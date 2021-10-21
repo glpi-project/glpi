@@ -244,12 +244,12 @@ class ITILFollowup  extends CommonDBChild {
       // Set pending reason data on parent and self
       if ($this->input['pending'] ?? 0) {
          PendingReason_Item::createForItem($parentitem, [
-            'pendingreasons_id'           => $this->input['pendingreasons_id'],
+            'pendingreasons_id'           => $this->input['pendingreasons_id'] ?? 0,
             'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
             'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
          ]);
          PendingReason_Item::createForItem($this, [
-            'pendingreasons_id'           => $this->input['pendingreasons_id'],
+            'pendingreasons_id'           => $this->input['pendingreasons_id'] ?? 0,
             'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
             'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
          ]);

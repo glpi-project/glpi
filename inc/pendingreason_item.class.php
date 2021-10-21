@@ -48,7 +48,7 @@ class PendingReason_Item extends CommonDBRelation
       return _n('Item', 'Items', $nb);
    }
 
-   public static function getForItem(CommonDBTM $item) {
+   public static function getForItem(CommonDBTM $item, bool $get_empty = false) {
       $em = new self();
       $find = $em->find([
          'itemtype' => $item::getType(),
@@ -56,6 +56,11 @@ class PendingReason_Item extends CommonDBRelation
       ]);
 
       if (!count($find)) {
+         if ($get_empty) {
+            $pending_item = new self();
+            $pending_item->getEmpty();
+         }
+
          return false;
       }
 
@@ -191,151 +196,6 @@ class PendingReason_Item extends CommonDBRelation
       $date->setTimestamp($date->getTimestamp() + $this->fields['followup_frequency'] * ($this->fields['followups_before_resolution'] + 1 - $this->fields['bump_count']));
 
       return $date->format("Y-m-d H:i:s");
-   }
-
-   /**
-    * Display the "pending" mini form for a given timeline item
-    *
-    * @param CommonDBTM $item
-    * @param int $rand
-    */
-   public static function showFormForTimelineItem(CommonDBTM $item, int $rand): void {
-      global $CFG_GLPI;
-
-      // Only show pending form if creating a new followup or editing one with a pending reason
-      $pending_item = self::getForItem($item);
-      if ($item->isNewItem() || $pending_item || self::isLastTimelineItem($item)) {
-         if (!$pending_item) {
-            $pending_item = new self();
-            $pending_item->getEmpty();
-         }
-
-         echo "<tr><td colspan='4'>";
-
-         // Display "pending" switch
-         echo "<div class='fa-label'>";
-         echo "<i class='fas fa-pause fa-fw' title='".__('Pending')."'></i>";
-         echo "<span class='switch pager_controls'>";
-         echo "<label for='pendingswitch$rand' title='".__('Pending')."'>";
-         $pending_checked = !$pending_item->isNewItem() ? "checked='checked'" : "";
-         echo "<input type='checkbox' id='pendingswitch$rand' name='pending' value='1' $pending_checked>";
-         echo "<span class='lever'></span>";
-         echo "</label>";
-         echo "</span>";
-         echo "</div>";
-
-         // Display pending reason field
-         $display_pending_reason = $pending_checked ? "" : "starthidden";
-         echo "<div id='pending_reason_dropdown$rand' class='$display_pending_reason fa-label'>";
-         echo "<i class='fas fa-tag fa-fw ms-2' title='". PendingReason::getTypeName(1) ."'></i>";
-         PendingReason::dropdown([
-            'emptylabel'          => __("No pending reason"),
-            'display_emptychoice' => true,
-            'rand'                => $rand,
-            'value'               => $pending_item->fields["pendingreasons_id"],
-         ]);
-         echo "</div>";
-
-         // Display auto bump field
-         $display_pending_reason_extra = $pending_item->fields["pendingreasons_id"] > 0 ? "" : "starthidden";
-         echo "<div id='pending_reason_followup_frequency_dropdown$rand' class='$display_pending_reason_extra fa-label'>";
-         echo "<i class='fas fa-redo fa-fw ms-2' title='".__('Automatic follow-up')."'></i>";
-         echo PendingReason::displayFollowupFrequencyfield($pending_item->fields["followup_frequency"]);
-         echo "</div>";
-
-         // Display auto solve field
-         echo "<div id='pending_reason_followups_before_resolution_dropdown$rand' class='$display_pending_reason_extra fa-label'>";
-         echo "<i class='fas fa-check fa-fw ms-2' title='".__('Automatic resolution')."'></i>";
-         echo PendingReason::displayFollowupsNumberBeforeResolutionField($pending_item->fields["followups_before_resolution"]);
-         echo "</div>";
-
-         // JS handling visiblity and values of the previous fields
-         $pending_ajax_url = $CFG_GLPI["root_doc"]."/ajax/pendingreason.php";
-         echo Html::scriptBlock("
-            $('#pendingswitch$rand').change(function() {
-               if ($('#pendingswitch$rand').prop('checked')) {
-                  $('#pending_reason_dropdown$rand').show();
-                  if ($('#dropdown_pendingreasons_id$rand').val() > 0) {
-                     $('#pending_reason_followup_frequency_dropdown$rand').show();
-                     $('#pending_reason_followups_before_resolution_dropdown$rand').show();
-                  }
-               } else {
-                  $('#pending_reason_dropdown$rand').hide();
-                  $('#pending_reason_followup_frequency_dropdown$rand').hide();
-                  $('#pending_reason_followups_before_resolution_dropdown$rand').hide();
-               }
-            });
-
-            var pending_reasons_cache = [];
-            $('#dropdown_pendingreasons_id$rand').change(function() {
-               var pending_val = $('#dropdown_pendingreasons_id$rand').val();
-
-               if (pending_val > 0) {
-                  if (pending_reasons_cache[pending_val] == undefined) {
-                     $.ajax({
-                        url: '{$pending_ajax_url}',
-                        type: 'POST',
-                        data: {
-                           pendingreasons_id: pending_val
-                        }
-                     }).done(function(data) {
-                        $('#pending_reason_followup_frequency_dropdown$rand').show();
-                        $('#pending_reason_followups_before_resolution_dropdown$rand').show();
-                        $('#pending_reason_followup_frequency_dropdown$rand select').val(data.followup_frequency);
-                        $('#pending_reason_followups_before_resolution_dropdown$rand select').val(data.followups_before_resolution);
-                        $('#pending_reason_followup_frequency_dropdown$rand select').trigger('change');
-                        $('#pending_reason_followups_before_resolution_dropdown$rand select').trigger('change');
-
-                        pending_reasons_cache[pending_val] = data;
-                     });
-                  } else {
-                     $('#pending_reason_followup_frequency_dropdown$rand').show();
-                     $('#pending_reason_followups_before_resolution_dropdown$rand').show();
-                  }
-               } else {
-                  $('#pending_reason_followup_frequency_dropdown$rand').hide();
-                  $('#pending_reason_followups_before_resolution_dropdown$rand').hide();
-               }
-            });
-         ");
-
-         echo "</td></tr>";
-      }
-   }
-
-   /**
-    * Display pending informations in the main tab of a given CommonITILObject
-    *
-    * @param CommonITILObject $item
-    */
-   public static function displayStatusTooltip(CommonITILObject $item): void {
-      $pending_item = self::getForItem($item);
-      if ($pending_item) {
-         $pending_reason = PendingReason::getById($pending_item->fields['pendingreasons_id']);
-
-         if (!$pending_reason) {
-            return;
-         }
-
-         echo '<div class="pending_detail">' . $pending_reason->getLink();
-         $tooltip = "";
-
-         $next_bump = $pending_item->getNextFollowupDate();
-         if ($next_bump) {
-            $tooltip .= sprintf(__("Next automatic follow-up scheduled on %s"), Html::convDate($next_bump)) . ".<br>";
-         }
-
-         $resolve = $pending_item->getAutoResolvedate();
-         if ($resolve) {
-            $tooltip .= sprintf(__("Automatic resolution scheduled on %s"), Html::convDate($resolve)) . ".<br>";
-         }
-
-         if (!empty($tooltip)) {
-            Html::showToolTip($tooltip);
-         }
-
-         echo "</div>";
-      }
    }
 
    /**
