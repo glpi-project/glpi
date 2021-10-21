@@ -179,7 +179,7 @@ var filesToCopy = [
    },
    {
       package: 'tinymce-i18n',
-      from: 'langs/*.js',
+      from: 'langs5/*.js',
    },
    // SCSS files
    {
