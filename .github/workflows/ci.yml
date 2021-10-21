@@ -200,6 +200,10 @@ jobs:
         if: env.skip != 'true'
         run: |
           docker-compose exec -T app .github/actions/test_tests-web.sh
+      - name: "Javascript tests"
+        if: env.skip != 'true'
+        run: |
+          docker-compose exec -T app .github/actions/test_javascript.sh
       - name: "Cleanup containers"
         if: env.skip != 'true' && always()
         run: |

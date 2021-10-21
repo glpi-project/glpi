@@ -63,7 +63,7 @@
         "build:patch_dependencies": "(patch -f -p1 -d node_modules/@tabler/core/ < tools/tabler-831.patch || echo 'Error applying patch')",
         "build:pack": "webpack --config webpack.config.js",
         "build": "npm run build:patch_dependencies && npm run build:pack",
-        "test": "jest --config tests/js/jest.config.js ./tests/js/**"
+        "test": "jest --colors --config tests/js/jest.config.js ./tests/js/**"
     },
     "devDependencies": {
         "@babel/core": "^7.15.0",
