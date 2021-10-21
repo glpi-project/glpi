@@ -29,6 +29,8 @@
  * ---------------------------------------------------------------------
  */
 
+/* global GLPI */
+
 require('../../../js/modules/Search/GenericView.js');
 
 describe('Search GenericView', () => {

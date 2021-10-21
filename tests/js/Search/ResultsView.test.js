@@ -29,6 +29,8 @@
  * ---------------------------------------------------------------------
  */
 
+/* global GLPI */
+
 require('../../../js/modules/Search/ResultsView.js');
 require('../../../js/modules/Search/Table.js');
 

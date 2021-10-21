@@ -29,9 +29,9 @@
  * ---------------------------------------------------------------------
  */
 
-require('../../../js/modules/Search/Table.js');
-
 /* global GLPI */
+
+require('../../../js/modules/Search/Table.js');
 
 describe('Search Table', () => {
    beforeEach(() => {
