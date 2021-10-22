@@ -2371,7 +2371,36 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          'item'                        => [
             'itemtype'  => 'Project',
             'items_id'  => $ID
-         ]
+         ],
+         'supported_filters'           => [
+            'title' => [
+               'description' => _x('js_filters', 'The title of the item')
+            ],
+            'type' => [
+               'description' => _x('js_filters', 'The type of the item')
+            ],
+            'milestone' => [
+               'description' => _x('js_filters', 'If the item represents a milestone or not')
+            ],
+            'content' => [
+               'description' => _x('js_filters', 'The content of the item')
+            ],
+            'team' => [
+               'description' => _x('js_filters', 'A team member for the item')
+            ],
+            'user' => [
+               'description' => _x('js_filters', 'A user in the team of the item')
+            ],
+            'group' => [
+               'description' => _x('js_filters', 'A group in the team of the item')
+            ],
+            'supplier' => [
+               'description' => _x('js_filters', 'A supplier in the team of the item')
+            ],
+            'contact' => [
+               'description' => _x('js_filters', 'A contact in the team of the item')
+            ],
+         ],
       ]);
    }
 

@@ -250,35 +250,9 @@ class GLPIKanbanRights {
          _text: ''
       };
 
-      this.filter_tokenizer = new SearchTokenizer({
-         title: {
-            description: _x('js_filters', 'The title of the item')
-         },
-         type: {
-            description: _x('js_filters', 'The type of the item')
-         },
-         milestone: {
-            description: _x('js_filters', 'If the item represents a milestone or not')
-         },
-         content: {
-            description: _x('js_filters', 'The content of the item')
-         },
-         team: {
-            description: _x('js_filters', 'A team member for the item')
-         },
-         user: {
-            description: _x('js_filters', 'A user in the team of the item')
-         },
-         group: {
-            description: _x('js_filters', 'A group in the team of the item')
-         },
-         supplier: {
-            description: _x('js_filters', 'A supplier in the team of the item')
-         },
-         contact: {
-            description: _x('js_filters', 'A contact in the team of the item')
-         },
-      });
+      this.filter_tokenizer = null;
+
+      this.supported_filters = [];
 
       /**
        * The ID of the add column form.
@@ -371,7 +345,7 @@ class GLPIKanbanRights {
             'element', 'max_team_images', 'team_image_size', 'item',
             'supported_itemtypes', 'allow_add_item', 'allow_add_column', 'dark_theme', 'background_refresh_interval',
             'column_field', 'allow_modify_view', 'limit_addcard_columns', 'allow_order_card', 'allow_create_column',
-            'allow_delete_item'
+            'allow_delete_item', 'supported_filters'
          ];
          // Use CSS variable check for dark theme detection by default
          self.dark_theme = $('html').css('--is-dark').trim() === true;
@@ -401,6 +375,7 @@ class GLPIKanbanRights {
          if (self.filters._text === undefined) {
             self.filters._text = '';
          }
+         self.filter_tokenizer = new SearchTokenizer(self.supported_filters);
          self.refreshSearchTokenizer();
          self.filter();
       };
