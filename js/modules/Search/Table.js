@@ -40,6 +40,8 @@ window.GLPI.Search.Table = class Table extends GenericView {
    constructor(result_view_element_id) {
       const element_id = $('#'+result_view_element_id).find('table.search-results').attr('id');
       super(element_id);
+
+      this.shiftSelectAllCheckbox();
    }
 
    getElement() {
@@ -167,10 +169,16 @@ window.GLPI.Search.Table = class Table extends GenericView {
          $(ajax_container).load(CFG_GLPI.root_doc + '/ajax/search.php', search_data, () => {
             this.getElement().trigger('search_refresh', [this.getElement()]);
             this.hideLoadingSpinner();
+            this.shiftSelectAllCheckbox();
          });
       } catch (error) {
          this.hideLoadingSpinner();
       }
+   }
+
+   // permit to [shift] select checkboxes
+   shiftSelectAllCheckbox() {
+      $('#'+this.element_id+' input[type="checkbox"]').shiftSelectable();
    }
 
    registerListeners() {
