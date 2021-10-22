@@ -250,7 +250,35 @@ class GLPIKanbanRights {
          _text: ''
       };
 
-      this.filter_tokenizer = new SearchTokenizer();
+      this.filter_tokenizer = new SearchTokenizer({
+         title: {
+            description: _x('js_filters', 'The title of the item')
+         },
+         type: {
+            description: _x('js_filters', 'The type of the item')
+         },
+         milestone: {
+            description: _x('js_filters', 'If the item represents a milestone or not')
+         },
+         content: {
+            description: _x('js_filters', 'The content of the item')
+         },
+         team: {
+            description: _x('js_filters', 'A team member for the item')
+         },
+         user: {
+            description: _x('js_filters', 'A user in the team of the item')
+         },
+         group: {
+            description: _x('js_filters', 'A group in the team of the item')
+         },
+         supplier: {
+            description: _x('js_filters', 'A supplier in the team of the item')
+         },
+         contact: {
+            description: _x('js_filters', 'A contact in the team of the item')
+         },
+      });
 
       /**
        * The ID of the add column form.
@@ -373,6 +401,7 @@ class GLPIKanbanRights {
          if (self.filters._text === undefined) {
             self.filters._text = '';
          }
+         self.refreshSearchTokenizer();
          self.filter();
       };
 
@@ -509,7 +538,7 @@ class GLPIKanbanRights {
          $(self.element).trigger('kanban:pre_build_toolbar');
          let toolbar = $("<div class='kanban-toolbar card flex-row'></div>").appendTo(self.element);
          $("<select name='kanban-board-switcher'></select>").appendTo(toolbar);
-         let filter_input = $("<input name='filter' class='form-control ms-1' type='text' placeholder='" + __('Search or filter results') + "'/>").appendTo(toolbar);
+         let filter_input = $(`<input name='filter' class='form-control ms-1' type='text' placeholder="${__('Search or filter results')}" autocomplete="off"/>`).appendTo(toolbar);
          if (self.rights.canModifyView()) {
             let add_column = "<buttom rome='button' class='kanban-add-column btn btn-outline-secondary ms-1'>" + __('Add column') + "</button>";
             toolbar.append(add_column);
@@ -546,6 +575,33 @@ class GLPIKanbanRights {
             });
             self.filter();
          }));
+
+         filter_input.popover({
+            trigger: 'manual',
+            html: true,
+            placement: 'bottom',
+            customClass: 'kanban-filter-popover',
+            delay: {
+               hide: 30000
+            },
+            content: () => {
+               if (self.filter_tokenizer) {
+                  return self.filter_tokenizer.getPopoverContent(filter_input.val(), filter_input.selectionStart);
+               }
+               return null;
+            }
+         });
+
+         filter_input.on('input click', (e) => {
+            const popover_content = self.filter_tokenizer.getPopoverContent(filter_input.val(), e.target.selectionStart);
+            $('.kanban-filter-popover').html(popover_content);
+            filter_input.popover('show');
+         });
+
+         filter_input.on('blur', () => {
+            filter_input.popover('hide');
+         });
+
          $(self.element).trigger('kanban:post_build_toolbar');
       };
 
@@ -2081,6 +2137,16 @@ class GLPIKanbanRights {
          }
          card_obj.data('_team', card['_team']);
          self.updateColumnCount(column_el);
+      };
+
+      this.refreshSearchTokenizer = () => {
+         self.filter_tokenizer.clearAutocomplete();
+
+         // Refresh core tags autocomplete
+         self.filter_tokenizer.setAutocomplete('type', Object.keys(self.supported_itemtypes));
+         self.filter_tokenizer.setAutocomplete('milestone', ["true", "false"]);
+
+         $(self.element).trigger('kanban:refresh_tokenizer', self.filter_tokenizer);
       };
 
       /**

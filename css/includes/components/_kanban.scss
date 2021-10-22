@@ -439,3 +439,21 @@
 .flex-break {
    width: 100%;
 }
+
+.popover.kanban-filter-popover {
+   background-color: inherit;
+   color: inherit;
+   min-width: 200px;
+
+   .popover-arrow {
+      display: none;
+   }
+
+   .popover-body {
+      color: inherit;
+
+      ul {
+         list-style: none;
+      }
+   }
+}

@@ -35,11 +35,18 @@
 export default class SearchTokenizer {
 
    /**
+    * @typedef TagDefinition
+    * @property {string} description
+    * @property {string[]} autocomplete_values
+    */
+   /**
     *
-    * @param {string[]} allowed_tags Array of tags the tokenizer should recognize
+    * @param {Object.<string, TagDefinition>} allowed_tags Tags the tokenizer should recognize
+    *    The object keys are the tag names. Each tag can have multiple properties to store
+    *    additional information such as descriptions.
     * @param {boolean} drop_unallowed_tags If true, unallowed tags are ignored. If false, the token is treated as a plain term.
     */
-   constructor(allowed_tags = [], drop_unallowed_tags = false) {
+   constructor(allowed_tags = {}, drop_unallowed_tags = false) {
       this.token_pattern = /(\w+:|-)?("[^"]*"|'[^']*'|[^\s]+)/g;
       this.EXCLUSION_PREFIX = '-';
       this.allowed_tags = allowed_tags;
@@ -55,7 +62,66 @@ export default class SearchTokenizer {
       if (tag === null) {
          return true;
       }
-      return this.allowed_tags.length === 0 || this.allowed_tags.includes(tag);
+      return this.allowed_tags.length === 0 || (tag in this.allowed_tags);
+   }
+
+   getPopoverContent(text, cursor_pos) {
+      const t = text.slice(0, cursor_pos);
+      if (t.endsWith(' ')) {
+         return this.getTagsHelperContent();
+      }
+      const tokens = this.tokenize(t).tokens;
+      const max = Math.max.apply(Math, tokens.map((token) => {
+         return token.position;
+      }));
+      const last_token = tokens.find((token) => {
+         return token.position === max;
+      });
+
+      return (last_token && last_token.tag) ? this.getAutocompleteHelperContent(last_token.tag) : this.getTagsHelperContent();
+   }
+
+   getTagsHelperContent() {
+      const tags = this.allowed_tags;
+      let helper = `
+         ${_x('js_search', 'Allowed tags')}:</br>
+         <ul>
+      `;
+      $.each(tags, (name, info) => {
+         helper += `
+            <li>
+                ${name}: ${info['description'] || ''}
+            </li>
+         `;
+      });
+      helper += '</ul>';
+      return helper;
+   }
+
+   getAutocompleteHelperContent(tag_name) {
+      const tag = this.allowed_tags[tag_name.toLowerCase()];
+      if (tag === undefined) {
+         return null;
+      }
+      let helper = `
+        ${tag_name.toLowerCase()}: ${tag.description}</br>
+        <ul>`;
+      $.each(tag.autocomplete_values, (i, v) => {
+         helper += `<li>${v}</li>`;
+      });
+      return helper;
+   }
+
+   clearAutocomplete() {
+      Object.keys(this.allowed_tags).forEach((k) => {
+         this.allowed_tags[k].autocomplete_values = [];
+      });
+   }
+
+   setAutocomplete(tag, values) {
+      if (tag in this.allowed_tags) {
+         this.allowed_tags[tag].autocomplete_values = values;
+      }
    }
 
    /**
@@ -71,6 +137,7 @@ export default class SearchTokenizer {
       let token = null;
       let is_exclusion = false;
       let tag = null;
+      let pos = 0;
 
       while ((token = this.token_pattern.exec(input)) !== null) {
          let prefix = token[1];
@@ -94,9 +161,9 @@ export default class SearchTokenizer {
          }
 
          if (this.isAllowedTag(tag)) {
-            result.tokens.push(new Token(term, tag, is_exclusion));
+            result.tokens.push(new Token(term, tag, is_exclusion, pos++));
          } else if (!this.drop_unallowed_tags) {
-            result.tokens.push(new Token(token[0], null, false));
+            result.tokens.push(new Token(token[0], null, false, pos++));
          }
       }
 
@@ -105,10 +172,11 @@ export default class SearchTokenizer {
 }
 
 class Token {
-   constructor(term, tag, exclusion) {
+   constructor(term, tag, exclusion, position) {
       this.term = term;
       this.tag = tag;
       this.exclusion = exclusion;
+      this.position = position;
    }
 }
 
