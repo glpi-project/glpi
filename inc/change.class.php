@@ -32,6 +32,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\Parameters\ChangeParameters;
+use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\RichText;
 
 if (!defined('GLPI_ROOT')) {
@@ -805,8 +806,11 @@ class Change extends CommonITILObject {
 
       $legacy_actions = '';
 
-      if (isset($PLUGIN_HOOKS['timeline_actions'])) {
-         foreach ($PLUGIN_HOOKS['timeline_actions'] as $callback) {
+      if (isset($PLUGIN_HOOKS[Hooks::TIMELINE_ACTIONS])) {
+         foreach ($PLUGIN_HOOKS[Hooks::TIMELINE_ACTIONS] as $plugin => $callback) {
+            if (!Plugin::isPluginActive($plugin)) {
+               continue;
+            }
             if (is_callable($callback)) {
                ob_start();
                $callback([
