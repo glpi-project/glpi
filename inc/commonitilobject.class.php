@@ -6005,6 +6005,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    public function getTimelineItemtypes(): array {
+      global $PLUGIN_HOOKS;
+
       /** @var CommonITILObject $obj_type */
       $obj_type = static::getType();
       $foreign_key = static::getForeignKeyField();
@@ -6078,7 +6080,14 @@ abstract class CommonITILObject extends CommonDBTM {
          ];
       }
 
-      //TODO Call timeline_actions plugin hook
+      if (isset($PLUGIN_HOOKS['timeline_itemtypes'])) {
+         foreach ($PLUGIN_HOOKS['timeline_itemtypes'] as $hook_itemtypes) {
+            if (is_callable($hook_itemtypes)) {
+               $hook_itemtypes = $hook_itemtypes(['item' => $this]);
+            }
+            $itemtypes = array_merge($itemtypes, $hook_itemtypes);
+         }
+      }
 
       return $itemtypes;
    }
