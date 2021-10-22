@@ -535,6 +535,8 @@ HTML;
       $dark_bg_color = Toolbox::getFgColor($p['color'], 80);
       $dark_fg_color = Toolbox::getFgColor($p['color'], 40);
 
+      $chart_id = "chart-{$p['cache_key']}";
+
       $class = "pie";
       $class.= $p['half'] ? " half": "";
       $class.= $p['donut'] ? " donut": "";
@@ -554,29 +556,29 @@ HTML;
          $palette_style = self::getCssGradientPalette(
             $p['color'],
             $nb_series,
-            ".dashboard #chart-{$p['rand']}",
+            ".dashboard #{$chart_id}",
             false
          );
       }
 
       $html = <<<HTML
       <style>
-         #chart-{$p['rand']} {
+         #{$chart_id} {
             background-color: {$p['color']};
             color: {$fg_color}
          }
 
-         .theme-dark #chart-{$p['rand']} {
+         .theme-dark #{$chart_id} {
             background-color: {$dark_bg_color};
             color: {$dark_fg_color};
          }
 
-         #chart-{$p['rand']} .ct-label {
+         #{$chart_id} .ct-label {
             fill: {$fg_color};
             color: {$fg_color};
          }
 
-         .theme-dark #chart-{$p['rand']} .ct-label {
+         .theme-dark #{$chart_id} .ct-label {
             fill: {$dark_fg_color};
             color: {$dark_fg_color};
          }
@@ -584,7 +586,7 @@ HTML;
          {$palette_style}
       </style>
       <div class="card g-chart {$class}"
-           id="chart-{$p['rand']}">
+           id="{$chart_id}">
          <div class="chart ct-chart">{$no_data_html}</div>
          <span class="main-label">{$p['label']}</span>
          <i class="main-icon {$p['icon']}"></i>
@@ -645,7 +647,7 @@ HTML;
 
       $js = <<<JAVASCRIPT
       $(function () {
-         var chart = new Chartist.Pie('#chart-{$p['rand']} .chart', {
+         var chart = new Chartist.Pie('#{$chart_id} .chart', {
             labels: {$labels},
             series: {$series},
          }, {
@@ -735,14 +737,14 @@ HTML;
 
             // fade others bars on one mouseouver
             chart.on('created', function(bar) {
-               $('#chart-{$p['rand']} .ct-series')
+               $('#{$chart_id} .ct-series')
                   .mouseover(function() {
                      $(this).parent().children().addClass('disable-animation');
                      $(this).addClass('mouseover');
                      $(this).siblings()
                         .addClass('notmouseover');
 
-                     $('#chart-{$p['rand']} .ct-label')
+                     $('#{$chart_id} .ct-label')
                         .addClass('fade');
                   })
                   .mouseout(function() {
@@ -750,7 +752,7 @@ HTML;
                      $(this).siblings()
                         .removeClass('notmouseover');
 
-                     $('#chart-{$p['rand']} .ct-label')
+                     $('#{$chart_id} .ct-label')
                         .removeClass('fade');
                   });
             });
@@ -1011,6 +1013,8 @@ JAVASCRIPT;
 
       $animation_duration = self::$animation_duration;
 
+      $chart_id = 'chart_'.$p['cache_key'];
+
       $class = "bar";
       $class.= $p['horizontal'] ? " horizontal": "";
       $class.= $p['distributed'] ? " distributed": "";
@@ -1021,7 +1025,7 @@ JAVASCRIPT;
       $palette_style = "";
       if ($p['use_gradient']) {
          $nb_gradients = $p['distributed'] ? $nb_labels : $nb_series;
-         $palette_style = self::getCssGradientPalette($p['color'], $nb_gradients, "#chart-{$p['rand']}");
+         $palette_style = self::getCssGradientPalette($p['color'], $nb_gradients, "#{$chart_id}");
       }
 
       $nodata = isset($p['data']['nodata']) && $p['data']['nodata']
@@ -1043,41 +1047,41 @@ JAVASCRIPT;
 
       $html = <<<HTML
       <style>
-      #chart-{$p['rand']} {
+      #{$chart_id} {
          background-color: {$p['color']};
          color: {$fg_color}
       }
 
-      .theme-dark #chart-{$p['rand']} {
+      .theme-dark #{$chart_id} {
          background-color: {$dark_bg_color};
          color: {$dark_fg_color};
       }
 
-      #chart-{$p['rand']} .ct-label {
+      #{$chart_id} .ct-label {
          color: {$fg_color};
       }
 
-      .theme-dark #chart-{$p['rand']} .ct-label {
+      .theme-dark #{$chart_id} .ct-label {
          color: {$dark_fg_color};
       }
 
-      #chart-{$p['rand']} .ct-grid {
+      #{$chart_id} .ct-grid {
          stroke: {$line_color};
       }
 
-      .theme-dark #chart-{$p['rand']} .ct-grid {
+      .theme-dark #{$chart_id} .ct-grid {
          stroke: {$dark_line_color};
       }
 
       /** fix chrome resizing height when animating svg (don't know why) **/
-      #chart-{$p['rand']} .ct-chart-bar {
+      #{$chart_id} .ct-chart-bar {
          min-height: $height;
       }
       {$palette_style}
       </style>
 
       <div class="card g-chart $class"
-            id="chart-{$p['rand']}">
+            id="{$chart_id}">
          <div class="chart ct-chart">$no_data_html</div>
          <span class="main-label">{$p['label']}</span>
          <i class="main-icon {$p['icon']}"></i>
@@ -1127,7 +1131,7 @@ HTML;
 
       $js = <<<JAVASCRIPT
       $(function () {
-         var chart = new Chartist.Bar('#chart-{$p['rand']} .chart', {
+         var chart = new Chartist.Bar('#{$chart_id} .chart', {
             labels: {$json_labels},
             series: {$json_series},
          }, {
@@ -1285,7 +1289,7 @@ HTML;
          });
 
          chart.on('created', function(bar) {
-            $('#chart-{$p['rand']} .ct-series')
+            $('#{$chart_id} .ct-series')
                .mouseover(function() {
                   $(this).siblings().children().css('stroke-opacity', "0.2");
                })
@@ -1441,6 +1445,8 @@ JAVASCRIPT;
       $json_labels = json_encode($labels);
       $json_series = json_encode($series);
 
+      $chart_id = 'chart_'.$p['cache_key'];
+
       $fg_color        = Toolbox::getFgColor($p['color']);
       $line_color      = Toolbox::getFgColor($p['color'], 10);
       $dark_bg_color   = Toolbox::getFgColor($p['color'], 80);
@@ -1456,7 +1462,7 @@ JAVASCRIPT;
 
       $palette_style = "";
       if (!$p['multiple'] || $p['use_gradient']) {
-         $palette_style = self::getCssGradientPalette($p['color'], $nb_series, "#chart-{$p['rand']}");
+         $palette_style = self::getCssGradientPalette($p['color'], $nb_series, "#{$chart_id}");
       }
 
       $pointlabels_plugins = "";
@@ -1484,48 +1490,48 @@ JAVASCRIPT;
       $html = <<<HTML
       <style>
          /** fix chrome resizing height when animating svg (don't know why) **/
-      #chart-{$p['rand']} .ct-chart-line {
+      #{$chart_id} .ct-chart-line {
          min-height: $height;
       }
 
-      #chart-{$p['rand']} {
+      #{$chart_id} {
          background-color: {$p['color']};
          color: {$fg_color}
       }
 
-      .theme-dark #chart-{$p['rand']} {
+      .theme-dark #{$chart_id} {
          background-color: {$dark_bg_color};
          color: {$dark_fg_color};
       }
 
-      #chart-{$p['rand']} .ct-label {
+      #{$chart_id} .ct-label {
          color: {$fg_color};
       }
 
-      .theme-dark #chart-{$p['rand']} .ct-label {
+      .theme-dark #{$chart_id} .ct-label {
          color: {$dark_fg_color};
       }
 
-      #chart-{$p['rand']} .ct-grid {
+      #{$chart_id} .ct-grid {
          stroke: {$line_color};
       }
 
-      .theme-dark #chart-{$p['rand']} .ct-grid {
+      .theme-dark #{$chart_id} .ct-grid {
          stroke: {$dark_line_color};
       }
 
-      #chart-{$p['rand']} .ct-circle {
+      #{$chart_id} .ct-circle {
          stroke: {$p['color']};
          stroke-width: 3;
       }
-      #chart-{$p['rand']} .ct-circle + .ct-label {
+      #{$chart_id} .ct-circle + .ct-label {
          stroke: {$p['color']};
       }
       {$palette_style}
       </style>
 
       <div class="card g-chart $class"
-           id="chart-{$p['rand']}">
+           id="{$chart_id}">
          <div class="chart ct-chart"></div>
          <span class="main-label">{$p['label']}</span>
          <i class="main-icon {$p['icon']}"></i>
@@ -1540,7 +1546,7 @@ HTML;
 
       $js = <<<JAVASCRIPT
       $(function () {
-         var chart = new Chartist.Line('#chart-{$p['rand']} .chart', {
+         var chart = new Chartist.Line('#{$chart_id} .chart', {
             labels: {$json_labels},
             series: {$json_series},
          }, {
@@ -1605,7 +1611,7 @@ HTML;
 
          // hide other lines when hovering a point
          chart.on('created', function(bar) {
-            $('#chart-{$p['rand']} .ct-series .ct-circle, #chart-{$p['rand']} .ct-series .ct-circle + .ct-label')
+            $('#{$chart_id} .ct-series .ct-circle, #{$chart_id} .ct-series .ct-circle + .ct-label')
                .mouseover(function() {
                   $(this)
                      .attr('r', "9")
