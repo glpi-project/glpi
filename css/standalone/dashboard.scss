@@ -354,7 +354,6 @@ $break_tablet: 1400px;
       .filters {
          display: inline-flex;
          flex-wrap: wrap;
-         line-height: 14px;
          align-items: stretch;
 
          fieldset.filter {
@@ -415,6 +414,7 @@ $break_tablet: 1400px;
                .select2-selection.select2-selection--single {
                   border: none;
                   background-color: transparent;
+                  height: 24px;
                }
 
                .select2-container {
