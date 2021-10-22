@@ -338,10 +338,13 @@ JAVASCRIPT;
          echo  "</div>"; // .tab-content
          echo "</div>"; // .container-fluid
          $js = "
-         var loadTabContents = function (tablink) {
+         var loadTabContents = function (tablink, force_reload = false) {
             var url = tablink.attr('href');
             var target = tablink.attr('data-bs-target');
             var index = tablink.closest('.nav-item').index();
+            if ($(target).html() && !force_reload) {
+                return;
+            }
             $(target).html('<i class=\"fas fa-3x fa-spinner fa-pulse position-absolute top-50 start-50\"></i>');
 
             $.get(url, function(data) {
