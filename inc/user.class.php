@@ -4035,7 +4035,7 @@ JAVASCRIPT;
          $p['value'] = $p['value'][$p['_user_index']] ?? 0;
       }
 
-      // Check default value for dropdown : need to be a numeric
+      // Check default value for dropdown : need to be a numeric (or null)
       if ($p['value'] !== null
           && ((strlen($p['value']) == 0) || !is_numeric($p['value']) && $p['value'] != 'myself')) {
          $p['value'] = 0;

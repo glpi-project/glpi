@@ -152,7 +152,7 @@ JAVASCRIPT;
    }
 
    static function group_tech(string $value = ""): string {
-      return self::displayList($value, 'group_tech', Group::class, ['toadd' => [-1 => __("My groups")]]);
+      return self::displayList($value, 'group_tech', Group::class, ['toadd' => ['mygroups' => __("My groups")]]);
    }
 
    static function user_tech(string $value = ""): string {
@@ -173,7 +173,7 @@ JAVASCRIPT;
       string $itemtype = "",
       array $add_params = []
    ): string {
-      $value     = !empty($value) ? (int) $value : null;
+      $value     = !empty($value) ? $value : null;
       $rand      = mt_rand();
       $label     = self::getAll()[$fieldname];
       $field     = $itemtype::dropdown([
@@ -192,17 +192,17 @@ JAVASCRIPT;
       $js = <<<JAVASCRIPT
       var on_change_{$rand} = function() {
          var dom_elem    = $('#dropdown_{$fieldname}{$rand}');
-         var selected    = parseInt(dom_elem.find(':selected').val());
+         var selected    = dom_elem.find(':selected').val();
 
          Dashboard.saveFilter('{$fieldname}', selected);
 
-         $(dom_elem).closest("fieldset").toggleClass("filled", selected > 0)
+         $(dom_elem).closest("fieldset").toggleClass("filled", selected !== null)
       };
 
 JAVASCRIPT;
       $field.= Html::scriptBlock($js);
 
-      return self::field($fieldname, $field, $label, $value > 0);
+      return self::field($fieldname, $field, $label, $value !== null);
    }
 
    /**
