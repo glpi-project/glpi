@@ -111,7 +111,7 @@ $input-border: $dark-mode-text !default;
    }
 
    // Manually applied patch from unmerged PR tabler/tabler#855
-   .alert {
+   .alert:not(.alert-important) {
       background-color: $dark;
       color: inherit;
    }
