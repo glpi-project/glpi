@@ -10,11 +10,11 @@
                <div>
                   <input class="form-check-input" type="checkbox" id="checkall_{{ rand }}"
                         value="" aria-label="{{ __('Check all as') }}"
-                        onclick="checkAsCheckboxes('checkall_{{ rand }}', 'search_{{ rand }}');" />
+                        onclick="checkAsCheckboxes('checkall_{{ rand }}', '{{ searchform_id }}');" />
                   {# permit to shift select checkboxes #}
                   <script>
                      $(function() {
-                        $('#search_{{ rand }} input[type="checkbox"]').shiftSelectable();
+                        $('#{{ searchform_id }} input[type="checkbox"]').shiftSelectable();
                      });
                   </script>
                </div>
