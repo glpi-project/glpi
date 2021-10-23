@@ -25,6 +25,12 @@
 </div>
 
 <script>
+   function refreshItemCounter{{ rand }}() {
+      const item_form = $("#itemAddForm{{ rand }}");
+      const item_count = item_form.find('> div').length - 2;
+      item_form.closest('.accordion-item').find('.item-counter').text(item_count);
+   }
+
    function itemAction{{ rand }}(action, itemtype, items_id) {
       $.ajax({
          url: CFG_GLPI.root_doc + '/ajax/itemTicket.php',
@@ -38,7 +44,9 @@
             'items_id'   : (items_id === undefined) ? $('#dropdown_add_items_id{{ rand }}').val() : items_id},
          success: function(response) {
             $("#itemAddForm{{ rand }}").replaceWith(response);
+            refreshItemCounter{{ rand }}();
          }
       });
    }
+   refreshItemCounter{{ rand }}();
 </script>
