@@ -48,11 +48,13 @@
    'id': 'kanban-modal'
 }) }}
 
-<template id="kanban-teammember-item-dropdown">
-   {{ fields.dropdownItemsFromItemtypes('add-teammember', '', {
-      'itemtypes': ['User', 'Group', 'Supplier', 'Contact']
-   }) }}
-</template>
+{% for supported_itemtype, info in supported_itemtypes %}
+   <template id="kanban-teammember-item-dropdown-{{ supported_itemtype }}">
+      {{ fields.dropdownItemsFromItemtypes('add-teammember', '', {
+         'itemtypes': info.team_itemtypes
+      }) }}
+   </template>
+{% endfor %}
 
 <script>
    $(function(){

@@ -47,6 +47,7 @@ abstract class CommonITILObject extends CommonDBTM {
    use \Glpi\Features\UserMention;
    use \Glpi\Features\Timeline;
    use \Glpi\Features\Kanban;
+   use Glpi\Features\Team;
 
    /// Users by type
    protected $users       = [];
@@ -7694,7 +7695,8 @@ abstract class CommonITILObject extends CommonDBTM {
                   'type'         => 'hidden',
                   'value'        => $_SESSION['glpiID']
                ]
-            ]
+            ],
+            'team_itemtypes'  => static::getTeamItemtypes(),
          ];
       }
       $column_field = [
@@ -7775,6 +7777,10 @@ abstract class CommonITILObject extends CommonDBTM {
          return [];
       }
       return $columns[$column_field];
+   }
+
+   public static function getTeamItemtypes(): array {
+      return ['User', 'Group', 'Supplier'];
    }
 
    public function addTeamMember(string $itemtype, int $items_id, array $params = []): bool {

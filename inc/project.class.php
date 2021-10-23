@@ -2299,7 +2299,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                   'type'   => 'hidden',
                   'value'  => 0
                ]
-            ]
+            ],
+            'team_itemtypes'  => Project::getTeamItemtypes(),
          ];
       }
 
@@ -2335,7 +2336,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                   'type'   => 'hidden',
                   'value'  => 0
                ]
-            ]
+            ],
+            'team_itemtypes'  => ProjectTask::getTeamItemtypes(),
          ];
          if ($ID <= 0) {
             $supported_itemtypes['ProjectTask']['fields']['projects_id'] = [

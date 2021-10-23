@@ -467,7 +467,7 @@ class GLPIKanbanRights {
             <li class='kanban-item-goto dropdown-item'>
                <a href="#"><i class="fas fa-share"></i>${__('Go to')}</a>
             </li>`;
-         if (self.item.itemtype === 'Project' && self.rights.canOrderCard()) {
+         if (self.rights.canOrderCard()) {
             card_overflow_dropdown += `
                 <li class='kanban-item-edit-team dropdown-item'>
                    <span>
@@ -2448,7 +2448,7 @@ class GLPIKanbanRights {
             `;
          });
 
-         const teammember_types_dropdown = $('#kanban-teammember-item-dropdown').html();
+         const teammember_types_dropdown = $(`#kanban-teammember-item-dropdown-${card_itemtype}`).html();
          content += `
             </ul>
             <hr>
