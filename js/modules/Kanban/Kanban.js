@@ -2468,10 +2468,11 @@ class GLPIKanbanRights {
          modal.on('click', 'button[name="delete"]', (e) => {
             const list_item = $(e.target).closest('li');
             const itemtype = list_item.attr('data-itemtype');
-            const items_id = list_item.attr('data-items_id');
+            const items_id = list_item.attr('data-items-id');
 
             if (itemtype && items_id) {
                removeTeamMember(card_itemtype, card_items_id, itemtype, items_id);
+               list_item.remove();
             }
          });
          showModal(content, {
@@ -2491,7 +2492,9 @@ class GLPIKanbanRights {
                items_id_teammember: members_id
             }
          }).done(() => {
-            backgroundRefresh();
+            self.refresh(null, null, function() {
+               _backgroundRefreshTimer = window.setTimeout(_backgroundRefresh, self.background_refresh_interval * 60 * 1000);
+            }, false);
          }).fail(() => {
             glpi_toast_error(__('Failed to add team member'), __('Error'));
          });
@@ -2509,7 +2512,9 @@ class GLPIKanbanRights {
                items_id_teammember: members_id
             }
          }).done(() => {
-            backgroundRefresh();
+            self.refresh(null, null, function() {
+               _backgroundRefreshTimer = window.setTimeout(_backgroundRefresh, self.background_refresh_interval * 60 * 1000);
+            }, false);
          }).fail(() => {
             glpi_toast_error(__('Failed to remove team member'), __('Error'));
          });
