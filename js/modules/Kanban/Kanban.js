@@ -31,6 +31,7 @@
 
 import SearchTokenizer from "../SearchTokenizer/SearchTokenizer.js";
 /* global sortable */
+/* global glpi_toast_error */
 
 /**
  * Kanban rights structure
