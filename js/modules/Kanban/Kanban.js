@@ -2439,7 +2439,7 @@ class GLPIKanbanRights {
          $.each(team, (i, member) => {
             const badge = getTeamBadge(member);
             content += `
-               <li data-itemtype="${member['itemtype']}" data-items-id="${member['items_id']}" class="d-flex justify-content-between">
+               <li data-itemtype="${member['itemtype']}" data-items-id="${member['id']}" class="d-flex justify-content-between">
                   <span>${badge}<span class="ms-2">${member['name']}</span></span>
                   <button type="button" name="delete" class="btn btn-danger" title="${_x('button', 'Delete')}">
                      <i class="far fa-times-circle"></i>

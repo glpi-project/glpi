@@ -7784,11 +7784,65 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
    public function addTeamMember(string $itemtype, int $items_id, array $params = []): bool {
-      return false;
+      global $DB;
+
+      $role = $params['role'] ?? CommonITILActor::ASSIGN;
+
+      /** @var CommonDBTM $link_class */
+      $link_class = null;
+      switch ($itemtype) {
+         case 'User':
+            $link_class = $this->userlinkclass;
+            break;
+         case 'Group':
+            $link_class = $this->grouplinkclass;
+            break;
+         case 'Supplier':
+            $link_class = $this->supplierlinkclass;
+            break;
+      }
+
+      if ($link_class === null) {
+         return false;
+      }
+
+      $result = $DB->insert($link_class::getTable(), [
+         static::getForeignKeyField()        => $this->getID(),
+         [$itemtype, 'getForeignKeyField']() => $items_id,
+         'type'                              => $role
+      ]);
+      return (bool) $result;
    }
 
    public function deleteTeamMember(string $itemtype, int $items_id, array $params = []): bool {
-      return false;
+      global $DB;
+
+      $role = $params['role'] ?? CommonITILActor::ASSIGN;
+
+      /** @var CommonDBTM $link_class */
+      $link_class = null;
+      switch ($itemtype) {
+         case 'User':
+            $link_class = $this->userlinkclass;
+            break;
+         case 'Group':
+            $link_class = $this->grouplinkclass;
+            break;
+         case 'Supplier':
+            $link_class = $this->supplierlinkclass;
+            break;
+      }
+
+      if ($link_class === null) {
+         return false;
+      }
+
+      $result = $DB->delete($link_class::getTable(), [
+         static::getForeignKeyField()        => $this->getID(),
+         [$itemtype, 'getForeignKeyField']() => $items_id,
+         'type'                              => $role
+      ]);
+      return (bool) $result;
    }
 
    public function getTimelineStats(): array {
