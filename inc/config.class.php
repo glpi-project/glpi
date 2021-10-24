@@ -1927,7 +1927,6 @@ class Config extends CommonDBTM {
       </td></tr>
 HTML;
 
-
       echo "<tr class='tab_bg_1'><td><pre class='section-content'>";
       echo "GLPI $ver (" . $CFG_GLPI['root_doc']." => " . GLPI_ROOT . ")\n";
       echo "Installation mode: " . GLPI_INSTALL_MODE . "\n";
