@@ -475,7 +475,7 @@ class Impact extends CommonGLPI {
             $("#impact-list-settings").click(function() {
                glpi_html_dialog({
                   title: __("Settings"),
-                  body: '.$setting_dialog.',
+                  body: '.($setting_dialog || '{}').',
                });
             });
 
