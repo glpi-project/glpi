@@ -1330,3 +1330,28 @@ $(
 jQuery.expr.filters.icontains = function(elem, i, m) {
    return (elem.innerText || elem.textContent || "").toLowerCase().indexOf(m[3].toLowerCase()) > -1;
 };
+
+function tableToDetails(table) {
+   let in_details = false;
+   const section_els = $(table).find('.section-header, .section-content');
+   let details = '';
+
+   section_els.each((i, e) => {
+      if (e.classList.contains('section-header')) {
+         if (in_details) {
+            details += '</details>';
+         }
+         details += `<details><summary>${e.innerText}</summary>`;
+         in_details = true;
+      } else {
+         if (in_details) {
+            details += e.innerText;
+         }
+      }
+   });
+
+   if (in_details) {
+      details += '</details>';
+   }
+   return details;
+}

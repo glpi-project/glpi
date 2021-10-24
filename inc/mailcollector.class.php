@@ -1844,8 +1844,8 @@ class MailCollector  extends CommonDBTM {
 
       // No need to translate, this part always display in english (for copy/paste to forum)
 
-      echo "<tr class='tab_bg_2'><th>Notifications</th></tr>\n";
-      echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
+      echo "<tr class='tab_bg_2'><th class='section-header'>Notifications</th></tr>\n";
+      echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
 
       $msg = 'Way of sending emails: ';
       switch ($CFG_GLPI['smtp_mode']) {
