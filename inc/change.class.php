@@ -804,28 +804,10 @@ class Change extends CommonITILObject {
          }
       }
 
-      $legacy_actions = '';
-
-      if (isset($PLUGIN_HOOKS[Hooks::TIMELINE_ACTIONS])) {
-         foreach ($PLUGIN_HOOKS[Hooks::TIMELINE_ACTIONS] as $plugin => $callback) {
-            if (!Plugin::isPluginActive($plugin)) {
-               continue;
-            }
-            if (is_callable($callback)) {
-               ob_start();
-               $callback([
-                  'rand'   => mt_rand(),
-                  'item'   => $this
-               ]);
-               $legacy_actions .= ob_get_clean() ?? '';
-            }
-         }
-      }
-
       TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
          'item'               => $this,
          'timeline_itemtypes' => $this->getTimelineItemtypes(),
-         'legacy_timeline_actions'  => $legacy_actions,
+         'legacy_timeline_actions'  => $this->getLegacyTimelineActionsHTML(),
          'params'             => $options,
          'timeline'           => $this->getTimelineItems(),
          'itiltemplate_key'   => $tpl_key,

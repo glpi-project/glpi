@@ -6095,6 +6095,32 @@ abstract class CommonITILObject extends CommonDBTM {
       return $itemtypes;
    }
 
+   /**
+    * Get an HTML string of all timeline actions/buttons provided by plugins via the {@link Hooks::TIMELINE_ACTIONS}  hook.
+    * @return string
+    * @since 10.0.0
+    */
+   public function getLegacyTimelineActionsHTML(): string {
+      $legacy_actions = '';
+
+      if (isset($PLUGIN_HOOKS[Hooks::TIMELINE_ACTIONS])) {
+         foreach ($PLUGIN_HOOKS[Hooks::TIMELINE_ACTIONS] as $plugin => $callback) {
+            if (!Plugin::isPluginActive($plugin)) {
+               continue;
+            }
+            if (is_callable($callback)) {
+               ob_start();
+               $callback([
+                  'rand'   => mt_rand(),
+                  'item'   => $this
+               ]);
+               $legacy_actions .= ob_get_clean() ?? '';
+            }
+         }
+      }
+
+      return $legacy_actions;
+   }
 
    /**
     * Retrieves all timeline items for this ITILObject
