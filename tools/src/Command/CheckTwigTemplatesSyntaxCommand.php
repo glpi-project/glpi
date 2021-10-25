@@ -30,16 +30,18 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
+namespace Glpi\Tools\Command;
 
+use FilesystemIterator;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Console\AbstractCommand;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use RegexIterator;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CheckTwigTemplatesSyntaxCommand extends AbstractCommand {
+class CheckTwigTemplatesSyntaxCommand extends Command {
 
    /**
     * Error code returned when some templates have invalid yntax.
@@ -48,14 +50,10 @@ class CheckTwigTemplatesSyntaxCommand extends AbstractCommand {
     */
    const ERROR_INVALID_TEMPLATES = 1;
 
-   protected $requires_db = false;
-
    protected function configure() {
       parent::configure();
 
-      $this->setName('glpi:tools:check_twig_templates_syntax');
-      $this->setAliases(['tools:check_twig_templates_syntax']);
-      $this->setDescription(__('Check Twig templates syntax.'));
+      $this->setName(self::class);
    }
 
    protected function execute(InputInterface $input, OutputInterface $output) {
@@ -71,8 +69,12 @@ class CheckTwigTemplatesSyntaxCommand extends AbstractCommand {
          ),
          '/\.twig$/i'
       );
-      /* @var SplFileInfo $tpl_file */
+      /* @var \SplFileInfo $tpl_file */
       foreach ($tpl_files_iterator as $tpl_file) {
+         $output->writeln(
+            sprintf('<comment>Parsing %s...</comment>', $tpl_file->getPathname()),
+            OutputInterface::VERBOSITY_VERBOSE
+         );
          $tpl_path = str_replace($tpl_dir . '/', '', $tpl_file->getPathname());
          $source = $environment->getLoader()->getSourceContext($tpl_path);
          try {
