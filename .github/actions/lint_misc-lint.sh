@@ -1,10 +1,10 @@
 #!/bin/bash -e
 
 echo "Check for missing headers"
-vendor/bin/licence-headers-check
+vendor/bin/licence-headers-check --ansi --no-interaction
 
 echo "Check for SCSS compilation errors"
-bin/console build:compile_scss --ansi
+bin/console build:compile_scss --ansi --no-interaction
 
 echo "Check for gettext errors/warnings"
 tools/locale/extract_template.sh 2>&1 | tee extract.log
