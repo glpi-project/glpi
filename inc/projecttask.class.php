@@ -797,7 +797,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
          'name'            => 'content',
          'enable_richtext' => true,
          'editor_id'       => "description$rand_description",
-         'value'           => RichText::getSafeHtml($this->fields["content"], true, true),
+         'value'           => RichText::getSafeHtml($this->fields["content"], true),
       ]);
       echo "</td></tr>";
 
@@ -1301,7 +1301,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                         ProjectTask::getFormURLWithID($data['id'])."'>".$data['name'].
                         (empty($data['name'])?"(".$data['id'].")":"")."</a>";
             echo sprintf(__('%1$s %2$s'), $link,
-                           Html::showToolTip(RichText::getSafeHtml($data['content'], true),
+                           Html::showToolTip(RichText::getSafeHtml($data['content']),
                                              ['display' => false,
                                                    'applyto' => "ProjectTask".$data["id"].$rand]));
             echo "</td>";
@@ -1563,7 +1563,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                            = ['id'      => $task->fields['uuid'],
                               'parent_id' => $parent_id,
                               'name'    => $task->fields['name'],
-                              'desc'    => RichText::getTextFromHtml($task->fields['content'], true, false, true),
+                              'desc'    => RichText::getTextFromHtml($task->fields['content'], true, false),
                               'link'    => $task->getlink(),
                               'type'    => 'task',
                               'percent' => $percent,
@@ -1797,7 +1797,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
                $interv[$key]["name"]     = Sanitizer::unsanitize($task->fields["name"]); // name is re-encoded on JS side
                $interv[$key]["content"]  = $task->fields["content"] !== null
-                  ? RichText::getSafeHtml($task->fields["content"], true)
+                  ? RichText::getSafeHtml($task->fields["content"])
                   : '';
                $interv[$key]["status"]   = $task->fields["percent_done"];
 

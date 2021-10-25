@@ -190,7 +190,7 @@ class DataFactory {
       $item->start_date = $record['plan_start_date'] ?? $_SESSION['glpi_currenttime'];
       $item->end_date = $record['plan_end_date'] ?? date('Y-m-d H:i:s', strtotime($item->start_date . ' + 1 day'));
       $item->text = $record['name'];
-      $item->content = isset($record['content']) ? RichText::getSafeHtml($record['content'], true) : "";
+      $item->content = isset($record['content']) ? RichText::getSafeHtml($record['content']) : "";
       $item->comment = $record['comment'] ?? "";
       $item->progress = $record['percent_done'] / 100;
 

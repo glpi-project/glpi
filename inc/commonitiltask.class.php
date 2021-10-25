@@ -1180,7 +1180,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                   }
 
                   $interv[$key]["name"]     = Sanitizer::unsanitize($parentitem->fields['name']); // name is re-encoded on JS side
-                  $interv[$key]["content"]  = RichText::getSafeHtml($item->fields['content'], true);
+                  $interv[$key]["content"]  = RichText::getSafeHtml($item->fields['content']);
                   $interv[$key]["status"]   = $parentitem->fields["status"];
                   $interv[$key]["priority"] = $parentitem->fields["priority"];
 
@@ -1579,7 +1579,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          printf(
             __('%1$s %2$s'),
             $link,
-            Html::resume_text(RichText::getTextFromHtml($job->fields['content'], false, true, true), 50)
+            Html::resume_text(RichText::getTextFromHtml($job->fields['content'], false, true), 50)
          );
 
          echo "</a>";

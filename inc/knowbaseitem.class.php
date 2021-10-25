@@ -861,7 +861,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          echo Html::hidden('_in_modal', ['value' => 1]);
       }
       Html::textarea(['name'              => 'answer',
-                      'value'             => RichText::getSafeHtml($this->fields['answer'], true, true),
+                      'value'             => RichText::getSafeHtml($this->fields['answer'], true),
                       'enable_fileupload' => true,
                       'enable_richtext'   => true,
                       'cols'              => $cols,
@@ -1641,11 +1641,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
                }
                echo Search::showItem($output_type,
                                        "<div class='kb'>$toadd <i class='fa fa-fw $fa_class' title='$fa_title'></i> <a $href>".Html::resume_text($name, 80)."</a></div>
-                                       <div class='kb_resume'>".Html::resume_text(RichText::getTextFromHtml($answer, false, false, true), 600)."</div>",
+                                       <div class='kb_resume'>".Html::resume_text(RichText::getTextFromHtml($answer, false, false), 600)."</div>",
                                        $item_num, $row_num);
             } else {
                echo Search::showItem($output_type, $name, $item_num, $row_num);
-               echo Search::showItem($output_type, RichText::getTextFromHtml($answer, true, false, true, true), $item_num, $row_num);
+               echo Search::showItem($output_type, RichText::getTextFromHtml($answer, true, false, true), $item_num, $row_num);
             }
 
             $showuserlink = 0;
@@ -2005,7 +2005,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       } else {
          $answer = $this->fields["answer"];
       }
-      $answer = RichText::getSafeHtml($answer, true);
+      $answer = RichText::getSafeHtml($answer);
 
       $callback = function ($matches) {
          //1 => tag name, 2 => existing attributes, 3 => title contents

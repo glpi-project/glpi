@@ -85,7 +85,7 @@ if ($apply_twig) {
    // Render template content using twig
    $template->fields['content'] = $template->getRenderedContent($parent);
 } else {
-   $template->fields['content'] = RichText::getSafeHtml($template->fields['content'], true);
+   $template->fields['content'] = RichText::getSafeHtml($template->fields['content']);
 }
 
 // Return json response with the template fields

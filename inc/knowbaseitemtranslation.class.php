@@ -162,7 +162,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
       echo "<tr><td class='left' colspan='4'><h2>".__('Content')."</h2>\n";
 
       echo "<div class='rich_text_container' id='kbanswer'>";
-      echo RichText::getSafeHtml($this->fields['answer'], true);
+      echo RichText::getSafeHtml($this->fields['answer']);
       echo "</div>";
       echo "</td></tr>";
       echo "</table>";
@@ -240,7 +240,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
             }
             if (isset($data['answer']) && !empty($data['answer'])) {
                echo "&nbsp;";
-               Html::showToolTip(RichText::getSafeHtml($data['answer'], true));
+               Html::showToolTip(RichText::getSafeHtml($data['answer']));
             }
             echo "</td></tr>";
          }
@@ -306,7 +306,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
       Html::textarea(
          [
             'name'              => 'answer',
-            'value'             => RichText::getSafeHtml($this->fields['answer'], true, true),
+            'value'             => RichText::getSafeHtml($this->fields['answer'], true),
             'editor_id'         => 'answer',
             'enable_fileupload' => false,
             'enable_richtext'   => true,

@@ -176,7 +176,7 @@ class ReminderTranslation extends CommonDBChild {
             }
             if (isset($data['text']) && !empty($data['text'])) {
                echo "&nbsp;";
-               Html::showToolTip(RichText::getSafeHtml($data['text'], true));
+               Html::showToolTip(RichText::getSafeHtml($data['text']));
             }
             echo "</td></tr>";
          }
@@ -239,7 +239,7 @@ class ReminderTranslation extends CommonDBChild {
       echo "<td>".__('Description')."</td>";
       echo "<td colspan='3'>";
       Html::textarea(['name'              => 'text',
-                      'value'             => RichText::getSafeHtml($this->fields["text"], true, true),
+                      'value'             => RichText::getSafeHtml($this->fields["text"], true),
                       'enable_richtext'   => true,
                       'enable_fileupload' => false]);
       echo "</td></tr>\n";

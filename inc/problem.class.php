@@ -1032,7 +1032,7 @@ class Problem extends CommonITILObject {
                $link .= "'>";
                $link .= "<span class='b'>".$problem->fields["name"]."</span></a>";
                $link = sprintf(__('%1$s %2$s'), $link,
-                  Html::showToolTip(RichText::getSafeHtml($problem->fields['content'], true),
+                  Html::showToolTip(RichText::getSafeHtml($problem->fields['content']),
                      ['applyto' => 'problem'.$problem->fields["id"].$rand,
                         'display' => false]));
 
@@ -1250,7 +1250,7 @@ class Problem extends CommonITILObject {
          $link .= "'>";
          $link .= "<span class='b'>".$problem->fields["name"]."</span></a>";
          $link = printf(__('%1$s %2$s'), $link,
-                        Html::showToolTip(RichText::getSafeHtml($problem->fields['content'], true),
+                        Html::showToolTip(RichText::getSafeHtml($problem->fields['content']),
                                           ['applyto' => 'problem'.$problem->fields["id"].$rand,
                                                 'display' => false]));
 

@@ -44,19 +44,14 @@ class RichText {
     * @since 10.0.0
     *
     * @param null|string   $content                HTML string to be made safe
-    * @param boolean       $sanitized_input        Indicates whether the input has been transformed by GLPI sanitize process
     * @param boolean       $encode_output_entities Indicates whether the output should be encoded (encoding of HTML special chars)
     *
     * @return string
     */
-   public static function getSafeHtml(?string $content, bool $sanitized_input = false, bool $encode_output_entities = false): string {
+   public static function getSafeHtml(?string $content, bool $encode_output_entities = false): string {
 
       if (empty($content)) {
          return '';
-      }
-
-      if ($sanitized_input) {
-         $content = Sanitizer::unsanitize($content);
       }
 
       $content = self::normalizeHtmlContent($content, true);
@@ -94,7 +89,6 @@ class RichText {
     * @param string  $content                HTML string to be made safe
     * @param boolean $keep_presentation      Indicates whether the presentation elements have to be replaced by plaintext equivalents
     * @param boolean $compact                Indicates whether the output should be compact (limited line length, no links URL, ...)
-    * @param boolean $sanitized_input        Indicates whether the input has been transformed by GLPI sanitize process
     * @param boolean $encode_output_entities Indicates whether the output should be encoded (encoding of HTML special chars)
     *
     * @return string
@@ -103,14 +97,9 @@ class RichText {
       string $content,
       bool $keep_presentation = true,
       bool $compact = false,
-      bool $sanitized_input = false,
       bool $encode_output_entities = false
    ): string {
       global $CFG_GLPI;
-
-      if ($sanitized_input) {
-         $content = Sanitizer::unsanitize($content);
-      }
 
       $content = self::normalizeHtmlContent($content, false);
 
@@ -201,6 +190,9 @@ class RichText {
     * @return string
     */
    private static function normalizeHtmlContent(string $content, bool $enhanced_html = false) {
+
+      $content = Sanitizer::getVerbatimValue($content);
+
       if (self::isRichTextHtmlContent($content)) {
          // Remove contentless HTML tags
          // Remove also surrounding spaces:

@@ -546,7 +546,7 @@ trait PlanningEvent {
                   'background'       => $has_bg ? $data['background'] : false,
                   'name'             => Sanitizer::unsanitize($data['name']), // name is re-encoded on JS side
                   'text'             => $data['text'] !== null
-                     ? RichText::getSafeHtml($data['text'], true)
+                     ? RichText::getSafeHtml($data['text'])
                      : '',
                   'ajaxurl'          => $CFG_GLPI["root_doc"]."/ajax/planning.php".
                                         "?action=edit_event_form".
