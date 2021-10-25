@@ -97,7 +97,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Glpi\\Tools\\": "tools/",
+            "Glpi\\Tools\\": "tools/src/",
             "Glpi\\Tests\\": "tests/src/"
         }
     },
