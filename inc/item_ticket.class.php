@@ -223,8 +223,6 @@ class Item_Ticket extends CommonItilObject_Item {
          }
       }
 
-
-
       $rand  = mt_rand();
       $count = 0;
 
