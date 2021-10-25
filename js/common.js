@@ -1355,3 +1355,20 @@ function tableToDetails(table) {
    }
    return details;
 }
+
+function flashIconButton(button, button_classes, icon_classes, duration) {
+   const btn = $(button);
+   const ico = btn.find('i').eq(0);
+   const original_btn_classes = btn.attr('class');
+   const original_ico_classes = ico.attr('class');
+   btn.removeClass();
+   ico.removeClass();
+   btn.addClass(button_classes);
+   ico.addClass(icon_classes);
+   window.setTimeout(() => {
+      btn.removeClass();
+      ico.removeClass();
+      btn.addClass(original_btn_classes);
+      ico.addClass(original_ico_classes);
+   }, duration);
+}

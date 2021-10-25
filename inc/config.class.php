@@ -1891,8 +1891,12 @@ class Config extends CommonDBTM {
       echo "<p>" . Telemetry::getViewLink() . "</p>";
 
       $copy_msg = __('Copy system information');
+      $copy_onclick = <<<JS
+      copyTextToClipboard(tableToDetails('#system-info-table'));
+      flashIconButton(this, 'btn btn-success', 'fas fa-check', 1500);
+JS;
       echo <<<HTML
-         <button type="button" class="btn btn-secondary" onclick="copyTextToClipboard(tableToDetails('#system-info-table'))">
+         <button type="button" name="copy-sysinfo" class="btn btn-secondary" onclick="{$copy_onclick}">
             <i class="far fa-copy me-2"></i>{$copy_msg}
          </button>
 HTML;
