@@ -1341,7 +1341,7 @@ function tableToDetails(table) {
          if (in_details) {
             details += '</details>';
          }
-         details += `<details><summary>${e.innerText}</summary>`;
+         details += `<details><summary>${e.innerText}</summary><pre>`;
          in_details = true;
       } else {
          if (in_details) {
@@ -1351,7 +1351,7 @@ function tableToDetails(table) {
    });
 
    if (in_details) {
-      details += '</details>';
+      details += '</pre></details>';
    }
    return details;
 }
