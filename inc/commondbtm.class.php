@@ -4291,7 +4291,7 @@ class CommonDBTM extends CommonGLPI {
 
                case "text" :
                   if (isset($searchoptions['htmltext']) && $searchoptions['htmltext']) {
-                     $value = RichText::getTextFromHtml($value, true, false, true);
+                     $value = RichText::getTextFromHtml($value, true, false);
                   }
 
                   return $options['html'] ? nl2br($value) : $value;
@@ -4522,7 +4522,7 @@ class CommonDBTM extends CommonGLPI {
             case "text" :
                $is_htmltext = isset($searchoptions['htmltext']) && $searchoptions['htmltext'];
                if ($is_htmltext) {
-                  $value = RichText::getSafeHtml($value, true, true);
+                  $value = RichText::getSafeHtml($value, true);
                }
 
                return Html::textarea(

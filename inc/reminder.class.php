@@ -721,12 +721,12 @@ class Reminder extends CommonDBVisible implements
 
       if ($canedit) {
          Html::textarea(['name'              => 'text',
-                         'value'             => RichText::getSafeHtml($this->fields["text"], true, true),
+                         'value'             => RichText::getSafeHtml($this->fields["text"], true),
                          'enable_richtext'   => true,
                          'enable_fileupload' => true]);
       } else {
          echo "<div class='rich_text_container'>";
-         echo RichText::getSafeHtml($this->fields["text"], true);
+         echo RichText::getSafeHtml($this->fields["text"]);
          echo "</div>";
       }
 
@@ -933,7 +933,7 @@ class Reminder extends CommonDBVisible implements
             if (isset($data['transtext']) && !empty($data['transtext'])) {
                $text = $data['transtext'];
             }
-            $tooltip = Html::showToolTip(RichText::getSafeHtml($text, true),
+            $tooltip = Html::showToolTip(RichText::getSafeHtml($text),
                                          ['applyto' => "content_reminder_".$data["id"].$rand,
                                           'display' => false]);
             $output.= sprintf(__('%1$s %2$s'), $link, $tooltip);

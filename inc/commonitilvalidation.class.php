@@ -901,13 +901,13 @@ abstract class CommonITILValidation  extends CommonDBChild {
             echo "<td><div style='background-color:".$bgcolor.";'>".$status."</div></td>";
             echo "<td>".Html::convDateTime($row["submission_date"])."</td>";
             echo "<td>".getUserName($row["users_id"])."</td>";
-            $comment_submission = RichText::getSafeHtml($this->fields['comment_submission'], true);
+            $comment_submission = RichText::getSafeHtml($this->fields['comment_submission']);
             $comment_submission = $this->refreshUserMentionsHtmlToDisplay($comment_submission);
             $comment_submission = Html::replaceImagesByGallery($comment_submission);
             echo "<td><div class='rich_text_container'>".$comment_submission."</div></td>";
             echo "<td>".Html::convDateTime($row["validation_date"])."</td>";
             echo "<td>".getUserName($row["users_id_validate"])."</td>";
-            $comment_validation = RichText::getSafeHtml($this->fields['comment_validation'] ?? '', true);
+            $comment_validation = RichText::getSafeHtml($this->fields['comment_validation'] ?? '');
             $comment_validation = $this->refreshUserMentionsHtmlToDisplay($comment_validation);
             $comment_validation = Html::replaceImagesByGallery($comment_validation);
             echo "<td><div class='rich_text_container'>".$comment_validation."</div></td>";

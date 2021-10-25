@@ -52,7 +52,7 @@ $revision = new KnowbaseItem_Revision();
 $revision->getFromDB($revid);
 $rev = [
    'name'   => $revision->fields['name'],
-   'answer' => RichText::getSafeHtml($revision->fields['answer'], true)
+   'answer' => RichText::getSafeHtml($revision->fields['answer'])
 ];
 
 echo json_encode($rev);

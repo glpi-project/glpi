@@ -155,7 +155,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "</td><td colspan='3'>";
       $content_id = "content$rand";
       Html::textarea(['name'              => 'content_html',
-                         'value'             => RichText::getSafeHtml($this->fields['content_html'], true, true),
+                         'value'             => RichText::getSafeHtml($this->fields['content_html'], true),
                          'rand'              => $rand,
                          'editor_id'         => $content_id,
                          'enable_fileupload' => false,

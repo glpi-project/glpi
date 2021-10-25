@@ -5007,7 +5007,7 @@ JAVASCRIPT;
                   sprintf(__('%1$s - %2$s'), $job->numberOfFollowups($showprivate),
                      $job->numberOfTasks($showprivate)));
                $link    = sprintf(__('%1$s %2$s'), $link,
-                  Html::showToolTip(RichText::getSafeHtml($job->fields['content'], true),
+                  Html::showToolTip(RichText::getSafeHtml($job->fields['content']),
                      ['applyto' => 'ticket'.$job->fields["id"].$rand,
                         'display' => false]));
                $row['values'][] = $link;
@@ -5601,7 +5601,7 @@ JAVASCRIPT;
                             sprintf(__('%1$s - %2$s'), $job->numberOfFollowups($showprivate),
                                     $job->numberOfTasks($showprivate)));
          $link    = printf(__('%1$s %2$s'), $link,
-                           Html::showToolTip(RichText::getSafeHtml($job->fields['content'], true),
+                           Html::showToolTip(RichText::getSafeHtml($job->fields['content']),
                                              ['applyto' => 'ticket'.$job->fields["id"].$rand,
                                                    'display' => false]));
          echo "</td>";

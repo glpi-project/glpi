@@ -326,7 +326,7 @@ JAVASCRIPT;
       if ($canedit) {
          Html::textarea([
             'name'              => 'text',
-            'value'             => RichText::getSafeHtml($this->fields["text"], true, true),
+            'value'             => RichText::getSafeHtml($this->fields["text"], true),
             'enable_richtext'   => true,
             'enable_fileupload' => true,
             'rand'              => $rand,
@@ -334,7 +334,7 @@ JAVASCRIPT;
          ]);
       } else {
          echo "<div class='rich_text_container'>";
-         echo RichText::getSafeHtml($this->fields["text"], true);
+         echo RichText::getSafeHtml($this->fields["text"]);
          echo "</div>";
       }
 

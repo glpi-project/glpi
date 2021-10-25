@@ -155,8 +155,6 @@ class DataHelpersExtension extends AbstractExtension {
          return $string;
       }
 
-      $string = Sanitizer::getVerbatimValue($string);
-
       return RichText::getTextFromHtml($string, $keep_presentation, $compact);
    }
 
@@ -174,8 +172,6 @@ class DataHelpersExtension extends AbstractExtension {
       if (!is_string($string)) {
          return $string;
       }
-
-      $string = Sanitizer::getVerbatimValue($string);
 
       return RichText::getSafeHtml($string);
    }

@@ -6119,7 +6119,7 @@ JAVASCRIPT;
                   }
                   $out    .= $name."</a>";
                   $out     = sprintf(__('%1$s %2$s'), $out,
-                                     Html::showToolTip(RichText::getSafeHtml($data[$ID][0]['content'], true),
+                                     Html::showToolTip(RichText::getSafeHtml($data[$ID][0]['content']),
                                                              ['applyto' => $itemtype.
                                                                                 $data[$ID][0]['id'],
                                                                    'display' => false]));
@@ -6291,7 +6291,7 @@ JAVASCRIPT;
                      }
                      $count_display++;
 
-                     $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true, true);
+                     $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true);
 
                      if (self::$output_type == self::HTML_OUTPUT && (Toolbox::strlen($plaintext) > $CFG_GLPI['cut'])) {
                         $rand = mt_rand();
@@ -6305,7 +6305,7 @@ JAVASCRIPT;
                            __('%1$s %2$s'),
                            "<span id='text$rand'>". Html::resume_text($plaintext, $CFG_GLPI['cut']).'</span>',
                            Html::showToolTip(
-                              '<div class="fup-popup">'.RichText::getSafeHtml($data[$ID][$k]['name'], true).'</div>', $popup_params
+                              '<div class="fup-popup">'.RichText::getSafeHtml($data[$ID][$k]['name']).'</div>', $popup_params
                               )
                         );
                      } else {

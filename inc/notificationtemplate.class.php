@@ -274,8 +274,8 @@ class NotificationTemplate extends CommonDBTM {
 
             //If no html content, then send only in text
             if (!empty($template_datas['content_html'])) {
-               $signature_html = RichText::getSafeHtml($this->signature, true);
-               $signature_text = RichText::getTextFromHtml($this->signature, false, false, true);
+               $signature_html = RichText::getSafeHtml($this->signature);
+               $signature_text = RichText::getTextFromHtml($this->signature, false, false);
 
                $template_datas['content_html'] = self::process(
                   $template_datas['content_html'],

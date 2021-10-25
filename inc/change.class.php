@@ -1444,7 +1444,7 @@ class Change extends CommonITILObject {
                $link .= "'>";
                $link .= "<span class='b'>".$change->fields["name"]."</span></a>";
                $link = sprintf(__('%1$s %2$s'), $link,
-                  Html::showToolTip(RichText::getSafeHtml($change->fields['content'], true),
+                  Html::showToolTip(RichText::getSafeHtml($change->fields['content']),
                      ['applyto' => 'change'.$change->fields["id"].$rand,
                         'display' => false]));
 

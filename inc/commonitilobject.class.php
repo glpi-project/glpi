@@ -5749,7 +5749,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          if ($p['output_type'] == Search::HTML_OUTPUT) {
             $name_column = sprintf(__('%1$s %2$s'), $name_column,
-                                    Html::showToolTip(RichText::getSafeHtml($item->fields['content'], true),
+                                    Html::showToolTip(RichText::getSafeHtml($item->fields['content']),
                                                       ['display' => false,
                                                             'applyto' => $item->getType().$item->fields["id"].
                                                                            $rand]));
