@@ -39,7 +39,7 @@ function refreshAssetBreadcrumb(itemtype, items_id, dom_to_update) {
          items_id: items_id,
          itemtype: itemtype,
       }
-   }).success(function(html_breadcrum) {
+   }).done(function(html_breadcrum) {
       $('#' + dom_to_update).empty();
       $('#' + dom_to_update).append(html_breadcrum);
    });
@@ -56,7 +56,7 @@ function refreshNetworkPortDropdown(itemtype, items_id, dom_to_update) {
          items_id: items_id,
          itemtype: itemtype,
       }
-   }).success(function(html_data) {
+   }).done(function(html_data) {
       $('#' + dom_to_update).empty();
       $('#' + dom_to_update).append(html_data);
    });
@@ -74,7 +74,7 @@ function refreshSocketDropdown(itemtype, items_id, socketmodels_id, dom_name) {
          socketmodels_id: socketmodels_id,
          dom_name: dom_name
       }
-   }).success(function(html_data) {
+   }).done(function(html_data) {
       var parent_dom = $('select[name="'+dom_name+'"]').parent().parent();
       parent_dom.empty();
       parent_dom.append(html_data);
