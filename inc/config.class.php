@@ -1890,11 +1890,21 @@ class Config extends CommonDBTM {
 
       echo "<p>" . Telemetry::getViewLink() . "</p>";
 
+      $copy_msg = __('Copy system information');
+      echo <<<HTML
+         <button type="button" class="btn btn-secondary" onclick="copyTextToClipboard(tableToDetails('#system-info-table'))">
+            <i class="far fa-copy me-2"></i>{$copy_msg}
+         </button>
+HTML;
+      $check_new_version_msg = __('Check if a new version is available');
+      echo <<<HTML
+      <a class='btn btn-secondary' href='?check_version'>
+         <i class="fas fa-sync me-2"></i>{$check_new_version_msg}
+      </a>
+HTML;
       echo "<table id='system-info-table' class='tab_cadre_fixe'>";
-      echo "<tr><th>". __('Information about system installation and configuration')."</th></tr>";
-      echo "<tr class='tab_bg_1'><td>";
-      echo "<a class='btn btn-secondary' href='?check_version'>".__('Check if a new version is available')."</a>";
-      echo "</td></tr>";
+      echo "<tr><th class='section-header'>". __('Information about system installation and configuration')."</th></tr>";
+      echo "<tr class='tab_bg_1'><td></td></tr>";
 
        $oldlang = $_SESSION['glpilanguage'];
        // Keep this, for some function call which still use translation (ex showAllReplicateDelay)
@@ -1919,13 +1929,6 @@ class Config extends CommonDBTM {
             $ver .= '-git-' .$gitbranch . '-' . $gitrev;
          }
       }
-
-      $copy_msg = __('Copy system information');
-      echo <<<HTML
-      <tr class='tab_bg_1'><td>
-         <button type="button" class="btn btn-secondary" onclick="copyTextToClipboard(tableToDetails('#system-info-table'))">{$copy_msg}</button>
-      </td></tr>
-HTML;
 
       echo "<tr class='tab_bg_1'><td><pre class='section-content'>";
       echo "GLPI $ver (" . $CFG_GLPI['root_doc']." => " . GLPI_ROOT . ")\n";
