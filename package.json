@@ -14,7 +14,7 @@
         "@fullcalendar/list": "^4.4.0",
         "@fullcalendar/rrule": "^4.4.0",
         "@fullcalendar/timegrid": "^4.4.0",
-        "@tabler/core": "https://github.com/tabler/tabler/tarball/3d6cbe85a7475cb82144e6e265bcb37383ac2f21",
+        "@tabler/core": "https://github.com/tabler/tabler/tarball/cb3140e98cc8ee1dd55b4704206437ceb61bdb37",
         "@tabler/icons": "^1.41.2",
         "animate.css": "^4.1.1",
         "bootstrap": "^5.1.1",
@@ -60,9 +60,8 @@
         "tinymce-i18n": "^20.4.4"
     },
     "scripts": {
-        "build:patch_dependencies": "(patch -f -p1 -d node_modules/@tabler/core/ < tools/tabler-831.patch || echo 'Error applying patch')",
         "build:pack": "webpack --config webpack.config.js",
-        "build": "npm run build:patch_dependencies && npm run build:pack",
+        "build": "npm run build:pack",
         "test": "jest --colors --config tests/js/jest.config.js ./tests/js/**"
     },
     "devDependencies": {
