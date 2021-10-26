@@ -1836,7 +1836,7 @@ abstract class CommonITILObject extends CommonDBTM {
          // Build name based on content
 
          // Unsanitize
-         $content = Sanitizer::unsanitize($input['content'], true);
+         $content = Sanitizer::unsanitize($input['content']);
 
          // Get unformatted text
          $name = RichText::getTextFromHtml($content, false);

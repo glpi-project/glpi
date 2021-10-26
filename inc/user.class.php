@@ -608,7 +608,7 @@ class User extends CommonDBTM {
             if ($input["password"] == $input["password2"]) {
                if (Config::validatePassword($input["password"])) {
                   $input["password"]
-                     = Auth::getPasswordHash(Sanitizer::unsanitize(stripslashes($input["password"])));
+                     = Auth::getPasswordHash(Sanitizer::unsanitize($input["password"]));
 
                   $input['password_last_update'] = $_SESSION['glpi_currenttime'];
                } else {
@@ -804,7 +804,7 @@ class User extends CommonDBTM {
                                -strtotime($this->fields['password_forget_token_date'])) < DAY_TIMESTAMP)
                            && $this->isEmail($input['email'])))) {
                   $input["password"]
-                     = Auth::getPasswordHash(Sanitizer::unsanitize($input["password"], true));
+                     = Auth::getPasswordHash(Sanitizer::unsanitize($input["password"]));
 
                   $input['password_last_update'] = $_SESSION["glpi_currenttime"];
                } else {

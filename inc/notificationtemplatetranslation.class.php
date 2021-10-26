@@ -253,7 +253,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
    static function cleanContentHtml(array $input) {
 
       // Unsanitize
-      $txt = Sanitizer::unsanitize($input['content_html'], true);
+      $txt = Sanitizer::unsanitize($input['content_html']);
 
       // Get as text plain text
       $txt = RichText::getTextFromHtml($txt, true);

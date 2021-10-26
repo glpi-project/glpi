@@ -79,23 +79,21 @@ class Sanitizer {
          $value = self::dbEscape($value);
       }
 
-      $mapping = self::CHARS_MAPPING;
-      return str_replace(array_keys($mapping), array_values($mapping), $value);
+      return self::encodeHtmlSpecialChars($value);
    }
 
    /**
     * Unsanitize a value. Reverts self::sanitize() transformation.
     *
     * @param mixed $value
-    * @param bool  $db_unescape
     *
     * @return mixed
     */
-   public static function unsanitize($value, bool $db_unescape = false) {
+   public static function unsanitize($value) {
       if (is_array($value)) {
          return array_map(
-            function ($val) use ($db_unescape) {
-               return self::unsanitize($val, $db_unescape);
+            function ($val) {
+               return self::unsanitize($val);
             },
             $value
          );
@@ -104,22 +102,11 @@ class Sanitizer {
          return $value;
       }
 
-      $mapping = null;
-      foreach (self::CHARS_MAPPING as $htmlentity) {
-         if (strpos($value, $htmlentity) !== false) {
-            // Value was cleaned using new char mapping, so it must be uncleaned with same mapping
-            $mapping = self::CHARS_MAPPING;
-            break;
-         }
-      }
-      if ($mapping === null) {
-         $mapping = self::LEGACY_CHARS_MAPPING; // Fallback to legacy chars mapping
+      if (self::isHtmlEncoded($value)) {
+         $value = self::decodeHtmlSpecialChars($value);
       }
 
-      $mapping = array_reverse($mapping);
-      $value = str_replace(array_values($mapping), array_keys($mapping), $value);
-
-      if ($db_unescape) {
+      if (self::isDbEscaped($value)) {
          $value = self::dbUnescape($value);
       }
 
@@ -133,7 +120,12 @@ class Sanitizer {
     *
     * @return bool
     */
-   public static function isSanitized(string $value): bool {
+   public static function isHtmlEncoded(string $value): bool {
+      // A value is Html Encoded if it does not contains
+      // - `<`;
+      // - `>`;
+      // - `&` not followed by an HTML entity identifier;
+      // and if it contains any entity used to encode HTML special chars during sanitization process.
       $special_chars_pattern   = '/(<|>|(&(?!#?[a-z0-9]+;)))/i';
       $sanitized_chars = array_merge(
          array_values(self::CHARS_MAPPING),
@@ -146,6 +138,73 @@ class Sanitizer {
    }
 
    /**
+    * Check if value is escaped for DB usage.
+    * A value is considered as escaped if it special char (NULL, \n, \r, \, ', " and EOF) that has been escaped.
+    *
+    * @param string $value
+    *
+    * @return string
+    */
+   public static function isDbEscaped(string $value): bool {
+      // Search for unprotected control chars `NULL`, `\n`, `\r` and `EOF`.
+      $control_chars = ["\x00", "\n", "\r", "\x1a"];
+      for ($i = 0; $i < strlen($value); $i++) {
+         foreach ($control_chars as $char) {
+            if ($i + strlen($char) <= strlen($value) && substr($value, $i, strlen($char)) == $char) {
+               return false; // Unprotected control char found
+            }
+         }
+      }
+
+      // Search for unprotected quotes.
+      $quotes = ["'", '"'];
+      for ($i = 0; $i < strlen($value); $i++) {
+         foreach ($quotes as $char) {
+            if (substr($value, $i, 1) != $char) {
+               continue;
+            }
+            if ($i === 0 || substr($value, $i - 1, 1) !== '\\') {
+               return false; // Unprotected quote found
+            }
+         }
+      }
+
+      $has_special_chars = false;
+
+      // Search for unprotected backslashes.
+      $special_chars = ['\x00', '\n', '\r', "\'", '\"', '\x1a'];
+      $backslashes_count = 0;
+      for ($i = 0; $i < strlen($value); $i++) {
+         if (substr($value, $i, 1) != '\\') {
+            continue;
+         }
+         $has_special_chars = true;
+
+         // Count successive backslashes.
+         $backslashes_count = 1;
+         while ($i + 1 <= strlen($value) && substr($value, $i + 1, 1) == '\\') {
+            $backslashes_count++;
+            $i++;
+         }
+
+         // Check if last backslash is related to an escaped special char.
+         foreach ($special_chars as $char) {
+            if ($i + strlen($char) <= strlen($value) && substr($value, $i, strlen($char)) == $char) {
+               $backslashes_count--;
+               break;
+            }
+         }
+
+         // Backslashes are escaped only if there is odd count of them.
+         if ($backslashes_count % 2 === 1) {
+            return false; // Unprotected backslash or quote found
+         }
+      }
+
+      return $has_special_chars;
+   }
+
+   /**
     * Return verbatim value for an itemtype field.
     * Returned value will be unsanitized if it has been transformed by GLPI sanitizing process.
     *
@@ -154,7 +213,43 @@ class Sanitizer {
     * @return string
     */
    public static function getVerbatimValue(string $value): string {
-      return Sanitizer::isSanitized($value) ? Sanitizer::unsanitize($value) : $value;
+      return Sanitizer::unsanitize($value);
+   }
+
+   /**
+    * Encode HTML special chars, to prevent XSS when value is printed without using any filter.
+    *
+    * @param string $value
+    *
+    * @return string
+    */
+   private static function encodeHtmlSpecialChars(string $value): string {
+      $mapping = self::CHARS_MAPPING;
+      return str_replace(array_keys($mapping), array_values($mapping), $value);
+   }
+
+   /**
+    * Decode HTML special chars.
+    *
+    * @param string $value
+    *
+    * @return string
+    */
+   private static function decodeHtmlSpecialChars(string $value): string {
+      $mapping = null;
+      foreach (self::CHARS_MAPPING as $htmlentity) {
+         if (strpos($value, $htmlentity) !== false) {
+            // Value was cleaned using new char mapping, so it must be uncleaned with same mapping
+            $mapping = self::CHARS_MAPPING;
+            break;
+         }
+      }
+      if ($mapping === null) {
+         $mapping = self::LEGACY_CHARS_MAPPING; // Fallback to legacy chars mapping
+      }
+
+      $mapping = array_reverse($mapping);
+      return str_replace(array_values($mapping), array_keys($mapping), $value);
    }
 
    /**
@@ -181,15 +276,16 @@ class Sanitizer {
    private static function dbUnescape(string $value): string {
       // stripslashes cannot be used here as it would produce "r" and "n" instead of "\r" and \n".
 
-      $search  = ['x00', 'n', 'r', '\\', '\'', '"','x1a'];
+      $search  = ['x00', 'n', 'r', '\\', '\'', '"', 'x1a'];
       $replace = ["\x00", "\n", "\r", "\\", "'", "\"", "\x1a"];
       for ($i = 0; $i < strlen($value); $i++) {
-         if (substr($value, $i, 1) == '\\') {
-            foreach ($search as $index => $char) {
-               if ($i <= strlen($value) - strlen($char) && substr($value, $i + 1, strlen($char)) == $char) {
-                  $value = substr_replace($value, $replace[$index], $i, strlen($char) + 1);
-                  break;
-               }
+         if (substr($value, $i, 1) != '\\') {
+            continue;
+         }
+         foreach ($search as $index => $char) {
+            if ($i + strlen($char) <= strlen($value) && substr($value, $i + 1, strlen($char)) == $char) {
+               $value = substr_replace($value, $replace[$index], $i, strlen($char) + 1);
+               break;
             }
          }
       }
