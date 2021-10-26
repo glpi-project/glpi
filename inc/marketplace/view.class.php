@@ -283,7 +283,7 @@ class View extends CommonGLPI {
       }
 
       header("X-GLPI-Marketplace-Total: $nb_plugins");
-      self::displayList($plugins, "discover", $only_lis, $nb_plugins, $sort);
+      self::displayList($plugins, "discover", $only_lis, $nb_plugins, $sort, $api->isListTruncated());
    }
 
 
@@ -323,10 +323,19 @@ class View extends CommonGLPI {
       string $tab = "",
       bool $only_lis = false,
       int $nb_plugins = 0,
-      string $sort = 'sort-alpha-asc'
+      string $sort = 'sort-alpha-asc',
+      bool $is_list_truncated = false
    ) {
       if (!self::canView()) {
          return false;
+      }
+
+      $messages = '';
+      if ($is_list_truncated) {
+         $msg = count($plugins) === 0
+            ? sprintf(__('Unable to fetch plugin list due to %s services website unavailability. Please try again later.'), 'GLPI Network')
+            : sprintf(__('Plugin list may be truncated due to %s services website unavailability. Please try again later.'), 'GLPI Network');
+         $messages = '<li class="warning"><i class="fa fa-exclamation-triangle fa-3x"></i>'.$msg.'</li>';
       }
 
       $plugins_li = "";
@@ -407,6 +416,7 @@ class View extends CommonGLPI {
                   </div>
                </div>
                <ul class='plugins'>
+                  {$messages}
                   {$plugins_li}
                </ul>
                $pagination
@@ -421,7 +431,7 @@ class View extends CommonGLPI {
 HTML;
          echo $marketplace;
       } else {
-         echo $plugins_li;
+         echo $messages . $plugins_li;
       }
 
       $js = <<<JS
