@@ -156,7 +156,7 @@ body .modal-content, body .modal-header {
 
 .page-anonymous {
    .glpi-logo {
-      --logo: url(#{$logo-light}) !important;
+      --logo: url(#{$logo-light-login}) !important;
    }
 }
 

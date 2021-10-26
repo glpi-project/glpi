@@ -83,7 +83,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       }
    }
 
-   TemplateRenderer::getInstance()->display('login.html.twig', [
+   TemplateRenderer::getInstance()->display('pages/login.html.twig', [
       'card_bg_width'       => true,
       'lang'                => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
       'title'               => __('Authentication'),
