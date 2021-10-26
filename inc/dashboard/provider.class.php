@@ -930,6 +930,9 @@ class Provider {
                new QueryExpression("DATE_FORMAT(".$DB->quoteName("date").", '%Y-%m') AS ticket_month")
             ],
             'FROM'    => $t_table,
+            'WHERE'    => [
+               "$t_table.is_deleted" => 0,
+            ] + getEntitiesRestrictCriteria($t_table),
             'GROUPBY' => 'ticket_month',
             'ORDER'   => 'ticket_month ASC'
          ],

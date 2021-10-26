@@ -100,6 +100,7 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
    }
 
    if (isCommandLine()
+       && !defined('TU_USER') // In test suite context, used --debug option is the atoum one
        && isset($_SERVER['argv'])) {
       $key = array_search('--debug', $_SERVER['argv']);
       if ($key) {

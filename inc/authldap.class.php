@@ -3212,7 +3212,12 @@ class AuthLDAP extends CommonDBTM {
                 && ($entity->getField('authldaps_id') > 0)) {
 
                $authldap->getFromDB($_SESSION['ldap_import']['authldaps_id']);
-               $_SESSION['ldap_import']['authldaps_id'] = $entity->getField('authldaps_id');
+
+               if ($_SESSION['ldap_import']['authldaps_id'] == NOT_AVAILABLE) {
+                  // authldaps_id wasn't submitted by the user -> take entity config
+                  $_SESSION['ldap_import']['authldaps_id'] = $entity->getField('authldaps_id');
+               }
+
                $_SESSION['ldap_import']['basedn']       = $entity->getField('ldap_dn');
 
                // No dn specified in entity : use standard one
