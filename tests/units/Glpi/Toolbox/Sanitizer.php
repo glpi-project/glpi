@@ -79,6 +79,11 @@ class Sanitizer extends \GLPITestCase {
          'sanitized_value' => "&#60;strong&#62;text with slashable chars \' \\n \\\"&#60;/strong&#62;",
          'add_slashes'     => true,
       ];
+      yield [
+         'value'           => "text with ending slashable chars '\n\"",
+         'sanitized_value' => "text with ending slashable chars \'\\n\\\"",
+         'add_slashes'     => true,
+      ];
 
       // Strings in array should be sanitized
       yield [
@@ -121,7 +126,6 @@ class Sanitizer extends \GLPITestCase {
          yield [
             'value'             => $data['sanitized_value'],
             'unsanitized_value' => $data['value'],
-            'strip_slashes'     => $data['add_slashes'] ?? false,
          ];
       }
 
@@ -141,21 +145,212 @@ class Sanitizer extends \GLPITestCase {
     */
    public function testUnanitize(
       $value,
-      $unsanitized_value,
-      bool $strip_slashes = false
-   ) {
-      $sanitizer = $this->newTestedInstance();
-      $this->variable($sanitizer->unsanitize($value, $strip_slashes))->isEqualTo($unsanitized_value);
-   }
-
-   /**
-    * @dataProvider sanitizedValueProvider
-    */
-   public function isSanitized(
-      $value,
       $unsanitized_value
    ) {
       $sanitizer = $this->newTestedInstance();
-      $this->boolean($sanitizer->isSanitized($value))->isEqualTo($unsanitized_value === $value);
+      $this->variable($sanitizer->unsanitize($value))->isEqualTo($unsanitized_value);
+
+      // Calling unsanitize multiple times should not corrupt unsanitized value
+      $this->variable($sanitizer->unsanitize($unsanitized_value))->isEqualTo($unsanitized_value);
+   }
+
+   protected function isHtmlEncodedValueProvider(): iterable {
+      yield [
+         'value'      => 'mystring',
+         'is_encoded' => false,
+      ];
+      yield [
+         'value'      => '5 > 1',
+         'is_encoded' => false,
+      ];
+      yield [
+         'value'      => '5 &#62; 1',
+         'is_encoded' => true,
+      ];
+      yield [
+         'value'      => '<strong>string</strong>',
+         'is_encoded' => false,
+      ];
+      yield [
+         'value'      => '&#60;strong&#62;string&#60;/strong&#62;',
+         'is_encoded' => true,
+      ];
+      yield [
+         'value'      => "<strong>text with slashable chars ' \n \"</strong>",
+         'is_encoded' => false,
+      ];
+      yield [
+         'value'      => "&#60;strong&#62;text with slashable chars \' \\n \\\"&#60;/strong&#62;",
+         'is_encoded' => true,
+      ];
+   }
+
+   /**
+    * @dataProvider isHtmlEncodedValueProvider
+    */
+   public function testIsHtmlEncoded(string $value, bool $is_encoded) {
+      $sanitizer = $this->newTestedInstance();
+      $this->boolean($sanitizer->isHtmlEncoded($value))->isEqualTo($is_encoded);
+   }
+
+   protected function isEscapedValueProvider(): iterable {
+      global $DB;
+
+      // Raw char should not be considered as escaped
+      yield [
+         'value'      => "\\", // raw string: `[BACKSLASH]`
+         'is_escaped' => false,
+      ];
+      yield [
+         'value'      => "'",
+         'is_escaped' => false,
+      ];
+      yield [
+         'value'      => '"',
+         'is_escaped' => false,
+      ];
+      yield [
+         'value'      => "\n",
+         'is_escaped' => false,
+      ];
+
+      // Values escaped by $DB should be considered as escaped
+      yield [
+         'value'      => $DB->escape("\\"), // raw string: `[BACKSLASH]`
+         'is_escaped' => true,
+      ];
+      yield [
+         'value'      => $DB->escape("'"),
+         'is_escaped' => true,
+      ];
+      yield [
+         'value'      => $DB->escape('"'),
+         'is_escaped' => true,
+      ];
+      yield [
+         'value'      => $DB->escape("\n"),
+         'is_escaped' => true,
+      ];
+
+      // Manually backslashed char should be considered as escaped
+      yield [
+         'value'      => "\\\\", // raw string: `\[BACKSLASH]`
+         'is_escaped' => true,
+      ];
+      yield [
+         'value'      => '\"',
+         'is_escaped' => true,
+      ];
+      yield [
+         'value'      => "\'",
+         'is_escaped' => true,
+      ];
+      yield [
+         'value'      => "\\n",
+         'is_escaped' => true,
+      ];
+
+      // 2 x backslashes do not escape quotes/backslashes.
+      yield [
+         'value'      => "\\\\\\", // raw string: `\[BACKSLASH][BACKSLASH]` (i.e. escaped backslash + unescaped backslash)
+         'is_escaped' => false,
+      ];
+      yield [
+         'value'      => "\\\\'", // raw string: `\[BACKSLASH]'` (i.e. escaped backslash + unescaped quote)
+         'is_escaped' => false,
+      ];
+      yield [
+         'value'      => '\\\\"', // raw string: `\[BACKSLASH]"` (i.e. escaped backslash + unescaped quote
+         'is_escaped' => false,
+      ];
+
+      // 3 x backslashes do escape quotes/backslashes (escaped backslash followed by escaped char).
+      yield [
+         'value'      => "\\\\\\\\", // raw string: `\[BACKSLASH]\[BACKSLASH]` (i.e. escaped backslash + escaped backslash)
+         'is_escaped' => true,
+      ];
+      yield [
+         'value'      => "\\\\\\'", // raw string: `\[BACKSLASH]\'` (i.e. escaped backslash + escaped quote)
+         'is_escaped' => true,
+      ];
+      yield [
+         'value'      => '\\\\\"', // raw string: `\[BACKSLASH]\"` (i.e. escaped backslash + escaped quote
+         'is_escaped' => true,
+      ];
+
+      // Control chars already contains a backslash which should not be considered as an escaping backslash.
+      yield [
+         'value'      => "\\\n", // raw string: `[BACKSLASH][EOL]` (i.e. unescaped backslash + unescaped EOL)
+         'is_escaped' => false,
+      ];
+      yield [
+         'value'      => "\\\\n", // raw string: `[BACKSLASH]\[EOL]` (i.e. unescaped backslash + escaped EOL)
+         'is_escaped' => false,
+      ];
+      yield [
+         'value'      => "\\\\\\n", // raw string: `\[BACKSLASH]\[EOL]` (i.e. escaped backslash + escaped EOL)
+         'is_escaped' => true,
+      ];
+      yield [
+         'value'      => "\\\\\\\\n", // raw string: `\[BACKSLASH][BACKSLASH]\[EOL]` (i.e. escaped backslash + unescaped backslash + escaped EOL)
+         'is_escaped' => false,
+      ];
+
+      // `a` is not escapable, so preceding backslash has to be considered as an unescaped backslash.
+      yield [
+         'value'      => "\a", // raw string: `[BACKSLASH]a` (i.e. unescaped backslash + `a`)
+         'is_escaped' => false,
+      ];
+      yield [
+         'value'      => "\\a", // raw string: `[BACKSLASH]a` (i.e. unescaped backslash + `a`)
+         'is_escaped' => false,
+      ];
+      yield [
+         'value'      => "\\\a", // raw string: `\[BACKSLASH]a` (i.e. escaped backslash + `a`)
+         'is_escaped' => true,
+      ];
+      yield [
+         'value'      => "\\\\a", // raw string: `\[BACKSLASH]a` (i.e. escaped backslash + `a`)
+         'is_escaped' => true,
+      ];
+      yield [
+         'value'      => "\\\\\a", // raw string: `\[BACKSLASH][BACKSLASH]a` (i.e. escaped backslash + unescaped backslash + `a`)
+         'is_escaped' => false,
+      ];
+
+      // Check real values
+      $txt = <<<TXT
+This string contains unexpected chars:
+- ' (a quote);
+- " (another quote).
+It also contains EOL chars.
+TXT;
+      yield [
+         'value'      => $txt,
+         'is_escaped' => false,
+      ];
+      yield [
+         'value'      => $DB->escape($txt),
+         'is_escaped' => true,
+      ];
+
+      // Values with no special chars are never considered as escaped, as escaping process cannot alter them.
+      yield [
+         'value'      => 'String with no escapable char',
+         'is_escaped' => false,
+      ];
+      yield [
+         'value'      => $DB->escape('String with no escapable char'),
+         'is_escaped' => false,
+      ];
+   }
+
+   /**
+    * @dataProvider isEscapedValueProvider
+    */
+   public function testIsDbEscaped(string $value, bool $is_escaped) {
+      $sanitizer = $this->newTestedInstance();
+
+      $this->boolean($sanitizer->isDbEscaped($value))->isEqualTo($is_escaped, $value);
    }
 }

@@ -1714,7 +1714,7 @@ class AuthLDAP extends CommonDBTM {
       $count    = 0;  //Store the number of results ldap_search
 
       do {
-         $filter = Sanitizer::unsanitize($filter, true);
+         $filter = Sanitizer::unsanitize($filter);
          if (self::isLdapPageSizeAvailable($config_ldap)) {
             $controls = [
                [
@@ -2285,7 +2285,7 @@ class AuthLDAP extends CommonDBTM {
       $cookie = '';
       $count  = 0;
       do {
-         $filter = Sanitizer::unsanitize($filter, true);
+         $filter = Sanitizer::unsanitize($filter);
          if (self::isLdapPageSizeAvailable($config_ldap)) {
             $controls = [
                [
@@ -3430,7 +3430,7 @@ class AuthLDAP extends CommonDBTM {
                   $field_counter++;
                   $field_value = '';
                   if (isset($_SESSION['ldap_import']['criterias'][$field])) {
-                     $field_value = Html::entities_deep(Sanitizer::unsanitize($_SESSION['ldap_import']['criterias'][$field], true));
+                     $field_value = Html::entities_deep(Sanitizer::unsanitize($_SESSION['ldap_import']['criterias'][$field]));
                   }
                   echo "<input type='text' class='form-control' id='criterias$field' name='criterias[$field]' value='$field_value'>";
                   echo "</td>";

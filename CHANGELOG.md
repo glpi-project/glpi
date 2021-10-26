@@ -56,6 +56,7 @@ The present file will list all changes made to the project; according to the
 - `Transfer::transferDropdownNetpoint()` has been renamed to `Transfer::transferDropdownSocket()`.
 
 #### Deprecated
+- Handling of encoded/escaped value in `autoName()`
 - `Netpoint` has been deprecated and replaced by `Socket`
 - `Html::clean()`
 - `RuleImportComputer` class

@@ -283,7 +283,8 @@ class Toolbox {
    **/
    static function unclean_cross_side_scripting_deep($value) {
       Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::unsanitize()"');
-      return Sanitizer::unsanitize($value);
+      global $DB;
+      return $DB->escape(Sanitizer::unsanitize($value));
    }
 
    /**
@@ -2452,7 +2453,7 @@ class Toolbox {
                      //retrieve dimensions
                      $width = $height = null;
                      $attributes = [];
-                     preg_match_all('/(width|height)=\\\"([^"]*)\\\"/i', $match_img, $attributes);
+                     preg_match_all('/(width|height)="([^"]*)"/i', $match_img, $attributes);
                      if (isset($attributes[1][0])) {
                         ${$attributes[1][0]} = $attributes[2][0];
                      }

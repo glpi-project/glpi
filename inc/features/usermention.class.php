@@ -179,7 +179,7 @@ trait UserMention {
 
       try {
          if ($sanitized) {
-            $content = Sanitizer::unsanitize($content, true);
+            $content = Sanitizer::unsanitize($content);
          }
          libxml_use_internal_errors(true);
          $content_as_xml = new SimpleXMLElement('<div>' . $content . '</div>');
