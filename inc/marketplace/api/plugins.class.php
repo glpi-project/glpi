@@ -46,12 +46,26 @@ use \Session;
 
 class Plugins {
    protected $httpClient  = null;
-   protected $last_error  = "";
+   protected $last_error  = null;
 
-   public    const COL_PAGE = 200;
-   protected const TIMEOUT  = 5;
+   public    const COL_PAGE    = 200;
+   protected const TIMEOUT     = 5;
 
-   static $plugins = [];
+   /**
+    * Max request attemps on READ operations.
+    *
+    * @var integer
+    */
+   protected const MAX_REQUEST_ATTEMPTS = 3;
+
+   /**
+    * Flag that indicates that plugin list is truncated (due to an errored response from marketplace API).
+    *
+    * @var boolean
+    */
+   protected $is_list_truncated = false;
+
+   static $plugins = null;
 
    function __construct(bool $connect = false) {
       global $CFG_GLPI;
@@ -107,7 +121,7 @@ class Plugins {
 
       try {
          $response = $this->httpClient->request($method, $endpoint, $options);
-
+         $this->last_error = null; // Reset error buffer
       } catch (RequestException $e) {
          $this->last_error = [
             'title'     => "Plugins API error",
@@ -143,7 +157,10 @@ class Plugins {
       string $method = 'GET'
    ): array {
       $collection = [];
-      $i    = 0;
+
+      $i          = 0;
+      $attempt_no = 1;
+
       do {
          $request_options = array_merge_recursive([
             'headers' => [
@@ -152,12 +169,20 @@ class Plugins {
          ], $options);
          $response = $this->request($endpoint, $request_options, $method);
 
-         if ($current = ($response !== false ? json_decode($response->getBody(), true) : false)) {
-            $collection = array_merge($collection, $current);
+         if ($response === false || !is_array($current = json_decode($response->getBody(), true))) {
+            // retry on error or unexpected response
+            $attempt_no++;
+            continue;
          }
 
+         if (count($current) === 0) {
+            break; // Last page reached
+         }
+
+         $collection = array_merge($collection, $current);
          $i++;
-      } while ($current !== false && count($current));
+         $attempt_no = 1;
+      } while ($attempt_no <= self::MAX_REQUEST_ATTEMPTS);
 
       return $collection;
    }
@@ -181,53 +206,64 @@ class Plugins {
    ) {
       global $GLPI_CACHE;
 
-      $plugins_colct = !$force_refresh
-         ? $GLPI_CACHE->get('marketplace_all_plugins', null)
-         : null;
+      if (self::$plugins === null) {
+         $plugins_colct = !$force_refresh
+            ? $GLPI_CACHE->get('marketplace_all_plugins', null)
+            : null;
 
-      if ($plugins_colct === null) {
-         $plugins = $this->getPaginatedCollection('plugins');
+         if ($plugins_colct === null) {
+            $plugins = $this->getPaginatedCollection('plugins');
+            $this->is_list_truncated = $this->last_error !== null;
 
-         // replace keys indexes by system names
-         $plugins_keys  = array_column($plugins, 'key');
-         $plugins_colct = array_combine($plugins_keys, $plugins);
+            // replace keys indexes by system names
+            $plugins_keys  = array_column($plugins, 'key');
+            $plugins_colct = array_combine($plugins_keys, $plugins);
 
+            foreach ($plugins_colct as &$plugin) {
+               usort(
+                  $plugin['versions'],
+                  function ($a, $b) {
+                     return version_compare($a['num'], $b['num']);
+                  }
+               );
+            }
+
+            if ($this->last_error === null) {
+               // Cache result only if self::getPaginatedCollection() did not returned an incomplete result due to an error
+               $GLPI_CACHE->set('marketplace_all_plugins', $plugins_colct, HOUR_TIMESTAMP);
+            }
+         }
+
+         // Filter versions.
+         // Done after caching process to be able to handle change of "GLPI_MARKETPLACE_PRERELEASES"
+         // without having to purge the cache manually.
          foreach ($plugins_colct as &$plugin) {
-            usort(
-               $plugin['versions'],
-               function ($a, $b) {
-                  return version_compare($a['num'], $b['num']);
-               }
-            );
-         }
+            if (!GLPI_MARKETPLACE_PRERELEASES) {
+               $plugin['versions'] = array_filter($plugin['versions'], function($version) {
+                  return !isset($version['stability']) || $version['stability'] === "stable";
+               });
+            }
 
-         $GLPI_CACHE->set('marketplace_all_plugins', $plugins_colct, HOUR_TIMESTAMP);
+            if (count($plugin['versions']) === 0) {
+               continue;
+            }
+
+            $higher_version = end($plugin['versions']);
+            if (is_array($higher_version)) {
+               $plugin['installation_url'] = $higher_version['download_url'];
+               $plugin['version'] = $higher_version['num'];
+            }
+         }
+         self::$plugins = $plugins_colct;
+      } else {
+         $plugins_colct = self::$plugins;
       }
-
-      // Filter versions.
-      // Done after caching process to be able to handle change of "GLPI_MARKETPLACE_PRERELEASES"
-      // without having to purge the cache manually.
-      foreach ($plugins_colct as &$plugin) {
-         if (!GLPI_MARKETPLACE_PRERELEASES) {
-            $plugin['versions'] = array_filter($plugin['versions'], function($version) {
-               return !isset($version['stability']) || $version['stability'] === "stable";
-            });
-         }
-
-         if (count($plugin['versions']) === 0) {
-            continue;
-         }
-
-         $higher_version = end($plugin['versions']);
-         if (is_array($higher_version)) {
-            $plugin['installation_url'] = $higher_version['download_url'];
-            $plugin['version'] = $higher_version['num'];
-         }
-      }
-      self::$plugins = $plugins_colct;
 
       if (strlen($tag_filter) > 0) {
          $tagged_plugins = array_column($this->getPluginsForTag($tag_filter), 'key');
+         if ($this->last_error !== null) {
+            $this->is_list_truncated = true;
+         }
          $plugins_colct  = array_intersect_key($plugins_colct, array_flip($tagged_plugins));
       }
 
@@ -372,12 +408,7 @@ class Plugins {
     * @return array plugin data
     */
    public function getPlugin(string $key = "", bool $force_refresh = false): array {
-      $plugins_list = [];
-      if ($force_refresh || !count(self::$plugins)) {
-         $plugins_list = $this->getAllPlugins($force_refresh);
-      } else {
-         $plugins_list = self::$plugins;
-      }
+      $plugins_list = $this->getAllPlugins($force_refresh);
 
       return $plugins_list[$key] ?? [];
    }
@@ -444,7 +475,11 @@ class Plugins {
 
       if (!count($plugins_colct)) {
          $plugins_colct = $this->getPaginatedCollection("tags/{$tag}/plugin");
-         $GLPI_CACHE->set("marketplace_tag_$tag", $plugins_colct, HOUR_TIMESTAMP);
+
+         if ($this->last_error === null) {
+            // Cache result only if self::getPaginatedCollection() did not returned an incomplete result due to an error
+            $GLPI_CACHE->set("marketplace_tag_$tag", $plugins_colct, HOUR_TIMESTAMP);
+         }
       }
 
       return $plugins_colct;
@@ -514,5 +549,14 @@ class Plugins {
       }
 
       return $response !== false && $response->getStatusCode() === 200;
+   }
+
+   /**
+    * Indicates whether the plugin list is truncated, mostly due to a marketplace API server unavailability.
+    *
+    * @return bool
+    */
+   public function isListTruncated(): bool {
+      return $this->is_list_truncated;
    }
 }
