@@ -149,7 +149,9 @@ find "$APPLICATION_ROOT/tests/config" -mindepth 1 ! -iname ".gitignore" -exec mv
 
 # Export variables to env (required for docker-compose) and start containers
 export COMPOSE_FILE="$APPLICATION_ROOT/.github/actions/docker-compose-app.yml"
-[[ $USE_SERVICES_CONTAINERS ]] || export COMPOSE_FILE="$COMPOSE_FILE:$APPLICATION_ROOT/.github/actions/docker-compose-services.yml"
+if [[ "$USE_SERVICES_CONTAINERS" ]]; then
+  export COMPOSE_FILE="$COMPOSE_FILE:$APPLICATION_ROOT/.github/actions/docker-compose-services.yml"
+fi
 export APPLICATION_ROOT
 export APP_CONTAINER_HOME
 export DB_IMAGE
