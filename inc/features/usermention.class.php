@@ -77,14 +77,14 @@ trait UserMention {
          if ($new_value !== null) {
             $mentionned_actors_ids = array_merge(
                $mentionned_actors_ids,
-               $this->getUserIdsFromUserMentions($new_value, true)
+               $this->getUserIdsFromUserMentions($new_value)
             );
          }
 
          if ($previous_value !== null) {
             $previously_mentionned_actors_ids = array_merge(
                $previously_mentionned_actors_ids,
-               $this->getUserIdsFromUserMentions($previous_value, true)
+               $this->getUserIdsFromUserMentions($previous_value)
             );
          }
       }
@@ -170,17 +170,15 @@ trait UserMention {
     * Extract ids of mentionned users.
     *
     * @param string $content
-    * @param bool $sanitized
     *
     * @return int[]
     */
-   protected function getUserIdsFromUserMentions(string $content, bool $sanitized = false) {
+   protected function getUserIdsFromUserMentions(string $content) {
       $ids = [];
 
       try {
-         if ($sanitized) {
-            $content = Sanitizer::unsanitize($content);
-         }
+         $content = Sanitizer::getVerbatimValue($content);
+
          libxml_use_internal_errors(true);
          $content_as_xml = new SimpleXMLElement('<div>' . $content . '</div>');
       } catch (\Throwable $e) {

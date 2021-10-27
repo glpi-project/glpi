@@ -86,41 +86,24 @@ class TemplateManager extends GLPITestCase
             'params'    => ['content' => '<p>Item content</p>'],
             'expected'  => '<h1>Test sanitized template</h1><hr /><p>Item content</p>',
             'error'     => null,
-            'sanitized' => true
          ],
          [
             'content'   => '&#60;h1&#62;Test sanitized template 2&#60;/h1&#62;&#60;hr /&#62;{{content|raw}}',
             'params'    => ['content' => 'Item content should not be unsanitized: &#60;--'],
             'expected'  => '<h1>Test sanitized template 2</h1><hr />Item content should not be unsanitized: &#60;--',
             'error'     => null,
-            'sanitized' => true
-         ],
-         [
-            'content'   => '&#60;h1&#62;Test misused sanitized input&#60;/h1&#62;&#60;hr /&#62;{{content|raw}}',
-            'params'    => ['content' => '<p>Item content</p>'],
-            'expected'  => '&#60;h1&#62;Test misused sanitized input&#60;/h1&#62;&#60;hr /&#62;<p>Item content</p>',
-            'error'     => null,
-            'sanitized' => false
          ],
          [
             'content'   => "&#60;p&#62;Test sanitized template {% if count &#62; 5 %}&#60;b&#62;++&#60;/b&#62;{% endif %}&#60;/p&#62;",
             'params'    => ['count' => 25],
             'expected'  => "<p>Test sanitized template <b>++</b></p>",
             'error'     => null,
-            'sanitized' => true
-         ],
-         [
-            'content'   => "Test invalid on missing unsanitizing {% if count &#62; 5 %}test{% endif %}",
-            'params'    => [],
-            'expected'  => "",
-            'error'     => 'Invalid twig template syntax',
          ],
          [
             'content'   => '&#60;h1 onclick="alert(1);"&#62;Test safe HTML2&#60;/h1&#62;&#60;hr /&#62;{{content|raw}}',
             'params'    => ['content' => 'Fill this form:<iframe src="phishing.php"></iframe>'],
             'expected'  => '<h1>Test safe HTML2</h1><hr />Fill this form:',
             'error'     => null,
-            'sanitized' => true
          ],
       ];
    }
@@ -132,8 +115,7 @@ class TemplateManager extends GLPITestCase
       string $content,
       array $params,
       string $expected,
-      ?string $error = null,
-      bool $sanitized = false
+      ?string $error = null
    ): void {
       $manager = $this->newTestedInstance();
 
@@ -141,13 +123,13 @@ class TemplateManager extends GLPITestCase
 
       if ($error !== null) {
          $this->exception(
-            function () use ($manager, $content, $params, $sanitized, &$html) {
-               $html = $manager->render($content, $params, $sanitized);
+            function () use ($manager, $content, $params, &$html) {
+               $html = $manager->render($content, $params);
             }
          );
          return;
       } else {
-         $html = $manager->render($content, $params, $sanitized);
+         $html = $manager->render($content, $params);
       }
 
       $this->string($html)->isEqualTo($expected);
@@ -160,12 +142,11 @@ class TemplateManager extends GLPITestCase
       string $content,
       array $params,
       string $expected,
-      ?string $error = null,
-      bool $sanitized = false
+      ?string $error = null
    ): void {
       $manager = $this->newTestedInstance();
       $err_msg = null;
-      $is_valid = $manager->validate($content, $sanitized, $err_msg);
+      $is_valid = $manager->validate($content, $err_msg);
       $this->boolean($is_valid)->isEqualTo(empty($error));
 
       // Handle error if neeced
