@@ -84,6 +84,11 @@ class Sanitizer extends \GLPITestCase {
          'sanitized_value' => "text with ending slashable chars \'\\n\\\"",
          'add_slashes'     => true,
       ];
+      yield [
+         'value'           => "<p>HTML containing a code snippet</p><pre>&lt;a href=&quot;/test&quot;&gt;link&lt;/a&gt;</pre>",
+         'sanitized_value' => "&#60;p&#62;HTML containing a code snippet&#60;/p&#62;&#60;pre&#62;&#38;lt;a href=&#38;quot;/test&#38;quot;&#38;gt;link&#38;lt;/a&#38;gt;&#60;/pre&#62;",
+         'add_slashes'     => true,
+      ];
 
       // Strings in array should be sanitized
       yield [
@@ -352,5 +357,23 @@ TXT;
       $sanitizer = $this->newTestedInstance();
 
       $this->boolean($sanitizer->isDbEscaped($value))->isEqualTo($is_escaped, $value);
+   }
+
+   /**
+    * @dataProvider rawValueProvider
+    */
+   public function testSanitizationReversibility(
+      $value,
+      $sanitized_value,
+      bool $add_slashes = false
+   ) {
+      $sanitizer = $this->newTestedInstance();
+
+      // Value should stay the same if it has been sanitized then unsanitized
+      $this->variable($sanitizer->unsanitize($sanitizer->sanitize($value, true)))->isEqualTo($value);
+      $this->variable($sanitizer->unsanitize($sanitizer->sanitize($value, false)))->isEqualTo($value);
+
+      // Re-sanitize a value provide the same result as first sanitization
+      $this->variable($sanitizer->sanitize($sanitizer->unsanitize($value), $add_slashes))->isEqualTo($sanitized_value);
    }
 }

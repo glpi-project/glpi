@@ -76,7 +76,12 @@ class RichText extends \GLPITestCase {
 XML;
       $content = '<h1>XML example</h1>' . "\n" . htmlentities($xml_sample);
       yield [
-         'content'                => Sanitizer::sanitize($content),
+         'content'                => Sanitizer::sanitize($content, false), // Without quotes escaping
+         'encode_output_entities' => false,
+         'expected_result'        => $content,
+      ];
+      yield [
+         'content'                => Sanitizer::sanitize($content, true), // With quotes escaping
          'encode_output_entities' => false,
          'expected_result'        => $content,
       ];
@@ -351,16 +356,23 @@ HTML,
   <url>http://www.glpi-project.org/void?test=1&amp;debug=1</url>
 </root>
 XML;
+      $content = '<h1>XML example</h1>' . "\n" . htmlentities($xml_sample);
+      $result  = <<<PLAINTEXT
+XML example <?xml version="1.0" encoding="UTF-8"?> <root> <desc><![CDATA[Some CDATA content]]></desc> <url>http://www.glpi-project.org/void?test=1&amp;debug=1</url> </root>
+PLAINTEXT;
       yield [
-         'content'                => Sanitizer::sanitize(
-            '<h1>XML example</h1>' . "\n" . htmlentities($xml_sample)
-         ),
+         'content'                => Sanitizer::sanitize($content, false), // Without quotes escaping
          'keep_presentation'      => false,
          'compact'                => false,
          'encode_output_entities' => false,
-         'expected_result'        => <<<PLAINTEXT
-XML example <?xml version="1.0" encoding="UTF-8"?> <root> <desc><![CDATA[Some CDATA content]]></desc> <url>http://www.glpi-project.org/void?test=1&amp;debug=1</url> </root>
-PLAINTEXT,
+         'expected_result'        => $result,
+      ];
+      yield [
+         'content'                => Sanitizer::sanitize($content, true), // With quotes escaping
+         'keep_presentation'      => false,
+         'compact'                => false,
+         'encode_output_entities' => false,
+         'expected_result'        => $result,
       ];
 
       // Simple text without presentation from complex HTML
