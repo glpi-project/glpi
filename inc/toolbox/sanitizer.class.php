@@ -32,8 +32,6 @@
 
 namespace Glpi\Toolbox;
 
-use Toolbox;
-
 class Sanitizer {
 
    private const CHARS_MAPPING = [
@@ -260,9 +258,8 @@ class Sanitizer {
     * @return string
     */
    private static function dbEscape(string $value): string {
-      // TODO Toolbox::addslashes_deep() should be moved in current class,
-      // but it is widely used, so it will be done later.
-      return Toolbox::addslashes_deep($value);
+      global $DB;
+      return $DB->escape($value);
    }
 
    /**
