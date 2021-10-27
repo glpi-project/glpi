@@ -102,9 +102,13 @@ class APIRest extends APIBaseClass {
       $verb         = isset($params['verb'])
                         ? $params['verb']
                         : 'GET';
-      $relative_uri = (!in_array($resource, ['getItem', 'getItems', 'createItems',
+
+      $resource_path  = parse_url($resource, PHP_URL_PATH);
+      $resource_query = parse_url($resource, PHP_URL_QUERY);
+
+      $relative_uri = (!in_array($resource_path, ['getItem', 'getItems', 'createItems',
                                              'updateItems', 'deleteItems'])
-                         ? $resource.'/'
+                         ? $resource_path.'/'
                          : '').
                       (isset($params['parent_itemtype'])
                          ? $params['parent_itemtype'].'/'
@@ -117,6 +121,9 @@ class APIRest extends APIBaseClass {
                          : '').
                       (isset($params['id'])
                          ? $params['id']
+                         : '').
+                      (!empty($resource_query)
+                         ? '?' . $resource_query
                          : '');
       unset($params['itemtype'],
             $params['id'],
@@ -505,7 +512,7 @@ class APIRest extends APIBaseClass {
          ->hasKeys($deprecated_fields);
 
       // Clean db to prevent unicity failure on next run
-      $item->delete(['id' => $item_id]);
+      $item->delete(['id' => $item_id], true);
    }
 
    /**
@@ -539,7 +546,7 @@ class APIRest extends APIBaseClass {
       }
 
       // Clean db to prevent unicity failure on next run
-      $item->delete(['id' => $item_id]);
+      $item->delete(['id' => $item_id], true);
    }
 
    /**
@@ -571,7 +578,7 @@ class APIRest extends APIBaseClass {
       }
 
       // Clean db to prevent unicity failure on next run
-      $item->delete(['id' => $data['id']]);
+      $item->delete(['id' => $data['id']], true);
    }
 
    /**
@@ -607,7 +614,7 @@ class APIRest extends APIBaseClass {
       }
 
       // Clean db to prevent unicity failure on next run
-      $item->delete(['id' => $item_id]);
+      $item->delete(['id' => $item_id], true);
    }
 
    /**
@@ -627,7 +634,7 @@ class APIRest extends APIBaseClass {
       $this->integer($item_id);
 
       // Call API
-      $this->query("$deprecated_itemtype/$item_id", [
+      $this->query("$deprecated_itemtype/$item_id?force_purge=1", [
          'headers' => $headers,
          'verb'    => "DELETE",
       ], 200, "", true);
