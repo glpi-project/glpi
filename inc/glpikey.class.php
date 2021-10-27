@@ -374,17 +374,17 @@ class GLPIKey {
     * @return string|null
     */
    public function decrypt(?string $string, $key = null): ?string {
+      if (empty($string)) {
+         // Avoid sodium exception for blank content. Just return the null/empty value.
+         return $string;
+      }
+
       if ($key === null) {
          $key = $this->get();
       }
 
       if ($key === null) {
          // Cannot decrypt string as key reading fails, returns encrypted value.
-         return $string;
-      }
-
-      if (empty($string)) {
-         // Avoid sodium exception for blank content. Just return the null/empty value.
          return $string;
       }
 
