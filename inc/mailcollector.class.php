@@ -1224,7 +1224,7 @@ class MailCollector  extends CommonDBTM {
          }
       }
 
-      $tkt = Sanitizer::sanitize($tkt, true);
+      $tkt = Sanitizer::sanitize($tkt);
       $tkt['name']    = LitEmoji::encodeShortcode($tkt['name']);
       return $tkt;
    }
@@ -1285,7 +1285,7 @@ class MailCollector  extends CommonDBTM {
    **/
    function cleanSubject($text) {
       $text = str_replace("=20", "\n", $text);
-      $text =  Sanitizer::sanitize($text);
+      $text =  Sanitizer::sanitize($text, false);
       return $text;
    }
 

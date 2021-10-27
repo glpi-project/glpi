@@ -1727,7 +1727,7 @@ abstract class API {
                $object["_add"] = true;
 
                //add current item
-               $object = Sanitizer::sanitize($object, true);
+               $object = Sanitizer::sanitize($object);
                $new_id = $item->add($object);
                if ($new_id === false) {
                   $failed++;
@@ -1854,7 +1854,7 @@ abstract class API {
                   }
 
                   //update item
-                  $object = Sanitizer::sanitize((array)$object, true);
+                  $object = Sanitizer::sanitize((array)$object);
                   $update_return = $item->update($object);
                   if ($update_return === false) {
                      $failed++;

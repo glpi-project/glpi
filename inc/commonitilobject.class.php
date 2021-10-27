@@ -1845,7 +1845,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $name = Toolbox::substr(preg_replace('/\s{2,}/', ' ', $name), 0, 70);
 
          // Sanitize result
-         $input['name'] = Sanitizer::sanitize($name, true);
+         $input['name'] = Sanitizer::sanitize($name);
       }
 
       // Set default dropdown
@@ -7136,7 +7136,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $tasktemplate_content = $tasktemplate->getRenderedContent($this);
 
          // Sanitize generated HTML before adding it in DB
-         $tasktemplate_content = Sanitizer::sanitize($tasktemplate_content, true);
+         $tasktemplate_content = Sanitizer::sanitize($tasktemplate_content);
 
          $itiltask->add([
             'tasktemplates_id'            => $tasktemplates_id,
@@ -7178,7 +7178,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $new_fup_content = $fup_template->getRenderedContent($this);
 
          // Sanitize generated HTML before adding it in DB
-         $new_fup_content = Sanitizer::sanitize($new_fup_content, true);
+         $new_fup_content = Sanitizer::sanitize($new_fup_content);
 
          // Insert new followup from template
          $fup = new ITILFollowup();

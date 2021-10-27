@@ -48,13 +48,14 @@ class Sanitizer {
    /**
     * Sanitize a value. Resulting value will have its HTML special chars converted into entities
     * and would be printable in a HTML document without having to be escaped.
+    * Also, DB special chars can be escaped to prevent SQL injections.
     *
     * @param mixed $value
     * @param bool  $db_escape
     *
     * @return mixed
     */
-   public static function sanitize($value, bool $db_escape = false) {
+   public static function sanitize($value, bool $db_escape = true) {
       if (is_array($value)) {
          return array_map(
             function ($val) use ($db_escape) {

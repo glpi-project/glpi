@@ -1682,7 +1682,7 @@ final class DbUtils {
       );
 
       if ($was_sanitized) {
-         $objectName = Sanitizer::sanitize($objectName);
+         $objectName = Sanitizer::sanitize($objectName, false);
       }
 
       return $objectName;

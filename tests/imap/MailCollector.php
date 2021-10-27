@@ -827,7 +827,7 @@ HTML,
       ];
 
       foreach ($expected_followups as $expected_followup) {
-         $this->integer(countElementsInTable(ITILFollowup::getTable(), Sanitizer::sanitize($expected_followup, true)))->isEqualTo(1);
+         $this->integer(countElementsInTable(ITILFollowup::getTable(), Sanitizer::sanitize($expected_followup)))->isEqualTo(1);
       }
    }
 
