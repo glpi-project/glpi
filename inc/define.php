@@ -501,7 +501,9 @@ $CFG_GLPI['javascript'] = [
    'assets'    => [
       'dashboard' => $dashboard_libs,
       'rack'      => ['gridstack', 'rack'],
-      'printer'   => $dashboard_libs
+      'printer'   => $dashboard_libs,
+      'cable'     => ['cable'],
+      'socket'    => ['cable'],
    ],
    'helpdesk'  => [
       'dashboard' => $dashboard_libs,
@@ -523,8 +525,6 @@ $CFG_GLPI['javascript'] = [
       'datacenter' => [
          'dcroom' => ['gridstack', 'rack']
       ],
-      'cable' => ['cable'],
-      'socket' => ['cable'],
    ],
    'config' => [
       'commondropdown'  => [

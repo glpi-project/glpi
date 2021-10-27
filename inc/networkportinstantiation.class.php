@@ -625,7 +625,6 @@ class NetworkPortInstantiation extends CommonDBChild {
 
          Socket::dropdown(['name'      => 'sockets_id',
                            'value'     => $value,
-                           'entity'    => $lastItem->getEntityID(),
                            ]);
       } else {
          echo __('item not linked to an object');

@@ -69,11 +69,7 @@ if (isset($_POST["add"])) {
                  //TRANS: %s is the user login
                  sprintf(__('%s purges a socket'), $_SESSION["glpiname"]));
    }
-   $itemtype = $socket->fields['itemtype'];
-   $item = new $itemtype();
-   $item->getFromDB($socket->fields['items_id']);
-   Html::redirect($itemtype::getFormURLWithID($socket->fields['items_id']).
-                  ($item->fields['is_template']?"&withtemplate=1":""));
+   $socket->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $socket->check($_POST["id"], UPDATE);

@@ -33,6 +33,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Socket;
 use Glpi\Toolbox\Sanitizer;
 
 /* Test for inc/dropdown.class.php */
@@ -729,6 +730,22 @@ class Dropdown extends DbTestCase {
                      'id'     => getItemByTypeName('ComputerModel', '_test_computermodel_2', true),
                      'text'   => '_test_computermodel_2 - CMP_567AEC68',
                      'title'  => '_test_computermodel_2 - CMP_567AEC68',
+                  ]
+               ],
+               'count'     => 1
+            ]
+         ], [
+            'params' => [
+               'display_emptychoice' => 0,
+               'itemtype'            => Socket::class,
+               'searchText'          => '_socket01',
+            ],
+            'expected'  => [
+               'results'   => [
+                  [
+                     'id'     => getItemByTypeName(Socket::class, '_socket01', true),
+                     'text'   => '_socket01',
+                     'title'  => '_socket01 - Comment for socket _socket01',
                   ]
                ],
                'count'     => 1

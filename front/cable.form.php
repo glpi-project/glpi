@@ -57,13 +57,13 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} else if (isset($_POST["delete"])) {
-   $cable->check($_POST["id"], DELETE);
+} else if (isset($_POST["purge"])) {
+   $cable->check($_POST["id"], PURGE);
 
-   if ($cable->delete($_POST)) {
+   if ($cable->delete($_POST, 1)) {
       Event::log($_POST["id"], "cable", 4, "management",
                   //TRANS: %s is the user login
-                  sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
+                  sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    }
    $cable->redirectToList();
 
