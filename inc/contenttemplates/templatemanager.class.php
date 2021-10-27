@@ -58,21 +58,16 @@ class TemplateManager
    /**
     * Boiler plate code to render a template
     *
-    * @param string $content           Template content (html + twig)
-    * @param array $params             Variables to be exposed to the templating engine
-    * @param bool $sanitized_content   Indicates whether the content has been transformed by GLPI sanitize process
+    * @param string $content  Template content (html + twig)
+    * @param array $params    Variables to be exposed to the templating engine
     *
     * @return string The rendered HTML
     */
    public static function render(
       string $content,
-      array $params,
-      bool $sanitized_content = false
+      array $params
    ): string {
-      // Unclean input if needed
-      if ($sanitized_content) {
-         $content = Sanitizer::unsanitize($content);
-      }
+      $content = Sanitizer::getVerbatimValue($content);
 
       // Init twig
       $loader = new ArrayLoader(['template' => $content]);
@@ -111,8 +106,7 @@ class TemplateManager
             [
                'itemtype' => $itil_item->getType(),
                $parameters->getDefaultNodeName() => $parameters->getValues($itil_item),
-            ],
-            true
+            ]
          );
       } catch (\Twig\Error\Error $e) {
          global $GLPI;
@@ -124,16 +118,13 @@ class TemplateManager
    /**
     * Boiler plate code to validate a template that user is trying to submit
     *
-    * @param string $content           Template content (html + twig)
-    * @param bool $sanitized_content   Indicates whether the content has been transformed by GLPI sanitize process
-    * @param null|string $err_msg      Reference to variable that will be filled by error message if validation fails
+    * @param string $content        Template content (html + twig)
+    * @param null|string $err_msg   Reference to variable that will be filled by error message if validation fails
     *
     * @return bool
     */
-   public static function validate(string $content, bool $sanitized_content = false, ?string &$err_msg = null): bool {
-      if ($sanitized_content) {
-         $content = Sanitizer::unsanitize($content);
-      }
+   public static function validate(string $content, ?string &$err_msg = null): bool {
+      $content = Sanitizer::getVerbatimValue($content);
 
       $twig = new Environment(new ArrayLoader(['template' => $content]));
       $twig->addExtension(new SandboxExtension(self::getSecurityPolicy(), true));

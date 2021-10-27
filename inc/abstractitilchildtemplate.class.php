@@ -94,7 +94,7 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
       }
 
       $err_msg = null;
-      if (!TemplateManager::validate(stripslashes($input['content']), true, $err_msg)) {
+      if (!TemplateManager::validate($input['content'], $err_msg)) {
          Session::addMessageAfterRedirect(
             sprintf('%s: %s', __('Content'), $err_msg),
             false,
