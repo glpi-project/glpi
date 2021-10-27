@@ -239,7 +239,7 @@ class RuleTicket extends Rule {
                         $solution_content = $template->getRenderedContent($parent);
 
                         // Sanitize generated HTML before adding it in DB
-                        $solution_content = Sanitizer::sanitize($solution_content, true);
+                        $solution_content = Sanitizer::sanitize($solution_content);
 
                         $solution = new ITILSolution();
                         $solution->add([

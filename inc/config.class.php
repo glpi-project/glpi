@@ -1965,7 +1965,7 @@ HTML;
       echo wordwrap($msg."\n", $width, "\n\t");
 
       if (isset($_SERVER["HTTP_USER_AGENT"])) {
-         echo "\t" . Sanitizer::sanitize($_SERVER["HTTP_USER_AGENT"]) . "\n";
+         echo "\t" . Sanitizer::sanitize($_SERVER["HTTP_USER_AGENT"], false) . "\n";
       }
 
       foreach ($DB->getInfo() as $key => $val) {

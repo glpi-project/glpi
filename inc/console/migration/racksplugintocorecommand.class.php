@@ -602,7 +602,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             $new_model_fields = Sanitizer::sanitize([
                'name'    => $othermodel['name'],
                'comment' => $othermodel['comment'],
-            ], true);
+            ]);
 
             if (!($new_model_id = $new_model->getFromDBByCrit($new_model_fields))
                 && !($new_model_id = $new_model->add($new_model_fields))) {
@@ -655,7 +655,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
                                        : $otheritem['id'],
                      'entities_id' => $otheritem['entities_id'],
                      $fk_new_model => $new_model_id
-                  ], true);
+                  ]);
 
                   $new_item = new $new_itemtype();
 
@@ -831,8 +831,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
                [
                   'name'    => $old_model['name'],
                   'comment' => $old_model['comment'],
-               ],
-               true
+               ]
             );
 
             if (!($rackmodel_id = $rackmodel->getFromDBByCrit($rackmodel_fields))
@@ -912,8 +911,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
                   'entities_id'  => $old_type['entities_id'],
                   'is_recursive' => $old_type['is_recursive'],
                   'comment'      => $old_type['comment'],
-               ],
-               true
+               ]
             );
 
             if (!($racktype_id = $racktype->getFromDBByCrit($racktype_fields))
@@ -991,8 +989,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
                [
                   'name'      => $old_state['name'],
                   'states_id' => 0,
-               ],
-               true
+               ]
             );
 
             if (!($state_id = $state->getFromDBByCrit($state_fields))) {
@@ -1079,8 +1076,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
                   'datacenters_id' => $this->datacenter_id,
                   'vis_cols'       => 10,
                   'vis_rows'       => 10,
-               ],
-               true
+               ]
             );
 
             if (!($room_id = $room->getFromDBByCrit($room_fields))
@@ -1205,8 +1201,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
                   'is_deleted'       => $old_rack['is_deleted'],
                   'dcrooms_id'       => $room_id,
                   'bgcolor'          => "#FEC95C",
-               ],
-               true
+               ]
             );
 
             if (!($rack_id = $rack->getFromDBByCrit($rack_fields))) {

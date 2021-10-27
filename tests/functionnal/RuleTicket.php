@@ -483,7 +483,7 @@ class RuleTicket extends DbTestCase {
       $this->boolean($itilSolution->getFromDBByCrit([
          'items_id' => $tickets_id,
          'itemtype' => 'Ticket',
-         'content'  => Sanitizer::sanitize("<p>content of solution template  white ' quote</p>", true)
+         'content'  => Sanitizer::sanitize("<p>content of solution template  white ' quote</p>")
       ]))->isTrue();
 
       $this->integer((int)$itilSolution->getID())->isGreaterThan(0);
@@ -870,7 +870,7 @@ class RuleTicket extends DbTestCase {
       $this->array($ticket_tasks)->hasSize(1);
       $task_data = array_pop($ticket_tasks);
       $this->array($task_data)->hasKey('content');
-      $this->string($task_data['content'])->isEqualTo(Sanitizer::sanitize('<p>test content</p>'));
+      $this->string($task_data['content'])->isEqualTo(Sanitizer::sanitize('<p>test content</p>', false));
 
       // Test on update
       $ticket_em = new \Ticket();
@@ -900,7 +900,7 @@ class RuleTicket extends DbTestCase {
       $task_data = array_pop($ticket_tasks);
       $this->array($task_data)->hasKey('content');
       $this->string($task_data['content'])->isEqualTo(
-         Sanitizer::sanitize('<p>test content</p>')
+         Sanitizer::sanitize('<p>test content</p>', false)
       );
 
       // Add a second action to the rule (test multiple creation)
@@ -930,13 +930,13 @@ class RuleTicket extends DbTestCase {
       $task_data = array_pop($ticket_tasks);
       $this->array($task_data)->hasKey('content');
       $this->string($task_data['content'])->isEqualTo(
-         Sanitizer::sanitize('<p>test content 2</p>')
+         Sanitizer::sanitize('<p>test content 2</p>', false)
       );
 
       $task_data = array_pop($ticket_tasks);
       $this->array($task_data)->hasKey('content');
       $this->string($task_data['content'])->isEqualTo(
-         Sanitizer::sanitize('<p>test content</p>')
+         Sanitizer::sanitize('<p>test content</p>', false)
       );
    }
 
@@ -1001,7 +1001,7 @@ class RuleTicket extends DbTestCase {
       $ticket_followups_data = array_pop($ticket_followups);
       $this->array($ticket_followups_data)->hasKey('content');
       $this->string($ticket_followups_data['content'])->isEqualTo(
-         Sanitizer::sanitize('<p>test testFollowupTemplateAssignFromRule</p>')
+         Sanitizer::sanitize('<p>test testFollowupTemplateAssignFromRule</p>', false)
       );
 
       // Test on update
@@ -1036,7 +1036,7 @@ class RuleTicket extends DbTestCase {
       $ticket_followups_data = array_pop($ticket_followups);
       $this->array($ticket_followups_data)->hasKey('content');
       $this->string($ticket_followups_data['content'])->isEqualTo(
-         Sanitizer::sanitize('<p>test testFollowupTemplateAssignFromRule</p>')
+         Sanitizer::sanitize('<p>test testFollowupTemplateAssignFromRule</p>', false)
       );
 
       // Add a second action to the rule (test multiple creation)
@@ -1068,13 +1068,13 @@ class RuleTicket extends DbTestCase {
       $ticket_followups_data = array_pop($ticket_followups);
       $this->array($ticket_followups_data)->hasKey('content');
       $this->string($ticket_followups_data['content'])->isEqualTo(
-         Sanitizer::sanitize('<p>test testFollowupTemplateAssignFromRule 2</p>')
+         Sanitizer::sanitize('<p>test testFollowupTemplateAssignFromRule 2</p>', false)
       );
 
       $ticket_followups_data = array_pop($ticket_followups);
       $this->array($ticket_followups_data)->hasKey('content');
       $this->string($ticket_followups_data['content'])->isEqualTo(
-         Sanitizer::sanitize('<p>test testFollowupTemplateAssignFromRule</p>')
+         Sanitizer::sanitize('<p>test testFollowupTemplateAssignFromRule</p>', false)
       );
    }
 

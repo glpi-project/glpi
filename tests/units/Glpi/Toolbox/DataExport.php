@@ -60,7 +60,7 @@ $(function(){\$('#Ticket1').qtip({
 
 //]]>
 </script>
-HTML),
+HTML, false),
          'expected_result' => "Ticket title ",
       ];
    }

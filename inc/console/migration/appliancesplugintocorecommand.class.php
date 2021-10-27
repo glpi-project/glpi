@@ -408,7 +408,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand {
             'appliances_id' => $item['plugin_appliances_appliances_id'],
             'items_id'      => $item['items_id'],
             'itemtype'      => $item['itemtype']
-         ], true);
+         ]);
 
          $appi = new Appliance_Item();
          if (!($appi_id = $appi->getFromDBByCrit($app_fields))) {
@@ -466,7 +466,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand {
             'id'      => $env['id'],
             'name'    => $env['name'],
             'comment' => $env['comment']
-         ], true);
+         ]);
 
          $appe = new ApplianceEnvironment();
          if (!($appe_id = $appe->getFromDBByCrit($app_fields))) {
@@ -540,7 +540,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand {
             'externalidentifier'       => $appliance['externalid'],
             'serial'                   => $appliance['serial'],
             'otherserial'              => $appliance['otherserial']
-         ], true);
+         ]);
 
          $app = new Appliance();
          if (!($app_id = $app->getFromDBByCrit($app_fields))) {
@@ -601,7 +601,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand {
             'name'               => $type['name'],
             'comment'            => $type['comment'],
             'externalidentifier' => $type['externalid']
-         ], true);
+         ]);
 
          $appt = new ApplianceType();
          if (!($appt_id = $appt->getFromDBByCrit($appt_fields))) {
@@ -692,7 +692,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand {
             'appliances_items_id' => $row['plugin_appliances_appliances_items_id'],
             'itemtype'            => $itemtype,
             'items_id'            => $row['relations_id']
-         ], true);
+         ]);
 
          $appr = new Appliance_Item_Relation();
          if (!($appr_id = $appr->getFromDBByCrit($appr_fields))) {

@@ -324,7 +324,7 @@ class Calendar extends AbstractBackend {
          $input['uuid'] = Uuid::uuid4();
       }
 
-      $input = Sanitizer::sanitize($input, true);
+      $input = Sanitizer::sanitize($input);
 
       if ($item->isNewItem()) {
          // Auto set entities_id if exists and not set

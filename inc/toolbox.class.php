@@ -266,7 +266,7 @@ class Toolbox {
    **/
    static function clean_cross_side_scripting_deep($value) {
       Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::sanitize()"');
-      return Sanitizer::sanitize($value);
+      return Sanitizer::sanitize($value, false);
    }
 
 
@@ -2444,7 +2444,7 @@ class Toolbox {
 
                   // 1 - Replace direct tag (with prefix and suffix) by the image
                   $content_text = preg_replace('/'.Document::getImageTag($image['tag']).'/',
-                                               Sanitizer::sanitize($img), $content_text);
+                                               Sanitizer::sanitize($img, false), $content_text);
 
                   // 2 - Replace img with tag in id attribute by the image
                   $regex = '/<img[^>]+' . preg_quote($image['tag'], '/') . '[^<]+>/im';
@@ -2484,7 +2484,7 @@ class Toolbox {
                         $new_image,
                         Sanitizer::unsanitize($content_text)
                      );
-                     $content_text = Sanitizer::sanitize($content_text);
+                     $content_text = Sanitizer::sanitize($content_text, false);
                   }
 
                   // If the tag is from another ticket : link document to ticket
