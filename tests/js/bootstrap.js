@@ -58,3 +58,5 @@ window._x = function (msgctxt, msgid, domain /* , extra */) {
 window._nx = function (msgctxt, msgid, msgid_plural, n = 1, domain /* , extra */) {
    return n === 1 ? msgid : msgid_plural;
 };
+
+require('../../js/common.js');
