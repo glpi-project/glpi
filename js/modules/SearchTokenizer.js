@@ -84,7 +84,7 @@ export default class SearchTokenizer {
    getTagsHelperContent() {
       const tags = this.allowed_tags;
       let helper = `
-         ${_x('js_search', 'Allowed tags')}:</br>
+         ${_x('filters', 'Allowed tags')}:</br>
          <ul>
       `;
       $.each(tags, (name, info) => {
