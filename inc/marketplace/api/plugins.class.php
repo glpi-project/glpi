@@ -336,69 +336,6 @@ class Plugins {
 
 
    /**
-    * get top 10 plugins sorted by trending (most downloaded in the last month) criterion
-    *
-    * @return array collection of plugins
-    */
-   function getTrendingPlugins() {
-      return $this->getTopPlugins("trending");
-   }
-
-
-   /**
-    * get top 10 plugins sorted by popular (most downloaded all time) criterion
-    *
-    * @return array collection of plugins
-    */
-   function getPopularPlugins() {
-      return $this->getTopPlugins("popular");
-   }
-
-   /**
-    * get top 10 plugins sorted by their submition date (DESC sort) criterion
-    *
-    * @return array collection of plugins
-    */
-   function getNewPlugins() {
-      return $this->getTopPlugins("new");
-   }
-
-   /**
-    * get top 10 plugins sorted by their update date (DESC sort) criterion
-    *
-    * @return array collection of plugins
-    */
-   function getUpdatedPlugins() {
-      return $this->getTopPlugins("updated");
-   }
-
-   /**
-    * get top 10 plugins sorted by given criterion (see other getTopXXX methods)
-    *
-    * @param string $endpoint criterion to filter plugsin
-    *
-    * @return array collection of plugins
-    */
-   function getTopPlugins(string $endpoint = "") {
-      $response = $this->request("plugin/{$endpoint}");
-
-      if ($response === false) {
-         return [];
-      }
-
-      $top      = json_decode($response->getBody(), true);
-      $key_list = array_column($top, 'key', 'key');
-      $plugins  = $this->getAllPlugins();
-
-      $top_plugins = array_filter($plugins, function($plugin) use($key_list) {
-         return in_array($plugin['key'], $key_list);
-      });
-
-      return $top_plugins;
-   }
-
-
-   /**
     * Get a single plugin array
     *
     * @param string $key plugin system name

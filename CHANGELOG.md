@@ -139,6 +139,11 @@ The present file will list all changes made to the project; according to the
 - `DCBreadcrumb::showDcBreadcrumb()`
 - `Document_Item::cloneItem()`
 - `Entity::showSelector()`
+- `Glpi\Marketplace\Api\Plugins::getNewPlugins()`
+- `Glpi\Marketplace\Api\Plugins::getPopularPlugins()`
+- `Glpi\Marketplace\Api\Plugins::getTopPlugins()`
+- `Glpi\Marketplace\Api\Plugins::getTrendingPlugins()`
+- `Glpi\Marketplace\Api\Plugins::getUpdatedPlugins()`
 - `Html::autocompletionTextField()`
 - `Html::displayImpersonateBanner()`
 - `Html::displayMainMenu()`
