@@ -30,19 +30,13 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * Filename was previously states.php
- * @since 0.84
- */
+class AllAssets extends CommonGLPI
+{
+   public static function canView() {
+      return Session::getCurrentInterface() == "central";
+   }
 
-include ('../inc/includes.php');
-
-
-Session::checkCentralAccess();
-
-Html::header(__('Global'), $_SERVER['PHP_SELF'], "assets", "allassets");
-
-Search::show(AllAssets::getType());
-
-
-Html::footer();
+   public static function getTypeName($nb = 0) {
+      return _n('Asset', 'Assets', $nb);
+   }
+}

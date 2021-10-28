@@ -37,6 +37,7 @@
 
 namespace Glpi\Api;
 
+use AllAssets;
 use APIClient;
 use Auth;
 use Change;
@@ -1460,8 +1461,7 @@ abstract class API {
       $itemtype = $this->handleDepreciation($itemtype);
 
       // check rights
-      if ($itemtype != 'AllAssets'
-          && !$itemtype::canView()) {
+      if (!$itemtype::canView()) {
          return $this->messageRightError();
       }
 
@@ -1596,7 +1596,7 @@ abstract class API {
          $id = $raw['id'];
 
          // keep row itemtype for all asset
-         if ($itemtype == 'AllAssets') {
+         if ($itemtype == AllAssets::getType()) {
             $current_id       = $raw['id'];
             $current_itemtype = $raw['TYPE'];
          }
@@ -1626,7 +1626,7 @@ abstract class API {
          }
 
          // if all asset, provide type in returned data
-         if ($itemtype == 'AllAssets') {
+         if ($itemtype == AllAssets::getType()) {
             $current_line['id']       = $current_id;
             $current_line['itemtype'] = $current_itemtype;
          }

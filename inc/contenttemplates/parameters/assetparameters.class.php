@@ -54,7 +54,7 @@ class AssetParameters extends AbstractParameters
    }
 
    public static function getObjectLabel(): string {
-      return __('Asset');
+      return _n('Asset', 'Assets', 1);
    }
 
    protected function getTargetClasses(): array {

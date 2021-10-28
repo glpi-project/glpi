@@ -862,7 +862,7 @@ class Socket extends CommonDBChild {
 
          echo "<th>".__('Name')."</th>"; // Name
          echo "<th>".__('Socket Model')."</th>"; // socket Model
-         echo "<th>".__('Assets')."</th>"; // Asset
+         echo "<th>"._n('Asset', 'Assets', Session::getPluralNumber())."</th>"; // Asset
          echo "<th>".__('NetworkPort')."</th>"; // NetworkPort
          echo "<th>".__('Wiring side')."</th>"; // Wiring side
          echo "<th>".__('Comments')."</th>"; // Comment

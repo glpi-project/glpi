@@ -154,7 +154,7 @@ class Event extends CommonDBTM {
                            'dropdown'    => _n('Dropdown', 'Dropdowns', Session::getPluralNumber()),
                            'rules'       => _n('Rule', 'Rules', Session::getPluralNumber())];
 
-      $logService = ['inventory'    => __('Assets'),
+      $logService = ['inventory'    => _n('Asset', 'Assets', Session::getPluralNumber()),
                           'tracking'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
                           'maintain'     => __('Assistance'),
                           'planning'     => __('Planning'),
