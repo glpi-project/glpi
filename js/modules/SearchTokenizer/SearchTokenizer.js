@@ -29,6 +29,9 @@
  * ---------------------------------------------------------------------
  */
 
+import SearchToken from "./SearchToken.js";
+import SearchTokenizerResult from "./SearchTokenizerResult.js";
+
 /**
  * Inspired by/rebuilt from https://github.com/tatsuya/search-text-tokenizer
  */
@@ -128,12 +131,12 @@ export default class SearchTokenizer {
    /**
     *
     * @param {string} input
-    * @returns {TokenizerResult}
+    * @returns {SearchTokenizerResult}
     */
    tokenize(input) {
       input = input.trim();
 
-      const result = new TokenizerResult();
+      const result = new SearchTokenizerResult();
 
       let token = null;
       let is_exclusion = false;
@@ -162,68 +165,12 @@ export default class SearchTokenizer {
          }
 
          if (this.isAllowedTag(tag)) {
-            result.tokens.push(new Token(term, tag, is_exclusion, pos++));
+            result.tokens.push(new SearchToken(term, tag, is_exclusion, pos++));
          } else if (!this.drop_unallowed_tags) {
-            result.tokens.push(new Token(token[0], null, false, pos++));
+            result.tokens.push(new SearchToken(token[0], null, false, pos++));
          }
       }
 
       return result;
-   }
-}
-
-export class Token {
-   constructor(term, tag, exclusion, position) {
-      this.term = term;
-      this.tag = tag;
-      this.exclusion = exclusion;
-      this.position = position;
-   }
-}
-
-export class TokenizerResult {
-
-   constructor() {
-      /**
-       * @type {Token[]}
-       */
-      this.tokens = [];
-   }
-
-   /**
-    * Get all tokens with a specific tag
-    * @param name
-    * @return {Token[]}
-    */
-   getTag(name) {
-      return this.tokens.filter(t => t.tag === name);
-   }
-
-   /**
-    * Get all tokens with a tag
-    * @return {Token[]}
-    */
-   getTaggedTerms() {
-      return this.tokens.filter(t => t.tag !== null);
-   }
-
-   /**
-    * Get all tokens without a tag
-    * @return {Token[]}
-    */
-   getUntaggedTerms() {
-      return this.tokens.filter(t => t.tag === null);
-   }
-
-   /**
-    * Get all untagged terms as a concatenated string
-    *
-    * The terms in the resulting string should be in the same order they appeared in the tokenizer input string.
-    * @return {string}
-    */
-   getFullPhrase() {
-      let full_phrase = '';
-      this.getUntaggedTerms().forEach(t => full_phrase += ' ' + t.term);
-      return full_phrase.trim();
    }
 }

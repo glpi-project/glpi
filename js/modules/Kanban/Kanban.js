@@ -29,7 +29,7 @@
  * ---------------------------------------------------------------------
  */
 
-import SearchTokenizer from "../SearchTokenizer.js";
+import SearchTokenizer from "../SearchTokenizer/SearchTokenizer.js";
 /* global sortable */
 
 /**

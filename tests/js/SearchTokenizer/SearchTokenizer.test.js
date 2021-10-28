@@ -31,7 +31,8 @@
 
 /* global GLPI */
 
-import SearchTokenizer, {Token} from "../../js/modules/SearchTokenizer";
+import SearchTokenizer from "../../../js/modules/SearchTokenizer/SearchTokenizer.js";
+import SearchToken from "../../../js/modules/SearchTokenizer/SearchToken.js";
 
 describe('Search Tokenizer', () => {
 
@@ -41,10 +42,10 @@ describe('Search Tokenizer', () => {
 
    test('Tokenize', () => {
       const untagged_tokens = [
-         new Token('This', null, false, 0),
-         new Token('is', null, false, 1),
-         new Token('a', null, false, 2),
-         new Token('te:st', null, false, 3),
+         new SearchToken('This', null, false, 0),
+         new SearchToken('is', null, false, 1),
+         new SearchToken('a', null, false, 2),
+         new SearchToken('te:st', null, false, 3),
       ];
       let tokenizer = new SearchTokenizer();
       //strings with colons quoted to be treated as a string when no allowed tags specified (All tags allowed by default)
@@ -68,7 +69,7 @@ describe('Search Tokenizer', () => {
       expect(result.getTaggedTerms().length).toBe(1);
       let name_tags = result.getTag('name');
       expect(name_tags.length).toBe(1);
-      expect(name_tags[0]).toStrictEqual(new Token('Test', 'name', false, 4));
+      expect(name_tags[0]).toStrictEqual(new SearchToken('Test', 'name', false, 4));
 
       result = tokenizer.tokenize('This is a te:st -name:"Test"');
       expect(result.getFullPhrase()).toBe('This is a te:st');
@@ -76,7 +77,7 @@ describe('Search Tokenizer', () => {
       expect(result.getTaggedTerms().length).toBe(1);
       name_tags = result.getTag('name');
       expect(name_tags.length).toBe(1);
-      expect(name_tags[0]).toStrictEqual(new Token('Test', 'name', true, 4));
+      expect(name_tags[0]).toStrictEqual(new SearchToken('Test', 'name', true, 4));
 
       tokenizer = new SearchTokenizer({
          name: {
@@ -87,14 +88,14 @@ describe('Search Tokenizer', () => {
       result = tokenizer.tokenize('This is a te:st -name:"Test"');
       expect(result.getFullPhrase()).toBe('This is a');
       expect(result.getUntaggedTerms()).toStrictEqual([
-         new Token('This', null, false, 0),
-         new Token('is', null, false, 1),
-         new Token('a', null, false, 2),
+         new SearchToken('This', null, false, 0),
+         new SearchToken('is', null, false, 1),
+         new SearchToken('a', null, false, 2),
       ]);
       expect(result.getTaggedTerms().length).toBe(1);
       name_tags = result.getTag('name');
       expect(name_tags.length).toBe(1);
-      expect(name_tags[0]).toStrictEqual(new Token('Test', 'name', true, 3));
+      expect(name_tags[0]).toStrictEqual(new SearchToken('Test', 'name', true, 3));
 
       // "te" is not an allowed tag, but it is quoted so we expect it to be treated as a string and not a tagged value
       result = tokenizer.tokenize('This is a "te:st" -name:"Test"');
@@ -103,7 +104,7 @@ describe('Search Tokenizer', () => {
       expect(result.getTaggedTerms().length).toBe(1);
       name_tags = result.getTag('name');
       expect(name_tags.length).toBe(1);
-      expect(name_tags[0]).toStrictEqual(new Token('Test', 'name', true, 4));
+      expect(name_tags[0]).toStrictEqual(new SearchToken('Test', 'name', true, 4));
    });
 
    test('Allowed Tags', () => {
