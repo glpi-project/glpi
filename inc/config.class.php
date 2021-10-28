@@ -1890,11 +1890,25 @@ class Config extends CommonDBTM {
 
       echo "<p>" . Telemetry::getViewLink() . "</p>";
 
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th>". __('Information about system installation and configuration')."</th></tr>";
-      echo "<tr class='tab_bg_1'><td>";
-      echo "<a class='btn btn-secondary' href='?check_version'>".__('Check if a new version is available')."</a>";
-      echo "</td></tr>";
+      $copy_msg = __('Copy system information');
+      $copy_onclick = <<<JS
+      copyTextToClipboard(tableToDetails('#system-info-table'));
+      flashIconButton(this, 'btn btn-success', 'fas fa-check', 1500);
+JS;
+      echo <<<HTML
+         <button type="button" name="copy-sysinfo" class="btn btn-secondary" onclick="{$copy_onclick}">
+            <i class="far fa-copy me-2"></i>{$copy_msg}
+         </button>
+HTML;
+      $check_new_version_msg = __('Check if a new version is available');
+      echo <<<HTML
+      <a class='btn btn-secondary' href='?check_version'>
+         <i class="fas fa-sync me-2"></i>{$check_new_version_msg}
+      </a>
+HTML;
+      echo "<table id='system-info-table' class='tab_cadre_fixe'>";
+      echo "<tr><th class='section-header'>". __('Information about system installation and configuration')."</th></tr>";
+      echo "<tr class='tab_bg_1'><td></td></tr>";
 
        $oldlang = $_SESSION['glpilanguage'];
        // Keep this, for some function call which still use translation (ex showAllReplicateDelay)
@@ -1919,14 +1933,15 @@ class Config extends CommonDBTM {
             $ver .= '-git-' .$gitbranch . '-' . $gitrev;
          }
       }
-      echo "<tr class='tab_bg_1'><td><pre>[code]\n&nbsp;\n";
+
+      echo "<tr class='tab_bg_1'><td><pre class='section-content'>";
       echo "GLPI $ver (" . $CFG_GLPI['root_doc']." => " . GLPI_ROOT . ")\n";
       echo "Installation mode: " . GLPI_INSTALL_MODE . "\n";
       echo "Current language:" . $oldlang . "\n";
       echo "\n</pre></td></tr>";
 
-      echo "<tr><th>Server</th></tr>\n";
-      echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
+      echo "<tr><th class='section-header'>Server</th></tr>\n";
+      echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
       echo wordwrap("Operating system: ".php_uname()."\n", $width, "\n\t");
       $exts = get_loaded_extensions();
       sort($exts);
@@ -1979,8 +1994,8 @@ class Config extends CommonDBTM {
 
       echo "\n</pre></td></tr>";
 
-      echo "<tr><th>GLPI constants</th></tr>\n";
-      echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
+      echo "<tr><th class='section-header'>GLPI constants</th></tr>\n";
+      echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
       foreach (get_defined_constants() as $constant_name => $constant_value) {
          if (preg_match('/^GLPI_/', $constant_name)) {
             echo $constant_name . ': ' . $constant_value . "\n";
@@ -2003,15 +2018,13 @@ class Config extends CommonDBTM {
       );
       sort($files);
       if (count($files)) {
-         echo "<tr><th>Locales overrides</th></tr>\n";
+         echo "<tr><th class='section-header'>Locales overrides</th></tr>\n";
          echo "<tr class='tab_bg_1'><td>\n";
          foreach ($files as $file) {
             echo "$file<br/>\n";
          }
          echo "</td></tr>";
       }
-
-      echo "<tr class='tab_bg_1'><td>[/code]\n</td></tr>";
 
       echo "<tr class='tab_bg_2'><th>". __('To copy/paste in your support request')."</th></tr>\n";
 
@@ -2164,8 +2177,8 @@ class Config extends CommonDBTM {
 
       // No gettext
 
-      echo "<tr class='tab_bg_2'><th>Libraries</th></tr>\n";
-      echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
+      echo "<tr class='tab_bg_2'><th class='section-header'>Libraries</th></tr>\n";
+      echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
 
       foreach (self::getLibraries() as $dep) {
          $path = self::getLibraryDir($dep['check']);

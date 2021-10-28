@@ -7,6 +7,7 @@ The present file will list all changes made to the project; according to the
 
 ### Added
 - Added UUID to all other itemtypes that are related to Operating Systems (Phones, Printers, etc)
+- Added a button to the General > System configuration tab to copy the system information
 
 ### Changed
 - APCu and WinCache are not anymore use by GLPI, use `php bin/console cache:configure` command to configure cache system.
