@@ -32,7 +32,6 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\Parameters\ChangeParameters;
-use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\RichText;
 
 if (!defined('GLPI_ROOT')) {

@@ -6080,8 +6080,8 @@ abstract class CommonITILObject extends CommonDBTM {
          ];
       }
 
-      if (isset($PLUGIN_HOOKS[Hooks::TIMELINE_ITEMTYPES])) {
-         foreach ($PLUGIN_HOOKS[Hooks::TIMELINE_ITEMTYPES] as $plugin => $hook_itemtypes) {
+      if (isset($PLUGIN_HOOKS[Hooks::TIMELINE_ANSWER_ACTIONS])) {
+         foreach ($PLUGIN_HOOKS[Hooks::TIMELINE_ANSWER_ACTIONS] as $plugin => $hook_itemtypes) {
             if (!Plugin::isPluginActive($plugin)) {
                continue;
             }

@@ -89,15 +89,15 @@ class Hooks
    const SHOW_ITEM_STATS           = 'show_item_stats';
 
    // Item hooks expecting an array parameter (available keys: item, options)
-   const ITEM_TRANSFER        = 'item_transfer';
-   const POST_ITEM_FORM       = 'post_item_form';
-   const POST_SHOW_ITEM       = 'post_show_item';
-   const POST_SHOW_TAB        = 'post_show_tab';
-   const PRE_ITEM_FORM        = 'pre_item_form';
-   const PRE_SHOW_ITEM        = 'pre_show_item';
-   const PRE_SHOW_TAB         = 'pre_show_tab';
-   const TIMELINE_ACTIONS     = 'timeline_actions';  // (keys: item, rand)
-   const TIMELINE_ITEMTYPES   = 'timeline_itemtypes';  // (keys: item)
+   const ITEM_TRANSFER           = 'item_transfer';
+   const POST_ITEM_FORM          = 'post_item_form';
+   const POST_SHOW_ITEM          = 'post_show_item';
+   const POST_SHOW_TAB           = 'post_show_tab';
+   const PRE_ITEM_FORM           = 'pre_item_form';
+   const PRE_SHOW_ITEM           = 'pre_show_item';
+   const PRE_SHOW_TAB            = 'pre_show_tab';
+   const TIMELINE_ACTIONS        = 'timeline_actions';  // (keys: item, rand)
+   const TIMELINE_ANSWER_ACTIONS = 'timeline_answer_actions';  // (keys: item)
 
    // Security hooks (data to encypt)
    const SECURED_FIELDS  = 'secured_fields';
