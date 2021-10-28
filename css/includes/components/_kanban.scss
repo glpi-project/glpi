@@ -443,13 +443,14 @@
 .popover.kanban-filter-popover {
    background-color: inherit;
    color: inherit;
-   min-width: 200px;
 
    .popover-arrow {
       display: none;
    }
 
    .popover-body {
+      width: 400px;
+      overflow: auto;
       color: inherit;
 
       ul {

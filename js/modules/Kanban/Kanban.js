@@ -557,7 +557,7 @@ class GLPIKanbanRights {
             placement: 'bottom',
             customClass: 'kanban-filter-popover',
             delay: {
-               hide: 30000
+               hide: 300
             },
             content: () => {
                if (self.filter_tokenizer) {
@@ -569,7 +569,7 @@ class GLPIKanbanRights {
 
          filter_input.on('input click', (e) => {
             const popover_content = self.filter_tokenizer.getPopoverContent(filter_input.val(), e.target.selectionStart);
-            $('.kanban-filter-popover').html(popover_content);
+            $('.kanban-filter-popover .popover-body').html(popover_content);
             filter_input.popover('show');
          });
 
