@@ -86,10 +86,10 @@ export default class SearchTokenizer {
 
    getTagsHelperContent() {
       const tags = this.allowed_tags;
-      let helper = `
-         ${_x('filters', 'Allowed tags')}:</br>
-         <ul>
-      `;
+      let helper = `${_x('filters', 'Allowed tags')}:`;
+      if (Object.keys(tags).length > 0) {
+         helper += '</br><ul>';
+      }
       $.each(tags, (name, info) => {
          helper += `
             <li>
@@ -97,7 +97,9 @@ export default class SearchTokenizer {
             </li>
          `;
       });
-      helper += '</ul>';
+      if (Object.keys(tags).length > 0) {
+         helper += '</ul>';
+      }
       return helper;
    }
 
@@ -106,13 +108,16 @@ export default class SearchTokenizer {
       if (tag === undefined) {
          return null;
       }
-      let helper = `
-        ${tag_name.toLowerCase()}: ${tag.description}</br>
-        <ul>`;
+      let helper = `${tag_name.toLowerCase()}: ${tag.description}`;
+      if (tag.autocomplete_values && tag.autocomplete_values.length > 0) {
+         helper += '</br><ul>';
+      }
       $.each(tag.autocomplete_values, (i, v) => {
          helper += `<li>${v}</li>`;
       });
-      helper += `</ul>`;
+      if (tag.autocomplete_values && tag.autocomplete_values.length > 0) {
+         helper += '</ul>';
+      }
       return helper;
    }
 

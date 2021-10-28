@@ -162,9 +162,9 @@ describe('Search Tokenizer', () => {
       });
 
       let content = tokenizer.getAutocompleteHelperContent('name');
-      expect(stripExtraWhitespace(content)).toBe(`name: The name</br><ul></ul>`);
+      expect(stripExtraWhitespace(content)).toBe(`name: The name`);
       content = tokenizer.getAutocompleteHelperContent('content');
-      expect(stripExtraWhitespace(content)).toBe(`content: The content</br><ul></ul>`);
+      expect(stripExtraWhitespace(content)).toBe(`content: The content`);
       content = tokenizer.getAutocompleteHelperContent('milestone');
       expect(stripExtraWhitespace(content)).toBe(`milestone: Is a milestone</br><ul><li>true</li><li>false</li></ul>`);
       expect(tokenizer.getAutocompleteHelperContent('invalid_tag')).toBeNull();
@@ -173,7 +173,7 @@ describe('Search Tokenizer', () => {
          description: 'The itemtype'
       };
       content = tokenizer.getAutocompleteHelperContent('itemtype');
-      expect(stripExtraWhitespace(content)).toBe(`itemtype: The itemtype</br><ul></ul>`);
+      expect(stripExtraWhitespace(content)).toBe(`itemtype: The itemtype`);
 
       tokenizer.setAutocomplete('itemtype', ['Project', 'ProjectTask']);
       content = tokenizer.getAutocompleteHelperContent('itemtype');
@@ -181,7 +181,7 @@ describe('Search Tokenizer', () => {
 
       tokenizer.clearAutocomplete();
       content = tokenizer.getAutocompleteHelperContent('itemtype');
-      expect(stripExtraWhitespace(content)).toBe(`itemtype: The itemtype</br><ul></ul>`);
+      expect(stripExtraWhitespace(content)).toBe(`itemtype: The itemtype`);
    });
 
    test('Popover Content', () => {
