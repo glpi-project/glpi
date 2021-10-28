@@ -165,7 +165,7 @@ trait VobjectConverterTrait {
             $rrule = new RRule($rrule_specs);
             $vcomp->RRULE = $rrule->rfcString();
          } catch (\InvalidArgumentException $e) {
-            ErrorHandler::getInstance()->handleException($e);
+            ErrorHandler::getInstance()->handleException($e, true);
          }
       }
 

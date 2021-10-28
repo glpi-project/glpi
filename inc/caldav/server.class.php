@@ -95,6 +95,6 @@ class Server extends DAV\Server {
          return;
       }
 
-      ErrorHandler::getInstance()->handleException($exception);
+      ErrorHandler::getInstance()->handleException($exception, true);
    }
 }

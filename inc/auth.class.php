@@ -257,7 +257,7 @@ class Auth extends CommonGLPI {
                'user_dn'           => $this->user_dn
             ]);
          } catch (\Throwable $e) {
-            ErrorHandler::getInstance()->handleException($e);
+            ErrorHandler::getInstance()->handleException($e, true);
             $this->addToError(__('Unable to connect to the LDAP directory'));
             return false;
          }
@@ -785,7 +785,7 @@ class Auth extends CommonGLPI {
                            ],
                         ]);
                      } catch (\RuntimeException $e) {
-                        ErrorHandler::getInstance()->handleException($e);
+                        ErrorHandler::getInstance()->handleException($e, true);
                         $user_dn = false;
                      }
                      if ($user_dn) {
