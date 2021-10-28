@@ -62,7 +62,7 @@ export default class SearchTokenizer {
       if (tag === null) {
          return true;
       }
-      return this.allowed_tags.length === 0 || (tag in this.allowed_tags);
+      return Object.keys(this.allowed_tags).length === 0 || (tag in this.allowed_tags);
    }
 
    getPopoverContent(text, cursor_pos) {
@@ -109,6 +109,7 @@ export default class SearchTokenizer {
       $.each(tag.autocomplete_values, (i, v) => {
          helper += `<li>${v}</li>`;
       });
+      helper += `</ul>`;
       return helper;
    }
 
@@ -171,7 +172,7 @@ export default class SearchTokenizer {
    }
 }
 
-class Token {
+export class Token {
    constructor(term, tag, exclusion, position) {
       this.term = term;
       this.tag = tag;
@@ -180,7 +181,7 @@ class Token {
    }
 }
 
-class TokenizerResult {
+export class TokenizerResult {
 
    constructor() {
       /**
@@ -192,7 +193,7 @@ class TokenizerResult {
    /**
     * Get all tokens with a specific tag
     * @param name
-    * @return {Token}
+    * @return {Token[]}
     */
    getTag(name) {
       return this.tokens.filter(t => t.tag === name);
