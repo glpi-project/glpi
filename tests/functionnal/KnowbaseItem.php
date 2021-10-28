@@ -325,4 +325,39 @@ class KnowbaseItem extends DbTestCase {
          ->hasSize(1)
          ->contains(-1);
    }
+
+   protected function testGetListRequestProvider(): array {
+      return [
+         [
+            'params' => [
+               'knowbaseitemcategories_id' => 0,
+               'faq' => false,
+               'contains' => "test1 ",
+            ],
+            'type' => 'search'
+         ],
+         [
+            'params' => [
+               'knowbaseitemcategories_id' => 0,
+               'faq' => false,
+               'contains' => "test1 / test2 ( test3 )",
+            ],
+            'type' => 'search'
+         ]
+      ];
+   }
+
+   /**
+    * @dataprovider testGetListRequestProvider
+    */
+   public function testGetListRequest(array $params, string $type): void {
+      global $DB;
+
+      // Build criteria array
+      $criteria = \KnowbaseItem::getListRequest($params, $type);
+      $this->array($criteria);
+
+      // Check that the request is valid
+      $DB->request($criteria);
+   }
 }
