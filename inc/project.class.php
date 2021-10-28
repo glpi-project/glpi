@@ -2228,7 +2228,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
             }
          }
          if (isset($card['_metadata']['content']) && is_string($card['_metadata']['content'])) {
-            $card['_metadata']['content'] = Glpi\Toolbox\RichText::getTextFromHtml($card['_metadata']['content'], false, true, true);
+            $card['_metadata']['content'] = Glpi\Toolbox\RichText::getTextFromHtml($card['_metadata']['content'], false, true);
          } else {
             $card['_metadata']['content'] = '';
          }
