@@ -6010,6 +6010,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    public function getTimelineItemtypes(): array {
+      global $PLUGIN_HOOKS;
+
       /** @var CommonITILObject $obj_type */
       $obj_type = static::getType();
       $foreign_key = static::getForeignKeyField();
@@ -6083,11 +6085,47 @@ abstract class CommonITILObject extends CommonDBTM {
          ];
       }
 
-      //TODO Call timeline_actions plugin hook
+      if (isset($PLUGIN_HOOKS[Hooks::TIMELINE_ANSWER_ACTIONS])) {
+         foreach ($PLUGIN_HOOKS[Hooks::TIMELINE_ANSWER_ACTIONS] as $plugin => $hook_itemtypes) {
+            if (!Plugin::isPluginActive($plugin)) {
+               continue;
+            }
+            if (is_callable($hook_itemtypes)) {
+               $hook_itemtypes = $hook_itemtypes(['item' => $this]);
+            }
+            $itemtypes = array_merge($itemtypes, $hook_itemtypes);
+         }
+      }
 
       return $itemtypes;
    }
 
+   /**
+    * Get an HTML string of all timeline actions/buttons provided by plugins via the {@link Hooks::TIMELINE_ACTIONS}  hook.
+    * @return string
+    * @since 10.0.0
+    */
+   public function getLegacyTimelineActionsHTML(): string {
+      $legacy_actions = '';
+
+      if (isset($PLUGIN_HOOKS[Hooks::TIMELINE_ACTIONS])) {
+         foreach ($PLUGIN_HOOKS[Hooks::TIMELINE_ACTIONS] as $plugin => $callback) {
+            if (!Plugin::isPluginActive($plugin)) {
+               continue;
+            }
+            if (is_callable($callback)) {
+               ob_start();
+               $callback([
+                  'rand'   => mt_rand(),
+                  'item'   => $this
+               ]);
+               $legacy_actions .= ob_get_clean() ?? '';
+            }
+         }
+      }
+
+      return $legacy_actions;
+   }
 
    /**
     * Retrieves all timeline items for this ITILObject

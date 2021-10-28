@@ -4089,6 +4089,8 @@ JAVASCRIPT;
 
 
    function showForm($ID, $options = []) {
+      global $PLUGIN_HOOKS;
+
       // show full create form only to tech users
       if ($ID <= 0 && Session::getCurrentInterface() !== "central") {
          return;
@@ -4344,6 +4346,7 @@ JAVASCRIPT;
       TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
          'item'               => $this,
          'timeline_itemtypes' => $this->getTimelineItemtypes(),
+         'legacy_timeline_actions'  => $this->getLegacyTimelineActionsHTML(),
          'params'             => $options,
          'timeline'           => $this->getTimelineItems(),
          'itiltemplate_key'   => $tpl_key,

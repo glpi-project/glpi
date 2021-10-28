@@ -1425,6 +1425,7 @@ class Problem extends CommonITILObject {
       TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
          'item'               => $this,
          'timeline_itemtypes' => $this->getTimelineItemtypes(),
+         'legacy_timeline_actions'  => $this->getLegacyTimelineActionsHTML(),
          'params'             => $options,
          'timeline'           => $this->getTimelineItems(),
          'itiltemplate_key'   => $tpl_key,

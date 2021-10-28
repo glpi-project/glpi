@@ -26,6 +26,9 @@
                </div>
             {% endif %}
 
+            <ul class="legacy-timeline-actions">
+               {{ legacy_timeline_actions|default('')|raw }}
+            </ul>
             {{ include('components/itilobject/timeline/filter_timeline.html.twig') }}
          </div>
       {% endif %}
