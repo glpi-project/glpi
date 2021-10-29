@@ -79,9 +79,11 @@ class Request extends AbstractRequest
          case self::INVENT_ACTION:
          case self::SNMP_QUERY:
          case self::OLD_SNMP_QUERY:
-         case self::NETDISCOVERY_ACTION:
          case self::NETINV_ACTION:
             $this->inventory($content);
+            break;
+         case self::NETDISCOVERY_ACTION:
+            $this->networkDiscovery($content);
             break;
          case self::REGISTER_ACTION:
          case self::CONFIG_ACTION:
@@ -167,6 +169,38 @@ class Request extends AbstractRequest
       $response = $hook_response['response'];
 
       $this->addToResponse($response);
+   }
+
+
+   /**
+    * Handle agent network discovery request
+    * @return void
+    */
+   public function networkDiscovery($data) {
+      $this->inventory = new Inventory();
+      $this->inventory->setData($data, $this->getMode());
+
+      $response = [];
+      $hook_params = [
+         'mode' => $this->getMode(),
+         'inventory' => $this->inventory,
+         'deviceid' => ($this->getMode() == self::XML_MODE ? (string)$data->DEVICEID : $data->deviceid),
+         'response' => $response
+      ];
+
+      $hook_response = Plugin::doHookFunction(
+         Hooks::NETWORK_DISCOVERY,
+         $hook_params
+      );
+      $response = $hook_response['response'];
+
+      if (count($response)) {
+         $this->addToResponse($response);
+      } else if (count($hook_response['errors'])) {
+         $this->addError($hook_response['errors'], 400);
+      } else {
+         $this->addError("Query '" . self::NETDISCOVERY_ACTION . "' is not supported.", 400);
+      }
    }
 
 

@@ -105,6 +105,7 @@ class Hooks
 
    // Inventory hooks
    const PROLOG_RESPONSE = 'prolog_response';
+   const NETWORK_DISCOVERY = 'network_discovery';
 
    /**
     * Get file hooks
