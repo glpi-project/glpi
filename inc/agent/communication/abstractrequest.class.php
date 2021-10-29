@@ -205,7 +205,7 @@ abstract class AbstractRequest
      * Handle Query
      *
      * @param string $action  Action (one of self::*_ACTION)
-     * @param mixed  $content Contents, optionnal
+     * @param mixed  $content Contents, optional
      *
      * @return boolean
      */
@@ -332,22 +332,40 @@ abstract class AbstractRequest
     * @return void
     */
    private function addNode(DOMElement $parent, $name, $content) {
-      if (is_array($content)) {
-          $node = $parent->appendChild(
-              $this->response->createElement(
-                  $name
-              )
-          );
-         foreach ($content as $sname => $scontent) {
-            $this->addNode($node, $sname, $scontent);
+      if (is_array($content) && !isset($content['content']) && !isset($content['attributes'])) {
+         if (!is_string($name)) {
+            foreach ($content as $sname => $scontent) {
+               $this->addNode($parent, $sname, $scontent);
+            }
+         } else {
+            $node = $parent->appendChild(
+               $this->response->createElement($name)
+            );
+            foreach ($content as $sname => $scontent) {
+               $this->addNode($node, $sname, $scontent);
+            }
          }
       } else {
-          $parent->appendChild(
-              $this->response->createElement(
-                  $name,
-                  $content
-              )
-          );
+         $attributes = [];
+         if (is_array($content) && isset($content['content']) && isset($content['attributes'])) {
+            $attributes = $content['attributes'];
+            $content = $content['content'];
+         }
+
+         $new_node = $this->response->createElement(
+            $name,
+            $content
+         );
+
+         if (count($attributes)) {
+            foreach ($attributes as $aname => $avalue) {
+               $attr = $this->response->createAttribute($aname);
+               $attr->value = $avalue;
+               $new_node->appendChild($attr);
+            }
+         }
+
+         $parent->appendChild($new_node);
       }
    }
 
