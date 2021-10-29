@@ -3541,6 +3541,13 @@ JS;
       }
       $pluginsjs = json_encode($plugins);
 
+      $language_opts = '';
+      if ($language !== 'en_GB') {
+         $language_opts = json_encode([
+            'language' => $language,
+            'language_url' => $language_url
+         ]);
+      }
       // init tinymce
       $js = <<<JS
          $(function() {
@@ -3548,15 +3555,12 @@ JS;
             var richtext_layout = "{$_SESSION['glpirichtext_layout']}";
 
             // init editor
-            tinyMCE.init({
+            tinyMCE.init(Object.assign({
                selector: '#{$name}',
 
                plugins: {$pluginsjs},
 
                // Appearance
-               language: '{$language}',
-               language_url: '{$language_url}',
-
                skin_url: is_dark
                   ? CFG_GLPI['root_doc']+'/public/lib/tinymce/skins/ui/oxide-dark'
                   : CFG_GLPI['root_doc']+'/public/lib/tinymce/skins/ui/oxide',
@@ -3637,7 +3641,7 @@ JS;
                      submitparentForm($('#$name'));
                   });
                }
-            });
+            }, {$language_opts}));
          });
 JS;
 
