@@ -51,10 +51,10 @@ abstract class AbstractRequest
    const JSON_MODE   = 1;
 
    //FusionInventory agent
-   const PROLOG_QUERY = 'PROLOG';
-   const INVENT_QUERY = 'INVENTORY';
-   const SNMP_QUERY   = 'SNMP';
-   const OLD_SNMP_QUERY   = 'SNMPQUERY';
+   const PROLOG_QUERY = 'prolog';
+   const INVENT_QUERY = 'inventory';
+   const SNMP_QUERY   = 'snmp';
+   const OLD_SNMP_QUERY   = 'snmpquery';
 
    //GLPI AGENT ACTION
    const CONTACT_ACTION = 'contact';
@@ -244,7 +244,7 @@ abstract class AbstractRequest
       //query is not mandatory. Defaults to inventory
       $action = self::INVENT_QUERY;
       if (property_exists($xml, 'QUERY')) {
-         $action = (string)$xml->QUERY;
+         $action = strtolower((string)$xml->QUERY);
       }
 
       return $this->handleAction($action, $xml);

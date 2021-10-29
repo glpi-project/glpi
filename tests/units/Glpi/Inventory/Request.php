@@ -105,11 +105,11 @@ class Request extends \GLPITestCase {
 
 
    public function testWrongQuery() {
-      $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>UNKNWON</QUERY></REQUEST>";
+      $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>UNKNOWN</QUERY></REQUEST>";
       $request = new \Glpi\Inventory\Request;
       $request->handleContentType('application/xml');
       $request->handleRequest($data);
-      $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR>Query 'UNKNWON' is not supported.</ERROR></REPLY>\n");
+      $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR>Query 'unknown' is not supported.</ERROR></REPLY>\n");
    }
 
    public function testAddError() {
