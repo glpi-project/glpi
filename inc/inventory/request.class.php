@@ -34,6 +34,7 @@ namespace Glpi\Inventory;
 
 use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Agent\Communication\Headers\Common;
+use Glpi\Plugin\Hooks;
 use Plugin;
 use Unmanaged;
 
@@ -72,7 +73,7 @@ class Request extends AbstractRequest
             $this->contact($content);
             break;
          case self::PROLOG_QUERY:
-            $this->prolog();
+            $this->prolog($content);
             break;
          case self::INVENT_QUERY:
          case self::INVENT_ACTION:
@@ -139,7 +140,7 @@ class Request extends AbstractRequest
     * Handle agent prolog request
     * @return void
     */
-   public function prolog() {
+   public function prolog($data) {
       if ($this->headers->hasHeader('GLPI-Agent-ID')) {
           $this->setMode(self::JSON_MODE);
           $response = [
@@ -152,7 +153,20 @@ class Request extends AbstractRequest
             'RESPONSE'     => 'SEND'
          ];
       }
-       $this->addToResponse($response);
+
+      $hook_params = [
+         'mode' => $this->getMode(),
+         'deviceid' => ($this->getMode() == self::XML_MODE ? (string)$data->DEVICEID : $data->deviceid),
+         'response' => $response
+      ];
+      $hook_response = Plugin::doHookFunction(
+         Hooks::PROLOG_RESPONSE,
+         $hook_params
+      );
+
+      $response = $hook_response['response'];
+
+      $this->addToResponse($response);
    }
 
 

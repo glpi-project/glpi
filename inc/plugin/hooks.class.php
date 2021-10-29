@@ -103,6 +103,9 @@ class Hooks
    const SECURED_FIELDS  = 'secured_fields';
    const SECURED_CONFIGS = 'secured_configs';
 
+   // Inventory hooks
+   const PROLOG_RESPONSE = 'prolog_response';
+
    /**
     * Get file hooks
     *
