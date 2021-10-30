@@ -20,7 +20,7 @@
       <i>{{ _n('%1$s item not saved', '%1$s items not saved', (count - usedcount))|format((count - usedcount)) }}</i>
    {% endif %}
    {% if params.id > 0 and usedcount > 5 %}
-      <i><a href="">{{ __('Display all items') ~ '(' ~ usedcount ~ ')' }}</a></i>
+      <i><a href="{{ 'Ticket'|itemtype_form_path(params.id) }}&amp;forcetab=Item_Ticket$1">{{ __('Display all items') ~ '(' ~ usedcount ~ ')' }}</a></i>
    {% endif %}
 </div>
 
