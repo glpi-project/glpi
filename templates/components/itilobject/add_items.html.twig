@@ -1,9 +1,9 @@
-<div id='itemAddForm{{ rand }}'>
+<div id="itemAddForm{{ rand }}">
    {% if can_edit %}
       {{ my_items_dropdown|raw }}
       {{ all_items_dropdown|raw }}
-      <a href='javascript:itemAction{{ rand }}("add");' class='btn btn-sm btn-outline-secondary'>
-         <i class='fas fa-plus'></i>
+      <a href="javascript:itemAction{{ rand }}('add');" class="btn btn-sm btn-outline-secondary">
+         <i class="fas fa-plus"></i>
          <span>{{ _x('button', 'Add') }}</span>
       </a>
    {% endif %}
@@ -13,7 +13,7 @@
    {% endfor %}
 
    {% if count == 0 %}
-      <input type='hidden' value='0' name='items_id'>
+      <input type="hidden" value="0" name="items_id">
    {% endif %}
 
    {% if params.id > 0 and usedcount != count %}
