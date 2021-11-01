@@ -7845,6 +7845,55 @@ abstract class CommonITILObject extends CommonDBTM {
       return (bool) $result;
    }
 
+   public function getTeam(): array {
+      global $DB;
+
+      //TODO Need name and some other info
+
+      $team = [
+         'User'      => [],
+         'Group'     => [],
+         'Supplier'  => [],
+      ];
+
+      $team_itemtypes = static::getTeamItemtypes();
+
+      /** @var CommonDBTM $itemtype */
+      foreach ($team_itemtypes as $itemtype) {
+         /** @var CommonDBTM $link_class */
+         $link_class = null;
+         switch ($itemtype) {
+            case 'User':
+               $link_class = $this->userlinkclass;
+               break;
+            case 'Group':
+               $link_class = $this->grouplinkclass;
+               break;
+            case 'Supplier':
+               $link_class = $this->supplierlinkclass;
+               break;
+         }
+
+         if ($link_class === null) {
+            continue;
+         }
+
+         $it = $DB->request([
+            'SELECT' => [$itemtype::getForeignKeyField(), 'type'],
+            'FROM'   => $link_class,
+            'WHERE'  => [static::getForeignKeyField() => $this->getID()]
+         ]);
+         foreach ($it as $data) {
+            $team[$itemtype][] = [
+               'id'     => $itemtype::getForeignKeyField(),
+               'role'   => $data['type'],
+            ];
+         }
+      }
+
+      return $team;
+   }
+
    public function getTimelineStats(): array {
       global $DB;
 

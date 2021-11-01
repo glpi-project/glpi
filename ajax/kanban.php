@@ -30,7 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\Kanban;
+use Glpi\Features\Team;
 use Glpi\Toolbox\Sanitizer;
 
 $AJAX_INCLUDE = 1;
@@ -49,7 +51,7 @@ if (!isset($_REQUEST['action'])) {
 }
 $action = $_REQUEST['action'];
 
-$nonkanban_actions = ['update', 'bulk_add_item', 'add_item', 'move_item', 'show_card_edit_form', 'delete_item',
+$nonkanban_actions = ['update', 'bulk_add_item', 'add_item', 'move_item', 'show_card_edit_form', 'delete_item', 'load_item_panel',
    'add_teammember', 'delete_teammember'];
 if (isset($_REQUEST['itemtype'])) {
    if (!in_array($_REQUEST['action'], $nonkanban_actions) && !Toolbox::hasTrait($_REQUEST['itemtype'], Kanban::class)) {
@@ -66,14 +68,14 @@ if (isset($_REQUEST['itemtype'])) {
 
 // Rights Checks
 if (isset($itemtype)) {
-   if (in_array($action, ['refresh', 'get_switcher_dropdown', 'get_column'])) {
+   if (in_array($action, ['refresh', 'get_switcher_dropdown', 'get_column', 'load_item_panel'])) {
       if (!$item->canView()) {
          // Missing rights
          http_response_code(403);
          return;
       }
    }
-   if (in_array($action, ['update', 'add_teammember', 'delete_teammember'])) {
+   if (in_array($action, ['update', 'add_teammember', 'delete_teammember', 'load_item_panel'])) {
       $item->getFromDB($_REQUEST['items_id']);
       if (!$item->canUpdateItem()) {
          // Missing rights
@@ -254,4 +256,18 @@ if (($_POST['action'] ?? null) === 'update') {
 } else if (($_POST['action'] ?? null) === 'delete_teammember') {
    $checkParams(['itemtype_teammember', 'items_id_teammember']);
    $item->deleteTeamMember($_POST['itemtype_teammember'], (int) $_POST['items_id_teammember']);
+} else if (($_REQUEST['action'] ?? null) === 'load_item_panel') {
+   if (isset($itemtype, $item)) {
+      TemplateRenderer::getInstance()->display('components/kanban/item_panels/base.html.twig', [
+         'itemtype'     => $itemtype,
+         'item_fields'  => $item->fields,
+         'team'         => Toolbox::hasTrait($item, Team::class) ? $item->getTeam() : []
+      ]);
+   } else {
+      http_response_code(400);
+      return;
+   }
+} else {
+   http_response_code(400);
+   return;
 }

@@ -2440,6 +2440,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       return (bool) $result;
    }
 
+   public function getTeam(): array {
+      //TODO Need name and some other info
+      return ProjectTeam::getTeamFor($this->getID());
+   }
+
    /**
     * Display debug information for current object
    **/

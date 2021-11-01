@@ -1,0 +1,87 @@
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<div class="item-details-panel">
+   <div class="card d-flex flex-column h-100">
+      <div class="card-header">
+         <h5 class="card-title">
+            <a href="{{ itemtype|itemtype_form_path(item_fields.id) }}">
+               <i class="{{ itemtype|itemtype_icon }}" title="{{ itemtype|itemtype_name }}"></i>
+               {{ item_fields.name }}
+            </a>
+            <button type="button" class="btn-link" onclick="$(this).closest('.item-details-panel').remove()"><i class="fas fa-times"></i></button>
+         </h5>
+         <h6 class="card-subtitle">
+            {% block panel_subtitle %}{% endblock %}
+         </h6>
+      </div>
+      <div class="card-body overflow-auto">
+         {% set pre_content %}
+            {{ call_plugin_hook('pre_kanban_panel_content', {
+               "itemtype": itemtype,
+               "items_id": item_fields.id
+            }) }}
+         {% endset %}
+         {% if pre_content|trim is not empty %}
+            {{ pre_content }}
+            <hr>
+         {% endif %}
+         {% set pre_main_content %}
+            {{ call_plugin_hook('pre_kanban_panel_main_content', {
+               "itemtype": itemtype,
+               "items_id": item_fields.id
+            }) }}
+         {% endset %}
+         {% if pre_main_content|trim is not empty %}
+            {{ pre_main_content }}
+            <hr>
+         {% endif %}
+
+
+         {% set preview = item_fields.content|length > 1000 ? item_fields.content|slice(0, 1000) ~ ' (...)' : item_fields.content %}
+         {{ fields.textareaField('content', preview, '', {
+            "enable_richtext": true,
+            "no_label": true,
+            "full_width": true
+         }) }}
+         <hr>
+
+         {% set post_main_content %}
+            {{ call_plugin_hook('post_kanban_panel_main_content', {
+               "itemtype": itemtype,
+               "items_id": item_fields.id
+            }) }}
+         {% endset %}
+         {% if post_main_content|trim is not empty %}
+            {{ post_main_content }}
+            <hr>
+         {% endif %}
+
+         {% if team is not empty %}
+            <ul class="list-group">
+               {% for team_type,team_members in team %}
+                  {% for team_member in team_members %}
+                     <li class="list-group-item">{{ team_member.name|default(team_type~" ("~team_member.id~")") }}</li>
+                  {% endfor %}
+               {% endfor %}
+            </ul>
+         {% endif %}
+         <hr>
+
+         {% set post_content %}
+            {{ call_plugin_hook('post_kanban_panel_content', {
+               "itemtype": itemtype,
+               "items_id": item_fields.id
+            }) }}
+         {% endset %}
+         {% if post_content|trim is not empty %}
+            {{ post_content }}
+            <hr>
+         {% endif %}
+      </div>
+      <div class="card-footer border-top flex-shrink-0 text-center p-3">
+         <a class="btn btn-outline w-100" target="_blank" rel="noopener" href="{{ form_url }}">
+            <span class="pr-1">{{ __('Open full form') }}</span>
+         </a>
+      </div>
+   </div>
+</div>

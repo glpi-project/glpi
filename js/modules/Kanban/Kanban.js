@@ -1014,7 +1014,20 @@ class GLPIKanbanRights {
             e.preventDefault();
             const card = $(e.target).closest('.kanban-item');
             const [itemtype, items_id] = card.prop('id').split('-');
-            showModalFromUrl((self.ajax_root + "kanban.php?action=show_card_edit_form&itemtype="+itemtype+"&card=" + items_id));
+            $.ajax({
+               method: 'GET',
+               url: (self.ajax_root + "kanban.php"),
+               data: {
+                  itemtype: itemtype,
+                  items_id: items_id,
+                  action: 'load_item_panel'
+               }
+            }).done((result) => {
+               $('.item-details-panel').remove();
+               $(self.element).append($(result));
+            });
+
+            // showModalFromUrl((self.ajax_root + "kanban.php?action=show_card_edit_form&itemtype="+itemtype+"&card=" + items_id));
          });
       };
 

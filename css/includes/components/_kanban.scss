@@ -426,6 +426,14 @@
          color: #792220;
       }
    }
+
+   .item-details-panel {
+      width: 360px;
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 100;
+   }
 }
 
 .flex-break {

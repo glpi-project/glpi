@@ -63,4 +63,11 @@ trait Team {
     * @since 10.0.0
     */
    abstract public function deleteTeamMember(string $itemtype, int $items_id, array $params = []): bool;
+
+   /**
+    * Get all team members
+    * @return array
+    * @since 10.0.0
+    */
+   abstract public function getTeam(): array;
 }
