@@ -169,16 +169,16 @@
         },
         {
             "name": "elvanto/litemoji",
-            "version": "4.0.1",
+            "version": "4.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elvanto/litemoji.git",
-                "reference": "4531979f7ec86a3267c51e3a279216bf46a35e21"
+                "reference": "e70a2b72e4390e06d487810b7d784ac278dfbcb6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elvanto/litemoji/zipball/4531979f7ec86a3267c51e3a279216bf46a35e21",
-                "reference": "4531979f7ec86a3267c51e3a279216bf46a35e21",
+                "url": "https://api.github.com/repos/elvanto/litemoji/zipball/e70a2b72e4390e06d487810b7d784ac278dfbcb6",
+                "reference": "e70a2b72e4390e06d487810b7d784ac278dfbcb6",
                 "shasum": ""
             },
             "require": {
@@ -205,9 +205,9 @@
             ],
             "support": {
                 "issues": "https://github.com/elvanto/litemoji/issues",
-                "source": "https://github.com/elvanto/litemoji/tree/4.0.1"
+                "source": "https://github.com/elvanto/litemoji/tree/4.0.2"
             },
-            "time": "2021-04-27T21:51:29+00:00"
+            "time": "2021-10-05T22:30:33+00:00"
         },
         {
             "name": "glpi-project/inventory_format",
