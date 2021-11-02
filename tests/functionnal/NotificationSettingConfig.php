@@ -84,7 +84,7 @@ class NotificationSettingConfig extends DbTestCase {
       $options = ['display' => false];
 
       $output = $settingconfig->showConfigForm($options);
-      $this->string($output)->matches("/^\s*$/"); // Only whitespaces, no real content
+      $this->string(trim($output))->isEmpty(); // Only whitespaces, no real content
 
       $this->login();
 
