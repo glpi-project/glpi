@@ -295,7 +295,7 @@ class MassiveAction {
          $this->fields_to_remove_when_reload[] = 'timeout_delay';
 
          if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
-            $this->messaget_after_redirect = $_SESSION["MESSAGE_AFTER_REDIRECT"];
+            $this->message_after_redirect = $_SESSION["MESSAGE_AFTER_REDIRECT"];
             unset($_SESSION["MESSAGE_AFTER_REDIRECT"]);
          }
       }
@@ -1082,10 +1082,10 @@ class MassiveAction {
 
          $this->updateProgressBars();
 
-         if (isset($this->messaget_after_redirect)) {
-            $_SESSION["MESSAGE_AFTER_REDIRECT"] = $this->messaget_after_redirect;
+         if (isset($this->message_after_redirect) && !empty($this->message_after_redirect)) {
+            $_SESSION["MESSAGE_AFTER_REDIRECT"] = $this->message_after_redirect;
             Html::displayMessageAfterRedirect();
-            unset($this->messaget_after_redirect);
+            unset($this->message_after_redirect);
          }
 
          $processor = $this->processor;
