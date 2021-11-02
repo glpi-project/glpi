@@ -30,7 +30,7 @@
  */
 
 module.exports = {
-   setupFilesAfterEnv: ["jest-extended"],
+   setupFilesAfterEnv: ["jest-extended/all"],
    setupFiles: ['<rootDir>/bootstrap.js'],
    transform: {
       '^.+\\.js$': 'babel-jest',
