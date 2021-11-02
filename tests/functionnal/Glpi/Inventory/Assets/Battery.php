@@ -77,6 +77,23 @@ class Battery extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
             'expected'  => '{"capacity": "43746", "chemistry": "lithium-polymer", "date": "2015-11-10", "manufacturer": "SMP", "name": "DELL JHXPY53", "serial": "3701", "voltage": "0", "designation": "DELL JHXPY53", "manufacturers_id": "SMP", "manufacturing_date": "2015-11-10", "devicebatterytypes_id": "lithium-polymer"}'
+         ], [ //empty info
+            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <BATTERIES>
+      <CAPACITY>0</CAPACITY>
+      <CHEMISTRY>Li-ION</CHEMISTRY>
+      <MANUFACTURER>OTHER MANU</MANUFACTURER>
+      <NAME></NAME>
+      <SERIAL>00000000</SERIAL>
+    </BATTERIES>
+    <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+  </REQUEST>",
+            'expected'  => '{"chemistry": "Li-ION", "manufacturer": "OTHER MANU", "serial": "00000000", "voltage": "0", "manufacturers_id": "OTHER MANU", "devicebatterytypes_id": "Li-ION"}'
          ]
       ];
    }
@@ -100,7 +117,7 @@ class Battery extends AbstractInventoryAsset {
       $computer = getItemByTypeName('Computer', '_test_pc01');
 
       //first, check there are no battery linked to this computer
-      $idb = new \Item_DeviceBattery();;
+      $idb = new \Item_DeviceBattery();
       $this->boolean($idb->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isFalse('A battery is already linked to computer!');
 
@@ -123,4 +140,33 @@ class Battery extends AbstractInventoryAsset {
       $this->boolean($idb->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isTrue('Battery has not been linked to computer :(');
    }
+
+   public function testHandleNoFullInfo() {
+      $computer = getItemByTypeName('Computer', '_test_pc02');
+
+      //first, check there are no battery linked to this computer
+      $idb = new \Item_DeviceBattery();
+      $this->boolean($idb->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+         ->isFalse('A battery is already linked to computer!');
+
+      //convert data
+      $expected = $this->assetProvider()[2];
+
+      $converter = new \Glpi\Inventory\Converter;
+      $data = $converter->convert($expected['xml']);
+      $json = json_decode($data);
+
+      $computer = getItemByTypeName('Computer', '_test_pc02');
+      $asset = new \Glpi\Inventory\Asset\Battery($computer, $json->content->batteries);
+      $asset->setExtraData((array)$json->content);
+      $result = $asset->prepare();
+      $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
+
+      //handle
+      $asset->handleLinks();
+      $asset->handle();
+      $this->boolean($idb->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+         ->isTrue('Battery has not been linked to computer :(');
+   }
+
 }
