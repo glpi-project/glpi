@@ -34,6 +34,7 @@ namespace Glpi\Inventory;
 
 use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Agent\Communication\Headers\Common;
+use Glpi\Plugin\Hooks;
 use Plugin;
 use Unmanaged;
 
@@ -72,15 +73,17 @@ class Request extends AbstractRequest
             $this->contact($content);
             break;
          case self::PROLOG_QUERY:
-            $this->prolog();
+            $this->prolog($content);
             break;
          case self::INVENT_QUERY:
          case self::INVENT_ACTION:
          case self::SNMP_QUERY:
          case self::OLD_SNMP_QUERY:
-         case self::NETDISCOVERY_ACTION:
          case self::NETINV_ACTION:
             $this->inventory($content);
+            break;
+         case self::NETDISCOVERY_ACTION:
+            $this->networkDiscovery($content);
             break;
          case self::REGISTER_ACTION:
          case self::CONFIG_ACTION:
@@ -139,7 +142,7 @@ class Request extends AbstractRequest
     * Handle agent prolog request
     * @return void
     */
-   public function prolog() {
+   public function prolog($data) {
       if ($this->headers->hasHeader('GLPI-Agent-ID')) {
           $this->setMode(self::JSON_MODE);
           $response = [
@@ -152,7 +155,52 @@ class Request extends AbstractRequest
             'RESPONSE'     => 'SEND'
          ];
       }
-       $this->addToResponse($response);
+
+      $hook_params = [
+         'mode' => $this->getMode(),
+         'deviceid' => ($this->getMode() == self::XML_MODE ? (string)$data->DEVICEID : $data->deviceid),
+         'response' => $response
+      ];
+      $hook_response = Plugin::doHookFunction(
+         Hooks::PROLOG_RESPONSE,
+         $hook_params
+      );
+
+      $response = $hook_response['response'];
+
+      $this->addToResponse($response);
+   }
+
+
+   /**
+    * Handle agent network discovery request
+    * @return void
+    */
+   public function networkDiscovery($data) {
+      $this->inventory = new Inventory();
+      $this->inventory->setData($data, $this->getMode());
+
+      $response = [];
+      $hook_params = [
+         'mode' => $this->getMode(),
+         'inventory' => $this->inventory,
+         'deviceid' => ($this->getMode() == self::XML_MODE ? (string)$data->DEVICEID : $data->deviceid),
+         'response' => $response
+      ];
+
+      $hook_response = Plugin::doHookFunction(
+         Hooks::NETWORK_DISCOVERY,
+         $hook_params
+      );
+      $response = $hook_response['response'];
+
+      if (count($response)) {
+         $this->addToResponse($response);
+      } else if (count($hook_response['errors'])) {
+         $this->addError($hook_response['errors'], 400);
+      } else {
+         $this->addError("Query '" . self::NETDISCOVERY_ACTION . "' is not supported.", 400);
+      }
    }
 
 

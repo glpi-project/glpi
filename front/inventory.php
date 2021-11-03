@@ -32,7 +32,9 @@
 
 use Glpi\Inventory\Request;
 
-include ('../inc/includes.php');
+if (!defined('GLPI_ROOT')) {
+   include ('../inc/includes.php');
+}
 
 $inventory_request = new Request();
 $inventory_request->handleHeaders();

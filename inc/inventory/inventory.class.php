@@ -128,9 +128,10 @@ class Inventory
       } catch (\RuntimeException $e) {
          $this->errors[] = $e->getMessage();
          return false;
+      } finally {
+         $this->raw_data = $data;
       }
 
-      $this->raw_data = $data;
       $this->extractMetadata();
       return true;
    }
@@ -351,7 +352,7 @@ class Inventory
     *
     * @return array
     */
-   public function getRawData(): Object {
+   public function getRawData(): ?Object {
       return $this->raw_data;
    }
 
