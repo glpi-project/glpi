@@ -46,7 +46,7 @@ use Glpi\Toolbox\RichText;
 class Project extends CommonDBTM implements ExtraVisibilityCriteria {
    use Glpi\Features\Kanban;
    use Glpi\Features\Clonable;
-   use Glpi\Features\Team;
+   use Glpi\Features\Teamwork;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -58,6 +58,10 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
    const READALL                       = 1024;
 
    protected $team                     = [];
+
+   public const ROLE_MANAGER = 1;
+
+   public const ROLE_MEMBER = 2;
 
    public function getCloneRelations() :array {
       return [
@@ -2301,6 +2305,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                ]
             ],
             'team_itemtypes'  => Project::getTeamItemtypes(),
+            'panel'           => 'components/kanban/item_panels/project.html.twig'
          ];
       }
 
@@ -2412,6 +2417,23 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          $this->getFromDB($ID);
       }
       return ($ID <= 0 || $this->canModifyGlobalState());
+   }
+
+   public static function getTeamRoles(): array {
+      return [
+         self::ROLE_MANAGER,
+         self::ROLE_MEMBER
+      ];
+   }
+
+   public static function getTeamRoleName(int $role, int $nb = 1): string {
+      switch ($role) {
+         case self::ROLE_MANAGER:
+            return _n('Manager', 'Managers', $nb);
+         case self::ROLE_MEMBER:
+            return _n('Member', 'Members', $nb);
+      }
+      return '';
    }
 
    public static function getTeamItemtypes(): array {

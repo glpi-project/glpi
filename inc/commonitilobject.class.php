@@ -47,7 +47,7 @@ abstract class CommonITILObject extends CommonDBTM {
    use \Glpi\Features\UserMention;
    use \Glpi\Features\Timeline;
    use \Glpi\Features\Kanban;
-   use Glpi\Features\Team;
+   use Glpi\Features\Teamwork;
 
    /// Users by type
    protected $users       = [];
@@ -7779,6 +7779,26 @@ abstract class CommonITILObject extends CommonDBTM {
       return $columns[$column_field];
    }
 
+   public static function getTeamRoles(): array {
+      return [
+         CommonITILActor::REQUESTER,
+         CommonITILActor::OBSERVER,
+         CommonITILActor::ASSIGN,
+      ];
+   }
+
+   public static function getTeamRoleName(int $role, int $nb = 1): string {
+      switch ($role) {
+         case CommonITILActor::REQUESTER:
+            return _n('Requester', 'Requesters', $nb);
+         case CommonITILActor::OBSERVER:
+            return _n('Watcher', 'Watchers', $nb);
+         case CommonITILActor::ASSIGN:
+            return _n('Assignee', 'Assignees', $nb);
+      }
+      return '';
+   }
+
    public static function getTeamItemtypes(): array {
       return ['User', 'Group', 'Supplier'];
    }
@@ -7879,14 +7899,25 @@ abstract class CommonITILObject extends CommonDBTM {
          }
 
          $it = $DB->request([
-            'SELECT' => [$itemtype::getForeignKeyField(), 'type'],
-            'FROM'   => $link_class,
-            'WHERE'  => [static::getForeignKeyField() => $this->getID()]
+            'SELECT' => [
+               $link_class::getTable().'.'.$itemtype::getForeignKeyField(), 'type', 'name'
+            ],
+            'FROM'   => $link_class::getTable(),
+            'WHERE'  => [static::getForeignKeyField() => $this->getID()],
+            'LEFT JOIN' => [
+               $itemtype::getTable() => [
+                  'ON'  => [
+                     $itemtype::getTable()   => 'id',
+                     $link_class::getTable() => $itemtype::getForeignKeyField()
+                  ]
+               ]
+            ]
          ]);
          foreach ($it as $data) {
             $team[$itemtype][] = [
-               'id'     => $itemtype::getForeignKeyField(),
+               'id'     => $data[$itemtype::getForeignKeyField()],
                'role'   => $data['type'],
+               'name'   => $data['name']
             ];
          }
       }

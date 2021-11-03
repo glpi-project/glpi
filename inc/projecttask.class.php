@@ -50,7 +50,7 @@ use Sabre\VObject\Property\IntegerValue;
 class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface {
    use Glpi\Features\PlanningEvent;
    use VobjectConverterTrait;
-   use Glpi\Features\Team;
+   use Glpi\Features\Teamwork;
 
    // From CommonDBTM
    public $dohistory = true;
@@ -2066,6 +2066,14 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
    public function prepareInputForClone($input) {
       $input['uuid'] = \Ramsey\Uuid\Uuid::uuid4();
       return $input;
+   }
+
+   public static function getTeamRoles(): array {
+      return Project::getTeamRoles();
+   }
+
+   public static function getTeamRoleName(int $role, int $nb = 1): string {
+      return Project::getTeamRoleName($role, $nb);
    }
 
    public static function getTeamItemtypes(): array {

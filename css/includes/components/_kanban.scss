@@ -433,6 +433,17 @@
       top: 0;
       right: 0;
       z-index: 100;
+      height: calc(100% - 10px);
+
+      .card-header .card-title {
+         display: flex;
+         justify-content: space-between;
+         width: 100%;
+      }
+
+      ul.team-list li img {
+         border-radius: 50%;
+      }
    }
 }
 

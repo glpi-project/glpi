@@ -846,7 +846,10 @@ class GLPIKanbanRights {
          $(self.element + ' .kanban-container').on('click', '.kanban-item-edit-team', function(e) {
             // Get root dropdown, then the button that triggered it, and finally the card that the button is in
             const card = $(e.target.closest('.kanban-dropdown')).data('trigger-button').closest('.kanban-item');
-            showTeamModal($(card));
+            self.showTeamModal($(card));
+         });
+         $(self.element).on('click', '.item-details-panel .kanban-item-edit-team', (e) => {
+            self.showTeamModal($(e.target).closest('.item-details-panel').data('card'));
          });
          $(self.element + ' .kanban-container').on('click', '.kanban-item-remove', function(e) {
             // Get root dropdown, then the button that triggered it, and finally the card that the button is in
@@ -1025,6 +1028,18 @@ class GLPIKanbanRights {
             }).done((result) => {
                $('.item-details-panel').remove();
                $(self.element).append($(result));
+               $('.item-details-panel').data('card', card);
+               // Load badges
+               $('.item-details-panel ul.team-list li').each((i, l) => {
+                  l = $(l);
+                  const member_itemtype = l.attr('data-itemtype');
+                  const member_items_id = l.attr('data-items_id');
+                  l.prepend(getTeamBadge({
+                     itemtype: member_itemtype,
+                     id: member_items_id,
+                     name: l.attr('data-name')
+                  }));
+               });
             });
 
             // showModalFromUrl((self.ajax_root + "kanban.php?action=show_card_edit_form&itemtype="+itemtype+"&card=" + items_id));
@@ -2445,7 +2460,7 @@ class GLPIKanbanRights {
          self.user_state = new_state;
       };
 
-      const showTeamModal = (card_el) => {
+      this.showTeamModal = (card_el) => {
          const team = card_el.data('_team');
          const [card_itemtype, card_items_id] = card_el.prop('id').split('-', 2);
          let content = '<ul class="kanban-team-list">';

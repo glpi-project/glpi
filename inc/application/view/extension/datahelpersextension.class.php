@@ -55,6 +55,8 @@ class DataHelpersExtension extends AbstractExtension {
          new TwigFilter('safe_html', [$this, 'getSafeHtml'], ['is_safe' => ['html']]),
          new TwigFilter('verbatim_value', [$this, 'getVerbatimValue']),
          new TwigFilter('shortcut', [$this, 'underlineShortcutLetter'], ['is_safe' => ['html']]),
+         new TwigFilter('ungroup', [$this, 'ungroup']),
+         new TwigFilter('group_by', [$this, 'groupBy']),
       ];
    }
 
@@ -191,5 +193,44 @@ class DataHelpersExtension extends AbstractExtension {
       }
 
       return Sanitizer::getVerbatimValue($string);
+   }
+
+   /**
+    * Ungroup an array optionally moving the group key value into a property
+    * @param array $array
+    * @param string|null $key_property
+    * @return array
+    */
+   public function ungroup(array $array, string $key_property = null): array {
+      $result = [];
+      foreach ($array as $group => $group_elements) {
+         foreach ($group_elements as $element) {
+            $el = $element;
+            if ($key_property !== null) {
+               $el[$key_property] = $group;
+            }
+            $result[] = $el;
+         }
+      }
+      return $result;
+   }
+
+   /**
+    * Group array values by a common property/key
+    * @param array $array Input array
+    * @param string $property Property to group by
+    * @return array Result array
+    */
+   public function groupBy(array $array, string $property): array {
+      $result = [];
+      foreach ($array as $element) {
+         if (isset($element[$property])) {
+            if (!isset($result[$element[$property]])) {
+               $result[$element[$property]] = [];
+            }
+            $result[$element[$property]][] = $element;
+         }
+      }
+      return $result;
    }
 }

@@ -204,7 +204,9 @@
    {% if options.enable_richtext %}
       {% do call('Html::initEditorSystem', [
          id,
-         options.rand
+         options.rand,
+         true,
+         options.disabled|default(false)
       ]) %}
    {% endif %}
 

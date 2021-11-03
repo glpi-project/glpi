@@ -30,44 +30,29 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Features;
+namespace Glpi\Application\View\Extension;
+
+use CommonDBTM;
+use Glpi\Features\Teamwork;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 
 /**
- * Trait for itemtypes that can have a team
  * @since 10.0.0
  */
-trait Team {
+class TeamExtension extends AbstractExtension {
 
-   /**
-    * Get all types of team members that are supported by this item type
-    * @return array
-    */
-   abstract public static function getTeamItemtypes(): array;
+   public function getFilters(): array {
+      return [
+         new TwigFilter('team_role_name', [$this, 'getTeamRoleName']),
+      ];
+   }
 
-   /**
-    * Add a team member to this item
-    * @param string $itemtype
-    * @param int $items_id
-    * @param array $params
-    * @return bool
-    * @since 10.0.0
-    */
-   abstract public function addTeamMember(string $itemtype, int $items_id, array $params = []): bool;
-
-   /**
-    * Remove a team member to this item
-    * @param string $itemtype
-    * @param int $items_id
-    * @param array $params
-    * @return bool
-    * @since 10.0.0
-    */
-   abstract public function deleteTeamMember(string $itemtype, int $items_id, array $params = []): bool;
-
-   /**
-    * Get all team members
-    * @return array
-    * @since 10.0.0
-    */
-   abstract public function getTeam(): array;
+   public function getTeamRoleName($itemtype, int $role, int $nb = 1): string {
+      if (\Toolbox::hasTrait($itemtype, Teamwork::class)) {
+         /** @var Teamwork $itemtype */
+         return $itemtype::getTeamRoleName($role, $nb);
+      }
+      return '';
+   }
 }

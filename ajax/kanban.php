@@ -32,7 +32,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\Kanban;
-use Glpi\Features\Team;
+use Glpi\Features\Teamwork;
 use Glpi\Toolbox\Sanitizer;
 
 $AJAX_INCLUDE = 1;
@@ -261,7 +261,7 @@ if (($_POST['action'] ?? null) === 'update') {
       TemplateRenderer::getInstance()->display('components/kanban/item_panels/base.html.twig', [
          'itemtype'     => $itemtype,
          'item_fields'  => $item->fields,
-         'team'         => Toolbox::hasTrait($item, Team::class) ? $item->getTeam() : []
+         'team'         => Toolbox::hasTrait($item, Teamwork::class) ? $item->getTeam() : []
       ]);
    } else {
       http_response_code(400);
