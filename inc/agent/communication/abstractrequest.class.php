@@ -333,17 +333,11 @@ abstract class AbstractRequest
     */
    private function addNode(DOMElement $parent, $name, $content) {
       if (is_array($content) && !isset($content['content']) && !isset($content['attributes'])) {
-         if (!is_string($name)) {
-            foreach ($content as $sname => $scontent) {
-               $this->addNode($parent, $sname, $scontent);
-            }
-         } else {
-            $node = $parent->appendChild(
-               $this->response->createElement($name)
-            );
-            foreach ($content as $sname => $scontent) {
-               $this->addNode($node, $sname, $scontent);
-            }
+         $node = is_string($name)
+            ? $parent->appendChild($this->response->createElement($name))
+            : $parent;
+         foreach ($content as $sname => $scontent) {
+            $this->addNode($node, $sname, $scontent);
          }
       } else {
          $attributes = [];
