@@ -74,6 +74,10 @@ if (!$DB->tableExists('glpi_agents')) {
          `useragent` varchar(255) DEFAULT NULL,
          `tag` varchar(255) DEFAULT NULL,
          `port` varchar(6) DEFAULT NULL,
+         `threads_networkdiscovery` int(4) NOT NULL DEFAULT '1' COMMENT 'Number of threads for Network Discovery',
+         `threads_networkinventory` int(4) NOT NULL DEFAULT '1' COMMENT 'Number of threads for Network Inventory',
+         `timeout_networkdiscovery` int(4) NOT NULL DEFAULT '0' COMMENT 'Network Discovery task timeout (disabled by default)',
+         `timeout_networkinventory` int(4) NOT NULL DEFAULT '0' COMMENT 'Network Inventory task timeout (disabled by default)',
          PRIMARY KEY (`id`),
          KEY `name` (`name`),
          KEY `entities_id` (`entities_id`),
@@ -92,6 +96,34 @@ if (!$DB->tableExists('glpi_agents')) {
    $migration->addKey('glpi_agents', 'entities_id');
    $migration->addKey('glpi_agents', 'is_recursive');
    $migration->addKey('glpi_agents', ['itemtype', 'items_id'], 'item');
+   $migration->addField(
+      'glpi_agents',
+      'threads_networkdiscovery',
+      'int(4) NOT NULL DEFAULT 1', [
+         'comment' => 'Number of threads for Network Discovery'
+      ]
+   );
+   $migration->addField(
+      'glpi_agents',
+      'threads_networkinventory',
+      "int(4) NOT NULL DEFAULT '1'", [
+         'comment' => 'Number of threads for Network Inventory'
+      ]
+   );
+   $migration->addField(
+      'glpi_agents',
+      'timeout_networkdiscovery',
+      "int(4) NOT NULL DEFAULT '0'", [
+         'comment' => 'Network Discovery task timeout (disabled by default)'
+      ]
+   );
+   $migration->addField(
+      'glpi_agents',
+      'timeout_networkinventory',
+      "int(4) NOT NULL DEFAULT '0'", [
+         'comment' => 'Network Inventory task timeout (disabled by default)'
+      ]
+   );
 }
 $ADDTODISPLAYPREF['Agent'] = [2, 4, 10, 8, 11, 6];
 
