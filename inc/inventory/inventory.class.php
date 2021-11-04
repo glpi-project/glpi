@@ -38,6 +38,7 @@ use Glpi\Inventory\Asset\InventoryAsset;
 use Lockedfield;
 use RefusedEquipment;
 use Session;
+use SNMPCredential;
 use Toolbox;
 
 /**
@@ -423,7 +424,8 @@ class Inventory
       $classes = [
          Agent::class,
          Lockedfield::class,
-         RefusedEquipment::class
+         RefusedEquipment::class,
+         SNMPCredential::class
       ];
       $links = [];
       foreach ($classes as $class) {
@@ -455,6 +457,14 @@ class Inventory
                'page'  => RefusedEquipment::getSearchURL(false),
                'links' => $links
             ],
+            'snmpcredential' => [
+               'title' => SNMPCredential::getTypeName(Session::getPluralNumber()),
+               'page' => SNMPCredential::getSearchURL(false),
+               'links' => [
+                  'add'    => '/front/snmpcredential.form.php',
+                  'search' => '/front/snmpcredential.php',
+               ] + $links
+            ]
          ],
          'links' => $links,
       ];

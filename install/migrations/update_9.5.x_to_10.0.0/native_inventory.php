@@ -74,10 +74,10 @@ if (!$DB->tableExists('glpi_agents')) {
          `useragent` varchar(255) DEFAULT NULL,
          `tag` varchar(255) DEFAULT NULL,
          `port` varchar(6) DEFAULT NULL,
-         `threads_networkdiscovery` int(4) NOT NULL DEFAULT '1' COMMENT 'Number of threads for Network Discovery',
-         `threads_networkinventory` int(4) NOT NULL DEFAULT '1' COMMENT 'Number of threads for Network Inventory',
-         `timeout_networkdiscovery` int(4) NOT NULL DEFAULT '0' COMMENT 'Network Discovery task timeout (disabled by default)',
-         `timeout_networkinventory` int(4) NOT NULL DEFAULT '0' COMMENT 'Network Inventory task timeout (disabled by default)',
+         `threads_networkdiscovery` int NOT NULL DEFAULT '1' COMMENT 'Number of threads for Network Discovery',
+         `threads_networkinventory` int NOT NULL DEFAULT '1' COMMENT 'Number of threads for Network Inventory',
+         `timeout_networkdiscovery` int NOT NULL DEFAULT '0' COMMENT 'Network Discovery task timeout (disabled by default)',
+         `timeout_networkinventory` int NOT NULL DEFAULT '0' COMMENT 'Network Inventory task timeout (disabled by default)',
          PRIMARY KEY (`id`),
          KEY `name` (`name`),
          KEY `entities_id` (`entities_id`),
@@ -99,28 +99,28 @@ if (!$DB->tableExists('glpi_agents')) {
    $migration->addField(
       'glpi_agents',
       'threads_networkdiscovery',
-      'int(4) NOT NULL DEFAULT 1', [
+      'int NOT NULL DEFAULT 1', [
          'comment' => 'Number of threads for Network Discovery'
       ]
    );
    $migration->addField(
       'glpi_agents',
       'threads_networkinventory',
-      "int(4) NOT NULL DEFAULT '1'", [
+      "int NOT NULL DEFAULT '1'", [
          'comment' => 'Number of threads for Network Inventory'
       ]
    );
    $migration->addField(
       'glpi_agents',
       'timeout_networkdiscovery',
-      "int(4) NOT NULL DEFAULT '0'", [
+      "int NOT NULL DEFAULT '0'", [
          'comment' => 'Network Discovery task timeout (disabled by default)'
       ]
    );
    $migration->addField(
       'glpi_agents',
       'timeout_networkinventory',
-      "int(4) NOT NULL DEFAULT '0'", [
+      "int NOT NULL DEFAULT '0'", [
          'comment' => 'Network Inventory task timeout (disabled by default)'
       ]
    );
@@ -273,6 +273,7 @@ if (!$DB->tableExists('glpi_unmanageds')) {
          `accepted` tinyint NOT NULL DEFAULT '0',
          `hub` tinyint NOT NULL DEFAULT '0',
          `ip` varchar(255) DEFAULT NULL,
+         `snmpcredentials_id` int NOT NULL DEFAULT '0',
          PRIMARY KEY (`id`),
          KEY `name` (`name`),
          KEY `entities_id` (`entities_id`),
@@ -291,7 +292,8 @@ if (!$DB->tableExists('glpi_unmanageds')) {
          KEY `date_creation` (`date_creation`),
          KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
          KEY `domains_id` (`domains_id`),
-         KEY `agents_id` (`agents_id`)
+         KEY `agents_id` (`agents_id`),
+         KEY `snmpcredentials_id` (`snmpcredentials_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
    $DB->queryOrDie($query, "10.0 add table glpi_unmanageds");
 } else {
@@ -559,6 +561,38 @@ if (!$DB->tableExists('glpi_pcivendors')) {
    $migration->addKey('glpi_pcivendors', 'is_recursive');
 }
 $ADDTODISPLAYPREF['PCIVendor'] = [10, 11];
+
+if (!$DB->tableExists('glpi_snmpcredentials')) {
+   $query = "CREATE TABLE `glpi_snmpcredentials` (
+         `id` int NOT NULL AUTO_INCREMENT,
+         `name` varchar(64) DEFAULT NULL,
+         `snmpversion` varchar(8) NOT NULL DEFAULT '1',
+         `community` varchar(255) DEFAULT NULL,
+         `username` varchar(255) DEFAULT NULL,
+         `authentication` varchar(255) DEFAULT NULL,
+         `auth_passphrase` varchar(255) DEFAULT NULL,
+         `encryption` varchar(255) DEFAULT NULL,
+         `priv_passphrase` varchar(255) DEFAULT NULL,
+         `is_deleted` tinyint NOT NULL DEFAULT '0',
+         PRIMARY KEY (`id`),
+         KEY `name` (`name`),
+         KEY `snmpversion` (`snmpversion`),
+         KEY `is_deleted` (`is_deleted`)
+      ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+   $DB->queryOrDie($query, "10.0 add table glpi_snmpcredentials");
+}
+
+$cred_tables = ['glpi_printers', 'glpi_networkequipments', 'glpi_unmanageds'];
+foreach ($cred_tables as $cred_table) {
+   if (!$DB->fieldExists($cred_table, 'snmpcredentials_id')) {
+      $migration->addField(
+         $cred_table,
+         'snmpcredentials_id',
+         'integer'
+      );
+      $migration->addKey($cred_table, 'snmpcredentials_id');
+   }
+}
 
 if (countElementsInTable(Blacklist::getTable()) === 4) {
 

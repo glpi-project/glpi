@@ -899,7 +899,7 @@ class Inventory extends DbTestCase {
          'entities_id' => 0,
          'is_recursive' => 0,
          'name' => 'Officejet_Pro_8600_34AF9E_',
-         'contact' => null, //($contact ? 'trasher/root' : null),
+         'contact' => null,
          'contact_num' => null,
          'users_id_tech' => 0,
          'groups_id_tech' => 0,
@@ -930,6 +930,7 @@ class Inventory extends DbTestCase {
          'is_dynamic' => 1,
          'uuid' => null,
          'sysdescr' => null,
+         'snmpcredentials_id' => 0,
          'linkid' => $printer_link['linkid'],
          'glpi_computers_items_is_dynamic' => 1,
          'entity' => 0,
@@ -2008,6 +2009,7 @@ class Inventory extends DbTestCase {
          'date_creation' => $equipment->fields['date_creation'],
          'autoupdatesystems_id' => $autoupdatesystems_id,
          'sysdescr' => null,
+         'snmpcredentials_id' => 0,
       ];
       $this->array($equipment->fields)->isIdenticalTo($expected);
 
@@ -2355,6 +2357,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          'date_creation' => null,
          'autoupdatesystems_id' => $autoupdatesystems_id,
          'sysdescr' => null,
+         'snmpcredentials_id' => 0,
       ];
 
       $stacks = [
@@ -2848,6 +2851,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          'date_creation' => null,
          'autoupdatesystems_id' => $autoupdatesystems_id,
          'sysdescr' => null,
+         'snmpcredentials_id' => 0,
       ];
 
       foreach ($iterator as $row) {
@@ -3529,6 +3533,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          'date_creation' => null,
          'autoupdatesystems_id' => $autoupdatesystems_id,
          'sysdescr' => null,
+         'snmpcredentials_id' => 0,
       ];
 
       $first = true;
@@ -3912,6 +3917,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          'date_creation' => $equipment->fields['date_creation'],
          'autoupdatesystems_id' => $autoupdatesystems_id,
          'sysdescr' => null,
+         'snmpcredentials_id' => 0,
       ];
       $this->array($equipment->fields)->isIdenticalTo($expected);
 

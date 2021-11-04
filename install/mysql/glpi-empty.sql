@@ -4445,6 +4445,7 @@ CREATE TABLE `glpi_networkequipments` (
   `date_creation` timestamp NULL DEFAULT NULL,
   `autoupdatesystems_id` int NOT NULL DEFAULT '0',
   `sysdescr` text,
+  `snmpcredentials_id` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -4467,7 +4468,8 @@ CREATE TABLE `glpi_networkequipments` (
   KEY `otherserial` (`otherserial`),
   KEY `uuid` (`uuid`),
   KEY `date_creation` (`date_creation`),
-  KEY `autoupdatesystems_id` (`autoupdatesystems_id`)
+  KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
+  KEY `snmpcredentials_id` (`snmpcredentials_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -5372,6 +5374,7 @@ CREATE TABLE `glpi_printers` (
   `uuid` varchar(255) DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `sysdescr` text,
+  `snmpcredentials_id` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -5395,7 +5398,8 @@ CREATE TABLE `glpi_printers` (
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
   KEY `uuid` (`uuid`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `snmpcredentials_id` (`snmpcredentials_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -8686,10 +8690,10 @@ CREATE TABLE `glpi_agents` (
   `useragent` varchar(255) DEFAULT NULL,
   `tag` varchar(255) DEFAULT NULL,
   `port` varchar(6) DEFAULT NULL,
-  `threads_networkdiscovery` int(4) NOT NULL DEFAULT '1' COMMENT 'Number of threads for Network discovery',
-  `threads_networkinventory` int(4) NOT NULL DEFAULT '1' COMMENT 'Nuùber of threads for Network inventory',
-  `timeout_networkdiscovery` int(4) NOT NULL DEFAULT '0' COMMENT 'Network Discovery task timeout (disabled by default)',
-  `timeout_networkinventory` int(4) NOT NULL DEFAULT '0' COMMENT 'Network Inventory task timeout (disabled by default)',
+  `threads_networkdiscovery` int NOT NULL DEFAULT '1' COMMENT 'Number of threads for Network discovery',
+  `threads_networkinventory` int NOT NULL DEFAULT '1' COMMENT 'Number of threads for Network inventory',
+  `timeout_networkdiscovery` int NOT NULL DEFAULT '0' COMMENT 'Network Discovery task timeout (disabled by default)',
+  `timeout_networkinventory` int NOT NULL DEFAULT '0' COMMENT 'Network Inventory task timeout (disabled by default)',
   PRIMARY KEY (`id`),
   UNIQUE KEY `deviceid` (`deviceid`),
   KEY `name` (`name`),
@@ -8759,6 +8763,7 @@ CREATE TABLE `glpi_unmanageds` (
   `accepted` tinyint NOT NULL DEFAULT '0',
   `hub` tinyint NOT NULL DEFAULT '0',
   `ip` varchar(255) DEFAULT NULL,
+  `snmpcredentials_id` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -8777,7 +8782,8 @@ CREATE TABLE `glpi_unmanageds` (
   KEY `date_creation` (`date_creation`),
   KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
   KEY `domains_id` (`domains_id`),
-  KEY `agents_id` (`agents_id`)
+  KEY `agents_id` (`agents_id`),
+  KEY `snmpcredentials_id` (`snmpcredentials_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_networkporttypes`;
@@ -9100,6 +9106,25 @@ CREATE TABLE `glpi_databases` (
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`),
   KEY `databaseinstances_id` (`databaseinstances_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+
+DROP TABLE IF EXISTS `glpi_snmpcredentials`;
+CREATE TABLE `glpi_snmpcredentials` (
+   `id` int NOT NULL AUTO_INCREMENT,
+   `name` varchar(64) DEFAULT NULL,
+   `snmpversion` varchar(8) NOT NULL DEFAULT '1',
+   `community` varchar(255) DEFAULT NULL,
+   `username` varchar(255) DEFAULT NULL,
+   `authentication` varchar(255) DEFAULT NULL,
+   `auth_passphrase` varchar(255) DEFAULT NULL,
+   `encryption` varchar(255) DEFAULT NULL,
+   `priv_passphrase` varchar(255) DEFAULT NULL,
+   `is_deleted` tinyint NOT NULL DEFAULT '0',
+   PRIMARY KEY (`id`),
+   KEY `name` (`name`),
+   KEY `snmpversion` (`snmpversion`),
+   KEY `is_deleted` (`is_deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;
