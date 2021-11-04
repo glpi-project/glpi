@@ -36,6 +36,7 @@ use Auth;
 use CommonDBTM;
 use Dropdown;
 use Glpi\Inventory\Conf;
+use Glpi\Inventory\Request;
 use RefusedEquipment;
 use RuleImportAssetCollection;
 use RuleImportEntityCollection;
@@ -651,7 +652,7 @@ abstract class MainAsset extends InventoryAsset
          'items_id'  => $items_id,
          'itemtype'  => $itemtype,
          'agents_id' => $this->agent->fields['id'],
-         'method'    => 'inventory'
+         'method'    => $this->request_query ?? Request::INVENT_QUERY
       ];
       $rulesmatched->add($inputrulelog, [], false);
       $rulesmatched->cleanOlddata($items_id, $itemtype);

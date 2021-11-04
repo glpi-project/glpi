@@ -1205,18 +1205,21 @@ class Inventory extends DbTestCase {
       $iterator = $DB->request($monitor_criteria);
       $this->integer(count($iterator))->isIdenticalTo(1);
       $this->string($iterator->current()['name'])->isIdenticalTo('Monitor import (by serial)');
+      $this->string($iterator->current()['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
 
       $printer_criteria = $criteria;
       $printer_criteria['WHERE'] = ['itemtype' => \Printer::getType()];
       $iterator = $DB->request($printer_criteria);
       $this->integer(count($iterator))->isIdenticalTo(1);
       $this->string($iterator->current()['name'])->isIdenticalTo('Printer import (by serial)');
+      $this->string($iterator->current()['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
 
       $computer_criteria = $criteria;
       $computer_criteria['WHERE'] = ['itemtype' => \Computer::getType()];
       $iterator = $DB->request($computer_criteria);
       $this->integer(count($iterator))->isIdenticalTo(1);
       $this->string($iterator->current()['name'])->isIdenticalTo('Computer import (by serial + uuid)');
+      $this->string($iterator->current()['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
    }
 
    public function testUpdateComputer() {
@@ -1278,6 +1281,7 @@ class Inventory extends DbTestCase {
       $iterator = $DB->request($monitor_criteria);
       $this->integer(count($iterator))->isIdenticalTo(1);
       $this->string($iterator->current()['name'])->isIdenticalTo('Monitor import (by serial)');
+      $this->string($iterator->current()['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
 
       $computer_criteria = $mrules_criteria;
       $computer_criteria['WHERE'] = ['itemtype' => \Computer::getType()];
@@ -1285,6 +1289,7 @@ class Inventory extends DbTestCase {
       $this->integer(count($iterator))->isIdenticalTo(1);
       $this->string($iterator->current()['name'])->isIdenticalTo('Computer import (by serial + uuid)');
       $this->integer($iterator->current()['items_id'])->isIdenticalTo($agent['items_id']);
+      $this->string($iterator->current()['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
 
       //get computer models, manufacturer, ...
       $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
@@ -1898,6 +1903,7 @@ class Inventory extends DbTestCase {
       $iterator = $DB->request($monitor_criteria);
       $this->integer(count($iterator))->isIdenticalTo(1);
       $this->string($iterator->current()['name'])->isIdenticalTo('Monitor update (by serial)');
+      $this->string($iterator->current()['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
 
       $computer_criteria = $mrules_criteria;
       $computer_criteria['WHERE'][] = ['itemtype' => \Computer::getType()];
@@ -1907,6 +1913,7 @@ class Inventory extends DbTestCase {
       foreach ($iterator as $rmlog) {
          $this->string($rmlog['name'])->isIdenticalTo('Computer update (by serial + uuid)');
          $this->integer($rmlog['items_id'])->isIdenticalTo($agent['items_id']);
+         $this->string($rmlog['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
       }
    }
 
@@ -2239,6 +2246,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       foreach ($iterator as $neteq) {
          $this->string($neteq['name'])->isIdenticalTo('NetworkEquipment import (by serial)');
          $this->integer($neteq['items_id'])->isIdenticalTo($equipments_id);
+         $this->string($neteq['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
       }
 
       $unmanaged_criteria = $mrules_criteria;
@@ -2247,6 +2255,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->integer(count($iterator))->isIdenticalTo(5);
       foreach ($iterator as $unmanaged) {
          $this->string($unmanaged['name'])->isIdenticalTo('Device import (by ip+ifdescr)');
+         $this->string($unmanaged['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
       }
    }
 
@@ -2734,6 +2743,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->integer(count($iterator))->isIdenticalTo($expected_eq_count);
       foreach ($iterator as $neteq) {
          $this->string($neteq['name'])->isIdenticalTo('NetworkEquipment import (by serial)');
+         $this->string($neteq['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
       }
 
       $unmanaged_criteria = $mrules_criteria;
@@ -3414,6 +3424,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       foreach ($iterator as $neteq) {
          $this->string($neteq['name'])->isIdenticalTo('NetworkEquipment import (by serial)');
          $this->integer($neteq['items_id'])->isIdenticalTo($equipments_id);
+         $this->string($neteq['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
       }
 
       $unmanaged_criteria = $mrules_criteria;
@@ -3794,7 +3805,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->integer(count($iterator))->isIdenticalTo($expected_eq_count);
       foreach ($iterator as $neteq) {
          $this->string($neteq['name'])->isIdenticalTo('NetworkEquipment import (by serial)');
-         //$this->integer($neteq['items_id'])->isIdenticalTo($equipments_id);
+         $this->string($neteq['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
       }
 
       $unmanaged_criteria = $mrules_criteria;
@@ -3803,6 +3814,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->integer(count($iterator))->isIdenticalTo(count($unmanageds));
       foreach ($iterator as $unmanaged) {
          $this->string($unmanaged['name'])->isIdenticalTo('Device import (by ip+ifdescr)');
+         $this->string($unmanaged['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
       }
    }
 
@@ -4276,12 +4288,14 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $iterator = $DB->request($monitor_criteria);
       $this->integer(count($iterator))->isIdenticalTo(1);
       $this->string($iterator->current()['name'])->isIdenticalTo('Monitor import (by serial)');
+      $this->string($iterator->current()['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
 
       $printer_criteria = $criteria;
       $printer_criteria['WHERE'] = ['itemtype' => \Printer::getType()];
       $iterator = $DB->request($printer_criteria);
       $this->integer(count($iterator))->isIdenticalTo(1);
       $this->string($iterator->current()['name'])->isIdenticalTo('Printer import (by serial)');
+      $this->string($iterator->current()['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
 
       $computer_criteria = $criteria;
       $computer_criteria['WHERE'] = ['itemtype' => \Computer::getType()];
@@ -4289,6 +4303,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->integer(count($iterator))->isIdenticalTo(1);
       $this->string($iterator->current()['name'])->isIdenticalTo('Computer import (by serial + uuid)');
       $this->integer($iterator->current()['items_id'])->isIdenticalTo($gagent->fields['items_id']);
+      $this->string($iterator->current()['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
    }
 
    public function testImportRefusedFromEntitiesRules() {

@@ -93,6 +93,8 @@ abstract class AbstractRequest
    protected $headers;
    /** @var int */
    private $http_response_code = 200;
+   /** @var string */
+   protected $query;
 
    public function __construct() {
        $this->headers = $this->initHeaders();
@@ -532,5 +534,9 @@ abstract class AbstractRequest
 
    public function getHttpResponseCode(): int {
        return $this->http_response_code;
+   }
+
+   public function getQuery():? string {
+      return $this->query;
    }
 }

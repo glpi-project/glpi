@@ -74,6 +74,8 @@ class Inventory
    private $inventory_format;
    /** @var InventoryAsset */
    private $mainasset;
+   /** @var string */
+   private $request_query;
 
    /**
     * @param mixed   $data   Inventory data, optional
@@ -134,6 +136,15 @@ class Inventory
 
       $this->extractMetadata();
       return true;
+   }
+
+   /**
+    * @param string $query
+    * @return $this
+    */
+   public function setRequestQuery(string $query): self {
+      $this->request_query = $query;
+      return $this;
    }
 
    /**
@@ -285,6 +296,7 @@ class Inventory
 
          $main_class = $this->getMainClass();
          $main = new $main_class($this->item, $this->raw_data);
+         $main->setRequestQuery($this->request_query);
          $main->setAgent($this->getAgent());
          $main->setExtraData($this->data);
 
