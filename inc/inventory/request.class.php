@@ -59,8 +59,8 @@ class Request extends AbstractRequest
     /**
      * Handle Query
      *
-     * @param string $query   Query mode (one of self::*_QUERY)
-     * @param mixed  $content Contents, optionnal
+     * @param string $query   Query mode (one of self::*_QUERY or self::*_ACTION)
+     * @param mixed  $content Contents, optional
      *
      * @return boolean
      */

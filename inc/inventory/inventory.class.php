@@ -76,7 +76,7 @@ class Inventory
    private $mainasset;
 
    /**
-    * @param mixed   $data   Inventory data, optionnal
+    * @param mixed   $data   Inventory data, optional
     * @param integer $mode   One of self::*_MODE
     * @param integer $format One of Request::*_MODE
     */
@@ -99,7 +99,7 @@ class Inventory
    /**
     * Set data, and convert them if we're using legacy format
     *
-    * @param mixed   $data   Inventory data, optionnal
+    * @param mixed   $data   Inventory data, optional
     * @param integer $format One of self::*_FORMAT
     *
     * @return boolean
