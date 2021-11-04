@@ -37,6 +37,7 @@ use Blacklist;
 use CommonDBTM;
 use Dropdown;
 use Glpi\Inventory\Conf;
+use Glpi\Inventory\Request;
 use Manufacturer;
 use OperatingSystemKernelVersion;
 
@@ -60,6 +61,8 @@ abstract class InventoryAsset
    protected $with_history = true;
    /** @var InventoryAsset */
    protected $main_asset;
+   /** @var string */
+   protected $request_query;
 
    /**
     * Constructor
@@ -255,6 +258,18 @@ abstract class InventoryAsset
     */
    public function setEntityID($id): InventoryAsset {
       $this->entities_id = $id;
+      return $this;
+   }
+
+   /**
+    * Set request query
+    *
+    * @param string $query Requested query
+    *
+    * @return $this
+    */
+   public function setRequestQuery($query = Request::INVENT_QUERY): InventoryAsset {
+      $this->request_query = $query;
       return $this;
    }
 

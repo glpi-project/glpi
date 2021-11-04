@@ -65,6 +65,7 @@ class Request extends AbstractRequest
      * @return boolean
      */
    protected function handleAction($query, $content = null) :bool {
+      $this->query = $query;
       switch ($query) {
          case self::GET_PARAMS:
             $this->getParams($content);
@@ -185,7 +186,8 @@ class Request extends AbstractRequest
          'mode' => $this->getMode(),
          'inventory' => $this->inventory,
          'deviceid' => ($this->getMode() == self::XML_MODE ? (string)$data->DEVICEID : $data->deviceid),
-         'response' => $response
+         'response' => $response,
+         'query' => $this->query
       ];
 
       $hook_response = Plugin::doHookFunction(
@@ -237,7 +239,10 @@ class Request extends AbstractRequest
     */
    public function inventory($data) {
       $this->inventory = new Inventory();
-      $this->inventory->setData($data, $this->getMode());
+      $this->inventory
+         ->setRequestQuery($this->query)
+         ->setData($data, $this->getMode());
+
       $this->inventory->doInventory($this->test_rules);
 
       if ($this->inventory->inError()) {
