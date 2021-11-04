@@ -119,7 +119,7 @@ class Printer extends AbstractInventoryAsset {
          'last_pages_counter' => 1802
       ]);
 
-      //get one management port only, since iftype 24 is not importabel per default
+      //get one management port only, since iftype 24 is not importable per default
       $this->array($main->getNetworkPorts())->isIdenticalTo([]);
       $this->array($mports = $main->getManagementPorts())->hasSize(1)->hasKey('management');
       $this->array((array)$mports['management'])->isIdenticalTo([

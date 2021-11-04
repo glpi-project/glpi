@@ -1181,6 +1181,42 @@ class Inventory extends DbTestCase {
       $this->checkComputer1Volumes($computer);
       $this->checkComputer1Softwares($computer);
       $this->checkComputer1Batteries($computer);
+
+      //check matchedlogs
+      $mlogs = new \RuleMatchedLog();
+      $found = $mlogs->find();
+      $this->array($found)->hasSize(3);
+
+      $criteria = [
+         'FROM' => \RuleMatchedLog::getTable(),
+         'LEFT JOIN' => [
+            \Rule::getTable() => [
+               'ON' => [
+                  \RuleMatchedLog::getTable() => 'rules_id',
+                  \Rule::getTable() => 'id'
+               ]
+            ]
+         ],
+         'WHERE' => []
+      ];
+
+      $monitor_criteria = $criteria;
+      $monitor_criteria['WHERE'] = ['itemtype' => \Monitor::getType()];
+      $iterator = $DB->request($monitor_criteria);
+      $this->integer(count($iterator))->isIdenticalTo(1);
+      $this->string($iterator->current()['name'])->isIdenticalTo('Monitor import (by serial)');
+
+      $printer_criteria = $criteria;
+      $printer_criteria['WHERE'] = ['itemtype' => \Printer::getType()];
+      $iterator = $DB->request($printer_criteria);
+      $this->integer(count($iterator))->isIdenticalTo(1);
+      $this->string($iterator->current()['name'])->isIdenticalTo('Printer import (by serial)');
+
+      $computer_criteria = $criteria;
+      $computer_criteria['WHERE'] = ['itemtype' => \Computer::getType()];
+      $iterator = $DB->request($computer_criteria);
+      $this->integer(count($iterator))->isIdenticalTo(1);
+      $this->string($iterator->current()['name'])->isIdenticalTo('Computer import (by serial + uuid)');
    }
 
    public function testUpdateComputer() {
@@ -1218,6 +1254,37 @@ class Inventory extends DbTestCase {
          ->string['version']->isIdenticalTo('2.3.19')
          ->string['itemtype']->isIdenticalTo('Computer')
          ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
+
+      //check matchedlogs
+      $mlogs = new \RuleMatchedLog();
+      $mrules_found = $mlogs->find();
+      $this->array($mrules_found)->hasSize(2);
+
+      $mrules_criteria = [
+         'FROM' => \RuleMatchedLog::getTable(),
+         'LEFT JOIN' => [
+            \Rule::getTable() => [
+               'ON' => [
+                  \RuleMatchedLog::getTable() => 'rules_id',
+                  \Rule::getTable() => 'id'
+               ]
+            ]
+         ],
+         'WHERE' => []
+      ];
+
+      $monitor_criteria = $mrules_criteria;
+      $monitor_criteria['WHERE'] = ['itemtype' => \Monitor::getType()];
+      $iterator = $DB->request($monitor_criteria);
+      $this->integer(count($iterator))->isIdenticalTo(1);
+      $this->string($iterator->current()['name'])->isIdenticalTo('Monitor import (by serial)');
+
+      $computer_criteria = $mrules_criteria;
+      $computer_criteria['WHERE'] = ['itemtype' => \Computer::getType()];
+      $iterator = $DB->request($computer_criteria);
+      $this->integer(count($iterator))->isIdenticalTo(1);
+      $this->string($iterator->current()['name'])->isIdenticalTo('Computer import (by serial + uuid)');
+      $this->integer($iterator->current()['items_id'])->isIdenticalTo($agent['items_id']);
 
       //get computer models, manufacturer, ...
       $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
@@ -1819,6 +1886,28 @@ class Inventory extends DbTestCase {
       }
 
       $this->array($types_count)->isIdenticalTo($expected_types_count);
+
+      //check matchedlogs
+      $mlogs = new \RuleMatchedLog();
+      $found = $mlogs->find(['NOT' => ['id' => array_keys($mrules_found)]]);
+      $mrules_criteria['WHERE'] = ['NOT' => [\RuleMatchedLog::getTable() . '.id' => array_keys($mrules_found)]];
+      $this->array($found)->hasSize(5);
+
+      $monitor_criteria = $mrules_criteria;
+      $monitor_criteria['WHERE'][] = ['itemtype' => \Monitor::getType()];
+      $iterator = $DB->request($monitor_criteria);
+      $this->integer(count($iterator))->isIdenticalTo(1);
+      $this->string($iterator->current()['name'])->isIdenticalTo('Monitor update (by serial)');
+
+      $computer_criteria = $mrules_criteria;
+      $computer_criteria['WHERE'][] = ['itemtype' => \Computer::getType()];
+      $iterator = $DB->request($computer_criteria);
+
+      $this->integer(count($iterator))->isIdenticalTo(4);
+      foreach ($iterator as $rmlog) {
+         $this->string($rmlog['name'])->isIdenticalTo('Computer update (by serial + uuid)');
+         $this->integer($rmlog['items_id'])->isIdenticalTo($agent['items_id']);
+      }
    }
 
    public function testImportNetworkEquipment() {
@@ -2124,6 +2213,41 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          $this->boolean(in_array($unmanaged['name'], array_keys($expecteds)))->isTrue($unmanaged['name']);
          $this->string($unmanaged['sysdescr'])->isIdenticalTo($expecteds[$unmanaged['name']]);
       }
+
+      //check matchedlogs
+      $mlogs = new \RuleMatchedLog();
+      $found = $mlogs->find();
+      $this->array($found)->hasSize(6);//1 equipment, 5 unmanageds
+
+      $mrules_criteria = [
+         'FROM' => \RuleMatchedLog::getTable(),
+         'LEFT JOIN' => [
+            \Rule::getTable() => [
+               'ON' => [
+                  \RuleMatchedLog::getTable() => 'rules_id',
+                  \Rule::getTable() => 'id'
+               ]
+            ]
+         ],
+         'WHERE' => []
+      ];
+
+      $neteq_criteria = $mrules_criteria;
+      $neteq_criteria['WHERE'][] = ['itemtype' => \NetworkEquipment::getType()];
+      $iterator = $DB->request($neteq_criteria);
+      $this->integer(count($iterator))->isIdenticalTo(1);
+      foreach ($iterator as $neteq) {
+         $this->string($neteq['name'])->isIdenticalTo('NetworkEquipment import (by serial)');
+         $this->integer($neteq['items_id'])->isIdenticalTo($equipments_id);
+      }
+
+      $unmanaged_criteria = $mrules_criteria;
+      $unmanaged_criteria['WHERE'][] = ['itemtype' => \Unmanaged::getType()];
+      $iterator = $DB->request($unmanaged_criteria);
+      $this->integer(count($iterator))->isIdenticalTo(5);
+      foreach ($iterator as $unmanaged) {
+         $this->string($unmanaged['name'])->isIdenticalTo('Device import (by ip+ifdescr)');
+      }
    }
 
    public function testImportStackedNetworkEquipment() {
@@ -2184,12 +2308,12 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $locations_id = $cloc['id'];
 
       //check created equipments
-      $expected_count = 5;
+      $expected_eq_count = 5;
       $iterator = $DB->request([
          'FROM'   => \NetworkEquipment::getTable(),
          'WHERE'  => ['is_dynamic' => 1]
       ]);
-      $this->integer(count($iterator))->isIdenticalTo($expected_count);
+      $this->integer(count($iterator))->isIdenticalTo($expected_eq_count);
 
       $main_expected = [
          'id' => null,
@@ -2585,6 +2709,37 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          }
          ++$i;
       }*/
+
+      //check matchedlogs
+      $mlogs = new \RuleMatchedLog();
+      $found = $mlogs->find();
+      $this->array($found)->hasSize(48);
+
+      $mrules_criteria = [
+         'FROM' => \RuleMatchedLog::getTable(),
+         'LEFT JOIN' => [
+            \Rule::getTable() => [
+               'ON' => [
+                  \RuleMatchedLog::getTable() => 'rules_id',
+                  \Rule::getTable() => 'id'
+               ]
+            ]
+         ],
+         'WHERE' => []
+      ];
+
+      $neteq_criteria = $mrules_criteria;
+      $neteq_criteria['WHERE'][] = ['itemtype' => \NetworkEquipment::getType()];
+      $iterator = $DB->request($neteq_criteria);
+      $this->integer(count($iterator))->isIdenticalTo($expected_eq_count);
+      foreach ($iterator as $neteq) {
+         $this->string($neteq['name'])->isIdenticalTo('NetworkEquipment import (by serial)');
+      }
+
+      $unmanaged_criteria = $mrules_criteria;
+      $unmanaged_criteria['WHERE'][] = ['itemtype' => \Unmanaged::getType()];
+      $iterator = $DB->request($unmanaged_criteria);
+      $this->integer(count($iterator))->isIdenticalTo(43);
    }
 
    public function testImportNetworkEquipmentMultiConnections() {
@@ -3233,6 +3388,38 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          }
          ++$i;
       }
+
+      //check matchedlogs
+      $mlogs = new \RuleMatchedLog();
+      $found = $mlogs->find();
+      $this->array($found)->hasSize(61);
+
+      $mrules_criteria = [
+         'FROM' => \RuleMatchedLog::getTable(),
+         'LEFT JOIN' => [
+            \Rule::getTable() => [
+               'ON' => [
+                  \RuleMatchedLog::getTable() => 'rules_id',
+                  \Rule::getTable() => 'id'
+               ]
+            ]
+         ],
+         'WHERE' => []
+      ];
+
+      $neteq_criteria = $mrules_criteria;
+      $neteq_criteria['WHERE'][] = ['itemtype' => \NetworkEquipment::getType()];
+      $iterator = $DB->request($neteq_criteria);
+      $this->integer(count($iterator))->isIdenticalTo(1);
+      foreach ($iterator as $neteq) {
+         $this->string($neteq['name'])->isIdenticalTo('NetworkEquipment import (by serial)');
+         $this->integer($neteq['items_id'])->isIdenticalTo($equipments_id);
+      }
+
+      $unmanaged_criteria = $mrules_criteria;
+      $unmanaged_criteria['WHERE'][] = ['itemtype' => \Unmanaged::getType()];
+      $iterator = $DB->request($unmanaged_criteria);
+      $this->integer(count($iterator))->isIdenticalTo(60);
    }
 
    public function testImportNetworkEquipmentWireless() {
@@ -3293,12 +3480,12 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $locations_id = $cloc['id'];
 
       //check created equipments
-      $expected_count = 302;
+      $expected_eq_count = 302;
       $iterator = $DB->request([
          'FROM'   => \NetworkEquipment::getTable(),
          'WHERE'  => ['is_dynamic' => 1]
       ]);
-      $this->integer(count($iterator))->isIdenticalTo($expected_count);
+      $this->integer(count($iterator))->isIdenticalTo($expected_eq_count);
 
       $expected_eq = [
          'id' => null,
@@ -3581,6 +3768,41 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $this->variable($unmanaged[$key])->isEqualTo($value);
          }
          ++$i;
+      }
+
+      //check matchedlogs
+      $mlogs = new \RuleMatchedLog();
+      $found = $mlogs->find();
+      $this->array($found)->hasSize($expected_eq_count + count($unmanageds));
+
+      $mrules_criteria = [
+         'FROM' => \RuleMatchedLog::getTable(),
+         'LEFT JOIN' => [
+            \Rule::getTable() => [
+               'ON' => [
+                  \RuleMatchedLog::getTable() => 'rules_id',
+                  \Rule::getTable() => 'id'
+               ]
+            ]
+         ],
+         'WHERE' => []
+      ];
+
+      $neteq_criteria = $mrules_criteria;
+      $neteq_criteria['WHERE'][] = ['itemtype' => \NetworkEquipment::getType()];
+      $iterator = $DB->request($neteq_criteria);
+      $this->integer(count($iterator))->isIdenticalTo($expected_eq_count);
+      foreach ($iterator as $neteq) {
+         $this->string($neteq['name'])->isIdenticalTo('NetworkEquipment import (by serial)');
+         //$this->integer($neteq['items_id'])->isIdenticalTo($equipments_id);
+      }
+
+      $unmanaged_criteria = $mrules_criteria;
+      $unmanaged_criteria['WHERE'][] = ['itemtype' => \Unmanaged::getType()];
+      $iterator = $DB->request($unmanaged_criteria);
+      $this->integer(count($iterator))->isIdenticalTo(count($unmanageds));
+      foreach ($iterator as $unmanaged) {
+         $this->string($unmanaged['name'])->isIdenticalTo('Device import (by ip+ifdescr)');
       }
    }
 
@@ -3996,6 +4218,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
       $this->array($result)->isEqualTo($expected);
 
+      //check no matchedlogs
+      $mlogs = new \RuleMatchedLog();
+      $found = $mlogs->find();
+      $this->array($found)->hasSize(0);
+
       //test inventory from refused equipment, will be accepted since rules has been reset ;)
       $refused = new \RefusedEquipment();
       $this->boolean($refused->getFromDB($result['id']))->isTrue();
@@ -4025,6 +4252,43 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $computer = new \Computer();
       $this->boolean($computer->getFromDB($gagent->fields['items_id']))->isTrue();
       $this->string($computer->fields['name'])->isIdenticalTo('glpixps');
+
+      //check no matchedlogs
+      $mlogs = new \RuleMatchedLog();
+      $found = $mlogs->find();
+      $this->array($found)->hasSize(3);
+
+      $criteria = [
+         'FROM' => \RuleMatchedLog::getTable(),
+         'LEFT JOIN' => [
+            \Rule::getTable() => [
+               'ON' => [
+                  \RuleMatchedLog::getTable() => 'rules_id',
+                  \Rule::getTable() => 'id'
+               ]
+            ]
+         ],
+         'WHERE' => []
+      ];
+
+      $monitor_criteria = $criteria;
+      $monitor_criteria['WHERE'] = ['itemtype' => \Monitor::getType()];
+      $iterator = $DB->request($monitor_criteria);
+      $this->integer(count($iterator))->isIdenticalTo(1);
+      $this->string($iterator->current()['name'])->isIdenticalTo('Monitor import (by serial)');
+
+      $printer_criteria = $criteria;
+      $printer_criteria['WHERE'] = ['itemtype' => \Printer::getType()];
+      $iterator = $DB->request($printer_criteria);
+      $this->integer(count($iterator))->isIdenticalTo(1);
+      $this->string($iterator->current()['name'])->isIdenticalTo('Printer import (by serial)');
+
+      $computer_criteria = $criteria;
+      $computer_criteria['WHERE'] = ['itemtype' => \Computer::getType()];
+      $iterator = $DB->request($computer_criteria);
+      $this->integer(count($iterator))->isIdenticalTo(1);
+      $this->string($iterator->current()['name'])->isIdenticalTo('Computer import (by serial + uuid)');
+      $this->integer($iterator->current()['items_id'])->isIdenticalTo($gagent->fields['items_id']);
    }
 
    public function testImportRefusedFromEntitiesRules() {

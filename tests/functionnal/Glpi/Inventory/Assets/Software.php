@@ -121,7 +121,7 @@ class Software extends AbstractInventoryAsset {
    public function testHandle() {
       $computer = getItemByTypeName('Computer', '_test_pc01');
 
-      //first, check there are no AV linked to this computer
+      //first, check there are no software linked to this computer
       $sov = new \Item_SoftwareVersion();
       $this->boolean($sov->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isFalse('A software version is already linked to computer!');
@@ -190,5 +190,36 @@ class Software extends AbstractInventoryAsset {
       $version = new \SoftwareVersion();
       $this->boolean($version->getFromDB($sov->fields['softwareversions_id']))->isTrue();
       $this->integer($version->fields['operatingsystems_id'])->isGreaterThan(0);
+
+      //new computer with same software
+      global $DB;
+      $soft_reference = $DB->request(\Software::getTable());
+      $this->integer(count($soft_reference))->isIdenticalTo(4);
+
+      $computer2 = getItemByTypeName('Computer', '_test_pc02');
+      //first, check there are no software linked to this computer
+      $this->boolean($sov->getFromDbByCrit(['items_id' => $computer2->fields['id'], 'itemtype' => 'Computer']))
+         ->isFalse('A software version is already linked to computer!');
+
+      $asset = new \Glpi\Inventory\Asset\Software($computer2, $json->content->softwares);
+      $osasset = new \Glpi\Inventory\Asset\OperatingSystem($computer2, (array)$json->content->operatingsystem);
+      $osasset->prepare();
+      //handle
+      $osasset->handleLinks();
+      $osasset->handle();
+
+      $extra_data = (array)$json->content;
+      $extra_data[\Glpi\Inventory\Asset\OperatingSystem::class] = $osasset;
+
+      $asset->setExtraData($extra_data);
+      $result = $asset->prepare();
+
+      //handle
+      $asset->handleLinks();
+      $asset->handle();
+      $this->boolean($sov->getFromDbByCrit(['items_id' => $computer2->fields['id'], 'itemtype' => 'Computer']))
+         ->isTrue('A software version has not been linked to computer!');
+
+      $this->integer(count($DB->request(\Software::getTable())))->isIdenticalTo(count($soft_reference));
    }
 }
