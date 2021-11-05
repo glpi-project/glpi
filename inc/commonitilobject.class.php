@@ -6131,6 +6131,8 @@ abstract class CommonITILObject extends CommonDBTM {
     * @since 10.0.0
     */
    public function getLegacyTimelineActionsHTML(): string {
+      global $PLUGIN_HOOKS;
+
       $legacy_actions = '';
 
       if (isset($PLUGIN_HOOKS[Hooks::TIMELINE_ACTIONS])) {
