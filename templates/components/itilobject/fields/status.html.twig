@@ -47,7 +47,7 @@
    {% endset %}
 {% else %}
    {% set status_field %}
-      <i class="itilstatus closed fas fa-circle"></i>
+      {{ item.getStatusIcon(item.fields['status'])|raw }}
       {{ item.getStatus(item.fields['status']) }}
 
       {% if item.canReopen() %}
