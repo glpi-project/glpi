@@ -224,7 +224,7 @@ if (!$DB->fieldExists('glpi_networkequipments', 'uptime')) {
    $migration->addField(
       'glpi_networkequipments',
       'uptime',
-      'text', [
+      'string', [
          'after' => 'cpu',
       ]
    );
