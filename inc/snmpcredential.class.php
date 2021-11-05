@@ -113,7 +113,7 @@ class SNMPCredential extends CommonDBTM {
     * @return string
     */
    function getAuthProtocol(): string {
-      switch ($this->fields['id']) {
+      switch ($this->fields['authentication']) {
          case 1:
             return 'MD5';
          case 2:
@@ -130,7 +130,7 @@ class SNMPCredential extends CommonDBTM {
     * @return string
     */
    function getEncryption(): string {
-      switch ($this->fields['id']) {
+      switch ($this->fields['encryption']) {
          case 1:
             return 'DES';
          case 2:
