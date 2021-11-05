@@ -210,6 +210,36 @@ if (!$DB->fieldExists('glpi_networkequipments', 'sysdescr')) {
    );
 }
 
+if (!$DB->fieldExists('glpi_networkequipments', 'cpu')) {
+   $migration->addField(
+      'glpi_networkequipments',
+      'cpu',
+      'integer', [
+         'after' => 'sysdescr',
+      ]
+   );
+}
+
+if (!$DB->fieldExists('glpi_networkequipments', 'uptime')) {
+   $migration->addField(
+      'glpi_networkequipments',
+      'uptime',
+      'text', [
+         'after' => 'cpu',
+      ]
+   );
+}
+
+if (!$DB->fieldExists('glpi_networkequipments', 'last_inventory_update')) {
+   $migration->addField(
+      'glpi_networkequipments',
+      'last_inventory_update',
+      'timestamp', [
+         'after' => 'uptime',
+      ]
+   );
+}
+
 if (!$DB->fieldExists('glpi_printers', 'sysdescr')) {
    $migration->addField(
       'glpi_printers',
@@ -220,6 +250,15 @@ if (!$DB->fieldExists('glpi_printers', 'sysdescr')) {
    );
 }
 
+if (!$DB->fieldExists('glpi_printers', 'last_inventory_update')) {
+   $migration->addField(
+      'glpi_printers',
+      'last_inventory_update',
+      'timestamp', [
+         'after' => 'sysdescr',
+      ]
+   );
+}
 //new fields in networports table
 $netport_fields = [
    'ifmtu' => "int NOT NULL DEFAULT '0'",
