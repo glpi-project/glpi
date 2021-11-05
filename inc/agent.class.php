@@ -180,29 +180,29 @@ class Agent extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='name'>".__('Name')."</label></td>";
-      echo "<td class='center'>";
+      echo "<td>";
       echo Html::input('name', ['value' => $this->fields['name'], 'size' => 40]);
       echo "</td>";
       echo "<td>".__('Locked')."</td>";
-      echo "<td class='center'>";
+      echo "<td>";
       Dropdown::showYesNo('locked', $this->fields["locked"]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='deviceid'>".__('Device id')."</label></td>";
-      echo "<td class='center'>";
-      echo "<input type='text' name='deviceid' id='deviceid' value='".$this->fields['deviceid']."' required='required'/>";
+      echo "<td>";
+      echo Html::input('deviceid', ['value' => $this->fields['deviceid'], 'size' => 40, 'required' => 'required']);
       echo "</td>";
       echo "<td>"._n('Port', 'Ports', 1)."</td>";
-      echo "<td class='center'>";
-      echo "<input type='text' name='port' value='".$this->fields['port']."'/>";
+      echo "<td>";
+      echo Html::input('port', ['value' => $this->fields['port'], 'type' => 'number']);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='agenttypes_id'>".AgentType::getTypeName(1)."</label></td>";
-      echo "<td class='center'>";
+      echo "<td>";
 
       $value = $this->isNewItem() ? 1 : $this->fields['agenttypes_id'];
       AgentType::dropdown(['value' => $value]);
@@ -212,12 +212,12 @@ class Agent extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Item type')."</td>";
-      echo "<td class='center'>";
+      echo "<td>";
       $itemtype = $this->fields['itemtype'];
       Dropdown::showFromArray('itemtype', array_combine($CFG_GLPI['inventory_types'], $CFG_GLPI['inventory_types']), ['value' => $itemtype]);
       echo "</td>";
       echo "<td>".__('Item link')."</td>";
-      echo "<td class='center'>";
+      echo "<td>";
       if (!empty($this->fields["items_id"]) && $itemtype) {
          $asset = new $this->fields['itemtype'];
          $asset->getFromDB($this->fields['items_id']);
@@ -235,31 +235,68 @@ class Agent extends CommonDBTM {
       if (!$this->isNewItem()) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>"._n('Version', 'Versions', 1)."</td>";
-         echo "<td class='center'>";
+         echo "<td>";
          $versions = importArrayFromDB($this->fields["version"]);
          foreach ($versions as $module => $version) {
             echo "<strong>".$module. "</strong>: ".$version."<br/>";
          }
          echo "</td>";
          echo "<td>".__('Tag')."</td>";
-         echo "<td class='center'>";
+         echo "<td>";
          echo $this->fields["tag"];
          echo "</td>";
          echo "</tr>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Useragent')."</td>";
-         echo "<td class='center'>";
+         echo "<td>";
          echo $this->fields["useragent"];
          echo "</td>";
          echo "<td>".__('Last contact')."</td>";
-         echo "<td align='center'>";
+         echo "<td>";
          echo Html::convDateTime($this->fields["last_contact"]);
          echo "</td>";
          echo "</tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2'>";
+         echo "<td>".__('Discovery threads')."</td>";
+         echo "<td>";
+         Dropdown::showNumber(
+            'threads_networkdiscovery', [
+               'value' => $this->fields['threads_networkdiscovery'],
+               'toadd' => [__('General setup')]
+            ]
+         );
+         echo "</td>";
+         echo "<td>".__('Discovery timeout')."</td>";
+         echo "<td>";
+         Dropdown::showNumber(
+            'timeout_networkdiscovery', [
+               'value' => $this->fields['timeout_networkdiscovery'],
+               'toadd' => [__('General setup')]
+            ]
+         );
+         echo "</td>";
+         echo "</tr>";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".__('Inventory threads')."</td>";
+         echo "<td>";
+         Dropdown::showNumber(
+            'threads_networkinventory', [
+               'value' => $this->fields['threads_networkinventory'],
+               'toadd' => [__('General setup')]
+            ]
+         );
+         echo "</td>";
+         echo "<td>".__('Inventory timeout')."</td>";
+         echo "<td>";
+         Dropdown::showNumber(
+            'timeout_networkinventory', [
+               'value' => $this->fields['timeout_networkinventory'],
+               'toadd' => [__('General setup')]
+            ]
+         );
          echo "</td>";
          echo "</tr>";
       }
