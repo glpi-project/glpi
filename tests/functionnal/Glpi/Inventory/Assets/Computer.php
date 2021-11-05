@@ -86,7 +86,7 @@ class Computer extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'asset'  => '{"chassis_type":"Laptop","datelastloggeduser":"Wed Oct 3 06:56","defaultgateway":"192.168.1.1","dns":"192.168.1.1\\/172.28.200.20","lastloggeduser":"trasher","memory":7822,"name":"glpixps","swap":7951,"uuid":"4c4c4544-0034-3010-8048-b6c04f503732","vmsystem":"Physical","workgroup":"teclib.infra","domains_id":"teclib.infra","users_id":0,"contact":"trasher","manufacturers_id":"Dell Inc.","computermodels_id":"XPS 13 9350","serial":"640HP72","mserial":"\\/640HP72\\/CN129636460078\\/","computertypes_id":"Laptop","autoupdatesystems_id":"GLPI Native Inventory"}'
+            'asset'  => '{"chassis_type":"Laptop","datelastloggeduser":"Wed Oct 3 06:56","defaultgateway":"192.168.1.1","dns":"192.168.1.1\\/172.28.200.20","lastloggeduser":"trasher","memory":7822,"name":"glpixps","swap":7951,"uuid":"4c4c4544-0034-3010-8048-b6c04f503732","vmsystem":"Physical","workgroup":"teclib.infra","domains_id":"teclib.infra","users_id":0,"contact":"trasher","manufacturers_id":"Dell Inc.","computermodels_id":"XPS 13 9350","serial":"640HP72","mserial":"\\/640HP72\\/CN129636460078\\/","computertypes_id":"Laptop","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW"}'
          ], [ //only hardware
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -119,7 +119,7 @@ class Computer extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'asset'  => '{"chassis_type":"Laptop","datelastloggeduser":"Wed Oct 3 06:56","defaultgateway":"192.168.1.1","dns":"192.168.1.1\\/172.28.200.20","lastloggeduser":"trasher","memory":7822,"name":"glpixps","swap":7951,"uuid":"4c4c4544-0034-3010-8048-b6c04f503732","vmsystem":"Physical","workgroup":"teclib.infra","domains_id":"teclib.infra","users_id":0,"contact":"trasher","computertypes_id":"Laptop","autoupdatesystems_id":"GLPI Native Inventory"}'
+            'asset'  => '{"chassis_type":"Laptop","datelastloggeduser":"Wed Oct 3 06:56","defaultgateway":"192.168.1.1","dns":"192.168.1.1\\/172.28.200.20","lastloggeduser":"trasher","memory":7822,"name":"glpixps","swap":7951,"uuid":"4c4c4544-0034-3010-8048-b6c04f503732","vmsystem":"Physical","workgroup":"teclib.infra","domains_id":"teclib.infra","users_id":0,"contact":"trasher","computertypes_id":"Laptop","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW"}'
          ], [ //only bios
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -141,7 +141,7 @@ class Computer extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'asset'  => '{"manufacturers_id":"Dell Inc.","computermodels_id":"XPS 13 9350","serial":"640HP72","mserial":"\\/640HP72\\/CN129636460078\\/","autoupdatesystems_id":"GLPI Native Inventory"}'
+            'asset'  => '{"manufacturers_id":"Dell Inc.","computermodels_id":"XPS 13 9350","serial":"640HP72","mserial":"\\/640HP72\\/CN129636460078\\/","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW"}'
          ], [ //only bios - with otherserial
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -164,7 +164,7 @@ class Computer extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'asset'  => '{"manufacturers_id":"Dell Inc.","computermodels_id":"XPS 13 9350","serial":"640HP72","mserial":"\\/640HP72\\/CN129636460078\\/","otherserial":"SER1234","autoupdatesystems_id":"GLPI Native Inventory"}'
+            'asset'  => '{"manufacturers_id":"Dell Inc.","computermodels_id":"XPS 13 9350","serial":"640HP72","mserial":"\\/640HP72\\/CN129636460078\\/","otherserial":"SER1234","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW"}'
          ]
       ];
    }
@@ -173,6 +173,9 @@ class Computer extends AbstractInventoryAsset {
     * @dataProvider assetProvider
     */
    public function testPrepare($xml, $asset) {
+      $date_now = date('Y-m-d H:i:s');
+      $_SESSION['glpi_currentime'] = $date_now;
+      $asset = str_replace('DATE_NOW', $date_now, $asset);
       $converter = new \Glpi\Inventory\Converter;
       $data = $converter->convert($xml);
       $json = json_decode($data);

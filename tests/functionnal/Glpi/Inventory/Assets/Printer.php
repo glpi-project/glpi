@@ -62,7 +62,7 @@ class Printer extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"driver": "HP Color LaserJet Pro MFP M476 PCL 6", "name": "HP Color LaserJet Pro MFP M476 PCL 6", "network": false, "printprocessor": "hpcpp155", "resolution": "600x600", "shared": false, "sharename": "HP Color LaserJet Pro MFP M476 PCL 6  (1)", "status": "Unknown", "have_usb": 0, "autoupdatesystems_id": "GLPI Native Inventory"}'
+            'expected'  => '{"driver": "HP Color LaserJet Pro MFP M476 PCL 6", "name": "HP Color LaserJet Pro MFP M476 PCL 6", "network": false, "printprocessor": "hpcpp155", "resolution": "600x600", "shared": false, "sharename": "HP Color LaserJet Pro MFP M476 PCL 6  (1)", "status": "Unknown", "have_usb": 0, "autoupdatesystems_id": "GLPI Native Inventory", "last_inventory_update": "DATE_NOW"}'
          ]
       ];
    }
@@ -71,6 +71,10 @@ class Printer extends AbstractInventoryAsset {
     * @dataProvider assetProvider
     */
    public function testPrepare($xml, $expected) {
+      $date_now = date('Y-m-d H:i:s');
+      $_SESSION['glpi_currentime'] = $date_now;
+      $expected = str_replace('DATE_NOW', $_SESSION['glpi_currentime'], $expected);
+
       $converter = new \Glpi\Inventory\Converter;
       $data = $converter->convert($xml);
       $json = json_decode($data);
@@ -83,6 +87,8 @@ class Printer extends AbstractInventoryAsset {
    }
 
    public function testSnmpPrinter() {
+      $date_now = date('Y-m-d H:i:s');
+      $_SESSION['glpi_currentime'] = $date_now;
       $json_str = file_get_contents(self::INV_FIXTURES . 'printer_1.json');
 
       $json = json_decode($json_str);
@@ -102,6 +108,7 @@ class Printer extends AbstractInventoryAsset {
       $this->array($result)->hasSize(1);
       $this->array((array)$result[0])->isIdenticalTo([
          'autoupdatesystems_id' => 'GLPI Native Inventory',
+         'last_inventory_update' => $date_now,
          'firmware' => '2409048_052887',
          'ips' => ['10.59.29.175'],
          'mac' => '00:68:eb:f2:be:10',

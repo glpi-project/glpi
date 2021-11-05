@@ -930,6 +930,7 @@ class Inventory extends DbTestCase {
          'is_dynamic' => 1,
          'uuid' => null,
          'sysdescr' => null,
+         'last_inventory_update' => $_SESSION['glpi_currenttime'],
          'snmpcredentials_id' => 0,
          'linkid' => $printer_link['linkid'],
          'glpi_computers_items_is_dynamic' => 1,
@@ -1921,6 +1922,8 @@ class Inventory extends DbTestCase {
    public function testImportNetworkEquipment() {
       $json = file_get_contents(self::INV_FIXTURES . 'networkequipment_1.json');
 
+      $date_now = date('Y-m-d H:i:s');
+      $_SESSION['glpi_currenttime'] = $date_now;
       $inventory = new \Glpi\Inventory\Inventory($json);
 
       if ($inventory->inError()) {
@@ -2009,6 +2012,9 @@ class Inventory extends DbTestCase {
          'date_creation' => $equipment->fields['date_creation'],
          'autoupdatesystems_id' => $autoupdatesystems_id,
          'sysdescr' => null,
+         'cpu' => 4,
+         'uptime' => '482 days, 05:42:18.50',
+         'last_inventory_update' => $date_now,
          'snmpcredentials_id' => 0,
       ];
       $this->array($equipment->fields)->isIdenticalTo($expected);
@@ -2264,6 +2270,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
    public function testImportStackedNetworkEquipment() {
       $json = file_get_contents(self::INV_FIXTURES . 'networkequipment_2.json');
 
+      $date_now = date('Y-m-d H:i:s');
+      $_SESSION['glpi_currenttime'] = $date_now;
       $inventory = new \Glpi\Inventory\Inventory($json);
 
       if ($inventory->inError()) {
@@ -2357,6 +2365,9 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          'date_creation' => null,
          'autoupdatesystems_id' => $autoupdatesystems_id,
          'sysdescr' => null,
+         'cpu' => 47,
+         'uptime' => '103 days, 13:53:28.28',
+         'last_inventory_update' => $date_now,
          'snmpcredentials_id' => 0,
       ];
 
@@ -2758,6 +2769,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
    public function testImportNetworkEquipmentMultiConnections() {
       $json = file_get_contents(self::INV_FIXTURES . 'networkequipment_3.json');
 
+      $date_now = date('Y-m-d H:i:s');
+      $_SESSION['glpi_currenttime'] = $date_now;
       $inventory = new \Glpi\Inventory\Inventory($json);
 
       if ($inventory->inError()) {
@@ -2851,6 +2864,9 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          'date_creation' => null,
          'autoupdatesystems_id' => $autoupdatesystems_id,
          'sysdescr' => null,
+         'cpu' => 0,
+         'uptime' => '(78894038) 9 days, 3:09:00.38',
+         'last_inventory_update' => $date_now,
          'snmpcredentials_id' => 0,
       ];
 
@@ -3440,6 +3456,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
    public function testImportNetworkEquipmentWireless() {
       $json = file_get_contents(self::INV_FIXTURES . 'networkequipment_4.json');
 
+      $date_now = date('Y-m-d H:i:s');
+      $_SESSION["glpi_currenttime"] = $date_now;
       $inventory = new \Glpi\Inventory\Inventory($json);
 
       if ($inventory->inError()) {
@@ -3533,6 +3551,9 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          'date_creation' => null,
          'autoupdatesystems_id' => $autoupdatesystems_id,
          'sysdescr' => null,
+         'cpu' => 0,
+         'uptime' => '53 days, 4:19:42.16',
+         'last_inventory_update' => $date_now,
          'snmpcredentials_id' => 0,
       ];
 
@@ -3826,6 +3847,9 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
    public function testImportNetworkEquipmentWAggregatedPorts() {
       $json = file_get_contents(self::INV_FIXTURES . 'networkequipment_5.json');
 
+      $date_now = date('Y-m-d H:i:s');
+      $_SESSION["glpi_currenttime"] = $date_now;
+
       $inventory = new \Glpi\Inventory\Inventory($json);
 
       if ($inventory->inError()) {
@@ -3917,6 +3941,9 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          'date_creation' => $equipment->fields['date_creation'],
          'autoupdatesystems_id' => $autoupdatesystems_id,
          'sysdescr' => null,
+         'cpu' => 0,
+         'uptime' => '65 days, 20:13:08.93',
+         'last_inventory_update' => $date_now,
          'snmpcredentials_id' => 0,
       ];
       $this->array($equipment->fields)->isIdenticalTo($expected);
