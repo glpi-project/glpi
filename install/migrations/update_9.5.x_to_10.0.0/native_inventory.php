@@ -226,6 +226,8 @@ if (!$DB->fieldExists('glpi_networkequipments', 'uptime')) {
       'uptime',
       'string', [
          'after' => 'cpu',
+         'value' => '0'
+
       ]
    );
 }
