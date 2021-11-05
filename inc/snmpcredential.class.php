@@ -92,15 +92,13 @@ class SNMPCredential extends CommonDBTM {
    /**
     * Real version of SNMP
     *
-    * @param integer $id ID to fetch
-    *
     * @return string
     */
-   public function getRealVersion(int $id): string {
-      switch ($id) {
+   public function getRealVersion(): string {
+      switch ($this->fields['id']) {
          case 1:
-         case '3':
-            return (string)$id;
+         case 3:
+            return (string)$this->fields['id'];
          case 2:
             return '2c';
          default:
@@ -112,12 +110,10 @@ class SNMPCredential extends CommonDBTM {
    /**
     * Get SNMP authentication protocol
     *
-    * @param integer $id SNMP ID
-    *
     * @return string
     */
-   function getAuthProtocol(int $id): string {
-      switch ($id) {
+   function getAuthProtocol(): string {
+      switch ($this->fields['id']) {
          case 1:
             return 'MD5';
          case 2:
@@ -131,12 +127,10 @@ class SNMPCredential extends CommonDBTM {
    /**
     * Get SNMP encryption protocol
     *
-    * @param integer $id SNMP ID
-    *
     * @return string
     */
-   function getEncryption(int $id): string {
-      switch ($id) {
+   function getEncryption(): string {
+      switch ($this->fields['id']) {
          case 1:
             return 'DES';
          case 2:
