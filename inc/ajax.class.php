@@ -212,8 +212,8 @@ HTML;
          }
 
          document.getElementById('iframe$domid').onload = function() {
-            var h =  $('#iframe{$domid}').contents().height();
-            var w =  $('#iframe{$domid}').contents().width();
+            var h =  {$param['height']};
+            var w =  {$param['width']};
 
             $('#iframe{$domid}')
                .height(h);
