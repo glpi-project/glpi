@@ -142,6 +142,30 @@ class SNMPCredential extends CommonDBTM {
       }
    }
 
+   protected function prepareInputs(array $input): array {
+      if (isset($input['auth_passphrase'])) {
+         $input['auth_passphrase'] = Toolbox::sodiumEncrypt($input['auth_passphrase']);
+      }
+
+      if (isset($input['priv_passphrase'])) {
+         $input['priv_passphrase'] = Toolbox::sodiumEncrypt($input['priv_passphrase']);
+      }
+
+      return $input;
+   }
+
+   public function prepareInputForAdd($input)
+   {
+      $input = parent::prepareInputForAdd($input);
+      return $this->prepareInputs($input);
+   }
+
+   public function prepareInputForUpdate($input)
+   {
+      $input = parent::prepareInputForUpdate($input);
+      return $this->prepareInputs($input);
+   }
+
    public static function getIcon() {
       return "fas fa-user-secret";
    }
