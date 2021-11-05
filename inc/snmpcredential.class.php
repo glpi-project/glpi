@@ -154,14 +154,12 @@ class SNMPCredential extends CommonDBTM {
       return $input;
    }
 
-   public function prepareInputForAdd($input)
-   {
+   public function prepareInputForAdd($input) {
       $input = parent::prepareInputForAdd($input);
       return $this->prepareInputs($input);
    }
 
-   public function prepareInputForUpdate($input)
-   {
+   public function prepareInputForUpdate($input) {
       $input = parent::prepareInputForUpdate($input);
       return $this->prepareInputs($input);
    }
