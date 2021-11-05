@@ -77,7 +77,7 @@ class Entity extends CommonTreeDropdown {
          'address', 'country', 'email', 'fax', 'notepad',
          'longitude','latitude','altitude',
          'phonenumber', 'postcode', 'state', 'town',
-         'website',
+         'website', 'registration_number',
          // Advanced (could be user_authtype ?)
          'authldaps_id', 'entity_ldapfilter', 'ldap_dn',
          'mail_domain', 'tag',
@@ -691,6 +691,15 @@ class Entity extends CommonTreeDropdown {
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
          'massiveaction'      => false
+      ];
+
+      $tab[] = [
+         'id'                 => '70',
+         'table'              => $this->getTable(),
+         'field'              => 'registration_number',
+         'name'               => __('Administrative number'),
+         'datatype'           => 'string',
+         'autocomplete'       => true
       ];
 
       // add objectlock search options
@@ -1313,15 +1322,19 @@ class Entity extends CommonTreeDropdown {
       echo "<td>";
       echo Html::input('phonenumber', ['value' => $entity->fields['phonenumber']]);
       echo "</td>";
-      echo "<td rowspan='7'>".__('Address')."</td>";
-      echo "<td rowspan='7'>";
-      echo "<textarea name='address' class='form-control'>". $entity->fields["address"]."</textarea>";
+      echo "<td>".__('Administrative Number')."</td>";
+      echo "<td>";
+      echo Html::input('registration_number', ['value' => $entity->fields['registration_number']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Fax')."</td>";
       echo "<td>";
       echo Html::input('fax', ['value' => $entity->fields['fax']]);
+      echo "</td>";
+      echo "<td rowspan='6'>".__('Address')."</td>";
+      echo "<td rowspan='6'>";
+      echo "<textarea name='address' class='form-control'>". $entity->fields["address"]."</textarea>";
       echo "</td></tr>";
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Website')."</td>";

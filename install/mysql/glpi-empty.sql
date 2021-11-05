@@ -2684,6 +2684,7 @@ CREATE TABLE `glpi_entities` (
   `level` int NOT NULL DEFAULT '0',
   `sons_cache` longtext,
   `ancestors_cache` longtext,
+  `registration_number` varchar(255) DEFAULT NULL,
   `address` text,
   `postcode` varchar(255) DEFAULT NULL,
   `town` varchar(255) DEFAULT NULL,
