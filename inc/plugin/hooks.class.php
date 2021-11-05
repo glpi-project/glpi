@@ -98,6 +98,7 @@ class Hooks
    const PRE_SHOW_TAB            = 'pre_show_tab';
    const TIMELINE_ACTIONS        = 'timeline_actions';  // (keys: item, rand)
    const TIMELINE_ANSWER_ACTIONS = 'timeline_answer_actions';  // (keys: item)
+   const SHOW_IN_TIMELINE        = 'show_in_timeline';  // (keys: item)
 
    // Security hooks (data to encypt)
    const SECURED_FIELDS  = 'secured_fields';

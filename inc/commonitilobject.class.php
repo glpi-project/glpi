@@ -6419,6 +6419,8 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
+      Plugin::doHook(Hooks::SHOW_IN_TIMELINE, ['item' => $this, 'timeline' => &$timeline]);
+
       //sort timeline items by date
       $reverse = $params['sort_by_date_desc'];
       usort($timeline, function($a, $b) use ($reverse) {
