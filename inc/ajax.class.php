@@ -212,8 +212,16 @@ HTML;
          }
 
          document.getElementById('iframe$domid').onload = function() {
-            var h =  {$param['height']};
-            var w =  {$param['width']};
+            if ({$param['height']} !== 'undefined') {
+               var h =  {$param['height']};
+            } else {
+               var h =  $('#iframe{$domid}').contents().height();
+            }
+            if ({$param['width']} !== 'undefined') {
+               var w =  {$param['width']};
+            } else {
+               var w =  $('#iframe{$domid}').contents().width();
+            }
 
             $('#iframe{$domid}')
                .height(h);
