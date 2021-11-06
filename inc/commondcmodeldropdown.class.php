@@ -53,13 +53,6 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
       global $DB;
 
       $fields = parent::getAdditionalFields();
-      if ($DB->fieldExists($this->getTable(), 'product_number')) {
-         $fields[] = [
-            'name'   => 'product_number',
-            'type'   => 'text',
-            'label'  => __('Product Number')
-         ];
-      }
 
       if ($DB->fieldExists($this->getTable(), 'weight')) {
          $fields[] = [
