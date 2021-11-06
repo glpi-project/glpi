@@ -27,7 +27,8 @@
 <script>
    function refreshItemCounter{{ rand }}() {
       const item_form = $("#itemAddForm{{ rand }}");
-      const item_count = item_form.find('> div').length - 2;
+      let item_count = item_form.find('> div').length - 2;
+      item_count += item_form.find('> input[type="hidden"]').length;
       item_form.closest('.accordion-item').find('.item-counter').text(item_count);
    }
 
