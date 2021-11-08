@@ -32,9 +32,7 @@
 
 include ('../inc/includes.php');
 
-if (!isset($_GET['genical'])) {
-   Session::checkRight("planning", READ);
-}
+Session::checkRight("planning", READ);
 
 $users_id = null;
 $groups_id = (isset($_GET["gID"]) ? (int)$_GET['uID'] : 0);
