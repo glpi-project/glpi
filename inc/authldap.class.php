@@ -2536,6 +2536,11 @@ class AuthLDAP extends CommonDBTM {
                   }
                   $input['id'] = $id;
 
+                  // 'is_active' may have been set to '0' if user has been deactivated on LDAP server side
+                  // in case AuthLDAP::DELETED_USER_DISABLE strategy is used.
+                  // Ensure 'is_active' is set back to '1' if user is reactivated in LDAP server.
+                  $input['is_active'] = 1;
+
                   if ($display) {
                      $input['update'] = 1;
                   }
