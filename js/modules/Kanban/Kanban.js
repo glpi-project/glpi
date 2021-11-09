@@ -554,7 +554,11 @@ class GLPIKanbanRights {
          filter_input.popover({
             trigger: 'manual',
             html: true,
-            placement: 'bottom',
+            container: filter_input.closest('.kanban-toolbar').get(0),
+            placement: 'bottom', // Option from Bootstrap (fallback)
+            popperConfig: {
+               placement: 'bottom-start', // Option only available directly in popper.js (Preferred)
+            },
             customClass: 'kanban-filter-popover',
             delay: {
                hide: 300
@@ -2148,7 +2152,7 @@ class GLPIKanbanRights {
          $(self.element + ' .kanban-item').each(function(i, item) {
             const card = $(item);
             let shown = true;
-            const title = card.find(".kanban-item-title span").text();
+            const title = card.find("span.kanban-item-title").text();
 
             const filter_include = (filter_data, haystack) => {
                if ((!haystack.toLowerCase().includes(filter_data.term.toLowerCase())) !== filter_data.exclusion) {
