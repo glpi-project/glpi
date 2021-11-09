@@ -95,10 +95,10 @@ class SNMPCredential extends CommonDBTM {
     * @return string
     */
    public function getRealVersion(): string {
-      switch ($this->fields['id']) {
+      switch ($this->fields['snmpversion']) {
          case 1:
          case 3:
-            return (string)$this->fields['id'];
+            return (string)$this->fields['snmpversion'];
          case 2:
             return '2c';
          default:
