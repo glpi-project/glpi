@@ -40,15 +40,12 @@ if (!basename($_SERVER['SCRIPT_NAME']) == "helpdesk.faq.php") {
 if (isset($_GET['tab']) && isset($_GET['itemtype'])) {
 
    $tabs = Toolbox::getAvailablesTabs($_UGET['itemtype'], $_GET['id'] ?? null);
-   $selected_tab = '';
    $current      = 0;
    foreach (array_keys($tabs) as $key) {
       if ($current == $_GET['tab']) {
-         $selected_tab = $key;
+         Session::setActiveTab($_UGET['itemtype'], $key);
+         break;
       }
       $current++;
-   }
-   if (!empty($selected_tab)) {
-      Session::setActiveTab($_UGET['itemtype'], $selected_tab);
    }
 }
