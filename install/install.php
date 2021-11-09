@@ -413,14 +413,19 @@ function update1($DBname) {
       $from_install = true;
       include_once(GLPI_ROOT ."/install/update.php");
    } else { // can't create config_db file
+      header_html('');
       echo __("Can't create the database connection file, please verify file permissions.");
       echo "<h3>".__('Do you want to continue?')."</h3>";
       echo "<form action='install.php' method='post'>";
       echo "<input type='hidden' name='update' value='yes'>";
       echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
-      echo "<input type='submit' name='submit' class='submit' value=\"".__('Continue')."\">";
+      echo "<button type='submit' name='submit' class='btn btn-primary'>
+         ".__('Continue')."
+         <i class='fas fa-chevron-right ms-1'></i>
+      </button>";
       echo "</p>";
       Html::closeForm();
+      footer_html();
    }
 }
 
