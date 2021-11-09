@@ -1787,7 +1787,7 @@ HTML;
          }
       }
 
-      //$menu = Plugin::doHookFunction("redefine_menus", $menu);
+      $menu = Plugin::doHookFunction("redefine_menus", $menu);
 
       TemplateRenderer::getInstance()->display(
          'layout/parts/page_header.html.twig',
