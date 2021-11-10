@@ -297,7 +297,7 @@ class Printer extends NetworkEquipment
 
       if ($metrics->getFromDBByCrit(['printers_id' => $this->item->fields['id']])) {
          $input['id'] = $metrics->fields['id'];
-         $metrics->update($input, false) ;
+         $metrics->update($input, false);
       } else {
          $metrics->add($input, [], false);
       }
