@@ -2561,12 +2561,12 @@ HTML;
 
       $calendar_btn = $p['calendar_btn']
          ? "<a class='input-button' data-toggle>
-               <i class='far fa-calendar-alt fa-lg pointer'></i>
+               <i class='input-group-text far fa-calendar-alt fa-lg pointer'></i>
             </a>"
          : "";
       $clear_btn = $p['clear_btn'] && $p['maybeempty'] && $p['canedit']
          ? "<a data-clear  title='".__s('Clear')."'>
-               <i class='fa fa-times-circle pointer'></i>
+               <i class='input-group-text fa fa-times-circle pointer'></i>
             </a>"
          : "";
 
@@ -2575,9 +2575,9 @@ HTML;
          : "";
 
       $output = <<<HTML
-      <div class="text-nowrap flatpickr d-flex align-items-center" id="showdate{$p['rand']}">
+      <div class="input-group flex-grow-1 flatpickr d-flex align-items-center" id="showdate{$p['rand']}">
          <input type="text" name="{$name}" size="{$p['size']}"
-                {$required} {$disabled} data-input placeholder="{$p['placeholder']}">
+                {$required} {$disabled} data-input placeholder="{$p['placeholder']}" class="form-control rounded-start ps-2">
          $calendar_btn
          $clear_btn
       </div>
