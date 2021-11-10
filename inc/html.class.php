@@ -2882,16 +2882,16 @@ JS;
          : "";
       $clear    = $p['maybeempty'] && $p['canedit']
          ? "<a data-clear  title='".__s('Clear')."'>
-               <i class='fa fa-times-circle pointer'></i>
+               <i class='input-group-text fa fa-times-circle pointer'></i>
             </a>"
          : "";
 
       $output = <<<HTML
-         <div class="text-nowrap flatpickr" id="showtime{$p['rand']}">
+         <div class="input-group flex-grow-1 flatpickr" id="showtime{$p['rand']}">
             <input type="text" name="{$name}" value="{$p['value']}"
-                   {$required} {$disabled} data-input>
+                   {$required} {$disabled} data-input class="form-control rounded-start ps-2">
             <a class="input-button" data-toggle>
-               <i class="far fa-clock fa-lg pointer"></i>
+               <i class="input-group-text far fa-clock fa-lg pointer"></i>
             </a>
             $clear
          </div>
