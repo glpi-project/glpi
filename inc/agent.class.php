@@ -259,7 +259,7 @@ class Agent extends CommonDBTM {
          echo "</tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Discovery threads')."</td>";
+         echo "<td>".__('Network discovery threads')."</td>";
          echo "<td>";
          Dropdown::showNumber(
             'threads_networkdiscovery', [
@@ -268,7 +268,7 @@ class Agent extends CommonDBTM {
             ]
          );
          echo "</td>";
-         echo "<td>".__('Discovery timeout')."</td>";
+         echo "<td>".__('Network discovery timeout')."</td>";
          echo "<td>";
          Dropdown::showNumber(
             'timeout_networkdiscovery', [
@@ -280,7 +280,7 @@ class Agent extends CommonDBTM {
          echo "</tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Inventory threads')."</td>";
+         echo "<td>".__('Network inventory threads')."</td>";
          echo "<td>";
          Dropdown::showNumber(
             'threads_networkinventory', [
@@ -289,7 +289,7 @@ class Agent extends CommonDBTM {
             ]
          );
          echo "</td>";
-         echo "<td>".__('Inventory timeout')."</td>";
+         echo "<td>".__('Network inventory timeout')."</td>";
          echo "<td>";
          Dropdown::showNumber(
             'timeout_networkinventory', [
