@@ -65,17 +65,23 @@ class NetworkEquipment extends MainAsset
          $device = (object)$this->extra_data['network_device'];
 
          $dev_mapping = [
-            'description'  => 'name',
+            'description'  => 'sysdescr',
             'location'     => 'locations_id',
             'model'        => $model_field,
             'type'         => $types_field,
-            'manufacturer' => 'manufacturers_id'
+            'manufacturer' => 'manufacturers_id',
+            'credentials'  => 'snmpcredentials_id'
          ];
 
          foreach ($dev_mapping as $origin => $dest) {
             if (property_exists($device, $origin)) {
                $device->$dest = $device->$origin;
             }
+         }
+
+         if (!property_exists($device, 'name') && property_exists($device, 'description')) {
+            //take description if name is missing
+            $device->name = $device->descrition;
          }
          $this->hardware = $device;
 
