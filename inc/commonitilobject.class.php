@@ -7898,10 +7898,19 @@ abstract class CommonITILObject extends CommonDBTM {
             continue;
          }
 
+         $select = [];
+         if ($itemtype === 'User') {
+            $select = [$link_class::getTable().'.'.$itemtype::getForeignKeyField(), 'type', 'name', 'realname', 'firstname'];
+         } else {
+            $select = [
+               $link_class::getTable().'.'.$itemtype::getForeignKeyField(), 'type', 'name',
+               new QueryExpression('NULL as realname'),
+               new QueryExpression('NULL as firstname')
+            ];
+         }
+
          $it = $DB->request([
-            'SELECT' => [
-               $link_class::getTable().'.'.$itemtype::getForeignKeyField(), 'type', 'name'
-            ],
+            'SELECT' => $select,
             'FROM'   => $link_class::getTable(),
             'WHERE'  => [static::getForeignKeyField() => $this->getID()],
             'LEFT JOIN' => [
@@ -7914,10 +7923,12 @@ abstract class CommonITILObject extends CommonDBTM {
             ]
          ]);
          foreach ($it as $data) {
+            $items_id = $data[$itemtype::getForeignKeyField()];
             $team[$itemtype][] = [
-               'id'     => $data[$itemtype::getForeignKeyField()],
-               'role'   => $data['type'],
-               'name'   => $data['name']
+               'items_id'  => $items_id,
+               'role'      => $data['type'],
+               'name'      => $data['name'],
+               'display_name' => formatUserName($items_id, $data['name'], $data['realname'], $data['firstname'])
             ];
          }
       }
