@@ -258,7 +258,7 @@ if (($_POST['action'] ?? null) === 'update') {
    $item->deleteTeamMember($_POST['itemtype_teammember'], (int) $_POST['items_id_teammember']);
 } else if (($_REQUEST['action'] ?? null) === 'load_item_panel') {
    if (isset($itemtype, $item)) {
-      TemplateRenderer::getInstance()->display('components/kanban/item_panels/base.html.twig', [
+      TemplateRenderer::getInstance()->display('components/kanban/item_panels/default_panel.html.twig', [
          'itemtype'     => $itemtype,
          'item_fields'  => $item->fields,
          'team'         => Toolbox::hasTrait($item, Teamwork::class) ? $item->getTeam() : []

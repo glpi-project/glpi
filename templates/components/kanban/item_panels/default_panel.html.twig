@@ -2,7 +2,7 @@
 
 <div class="item-details-panel">
    <div class="card d-flex flex-column h-100">
-      <div class="card-header">
+      <div class="card-header d-block">
          <h5 class="card-title">
             <a href="{{ itemtype|itemtype_form_path(item_fields.id) }}">
                <i class="{{ itemtype|itemtype_icon }}" title="{{ itemtype|itemtype_name }}"></i>
@@ -11,7 +11,9 @@
             <button type="button" class="btn-link" onclick="$(this).closest('.item-details-panel').remove()"><i class="fas fa-times"></i></button>
          </h5>
          <h6 class="card-subtitle">
-            {% block panel_subtitle %}{% endblock %}
+            {% if item_fields.is_milestone %}
+                  <i class="fas fa-map-signs me-2"></i>{{ __('Milestone') }}
+            {% endif %}
          </h6>
       </div>
       <div class="card-body overflow-auto">
