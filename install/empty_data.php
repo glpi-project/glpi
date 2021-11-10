@@ -8340,4 +8340,19 @@ $tables['glpi_agenttypes'] = [
    ]
 ];
 
+$table[SNMPCredential::getTable()] = [
+   [
+      'id' => 1,
+      'name' => 'Public community v1',
+      'snmpversion' => 1,
+      'community' => 'public'
+   ],
+   [
+      'id' => 2,
+      'name' => 'Public community v2c',
+      'snmpversion' => 2,
+      'community' => 'public'
+   ]
+];
+
 return $tables;
