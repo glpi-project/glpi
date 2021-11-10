@@ -115,7 +115,6 @@ class Printer extends AbstractInventoryAsset {
          'manufacturer' => 'Hewlett-Packard',
          'model' => 'HP LaserJet M507',
          'name' => 'NPIF2BE10',
-         'ram' => 512,
          'serial' => 'PHCVN191TG',
          'type' => 'Printer',
          'uptime' => '7 days, 01:26:41.98',
@@ -123,6 +122,8 @@ class Printer extends AbstractInventoryAsset {
          'printertypes_id' => 'Printer',
          'manufacturers_id' => 'Hewlett-Packard',
          'have_usb' => 0,
+         'have_ethernet' => 1,
+         'memory_size' => 512,
          'last_pages_counter' => 1802
       ]);
 
