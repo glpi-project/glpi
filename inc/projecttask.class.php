@@ -2104,6 +2104,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
    public function getTeam(): array {
       //TODO Need name and some other info
-      return ProjectTaskTeam::getTeamFor($this->getID());
+      return ProjectTaskTeam::getTeamFor($this->getID(), true);
    }
 }
