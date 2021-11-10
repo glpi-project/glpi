@@ -81,7 +81,7 @@ class NetworkEquipment extends MainAsset
 
          if (!property_exists($device, 'name') && property_exists($device, 'description')) {
             //take description if name is missing
-            $device->name = $device->descrition;
+            $device->name = $device->description;
          }
          $this->hardware = $device;
 
