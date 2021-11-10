@@ -1,6 +1,6 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-<div class="item-details-panel">
+<div class="item-details-panel" data-itemtype="{{ itemtype }}" data-items_id="{{ item_fields.id }}">
    <div class="card d-flex flex-column h-100">
       <div class="card-header d-block">
          <h5 class="card-title">
@@ -52,8 +52,9 @@
                <h5>{{ itemtype|team_role_name(team_role, get_plural_number()) }}</h5>
                <ul class="list-group team-list" data-role="{{ team_role }}">
                   {% for team_member in team_members %}
-                     <li class="list-group-item" data-itemtype="{{ team_member.itemtype }}" data-items_id="{{ team_member.id }}" data-name="{{ team_member.name }}">
-                        {{ team_member.name|default(team_member.itemtype~" ("~team_member.id~")") }}
+                     <li class="list-group-item d-flex justify-content-between" data-itemtype="{{ team_member.itemtype }}"
+                         data-items_id="{{ team_member.items_id }}" data-name="{{ team_member.display_name|default(team_member.name) }}">
+                        {# Contents added in Kanban JS #}
                      </li>
                   {% endfor %}
                </ul>

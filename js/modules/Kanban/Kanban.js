@@ -1034,12 +1034,36 @@ class GLPIKanbanRights {
                   l = $(l);
                   const member_itemtype = l.attr('data-itemtype');
                   const member_items_id = l.attr('data-items_id');
-                  l.prepend(getTeamBadge({
+                  let member_item = getTeamBadge({
                      itemtype: member_itemtype,
                      id: member_items_id,
                      name: l.attr('data-name')
-                  }));
+                  });
+                  //member_item += (l.attr('data-name') || `${member_itemtype} (${member_items_id})`).trim();
+                  l.append(`
+                     <div class="member-details">
+                        ${member_item}
+                        ${l.attr('data-name') || `${member_itemtype} (${member_items_id})`}
+                     </div>
+                     <button type="button" name="delete" class="btn btn-ghost-danger">
+                        <i class="fas fa-times" title="${__('Delete')}"></i>
+                     </button>
+                  `);
                });
+            });
+
+            $(self.element).on('click', '.item-details-panel ul.team-list button[name="delete"]', (e) => {
+               const list_item = $(e.target).closest('li');
+               const member_itemtype = list_item.attr('data-itemtype');
+               const member_items_id = list_item.attr('data-items_id');
+               const panel = $(e.target).closest('.item-details-panel');
+               const itemtype = panel.attr('data-itemtype');
+               const items_id = panel.attr('data-items_id');
+
+               if (itemtype && items_id) {
+                  removeTeamMember(itemtype, items_id, member_itemtype, member_items_id);
+                  list_item.remove();
+               }
             });
 
             // showModalFromUrl((self.ajax_root + "kanban.php?action=show_card_edit_form&itemtype="+itemtype+"&card=" + items_id));

@@ -441,8 +441,20 @@
          width: 100%;
       }
 
-      ul.team-list li img {
-         border-radius: 50%;
+      ul.team-list li {
+         img {
+            border-radius: 50%;
+         }
+         button {
+            display: none;
+            padding: unset;
+         }
+         button:hover, button i:hover, &:hover button {
+            display: inline-flex;
+         }
+         .member-details > span {
+            margin-right: 2rem;
+         }
       }
    }
 }
