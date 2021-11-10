@@ -122,9 +122,10 @@ class ProjectTeam extends CommonDBRelation {
       $subqueries = [];
 
       if (count($team['User'])) {
-         $user_ids = array_column($team['User'], 'id');
+         $user_ids = array_column($team['User'], 'items_id');
          $subqueries[] = new QuerySubQuery([
-            'SELECT' => ['id', 'name', 'realname', 'firstname', new QueryExpression('"User" AS itemtype')],
+            'SELECT' => ['id', 'name', 'realname', 'firstname',
+               new QueryExpression('"User" AS itemtype')],
             'FROM' => 'glpi_users',
             'WHERE' => [
                'id'           => $user_ids
@@ -132,9 +133,14 @@ class ProjectTeam extends CommonDBRelation {
          ]);
       }
       if (count($team['Group'])) {
-         $group_ids = array_column($team['Group'], 'id');
+         $group_ids = array_column($team['Group'], 'items_id');
          $subqueries[] = new QuerySubQuery([
-            'SELECT' => ['id', 'name', 'NULL AS realname', 'NULL AS firstname', new QueryExpression('"Group" AS itemtype')],
+            'SELECT' => [
+               'id',
+               'name',
+               new QueryExpression('NULL AS realname'),
+               new QueryExpression('NULL AS firstname'),
+               new QueryExpression('"Group" AS itemtype')],
             'FROM' => 'glpi_groups',
             'WHERE' => [
                'id'           => $group_ids
@@ -142,9 +148,14 @@ class ProjectTeam extends CommonDBRelation {
          ]);
       }
       if (count($team['Supplier'])) {
-         $supplier_ids = array_column($team['Supplier'], 'id');
+         $supplier_ids = array_column($team['Supplier'], 'items_id');
          $subqueries[] = new QuerySubQuery([
-            'SELECT' => ['id', 'name', 'NULL AS realname', 'NULL AS firstname', new QueryExpression('"Supplier" AS itemtype')],
+            'SELECT' => [
+               'id',
+               'name',
+               new QueryExpression('NULL AS realname'),
+               new QueryExpression('NULL AS firstname'),
+               new QueryExpression('"Supplier" AS itemtype')],
             'FROM' => 'glpi_suppliers',
             'WHERE' => [
                'id' => $supplier_ids
@@ -152,9 +163,14 @@ class ProjectTeam extends CommonDBRelation {
          ]);
       }
       if (count($team['Contact'])) {
-         $contact_ids = array_column($team['Contact'], 'id');
+         $contact_ids = array_column($team['Contact'], 'items_id');
          $subqueries[] = new QuerySubQuery([
-            'SELECT' => ['id', 'name', 'name AS realname', 'NULL AS firstname', new QueryExpression('"Contact" AS itemtype')],
+            'SELECT' => [
+               'id',
+               'name',
+               new QueryExpression('NULL AS realname'),
+               new QueryExpression('NULL AS firstname'),
+               new QueryExpression('"Contact" AS itemtype')],
             'FROM' => 'glpi_contacts',
             'WHERE' => [
                'id' => $contact_ids
@@ -172,7 +188,9 @@ class ProjectTeam extends CommonDBRelation {
 
          foreach ($iterator as $data) {
             foreach ($team[$data['itemtype']] as &$member) {
-               if ($member['id'] === $data['id']) {
+               if ($member['items_id'] === $data['id']) {
+                  unset($data['id']);
+                  $member['display_name'] = formatUserName($data['id'], $data['name'], $data['realname'], $data['firstname']);
                   /** @noinspection SlowArrayOperationsInLoopInspection */
                   $member = array_merge($member, $data);
                }
