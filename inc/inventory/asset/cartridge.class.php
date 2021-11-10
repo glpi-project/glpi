@@ -236,7 +236,7 @@ class Cartridge extends InventoryAsset
                $input = (array)$val + [
                   'id'           => $keydb
                ];
-               $cartinfo->update(Toolbox::addslashes_deep($input), $this->withHistory());
+               $cartinfo->update(Toolbox::addslashes_deep($input), false);
                unset($value->$k);
                unset($db_cartridges[$keydb]);
                break;
@@ -258,7 +258,7 @@ class Cartridge extends InventoryAsset
                 'value' => addslashes($val)
             ],
             [],
-            $this->withHistory()
+            false
          );
       }
    }

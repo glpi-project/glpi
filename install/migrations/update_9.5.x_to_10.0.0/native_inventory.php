@@ -261,7 +261,7 @@ if (!$DB->fieldExists('glpi_printers', 'last_inventory_update')) {
       ]
    );
 }
-//new fields in networports table
+//new fields in networkports table
 $netport_fields = [
    'ifmtu' => "int NOT NULL DEFAULT '0'",
    'ifspeed'            => "bigint NOT NULL DEFAULT '0'",
