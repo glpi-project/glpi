@@ -44,9 +44,10 @@ class AuthLDAP extends CommonDBTM {
    const ACTION_SYNCHRONIZE = 1;
    const ACTION_ALL         = 2;
 
-   const USER_IMPORTED     = 0;
-   const USER_SYNCHRONIZED = 1;
-   const USER_DELETED_LDAP = 2;
+   const USER_IMPORTED      = 0;
+   const USER_SYNCHRONIZED  = 1;
+   const USER_DELETED_LDAP  = 2;
+   const USER_RESTORED_LDAP = 3;
 
    //Import user by giving his login
    const IDENTIFIER_LOGIN = 'login';
@@ -87,6 +88,27 @@ class AuthLDAP extends CommonDBTM {
     * @var integer
     */
    const DELETED_USER_DISABLEANDWITHDRAWDYNINFO = 4;
+
+   /**
+    * Restored user strategy: Make no change to GLPI user
+    * @var integer
+    * @since 10.0.0
+    */
+   const RESTORED_USER_PRESERVE = 0;
+
+   /**
+    * Restored user strategy: Restore user from trash
+    * @var integer
+    * @since 10.0.0
+    */
+   const RESTORED_USER_RESTORE = 1;
+
+   /**
+    * Restored user strategy: Re-enable user
+    * @var integer
+    * @since 10.0.0
+    */
+   const RESTORED_USER_ENABLE  = 3;
 
    // From CommonDBTM
    public $dohistory = true;
@@ -1947,11 +1969,16 @@ class AuthLDAP extends CommonDBTM {
                         && !$limitexceeded) {
                // Only manage deleted user if ALL (because of entity visibility in delegated mode)
 
-               //If user is marked as coming from LDAP, but is not present in it anymore
-               if (!$user['is_deleted']
-                   && ($user['auths_id'] == $options['authldaps_id'])) {
-                  User::manageDeletedUserInLdap($user['id']);
-                  $results[self::USER_DELETED_LDAP] ++;
+               if ($user['auths_id'] == $options['authldaps_id']) {
+                  if (!$user['is_deleted']) {
+                     //If user is marked as coming from LDAP, but is not present in it anymore
+                     User::manageDeletedUserInLdap($user['id']);
+                     $results[self::USER_DELETED_LDAP]++;
+                  } else {
+                     // User is marked as coming from LDAP, but was previously deleted
+                     User::manageRestoredUserInLdap($user['id']);
+                     $results[self::USER_RESTORED_LDAP]++;
+                  }
                }
             }
          }
@@ -2550,6 +2577,21 @@ class AuthLDAP extends CommonDBTM {
                //Get information from LDAP
                if ($user->getFromLDAP($ds, $config_ldap->fields, $user_dn, addslashes($login),
                                     ($action == self::ACTION_IMPORT))) {
+                  //Get the ID by sync field (Used to check if restoration is needed)
+                  if (!($tmp_users_id = User::getIdByfield($params['user_field'], $login))) {
+                     //In case user id as changed : get id by dn (Used to check if restoration is needed)
+                     $tmp_users_id = User::getIdByfield('user_dn', $user_dn);
+                  }
+                  if ($tmp_users_id) {
+                     $tmp_user = new User();
+                     $tmp_user_result = $tmp_user->getFromDB($tmp_users_id);
+                     if ($tmp_user_result && $tmp_user->fields['is_deleted_ldap'] && $tmp_user->fields['user_dn']) {
+                        User::manageRestoredUserInLdap($tmp_users_id);
+                        return ['action' => self::USER_RESTORED_LDAP,
+                           'id' => $tmp_users_id];
+                     }
+                  }
+
                   // Add the auth method
                   // Force date sync
                   $user->fields["date_sync"] = $_SESSION["glpi_currenttime"];
@@ -3664,6 +3706,20 @@ class AuthLDAP extends CommonDBTM {
    }
 
    /**
+    * Get LDAP restored user action options.
+    *
+    * @since 10.0.0
+    * @return array
+    */
+   static function getLdapRestoredUserActionOptions() {
+      return [
+         self::RESTORED_USER_PRESERVE  => __('Preserve'),
+         self::RESTORED_USER_RESTORE   => __('Restore'),
+         self::RESTORED_USER_ENABLE    => __('Enable'),
+      ];
+   }
+
+   /**
     * Builds deleted actions dropdown
     *
     * @param integer $value (default 0)
@@ -3677,6 +3733,20 @@ class AuthLDAP extends CommonDBTM {
       return Dropdown::showFromArray('user_deleted_ldap', $options, ['value' => $value]);
    }
 
+   /**
+    * Builds restored actions dropdown
+    *
+    * @param integer $value (default 0)
+    *
+    * @since 10.0.0
+    * @return string
+    */
+   static function dropdownUserRestoredActions($value = 0) {
+
+      $options = self::getLdapRestoredUserActionOptions();
+      asort($options);
+      return Dropdown::showFromArray('user_restored_ldap', $options, ['value' => $value]);
+   }
 
    /**
     * Return all the ldap servers where email field is configured

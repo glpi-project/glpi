@@ -40,6 +40,9 @@ use Group_User;
 /* Test for inc/authldap.class.php */
 
 class AuthLDAP extends DbTestCase {
+   /**
+    * @var \AuthLDAP
+    */
    private $ldap;
 
    public function beforeTestMethod($method) {
