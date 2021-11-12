@@ -93,11 +93,9 @@
 
             .search-header {
                border-bottom: 0;
-
-               .search-limit {
-                  position: sticky;
-                  right: 10px;
-               }
+               position: sticky;
+               top: -1px;
+               background-color: $card-cap-bg;
             }
          }
 
@@ -116,7 +114,7 @@
                   th {
                      z-index: 5;
                      position: sticky;
-                     top: 0;
+                     top: 49px;
                      border: 1px solid $card-border-color;
                      border-left: 0;
                      border-right: 0;
