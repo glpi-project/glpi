@@ -377,7 +377,7 @@ JAVASCRIPT;
             // Update href and load tab contents
             var currenthref = active_link.attr('href');
             active_link.attr('href', currenthref + '&' + add);
-            loadTabContents(active_link);
+            loadTabContents(active_link, true);
 
             // Restore href
             active_link.attr('href', currenthref);
