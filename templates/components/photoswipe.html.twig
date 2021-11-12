@@ -107,7 +107,9 @@
                              class="{{ img['img_class']|default('') }} pointer pswp-trigger" />
                      </a>
                   {% endif %}
-               <figcaption itemprop="caption description">{{ img['title']|default('') }}</figcaption>
+               <figcaption itemprop="caption description" class="text-muted fst-italic">
+                  {{ img['title']|default('') }}
+               </figcaption>
             </figure>
             {% if img['post_figure_content'] %}
                {{ img['post_figure_content']|raw }}
@@ -129,6 +131,7 @@
                   {
                      'no_label': true,
                      'full_width': true,
+                     'mb': '',
                      'clearable': clearable,
                      'class': 'pswp-trigger',
                      'alt': img['title']|default(''),
@@ -139,7 +142,9 @@
                      'data-index': '0'
                   }
             ) }}
-            <figcaption itemprop="caption description">{{ img['title']|default('') }}</figcaption>
+            <figcaption itemprop="caption description" class="text-muted fst-italic">
+               {{ img['title']|default('') }}
+            </figcaption>
          </figure>
       {% endfor %}
    </div>
