@@ -29,43 +29,43 @@
  # ---------------------------------------------------------------------
  #}
 
-<div class="d-inline-flex flex-wrap-reverse gap-2 gap-sm-0 align-items-center search-controls">
+<div class="d-inline-flex search-controls">
    {% if showmassiveactions and count > 0 %}
       {% do call('Html::showMassiveActions', [massiveactionparams]) %}
    {% endif %}
 
    {% if may_be_located and (count > 0 or data['search']['as_map'] == 1) %}
-      <label class="form-check form-switch btn btn-sm btn-ghost-info me-1 px-1 mb-0"
+      <label class="form-check form-switch btn btn-sm btn-ghost-info me-0 me-sm-1 px-1 mb-0 flex-column-reverse flex-sm-row"
              data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Show as map') }}">
          <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
                 name="as_map" value="1" autocomplete="off"
                 onclick="toogle('as_map','','',''); document.forms['searchform{{ itemtype|lower }}'].submit();"
                 {{ data['search']['as_map'] == 1 ? 'checked' : '' }} />
-         <span class="form-check-label">
+         <span class="form-check-label mb-1 mb-sm-0">
             <i class="fas fa-lg fa-globe-americas"></i>
          </span >
       </label>
    {% endif %}
 
    {% if may_be_deleted %}
-      <label class="form-check form-switch btn btn-sm btn-ghost-danger me-1 px-1 mb-0"
+      <label class="form-check form-switch btn btn-sm btn-ghost-danger me-0 me-sm-1 px-1 mb-0 flex-column-reverse flex-sm-row"
              data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Show the trashbin') }}">
          <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
                 name="is_deleted" value="1" autocomplete="off"
                 onclick="toogle('is_deleted','','',''); document.forms['searchform{{ itemtype|lower }}'].submit();"
                 {{ data['search']['is_deleted'] == 1 ? 'checked' : '' }} />
-         <span class="form-check-label">
+         <span class="form-check-label mb-1 mb-sm-0">
             <i class="fas fa-lg fa-trash-alt"></i>
          </span>
       </label>
    {% endif %}
 
-   <label class="form-check form-switch btn btn-sm btn-ghost-secondary me-1 px-1 mb-0"
+   <label class="form-check form-switch btn btn-sm btn-ghost-secondary me-0 me-sm-1 px-1 mb-0 flex-column-reverse flex-sm-row"
           data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover"
           title="{{ __('Toggle search filters') }}">
       <input type="checkbox" class="form-check-input ms-0 me-1 mt-0 fold-search" role="button"
              {{ session('glpifold_search') ? '' : 'checked' }} autocomplete="off" />
-      <span class="form-check-label">
+      <span class="form-check-label mb-1 mb-sm-0">
          <i class="fas fa-lg fa-search"></i>
       </span>
    </label>
@@ -73,7 +73,7 @@
    <div class="d-inline-flex" role="group">
 
       {% if can_config and count > 0 %}
-      <button class="btn btn-sm btn-icon btn-ghost-secondary show_displaypreference_modal me-1"
+      <button class="btn btn-sm btn-icon btn-ghost-secondary show_displaypreference_modal me-0 me-sm-1"
              title="{{ __('Select default items to show') }}" data-bs-toggle="tooltip" data-bs-placement="bottom">
          <i class="fas fa-lg fa-wrench"></i>
       </button>

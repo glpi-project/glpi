@@ -32,7 +32,7 @@
 {% set links = menu[sector]['content'][item]['options'][option]['links'] ?? menu[sector]['content'][item]['links'] %}
 
 {# @TODO  border-start is not implemented in current boostrap beta (remove border-left when done)  #}
-<ul class="nav navbar-nav border-start border-left ps-2 flex-row">
+<ul class="nav navbar-nav border-start border-left ps-1 ps-sm-2 flex-row">
 
 {% if links['add'] is defined %}
 <li class="nav-item">

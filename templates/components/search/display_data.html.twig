@@ -40,7 +40,7 @@
 <form id="massform{{ normalized_itemtype }}" method="get" action="{{ path('front/massiveaction.php') }}"
       data-search-itemtype="{{ data['itemtype'] }}" data-start="{{ start }}" data-count="{{ count }}" data-limit="{{ limit }}">
    <div class="card card-sm mt-0 search-card">
-      <div class="card-header d-flex justify-content-between search-header">
+      <div class="card-header d-flex justify-content-between search-header pe-0">
          {% if data['display_type'] == constant('Search::GLOBAL_SEARCH') %}
             <h2>{{ itemtype|itemtype_name }}</h2>
 
