@@ -63,3 +63,8 @@ $gridstack-columns: 100 !default;
 @for $j from $gridstack-columns-start through $gridstack-columns {
    @include grid-stack-items($j);
 }
+
+/* Fix responsive width */
+.grid-stack.grid-stack-1 > .grid-stack-item {
+   width: 100% !important;
+}
