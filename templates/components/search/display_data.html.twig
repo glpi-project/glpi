@@ -52,15 +52,6 @@
             {% endif %}
          {% else %}
             {{ include('components/search/controls.html.twig') }}
-
-            {% if count > 0 and data['search']['as_map'] == 0 %}
-               {% set no_onchange = true %}
-               {% set select_class = 'search-limit-dropdown' %}
-               {% set limitdropdown = include('components/dropdown/limit.html.twig') %}
-               <div class="d-inline-flex align-items-center d-none d-md-block search-limit">
-                  {{ __('Show %s entries')|format(limitdropdown)|raw }}
-               </div>
-            {% endif %}
          {% endif %}
       </div>
 
