@@ -29,9 +29,9 @@
  # ---------------------------------------------------------------------
  #}
 
-<div class="d-inline-flex align-items-center search-controls">
+<div class="d-inline-flex flex-wrap-reverse gap-2 gap-sm-0 align-items-center search-controls">
    {% if showmassiveactions and count > 0 %}
-   {% do call('Html::showMassiveActions', [massiveactionparams]) %}
+      {% do call('Html::showMassiveActions', [massiveactionparams]) %}
    {% endif %}
 
    {% if may_be_located and (count > 0 or data['search']['as_map'] == 1) %}
