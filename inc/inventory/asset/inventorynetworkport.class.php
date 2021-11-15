@@ -335,7 +335,11 @@ trait InventoryNetworkPort {
 
       $netname_stmt = null;
 
-      foreach ($this->ports as $key => $data) {
+      $ports = $this->ports;
+      if (method_exists($this, 'getManagementPorts')) {
+         $ports += $this->getManagementPorts();
+      }
+      foreach ($ports as $key => $data) {
          foreach ($db_ports as $keydb => $datadb) {
             //keep trace of logical number from db
             $db_lnumber = $datadb['logical_number'];
@@ -447,12 +451,17 @@ trait InventoryNetworkPort {
             unset($db_ports[$keydb]);
             unset($this->networks[$key]);
             unset($this->ports[$key]);
+            if (method_exists($this, 'getManagementPorts')) {
+               $managements = $this->getManagementPorts();
+               unset($managements[$key]);
+               $this->setManagementPorts($managements);
+            }
 
             $this->portUpdated($data, $keydb);
          }
       }
 
-      //delete remaning network ports, if any
+      //delete remaining network ports, if any
       if (!$this->isMainPartial() && count($db_ports)) {
          foreach ($db_ports as $netpid => $netpdata) {
             if ($netpdata['name'] != 'management') { //prevent removing internal management port
@@ -546,7 +555,11 @@ trait InventoryNetworkPort {
     * @return void
     */
    private function handleCreates() {
-      foreach ($this->ports as $port) {
+      $ports = $this->ports;
+      if (method_exists($this, 'getManagementPorts')) {
+         $ports += $this->getManagementPorts();
+      }
+      foreach ($ports as $port) {
          $netports_id = $this->addNetworkPort($port);
          if (count($port->ipaddress)) {
             $netnames_id = $this->addNetworkName($netports_id, $port->netname ?? null);

@@ -94,10 +94,20 @@ class Printer extends NetworkEquipment
          }
          unset($val->port);
 
+         //inventoried printers certainly have ethernet
+         if (property_exists($this->raw_data->content ?? new \stdClass(), 'network_device')) {
+            $val->have_ethernet = 1;
+         }
+
          // Hack for USB Printer serial
          if (property_exists($val, 'serial')
                && preg_match('/\/$/', $val->serial)) {
             $val->serial = preg_replace('/\/$/', '', $val->serial);
+         }
+
+         if (property_exists($val, 'ram')) {
+            $val->memory_size = $val->ram;
+            unset($val->ram);
          }
 
          $res_rule = $rulecollection->processAllRules(['name' => $val->name]);
@@ -284,6 +294,12 @@ class Printer extends NetworkEquipment
       $input = (array)$this->counters;
       $input['printers_id'] = $this->item->fields['id'];
       $input['date'] = $_SESSION['glpi_currenttime'];
-      $metrics->add($input, [], false);
+
+      if ($metrics->getFromDBByCrit(['printers_id' => $this->item->fields['id']])) {
+         $input['id'] = $metrics->fields['id'];
+         $metrics->update($input, false);
+      } else {
+         $metrics->add($input, [], false);
+      }
    }
 }
