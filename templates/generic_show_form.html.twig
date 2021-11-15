@@ -45,8 +45,8 @@
    {% set withtemplate = params['withtemplate'] ?? '' %}
    {% set item_type = item.getType() %}
 
-   <div class="card-body d-flex">
-      <div class="col-9 flex-column">
+   <div class="card-body d-flex flex-wrap">
+      <div class="col-12 col-xxl-9 flex-column">
          <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
             <div class="row flex-row align-items-start flex-grow-1">
                <div class="row flex-row">
@@ -533,7 +533,7 @@
             </div> {# .row #}
          </div> {# .flex-row #}
       </div>
-      <div class="col-3 flex-column">
+      <div class="col-12 col-xxl-3 flex-column">
          <div class="flex-row asset-pictures">
             {{ include('components/form/pictures.html.twig', {'gallery_type': ''}) }}
          </div>

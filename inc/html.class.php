@@ -2465,19 +2465,20 @@ HTML;
                   ]
             );
          }
-         if ($p['display_arrow']) {
-            $out .= "<i class='fas fa-level-".($p['ontop']?'down':'up')."-alt fa-flip-horizontal fa-lg ms-2 me-1 mt-2'></i>";
-         }
          $out .= "<a title='".__('Massive actions')."'
                      data-bs-toggle='tooltip' data-bs-placement='top'
-                     class='btn btn-sm btn-outline-secondary me-2' ";
+                     class='btn btn-sm btn-outline-secondary me-1' ";
          if (is_array($p['confirm'] || strlen($p['confirm']))) {
             $out .= self::addConfirmationOnAction($p['confirm'], "modal_massiveaction_window$identifier.show();");
          } else {
             $out .= "onclick='modal_massiveaction_window$identifier.show();'";
          }
          $out .= " href='#modal_massaction_content$identifier' title=\"".htmlentities($p['title'], ENT_QUOTES, 'UTF-8')."\">";
-         $out .= $p['title']."</a>";
+         if ($p['display_arrow']) {
+            $out .= "<i class='fas fa-level-".($p['ontop']?'down':'up')."-alt fa-flip-horizontal mt-2' style='margin-left: -2px;'></i>";
+         }
+         $out .= "<span>".$p['title']."</span>";
+         $out .= "</a>";
 
          if (!$p['ontop']
              || (isset($p['forcecreate']) && $p['forcecreate'])) {

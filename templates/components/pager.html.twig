@@ -65,17 +65,24 @@
 {% set adjacents = 2 %}
 {% set skip_adjacents = false %}
 
-<div class="flex-grow-1 d-flex flex-wrap flex-md-nowrap  align-items-center justify-content-center justify-content-md-between mb-2 search-pager">
-   <span class="d-block d-md-none page-infos">
-      {{ include('components/dropdown/limit.html.twig') }}
+<div class="flex-grow-1 d-flex flex-wrap flex-md-nowrap  align-items-center justify-content-between mb-2 search-pager">
+   {% set limitdropdown = include('components/dropdown/limit.html.twig', {
+      'on_change': true,
+      'select_class': 'search-limit-dropdown',
+   }) %}
+   <span class="search-limit d-none d-md-block">
+      {{ __('%s rows / page')|format(limitdropdown)|raw }}
+   </span>
+   <span class="search-limit d-block d-md-none">
+      {{ limitdropdown|raw }}
    </span>
    <p class="m-0 text-muted d-none d-md-block page-infos">
-      {{ __('Showing %s to %s of %s entries')|format(current_start, current_end, count) }}
+      {{ __('Showing %s to %s of %s rows')|format(current_start, current_end, count) }}
    </p>
    <p class="m-0 text-muted d-block d-md-none text-nowrap ms-2 page-infos">
       {{ __('%s-%s/%s')|format(current_start, current_end, count) }}
    </p>
-   <ul class="pagination m-0 mt-2 mt-md-0">
+   <ul class="pagination m-0 mt-sm-2 mt-md-0">
       {% set is_first_page = start == 0 %}
       {% set is_last_page = forward >= count %}
 
@@ -92,7 +99,7 @@
       {% for page in range(1, nb_pages) %}
          {% if current_page - adjacents <= page and current_page + adjacents >= page %}
             {% set page_start = (page - 1) * limit %}
-            <li class="page-item {% if page == current_page %}active selected{% endif %}">
+            <li class="d-none d-sm-block page-item {% if page == current_page %}active selected{% endif %}">
                <a class="page-link page-link-num" href="{{ href|replace({'%start%': page_start}) }}" data-start="{{ page_start }}">{{ page }}</a>
             </li>
             {% if current_page + adjacents == page %}
@@ -100,7 +107,7 @@
             {% endif %}
          {% elseif skip_adjacents == false %}
             {% set skip_adjacents = true %}
-            <li class="page-item disabled">
+            <li class="d-none d-sm-block page-item disabled">
                <a class="page-link" href="#" aria-disabled="true">...</a>
             </li>
          {% endif %}

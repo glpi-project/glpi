@@ -641,14 +641,17 @@
 
 
 {% macro noLabelField(field, id = '', add_field_html = '', options = {}) %}
-   {% set options = {'full_width': false}|merge(options) %}
+   {% set options = {
+      'full_width': false,
+      'mb': 'mb-3',
+   }|merge(options) %}
 
    {% set class = 'col-12 col-sm-6' %}
    {% if options.full_width %}
       {% set class = 'col-12' %}
    {% endif %}
 
-   <div class="{{ class }} mb-3">
+   <div class="{{ class }} {{ options.mb }}">
       {{ field|raw }}
       {{ add_field_html|raw }}
    </div>

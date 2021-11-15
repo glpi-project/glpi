@@ -38,7 +38,7 @@
                   {{ __('No item found') }}
                </div>
             {% else %}
-               <div class="card-header search-header">
+               <div class="card-header search-header pe-0">
                   {% if count > 0 %}
                      {% set limitdropdown = include('components/dropdown/limit.html.twig', {
                         'href': target ~ '?',

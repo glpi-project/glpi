@@ -40,7 +40,7 @@
 <form id="massform{{ normalized_itemtype }}" method="get" action="{{ path('front/massiveaction.php') }}"
       data-search-itemtype="{{ data['itemtype'] }}" data-start="{{ start }}" data-count="{{ count }}" data-limit="{{ limit }}">
    <div class="card card-sm mt-0 search-card">
-      <div class="card-header d-flex justify-content-between search-header">
+      <div class="card-header d-flex justify-content-between search-header pe-0">
          {% if data['display_type'] == constant('Search::GLOBAL_SEARCH') %}
             <h2>{{ itemtype|itemtype_name }}</h2>
 
@@ -52,15 +52,6 @@
             {% endif %}
          {% else %}
             {{ include('components/search/controls.html.twig') }}
-
-            {% if count > 0 and data['search']['as_map'] == 0 %}
-               {% set no_onchange = true %}
-               {% set select_class = 'search-limit-dropdown' %}
-               {% set limitdropdown = include('components/dropdown/limit.html.twig') %}
-               <div class="d-inline-flex align-items-center d-none d-md-block search-limit">
-                  {{ __('Show %s entries')|format(limitdropdown)|raw }}
-               </div>
-            {% endif %}
          {% endif %}
       </div>
 

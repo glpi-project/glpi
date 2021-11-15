@@ -149,16 +149,20 @@ $(function() {
    });
 
    var scrollToTimelineBottom = function() {
-      // scroll body to ensure we are at bottom (useful for responsive display)
-      $('html, body').animate({
-         scrollTop: $(document).height()
-      }, 0, function(){
-          // scroll timeline with animation
-         var timeline = $("#itil-object-container .itil-left-side");
-         timeline.animate(
-            { scrollTop: timeline.prop('scrollHeight') }, 'slow',
-         );
-      });
+      // small delay to be sure all content is loaded
+      // otherwise, height of answer html may not be taken in account by document height
+      setTimeout(() => {
+         // scroll body to ensure we are at bottom (useful for responsive display)
+         $('html, body').animate({
+            scrollTop: $(document).height()
+         }, 0, function(){
+            // scroll timeline with animation
+            var timeline = $("#itil-object-container .itil-left-side");
+            timeline.animate({
+               scrollTop: timeline.prop('scrollHeight')
+            }, 'slow');
+         });
+      }, 200);
    };
 
    {% if openfollowup %}

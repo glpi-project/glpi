@@ -164,9 +164,9 @@ class Ticket extends CommonITILObject {
          $opt['criteria'][4]['link']       = 'AND NOT';
 
          $pic_validate = '
-            <span class="fa-stack" style="vertical-align: middle; font-size: 0.8em" title="'.__s('Ticket waiting for your approval').'">
-                <i class="fas fa-check fa-stack-1x" style="top: 1px; left: -7px; font-size: 1.2em"></i>
-                <i class="far fa-clock fa-stack-1x" style="top: 6px; left: -3px"></i>
+            <span class="fa-stack" title="'.__s('Ticket waiting for your approval').'">
+                <i class="fas fa-check fa-stack-1x" style="top: 1px; left: -2px; font-size: 1.2em"></i>
+                <i class="far fa-clock fa-stack-1x" style="top: 6px; left: 1px"></i>
             </span>
             <span class="d-none d-xxl-block">
                '.__s('Ticket waiting for your approval').'
