@@ -468,14 +468,6 @@ class GLPIKanbanRights {
             <li class='kanban-item-goto dropdown-item'>
                <a href="#"><i class="fas fa-share"></i>${__('Go to')}</a>
             </li>`;
-         if (self.rights.canOrderCard()) {
-            card_overflow_dropdown += `
-                <li class='kanban-item-edit-team dropdown-item'>
-                   <span>
-                      <i class="fas fa-users"></i>${__('Manage team')}
-                   </span>
-                </li>`;
-         }
          if (self.rights.canDeleteItem()) {
             card_overflow_dropdown += `
                 <li class='kanban-item-remove dropdown-item'>
@@ -842,11 +834,6 @@ class GLPIKanbanRights {
             const column = $(e.target.closest('.kanban-dropdown')).data('trigger-button').closest('.kanban-column');
             // Hide that column
             hideColumn(getColumnIDFromElement(column));
-         });
-         $(self.element + ' .kanban-container').on('click', '.kanban-item-edit-team', function(e) {
-            // Get root dropdown, then the button that triggered it, and finally the card that the button is in
-            const card = $(e.target.closest('.kanban-dropdown')).data('trigger-button').closest('.kanban-item');
-            self.showTeamModal($(card));
          });
          $(self.element).on('click', '.item-details-panel .kanban-item-edit-team', (e) => {
             self.showTeamModal($(e.target).closest('.item-details-panel').data('card'));
