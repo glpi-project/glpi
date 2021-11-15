@@ -2504,8 +2504,9 @@ class GLPIKanbanRights {
             const items_id = modal.find('select[name="items_id"]').val();
 
             if (itemtype && items_id) {
-               addTeamMember(card_itemtype, card_items_id, itemtype, items_id);
-               self.showCardPanel($(`#${card_itemtype}-${card_items_id}`));
+               addTeamMember(card_itemtype, card_items_id, itemtype, items_id).done(() => {
+                  self.showCardPanel($(`#${card_itemtype}-${card_items_id}`));
+               });
                hideModal();
             }
          });
@@ -2515,8 +2516,9 @@ class GLPIKanbanRights {
             const items_id = list_item.attr('data-items-id');
 
             if (itemtype && items_id) {
-               removeTeamMember(card_itemtype, card_items_id, itemtype, items_id);
-               self.showCardPanel($(`#${card_itemtype}-${card_items_id}`));
+               removeTeamMember(card_itemtype, card_items_id, itemtype, items_id).done(() => {
+                  self.showCardPanel($(`#${card_itemtype}-${card_items_id}`));
+               });
                list_item.remove();
             }
          });
@@ -2526,7 +2528,7 @@ class GLPIKanbanRights {
       };
 
       const addTeamMember = (itemtype, items_id, member_type, members_id) => {
-         $.ajax({
+         return $.ajax({
             method: 'POST',
             url: (self.ajax_root + "kanban.php"),
             data: {
@@ -2546,7 +2548,7 @@ class GLPIKanbanRights {
       };
 
       const removeTeamMember = (itemtype, items_id, member_type, members_id) => {
-         $.ajax({
+         return $.ajax({
             method: 'POST',
             url: (self.ajax_root + "kanban.php"),
             data: {
