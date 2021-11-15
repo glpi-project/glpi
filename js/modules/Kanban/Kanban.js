@@ -2490,26 +2490,11 @@ class GLPIKanbanRights {
       };
 
       this.showTeamModal = (card_el) => {
-         const team = card_el.data('_team');
          const [card_itemtype, card_items_id] = card_el.prop('id').split('-', 2);
-         let content = '<ul class="kanban-team-list">';
-
-         $.each(team, (i, member) => {
-            const badge = getTeamBadge(member);
-            content += `
-               <li data-itemtype="${member['itemtype']}" data-items-id="${member['id']}" class="d-flex justify-content-between">
-                  <span>${badge}<span class="ms-2">${member['name']}</span></span>
-                  <button type="button" name="delete" class="btn btn-danger" title="${_x('button', 'Delete')}">
-                     <i class="far fa-times-circle"></i>
-                  </button>
-               </li>
-            `;
-         });
+         let content = '';
 
          const teammember_types_dropdown = $(`#kanban-teammember-item-dropdown-${card_itemtype}`).html();
          content += `
-            </ul>
-            <hr>
             ${teammember_types_dropdown}
             <button type="button" name="add" class="btn btn-primary">${_x('button', 'Add')}</button>
          `;
