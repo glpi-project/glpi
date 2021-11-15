@@ -299,7 +299,7 @@ table {
 
 .list-group .list-group-item {
    color: inherit;
-   border: $input-border-width solid $input-border-color;
+   border-color: $table-border-color;
    &:hover {
       background-color: $hover-bg;
    }
