@@ -821,7 +821,7 @@ class RuleImportAsset extends Rule {
                ];
                break;
 
-            case 'domains_id':
+            case 'domain':
                $it_criteria['LEFT JOIN']['glpi_domains'] = [
                   'ON'  => [
                      'glpi_domains' => 'id',
