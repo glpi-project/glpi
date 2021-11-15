@@ -34,17 +34,21 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
 
 ## Some screenshots
 
-**Tickets Timeline**
+**Tickets**
 
-![Tickets Timeline](pics/screenshots/timeline.png)
+![Tickets Timeline](pics/screenshots/ticket.png)
 
-**DCIM drag&drop**
+**DCIM**
 
 ![DCIM drag&drop](pics/screenshots/dcim_racks_draganddrop.gif)
 
-**Components**
+**Assets**
 
-![Components](pics/screenshots/components.png)
+![asset view](pics/screenshots/asset.png)
+
+**Dashboards**
+
+![Asset dashboard](pics/screenshots/dashboard.png)
 
 ## Prerequisites
 
