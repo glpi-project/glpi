@@ -193,6 +193,7 @@ class ProjectTeam extends CommonDBRelation {
                   unset($data['id']);
                   /** @noinspection SlowArrayOperationsInLoopInspection */
                   $member = array_merge($member, $data);
+                  break;
                }
             }
          }
