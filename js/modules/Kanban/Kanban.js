@@ -1016,57 +1016,7 @@ class GLPIKanbanRights {
          $(self.element + ' .kanban-container').on('click', '.kanban-item .kanban-item-title', function(e) {
             e.preventDefault();
             const card = $(e.target).closest('.kanban-item');
-            const [itemtype, items_id] = card.prop('id').split('-');
-            $.ajax({
-               method: 'GET',
-               url: (self.ajax_root + "kanban.php"),
-               data: {
-                  itemtype: itemtype,
-                  items_id: items_id,
-                  action: 'load_item_panel'
-               }
-            }).done((result) => {
-               $('.item-details-panel').remove();
-               $(self.element).append($(result));
-               $('.item-details-panel').data('card', card);
-               // Load badges
-               $('.item-details-panel ul.team-list li').each((i, l) => {
-                  l = $(l);
-                  const member_itemtype = l.attr('data-itemtype');
-                  const member_items_id = l.attr('data-items_id');
-                  let member_item = getTeamBadge({
-                     itemtype: member_itemtype,
-                     id: member_items_id,
-                     name: l.attr('data-name')
-                  });
-                  //member_item += (l.attr('data-name') || `${member_itemtype} (${member_items_id})`).trim();
-                  l.append(`
-                     <div class="member-details">
-                        ${member_item}
-                        ${l.attr('data-name') || `${member_itemtype} (${member_items_id})`}
-                     </div>
-                     <button type="button" name="delete" class="btn btn-ghost-danger">
-                        <i class="fas fa-times" title="${__('Delete')}"></i>
-                     </button>
-                  `);
-               });
-            });
-
-            $(self.element).on('click', '.item-details-panel ul.team-list button[name="delete"]', (e) => {
-               const list_item = $(e.target).closest('li');
-               const member_itemtype = list_item.attr('data-itemtype');
-               const member_items_id = list_item.attr('data-items_id');
-               const panel = $(e.target).closest('.item-details-panel');
-               const itemtype = panel.attr('data-itemtype');
-               const items_id = panel.attr('data-items_id');
-
-               if (itemtype && items_id) {
-                  removeTeamMember(itemtype, items_id, member_itemtype, member_items_id);
-                  list_item.remove();
-               }
-            });
-
-            // showModalFromUrl((self.ajax_root + "kanban.php?action=show_card_edit_form&itemtype="+itemtype+"&card=" + items_id));
+            self.showCardPanel(card);
          });
       };
 
@@ -2484,6 +2434,61 @@ class GLPIKanbanRights {
          self.user_state = new_state;
       };
 
+      this.showCardPanel = (card) => {
+         if (!card) {
+            $('.item-details-panel').remove();
+         }
+         const [itemtype, items_id] = card.prop('id').split('-');
+         $.ajax({
+            method: 'GET',
+            url: (self.ajax_root + "kanban.php"),
+            data: {
+               itemtype: itemtype,
+               items_id: items_id,
+               action: 'load_item_panel'
+            }
+         }).done((result) => {
+            $('.item-details-panel').remove();
+            $(self.element).append($(result));
+            $('.item-details-panel').data('card', card);
+            // Load badges
+            $('.item-details-panel ul.team-list li').each((i, l) => {
+               l = $(l);
+               const member_itemtype = l.attr('data-itemtype');
+               const member_items_id = l.attr('data-items_id');
+               let member_item = getTeamBadge({
+                  itemtype: member_itemtype,
+                  id: member_items_id,
+                  name: l.attr('data-name')
+               });
+               //member_item += (l.attr('data-name') || `${member_itemtype} (${member_items_id})`).trim();
+               l.append(`
+                     <div class="member-details">
+                        ${member_item}
+                        ${l.attr('data-name') || `${member_itemtype} (${member_items_id})`}
+                     </div>
+                     <button type="button" name="delete" class="btn btn-ghost-danger">
+                        <i class="fas fa-times" title="${__('Delete')}"></i>
+                     </button>
+                  `);
+            });
+         });
+
+         $(self.element).on('click', '.item-details-panel ul.team-list button[name="delete"]', (e) => {
+            const list_item = $(e.target).closest('li');
+            const member_itemtype = list_item.attr('data-itemtype');
+            const member_items_id = list_item.attr('data-items_id');
+            const panel = $(e.target).closest('.item-details-panel');
+            const itemtype = panel.attr('data-itemtype');
+            const items_id = panel.attr('data-items_id');
+
+            if (itemtype && items_id) {
+               removeTeamMember(itemtype, items_id, member_itemtype, member_items_id);
+               list_item.remove();
+            }
+         });
+      };
+
       this.showTeamModal = (card_el) => {
          const team = card_el.data('_team');
          const [card_itemtype, card_items_id] = card_el.prop('id').split('-', 2);
@@ -2515,6 +2520,7 @@ class GLPIKanbanRights {
 
             if (itemtype && items_id) {
                addTeamMember(card_itemtype, card_items_id, itemtype, items_id);
+               self.showCardPanel($(`#${card_itemtype}-${card_items_id}`));
                hideModal();
             }
          });
@@ -2525,6 +2531,7 @@ class GLPIKanbanRights {
 
             if (itemtype && items_id) {
                removeTeamMember(card_itemtype, card_items_id, itemtype, items_id);
+               self.showCardPanel($(`#${card_itemtype}-${card_items_id}`));
                list_item.remove();
             }
          });
