@@ -669,13 +669,16 @@ HTML;
             <button class='modify_plugin'
                     data-action='clean_plugin'
                     title='".__s("Clean")."'>
-               <i class='fas fa-broom'></i>
-            </button>
-            <button class='modify_plugin'
-                    data-action='download_plugin'
-                    title='".__s("Download again")."'>
-               <i class='fas fa-cloud-download-alt'></i>
+                    <i class='fas fa-broom'></i>
             </button>";
+         if ($can_be_downloaded) {
+            $buttons .="
+               <button class='modify_plugin'
+                     data-action='download_plugin'
+                     title='".__s("Download again")."'>
+                  <i class='fas fa-cloud-download-alt'></i>
+               </button>";
+         }
       } else if (!$is_available) {
          if (!$can_run_local_install) {
             $rand = mt_rand();
