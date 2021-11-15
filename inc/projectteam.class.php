@@ -189,8 +189,8 @@ class ProjectTeam extends CommonDBRelation {
          foreach ($iterator as $data) {
             foreach ($team[$data['itemtype']] as &$member) {
                if ($member['items_id'] === $data['id']) {
-                  unset($data['id']);
                   $member['display_name'] = formatUserName($data['id'], $data['name'], $data['realname'], $data['firstname']);
+                  unset($data['id']);
                   /** @noinspection SlowArrayOperationsInLoopInspection */
                   $member = array_merge($member, $data);
                }
