@@ -1227,6 +1227,7 @@ $break_tablet: 1400px;
 
 .chartist-tooltip.dashboard-tooltip {
    $bg-color: rgba($color: #FFFFFF, $alpha: .65);
+   z-index: 1080;
 
    background-color: $bg-color;
    @include soft-shadow;
