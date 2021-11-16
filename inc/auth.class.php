@@ -756,7 +756,7 @@ class Auth extends CommonGLPI {
                   $ds = AuthLDAP::connectToServer($ldap_method["host"],
                                                   $ldap_method["port"],
                                                   $ldap_method["rootdn"],
-                                                  Toolbox::sodiumDecrypt($ldap_method["rootdn_passwd"]),
+                                                  (new GLPIKey())->decrypt($ldap_method["rootdn_passwd"]),
                                                   $ldap_method["use_tls"],
                                                   $ldap_method["deref_option"],
                                                   $ldap_method["tls_certfile"],

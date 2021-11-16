@@ -65,7 +65,7 @@ class GLPIMailer extends PHPMailer {
          if ($CFG_GLPI['smtp_username'] != '') {
             $this->SMTPAuth = true;
             $this->Username = $CFG_GLPI['smtp_username'];
-            $this->Password = Toolbox::sodiumDecrypt($CFG_GLPI['smtp_passwd']);
+            $this->Password = (new GLPIKey())->decrypt($CFG_GLPI['smtp_passwd']);
          }
 
          if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPSSL) {

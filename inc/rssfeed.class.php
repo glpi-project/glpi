@@ -867,7 +867,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
          if (!empty($CFG_GLPI["proxy_user"])) {
             $prx_opt[CURLOPT_HTTPAUTH]     = CURLAUTH_ANYSAFE;
             $prx_opt[CURLOPT_PROXYUSERPWD] = $CFG_GLPI["proxy_user"].":".
-                                             Toolbox::sodiumDecrypt($CFG_GLPI["proxy_passwd"]);
+                                             (new GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]);
          }
          $feed->set_curl_options($prx_opt);
       }

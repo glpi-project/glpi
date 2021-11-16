@@ -33,6 +33,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use GLPIKey;
 use Group;
 use Group_User;
 
@@ -600,7 +601,7 @@ class AuthLDAP extends DbTestCase {
       $this->boolean($ldap->getFromDB($id))->isTrue();
 
       //Expected value to be encrypted using current  key
-      $this->string(\Toolbox::sodiumDecrypt($ldap->fields['rootdn_passwd']))->isIdenticalTo($password);
+      $this->string((new GLPIKey())->decrypt($ldap->fields['rootdn_passwd']))->isIdenticalTo($password);
 
       $password = 'tot\'o';
       $input    = ['id' => $id, 'name' => 'ldap', 'rootdn_passwd' => $password];
@@ -608,7 +609,7 @@ class AuthLDAP extends DbTestCase {
       $this->boolean($ldap->getFromDB($id))->isTrue();
 
       //Expected value to be encrypted using current key
-      $this->string(\Toolbox::sodiumDecrypt($ldap->fields['rootdn_passwd']))->isIdenticalTo($password);
+      $this->string((new GLPIKey())->decrypt($ldap->fields['rootdn_passwd']))->isIdenticalTo($password);
 
       $input['_blank_passwd'] = 1;
       $result   = $ldap->prepareInputForUpdate($input);
