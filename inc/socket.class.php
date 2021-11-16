@@ -771,7 +771,12 @@ class Socket extends CommonDBChild {
          echo "<tr class='tab_bg_2 center'>";
          echo "<td class='b'>"._n('Network socket', 'Network sockets', 1)."</td>";
          echo "<td>".__('Name')."</td><td>";
-         Html::autocompletionTextField($item, "name", ['value' => '']);
+         echo Html::input(
+            'name',
+            [
+               'value' => '',
+            ]
+         );
          echo "</td>";
          echo "<td>".SocketModel::getTypeName(1)."</td><td>";
          SocketModel::dropdown("socketmodels_id", []);
