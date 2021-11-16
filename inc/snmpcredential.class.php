@@ -149,7 +149,7 @@ class SNMPCredential extends CommonDBTM {
       }
 
       if (isset($input['priv_passphrase'])) {
-         $input['priv_passphrase'] = $key->decrypt($input['priv_passphrase']);
+         $input['priv_passphrase'] = $key->encrypt($input['priv_passphrase']);
       }
 
       return $input;
