@@ -364,17 +364,26 @@ abstract class MainAsset extends InventoryAsset
          $input['tag'] = $this->getAgent()->fields['tag'];
       }
 
-      if (property_exists($val, 'serial') && !empty($val->serial)) {
-         $input['serial'] = $val->serial;
+      $models_id = $this->getModelsFieldName();
+      foreach ($val as $prop => $value) {
+         switch ($prop) {
+            case $models_id:
+               $prop = 'model';
+               break;
+            case 'domains_id':
+               $prop = 'domain';
+               break;
+            case 'ips':
+               $prop = 'ip';
+               break;
+         }
+         if (!empty($value)) {
+            $input[$prop] = $value;
+         }
       }
-      if (property_exists($val, 'otherserial') && !empty($val->otherserial)) {
-         $input['otherserial'] = $val->otherserial;
-      }
-      if (property_exists($val, 'uuid') && !empty($val->uuid)) {
-         $input['uuid'] = $val->uuid;
-      }
-      if (property_exists($val, 'autoupdatesystems_id') && !empty($val->autoupdatesystems_id)) {
-         $input['autoupdatesystems_id'] = $val->autoupdatesystems_id;
+
+      if (!isset($input['name'])) {
+         $input['name'] = '';
       }
 
       if (isset($this->extra_data['\Glpi\Inventory\Asset\NetworkCard'])) {
@@ -420,20 +429,6 @@ abstract class MainAsset extends InventoryAsset
          }
       }
 
-      $models_id = $this->getModelsFieldName();
-      if (property_exists($val, $models_id) && !empty($val->$models_id)) {
-         $input['model'] = $val->$models_id;
-      }
-
-      if (property_exists($val, 'domains_id') && !empty($val->domains_id)) {
-         $input['domains_id'] = $val->domains_id;
-      }
-
-      if (property_exists($val, 'name') && !empty($val->name)) {
-         $input['name'] = $val->name;
-      } else {
-         $input['name'] = '';
-      }
       $input['itemtype'] = $this->item->getType();
 
       // * entity rules
