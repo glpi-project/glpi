@@ -1363,6 +1363,7 @@ JAVASCRIPT;
          array_merge($params, [
             'legend'   => true,
             'multiple' => true,
+            'cache_key' => mt_rand(),
          ]),
          $params['data']['labels'],
          $params['data']['series']
@@ -1379,6 +1380,7 @@ JAVASCRIPT;
    public static function multipleAreas(array $params = []): string {
       return self::multipleLines(array_merge($params, [
          'area' => true,
+         'cache_key' => mt_rand(),
       ]));
    }
 
