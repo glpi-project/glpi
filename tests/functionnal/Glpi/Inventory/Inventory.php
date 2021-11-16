@@ -932,6 +932,7 @@ class Inventory extends DbTestCase {
          'sysdescr' => null,
          'last_inventory_update' => $_SESSION['glpi_currenttime'],
          'snmpcredentials_id' => 0,
+         'autoupdatesystems_id' => $autoupdatesystems_id,
          'linkid' => $printer_link['linkid'],
          'glpi_computers_items_is_dynamic' => 1,
          'entity' => 0,
