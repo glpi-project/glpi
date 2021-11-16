@@ -2455,7 +2455,6 @@ HTML;
                $url,
                [
                   'title'           => $p['title'],
-                  'container'       => 'massiveactioncontent'.$identifier,
                   'extraparams'     => $p['extraparams'],
                   'width'           => $p['width'],
                   'height'          => $p['height'],
