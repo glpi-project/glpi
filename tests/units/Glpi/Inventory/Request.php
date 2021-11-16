@@ -84,7 +84,6 @@ class Request extends \GLPITestCase {
       return [
          ['query' => 'INVENTORY'],
          ['query' => 'PROLOG'],
-         ['query' => 'SNMPQUERY'],
       ];
    }
 
