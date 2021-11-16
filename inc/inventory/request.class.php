@@ -120,9 +120,12 @@ class Request extends AbstractRequest
 
 
    /**
-     * Handle agent GETPARAMS request
-     * @return void
-     */
+    * Handle agent GETPARAMS request
+    *
+    * @param mixed $data Inventory input following specs
+    *
+    * @return void
+    */
    public function getParams($data) {
       $this->inventory = new Inventory();
       $this->inventory->contact($data);
@@ -143,6 +146,9 @@ class Request extends AbstractRequest
 
    /**
     * Handle agent prolog request
+    *
+    * @param mixed $data Inventory input following specs
+    *
     * @return void
     */
    public function prolog($data) {
@@ -161,7 +167,7 @@ class Request extends AbstractRequest
 
       $hook_params = [
          'mode' => $this->getMode(),
-         'deviceid' => ($this->getMode() == self::XML_MODE ? (string)$data->DEVICEID : $data->deviceid),
+         'deviceid' => $this->getDeviceID(),
          'response' => $response
       ];
       $hook_response = Plugin::doHookFunction(
@@ -177,6 +183,9 @@ class Request extends AbstractRequest
 
    /**
     * Handle agent network discovery request
+    *
+    * @param mixed $data Inventory input following specs
+    *
     * @return void
     */
    public function networkDiscovery($data) {
@@ -187,7 +196,7 @@ class Request extends AbstractRequest
       $hook_params = [
          'mode' => $this->getMode(),
          'inventory' => $this->inventory,
-         'deviceid' => ($this->getMode() == self::XML_MODE ? (string)$data->DEVICEID : $data->deviceid),
+         'deviceid' => $this->getDeviceID(),
          'response' => $response,
          'query' => $this->query
       ];
@@ -196,20 +205,29 @@ class Request extends AbstractRequest
          Hooks::NETWORK_DISCOVERY,
          $hook_params
       );
-      $response = $hook_response['response'];
 
-      if (count($response)) {
-         $this->addToResponse($response);
-      } else if (count($hook_response['errors'])) {
-         $this->addError($hook_response['errors'], 400);
+      if ($hook_response == $hook_params) {
+         //no hook, use native capabilities
+         $this->inventory($data);
       } else {
-         $this->addError("Query '" . self::NETDISCOVERY_ACTION . "' is not supported.", 400);
+         //try to use hook response
+         if (isset($hook_response['response']) && count($hook_response['response'])) {
+            $this->addToResponse($response);
+         } else if (isset($hook_response['errors']) && count($hook_response['errors'])) {
+            $this->addError($hook_response['errors'], 400);
+         } else {
+            //nothing expected happens; this is an error
+            $this->addError("Query '" . $this->query . "' is not supported.", 400);
+         }
       }
    }
 
 
    /**
     * Handle agent network inventory request
+    *
+    * @param mixed $data Inventory input following specs
+    *
     * @return void
     */
    public function networkInventory($data) {
@@ -220,7 +238,7 @@ class Request extends AbstractRequest
       $hook_params = [
          'mode' => $this->getMode(),
          'inventory' => $this->inventory,
-         'deviceid' => ($this->getMode() == self::XML_MODE ? (string)$data->DEVICEID : $data->deviceid),
+         'deviceid' => $this->getDeviceID(),
          'response' => $response,
          'query' => $this->query
       ];
@@ -229,21 +247,31 @@ class Request extends AbstractRequest
          Hooks::NETWORK_INVENTORY,
          $hook_params
       );
-      $response = $hook_response['response'];
 
-      if (count($response)) {
-         $this->addToResponse($response);
-      } else if (count($hook_response['errors'])) {
-         $this->addError($hook_response['errors'], 400);
+      if ($hook_response == $hook_params) {
+         //no hook, use native capabilities
+         $this->inventory($data);
       } else {
-         $this->addError("Query '" . self::NETINV_ACTION . "' is not supported.", 400);
+         //try to use hook response
+         if (isset($hook_response['response']) && count($hook_response['response'])) {
+            $this->addToResponse($response);
+         } else if (isset($hook_response['errors']) && count($hook_response['errors'])) {
+            $this->addError($hook_response['errors'], 400);
+         } else {
+            //nothing expected happens; this is an error
+            $this->addError("Query '" . $this->query . "' is not supported.", 400);
+         }
       }
    }
 
 
    /**
-   * Handle agent CONTACT request
-   */
+    * Handle agent CONTACT request
+    *
+    * @param mixed $data Inventory input following specs
+    *
+    * @return void
+    */
    public function contact($data) {
       $this->inventory = new Inventory();
       $this->inventory->contact($data);
@@ -268,7 +296,7 @@ class Request extends AbstractRequest
    /**
     * Handle agent inventory request
     *
-    * @param array $data Inventory input following specs
+    * @param mixed $data Inventory input following specs
     *
     * @return void
     */
