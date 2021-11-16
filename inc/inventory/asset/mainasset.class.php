@@ -366,7 +366,7 @@ abstract class MainAsset extends InventoryAsset
 
       $models_id = $this->getModelsFieldName();
       foreach ($val as $prop => $value) {
-         switch($prop) {
+         switch ($prop) {
             case $models_id:
                $prop = 'model';
                break;
