@@ -143,12 +143,13 @@ class SNMPCredential extends CommonDBTM {
    }
 
    protected function prepareInputs(array $input): array {
+      $key = new GLPIKey();
       if (isset($input['auth_passphrase'])) {
-         $input['auth_passphrase'] = Toolbox::sodiumEncrypt($input['auth_passphrase']);
+         $input['auth_passphrase'] = $key->encrypt($input['auth_passphrase']);
       }
 
       if (isset($input['priv_passphrase'])) {
-         $input['priv_passphrase'] = Toolbox::sodiumEncrypt($input['priv_passphrase']);
+         $input['priv_passphrase'] = $key->decrypt($input['priv_passphrase']);
       }
 
       return $input;
