@@ -95,7 +95,8 @@
                border-bottom: 0;
                position: sticky;
                top: -1px;
-               background-color: $card-cap-bg;
+               background-color: inherit;
+               z-index: $zindex-sticky;
             }
          }
 
@@ -112,7 +113,7 @@
             @include media-breakpoint-up(sm) {
                thead:first-child {
                   th {
-                     z-index: 5;
+                     z-index: $zindex-sticky;
                      position: sticky;
                      top: 49px;
                      border: 1px solid $card-border-color;
