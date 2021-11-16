@@ -644,6 +644,7 @@ if (!$DB->fieldExists('glpi_printers', 'autoupdatesystems_id')) {
          'after' => 'snmpcredentials_id',
       ]
    );
+   $migration->addKey('glpi_printers', 'autoupdatesystems_id');
 }
 
 if (countElementsInTable(Blacklist::getTable()) === 4) {
