@@ -5379,6 +5379,7 @@ CREATE TABLE `glpi_printers` (
   `sysdescr` text,
   `last_inventory_update` timestamp NULL DEFAULT NULL,
   `snmpcredentials_id` int NOT NULL DEFAULT '0',
+  `autoupdatesystems_id` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -5403,7 +5404,8 @@ CREATE TABLE `glpi_printers` (
   KEY `otherserial` (`otherserial`),
   KEY `uuid` (`uuid`),
   KEY `date_creation` (`date_creation`),
-  KEY `snmpcredentials_id` (`snmpcredentials_id`)
+  KEY `snmpcredentials_id` (`snmpcredentials_id`),
+  KEY `autoupdatesystems_id` (`autoupdatesystems_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 

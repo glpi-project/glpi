@@ -261,6 +261,7 @@ if (!$DB->fieldExists('glpi_printers', 'last_inventory_update')) {
       ]
    );
 }
+
 //new fields in networkports table
 $netport_fields = [
    'ifmtu' => "int NOT NULL DEFAULT '0'",
@@ -633,6 +634,17 @@ foreach ($cred_tables as $cred_table) {
       );
       $migration->addKey($cred_table, 'snmpcredentials_id');
    }
+}
+
+if (!$DB->fieldExists('glpi_printers', 'autoupdatesystems_id')) {
+   $migration->addField(
+      'glpi_printers',
+      'autoupdatesystems_id',
+      'int', [
+         'after' => 'snmpcredentials_id',
+      ]
+   );
+   $migration->addKey('glpi_printers', 'autoupdatesystems_id');
 }
 
 if (countElementsInTable(Blacklist::getTable()) === 4) {
