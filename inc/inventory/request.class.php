@@ -78,13 +78,15 @@ class Request extends AbstractRequest
             break;
          case self::INVENT_QUERY:
          case self::INVENT_ACTION:
-         case self::SNMP_QUERY:
-         case self::OLD_SNMP_QUERY:
-         case self::NETINV_ACTION:
             $this->inventory($content);
             break;
          case self::NETDISCOVERY_ACTION:
             $this->networkDiscovery($content);
+            break;
+         case self::SNMP_QUERY:
+         case self::OLD_SNMP_QUERY:
+         case self::NETINV_ACTION:
+            $this->networkInventory($content);
             break;
          case self::REGISTER_ACTION:
          case self::CONFIG_ACTION:
@@ -202,6 +204,39 @@ class Request extends AbstractRequest
          $this->addError($hook_response['errors'], 400);
       } else {
          $this->addError("Query '" . self::NETDISCOVERY_ACTION . "' is not supported.", 400);
+      }
+   }
+
+
+   /**
+    * Handle agent network inventory request
+    * @return void
+    */
+   public function networkInventory($data) {
+      $this->inventory = new Inventory();
+      $this->inventory->setData($data, $this->getMode());
+
+      $response = [];
+      $hook_params = [
+         'mode' => $this->getMode(),
+         'inventory' => $this->inventory,
+         'deviceid' => ($this->getMode() == self::XML_MODE ? (string)$data->DEVICEID : $data->deviceid),
+         'response' => $response,
+         'query' => $this->query
+      ];
+
+      $hook_response = Plugin::doHookFunction(
+         Hooks::NETWORK_INVENTORY,
+         $hook_params
+      );
+      $response = $hook_response['response'];
+
+      if (count($response)) {
+         $this->addToResponse($response);
+      } else if (count($hook_response['errors'])) {
+         $this->addError($hook_response['errors'], 400);
+      } else {
+         $this->addError("Query '" . self::NETINV_ACTION . "' is not supported.", 400);
       }
    }
 
