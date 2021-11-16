@@ -32,6 +32,9 @@ The present file will list all changes made to the project; according to the
 - Added `CommonDBTM::showForm()` to have a generic showForm for asset (based on a twig template).
 
 #### Changes
+- MySQL warnings are now logged in SQL errors log.
+- `Guzzle` library has been upgraded to version 7.4.
+- `Symfony\Console` library has been upgraded to version 5.4.
 - `CommonGLPI` constructor signature has been declared in an interface (`CommonGLPIInterface`).
 - `DBmysqlIterator` class compliancy with `Iterator` has been fixed (i.e. `DBmysqlIterator::next()` does not return current row anymore).
 - `showForm()` method of all classes inheriting `CommonDBTM` have been changed to match `CommonDBTM::showForm()` signature.
@@ -75,13 +78,14 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::logError()`
 - `Toolbox::logNotice()`
 - `Toolbox::logWarning()`
-- `Toolbox::unclean_cross_side_scripting_deep()`
-- `Toolbox::startsWith()`
 - `Toolbox::sodiumDecrypt()`
 - `Toolbox::sodiumEncrypt()`
+- `Toolbox::startsWith()`
+- `Toolbox::unclean_cross_side_scripting_deep()`
 
 #### Removed
-- jQueryUI has been partially removed and remaining widgets will be removed in a near future.
+- `jQueryUI` has been removed in favor of `twbs/bootstrap`. This implies removal of following widgets: `$.accordion`, `$.autocomplete`,
+  `$.button`, `$.dialog`, `$.draggable`, `$.droppable`, `$.progressbar`, `$.resizable`, `$.selectable`, `$.sortable`, `$.tabs`, `$.tooltip`.
 - Usage of `$order` parameter in `getAllDataFromTable()` (`DbUtils::getAllDataFromTable()`)
 - Usage of `table` parameter in requests made to `ajax/comments.php`
 - Usage of `GLPI_FORCE_EMPTY_SQL_MODE` constant
