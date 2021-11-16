@@ -30,12 +30,13 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
+use Glpi\Cache\SimpleCache;
 use Glpi\Exception\PasswordTooWeakException;
-use Glpi\Plugin\Hooks;
 use Glpi\System\RequirementsManager;
-use Glpi\Toolbox\Sanitizer;
+use Laminas\Cache\Storage\AvailableSpaceCapableInterface;
+use Laminas\Cache\Storage\FlushableInterface;
+use Laminas\Cache\Storage\TotalSpaceCapableInterface;
 use PHPMailer\PHPMailer\PHPMailer;
 
 if (!defined('GLPI_ROOT')) {
@@ -246,10 +247,6 @@ class Config extends CommonDBTM {
          $input[Impact::CONF_ENABLED] = exportArrayToDB($input[Impact::CONF_ENABLED]);
       }
 
-      if (isset($input['planning_work_days'])) {
-         $input['planning_work_days'] = exportArrayToDB($input['planning_work_days']);
-      }
-
       // Beware : with new management system, we must update each value
       unset($input['id']);
       unset($input['_glpi_csrf_token']);
@@ -275,7 +272,7 @@ class Config extends CommonDBTM {
             && in_array($fields['name'], self::$undisclosedFields)) {
             unset($fields['value']);
          } else {
-            $fields = Plugin::doHookFunction(Hooks::UNDISCLOSED_CONFIG_VALUE, $fields);
+            $fields = Plugin::doHookFunction('undiscloseConfigValue', $fields);
          }
       }
    }
@@ -304,13 +301,13 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('General setup') . "</th></tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='url_base'>" . __('URL of the application') . "</label></td>";
-      echo "<td colspan='3'><input type='url' name='url_base' id='url_base' value='".$CFG_GLPI["url_base"]."' class='form-control'>";
+      echo "<td colspan='3'><input type='text' name='url_base' id='url_base' size='80' value='".$CFG_GLPI["url_base"]."'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='text_login'>" . __('Text in the login box (HTML tags supported)') . "</label></td>";
       echo "<td colspan='3'>";
-      echo "<textarea class='form-control' name='text_login' id='text_login'>".$CFG_GLPI["text_login"]."</textarea>";
+      echo "<textarea cols='70' rows='4' name='text_login' id='text_login'>".$CFG_GLPI["text_login"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -318,7 +315,7 @@ class Config extends CommonDBTM {
       Dropdown::showYesNo("use_public_faq", $CFG_GLPI["use_public_faq"], -1, ['rand' => $rand]);
       echo "</td><td width='30%'><label for='helpdesk_doc_url'>" . __('Simplified interface help link') . "</label></td>";
       echo "<td><input size='22' type='text' name='helpdesk_doc_url' id='helpdesk_doc_url' value='" .
-                 $CFG_GLPI["helpdesk_doc_url"] . "' class='form-control'></td>";
+                 $CFG_GLPI["helpdesk_doc_url"] . "'></td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -330,7 +327,7 @@ class Config extends CommonDBTM {
                                               'rand'  => $rand]);
       echo "</td><td><label for='central_doc_url'>" . __('Standard interface help link') . "</label></td>";
       echo "<td><input size='22' type='text' name='central_doc_url' id='central_doc_url' value='" .
-                 $CFG_GLPI["central_doc_url"] . "' class='form-control'></td>";
+                 $CFG_GLPI["central_doc_url"] . "'></td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -384,7 +381,9 @@ class Config extends CommonDBTM {
                                             'max'   => 200,
                                             'rand'  => $rand]);
       echo "</td>";
-      echo "<td colspan='2'></td>";
+      echo "<td><label for='dropdown_use_ajax_autocompletion$rand'>" . __('Autocompletion of text fields') . "</label></td><td>";
+      Dropdown::showYesNo("use_ajax_autocompletion", $CFG_GLPI["use_ajax_autocompletion"], -1, ['rand' => $rand]);
+      echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -476,7 +475,7 @@ class Config extends CommonDBTM {
       if ($canedit) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='4' class='center'>";
-         echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
+         echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
          echo "</td></tr>";
       }
 
@@ -505,7 +504,7 @@ class Config extends CommonDBTM {
       echo "<div class='center' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='4'>" . _n('Asset', 'Assets', Session::getPluralNumber()) . "</th></tr>";
+      echo "<tr><th colspan='4'>" . __('Assets') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td width='30%'><label for='dropdown_auto_create_infocoms$rand'>". __('Enable the financial and administrative information by default')."</label></td>";
@@ -656,7 +655,7 @@ class Config extends CommonDBTM {
       if ($canedit) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='6' class='center'>";
-         echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
+         echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
          echo "</td></tr>";
       }
 
@@ -678,7 +677,7 @@ class Config extends CommonDBTM {
       }
 
       echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post' data-track-changes='true'>";
-      echo "<div class='card' id='tabsbody'>";
+      echo "<div class='center' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>" . __('Authentication') . "</th></tr>";
 
@@ -700,7 +699,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' name='update_auth' class='btn btn-primary' value=\""._sx('button', 'Save').
+      echo "<input type='submit' name='update_auth' class='submit' value=\""._sx('button', 'Save').
            "\">";
       echo "</td></tr>";
 
@@ -738,7 +737,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('SQL server (MariaDB or MySQL)') . "</td>";
       echo "<td><input type='text' name='_dbreplicate_dbhost' size='40' value='$host'></td>";
-      echo "<td>" . _n('Database', 'Databases', 1) . "</td>";
+      echo "<td>" . __('Database') . "</td>";
       echo "<td><input type='text' name='_dbreplicate_dbdefault' value='".$DBslave->dbdefault."'>";
       echo "</td></tr>";
 
@@ -769,7 +768,7 @@ class Config extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
+      echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
       echo "</td></tr>";
 
       echo "</table></div>";
@@ -803,7 +802,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='url_base_api'>" . __('URL of the API') . "</label></td>";
-      echo "<td colspan='3'><input type='url' name='url_base_api' id='url_base_api' value='".$CFG_GLPI["url_base_api"]."' class='form-control'></td>";
+      echo "<td colspan='3'><input type='text' name='url_base_api' id='url_base_api' size='80' value='".$CFG_GLPI["url_base_api"]."'></td>";
       echo "</tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='dropdown_enable_api$rand'>" . __("Enable Rest API") . "</label></td>";
@@ -838,7 +837,7 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
+      echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
       echo "<br><br><br>";
       echo "</td></tr>";
 
@@ -937,30 +936,6 @@ class Config extends CommonDBTM {
       Dropdown::showYesNo("use_anonymous_followups", $CFG_GLPI["use_anonymous_followups"], -1, ['rand' => $rand]);
       echo "</td><td colspan='2'></td></tr>";
 
-      echo "<tr>";
-      echo "<td>";
-      echo "<label for='dropdown_planning_work_days$rand'>" . __('Planning work days') . "</label>";
-      echo "</td>";
-      echo "<td colspan='3'>";
-      Dropdown::showFromArray(
-         "planning_work_days",
-         [
-            1 => __("Monday"),
-            2 => __("Tuesday"),
-            3 => __("Wednesday"),
-            4 => __("Thursday"),
-            5 => __("Friday"),
-            6 => __("Saturday"),
-            0 => __("Sunday"),
-         ],
-         [
-            'values'   => $CFG_GLPI["planning_work_days"],
-            'multiple' => true,
-            'rand'     => $rand,
-         ]
-      );
-      echo "</td>";
-      echo "</tr>";
       echo "</table>";
 
       echo "<table class='tab_cadre_fixe'>";
@@ -1033,7 +1008,7 @@ class Config extends CommonDBTM {
       if ($canedit) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='7' class='center'>";
-         echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
+         echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
          echo "</td></tr>";
       }
 
@@ -1236,58 +1211,39 @@ class Config extends CommonDBTM {
          $('label[for=theme-selector]').on('click', function(){ $('#theme-selector').select2('open'); });
       ");
       echo "</td>";
-      echo "<td>";
+      echo "<td><label for='layout-selector'>" . __('Layout')."</label></td><td>";
 
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td><label for='dropdown_page_layout$rand'>" . __('Page layout') . "</label></td>";
-      echo "<td>";
-
-      $global_layout_options = [
-         'horizontal' => __('Horizontal (menu in header)'),
-         'vertical'   => __('Vertical (menu in sidebar)'),
+      $layout_options = [
+         'lefttab' => __("Tabs on left"),
+         'classic' => __("Classic view"),
+         'vsplit'  => __("Vertical split")
       ];
+
       echo Html::select(
-         'page_layout',
-         $global_layout_options,
+         'layout',
+         $layout_options,
          [
-            'id'        => 'global-layout-selector',
-            'selected'  => $data['page_layout']
+            'id'        => 'layout-selector',
+            'selected'  => $data['layout']
          ]
       );
 
       echo Html::scriptBlock("
-         function formatGlobalLayout(layout) {
+         function formatLayout(layout) {
              if (!layout.id) {
                 return layout.text;
              }
-             return $('<span></span>').html('<img src=\'../pics/layout/global_layout_' + layout.id.toLowerCase() + '.png\'/>'
+             return $('<span></span>').html('<img src=\'../pics/layout_' + layout.id.toLowerCase() + '.png\'/>'
                       + '&nbsp;' + layout.text);
          }
-         $('#global-layout-selector').select2({
+         $(\"#layout-selector\").select2({
              dropdownAutoWidth: true,
-             templateResult: formatGlobalLayout,
-             templateSelection: formatGlobalLayout
+             templateResult: formatLayout,
+             templateSelection: formatLayout
          });
-         $('label[for=global-layout-selector]').on('click', function(){
-            $('#global-layout-selector').select2('open');
-         });
+         $('label[for=layout-selector]').on('click', function(){ $('#layout-selector').select2('open'); });
       ");
-      echo "</td>";
-
-      echo "<td><label for='dropdown_richtext_layout$rand'>" . __('Rich text field layout') . "</label></td>";
-      echo "<td>";
-      Dropdown::showFromArray(
-         'richtext_layout',
-         [
-            'inline'  => __('Inline (no toolbars)'),
-            'classic' => __('Classic (toolbar on top)'),
-         ], [
-            'value' => $data["richtext_layout"],
-         ]
-      );
+      echo "</select>";
       echo "</td>";
       echo "</tr>";
 
@@ -1313,13 +1269,7 @@ class Config extends CommonDBTM {
          echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\">";
          echo $tz_warning;
       }
-
-      echo "<tr class='tab_bg_2'><td><label for='dropdown_default_central_tab$rand'>".__('Default central tab')."</label></td>";
-      echo "<td>";
-      $central = new Central();
-      Dropdown::showFromArray('default_central_tab', $central->getTabNameForItem($central, 0), ['value'=> $data['default_central_tab'], 'rand' => $rand]);
-      echo "<tr>";
-      echo "<td>";
+      echo "</td>";
       echo "</tr>";
 
       if ($oncentral) {
@@ -1489,7 +1439,7 @@ class Config extends CommonDBTM {
       if ((!$userpref && $canedit) || ($userpref && $canedituser)) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='4' class='center'>";
-         echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
+         echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
          echo "</td></tr>";
       }
 
@@ -1597,7 +1547,7 @@ class Config extends CommonDBTM {
       global $CFG_GLPI;
 
       $ok = true;
-      $exception = new \Glpi\Exception\PasswordTooWeakException();
+      $exception = new PasswordTooWeakException();
       if ($CFG_GLPI["use_password_security"]) {
          if (Toolbox::strlen($password) < $CFG_GLPI['password_min_length']) {
             $ok = false;
@@ -1659,12 +1609,13 @@ class Config extends CommonDBTM {
    /**
     * Display a report about system performance
     * - opcode cache (opcache)
-    * - core cache
-    * - translations cache
+    * - user data cache (apcu / apcu-bc)
     *
     * @since 9.1
    **/
    function showPerformanceInformations() {
+      $GLPI_CACHE = self::getCache('cache_db', 'core', false);
+
       if (!Config::canUpdate()) {
          return false;
       }
@@ -1733,10 +1684,10 @@ class Config extends CommonDBTM {
 
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             echo "<tr><td></td><td colspan='3'>";
-            echo '<form method="POST" action="' . static::getFormURL() . '" class="d-inline">';
+            echo '<form method="POST" action="' . static::getFormURL() . '" style="display:inline;">';
             echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
             echo Html::hidden('reset_opcache', ['value' => 1]);
-            echo '<button type="submit" class="btn btn-primary">';
+            echo '<button type="submit" class="vsubmit">';
             echo __('Reset');
             echo '</button>';
             echo '</form>';
@@ -1749,11 +1700,9 @@ class Config extends CommonDBTM {
       }
 
       echo "<tr><th colspan='4'>" . __('User data cache') . "</th></tr>";
-      echo '<tr><td class="b">' . __('You can use "php bin/console cache:configure" command to configure cache system.') . '</td></tr>';
-      $cache_manager = new CacheManager();
-      $ext = strtolower(get_class($cache_manager->getCacheStorageAdapter(CacheManager::CONTEXT_CORE)));
-      $ext = preg_replace('/^.*\\\([a-z]+?)(?:adapter)?$/', '$1', $ext);
-      if (in_array($ext, ['memcached', 'redis'])) {
+      $ext = strtolower(get_class($GLPI_CACHE));
+      $ext = substr($ext, strrpos($ext, '\\')+1);
+      if (in_array($ext, ['apcu', 'memcache', 'memcached', 'wincache', 'redis'])) {
          $msg = sprintf(__s('The "%s" cache extension is installed'), $ext);
       } else {
          $msg = sprintf(__s('"%s" cache system is used'), $ext);
@@ -1763,12 +1712,34 @@ class Config extends CommonDBTM {
             <td></td>
             <td class='icons_block'><i class='fa fa-check-circle ok' title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
 
-      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+      if ($ext != 'filesystem' && $GLPI_CACHE instanceof AvailableSpaceCapableInterface && $GLPI_CACHE instanceof TotalSpaceCapableInterface) {
+         $free = $GLPI_CACHE->getAvailableSpace();
+         $max  = $GLPI_CACHE->getTotalSpace();
+         $used = $max - $free;
+         $rate = round(100.0 * $used / $max);
+         $max  = Toolbox::getSize($max);
+         $used = Toolbox::getSize($used);
+
+         echo "<tr><td>" . _n('Memory', 'Memories', 1) . "</td>
+         <td>" . sprintf(__('%1$s / %2$s'), $used, $max) . "</td><td>";
+         Html::displayProgressBar('100', $rate, ['simple'       => true,
+                                                 'forcepadding' => false]);
+         $class   = 'info-circle missing';
+            $msg     = sprintf(__s('%1$s memory usage is too high'), $ext);
+         if ($rate < 80) {
+            $class   = 'check-circle ok';
+            $msg     = sprintf(__s('%1$s memory usage is correct'), $ext);
+         }
+         echo "</td><td class='icons_block'><i title='$msg' class='fa fa-$class'></td></tr>";
+      }
+
+      if ($GLPI_CACHE instanceof FlushableInterface) {
          echo "<tr><td></td><td colspan='3'>";
-         echo '<form method="POST" action="' . static::getFormURL() . '" class="d-inline">';
+         echo '<form method="POST" action="' . static::getFormURL() . '" style="display:inline;">';
          echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
-         echo Html::hidden('reset_core_cache', ['value' => 1]);
-         echo '<button type="submit" class="btn btn-primary">';
+         echo Html::hidden('reset_cache', ['value' => 1]);
+         echo Html::hidden('optname', ['value' => 'cache_db']);
+         echo '<button type="submit" class="vsubmit">';
          echo __('Reset');
          echo '</button>';
          echo '</form>';
@@ -1776,25 +1747,27 @@ class Config extends CommonDBTM {
       }
 
       echo "<tr><th colspan='4'>" . __('Translation cache') . "</th></tr>";
-      $adapter_class = strtolower(get_class($cache_manager->getCacheStorageAdapter(CacheManager::CONTEXT_TRANSLATIONS)));
-      $adapter = preg_replace('/^.*\\\([a-z]+?)(?:adapter)?$/', '$1', $adapter_class);
+      $translation_cache = self::getCache('cache_trans', 'core', false);
+      $adapter_class = strtolower(get_class($translation_cache));
+      $adapter = substr($adapter_class, strrpos($adapter_class, '\\')+1);
       $msg = sprintf(__s('"%s" cache system is used'), $adapter);
       echo "<tr><td colspan='3'>" . $msg . "</td>
             <td class='icons_block'><i class='fa fa-check-circle ok' title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
 
-      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+      if ($translation_cache instanceof FlushableInterface) {
          echo "<tr><td></td><td colspan='3'>";
-         echo '<form method="POST" action="' . static::getFormURL() . '" style="d-inline">';
+         echo '<form method="POST" action="' . static::getFormURL() . '" style="display:inline;">';
          echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
-         echo Html::hidden('reset_translation_cache', ['value' => 1]);
-         echo '<button type="submit" class="btn btn-primary">';
+         echo Html::hidden('reset_cache', ['value' => 1]);
+         echo Html::hidden('optname', ['value' => 'cache_trans']);
+         echo '<button type="submit" class="vsubmit">';
          echo __('Reset');
          echo '</button>';
          echo '</form>';
          echo "</td></tr>";
       }
 
-      echo "</table></div>";
+      echo "</table></div>\n";
    }
 
    /**
@@ -1854,7 +1827,7 @@ class Config extends CommonDBTM {
       //TRANS: Proxy port
       echo "<td><label for='maintenance_text'>" . __('Maintenance text') . "</label></td>";
       echo "<td>";
-      echo "<textarea class='form-control' name='maintenance_text' id='maintenance_text'>".$CFG_GLPI["maintenance_text"];
+      echo "<textarea cols='70' rows='4' name='maintenance_text' id='maintenance_text'>".$CFG_GLPI["maintenance_text"];
       echo "</textarea>";
       echo "</td></tr>";
 
@@ -1864,23 +1837,23 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='proxy_name'>" . __('Server') . "</label></td>";
-      echo "<td><input type='text' name='proxy_name' id='proxy_name' value='".$CFG_GLPI["proxy_name"]."' class='form-control'></td>";
+      echo "<td><input type='text' name='proxy_name' id='proxy_name' value='".$CFG_GLPI["proxy_name"]."'></td>";
       //TRANS: Proxy port
       echo "<td><label for='proxy_port'>" . _n('Port', 'Ports', 1) . "</label></td>";
-      echo "<td><input type='text' name='proxy_port' id='proxy_port' value='".$CFG_GLPI["proxy_port"]."' class='form-control'></td>";
+      echo "<td><input type='text' name='proxy_port' id='proxy_port' value='".$CFG_GLPI["proxy_port"]."'></td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='proxy_user'>" . __('Login') . "</label></td>";
-      echo "<td><input type='text' name='proxy_user' id='proxy_user' value='".$CFG_GLPI["proxy_user"]."' class='form-control'></td>";
+      echo "<td><input type='text' name='proxy_user' id='proxy_user' value='".$CFG_GLPI["proxy_user"]."'></td>";
       echo "<td><label for='proxy_passwd'>" . __('Password') . "</label></td>";
-      echo "<td><input type='password' name='proxy_passwd' id='proxy_passwd' value='' autocomplete='new-password' class='form-control'>";
+      echo "<td><input type='password' name='proxy_passwd' id='proxy_passwd' value='' autocomplete='new-password'>";
       echo "<br><input type='checkbox' name='_blank_proxy_passwd' id='_blank_proxy_passwd'><label for='_blank_proxy_passwd'>".__('Clear')."</label>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' class='btn btn-primary' value=\""._sx('button', 'Save')."\">";
+      echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
       echo "</td></tr>";
 
       echo "</table>";
@@ -1890,25 +1863,11 @@ class Config extends CommonDBTM {
 
       echo "<p>" . Telemetry::getViewLink() . "</p>";
 
-      $copy_msg = __('Copy system information');
-      $copy_onclick = <<<JS
-      copyTextToClipboard(tableToDetails('#system-info-table'));
-      flashIconButton(this, 'btn btn-success', 'fas fa-check', 1500);
-JS;
-      echo <<<HTML
-         <button type="button" name="copy-sysinfo" class="btn btn-secondary" onclick="{$copy_onclick}">
-            <i class="far fa-copy me-2"></i>{$copy_msg}
-         </button>
-HTML;
-      $check_new_version_msg = __('Check if a new version is available');
-      echo <<<HTML
-      <a class='btn btn-secondary' href='?check_version'>
-         <i class="fas fa-sync me-2"></i>{$check_new_version_msg}
-      </a>
-HTML;
-      echo "<table id='system-info-table' class='tab_cadre_fixe'>";
-      echo "<tr><th class='section-header'>". __('Information about system installation and configuration')."</th></tr>";
-      echo "<tr class='tab_bg_1'><td></td></tr>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th>". __('Information about system installation and configuration')."</th></tr>";
+      echo "<tr class='tab_bg_1'><td>";
+      echo "<a class='vsubmit' href='?check_version'>".__('Check if a new version is available')."</a>";
+      echo "</td></tr>";
 
        $oldlang = $_SESSION['glpilanguage'];
        // Keep this, for some function call which still use translation (ex showAllReplicateDelay)
@@ -1933,15 +1892,13 @@ HTML;
             $ver .= '-git-' .$gitbranch . '-' . $gitrev;
          }
       }
-
-      echo "<tr class='tab_bg_1'><td><pre class='section-content'>";
       echo "GLPI $ver (" . $CFG_GLPI['root_doc']." => " . GLPI_ROOT . ")\n";
       echo "Installation mode: " . GLPI_INSTALL_MODE . "\n";
       echo "Current language:" . $oldlang . "\n";
       echo "\n</pre></td></tr>";
 
-      echo "<tr><th class='section-header'>Server</th></tr>\n";
-      echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
+      echo "<tr><th>Server</th></tr>\n";
+      echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
       echo wordwrap("Operating system: ".php_uname()."\n", $width, "\n\t");
       $exts = get_loaded_extensions();
       sort($exts);
@@ -1960,12 +1917,12 @@ HTML;
          $msg .= $_SERVER["SERVER_SOFTWARE"];
       }
       if (isset($_SERVER["SERVER_SIGNATURE"])) {
-         $msg .= ' ('.Toolbox::stripTags($_SERVER["SERVER_SIGNATURE"]).')';
+         $msg .= ' ('.Html::clean($_SERVER["SERVER_SIGNATURE"]).')';
       }
       echo wordwrap($msg."\n", $width, "\n\t");
 
       if (isset($_SERVER["HTTP_USER_AGENT"])) {
-         echo "\t" . Sanitizer::sanitize($_SERVER["HTTP_USER_AGENT"]) . "\n";
+         echo "\t" . Toolbox::clean_cross_side_scripting_deep($_SERVER["HTTP_USER_AGENT"]) . "\n";
       }
 
       foreach ($DB->getInfo() as $key => $val) {
@@ -1994,8 +1951,8 @@ HTML;
 
       echo "\n</pre></td></tr>";
 
-      echo "<tr><th class='section-header'>GLPI constants</th></tr>\n";
-      echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
+      echo "<tr><th>GLPI constants</th></tr>\n";
+      echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
       foreach (get_defined_constants() as $constant_name => $constant_value) {
          if (preg_match('/^GLPI_/', $constant_name)) {
             echo $constant_name . ': ' . $constant_value . "\n";
@@ -2018,13 +1975,14 @@ HTML;
       );
       sort($files);
       if (count($files)) {
-         echo "<tr><th class='section-header'>Locales overrides</th></tr>\n";
+         echo "<tr><th>Locales overrides</th></tr>\n";
          echo "<tr class='tab_bg_1'><td>\n";
          foreach ($files as $file) {
             echo "$file<br/>\n";
          }
          echo "</td></tr>";
       }
+
 
       echo "<tr class='tab_bg_2'><th>". __('To copy/paste in your support request')."</th></tr>\n";
 
@@ -2078,8 +2036,9 @@ HTML;
                [ 'name'    => 'simplepie/simplepie',
                  'version' => SIMPLEPIE_VERSION,
                  'check'   => $sp ],
-               [ 'name'    => 'mpdf/mpdf',
-                 'check'   => 'Mpdf\\Mpdf' ],
+               [ 'name'    => 'tecnickcom/tcpdf',
+                 'version' => TCPDF_STATIC::getTCPDFVersion(),
+                 'check'   => 'TCPDF' ],
                [ 'name'    => 'michelf/php-markdown',
                  'check'   => 'Michelf\\Markdown' ],
                [ 'name'    => 'true/punycode',
@@ -2094,10 +2053,12 @@ HTML;
                  'check'   => 'Sabre\\Uri\\Version' ],
                [ 'name'    => 'sabre/vobject',
                  'check'   => 'Sabre\\VObject\\Component' ],
+               [ 'name'    => 'laminas/laminas-cache',
+                 'check'   => 'Laminas\\Cache\\Module' ],
                [ 'name'    => 'laminas/laminas-i18n',
                  'check'   => 'Laminas\\I18n\\Module' ],
-               [ 'name'    => 'laminas/laminas-servicemanager',
-                 'check'   => 'Laminas\\ServiceManager\\ServiceManager' ],
+               [ 'name'    => 'laminas/laminas-serializer',
+                 'check'   => 'Laminas\\Serializer\\Module' ],
                [ 'name'    => 'monolog/monolog',
                  'check'   => 'Monolog\\Logger' ],
                [ 'name'    => 'sebastian/diff',
@@ -2122,40 +2083,16 @@ HTML;
                  'check'   => 'Psr\\Log\\LoggerInterface' ],
                [ 'name'    => 'psr/simple-cache',
                  'check'   => 'Psr\\SimpleCache\\CacheInterface' ],
-               [ 'name'    => 'psr/cache',
-                 'check'   => 'Psr\\Cache\\CacheItemPoolInterface' ],
-               [ 'name'    => 'league/csv',
-                 'check'   => 'League\\Csv\\Writer' ],
                [ 'name'    => 'mexitek/phpcolors',
                  'check'   => 'Mexitek\\PHPColors\\Color' ],
                [ 'name'    => 'guzzlehttp/guzzle',
                  'check'   => 'GuzzleHttp\\Client' ],
                [ 'name'    => 'guzzlehttp/psr7',
                  'check'   => 'GuzzleHttp\\Psr7\\Response' ],
-               [ 'name'    => 'glpi-project/inventory_format',
-                 'check'   => 'Glpi\Inventory\Converter'],
                [ 'name'    => 'wapmorgan/unified-archive',
                  'check'   => 'wapmorgan\\UnifiedArchive\\UnifiedArchive' ],
                [ 'name'    => 'paragonie/sodium_compat',
                  'check'   => 'ParagonIE_Sodium_Compat' ],
-               [ 'name'    => 'symfony/cache',
-                 'check'   => 'Symfony\\Component\\Cache\\Psr16Cache' ],
-               [ 'name'    => 'html2text/html2text',
-                 'check'   => 'Html2Text\\Html2Text' ],
-               [ 'name'    => 'symfony/dom-crawler',
-                 'check'   => 'Symfony\\Component\\DomCrawler\\Crawler' ],
-               [ 'name'    => 'twig/twig',
-                 'check'   => 'Twig\\Environment' ],
-               [ 'name'    => 'twig/string-extra',
-                 'check'   => 'Twig\\Extra\\String\\StringExtension' ],
-               [ 'name'    => 'symfony/polyfill-ctype',
-                 'check'   => 'ctype_digit' ],
-               [ 'name'    => 'symfony/polyfill-iconv',
-                 'check'   => 'iconv' ],
-               [ 'name'    => 'symfony/polyfill-mbstring',
-                 'check'   => 'mb_list_encodings' ],
-               [ 'name'    => 'symfony/polyfill-php80',
-                 'check'   => 'str_contains' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [
@@ -2177,8 +2114,8 @@ HTML;
 
       // No gettext
 
-      echo "<tr class='tab_bg_2'><th class='section-header'>Libraries</th></tr>\n";
-      echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
+      echo "<tr class='tab_bg_2'><th>Libraries</th></tr>\n";
+      echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
       foreach (self::getLibraries() as $dep) {
          $path = self::getLibraryDir($dep['check']);
@@ -2328,9 +2265,8 @@ HTML;
             $tabs = [
                1 => __('General setup'),  // Display
                2 => __('Default values'), // Prefs
-               3 => _n('Asset', 'Assets', Session::getPluralNumber()),
+               3 => __('Assets'),
                4 => __('Assistance'),
-               12 => __('Management'),
             ];
             if (Config::canUpdate()) {
                $tabs[9]  = __('Logs purge');
@@ -2418,10 +2354,6 @@ HTML;
             case 11:
                Impact::showConfigForm();
                break;
-
-            case 12:
-               $item->showFormManagement();
-               break;
          }
       }
       return true;
@@ -2473,6 +2405,61 @@ HTML;
       return $error;
    }
 
+   /**
+    * Display extensions checks report
+    *
+    * @since 9.2
+    *
+    * @param boolean    $fordebug display for debug (no html required) (false by default)
+    *
+    * @return integer 2: missing extension,  1: missing optionnal extension, 0: OK,
+    *
+    * @deprecated 9.5.0
+    **/
+   static function displayCheckExtensions($fordebug = false) {
+      Toolbox::deprecated();
+
+      global $CFG_GLPI;
+
+      $report = self::checkExtensions();
+
+      foreach ($report['good'] as $ext => $msg) {
+         if (!$fordebug) {
+            echo "<tr class=\"tab_bg_1\"><td class=\"left b\">" . sprintf(__('%s extension test'), $ext) . "</td>";
+            echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/ok_min.png\"
+                           alt=\"$msg\"
+                           title=\"$msg\"></td>";
+            echo "</tr>";
+         } else {
+            echo  "<img src=\"{$CFG_GLPI['root_doc']}/pics/ok_min.png\"
+                        alt=\"\">$msg\n";
+         }
+      }
+
+      foreach ($report['may'] as $ext => $msg) {
+         if (!$fordebug) {
+            echo "<tr class=\"tab_bg_1\"><td class=\"left b\">" . sprintf(__('%s extension test'), $ext) . "</td>";
+            echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\"> " . $msg . "</td>";
+            echo "</tr>";
+         } else {
+            echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\">" . $msg . "\n";
+         }
+
+      }
+
+      foreach ($report['missing'] as $ext => $msg) {
+         if (!$fordebug) {
+            echo "<tr class=\"tab_bg_1\"><td class=\"left b\">" . sprintf(__('%s extension test'), $ext) . "</td>";
+            echo "<td class=\"red\"><img src=\"{$CFG_GLPI['root_doc']}/pics/ko_min.png\"> " . $msg . "</td>";
+            echo "</tr>";
+         } else {
+            echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/ko_min.png\">" . $msg . "\n";
+         }
+      }
+
+      return $report['error'];
+   }
+
 
    /**
     * Check for needed extensions
@@ -2481,23 +2468,21 @@ HTML;
     *
     * @param string $raw Raw version to check (mainly from install), defaults to null
     *
-    * @return array
+    * @return boolean
    **/
    static function checkDbEngine($raw = null) {
+      // MySQL >= 5.6 || MariaDB >= 10
       if ($raw === null) {
          global $DB;
          $raw = $DB->getVersion();
       }
 
-      $server  = preg_match('/-MariaDB/', $raw) ? 'MariaDB': 'MySQL';
-      $version = preg_replace('/^((\d+\.?)+).*$/', '$1', $raw);
+      /** @var array $found */
+      preg_match('/(\d+(\.)?)+/', $raw, $found);
+      $version = $found[0];
 
-      // MySQL >= 5.7 || MariaDB >= 10.2
-      $is_supported = $server === 'MariaDB'
-         ? version_compare($version, '10.2', '>=')
-         : version_compare($version, '5.7', '>=');
-
-      return [$version => $is_supported];
+      $db_ver = version_compare($version, '5.6', '>=');
+      return [$version => $db_ver];
    }
 
 
@@ -2521,6 +2506,10 @@ HTML;
             'mysqli'   => [
                'required'  => true
             ],
+            'ctype'    => [
+               'required'  => true,
+               'function'  => 'ctype_digit',
+            ],
             'fileinfo' => [
                'required'  => true,
                'class'     => 'finfo'
@@ -2528,6 +2517,12 @@ HTML;
             'json'     => [
                'required'  => true,
                'function'  => 'json_encode'
+            ],
+            'mbstring' => [
+               'required'  => true,
+            ],
+            'iconv'    => [
+               'required'  => true,
             ],
             'zlib'     => [
                'required'  => true,
@@ -2551,6 +2546,15 @@ HTML;
             ],
             //to enhance perfs
             'Zend OPcache' => [
+               'required'  => false
+            ],
+            //to enhance perfs
+            'APCu'      => [
+               'required'  => false,
+               'function'  => 'apcu_fetch'
+            ],
+            //for XMLRPC API
+            'xmlrpc'     => [
                'required'  => false
             ],
             //for CAS lib
@@ -2624,6 +2628,213 @@ HTML;
 
 
    /**
+    * Get data directories for checks
+    *
+    * @return array
+    *
+    * @deprecated 9.5.0
+    */
+   private static function getDataDirectories() {
+      Toolbox::deprecated();
+
+      $dir_to_check = [
+         GLPI_CONFIG_DIR      => __('Checking write permissions for setting files'),
+         GLPI_DOC_DIR         => __('Checking write permissions for document files'),
+         GLPI_DUMP_DIR        => __('Checking write permissions for dump files'),
+         GLPI_SESSION_DIR     => __('Checking write permissions for session files'),
+         GLPI_CRON_DIR        => __('Checking write permissions for automatic actions files'),
+         GLPI_GRAPH_DIR       => __('Checking write permissions for graphic files'),
+         GLPI_LOCK_DIR        => __('Checking write permissions for lock files'),
+         GLPI_PLUGIN_DOC_DIR  => __('Checking write permissions for plugins document files'),
+         GLPI_TMP_DIR         => __('Checking write permissions for temporary files'),
+         GLPI_CACHE_DIR       => __('Checking write permissions for cache files'),
+         GLPI_RSS_DIR         => __('Checking write permissions for rss files'),
+         GLPI_UPLOAD_DIR      => __('Checking write permissions for upload files'),
+         GLPI_PICTURE_DIR     => __('Checking write permissions for pictures files')
+      ];
+
+      return $dir_to_check;
+   }
+
+
+   /**
+    * Check Write Access to needed directories
+    *
+    * @param boolean $fordebug display for debug (no html, no gettext required) (false by default)
+    *
+    * @return integer 2 : creation error 1 : delete error 0: OK
+    *
+    * @deprecated 9.5.0
+   **/
+   static function checkWriteAccessToDirs($fordebug = false) {
+      Toolbox::deprecated();
+
+      global $CFG_GLPI;
+
+      // Only write test for GLPI_LOG as SElinux prevent removing log file.
+      if (!$fordebug) {
+         echo "<tr class='tab_bg_1'><td class='b left'>".
+               __('Checking write permissions for log files')."</td>";
+      }
+
+      $can_write_logs = false;
+
+      try {
+         global $PHPLOGGER;
+         $PHPLOGGER->addRecord(Monolog\Logger::WARNING, "Test logger");
+         $can_write_logs = true;
+      } catch (\UnexpectedValueException $e) {
+         $catched = true;
+         //empty catch
+      }
+
+      if ($can_write_logs) {
+         if ($fordebug) {
+            echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".__s('OK')."\">".
+                   GLPI_LOG_DIR." : OK\n";
+         } else {
+            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
+                       __s('A file was created - Perfect!')."\" title=\"".
+                       __s('A file was created - Perfect!')."\"></td></tr>";
+         }
+
+      } else {
+         if ($fordebug) {
+            echo "<img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
+                  sprintf(__('Check permissions to the directory: %s'), GLPI_LOG_DIR)."\n";
+         } else {
+            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
+                 "<p class='red'>".__('The file could not be created.')."</p>".
+                 sprintf(__('Check permissions to the directory: %s'), GLPI_LOG_DIR)."</td></tr>";
+         }
+      }
+
+      if ($can_write_logs) {
+         $dir_to_check = self::getDataDirectories();
+         //log dir is tested differently below
+         unset($dir_to_check[GLPI_LOG_DIR]);
+         $error = 0;
+         foreach ($dir_to_check as $dir => $message) {
+            if (!$fordebug) {
+               echo "<tr class='tab_bg_1'><td class='left b'>".$message."</td>";
+            }
+            $tmperror = Toolbox::testWriteAccessToDirectory($dir);
+
+            $errors = [
+               4 => __('The directory could not be created.'),
+               3 => __('The directory was created but could not be removed.'),
+               2 => __('The file could not be created.'),
+               1 => __("The file was created but can't be deleted.")
+            ];
+
+            if ($tmperror > 0) {
+               if ($fordebug) {
+                  echo "<img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'> ".
+                        sprintf(__('Check permissions to the directory: %s'), $dir).
+                        " ".$errors[$tmperror]."\n";
+               } else {
+                  echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'><p class='red'>".
+                     $errors[$tmperror]."</p> ".
+                     sprintf(__('Check permissions to the directory: %s'), $dir).
+                     "'</td></tr>";
+               }
+               $error = 2;
+            } else {
+               if ($fordebug) {
+                  echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".__s('OK').
+                     "\">$dir : OK\n";
+               } else {
+                  echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
+                           __s('A file and a directory have be created and deleted - Perfect!')."\"
+                           title=\"".
+                           __s('A file and a directory have be created and deleted - Perfect!')."\">".
+                     "</td></tr>";
+               }
+            }
+         }
+      } else {
+         $error = 2;
+      }
+
+      $check_access = false;
+      $directories = array_keys(self::getDataDirectories());
+
+      foreach ($directories as $dir) {
+         if (Toolbox::startsWith($dir, GLPI_ROOT)) {
+            //only check access if one of the data directories is under GLPI document root.
+            $check_access = true;
+            break;
+         }
+      }
+
+      if ($check_access) {
+         $oldhand = set_error_handler(function($errno, $errmsg, $filename, $linenum, $vars){return true;});
+         $oldlevel = error_reporting(0);
+
+         //create a context to set timeout
+         $context = stream_context_create([
+            'http' => [
+               'timeout' => 2.0
+            ]
+         ]);
+
+         /* TODO: could be improved, only default vhost checked */
+         $protocol = 'http';
+         if (isset($_SERVER['HTTPS'])) {
+            $protocol = 'https';
+         }
+         $uri = $protocol . '://' . $_SERVER['SERVER_NAME'] . $CFG_GLPI['root_doc'];
+
+         if ($fic = fopen($uri.'/index.php?skipCheckWriteAccessToDirs=1', 'r', false, $context)) {
+            fclose($fic);
+            if (!$fordebug) {
+               echo "<tr class='tab_bg_1'><td class='b left'>".
+                  __('Web access to files directory is protected')."</td>";
+            }
+            if ($fic = fopen($uri.'/files/_log/php-errors.log', 'r', false, $context)) {
+               fclose($fic);
+               if ($fordebug) {
+                  echo "<img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
+                        __('Web access to the files directory should not be allowed')."\n".
+                        __('Check the .htaccess file and the web server configuration.')."\n";
+               } else {
+                  echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
+                     "<p class='red'>".__('Web access to the files directory should not be allowed')."<br/>".
+                     __('Check the .htaccess file and the web server configuration.')."</p></td></tr>";
+               }
+               $error = 1;
+            } else {
+               if ($fordebug) {
+                  echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
+                        __s('Web access to files directory is protected')."\">".
+                        __s('Web access to files directory is protected')." : OK\n";
+               } else {
+                  echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
+                        __s('Web access to files directory is protected')."\" title=\"".
+                        __s('Web access to files directory is protected')."\"></td></tr>";
+               }
+            }
+         } else {
+            $msg = __('Web access to the files directory should not be allowed but this cannot be checked automatically on this instance.')."\n".
+               "Make sure acces to <a href='{$CFG_GLPI['root_doc']}/files/_log/php-errors.log'>".__('error log file')."</a> is forbidden; otherwise review .htaccess file and web server configuration.";
+
+            if ($fordebug) {
+               echo "<img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".$msg;
+            } else {
+               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
+                     "<p class='red'>".nl2br($msg)."</p></td></tr>";
+            }
+         }
+
+         error_reporting($oldlevel);
+         set_error_handler($oldhand);
+      }
+
+      return $error;
+   }
+
+
+   /**
     * Get current DB version (compatible with all version of GLPI)
     *
     * @since 0.85
@@ -2654,7 +2865,7 @@ HTML;
          'SELECT' => [$select],
          'FROM'   => $table,
          'WHERE'  => $where
-      ])->current();
+      ])->next();
 
       return trim($row['version']);
    }
@@ -2686,7 +2897,7 @@ HTML;
 
       $iterator = $DB->request($query);
       $result = [];
-      foreach ($iterator as $line) {
+      while ($line = $iterator->next()) {
          $result[$line['name']] = $line['value'];
       }
       return $result;
@@ -2695,32 +2906,88 @@ HTML;
    /**
     * Load legacy configuration into $CFG_GLPI global variable.
     *
-    * @return boolean True for success, false if an error occured
+    * @param boolean $older_to_latest Search on old configuration objects first
     *
-    * @since 10.0.0 Parameter $older_to_latest is not longer used.
+    * @return boolean True for success, false if an error occured
     */
-   public static function loadLegacyConfiguration() {
+   public static function loadLegacyConfiguration($older_to_latest = true) {
 
       global $CFG_GLPI, $DB;
 
-      $iterator = $DB->request(['FROM' => 'glpi_configs']);
-
-      if ($iterator->count() === 0) {
-         return false;
+      $config_tables_iterator = $DB->listTables('glpi_config%');
+      $config_tables = [];
+      foreach ($config_tables_iterator as $config_table) {
+         $config_tables[] = $config_table['TABLE_NAME'];
       }
 
-      if ($iterator->count() === 1) {
-         // 1 row = 0.78 to 0.84 config table schema
-         $values = $iterator->current();
-      } else {
+      $get_prior_to_078_config  = function() use ($DB, $config_tables) {
+         if (!in_array('glpi_config', $config_tables)) {
+            return false;
+         }
+
+         $config = new Config();
+         $config->forceTable('glpi_config');
+         if ($config->getFromDB(1)) {
+            return $config->fields;
+         }
+
+         return false;
+      };
+
+      $get_078_to_latest_config    = function() use ($DB, $config_tables) {
+         if (!in_array('glpi_configs', $config_tables)) {
+            return false;
+         }
+
+         Config::forceTable('glpi_configs');
+
+         $iterator = $DB->request(['FROM' => 'glpi_configs']);
+         if ($iterator->count() === 0) {
+            return false;
+         }
+
+         if ($iterator->count() === 1) {
+            // 1 row = 0.78 to 0.84 config table schema
+            return $iterator->next();
+         }
+
          // multiple rows = 0.85+ config
-         $values = [];
-         foreach ($iterator as $row) {
+         $config = [];
+         while ($row = $iterator->next()) {
             if ('core' !== $row['context']) {
                continue;
             }
-            $values[$row['name']] = $row['value'];
+            $config[$row['name']] = $row['value'];
          }
+         return $config;
+      };
+
+      $functions = [];
+      if ($older_to_latest) {
+         // Try with old config table first : for update process management from < 0.80 to >= 0.80.
+         $functions = [
+            $get_prior_to_078_config,
+            $get_078_to_latest_config,
+         ];
+      } else {
+         // Normal load process : use normal config table. If problem try old one.
+         $functions = [
+            $get_078_to_latest_config,
+            $get_prior_to_078_config,
+         ];
+      }
+
+      $values = [];
+
+      foreach ($functions as $function) {
+         if ($config = $function()) {
+            $values = $config;
+            break;
+         }
+      }
+
+      if (count($values) === 0) {
+         return false;
       }
 
       $CFG_GLPI = array_merge($CFG_GLPI, $values);
@@ -2750,10 +3017,6 @@ HTML;
       // Path for icon of document type (web mode only)
       if (isset($CFG_GLPI['root_doc'])) {
          $CFG_GLPI['typedoc_icon_dir'] = $CFG_GLPI['root_doc'] . '/pics/icones';
-      }
-
-      if (isset($CFG_GLPI['planning_work_days'])) {
-         $CFG_GLPI['planning_work_days'] = importArrayFromDB($CFG_GLPI['planning_work_days']);
       }
 
       return true;
@@ -2842,14 +3105,8 @@ HTML;
     * @return void
     */
    public static function agreeDevMessage($bg = false) {
-      $msg = '<div class="'.($bg ? 'alert-important' : '') .' alert alert-warning">
-         <strong>' . __('You are using a development version, be careful!') . '</strong>
-         <br/>';
-      $msg .= "<div class='form-check'>
-         <input type='checkbox' class='form-check-input' required='required' id='agree_dev' name='agree_dev'>
-         <label for='agree_dev' class='form-check-label'>" . __('I know I am using a unstable version.') . "</label>
-      </div>
-      </div>";
+      $msg = '<p class="'.($bg ? 'mig' : '') .'red"><strong>' . __('You are using a development version, be careful!') . '</strong><br/>';
+      $msg .= "<input type='checkbox' required='required' id='agree_dev' name='agree_dev'/><label for='agree_dev'>" . __('I know I am using a unstable version.') . "</label></p>";
       $msg .= "<script type=text/javascript>
             $(function() {
                $('[name=from_update]').on('click', function(event){
@@ -2864,6 +3121,200 @@ HTML;
    }
 
    /**
+    * Get a cache adapter from configuration
+    *
+    * @param string  $optname name of the configuration field
+    * @param string  $context name of the configuration context (default 'core')
+    * @param boolean $psr16   Whether to return a PSR16 compliant obkect or not (since Laminas Translator is NOT PSR16 compliant).
+    *
+    * @return Psr\SimpleCache\CacheInterface|Laminas\Cache\Storage\StorageInterface object
+    */
+   public static function getCache($optname, $context = 'core', $psr16 = true) {
+      global $DB;
+
+      /* Tested configuration values
+       *
+       * - {"adapter":"apcu"}
+       * - {"adapter":"redis","options":{"server":{"host":"127.0.0.1"}},"plugins":["serializer"]}
+       * - {"adapter":"filesystem"}
+       * - {"adapter":"filesystem","options":{"cache_dir":"_cache_trans"},"plugins":["serializer"]}
+       * - {"adapter":"dba"}
+       * - {"adapter":"dba","options":{"pathname":"trans.db","handler":"flatfile"},"plugins":["serializer"]}
+       * - {"adapter":"memcache","options":{"servers":["127.0.0.1"]}}
+       * - {"adapter":"memcached","options":{"servers":["127.0.0.1"]}}
+       * - {"adapter":"wincache"}
+       *
+       */
+      // Read configuration
+      $conf = [];
+      if ($DB
+         && $DB->connected
+         && $DB->fieldExists(self::getTable(), 'context')
+      ) {
+         $conf = self::getConfigurationValues($context, [$optname]);
+      }
+
+      // Adapter default options
+      $opt = [];
+      if (isset($conf[$optname])) {
+         $opt = json_decode($conf[$optname], true);
+         Toolbox::logDebug("CACHE CONFIG  $optname", $opt);
+      }
+
+      if (!isset($opt['options']['namespace'])) {
+         $namespace = "glpi_${optname}_" . GLPI_VERSION;
+         if ($DB) {
+            $namespace .= md5(
+               (is_array($DB->dbhost) ? implode(' ', $DB->dbhost) : $DB->dbhost) . $DB->dbdefault
+            );
+         }
+         $opt['options']['namespace'] = $namespace;
+      }
+      if (!isset($opt['adapter'])) {
+         if (function_exists('apcu_fetch')) {
+            $opt['adapter'] = (version_compare(PHP_VERSION, '7.0.0') >= 0) ? 'apcu' : 'apc';
+         } else if (function_exists('wincache_ucache_add')) {
+            $opt['adapter'] = 'wincache';
+         } else {
+            $opt['adapter'] = 'filesystem';
+         }
+
+         // Cannot skip integrity checks if 'adapter' was computed,
+         // as computation result may differ for a different context (CLI VS web server).
+         $skip_integrity_checks = false;
+
+         $is_computed_config = true;
+      } else {
+         // Adapter names can be written using case variations.
+         // see Laminas\Cache\Storage\AdapterPluginManager::$aliases
+         $opt['adapter'] = strtolower($opt['adapter']);
+
+         switch ($opt['adapter']) {
+            // Cache adapters that can share their data accross processes
+            case 'dba':
+            case 'ext_mongo_db':
+            case 'extmongodb':
+            case 'filesystem':
+            case 'memcache':
+            case 'memcached':
+            case 'mongo_db':
+            case 'mongodb':
+            case 'redis':
+               $skip_integrity_checks = true;
+               break;
+
+            // Cache adapters that cannot share their data accross processes
+            case 'apc':
+            case 'apcu':
+            case 'memory':
+            case 'session':
+
+               // wincache activation uses different configuration variable for CLI and web server
+               // so it may not be available for all contexts
+            case 'win_cache':
+            case 'wincache':
+
+               // zend server adapters are not available for CLI context
+            case 'zend_server_disk':
+            case 'zendserverdisk':
+            case 'zend_server_shm':
+            case 'zendservershm':
+
+            default:
+               $skip_integrity_checks = false;
+               break;
+         }
+
+         $is_computed_config = false;
+      }
+
+      // Adapter specific options
+      $ser = false;
+      switch ($opt['adapter']) {
+         case 'filesystem':
+            if (!isset($opt['options']['cache_dir'])) {
+               $opt['options']['cache_dir'] = $optname;
+            }
+            // Make configured directory relative to GLPI cache directory
+            $opt['options']['cache_dir'] = GLPI_CACHE_DIR . '/' . $opt['options']['cache_dir'];
+            if (!is_dir($opt['options']['cache_dir'])) {
+               mkdir($opt['options']['cache_dir']);
+            }
+            $ser = true;
+            break;
+
+         case 'dba':
+            if (!isset($opt['options']['pathname'])) {
+               $opt['options']['pathname'] = "$optname.data";
+            }
+            // Make configured path relative to GLPI cache directory
+            $opt['options']['pathname'] = GLPI_CACHE_DIR . '/' . $opt['options']['pathname'];
+            $ser = true;
+            break;
+
+         case 'redis':
+            $ser = true;
+            break;
+      }
+      // Some know plugins require data serialization
+      if ($ser && !isset($opt['plugins'])) {
+         $opt['plugins'] = ['serializer'];
+      }
+
+      // Create adapter
+      try {
+         $storage = Laminas\Cache\StorageFactory::factory($opt);
+      } catch (Exception $e) {
+         if (!$is_computed_config) {
+            Toolbox::logError($e->getMessage());
+         }
+
+         // fallback to filesystem cache system if adapter was not explicitely defined in config
+         $fallback = false;
+         if ($is_computed_config && $opt['adapter'] != 'filesystem') {
+            $opt = [
+               'adapter'   => 'filesystem',
+               'options'   => [
+                  'cache_dir' => GLPI_CACHE_DIR . '/' . $optname,
+                  'namespace' => $namespace,
+               ],
+               'plugins'   => ['serializer']
+            ];
+
+            if (!is_dir($opt['options']['cache_dir'])) {
+               mkdir($opt['options']['cache_dir']);
+            }
+            try {
+               $storage = Laminas\Cache\StorageFactory::factory($opt);
+               $fallback = true;
+            } catch (Exception $e1) {
+               Toolbox::logError($e1->getMessage());
+               if (isset($_SESSION['glpi_use_mode'])
+                   && Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
+                  //preivous attempt has faled as well.
+                  Toolbox::logDebug($e->getMessage());
+               }
+            }
+         }
+
+         if ($fallback === false) {
+            $opt = ['adapter' => 'memory'];
+            $storage = Laminas\Cache\StorageFactory::factory($opt);
+         }
+         if (isset($_SESSION['glpi_use_mode'])
+             && Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
+            Toolbox::logDebug($e->getMessage());
+         }
+      }
+
+      if ($psr16) {
+         return new SimpleCache($storage, GLPI_CACHE_DIR, !$skip_integrity_checks);
+      } else {
+         return $storage;
+      }
+   }
+
+   /**
     * Get available palettes
     *
     * @return array
@@ -2872,8 +3323,8 @@ HTML;
       $themes_files = scandir(GLPI_ROOT."/css/palettes/");
       $themes = [];
       foreach ($themes_files as $file) {
-         if (preg_match('/^[^_].*\.scss$/', $file) === 1) {
-            $name          = basename($file, '.scss');
+         if (strpos($file, ".scss") !== false) {
+            $name     = substr($file, 1, -5);
             $themes[$name] = ucfirst($name);
          }
       }
@@ -2953,8 +3404,7 @@ HTML;
            __("Plugins")."</td><td>";
       self::showLogsInterval('purge_plugins', $CFG_GLPI["purge_plugins"]);
       echo "</td>";
-      echo "<td class='center'>" . RefusedEquipment::getTypeName(Session::getPluralNumber()) . "</td><td>";
-      self::showLogsInterval('purge_refusedequipment', $CFG_GLPI["purge_refusedequipment"]);
+      echo "<td class='center'></td><td>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><th colspan='4'>"._n('Software', 'Software', Session::getPluralNumber())."</th></tr>";
@@ -2963,7 +3413,7 @@ HTML;
       self::showLogsInterval('purge_item_software_install',
                           $CFG_GLPI["purge_item_software_install"]);
       echo "</td>";
-      echo "<td>".__("Installation/uninstallation versions on software")."</td><td>";
+      echo "<td>".__("Installation/uninstallation versions on softwares")."</td><td>";
       self::showLogsInterval('purge_software_version_install',
                          $CFG_GLPI["purge_software_version_install"]);
       echo "</td>";
@@ -3039,7 +3489,7 @@ HTML;
 
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary' >";
+      echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit' >";
       echo"</td>";
       echo "</tr>";
 
@@ -3279,73 +3729,12 @@ HTML;
 
       echo '<tr class="tab_bg_2">';
       echo '<td colspan="4" class="center">';
-      echo '<input type="submit" name="update" class="btn btn-primary" value="' . _sx('button', 'Save') . '">';
+      echo '<input type="submit" name="update" class="submit" value="' . _sx('button', 'Save') . '">';
       echo '</td>';
       echo '</tr>';
 
       echo '</table>';
       Html::closeForm();
-   }
-
-   /**
-    * Security form related to management entries.
-    *
-    * @since 10.0.0
-    *
-    * @return void|boolean (display) Returns false if there is a rights error.
-    */
-   function showFormManagement () {
-      global $CFG_GLPI;
-
-      if (!self::canView()) {
-         return;
-      }
-
-      $rand = mt_rand();
-      $canedit = Session::haveRight(self::$rightname, UPDATE);
-
-      echo '<div class="center" id="tabsbody">';
-      if ($canedit) {
-         echo '<form name="form" action="' . Toolbox::getItemTypeFormURL(__CLASS__) . '" method="post" data-track-changes="true">';
-      }
-      echo '<table class="tab_cadre_fixe">';
-      echo '<tr><th colspan="4">' . __('Documents setup') . '</th></tr>';
-
-      echo '<tr class="tab_bg_2">';
-      echo '<td>';
-      echo '<label for="dropdown_document_max_size' . $rand . '">';
-      echo __('Document files maximum size (Mio)');
-      echo '</label>';
-      echo '</td>';
-      echo '<td>';
-      Dropdown::showNumber(
-         'document_max_size',
-         [
-            'value' => $CFG_GLPI['document_max_size'],
-            'min'   => 1,
-            'max'   => 250,
-            'rand'  => $rand,
-         ]
-      );
-      echo '</td>';
-      echo '<td colspan="2"></td>';
-      echo '</tr>';
-
-      if ($canedit) {
-         echo '<tr class="tab_bg_2">';
-         echo '<td colspan="4" class="center">';
-         echo '<input type="submit" name="update" class="btn btn-primary" value="' . _sx('button', 'Save') . '">';
-         echo '</td>';
-         echo '</tr>';
-      }
-
-      echo '</table>';
-
-      if ($canedit) {
-         Html::closeForm();
-      }
-
-      echo '</div>';
    }
 
    public function rawSearchOptions() {
