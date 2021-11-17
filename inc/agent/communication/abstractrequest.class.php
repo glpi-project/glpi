@@ -76,6 +76,7 @@ abstract class AbstractRequest
    const COMPRESS_ZLIB = 1;
    const COMPRESS_GZIP = 2;
    const COMPRESS_BR   = 3;
+   const COMPRESS_DEFLATE = 4;
 
    /** @var integer */
    protected $mode;
@@ -184,6 +185,9 @@ abstract class AbstractRequest
                break;
             case self::COMPRESS_BR:
                $data = brotli_uncompress($data);
+               break;
+            case self::COMPRESS_DEFLATE:
+               $data = gzinflate($data);
                break;
             default:
                throw new \UnexpectedValueException("Unknown compression mode" . $this->compression);
@@ -383,6 +387,8 @@ abstract class AbstractRequest
             return 'application/x-compress-gzip';
          case self::COMPRESS_BR:
             return 'application/x-br';
+         case self::COMPRESS_DEFLATE:
+            return 'application/x-compress-deflate';
       }
 
       switch ($this->mode) {
@@ -429,6 +435,9 @@ abstract class AbstractRequest
             case self::COMPRESS_BR:
                $data = brotli_compress($data);
                break;
+            case self::COMPRESS_DEFLATE:
+               $data = gzdeflate($data);
+               break;
             default:
                throw new \UnexpectedValueException("Unknown compression mode" . $this->compression);
          }
@@ -461,6 +470,10 @@ abstract class AbstractRequest
             } else {
                $this->compression = self::COMPRESS_BR;
             }
+            break;
+         case 'application/x-deflate':
+         case 'application/x-compress-deflate':
+            $this->compression = self::COMPRESS_DEFLATE;
             break;
          case 'application/xml':
             $this->compression = self::COMPRESS_NONE;
