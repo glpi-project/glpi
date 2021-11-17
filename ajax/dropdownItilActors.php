@@ -63,17 +63,20 @@ if (isset($_POST["type"])
                              'ldap_import' => true];
 
             if ($CFG_GLPI["notifications_mailing"]) {
-               $paramscomment = ['value'       => '__VALUE__',
-                                      'allow_email' => $withemail,
-                                      'field'       => "_itil_".$_POST["actortype"],
-                                      'use_notification' => $_POST["use_notif"]];
+               $paramscomment = ['value' => '__VALUE__',
+                  'allow_email' => $withemail,
+                  'field' => "_itil_" . $_POST["actortype"],
+                  'use_notification' => $_POST["use_notif"]];
                // Fix rand value
-               $options['rand']     = $rand;
-               $options['toupdate'] = ['value_fieldname' => 'value',
-                                            'to_update'       => "notif_user_$rand",
-                                            'url'             => $CFG_GLPI["root_doc"].
-                                                                     "/ajax/uemailUpdate.php",
-                                            'moreparams'      => $paramscomment];
+               $options['rand'] = $rand;
+               if ($withemail) {
+                  $options['toupdate'] = [
+                     'value_fieldname' => 'value',
+                     'to_update'       => "notif_user_$rand",
+                     'url'             => $CFG_GLPI["root_doc"] . "/ajax/uemailUpdate.php",
+                     'moreparams'      => $paramscomment
+                  ];
+               }
             }
 
             if (($_POST["itemtype"] == 'Ticket')
@@ -162,11 +165,14 @@ if (isset($_POST["type"])
                                       'use_notification' => $_POST["use_notif"]];
                // Fix rand value
                $options['rand']     = $rand;
-               $options['toupdate'] = ['value_fieldname' => 'value',
-                                            'to_update'       => "notif_supplier_$rand",
-                                            'url'             => $CFG_GLPI["root_doc"].
-                                                                     "/ajax/uemailUpdate.php",
-                                            'moreparams'      => $paramscomment];
+               if ($withemail) {
+                  $options['toupdate'] = [
+                     'value_fieldname' => 'value',
+                     'to_update'       => "notif_supplier_$rand",
+                     'url'             => $CFG_GLPI["root_doc"] . "/ajax/uemailUpdate.php",
+                     'moreparams'      => $paramscomment
+                  ];
+               }
             }
             if ($_POST["itemtype"] == 'Ticket') {
                $toupdate = [];
