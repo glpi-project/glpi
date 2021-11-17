@@ -539,4 +539,8 @@ abstract class AbstractRequest
    public function getQuery():? string {
       return $this->query;
    }
+
+   public function getDeviceID(): string {
+      return $this->deviceid;
+   }
 }

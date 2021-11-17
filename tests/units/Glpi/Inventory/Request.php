@@ -82,9 +82,14 @@ class Request extends \GLPITestCase {
 
    protected function queriesProvider() {
       return [
-         ['query' => 'INVENTORY'],
-         ['query' => 'PROLOG'],
-         ['query' => 'SNMPQUERY'],
+         ['query' => 'INVENTORY'], //Request::INVENT_QUERY | Request::INVENT_ACTION
+         ['query' => 'PROLOG'], //Request::PROLOG_QUERY
+         ['query' => 'SNMPQUERY'], //Request::OLD_SNMP_QUERY
+         ['query' => 'SNMP'], //Request::SNMP_QUERY
+         ['query' => 'NETDISCOVERY'], //Request::NETDISCOVERY_ACTION
+         ['query' => 'inventory'], //Request::INVENT_QUERY | Request::INVENT_ACTION
+         ['query' => 'prolog'], //Request::PROLOG_QUERY
+         ['query' => 'netinventory'], //Request::NETINV_ACTION
       ];
    }
 
@@ -103,13 +108,29 @@ class Request extends \GLPITestCase {
       $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY/>\n");
    }
 
+   protected function unhandledQueriesProvider() {
+      return [
+         ['query' => 'register'], //Request::REGISTER_ACTION
+         ['query' => 'configuration'], //Request::CONFIG_ACTION
+         ['query' => 'ESX'], //Request::ESX_ACTION
+         ['query' => 'COLLECT'], //Request::COLLECT_ACTION
+         ['query' => 'DEPLOY'], //Request:: DEPLOY_ACTION
+         ['query' => 'wakeonlan'], //Request::WOL_ACTION
+         ['query' => 'UNKNOWN'],
+      ];
+   }
 
-   public function testWrongQuery() {
-      $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>UNKNOWN</QUERY></REQUEST>";
+   /**
+    * Test unknown queries
+    *
+    * @dataProvider unhandledQueriesProvider
+    */
+   public function testWrongQuery($query) {
+      $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>$query</QUERY></REQUEST>";
       $request = new \Glpi\Inventory\Request;
       $request->handleContentType('application/xml');
       $request->handleRequest($data);
-      $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR>Query 'unknown' is not supported.</ERROR></REPLY>\n");
+      $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR>Query '".strtolower($query)."' is not supported.</ERROR></REPLY>\n");
    }
 
    public function testAddError() {
