@@ -101,7 +101,7 @@
                         </button>
                      {% endif %}
                   {% elseif not item.isDeleted() and item.can(id, constant('DELETE')) %}
-                     <button class="btn btn-outline-secondary me-2" type="submit"
+                     <button class="btn btn-outline-warning me-2" type="submit"
                              name="delete" value="1">
                         <i class="fas fa-trash-alt"></i>
                         <span>{{ _x('button', 'Put in trashbin') }}</span>
