@@ -604,8 +604,7 @@ class Cartridge extends CommonDBRelation {
     * @param integer $tID Cartridge item ID
     * @return integer
     */
-   static function getStockTarget(int $tID): int
-   {
+   static function getStockTarget(int $tID): int {
       global $DB;
 
       $it = $DB->request([
