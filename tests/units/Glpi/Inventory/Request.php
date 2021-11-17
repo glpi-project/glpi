@@ -196,4 +196,50 @@ class Request extends \GLPITestCase {
 
       $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR><OPTION><NAME>NETDISCOVERY</NAME><PARAM THREADS_DISCOVERY=\"5\" TIMEOUT=\"1\" PID=\"16\"/><RANGEIP ID=\"1\" IPSTART=\"192.168.1.1\" IPEND=\"192.168.1.254\" ENTITY=\"0\"/><AUTHENTICATION ID=\"1\" COMMUNITY=\"public\" VERSION=\"1\" USERNAME=\"\" AUTHPROTOCOL=\"\" AUTHPASSPHRASE=\"\" PRIVPROTOCOL=\"\" PRIVPASSPHRASE=\"\"/><AUTHENTICATION ID=\"2\" COMMUNITY=\"public\" VERSION=\"2c\" USERNAME=\"\" AUTHPROTOCOL=\"\" AUTHPASSPHRASE=\"\" PRIVPROTOCOL=\"\" PRIVPASSPHRASE=\"\"/></OPTION></ERROR></REPLY>\n");
    }
+
+   protected function compressionProvider(): array {
+      return [
+         [
+            'function' => 'gzcompress',
+            'mime' => 'application/x-compress-zlib'
+         ], [
+            'function' => 'gzcompress',
+            'mime' => 'application/x-zlib'
+         ], [
+            'function' => 'gzencode',
+            'mime' => 'application/x-gzip'
+         ], [
+            'function' => 'gzencode',
+            'mime' => 'application/x-compress-gzip'
+         ], [
+            'function' => 'gzdeflate',
+            'mime' => 'application/x-compress-deflate'
+         ], [
+            'function' => 'gzdeflate',
+            'mime' => 'application/x-deflate'
+         ]
+      ];
+   }
+
+   /**
+    * Test request compression
+    *
+    * @param string $function Compression method to use
+    * @param string $mime     Mime type to set
+    *
+    * @dataProvider compressionProvider
+    *
+    * @return void
+    */
+   public function testCompression(string $function, string $mime) {
+      $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>PROLOG</QUERY></REQUEST>";
+      $cdata = $function($data);
+
+      $request = new \Glpi\Inventory\Request;
+      $request->handleContentType($mime);
+      $request->handleRequest($cdata);
+      $this->string($request->getDeviceID())->isIdenticalTo('atoumized-device');
+      $this->string($request->getResponse())->isIdenticalTo($function("<?xml version=\"1.0\"?>\n<REPLY><PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE></REPLY>\n"));
+   }
+
 }
