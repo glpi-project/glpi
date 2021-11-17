@@ -42,6 +42,8 @@ if (isset($_POST["type"])
     && isset($_POST["actortype"])
     && isset($_POST["itemtype"])) {
    $rand = mt_rand();
+   $withemail = isset($_POST['allow_email']) && filter_var($_POST['allow_email'], FILTER_VALIDATE_BOOLEAN);
+
    if ($item = getItemForItemtype($_POST["itemtype"])) {
       switch ($_POST["type"]) {
          case "user" :
@@ -61,7 +63,6 @@ if (isset($_POST["type"])
                              'ldap_import' => true];
 
             if ($CFG_GLPI["notifications_mailing"]) {
-               $withemail     = (isset($_POST["allow_email"]) ? $_POST["allow_email"] : false);
                $paramscomment = ['value'       => '__VALUE__',
                                       'allow_email' => $withemail,
                                       'field'       => "_itil_".$_POST["actortype"],
@@ -154,7 +155,6 @@ if (isset($_POST["type"])
                              'entity'    => $_POST['entity_restrict'],
                              'rand'      => $rand];
             if ($CFG_GLPI["notifications_mailing"]) {
-               $withemail     = (isset($_POST["allow_email"]) ? $_POST["allow_email"] : false);
                $paramscomment = ['value'       => '__VALUE__',
                                       'allow_email' => $withemail,
                                       'field'       => '_itil_'.$_POST["actortype"],
