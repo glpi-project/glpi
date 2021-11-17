@@ -2433,8 +2433,6 @@ HTML;
          // Create Modal window on top
          if ($p['ontop']
              || (isset($p['forcecreate']) && $p['forcecreate'])) {
-                $out .= "<div id='massiveactioncontent$identifier'></div>";
-
             if (!empty($p['tag_to_send'])) {
                $js_modal_fields  = "var items = $('";
                if (!empty($p['container'])) {
@@ -2455,7 +2453,6 @@ HTML;
                $url,
                [
                   'title'           => $p['title'],
-                  'container'       => 'massiveactioncontent'.$identifier,
                   'extraparams'     => $p['extraparams'],
                   'width'           => $p['width'],
                   'height'          => $p['height'],
