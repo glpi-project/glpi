@@ -61,6 +61,8 @@ class Antivirus extends InventoryAsset
          if (!property_exists($val, 'antivirus_version')) {
             $val->antivirus_version = '';
          }
+
+         $val->is_dynamic = 1;
       }
 
       return $this->data;
@@ -77,7 +79,7 @@ class Antivirus extends InventoryAsset
       $db_existing = [];
 
       $iterator = $DB->request([
-         'SELECT' => ['id', 'name', 'antivirus_version'],
+         'SELECT' => ['id', 'name', 'antivirus_version', 'is_dynamic'],
          'FROM'   => ComputerAntivirus::getTable(),
          'WHERE'  => ['computers_id' => $this->item->fields['id']]
       ]);
@@ -104,10 +106,10 @@ class Antivirus extends InventoryAsset
          $compare = ['name' => $val->name, 'antivirus_version' => $val->antivirus_version];
          $compare = array_map('strtolower', $compare);
          foreach ($db_antivirus as $keydb => $arraydb) {
+            unset($arraydb['is_dynamic']);
             if ($compare == $arraydb) {
                $input = (array)$val + [
-                  'id'           => $keydb,
-                  'is_dynamic'   => 1
+                  'id'           => $keydb
                ];
                $computerAntivirus->update(Toolbox::addslashes_deep($input), $this->withHistory());
                unset($value[$k]);
@@ -119,7 +121,9 @@ class Antivirus extends InventoryAsset
 
       if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_antivirus) != 0) {
          foreach ($db_antivirus as $idtmp => $data) {
-            $computerAntivirus->delete(['id' => $idtmp], 1);
+            if ($data['is_dynamic'] == 1) {
+               $computerAntivirus->delete(['id' => $idtmp], 1);
+            }
          }
       }
 
