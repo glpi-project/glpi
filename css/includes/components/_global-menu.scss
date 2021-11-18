@@ -54,6 +54,10 @@
 
 .sidebar {
 
+   & ~ .navbar {
+      z-index: $zindex-fixed;
+   }
+
    & ~ .page-wrapper, ~ .navbar {
       transition: margin-inline-start var(--animate-duration);
    }
