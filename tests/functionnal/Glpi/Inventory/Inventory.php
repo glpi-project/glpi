@@ -1072,8 +1072,6 @@ class Inventory extends InventoryTestCase {
 
       $inventory = $this->doInventory($json);
 
-
-
       //check inventory metadata
       $metadata = $inventory->getMetadata();
       $this->array($metadata)->hasSize(6)
