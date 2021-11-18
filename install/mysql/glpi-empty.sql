@@ -6836,6 +6836,7 @@ CREATE TABLE `glpi_suppliers` (
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `suppliertypes_id` int NOT NULL DEFAULT '0',
+  `registration_number` varchar(255) DEFAULT NULL,
   `address` text,
   `postcode` varchar(255) DEFAULT NULL,
   `town` varchar(255) DEFAULT NULL,

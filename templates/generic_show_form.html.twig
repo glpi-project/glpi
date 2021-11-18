@@ -177,6 +177,15 @@
                         ) }}
                      {% endif %}
 
+                     {% if item.isField('registration_number') %}
+                        {{ fields.autoNameField(
+                           'registration_number',
+                           item,
+                           __('Administrative number'),
+                           withtemplate
+                        ) }}
+                     {% endif %}
+
                      {% if item.isField('phone') %}
                         {{ fields.autoNameField(
                            'phone',
