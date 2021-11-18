@@ -91,9 +91,10 @@ export default class SearchTokenizer {
          helper += '</br><ul>';
       }
       $.each(tags, (name, info) => {
+         const description = info.description ? `"${info.description}"` : '';
          helper += `
             <li>
-                ${name}: ${info['description'] || ''}
+                ${name}: ${description}
             </li>
          `;
       });
