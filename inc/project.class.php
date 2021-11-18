@@ -2219,6 +2219,19 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          $card['_team'] = $item['_team'];
          $card['_readonly'] = $item['_readonly'];
          $card['_form_link'] = $itemtype::getFormUrlWithID($item['id']);
+         $card['_metadata'] = [];
+         $metadata_values = ['name', 'content', 'is_milestone', 'plan_start_date', 'plan_end_date', 'real_start_date', 'real_end_date',
+            'planned_duration', 'effective_duration', 'percent_done'];
+         foreach ($metadata_values as $metadata_value) {
+            if (isset($item[$metadata_value])) {
+               $card['_metadata'][$metadata_value] = $item[$metadata_value];
+            }
+         }
+         if (isset($card['_metadata']['content']) && is_string($card['_metadata']['content'])) {
+            $card['_metadata']['content'] = Glpi\Toolbox\RichText::getTextFromHtml($card['_metadata']['content'], false, true);
+         } else {
+            $card['_metadata']['content'] = '';
+         }
          $columns[$item['projectstates_id']]['items'][] = $card;
       }
 
@@ -2358,7 +2371,36 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          'item'                        => [
             'itemtype'  => 'Project',
             'items_id'  => $ID
-         ]
+         ],
+         'supported_filters'           => [
+            'title' => [
+               'description' => _x('filters', 'The title of the item')
+            ],
+            'type' => [
+               'description' => _x('filters', 'The type of the item')
+            ],
+            'milestone' => [
+               'description' => _x('filters', 'If the item represents a milestone or not')
+            ],
+            'content' => [
+               'description' => _x('filters', 'The content of the item')
+            ],
+            'team' => [
+               'description' => _x('filters', 'A team member for the item')
+            ],
+            'user' => [
+               'description' => _x('filters', 'A user in the team of the item')
+            ],
+            'group' => [
+               'description' => _x('filters', 'A group in the team of the item')
+            ],
+            'supplier' => [
+               'description' => _x('filters', 'A supplier in the team of the item')
+            ],
+            'contact' => [
+               'description' => _x('filters', 'A contact in the team of the item')
+            ],
+         ],
       ]);
    }
 

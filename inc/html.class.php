@@ -1156,6 +1156,7 @@ HTML;
          }
 
          if (in_array('kanban', $jslibs)) {
+            $tpl_vars['js_modules'][] = 'js/modules/Kanban/Kanban.js';
             Html::requireJs('kanban');
          }
 
@@ -6009,7 +6010,6 @@ JAVASCRIPT;
             $_SESSION['glpi_js_toload'][$name][] = 'js/gantt-helper.js';
             break;
          case 'kanban':
-            $_SESSION['glpi_js_toload'][$name][] = 'js/kanban.js';
             $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery.ui.touch-punch.js';
             break;
          case 'rateit':

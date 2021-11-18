@@ -57,7 +57,8 @@
          max_team_images: 3,
          column_field: {{ column_field|json_encode|raw }},
          background_refresh_interval: {{ background_refresh_interval|default(session('glpirefresh_views')) }},
-         item: {{ item|json_encode|raw }}
+         item: {{ item|json_encode|raw }},
+         supported_filters: {{ supported_filters|json_encode|raw }}
       });
       // Create kanban elements and add data
       kanban.init();

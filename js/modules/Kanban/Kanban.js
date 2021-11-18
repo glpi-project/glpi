@@ -29,6 +29,7 @@
  * ---------------------------------------------------------------------
  */
 
+import SearchTokenizer from "../SearchTokenizer/SearchTokenizer.js";
 /* global sortable */
 
 /**
@@ -249,6 +250,10 @@ class GLPIKanbanRights {
          _text: ''
       };
 
+      this.filter_tokenizer = null;
+
+      this.supported_filters = [];
+
       /**
        * The ID of the add column form.
        * @since 9.5.0
@@ -340,7 +345,7 @@ class GLPIKanbanRights {
             'element', 'max_team_images', 'team_image_size', 'item',
             'supported_itemtypes', 'allow_add_item', 'allow_add_column', 'dark_theme', 'background_refresh_interval',
             'column_field', 'allow_modify_view', 'limit_addcard_columns', 'allow_order_card', 'allow_create_column',
-            'allow_delete_item'
+            'allow_delete_item', 'supported_filters'
          ];
          // Use CSS variable check for dark theme detection by default
          self.dark_theme = $('html').css('--is-dark').trim() === true;
@@ -370,6 +375,8 @@ class GLPIKanbanRights {
          if (self.filters._text === undefined) {
             self.filters._text = '';
          }
+         self.filter_tokenizer = new SearchTokenizer(self.supported_filters);
+         self.refreshSearchTokenizer();
          self.filter();
       };
 
@@ -506,19 +513,74 @@ class GLPIKanbanRights {
          $(self.element).trigger('kanban:pre_build_toolbar');
          let toolbar = $("<div class='kanban-toolbar card flex-row'></div>").appendTo(self.element);
          $("<select name='kanban-board-switcher'></select>").appendTo(toolbar);
-         let filter_input = $("<input name='filter' class='form-control ms-1' type='text' placeholder='" + __('Search or filter results') + "'/>").appendTo(toolbar);
+         let filter_input = $(`<input name='filter' class='form-control ms-1' type='text' placeholder="${__('Search or filter results')}" autocomplete="off"/>`).appendTo(toolbar);
          if (self.rights.canModifyView()) {
             let add_column = "<buttom rome='button' class='kanban-add-column btn btn-outline-secondary ms-1'>" + __('Add column') + "</button>";
             toolbar.append(add_column);
          }
-         filter_input.on('input', function() {
-            let text = $(this).val();
+
+         const debounce = (fn) => {
+            let timerId;
+            return function (...args) {
+               if (timerId) {
+                  clearTimeout(timerId);
+               }
+               timerId = setTimeout(() => {
+                  fn(...args);
+                  timerId = null;
+               }, 200);
+            };
+         };
+
+         filter_input.on('input', debounce((e) => {
+            let text = $(e.target).val();
             if (text === null) {
                text = '';
             }
-            self.filters._text = text;
+
+            const result = self.filter_tokenizer.tokenize(text);
+
+            self.filters = {
+               _text: ''
+            };
+            self.filters._text = result.getFullPhrase();
+            result.getTaggedTerms().forEach(t => self.filters[t.tag] = {
+               term: t.term || '',
+               exclusion: t.exclusion || false
+            });
             self.filter();
+         }));
+
+         filter_input.popover({
+            trigger: 'manual',
+            html: true,
+            container: filter_input.closest('.kanban-toolbar').get(0),
+            placement: 'bottom', // Option from Bootstrap (fallback)
+            popperConfig: {
+               placement: 'bottom-start', // Option only available directly in popper.js (Preferred)
+            },
+            customClass: 'kanban-filter-popover',
+            delay: {
+               hide: 300
+            },
+            content: () => {
+               if (self.filter_tokenizer) {
+                  return self.filter_tokenizer.getPopoverContent(filter_input.val(), filter_input.selectionStart);
+               }
+               return null;
+            }
          });
+
+         filter_input.on('input click', (e) => {
+            const popover_content = self.filter_tokenizer.getPopoverContent(filter_input.val(), e.target.selectionStart);
+            $('.kanban-filter-popover .popover-body').html(popover_content);
+            filter_input.popover('show');
+         });
+
+         filter_input.on('blur', () => {
+            filter_input.popover('hide');
+         });
+
          $(self.element).trigger('kanban:post_build_toolbar');
       };
 
@@ -2045,8 +2107,25 @@ class GLPIKanbanRights {
             }
          }
          card_el += "</div></li>";
-         $(card_el).appendTo(col_body).data('form_link', card['_form_link'] || undefined);
+         const card_obj = $(card_el).appendTo(col_body);
+         card_obj.data('form_link', card['_form_link'] || undefined);
+         if (card['_metadata']) {
+            $.each(card['_metadata'], (k, v) => {
+               card_obj.data(k, v);
+            });
+         }
+         card_obj.data('_team', card['_team']);
          self.updateColumnCount(column_el);
+      };
+
+      this.refreshSearchTokenizer = () => {
+         self.filter_tokenizer.clearAutocomplete();
+
+         // Refresh core tags autocomplete
+         self.filter_tokenizer.setAutocomplete('type', Object.keys(self.supported_itemtypes));
+         self.filter_tokenizer.setAutocomplete('milestone', ["true", "false"]);
+
+         $(self.element).trigger('kanban:refresh_tokenizer', self.filter_tokenizer);
       };
 
       /**
@@ -2069,21 +2148,102 @@ class GLPIKanbanRights {
          $(self.element).trigger('kanban:pre_filter', self.filters);
          // Unhide all items in case they are no longer filtered
          self.clearFiltered();
-         // Filter using built-in text filter (Check title)
+
          $(self.element + ' .kanban-item').each(function(i, item) {
-            const title = $(item).find(".kanban-item-header a").text();
-            try {
-               if (!title.match(new RegExp(self.filters._text, 'i'))) {
-                  $(item).addClass('filtered-out');
+            const card = $(item);
+            let shown = true;
+            const title = card.find("span.kanban-item-title").text();
+
+            const filter_include = (filter_data, haystack) => {
+               if ((!haystack.toLowerCase().includes(filter_data.term.toLowerCase())) !== filter_data.exclusion) {
+                  shown = false;
                }
-            } catch (err) {
-               // Probably not a valid regular expression. Use simple contains matching.
-               if (!title.toLowerCase().includes(self.filters._text.toLowerCase())) {
-                  $(item).addClass('filtered-out');
+            };
+
+            const filter_equal = (filter_data, target) => {
+               if ((target != filter_data.term) !== filter_data.exclusion) {
+                  shown = false;
+               }
+            };
+
+            const filter_teammember = (filter_data, itemtype) => {
+               const team_members = card.data('_team');
+               let has_matching_member = false;
+               $.each(team_members, (i, m) => {
+                  if (m.itemtype === itemtype && (m.name.toLowerCase().includes(filter_data.term.toLowerCase()) !== filter_data.exclusion)) {
+                     has_matching_member = true;
+                  }
+               });
+               if (!has_matching_member) {
+                  shown = false;
+               }
+            };
+
+            if (self.filters._text) {
+               try {
+                  if (!title.match(new RegExp(self.filters._text, 'i'))) {
+                     shown = false;
+                  }
+               } catch (err) {
+                  // Probably not a valid regular expression. Use simple contains matching.
+                  if (!title.toLowerCase().includes(self.filters._text.toLowerCase())) {
+                     shown = false;
+                  }
                }
             }
+
+            if (self.filters.title !== undefined) {
+               filter_include(self.filters.title, title);
+            }
+
+            if (self.filters.type !== undefined) {
+               filter_equal(self.filters.type, card.attr('id').split('-')[0]);
+            }
+
+            if (self.filters.milestone !== undefined) {
+               self.filters.milestone.term = (self.filters.milestone.term == '0' || self.filters.milestone.term == 'false') ? 0 : 1;
+               filter_equal(self.filters.milestone, card.data('is_milestone'));
+            }
+
+            if (self.filters.content !== undefined) {
+               filter_include(self.filters.content, card.data('content'));
+            }
+
+            if (self.filters.team !== undefined) {
+               const team_search = self.filters.team.term.toLowerCase();
+               const team_members = card.data('_team');
+               let has_matching_member = false;
+               $.each(team_members, (i, m) => {
+                  if (m.name.toLowerCase().includes(team_search)) {
+                     has_matching_member = true;
+                  }
+               });
+               if (!has_matching_member) {
+                  shown = false;
+               }
+            }
+
+            if (self.filters.user !== undefined) {
+               filter_teammember(self.filters.user, 'User');
+            }
+
+            if (self.filters.group !== undefined) {
+               filter_teammember(self.filters.group, 'Group');
+            }
+
+            if (self.filters.supplier !== undefined) {
+               filter_teammember(self.filters.supplier, 'Supplier');
+            }
+
+            if (self.filters.contact !== undefined) {
+               filter_teammember(self.filters.contact, 'Contact');
+            }
+
+            if (!shown) {
+               card.addClass('filtered-out');
+            }
          });
-         // Check specialized filters (By column item property).
+
          $(self.element).trigger('kanban:filter', self.filters);
 
          // Update column counters

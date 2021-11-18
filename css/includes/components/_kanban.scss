@@ -439,3 +439,30 @@
 .flex-break {
    width: 100%;
 }
+
+.popover.kanban-filter-popover {
+   background-color: inherit;
+   color: inherit;
+   max-width: unset;
+
+   .popover-arrow {
+      top: calc(-0.5rem - 1px); // Fix for using non-standard placement
+      transform: unset !important; // Fix for using non-standard placement
+      left: 50% !important; // Fix for using non-standard placement
+      &::before  {// Fix for using non-standard placement
+         top: 0;
+         border-width: 0 (1rem * .5) 0.5rem (1rem * .5);
+         border-bottom-color: $popover-arrow-outer-color;
+      }
+   }
+
+   .popover-body {
+      width: 400px;
+      color: inherit;
+      overflow: auto;
+
+      ul {
+         list-style: none;
+      }
+   }
+}
