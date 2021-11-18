@@ -587,12 +587,6 @@ $break_tablet: 1400px;
             display: none;
          }
 
-         &.ui-draggable-dragging {
-            .grid-stack-item-content {
-               box-shadow: none;
-            }
-         }
-
          & > .ui-resizable-se {
             bottom: 14px;
             right: 3px;
