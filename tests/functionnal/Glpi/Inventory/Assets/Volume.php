@@ -259,7 +259,7 @@ class Volume extends AbstractInventoryAsset {
       $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
       $this->integer(count($disks))->isIdenticalTo(3);
 
-      //disks present in the inventory source are still dynamic
+      //disks present in the inventory source are now dynamic
       $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
       $this->integer(count($disks))->isIdenticalTo(2);
 
@@ -307,7 +307,7 @@ class Volume extends AbstractInventoryAsset {
       $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
       $this->integer(count($disks))->isIdenticalTo(2);
 
-      //disks present in the inventory source are now dynamic
+      //disks present in the inventory source are still dynamic
       $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
       $this->integer(count($disks))->isIdenticalTo(1);
 

@@ -63,6 +63,8 @@ class Battery extends Device
             //a numeric value is expected here
             $val->voltage = 0;
          }
+
+         $val->is_dynamic = 1;
       }
       return $this->data;
    }
