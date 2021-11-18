@@ -1369,6 +1369,7 @@ CREATE TABLE `glpi_contacts` (
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `firstname` varchar(255) DEFAULT NULL,
+  `registration_number` varchar(255) DEFAULT NULL,
   `phone` varchar(255) DEFAULT NULL,
   `phone2` varchar(255) DEFAULT NULL,
   `mobile` varchar(255) DEFAULT NULL,
