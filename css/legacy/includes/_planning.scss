@@ -233,34 +233,8 @@
 
       }
 
-      .event_past {
-         .ui-widget-content {
-            color: #CCCCCC;
-
-            a {
-               color: #CCCCCC;
-            }
-         }
-
-         &.event_todo .ui-widget-content {
-            color: #FF0000;
-
-            a {
-               color: #FF0000;
-            }
-         }
-      }
-
       .event_today {
          background: #fcf8e3;
-      }
-
-      .event_today.event_todo .ui-widget-content {
-         color: #FFA100;
-
-         a {
-            color: #FFA100;
-         }
       }
 
       .fc-event {
@@ -354,10 +328,6 @@
 }
 
 .planning_on_central {
-   .ui-widget-content {
-      border: none;
-   }
-
    .fc-head {
       display: none;
    }

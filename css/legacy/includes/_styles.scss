@@ -42,7 +42,7 @@
 }
 
 /* Apply legacy styles to main content (#page) and elements that are inserted directly in body (modals, tooltips, ...) */
-#page, .ui-dialog, .qtip, .modal .modal-body {
+#page, .qtip, .modal .modal-body {
    .starthidden {
      display: none;
    }
@@ -903,10 +903,6 @@
       }
    }
 
-   .ui-widget-content .error a {
-      color: red;
-   }
-
    .error a:hover {
       text-decoration: underline;
    }
@@ -1680,6 +1676,13 @@
       border: none;
       height: 24px;
       width: 24px;
+   }
+
+   .uploadbar {
+      height: 18px;
+      text-align: center;
+      font-weight:bold;
+      background-image: url('../pics/jquery/pbar-ani.gif');
    }
 }
 

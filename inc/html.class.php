@@ -1234,8 +1234,6 @@ HTML;
       // load log filters everywhere
       Html::requireJs('log_filters');
 
-      $tpl_vars['css_files'][] = 'css/legacy/jquery-glpi.scss';
-
       if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
          $tpl_vars['high_contrast'] = true;
       }
@@ -6010,7 +6008,6 @@ JAVASCRIPT;
             $_SESSION['glpi_js_toload'][$name][] = 'js/gantt-helper.js';
             break;
          case 'kanban':
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery.ui.touch-punch.js';
             break;
          case 'rateit':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jquery.rateit.js';
@@ -6047,7 +6044,6 @@ JAVASCRIPT;
             break;
          case 'rack':
             $_SESSION['glpi_js_toload'][$name][] = 'js/rack.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery.ui.touch-punch.js';
             break;
          case 'leaflet':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/leaflet.js';

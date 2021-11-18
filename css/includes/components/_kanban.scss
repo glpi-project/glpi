@@ -165,10 +165,6 @@
                color: #777620;
             }
 
-            &.ui-sortable-helper {
-               cursor: grab;
-            }
-
             &.collapsed {
                min-width: unset;
                width: calc(1.2em + 20px);
@@ -293,10 +289,6 @@
 
                   &.filtered-out {
                      display: none;
-                  }
-
-                  &.ui-sortable-helper {
-                     cursor: grab;
                   }
 
                   .kanban-item-header,
