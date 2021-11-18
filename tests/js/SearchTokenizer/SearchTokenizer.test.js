@@ -140,9 +140,9 @@ describe('Search Tokenizer', () => {
       expect(content).toBe(stripExtraWhitespace(`
       Allowed tags:</br>
       <ul>
-         <li>name: The name</li>
-         <li>content: The content</li>
-         <li>milestone: Is a milestone</li>
+         <li>name: "The name"</li>
+         <li>content: "The content"</li>
+         <li>milestone: "Is a milestone"</li>
       </ul>
       `));
    });
