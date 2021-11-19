@@ -57,8 +57,11 @@ if (isset($_POST['type']) && !empty($_POST['type'])
    switch ($_POST['type']) {
       case 'User' :
          echo "<td>";
-         User::dropdown(['right' => $_POST['right'],
-                              'name'  => $prefix.'users_id'.$suffix]);
+         $params = [
+            'right' => isset($_POST['allusers']) ? 'all' : $_POST['right'],
+            'name' => $prefix.'users_id'.$suffix
+         ];
+         User::dropdown($params);
          echo "</td>";
          $display = true;
          break;

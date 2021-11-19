@@ -237,8 +237,16 @@ JAVASCRIPT;
             [
                'SELECT' => ['COUNT DISTINCT' => KnowbaseItem::getTableField('id') . ' as cpt'],
                'FROM'   => KnowbaseItem::getTable(),
+               'INNER JOIN' => [
+                  KnowbaseItem_Category::getTable() => [
+                     'ON'  => [
+                        KnowbaseItem_Category::getTable()   => KnowbaseItem::getForeignKeyField(),
+                        KnowbaseItem::getTable()            => 'id'
+                     ]
+                  ]
+               ],
                'WHERE'  => [
-                  KnowbaseItem::getTableField($cat_fk) => new QueryExpression(
+                  KnowbaseItem_Category::getTableField($cat_fk) => new QueryExpression(
                      DB::quoteName(KnowbaseItemCategory::getTableField('id'))
                   ),
                ]
@@ -298,8 +306,22 @@ JAVASCRIPT;
             [
                'SELECT' => ['COUNT DISTINCT' => KnowbaseItem::getTableField('id') . ' as cpt'],
                'FROM'   => KnowbaseItem::getTable(),
+               'LEFT JOIN' => [
+                  KnowbaseItem_Category::getTable() => [
+                     'ON'  => [
+                        KnowbaseItem_Category::getTable()   => KnowbaseItem::getForeignKeyField(),
+                        KnowbaseItem::getTable()            => 'id'
+                     ]
+                  ],
+                  KnowbaseItemCategory::getTable() => [
+                     'ON'  => [
+                        KnowbaseItem_Category::getTable()   => KnowbaseItemCategory::getForeignKeyField(),
+                        KnowbaseItemCategory::getTable()    => 'id'
+                     ]
+                  ]
+               ],
                'WHERE'  => [
-                  KnowbaseItem::getTableField($cat_fk) => 0,
+                  KnowbaseItemCategory::getTableField('id') => null,
                ]
             ],
             $kbitem_visibility_crit

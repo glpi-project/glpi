@@ -117,11 +117,19 @@ class Knowbase extends DbTestCase {
       $kbitem = new \KnowbaseItem();
       $kbitem_id = $kbitem->add(
          [
-            'knowbaseitemcategories_id' => $cat_1_1_2_id,
             'users_id' => \Session::getLoginUserID(),
          ]
       );
       $this->integer($kbitem_id)->isGreaterThan(0);
+
+      $kbitem_cat = new \KnowbaseItem_Category();
+      $kbitem_cat_id = $kbitem_cat->add(
+         [
+            'knowbaseitemcategories_id' => "$cat_1_1_2_id",
+            'knowbaseitems_id' => "$kbitem_id",
+         ]
+      );
+      $this->integer($kbitem_cat_id)->isGreaterThan(0);
 
       $kbitem_target = new \Entity_KnowbaseItem();
       $kbitem_target_id = $kbitem_target->add(
@@ -166,15 +174,74 @@ class Knowbase extends DbTestCase {
          ]
       );
 
+      // Add 2nd category
+      $kbitem_cat_id = $kbitem_cat->add(
+         [
+            'knowbaseitemcategories_id' => "$cat_1_3_id",
+            'knowbaseitems_id' => "$kbitem_id",
+         ]
+      );
+      $this->integer($kbitem_cat_id)->isGreaterThan(0);
+
+      $kbitem_target = new \Entity_KnowbaseItem();
+      $kbitem_target_id = $kbitem_target->add(
+         [
+            'knowbaseitems_id' => $kbitem_id,
+            'entities_id' => 0,
+            'is_recursive' => 1,
+         ]
+      );
+      $this->integer($kbitem_target_id)->isGreaterThan(0);
+
+      // Check that tree contains root + category branch containing kb item of user
+      $tree = \Knowbase::getJstreeCategoryList();
+      $this->array($tree)->isEqualTo(
+         [
+            [
+               'id' => "$cat_1_1_2_id",
+               'parent' => "$cat_1_1_id",
+               'text' => 'cat 1.1.2 <strong title="This category contains articles">(1)</strong>',
+               'a_attr' => ['data-id' => "$cat_1_1_2_id"]
+            ],
+            [
+               'id' => "$cat_1_1_id",
+               'parent' => "$cat_1_id",
+               'text' => 'cat 1.1',
+               'a_attr' => ['data-id' => "$cat_1_1_id"]
+            ],
+            [
+               'id' => "$cat_1_3_id",
+               'parent' => "$cat_1_id",
+               'text' => 'cat 1.3 <strong title="This category contains articles">(1)</strong>',
+               'a_attr' => ['data-id' => "$cat_1_3_id"]
+            ],
+            [
+               'id' => "$cat_1_id",
+               'parent' => '0',
+               'text' => 'cat 1',
+               'a_attr' => ['data-id' => "$cat_1_id"]
+            ],
+            $expected_root_cat
+         ]
+      );
+
       // Add a FAQ item
       $kbitem = new \KnowbaseItem();
       $kbitem_id = $kbitem->add(
          [
-            'knowbaseitemcategories_id' => $cat_1_2_1_id,
             'is_faq' => 1,
          ]
       );
       $this->integer($kbitem_id)->isGreaterThan(0);
+
+      $kbitem_cat = new \KnowbaseItem_Category();
+      $kbitem_cat_id = $kbitem_cat->add(
+         [
+            'knowbaseitemcategories_id' => "$cat_1_2_1_id",
+            'knowbaseitems_id' => "$kbitem_id",
+         ]
+      );
+      $this->integer($kbitem_cat_id)->isGreaterThan(0);
 
       $kbitem_target = new \Entity_KnowbaseItem();
       $kbitem_target_id = $kbitem_target->add(
