@@ -186,4 +186,90 @@ class ProjectTask extends DbTestCase {
       );
       $this->integer($ttask_id)->isGreaterThan(0);
    }
+
+   public function testGetTeamRoles(): void {
+      $roles = \ProjectTask::getTeamRoles();
+      $this->array($roles)->containsValues([
+         \Project::ROLE_MANAGER,
+         \Project::ROLE_MEMBER,
+      ]);
+   }
+
+   public function testGetTeamRoleName(): void {
+      $roles = \ProjectTask::getTeamRoles();
+      foreach ($roles as $role) {
+         $this->string(\ProjectTask::getTeamRoleName($role))->isNotEmpty();
+      }
+   }
+
+   /**
+    * Tests addTeamMember, deleteTeamMember, and getTeamMembers methods
+    */
+   public function testTeamManagement(): void {
+
+      $project_task = new \ProjectTask();
+      $team_itemtypes = $project_task::getTeamItemtypes();
+
+      $project = new \Project();
+      $projects_id = $project->add([
+         'name'      => 'Team test',
+         'content'   => 'Team test'
+      ]);
+
+      $projecttasks_id = $project_task->add([
+         'projects_id'  => $projects_id,
+         'name'         => 'Team test',
+         'content'      => 'Team test'
+      ]);
+      $this->integer($projecttasks_id)->isGreaterThan(0);
+
+      // Check team members array has keys for all team itemtypes
+      $team = $project_task->getTeam();
+      $this->array($team)->hasKeys($team_itemtypes);
+
+      // Check no team members
+      foreach ($team_itemtypes as $itemtype) {
+         $this->array($team[$itemtype])->isEmpty();
+      }
+
+      // Add team members
+      $project_task->addTeamMember(\User::class, 1, ['role' => \Project::ROLE_MEMBER]);
+
+      // Reload ticket from DB
+      $project_task->getFromDB($projecttasks_id);
+
+      // Check team members
+      $team = $project_task->getTeam();
+      $this->array($team[\User::class])->hasSize(1);
+      $this->array($team[\User::class][0])->hasKey('role');
+      $this->integer($team[\User::class][0]['role'])->isEqualTo(\Project::ROLE_MEMBER);
+      $this->integer($team[\User::class][0]['items_id'])->isEqualTo(1);
+      $this->array($team[\Group::class])->isEmpty();
+
+      // Delete team members
+      $project_task->deleteTeamMember(\User::class, 1);
+
+      //Reload ticket from DB
+      $project_task->getFromDB($projecttasks_id);
+      $team = $project_task->getTeam();
+
+      // Check no team members
+      foreach ($team_itemtypes as $itemtype) {
+         $this->array($team[$itemtype])->isEmpty();
+      }
+
+      // Add team members
+      $project_task->addTeamMember(\Group::class, 5, ['role' => \Project::ROLE_MEMBER]);
+
+      // Reload ticket from DB
+      $project_task->getFromDB($projecttasks_id);
+
+      // Check team members
+      $team = $project_task->getTeam();
+      $this->array($team[\Group::class])->hasSize(1);
+      $this->array($team[\Group::class][0])->hasKey('role');
+      $this->integer($team[\Group::class][0]['role'])->isEqualTo(\Project::ROLE_MEMBER);
+      $this->integer($team[\Group::class][0]['items_id'])->isEqualTo(5);
+      $this->array($team[\User::class])->isEmpty();
+   }
 }

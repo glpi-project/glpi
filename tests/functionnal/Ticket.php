@@ -3695,4 +3695,86 @@ HTML
       $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
       $this->boolean($ticket->isValidator($users_id))->isEqualTo($expected);
    }
+
+   public function testGetTeamRoles(): void {
+      $roles = \Ticket::getTeamRoles();
+      $this->array($roles)->containsValues([
+         \CommonITILActor::ASSIGN,
+         \CommonITILActor::OBSERVER,
+         \CommonITILActor::REQUESTER,
+      ]);
+   }
+
+   public function testGetTeamRoleName(): void {
+      $roles = \Ticket::getTeamRoles();
+      foreach ($roles as $role) {
+         $this->string(\Ticket::getTeamRoleName($role))->isNotEmpty();
+      }
+   }
+
+   /**
+    * Tests addTeamMember, deleteTeamMember, and getTeamMembers methods
+    */
+   public function testTeamManagement(): void {
+
+      $ticket = new \Ticket();
+      $team_itemtypes = $ticket::getTeamItemtypes();
+
+      $tickets_id = $ticket->add([
+         'name'      => 'Team test',
+         'content'   => 'Team test'
+      ]);
+      $this->integer($tickets_id)->isGreaterThan(0);
+
+      // Check team members array has keys for all team itemtypes
+      $team = $ticket->getTeam();
+      $this->array($team)->hasKeys($team_itemtypes);
+
+      // Check no team members
+      foreach ($team_itemtypes as $itemtype) {
+         $this->array($team[$itemtype])->isEmpty();
+      }
+
+      // Add team members
+      $ticket->addTeamMember(\User::class, 1, ['role' => \CommonITILActor::ASSIGN]);
+
+      // Reload ticket from DB
+      $ticket->getFromDB($tickets_id);
+
+      // Check team members
+      $team = $ticket->getTeam();
+      $this->array($team[\User::class])->hasSize(1);
+      $this->array($team[\User::class][0])->hasKey('role');
+      $this->integer($team[\User::class][0]['role'])->isEqualTo(\CommonITILActor::ASSIGN);
+      $this->integer($team[\User::class][0]['items_id'])->isEqualTo(1);
+      $this->array($team[\Group::class])->isEmpty();
+      $this->array($team[\Supplier::class])->isEmpty();
+
+      // Delete team members
+      $ticket->deleteTeamMember(\User::class, 1);
+
+      //Reload ticket from DB
+      $ticket->getFromDB($tickets_id);
+      $team = $ticket->getTeam();
+
+      // Check no team members
+      foreach ($team_itemtypes as $itemtype) {
+         $this->array($team[$itemtype])->isEmpty();
+      }
+
+      // Add team members
+      $ticket->addTeamMember(\Group::class, 5, ['role' => \CommonITILActor::ASSIGN]);
+
+      // Reload ticket from DB
+      $ticket->getFromDB($tickets_id);
+
+      // Check team members
+      $team = $ticket->getTeam();
+      $this->array($team[\Group::class])->hasSize(1);
+      $this->array($team[\Group::class][0])->hasKey('role');
+      $this->integer($team[\Group::class][0]['role'])->isEqualTo(\CommonITILActor::ASSIGN);
+      $this->integer($team[\Group::class][0]['items_id'])->isEqualTo(5);
+      $this->array($team[\User::class])->isEmpty();
+      $this->array($team[\Supplier::class])->isEmpty();
+   }
 }
