@@ -51,8 +51,8 @@ if (!$DB->tableExists('glpi_devicecameras')) {
       `date_mod` timestamp NULL DEFAULT NULL,
       `date_creation` timestamp NULL DEFAULT NULL,
       PRIMARY KEY (`id`),
-      UNIQUE KEY `unicity` (`manufacturers_id`,`devicecameramodels_id`),
       KEY `designation` (`designation`),
+      KEY `manufacturers_id` (`manufacturers_id`),
       KEY `devicecameramodels_id` (`devicecameramodels_id`),
       KEY `entities_id` (`entities_id`),
       KEY `is_recursive` (`is_recursive`),
@@ -60,6 +60,9 @@ if (!$DB->tableExists('glpi_devicecameras')) {
       KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
    $DB->queryOrDie($query, "10.0 add table glpi_devicecameras");
+} else {
+   $migration->dropKey('glpi_devicecameras', 'unicity');
+   $migration->addKey('glpi_devicecameras', 'manufacturers_id', 'manufacturers_id');
 }
 
 if (!$DB->tableExists('glpi_devicecameramodels')) {
