@@ -180,9 +180,10 @@ class DeviceGraphicCard extends CommonDevice {
 
    function getImportCriteria() {
 
-      return ['designation'       => 'equal',
-                   'manufacturers_id'  => 'equal',
-                   'interfacetypes_id' => 'equal'];
+      return [
+         'designation' => 'equal',
+         'chipset'  => 'equal',
+      ];
    }
 
    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams) {

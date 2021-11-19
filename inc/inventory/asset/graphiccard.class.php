@@ -60,6 +60,8 @@ class GraphicCard extends Device
             if (isset($val->chipset)) {
                $this->ignored['controllers'][$val->chipset] = $val->chipset;
             }
+
+            $val->is_dynamic = 1;
          } else {
             unset($this->data[$k]);
          }

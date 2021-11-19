@@ -181,6 +181,7 @@ class Processor extends AbstractInventoryAsset {
          'itemtype'     => 'Computer',
          'deviceprocessors_id' => $cpu_1_id
       ]);
+      $this->integer($item_cpu_1_id)->isGreaterThan(0);
 
       $cpu_2_id = $device_proc->add([
          'designation' => 'Intel(R) Core(TM) i5',
@@ -195,6 +196,7 @@ class Processor extends AbstractInventoryAsset {
          'itemtype'     => 'Computer',
          'deviceprocessors_id' => $cpu_2_id
       ]);
+      $this->integer($item_cpu_2_id)->isGreaterThan(0);
 
       $cpu_3_id = $device_proc->add([
          'designation' => 'Intel(R) Core(TM) i3',
@@ -209,6 +211,7 @@ class Processor extends AbstractInventoryAsset {
          'itemtype'     => 'Computer',
          'deviceprocessors_id' => $cpu_3_id
       ]);
+      $this->integer($item_cpu_3_id)->isGreaterThan(0);
 
       $cpus = $item_proc->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
       $this->integer(count($cpus))->isIdenticalTo(3);
