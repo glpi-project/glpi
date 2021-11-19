@@ -5897,7 +5897,7 @@ JAVASCRIPT;
       }
 
       $initials = mb_substr($this->fields['firstname'] ?? '', 0, 1) . mb_substr($this->fields['realname'] ?? '', 0, 1);
-      if (empty(!$initials)) {
+      if (empty($initials)) {
          $initials = mb_substr($this->fields['name'] ?? '', 0, 2);
       }
       return mb_strtoupper($initials);
