@@ -1911,30 +1911,32 @@ class MailCollector  extends CommonDBTM {
 
 
    function title() {
-      global $CFG_GLPI;
-
-      $buttons = [];
-      if (countElementsInTable($this->getTable())) {
-         $buttons["notimportedemail.php"] = __('List of not imported emails');
-      }
-
       $errors  = getAllDataFromTable($this->getTable(), ['errors' => ['>', 0]]);
       $message = '';
       if (count($errors)) {
          $servers = [];
          foreach ($errors as $data) {
             $this->getFromDB($data['id']);
-            $servers[] = $this->getLink();
+            $servers[] = "<a class='btn btn-ghost-danger' href='".$this->getLinkUrl()."'>
+               ".$this->getName(['complete' => true])."
+            </a>";
          }
 
-         $message = sprintf(__('Receivers in error: %s'), implode(" ", $servers));
+         $message = "<span class='border-danger text-danger border-1 border p-1 ps-2 rounded-start'>
+            <i class='fas fa-exclamation-triangle fa-lg me-2'></i>
+            ".sprintf(__('Receivers in error: %s'), implode(" ", $servers))."
+         </span>";
       }
 
-      if (count($buttons)) {
-         Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png",
-                            _n('Receiver', 'Receivers', Session::getPluralNumber()), $message, $buttons);
+      echo "<div class='btn-group flex-wrap mb-3'>";
+      echo $message;
+      if (countElementsInTable($this->getTable())) {
+         echo "<a class='btn btn-outline-warning' href='notimportedemail.php'>
+         <i class='fas fa-list fa-lg me-2'></i>
+            <span>".__('List of not imported emails')."</span>
+         </a>";
       }
-
+      echo "</div>";
    }
 
 

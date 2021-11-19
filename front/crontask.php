@@ -46,16 +46,17 @@ if ($crontask->getNeedToRun(CronTask::MODE_INTERNAL)) {
                    Html::getSimpleForm($crontask->getFormURL(),
                                        ['execute' => $crontask->fields['name']],
                                              __('Execute')));
-   Html::displayTitle($CFG_GLPI['root_doc'].'/pics/warning.png', __('Next run'),
-                      sprintf(__('Next task to run: %s'), $name));
+   Html::displayTitle("", __('Next run'),
+                      "<i class='fas fa-step-forward fa-lg me-2'></i>".sprintf(__('Next task to run: %s'), $name));
 } else {
-   Html::displayTitle($CFG_GLPI['root_doc'].'/pics/ok.png', __('No action pending'),
-                      __('No action pending'));
+   Html::displayTitle("", __('No action pending'),
+                      "<i class='fas fa-check fa-lg me-2'></i>".__('No action pending'));
 }
 
 if ($CFG_GLPI['cron_limit'] < countElementsInTable('glpi_crontasks',
                                                    ['frequency' => MINUTE_TIMESTAMP])) {
    Html::displayTitle('', '',
+                      "<i class='fas fa-exclamation-triangle fa-lg me-2'></i>".
                       __('You have more automatic actions which need to run each minute than the number allow each run. Increase this config.'));
 }
 
