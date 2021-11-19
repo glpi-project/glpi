@@ -48,7 +48,7 @@
          {% if team is not empty %}
             {# Ungroup team and move the keys to an itemtype property, then regroup by role #}
             {% set team_by_role = team|ungroup('itemtype')|group_by('role') %}
-            {% for team_role,team_members in team_by_role %}
+            {% for team_role, team_members in team_by_role %}
                <h5>{{ itemtype|team_role_name(team_role, get_plural_number()) }}</h5>
                <ul class="list-group team-list" data-role="{{ team_role }}">
                   {% for team_member in team_members %}

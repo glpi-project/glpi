@@ -1007,14 +1007,6 @@ class GLPIKanbanRights {
          });
       };
 
-      const showModalFromUrl = (url, data) => {
-         const modal = $('#kanban-modal');
-         modal.removeData();
-         modal.data(data);
-         modal.find('.modal-body').load(url);
-         modal.modal('show');
-      };
-
       const showModal = (content, data) => {
          const modal = $('#kanban-modal');
          modal.removeData();
