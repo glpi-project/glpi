@@ -55,6 +55,7 @@ class SoundCard extends Device
                $val->$dest = $val->$origin;
             }
          }
+         $val->is_dynamic = 1;
          $this->ignored['controllers'][$val->name] = $val->name;
       }
       return $this->data;
