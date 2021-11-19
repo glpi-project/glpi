@@ -60,7 +60,7 @@ class Memory extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"capacity": 4096, "caption": "System Board Memory", "description": "Chip", "manufacturer": "Elpida", "memorycorrection": "None", "numslots": 1, "serialnumber": "12161217", "speed": "1867", "type": "LPDDR3", "size": 4096, "frequence": "1867", "devicememorytypes_id": "LPDDR3", "serial": "12161217", "busID": 1, "designation": "LPDDR3 - Chip"}'
+            'expected'  => '{"capacity": 4096, "caption": "System Board Memory", "description": "Chip", "manufacturer": "Elpida", "memorycorrection": "None", "numslots": 1, "serialnumber": "12161217", "speed": "1867", "type": "LPDDR3", "size": 4096, "frequence": "1867", "manufacturers_id": "Elpida", "devicememorytypes_id": "LPDDR3", "serial": "12161217", "busID": 1, "designation": "LPDDR3 - Chip", "is_dynamic": 1}'
          ]
       ];
    }
@@ -106,5 +106,177 @@ class Memory extends AbstractInventoryAsset {
       $asset->handle();
       $this->boolean($idm->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isTrue('Memory has not been linked to computer :(');
+   }
+
+   public function testInventoryUpdate() {
+      $computer = new \Computer();
+      $device_mem = new \DeviceMemory();
+      $item_mem = new \Item_DeviceMemory();
+
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <MEMORIES>
+      <CAPACITY>8192</CAPACITY>
+      <CAPTION>Bottom-Slot 1(left)</CAPTION>
+      <DESCRIPTION>SODIMM</DESCRIPTION>
+      <MANUFACTURER>Samsung</MANUFACTURER>
+      <MEMORYCORRECTION>None</MEMORYCORRECTION>
+      <NUMSLOTS>1</NUMSLOTS>
+      <SERIALNUMBER>97842456</SERIALNUMBER>
+      <SPEED>2133</SPEED>
+      <TYPE>DDR4</TYPE>
+    </MEMORIES>
+    <MEMORIES>
+      <CAPACITY>8192</CAPACITY>
+      <CAPTION>Bottom-Slot 2(right)</CAPTION>
+      <DESCRIPTION>SODIMM</DESCRIPTION>
+      <MANUFACTURER>Samsung</MANUFACTURER>
+      <MEMORYCORRECTION>None</MEMORYCORRECTION>
+      <NUMSLOTS>1</NUMSLOTS>
+      <SERIALNUMBER>97842457</SERIALNUMBER>
+      <SPEED>2133</SPEED>
+      <TYPE>DDR4</TYPE>
+    </MEMORIES>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      //create manually a computer, with 3 memories
+      $computers_id = $computer->add([
+         'name'   => 'pc002',
+         'serial' => 'ggheb7ne7',
+         'entities_id' => 0
+      ]);
+      $this->integer($computers_id)->isGreaterThan(0);
+
+      $manufacturer = new \Manufacturer();
+      $manufacturers_id = $manufacturer->add([
+         'name' => 'Samsung'
+      ]);
+      $this->integer($manufacturers_id)->isGreaterThan(0);
+
+      $type = new \DeviceMemoryType();
+      $types_id = $type->add([
+         'name' => 'DDR4'
+      ]);
+      $this->integer($types_id)->isGreaterThan(0);
+
+      $mem_1_id = $device_mem->add([
+         'designation' => 'DDR4 - SODIMM',
+         'manufacturers_id' => $manufacturers_id,
+         'devicememorytypes_id' => $types_id,
+         'frequence' => '2133',
+         'entities_id'  => 0
+      ]);
+      $this->integer($mem_1_id)->isGreaterThan(0);
+
+      $item_mem_1_id = $item_mem->add([
+         'items_id'     => $computers_id,
+         'itemtype'     => 'Computer',
+         'devicememories_id' => $mem_1_id
+      ]);
+      $this->integer($item_mem_1_id)->isGreaterThan(0);
+
+      $item_mem_2_id = $item_mem->add([
+         'items_id'     => $computers_id,
+         'itemtype'     => 'Computer',
+         'devicememories_id' => $mem_1_id
+      ]);
+      $this->integer($item_mem_2_id)->isGreaterThan(0);
+
+      $mem_3_id = $device_mem->add([
+         'designation' => 'DDR3 - SODIMM',
+         'manufacturers_id' => $manufacturers_id,
+         'devicememorytypes_id' => $types_id,
+         'frequence' => '2133',
+         'entities_id'  => 0
+      ]);
+      $this->integer($mem_3_id)->isGreaterThan(0);
+
+      $item_mem_3_id = $item_mem->add([
+         'items_id'     => $computers_id,
+         'itemtype'     => 'Computer',
+         'devicememories_id' => $mem_3_id
+      ]);
+      $this->integer($item_mem_3_id)->isGreaterThan(0);
+
+      $memories = $item_mem->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($memories))->isIdenticalTo(3);
+      foreach ($memories as $memory) {
+         $this->variable($memory['is_dynamic'])->isEqualTo(0);
+      }
+
+      //computer inventory knows only "Bottom-Slot 1(left)" and "Bottom-Slot 2(right)" memories
+      $this->doInventory($xml_source, true);
+
+      //we still have 2 memory devices
+      $memories = $device_mem->find();
+      $this->integer(count($memories))->isIdenticalTo(2);
+
+      //we still have 3 memories items linked to the computer
+      $memories = $item_mem->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($memories))->isIdenticalTo(3);
+
+      //memories present in the inventory source are now dynamic
+      $memories = $item_mem->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+      $this->integer(count($memories))->isIdenticalTo(2);
+
+      //memory not present in the inventory is still not dynamic
+      $memories = $item_mem->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+      $this->integer(count($memories))->isIdenticalTo(1);
+
+      //Redo inventory, but with removed "Bottom-Slot 2(right)" memory
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <MEMORIES>
+      <CAPACITY>8192</CAPACITY>
+      <CAPTION>Bottom-Slot 1(left)</CAPTION>
+      <DESCRIPTION>SODIMM</DESCRIPTION>
+      <MANUFACTURER>Samsung</MANUFACTURER>
+      <MEMORYCORRECTION>None</MEMORYCORRECTION>
+      <NUMSLOTS>1</NUMSLOTS>
+      <SERIALNUMBER>97842456</SERIALNUMBER>
+      <SPEED>2133</SPEED>
+      <TYPE>DDR4</TYPE>
+    </MEMORIES>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      $this->doInventory($xml_source, true);
+
+      //we now have only 2 memories
+      $memories = $device_mem->find();
+      $this->integer(count($memories))->isIdenticalTo(2);
+
+      //we now have 2 memories linked to computer only
+      $memories = $item_mem->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($memories))->isIdenticalTo(2);
+
+      //memory present in the inventory source is still dynamic
+      $memories = $item_mem->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+      $this->integer(count($memories))->isIdenticalTo(1);
+
+      //memory not present in the inventory is still not dynamic
+      $memories = $item_mem->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+      $this->integer(count($memories))->isIdenticalTo(1);
    }
 }

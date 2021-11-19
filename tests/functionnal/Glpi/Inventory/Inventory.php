@@ -1425,10 +1425,10 @@ class Inventory extends InventoryTestCase {
          'LIMIT' => $nblogsnow,
          'OFFSET' => $this->nblogs,
       ]);
-      $this->integer(count($logs))->isIdenticalTo(71);
+      $this->integer(count($logs))->isIdenticalTo(72);
 
       $expected_types_count = [
-         \Log::HISTORY_CREATE_ITEM => 63,
+         \Log::HISTORY_CREATE_ITEM => 64,
          \Log::HISTORY_ADD_SUBITEM => count($expecteds_fs),
          0 => 1, // Change Monitor contact (is_contact_autoupdate)
          \Log::HISTORY_ADD_RELATION => 4 //OS and Monitor x2 each
@@ -1573,7 +1573,7 @@ class Inventory extends InventoryTestCase {
          'LIMIT' => $nblogsnow,
          'OFFSET' => $this->nblogs,
       ]);
-      $this->integer(count($logs))->isIdenticalTo(71);
+      $this->integer(count($logs))->isIdenticalTo(72);
 
       $types_count = [];
       foreach ($logs as $row) {
