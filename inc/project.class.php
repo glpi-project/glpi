@@ -612,7 +612,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          'table'              => 'glpi_users',
          'field'              => 'name',
          'linkfield'          => 'users_id',
-         'name'               => __('Manager'),
+         'name'               => _n('Manager', 'Managers', 1),
          'datatype'           => 'dropdown',
          'right'              => 'see_project'
       ];
@@ -1136,7 +1136,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       }
 
       $items[__('Priority')]         = "priority";
-      $items[__('Manager')]          = "users_id";
+      $items[_n('Manager', 'Managers', 1)] = "users_id";
       $items[__('Manager group')]    = "groups_id";
       $items[__('Name')]             = "name";
 
@@ -1522,7 +1522,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr><td colspan='4' class='subheader'>".__('Manager')."</td></tr>";
+      echo "<tr><td colspan='4' class='subheader'>"._n('Manager', 'Managers', 1)."</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".User::getTypeName(1)."</td>";

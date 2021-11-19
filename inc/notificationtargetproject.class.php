@@ -57,7 +57,7 @@ class NotificationTargetProject extends NotificationTarget {
 
    function addAdditionalTargets($event = '') {
 
-      $this->addTarget(Notification::MANAGER_USER, __('Manager'));
+      $this->addTarget(Notification::MANAGER_USER, _n('Manager', 'Managers', 1));
       $this->addTarget(Notification::MANAGER_GROUP, __('Manager group'));
       $this->addTarget(Notification::MANAGER_GROUP_SUPERVISOR, __('Manager of manager group'));
       $this->addTarget(Notification::MANAGER_GROUP_WITHOUT_SUPERVISOR,
@@ -603,7 +603,7 @@ class NotificationTargetProject extends NotificationTarget {
                         'project.realenddate'         => __('Real end date'),
                         'project.priority'            => __('Priority'),
                         'project.father'              => __('Father'),
-                        'project.manager'             => __('Manager'),
+                        'project.manager'             => _n('Manager', 'Managers', 1),
                         'project.managergroup'        => __('Manager group'),
                         'project.type'                => _n('Type', 'Types', 1),
                         'project.state'               => _x('item', 'State'),

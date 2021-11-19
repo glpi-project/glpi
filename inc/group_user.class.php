@@ -199,7 +199,7 @@ class Group_User extends CommonDBRelation{
             ] + getEntitiesRestrictCriteria(Group::getTable(), '', '', true)
          ];
          Group::dropdown($params);
-         echo "</td><td>".__('Manager')."</td><td>";
+         echo "</td><td>"._n('Manager', 'Managers', 1)."</td><td>";
          Dropdown::showYesNo('is_manager');
 
          echo "</td><td>".__('Delegatee')."</td><td>";
@@ -238,7 +238,7 @@ class Group_User extends CommonDBRelation{
       }
       $header_end .= "<th>".Group::getTypeName(1)."</th>";
       $header_end .= "<th>".__('Dynamic')."</th>";
-      $header_end .= "<th>".__('Manager')."</th>";
+      $header_end .= "<th>"._n('Manager', 'Managers', 1)."</th>";
       $header_end .= "<th>".__('Delegatee')."</th></tr>";
       echo $header_begin.$header_top.$header_end;
 
@@ -271,7 +271,7 @@ class Group_User extends CommonDBRelation{
             echo "<td class='center'>";
             if ($data['is_manager']) {
                echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14' alt=\"".
-                      __('Manager')."\">";
+                  _n('Manager', 'Managers', 1)."\">";
             }
             echo "</td><td class='center'>";
             if ($data['is_userdelegate']) {
@@ -328,7 +328,7 @@ class Group_User extends CommonDBRelation{
                               'with_no_right' => true,
                               'used'   => $used_ids]);
 
-         echo "</td><td>".__('Manager')."</td><td>";
+         echo "</td><td>"._n('Manager', 'Managers', 1)."</td><td>";
          Dropdown::showYesNo('is_manager', (($crit == 'is_manager') ? 1 : 0));
 
          echo "</td><td>".__('Delegatee')."</td><td>";
@@ -472,7 +472,7 @@ class Group_User extends CommonDBRelation{
       echo "<tr class='tab_bg_1'><th colspan='2'>".User::getTypeName(Session::getPluralNumber())."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
       echo _n('Criterion', 'Criteria', 1)."&nbsp;";
-      $crits = ['is_manager'      => __('Manager'),
+      $crits = ['is_manager'      => _n('Manager', 'Managers', 1),
                      'is_userdelegate' => __('Delegatee')];
       Dropdown::showFromArray('crit', $crits,
                               ['value'               => $crit,
@@ -531,7 +531,7 @@ class Group_User extends CommonDBRelation{
             $header_end .= "<th>".Group::getTypeName(1)."</th>";
          }
          $header_end .= "<th>".__('Dynamic')."</th>";
-         $header_end .= "<th>".__('Manager')."</th>";
+         $header_end .= "<th>"._n('Manager', 'Managers', 1)."</th>";
          $header_end .= "<th>".__('Delegatee')."</th>";
          $header_end .= "<th>".__('Active')."</th></tr>";
          echo $header_begin.$header_top.$header_end;
@@ -564,7 +564,7 @@ class Group_User extends CommonDBRelation{
             echo "</td><td class='center'>";
             if ($data['is_manager']) {
                echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14' alt=\"".
-                      __('Manager')."\">";
+                  _n('Manager', 'Managers', 1)."\">";
             }
             echo "</td><td class='center'>";
             if ($data['is_userdelegate']) {
@@ -692,7 +692,7 @@ class Group_User extends CommonDBRelation{
          'id'                 => '6',
          'table'              => $this->getTable(),
          'field'              => 'is_manager',
-         'name'               => __('Manager'),
+         'name'               => _n('Manager', 'Managers', 1),
          'datatype'           => 'bool'
       ];
 
