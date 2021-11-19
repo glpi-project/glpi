@@ -32,7 +32,6 @@
 
 namespace Glpi\Application\View\Extension;
 
-use CommonDBTM;
 use Glpi\Features\Teamwork;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;

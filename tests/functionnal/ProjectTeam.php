@@ -33,7 +33,6 @@
 namespace tests\units;
 
 use DbTestCase;
-use ProjectTask;
 
 /* Test for inc/projectteam.class.php */
 class ProjectTeam extends DbTestCase {
