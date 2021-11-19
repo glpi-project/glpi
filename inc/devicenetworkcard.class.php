@@ -53,9 +53,10 @@ class DeviceNetworkCard extends CommonDevice {
    **/
    function getImportCriteria() {
 
-      return ['designation'      => 'equal',
-                   'manufacturers_id' => 'equal',
-                   'mac'              => 'equal'];
+      return [
+         'designation' => 'equal',
+         'bandwidth' => 'equal',
+      ];
    }
 
 
@@ -108,40 +109,6 @@ class DeviceNetworkCard extends CommonDevice {
       ];
 
       return $tab;
-   }
-
-
-   /**
-    * Import a device if not exists
-    *
-    * @param $input array of datas
-    *
-    * @return integer ID of existing or new Device
-   **/
-   function import(array $input) {
-      global $DB;
-
-      if (!isset($input['designation']) || empty($input['designation'])) {
-         return 0;
-      }
-
-      $criteria = [
-         'SELECT' => 'id',
-         'FROM'   => $this->getTable(),
-         'WHERE'  => ['designation' => $input['designation']]
-      ];
-
-      if (isset($input["bandwidth"])) {
-         $criteria['WHERE']['bandwidth'] = $input['bandwidth'];
-      }
-
-      $iterator = $DB->request($criteria);
-
-      if (count($iterator) > 0) {
-         $line = $iterator->current();
-         return $line['id'];
-      }
-      return $this->add($input);
    }
 
 

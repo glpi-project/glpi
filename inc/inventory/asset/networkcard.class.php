@@ -102,17 +102,30 @@ class NetworkCard extends Device
 
                      //manufacturer
                      if ($pci_manufacturer = $pcivendor->getManufacturer($exploded[0])) {
-                        $found_controller->manufacturers_id = $pci_manufacturer;
+                        $val->manufacturers_id = $pci_manufacturer;
                      }
 
                      //product name
                      if ($pci_product = $pcivendor->getProductName($exploded[0], $exploded[1])) {
-                        $found_controller->designation = $pci_product;
+                        $val->designation = $pci_product;
+                     }
+                  } else if (property_exists($found_controller, 'vendorid')) {
+                     //manufacturer
+                     if ($pci_manufacturer = $pcivendor->getManufacturer($found_controller->vendorid)) {
+                        $val->manufacturers_id = $pci_manufacturer;
+                     }
+
+                     if (property_exists($found_controller, 'productid')) {
+                        //product name
+                        if ($pci_product = $pcivendor->getProductName($found_controller->vendorid, $found_controller->productid)) {
+                           $val->designation = $pci_product;
+                        }
                      }
                   }
 
                   if (property_exists($val, 'mac')) {
                      $val->mac = strtolower($val->mac);
+                     $val->mac_default = $val->mac;
                   }
 
                   if (property_exists($val, 'name')) {
