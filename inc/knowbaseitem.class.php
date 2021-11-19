@@ -975,7 +975,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       $out.= "<tr><th colspan='4'>".sprintf(__('%1$s: %2$s'), _n('Category', 'Categories', $nb), $tmp);
       $out.= "</th></tr>";
 
-
       $out.= "<tr><td class='left' colspan='4'><h2>".__('Subject')."</h2>";
       if (KnowbaseItemTranslation::canBeTranslated($this)) {
          $out.= KnowbaseItemTranslation::getTranslatedValue($this, 'name');
@@ -1696,7 +1695,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
                                                                      $knowbaseitemcategories_id);
                   $cathref = $ki->getSearchURL()."?knowbaseitemcategories_id=".
                               $knowbaseitemcategories_id.'&amp;forcetab=Knowbase$2';
-         
                   $tmp[] = "<a class='kb-category'"
                         . " href='$cathref'"
                         . " data-category-id='" . $knowbaseitemcategories_id . "'"
