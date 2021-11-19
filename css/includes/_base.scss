@@ -187,7 +187,7 @@ body.iframed {
       color: inherit;
    }
 
-   i.fas, i.far, i.fab, i.ti {
+   i.fas, i.far, i.fab, i.ti, .fa-stack {
       margin-inline-start: 0;
 
       & + * {
@@ -206,9 +206,13 @@ body.iframed {
          .fa-stack {
             height: 1.65em;
             line-height: 1.2em;
-            width: 1.4em;
+            width: 1.8em;
             margin-top: -2px;
             font-size: 0.8em;
+
+            @include media-breakpoint-down(sm) {
+               width: 1.4em;
+            }
          }
 
          i.fas, i.far, i.fab, i.ti {
