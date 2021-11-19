@@ -2517,7 +2517,7 @@ class GLPIKanbanRights {
             return;
          }
          _backgroundRefresh = function() {
-            const sorting = $('.ui-sortable-helper');
+            const sorting = $('.sortable-placeholder');
             // Check if the user is current sorting items
             if (sorting.length > 0) {
                // Wait 10 seconds and try the background refresh again
