@@ -39,9 +39,6 @@ if (!defined('GLPI_ROOT')) {
  * @var Migration $migration
  */
 
-$default_charset = DBConnection::getDefaultCharset();
-$default_collation = DBConnection::getDefaultCollation();
-
 if (!$DB->fieldExists("glpi_suppliers", "registration_number")) {
    $migration->addField(
       "glpi_suppliers",
