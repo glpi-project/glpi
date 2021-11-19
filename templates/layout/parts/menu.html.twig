@@ -65,7 +65,9 @@
                   href="{{ path(sublevel['page']) }}"
                   accesskey="{{ sublevel['shortcut'] ?? '' }}" title="{{ sublevel['title'] }}">
                   <i class="fa-fw {{ sublevel['icon'] ?? '' }}"></i>
-                  {{ sublevel['title']|shortcut(sublevel['shortcut'] ?? '') }}
+                  <span class='text-wrap'>
+                     {{ sublevel['title']|shortcut(sublevel['shortcut'] ?? '') }}
+                  </span>
                </a>
                {% endif %}
 
