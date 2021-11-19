@@ -45,6 +45,7 @@
                <input type="hidden" name="id" value="{{ entry_i['id'] }}" />
                <input type="hidden" name="users_id_validate" value="{{ entry_i['users_id_validate'] }}" />
                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+               {{ call_plugin_hook('pre_item_form', {"item": subitem}) }}
 
                <div class="mb-3 comment-part">
                   {{ fields.textareaField(
@@ -141,6 +142,7 @@
                </div>
             </div>
 
+            {{ call_plugin_hook('post_item_form', {"item": subitem}) }}
             <div class="d-flex card-footer mx-n3 mb-n3">
                {% if subitem.fields['id'] <= 0 %}
                   <button class="btn btn-primary me-2" type="submit" name="add">

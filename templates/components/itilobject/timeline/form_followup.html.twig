@@ -76,6 +76,7 @@
                action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true">
             <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
             <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
+            {{ call_plugin_hook('pre_item_form', {"item": subitem}) }}
 
             {% set openfollowup = _get['_openfollowup'] ?? false %}
             {% if openfollowup %}
@@ -186,6 +187,7 @@
                </div>
             </div>
 
+            {{ call_plugin_hook('post_item_form', {"item": subitem}) }}
             <div class="d-flex card-footer mx-n3 mb-n3">
                {% if subitem.fields['id'] <= 0 %}
                   <div class="input-group">
