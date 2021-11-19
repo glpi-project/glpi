@@ -29,6 +29,7 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/form/modals_macros.html.twig' as modals %}
 
 {% if rights is not defined %}
@@ -46,6 +47,12 @@
 {{ modals.modal('', '', {
    'id': 'kanban-modal'
 }) }}
+
+<template id="kanban-teammember-item-dropdown">
+   {{ fields.dropdownItemsFromItemtypes('add-teammember', '', {
+      'itemtypes': ['User', 'Group', 'Supplier', 'Contact']
+   }) }}
+</template>
 
 <script>
    $(function(){

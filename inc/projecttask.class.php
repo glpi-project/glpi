@@ -50,6 +50,7 @@ use Sabre\VObject\Property\IntegerValue;
 class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface {
    use Glpi\Features\PlanningEvent;
    use VobjectConverterTrait;
+   use Glpi\Features\Team;
 
    // From CommonDBTM
    public $dohistory = true;
@@ -2065,5 +2066,31 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
    public function prepareInputForClone($input) {
       $input['uuid'] = \Ramsey\Uuid\Uuid::uuid4();
       return $input;
+   }
+
+   public static function getTeamItemtypes(): array {
+      return ProjectTaskTeam::$available_types;
+   }
+
+   public function addTeamMember(string $itemtype, int $items_id, array $params = []): bool {
+      global $DB;
+
+      $result = $DB->insert(ProjectTaskTeam::getTable(), [
+         'projecttasks_id' => $this->getID(),
+         'itemtype'        => $itemtype,
+         'items_id'        => $items_id
+      ]);
+      return (bool) $result;
+   }
+
+   public function deleteTeamMember(string $itemtype, int $items_id, array $params = []): bool {
+      global $DB;
+
+      $result = $DB->delete(ProjectTaskTeam::getTable(), [
+         'projecttasks_id' => $this->getID(),
+         'itemtype'        => $itemtype,
+         'items_id'        => $items_id
+      ]);
+      return (bool) $result;
    }
 }

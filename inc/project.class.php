@@ -46,6 +46,7 @@ use Glpi\Toolbox\RichText;
 class Project extends CommonDBTM implements ExtraVisibilityCriteria {
    use Glpi\Features\Kanban;
    use Glpi\Features\Clonable;
+   use Glpi\Features\Team;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -2409,6 +2410,32 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          $this->getFromDB($ID);
       }
       return ($ID <= 0 || $this->canModifyGlobalState());
+   }
+
+   public static function getTeamItemtypes(): array {
+      return ProjectTeam::$available_types;
+   }
+
+   public function addTeamMember(string $itemtype, int $items_id, array $params = []): bool {
+      global $DB;
+
+      $result = $DB->insert(ProjectTeam::getTable(), [
+         'projects_id'  => $this->getID(),
+         'itemtype'     => $itemtype,
+         'items_id'     => $items_id
+      ]);
+      return (bool) $result;
+   }
+
+   public function deleteTeamMember(string $itemtype, int $items_id, array $params = []): bool {
+      global $DB;
+
+      $result = $DB->delete(ProjectTeam::getTable(), [
+         'projects_id'  => $this->getID(),
+         'itemtype'     => $itemtype,
+         'items_id'     => $items_id
+      ]);
+      return (bool) $result;
    }
 
    /**

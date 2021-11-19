@@ -7777,6 +7777,14 @@ abstract class CommonITILObject extends CommonDBTM {
       return $columns[$column_field];
    }
 
+   public function addTeamMember(string $itemtype, int $items_id, array $params = []): bool {
+      return false;
+   }
+
+   public function deleteTeamMember(string $itemtype, int $items_id, array $params = []): bool {
+      return false;
+   }
+
    public function getTimelineStats(): array {
       global $DB;
 

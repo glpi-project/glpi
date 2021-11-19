@@ -467,9 +467,17 @@ class GLPIKanbanRights {
             <li class='kanban-item-goto dropdown-item'>
                <a href="#"><i class="fas fa-share"></i>${__('Go to')}</a>
             </li>`;
+         if (self.item.itemtype === 'Project' && self.rights.canOrderCard()) {
+            card_overflow_dropdown += `
+                <li class='kanban-item-edit-team dropdown-item'>
+                   <span>
+                      <i class="fas fa-users"></i>${__('Manage team')}
+                   </span>
+                </li>`;
+         }
          if (self.rights.canDeleteItem()) {
             card_overflow_dropdown += `
-                <li class='kanban-item-remove  dropdown-item'>
+                <li class='kanban-item-remove dropdown-item'>
                    <span>
                       <i class="fas fa-trash-alt"></i>${__('Delete')}
                    </span>
@@ -834,6 +842,11 @@ class GLPIKanbanRights {
             // Hide that column
             hideColumn(getColumnIDFromElement(column));
          });
+         $(self.element + ' .kanban-container').on('click', '.kanban-item-edit-team', function(e) {
+            // Get root dropdown, then the button that triggered it, and finally the card that the button is in
+            const card = $(e.target.closest('.kanban-dropdown')).data('trigger-button').closest('.kanban-item');
+            showTeamModal($(card));
+         });
          $(self.element + ' .kanban-container').on('click', '.kanban-item-remove', function(e) {
             // Get root dropdown, then the button that triggered it, and finally the card that the button is in
             const card = $(e.target.closest('.kanban-dropdown')).data('trigger-button').closest('.kanban-item').prop('id');
@@ -1000,9 +1013,28 @@ class GLPIKanbanRights {
             e.preventDefault();
             const card = $(e.target).closest('.kanban-item');
             const [itemtype, items_id] = card.prop('id').split('-');
-            $('#kanban-modal .modal-body').load((self.ajax_root + "kanban.php?action=show_card_edit_form&itemtype="+itemtype+"&card=" + items_id));
-            $('#kanban-modal').modal('show');
+            showModalFromUrl((self.ajax_root + "kanban.php?action=show_card_edit_form&itemtype="+itemtype+"&card=" + items_id));
          });
+      };
+
+      const showModalFromUrl = (url, data) => {
+         const modal = $('#kanban-modal');
+         modal.removeData();
+         modal.data(data);
+         modal.find('.modal-body').load(url);
+         modal.modal('show');
+      };
+
+      const showModal = (content, data) => {
+         const modal = $('#kanban-modal');
+         modal.removeData();
+         modal.data(data);
+         modal.find('.modal-body').html(content);
+         modal.modal('show');
+      };
+
+      const hideModal = () => {
+         $('#kanban-modal').modal('hide');
       };
 
       /**
@@ -2397,6 +2429,90 @@ class GLPIKanbanRights {
             });
          });
          self.user_state = new_state;
+      };
+
+      const showTeamModal = (card_el) => {
+         const team = card_el.data('_team');
+         const [card_itemtype, card_items_id] = card_el.prop('id').split('-', 2);
+         let content = '<ul class="kanban-team-list">';
+
+         $.each(team, (i, member) => {
+            const badge = getTeamBadge(member);
+            content += `
+               <li data-itemtype="${member['itemtype']}" data-items-id="${member['items_id']}" class="d-flex justify-content-between">
+                  <span>${badge}<span class="ms-2">${member['name']}</span></span>
+                  <button type="button" name="delete" class="btn btn-danger" title="${_x('button', 'Delete')}">
+                     <i class="far fa-times-circle"></i>
+                  </button>
+               </li>
+            `;
+         });
+
+         const teammember_types_dropdown = $('#kanban-teammember-item-dropdown').html();
+         content += `
+            </ul>
+            <hr>
+            ${teammember_types_dropdown}
+            <button type="button" name="add" class="btn btn-primary">${_x('button', 'Add')}</button>
+         `;
+         const modal = $('#kanban-modal');
+         modal.on('click', 'button[name="add"]', () => {
+            const itemtype = modal.find('select[name="itemtype"]').val();
+            const items_id = modal.find('select[name="items_id"]').val();
+
+            if (itemtype && items_id) {
+               addTeamMember(card_itemtype, card_items_id, itemtype, items_id);
+               hideModal();
+            }
+         });
+         modal.on('click', 'button[name="delete"]', (e) => {
+            const list_item = $(e.target).closest('li');
+            const itemtype = list_item.attr('data-itemtype');
+            const items_id = list_item.attr('data-items_id');
+
+            if (itemtype && items_id) {
+               removeTeamMember(card_itemtype, card_items_id, itemtype, items_id);
+            }
+         });
+         showModal(content, {
+            card_el: card_el
+         });
+      };
+
+      const addTeamMember = (itemtype, items_id, member_type, members_id) => {
+         $.ajax({
+            method: 'POST',
+            url: (self.ajax_root + "kanban.php"),
+            data: {
+               action: "add_teammember",
+               itemtype: itemtype,
+               items_id: items_id,
+               itemtype_teammember: member_type,
+               items_id_teammember: members_id
+            }
+         }).done(() => {
+            backgroundRefresh();
+         }).fail(() => {
+            glpi_toast_error(__('Failed to add team member'), __('Error'));
+         });
+      };
+
+      const removeTeamMember = (itemtype, items_id, member_type, members_id) => {
+         $.ajax({
+            method: 'POST',
+            url: (self.ajax_root + "kanban.php"),
+            data: {
+               action: "delete_teammember",
+               itemtype: itemtype,
+               items_id: items_id,
+               itemtype_teammember: member_type,
+               items_id_teammember: members_id
+            }
+         }).done(() => {
+            backgroundRefresh();
+         }).fail(() => {
+            glpi_toast_error(__('Failed to remove team member'), __('Error'));
+         });
       };
 
       /**

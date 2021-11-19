@@ -458,3 +458,13 @@
       }
    }
 }
+
+#kanban-modal {
+   ul.kanban-team-list {
+      list-style: none;
+      li {
+         border: $input-border-width solid $input-border-color;
+         padding: 5px;
+      }
+   }
+}

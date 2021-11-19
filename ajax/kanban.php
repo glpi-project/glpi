@@ -49,7 +49,8 @@ if (!isset($_REQUEST['action'])) {
 }
 $action = $_REQUEST['action'];
 
-$nonkanban_actions = ['update', 'bulk_add_item', 'add_item', 'move_item', 'show_card_edit_form', 'delete_item'];
+$nonkanban_actions = ['update', 'bulk_add_item', 'add_item', 'move_item', 'show_card_edit_form', 'delete_item',
+   'add_teammember', 'delete_teammember'];
 if (isset($_REQUEST['itemtype'])) {
    if (!in_array($_REQUEST['action'], $nonkanban_actions) && !Toolbox::hasTrait($_REQUEST['itemtype'], Kanban::class)) {
       // Bad request
@@ -72,7 +73,7 @@ if (isset($itemtype)) {
          return;
       }
    }
-   if (in_array($action, ['update'])) {
+   if (in_array($action, ['update', 'add_teammember', 'delete_teammember'])) {
       $item->getFromDB($_REQUEST['items_id']);
       if (!$item->canUpdateItem()) {
          // Missing rights
@@ -247,4 +248,10 @@ if (($_POST['action'] ?? null) === 'update') {
       http_response_code(403);
       return;
    }
+} else if (($_POST['action'] ?? null) === 'add_teammember') {
+   $checkParams(['itemtype_teammember', 'items_id_teammember']);
+   $item->addTeamMember($_POST['itemtype_teammember'], (int) $_POST['items_id_teammember']);
+} else if (($_POST['action'] ?? null) === 'delete_teammember') {
+   $checkParams(['itemtype_teammember', 'items_id_teammember']);
+   $item->deleteTeamMember($_POST['itemtype_teammember'], (int) $_POST['items_id_teammember']);
 }

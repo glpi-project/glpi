@@ -526,6 +526,15 @@
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
 {% endmacro %}
 
+{% macro dropdownItemsFromItemtypes(name, label = '', options = {}) %}
+   {% set options = {
+      'rand': random()
+   }|merge(options) %}
+
+   {% set field = get_items_from_itemtype_dropdown(options) %}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
+{% endmacro %}
+
 {% macro dropdownIcons(name, value, label = '', options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
    {% if options.fields_template.isMandatoryField(name) %}
