@@ -54,6 +54,7 @@ class Firmware extends Device
                $val->$dest = $val->$origin;
             }
          }
+         $val->is_dynamic = 1;
       }
 
       return $this->data;
