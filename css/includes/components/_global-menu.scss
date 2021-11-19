@@ -52,6 +52,10 @@
    }
 }
 
+.topbar {
+   z-index: $zindex-fixed;
+}
+
 .sidebar {
 
    & ~ .navbar {
