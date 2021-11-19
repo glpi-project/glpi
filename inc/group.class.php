@@ -299,21 +299,19 @@ class Group extends CommonTreeDropdown {
     *@return void
     **/
    function title() {
-      global $CFG_GLPI;
-
       $buttons = [];
       if (Group::canUpdate()
           && Session::haveRight("user", User::UPDATEAUTHENT)
           && AuthLDAP::useAuthLdap()) {
 
-         $buttons["ldap.group.php"] = __('LDAP directory link');
+         $buttons["ldap.group.php"] = "<i class='fas fa-users-cog fa-lg me-2'></i>".__('LDAP directory link');
          $title                     = "";
 
       } else {
-         $title = self::getTypeName(Session::getPluralNumber());
+         $title = "<i class='fas fa-users fa-lg me-2'></i>".self::getTypeName(Session::getPluralNumber());
       }
 
-      Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/groupes.png", self::getTypeName(Session::getPluralNumber()), $title,
+      Html::displayTitle("", self::getTypeName(Session::getPluralNumber()), $title,
                          $buttons);
    }
 

@@ -199,21 +199,6 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
-   /**
-    * Display title above search engine
-    *
-    * @return void HTML display if needed
-   **/
-   function title() {
-
-      if ($this->display_dropdowntitle) {
-         Dropdown::showItemTypeMenu(_n('Dropdown', 'Dropdowns', Session::getPluralNumber()),
-                                    Dropdown::getStandardDropdownItemTypes(),
-                                    $this->getSearchURL());
-      }
-   }
-
-
    function displayHeader() {
 
       if (empty($this->third_level_menu)) {

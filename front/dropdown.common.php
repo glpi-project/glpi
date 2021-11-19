@@ -46,8 +46,6 @@ if (!$dropdown->canView()) {
 
 $dropdown->displayHeader();
 
-$dropdown->title();
-
 Search::show(get_class($dropdown));
 
 Html::footer();
