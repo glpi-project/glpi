@@ -60,6 +60,7 @@ class DatabaseInstance extends InventoryAsset
          if (property_exists($val, 'is_active')) {
             $val->is_active = $val->is_active ? 1 : 0;
          }
+         $val->is_dynamic = 1;
       }
 
       return $this->data;
@@ -77,18 +78,19 @@ class DatabaseInstance extends InventoryAsset
 
       $iterator = $DB->request([
          'SELECT' => [
-            'id'
+            'id',
+            'name',
+            'is_dynamic'
          ],
          'FROM'   => GDatabaseInstance::getTable(),
          'WHERE'  => [
             'itemtype'     => $this->item->getType(),
-            'items_id'     => $this->item->fields['id'],
-            'is_dynamic'   => 1
+            'items_id'     => $this->item->fields['id']
          ]
       ]);
 
       foreach ($iterator as $row) {
-         $db_existing[$row['id']] = $row['id'];
+         $db_existing[$row['id']] = $row;
       }
 
       return $db_existing;
@@ -121,14 +123,12 @@ class DatabaseInstance extends InventoryAsset
          if (isset($data['found_inventories'])) {
             $databases = $val->databases ?? [];
             $input = (array)$val;
-            $existing_databases = [];
 
             $items_id = null;
             $itemtype = 'DatabaseInstance';
             if ($data['found_inventories'][0] == 0) {
                // add instance
                $input += [
-                  'is_dynamic'   => 1,
                   'entities_id'  => $this->entities_id,
                   'itemtype'     => $this->item->getType(),
                   'items_id'     => $this->item->fields['id']
@@ -161,8 +161,8 @@ class DatabaseInstance extends InventoryAsset
 
                //cleanup associated databases
                if (count($existing_databases)) {
-                  foreach ($existing_databases as $existing_database) {
-                     $odatabase->delete(['id' => $existing_database['id']], false, $this->withHistory());
+                  foreach ($existing_databases as $dbkey => $existing_database) {
+                     $odatabase->delete(['id' => $dbkey], false, $this->withHistory());
                   }
                }
             }
@@ -171,7 +171,6 @@ class DatabaseInstance extends InventoryAsset
             foreach ($databases as $database) {
                $dbinput = (array)$database;
                $dbinput += [
-                  'is_dynamic' => 1,
                   'databaseinstances_id' => $instance->fields['id']
                ];
                $odatabase->add(Toolbox::addslashes_deep($dbinput), [], $this->withHistory());
@@ -197,7 +196,7 @@ class DatabaseInstance extends InventoryAsset
       }
 
       if (count($db_instances) && count($instances)) {
-         foreach ($db_instances as $keydb) {
+         foreach (array_keys($db_instances) as $keydb) {
             foreach ($instances as $key) {
                if ($key == $keydb) {
                   unset($instances[$key]);
@@ -211,7 +210,9 @@ class DatabaseInstance extends InventoryAsset
       if (count($db_instances) != 0) {
          //remove no longer existing databases
          foreach ($db_instances as $idtmp => $data) {
-            $instance->delete(['id' => $idtmp]);
+            if ($data['is_dynamic'] == 1) {
+               $instance->delete(['id' => $idtmp]);
+            }
          }
       }
    }
