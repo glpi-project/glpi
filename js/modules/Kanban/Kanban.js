@@ -29,7 +29,8 @@
  * ---------------------------------------------------------------------
  */
 
-import SearchTokenizer from "../SearchTokenizer/SearchTokenizer.js";
+import SearchInput from "../SearchTokenizer/SearchInput.js";
+
 /* global sortable */
 /* global glpi_toast_error */
 
@@ -376,9 +377,10 @@ class GLPIKanbanRights {
          if (self.filters._text === undefined) {
             self.filters._text = '';
          }
-         self.filter_tokenizer = new SearchTokenizer(self.supported_filters);
-         self.refreshSearchTokenizer();
-         self.filter();
+         /**
+          * @type {SearchInput}
+          */
+         self.filter_input = null;
       };
 
       const initMutationObserver = function() {
@@ -512,7 +514,7 @@ class GLPIKanbanRights {
 
       const buildToolbar = function() {
          $(self.element).trigger('kanban:pre_build_toolbar');
-         let toolbar = $("<div class='kanban-toolbar card flex-row'></div>").appendTo(self.element);
+         let toolbar = $("<div class='kanban-toolbar card flex-column flex-md-row'></div>").appendTo(self.element);
          $("<select name='kanban-board-switcher'></select>").appendTo(toolbar);
          let filter_input = $(`<input name='filter' class='form-control ms-1' type='text' placeholder="${__('Search or filter results')}" autocomplete="off"/>`).appendTo(toolbar);
          if (self.rights.canModifyView()) {
@@ -520,67 +522,31 @@ class GLPIKanbanRights {
             toolbar.append(add_column);
          }
 
-         const debounce = (fn) => {
-            let timerId;
-            return function (...args) {
-               if (timerId) {
-                  clearTimeout(timerId);
-               }
-               timerId = setTimeout(() => {
-                  fn(...args);
-                  timerId = null;
-               }, 200);
-            };
-         };
-
-         filter_input.on('input', debounce((e) => {
-            let text = $(e.target).val();
-            if (text === null) {
-               text = '';
-            }
-
-            const result = self.filter_tokenizer.tokenize(text);
-
-            self.filters = {
-               _text: ''
-            };
-            self.filters._text = result.getFullPhrase();
-            result.getTaggedTerms().forEach(t => self.filters[t.tag] = {
-               term: t.term || '',
-               exclusion: t.exclusion || false
-            });
-            self.filter();
-         }));
-
-         filter_input.popover({
-            trigger: 'manual',
-            html: true,
-            container: filter_input.closest('.kanban-toolbar').get(0),
-            placement: 'bottom', // Option from Bootstrap (fallback)
-            popperConfig: {
-               placement: 'bottom-start', // Option only available directly in popper.js (Preferred)
+         self.filter_input = new SearchInput(filter_input, {
+            allowed_tags: self.supported_filters,
+            on_result_change: (e, result) => {
+               self.filters = {
+                  _text: ''
+               };
+               self.filters._text = result.getFullPhrase();
+               result.getTaggedTerms().forEach(t => self.filters[t.tag] = {
+                  term: t.term || '',
+                  exclusion: t.exclusion || false,
+                  prefix: t.prefix
+               });
+               self.filter();
             },
-            customClass: 'kanban-filter-popover',
-            delay: {
-               hide: 300
-            },
-            content: () => {
-               if (self.filter_tokenizer) {
-                  return self.filter_tokenizer.getPopoverContent(filter_input.val(), filter_input.selectionStart);
+            tokenizer_options: {
+               custom_prefixes: {
+                  '#': { // Regex prefix
+                     label: __('Regex'),
+                     token_color: '#00800080'
+                  }
                }
-               return null;
             }
          });
-
-         filter_input.on('input click', (e) => {
-            const popover_content = self.filter_tokenizer.getPopoverContent(filter_input.val(), e.target.selectionStart);
-            $('.kanban-filter-popover .popover-body').html(popover_content);
-            filter_input.popover('show');
-         });
-
-         filter_input.on('blur', () => {
-            filter_input.popover('hide');
-         });
+         self.refreshSearchTokenizer();
+         self.filter();
 
          $(self.element).trigger('kanban:post_build_toolbar');
       };
@@ -2133,13 +2099,13 @@ class GLPIKanbanRights {
       };
 
       this.refreshSearchTokenizer = () => {
-         self.filter_tokenizer.clearAutocomplete();
+         self.filter_input.tokenizer.clearAutocomplete();
 
          // Refresh core tags autocomplete
-         self.filter_tokenizer.setAutocomplete('type', Object.keys(self.supported_itemtypes));
-         self.filter_tokenizer.setAutocomplete('milestone', ["true", "false"]);
+         self.filter_input.tokenizer.setAutocomplete('type', Object.keys(self.supported_itemtypes).map(k => `<i class="${self.supported_itemtypes[k].icon} me-1"></i>` + k));
+         self.filter_input.tokenizer.setAutocomplete('milestone', ["true", "false"]);
 
-         $(self.element).trigger('kanban:refresh_tokenizer', self.filter_tokenizer);
+         $(self.element).trigger('kanban:refresh_tokenizer', self.filter_input.tokenizer);
       };
 
       /**
@@ -2166,7 +2132,20 @@ class GLPIKanbanRights {
          $(self.element + ' .kanban-item').each(function(i, item) {
             const card = $(item);
             let shown = true;
-            const title = card.find("span.kanban-item-title").text();
+            const title = card.find("span.kanban-item-title").text().trim();
+
+            const filter_text = (filter_data, target, matchers = ['regex', 'includes']) => {
+               if (filter_data.prefix === '#' && matchers.includes('regex')) {
+                  return filter_regex_match(filter_data, target);
+               } else {
+                  if (matchers.includes('includes')) {
+                     filter_include(filter_data, target);
+                  }
+                  if (matchers.includes('equals')) {
+                     filter_equal(filter_data, target);
+                  }
+               }
+            };
 
             const filter_include = (filter_data, haystack) => {
                if ((!haystack.toLowerCase().includes(filter_data.term.toLowerCase())) !== filter_data.exclusion) {
@@ -2177,6 +2156,20 @@ class GLPIKanbanRights {
             const filter_equal = (filter_data, target) => {
                if ((target != filter_data.term) !== filter_data.exclusion) {
                   shown = false;
+               }
+            };
+
+            const filter_regex_match = (filter_data, target) => {
+               try {
+                  if ((!target.trim().match(filter_data.term)) !== filter_data.exclusion) {
+                     shown = false;
+                  }
+               } catch (e) {
+                  // Invalid regex
+                  glpi_toast_error(
+                     __('The regular expression you entered is invalid. Please check it and try again.'),
+                     __('Invalid regular expression')
+                  );
                }
             };
 
@@ -2207,11 +2200,11 @@ class GLPIKanbanRights {
             }
 
             if (self.filters.title !== undefined) {
-               filter_include(self.filters.title, title);
+               filter_text(self.filters.title, title);
             }
 
             if (self.filters.type !== undefined) {
-               filter_equal(self.filters.type, card.attr('id').split('-')[0]);
+               filter_text(self.filters.type, card.attr('id').split('-')[0], ['regex', 'equals']);
             }
 
             if (self.filters.milestone !== undefined) {
@@ -2220,7 +2213,7 @@ class GLPIKanbanRights {
             }
 
             if (self.filters.content !== undefined) {
-               filter_include(self.filters.content, card.data('content'));
+               filter_text(self.filters.content, card.data('content'));
             }
 
             if (self.filters.team !== undefined) {

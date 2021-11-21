@@ -2391,31 +2391,40 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          ],
          'supported_filters'           => [
             'title' => [
-               'description' => _x('filters', 'The title of the item')
+               'description' => _x('filters', 'The title of the item'),
+               'supported_prefixes' => ['!', '#'] // Support exclusions and regex
             ],
             'type' => [
-               'description' => _x('filters', 'The type of the item')
+               'description' => _x('filters', 'The type of the item'),
+               'supported_prefixes' => ['!'] // Support exclusions only
             ],
             'milestone' => [
-               'description' => _x('filters', 'If the item represents a milestone or not')
+               'description' => _x('filters', 'If the item represents a milestone or not'),
+               'supported_prefixes' => ['!']
             ],
             'content' => [
-               'description' => _x('filters', 'The content of the item')
+               'description' => _x('filters', 'The content of the item'),
+               'supported_prefixes' => ['!', '#']
             ],
             'team' => [
-               'description' => _x('filters', 'A team member for the item')
+               'description' => _x('filters', 'A team member for the item'),
+               'supported_prefixes' => ['!']
             ],
             'user' => [
-               'description' => _x('filters', 'A user in the team of the item')
+               'description' => _x('filters', 'A user in the team of the item'),
+               'supported_prefixes' => ['!']
             ],
             'group' => [
-               'description' => _x('filters', 'A group in the team of the item')
+               'description' => _x('filters', 'A group in the team of the item'),
+               'supported_prefixes' => ['!']
             ],
             'supplier' => [
-               'description' => _x('filters', 'A supplier in the team of the item')
+               'description' => _x('filters', 'A supplier in the team of the item'),
+               'supported_prefixes' => ['!']
             ],
             'contact' => [
-               'description' => _x('filters', 'A contact in the team of the item')
+               'description' => _x('filters', 'A contact in the team of the item'),
+               'supported_prefixes' => ['!']
             ],
          ],
       ]);

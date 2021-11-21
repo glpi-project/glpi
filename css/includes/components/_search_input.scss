@@ -1,0 +1,97 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2021 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+div.search-input {
+   cursor: text;
+
+   span.search-input-tag,
+   span.search-input-tag-input {
+      text-transform: inherit;
+      font-weight: inherit;
+      font-size: 0.8rem;
+
+      i.ti {
+         font-size: inherit;
+      }
+   }
+
+   span.search-input-tag-input {
+      display: inline-block;
+      min-width: 110px;
+      position: relative;
+      cursor: text;
+
+      &:focus {
+         outline: none;
+      }
+
+      &:last-of-type {
+         flex-grow: 1;
+      }
+   }
+}
+
+.search-input-popover {
+   background-color: inherit;
+   color: inherit;
+   max-width: unset;
+
+   .popover-arrow {
+      top: calc(-0.5rem - 1px); // Fix for using non-standard placement
+      transform: unset !important; // Fix for using non-standard placement
+      left: 50% !important; // Fix for using non-standard placement
+      &::before {// Fix for using non-standard placement
+         top: 0;
+         border-width: 0 (1rem * 0.5) 0.5rem (1rem * 0.5);
+         border-bottom-color: $popover-arrow-outer-color;
+      }
+   }
+
+   .popover-body {
+      width: 400px;
+      color: inherit;
+      overflow: auto;
+      padding: 0;
+
+      ul {
+         list-style: none;
+
+         li {
+            padding: 0.3rem 0.5rem;
+
+            button.btn.active { // Fix for not being able to apply :hover pseudo class programmatically
+               background-color: rgba(var(--tblr-btn-color), 1);
+               color: rgba(var(--tblr-btn-color-text), 1);
+            }
+         }
+      }
+   }
+}
