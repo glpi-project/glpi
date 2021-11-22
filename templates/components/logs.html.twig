@@ -47,14 +47,14 @@
             <th>{{ _x('name', 'Update') }}</th>
             <th>
                <span class="float-end log-toolbar mb-0">
-                  <button class="btn btn-sm  show_log_filters {{ filters|length > 0 ? 'btn-secondary active' : 'btn-outline-secondary' }}">
+                  <button class="btn btn-sm show_log_filters {{ filters|length > 0 ? 'btn-secondary active' : 'btn-outline-secondary' }}">
                      <i class="fas fa-filter"></i>
                      <span class="d-none d-xl-block">{{ __('Filter') }}</span>
                   </button>
-                  <button href="{{ csv_url }}" class="btn btn-sm btn-icon btn-outline-secondary">
+                  <a href="{{ csv_url }}" class="btn btn-sm text-capitalize btn-icon btn-outline-secondary">
                      <i class="fas fa-file-download"></i>
                      <span class="d-none d-xl-block">{{ __('Export') }}</span>
-                  </button>
+                  </a>
                </span>
             </th>
          </tr>
