@@ -572,7 +572,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
             }
             // Display message
             if ($partial_load && Session::getCurrentInterface() != "helpdesk") {
-               Session::addMessageAfterRedirect(__('Partial load of the saved search.'), false, ERROR);
+               Session::addMessageAfterRedirect(
+                  sprintf(__('Partial load of the saved search: %s'), $this->getName()),
+                  false,
+                  ERROR
+               );
             }
             // add reset value
             $query_tab['reset'] = 'reset';
