@@ -5386,6 +5386,14 @@ JAVASCRIPT;
                                  : DocumentType::getUploadableFilePattern()).",
             maxFileSize: {$max_file_size},
             maxChunkSize: {$max_chunk_size},
+            add: function (e, data) {
+               // randomize filename
+               for (var i = 0; i < data.files.length; i++) {
+                  data.files[i].uploadName = uniqid('', true) + data.files[i].name;
+               }
+               // call default handler
+               $.blueimp.fileupload.prototype.options.add.call(this, e, data);
+            },
             done: function (event, data) {
                handleUploadedFile(
                   data.files, // files as blob
@@ -5394,6 +5402,12 @@ JAVASCRIPT;
                   $('#{$p['filecontainer']}'),
                   '{$p['editor_id']}'
                );
+            },
+            fail: function (e, data) {
+               const err = 'responseText' in data.jqXHR && data.jqXHR.responseText.length > 0
+                  ? data.jqXHR.responseText
+                  : data.jqXHR.statusText;
+               alert(err);
             },
             processfail: function (e, data) {
                $.each(

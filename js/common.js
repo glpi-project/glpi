@@ -1372,3 +1372,18 @@ function flashIconButton(button, button_classes, icon_classes, duration) {
       ico.addClass(original_ico_classes);
    }, duration);
 }
+
+/**
+ * uniqid() function, providing similar result as PHP does.
+ *
+ * @param {string} prefix
+ * @param {boolean} random
+ * @returns {string}
+ *
+ * @see https://stackoverflow.com/a/48593447
+ */
+function uniqid(prefix = "", more_entropy = false) {
+   const sec = Date.now() * 1000 + Math.random() * 1000;
+   const id = sec.toString(16).replace(/\./g, "").padEnd(14, "0");
+   return `${prefix}${id}${more_entropy ? `.${Math.trunc(Math.random() * 100000000)}`:""}`;
+};
