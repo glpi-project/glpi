@@ -260,7 +260,7 @@ class Controller extends AbstractInventoryAsset {
       $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
       $this->integer(count($controllers))->isIdenticalTo(1);
 
-      //Redo inventory, but with removed "NVMe SSD" processor
+      //Redo inventory, but with removed "NVMe SSD" controller
       $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
