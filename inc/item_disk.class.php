@@ -474,7 +474,7 @@ class Item_Disk extends CommonDBChild {
          'datatype'           => 'progressbar',
          'width'              => 2,
          // NULLIF -> avoid divizion by zero by replacing it by null (division by null return null without warning)
-         'computation'        => 'ROUND(100*TABLE.freesize/NULLIF(TABLE.totalsize, 0))',
+         'computation'        => 'LPAD(ROUND(100*TABLE.freesize/NULLIF(TABLE.totalsize, 0)), 3, 0)',
          'computationgroupby' => true,
          'unit'               => '%',
          'massiveaction'      => false,
