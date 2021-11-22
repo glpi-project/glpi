@@ -130,10 +130,6 @@ class GLPIUploadHandler extends UploadHandler {
       $params = array_merge($default_params, $params);
 
       $pname = $params['name'];
-      $rand_name = uniqid('', true);
-      foreach ($_FILES[$pname]['name'] as &$name) {
-         $name = $rand_name . $name;
-      }
 
       $upload_dir     = GLPI_TMP_DIR.'/';
       $upload_handler = new self(
@@ -157,9 +153,9 @@ class GLPIUploadHandler extends UploadHandler {
             if (isset($val->error) && file_exists($upload_dir.$val->name)) {
                unlink($upload_dir.$val->name);
             } else {
-               $val->prefix = $rand_name;
                if (isset($val->name)) {
-                  $val->display = str_replace($rand_name, '', $val->name);
+                  $val->prefix = substr($val->name, 0, 23);
+                  $val->display = str_replace($val->prefix, '', $val->name);
                }
                if (isset($val->size)) {
                   $val->filesize = Toolbox::getSize($val->size);

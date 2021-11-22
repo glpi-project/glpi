@@ -69,6 +69,12 @@ class APIRest extends API {
     */
    public function manageUploadedFiles() {
       foreach (array_keys($_FILES) as $filename) {
+         // Randomize files names
+         $rand_name = uniqid('', true);
+         foreach ($_FILES[$filename]['name'] as &$name) {
+            $name = $rand_name . $name;
+         }
+
          $upload_result
             = GLPIUploadHandler::uploadFiles(['name'           => $filename,
                                               'print_response' => false]);

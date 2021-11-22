@@ -5333,6 +5333,7 @@ JAVASCRIPT;
          'name'          => $p['name'],
          'display'       => false,
          'uploads'       => $p['uploads'],
+         'editor_id'     => $p['editor_id'],
       ]);
 
       $max_file_size  = $CFG_GLPI['document_max_size'] * 1024 * 1024;
@@ -5342,10 +5343,10 @@ JAVASCRIPT;
          // manage file upload without tinymce editor
          $display .= "<span class='b'>".__('Drag and drop your file here, or').'</span><br>';
       }
-      $display .= "<input id='fileupload{$p['rand']}' type='file' name='".$p['name']."[]'
+      $display .= "<input id='fileupload{$p['rand']}' type='file' name='_uploader_".$p['name']."[]'
                       class='form-control'
                       data-url='".$CFG_GLPI["root_doc"]."/ajax/fileupload.php'
-                      data-form-data='{\"name\": \"".$p['name']."\", \"showfilesize\": \"".$p['showfilesize']."\"}'"
+                      data-form-data='{\"name\": \"_uploader_".$p['name']."\", \"showfilesize\": \"".$p['showfilesize']."\"}'"
                       .($p['multiple']?" multiple='multiple'":"")
                       .($p['onlyimages']?" accept='.gif,.png,.jpg,.jpeg'":"").">";
 
@@ -5381,14 +5382,28 @@ JAVASCRIPT;
                                  : DocumentType::getUploadableFilePattern()).",
             maxFileSize: {$max_file_size},
             maxChunkSize: {$max_chunk_size},
+            add: function (e, data) {
+               // randomize filename
+               for (var i = 0; i < data.files.length; i++) {
+                  data.files[i].uploadName = uniqid('', true) + data.files[i].name;
+               }
+               // call default handler
+               $.blueimp.fileupload.prototype.options.add.call(this, e, data);
+            },
             done: function (event, data) {
                handleUploadedFile(
                   data.files, // files as blob
-                  data.result.{$p['name']}, // response from '/ajax/fileupload.php'
+                  data.result._uploader_{$p['name']}, // response from '/ajax/fileupload.php'
                   '{$p['name']}',
                   $('#{$p['filecontainer']}'),
                   '{$p['editor_id']}'
                );
+            },
+            fail: function (e, data) {
+               const err = 'responseText' in data.jqXHR && data.jqXHR.responseText.length > 0
+                  ? data.jqXHR.responseText
+                  : data.jqXHR.statusText;
+               alert(err);
             },
             processfail: function (e, data) {
                $.each(
