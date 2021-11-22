@@ -180,6 +180,11 @@ $(document).ready(function() {
          },
          success: function() {
             toggle_fold_search(show_search);
+
+            // scroll to top to display the change
+            if (show_search) {
+               $("html, body, .search-container").animate({ scrollTop: 0 });
+            }
          }
       });
    });
