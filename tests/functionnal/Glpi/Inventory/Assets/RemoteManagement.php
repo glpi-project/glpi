@@ -53,7 +53,7 @@ class RemoteManagement extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"remoteid": "123456789", "type": "teamviewer"}'
+            'expected'  => '{"remoteid": "123456789", "type": "teamviewer", "is_dynamic": 1}'
          ], [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -67,7 +67,7 @@ class RemoteManagement extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"remoteid": "abcdyz", "type": "anydesk"}'
+            'expected'  => '{"remoteid": "abcdyz", "type": "anydesk", "is_dynamic": 1}'
          ], [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -81,7 +81,7 @@ class RemoteManagement extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"remoteid": "myspecialid", "type": "litemanager"}'
+            'expected'  => '{"remoteid": "myspecialid", "type": "litemanager", "is_dynamic": 1}'
          ]
       ];
    }
@@ -153,7 +153,6 @@ class RemoteManagement extends AbstractInventoryAsset {
 
       $computer = getItemByTypeName('Computer', '_test_pc01');
 
-      //first, check there are no AV linked to this computer
       //first, check there are no remote management linked to this computer
       $mgmt = new \Item_RemoteManagement;
       $this->boolean(
@@ -189,5 +188,131 @@ class RemoteManagement extends AbstractInventoryAsset {
       )->isTrue();
 
       $this->string($mgmt->fields['remoteid'])->isIdenticalTo('987654321');
+   }
+
+   public function testInventoryUpdate() {
+      $computer = new \Computer();
+      $mgmt = new \Item_RemoteManagement;
+
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <REMOTE_MGMT>
+      <ID>123456789</ID>
+      <TYPE>teamviewer</TYPE>
+    </REMOTE_MGMT>
+    <REMOTE_MGMT>
+      <ID>abcdyz</ID>
+      <TYPE>anydesk</TYPE>
+    </REMOTE_MGMT>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      //create manually a computer, with 3 remote managements
+      $computers_id = $computer->add([
+         'name'   => 'pc002',
+         'serial' => 'ggheb7ne7',
+         'entities_id' => 0
+      ]);
+      $this->integer($computers_id)->isGreaterThan(0);
+
+      $this->integer(
+         $mgmt->add([
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
+            'type' => 'teamviewer',
+            'remoteid' => '123456789'
+         ])
+      )->isGreaterThan(0);
+
+      $this->integer(
+         $mgmt->add([
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
+            'type' => 'anydesk',
+            'remoteid' => 'abcdyz'
+         ])
+      )->isGreaterThan(0);
+
+      $this->integer(
+         $mgmt->add([
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
+            'type' => 'mymgmt',
+            'remoteid' => 'qwertyuiop'
+         ])
+      )->isGreaterThan(0);
+
+      $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($mgmts))->isIdenticalTo(3);
+      foreach ($mgmts as $m) {
+         $this->variable($m['is_dynamic'])->isEqualTo(0);
+      }
+
+      //computer inventory knows only "teamviewer" and "anydesk" remote managements
+      $this->doInventory($xml_source, true);
+
+      //we still have 3 remote managements
+      $mgmts = $mgmt->find();
+      $this->integer(count($mgmts))->isIdenticalTo(3);
+
+      //we still have 3 remote managements items linked to the computer
+      $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($mgmts))->isIdenticalTo(3);
+
+      //remote managements present in the inventory source are now dynamic
+      $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+      $this->integer(count($mgmts))->isIdenticalTo(2);
+
+      //remote management not present in the inventory is still not dynamic
+      $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+      $this->integer(count($mgmts))->isIdenticalTo(1);
+
+      //Redo inventory, but with removed "anydesk" remote managements
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <REMOTE_MGMT>
+      <ID>123456789</ID>
+      <TYPE>teamviewer</TYPE>
+    </REMOTE_MGMT>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      $this->doInventory($xml_source, true);
+
+      //we now have only 2 remote managements
+      $mgmts = $mgmt->find();
+      $this->integer(count($mgmts))->isIdenticalTo(2);
+
+      //we now have 2 remote managements linked to computer only
+      $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($mgmts))->isIdenticalTo(2);
+
+      //remote management present in the inventory source is still dynamic
+      $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+      $this->integer(count($mgmts))->isIdenticalTo(1);
+
+      //remote management not present in the inventory is still not dynamic
+      $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+      $this->integer(count($mgmts))->isIdenticalTo(1);
    }
 }
