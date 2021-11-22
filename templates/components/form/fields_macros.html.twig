@@ -210,7 +210,7 @@
    {% set add_html = '' %}
    {% if options.enable_fileupload %}
       {% set add_html %}
-         {% do call('Html::file', [{'editor_id': id}]) %}
+         {% do call('Html::file', [{'editor_id': id, 'multiple': true}]) %}
       {% endset %}
    {% elseif not options.enable_fileupload and options.enable_richtext and options.enable_images %}
       {% set add_html %}
