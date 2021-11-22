@@ -63,6 +63,8 @@ class Drive extends Device
             if (property_exists($val, 'description')) {
                $val->designation = $val->description;
             }
+
+            $val->is_dynamic = 1;
          } else { // it's harddisk
             $hdd[] = $val;
             unset($this->data[$k]);

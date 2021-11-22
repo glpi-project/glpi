@@ -59,6 +59,8 @@ class HardDrive extends Device
          if ((!property_exists($val, 'model') || $val->model == '') && property_exists($val, 'name')) {
             $val->designation = $val->name;
          }
+
+         $val->is_dynamic = 1;
       }
 
       return $this->data;
