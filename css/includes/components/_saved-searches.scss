@@ -38,7 +38,7 @@
    top: $contextbar-height;
    bottom: 0;
    left: $sidebar-width;
-   z-index: 1010;
+   z-index: $zindex-fixed;
    transition: left var(--animate-duration);
 
    min-width: 400px;
@@ -142,7 +142,7 @@ body.horizontal-layout {
       margin-top: 0 !important;
       padding-bottom: 20px;
       margin-left: 0 !important;
-      z-index: 1030;
+      z-index: $zindex-fixed;
       display: flex !important;
 
       &.responsive-toggle {
