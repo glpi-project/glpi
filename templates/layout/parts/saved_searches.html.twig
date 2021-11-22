@@ -111,6 +111,8 @@ $(function() {
 
       $.get(url, function(data) {
          $(target).html(data);
+
+         displayAjaxMessageAfterRedirect();
       });
    });
    // load initial tab

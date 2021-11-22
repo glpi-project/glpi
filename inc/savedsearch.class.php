@@ -521,10 +521,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
     *
     * @param integer $type      Saved search type (see SavedSearch constants)
     * @param array   $query_tab Parameters array
+    * @param bool    $enable_partial_warnings display warning messages about partial loading
     *
-    * @return prepared query array
+    * @return array prepared query array
    **/
-   function prepareQueryToUse($type, $query_tab) {
+   function prepareQueryToUse($type, $query_tab, $enable_partial_warnings = true) {
 
       switch ($type) {
          case self::SEARCH:
@@ -571,7 +572,9 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
                }
             }
             // Display message
-            if ($partial_load && Session::getCurrentInterface() != "helpdesk") {
+            if ($enable_partial_warnings
+                && $partial_load
+                && Session::getCurrentInterface() != "helpdesk") {
                Session::addMessageAfterRedirect(
                   sprintf(__('Partial load of the saved search: %s'), $this->getName()),
                   false,
@@ -729,11 +732,12 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
     * return an array of saved searches for a given itemtype
     *
     * @param string $itemtype if given filter saved search by only this one
-    * @param bool $inverse if true, the `itemtype` params filter by "not" criteria
+    * @param bool   $inverse if true, the `itemtype` params filter by "not" criteria
+    * @param bool   $enable_partial_warnings display warning messages about partial loading
     *
     * @return array
     */
-   function getMine(string $itemtype = null, bool $inverse = false):array {
+   function getMine(string $itemtype = null, bool $inverse = false, bool $enable_partial_warnings = true):array {
       global $DB;
 
       $searches = [];
@@ -788,11 +792,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
 
          if ($_SESSION['glpishow_count_on_tabs']) {
             $this->fields = $data;
-            $search_data = $this->execute();
+            $search_data = $this->execute(false, $enable_partial_warnings);
 
             $count = null;
             try {
-               $search_data = $this->execute();
+               $search_data = $this->execute(false, $enable_partial_warnings);
             } catch (\RuntimeException $e) {
                Toolbox::logError($e);
                $search_data = false;
@@ -822,14 +826,15 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
     * return Html list of saved searches for a given itemtype
     *
     * @param string $itemtype
-    * @param bool $inverse
+    * @param bool   $inverse
+    * @param bool   $enable_partial_warnings display warning messages about partial loading
     *
     * @return void
     */
-   function displayMine(string $itemtype = null, bool $inverse = false) {
+   function displayMine(string $itemtype = null, bool $inverse = false, bool $enable_partial_warnings = true) {
       TemplateRenderer::getInstance()->display('layout/parts/saved_searches_list.html.twig', [
          'active'         => $_SESSION['glpi_loaded_savedsearch'] ?? "",
-         'saved_searches' => $this->getMine($itemtype, $inverse),
+         'saved_searches' => $this->getMine($itemtype, $inverse, $enable_partial_warnings),
       ]);
    }
 
@@ -1157,12 +1162,13 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
     *
     * @param boolean $force Force query execution even if it should not be executed
     *                       (default false)
+    * @param boolean $enable_partial_warnings display warning messages about partial loading
     *
     * @throws RuntimeException
     *
     * @return array
    **/
-   public function execute($force = false) {
+   public function execute($force = false, bool $enable_partial_warnings = true) {
       global $CFG_GLPI;
 
       if (($force === true)
@@ -1178,7 +1184,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
 
          $params = null;
          if (class_exists($this->getField('itemtype'))) {
-            $params = $this->prepareQueryToUse($this->getField('type'), $query_tab);
+            $params = $this->prepareQueryToUse(
+               $this->getField('type'),
+               $query_tab,
+               $enable_partial_warnings
+            );
          }
 
          if (!$params) {
