@@ -5338,6 +5338,7 @@ JAVASCRIPT;
          'name'          => $p['name'],
          'display'       => false,
          'uploads'       => $p['uploads'],
+         'editor_id'     => $p['editor_id'],
       ]);
 
       $max_file_size  = $CFG_GLPI['document_max_size'] * 1024 * 1024;

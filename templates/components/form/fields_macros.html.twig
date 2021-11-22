@@ -184,7 +184,8 @@
       'rand': random(),
       'enable_richtext': false,
       'enable_images': true,
-      'enable_fileupload': false
+      'enable_fileupload': false,
+      'uploads': []
    }|merge(options) %}
 
    {% if options.fields_template.isMandatoryField(name) %}
@@ -210,11 +211,11 @@
    {% set add_html = '' %}
    {% if options.enable_fileupload %}
       {% set add_html %}
-         {% do call('Html::file', [{'editor_id': id, 'multiple': true}]) %}
+         {% do call('Html::file', [{'editor_id': id, 'multiple': true, 'uploads': options.uploads}]) %}
       {% endset %}
    {% elseif not options.enable_fileupload and options.enable_richtext and options.enable_images %}
       {% set add_html %}
-         {% do call('Html::file', [{'editor_id': id, 'name': name, 'only_uploaded_files': true}]) %}
+         {% do call('Html::file', [{'editor_id': id, 'name': name, 'only_uploaded_files': true, 'uploads': options.uploads}]) %}
       {% endset %}
    {% endif %}
 

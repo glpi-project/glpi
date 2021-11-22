@@ -53,6 +53,14 @@
          field_options
       ) }}
 
+      {% set uploads = [] %}
+      {% if item.input._content is defined %}
+         {% set uploads = uploads|merge({'_content': item.input._content, '_tag_content': item.input._tag_content}) %}
+      {% endif %}
+      {% if item.input._filename is defined %}
+         {% set uploads = uploads|merge({'_filename': item.input._filename, '_tag_filename': item.input._tag_filename}) %}
+      {% endif %}
+
       {{ fields.textareaField(
          'content',
          item.fields['content'],
@@ -60,6 +68,7 @@
          field_options|merge({
             'enable_richtext': true,
             'enable_fileupload': true,
+            'uploads': uploads,
             'add_field_class': 'col-12 itil-textarea-content',
          })
       ) }}
