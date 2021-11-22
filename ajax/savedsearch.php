@@ -77,7 +77,11 @@ if (!isset($_GET['action'])) {
 
 if ($_GET['action'] == 'display_mine') {
    header("Content-Type: text/html; charset=UTF-8");
-   $savedsearch->displayMine($_GET["itemtype"], (bool) ($_GET["inverse"] ?? false));
+   $savedsearch->displayMine(
+      $_GET["itemtype"],
+      (bool) ($_GET["inverse"] ?? false),
+      false
+   );
 }
 
 if ($_GET['action'] == 'reorder') {
