@@ -40,7 +40,7 @@
       __('The server answered: %s')|format(link.connect_error)
    ) }}
 
-   <form action="install.php" method="post" class="d-inline">
+   <form action="install.php" method="post" class="d-inline" data-submit-once>
       <button type="submit" name="submit" class="btn btn-warning">
          <i class="fas fa-chevron-left me-1 fa-2x alert-icon"></i>
          {{ __("Back") }}

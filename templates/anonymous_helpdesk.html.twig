@@ -32,7 +32,7 @@
 {% extends 'layout/page_card_notlogged.html.twig' %}
 
 {% block content_block %}
-   <form action="{{ path('front/tracking.injector.php') }}" method="post" autocomplete="off">
+   <form action="{{ path('front/tracking.injector.php') }}" method="post" autocomplete="off" data-submit-once>
       <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
       <input type="hidden" name="_type" value="Helpdesk" />
       <input type="hidden" name="_auto_import" value="1" />

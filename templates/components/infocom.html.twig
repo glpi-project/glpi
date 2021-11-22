@@ -32,7 +32,7 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% if can_edit or can_create %}
-   <form action="{{ path('front/infocom.form.php') }}" method="post">
+   <form action="{{ path('front/infocom.form.php') }}" method="post" data-submit-once>
 {% endif %}
 
 {% if infocom.fields['id'] <= 0 %}

@@ -50,12 +50,12 @@
 
 {% if item.canEdit(item.fields['id']) %}
 <form name="massaction_{{ rand }}" id="massaction_{{ rand }}" method="post"
-      action="{{ path('/front/massiveaction.php') }}">
+      action="{{ path('/front/massiveaction.php') }}" data-submit-once>
    <div id="massive_container_{{ rand }}"></div>
    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
 </form>
 
-<form name="asset_form" method="post" action="{{ target }}" {{ formoptions|raw }} enctype="multipart/form-data">
+<form name="asset_form" method="post" action="{{ target }}" {{ formoptions|raw }} enctype="multipart/form-data" data-submit-once>
    <input type="hidden" name="entities_id" value="{{ entity_id }}" />
 {% endif %}
    <div id="mainformtable">

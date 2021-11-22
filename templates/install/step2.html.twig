@@ -31,7 +31,7 @@
 
 <h3>{{ __('Database connection setup') }}</h3>
 
-<form action="install.php" method="post">
+<form action="install.php" method="post" data-submit-once>
 
    <div class="mb-3">
       <label for="db_host" class="form-label">{{ __('SQL server (MariaDB or MySQL)') }}</label>

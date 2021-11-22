@@ -75,7 +75,7 @@
 
          {% if not noform %}
          <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
-               action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true">
+               action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true" data-submit-once>
          {% endif %}
 
             <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
