@@ -5347,10 +5347,10 @@ JAVASCRIPT;
          // manage file upload without tinymce editor
          $display .= "<span class='b'>".__('Drag and drop your file here, or').'</span><br>';
       }
-      $display .= "<input id='fileupload{$p['rand']}' type='file' name='".$p['name']."[]'
+      $display .= "<input id='fileupload{$p['rand']}' type='file' name='_uploader_".$p['name']."[]'
                       class='form-control'
                       data-url='".$CFG_GLPI["root_doc"]."/ajax/fileupload.php'
-                      data-form-data='{\"name\": \"".$p['name']."\", \"showfilesize\": \"".$p['showfilesize']."\"}'"
+                      data-form-data='{\"name\": \"_uploader_".$p['name']."\", \"showfilesize\": \"".$p['showfilesize']."\"}'"
                       .($p['multiple']?" multiple='multiple'":"")
                       .($p['onlyimages']?" accept='.gif,.png,.jpg,.jpeg'":"").">";
 
@@ -5389,7 +5389,7 @@ JAVASCRIPT;
             done: function (event, data) {
                handleUploadedFile(
                   data.files, // files as blob
-                  data.result.{$p['name']}, // response from '/ajax/fileupload.php'
+                  data.result._uploader_{$p['name']}, // response from '/ajax/fileupload.php'
                   '{$p['name']}',
                   $('#{$p['filecontainer']}'),
                   '{$p['editor_id']}'
