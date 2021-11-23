@@ -1783,7 +1783,7 @@ class Inventory extends InventoryTestCase {
          ++$types_count[$row['linked_action']];
       }
 
-      $this->array($types_count)->isIdenticalTo($expected_types_count);
+      $this->array($types_count)->isEqualTo($expected_types_count);
 
       //check matchedlogs
       $mlogs = new \RuleMatchedLog();
