@@ -3850,7 +3850,6 @@ CREATE TABLE `glpi_knowbaseitemcategories` (
 DROP TABLE IF EXISTS `glpi_knowbaseitems`;
 CREATE TABLE `glpi_knowbaseitems` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `knowbaseitemcategories_id` int NOT NULL DEFAULT '0',
   `name` text,
   `answer` longtext,
   `is_faq` tinyint NOT NULL DEFAULT '0',
@@ -3877,9 +3876,9 @@ CREATE TABLE `glpi_knowbaseitems` (
 
 DROP TABLE IF EXISTS `glpi_knowbaseitems_categories`;
 CREATE TABLE `glpi_knowbaseitems_categories` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `knowbaseitems_id` int(11) NOT NULL DEFAULT '0',
-  `knowbaseitemcategories_id` int(11) NOT NULL DEFAULT '0',
+  `id` int NOT NULL AUTO_INCREMENT,
+  `knowbaseitems_id` int NOT NULL DEFAULT '0',
+  `knowbaseitemcategories_id` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `knowbaseitems_id` (`knowbaseitems_id`),
   KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`)

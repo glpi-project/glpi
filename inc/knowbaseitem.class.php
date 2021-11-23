@@ -959,7 +959,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       $this->updateCounter();
 
       $tmp = [];
-      $nb = 0;
       foreach ($this->knowbase_categories as $category) {
          $knowbaseitemcategories_id = $category['knowbaseitemcategories_id'];
          $fullcategoryname          = getTreeValueCompleteName("glpi_knowbaseitemcategories",
@@ -968,11 +967,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          $tmp[] = "<a href='".$this->getSearchURL().
              "?knowbaseitemcategories_id=$knowbaseitemcategories_id&forcetab=Knowbase$2'>".
              $fullcategoryname."</a>";
-         $nb++;
       }
       $tmp = implode(', ', $tmp);
       $out.= "<table class='tab_cadre_fixe'>";
-      $out.= "<tr><th colspan='4'>".sprintf(__('%1$s: %2$s'), _n('Category', 'Categories', $nb), $tmp);
+      $out.= "<tr><th colspan='4'>".sprintf(__('%1$s: %2$s'), _n('Category', 'Categories', 1), $tmp);
       $out.= "</th></tr>";
 
       $out.= "<tr><td class='left' colspan='4'><h2>".__('Subject')."</h2>";

@@ -34,16 +34,19 @@
  * @var Migration $migration
  */
 
+$default_charset = DBConnection::getDefaultCharset();
+$default_collation = DBConnection::getDefaultCollation();
+
 /* Update link KB_item-category from 1-1 to 1-n */
 if (!$DB->tableExists('glpi_knowbaseitems_categories')) {
    $query = "CREATE TABLE `glpi_knowbaseitems_categories` (
-      `id` int(11) NOT NULL AUTO_INCREMENT,
-      `knowbaseitems_id` int(11) NOT NULL DEFAULT '0',
-      `knowbaseitemcategories_id` int(11) NOT NULL DEFAULT '0',
+      `id` int NOT NULL AUTO_INCREMENT,
+      `knowbaseitems_id` int NOT NULL DEFAULT '0',
+      `knowbaseitemcategories_id` int NOT NULL DEFAULT '0',
       PRIMARY KEY (`id`),
       KEY `knowbaseitems_id` (`knowbaseitems_id`),
       KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`)
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;";
+      ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
    $DB->queryOrDie($query, "add table glpi_knowbaseitems_categories");
 
    if ($DB->fieldExists('glpi_knowbaseitems', 'knowbaseitemcategories_id')) {
