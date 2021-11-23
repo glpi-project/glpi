@@ -249,6 +249,23 @@
       </div>
    </div>
 
+   {% if item_ticket is defined and item_ticket is not null %}
+      <div class="accordion-item">
+         <h2 class="accordion-header" id="items-heading">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#items" aria-expanded="true" aria-controls="items">
+               <i class="fa fa-users me-1"></i>
+               <span>{{ _n('Item', 'Items', get_plural_number()) }}</span>
+               <span class="item-counter badge bg-secondary ms-2"></span>
+            </button>
+         </h2>
+         <div id="items" class="accordion-collapse collapse show" aria-labelledby="items-heading">
+            <div class="accordion-body accordion-items row m-0 mt-n2">
+               {{ item_ticket.itemAddForm(item, params|default({})) }}
+            </div>
+         </div>
+      </div>
+   {% endif %}
+
    {% if item.getType() == 'Ticket' %}
       {% set nb_la = (item.fields['slas_id_tto'] > 0 ? 1 : 0) + (item.fields['slas_id_ttr'] > 0 ? 1 : 0) + (item.fields['olas_id_tto'] > 0 ? 1 : 0) + (item.fields['olas_id_ttr'] > 0 ? 1 : 0) %}
       <div class="accordion-item">

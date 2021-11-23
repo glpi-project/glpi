@@ -4342,6 +4342,12 @@ JAVASCRIPT;
 
       $sla = new SLA;
       $ola = new OLA;
+      $item_ticket = null;
+
+      $options['_canupdate'] = Session::haveRight('ticket', CREATE);
+      if ($options['_canupdate']) {
+         $item_ticket = new Item_Ticket;
+      }
 
       TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
          'item'               => $this,
@@ -4353,6 +4359,7 @@ JAVASCRIPT;
          'itiltemplate'       => $tt,
          'predefined_fields'  => Toolbox::prepareArrayForInput($predefined_fields),
          'ticket_ticket'      => new Ticket_Ticket,
+         'item_ticket'        => $item_ticket,
          'sla'                => $sla,
          'ola'                => $ola,
          'canupdate'          => $canupdate,

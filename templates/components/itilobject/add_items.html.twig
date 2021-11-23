@@ -1,0 +1,84 @@
+{#
+ # ---------------------------------------------------------------------
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ # Copyright (C) 2015-2021 Teclib' and contributors.
+ #
+ # http://glpi-project.org
+ #
+ # based on GLPI - Gestionnaire Libre de Parc Informatique
+ # Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # GLPI is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 2 of the License, or
+ # (at your option) any later version.
+ #
+ # GLPI is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ # ---------------------------------------------------------------------
+ #}
+
+<div id="itemAddForm{{ rand }}">
+   {% if can_edit %}
+      {{ my_items_dropdown|raw }}
+      {{ all_items_dropdown|raw }}
+      <a href="javascript:itemAction{{ rand }}('add');" class="btn btn-sm btn-outline-secondary">
+         <i class="fas fa-plus"></i>
+         <span>{{ _x('button', 'Add') }}</span>
+      </a>
+   {% endif %}
+
+   {% for item_to_add in items_to_add %}
+      {{ item_to_add|raw }}
+   {% endfor %}
+
+   {% if count == 0 %}
+      <input type="hidden" value="0" name="items_id">
+   {% endif %}
+
+   {% if params.id > 0 and usedcount != count %}
+      <i>{{ _n('%1$s item not saved', '%1$s items not saved', (count - usedcount))|format((count - usedcount)) }}</i>
+   {% endif %}
+   {% if params.id > 0 and usedcount > 5 %}
+      <i><a href="{{ 'Ticket'|itemtype_form_path(params.id) }}&amp;forcetab=Item_Ticket$1">{{ __('Display all items') ~ '(' ~ usedcount ~ ')' }}</a></i>
+   {% endif %}
+</div>
+
+<script>
+   function refreshItemCounter{{ rand }}() {
+      const item_form = $("#itemAddForm{{ rand }}");
+      let item_count = item_form.find('> div').length - 2;
+      item_count += item_form.find('> input[type="hidden"]').length;
+      item_form.closest('.accordion-item').find('.item-counter').text(item_count);
+   }
+
+   function itemAction{{ rand }}(action, itemtype, items_id) {
+      $.ajax({
+         url: CFG_GLPI.root_doc + '/ajax/itemTicket.php',
+         dataType: 'html',
+         data: {
+            'action'     : action,
+            'rand'       : {{ rand }},
+            'params'     : {{ opt|json_encode|raw }},
+            'my_items'   : $('#dropdown_my_items{{ rand }}').val(),
+            'itemtype'   : (itemtype === undefined) ? $('#dropdown_itemtype{{ rand }}').val() : itemtype,
+            'items_id'   : (items_id === undefined) ? $('#dropdown_add_items_id{{ rand }}').val() : items_id},
+         success: function(response) {
+            $("#itemAddForm{{ rand }}").replaceWith(response);
+            refreshItemCounter{{ rand }}();
+         }
+      });
+   }
+   refreshItemCounter{{ rand }}();
+</script>

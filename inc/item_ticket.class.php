@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
@@ -172,14 +174,13 @@ class Item_Ticket extends CommonItilObject_Item {
    static function itemAddForm(Ticket $ticket, $options = []) {
       global $CFG_GLPI;
 
-      $params = ['id'                  => (isset($ticket->fields['id'])
-                                                && $ticket->fields['id'] != '')
-                                                   ? $ticket->fields['id']
-                                                   : 0,
-                      '_users_id_requester' => 0,
-                      'items_id'            => [],
-                      'itemtype'            => '',
-                      '_canupdate'          => false];
+      $params = [
+         'id'  => (isset($ticket->fields['id']) && $ticket->fields['id'] != '') ? $ticket->fields['id'] : 0,
+         '_users_id_requester' => 0,
+         'items_id'            => [],
+         'itemtype'            => '',
+         '_canupdate'          => false
+      ];
 
       $opt = [];
 
@@ -197,6 +198,7 @@ class Item_Ticket extends CommonItilObject_Item {
                   && $params['_canupdate']);
 
       // Ticket update case
+      $usedcount = 0;
       if ($params['id'] > 0) {
          // Get requester
          $class        = new $ticket->userlinkclass();
@@ -210,7 +212,6 @@ class Item_Ticket extends CommonItilObject_Item {
 
          // Get associated elements for ticket
          $used = self::getUsedItems($params['id']);
-         $usedcount = 0;
          foreach ($used as $itemtype => $items) {
             foreach ($items as $items_id) {
                if (!isset($params['items_id'][$itemtype])
@@ -222,42 +223,47 @@ class Item_Ticket extends CommonItilObject_Item {
          }
       }
 
+      $rand  = mt_rand();
+      $count = 0;
+
+      $twig_params = [
+         'rand'               => $rand,
+         'can_edit'           => $canedit,
+         'my_items_dropdown'  => '',
+         'all_items_dropdown' => '',
+         'items_to_add'       => [],
+         'params'             => $params,
+         'opt'                => []
+      ];
+
       // Get ticket template
       $tt = new TicketTemplate();
       if (isset($options['_tickettemplate'])) {
          $tt                  = $options['_tickettemplate'];
          if (isset($tt->fields['id'])) {
-            $opt['templates_id'] = $tt->fields['id'];
+            $twig_params['opt']['templates_id'] = $tt->fields['id'];
          }
       } else if (isset($options['templates_id'])) {
          $tt->getFromDBWithData($options['templates_id']);
          if (isset($tt->fields['id'])) {
-            $opt['templates_id'] = $tt->fields['id'];
+            $twig_params['opt']['templates_id'] = $tt->fields['id'];
          }
       }
-
-      $rand  = mt_rand();
-      $count = 0;
-
-      echo "<div id='itemAddForm$rand'>";
-
       // Show associated item dropdowns
       if ($canedit) {
          $p = ['used'       => $params['items_id'],
-                    'rand'       => $rand,
-                    'tickets_id' => $params['id']];
+            'rand'       => $rand,
+            'tickets_id' => $params['id']];
          // My items
          if ($params['_users_id_requester'] > 0) {
-            Item_Ticket::dropdownMyDevices($params['_users_id_requester'], $ticket->fields["entities_id"], $params['itemtype'], 0, $p);
+            ob_start();
+            self::dropdownMyDevices($params['_users_id_requester'], $ticket->fields["entities_id"], $params['itemtype'], 0, $p);
+            $twig_params['my_items_dropdown'] = ob_get_clean();
          }
          // Global search
-         Item_Ticket::dropdownAllDevices("itemtype", $params['itemtype'], 0, 1, $params['_users_id_requester'], $ticket->fields["entities_id"], $p);
-
-         // Add button
-         echo "<a href='javascript:itemAction$rand(\"add\");' class='btn btn-sm btn-outline-secondary'>
-               <i class='fas fa-plus'></i>
-               <span>"._sx('button', 'Add')."</span>
-            </a>";
+         ob_start();
+         self::dropdownAllDevices("itemtype", $params['itemtype'], 0, 1, $params['_users_id_requester'], $ticket->fields["entities_id"], $p);
+         $twig_params['all_items_dropdown'] = ob_get_clean();
       }
 
       // Display list
@@ -275,7 +281,7 @@ class Item_Ticket extends CommonItilObject_Item {
          foreach ($params['items_id'] as $itemtype => $items) {
             foreach ($items as $items_id) {
                $count++;
-               echo self::showItemToAdd(
+               $twig_params['items_to_add'][] = self::showItemToAdd(
                   $params['id'],
                   $itemtype,
                   $items_id,
@@ -288,41 +294,14 @@ class Item_Ticket extends CommonItilObject_Item {
             }
          }
       }
-
-      if ($count == 0) {
-         echo "<input type='hidden' value='0' name='items_id'>";
-      }
-
-      if ($params['id'] > 0 && $usedcount != $count) {
-         $count_notsaved = $count - $usedcount;
-         echo "<i>" . sprintf(_n('%1$s item not saved', '%1$s items not saved', $count_notsaved), $count_notsaved)  . "</i>";
-      }
-      if ($params['id'] > 0 && $usedcount > 5) {
-         echo "<i><a href='".$ticket->getFormURLWithID($params['id'])."&amp;forcetab=Item_Ticket$1'>"
-                  .__('Display all items')." (".$usedcount.")</a></i>";
-      }
-      echo "</div>";
+      $twig_params['count'] = $count;
+      $twig_params['usedcount'] = $usedcount;
 
       foreach (['id', '_users_id_requester', 'items_id', 'itemtype', '_canupdate'] as $key) {
-         $opt[$key] = $params[$key];
+         $twig_params['opt'][$key] = $params[$key];
       }
 
-      $js  = " function itemAction$rand(action, itemtype, items_id) {";
-      $js .= "    $.ajax({
-                     url: '".$CFG_GLPI['root_doc']."/ajax/itemTicket.php',
-                     dataType: 'html',
-                     data: {'action'     : action,
-                            'rand'       : $rand,
-                            'params'     : ".json_encode($opt).",
-                            'my_items'   : $('#dropdown_my_items$rand').val(),
-                            'itemtype'   : (itemtype === undefined) ? $('#dropdown_itemtype$rand').val() : itemtype,
-                            'items_id'   : (items_id === undefined) ? $('#dropdown_add_items_id$rand').val() : items_id},
-                     success: function(response) {";
-      $js .= "          $(\"#itemAddForm$rand\").replaceWith(response);";
-      $js .= "       }";
-      $js .= "    });";
-      $js .= " }";
-      echo Html::scriptBlock($js);
+      TemplateRenderer::getInstance()->display('components/itilobject/add_items.html.twig', $twig_params);
    }
 
 
