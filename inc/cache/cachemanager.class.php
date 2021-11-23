@@ -109,16 +109,29 @@ class CacheManager {
    }
 
    /**
+    * Defines cache namespace prefix.
+    *
+    * @param string $namespace_prefix
+    *
+    * @return bool
+    */
+   public function setNamespacePrefix(string $namespace_prefix): bool {
+      $config = $this->getRawConfig();
+      $config['namespace_prefix'] = $namespace_prefix ?: null;
+
+      return $this->writeConfig($config);
+   }
+
+   /**
     * Defines cache configuration for given context.
     *
     * @param string          $context
     * @param string|string[] $dsn
     * @param array           $options
-    * @param string|null     $namespace
     *
     * @return bool
     */
-   public function setConfiguration(string $context, $dsn, array $options = [], ?string $namespace = null): bool {
+   public function setConfiguration(string $context, $dsn, array $options = []): bool {
       if (!$this->isContextValid($context, true)) {
          throw new \InvalidArgumentException(sprintf('Invalid or non configurable context: "%s".', $context));
       }
@@ -127,10 +140,9 @@ class CacheManager {
       }
 
       $config = $this->getRawConfig();
-      $config[$context] = [
+      $config['contexts'][$context] = [
          'dsn'       => $dsn,
          'options'   => $options,
-         'namespace' => $namespace,
       ];
 
       return $this->writeConfig($config);
@@ -149,7 +161,7 @@ class CacheManager {
       }
 
       $config = $this->getRawConfig();
-      unset($config[$context]);
+      unset($config['contexts'][$context]);
 
       return $this->writeConfig($config);
    }
@@ -205,28 +217,33 @@ class CacheManager {
          throw new \InvalidArgumentException(sprintf('Invalid context: "%s".', $context));
       }
 
+      $raw_config = $this->getRawConfig();
+
+      $namespace_prefix = $raw_config['namespace_prefix'] ?? '';
+      if (!empty($namespace_prefix)) {
+         $namespace_prefix .= '-';
+      }
+
       if ($context === self::CONTEXT_TRANSLATIONS || $context === self::CONTEXT_INSTALLER) {
          // 'translations' and 'installer' contexts are not supposed to be configured
          // and should always use a filesystem adapter.
          // Append GLPI version to namespace to ensure that these caches are not containing data
          // from a previous version.
-         $namespace = $this->normalizeNamespace($context . '-' . GLPI_VERSION);
+         $namespace = $this->normalizeNamespace($namespace_prefix . $context . '-' . GLPI_VERSION);
          return new FilesystemAdapter($namespace, 0, $this->cache_dir);
       }
 
-      $raw_config = $this->getRawConfig();
-
-      if (!array_key_exists($context, $raw_config)) {
-         // Default to filesystem, inside GLPI_CACHE_DIR/$context, with a generic namespace.
-         return new FilesystemAdapter($this->normalizeNamespace($context), 0, $this->cache_dir);
+      if (!array_key_exists($context, $raw_config['contexts'])) {
+         // Default to filesystem, inside GLPI_CACHE_DIR/$context.
+         return new FilesystemAdapter($this->normalizeNamespace($namespace_prefix . $context), 0, $this->cache_dir);
       }
 
-      $config = $raw_config[$context];
+      $context_config = $raw_config['contexts'][$context];
 
-      $dsn       = $config['dsn'];
-      $options   = $config['options'] ?? [];
+      $dsn       = $context_config['dsn'];
+      $options   = $context_config['options'] ?? [];
       $scheme    = $this->extractScheme($dsn);
-      $namespace = $this->normalizeNamespace($config['namespace'] ?? $context);
+      $namespace = $this->normalizeNamespace($namespace_prefix .  $context);
 
       switch ($scheme) {
          case self::SCHEME_MEMCACHED:
@@ -328,7 +345,7 @@ class CacheManager {
       // Contexts defined in configuration.
       // These may not be find in directories if they are configured to use a remote service.
       $config = $this->getRawConfig();
-      array_push($contexts, ...array_keys($config));
+      array_push($contexts, ...array_keys($config['contexts']));
 
       // Context found from cache directories.
       // These may not be find in configuration if they are using default configuration.
@@ -395,26 +412,28 @@ class CacheManager {
    private function getRawConfig(): array {
       $config_file = $this->config_dir . DIRECTORY_SEPARATOR . self::CONFIG_FILENAME;
 
-      $configs = [];
+      $config = [];
       if (file_exists($config_file)) {
-         $configs = include($config_file);
-         foreach ($configs as $context => $config) {
+         $config  = include($config_file);
+         $contexts = $config['contexts'] ?? [];
+         foreach ($contexts as $context => $context_config) {
             if (!$this->isContextValid($context, true)
-                || !is_array($config)
-                || !array_key_exists('dsn', $config)
-                || !$this->isDsnValid($config['dsn'])
-                || (array_key_exists('options', $config) && !is_array($config['options']))) {
+                || !is_array($context_config)
+                || !array_key_exists('dsn', $context_config)
+                || !$this->isDsnValid($context_config['dsn'])
+                || (array_key_exists('options', $context_config) && !is_array($context_config['options']))) {
                trigger_error(sprintf('Invalid configuration for cache context "%s".', $context), E_USER_WARNING);
-               unset($configs[$context]);
+               unset($config['contexts'][$context]);
                continue;
             }
          }
-         if (false) {
-            $configs = null;
-         }
       }
 
-      return $configs;
+      if (!array_key_exists('contexts', $config)) {
+         $config['contexts'] = [];
+      }
+
+      return $config;
    }
 
    /**

@@ -90,13 +90,6 @@ class ConfigureCommand extends AbstractCommand {
       );
 
       $this->addOption(
-         'namespace',
-         null,
-         InputOption::VALUE_REQUIRED,
-         __('Cache namespace')
-      );
-
-      $this->addOption(
          'use-default',
          null,
          InputOption::VALUE_NONE,
@@ -135,7 +128,6 @@ class ConfigureCommand extends AbstractCommand {
       $use_default = $input->getOption('use-default');
       $context     = $input->getOption('context');
       $dsn         = $input->getOption('dsn');
-      $namespace   = $input->getOption('namespace');
 
       if (!$this->cache_manager->isContextValid($context, true)) {
          throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
@@ -194,7 +186,7 @@ class ConfigureCommand extends AbstractCommand {
       }
 
       // Store configuration
-      $success = $this->cache_manager->setConfiguration($context, $dsn, [], $namespace);
+      $success = $this->cache_manager->setConfiguration($context, $dsn, []);
 
       if (!$success) {
          throw new \Glpi\Console\Exception\EarlyExitException(

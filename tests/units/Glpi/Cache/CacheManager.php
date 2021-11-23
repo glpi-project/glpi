@@ -135,7 +135,6 @@ class CacheManager extends \GLPITestCase {
             'context'          => $context,
             'dsn'              => 'whoot://invalid',
             'options'          => [],
-            'namespace'        => null,
             'expected_error'   => 'Invalid DSN: "whoot://invalid".',
             'expected_adapter' => FilesystemAdapter::class, // Fallback adapter
          ];
@@ -145,7 +144,6 @@ class CacheManager extends \GLPITestCase {
             'context'          => $context,
             'dsn'              => ['redis://cache1.glpi-project.org', 'redis://cache2.glpi-project.org'],
             'options'          => [],
-            'namespace'        => null,
             'expected_error'   => 'Invalid DSN: ["redis://cache1.glpi-project.org","redis://cache2.glpi-project.org"].',
             'expected_adapter' => FilesystemAdapter::class, // Fallback adapter
          ];
@@ -158,7 +156,6 @@ class CacheManager extends \GLPITestCase {
                'options'          => [
                   'libketama_compatible' => true,
                ],
-               'namespace'        => null,
                'expected_error'   => null,
                'expected_adapter' => MemcachedAdapter::class,
             ];
@@ -168,7 +165,6 @@ class CacheManager extends \GLPITestCase {
                'context'          => $context,
                'dsn'              => ['memcached://cache1.glpi-project.org', 'memcached://cache2.glpi-project.org'],
                'options'          => [],
-               'namespace'        => 'glpi1',
                'expected_error'   => null,
                'expected_adapter' => MemcachedAdapter::class,
             ];
@@ -183,7 +179,6 @@ class CacheManager extends \GLPITestCase {
                   'lazy'       => true,
                   'persistent' => 1,
                ],
-               'namespace'        => null,
                'expected_error'   => null,
                'expected_adapter' => RedisAdapter::class,
             ];
@@ -198,7 +193,6 @@ class CacheManager extends \GLPITestCase {
       string $context,
       $dsn,
       array $options,
-      ?string $namespace,
       ?string $expected_error,
       ?string $expected_adapter
    ): void {
@@ -209,22 +203,23 @@ class CacheManager extends \GLPITestCase {
 
       if ($expected_error !== null) {
          $this->exception(
-            function () use ($context, $dsn, $options, $namespace) {
-               $this->testedInstance->setConfiguration($context, $dsn, $options, $namespace);
+            function () use ($context, $dsn, $options) {
+               $this->testedInstance->setConfiguration($context, $dsn, $options);
             }
          )->message->isEqualTo($expected_error);
          return;
       }
 
-      $this->boolean($this->testedInstance->setConfiguration($context, $dsn, $options, $namespace))->isTrue();
+      $this->boolean($this->testedInstance->setConfiguration($context, $dsn, $options))->isTrue();
 
       $config_file = vfsStream::url('glpi/config/' . \Glpi\Cache\CacheManager::CONFIG_FILENAME);
 
       $expected_config = [
-         $context => [
-            'dsn'       => $dsn,
-            'options'   => $options,
-            'namespace' => $namespace,
+         'contexts' => [
+            $context => [
+               'dsn'       => $dsn,
+               'options'   => $options,
+            ],
          ],
       ];
 
@@ -236,18 +231,18 @@ class CacheManager extends \GLPITestCase {
       $config_filename = \Glpi\Cache\CacheManager::CONFIG_FILENAME;
 
       $expected_config = [
-         'core' => [
-            'dsn'       => 'memcached://localhost',
-         ],
-         'plugin:tester' => [
-            'dsn'       => 'redis://cache.glpi-project.org/glpi',
-            'options'   => ['lazy' => true],
-            'namespace' => 'tester',
-         ],
-         'plugin:another' => [
-            'dsn'       => 'redis://cache.glpi-project.org/glpi',
-            'options'   => [],
-            'namespace' => 'another',
+         'contexts' => [
+            'core' => [
+               'dsn'       => 'memcached://localhost',
+            ],
+            'plugin:tester' => [
+               'dsn'       => 'redis://cache.glpi-project.org/glpi',
+               'options'   => ['lazy' => true],
+            ],
+            'plugin:another' => [
+               'dsn'       => 'redis://cache.glpi-project.org/glpi',
+               'options'   => [],
+            ],
          ],
       ];
 
@@ -277,13 +272,13 @@ class CacheManager extends \GLPITestCase {
 
       // Unsetting core config only removes core entry in config file
       $this->boolean($this->testedInstance->unsetConfiguration('core'))->isTrue();
-      unset($expected_config['core']);
+      unset($expected_config['contexts']['core']);
       $this->boolean(file_exists($config_file))->isTrue();
       $this->array(include($config_file))->isEqualTo($expected_config);
 
       // Unsetting a plugin config only removes this plugin entry in config file
       $this->boolean($this->testedInstance->unsetConfiguration('plugin:tester'))->isTrue();
-      unset($expected_config['plugin:tester']);
+      unset($expected_config['contexts']['plugin:tester']);
       $this->boolean(file_exists($config_file))->isTrue();
       $this->array(include($config_file))->isEqualTo($expected_config);
    }
@@ -295,16 +290,16 @@ class CacheManager extends \GLPITestCase {
       string $context,
       $dsn,
       array $options,
-      ?string $namespace,
       ?string $expected_error,
       ?string $expected_adapter
    ): void {
 
       $config = [
-         $context => [
-            'dsn'       => $dsn,
-            'options'   => $options,
-            'namespace' => $namespace,
+         'contexts' => [
+            $context => [
+               'dsn'       => $dsn,
+               'options'   => $options,
+            ],
          ],
       ];
 
@@ -469,5 +464,36 @@ class CacheManager extends \GLPITestCase {
       $expected_contexts[] = 'plugin:c';
       $expected_contexts[] = 'plugin:d';
       $this->variable($this->testedInstance->getKnownContexts())->isIdenticalTo($expected_contexts);
+   }
+
+   public function testSetNamespacePrefix() {
+
+      vfsStream::setup('glpi', null, ['config' => [], 'files' => ['_cache' => []]]);
+
+      $this->newTestedInstance(vfsStream::url('glpi/config'), vfsStream::url('glpi/files/_cache'));
+
+      $config_file = vfsStream::url('glpi/config/' . \Glpi\Cache\CacheManager::CONFIG_FILENAME);
+
+      // Defines a non empty namespace
+      $this->boolean($this->testedInstance->setNamespacePrefix('my-instance'))->isTrue();
+
+      $expected_config = [
+         'namespace_prefix' => 'my-instance',
+         'contexts' => [],
+      ];
+
+      $this->boolean(file_exists($config_file))->isTrue();
+      $this->array(include($config_file))->isEqualTo($expected_config);
+
+      // Defines an empty namespace, should be saved as null
+      $this->boolean($this->testedInstance->setNamespacePrefix(''))->isTrue();
+
+      $expected_config = [
+         'namespace_prefix' => null,
+         'contexts' => [],
+      ];
+
+      $this->boolean(file_exists($config_file))->isTrue();
+      $this->array(include($config_file))->isEqualTo($expected_config);
    }
 }
