@@ -820,7 +820,7 @@ class OperatingSystem extends AbstractInventoryAsset {
       $list = $os->find();
       $this->integer(count($list))->isIdenticalTo(1);
 
-      //check tha tOS is linked to computer, and is now dynamic
+      //check that OS is linked to computer, and is now dynamic
       $list = $cos->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
       $this->integer(count($list))->isIdenticalTo(1);
       $theos = current($list);

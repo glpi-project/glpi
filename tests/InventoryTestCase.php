@@ -122,9 +122,7 @@ class InventoryTestCase extends \DbTestCase {
       $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
       if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
+         $this->dump($inventory->getErrors());
       }
       $this->boolean($inventory->inError())->isFalse();
       $this->array($inventory->getErrors())->isEmpty();

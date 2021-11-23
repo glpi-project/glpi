@@ -223,7 +223,7 @@ class Peripheral extends AbstractInventoryAsset {
          $this->variable($p['is_dynamic'])->isEqualTo(0);
       }
 
-      //computer inventory knows only "Fingerprint" and "Smatrtcard reader" peripherals
+      //computer inventory knows only "Fingerprint" and "Smartcard reader" peripherals
       $this->doInventory($xml_source, true);
 
       //we still have 3 peripherals
@@ -242,7 +242,7 @@ class Peripheral extends AbstractInventoryAsset {
       $periphs = $item_periph->find(['itemtype' => \Peripheral::class, 'computers_id' => $computers_id, 'is_dynamic' => 0]);
       $this->integer(count($periphs))->isIdenticalTo(1);
 
-      //Redo inventory, but with removed "Smatrtcard reader" peripheral
+      //Redo inventory, but with removed "Smartcard reader" peripheral
       $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>

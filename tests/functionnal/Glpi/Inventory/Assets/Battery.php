@@ -290,7 +290,7 @@ class Battery extends AbstractInventoryAsset {
       $batteries = $item_battery->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
       $this->integer(count($batteries))->isIdenticalTo(3);
 
-      //batteries present in the inventory source are still dynamic
+      //batteries present in the inventory source are now dynamic
       $batteries = $item_battery->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
       $this->integer(count($batteries))->isIdenticalTo(2);
 
@@ -333,7 +333,7 @@ class Battery extends AbstractInventoryAsset {
       $batteries = $item_battery->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
       $this->integer(count($batteries))->isIdenticalTo(2);
 
-      //battery present in the inventory source is still now dynamic
+      //battery present in the inventory source is still dynamic
       $batteries = $item_battery->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
       $this->integer(count($batteries))->isIdenticalTo(1);
 
