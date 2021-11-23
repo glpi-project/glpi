@@ -563,8 +563,11 @@ abstract class MainAsset extends InventoryAsset
       $val->states_id = $this->states_id_default ?? $this->item->fields['states_id'] ?? 0;
       $val->locations_id = $this->locations_id ?? $val->locations_id ?? $this->item->fields['locations_id'] ?? 0;
 
-      $orig_entity = $_SESSION['glpiactive_entity'] ?? null;
-      //set entity in session; if it does not exists
+      $orig_glpiactive_entity = $_SESSION['glpiactive_entity'] ?? null;
+      $orig_glpiactiveentities = $_SESSION['glpiactiveentities'] ?? null;
+      $orig_glpiactiveentities_string = $_SESSION['glpiactiveentities_string'] ?? null;
+
+      //set entity in session
       $_SESSION['glpiactiveentities']        = [$entities_id];
       $_SESSION['glpiactiveentities_string'] = $entities_id;
       $_SESSION['glpiactive_entity']         = $entities_id;
@@ -658,10 +661,18 @@ abstract class MainAsset extends InventoryAsset
          $this->inventoried[] = clone $this->item;
       }
 
-      if ($orig_entity !== null) {
-         $_SESSION['glpiactive_entity'] = $orig_entity;
+      //Restore entities in session
+      if ($orig_glpiactive_entity !== null) {
+         $_SESSION['glpiactive_entity'] = $orig_glpiactive_entity;
       }
 
+      if ($orig_glpiactiveentities !== null) {
+         $_SESSION['glpiactiveentities'] = $orig_glpiactive_entity;
+      }
+
+      if ($orig_glpiactiveentities_string !== null) {
+         $_SESSION['glpiactiveentities_string'] = $orig_glpiactive_entity;
+      }
    }
 
    /**
