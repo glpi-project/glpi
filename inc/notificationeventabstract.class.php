@@ -118,7 +118,6 @@ abstract class NotificationEventAbstract {
                         $DB->setTimezone($orig_tz);
                      }
 
-
                      if ($tid = $template->getTemplateByLanguage($notificationtarget,
                                                                   $users_infos, $event,
                                                                   $options)) {
