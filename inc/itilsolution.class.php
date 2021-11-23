@@ -41,7 +41,6 @@ if (!defined('GLPI_ROOT')) {
  * ITILSolution Class
 **/
 class ITILSolution extends CommonDBChild {
-   use \Glpi\Features\UserMention;
 
    // From CommonDBTM
    public $dohistory                   = true;

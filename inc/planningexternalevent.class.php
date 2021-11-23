@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
-use Glpi\Toolbox\RichText;
+use Glpi\RichText\RichText;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VTodo;
 
@@ -334,7 +334,7 @@ JAVASCRIPT;
          ]);
       } else {
          echo "<div class='rich_text_container'>";
-         echo RichText::getSafeHtml($this->fields["text"]);
+         echo RichText::getEnhancedHtml($this->fields["text"]);
          echo "</div>";
       }
 

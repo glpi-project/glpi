@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Features;
+namespace tests\units\Glpi\RichText;
 
 use CommonITILActor;
 use CommonITILObject;

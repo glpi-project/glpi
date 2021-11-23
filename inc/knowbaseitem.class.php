@@ -31,7 +31,7 @@
  */
 
 use Glpi\Event;
-use Glpi\Toolbox\RichText;
+use Glpi\RichText\RichText;
 use Glpi\Toolbox\Sanitizer;
 
 if (!defined('GLPI_ROOT')) {
@@ -2040,7 +2040,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       } else {
          $answer = $this->fields["answer"];
       }
-      $answer = RichText::getSafeHtml($answer);
+      $answer = RichText::getEnhancedHtml($answer);
 
       $callback = function ($matches) {
          //1 => tag name, 2 => existing attributes, 3 => title contents

@@ -31,7 +31,7 @@
  */
 
 use Glpi\Http\Response;
-use Glpi\Toolbox\RichText;
+use Glpi\RichText\RichText;
 
 $AJAX_INCLUDE = 1;
 

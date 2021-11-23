@@ -31,7 +31,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\RichText;
+use Glpi\RichText\RichText;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -1002,7 +1002,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
                $output.= "</a>";
             }
             $output.= "</div>";
-            $output.= Html::showToolTip(RichText::getSafeHtml($item->get_content()), [
+            $output.= Html::showToolTip(RichText::getEnhancedHtml($item->get_content()), [
                'applyto' => "rssitem$rand",
                'display' => false
             ]);

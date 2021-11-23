@@ -35,7 +35,10 @@
 {% block timeline_card %}
    {% if form_mode == 'view' %}
       <div class="read-only-content">
-         {{ entry_i['content']|safe_html }}
+         {{ entry_i['content']|enhanced_html({
+            'user_mentions': true,
+            'images_gallery': true
+         }) }}
 
          {% if entry_i['can_answer'] %}
             <hr class="my-2" />

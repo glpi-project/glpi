@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
-use Glpi\Toolbox\RichText;
+use Glpi\RichText\RichText;
 use Glpi\Toolbox\Sanitizer;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Property\FlatText;
@@ -1302,7 +1302,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                         ProjectTask::getFormURLWithID($data['id'])."'>".$data['name'].
                         (empty($data['name'])?"(".$data['id'].")":"")."</a>";
             echo sprintf(__('%1$s %2$s'), $link,
-                           Html::showToolTip(RichText::getSafeHtml($data['content']),
+                           Html::showToolTip(RichText::getEnhancedHtml($data['content']),
                                              ['display' => false,
                                                    'applyto' => "ProjectTask".$data["id"].$rand]));
             echo "</td>";

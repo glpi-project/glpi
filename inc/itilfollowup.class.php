@@ -41,7 +41,6 @@ use Glpi\Application\View\TemplateRenderer;
  * @since 9.4.0
  */
 class ITILFollowup  extends CommonDBChild {
-   use \Glpi\Features\UserMention;
 
    // From CommonDBTM
    public $auto_message_on_action = false;

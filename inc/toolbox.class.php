@@ -2763,7 +2763,7 @@ class Toolbox {
     * @deprecated 10.0.0
     */
    public static function getHtmlToDisplay($content) {
-      Toolbox::deprecated('Use Glpi\Toolbox\RichText::getSafeHtml()');
+      Toolbox::deprecated('Use Glpi\Toolbox\RichText::getEnhancedHtml()');
 
       $content = Toolbox::unclean_cross_side_scripting_deep(
          $content

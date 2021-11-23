@@ -35,8 +35,8 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\RichText\RichText;
 use Glpi\Toolbox\DataExport;
-use Glpi\Toolbox\RichText;
 use Glpi\Toolbox\Sanitizer;
 
 /**
@@ -6120,7 +6120,7 @@ JAVASCRIPT;
                   }
                   $out    .= $name."</a>";
                   $out     = sprintf(__('%1$s %2$s'), $out,
-                                     Html::showToolTip(RichText::getSafeHtml($data[$ID][0]['content']),
+                                     Html::showToolTip(RichText::getEnhancedHtml($data[$ID][0]['content']),
                                                              ['applyto' => $itemtype.
                                                                                 $data[$ID][0]['id'],
                                                                    'display' => false]));
@@ -6307,7 +6307,7 @@ JAVASCRIPT;
                            __('%1$s %2$s'),
                            "<span id='text$rand'>". Html::resume_text($plaintext, $CFG_GLPI['cut']).'</span>',
                            Html::showToolTip(
-                              '<div class="fup-popup">'.RichText::getSafeHtml($data[$ID][$k]['name']).'</div>', $popup_params
+                              '<div class="fup-popup">'.RichText::getEnhancedHtml($data[$ID][$k]['name']).'</div>', $popup_params
                               )
                         );
                      } else {

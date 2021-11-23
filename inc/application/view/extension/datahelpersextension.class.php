@@ -32,7 +32,7 @@
 
 namespace Glpi\Application\View\Extension;
 
-use Glpi\Toolbox\RichText;
+use Glpi\RichText\RichText;
 use Glpi\Toolbox\Sanitizer;
 use Html;
 use Toolbox;
@@ -55,6 +55,7 @@ class DataHelpersExtension extends AbstractExtension {
          new TwigFilter('safe_html', [$this, 'getSafeHtml'], ['is_safe' => ['html']]),
          new TwigFilter('verbatim_value', [$this, 'getVerbatimValue']),
          new TwigFilter('shortcut', [$this, 'underlineShortcutLetter'], ['is_safe' => ['html']]),
+         new TwigFilter('enhanced_html', [$this, 'getEnhancedHtml'], ['is_safe' => ['html']]),
       ];
    }
 
@@ -174,6 +175,24 @@ class DataHelpersExtension extends AbstractExtension {
       }
 
       return RichText::getSafeHtml($string);
+   }
+
+   /**
+    * Return enhanced HTML (rich text).
+    * Value will be made safe, whenever it has been sanitize (value fetched from DB),
+    * or not (value computed during runtime).
+    * Result will not be escaped, to prevent having to use `|raw` filter.
+    *
+    * @param mixed $string
+    *
+    * @return mixed
+    */
+   public function getEnhancedHtml($string, array $params = []) {
+      if (!is_string($string)) {
+         return $string;
+      }
+
+      return RichText::getEnhancedHtml($string, $params);
    }
 
    /**

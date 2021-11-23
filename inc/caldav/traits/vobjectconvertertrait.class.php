@@ -33,7 +33,7 @@
 namespace Glpi\CalDAV\Traits;
 
 use Glpi\Application\ErrorHandler;
-use Glpi\Toolbox\RichText;
+use Glpi\RichText\RichText;
 use Glpi\Toolbox\Sanitizer;
 use RRule\RRule;
 use Sabre\VObject\Component;
