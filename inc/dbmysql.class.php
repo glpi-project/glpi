@@ -237,7 +237,7 @@ class DBmysql {
     *
     * @since 9.5.0
     */
-   protected function guessTimezone() {
+   public function guessTimezone() {
       if (isset($_SESSION['glpi_tz'])) {
          $zone = $_SESSION['glpi_tz'];
       } else {
