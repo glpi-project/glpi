@@ -45,5 +45,4 @@ class Computer extends MainAsset
    protected function getTypesFieldName(): string {
       return ComputerType::getForeignKeyField();
    }
-
 }

@@ -239,7 +239,7 @@ class Peripheral extends InventoryAsset
                'items_id'        => $peripherals_id,
                'is_dynamic'      => 1,
             ];
-            $computer_Item->add($input, [], $this->withHistory());
+            $this->addOrMoveItem($input);
          }
       }
    }
