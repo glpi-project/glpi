@@ -284,9 +284,9 @@ class Sensor extends AbstractInventoryAsset {
 
       $this->doInventory($xml_source, true);
 
-      //we now have only 2 sensors (+1 from bootstrap)
+      //we still have 3 sensors (+1 from bootstrap)
       $sensors = $device_sensor->find();
-      $this->integer(count($sensors))->isIdenticalTo(2 + 1);
+      $this->integer(count($sensors))->isIdenticalTo(3 + 1);
 
       //we now have 2 sensors linked to computer only
       $sensors = $item_sensor->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

@@ -248,9 +248,9 @@ class GraphicCard extends AbstractInventoryAsset {
 
       $this->doInventory($xml_source, true);
 
-      //we now have only 2 graphic cards
+      //we still have 3 graphic cards
       $gcs = $device_gc->find();
-      $this->integer(count($gcs))->isIdenticalTo(2);
+      $this->integer(count($gcs))->isIdenticalTo(3);
 
       //we now have 2 graphic cards linked to computer only
       $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

@@ -139,8 +139,6 @@ abstract class Device extends InventoryAsset
                      $fk => $deviceid
                   ]
                );
-               //then device itself
-               $device->delete(['id' => $deviceid], true);
             }
          }
       }

@@ -263,9 +263,9 @@ class Processor extends AbstractInventoryAsset {
 
       $this->doInventory($xml_source, true);
 
-      //we now have only 2 processors
+      //we still have 3 processors
       $cpus = $device_proc->find();
-      $this->integer(count($cpus))->isIdenticalTo(2);
+      $this->integer(count($cpus))->isIdenticalTo(3);
 
       //we now have 2 processors linked to computer only
       $cpus = $item_proc->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

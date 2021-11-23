@@ -886,9 +886,9 @@ class NetworkCard extends AbstractInventoryAsset {
 
       $this->doInventory($xml_source, true);
 
-      //we now have only 2 network cards
+      //we still have 3 network cards
       $cards = $device_net->find();
-      $this->integer(count($cards))->isIdenticalTo(2);
+      $this->integer(count($cards))->isIdenticalTo(3);
 
       //we now have 2 network cards linked to computer only
       $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

@@ -275,9 +275,9 @@ class Camera extends AbstractInventoryAsset {
 
       $this->doInventory($xml_source, true);
 
-      //we now have only 2 cameras
+      //we still have 3 cameras
       $cams = $device_cam->find();
-      $this->integer(count($cams))->isIdenticalTo(2);
+      $this->integer(count($cams))->isIdenticalTo(3);
 
       //we now have 2 cameras linked to computer only
       $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

@@ -307,9 +307,9 @@ class Drive extends AbstractInventoryAsset {
 
       $this->doInventory($xml_source, true);
 
-      //we now have only 2 drives
+      //we still have 3 drives
       $drives = $device_drive->find();
-      $this->integer(count($drives))->isIdenticalTo(2);
+      $this->integer(count($drives))->isIdenticalTo(3);
 
       //we now have 2 drives linked to computer only
       $drives = $item_drive->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
@@ -489,9 +489,9 @@ class Drive extends AbstractInventoryAsset {
 
       $this->doInventory($xml_source, true);
 
-      //we now have only 2 harddrives
+      //we still have 3 harddrives
       $harddrives = $device_hdd->find();
-      $this->integer(count($harddrives))->isIdenticalTo(2);
+      $this->integer(count($harddrives))->isIdenticalTo(3);
 
       //we now have 2 harddrives linked to computer only
       $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

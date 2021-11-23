@@ -325,9 +325,9 @@ class Battery extends AbstractInventoryAsset {
 
       $this->doInventory($xml_source, true);
 
-      //we now have only 2 batteries
+      //we still have 3 batteries
       $batteries = $device_battery->find();
-      $this->integer(count($batteries))->isIdenticalTo(2);
+      $this->integer(count($batteries))->isIdenticalTo(3);
 
       //we now have 2 batteries linked to computer only
       $batteries = $item_battery->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

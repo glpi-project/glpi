@@ -242,9 +242,9 @@ class SoundCard extends AbstractInventoryAsset {
 
       $this->doInventory($xml_source, true);
 
-      //we now have only 2 sound cards
+      //we still have 3 sound cards
       $sounds = $device_sound->find();
-      $this->integer(count($sounds))->isIdenticalTo(2);
+      $this->integer(count($sounds))->isIdenticalTo(3);
 
       //we now have 2 sound cards linked to computer only
       $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

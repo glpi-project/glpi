@@ -290,9 +290,9 @@ class Controller extends AbstractInventoryAsset {
 
       $this->doInventory($xml_source, true);
 
-      //we now have only 2 controllers
+      //we still have 3 controllers
       $controllers = $device_control->find();
-      $this->integer(count($controllers))->isIdenticalTo(2);
+      $this->integer(count($controllers))->isIdenticalTo(3);
 
       //we now have 2 controllers linked to computer only
       $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
