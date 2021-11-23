@@ -33,7 +33,7 @@
 namespace Glpi\ContentTemplates;
 
 use CommonITILObject;
-use Glpi\Toolbox\RichText;
+use Glpi\RichText\RichText;
 use Glpi\Toolbox\Sanitizer;
 use Twig\Environment;
 use Twig\Extension\SandboxExtension;

@@ -30,12 +30,12 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Toolbox;
+namespace tests\units\Glpi\RichText;
 
 use Glpi\Toolbox\Sanitizer;
 
 /**
- * Test class for src/Glpi/Toolbox/richtext.class.php
+ * Test class for src/Glpi/RichText/richtext.class.php
  */
 class RichText extends \GLPITestCase {
 

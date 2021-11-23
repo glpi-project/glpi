@@ -165,9 +165,11 @@ The present file will list all changes made to the project; according to the
 - `Html::displayTopMenu()`
 - `Html::fileForRichText()`
 - `Html::generateImageName()`
+- `Html::imageGallery()`
 - `Html::jsDisable()`
 - `Html::jsEnable()`
 - `Html::nl2br_deep()`
+- `Html::replaceImagesByGallery()`
 - `Html::resume_name()`
 - `Html::setSimpleTextContent()`
 - `Html::setRichTextContent()`

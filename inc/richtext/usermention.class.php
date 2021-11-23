@@ -30,8 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Features;
+namespace Glpi\RichText;
 
+use CommonDBTM;
 use CommonITILActor;
 use CommonITILObject;
 use CommonITILTask;
@@ -43,7 +44,7 @@ use NotificationEvent;
 use SimpleXMLElement;
 use User;
 
-trait UserMention {
+final class UserMention {
 
    /**
     * Handle user mentions.
@@ -51,9 +52,9 @@ trait UserMention {
     *
     * @return void
     */
-   protected function handleUserMentions(): void {
+   public static function handleUserMentions(CommonDBTM $item): void {
 
-      $content_fields = $this instanceof CommonITILValidation
+      $content_fields = $item instanceof CommonITILValidation
          ? ['comment_submission', 'comment_validation']
          : ['content'];
 
@@ -61,35 +62,41 @@ trait UserMention {
       $mentionned_actors_ids = [];
 
       foreach ($content_fields as $content_field) {
-         if (property_exists($this, 'oldvalues') && array_key_exists($content_field, $this->oldvalues)) {
+         if (!array_key_exists($content_field, $item->fields) && !array_key_exists($content_field, $item->input)) {
+            // Field is not define in both `$item->fields` and `$item->input`, it means that
+            // it is certainly not a valid field for current item.
+            continue;
+         }
+
+         if (property_exists($item, 'oldvalues') && array_key_exists($content_field, $item->oldvalues)) {
             // Update case: content field was updated
-            $previous_value = $this->oldvalues[$content_field];
-         } else if (property_exists($this, 'updates')) {
+            $previous_value = $item->oldvalues[$content_field];
+         } else if (property_exists($item, 'updates')) {
             // Update case: content field was not updated
-            $previous_value = $this->fields[$content_field];
+            $previous_value = $item->fields[$content_field];
          } else {
             // Creation case
             $previous_value = null;
          }
 
-         $new_value = $this->input[$content_field] ?? null;
+         $new_value = $item->input[$content_field] ?? null;
 
          if ($new_value !== null) {
             $mentionned_actors_ids = array_merge(
                $mentionned_actors_ids,
-               $this->getUserIdsFromUserMentions($new_value)
+               self::getUserIdsFromUserMentions($new_value, true)
             );
          }
 
          if ($previous_value !== null) {
             $previously_mentionned_actors_ids = array_merge(
                $previously_mentionned_actors_ids,
-               $this->getUserIdsFromUserMentions($previous_value)
+               self::getUserIdsFromUserMentions($previous_value, true)
             );
          }
       }
 
-      // Keep only newly mentionned actors
+      // Keep only newly mentioned actors
       $mentionned_actors_ids = array_diff($mentionned_actors_ids, $previously_mentionned_actors_ids);
 
       if (empty($mentionned_actors_ids)) {
@@ -97,58 +104,58 @@ trait UserMention {
       }
 
       // Retrieve main item
-      $item = $this;
+      $main_item = $item;
       $options = [];
-      if ($this instanceof CommonITILTask) {
+      if ($item instanceof CommonITILTask) {
          $options = [
-            'task_id'    => $this->fields['id'],
-            'is_private' => $this->isPrivate(),
+            'task_id'    => $item->fields['id'],
+            'is_private' => $item->isPrivate(),
          ];
 
-         $item = $this->getItem();
-      } else if ($this instanceof CommonITILValidation) {
+         $main_item = $item->getItem();
+      } else if ($item instanceof CommonITILValidation) {
          $options = [
-            'validation_id'     => $this->fields['id'],
-            'validation_status' => $this->fields['status']
+            'validation_id'     => $item->fields['id'],
+            'validation_status' => $item->fields['status']
          ];
 
-         $item = getItemForItemtype($this->getItilObjectItemType());
-         $item->getFromDB($this->fields[$this::$items_id]);
-      } else if ($this instanceof ITILFollowup) {
+         $main_item = getItemForItemtype($item->getItilObjectItemType());
+         $main_item->getFromDB($item->fields[$item::$items_id]);
+      } else if ($item instanceof ITILFollowup) {
          $options = [
-            'followup_id' => $this->fields['id'],
-            'is_private'  => $this->isPrivate(),
+            'followup_id' => $item->fields['id'],
+            'is_private'  => $item->isPrivate(),
          ];
 
-         $item = getItemForItemtype($this->fields['itemtype']);
-         $item->getFromDB($this->fields['items_id']);
-      } else if ($this instanceof ITILSolution) {
-         $item = getItemForItemtype($this->fields['itemtype']);
-         $item->getFromDB($this->fields['items_id']);
+         $main_item = getItemForItemtype($item->fields['itemtype']);
+         $main_item->getFromDB($item->fields['items_id']);
+      } else if ($item instanceof ITILSolution) {
+         $main_item = getItemForItemtype($item->fields['itemtype']);
+         $main_item->getFromDB($item->fields['items_id']);
       }
 
-      // Send a "you have been mentionned" notification
+      // Send a "you have been mentioned" notification
       foreach ($mentionned_actors_ids as $user_id) {
          $options['users_id'] = $user_id;
-         NotificationEvent::raiseEvent('user_mention', $item, $options);
+         NotificationEvent::raiseEvent('user_mention', $main_item, $options);
       }
 
-      if ($item instanceof CommonITILObject) {
-         if (empty($item->userlinkclass) || !class_exists($item->userlinkclass)) {
+      if ($main_item instanceof CommonITILObject) {
+         if (empty($main_item->userlinkclass) || !class_exists($main_item->userlinkclass)) {
             return; // Cannot add observers
          }
 
          // Retrieve current actors list
-         $userlink = new $item->userlinkclass();
+         $userlink = new $main_item->userlinkclass();
          $current_actors_ids = [];
-         $current_actors = $userlink->getActors($item->fields['id']);
+         $current_actors = $userlink->getActors($main_item->fields['id']);
          foreach ($current_actors as $actors) {
             foreach ($actors as $actor) {
                $current_actors_ids[] = $actor['users_id'];
             }
          }
 
-         // Add newly mentionned actors as observers
+         // Add newly mentioned actors as observers
          foreach ($mentionned_actors_ids as $user_id) {
             if (in_array($user_id, $current_actors_ids)) {
                continue;
@@ -157,7 +164,7 @@ trait UserMention {
             $input = [
                'type'                            => CommonITILActor::OBSERVER,
                'users_id'                        => $user_id,
-               $item->getForeignKeyField()       => $item->fields['id'],
+               $main_item->getForeignKeyField()  => $main_item->fields['id'],
                '_do_not_compute_takeintoaccount' => true,
                '_from_object'                    => true,
             ];
@@ -167,18 +174,20 @@ trait UserMention {
    }
 
    /**
-    * Extract ids of mentionned users.
+    * Extract ids of mentioned users.
     *
     * @param string $content
+    * @param bool $sanitized
     *
     * @return int[]
     */
-   protected function getUserIdsFromUserMentions(string $content) {
+   public static function getUserIdsFromUserMentions(string $content, bool $sanitized = false) {
       $ids = [];
 
       try {
-         $content = Sanitizer::getVerbatimValue($content);
-
+         if ($sanitized) {
+            $content = Sanitizer::unsanitize($content, true);
+         }
          libxml_use_internal_errors(true);
          $content_as_xml = new SimpleXMLElement('<div>' . $content . '</div>');
       } catch (\Throwable $e) {
@@ -203,19 +212,19 @@ trait UserMention {
     *
     * @return string
     */
-   protected function refreshUserMentionsHtmlToDisplay(string $content, bool $add_link = true): string {
+   public static function refreshUserMentionsHtmlToDisplay(string $content): string {
 
-      $mentionned_users_ids = $this->getUserIdsFromUserMentions($content);
+      $mentionned_users_ids = self::getUserIdsFromUserMentions($content);
 
       foreach ($mentionned_users_ids as $user_id) {
          $user = new User();
          if (!$user->getFromDB($user_id)) {
-            // User does not exists anymore, keep the mention but do not add link.
+            // User does not exist anymore, keep the mention but do not add link.
             continue;
          }
 
          $pattern = '/'
-             // <span data-user-mention="true" ...>
+            // <span data-user-mention="true" ...>
             . '<span[^>]*'
             . '('
             . 'data-user-mention="true"[^>]+data-user-id="' . $user_id . '"'

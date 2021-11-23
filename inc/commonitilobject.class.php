@@ -36,8 +36,8 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
+use Glpi\RichText\RichText;
 use Glpi\Team\Team;
-use Glpi\Toolbox\RichText;
 use Glpi\Toolbox\Sanitizer;
 
 /**
@@ -45,7 +45,6 @@ use Glpi\Toolbox\Sanitizer;
 **/
 abstract class CommonITILObject extends CommonDBTM {
    use \Glpi\Features\Clonable;
-   use \Glpi\Features\UserMention;
    use \Glpi\Features\Timeline;
    use \Glpi\Features\Kanban;
    use Glpi\Features\Teamwork;
@@ -5782,7 +5781,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          if ($p['output_type'] == Search::HTML_OUTPUT) {
             $name_column = sprintf(__('%1$s %2$s'), $name_column,
-                                    Html::showToolTip(RichText::getSafeHtml($item->fields['content']),
+                                    Html::showToolTip(RichText::getEnhancedHtml($item->fields['content']),
                                                       ['display' => false,
                                                             'applyto' => $item->getType().$item->fields["id"].
                                                                            $rand]));
@@ -7660,7 +7659,7 @@ abstract class CommonITILObject extends CommonDBTM {
             }
          }
          if (isset($card['_metadata']['content']) && is_string($card['_metadata']['content'])) {
-            $card['_metadata']['content'] = Glpi\Toolbox\RichText::getTextFromHtml($card['_metadata']['content'], false, true);
+            $card['_metadata']['content'] = Glpi\RichText\RichText::getTextFromHtml($card['_metadata']['content'], false, true);
          } else {
             $card['_metadata']['content'] = '';
          }

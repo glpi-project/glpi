@@ -34,7 +34,7 @@
  * @since 9.1
  */
 
-use Glpi\Toolbox\RichText;
+use Glpi\RichText\RichText;
 
 include ('../inc/includes.php');
 header("Content-Type: application/json; charset=UTF-8");
@@ -52,7 +52,7 @@ $revision = new KnowbaseItem_Revision();
 $revision->getFromDB($revid);
 $rev = [
    'name'   => $revision->fields['name'],
-   'answer' => RichText::getSafeHtml($revision->fields['answer'])
+   'answer' => RichText::getEnhancedHtml($revision->fields['answer'])
 ];
 
 echo json_encode($rev);

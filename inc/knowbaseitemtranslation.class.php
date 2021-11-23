@@ -31,7 +31,7 @@
  */
 
 use Glpi\Event;
-use Glpi\Toolbox\RichText;
+use Glpi\RichText\RichText;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -162,7 +162,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
       echo "<tr><td class='left' colspan='4'><h2>".__('Content')."</h2>\n";
 
       echo "<div class='rich_text_container' id='kbanswer'>";
-      echo RichText::getSafeHtml($this->fields['answer']);
+      echo RichText::getEnhancedHtml($this->fields['answer']);
       echo "</div>";
       echo "</td></tr>";
       echo "</table>";
@@ -240,7 +240,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
             }
             if (isset($data['answer']) && !empty($data['answer'])) {
                echo "&nbsp;";
-               Html::showToolTip(RichText::getSafeHtml($data['answer']));
+               Html::showToolTip(RichText::getEnhancedHtml($data['answer']));
             }
             echo "</td></tr>";
          }

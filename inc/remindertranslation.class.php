@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use Glpi\Toolbox\RichText;
+use Glpi\RichText\RichText;
 
 /**
  * ReminderTranslation Class
@@ -176,7 +176,7 @@ class ReminderTranslation extends CommonDBChild {
             }
             if (isset($data['text']) && !empty($data['text'])) {
                echo "&nbsp;";
-               Html::showToolTip(RichText::getSafeHtml($data['text']));
+               Html::showToolTip(RichText::getEnhancedHtml($data['text']));
             }
             echo "</td></tr>";
          }

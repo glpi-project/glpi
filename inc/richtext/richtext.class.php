@@ -30,13 +30,15 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Toolbox;
+namespace Glpi\RichText;
 
+use Document;
+use Glpi\Toolbox\Sanitizer;
 use Html;
 use Html2Text\Html2Text;
 use Toolbox;
 
-class RichText {
+final class RichText {
 
    /**
     * Get safe HTML string based on user input content.
@@ -233,5 +235,203 @@ class RichText {
       }
 
       return $content;
+   }
+
+   /**
+    * Get enhanced HTML string based on user input content.
+    *
+    * @since 10.0.0
+    *
+    * @param null|string   $content HTML string to enahnce
+    * @param array         $params  Enhancement parameters
+    *
+    * @return string
+    */
+   public static function getEnhancedHtml(?string $content, array $params = []): string {
+      $p = [
+         'images_gallery'           => false,
+         'user_mentions'            => true,
+      ];
+      $p = array_replace($p, $params);
+
+      // Sanitize content first (security and to decode HTML entities)
+      $content = self::getSafeHtml($content);
+
+      if (isset($p['user_mentions'])) {
+         $content = UserMention::refreshUserMentionsHtmlToDisplay($content);
+      }
+
+      if (isset($p['images_gallery'])) {
+         $content = self::replaceImagesByGallery($content);
+      }
+
+      return $content;
+   }
+
+   /**
+    * Replace images by gallery component in rich text.
+    *
+    * @since 10.0.0
+    *
+    * @param string  $content
+    *
+    * @return string
+    */
+   private static function replaceImagesByGallery(string $content): string {
+
+      $image_matches = [];
+      preg_match_all(
+         '/<a[^>]*>\s*<img[^>]*src=["\']([^"\']*document\.send\.php\?docid=([0-9]+)(?:&[^"\']+)?)["\'][^>]*>\s*<\/a>/',
+         $content,
+         $image_matches,
+         PREG_SET_ORDER
+      );
+      foreach ($image_matches as $image_match) {
+         $img_tag = $image_match[0];
+         $docsrc  = $image_match[1];
+         $docid   = $image_match[2];
+         $document = new Document();
+         if ($document->getFromDB($docid)) {
+            $docpath = GLPI_DOC_DIR . '/' . $document->fields['filepath'];
+            if (Document::isImage($docpath)) {
+               $imgsize = getimagesize($docpath);
+               $gallery = self::imageGallery([
+                  [
+                     'src' => $docsrc,
+                     'w'   => $imgsize[0],
+                     'h'   => $imgsize[1]
+                  ]
+               ]);
+               $content = str_replace($img_tag, $gallery, $content);
+            }
+         }
+      }
+
+      return $content;
+   }
+
+
+   /**
+    * Creates a PhotoSwipe image gallery.
+    *
+    * @since 10.0.0
+    *
+    * @param array $imgs  Array of image info
+    *                      - src The public path of img
+    *                      - w   The width of img
+    *                      - h   The height of img
+    * @param array $options
+    * @return string completed gallery
+    */
+   private static function imageGallery(array $imgs, array $options = []): string {
+      $p = [
+         'controls' => [
+            'close'        => true,
+            'share'        => true,
+            'fullscreen'   => true,
+            'zoom'         => true,
+         ],
+         'rand'               => mt_rand(),
+         'gallery_item_class' => ''
+      ];
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+
+      $out = "<div id='psgallery{$p['rand']}' class='pswp' tabindex='-1'
+         role='dialog' aria-hidden='true'>";
+      $out .= "<div class='pswp__bg'></div>";
+      $out .= "<div class='pswp__scroll-wrap'>";
+      $out .= "<div class='pswp__container'>";
+      $out .= "<div class='pswp__item'></div>";
+      $out .= "<div class='pswp__item'></div>";
+      $out .= "<div class='pswp__item'></div>";
+      $out .= "</div>";
+      $out .= "<div class='pswp__ui pswp__ui--hidden'>";
+      $out .= "<div class='pswp__top-bar'>";
+      $out .= "<div class='pswp__counter'></div>";
+
+      if (isset($p['controls']['close']) && $p['controls']['close']) {
+         $out .= "<button class='pswp__button pswp__button--close' title='".__('Close (Esc)')."'></button>";
+      }
+
+      if (isset($p['controls']['share']) && $p['controls']['share']) {
+         $out .= "<button class='pswp__button pswp__button--share' title='".__('Share')."'></button>";
+      }
+
+      if (isset($p['controls']['fullscreen']) && $p['controls']['fullscreen']) {
+         $out .= "<button class='pswp__button pswp__button--fs' title='".__('Toggle fullscreen')."'></button>";
+      }
+
+      if (isset($p['controls']['zoom']) && $p['controls']['zoom']) {
+         $out .= "<button class='pswp__button pswp__button--zoom' title='".__('Zoom in/out')."'></button>";
+      }
+
+      $out .= "<div class='pswp__preloader'>";
+      $out .= "<div class='pswp__preloader__icn'>";
+      $out .= "<div class='pswp__preloader__cut'>";
+      $out .= "<div class='pswp__preloader__donut'></div>";
+      $out .= "</div></div></div></div>";
+      $out .= "<div class='pswp__share-modal pswp__share-modal--hidden pswp__single-tap'>";
+      $out .= "<div class='pswp__share-tooltip'></div>";
+      $out .= "</div>";
+      $out .= "<button class='pswp__button pswp__button--arrow--left' title='".__('Previous (arrow left)')."'>";
+      $out .= "</button>";
+      $out .= "<button class='pswp__button pswp__button--arrow--right' title='".__('Next (arrow right)')."'>";
+      $out .= "</button>";
+      $out .= "<div class='pswp__caption'>";
+      $out .= "<div class='pswp__caption__center'></div>";
+      $out .= "</div></div></div></div>";
+
+      $out .= "<div class='pswp-img{$p['rand']} {$p['gallery_item_class']}' itemscope itemtype='http://schema.org/ImageGallery'>";
+      foreach ($imgs as $img) {
+         if (!isset($img['thumbnail_src'])) {
+            $img['thumbnail_src'] = $img['src'];
+         }
+         $out .= "<figure itemprop='associatedMedia' itemscope itemtype='http://schema.org/ImageObject'>";
+         $out .= "<a href='{$img['src']}' itemprop='contentUrl' data-index='0'>";
+         $out .= "<img src='{$img['thumbnail_src']}' itemprop='thumbnail'>";
+         $out .= "</a>";
+         $out .= "</figure>";
+      }
+      $out .= "</div>";
+
+      // Decode images urls
+      $imgs = array_map(function($img) {
+         $img['src'] = html_entity_decode($img['src']);
+         return $img;
+      }, $imgs);
+
+      $items_json = json_encode($imgs);
+      $dltext = __('Download');
+      $js = <<<JAVASCRIPT
+      (function($) {
+         var pswp = document.getElementById('psgallery{$p['rand']}');
+
+         $('.pswp-img{$p['rand']}').on('click', 'figure', function(event) {
+            event.preventDefault();
+
+            var options = {
+                index: $(this).index(),
+                bgOpacity: 0.7,
+                showHideOpacity: true,
+                shareButtons: [
+                  {id:'download', label:'{$dltext}', url:'{{raw_image_url}}', download:true}
+                ]
+            }
+
+            var lightBox = new PhotoSwipe(pswp, PhotoSwipeUI_Default, {$items_json}, options);
+            lightBox.init();
+        });
+      })(jQuery);
+
+JAVASCRIPT;
+
+      $out .= Html::scriptBlock($js);
+
+      return $out;
    }
 }

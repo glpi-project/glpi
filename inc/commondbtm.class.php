@@ -34,7 +34,8 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 use Glpi\Features\CacheableListInterface;
 use Glpi\Plugin\Hooks;
-use Glpi\Toolbox\RichText;
+use Glpi\RichText\RichText;
+use Glpi\RichText\UserMention;
 use Glpi\Toolbox\Sanitizer;
 
 if (!defined('GLPI_ROOT')) {
@@ -1401,9 +1402,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function post_addItem() {
 
-      if (Toolbox::hasTrait($this, \Glpi\Features\UserMention::class)) {
-         $this->handleUserMentions();
-      }
+      UserMention::handleUserMentions($this);
    }
 
 
@@ -1755,9 +1754,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function post_updateItem($history = 1) {
 
-      if (Toolbox::hasTrait($this, \Glpi\Features\UserMention::class)) {
-         $this->handleUserMentions();
-      }
+      UserMention::handleUserMentions($this);
    }
 
 

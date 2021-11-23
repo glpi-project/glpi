@@ -32,6 +32,8 @@
 
 namespace Glpi\Toolbox;
 
+use Glpi\RichText\RichText;
+
 class DataExport {
 
    /**

@@ -35,8 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Features\UserMention;
-use Glpi\Toolbox\RichText;
+use Glpi\RichText\RichText;
 
 /**
  * CommonITILValidation Class
@@ -44,8 +43,6 @@ use Glpi\Toolbox\RichText;
  * @since 0.85
 **/
 abstract class CommonITILValidation  extends CommonDBChild {
-
-   use UserMention;
 
    // From CommonDBTM
    public $auto_message_on_action    = false;
@@ -901,15 +898,11 @@ abstract class CommonITILValidation  extends CommonDBChild {
             echo "<td><div style='background-color:".$bgcolor.";'>".$status."</div></td>";
             echo "<td>".Html::convDateTime($row["submission_date"])."</td>";
             echo "<td>".getUserName($row["users_id"])."</td>";
-            $comment_submission = RichText::getSafeHtml($this->fields['comment_submission']);
-            $comment_submission = $this->refreshUserMentionsHtmlToDisplay($comment_submission);
-            $comment_submission = Html::replaceImagesByGallery($comment_submission);
+            $comment_submission = RichText::getEnhancedHtml($this->fields['comment_submission'], ['images_gallery' => true]);
             echo "<td><div class='rich_text_container'>".$comment_submission."</div></td>";
             echo "<td>".Html::convDateTime($row["validation_date"])."</td>";
             echo "<td>".getUserName($row["users_id_validate"])."</td>";
-            $comment_validation = RichText::getSafeHtml($this->fields['comment_validation'] ?? '');
-            $comment_validation = $this->refreshUserMentionsHtmlToDisplay($comment_validation);
-            $comment_validation = Html::replaceImagesByGallery($comment_validation);
+            $comment_validation = RichText::getEnhancedHtml($this->fields['comment_validation'] ?? '', ['images_gallery' => true]);
             echo "<td><div class='rich_text_container'>".$comment_validation."</div></td>";
 
             $doc_item = new Document_Item();

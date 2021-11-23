@@ -35,7 +35,7 @@ use Glpi\ContentTemplates\Parameters\TicketParameters;
 use Glpi\ContentTemplates\ParametersPreset;
 use Glpi\ContentTemplates\TemplateManager;
 use Glpi\Event;
-use Glpi\Toolbox\RichText;
+use Glpi\RichText\RichText;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -5022,7 +5022,7 @@ JAVASCRIPT;
                   sprintf(__('%1$s - %2$s'), $job->numberOfFollowups($showprivate),
                      $job->numberOfTasks($showprivate)));
                $link    = sprintf(__('%1$s %2$s'), $link,
-                  Html::showToolTip(RichText::getSafeHtml($job->fields['content']),
+                  Html::showToolTip(RichText::getEnhancedHtml($job->fields['content']),
                      ['applyto' => 'ticket'.$job->fields["id"].$rand,
                         'display' => false]));
                $row['values'][] = $link;
@@ -5616,7 +5616,7 @@ JAVASCRIPT;
                             sprintf(__('%1$s - %2$s'), $job->numberOfFollowups($showprivate),
                                     $job->numberOfTasks($showprivate)));
          $link    = printf(__('%1$s %2$s'), $link,
-                           Html::showToolTip(RichText::getSafeHtml($job->fields['content']),
+                           Html::showToolTip(RichText::getEnhancedHtml($job->fields['content']),
                                              ['applyto' => 'ticket'.$job->fields["id"].$rand,
                                                    'display' => false]));
          echo "</td>";

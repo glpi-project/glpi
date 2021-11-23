@@ -34,7 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use Glpi\Toolbox\RichText;
+use Glpi\RichText\RichText;
 
 /**
  * ProjectTask_Ticket Class
@@ -497,7 +497,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
                            ProjectTask::getFormURLWithID($data['id'])."'>".$data['name'].
                            (empty($data['name'])?"(".$data['id'].")":"")."</a>";
                echo sprintf(__('%1$s %2$s'), $link,
-                              Html::showToolTip(RichText::getSafeHtml($data['content']),
+                              Html::showToolTip(RichText::getEnhancedHtml($data['content']),
                                                 ['display' => false,
                                                       'applyto' => "ProjectTask".$data["id"].$rand]));
                echo "</td>";

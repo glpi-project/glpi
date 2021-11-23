@@ -32,7 +32,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\Parameters\ProblemParameters;
-use Glpi\Toolbox\RichText;
+use Glpi\RichText\RichText;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -1034,7 +1034,7 @@ class Problem extends CommonITILObject {
                $link .= "'>";
                $link .= "<span class='b'>".$problem->fields["name"]."</span></a>";
                $link = sprintf(__('%1$s %2$s'), $link,
-                  Html::showToolTip(RichText::getSafeHtml($problem->fields['content']),
+                  Html::showToolTip(RichText::getEnhancedHtml($problem->fields['content']),
                      ['applyto' => 'problem'.$problem->fields["id"].$rand,
                         'display' => false]));
 
@@ -1252,7 +1252,7 @@ class Problem extends CommonITILObject {
          $link .= "'>";
          $link .= "<span class='b'>".$problem->fields["name"]."</span></a>";
          $link = printf(__('%1$s %2$s'), $link,
-                        Html::showToolTip(RichText::getSafeHtml($problem->fields['content']),
+                        Html::showToolTip(RichText::getEnhancedHtml($problem->fields['content']),
                                           ['applyto' => 'problem'.$problem->fields["id"].$rand,
                                                 'display' => false]));
 

@@ -37,14 +37,13 @@ if (!defined('GLPI_ROOT')) {
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
-use Glpi\Toolbox\RichText;
+use Glpi\RichText\RichText;
 use Glpi\Toolbox\Sanitizer;
 use Sabre\VObject\Component\VCalendar;
 
 /// TODO extends it from CommonDBChild
 abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItemInterface {
    use Glpi\Features\PlanningEvent;
-   use Glpi\Features\UserMention;
    use VobjectConverterTrait;
 
    // From CommonDBTM

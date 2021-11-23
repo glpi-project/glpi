@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
-use Glpi\Toolbox\RichText;
+use Glpi\RichText\RichText;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VTodo;
 
@@ -726,7 +726,7 @@ class Reminder extends CommonDBVisible implements
                          'enable_fileupload' => true]);
       } else {
          echo "<div class='rich_text_container'>";
-         echo RichText::getSafeHtml($this->fields["text"]);
+         echo RichText::getEnhancedHtml($this->fields["text"]);
          echo "</div>";
       }
 
@@ -933,7 +933,7 @@ class Reminder extends CommonDBVisible implements
             if (isset($data['transtext']) && !empty($data['transtext'])) {
                $text = $data['transtext'];
             }
-            $tooltip = Html::showToolTip(RichText::getSafeHtml($text),
+            $tooltip = Html::showToolTip(RichText::getEnhancedHtml($text),
                                          ['applyto' => "content_reminder_".$data["id"].$rand,
                                           'display' => false]);
             $output.= sprintf(__('%1$s %2$s'), $link, $tooltip);

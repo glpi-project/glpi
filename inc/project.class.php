@@ -36,8 +36,8 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
+use Glpi\RichText\RichText;
 use Glpi\Team\Team;
-use Glpi\Toolbox\RichText;
 
 /**
  * Project Class
@@ -2227,7 +2227,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
             }
          }
          if (isset($card['_metadata']['content']) && is_string($card['_metadata']['content'])) {
-            $card['_metadata']['content'] = Glpi\Toolbox\RichText::getTextFromHtml($card['_metadata']['content'], false, true);
+            $card['_metadata']['content'] = Glpi\RichText\RichText::getTextFromHtml($card['_metadata']['content'], false, true);
          } else {
             $card['_metadata']['content'] = '';
          }

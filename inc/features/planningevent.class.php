@@ -44,7 +44,7 @@ use DateTime;
 use DateTimeZone;
 use Dropdown;
 use Entity;
-use Glpi\Toolbox\RichText;
+use Glpi\RichText\RichText;
 use Glpi\Toolbox\Sanitizer;
 use Group_User;
 use Html;
