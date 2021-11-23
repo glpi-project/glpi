@@ -319,6 +319,50 @@ class Consumable extends CommonDBChild {
       return(int) $result['cpt'];
    }
 
+   /**
+    * The desired stock level
+    *
+    * This is used when the alarm threshold is reached to know how many to order.
+    * @param integer $tID Consumable item ID
+    * @return integer
+    */
+   static function getStockTarget(int $tID): int {
+      global $DB;
+
+      $it = $DB->request([
+         'COUNT'  => 'stock_target',
+         'FROM'   => ConsumableItem::getTable(),
+         'WHERE'  => [
+            'id'  => $tID
+         ]
+      ]);
+      if ($it->count()) {
+         return $it->next()['stock_target'];
+      }
+      return 0;
+   }
+
+   /**
+    * The lower threshold for the stock amount before an alarm is triggered
+    *
+    * @param integer $tID Consumable item ID
+    * @return integer
+    */
+   static function getAlarmThreshold(int $tID): int {
+      global $DB;
+
+      $it = $DB->request([
+         'COUNT'  => 'alarm_threshold',
+         'FROM'   => ConsumableItem::getTable(),
+         'WHERE'  => [
+            'id'  => $tID
+         ]
+      ]);
+      if ($it->count()) {
+         return $it->next()['stock_target'];
+      }
+      return 0;
+   }
 
    /**
     * Get the consumable count HTML array for a defined consumable type

@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssetImage;
 
 //!  ConsumableItem Class
@@ -428,6 +429,14 @@ class ConsumableItem extends CommonDBTM {
       return true;
    }
 
+   function showForm($ID, array $options = []) {
+      $this->initForm($ID, $options);
+      TemplateRenderer::getInstance()->display('pages/assets/consumableitem.html.twig', [
+         'item'   => $this,
+         'params' => $options,
+      ]);
+      return true;
+   }
 
    static function getIcon() {
       return Consumable::getIcon();

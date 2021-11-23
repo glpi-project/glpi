@@ -58,10 +58,19 @@ class NotificationTargetConsumableItem extends NotificationTarget {
       $this->data['##consumable.action##']      = $events[$event];
 
       foreach ($options['items'] as $id => $consumable) {
+         $remaining_stock = Consumable::getUnusedNumber($id);
+         $target_stock = Consumable::getStockTarget($id);
+         if ($target_stock <= 0) {
+            $alarm_threshold = Consumable::getAlarmThreshold($id);
+            $target_stock = $alarm_threshold + 1;
+         }
+         $to_order = $target_stock - $remaining_stock;
          $tmp                             = [];
          $tmp['##consumable.item##']      = $consumable['name'];
          $tmp['##consumable.reference##'] = $consumable['ref'];
-         $tmp['##consumable.remaining##'] = Consumable::getUnusedNumber($id);
+         $tmp['##consumable.remaining##'] = $remaining_stock;
+         $tmp['##consumable.stock_target##'] = $target_stock;
+         $tmp['##consumable.to_order##'] = $to_order;
          $tmp['##consumable.url##']       = $this->formatURL($options['additionnaloption']['usertype'],
                                                              "ConsumableItem_".$id);
          $this->data['consumables'][] = $tmp;
@@ -78,11 +87,15 @@ class NotificationTargetConsumableItem extends NotificationTarget {
 
    function getTags() {
 
-      $tags = ['consumable.action'    => _n('Event', 'Events', 1),
-                    'consumable.reference' => __('Reference'),
-                    'consumable.item'      => ConsumableItem::getTypeName(1),
-                    'consumable.remaining' => __('Remaining'),
-                    'consumable.entity'    => Entity::getTypeName(1)];
+      $tags = [
+         'consumable.action'        => _n('Event', 'Events', 1),
+         'consumable.reference'     => __('Reference'),
+         'consumable.item'          => ConsumableItem::getTypeName(1),
+         'consumable.remaining'     => __('Remaining'),
+         'consumable.stock_target'  => __('Stock target'),
+         'consumable.to_order'      => __('To order'),
+         'consumable.entity'        => Entity::getTypeName(1)
+      ];
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(['tag'   => $tag,
