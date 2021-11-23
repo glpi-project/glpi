@@ -237,9 +237,9 @@ class Item_OperatingSystem extends DbTestCase {
       $this->setEntity('Root Entity', true);
       $this->boolean($ios->can($ios->getID(), READ))->isTrue();
       $this->setEntity('_test_child_1', true);
-      $this->boolean($ios->can($ios->getID(), READ))->isTrue();
+      $this->boolean($ios->can($ios->getID(), READ))->isFalse();
       $this->setEntity('_test_child_2', true);
-      $this->boolean($ios->can($ios->getID(), READ))->isTrue();
+      $this->boolean($ios->can($ios->getID(), READ))->isFalse();
 
       $this->setEntity('_test_root_entity', true);
       $this->boolean(

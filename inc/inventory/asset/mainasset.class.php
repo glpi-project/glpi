@@ -563,12 +563,11 @@ abstract class MainAsset extends InventoryAsset
       $val->states_id = $this->states_id_default ?? $this->item->fields['states_id'] ?? 0;
       $val->locations_id = $this->locations_id ?? $val->locations_id ?? $this->item->fields['locations_id'] ?? 0;
 
-      if (!isset($_SESSION['glpiactive_entity'])) {
-         //set entity in session; if it does not exists
-         $_SESSION['glpiactiveentities']        = [$entities_id];
-         $_SESSION['glpiactiveentities_string'] = $entities_id;
-         $_SESSION['glpiactive_entity']         = $entities_id;
-      }
+      $orig_entity = $_SESSION['glpiactive_entity'] ?? null;
+      //set entity in session; if it does not exists
+      $_SESSION['glpiactiveentities']        = [$entities_id];
+      $_SESSION['glpiactiveentities_string'] = $entities_id;
+      $_SESSION['glpiactive_entity']         = $entities_id;
 
       //handleLinks relies on $this->data; update it before the call
       $this->handleLinks();
@@ -578,13 +577,13 @@ abstract class MainAsset extends InventoryAsset
          unset($input['ap_port']);
          unset($input['firmware']);
          $items_id = $this->item->add(Toolbox::addslashes_deep($input));
-         $this->agent->update(['id' => $this->agent->fields['id'], 'items_id' => $items_id]);
+         $this->agent->update(['id' => $this->agent->fields['id'], 'items_id' => $items_id, 'entities_id' => $entities_id]);
 
          $this->with_history = false;//do not handle history on main item first import
       } else {
          $this->item->getFromDB($items_id);
          if (($this->agent->fields['items_id'] ?? 0) != $items_id) {
-            $this->agent->update(['id' => $this->agent->fields['id'], 'items_id' => $items_id]);
+            $this->agent->update(['id' => $this->agent->fields['id'], 'items_id' => $items_id, 'entities_id' => $entities_id]);
          }
       }
 
@@ -658,6 +657,11 @@ abstract class MainAsset extends InventoryAsset
       if (!$this->isAccessPoint($val)) {
          $this->inventoried[] = clone $this->item;
       }
+
+      if ($orig_entity !== null) {
+         $_SESSION['glpiactive_entity'] = $orig_entity;
+      }
+
    }
 
    /**
