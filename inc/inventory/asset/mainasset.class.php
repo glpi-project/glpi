@@ -667,11 +667,11 @@ abstract class MainAsset extends InventoryAsset
       }
 
       if ($orig_glpiactiveentities !== null) {
-         $_SESSION['glpiactiveentities'] = $orig_glpiactive_entity;
+         $_SESSION['glpiactiveentities'] = $orig_glpiactiveentities;
       }
 
       if ($orig_glpiactiveentities_string !== null) {
-         $_SESSION['glpiactiveentities_string'] = $orig_glpiactive_entity;
+         $_SESSION['glpiactiveentities_string'] = $orig_glpiactiveentities_string;
       }
    }
 
