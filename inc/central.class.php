@@ -472,20 +472,18 @@ class Central extends CommonGLPI {
                "install/install.php");
          }
 
-         $myisam_tables = $DB->getMyIsamTables();
-         if (count($myisam_tables)) {
-            $messages['warnings'][] = sprintf(
-               __('%1$s tables not migrated to InnoDB engine.'),
-               count($myisam_tables)
-            );
+         if (($myisam_count = $DB->getMyIsamTables()->count()) > 0) {
+            $messages['warnings'][] = sprintf(__('%d tables are using the deprecated MyISAM storage engine.'), $myisam_count)
+               . ' '
+               . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:myisam_to_innodb');
          }
-         if (($not_tstamp = $DB->getTzIncompatibleTables()->count()) > 0) {
-            $messages['warnings'][] = sprintf(__('%1$s columns are not still using datetime field type.'), $not_tstamp)
+         if (($datetime_count = $DB->getTzIncompatibleTables()->count()) > 0) {
+            $messages['warnings'][] = sprintf(__('%1$s columns are using the deprecated datetime storage field type.'), $datetime_count)
                . ' '
                . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:timestamps');
          }
-         if (($non_utf8mb4_tables = $DB->getNonUtf8mb4Tables()->count()) > 0) {
-            $messages['warnings'][] = sprintf(__('%1$s tables not migrated to utf8mb4 collation.'), $non_utf8mb4_tables)
+         if (($non_utf8mb4_count = $DB->getNonUtf8mb4Tables()->count()) > 0) {
+            $messages['warnings'][] = sprintf(__('%1$s tables are using the deprecated utf8mb3 storage charset.'), $non_utf8mb4_count)
                . ' '
                . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:utf8mb4');
          }

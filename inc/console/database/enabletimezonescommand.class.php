@@ -88,7 +88,7 @@ class EnableTimezonesCommand extends AbstractCommand {
       }
 
       if (($datetime_count = $this->db->getTzIncompatibleTables()->count()) > 0) {
-         $message = sprintf(__('%1$s columns are not still using datetime field type.'), $datetime_count)
+         $message = sprintf(__('%1$s columns are using the deprecated datetime storage field type.'), $datetime_count)
             . ' '
             . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:timestamps');
          throw new \Glpi\Console\Exception\EarlyExitException(

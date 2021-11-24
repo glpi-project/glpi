@@ -225,6 +225,19 @@ class Migration {
 
 
    /**
+    * Display an error
+    *
+    * @param string  $msg Message to display
+    *
+    * @return void
+   **/
+   function displayError(string $message): void {
+      $this->outputMessage($message, 'error');
+      $this->log($message, true);
+   }
+
+
+   /**
     * Define field's format
     *
     * @param string  $type          can be bool, char, string, integer, date, datetime, text, longtext or autoincrement
@@ -1184,6 +1197,11 @@ class Migration {
             $format    = 'comment';
             $verbosity = OutputInterface::VERBOSITY_NORMAL;
             break;
+         case 'error':
+            $msg       = str_pad("!! {$msg}", 100);
+            $format    = 'error';
+            $verbosity = OutputInterface::VERBOSITY_QUIET;
+            break;
          default:
             $msg       = str_pad($msg, 100);
             $format    = 'comment';
@@ -1219,6 +1237,7 @@ class Migration {
             $msg = '<h3>' . $msg . '</h3>';
             break;
          case 'warning':
+         case 'error':
             $msg = '<div class="migred"><p>' . $msg . '</p></div>';
             break;
          case 'strong':

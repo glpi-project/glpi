@@ -112,19 +112,17 @@ class Utf8mb4Command extends AbstractCommand {
 
       // Check that all tables are using InnoDB engine
       if (($myisam_count = $this->db->getMyIsamTables()->count()) > 0) {
-         $msg = sprintf(
-            __('%d tables are still using MyISAM storage engine. Run "php bin/console glpi:migration:myisam_to_innodb" to fix this.'),
-            $myisam_count
-         );
+         $msg = sprintf(__('%d tables are using the deprecated MyISAM storage engine.'), $myisam_count)
+            . ' '
+            . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:myisam_to_innodb');
          throw new \Glpi\Console\Exception\EarlyExitException('<error>' . $msg . '</error>', self::ERROR_INNODB_REQUIRED);
       }
 
       // Check that all tables are using the "Dynamic" row format
       if ($this->db->listTables('glpi\_%', ['row_format' => ['COMPACT', 'REDUNDANT']])->count() > 0) {
-         $msg = sprintf(
-            __('%d tables are still using Compact or Redundant row format. Run "php bin/console glpi:migration:dynamic_row_format" to fix this.'),
-            $myisam_count
-         );
+         $msg = sprintf(__('%d tables are still using Compact or Redundant row format.'), $myisam_count)
+            . ' '
+            . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:dynamic_row_format');
          throw new \Glpi\Console\Exception\EarlyExitException('<error>' . $msg . '</error>', self::ERROR_DYNAMIC_ROW_FORMAT_REQUIRED);
       }
    }
