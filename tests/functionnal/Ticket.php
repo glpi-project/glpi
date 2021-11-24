@@ -3751,7 +3751,7 @@ HTML
       $this->array($team[\Supplier::class])->isEmpty();
 
       // Delete team members
-      $ticket->deleteTeamMember(\User::class, 1);
+      $ticket->deleteTeamMember(\User::class, 1, ['role' => \CommonITILActor::ASSIGN]);
 
       //Reload ticket from DB
       $ticket->getFromDB($tickets_id);

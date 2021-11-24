@@ -243,7 +243,7 @@ class Project extends DbTestCase {
       $this->array($team[\Group::class])->isEmpty();
 
       // Delete team members
-      $project->deleteTeamMember(\User::class, 1);
+      $project->deleteTeamMember(\User::class, 1, ['role' => Team::ROLE_MEMBER]);
 
       //Reload ticket from DB
       $project->getFromDB($projects_id);
