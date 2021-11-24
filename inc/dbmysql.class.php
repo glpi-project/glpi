@@ -112,20 +112,20 @@ class DBmysql {
    public $dbsslcacipher      = null;
 
    /**
-    * Determine if utf8mb4 should be used for DB connection and tables altering operations.
-    * Defaults to false to keep backward compatibility with old DB.
-    *
-    * @var bool
-    */
-   public $use_utf8mb4 = false;
-
-   /**
     * Determine if warnings related to MySQL deprecations should be logged too.
     * Defaults to false as this option should only on development/test environment.
     *
     * @var bool
     */
    public $log_deprecation_warnings = false;
+
+   /**
+    * Determine if utf8mb4 should be used for DB connection and tables altering operations.
+    * Defaults to false to keep backward compatibility with old DB.
+    *
+    * @var bool
+    */
+   public $use_utf8mb4 = false;
 
 
    /** Is it a first connection ?
@@ -599,9 +599,11 @@ class DBmysql {
    /**
     * Returns tables not using "utf8mb4_unicode_ci" collation.
     *
+    * @param bool $exclude_plugins
+    *
     * @return DBmysqlIterator
     */
-   public function getNonUtf8mb4Tables(): DBmysqlIterator {
+   public function getNonUtf8mb4Tables(bool $exclude_plugins = false): DBmysqlIterator {
 
       // Find tables that does not use utf8mb4 collation
       $tables_query = [
@@ -645,10 +647,16 @@ class DBmysql {
          ],
       ];
 
+      if ($exclude_plugins) {
+         $tables_query['WHERE'][] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'glpi\_plugin\_%']]];
+         $columns_query['WHERE'][] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'glpi\_plugin\_%']]];
+      }
+
       $iterator = $this->request([
          'SELECT'   => ['TABLE_NAME'],
          'DISTINCT' => true,
          'FROM'     => new QueryUnion([$tables_query, $columns_query], true),
+         'ORDER'    => ['TABLE_NAME']
       ]);
 
       return $iterator;
@@ -1745,5 +1753,21 @@ class DBmysql {
       if (!$stmt->execute()) {
          trigger_error($stmt->error, E_USER_ERROR);
       }
+   }
+
+   /**
+    * Return configuration boolean properties computed using current state of tables.
+    *
+    * @return array
+    */
+   public function getComputedConfigBooleanFlags(): array {
+      $config_flags = [];
+
+      if ($this->getNonUtf8mb4Tables(true)->count() === 0) {
+         // Use utf8mb4 charset for update process if there all core table are using this charset.
+         $config_flags[DBConnection::PROPERTY_USE_UTF8MB4] = true;
+      }
+
+      return $config_flags;
    }
 }

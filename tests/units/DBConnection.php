@@ -78,8 +78,8 @@ class DBConnection extends \GLPITestCase {
             'user'                     => 'glpi',
             'password'                 => 'secret',
             'name'                     => 'glpi_db',
-            'use_utf8mb4'              => false,
             'log_deprecation_warnings' => false,
+            'use_utf8mb4'              => false,
             'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
@@ -96,8 +96,8 @@ PHP
             'user'                     => 'root',
             'password'                 => '',
             'name'                     => 'db',
-            'use_utf8mb4'              => true,
             'log_deprecation_warnings' => false,
+            'use_utf8mb4'              => true,
             'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
@@ -115,8 +115,8 @@ PHP
             'user'                     => 'root',
             'password'                 => 'iT4%dU9*rI9#jT8>',
             'name'                     => 'db',
-            'use_utf8mb4'              => false,
             'log_deprecation_warnings' => true,
+            'use_utf8mb4'              => false,
             'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
@@ -140,13 +140,13 @@ PHP
       string $user,
       string $password,
       string $name,
-      bool $use_utf8mb4,
       bool $log_deprecation_warnings,
+      bool $use_utf8mb4,
       string $expected
    ): void {
       vfsStream::setup('config-dir', null, []);
 
-      $result = \DBConnection::createMainConfig($host, $user, $password, $name, $use_utf8mb4, $log_deprecation_warnings, vfsStream::url('config-dir'));
+      $result = \DBConnection::createMainConfig($host, $user, $password, $name, $log_deprecation_warnings, $use_utf8mb4, vfsStream::url('config-dir'));
       $this->boolean($result)->isTrue();
 
       $path = vfsStream::url('config-dir/config_db.php');
@@ -161,8 +161,8 @@ PHP
             'user'                     => 'glpi',
             'password'                 => 'secret',
             'name'                     => 'glpi_db',
-            'use_utf8mb4'              => false,
             'log_deprecation_warnings' => false,
+            'use_utf8mb4'              => false,
             'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
@@ -180,8 +180,8 @@ PHP
             'user'                     => 'root',
             'password'                 => '',
             'name'                     => 'db',
-            'use_utf8mb4'              => true,
             'log_deprecation_warnings' => false,
+            'use_utf8mb4'              => true,
             'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
@@ -204,8 +204,8 @@ PHP
             'user'                     => 'root',
             'password'                 => 'iT4%dU9*rI9#jT8>',
             'name'                     => 'db',
-            'use_utf8mb4'              => false,
             'log_deprecation_warnings' => true,
+            'use_utf8mb4'              => false,
             'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
@@ -230,13 +230,13 @@ PHP
       string $user,
       string $password,
       string $name,
-      bool $use_utf8mb4,
       bool $log_deprecation_warnings,
+      bool $use_utf8mb4,
       string $expected
    ): void {
       vfsStream::setup('config-dir', null, []);
 
-      $result = \DBConnection::createSlaveConnectionFile($host, $user, $password, $name, $use_utf8mb4, $log_deprecation_warnings, vfsStream::url('config-dir'));
+      $result = \DBConnection::createSlaveConnectionFile($host, $user, $password, $name, $log_deprecation_warnings, $use_utf8mb4, vfsStream::url('config-dir'));
       $this->boolean($result)->isTrue();
 
       $path = vfsStream::url('config-dir/config_db_slave.php');
@@ -244,22 +244,28 @@ PHP
       $this->string(file_get_contents($path))->isEqualTo($expected, file_get_contents($path));
    }
 
-   protected function configFilesProvider() {
+   protected function updatePropertiesProvider() {
       return [
          [
-            // Add a new boolean (true) variable without slave
+            // Add new boolean + string variables, update float + array variables without slave
             'init_config_files'     => [
                'config_db.php' => <<<PHP
 <?php
 class DB extends DBmysql {
    public \$dbuser      = 'glpi';
    public \$dbdefault   = 'glpi';
+   public \$prop        = ['e'];
+   public \$version     = 9.4;
 }
 PHP
                ,
             ],
-            'name'                  => 'utf8mb4',
-            'new_value'             => true,
+            'properties'            => [
+               'use_utf8mb4' => false,
+               'test'        => 'foobar',
+               'version'     => 10.2,
+               'prop'        => ['a', 'b'],
+            ],
             'update_slave'          => true, // Will have no effect as slave not exists
             'expected_config_files' => [
                'config_db.php' => <<<PHP
@@ -267,20 +273,27 @@ PHP
 class DB extends DBmysql {
    public \$dbuser      = 'glpi';
    public \$dbdefault   = 'glpi';
-   public \$utf8mb4 = true;
+   public \$prop        = array (
+  0 => 'a',
+  1 => 'b',
+);
+   public \$version     = 10.2;
+   public \$use_utf8mb4 = false;
+   public \$test = 'foobar';
 }
 PHP
                ,
             ],
          ],
          [
-            // Add a new boolean (false) variable with slave
+            // Add new boolean + float + array variables, update string variables with slave
             'init_config_files'     => [
                'config_db.php' => <<<PHP
 <?php
 class DB extends DBmysql {
    public \$dbuser      = 'glpi';
    public \$dbdefault   = 'glpi';
+   public \$test        = 'foobar';
 }
 PHP
                ,
@@ -290,12 +303,17 @@ class DB extends DBmysql {
    public \$dbhost      = 'slave.domain.org';
    public \$dbuser      = 'glpi';
    public \$dbdefault   = 'glpi';
+   public \$test        = 'foobar';
 }
 PHP
                ,
             ],
-            'name'                  => 'utf8mb4',
-            'new_value'             => false,
+            'properties'            => [
+               'use_utf8mb4' => false,
+               'test'        => 'barfoo',
+               'version'     => 10.2,
+               'prop'        => ['a', 'b'],
+            ],
             'update_slave'          => true,
             'expected_config_files' => [
                'config_db.php' => <<<PHP
@@ -303,56 +321,12 @@ PHP
 class DB extends DBmysql {
    public \$dbuser      = 'glpi';
    public \$dbdefault   = 'glpi';
-   public \$utf8mb4 = false;
-}
-PHP
-               ,
-               'config_db_slave.php' => <<<PHP
-<?php
-class DB extends DBmysql {
-   public \$dbhost      = 'slave.domain.org';
-   public \$dbuser      = 'glpi';
-   public \$dbdefault   = 'glpi';
-   public \$utf8mb4 = false;
-}
-PHP
-               ,
-            ],
-         ],
-         [
-            // Update an array variable without updating slave
-            'init_config_files'     => [
-               'config_db.php' => <<<PHP
-<?php
-class DB extends DBmysql {
-   public \$dbuser      = 'glpi';
-   public \$dbdefault   = 'glpi';
-   public \$prop        = ['first', 'second'];
-}
-PHP
-               ,
-               'config_db_slave.php' => <<<PHP
-<?php
-class DB extends DBmysql {
-   public \$dbhost      = 'slave.domain.org';
-   public \$dbuser      = 'glpi';
-   public \$dbdefault   = 'glpi';
-}
-PHP
-               ,
-            ],
-            'name'                  => 'prop',
-            'new_value'             => ['new', 'old'],
-            'update_slave'          => false,
-            'expected_config_files' => [
-               'config_db.php' => <<<PHP
-<?php
-class DB extends DBmysql {
-   public \$dbuser      = 'glpi';
-   public \$dbdefault   = 'glpi';
-   public \$prop        = array (
-  0 => 'new',
-  1 => 'old',
+   public \$test        = 'barfoo';
+   public \$use_utf8mb4 = false;
+   public \$version = 10.2;
+   public \$prop = array (
+  0 => 'a',
+  1 => 'b',
 );
 }
 PHP
@@ -363,51 +337,45 @@ class DB extends DBmysql {
    public \$dbhost      = 'slave.domain.org';
    public \$dbuser      = 'glpi';
    public \$dbdefault   = 'glpi';
+   public \$test        = 'barfoo';
+   public \$use_utf8mb4 = false;
+   public \$version = 10.2;
+   public \$prop = array (
+  0 => 'a',
+  1 => 'b',
+);
 }
 PHP
                ,
             ],
          ],
          [
-            // Update a string variable
+            // Add new float variable, update string variable without updating slave
             'init_config_files'     => [
                'config_db.php' => <<<PHP
 <?php
 class DB extends DBmysql {
    public \$dbuser      = 'glpi';
    public \$dbdefault   = 'glpi';
+   public \$test        = 'foobar';
 }
 PHP
                ,
-            ],
-            'name'                  => 'dbdefault',
-            'new_value'             => 'glpi_b',
-            'update_slave'          => false,
-            'expected_config_files' => [
-               'config_db.php' => <<<PHP
+               'config_db_slave.php' => <<<PHP
 <?php
 class DB extends DBmysql {
-   public \$dbuser      = 'glpi';
-   public \$dbdefault   = 'glpi_b';
-}
-PHP
-               ,
-            ],
-         ],
-         [
-            // Add a float variable
-            'init_config_files'     => [
-               'config_db.php' => <<<PHP
-<?php
-class DB extends DBmysql {
+   public \$dbhost      = 'slave.domain.org';
    public \$dbuser      = 'glpi';
    public \$dbdefault   = 'glpi';
+   public \$test        = 'foobar';
 }
 PHP
                ,
             ],
-            'name'                  => 'version',
-            'new_value'             => 20.3,
+            'properties'            => [
+               'test'    => 'barfoo',
+               'version' => 10.2,
+            ],
             'update_slave'          => false,
             'expected_config_files' => [
                'config_db.php' => <<<PHP
@@ -415,7 +383,18 @@ PHP
 class DB extends DBmysql {
    public \$dbuser      = 'glpi';
    public \$dbdefault   = 'glpi';
-   public \$version = 20.3;
+   public \$test        = 'barfoo';
+   public \$version = 10.2;
+}
+PHP
+               ,
+               'config_db_slave.php' => <<<PHP
+<?php
+class DB extends DBmysql {
+   public \$dbhost      = 'slave.domain.org';
+   public \$dbuser      = 'glpi';
+   public \$dbdefault   = 'glpi';
+   public \$test        = 'foobar';
 }
 PHP
                ,
@@ -424,8 +403,10 @@ PHP
          [
             // Cannot update a config that not exists
             'init_config_files'     => [],
-            'name'                  => 'version',
-            'new_value'             => 20.3,
+            'properties'            => [
+               'test'    => 'foobar',
+               'version' => 10.2,
+            ],
             'update_slave'          => false,
             'expected_config_files' => [],
             'expected_result'       => false,
@@ -434,19 +415,42 @@ PHP
    }
 
    /**
-    * @dataProvider configFilesProvider
+    * @dataProvider updatePropertiesProvider
     */
    public function testUpdateConfigProperty(
       array $init_config_files,
-      string $name,
-      $new_value,
+      array $properties,
       bool $update_slave,
       array $expected_config_files,
       bool $expected_result = true
    ) {
       vfsStream::setup('config-dir', null, $init_config_files);
 
-      $result = \DBConnection::updateConfigProperty($name, $new_value, $update_slave, vfsStream::url('config-dir'));
+      foreach ($properties as $name => $new_value) {
+         $result = \DBConnection::updateConfigProperty($name, $new_value, $update_slave, vfsStream::url('config-dir'));
+         $this->boolean($result)->isEqualTo($expected_result);
+      }
+
+      foreach ($expected_config_files as $filename => $contents) {
+         $path = vfsStream::url('config-dir/' . $filename);
+         $this->boolean(file_exists($path))->isTrue();
+         $this->string(file_get_contents($path))->isEqualTo($contents);
+      }
+   }
+
+   /**
+    * @dataProvider updatePropertiesProvider
+    */
+   public function testUpdateConfigProperties(
+      array $init_config_files,
+      array $properties,
+      bool $update_slave,
+      array $expected_config_files,
+      bool $expected_result = true
+   ) {
+      vfsStream::setup('config-dir', null, $init_config_files);
+
+      $result = \DBConnection::updateConfigProperties($properties, $update_slave, vfsStream::url('config-dir'));
       $this->boolean($result)->isEqualTo($expected_result);
 
       foreach ($expected_config_files as $filename => $contents) {

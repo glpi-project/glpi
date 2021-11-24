@@ -5,7 +5,7 @@ mkdir -p $(dirname "$LOG_FILE")
 
 bin/console glpi:database:configure \
   --config-dir=./tests/config --no-interaction --ansi \
-  --reconfigure --db-name=glpitest-9.5.3 --db-host=db --db-user=root --use-utf8mb4 \
+  --reconfigure --db-name=glpitest-9.5.3 --db-host=db --db-user=root \
   --log-deprecation-warnings
 
 # Force ROW_FORMAT=DYNAMIC to prevent tests MySQL 5.6 and MariaDB 10.1 databases
@@ -59,7 +59,7 @@ bin/console glpi:database:check_schema_integrity --config-dir=./tests/config --a
 # Check updated data
 bin/console glpi:database:configure \
   --config-dir=./tests/config --no-interaction --ansi \
-  --reconfigure --db-name=glpi --db-host=db --db-user=root --use-utf8mb4 \
+  --reconfigure --db-name=glpi --db-host=db --db-user=root \
   --log-deprecation-warnings
 mkdir -p ./tests/files/_cache
 tests/bin/test-updated-data --host=db --user=root --fresh-db=glpi --updated-db=glpitest-9.5.3 --ansi --no-interaction

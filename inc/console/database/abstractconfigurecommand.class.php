@@ -38,8 +38,10 @@ if (!defined('GLPI_ROOT')) {
 
 use Config;
 use DBConnection;
+use DBmysql;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
+use mysqli;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -183,13 +185,19 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
     *
     * @param InputInterface $input
     * @param OutputInterface $output
+    * @param bool $auto_config_flags
     * @param bool $use_utf8mb4
     *
     * @throws InvalidArgumentException
     *
     * @return string
     */
-   protected function configureDatabase(InputInterface $input, OutputInterface $output, bool $use_utf8mb4) {
+   protected function configureDatabase(
+      InputInterface $input,
+      OutputInterface $output,
+      bool $auto_config_flags = true,
+      bool $use_utf8mb4 = false
+   ) {
 
       $db_pass     = $input->getOption('db-password');
       $db_host     = $input->getOption('db-host');
@@ -226,7 +234,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          return self::ABORTED_BY_USER;
       }
 
-      $mysqli = new \mysqli();
+      $mysqli = new mysqli();
       if (intval($db_port) > 0) {
          // Network port
          @$mysqli->connect($db_host, $db_user, $db_pass, null, $db_port);
@@ -245,8 +253,6 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          return self::ERROR_DB_CONNECTION_FAILED;
       }
 
-      DBConnection::setConnectionCharset($mysqli, $use_utf8mb4);
-
       ob_start();
       $db_version_data = $mysqli->query('SELECT version()')->fetch_array();
       $checkdb = Config::displayCheckDbEngine(false, $db_version_data[0]);
@@ -256,13 +262,30 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          return self::ERROR_DB_ENGINE_UNSUPPORTED;
       }
 
+      if ($auto_config_flags) {
+         // Instanciate DB to be able to compute boolean properties flags.
+         $db = new class($db_hostport, $db_user, $db_pass, $db_name) extends DBmysql {
+            public function __construct($dbhost, $dbuser, $dbpassword, $dbdefault) {
+               $this->dbhost     = $dbhost;
+               $this->dbuser     = $dbuser;
+               $this->dbpassword = $dbpassword;
+               $this->dbdefault  = $dbdefault;
+               parent::__construct();
+            }
+         };
+         $config_flags = $db->getComputedConfigBooleanFlags();
+         $use_utf8mb4 = $config_flags[DBConnection::PROPERTY_USE_UTF8MB4] ?? $use_utf8mb4;
+      }
+
+      DBConnection::setConnectionCharset($mysqli, $use_utf8mb4);
+
       $db_name = $mysqli->real_escape_string($db_name);
 
       $output->writeln(
          '<comment>' . __('Saving configuration file...') . '</comment>',
          OutputInterface::VERBOSITY_VERBOSE
       );
-      if (!DBConnection::createMainConfig($db_hostport, $db_user, $db_pass, $db_name, $use_utf8mb4, $log_deprecation_warnings)) {
+      if (!DBConnection::createMainConfig($db_hostport, $db_user, $db_pass, $db_name, $log_deprecation_warnings, $use_utf8mb4)) {
          $message = sprintf(
             __('Cannot write configuration file "%s".'),
             GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'config_db.php'
@@ -273,6 +296,23 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          );
          return self::ERROR_DB_CONFIG_FILE_NOT_SAVED;
       }
+
+      // Set $db instance to use new connection properties
+      $this->db = new class($db_hostport, $db_user, $db_pass, $db_name, $log_deprecation_warnings, $use_utf8mb4) extends DBmysql {
+         public function __construct($dbhost, $dbuser, $dbpassword, $dbdefault, $log_deprecation_warnings, $use_utf8mb4) {
+            $this->dbhost      = $dbhost;
+            $this->dbuser      = $dbuser;
+            $this->dbpassword  = $dbpassword;
+            $this->dbdefault   = $dbdefault;
+            $this->use_utf8mb4 = $use_utf8mb4;
+
+            $this->log_deprecation_warnings = $log_deprecation_warnings;
+
+            $this->clearSchemaCache();
+
+            parent::__construct();
+         }
+      };
 
       return self::SUCCESS;
    }

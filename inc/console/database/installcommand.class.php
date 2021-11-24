@@ -36,7 +36,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use DB;
 use DBConnection;
 use DBmysql;
 use Glpi\Cache\CacheManager;
@@ -151,8 +150,6 @@ class InstallCommand extends AbstractConfigureCommand {
 
    protected function execute(InputInterface $input, OutputInterface $output) {
 
-      global $DB;
-
       $default_language = $input->getOption('default-language');
       $force            = $input->getOption('force');
 
@@ -168,7 +165,7 @@ class InstallCommand extends AbstractConfigureCommand {
       }
 
       if (!$this->isDbAlreadyConfigured() || $input->getOption('reconfigure')) {
-         $result = $this->configureDatabase($input, $output, true);
+         $result = $this->configureDatabase($input, $output, false, true);
 
          if (self::ABORTED_BY_USER === $result) {
             return 0; // Considered as success
@@ -184,6 +181,7 @@ class InstallCommand extends AbstractConfigureCommand {
          $db_pass     = $input->getOption('db-password');
       } else {
          // Ask to confirm installation based on existing configuration.
+         global $DB;
 
          // $DB->dbhost can be array when using round robin feature
          $db_hostport = is_array($DB->dbhost) ? $DB->dbhost[0] : $DB->dbhost;
@@ -216,6 +214,8 @@ class InstallCommand extends AbstractConfigureCommand {
             );
             return 0;
          }
+
+         $this->db = $DB;
       }
 
       // Create security key
@@ -296,33 +296,13 @@ class InstallCommand extends AbstractConfigureCommand {
          return self::ERROR_DB_ALREADY_CONTAINS_TABLES;
       }
 
-      if ($DB instanceof DBmysql) {
-         // If global $DB is set at this point, it means that configuration file has been loaded
-         // prior to reconfiguration.
-         // As configuration is part of a class, it cannot be reloaded and class properties
-         // have to be updated manually in order to make `Toolbox::createSchema()` work correctly.
-         $DB->dbhost      = $db_hostport;
-         $DB->dbuser      = $db_user;
-         $DB->dbpassword  = rawurlencode($db_pass);
-         $DB->dbdefault   = $db_name;
-         $DB->use_utf8mb4 = true;
-         $DB->log_deprecation_warnings = $input->getOption('log-deprecation-warnings');
-         $DB->clearSchemaCache();
-         $DB->connect();
-
-         $db_instance = $DB;
-      } else {
-         include_once (GLPI_CONFIG_DIR . "/config_db.php");
-         $db_instance = new DB();
-      }
-
       $output->writeln(
          '<comment>' . __('Loading default schema...') . '</comment>',
          OutputInterface::VERBOSITY_VERBOSE
       );
       // TODO Get rid of output buffering
       ob_start();
-      Toolbox::createSchema($default_language, $db_instance);
+      Toolbox::createSchema($default_language, $this->db);
       $message = ob_get_clean();
       if (!empty($message)) {
          $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
