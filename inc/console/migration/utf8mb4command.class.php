@@ -190,7 +190,7 @@ class Utf8mb4Command extends AbstractCommand {
          $this->output->write(PHP_EOL);
       }
 
-      if (!DBConnection::updateConfigProperty('use_utf8mb4', true)) {
+      if (!DBConnection::updateConfigProperty(DBConnection::PROPERTY_USE_UTF8MB4, true)) {
          throw new \Glpi\Console\Exception\EarlyExitException(
             '<error>' . __('Unable to update DB configuration file.') . '</error>',
             self::ERROR_UNABLE_TO_UPDATE_CONFIG

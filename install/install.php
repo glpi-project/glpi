@@ -264,7 +264,7 @@ function step4 ($databasename, $newdatabasename) {
          prev_form($host, $user, $password);
 
       } else {
-         if (DBConnection::createMainConfig($host, $user, $password, $databasename, true)) {
+         if (DBConnection::createMainConfig($host, $user, $password, $databasename, false, true)) {
             Toolbox::createSchema($_SESSION["glpilanguage"]);
             echo "<p>".__('OK - database was initialized')."</p>";
 
@@ -281,7 +281,7 @@ function step4 ($databasename, $newdatabasename) {
       if ($link->select_db($newdatabasename)) {
          echo "<p>".__('Database created')."</p>";
 
-         if (DBConnection::createMainConfig($host, $user, $password, $newdatabasename, true)) {
+         if (DBConnection::createMainConfig($host, $user, $password, $newdatabasename, false, true)) {
             Toolbox::createSchema($_SESSION["glpilanguage"]);
             echo "<p>".__('OK - database was initialized')."</p>";
             next_form();
@@ -296,7 +296,7 @@ function step4 ($databasename, $newdatabasename) {
             echo "<p>".__('Database created')."</p>";
 
             if ($link->select_db($newdatabasename)
-                && DBConnection::createMainConfig($host, $user, $password, $newdatabasename, true)) {
+                && DBConnection::createMainConfig($host, $user, $password, $newdatabasename, false, true)) {
 
                Toolbox::createSchema($_SESSION["glpilanguage"]);
                echo "<p>".__('OK - database was initialized')."</p>";
@@ -396,13 +396,8 @@ function update1($DBname) {
       include_once (GLPI_CONFIG_DIR . "/config_db.php");
       global $DB;
       $DB = new DB();
-      if ($DB->listTables('glpi\_%', ['table_collation' => 'utf8mb4_unicode_ci'])->count() > 0) {
-         // Use utf8mb4 charset for update process if at least one table already uses this charset.
-         if ($success = DBConnection::updateConfigProperty('use_utf8mb4', true)) {
-            $DB->use_utf8mb4 = true;
-            $DB->setConnectionCharset();
-         }
-      }
+
+      $success = DBConnection::updateConfigProperties($DB->getComputedConfigBooleanFlags());
    }
    if ($success) {
       $from_install = true;

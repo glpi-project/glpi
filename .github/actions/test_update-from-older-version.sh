@@ -79,6 +79,6 @@ bin/console glpi:database:check_schema_integrity --config-dir=./tests/config --a
 # Check updated data
 bin/console glpi:database:configure \
   --config-dir=./tests/config --no-interaction --ansi \
-  --reconfigure --db-name=glpi --db-host=db --db-user=root --use-utf8mb4 \
+  --reconfigure --db-name=glpi --db-host=db --db-user=root \
   --log-deprecation-warnings
 tests/bin/test-updated-data --host=db --user=root --fresh-db=glpi --updated-db=glpitest080 --ansi --no-interaction

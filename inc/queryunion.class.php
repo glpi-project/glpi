@@ -90,8 +90,6 @@ class QueryUnion extends AbstractQuery {
     * @return string
     */
    public function getQuery() {
-      global $DB;
-
       $union_queries = $this->getQueries();
       if (empty($union_queries
       )) {
@@ -112,7 +110,7 @@ class QueryUnion extends AbstractQuery {
       $alias = $this->alias !== null
          ? $this->alias
          : 'union_' . md5($query);
-      $query .= ' AS ' . $DB->quoteName($alias);
+      $query .= ' AS ' . DBmysql::quoteName($alias);
 
       return $query;
    }
