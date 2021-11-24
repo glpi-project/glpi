@@ -37,7 +37,7 @@
          <h5 class="card-title">
             <a href="{{ itemtype|itemtype_form_path(item_fields.id) }}">
                <i class="{{ itemtype|itemtype_icon }}" title="{{ itemtype|itemtype_name }}"></i>
-               {{ item_fields.name }}
+               {{ item_fields.name|verbatim_value }}
             </a>
             <button type="button" class="btn-link" onclick="$(this).closest('.item-details-panel').remove()"><i class="fas fa-times"></i></button>
          </h5>
