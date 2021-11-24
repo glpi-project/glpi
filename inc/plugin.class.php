@@ -374,7 +374,7 @@ class Plugin extends CommonDBTM {
       });
 
       foreach ($plugin_folders as $plugin_folder) {
-         $mofile = str_replace($locales_dir, GLPI_LOCAL_I18N_DIR . '/'. $plugin_folder . '/', $mofile);
+         $mofile = GLPI_LOCAL_I18N_DIR . "/$plugin_folder/$coretrytoload.mo";
          $phpfile = str_replace('.mo', '.php', $mofile);
 
          // Load local PHP file if it exists
