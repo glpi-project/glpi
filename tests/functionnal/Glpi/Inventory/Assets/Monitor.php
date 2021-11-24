@@ -256,7 +256,7 @@ class Monitor extends AbstractInventoryAsset {
       $inventory = $this->doInventory($xml_source_2, true);
 
       $computers_2_id = $inventory->getItem()->fields['id'];
-      $this->integer($computers_id)->isGreaterThan(0);
+      $this->integer($computers_2_id)->isGreaterThan(0);
 
       //we still have only 1 monitor
       $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);

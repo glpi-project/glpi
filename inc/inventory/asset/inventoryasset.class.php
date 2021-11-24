@@ -331,7 +331,8 @@ abstract class InventoryAsset
    }
 
    /**
-    * Add or move a computer_item
+    * Add or move a computer_item.
+    * If the computer is item is already linked to another computer, existing link will be replaced by new link.
     *
     * @param array $input
     *
