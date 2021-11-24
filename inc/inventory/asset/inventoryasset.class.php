@@ -345,10 +345,16 @@ abstract class InventoryAsset
          'items_id' => $input['items_id']
       ]);
 
-      if (isset($citem->fields['id'])) {
-         $citem->delete(['id' => $citem->fields['id']], true, $this->withHistory());
+      $itemtype = $input['itemtype'];
+      $item = new $itemtype;
+      $item->getFromDb($input['items_id']);
+
+      if (($item->fields['is_global'] ?? 0) == 0) {
+         if (isset($citem->fields['id'])) {
+            $citem->delete(['id' => $citem->fields['id']], true, $this->withHistory());
+         }
+         $citem->add($input, [], $this->withHistory());
       }
-      $citem->add($input, [], $this->withHistory());
    }
 
 }
