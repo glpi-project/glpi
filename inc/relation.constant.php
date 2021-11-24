@@ -679,10 +679,10 @@ $RELATION = [
    ],
 
    'glpi_knowbaseitemcategories' => [
-      'glpi_itilcategories'         => 'knowbaseitemcategories_id',
-      'glpi_knowbaseitemcategories' => 'knowbaseitemcategories_id',
-      'glpi_knowbaseitems'          => 'knowbaseitemcategories_id',
-      'glpi_taskcategories'         => 'knowbaseitemcategories_id',
+      'glpi_itilcategories'            => 'knowbaseitemcategories_id',
+      'glpi_knowbaseitemcategories'    => 'knowbaseitemcategories_id',
+      'glpi_knowbaseitems_categories'  => 'knowbaseitemcategories_id',
+      'glpi_taskcategories'            => 'knowbaseitemcategories_id',
    ],
 
    'glpi_knowbaseitems' => [
@@ -694,6 +694,7 @@ $RELATION = [
       '_glpi_knowbaseitems_revisions'  => 'knowbaseitems_id',
       '_glpi_knowbaseitems_users'      => 'knowbaseitems_id',
       '_glpi_knowbaseitemtranslations' => 'knowbaseitems_id',
+      '_glpi_knowbaseitems_categories' => 'knowbaseitems_id',
    ],
 
    'glpi_knowbaseitems_comments' => [

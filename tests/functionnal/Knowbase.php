@@ -38,7 +38,7 @@ use DbTestCase;
 
 class Knowbase extends DbTestCase {
 
-   public function testGetJstreeCategoryList() {
+   public function testGetTreeCategoryList() {
 
       // Create empty categories
       $kbcat = new \KnowbaseItemCategory();
@@ -194,34 +194,41 @@ class Knowbase extends DbTestCase {
       $this->integer($kbitem_target_id)->isGreaterThan(0);
 
       // Check that tree contains root + category branch containing kb item of user
-      $tree = \Knowbase::getJstreeCategoryList();
+      $tree = \Knowbase::getTreeCategoryList();
       $this->array($tree)->isEqualTo(
          [
-            [
-               'id' => "$cat_1_1_2_id",
-               'parent' => "$cat_1_1_id",
-               'text' => 'cat 1.1.2 <strong title="This category contains articles">(1)</strong>',
-               'a_attr' => ['data-id' => "$cat_1_1_2_id"]
-            ],
-            [
-               'id' => "$cat_1_1_id",
-               'parent' => "$cat_1_id",
-               'text' => 'cat 1.1',
-               'a_attr' => ['data-id' => "$cat_1_1_id"]
-            ],
-            [
-               'id' => "$cat_1_3_id",
-               'parent' => "$cat_1_id",
-               'text' => 'cat 1.3 <strong title="This category contains articles">(1)</strong>',
-               'a_attr' => ['data-id' => "$cat_1_3_id"]
-            ],
-            [
-               'id' => "$cat_1_id",
-               'parent' => '0',
-               'text' => 'cat 1',
-               'a_attr' => ['data-id' => "$cat_1_id"]
-            ],
-            $expected_root_cat
+            array_merge($expected_root_cat, [
+               'children' => [
+                  [
+                     'key'      => $cat_1_id,
+                     'parent'   => 0,
+                     'title'    => 'cat 1',
+                     'a_attr'   => ['data-id' => $cat_1_id],
+                     'children' => [
+                        [
+                           'key'      => $cat_1_1_id,
+                           'parent'   => $cat_1_id,
+                           'title'    => 'cat 1.1',
+                           'a_attr'   => ['data-id' => $cat_1_1_id],
+                           'children' => [
+                              [
+                                 'key'    => $cat_1_1_2_id,
+                                 'parent' => $cat_1_1_id,
+                                 'title'  => 'cat 1.1.2 <span class="badge bg-azure-lt" title="This category contains articles">1</span>',
+                                 'a_attr' => ['data-id' => $cat_1_1_2_id]
+                              ],
+                           ]
+                        ],
+                        [
+                           'key'    => $cat_1_3_id,
+                           'parent' => $cat_1_id,
+                           'title'  => 'cat 1.3 <span class="badge bg-azure-lt" title="This category contains articles">1</span>',
+                           'a_attr' => ['data-id' => $cat_1_3_id]
+                        ]
+                     ]
+                  ],
+               ]
+            ]),
          ]
       );
 

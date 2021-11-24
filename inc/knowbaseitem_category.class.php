@@ -132,7 +132,7 @@ class KnowbaseItem_Category extends CommonDBRelation {
             );
          }
 
-         $type_name = __('Category');
+         $type_name = _n('Category', 'Categories', 1);
 
          return self::createTabEntry($type_name, $nb);
       }

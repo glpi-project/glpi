@@ -1907,14 +1907,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       ];
 
       $tab[] = [
-         'id'                 => '4',
-         'table'              => 'glpi_knowbaseitemcategories',
-         'field'              => 'name',
-         'name'               => _n('Category', 'Categories', 1),
-         'datatype'           => 'dropdown'
-      ];
-
-      $tab[] = [
          'id'                 => '6',
          'table'              => $this->getTable(),
          'field'              => 'name',
