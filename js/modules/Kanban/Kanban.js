@@ -2440,7 +2440,6 @@ class GLPIKanbanRights {
                   id: member_items_id,
                   name: l.attr('data-name')
                });
-               //member_item += (l.attr('data-name') || `${member_itemtype} (${member_items_id})`).trim();
                l.append(`
                      <div class="member-details">
                         ${member_item}
