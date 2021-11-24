@@ -2081,23 +2081,21 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
    }
 
    public function addTeamMember(string $itemtype, int $items_id, array $params = []): bool {
-      global $DB;
-
-      $result = $DB->insert(ProjectTaskTeam::getTable(), [
-         'projecttasks_id' => $this->getID(),
-         'itemtype'        => $itemtype,
-         'items_id'        => $items_id
+      $projecttask_team = new ProjectTaskTeam();
+      $result = $projecttask_team->add([
+         'projects_id'  => $this->getID(),
+         'itemtype'     => $itemtype,
+         'items_id'     => $items_id
       ]);
       return (bool) $result;
    }
 
    public function deleteTeamMember(string $itemtype, int $items_id, array $params = []): bool {
-      global $DB;
-
-      $result = $DB->delete(ProjectTaskTeam::getTable(), [
-         'projecttasks_id' => $this->getID(),
-         'itemtype'        => $itemtype,
-         'items_id'        => $items_id
+      $projecttask_team = new ProjectTaskTeam();
+      $result = $projecttask_team->delete([
+         'projects_id'  => $this->getID(),
+         'itemtype'     => $itemtype,
+         'items_id'     => $items_id
       ]);
       return (bool) $result;
    }

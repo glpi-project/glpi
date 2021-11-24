@@ -2457,9 +2457,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
    }
 
    public function addTeamMember(string $itemtype, int $items_id, array $params = []): bool {
-      global $DB;
-
-      $result = $DB->insert(ProjectTeam::getTable(), [
+      $project_team = new ProjectTeam();
+      $result = $project_team->add([
          'projects_id'  => $this->getID(),
          'itemtype'     => $itemtype,
          'items_id'     => $items_id
@@ -2468,9 +2467,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
    }
 
    public function deleteTeamMember(string $itemtype, int $items_id, array $params = []): bool {
-      global $DB;
-
-      $result = $DB->delete(ProjectTeam::getTable(), [
+      $project_team = new ProjectTeam();
+      $result = $project_team->delete([
          'projects_id'  => $this->getID(),
          'itemtype'     => $itemtype,
          'items_id'     => $items_id

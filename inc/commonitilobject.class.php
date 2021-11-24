@@ -7813,8 +7813,6 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
    public function addTeamMember(string $itemtype, int $items_id, array $params = []): bool {
-      global $DB;
-
       $role = $params['role'] ?? CommonITILActor::ASSIGN;
 
       /** @var CommonDBTM $link_class */
@@ -7835,17 +7833,17 @@ abstract class CommonITILObject extends CommonDBTM {
          return false;
       }
 
-      $result = $DB->insert($link_class::getTable(), [
-         static::getForeignKeyField()        => $this->getID(),
-         [$itemtype, 'getForeignKeyField']() => $items_id,
-         'type'                              => $role
+      $link_item = new $link_class();
+      /** @var CommonDBTM $itemtype */
+      $result = $link_item->add([
+         static::getForeignKeyField()     => $this->getID(),
+         $itemtype::getForeignKeyField()  => $items_id,
+         'type'                           => $role
       ]);
       return (bool) $result;
    }
 
    public function deleteTeamMember(string $itemtype, int $items_id, array $params = []): bool {
-      global $DB;
-
       $role = $params['role'] ?? CommonITILActor::ASSIGN;
 
       /** @var CommonDBTM $link_class */
@@ -7866,18 +7864,18 @@ abstract class CommonITILObject extends CommonDBTM {
          return false;
       }
 
-      $result = $DB->delete($link_class::getTable(), [
-         static::getForeignKeyField()        => $this->getID(),
-         [$itemtype, 'getForeignKeyField']() => $items_id,
-         'type'                              => $role
+      $link_item = new $link_class();
+      /** @var CommonDBTM $itemtype */
+      $result = $link_item->delete([
+         static::getForeignKeyField()     => $this->getID(),
+         $itemtype::getForeignKeyField()  => $items_id,
+         'type'                           => $role
       ]);
       return (bool) $result;
    }
 
    public function getTeam(): array {
       global $DB;
-
-      //TODO Need name and some other info
 
       $team = [
          'User'      => [],
