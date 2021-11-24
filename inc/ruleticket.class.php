@@ -380,7 +380,7 @@ class RuleTicket extends Rule {
                   }
                   break;
 
-               case 'regex_result';
+               case 'regex_result':
                   if ($action->fields["field"] == "_affect_itilcategory_by_code") {
                      if (isset($this->regex_results[0])) {
                         $regexvalue = RuleAction::getRegexResultById($action->fields["value"],

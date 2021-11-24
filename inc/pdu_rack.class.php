@@ -715,18 +715,17 @@ JAVASCRIPT;
     */
    static function getOtherSide($side) {
       switch ($side) {
-         case self::SIDE_TOP;
+         case self::SIDE_TOP:
             return self::SIDE_BOTTOM;
-            break;
-         case self::SIDE_BOTTOM;
+           case self::SIDE_BOTTOM:
+         case self::SIDE_BOTTOM:
             return self::SIDE_TOP;
-            break;
-         case self::SIDE_LEFT;
+           case self::SIDE_LEFT:
+         case self::SIDE_LEFT:
             return self::SIDE_RIGHT;
-            break;
-         case self::SIDE_RIGHT;
+           case self::SIDE_RIGHT:
+         case self::SIDE_RIGHT:
             return self::SIDE_LEFT;
-            break;
       }
       return false;
    }
