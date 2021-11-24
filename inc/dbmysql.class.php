@@ -127,6 +127,14 @@ class DBmysql {
     */
    public $use_utf8mb4 = false;
 
+   /**
+    * Determine if MyISAM engine usage should be allowed for tables creation/altering operations.
+    * Defaults to true to keep backward compatibility with old DB.
+    *
+    * @var bool
+    */
+   public $allow_myisam = true;
+
 
    /** Is it a first connection ?
     * Indicates if the first connection attempt is successful or not
@@ -311,28 +319,7 @@ class DBmysql {
          $TIMER->start();
       }
 
-      if (preg_match('/(ALTER|CREATE)\s+TABLE\s+/', $query)) {
-         $matches = [];
-         if ($this->use_utf8mb4 && preg_match('/(?<invalid>(utf8(_[^\';\s]+)?))[\';\s]/', $query, $matches)) {
-            trigger_error(
-               sprintf(
-                  'Usage of "%s" charset/collation detected, should be "%s"',
-                  $matches['invalid'],
-                  str_replace('utf8', 'utf8mb4', $matches['invalid'])
-               ),
-               E_USER_WARNING
-            );
-         } else if (!$this->use_utf8mb4 && preg_match('/(?<invalid>(utf8mb4(_[^\';\s]+)?))[\';\s]/', $query, $matches)) {
-            trigger_error(
-               sprintf(
-                  'Usage of "%s" charset/collation detected, should be "%s"',
-                  $matches['invalid'],
-                  str_replace('utf8mb4', 'utf8', $matches['invalid'])
-               ),
-               E_USER_WARNING
-            );
-         }
-      }
+      $this->checkForDeprecatedTableOptions($query);
 
       $res = $this->dbh->query($query);
       if (!$res) {
@@ -589,10 +576,20 @@ class DBmysql {
    /**
     * Returns tables using "MyIsam" engine.
     *
+    * @param bool $exclude_plugins
+    *
     * @return DBmysqlIterator
     */
-   public function getMyIsamTables(): DBmysqlIterator {
-      $iterator = $this->listTables('glpi\_%', ['engine' => 'MyIsam']);
+   public function getMyIsamTables(bool $exclude_plugins = false): DBmysqlIterator {
+      $criteria = [
+         'engine' => 'MyIsam',
+      ];
+      if ($exclude_plugins) {
+         $criteria[] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'glpi\_plugin\_%']]];
+      }
+
+      $iterator = $this->listTables('glpi\_%', $criteria);
+
       return $iterator;
    }
 
@@ -1756,6 +1753,47 @@ class DBmysql {
    }
 
    /**
+    * Check for deprecated table options during ALTER/CREATE TABLE queries.
+    *
+    * @param string $query
+    *
+    * @return void
+    */
+   private function checkForDeprecatedTableOptions(string $query): void {
+      if (preg_match('/(ALTER|CREATE)\s+TABLE\s+/', $query) !== 1) {
+         return;
+      }
+
+      // Wrong UTF8 charset/collation
+      $matches = [];
+      if ($this->use_utf8mb4 && preg_match('/(?<invalid>(utf8(_[^\';\s]+)?))([\';\s]|$)/', $query, $matches)) {
+         trigger_error(
+            sprintf(
+               'Usage of "%s" charset/collation detected, should be "%s"',
+               $matches['invalid'],
+               str_replace('utf8', 'utf8mb4', $matches['invalid'])
+            ),
+            E_USER_WARNING
+         );
+      } else if (!$this->use_utf8mb4 && preg_match('/(?<invalid>(utf8mb4(_[^\';\s]+)?))([\';\s]|$)/', $query, $matches)) {
+         trigger_error(
+            sprintf(
+               'Usage of "%s" charset/collation detected, should be "%s"',
+               $matches['invalid'],
+               str_replace('utf8mb4', 'utf8', $matches['invalid'])
+            ),
+            E_USER_WARNING
+         );
+      }
+
+      // Usage of MyISAM
+      $matches = [];
+      if (!$this->allow_myisam && preg_match('/[)\s]engine\s*=\s*\'?myisam([\';\s]|$)/i', $query, $matches)) {
+         trigger_error('Usage of "MyISAM" engine is discouraged, please use "InnoDB" engine.', E_USER_WARNING);
+      }
+   }
+
+   /**
     * Return configuration boolean properties computed using current state of tables.
     *
     * @return array
@@ -1766,6 +1804,11 @@ class DBmysql {
       if ($this->getNonUtf8mb4Tables(true)->count() === 0) {
          // Use utf8mb4 charset for update process if there all core table are using this charset.
          $config_flags[DBConnection::PROPERTY_USE_UTF8MB4] = true;
+      }
+
+      if ($this->getMyIsamTables(true)->count() === 0) {
+         // Disallow MyISAM if there is no core table still using this engine.
+         $config_flags[DBConnection::PROPERTY_ALLOW_MYISAM] = false;
       }
 
       return $config_flags;

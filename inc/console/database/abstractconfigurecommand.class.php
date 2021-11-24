@@ -187,6 +187,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
     * @param OutputInterface $output
     * @param bool $auto_config_flags
     * @param bool $use_utf8mb4
+    * @param bool $allow_myisam
     *
     * @throws InvalidArgumentException
     *
@@ -196,7 +197,8 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
       InputInterface $input,
       OutputInterface $output,
       bool $auto_config_flags = true,
-      bool $use_utf8mb4 = false
+      bool $use_utf8mb4 = false,
+      bool $allow_myisam = true
    ) {
 
       $db_pass     = $input->getOption('db-password');
@@ -275,6 +277,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          };
          $config_flags = $db->getComputedConfigBooleanFlags();
          $use_utf8mb4 = $config_flags[DBConnection::PROPERTY_USE_UTF8MB4] ?? $use_utf8mb4;
+         $allow_myisam = $config_flags[DBConnection::PROPERTY_ALLOW_MYISAM] ?? $allow_myisam;
       }
 
       DBConnection::setConnectionCharset($mysqli, $use_utf8mb4);
@@ -285,7 +288,16 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          '<comment>' . __('Saving configuration file...') . '</comment>',
          OutputInterface::VERBOSITY_VERBOSE
       );
-      if (!DBConnection::createMainConfig($db_hostport, $db_user, $db_pass, $db_name, $log_deprecation_warnings, $use_utf8mb4)) {
+      $result = DBConnection::createMainConfig(
+         $db_hostport,
+         $db_user,
+         $db_pass,
+         $db_name,
+         $log_deprecation_warnings,
+         $use_utf8mb4,
+         $allow_myisam
+      );
+      if (!$result) {
          $message = sprintf(
             __('Cannot write configuration file "%s".'),
             GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'config_db.php'
@@ -298,13 +310,30 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
       }
 
       // Set $db instance to use new connection properties
-      $this->db = new class($db_hostport, $db_user, $db_pass, $db_name, $log_deprecation_warnings, $use_utf8mb4) extends DBmysql {
-         public function __construct($dbhost, $dbuser, $dbpassword, $dbdefault, $log_deprecation_warnings, $use_utf8mb4) {
-            $this->dbhost      = $dbhost;
-            $this->dbuser      = $dbuser;
-            $this->dbpassword  = $dbpassword;
-            $this->dbdefault   = $dbdefault;
-            $this->use_utf8mb4 = $use_utf8mb4;
+      $this->db = new class(
+         $db_hostport,
+         $db_user,
+         $db_pass,
+         $db_name,
+         $log_deprecation_warnings,
+         $use_utf8mb4,
+         $allow_myisam
+      ) extends DBmysql {
+         public function __construct(
+            $dbhost,
+            $dbuser,
+            $dbpassword,
+            $dbdefault,
+            $log_deprecation_warnings,
+            $use_utf8mb4,
+            $allow_myisam
+         ) {
+            $this->dbhost       = $dbhost;
+            $this->dbuser       = $dbuser;
+            $this->dbpassword   = $dbpassword;
+            $this->dbdefault    = $dbdefault;
+            $this->use_utf8mb4  = $use_utf8mb4;
+            $this->allow_myisam = $allow_myisam;
 
             $this->log_deprecation_warnings = $log_deprecation_warnings;
 

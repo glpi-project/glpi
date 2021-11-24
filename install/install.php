@@ -264,7 +264,16 @@ function step4 ($databasename, $newdatabasename) {
          prev_form($host, $user, $password);
 
       } else {
-         if (DBConnection::createMainConfig($host, $user, $password, $databasename, false, true)) {
+         $success = DBConnection::createMainConfig(
+            $host,
+            $user,
+            $password,
+            $databasename,
+            false,
+            true,
+            false
+         );
+         if ($success) {
             Toolbox::createSchema($_SESSION["glpilanguage"]);
             echo "<p>".__('OK - database was initialized')."</p>";
 
@@ -281,7 +290,16 @@ function step4 ($databasename, $newdatabasename) {
       if ($link->select_db($newdatabasename)) {
          echo "<p>".__('Database created')."</p>";
 
-         if (DBConnection::createMainConfig($host, $user, $password, $newdatabasename, false, true)) {
+         $success = DBConnection::createMainConfig(
+            $host,
+            $user,
+            $password,
+            $newdatabasename,
+            false,
+            true,
+            false
+         );
+         if ($success) {
             Toolbox::createSchema($_SESSION["glpilanguage"]);
             echo "<p>".__('OK - database was initialized')."</p>";
             next_form();
@@ -295,9 +313,21 @@ function step4 ($databasename, $newdatabasename) {
          if ($link->query("CREATE DATABASE IF NOT EXISTS `".$newdatabasename."`")) {
             echo "<p>".__('Database created')."</p>";
 
-            if ($link->select_db($newdatabasename)
-                && DBConnection::createMainConfig($host, $user, $password, $newdatabasename, false, true)) {
+            $select_db = $link->select_db($newdatabasename);
+            $success = false;
+            if ($select_db) {
+               $success = DBConnection::createMainConfig(
+                  $host,
+                  $user,
+                  $password,
+                  $newdatabasename,
+                  false,
+                  true,
+                  false
+               );
+            }
 
+            if ($success) {
                Toolbox::createSchema($_SESSION["glpilanguage"]);
                echo "<p>".__('OK - database was initialized')."</p>";
                next_form();
