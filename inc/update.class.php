@@ -189,6 +189,31 @@ class Update {
          $function();
       }
 
+      if (($myisam_count = $DB->getMyIsamTables()->count()) > 0) {
+         $message = sprintf(__('%d tables are using the deprecated MyISAM storage engine.'), $myisam_count)
+            . ' '
+            . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:myisam_to_innodb');
+         $this->migration->displayError($message);
+      }
+      if (($datetime_count = $DB->getTzIncompatibleTables()->count()) > 0) {
+         $message = sprintf(__('%1$s columns are using the deprecated datetime storage field type.'), $datetime_count)
+            . ' '
+            . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:timestamps');
+         $this->migration->displayError($message);
+      }
+      /*
+       * FIXME: Remove `$DB->use_utf8mb4` condition GLPI 10.1.
+       * This condition is here only to prevent having this message on every migration GLPI 10.0.
+       * Indeed, as migration command was not available in previous versions, users may not understand
+       * why this is considered as an error.
+       */
+      if ($DB->use_utf8mb4 && ($non_utf8mb4_count = $DB->getNonUtf8mb4Tables()->count()) > 0) {
+         $message = sprintf(__('%1$s tables are using the deprecated utf8mb3 storage charset.'), $non_utf8mb4_count)
+            . ' '
+            . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:utf8mb4');
+         $this->migration->displayError($message);
+      }
+
       // Update version number and default langage and new version_founded ---- LEAVE AT THE END
       Config::setConfigurationValues('core', ['version'             => GLPI_VERSION,
                                               'dbversion'           => GLPI_SCHEMA_VERSION,
