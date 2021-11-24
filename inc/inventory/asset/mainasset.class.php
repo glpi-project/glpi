@@ -597,9 +597,10 @@ abstract class MainAsset extends InventoryAsset
 
       if ($entities_id != $this->item->fields['entities_id']) {
          //asset entity has changed in rules; do transfer
-         if ($CFG_GLPI['transfers_id_auto']) {
+         $doTransfer = \Entity::getUsedConfig('transfers_id', $this->item->fields['entities_id']);
+         if ($doTransfer) {
             $transfer = new Transfer();
-            $transfer->getFromDB($CFG_GLPI['transfers_id_auto']);
+            $transfer->getFromDB($doTransfer);
             $item_to_transfer = [$this->itemtype => [$items_id => $items_id]];
             $transfer->moveItems($item_to_transfer, $entities_id, $transfer->fields);
          }

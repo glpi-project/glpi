@@ -84,7 +84,7 @@ class Entity extends CommonTreeDropdown {
          // Inventory
          'entities_id_software', 'level', 'name',
          'completename', 'entities_id',
-         'ancestors_cache', 'sons_cache', 'comment'
+         'ancestors_cache', 'sons_cache', 'comment', 'transfers_id'
       ],
       // Inventory
       'infocom' => [
