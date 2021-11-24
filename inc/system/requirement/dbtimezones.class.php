@@ -56,15 +56,39 @@ class DbTimezones extends AbstractRequirement {
    }
 
    protected function check() {
-      $tz_warning = '';
-      $tz_available = $this->db->areTimezonesAvailable($tz_warning);
-
-      if (!$tz_available) {
+      $mysql_db_res = $this->db->request('SHOW DATABASES LIKE ' . $this->db->quoteValue('mysql'));
+      if ($mysql_db_res->count() === 0) {
          $this->validated = false;
-         $this->validation_messages[] = $tz_warning;
-      } else {
-         $this->validated = true;
-         $this->validation_messages[] = __('Timezones seems loaded in database');
+         $this->validation_messages[] = __('Access to timezone database (mysql) is not allowed.');
+         return;
       }
+
+      $tz_table_res = $this->db->request(
+         'SHOW TABLES FROM '
+         . $this->db->quoteName('mysql')
+         . ' LIKE '
+         . $this->db->quoteValue('time_zone_name')
+      );
+      if ($tz_table_res->count() === 0) {
+         $this->validated = false;
+         $this->validation_messages[] = __('Access to timezone table (mysql.time_zone_name) is not allowed.');
+         return;
+      }
+
+      $iterator = $this->db->request(
+         [
+            'COUNT'  => 'cpt',
+            'FROM'   => 'mysql.time_zone_name',
+         ]
+      );
+      $result = $iterator->current();
+      if ($result['cpt'] === 0) {
+         $this->validated = false;
+         $this->validation_messages[] = __('Timezones seems not loaded, see https://glpi-install.readthedocs.io/en/latest/timezones.html.');
+         return;
+      }
+
+      $this->validated = true;
+      $this->validation_messages[] = __('Timezones seems loaded in database.');
    }
 }

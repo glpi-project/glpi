@@ -78,6 +78,7 @@ class DBConnection extends \GLPITestCase {
             'user'                     => 'glpi',
             'password'                 => 'secret',
             'name'                     => 'glpi_db',
+            'use_timezones'            => false,
             'log_deprecation_warnings' => false,
             'use_utf8mb4'              => false,
             'allow_myisam'             => true,
@@ -97,6 +98,7 @@ PHP
             'user'                     => 'root',
             'password'                 => '',
             'name'                     => 'db',
+            'use_timezones'            => true,
             'log_deprecation_warnings' => false,
             'use_utf8mb4'              => true,
             'allow_myisam'             => false,
@@ -107,6 +109,7 @@ class DB extends DBmysql {
    public $dbuser = 'root';
    public $dbpassword = '';
    public $dbdefault = 'db';
+   public $use_timezones = true;
    public $use_utf8mb4 = true;
    public $allow_myisam = false;
 }
@@ -118,6 +121,7 @@ PHP
             'user'                     => 'root',
             'password'                 => 'iT4%dU9*rI9#jT8>',
             'name'                     => 'db',
+            'use_timezones'            => false,
             'log_deprecation_warnings' => true,
             'use_utf8mb4'              => false,
             'allow_myisam'             => true,
@@ -144,6 +148,7 @@ PHP
       string $user,
       string $password,
       string $name,
+      bool $use_timezones,
       bool $log_deprecation_warnings,
       bool $use_utf8mb4,
       bool $allow_myisam,
@@ -156,6 +161,7 @@ PHP
          $user,
          $password,
          $name,
+         $use_timezones,
          $log_deprecation_warnings,
          $use_utf8mb4,
          $allow_myisam,
@@ -175,6 +181,7 @@ PHP
             'user'                     => 'glpi',
             'password'                 => 'secret',
             'name'                     => 'glpi_db',
+            'use_timezones'            => false,
             'log_deprecation_warnings' => false,
             'use_utf8mb4'              => false,
             'allow_myisam'             => true,
@@ -195,6 +202,7 @@ PHP
             'user'                     => 'root',
             'password'                 => '',
             'name'                     => 'db',
+            'use_timezones'            => true,
             'log_deprecation_warnings' => false,
             'use_utf8mb4'              => true,
             'allow_myisam'             => false,
@@ -210,6 +218,7 @@ class DB extends DBmysql {
    public $dbuser = 'root';
    public $dbpassword = '';
    public $dbdefault = 'db';
+   public $use_timezones = true;
    public $use_utf8mb4 = true;
    public $allow_myisam = false;
 }
@@ -221,6 +230,7 @@ PHP
             'user'                     => 'root',
             'password'                 => 'iT4%dU9*rI9#jT8>',
             'name'                     => 'db',
+            'use_timezones'            => false,
             'log_deprecation_warnings' => true,
             'use_utf8mb4'              => false,
             'allow_myisam'             => true,
@@ -248,6 +258,7 @@ PHP
       string $user,
       string $password,
       string $name,
+      bool $use_timezones,
       bool $log_deprecation_warnings,
       bool $use_utf8mb4,
       bool $allow_myisam,
@@ -260,6 +271,7 @@ PHP
          $user,
          $password,
          $name,
+         $use_timezones,
          $log_deprecation_warnings,
          $use_utf8mb4,
          $allow_myisam,

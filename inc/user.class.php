@@ -2247,12 +2247,10 @@ JAVASCRIPT;
          echo "<tr class='tab_bg_1'><td></td><td></td></tr>";
       }
 
-      $tz_warning = '';
-      $tz_available = $DB->areTimezonesAvailable($tz_warning);
-      if ($tz_available || Session::haveRight("config", READ)) {
+      if ($DB->use_timezones || Session::haveRight("config", READ)) {
          echo "<tr class='tab_bg_1'>";
          echo "<td><label for='timezone'>".__('Time zone')."</label></td><td>";
-         if ($tz_available) {
+         if ($DB->use_timezones) {
             $timezones = $DB->getTimezones();
             Dropdown::showFromArray(
                'timezone',
@@ -2264,8 +2262,9 @@ JAVASCRIPT;
             );
          } else if (Session::haveRight("config", READ)) {
             // Display a warning but only if user is more or less an admin
-            echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\">";
-            echo $tz_warning;
+            echo __('Timezone usage has not been activated.')
+               . ' '
+               . sprintf(__('Run the "php bin/console %1$s" command to activate it.'), 'glpi:database:enable_timezones');
          }
          echo "</td></tr>";
       }
@@ -2704,12 +2703,10 @@ JAVASCRIPT;
             echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
          }
 
-         $tz_warning = '';
-         $tz_available = $DB->areTimezonesAvailable($tz_warning);
-         if ($tz_available || Session::haveRight("config", READ)) {
+         if ($DB->use_timezones || Session::haveRight("config", READ)) {
             echo "<tr class='tab_bg_1'>";
             echo "<td><label for='timezone'>".__('Time zone')."</label></td><td>";
-            if ($tz_available) {
+            if ($DB->use_timezones) {
                $timezones = $DB->getTimezones();
                Dropdown::showFromArray(
                   'timezone',
@@ -2721,8 +2718,9 @@ JAVASCRIPT;
                );
             } else if (Session::haveRight("config", READ)) {
                // Display a warning but only if user is more or less an admin
-               echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\">";
-               echo $tz_warning;
+               echo __('Timezone usage has not been activated.')
+                  . ' '
+                  . sprintf(__('Run the "php bin/console %1$s" command to activate it.'), 'glpi:database:enable_timezones');
             }
             echo "</td>";
             if ($extauth

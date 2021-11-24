@@ -127,6 +127,7 @@ The present file will list all changes made to the project; according to the
 - `Config::displayCheckExtensions()`
 - `Config::getCache()`
 - `DBMysql::affected_rows()`
+- `DBMysql::areTimezonesAvailable()`
 - `DBMysql::data_seek()`
 - `DBMysql::fetch_array()`
 - `DBMysql::fetch_assoc()`
@@ -138,6 +139,7 @@ The present file will list all changes made to the project; according to the
 - `DBMysql::insert_id()`
 - `DBMysql::isMySQLStrictMode()`
 - `DBMysql::list_fields()`
+- `DBMysql::notTzMigrated()`
 - `DBMysql::num_fields()`
 - `DbUtils::getRealQueryForTreeItem()`
 - `Dropdown::getDropdownNetpoint()`

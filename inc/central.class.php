@@ -479,13 +479,10 @@ class Central extends CommonGLPI {
                count($myisam_tables)
             );
          }
-         if ($DB->areTimezonesAvailable()) {
-            $not_tstamp = $DB->notTzMigrated();
-            if ($not_tstamp > 0) {
-               $messages['warnings'][] = sprintf(__('%1$s columns are not compatible with timezones usage.'), $not_tstamp)
-                  . ' '
-                  . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:timestamps');
-            }
+         if ($DB->use_timezones && ($not_tstamp = $DB->getTzIncompatibleTables()->count()) > 0) {
+            $messages['warnings'][] = sprintf(__('%1$s columns are not compatible with timezones usage.'), $not_tstamp)
+               . ' '
+               . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:timestamps');
          }
          if (($non_utf8mb4_tables = $DB->getNonUtf8mb4Tables()->count()) > 0) {
             $messages['warnings'][] = sprintf(__('%1$s tables not migrated to utf8mb4 collation.'), $non_utf8mb4_tables)

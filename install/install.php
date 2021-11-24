@@ -34,6 +34,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\System\Requirement\DbConfiguration;
 use Glpi\System\Requirement\DbEngine;
+use Glpi\System\Requirement\DbTimezones;
 use Glpi\System\RequirementsManager;
 
 define('GLPI_ROOT', realpath('..'));
@@ -255,6 +256,13 @@ function step4 ($databasename, $newdatabasename) {
    $databasename    = $link->real_escape_string($databasename);
    $newdatabasename = $link->real_escape_string($newdatabasename);
 
+   $db = new class($mysqli) extends DBmysql {
+      public function __construct($dbh) {
+         $this->dbh = $dbh;
+      }
+   };
+   $timezones_requirement = new DbTimezones($db);
+
    if (!empty($databasename)) { // use db already created
       $DB_selected = $link->select_db($databasename);
 
@@ -269,6 +277,7 @@ function step4 ($databasename, $newdatabasename) {
             $user,
             $password,
             $databasename,
+            $timezones_requirement->isValidated(),
             false,
             true,
             false
@@ -295,6 +304,7 @@ function step4 ($databasename, $newdatabasename) {
             $user,
             $password,
             $newdatabasename,
+            $timezones_requirement->isValidated(),
             false,
             true,
             false
@@ -321,6 +331,7 @@ function step4 ($databasename, $newdatabasename) {
                   $user,
                   $password,
                   $newdatabasename,
+                  $timezones_requirement->isValidated(),
                   false,
                   true,
                   false

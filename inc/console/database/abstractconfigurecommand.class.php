@@ -41,6 +41,7 @@ use DBConnection;
 use DBmysql;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
+use Glpi\System\Requirement\DbTimezones;
 use mysqli;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Helper\Table;
@@ -282,6 +283,8 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
 
       DBConnection::setConnectionCharset($mysqli, $use_utf8mb4);
 
+      $use_timezones = $this->checkTimezonesAvailability($mysqli);
+
       $db_name = $mysqli->real_escape_string($db_name);
 
       $output->writeln(
@@ -293,6 +296,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          $db_user,
          $db_pass,
          $db_name,
+         $use_timezones,
          $log_deprecation_warnings,
          $use_utf8mb4,
          $allow_myisam
@@ -315,6 +319,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          $db_user,
          $db_pass,
          $db_name,
+         $use_timezones,
          $log_deprecation_warnings,
          $use_utf8mb4,
          $allow_myisam
@@ -324,16 +329,18 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
             $dbuser,
             $dbpassword,
             $dbdefault,
+            $use_timezones,
             $log_deprecation_warnings,
             $use_utf8mb4,
             $allow_myisam
          ) {
-            $this->dbhost       = $dbhost;
-            $this->dbuser       = $dbuser;
-            $this->dbpassword   = $dbpassword;
-            $this->dbdefault    = $dbdefault;
-            $this->use_utf8mb4  = $use_utf8mb4;
-            $this->allow_myisam = $allow_myisam;
+            $this->dbhost        = $dbhost;
+            $this->dbuser        = $dbuser;
+            $this->dbpassword    = $dbpassword;
+            $this->dbdefault     = $dbdefault;
+            $this->use_timezones = $use_timezones;
+            $this->use_utf8mb4   = $use_utf8mb4;
+            $this->allow_myisam  = $allow_myisam;
 
             $this->log_deprecation_warnings = $log_deprecation_warnings;
 
@@ -430,5 +437,56 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          $output,
          new ConfirmationQuestion(__('Do you want to continue?') . ' [Yes/no]', true)
       );
+   }
+
+   /**
+    * Check timezones availability and return availability state.
+    *
+    * @param mysqli $mysqli
+    *
+    * @return bool
+    */
+   private function checkTimezonesAvailability(mysqli $mysqli): bool {
+
+      $db = new class($mysqli) extends DBmysql {
+         public function __construct($dbh) {
+            $this->dbh = $dbh;
+         }
+      };
+      $timezones_requirement = new DbTimezones($db);
+
+      if (!$timezones_requirement->isValidated()) {
+         $message = __('Timezones usage cannot be activated due to following errors:');
+         foreach ($timezones_requirement->getValidationMessages() as $validation_message) {
+            $message .= "\n - " . $validation_message;
+         }
+         $this->output->writeln(
+            '<comment>' . $message . '</comment>',
+            OutputInterface::VERBOSITY_QUIET
+         );
+         if ($this->input->getOption('no-interaction')) {
+            $message = sprintf(
+               __('Fix them and run the "php bin/console %1$s" command to enable timezones.'),
+               'glpi:database:enable_timezones'
+            );
+            $this->output->writeln('<comment>' . $message . '</comment>', OutputInterface::VERBOSITY_QUIET);
+         } else {
+            /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
+            $question_helper = $this->getHelper('question');
+            $continue = $question_helper->ask(
+               $this->input,
+               $this->output,
+               new ConfirmationQuestion(__('Do you want to continue?') . ' [Yes/no]', true)
+            );
+            if (!$continue) {
+               throw new \Glpi\Console\Exception\EarlyExitException(
+                  '<comment>' . __('Configuration aborted.') . '</comment>',
+                  self::ABORTED_BY_USER
+               );
+            }
+         }
+      }
+
+      return $timezones_requirement->isValidated();
    }
 }
