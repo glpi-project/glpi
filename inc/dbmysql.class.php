@@ -144,6 +144,14 @@ class DBmysql {
     */
    public $allow_myisam = true;
 
+   /**
+    * Determine if datetime fields usage should be allowed for tables creation/altering operations.
+    * Defaults to true to keep backward compatibility with old DB.
+    *
+    * @var bool
+    */
+   public $allow_datetime = true;
+
 
    /** Is it a first connection ?
     * Indicates if the first connection attempt is successful or not
@@ -1785,6 +1793,12 @@ class DBmysql {
       if (!$this->allow_myisam && preg_match('/[)\s]engine\s*=\s*\'?myisam([\';\s]|$)/i', $query, $matches)) {
          trigger_error('Usage of "MyISAM" engine is discouraged, please use "InnoDB" engine.', E_USER_WARNING);
       }
+
+      // Usage of datetime
+      $matches = [];
+      if (!$this->allow_datetime && preg_match('/ datetime /i', $query, $matches)) {
+         trigger_error('Usage of "DATETIME" fields is discouraged, please use "TIMESTAMP" fields instead.', E_USER_WARNING);
+      }
    }
 
    /**
@@ -1796,6 +1810,9 @@ class DBmysql {
       $config_flags = [];
 
       if ($this->getTzIncompatibleTables(true)->count() === 0) {
+         // Disallow datetime if there is no core table still using this field type.
+         $config_flags[DBConnection::PROPERTY_ALLOW_DATETIME] = false;
+
          $timezones_requirement = new DbTimezones($this);
          if ($timezones_requirement->isValidated()) {
             // Activate timezone usage if timezones are available and all tables are already migrated.

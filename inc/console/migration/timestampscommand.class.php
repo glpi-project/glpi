@@ -205,14 +205,13 @@ class TimestampsCommand extends AbstractCommand {
          $this->output->write(PHP_EOL);
       }
 
+      $properties_to_update = [
+         DBConnection::PROPERTY_ALLOW_DATETIME => false,
+      ];
+
       $timezones_requirement = new DbTimezones($this->db);
       if ($timezones_requirement->isValidated()) {
-         if (!DBConnection::updateConfigProperty(DBConnection::PROPERTY_USE_TIMEZONES, true)) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
-               '<error>' . __('Unable to update DB configuration file.') . '</error>',
-               self::ERROR_UNABLE_TO_UPDATE_CONFIG
-            );
-         }
+         $properties_to_update[DBConnection::PROPERTY_USE_TIMEZONES] = true;
       } else {
          $output->writeln(
             '<error>' . __('Timezones usage cannot be activated due to following errors:') . '</error>',
@@ -229,6 +228,13 @@ class TimestampsCommand extends AbstractCommand {
             'glpi:database:enable_timezones'
          );
          $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
+      }
+
+      if (!DBConnection::updateConfigProperties($properties_to_update)) {
+         throw new \Glpi\Console\Exception\EarlyExitException(
+            '<error>' . __('Unable to update DB configuration file.') . '</error>',
+            self::ERROR_UNABLE_TO_UPDATE_CONFIG
+         );
       }
 
       if ($tbl_iterator->count() > 0) {

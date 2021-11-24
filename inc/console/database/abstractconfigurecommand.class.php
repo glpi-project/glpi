@@ -189,6 +189,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
     * @param bool $auto_config_flags
     * @param bool $use_utf8mb4
     * @param bool $allow_myisam
+    * @param bool $allow_datetime
     *
     * @throws InvalidArgumentException
     *
@@ -199,7 +200,8 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
       OutputInterface $output,
       bool $auto_config_flags = true,
       bool $use_utf8mb4 = false,
-      bool $allow_myisam = true
+      bool $allow_myisam = true,
+      bool $allow_datetime = true
    ) {
 
       $db_pass     = $input->getOption('db-password');
@@ -279,11 +281,13 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          $config_flags = $db->getComputedConfigBooleanFlags();
          $use_utf8mb4 = $config_flags[DBConnection::PROPERTY_USE_UTF8MB4] ?? $use_utf8mb4;
          $allow_myisam = $config_flags[DBConnection::PROPERTY_ALLOW_MYISAM] ?? $allow_myisam;
+         $allow_datetime = $config_flags[DBConnection::PROPERTY_ALLOW_DATETIME] ?? $allow_datetime;
       }
 
       DBConnection::setConnectionCharset($mysqli, $use_utf8mb4);
 
-      $use_timezones = $this->checkTimezonesAvailability($mysqli);
+      $are_timezones_available = $this->checkTimezonesAvailability($mysqli);
+      $use_timezones = !$allow_datetime && $are_timezones_available;
 
       $db_name = $mysqli->real_escape_string($db_name);
 
@@ -299,7 +303,8 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          $use_timezones,
          $log_deprecation_warnings,
          $use_utf8mb4,
-         $allow_myisam
+         $allow_myisam,
+         $allow_datetime
       );
       if (!$result) {
          $message = sprintf(
@@ -322,7 +327,8 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
          $use_timezones,
          $log_deprecation_warnings,
          $use_utf8mb4,
-         $allow_myisam
+         $allow_myisam,
+         $allow_datetime
       ) extends DBmysql {
          public function __construct(
             $dbhost,
@@ -332,15 +338,18 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
             $use_timezones,
             $log_deprecation_warnings,
             $use_utf8mb4,
-            $allow_myisam
+            $allow_myisam,
+            $allow_datetime
          ) {
-            $this->dbhost        = $dbhost;
-            $this->dbuser        = $dbuser;
-            $this->dbpassword    = $dbpassword;
-            $this->dbdefault     = $dbdefault;
-            $this->use_timezones = $use_timezones;
-            $this->use_utf8mb4   = $use_utf8mb4;
-            $this->allow_myisam  = $allow_myisam;
+            $this->dbhost     = $dbhost;
+            $this->dbuser     = $dbuser;
+            $this->dbpassword = $dbpassword;
+            $this->dbdefault  = $dbdefault;
+
+            $this->use_timezones  = $use_timezones;
+            $this->use_utf8mb4    = $use_utf8mb4;
+            $this->allow_myisam   = $allow_myisam;
+            $this->allow_datetime = $allow_datetime;
 
             $this->log_deprecation_warnings = $log_deprecation_warnings;
 
