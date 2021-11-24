@@ -45,14 +45,16 @@ $logo-light-login: "../pics/logos/logo-GLPI-250-white.png" !default;
 $logo: $logo-light;
 $logo_reduced: $logo-light-reduced;
 
-@if $is-dark {
-   @import "css/includes/dark";
-} @else {
-   @import "~@tabler/core/src/scss/tabler";
-}
+// TODO import within a control block is forbidden, a mixin is needed here
+// phpscss is lazy here, but dart-scss report an error.
+/*@if $is-dark {
+   @import "./dark";
+} @else {*/
+   @import "@tabler/core/src/scss/tabler";
+//}
 
 $ti-font-path: '../css/lib/tabler/icons/iconfont/fonts';
-@import "~@tabler/icons/iconfont/tabler-icons";
+@import "@tabler/icons/iconfont/tabler-icons";
 
 $mainmenu_bg: $dark !default;
 $mainmenu_fg: $light !default;

@@ -6517,6 +6517,8 @@ HTML;
       }
 
       $scss->addImportPath(GLPI_ROOT);
+      $scss->addImportPath(GLPI_ROOT."/css");
+      $scss->addImportPath(GLPI_ROOT."/node_modules");
 
       // Enable imports of ".scss" files from "node_modules", when path starts with "~".
       $scss->addImportPath(
@@ -6545,7 +6547,7 @@ HTML;
       } else {
          try {
             Toolbox::logDebug("Compile $file");
-            $css = $scss->compile($import);
+            $css = $scss->compileString($import)->getCss();
             if (!isset($args['nocache'])) {
                $GLPI_CACHE->set($ckey, $css);
                $GLPI_CACHE->set($fckey, $file_hash);
