@@ -227,7 +227,7 @@ class ProjectTeam extends CommonDBRelation {
       ]);
 
       foreach ($iterator as $data) {
-         $data['role'] = Team::ROLE_ASSIGNED;
+         $data['role'] = Team::ROLE_MEMBER;
          if (!isset($team[$data['itemtype']])) {
             $team[$data['itemtype']] = [];
          }

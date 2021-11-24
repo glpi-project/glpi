@@ -144,7 +144,7 @@ class ProjectTaskTeam extends CommonDBRelation {
       $iterator = $DB->request($criteria);
 
       foreach ($iterator as $data) {
-         $data['role'] = Team::ROLE_ASSIGNED;
+         $data['role'] = Team::ROLE_MEMBER;
          $team[$data['itemtype']][] = $data;
       }
 
