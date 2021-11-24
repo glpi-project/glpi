@@ -3410,7 +3410,7 @@ class Transfer extends CommonDBTM {
                   ]
                );
             }
-                break;
+            break;
 
          default : // Keep devices
             foreach (Item_Devices::getItemAffinities($itemtype) as $itemdevicetype) {
