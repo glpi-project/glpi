@@ -80,6 +80,7 @@ class DBConnection extends \GLPITestCase {
             'name'                     => 'glpi_db',
             'log_deprecation_warnings' => false,
             'use_utf8mb4'              => false,
+            'allow_myisam'             => true,
             'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
@@ -98,6 +99,7 @@ PHP
             'name'                     => 'db',
             'log_deprecation_warnings' => false,
             'use_utf8mb4'              => true,
+            'allow_myisam'             => false,
             'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
@@ -106,6 +108,7 @@ class DB extends DBmysql {
    public $dbpassword = '';
    public $dbdefault = 'db';
    public $use_utf8mb4 = true;
+   public $allow_myisam = false;
 }
 
 PHP
@@ -117,6 +120,7 @@ PHP
             'name'                     => 'db',
             'log_deprecation_warnings' => true,
             'use_utf8mb4'              => false,
+            'allow_myisam'             => true,
             'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
@@ -142,11 +146,21 @@ PHP
       string $name,
       bool $log_deprecation_warnings,
       bool $use_utf8mb4,
+      bool $allow_myisam,
       string $expected
    ): void {
       vfsStream::setup('config-dir', null, []);
 
-      $result = \DBConnection::createMainConfig($host, $user, $password, $name, $log_deprecation_warnings, $use_utf8mb4, vfsStream::url('config-dir'));
+      $result = \DBConnection::createMainConfig(
+         $host,
+         $user,
+         $password,
+         $name,
+         $log_deprecation_warnings,
+         $use_utf8mb4,
+         $allow_myisam,
+         vfsStream::url('config-dir')
+      );
       $this->boolean($result)->isTrue();
 
       $path = vfsStream::url('config-dir/config_db.php');
@@ -163,6 +177,7 @@ PHP
             'name'                     => 'glpi_db',
             'log_deprecation_warnings' => false,
             'use_utf8mb4'              => false,
+            'allow_myisam'             => true,
             'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
@@ -182,6 +197,7 @@ PHP
             'name'                     => 'db',
             'log_deprecation_warnings' => false,
             'use_utf8mb4'              => true,
+            'allow_myisam'             => false,
             'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
@@ -195,6 +211,7 @@ class DB extends DBmysql {
    public $dbpassword = '';
    public $dbdefault = 'db';
    public $use_utf8mb4 = true;
+   public $allow_myisam = false;
 }
 
 PHP
@@ -206,6 +223,7 @@ PHP
             'name'                     => 'db',
             'log_deprecation_warnings' => true,
             'use_utf8mb4'              => false,
+            'allow_myisam'             => true,
             'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
@@ -232,11 +250,21 @@ PHP
       string $name,
       bool $log_deprecation_warnings,
       bool $use_utf8mb4,
+      bool $allow_myisam,
       string $expected
    ): void {
       vfsStream::setup('config-dir', null, []);
 
-      $result = \DBConnection::createSlaveConnectionFile($host, $user, $password, $name, $log_deprecation_warnings, $use_utf8mb4, vfsStream::url('config-dir'));
+      $result = \DBConnection::createSlaveConnectionFile(
+         $host,
+         $user,
+         $password,
+         $name,
+         $log_deprecation_warnings,
+         $use_utf8mb4,
+         $allow_myisam,
+         vfsStream::url('config-dir')
+      );
       $this->boolean($result)->isTrue();
 
       $path = vfsStream::url('config-dir/config_db_slave.php');

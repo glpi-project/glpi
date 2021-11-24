@@ -441,7 +441,83 @@ OTHER EXPRESSION;"
             ->string($this->testedInstance->removeSqlRemarks($sql))->isIdenticalTo($expected);
    }
 
-   public function testCollationWarnings() {
+   protected function tableOptionProvider(): iterable {
+      yield [
+         'table_options' => '',
+         'db_properties' => [],
+         'warning'       => null,
+      ];
+
+      // Warnings related to MyISAM usage
+      $myisam_declarations = [
+         'engine=MyISAM',  // without ending `;`
+         'engine=MyISAM;', // with ending `;`
+         ' Engine =  myisam ', // mixed case
+         '   ENGINE  =    MYISAM  ', // uppercase with lots of spaces
+         " ENGINE = 'MyISAM'", // surrounded by quotes
+         "ROW_FORMAT=DYNAMIC ENGINE=MyISAM", // preceded by another option
+         "ENGINE=MyISAM ROW_FORMAT=DYNAMIC", // followed by another option
+      ];
+
+      foreach ($myisam_declarations as $table_options) {
+         yield [
+            'table_options' => $table_options,
+            'db_properties' => [
+               'allow_myisam' => true,
+            ],
+            'warning'       => null,
+         ];
+
+         yield [
+            'table_options' => $table_options,
+            'db_properties' => [
+               'allow_myisam' => false,
+            ],
+            'warning'       => 'Usage of "MyISAM" engine is discouraged, please use "InnoDB" engine.',
+         ];
+      }
+
+      // Warnings related to 'utf8mb4' usage when DB not yet migrated to 'utf8mb4'
+      yield [
+         'table_options' => 'ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci',
+         'db_properties' => [
+            'use_utf8mb4' => false,
+         ],
+         'warning'       => null,
+      ];
+      yield [
+         'table_options' => 'ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci',
+         'db_properties' => [
+            'use_utf8mb4' => false,
+         ],
+         'warning'       => 'Usage of "utf8mb4" charset/collation detected, should be "utf8"',
+      ];
+
+      // Warnings related to 'utf8' usage when DB has been migrated to 'utf8mb4'
+      yield [
+         'table_options' => 'ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci',
+         'db_properties' => [
+            'use_utf8mb4' => true,
+         ],
+         'warning'       => 'Usage of "utf8" charset/collation detected, should be "utf8mb4"',
+      ];
+      yield [
+         'table_options' => 'ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci',
+         'db_properties' => [
+            'use_utf8mb4' => true,
+         ],
+         'warning'       => null,
+      ];
+   }
+
+   /**
+    * @dataProvider tableOptionProvider
+    */
+   public function testAlterOrCreateTableWarnings(
+      string $table_options,
+      array $db_properties,
+      ?string $warning = null
+   ) {
       $db = new \mock\DB();
 
       $create_query_template = <<<SQL
@@ -450,52 +526,27 @@ OTHER EXPRESSION;"
             `itemtype` varchar(100) NOT NULL,
             `items_id` int NOT NULL DEFAULT '0',
             PRIMARY KEY (`id`)
-         ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = %s COLLATE = %s
+         )%s
 SQL;
       $drop_query_template = 'DROP TABLE `%s`';
 
-      $db->use_utf8mb4 = false;
+      $db->log_deprecation_warnings = false; // Prevent deprecation warning from MySQL server
+      foreach ($db_properties as $db_property => $value) {
+         $db->$db_property = $value;
+      }
+
+      $asserter = $warning === null ? 'notExists' : 'exists';
 
       $this->when(
-         function () use ($db, $create_query_template, $drop_query_template) {
+         function () use ($db, $create_query_template, $drop_query_template, $table_options) {
             $table = sprintf('glpitests_%s', uniqid());
-            $db->query(sprintf($create_query_template, $table, 'utf8', 'utf8_unicode_ci'));
-            $db->query(sprintf($drop_query_template, $table));
-         }
-      )->error()->notExists();
-
-      $this->when(
-         function () use ($db, $create_query_template, $drop_query_template) {
-            $table = sprintf('glpitests_%s', uniqid());
-            $db->query(sprintf($create_query_template, $table, 'utf8mb4', 'utf8mb4_unicode_ci'));
+            $db->query(sprintf($create_query_template, $table, $table_options));
             $db->query(sprintf($drop_query_template, $table));
          }
       )->error()
          ->withType(E_USER_WARNING)
-         ->withMessage('Usage of "utf8mb4" charset/collation detected, should be "utf8"')
-            ->exists();
-
-      $db->use_utf8mb4 = true;
-      $db->log_deprecation_warnings = false;
-
-      $this->when(
-         function () use ($db, $create_query_template, $drop_query_template) {
-            $table = sprintf('glpitests_%s', uniqid());
-            $db->query(sprintf($create_query_template, $table, 'utf8', 'utf8_unicode_ci'));
-            $db->query(sprintf($drop_query_template, $table));
-         }
-      )->error()
-         ->withType(E_USER_WARNING)
-         ->withMessage('Usage of "utf8" charset/collation detected, should be "utf8mb4"')
-            ->exists();
-
-      $this->when(
-         function () use ($db, $create_query_template, $drop_query_template) {
-            $table = sprintf('glpitests_%s', uniqid());
-            $db->query(sprintf($create_query_template, $table, 'utf8mb4', 'utf8mb4_unicode_ci'));
-            $db->query(sprintf($drop_query_template, $table));
-         }
-      )->error()->notExists();
+         ->withMessage($warning)
+         ->$asserter();
    }
 
    public function testSavepoints() {
