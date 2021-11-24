@@ -334,6 +334,7 @@ class Cable extends CommonDBTM {
                $options['value'] = $values[$field];
                return Dropdown::show($values['itemtype_endpoint_a'], $options);
             }
+            break;
          case 'items_id_endpoint_b' :
             if (isset($values['itemtype_endpoint_b']) && !empty($values['itemtype_endpoint_b'])) {
                $options['name']  = $name;

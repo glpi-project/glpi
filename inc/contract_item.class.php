@@ -222,11 +222,12 @@ class Contract_Item extends CommonDBRelation{
       switch ($item->getType()) {
          case 'Contract' :
             self::showForContract($item, $withtemplate);
-
+            break;
          default :
             if (in_array($item->getType(), $CFG_GLPI["contract_types"])) {
                self::showForItem($item, $withtemplate);
             }
+            break;
       }
       return true;
    }

@@ -6066,6 +6066,7 @@ JAVASCRIPT;
             break;
          case 'photoswipe':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/photoswipe.js';
+            break;
          case 'reservations':
             $_SESSION['glpi_js_toload'][$name][] = 'js/reservations.js';
             break;

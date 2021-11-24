@@ -3799,6 +3799,7 @@ JAVASCRIPT;
                            'glpi_profilerights.rights'   => ['&', KnowbaseItem::READFAQ]
                         ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
                      ];
+                     break;
 
                   default :
                      // Check read or active for rights

@@ -338,6 +338,7 @@ class Provider {
             $params['icon']  = Ticket::getIcon();
             $params['label'] = __("Incoming tickets");
             $skip = true;
+            //no break
          case 'waiting':
             if (!$skip) {
                $status =Ticket::WAITING;
@@ -345,6 +346,7 @@ class Provider {
                $params['label'] = __("Pending tickets");
                $skip = true;
             }
+            //no break
          case 'assigned':
             if (!$skip) {
                $status = Ticket::ASSIGNED;
@@ -352,6 +354,7 @@ class Provider {
                $params['label'] = __("Assigned tickets");
                $skip = true;
             }
+            //no break
          case 'planned':
             if (!$skip) {
                $status = Ticket::PLANNED;
@@ -359,6 +362,7 @@ class Provider {
                $params['label'] = __("Planned tickets");
                $skip = true;
             }
+            //no break
          case 'solved':
             if (!$skip) {
                $status = Ticket::SOLVED;
@@ -366,6 +370,7 @@ class Provider {
                $params['label'] = __("Solved tickets");
                $skip = true;
             }
+            //no break
          case 'closed':
             if (!$skip) {
                $status = Ticket::CLOSED;
@@ -373,6 +378,7 @@ class Provider {
                $params['label'] = __("Closed tickets");
                $skip = true;
             }
+            //no break
          case 'status':
             if (!$skip) {
                $status = Ticket::INCOMING;
