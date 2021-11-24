@@ -533,7 +533,9 @@
       'rand': random()
    }|merge(options) %}
 
-   {% set field = get_items_from_itemtype_dropdown(options) %}
+   {% set field %}
+      {% do call('Dropdown::showSelectItemFromItemtypes', [options]) %}
+   {% endset %}
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
 {% endmacro %}
 

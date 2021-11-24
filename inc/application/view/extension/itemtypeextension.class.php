@@ -65,7 +65,6 @@ class ItemtypeExtension extends AbstractExtension {
          new TwigFunction('get_item_comment', [$this, 'getItemComment']),
          new TwigFunction('get_item_link', [$this, 'getItemLink'], ['is_safe' => ['html']]),
          new TwigFunction('get_item_name', [$this, 'getItemName']),
-         new TwigFunction('get_items_from_itemtype_dropdown', [$this, 'getSelectItemFromItemtypes']),
       ];
    }
 
@@ -249,10 +248,5 @@ class ItemtypeExtension extends AbstractExtension {
 
       $instance = $id !== null ? $item::getById($id) : null;
       return $instance ?: null;
-   }
-
-   public function getSelectItemFromItemtypes($options = []): string {
-      $options['display'] = false;
-      return Dropdown::showSelectItemFromItemtypes($options);
    }
 }
