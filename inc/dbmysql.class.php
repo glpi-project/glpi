@@ -35,6 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\Application\ErrorHandler;
+use Glpi\System\Requirement\DbTimezones;
 
 /**
  *  Database class for Mysql
@@ -110,6 +111,14 @@ class DBmysql {
     * @var string|null
     */
    public $dbsslcacipher      = null;
+
+   /**
+    * Determine if timezones should be used for timestamp fields.
+    * Defaults to false to keep backward compatibility with old DB.
+    *
+    * @var bool
+    */
+   public $use_timezones = false;
 
    /**
     * Determine if warnings related to MySQL deprecations should be logged too.
@@ -255,22 +264,26 @@ class DBmysql {
     * @since 9.5.0
     */
    protected function guessTimezone() {
-      if (isset($_SESSION['glpi_tz'])) {
-         $zone = $_SESSION['glpi_tz'];
-      } else {
-         $conf_tz = ['value' => null];
-         if ($this->tableExists(Config::getTable())
-             && $this->fieldExists(Config::getTable(), 'value')) {
-            $conf_tz = $this->request([
-               'SELECT' => 'value',
-               'FROM'   => Config::getTable(),
-               'WHERE'  => [
-                  'context'   => 'core',
-                  'name'      => 'timezone'
-                ]
-            ])->current();
+      if ($this->use_timezones) {
+         if (isset($_SESSION['glpi_tz'])) {
+            $zone = $_SESSION['glpi_tz'];
+         } else {
+            $conf_tz = ['value' => null];
+            if ($this->tableExists(Config::getTable())
+                && $this->fieldExists(Config::getTable(), 'value')) {
+               $conf_tz = $this->request([
+                  'SELECT' => 'value',
+                  'FROM'   => Config::getTable(),
+                  'WHERE'  => [
+                     'context'   => 'core',
+                     'name'      => 'timezone'
+                   ]
+               ])->current();
+            }
+            $zone = !empty($conf_tz['value']) ? $conf_tz['value'] : date_default_timezone_get();
          }
-         $zone = !empty($conf_tz['value']) ? $conf_tz['value'] : date_default_timezone_get();
+      } else {
+         $zone = date_default_timezone_get();
       }
 
       return $zone;
@@ -655,6 +668,54 @@ class DBmysql {
          'FROM'     => new QueryUnion([$tables_query, $columns_query], true),
          'ORDER'    => ['TABLE_NAME']
       ]);
+
+      return $iterator;
+   }
+
+   /**
+    * Returns tables not compatible with timezone usage, i.e. having "datetime" columns.
+    *
+    * @param bool $exclude_plugins
+    *
+    * @return DBmysqlIterator
+    *
+    * @since 10.0.0
+    */
+   public function getTzIncompatibleTables(bool $exclude_plugins = false): DBmysqlIterator {
+
+      $query = [
+         'SELECT'       => ['information_schema.columns.table_name as TABLE_NAME'],
+         'DISTINCT'     => true,
+         'FROM'         => 'information_schema.columns',
+         'INNER JOIN'   => [
+            'information_schema.tables' => [
+               'FKEY' => [
+                  'information_schema.tables'  => 'table_name',
+                  'information_schema.columns' => 'table_name',
+                  [
+                     'AND' => [
+                        'information_schema.tables.table_schema' => new QueryExpression(
+                           $this->quoteName('information_schema.columns.table_schema')
+                        ),
+                     ]
+                  ],
+               ]
+            ]
+         ],
+         'WHERE'       => [
+            'information_schema.tables.table_schema' => $this->dbdefault,
+            'information_schema.tables.table_name'   => ['LIKE', 'glpi\_%'],
+            'information_schema.tables.table_type'   => 'BASE TABLE',
+            'information_schema.columns.data_type'   => 'datetime',
+         ],
+         'ORDER'       => ['TABLE_NAME']
+      ];
+
+      if ($exclude_plugins) {
+         $query['WHERE'][] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'glpi\_plugin\_%']]];
+      }
+
+      $iterator = $this->request($query);
 
       return $iterator;
    }
@@ -1460,55 +1521,6 @@ class DBmysql {
    }
 
    /**
-    * Check if timezone data is accessible and available in database.
-    *
-    * @param string $msg  Variable that would contain the reason of data unavailability.
-    *
-    * @return boolean
-    *
-    * @since 9.5.0
-    */
-   public function areTimezonesAvailable(string &$msg = '') {
-      global $GLPI_CACHE;
-
-      if ($GLPI_CACHE->has('are_timezones_available')) {
-         return $GLPI_CACHE->get('are_timezones_available');
-      }
-      $GLPI_CACHE->set('are_timezones_available', false, DAY_TIMESTAMP);
-
-      $mysql_db_res = $this->request('SHOW DATABASES LIKE ' . $this->quoteValue('mysql'));
-      if ($mysql_db_res->count() === 0) {
-         $msg = __('Access to timezone database (mysql) is not allowed.');
-         return false;
-      }
-
-      $tz_table_res = $this->request(
-         'SHOW TABLES FROM '
-         . $this->quoteName('mysql')
-         . ' LIKE '
-         . $this->quoteValue('time_zone_name')
-      );
-      if ($tz_table_res->count() === 0) {
-         $msg = __('Access to timezone table (mysql.time_zone_name) is not allowed.');
-         return false;
-      }
-
-      $criteria = [
-         'COUNT'  => 'cpt',
-         'FROM'   => 'mysql.time_zone_name',
-      ];
-      $iterator = $this->request($criteria);
-      $result = $iterator->current();
-      if ($result['cpt'] == 0) {
-         $msg = __('Timezones seems not loaded, see https://glpi-install.readthedocs.io/en/latest/timezones.html.');
-         return false;
-      }
-
-      $GLPI_CACHE->set('are_timezones_available', true);
-      return true;
-   }
-
-   /**
     * Defines timezone to use.
     *
     * @param string $timezone
@@ -1517,7 +1529,7 @@ class DBmysql {
     */
    public function setTimezone($timezone) {
       //setup timezone
-      if ($this->areTimezonesAvailable()) {
+      if ($this->use_timezones) {
          date_default_timezone_set($timezone);
          $this->dbh->query("SET SESSION time_zone = '$timezone'");
          $_SESSION['glpi_currenttime'] = date("Y-m-d H:i:s");
@@ -1533,6 +1545,10 @@ class DBmysql {
     * @since 9.5.0
     */
    public function getTimezones() {
+      if (!$this->use_timezones) {
+         return [];
+      }
+
       $list = []; //default $tz is empty
 
       $from_php = \DateTimeZone::listIdentifiers();
@@ -1550,28 +1566,6 @@ class DBmysql {
       }
 
       return $list;
-   }
-
-   /**
-    * Returns count of tables that were not migrated to be compatible with timezones usage.
-    *
-    * @return number
-    *
-    * @since 9.5.0
-    */
-   public function notTzMigrated() {
-       global $DB;
-
-       $result = $DB->request([
-           'COUNT'       => 'cpt',
-           'FROM'        => 'information_schema.columns',
-           'WHERE'       => [
-              'information_schema.columns.table_schema' => $DB->dbdefault,
-              'information_schema.columns.table_name'   => ['LIKE', 'glpi\_%'],
-              'information_schema.columns.data_type'    => ['datetime']
-           ]
-       ])->current();
-       return (int)$result['cpt'];
    }
 
    /**
@@ -1800,6 +1794,14 @@ class DBmysql {
     */
    public function getComputedConfigBooleanFlags(): array {
       $config_flags = [];
+
+      if ($this->getTzIncompatibleTables(true)->count() === 0) {
+         $timezones_requirement = new DbTimezones($this);
+         if ($timezones_requirement->isValidated()) {
+            // Activate timezone usage if timezones are available and all tables are already migrated.
+            $config_flags[DBConnection::PROPERTY_USE_TIMEZONES] = true;
+         }
+      }
 
       if ($this->getNonUtf8mb4Tables(true)->count() === 0) {
          // Use utf8mb4 charset for update process if there all core table are using this charset.

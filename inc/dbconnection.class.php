@@ -41,6 +41,12 @@ if (!defined('GLPI_ROOT')) {
 class DBConnection extends CommonDBTM {
 
    /**
+    * "Use timezones" property name.
+    * @var string
+    */
+   public const PROPERTY_USE_TIMEZONES = 'use_timezones';
+
+   /**
     * "Log deprecation warnings" property name.
     * @var string
     */
@@ -75,6 +81,7 @@ class DBConnection extends CommonDBTM {
     * @param string  $user                      The DB user
     * @param string  $password                  The DB password
     * @param string  $dbname                    The name of the DB
+    * @param boolean $use_timezones             Flag that indicates if timezones usage should be activated
     * @param boolean $log_deprecation_warnings  Flag that indicates if DB deprecation warnings should be logged
     * @param boolean $use_utf8mb4               Flag that indicates if utf8mb4 charset/collation should be used
     * @param boolean $allow_myisam              Flag that indicates if MyISAM engine usage should be allowed
@@ -87,6 +94,7 @@ class DBConnection extends CommonDBTM {
       string $user,
       string $password,
       string $dbname,
+      bool $use_timezones = false,
       bool $log_deprecation_warnings = false,
       bool $use_utf8mb4 = false,
       bool $allow_myisam = true,
@@ -99,6 +107,9 @@ class DBConnection extends CommonDBTM {
          'dbpassword' => rawurlencode($password),
          'dbdefault'  => $dbname,
       ];
+      if ($use_timezones) {
+         $properties[self::PROPERTY_USE_TIMEZONES] = true;
+      }
       if ($log_deprecation_warnings) {
          $properties[self::PROPERTY_LOG_DEPRECATION_WARNINGS] = true;
       }
@@ -202,6 +213,7 @@ class DBConnection extends CommonDBTM {
     * @param string  $user                      The DB user
     * @param string  $password                  The DB password
     * @param string  $dbname                    The name of the DB
+    * @param boolean $use_timezones             Flag that indicates if timezones usage should be activated
     * @param boolean $log_deprecation_warnings  Flag that indicates if DB deprecation warnings should be logged
     * @param boolean $use_utf8mb4               Flag that indicates if utf8mb4 charset/collation should be used
     * @param boolean $allow_myisam              Flag that indicates if MyISAM engine usage should be allowed
@@ -214,6 +226,7 @@ class DBConnection extends CommonDBTM {
       string $user,
       string $password,
       string $dbname,
+      bool $use_timezones = false,
       bool $log_deprecation_warnings = false,
       bool $use_utf8mb4 = false,
       bool $allow_myisam = true,
@@ -233,6 +246,9 @@ class DBConnection extends CommonDBTM {
          'dbpassword' => rawurlencode($password),
          'dbdefault'  => $dbname,
       ];
+      if ($use_timezones) {
+         $properties[self::PROPERTY_USE_TIMEZONES] = true;
+      }
       if ($log_deprecation_warnings) {
          $properties[self::PROPERTY_LOG_DEPRECATION_WARNINGS] = true;
       }
@@ -289,6 +305,7 @@ class DBConnection extends CommonDBTM {
          "glpi",
          "glpi",
          "glpi",
+         $DB->use_timezones,
          $DB->log_deprecation_warnings,
          $DB->use_utf8mb4,
          $DB->allow_myisam
@@ -311,6 +328,7 @@ class DBConnection extends CommonDBTM {
          $user,
          $password,
          $DBname,
+         $DB->use_timezones,
          $DB->log_deprecation_warnings,
          $DB->use_utf8mb4,
          $DB->allow_myisam

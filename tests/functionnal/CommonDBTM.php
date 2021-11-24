@@ -885,7 +885,7 @@ class CommonDBTM extends DbTestCase {
       global $DB;
 
       //check if timezones are available
-      $this->boolean($DB->areTimezonesAvailable())->isTrue();
+      $this->boolean($DB->use_timezones)->isTrue();
       $this->array($DB->getTimezones())->size->isGreaterThan(0);
 
       //login with default TZ
