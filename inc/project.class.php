@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
+use Glpi\Team\Team;
 use Glpi\Toolbox\RichText;
 
 /**
@@ -58,10 +59,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
    const READALL                       = 1024;
 
    protected $team                     = [];
-
-   public const ROLE_MANAGER = 1;
-
-   public const ROLE_MEMBER = 2;
 
    public function getCloneRelations() :array {
       return [
@@ -2276,6 +2273,15 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
 
       $supported_itemtypes = [];
       if (Project::canCreate()) {
+         $team_role_ids = static::getTeamRoles();
+         $team_roles = [];
+
+         foreach ($team_role_ids as $role_id) {
+            $team_roles[$role_id] = static::getTeamRoleName($role_id);
+         }
+         // Owner cannot be set from the Kanban view yet because it is a special case (One owner user and one owner group)
+         unset($team_roles[Team::ROLE_OWNER]);
+
          $supported_itemtypes['Project'] = [
             'name'   => Project::getTypeName(1),
             'icon'   => Project::getIcon(),
@@ -2305,11 +2311,20 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                ]
             ],
             'team_itemtypes'  => Project::getTeamItemtypes(),
-            'panel'           => 'components/kanban/item_panels/project.html.twig'
+            'team_roles'      => $team_roles,
          ];
       }
 
       if (ProjectTask::canCreate()) {
+         $team_role_ids = static::getTeamRoles();
+         $team_roles = [];
+
+         foreach ($team_role_ids as $role_id) {
+            $team_roles[$role_id] = static::getTeamRoleName($role_id);
+         }
+         // Owner cannot be set from the Kanban view yet because it is a special case (One owner user and one owner group)
+         unset($team_roles[Team::ROLE_OWNER]);
+
          $supported_itemtypes['ProjectTask'] = [
             'name'   => ProjectTask::getTypeName(1),
             'icon'   => ProjectTask::getIcon(),
@@ -2343,6 +2358,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                ]
             ],
             'team_itemtypes'  => ProjectTask::getTeamItemtypes(),
+            'team_roles'      => $team_roles,
          ];
          if ($ID <= 0) {
             $supported_itemtypes['ProjectTask']['fields']['projects_id'] = [
@@ -2421,16 +2437,16 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
 
    public static function getTeamRoles(): array {
       return [
-         self::ROLE_MANAGER,
-         self::ROLE_MEMBER
+         Team::ROLE_OWNER,
+         Team::ROLE_MEMBER
       ];
    }
 
    public static function getTeamRoleName(int $role, int $nb = 1): string {
       switch ($role) {
-         case self::ROLE_MANAGER:
+         case Team::ROLE_OWNER:
             return _n('Manager', 'Managers', $nb);
-         case self::ROLE_MEMBER:
+         case Team::ROLE_MEMBER:
             return _n('Member', 'Members', $nb);
       }
       return '';

@@ -2481,9 +2481,10 @@ class GLPIKanbanRights {
          modal.on('click', 'button[name="add"]', () => {
             const itemtype = modal.find('select[name="itemtype"]').val();
             const items_id = modal.find('select[name="items_id"]').val();
+            const role = modal.find('select[name="role"]').val();
 
             if (itemtype && items_id) {
-               addTeamMember(card_itemtype, card_items_id, itemtype, items_id).done(() => {
+               addTeamMember(card_itemtype, card_items_id, itemtype, items_id, role).done(() => {
                   self.showCardPanel($(`#${card_itemtype}-${card_items_id}`));
                });
                hideModal();
@@ -2493,9 +2494,10 @@ class GLPIKanbanRights {
             const list_item = $(e.target).closest('li');
             const itemtype = list_item.attr('data-itemtype');
             const items_id = list_item.attr('data-items-id');
+            const role = list_item.closest('ul').attr('data-role');
 
             if (itemtype && items_id) {
-               removeTeamMember(card_itemtype, card_items_id, itemtype, items_id).done(() => {
+               removeTeamMember(card_itemtype, card_items_id, itemtype, items_id, role).done(() => {
                   self.showCardPanel($(`#${card_itemtype}-${card_items_id}`));
                });
                list_item.remove();
@@ -2506,7 +2508,7 @@ class GLPIKanbanRights {
          });
       };
 
-      const addTeamMember = (itemtype, items_id, member_type, members_id) => {
+      const addTeamMember = (itemtype, items_id, member_type, members_id, role) => {
          return $.ajax({
             method: 'POST',
             url: (self.ajax_root + "kanban.php"),
@@ -2515,7 +2517,8 @@ class GLPIKanbanRights {
                itemtype: itemtype,
                items_id: items_id,
                itemtype_teammember: member_type,
-               items_id_teammember: members_id
+               items_id_teammember: members_id,
+               role: role
             }
          }).done(() => {
             self.refresh(null, null, function() {
@@ -2526,7 +2529,7 @@ class GLPIKanbanRights {
          });
       };
 
-      const removeTeamMember = (itemtype, items_id, member_type, members_id) => {
+      const removeTeamMember = (itemtype, items_id, member_type, members_id, role) => {
          return $.ajax({
             method: 'POST',
             url: (self.ajax_root + "kanban.php"),
@@ -2535,7 +2538,8 @@ class GLPIKanbanRights {
                itemtype: itemtype,
                items_id: items_id,
                itemtype_teammember: member_type,
-               items_id_teammember: members_id
+               items_id_teammember: members_id,
+               role: role
             }
          }).done(() => {
             self.refresh(null, null, function() {

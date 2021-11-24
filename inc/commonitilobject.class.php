@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
+use Glpi\Team\Team;
 use Glpi\Toolbox\RichText;
 use Glpi\Toolbox\Sanitizer;
 
@@ -7678,6 +7679,13 @@ abstract class CommonITILObject extends CommonDBTM {
          return false;
       }
 
+      $team_role_ids = static::getTeamRoles();
+      $team_roles = [];
+
+      foreach ($team_role_ids as $role_id) {
+         $team_roles[$role_id] = static::getTeamRoleName($role_id);
+      }
+
       $supported_itemtypes = [];
       if (static::canCreate()) {
          $supported_itemtypes[static::class] = [
@@ -7697,6 +7705,7 @@ abstract class CommonITILObject extends CommonDBTM {
                ]
             ],
             'team_itemtypes'  => static::getTeamItemtypes(),
+            'team_roles'      => $team_roles,
          ];
       }
       $column_field = [
@@ -7781,19 +7790,19 @@ abstract class CommonITILObject extends CommonDBTM {
 
    public static function getTeamRoles(): array {
       return [
-         CommonITILActor::REQUESTER,
-         CommonITILActor::OBSERVER,
-         CommonITILActor::ASSIGN,
+         Team::ROLE_REQUESTER,
+         Team::ROLE_OBSERVER,
+         Team::ROLE_ASSIGNED,
       ];
    }
 
    public static function getTeamRoleName(int $role, int $nb = 1): string {
       switch ($role) {
-         case CommonITILActor::REQUESTER:
+         case Team::ROLE_REQUESTER:
             return _n('Requester', 'Requesters', $nb);
-         case CommonITILActor::OBSERVER:
+         case Team::ROLE_OBSERVER:
             return _n('Watcher', 'Watchers', $nb);
-         case CommonITILActor::ASSIGN:
+         case Team::ROLE_ASSIGNED:
             return _n('Assignee', 'Assignees', $nb);
       }
       return '';

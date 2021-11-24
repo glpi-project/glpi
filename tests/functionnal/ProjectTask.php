@@ -33,6 +33,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Team\Team;
 
 /* Test for inc/projecttask.class.php */
 
@@ -190,8 +191,8 @@ class ProjectTask extends DbTestCase {
    public function testGetTeamRoles(): void {
       $roles = \ProjectTask::getTeamRoles();
       $this->array($roles)->containsValues([
-         \Project::ROLE_MANAGER,
-         \Project::ROLE_MEMBER,
+         Team::ROLE_OWNER,
+         Team::ROLE_MEMBER,
       ]);
    }
 
@@ -233,7 +234,7 @@ class ProjectTask extends DbTestCase {
       }
 
       // Add team members
-      $project_task->addTeamMember(\User::class, 1, ['role' => \Project::ROLE_MEMBER]);
+      $project_task->addTeamMember(\User::class, 1, ['role' => Team::ROLE_MEMBER]);
 
       // Reload ticket from DB
       $project_task->getFromDB($projecttasks_id);
@@ -242,7 +243,7 @@ class ProjectTask extends DbTestCase {
       $team = $project_task->getTeam();
       $this->array($team[\User::class])->hasSize(1);
       $this->array($team[\User::class][0])->hasKey('role');
-      $this->integer($team[\User::class][0]['role'])->isEqualTo(\Project::ROLE_MEMBER);
+      $this->integer($team[\User::class][0]['role'])->isEqualTo(Team::ROLE_MEMBER);
       $this->integer($team[\User::class][0]['items_id'])->isEqualTo(1);
       $this->array($team[\Group::class])->isEmpty();
 
@@ -259,7 +260,7 @@ class ProjectTask extends DbTestCase {
       }
 
       // Add team members
-      $project_task->addTeamMember(\Group::class, 5, ['role' => \Project::ROLE_MEMBER]);
+      $project_task->addTeamMember(\Group::class, 5, ['role' => Team::ROLE_MEMBER]);
 
       // Reload ticket from DB
       $project_task->getFromDB($projecttasks_id);
@@ -268,7 +269,7 @@ class ProjectTask extends DbTestCase {
       $team = $project_task->getTeam();
       $this->array($team[\Group::class])->hasSize(1);
       $this->array($team[\Group::class][0])->hasKey('role');
-      $this->integer($team[\Group::class][0]['role'])->isEqualTo(\Project::ROLE_MEMBER);
+      $this->integer($team[\Group::class][0]['role'])->isEqualTo(Team::ROLE_MEMBER);
       $this->integer($team[\Group::class][0]['items_id'])->isEqualTo(5);
       $this->array($team[\User::class])->isEmpty();
    }

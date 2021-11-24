@@ -252,10 +252,14 @@ if (($_POST['action'] ?? null) === 'update') {
    }
 } else if (($_POST['action'] ?? null) === 'add_teammember') {
    $checkParams(['itemtype_teammember', 'items_id_teammember']);
-   $item->addTeamMember($_POST['itemtype_teammember'], (int) $_POST['items_id_teammember']);
+   $item->addTeamMember($_POST['itemtype_teammember'], (int) $_POST['items_id_teammember'], [
+      'role'   => (int) $_POST['role']
+   ]);
 } else if (($_POST['action'] ?? null) === 'delete_teammember') {
    $checkParams(['itemtype_teammember', 'items_id_teammember']);
-   $item->deleteTeamMember($_POST['itemtype_teammember'], (int) $_POST['items_id_teammember']);
+   $item->deleteTeamMember($_POST['itemtype_teammember'], (int) $_POST['items_id_teammember'], [
+      'role'   => (int) $_POST['role']
+   ]);
 } else if (($_REQUEST['action'] ?? null) === 'load_item_panel') {
    if (isset($itemtype, $item)) {
       TemplateRenderer::getInstance()->display('components/kanban/item_panels/default_panel.html.twig', [
