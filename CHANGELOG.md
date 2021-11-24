@@ -58,6 +58,7 @@ The present file will list all changes made to the project; according to the
 #### Deprecated
 - Usage of `MyISAM` engine in database, in favor of `InnoDB` engine.
 - Usage of `utf8mb3` charset/collation in database in favor of `utf8mb4` charset/collation.
+- Usage of `datetime` field type in database, in favor of `timestamp` field type.
 - Handling of encoded/escaped value in `autoName()`
 - `Netpoint` has been deprecated and replaced by `Socket`
 - `Html::clean()`

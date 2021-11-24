@@ -444,6 +444,7 @@ OTHER EXPRESSION;"
    protected function tableOptionProvider(): iterable {
       yield [
          'table_options' => '',
+         'extra_fields'  => '',
          'db_properties' => [],
          'warning'       => null,
       ];
@@ -462,6 +463,7 @@ OTHER EXPRESSION;"
       foreach ($myisam_declarations as $table_options) {
          yield [
             'table_options' => $table_options,
+            'extra_fields'  => '',
             'db_properties' => [
                'allow_myisam' => true,
             ],
@@ -470,6 +472,7 @@ OTHER EXPRESSION;"
 
          yield [
             'table_options' => $table_options,
+            'extra_fields'  => '',
             'db_properties' => [
                'allow_myisam' => false,
             ],
@@ -477,9 +480,28 @@ OTHER EXPRESSION;"
          ];
       }
 
+      // Warnings related to datetime fields
+      yield [
+         'table_options' => '',
+         'extra_fields'  => '`date` datetime NOT NULL,',
+         'db_properties' => [
+            'allow_datetime' => true,
+         ],
+         'warning'       => null,
+      ];
+      yield [
+         'table_options' => '',
+         'extra_fields'  => '`date` datetime NOT NULL,',
+         'db_properties' => [
+            'allow_datetime' => false,
+         ],
+         'warning'       => 'Usage of "DATETIME" fields is discouraged, please use "TIMESTAMP" fields instead.',
+      ];
+
       // Warnings related to 'utf8mb4' usage when DB not yet migrated to 'utf8mb4'
       yield [
          'table_options' => 'ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci',
+         'extra_fields'  => '',
          'db_properties' => [
             'use_utf8mb4' => false,
          ],
@@ -487,6 +509,7 @@ OTHER EXPRESSION;"
       ];
       yield [
          'table_options' => 'ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci',
+         'extra_fields'  => '',
          'db_properties' => [
             'use_utf8mb4' => false,
          ],
@@ -496,6 +519,7 @@ OTHER EXPRESSION;"
       // Warnings related to 'utf8' usage when DB has been migrated to 'utf8mb4'
       yield [
          'table_options' => 'ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci',
+         'extra_fields'  => '',
          'db_properties' => [
             'use_utf8mb4' => true,
          ],
@@ -503,6 +527,7 @@ OTHER EXPRESSION;"
       ];
       yield [
          'table_options' => 'ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci',
+         'extra_fields'  => '',
          'db_properties' => [
             'use_utf8mb4' => true,
          ],
@@ -515,6 +540,7 @@ OTHER EXPRESSION;"
     */
    public function testAlterOrCreateTableWarnings(
       string $table_options,
+      string $extra_fields,
       array $db_properties,
       ?string $warning = null
    ) {
@@ -525,6 +551,7 @@ OTHER EXPRESSION;"
             `id` int NOT NULL AUTO_INCREMENT,
             `itemtype` varchar(100) NOT NULL,
             `items_id` int NOT NULL DEFAULT '0',
+            %s
             PRIMARY KEY (`id`)
          )%s
 SQL;
@@ -538,9 +565,9 @@ SQL;
       $asserter = $warning === null ? 'notExists' : 'exists';
 
       $this->when(
-         function () use ($db, $create_query_template, $drop_query_template, $table_options) {
+         function () use ($db, $create_query_template, $drop_query_template, $extra_fields, $table_options) {
             $table = sprintf('glpitests_%s', uniqid());
-            $db->query(sprintf($create_query_template, $table, $table_options));
+            $db->query(sprintf($create_query_template, $table, $extra_fields, $table_options));
             $db->query(sprintf($drop_query_template, $table));
          }
       )->error()

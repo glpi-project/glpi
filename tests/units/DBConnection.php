@@ -82,6 +82,7 @@ class DBConnection extends \GLPITestCase {
             'log_deprecation_warnings' => false,
             'use_utf8mb4'              => false,
             'allow_myisam'             => true,
+            'allow_datetime'           => true,
             'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
@@ -102,6 +103,7 @@ PHP
             'log_deprecation_warnings' => false,
             'use_utf8mb4'              => true,
             'allow_myisam'             => false,
+            'allow_datetime'           => false,
             'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
@@ -112,6 +114,7 @@ class DB extends DBmysql {
    public $use_timezones = true;
    public $use_utf8mb4 = true;
    public $allow_myisam = false;
+   public $allow_datetime = false;
 }
 
 PHP
@@ -125,6 +128,7 @@ PHP
             'log_deprecation_warnings' => true,
             'use_utf8mb4'              => false,
             'allow_myisam'             => true,
+            'allow_datetime'           => true,
             'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
@@ -152,6 +156,7 @@ PHP
       bool $log_deprecation_warnings,
       bool $use_utf8mb4,
       bool $allow_myisam,
+      bool $allow_datetime,
       string $expected
    ): void {
       vfsStream::setup('config-dir', null, []);
@@ -165,6 +170,7 @@ PHP
          $log_deprecation_warnings,
          $use_utf8mb4,
          $allow_myisam,
+         $allow_datetime,
          vfsStream::url('config-dir')
       );
       $this->boolean($result)->isTrue();
@@ -185,6 +191,7 @@ PHP
             'log_deprecation_warnings' => false,
             'use_utf8mb4'              => false,
             'allow_myisam'             => true,
+            'allow_datetime'           => true,
             'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
@@ -206,6 +213,7 @@ PHP
             'log_deprecation_warnings' => false,
             'use_utf8mb4'              => true,
             'allow_myisam'             => false,
+            'allow_datetime'           => false,
             'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
@@ -221,6 +229,7 @@ class DB extends DBmysql {
    public $use_timezones = true;
    public $use_utf8mb4 = true;
    public $allow_myisam = false;
+   public $allow_datetime = false;
 }
 
 PHP
@@ -234,6 +243,7 @@ PHP
             'log_deprecation_warnings' => true,
             'use_utf8mb4'              => false,
             'allow_myisam'             => true,
+            'allow_datetime'           => true,
             'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
@@ -262,6 +272,7 @@ PHP
       bool $log_deprecation_warnings,
       bool $use_utf8mb4,
       bool $allow_myisam,
+      bool $allow_datetime,
       string $expected
    ): void {
       vfsStream::setup('config-dir', null, []);
@@ -275,6 +286,7 @@ PHP
          $log_deprecation_warnings,
          $use_utf8mb4,
          $allow_myisam,
+         $allow_datetime,
          vfsStream::url('config-dir')
       );
       $this->boolean($result)->isTrue();

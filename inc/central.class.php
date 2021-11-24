@@ -479,8 +479,8 @@ class Central extends CommonGLPI {
                count($myisam_tables)
             );
          }
-         if ($DB->use_timezones && ($not_tstamp = $DB->getTzIncompatibleTables()->count()) > 0) {
-            $messages['warnings'][] = sprintf(__('%1$s columns are not compatible with timezones usage.'), $not_tstamp)
+         if (($not_tstamp = $DB->getTzIncompatibleTables()->count()) > 0) {
+            $messages['warnings'][] = sprintf(__('%1$s columns are not still using datetime field type.'), $not_tstamp)
                . ' '
                . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:timestamps');
          }
