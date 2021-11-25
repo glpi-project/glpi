@@ -67,7 +67,6 @@
       height: auto;
       text-align: left;
       display: inline-flex;
-      //flex-direction: column;
       flex-wrap: wrap;
       align-items: flex-start;
       justify-content: left;
@@ -121,7 +120,6 @@
                      flex-direction: column;
 
                      .row {
-                        //height: calc(100% - 55px); // remove alert height
                         height: 100%;
 
                         .form-field.itil-textarea-content,

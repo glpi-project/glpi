@@ -73,7 +73,6 @@ $break_tablet: 1400px;
 }
 
 .dashboard {
-   //font-family: Arial, Helvetica, sans-serif/*{ffDefault}*/; // for embed
    position: relative;
    padding-top: $toolbar_height;
 
@@ -797,7 +796,6 @@ $break_tablet: 1400px;
                font-weight: normal;
 
                .content {
-                  //flex-grow: 1;
                   display: flex;
 
                   .formatted-number {
@@ -1032,7 +1030,6 @@ $break_tablet: 1400px;
             .ct-slice-pie, .ct-slice-donut-solid  {
                stroke-width: 1px;
                transform-origin: center center;
-               //transition: transform 400ms ease-in-out;
                fill-opacity: 0;
                animation: slice-fill-opacity 1s ease-in-out forwards;
             }

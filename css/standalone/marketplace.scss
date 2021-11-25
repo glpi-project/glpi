@@ -162,7 +162,7 @@ $break_s_screen: 1400px;
 
          .plugin {
             $margin_width: 10px;
-            width: calc(25% - #{$margin_width}); //minus margin
+            width: calc(25% - #{$margin_width}); // minus margin
             margin: calc(#{$margin_width} / 2);
             margin-bottom: 10px;
             border-radius: 2px;
