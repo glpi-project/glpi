@@ -79,21 +79,10 @@
 
    .tab_cadre_pager {
       img {
-         &[src*=first\.png], &[src*=left\.png] {
-            border: 1px solid $hc-border-color-contrast;
-            padding: 2px;
-            border-radius: 2px;
-         }
-      }
-
-      .fa-wrench {
-         border: 1px solid $hc-border-color-contrast;
-         padding: 2px;
-         border-radius: 2px;
-      }
-
-      img {
-         &[src*=right\.png], &[src*=last\.png] {
+         &[src*=first\.png],
+         &[src*=left\.png],
+         &[src*=right\.png],
+         &[src*=last\.png] {
             border: 1px solid $hc-border-color-contrast;
             padding: 2px;
             border-radius: 2px;
@@ -102,6 +91,12 @@
          &:hover {
             opacity: .5;
          }
+      }
+
+      .fa-wrench {
+         border: 1px solid $hc-border-color-contrast;
+         padding: 2px;
+         border-radius: 2px;
       }
    }
 

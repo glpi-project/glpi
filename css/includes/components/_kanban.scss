@@ -263,6 +263,9 @@
                overflow-x: hidden;
 
                .kanban-add-form {
+                  padding-top: 10px !important;
+                  padding-bottom: 10px !important;
+
                   input {
                      margin: 8px 0 0;
                   }
@@ -270,11 +273,6 @@
                   textarea {
                      margin: 8px 0;
                   }
-               }
-
-               .kanban-add-form {
-                  padding-top: 10px !important;
-                  padding-bottom: 10px !important;
                }
 
                .kanban-item,
