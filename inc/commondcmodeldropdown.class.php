@@ -34,8 +34,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Features\AssetImage;
+
 /// CommonDCModelDropdown class - dropdown for datacenter items models
 abstract class CommonDCModelDropdown extends CommonDropdown {
+   use AssetImage;
 
    public $additional_fields_for_dictionnary = ['manufacturer'];
 
@@ -216,46 +219,6 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
    function cleanDBonPurge() {
       Toolbox::deletePicture($this->fields['picture_front']);
       Toolbox::deletePicture($this->fields['picture_rear']);
-   }
-
-   /**
-    * Add/remove front and rear pictures for models
-    * @param  array $input the form input
-    * @return array        the altered input
-    */
-   function managePictures($input) {
-      foreach (['picture_front', 'picture_rear'] as $name) {
-         if (isset($input["_blank_$name"])
-             && $input["_blank_$name"]) {
-            $input[$name] = '';
-
-            if (array_key_exists($name, $this->fields)) {
-               Toolbox::deletePicture($this->fields[$name]);
-            }
-         }
-
-         if (isset($input["_$name"])) {
-            $filename = array_shift($input["_$name"]);
-            $src      = GLPI_TMP_DIR . '/' . $filename;
-
-            $prefix   = '';
-            if (isset($input["_prefix_$name"])) {
-               $prefix = array_shift($input["_prefix_$name"]);
-            }
-
-            if ($dest = Toolbox::savePicture($src, $prefix)) {
-               $input[$name] = $dest;
-            } else {
-               Session::addMessageAfterRedirect(__('Unable to save picture file.'), true, ERROR);
-            }
-
-            if (array_key_exists($name, $this->fields)) {
-               Toolbox::deletePicture($this->fields[$name]);
-            }
-         }
-      }
-
-      return $input;
    }
 
    function displaySpecificTypeField($ID, $field = [], array $options = []) {
