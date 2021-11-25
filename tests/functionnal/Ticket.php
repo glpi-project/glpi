@@ -3719,7 +3719,6 @@ HTML
    public function testTeamManagement(): void {
 
       $ticket = new \Ticket();
-      $team_itemtypes = $ticket::getTeamItemtypes();
 
       $tickets_id = $ticket->add([
          'name'      => 'Team test',
@@ -3732,7 +3731,7 @@ HTML
       $this->array($team)->isEmpty();
 
       // Add team members
-      $ticket->addTeamMember(\User::class, 1, ['role' => Team::ROLE_ASSIGNED]);
+      $this->boolean($ticket->addTeamMember(\User::class, 1, ['role' => Team::ROLE_ASSIGNED]))->isTrue();
 
       // Reload ticket from DB
       $ticket->getFromDB($tickets_id);
@@ -3743,10 +3742,10 @@ HTML
       $this->array($team[0])->hasKeys(['itemtype', 'items_id', 'role']);
       $this->string($team[0]['itemtype'])->isEqualTo(\User::class);
       $this->integer($team[0]['items_id'])->isEqualTo(1);
-      $this->string($team[0]['role'])->isEqualTo(Team::ROLE_MEMBER);
+      $this->integer($team[0]['role'])->isEqualTo(Team::ROLE_ASSIGNED);
 
       // Delete team members
-      $ticket->deleteTeamMember(\User::class, 1, ['role' => Team::ROLE_ASSIGNED]);
+      $this->boolean($ticket->deleteTeamMember(\User::class, 1, ['role' => Team::ROLE_ASSIGNED]))->isTrue();
 
       //Reload ticket from DB
       $ticket->getFromDB($tickets_id);
@@ -3755,7 +3754,7 @@ HTML
       $this->array($team)->isEmpty();
 
       // Add team members
-      $ticket->addTeamMember(\Group::class, 5, ['role' => Team::ROLE_ASSIGNED]);
+      $this->boolean($ticket->addTeamMember(\Group::class, 5, ['role' => Team::ROLE_ASSIGNED]))->isTrue();
 
       // Reload ticket from DB
       $ticket->getFromDB($tickets_id);
@@ -3766,6 +3765,6 @@ HTML
       $this->array($team[0])->hasKeys(['itemtype', 'items_id', 'role']);
       $this->string($team[0]['itemtype'])->isEqualTo(\Group::class);
       $this->integer($team[0]['items_id'])->isEqualTo(5);
-      $this->string($team[0]['role'])->isEqualTo(Team::ROLE_MEMBER);
+      $this->integer($team[0]['role'])->isEqualTo(Team::ROLE_ASSIGNED);
    }
 }

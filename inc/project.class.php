@@ -2468,7 +2468,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
 
    public function deleteTeamMember(string $itemtype, int $items_id, array $params = []): bool {
       $project_team = new ProjectTeam();
-      $result = $project_team->delete([
+      $result = $project_team->deleteByCriteria([
          'projects_id'  => $this->getID(),
          'itemtype'     => $itemtype,
          'items_id'     => $items_id

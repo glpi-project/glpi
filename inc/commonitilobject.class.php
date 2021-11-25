@@ -7866,7 +7866,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $link_item = new $link_class();
       /** @var CommonDBTM $itemtype */
-      $result = $link_item->delete([
+      $result = $link_item->deleteByCriteria([
          static::getForeignKeyField()     => $this->getID(),
          $itemtype::getForeignKeyField()  => $items_id,
          'type'                           => $role
@@ -7877,11 +7877,7 @@ abstract class CommonITILObject extends CommonDBTM {
    public function getTeam(): array {
       global $DB;
 
-      $team = [
-         'User'      => [],
-         'Group'     => [],
-         'Supplier'  => [],
-      ];
+      $team = [];
 
       $team_itemtypes = static::getTeamItemtypes();
 

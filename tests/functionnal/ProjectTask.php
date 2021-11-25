@@ -209,7 +209,6 @@ class ProjectTask extends DbTestCase {
    public function testTeamManagement(): void {
 
       $project_task = new \ProjectTask();
-      $team_itemtypes = $project_task::getTeamItemtypes();
 
       $project = new \Project();
       $projects_id = $project->add([
@@ -229,7 +228,7 @@ class ProjectTask extends DbTestCase {
       $this->array($team)->isEmpty();
 
       // Add team members
-      $project_task->addTeamMember(\User::class, 1, ['role' => Team::ROLE_MEMBER]);
+      $this->boolean($project_task->addTeamMember(\User::class, 1, ['role' => Team::ROLE_MEMBER]))->isTrue();
 
       // Reload ticket from DB
       $project_task->getFromDB($projecttasks_id);
@@ -240,10 +239,10 @@ class ProjectTask extends DbTestCase {
       $this->array($team[0])->hasKeys(['itemtype', 'items_id', 'role']);
       $this->string($team[0]['itemtype'])->isEqualTo(\User::class);
       $this->integer($team[0]['items_id'])->isEqualTo(1);
-      $this->string($team[0]['role'])->isEqualTo(Team::ROLE_MEMBER);
+      $this->integer($team[0]['role'])->isEqualTo(Team::ROLE_MEMBER);
 
       // Delete team members
-      $project_task->deleteTeamMember(\User::class, 1, ['role' => Team::ROLE_MEMBER]);
+      $this->boolean($project_task->deleteTeamMember(\User::class, 1, ['role' => Team::ROLE_MEMBER]))->isTrue();
 
       //Reload ticket from DB
       $project_task->getFromDB($projecttasks_id);
@@ -252,7 +251,7 @@ class ProjectTask extends DbTestCase {
       $this->array($team)->isEmpty();
 
       // Add team members
-      $project_task->addTeamMember(\Group::class, 5, ['role' => Team::ROLE_MEMBER]);
+      $this->boolean($project_task->addTeamMember(\Group::class, 5, ['role' => Team::ROLE_MEMBER]))->isTrue();
 
       // Reload ticket from DB
       $project_task->getFromDB($projecttasks_id);
@@ -263,6 +262,6 @@ class ProjectTask extends DbTestCase {
       $this->array($team[0])->hasKeys(['itemtype', 'items_id', 'role']);
       $this->string($team[0]['itemtype'])->isEqualTo(\Group::class);
       $this->integer($team[0]['items_id'])->isEqualTo(5);
-      $this->string($team[0]['role'])->isEqualTo(Team::ROLE_MEMBER);
+      $this->integer($team[0]['role'])->isEqualTo(Team::ROLE_MEMBER);
    }
 }
