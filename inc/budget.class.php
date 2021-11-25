@@ -886,6 +886,6 @@ class Budget extends CommonDropdown{
 
 
    static function getIcon() {
-      return "fas fa-calculator";
+      return "ti ti-calculator";
    }
 }

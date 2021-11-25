@@ -1058,7 +1058,7 @@ class Software extends CommonDBTM {
    }
 
    static function getIcon() {
-      return "fas fa-cube";
+      return "ti ti-apps";
    }
 
    public function handleCategoryRules(array &$input) {

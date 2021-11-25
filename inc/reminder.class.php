@@ -1074,6 +1074,6 @@ class Reminder extends CommonDBVisible implements
 
 
    static function getIcon() {
-      return "far fa-sticky-note";
+      return "ti ti-note";
    }
 }

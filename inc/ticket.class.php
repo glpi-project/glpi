@@ -121,7 +121,7 @@ class Ticket extends CommonITILObject {
             'create_ticket' => [
                'title' => __('Create ticket'),
                'page'  => static::getFormURL(false),
-               'icon'  => 'fas fa-plus',
+               'icon'  => 'ti ti-plus',
             ],
          ];
          return $menu;
@@ -164,10 +164,7 @@ class Ticket extends CommonITILObject {
          $opt['criteria'][4]['link']       = 'AND NOT';
 
          $pic_validate = '
-            <span class="fa-stack" title="'.__s('Ticket waiting for your approval').'">
-                <i class="fas fa-check fa-stack-1x" style="top: 1px; left: -2px; font-size: 1.2em"></i>
-                <i class="far fa-clock fa-stack-1x" style="top: 6px; left: 1px"></i>
-            </span>
+            <i class="ti ti-eye-check" title="'.__s('Ticket waiting for your approval').'"></i>
             <span class="d-none d-xxl-block">
                '.__s('Ticket waiting for your approval').'
             </span>
@@ -5174,7 +5171,7 @@ JAVASCRIPT;
          $twig_params['title']['button'] = [
             'link'   => $CFG_GLPI["root_doc"].'/front/helpdesk.public.php?create_ticket=1',
             'text'   => __('Create a ticket'),
-            'icon'   => 'fa fa-plus',
+            'icon'   => 'ti ti-plus',
          ];
       }
 
@@ -6808,7 +6805,7 @@ JAVASCRIPT;
 
 
    static function getIcon() {
-      return "fas fa-exclamation-circle";
+      return "ti ti-alert-circle";
    }
 
    public static function getItemLinkClass(): string {

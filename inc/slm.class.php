@@ -213,6 +213,6 @@ class SLM extends CommonDBTM {
 
 
    static function getIcon() {
-      return "fas fa-file-contract";
+      return "ti ti-checkup-list";
    }
 }

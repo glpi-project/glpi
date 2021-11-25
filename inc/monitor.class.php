@@ -457,7 +457,7 @@ class Monitor extends CommonDBTM {
 
 
    static function getIcon() {
-      return "fas fa-desktop";
+      return "ti ti-device-desktop";
    }
 
 }

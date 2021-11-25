@@ -137,7 +137,7 @@ class Database extends CommonDBChild {
 
 
    static function getIcon() {
-      return "fas fa-database";
+      return "ti ti-database";
    }
 
    function rawSearchOptions() {

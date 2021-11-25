@@ -1123,7 +1123,7 @@ class Change extends CommonITILObject {
 
 
    static function getIcon() {
-      return "fas fa-clipboard-check";
+      return "ti ti-clipboard-check";
    }
 
    public static function getItemLinkClass(): string {

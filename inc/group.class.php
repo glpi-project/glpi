@@ -980,7 +980,7 @@ class Group extends CommonTreeDropdown {
    }
 
    static function getIcon() {
-      return "fas fa-users";
+      return "ti ti-users";
    }
 
    /**

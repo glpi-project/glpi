@@ -725,7 +725,7 @@ class Inventory
    }
 
    static function getIcon() {
-      return "fas fa-cloud-download-alt";
+      return "ti ti-cloud-download";
    }
 
    public function getMetadata(): array {

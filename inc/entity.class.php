@@ -3367,7 +3367,7 @@ class Entity extends CommonTreeDropdown {
    }
 
    static function getIcon() {
-      return "fas fa-layer-group";
+      return "ti ti-stack";
    }
 
    /**

@@ -632,6 +632,6 @@ class FieldUnicity extends CommonDropdown {
 
 
    static function getIcon() {
-      return "fas fa-fingerprint";
+      return "ti ti-fingerprint";
    }
 }

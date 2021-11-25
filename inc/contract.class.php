@@ -1707,7 +1707,7 @@ class Contract extends CommonDBTM {
    }
 
    static function getIcon() {
-      return "fas fa-file-signature";
+      return "ti ti-writing-sign";
    }
 
    public static function getExpiredCriteria() {

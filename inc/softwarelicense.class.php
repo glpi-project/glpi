@@ -1230,6 +1230,6 @@ class SoftwareLicense extends CommonTreeDropdown {
    }
 
    static function getIcon() {
-      return "fas fa-key";
+      return "ti ti-key";
    }
 }

@@ -276,6 +276,6 @@ class Enclosure extends CommonDBTM {
 
 
    static function getIcon() {
-      return "fas fa-th";
+      return "ti ti-columns";
    }
 }

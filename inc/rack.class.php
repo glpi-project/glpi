@@ -855,6 +855,6 @@ JAVASCRIPT;
 
 
    static function getIcon() {
-      return "fas fa-server";
+      return "ti ti-server";
    }
 }

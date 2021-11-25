@@ -34,7 +34,7 @@
 <div class="dropdown dropstart">
    <button class="dropdown-item dropdown-toggle" type="button" data-bs-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false">
-      <i class="fas fa-user-check"></i>
+      <i class="ti ti-user-check"></i>
       {{ (session('glpiactiveprofile')['name'] ?? '')|verbatim_value }}
    </button>
    <div class="dropdown-menu" data-bs-popper="none">
@@ -42,7 +42,7 @@
       {% for profile_id, profile in session('glpiprofiles') %}
       <a class="dropdown-item {{ profile_id == (session('glpiactiveprofile')['id'] ?? 0) ? 'active' : '' }}"
          href="{{ index_path() }}?newprofile={{ profile_id }}">
-         <i class="fas fa-user-check"></i>{{ profile['name']|verbatim_value }}
+         <i class="ti ti-user-check"></i>{{ profile['name']|verbatim_value }}
       </a>
       {% endfor %}
    </div>
@@ -55,13 +55,13 @@
 
 {% if session('glpi_multientitiesmode') == 0 %}
    <span class="dropdown-item dropdown-item-text">
-      <i class="fa-fw fas fa-layer-group"></i>
+      <i class="fa-fw ti ti-stack"></i>
       {{ session('glpiactive_entity_name')|verbatim_value|u.truncate(35, '...') }}
    </span>
 {% else %}
    <div class="dropdown dropstart">
       <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-         <i class="fa-fw fas fa-layer-group"></i>
+         <i class="fa-fw ti ti-stack"></i>
          {{ session('glpiactive_entity_name')|verbatim_value|u.truncate(35, '...') }}
       </a>
       <div class="dropdown-menu p-3">
@@ -83,7 +83,7 @@
                      placeholder="{{ __('Search entity') }}" autocomplete="off">
                <button type="submit" class="btn btn-icon btn-primary" title="{{ __('Search') }}"
                      data-bs-toggle="tooltip" data-bs-placement="top">
-                  <i class="fas fa-search"></i>
+                  <i class="ti ti-search"></i>
                </button>
                <a class="btn btn-icon btn-outline-secondary" href="#" id="entsearchtext{{ rand }}_clear"
                   title="{{ __("Clear search") }}" data-bs-toggle="tooltip" data-bs-placement="top">

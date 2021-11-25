@@ -602,6 +602,6 @@ abstract class CommonITILRecurrent extends CommonDropdown
    }
 
    public static function getIcon() {
-      return "fas fa-stopwatch";
+      return "ti ti-alarm";
    }
 }

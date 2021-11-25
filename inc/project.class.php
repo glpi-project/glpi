@@ -247,10 +247,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       if (static::canView()
           || Session::haveRight('projecttask', ProjectTask::READMY)) {
          $pic_validate = '
-            <span class="fa-stack" title="'.__('My tasks').'">
-               <i class="fas fa-check fa-stack-1x" style="top: 1px; left: -2px; font-size: 1.2em"></i>
-               <i class="far fa-clock fa-stack-1x" style="top: 6px; left: 1px"></i>
-            </span>
+            <i class="ti ti-eye-check" title="'.__('My tasks').'"></i>
             <span class="d-none d-xxl-block">
                '.__('My tasks').'
             </span>
@@ -2553,6 +2550,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
 
 
    static function getIcon() {
-      return "fas fa-columns";
+      return "ti ti-layout-kanban";
    }
 }

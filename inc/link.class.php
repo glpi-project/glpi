@@ -706,6 +706,6 @@ class Link extends CommonDBTM {
    }
 
    static function getIcon() {
-      return "fas fa-link";
+      return "ti ti-link";
    }
 }

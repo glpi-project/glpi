@@ -2121,6 +2121,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
 
 
    static function getIcon() {
-      return "fas fa-question";
+      return "ti ti-lifebuoy";
    }
 }

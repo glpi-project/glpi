@@ -3362,6 +3362,6 @@ class Profile extends CommonDBTM {
 
 
    static function getIcon() {
-      return "fas fa-user-check";
+      return "ti ti-user-check";
    }
 }

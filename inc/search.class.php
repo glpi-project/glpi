@@ -2241,7 +2241,7 @@ class Search {
       if ($p['mainform']) {
          // Display submit button
          echo "<button class='btn btn-sm btn-primary me-1' type='submit' name='".$p['actionname']."'>
-               <i class='fas fa-search'></i>
+               <i class='ti ti-search'></i>
                <span class='d-none d-sm-block'>".$p['actionvalue']."</span>
             </button>";
          if ($p['showbookmark'] || $p['showreset']) {
@@ -2260,7 +2260,7 @@ class Search {
                   .$p['target']
                   .(strpos($p['target'], '?') ? '&amp;' : '?')
                   ."reset=reset' title=\"".__s('Blank')."\"
-                  ><i class='fas fa-lg fa-undo'></i></a>";
+                  ><i class='ti fa-lg ti-circle-x'></i></a>";
             }
          }
       }

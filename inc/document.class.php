@@ -1639,7 +1639,7 @@ class Document extends CommonDBTM {
 
 
    static function getIcon() {
-      return "far fa-file";
+      return "ti ti-files";
    }
 
 

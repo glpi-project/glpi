@@ -1966,6 +1966,6 @@ class CronTask extends CommonDBTM{
 
 
    static function getIcon() {
-      return "fas fa-stopwatch";
+      return "ti ti-settings-automation";
    }
 }

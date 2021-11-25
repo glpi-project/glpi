@@ -2243,6 +2243,6 @@ class MailCollector  extends CommonDBTM {
 
 
    static function getIcon() {
-      return "fas fa-inbox";
+      return "ti ti-inbox";
    }
 }

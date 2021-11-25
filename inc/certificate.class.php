@@ -678,6 +678,6 @@ class Certificate extends CommonDBTM {
 
 
    static function getIcon() {
-      return "fas fa-certificate";
+      return "ti ti-certificate";
    }
 }

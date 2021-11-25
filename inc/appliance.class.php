@@ -369,7 +369,7 @@ class Appliance extends CommonDBTM {
 
 
    static function getIcon() {
-      return "fas fa-cubes";
+      return "ti ti-versions";
    }
 
    /**

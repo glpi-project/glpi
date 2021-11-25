@@ -716,7 +716,7 @@ class Printer  extends CommonDBTM {
 
 
    static function getIcon() {
-      return "fas fa-print";
+      return "ti ti-printer";
    }
 
 }

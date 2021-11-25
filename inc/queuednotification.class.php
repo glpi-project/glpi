@@ -794,6 +794,6 @@ class QueuedNotification extends CommonDBTM {
 
 
    static function getIcon() {
-      return "far fa-list-alt";
+      return "ti ti-notification";
    }
 }

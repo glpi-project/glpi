@@ -5656,7 +5656,7 @@ JAVASCRIPT;
    }
 
    static function getIcon() {
-      return "fas fa-user";
+      return "ti ti-user";
    }
 
    /**

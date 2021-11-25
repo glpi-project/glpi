@@ -1732,7 +1732,7 @@ class Problem extends CommonITILObject {
 
 
    static function getIcon() {
-      return "fas fa-exclamation-triangle";
+      return "ti ti-alert-triangle";
    }
 
    public static function getItemLinkClass(): string {

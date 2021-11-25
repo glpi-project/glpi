@@ -543,7 +543,7 @@ class Report extends CommonGLPI{
 
 
    static function getIcon() {
-      return "fas fa-file-medical-alt";
+      return "ti ti-report";
    }
 
 }

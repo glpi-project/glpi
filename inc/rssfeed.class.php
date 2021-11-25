@@ -1035,6 +1035,6 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
 
 
    static function getIcon() {
-      return "fas fa-rss";
+      return "ti ti-rss";
    }
 }

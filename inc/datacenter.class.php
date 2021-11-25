@@ -186,6 +186,6 @@ class Datacenter extends CommonDBTM {
 
 
    static function getIcon() {
-      return "fas fa-warehouse";
+      return "ti ti-building-warehouse";
    }
 }
