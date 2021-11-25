@@ -226,12 +226,7 @@ class ProjectTask extends DbTestCase {
 
       // Check team members array has keys for all team itemtypes
       $team = $project_task->getTeam();
-      $this->array($team)->hasKeys($team_itemtypes);
-
-      // Check no team members
-      foreach ($team_itemtypes as $itemtype) {
-         $this->array($team[$itemtype])->isEmpty();
-      }
+      $this->array($team)->isEmpty();
 
       // Add team members
       $project_task->addTeamMember(\User::class, 1, ['role' => Team::ROLE_MEMBER]);
@@ -241,11 +236,11 @@ class ProjectTask extends DbTestCase {
 
       // Check team members
       $team = $project_task->getTeam();
-      $this->array($team[\User::class])->hasSize(1);
-      $this->array($team[\User::class][0])->hasKey('role');
-      $this->integer($team[\User::class][0]['role'])->isEqualTo(Team::ROLE_MEMBER);
-      $this->integer($team[\User::class][0]['items_id'])->isEqualTo(1);
-      $this->array($team[\Group::class])->isEmpty();
+      $this->array($team)->hasSize(1);
+      $this->array($team[0])->hasKeys(['itemtype', 'items_id', 'role']);
+      $this->string($team[0]['itemtype'])->isEqualTo(\User::class);
+      $this->integer($team[0]['items_id'])->isEqualTo(1);
+      $this->string($team[0]['role'])->isEqualTo(Team::ROLE_MEMBER);
 
       // Delete team members
       $project_task->deleteTeamMember(\User::class, 1, ['role' => Team::ROLE_MEMBER]);
@@ -254,10 +249,7 @@ class ProjectTask extends DbTestCase {
       $project_task->getFromDB($projecttasks_id);
       $team = $project_task->getTeam();
 
-      // Check no team members
-      foreach ($team_itemtypes as $itemtype) {
-         $this->array($team[$itemtype])->isEmpty();
-      }
+      $this->array($team)->isEmpty();
 
       // Add team members
       $project_task->addTeamMember(\Group::class, 5, ['role' => Team::ROLE_MEMBER]);
@@ -267,10 +259,10 @@ class ProjectTask extends DbTestCase {
 
       // Check team members
       $team = $project_task->getTeam();
-      $this->array($team[\Group::class])->hasSize(1);
-      $this->array($team[\Group::class][0])->hasKey('role');
-      $this->integer($team[\Group::class][0]['role'])->isEqualTo(Team::ROLE_MEMBER);
-      $this->integer($team[\Group::class][0]['items_id'])->isEqualTo(5);
-      $this->array($team[\User::class])->isEmpty();
+      $this->array($team)->hasSize(1);
+      $this->array($team[0])->hasKeys(['itemtype', 'items_id', 'role']);
+      $this->string($team[0]['itemtype'])->isEqualTo(\Group::class);
+      $this->integer($team[0]['items_id'])->isEqualTo(5);
+      $this->string($team[0]['role'])->isEqualTo(Team::ROLE_MEMBER);
    }
 }

@@ -34,6 +34,7 @@ namespace tests\units;
 
 use CommonITILObject;
 use DbTestCase;
+use Glpi\Team\Team;
 use Glpi\Toolbox\Sanitizer;
 use Symfony\Component\DomCrawler\Crawler;
 use TicketValidation;
@@ -3728,53 +3729,43 @@ HTML
 
       // Check team members array has keys for all team itemtypes
       $team = $ticket->getTeam();
-      $this->array($team)->hasKeys($team_itemtypes);
-
-      // Check no team members
-      foreach ($team_itemtypes as $itemtype) {
-         $this->array($team[$itemtype])->isEmpty();
-      }
+      $this->array($team)->isEmpty();
 
       // Add team members
-      $ticket->addTeamMember(\User::class, 1, ['role' => \CommonITILActor::ASSIGN]);
+      $ticket->addTeamMember(\User::class, 1, ['role' => Team::ROLE_ASSIGNED]);
 
       // Reload ticket from DB
       $ticket->getFromDB($tickets_id);
 
       // Check team members
       $team = $ticket->getTeam();
-      $this->array($team[\User::class])->hasSize(1);
-      $this->array($team[\User::class][0])->hasKey('role');
-      $this->integer($team[\User::class][0]['role'])->isEqualTo(\CommonITILActor::ASSIGN);
-      $this->integer($team[\User::class][0]['items_id'])->isEqualTo(1);
-      $this->array($team[\Group::class])->isEmpty();
-      $this->array($team[\Supplier::class])->isEmpty();
+      $this->array($team)->hasSize(1);
+      $this->array($team[0])->hasKeys(['itemtype', 'items_id', 'role']);
+      $this->string($team[0]['itemtype'])->isEqualTo(\User::class);
+      $this->integer($team[0]['items_id'])->isEqualTo(1);
+      $this->string($team[0]['role'])->isEqualTo(Team::ROLE_MEMBER);
 
       // Delete team members
-      $ticket->deleteTeamMember(\User::class, 1, ['role' => \CommonITILActor::ASSIGN]);
+      $ticket->deleteTeamMember(\User::class, 1, ['role' => Team::ROLE_ASSIGNED]);
 
       //Reload ticket from DB
       $ticket->getFromDB($tickets_id);
       $team = $ticket->getTeam();
 
-      // Check no team members
-      foreach ($team_itemtypes as $itemtype) {
-         $this->array($team[$itemtype])->isEmpty();
-      }
+      $this->array($team)->isEmpty();
 
       // Add team members
-      $ticket->addTeamMember(\Group::class, 5, ['role' => \CommonITILActor::ASSIGN]);
+      $ticket->addTeamMember(\Group::class, 5, ['role' => Team::ROLE_ASSIGNED]);
 
       // Reload ticket from DB
       $ticket->getFromDB($tickets_id);
 
       // Check team members
       $team = $ticket->getTeam();
-      $this->array($team[\Group::class])->hasSize(1);
-      $this->array($team[\Group::class][0])->hasKey('role');
-      $this->integer($team[\Group::class][0]['role'])->isEqualTo(\CommonITILActor::ASSIGN);
-      $this->integer($team[\Group::class][0]['items_id'])->isEqualTo(5);
-      $this->array($team[\User::class])->isEmpty();
-      $this->array($team[\Supplier::class])->isEmpty();
+      $this->array($team)->hasSize(1);
+      $this->array($team[0])->hasKeys(['itemtype', 'items_id', 'role']);
+      $this->string($team[0]['itemtype'])->isEqualTo(\Group::class);
+      $this->integer($team[0]['items_id'])->isEqualTo(5);
+      $this->string($team[0]['role'])->isEqualTo(Team::ROLE_MEMBER);
    }
 }
