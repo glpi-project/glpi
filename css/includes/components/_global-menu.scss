@@ -67,28 +67,57 @@
    }
 
    #navbar-menu {
-      .nav-link.active + .dropdown-menu,
-      .nav-link.show + .dropdown-menu {
-         border-left: 4px solid rgba($color: #000000, $alpha: .5);
-         border-radius: unset;
-         background-color: rgba($color: #000000, $alpha: .1);
+      .nav-item  {
+         .nav-link {
+            color: rgba($color: $mainmenu-fg, $alpha: .8);
+            border-left: 3px solid transparent;
+            border-radius: unset;
 
-         .dropdown-header {
-            display: none;
+            &.show, &.active {
+               border-left-color: rgba($color: $primary, $alpha: .3);
+               color: rgba($color: $primary, $alpha: .9);
+               font-weight: bold;
+            }
+
+            &.active, &.show {
+               & +.dropdown-menu {
+                  border-radius: unset;
+                  background-color: rgba($color: #000000, $alpha: .1);
+
+                  .dropdown-header {
+                     display: none;
+                  }
+
+                  .dropdown-item  {
+                     border-left: 3px solid rgba($color: #000000, $alpha: .5);
+
+                     &.active {
+                        border-left-color: rgba($color: $primary, $alpha: .3);
+                        background-color: rgba($color: #000000, $alpha: .1);
+                        font-weight: bold;
+                     }
+
+                     &:hover {
+                        border-left-color: $primary;
+                        color: $primary;
+                        background-color: rgba($color: #000000, $alpha: .2);
+                     }
+                  }
+               }
+            }
          }
-      }
 
-      .nav-link {
-         color: rgba($color: $mainmenu-fg, $alpha: .8);
-
-         &.show, &.active {
-            color: rgba($color: $primary, $alpha: .9);
-            font-weight: bold;
+         i {
+            margin-right: 0.7em;
          }
-      }
 
-      i {
-         margin-right: 0.7em;
+         &:hover {
+            .nav-link {
+               border-left-color: $primary;
+               color: $primary;
+               background-color: lighten($mainmenu-bg, 5%);
+            }
+         }
       }
    }
 
@@ -163,8 +192,6 @@
 
             .nav-item  {
                .nav-link {
-                  border-left: 3px solid transparent;
-                  border-radius: unset;
                   z-index: 1060;
 
                   & + .dropdown-menu {
@@ -198,10 +225,6 @@
 
                &:hover {
                   .nav-link {
-                     border-left-color: $primary;
-                     color: $primary;
-                     background-color: lighten($mainmenu-bg, 5%);
-
                      & + .dropdown-menu {
                         display: block;
                      }
