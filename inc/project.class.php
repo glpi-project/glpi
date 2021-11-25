@@ -2477,7 +2477,15 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
    }
 
    public function getTeam(): array {
-      return ProjectTeam::getTeamFor($this->getID(), true);
+      $team = ProjectTeam::getTeamFor($this->getID(), true);
+      // Flatten the array
+      $result = [];
+      foreach ($team as $itemtype_members) {
+         foreach ($itemtype_members as $member) {
+            $result[] = $member;
+         }
+      }
+      return $result;
    }
 
    /**

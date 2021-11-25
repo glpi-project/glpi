@@ -7931,7 +7931,8 @@ abstract class CommonITILObject extends CommonDBTM {
          ]);
          foreach ($it as $data) {
             $items_id = $data[$itemtype::getForeignKeyField()];
-            $team[$itemtype][] = [
+            $team[] = [
+               'itemtype'  => $itemtype,
                'items_id'  => $items_id,
                'role'      => $data['type'],
                'name'      => $data['name'],
