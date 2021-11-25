@@ -60,17 +60,17 @@
       vertical-align: middle;
 
       &.state_0 {
-         background-image: url(../pics/timeline/information.png);
+         background-image: url("../pics/timeline/information.png");
       }
 
       &.state_1 {
          cursor: pointer;
-         background-image: url(../pics/timeline/todo.png);
+         background-image: url("../pics/timeline/todo.png");
       }
 
       &.state_2 {
          cursor: pointer;
-         background-image: url(../pics/timeline/done.png);
+         background-image: url("../pics/timeline/done.png");
       }
    }
 
@@ -159,7 +159,7 @@
          background-color: $timeline-fup-bg;
          color: $timeline-fup-fg;
          border-color: $timeline-fup-border;
-         background-image: url(../pics/timeline/followup.png);
+         background-image: url("../pics/timeline/followup.png");
          background-repeat: no-repeat;
 
          &::before {
@@ -182,7 +182,7 @@
          background-color: $timeline-task-bg;
          color: $timeline-task-fg;
          border-color: $timeline-task-border;
-         background-image: url(../pics/timeline/task.png);
+         background-image: url("../pics/timeline/task.png");
          background-repeat: no-repeat;
 
          &::before {
