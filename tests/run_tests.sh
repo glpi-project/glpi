@@ -170,11 +170,12 @@ do
   LAST_EXIT_CODE=0
   case $TEST_SUITE in
     "lint")
-      # Misc lint (locales and SCSS) is not executed here as their output is not configurable yet
+      # Misc lint (licence headers and locales) is not executed here as their output is not configurable yet
       # and it would be a pain to handle rolling back of their changes.
-      # TODO Add ability to simulate locales extact and SCSS compilation without actually modifying locale files.
+      # TODO Add ability to simulate locales extact without actually modifying locale files.
          docker-compose exec -T app .github/actions/lint_php-lint.sh \
       && docker-compose exec -T app .github/actions/lint_js-lint.sh \
+      && docker-compose exec -T app .github/actions/lint_scss-lint.sh \
       && docker-compose exec -T app .github/actions/lint_twig-lint.sh \
       || LAST_EXIT_CODE=$?
       ;;

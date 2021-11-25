@@ -86,6 +86,9 @@ jobs:
       - name: "JS lint"
         run: |
           docker-compose exec -T app .github/actions/lint_js-lint.sh
+      - name: "SCSS lint"
+        run: |
+          docker-compose exec -T app .github/actions/lint_scss-lint.sh
       - name: "Misc lint"
         run: |
           docker-compose exec -T app .github/actions/lint_misc-lint.sh
