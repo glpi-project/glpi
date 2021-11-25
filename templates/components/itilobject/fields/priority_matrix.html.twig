@@ -36,7 +36,7 @@
    'disabled': (not (canupdate or can_requester))
 }) %}
 {% if field_options.fields_template.isMandatoryField('urgency') %}
-   {% set urgency_options = urgency_option|merge({
+   {% set urgency_options = urgency_options|merge({
       'required': true,
    }) %}
 {% endif %}
