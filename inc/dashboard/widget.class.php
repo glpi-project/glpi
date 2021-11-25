@@ -1997,13 +1997,13 @@ JAVASCRIPT;
       }
 
       $scss = new Compiler();
-      $scss->addImportPath(GLPI_ROOT);
 
+      $glpi_root = GLPI_ROOT;
       $palette_css = $scss->compile("{$css_dom_parent} {
          \$ct-series-names: ({$series_names});
          \$ct-series-colors: ({$series_colors});
 
-         @import 'css/includes/components/chartist/generate';
+         @import '{$glpi_root}/css/includes/components/chartist/generate';
       }");
 
       $GLPI_CACHE->set($hash, $palette_css);

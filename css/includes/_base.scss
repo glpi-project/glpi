@@ -46,7 +46,7 @@ $logo: $logo-light;
 $logo_reduced: $logo-light-reduced;
 
 @if $is-dark {
-   @import "css/includes/dark";
+   @import "dark";
 } @else {
    @import "~@tabler/core/src/scss/tabler";
 }

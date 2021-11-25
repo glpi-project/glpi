@@ -31,10 +31,10 @@
 
 $is-dark: false !default;
 
-@import "css/palettes/defaults";
-@import "css/includes/base";
-@import "css/includes/global-variables";
-@import "css/includes/components/select2";
+@import "palettes/defaults";
+@import "includes/base";
+@import "includes/global-variables";
+@import "includes/components/select2";
 
 /*  ############# Definition des styles de l'install et de l'update ############# */
 
