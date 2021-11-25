@@ -6519,7 +6519,7 @@ HTML;
          return '';
       }
 
-      $import = '@import "' . $file . '";';
+      $import = '@import "' . $path . '";';
       $fckey = 'css_raw_file_' . $file;
       $file_hash = self::getScssFileHash($path);
 
@@ -6531,9 +6531,7 @@ HTML;
          }
       }
 
-      $scss->addImportPath(GLPI_ROOT);
-
-      // Enable imports of ".scss" files from "node_modules", when path starts with "~".
+      // Enable imports of ".scss" files from "css/lib", when path starts with "~".
       $scss->addImportPath(
          function($path) {
             $file_chunks = [];
@@ -6628,9 +6626,6 @@ CSS;
             $potential_paths[] = GLPI_ROOT . '/css/lib/' . $import_dirname . '/' . $import_filename;
             $potential_paths[] = GLPI_ROOT . '/css/lib/' . $import_dirname . '/_' . $import_filename;
          } else {
-            // Search using path relative to GLPI root
-            $potential_paths[] = GLPI_ROOT . '/' . $import_dirname . '/' . $import_filename;
-            $potential_paths[] = GLPI_ROOT . '/' . $import_dirname . '/_' . $import_filename;
             // Search using path relative to current file
             $potential_paths[] = dirname($filepath) . '/' . $import_dirname . '/' . $import_filename;
             $potential_paths[] = dirname($filepath) . '/' . $import_dirname . '/_' . $import_filename;
