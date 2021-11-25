@@ -64,16 +64,11 @@
       overflow: visible;
       padding: 0;
       text-align: left;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
       user-select: none;
 
 
       .gantt-menu-item {
          display: inline-block;
-         -webkit-box-sizing: border-box;
-         -moz-box-sizing: border-box;
          box-sizing: border-box;
          position: relative;
          overflow: visible;

@@ -213,15 +213,10 @@ $break_tablet: 1400px;
 
                legend {
                   display: inline-block;
-                  cursor: move; // fallback
                   cursor: grab;
-                  cursor: -moz-grab;
-                  cursor: -webkit-grab;
 
                   &:active {
-                     cursor: -webkit-grabbing;
-                     cursor:    -moz-grabbing;
-                     cursor:         grabbing;
+                     cursor: grabbing;
                   }
                }
 
