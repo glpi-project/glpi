@@ -439,13 +439,12 @@ $break_tablet: 1400px;
                   &:after {
                      position: absolute;
                      font-family: "Font Awesome 5 Free";
-                     color: #222;
+                     color: #509ee3;
                      font-weight: 900;
                      content: "\f057";
                      opacity: 0.7;
                      font-size: 11px;
                      left: 7px;
-                     color: #509ee3;
                   }
 
                   &:hover:after {
@@ -865,11 +864,10 @@ $break_tablet: 1400px;
 
             .content {
                font-size: $number_size;
-               min-width: 30px;
+               min-width: 40px;
                background-color: rgba($color: #000, $alpha: .1);
                padding: 10px;
                text-align: center;
-               min-width: 40px;
                white-space: nowrap;
                width: 1%;
             }
