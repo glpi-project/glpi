@@ -3845,7 +3845,7 @@ class CommonDBTM extends CommonGLPI {
                      if (!class_exists($value)) {
                         $unset = true;
                      }
-                     //go threw plugins
+                     break;
 
                   case 'email' :
                   case 'string' :
