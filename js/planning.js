@@ -380,6 +380,10 @@ var GLPIPlanning  = {
 
             // set end of day markers for timeline
             GLPIPlanning.setEndofDays(info.view);
+
+            $('#refresh_planning').on ('click', function() {
+               GLPIPlanning.refresh();
+            });
          },
          viewSkeletonRender: function(info) {
             var view_type = info.view.type;
@@ -624,10 +628,6 @@ var GLPIPlanning  = {
 
       //window.calendar = calendar; // Required as object is not accessible by forms callback
       GLPIPlanning.calendar.render();
-
-      $('#refresh_planning').click(function() {
-         GLPIPlanning.refresh();
-      });
 
       // attach the date picker to planning
       GLPIPlanning.initFCDatePicker();
