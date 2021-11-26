@@ -58,10 +58,10 @@ class Widget extends DbTestCase {
             'expected'  => [
                'names'  => ['a', 'b', 'c', 'd'],
                'colors' => [
-                  '#a5a5a5',
-                  '#7f7f7f',
+                  '#a6a6a6',
+                  '#808080',
                   '#595959',
-                  '#323232',
+                  '#333333',
                ],
             ]
          ], [
@@ -72,8 +72,8 @@ class Widget extends DbTestCase {
                'names'  => ['a', 'b', 'c', 'd'],
                'colors' => [
                   '#595959',
-                  '#7f7f7f',
-                  '#a5a5a5',
+                  '#808080',
+                  '#a6a6a6',
                   '#cccccc',
                ],
             ]
