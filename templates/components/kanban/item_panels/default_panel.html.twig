@@ -61,14 +61,9 @@
          {{ _self.print_hook_section('pre_kanban_panel_content', itemtype, item_fields.id) }}
          {{ _self.print_hook_section('pre_kanban_panel_main_content', itemtype, item_fields.id) }}
 
-         {% set preview = item_fields.content|length > 1000 ? item_fields.content|slice(0, 1000) ~ ' (...)' : item_fields.content %}
-         {{ fields.textareaField('content', preview, '', {
-            "enable_richtext": true,
-            "no_label": true,
-            "full_width": true,
-            "disabled": true,
-         }) }}
-         <hr>
+         {% set content = item_fields.content|safe_html %}
+         {% set preview = content|length > 1000 ? content|slice(0, 1000) ~ ' (...)' : content %}
+         <div class="col-12 mb-3 rich_text_container">{{ preview|safe_html }}</div>
 
          {{ _self.print_hook_section('post_kanban_panel_main_content', itemtype, item_fields.id) }}
 
