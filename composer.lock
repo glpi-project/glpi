@@ -4550,23 +4550,23 @@
         },
         {
             "name": "twig/string-extra",
-            "version": "v3.3.3",
+            "version": "v3.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/string-extra.git",
-                "reference": "a0fee99b205440758f9958caad9174d12352a620"
+                "reference": "2aea4098a54af141366ebb0100492750253d971a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/string-extra/zipball/a0fee99b205440758f9958caad9174d12352a620",
-                "reference": "a0fee99b205440758f9958caad9174d12352a620",
+                "url": "https://api.github.com/repos/twigphp/string-extra/zipball/2aea4098a54af141366ebb0100492750253d971a",
+                "reference": "2aea4098a54af141366ebb0100492750253d971a",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.2.5",
                 "symfony/string": "^5.0|^6.0",
                 "symfony/translation-contracts": "^1.1|^2",
-                "twig/twig": "^2.4|^3.0"
+                "twig/twig": "^2.7|^3.0"
             },
             "require-dev": {
                 "symfony/phpunit-bridge": "^4.4.9|^5.0.9|^6.0"
@@ -4606,7 +4606,7 @@
                 "unicode"
             ],
             "support": {
-                "source": "https://github.com/twigphp/string-extra/tree/v3.3.3"
+                "source": "https://github.com/twigphp/string-extra/tree/v3.3.4"
             },
             "funding": [
                 {
@@ -4618,7 +4618,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-05-20T14:28:34+00:00"
+            "time": "2021-11-13T16:20:21+00:00"
         },
         {
             "name": "twig/twig",
