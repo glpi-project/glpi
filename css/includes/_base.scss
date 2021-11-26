@@ -45,6 +45,9 @@ $logo-light-login: "../pics/logos/logo-GLPI-250-white.png" !default;
 $logo: $logo-light;
 $logo_reduced: $logo-light-reduced;
 
+@import "fonts";
+$font-family-sans-serif: Inter, -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif !default;
+
 @if $is-dark {
    @import "dark";
 } @else {
