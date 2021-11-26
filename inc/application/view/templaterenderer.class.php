@@ -49,6 +49,7 @@ use Glpi\Application\View\Extension\RoutingExtension;
 use Glpi\Application\View\Extension\SearchExtension;
 use Glpi\Application\View\Extension\SecurityExtension;
 use Glpi\Application\View\Extension\SessionExtension;
+use Glpi\Application\View\Extension\TeamExtension;
 use Plugin;
 use Session;
 use Twig\Environment;
@@ -102,6 +103,7 @@ class TemplateRenderer {
       $this->environment->addExtension(new RoutingExtension());
       $this->environment->addExtension(new SearchExtension());
       $this->environment->addExtension(new SessionExtension());
+      $this->environment->addExtension(new TeamExtension());
 
       // add superglobals
       $this->environment->addGlobal('_post', $_POST);

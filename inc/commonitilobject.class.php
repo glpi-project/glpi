@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
+use Glpi\Team\Team;
 use Glpi\Toolbox\RichText;
 use Glpi\Toolbox\Sanitizer;
 
@@ -47,6 +48,7 @@ abstract class CommonITILObject extends CommonDBTM {
    use \Glpi\Features\UserMention;
    use \Glpi\Features\Timeline;
    use \Glpi\Features\Kanban;
+   use Glpi\Features\Teamwork;
 
    /// Users by type
    protected $users       = [];
@@ -7503,6 +7505,14 @@ abstract class CommonITILObject extends CommonDBTM {
                ]);
                $all_members[$itemtype] = [];
                foreach ($all_items as $member_data) {
+                  if ($itemtype === User::class) {
+                     $member_data['name'] = formatUserName(
+                        $member_data['id'],
+                        '',
+                        $member_data['realname'],
+                        $member_data['firstname']
+                     );
+                  }
                   $team[] = $member_data;
                }
             }
@@ -7677,6 +7687,13 @@ abstract class CommonITILObject extends CommonDBTM {
          return false;
       }
 
+      $team_role_ids = static::getTeamRoles();
+      $team_roles = [];
+
+      foreach ($team_role_ids as $role_id) {
+         $team_roles[$role_id] = static::getTeamRoleName($role_id);
+      }
+
       $supported_itemtypes = [];
       if (static::canCreate()) {
          $supported_itemtypes[static::class] = [
@@ -7694,7 +7711,9 @@ abstract class CommonITILObject extends CommonDBTM {
                   'type'         => 'hidden',
                   'value'        => $_SESSION['glpiID']
                ]
-            ]
+            ],
+            'team_itemtypes'  => static::getTeamItemtypes(),
+            'team_roles'      => $team_roles,
          ];
       }
       $column_field = [
@@ -7775,6 +7794,161 @@ abstract class CommonITILObject extends CommonDBTM {
          return [];
       }
       return $columns[$column_field];
+   }
+
+   public static function getTeamRoles(): array {
+      return [
+         Team::ROLE_REQUESTER,
+         Team::ROLE_OBSERVER,
+         Team::ROLE_ASSIGNED,
+      ];
+   }
+
+   public static function getTeamRoleName(int $role, int $nb = 1): string {
+      switch ($role) {
+         case Team::ROLE_REQUESTER:
+            return _n('Requester', 'Requesters', $nb);
+         case Team::ROLE_OBSERVER:
+            return _n('Watcher', 'Watchers', $nb);
+         case Team::ROLE_ASSIGNED:
+            return _n('Assignee', 'Assignees', $nb);
+      }
+      return '';
+   }
+
+   public static function getTeamItemtypes(): array {
+      return ['User', 'Group', 'Supplier'];
+   }
+
+   public function addTeamMember(string $itemtype, int $items_id, array $params = []): bool {
+      $role = $params['role'] ?? CommonITILActor::ASSIGN;
+
+      /** @var CommonDBTM $link_class */
+      $link_class = null;
+      switch ($itemtype) {
+         case 'User':
+            $link_class = $this->userlinkclass;
+            break;
+         case 'Group':
+            $link_class = $this->grouplinkclass;
+            break;
+         case 'Supplier':
+            $link_class = $this->supplierlinkclass;
+            break;
+      }
+
+      if ($link_class === null) {
+         return false;
+      }
+
+      $link_item = new $link_class();
+      /** @var CommonDBTM $itemtype */
+      $result = $link_item->add([
+         static::getForeignKeyField()     => $this->getID(),
+         $itemtype::getForeignKeyField()  => $items_id,
+         'type'                           => $role
+      ]);
+      return (bool) $result;
+   }
+
+   public function deleteTeamMember(string $itemtype, int $items_id, array $params = []): bool {
+      $role = $params['role'] ?? CommonITILActor::ASSIGN;
+
+      /** @var CommonDBTM $link_class */
+      $link_class = null;
+      switch ($itemtype) {
+         case 'User':
+            $link_class = $this->userlinkclass;
+            break;
+         case 'Group':
+            $link_class = $this->grouplinkclass;
+            break;
+         case 'Supplier':
+            $link_class = $this->supplierlinkclass;
+            break;
+      }
+
+      if ($link_class === null) {
+         return false;
+      }
+
+      $link_item = new $link_class();
+      /** @var CommonDBTM $itemtype */
+      $result = $link_item->deleteByCriteria([
+         static::getForeignKeyField()     => $this->getID(),
+         $itemtype::getForeignKeyField()  => $items_id,
+         'type'                           => $role
+      ]);
+      return (bool) $result;
+   }
+
+   public function getTeam(): array {
+      global $DB;
+
+      $team = [];
+
+      $team_itemtypes = static::getTeamItemtypes();
+
+      /** @var CommonDBTM $itemtype */
+      foreach ($team_itemtypes as $itemtype) {
+         /** @var CommonDBTM $link_class */
+         $link_class = null;
+         switch ($itemtype) {
+            case 'User':
+               $link_class = $this->userlinkclass;
+               break;
+            case 'Group':
+               $link_class = $this->grouplinkclass;
+               break;
+            case 'Supplier':
+               $link_class = $this->supplierlinkclass;
+               break;
+         }
+
+         if ($link_class === null) {
+            continue;
+         }
+
+         $select = [];
+         if ($itemtype === 'User') {
+            $select = [$link_class::getTable().'.'.$itemtype::getForeignKeyField(), 'type', 'name', 'realname', 'firstname'];
+         } else {
+            $select = [
+               $link_class::getTable().'.'.$itemtype::getForeignKeyField(), 'type', 'name',
+               new QueryExpression('NULL as realname'),
+               new QueryExpression('NULL as firstname')
+            ];
+         }
+
+         $it = $DB->request([
+            'SELECT' => $select,
+            'FROM'   => $link_class::getTable(),
+            'WHERE'  => [static::getForeignKeyField() => $this->getID()],
+            'LEFT JOIN' => [
+               $itemtype::getTable() => [
+                  'ON'  => [
+                     $itemtype::getTable()   => 'id',
+                     $link_class::getTable() => $itemtype::getForeignKeyField()
+                  ]
+               ]
+            ]
+         ]);
+         foreach ($it as $data) {
+            $items_id = $data[$itemtype::getForeignKeyField()];
+            $member = [
+               'itemtype'     => $itemtype,
+               'items_id'     => $items_id,
+               'role'         => $data['type'],
+               'name'         => $data['name'],
+               'realname'     => $data['realname'],
+               'firstname'    => $data['firstname'],
+               'display_name' => formatUserName($items_id, $data['name'], $data['realname'], $data['firstname'])
+            ];
+            $team[] = $member;
+         }
+      }
+
+      return $team;
    }
 
    public function getTimelineStats(): array {

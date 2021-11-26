@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
+use Glpi\Team\Team;
 use Glpi\Toolbox\RichText;
 
 /**
@@ -46,6 +47,7 @@ use Glpi\Toolbox\RichText;
 class Project extends CommonDBTM implements ExtraVisibilityCriteria {
    use Glpi\Features\Kanban;
    use Glpi\Features\Clonable;
+   use Glpi\Features\Teamwork;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -607,7 +609,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          'table'              => 'glpi_users',
          'field'              => 'name',
          'linkfield'          => 'users_id',
-         'name'               => __('Manager'),
+         'name'               => _n('Manager', 'Managers', 1),
          'datatype'           => 'dropdown',
          'right'              => 'see_project'
       ];
@@ -1131,7 +1133,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       }
 
       $items[__('Priority')]         = "priority";
-      $items[__('Manager')]          = "users_id";
+      $items[_n('Manager', 'Managers', 1)] = "users_id";
       $items[__('Manager group')]    = "groups_id";
       $items[__('Name')]             = "name";
 
@@ -1517,7 +1519,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr><td colspan='4' class='subheader'>".__('Manager')."</td></tr>";
+      echo "<tr><td colspan='4' class='subheader'>"._n('Manager', 'Managers', 1)."</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".User::getTypeName(1)."</td>";
@@ -2271,6 +2273,15 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
 
       $supported_itemtypes = [];
       if (Project::canCreate()) {
+         $team_role_ids = static::getTeamRoles();
+         $team_roles = [];
+
+         foreach ($team_role_ids as $role_id) {
+            $team_roles[$role_id] = static::getTeamRoleName($role_id);
+         }
+         // Owner cannot be set from the Kanban view yet because it is a special case (One owner user and one owner group)
+         unset($team_roles[Team::ROLE_OWNER]);
+
          $supported_itemtypes['Project'] = [
             'name'   => Project::getTypeName(1),
             'icon'   => Project::getIcon(),
@@ -2298,11 +2309,22 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                   'type'   => 'hidden',
                   'value'  => 0
                ]
-            ]
+            ],
+            'team_itemtypes'  => Project::getTeamItemtypes(),
+            'team_roles'      => $team_roles,
          ];
       }
 
       if (ProjectTask::canCreate()) {
+         $team_role_ids = static::getTeamRoles();
+         $team_roles = [];
+
+         foreach ($team_role_ids as $role_id) {
+            $team_roles[$role_id] = static::getTeamRoleName($role_id);
+         }
+         // Owner cannot be set from the Kanban view yet because it is a special case (One owner user and one owner group)
+         unset($team_roles[Team::ROLE_OWNER]);
+
          $supported_itemtypes['ProjectTask'] = [
             'name'   => ProjectTask::getTypeName(1),
             'icon'   => ProjectTask::getIcon(),
@@ -2334,7 +2356,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
                   'type'   => 'hidden',
                   'value'  => 0
                ]
-            ]
+            ],
+            'team_itemtypes'  => ProjectTask::getTeamItemtypes(),
+            'team_roles'      => $team_roles,
          ];
          if ($ID <= 0) {
             $supported_itemtypes['ProjectTask']['fields']['projects_id'] = [
@@ -2409,6 +2433,59 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          $this->getFromDB($ID);
       }
       return ($ID <= 0 || $this->canModifyGlobalState());
+   }
+
+   public static function getTeamRoles(): array {
+      return [
+         Team::ROLE_OWNER,
+         Team::ROLE_MEMBER
+      ];
+   }
+
+   public static function getTeamRoleName(int $role, int $nb = 1): string {
+      switch ($role) {
+         case Team::ROLE_OWNER:
+            return _n('Manager', 'Managers', $nb);
+         case Team::ROLE_MEMBER:
+            return _n('Member', 'Members', $nb);
+      }
+      return '';
+   }
+
+   public static function getTeamItemtypes(): array {
+      return ProjectTeam::$available_types;
+   }
+
+   public function addTeamMember(string $itemtype, int $items_id, array $params = []): bool {
+      $project_team = new ProjectTeam();
+      $result = $project_team->add([
+         'projects_id'  => $this->getID(),
+         'itemtype'     => $itemtype,
+         'items_id'     => $items_id
+      ]);
+      return (bool) $result;
+   }
+
+   public function deleteTeamMember(string $itemtype, int $items_id, array $params = []): bool {
+      $project_team = new ProjectTeam();
+      $result = $project_team->deleteByCriteria([
+         'projects_id'  => $this->getID(),
+         'itemtype'     => $itemtype,
+         'items_id'     => $items_id
+      ]);
+      return (bool) $result;
+   }
+
+   public function getTeam(): array {
+      $team = ProjectTeam::getTeamFor($this->getID(), true);
+      // Flatten the array
+      $result = [];
+      foreach ($team as $itemtype_members) {
+         foreach ($itemtype_members as $member) {
+            $result[] = $member;
+         }
+      }
+      return $result;
    }
 
    /**

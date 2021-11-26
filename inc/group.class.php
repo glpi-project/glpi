@@ -482,7 +482,7 @@ class Group extends CommonTreeDropdown {
          'id'                 => '70',
          'table'              => 'glpi_users',
          'field'              => 'name',
-         'name'               => __('Manager'),
+         'name'               => _n('Manager', 'Managers', 1),
          'datatype'           => 'dropdown',
          'right'              => 'all',
          'forcegroupby'       => true,

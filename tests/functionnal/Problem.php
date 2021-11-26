@@ -171,4 +171,20 @@ class Problem extends DbTestCase {
          'type'       => \CommonITILActor::ASSIGN,
       ]);
    }
+
+   public function testGetTeamRoles(): void {
+      $roles = \Problem::getTeamRoles();
+      $this->array($roles)->containsValues([
+         \CommonITILActor::ASSIGN,
+         \CommonITILActor::OBSERVER,
+         \CommonITILActor::REQUESTER,
+      ]);
+   }
+
+   public function testGetTeamRoleName(): void {
+      $roles = \Problem::getTeamRoles();
+      foreach ($roles as $role) {
+         $this->string(\Problem::getTeamRoleName($role))->isNotEmpty();
+      }
+   }
 }

@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Team\Team;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -121,8 +123,10 @@ class ProjectTaskTeam extends CommonDBRelation {
     * Get team for a project task
     *
     * @param $tasks_id
+    * @param bool $expand If true, the team member data is expanded to include specific properties like firstname, realname, ...
+    * @return array
    **/
-   static function getTeamFor($tasks_id) {
+   static function getTeamFor($tasks_id, bool $expand = false) {
       global $DB;
 
       $team = [];
@@ -133,18 +137,24 @@ class ProjectTaskTeam extends CommonDBRelation {
          }
       }
 
-      $iterator = $DB->request([
+      $criteria = [
          'FROM'   => self::getTable(),
          'WHERE'  => ['projecttasks_id' => $tasks_id]
-      ]);
+      ];
+      $iterator = $DB->request($criteria);
 
       foreach ($iterator as $data) {
+         $data['role'] = Team::ROLE_MEMBER;
          $team[$data['itemtype']][] = $data;
+      }
+
+      if ($expand) {
+         // This call is purposefully going to ProjectTeam because the code would be the same for both it and this (ProjectTaskTeam)
+         $team = ProjectTeam::expandTeamData($team);
       }
 
       return $team;
    }
-
 
    function prepareInputForAdd($input) {
       global $DB;

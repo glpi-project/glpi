@@ -33,6 +33,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Team\Team;
 use ProjectTask;
 
 /* Test for inc/project.class.php */
@@ -187,5 +188,75 @@ class Project extends DbTestCase {
          $this->integer($task_data['entities_id'])->isEqualTo($entity_id);
          $this->integer($task_data['is_recursive'])->isEqualTo(0);
       }
+   }
+
+   public function testGetTeamRoles(): void {
+      $roles = \Project::getTeamRoles();
+      $this->array($roles)->containsValues([
+         Team::ROLE_OWNER,
+         Team::ROLE_MEMBER,
+      ]);
+   }
+
+   public function testGetTeamRoleName(): void {
+      $roles = \Project::getTeamRoles();
+      foreach ($roles as $role) {
+         $this->string(\Project::getTeamRoleName($role))->isNotEmpty();
+      }
+   }
+
+   /**
+    * Tests addTeamMember, deleteTeamMember, and getTeamMembers methods
+    */
+   public function testTeamManagement(): void {
+
+      $project = new \Project();
+
+      $projects_id = $project->add([
+         'name'      => 'Team test',
+         'content'   => 'Team test'
+      ]);
+      $this->integer($projects_id)->isGreaterThan(0);
+
+      // Check team members array has keys for all team itemtypes
+      $team = $project->getTeam();
+      $this->array($team)->isEmpty();
+
+      // Add team members
+      $this->boolean($project->addTeamMember(\User::class, 1, ['role' => Team::ROLE_MEMBER]))->isTrue();
+
+      // Reload from DB
+      $project->getFromDB($projects_id);
+
+      // Check team members
+      $team = $project->getTeam();
+      $this->array($team)->hasSize(1);
+      $this->array($team[0])->hasKeys(['itemtype', 'items_id', 'role']);
+      $this->string($team[0]['itemtype'])->isEqualTo(\User::class);
+      $this->integer($team[0]['items_id'])->isEqualTo(1);
+      $this->integer($team[0]['role'])->isEqualTo(Team::ROLE_MEMBER);
+
+      // Delete team members
+      $this->boolean($project->deleteTeamMember(\User::class, 1, ['role' => Team::ROLE_MEMBER]))->isTrue();
+
+      //Reload ticket from DB
+      $project->getFromDB($projects_id);
+      $team = $project->getTeam();
+
+      $this->array($team)->isEmpty();
+
+      // Add team members
+      $this->boolean($project->addTeamMember(\Group::class, 5, ['role' => Team::ROLE_MEMBER]))->isTrue();
+
+      // Reload ticket from DB
+      $project->getFromDB($projects_id);
+
+      // Check team members
+      $team = $project->getTeam();
+      $this->array($team)->hasSize(1);
+      $this->array($team[0])->hasKeys(['itemtype', 'items_id', 'role']);
+      $this->string($team[0]['itemtype'])->isEqualTo(\Group::class);
+      $this->integer($team[0]['items_id'])->isEqualTo(5);
+      $this->integer($team[0]['role'])->isEqualTo(Team::ROLE_MEMBER);
    }
 }

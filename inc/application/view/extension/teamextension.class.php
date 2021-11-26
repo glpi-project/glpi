@@ -32,52 +32,26 @@
 
 namespace Glpi\Application\View\Extension;
 
-use Plugin;
+use Glpi\Features\Teamwork;
 use Twig\Extension\AbstractExtension;
-use Twig\TwigFunction;
+use Twig\TwigFilter;
 
 /**
  * @since 10.0.0
  */
-class PluginExtension extends AbstractExtension {
-   public function getFunctions(): array {
+class TeamExtension extends AbstractExtension {
+
+   public function getFilters(): array {
       return [
-         new TwigFunction('call_plugin_hook', [$this, 'callPluginHook']),
-         new TwigFunction('call_plugin_hook_func', [$this, 'callPluginHookFunction']),
+         new TwigFilter('team_role_name', [$this, 'getTeamRoleName']),
       ];
    }
 
-   /**
-    * Call plugin hook with given params.
-    *
-    * @param string  $name          Hook name.
-    * @param mixed   $params        Hook parameters.
-    * @param bool    $return_result Indicates that the result should be returned.
-    *
-    * @return mixed|void
-    */
-   public function callPluginHook(string $name, $params = null, bool $return_result = false) {
-      $result = Plugin::doHook($name, $params);
-
-      if ($return_result) {
-         return $result;
+   public function getTeamRoleName($itemtype, int $role, int $nb = 1): string {
+      if (\Toolbox::hasTrait($itemtype, Teamwork::class)) {
+         /** @var Teamwork $itemtype */
+         return $itemtype::getTeamRoleName($role, $nb);
       }
-   }
-
-   /**
-    * Call plugin hook function with given params.
-    *
-    * @param string  $name          Hook name.
-    * @param mixed   $params        Hook parameters.
-    * @param bool    $return_result Indicates that the result should be returned.
-    *
-    * @return mixed|void
-    */
-   public function callPluginHookFunction(string $name, $params = null, bool $return_result = false) {
-      $result = Plugin::doHookFunction($name, $params);
-
-      if ($return_result) {
-         return $result;
-      }
+      return '';
    }
 }

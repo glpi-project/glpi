@@ -204,7 +204,9 @@
    {% if options.enable_richtext %}
       {% do call('Html::initEditorSystem', [
          id,
-         options.rand
+         options.rand,
+         true,
+         options.disabled|default(false)
       ]) %}
    {% endif %}
 
@@ -523,6 +525,17 @@
       }|merge(options)]) %}
    {% endset %}
 
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
+{% endmacro %}
+
+{% macro dropdownItemsFromItemtypes(name, label = '', options = {}) %}
+   {% set options = {
+      'rand': random()
+   }|merge(options) %}
+
+   {% set field %}
+      {% do call('Dropdown::showSelectItemFromItemtypes', [options]) %}
+   {% endset %}
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
 {% endmacro %}
 

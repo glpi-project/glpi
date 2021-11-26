@@ -170,4 +170,20 @@ class Change extends DbTestCase {
          'type'       => \CommonITILActor::ASSIGN,
       ]);
    }
+
+   public function testGetTeamRoles(): void {
+      $roles = \Change::getTeamRoles();
+      $this->array($roles)->containsValues([
+         \CommonITILActor::ASSIGN,
+         \CommonITILActor::OBSERVER,
+         \CommonITILActor::REQUESTER,
+      ]);
+   }
+
+   public function testGetTeamRoleName(): void {
+      $roles = \Change::getTeamRoles();
+      foreach ($roles as $role) {
+         $this->string(\Change::getTeamRoleName($role))->isNotEmpty();
+      }
+   }
 }

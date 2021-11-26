@@ -50,6 +50,7 @@ use Sabre\VObject\Property\IntegerValue;
 class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface {
    use Glpi\Features\PlanningEvent;
    use VobjectConverterTrait;
+   use Glpi\Features\Teamwork;
 
    // From CommonDBTM
    public $dohistory = true;
@@ -2065,5 +2066,49 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
    public function prepareInputForClone($input) {
       $input['uuid'] = \Ramsey\Uuid\Uuid::uuid4();
       return $input;
+   }
+
+   public static function getTeamRoles(): array {
+      return Project::getTeamRoles();
+   }
+
+   public static function getTeamRoleName(int $role, int $nb = 1): string {
+      return Project::getTeamRoleName($role, $nb);
+   }
+
+   public static function getTeamItemtypes(): array {
+      return ProjectTaskTeam::$available_types;
+   }
+
+   public function addTeamMember(string $itemtype, int $items_id, array $params = []): bool {
+      $projecttask_team = new ProjectTaskTeam();
+      $result = $projecttask_team->add([
+         'projecttasks_id' => $this->getID(),
+         'itemtype'        => $itemtype,
+         'items_id'        => $items_id
+      ]);
+      return (bool) $result;
+   }
+
+   public function deleteTeamMember(string $itemtype, int $items_id, array $params = []): bool {
+      $projecttask_team = new ProjectTaskTeam();
+      $result = $projecttask_team->deleteByCriteria([
+         'projecttasks_id' => $this->getID(),
+         'itemtype'        => $itemtype,
+         'items_id'        => $items_id
+      ]);
+      return (bool) $result;
+   }
+
+   public function getTeam(): array {
+      $team = ProjectTaskTeam::getTeamFor($this->getID(), true);
+      // Flatten the array
+      $result = [];
+      foreach ($team as $itemtype_members) {
+         foreach ($itemtype_members as $member) {
+            $result[] = $member;
+         }
+      }
+      return $result;
    }
 }

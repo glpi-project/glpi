@@ -426,6 +426,37 @@
          color: #792220;
       }
    }
+
+   .item-details-panel {
+      width: 360px;
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 100;
+      height: calc(100% - 10px);
+
+      .card-header .card-title {
+         display: flex;
+         justify-content: space-between;
+         width: 100%;
+      }
+
+      ul.team-list li {
+         img {
+            border-radius: 50%;
+         }
+         button {
+            display: none;
+            padding: unset;
+         }
+         button:hover, button i:hover, &:hover button {
+            display: inline-flex;
+         }
+         .member-details > span {
+            margin-right: 2rem;
+         }
+      }
+   }
 }
 
 .flex-break {
@@ -455,6 +486,16 @@
 
       ul {
          list-style: none;
+      }
+   }
+}
+
+#kanban-modal {
+   ul.kanban-team-list {
+      list-style: none;
+      li {
+         border: $input-border-width solid $input-border-color;
+         padding: 5px;
       }
    }
 }

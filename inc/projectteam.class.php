@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Team\Team;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -107,33 +109,133 @@ class ProjectTeam extends CommonDBRelation {
       }
    }
 
+   /**
+    * Add additional data about the individual members to an array of team members for a Project or ProjectTask.
+    *
+    * The additional information includes data in the specific itemtype's table rather than the ProjectTeam or ProjectTaskTeam tables.
+    * @param array $team Team members. The keys should correspond to the Itemtype and each sub-array should have at least the 'id' property.
+    * @return array The array of team members with additional information
+    * @since 10.0.0
+    */
+   public static function expandTeamData(array $team) {
+      global $DB;
+      $subqueries = [];
+
+      if (count($team['User'])) {
+         $user_ids = array_column($team['User'], 'items_id');
+         $subqueries[] = new QuerySubQuery([
+            'SELECT' => ['id', 'name', 'realname', 'firstname',
+               new QueryExpression('"User" AS itemtype')],
+            'FROM' => 'glpi_users',
+            'WHERE' => [
+               'id'           => $user_ids
+            ]
+         ]);
+      }
+      if (count($team['Group'])) {
+         $group_ids = array_column($team['Group'], 'items_id');
+         $subqueries[] = new QuerySubQuery([
+            'SELECT' => [
+               'id',
+               'name',
+               new QueryExpression('NULL AS realname'),
+               new QueryExpression('NULL AS firstname'),
+               new QueryExpression('"Group" AS itemtype')],
+            'FROM' => 'glpi_groups',
+            'WHERE' => [
+               'id'           => $group_ids
+            ]
+         ]);
+      }
+      if (count($team['Supplier'])) {
+         $supplier_ids = array_column($team['Supplier'], 'items_id');
+         $subqueries[] = new QuerySubQuery([
+            'SELECT' => [
+               'id',
+               'name',
+               new QueryExpression('NULL AS realname'),
+               new QueryExpression('NULL AS firstname'),
+               new QueryExpression('"Supplier" AS itemtype')],
+            'FROM' => 'glpi_suppliers',
+            'WHERE' => [
+               'id' => $supplier_ids
+            ]
+         ]);
+      }
+      if (count($team['Contact'])) {
+         $contact_ids = array_column($team['Contact'], 'items_id');
+         $subqueries[] = new QuerySubQuery([
+            'SELECT' => [
+               'id',
+               'name',
+               new QueryExpression('NULL AS realname'),
+               new QueryExpression('NULL AS firstname'),
+               new QueryExpression('"Contact" AS itemtype')],
+            'FROM' => 'glpi_contacts',
+            'WHERE' => [
+               'id' => $contact_ids
+            ]
+         ]);
+      }
+
+      if (count($subqueries)) {
+         $union = new QueryUnion($subqueries);
+         $criteria = [
+            'SELECT' => ['id', 'name', 'realname', 'firstname', 'itemtype'],
+            'FROM' => $union,
+         ];
+         $iterator = $DB->request($criteria);
+
+         foreach ($iterator as $data) {
+            foreach ($team[$data['itemtype']] as &$member) {
+               if ($member['items_id'] === $data['id']) {
+                  $member['display_name'] = formatUserName($data['id'], $data['name'], $data['realname'], $data['firstname']);
+                  unset($data['id']);
+                  /** @noinspection SlowArrayOperationsInLoopInspection */
+                  $member = array_merge($member, $data);
+                  break;
+               }
+            }
+         }
+      }
+
+      return $team;
+   }
 
    /**
     * Get team for a project
     *
     * @param $projects_id
-   **/
-   static function getTeamFor($projects_id) {
+    * @param bool $expand If true, the team member data is expanded to include specific properties like firstname, realname, ...
+    * @return array
+    */
+   static function getTeamFor($projects_id, bool $expand = false) {
       global $DB;
 
       $team = [];
-      $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => ['projects_id' => $projects_id]
-      ]);
-
-      foreach ($iterator as $data) {
-         if (!isset($team[$data['itemtype']])) {
-            $team[$data['itemtype']] = [];
-         }
-         $team[$data['itemtype']][] = $data;
-      }
 
       // Define empty types
       foreach (static::$available_types as $type) {
          if (!isset($team[$type])) {
             $team[$type] = [];
          }
+      }
+
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => ['projects_id' => $projects_id]
+      ]);
+
+      foreach ($iterator as $data) {
+         $data['role'] = Team::ROLE_MEMBER;
+         if (!isset($team[$data['itemtype']])) {
+            $team[$data['itemtype']] = [];
+         }
+         $team[$data['itemtype']][] = $data;
+      }
+
+      if ($expand) {
+         $team = self::expandTeamData($team);
       }
 
       return $team;
