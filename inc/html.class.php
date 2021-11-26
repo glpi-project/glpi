@@ -6336,7 +6336,7 @@ JAVASCRIPT;
                      <div class="modal-content">
                         <div class="modal-header">
                            <h5 class="modal-title">
-                              <i class="fas fa-arrow-right me-2"></i>
+                              <i class="ti ti-arrow-big-right me-2"></i>
                               {$modal_header}
                            </h5>
                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
