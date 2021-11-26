@@ -390,6 +390,15 @@ class Contact extends CommonDBTM{
          'massiveaction'      => false
       ];
 
+      $tab[] = [
+         'id'                 => '70',
+         'table'              => $this->getTable(),
+         'field'              => 'registration_number',
+         'name'               => __('Administrative number'),
+         'datatype'           => 'string',
+         'autocomplete'       => true
+      ];
+
       // add objectlock search options
       $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
