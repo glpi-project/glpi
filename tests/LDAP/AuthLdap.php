@@ -1472,6 +1472,112 @@ class AuthLDAP extends DbTestCase {
       $this->boolean((bool)$user->fields['is_deleted'])->isTrue();
    }
 
+   /**
+    * Test restoring users from LDAP
+    *
+    * @extensions ldap
+    *
+    * @return void
+    */
+   public function testRestoredUser() {
+      global $CFG_GLPI;
+
+      $ldap = $this->ldap;
+
+      //put deleted LDAP users in trashbin
+      $CFG_GLPI['user_deleted_ldap'] = 1;
+
+      //add a new user in directory
+      $this->boolean(
+         ldap_add(
+            $ldap->connect(),
+            'uid=torestoretest,ou=people,ou=ldap3,dc=glpi,dc=org',
+            [
+               'uid'          => 'torestoretest',
+               'sn'           => 'A SN',
+               'cn'           => 'A CN',
+               'userpassword' => 'password',
+               'objectClass'  => [
+                  'top',
+                  'inetOrgPerson'
+               ]
+            ]
+         )
+      )->isTrue();
+
+      //import the user
+      $import = \AuthLDAP::ldapImportUserByServerId(
+         [
+            'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+            'value'  => 'torestoretest'
+         ],
+         \AuthLDAP::ACTION_IMPORT,
+         $ldap->getID(),
+         true
+      );
+      $this->array($import)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
+         ->integer['id']->isGreaterThan(0);
+
+      //check created user
+      $user = new \User();
+      $this->boolean($user->getFromDB($import['id']))->isTrue();
+      $this->boolean((bool)$user->fields['is_deleted'])->isFalse();
+
+      // delete the user in LDAP
+      $this->boolean(
+         ldap_delete(
+            $ldap->connect(),
+            'uid=torestoretest,ou=people,ou=ldap3,dc=glpi,dc=org'
+         )
+      )->isTrue();
+
+      $synchro = $ldap->forceOneUserSynchronization($user);
+      $this->array($synchro)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_DELETED_LDAP)
+         ->variable['id']->isEqualTo($import['id']);
+      $CFG_GLPI['user_deleted_ldap'] = 0;
+      $CFG_GLPI['user_restored_ldap'] = 1;
+
+      //reload user from DB
+      $this->boolean($user->getFromDB($import['id']))->isTrue();
+      $this->boolean((bool)$user->fields['is_deleted'])->isTrue();
+      $this->boolean((bool)$user->fields['is_deleted_ldap'])->isTrue();
+
+      // manually re-add the user in LDAP to simulate a restore
+      $this->boolean(
+         ldap_add(
+            $ldap->connect(),
+            'uid=torestoretest,ou=people,ou=ldap3,dc=glpi,dc=org',
+            [
+               'uid'          => 'torestoretest',
+               'sn'           => 'A SN',
+               'cn'           => 'A CN',
+               'userpassword' => 'password',
+               'objectClass'  => [
+                  'top',
+                  'inetOrgPerson'
+               ]
+            ]
+         )
+      )->isTrue();
+
+      $synchro = $ldap->forceOneUserSynchronization($user);
+      $this->array($synchro)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_RESTORED_LDAP)
+         ->variable['id']->isEqualTo($import['id']);
+      $CFG_GLPI['user_deleted_ldap'] = 0;
+      $CFG_GLPI['user_restored_ldap'] = 1;
+
+      //reload user from DB
+      $this->boolean($user->getFromDB($import['id']))->isTrue();
+      $this->boolean((bool)$user->fields['is_deleted'])->isFalse();
+      $CFG_GLPI['user_restored_ldap'] = 0;
+   }
+
    protected function ssoVariablesProvider() {
       global $DB;
 
