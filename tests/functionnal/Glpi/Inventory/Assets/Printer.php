@@ -316,4 +316,288 @@ class Printer extends AbstractInventoryAsset {
       $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
       $this->integer(count($printers))->isIdenticalTo(1);
    }
+
+   public function testInventoryNoMove() {
+      $printer = new \Printer();
+      $item_printer = new \Computer_Item();
+
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <PRINTERS>
+      <DRIVER>HP Color LaserJet Pro MFP M476 PCL 6</DRIVER>
+      <NAME>HP Color LaserJet Pro MFP M476 PCL 6</NAME>
+      <NETWORK>0</NETWORK>
+      <PORT>10.253.6.117</PORT>
+      <PRINTPROCESSOR>hpcpp155</PRINTPROCESSOR>
+      <RESOLUTION>600x600</RESOLUTION>
+      <SHARED>0</SHARED>
+      <SHARENAME>HP Color LaserJet Pro MFP M476 PCL 6  (1)</SHARENAME>
+      <STATUS>Unknown</STATUS>
+      <SERIAL>abcdef</SERIAL>
+    </PRINTERS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      //computer inventory with one printer
+      $inventory = $this->doInventory($xml_source, true);
+
+      $computers_id = $inventory->getItem()->fields['id'];
+      $this->integer($computers_id)->isGreaterThan(0);
+
+      //we have 1 printer items linked to the computer
+      $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_id]);
+      $this->integer(count($printers))->isIdenticalTo(1);
+
+      $this->boolean($printer->getFromDB(current($printers)['items_id']));
+      $this->boolean($printer->update(['id' => $printer->fields['id'], 'is_global' => 1]));
+
+      //same printer, but on another computer
+      $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <PRINTERS>
+      <DRIVER>HP Color LaserJet Pro MFP M476 PCL 6</DRIVER>
+      <NAME>HP Color LaserJet Pro MFP M476 PCL 6</NAME>
+      <NETWORK>0</NETWORK>
+      <PORT>10.253.6.117</PORT>
+      <PRINTPROCESSOR>hpcpp155</PRINTPROCESSOR>
+      <RESOLUTION>600x600</RESOLUTION>
+      <SHARED>0</SHARED>
+      <SHARENAME>HP Color LaserJet Pro MFP M476 PCL 6  (1)</SHARENAME>
+      <STATUS>Unknown</STATUS>
+      <SERIAL>abcdef</SERIAL>
+    </PRINTERS>
+    <HARDWARE>
+      <NAME>pc003</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne8</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc003</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      //computer inventory with one printer
+      $inventory = $this->doInventory($xml_source_2, true);
+
+      $computers_2_id = $inventory->getItem()->fields['id'];
+      $this->integer($computers_2_id)->isGreaterThan(0);
+
+      //we still have only 1 printer
+      $printers = $printer->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+      $this->integer(count($printers))->isIdenticalTo(1);
+
+      //still linked on first computer inventoried
+      $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_id]);
+      $this->integer(count($printers))->isIdenticalTo(1);
+
+      //not linked on last inventoried computer
+      $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_2_id]);
+      $this->integer(count($printers))->isIdenticalTo(0);
+   }
+
+   public function testPrinterIgnoreImport() {
+      $printer = new \Printer();
+
+      // Add dictionary rule for ignore import for printer "HP Deskjet 2540"
+      $rulecollection = new \RuleDictionnaryPrinterCollection();
+      $rule = $rulecollection->getRuleClass();
+      $rule_id = $rule->add([
+         'is_active' => 1,
+         'name' => 'Ignore import',
+         'match' => 'AND',
+         'sub_type' => 'RuleDictionnaryPrinter',
+         'ranking' => 1
+      ]);
+      $this->integer($rule_id)->isGreaterThan(0);
+
+      // Add criteria
+      $rulecriteria = new \RuleCriteria(get_class($rule));
+      $this->integer(
+         $rulecriteria->add([
+            'rules_id' => $rule_id,
+            'criteria' => "name",
+            'pattern' => 'HP Deskjet 2540',
+            'condition' => 0
+         ])
+      )->isGreaterThan(0);
+
+      // Add action
+      $ruleaction = new \RuleAction(get_class($rule));
+      $this->integer(
+         $ruleaction->add([
+            'rules_id' => $rule_id,
+            'action_type' => 'assign',
+            'field' => '_ignore_import',
+            'value' => '1'
+         ])
+      )->isGreaterThan(0);
+
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <PRINTERS>
+      <DRIVER>HP Color LaserJet Pro MFP M476 PCL 6</DRIVER>
+      <NAME>HP Color LaserJet Pro MFP M476 PCL 6</NAME>
+      <NETWORK>0</NETWORK>
+      <PORT>10.253.6.117</PORT>
+      <PRINTPROCESSOR>hpcpp155</PRINTPROCESSOR>
+      <RESOLUTION>600x600</RESOLUTION>
+      <SHARED>0</SHARED>
+      <SHARENAME>HP Color LaserJet Pro MFP M476 PCL 6  (1)</SHARENAME>
+      <STATUS>Unknown</STATUS>
+      <SERIAL>abcdef</SERIAL>
+    </PRINTERS>
+    <PRINTERS>
+      <DRIVER>HP Deskjet 2540</DRIVER>
+      <NAME>HP Deskjet 2540</NAME>
+      <SERIAL>azerty</SERIAL>
+    </PRINTERS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      //computer inventory with two printers, "HP Deskjet 2540" ignored by rules
+      $inventory = $this->doInventory($xml_source, true);
+
+      $item_printer = new \Computer_Item();
+      $printers = $item_printer->find(['computers_id' => $inventory->getItem()->fields['id'], 'itemtype' => 'Printer']);
+      $this->integer(count($printers))->isIdenticalTo(1);
+
+      $this->boolean($printer->getFromDB(current($printers)['items_id']))->isTrue();
+      $this->string($printer->fields['name'])->isIdenticalTo('HP Color LaserJet Pro MFP M476 PCL 6');
+   }
+
+   public function testPrinterRenamedImport() {
+      $computer = new \Computer();
+      $printer = new \Printer();
+
+      $manufacturer = new \Manufacturer();
+      $this->integer($manufacturer->add(['name' => 'HP inc.']))->isGreaterThan(0);
+
+      $rulecollection = new \RuleDictionnaryPrinterCollection();
+      $rule = $rulecollection->getRuleClass();
+      $rule_id = $rule->add([
+         'is_active' => 1,
+         'name' => 'rename',
+         'match' => 'AND',
+         'sub_type' => 'RuleDictionnaryPrinter',
+         'ranking' => 2
+      ]);
+      $this->integer($rule_id)->isGreaterThan(0);
+
+      // Add criteria
+      $rule = $rulecollection->getRuleClass();
+      $rulecriteria = new \RuleCriteria(get_class($rule));
+      $this->integer(
+         $rulecriteria->add([
+            'rules_id' => $rule_id,
+            'criteria' => "name",
+            'pattern' => 'HP Deskjet 2540',
+            'condition' => 0
+         ])
+      )->isGreaterThan(0);
+
+      // Add action
+      $ruleaction = new \RuleAction(get_class($rule));
+      $this->integer(
+         $ruleaction->add([
+            'rules_id' => $rule_id,
+            'action_type' => 'assign',
+            'field' => 'name',
+            'value' => 'HP Deskjet 2540 - renamed'
+         ])
+      )->isGreaterThan(0);
+
+      // Add action
+      $ruleaction = new \RuleAction(get_class($rule));
+      $this->integer(
+         $ruleaction->add([
+            'rules_id' => $rule_id,
+            'action_type' => 'assign',
+            'field' => 'manufacturer',
+            'value' => $manufacturer->fields['id']
+         ])
+      )->isGreaterThan(0);
+
+      // Add action
+      $ruleaction = new \RuleAction(get_class($rule));
+      $ruleaction->add([
+         'rules_id' => $rule_id,
+         'action_type' => 'assign',
+         'field' => 'is_global',
+         'value' => '0'
+      ]);
+
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <PRINTERS>
+      <DRIVER>HP Color LaserJet Pro MFP M476 PCL 6</DRIVER>
+      <NAME>HP Color LaserJet Pro MFP M476 PCL 6</NAME>
+      <NETWORK>0</NETWORK>
+      <PORT>10.253.6.117</PORT>
+      <PRINTPROCESSOR>hpcpp155</PRINTPROCESSOR>
+      <RESOLUTION>600x600</RESOLUTION>
+      <SHARED>0</SHARED>
+      <SHARENAME>HP Color LaserJet Pro MFP M476 PCL 6  (1)</SHARENAME>
+      <STATUS>Unknown</STATUS>
+      <SERIAL>abcdef</SERIAL>
+    </PRINTERS>
+    <PRINTERS>
+      <DRIVER>HP Deskjet 2540</DRIVER>
+      <NAME>HP Deskjet 2540</NAME>
+      <SERIAL>azerty</SERIAL>
+    </PRINTERS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      //computer inventory with two printers, "HP Deskjet 2540" renamed by rules
+      $inventory = $this->doInventory($xml_source, true);
+
+      $computer->getFromDBByCrit(['serial' => 'ggheb7ne7']);
+
+      $item_printer = new \Computer_Item();
+      $printers = $item_printer->find(['computers_id' => $inventory->getItem()->fields['id'], 'itemtype' => 'Printer']);
+      $this->integer(count($printers))->isIdenticalTo(2);
+
+      $printer1 = array_pop($printers);
+      $this->boolean($printer->getFromDB($printer1['items_id']))->isTrue();
+      $this->string($printer->fields['name'])->isIdenticalTo('HP Deskjet 2540 - renamed');
+      $this->integer($printer->fields['manufacturers_id'])->isIdenticalTo($manufacturer->fields['id']);
+      $this->integer($printer->fields['is_global'])->isIdenticalTo(0);
+
+      $printer2 = array_pop($printers);
+      $this->boolean($printer->getFromDB($printer2['items_id']))->isTrue();
+      $this->string($printer->fields['name'])->isIdenticalTo('HP Color LaserJet Pro MFP M476 PCL 6');
+   }
 }

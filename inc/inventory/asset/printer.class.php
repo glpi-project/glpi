@@ -62,10 +62,13 @@ class Printer extends NetworkEquipment
       parent::prepare();
 
       if (!property_exists($this->raw_data->content ?? new \stdClass(), 'network_device')) {
-         $val = $this->raw_data[0];
-         $val->autoupdatesystems_id = $this->data[0]->autoupdatesystems_id;
-         $val->last_inventory_update = $_SESSION['glpi_currenttime'];
-         $this->data = [$val];
+         $autoupdatesystems_id = $this->data[0]->autoupdatesystems_id;
+         $this->data = [];
+         foreach ($this->raw_data as $val) {
+            $val->autoupdatesystems_id = $autoupdatesystems_id;
+            $val->last_inventory_update = $_SESSION['glpi_currenttime'];
+            $this->data[] = $val;
+         }
       }
 
       $rulecollection = new RuleDictionnaryPrinterCollection();
