@@ -523,6 +523,11 @@ class NotificationTarget extends CommonDBChild {
                  && Auth::isAlternateAuth(Auth::checkAlternateAuthSystems()))) {
             $notificationoption['usertype'] = self::EXTERNAL_USER;
          }
+
+         // retrieve timezone of the user if exists
+         if (!empty($user->fields['timezone']) && 'null' !== strtolower($user->fields['timezone'])) {
+            $notificationoption['timezone'] = $user->fields['timezone'];
+         }
       }
 
       // Pass user type as argument ? forced for specific cases

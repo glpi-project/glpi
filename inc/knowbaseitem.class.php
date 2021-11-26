@@ -1321,7 +1321,17 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          case 'search' :
             if (strlen($params["contains"]) > 0) {
                $search  = Sanitizer::unsanitize($params["contains"]);
-               $search_wilcard = explode(' ', $search);
+
+               // Replace all non word characters with spaces (see: https://stackoverflow.com/a/26537463)
+               $search_wilcard = preg_replace('/[^\p{L}\p{N}_]+/u', ' ', $search);
+
+               // Remove last space to avoid illegal syntax with " *"
+               $search_wilcard = trim($search_wilcard);
+
+               // Merge spaces since we are using them to split the string later
+               $search_wilcard = preg_replace('!\s+!', ' ', $search_wilcard);
+
+               $search_wilcard = explode(' ', $search_wilcard);
                $search_wilcard = implode('* ', $search_wilcard).'*';
 
                $addscore = [];
@@ -1688,7 +1698,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
                   'WHERE'  => [
                      'items_id'  => $data["id"],
                      'itemtype'  => 'KnowbaseItem'
-                  ] + getEntitiesRestrictCriteria()
+                  ] + getEntitiesRestrictCriteria('', '', '', true)
                ]);
                foreach ($iterator as $docs) {
                   $doc = new Document();
