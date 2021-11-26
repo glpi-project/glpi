@@ -208,6 +208,8 @@ class Agent extends CommonDBTM {
       AgentType::dropdown(['value' => $value]);
 
       echo "</td>";
+      echo "<td><label for='agent_base_url'>".__('Agent base URL')."</label></td>";
+      echo "<td>".Html::input('agent_base_url')."</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";

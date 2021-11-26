@@ -2761,6 +2761,7 @@ CREATE TABLE `glpi_entities` (
   `longitude` varchar(255) DEFAULT NULL,
   `altitude` varchar(255) DEFAULT NULL,
   `transfers_id` int NOT NULL DEFAULT '-2',
+  `agent_base_url` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`,`name`),
   KEY `name` (`name`),
