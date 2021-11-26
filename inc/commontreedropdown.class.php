@@ -900,6 +900,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
 
    static function getIcon() {
-      return "fas fa-sitemap";
+      return "ti ti-subtask";
    }
 }

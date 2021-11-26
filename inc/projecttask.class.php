@@ -75,7 +75,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
    }
 
    public static function getIcon() {
-      return 'fas fa-tasks';
+      return 'ti ti-list-check';
    }
 
 
