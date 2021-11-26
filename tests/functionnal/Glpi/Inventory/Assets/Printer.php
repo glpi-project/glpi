@@ -581,7 +581,7 @@ class Printer extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      //computer inventory with two printers, "HP Deskjet 2540" ignored by rules
+      //computer inventory with two printers, "HP Deskjet 2540" renamed by rules
       $inventory = $this->doInventory($xml_source, true);
 
       $computer->getFromDBByCrit(['serial' => 'ggheb7ne7']);

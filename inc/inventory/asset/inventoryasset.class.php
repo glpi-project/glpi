@@ -349,7 +349,7 @@ abstract class InventoryAsset
       $item = new $itemtype;
       $item->getFromDb($input['items_id']);
 
-      if (($item->fields['is_global'] ?? 0) == 0) {
+      if (!($item->fields['is_global'] ?? false)) {
          if (isset($citem->fields['id'])) {
             $citem->delete(['id' => $citem->fields['id']], true, $this->withHistory());
          }
