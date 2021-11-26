@@ -1503,6 +1503,7 @@ class Toolbox {
                      // no break
                      case "tracking" :
                         $data[0] = "Ticket";
+                        //var defined, use default case
 
                      default :
                         // redirect to item

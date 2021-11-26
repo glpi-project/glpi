@@ -212,6 +212,7 @@ class ProjectTaskTemplate extends CommonDropdown {
                'unit'      => '%',
                'width'     => '100%',
             ]);
+            break;
          case 'actiontime' :
             Dropdown::showTimeStamp($field["name"], [
                'min'             => 0,
@@ -222,6 +223,7 @@ class ProjectTaskTemplate extends CommonDropdown {
                'inhours'         => true,
                'width'           => '100%',
             ]);
+            break;
       }
    }
 

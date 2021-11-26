@@ -4151,6 +4151,7 @@ JAVASCRIPT;
       switch ($searchtype) {
          case "notcontains" :
             $nott = !$nott;
+            //negated, use contains case
          case "contains" :
             $SEARCH = self::makeTextSearch($val, $nott);
             break;
@@ -5107,6 +5108,7 @@ JAVASCRIPT;
 
                case "mainitemtype_mainitem" :
                   $addmain = 'main';
+                  //addmain defined to be used in itemtype_item case
 
                case "itemtype_item" :
                   if (!isset($addmain)) {
@@ -6124,6 +6126,7 @@ JAVASCRIPT;
                                                                    'display' => false]));
                   return $out;
                }
+               break;
 
             case 'glpi_ticketvalidations.status' :
                $out   = '';

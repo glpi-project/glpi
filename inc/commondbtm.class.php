@@ -1487,7 +1487,8 @@ class CommonDBTM extends CommonGLPI {
                               $ischanged = (strcmp((string)$DB->escape($this->fields[$key]),
                                                    (string)$this->input[$key]) != 0);
                               break;
-                           } // else default
+                           }
+                           // else default
 
                         default :
                            $ischanged = ($DB->escape($this->fields[$key]) != $this->input[$key]);
@@ -3844,6 +3845,7 @@ class CommonDBTM extends CommonGLPI {
                      if (!class_exists($value)) {
                         $unset = true;
                      }
+                     break;
 
                   case 'email' :
                   case 'string' :
@@ -4351,6 +4353,7 @@ class CommonDBTM extends CommonGLPI {
                   if ($searchoptions['table'] == $this->getTable()) {
                      break;
                   }
+                  //use dropdown per default
 
                case "dropdown" :
                   if (isset($searchoptions['toadd']) && isset($searchoptions['toadd'][$value])) {
@@ -4595,10 +4598,11 @@ class CommonDBTM extends CommonGLPI {
                return Dropdown::showTimeStamp($name, $options);
 
             case "itemlink" :
-               // Do not use dropdown if wanted to select string value instead of ID
                if (isset($options['itemlink_as_string']) && $options['itemlink_as_string']) {
+                  // Do not use dropdown if wanted to select string value instead of ID
                   break;
                }
+               //use dropdown case per default
 
             case "dropdown" :
                $copytooption     = ['condition', 'displaywith', 'emptylabel',

@@ -6030,7 +6030,7 @@ JAVASCRIPT;
          case 'charts':
             $_SESSION['glpi_js_toload']['charts'][] = 'public/lib/chartist.js';
             break;
-         case 'notifications_ajax';
+         case 'notifications_ajax':
             $_SESSION['glpi_js_toload']['notifications_ajax'][] = 'js/notifications_ajax.js';
             break;
          case 'fuzzy':
@@ -6066,6 +6066,7 @@ JAVASCRIPT;
             break;
          case 'photoswipe':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/photoswipe.js';
+            break;
          case 'reservations':
             $_SESSION['glpi_js_toload'][$name][] = 'js/reservations.js';
             break;
@@ -6357,7 +6358,7 @@ HTML;
             return $html;
             break;
 
-         default;
+         default:
             $fuzzy_entries = [];
 
             // retrieve menu

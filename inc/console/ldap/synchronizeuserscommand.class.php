@@ -299,13 +299,13 @@ class SynchronizeUsersCommand extends AbstractCommand {
 
             $action_message = '';
             switch ($action) {
-               case AuthLDAP::ACTION_IMPORT;
+               case AuthLDAP::ACTION_IMPORT:
                   $action_message = __('Import new users from server "%s"...');
                   break;
-               case AuthLDAP::ACTION_SYNCHRONIZE;
+               case AuthLDAP::ACTION_SYNCHRONIZE:
                   $action_message = __('Update existing users with server "%s"...');
                   break;
-               case AuthLDAP::ACTION_ALL;
+               case AuthLDAP::ACTION_ALL:
                   $action_message = __('Synchronize users with server "%s"...');
                   break;
             }
