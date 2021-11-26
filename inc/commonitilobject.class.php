@@ -4068,7 +4068,7 @@ abstract class CommonITILObject extends CommonDBTM {
    public static function getStatusIcon($status) {
       $class = static::getStatusClass($status);
       $label = static::getStatus($status);
-      return "<i class='$class' title='$label' data-bs-toggle='tooltip'></i>";
+      return "<i class='$class me-1' title='$label' data-bs-toggle='tooltip'></i>";
    }
 
    /**
