@@ -2260,7 +2260,7 @@ class Search {
                   .$p['target']
                   .(strpos($p['target'], '?') ? '&amp;' : '?')
                   ."reset=reset' title=\"".__s('Blank')."\"
-                  ><i class='ti fa-lg ti-circle-x'></i></a>";
+                  ><i class='ti ti-circle-x'></i></a>";
             }
          }
       }

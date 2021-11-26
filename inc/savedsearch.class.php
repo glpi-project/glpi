@@ -874,7 +874,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
              class='btn btn-ghost-secondary btn-icon btn-sm me-1 bookmark_record save'
              data-bs-toggle='tooltip' data-bs-placement='bottom'
              title='".__s('Save current search')."'>";
-      echo "<i class='ti fa-lg ti-star " . ($active ? 'active' : '') . "'></i>";
+      echo "<i class='ti ti-star " . ($active ? 'active' : '') . "'></i>";
       echo "</a>";
 
       $params = [
