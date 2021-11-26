@@ -37,8 +37,8 @@ $break_tablet: 1400px;
 
 @mixin soft-shadow {
    box-shadow:
-      0 1px 3px rgba(0,0,0,0.12),
-      0 1px 2px rgba(0,0,0,0.24) !important;
+      0 1px 3px rgba(0, 0, 0, 12%),
+      0 1px 2px rgba(0, 0, 0, 24%) !important;
 }
 
 @mixin custom-scroll-bar() {
@@ -63,17 +63,16 @@ $break_tablet: 1400px;
 
       // chrome
       &::-webkit-scrollbar-thumb {
-         background-color: rgba(0, 0, 0, .3);
+         background-color: rgba(0, 0, 0, 30%);
       }
 
       &::-webkit-scrollbar-track {
-         background-color: rgba(0, 0, 0, .2);
+         background-color: rgba(0, 0, 0, 20%);
       }
    }
 }
 
 .dashboard {
-   //font-family: Arial, Helvetica, sans-serif/*{ffDefault}*/; // for embed
    position: relative;
    padding-top: $toolbar_height;
 
@@ -116,7 +115,7 @@ $break_tablet: 1400px;
 
    &.embed {
       .glpi_logo {
-         background: url(../pics/logos/logo-GLPI-100-black.png) no-repeat;
+         background: url("../pics/logos/logo-GLPI-100-black.png") no-repeat;
          width: 100px;
          height: 55px;
          position: absolute;
@@ -125,7 +124,8 @@ $break_tablet: 1400px;
       }
    }
 
-   &.fullscreen, &.embed {
+   &.fullscreen,
+   &.embed {
       background: white;
       padding: 100px;
 
@@ -168,19 +168,20 @@ $break_tablet: 1400px;
          }
 
          .card {
-            border-color: currentColor
+            border-color: currentColor;
          }
       }
 
       .markdown .html_content {
          display: none;
       }
+
       .markdown textarea.markdown_content {
          display: block;
       }
 
       .g-chart .ct-chart {
-         [data-clickable=true] {
+         [data-clickable="true"] {
             cursor: grab;
          }
       }
@@ -201,9 +202,13 @@ $break_tablet: 1400px;
                &.filled {
                   margin-top: 0.5em;
                }
+
                border-color: #f0f0f0 !important;
 
-               input, .flatpickr, .select2, .btn-group {
+               input,
+               .flatpickr,
+               .select2,
+               .btn-group {
                   display: none !important;
                }
 
@@ -213,21 +218,16 @@ $break_tablet: 1400px;
 
                legend {
                   display: inline-block;
-                  cursor: move; // fallback
                   cursor: grab;
-                  cursor: -moz-grab;
-                  cursor: -webkit-grab;
 
                   &:active {
-                     cursor: -webkit-grabbing;
-                     cursor:    -moz-grabbing;
-                     cursor:         grabbing;
+                     cursor: grabbing;
                   }
                }
 
                &:hover {
                   border-color: #509ee3 !important;
-                  background: rgb(80,158,227, .3);
+                  background: rgb(80, 158, 227, 30%);
                }
             }
 
@@ -252,9 +252,9 @@ $break_tablet: 1400px;
       .card.filter-impacted {
          border-color: #509ee3;
 
-         &:before {
-            background: rgb(80,158,227, .3);
-            content: '';
+         &::before {
+            background: rgb(80, 158, 227, 30%);
+            content: "";
             position: absolute;
             width: inherit;
             height: inherit;
@@ -315,7 +315,7 @@ $break_tablet: 1400px;
       .edit-dashboard-properties {
          display: none;
 
-         input.dashboard-name:not(.submit):not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field) {
+         input.dashboard-name:not(.submit):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not(.select2-search__field) {
             min-width: 200px;
             resize: horizontal;
          }
@@ -359,7 +359,7 @@ $break_tablet: 1400px;
          fieldset.filter {
             border: 2px solid var(--input-border);
             border-radius: 4px;
-            padding: 6px 12px 5px 12px;
+            padding: 6px 12px 5px;
             text-align: center;
             margin: 6px 2px 0;
             font-size: 0.8rem;
@@ -393,7 +393,7 @@ $break_tablet: 1400px;
                   display: none;
                }
 
-               &:after {
+               &::after {
                   font-weight: 400;
                   content: "\f133";
                   right: 5px;
@@ -401,8 +401,8 @@ $break_tablet: 1400px;
             }
 
             .select2 {
-
-               & ~ a, & ~ span { // remove icons next select2
+               & ~ a,
+               & ~ span { // remove icons next select2
                   display: none;
                }
 
@@ -436,44 +436,45 @@ $break_tablet: 1400px;
                   color: transparent;
                   position: relative;
 
-                  &:after {
+                  &::after {
                      position: absolute;
                      font-family: "Font Awesome 5 Free";
-                     color: #222;
+                     color: #509ee3;
                      font-weight: 900;
                      content: "\f057";
                      opacity: 0.7;
                      font-size: 11px;
                      left: 7px;
-                     color: #509ee3;
                   }
 
-                  &:hover:after {
+                  &:hover::after {
                      opacity: 1;
                   }
                }
 
-               &:after {
+               &::after {
                   font-weight: 900;
                   content: "\f02b";
                }
             }
 
-            .flatpickr, .select2 {
-               &::placeholder, .select2-selection__placeholder {
+            .flatpickr,
+            .select2 {
+               &::placeholder,
+               .select2-selection__placeholder {
                   color: #74838f;
-                  opacity: .7;
+                  opacity: 0.7;
                }
 
-               &:after {
+               &::after {
                   font-family: "Font Awesome 5 Free";
                   color: #74838f;
-                  opacity: .7;
+                  opacity: 0.7;
                   font-size: 14px;
                   pointer-events: none;
                   position: absolute;
                   right: 0;
-                  top: 1px
+                  top: 1px;
                }
             }
 
@@ -491,12 +492,14 @@ $break_tablet: 1400px;
                   display: inline-block;
                }
 
-               input, .select2-selection__rendered {
+               input,
+               .select2-selection__rendered {
                   color: #509ee3 !important;
                }
 
-               .flatpickr, .select2 {
-                  &:after {
+               .flatpickr,
+               .select2 {
+                  &::after {
                      display: none;
                   }
 
@@ -521,7 +524,8 @@ $break_tablet: 1400px;
             display: none;
             cursor: pointer;
 
-            .no-filter, .add-filter-lbl {
+            .no-filter,
+            .add-filter-lbl {
                padding-left: 0.2em;
                font-style: italic;
                color: #74838f;
@@ -555,13 +559,13 @@ $break_tablet: 1400px;
             opacity: 1;
          }
 
-         &:after {
+         &::after {
             content: "\f067";
             left: 40%;
             top: 40%;
             font-size: 1em;
             color: grey;
-            font-family: 'Font Awesome\ 5 Free';
+            font-family: "Font Awesome 5 Free";
             position: absolute;
             font-weight: 900;
          }
@@ -578,7 +582,6 @@ $break_tablet: 1400px;
       }
 
       .grid-stack-item {
-
          &:hover {
             cursor: default;
          }
@@ -600,8 +603,9 @@ $break_tablet: 1400px;
             z-index: 11;
             cursor: pointer;
 
-            i.fas, i.far {
-               opacity: .6;
+            i.fas,
+            i.far {
+               opacity: 0.6;
 
                &:hover {
                   opacity: 1;
@@ -616,7 +620,7 @@ $break_tablet: 1400px;
 
          .loading-card {
             height: 100%;
-            border: 1px solid rgba($color: #000, $alpha: .05);
+            border: 1px solid rgba($color: #000, $alpha: 5%);
 
             .fa-spin {
                position: absolute;
@@ -640,15 +644,15 @@ $break_tablet: 1400px;
          }
 
          .card-error {
-            border-color: rgba(100, 0, 0, .3);
-            background: rgba(255, 0, 0, .1);
-            color: rgba(100, 0, 0, .5);
+            border-color: rgba(100, 0, 0, 30%);
+            background: rgba(255, 0, 0, 10%);
+            color: rgba(100, 0, 0, 50%);
          }
 
          .card-warning {
-            border-color: rgba(105, 100, 32, 0.3);
-            background: rgba(255, 238, 0, 0.178);
-            color: rgba(105, 100, 32, 0.3);
+            border-color: rgba(105, 100, 32, 30%);
+            background: rgba(255, 238, 0, 17.8%);
+            color: rgba(105, 100, 32, 30%);
          }
 
          .no-data {
@@ -667,7 +671,7 @@ $break_tablet: 1400px;
             background: none;
             text-indent: unset;
 
-            &:before {
+            &::before {
                content: "\f338";
                font-family: "Font Awesome 5 Free";
                font-weight: 900;
@@ -677,11 +681,11 @@ $break_tablet: 1400px;
                right: 1px;
                width: 20px;
                height: 20px;
-               opacity: .6;
+               opacity: 0.6;
             }
 
             &:hover {
-               &:before {
+               &::before {
                   opacity: 1;
                }
             }
@@ -694,7 +698,7 @@ $break_tablet: 1400px;
             .debug-card {
                z-index: 10;
                position: absolute;
-               color: rgba(255, 0, 0, 0.5);
+               color: rgba(255, 0, 0, 50%);
                font-size: 10px;
                bottom: 5px;
                left: 5px;
@@ -705,18 +709,19 @@ $break_tablet: 1400px;
 
    .card {
       @include soft-shadow;
+
       text-align: left;
       padding: 5px;
       height: 100%;
       width: 100%;
       margin: 2px 0 0 2px;
       display: block;
-      color: rgba(0, 0, 0, 0.7);
+      color: rgba(0, 0, 0, 70%);
       border: 2px solid transparent;
       border-radius: 3px;
       border-top-left-radius: 3px !important;
       position: relative;
-      background-color: #DDD;
+      background-color: #ddd;
 
       img {
          max-width: 100%;
@@ -725,7 +730,7 @@ $break_tablet: 1400px;
 
    .big-number {
       .content {
-         margin: 0
+         margin: 0;
       }
 
       .main-icon {
@@ -736,7 +741,8 @@ $break_tablet: 1400px;
       .formatted-number {
          display: flex;
 
-         .number, .suffix {
+         .number,
+         .suffix {
             font-size: 3em;
             font-weight: normal;
 
@@ -752,6 +758,7 @@ $break_tablet: 1400px;
          text-overflow: ellipsis;
       }
    }
+
    .main-icon {
       font-size: 3em;
       position: absolute;
@@ -798,12 +805,11 @@ $break_tablet: 1400px;
                flex-direction: column-reverse;
                justify-content: space-evenly;
                flex-basis: 100%;
-               color: #555555;
+               color: #555;
                position: relative;
                font-weight: normal;
 
                .content {
-                  //flex-grow: 1;
                   display: flex;
 
                   .formatted-number {
@@ -816,11 +822,11 @@ $break_tablet: 1400px;
                }
 
                &:not(:first-child) {
-                  border-left: 1px solid rgba(125, 125, 125, .2);
+                  border-left: 1px solid rgba(125, 125, 125, 20%);
                }
 
                &:hover {
-                  background-color: rgba(125, 125, 125, .1);
+                  background-color: rgba(125, 125, 125, 10%);
                   cursor: pointer;
                   border-radius: 3px;
                   border-left-color: transparent;
@@ -840,7 +846,8 @@ $break_tablet: 1400px;
       .scrollable {
          overflow: auto;
          max-height: calc(100% - 35px);
-         @include custom-scroll-bar();
+
+         @include custom-scroll-bar;
       }
 
       .table {
@@ -856,25 +863,25 @@ $break_tablet: 1400px;
             }
 
             &:nth-child(odd) {
-               background-color: rgba($color: #000, $alpha: .05)
+               background-color: rgba($color: #000, $alpha: 5%);
             }
 
             &:hover {
-               background-color: rgba($color: #000, $alpha: .2)
+               background-color: rgba($color: #000, $alpha: 20%);
             }
 
             .content {
                font-size: $number_size;
-               min-width: 30px;
-               background-color: rgba($color: #000, $alpha: .1);
+               min-width: 40px;
+               background-color: rgba($color: #000, $alpha: 10%);
                padding: 10px;
                text-align: center;
-               min-width: 40px;
                white-space: nowrap;
                width: 1%;
             }
 
-            .label, .icon {
+            .label,
+            .icon {
                position: inherit;
                font-size: inherit;
                padding: 10px 0 10px 10px;
@@ -882,7 +889,7 @@ $break_tablet: 1400px;
             }
 
             .icon {
-               color: rgba(0, 0, 0, .5);
+               color: rgba(0, 0, 0, 50%);
             }
          }
       }
@@ -898,7 +905,8 @@ $break_tablet: 1400px;
       .scrollable {
          overflow: auto;
          max-height: calc(100% - 35px);
-         @include custom-scroll-bar();
+
+         @include custom-scroll-bar;
       }
 
       .line {
@@ -928,10 +936,11 @@ $break_tablet: 1400px;
          }
 
          .date {
-            float: right
+            float: right;
          }
 
-         a, i.fa-user {
+         a,
+         i.fa-user {
             color: currentColor;
          }
 
@@ -968,6 +977,7 @@ $break_tablet: 1400px;
             paint-order: stroke;
             stroke-width: 5px;
          }
+
          .ct-labels {
             .ct-label:not(.ct-vertical) {
                word-break: break-word;
@@ -989,7 +999,7 @@ $break_tablet: 1400px;
             font-weight: bold;
 
             &.fade {
-               opacity: .2;
+               opacity: 0.2;
             }
          }
       }
@@ -1001,12 +1011,12 @@ $break_tablet: 1400px;
             white-space: nowrap;
             display: block;
 
-            &:before {
+            &::before {
                content: "";
                display: inline-block;
                height: 100%;
                vertical-align: middle;
-             }
+            }
          }
       }
 
@@ -1021,7 +1031,8 @@ $break_tablet: 1400px;
             max-height: calc(100% - 45px); // prevent gauge to overflow
 
             .ct-series.mouseover {
-               .ct-slice-pie, .ct-slice-donut-solid {
+               .ct-slice-pie,
+               .ct-slice-donut-solid {
                   transform: scale(1.02); // with gauge, scale 5% si too much (we have clipping)
                }
             }
@@ -1034,25 +1045,28 @@ $break_tablet: 1400px;
          }
       }
 
-      .ct-chart-donut, .ct-chart-pie {
+      .ct-chart-donut,
+      .ct-chart-pie {
          .ct-series {
-            .ct-slice-pie, .ct-slice-donut-solid  {
+            .ct-slice-pie,
+            .ct-slice-donut-solid {
                stroke-width: 1px;
                transform-origin: center center;
-               //transition: transform 400ms ease-in-out;
                fill-opacity: 0;
                animation: slice-fill-opacity 1s ease-in-out forwards;
             }
 
             &.disable-animation {
-               .ct-slice-pie, .ct-slice-donut-solid {
+               .ct-slice-pie,
+               .ct-slice-donut-solid {
                   animation: none;
                   fill-opacity: 1;
                }
             }
 
             &.mouseover {
-               .ct-slice-pie, .ct-slice-donut-solid {
+               .ct-slice-pie,
+               .ct-slice-donut-solid {
                   fill-opacity: 1;
                   stroke-opacity: 1;
                   stroke-width: 3px;
@@ -1060,8 +1074,9 @@ $break_tablet: 1400px;
             }
 
             &.notmouseover {
-               .ct-slice-pie, .ct-slice-donut-solid {
-                  fill-opacity: .5;
+               .ct-slice-pie,
+               .ct-slice-donut-solid {
+                  fill-opacity: 0.5;
                   stroke-opacity: 0;
                }
             }
@@ -1069,7 +1084,7 @@ $break_tablet: 1400px;
       }
 
       .ct-chart {
-         [data-clickable=true] {
+         [data-clickable="true"] {
             cursor: pointer;
          }
       }
@@ -1078,12 +1093,14 @@ $break_tablet: 1400px;
          stroke-width: 13px;
       }
 
-      &.pie, &.line.multiple, &.bar.tab10 {
-         @import '../includes/components/chartist/palette_d3_tab_10';
+      &.pie,
+      &.line.multiple,
+      &.bar.tab10 {
+         @import "../includes/components/chartist/palette_d3_tab_10";
       }
 
       &.bar.tab20 {
-         @import '../includes/components/chartist/palette_d3_cat_20';
+         @import "../includes/components/chartist/palette_d3_cat_20";
       }
 
       .ct-legend {
@@ -1096,17 +1113,17 @@ $break_tablet: 1400px;
             margin-bottom: 3px;
          }
 
-         li:before {
+         li::before {
             width: 12px;
             height: 12px;
             position: absolute;
             left: 0;
-            content: '';
+            content: "";
             border: 3px solid transparent;
             border-radius: 2px;
          }
 
-         li.inactive:before {
+         li.inactive::before {
             background-color: transparent !important;
          }
       }
@@ -1114,9 +1131,11 @@ $break_tablet: 1400px;
 
    .markdown {
       $mdmargin_v: 15px;
-      $editor_border: 1px solid rgba(0, 0, 0, 0.3);
+      $editor_border: 1px solid rgba(0, 0, 0, 30%);
+
       overflow-y: auto;
-      @include custom-scroll-bar();
+
+      @include custom-scroll-bar;
 
       textarea.markdown_content {
          display: none;
@@ -1125,11 +1144,11 @@ $break_tablet: 1400px;
          resize: none;
          padding: 5px;
          margin: $mdmargin_v 0;
-         background-color: rgba(255, 255, 255, .9);
+         background-color: rgba(255, 255, 255, 90%);
          border: 1px solid currentColor;
          border-radius: 1px;
          outline: none;
-         font-family: monospace
+         font-family: monospace;
       }
 
       ul {
@@ -1141,10 +1160,11 @@ $break_tablet: 1400px;
       }
 
       h1 {
-         border-bottom: 2px solid currentColor
+         border-bottom: 2px solid currentColor;
       }
+
       h2 {
-         border-bottom: 1px solid currentColor
+         border-bottom: 1px solid currentColor;
       }
 
       img {
@@ -1158,7 +1178,8 @@ $break_tablet: 1400px;
          overflow: auto;
          max-height: calc(100% - 40px);
          margin-top: 10px;
-         @include custom-scroll-bar();
+
+         @include custom-scroll-bar;
 
          .tab_cadrehov {
             margin: 0;
@@ -1171,13 +1192,13 @@ $break_tablet: 1400px;
                position: sticky;
                top: 0;
                z-index: 10;
-               padding: 5px 5px;
+               padding: 5px;
                border-bottom: 0;
                color: inherit;
                font-size: inherit;
 
-               &.order_ASC:before,
-               &.order_DESC:before {
+               &.order_ASC::before,
+               &.order_DESC::before {
                   color: inherit;
                }
             }
@@ -1187,8 +1208,9 @@ $break_tablet: 1400px;
             }
 
             .tab_bg_1 {
-               background-color: rgba(0, 0, 0, .03);
+               background-color: rgba(0, 0, 0, 3%);
             }
+
             .tab_bg_2 {
                background-color: transparent;
             }
@@ -1220,13 +1242,14 @@ $break_tablet: 1400px;
 }
 
 .chartist-tooltip.dashboard-tooltip {
-   $bg-color: rgba($color: #FFFFFF, $alpha: .65);
-   z-index: 1080;
+   $bg-color: rgba($color: #fff, $alpha: 65%);
 
+   z-index: 1080;
    background-color: $bg-color;
+
    @include soft-shadow;
 
-   &:before {
+   &::before {
       border-top-color: $bg-color;
    }
 }
@@ -1241,11 +1264,11 @@ $break_tablet: 1400px;
       max-width: 400px;
    }
 
-   input[type=radio].widget-select {
+   input[type="radio"].widget-select {
       display: none;
 
       & + label {
-         background: rgba($color: #000, $alpha: .05);
+         background: rgba($color: #000, $alpha: 5%);
          margin: 5px 5px 0 0;
          padding: 5px;
          border: 2px solid transparent;
@@ -1255,24 +1278,24 @@ $break_tablet: 1400px;
          font-weight: bold;
 
          &:hover {
-            background: rgba($color: #000, $alpha: .1);
-            border-color: rgba($color: #000, $alpha: .2);
+            background: rgba($color: #000, $alpha: 10%);
+            border-color: rgba($color: #000, $alpha: 20%);
             cursor: pointer;
          }
       }
 
       &:checked + label {
-         background: rgba($color: #000, $alpha: .2);
-         border-color: rgba($color: #000, $alpha: .3);
+         background: rgba($color: #000, $alpha: 20%);
+         border-color: rgba($color: #000, $alpha: 30%);
          position: relative;
 
-         &:after {
+         &::after {
             content: "\f00c";
             right: 5px;
             bottom: 3px;
             font-size: 1em;
             color: rgb(39, 39, 39);
-            font-family: 'Font Awesome\ 5 Free';
+            font-family: "Font Awesome 5 Free";
             position: absolute;
             font-weight: 900;
          }
@@ -1280,10 +1303,11 @@ $break_tablet: 1400px;
    }
 }
 
-.dashboard.theme-dark, .theme-dark .dashboard {
+.dashboard.theme-dark,
+.theme-dark .dashboard {
    &.embed {
       .glpi_logo {
-         background: url(../pics/logos/logo-GLPI-100-white.png) no-repeat;
+         background: url("../pics/logos/logo-GLPI-100-white.png") no-repeat;
       }
    }
 

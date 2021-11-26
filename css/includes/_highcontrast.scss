@@ -33,6 +33,7 @@
    $hc-border-color: $gray-600;
    $hc-tr-background-color: $gray-600;
    $hc-border-color-contrast: $gray-800;
+
    @if $is-dark {
       $hc-border-color-contrast: $gray-400;
    }
@@ -45,7 +46,7 @@
       border: 1px solid $hc-border-color;
    }
 
-   .tab-content .tab-pane:first-of-type  .main-header {
+   .tab-content .tab-pane:first-of-type .main-header {
       border-bottom: 1px solid $hc-border-color;
       border-top: 1px solid $hc-border-color;
       box-sizing: border-box;
@@ -54,7 +55,8 @@
 
    // Tables in KB should still have border
    #kbanswer table {
-      th, td {
+      th,
+      td {
          border: 1px solid $hc-border-color;
       }
    }
@@ -64,7 +66,8 @@
          border: 1px solid $hc-border-color;
       }
 
-      th, td {
+      th,
+      td {
          border: 0;
       }
    }
@@ -73,16 +76,23 @@
       border: 1px solid $hc-border-color-contrast;
    }
 
-   .order_DESC:before {
+   .order_DESC::before {
       color: $dark;
    }
 
    .tab_cadre_pager {
       img {
-         &[src*=first\.png], &[src*=left\.png] {
+         &[src*="first.png"],
+         &[src*="left.png"],
+         &[src*="right.png"],
+         &[src*="last.png"] {
             border: 1px solid $hc-border-color-contrast;
             padding: 2px;
             border-radius: 2px;
+         }
+
+         &:hover {
+            opacity: 0.5;
          }
       }
 
@@ -90,18 +100,6 @@
          border: 1px solid $hc-border-color-contrast;
          padding: 2px;
          border-radius: 2px;
-      }
-
-      img {
-         &[src*=right\.png], &[src*=last\.png] {
-            border: 1px solid $hc-border-color-contrast;
-            padding: 2px;
-            border-radius: 2px;
-         }
-
-         &:hover {
-            opacity: .5;
-         }
       }
    }
 
@@ -144,12 +142,16 @@
    }
 
    input {
-      &[type=text], &[type=password], &[type=number] {
+      &[type="text"],
+      &[type="password"],
+      &[type="number"] {
          border: 1px solid $hc-border-color-contrast;
       }
    }
 
-   select, .select2-choice, .select2-container--default .select2-selection {
+   select,
+   .select2-choice,
+   .select2-container--default .select2-selection {
       border: 1px solid $hc-border-color-contrast !important;
    }
 
@@ -175,7 +177,8 @@
       }
    }
 
-   .btn.btn-secondary, .btn.btn-outline-secondary {
+   .btn.btn-secondary,
+   .btn.btn-outline-secondary {
       border-color: $hc-border-color-contrast;
    }
 
@@ -195,7 +198,7 @@
    }
 
    /****** TinyMCE *****/
-   .tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type) {
+   .tox:not([dir="rtl"]) .tox-toolbar__group:not(:last-of-type) {
       border-right: 1px solid $hc-border-color-contrast;
    }
 
@@ -240,7 +243,8 @@
    .timeline-item .timeline-content {
       border: 1px solid $hc-border-color-contrast;
 
-      &:before, &:after {
+      &::before,
+      &::after {
          border-color: $hc-border-color-contrast $hc-border-color-contrast transparent transparent;
       }
    }

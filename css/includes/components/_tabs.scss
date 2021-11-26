@@ -31,9 +31,7 @@
 
 .card-tabs {
    #tabspanel.nav-tabs {
-
       .nav-link {
-
          background: $tabs-bg;
          color: $tabs-fg;
          border-color: $tabs-border;
@@ -60,6 +58,7 @@
    &.vertical {
       .nav-link {
          border-bottom: $card-border-width solid $card-border-color;
+
          &.active {
             border-left-width: 5px;
             border-right-color: transparent !important;

@@ -29,7 +29,7 @@
  * ---------------------------------------------------------------------
  */
 
-//from https://github.com/d3/d3-scale-chromatic/blob/v1.5.0/README.md
+// from https://github.com/d3/d3-scale-chromatic/blob/v1.5.0/README.md
 
 $ct-series-names: (a, b, c, d, e, f, g, h, i, j);
 $ct-series-colors: (
@@ -45,4 +45,4 @@ $ct-series-colors: (
    #17becf
 );
 
-@import 'generate';
+@import "generate";

@@ -35,7 +35,7 @@
    float: right;
 
    i {
-      margin-left: .5em;
+      margin-left: 0.5em;
 
       &.selected {
          color: green;
@@ -61,7 +61,8 @@
       display: none;
    }
 
-   th, td {
+   th,
+   td {
       height: 2em;
       text-align: center;
       padding: 0;
@@ -69,24 +70,24 @@
 
    .mini_toggle {
       font-size: 11px;
-      opacity: .5;
+      opacity: 0.5;
       cursor: pointer;
       position: relative;
       padding-left: 20px;
       margin: 15px 5px;
       float: left;
 
-      &:before {
+      &::before {
          content: "\f204";
          left: 0;
          top: 0;
          font-size: 15px;
-         font-family: 'Font Awesome\ 5 Free';
+         font-family: "Font Awesome 5 Free";
          position: absolute;
          font-weight: 900;
       }
 
-      &.active:before {
+      &.active::before {
          content: "\f205";
          font-weight: 900;
       }

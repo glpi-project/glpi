@@ -36,7 +36,6 @@
 }
 
 .gantt-block {
-
    &__features {
       height: 55px;
       border-bottom-color: rgb(62, 67, 70);
@@ -50,9 +49,9 @@
          border-radius: 5px;
 
          #search {
-            width:150px;
-            height:22px;
-            font-size:14px;
+            width: 150px;
+            height: 22px;
+            font-size: 14px;
          }
       }
    }
@@ -64,16 +63,10 @@
       overflow: visible;
       padding: 0;
       text-align: left;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
       user-select: none;
-
 
       .gantt-menu-item {
          display: inline-block;
-         -webkit-box-sizing: border-box;
-         -moz-box-sizing: border-box;
          box-sizing: border-box;
          position: relative;
          overflow: visible;
@@ -94,14 +87,14 @@
    }
 
    .highlight {
-      background-color: #8EC547 !important;
+      background-color: #8ec547 !important;
    }
 
    .gantt_task_progress {
       text-align: left;
       padding-left: 5px;
       box-sizing: border-box;
-      color: rgba(255, 255, 255, 0.925);
+      color: rgba(255, 255, 255, 92.5%);
       font-weight: bold;
    }
 
@@ -124,7 +117,7 @@
    #gantt-loader {
       border: 12px solid #f3f3f3;
       border-radius: 50%;
-      border-top: 12px solid #444444;
+      border-top: 12px solid #444;
       width: 70px;
       height: 70px;
       animation: spin 1s linear infinite;

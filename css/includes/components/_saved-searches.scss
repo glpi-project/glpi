@@ -30,19 +30,16 @@
  */
 
 .saved-searches-panel {
-   border-color: rgba($color: $secondary, $alpha: .3);
+   border-color: rgba($color: $secondary, $alpha: 30%);
    border-left-width: 0;
    border-radius: unset;
-
    position: fixed;
    top: $contextbar-height;
    bottom: 0;
    left: $sidebar-width;
    z-index: $zindex-fixed;
    transition: left var(--animate-duration);
-
    min-width: 400px;
-
    padding: 0;
 
    &.pinned {
@@ -54,9 +51,9 @@
       min-width: 320px;
 
       .pin-saved-searches-panel {
-         border: 2px inset rgba($color: $secondary, $alpha: .5);
-         background-color: rgba($color: $secondary, $alpha: .1);
-         border-radius: .15rem;
+         border: 2px inset rgba($color: $secondary, $alpha: 50%);
+         background-color: rgba($color: $secondary, $alpha: 10%);
+         border-radius: 0.15rem;
       }
 
       .close-saved-searches-panel {
@@ -89,7 +86,6 @@
 
             .default-ctrl {
                padding-right: 0;
-
             }
 
             .badge {
@@ -100,7 +96,6 @@
       }
    }
 }
-
 
 body.navbar-collapsed {
    .saved-searches-panel {
@@ -114,7 +109,6 @@ body.navbar-collapsed {
 }
 
 body.horizontal-layout {
-
    .saved-searches-panel {
       top: $topbar-height;
       left: 0;

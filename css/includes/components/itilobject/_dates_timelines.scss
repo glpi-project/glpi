@@ -38,14 +38,14 @@
    ul {
       position: relative;
 
-      &:before {
-         content: '';
+      &::before {
+         content: "";
          position: absolute;
          top: 23px;
          bottom: 23px;
          left: 170px;
          width: 3px;
-         background-color: #A8A8A8;
+         background-color: #a8a8a8;
       }
    }
 
@@ -70,13 +70,13 @@
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      background-color: #FFF;
+      background-color: #fff;
       border: 2px solid #696969;
       box-sizing: content-box;
 
-      &:before {
+      &::before {
          color: #929292;
-         font-family: 'Font Awesome\ 5 Free';
+         font-family: "Font Awesome 5 Free";
          padding-left: 3px;
       }
    }
@@ -91,8 +91,8 @@
       }
 
       .dot {
-         background-color: #49BAF6;
-         border-color: #4A9BC5;
+         background-color: #49baf6;
+         border-color: #4a9bc5;
       }
    }
 
@@ -102,33 +102,34 @@
       height: 18px;
       left: 161px;
 
-      &:before {
-         content: '\f069';
+      &::before {
+         content: "\f069";
          font-weight: 900;
       }
    }
 
    .passed {
-      time, label {
-         border-color: #FF0014;
-         color: #FF0014;
+      time,
+      label {
+         border-color: #ff0014;
+         color: #ff0014;
       }
 
       .dot {
-         border-color: #FF0014;
-         color: #FF0014;
+         border-color: #ff0014;
+         color: #ff0014;
 
-         &:before {
-            content: '\f12a';
+         &::before {
+            content: "\f12a";
             padding-left: 8px;
-            color: #E54E5A;
+            color: #e54e5a;
             font-weight: 900;
          }
       }
    }
 
-   .checked .dot:before {
-      content: '\f00c';
+   .checked .dot::before {
+      content: "\f00c";
       font-weight: 900;
    }
 
@@ -137,8 +138,8 @@
       font-size: 15px;
       left: 163px;
 
-      &:before {
-         content: '\f024';
+      &::before {
+         content: "\f024";
          font-weight: 900;
       }
    }

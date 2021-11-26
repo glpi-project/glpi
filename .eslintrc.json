@@ -77,7 +77,7 @@
             }
         },
         {
-            "files": ["webpack.config.js"],
+            "files": ["stylelint.config.js", "webpack.config.js"],
             "env": {
                 "node": true
             }

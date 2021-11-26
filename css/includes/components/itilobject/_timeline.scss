@@ -46,7 +46,7 @@
 
       .timeline-item-buttons {
          .is-private {
-            color: rgba(43, 43, 43, 0.7);
+            color: rgba(43, 43, 43, 70%);
          }
       }
    }
@@ -60,17 +60,17 @@
       vertical-align: middle;
 
       &.state_0 {
-         background-image: url(../pics/timeline/information.png);
+         background-image: url("../pics/timeline/information.png");
       }
 
       &.state_1 {
          cursor: pointer;
-         background-image: url(../pics/timeline/todo.png);
+         background-image: url("../pics/timeline/todo.png");
       }
 
       &.state_2 {
          cursor: pointer;
-         background-image: url(../pics/timeline/done.png);
+         background-image: url("../pics/timeline/done.png");
       }
    }
 
@@ -103,6 +103,7 @@
             border: 7px solid;
             border-color: transparent;
          }
+
          &::after {
             content: " ";
             position: absolute;
@@ -110,7 +111,7 @@
             height: 0;
             left: -12px;
             right: auto;
-            top: 0px;
+            top: 0;
             bottom: auto;
             border: 6px solid;
             border-color: transparent;
@@ -123,6 +124,7 @@
                left: auto;
                right: -14px;
             }
+
             &::after {
                left: auto;
                right: -12px;
@@ -141,12 +143,15 @@
          &::before {
             border-color: $timeline-itilc-border $timeline-itilc-border transparent transparent;
          }
+
          &::after {
             border-color: $timeline-itilc-bg $timeline-itilc-bg transparent transparent;
          }
+
          &.t-right::before {
             border-color: $timeline-itilc-border transparent transparent $timeline-itilc-border;
          }
+
          &.t-right::after {
             border-color: $timeline-itilc-bg transparent transparent $timeline-itilc-bg;
          }
@@ -159,18 +164,21 @@
          background-color: $timeline-fup-bg;
          color: $timeline-fup-fg;
          border-color: $timeline-fup-border;
-         background-image: url(../pics/timeline/followup.png);
+         background-image: url("../pics/timeline/followup.png");
          background-repeat: no-repeat;
 
          &::before {
             border-color: $timeline-fup-border $timeline-fup-border transparent transparent;
          }
+
          &::after {
             border-color: $timeline-fup-bg $timeline-fup-bg transparent transparent;
          }
+
          &.t-right::before {
             border-color: $timeline-fup-border transparent transparent $timeline-fup-border;
          }
+
          &.t-right::after {
             border-color: $timeline-fup-bg transparent transparent $timeline-fup-bg;
          }
@@ -182,18 +190,21 @@
          background-color: $timeline-task-bg;
          color: $timeline-task-fg;
          border-color: $timeline-task-border;
-         background-image: url(../pics/timeline/task.png);
+         background-image: url("../pics/timeline/task.png");
          background-repeat: no-repeat;
 
          &::before {
             border-color: $timeline-task-border $timeline-task-border transparent transparent;
          }
+
          &::after {
             border-color: $timeline-task-bg $timeline-task-bg transparent transparent;
          }
+
          &.t-right::before {
             border-color: $timeline-task-border transparent transparent $timeline-task-border;
          }
+
          &.t-right::after {
             border-color: $timeline-task-bg transparent transparent $timeline-task-bg;
          }
@@ -221,26 +232,29 @@
 
          .solimg {
             position: absolute;
-            color: rgba(66, 91, 100, 0.1);
+            color: rgba(66, 91, 100, 10%);
             pointer-events: none;
          }
 
          &::before {
             border-color: $timeline-sol-border $timeline-sol-border transparent transparent;
          }
+
          &::after {
             border-color: $timeline-sol-bg $timeline-sol-bg transparent transparent;
          }
+
          &.t-right::before {
             border-color: $timeline-sol-border transparent transparent $timeline-sol-border;
          }
+
          &.t-right::after {
             border-color: $timeline-sol-bg transparent transparent $timeline-sol-bg;
          }
       }
    }
 
-   &.Document_Item  {
+   &.Document_Item {
       .timeline-content {
          border: 0;
          box-shadow: none;
@@ -259,7 +273,6 @@
          justify-content: flex-end;
          margin-left: 75px;
          margin-right: 83px;
-         //background-color: $timeline-log-bg;
 
          .timeline-content {
             border: 0;
@@ -318,12 +331,14 @@
             border-color: $timeline-itilc-border;
          }
       }
+
       &.ITILTask {
          .form-check-input:checked {
             background-color: $timeline-task-bg;
             border-color: $timeline-task-border;
          }
       }
+
       &.ITILSolution {
          .form-check-input:checked {
             background-color: $timeline-sol-bg;
@@ -335,7 +350,7 @@
 
 .timeline-todo-list {
    .itil-left-side {
-      padding-right: .4rem !important;
+      padding-right: 0.4rem !important;
       transition: none;
 
       .timeline-item {
@@ -472,8 +487,8 @@
                   }
                }
 
-               &:before,
-               &:after {
+               &::before,
+               &::after {
                   display: none;
                }
             }
@@ -509,12 +524,14 @@ ul.legacy-timeline-actions {
    padding-left: 5px;
    list-style: none;
    display: inline-flex;
+
    li {
       display: inline;
       margin-left: 5px;
       border: $input-border-width solid $input-border-color;
       border-radius: 5px;
       padding: 5px;
+
       i {
          padding-right: 1em;
       }

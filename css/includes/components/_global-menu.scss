@@ -33,20 +33,22 @@
    color: $mainmenu-fg;
 }
 
-.sidebar, .topbar {
+.sidebar,
+.topbar {
    background-color: $mainmenu-bg;
    color: $mainmenu-fg;
 
    .btn-ghost-secondary {
-      color: rgba($color: $mainmenu-fg, $alpha: .8);
+      color: rgba($color: $mainmenu-fg, $alpha: 80%);
    }
+
    .btn-outline-secondary {
-      color: rgba($color: $mainmenu-fg, $alpha: .8);
-      border-color: rgba($color: $mainmenu-fg, $alpha: .8);
+      color: rgba($color: $mainmenu-fg, $alpha: 80%);
+      border-color: rgba($color: $mainmenu-fg, $alpha: 80%);
 
       &:hover {
-         background-color: rgba($color: $mainmenu-fg, $alpha: .8);
-         color: rgba($color: $mainmenu-bg, $alpha: .8);
+         background-color: rgba($color: $mainmenu-fg, $alpha: 80%);
+         color: rgba($color: $mainmenu-bg, $alpha: 80%);
          border-color: transparend;
       }
    }
@@ -57,50 +59,52 @@
 }
 
 .sidebar {
-
    & ~ .navbar {
       z-index: $zindex-fixed;
    }
 
-   & ~ .page-wrapper, ~ .navbar {
+   & ~ .page-wrapper,
+   ~ .navbar {
       transition: margin-inline-start var(--animate-duration);
    }
 
    #navbar-menu {
-      .nav-item  {
+      .nav-item {
          .nav-link {
-            color: rgba($color: $mainmenu-fg, $alpha: .8);
+            color: rgba($color: $mainmenu-fg, $alpha: 80%);
             border-left: 3px solid transparent;
             border-radius: unset;
 
-            &.show, &.active {
-               border-left-color: rgba($color: $primary, $alpha: .3);
-               color: rgba($color: $primary, $alpha: .9);
+            &.show,
+            &.active {
+               border-left-color: rgba($color: $primary, $alpha: 30%);
+               color: rgba($color: $primary, $alpha: 90%);
                font-weight: bold;
             }
 
-            &.active, &.show {
-               & +.dropdown-menu {
+            &.active,
+            &.show {
+               & + .dropdown-menu {
                   border-radius: unset;
-                  background-color: rgba($color: #000000, $alpha: .1);
+                  background-color: rgba($color: #000, $alpha: 10%);
 
                   .dropdown-header {
                      display: none;
                   }
 
-                  .dropdown-item  {
-                     border-left: 3px solid rgba($color: #000000, $alpha: .5);
+                  .dropdown-item {
+                     border-left: 3px solid rgba($color: #000, $alpha: 50%);
 
                      &.active {
-                        border-left-color: rgba($color: $primary, $alpha: .3);
-                        background-color: rgba($color: #000000, $alpha: .1);
+                        border-left-color: rgba($color: $primary, $alpha: 30%);
+                        background-color: rgba($color: #000, $alpha: 10%);
                         font-weight: bold;
                      }
 
                      &:hover {
                         border-left-color: $primary;
                         color: $primary;
-                        background-color: rgba($color: #000000, $alpha: .2);
+                        background-color: rgba($color: #000, $alpha: 20%);
                      }
                   }
                }
@@ -121,14 +125,14 @@
       }
    }
 
-   .reduce-menu:before {
+   .reduce-menu::before {
       font-family: "Font Awesome 5 Free";
       content: "\f100";
       display: inline-block;
       padding-right: 3px;
       vertical-align: middle;
       font-weight: 900;
-      font-size: 1.33333em;
+      font-size: 1.3333em;
       line-height: 0.75em;
    }
 }
@@ -156,11 +160,14 @@
 
       .sidebar {
          z-index: 1050;
+
          $siderbar-collasped-width: 70px;
+
          width: $siderbar-collasped-width;
          overflow-x: visible;
 
-         & ~ .page-wrapper, ~ .navbar {
+         & ~ .page-wrapper,
+         ~ .navbar {
             margin-inline-start: $siderbar-collasped-width;
          }
 
@@ -185,12 +192,12 @@
                   flex-direction: row;
 
                   .dropdown-item {
-                     padding: 0.5rem 0.75rem;;
+                     padding: 0.5rem 0.75rem;
                   }
                }
             }
 
-            .nav-item  {
+            .nav-item {
                .nav-link {
                   z-index: 1060;
 
@@ -212,12 +219,13 @@
 
                         &.active {
                            background-color: lighten($mainmenu-bg, 5%);
-                           border-left-color: $primary
+                           border-left-color: $primary;
                         }
                      }
                   }
 
-                  &.show, &.active {
+                  &.show,
+                  &.active {
                      color: inherit;
                      font-weight: normal;
                   }
@@ -237,7 +245,7 @@
             }
          }
 
-         .reduce-menu:before {
+         .reduce-menu::before {
             content: "\f101";
          }
       }
@@ -251,7 +259,7 @@
             position: static;
             border-radius: unset;
             box-shadow: unset;
-            background-color: rgba(0, 0, 0, 0.02);
+            background-color: rgba(0, 0, 0, 2%);
             border-style: inset;
             border-width: 2px 0;
          }

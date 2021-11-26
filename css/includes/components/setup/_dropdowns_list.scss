@@ -29,12 +29,8 @@
  * ---------------------------------------------------------------------
  */
 
- .dropdowns-list {
+.dropdowns-list {
    .accordion-item {
       background-color: transparent;
-
-      .list-group-item.dropdown-no-entity:not(:hover) {
-         //background: $dropdowns-list-contrast;
-      }
    }
 }

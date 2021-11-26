@@ -1131,7 +1131,7 @@
       }
 
       .add_answer {
-         background-image: url(../pics/answer.png);
+         background-image: url("../pics/answer.png");
          width: 16px;
          height: 16px;
          display: block;
@@ -1211,7 +1211,7 @@
       }
 
       &:after {
-         font-family: 'Font Awesome\ 5 Free';
+         font-family: 'Font Awesome 5 Free';
          position: relative;
          left: -15px;
          top: 1px;
@@ -1273,7 +1273,7 @@
    }
 
    .loadingindicator {
-      background: #fff url(../pics/spinner.48.gif) no-repeat center 0.5em;
+      background: #fff url("../pics/spinner.48.gif") no-repeat center 0.5em;
       padding: 60px .5em .5em;
       text-align: center;
       max-width: 350px;
@@ -1669,7 +1669,7 @@
    }
 
    .spinner-18 {
-      background: transparent url(../pics/spinner.gif) no-repeat center center;
+      background: transparent url("../pics/spinner.gif") no-repeat center center;
       display: none;
       vertical-align: middle;
       margin: auto;

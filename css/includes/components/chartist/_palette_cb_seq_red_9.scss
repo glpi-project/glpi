@@ -29,7 +29,7 @@
  * ---------------------------------------------------------------------
  */
 
-//from http://colorbrewer2.org/
+// from http://colorbrewer2.org/
 
 $ct-series-names: (a, b, c, d, e, f, g, h, i);
 $ct-series-colors: (
@@ -44,4 +44,4 @@ $ct-series-colors: (
    #fff5f0,
 );
 
-@import 'generate';
+@import "generate";

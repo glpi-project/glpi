@@ -66,6 +66,13 @@ class CompileScssCommand extends Command {
          InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
          'File to compile (compile all SCSS files by default)'
       );
+
+      $this->addOption(
+         'dry-run',
+         null,
+         InputOption::VALUE_NONE,
+         'Simulate compilation without actually save compiled CSS files'
+      );
    }
 
    protected function initialize(InputInterface $input, OutputInterface $output) {
@@ -85,6 +92,7 @@ class CompileScssCommand extends Command {
    protected function execute(InputInterface $input, OutputInterface $output) {
 
       $files = $input->getOption('file');
+      $dry_run = $input->getOption('dry-run');
 
       if (empty($files)) {
          $root_path = realpath(GLPI_ROOT);
@@ -107,7 +115,7 @@ class CompileScssCommand extends Command {
          }
       }
 
-      $lincence_header = $this->getLicenceHeaderString();
+      $licence_header = $this->getLicenceHeaderString();
 
       foreach ($files as $file) {
          $output->writeln(
@@ -123,9 +131,15 @@ class CompileScssCommand extends Command {
             ]
          );
 
-         $css = $lincence_header . $css;
+         $css = $licence_header . $css;
 
-         if (strlen($css) === @file_put_contents($compiled_path, $css)) {
+         if ($dry_run) {
+            $message = sprintf('"%s" compiled successfully.', $file);
+            $output->writeln(
+               '<info>' . $message . '</info>',
+               OutputInterface::VERBOSITY_NORMAL
+            );
+         } else if (strlen($css) === @file_put_contents($compiled_path, $css)) {
             $message = sprintf('"%s" compiled successfully in "%s".', $file, $compiled_path);
             $output->writeln(
                '<info>' . $message . '</info>',

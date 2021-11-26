@@ -31,20 +31,14 @@
 
 :root {
    --is-dark: #{$is-dark};
-   --animate-duration: .3s;
-
+   --animate-duration: 0.3s;
    --light: #{$light};
    --dark: #{$dark};
-
    --logo: #{$logo};
-
    --contrast-light: #{$color-contrast-light};
    --contrast-dark: #{$color-contrast-dark};
-
    --light-mix: #{$light-mix};
-
    --hover-bg: #{$hover-bg};
-
    --btn-disabled-opacity: #{$btn-disabled-opacity};
 
    // Dark mode
@@ -72,4 +66,3 @@
    --table-head-color: #{$table-head-color};
    --table-head-bg: #{$table-head-bg};
 }
-
