@@ -2493,7 +2493,7 @@ class Ticket extends CommonITILObject {
       if (Session::getCurrentInterface() == 'central') {
          if (Ticket::canUpdate() && Ticket::canDelete()) {
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'merge_as_followup']
-               = "<i class='fa-fw ti ti-git-branch'></i>".
+               = "<i class='fa-fw ti ti-git-merge'></i>".
                  __('Merge as Followup');
          }
 
