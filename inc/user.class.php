@@ -4643,6 +4643,7 @@ JAVASCRIPT;
 
          //Put user in trashbin
          case AuthLDAP::DELETED_USER_DELETE:
+            $myuser->update($tmp);
             $myuser->delete($tmp);
             break;
 
