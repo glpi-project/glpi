@@ -32,84 +32,10 @@
 
 namespace tests\units\Glpi\Inventory;
 
-use DbTestCase;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
+use InventoryTestCase;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 
-class Inventory extends DbTestCase {
-
-   const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
-
-   /**
-    * Path to use to test inventory archive manipulations.
-    * File will be removed before/after tests.
-    * @var string
-    */
-   private const INVENTORY_ARCHIVE_PATH = GLPI_TMP_DIR . '/to_inventory.zip';
-
-   private $nblogs;
-
-   public function beforeTestMethod($method) {
-      parent::beforeTestMethod($method);
-
-      $this->nblogs = countElementsInTable(\Log::getTable());
-
-      if (file_exists(self::INVENTORY_ARCHIVE_PATH)) {
-         unlink(self::INVENTORY_ARCHIVE_PATH);
-      }
-   }
-
-   public function afterTestMethod($method) {
-      global $DB;
-
-      parent::afterTestMethod($method);
-      if (str_starts_with($method, 'testImport')) {
-         //$this->dump('Checking for unexpected logs');
-         $nblogsnow = countElementsInTable(\Log::getTable());
-         $logs = $DB->request([
-            'FROM' => \Log::getTable(),
-            'LIMIT' => $nblogsnow,
-            'OFFSET' => $this->nblogs,
-            'WHERE' => [
-               'NOT' => [
-                  'linked_action' => [
-                     \Log::HISTORY_ADD_DEVICE,
-                     \Log::HISTORY_ADD_RELATION,
-                     \Log::HISTORY_ADD_SUBITEM,
-                     \Log::HISTORY_CREATE_ITEM
-                  ]
-               ]
-            ]
-         ]);
-         $this->integer(count($logs))->isIdenticalTo(0, print_r(iterator_to_array($logs), true));
-      }
-
-      if (str_starts_with($method, 'testUpdate')) {
-         $nblogsnow = countElementsInTable(\Log::getTable());
-         $logs = $DB->request([
-            'FROM' => \Log::getTable(),
-            'LIMIT' => $nblogsnow,
-            'OFFSET' => $this->nblogs,
-         ]);
-         $this->integer(count($logs))->isIdenticalTo(0/*, print_r(iterator_to_array($logs), true)*/);
-      }
-
-      $files = new RecursiveIteratorIterator(
-         new RecursiveDirectoryIterator(GLPI_INVENTORY_DIR, RecursiveDirectoryIterator::SKIP_DOTS),
-         RecursiveIteratorIterator::CHILD_FIRST
-      );
-
-      foreach ($files as $fileinfo) {
-         $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
-         $todo($fileinfo->getRealPath());
-      }
-
-      if (file_exists(self::INVENTORY_ARCHIVE_PATH)) {
-         unlink(self::INVENTORY_ARCHIVE_PATH);
-      }
-   }
-
+class Inventory extends InventoryTestCase {
    private function checkComputer1($computers_id) {
       global $DB;
 
@@ -209,7 +135,7 @@ class Inventory extends DbTestCase {
          'id' => $monitor_link['id'],
          'entities_id' => 0,
          'name' => 'DJCP6',
-         'contact' => null,
+         'contact' => 'trasher/root',
          'contact_num' => null,
          'users_id_tech' => 0,
          'groups_id_tech' => 0,
@@ -899,7 +825,7 @@ class Inventory extends DbTestCase {
          'entities_id' => 0,
          'is_recursive' => 0,
          'name' => 'Officejet_Pro_8600_34AF9E_',
-         'contact' => null,
+         'contact' => 'trasher/root',
          'contact_num' => null,
          'users_id_tech' => 0,
          'groups_id_tech' => 0,
@@ -1144,19 +1070,7 @@ class Inventory extends DbTestCase {
 
       $json = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
 
-      $CFG_GLPI["is_contact_autoupdate"] = 0;
-
-      $inventory = new \Glpi\Inventory\Inventory($json);
-
-      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
-
-      if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
+      $inventory = $this->doInventory($json);
 
       //check inventory metadata
       $metadata = $inventory->getMetadata();
@@ -1230,15 +1144,7 @@ class Inventory extends DbTestCase {
 
       $json = file_get_contents(self::INV_FIXTURES . 'computer_3.json');
 
-      $inventory = new \Glpi\Inventory\Inventory($json);
-
-      if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
+      $inventory = $this->doInventory($json);
 
       //check inventory metadata
       $metadata = $inventory->getMetadata();
@@ -1519,10 +1425,10 @@ class Inventory extends DbTestCase {
          'LIMIT' => $nblogsnow,
          'OFFSET' => $this->nblogs,
       ]);
-      $this->integer(count($logs))->isIdenticalTo(71);
+      $this->integer(count($logs))->isIdenticalTo(72);
 
       $expected_types_count = [
-         \Log::HISTORY_CREATE_ITEM => 63,
+         \Log::HISTORY_CREATE_ITEM => 64,
          \Log::HISTORY_ADD_SUBITEM => count($expecteds_fs),
          0 => 1, // Change Monitor contact (is_contact_autoupdate)
          \Log::HISTORY_ADD_RELATION => 4 //OS and Monitor x2 each
@@ -1667,7 +1573,7 @@ class Inventory extends DbTestCase {
          'LIMIT' => $nblogsnow,
          'OFFSET' => $this->nblogs,
       ]);
-      $this->integer(count($logs))->isIdenticalTo(71);
+      $this->integer(count($logs))->isIdenticalTo(72);
 
       $types_count = [];
       foreach ($logs as $row) {
@@ -1680,28 +1586,12 @@ class Inventory extends DbTestCase {
 
       $this->array($types_count)->isIdenticalTo($expected_types_count);
 
-      $inventory = new \Glpi\Inventory\Inventory($json);
-
-      if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
+      $inventory = $this->doInventory($json);
 
       //real computer update
       $json = file_get_contents(self::INV_FIXTURES . 'computer_3_updated.json');
 
-      $inventory = new \Glpi\Inventory\Inventory($json);
-
-      if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
+      $inventory = $this->doInventory($json);
 
       //check inventory metadata
       $metadata = $inventory->getMetadata();
@@ -1871,13 +1761,13 @@ class Inventory extends DbTestCase {
          'OFFSET' => $nblogsnow,
       ]);
 
-      $this->integer(count($logs))->isIdenticalTo(126);
+      $this->integer(count($logs))->isIdenticalTo(127);
 
       $expected_types_count = [
          \Log::HISTORY_DELETE_SUBITEM => 5,//networkport and networkname
          \Log::HISTORY_ADD_DEVICE => 41,
          \Log::HISTORY_CREATE_ITEM => 57, //virtual machines, os, manufacturer, net ports, net names, ...
-         0 => 6, //Agent version, disks usage
+         0 => 7, //Agent version, disks usage
          \Log::HISTORY_ADD_SUBITEM => 9,//network port/name, ip adrress, VMs
          \Log::HISTORY_UPDATE_SUBITEM => 4,//disks usage
          \Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
@@ -1893,7 +1783,7 @@ class Inventory extends DbTestCase {
          ++$types_count[$row['linked_action']];
       }
 
-      $this->array($types_count)->isIdenticalTo($expected_types_count);
+      $this->array($types_count)->isEqualTo($expected_types_count);
 
       //check matchedlogs
       $mlogs = new \RuleMatchedLog();
@@ -1925,15 +1815,7 @@ class Inventory extends DbTestCase {
 
       $date_now = date('Y-m-d H:i:s');
       $_SESSION['glpi_currenttime'] = $date_now;
-      $inventory = new \Glpi\Inventory\Inventory($json);
-
-      if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
+      $inventory = $this->doInventory($json);
 
       //check inventory metadata
       $metadata = $inventory->getMetadata();
@@ -2273,15 +2155,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
       $date_now = date('Y-m-d H:i:s');
       $_SESSION['glpi_currenttime'] = $date_now;
-      $inventory = new \Glpi\Inventory\Inventory($json);
-
-      if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
+      $inventory = $this->doInventory($json);
 
       //check inventory metadata
       $metadata = $inventory->getMetadata();
@@ -2772,15 +2646,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
       $date_now = date('Y-m-d H:i:s');
       $_SESSION['glpi_currenttime'] = $date_now;
-      $inventory = new \Glpi\Inventory\Inventory($json);
-
-      if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
+      $inventory = $this->doInventory($json);
 
       //check inventory metadata
       $metadata = $inventory->getMetadata();
@@ -3459,15 +3325,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
       $date_now = date('Y-m-d H:i:s');
       $_SESSION["glpi_currenttime"] = $date_now;
-      $inventory = new \Glpi\Inventory\Inventory($json);
-
-      if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
+      $inventory = $this->doInventory($json);
 
       //check inventory metadata
       $metadata = $inventory->getMetadata();
@@ -3850,16 +3708,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
       $date_now = date('Y-m-d H:i:s');
       $_SESSION["glpi_currenttime"] = $date_now;
-
-      $inventory = new \Glpi\Inventory\Inventory($json);
-
-      if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
+      $inventory = $this->doInventory($json);
 
       //check inventory metadata
       $metadata = $inventory->getMetadata();
@@ -4193,7 +4042,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
       //do inventory
       $json = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
-      $inventory = new \Glpi\Inventory\Inventory($json);
+      $inventory = $this->doInventory($json);
 
       //move rule back to accept computer inventory
       $this->boolean(
@@ -4203,15 +4052,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             \RuleCollection::MOVE_AFTER
          )
       )->isTrue();
-
-      //test inventory, will be refused
-      if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
 
       //check inventory metadata
       $metadata = $inventory->getMetadata();
@@ -4381,16 +4221,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       unset($data->content->bios);
       unset($data->content->hardware->name);
       $json = json_encode($data);
-
-      $inventory = new \Glpi\Inventory\Inventory($json);
-
-      if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
+      $inventory = $this->doInventory($json);
 
       //check inventory metadata
       $metadata = $inventory->getMetadata();
@@ -4529,13 +4360,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
       $nb_vms = countElementsInTable(\ComputerVirtualMachine::getTable());
       $nb_computers = countElementsInTable(\Computer::getTable());
-      $inventory = new \Glpi\Inventory\Inventory($json);
-
-      if ($inventory->inError()) {
-         $this->dump($inventory->getErrors());
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
+      $inventory = $this->doInventory($json);
 
       //check inventory metadata
       $metadata = $inventory->getMetadata();
@@ -4556,13 +4381,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $conf = new \Glpi\Inventory\Conf();
       $this->boolean($conf->saveConf(['vm_as_computer' => 1]))->isTrue();
 
-      $inventory = new \Glpi\Inventory\Inventory($json);
-
-      if ($inventory->inError()) {
-         $this->dump($inventory->getErrors());
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
+      $inventory = $this->doInventory($json);
 
       //check inventory metadata
       $metadata = $inventory->getMetadata();
@@ -4579,17 +4398,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
       //partial inventory: postgres vm has been stopped
       $json = file_get_contents(self::INV_FIXTURES . 'computer_2_partial_vms.json');
-      $CFG_GLPI["is_contact_autoupdate"] = 0;
-      $inventory = new \Glpi\Inventory\Inventory($json);
-      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
-
-      if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
+      $inventory = $this->doInventory($json);
 
       //check nothing has changed
       $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
@@ -4732,17 +4541,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->integer((int)$ruleaction->add($input))->isGreaterThan(0);
 
       $json = file_get_contents(self::INV_FIXTURES . 'computer_2_partial_dbs.json');
-      $CFG_GLPI["is_contact_autoupdate"] = 0;
-      $inventory = new \Glpi\Inventory\Inventory($json);
-      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
-
-      if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
+      $inventory = $this->doInventory($json);
 
       //check nothing has changed
       $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
@@ -4753,17 +4552,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->integer(countElementsInTable(\Database::getTable()))->isIdenticalTo(3);
 
       //play an update - nothing should have changed
-      $CFG_GLPI["is_contact_autoupdate"] = 0;
-      $inventory = new \Glpi\Inventory\Inventory($json);
-      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
-
-      if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
+      $inventory = $this->doInventory($json);
 
       //check nothing has changed
       $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
@@ -4792,17 +4581,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $services = [$mysql];
       $json->content->databases_services = $services;
 
-      $CFG_GLPI["is_contact_autoupdate"] = 0;
-      $inventory = new \Glpi\Inventory\Inventory(json_encode($json));
-      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
-
-      if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
+      $inventory = $this->doInventory(json_encode($json));
 
       //check created databases & instances
       $this->integer(countElementsInTable(\DatabaseInstance::getTable(), ['is_deleted' => 0]))->isIdenticalTo(1);
@@ -4829,19 +4608,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
       $json = file_get_contents(self::INV_FIXTURES . 'phone_1.json');
 
-      $CFG_GLPI["is_contact_autoupdate"] = 0;
-
-      $inventory = new \Glpi\Inventory\Inventory($json);
-
-      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
-
-      if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
+      $inventory = $this->doInventory($json);
 
       //check inventory metadata
       $metadata = $inventory->getMetadata();
@@ -5327,17 +5094,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->testImportComputer();
 
       $json = file_get_contents(self::INV_FIXTURES . 'computer_1_partial_volumes.json');
-      $CFG_GLPI["is_contact_autoupdate"] = 0;
-      $inventory = new \Glpi\Inventory\Inventory($json);
-      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
-
-      if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
+      $inventory = $this->doInventory($json);
 
       //check inventory metadata
       $metadata = $inventory->getMetadata();
@@ -5375,17 +5132,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->checkComputer1Batteries($computer);
 
       $json = file_get_contents(self::INV_FIXTURES . 'computer_1_partial_softs.json');
-      $CFG_GLPI["is_contact_autoupdate"] = 0;
-      $inventory = new \Glpi\Inventory\Inventory($json);
-      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
-
-      if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
+      $inventory = $this->doInventory($json);
 
       //software versions
       $versions = [
@@ -5399,17 +5146,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
       $this->checkComputer1Softwares($computer, $versions);
 
       $json = file_get_contents(self::INV_FIXTURES . 'computer_1_partial_batteries.json');
-      $CFG_GLPI["is_contact_autoupdate"] = 0;
-      $inventory = new \Glpi\Inventory\Inventory($json);
-      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
-
-      if ($inventory->inError()) {
-         foreach ($inventory->getErrors() as $error) {
-            var_dump($error);
-         }
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
+      $inventory = $this->doInventory($json);
 
       //software versions
       $capacities = [

@@ -73,7 +73,7 @@ class Firmware extends AbstractInventoryAsset {
   <DEVICEID>foo</DEVICEID>
   <QUERY>SNMPQUERY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description":"device firmware","manufacturer":"Cisco","name":"UCS 6248UP 48-Port","type":"device","version":"5.0(3)N2(4.02b)","manufacturers_id":"Cisco","designation":"UCS 6248UP 48-Port","devicefirmwaretypes_id":"device"}'
+            'expected'  => '{"description":"device firmware","manufacturer":"Cisco","name":"UCS 6248UP 48-Port","type":"device","version":"5.0(3)N2(4.02b)","manufacturers_id":"Cisco","designation":"UCS 6248UP 48-Port","devicefirmwaretypes_id":"device", "is_dynamic": 1}'
          ]
       ];
    }
@@ -119,5 +119,185 @@ class Firmware extends AbstractInventoryAsset {
       $asset->handle();
       $this->boolean($idf->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isTrue('Firmware has not been linked to computer :(');
+   }
+
+   public function testInventoryUpdate() {
+      $computer = new \Computer();
+      $device_fw = new \DeviceFirmware();
+      $item_fw = new \Item_DeviceFirmware();
+
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <FIRMWARES>
+      <DESCRIPTION>device firmware</DESCRIPTION>
+      <MANUFACTURER>Cisco</MANUFACTURER>
+      <NAME>UCS 6248UP 48-Port</NAME>
+      <TYPE>device</TYPE>
+      <VERSION>5.0(3)N2(4.02b)</VERSION>
+    </FIRMWARES>
+    <FIRMWARES>
+      <DESCRIPTION>HP Web Management Software version</DESCRIPTION>
+      <MANUFACTURER>HP</MANUFACTURER>
+      <NAME>HP-HttpMg-Version</NAME>
+      <TYPE>system</TYPE>
+      <VERSION>WC.16.02.0003</VERSION>
+    </FIRMWARES>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      //create manually a computer, with 3 firmwares
+      $computers_id = $computer->add([
+         'name'   => 'pc002',
+         'serial' => 'ggheb7ne7',
+         'entities_id' => 0
+      ]);
+      $this->integer($computers_id)->isGreaterThan(0);
+
+      $manufacturer = new \Manufacturer();
+      $manufacturers_id = $manufacturer->add([
+         'name' => 'Cisco'
+      ]);
+      $this->integer($manufacturers_id)->isGreaterThan(0);
+
+      $type = new \DeviceFirmwareType();
+      $types_id = $type->add([
+         'name' => 'device'
+      ]);
+      $this->integer($types_id)->isGreaterThan(0);
+
+      $fw_1_id = $device_fw->add([
+         'designation' => 'UCS 6248UP 48-Port',
+         'manufacturers_id' => $manufacturers_id,
+         'devicefirmwaretypes_id' => $types_id,
+         'version' => '5.0(3)N2(4.02b)',
+         'entities_id'  => 0
+      ]);
+      $this->integer($fw_1_id)->isGreaterThan(0);
+
+      $item_fw_1_id = $item_fw->add([
+         'items_id'     => $computers_id,
+         'itemtype'     => 'Computer',
+         'devicefirmwares_id' => $fw_1_id
+      ]);
+      $this->integer($item_fw_1_id)->isGreaterThan(0);
+
+      $manufacturer = new \Manufacturer();
+      $manufacturers_id = $manufacturer->add([
+         'name' => 'HP'
+      ]);
+      $this->integer($manufacturers_id)->isGreaterThan(0);
+
+      $type = new \DeviceFirmwareType();
+      $types_id = $type->add([
+         'name' => 'system'
+      ]);
+      $this->integer($types_id)->isGreaterThan(0);
+
+      $fw_2_id = $device_fw->add([
+         'designation' => 'HP-HttpMg-Version',
+         'manufacturers_id' => $manufacturers_id,
+         'devicefirmwaretypes_id' => $types_id,
+         'version' => 'WC.16.02.0003',
+         'entities_id'  => 0
+      ]);
+      $this->integer($fw_2_id)->isGreaterThan(0);
+
+      $item_fw_2_id = $item_fw->add([
+         'items_id'     => $computers_id,
+         'itemtype'     => 'Computer',
+         'devicefirmwares_id' => $fw_2_id
+      ]);
+      $this->integer($item_fw_2_id)->isGreaterThan(0);
+
+      $fw_3_id = $device_fw->add([
+         'designation' => 'My Firmware',
+         'manufacturers_id' => $manufacturers_id,
+         'devicefirmwaretypes_id' => $types_id,
+         'entities_id'  => 0
+      ]);
+      $this->integer($fw_3_id)->isGreaterThan(0);
+
+      $item_fw_3_id = $item_fw->add([
+         'items_id'     => $computers_id,
+         'itemtype'     => 'Computer',
+         'devicefirmwares_id' => $fw_3_id
+      ]);
+      $this->integer($item_fw_3_id)->isGreaterThan(0);
+
+      $firmwares = $item_fw->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($firmwares))->isIdenticalTo(3);
+      foreach ($firmwares as $firmware) {
+         $this->variable($firmware['is_dynamic'])->isEqualTo(0);
+      }
+
+      //computer inventory knows only "UCS 6248UP 48-Port" and "HP-HttpMg-Version" firmwares
+      $this->doInventory($xml_source, true);
+
+      //we still have 3 firmwares + 1 bios
+      $fws = $device_fw->find();
+      $this->integer(count($fws))->isIdenticalTo(3 +1);
+
+      //we still have 3 firmwares items linked to the computer
+      $fws = $item_fw->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($fws))->isIdenticalTo(3);
+
+      //firmwares present in the inventory source are now dynamic
+      $fws = $item_fw->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+      $this->integer(count($fws))->isIdenticalTo(2);
+
+      //firmware not present in the inventory is still not dynamic
+      $fws = $item_fw->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+      $this->integer(count($fws))->isIdenticalTo(1);
+
+      //Redo inventory, but with removed "HP-HttpMg-Version" firmware
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <FIRMWARES>
+      <DESCRIPTION>device firmware</DESCRIPTION>
+      <MANUFACTURER>Cisco</MANUFACTURER>
+      <NAME>UCS 6248UP 48-Port</NAME>
+      <TYPE>device</TYPE>
+      <VERSION>5.0(3)N2(4.02b)</VERSION>
+    </FIRMWARES>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      $this->doInventory($xml_source, true);
+
+      //we still have 3 firmwares + 1 bios
+      $fws = $device_fw->find();
+      $this->integer(count($fws))->isIdenticalTo(3 + 1);
+
+      //we now have 2 firmwares linked to computer only
+      $fws = $item_fw->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($fws))->isIdenticalTo(2);
+
+      //firmware present in the inventory source is still dynamic
+      $fws = $item_fw->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+      $this->integer(count($fws))->isIdenticalTo(1);
+
+      //firmware not present in the inventory is still not dynamic
+      $fws = $item_fw->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+      $this->integer(count($fws))->isIdenticalTo(1);
    }
 }

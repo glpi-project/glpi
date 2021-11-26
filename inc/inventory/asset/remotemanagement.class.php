@@ -60,6 +60,7 @@ class RemoteManagement extends InventoryAsset
          }
 
          unset($val->id);
+         $val->is_dynamic = 1;
       }
 
       return $this->data;
@@ -76,6 +77,7 @@ class RemoteManagement extends InventoryAsset
       $db_existing = [];
 
       $iterator = $DB->request([
+         'SELECT' => ['id', 'remoteid', 'type', 'is_dynamic'],
          'FROM'   => Item_RemoteManagement::getTable(),
          'WHERE'  => [
             'itemtype' => $this->item->getType(),
@@ -93,8 +95,6 @@ class RemoteManagement extends InventoryAsset
    }
 
    public function handle() {
-      global $DB;
-
       $db_mgmt = $this->getExisting();
       $value = $this->data;
       $mgmt = new Item_RemoteManagement();
@@ -103,13 +103,13 @@ class RemoteManagement extends InventoryAsset
          $compare = ['remoteid' => $val->remoteid, 'type' => $val->type];
          $compare = array_map('strtolower', $compare);
          foreach ($db_mgmt as $keydb => $arraydb) {
+            unset($arraydb['is_dynamic']);
             if ($compare == $arraydb) {
                $input = (array)$val + [
-                  'id'           => $keydb,
-                  'is_dynamic'   => 1
+                  'id'           => $keydb
                ];
                $mgmt->update(Toolbox::addslashes_deep($input), $this->withHistory());
-               unset($data[$k]);
+               unset($value[$k]);
                unset($db_mgmt[$keydb]);
                break;
             }
@@ -118,7 +118,9 @@ class RemoteManagement extends InventoryAsset
 
       if (!$this->main_asset || !$this->main_asset->isPartial()) {
          foreach ($db_mgmt as $idtmp => $data) {
-            $mgmt->delete(['id' => $idtmp], 1);
+            if ($data['is_dynamic']) {
+               $mgmt->delete(['id' => $idtmp], 1);
+            }
          }
       }
 

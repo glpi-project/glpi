@@ -69,7 +69,7 @@ class Camera extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"resolution":["800x600","8000x6000"],"lensfacing":"BACK","flashunit":"1","imageformats":["RAW_SENSOR","JPEG","YUV_420_888","RAW10"],"orientation":"90","focallength":"4.77","sensorsize":"6.4x4.8","resolutionvideo":["176x144","1760x1440"]}'
+            'expected'  => '{"resolution":["800x600","8000x6000"],"lensfacing":"BACK","flashunit":"1","imageformats":["RAW_SENSOR","JPEG","YUV_420_888","RAW10"],"orientation":"90","focallength":"4.77","sensorsize":"6.4x4.8","resolutionvideo":["176x144","1760x1440"], "is_dynamic": 1}'
          ]
       ];
    }
@@ -133,5 +133,162 @@ class Camera extends AbstractInventoryAsset {
       //four links between images resolutions and camera has been created
       $iterator = $DB->request(['FROM' => \Item_DeviceCamera_ImageResolution::getTable()]);
       $this->integer(count($iterator))->isIdenticalTo(4);
+   }
+
+   public function testInventoryUpdate() {
+      $computer = new \Computer();
+      $device_cam = new \DeviceCamera();
+      $item_cam = new \Item_DeviceCamera();
+
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <CAMERAS>
+      <DESIGNATION>Front cam</DESIGNATION>
+      <MANUFACTURER>Xiaomi</MANUFACTURER>
+      <MODEL>Test</MODEL>
+    </CAMERAS>
+    <CAMERAS>
+      <DESIGNATION>Rear cam</DESIGNATION>
+      <MANUFACTURER>Xiaomi</MANUFACTURER>
+      <MODEL>Test</MODEL>
+    </CAMERAS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      //create manually a computer, with 3 cameras
+      $computers_id = $computer->add([
+         'name'   => 'pc002',
+         'serial' => 'ggheb7ne7',
+         'entities_id' => 0
+      ]);
+      $this->integer($computers_id)->isGreaterThan(0);
+
+      $manufacturer = new \Manufacturer();
+      $manufacturers_id = $manufacturer->add([
+         'name' => 'Xiaomi'
+      ]);
+      $this->integer($manufacturers_id)->isGreaterThan(0);
+
+      $model = new \DeviceCameraModel();
+      $models_id = $model->add([
+         'name' => 'test'
+      ]);
+      $this->integer($models_id)->isGreaterThan(0);
+
+      $cam_1_id = $device_cam->add([
+         'designation' => 'Front cam',
+         'manufacturers_id' => $manufacturers_id,
+         'devicecameramodels_id' => $models_id,
+         'entities_id'  => 0
+      ]);
+      $this->integer($cam_1_id)->isGreaterThan(0);
+
+      $item_cam_1_id = $item_cam->add([
+         'items_id'     => $computers_id,
+         'itemtype'     => 'Computer',
+         'devicecameras_id' => $cam_1_id
+      ]);
+
+      $cam_2_id = $device_cam->add([
+         'designation' => 'Rear cam',
+         'manufacturers_id' => $manufacturers_id,
+         'devicecameramodels_id' => $models_id,
+         'entities_id'  => 0
+      ]);
+      $this->integer($cam_2_id)->isGreaterThan(0);
+
+      $item_cam_2_id = $item_cam->add([
+         'items_id'     => $computers_id,
+         'itemtype'     => 'Computer',
+         'devicecameras_id' => $cam_2_id
+      ]);
+
+      $cam_3_id = $device_cam->add([
+         'designation' => 'Other cam',
+         'manufacturers_id' => $manufacturers_id,
+         'devicecameramodels_id' => $models_id,
+         'entities_id'  => 0
+      ]);
+      $this->integer($cam_3_id)->isGreaterThan(0);
+
+      $item_cam_3_id = $item_cam->add([
+         'items_id'     => $computers_id,
+         'itemtype'     => 'Computer',
+         'devicecameras_id' => $cam_3_id
+      ]);
+
+      $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($cams))->isIdenticalTo(3);
+      foreach ($cams as $cam) {
+         $this->variable($cam['is_dynamic'])->isEqualTo(0);
+      }
+
+      //computer inventory knows only "Front" and "Rear" cameras
+      $this->doInventory($xml_source, true);
+
+      //we still have 3 cameras
+      $cams = $device_cam->find();
+      $this->integer(count($cams))->isIdenticalTo(3);
+
+      //we still have 3 cameras items linked to the computer
+      $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($cams))->isIdenticalTo(3);
+
+      //cameras present in the inventory source are now dynamic
+      $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+      $this->integer(count($cams))->isIdenticalTo(2);
+
+      //camera not present in the inventory is still not dynamic
+      $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+      $this->integer(count($cams))->isIdenticalTo(1);
+
+      //Redo inventory, but with removed "Rear" camera
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <CAMERAS>
+      <DESIGNATION>Front cam</DESIGNATION>
+      <MANUFACTURER>Xiaomi</MANUFACTURER>
+      <MODEL>Test</MODEL>
+    </CAMERAS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      $this->doInventory($xml_source, true);
+
+      //we still have 3 cameras
+      $cams = $device_cam->find();
+      $this->integer(count($cams))->isIdenticalTo(3);
+
+      //we now have 2 cameras linked to computer only
+      $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($cams))->isIdenticalTo(2);
+
+      //camera present in the inventory source is still dynamic
+      $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+      $this->integer(count($cams))->isIdenticalTo(1);
+
+      //camera not present in the inventory is still not dynamic
+      $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+      $this->integer(count($cams))->isIdenticalTo(1);
    }
 }

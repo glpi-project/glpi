@@ -387,7 +387,7 @@ class Software extends InventoryAsset
    }
 
    /**
-    * Get full comparison keys for a software (including operating system but not manufacvturer)
+    * Get full comparison keys for a software (including operating system but not manufacturer)
     *
     * @param \stdClass $val Object values
     *
@@ -671,7 +671,6 @@ class Software extends InventoryAsset
       }
 
       $stmt = null;
-      $inputs = [];
       foreach ($this->data as $val) {
          $skey = $this->getSoftwareKey($val->name, $val->manufacturers_id);
          $softwares_id = $this->softwares[$skey];

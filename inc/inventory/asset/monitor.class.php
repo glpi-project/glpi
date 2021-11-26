@@ -128,8 +128,6 @@ class Monitor extends InventoryAsset
    }
 
    public function handle() {
-      global $DB;
-
       $entities_id = $this->entities_id;
       $monitor = new GMonitor();
       $computer_Item = new Computer_Item();
@@ -186,7 +184,7 @@ class Monitor extends InventoryAsset
                'items_id'     => $monitors_id,
                'is_dynamic'   => 1,
             ];
-            $computer_Item->add($input, [], $this->withHistory());
+            $this->addOrMoveItem($input);
          }
       } else {
          // Check all fields from source:
@@ -214,7 +212,7 @@ class Monitor extends InventoryAsset
                'items_id'     => $monitors_id,
                'is_dynamic'   => 1,
             ];
-            $computer_Item->add($input, [], $this->withHistory());
+            $this->addOrMoveItem($input);
          }
       }
 

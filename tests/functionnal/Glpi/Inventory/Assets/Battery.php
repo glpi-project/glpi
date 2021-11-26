@@ -58,7 +58,7 @@ class Battery extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"capacity": "43746", "chemistry": "lithium-polymer", "date": "2015-11-10", "manufacturer": "SMP", "name": "DELL JHXPY53", "serial": "3701", "voltage": "8614", "designation": "DELL JHXPY53", "manufacturers_id": "SMP", "manufacturing_date": "2015-11-10", "devicebatterytypes_id": "lithium-polymer"}'
+            'expected'  => '{"capacity": "43746", "chemistry": "lithium-polymer", "date": "2015-11-10", "manufacturer": "SMP", "name": "DELL JHXPY53", "serial": "3701", "voltage": "8614", "designation": "DELL JHXPY53", "manufacturers_id": "SMP", "manufacturing_date": "2015-11-10", "devicebatterytypes_id": "lithium-polymer", "is_dynamic": 1}'
          ], [ //no voltage
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -76,7 +76,7 @@ class Battery extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"capacity": "43746", "chemistry": "lithium-polymer", "date": "2015-11-10", "manufacturer": "SMP", "name": "DELL JHXPY53", "serial": "3701", "voltage": "0", "designation": "DELL JHXPY53", "manufacturers_id": "SMP", "manufacturing_date": "2015-11-10", "devicebatterytypes_id": "lithium-polymer"}'
+            'expected'  => '{"capacity": "43746", "chemistry": "lithium-polymer", "date": "2015-11-10", "manufacturer": "SMP", "name": "DELL JHXPY53", "serial": "3701", "voltage": "0", "designation": "DELL JHXPY53", "manufacturers_id": "SMP", "manufacturing_date": "2015-11-10", "devicebatterytypes_id": "lithium-polymer", "is_dynamic": 1}'
          ], [ //empty info
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -93,7 +93,7 @@ class Battery extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"chemistry": "Li-ION", "manufacturer": "OTHER MANU", "serial": "00000000", "voltage": "0", "manufacturers_id": "OTHER MANU", "devicebatterytypes_id": "Li-ION"}'
+            'expected'  => '{"chemistry": "Li-ION", "manufacturer": "OTHER MANU", "serial": "00000000", "voltage": "0", "manufacturers_id": "OTHER MANU", "devicebatterytypes_id": "Li-ION", "is_dynamic": 1}'
          ]
       ];
    }
@@ -169,4 +169,176 @@ class Battery extends AbstractInventoryAsset {
          ->isTrue('Battery has not been linked to computer :(');
    }
 
+   public function testInventoryUpdate() {
+      $computer = new \Computer();
+      $device_battery = new \DeviceBattery();
+      $item_battery = new \Item_DeviceBattery();
+
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <BATTERIES>
+      <CAPACITY>43.7456 Wh</CAPACITY>
+      <CHEMISTRY>lithium-polymer</CHEMISTRY>
+      <DATE>10/11/2015</DATE>
+      <MANUFACTURER>SMP</MANUFACTURER>
+      <NAME>DELL JHXPY53</NAME>
+      <SERIAL>3701</SERIAL>
+      <VOLTAGE>8.614 V</VOLTAGE>
+    </BATTERIES>
+    <BATTERIES>
+      <CAPACITY>45280</CAPACITY>
+      <CHEMISTRY>lithium-polymer</CHEMISTRY>
+      <DATE>17/07/2020</DATE>
+      <MANUFACTURER>SMP</MANUFACTURER>
+      <NAME>5B10W138</NAME>
+      <SERIAL>7565</SERIAL>
+      <VOLTAGE>11100</VOLTAGE>
+    </BATTERIES>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      //create manually a computer, with 3 batteries
+      $computers_id = $computer->add([
+         'name'   => 'pc002',
+         'serial' => 'ggheb7ne7',
+         'entities_id' => 0
+      ]);
+      $this->integer($computers_id)->isGreaterThan(0);
+
+      $manufacturer = new \Manufacturer();
+      $manufacturers_id = $manufacturer->add([
+         'name' => 'SMP'
+      ]);
+      $this->integer($manufacturers_id)->isGreaterThan(0);
+
+      $batterytype = new \DeviceBatteryType();
+      $types_id = $batterytype->add([
+         'name' => 'lithium-polymer'
+      ]);
+      $this->integer($types_id)->isGreaterThan(0);
+
+      $battery_1_id = $device_battery->add([
+         'designation' => 'DELL JHXPY53',
+         'manufacturers_id' => $manufacturers_id,
+         'devicebatterytypes_id' => $types_id,
+         'voltage' => 8614,
+         'capacity' => 43746,
+         'entities_id'  => 0
+      ]);
+      $this->integer($battery_1_id)->isGreaterThan(0);
+
+      $item_battery_1_id = $item_battery->add([
+         'items_id'     => $computers_id,
+         'itemtype'     => 'Computer',
+         'devicebatteries_id' => $battery_1_id
+      ]);
+
+      $battery_2_id = $device_battery->add([
+         'designation' => '5B10W138',
+         'manufacturers_id' => $manufacturers_id,
+         'devicebatterytypes_id' => $types_id,
+         'voltage' => 11100,
+         'capacity' => 45280,
+         'entities_id'  => 0
+      ]);
+      $this->integer($battery_2_id)->isGreaterThan(0);
+
+      $item_battery_2_id = $item_battery->add([
+         'items_id'     => $computers_id,
+         'itemtype'     => 'Computer',
+         'devicebatteries_id' => $battery_2_id
+      ]);
+
+      $battery_3_id = $device_battery->add([
+         'designation' => 'test battery',
+         'manufacturers_id' => $manufacturers_id,
+         'devicebatterytypes_id' => $types_id,
+         'entities_id'  => 0
+      ]);
+      $this->integer($battery_3_id)->isGreaterThan(0);
+
+      $item_battery_3_id = $item_battery->add([
+         'items_id'     => $computers_id,
+         'itemtype'     => 'Computer',
+         'devicebatteries_id' => $battery_3_id
+      ]);
+
+      $disks = $item_battery->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($disks))->isIdenticalTo(3);
+      foreach ($disks as $disk) {
+         $this->variable($disk['is_dynamic'])->isEqualTo(0);
+      }
+
+      //computer inventory knows only "DELL JHXPY53" and "5B10W138" batteries
+      $this->doInventory($xml_source, true);
+
+      //we still have 3 batteries
+      $batteries = $device_battery->find();
+      $this->integer(count($batteries))->isIdenticalTo(3);
+
+      //we still have 3 batteries items linked to the computer
+      $batteries = $item_battery->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($batteries))->isIdenticalTo(3);
+
+      //batteries present in the inventory source are now dynamic
+      $batteries = $item_battery->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+      $this->integer(count($batteries))->isIdenticalTo(2);
+
+      //disk not present in the inventory is still not dynamic
+      $batteries = $item_battery->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+      $this->integer(count($batteries))->isIdenticalTo(1);
+
+      //Redo inventory, but with removed battery "5B10W138"
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <BATTERIES>
+      <CAPACITY>43.7456 Wh</CAPACITY>
+      <CHEMISTRY>lithium-polymer</CHEMISTRY>
+      <DATE>10/11/2015</DATE>
+      <MANUFACTURER>SMP</MANUFACTURER>
+      <NAME>DELL JHXPY53</NAME>
+      <SERIAL>3701</SERIAL>
+      <VOLTAGE>8.614 V</VOLTAGE>
+    </BATTERIES>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      $this->doInventory($xml_source, true);
+
+      //we still have 3 batteries
+      $batteries = $device_battery->find();
+      $this->integer(count($batteries))->isIdenticalTo(3);
+
+      //we now have 2 batteries linked to computer only
+      $batteries = $item_battery->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($batteries))->isIdenticalTo(2);
+
+      //battery present in the inventory source is still dynamic
+      $batteries = $item_battery->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+      $this->integer(count($batteries))->isIdenticalTo(1);
+
+      //battery not present in the inventory is still not dynamic
+      $batteries = $item_battery->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+      $this->integer(count($batteries))->isIdenticalTo(1);
+   }
 }

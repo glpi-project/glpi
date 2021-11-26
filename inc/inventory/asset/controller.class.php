@@ -70,6 +70,7 @@ class Controller extends Device
                   }
                }
             }
+            $val->is_dynamic = 1;
          } else {
             unset($this->data[$k]);
          }

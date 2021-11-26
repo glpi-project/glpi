@@ -222,4 +222,117 @@ class Software extends AbstractInventoryAsset {
 
       $this->integer(count($DB->request(\Software::getTable())))->isIdenticalTo(count($soft_reference));
    }
+
+   public function testInventoryUpdate() {
+      $computer = new \Computer();
+      $soft = new \Software();
+      $version = new \SoftwareVersion();
+      $item_version = new \Item_SoftwareVersion();
+
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <SOFTWARES>
+      <ARCH>x86_64</ARCH>
+      <COMMENTS>GNU Image Manipulation Program</COMMENTS>
+      <FILESIZE>67382735</FILESIZE>
+      <FROM>rpm</FROM>
+      <INSTALLDATE>03/10/2021</INSTALLDATE>
+      <NAME>gimp</NAME>
+      <PUBLISHER>Fedora Project</PUBLISHER>
+      <SYSTEM_CATEGORY>Unspecified</SYSTEM_CATEGORY>
+      <VERSION>2.10.28-1.fc34</VERSION>
+    </SOFTWARES>
+    <SOFTWARES>
+      <ARCH>x86_64</ARCH>
+      <COMMENTS>Command-line interface for PHP</COMMENTS>
+      <FILESIZE>25438052</FILESIZE>
+      <FROM>rpm</FROM>
+      <INSTALLDATE>25/11/2021</INSTALLDATE>
+      <NAME>php-cli</NAME>
+      <PUBLISHER>Fedora Project</PUBLISHER>
+      <SYSTEM_CATEGORY>Development/Languages</SYSTEM_CATEGORY>
+      <VERSION>7.4.25-1.fc34</VERSION>
+    </SOFTWARES>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      //software import behave differently: non-dynamic are not handled at all.
+      //create manually a computer
+      $computers_id = $computer->add([
+         'name'   => 'pc002',
+         'serial' => 'ggheb7ne7',
+         'entities_id' => 0
+      ]);
+      $this->integer($computers_id)->isGreaterThan(0);
+
+      //computer inventory knows only "gimp" and "php-cli" software
+      $this->doInventory($xml_source, true);
+
+      //we have 2 software & versions
+      $softs = $soft->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+      $this->integer(count($softs))->isIdenticalTo(2);
+      $versions = $version->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+      $this->integer(count($versions))->isIdenticalTo(2);
+
+      //we have 2 softwareversion items linked to the computer
+      $item_versions = $item_version->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($item_versions))->isIdenticalTo(2);
+
+      //software present in the inventory source are dynamic
+      $item_versions = $item_version->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+      $this->integer(count($item_versions))->isIdenticalTo(2);
+
+      //Redo inventory, but with removed "php-cli" software
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <SOFTWARES>
+      <ARCH>x86_64</ARCH>
+      <COMMENTS>GNU Image Manipulation Program</COMMENTS>
+      <FILESIZE>67382735</FILESIZE>
+      <FROM>rpm</FROM>
+      <INSTALLDATE>03/10/2021</INSTALLDATE>
+      <NAME>gimp</NAME>
+      <PUBLISHER>Fedora Project</PUBLISHER>
+      <SYSTEM_CATEGORY>Unspecified</SYSTEM_CATEGORY>
+      <VERSION>2.10.28-1.fc34</VERSION>
+    </SOFTWARES>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      $this->doInventory($xml_source, true);
+
+      //we still have 2 software & versions
+      $softs = $soft->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+      $this->integer(count($softs))->isIdenticalTo(2);
+      $versions = $version->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+      $this->integer(count($versions))->isIdenticalTo(2);
+
+      //we now have 1 softwareversion items linked to the computer
+      $item_versions = $item_version->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($item_versions))->isIdenticalTo(1);
+
+      //software present in the inventory source is still dynamic
+      $item_versions = $item_version->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+      $this->integer(count($item_versions))->isIdenticalTo(1);
+   }
 }

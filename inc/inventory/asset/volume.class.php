@@ -86,6 +86,8 @@ class Volume extends InventoryAsset
                $val->encryption_status = Item_Disk::ENCRYPTION_STATUS_NO;
             }
          }
+
+         $val->is_dynamic = 1;
       }
 
       return $this->data;
@@ -102,12 +104,11 @@ class Volume extends InventoryAsset
       $db_existing = [];
 
       $iterator = $DB->request([
-         'SELECT' => ['id', 'name', 'device', 'mountpoint'],
+         'SELECT' => ['id', 'name', 'device', 'mountpoint', 'is_dynamic'],
          'FROM'   => Item_Disk::getTable(),
          'WHERE'  => [
             'items_id' => $this->item->fields['id'],
-            'itemtype' => $this->item->getType(),
-            'is_dynamic'   => 1
+            'itemtype' => $this->item->getType()
          ]
       ]);
       foreach ($iterator as $data) {
@@ -133,6 +134,7 @@ class Volume extends InventoryAsset
          }
 
          foreach ($db_itemdisk as $keydb => $arraydb) {
+            unset($arraydb['is_dynamic']);
             if ($db_elt == $arraydb) {
                $input = (array)$val + [
                   'id'           => $keydb,
@@ -148,15 +150,17 @@ class Volume extends InventoryAsset
       if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_itemdisk) != 0) {
          // Delete Item_Disk in DB
          foreach ($db_itemdisk as $dbid => $data) {
-            $itemDisk->delete(['id' => $dbid], 1);
+            if ($data['is_dynamic'] == 1) {
+               //Delete only dynamics
+               $itemDisk->delete(['id' => $dbid], 1);
+            }
          }
       }
       if (count($value)) {
          foreach ($value as $val) {
             $input = (array)$val + [
                'items_id'     => $this->item->fields['id'],
-               'itemtype'     => $this->item->getType(),
-               'is_dynamic'   => 1
+               'itemtype'     => $this->item->getType()
             ];
 
             $itemDisk->add(Toolbox::addslashes_deep($input), [], $this->withHistory());

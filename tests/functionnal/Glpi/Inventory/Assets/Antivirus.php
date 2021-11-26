@@ -57,7 +57,7 @@ class Antivirus extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"company": "Microsoft Corporation", "enabled": true, "guid": "{641105E6-77ED-3F35-A304-765193BCB75F}", "name": "Microsoft Security Essentials", "uptodate": true, "version": "4.3.216.0", "manufacturers_id": "Microsoft Corporation", "antivirus_version": "4.3.216.0", "is_active": true, "is_uptodate": true}'
+            'expected'  => '{"company": "Microsoft Corporation", "enabled": true, "guid": "{641105E6-77ED-3F35-A304-765193BCB75F}", "name": "Microsoft Security Essentials", "uptodate": true, "version": "4.3.216.0", "manufacturers_id": "Microsoft Corporation", "antivirus_version": "4.3.216.0", "is_active": true, "is_uptodate": true, "is_dynamic": 1}'
          ], [ //no version
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -74,7 +74,7 @@ class Antivirus extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"company": "Microsoft Corporation", "enabled": true, "guid": "{641105E6-77ED-3F35-A304-765193BCB75F}", "name": "Microsoft Security Essentials", "uptodate": true, "manufacturers_id": "Microsoft Corporation", "antivirus_version": "", "is_active": true, "is_uptodate": true}'
+            'expected'  => '{"company": "Microsoft Corporation", "enabled": true, "guid": "{641105E6-77ED-3F35-A304-765193BCB75F}", "name": "Microsoft Security Essentials", "uptodate": true, "manufacturers_id": "Microsoft Corporation", "antivirus_version": "", "is_active": true, "is_uptodate": true, "is_dynamic": 1}'
          ], [ //w expiration date
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -93,7 +93,7 @@ class Antivirus extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"company": "Microsoft Corporation", "enabled": true, "guid": "{641105E6-77ED-3F35-A304-765193BCB75F}", "name": "Microsoft Security Essentials", "uptodate": true, "version": "4.3.216.0", "manufacturers_id": "Microsoft Corporation", "antivirus_version": "4.3.216.0", "is_active": true, "is_uptodate": true, "expiration": "2019-04-01", "date_expiration": "2019-04-01"}'
+            'expected'  => '{"company": "Microsoft Corporation", "enabled": true, "guid": "{641105E6-77ED-3F35-A304-765193BCB75F}", "name": "Microsoft Security Essentials", "uptodate": true, "version": "4.3.216.0", "manufacturers_id": "Microsoft Corporation", "antivirus_version": "4.3.216.0", "is_active": true, "is_uptodate": true, "expiration": "2019-04-01", "date_expiration": "2019-04-01", "is_dynamic": 1}'
          ]
       ];
    }
@@ -191,5 +191,152 @@ class Antivirus extends AbstractInventoryAsset {
       $this->boolean($avc->getFromDbByCrit(['computers_id' => $computer->fields['id']]))->isTrue();
 
       $this->string($avc->fields['antivirus_version'])->isIdenticalTo('4.5.12.0');
+   }
+
+   public function testInventoryUpdate() {
+      $computer = new \Computer();
+      $antivirus = new \ComputerAntivirus();
+
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <ANTIVIRUS>
+      <BASE_VERSION>20200310.007</BASE_VERSION>
+      <COMPANY>Kaspersky</COMPANY>
+      <ENABLED>1</ENABLED>
+      <GUID>{B41C7598-35F6-4D89-7D0E-7ADE69B4047B}</GUID>
+      <NAME>Kaspersky Endpoint Security 10 for Windows</NAME>
+      <UPTODATE>1</UPTODATE>
+      <VERSION>2021 21.3.10.391</VERSION>
+    </ANTIVIRUS>
+    <ANTIVIRUS>
+      <COMPANY>Microsoft Corporation</COMPANY>
+      <ENABLED>1</ENABLED>
+      <GUID>{641105E6-77ED-3F35-A304-765193BCB75F}</GUID>
+      <NAME>Microsoft Security Essentials</NAME>
+      <UPTODATE>1</UPTODATE>
+      <VERSION>4.3.216.0</VERSION>
+    </ANTIVIRUS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      //create manually a computer, with 3 antivirus
+      $computers_id = $computer->add([
+         'name'   => 'pc002',
+         'serial' => 'ggheb7ne7',
+         'entities_id' => 0
+      ]);
+      $this->integer($computers_id)->isGreaterThan(0);
+
+      $antivirus_1_id = $antivirus->add([
+         'computers_id' => $computers_id,
+         'name' => 'Kaspersky Endpoint Security 10 for Windows',
+         'antivirus_version' => '2021 21.3.10.391',
+         'is_active' => 1
+      ]);
+      $this->integer($antivirus_1_id)->isGreaterThan(0);
+
+      $antivirus_2_id = $antivirus->add([
+         'computers_id' => $computers_id,
+         'name' => 'Microsoft Security Essentials',
+         'antivirus_version' => '4.3.216.0',
+         'is_active' => 1
+      ]);
+      $this->integer($antivirus_2_id)->isGreaterThan(0);
+
+      $antivirus_3_id = $antivirus->add([
+         'computers_id' => $computers_id,
+         'name' => 'Avast Antivirus',
+         'antivirus_version' => '19',
+         'is_active' => 1
+      ]);
+      $this->integer($antivirus_3_id)->isGreaterThan(0);
+
+      $results = $antivirus->find(['computers_id' => $computers_id]);
+      $this->integer(count($results))->isIdenticalTo(3);
+      foreach ($results as $result) {
+         $this->variable($result['is_dynamic'])->isEqualTo(0);
+      }
+
+      //computer inventory knows only 2 antivirus: Microsoft and Kaspersky
+      $this->doInventory($xml_source, true);
+
+      //we still have 3 antivirus linked to the computer
+      $results = $antivirus->find(['computers_id' => $computers_id]);
+      $this->integer(count($results))->isIdenticalTo(3);
+
+      //antivirus present in the inventory source are now dynamic
+      $results = $antivirus->find(['computers_id' => $computers_id, 'is_dynamic' => 1]);
+      $this->integer(count($results))->isIdenticalTo(2);
+
+      $this->boolean($antivirus->getFromDB($antivirus_1_id))->isTrue();
+      $this->integer($antivirus->fields['is_dynamic'])->isIdenticalTo(1);
+
+      $this->boolean($antivirus->getFromDB($antivirus_2_id))->isTrue();
+      $this->integer($antivirus->fields['is_dynamic'])->isIdenticalTo(1);
+
+      //antivirus not present in the inventory is still not dynamic
+      $results = $antivirus->find(['computers_id' => $computers_id, 'is_dynamic' => 0]);
+      $this->integer(count($results))->isIdenticalTo(1);
+
+      $this->boolean($antivirus->getFromDB($antivirus_3_id))->isTrue();
+      $this->integer($antivirus->fields['is_dynamic'])->isIdenticalTo(0);
+
+      //Redo inventory, but with removed microsoft antivirus
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <ANTIVIRUS>
+      <BASE_VERSION>20200310.007</BASE_VERSION>
+      <COMPANY>Kaspersky</COMPANY>
+      <ENABLED>1</ENABLED>
+      <GUID>{B41C7598-35F6-4D89-7D0E-7ADE69B4047B}</GUID>
+      <NAME>Kaspersky Endpoint Security 10 for Windows</NAME>
+      <UPTODATE>1</UPTODATE>
+      <VERSION>2021 21.3.10.391</VERSION>
+    </ANTIVIRUS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      $this->doInventory($xml_source, true);
+
+      //we now have 2 antivirus only
+      $results = $antivirus->find(['computers_id' => $computers_id]);
+      $this->integer(count($results))->isIdenticalTo(2);
+
+      //antivirus present in the inventory source are still dynamic
+      $results = $antivirus->find(['computers_id' => $computers_id, 'is_dynamic' => 1]);
+      $this->integer(count($results))->isIdenticalTo(1);
+
+      $this->boolean($antivirus->getFromDB($antivirus_1_id))->isTrue();
+      $this->integer($antivirus->fields['is_dynamic'])->isIdenticalTo(1);
+
+      //microsoft has been removed
+      $this->boolean($antivirus->getFromDB($antivirus_2_id))->isFalse();
+
+      //antivirus not present in the inventory is still not dynamic
+      $results = $antivirus->find(['computers_id' => $computers_id, 'is_dynamic' => 0]);
+      $this->integer(count($results))->isIdenticalTo(1);
+
+      $this->boolean($antivirus->getFromDB($antivirus_3_id))->isTrue();
+      $this->integer($antivirus->fields['is_dynamic'])->isIdenticalTo(0);
    }
 }

@@ -99,7 +99,7 @@ class NetworkCard extends AbstractInventoryAsset {
       <VIRTUALDEV>0</VIRTUALDEV>
       <WIFI_BSSID>58:6D:8F:C2:19:BF</WIFI_BSSID>
       <WIFI_MODE>Managed</WIFI_MODE>
-      <WIFI_SSID>trashylands</WIFI_SSID>
+      <WIFI_SSID>teclib</WIFI_SSID>
       <WIFI_VERSION>802.11</WIFI_VERSION>
     </NETWORKS>
     <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
@@ -107,7 +107,7 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress": "192.168.1.119", "ipgateway": "192.168.1.1", "ipmask": "255.255.255.0", "ipsubnet": "192.168.1.0", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "trashylands", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}'
+            'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress": "192.168.1.119", "ipgateway": "192.168.1.1", "ipmask": "255.255.255.0", "ipsubnet": "192.168.1.0", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "teclib", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}'
          ], [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -126,7 +126,7 @@ class NetworkCard extends AbstractInventoryAsset {
       <VIRTUALDEV>0</VIRTUALDEV>
       <WIFI_BSSID>58:6D:8F:C2:19:BF</WIFI_BSSID>
       <WIFI_MODE>Managed</WIFI_MODE>
-      <WIFI_SSID>trashylands</WIFI_SSID>
+      <WIFI_SSID>teclib</WIFI_SSID>
       <WIFI_VERSION>802.11</WIFI_VERSION>
     </NETWORKS>
     <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
@@ -134,7 +134,7 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress6": "fe80::92a4:26c6:99dd:2d60", "ipmask6": "ffff:ffff:ffff:ffff::", "ipsubnet6": "fe80::", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "trashylands", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}'
+            'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress6": "fe80::92a4:26c6:99dd:2d60", "ipmask6": "ffff:ffff:ffff:ffff::", "ipsubnet6": "fe80::", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "teclib", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}'
          ], [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -595,7 +595,7 @@ class NetworkCard extends AbstractInventoryAsset {
       <VIRTUALDEV>0</VIRTUALDEV>
       <WIFI_BSSID>58:6D:8F:C2:19:BF</WIFI_BSSID>
       <WIFI_MODE>Managed</WIFI_MODE>
-      <WIFI_SSID>trashylands</WIFI_SSID>
+      <WIFI_SSID>teclib</WIFI_SSID>
       <WIFI_VERSION>802.11</WIFI_VERSION>
     </NETWORKS>
     <NETWORKS>
@@ -612,7 +612,7 @@ class NetworkCard extends AbstractInventoryAsset {
       <VIRTUALDEV>0</VIRTUALDEV>
       <WIFI_BSSID>58:6D:8F:C2:19:BF</WIFI_BSSID>
       <WIFI_MODE>Managed</WIFI_MODE>
-      <WIFI_SSID>trashylands</WIFI_SSID>
+      <WIFI_SSID>teclib</WIFI_SSID>
       <WIFI_VERSION>802.11</WIFI_VERSION>
     </NETWORKS>
     <NETWORKS>
@@ -684,17 +684,222 @@ class NetworkCard extends AbstractInventoryAsset {
          ->hasKey('tun0-');
 
       $this->array($ports['lo-00:00:00:00:00:00']->ipaddress)
-         ->contains('127.0.0.1');
-         //->contains('::1');
+         ->contains('127.0.0.1')
+         ->contains('::1');
 
       $this->array($ports['wlp58s0-44:85:00:2b:90:bc']->ipaddress)
-         ->contains('192.168.1.119');
-         //->contains('fe80::92a4:26c6:99dd:2d60');
+         ->contains('192.168.1.119')
+         ->contains('fe80::92a4:26c6:99dd:2d60');
 
       //handle
       $asset->handleLinks();
       $asset->handle();
 
-      //TODO: check for created values in databse
+      //TODO: check for created values in database
+   }
+
+   public function testInventoryUpdate() {
+      $computer = new \Computer();
+      $device_net = new \DeviceNetworkCard();
+      $item_net = new \Item_DeviceNetworkCard();
+
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <CONTROLLERS>
+      <CAPTION>82540EM Gigabit Ethernet Controller</CAPTION>
+      <MANUFACTURER>Intel Corporation</MANUFACTURER>
+      <NAME>PRO/1000 MT Desktop Adapter</NAME>
+      <PCISUBSYSTEMID>8086:001e</PCISUBSYSTEMID>
+      <PRODUCTID>100e</PRODUCTID>
+      <TYPE>Carte Intel(R) PRO/1000 MT pour station de travail</TYPE>
+      <VENDORID>8086</VENDORID>
+    </CONTROLLERS>
+    <CONTROLLERS>
+      <CAPTION>Ethernet Connection I219-LM</CAPTION>
+      <MANUFACTURER>Intel Corporation</MANUFACTURER>
+      <NAME>Ethernet Connection I219-LM</NAME>
+      <PCISUBSYSTEMID>1028:06dd</PCISUBSYSTEMID>
+      <PRODUCTID>156f</PRODUCTID>
+      <TYPE>Intel(R) Ethernet Connection I219-LM</TYPE>
+      <VENDORID>8086</VENDORID>
+    </CONTROLLERS>
+    <NETWORKS>
+      <DESCRIPTION>Carte Intel(R) PRO/1000 MT pour station de travail</DESCRIPTION>
+      <IPADDRESS>172.28.211.63</IPADDRESS>
+      <IPDHCP>172.28.200.22</IPDHCP>
+      <IPGATEWAY>172.28.211.1</IPGATEWAY>
+      <IPMASK>255.255.255.0</IPMASK>
+      <IPSUBNET>172.28.211.0</IPSUBNET>
+      <MACADDR>08:00:27:16:9C:60</MACADDR>
+      <PCIID>8086:100E:001E:8086</PCIID>
+      <SPEED>1000</SPEED>
+      <STATUS>Up</STATUS>
+      <VIRTUALDEV>0</VIRTUALDEV>
+    </NETWORKS>
+    <NETWORKS>
+      <DESCRIPTION>Intel(R) Ethernet Connection I219-LM</DESCRIPTION>
+      <IPADDRESS>10.16.9.64</IPADDRESS>
+      <IPDHCP>10.1.2.11</IPDHCP>
+      <IPGATEWAY>10.16.1.1</IPGATEWAY>
+      <IPMASK>255.255.240.0</IPMASK>
+      <IPSUBNET>10.16.0.0</IPSUBNET>
+      <MACADDR>18:DB:F2:29:99:35</MACADDR>
+      <PCIID>8086:156F:06DD:1028</PCIID>
+      <SPEED>1000</SPEED>
+      <STATUS>Up</STATUS>
+      <VIRTUALDEV>0</VIRTUALDEV>
+    </NETWORKS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      //create manually a computer, with 3 network cards
+      $computers_id = $computer->add([
+         'name'   => 'pc002',
+         'serial' => 'ggheb7ne7',
+         'entities_id' => 0
+      ]);
+      $this->integer($computers_id)->isGreaterThan(0);
+
+      $manufacturer = new \Manufacturer();
+      $manufacturers_id = $manufacturer->add([
+         'name' => 'Intel Corporation'
+      ]);
+      $this->integer($manufacturers_id)->isGreaterThan(0);
+
+      $card_1_id = $device_net->add([
+         'designation' => '82540EM Gigabit Ethernet Controller',
+         'manufacturers_id' => $manufacturers_id,
+         'mac_default' => '08:00:27:16:9C:60',
+         'entities_id'  => 0
+      ]);
+      $this->integer($card_1_id)->isGreaterThan(0);
+
+      $item_card_1_id = $item_net->add([
+         'items_id'     => $computers_id,
+         'itemtype'     => 'Computer',
+         'devicenetworkcards_id' => $card_1_id
+      ]);
+      $this->integer($item_card_1_id)->isGreaterThan(0);
+
+      $card_2_id = $device_net->add([
+         'designation' => 'Ethernet Connection I219-LM',
+         'manufacturers_id' => $manufacturers_id,
+         'mac_default' => '18:db:f2:29:99:35',
+         'entities_id'  => 0
+      ]);
+      $this->integer($card_2_id)->isGreaterThan(0);
+
+      $item_card_2_id = $item_net->add([
+         'items_id'     => $computers_id,
+         'itemtype'     => 'Computer',
+         'devicenetworkcards_id' => $card_2_id
+      ]);
+      $this->integer($item_card_2_id)->isGreaterThan(0);
+
+      $card_3_id = $device_net->add([
+         'designation' => 'Me Ethernet Controller',
+         'manufacturers_id' => $manufacturers_id,
+         'mac_default' => '00:b1:00:00:00',
+         'entities_id'  => 0
+      ]);
+      $this->integer($card_3_id)->isGreaterThan(0);
+
+      $item_card_3_id = $item_net->add([
+         'items_id'     => $computers_id,
+         'itemtype'     => 'Computer',
+         'devicenetworkcards_id' => $card_3_id
+      ]);
+      $this->integer($item_card_3_id)->isGreaterThan(0);
+
+      $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($cards))->isIdenticalTo(3);
+      foreach ($cards as $card) {
+         $this->variable($card['is_dynamic'])->isEqualTo(0);
+      }
+
+      //computer inventory knows only 2 network cards
+      $this->doInventory($xml_source, true);
+
+      //we still have 3 network cards
+      $cards = $device_net->find();
+      $this->integer(count($cards))->isIdenticalTo(3);
+
+      //we still have 3 network cards items linked to the computer
+      $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($cards))->isIdenticalTo(3);
+
+      //network cards present in the inventory source are now dynamic
+      $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+      $this->integer(count($cards))->isIdenticalTo(2);
+
+      //network card not present in the inventory is still not dynamic
+      $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+      $this->integer(count($cards))->isIdenticalTo(1);
+
+      //Redo inventory, but with removed last network card
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <CONTROLLERS>
+      <CAPTION>82540EM Gigabit Ethernet Controller</CAPTION>
+      <MANUFACTURER>Intel Corporation</MANUFACTURER>
+      <NAME>PRO/1000 MT Desktop Adapter</NAME>
+      <PCISUBSYSTEMID>8086:001e</PCISUBSYSTEMID>
+      <PRODUCTID>100e</PRODUCTID>
+      <TYPE>Carte Intel(R) PRO/1000 MT pour station de travail</TYPE>
+      <VENDORID>8086</VENDORID>
+    </CONTROLLERS>
+    <NETWORKS>
+      <DESCRIPTION>Carte Intel(R) PRO/1000 MT pour station de travail</DESCRIPTION>
+      <IPADDRESS>172.28.211.63</IPADDRESS>
+      <IPDHCP>172.28.200.22</IPDHCP>
+      <IPGATEWAY>172.28.211.1</IPGATEWAY>
+      <IPMASK>255.255.255.0</IPMASK>
+      <IPSUBNET>172.28.211.0</IPSUBNET>
+      <MACADDR>08:00:27:16:9C:60</MACADDR>
+      <PCIID>8086:100E:001E:8086</PCIID>
+      <SPEED>1000</SPEED>
+      <STATUS>Up</STATUS>
+      <VIRTUALDEV>0</VIRTUALDEV>
+    </NETWORKS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      $this->doInventory($xml_source, true);
+
+      //we still have 3 network cards
+      $cards = $device_net->find();
+      $this->integer(count($cards))->isIdenticalTo(3);
+
+      //we now have 2 network cards linked to computer only
+      $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($cards))->isIdenticalTo(2);
+
+      //network card present in the inventory source is still dynamic
+      $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+      $this->integer(count($cards))->isIdenticalTo(1);
+
+      //network card not present in the inventory is still not dynamic
+      $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+      $this->integer(count($cards))->isIdenticalTo(1);
    }
 }

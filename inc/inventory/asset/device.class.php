@@ -64,17 +64,17 @@ abstract class Device extends InventoryAsset
       $iterator = $DB->request([
          'SELECT'    => [
             "$itemdevicetable.$fk",
+            "is_dynamic"
          ],
          'FROM'      => $itemdevicetable,
          'WHERE'     => [
             "$itemdevicetable.items_id"     => $this->item->fields['id'],
-            "$itemdevicetable.itemtype"     => $this->item->getType(),
-            "$itemdevicetable.is_dynamic"   => 1
+            "$itemdevicetable.itemtype"     => $this->item->getType()
          ]
       ]);
 
       foreach ($iterator as $row) {
-         $db_existing[$row[$fk]][] = $row[$fk];
+         $db_existing[$row[$fk]] = $row;
       }
 
       return $db_existing;
@@ -115,8 +115,6 @@ abstract class Device extends InventoryAsset
                      $fk => $device_id,
                      'items_id'     => $this->item->fields['id'],
                      'itemtype'     => $this->item->getType(),
-                     'is_dynamic'   => 1
-
                   ]
                );
                $deleted_items[$device_id] = $device_id;
@@ -133,15 +131,15 @@ abstract class Device extends InventoryAsset
             unset($existing[$device_id]);
          }
 
-         foreach (array_keys($existing) as $deviceid) {
+         foreach ($existing as $deviceid => $data) {
             //first, remove items
-            $DB->delete(
-               $itemdevice->getTable(), [
-                  $fk => $deviceid
-               ]
-            );
-            //then device itself
-            $device->delete(['id' => $deviceid], true);
+            if ($data['is_dynamic'] == 1) {
+               $DB->delete(
+                  $itemdevice->getTable(), [
+                     $fk => $deviceid
+                  ]
+               );
+            }
          }
       }
    }

@@ -221,7 +221,7 @@ class DeviceCamera extends CommonDevice {
    function getImportCriteria() {
       return [
          'designation'           => 'equal',
-         'devicebatterymodels_id' => 'equal',
+         'devicecameramodels_id' => 'equal',
          'manufacturers_id'      => 'equal'
       ];
    }

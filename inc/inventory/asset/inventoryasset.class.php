@@ -329,4 +329,26 @@ abstract class InventoryAsset
    public function getMainAsset(): InventoryAsset {
       return $this->main_asset;
    }
+
+   /**
+    * Add or move a computer_item.
+    * If the computer is item is already linked to another computer, existing link will be replaced by new link.
+    *
+    * @param array $input
+    *
+    * @return void
+    */
+   protected function addOrMoveItem(array $input): void {
+      $citem = new \Computer_Item();
+      $citem->getFromDBByCrit([
+         'itemtype' => $input['itemtype'],
+         'items_id' => $input['items_id']
+      ]);
+
+      if (isset($citem->fields['id'])) {
+         $citem->delete(['id' => $citem->fields['id']], true, $this->withHistory());
+      }
+      $citem->add($input, [], $this->withHistory());
+   }
+
 }

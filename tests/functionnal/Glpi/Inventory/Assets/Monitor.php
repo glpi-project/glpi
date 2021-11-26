@@ -142,7 +142,7 @@ class Monitor extends AbstractInventoryAsset {
    public function testHandle() {
       $computer = getItemByTypeName('Computer', '_test_pc01');
 
-      //first, check there are no controller linked to this computer
+      //first, check there are no monitor linked to this computer
       $ico = new \Computer_Item();
       $this->boolean($ico->getFromDbByCrit(['computers_id' => $computer->fields['id'], 'itemtype' => 'Monitor']))
            ->isFalse('A monitor is already linked to computer!');
@@ -169,5 +169,128 @@ class Monitor extends AbstractInventoryAsset {
       $asset->handle();
       $this->boolean($ico->getFromDbByCrit(['computers_id' => $computer->fields['id'], 'itemtype' => 'Monitor']))
            ->isTrue('Monitor has not been linked to computer :(');
+   }
+
+   public function testInventoryMove() {
+      $monitor = new \Monitor();
+      $item_monitor = new \Computer_Item();
+
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <MONITORS>
+      <BASE64>AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBGjaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAAAAAAACQQMoABIAAAsBCiAgAGY=</BASE64>
+      <CAPTION>DJCP6</CAPTION>
+      <DESCRIPTION>32/2015</DESCRIPTION>
+      <MANUFACTURER>Sharp Corporation</MANUFACTURER>
+      <SERIAL>AFGHHDR0</SERIAL>
+    </MONITORS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      //computer inventory with one monitor
+      $inventory = $this->doInventory($xml_source, true);
+
+      $computers_id = $inventory->getItem()->fields['id'];
+      $this->integer($computers_id)->isGreaterThan(0);
+
+      //we have 1 monitor
+      $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+      $this->integer(count($monitors))->isIdenticalTo(1);
+
+      //we have 1 monitor items linked to the computer
+      $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+      $this->integer(count($monitors))->isIdenticalTo(1);
+
+      //monitor present in the inventory source is dynamic
+      $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+      $this->integer(count($monitors))->isIdenticalTo(1);
+
+      //same inventory again
+      $inventory = $this->doInventory($xml_source, true);
+
+      $computers_id = $inventory->getItem()->fields['id'];
+      $this->integer($computers_id)->isGreaterThan(0);
+
+      //we still have only 1 monitor
+      $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+      $this->integer(count($monitors))->isIdenticalTo(1);
+
+      //we still have only 1 monitor items linked to the computer
+      $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+      $this->integer(count($monitors))->isIdenticalTo(1);
+
+      //same monitor, but on another computer
+      $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <MONITORS>
+      <BASE64>AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBGjaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAAAAAAACQQMoABIAAAsBCiAgAGY=</BASE64>
+      <CAPTION>DJCP6</CAPTION>
+      <DESCRIPTION>32/2015</DESCRIPTION>
+      <MANUFACTURER>Sharp Corporation</MANUFACTURER>
+      <SERIAL>AFGHHDR0</SERIAL>
+    </MONITORS>
+    <HARDWARE>
+      <NAME>pc003</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne8</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc003</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      //computer inventory with one monitor
+      $inventory = $this->doInventory($xml_source_2, true);
+
+      $computers_2_id = $inventory->getItem()->fields['id'];
+      $this->integer($computers_2_id)->isGreaterThan(0);
+
+      //we still have only 1 monitor
+      $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+      $this->integer(count($monitors))->isIdenticalTo(1);
+
+      //no longer linked on first computer inventoried
+      $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+      $this->integer(count($monitors))->isIdenticalTo(0);
+
+      //but now linked on last inventoried computer
+      $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id]);
+      $this->integer(count($monitors))->isIdenticalTo(1);
+
+      //monitor is still dynamic
+      $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
+      $this->integer(count($monitors))->isIdenticalTo(1);
+
+      //replay first computer inventory, monitor is back \o/
+      $inventory = $this->doInventory($xml_source, true);
+
+      //we still have only 1 monitor
+      $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+      $this->integer(count($monitors))->isIdenticalTo(1);
+
+      //linked again on first computer inventoried
+      $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+      $this->integer(count($monitors))->isIdenticalTo(1);
+
+      //no longer linked on last inventoried computer
+      $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id]);
+      $this->integer(count($monitors))->isIdenticalTo(0);
+
+      //monitor is still dynamic
+      $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+      $this->integer(count($monitors))->isIdenticalTo(1);
    }
 }

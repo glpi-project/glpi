@@ -267,7 +267,7 @@ class Printer extends NetworkEquipment
             'items_id'     => $printers_id,
             'is_dynamic'   => 1
          ];
-         $link_item->add($input, [], $this->withHistory());
+         $this->addOrMoveItem($input);
       }
    }
 

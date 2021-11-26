@@ -32,7 +32,7 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
-abstract class AbstractInventoryAsset extends \DbTestCase {
+abstract class AbstractInventoryAsset extends \InventoryTestCase {
    protected $myclass = "";
 
    protected $log_entries;

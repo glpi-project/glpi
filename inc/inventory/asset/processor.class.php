@@ -65,6 +65,7 @@ class Processor extends Device
             $val->designation = $val->type;
          }
          unset($val->id);
+         $val->is_dynamic = 1;
       }
       return $this->data;
    }

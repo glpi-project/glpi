@@ -46,6 +46,7 @@ class Memory extends Device
          'capacity'     => 'size',
          'speed'        => 'frequence',
          'type'         => 'devicememorytypes_id',
+         'manufacturer' => 'manufacturers_id',
          'serialnumber' => 'serial',
          'numslots'     => 'busID'
       ];
@@ -91,6 +92,8 @@ class Memory extends Device
          if (property_exists($val, 'frequence')) {
             $val->frequence = str_replace([' MHz', ' MT/s'], '', $val->frequence);
          }
+
+         $val->is_dynamic = 1;
       }
       return $this->data;
    }

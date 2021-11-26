@@ -731,7 +731,6 @@ class OperatingSystem extends AbstractInventoryAsset {
       return $result;
    }
 
-
    public function testHandle() {
       $computer = getItemByTypeName('Computer', '_test_pc01');
 
@@ -758,5 +757,119 @@ class OperatingSystem extends AbstractInventoryAsset {
       $asset->handle();
       $this->boolean($ios->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isTrue('Operating system has not been linked to computer :(');
+   }
+
+   public function testInventoryUpdate() {
+      $this->login();
+      $computer = new \Computer();
+      $os = new \OperatingSystem();
+      $cos = new \Item_OperatingSystem();
+
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <OPERATINGSYSTEM>
+      <ARCH>x86_64</ARCH>
+      <BOOT_TIME>2018-10-02 08:56:09</BOOT_TIME>
+      <FQDN>test-pc002</FQDN>
+      <FULL_NAME>Fedora 28 (Workstation Edition)</FULL_NAME>
+      <HOSTID>a8c07701</HOSTID>
+      <KERNEL_NAME>linux</KERNEL_NAME>
+      <KERNEL_VERSION>4.18.9-200.fc28.x86_64</KERNEL_VERSION>
+      <NAME>Fedora</NAME>
+      <TIMEZONE>
+        <NAME>CEST</NAME>
+        <OFFSET>+0200</OFFSET>
+      </TIMEZONE>
+      <VERSION>28 (Workstation Edition)</VERSION>
+    </OPERATINGSYSTEM>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      //create manually a computer, with an operating system
+      $computers_id = $computer->add([
+         'name'   => 'pc002',
+         'serial' => 'ggheb7ne7',
+         'entities_id' => 0
+      ]);
+      $this->integer($computers_id)->isGreaterThan(0);
+
+      $os_id = $os->add([
+         'name' => 'Fedora 28 (Workstation Edition)'
+      ]);
+      $this->integer($os_id)->isGreaterThan(0);
+
+      $cos_id = $cos->add([
+         'itemtype' => 'Computer',
+         'items_id' => $computers_id,
+         'operatingsystems_id' => $os_id
+      ]);
+      $this->integer($cos_id)->isGreaterThan(0);
+
+      $this->doInventory($xml_source, true);
+
+      $list = $os->find();
+      $this->integer(count($list))->isIdenticalTo(1);
+
+      //check that OS is linked to computer, and is now dynamic
+      $list = $cos->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($list))->isIdenticalTo(1);
+      $theos = current($list);
+      $this->integer($theos['operatingsystems_id'])->isIdenticalTo($os_id);
+      $this->integer($theos['is_dynamic'])->isIdenticalTo(1);
+
+      //Redo inventory, but with updated operating system
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <OPERATINGSYSTEM>
+      <ARCH>x86_64</ARCH>
+      <BOOT_TIME>2020-12-21 07:58:42</BOOT_TIME>
+      <DNS_DOMAIN></DNS_DOMAIN>
+      <FQDN>test-pc002</FQDN>
+      <FULL_NAME>Fedora 32 (Workstation Edition)</FULL_NAME>
+      <HOSTID>a8c06c01</HOSTID>
+      <KERNEL_NAME>linux</KERNEL_NAME>
+      <KERNEL_VERSION>5.9.13-100.fc32.x86_64</KERNEL_VERSION>
+      <NAME>Fedora</NAME>
+      <TIMEZONE>
+        <NAME>CET</NAME>
+        <OFFSET>+0100</OFFSET>
+      </TIMEZONE>
+      <VERSION>32 (Workstation Edition)</VERSION>
+    </OPERATINGSYSTEM>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      $this->doInventory($xml_source, true);
+
+      //We now have 2 operating systems
+      $list = $os->find();
+      $this->integer(count($list))->isIdenticalTo(2);
+
+      //but still only one linked to computer
+      $list = $cos->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($list))->isIdenticalTo(1);
+      $theos = current($list);
+      $this->integer($theos['operatingsystems_id'])->isNotIdenticalTo($os_id, 'Operating system link has not been updated');
+      $this->integer($theos['is_dynamic'])->isIdenticalTo(1);
    }
 }

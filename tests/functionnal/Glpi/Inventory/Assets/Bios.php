@@ -124,4 +124,121 @@ class Bios extends AbstractInventoryAsset {
       $this->boolean($idf->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isTrue('Firmware has not been linked to computer :(');
    }
+
+   public function testInventoryUpdate() {
+      $computer = new \Computer();
+      $device_bios = new \DeviceFirmware();
+      $item_bios = new \Item_DeviceFirmware();
+
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+      <BMANUFACTURER>Dell Inc.</BMANUFACTURER>
+      <BVERSION>1.4.3</BVERSION>
+      <MMANUFACTURER>Dell Inc.</MMANUFACTURER>
+      <MMODEL>07TYC2</MMODEL>
+      <MSN>/640HP72/CN129636460078/</MSN>
+      <SKUNUMBER>0704</SKUNUMBER>
+      <SMANUFACTURER>Dell Inc.</SMANUFACTURER>
+      <SMODEL>XPS 13 9350</SMODEL>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      $type = new \DeviceFirmwareType();
+      $type->getFromDBByCrit([
+         'name' => 'BIOS'
+      ]);
+      $types_id = $type->getID();
+
+      $manufacturer = new \Manufacturer();
+      $manufacturers_id = $manufacturer->add([
+         'name' => 'Dell Inc.'
+      ]);
+      $this->integer($manufacturers_id)->isGreaterThan(0);
+
+      //create manually a computer, with a bios
+      $computers_id = $computer->add([
+         'name'   => 'pc002',
+         'serial' => 'ggheb7ne7',
+         'entities_id' => 0
+      ]);
+      $this->integer($computers_id)->isGreaterThan(0);
+
+      $bios_id = $device_bios->add([
+         'designation' => 'Dell Inc. BIOS',
+         'devicefirmwaretypes_id' => $types_id,
+         'manufacturers_id' => $manufacturers_id,
+         'version' => '1.4.3'
+      ]);
+
+      $item_bios_id = $item_bios->add([
+         'items_id' => $computers_id,
+         'itemtype' => 'Computer',
+         'devicefirmwares_id' => $bios_id
+      ]);
+      $this->integer($item_bios_id)->isGreaterThan(0);
+
+      $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($firmwares))->isIdenticalTo(1);
+      foreach ($firmwares as $firmware) {
+         $this->variable($firmware['is_dynamic'])->isEqualTo(0);
+      }
+
+      //computer inventory knows bios
+      $this->doInventory($xml_source, true);
+
+      //we still have 1 bios linked to the computer
+      $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($firmwares))->isIdenticalTo(1);
+
+      //bios present in the inventory source is now dynamic
+      $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+      $this->integer(count($firmwares))->isIdenticalTo(1);
+
+      //Redo inventory, but with modified firmware => will create a new one
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+      <BMANUFACTURER>Dell Inc.</BMANUFACTURER>
+      <BVERSION>1.4.4</BVERSION>
+      <MMANUFACTURER>Dell Inc.</MMANUFACTURER>
+      <MMODEL>07TYC2</MMODEL>
+      <MSN>/640HP72/CN129636460078/</MSN>
+      <SKUNUMBER>0704</SKUNUMBER>
+      <SMANUFACTURER>Dell Inc.</SMANUFACTURER>
+      <SMODEL>XPS 13 9350</SMODEL>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      $this->doInventory($xml_source, true);
+
+      //we still have one firmware
+      $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($firmwares))->isIdenticalTo(1);
+
+      //bios present in the inventory source is still dynamic
+      $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+      $this->integer(count($firmwares))->isIdenticalTo(1);
+
+      //"original" firmware has been removed
+      $this->boolean($item_bios->getFromDB($item_bios_id))->isFalse();
+   }
 }

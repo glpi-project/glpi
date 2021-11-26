@@ -82,6 +82,7 @@ class Peripheral extends InventoryAsset
                $val->name = $val->productname;
             }
             unset($val->productname);
+            $val->is_dynamic = 1;
 
             $existing[$val->name] = $k;
 
@@ -153,11 +154,11 @@ class Peripheral extends InventoryAsset
             $itemtype = 'Peripheral';
             if ($data['found_inventories'][0] == 0) {
                // add peripheral
-               $val->is_dynamic = 1;
                $val->entities_id = $this->entities_id;
                $items_id = $peripheral->add(Toolbox::addslashes_deep((array)$val), [], $this->withHistory());
             } else {
                $items_id = $data['found_inventories'][0];
+               $peripheral->update(Toolbox::addslashes_deep(['id' => $items_id] + (array)$val), $this->withHistory());
             }
 
             $peripherals[] = $items_id;
@@ -183,7 +184,8 @@ class Peripheral extends InventoryAsset
       $iterator = $DB->request([
          'SELECT'    => [
             'glpi_peripherals.id',
-            'glpi_computers_items.id AS link_id'
+            'glpi_computers_items.id AS link_id',
+            'glpi_computers_items.is_dynamic',
          ],
          'FROM'      => 'glpi_computers_items',
          'LEFT JOIN' => [
@@ -195,26 +197,26 @@ class Peripheral extends InventoryAsset
             ]
          ],
          'WHERE'     => [
-            'itemtype'                          => 'Peripheral',
-            'computers_id'                      => $this->item->fields['id'],
-            'entities_id'                       => $this->entities_id,
-            'glpi_computers_items.is_dynamic'   => 1,
-            'glpi_peripherals.is_global'           => 0
+            'itemtype' => 'Peripheral',
+            'computers_id' => $this->item->fields['id'],
+            'entities_id' => $this->entities_id,
+            'glpi_peripherals.is_global' => 0
          ]
       ]);
 
       foreach ($iterator as $data) {
          $idtmp = $data['link_id'];
          unset($data['link_id']);
-         $db_peripherals[$idtmp] = $data['id'];
+         $db_peripherals[$idtmp] = $data;
       }
 
       if (count($db_peripherals) && count($peripherals)) {
          foreach ($peripherals as $key => $peripherals_id) {
-            foreach ($db_peripherals as $keydb => $periphs_id) {
-               if ($peripherals_id == $periphs_id) {
+            foreach ($db_peripherals as $keydb => $data) {
+               if ($peripherals_id == $data['id']) {
                   unset($peripherals[$key]);
                   unset($db_peripherals[$keydb]);
+                  $computer_Item->update(['id' => $keydb, 'is_dynamic' => 1], $this->withHistory());
                   break;
                }
             }
@@ -223,8 +225,10 @@ class Peripheral extends InventoryAsset
 
       if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_peripherals)) {
          // Delete peripherals links in DB
-         foreach ($db_peripherals as $idtmp => $data) {
-            $computer_Item->delete(['id'=>$idtmp], 1);
+         foreach ($db_peripherals as $keydb => $data) {
+            if ($data['is_dynamic']) {
+               $computer_Item->delete(['id' => $keydb], 1);
+            }
          }
       }
       if (count($peripherals)) {
@@ -235,7 +239,7 @@ class Peripheral extends InventoryAsset
                'items_id'        => $peripherals_id,
                'is_dynamic'      => 1,
             ];
-            $computer_Item->add($input, [], $this->withHistory());
+            $this->addOrMoveItem($input);
          }
       }
    }
