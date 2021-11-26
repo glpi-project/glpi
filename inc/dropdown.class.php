@@ -254,12 +254,12 @@ class Dropdown {
              && $item->canCreate()
              && !isset($_REQUEST['_in_modal'])
              && $params['addicon']) {
-               $icons .= '<div class="btn btn-outline-secondary">';
+               $icons .= '<div class="btn btn-outline-secondary"
+                               title=\"'.__s('Add').'\" data-bs-toggle="tooltip">';
                $icons .= Ajax::createIframeModalWindow('add_'.$field_id, $item->getFormURL(), ['display' => false]);
-               $icons .= "<span title=\"".__s('Add')."\"
-                                 data-bs-toggle='modal' data-bs-target='#add_$field_id'
+               $icons .= "<span data-bs-toggle='modal' data-bs-target='#add_$field_id'
                            >
-                  <i class='fas fa-fw fa-plus-circle'></i>
+                  <i class='fa-fw ti ti-plus'></i>
                   <span class='sr-only'>" . __s('Add') . "</span>
                </span>";
                $icons .= '</div>';
@@ -277,8 +277,8 @@ class Dropdown {
          // Location icon
          if ($itemtype == 'Location') {
             $icons .= '<div class="btn btn-outline-secondary">';
-            $icons .= "<span title='".__s('Display on map')."' onclick='showMapForLocation(this)' data-fid='$field_id'>
-               <i class='fas fa-fw fa-globe-americas'></i>
+            $icons .= "<span title='".__s('Display on map')."' data-bs-toggle='tooltip' onclick='showMapForLocation(this)' data-fid='$field_id'>
+               <i class='fa-fw ti ti-map'></i>
             </span>";
             $icons .= '</div>';
          }

@@ -40,7 +40,7 @@
    <div class="accordion-item">
       <h2 class="accordion-header" id="heading-main-ticket">
          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#ticket-main" aria-expanded="true" aria-controls="ticket-main">
-            <i class="fas fa-exclamation-circle me-1"></i>
+            <i class="ti ti-alert-circle me-1"></i>
             <span>{{ item.getTypeName(1) }}</span>
          </button>
       </h2>
@@ -235,7 +235,7 @@
    <div class="accordion-item">
       <h2 class="accordion-header" id="heading-actor">
          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#actors" aria-expanded="true" aria-controls="actors">
-            <i class="fa fa-users me-1"></i>
+            <i class="ti ti-users me-1"></i>
             <span>{{ __('Actors') }}</span>
             <span class="badge bg-secondary ms-2">
                {{ item.countActors() }}
@@ -253,7 +253,7 @@
       <div class="accordion-item">
          <h2 class="accordion-header" id="items-heading">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#items" aria-expanded="true" aria-controls="items">
-               <i class="fa fa-users me-1"></i>
+               <i class="ti ti-package me-1"></i>
                <span>{{ _n('Item', 'Items', get_plural_number()) }}</span>
                <span class="item-counter badge bg-secondary ms-2"></span>
             </button>
@@ -271,7 +271,7 @@
       <div class="accordion-item">
          <h2 class="accordion-header" id="service-levels-heading">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#service-levels" aria-expanded="true" aria-controls="service-levels">
-               <i class="fas fa-stopwatch me-1"></i>
+               <i class="ti ti-alarm me-1"></i>
                <span>{{ _n('Service level', 'Service levels', get_plural_number()) }}</span>
                {% if nb_la > 0 %}
                   <span class="badge bg-secondary ms-2">{{ nb_la }}</span>
@@ -303,7 +303,7 @@
       <div class="accordion-item">
          <h2 class="accordion-header" id="analysis-heading">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#analysis" aria-expanded="true" aria-controls="analysis">
-               <i class="fas fa-binoculars me-1"></i>
+               <i class="ti ti-eyeglass me-1"></i>
                <span>{{ __("Analysis") }}</span>
                {% if nb_analysis > 0 %}
                   <span class="badge bg-secondary ms-2">{{ nb_analysis }}</span>
@@ -347,7 +347,7 @@
       <div class="accordion-item">
          <h2 class="accordion-header" id="plans-heading">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#plans" aria-expanded="true" aria-controls="plans">
-               <i class="fas fa-tasks me-1"></i>
+               <i class="ti ti-checkup-list me-1"></i>
                <span>{{ __("Plans") }}</span>
                {% if nb_plans > 0 %}
                   <span class="badge bg-secondary ms-2">{{ nb_plans }}</span>
@@ -378,7 +378,7 @@
       <div class="accordion-item">
          <h2 class="accordion-header" id="linked_tickets-heading">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#linked_tickets" aria-expanded="true" aria-controls="linked_tickets">
-               <i class="fas fa-link me-1"></i>
+               <i class="ti ti-link me-1"></i>
                {% set linked_tickets = ticket_ticket.getLinkedTicketsTo(item.fields['id']) %}
                {% set nb_linked_tickets = linked_tickets|length %}
                {% if item.isNewItem() and params['_link']['tickets_id_2']|length > 0 %}

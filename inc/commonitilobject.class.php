@@ -4092,6 +4092,7 @@ abstract class CommonITILObject extends CommonDBTM {
             break;
          case self::PLANNED :
             $class = 'calendar';
+            $solid = false;
             break;
          case self::WAITING :
             $class = 'circle';
@@ -6075,7 +6076,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $itemtypes['answer'] = [
             'type'      => 'ITILFollowup',
             'class'     => 'ITILFollowup',
-            'icon'      => 'far fa-comment',
+            'icon'      => 'ti ti-message-circle',
             'label'     => _x('button', 'Answer'),
             'template'  => 'components/itilobject/timeline/form_followup.html.twig',
             'item'      => $fup
@@ -6085,7 +6086,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $itemtypes['task'] = [
             'type'      => 'ITILTask',
             'class'     => $task_class,
-            'icon'      => 'fas fa-wrench',
+            'icon'      => 'ti ti-checkbox',
             'label'     => _x('button', 'Create a task'),
             'template'  => 'components/itilobject/timeline/form_task.html.twig',
             'item'      => $task
@@ -6095,7 +6096,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $itemtypes['solution'] = [
             'type'      => 'ITILSolution',
             'class'     => 'ITILSolution',
-            'icon'      => 'fas fa-check',
+            'icon'      => 'ti ti-check',
             'label'     => _x('button', 'Add a solution'),
             'template'  => 'components/itilobject/timeline/form_solution.html.twig',
             'item'      => new ITILSolution()
@@ -6105,7 +6106,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $itemtypes['validation'] = [
             'type'      => 'ITILValidation',
             'class'     => $validation_class,
-            'icon'      => 'far fa-thumbs-up',
+            'icon'      => 'ti ti-thumb-up',
             'label'     => _x('button', 'Ask for validation'),
             'template'  => 'components/itilobject/timeline/form_validation.html.twig',
             'item'      => $validation
@@ -6309,7 +6310,7 @@ abstract class CommonITILObject extends CommonDBTM {
                'item' => [
                   'id'        => $validations_id,
                   'date'      => $validation['submission_date'],
-                  'content'   => __('Validation request')." => <i class='fas fa-user text-muted me-1'></i>".$user->getlink().
+                  'content'   => __('Validation request')." => <i class='ti ti-user text-muted me-1'></i>".$user->getlink().
                                                  "<br>".$validation['comment_submission'],
                   'users_id'  => $validation['users_id'],
                   'can_edit'  => $canedit,

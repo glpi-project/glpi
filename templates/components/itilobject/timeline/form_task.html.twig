@@ -228,7 +228,7 @@
 
 
                      {% set task_private_lbl %}
-                        <i class="fas fa-lock fa-fw me-1" title="{{ __('Private') }}"></i>
+                        <i class="ti ti-lock fa-fw me-1" title="{{ __('Private') }}"></i>
                      {% endset %}
                      {{ fields.sliderField(
                         'is_private',
@@ -260,7 +260,7 @@
 
                      {% if candedit and can_update_kb and not nokb %}
                         {% set task_to_kb_lbl %}
-                           <i class="fas fa-save fa-fw me-1" title="{{ __('Save and add to the knowledge base') }}"
+                           <i class="far fa-save fa-fw me-1" title="{{ __('Save and add to the knowledge base') }}"
                               data-bs-toggle="tooltip" data-bs-placement="top"></i>
                         {% endset %}
                         {{ fields.sliderField(
@@ -377,7 +377,7 @@
                {% else %}
                   <input type="hidden" name="id" value="{{ subitem.fields['id'] }}" />
                   <button class="btn btn-primary me-2" type="submit" name="update">
-                     <i class="fas fa-save"></i>
+                     <i class="far fa-save"></i>
                      <span>{{ _x('button', 'Save') }}</span>
                   </button>
 

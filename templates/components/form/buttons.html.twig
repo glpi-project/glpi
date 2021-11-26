@@ -48,7 +48,7 @@
                </button>
             {% else %}
                <button class="btn btn-primary me-2" type="submit" name="update" value="1">
-                  <i class="fas fa-save"></i>
+                  <i class="far fa-save"></i>
                   <span>{{ _x('button', 'Save') }}</span>
                </button>
             {% endif %}
@@ -59,7 +59,7 @@
 
             {% if canedit and item.can(id, constant('UPDATE')) %}
                <button class="btn btn-primary me-2" type="submit" name="update" value="1">
-                  <i class="fas fa-save"></i>
+                  <i class="far fa-save"></i>
                   <span>{{ _x('button', 'Save') }}</span>
                </button>
             {% endif %}
@@ -69,7 +69,7 @@
                   {% if item.can(id, constant('DELETE')) %}
                      <button class="btn btn-outline-secondary me-2" type="submit"
                              name="restore" value="1">
-                        <i class="fas fa-trash-restore"></i>
+                        <i class="ti ti-trash-off"></i>
                         <span>{{ _x('button', 'Restore') }}</span>
                      </button>
                   {% endif %}
@@ -78,7 +78,7 @@
                      <button class="btn btn-outline-danger me-2" type="submit" name="purge"
                              value="1"
                              onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
-                        <i class="fas fa-trash-alt"></i>
+                        <i class="ti ti-trash"></i>
                         <span>{{ _x('button', 'Delete permanently') }}</span>
                      </button>
                      <div class="d-inline-block">
@@ -96,14 +96,14 @@
                         <button class="btn btn-outline-danger me-2" type="submit" name="purge"
                                 onclick="return confirm('{{ __('Confirm the final deletion?') }}');"
                                 value="1">
-                           <i class="fas fa-trash-alt"></i>
+                           <i class="ti ti-trash"></i>
                            <span>{{ _x('button', 'Delete permanently') }}</span>
                         </button>
                      {% endif %}
                   {% elseif not item.isDeleted() and item.can(id, constant('DELETE')) %}
                      <button class="btn btn-outline-warning me-2" type="submit"
                              name="delete" value="1">
-                        <i class="fas fa-trash-alt"></i>
+                        <i class="ti ti-trash"></i>
                         <span>{{ _x('button', 'Put in trashbin') }}</span>
                      </button>
                   {% endif %}

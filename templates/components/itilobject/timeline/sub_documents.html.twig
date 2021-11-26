@@ -47,14 +47,14 @@
                   <a href="{{ 'Document'|itemtype_form_path(document['item']['id']) }}"
                      class="btn btn-sm btn-ghost-secondary" title="{{ _x('button', 'Edit') }}"
                      data-bs-toggle="tooltip" data-bs-placement="top">
-                     <i class="fas fa-edit"></i>
+                     <i class="ti ti-edit"></i>
                   </a>
 
                   {% set fk = item.getForeignKeyField() %}
                   <a href="{{ delete_link }}"
                      class="btn btn-sm btn-ghost-secondary" title="{{ _x('button', 'Delete permanently') }}"
                      data-bs-toggle="tooltip" data-bs-placement="top">
-                     <i class="fas fa-trash-alt"></i>
+                     <i class="ti ti-trash"></i>
                   </a>
                </div>
             </div>

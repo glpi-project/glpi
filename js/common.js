@@ -918,7 +918,7 @@ var templateItilStatus = function(option) {
          classes = 'assigned far fa-circle';
          break;
       case 3 :
-         classes = 'planned fas fa-calendar';
+         classes = 'planned far fa-calendar';
          break;
       case 4 :
          classes = 'waiting fas fa-circle';
@@ -964,7 +964,7 @@ var templateValidation = function(option) {
    var classes = "";
    switch (parseInt(status)) {
       case 2 : // WAITING
-         classes = 'waiting fas fa-clock';
+         classes = 'waiting far fa-clock';
          break;
       case 3 : // ACCEPTED
          classes = 'accepted fas fa-check';

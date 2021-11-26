@@ -809,7 +809,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
                                 : __s('Counting this saved search would take too long, it has been skipped.');
                if ($count === null) {
                   //no count, just inform the user
-                  $count = "<span class='fa fa-info-circle' title='$info_message'></span>";
+                  $count = "<span class='ti ti-info-circle' title='$info_message'></span>";
                }
             }
 

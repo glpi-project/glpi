@@ -32,7 +32,7 @@
 {% set rand = random() %}
 
 <span id="user_{{ rand }}">
-   <i class="far fa-user ms-1"></i>
+   <i class="ti ti-user ms-1"></i>
    {{ get_item_link('User', users_id, {
       'enable_anonymization': enable_anonymization
    })|raw }}
