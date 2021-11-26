@@ -31,22 +31,20 @@
 
 $info: #80abe4;
 $danger: #d49696;
-
 $enable-negative-margins: true;
 $link-hover-decoration: none;
-
 $logo-light: "../pics/logos/logo-GLPI-100-white.png" !default;
 $logo-light-reduced: "../pics/logos/logo-G-100-white.png" !default;
 $logo-dark: "../pics/logos/logo-GLPI-100-black.png" !default;
 $logo-dark-reduced: "../pics/logos/logo-G-100-black.png" !default;
 $logo-dark-login: "../pics/logos/logo-GLPI-250-black.png" !default;
 $logo-light-login: "../pics/logos/logo-GLPI-250-white.png" !default;
-
 $logo: $logo-light;
 $logo_reduced: $logo-light-reduced;
 
 @import "fonts";
-$font-family-sans-serif: Inter, -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif !default;
+
+$font-family-sans-serif: inter, -apple-system, blinkmacsystemfont, san francisco, segoe ui, roboto, helvetica neue, sans-serif !default;
 
 @if $is-dark {
    @import "dark";
@@ -54,67 +52,63 @@ $font-family-sans-serif: Inter, -apple-system, BlinkMacSystemFont, San Francisco
    @import "~@tabler/core/src/scss/tabler";
 }
 
-$ti-font-path: '../css/lib/tabler/icons/iconfont/fonts';
+$ti-font-path: "../css/lib/tabler/icons/iconfont/fonts";
+
 @import "~@tabler/icons/iconfont/tabler-icons";
 
 $mainmenu_bg: $dark !default;
 $mainmenu_fg: $light !default;
-
 $search_bg: transparentize($mainmenu_bg, 0.95) !default;
 $search_fg: lighten($mainmenu_bg, 5%) !default;
 $search_border: lighten($color: $search_fg, $amount: 35) !default;
-
-$table_border: #eeeeee !default;
+$table_border: #eee !default;
 $table_header_bg: #f8f8f8 !default;
-
 $header-fg: $blue !default;
 $header-bg: theme-color-lighter($header-fg, true) !default;
 $header-border-color: tint-color($header-fg, 75%) !default;
 $header-danger-bg: $danger !default;
-$header-badge-bg: tint-color($header-fg, 80%)!default;
+$header-badge-bg: tint-color($header-fg, 80%) !default;
 $header-badge-fg: darken($header-fg, 20%) !default;
-
-$scrollbar-color-thumb: rgba($color: $secondary, $alpha: .8) !default;
+$scrollbar-color-thumb: rgba($color: $secondary, $alpha: 80%) !default;
 $scrollbar-color-track: transparent !default;
-
 $tabs-bg: $card-cap-bg !default;
 $tabs-fg: $text-muted !default;
 $tabs-border: $card-border-color !default;
-$tabs-active-bg: #FFFFFF !default;
+$tabs-active-bg: #fff !default;
 $tabs-active-fg: $dark !default;
 $tabs-active-border: $tabs-border !default;
 $badge-bg: $secondary !default;
 $badge-fg: $light !default;
-
 $itil-secondary-bg: #f5f5f5 !default; // secondary color for right side and footer (primary color is card background)
 $timeline-itilc-bg: #e2f2e3 !default;
 $timeline-itilc-fg: #155210 !default;
 $timeline-itilc-border: #87aa8a !default;
 $timeline-fup-bg: #ececec !default;
 $timeline-fup-fg: #535353 !default;
-$timeline-fup-border: #cccccc !default;
+$timeline-fup-border: #ccc !default;
 $timeline-task-bg: #ffe8b9 !default;
-$timeline-task-fg: #38301F !default;
+$timeline-task-fg: #38301f !default;
 $timeline-task-border: #e5c88c !default;
-$timeline-sol-bg: #9FD6ED !default;
-$timeline-sol-fg: #425B64 !default;
+$timeline-sol-bg: #9fd6ed !default;
+$timeline-sol-fg: #425b64 !default;
 $timeline-sol-border: #90c2d8 !default;
 $timeline-log-bg: #cacaca21 !default;
-$timeline-badge-bg: rgba(97, 97, 97, 0.15) !default;
-$timeline-badge-fg: rgba(43, 43, 43, 0.8) !default;
-
+$timeline-badge-bg: rgba(97, 97, 97, 15%) !default;
+$timeline-badge-fg: rgba(43, 43, 43, 80%) !default;
 $input-border: $dark-mode-text !default;
-
-$dropdowns-list-contrast: rgba(167, 171, 175, 0.1) !default;
+$dropdowns-list-contrast: rgba(167, 171, 175, 10%) !default;
 
 // additionnal fixes
 $primary-fg: $body-color !default;
+
 .btn-primary,
 .btn-outline-primary,
 .btn-ghost-primary {
    --tblr-btn-color-text: #{$primary-fg};
 }
+
 $secondary-fg: $light !default;
+
 .btn-secondary,
 .btn-outline-secondary,
 .btn-ghost-secondary {
@@ -156,7 +150,10 @@ body.iframed {
 }
 
 .dropdown-item {
-   & > .fas:first-child, & > .far:first-child, & > .fab:first-child, & > .ti:first-child {
+   & > .fas:first-child,
+   & > .far:first-child,
+   & > .fab:first-child,
+   & > .ti:first-child {
       margin-right: 0.5em;
    }
 }
@@ -172,7 +169,7 @@ body.iframed {
    &.fa-lg {
       font-size: 1.8em;
       line-height: 0.75em;
-      vertical-align: -.0667em;
+      vertical-align: -0.0667em;
    }
 
    &.fa-2x {
@@ -190,7 +187,11 @@ body.iframed {
       color: inherit;
    }
 
-   i.fas, i.far, i.fab, i.ti, .fa-stack {
+   i.fas,
+   i.far,
+   i.fab,
+   i.ti,
+   .fa-stack {
       margin-inline-start: 0;
 
       & + * {
@@ -199,8 +200,10 @@ body.iframed {
    }
 
    &.btn-icon {
-
-      i.fas, i.far, i.fab, i.ti {
+      i.fas,
+      i.far,
+      i.fab,
+      i.ti {
          margin-right: 0;
          line-height: 1.5em;
       }
@@ -218,7 +221,10 @@ body.iframed {
             }
          }
 
-         i.fas, i.far, i.fab, i.ti {
+         i.fas,
+         i.far,
+         i.fab,
+         i.ti {
             line-height: 1.2em;
          }
       }
@@ -237,6 +243,7 @@ body.iframed {
 .page-anonymous {
    .glpi-logo {
       --logo: url(#{$logo-dark-login});
+
       content: var(--logo);
       width: 200px;
       height: 110px;
@@ -244,7 +251,8 @@ body.iframed {
 }
 
 table {
-   td.active, td.tab_bg_4 {
+   td.active,
+   td.tab_bg_4 {
       background-color: $table-active-bg;
       color: $table-active-color;
    }
@@ -256,7 +264,7 @@ table {
    }
 }
 
-.entity_tree{
+.entity_tree {
    width: 450px;
    max-width: 85vw;
    position: relative;
@@ -289,9 +297,11 @@ table {
          width: 8px;
       }
 
-      .arrow-up, .arrow-down {
+      .arrow-up,
+      .arrow-down {
          display: none;
       }
+
       .slider-area {
          top: 0 !important;
          bottom: 0 !important;
@@ -307,6 +317,7 @@ table {
 .list-group .list-group-item {
    color: inherit;
    border-color: $table-border-color;
+
    &:hover {
       background-color: $hover-bg;
    }

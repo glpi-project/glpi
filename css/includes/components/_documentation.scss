@@ -51,7 +51,7 @@
    h2 {
       color: #940000;
       margin-top: 70px;
-      border-bottom: 1px solid #A87A7A;
+      border-bottom: 1px solid #a87a7a;
    }
 
    li {
@@ -83,7 +83,8 @@
       margin-left: 20px;
    }
 
-   td, th {
+   td,
+   th {
       padding-right: 24px;
       padding-bottom: 8px;
       font-size: 12px;
@@ -107,7 +108,8 @@
 }
 
 @include media-breakpoint-up(sm) {
-   .documentation #summary, .documentation .summary {
+   .documentation #summary,
+   .documentation .summary {
       position: fixed;
       top: 40px;
       left: 15px;

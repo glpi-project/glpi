@@ -35,22 +35,24 @@ $ct-series-colors: () !default;
 @function setColor($color) {
    @if (lightness($color) > 40) {
       @return darken($color, 30%);
-    }
-    @else {
+   } @else {
       @return lighten($color, 30%);
-    }
+   }
 }
 
 @for $i from 0 to length($ct-series-names) {
    $color: nth($ct-series-colors, $i + 1);
 
    .ct-series-#{nth($ct-series-names, $i + 1)} {
-      .ct-point, .ct-line, .ct-bar, .ct-slice-donut {
+      .ct-point,
+      .ct-line,
+      .ct-bar,
+      .ct-slice-donut {
          stroke: $color;
       }
 
       .ct-bar + .ct-barlabel {
-         fill: setColor($color);
+         fill: setcolor($color);
       }
 
       .ct-circle {
@@ -61,9 +63,11 @@ $ct-series-colors: () !default;
          }
       }
 
-      .ct-slice-pie, .ct-area, .ct-slice-donut-solid {
+      .ct-slice-pie,
+      .ct-area,
+      .ct-slice-donut-solid {
          fill: $color;
-         stroke: setColor($color);
+         stroke: setcolor($color);
       }
    }
 

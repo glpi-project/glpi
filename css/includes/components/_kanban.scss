@@ -52,19 +52,22 @@
 
    .kanban-form {
       text-align: left;
-      padding: 10px 10px 10px 10px;
+      padding: 10px;
       z-index: 10;
 
       input {
          &[type="checkbox"] {
             margin-right: 5px;
          }
+
          &:not([type="checkbox"]) {
             display: block;
          }
+
          &[type="submit"] {
             margin: auto;
          }
+
          &[type="button"] {
             width: 100%;
          }
@@ -85,11 +88,12 @@
             list-style: none;
 
             li {
-               padding: 5px 0px 0px 0px;
+               padding: 5px 0 0;
             }
          }
       }
    }
+
    .kanban-container {
       overflow: auto;
 
@@ -137,7 +141,7 @@
          }
 
          li.dropdown-trigger {
-            a:after {
+            a::after {
                content: "\f054";
                font-family: "Font Awesome 5 Free";
                font-weight: 900;
@@ -160,7 +164,7 @@
             text-align: center;
             border-top: 5px solid $header-border-color;
 
-            &[data-drop-only=true] .kanban-body {
+            &[data-drop-only="true"] .kanban-body {
                background: #fffa90;
                color: #777620;
             }
@@ -186,7 +190,7 @@
                      }
 
                      .kanban-collapse-column {
-                        margin: 0 0 8px 0;
+                        margin: 0 0 8px;
                      }
 
                      .kanban-column-toolbar {
@@ -225,7 +229,7 @@
                   position: relative;
 
                   // Increase click area to make it easier to collapse/expand boards
-                  &:after {
+                  &::after {
                      content: "";
                      position: absolute;
                      top: -50%;
@@ -254,9 +258,10 @@
                   }
                }
             }
+
             .kanban-body {
                min-height: 150px;
-               padding: 0 5px 0 5px;
+               padding: 0 5px;
                height: calc(100% - (1.2em + 35px));
                overflow-y: auto;
                overflow-x: hidden;
@@ -278,7 +283,7 @@
                .kanban-add-form {
                   text-align: left;
                   padding-left: 0;
-                  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                  box-shadow: 0 1px 2px rgba(0, 0, 0, 10%);
                   min-height: 50px;
                   margin-top: 10px;
                   border-radius: 5px;
@@ -301,6 +306,7 @@
 
                      .kanban-item-title .fas {
                         float: none;
+
                         &:last-of-type {
                            margin-right: 5px;
                         }
@@ -312,17 +318,19 @@
                      a:hover {
                         text-decoration: underline;
                      }
+
                      a {
                         padding: unset;
                      }
                   }
+
                   .kanban-item-content {
-                     padding: 0 10px 0 10px;
+                     padding: 0 10px;
 
                      .kanban-core-content {
                         display: flex;
                         flex-wrap: wrap;
-                        margin: 10px 0 10px 0;
+                        margin: 10px 0;
                      }
                   }
 
@@ -355,13 +363,16 @@
             min-width: 200px;
             height: 600px;
             margin: 0 8px 0 0;
-            border-radius: 5px
+            border-radius: 5px;
          }
       }
    }
-   .kanban-color-preview, .kanban-column-title {
+
+   .kanban-color-preview,
+   .kanban-column-title {
       &.itilstatus {
-         &.assigned, &.new {
+         &.assigned,
+         &.new {
             background-color: #49bf4d;
             color: #000f01;
          }
@@ -376,14 +387,16 @@
             color: rgb(19, 5, 0);
          }
 
-         &.test, &.qualif, &.waiting {
+         &.test,
+         &.qualif,
+         &.waiting {
             background-color: orange;
             color: rgb(27, 18, 0);
          }
 
          &.approval {
             background-color: #8cabdb;
-            color: rgb(18, 24, 36)
+            color: rgb(18, 24, 36);
          }
 
          &.eval {
@@ -391,7 +404,10 @@
             color: rgb(30, 38, 41);
          }
 
-         &.closed, &.solved, &.observe, &.canceled {
+         &.closed,
+         &.solved,
+         &.observe,
+         &.canceled {
             background-color: black;
             color: white;
          }
@@ -417,6 +433,7 @@
       color: #777620;
       height: 40px;
       margin-top: 5px;
+
       &.invalid-position {
          border: 2px dashed #d3413c;
          background: #ff7370;
@@ -442,13 +459,18 @@
          img {
             border-radius: 50%;
          }
+
          button {
             display: none;
             padding: unset;
          }
-         button:hover, button i:hover, &:hover button {
+
+         button:hover,
+         button i:hover,
+         &:hover button {
             display: inline-flex;
          }
+
          .member-details > span {
             margin-right: 2rem;
          }
@@ -469,9 +491,9 @@
       top: calc(-0.5rem - 1px); // Fix for using non-standard placement
       transform: unset !important; // Fix for using non-standard placement
       left: 50% !important; // Fix for using non-standard placement
-      &::before  {// Fix for using non-standard placement
+      &::before {// Fix for using non-standard placement
          top: 0;
-         border-width: 0 (1rem * .5) 0.5rem (1rem * .5);
+         border-width: 0 (1rem * 0.5) 0.5rem (1rem * 0.5);
          border-bottom-color: $popover-arrow-outer-color;
       }
    }
@@ -490,6 +512,7 @@
 #kanban-modal {
    ul.kanban-team-list {
       list-style: none;
+
       li {
          border: $input-border-width solid $input-border-color;
          padding: 5px;

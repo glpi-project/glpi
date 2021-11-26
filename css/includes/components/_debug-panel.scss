@@ -55,6 +55,7 @@
                         background-color: $gray-900;
                      }
                   }
+
                   &:nth-child(even) {
                      background-color: $gray-300;
 
@@ -72,7 +73,8 @@
                   }
                }
 
-               th, td {
+               th,
+               td {
                   padding: 0.25em;
                }
 
@@ -91,16 +93,19 @@
                   &:nth-child(2) {
                      white-space: nowrap;
                   }
+
                   &:nth-child(3) {
                      width: 100%;
                      word-break: break-all;
                   }
                }
+
                &.sql-debug td {
                   &:nth-child(1),
                   &:nth-child(3) {
                      white-space: nowrap;
                   }
+
                   &:nth-child(2),
                   &:nth-child(4) {
                      width: 100%;

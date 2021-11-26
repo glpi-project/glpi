@@ -41,6 +41,7 @@
    .select2-selection {
       background-color: $input-bg;
       border: $input-border-width solid $input-border-color;
+
       @include border-radius($input-border-radius);
       @include box-shadow($input-box-shadow);
       @include transition($input-transition);
@@ -56,6 +57,7 @@
          border-color: $input-focus-border-color;
          box-shadow: $input-focus-box-shadow;
       }
+
       .select2-container--disabled& {
          background-color: $input-disabled-bg;
          border-color: $input-border-color;
@@ -66,19 +68,22 @@
       .select2-selection__rendered {
          direction: rtl; // ellipsis on left
          text-align: left;
-         &:before {
-            content: '\200E'; // left-to-right mark: be sure that content is displayed in ltr way
+
+         &::before {
+            content: "\200E"; // left-to-right mark: be sure that content is displayed in ltr way
          }
       }
 
       &.select2-selection--single {
          @include font-size($input-font-size);
+
          height: $input-height;
          position: relative; // fix arrow position
 
          .select2-selection__arrow {
             height: $input-height;
          }
+
          .select2-selection__rendered {
             line-height: $input-height;
 
@@ -92,28 +97,35 @@
 
          .form-select-sm + & {
             @include font-size($input-font-size-sm);
+
             height: $input-height-sm;
 
             .select2-selection__arrow {
                height: $input-height-sm;
+
                b {
                   margin-top: -4px;
                }
             }
+
             .select2-selection__rendered {
                line-height: $input-height-sm;
             }
          }
+
          .form-select-lg + & {
             @include font-size($input-font-size-lg);
+
             height: $input-height-lg;
 
             .select2-selection__arrow {
                height: $input-height-lg;
+
                b {
                   margin-top: -1px;
                }
             }
+
             .select2-selection__rendered {
                line-height: $input-height-lg;
             }
@@ -121,15 +133,19 @@
       }
 
       &.select2-selection--multiple {
-         @include font-size($input-font-size * .875);
+         @include font-size($input-font-size * 0.875);
+
          min-height: $input-height;
 
          .form-select-sm + & {
-            @include font-size($input-font-size-sm * .875);
+            @include font-size($input-font-size-sm * 0.875);
+
             min-height: $input-height-sm;
          }
+
          .form-select-lg + & {
-            @include font-size($input-font-size-lg * .875);
+            @include font-size($input-font-size-lg * 0.875);
+
             min-height: $input-height-lg;
          }
 
@@ -137,7 +153,9 @@
             .select2-selection__choice {
                background-color: $light;
                border: $input-border-width solid $input-border-color;
+
                @include border-radius($input-border-radius-sm);
+
                padding: 1px 3px;
                margin: 3px 3px 0 0;
 
@@ -158,7 +176,8 @@
                   }
 
                   @include dark-mode {
-                     &, &:hover {
+                     &,
+                     &:hover {
                         color: $light;
                      }
                   }
@@ -171,6 +190,7 @@
    .select2-dropdown {
       border-color: $input-border-color;
       border-radius: 0;
+
       @include font-size($input-font-size);
 
       @include dark-mode {
@@ -189,16 +209,20 @@
 
       &.select2-dropdown--below {
          border-top: none;
+
          @include border-bottom-radius($input-border-radius);
       }
+
       &.select2-dropdown--above {
          border-top: 1px solid $input-border-color;
+
          @include border-top-radius($input-border-radius);
       }
 
       .select2-search {
          .select2-search__field {
             border: $input-border-width solid $input-border-color;
+
             @include border-radius($input-border-radius);
 
             @include dark-mode {
@@ -214,7 +238,7 @@
       .select2-results {
          .select2-results__options {
             .select2-results__option {
-               &[aria-selected=true]:not(.select2-results__option--highlighted) {
+               &[aria-selected="true"]:not(.select2-results__option--highlighted) {
                   background-color: darken($light, 5%);
 
                   @include dark-mode {
@@ -223,6 +247,7 @@
                      }
                   }
                }
+
                &.select2-results__option--highlighted {
                   background-color: $primary;
                   color: $light;
@@ -235,13 +260,15 @@
                      }
                   }
                }
-               &[role=group] {
+
+               &[role="group"] {
                   padding: 0;
 
                   .select2-results__options--nested .select2-results__option {
                      padding-left: 1em;
                   }
                }
+
                .select2-rendered__match {
                   text-decoration: underline;
                }

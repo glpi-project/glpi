@@ -35,7 +35,8 @@
 }
 
 .clear_picture .grid-stack .grid-stack-item {
-   .grid-stack-item-content, &:after {
+   .grid-stack-item-content,
+   &::after {
       background: none !important;
    }
 }
@@ -49,16 +50,16 @@
       cursor: move;
 
       /* fallback */
-      cursor: -webkit-grab;
-      cursor: -moz-grab;
+      cursor: grab;
+      cursor: grab;
       cursor: grab;
 
       &:active {
          cursor: move;
 
          /* fallback */
-         cursor: -webkit-grabbing;
-         cursor: -moz-grabbing;
+         cursor: grabbing;
+         cursor: grabbing;
          cursor: grabbing;
       }
    }
@@ -75,12 +76,12 @@
 
 #viewgraph:not(.clear_picture) .with_picture .grid-stack-item-content {
    .itemrack_name {
-      background-color: rgba(255, 255, 255, 0.65);
+      background-color: rgba(255, 255, 255, 65%);
       color: #000 !important;
    }
 
    .rel-link {
-      opacity: .6;
+      opacity: 0.6;
    }
 }
 
@@ -97,13 +98,14 @@
    }
 
    &:hover .rel-link {
-      opacity: .8;
+      opacity: 0.8;
    }
 }
 
 .grid-stack {
    .grid-stack-item {
-      .grid-stack-item-content, .placeholder-content {
+      .grid-stack-item-content,
+      .placeholder-content {
          left: 0;
          right: 0;
       }
@@ -111,7 +113,7 @@
 
    .grid-stack-placeholder > .placeholder-content {
       border: 1px dashed #bcbf33;
-      background-color: rgba(229, 245, 105, .5);
+      background-color: rgba(229, 245, 105, 50%);
    }
 }
 
@@ -133,7 +135,7 @@ ul.indexes {
    margin: 0;
    padding: 0;
    text-align: center;
-   font-size: .7em;
+   font-size: 0.7em;
    color: silver;
    float: left;
 }
@@ -145,13 +147,13 @@ ul.indexes {
    z-index: 2;
    position: relative;
 
-   &:after {
+   &::after {
       content: "\f067";
       left: 45%;
       font-size: 1em;
       color: grey;
       top: 1px;
-      font-family: 'Font Awesome 5 Free';
+      font-family: "Font Awesome 5 Free";
       position: absolute;
       font-weight: 900;
    }
@@ -168,7 +170,9 @@ ul.indexes {
    float: left;
    padding: 15px 0 0 15px;
 
-   *, ::before, ::after {
+   *,
+   ::before,
+   ::after {
       box-sizing: content-box;
    }
 
@@ -181,13 +185,16 @@ ul.indexes {
       border: 1px solid $table-border-color;
       border-width: 0 1px 1px 0;
       background-size: 40px 39px;
-      background-image: linear-gradient(
-         to right,
-         $table-border-color 1px, transparent 1px
-      ),linear-gradient(
-         to bottom,
-         $table-border-color 1px,
-         transparent 1px
+      background-image:
+         linear-gradient(
+            to right,
+            $table-border-color 1px,
+            transparent 1px
+         ),
+         linear-gradient(
+            to bottom,
+            $table-border-color 1px,
+            transparent 1px
          );
       margin-left: 15px;
 
@@ -196,7 +203,7 @@ ul.indexes {
          width: 40px;
          float: left;
 
-         &:after {
+         &::after {
             left: 15px;
             top: 10px;
          }
@@ -211,13 +218,13 @@ ul.indexes {
       border: 1px solid rgb(68, 68, 68);
       box-sizing: border-box;
 
-      &:after {
+      &::after {
          position: absolute;
          content: " ";
-         background-color: rgba(3, 2, 2, 0.3);
+         background-color: rgba(3, 2, 2, 30%);
       }
 
-      &.room_orientation_1:after {
+      &.room_orientation_1::after {
          // NORTH
          top: 0;
          left: 0;
@@ -225,7 +232,7 @@ ul.indexes {
          height: 4px;
       }
 
-      &.room_orientation_2:after {
+      &.room_orientation_2::after {
          // EAST
          top: 0;
          right: 0;
@@ -233,7 +240,7 @@ ul.indexes {
          height: 100%;
       }
 
-      &.room_orientation_3:after {
+      &.room_orientation_3::after {
          // SOUTH
          bottom: 0;
          left: 0;
@@ -241,7 +248,7 @@ ul.indexes {
          height: 4px;
       }
 
-      &.room_orientation_4:after {
+      &.room_orientation_4::after {
          // WEST
          top: 0;
          left: 0;
@@ -263,7 +270,7 @@ ul.indexes {
       margin: 0;
       padding: 0;
       text-align: center;
-      font-size: .7em;
+      font-size: 0.7em;
       color: $table-color;
       float: left;
 
@@ -312,14 +319,14 @@ ul.indexes {
          position: absolute;
          right: 0;
          top: 0;
-         padding: .5em;
+         padding: 0.5em;
 
          &:link {
             color: $table-color;
             position: absolute;
             right: 0;
             top: 0;
-            padding: .5em;
+            padding: 0.5em;
          }
       }
 
@@ -328,7 +335,7 @@ ul.indexes {
          position: absolute;
          right: 0;
          top: 0;
-         padding: .5em;
+         padding: 0.5em;
       }
 
       &.itemlink .fa {
@@ -337,13 +344,14 @@ ul.indexes {
    }
 
    table.rooms {
-      th, td {
+      th,
+      td {
          height: 5em;
       }
 
       th {
          color: $table-head-color;
-         background-color: SteelBlue;
+         background-color: steelblue;
       }
 
       td {
@@ -366,7 +374,7 @@ ul.indexes {
                color: #e0e0e0;
 
                &:hover {
-                  background-color: rgba(0, 128, 0, 0.5);
+                  background-color: rgba(0, 128, 0, 50%);
                   cursor: pointer;
                }
             }
@@ -374,8 +382,6 @@ ul.indexes {
       }
    }
 }
-
-
 
 /*** Racks ***/
 
@@ -421,7 +427,9 @@ ul.indexes {
 }
 
 .grid-rack {
-   *, ::before, ::after {
+   *,
+   ::before,
+   ::after {
       box-sizing: content-box;
    }
 
@@ -434,11 +442,13 @@ ul.indexes {
    }
 
    width: 217px;
-   background: $table-bg repeating-linear-gradient(
-      transparent,
-      transparent 21px,
-      $table-striped-bg 21px,
-      $table-striped-bg 42px);
+   background:
+      $table-bg repeating-linear-gradient(
+         transparent,
+         transparent 21px,
+         $table-striped-bg 21px,
+         $table-striped-bg 42px
+      );
    z-index: 1;
    border: 1px solid $table-border-color;
    float: left;
@@ -469,7 +479,7 @@ ul.indexes {
    margin: 0 1px;
 
    .grid-stack-item:not(.lock-bottom) {
-      background-color: #FF9D1F;
+      background-color: #ff9d1f;
       overflow: hidden;
    }
 }
@@ -477,7 +487,7 @@ ul.indexes {
 .side_pdus_float {
    .grid-stack-item {
       .grid-stack-item-content {
-         border: 0 solid rgba(4, 4, 4, .4);
+         border: 0 solid rgba(4, 4, 4, 40%);
          border-width: 4px 1px;
 
          .rotated_text {
@@ -504,8 +514,8 @@ ul.indexes {
       right: unset;
    }
 
-   .grid-stack-item:after {
-      content: '';
+   .grid-stack-item::after {
+      content: "";
       position: absolute;
       height: 20px;
       bottom: 4px;
@@ -516,41 +526,41 @@ ul.indexes {
    }
 }
 
-
-.side_pdus_nofloat .grid-stack-item .grid-stack-item-content, .grid-rack .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
+.side_pdus_nofloat .grid-stack-item .grid-stack-item-content,
+.grid-rack .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
    color: #2c3e50;
-   border: 0 solid rgba(4, 4, 4, .4);
+   border: 0 solid rgba(4, 4, 4, 40%);
    border-width: 1px 4px;
-   box-shadow: 1px 1px 5px 0px #656565;
+   box-shadow: 1px 1px 5px 0 #656565;
 }
 
 #viewgraph:not(.clear_picture) .grid-rack .grid-stack-item.with_picture .grid-stack-item-content {
-   border-color: rgba(4, 4, 4, .25);
+   border-color: rgba(4, 4, 4, 25%);
    border-width: 0 4px;
 }
 
 .grid-rack .grid-stack-item {
    &.reserved .grid-stack-item-content {
-      border: 1px solid #FF7C24;
+      border: 1px solid #ff7c24;
       box-shadow: none;
 
       a.itemrack_name {
-         color: #7F4723 !important;
+         color: #7f4723 !important;
       }
    }
 
    &.item_rear {
-      background: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15) 10px, rgba(59, 59, 59, 0.15) 10px, rgba(59, 59, 59, 0.15) 20px);
+      background: repeating-linear-gradient(45deg, rgba(0, 0, 0, 15%), rgba(0, 0, 0, 15%) 10px, rgba(59, 59, 59, 15%) 10px, rgba(59, 59, 59, 15%) 20px);
    }
 
    &.reserved {
-      background: repeating-linear-gradient(115deg, #FF8A3C, #FF8A3C 30px, #FFD7BC 30px, #FFD7BC 60px);
+      background: repeating-linear-gradient(115deg, #ff8a3c, #ff8a3c 30px, #ffd7bc 30px, #ffd7bc 60px);
    }
 }
 
 .grid-stack-item .item_rack_icon {
    float: left;
-   opacity: .6;
+   opacity: 0.6;
    padding: 3px 0 0 2px;
    font-size: 14px;
 }
@@ -611,13 +621,12 @@ ul.indexes {
    margin: 0 3px;
 }
 
-
 div#viewgraph .rack_side_block .pdu_list {
    background: none;
 
    td {
       text-align: left;
-      border: 1px solid rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(0, 0, 0, 20%);
       padding: 0 3px;
    }
 }
@@ -628,6 +637,6 @@ div#viewgraph .rack_side_block .pdu_list {
    }
 
    i.fa {
-      color: rgba(0, 0, 0, 0.6);
+      color: rgba(0, 0, 0, 60%);
    }
 }

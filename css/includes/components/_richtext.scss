@@ -51,8 +51,9 @@ body.mce-content-body {
    }
 }
 
-.user-mention, [data-user-mention="true"] {
-   background: rgba(0, 0, 0, 0.2);
+.user-mention,
+[data-user-mention="true"] {
+   background: rgba(0, 0, 0, 20%);
    border-radius: 3px;
    padding: 5px;
 }

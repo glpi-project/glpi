@@ -36,9 +36,11 @@
    ::-webkit-scrollbar {
       width: 5px !important;
    }
+
    ::-webkit-scrollbar-track {
       background: $scrollbar-color-track !important;
    }
+
    ::-webkit-scrollbar-thumb {
       background: $scrollbar-color-thumb !important;
    }

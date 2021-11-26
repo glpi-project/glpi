@@ -34,6 +34,7 @@
 .form-check-input[name="as_map"]:checked {
    background-color: $info;
 }
+
 .form-check-input[name="is_deleted"]:checked {
    background-color: $danger;
 }
@@ -77,7 +78,7 @@
 
             // try having same width on link dropdowns
             .select2-container {
-               min-width:58px;
+               min-width: 58px;
             }
 
             .sub_criteria {
@@ -100,12 +101,12 @@
             }
          }
 
-
          .table-responsive-md {
             @include media-breakpoint-down(md) {
                max-width: calc(100vw - 2rem);
             }
          }
+
          .search-results {
             border-collapse: separate;
             border-spacing: 0;
@@ -135,7 +136,6 @@
 
             @include media-breakpoint-up(sm) {
                .search-pager {
-
                   .page-infos {
                      position: sticky;
                      left: 10px;

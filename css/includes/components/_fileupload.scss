@@ -31,16 +31,16 @@
 
 .fileupload:not(.only-uploaded-files) {
    text-align: center;
-   border: 1px dashed #cccccc;
+   border: 1px dashed #ccc;
    background: #cccccc1c;
    min-height: 65px;
    border-radius: 5px;
-   margin: .5em auto;
-   padding: .5em;
+   margin: 0.5em auto;
+   padding: 0.5em;
    margin-top: 5px;
    width: 100%;
 
-   input[type=file] {
+   input[type="file"] {
       width: auto;
       max-width: 100%;
       margin-left: auto;
@@ -48,8 +48,8 @@
    }
 }
 
-.fileupload.only-uploaded-files input[type=file] {
-   display:none;
+.fileupload.only-uploaded-files input[type="file"] {
+   display: none;
 }
 
 .fileupload_info {
@@ -57,5 +57,5 @@
 }
 
 .draghover {
-   background: #FBF8DF;
+   background: #fbf8df;
 }

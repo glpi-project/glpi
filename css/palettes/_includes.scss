@@ -34,7 +34,6 @@ $is-dark: false !default;
 @import "../includes/base";
 @import "../includes/global-variables";
 @import "../includes/highcontrast";
-
 @import "../includes/components/asset-form";
 @import "../includes/components/buttons-group";
 @import "../includes/components/documentation";
@@ -61,10 +60,8 @@ $is-dark: false !default;
 @import "../includes/components/itilobject/dates_timelines";
 @import "../includes/components/itilobject/status";
 @import "../includes/components/setup/dropdowns_list";
-
 @import "../includes/pages/search";
-
-@import '../legacy/includes/styles';
-@import '../legacy/includes/planning';
-@import '../legacy/includes/impact';
-@import '../legacy/includes/responsive_fixes';
+@import "../legacy/includes/styles";
+@import "../legacy/includes/planning";
+@import "../legacy/includes/impact";
+@import "../legacy/includes/responsive_fixes";

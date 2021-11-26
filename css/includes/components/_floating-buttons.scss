@@ -37,14 +37,15 @@
 
    #backtotop {
       cursor: pointer;
+
       &:hover {
-         opacity: .8;
+         opacity: 0.8;
       }
    }
 }
 
 #maintenance-float {
-   top: 0px;
+   top: 0;
    left: 250px;
    position: absolute;
    z-index: 9999;
