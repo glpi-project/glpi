@@ -507,7 +507,7 @@ class Location extends CommonTreeDropdown {
    }
 
    static function getIcon() {
-      return "fas fa-map-marker-alt";
+      return "ti ti-map-pin";
    }
 
    public function prepareInputForAdd($input) {

@@ -2223,17 +2223,17 @@ class Search {
       echo "<div class='card-footer d-flex search_actions'>";
       $linked = self::getMetaItemtypeAvailable($itemtype);
       echo "<button id='addsearchcriteria$rand_criteria' class='btn btn-sm btn-outline-secondary me-1' type='button'>
-               <i class='fas fa-plus-square'></i>
+               <i class='ti ti-square-plus'></i>
                <span class='d-none d-sm-block'>".__s('rule')."</span>
             </button>";
       if (count($linked)) {
          echo "<button id='addmetasearchcriteria$rand_criteria' class='btn btn-sm btn-outline-secondary me-1' type='button'>
-                  <i class='far fa-plus-square'></i>
+                  <i class='ti ti-circle-plus'></i>
                   <span class='d-none d-sm-block'>".__s('global rule')."</span>
                </button>";
       }
       echo "<button id='addcriteriagroup$rand_criteria' class='btn btn-sm btn-outline-secondary me-1' type='button'>
-               <i class='fas fa-plus-circle'></i>
+               <i class='ti ti-code-plus'></i>
                <span class='d-none d-sm-block'>".__s('group')."</span>
             </button>";
       $json_p = json_encode($p);
@@ -2241,7 +2241,7 @@ class Search {
       if ($p['mainform']) {
          // Display submit button
          echo "<button class='btn btn-sm btn-primary me-1' type='submit' name='".$p['actionname']."'>
-               <i class='fas fa-search'></i>
+               <i class='ti ti-list-search'></i>
                <span class='d-none d-sm-block'>".$p['actionvalue']."</span>
             </button>";
          if ($p['showbookmark'] || $p['showreset']) {
@@ -2260,7 +2260,7 @@ class Search {
                   .$p['target']
                   .(strpos($p['target'], '?') ? '&amp;' : '?')
                   ."reset=reset' title=\"".__s('Blank')."\"
-                  ><i class='fas fa-lg fa-undo'></i></a>";
+                  ><i class='ti ti-circle-x'></i></a>";
             }
          }
       }
@@ -2445,7 +2445,7 @@ JAVASCRIPT;
          echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' type='button' data-rowid='$rowid'
                        data-bs-toggle='tooltip' data-bs-placement='left'
                        title=\"".__s('Delete a rule')."\">
-            <i class='far fa-minus-square' alt='-'></i>
+            <i class='ti ti-square-minus' alt='-'></i>
          </button>";
          echo "</div>";
       }
@@ -2595,7 +2595,7 @@ JAVASCRIPT;
 
       echo "<div class='col-auto'>";
       echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' type='button' data-rowid='$rowid'>
-         <i class='far fa-minus-square' alt='-' title=\"".
+         <i class='ti ti-square-minus' alt='-' title=\"".
          __s('Delete a global rule')."\"></i>
       </button>";
       echo "</div>";
@@ -2690,7 +2690,7 @@ JAVASCRIPT;
                     data-bs-toggle='tooltip' data-bs-placement='left'
                     title=\"".__s('Delete a rule')."\"
       >
-         <i class='far fa-minus-square' alt='-'></i>
+         <i class='ti ti-square-minus' alt='-'></i>
       </button>";
       echo "</div>";
       echo "<div class='col-auto'>";

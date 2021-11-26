@@ -369,7 +369,7 @@ class Appliance extends CommonDBTM {
 
 
    static function getIcon() {
-      return "fas fa-cubes";
+      return "ti ti-versions";
    }
 
    /**
@@ -421,7 +421,7 @@ class Appliance extends CommonDBTM {
       if (in_array($itemtype, self::getTypes())) {
          if (self::canUpdate()) {
             $action_prefix                    = 'Appliance_Item'.MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$action_prefix.'add']    = "<i class='fas fa-file-contract'></i>".
+            $actions[$action_prefix.'add']    = "<i class='fa-fw fas fa-file-contract'></i>".
                                                 _x('button', 'Add to an appliance');
             $actions[$action_prefix.'remove'] = _x('button', 'Remove from an appliance');
          }

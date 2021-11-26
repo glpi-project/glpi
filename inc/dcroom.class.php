@@ -480,6 +480,6 @@ class DCRoom extends CommonDBTM {
    }
 
    static function getIcon() {
-      return "fas fa-building";
+      return "ti ti-building";
    }
 }

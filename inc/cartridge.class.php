@@ -1330,7 +1330,7 @@ class Cartridge extends CommonDBRelation {
 
 
    static function getIcon() {
-      return "fas fa-fill-drip";
+      return "ti ti-droplet-filled-2";
    }
 
 }

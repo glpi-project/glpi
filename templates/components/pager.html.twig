@@ -88,12 +88,12 @@
 
       <li class="page-item {% if is_first_page %}disabled{% endif %}">
          <a class="page-link page-link-start" href="{{ href|replace({'%start%': 0}) }}" title="{{ __('Start') }}" data-start="0" {% if is_first_page %}aria-disabled="true"{% endif %}>
-            <i class="fas fa-angle-double-left"></i>
+            <i class="ti ti-chevrons-left"></i>
          </a>
       </li>
       <li class="page-item {% if is_first_page %}disabled{% endif %}">
          <a class="page-link page-link-prev" href="{{ href|replace({'%start%': back}) }}" title="{{ __('Previous') }}" data-start="{{ back }}" {% if is_first_page %}aria-disabled="true"{% endif %}>
-            <i class="fas fa-angle-left"></i>
+            <i class="ti ti-chevron-left"></i>
          </a>
       </li>
       {% for page in range(1, nb_pages) %}
@@ -115,12 +115,12 @@
 
       <li class="page-item {% if is_last_page %}disabled{% endif %}">
          <a class="page-link page-link-next" href="{{ href|replace({'%start%': forward}) }}" title="{{ __('Next') }}" data-start="{{ forward }}" {% if is_last_page %}aria-disabled="true"{% endif %}>
-            <i class="fas fa-angle-right"></i>
+            <i class="ti ti-chevron-right"></i>
          </a>
       </li>
       <li class="page-item {% if is_last_page %}disabled{% endif %}">
          <a class="page-link page-link-last" href="{{ href|replace({'%start%': end}) }}" title="{{ __('End') }}" data-start="{{ end }}" {% if is_last_page %}aria-disabled="true"{% endif %}>
-            <i class="fas fa-angle-double-right"></i>
+            <i class="ti ti-chevrons-right"></i>
          </a>
       </li>
    </ul>

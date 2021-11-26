@@ -1720,7 +1720,7 @@ class Auth extends CommonGLPI {
 
 
    static function getIcon() {
-      return "fas fa-sign-in-alt";
+      return "ti ti-login";
    }
 
    /**

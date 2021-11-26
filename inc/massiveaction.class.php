@@ -478,7 +478,7 @@ class MassiveAction {
       if (Session::haveRight('transfer', READ)
           && Session::isMultiEntitiesMode()) {
          $actions[__CLASS__.self::CLASS_ACTION_SEPARATOR.'add_transfer_list']
-                  = "<i class='fas fa-level-up-alt'></i>".
+                  = "<i class='fa-fw fas fa-level-up-alt'></i>".
                     _x('button', 'Add to transfer list');
       }
 
@@ -545,7 +545,7 @@ class MassiveAction {
             $actions[$self_pref.'update'] = _x('button', 'Update');
 
             if (Toolbox::hasTrait($itemtype, Clonable::class)) {
-               $actions[$self_pref . 'clone'] = "<i class='far fa-clone'></i>"._x('button', 'Clone');
+               $actions[$self_pref . 'clone'] = "<i class='fa-fw far fa-clone'></i>"._x('button', 'Clone');
             }
          }
 
@@ -581,12 +581,12 @@ class MassiveAction {
          // Amend comment for objects with a 'comment' field
          $item->getEmpty();
          if ($canupdate && isset($item->fields['comment'])) {
-            $actions[$self_pref.'amend_comment'] = "<i class='far fa-comment'></i>".__("Amend comment");
+            $actions[$self_pref.'amend_comment'] = "<i class='fa-fw far fa-comment'></i>".__("Amend comment");
          }
 
          // Add a note for objects with the UPDATENOTE rights
          if (Session::haveRight($item::$rightname, UPDATENOTE)) {
-            $actions[$self_pref.'add_note'] = "<i class='far fa-sticky-note'></i>".__("Add note");
+            $actions[$self_pref.'add_note'] = "<i class='fa-fw far fa-sticky-note'></i>".__("Add note");
          }
 
          // Plugin Specific actions

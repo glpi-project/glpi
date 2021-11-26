@@ -84,24 +84,23 @@
          var alt_email = element.data('alternative-email') ?? option.alternative_email ?? '';
 
          var icon = "";
-         var size = is_selection ? "fa-lg" : ""
          var fk   = "";
          switch (itemtype) {
             case "User":
                if (items_id == 0) {
                   text = alt_email;
-                  icon = `<i class="fas ${size} fa-fw fa-envelope mx-1" title="{{ __('Direct email') }}"></i>`;
+                  icon = `<i class="ti  fa-fw ti-mail mx-1" title="{{ __('Direct email') }}"></i>`;
                } else {
-                  icon = `<i class="fas ${size} fa-fw fa-user mx-1" title="{{ 'User'|itemtype_name }}"></i>`;
+                  icon = `<i class="ti  fa-fw ti-user mx-1" title="{{ 'User'|itemtype_name }}"></i>`;
                }
                fk   = "users_id_assign";
                break;
             case "Group":
-               icon = `<i class="fas ${size} fa-fw fa-users mx-1" title="{{ 'Group'|itemtype_name }}"></i>`;
+               icon = `<i class="ti  fa-fw ti-users mx-1" title="{{ 'Group'|itemtype_name }}"></i>`;
                fk   = "groups_id_assign";
                break;
             case "Supplier":
-               icon = `<i class="fas ${size} fa-fw fa-pallet mx-1" title="{{ 'Supplier'|itemtype_name }}"></i>`;
+               icon = `<i class="ti fa-fw ti-package mx-1" title="{{ 'Supplier'|itemtype_name }}"></i>`;
                fk   = "suppliers_id_assign";
                break;
          }

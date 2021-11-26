@@ -137,7 +137,7 @@ class Database extends CommonDBChild {
 
 
    static function getIcon() {
-      return "fas fa-database";
+      return "ti ti-database";
    }
 
    function rawSearchOptions() {
@@ -421,8 +421,8 @@ class Database extends CommonDBChild {
    static function getAdditionalMenuLinks() {
       $links = [];
       if (static::canView()) {
-         $insts = "<i class=\"fas fa-database pointer\" title=\"" . DatabaseInstance::getTypeName(Session::getPluralNumber()) .
-            "\"></i><span class=\"sr-only\">" . DatabaseInstance::getTypeName(Session::getPluralNumber()). "</span>";
+         $insts = "<i class=\"ti ti-database-import\" title=\"" . DatabaseInstance::getTypeName(Session::getPluralNumber()) .
+            "\"></i><span class='d-none d-xxl-block'>" . DatabaseInstance::getTypeName(Session::getPluralNumber()). "</span>";
          $links[$insts] = DatabaseInstance::getSearchURL(false);
 
       }
@@ -438,6 +438,7 @@ class Database extends CommonDBChild {
             'databaseinstance' => [
                'title' => DatabaseInstance::getTypeName(Session::getPluralNumber()),
                'page'  => DatabaseInstance::getSearchURL(false),
+               'icon'  => DatabaseInstance::getIcon(),
                'links' => [
                   'add'    => '/front/databaseinstance.form.php',
                   'search' => '/front/dabataseinstance.php',

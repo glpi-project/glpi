@@ -1602,7 +1602,7 @@ class Contract extends CommonDBTM {
       if (in_array($itemtype, $CFG_GLPI["contract_types"])) {
          if (self::canUpdate()) {
             $action_prefix                    = 'Contract_Item'.MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$action_prefix.'add']    = "<i class='fas fa-file-contract'></i>".
+            $actions[$action_prefix.'add']    = "<i class='fa-fw ".self::getIcon()."'></i>".
                                                 _x('button', 'Add a contract');
             $actions[$action_prefix.'remove'] = _x('button', 'Remove a contract');
          }
@@ -1707,7 +1707,7 @@ class Contract extends CommonDBTM {
    }
 
    static function getIcon() {
-      return "fas fa-file-signature";
+      return "ti ti-writing-sign";
    }
 
    public static function getExpiredCriteria() {

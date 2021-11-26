@@ -212,6 +212,6 @@ class Line extends CommonDBTM {
 
 
    static function getIcon() {
-      return "fas fa-phone";
+      return "ti ti-phone-calling";
    }
 }

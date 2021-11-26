@@ -453,10 +453,10 @@ class GLPIKanbanRights {
             add_itemtype_bulk_dropdown += "<li id='kanban-bulk-add-" + itemtype + "' class='dropdown-item'><span>" + self.supported_itemtypes[itemtype]['name'] + '</span></li>';
          });
          add_itemtype_bulk_dropdown += '</ul>';
-         const add_itemtype_bulk_link = '<a href="#">' + '<i class="fas fa-list"></i>' + __('Bulk add') + '</a>';
+         const add_itemtype_bulk_link = '<a href="#">' + '<i class="fa-fw fas fa-list"></i>' + __('Bulk add') + '</a>';
          column_overflow_dropdown += '<li class="dropdown-trigger dropdown-item">' + add_itemtype_bulk_link + add_itemtype_bulk_dropdown + '</li>';
          if (self.rights.canModifyView()) {
-            column_overflow_dropdown += "<li class='kanban-remove dropdown-item' data-forbid-protected='true'><span>"  + '<i class="fas fa-trash-alt"></i>' + __('Delete') + "</span></li>";
+            column_overflow_dropdown += "<li class='kanban-remove dropdown-item' data-forbid-protected='true'><span>"  + '<i class="fa-fw ti ti-trash"></i>' + __('Delete') + "</span></li>";
          }
          column_overflow_dropdown += '</ul>';
          kanban_container.append(column_overflow_dropdown);
@@ -466,13 +466,13 @@ class GLPIKanbanRights {
          let card_overflow_dropdown = "<ul id='kanban-item-overflow-dropdown' class='kanban-dropdown dropdown-menu' style='display: none'>";
          card_overflow_dropdown += `
             <li class='kanban-item-goto dropdown-item'>
-               <a href="#"><i class="fas fa-share"></i>${__('Go to')}</a>
+               <a href="#"><i class="fa-fw fas fa-share"></i>${__('Go to')}</a>
             </li>`;
          if (self.rights.canDeleteItem()) {
             card_overflow_dropdown += `
                 <li class='kanban-item-remove dropdown-item'>
                    <span>
-                      <i class="fas fa-trash-alt"></i>${__('Delete')}
+                      <i class="fa-fw ti ti-trash"></i>${__('Delete')}
                    </span>
                 </li>`;
          }
@@ -796,9 +796,9 @@ class GLPIKanbanRights {
 
             let delete_action = $(card_overflow_dropdown.find('.kanban-item-remove'));
             if (card.hasClass('deleted')) {
-               delete_action.html('<span><i class="fas fa-trash-alt"></i>'+__('Purge')+'</span>');
+               delete_action.html('<span><i class="ti ti-trash"></i>'+__('Purge')+'</span>');
             } else {
-               delete_action.html('<span><i class="fas fa-trash-alt"></i>'+__('Delete')+'</span>');
+               delete_action.html('<span><i class="ti ti-trash"></i>'+__('Delete')+'</span>');
             }
          });
 
@@ -1734,7 +1734,7 @@ class GLPIKanbanRights {
                <i class="${self.supported_itemtypes[itemtype]['icon']}"></i>
                ${self.supported_itemtypes[itemtype]['name']}
             </span>`;
-         form_header += "<i class='fas fa-times' title='Close' onclick='$(this).parent().parent().remove()'></i></div>";
+         form_header += "<i class='ti ti-x' title='Close' onclick='$(this).parent().parent().remove()'></i></div>";
          add_form += form_header;
 
          add_form += "<div class='kanban-item-content'>";
@@ -1796,7 +1796,7 @@ class GLPIKanbanRights {
                    <i class="${self.supported_itemtypes[itemtype]['icon']}"></i>
                    ${self.supported_itemtypes[itemtype]['name']}
                 </span>
-                <i class='fas fa-times' title='Close' onclick='$(this).parent().parent().remove()'></i>
+                <i class='ti ti-x' title='Close' onclick='$(this).parent().parent().remove()'></i>
                 <div>
                     <span class="kanban-item-subtitle">${__("One item per line")}</span>
                  </div>
@@ -2448,7 +2448,7 @@ class GLPIKanbanRights {
                         ${l.attr('data-name') || `${member_itemtype} (${member_items_id})`}
                      </div>
                      <button type="button" name="delete" class="btn btn-ghost-danger">
-                        <i class="fas fa-times" title="${__('Delete')}"></i>
+                        <i class="ti ti-x" title="${__('Delete')}"></i>
                      </button>
                   `);
             });

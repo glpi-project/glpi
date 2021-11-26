@@ -34,7 +34,7 @@
 <div class="btn-group">
    {% if is_debug_active %}
       <button class="btn btn-outline-danger d-none d-md-block see_debug" role="button">
-         <i class="fas fa-bug fa-lg mt-1" title=" {{ __('Display GLPI debug informations') }}">
+         <i class="ti ti-bug fa-lg mt-1" title=" {{ __('Display GLPI debug informations') }}">
             <span class="visually-hidden">{{ __('Display GLPI debug informations') }}</span>
          </i>
       </button>
@@ -62,7 +62,7 @@
                   <a href="{{ path('/ajax/switchdebug.php') }}"
                      class="dropdown-item {% if is_debug_active %}bg-red-lt{% endif %}"
                      title="{{ __('Change mode') }}">
-                     <i class="fas fa-fw fa-bug debug"></i>
+                     <i class="ti fa-fw ti-bug debug"></i>
                      {{ is_debug_active ? __('Debug mode enabled') : __('Debug mode disabled') }}
                   </a>
                {% endif %}
@@ -70,20 +70,20 @@
                {# @TODO Saved searches panel #}
 
                <div class="dropdown-item">
-                  <i class="fas fa-fw fa-language"></i>
+                  <i class="ti fa-fw ti-language"></i>
                   {{ call('User::showSwitchLangForm')|raw }}
                </div>
 
                <div class="dropdown-divider"></div>
 
                <a href="{{ help_url }}" class="dropdown-item" title="{{ __('Help') }}">
-                  <i class="fas fa-fw fa-question"></i>
+                  <i class="ti fa-fw ti-help"></i>
                   {{ __('Help') }}
                </a>
 
                <a href="#" class="dropdown-item" title="{{ __('About') }}"
                   id="show_about_modal_{{ rand_header }}">
-                  <i class="fas fa-fw fa-info"></i>
+                  <i class="ti fa-fw ti-info-circle"></i>
                   {{ __('About') }}
                   {% if founded_new_version is not null %}
                      <span class="badge bg-info text-dark ms-2">
@@ -95,11 +95,11 @@
                <div class="dropdown-divider"></div>
 
                <a href="{{ path('/front/preference.php') }}" class="dropdown-item" title="{{ __('My settings') }}">
-                  <i class="fas fa-fw fa-user-cog"></i>
+                  <i class="ti fa-fw ti-adjustments-alt"></i>
                   {{ __('My settings') }}
                </a>
                <a href="{{ path('/front/logout.php' ~ ((session('glpiextauth') ?: false) ? '?noAUTO=1' : '')) }}" class="dropdown-item" title="{{ __('Logout') }}">
-                  <i class="fas fa-fw fa-sign-out-alt"></i>
+                  <i class="ti fa-fw ti-logout"></i>
                   {{ __('Logout') }}
                </a>
             </div>

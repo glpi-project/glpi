@@ -828,6 +828,6 @@ class Consumable extends CommonDBChild {
 
 
    static function getIcon() {
-      return "fas fa-box-open";
+      return "ti ti-package";
    }
 }

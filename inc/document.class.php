@@ -1455,7 +1455,7 @@ class Document extends CommonDBTM {
 
       if (self::canApplyOn($itemtype)) {
          if (Document::canView()) {
-            $actions[$action_prefix.'add']    = "<i class='far fa-file'></i>".
+            $actions[$action_prefix.'add']    = "<i class='fa-fw ".self::getIcon()."'></i>".
                                                 _x('button', 'Add a document');
             $actions[$action_prefix.'remove'] = _x('button', 'Remove a document');
          }
@@ -1639,7 +1639,7 @@ class Document extends CommonDBTM {
 
 
    static function getIcon() {
-      return "far fa-file";
+      return "ti ti-files";
    }
 
 

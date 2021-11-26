@@ -2517,6 +2517,6 @@ class Planning extends CommonGLPI {
    }
 
    static function getIcon() {
-      return "far fa-calendar-alt";
+      return "ti ti-calendar-time";
    }
 }

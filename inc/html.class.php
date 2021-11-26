@@ -1289,7 +1289,7 @@ HTML;
                'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment', 'Unmanaged', 'Cable'
             ], $CFG_GLPI['devices_in_menu']),
             'default_dashboard' => '/front/dashboard_assets.php',
-            'icon'    => 'fas fa-boxes'
+            'icon'    => 'ti ti-package'
          ],
          'helpdesk' => [
             'title' => __('Assistance'),
@@ -1298,7 +1298,7 @@ HTML;
                'Planning', 'Stat', 'TicketRecurrent', 'RecurrentChange'
             ],
             'default_dashboard' => '/front/dashboard_helpdesk.php',
-            'icon'    => 'fas fa-headset'
+            'icon'    => 'ti ti-headset'
          ],
          'management' => [
             'title' => __('Management'),
@@ -1307,7 +1307,7 @@ HTML;
                'Document', 'Line', 'Certificate', 'Datacenter', 'Cluster', 'Domain',
                'Appliance', 'Database'
             ],
-            'icon'  => 'fas fa-wallet'
+            'icon'  => 'ti ti-wallet'
          ],
          'tools' => [
             'title' => __('Tools'),
@@ -1316,12 +1316,12 @@ HTML;
                'ReservationItem', 'Report', 'MigrationCleaner',
                'SavedSearch', 'Impact'
             ],
-            'icon' => 'fas fa-briefcase'
+            'icon' => 'ti ti-briefcase'
          ],
          'plugins' => [
             'title' => _n('Plugin', 'Plugins', Session::getPluralNumber()),
             'types' => [],
-            'icon'  => 'fas fa-puzzle-piece'
+            'icon'  => 'ti ti-puzzle'
          ],
          'admin' => [
             'title' => __('Administration'),
@@ -1329,7 +1329,7 @@ HTML;
                'User', 'Group', 'Entity', 'Rule',
                'Profile', 'QueuedNotification', 'Glpi\\Event', 'Glpi\Inventory\Inventory'
             ],
-            'icon'  => 'fas fa-user-shield'
+            'icon'  => 'ti ti-shield-check'
          ],
          'config' => [
             'title' => __('Setup'),
@@ -1338,7 +1338,7 @@ HTML;
                'SLM', 'Config', 'FieldUnicity', 'CronTask', 'Auth',
                'MailCollector', 'Link', 'Plugin'
             ],
-            'icon'  => 'fas fa-cogs'
+            'icon'  => 'ti ti-settings'
          ],
 
          // special items
@@ -1743,7 +1743,7 @@ HTML;
          $menu['create_ticket'] = [
             'default' => '/front/helpdesk.public.php?create_ticket=1',
             'title'   => __('Create a ticket'),
-            'icon'    => 'fas fa-plus',
+            'icon'    => 'ti ti-plus',
          ];
       }
 
@@ -2466,7 +2466,7 @@ HTML;
          }
          $out .= " href='#modal_massaction_content$identifier' title=\"".htmlentities($p['title'], ENT_QUOTES, 'UTF-8')."\">";
          if ($p['display_arrow']) {
-            $out .= "<i class='fas fa-level-".($p['ontop']?'down':'up')."-alt fa-flip-horizontal mt-2' style='margin-left: -2px;'></i>";
+            $out .= "<i class='ti ti-corner-left-".($p['ontop']?'down':'up')." mt-1' style='margin-left: -2px;'></i>";
          }
          $out .= "<span>".$p['title']."</span>";
          $out .= "</a>";

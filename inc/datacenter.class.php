@@ -155,7 +155,7 @@ class Datacenter extends CommonDBTM {
    static function getAdditionalMenuLinks() {
       $links = [];
       if (static::canView()) {
-         $rooms = "<i class='fas fa-building pointer'
+         $rooms = "<i class='ti ti-building pointer'
                       title=\"".DCRoom::getTypeName(Session::getPluralNumber())."\"></i>
             <span class='d-none d-xxl-block ps-1'>
                ".DCRoom::getTypeName(Session::getPluralNumber())."
@@ -175,6 +175,7 @@ class Datacenter extends CommonDBTM {
             'dcroom' => [
                'title' => DCRoom::getTypeName(Session::getPluralNumber()),
                'page'  => DCRoom::getSearchURL(false),
+               'icon'  => DCRoom::getIcon(),
                'links' => [
                   'add'    => '/front/dcroom.form.php',
                   'search' => '/front/dcroom.php',
@@ -186,6 +187,6 @@ class Datacenter extends CommonDBTM {
 
 
    static function getIcon() {
-      return "fas fa-warehouse";
+      return "ti ti-building-warehouse";
    }
 }

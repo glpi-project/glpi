@@ -1182,7 +1182,7 @@ JAVASCRIPT;
 
 
    static function getIcon() {
-      return "fas fa-calendar-check";
+      return "ti ti-calendar-event";
    }
 
 }

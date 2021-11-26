@@ -921,6 +921,6 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    static function getIcon() {
-      return "fas fa-edit";
+      return "ti ti-edit";
    }
 }

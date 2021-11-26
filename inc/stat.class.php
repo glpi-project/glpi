@@ -1932,6 +1932,6 @@ class Stat extends CommonGLPI {
    }
 
    static function getIcon() {
-      return "fas fa-chart-bar";
+      return "ti ti-chart-pie";
    }
 }

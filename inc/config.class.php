@@ -3454,7 +3454,7 @@ HTML;
 
 
    static function getIcon() {
-      return "fas fa-cog";
+      return "ti ti-adjustments";
    }
 
    /**

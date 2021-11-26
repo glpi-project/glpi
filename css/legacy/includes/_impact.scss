@@ -394,6 +394,11 @@ i.fa-impact-manipulation {
       i {
          padding  : 10px 4px;
          font-size: 1.5em;
+
+         &.ti {
+            font-size: 1.8em;
+            line-height: 1.5em;
+         }
       }
 
       &:hover {

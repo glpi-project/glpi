@@ -77,7 +77,7 @@
 
                <div class="card-footer">
                   <button type="submit" class="btn btn-primary">
-                     <i class="fas fa-save"></i>
+                     <i class="far fa-save"></i>
                      <span>{{ __('Save') }}</span>
                   </button>
                </div>
@@ -96,20 +96,20 @@
             <div class="list-group list-group-flush">
                {% if has_profile_right('config', constant('READ')) %}
                   <a href="{{ path('front/notificationtemplate.php') }}" class="list-group-item list-group-item-action">
-                     <i class="fa-fw fas fa-layer-group"></i>
+                     <i class="fa-fw ti ti-template"></i>
                      <span>{{ _n('Notification template', 'Notification templates', get_plural_number()) }}</span>
                   </a>
                {% endif %}
 
                {% if has_profile_right('notification', constant('READ')) %}
                   <a href="{{ path('front/notification.php') }}" class="list-group-item list-group-item-action">
-                     <i class="fa-fw fas fa-bell "></i>
+                     <i class="fa-fw ti ti-bell "></i>
                      <span>{{ _n('Notification', 'Notifications', get_plural_number()) }}</span>
                   </a>
                {% else %}
                   <div class="list-group-item">
                      <div class="alert alert-important alert-warning m-3">
-                        <i class="fa fa-exclamation-triangle me-2"></i>
+                        <i class="fa-fw ti ti-alert-triangle me-2"></i>
                         {{ __('Unable to configure notifications: please configure at least one followup type using the above configuration.') }}
                      </div>
                   </div>

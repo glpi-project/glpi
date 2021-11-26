@@ -3203,7 +3203,7 @@ class Rule extends CommonDBTM {
    }
 
    static function getIcon() {
-      return "fas fa-book";
+      return "ti ti-book";
    }
 
    public function prepareInputForClone($input) {

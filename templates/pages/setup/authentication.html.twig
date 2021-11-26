@@ -39,20 +39,20 @@
             <div class="list-group list-group-flush">
                {% if has_profile_right('config', constant('UPDATE')) %}
                   <a class="list-group-item list-group-item-action" href="{{ path('front/auth.settings.php') }}">
-                     <i class="fas fa-fw fa-cogs me-1"></i>
+                     <i class="fa-fw ti ti-adjustments me-1"></i>
                      <span>{{ __('Setup') }}</span>
                   </a>
                {% endif %}
 
                {% if can_use_ldap %}
                   <a class="list-group-item list-group-item-action" href="{{ path('front/authldap.php') }}">
-                     <i class="far fa-fw fa-address-book me-1"></i>
+                     <i class="fa-fw far fa-address-book me-1"></i>
                      <span>{{ 'AuthLDAP'|itemtype_name }}</span>
                   </a>
                {% else %}
                   <div class="list-group-item">
                      <div class="list-group-item alert alert-important alert-warning m-3">
-                        <i class="fa fa-exclamation-triangle me-2"></i>
+                        <i class="fa-fw fa fa-exclamation-triangle me-2"></i>
                         {{ __('The LDAP extension of your PHP parser isn’t installed') }}
                      </div>
                   </div>
@@ -64,7 +64,7 @@
                </a>
 
                <a class="list-group-item list-group-item-action" href="{{ path('front/auth.others.php') }}">
-                  <i class="fas fa-fw fa-sign-in-alt me-1"></i>
+                  <i class="fa-fw ti ti-login me-1"></i>
                   <span>{{ __('Others authentication methods') }}</span>
                </a>
             </div>

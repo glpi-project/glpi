@@ -220,7 +220,7 @@ class Computer_Item extends CommonDBRelation{
       $specificities = self::getRelationMassiveActionsSpecificities();
 
       if (in_array($itemtype, $specificities['itemtypes'])) {
-         $actions[$action_prefix.'add']    = "<i class='fas fa-plug'></i>".
+         $actions[$action_prefix.'add']    = "<i class='fa-fw fas fa-plug'></i>".
                                              _x('button', 'Connect');
          $actions[$action_prefix.'remove'] = _x('button', 'Disconnect');
       }

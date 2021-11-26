@@ -320,8 +320,8 @@ class Rack extends CommonDBTM {
       );
 
       echo "<div id='switchview'>";
-      echo "<i id='sviewlist' class='pointer fa fa-list-alt' title='".__('View as list')."'></i>";
-      echo "<i id='sviewgraph' class='pointer fa fa-th-large selected' title='".__('View graphical representation')."'></i>";
+      echo "<i id='sviewlist' class='pointer ti ti-list' title='".__('View as list')."'></i>";
+      echo "<i id='sviewgraph' class='pointer ti ti-layout-grid selected' title='".__('View graphical representation')."'></i>";
       echo "</div>";
 
       $racks = iterator_to_array($racks);
@@ -855,6 +855,6 @@ JAVASCRIPT;
 
 
    static function getIcon() {
-      return "fas fa-server";
+      return "ti ti-server";
    }
 }

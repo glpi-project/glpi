@@ -809,7 +809,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
                                 : __s('Counting this saved search would take too long, it has been skipped.');
                if ($count === null) {
                   //no count, just inform the user
-                  $count = "<span class='fa fa-info-circle' title='$info_message'></span>";
+                  $count = "<span class='ti ti-info-circle' title='$info_message'></span>";
                }
             }
 
@@ -874,7 +874,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
              class='btn btn-ghost-secondary btn-icon btn-sm me-1 bookmark_record save'
              data-bs-toggle='tooltip' data-bs-placement='bottom'
              title='".__s('Save current search')."'>";
-      echo "<i class='fas fa-lg fa-star " . ($active ? 'active' : '') . "'></i>";
+      echo "<i class='ti ti-star " . ($active ? 'active' : '') . "'></i>";
       echo "</a>";
 
       $params = [
@@ -1289,6 +1289,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
 
 
    static function getIcon() {
-      return "far fa-bookmark";
+      return "ti ti-bookmarks";
    }
 }

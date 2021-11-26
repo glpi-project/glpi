@@ -42,7 +42,7 @@
                 onclick="toogle('as_map','','',''); document.forms['searchform{{ itemtype|lower }}'].submit();"
                 {{ data['search']['as_map'] == 1 ? 'checked' : '' }} />
          <span class="form-check-label mb-1 mb-sm-0">
-            <i class="fas fa-lg fa-globe-americas"></i>
+            <i class="ti fa-lg ti-map-2"></i>
          </span >
       </label>
    {% endif %}
@@ -55,7 +55,7 @@
                 onclick="toogle('is_deleted','','',''); document.forms['searchform{{ itemtype|lower }}'].submit();"
                 {{ data['search']['is_deleted'] == 1 ? 'checked' : '' }} />
          <span class="form-check-label mb-1 mb-sm-0">
-            <i class="fas fa-lg fa-trash-alt"></i>
+            <i class="ti fa-lg ti-trash"></i>
          </span>
       </label>
    {% endif %}
@@ -66,7 +66,7 @@
       <input type="checkbox" class="form-check-input ms-0 me-1 mt-0 fold-search" role="button"
              {{ session('glpifold_search') ? '' : 'checked' }} autocomplete="off" />
       <span class="form-check-label mb-1 mb-sm-0">
-         <i class="fas fa-lg fa-search"></i>
+         <i class="ti fa-lg ti-search"></i>
       </span>
    </label>
 
@@ -75,7 +75,7 @@
       {% if can_config and count > 0 %}
       <button class="btn btn-sm btn-icon btn-ghost-secondary show_displaypreference_modal me-0 me-sm-1"
              title="{{ __('Select default items to show') }}" data-bs-toggle="tooltip" data-bs-placement="bottom">
-         <i class="fas fa-lg fa-wrench"></i>
+         <i class="ti fa-lg ti-tool"></i>
       </button>
       {% endif %}
 
@@ -83,21 +83,21 @@
          <button class="dropdown-toggle btn btn-sm btn-icon btn-ghost-secondary" type="button" id="dropdown-export"
                data-bs-toggle="dropdown" aria-expanded="false" >
             <span class="py-1 px-2 my-n1 mx-n2"data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ _x('button', 'Export') }}">
-               <i id="export_dropdown_icon" class="fas fa-lg fa-file-download"></i>
+               <i id="export_dropdown_icon" class="ti fa-lg ti-file-download"></i>
             </span>
          </button>
       {% set exporthref = path('/front/report.dynamic.php') ~ '?item_type=' ~ itemtype ~ '&start=' ~ start ~ '&' ~ posthref %}
       <ul class="dropdown-menu" aria-labelledby="dropdown-export">
          <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::PDF_OUTPUT_LANDSCAPE') }}">
-            <i class="fas fa-lg fa-file-pdf"></i>
+            <i class="far fa-lg fa-file-pdf"></i>
             {{ __('Current page in landscape PDF') }}
          </a></li>
          <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::PDF_OUTPUT_PORTRAIT') }}">
-            <i class="fas fa-lg fa-file-pdf"></i>
+            <i class="far fa-lg fa-file-pdf"></i>
             {{ __('Current page in portrait PDF') }}
          </a></li>
          <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::SYLK_OUTPUT') }}">
-            <i class="fas fa-lg fa-file-excel"></i>
+            <i class="far fa-lg fa-file-excel"></i>
             {{ __('Current page in SLK') }}
          </a></li>
          <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::CSV_OUTPUT') }}">
@@ -105,15 +105,15 @@
             {{ __('Current page in CSV') }}
          </a></li>
          <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::PDF_OUTPUT_LANDSCAPE') }}">
-            <i class="fas fa-lg fa-file-pdf"></i>
+            <i class="far fa-lg fa-file-pdf"></i>
             {{ __('All pages in landscape PDF') }}
          </a></li>
          <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::PDF_OUTPUT_PORTRAIT') }}">
-            <i class="fas fa-lg fa-file-pdf"></i>
+            <i class="far fa-lg fa-file-pdf"></i>
             {{ __('All pages in portrait PDF') }}
          </a></li>
          <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::SYLK_OUTPUT') }}">
-            <i class="fas fa-lg fa-file-excel"></i>
+            <i class="far fa-lg fa-file-excel"></i>
             {{ __('All pages in SLK') }}
          </a></li>
          <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::CSV_OUTPUT') }}">
@@ -122,7 +122,7 @@
          </a></li>
          {% if itemtype != 'Stat' %}
          <li id="copy_names_to_clipboard"><a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::NAMES_OUTPUT') }}">
-            <i class="fas fa-lg fa-copy"></i>
+            <i class="far fa-lg fa-copy"></i>
             {{ __('Copy names to clipboard') }}
          </a></li>
          {% endif %}

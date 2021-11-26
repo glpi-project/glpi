@@ -519,4 +519,8 @@ class DatabaseInstance extends CommonDBTM {
          echo "</table>";
       }
    }
+
+   static function getIcon() {
+      return "ti ti-database-import";
+   }
 }

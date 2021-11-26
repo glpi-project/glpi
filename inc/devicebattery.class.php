@@ -167,6 +167,6 @@ class DeviceBattery extends CommonDevice {
 
 
    static function getIcon() {
-      return "fas fa-battery-half";
+      return "ti ti-battery-2";
    }
 }

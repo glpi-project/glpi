@@ -346,7 +346,7 @@ class Notepad extends CommonDBChild {
                                     ['purge' => 'purge'],
                                     _x('button', 'Delete permanently'),
                                     ['id'   => $note['id']],
-                                    'fa-times-circle',
+                                    'ti ti-circle-x',
                                     '',
                                      __('Confirm the final deletion?'));
             }

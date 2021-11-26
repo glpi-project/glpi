@@ -2458,7 +2458,7 @@ class Plugin extends CommonDBTM {
 
 
    static function getIcon() {
-      return "fas fa-puzzle-piece";
+      return "ti ti-puzzle";
    }
 
    function getSpecificMassiveActions($checkitem = null) {

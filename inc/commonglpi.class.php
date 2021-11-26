@@ -955,7 +955,7 @@ JAVASCRIPT;
             echo "<a href='$cleantarget?id=$first$extraparamhtml'
                      class='btn btn-sm btn-icon btn-ghost-secondary' title=\"".__s('First')."\"
                      data-bs-toggle='tooltip' data-bs-placement='bottom'>
-                     <i class='fas fa-lg fa-angle-double-left'></i>
+                     <i class='fa-lg ti ti-chevrons-left'></i>
                   </a>";
          }
 
@@ -964,7 +964,7 @@ JAVASCRIPT;
                      id='previouspage'
                      class='btn btn-sm btn-icon btn-ghost-secondary' title=\"".__s('Previous')."\"
                      data-bs-toggle='tooltip' data-bs-placement='bottom'>
-                     <i class='fas fa-lg fa-angle-left'></i>
+                     <i class='fa-lg ti ti-chevron-left'></i>
                   </a>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
@@ -1021,7 +1021,7 @@ JAVASCRIPT;
                      class='btn btn-sm btn-icon btn-ghost-secondary'
                      title=\"".__s('Next')."\"
                      data-bs-toggle='tooltip' data-bs-placement='bottom'>" .
-               "<i class='fas fa-lg fa-angle-right'></i>
+               "<i class='fa-lg ti ti-chevron-right'></i>
                     </a>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
@@ -1038,7 +1038,7 @@ JAVASCRIPT;
                      class='btn btn-sm btn-icon btn-ghost-secondary'
                      title=\"".__s('Last')."\"
                      data-bs-toggle='tooltip' data-bs-placement='bottom'>" .
-               "<i class='fas fa-lg fa-angle-double-right'></i></a>";
+               "<i class='fa-lg ti ti-chevrons-right'></i></a>";
          }
 
          echo "</div>"; // .navigationheader

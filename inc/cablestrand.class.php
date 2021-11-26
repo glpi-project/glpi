@@ -207,4 +207,8 @@ class CableStrand extends CommonDropdown {
       echo "</table></div>";
 
    }
+
+   static function getIcon() {
+      return Cable::getIcon();
+   }
 }

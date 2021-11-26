@@ -402,6 +402,6 @@ class Event extends CommonDBTM {
 
 
    static function getIcon() {
-      return "fas fa-scroll";
+      return "ti ti-news";
    }
 }

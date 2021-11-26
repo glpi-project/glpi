@@ -50,7 +50,7 @@
          {% if entry_i['link'] %}
             <div class="col-auto">
                <a href="{{ entry_i['link'] }}" target="_blank">
-                  <i class="fas fa-external-link"></i>
+                  <i class="ti ti-external-link"></i>
                   {{ entry_i['name'] }}
                </a>
             </div>
@@ -65,14 +65,14 @@
                <a href="{{ 'Document'|itemtype_form_path(entry_i['id']) }}"
                   class="btn btn-sm btn-ghost-secondary" title="{{ _x('button', 'Edit') }}"
                   data-bs-toggle="tooltip" data-bs-placement="top">
-                  <i class="fas fa-edit"></i>
+                  <i class="ti ti-edit"></i>
                </a>
 
                {% set fk = item.getForeignKeyField() %}
                <a href="{{ item.getFormURL() }}?delete_document&amp;documents_id={{ entry_i['id'] }}&amp;{{ fk }}={{ item.fields['id'] }}"
                   class="btn btn-sm btn-ghost-secondary" title="{{ _x('button', 'Delete permanently') }}"
                   data-bs-toggle="tooltip" data-bs-placement="top">
-                  <i class="fas fa-trash-alt"></i>
+                  <i class="ti ti-trash"></i>
                </a>
             </div>
          </div>

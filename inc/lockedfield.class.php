@@ -108,7 +108,7 @@ class Lockedfield extends CommonDBTM {
    }
 
    static function getIcon() {
-      return "fas fa-lock";
+      return "ti ti-lock";
    }
 
    /**

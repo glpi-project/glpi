@@ -400,10 +400,14 @@ class KnowbaseItem_Item extends CommonDBRelation {
          $action_prefix = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
 
          $actions[$action_prefix.'add']
-            = "<i class='fas fa-book'></i>".
+            = "<i class='fa-fw ".self::getIcon()."'></i>".
               _x('button', 'Link knowledgebase article');
       }
 
       parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
+   }
+
+   static function getIcon() {
+      return KnowbaseItem::getIcon();
    }
 }

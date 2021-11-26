@@ -680,7 +680,7 @@ class Notification extends CommonDBTM {
 
 
    static function getIcon() {
-      return "fas fa-bell";
+      return "ti ti-bell";
    }
 
    public function allowResponse() {

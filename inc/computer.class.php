@@ -323,13 +323,13 @@ class Computer extends CommonDBTM {
             'Item_OperatingSystem'.MassiveAction::CLASS_ACTION_SEPARATOR.'update'
                => OperatingSystem::getTypeName(),
             'Computer_Item'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'
-               => "<i class='fas fa-plug'></i>".
+               => "<i class='fa-fw ti ti-plug'></i>".
                   _x('button', 'Connect'),
             'Item_SoftwareVersion'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'
-               => "<i class='fas fa-laptop-medical'></i>".
+               => "<i class='fa-fw fas fa-laptop-medical'></i>".
                   _x('button', 'Install'),
             'Item_SoftwareLicense'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'
-               => "<i class='fas fa-key'></i>".
+               => "<i class='fa-fw ".SoftwareLicense::getIcon()."'></i>".
                   _x('button', 'Add a license'),
 
          ];

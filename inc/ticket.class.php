@@ -121,7 +121,7 @@ class Ticket extends CommonITILObject {
             'create_ticket' => [
                'title' => __('Create ticket'),
                'page'  => static::getFormURL(false),
-               'icon'  => 'fas fa-plus',
+               'icon'  => 'ti ti-plus',
             ],
          ];
          return $menu;
@@ -164,10 +164,7 @@ class Ticket extends CommonITILObject {
          $opt['criteria'][4]['link']       = 'AND NOT';
 
          $pic_validate = '
-            <span class="fa-stack" title="'.__s('Ticket waiting for your approval').'">
-                <i class="fas fa-check fa-stack-1x" style="top: 1px; left: -2px; font-size: 1.2em"></i>
-                <i class="far fa-clock fa-stack-1x" style="top: 6px; left: 1px"></i>
-            </span>
+            <i class="ti ti-eye-check" title="'.__s('Ticket waiting for your approval').'"></i>
             <span class="d-none d-xxl-block">
                '.__s('Ticket waiting for your approval').'
             </span>
@@ -2496,31 +2493,31 @@ class Ticket extends CommonITILObject {
       if (Session::getCurrentInterface() == 'central') {
          if (Ticket::canUpdate() && Ticket::canDelete()) {
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'merge_as_followup']
-               = "<i class='fas fa-code-branch'></i>".
+               = "<i class='fa-fw ti ti-git-merge'></i>".
                  __('Merge as Followup');
          }
 
          if (Item_Ticket::canCreate()) {
             $actions['Item_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'add_item']
-               = "<i class='fas fa-plus'></i>".
+               = "<i class='fa-fw fas fa-plus'></i>".
                  _x('button', 'Add an item');
          }
 
          if (ITILFollowup::canCreate()) {
             $actions['ITILFollowup'.MassiveAction::CLASS_ACTION_SEPARATOR.'add_followup']
-               = "<i class='far fa-comment'></i>".
+               = "<i class='fa-fw ti ti-message-circle'></i>".
                  __('Add a new followup');
          }
 
          if (TicketTask::canCreate()) {
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_task']
-               = "<i class='far fa-check-square'></i>".
+               = "<i class='fa-fw ti ti-checkbox'></i>".
                  __('Add a new task');
          }
 
          if (TicketValidation::canCreate()) {
             $actions['TicketValidation'.MassiveAction::CLASS_ACTION_SEPARATOR.'submit_validation']
-               = "<i class='fas fa-check'></i>".
+               = "<i class='fa-fw fas fa-check'></i>".
                  __('Approval request');
          }
 
@@ -2531,18 +2528,18 @@ class Ticket extends CommonITILObject {
 
          if (Session::haveRight(self::$rightname, UPDATE)) {
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_actor']
-               = "<i class='fas fa-user'></i>".
+               = "<i class='fa-fw ti ti-user'></i>".
                  __('Add an actor');
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'update_notif']
                = __('Set notifications for all actors');
             $actions['Ticket_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
-               = "<i class='fas fa-link'></i>".
+               = "<i class='fa-fw fas fa-link'></i>".
                  _x('button', 'Link tickets');
             $actions['ProjectTask_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
-               = "<i class='fas fa-link'></i>".
+               = "<i class='fa-fw fas fa-link'></i>".
                _x('button', 'Link project task');
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_contract']
-               = "<i class='fas fa-file-signature'></i>".
+               = "<i class='fa-fw ".Contract::getIcon()."'></i>".
                  _x('button', 'Add contract');
 
             KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
@@ -2550,13 +2547,13 @@ class Ticket extends CommonITILObject {
 
          if (Problem::canUpdate()) {
             $actions[self::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'link_to_problem']
-               = "<i class='fas fa-exclamation-triangle' ></i>" .
+               = "<i class='fa-fw ".Problem::getIcon()."' ></i>" .
                __("Link to a problem");
          }
 
          if (self::canUpdate()) {
             $actions[self::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'resolve_tickets']
-               = "<i class='fas fa-check'></i>" .
+               = "<i class='fa-fw fas fa-check'></i>" .
                __("Resolve selected tickets");
          }
       }
@@ -5174,7 +5171,7 @@ JAVASCRIPT;
          $twig_params['title']['button'] = [
             'link'   => $CFG_GLPI["root_doc"].'/front/helpdesk.public.php?create_ticket=1',
             'text'   => __('Create a ticket'),
-            'icon'   => 'fa fa-plus',
+            'icon'   => 'ti ti-plus',
          ];
       }
 
@@ -6808,7 +6805,7 @@ JAVASCRIPT;
 
 
    static function getIcon() {
-      return "fas fa-exclamation-circle";
+      return "ti ti-alert-circle";
    }
 
    public static function getItemLinkClass(): string {

@@ -197,7 +197,7 @@ class Unmanaged extends CommonDBTM {
    }
 
    static function getIcon() {
-      return "fas fa-question";
+      return "ti ti-question-mark";
    }
 
    function getSpecificMassiveActions($checkitem = null) {

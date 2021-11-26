@@ -423,7 +423,7 @@ HTML;
       if ($nodata) {
          $numbers_html = "<span class='line empty-card no-data'>
                <span class='content'>
-                  <i class='icon fas fa-exclamation-triangle'></i>
+                  <i class='icon fas fa-alert-triangle'></i>
                </span>
                <span class='label'>".__('No data found')."</span>
             <span>";

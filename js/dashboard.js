@@ -554,9 +554,9 @@ var Dashboard = {
       var html = ' \
       <div class="grid-stack-item"> \
          <span class="controls"> \
-            <i class="refresh-item fas fa-sync-alt" title="'+__("Refresh this card")+'"></i> \
-            <i class="edit-item fas fa-edit" title="'+__("Edit this card")+'"></i> \
-            <i class="delete-item fas fa-times" title="'+__("Delete this card")+'"></i> \
+            <i class="refresh-item ti ti-refresh" title="'+__("Refresh this card")+'"></i> \
+            <i class="edit-item ti ti-edit" title="'+__("Edit this card")+'"></i> \
+            <i class="delete-item ti ti-x" title="'+__("Delete this card")+'"></i> \
          </span> \
          <div class="grid-stack-item-content"> \
          </div> \

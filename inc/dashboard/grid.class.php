@@ -301,25 +301,25 @@ HTML;
             $l_tb_icons.= "<i class='btn btn-outline-secondary fas fa-plus fs-toggle add-dashboard' title='$add_dash_label'></i>";
          }
          if (!$mini && $can_clone) {
-            $r_tb_icons.= "<i class='btn btn-outline-secondary fas fa-clone fs-toggle clone-dashboard' title='$clone_label'></i>";
+            $r_tb_icons.= "<i class='btn btn-outline-secondary ti ti-copy fs-toggle clone-dashboard' title='$clone_label'></i>";
          }
          if (!$mini && $can_edit) {
-            $r_tb_icons.= "<i class='btn btn-outline-secondary fas fa-share-alt fs-toggle open-embed' title='$embed_label'></i>";
+            $r_tb_icons.= "<i class='btn btn-outline-secondary ti ti-share fs-toggle open-embed' title='$embed_label'></i>";
             $rename = "<div class='edit-dashboard-properties'>
                <input type='text' class='dashboard-name form-control' value='{$dashboard_title}' size='1'>
-               <i class='btn btn-outline-secondary fas fa-save save-dashboard-name' title='{$save_label}'></i>
+               <i class='btn btn-outline-secondary far fa-save save-dashboard-name' title='{$save_label}'></i>
                <span class='display-message'></span>
             </div>";
          }
          if (!$mini && $can_purge) {
-            $r_tb_icons.= "<i class='btn btn-outline-secondary fas fa-trash fs-toggle delete-dashboard' title='$delete_label'></i>";
+            $r_tb_icons.= "<i class='btn btn-outline-secondary ti ti-trash fs-toggle delete-dashboard' title='$delete_label'></i>";
          }
          if ($can_edit) {
-            $r_tb_icons.= "<i class='btn btn-outline-secondary fas fa-edit fs-toggle edit-dashboard' title='$edit_label'></i>";
+            $r_tb_icons.= "<i class='btn btn-outline-secondary ti ti-edit fs-toggle edit-dashboard' title='$edit_label'></i>";
          }
 
          if (!$mini) {
-            $r_tb_icons.= "<i class='btn btn-outline-secondary fas fa-expand toggle-fullscreen' title='$fs_label'></i>";
+            $r_tb_icons.= "<i class='btn btn-outline-secondary ti ti-maximize toggle-fullscreen' title='$fs_label'></i>";
          }
 
          if (!$mini) {
@@ -356,7 +356,7 @@ HTML;
          <div class='filters_toolbar'>
             <span class='filters'></span>
             <span class='filters-control'>
-               <i class="btn btn-sm btn-icon btn-ghost-secondary fas fa-plus-square plus-sign add-filter">
+               <i class="btn btn-sm btn-icon btn-ghost-secondary fas fa-plus plus-sign add-filter">
                   <span class='add-filter-lbl'>{$add_filter_lbl}</span>
                </i>
             </span>
@@ -601,9 +601,9 @@ HTML;
                {$data_option_attr}
                style="color: {$fg_color}">
             <span class="controls">
-               <i class="refresh-item fas fa-sync-alt" title="{$refresh_label}"></i>
-               <i class="edit-item fas fa-edit" title="{$edit_label}"></i>
-               <i class="delete-item fas fa-times" title="{$delete_label}"></i>
+               <i class="refresh-item ti ti-refresh" title="{$refresh_label}"></i>
+               <i class="edit-item ti ti-edit" title="{$edit_label}"></i>
+               <i class="delete-item ti ti-x" title="{$delete_label}"></i>
             </span>
             <div class="grid-stack-item-content">{$html}</div>
          </div>
@@ -836,7 +836,7 @@ HTML;
       echo "</div>";
 
       echo "<a href='#' class='btn btn-primary save_rights'>
-         <i class='fas fa-save'></i>
+         <i class='far fa-save'></i>
          <span>".__("Save")."</span>
       </a>";
 
