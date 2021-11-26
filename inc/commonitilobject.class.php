@@ -7935,13 +7935,16 @@ abstract class CommonITILObject extends CommonDBTM {
          ]);
          foreach ($it as $data) {
             $items_id = $data[$itemtype::getForeignKeyField()];
-            $team[] = [
-               'itemtype'  => $itemtype,
-               'items_id'  => $items_id,
-               'role'      => $data['type'],
-               'name'      => $data['name'],
+            $member = [
+               'itemtype'     => $itemtype,
+               'items_id'     => $items_id,
+               'role'         => $data['type'],
+               'name'         => $data['name'],
+               'realname'     => $data['realname'],
+               'firstname'    => $data['firstname'],
                'display_name' => formatUserName($items_id, $data['name'], $data['realname'], $data['firstname'])
             ];
+            $team[] = $member;
          }
       }
 

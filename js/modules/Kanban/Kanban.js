@@ -2438,7 +2438,9 @@ class GLPIKanbanRights {
                let member_item = getTeamBadge({
                   itemtype: member_itemtype,
                   id: member_items_id,
-                  name: l.attr('data-name')
+                  name: l.attr('data-name'),
+                  realname: l.attr('data-realname'),
+                  firstname: l.attr('data-firstname')
                });
                l.append(`
                      <div class="member-details">
