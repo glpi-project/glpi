@@ -7505,6 +7505,14 @@ abstract class CommonITILObject extends CommonDBTM {
                ]);
                $all_members[$itemtype] = [];
                foreach ($all_items as $member_data) {
+                  if ($itemtype === User::class) {
+                     $member_data['name'] = formatUserName(
+                        $member_data['id'],
+                        '',
+                        $member_data['realname'],
+                        $member_data['firstname']
+                     );
+                  }
                   $team[] = $member_data;
                }
             }
