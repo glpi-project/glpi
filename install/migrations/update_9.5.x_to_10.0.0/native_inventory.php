@@ -188,6 +188,15 @@ if (!$DB->fieldExists('glpi_entities', 'transfers_id')) {
    $migration->addKey('glpi_entities', 'transfers_id');
 }
 
+//agent URL configuration per entity
+if (!$DB->fieldExists('glpi_entities', 'agent_base_url')) {
+   $migration->addField(
+      'glpi_entities',
+      'agent_base_url',
+      'string'
+   );
+}
+
 //missing fields in network related tables
 if (!$DB->fieldExists('glpi_networkequipments', 'autoupdatesystems_id')) {
    $migration->addField(
