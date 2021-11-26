@@ -252,7 +252,7 @@ class Auth extends CommonGLPI {
                   'method' => AuthLDAP::IDENTIFIER_LOGIN,
                    'value'  => $login
                ],
-               'condition'         => $ldap_method['condition'],
+               'condition'         => Sanitizer::unsanitize($ldap_method['condition']),
                'user_dn'           => $this->user_dn
             ]);
          } catch (\Throwable $e) {
