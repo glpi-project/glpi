@@ -97,7 +97,7 @@
          </form>
 
          <div class="fancytree-grid-container flexbox-item-grow entity_tree">
-            <table id="tree_projectcategory{{ rand }}">
+            <table id="tree_entity{{ rand }}">
                <colgroup>
                   <col></col>
                </colgroup>
@@ -116,7 +116,7 @@
 
    <script type="text/javascript">
    $(function() {
-      $('#tree_projectcategory{{ rand }}').fancytree({
+      $('#tree_entity{{ rand }}').fancytree({
          // load plugins
          extensions: ['filter', 'glyph', 'grid'],
 
@@ -183,7 +183,7 @@
 
       var searchTree = function() {
          var search_text = $("#entsearchtext{{ rand }}").val();
-         $.ui.fancytree.getTree("#tree_projectcategory{{ rand }}").filterNodes(search_text);
+         $.ui.fancytree.getTree("#tree_entity{{ rand }}").filterNodes(search_text);
       }
 
       $('#entsearchform{{ rand }}').submit(function(event) {
