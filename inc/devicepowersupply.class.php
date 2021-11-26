@@ -148,6 +148,6 @@ class DevicePowerSupply extends CommonDevice {
 
 
    static function getIcon() {
-      return "fas fa-bolt";
+      return "ti ti-bolt";
    }
 }

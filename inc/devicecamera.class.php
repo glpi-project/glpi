@@ -227,6 +227,6 @@ class DeviceCamera extends CommonDevice {
    }
 
    static function getIcon() {
-      return "fas fa-camera";
+      return "ti ti-camera";
    }
 }

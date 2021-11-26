@@ -45,4 +45,7 @@ class CableType extends CommonDropdown {
       return self::getTypeName(1);
    }
 
+   static function getIcon() {
+      return Cable::getIcon();
+   }
 }

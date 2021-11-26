@@ -274,7 +274,9 @@ $break_tablet: 1400px;
          right: initial;
          left: 5px;
 
-         i.fas {
+         i.fas,
+         i.far,
+         i.ti {
             margin-left: 0;
             font-size: 1em;
          }
@@ -292,12 +294,18 @@ $break_tablet: 1400px;
          }
       }
 
-      i.fas {
+      i.fas,
+      i.far,
+      i.ti {
          font-size: 1.35em;
          cursor: pointer;
          padding: 5px;
          margin-left: 5px;
          border: 2px solid transparent;
+
+         &.ti {
+            font-size: 1.75em;
+         }
 
          @media screen and (max-width: $break_phones) {
             display: none;
@@ -604,7 +612,8 @@ $break_tablet: 1400px;
             cursor: pointer;
 
             i.fas,
-            i.far {
+            i.far,
+            i.ti {
                opacity: 0.6;
 
                &:hover {
@@ -635,7 +644,9 @@ $break_tablet: 1400px;
             border-radius: 3px;
             border: 1px solid transparent;
 
-            .fas {
+            .fas,
+            .far,
+            .ti {
                position: absolute;
                top: calc(50% - 16px);
                left: calc(50% - 16px);

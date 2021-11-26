@@ -166,6 +166,6 @@ class SNMPCredential extends CommonDBTM {
    }
 
    public static function getIcon() {
-      return "fas fa-user-secret";
+      return "ti ti-key";
    }
 }

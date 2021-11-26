@@ -74,7 +74,7 @@ class View extends CommonGLPI {
 
 
    static function getIcon() {
-      return "fas fa-store";
+      return "ti ti-building-store";
    }
 
 
@@ -175,7 +175,7 @@ class View extends CommonGLPI {
 
       if (count($messages)) {
          echo "<div class='alert alert-important alert-warning d-flex'>";
-         echo "<i class='fas fa-3x fa-exclamation-triangle '></i>";
+         echo "<i class='fa-3x ti ti-alert-triangle'></i>";
          echo "<ul><li>" . implode('</li><li>', $messages) . "</li></ul>";
          echo "</div>";
       }
@@ -365,32 +365,32 @@ class View extends CommonGLPI {
             <select class='sort-control form-select form-select-sm'>
                <option value='sort-alpha-asc'
                        ".($sort == "sort-alpha-asc" ? "selected" : "")."
-                       data-icon='fas fa-lg fa-sort-alpha-down'>
+                       data-icon='fa-fw fa-lg ti ti-sort-ascending-letters'>
                   ".__("Alpha ASC")."
                </option>
                <option value='sort-alpha-desc'
                        ".($sort == "sort-alpha-desc" ? "selected" : "")."
-                       data-icon='fas fa-lg fa-sort-alpha-down-alt'>
+                       data-icon='fa-fw fa-lg ti ti-sort-descending-letters'>
                   ".__("Alpha DESC")."
                </option>
                <option value='sort-dl'
                        ".($sort == "sort-dl'" ? "selected" : "")."
-                       data-icon='fas fa-lg fa-cloud-download-alt'>
+                       data-icon='fa-fw fa-lg ti ti-cloud-download'>
                   ".__("Most popular")."
                </option>
                <option value='sort-update'
                        ".($sort == "sort-update'" ? "selected" : "")."
-                       data-icon='fas fa-lg fa-history'>
+                       data-icon='fa-fw fas fa-lg fa-history'>
                   ".__("Last updated")."
                </option>
                <option value='sort-added'
                        ".($sort == "sort-added'" ? "selected" : "")."
-                       data-icon='fas fa-lg fa-calendar-plus'>
+                       data-icon='fa-fw fa-lg ti ti-calendar-time'>
                   ".__("Most recent")."
                </option>
                <option value='sort-note'
                        ".($sort == "sort-note'" ? "selected" : "")."
-                       data-icon='fas fa-lg fa-star'>
+                       data-icon='fa-fw fa-lg ti ti-star'>
                   ".__("Best notes")."
                </option>
             </select>";
@@ -409,7 +409,7 @@ class View extends CommonGLPI {
                   <input type='search' class='filter-list form-control' placeholder='{$search_label}'>
                   <div class='controls'>
                      $sort_controls
-                     <i class='fas fa-sync-alt refresh-plugin-list'
+                     <i class='ti ti-refresh refresh-plugin-list'
                         title='{$refresh_lbl}'></i>
                   </div>
                </div>
@@ -478,17 +478,17 @@ JS;
       $authors = Toolbox::stripTags(implode(', ', array_column($plugin['authors'] ?? [], 'name', 'id')));
       $authors_title = Html::entities_deep($authors);
       $authors = strlen($authors)
-         ? "<i class='fas fa-fw fa-user-friends'></i>{$authors}"
+         ? "<i class='fa-fw ti ti-users'></i>{$authors}"
          : "";
 
       $licence = Toolbox::stripTags($plugin['license'] ?? '');
       $licence = strlen($licence)
-         ? "<i class='fas fa-fw fa-balance-scale'></i>{$licence}"
+         ? "<i class='fa-fw ti ti-license'></i>{$licence}"
          : "";
 
       $version = Toolbox::stripTags($plugin['version'] ?? '');
       $version = strlen($version)
-         ? "<i class='fas fa-fw fa-code-branch'></i>{$version}"
+         ? "<i class='fa-fw ti ti-git-branch'></i>{$version}"
          : "";
 
       $stars = ($plugin['note'] ?? -1) > 0
@@ -498,21 +498,21 @@ JS;
       $home_url = Html::entities_deep($plugin['homepage_url'] ?? "");
       $home_url = strlen($home_url)
          ? "<a href='{$home_url}' target='_blank' >
-            <i class='fas fa-home add_tooltip' title='".__s("Homepage")."'></i>
+            <i class='ti ti-home-2 add_tooltip' title='".__s("Homepage")."'></i>
             </a>"
          : "";
 
       $issues_url = Html::entities_deep($plugin['issues_url'] ?? "");
       $issues_url = strlen($issues_url)
          ? "<a href='{$issues_url}' target='_blank' >
-            <i class='fas fa-bug add_tooltip' title='".__s("Get help")."'></i>
+            <i class='ti ti-bug add_tooltip' title='".__s("Get help")."'></i>
             </a>"
          : "";
 
       $readme_url = Html::entities_deep($plugin['readme_url'] ?? "");
       $readme_url = strlen($readme_url)
          ? "<a href='{$readme_url}' target='_blank' >
-            <i class='fas fa-book add_tooltip' title='".__s("Readme")."'></i>
+            <i class='ti ti-book add_tooltip' title='".__s("Readme")."'></i>
             </a>"
          : "";
       $icon    = self::getPluginIcon($plugin);
@@ -658,7 +658,7 @@ HTML;
 
       if (strlen($error)) {
          $rand = mt_rand();
-         $buttons .="<i class='fas fa-exclamation-triangle plugin-error' id='plugin-error-$rand'></i>";
+         $buttons .="<i class='ti ti-alert-triangle plugin-error' id='plugin-error-$rand'></i>";
          Html::showToolTip($error, [
             'applyto' => "plugin-error-$rand",
          ]);
@@ -682,7 +682,7 @@ HTML;
       } else if (!$is_available) {
          if (!$can_run_local_install) {
             $rand = mt_rand();
-            $buttons .="<i class='fas fa-exclamation-triangle plugin-unavailable' id='plugin-tooltip-$rand'></i>";
+            $buttons .="<i class='ti ti-alert-triangle plugin-unavailable' id='plugin-tooltip-$rand'></i>";
             Html::showToolTip(
                __('This plugin is not available for your GLPI version.'),
                [
@@ -719,7 +719,7 @@ HTML;
             $buttons .="<button class='modify_plugin'
                                 data-action='download_plugin'
                                 title='".__s("Download")."'>
-               <i class='fas fa-cloud-download-alt'></i>
+               <i class='ti ti-alert-triangle'></i>
             </button>";
          } else if ($can_be_updated) {
             $update_title = sprintf(
@@ -729,7 +729,7 @@ HTML;
             $buttons .="<button class='modify_plugin'
                                 data-action='update_plugin'
                                 title='{$update_title}'>
-               <i class='fas fa-cloud-download-alt'></i>
+               <i class='ti ti-cloud-download'></i>
             </button>";
          }
       }
@@ -749,7 +749,7 @@ HTML;
 
       if ($can_run_local_install) {
          $title = __s("Install");
-         $icon  = "fas fa-folder-plus";
+         $icon  = "ti ti-folder-plus";
          if ($has_local_update) {
             $title = __s("Update");
             $icon  =  "far fa-caret-square-up";
@@ -781,7 +781,7 @@ HTML;
          $buttons .="<button class='modify_plugin'
                              data-action='uninstall_plugin'
                              title='".__s("Uninstall")."'>
-            <i class='fas fa-folder-minus'></i>
+            <i class='ti ti-folder-x'></i>
          </button>";
 
          if (!strlen($error) && $is_actived && $config_page) {
@@ -789,7 +789,7 @@ HTML;
                $config_url = "$plugin_dir/$config_page";
                $buttons .="<a href='$config_url'>
                   <button class='add_tooltip' title='".__s("Configure")."'>
-                     <i class='fas fa-wrench'></i>
+                     <i class='ti ti-tool'></i>
                   </button>
                </a>";
          }

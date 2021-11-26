@@ -748,8 +748,8 @@ class Impact extends CommonGLPI {
       echo '<div class="impact-header">';
       echo "<h2>" . __("Impact analysis") . "</h2>";
       echo "<div id='switchview'>";
-      echo "<a id='sviewlist' href='#list'><i class='pointer fa fa-list-alt' title='".__('View as list')."'></i></a>";
-      echo "<a id='sviewgraph' href='#graph'><i class='pointer fa fa-bezier-curve' title='".__('View graphical representation')."'></i></a>";
+      echo "<a id='sviewlist' href='#list'><i class='pointer ti ti-list' title='".__('View as list')."'></i></a>";
+      echo "<a id='sviewgraph' href='#graph'><i class='pointer ti ti-hierarchy-2' title='".__('View graphical representation')."'></i></a>";
       echo "</div>";
       echo "</div>";
 
@@ -1096,20 +1096,20 @@ class Impact extends CommonGLPI {
       echo '</div>'; // div class="impact-side-panel">
 
       echo '<ul>';
-      echo '<li id="save_impact" title="' . __("Save") .'"><i class="fas fa-fw fa-save"></i></li>';
-      echo '<li id="impact_undo" class="impact-disabled" title="' . __("Undo") .'"><i class="fas fa-fw fa-undo"></i></li>';
-      echo '<li id="impact_redo" class="impact-disabled" title="' . __("Redo") .'"><i class="fas fa-fw fa-redo"></i></li>';
+      echo '<li id="save_impact" title="' . __("Save") .'"><i class="fa-fw far fa-save"></i></li>';
+      echo '<li id="impact_undo" class="impact-disabled" title="' . __("Undo") .'"><i class="fa-fw fas fa-undo"></i></li>';
+      echo '<li id="impact_redo" class="impact-disabled" title="' . __("Redo") .'"><i class="fa-fw fas fa-redo"></i></li>';
       echo '<li class="impact-separator"></li>';
-      echo '<li id="add_node" title="' . __("Add asset") .'"><i class="fas fa-fw fa-plus"></i></li>';
-      echo '<li id="add_edge" title="' . __("Add relation") .'"><i class="fas fa-fw fa-slash"></i></li>';
+      echo '<li id="add_node" title="' . __("Add asset") .'"><i class="fa-fw ti ti-plus"></i></li>';
+      echo '<li id="add_edge" title="' . __("Add relation") .'"><i class="fa-fw ti ti-line"></i></li>';
       echo '<li id="add_compound" title="' . __("Add group") .'"><i class="far fa-fw fa-object-group"></i></li>';
-      echo '<li id="delete_element" title="' . __("Delete element") .'"><i class="fas fa-fw fa-trash"></i></li>';
+      echo '<li id="delete_element" title="' . __("Delete element") .'"><i class="fa-fw ti ti-trash"></i></li>';
       echo '<li class="impact-separator"></li>';
-      echo '<li id="export_graph" title="' . __("Download") .'"><i class="fas fa-fw fa-download"></i></li>';
-      echo '<li id="toggle_fullscreen" title="' . __("Fullscreen") .'"><i class="fas fa-fw fa-expand"></i></li>';
-      echo '<li id="impact_settings" title="' . __("Settings") .'"><i class="fas fa-fw fa-cog"></i></li>';
+      echo '<li id="export_graph" title="' . __("Download") .'"><i class="fa-fw ti ti-download"></i></li>';
+      echo '<li id="toggle_fullscreen" title="' . __("Fullscreen") .'"><i class="fa-fw ti ti-maximize"></i></li>';
+      echo '<li id="impact_settings" title="' . __("Settings") .'"><i class="fa-fw ti ti-adjustments"></i></li>';
       echo '</ul>';
-      echo '<span class="impact-side-toggle"><i class="fas fa-2x fa-chevron-left"></i></span>';
+      echo '<span class="impact-side-toggle"><i class="fa-fw ti ti-chevron-left"></i></span>';
       echo '</div>'; // <div class="impact-side impact-side-expanded">
       echo "</td></tr>";
       echo "</table>";

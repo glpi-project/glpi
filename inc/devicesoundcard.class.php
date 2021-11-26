@@ -150,6 +150,6 @@ class DeviceSoundCard extends CommonDevice {
 
 
    static function getIcon() {
-      return "fas fa-volume-down";
+      return "ti ti-volume-2";
    }
 }

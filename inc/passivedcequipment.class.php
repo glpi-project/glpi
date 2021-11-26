@@ -208,6 +208,6 @@ class PassiveDCEquipment extends CommonDBTM {
    }
 
    static function getIcon() {
-      return "fas fa-th-list";
+      return "ti ti-layout-navbar";
    }
 }

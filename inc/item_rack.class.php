@@ -121,8 +121,8 @@ class Item_Rack extends CommonDBRelation {
       }
 
       echo "<div id='switchview'>";
-      echo "<i id='sviewlist' class='pointer fa fa-list-alt' title='".__('View as list')."'></i>";
-      echo "<i id='sviewgraph' class='pointer fa fa-th-large selected' title='".__('View graphical representation')."'></i>";
+      echo "<i id='sviewlist' class='pointer ti ti-list' title='".__('View as list')."'></i>";
+      echo "<i id='sviewgraph' class='pointer ti ti-server selected' title='".__('View graphical representation')."'></i>";
       echo "</div>";
 
       $items = iterator_to_array($items);
@@ -841,10 +841,10 @@ JAVASCRIPT;
       $icon = "";
       switch ($itemtype) {
          case "Computer":
-            $icon = "fas fa-server";
+            $icon = "ti ti-server";
             break;
          case "Reserved":
-            $icon = "fas fa-lock";
+            $icon = "ti ti-lock";
             break;
 
          default:
