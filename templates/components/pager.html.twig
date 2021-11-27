@@ -59,7 +59,7 @@
 {% endif %}
 
 {% set nb_pages = (count / limit)|round(0, 'ceil') %}
-{% set current_page = (current_start / limit)|round(0, 'ceil') + 1 %}
+{% set current_page = ((current_start - 1) / limit)|round(0, 'ceil') + 1 %}
 
 {# limit the number of adjacents links displayed #}
 {% set adjacents = 2 %}
