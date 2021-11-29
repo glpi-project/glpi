@@ -346,6 +346,104 @@ class Certificate extends CommonDBTM {
       return $tab;
    }
 
+   static function rawSearchOptionsToAdd($itemtype = null) {
+      $tab = [];
+      $name = static::getTypeName(Session::getPluralNumber());
+
+      if (!self::canView()) {
+         return $tab;
+      }
+
+      $joinparams = [
+         'beforejoin'         => [
+            'table'              => Certificate_Item::getTable(),
+            'joinparams'         => [
+               'jointype'           => 'itemtype_item',
+               'specific_itemtype'  => $itemtype
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => 'certificate',
+         'name'               => $name
+      ];
+
+      $tab[] = [
+         'id'                 => '1300',
+         'table'              => self::getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'dropdown',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => $joinparams
+      ];
+
+      $tab[] = [
+         'id'                 => '1301',
+         'table'              => self::getTable(),
+         'field'              => 'serial',
+         'datatype'           => 'string',
+         'name'               => __('Serial number'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => $joinparams
+      ];
+
+      $tab[] = [
+         'id'                 => '1302',
+         'table'              => self::getTable(),
+         'field'              => 'otherserial',
+         'datatype'           => 'string',
+         'name'               => __('Inventory number'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => $joinparams
+      ];
+
+      $tab[] = [
+         'id'                 => '1304',
+         'table'              => CertificateType::getTable(),
+         'field'              => 'name',
+         'datatype'           => 'dropdown',
+         'name'               => _n('Type', 'Types', 1),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => self::getTable(),
+               'joinparams'         => $joinparams
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '1305',
+         'table'              => self::getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'forcegroupby'       => true,
+         'datatype'           => 'text',
+         'massiveaction'      => false,
+         'joinparams'         => $joinparams
+      ];
+
+      $tab[] = [
+         'id'                 => '1306',
+         'table'              => self::getTable(),
+         'field'              => 'date_expiration',
+         'name'               => __('Expiration'),
+         'forcegroupby'       => true,
+         'datatype'           => 'date',
+         'emptylabel'         => 'Never expire',
+         'massiveaction'      => false,
+         'joinparams'         => $joinparams
+      ];
+
+      return $tab;
+   }
+
    /**
     * @param array $options
     * @return array
