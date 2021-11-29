@@ -70,12 +70,29 @@ var initRack = function() {
          glpi_ajax_dialog({
             url : grid_link_url,
             method : 'get',
+            dialogclass: 'modal-xl',
             params: {
                racks_id: grid_rack_id,
                orientation: side,
                position: index,
                ajax: true
             }
+         });
+      })
+
+      .on("click", "#add_pdu", function(event) {
+         event.preventDefault();
+
+         glpi_ajax_dialog({
+            title: __("Add PDU"),
+            url: grid_item_ajax_url,
+            method : 'get',
+            dialogclass: 'modal-xl',
+            params: {
+               racks_id: grid_rack_id,
+               action: "show_pdu_form",
+               ajax: true,
+            },
          });
       });
 

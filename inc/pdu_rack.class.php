@@ -457,32 +457,12 @@ class PDU_Rack extends CommonDBRelation {
          }
          echo "</table>";
       }
-      echo "<a id='add_pdu' class='btn btn-sm btn-ghost-secondary ms-auto'>";
+      echo "<a id='add_pdu' class='btn btn-sm btn-ghost-secondary ms-auto mt-2'>";
       echo "<i class='fa fa-plus'></i>";
       echo "<span>"._sx('button', "Add")."</span>";
       echo "</a>";
       echo "</div>";
       echo "</div>";
-
-      $ajax_url = $CFG_GLPI['root_doc']."/ajax/rack.php";
-      $js = <<<JAVASCRIPT
-      $(function() {
-         $('#add_pdu').click(function(event) {
-            event.preventDefault();
-
-            glpi_ajax_dialog({
-               title: __("Add rack"),
-               url : "{$ajax_url}",
-               params: {
-                  racks_id: "{$rack->getID()}",
-                  action: "show_pdu_form",
-                  ajax: true,
-               },
-            });
-         });
-      });
-JAVASCRIPT;
-      echo Html::scriptBlock($js);
    }
 
    static function showFirstForm($racks_id = 0) {
@@ -622,7 +602,7 @@ JAVASCRIPT;
                        gs-x='0' gs-y='$y'
                        style='background-color: $bg_color; color: $fg_color;'>
                   <div class='grid-stack-item-content' style='$fg_color_s'>
-                     <i class='item_rack_icon fa fa-plug fa-rotate-270'></i>
+                     <i class='item_rack_icon ti ti-plug fa-rotate-270'></i>
                      <span class='rotated_text'>
                         <a href='".$pdu->getLinkURL()."'
                            class='itemrack_name'

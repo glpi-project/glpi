@@ -528,6 +528,7 @@ ul.indexes {
 
 .side_pdus_nofloat .grid-stack-item .grid-stack-item-content,
 .grid-rack .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
+   position: relative;
    color: #2c3e50;
    border: 0 solid rgba(4, 4, 4, 40%);
    border-width: 1px 4px;
