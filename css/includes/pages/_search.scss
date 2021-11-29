@@ -97,7 +97,7 @@
                position: sticky;
                top: -1px;
                background-color: inherit;
-               z-index: $zindex-sticky;
+               z-index: #{$zindex-sticky + 1};
             }
          }
 
