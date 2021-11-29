@@ -724,21 +724,15 @@ var initMap = function(parent_elt, map_id, height, initial_view = {position: [43
    height = (typeof height !== 'undefined') ? height : '200px';
 
    if (height == 'full') {
-      //full height map
-      var wheight = $(window).height();
-      var _oSize = 0;
-
-      $('#footer, .search_page').each(function(){
-         _oSize += _eltRealSize($(this));
-      });
-      _oSize += parseFloat($('#page').css('padding-top').replace('px', ''));
-      _oSize += parseFloat($('#page').css('padding-bottom').replace('px', ''));
-      _oSize += parseFloat($('#page').css('margin-top').replace('px', ''));
-      _oSize += parseFloat($('#page').css('margin-bottom').replace('px', ''));
-
-      var newHeight = Math.floor(wheight - _oSize);
+      var viewport_height = $(window).height();
+      var map_position    = $(parent_elt).offset()['top'] + $(parent_elt).outerHeight();
+      var newHeight = Math.floor(
+         viewport_height
+         - map_position
+         - 2 // small margin to display the border at the bottom
+      );
       var minHeight = 300;
-      if ( newHeight < minHeight ) {
+      if (newHeight < minHeight) {
          newHeight = minHeight;
       }
       height = newHeight + 'px';
