@@ -297,7 +297,11 @@ class Session {
     * @param string $title    List title (default '')
    **/
    static function initNavigateListItems($itemtype, $title = "") {
+      global $AJAX_INCLUDE;
 
+      if (isset($AJAX_INCLUDE)) {
+         return;
+      }
       if (empty($title)) {
          $title = __('List');
       }
