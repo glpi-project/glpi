@@ -602,7 +602,7 @@ JAVASCRIPT;
                        gs-x='0' gs-y='$y'
                        style='background-color: $bg_color; color: $fg_color;'>
                   <div class='grid-stack-item-content' style='$fg_color_s'>
-                     <i class='item_rack_icon fa fa-plug fa-rotate-270'></i>
+                     <i class='item_rack_icon ti ti-plug fa-rotate-270'></i>
                      <span class='rotated_text'>
                         <a href='".$pdu->getLinkURL()."'
                            class='itemrack_name'
