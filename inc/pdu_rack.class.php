@@ -463,26 +463,6 @@ class PDU_Rack extends CommonDBRelation {
       echo "</a>";
       echo "</div>";
       echo "</div>";
-
-      $ajax_url = $CFG_GLPI['root_doc']."/ajax/rack.php";
-      $js = <<<JAVASCRIPT
-      $(function() {
-         $('#add_pdu').click(function(event) {
-            event.preventDefault();
-
-            glpi_ajax_dialog({
-               title: __("Add rack"),
-               url : "{$ajax_url}",
-               params: {
-                  racks_id: "{$rack->getID()}",
-                  action: "show_pdu_form",
-                  ajax: true,
-               },
-            });
-         });
-      });
-JAVASCRIPT;
-      echo Html::scriptBlock($js);
    }
 
    static function showFirstForm($racks_id = 0) {
