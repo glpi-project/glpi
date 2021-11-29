@@ -374,7 +374,7 @@ class Certificate extends CommonDBTM {
          'table'              => self::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
-         'datatype'           => 'dropdown',
+         'datatype'           => 'itemlink',
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => $joinparams
