@@ -1960,7 +1960,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
 
          return $title;
       };
-      $pattern = '|<(h[1-6]{1})(.?[^>])?>(.+)</h[1-6]{1}>|';
+      $pattern = '|<(h[1-6]{1})(.?[^>])?>(.+?)</h[1-6]{1}>|';
       $answer = preg_replace_callback($pattern, $callback, $answer);
 
       return $answer;
