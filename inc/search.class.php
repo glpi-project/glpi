@@ -197,9 +197,9 @@ class Search {
          }
          $typename = class_exists($itemtype) ? $itemtype::getTypeName($data['data']['totalcount']) : $itemtype;
 
-         echo "<div class='card'>";
-         echo "<div class='card-body' id='map_container'>";
-         echo "<div class='card-title'>".__('Search results for localized items only')."</div>";
+         echo "<div class='card border-top-0 rounded-0 search-as-map'>";
+         echo "<div class='card-body px-0' id='map_container'>";
+         echo "<small class='text-muted p-1'>".__('Search results for localized items only')."</small>";
          $js = "$(function() {
                var map = initMap($('#map_container'), 'map', 'full');
                _loadMap(map, '$itemtype');
