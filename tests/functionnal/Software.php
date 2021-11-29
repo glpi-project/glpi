@@ -418,6 +418,6 @@ class Software extends DbTestCase {
 
       $this->login();
       $result   = $software->rawSearchOptions();
-      $this->array($result)->hasSize(50);
+      $this->array($result)->hasSize(57);
    }
 }
