@@ -100,6 +100,14 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
    }
 
 
+   static function getMenuContent() {
+      $menu = parent::getMenuContent();
+      unset($menu['links']['lists']);
+
+      return $menu;
+   }
+
+
    static function canCreate() {
 
       return Session::haveRightsOr(self::$rightname, [CREATE, self::PUBLISHFAQ]);

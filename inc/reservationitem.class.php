@@ -102,6 +102,14 @@ class ReservationItem extends CommonDBChild {
    }
 
 
+   static function getMenuContent() {
+      $menu = parent::getMenuContent();
+      unset($menu['links']['lists']);
+
+      return $menu;
+   }
+
+
    // From CommonDBTM
    /**
     * Retrieve an item from the database for a specific item
