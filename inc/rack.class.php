@@ -441,7 +441,7 @@ class Rack extends CommonDBTM {
 
       $blueprint = "";
       $blueprint_ctrl = "";
-      if (strlen(($room->fields['blueprint'] ?? ""))) {
+      if (!empty($room->fields['blueprint'])) {
          $blueprint_url = Toolbox::getPictureUrl($room->fields['blueprint']);
          $blueprint = "
             <div class='blueprint'
