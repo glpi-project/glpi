@@ -114,7 +114,10 @@ class Volume extends InventoryAsset
       foreach ($iterator as $data) {
          $dbid = $data['id'];
          unset($data['id']);
-         $db_existing[$dbid] = array_map('strtolower', $data);
+         $db_existing[$dbid] = [];
+         foreach ($data as $key => $value) {
+            $db_existing[$dbid][$key] = $value !== null ? strtolower($value) : null;
+         }
       }
 
       return $db_existing;
