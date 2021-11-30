@@ -6462,7 +6462,7 @@ JAVASCRIPT;
             case 'progressbar':
                if (!isset($progressbar_data)) {
                   $bar_color = 'green';
-                  $percent   = ltrim($data[$ID][0]['name'], 0);
+                  $percent   = ltrim(($data[$ID][0]['name'] ?? ""), 0);
                   $progressbar_data = [
                      'percent'      => $percent,
                      'percent_text' => $percent,
