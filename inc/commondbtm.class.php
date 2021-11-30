@@ -3062,7 +3062,7 @@ class CommonDBTM extends CommonGLPI {
    function getField($field) {
 
       if (array_key_exists($field, $this->fields)) {
-         return $this->fields[$field] ?? "";
+         return $this->fields[$field];
       }
       return NOT_AVAILABLE;
    }
@@ -3095,17 +3095,17 @@ class CommonDBTM extends CommonGLPI {
       $toadd   = [];
       if ($this->isField('completename')) {
          $toadd[] = ['name'  => __('Complete name'),
-                          'value' => nl2br($this->getField('completename'))];
+                          'value' => nl2br((string) $this->getField('completename'))];
       }
 
       if ($this->isField('serial')) {
          $toadd[] = ['name'  => __('Serial number'),
-                          'value' => nl2br($this->getField('serial'))];
+                          'value' => nl2br((string) $this->getField('serial'))];
       }
 
       if ($this->isField('otherserial')) {
          $toadd[] = ['name'  => __('Inventory number'),
-                          'value' => nl2br($this->getField('otherserial'))];
+                          'value' => nl2br((string) $this->getField('otherserial'))];
       }
 
       if ($this->isField('states_id') && $this->getType()!='State') {
@@ -3151,12 +3151,12 @@ class CommonDBTM extends CommonGLPI {
 
       if ($this->isField('contact')) {
          $toadd[] = ['name'  => __('Alternate username'),
-                          'value' => nl2br($this->getField('contact'))];
+                          'value' => nl2br((string) $this->getField('contact'))];
       }
 
       if ($this->isField('contact_num')) {
          $toadd[] = ['name'  => __('Alternate username number'),
-                          'value' => nl2br($this->getField('contact_num'))];
+                          'value' => nl2br((string) $this->getField('contact_num'))];
       }
 
       if (Infocom::canApplyOn($this)) {
@@ -3172,7 +3172,7 @@ class CommonDBTM extends CommonGLPI {
       if (($this instanceof CommonDropdown)
           && $this->isField('comment')) {
          $toadd[] = ['name'  => __('Comments'),
-                          'value' => nl2br($this->getField('comment'))];
+                          'value' => nl2br((string) $this->getField('comment'))];
       }
 
       if (count($toadd)) {
