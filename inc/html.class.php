@@ -3870,7 +3870,7 @@ JAVASCRIPT
                         echo "(object) " . get_class($val);
                      }
                   } else {
-                     echo htmlentities($val);
+                     echo htmlentities($val ?? "");
                   }
                }
             }

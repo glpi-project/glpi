@@ -3062,7 +3062,7 @@ class CommonDBTM extends CommonGLPI {
    function getField($field) {
 
       if (array_key_exists($field, $this->fields)) {
-         return $this->fields[$field];
+         return $this->fields[$field] ?? "";
       }
       return NOT_AVAILABLE;
    }

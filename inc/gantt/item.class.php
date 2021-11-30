@@ -94,7 +94,7 @@ class Item implements \JsonSerializable {
    /**
     * Enables Json serialization of Item objects
     */
-   public function jsonSerialize() {
+   public function jsonSerialize(): mixed {
       return (array)$this;
    }
 }
