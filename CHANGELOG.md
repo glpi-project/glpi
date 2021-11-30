@@ -67,6 +67,9 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::clean_cross_side_scripting_deep()`
 - `Toolbox::endsWith()`
 - `Toolbox::getHtmlToDisplay()`
+- `Toolbox::logError()`
+- `Toolbox::logNotice()`
+- `Toolbox::logWarning()`
 - `Toolbox::unclean_cross_side_scripting_deep()`
 - `Toolbox::startsWith()`
 - `Toolbox::sodiumDecrypt()`
@@ -216,6 +219,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::getGlpiSecKey()`
 - `Toolbox::removeHtmlSpecialChars()`
 - `Toolbox::sanitize()`
+- `Toolbox::throwError()`
 - `Toolbox::unclean_html_cross_side_scripting_deep()`
 - `Toolbox::useCache()`
 - `Toolbox::userErrorHandlerDebug()`

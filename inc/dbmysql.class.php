@@ -324,11 +324,9 @@ class DBmysql {
     * @var integer $SQL_TOTAL_REQUEST
     *
     * @return mysqli_result|boolean Query result handler
-    *
-    * @throws GlpitestSQLError
     */
    function query($query) {
-      global $CFG_GLPI, $DEBUG_SQL, $GLPI, $SQL_TOTAL_REQUEST;
+      global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
 
       $is_debug = isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE);
       if ($is_debug && $CFG_GLPI["debug_sql"]) {
@@ -351,10 +349,7 @@ class DBmysql {
 
          Toolbox::logSqlError($error);
 
-         $error_handler = $GLPI->getErrorHandler();
-         if ($error_handler instanceof ErrorHandler) {
-            $error_handler->handleSqlError($this->dbh->errno, $this->dbh->error, $query);
-         }
+         ErrorHandler::getInstance()->handleSqlError($this->dbh->errno, $this->dbh->error, $query);
 
          if (($is_debug || isAPI()) && $CFG_GLPI["debug_sql"]) {
             $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();
@@ -377,9 +372,7 @@ class DBmysql {
          $message .= Toolbox::backtrace(false, 'DBmysql->query()', ['Toolbox::backtrace()']);
          Toolbox::logSqlWarning($message);
 
-         if (($error_handler = $GLPI->getErrorHandler()) instanceof ErrorHandler) {
-            $error_handler->handleSqlWarnings($warnings, $query);
-         }
+         ErrorHandler::getInstance()->handleSqlWarnings($warnings, $query);
       }
 
       if ($this->execution_time === true) {
@@ -425,8 +418,6 @@ class DBmysql {
     * @param string $query Query to prepare
     *
     * @return mysqli_stmt|boolean statement object or FALSE if an error occurred.
-    *
-    * @throws GlpitestSQLError
     */
    function prepare($query) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
@@ -438,10 +429,9 @@ class DBmysql {
                    $this->dbh->error."\n";
          $error .= Toolbox::backtrace(false, 'DBmysql->prepare()', ['Toolbox::backtrace()']);
 
-         Toolbox::logInFile("sql-errors", $error);
-         if (class_exists('GlpitestSQLError')) { // For unit test
-            throw new \GlpitestSQLError($error);
-         }
+         Toolbox::logSqlError($error);
+
+         ErrorHandler::getInstance()->handleSqlError($this->dbh->errno, $this->dbh->error, $query);
 
          if (isset($_SESSION['glpi_use_mode'])
              && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
@@ -1321,7 +1311,7 @@ class DBmysql {
       } else if ($req->count() == 1 || !$onlyone) {
          return $this->updateOrDie($table, $data, $where, 'Unable to create new element or update existing one');
       } else {
-         Toolbox::logWarning('Update would change too many rows!');
+         trigger_error('Update would change too many rows!', E_USER_WARNING);
          return false;
       }
    }
@@ -1472,7 +1462,7 @@ class DBmysql {
     */
    public function beginTransaction() {
       if ($this->in_transaction === true) {
-         Toolbox::logError('A database transaction has already been started!');
+         trigger_error('A database transaction has already been started!', E_USER_WARNING);
       }
       $this->in_transaction = true;
       return $this->dbh->begin_transaction();
@@ -1486,7 +1476,7 @@ class DBmysql {
          $this->dbh->savepoint($name);
       } else {
          // Not already in transaction or failed to start one now
-         Toolbox::logError('Unable to set DB savepoint because no transaction was started');
+         trigger_error('Unable to set DB savepoint because no transaction was started', E_USER_WARNING);
       }
    }
 

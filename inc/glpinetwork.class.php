@@ -218,10 +218,13 @@ class GLPINetwork extends CommonGLPI {
       if ($error_message !== null || json_last_error() !== JSON_ERROR_NONE
           || !is_array($registration_data) || !array_key_exists('is_valid', $registration_data)) {
          $informations['validation_message'] = __('Unable to fetch registration information.');
-         Toolbox::logError(
-            'Unable to fetch registration information.',
-            $error_message,
-            $registration_response
+         trigger_error(
+            sprintf(
+               "Unable to fetch registration information.\nError message:%s\nResponse:\n%s",
+               $error_message,
+               $registration_response
+            ),
+            E_USER_WARNING
          );
          return $informations;
       }
@@ -310,10 +313,13 @@ class GLPINetwork extends CommonGLPI {
       $offers = $error_message === null ? json_decode($response) : null;
 
       if ($error_message !== null || json_last_error() !== JSON_ERROR_NONE || !is_array($offers)) {
-         Toolbox::logError(
-            'Unable to fetch offers information.',
-            $error_message,
-            $response
+         trigger_error(
+            sprintf(
+               "Unable to fetch offers information.\nError message:%s\nResponse:\n%s",
+               $error_message,
+               $response
+            ),
+            E_USER_WARNING
          );
          return [];
       }

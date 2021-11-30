@@ -651,8 +651,12 @@ class Migration {
             $newtable,
             ($DB->tableExists($newtable) ? __('nok') : __('ok'))
          );
-         Toolbox::logError($message);
-         die(1);
+         if (isCommandLine()) {
+            throw new \RuntimeException($message);
+         } else {
+            echo $message . "\n";
+            die(1);
+         }
       }
    }
 

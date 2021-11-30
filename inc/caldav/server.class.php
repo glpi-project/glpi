@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\ErrorHandler;
 use Glpi\CalDAV\Backend\Auth;
 use Glpi\CalDAV\Backend\Calendar;
 use Glpi\CalDAV\Backend\Principal;
@@ -93,8 +94,7 @@ class Server extends DAV\Server {
          // Ignore server exceptions that does not corresponds to a server error
          return;
       }
-      \Toolbox::logError(
-         get_class($exception) . ': ' . $exception->getMessage() . "\n" . $exception->getTraceAsString()
-      );
+
+      ErrorHandler::getInstance()->handleException($exception, true);
    }
 }

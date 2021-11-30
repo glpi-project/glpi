@@ -31,6 +31,7 @@
  */
 
 use Glpi\Event;
+use Glpi\Http\Response;
 
 include ('../inc/includes.php');
 
@@ -38,8 +39,7 @@ Session::checkValidSessionId();
 
 $link = new ManualLink();
 if (array_key_exists('id', $_REQUEST) && !$link->getFromDB($_REQUEST['id'])) {
-   Toolbox::throwError(404, 'No item found for given id', 'string');
-   Html::back();
+   Response::sendError(404, 'No item found for given id', Response::CONTENT_TYPE_TEXT_HTML);
 }
 
 if (array_key_exists('purge', $_POST) || array_key_exists('delete', $_POST)) {

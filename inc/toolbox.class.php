@@ -398,6 +398,11 @@ class Toolbox {
     * PHP notice log
     */
    static function logNotice() {
+      self::deprecated(
+         'Use either native trigger_error($msg, E_USER_NOTICE) to log notices,'
+         . ' either Glpi\\Application\\ErrorHandler::handleException() to log exceptions,'
+         . ' either Toolbox::logInfo() or Toolbox::logDebug() to log messages not related to errors.'
+      );
       self::log(null, Logger::NOTICE, func_get_args());
    }
 
@@ -412,6 +417,11 @@ class Toolbox {
     * PHP warning log
     */
    static function logWarning() {
+      self::deprecated(
+         'Use either native trigger_error($msg, E_USER_WARNING) to log warnings,'
+         . ' either Glpi\\Application\\ErrorHandler::handleException() to log exceptions,'
+         . ' either Toolbox::logInfo() or Toolbox::logDebug() to log messages not related to errors.'
+      );
       self::log(null, Logger::WARNING, func_get_args());
    }
 
@@ -419,6 +429,11 @@ class Toolbox {
     * PHP error log
     */
    static function logError() {
+      self::deprecated(
+         'Use either native trigger_error($msg, E_USER_WARNING) to log errors,'
+         . ' either Glpi\\Application\\ErrorHandler::handleException() to log exceptions,'
+         . ' either Toolbox::logInfo() or Toolbox::logDebug() to log messages not related to errors.'
+      );
       self::log(null, Logger::ERROR, func_get_args());
    }
 
@@ -1335,7 +1350,7 @@ class Toolbox {
          $msgerr = __('No data available on the web site');
       }
       if (!empty($msgerr)) {
-         Toolbox::logError($msgerr);
+         trigger_error($msgerr, E_USER_WARNING);
       }
       return $content;
    }
@@ -2876,34 +2891,6 @@ class Toolbox {
       }
 
       return ($full ? $CFG_GLPI["root_doc"] : "") . '/front/document.send.php?file=_pictures/' . $path;
-   }
-
-   /**
-    * Send the given HTTP code then die with the error message in the given format
-    *
-    * @param int     $code    HTTP code to set for the response
-    * @param string  $message Error message to display
-    * @param string  $format  Output format (json or string)
-    */
-   public static function throwError(
-      int $code,
-      string $message,
-      string $format = "json"
-   ) {
-      switch ($format) {
-         case 'json':
-            $output = json_encode(["message" => $message]);
-            break;
-
-         case 'string':
-         default:
-            $output = $message;
-            break;
-      }
-
-      http_response_code($code);
-      Toolbox::logWarning($message);
-      die($output);
    }
 
    /**

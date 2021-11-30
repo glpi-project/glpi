@@ -2629,9 +2629,7 @@ abstract class API {
          } else {
 
             if (!isset($data[$kn_fkey])) {
-               Toolbox::logWarning(
-                  "Invalid value: \"$kn_fkey\" doesn't exist.
-               ");
+               trigger_error(sprintf('Invalid value: "%s" doesn\'t exist.', $kn_fkey), E_USER_WARNING);
                continue;
             }
 
@@ -2643,9 +2641,7 @@ abstract class API {
          // Check itemtype is valid
          $kn_item = getItemForItemtype($kn_itemtype);
          if (!$kn_item) {
-            Toolbox::logWarning(
-               "Invalid itemtype \"$kn_itemtype\" for fkey  \"$kn_fkey\""
-            );
+            trigger_error(sprintf('Invalid itemtype "%s" for fkey "%s".', $kn_itemtype, $kn_fkey), E_USER_WARNING);
             continue;
          }
 

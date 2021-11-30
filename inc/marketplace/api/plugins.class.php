@@ -131,9 +131,7 @@ class Plugins {
              $this->last_error['response'] = Message::toString($e->getResponse());
          }
 
-         if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-            Toolbox::logDebug($this->last_error);
-         }
+         Toolbox::logDebug($this->last_error);
          return false;
       }
 

@@ -49,55 +49,76 @@ class Document_Item extends DbTestCase {
       $input = [];
       $ditem = $this->newTestedInstance;
 
-      $this->exception(
+      $this->when(
          function () use ($input) {
             $this->boolean($this->testedInstance->add($input))->isFalse();
          }
-      )->message->contains('Item type is mandatory');
+      )->error
+         ->withType(E_USER_WARNING)
+         ->withMessage('Item type is mandatory')
+         ->exists();
 
       $input['itemtype'] = '';
-      $this->exception(
+      $this->when(
          function () use ($input) {
             $this->boolean($this->testedInstance->add($input))->isFalse();
          }
-      )->message->contains('Item type is mandatory');
+      )->error
+         ->withType(E_USER_WARNING)
+         ->withMessage('Item type is mandatory')
+         ->exists();
 
       $input['itemtype'] = 'NotAClass';
-      $this->exception(
+      $this->when(
          function () use ($input) {
             $this->boolean($this->testedInstance->add($input))->isFalse();
          }
-      )->message->contains('No class found for type NotAClass');
+      )->error
+         ->withType(E_USER_WARNING)
+         ->withMessage('No class found for type NotAClass')
+         ->exists();
 
       $input['itemtype'] = 'Computer';
-      $this->exception(
+      $this->when(
          function () use ($input) {
             $this->boolean($this->testedInstance->add($input))->isFalse();
          }
-      )->message->contains('Item ID is mandatory');
+      )->error
+         ->withType(E_USER_WARNING)
+         ->withMessage('Item ID is mandatory')
+         ->exists();
 
       $input['items_id'] = 0;
-      $this->exception(
+      $this->when(
          function () use ($input) {
             $this->boolean($this->testedInstance->add($input))->isFalse();
          }
-      )->message->contains('Item ID is mandatory');
+      )->error
+         ->withType(E_USER_WARNING)
+         ->withMessage('Item ID is mandatory')
+         ->exists();
 
       $cid = getItemByTypeName('Computer', '_test_pc01', true);
       $input['items_id'] = $cid;
 
-      $this->exception(
+      $this->when(
          function () use ($input) {
             $this->boolean($this->testedInstance->add($input))->isFalse();
          }
-      )->message->contains('Document ID is mandatory');
+      )->error
+         ->withType(E_USER_WARNING)
+         ->withMessage('Document ID is mandatory')
+         ->exists();
 
       $input['documents_id'] = 0;
-      $this->exception(
+      $this->when(
          function () use ($input) {
             $this->boolean($this->testedInstance->add($input))->isFalse();
          }
-      )->message->contains('Document ID is mandatory');
+      )->error
+         ->withType(E_USER_WARNING)
+         ->withMessage('Document ID is mandatory')
+         ->exists();
 
       $document = new \Document();
       $this->integer(

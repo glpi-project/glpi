@@ -108,9 +108,7 @@ class GLPI {
     * @return ErrorHandler
     */
    public function initErrorHandler() {
-      global $PHPLOGGER;
-
-      $this->error_handler = new ErrorHandler($PHPLOGGER);
+      $this->error_handler = ErrorHandler::getInstance();
       $this->error_handler->register();
 
       return $this->error_handler;

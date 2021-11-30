@@ -320,7 +320,6 @@ class Inventory
             }
          }
       } catch (\Exception $e) {
-         Toolbox::logError($e);
          $DB->rollback();
          throw $e;
       } finally {
@@ -397,7 +396,6 @@ class Inventory
       }
 
       if (file_exists($tmpfile)) {
-         //Toolbox::logWarning('Nothing to do, inventory temp file will be removed');
          unlink($tmpfile);
       }
    }

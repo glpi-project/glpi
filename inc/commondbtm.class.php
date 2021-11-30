@@ -281,11 +281,13 @@ class CommonDBTM extends CommonGLPI {
          $this->post_getFromDB();
          return true;
       } else if (count($iterator) > 1) {
-         Toolbox::logWarning(
+         trigger_error(
             sprintf(
-               'getFromDB expects to get one result, %1$s found!',
-               count($iterator)
-            )
+               'getFromDB expects to get one result, %1$s found in query "%2$s".',
+               count($iterator),
+               $iterator->getSql()
+            ),
+            E_USER_WARNING
          );
       }
 
@@ -395,12 +397,14 @@ class CommonDBTM extends CommonGLPI {
          $this->post_getFromDB();
          return true;
       } else if (count($iterator) > 1) {
-         Toolbox::logWarning(
-               sprintf(
-                     'getFromDBByRequest expects to get one result, %1$s found!',
-                     count($iterator)
-                     )
-               );
+         trigger_error(
+            sprintf(
+               'getFromDBByRequest expects to get one result, %1$s found in query "%2$s".',
+               count($iterator),
+               $iterator->getSql()
+            ),
+            E_USER_WARNING
+         );
       }
       return false;
    }
@@ -857,11 +861,12 @@ class CommonDBTM extends CommonGLPI {
 
       foreach ($relations_classes as $classname) {
          if (!is_a($classname, CommonDBConnexity::class, true)) {
-            Toolbox::logWarning(
+            trigger_error(
                sprintf(
                   'Unable to clean elements of class %s as it does not extends "CommonDBConnexity"',
                   $classname
-               )
+               ),
+               E_USER_WARNING
             );
             continue;
          }
@@ -1625,7 +1630,7 @@ class CommonDBTM extends CommonGLPI {
             $res = $stmt->execute();
             if ($res === false) {
                if ($DB->errno() != 1062) {
-                  Toolbox::logError('Unable to add locked field!');
+                  trigger_error('Unable to add locked field!', E_USER_WARNING);
                }
 
             }
@@ -3422,7 +3427,7 @@ class CommonDBTM extends CommonGLPI {
             $message = "Duplicate key $optid ({$options[$type][$optid]['name']}/{$opt['name']}) in ".
                   get_class($this) . " searchOptions!";
 
-            Toolbox::logError($message);
+            trigger_error($message, E_USER_WARNING);
          }
 
          foreach ($opt as $k => $v) {
@@ -3516,7 +3521,7 @@ class CommonDBTM extends CommonGLPI {
                $message = "Duplicate key $optid ({$all_options[$optid]['name']}/{$opt['name']}) in ".
                   self::class . " searchOptionsToAdd for $itemtype!";
 
-               Toolbox::logError($message);
+               trigger_error($message, E_USER_WARNING);
             }
          }
 
@@ -3850,7 +3855,10 @@ class CommonDBTM extends CommonGLPI {
                   case 'email' :
                   case 'string' :
                      if (strlen($value) > 255) {
-                        Toolbox::logWarning("$value exceed 255 characters long (".strlen($value)."), it will be truncated.");
+                        trigger_error(
+                           "$value exceed 255 characters long (".strlen($value)."), it will be truncated.",
+                           E_USER_WARNING
+                        );
                         $this->input[$key] = substr($value, 0, 254);
                      }
                      break;
@@ -4033,7 +4041,7 @@ class CommonDBTM extends CommonGLPI {
             $entities_id = $this->fields['entities_id'];
          } else {
             $message = 'Missing entity ID!';
-            Toolbox::logError($message);
+            trigger_error($message, E_USER_WARNING);
          }
 
          $all_fields =  FieldUnicity::getUnicityFieldsConfig(get_class($this), $entities_id);
@@ -5503,7 +5511,11 @@ class CommonDBTM extends CommonGLPI {
             } else {
                $owner_type = isset($model) ? $model::getType() : $itemtype;
                $owner_id = isset($model) ? $model->getID() : $this->getID();
-               \Toolbox::logWarning("The picture '{$src_file}' referenced by the {$owner_type} with ID {$owner_id} does not exist");
+
+               trigger_error(
+                  "The picture '{$src_file}' referenced by the {$owner_type} with ID {$owner_id} does not exist",
+                  E_USER_WARNING
+               );
             }
          }
       }

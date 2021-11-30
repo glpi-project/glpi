@@ -471,11 +471,13 @@ class ComputerVirtualMachine extends CommonDBChild {
          $result = $iterator->current();
          return $result['id'];
       } else if (count($iterator) > 1) {
-         Toolbox::logWarning(
+         trigger_error(
             sprintf(
-               'findVirtualMachine expects to get one result, %1$s found!',
-               count($iterator)
-            )
+               'findVirtualMachine expects to get one result, %1$s found in query "%2$s".',
+               count($iterator),
+               $iterator->getSql()
+            ),
+            E_USER_WARNING
          );
       }
 

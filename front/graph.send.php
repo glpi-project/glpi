@@ -32,6 +32,7 @@
 
 use Glpi\Csv\CsvResponse;
 use Glpi\Csv\StatCsvExport;
+use Glpi\Http\Response;
 use Glpi\Stat\StatData;
 
 include ('../inc/includes.php');
@@ -44,7 +45,7 @@ $statdata_itemtype = $_UGET['statdata_itemtype'] ?? null;
 
 // Validate stats itemtype
 if (!is_a($statdata_itemtype, StatData::class, true)) {
-    Toolbox::throwError(400, "Invalid stats itemtype", "string");
+    Response::sendError(400, "Invalid stats itemtype", Response::CONTENT_TYPE_TEXT_PLAIN);
 }
 
 // Get data and output csv

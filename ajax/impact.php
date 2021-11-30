@@ -1,5 +1,4 @@
 <?php
-
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Http\Response;
+
 const DELTA_ACTION_ADD    = 1;
 const DELTA_ACTION_UPDATE = 2;
 const DELTA_ACTION_DELETE = 3;
@@ -58,7 +59,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
             // Check required params
             if (empty($itemtype)) {
-               Toolbox::throwError(400, "Missing itemtype");
+               Response::sendError(400, "Missing itemtype");
             }
 
             // Execute search
@@ -74,12 +75,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
             // Check required params
             if (empty($itemtype) || empty($items_id)) {
-               Toolbox::throwError(400, "Missing itemtype or items_id");
+               Response::sendError(400, "Missing itemtype or items_id");
             }
 
             // Check that the the target asset exist
             if (!Impact::assetExist($itemtype, $items_id)) {
-               Toolbox::throwError(400, "Object[class=$itemtype, id=$items_id] doesn't exist");
+               Response::sendError(400, "Object[class=$itemtype, id=$items_id] doesn't exist");
             }
 
             // Prepare graph
@@ -105,7 +106,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
             break;
 
          default:
-            Toolbox::throwError(400, "Missing or invalid 'action' parameter");
+            Response::sendError(400, "Missing or invalid 'action' parameter");
             break;
       }
       break;
@@ -114,13 +115,13 @@ switch ($_SERVER['REQUEST_METHOD']) {
    case 'POST':
       // Check required params
       if (!isset($_POST['impacts'])) {
-         Toolbox::throwError(400, "Missing 'impacts' payload");
+         Response::sendError(400, "Missing 'impacts' payload");
       }
 
       // Decode data (should be json)
       $data = Toolbox::jsonDecode($_UPOST['impacts'], true);
       if (!is_array($data)) {
-         Toolbox::throwError(400, "Payload should be an array");
+         Response::sendError(400, "Payload should be an array");
       }
       $data = Toolbox::addslashes_deep($data);
 
@@ -142,7 +143,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
       // Stop here if readonly graph
       if ($readonly) {
-         Toolbox::throwError(403, "Missing rights");
+         Response::sendError(403, "Missing rights");
       }
 
       $context_id = 0;

@@ -30,52 +30,60 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Http;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-class NotificationEventAjax extends NotificationEventAbstract implements NotificationEventInterface {
+use Toolbox;
 
-   static public function getTargetFieldName() {
-      return 'users_id';
-   }
+/**
+ * @since 10.0.0
+ */
+class Response {
 
+   /**
+    * "application/json" content type.
+    */
+   const CONTENT_TYPE_JSON = 'application/json';
 
-   static public function getTargetField(&$data) {
-      $field = self::getTargetFieldName();
+   /**
+    * "text/html" content type.
+    */
+   const CONTENT_TYPE_TEXT_HTML = 'text/html';
 
-      if (!isset($data[$field])) {
-         //Missing users_id; set to null
-         $data[$field] = null;
+   /**
+    * "text/plain" content type.
+    */
+   const CONTENT_TYPE_TEXT_PLAIN = 'text/plain';
+
+   /**
+    * Send the given HTTP code then die with the error message in the given format.
+    *
+    * @param int     $code          HTTP code to set for the response
+    * @param string  $message       Error message to send
+    * @param string  $content_type  Response content type
+    *
+    * @return void
+    */
+   public static function sendError(int $code, string $message, string $content_type = self::CONTENT_TYPE_JSON): void {
+
+      switch ($content_type) {
+         case self::CONTENT_TYPE_JSON:
+            $output = json_encode(['message' => $message]);
+            break;
+
+         case self::CONTENT_TYPE_TEXT_HTML:
+         default:
+            $output = $message;
+            break;
       }
 
-      return $field;
-   }
+      header(sprintf('Content-Type: %s; charset=UTF-8', $content_type), true, $code);
 
+      Toolbox::logDebug($message);
 
-   static public function canCron() {
-      //notifications are pulled from web browser, it must not be handled from cron
-      return false;
-   }
-
-
-   static public function getAdminData() {
-      //since admin cannot be logged in; no ajax notifications for global admin
-      return false;
-   }
-
-
-   static public function getEntityAdminsData($entity) {
-      //since entities admin cannot be logged in; no ajax notifications for them
-      return false;
-   }
-
-
-   static public function send(array $data) {
-      trigger_error(
-         __METHOD__ . ' should not be called!',
-         E_USER_WARNING
-      );
-      return false;
+      die($output);
    }
 }

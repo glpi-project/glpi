@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Http\Response;
+
 $AJAX_INCLUDE = 1;
 
 include ('../inc/includes.php');
@@ -40,10 +42,7 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (!isset($_GET['users_id'])) {
-   // Bad request
-   Toolbox::logError("Missing users_id parameter");
-   http_response_code(400);
-   return;
+   Response::sendError(400, "Missing users_id parameter");
 } else if (!is_array($_GET['users_id'])) {
    $_GET['users_id'] = [$_GET['users_id']];
 }

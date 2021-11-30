@@ -375,7 +375,7 @@ class RuleImportAsset extends Rule {
                   } else if (isset($definition_criteria['is_global'])
                           && $definition_criteria['is_global']) {
                      //If a value is missing, then there's a problem !
-                     Toolbox::logWarning('A value seems missing, criterion was: ' . $criterion);
+                     trigger_error('A value seems missing, criterion was: ' . $criterion, E_USER_WARNING);
                      return false;
                   }
                } else if ($crit->fields["condition"] == Rule::PATTERN_FIND) {
@@ -384,7 +384,7 @@ class RuleImportAsset extends Rule {
                } else if ($crit->fields["condition"] == Rule::PATTERN_EXISTS) {
                   if (!isset($input[$crit->fields['criteria']])
                           || empty($input[$crit->fields['criteria']])) {
-                     Toolbox::logWarning('A value seems missing, criterion was: ' . $criterion);
+                     trigger_error('A value seems missing, criterion was: ' . $criterion, E_USER_WARNING);
                      return false;
                   }
                } else if ($crit->fields["criteria"] == 'itemtype') {
@@ -414,7 +414,6 @@ class RuleImportAsset extends Rule {
                && $key != "class"
                && !is_object($crit)
             ) {
-               //Toolbox::logWarning('No criterion for ' . $key);
                return false;
             }
          }

@@ -1484,7 +1484,7 @@ class Plugin extends CommonDBTM {
             $res['requirements'] = ['glpi' => ['min' => $res['minGlpiVersion']]];
          }
       } else {
-         Toolbox::logError("$fct method must be defined!");
+         trigger_error("$fct method must be defined!", E_USER_WARNING);
          $res = [];
       }
       if (isset($info)) {
@@ -1617,7 +1617,7 @@ class Plugin extends CommonDBTM {
                if (isset($options[$optid])) {
                   $message = "Duplicate key $optid ({$options[$optid]['name']}/{$opt['name']}) in ".
                      $itemtype . " searchOptions!";
-                  Toolbox::logError($message);
+                  trigger_error($message, E_USER_WARNING);
                }
 
                foreach ($opt as $k => $v) {

@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\ErrorHandler;
 use Glpi\Toolbox\Sanitizer;
 
 /**
@@ -1767,7 +1768,7 @@ class AuthLDAP extends CommonDBTM {
                   $uid = self::getFieldValue($info[$ligne], $field_for_sync);
 
                   if ($login_field != $field_for_sync && !isset($info[$ligne][$login_field])) {
-                     Toolbox::logWarning("Missing field $login_field for LDAP entry $field_for_sync $uid");
+                     trigger_error("Missing field $login_field for LDAP entry $field_for_sync $uid", E_USER_WARNING);
                      //Login field may be missing... Skip the user
                      continue;
                   }
@@ -2598,7 +2599,7 @@ class AuthLDAP extends CommonDBTM {
                      'id'     => $users_id];
             }
          } catch (\RuntimeException $e) {
-            Toolbox::logError($e->getMessage());
+            ErrorHandler::getInstance()->handleException($e);
             return false;
          }
       } else {
@@ -2738,7 +2739,7 @@ class AuthLDAP extends CommonDBTM {
     */
    static function tryToConnectToServer($ldap_method, $login, $password) {
       if (!function_exists('ldap_connect')) {
-         Toolbox::logError("ldap_connect function is missing. Did you miss install php-ldap extension?");
+         trigger_error("ldap_connect function is missing. Did you miss install php-ldap extension?", E_USER_WARNING);
          return false;
       }
       $ds = self::connectToServer($ldap_method['host'], $ldap_method['port'],

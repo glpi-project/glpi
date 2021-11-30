@@ -33,12 +33,13 @@
 include ('../../inc/includes.php');
 
 use Glpi\ContentTemplates\TemplateManager;
+use Glpi\Http\Response;
 use Michelf\MarkdownExtra;
 
 // Check mandatory parameter
 $preset = $_GET['preset'] ?? null;
 if (is_null($preset)) {
-   Toolbox::throwError(400, "Missing mandatory 'preset' parameter", "string");
+   Response::sendError(400, "Missing mandatory 'preset' parameter", Response::CONTENT_TYPE_TEXT_HTML);
 }
 
 echo Html::includeHeader(__("Template variables documentation"));

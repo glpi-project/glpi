@@ -32,6 +32,7 @@
 
 namespace Glpi\CalDAV\Traits;
 
+use Glpi\Application\ErrorHandler;
 use Glpi\Toolbox\RichText;
 use Glpi\Toolbox\Sanitizer;
 use RRule\RRule;
@@ -164,9 +165,7 @@ trait VobjectConverterTrait {
             $rrule = new RRule($rrule_specs);
             $vcomp->RRULE = $rrule->rfcString();
          } catch (\InvalidArgumentException $e) {
-            \Toolbox::logError(
-               sprintf('Invalid RRULE "%s" from event "%s"', $fields['rrule'], $fields['id'])
-            );
+            ErrorHandler::getInstance()->handleException($e, true);
          }
       }
 

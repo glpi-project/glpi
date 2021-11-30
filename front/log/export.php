@@ -32,6 +32,7 @@
 
 use Glpi\Csv\CsvResponse;
 use Glpi\Csv\LogCsvExport;
+use Glpi\Http\Response;
 
 include ('../../inc/includes.php');
 
@@ -44,18 +45,18 @@ Session::checkRight(Log::$rightname, READ);
 
 // Validate itemtype
 if (!is_a($itemtype, CommonDBTM::class, true)) {
-    Toolbox::throwError(400, "Invalid itemtype", "string");
+    Response::sendError(400, "Invalid itemtype", Response::CONTENT_TYPE_TEXT_PLAIN);
 }
 
 // Validate id
 $item = $itemtype::getById($id);
 if (!$item || !$item->canViewItem()) {
-    Toolbox::throwError(400, "No item found for given id", "string");
+    Response::sendError(400, "No item found for given id", Response::CONTENT_TYPE_TEXT_PLAIN);
 }
 
 // Validate filter
 if (!is_array($filter)) {
-    Toolbox::throwError(400, "Invalid filter", "string");
+    Response::sendError(400, "Invalid filter", Response::CONTENT_TYPE_TEXT_PLAIN);
 }
 
 CsvResponse::output(new LogCsvExport($item, $filter));

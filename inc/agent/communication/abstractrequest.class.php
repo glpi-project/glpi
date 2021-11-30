@@ -35,7 +35,7 @@ namespace Glpi\Agent\Communication;
 use DOMDocument;
 use DOMElement;
 use Glpi\Agent\Communication\Headers\Common;
-use Toolbox;
+use Glpi\Application\ErrorHandler;
 
 /**
  * Handle agent requests
@@ -242,7 +242,12 @@ abstract class AbstractRequest
       $xml = simplexml_load_string($data, 'SimpleXMLElement', LIBXML_NOCDATA);
       if (!$xml) {
          $xml_errors = libxml_get_errors();
-         Toolbox::logWarning('Invalid XML: ' . print_r($xml_errors, true));
+         /* @var \LibXMLError $xml_error */
+         foreach ($xml_errors as $xml_error) {
+            ErrorHandler::getInstance()->handleError(
+               E_USER_WARNING, $xml_error->message, $xml_error->file, $xml_error->line
+            );
+         }
          $this->addError('XML not well formed!', 400);
          return false;
       }

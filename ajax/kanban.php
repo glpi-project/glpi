@@ -33,6 +33,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\Kanban;
 use Glpi\Features\Teamwork;
+use Glpi\Http\Response;
 use Glpi\Toolbox\Sanitizer;
 
 $AJAX_INCLUDE = 1;
@@ -45,9 +46,7 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (!isset($_REQUEST['action'])) {
-   Toolbox::logError("Missing action parameter");
-   http_response_code(400);
-   return;
+   Response::sendError(400, "Missing action parameter", Response::CONTENT_TYPE_TEXT_HTML);
 }
 $action = $_REQUEST['action'];
 
@@ -57,9 +56,7 @@ if (isset($_REQUEST['itemtype'])) {
    if (!in_array($_REQUEST['action'], $nonkanban_actions) && !Toolbox::hasTrait($_REQUEST['itemtype'], Kanban::class)) {
       // Bad request
       // For all actions, except those in $nonkanban_actions, we expect to be manipulating the Kanban itself.
-      Toolbox::logError("Invalid itemtype parameter");
-      http_response_code(400);
-      return;
+      Response::sendError(400, "Invalid itemtype parameter", Response::CONTENT_TYPE_TEXT_HTML);
    }
    /** @var CommonDBTM $item */
    $itemtype = $_REQUEST['itemtype'];
@@ -104,9 +101,7 @@ if (isset($itemtype)) {
 $checkParams = static function($required) {
    foreach ($required as $param) {
       if (!isset($_REQUEST[$param])) {
-         Toolbox::logError("Missing $param parameter");
-         http_response_code(400);
-         die();
+         Response::sendError(400, "Missing $param parameter");
       }
    }
 };
@@ -188,9 +183,7 @@ if (($_POST['action'] ?? null) === 'update') {
    $tabs = $item->defineTabs();
    $tab_id = array_search(__('Kanban'), $tabs);
    if (false === $tab_id || is_null($tab_id)) {
-      Toolbox::logError("Itemtype does not have a Kanban tab!");
-      http_response_code(400);
-      return;
+      Response::sendError(400, "Itemtype does not have a Kanban tab!", Response::CONTENT_TYPE_TEXT_HTML);
    }
    echo $itemtype::getFormURLWithID($_REQUEST['items_id'], true)."&forcetab={$tab_id}";
 } else if (($_POST['action'] ?? null) === 'create_column') {

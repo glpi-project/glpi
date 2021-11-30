@@ -6430,7 +6430,7 @@ JAVASCRIPT;
 
       if (!$merge_target->canAddFollowups()) {
          foreach ($ticket_ids as $id) {
-            Toolbox::logError(sprintf(__('Not enough rights to merge tickets %d and %d'), $merge_target_id, $id));
+            Toolbox::logDebug(sprintf(__('Not enough rights to merge tickets %d and %d'), $merge_target_id, $id));
             // Set status = 2 : Rights issue
             $status[$id] = 2;
          }
@@ -6660,7 +6660,7 @@ JAVASCRIPT;
             } else {
                $status[$id] = $e->getCode();
             }
-            Toolbox::logError($e->getMessage());
+            Toolbox::logDebug($e->getMessage());
             if (!$in_transaction) {
                $DB->rollBack();
             }
