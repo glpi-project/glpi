@@ -6328,6 +6328,7 @@ JAVASCRIPT;
                      $out .= (empty($out)?'':self::LBBR).Html::convDate($data[$ID][$k]['name']);
                   }
                }
+               $out = "<span class='text-nowrap'>$out</span>";
                return $out;
 
             case "datetime" :
@@ -6340,6 +6341,7 @@ JAVASCRIPT;
                      $out .= (empty($out)?'':self::LBBR).Html::convDateTime($data[$ID][$k]['name']);
                   }
                }
+               $out = "<span class='text-nowrap'>$out</span>";
                return $out;
 
             case "timestamp" :
@@ -6358,6 +6360,7 @@ JAVASCRIPT;
                                                                            $withseconds,
                                                                            $withdays);
                }
+               $out = "<span class='text-nowrap'>$out</span>";
                return $out;
 
             case "email" :
@@ -6407,6 +6410,7 @@ JAVASCRIPT;
                      }
                   }
                }
+               $out = "<span class='text-nowrap'>$out</span>";
                return $out;
 
             case "decimal" :
@@ -6427,6 +6431,7 @@ JAVASCRIPT;
                      }
                   }
                }
+               $out = "<span class='text-nowrap'>$out</span>";
                return $out;
 
             case "bool" :
@@ -6469,7 +6474,9 @@ JAVASCRIPT;
                $out = "";
                if ($progressbar_data['percent'] != null) {
                   $out = <<<HTML
-                  {$progressbar_data['text']}
+                  <span class='text-nowrap'>
+                     {$progressbar_data['text']}
+                  </span>
                   <div class="progress" style="height: 16px">
                      <div class="progress-bar progress-bar-striped" role="progressbar"
                           style="width: {$progressbar_data['percent']}%; background-color: {$progressbar_data['color']};"
