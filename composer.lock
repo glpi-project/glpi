@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5a7a530709d667cf46e757b3ad4a4fc1",
+    "content-hash": "d930939243c37508a4b70c63ffeced9b",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -5107,20 +5107,19 @@
         },
         {
             "name": "glpi-project/tools",
-            "version": "0.3.1",
+            "version": "0.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/tools.git",
-                "reference": "d5f2aaa76e202d001e611aedeb00c9070069304f"
+                "reference": "dbf9bf158e24247ed369a755c76163f79220450e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/tools/zipball/d5f2aaa76e202d001e611aedeb00c9070069304f",
-                "reference": "d5f2aaa76e202d001e611aedeb00c9070069304f",
+                "url": "https://api.github.com/repos/glpi-project/tools/zipball/dbf9bf158e24247ed369a755c76163f79220450e",
+                "reference": "dbf9bf158e24247ed369a755c76163f79220450e",
                 "shasum": ""
             },
             "require": {
-                "glpi-project/coding-standard": "^0.9",
                 "symfony/console": "^4.4 || ^5.0"
             },
             "bin": [
@@ -5155,7 +5154,7 @@
                 "issues": "https://github.com/glpi-project/tools/issues",
                 "source": "https://github.com/glpi-project/tools"
             },
-            "time": "2021-10-28T13:23:26+00:00"
+            "time": "2021-11-17T14:01:30+00:00"
         },
         {
             "name": "maglnet/composer-require-checker",

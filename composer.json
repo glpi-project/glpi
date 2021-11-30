@@ -71,7 +71,7 @@
         "atoum/atoum": "^4.0",
         "friendsoftwig/twigcs": "^5.1",
         "glpi-project/coding-standard": "^0.9",
-        "glpi-project/tools": "^0.3",
+        "glpi-project/tools": "^0.4",
         "maglnet/composer-require-checker": "^3.5",
         "mikey179/vfsstream": "^1.6",
         "php-parallel-lint/php-parallel-lint": "^1.3",
