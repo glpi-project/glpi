@@ -682,7 +682,7 @@ final class DbUtils {
             $ancestors = array_diff($ancestors, $value);
 
          } else if (strlen($value) == 0) {
-            $ancestors = $_SESSION['glpiparententities'];
+            $ancestors = $_SESSION['glpiparententities'] ?? [];
 
          } else {
             $ancestors = $this->getAncestorsOf('glpi_entities', $value);
