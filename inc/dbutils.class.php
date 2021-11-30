@@ -1418,7 +1418,7 @@ final class DbUtils {
       }
 
       if ($ID > 0
-         && ((strlen($formatted) == 0) || $id_visible)) {
+         && ((strlen($formatted ?? '') == 0) || $id_visible)) {
          $formatted = sprintf(__('%1$s (%2$s)'), $formatted, $ID);
       }
 
