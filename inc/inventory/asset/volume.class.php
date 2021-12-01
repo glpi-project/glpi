@@ -32,7 +32,6 @@
 
 namespace Glpi\Inventory\Asset;
 
-use atoum\atoum\writers\std;
 use Glpi\Inventory\Conf;
 use Item_Disk;
 use Toolbox;
