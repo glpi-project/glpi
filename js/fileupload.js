@@ -29,7 +29,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global fileType, getExtIcon, getSize, isImage, stopEvent, Uint8Array */
+/* global getExtIcon, getSize, isImage, stopEvent, Uint8Array */
 
 var insertIntoEditor = []; // contains flags that indicate if uploaded file (image) should be added to editor contents
 
@@ -335,27 +335,19 @@ if (typeof tinyMCE != 'undefined') {
 
             var xhr = new XMLHttpRequest();
             xhr.open('GET', src, true);
-            xhr.responseType = 'arraybuffer';
+            xhr.responseType = 'blob';
             xhr.onload = function() {
                if (this.status !== 200) {
                   console.error("paste error");
                   return;
                }
 
-               var imgData = new Uint8Array(this.response);
-               // fileType.fromBuffer() returns a promise (async method)
-               fileType.fromBuffer(imgData).then(function(imgType) {
-                  if (!imgType || !imgType.ext || !imgType.mime) {
-                     // Unable to retrieve file ext
-                     console.error("paste error");
-                     return;
-                  }
-
-                  var file  = new Blob([imgData.buffer], {type: imgType.mime});
-                  file.name = 'image_paste' + Math.floor((Math.random() * 10000000) + 1) + '.' + imgType.ext;
-
+               var file = this.response;
+               if (/^image\/.+/.test(file.type)) {
+                  var ext = file.type.replace('image/', '');
+                  file.name = 'image_paste' + Math.floor((Math.random() * 10000000) + 1) + '.' + ext;
                   insertImageInTinyMCE(editor, file);
-               });
+               }
             };
             xhr.send();
          }
