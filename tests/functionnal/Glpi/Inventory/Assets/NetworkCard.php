@@ -32,6 +32,8 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Glpi\Inventory\Conf;
+
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/networkcard.class.php */
@@ -59,7 +61,8 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "lo", "ipaddress": "127.0.0.1", "ipmask": "255.0.0.0", "ipsubnet": "127.0.0.0", "status": "up", "type": "loopback", "virtualdev": true, "mac": "00:00:00:00:00:00"}'
+            'expected'  => '{"description": "lo", "ipaddress": "127.0.0.1", "ipmask": "255.0.0.0", "ipsubnet": "127.0.0.0", "status": "up", "type": "loopback", "virtualdev": true, "mac": "00:00:00:00:00:00"}',
+            'virtual'   => true
          ], [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -79,7 +82,8 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "lo", "ipaddress6": "::1", "ipmask6": "fff0::", "ipsubnet6": "::", "status": "up", "type": "loopback", "virtualdev": true, "mac": "00:00:00:00:00:00"}'
+            'expected'  => '{"description": "lo", "ipaddress6": "::1", "ipmask6": "fff0::", "ipsubnet6": "::", "status": "up", "type": "loopback", "virtualdev": true, "mac": "00:00:00:00:00:00"}',
+            'virtual'   => true
          ], [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -107,7 +111,8 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress": "192.168.1.119", "ipgateway": "192.168.1.1", "ipmask": "255.255.255.0", "ipsubnet": "192.168.1.0", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "teclib", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}'
+            'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress": "192.168.1.119", "ipgateway": "192.168.1.1", "ipmask": "255.255.255.0", "ipsubnet": "192.168.1.0", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "teclib", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}',
+            'virtual'   => false
          ], [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -134,7 +139,8 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress6": "fe80::92a4:26c6:99dd:2d60", "ipmask6": "ffff:ffff:ffff:ffff::", "ipsubnet6": "fe80::", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "teclib", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}'
+            'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress6": "fe80::92a4:26c6:99dd:2d60", "ipmask6": "ffff:ffff:ffff:ffff::", "ipsubnet6": "fe80::", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "teclib", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}',
+            'virtual'   => false
          ], [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -155,7 +161,8 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "virbr0", "ipaddress": "192.168.122.1", "ipmask": "255.255.255.0", "ipsubnet": "192.168.122.0", "status": "up", "type": "bridge", "virtualdev": true, "mac": "52:54:00:fa:20:0e"}'
+            'expected'  => '{"description": "virbr0", "ipaddress": "192.168.122.1", "ipmask": "255.255.255.0", "ipsubnet": "192.168.122.0", "status": "up", "type": "bridge", "virtualdev": true, "mac": "52:54:00:fa:20:0e"}',
+            'virtual'   => true
          ], [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -172,7 +179,8 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "virbr0-nic", "speed": "10", "status": "down", "virtualdev": true, "mac": "52:54:00:fa:20:0e"}'
+            'expected'  => '{"description": "virbr0-nic", "speed": "10", "status": "down", "virtualdev": true, "mac": "52:54:00:fa:20:0e"}',
+            'virtual'   => true
          ], [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -191,7 +199,8 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "tun0", "ipaddress": "192.168.11.47", "ipmask": "255.255.255.0", "ipsubnet": "192.168.11.0", "speed": "10", "status": "up", "virtualdev": true}'
+            'expected'  => '{"description": "tun0", "ipaddress": "192.168.11.47", "ipmask": "255.255.255.0", "ipsubnet": "192.168.11.0", "speed": "10", "status": "up", "virtualdev": true}',
+            'virtual'   => true
          ], [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -210,7 +219,8 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "tun0", "ipaddress6": "fe80::c33a:59c7:61c5:339e", "ipmask6": "ffff:ffff:ffff:ffff::", "ipsubnet6": "fe80::", "speed": "10", "status": "up", "virtualdev": true}'
+            'expected'  => '{"description": "tun0", "ipaddress6": "fe80::c33a:59c7:61c5:339e", "ipmask6": "ffff:ffff:ffff:ffff::", "ipsubnet6": "fe80::", "speed": "10", "status": "up", "virtualdev": true}',
+            'virtual'   => true
          ]
       ];
    }
@@ -218,7 +228,7 @@ class NetworkCard extends AbstractInventoryAsset {
    /**
     * @dataProvider assetProvider
     */
-   public function testPrepare($xml, $expected) {
+   public function testPrepare($xml, $expected, $virtual) {
       $converter = new \Glpi\Inventory\Converter;
       $data = $converter->convert($xml);
       $json = json_decode($data);
@@ -226,8 +236,34 @@ class NetworkCard extends AbstractInventoryAsset {
       $computer = getItemByTypeName('Computer', '_test_pc01');
       $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
       $asset->setExtraData((array)$json->content);
+      $conf = new \Glpi\Inventory\Conf();
+      $asset->checkConf($conf);
       $result = $asset->prepare();
       $this->object($result[0])->isEqualTo(json_decode($expected));
+   }
+
+   /**
+    * @dataProvider assetProvider
+    */
+   public function testNoVirtuals($xml, $expected, $virtual) {
+      $this->login();
+      $converter = new \Glpi\Inventory\Converter;
+      $data = $converter->convert($xml);
+      $json = json_decode($data);
+
+      $computer = getItemByTypeName('Computer', '_test_pc01');
+      $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
+      $asset->setExtraData((array)$json->content);
+      $conf = new \Glpi\Inventory\Conf();
+      $this->boolean($conf->saveConf(['component_networkcardvirtual' => 0]))->isTrue();
+      $asset->checkConf($conf);
+      $result = $asset->prepare();
+      $this->boolean($conf->saveConf(['component_networkcardvirtual' => 1]))->isTrue();
+      if ($virtual) {
+         $this->array($result)->isEmpty();
+      } else {
+         $this->object($result[0])->isEqualTo(json_decode($expected));
+      }
    }
 
    public function testHandle() {
@@ -248,6 +284,8 @@ class NetworkCard extends AbstractInventoryAsset {
       $computer = getItemByTypeName('Computer', '_test_pc01');
       $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
       $asset->setExtraData((array)$json->content);
+      $conf = new \Glpi\Inventory\Conf();
+      $asset->checkConf($conf);
       $result = $asset->prepare();
       $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
 
@@ -671,6 +709,8 @@ class NetworkCard extends AbstractInventoryAsset {
 
       $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
       $asset->setExtraData((array)$json->content);
+      $conf = new \Glpi\Inventory\Conf();
+      $asset->checkConf($conf);
       $result = $asset->prepare();
 
       $this->array($result)->isEmpty();

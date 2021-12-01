@@ -40,6 +40,7 @@ use DeviceDrive;
 use DeviceGraphicCard;
 use DeviceHardDrive;
 use DeviceMemory;
+use DeviceNetworkCard;
 use DevicePowerSupply;
 use DeviceProcessor;
 use DeviceSimcard;
@@ -516,6 +517,35 @@ class Conf extends CommonGLPI
          'name'      => 'component_soundcard',
          'id'        => 'component_soundcard',
          'checked'   => $config['component_soundcard']
+      ]);
+
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo "<label for='component_networkcard'>";
+      echo DeviceNetworkCard::getTypeName(Session::getPluralNumber());
+      echo "</label>";
+      echo "</td>";
+      echo "<td>";
+      Html::showCheckbox([
+         'name'      => 'component_networkcard',
+         'id'        => 'component_networkcard',
+         'checked'   => $config['component_networkcard']
+      ]);
+      echo "</td>";
+
+      echo "<td>";
+      echo "<label for='component_networkcardvirtual'>";
+      echo __('Virtual network cards');
+      echo "</label>";
+      echo "</td>";
+      echo "<td>";
+      Html::showCheckbox([
+         'name'      => 'component_networkcardvirtual',
+         'id'        => 'component_networkcardvirtual',
+         'checked'   => $config['component_networkcardvirtual']
       ]);
 
       echo "</td>";
