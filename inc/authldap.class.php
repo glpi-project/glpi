@@ -2578,9 +2578,9 @@ class AuthLDAP extends CommonDBTM {
                if ($user->getFromLDAP($ds, $config_ldap->fields, $user_dn, addslashes($login),
                                     ($action == self::ACTION_IMPORT))) {
                   //Get the ID by sync field (Used to check if restoration is needed)
-                  if (!($tmp_users_id = User::getIdByfield($params['user_field'], $login))) {
-                     //In case user id as changed : get id by dn (Used to check if restoration is needed)
-                     $tmp_users_id = User::getIdByfield('user_dn', $user_dn);
+                  if (!($tmp_users_id = $user->getFromDBbySyncField($login))) {
+                     //In case user id has changed : get id by dn (Used to check if restoration is needed)
+                     $tmp_users_id = $user->getFromDBbyDn($user_dn);
                   }
                   if ($tmp_users_id) {
                      $tmp_user = new User();
