@@ -29,7 +29,6 @@
  * ---------------------------------------------------------------------
  */
 
-const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -112,12 +111,6 @@ let config = {
       ],
    },
    plugins: [
-      new webpack.ProvidePlugin(
-         {
-            process: 'process/browser', // required in util.js (indirect dependency of file-type.js)
-            Buffer: ['buffer', 'Buffer'], // required in file-type.js
-         }
-      ),
       new CleanWebpackPlugin(
          {
             cleanOnceBeforeBuildPatterns: [
@@ -133,9 +126,6 @@ let config = {
       mainFields: [
          'main',
       ],
-      alias: {
-         'stream': 'stream-browserify',
-      },
    },
    mode: 'none', // Force 'none' mode, as optimizations will be done on release process
    devtool: 'source-map', // Add sourcemap to files
