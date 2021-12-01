@@ -187,14 +187,12 @@ class Volume extends InventoryAsset
     *
     * @return bool
     */
-   public function isNetworkDrive(\stdClass $raw_data): bool
-   {
+   public function isNetworkDrive(\stdClass $raw_data): bool {
       return strtolower($raw_data->type ?? '') == 'network drive'
          || in_array(strtolower($raw_data->filesystem ?? ''), ['nfs', 'smbfs', 'afpfs']);
    }
 
-   public function isRemovableDrive(\stdClass  $raw_data): bool
-   {
+   public function isRemovableDrive(\stdClass  $raw_data): bool {
       return in_array(strtolower($raw_data->type ?? ''), ['removable disk', 'compact disk']);
    }
 

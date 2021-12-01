@@ -491,7 +491,7 @@ class Volume extends AbstractInventoryAsset {
       $this->integer(count($disks))->isIdenticalTo(4);
 
       $removables_id = null;
-      foreach($disks as $disk) {
+      foreach ($disks as $disk) {
          if ($disk['name'] == 'USB2') {
             $removables_id = $disk['id'];
             break;
