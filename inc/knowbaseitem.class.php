@@ -102,7 +102,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
 
    static function getMenuContent() {
       $menu = parent::getMenuContent();
-      unset($menu['links']['lists']);
+      if (isset($menu['links']['lists'])) {
+         unset($menu['links']['lists']);
+      }
 
       return $menu;
    }

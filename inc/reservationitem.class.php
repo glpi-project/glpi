@@ -104,7 +104,9 @@ class ReservationItem extends CommonDBChild {
 
    static function getMenuContent() {
       $menu = parent::getMenuContent();
-      unset($menu['links']['lists']);
+      if (isset($menu['links']['lists'])) {
+         unset($menu['links']['lists']);
+      }
 
       return $menu;
    }
