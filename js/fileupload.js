@@ -70,6 +70,7 @@ var handleUploadedFile = function (files, files_data, input_name, container, edi
                   if (editor_id && Object.prototype.hasOwnProperty.call(insertIntoEditor, file.name) && insertIntoEditor[file.name]) {
                      editor = tinyMCE.get(editor_id);
                      insertImgFromFile(editor, file, tag_data.tag);
+                     input_name = editor.targetElm.name; // attach uploaded image to rich text field
                   }
 
                   displayUploadedFile(files_data[index], tag_data, editor, input_name, container);
