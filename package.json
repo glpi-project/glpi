@@ -4,6 +4,10 @@
     "private": true,
     "description": "GLPI dependencies",
     "license": "GPL-2.0",
+    "engines": {
+        "node": ">= 16.0",
+        "npm": ">= 8.0"
+    },
     "dependencies": {
         "@eastdesire/jscolor": "^2.4.6",
         "@fortawesome/fontawesome-free": "^5.12.1",
