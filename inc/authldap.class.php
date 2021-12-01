@@ -3713,8 +3713,8 @@ class AuthLDAP extends CommonDBTM {
     */
    static function getLdapRestoredUserActionOptions() {
       return [
-         self::RESTORED_USER_PRESERVE  => __('Preserve'),
-         self::RESTORED_USER_RESTORE   => __('Restore'),
+         self::RESTORED_USER_PRESERVE  => __('Do nothing'),
+         self::RESTORED_USER_RESTORE   => __('Restore (move out of trashbin)'),
          self::RESTORED_USER_ENABLE    => __('Enable'),
       ];
    }
