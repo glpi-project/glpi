@@ -32,8 +32,6 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
-use Glpi\Inventory\Conf;
-
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/networkcard.class.php */
