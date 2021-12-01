@@ -73,7 +73,7 @@
         "babel-jest": "^27.3.0",
         "buffer": "^6.0.3",
         "clean-webpack-plugin": "^4.0.0",
-        "copy-webpack-plugin": "^9.0.0",
+        "copy-webpack-plugin": "^10.0.0",
         "css-loader": "^6.2.0",
         "csso-cli": "^3.0.0",
         "eslint": "^8.1.0",
