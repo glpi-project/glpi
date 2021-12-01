@@ -1685,6 +1685,12 @@ class Entity extends CommonTreeDropdown {
       echo "</td>";
       echo "</td><td colspan='2'></td></tr>";
 
+      echo "<tr><th colspan='4'>" . __('Automatic inventory') . "</th></tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td><label for='agent_base_url'>".__('Agent base URL')."</label></td>";
+      echo "<td>".Html::input('agent_base_url')."</td>";
+      echo "</td><td colspan='2'></td></tr>";
+
       Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
 
       echo "</table>";

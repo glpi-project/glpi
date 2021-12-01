@@ -40,6 +40,7 @@ use DeviceDrive;
 use DeviceGraphicCard;
 use DeviceHardDrive;
 use DeviceMemory;
+use DevicePowerSupply;
 use DeviceProcessor;
 use DeviceSimcard;
 use DeviceSoundCard;
@@ -80,9 +81,10 @@ class Conf extends CommonGLPI
       'group'                          => 0,
       'vm_type'                        => 0,
       'vm_components'                  => 0,
-      'vm_as_computer'                 => 0
+      'vm_as_computer'                 => 0,
+      'component_removablemedia'       => 1,
+      'component_powersupply'          => 1
    ];
-
 
    /**
     * Display form for import the XML
@@ -561,6 +563,48 @@ class Conf extends CommonGLPI
          'checked'   => $config['component_drive']
       ]);
       echo "</td>";
+
+      echo "</td>";
+      echo "<td>";
+      echo "<label for='component_networkdrive'>";
+      echo __('Network drives');
+      echo "</label>";
+      echo "</td>";
+      echo "<td>";
+      Html::showCheckbox([
+         'name'      => 'component_networkdrive',
+         'id'        => 'component_networkdrive',
+         'checked'   => $config['component_networkdrive']
+      ]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo "<label for='component_drive'>";
+      echo __('Removable drives');
+      echo "</label>";
+      echo "</td>";
+      echo "<td>";
+      Html::showCheckbox([
+         'name'      => 'component_removablemedia',
+         'id'        => 'component_removablemedia',
+         'checked'   => $config['component_removablemedia']
+      ]);
+      echo "</td>";
+      echo "<td>";
+      echo "<label for='component_powersupply'>";
+      echo DevicePowerSupply::getTypeName();
+      echo "</label>";
+      echo "</td>";
+      echo "<td>";
+      Html::showCheckbox([
+         'name'      => 'component_powersupply',
+         'id'        => 'component_powersupply',
+         'checked'   => $config['component_powersupply']
+      ]);
+      echo "</td>";
+
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";

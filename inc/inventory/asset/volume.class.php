@@ -38,6 +38,9 @@ use Toolbox;
 
 class Volume extends InventoryAsset
 {
+   /** @var @var Conf */
+   private $conf;
+
    public function prepare() :array {
       $mapping = [
          'volumn'         => 'device',
@@ -50,11 +53,20 @@ class Volume extends InventoryAsset
          'encrypt_type'   => 'encryption_type'
       ];
 
-      foreach ($this->data as &$val) {
+      foreach ($this->data as $key => &$val) {
          foreach ($mapping as $origin => $dest) {
             if (property_exists($val, $origin)) {
                $val->$dest = $val->$origin;
             }
+         }
+
+         //check if type should be imported
+         if ($this->isNetworkDrive($val) && $this->conf->component_networkdrive != 1
+            || $this->isRemovableDrive($val) && $this->conf->component_removablemedia != 1
+            || $this->conf->import_volume != 1
+         ) {
+            unset($this->data[$key]);
+            continue;
          }
 
          if (property_exists($val, 'label') && !empty($val->label)) {
@@ -171,7 +183,24 @@ class Volume extends InventoryAsset
       }
    }
 
+   /**
+    * Check if asset is a network drive, based on its filesystem
+    *
+    * @param \stdClass $raw_data Raw data from inventory
+    *
+    * @return bool
+    */
+   public function isNetworkDrive(\stdClass $raw_data): bool {
+      return strtolower($raw_data->type ?? '') == 'network drive'
+         || in_array(strtolower($raw_data->filesystem ?? ''), ['nfs', 'smbfs', 'afpfs']);
+   }
+
+   public function isRemovableDrive(\stdClass $raw_data): bool {
+      return in_array(strtolower($raw_data->type ?? ''), ['removable disk', 'compact disk']);
+   }
+
    public function checkConf(Conf $conf): bool {
+      $this->conf = $conf;
       return $conf->import_volume == 1;
    }
 }

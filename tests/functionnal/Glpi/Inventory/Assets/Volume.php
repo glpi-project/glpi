@@ -133,6 +133,44 @@ class Volume extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
             'expected'  => '{"filesystem": "ext4", "free": 10009, "serial": "79d60190-518f-4de4-8ed5-74146414b890", "total": 20030, "type": "/var/lib/mysql", "volumn": "/dev/mapper/xps-maria", "device": "/dev/mapper/xps-maria", "filesystems_id": "ext4", "totalsize": 20030, "freesize": 10009, "name": "/var/lib/mysql", "mountpoint": "/var/lib/mysql", "is_dynamic": 1}'
+         ], [ //network drive
+            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <DRIVES>
+      <FILESYSTEM>afpfs</FILESYSTEM>
+      <FREE>2143720</FREE>
+      <TOTAL>4194304</TOTAL>
+      <TYPE>/Volumes/timemachine</TYPE>
+      <VOLUMN>//timemachine@timemachine.glpi-project.org/timemachine</VOLUMN>
+    </DRIVES>
+    <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+  </REQUEST>",
+            'expected'  => '{"filesystem": "afpfs", "free": 2143720, "total": 4194304, "type": "/Volumes/timemachine", "volumn": "//timemachine@timemachine.glpi-project.org/timemachine", "device": "//timemachine@timemachine.glpi-project.org/timemachine", "filesystems_id": "afpfs", "totalsize": 4194304, "freesize": 2143720, "name": "/Volumes/timemachine", "mountpoint": "/Volumes/timemachine", "is_dynamic": 1}'
+            ], [ //removable drive
+               'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <DRIVES>
+      <DESCRIPTION>Disque amovible</DESCRIPTION>
+      <FILESYSTEM>FAT32</FILESYSTEM>
+      <FREE>3267</FREE>
+      <LABEL>USB2</LABEL>
+      <LETTER>E:</LETTER>
+      <SERIAL>7C4A2931</SERIAL>
+      <TOTAL>7632</TOTAL>
+      <TYPE>Removable Disk</TYPE>
+      <VOLUMN>USB2</VOLUMN>
+    </DRIVES>
+    <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+  </REQUEST>",
+               'expected'  => '{"description": "Disque amovible", "filesystem": "FAT32", "free": 3267, "label": "USB2", "letter": "E:", "serial": "7C4A2931", "total": 7632, "type": "Removable Disk", "volumn": "USB2", "device": "USB2", "filesystems_id": "FAT32", "totalsize": 7632, "freesize": 3267, "name": "USB2", "mountpoint": "E:", "is_dynamic": 1}'
          ]
       ];
    }
@@ -148,6 +186,10 @@ class Volume extends AbstractInventoryAsset {
       $computer = getItemByTypeName('Computer', '_test_pc01');
       $asset = new \Glpi\Inventory\Asset\Volume($computer, $json->content->drives);
       $asset->setExtraData((array)$json->content);
+
+      $conf = new \Glpi\Inventory\Conf();
+      $this->boolean($asset->checkConf($conf))->isTrue();
+
       $result = $asset->prepare();
       $this->object($result[0])->isEqualTo(json_decode($expected));
    }
@@ -170,6 +212,10 @@ class Volume extends AbstractInventoryAsset {
       $computer = getItemByTypeName('Computer', '_test_pc01');
       $asset = new \Glpi\Inventory\Asset\Volume($computer, $json->content->drives);
       $asset->setExtraData((array)$json->content);
+
+      $conf = new \Glpi\Inventory\Conf();
+      $this->boolean($asset->checkConf($conf))->isTrue();
+
       $result = $asset->prepare();
       $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
 
@@ -323,5 +369,160 @@ class Volume extends AbstractInventoryAsset {
 
       $this->boolean($item_disk->getFromDB($ddisk_id))->isTrue();
       $this->integer($item_disk->fields['is_dynamic'])->isIdenticalTo(0);
+   }
+
+   public function testInventoryImportOrNot() {
+      $item_disk = new \Item_Disk();
+
+      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <DRIVES>
+      <FREE>259327</FREE>
+      <LETTER>C:</LETTER>
+      <TOTAL>290143</TOTAL>
+    </DRIVES>
+    <DRIVES>
+      <LETTER>Z:</LETTER>
+    </DRIVES>
+    <DRIVES>
+      <FILESYSTEM>afpfs</FILESYSTEM>
+      <FREE>2143720</FREE>
+      <TOTAL>4194304</TOTAL>
+      <TYPE>/Volumes/timemachine</TYPE>
+      <VOLUMN>//timemachine@timemachine.glpi-project.org/timemachine</VOLUMN>
+    </DRIVES>
+    <DRIVES>
+      <DESCRIPTION>Disque amovible</DESCRIPTION>
+      <FILESYSTEM>FAT32</FILESYSTEM>
+      <FREE>3267</FREE>
+      <LABEL>USB2</LABEL>
+      <LETTER>E:</LETTER>
+      <SERIAL>7C4A2931</SERIAL>
+      <TOTAL>7632</TOTAL>
+      <TYPE>Removable Disk</TYPE>
+      <VOLUMN>USB2</VOLUMN>
+    </DRIVES>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+      //per default, configuration allows all volumes import. change that.
+      $this->login();
+      $conf = new \Glpi\Inventory\Conf();
+      $this->boolean(
+         $conf->saveConf([
+            'import_volume' => 0,
+            'component_networkdrive' => 0,
+            'component_removablemedia' => 0
+         ])
+      )->isTrue();
+
+      //first inventory should import no disk.
+      $inventory = $this->doInventory($xml_source, true);
+
+      $this->boolean(
+         $conf->saveConf([
+            'import_volume' => 1,
+            'component_networkdrive' => 1,
+            'component_removablemedia' => 1
+         ])
+      )->isTrue();
+
+      $computer = $inventory->getItem();
+      $computers_id = $computer->fields['id'];
+
+      //no disks linked to the computer
+      $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($disks))->isIdenticalTo(0);
+
+      //set config to inventory disks, but no network nor removable
+      $this->boolean(
+         $conf->saveConf([
+            'import_volume' => 1,
+            'component_networkdrive' => 0,
+            'component_removablemedia' => 0
+         ])
+      )->isTrue();
+
+      //first inventory should import 2 disks (C: and Z:).
+      $inventory = $this->doInventory($xml_source, true);
+
+      $this->boolean(
+         $conf->saveConf([
+            'import_volume' => 1,
+            'component_networkdrive' => 1,
+            'component_removablemedia' => 1
+         ])
+      )->isTrue();
+
+      $computer = $inventory->getItem();
+      $computers_id = $computer->fields['id'];
+
+      //C: and Z: has been linked to the computer
+      $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($disks))->isIdenticalTo(2);
+
+      //set config to inventory disks, network and removable (the default)
+      $this->boolean(
+         $conf->saveConf([
+            'import_volume' => 1,
+            'component_networkdrive' => 1,
+            'component_removablemedia' => 1
+         ])
+      )->isTrue();
+
+      //inventory should import all 4 disks.
+      $inventory = $this->doInventory($xml_source, true);
+
+      $computer = $inventory->getItem();
+      $computers_id = $computer->fields['id'];
+
+      //all disks has been linked to the computer
+      $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($disks))->isIdenticalTo(4);
+
+      $removables_id = null;
+      foreach ($disks as $disk) {
+         if ($disk['name'] == 'USB2') {
+            $removables_id = $disk['id'];
+            break;
+         }
+      }
+      $this->boolean($item_disk->getFromDB($removables_id))->isTrue();
+
+      //set config to inventory disks and network, but no removable
+      $this->boolean(
+         $conf->saveConf([
+            'import_volume' => 1,
+            'component_networkdrive' => 1,
+            'component_removablemedia' => 0
+         ])
+      )->isTrue();
+
+      $inventory = $this->doInventory($xml_source, true);
+
+      $this->boolean(
+         $conf->saveConf([
+            'import_volume' => 1,
+            'component_networkdrive' => 1,
+            'component_removablemedia' => 1
+         ])
+      )->isTrue();
+
+      //3 disks are now been linked to the computer
+      $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+      $this->integer(count($disks))->isIdenticalTo(3);
+
+      //ensure removable has been removed!
+      $this->boolean($item_disk->getFromDB($removables_id))->isFalse();
    }
 }
