@@ -32,6 +32,7 @@
 
 namespace Glpi\Inventory\Asset;
 
+use atoum\atoum\writers\std;
 use Glpi\Inventory\Conf;
 use Item_Disk;
 use Toolbox;
@@ -192,7 +193,7 @@ class Volume extends InventoryAsset
          || in_array(strtolower($raw_data->filesystem ?? ''), ['nfs', 'smbfs', 'afpfs']);
    }
 
-   public function isRemovableDrive(\stdClass  $raw_data): bool {
+   public function isRemovableDrive(\stdClass $raw_data): bool {
       return in_array(strtolower($raw_data->type ?? ''), ['removable disk', 'compact disk']);
    }
 
