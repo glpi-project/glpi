@@ -596,6 +596,9 @@ class Inventory
             case 'databases_services':
                $assettype = '\Glpi\Inventory\Asset\DatabaseInstance';
                break;
+            case 'powersupplies':
+               $assettype = '\Glpi\Inventory\Asset\PowerSupply';
+               break;
             default:
                if (method_exists($this, 'processExtraInventoryData')) {
                   $assettype = $this->processExtraInventoryData($key);
