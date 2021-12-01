@@ -72,8 +72,8 @@ class Printer extends AbstractInventoryAsset {
     */
    public function testPrepare($xml, $expected) {
       $date_now = date('Y-m-d H:i:s');
-      $_SESSION['glpi_currentime'] = $date_now;
-      $expected = str_replace('DATE_NOW', $_SESSION['glpi_currentime'], $expected);
+      $_SESSION['glpi_currenttime'] = $date_now;
+      $expected = str_replace('DATE_NOW', $_SESSION['glpi_currenttime'], $expected);
 
       $converter = new \Glpi\Inventory\Converter;
       $data = $converter->convert($xml);
@@ -88,7 +88,7 @@ class Printer extends AbstractInventoryAsset {
 
    public function testSnmpPrinter() {
       $date_now = date('Y-m-d H:i:s');
-      $_SESSION['glpi_currentime'] = $date_now;
+      $_SESSION['glpi_currenttime'] = $date_now;
       $json_str = file_get_contents(self::INV_FIXTURES . 'printer_1.json');
 
       $json = json_decode($json_str);

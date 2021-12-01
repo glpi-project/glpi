@@ -174,7 +174,7 @@ class Computer extends AbstractInventoryAsset {
     */
    public function testPrepare($xml, $asset) {
       $date_now = date('Y-m-d H:i:s');
-      $_SESSION['glpi_currentime'] = $date_now;
+      $_SESSION['glpi_currenttime'] = $date_now;
       $asset = str_replace('DATE_NOW', $date_now, $asset);
       $converter = new \Glpi\Inventory\Converter;
       $data = $converter->convert($xml);
