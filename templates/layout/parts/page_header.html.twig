@@ -49,12 +49,7 @@
                <span class="glpi-logo"></span>
             </a>
 
-            {% if get_current_interface() == 'central' %}
-            <button class="btn btn-icon btn-sm btn-secondary trigger-fuzzy justify-content-start mb-md-2" title="{{ __('Ctrl+Alt+G') }}">
-               <i class="ti ti-arrow-big-right me-1"></i>
-               <span class="menu-label">{{ __('Find menu') }}</span>
-            </button>
-            {% endif %}
+            {{ include('layout/parts/goto_button.html.twig') }}
 
             <div class="d-lg-none">
                {{ include('layout/parts/user_header.html.twig') }}
@@ -97,12 +92,9 @@
 
                <div class="collapse navbar-collapse justify-content-center" id="navbar-menu">
                   {{ include('layout/parts/menu.html.twig') }}
-                  {% if get_current_interface() == 'central' %}
-                  <button class="btn btn-outline-secondary mx-1 trigger-fuzzy" title="{{ __('Ctrl+Alt+G') }}">
-                     <i class="fas fa-arrow-right"></i>
-                     <span>{{ __('Go to...') }}</span>
-                  </button>
-                  {% endif %}
+                  <span class="ms-2 mt-2">
+                     {{ include('layout/parts/goto_button.html.twig') }}
+                  </span>
                </div>
             {% endif %}
 
