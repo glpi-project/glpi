@@ -820,7 +820,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'name'               => __('Expiration'),
          'forcegroupby'       => true,
          'datatype'           => 'date',
-         'emptylabel'         => 'Never expire',
+         'emptylabel'         => __('Never expire'),
          'massiveaction'      => false,
          'joinparams'         => $licjoinexpire
       ];
