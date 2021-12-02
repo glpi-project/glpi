@@ -178,7 +178,7 @@ class KnowbaseItem_Category extends CommonDBRelation {
          echo "<tr class='tab_bg_2'><td>";
          $rand = KnowbaseItemCategory::dropdown();
          echo "</td><td>";
-         echo "<input type=\"submit\" name=\"add\" value=\""._sx('button', 'Add')."\" class=\"submit\">";
+         echo "<input type=\"submit\" name=\"add\" value=\""._sx('button', 'Add')."\" class=\"btn btn-primary\">";
          echo "</td></tr>";
          echo "</table>";
          echo '<input type="hidden" name="knowbaseitems_id" value="' . $item->getID() . '">';
