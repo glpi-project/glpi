@@ -242,13 +242,13 @@ describe('Search Table', () => {
       expect(table_onSearch).toHaveBeenCalledTimes(1);
 
       const load_data = jquery_load.mock.calls[0][1];
-      expect(load_data).toHaveProperty('criteria[0][link]');
+      expect( 'criteria[0][link]' in load_data).toBeTrue();
       expect(load_data['criteria[0][link]']).toBe('AND');
-      expect(load_data).toHaveProperty('criteria[0][field]');
+      expect( 'criteria[0][field]' in load_data).toBeTrue();
       expect(load_data['criteria[0][field]']).toBe('view');
-      expect(load_data).toHaveProperty('criteria[0][searchtype]');
+      expect( 'criteria[0][searchtype]' in load_data).toBeTrue();
       expect(load_data['criteria[0][searchtype]']).toBe('contains');
-      expect(load_data).toHaveProperty('criteria[0][value]');
+      expect( 'criteria[0][value]' in load_data).toBeTrue();
       expect(load_data['criteria[0][value]']).toBe('criteria_test');
       expect(load_data).toHaveProperty('is_deleted');
       expect(load_data['is_deleted']).toBe('0');
