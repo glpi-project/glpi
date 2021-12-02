@@ -39,6 +39,9 @@ class NetworkCard extends Device
 {
    use InventoryNetworkPort;
 
+   /** @var Conf */
+   private $conf;
+
    protected $extra_data = ['controllers' => null];
    protected $ignored = ['controllers' => null];
 
@@ -69,71 +72,75 @@ class NetworkCard extends Device
       $pcivendor = new \PCIVendor();
 
       foreach ($this->data as $k => &$val) {
-         if (!property_exists($val, 'description')) {
+
+         if (!property_exists($val, 'description')
+            || ($val->virtualdev ?? 0) == 1 && $this->conf->component_networkcardvirtual == 0
+         ) {
             unset($this->data[$k]);
-         } else {
-            $val_port = clone $val;
-            foreach ($mapping as $origin => $dest) {
-               if (property_exists($val, $origin)) {
-                  $val->$dest = $val->$origin;
+            continue;
+         }
+
+         $val_port = clone $val;
+         foreach ($mapping as $origin => $dest) {
+            if (property_exists($val, $origin)) {
+               $val->$dest = $val->$origin;
+            }
+         }
+
+         if (isset($this->extra_data['controllers'])) {
+            $found_controller = false;
+            // Search in controller if find NAME = CONTROLLER TYPE
+            foreach ($this->extra_data['controllers'] as $controller) {
+               if (property_exists($controller, 'type')
+                  && ($val->description == $controller->type
+                     || strtolower($val->description." controller") ==
+                              strtolower($controller->type))
+                     && !isset($this->ignored['controllers'][$controller->name])) {
+                  $found_controller = $controller;
+                  if (property_exists($val, 'macaddr')) {
+                     $found_controller->macaddr = $val->macaddr;
+                     break; //found, exit loop
+                  }
                }
             }
 
-            if (isset($this->extra_data['controllers'])) {
-               $found_controller = false;
-               // Search in controller if find NAME = CONTROLLER TYPE
-               foreach ($this->extra_data['controllers'] as $controller) {
-                  if (property_exists($controller, 'type')
-                     && ($val->description == $controller->type
-                        || strtolower($val->description." controller") ==
-                                 strtolower($controller->type))
-                        && !isset($this->ignored['controllers'][$controller->name])) {
-                     $found_controller = $controller;
-                     if (property_exists($val, 'macaddr')) {
-                        $found_controller->macaddr = $val->macaddr;
-                        break; //found, exit loop
-                     }
+            if ($found_controller) {
+               if (property_exists($found_controller, 'pciid')) {
+                  $exploded = explode(":", $found_controller->pciids);
+
+                  //manufacturer
+                  if ($pci_manufacturer = $pcivendor->getManufacturer($exploded[0])) {
+                     $val->manufacturers_id = $pci_manufacturer;
                   }
-               }
 
-               if ($found_controller) {
-                  if (property_exists($found_controller, 'pciid')) {
-                     $exploded = explode(":", $found_controller->pciids);
+                  //product name
+                  if ($pci_product = $pcivendor->getProductName($exploded[0], $exploded[1])) {
+                     $val->designation = $pci_product;
+                  }
+               } else if (property_exists($found_controller, 'vendorid')) {
+                  //manufacturer
+                  if ($pci_manufacturer = $pcivendor->getManufacturer($found_controller->vendorid)) {
+                     $val->manufacturers_id = $pci_manufacturer;
+                  }
 
-                     //manufacturer
-                     if ($pci_manufacturer = $pcivendor->getManufacturer($exploded[0])) {
-                        $val->manufacturers_id = $pci_manufacturer;
-                     }
-
+                  if (property_exists($found_controller, 'productid')) {
                      //product name
-                     if ($pci_product = $pcivendor->getProductName($exploded[0], $exploded[1])) {
+                     if ($pci_product = $pcivendor->getProductName($found_controller->vendorid, $found_controller->productid)) {
                         $val->designation = $pci_product;
                      }
-                  } else if (property_exists($found_controller, 'vendorid')) {
-                     //manufacturer
-                     if ($pci_manufacturer = $pcivendor->getManufacturer($found_controller->vendorid)) {
-                        $val->manufacturers_id = $pci_manufacturer;
-                     }
-
-                     if (property_exists($found_controller, 'productid')) {
-                        //product name
-                        if ($pci_product = $pcivendor->getProductName($found_controller->vendorid, $found_controller->productid)) {
-                           $val->designation = $pci_product;
-                        }
-                     }
                   }
-
-                  if (property_exists($val, 'mac')) {
-                     $val->mac = strtolower($val->mac);
-                     $val->mac_default = $val->mac;
-                  }
-
-                  if (property_exists($val, 'name')) {
-                     $this->ignored['controllers'][$val->name] = $val->name;
-                  }
-               } else {
-                  unset($this->data[$k]);
                }
+
+               if (property_exists($val, 'mac')) {
+                  $val->mac = strtolower($val->mac);
+                  $val->mac_default = $val->mac;
+               }
+
+               if (property_exists($val, 'name')) {
+                  $this->ignored['controllers'][$val->name] = $val->name;
+               }
+            } else {
+               unset($this->data[$k]);
             }
          }
 
@@ -237,6 +244,7 @@ class NetworkCard extends Device
    }
 
    public function checkConf(Conf $conf): bool {
+      $this->conf = $conf;
       return $conf->component_networkcard == 1;
    }
 
