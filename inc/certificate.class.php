@@ -436,7 +436,7 @@ class Certificate extends CommonDBTM {
          'name'               => __('Expiration'),
          'forcegroupby'       => true,
          'datatype'           => 'date',
-         'emptylabel'         => 'Never expire',
+         'emptylabel'         => __('Never expire'),
          'massiveaction'      => false,
          'joinparams'         => $joinparams
       ];
