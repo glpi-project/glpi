@@ -615,7 +615,7 @@ class Cartridge extends CommonDBRelation {
          ]
       ]);
       if ($it->count()) {
-         return $it->next()['stock_target'];
+         return $it->current()['stock_target'];
       }
       return 0;
    }
@@ -637,7 +637,7 @@ class Cartridge extends CommonDBRelation {
          ]
       ]);
       if ($it->count()) {
-         return $it->next()['stock_target'];
+         return $it->current()['stock_target'];
       }
       return 0;
    }

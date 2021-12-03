@@ -337,7 +337,7 @@ class Consumable extends CommonDBChild {
          ]
       ]);
       if ($it->count()) {
-         return $it->next()['stock_target'];
+         return $it->current()['stock_target'];
       }
       return 0;
    }
@@ -359,7 +359,7 @@ class Consumable extends CommonDBChild {
          ]
       ]);
       if ($it->count()) {
-         return $it->next()['stock_target'];
+         return $it->current()['stock_target'];
       }
       return 0;
    }
