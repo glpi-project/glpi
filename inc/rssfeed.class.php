@@ -648,7 +648,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
     * @param $options   array    of possible options:
     *     - target filename : where to go when done.
     **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       // Test _rss cache directory. I permission trouble : unable to edit
       if (Toolbox::testWriteAccessToDirectory(GLPI_RSS_DIR) > 0) {
          echo "<div class='center'>";

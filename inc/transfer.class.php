@@ -3688,7 +3688,7 @@ class Transfer extends CommonDBTM {
     *
     * @return boolean item found
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       $edit_form = true;
       if (strpos($_SERVER['HTTP_REFERER'], "transfer.form.php") === false) {
          $edit_form = false;

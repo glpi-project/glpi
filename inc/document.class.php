@@ -369,7 +369,7 @@ class Document extends CommonDBTM {
     *
     * @return void
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       $this->initForm($ID, $options);
       // $options['formoptions'] = " enctype='multipart/form-data'";
       $this->showFormHeader($options);

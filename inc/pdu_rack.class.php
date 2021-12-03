@@ -202,7 +202,7 @@ class PDU_Rack extends CommonDBRelation {
       return $filled;
    }
 
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       global $DB;
 
       // search used racked (or sided mounted) pdus

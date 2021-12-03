@@ -361,7 +361,7 @@ class ReservationItem extends CommonDBChild {
    }
 
 
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
 
       if (!self::canView()) {
          return false;

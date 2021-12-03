@@ -388,7 +388,7 @@ class Cable extends CommonDBTM {
    *
    * @return void|boolean (display) Returns false if there is a rights error.
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       $this->initForm($ID, $options);
       TemplateRenderer::getInstance()->display('pages/assets/cable.html.twig', [
          'item'   => $this,

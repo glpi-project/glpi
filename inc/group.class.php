@@ -207,7 +207,7 @@ class Group extends CommonTreeDropdown {
    *
    * @return void|boolean (display) Returns false if there is a rights error.
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);

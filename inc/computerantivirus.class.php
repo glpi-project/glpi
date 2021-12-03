@@ -226,7 +226,7 @@ class ComputerAntivirus extends CommonDBChild {
     *
     * @return boolean TRUE if form is ok
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
 
       if (!Session::haveRight("computer", READ)) {
          return false;

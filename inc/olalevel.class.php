@@ -217,7 +217,7 @@ class OlaLevel extends LevelAgreementLevel {
     *
     * @return void
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);

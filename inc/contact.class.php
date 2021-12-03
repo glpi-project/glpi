@@ -159,7 +159,7 @@ class Contact extends CommonDBTM{
    }
 
 
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
 
       $this->initForm($ID, $options);
       $vcard_url = $this->getFormURL().'?getvcard=1&id='.$ID;

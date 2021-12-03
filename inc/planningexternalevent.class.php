@@ -125,7 +125,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
    }
 
 
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       global $CFG_GLPI;
 
       $canedit    = $this->can($ID, UPDATE);

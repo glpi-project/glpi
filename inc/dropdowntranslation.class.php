@@ -422,7 +422,7 @@ class DropdownTranslation extends CommonDBChild {
     * @param integer $ID       field (default -1)
     * @param array   $options
     */
-   function showForm($ID = -1, $options = []) {
+   function showForm($ID = -1, array $options = []) {
       global $CFG_GLPI;
 
       if (isset($options['parent']) && !empty($options['parent'])) {

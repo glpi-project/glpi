@@ -102,7 +102,7 @@ class SavedSearch_Alert extends CommonDBChild {
     *
     * @return true if displayed  false if item not found or not right to display
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
 
       /*if (!Session::haveRight("savedsearch", UPDATE)) {
          return false;

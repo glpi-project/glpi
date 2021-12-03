@@ -944,7 +944,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @param $ID        integer  ID of the item
     * @param $options   array    options used
     **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
 
       if ($ID > 0) {
          $this->canEdit($ID);

@@ -194,7 +194,7 @@ class Notification extends CommonDBTM {
    }
 
 
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);

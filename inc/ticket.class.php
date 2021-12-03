@@ -4085,7 +4085,7 @@ JAVASCRIPT;
    }
 
 
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       global $PLUGIN_HOOKS;
 
       // show full create form only to tech users

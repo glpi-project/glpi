@@ -1164,7 +1164,7 @@ class Cartridge extends CommonDBRelation {
     *
     * @return boolean False if there was a rights issue. Otherwise, returns true.
     */
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
 
       if (isset($options['parent']) && !empty($options['parent'])) {
          $printer = $options['parent'];

@@ -309,7 +309,7 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
 
       if (!$this->isNewID($ID)) {
          $this->check($ID, READ);

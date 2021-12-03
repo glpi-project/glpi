@@ -309,7 +309,7 @@ class DomainRecord extends CommonDBChild {
       }
    }
 
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       global $CFG_GLPI;
 
       $rand = mt_rand();

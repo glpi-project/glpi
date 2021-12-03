@@ -1312,7 +1312,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     * @param $options   array
     *     -  parent Object : the object
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_task.html.twig', [
          'item'      => $options['parent'],
          'subitem'   => $this

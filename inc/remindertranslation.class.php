@@ -201,7 +201,7 @@ class ReminderTranslation extends CommonDBChild {
     * @param integer $ID
     * @param array   $options
     */
-   function showForm($ID = -1, $options = []) {
+   function showForm($ID = -1, array $options = []) {
 
       if ($ID > 0) {
          $this->check($ID, READ);

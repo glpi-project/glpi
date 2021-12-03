@@ -484,7 +484,7 @@ JAVASCRIPT;
       echo "</div>";
    }
 
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       global $DB, $CFG_GLPI;
 
       $colspan = 4;

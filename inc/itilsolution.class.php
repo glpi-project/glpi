@@ -117,7 +117,7 @@ class ITILSolution extends CommonDBChild {
     *
     * @return boolean item found
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       if ($this->isNewItem()) {
          $this->getEmpty();
       }

@@ -286,7 +286,7 @@ class Item_RemoteManagement extends CommonDBChild {
    }
 
 
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       $itemtype = null;
       if (isset($options['itemtype']) && !empty($options['itemtype'])) {
          $itemtype = $options['itemtype'];

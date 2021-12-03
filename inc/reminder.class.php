@@ -569,7 +569,7 @@ class Reminder extends CommonDBVisible implements
     *     - target filename : where to go when done.
     *     - from_planning_ajax : set to disable planning form part
     **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);

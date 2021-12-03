@@ -44,7 +44,7 @@ if (!defined('GLPI_ROOT')) {
  */
 abstract class AbstractITILChildTemplate extends CommonDropdown
 {
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       parent::showForm($ID, $options);
 
       // Add autocompletion for ticket properties (twig templates)

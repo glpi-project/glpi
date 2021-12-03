@@ -761,7 +761,7 @@ class ITILFollowup  extends CommonDBChild {
     *@param $options array of possible options:
     *     - item Object : the ITILObject parent
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       if ($this->isNewItem()) {
          $this->getEmpty();
       }

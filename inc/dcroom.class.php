@@ -67,7 +67,7 @@ class DCRoom extends CommonDBTM {
       return $ong;
    }
 
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       global $DB, $CFG_GLPI;
       $rand = mt_rand();
 

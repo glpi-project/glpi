@@ -1267,7 +1267,7 @@ class Item_Devices extends CommonDBRelation {
    /**
     * @since 0.85
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       if (!$this->isNewID($ID)) {
          $this->check($ID, READ);
       } else {

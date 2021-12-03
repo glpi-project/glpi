@@ -709,7 +709,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
     *
     * @return void
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       global $CFG_GLPI;
 
       // show kb item form

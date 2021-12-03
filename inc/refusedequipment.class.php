@@ -164,7 +164,7 @@ class RefusedEquipment extends CommonDBTM {
       return "fas fa-times";
    }
 
-   public function showForm($ID, $options = []) {
+   public function showForm($ID, array $options = []) {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);
