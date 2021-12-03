@@ -1576,7 +1576,6 @@ class AuthLDAP extends DbTestCase {
       //reload user from DB
       $this->boolean($user->getFromDB($import['id']))->isTrue();
       $this->boolean((bool)$user->fields['is_deleted'])->isFalse();
-      $CFG_GLPI['user_restored_ldap'] = 0;
    }
 
    protected function ssoVariablesProvider() {

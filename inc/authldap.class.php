@@ -2587,7 +2587,8 @@ class AuthLDAP extends CommonDBTM {
                   if ($user_found && $searched_user->fields['is_deleted_ldap'] && $searched_user->fields['user_dn']) {
                      User::manageRestoredUserInLdap($searched_user->fields['id']);
                      return ['action' => self::USER_RESTORED_LDAP,
-                        'id' => $searched_user->fields['id'];
+                        'id' => $searched_user->fields['id']
+                     ];
                   }
 
                   // Add the auth method
