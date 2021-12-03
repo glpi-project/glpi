@@ -211,7 +211,6 @@ class DBmysql {
       $this->dbh = @new mysqli();
       if ($this->dbssl) {
           $this->dbh->ssl_set(
-             $this->dbh,
              $this->dbsslkey,
              $this->dbsslcert,
              $this->dbsslca,
