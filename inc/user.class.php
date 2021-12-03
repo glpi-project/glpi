@@ -4643,6 +4643,7 @@ JAVASCRIPT;
 
          //Put user in trashbin
          case AuthLDAP::DELETED_USER_DELETE:
+            // Make sure the `is_deleted_ldap` flag is changed before deleting the user (Used for a potential future restore)
             $myuser->update($tmp);
             $myuser->delete($tmp);
             break;

@@ -1484,9 +1484,6 @@ class AuthLDAP extends DbTestCase {
 
       $ldap = $this->ldap;
 
-      //put deleted LDAP users in trashbin
-      $CFG_GLPI['user_deleted_ldap'] = 1;
-
       //add a new user in directory
       $this->boolean(
          ldap_add(
@@ -1524,6 +1521,7 @@ class AuthLDAP extends DbTestCase {
       $user = new \User();
       $this->boolean($user->getFromDB($import['id']))->isTrue();
       $this->boolean((bool)$user->fields['is_deleted'])->isFalse();
+      $this->boolean((bool)$user->fields['is_deleted_ldap'])->isFalse();
 
       // delete the user in LDAP
       $this->boolean(
@@ -1533,13 +1531,15 @@ class AuthLDAP extends DbTestCase {
          )
       )->isTrue();
 
+      $user_deleted_ldap_original = $CFG_GLPI['user_deleted_ldap'] ?? 0;
+      //put deleted LDAP users in trashbin
+      $CFG_GLPI['user_deleted_ldap'] = 1;
       $synchro = $ldap->forceOneUserSynchronization($user);
+      $CFG_GLPI['user_deleted_ldap'] = $user_deleted_ldap_original;
       $this->array($synchro)
          ->hasSize(2)
          ->integer['action']->isIdenticalTo(\AuthLDAP::USER_DELETED_LDAP)
          ->variable['id']->isEqualTo($import['id']);
-      $CFG_GLPI['user_deleted_ldap'] = 0;
-      $CFG_GLPI['user_restored_ldap'] = 1;
 
       //reload user from DB
       $this->boolean($user->getFromDB($import['id']))->isTrue();
@@ -1564,13 +1564,14 @@ class AuthLDAP extends DbTestCase {
          )
       )->isTrue();
 
+      $user_restored_ldap_original = $CFG_GLPI['user_restored_ldap'] ?? 0;
+      $CFG_GLPI['user_restored_ldap'] = 1;
       $synchro = $ldap->forceOneUserSynchronization($user);
+      $CFG_GLPI['user_restored_ldap'] = $user_restored_ldap_original;
       $this->array($synchro)
          ->hasSize(2)
          ->integer['action']->isIdenticalTo(\AuthLDAP::USER_RESTORED_LDAP)
          ->variable['id']->isEqualTo($import['id']);
-      $CFG_GLPI['user_deleted_ldap'] = 0;
-      $CFG_GLPI['user_restored_ldap'] = 1;
 
       //reload user from DB
       $this->boolean($user->getFromDB($import['id']))->isTrue();
