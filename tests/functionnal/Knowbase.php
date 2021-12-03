@@ -122,7 +122,7 @@ class Knowbase extends DbTestCase {
       );
       $this->integer($kbitem_id)->isGreaterThan(0);
 
-      $kbitem_cat = new \KnowbaseItem_Category();
+      $kbitem_cat = new \KnowbaseItem_KnowbaseItemCategory();
       $kbitem_cat_id = $kbitem_cat->add(
          [
             'knowbaseitemcategories_id' => "$cat_1_1_2_id",
@@ -241,7 +241,7 @@ class Knowbase extends DbTestCase {
       );
       $this->integer($kbitem_id)->isGreaterThan(0);
 
-      $kbitem_cat = new \KnowbaseItem_Category();
+      $kbitem_cat = new \KnowbaseItem_KnowbaseItemCategory();
       $kbitem_cat_id = $kbitem_cat->add(
          [
             'knowbaseitemcategories_id' => "$cat_1_2_1_id",

@@ -3872,10 +3872,10 @@ CREATE TABLE `glpi_knowbaseitems` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
-### Dump table glpi_knowbaseitems_categories
+### Dump table glpi_knowbaseitems_knowbaseitemcategories
 
-DROP TABLE IF EXISTS `glpi_knowbaseitems_categories`;
-CREATE TABLE `glpi_knowbaseitems_categories` (
+DROP TABLE IF EXISTS `glpi_knowbaseitems_knowbaseitemcategories`;
+CREATE TABLE `glpi_knowbaseitems_knowbaseitemcategories` (
   `id` int NOT NULL AUTO_INCREMENT,
   `knowbaseitems_id` int NOT NULL DEFAULT '0',
   `knowbaseitemcategories_id` int NOT NULL DEFAULT '0',

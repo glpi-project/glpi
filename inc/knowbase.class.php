@@ -238,15 +238,15 @@ JAVASCRIPT;
                'SELECT' => ['COUNT DISTINCT' => KnowbaseItem::getTableField('id') . ' as cpt'],
                'FROM'   => KnowbaseItem::getTable(),
                'INNER JOIN' => [
-                  KnowbaseItem_Category::getTable() => [
+                  KnowbaseItem_KnowbaseItemCategory::getTable() => [
                      'ON'  => [
-                        KnowbaseItem_Category::getTable()   => KnowbaseItem::getForeignKeyField(),
+                        KnowbaseItem_KnowbaseItemCategory::getTable()   => KnowbaseItem::getForeignKeyField(),
                         KnowbaseItem::getTable()            => 'id'
                      ]
                   ]
                ],
                'WHERE'  => [
-                  KnowbaseItem_Category::getTableField($cat_fk) => new QueryExpression(
+                  KnowbaseItem_KnowbaseItemCategory::getTableField($cat_fk) => new QueryExpression(
                      DB::quoteName(KnowbaseItemCategory::getTableField('id'))
                   ),
                ]
@@ -307,15 +307,15 @@ JAVASCRIPT;
                'SELECT' => ['COUNT DISTINCT' => KnowbaseItem::getTableField('id') . ' as cpt'],
                'FROM'   => KnowbaseItem::getTable(),
                'LEFT JOIN' => [
-                  KnowbaseItem_Category::getTable() => [
+                  KnowbaseItem_KnowbaseItemCategory::getTable() => [
                      'ON'  => [
-                        KnowbaseItem_Category::getTable()   => KnowbaseItem::getForeignKeyField(),
+                        KnowbaseItem_KnowbaseItemCategory::getTable()   => KnowbaseItem::getForeignKeyField(),
                         KnowbaseItem::getTable()            => 'id'
                      ]
                   ],
                   KnowbaseItemCategory::getTable() => [
                      'ON'  => [
-                        KnowbaseItem_Category::getTable()   => KnowbaseItemCategory::getForeignKeyField(),
+                        KnowbaseItem_KnowbaseItemCategory::getTable()   => KnowbaseItemCategory::getForeignKeyField(),
                         KnowbaseItemCategory::getTable()    => 'id'
                      ]
                   ]

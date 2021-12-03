@@ -35,13 +35,11 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- *  Class KnowbaseItem_Category
+ *  Class KnowbaseItem_KnowbaseItemCategory
  *
- *  @author Romain Biot <rbiot@teclib.com>
- *
- *  @since 9.5.6
+ *  @since 10.0.0
  */
-class KnowbaseItem_Category extends CommonDBRelation {
+class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation {
 
    // From CommonDBRelation
    static public $itemtype_1          = 'KnowbaseItem';
@@ -87,7 +85,7 @@ class KnowbaseItem_Category extends CommonDBRelation {
       ];
       $where = [];
 
-      $items_id  = (int)$item->getField('id');
+      $items_id  = $item->fields['id'];
 
       $id_field = $kbi_cat_table . '.knowbaseitems_id';
       $visibility = KnowbaseItem::getVisibilityCriteria();
