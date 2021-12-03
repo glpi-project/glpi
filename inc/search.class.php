@@ -3228,7 +3228,7 @@ JAVASCRIPT;
                'addOrderBy',
                $itemtype, $ID, $order, "{$itemtype}_{$ID}"
             );
-            $out = trim($out);
+            $out = $out !== null ? trim($out) : null;
             if (!empty($out)) {
                $out = preg_replace('/^ORDER BY /', '', $out);
                $criterion = $out;
@@ -3284,7 +3284,7 @@ JAVASCRIPT;
                   'addOrderBy',
                   $itemtype, $ID, $order, "{$itemtype}_{$ID}"
                );
-               $out = trim($out);
+               $out = $out !== null ? trim($out) : null;
                if (!empty($out)) {
                   $out = preg_replace('/^ORDER BY /', '', $out);
                   $criterion = $out;
