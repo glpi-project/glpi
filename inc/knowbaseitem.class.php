@@ -229,7 +229,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
-
+      $this->addStandardTab('KnowbaseItem_KnowbaseItemCategory', $ong, $options);
       $this->addStandardTab('KnowbaseItemTranslation', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
       $this->addStandardTab('KnowbaseItem_Revision', $ong, $options);
@@ -386,6 +386,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
 
       //Linked kb items
       $this->knowbase_items = KnowbaseItem_Item::getItems($this);
+
+      //Linked kb categories
+      $this->knowbase_categories = KnowbaseItem_KnowbaseItemCategory::getItems($this);
    }
 
 
@@ -400,6 +403,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          [
             Entity_KnowbaseItem::class,
             Group_KnowbaseItem::class,
+            KnowbaseItem_KnowbaseItemCategory::class,
             KnowbaseItem_Item::class,
             KnowbaseItem_Profile::class,
             KnowbaseItem_User::class,
@@ -581,14 +585,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       // Users
       if (Session::getLoginUserID()) {
          $where['OR'] = [
-               'glpi_knowbaseitems.users_id'       => Session::getLoginUserID(),
-               'glpi_knowbaseitems_users.users_id' => Session::getLoginUserID(),
+            'glpi_knowbaseitems.users_id'       => Session::getLoginUserID(),
+            'glpi_knowbaseitems_users.users_id' => Session::getLoginUserID(),
+            'glpi_knowbaseitems.is_faq'         => 1,
          ];
-
-         // public faq
-         if (!Session::haveRight(self::$rightname, READ)) {
-            $where['AND']['glpi_knowbaseitems.is_faq'] = 1;
-         }
       } else if ($is_public_faq_context) {
          $where = [
             "glpi_knowbaseitems.is_faq" => 1,
@@ -769,11 +769,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       $options['formoptions'] = "data-track-changes=true";
       $this->showFormHeader($options);
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Category name')."</td>";
-      echo "<td>";
-      echo "<input type='hidden' name='users_id' value=\"".Session::getLoginUserID()."\">";
-      KnowbaseItemCategory::dropdown(['value' => $this->fields["knowbaseitemcategories_id"]]);
-      echo "</td>";
+      echo "<td colspan=2></td>";
       echo "<td>";
       if ($this->fields["date_creation"]) {
          //TRANS: %s is the datetime of insertion
@@ -972,13 +968,17 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
 
       $this->updateCounter();
 
-      $knowbaseitemcategories_id = $this->fields["knowbaseitemcategories_id"];
-      $fullcategoryname          = getTreeValueCompleteName("glpi_knowbaseitemcategories",
+      $tmp = [];
+      foreach ($this->knowbase_categories as $category) {
+         $knowbaseitemcategories_id = $category['knowbaseitemcategories_id'];
+         $fullcategoryname          = getTreeValueCompleteName("glpi_knowbaseitemcategories",
                                                             $knowbaseitemcategories_id);
 
-      $tmp = "<a href='".$this->getSearchURL().
+         $tmp[] = "<a href='".$this->getSearchURL().
              "?knowbaseitemcategories_id=$knowbaseitemcategories_id&forcetab=Knowbase$2'>".
              $fullcategoryname."</a>";
+      }
+      $tmp = implode(', ', $tmp);
       $out.= "<table class='tab_cadre_fixe'>";
       $out.= "<tr><th colspan='4'>".sprintf(__('%1$s: %2$s'), _n('Category', 'Categories', 1), $tmp);
       $out.= "</th></tr>";
@@ -1241,7 +1241,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       $criteria = [
          'SELECT' => [
             'glpi_knowbaseitems.*',
-            'glpi_knowbaseitemcategories.completename AS category',
+            new QueryExpression(
+               'GROUP_CONCAT(DISTINCT ' . $DB->quoteName('glpi_knowbaseitemcategories.completename') . ') AS category'),
             new QueryExpression(
                'COUNT(' . $DB->quoteName('glpi_knowbaseitems_users.id') . ')' .
                   ' + COUNT(' . $DB->quoteName('glpi_groups_knowbaseitems.id') . ')' .
@@ -1253,7 +1254,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          'FROM'   => 'glpi_knowbaseitems',
          'WHERE'     => [], //to be filled
          'LEFT JOIN' => [], //to be filled
-         'GROUPBY'   => ['glpi_knowbaseitems.id', 'glpi_knowbaseitemcategories.completename']
+         'GROUPBY'   => ['glpi_knowbaseitems.id']
       ];
 
       // Lists kb Items
@@ -1287,7 +1288,16 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       }
 
       if ($params['faq']) { // helpdesk
-         $criteria['WHERE']['glpi_knowbaseitems.is_faq'] = 1;
+         $criteria['WHERE'][] = [
+            'OR' => [
+               'glpi_knowbaseitems.is_faq' => 1,
+               'glpi_knowbaseitems_users.users_id' => Session::getLoginUserID(),
+            ]
+         ];
+      }
+
+      if ($params['knowbaseitemcategories_id'] > 0) {
+         $criteria['WHERE']['glpi_knowbaseitemcategories.id'] = $params['knowbaseitemcategories_id'];
       }
 
       if (KnowbaseItemTranslation::isKbTranslationActive()
@@ -1448,8 +1458,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
             break;
 
          case 'browse' :
-            $criteria['WHERE']['glpi_knowbaseitems.knowbaseitemcategories_id'] = $params['knowbaseitemcategories_id'];
-
             if (!Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
                // Add visibility date
                $criteria['WHERE'][] = [
@@ -1470,10 +1478,17 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
             break;
       }
 
+      $criteria['LEFT JOIN']['glpi_knowbaseitems_knowbaseitemcategories'] = [
+         'ON'  => [
+            'glpi_knowbaseitems_knowbaseitemcategories'  => 'knowbaseitems_id',
+            'glpi_knowbaseitems'             => 'id'
+         ]
+      ];
+
       $criteria['LEFT JOIN']['glpi_knowbaseitemcategories'] = [
          'ON'  => [
-            'glpi_knowbaseitemcategories' => 'id',
-            'glpi_knowbaseitems'          => 'knowbaseitemcategories_id'
+            'glpi_knowbaseitemcategories'    => 'id',
+            'glpi_knowbaseitems_knowbaseitemcategories'  => 'knowbaseitemcategories_id'
          ]
       ];
 
@@ -1690,12 +1705,20 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
             }
 
             if ($output_type == Search::HTML_OUTPUT) {
-               $cathref = $ki->getSearchURL()."?knowbaseitemcategories_id=".
-                           $data["knowbaseitemcategories_id"].'&amp;forcetab=Knowbase$2';
-               $categ   = "<a class='kb-category'"
-                  . " href='$cathref'"
-                  . " data-category-id='" . $data["knowbaseitemcategories_id"] . "'"
-                  . ">".$categ.'</a>';
+               $tmp = [];
+               $ki->getFromDB($data["id"]);
+               foreach ($ki->knowbase_categories as $category) {
+                  $knowbaseitemcategories_id = $category['knowbaseitemcategories_id'];
+                  $fullcategoryname          = getTreeValueCompleteName("glpi_knowbaseitemcategories",
+                                                                     $knowbaseitemcategories_id);
+                  $cathref = $ki->getSearchURL()."?knowbaseitemcategories_id=".
+                              $knowbaseitemcategories_id.'&amp;forcetab=Knowbase$2';
+                  $tmp[] = "<a class='kb-category'"
+                        . " href='$cathref'"
+                        . " data-category-id='" . $knowbaseitemcategories_id . "'"
+                        . ">".$fullcategoryname.'</a>';
+               }
+               $categ = implode(', ', $tmp);
             }
             echo Search::showItem($output_type, $categ, $item_num, $row_num);
 
@@ -1904,14 +1927,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       ];
 
       $tab[] = [
-         'id'                 => '4',
-         'table'              => 'glpi_knowbaseitemcategories',
-         'field'              => 'name',
-         'name'               => _n('Category', 'Categories', 1),
-         'datatype'           => 'dropdown'
-      ];
-
-      $tab[] = [
          'id'                 => '6',
          'table'              => $this->getTable(),
          'field'              => 'name',
@@ -2058,7 +2073,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
     */
    protected function getShowVisibilityDropdownParams() {
       $params = parent::getShowVisibilityDropdownParams();
-      $params['right'] = ($this->getField('is_faq') ? 'faq' : 'knowbase');
+      $params['allusers'] = 1;
       return $params;
    }
 
@@ -2107,7 +2122,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       $ids = $DB->request([
          'SELECT' => 'id',
          'FROM'   => self::getTable(),
-         'WHERE'  => ['knowbaseitemcategories_id' => $category_id],
+         'LEFT JOIN' => [
+            'glpi_knowbaseitems_knowbaseitemcategories' => [
+               'ON'  => [
+                  'glpi_knowbaseitems_knowbaseitemcategories'  => 'knowbaseitems_id',
+                  'glpi_knowbaseitems'             => 'id'
+               ]
+            ]
+         ],
+         'WHERE'  => ['glpi_knowbaseitems_knowbaseitemcategories.knowbaseitemcategories_id' => $category_id],
       ]);
 
       // Get array of ids

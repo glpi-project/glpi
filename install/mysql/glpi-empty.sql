@@ -3854,7 +3854,6 @@ CREATE TABLE `glpi_knowbaseitemcategories` (
 DROP TABLE IF EXISTS `glpi_knowbaseitems`;
 CREATE TABLE `glpi_knowbaseitems` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `knowbaseitemcategories_id` int NOT NULL DEFAULT '0',
   `name` text,
   `answer` longtext,
   `is_faq` tinyint NOT NULL DEFAULT '0',
@@ -3866,7 +3865,6 @@ CREATE TABLE `glpi_knowbaseitems` (
   `end_date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `users_id` (`users_id`),
-  KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`),
   KEY `is_faq` (`is_faq`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`),
@@ -3875,6 +3873,19 @@ CREATE TABLE `glpi_knowbaseitems` (
   FULLTEXT KEY `fulltext` (`name`,`answer`),
   FULLTEXT KEY `name` (`name`),
   FULLTEXT KEY `answer` (`answer`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+
+### Dump table glpi_knowbaseitems_knowbaseitemcategories
+
+DROP TABLE IF EXISTS `glpi_knowbaseitems_knowbaseitemcategories`;
+CREATE TABLE `glpi_knowbaseitems_knowbaseitemcategories` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `knowbaseitems_id` int NOT NULL DEFAULT '0',
+  `knowbaseitemcategories_id` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `knowbaseitems_id` (`knowbaseitems_id`),
+  KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
