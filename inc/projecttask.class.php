@@ -529,7 +529,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     *
     * @return true if displayed  false if item not found or not right to display
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       global $CFG_GLPI;
 
       $rand_template           = mt_rand();

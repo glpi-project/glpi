@@ -101,7 +101,7 @@ class SLM extends CommonDBTM {
     *
     * @return boolean item found
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
 
       $rowspan = 2;
 

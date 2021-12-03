@@ -265,7 +265,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
     * @param integer $ID
     * @param array   $options
     */
-   function showForm($ID = -1, $options = []) {
+   function showForm($ID = -1, array $options = []) {
       if (isset($options['parent']) && !empty($options['parent'])) {
          $item = $options['parent'];
       }

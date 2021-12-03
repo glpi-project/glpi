@@ -1270,7 +1270,7 @@ class Problem extends CommonITILObject {
     * @param $ID
     * @param $options   array
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       global $CFG_GLPI;
 
       if (!static::canView()) {

@@ -215,7 +215,7 @@ class SlaLevel extends LevelAgreementLevel {
     *
     * @return void
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
 
       $canedit = $this->can('sla', UPDATE);
 

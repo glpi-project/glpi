@@ -538,7 +538,7 @@ class CronTask extends CommonDBTM{
     *
     * @return boolean
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       global $CFG_GLPI;
 
       if (!Config::canView() || !$this->getFromDB($ID)) {

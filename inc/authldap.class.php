@@ -334,7 +334,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return void|boolean (display) Returns false if there is a rights error.
     */
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
 
       if (!Config::canUpdate()) {
          return false;

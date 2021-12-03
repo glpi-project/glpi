@@ -630,7 +630,7 @@ class Change extends CommonITILObject {
    }
 
 
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
 
       if (!static::canView()) {
          return false;

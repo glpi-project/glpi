@@ -378,7 +378,7 @@ abstract class CommonITILCost extends CommonDBChild {
     * @param $ID        integer  ID of the item
     * @param $options   array    options used
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
 
       if (isset($options['parent']) && !empty($options['parent'])) {
          $item = $options['parent'];

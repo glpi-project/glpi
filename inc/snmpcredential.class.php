@@ -79,7 +79,7 @@ class SNMPCredential extends CommonDBTM {
       return $ong;
    }
 
-   public function showForm($ID, $options = []) {
+   public function showForm($ID, array $options = []) {
       $this->initForm($ID, $options);
       TemplateRenderer::getInstance()->display('components/form/snmpcredential.html.twig', [
          'item'   => $this,

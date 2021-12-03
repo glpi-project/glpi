@@ -216,7 +216,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @return boolean item found
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);

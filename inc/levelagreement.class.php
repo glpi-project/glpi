@@ -141,7 +141,7 @@ abstract class LevelAgreement extends CommonDBChild {
     *
     *@return boolean item found
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       $rowspan = 3;
       if ($ID > 0) {
          $rowspan = 5;

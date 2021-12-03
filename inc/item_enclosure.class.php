@@ -163,7 +163,7 @@ class Item_Enclosure extends CommonDBRelation {
       }
    }
 
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       global $DB, $CFG_GLPI;
 
       echo "<div class='center'>";

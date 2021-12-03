@@ -1172,7 +1172,7 @@ class NetworkPort extends CommonDBChild {
       return $icon . $device_link;
    }
 
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       if (!isset($options['several'])) {
          $options['several'] = false;
       }

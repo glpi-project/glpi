@@ -365,7 +365,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
     *
     * @return void
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
 
       // Try to load id from fields if not specified
       if ($ID == 0) {

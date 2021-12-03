@@ -174,7 +174,7 @@ class Socket extends CommonDBChild {
     *
     * @return true if displayed  false if item not found or not right to display
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
 
       $itemtype = null;
       if (isset($options['itemtype']) && !empty($options['itemtype'])) {

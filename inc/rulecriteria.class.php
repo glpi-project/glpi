@@ -581,7 +581,7 @@ class RuleCriteria extends CommonDBChild {
     * @param $options array    of possible options:
     *     - rule Object : the rule
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       global $CFG_GLPI;
 
       // Yllen: you always have parent for criteria

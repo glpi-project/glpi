@@ -89,7 +89,7 @@ class NetworkName extends FQDNLabel {
     *
     *@return void
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       $this->initForm($ID, $options);
 
       $recursiveItems = $this->recursivelyGetItems();

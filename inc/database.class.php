@@ -68,7 +68,7 @@ class Database extends CommonDBChild {
    }
 
 
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       $rand = mt_rand();
       $this->initForm($ID, $options);
       $this->showFormHeader($options);

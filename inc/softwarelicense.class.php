@@ -255,7 +255,7 @@ class SoftwareLicense extends CommonTreeDropdown {
    }
 
 
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       $softwares_id = -1;
       if (isset($options['softwares_id'])) {
          $softwares_id = $options['softwares_id'];

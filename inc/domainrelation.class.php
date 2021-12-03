@@ -77,7 +77,7 @@ class DomainRelation extends CommonDropdown {
     *
     * @return void|boolean (display) Returns false if there is a rights error.
     **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
 
       $rowspan = 3;
       if ($ID > 0) {

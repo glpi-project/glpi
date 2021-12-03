@@ -847,7 +847,7 @@ class Rule extends CommonDBTM {
     *
     * @return void
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       global $CFG_GLPI;
       if (!$this->isNewID($ID)) {
          $this->check($ID, READ);

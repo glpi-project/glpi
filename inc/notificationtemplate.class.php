@@ -98,7 +98,7 @@ class NotificationTemplate extends CommonDBTM {
    }
 
 
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       global $CFG_GLPI;
 
       if (!Config::canUpdate()) {

@@ -280,7 +280,7 @@ class Item_OperatingSystem extends CommonDBRelation {
       return parent::getConnexityItem($itemtype, $items_id, $getFromDB, $getEmpty, $getFromDBOrEmpty);
    }
 
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       $colspan = 4;
 
       echo "<div class='center'>";

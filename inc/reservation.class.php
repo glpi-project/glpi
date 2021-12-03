@@ -619,7 +619,7 @@ JAVASCRIPT;
     *     - item  reservation items ID for creation process
     *     - date date for creation process
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       global $CFG_GLPI;
 
       if (!Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {

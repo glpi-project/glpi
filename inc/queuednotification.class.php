@@ -649,7 +649,7 @@ class QueuedNotification extends CommonDBTM {
     *
     * @return true if displayed  false if item not found or not right to display
    **/
-   function showForm($ID, $options = []) {
+   function showForm($ID, array $options = []) {
       if (!Session::haveRight("queuednotification", READ)) {
          return false;
       }

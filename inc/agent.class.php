@@ -168,7 +168,7 @@ class Agent extends CommonDBTM {
     *
     * @return boolean
     */
-   function showForm($id, $options = []) {
+   function showForm($id, array $options = []) {
       global $CFG_GLPI;
 
       if (!empty($id)) {
