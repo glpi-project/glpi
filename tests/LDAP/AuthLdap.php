@@ -1964,8 +1964,8 @@ class AuthLDAP extends DbTestCase {
       // Drop both
       $this->boolean(ldap_delete($ldap->connect(), $user_full_dn))->isTrue();
       $this->boolean(ldap_delete($ldap->connect(), $manager_full_dn))->isTrue();
-      $this->boolean($user->delete(['id' => $user->fields['id']]))->isTrue();
-      $this->boolean($user->delete(['id' => $manager->fields['id']]))->isTrue();
+      $this->boolean($user->delete(['id' => $user->fields['id']], 1))->isTrue();
+      $this->boolean($user->delete(['id' => $manager->fields['id']], 1))->isTrue();
    }
 
    /**
