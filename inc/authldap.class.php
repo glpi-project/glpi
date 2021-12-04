@@ -2523,6 +2523,7 @@ class AuthLDAP extends CommonDBTM {
     */
    static function ldapImportUserByServerId(array $params, $action, $ldap_server,
                                             $display = false) {
+      global $DB;
 
       $params      = Toolbox::stripslashes_deep($params);
       $config_ldap = new self();
@@ -2580,9 +2581,9 @@ class AuthLDAP extends CommonDBTM {
                   //Get the ID by sync field (Used to check if restoration is needed)
                   $searched_user = new User();
                   $user_found = false;
-                  if (!($user_found = $searched_user->getFromDBbySyncField($login))) {
+                  if (!($user_found = $searched_user->getFromDBbySyncField($DB->escape($login)))) {
                      //In case user id has changed : get id by dn (Used to check if restoration is needed)
-                     $user_found = $searched_user->getFromDBbyDn($user_dn);
+                     $user_found = $searched_user->getFromDBbyDn($DB->escape($user_dn));
                   }
                   if ($user_found && $searched_user->fields['is_deleted_ldap'] && $searched_user->fields['user_dn']) {
                      User::manageRestoredUserInLdap($searched_user->fields['id']);
