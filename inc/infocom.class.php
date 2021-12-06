@@ -898,7 +898,7 @@ class Infocom extends CommonDBChild {
       $ecartfinmoiscourant = 0;
       $ecartmoisexercice   = 0;
       $date_Y  =  $date_m  =  $date_d  =  $date_H  =  $date_i  =  $date_s  =  0;
-      sscanf($date_achat, "%4s-%2s-%2s %2s:%2s:%2s",
+      sscanf(($date_achat ?? ""), "%4s-%2s-%2s %2s:%2s:%2s",
              $date_Y, $date_m, $date_d,
              $date_H, $date_i, $date_s); // un traitement sur la date mysql pour recuperer l'annee
 
