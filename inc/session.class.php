@@ -276,7 +276,7 @@ class Session {
    static function canViewAllEntities() {
       // Command line can see all entities
       return (isCommandLine()
-              || ((countElementsInTable("glpi_entities")) == count($_SESSION["glpiactiveentities"])));
+              || ((countElementsInTable("glpi_entities")) == count($_SESSION["glpiactiveentities"] ?? [])));
 
    }
 

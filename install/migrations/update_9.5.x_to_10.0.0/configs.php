@@ -60,3 +60,6 @@ Config::deleteConfigurationValues('core', ['layout']);
 
 $migration->displayMessage('Drop autocompletion configuration');
 Config::deleteConfigurationValues('core', ['use_ajax_autocompletion']);
+
+$migration->displayMessage('Add LDAP restore action preference');
+Config::setConfigurationValues('core', ['user_restored_ldap' => 0]);

@@ -40,6 +40,9 @@ use Group_User;
 /* Test for inc/authldap.class.php */
 
 class AuthLDAP extends DbTestCase {
+   /**
+    * @var \AuthLDAP
+    */
    private $ldap;
 
    public function beforeTestMethod($method) {
@@ -1469,6 +1472,112 @@ class AuthLDAP extends DbTestCase {
       $this->boolean((bool)$user->fields['is_deleted'])->isTrue();
    }
 
+   /**
+    * Test restoring users from LDAP
+    *
+    * @extensions ldap
+    *
+    * @return void
+    */
+   public function testRestoredUser() {
+      global $CFG_GLPI;
+
+      $ldap = $this->ldap;
+
+      //add a new user in directory
+      $this->boolean(
+         ldap_add(
+            $ldap->connect(),
+            'uid=torestoretest,ou=people,ou=ldap3,dc=glpi,dc=org',
+            [
+               'uid'          => 'torestoretest',
+               'sn'           => 'A SN',
+               'cn'           => 'A CN',
+               'userpassword' => 'password',
+               'objectClass'  => [
+                  'top',
+                  'inetOrgPerson'
+               ]
+            ]
+         )
+      )->isTrue();
+
+      //import the user
+      $import = \AuthLDAP::ldapImportUserByServerId(
+         [
+            'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+            'value'  => 'torestoretest'
+         ],
+         \AuthLDAP::ACTION_IMPORT,
+         $ldap->getID(),
+         true
+      );
+      $this->array($import)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
+         ->integer['id']->isGreaterThan(0);
+
+      //check created user
+      $user = new \User();
+      $this->boolean($user->getFromDB($import['id']))->isTrue();
+      $this->boolean((bool)$user->fields['is_deleted'])->isFalse();
+      $this->boolean((bool)$user->fields['is_deleted_ldap'])->isFalse();
+
+      // delete the user in LDAP
+      $this->boolean(
+         ldap_delete(
+            $ldap->connect(),
+            'uid=torestoretest,ou=people,ou=ldap3,dc=glpi,dc=org'
+         )
+      )->isTrue();
+
+      $user_deleted_ldap_original = $CFG_GLPI['user_deleted_ldap'] ?? 0;
+      //put deleted LDAP users in trashbin
+      $CFG_GLPI['user_deleted_ldap'] = 1;
+      $synchro = $ldap->forceOneUserSynchronization($user);
+      $CFG_GLPI['user_deleted_ldap'] = $user_deleted_ldap_original;
+      $this->array($synchro)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_DELETED_LDAP)
+         ->variable['id']->isEqualTo($import['id']);
+
+      //reload user from DB
+      $this->boolean($user->getFromDB($import['id']))->isTrue();
+      $this->boolean((bool)$user->fields['is_deleted'])->isTrue();
+      $this->boolean((bool)$user->fields['is_deleted_ldap'])->isTrue();
+
+      // manually re-add the user in LDAP to simulate a restore
+      $this->boolean(
+         ldap_add(
+            $ldap->connect(),
+            'uid=torestoretest,ou=people,ou=ldap3,dc=glpi,dc=org',
+            [
+               'uid'          => 'torestoretest',
+               'sn'           => 'A SN',
+               'cn'           => 'A CN',
+               'userpassword' => 'password',
+               'objectClass'  => [
+                  'top',
+                  'inetOrgPerson'
+               ]
+            ]
+         )
+      )->isTrue();
+
+      $user_restored_ldap_original = $CFG_GLPI['user_restored_ldap'] ?? 0;
+      $CFG_GLPI['user_restored_ldap'] = 1;
+      $synchro = $ldap->forceOneUserSynchronization($user);
+      $CFG_GLPI['user_restored_ldap'] = $user_restored_ldap_original;
+      $this->array($synchro)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_RESTORED_LDAP)
+         ->variable['id']->isEqualTo($import['id']);
+
+      //reload user from DB
+      $this->boolean($user->getFromDB($import['id']))->isTrue();
+      $this->boolean((bool)$user->fields['is_deleted'])->isFalse();
+   }
+
    protected function ssoVariablesProvider() {
       global $DB;
 
@@ -1855,8 +1964,8 @@ class AuthLDAP extends DbTestCase {
       // Drop both
       $this->boolean(ldap_delete($ldap->connect(), $user_full_dn))->isTrue();
       $this->boolean(ldap_delete($ldap->connect(), $manager_full_dn))->isTrue();
-      $this->boolean($user->delete(['id' => $user->fields['id']]))->isTrue();
-      $this->boolean($user->delete(['id' => $manager->fields['id']]))->isTrue();
+      $this->boolean($user->delete(['id' => $user->fields['id']], 1))->isTrue();
+      $this->boolean($user->delete(['id' => $manager->fields['id']], 1))->isTrue();
    }
 
    /**
