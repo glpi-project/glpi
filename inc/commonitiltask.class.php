@@ -1498,8 +1498,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                } else if ($itemtype == "ProblemTask") {
                   $title = __("Problem tasks to do");
                }
-               $itemtype_url = strtolower(str_replace("Task","",$itemtype));
-               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/".$itemtype_url.".php?".
+               $linked_itemtype = str_replace("Task","",$itemtype);
+               echo "<a href=\"".$linked_itemtype::getSearchURL()."?".
                       Toolbox::append_params($options, '&amp;')."\">".
                       Html::makeTitle($title, $displayed_row_count, $total_row_count)."</a>";
                break;
