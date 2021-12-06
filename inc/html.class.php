@@ -759,7 +759,11 @@ class Html {
          }
          foreach ($plugin_tabs as $tab_id => $tab_info) {
             echo "<div id='debug$tab_id$rand' class='tab-pane'>";
-            $tab_info['display_callable']($rand);
+            $tab_info['display_callable']([
+               'with_session' => $with_session,
+               'ajax'         => $ajax,
+               'rand'         => $rand,
+            ]);
             echo "</div>";
          }
          echo "</div>";
