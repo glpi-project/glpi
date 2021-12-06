@@ -904,7 +904,7 @@ class Infocom extends CommonDBChild {
 
       // un traitement sur la date mysql pour les infos necessaires
       $date_Y2 = $date_m2 = $date_d2 = $date_H2 = $date_i2 = $date_s2=0;
-      sscanf($date_tax, "%4s-%2s-%2s %2s:%2s:%2s",
+      sscanf(($date_tax ?? ""), "%4s-%2s-%2s %2s:%2s:%2s",
              $date_Y2, $date_m2, $date_d2,
              $date_H2, $date_i2, $date_s2);
       $date_Y2 = date("Y");
