@@ -1796,6 +1796,139 @@ class Config extends CommonDBTM {
       echo "</table></div>";
    }
 
+   public static function showSystemInfoTable($params = []) {
+      global $CFG_GLPI, $DB;
+
+      $p = [
+         'word_wrap_width' => 128
+      ];
+      $p = array_replace($p, $params);
+
+      echo "<table id='system-info-table' class='tab_cadre_fixe'>";
+      echo "<tr><th class='section-header'>". __('Information about system installation and configuration')."</th></tr>";
+      echo "<tr class='tab_bg_1'><td></td></tr>";
+
+      $oldlang = $_SESSION['glpilanguage'];
+      // Keep this, for some function call which still use translation (ex showAllReplicateDelay)
+      Session::loadLanguage('en_GB');
+
+      // No need to translate, this part always display in english (for copy/paste to forum)
+
+      // Try to compute a better version for .git
+      $ver = GLPI_VERSION;
+      if (is_dir(GLPI_ROOT."/.git")) {
+         $dir = getcwd();
+         chdir(GLPI_ROOT);
+         $returnCode = 1;
+         /** @var array $output */
+         $gitrev = @exec('git show --format="%h" --no-patch 2>&1', $output, $returnCode);
+         $gitbranch = '';
+         if (!$returnCode) {
+            $gitbranch = @exec('git symbolic-ref --quiet --short HEAD || git rev-parse --short HEAD 2>&1', $output, $returnCode);
+         }
+         chdir($dir);
+         if (!$returnCode) {
+            $ver .= '-git-' .$gitbranch . '-' . $gitrev;
+         }
+      }
+
+      echo "<tr class='tab_bg_1'><td><pre class='section-content'>";
+      echo "GLPI $ver (" . $CFG_GLPI['root_doc']." => " . GLPI_ROOT . ")\n";
+      echo "Installation mode: " . GLPI_INSTALL_MODE . "\n";
+      echo "Current language:" . $oldlang . "\n";
+      echo "\n</pre></td></tr>";
+
+      echo "<tr><th class='section-header'>Server</th></tr>\n";
+      echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
+      echo wordwrap("Operating system: ".php_uname()."\n", $p['word_wrap_width'], "\n\t");
+      $exts = get_loaded_extensions();
+      sort($exts);
+      echo wordwrap("PHP ".phpversion().' '.php_sapi_name()." (".implode(', ', $exts).")\n",
+         $p['word_wrap_width'], "\n\t");
+      $msg = "Setup: ";
+
+      foreach (['max_execution_time', 'memory_limit', 'post_max_size', 'safe_mode',
+                  'session.save_handler', 'upload_max_filesize'] as $key) {
+         $msg .= $key.'="'.ini_get($key).'" ';
+      }
+      echo wordwrap($msg."\n", $p['word_wrap_width'], "\n\t");
+
+      $msg = 'Software: ';
+      if (isset($_SERVER["SERVER_SOFTWARE"])) {
+         $msg .= $_SERVER["SERVER_SOFTWARE"];
+      }
+      if (isset($_SERVER["SERVER_SIGNATURE"])) {
+         $msg .= ' ('.Toolbox::stripTags($_SERVER["SERVER_SIGNATURE"]).')';
+      }
+      echo wordwrap($msg."\n", $p['word_wrap_width'], "\n\t");
+
+      if (isset($_SERVER["HTTP_USER_AGENT"])) {
+         echo "\t" . Sanitizer::sanitize($_SERVER["HTTP_USER_AGENT"], false) . "\n";
+      }
+
+      foreach ($DB->getInfo() as $key => $val) {
+         echo "$key: $val\n\t";
+      }
+      echo "\n";
+
+      $core_requirements = (new RequirementsManager())->getCoreRequirementList($DB);
+      /* @var \Glpi\System\Requirement\RequirementInterface $requirement */
+      foreach ($core_requirements as $requirement) {
+         if ($requirement->isOutOfContext()) {
+            continue; // skip requirement if not relevant
+         }
+
+         $img = $requirement->isValidated()
+            ? 'ok'
+            : ($requirement->isOptional() ? 'warning' : 'ko');
+         $messages = Html::entities_deep($requirement->getValidationMessages());
+
+         echo '<img src="' . $CFG_GLPI['root_doc'] . '/pics/' . $img . '_min.png"'
+            . ' alt="' . implode(' ', $messages) . '" title="' . implode(' ', $messages) . '" />';
+         echo implode("\n", $messages);
+
+         echo "\n";
+      }
+
+      echo "\n</pre></td></tr>";
+
+      echo "<tr><th class='section-header'>GLPI constants</th></tr>\n";
+      echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
+      foreach (get_defined_constants() as $constant_name => $constant_value) {
+         if (preg_match('/^GLPI_/', $constant_name)) {
+            echo $constant_name . ': ' . $constant_value . "\n";
+         }
+      }
+      echo "\n</pre></td></tr>";
+
+      self::showLibrariesInformation();
+
+      foreach ($CFG_GLPI["systeminformations_types"] as $type) {
+         $tmp = new $type();
+         $tmp->showSystemInformations($p['word_wrap_width']);
+      }
+
+      Session::loadLanguage($oldlang);
+
+      $files = array_merge(
+         glob(GLPI_LOCAL_I18N_DIR."/**/*.php"),
+         glob(GLPI_LOCAL_I18N_DIR."/**/*.mo")
+      );
+      sort($files);
+      if (count($files)) {
+         echo "<tr><th class='section-header'>Locales overrides</th></tr>\n";
+         echo "<tr class='tab_bg_1'><td>\n";
+         foreach ($files as $file) {
+            echo "$file<br/>\n";
+         }
+         echo "</td></tr>";
+      }
+
+      echo "<tr class='tab_bg_2'><th>". __('To copy/paste in your support request')."</th></tr>\n";
+
+      echo "</table>";
+   }
+
    /**
     * Display a HTML report about systeme information / configuration
    **/
@@ -1885,8 +2018,6 @@ class Config extends CommonDBTM {
       echo "</table>";
       Html::closeForm();
 
-      $width = 128;
-
       echo "<p>" . Telemetry::getViewLink() . "</p>";
 
       $copy_msg = __('Copy system information');
@@ -1905,129 +2036,8 @@ HTML;
          <i class="fas fa-sync me-2"></i>{$check_new_version_msg}
       </a>
 HTML;
-      echo "<table id='system-info-table' class='tab_cadre_fixe'>";
-      echo "<tr><th class='section-header'>". __('Information about system installation and configuration')."</th></tr>";
-      echo "<tr class='tab_bg_1'><td></td></tr>";
-
-       $oldlang = $_SESSION['glpilanguage'];
-       // Keep this, for some function call which still use translation (ex showAllReplicateDelay)
-       Session::loadLanguage('en_GB');
-
-      // No need to translate, this part always display in english (for copy/paste to forum)
-
-      // Try to compute a better version for .git
-      $ver = GLPI_VERSION;
-      if (is_dir(GLPI_ROOT."/.git")) {
-         $dir = getcwd();
-         chdir(GLPI_ROOT);
-         $returnCode = 1;
-         /** @var array $output */
-         $gitrev = @exec('git show --format="%h" --no-patch 2>&1', $output, $returnCode);
-         $gitbranch = '';
-         if (!$returnCode) {
-            $gitbranch = @exec('git symbolic-ref --quiet --short HEAD || git rev-parse --short HEAD 2>&1', $output, $returnCode);
-         }
-         chdir($dir);
-         if (!$returnCode) {
-            $ver .= '-git-' .$gitbranch . '-' . $gitrev;
-         }
-      }
-
-      echo "<tr class='tab_bg_1'><td><pre class='section-content'>";
-      echo "GLPI $ver (" . $CFG_GLPI['root_doc']." => " . GLPI_ROOT . ")\n";
-      echo "Installation mode: " . GLPI_INSTALL_MODE . "\n";
-      echo "Current language:" . $oldlang . "\n";
-      echo "\n</pre></td></tr>";
-
-      echo "<tr><th class='section-header'>Server</th></tr>\n";
-      echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
-      echo wordwrap("Operating system: ".php_uname()."\n", $width, "\n\t");
-      $exts = get_loaded_extensions();
-      sort($exts);
-      echo wordwrap("PHP ".phpversion().' '.php_sapi_name()." (".implode(', ', $exts).")\n",
-                    $width, "\n\t");
-      $msg = "Setup: ";
-
-      foreach (['max_execution_time', 'memory_limit', 'post_max_size', 'safe_mode',
-                     'session.save_handler', 'upload_max_filesize'] as $key) {
-         $msg .= $key.'="'.ini_get($key).'" ';
-      }
-      echo wordwrap($msg."\n", $width, "\n\t");
-
-      $msg = 'Software: ';
-      if (isset($_SERVER["SERVER_SOFTWARE"])) {
-         $msg .= $_SERVER["SERVER_SOFTWARE"];
-      }
-      if (isset($_SERVER["SERVER_SIGNATURE"])) {
-         $msg .= ' ('.Toolbox::stripTags($_SERVER["SERVER_SIGNATURE"]).')';
-      }
-      echo wordwrap($msg."\n", $width, "\n\t");
-
-      if (isset($_SERVER["HTTP_USER_AGENT"])) {
-         echo "\t" . Sanitizer::sanitize($_SERVER["HTTP_USER_AGENT"], false) . "\n";
-      }
-
-      foreach ($DB->getInfo() as $key => $val) {
-         echo "$key: $val\n\t";
-      }
-      echo "\n";
-
-      $core_requirements = (new RequirementsManager())->getCoreRequirementList($DB);
-      /* @var \Glpi\System\Requirement\RequirementInterface $requirement */
-      foreach ($core_requirements as $requirement) {
-         if ($requirement->isOutOfContext()) {
-            continue; // skip requirement if not relevant
-         }
-
-         $img = $requirement->isValidated()
-            ? 'ok'
-            : ($requirement->isOptional() ? 'warning' : 'ko');
-         $messages = Html::entities_deep($requirement->getValidationMessages());
-
-         echo '<img src="' . $CFG_GLPI['root_doc'] . '/pics/' . $img . '_min.png"'
-            . ' alt="' . implode(' ', $messages) . '" title="' . implode(' ', $messages) . '" />';
-         echo implode("\n", $messages);
-
-         echo "\n";
-      }
-
-      echo "\n</pre></td></tr>";
-
-      echo "<tr><th class='section-header'>GLPI constants</th></tr>\n";
-      echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
-      foreach (get_defined_constants() as $constant_name => $constant_value) {
-         if (preg_match('/^GLPI_/', $constant_name)) {
-            echo $constant_name . ': ' . $constant_value . "\n";
-         }
-      }
-      echo "\n</pre></td></tr>";
-
-      self::showLibrariesInformation();
-
-      foreach ($CFG_GLPI["systeminformations_types"] as $type) {
-         $tmp = new $type();
-         $tmp->showSystemInformations($width);
-      }
-
-      Session::loadLanguage($oldlang);
-
-      $files = array_merge(
-         glob(GLPI_LOCAL_I18N_DIR."/**/*.php"),
-         glob(GLPI_LOCAL_I18N_DIR."/**/*.mo")
-      );
-      sort($files);
-      if (count($files)) {
-         echo "<tr><th class='section-header'>Locales overrides</th></tr>\n";
-         echo "<tr class='tab_bg_1'><td>\n";
-         foreach ($files as $file) {
-            echo "$file<br/>\n";
-         }
-         echo "</td></tr>";
-      }
-
-      echo "<tr class='tab_bg_2'><th>". __('To copy/paste in your support request')."</th></tr>\n";
-
-      echo "</table></div>\n";
+      self::showSystemInfoTable();
+      echo "</div>\n";
    }
 
 
