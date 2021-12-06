@@ -549,6 +549,6 @@ class Computer extends CommonDBTM {
    }
 
    static function getIcon() {
-      return "fas fa-laptop";
+      return "ti ti-device-laptop";
    }
 }
