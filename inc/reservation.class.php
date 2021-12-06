@@ -265,7 +265,8 @@ class Reservation extends CommonDBChild {
 
       return (!empty($this->fields["begin"])
               && !empty($this->fields["end"])
-              && (strtotime($this->fields["begin"]) < strtotime($this->fields["end"])));
+              && (strtotime($this->fields["begin"]) < strtotime($this->fields["end"]))
+              && (strtotime($this->fields["begin"])> strtotime("now")));
    }
 
 
