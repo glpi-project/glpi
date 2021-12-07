@@ -1,5 +1,4 @@
 <?php
-
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    define('GLPI_ROOT', dirname(__DIR__));
 }
 
+use Glpi\Application\ErrorHandler;
+
 $_GET["donotcheckversion"]   = true;
 $dont_check_maintenance_mode = true;
 $skip_db_check               = true;
@@ -42,6 +43,9 @@ $skip_db_check               = true;
 //std cache, with DB connection
 include_once GLPI_ROOT . "/inc/db.function.php";
 include_once GLPI_ROOT . '/inc/config.php';
+
+// Ensure warnings will not break CSS output.
+ErrorHandler::getInstance()->disableOutput();
 
 $css = Html::compileScss($_GET);
 

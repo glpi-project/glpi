@@ -6559,7 +6559,8 @@ HTML;
       } else {
          try {
             Toolbox::logDebug("Compile $file");
-            $css = $scss->compile($import);
+            $result = $scss->compileString($import, dirname($path));
+            $css = $result->getCss();
             if (!isset($args['nocache'])) {
                $GLPI_CACHE->set($ckey, $css);
                $GLPI_CACHE->set($fckey, $file_hash);
