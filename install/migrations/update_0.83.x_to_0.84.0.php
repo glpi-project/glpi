@@ -484,16 +484,16 @@ function update083xto0840() {
 
    if (!$DB->tableExists('glpi_contractcosts')) {
       $query = "CREATE TABLE `glpi_contractcosts` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `contracts_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `contracts_id` int NOT NULL DEFAULT '0',
                   `name` varchar(255) DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   `begin_date` date DEFAULT NULL,
                   `end_date` date DEFAULT NULL,
                   `cost` decimal(20,4) NOT NULL DEFAULT '0.0000',
-                  `budgets_id` int(11) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `budgets_id` int NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
                   KEY `contracts_id` (`contracts_id`),
@@ -535,18 +535,18 @@ function update083xto0840() {
 
    if (!$DB->tableExists('glpi_ticketcosts')) {
       $query = "CREATE TABLE `glpi_ticketcosts` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `tickets_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `tickets_id` int NOT NULL DEFAULT '0',
                   `name` varchar(255) DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   `begin_date` date DEFAULT NULL,
                   `end_date` date DEFAULT NULL,
-                  `actiontime` int(11) NOT NULL DEFAULT '0',
+                  `actiontime` int NOT NULL DEFAULT '0',
                   `cost_time` decimal(20,4) NOT NULL DEFAULT '0.0000',
                   `cost_fixed` decimal(20,4) NOT NULL DEFAULT '0.0000',
                   `cost_material` decimal(20,4) NOT NULL DEFAULT '0.0000',
-                  `budgets_id` int(11) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `budgets_id` int NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
                   KEY `tickets_id` (`tickets_id`),
@@ -604,15 +604,15 @@ function update083xto0840() {
 
    if (!$DB->tableExists('glpi_rssfeeds')) {
       $query = "CREATE TABLE `glpi_rssfeeds` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) DEFAULT NULL,
-                  `users_id` int(11) NOT NULL DEFAULT '0',
+                  `users_id` int NOT NULL DEFAULT '0',
                   `comment` text COLLATE utf8_unicode_ci,
                   `url` text COLLATE utf8_unicode_ci,
-                  `refresh_rate` int(11) NOT NULL DEFAULT '86400',
-                  `max_items` int(11) NOT NULL DEFAULT '20',
-                  `have_error` TINYINT( 1 ) NOT NULL DEFAULT 0,
-                  `is_active` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  `refresh_rate` int NOT NULL DEFAULT '86400',
+                  `max_items` int NOT NULL DEFAULT '20',
+                  `have_error` TINYINT NOT NULL DEFAULT 0,
+                  `is_active` TINYINT NOT NULL DEFAULT 0,
                   `date_mod` DATETIME DEFAULT NULL,
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
@@ -626,9 +626,9 @@ function update083xto0840() {
    }
    if (!$DB->tableExists('glpi_rssfeeds_users')) {
       $query = "CREATE TABLE `glpi_rssfeeds_users` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `rssfeeds_id` int(11) NOT NULL DEFAULT '0',
-                  `users_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `rssfeeds_id` int NOT NULL DEFAULT '0',
+                  `users_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   KEY `rssfeeds_id` (`rssfeeds_id`),
                   KEY `users_id` (`users_id`)
@@ -639,11 +639,11 @@ function update083xto0840() {
 
    if (!$DB->tableExists('glpi_groups_rssfeeds')) {
       $query = "CREATE TABLE `glpi_groups_rssfeeds` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `rssfeeds_id` int(11) NOT NULL DEFAULT '0',
-                  `groups_id` int(11) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '-1',
-                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `rssfeeds_id` int NOT NULL DEFAULT '0',
+                  `groups_id` int NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '-1',
+                  `is_recursive` TINYINT NOT NULL DEFAULT 0,
                   PRIMARY KEY (`id`),
                   KEY `rssfeeds_id` (`rssfeeds_id`),
                   KEY `groups_id` (`groups_id`),
@@ -657,11 +657,11 @@ function update083xto0840() {
 
    if (!$DB->tableExists('glpi_profiles_rssfeeds')) {
       $query = "CREATE TABLE `glpi_profiles_rssfeeds` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `rssfeeds_id` int(11) NOT NULL DEFAULT '0',
-                  `profiles_id` int(11) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '-1',
-                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `rssfeeds_id` int NOT NULL DEFAULT '0',
+                  `profiles_id` int NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '-1',
+                  `is_recursive` TINYINT NOT NULL DEFAULT 0,
                   PRIMARY KEY (`id`),
                   KEY `rssfeeds_id` (`rssfeeds_id`),
                   KEY `profiles_id` (`profiles_id`),
@@ -674,10 +674,10 @@ function update083xto0840() {
 
    if (!$DB->tableExists('glpi_entities_rssfeeds')) {
       $query = "CREATE TABLE `glpi_entities_rssfeeds` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `rssfeeds_id` int(11) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `rssfeeds_id` int NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` TINYINT NOT NULL DEFAULT 0,
                   PRIMARY KEY (`id`),
                   KEY `rssfeeds_id` (`rssfeeds_id`),
                   KEY `entities_id` (`entities_id`),
@@ -691,11 +691,11 @@ function update083xto0840() {
 
    if (!$DB->tableExists('glpi_planningrecalls')) {
       $query = "CREATE TABLE `glpi_planningrecalls` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `items_id` int NOT NULL DEFAULT '0',
                   `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-                  `users_id` int(11) NOT NULL DEFAULT '0',
-                  `before_time` int(11) NOT NULL DEFAULT '-10',
+                  `users_id` int NOT NULL DEFAULT '0',
+                  `before_time` int NOT NULL DEFAULT '-10',
                   `when` datetime DEFAULT NULL,
                   PRIMARY KEY (`id`),
                   KEY `users_id` (`users_id`),
@@ -824,12 +824,12 @@ function update083xto0840() {
    $migration->addField("glpi_configs", "entity_ssofield", "string");
    $migration->addField("glpi_configs", "registration_number_ssofield", "string");
 
-   $migration->addField("glpi_users", "notification_to_myself", "tinyint(1) DEFAULT NULL");
+   $migration->addField("glpi_users", "notification_to_myself", "tinyint DEFAULT NULL");
    $migration->addField("glpi_users", 'duedateok_color', "string");
    $migration->addField("glpi_users", 'duedatewarning_color', "string");
    $migration->addField("glpi_users", 'duedatecritical_color', "string");
-   $migration->addField("glpi_users", 'duedatewarning_less', "int(11) DEFAULT NULL");
-   $migration->addField("glpi_users", 'duedatecritical_less', "int(11) DEFAULT NULL");
+   $migration->addField("glpi_users", 'duedatewarning_less', "int DEFAULT NULL");
+   $migration->addField("glpi_users", 'duedatecritical_less', "int DEFAULT NULL");
    $migration->addField("glpi_users", 'duedatewarning_unit', "string");
    $migration->addField("glpi_users", 'duedatecritical_unit', "string");
 
@@ -865,10 +865,10 @@ function update083xto0840() {
 
    if (!$DB->tableExists('glpi_slalevelcriterias')) {
       $query = "CREATE TABLE `glpi_slalevelcriterias` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `slalevels_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `slalevels_id` int NOT NULL DEFAULT '0',
                   `criteria` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `condition` int(11) NOT NULL DEFAULT '0'
+                  `condition` int NOT NULL DEFAULT '0'
                               COMMENT 'see define.php PATTERN_* and REGEX_* constant',
                   `pattern` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   PRIMARY KEY (`id`),
@@ -914,8 +914,8 @@ function update083xto0840() {
 
    if (!$DB->tableExists('glpi_blacklists')) {
       $query = "CREATE TABLE `glpi_blacklists` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `type` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `type` int NOT NULL DEFAULT '0',
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
@@ -955,7 +955,7 @@ function update083xto0840() {
 
    if (!$DB->tableExists('glpi_ssovariables')) {
       $query = "CREATE TABLE `glpi_ssovariables` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci NOT NULL,
                   PRIMARY KEY (`id`)
@@ -1143,10 +1143,10 @@ function update083xto0840() {
    // Add multiple suppliers for itil objects
    if (!$DB->tableExists('glpi_problems_suppliers')) {
       $query = "CREATE TABLE `glpi_problems_suppliers` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `problems_id` int(11) NOT NULL DEFAULT '0',
-                  `suppliers_id` int(11) NOT NULL DEFAULT '0',
-                  `type` int(11) NOT NULL DEFAULT '1',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `problems_id` int NOT NULL DEFAULT '0',
+                  `suppliers_id` int NOT NULL DEFAULT '0',
+                  `type` int NOT NULL DEFAULT '1',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`problems_id`,`type`,`suppliers_id`),
                   KEY `group` (`suppliers_id`,`type`)
@@ -1166,10 +1166,10 @@ function update083xto0840() {
 
    if (!$DB->tableExists('glpi_suppliers_tickets')) {
       $query = "CREATE TABLE `glpi_suppliers_tickets` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `tickets_id` int(11) NOT NULL DEFAULT '0',
-                  `suppliers_id` int(11) NOT NULL DEFAULT '0',
-                  `type` int(11) NOT NULL DEFAULT '1',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `tickets_id` int NOT NULL DEFAULT '0',
+                  `suppliers_id` int NOT NULL DEFAULT '0',
+                  `type` int NOT NULL DEFAULT '1',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`tickets_id`,`type`,`suppliers_id`),
                   KEY `group` (`suppliers_id`,`type`)
@@ -1839,9 +1839,9 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    // Adding FQDN table
    if (!$DB->tableExists('glpi_fqdns')) {
       $query = "CREATE TABLE `glpi_fqdns` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `fqdn` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
@@ -1877,9 +1877,9 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    // Adding IPAddress table
    if (!$DB->tableExists('glpi_ipaddresses')) {
       $query = "CREATE TABLE `glpi_ipaddresses` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `items_id` int NOT NULL DEFAULT '0',
                   `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
                   `version` tinyint unsigned DEFAULT '0',
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -1902,9 +1902,9 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    // Adding WifiNetwork table
    if (!$DB->tableExists('glpi_wifinetworks')) {
       $query = "CREATE TABLE `glpi_wifinetworks` (
-                 `id` int(11) NOT NULL AUTO_INCREMENT,
-                 `entities_id` int(11) NOT NULL DEFAULT '0',
-                 `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                 `id` int NOT NULL AUTO_INCREMENT,
+                 `entities_id` int NOT NULL DEFAULT '0',
+                 `is_recursive` tinyint NOT NULL DEFAULT '0',
                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                  `essid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                  `mode` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
@@ -1924,15 +1924,15 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    // Adding IPNetwork table
    if (!$DB->tableExists('glpi_ipnetworks')) {
       $query = "CREATE TABLE `glpi_ipnetworks` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                  `ipnetworks_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
+                  `ipnetworks_id` int NOT NULL DEFAULT '0',
                   `completename` text COLLATE utf8_unicode_ci,
-                  `level` int(11) NOT NULL DEFAULT '0',
+                  `level` int NOT NULL DEFAULT '0',
                   `ancestors_cache` longtext COLLATE utf8_unicode_ci,
                   `sons_cache` longtext COLLATE utf8_unicode_ci,
-                  `addressable` tinyint(1) NOT NULL DEFAULT '0',
+                  `addressable` tinyint NOT NULL DEFAULT '0',
                   `version` tinyint unsigned DEFAULT '0',
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `address` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -2043,9 +2043,9 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    // Adding IPNetwork table
    if (!$DB->tableExists('glpi_ipnetworks_vlans')) {
       $query = "CREATE TABLE `glpi_ipnetworks_vlans` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `ipnetworks_id` int(11) NOT NULL DEFAULT '0',
-                  `vlans_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `ipnetworks_id` int NOT NULL DEFAULT '0',
+                  `vlans_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `link` (`ipnetworks_id`, `vlans_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
@@ -2058,15 +2058,15 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    // Adding NetworkName table
    if (!$DB->tableExists('glpi_networknames')) {
       $query = "CREATE TABLE `glpi_networknames` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `items_id` int NOT NULL DEFAULT '0',
                   `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
-                  `fqdns_id` int(11) NOT NULL DEFAULT '0',
-                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
-                  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+                  `fqdns_id` int NOT NULL DEFAULT '0',
+                  `is_deleted` tinyint NOT NULL DEFAULT '0',
+                  `is_dynamic` tinyint NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   KEY `entities_id` (`entities_id`),
                   KEY `FQDN` (`name`,`fqdns_id`),
@@ -2097,11 +2097,11 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    // Adding NetworkAlias table
    if (!$DB->tableExists('glpi_networkaliases')) {
       $query = "CREATE TABLE `glpi_networkaliases` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `networknames_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `networknames_id` int NOT NULL DEFAULT '0',
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `fqdns_id` int(11) NOT NULL DEFAULT '0',
+                  `fqdns_id` int NOT NULL DEFAULT '0',
                   `comment` text COLLATE utf8_unicode_ci,
                   PRIMARY KEY (`id`),
                   KEY `entities_id` (`entities_id`),
@@ -2117,9 +2117,9 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    // Adding IPAddress_IPNetwork table
    if (!$DB->tableExists('glpi_ipaddresses_ipnetworks')) {
       $query = "CREATE TABLE `glpi_ipaddresses_ipnetworks` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `ipaddresses_id` int(11) NOT NULL DEFAULT '0',
-                  `ipnetworks_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `ipaddresses_id` int NOT NULL DEFAULT '0',
+                  `ipnetworks_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`ipaddresses_id`,`ipnetworks_id`),
                   KEY `ipnetworks_id` (`ipnetworks_id`),
@@ -2219,12 +2219,12 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    // Adding NetworkPortEthernet table
    if (!$DB->tableExists('glpi_networkportethernets')) {
       $query = "CREATE TABLE `glpi_networkportethernets` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `networkports_id` int(11) NOT NULL DEFAULT '0',
-                  `items_devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
-                  `netpoints_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `networkports_id` int NOT NULL DEFAULT '0',
+                  `items_devicenetworkcards_id` int NOT NULL DEFAULT '0',
+                  `netpoints_id` int NOT NULL DEFAULT '0',
                   `type` varchar(10) COLLATE utf8_unicode_ci DEFAULT '' COMMENT 'T, LX, SX',
-                  `speed` int(11) NOT NULL DEFAULT '10' COMMENT 'Mbit/s: 10, 100, 1000, 10000',
+                  `speed` int NOT NULL DEFAULT '10' COMMENT 'Mbit/s: 10, 100, 1000, 10000',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `networkports_id` (`networkports_id`),
                   KEY `card` (`items_devicenetworkcards_id`),
@@ -2244,11 +2244,11 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    // Adding NetworkPortWifi table
    if (!$DB->tableExists('glpi_networkportwifis')) {
       $query = "CREATE TABLE `glpi_networkportwifis` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `networkports_id` int(11) NOT NULL DEFAULT '0',
-                  `items_devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
-                  `wifinetworks_id` int(11) NOT NULL DEFAULT '0',
-                  `networkportwifis_id` int(11) NOT NULL DEFAULT '0'
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `networkports_id` int NOT NULL DEFAULT '0',
+                  `items_devicenetworkcards_id` int NOT NULL DEFAULT '0',
+                  `wifinetworks_id` int NOT NULL DEFAULT '0',
+                  `networkportwifis_id` int NOT NULL DEFAULT '0'
                                         COMMENT 'only useful in case of Managed node',
                   `version` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL
                             COMMENT 'a, a/b, a/b/g, a/b/g/n, a/b/g/n/y',
@@ -2273,8 +2273,8 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    // Adding NetworkPortLocal table
    if (!$DB->tableExists('glpi_networkportlocals')) {
       $query = "CREATE TABLE `glpi_networkportlocals` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `networkports_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `networkports_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `networkports_id` (`networkports_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
@@ -2290,8 +2290,8 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    // Adding NetworkPortDialup table
    if (!$DB->tableExists('glpi_networkportdialups')) {
       $query = "CREATE TABLE `glpi_networkportdialups` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `networkports_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `networkports_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `networkports_id` (`networkports_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
@@ -2307,8 +2307,8 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    // Adding NetworkPortAggregate table
    if (!$DB->tableExists('glpi_networkportaggregates')) {
       $query = "CREATE TABLE `glpi_networkportaggregates` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `networkports_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `networkports_id` int NOT NULL DEFAULT '0',
                   `networkports_id_list` TEXT DEFAULT NULL
                              COMMENT 'array of associated networkports_id',
                   PRIMARY KEY (`id`),
@@ -2391,9 +2391,9 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    // Adding NetworkPortAlias table
    if (!$DB->tableExists('glpi_networkportaliases')) {
       $query = "CREATE TABLE `glpi_networkportaliases` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `networkports_id` int(11) NOT NULL DEFAULT '0',
-                  `networkports_id_alias` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `networkports_id` int NOT NULL DEFAULT '0',
+                  `networkports_id_alias` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `networkports_id` (`networkports_id`),
                   KEY `networkports_id_alias` (`networkports_id_alias`)

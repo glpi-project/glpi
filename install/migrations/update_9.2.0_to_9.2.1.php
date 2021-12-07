@@ -99,8 +99,8 @@ function update920to921() {
    //see https://github.com/glpi-project/glpi/issues/2871
    if (!$DB->tableExists('glpi_olalevelactions')) {
       $query = "CREATE TABLE `glpi_olalevelactions` (
-               `id` int(11) NOT NULL AUTO_INCREMENT,
-               `olalevels_id` int(11) NOT NULL DEFAULT '0',
+               `id` int NOT NULL AUTO_INCREMENT,
+               `olalevels_id` int NOT NULL DEFAULT '0',
                `action_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                `field` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -112,10 +112,10 @@ function update920to921() {
 
    if (!$DB->tableExists('glpi_olalevelcriterias')) {
       $query = "CREATE TABLE `glpi_olalevelcriterias` (
-               `id` int(11) NOT NULL AUTO_INCREMENT,
-               `olalevels_id` int(11) NOT NULL DEFAULT '0',
+               `id` int NOT NULL AUTO_INCREMENT,
+               `olalevels_id` int NOT NULL DEFAULT '0',
                `criteria` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-               `condition` int(11) NOT NULL DEFAULT '0' COMMENT 'see define.php PATTERN_* and REGEX_* constant',
+               `condition` int NOT NULL DEFAULT '0' COMMENT 'see define.php PATTERN_* and REGEX_* constant',
                `pattern` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                PRIMARY KEY (`id`),
                KEY `olalevels_id` (`olalevels_id`),
@@ -126,13 +126,13 @@ function update920to921() {
 
    if (!$DB->tableExists('glpi_olalevels')) {
       $query = "CREATE TABLE `glpi_olalevels` (
-               `id` int(11) NOT NULL AUTO_INCREMENT,
+               `id` int NOT NULL AUTO_INCREMENT,
                `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-               `olas_id` int(11) NOT NULL DEFAULT '0',
-               `execution_time` int(11) NOT NULL,
-               `is_active` tinyint(1) NOT NULL DEFAULT '1',
-               `entities_id` int(11) NOT NULL DEFAULT '0',
-               `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+               `olas_id` int NOT NULL DEFAULT '0',
+               `execution_time` int NOT NULL,
+               `is_active` tinyint NOT NULL DEFAULT '1',
+               `entities_id` int NOT NULL DEFAULT '0',
+               `is_recursive` tinyint NOT NULL DEFAULT '0',
                `match` char(10) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'see define.php *_MATCHING constant',
                `uuid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                PRIMARY KEY (`id`),
@@ -145,9 +145,9 @@ function update920to921() {
 
    if (!$DB->tableExists('glpi_olalevels_tickets')) {
       $query = "CREATE TABLE `glpi_olalevels_tickets` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `tickets_id` int(11) NOT NULL DEFAULT '0',
-                  `olalevels_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `tickets_id` int NOT NULL DEFAULT '0',
+                  `olalevels_id` int NOT NULL DEFAULT '0',
                   `date` datetime DEFAULT NULL,
                   PRIMARY KEY (`id`),
                   KEY `tickets_id` (`tickets_id`),
@@ -376,7 +376,7 @@ function update920to921() {
    $migration->addField('glpi_items_devicesimcards', 'is_recursive', 'bool', ['after' => 'entities_id', 'value' => '0']);
    $migration->addKey('glpi_items_devicesimcards', 'is_recursive');
 
-   $migration->addField('glpi_items_operatingsystems', 'is_recursive', "tinyint(1) NOT NULL DEFAULT '0'",
+   $migration->addField('glpi_items_operatingsystems', 'is_recursive', "tinyint NOT NULL DEFAULT '0'",
                         ['after' => 'entities_id']);
    $migration->addKey('glpi_items_operatingsystems', 'is_recursive');
    $migration->migrationOneTable('glpi_items_operatingsystems');

@@ -73,8 +73,8 @@ function update085xto0900() {
    // add timeline config
    Config::setConfigurationValues('core', ['ticket_timeline' => 1]);
    Config::setConfigurationValues('core', ['ticket_timeline_keep_replaced_tabs' => 0]);
-   $migration->addField("glpi_users", "ticket_timeline", "tinyint(1) DEFAULT NULL");
-   $migration->addField("glpi_users", "ticket_timeline_keep_replaced_tabs", "tinyint(1) DEFAULT NULL");
+   $migration->addField("glpi_users", "ticket_timeline", "tinyint DEFAULT NULL");
+   $migration->addField("glpi_users", "ticket_timeline_keep_replaced_tabs", "tinyint DEFAULT NULL");
 
    // clean unused parameter
    $migration->dropField("glpi_users", "dropdown_chars_limit");

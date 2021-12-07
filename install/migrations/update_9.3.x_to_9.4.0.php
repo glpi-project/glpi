@@ -164,7 +164,7 @@ function update93xto940() {
          'glpi_itils_projects',
          'changes_id',
          'items_id',
-         "int(11) NOT NULL DEFAULT '0'"
+         "int NOT NULL DEFAULT '0'"
       );
 
       $migration->addKey(
@@ -188,7 +188,7 @@ function update93xto940() {
 
    /** Add watcher visibility to groups */
    if (!$DB->fieldExists('glpi_groups', 'is_watcher')) {
-      if ($migration->addField('glpi_groups', 'is_watcher', "tinyint(1) NOT NULL DEFAULT '1'", ['after' => 'is_requester'])) {
+      if ($migration->addField('glpi_groups', 'is_watcher', "tinyint NOT NULL DEFAULT '1'", ['after' => 'is_requester'])) {
          $migration->addKey('glpi_groups', 'is_watcher');
          $migration->migrationOneTable('glpi_groups');
       }
@@ -261,7 +261,7 @@ function update93xto940() {
          'glpi_itilfollowups',
          'tickets_id',
          'items_id',
-         "int(11) NOT NULL DEFAULT '0'"
+         "int NOT NULL DEFAULT '0'"
       );
       $migration->addKey(
          'glpi_itilfollowups',
@@ -302,7 +302,7 @@ function update93xto940() {
          'glpi_itilsolutions',
          'ticketfollowups_id',
          'itilfollowups_id',
-         "int(11) DEFAULT NULL"
+         "int DEFAULT NULL"
       );
       $migration->dropKey(
          'glpi_itilsolutions',
@@ -315,9 +315,9 @@ function update93xto940() {
    }
 
    /** Add timeline_position to Change and Problem items */
-   $migration->addField("glpi_changetasks", "timeline_position", "tinyint(1) NOT NULL DEFAULT '0'");
-   $migration->addField("glpi_changevalidations", "timeline_position", "tinyint(1) NOT NULL DEFAULT '0'");
-   $migration->addField("glpi_problemtasks", "timeline_position", "tinyint(1) NOT NULL DEFAULT '0'");
+   $migration->addField("glpi_changetasks", "timeline_position", "tinyint NOT NULL DEFAULT '0'");
+   $migration->addField("glpi_changevalidations", "timeline_position", "tinyint NOT NULL DEFAULT '0'");
+   $migration->addField("glpi_problemtasks", "timeline_position", "tinyint NOT NULL DEFAULT '0'");
 
    /** Give all existing profiles access to personalizations for legacy functionality */
    $migration->addRight('personalization', READ | UPDATE, []);
@@ -396,14 +396,14 @@ function update93xto940() {
 
    /** Add source item id to ITILFollowups. Used by followups created by merging tickets */
    if (!$DB->fieldExists('glpi_itilfollowups', 'sourceitems_id')) {
-      if ($migration->addField('glpi_itilfollowups', 'sourceitems_id', "int(11) NOT NULL DEFAULT '0'")) {
+      if ($migration->addField('glpi_itilfollowups', 'sourceitems_id', "int NOT NULL DEFAULT '0'")) {
          $migration->addKey('glpi_itilfollowups', 'sourceitems_id');
       }
    }
 
    /** Add sourceof item id to ITILFollowups. Used to link to tickets created by promotion */
    if (!$DB->fieldExists('glpi_itilfollowups', 'sourceof_items_id')) {
-      if ($migration->addField('glpi_itilfollowups', 'sourceof_items_id', "int(11) NOT NULL DEFAULT '0'")) {
+      if ($migration->addField('glpi_itilfollowups', 'sourceof_items_id', "int NOT NULL DEFAULT '0'")) {
          $migration->addKey('glpi_itilfollowups', 'sourceof_items_id');
       }
    }

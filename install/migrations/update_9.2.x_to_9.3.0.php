@@ -50,22 +50,22 @@ function update92xto930() {
    //Create solutions table
    if (!$DB->tableExists('glpi_itilsolutions')) {
       $query = "CREATE TABLE `glpi_itilsolutions` (
-         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `id` int NOT NULL AUTO_INCREMENT,
          `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-         `items_id` int(11) NOT NULL DEFAULT '0',
-         `solutiontypes_id` int(11) NOT NULL DEFAULT '0',
+         `items_id` int NOT NULL DEFAULT '0',
+         `solutiontypes_id` int NOT NULL DEFAULT '0',
          `solutiontype_name` varchar(255) NULL DEFAULT NULL,
          `content` longtext COLLATE utf8_unicode_ci,
          `date_creation` datetime DEFAULT NULL,
          `date_mod` datetime DEFAULT NULL,
          `date_approval` datetime DEFAULT NULL,
-         `users_id` int(11) NOT NULL DEFAULT '0',
+         `users_id` int NOT NULL DEFAULT '0',
          `user_name` varchar(255) NULL DEFAULT NULL,
-         `users_id_editor` int(11) NOT NULL DEFAULT '0',
-         `users_id_approval` int(11) NOT NULL DEFAULT '0',
+         `users_id_editor` int NOT NULL DEFAULT '0',
+         `users_id_approval` int NOT NULL DEFAULT '0',
          `user_name_approval` varchar(255) NULL DEFAULT NULL,
-         `status` int(11) NOT NULL DEFAULT '1',
-         `ticketfollowups_id` int(11) DEFAULT NULL  COMMENT 'Followup reference on reject or approve a ticket solution',
+         `status` int NOT NULL DEFAULT '1',
+         `ticketfollowups_id` int DEFAULT NULL  COMMENT 'Followup reference on reject or approve a ticket solution',
          PRIMARY KEY (`id`),
          KEY `itemtype` (`itemtype`),
          KEY `item_id` (`items_id`),
@@ -203,12 +203,12 @@ function update92xto930() {
    /** Datacenters */
    if (!$DB->tableExists('glpi_datacenters')) {
       $query = "CREATE TABLE `glpi_datacenters` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                  `locations_id` int(11) NOT NULL DEFAULT '0',
-                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
+                  `locations_id` int NOT NULL DEFAULT '0',
+                  `is_deleted` tinyint NOT NULL DEFAULT '0',
                   `date_mod` datetime DEFAULT NULL,
                   `date_creation` datetime DEFAULT NULL,
                   PRIMARY KEY (`id`),
@@ -222,16 +222,16 @@ function update92xto930() {
 
    if (!$DB->tableExists('glpi_dcrooms')) {
       $query = "CREATE TABLE `glpi_dcrooms` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                  `locations_id` int(11) NOT NULL DEFAULT '0',
-                  `vis_cols` int(11) DEFAULT NULL,
-                  `vis_rows` int(11) DEFAULT NULL,
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
+                  `locations_id` int NOT NULL DEFAULT '0',
+                  `vis_cols` int DEFAULT NULL,
+                  `vis_rows` int DEFAULT NULL,
                   `blueprint` text COLLATE utf8_unicode_ci,
-                  `datacenters_id` int(11) NOT NULL DEFAULT '0',
-                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+                  `datacenters_id` int NOT NULL DEFAULT '0',
+                  `is_deleted` tinyint NOT NULL DEFAULT '0',
                   `date_mod` datetime DEFAULT NULL,
                   `date_creation` datetime DEFAULT NULL,
                   PRIMARY KEY (`id`),
@@ -249,7 +249,7 @@ function update92xto930() {
 
    if (!$DB->tableExists('glpi_rackmodels')) {
       $query = "CREATE TABLE `glpi_rackmodels` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   `product_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -264,9 +264,9 @@ function update92xto930() {
 
    if (!$DB->tableExists('glpi_racktypes')) {
       $query = "CREATE TABLE `glpi_racktypes` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   `date_creation` datetime DEFAULT NULL,
@@ -283,34 +283,34 @@ function update92xto930() {
 
    if (!$DB->tableExists('glpi_racks')) {
       $query = "CREATE TABLE `glpi_racks` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                  `locations_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
+                  `locations_id` int NOT NULL DEFAULT '0',
                   `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `rackmodels_id` int(11) DEFAULT NULL,
-                  `manufacturers_id` int(11) NOT NULL DEFAULT '0',
-                  `racktypes_id` int(11) NOT NULL DEFAULT '0',
-                  `states_id` int(11) NOT NULL DEFAULT '0',
-                  `users_id_tech` int(11) NOT NULL DEFAULT '0',
-                  `groups_id_tech` int(11) NOT NULL DEFAULT '0',
-                  `width` int(11) DEFAULT NULL,
-                  `height` int(11) DEFAULT NULL,
-                  `depth` int(11) DEFAULT NULL,
-                  `number_units` int(11) DEFAULT '0',
-                  `is_template` tinyint(1) NOT NULL DEFAULT '0',
+                  `rackmodels_id` int DEFAULT NULL,
+                  `manufacturers_id` int NOT NULL DEFAULT '0',
+                  `racktypes_id` int NOT NULL DEFAULT '0',
+                  `states_id` int NOT NULL DEFAULT '0',
+                  `users_id_tech` int NOT NULL DEFAULT '0',
+                  `groups_id_tech` int NOT NULL DEFAULT '0',
+                  `width` int DEFAULT NULL,
+                  `height` int DEFAULT NULL,
+                  `depth` int DEFAULT NULL,
+                  `number_units` int DEFAULT '0',
+                  `is_template` tinyint NOT NULL DEFAULT '0',
                   `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
-                  `dcrooms_id` int(11) NOT NULL DEFAULT '0',
-                  `room_orientation` int(11) NOT NULL DEFAULT '0',
+                  `is_deleted` tinyint NOT NULL DEFAULT '0',
+                  `dcrooms_id` int NOT NULL DEFAULT '0',
+                  `room_orientation` int NOT NULL DEFAULT '0',
                   `position` varchar(50),
                   `bgcolor` varchar(7) DEFAULT NULL,
-                  `max_power` int(11) NOT NULL DEFAULT '0',
-                  `mesured_power` int(11) NOT NULL DEFAULT '0',
-                  `max_weight` int(11) NOT NULL DEFAULT '0',
+                  `max_power` int NOT NULL DEFAULT '0',
+                  `mesured_power` int NOT NULL DEFAULT '0',
+                  `max_weight` int NOT NULL DEFAULT '0',
                   `date_mod` datetime DEFAULT NULL,
                   `date_creation` datetime DEFAULT NULL,
                   PRIMARY KEY (`id`),
@@ -332,15 +332,15 @@ function update92xto930() {
 
    if (!$DB->tableExists('glpi_items_racks')) {
       $query = "CREATE TABLE `glpi_items_racks` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `racks_id` int(11) NOT NULL,
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `racks_id` int NOT NULL,
                   `itemtype` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-                  `items_id` int(11) NOT NULL,
-                  `position` int(11) NOT NULL,
-                  `orientation` tinyint(1),
+                  `items_id` int NOT NULL,
+                  `position` int NOT NULL,
+                  `orientation` tinyint,
                   `bgcolor` varchar(7) DEFAULT NULL,
-                  `hpos` tinyint(1) NOT NULL DEFAULT '0',
-                  `is_reserved` tinyint(1) NOT NULL DEFAULT '0',
+                  `hpos` tinyint NOT NULL DEFAULT '0',
+                  `is_reserved` tinyint NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `item` (`itemtype`,`items_id`, `is_reserved`),
                   KEY `relation` (`racks_id`,`itemtype`,`items_id`)
@@ -364,22 +364,22 @@ function update92xto930() {
    $models_fields = [
       [
          'name'   => 'weight',
-         'type'   => "int(11) NOT NULL DEFAULT '0'"
+         'type'   => "int NOT NULL DEFAULT '0'"
       ], [
          'name'   => 'required_units',
-         'type'   => "int(11) NOT NULL DEFAULT '1'"
+         'type'   => "int NOT NULL DEFAULT '1'"
       ], [
          'name'   => 'depth',
          'type'   => "float NOT NULL DEFAULT 1"
       ], [
          'name'   => 'power_connections',
-         'type'   => "int(11) NOT NULL DEFAULT '0'"
+         'type'   => "int NOT NULL DEFAULT '0'"
       ], [
          'name'   => 'power_consumption',
-         'type'   => "int(11) NOT NULL DEFAULT '0'"
+         'type'   => "int NOT NULL DEFAULT '0'"
       ], [
          'name'   => 'is_half_rack',
-         'type'   => "tinyint(1) NOT NULL DEFAULT '0'"
+         'type'   => "tinyint NOT NULL DEFAULT '0'"
       ], [
          'name'   => 'picture_front',
          'type'   => "text"
@@ -407,16 +407,16 @@ function update92xto930() {
 
    if (!$DB->tableExists('glpi_enclosuremodels')) {
       $query = "CREATE TABLE `glpi_enclosuremodels` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   `product_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `weight` int(11) NOT NULL DEFAULT '0',
-                  `required_units` int(11) NOT NULL DEFAULT '1',
+                  `weight` int NOT NULL DEFAULT '0',
+                  `required_units` int NOT NULL DEFAULT '1',
                   `depth` float NOT NULL DEFAULT 1,
-                  `power_connections` int(11) NOT NULL DEFAULT '0',
-                  `power_consumption` int(11) NOT NULL DEFAULT '0',
-                  `is_half_rack` tinyint(1) NOT NULL DEFAULT '0',
+                  `power_connections` int NOT NULL DEFAULT '0',
+                  `power_consumption` int NOT NULL DEFAULT '0',
+                  `is_half_rack` tinyint NOT NULL DEFAULT '0',
                   `picture_front` text COLLATE utf8_unicode_ci,
                   `picture_rear` text COLLATE utf8_unicode_ci,
                   `date_mod` datetime DEFAULT NULL,
@@ -432,24 +432,24 @@ function update92xto930() {
 
    if (!$DB->tableExists('glpi_enclosures')) {
       $query = "CREATE TABLE `glpi_enclosures` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                  `locations_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
+                  `locations_id` int NOT NULL DEFAULT '0',
                   `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `enclosuremodels_id` int(11) DEFAULT NULL,
-                  `users_id_tech` int(11) NOT NULL DEFAULT '0',
-                  `groups_id_tech` int(11) NOT NULL DEFAULT '0',
-                  `is_template` tinyint(1) NOT NULL DEFAULT '0',
+                  `enclosuremodels_id` int DEFAULT NULL,
+                  `users_id_tech` int NOT NULL DEFAULT '0',
+                  `groups_id_tech` int NOT NULL DEFAULT '0',
+                  `is_template` tinyint NOT NULL DEFAULT '0',
                   `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
-                  `orientation` tinyint(1),
-                  `power_supplies` tinyint(1) NOT NULL DEFAULT '0',
-                  `states_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
+                  `is_deleted` tinyint NOT NULL DEFAULT '0',
+                  `orientation` tinyint,
+                  `power_supplies` tinyint NOT NULL DEFAULT '0',
+                  `states_id` int NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
                   `comment` text COLLATE utf8_unicode_ci,
-                  `manufacturers_id` int(11) NOT NULL DEFAULT '0',
+                  `manufacturers_id` int NOT NULL DEFAULT '0',
                   `date_mod` datetime DEFAULT NULL,
                   `date_creation` datetime DEFAULT NULL,
                   PRIMARY KEY (`id`),
@@ -469,11 +469,11 @@ function update92xto930() {
 
    if (!$DB->tableExists('glpi_items_enclosures')) {
       $query = "CREATE TABLE `glpi_items_enclosures` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `enclosures_id` int(11) NOT NULL,
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `enclosures_id` int NOT NULL,
                   `itemtype` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-                  `items_id` int(11) NOT NULL,
-                  `position` int(11) NOT NULL,
+                  `items_id` int NOT NULL,
+                  `position` int NOT NULL,
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `item` (`itemtype`,`items_id`),
                   KEY `relation` (`enclosures_id`,`itemtype`,`items_id`)
@@ -483,19 +483,19 @@ function update92xto930() {
 
    if (!$DB->tableExists('glpi_pdumodels')) {
       $query = "CREATE TABLE `glpi_pdumodels` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   `product_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `weight` int(11) NOT NULL DEFAULT '0',
-                  `required_units` int(11) NOT NULL DEFAULT '1',
+                  `weight` int NOT NULL DEFAULT '0',
+                  `required_units` int NOT NULL DEFAULT '1',
                   `depth` float NOT NULL DEFAULT 1,
-                  `power_connections` int(11) NOT NULL DEFAULT '0',
-                  `max_power` int(11) NOT NULL DEFAULT '0',
-                  `is_half_rack` tinyint(1) NOT NULL DEFAULT '0',
+                  `power_connections` int NOT NULL DEFAULT '0',
+                  `max_power` int NOT NULL DEFAULT '0',
+                  `is_half_rack` tinyint NOT NULL DEFAULT '0',
                   `picture_front` text COLLATE utf8_unicode_ci,
                   `picture_rear` text COLLATE utf8_unicode_ci,
-                  `is_rackable` tinyint(1) NOT NULL DEFAULT '0',
+                  `is_rackable` tinyint NOT NULL DEFAULT '0',
                   `date_mod` datetime DEFAULT NULL,
                   `date_creation` datetime DEFAULT NULL,
                   PRIMARY KEY (`id`),
@@ -515,9 +515,9 @@ function update92xto930() {
 
    if (!$DB->tableExists('glpi_pdutypes')) {
       $query = "CREATE TABLE `glpi_pdutypes` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   `date_creation` datetime DEFAULT NULL,
@@ -534,23 +534,23 @@ function update92xto930() {
 
    if (!$DB->tableExists('glpi_pdus')) {
       $query = "CREATE TABLE `glpi_pdus` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                  `locations_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
+                  `locations_id` int NOT NULL DEFAULT '0',
                   `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `pdumodels_id` int(11) DEFAULT NULL,
-                  `users_id_tech` int(11) NOT NULL DEFAULT '0',
-                  `groups_id_tech` int(11) NOT NULL DEFAULT '0',
-                  `is_template` tinyint(1) NOT NULL DEFAULT '0',
+                  `pdumodels_id` int DEFAULT NULL,
+                  `users_id_tech` int NOT NULL DEFAULT '0',
+                  `groups_id_tech` int NOT NULL DEFAULT '0',
+                  `is_template` tinyint NOT NULL DEFAULT '0',
                   `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
-                  `states_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
+                  `is_deleted` tinyint NOT NULL DEFAULT '0',
+                  `states_id` int NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
                   `comment` text COLLATE utf8_unicode_ci,
-                  `manufacturers_id` int(11) NOT NULL DEFAULT '0',
-                  `pdutypes_id` int(11) NOT NULL DEFAULT '0',
+                  `manufacturers_id` int NOT NULL DEFAULT '0',
+                  `pdutypes_id` int NOT NULL DEFAULT '0',
                   `date_mod` datetime DEFAULT NULL,
                   `date_creation` datetime DEFAULT NULL,
                   PRIMARY KEY (`id`),
@@ -571,7 +571,7 @@ function update92xto930() {
 
    if (!$DB->tableExists('glpi_plugs')) {
       $query = "CREATE TABLE `glpi_plugs` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   `date_mod` datetime DEFAULT NULL,
@@ -586,10 +586,10 @@ function update92xto930() {
 
    if (!$DB->tableExists('glpi_pdus_plugs')) {
       $query = "CREATE TABLE `glpi_pdus_plugs` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `plugs_id` int(11) NOT NULL DEFAULT '0',
-                  `pdus_id` int(11) NOT NULL DEFAULT '0',
-                  `number_plugs` int(11) DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `plugs_id` int NOT NULL DEFAULT '0',
+                  `pdus_id` int NOT NULL DEFAULT '0',
+                  `number_plugs` int DEFAULT '0',
                   `date_mod` datetime DEFAULT NULL,
                   `date_creation` datetime DEFAULT NULL,
                   PRIMARY KEY (`id`),
@@ -610,11 +610,11 @@ function update92xto930() {
 
    if (!$DB->tableExists('glpi_pdus_racks')) {
       $query = "CREATE TABLE `glpi_pdus_racks` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `racks_id` int(11) NOT NULL DEFAULT '0',
-                  `pdus_id` int(11) NOT NULL DEFAULT '0',
-                  `side` int(11) DEFAULT '0',
-                  `position` int(11) NOT NULL,
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `racks_id` int NOT NULL DEFAULT '0',
+                  `pdus_id` int NOT NULL DEFAULT '0',
+                  `side` int DEFAULT '0',
+                  `position` int NOT NULL,
                   `bgcolor` varchar(7) DEFAULT NULL,
                   `date_mod` datetime DEFAULT NULL,
                   `date_creation` datetime DEFAULT NULL,

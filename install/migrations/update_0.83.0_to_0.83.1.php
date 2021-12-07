@@ -73,7 +73,7 @@ function update0830to0831() {
                               'condition' => " WHERE `config` = 'w'"]);
 
    $migration->addField("glpi_configs", "display_count_on_home", "integer", ['value' => 5]);
-   $migration->addField("glpi_users", "display_count_on_home", "int(11) NULL DEFAULT NULL");
+   $migration->addField("glpi_users", "display_count_on_home", "int NULL DEFAULT NULL");
 
    // ************ Keep it at the end **************
    $migration->displayMessage('Migration of glpi_displaypreferences');

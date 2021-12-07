@@ -84,11 +84,11 @@ function update080xto0830() {
    // Problems management
    if (!$DB->tableExists('glpi_problems')) {
       $query = "CREATE TABLE `glpi_problems` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) DEFAULT NULL,
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
+                  `is_deleted` tinyint NOT NULL DEFAULT '0',
                   `status` varchar(255) DEFAULT NULL,
                   `content` longtext DEFAULT NULL,
                   `date_mod` DATETIME DEFAULT NULL,
@@ -96,23 +96,23 @@ function update080xto0830() {
                   `solvedate` DATETIME DEFAULT NULL,
                   `closedate` DATETIME DEFAULT NULL,
                   `due_date` DATETIME DEFAULT NULL,
-                  `users_id_recipient` int(11) NOT NULL DEFAULT '0',
-                  `users_id_lastupdater` int(11) NOT NULL DEFAULT '0',
-                  `suppliers_id_assign` int(11) NOT NULL DEFAULT '0',
-                  `urgency` int(11) NOT NULL DEFAULT '1',
-                  `impact` int(11) NOT NULL DEFAULT '1',
-                  `priority` int(11) NOT NULL DEFAULT '1',
-                  `itilcategories_id` int(11) NOT NULL DEFAULT '0',
+                  `users_id_recipient` int NOT NULL DEFAULT '0',
+                  `users_id_lastupdater` int NOT NULL DEFAULT '0',
+                  `suppliers_id_assign` int NOT NULL DEFAULT '0',
+                  `urgency` int NOT NULL DEFAULT '1',
+                  `impact` int NOT NULL DEFAULT '1',
+                  `priority` int NOT NULL DEFAULT '1',
+                  `itilcategories_id` int NOT NULL DEFAULT '0',
                   `impactcontent` longtext DEFAULT NULL,
                   `causecontent` longtext DEFAULT NULL,
                   `symptomcontent` longtext DEFAULT NULL,
-                  `solutiontypes_id` int(11) NOT NULL DEFAULT '0',
+                  `solutiontypes_id` int NOT NULL DEFAULT '0',
                   `solution` text COLLATE utf8_unicode_ci,
-                  `actiontime` int(11) NOT NULL DEFAULT '0',
+                  `actiontime` int NOT NULL DEFAULT '0',
                   `begin_waiting_date` datetime DEFAULT NULL,
-                  `waiting_duration` int(11) NOT NULL DEFAULT '0',
-                  `close_delay_stat` int(11) NOT NULL DEFAULT '0',
-                  `solve_delay_stat` int(11) NOT NULL DEFAULT '0',
+                  `waiting_duration` int NOT NULL DEFAULT '0',
+                  `close_delay_stat` int NOT NULL DEFAULT '0',
+                  `solve_delay_stat` int NOT NULL DEFAULT '0',
                   `notepad` LONGTEXT NULL,
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
@@ -145,11 +145,11 @@ function update080xto0830() {
 
    if (!$DB->tableExists('glpi_problems_users')) {
       $query = "CREATE TABLE `glpi_problems_users` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `problems_id` int(11) NOT NULL DEFAULT '0',
-                  `users_id` int(11) NOT NULL DEFAULT '0',
-                  `type` int(11) NOT NULL DEFAULT '1',
-                  `use_notification` tinyint(1) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `problems_id` int NOT NULL DEFAULT '0',
+                  `users_id` int NOT NULL DEFAULT '0',
+                  `type` int NOT NULL DEFAULT '1',
+                  `use_notification` tinyint NOT NULL DEFAULT '0',
                   `alternative_email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`problems_id`,`type`,`users_id`,`alternative_email`),
@@ -160,10 +160,10 @@ function update080xto0830() {
 
    if (!$DB->tableExists('glpi_groups_problems')) {
       $query = "CREATE TABLE `glpi_groups_problems` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `problems_id` int(11) NOT NULL DEFAULT '0',
-                  `groups_id` int(11) NOT NULL DEFAULT '0',
-                  `type` int(11) NOT NULL DEFAULT '1',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `problems_id` int NOT NULL DEFAULT '0',
+                  `groups_id` int NOT NULL DEFAULT '0',
+                  `type` int NOT NULL DEFAULT '1',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`problems_id`,`type`,`groups_id`),
                   KEY `group` (`groups_id`,`type`)
@@ -173,10 +173,10 @@ function update080xto0830() {
 
    if (!$DB->tableExists('glpi_items_problems')) {
       $query = "CREATE TABLE `glpi_items_problems` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `problems_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `problems_id` int NOT NULL DEFAULT '0',
                   `itemtype` varchar(100) default NULL,
-                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  `items_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`problems_id`,`itemtype`,`items_id`),
                   KEY `item` (`itemtype`,`items_id`)
@@ -186,9 +186,9 @@ function update080xto0830() {
 
    if (!$DB->tableExists('glpi_problems_tickets')) {
       $query = "CREATE TABLE `glpi_problems_tickets` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `problems_id` int(11) NOT NULL DEFAULT '0',
-                  `tickets_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `problems_id` int NOT NULL DEFAULT '0',
+                  `tickets_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`problems_id`,`tickets_id`),
                   KEY `tickets_id` (`tickets_id`)
@@ -198,17 +198,17 @@ function update080xto0830() {
 
    if (!$DB->tableExists('glpi_problemtasks')) {
       $query = "CREATE TABLE `glpi_problemtasks` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `problems_id` int(11) NOT NULL DEFAULT '0',
-                  `taskcategories_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `problems_id` int NOT NULL DEFAULT '0',
+                  `taskcategories_id` int NOT NULL DEFAULT '0',
                   `date` datetime DEFAULT NULL,
                   `begin` datetime DEFAULT NULL,
                   `end` datetime DEFAULT NULL,
-                  `users_id` int(11) NOT NULL DEFAULT '0',
-                  `users_id_tech` int(11) NOT NULL DEFAULT '0',
+                  `users_id` int NOT NULL DEFAULT '0',
+                  `users_id_tech` int NOT NULL DEFAULT '0',
                   `content` longtext COLLATE utf8_unicode_ci,
-                  `actiontime` int(11) NOT NULL DEFAULT '0',
-                  `state` int(11) NOT NULL DEFAULT '0',
+                  `actiontime` int NOT NULL DEFAULT '0',
+                  `state` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   KEY `problems_id` (`problems_id`),
                   KEY `users_id` (`users_id`),
@@ -545,15 +545,15 @@ function update080xto0830() {
 
    $migration->addField("glpi_configs", "show_count_on_tabs", "bool", ['value' => '1']);
 
-   $migration->addField("glpi_users", "show_count_on_tabs", "tinyint(1) NULL DEFAULT NULL");
+   $migration->addField("glpi_users", "show_count_on_tabs", "tinyint NULL DEFAULT NULL");
 
    $migration->addField("glpi_configs", "refresh_ticket_list", "integer");
 
-   $migration->addField("glpi_users", "refresh_ticket_list", "int(11) NULL DEFAULT NULL");
+   $migration->addField("glpi_users", "refresh_ticket_list", "int NULL DEFAULT NULL");
 
    $migration->addField("glpi_configs", "set_default_tech", "bool", ['value' => '1']);
 
-   $migration->addField("glpi_users", "set_default_tech", "tinyint(1) NULL DEFAULT NULL");
+   $migration->addField("glpi_users", "set_default_tech", "tinyint NULL DEFAULT NULL");
 
    $migration->addField("glpi_reservations", "group", "integer");
 
@@ -638,10 +638,10 @@ function update080xto0830() {
    // Several email per users
    if (!$DB->tableExists('glpi_useremails')) {
       $query = "CREATE TABLE `glpi_useremails` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `users_id` int(11) NOT NULL DEFAULT '0',
-                  `is_default` TINYINT( 1 ) NOT NULL DEFAULT 0,
-                  `is_dynamic` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `users_id` int NOT NULL DEFAULT '0',
+                  `is_default` TINYINT NOT NULL DEFAULT 0,
+                  `is_dynamic` TINYINT NOT NULL DEFAULT 0,
                   `email` varchar( 255 ) NULL DEFAULT NULL,
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`users_id`,`email`),
@@ -817,10 +817,10 @@ function update080xto0830() {
 
    if (!$DB->tableExists('glpi_tickettemplates')) {
       $query = "CREATE TABLE `glpi_tickettemplates` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar( 255 ) NULL DEFAULT NULL,
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` TINYINT NOT NULL DEFAULT 0,
                   `comment` TEXT DEFAULT NULL,
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
@@ -855,11 +855,11 @@ function update080xto0830() {
 
    if (!$DB->tableExists('glpi_tickettemplatehiddenfields')) {
       $query = "CREATE TABLE `glpi_tickettemplatehiddenfields` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
-                  `num` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `tickettemplates_id` int NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` TINYINT NOT NULL DEFAULT 0,
+                  `num` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   KEY `entities_id` (`entities_id`),
                   KEY `is_recursive` (`is_recursive`),
@@ -871,11 +871,11 @@ function update080xto0830() {
 
    if (!$DB->tableExists('glpi_tickettemplatepredefinedfields')) {
       $query = "CREATE TABLE `glpi_tickettemplatepredefinedfields` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
-                  `num` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `tickettemplates_id` int NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` TINYINT NOT NULL DEFAULT 0,
+                  `num` int NOT NULL DEFAULT '0',
                   `value` TEXT DEFAULT NULL,
                   PRIMARY KEY (`id`),
                   KEY `entities_id` (`entities_id`),
@@ -888,11 +888,11 @@ function update080xto0830() {
 
    if (!$DB->tableExists('glpi_tickettemplatemandatoryfields')) {
       $query = "CREATE TABLE `glpi_tickettemplatemandatoryfields` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
-                  `num` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `tickettemplates_id` int NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` TINYINT NOT NULL DEFAULT 0,
+                  `num` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   KEY `entities_id` (`entities_id`),
                   KEY `is_recursive` (`is_recursive`),
@@ -1006,16 +1006,16 @@ function update080xto0830() {
 
    if (!$DB->tableExists('glpi_ticketrecurrents')) {
       $query = "CREATE TABLE `glpi_ticketrecurrents` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar( 255 ) NULL DEFAULT NULL,
                   `comment` TEXT DEFAULT NULL,
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
-                  `is_active` TINYINT( 1 ) NOT NULL DEFAULT 0,
-                  `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` TINYINT NOT NULL DEFAULT 0,
+                  `is_active` TINYINT NOT NULL DEFAULT 0,
+                  `tickettemplates_id` int NOT NULL DEFAULT '0',
                   `begin_date` datetime DEFAULT NULL,
-                  `periodicity` int(11) NOT NULL DEFAULT '0',
-                  `create_before` int(11) NOT NULL DEFAULT '0',
+                  `periodicity` int NOT NULL DEFAULT '0',
+                  `create_before` int NOT NULL DEFAULT '0',
                   `next_creation_date` datetime DEFAULT NULL,
                   PRIMARY KEY (`id`),
                   KEY `entities_id` (`entities_id`),
@@ -1242,9 +1242,9 @@ function update080xto0830() {
 
    if (!$DB->tableExists('glpi_reminders_users')) {
       $query = "CREATE TABLE `glpi_reminders_users` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `reminders_id` int(11) NOT NULL DEFAULT '0',
-                  `users_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `reminders_id` int NOT NULL DEFAULT '0',
+                  `users_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   KEY `reminders_id` (`reminders_id`),
                   KEY `users_id` (`users_id`)
@@ -1255,11 +1255,11 @@ function update080xto0830() {
 
    if (!$DB->tableExists('glpi_groups_reminders')) {
       $query = "CREATE TABLE `glpi_groups_reminders` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `reminders_id` int(11) NOT NULL DEFAULT '0',
-                  `groups_id` int(11) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '-1',
-                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `reminders_id` int NOT NULL DEFAULT '0',
+                  `groups_id` int NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '-1',
+                  `is_recursive` TINYINT NOT NULL DEFAULT 0,
                   PRIMARY KEY (`id`),
                   KEY `reminders_id` (`reminders_id`),
                   KEY `groups_id` (`groups_id`),
@@ -1273,11 +1273,11 @@ function update080xto0830() {
 
    if (!$DB->tableExists('glpi_profiles_reminders')) {
       $query = "CREATE TABLE `glpi_profiles_reminders` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `reminders_id` int(11) NOT NULL DEFAULT '0',
-                  `profiles_id` int(11) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '-1',
-                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `reminders_id` int NOT NULL DEFAULT '0',
+                  `profiles_id` int NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '-1',
+                  `is_recursive` TINYINT NOT NULL DEFAULT 0,
                   PRIMARY KEY (`id`),
                   KEY `reminders_id` (`reminders_id`),
                   KEY `profiles_id` (`profiles_id`),
@@ -1290,10 +1290,10 @@ function update080xto0830() {
 
    if (!$DB->tableExists('glpi_entities_reminders')) {
       $query = "CREATE TABLE `glpi_entities_reminders` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `reminders_id` int(11) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `reminders_id` int NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` TINYINT NOT NULL DEFAULT 0,
                   PRIMARY KEY (`id`),
                   KEY `reminders_id` (`reminders_id`),
                   KEY `entities_id` (`entities_id`),
@@ -1364,9 +1364,9 @@ function update080xto0830() {
 
    if (!$DB->tableExists('glpi_knowbaseitems_users')) {
       $query = "CREATE TABLE `glpi_knowbaseitems_users` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `knowbaseitems_id` int(11) NOT NULL DEFAULT '0',
-                  `users_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `knowbaseitems_id` int NOT NULL DEFAULT '0',
+                  `users_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   KEY `knowbaseitems_id` (`knowbaseitems_id`),
                   KEY `users_id` (`users_id`)
@@ -1377,11 +1377,11 @@ function update080xto0830() {
 
    if (!$DB->tableExists('glpi_groups_knowbaseitems')) {
       $query = "CREATE TABLE `glpi_groups_knowbaseitems` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `knowbaseitems_id` int(11) NOT NULL DEFAULT '0',
-                  `groups_id` int(11) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '-1',
-                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `knowbaseitems_id` int NOT NULL DEFAULT '0',
+                  `groups_id` int NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '-1',
+                  `is_recursive` TINYINT NOT NULL DEFAULT 0,
                   PRIMARY KEY (`id`),
                   KEY `knowbaseitems_id` (`knowbaseitems_id`),
                   KEY `groups_id` (`groups_id`),
@@ -1395,11 +1395,11 @@ function update080xto0830() {
 
    if (!$DB->tableExists('glpi_knowbaseitems_profiles')) {
       $query = "CREATE TABLE `glpi_knowbaseitems_profiles` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `knowbaseitems_id` int(11) NOT NULL DEFAULT '0',
-                  `profiles_id` int(11) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '-1',
-                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `knowbaseitems_id` int NOT NULL DEFAULT '0',
+                  `profiles_id` int NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '-1',
+                  `is_recursive` TINYINT NOT NULL DEFAULT 0,
                   PRIMARY KEY (`id`),
                   KEY `knowbaseitems_id` (`knowbaseitems_id`),
                   KEY `profiles_id` (`profiles_id`),
@@ -1412,10 +1412,10 @@ function update080xto0830() {
 
    if (!$DB->tableExists('glpi_entities_knowbaseitems')) {
       $query = "CREATE TABLE `glpi_entities_knowbaseitems` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `knowbaseitems_id` int(11) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `knowbaseitems_id` int NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` TINYINT NOT NULL DEFAULT 0,
                   PRIMARY KEY (`id`),
                   KEY `knowbaseitems_id` (`knowbaseitems_id`),
                   KEY `entities_id` (`entities_id`),
@@ -1529,15 +1529,15 @@ function update080xto0830() {
 
    // new default value
    $migration->changeField("glpi_entitydatas", "calendars_id", "calendars_id",
-                           "int(11) NOT NULL DEFAULT '-2'");
+                           "int NOT NULL DEFAULT '-2'");
    $migration->changeField("glpi_entitydatas", "tickettype", "tickettype",
-                           "int(11) NOT NULL DEFAULT '-2'");
+                           "int NOT NULL DEFAULT '-2'");
    $migration->changeField("glpi_entitydatas", "inquest_config", "inquest_config",
-                           "int(11) NOT NULL DEFAULT '-2'");
+                           "int NOT NULL DEFAULT '-2'");
    $migration->changeField("glpi_entitydatas", "inquest_rate", "inquest_rate",
-                           "int(11) NOT NULL DEFAULT '0'");
+                           "int NOT NULL DEFAULT '0'");
    $migration->changeField("glpi_entitydatas", "inquest_delay", "inquest_delay",
-                           "int(11) NOT NULL DEFAULT '-10'");
+                           "int NOT NULL DEFAULT '-10'");
 
    // migration to new values for inherit parent (-1 => -2)
    $fieldparent = ['autofill_buy_date', 'autofill_delivery_date', 'autofill_warranty_date',
@@ -1585,7 +1585,7 @@ function update080xto0830() {
                   $DB->queryOrDie($query, "0.83 migrate data from config to glpi_entitydatas");
 
                   $migration->changeField("glpi_entitydatas", "$field_config", "$field_config",
-                                          "int(11) NOT NULL DEFAULT '-2'");
+                                          "int NOT NULL DEFAULT '-2'");
 
                   $migration->dropField("glpi_configs", $field_config);
                }
