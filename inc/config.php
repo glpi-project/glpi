@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\System\RequirementsManager;
+use Glpi\Toolbox\VersionParser;
 
 // Be sure to use global objects if this file is included outside normal process
 global $CFG_GLPI, $GLPI, $GLPI_CACHE;
@@ -187,42 +188,16 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
             Html::closeForm();
          }
          if (!$core_requirements->hasMissingMandatoryRequirements()) {
-            $older = false;
-            $newer = false;
-            $dev   = false;
+            $outdated = version_compare(
+               VersionParser::getNormalizedVersion($CFG_GLPI['version'] ?? '0.0.0-dev'),
+               VersionParser::getNormalizedVersion(GLPI_VERSION),
+               '>'
+            );
 
-            if (!isset($CFG_GLPI["version"])) {
-               $older = true;
-            } else {
-               if (strlen(GLPI_SCHEMA_VERSION) > 40) {
-                  $dev   = true;
-                  //got a sha1sum on both sides... cannot know if version is older or newer
-                  if (!isset($CFG_GLPI['dbversion']) || strlen(trim($CFG_GLPI['dbversion'])) < 40) {
-                     //not sure this is older... User will be warned.
-                     if (trim($CFG_GLPI["version"]) < GLPI_PREVER) {
-                        $older = true;
-                     } else if (trim($CFG_GLPI['version']) >= GLPI_PREVER) {
-                        $newer = true;
-                     }
-                  }
-               } else if (isset($CFG_GLPI['dbversion']) && strlen($CFG_GLPI['dbversion']) > 40) {
-                  //got a dev version in database, but current stable
-                  if (str_starts_with($CFG_GLPI['dbversion'], GLPI_SCHEMA_VERSION)) {
-                     $older = true;
-                  } else {
-                     $newer = true;
-                  }
-               } else if (!isset($CFG_GLPI['dbversion']) || trim($CFG_GLPI["dbversion"]) < GLPI_SCHEMA_VERSION) {
-                  $older = true;
-               } else if (trim($CFG_GLPI["dbversion"]) > GLPI_SCHEMA_VERSION) {
-                  $newer = true;
-               }
-            }
-
-            if ($older === true) {
+            if ($outdated !== true) {
                echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/install/update.php'>";
-               if ($dev === true) {
-                  echo Config::agreeDevMessage();
+               if (!VersionParser::isStableRelease(GLPI_VERSION)) {
+                  echo Config::agreeUnstableMessage(VersionParser::isDevVersion(GLPI_VERSION));
                }
                echo "<p class='mt-2 mb-n2 alert alert-important alert-warning'>";
                echo __('The version of the database is not compatible with the version of the installed files. An update is necessary.')."</p>";
@@ -232,12 +207,9 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
                   'icon'  => "fas fa-check",
                ]);
                Html::closeForm();
-            } else if ($newer === true) {
+            } else {
                echo "<p class='mt-2 mb-n2 alert alert-important alert-warning'>".
                      __('You are trying to use GLPI with outdated files compared to the version of the database. Please install the correct GLPI files corresponding to the version of your database.')."</p>";
-            } else if ($dev === true) {
-               echo "<p class='mt-2 mb-n2 alert alert-important alert-warning'>".
-                     __('You are trying to update to a development version from a development version. This is not supported.')."</strong></p>";
             }
          }
 

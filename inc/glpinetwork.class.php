@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\VersionParser;
+
 class GLPINetwork extends CommonGLPI {
 
    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
@@ -134,7 +136,7 @@ class GLPINetwork extends CommonGLPI {
     * @return string
     */
    public static function getGlpiUserAgent(): string {
-      $version = defined('GLPI_PREVER') ? GLPI_PREVER : GLPI_VERSION;
+      $version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
       $comments = sprintf('installation-mode:%s', GLPI_INSTALL_MODE);
       if (!empty(GLPI_USER_AGENT_EXTRA_COMMENTS)) {
          // append extra comments (remove '(' and ')' chars to not break UA string)

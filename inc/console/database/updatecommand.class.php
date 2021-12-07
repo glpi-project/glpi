@@ -40,6 +40,7 @@ use Glpi\Cache\CacheManager;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Console\Traits\TelemetryActivationTrait;
+use Glpi\Toolbox\VersionParser;
 use Migration;
 use Session;
 use Symfony\Component\Console\Helper\Table;
@@ -124,7 +125,7 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
       $current_db_version  = $currents['dbversion'];
 
       global $migration; // Migration scripts are using global migrations
-      $migration = new Migration(GLPI_SCHEMA_VERSION);
+      $migration = new Migration(GLPI_VERSION);
       $migration->setOutputHandler($output);
       $update->setMigration($migration);
 
@@ -137,23 +138,21 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
       $informations->addRow([__('GLPI database version'), $current_db_version, GLPI_SCHEMA_VERSION]);
       $informations->render();
 
-      if (defined('GLPI_PREVER')) {
-         // Prevent unstable update unless explicitly asked
-         if (!$allow_unstable && version_compare($current_db_version, GLPI_SCHEMA_VERSION, 'ne')) {
-            $output->writeln(
-               sprintf(
-                  '<error>' . __('%s is not a stable release. Please upgrade manually or add --allow-unstable option.') . '</error>',
-                  GLPI_SCHEMA_VERSION
-               ),
-               OutputInterface::VERBOSITY_QUIET
-            );
-            return self::ERROR_NO_UNSTABLE_UPDATE;
-         }
-      }
-
       if (version_compare($current_db_version, GLPI_SCHEMA_VERSION, 'eq') && !$force) {
          $output->writeln('<info>' . __('No migration needed.') . '</info>');
          return 0;
+      }
+
+      if (!VersionParser::isStableRelease(GLPI_VERSION) && !$allow_unstable) {
+         // Prevent unstable update unless explicitly asked
+         $output->writeln(
+            sprintf(
+               '<error>' . __('%s is not a stable release. Please upgrade manually or add --allow-unstable option.') . '</error>',
+               GLPI_VERSION
+            ),
+            OutputInterface::VERBOSITY_QUIET
+         );
+         return self::ERROR_NO_UNSTABLE_UPDATE;
       }
 
       if ($update->isExpectedSecurityKeyFileMissing()) {

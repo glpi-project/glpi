@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Toolbox\VersionParser;
+
 /**
  *  Update class
 **/
@@ -296,15 +298,7 @@ class Update {
    public function getMigrationsToDo(string $current_version, bool $force_latest = false): array {
       $migrations = [];
 
-      // Normalize version to 'x.y.z-suffix'
-      $version_pattern = '/^(?<major>\d+)\.(?<minor>\d+)(\.(?<bugfix>\d+))?(\.(?<tag_fail>\d+))?(?<suffix>-dev)?$/';
-      $current_version_matches = [];
-      if (preg_match($version_pattern, $current_version, $current_version_matches) === 1) {
-         $current_version = $current_version_matches['major']
-            . '.' . $current_version_matches['minor']
-            . '.' . ($current_version_matches['bugfix'] ?? 0)
-            . ($current_version_matches['suffix'] ?? '');
-      }
+      $current_version = VersionParser::getNormalizedVersion($current_version);
 
       $pattern = '/^update_(?<source_version>\d+\.\d+\.(?:\d+|x))_to_(?<target_version>\d+\.\d+\.(?:\d+|x))\.php$/';
       $migration_iterator = new DirectoryIterator(GLPI_ROOT . '/install/migrations/');
