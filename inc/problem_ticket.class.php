@@ -292,7 +292,6 @@ class Problem_Ticket extends CommonDBRelation{
             'entity'      => $problem->getEntityID(),
             'entity_sons' => $problem->isRecursive(),
             'displaywith' => ['id'],
-            'condition'   => Ticket::getOpenCriteria()
          ]);
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
