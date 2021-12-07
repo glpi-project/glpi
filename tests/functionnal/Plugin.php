@@ -33,6 +33,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Toolbox\VersionParser;
 
 /* Test for inc/plugin.class.php */
 
@@ -56,38 +57,7 @@ class Plugin extends DbTestCase {
 
    public function testGetGlpiVersion() {
       $plugin = new \Plugin();
-      $this->string($plugin->getGlpiVersion())->isIdenticalTo(GLPI_VERSION);
-   }
-
-   public function testGetGlpiPrever() {
-      $plugin = new \Plugin();
-      if (defined('GLPI_PREVER')) {
-         $this->string($plugin->getGlpiPrever())->isIdenticalTo(GLPI_PREVER);
-      } else {
-         if (version_compare(PHP_VERSION, '8.0.0-dev', '<')) {
-            $this->when(
-               function () use ($plugin) {
-                  $plugin->getGlpiPrever();
-               }
-            )->error
-               ->exists();
-         } else {
-            $this->exception(
-               function () use ($plugin) {
-                  $plugin->getGlpiPrever();
-               }
-            )->message->contains('Undefined constant "GLPI_PREVER"');
-         }
-      }
-   }
-
-   public function testIsGlpiPrever() {
-      $plugin = new \Plugin();
-      if (defined('GLPI_PREVER')) {
-         $this->boolean($plugin->isGlpiPrever())->isTrue();
-      } else {
-         $this->boolean($plugin->isGlpiPrever())->isFalse();
-      }
+      $this->string($plugin->getGlpiVersion())->isIdenticalTo(VersionParser::getNormalizedVersion(GLPI_VERSION, false));
    }
 
 
@@ -98,26 +68,10 @@ class Plugin extends DbTestCase {
       // Test min compatibility
       $infos = ['min' => '0.90'];
 
-      $this->calling($plugin)->isGlpiPrever = false;
-      $this->calling($plugin)->getGlpiVersion = '9.2';
+      $this->calling($plugin)->getGlpiVersion = '9.2.0';
       $this->boolean($plugin->checkGlpiVersion($infos))->isTrue();
 
-      $this->calling($plugin)->isGlpiPrever = true;
-      $this->calling($plugin)->getGlpiPrever = '9.2';
-      $this->calling($plugin)->getGlpiVersion = '9.2-dev';
-      $this->boolean($plugin->checkGlpiVersion($infos))->isTrue();
-
-      $this->calling($plugin)->isGlpiPrever = false;
-      $this->calling($plugin)->getGlpiVersion = '0.89';
-      $this->output(
-         function () use ($plugin, $infos) {
-            $this->boolean($plugin->checkGlpiVersion($infos))->isFalse();
-         }
-      )->isIdenticalTo('This plugin requires GLPI >= 0.90.');
-
-      $this->calling($plugin)->isGlpiPrever = true;
-      $this->calling($plugin)->getGlpiPrever = '0.89';
-      $this->calling($plugin)->getGlpiVersion = '0.89-dev';
+      $this->calling($plugin)->getGlpiVersion = '0.89.0';
       $this->output(
          function () use ($plugin, $infos) {
             $this->boolean($plugin->checkGlpiVersion($infos))->isFalse();
@@ -127,26 +81,10 @@ class Plugin extends DbTestCase {
       // Test max compatibility
       $infos = ['max' => '9.3'];
 
-      $this->calling($plugin)->isGlpiPrever = false;
-      $this->calling($plugin)->getGlpiVersion = '9.2';
+      $this->calling($plugin)->getGlpiVersion = '9.2.0';
       $this->boolean($plugin->checkGlpiVersion($infos))->isTrue();
 
-      $this->calling($plugin)->isGlpiPrever = true;
-      $this->calling($plugin)->getGlpiPrever = '9.2';
-      $this->calling($plugin)->getGlpiVersion = '9.2-dev';
-      $this->boolean($plugin->checkGlpiVersion($infos))->isTrue();
-
-      $this->calling($plugin)->isGlpiPrever = false;
-      $this->calling($plugin)->getGlpiVersion = '9.3';
-      $this->output(
-         function () use ($plugin, $infos) {
-            $this->boolean($plugin->checkGlpiVersion($infos))->isFalse();
-         }
-      )->isIdenticalTo('This plugin requires GLPI < 9.3.');
-
-      $this->calling($plugin)->isGlpiPrever = true;
-      $this->calling($plugin)->getGlpiPrever = '9.3';
-      $this->calling($plugin)->getGlpiVersion = '9.3-dev';
+      $this->calling($plugin)->getGlpiVersion = '9.3.0';
       $this->output(
          function () use ($plugin, $infos) {
             $this->boolean($plugin->checkGlpiVersion($infos))->isFalse();
@@ -156,43 +94,17 @@ class Plugin extends DbTestCase {
       // Test min and max compatibility
       $infos = ['min' => '0.90', 'max' => '9.3'];
 
-      $this->calling($plugin)->isGlpiPrever = false;
-      $this->calling($plugin)->getGlpiVersion = '9.2';
+      $this->calling($plugin)->getGlpiVersion = '9.2.0';
       $this->boolean($plugin->checkGlpiVersion($infos))->isTrue();
 
-      $this->calling($plugin)->isGlpiPrever = true;
-      $this->calling($plugin)->getGlpiPrever = '9.2';
-      $this->calling($plugin)->getGlpiVersion = '9.2-dev';
-      $this->boolean($plugin->checkGlpiVersion($infos))->isTrue();
-
-      $this->calling($plugin)->isGlpiPrever = false;
-      $this->calling($plugin)->getGlpiVersion = '0.89';
+      $this->calling($plugin)->getGlpiVersion = '0.89.0';
       $this->output(
          function () use ($plugin, $infos) {
             $this->boolean($plugin->checkGlpiVersion($infos, true))->isFalse();
          }
       )->isIdenticalTo('This plugin requires GLPI >= 0.90 and < 9.3.');
 
-      $this->calling($plugin)->isGlpiPrever = true;
-      $this->calling($plugin)->getGlpiPrever = '0.89';
-      $this->calling($plugin)->getGlpiVersion = '0.89-dev';
-      $this->output(
-         function () use ($plugin, $infos) {
-            $this->boolean($plugin->checkGlpiVersion($infos))->isFalse();
-         }
-      )->isIdenticalTo('This plugin requires GLPI >= 0.90 and < 9.3.');
-
-      $this->calling($plugin)->isGlpiPrever = false;
-      $this->calling($plugin)->getGlpiVersion = '9.3';
-      $this->output(
-         function () use ($plugin, $infos) {
-            $this->boolean($plugin->checkGlpiVersion($infos))->isFalse();
-         }
-      )->isIdenticalTo('This plugin requires GLPI >= 0.90 and < 9.3.');
-
-      $this->calling($plugin)->isGlpiPrever = true;
-      $this->calling($plugin)->getGlpiPrever = '9.3';
-      $this->calling($plugin)->getGlpiVersion = '9.3-dev';
+      $this->calling($plugin)->getGlpiVersion = '9.3.0';
       $this->output(
          function () use ($plugin, $infos) {
             $this->boolean($plugin->checkGlpiVersion($infos))->isFalse();

@@ -6474,7 +6474,7 @@ HTML;
       }
 
       $ckey = 'css_';
-      $ckey .= isset($args['v']) ? $args['v'] : GLPI_SCHEMA_VERSION;
+      $ckey .= isset($args['v']) ? $args['v'] : GLPI_VERSION;
 
       $scss = new Compiler();
       if (isset($args['debug'])) {

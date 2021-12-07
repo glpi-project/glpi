@@ -33,17 +33,12 @@
 
 // Current version of GLPI
 define('GLPI_VERSION', '10.0.0-dev');
-if (substr(GLPI_VERSION, -4) === '-dev') {
-   //for dev version
-   define('GLPI_PREVER', str_replace('-dev', '', GLPI_VERSION));
-   define(
-      'GLPI_SCHEMA_VERSION',
-      GLPI_PREVER . '@' . sha1_file(GLPI_ROOT . '/install/mysql/glpi-empty.sql')
-   );
-} else {
-   //for stable version
-   define("GLPI_SCHEMA_VERSION", '10.0.0');
+define("GLPI_SCHEMA_VERSION", GLPI_VERSION . '@' . sha1_file(GLPI_ROOT . '/install/mysql/glpi-empty.sql'));
+
+if (!defined('GLPI_MARKETPLACE_PRERELEASES')) {
+   define('GLPI_MARKETPLACE_PRERELEASES', preg_match('/-(dev|alpha\d*|beta\d*|rc\d*)$/', GLPI_VERSION) === 1);
 }
+
 define('GLPI_MIN_PHP', '7.4.0'); // Must also be changed in top of index.php
 define('GLPI_YEAR', '2021');
 

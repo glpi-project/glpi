@@ -42,6 +42,7 @@ use Glpi\Cache\CacheManager;
 use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
 use Glpi\Plugin\Hooks;
+use Glpi\Toolbox\VersionParser;
 
 class Plugin extends CommonDBTM {
 
@@ -1789,7 +1790,7 @@ class Plugin extends CommonDBTM {
          throw new \LogicException('Either "min" or "max" is required for GLPI requirements!');
       }
 
-      $glpiVersion = $this->isGlpiPrever() ? $this->getGlpiPrever() : $this->getGlpiVersion();
+      $glpiVersion = $this->getGlpiVersion();
 
       $compat = true;
       if (isset($infos['min']) && !version_compare($glpiVersion, $infos['min'], '>=')) {
@@ -1945,30 +1946,7 @@ class Plugin extends CommonDBTM {
     * @return string
     */
    public function getGlpiVersion() {
-      return GLPI_VERSION;
-   }
-
-   /**
-    * Get GLPI pre version
-    * Used from unit tests to mock.
-    *
-    * @since 9.2
-    *
-    * @return string
-    */
-   public function getGlpiPrever() {
-      return GLPI_PREVER;
-   }
-
-   /**
-    * Check if GLPI version is a pre version
-    *
-    * @since 9.3
-    *
-    * @return string
-    */
-   public function isGlpiPrever() {
-      return defined('GLPI_PREVER');
+      return VersionParser::getNormalizedVersion(GLPI_VERSION, false);
    }
 
    /**

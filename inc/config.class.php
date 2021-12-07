@@ -2839,32 +2839,36 @@ HTML;
    }
 
    /**
-    * Get message that informs the user he's using a development version
+    * Get message that informs the user he is using an unstable version.
     *
-    * @param boolean $bg Display a background
+    * @param bool $is_dev
     *
     * @return void
     */
-   public static function agreeDevMessage($bg = false) {
-      $msg = '<div class="'.($bg ? 'alert-important' : '') .' alert alert-warning">
-         <strong>' . __('You are using a development version, be careful!') . '</strong>
+   public static function agreeUnstableMessage(bool $is_dev) {
+      $msg = $is_dev
+         ? __('You are using a development version, be careful!')
+         : __('You are using a pre-release version, be careful!');
+
+      $out = '<div class="alert alert-warning">
+         <strong>' . $msg . '</strong>
          <br/>';
-      $msg .= "<div class='form-check'>
-         <input type='checkbox' class='form-check-input' required='required' id='agree_dev' name='agree_dev'>
-         <label for='agree_dev' class='form-check-label'>" . __('I know I am using a unstable version.') . "</label>
+      $out .= "<div class='form-check'>
+         <input type='checkbox' class='form-check-input' required='required' id='agree_unstable' name='agree_unstable'>
+         <label for='agree_unstable' class='form-check-label'>" . __('I know I am using a unstable version.') . "</label>
       </div>
       </div>";
-      $msg .= "<script type=text/javascript>
+      $out .= "<script type=text/javascript>
             $(function() {
                $('[name=from_update]').on('click', function(event){
-                  if(!$('#agree_dev').is(':checked')) {
+                  if(!$('#agree_unstable').is(':checked')) {
                      event.preventDefault();
                      alert('" . __('Please check the unstable version checkbox.') . "');
                   }
                });
             });
             </script>";
-      return $msg;
+      return $out;
    }
 
    /**

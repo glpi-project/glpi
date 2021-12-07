@@ -175,6 +175,54 @@ class Update extends \GLPITestCase {
             ],
          ],
          [
+            // Alpha versions always triggger latest migration
+            'current_version'     => '10.0.0-alpha',
+            'force_latest'        => false,
+            'expected_migrations' => [
+               $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
+            ],
+         ],
+         [
+            // AlphaX versions always triggger latest migration
+            'current_version'     => '10.0.0-alpha3',
+            'force_latest'        => false,
+            'expected_migrations' => [
+               $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
+            ],
+         ],
+         [
+            // Beta versions always triggger latest migration
+            'current_version'     => '10.0.0-beta',
+            'force_latest'        => false,
+            'expected_migrations' => [
+               $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
+            ],
+         ],
+         [
+            // BetaX versions always triggger latest migration
+            'current_version'     => '10.0.0-beta1',
+            'force_latest'        => false,
+            'expected_migrations' => [
+               $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
+            ],
+         ],
+         [
+            // RC versions always triggger latest migration
+            'current_version'     => '10.0.0-rc',
+            'force_latest'        => false,
+            'expected_migrations' => [
+               $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
+            ],
+         ],
+         [
+            // RCX versions always triggger latest migration
+            'current_version'     => '10.0.0-rc2',
+            'force_latest'        => false,
+            'expected_migrations' => [
+               $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
+            ],
+         ],
+         [
             // Force latests does not duplicate latest in list
             'current_version'     => '10.0.0-dev',
             'force_latest'        => true,

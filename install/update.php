@@ -32,6 +32,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
+use Glpi\Toolbox\VersionParser;
 
 if (!defined('GLPI_ROOT')) {
    define('GLPI_ROOT', realpath('..'));
@@ -120,13 +121,12 @@ function doUpdateDb() {
    $current_version     = $currents['version'];
    $current_db_version  = $currents['dbversion'];
 
-   $migration = new Migration(GLPI_SCHEMA_VERSION);
+   $migration = new Migration(GLPI_VERSION);
    $update->setMigration($migration);
 
-   if (defined('GLPI_PREVER')) {
-      if ($current_db_version != GLPI_SCHEMA_VERSION && !isset($_POST['agree_dev'])) {
-         return;
-      }
+   if (!VersionParser::isStableRelease(GLPI_VERSION)
+       && $current_db_version != GLPI_SCHEMA_VERSION && !isset($_POST['agree_unstable'])) {
+      return;
    }
 
    $update->doUpdates($current_version);
@@ -208,8 +208,8 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
       echo "<h3 class='my-4'><span class='migred p-2'>".sprintf(__('Caution! You will update the GLPI database named: %s'), $DB->dbdefault) ."</h3>";
 
       echo "<form action='update.php' method='post'>";
-      if (strlen(GLPI_SCHEMA_VERSION) > 40) {
-         echo Config::agreeDevMessage();
+      if (!VersionParser::isStableRelease(GLPI_VERSION)) {
+         echo Config::agreeUnstableMessage(VersionParser::isDevVersion(GLPI_VERSION));
       }
       echo "<button type='submit' class='btn btn-primary' name='continuer' value='1'>
          ".__('Continue')."
