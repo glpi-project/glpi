@@ -1999,12 +1999,13 @@ JAVASCRIPT;
       $scss = new Compiler();
 
       $glpi_root = GLPI_ROOT;
-      $palette_css = $scss->compile("{$css_dom_parent} {
+      $result = $scss->compileString("{$css_dom_parent} {
          \$ct-series-names: ({$series_names});
          \$ct-series-colors: ({$series_colors});
 
          @import '{$glpi_root}/css/includes/components/chartist/generate';
       }");
+      $palette_css = $result->getCss();
 
       $GLPI_CACHE->set($hash, $palette_css);
 
