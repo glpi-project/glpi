@@ -547,6 +547,7 @@ class Problem extends CommonITILObject {
          'field'              => 'name',
          'name'               => Problem::getTypeName(1),
          'datatype'           => 'dropdown',
+         'massiveaction'      => false,
          'forcegroupby'       => true,
          'joinparams'         => [
             'beforejoin'         => [
@@ -584,6 +585,7 @@ class Problem extends CommonITILObject {
          'field'              => 'solvedate',
          'name'               => __('Resolution date'),
          'datatype'           => 'datetime',
+         'massiveaction'      => false,
          'forcegroupby'       => true,
          'joinparams'         => [
             'beforejoin'         => [
@@ -601,6 +603,7 @@ class Problem extends CommonITILObject {
          'field'              => 'date',
          'name'               => __('Opening date'),
          'datatype'           => 'datetime',
+         'massiveaction'      => false,
          'forcegroupby'       => true,
          'joinparams'         => [
             'beforejoin'         => [
