@@ -39,7 +39,7 @@
          </div>
 
 {% if canedit or item.canEdit(item.fields['id']) %}
-      <div class="card-body mx-n2 mb-4  border-top">
+      <div class="card-body mx-n2 mb-4 border-top d-flex flex-row-reverse align-items-start flex-wrap">
          {% if withtemplate|length > 0 or item.isNewID(id) %}
             {% if id <= 0 or withtemplate == 2 %}
                <button class="btn btn-primary me-2" type="submit" name="add" value="1">
@@ -75,20 +75,22 @@
                   {% endif %}
 
                   {% if item.can(id, constant('PURGE')) %}
-                     <button class="btn btn-outline-danger me-2" type="submit" name="purge"
-                             value="1"
-                             onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
-                        <i class="ti ti-trash"></i>
-                        <span>{{ _x('button', 'Delete permanently') }}</span>
-                     </button>
-                     <div class="d-inline-block">
-                        <label class="form-check form-switch">
-                           <input class="form-check-input" type="checkbox" name="keep_devices" value="1" />
-                           <span class="form-check-label">
-                              {{ __('Check to keep the devices while deleting this item') }}
-                           </span>
-                        </label>
-                     </div>
+                     <span class="border border-danger d-flex align-items-start flex-wrap p-1 px-2 me-2">
+                        <button class="btn btn-danger me-2" type="submit" name="purge"
+                              value="1"
+                              onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
+                           <i class="ti ti-trash"></i>
+                           <span>{{ _x('button', 'Delete permanently') }}</span>
+                        </button>
+                        <span class="mt-2">
+                           <label class="form-check form-switch">
+                              <input class="form-check-input" type="checkbox" name="keep_devices" value="1" />
+                              <span class="form-check-label">
+                                 {{ __('Keep the devices while deleting this item') }}
+                              </span>
+                           </label>
+                        </span>
+                     <span>
                   {% endif %}
                {% else %}
                   {% if (not item.maybeDeleted() or item.useDeletedToLockIfDynamic()) %}
