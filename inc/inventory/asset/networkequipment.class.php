@@ -192,6 +192,21 @@ class NetworkEquipment extends MainAsset
          }
       }
 
+      if (method_exists($this, 'getManagementPorts')) {
+         $mports = $this->getManagementPorts();
+         $np = new NetworkPort($this->item, $mports);
+         if ($np->checkConf($this->conf)) {
+            $np->setAgent($this->getAgent());
+            $np->setEntityID($this->getEntityID());
+            $np->prepare();
+            $np->handleLinks();
+            if (!isset($this->assets['Glpi\Inventory\Asset\NetworkPort'])) {
+               $this->assets['Glpi\Inventory\Asset\NetworkPort'] = [];
+            }
+            $this->assets['Glpi\Inventory\Asset\NetworkPort'][] = $np;
+         }
+      }
+
       parent::rulepassed($items_id, $itemtype, $rules_id, $ports_id);
 
       if (isset($bkp_assets)) {
