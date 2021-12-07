@@ -133,10 +133,10 @@ function update084xto0850() {
       }
 
       $query = "CREATE TABLE `glpi_profilerights` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `profiles_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `profiles_id` int NOT NULL DEFAULT '0',
                   `name` varchar(255) DEFAULT NULL,
-                  `rights` int(11) NOT NULL DEFAULT '0',
+                  `rights` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`profiles_id`, `name`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
@@ -991,13 +991,13 @@ function update084xto0850() {
 
    if (!$DB->tableExists('glpi_queuedmails')) {
       $query = "CREATE TABLE `glpi_queuedmails` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `itemtype` varchar(100) default NULL,
-                  `items_id` int(11) NOT NULL DEFAULT '0',
-                  `notificationtemplates_id` int(11) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
-                  `sent_try` int(11) NOT NULL DEFAULT '0',
+                  `items_id` int NOT NULL DEFAULT '0',
+                  `notificationtemplates_id` int NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_deleted` tinyint NOT NULL DEFAULT '0',
+                  `sent_try` int NOT NULL DEFAULT '0',
                   `create_time` datetime DEFAULT NULL,
                   `send_time` datetime DEFAULT NULL,
                   `sent_time` datetime DEFAULT NULL,
@@ -1077,38 +1077,38 @@ function update084xto0850() {
    // changes management
    if (!$DB->tableExists('glpi_changes')) {
       $query = "CREATE TABLE `glpi_changes` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) DEFAULT NULL,
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
-                  `status` int(11) NOT NULL DEFAULT '1',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
+                  `is_deleted` tinyint NOT NULL DEFAULT '0',
+                  `status` int NOT NULL DEFAULT '1',
                   `content` longtext DEFAULT NULL,
                   `date_mod` DATETIME DEFAULT NULL,
                   `date` DATETIME DEFAULT NULL,
                   `solvedate` DATETIME DEFAULT NULL,
                   `closedate` DATETIME DEFAULT NULL,
                   `due_date` DATETIME DEFAULT NULL,
-                  `users_id_recipient` int(11) NOT NULL DEFAULT '0',
-                  `users_id_lastupdater` int(11) NOT NULL DEFAULT '0',
-                  `urgency` int(11) NOT NULL DEFAULT '1',
-                  `impact` int(11) NOT NULL DEFAULT '1',
-                  `priority` int(11) NOT NULL DEFAULT '1',
-                  `itilcategories_id` int(11) NOT NULL DEFAULT '0',
+                  `users_id_recipient` int NOT NULL DEFAULT '0',
+                  `users_id_lastupdater` int NOT NULL DEFAULT '0',
+                  `urgency` int NOT NULL DEFAULT '1',
+                  `impact` int NOT NULL DEFAULT '1',
+                  `priority` int NOT NULL DEFAULT '1',
+                  `itilcategories_id` int NOT NULL DEFAULT '0',
                   `impactcontent` longtext DEFAULT NULL,
                   `controlistcontent` longtext DEFAULT NULL,
                   `rolloutplancontent` longtext DEFAULT NULL,
                   `backoutplancontent` longtext DEFAULT NULL,
                   `checklistcontent` longtext DEFAULT NULL,
                   `global_validation` varchar(255) COLLATE utf8_unicode_ci DEFAULT 'none',
-                  `validation_percent` int(11) NOT NULL DEFAULT '0',
-                  `solutiontypes_id` int(11) NOT NULL DEFAULT '0',
+                  `validation_percent` int NOT NULL DEFAULT '0',
+                  `solutiontypes_id` int NOT NULL DEFAULT '0',
                   `solution` text COLLATE utf8_unicode_ci,
-                  `actiontime` int(11) NOT NULL DEFAULT '0',
+                  `actiontime` int NOT NULL DEFAULT '0',
                   `begin_waiting_date` datetime DEFAULT NULL,
-                  `waiting_duration` int(11) NOT NULL DEFAULT '0',
-                  `close_delay_stat` int(11) NOT NULL DEFAULT '0',
-                  `solve_delay_stat` int(11) NOT NULL DEFAULT '0',
+                  `waiting_duration` int NOT NULL DEFAULT '0',
+                  `close_delay_stat` int NOT NULL DEFAULT '0',
+                  `solve_delay_stat` int NOT NULL DEFAULT '0',
                   `notepad` LONGTEXT NULL,
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
@@ -1138,11 +1138,11 @@ function update084xto0850() {
 
    if (!$DB->tableExists('glpi_changes_users')) {
       $query = "CREATE TABLE `glpi_changes_users` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `changes_id` int(11) NOT NULL DEFAULT '0',
-                  `users_id` int(11) NOT NULL DEFAULT '0',
-                  `type` int(11) NOT NULL DEFAULT '1',
-                  `use_notification` tinyint(1) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `changes_id` int NOT NULL DEFAULT '0',
+                  `users_id` int NOT NULL DEFAULT '0',
+                  `type` int NOT NULL DEFAULT '1',
+                  `use_notification` tinyint NOT NULL DEFAULT '0',
                   `alternative_email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`changes_id`,`type`,`users_id`,`alternative_email`),
@@ -1153,10 +1153,10 @@ function update084xto0850() {
 
    if (!$DB->tableExists('glpi_changes_groups')) {
       $query = "CREATE TABLE `glpi_changes_groups` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `changes_id` int(11) NOT NULL DEFAULT '0',
-                  `groups_id` int(11) NOT NULL DEFAULT '0',
-                  `type` int(11) NOT NULL DEFAULT '1',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `changes_id` int NOT NULL DEFAULT '0',
+                  `groups_id` int NOT NULL DEFAULT '0',
+                  `type` int NOT NULL DEFAULT '1',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`changes_id`,`type`,`groups_id`),
                   KEY `group` (`groups_id`,`type`)
@@ -1166,10 +1166,10 @@ function update084xto0850() {
 
    if (!$DB->tableExists('glpi_changes_suppliers')) {
       $query = "CREATE TABLE `glpi_changes_suppliers` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `changes_id` int(11) NOT NULL DEFAULT '0',
-                  `suppliers_id` int(11) NOT NULL DEFAULT '0',
-                  `type` int(11) NOT NULL DEFAULT '1',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `changes_id` int NOT NULL DEFAULT '0',
+                  `suppliers_id` int NOT NULL DEFAULT '0',
+                  `type` int NOT NULL DEFAULT '1',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`changes_id`,`type`,`suppliers_id`),
                   KEY `group` (`suppliers_id`,`type`)
@@ -1179,10 +1179,10 @@ function update084xto0850() {
 
    if (!$DB->tableExists('glpi_changes_items')) {
       $query = "CREATE TABLE `glpi_changes_items` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `changes_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `changes_id` int NOT NULL DEFAULT '0',
                   `itemtype` varchar(100) default NULL,
-                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  `items_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`changes_id`,`itemtype`,`items_id`),
                   KEY `item` (`itemtype`,`items_id`)
@@ -1192,9 +1192,9 @@ function update084xto0850() {
 
    if (!$DB->tableExists('glpi_changes_tickets')) {
       $query = "CREATE TABLE `glpi_changes_tickets` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `changes_id` int(11) NOT NULL DEFAULT '0',
-                  `tickets_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `changes_id` int NOT NULL DEFAULT '0',
+                  `tickets_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`changes_id`,`tickets_id`),
                   KEY `tickets_id` (`tickets_id`)
@@ -1204,9 +1204,9 @@ function update084xto0850() {
 
    if (!$DB->tableExists('glpi_changes_problems')) {
       $query = "CREATE TABLE `glpi_changes_problems` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `changes_id` int(11) NOT NULL DEFAULT '0',
-                  `problems_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `changes_id` int NOT NULL DEFAULT '0',
+                  `problems_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`changes_id`,`problems_id`),
                   KEY `problems_id` (`problems_id`)
@@ -1216,17 +1216,17 @@ function update084xto0850() {
 
    if (!$DB->tableExists('glpi_changetasks')) {
       $query = "CREATE TABLE `glpi_changetasks` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `changes_id` int(11) NOT NULL DEFAULT '0',
-                  `taskcategories_id` int(11) NOT NULL DEFAULT '0',
-                  `state` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `changes_id` int NOT NULL DEFAULT '0',
+                  `taskcategories_id` int NOT NULL DEFAULT '0',
+                  `state` int NOT NULL DEFAULT '0',
                   `date` datetime DEFAULT NULL,
                   `begin` datetime DEFAULT NULL,
                   `end` datetime DEFAULT NULL,
-                  `users_id` int(11) NOT NULL DEFAULT '0',
-                  `users_id_tech` int(11) NOT NULL DEFAULT '0',
+                  `users_id` int NOT NULL DEFAULT '0',
+                  `users_id_tech` int NOT NULL DEFAULT '0',
                   `content` longtext COLLATE utf8_unicode_ci,
-                  `actiontime` int(11) NOT NULL DEFAULT '0',
+                  `actiontime` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   KEY `changes_id` (`changes_id`),
                   KEY `state` (`state`),
@@ -1242,19 +1242,19 @@ function update084xto0850() {
 
    if (!$DB->tableExists('glpi_changecosts')) {
       $query = "CREATE TABLE `glpi_changecosts` (
-               `id` int(11) NOT NULL AUTO_INCREMENT,
-               `changes_id` int(11) NOT NULL DEFAULT '0',
+               `id` int NOT NULL AUTO_INCREMENT,
+               `changes_id` int NOT NULL DEFAULT '0',
                `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                `comment` text COLLATE utf8_unicode_ci,
                `begin_date` date DEFAULT NULL,
                `end_date` date DEFAULT NULL,
-               `actiontime` int(11) NOT NULL DEFAULT '0',
+               `actiontime` int NOT NULL DEFAULT '0',
                `cost_time` decimal(20,4) NOT NULL DEFAULT '0.0000',
                `cost_fixed` decimal(20,4) NOT NULL DEFAULT '0.0000',
                `cost_material` decimal(20,4) NOT NULL DEFAULT '0.0000',
-               `budgets_id` int(11) NOT NULL DEFAULT '0',
-               `entities_id` int(11) NOT NULL DEFAULT '0',
-               `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+               `budgets_id` int NOT NULL DEFAULT '0',
+               `entities_id` int NOT NULL DEFAULT '0',
+               `is_recursive` tinyint NOT NULL DEFAULT '0',
                PRIMARY KEY (`id`),
                KEY `name` (`name`),
                KEY `changes_id` (`changes_id`),
@@ -1269,15 +1269,15 @@ function update084xto0850() {
 
    if (!$DB->tableExists('glpi_changevalidations')) {
       $query = "CREATE TABLE `glpi_changevalidations` (
-            `id` int(11) NOT NULL AUTO_INCREMENT,
-            `entities_id` int(11) NOT NULL DEFAULT '0',
-            `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-            `users_id` int(11) NOT NULL DEFAULT '0',
-            `changes_id` int(11) NOT NULL DEFAULT '0',
-            `users_id_validate` int(11) NOT NULL DEFAULT '0',
+            `id` int NOT NULL AUTO_INCREMENT,
+            `entities_id` int NOT NULL DEFAULT '0',
+            `is_recursive` tinyint NOT NULL DEFAULT '0',
+            `users_id` int NOT NULL DEFAULT '0',
+            `changes_id` int NOT NULL DEFAULT '0',
+            `users_id_validate` int NOT NULL DEFAULT '0',
             `comment_submission` text COLLATE utf8_unicode_ci,
             `comment_validation` text COLLATE utf8_unicode_ci,
-            `status` int(11) NOT NULL DEFAULT '2',
+            `status` int NOT NULL DEFAULT '2',
             `submission_date` datetime DEFAULT NULL,
             `validation_date` datetime DEFAULT NULL,
             PRIMARY KEY (`id`),
@@ -1426,18 +1426,18 @@ function update084xto0850() {
    // Add problem costs
    if (!$DB->tableExists('glpi_problemcosts')) {
       $query = "CREATE TABLE `glpi_problemcosts` (
-               `id` int(11) NOT NULL AUTO_INCREMENT,
-               `problems_id` int(11) NOT NULL DEFAULT '0',
+               `id` int NOT NULL AUTO_INCREMENT,
+               `problems_id` int NOT NULL DEFAULT '0',
                `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                `comment` text COLLATE utf8_unicode_ci,
                `begin_date` date DEFAULT NULL,
                `end_date` date DEFAULT NULL,
-               `actiontime` int(11) NOT NULL DEFAULT '0',
+               `actiontime` int NOT NULL DEFAULT '0',
                `cost_time` decimal(20,4) NOT NULL DEFAULT '0.0000',
                `cost_fixed` decimal(20,4) NOT NULL DEFAULT '0.0000',
                `cost_material` decimal(20,4) NOT NULL DEFAULT '0.0000',
-               `budgets_id` int(11) NOT NULL DEFAULT '0',
-               `entities_id` int(11) NOT NULL DEFAULT '0',
+               `budgets_id` int NOT NULL DEFAULT '0',
+               `entities_id` int NOT NULL DEFAULT '0',
                PRIMARY KEY (`id`),
                KEY `name` (`name`),
                KEY `problems_id` (`problems_id`),
@@ -1483,8 +1483,8 @@ function update084xto0850() {
    Config::setConfigurationValues('core', ['translate_kb' => 0]);
    if (!$DB->tableExists("glpi_knowbaseitemtranslations")) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_knowbaseitemtranslations` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `knowbaseitems_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `knowbaseitems_id` int NOT NULL DEFAULT '0',
                   `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `name` text COLLATE utf8_unicode_ci,
                   `answer` longtext COLLATE utf8_unicode_ci,
@@ -1501,8 +1501,8 @@ function update084xto0850() {
    Config::setConfigurationValues('core', ['translate_dropdowns' => 0]);
    if (!$DB->tableExists("glpi_dropdowntranslations")) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_dropdowntranslations` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `items_id` int NOT NULL DEFAULT '0',
                   `itemtype` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `field` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -1600,7 +1600,7 @@ function update084xto0850() {
    $migration->dropField("glpi_users", 'is_not_categorized_soft_expanded');
 
    // Config::setConfigurationValues('core', array('use_unicodefont' => 0));
-   // $migration->addField("glpi_users", 'use_unicodefont', "int(11) DEFAULT NULL");
+   // $migration->addField("glpi_users", 'use_unicodefont', "int DEFAULT NULL");
    Config::deleteConfigurationValues('core', ['use_unicodefont']);
    $migration->dropField("glpi_users", 'use_unicodefont');
    Config::setConfigurationValues('core', ['pdffont' => 'helvetica']);
@@ -1751,7 +1751,7 @@ function update084xto0850() {
    }
 
    Config::setConfigurationValues('core', ['keep_devices_when_purging_item' => 0]);
-   $migration->addField("glpi_users", "keep_devices_when_purging_item", "int(11) DEFAULT NULL");
+   $migration->addField("glpi_users", "keep_devices_when_purging_item", "int DEFAULT NULL");
 
    Config::setConfigurationValues('core', ['maintenance_mode' => 0]);
    Config::setConfigurationValues('core', ['maintenance_text' => '']);
@@ -1823,7 +1823,7 @@ function update084xto0850() {
 
    if (!$DB->tableExists("glpi_blacklistedmailcontents")) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_blacklistedmailcontents` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) DEFAULT NULL,
                   `content` text COLLATE utf8_unicode_ci,
                   `comment` text COLLATE utf8_unicode_ci,
@@ -1882,7 +1882,7 @@ function update084xto0850() {
    $migration->addField('glpi_users', 'privatebookmarkorder', 'longtext');
 
    // Pref to comme back ticket created
-   if ($migration->addField('glpi_users', 'backcreated', 'TINYINT(1) DEFAULT NULL')) {
+   if ($migration->addField('glpi_users', 'backcreated', 'TINYINT DEFAULT NULL')) {
       $query = "INSERT INTO `glpi_configs`
                        (`context`, `name`, `value`)
                 VALUES ('core', 'backcreated', 0)";
@@ -1893,25 +1893,25 @@ function update084xto0850() {
 
    if (!$DB->tableExists("glpi_projects")) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_projects` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `priority` int(11) NOT NULL DEFAULT '1',
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                  `projects_id` int(11) NOT NULL DEFAULT '0',
-                  `projectstates_id` int(11) NOT NULL DEFAULT '0',
-                  `projecttypes_id` int(11) NOT NULL DEFAULT '0',
+                  `priority` int NOT NULL DEFAULT '1',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
+                  `projects_id` int NOT NULL DEFAULT '0',
+                  `projectstates_id` int NOT NULL DEFAULT '0',
+                  `projecttypes_id` int NOT NULL DEFAULT '0',
                   `date` datetime DEFAULT NULL,
                   `date_mod` datetime DEFAULT NULL,
-                  `users_id` int(11) NOT NULL DEFAULT '0',
-                  `groups_id` int(11) NOT NULL DEFAULT '0',
+                  `users_id` int NOT NULL DEFAULT '0',
+                  `groups_id` int NOT NULL DEFAULT '0',
                   `plan_start_date` datetime DEFAULT NULL,
                   `plan_end_date` datetime DEFAULT NULL,
                   `real_start_date` datetime DEFAULT NULL,
                   `real_end_date` datetime DEFAULT NULL,
-                  `percent_done` int(11) NOT NULL DEFAULT '0',
-                  `show_on_global_gantt` tinyint(1) NOT NULL DEFAULT '0',
+                  `percent_done` int NOT NULL DEFAULT '0',
+                  `show_on_global_gantt` tinyint NOT NULL DEFAULT '0',
                   `content` longtext DEFAULT NULL,
                   `comment` longtext DEFAULT NULL,
                   `notepad` longtext DEFAULT NULL,
@@ -1969,16 +1969,16 @@ function update084xto0850() {
 
    if (!$DB->tableExists('glpi_projectcosts')) {
       $query = "CREATE TABLE `glpi_projectcosts` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `projects_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `projects_id` int NOT NULL DEFAULT '0',
                   `name` varchar(255) DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   `begin_date` date DEFAULT NULL,
                   `end_date` date DEFAULT NULL,
                   `cost` decimal(20,4) NOT NULL DEFAULT '0.0000',
-                  `budgets_id` int(11) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `budgets_id` int NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
                   KEY `projects_id` (`projects_id`),
@@ -1993,11 +1993,11 @@ function update084xto0850() {
 
    if (!$DB->tableExists('glpi_projectstates')) {
       $query = "CREATE TABLE `glpi_projectstates` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   `color` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `is_finished` tinyint(1) NOT NULL DEFAULT '0',
+                  `is_finished` tinyint NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
                   KEY `is_finished` (`is_finished`)
@@ -2024,7 +2024,7 @@ function update084xto0850() {
    }
    if (!$DB->tableExists('glpi_projecttypes')) {
       $query = "CREATE TABLE `glpi_projecttypes` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   PRIMARY KEY (`id`),
@@ -2038,9 +2038,9 @@ function update084xto0850() {
 
    if (!$DB->tableExists('glpi_changes_projects')) {
       $query = "CREATE TABLE `glpi_changes_projects` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `changes_id` int(11) NOT NULL DEFAULT '0',
-                  `projects_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `changes_id` int NOT NULL DEFAULT '0',
+                  `projects_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`changes_id`,`projects_id`),
                   KEY `projects_id` (`projects_id`)
@@ -2050,10 +2050,10 @@ function update084xto0850() {
 
    if (!$DB->tableExists('glpi_projectteams')) {
       $query = "CREATE TABLE `glpi_projectteams` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `projects_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `projects_id` int NOT NULL DEFAULT '0',
                   `itemtype` varchar(100) default NULL,
-                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  `items_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`projects_id`,`itemtype`,`items_id`),
                   KEY `item` (`itemtype`,`items_id`)
@@ -2063,10 +2063,10 @@ function update084xto0850() {
 
    if (!$DB->tableExists('glpi_items_projects')) {
       $query = "CREATE TABLE `glpi_items_projects` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `projects_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `projects_id` int NOT NULL DEFAULT '0',
                   `itemtype` varchar(100) default NULL,
-                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  `items_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`projects_id`,`itemtype`,`items_id`),
                   KEY `item` (`itemtype`,`items_id`)
@@ -2076,26 +2076,26 @@ function update084xto0850() {
 
    if (!$DB->tableExists("glpi_projecttasks")) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_projecttasks` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `content` longtext DEFAULT NULL,
                   `comment` longtext DEFAULT NULL,
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                  `projects_id` int(11) NOT NULL DEFAULT '0',
-                  `projecttasks_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
+                  `projects_id` int NOT NULL DEFAULT '0',
+                  `projecttasks_id` int NOT NULL DEFAULT '0',
                   `date` datetime DEFAULT NULL,
                   `date_mod` datetime DEFAULT NULL,
                   `plan_start_date` datetime DEFAULT NULL,
                   `plan_end_date` datetime DEFAULT NULL,
                   `real_start_date` datetime DEFAULT NULL,
                   `real_end_date` datetime DEFAULT NULL,
-                  `planned_duration` int(11) NOT NULL DEFAULT '0',
-                  `effective_duration` int(11) NOT NULL DEFAULT '0',
-                  `projectstates_id` int(11) NOT NULL DEFAULT '0',
-                  `projecttasktypes_id` int(11) NOT NULL DEFAULT '0',
-                  `users_id` int(11) NOT NULL DEFAULT '0',
-                  `percent_done` int(11) NOT NULL DEFAULT '0',
+                  `planned_duration` int NOT NULL DEFAULT '0',
+                  `effective_duration` int NOT NULL DEFAULT '0',
+                  `projectstates_id` int NOT NULL DEFAULT '0',
+                  `projecttasktypes_id` int NOT NULL DEFAULT '0',
+                  `users_id` int NOT NULL DEFAULT '0',
+                  `percent_done` int NOT NULL DEFAULT '0',
                   `notepad` longtext DEFAULT NULL,
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
@@ -2120,7 +2120,7 @@ function update084xto0850() {
    }
    if (!$DB->tableExists('glpi_projecttasktypes')) {
       $query = "CREATE TABLE `glpi_projecttasktypes` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   PRIMARY KEY (`id`),
@@ -2130,10 +2130,10 @@ function update084xto0850() {
    }
    if (!$DB->tableExists('glpi_projecttaskteams')) {
       $query = "CREATE TABLE `glpi_projecttaskteams` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `projecttasks_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `projecttasks_id` int NOT NULL DEFAULT '0',
                   `itemtype` varchar(100) default NULL,
-                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  `items_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`projecttasks_id`,`itemtype`,`items_id`),
                   KEY `item` (`itemtype`,`items_id`)
@@ -2143,9 +2143,9 @@ function update084xto0850() {
 
    if (!$DB->tableExists('glpi_projecttasks_tickets')) {
       $query = "CREATE TABLE `glpi_projecttasks_tickets` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `tickets_id` int(11) NOT NULL DEFAULT '0',
-                  `projecttasks_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `tickets_id` int NOT NULL DEFAULT '0',
+                  `projecttasks_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`tickets_id`,`projecttasks_id`),
                   KEY `projects_id` (`projecttasks_id`)
@@ -2336,13 +2336,13 @@ function update084xto0850() {
    // Create new notepad table
    if (!$DB->tableExists('glpi_notepads')) {
       $query = "CREATE TABLE `glpi_notepads` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `itemtype` varchar(100) default NULL,
-                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  `items_id` int NOT NULL DEFAULT '0',
                   `date` datetime DEFAULT NULL,
                   `date_mod` datetime DEFAULT NULL,
-                  `users_id` int(11) NOT NULL DEFAULT '0',
-                  `users_id_lastupdater` int(11) NOT NULL DEFAULT '0',
+                  `users_id` int NOT NULL DEFAULT '0',
+                  `users_id_lastupdater` int NOT NULL DEFAULT '0',
                   `content` LONGTEXT DEFAULT NULL,
                   PRIMARY KEY (`id`),
                   KEY `item` (`itemtype`,`items_id`),
@@ -2379,11 +2379,11 @@ function update084xto0850() {
       }
    }
 
-   $migration->addField('glpi_deviceprocessors', 'nbcores_default', 'int(11) DEFAULT NULL');
-   $migration->addField('glpi_deviceprocessors', 'nbthreads_default', 'int(11) DEFAULT NULL');
+   $migration->addField('glpi_deviceprocessors', 'nbcores_default', 'int DEFAULT NULL');
+   $migration->addField('glpi_deviceprocessors', 'nbthreads_default', 'int DEFAULT NULL');
 
-   $migration->addField('glpi_items_deviceprocessors', 'nbcores', 'int(11) DEFAULT NULL');
-   $migration->addField('glpi_items_deviceprocessors', 'nbthreads', 'int(11) DEFAULT NULL');
+   $migration->addField('glpi_items_deviceprocessors', 'nbcores', 'int DEFAULT NULL');
+   $migration->addField('glpi_items_deviceprocessors', 'nbthreads', 'int DEFAULT NULL');
    $migration->addKey('glpi_items_deviceprocessors', 'nbcores');
    $migration->addKey('glpi_items_deviceprocessors', 'nbthreads');
 
@@ -2548,9 +2548,9 @@ function update084xto0850() {
    // as well devices
    if (!$DB->tableExists('glpi_registeredids')) {
       $query = "CREATE TABLE `glpi_registeredids` (
-                 `id` int(11) NOT NULL AUTO_INCREMENT,
+                 `id` int NOT NULL AUTO_INCREMENT,
                  `name` varchar(255) DEFAULT NULL,
-                 `items_id` int(11) NOT NULL DEFAULT '0',
+                 `items_id` int NOT NULL DEFAULT '0',
                  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
                  `device_type` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'USB, PCI ...',
                  PRIMARY KEY (`id`),

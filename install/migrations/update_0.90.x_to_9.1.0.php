@@ -71,10 +71,10 @@ function update090xto910() {
    /************** Lock Objects *************/
    if (!$DB->tableExists('glpi_objectlocks')) {
       $query = "CREATE TABLE `glpi_objectlocks` (
-                 `id` INT(11) NOT NULL AUTO_INCREMENT,
+                 `id` INT NOT NULL AUTO_INCREMENT,
                  `itemtype` VARCHAR(100) NOT NULL COMMENT 'Type of locked object',
-                 `items_id` INT(11) NOT NULL COMMENT 'RELATION to various tables, according to itemtype (ID)',
-                 `users_id` INT(11) NOT NULL COMMENT 'id of the locker',
+                 `items_id` INT NOT NULL COMMENT 'RELATION to various tables, according to itemtype (ID)',
+                 `users_id` INT NOT NULL COMMENT 'id of the locker',
                  `date_mod` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp of the lock',
                  PRIMARY KEY (`id`),
                  UNIQUE INDEX `item` (`itemtype`, `items_id`)
@@ -297,22 +297,22 @@ function update090xto910() {
       );
    }
 
-   $migration->addField("glpi_users", "lock_autolock_mode", "tinyint(1) NULL DEFAULT NULL");
-   $migration->addField("glpi_users", "lock_directunlock_notification", "tinyint(1) NULL DEFAULT NULL");
+   $migration->addField("glpi_users", "lock_autolock_mode", "tinyint NULL DEFAULT NULL");
+   $migration->addField("glpi_users", "lock_directunlock_notification", "tinyint NULL DEFAULT NULL");
 
    /************** Default Requester *************/
    Config::setConfigurationValues('core', ['set_default_requester' => 1]);
-   $migration->addField("glpi_users", "set_default_requester", "tinyint(1) NULL DEFAULT NULL");
+   $migration->addField("glpi_users", "set_default_requester", "tinyint NULL DEFAULT NULL");
 
    // ************ NetworkPort ethernets **************
    if (!$DB->tableExists("glpi_networkportfiberchannels")) {
       $query = "CREATE TABLE `glpi_networkportfiberchannels` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `networkports_id` int(11) NOT NULL DEFAULT '0',
-                  `items_devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
-                  `netpoints_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `networkports_id` int NOT NULL DEFAULT '0',
+                  `items_devicenetworkcards_id` int NOT NULL DEFAULT '0',
+                  `netpoints_id` int NOT NULL DEFAULT '0',
                   `wwn` varchar(16) COLLATE utf8_unicode_ci DEFAULT '',
-                  `speed` int(11) NOT NULL DEFAULT '10' COMMENT 'Mbit/s: 10, 100, 1000, 10000',
+                  `speed` int NOT NULL DEFAULT '10' COMMENT 'Mbit/s: 10, 100, 1000, 10000',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `networkports_id` (`networkports_id`),
                   KEY `card` (`items_devicenetworkcards_id`),
@@ -332,7 +332,7 @@ function update090xto910() {
 
    if (!$DB->tableExists('glpi_operatingsystemarchitectures')) {
       $query = "CREATE TABLE `glpi_operatingsystemarchitectures` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   `date_mod` datetime DEFAULT NULL,
@@ -348,13 +348,13 @@ function update090xto910() {
    /************** Task's templates *************/
    if (!$DB->tableExists('glpi_tasktemplates')) {
       $query = "CREATE TABLE `glpi_tasktemplates` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `content` text COLLATE utf8_unicode_ci,
-                  `taskcategories_id` int(11) NOT NULL DEFAULT '0',
-                  `actiontime` int(11) NOT NULL DEFAULT '0',
+                  `taskcategories_id` int NOT NULL DEFAULT '0',
+                  `actiontime` int NOT NULL DEFAULT '0',
                   `comment` text COLLATE utf8_unicode_ci,
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
@@ -375,7 +375,7 @@ function update090xto910() {
 
    if (!$DB->tableExists('glpi_budgettypes')) {
       $query = "CREATE TABLE `glpi_budgettypes` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   `date_mod` datetime DEFAULT NULL,
@@ -413,12 +413,12 @@ function update090xto910() {
    Config::setConfigurationValues('core', ['url_base_api' => trim($current_config['url_base'], "/")."/apirest.php/"]);
    if (!$DB->tableExists('glpi_apiclients')) {
       $query = "CREATE TABLE `glpi_apiclients` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `entities_id` INT NOT NULL DEFAULT '0',
-                  `is_recursive` TINYINT(1) NOT NULL DEFAULT '0',
+                  `is_recursive` TINYINT NOT NULL DEFAULT '0',
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `date_mod` DATETIME DEFAULT NULL,
-                  `is_active` TINYINT(1) NOT NULL DEFAULT '0',
+                  `is_active` TINYINT NOT NULL DEFAULT '0',
                   `ipv4_range_start` BIGINT NULL ,
                   `ipv4_range_end` BIGINT NULL ,
                   `ipv6` VARCHAR( 255 ) NULL,
@@ -648,16 +648,16 @@ function update090xto910() {
    /************* Add antivirus table */
    if (!$DB->tableExists('glpi_computerantiviruses')) {
       $query = "CREATE TABLE `glpi_computerantiviruses` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `computers_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `computers_id` int NOT NULL DEFAULT '0',
                   `name` varchar(255) DEFAULT NULL,
-                  `manufacturers_id` int(11) NOT NULL DEFAULT '0',
+                  `manufacturers_id` int NOT NULL DEFAULT '0',
                   `antivirus_version` varchar(255) DEFAULT NULL,
                   `signature_version` varchar(255) DEFAULT NULL,
-                  `is_active` tinyint(1) NOT NULL DEFAULT '0',
-                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
-                  `is_uptodate` tinyint(1) NOT NULL DEFAULT '0',
-                  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+                  `is_active` tinyint NOT NULL DEFAULT '0',
+                  `is_deleted` tinyint NOT NULL DEFAULT '0',
+                  `is_uptodate` tinyint NOT NULL DEFAULT '0',
+                  `is_dynamic` tinyint NOT NULL DEFAULT '0',
                   `date_expiration` datetime DEFAULT NULL,
                   `date_mod` datetime DEFAULT NULL,
                   `date_creation` datetime DEFAULT NULL,
@@ -770,19 +770,19 @@ function update090xto910() {
    /** ************ New SLA structure ************ */
    if (!$DB->tableExists('glpi_slts')) {
       $query = "CREATE TABLE `glpi_slts` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                  `type` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
+                  `type` int NOT NULL DEFAULT '0',
                   `comment` text COLLATE utf8_unicode_ci,
-                  `number_time` int(11) NOT NULL,
-                  `calendars_id` int(11) NOT NULL DEFAULT '0',
+                  `number_time` int NOT NULL,
+                  `calendars_id` int NOT NULL DEFAULT '0',
                   `date_mod` datetime DEFAULT NULL,
                   `definition_time` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `end_of_working_day` tinyint(1) NOT NULL DEFAULT '0',
+                  `end_of_working_day` tinyint NOT NULL DEFAULT '0',
                   `date_creation` datetime DEFAULT NULL,
-                  `slas_id` int(11) NOT NULL DEFAULT '0',
+                  `slas_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
                   KEY `calendars_id` (`calendars_id`),
@@ -888,7 +888,7 @@ function update090xto910() {
 
    /************** High contrast CSS **************/
    Config::setConfigurationValues('core', ['highcontrast_css' => 0]);
-   $migration->addField("glpi_users", "highcontrast_css", "tinyint(1) DEFAULT 0");
+   $migration->addField("glpi_users", "highcontrast_css", "tinyint DEFAULT 0");
 
    /************** SMTP option for self-signed certificates **************/
    Config::setConfigurationValues('core', ['smtp_check_certificate' => 1]);

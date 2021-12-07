@@ -117,8 +117,8 @@ function update0800to0801() {
 
    $migration->addField("glpi_ocsservers", "ocs_version", "VARCHAR( 255 ) NULL");
 
-   if ($migration->addField("glpi_slalevels", "entities_id", "INT( 11 ) NOT NULL DEFAULT 0")) {
-      $migration->addField("glpi_slalevels", "is_recursive", "TINYINT( 1 ) NOT NULL DEFAULT 0");
+   if ($migration->addField("glpi_slalevels", "entities_id", "INT NOT NULL DEFAULT 0")) {
+      $migration->addField("glpi_slalevels", "is_recursive", "TINYINT NOT NULL DEFAULT 0");
       $migration->migrationOneTable('glpi_slalevels');
 
       $entities    = getAllDataFromTable('glpi_entities');

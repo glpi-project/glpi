@@ -55,7 +55,7 @@ function update922to923() {
       $migration->addField(
          "glpi_devicepcis",
          "devicenetworkcardmodels_id",
-         "int(11) NOT NULL DEFAULT '0'",
+         "int NOT NULL DEFAULT '0'",
          ['after' => 'manufacturers_id']
       );
       $migration->addKey('glpi_devicepcis', 'devicenetworkcardmodels_id');

@@ -69,7 +69,7 @@ function update0850to0853() {
       Config::setConfigurationValues('core', ['cron_limit' => 5]);
    }
    Config::setConfigurationValues('core', ['task_state' => Planning::TODO]);
-   $migration->addField("glpi_users", "task_state", "int(11) DEFAULT NULL");
+   $migration->addField("glpi_users", "task_state", "int DEFAULT NULL");
 
    $migration->addField('glpi_projecttasks', 'is_milestone', 'bool');
    $migration->addKey('glpi_projecttasks', 'is_milestone');
@@ -78,10 +78,10 @@ function update0850to0853() {
    // Add glpi_items_tickets table for associated elements
    if (!$DB->tableExists('glpi_items_tickets')) {
       $query = "CREATE TABLE `glpi_items_tickets` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `itemtype` varchar(255) DEFAULT NULL,
-                  `items_id` int(11) NOT NULL DEFAULT '0',
-                  `tickets_id` int(11) NOT NULL DEFAULT '0',
+                  `items_id` int NOT NULL DEFAULT '0',
+                  `tickets_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`itemtype`, `items_id`, `tickets_id`),
                   KEY `tickets_id` (`tickets_id`)

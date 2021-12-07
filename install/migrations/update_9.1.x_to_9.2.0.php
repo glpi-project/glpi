@@ -53,16 +53,16 @@ function update91xto920() {
 
    if (!$DB->tableExists("glpi_businesscriticities")) {
       $query = "CREATE TABLE `glpi_businesscriticities` (
-        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `id` int NOT NULL AUTO_INCREMENT,
         `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-        `entities_id` int(11) NOT NULL DEFAULT '0',
-        `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+        `entities_id` int NOT NULL DEFAULT '0',
+        `is_recursive` tinyint NOT NULL DEFAULT '0',
         `comment` text COLLATE utf8_unicode_ci,
         `date_mod` datetime DEFAULT NULL,
         `date_creation` datetime DEFAULT NULL,
-        `businesscriticities_id` int(11) NOT NULL DEFAULT '0',
+        `businesscriticities_id` int NOT NULL DEFAULT '0',
         `completename` text COLLATE utf8_unicode_ci,
-        `level` int(11) NOT NULL DEFAULT '0',
+        `level` int NOT NULL DEFAULT '0',
         `ancestors_cache` longtext COLLATE utf8_unicode_ci,
         `sons_cache` longtext COLLATE utf8_unicode_ci,
         PRIMARY KEY (`id`),
@@ -112,10 +112,10 @@ function update91xto920() {
    $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Knowbase item link to tickets'));
    if (!$DB->tableExists('glpi_knowbaseitems_items')) {
       $query = "CREATE TABLE `glpi_knowbaseitems_items` (
-                 `id` int(11) NOT NULL AUTO_INCREMENT,
-                 `knowbaseitems_id` int(11) NOT NULL,
+                 `id` int NOT NULL AUTO_INCREMENT,
+                 `knowbaseitems_id` int NOT NULL,
                  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-                 `items_id` int(11) NOT NULL DEFAULT '0',
+                 `items_id` int NOT NULL DEFAULT '0',
                  `date_creation` datetime DEFAULT NULL,
                  `date_mod` datetime DEFAULT NULL,
                  PRIMARY KEY (`id`),
@@ -130,13 +130,13 @@ function update91xto920() {
    $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Knowbase item revisions'));
    if (!$DB->tableExists('glpi_knowbaseitems_revisions')) {
       $query = "CREATE TABLE `glpi_knowbaseitems_revisions` (
-                 `id` int(11) NOT NULL AUTO_INCREMENT,
-                 `knowbaseitems_id` int(11) NOT NULL,
-                 `revision` int(11) NOT NULL,
+                 `id` int NOT NULL AUTO_INCREMENT,
+                 `knowbaseitems_id` int NOT NULL,
+                 `revision` int NOT NULL,
                  `name` text COLLATE utf8_unicode_ci,
                  `answer` longtext COLLATE utf8_unicode_ci,
                  `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `users_id` int(11) NOT NULL DEFAULT '0',
+                 `users_id` int NOT NULL DEFAULT '0',
                  `date_creation` datetime DEFAULT NULL,
                  PRIMARY KEY (`id`),
                  UNIQUE KEY `unicity` (`knowbaseitems_id`, `revision`, `language`),
@@ -170,12 +170,12 @@ function update91xto920() {
    $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Knowbase item comments'));
    if (!$DB->tableExists('glpi_knowbaseitems_comments')) {
       $query = "CREATE TABLE `glpi_knowbaseitems_comments` (
-                 `id` int(11) NOT NULL AUTO_INCREMENT,
-                 `knowbaseitems_id` int(11) NOT NULL,
-                 `users_id` int(11) NOT NULL DEFAULT '0',
+                 `id` int NOT NULL AUTO_INCREMENT,
+                 `knowbaseitems_id` int NOT NULL,
+                 `users_id` int NOT NULL DEFAULT '0',
                  `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
                  `comment` text COLLATE utf8_unicode_ci NOT NULL,
-                 `parent_comment_id` int(11) DEFAULT NULL,
+                 `parent_comment_id` int DEFAULT NULL,
                  `date_creation` datetime DEFAULT NULL,
                  `date_mod` datetime DEFAULT NULL,
                  PRIMARY KEY (`id`)
@@ -242,8 +242,8 @@ function update91xto920() {
    //add serial, location and state on each devices items
    foreach ($tables as $table) {
       $migration->addField($table, "otherserial", "varchar(255) NULL DEFAULT NULL");
-      $migration->addField($table, "locations_id", "int(11) NOT NULL DEFAULT '0'");
-      $migration->addField($table, "states_id", "int(11) NOT NULL DEFAULT '0'");
+      $migration->addField($table, "locations_id", "int NOT NULL DEFAULT '0'");
+      $migration->addField($table, "states_id", "int NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($table);
       $migration->addKey($table, 'otherserial');
       $migration->addKey($table, 'locations_id');
@@ -271,7 +271,7 @@ function update91xto920() {
    foreach ($tables as $table) {
       if (!$DB->tableExists($table)) {
          $query = "CREATE TABLE `$table` (
-                      `id` INT(11) NOT NULL AUTO_INCREMENT,
+                      `id` INT NOT NULL AUTO_INCREMENT,
                       `name` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
                       `comment` TEXT NULL COLLATE 'utf8_unicode_ci',
                       `product_number` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
@@ -298,23 +298,23 @@ function update91xto920() {
               'glpi_devicesoundcards'    => 'devicesoundcardmodels_id'];
 
    foreach ($tables as $table => $field) {
-      $migration->addField($table, $field, 'int(11) DEFAULT NULL', ['after' => 'is_recursive']);
+      $migration->addField($table, $field, 'int DEFAULT NULL', ['after' => 'is_recursive']);
       $migration->migrationOneTable($table);
       $migration->addKey($table, $field);
    }
 
    if (!$DB->tableExists('glpi_devicegenerics')) {
       $query = "CREATE TABLE `glpi_devicegenerics` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `designation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `devicegenerictypes_id` int(11) NOT NULL DEFAULT '0',
+                  `devicegenerictypes_id` int NOT NULL DEFAULT '0',
                   `comment` text COLLATE utf8_unicode_ci,
-                  `manufacturers_id` int(11) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                  `locations_id` int(11) NOT NULL DEFAULT '0',
-                  `states_id` int(11) NOT NULL DEFAULT '0',
-                  `devicegenericmodels_id` int(11) DEFAULT NULL,
+                  `manufacturers_id` int NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
+                  `locations_id` int NOT NULL DEFAULT '0',
+                  `states_id` int NOT NULL DEFAULT '0',
+                  `devicegenericmodels_id` int DEFAULT NULL,
                   `date_mod` datetime DEFAULT NULL,
                   `date_creation` datetime DEFAULT NULL,
                   PRIMARY KEY (`id`),
@@ -334,18 +334,18 @@ function update91xto920() {
 
    if (!$DB->tableExists('glpi_items_devicegenerics')) {
       $query = "CREATE TABLE `glpi_items_devicegenerics` (
-                   `id` INT(11) NOT NULL AUTO_INCREMENT,
-                   `items_id` INT(11) NOT NULL DEFAULT '0',
+                   `id` INT NOT NULL AUTO_INCREMENT,
+                   `items_id` INT NOT NULL DEFAULT '0',
                    `itemtype` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
-                   `devicegenerics_id` INT(11) NOT NULL DEFAULT '0',
-                   `is_deleted` TINYINT(1) NOT NULL DEFAULT '0',
-                   `is_dynamic` TINYINT(1) NOT NULL DEFAULT '0',
-                   `entities_id` INT(11) NOT NULL DEFAULT '0',
-                   `is_recursive` TINYINT(1) NOT NULL DEFAULT '0',
+                   `devicegenerics_id` INT NOT NULL DEFAULT '0',
+                   `is_deleted` TINYINT NOT NULL DEFAULT '0',
+                   `is_dynamic` TINYINT NOT NULL DEFAULT '0',
+                   `entities_id` INT NOT NULL DEFAULT '0',
+                   `is_recursive` TINYINT NOT NULL DEFAULT '0',
                    `serial` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
                    `otherserial` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
-                   `locations_id` INT(11) NOT NULL DEFAULT '0',
-                   `states_id` INT(11) NOT NULL DEFAULT '0',
+                   `locations_id` INT NOT NULL DEFAULT '0',
+                   `states_id` INT NOT NULL DEFAULT '0',
                    PRIMARY KEY (`id`),
                    INDEX `computers_id` (`items_id`),
                    INDEX `devicegenerics_id` (`devicegenerics_id`),
@@ -362,7 +362,7 @@ function update91xto920() {
 
    if (!$DB->tableExists('glpi_devicegenerictypes')) {
       $query = "CREATE TABLE `glpi_devicegenerictypes` (
-                  `id` INT(11) NOT NULL AUTO_INCREMENT,
+                  `id` INT NOT NULL AUTO_INCREMENT,
                   `name` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
                   `comment` TEXT NULL COLLATE 'utf8_unicode_ci',
                    PRIMARY KEY (`id`),
@@ -373,16 +373,16 @@ function update91xto920() {
 
    if (!$DB->tableExists('glpi_devicebatteries')) {
       $query = "CREATE TABLE `glpi_devicebatteries` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `designation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
-                  `manufacturers_id` int(11) NOT NULL DEFAULT '0',
-                  `voltage` int(11) DEFAULT NULL,
-                  `capacity` int(11) DEFAULT NULL,
-                  `devicebatterytypes_id` int(11) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                  `devicebatterymodels_id` int(11) DEFAULT NULL,
+                  `manufacturers_id` int NOT NULL DEFAULT '0',
+                  `voltage` int DEFAULT NULL,
+                  `capacity` int DEFAULT NULL,
+                  `devicebatterytypes_id` int NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
+                  `devicebatterymodels_id` int DEFAULT NULL,
                   `date_mod` datetime DEFAULT NULL,
                   `date_creation` datetime DEFAULT NULL,
                   PRIMARY KEY (`id`),
@@ -400,19 +400,19 @@ function update91xto920() {
 
    if (!$DB->tableExists('glpi_items_devicebatteries')) {
       $query = "CREATE TABLE `glpi_items_devicebatteries` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `items_id` int NOT NULL DEFAULT '0',
                   `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `devicebatteries_id` int(11) NOT NULL DEFAULT '0',
+                  `devicebatteries_id` int NOT NULL DEFAULT '0',
                   `manufacturing_date` date DEFAULT NULL,
-                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
-                  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `is_deleted` tinyint NOT NULL DEFAULT '0',
+                  `is_dynamic` tinyint NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
                   `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `locations_id` int(11) NOT NULL DEFAULT '0',
-                  `states_id` int(11) NOT NULL DEFAULT '0',
+                  `locations_id` int NOT NULL DEFAULT '0',
+                  `states_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   KEY `computers_id` (`items_id`),
                   KEY `devicebatteries_id` (`devicebatteries_id`),
@@ -429,7 +429,7 @@ function update91xto920() {
 
    if (!$DB->tableExists('glpi_devicebatterytypes')) {
       $query = "CREATE TABLE `glpi_devicebatterytypes` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   `date_mod` datetime DEFAULT NULL,
@@ -444,16 +444,16 @@ function update91xto920() {
 
    if (!$DB->tableExists('glpi_devicefirmwares')) {
       $query = "CREATE TABLE `glpi_devicefirmwares` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `designation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
-                  `manufacturers_id` int(11) NOT NULL DEFAULT '0',
+                  `manufacturers_id` int NOT NULL DEFAULT '0',
                   `date` date DEFAULT NULL,
                   `version` varchar(255) DEFAULT NULL,
-                  `devicefirmwaretypes_id` int(11) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                  `devicefirmwaremodels_id` int(11) DEFAULT NULL,
+                  `devicefirmwaretypes_id` int NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
+                  `devicefirmwaremodels_id` int DEFAULT NULL,
                   `date_mod` datetime DEFAULT NULL,
                   `date_creation` datetime DEFAULT NULL,
                   PRIMARY KEY (`id`),
@@ -470,18 +470,18 @@ function update91xto920() {
    }
    if (!$DB->tableExists('glpi_items_devicefirmwares')) {
       $query = "CREATE TABLE `glpi_items_devicefirmwares` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `items_id` int NOT NULL DEFAULT '0',
                   `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `devicefirmwares_id` int(11) NOT NULL DEFAULT '0',
-                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
-                  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `devicefirmwares_id` int NOT NULL DEFAULT '0',
+                  `is_deleted` tinyint NOT NULL DEFAULT '0',
+                  `is_dynamic` tinyint NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
                   `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `locations_id` int(11) NOT NULL DEFAULT '0',
-                  `states_id` int(11) NOT NULL DEFAULT '0',
+                  `locations_id` int NOT NULL DEFAULT '0',
+                  `states_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   KEY `computers_id` (`items_id`),
                   KEY `devicefirmwares_id` (`devicefirmwares_id`),
@@ -497,7 +497,7 @@ function update91xto920() {
    }
    if (!$DB->tableExists('glpi_devicefirmwaretypes')) {
       $query = "CREATE TABLE `glpi_devicefirmwaretypes` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   `date_mod` datetime DEFAULT NULL,
@@ -537,16 +537,16 @@ function update91xto920() {
    //Device sensors
    if (!$DB->tableExists('glpi_devicesensors')) {
       $query = "CREATE TABLE `glpi_devicesensors` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `designation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `devicesensortypes_id` int(11) NOT NULL DEFAULT '0',
-                  `devicesensormodels_id` int(11) NOT NULL DEFAULT '0',
+                  `devicesensortypes_id` int NOT NULL DEFAULT '0',
+                  `devicesensormodels_id` int NOT NULL DEFAULT '0',
                   `comment` text COLLATE utf8_unicode_ci,
-                  `manufacturers_id` int(11) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                  `locations_id` int(11) NOT NULL DEFAULT '0',
-                  `states_id` int(11) NOT NULL DEFAULT '0',
+                  `manufacturers_id` int NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
+                  `locations_id` int NOT NULL DEFAULT '0',
+                  `states_id` int NOT NULL DEFAULT '0',
                   `date_mod` datetime DEFAULT NULL,
                   `date_creation` datetime DEFAULT NULL,
                   PRIMARY KEY (`id`),
@@ -565,18 +565,18 @@ function update91xto920() {
 
    if (!$DB->tableExists('glpi_items_devicesensors')) {
       $query = "CREATE TABLE `glpi_items_devicesensors` (
-                   `id` INT(11) NOT NULL AUTO_INCREMENT,
-                   `items_id` INT(11) NOT NULL DEFAULT '0',
+                   `id` INT NOT NULL AUTO_INCREMENT,
+                   `items_id` INT NOT NULL DEFAULT '0',
                    `itemtype` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
-                   `devicesensors_id` INT(11) NOT NULL DEFAULT '0',
-                   `is_deleted` TINYINT(1) NOT NULL DEFAULT '0',
-                   `is_dynamic` TINYINT(1) NOT NULL DEFAULT '0',
-                   `entities_id` INT(11) NOT NULL DEFAULT '0',
-                   `is_recursive` TINYINT(1) NOT NULL DEFAULT '0',
+                   `devicesensors_id` INT NOT NULL DEFAULT '0',
+                   `is_deleted` TINYINT NOT NULL DEFAULT '0',
+                   `is_dynamic` TINYINT NOT NULL DEFAULT '0',
+                   `entities_id` INT NOT NULL DEFAULT '0',
+                   `is_recursive` TINYINT NOT NULL DEFAULT '0',
                    `serial` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
                    `otherserial` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
-                   `locations_id` INT(11) NOT NULL DEFAULT '0',
-                   `states_id` INT(11) NOT NULL DEFAULT '0',
+                   `locations_id` INT NOT NULL DEFAULT '0',
+                   `states_id` INT NOT NULL DEFAULT '0',
                    PRIMARY KEY (`id`),
                    INDEX `computers_id` (`items_id`),
                    INDEX `devicesensors_id` (`devicesensors_id`),
@@ -595,7 +595,7 @@ function update91xto920() {
 
    if (!$DB->tableExists('glpi_devicesensortypes')) {
       $query = "CREATE TABLE `glpi_devicesensortypes` (
-                  `id` INT(11) NOT NULL AUTO_INCREMENT,
+                  `id` INT NOT NULL AUTO_INCREMENT,
                   `name` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
                   `comment` TEXT NULL COLLATE 'utf8_unicode_ci',
                    PRIMARY KEY (`id`),
@@ -694,19 +694,19 @@ function update91xto920() {
    /** ************ New SLM structure ************ */
    if (!$DB->tableExists('glpi_olas')) {
       $query = "CREATE TABLE `glpi_olas` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                  `type` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint NOT NULL DEFAULT '0',
+                  `type` int NOT NULL DEFAULT '0',
                   `comment` text COLLATE utf8_unicode_ci,
-                  `number_time` int(11) NOT NULL,
-                  `calendars_id` int(11) NOT NULL DEFAULT '0',
+                  `number_time` int NOT NULL,
+                  `calendars_id` int NOT NULL DEFAULT '0',
                   `date_mod` datetime DEFAULT NULL,
                   `definition_time` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `end_of_working_day` tinyint(1) NOT NULL DEFAULT '0',
+                  `end_of_working_day` tinyint NOT NULL DEFAULT '0',
                   `date_creation` datetime DEFAULT NULL,
-                  `slms_id` int(11) NOT NULL DEFAULT '0',
+                  `slms_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
                   KEY `calendars_id` (`calendars_id`),
@@ -719,8 +719,8 @@ function update91xto920() {
 
    if (!$DB->tableExists('glpi_olalevelactions')) {
       $query = "CREATE TABLE `glpi_olalevelactions` (
-               `id` int(11) NOT NULL AUTO_INCREMENT,
-               `olalevels_id` int(11) NOT NULL DEFAULT '0',
+               `id` int NOT NULL AUTO_INCREMENT,
+               `olalevels_id` int NOT NULL DEFAULT '0',
                `action_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                `field` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -732,10 +732,10 @@ function update91xto920() {
 
    if (!$DB->tableExists('glpi_olalevelcriterias')) {
       $query = "CREATE TABLE `glpi_olalevelcriterias` (
-               `id` int(11) NOT NULL AUTO_INCREMENT,
-               `olalevels_id` int(11) NOT NULL DEFAULT '0',
+               `id` int NOT NULL AUTO_INCREMENT,
+               `olalevels_id` int NOT NULL DEFAULT '0',
                `criteria` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-               `condition` int(11) NOT NULL DEFAULT '0' COMMENT 'see define.php PATTERN_* and REGEX_* constant',
+               `condition` int NOT NULL DEFAULT '0' COMMENT 'see define.php PATTERN_* and REGEX_* constant',
                `pattern` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                PRIMARY KEY (`id`),
                KEY `olalevels_id` (`olalevels_id`),
@@ -746,13 +746,13 @@ function update91xto920() {
 
    if (!$DB->tableExists('glpi_olalevels')) {
       $query = "CREATE TABLE `glpi_olalevels` (
-               `id` int(11) NOT NULL AUTO_INCREMENT,
+               `id` int NOT NULL AUTO_INCREMENT,
                `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-               `olas_id` int(11) NOT NULL DEFAULT '0',
-               `execution_time` int(11) NOT NULL,
-               `is_active` tinyint(1) NOT NULL DEFAULT '1',
-               `entities_id` int(11) NOT NULL DEFAULT '0',
-               `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+               `olas_id` int NOT NULL DEFAULT '0',
+               `execution_time` int NOT NULL,
+               `is_active` tinyint NOT NULL DEFAULT '1',
+               `entities_id` int NOT NULL DEFAULT '0',
+               `is_recursive` tinyint NOT NULL DEFAULT '0',
                `match` char(10) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'see define.php *_MATCHING constant',
                `uuid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                PRIMARY KEY (`id`),
@@ -765,9 +765,9 @@ function update91xto920() {
 
    if (!$DB->tableExists('glpi_olalevels_tickets')) {
       $query = "CREATE TABLE `glpi_olalevels_tickets` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `tickets_id` int(11) NOT NULL DEFAULT '0',
-                  `olalevels_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `tickets_id` int NOT NULL DEFAULT '0',
+                  `olalevels_id` int NOT NULL DEFAULT '0',
                   `date` datetime DEFAULT NULL,
                   PRIMARY KEY (`id`),
                   KEY `tickets_id` (`tickets_id`),
@@ -934,12 +934,12 @@ function update91xto920() {
    if ($DB->tableExists('glpi_bookmarks')) {
       $migration->renameTable("glpi_bookmarks", "glpi_savedsearches");
 
-      $migration->addField("glpi_savedsearches", "last_execution_time", "int(11) NULL DEFAULT NULL");
+      $migration->addField("glpi_savedsearches", "last_execution_time", "int NULL DEFAULT NULL");
       $migration->addField("glpi_savedsearches", "do_count",
-                           "tinyint(1) NOT NULL DEFAULT '2' COMMENT 'Do or do not count results on list display; see SavedSearch::COUNT_* constants'");
+                           "tinyint NOT NULL DEFAULT '2' COMMENT 'Do or do not count results on list display; see SavedSearch::COUNT_* constants'");
       $migration->addField("glpi_savedsearches", "last_execution_date",
                            "DATETIME NULL DEFAULT NULL");
-      $migration->addField("glpi_savedsearches", "counter", "int(11) NOT NULL DEFAULT '0'");
+      $migration->addField("glpi_savedsearches", "counter", "int NOT NULL DEFAULT '0'");
       $migration->migrationOneTable("glpi_savedsearches");
       $migration->addKey("glpi_savedsearches", 'last_execution_time');
       $migration->addKey("glpi_savedsearches", 'do_count');
@@ -1031,10 +1031,10 @@ function update91xto920() {
 
    if (!$DB->tableExists('glpi_notifications_notificationtemplates')) {
       $query = "CREATE TABLE `glpi_notifications_notificationtemplates` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `notifications_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `mode` varchar(20) COLLATE utf8_unicode_ci NOT NULL COMMENT 'See Notification_NotificationTemplate::MODE_* constants',
-                  `notificationtemplates_id` int(11) NOT NULL DEFAULT '0',
+                  `notificationtemplates_id` int NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`notifications_id`, `mode`, `notificationtemplates_id`),
                   KEY `notifications_id` (`notifications_id`),
@@ -1084,17 +1084,17 @@ function update91xto920() {
    if ($DB->tableExists('glpi_bookmarks_users')) {
       $migration->renameTable("glpi_bookmarks_users", "glpi_savedsearches_users");
       $migration->changeField('glpi_savedsearches_users', 'bookmarks_id', 'savedsearches_id',
-                              'int(11) NOT NULL DEFAULT "0"');
+                              'int NOT NULL DEFAULT "0"');
    }
 
    if (!$DB->tableExists('glpi_savedsearches_alerts')) {
       $query = "CREATE TABLE `glpi_savedsearches_alerts` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `savedsearches_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `savedsearches_id` int NOT NULL DEFAULT '0',
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `is_active` tinyint(1) NOT NULL DEFAULT '0',
-                  `operator` tinyint(1) NOT NULL,
-                  `value` int(11) NOT NULL,
+                  `is_active` tinyint NOT NULL DEFAULT '0',
+                  `operator` tinyint NOT NULL,
+                  `value` int NOT NULL,
                   `date_mod` datetime DEFAULT NULL,
                   `date_creation` datetime DEFAULT NULL,
                   PRIMARY KEY (`id`),
@@ -1269,17 +1269,17 @@ Regards,',
 
    if (!$DB->tableExists('glpi_items_operatingsystems')) {
       $query = "CREATE TABLE `glpi_items_operatingsystems` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `items_id` int NOT NULL DEFAULT '0',
                   `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `operatingsystems_id` int(11) NOT NULL DEFAULT '0',
-                  `operatingsystemversions_id` int(11) NOT NULL DEFAULT '0',
-                  `operatingsystemservicepacks_id` int(11) NOT NULL DEFAULT '0',
-                  `operatingsystemarchitectures_id` int(11) NOT NULL DEFAULT '0',
-                  `operatingsystemkernelversions_id` int(11) NOT NULL DEFAULT '0',
+                  `operatingsystems_id` int NOT NULL DEFAULT '0',
+                  `operatingsystemversions_id` int NOT NULL DEFAULT '0',
+                  `operatingsystemservicepacks_id` int NOT NULL DEFAULT '0',
+                  `operatingsystemarchitectures_id` int NOT NULL DEFAULT '0',
+                  `operatingsystemkernelversions_id` int NOT NULL DEFAULT '0',
                   `license_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `license_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `operatingsystemeditions_id` int(11) NOT NULL DEFAULT '0',
+                  `operatingsystemeditions_id` int NOT NULL DEFAULT '0',
                   `date_mod` datetime DEFAULT NULL,
                   `date_creation` datetime DEFAULT NULL,
                   PRIMARY KEY (`id`),
@@ -1299,7 +1299,7 @@ Regards,',
 
    if (!$DB->tableExists('glpi_operatingsystemkernels')) {
       $query = "CREATE TABLE `glpi_operatingsystemkernels` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   `date_mod` datetime DEFAULT NULL,
@@ -1312,8 +1312,8 @@ Regards,',
 
    if (!$DB->tableExists('glpi_operatingsystemkernelversions')) {
       $query = "CREATE TABLE `glpi_operatingsystemkernelversions` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `operatingsystemkernels_id` int(11) NOT NULL DEFAULT '0',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `operatingsystemkernels_id` int NOT NULL DEFAULT '0',
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   `date_mod` datetime DEFAULT NULL,
@@ -1327,7 +1327,7 @@ Regards,',
 
    if (!$DB->tableExists('glpi_operatingsystemeditions')) {
       $query = "CREATE TABLE `glpi_operatingsystemeditions` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   `date_mod` datetime DEFAULT NULL,
@@ -1400,7 +1400,7 @@ Regards,',
       $migration->addField(
          'glpi_items_operatingsystems',
          'is_deleted',
-         "tinyint(1) NOT NULL DEFAULT '0'"
+         "tinyint NOT NULL DEFAULT '0'"
       );
       $migration->addKey('glpi_items_operatingsystems', 'is_deleted');
    }
@@ -1409,7 +1409,7 @@ Regards,',
       $migration->addField(
          'glpi_items_operatingsystems',
          'is_dynamic',
-         "tinyint(1) NOT NULL DEFAULT '0'"
+         "tinyint NOT NULL DEFAULT '0'"
       );
       $migration->addKey('glpi_items_operatingsystems', 'is_dynamic');
    }
@@ -1418,7 +1418,7 @@ Regards,',
       $migration->addField(
          'glpi_items_operatingsystems',
          'entities_id',
-         "int(11) NOT NULL DEFAULT '0'"
+         "int NOT NULL DEFAULT '0'"
       );
       $migration->addKey('glpi_items_operatingsystems', 'entities_id');
    }
@@ -1429,28 +1429,28 @@ Regards,',
    // Add certificates management
    if (!$DB->tableExists('glpi_certificates')) {
       $query = "CREATE TABLE `glpi_certificates` (
-        `id` INT(11) NOT NULL AUTO_INCREMENT,
+        `id` INT NOT NULL AUTO_INCREMENT,
         `name` VARCHAR(255) COLLATE utf8_unicode_ci  DEFAULT NULL,
         `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
         `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-        `entities_id` INT(11) NOT NULL DEFAULT '0',
-        `is_recursive` TINYINT(1) NOT NULL DEFAULT '0',
+        `entities_id` INT NOT NULL DEFAULT '0',
+        `is_recursive` TINYINT NOT NULL DEFAULT '0',
         `comment` text COLLATE utf8_unicode_ci,
-        `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
-        `is_template` tinyint(1) NOT NULL DEFAULT '0',
+        `is_deleted` tinyint NOT NULL DEFAULT '0',
+        `is_template` tinyint NOT NULL DEFAULT '0',
         `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-        `certificatetypes_id`  INT(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_certificatetypes (id)',
+        `certificatetypes_id`  INT NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_certificatetypes (id)',
         `dns_name` VARCHAR(255) COLLATE utf8_unicode_ci  DEFAULT NULL,
         `dns_suffix` VARCHAR(255) COLLATE utf8_unicode_ci  DEFAULT NULL,
-        `users_id_tech` INT(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_users (id)',
-        `groups_id_tech` INT(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_groups (id)',
-        `locations_id` INT(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_locations (id)',
-        `manufacturers_id` INT(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_manufacturers (id)',
-        `users_id` int(11) NOT NULL DEFAULT '0',
-        `groups_id` int(11) NOT NULL DEFAULT '0',
-        `is_autosign` TINYINT(1) NOT NULL DEFAULT '0',
+        `users_id_tech` INT NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_users (id)',
+        `groups_id_tech` INT NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_groups (id)',
+        `locations_id` INT NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_locations (id)',
+        `manufacturers_id` INT NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_manufacturers (id)',
+        `users_id` int NOT NULL DEFAULT '0',
+        `groups_id` int NOT NULL DEFAULT '0',
+        `is_autosign` TINYINT NOT NULL DEFAULT '0',
         `date_expiration` DATE DEFAULT NULL,
-        `states_id` INT(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
+        `states_id` INT NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
         `command` TEXT COLLATE utf8_unicode_ci,
         `certificate_request` TEXT COLLATE utf8_unicode_ci,
         `certificate_item` TEXT COLLATE utf8_unicode_ci,
@@ -1477,9 +1477,9 @@ Regards,',
 
    if (!$DB->tableExists('glpi_certificates_items')) {
       $query = "CREATE TABLE `glpi_certificates_items` (
-           `id` INT(11) NOT NULL AUTO_INCREMENT,
-           `certificates_id` INT(11) NOT NULL DEFAULT '0',
-           `items_id` INT(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
+           `id` INT NOT NULL AUTO_INCREMENT,
+           `certificates_id` INT NOT NULL DEFAULT '0',
+           `items_id` INT NOT NULL DEFAULT '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
            `itemtype` VARCHAR(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'see .class.php file',
            `date_creation` DATETIME DEFAULT NULL,
            `date_mod` DATETIME DEFAULT NULL,
@@ -1495,9 +1495,9 @@ Regards,',
 
    if (!$DB->tableExists('glpi_certificatetypes')) {
       $query = "CREATE TABLE `glpi_certificatetypes` (
-           `id` INT(11) NOT NULL AUTO_INCREMENT,
-           `entities_id` INT(11) NOT NULL DEFAULT '0',
-           `is_recursive` TINYINT(1) NOT NULL DEFAULT '0',
+           `id` INT NOT NULL AUTO_INCREMENT,
+           `entities_id` INT NOT NULL DEFAULT '0',
+           `is_recursive` TINYINT NOT NULL DEFAULT '0',
            `name` VARCHAR(255) COLLATE utf8_unicode_ci DEFAULT NULL,
            `comment` TEXT COLLATE utf8_unicode_ci,
            `date_creation` DATETIME DEFAULT NULL,
@@ -1639,13 +1639,13 @@ Regards,',
 
    if (!$DB->tableExists('glpi_lineoperators')) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_lineoperators` (
-                   `id` int(11) NOT NULL AUTO_INCREMENT,
+                   `id` int NOT NULL AUTO_INCREMENT,
                    `name` varchar(255) NOT NULL DEFAULT '',
                    `comment` text COLLATE utf8_unicode_ci,
-                   `mcc` int(11) DEFAULT NULL,
-                   `mnc` int(11) DEFAULT NULL,
-                   `entities_id`      INT(11) NOT NULL DEFAULT 0,
-                   `is_recursive`     TINYINT(1) NOT NULL DEFAULT 0,
+                   `mcc` int DEFAULT NULL,
+                   `mnc` int DEFAULT NULL,
+                   `entities_id`      INT NOT NULL DEFAULT 0,
+                   `is_recursive`     TINYINT NOT NULL DEFAULT 0,
                    `date_mod` datetime DEFAULT NULL,
                    `date_creation` datetime DEFAULT NULL,
                    PRIMARY KEY (`id`),
@@ -1661,7 +1661,7 @@ Regards,',
 
    if (!$DB->tableExists('glpi_linetypes')) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_linetypes` (
-         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `id` int NOT NULL AUTO_INCREMENT,
          `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
          `comment` text COLLATE utf8_unicode_ci,
          `date_mod` datetime DEFAULT NULL,
@@ -1676,19 +1676,19 @@ Regards,',
 
    if (!$DB->tableExists('glpi_lines')) {
       $query = "CREATE TABLE `glpi_lines` (
-            `id`                   INT(11) NOT NULL auto_increment,
+            `id`                   INT NOT NULL auto_increment,
             `name`                 VARCHAR(255) NOT NULL DEFAULT '',
-            `entities_id`          INT(11) NOT NULL DEFAULT 0,
-            `is_recursive`         TINYINT(1) NOT NULL DEFAULT 0,
-            `is_deleted`           TINYINT(1) NOT NULL DEFAULT 0,
+            `entities_id`          INT NOT NULL DEFAULT 0,
+            `is_recursive`         TINYINT NOT NULL DEFAULT 0,
+            `is_deleted`           TINYINT NOT NULL DEFAULT 0,
             `caller_num`           VARCHAR(255) NOT NULL DEFAULT '',
             `caller_name`          VARCHAR(255) NOT NULL DEFAULT '',
-            `users_id`             INT(11) NOT NULL DEFAULT 0,
-            `groups_id`            INT(11) NOT NULL DEFAULT 0,
-            `lineoperators_id`     INT(11) NOT NULL DEFAULT 0,
-            `locations_id`         INT(11) NOT NULL DEFAULT '0',
-            `states_id`            INT(11) NOT NULL DEFAULT '0',
-            `linetypes_id`         INT(11) NOT NULL DEFAULT '0',
+            `users_id`             INT NOT NULL DEFAULT 0,
+            `groups_id`            INT NOT NULL DEFAULT 0,
+            `lineoperators_id`     INT NOT NULL DEFAULT 0,
+            `locations_id`         INT NOT NULL DEFAULT '0',
+            `states_id`            INT NOT NULL DEFAULT '0',
+            `linetypes_id`         INT NOT NULL DEFAULT '0',
             `date_creation`        DATETIME DEFAULT NULL,
             `date_mod`             DATETIME DEFAULT NULL,
             `comment`              TEXT DEFAULT NULL,
@@ -1703,7 +1703,7 @@ Regards,',
 
    if (!$DB->tableExists('glpi_devicesimcardtypes')) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_devicesimcardtypes` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `id` int NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) NOT NULL DEFAULT '',
                   `comment` text COLLATE utf8_unicode_ci,
                   `date_mod` datetime DEFAULT NULL,
@@ -1755,17 +1755,17 @@ Regards,',
 
    if (!$DB->tableExists('glpi_devicesimcards')) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_devicesimcards` (
-               `id` int(11) NOT NULL AUTO_INCREMENT,
+               `id` int NOT NULL AUTO_INCREMENT,
                `designation` varchar(255) DEFAULT NULL,
                `comment` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL,
-               `entities_id` int(11) NOT NULL DEFAULT '0',
-               `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-               `manufacturers_id` int(11) NOT NULL DEFAULT '0',
-               `voltage` int(11) DEFAULT NULL,
-               `devicesimcardtypes_id` int(11) NOT NULL DEFAULT '0',
+               `entities_id` int NOT NULL DEFAULT '0',
+               `is_recursive` tinyint NOT NULL DEFAULT '0',
+               `manufacturers_id` int NOT NULL DEFAULT '0',
+               `voltage` int DEFAULT NULL,
+               `devicesimcardtypes_id` int NOT NULL DEFAULT '0',
                `date_mod` datetime DEFAULT NULL,
                `date_creation` datetime DEFAULT NULL,
-               `allow_voip` tinyint(1) NOT NULL DEFAULT '0',
+               `allow_voip` tinyint NOT NULL DEFAULT '0',
                PRIMARY KEY (`id`),
                KEY `designation` (`designation`),
                KEY `entities_id` (`entities_id`),
@@ -1780,18 +1780,18 @@ Regards,',
 
    if (!$DB->tableExists('glpi_items_devicesimcards')) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_items_devicesimcards` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `items_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to various table, according to itemtype (id)',
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `items_id` int NOT NULL DEFAULT '0' COMMENT 'RELATION to various table, according to itemtype (id)',
                   `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-                  `devicesimcards_id` int(11) NOT NULL DEFAULT '0',
-                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
-                  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `devicesimcards_id` int NOT NULL DEFAULT '0',
+                  `is_deleted` tinyint NOT NULL DEFAULT '0',
+                  `is_dynamic` tinyint NOT NULL DEFAULT '0',
+                  `entities_id` int NOT NULL DEFAULT '0',
                   `serial` varchar(255) NULL DEFAULT NULL,
                   `otherserial` varchar(255) NULL DEFAULT NULL,
-                  `states_id` int(11) NOT NULL DEFAULT '0',
-                  `locations_id` int(11) NOT NULL DEFAULT '0',
-                  `lines_id` int(11) NOT NULL DEFAULT '0',
+                  `states_id` int NOT NULL DEFAULT '0',
+                  `locations_id` int NOT NULL DEFAULT '0',
+                  `lines_id` int NOT NULL DEFAULT '0',
                   `pin` varchar(255) NOT NULL DEFAULT '',
                   `pin2` varchar(255) NOT NULL DEFAULT '',
                   `puk` varchar(255) NOT NULL DEFAULT '',
@@ -1956,25 +1956,25 @@ Regards,',
 
    if (!$DB->tableExists('glpi_projecttasktemplates')) {
       $query = "CREATE TABLE `glpi_projecttasktemplates` (
-                       `id` int(11) NOT NULL AUTO_INCREMENT,
-                       `entities_id` int(11) NOT NULL DEFAULT '0',
-                       `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                       `id` int NOT NULL AUTO_INCREMENT,
+                       `entities_id` int NOT NULL DEFAULT '0',
+                       `is_recursive` tinyint NOT NULL DEFAULT '0',
                        `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                        `description` longtext COLLATE utf8_unicode_ci,
                        `comment` longtext COLLATE utf8_unicode_ci,
-                       `projects_id` int(11) NOT NULL DEFAULT '0',
-                       `projecttasks_id` int(11) NOT NULL DEFAULT '0',
+                       `projects_id` int NOT NULL DEFAULT '0',
+                       `projecttasks_id` int NOT NULL DEFAULT '0',
                        `plan_start_date` datetime DEFAULT NULL,
                        `plan_end_date` datetime DEFAULT NULL,
                        `real_start_date` datetime DEFAULT NULL,
                        `real_end_date` datetime DEFAULT NULL,
-                       `planned_duration` int(11) NOT NULL DEFAULT '0',
-                       `effective_duration` int(11) NOT NULL DEFAULT '0',
-                       `projectstates_id` int(11) NOT NULL DEFAULT '0',
-                       `projecttasktypes_id` int(11) NOT NULL DEFAULT '0',
-                       `users_id` int(11) NOT NULL DEFAULT '0',
-                       `percent_done` int(11) NOT NULL DEFAULT '0',
-                       `is_milestone` tinyint(1) NOT NULL DEFAULT '0',
+                       `planned_duration` int NOT NULL DEFAULT '0',
+                       `effective_duration` int NOT NULL DEFAULT '0',
+                       `projectstates_id` int NOT NULL DEFAULT '0',
+                       `projecttasktypes_id` int NOT NULL DEFAULT '0',
+                       `users_id` int NOT NULL DEFAULT '0',
+                       `percent_done` int NOT NULL DEFAULT '0',
+                       `is_milestone` tinyint NOT NULL DEFAULT '0',
                        `comments` text COLLATE utf8_unicode_ci,
                        `date_mod` datetime DEFAULT NULL,
                        `date_creation` datetime DEFAULT NULL,
@@ -2001,21 +2001,21 @@ Regards,',
 
    //add editor in followupps
    if (!$DB->fieldExists('glpi_ticketfollowups', 'users_id_editor')) {
-      $migration->addField("glpi_ticketfollowups", "users_id_editor", "int(11) NOT NULL DEFAULT '0'", ['after' => 'users_id']);
+      $migration->addField("glpi_ticketfollowups", "users_id_editor", "int NOT NULL DEFAULT '0'", ['after' => 'users_id']);
       $migration->addKey("glpi_ticketfollowups", "users_id_editor");
    }
 
    //add editor in *tasks
    if (!$DB->fieldExists('glpi_tickettasks', 'users_id_editor')) {
-      $migration->addField("glpi_tickettasks", "users_id_editor", "int(11) NOT NULL DEFAULT '0'", ['after' => 'users_id']);
+      $migration->addField("glpi_tickettasks", "users_id_editor", "int NOT NULL DEFAULT '0'", ['after' => 'users_id']);
       $migration->addKey("glpi_tickettasks", "users_id_editor");
    }
    if (!$DB->fieldExists('glpi_changetasks', 'users_id_editor')) {
-      $migration->addField("glpi_changetasks", "users_id_editor", "int(11) NOT NULL DEFAULT '0'", ['after' => 'users_id']);
+      $migration->addField("glpi_changetasks", "users_id_editor", "int NOT NULL DEFAULT '0'", ['after' => 'users_id']);
       $migration->addKey("glpi_changetasks", "users_id_editor");
    }
    if (!$DB->fieldExists('glpi_problemtasks', 'users_id_editor')) {
-      $migration->addField("glpi_problemtasks", "users_id_editor", "int(11) NOT NULL DEFAULT '0'", ['after' => 'users_id']);
+      $migration->addField("glpi_problemtasks", "users_id_editor", "int NOT NULL DEFAULT '0'", ['after' => 'users_id']);
       $migration->addKey("glpi_problemtasks", "users_id_editor");
    }
 
@@ -2061,26 +2061,26 @@ Regards,',
    //Fix some field order from old migrations
    $migration->migrationOneTable('glpi_states');
    $DB->queryOrDie("ALTER TABLE `glpi_budgets` CHANGE `date_creation` `date_creation` DATETIME NULL DEFAULT NULL AFTER `date_mod`");
-   $DB->queryOrDie("ALTER TABLE `glpi_changetasks` CHANGE `groups_id_tech` `groups_id_tech` INT(11) NOT NULL DEFAULT '0' AFTER `users_id_tech`");
-   $DB->queryOrDie("ALTER TABLE `glpi_problemtasks` CHANGE `groups_id_tech` `groups_id_tech` INT(11) NOT NULL DEFAULT '0' AFTER `users_id_tech`");
-   $DB->queryOrDie("ALTER TABLE `glpi_tickettasks` CHANGE `groups_id_tech` `groups_id_tech` INT(11) NOT NULL DEFAULT '0' AFTER `users_id_tech`");
+   $DB->queryOrDie("ALTER TABLE `glpi_changetasks` CHANGE `groups_id_tech` `groups_id_tech` INT NOT NULL DEFAULT '0' AFTER `users_id_tech`");
+   $DB->queryOrDie("ALTER TABLE `glpi_problemtasks` CHANGE `groups_id_tech` `groups_id_tech` INT NOT NULL DEFAULT '0' AFTER `users_id_tech`");
+   $DB->queryOrDie("ALTER TABLE `glpi_tickettasks` CHANGE `groups_id_tech` `groups_id_tech` INT NOT NULL DEFAULT '0' AFTER `users_id_tech`");
    $DB->queryOrDie("ALTER TABLE `glpi_knowbaseitemcategories` CHANGE `sons_cache` `sons_cache` LONGTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `level`");
-   $DB->queryOrDie("ALTER TABLE `glpi_requesttypes` CHANGE `is_followup_default` `is_followup_default` TINYINT(1) NOT NULL DEFAULT '0' AFTER `is_helpdesk_default`");
-   $DB->queryOrDie("ALTER TABLE `glpi_requesttypes` CHANGE `is_mailfollowup_default` `is_mailfollowup_default` TINYINT(1) NOT NULL DEFAULT '0' AFTER `is_mail_default`");
+   $DB->queryOrDie("ALTER TABLE `glpi_requesttypes` CHANGE `is_followup_default` `is_followup_default` TINYINT NOT NULL DEFAULT '0' AFTER `is_helpdesk_default`");
+   $DB->queryOrDie("ALTER TABLE `glpi_requesttypes` CHANGE `is_mailfollowup_default` `is_mailfollowup_default` TINYINT NOT NULL DEFAULT '0' AFTER `is_mail_default`");
    $DB->queryOrDie("ALTER TABLE `glpi_requesttypes` CHANGE `comment` `comment` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `is_ticketfollowup`");
    $DB->queryOrDie("ALTER TABLE `glpi_requesttypes` CHANGE `date_mod` `date_mod` DATETIME NULL DEFAULT NULL AFTER `comment`");
    $DB->queryOrDie("ALTER TABLE `glpi_requesttypes` CHANGE `date_creation` `date_creation` DATETIME NULL DEFAULT NULL AFTER `date_mod`");
-   $DB->queryOrDie("ALTER TABLE `glpi_groups` CHANGE `is_task` `is_task` TINYINT(1) NOT NULL DEFAULT '1' AFTER `is_assign`");
+   $DB->queryOrDie("ALTER TABLE `glpi_groups` CHANGE `is_task` `is_task` TINYINT NOT NULL DEFAULT '1' AFTER `is_assign`");
    $DB->queryOrDie("ALTER TABLE `glpi_states` CHANGE `date_mod` `date_mod` DATETIME NULL DEFAULT NULL AFTER `is_visible_certificate`");
    $DB->queryOrDie("ALTER TABLE `glpi_states` CHANGE `date_creation` `date_creation` DATETIME NULL DEFAULT NULL AFTER `date_mod`");
-   $DB->queryOrDie("ALTER TABLE `glpi_taskcategories` CHANGE `is_active` `is_active` TINYINT(1) NOT NULL DEFAULT '1' AFTER `sons_cache`");
+   $DB->queryOrDie("ALTER TABLE `glpi_taskcategories` CHANGE `is_active` `is_active` TINYINT NOT NULL DEFAULT '1' AFTER `sons_cache`");
    $DB->queryOrDie("ALTER TABLE `glpi_users` CHANGE `palette` `palette` CHAR(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `layout`");
-   $DB->queryOrDie("ALTER TABLE `glpi_users` CHANGE `set_default_requester` `set_default_requester` TINYINT(1) NULL DEFAULT NULL AFTER `ticket_timeline_keep_replaced_tabs`");
+   $DB->queryOrDie("ALTER TABLE `glpi_users` CHANGE `set_default_requester` `set_default_requester` TINYINT NULL DEFAULT NULL AFTER `ticket_timeline_keep_replaced_tabs`");
    $DB->queryOrDie("ALTER TABLE `glpi_users` CHANGE `plannings` `plannings` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `highcontrast_css`");
 
    //Fix bad default values
-   $DB->queryOrDie("ALTER TABLE `glpi_states` CHANGE `is_visible_softwarelicense` `is_visible_softwarelicense` TINYINT(1) NOT NULL DEFAULT '1'");
-   $DB->queryOrDie("ALTER TABLE `glpi_states` CHANGE `is_visible_line` `is_visible_line` TINYINT(1) NOT NULL DEFAULT '1'");
+   $DB->queryOrDie("ALTER TABLE `glpi_states` CHANGE `is_visible_softwarelicense` `is_visible_softwarelicense` TINYINT NOT NULL DEFAULT '1'");
+   $DB->queryOrDie("ALTER TABLE `glpi_states` CHANGE `is_visible_line` `is_visible_line` TINYINT NOT NULL DEFAULT '1'");
 
    //Fields added in 0905_91 script but not in empty sql...
    if (!$DB->fieldExists('glpi_changetasks', 'date_creation', false)) {
@@ -2121,7 +2121,7 @@ Regards,',
    }
 
    //Fix comments...
-   $DB->queryOrDie("ALTER TABLE `glpi_savedsearches` CHANGE `type` `type` INT(11) NOT NULL DEFAULT '0' COMMENT 'see SavedSearch:: constants'");
+   $DB->queryOrDie("ALTER TABLE `glpi_savedsearches` CHANGE `type` `type` INT NOT NULL DEFAULT '0' COMMENT 'see SavedSearch:: constants'");
 
    //Fix unicity...
    $tables = [
@@ -2171,7 +2171,7 @@ Regards,',
    }
 
    //wrong type
-   $DB->queryOrDie("ALTER TABLE `glpi_users` CHANGE `keep_devices_when_purging_item` `keep_devices_when_purging_item` TINYINT(1) NULL DEFAULT NULL");
+   $DB->queryOrDie("ALTER TABLE `glpi_users` CHANGE `keep_devices_when_purging_item` `keep_devices_when_purging_item` TINYINT NULL DEFAULT NULL");
 
    //missing index
    $migration->addKey('glpi_networknames', 'is_deleted');
@@ -2197,7 +2197,7 @@ Regards,',
    foreach ($timeline_tables as $tl_table) {
       //add timeline_position in $tl_table
       if (!$DB->fieldExists($tl_table, 'timeline_position')) {
-         $migration->addField($tl_table, "timeline_position", "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($tl_table, "timeline_position", "tinyint NOT NULL DEFAULT '0'");
          $where = [
             "$tl_table.tickets_id"  => new \QueryExpression(
                DBmysql::quoteName("glpi_tickets_users.tickets_id")
