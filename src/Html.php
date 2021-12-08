@@ -720,7 +720,7 @@ class Html {
             echo "<h1>".$SQL_TOTAL_REQUEST." Queries ";
             echo "took  ".array_sum($DEBUG_SQL['times'])."s</h1>";
 
-            echo "<table class='sql-debug'><tr><th>N&#176; </th><th>Queries</th><th>Time</th>";
+            echo "<table class='sql-debug table table-striped'><tr><th>N&#176; </th><th>Queries</th><th>Time</th>";
             echo "<th>Rows</th><th>Errors</th></tr>";
 
             foreach ($DEBUG_SQL['queries'] as $num => $query) {
@@ -3857,7 +3857,7 @@ JAVASCRIPT
    static function printCleanArray($tab, $pad = 0, $jsexpand = false) {
 
       if (count($tab)) {
-         echo "<table class='array-debug'>";
+         echo "<table class='array-debug table table-striped'>";
          // For debug / no gettext
          echo "<tr><th>KEY</th><th>=></th><th>VALUE</th></tr>";
 
