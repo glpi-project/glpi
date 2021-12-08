@@ -174,12 +174,6 @@ class CommonDBTM extends CommonGLPI {
     */
    static $undisclosedFields = [];
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-   }
-
 
    /**
     * Return the table used to store this object

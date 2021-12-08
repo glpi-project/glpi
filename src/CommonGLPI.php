@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  *  Common GLPI object
 **/
-class CommonGLPI {
+class CommonGLPI implements CommonGLPIInterface {
 
    /// GLPI Item type cache : set dynamically calling getType
    protected $type                 = -1;
@@ -73,6 +73,9 @@ class CommonGLPI {
    public $get_item_to_display_tab = false;
    static protected $othertabs     = [];
 
+
+   public function __construct() {
+   }
 
    /**
     * Return the localized name of the current Type

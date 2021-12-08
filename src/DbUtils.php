@@ -424,18 +424,6 @@ final class DbUtils {
          return false;
       }
 
-      if (($constructor = $item_class->getConstructor()) !== null) {
-         foreach ($constructor->getParameters() as $parameter) {
-            if (!$parameter->isOptional()) {
-               trigger_error(
-                  sprintf('Cannot instanciate "%s" as its constructor has non optionnal parameters.', $itemtype),
-                  E_USER_WARNING
-               );
-               return false;
-            }
-         }
-      }
-
       return new $itemtype();
    }
 
