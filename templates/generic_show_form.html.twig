@@ -44,9 +44,10 @@
    {% set target       = params['target'] ?? item.getFormURL() %}
    {% set withtemplate = params['withtemplate'] ?? '' %}
    {% set item_type = item.getType() %}
+   {% set item_has_pictures = item.hasItemtypeOrModelPictures() %}
 
    <div class="card-body d-flex flex-wrap">
-      <div class="col-12 col-xxl-9 flex-column">
+      <div class="col-12 col-xxl-{{ item_has_pictures ? '9' : '12' }} flex-column">
          <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
             <div class="row flex-row align-items-start flex-grow-1">
                <div class="row flex-row">
@@ -536,11 +537,13 @@
             </div> {# .row #}
          </div> {# .flex-row #}
       </div>
-      <div class="col-12 col-xxl-3 flex-column">
-         <div class="flex-row asset-pictures">
-            {{ include('components/form/pictures.html.twig', {'gallery_type': ''}) }}
+      {% if item_has_pictures %}
+         <div class="col-12 col-xxl-3 flex-column">
+            <div class="flex-row asset-pictures">
+               {{ include('components/form/pictures.html.twig', {'gallery_type': ''}) }}
+            </div>
          </div>
-      </div>
+      {% endif %}
    </div> {# .card-body #}
 
    {% if item_type == 'Contract' %}

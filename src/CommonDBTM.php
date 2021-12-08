@@ -5443,6 +5443,49 @@ class CommonDBTM extends CommonGLPI {
       return $type_class !== null ? $type_class::getForeignKeyField() : null;
    }
 
+   public function hasItemtypeOrModelPictures(array $picture_fields = ['picture_front', 'picture_rear', 'pictures']): bool {
+      $itemtype = $this->getType();
+      $modeltype = $itemtype . "Model";
+      /** @var CommonDBTM $model */
+      $model = new $modeltype;
+      $fk = getForeignKeyFieldForItemType($modeltype);
+      $has_model = class_exists($modeltype) && isset($this->fields[$fk]) && $this->fields[$fk] > 0;
+
+      $has_pictures = false;
+
+      foreach ($picture_fields as $picture_field) {
+         if ($this->isField($picture_field)) {
+            if ($picture_field === 'pictures') {
+               $urls = importArrayFromDB($this->fields[$picture_field]);
+               if (!empty($urls)) {
+                  $has_pictures = true;
+                  break;
+               }
+            } else if (!empty($this->fields[$picture_field])) {
+               $has_pictures = true;
+               break;
+            }
+         }
+      }
+      if (!$has_pictures && $has_model && $model->getFromDB(($this->fields[$fk]))) {
+         foreach ($picture_fields as $picture_field) {
+            if ($model->isField($picture_field)) {
+               if ($picture_field === 'pictures') {
+                  $urls = importArrayFromDB($model->fields[$picture_field]);
+                  if (!empty($urls)) {
+                     $has_pictures = true;
+                     break;
+                  }
+               } else if (!empty($model->fields[$picture_field])) {
+                  $has_pictures = true;
+                  break;
+               }
+            }
+         }
+      }
+      return $has_pictures;
+   }
+
    public function getItemtypeOrModelPicture(string $picture_field = 'picture_front', array $params = []): array {
       $p = [
          'thumbnail_w'  => 'auto',
