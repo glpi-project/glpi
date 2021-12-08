@@ -188,7 +188,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
       $(ajax_container).on('click', 'table.search-results th[data-searchopt-id]', (e) => {
          e.stopPropagation();
          const target = $(e.target).closest('th').get(0);
-         if (e.ctrlKey) {
+         if (e.ctrlKey || e.metaKey) {
             // Multisort mode
             this.onColumnSortClick(target, true);
          } else {
