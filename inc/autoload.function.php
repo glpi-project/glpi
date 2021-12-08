@@ -277,8 +277,6 @@ function glpi_autoload($classname) {
       return true;
    }
 
-   $dir = GLPI_ROOT . "/inc/";
-
    // Deprecation warn for RuleImportComputer* classes
    if (in_array($classname, ['RuleImportComputer', 'RuleImportComputerCollection'])) {
       Toolbox::deprecated(
@@ -290,50 +288,17 @@ function glpi_autoload($classname) {
       );
    }
 
-   if ($plug = isPluginItemType($classname)) {
-      $plugname = strtolower($plug['plugin']);
+   $plug = isPluginItemType($classname);
+   if (!$plug) {
+      return false;
+   }
 
-      // check plugin exists and is enabled
-      if (!Plugin::isPluginLoaded($plugname)) {
-         // Do not load plugin class if plugin is not loaded
-         return false;
-      }
+   $plugname = strtolower($plug['plugin']);
+   $dir      = GLPI_ROOT . "/plugins/$plugname/inc/";
+   $item     = str_replace('\\', '/', strtolower($plug['class']));
 
-      $item = str_replace('\\', '/', strtolower($plug['class']));
-
-      // load from first found directory
-      foreach (PLUGINS_DIRECTORIES as $base_dir) {
-         $dir = "$base_dir/$plugname/inc/";
-         if (is_dir($dir)) {
-            break;
-         }
-      }
-   } else if (strpos($classname, 'Glpi\Tests\Web\Deprecated') !== false) {
-      // Special case to autoload files in the tests dir that have a namespace
-      // and are not an atoum test case
-      $dir = GLPI_ROOT . "/tests/";
-
-      // Convert classname to array
-      $path = explode('\\', $classname);
-
-      // Remove first two items (Glpi\Tests)
-      array_splice($path, 0, 2);
-
-      // Extract file name
-      $item = array_pop($path);
-
-      // Convert all remaining path to lowercase
-      $path = array_map(function($folder) {
-         return strtolower($folder);
-      }, $path);
-
-      // Revert to string and add to dir path
-      $dir .= implode('/', $path) . '/';
-   } else {
-      $item = strtolower($classname);
-      if (substr($classname, 0, \strlen(NS_GLPI)) === NS_GLPI) {
-         $item = str_replace('\\', '/', substr($item, \strlen(NS_GLPI)));
-      }
+   if (!Plugin::isPluginLoaded($plugname)) {
+      return false;
    }
 
    if (file_exists("$dir$item.class.php")) {
@@ -415,4 +380,4 @@ if ($need_mo_compile) {
 require_once $autoload;
 
 // Use spl autoload to allow stackable autoload.
-spl_autoload_register('glpi_autoload', true, true);
+spl_autoload_register('glpi_autoload');
