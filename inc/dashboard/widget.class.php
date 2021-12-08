@@ -1997,11 +1997,12 @@ JAVASCRIPT;
       }
 
       $scss = new Compiler();
+      $root_path = str_replace(DIRECTORY_SEPARATOR, '/', realpath(GLPI_ROOT));
       $result = $scss->compileString("{$css_dom_parent} {
          \$ct-series-names: ({$series_names});
          \$ct-series-colors: ({$series_colors});
 
-         @import \"" . realpath(GLPI_ROOT . '/css/includes/components/chartist/_generate.scss') . "\";
+         @import '{$root_path}/css/includes/components/chartist/_generate.scss';
       }");
       $palette_css = $result->getCss();
 
