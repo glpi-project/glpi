@@ -332,7 +332,7 @@ class DisplayPreference extends CommonDBTM {
          }
          if ($values) {
             Dropdown::showFromArray('num', $values);
-            echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-sm btn-primary'>";
+            echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary ms-1'>";
          }
          Html::closeForm();
          echo "</td></tr>\n";
@@ -480,7 +480,7 @@ class DisplayPreference extends CommonDBTM {
          }
          if ($values) {
             Dropdown::showFromArray('num', $values);
-            echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-sm btn-primary'>";
+            echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary ms-1'>";
          }
          Html::closeForm();
          echo "</td></tr>";
