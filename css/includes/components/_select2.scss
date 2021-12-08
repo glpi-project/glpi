@@ -293,6 +293,16 @@
          }
       }
    }
+
+   & ~ .btn.btn-outline-secondary {
+      border: $input-border-width solid $input-border-color;
+
+      @include dark-mode {
+         & {
+            border-color: $input-border;
+         }
+      }
+   }
 }
 
 // fix z-index issue for select2 dropdown container with a boostrap modal

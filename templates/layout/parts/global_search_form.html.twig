@@ -31,11 +31,13 @@
 
 {% if get_current_interface() == 'central' %}
 <form action="{{ path('front/search.php') }}" role="search" method="get">
-   <div class="input-group">
-      <input type="text" class="form-control" name="globalsearch" placeholder="{{ __('Search…') }}" />
-      <button type="submit" class="btn btn-outline-secondary" title="{{ __('Search…') }}">
-         <span class="ti ti-search" aria-hidden="true"></span>
-      </button>
+   <div class="input-group input-group-flat">
+      <input type"text" class="form-control" name="globalsearch" placeholder="{{ __('Search…') }}" />
+      <span class="input-group-text">
+         <button type="submit" class="btn btn-link p-0 m-0" title="{{ __('Search…') }}">
+            <span class="ti ti-search" aria-hidden="true"></span>
+         </button>
+      </span>
    </div>
 </form>
 {% endif %}

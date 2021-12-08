@@ -30,7 +30,6 @@
  */
 
 $info: #80abe4;
-$danger: #d49696;
 $enable-negative-margins: true;
 $link-hover-decoration: none;
 $logo-light: "../pics/logos/logo-GLPI-100-white.png" !default;
@@ -97,23 +96,6 @@ $timeline-badge-bg: rgba(97, 97, 97, 15%) !default;
 $timeline-badge-fg: rgba(43, 43, 43, 80%) !default;
 $input-border: $dark-mode-text !default;
 $dropdowns-list-contrast: rgba(167, 171, 175, 10%) !default;
-
-// additionnal fixes
-$primary-fg: $body-color !default;
-
-.btn-primary,
-.btn-outline-primary,
-.btn-ghost-primary {
-   --tblr-btn-color-text: #{$primary-fg};
-}
-
-$secondary-fg: $light !default;
-
-.btn-secondary,
-.btn-outline-secondary,
-.btn-ghost-secondary {
-   --tblr-btn-color-text: #{$secondary-fg};
-}
 
 // helpers
 $topbar-height: 79px;

@@ -37,7 +37,7 @@
    --logo: #{$logo};
    --contrast-light: #{$color-contrast-light};
    --contrast-dark: #{$color-contrast-dark};
-   --light-mix: #{$light-mix};
+   --light-mix: #{rgba(mix($light, $dark, 64%), 0.24)};
    --hover-bg: #{$hover-bg};
    --btn-disabled-opacity: #{$btn-disabled-opacity};
 
