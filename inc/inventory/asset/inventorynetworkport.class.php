@@ -348,6 +348,9 @@ trait InventoryNetworkPort {
       $netname_stmt = null;
 
       $ports = $this->ports;
+      if (method_exists($this, 'getManagementPorts')) {
+         $ports += $this->getManagementPorts();
+      }
       foreach ($ports as $key => $data) {
          foreach ($db_ports as $keydb => $datadb) {
             //keep trace of logical number from db
@@ -565,6 +568,9 @@ trait InventoryNetworkPort {
     */
    private function handleCreates() {
       $ports = $this->ports;
+      if (method_exists($this, 'getManagementPorts')) {
+         $ports += $this->getManagementPorts();
+      }
       foreach ($ports as $port) {
          $netports_id = $this->addNetworkPort($port);
          if (count($port->ipaddress)) {

@@ -613,6 +613,11 @@ abstract class MainAsset extends InventoryAsset
          $_SESSION['glpiactive_entity']         = $entities_id;
       }
 
+      //Ports are handled a different way on network equipments
+      if ($this->item->getType() != 'NetworkEquipment') {
+          $this->handlePorts();
+      }
+
       if (method_exists($this, 'isWirelessController') && $this->isWirelessController()) {
          if (property_exists($val, 'firmware') && $val->firmware instanceof \stdClass) {
             $fw = new Firmware($this->item, [$val->firmware]);
