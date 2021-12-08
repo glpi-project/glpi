@@ -263,6 +263,8 @@ class Appliance extends CommonDBTM {
          'condition'          => ['is_visible_appliance' => 1]
       ];
 
+      $tab = array_merge($tab, Certificate::rawSearchOptionsToAdd());
+
       return $tab;
    }
 

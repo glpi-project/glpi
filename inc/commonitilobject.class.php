@@ -3693,6 +3693,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'field'              => 'name',
          'name'               => SolutionType::getTypeName(1),
          'datatype'           => 'dropdown',
+         'massiveaction'      => false,
          'forcegroupby'       => true,
          'joinparams'         => [
             'beforejoin'         => [

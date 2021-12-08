@@ -280,9 +280,7 @@ class Problem_Ticket extends CommonDBRelation{
          $used[$ticket['id']] = $ticket['id'];
       }
 
-      if ($canedit
-          && !in_array($problem->fields['status'], array_merge($problem->getClosedStatusArray(),
-                                                               $problem->getSolvedStatusArray()))) {
+      if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
@@ -297,7 +295,6 @@ class Problem_Ticket extends CommonDBRelation{
             'entity'      => $problem->getEntityID(),
             'entity_sons' => $problem->isRecursive(),
             'displaywith' => ['id'],
-            'condition'   => Ticket::getOpenCriteria()
          ]);
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
@@ -385,9 +382,7 @@ class Problem_Ticket extends CommonDBRelation{
       foreach ($problems as $problem) {
          $used[$problem['id']] = $problem['id'];
       }
-      if ($canedit
-          && !in_array($ticket->fields['status'], array_merge($ticket->getClosedStatusArray(),
-                                                              $ticket->getSolvedStatusArray()))) {
+      if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='problemticket_form$rand' id='problemticket_form$rand' method='post'
                 action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";

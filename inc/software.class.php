@@ -603,6 +603,7 @@ class Software extends CommonDBTM {
       ];
 
       $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
+      $tab = array_merge($tab, Certificate::rawSearchOptionsToAdd());
 
       return $tab;
    }
