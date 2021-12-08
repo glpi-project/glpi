@@ -957,6 +957,10 @@ HTML;
       }
       $card  = $cards[$card_id];
 
+      if (isset($card['keywords'])) {
+         $card_options['keywords'] = $card['keywords'];
+      }
+
       // manage cache
       $options_footprint = sha1(serialize($card_options).
          ($_SESSION['glpiactiveentities_string'] ?? "").
