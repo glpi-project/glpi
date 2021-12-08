@@ -38,9 +38,11 @@
      id="saved-searches-panel-{{ rand }}">
    <div class="card-header d-flex flex-nowrap pe-0 align-items-center text-muted">
       <i class="ti ti-star"></i>&nbsp;
-      {{ _n('Saved search', 'Saved searches', 2) }}
+      <span class="text-truncate">
+         {{ _n('Saved search', 'Saved searches', 2) }}
+      </span>
 
-      <li class="ms-auto btn-list me-1">
+      <li class="ms-auto btn-list me-1 flex-nowrap">
          <a href="{{ path('front/savedsearch.php') }}" class="btn btn-sm btn-icon btn-ghost-secondary"
             data-bs-toggle="tooltip" data-bs-placement="bottom"
             title="{{ __('Manage all saved searches') }}">
