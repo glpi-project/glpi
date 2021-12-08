@@ -104,6 +104,7 @@ class Printer extends AbstractInventoryAsset {
 
       $main = new \Glpi\Inventory\Asset\Printer($printer, $json);
       $main->setAgent($agent)->setExtraData($data);
+      $main->checkConf(new \Glpi\Inventory\Conf());
       $result = $main->prepare();
       $this->array($result)->hasSize(1);
       $this->array((array)$result[0])->isIdenticalTo([

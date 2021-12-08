@@ -292,6 +292,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
       $main = new \Glpi\Inventory\Asset\NetworkEquipment($netequ, $json);
       $main->setAgent($agent)->setExtraData($data);
+      $main->checkConf(new \Glpi\Inventory\Conf());
       $result = $main->prepare();
       $this->array($result)->hasSize(5);
 
