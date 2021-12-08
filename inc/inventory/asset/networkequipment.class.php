@@ -201,6 +201,7 @@ class NetworkEquipment extends MainAsset
             $np->prepare();
             $np->handleLinks();
             if (!isset($this->assets['\Glpi\Inventory\Asset\NetworkPort'])) {
+               $np->addNetworkPorts($mports);
                $this->assets['\Glpi\Inventory\Asset\NetworkPort'] = [$np];
             } else {
                $this->assets['\Glpi\Inventory\Asset\NetworkPort'][0]->addNetworkPorts($np->getNetworkPorts());
