@@ -82,7 +82,7 @@ $btn-close-color: $light;
 }
 
 // re-import styles impacted by dark-mode mixin
-@import "~@tabler/core/src/scss/dark";
+@import "~@tabler/core/src/scss/layout/dark";
 @import "~@tabler/core/src/scss/layout/navbar";
 
 $input-border: $dark-mode-text !default;
