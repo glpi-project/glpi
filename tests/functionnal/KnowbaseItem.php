@@ -33,7 +33,6 @@
 namespace test\units;
 
 use DbTestCase;
-use Glpi\Toolbox\Sanitizer;
 
 /* Test for inc/knowbaseitem.class.php */
 
