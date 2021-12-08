@@ -91,15 +91,22 @@ class RuleCollection extends CommonDBTM {
     *
     * @param boolean $recursive (true by default)
     * @param integer $condition (0 by default)
+    * @param integer $children (0 by default)
     *
     * @return : number of rules
    **/
-   function getCollectionSize($recursive = true, $condition = 0) {
+   function getCollectionSize(
+      $recursive = true,
+      $condition = 0,
+      $children = 0
+   ) {
       global $DB;
 
       $restrict = $this->getRuleListCriteria([
          'condition' => $condition,
-         'active'    => false
+         'active'    => false,
+         'inherited' => $recursive,
+         'childrens' => $children,
       ]);
 
       $iterator = $DB->request($restrict);
@@ -115,7 +122,6 @@ class RuleCollection extends CommonDBTM {
     * @return array
    **/
    function getRuleListCriteria($options = []) {
-
       $p['active']    = true;
       $p['start']     = 0;
       $p['limit']     = 0;
@@ -448,7 +454,7 @@ class RuleCollection extends CommonDBTM {
          echo "</td></tr></table>";
       }
 
-      $nb         = $this->getCollectionSize($p['inherited'], $p['condition']);
+      $nb         = $this->getCollectionSize($p['inherited'], $p['condition'], $p['childrens']);
       $p['start'] = (isset($options["start"]) ? $options["start"] : 0);
 
       if ($p['start'] >= $nb) {
