@@ -349,7 +349,7 @@ class GLPIKanbanRights {
             'allow_delete_item', 'supported_filters'
          ];
          // Use CSS variable check for dark theme detection by default
-         self.dark_theme = $('html').css('--is-dark').trim() === true;
+         self.dark_theme = $('html').css('--is-dark').trim() === 'true';
 
          if (args.length === 1) {
             for (let i = 0; i < overridableParams.length; i++) {
