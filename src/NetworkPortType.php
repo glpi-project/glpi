@@ -184,4 +184,24 @@ class NetworkPortType extends CommonDropdown {
 
       return false;
    }
+
+   function post_addItem() {
+      $this->invalidateCache();
+      parent::post_addItem();
+   }
+
+   function post_updateItem($history = 1) {
+      $this->invalidateCache();
+      parent::post_updateItem($history);
+   }
+
+   function post_deleteFromDB() {
+      $this->invalidateCache();
+      parent::post_deleteFromDB();
+   }
+
+   protected function invalidateCache() {
+      global $GLPI_CACHE;
+      $GLPI_CACHE->set('glpi_inventory_ports_types', null);
+   }
 }
