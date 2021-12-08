@@ -7462,17 +7462,17 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $itil_table = static::getTable();
 
-      $WHERE         = ['is_deleted' => 0];
+      $WHERE = ['is_deleted' => 0];
       $WHERE += $criteria;
       $WHERE += getEntitiesRestrictCriteria();
-
 
       $request = [
          'SELECT' => [
             $itil_table.'.*',
          ],
          'FROM'   => $itil_table,
-         'WHERE'  => $WHERE];
+         'WHERE'  => $WHERE
+      ];
 
       $iterator = $DB->request($request);
       foreach ($iterator as $data) {
