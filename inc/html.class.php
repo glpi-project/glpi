@@ -4171,7 +4171,7 @@ JAVASCRIPT
          $link .= $btlabel;
       } else {
          if (substr($btimage, 0, strlen('fa-')) === 'fa-') {
-            $link .= "<span class='fa $btimage' title='$btlabel'><span class='sr-only'>$btlabel</span>";
+            $link .= "<span class='fas $btimage' title='$btlabel'><span class='sr-only'>$btlabel</span>";
          } else {
             $link .= "<img src='$btimage' title='$btlabel' alt='$btlabel' class='pointer'>";
          }
