@@ -1997,13 +1997,20 @@ JAVASCRIPT;
       }
 
       $scss = new Compiler();
-      $root_path = str_replace(DIRECTORY_SEPARATOR, '/', realpath(GLPI_ROOT));
-      $result = $scss->compileString("{$css_dom_parent} {
-         \$ct-series-names: ({$series_names});
-         \$ct-series-colors: ({$series_colors});
+      $generate_scss_path = str_replace(
+         DIRECTORY_SEPARATOR,
+         '/',
+         realpath(GLPI_ROOT . '/css/includes/components/chartist/_generate.scss')
+      );
+      $result = $scss->compileString(
+         "{$css_dom_parent} {
+            \$ct-series-names: ({$series_names});
+            \$ct-series-colors: ({$series_colors});
 
-         @import '{$root_path}/css/includes/components/chartist/_generate.scss';
-      }");
+            @import '{$generate_scss_path}';
+         }",
+         dirname($generate_scss_path)
+      );
       $palette_css = $result->getCss();
 
       $GLPI_CACHE->set($hash, $palette_css);
