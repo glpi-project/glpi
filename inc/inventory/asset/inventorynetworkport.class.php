@@ -65,6 +65,18 @@ trait InventoryNetworkPort {
       return $this->ports;
    }
 
+   /**
+    * Add network ports
+    *
+    * @param $ports
+    *
+    * @return $this
+    */
+   public function addNetworkPorts($ports): self {
+      $this->ports += $ports;
+      return $this;
+   }
+
    private function isMainPartial(): bool {
       if ($this instanceof MainAsset) {
          return $this->isPartial();
