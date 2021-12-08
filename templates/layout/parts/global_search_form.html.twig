@@ -34,11 +34,9 @@
    <div class="input-group input-group-flat">
       <input type"text" class="form-control" name="globalsearch" placeholder="{{ __('Search…') }}" />
       <span class="input-group-text">
-         <a class="link-secondary" title="{{ __('Search…') }}"
-            onclick="$(this).closest('form').submit();"
-            role="button">
+         <button type="submit" class="btn btn-link p-0 m-0" title="{{ __('Search…') }}">
             <span class="ti ti-search" aria-hidden="true"></span>
-         </a>
+         </button>
       </span>
    </div>
 </form>
