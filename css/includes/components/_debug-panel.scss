@@ -47,32 +47,6 @@
             table {
                width: 100%;
 
-               tr {
-                  &:nth-child(odd) {
-                     background-color: $gray-100;
-
-                     body.theme-dark & {
-                        background-color: $gray-900;
-                     }
-                  }
-
-                  &:nth-child(even) {
-                     background-color: $gray-300;
-
-                     body.theme-dark & {
-                        background-color: $gray-800;
-                     }
-                  }
-               }
-
-               th {
-                  background-color: $gray-500;
-
-                  body.theme-dark & {
-                     background-color: $gray-700;
-                  }
-               }
-
                th,
                td {
                   padding: 0.25em;
