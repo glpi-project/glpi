@@ -6544,6 +6544,9 @@ HTML;
          return '';
       }
 
+      // Fix issue with Windows directory separator
+      $path = str_replace(DIRECTORY_SEPARATOR, '/', $path);
+
       $import = '@import "' . $path . '";';
       $fckey = 'css_raw_file_' . $file;
       $file_hash = self::getScssFileHash($path);
@@ -6578,6 +6581,7 @@ HTML;
          }
       );
 
+      $css = '';
       if (!isset($args['reload']) && !isset($args['nocache']) && $GLPI_CACHE->has($ckey)) {
          $css = $GLPI_CACHE->get($ckey);
       } else {
@@ -6590,6 +6594,7 @@ HTML;
                $GLPI_CACHE->set($fckey, $file_hash);
             }
          } catch (\Throwable $e) {
+            ErrorHandler::getInstance()->handleException($e, true);
             if (isset($args['debug'])) {
                $msg = 'An error occured during SCSS compilation: ' . $e->getMessage();
                $msg = str_replace(["\n", "\"", "'"], ['\00000a', '\0022', '\0027'], $msg);
