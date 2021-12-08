@@ -660,13 +660,21 @@ class Html {
     * @return void
    **/
    static function displayDebugInfos($with_session = true, $ajax = false, $rand = null) {
-      global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $TIMER_DEBUG;
+      global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $TIMER_DEBUG, $PLUGIN_HOOKS;
 
       // Only for debug mode so not need to be translated
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          if ($rand === null) {
             $rand = mt_rand();
          }
+
+         $plugin_tabs = [];
+         if (isset($PLUGIN_HOOKS[Hooks::DEBUG_TABS])) {
+            foreach ($PLUGIN_HOOKS[Hooks::DEBUG_TABS] as $plugin => $tabs) {
+               $plugin_tabs = array_merge($plugin_tabs, $tabs);
+            }
+         }
+
          echo "<div id='debugpanel$rand' class='container-fluid card debug-panel ".($ajax?"debug_ajax":"")."'>";
 
          echo "<ul class='nav nav-tabs' data-bs-toggle='tabs'>";
@@ -681,6 +689,9 @@ class Html {
                echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debugsession$rand'>SESSION VARIABLE</a></li>";
             }
             echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debugserver$rand'>SERVER VARIABLE</a></li>";
+         }
+         foreach ($plugin_tabs as $tab_id => $tab_info) {
+            echo "<li class='nav-item'><a class='nav-link' data-bs-toggle='tab' href='#debug$tab_id$rand'>{$tab_info['title']}</a></li>";
          }
          echo "<li class='nav-item ms-auto'><a class='nav-link' href='#' id='close_debug$rand'><i class='fa fa-2x fa-times'></i><span class='sr-only'>".__('Close')."</span></a></li>";
          echo "</ul>";
@@ -744,6 +755,19 @@ class Html {
             }
             echo "<div id='debugserver$rand' class='tab-pane'>";
             self::printCleanArray($_SERVER, 0, true);
+            echo "</div>";
+         }
+         foreach ($plugin_tabs as $tab_id => $tab_info) {
+            if (isset($tab_info['display_callable']) && !is_callable($tab_info['display_callable'])) {
+               trigger_error(sprintf('Debug tab "%s"(%s) display callable is invalid.', $tab_info['title'] ?? '', $tab_id), E_USER_WARNING);
+               continue;
+            }
+            echo "<div id='debug$tab_id$rand' class='tab-pane'>";
+            $tab_info['display_callable']([
+               'with_session' => $with_session,
+               'ajax'         => $ajax,
+               'rand'         => $rand,
+            ]);
             echo "</div>";
          }
          echo "</div>";

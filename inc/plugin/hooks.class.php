@@ -109,6 +109,9 @@ class Hooks
    const NETWORK_DISCOVERY = 'network_discovery';
    const NETWORK_INVENTORY = 'network_inventory';
 
+   // Debug / Development hooks
+   const DEBUG_TABS = 'debug_tabs';
+
    /**
     * Get file hooks
     *
