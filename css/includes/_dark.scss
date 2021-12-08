@@ -127,19 +127,6 @@ input[type="color"] {
    border-color: #6d000a;
 }
 
-.btn-danger,
-.btn-outline-danger,
-.btn-ghost-danger {
-   --tblr-btn-color: #642b2b;
-   --tblr-btn-color-darker: #6d000a;
-
-   background-color: var(--tblr-btn-color);
-
-   &:hover {
-      background-color: var(--tblr-btn-color-darker);
-   }
-}
-
 .accordion-item .accordion-button {
    background-color: var(--dark) !important;
 }
