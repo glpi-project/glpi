@@ -12,7 +12,7 @@
         "@eastdesire/jscolor": "^2.4.6",
         "@fortawesome/fontawesome-free": "^5.12.1",
         "@fullcalendar/bootstrap": "^4.4.0",
-        "@fullcalendar/core": "^4.4.0",
+        "@fullcalendar/core": "^5.10.1",
         "@fullcalendar/daygrid": "^4.4.0",
         "@fullcalendar/interaction": "^4.4.0",
         "@fullcalendar/list": "^4.4.0",
