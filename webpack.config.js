@@ -29,6 +29,7 @@
  * ---------------------------------------------------------------------
  */
 
+const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -68,7 +69,6 @@ let config = {
             // It also removes existing sourcemaps that cannot be used correctly.
             test: /\.js$/,
             include: [
-               path.resolve(__dirname, 'node_modules/@fullcalendar'),
                path.resolve(__dirname, 'node_modules/@fullcalendar'),
                path.resolve(__dirname, 'node_modules/codemirror'),
                path.resolve(__dirname, 'node_modules/cystoscape'),
@@ -111,6 +111,11 @@ let config = {
       ],
    },
    plugins: [
+      new webpack.ProvidePlugin(
+         {
+            process: 'process/browser', // required by some libs (including `popper.js`)
+         }
+      ),
       new CleanWebpackPlugin(
          {
             cleanOnceBeforeBuildPatterns: [
