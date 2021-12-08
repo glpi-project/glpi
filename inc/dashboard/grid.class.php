@@ -364,7 +364,6 @@ HTML;
 HTML;
       }
 
-
       // display the grid
       $html = <<<HTML
       <div class="dashboard {$embed_class} {$mini_class}" id="dashboard-{$rand}">
