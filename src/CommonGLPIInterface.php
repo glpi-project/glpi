@@ -30,11 +30,20 @@
  * ---------------------------------------------------------------------
  */
 
-namespace GlpiPlugin\Bar;
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
 
-class Something extends \CommonDBTM {
+/**
+ * CommonGLPI interface.
+ */
+interface CommonGLPIInterface {
 
-   public function __construct(array $param) {
-
-   }
+   /**
+    * Constructor.
+    *
+    * Declared in interface to ensure that `getItemForItemtype()` will be able to create an instance of CommonGLPI without
+    * having to pass any parameter.
+    */
+   public function __construct();
 }

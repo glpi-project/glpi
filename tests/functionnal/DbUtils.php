@@ -245,21 +245,6 @@ class DbUtils extends DbTestCase {
             ->exists();
    }
 
-   public function testGetItemForItemtypeHavingConstructorWithMandatoryParameters() {
-      require_once __DIR__ . '/../fixtures/pluginbarsomething.php';
-
-      $this
-         ->if($this->newTestedInstance)
-         ->when(
-            function () {
-               $this->boolean($this->testedInstance->getItemForItemtype('GlpiPlugin\Bar\Something'))->isFalse();
-            }
-         )->error
-            ->withType(E_USER_WARNING)
-            ->withMessage('Cannot instanciate "GlpiPlugin\Bar\Something" as its constructor has non optionnal parameters.')
-            ->exists();
-   }
-
    public function dataPlural() {
 
       return [

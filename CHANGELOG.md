@@ -29,6 +29,7 @@ The present file will list all changes made to the project; according to the
 - Added `CommonDBTM::showForm()` to have a generic showForm for asset (based on a twig template).
 
 #### Changes
+- `CommonGLPI` constructor signature has been declared in an interface (`CommonGLPIInterface`).
 - `DBmysqlIterator` class compliancy with `Iterator` has been fixed (i.e. `DBmysqlIterator::next()` does not return current row anymore).
 - `showForm()` method of all classes inheriting `CommonDBTM` have been changed to match `CommonDBTM::showForm()` signature.
 - Format of `Message-Id` header sent in Tickets notifications changed to match format used by other items.
