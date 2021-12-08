@@ -296,6 +296,12 @@
 
    & ~ .btn.btn-outline-secondary {
       border: $input-border-width solid $input-border-color;
+
+      @include dark-mode {
+         & {
+            border-color: $input-border;
+         }
+      }
    }
 }
 
