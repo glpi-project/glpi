@@ -722,7 +722,7 @@ abstract class MainAsset extends InventoryAsset
          }
       }
 
-      //do controlers
+      //do controllers
       foreach ($controllers as $asset) {
          $asset->setExtraData($this->assets);
          $asset->setExtraData(['\\' . get_class($this) => $mainasset]);

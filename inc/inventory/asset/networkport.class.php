@@ -71,8 +71,12 @@ class NetworkPort extends InventoryAsset
 
       foreach ($this->data as $k => &$val) {
          $keep = true;
-         $val->instantiation_type = 'NetworkPortEthernet';
-         $val->ipaddress = [];
+         if (!property_exists($val, 'instantiation_type')) {
+            $val->instantiation_type = 'NetworkPortEthernet';
+         }
+         if (!property_exists($val, 'ipaddress')) {
+            $val->ipaddress = [];
+         }
 
          if (!property_exists($val, 'logical_number') && !property_exists($val, 'ifnumber')) {
             unset($this->data[$k]);
