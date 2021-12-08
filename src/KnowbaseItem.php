@@ -2120,7 +2120,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       }
 
       $ids = $DB->request([
-         'SELECT' => 'id',
+         'SELECT' => self::getTable().'.id',
+
          'FROM'   => self::getTable(),
          'LEFT JOIN' => [
             'glpi_knowbaseitems_knowbaseitemcategories' => [
