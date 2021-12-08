@@ -364,15 +364,10 @@ HTML;
 HTML;
       }
 
-      $embed_watermark = "";
-      if (self::$embed) {
-         $embed_watermark = "<span class='glpi_logo'></span>";
-      }
-
       // display the grid
       $html = <<<HTML
       <div class="dashboard {$embed_class} {$mini_class}" id="dashboard-{$rand}">
-         $embed_watermark
+         <span class='glpi_logo'></span>
          $toolbars
          $filters
          $grid_guide

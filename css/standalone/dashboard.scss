@@ -113,7 +113,11 @@ $break_tablet: 1400px;
       }
    }
 
+   &.fullscreen,
    &.embed {
+      background: white;
+      padding: 100px;
+
       .glpi_logo {
          background: url("../pics/logos/logo-GLPI-100-black.png") no-repeat;
          width: 100px;
@@ -122,20 +126,14 @@ $break_tablet: 1400px;
          top: 30px;
          left: 100px;
       }
-   }
-
-   &.fullscreen,
-   &.embed {
-      background: white;
-      padding: 100px;
 
       .toolbar {
          top: 50px;
          right: 50px;
 
          &.left-toolbar {
-            top: 50px;
-            left: 104px;
+            top: 40px;
+            left: 250px;
          }
 
          .fs-toggle {
@@ -1316,6 +1314,7 @@ $break_tablet: 1400px;
 
 .dashboard.theme-dark,
 .theme-dark .dashboard {
+   &.fullscreen,
    &.embed {
       .glpi_logo {
          background: url("../pics/logos/logo-GLPI-100-white.png") no-repeat;
