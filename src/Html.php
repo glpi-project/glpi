@@ -37,10 +37,6 @@ use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\Sanitizer;
 use ScssPhp\ScssPhp\Compiler;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Html Class
  * Inpired from Html/FormHelper for several functions

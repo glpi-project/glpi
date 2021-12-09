@@ -43,10 +43,6 @@ use ShareDashboardDropdown;
 use Telemetry;
 use Toolbox;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 class Grid {
    protected $cell_margin     = 6;
    protected $grid_cols       = 26;

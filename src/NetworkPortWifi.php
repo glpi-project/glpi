@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// NetworkPortWifi class : wifi instantitation of NetworkPort
 /// @todo : add connection to other wifi networks
 /// @since 0.84

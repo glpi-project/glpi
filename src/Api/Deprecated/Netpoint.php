@@ -1,5 +1,4 @@
 <?php
-
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,10 +31,6 @@
  */
 
 namespace Glpi\Api\Deprecated;
-
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
 
 /**
  * @since 10.0.0

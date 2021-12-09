@@ -46,10 +46,6 @@ use Sabre\VObject\Property\ICalendar\DateTime;
 use Sabre\VObject\Property\ICalendar\Recur;
 use Sabre\VObject\Reader;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Trait containing methods to convert properties from/to a VObject component.
  *

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// Class DeviceSimcard
 class DeviceSimcard extends CommonDevice {
    static protected $forward_entity_to = ['Item_DeviceSimcard', 'Infocom'];

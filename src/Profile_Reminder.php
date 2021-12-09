@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// Class Profile_Reminder
 /// @since 0.83
 class Profile_Reminder extends CommonDBRelation {

@@ -32,10 +32,6 @@
 
 namespace Glpi\Console\Migration;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 use DBConnection;
 use Glpi\Console\AbstractCommand;
 use Glpi\System\Requirement\DbConfiguration;

@@ -32,10 +32,6 @@
 
 namespace Glpi\CalDAV\Backend;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 use Glpi\CalDAV\Node\Property;
 use Glpi\CalDAV\Traits\CalDAVPrincipalsTrait;
 use Glpi\CalDAV\Traits\CalDAVUriUtilTrait;

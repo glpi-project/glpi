@@ -35,10 +35,6 @@ namespace Glpi\ContentTemplates\Parameters\ParametersTypes;
 use Glpi\ContentTemplates\Parameters\TemplatesParametersInterface;
 use Glpi\ContentTemplates\TemplateManager;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * ObjectParameter represent a whole object to use as a parameter.
  * For exemple, this entity of a ticket or its category.

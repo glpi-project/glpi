@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 class DomainRecord extends CommonDBChild {
    const DEFAULT_TTL = 3600;
 

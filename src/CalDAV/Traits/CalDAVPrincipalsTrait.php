@@ -39,10 +39,6 @@ use Planning;
 use Session;
 use User;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Trait used for CalDAV Principals listing and visibility management.
  *

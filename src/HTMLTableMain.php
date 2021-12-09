@@ -30,11 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
-
 /// HTMLTable class
 /// Create a smart HTML table. The table allows cells to depend on other ones. As such, it is
 /// possible to have rowspan for cells that are "father" of other ones. If a "father" has several

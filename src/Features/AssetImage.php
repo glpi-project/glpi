@@ -35,10 +35,6 @@ namespace Glpi\Features;
 use Session;
 use Toolbox;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Objects that can have asset pictures (dropdowns and asset itemtypes directly).
  **/

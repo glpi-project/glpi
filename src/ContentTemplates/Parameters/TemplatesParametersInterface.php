@@ -34,10 +34,6 @@ namespace Glpi\ContentTemplates\Parameters;
 
 use CommonDBTM;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Twig content templates parameters definition interface.
  *

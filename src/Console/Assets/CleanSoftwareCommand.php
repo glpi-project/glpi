@@ -32,10 +32,6 @@
 
 namespace Glpi\Console\Assets;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 use CleanSoftwareCron;
 use Glpi\Console\AbstractCommand;
 use Symfony\Component\Console\Exception\InvalidArgumentException;

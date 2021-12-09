@@ -30,11 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
-
 /**
  * Common DataBase Connexity Table Manager Class
  * This class factorize code for CommonDBChild and CommonDBRelation. Both classes themselves

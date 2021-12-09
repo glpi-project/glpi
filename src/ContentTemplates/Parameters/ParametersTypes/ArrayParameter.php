@@ -34,10 +34,6 @@ namespace Glpi\ContentTemplates\Parameters\ParametersTypes;
 
 use Glpi\ContentTemplates\Parameters\TemplatesParametersInterface;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * ArrayParmameter represent a template parameter that contains multiple objets
  * of the same types.

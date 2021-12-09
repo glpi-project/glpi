@@ -35,10 +35,6 @@ namespace Glpi\Dashboard;
 use Ramsey\Uuid\Uuid;
 use Session;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 class Dashboard extends \CommonDBTM {
    protected $id      = 0;
    protected $key     = "";

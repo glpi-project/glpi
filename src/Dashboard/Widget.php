@@ -41,10 +41,6 @@ use ScssPhp\ScssPhp\Compiler;
 use Search;
 use Toolbox;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Widget class
 **/

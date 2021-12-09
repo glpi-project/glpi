@@ -46,10 +46,6 @@ use Session;
 use Supplier;
 use User;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Parameters for "CommonITILObject" items.
  *

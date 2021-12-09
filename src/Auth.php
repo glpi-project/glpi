@@ -35,10 +35,6 @@ use Glpi\Event;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\Sanitizer;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  *  Identification class used to login
  */

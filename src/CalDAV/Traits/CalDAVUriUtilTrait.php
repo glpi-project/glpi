@@ -35,10 +35,6 @@ namespace Glpi\CalDAV\Traits;
 use Glpi\CalDAV\Backend\Principal;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Trait used for CalDAV URI utilities, like generation and parsing.
  *

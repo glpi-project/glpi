@@ -34,10 +34,6 @@ namespace Glpi\ContentTemplates\Parameters;
 
 use OLA;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Parameters for "OLA" items.
  *

@@ -35,10 +35,6 @@ use Glpi\Cache\I18nCache;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Session Class
 **/

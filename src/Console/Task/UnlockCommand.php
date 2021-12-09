@@ -32,10 +32,6 @@
 
 namespace Glpi\Console\Task;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 use CronTask;
 use Glpi\Console\AbstractCommand;
 use Glpi\Event;

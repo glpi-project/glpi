@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// Class Entity_RSSFeed
 /// @since 0.84
 class Entity_RSSFeed extends CommonDBRelation {

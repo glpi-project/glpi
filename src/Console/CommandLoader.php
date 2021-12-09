@@ -32,10 +32,6 @@
 
 namespace Glpi\Console;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 use AppendIterator;
 use DirectoryIterator;
 use Plugin;

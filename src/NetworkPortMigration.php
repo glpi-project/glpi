@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// NetworkPortMigration class : class of unknown objects defined inside the NetworkPort before 0.84
 /// @since 0.84
 class NetworkPortMigration extends CommonDBChild {

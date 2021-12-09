@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// Class KnowbaseItem_Profile
 /// since version 0.83
 class KnowbaseItem_Profile extends CommonDBRelation {

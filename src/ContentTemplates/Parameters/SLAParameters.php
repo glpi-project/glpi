@@ -34,10 +34,6 @@ namespace Glpi\ContentTemplates\Parameters;
 
 use SLA;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Parameters for "SLA" items.
  *

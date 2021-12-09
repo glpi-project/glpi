@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 class OperatingSystemEdition extends CommonDropdown {
 
    public $can_be_translated = true;

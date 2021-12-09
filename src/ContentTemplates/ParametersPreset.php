@@ -42,10 +42,6 @@ use SolutionTemplate;
 use TaskTemplate;
 use TicketTemplate;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Helper class to get some predefined groups of twig parameters
  */

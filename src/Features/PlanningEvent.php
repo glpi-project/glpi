@@ -1,5 +1,4 @@
 <?php
-
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,10 +31,6 @@
  */
 
 namespace Glpi\Features;
-
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
 
 use CommonDBVisible;
 use CommonITILTask;

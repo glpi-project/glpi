@@ -32,10 +32,6 @@
 
 namespace Glpi;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 use Ajax;
 use Cable;
 use CommonDBChild;

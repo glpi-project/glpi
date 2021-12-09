@@ -33,10 +33,6 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssetImage;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * SoftwareLicense Class
 **/

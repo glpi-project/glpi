@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 class Ticket_Contract extends CommonDBRelation {
 
    public static $itemtype_1 = 'Ticket';

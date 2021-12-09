@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// NetworkPortAlias class : alias instantiation of NetworkPort. An alias can be use to define VLAN
 /// tagged ports. It is use in old version of Linux to define several IP addresses to a given port.
 /// @since 0.84

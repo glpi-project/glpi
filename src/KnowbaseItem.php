@@ -34,10 +34,6 @@ use Glpi\Event;
 use Glpi\RichText\RichText;
 use Glpi\Toolbox\Sanitizer;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * KnowbaseItem Class
 **/

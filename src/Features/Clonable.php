@@ -32,10 +32,6 @@
 
 namespace Glpi\Features;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 use CommonDBConnexity;
 use CommonDBTM;
 use Session;

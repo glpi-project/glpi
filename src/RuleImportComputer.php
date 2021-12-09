@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// OCS Rules class
 // @deprecated 10.0.0 @see RuleImportAsset
 class RuleImportComputer extends Rule {

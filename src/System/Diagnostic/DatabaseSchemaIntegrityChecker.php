@@ -32,10 +32,6 @@
 
 namespace Glpi\System\Diagnostic;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 use DBmysql;
 use SebastianBergmann\Diff\Differ;
 

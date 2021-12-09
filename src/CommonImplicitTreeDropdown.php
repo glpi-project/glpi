@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// Class CommonImplicitTreeDropdown : Manage implicit tree, ie., trees that cannot be manage by
 /// the user. For instance, Network hierarchy only depends on network addresses and netmasks.
 /// @since 0.84

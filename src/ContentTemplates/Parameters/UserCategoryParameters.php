@@ -34,10 +34,6 @@ namespace Glpi\ContentTemplates\Parameters;
 
 use UserCategory;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Parameters class for "UserCategory" items.
  *
