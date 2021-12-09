@@ -202,6 +202,6 @@ class NetworkPortType extends CommonDropdown {
 
    protected function invalidateCache() {
       global $GLPI_CACHE;
-      $GLPI_CACHE->set('glpi_inventory_ports_types', null);
+      $GLPI_CACHE->delete('glpi_inventory_ports_types');
    }
 }
