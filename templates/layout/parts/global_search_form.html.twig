@@ -30,7 +30,7 @@
  #}
 
 {% if get_current_interface() == 'central' %}
-<form action="{{ path('front/search.php') }}" role="search" method="get">
+<form action="{{ path('front/search.php') }}" role="search" method="get" data-submit-once>
    <div class="input-group input-group-flat">
       <input type"text" class="form-control" name="globalsearch" placeholder="{{ __('Search…') }}" />
       <span class="input-group-text">

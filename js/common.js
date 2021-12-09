@@ -1381,3 +1381,42 @@ function uniqid(prefix = "", more_entropy = false) {
    const id = sec.toString(16).replace(/\./g, "").padEnd(14, "0");
    return `${prefix}${id}${more_entropy ? `.${Math.trunc(Math.random() * 100000000)}`:""}`;
 }
+
+/**
+ * Prevent submitting the form again
+ *
+ * A spinner is shown in the triggering submit button and all others are disabled.
+ * @param form The form to block submits
+ * @param {SubmitEvent} e The submit event
+ */
+function blockFormSubmit(form, e) {
+   let submitter = $(e.originalEvent.submitter);
+
+   // if submitter is not a button, find the first submit button with add or update as the name
+   if (!submitter.is('button')) {
+      submitter = submitter.find('button[name="add"]:first, button[name="update"]:first');
+      // If no submit button was found, use the first submit button
+      if (submitter.length === 0) {
+         submitter = form.find('button[type="submit"]:first');
+      }
+   }
+
+   if (submitter.length > 0 && submitter.is('button')) {
+      submitter.html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`);
+   }
+
+   // Prevent clicking any submit buttons in form
+   form.find('button[type="submit"]').click((e) => {e.preventDefault();});
+   // Mark the form as submitted
+   form.attr('data-submitted', 'true');
+}
+
+$(document.body).on('submit', 'form[data-submit-once]', (e) => {
+   const form = $(e.target).closest('form');
+   if (form.attr('data-submitted') === 'true') {
+      e.preventDefault();
+      return false;
+   } else {
+      blockFormSubmit(form, e);
+   }
+});

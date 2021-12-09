@@ -43,7 +43,7 @@
 } %}
 
 {% if show_form %}
-<form method="post" action="{{ target }}" {{ formoptions }} enctype="multipart/form-data">
+<form method="post" action="{{ target }}" {{ formoptions }} enctype="multipart/form-data" data-submit-once>
 {% endif %}
    <div class="row flex-column">
       {{ fields.textField(
