@@ -246,8 +246,9 @@ class Item_Problem extends CommonItilObject_Item {
                         foreach ($linkeditems as $type => $tab) {
                            $typeitem = new $type;
                            foreach ($tab as $ID) {
-                              $typeitem->getFromDB($ID);
-                              $nb += self::countForItem($typeitem);
+                              if ($typeitem->getFromDB($ID)) {
+                                 $nb += self::countForItem($typeitem);
+                              }
                            }
                         }
                      }
