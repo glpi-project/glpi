@@ -53,11 +53,13 @@
          </span>
       {% endif %}
    </div>
-
+   {% if item.fields['id'] > 0 and item.isField('is_dynamic') %}
+      <div class="card-body row">
+         {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::AUTOINVENTORY_INFORMATION'), item) }}
+      </div>
+   {% endif %}
    {% set agent = item is usingtrait('Glpi\\Features\\Inventoriable') ? item.getInventoryAgent() : null %}
-   {% if agent is null %}
-      {{ __('No agent has been linked.') }}
-   {% else %}
+   {% if agent is not null %}
       <div class="card-body row">
          <div class="mb-3 col-12 col-sm-6">
             <label class="form-label" >{{ agent.getTypeName() }}</label>

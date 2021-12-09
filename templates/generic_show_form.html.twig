@@ -531,12 +531,6 @@
 
                      {% block more_fields %}
                      {% endblock %}
-
-                     {% if item.fields['id'] > 0 and item.isField('is_dynamic') %}
-                        <div class="mb-3 col-12 col-sm-6">
-                           {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::AUTOINVENTORY_INFORMATION'), item) }}
-                        </div>
-                     {% endif %}
                   {% endblock %}
                </div> {# .row #}
             </div> {# .row #}
