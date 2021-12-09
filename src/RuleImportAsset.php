@@ -907,7 +907,7 @@ class RuleImportAsset extends Rule {
                      }
                      return $output;
                   }
-               } else {
+               } elseif ($action->fields["value"] != self::RULE_ACTION_LINK_OR_NO_IMPORT) {
                   // Import into new equipment
                   if (count($this->criterias)) {
                      foreach ($this->criterias as $criterion) {
