@@ -957,8 +957,9 @@ HTML;
       }
       $card  = $cards[$card_id];
 
-      if (isset($card['keywords'])) {
-         $card_options['keywords'] = $card['keywords'];
+      // allows plugins to control uniqueness of its cards in cache system
+      if (isset($card['custom_hash'])) {
+         $card_options['custom_hash'] = $card['custom_hash'];
       }
 
       // manage cache
