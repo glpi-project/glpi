@@ -119,8 +119,10 @@ class Rule extends CommonDBTM {
 
       $rule = new self();
       if ($rule->getFromDB($rules_id)) {
-         $realrule = new $rule->fields['sub_type']();
-         return $realrule;
+         if (class_exists($rule->fields['sub_type'])) {
+            $realrule = new $rule->fields['sub_type']();
+            return $realrule;
+         }
       }
       return null;
    }
