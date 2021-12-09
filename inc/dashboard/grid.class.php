@@ -957,6 +957,11 @@ HTML;
       }
       $card  = $cards[$card_id];
 
+      // allows plugins to control uniqueness of its cards in cache system
+      if (isset($card['custom_hash'])) {
+         $card_options['custom_hash'] = $card['custom_hash'];
+      }
+
       // manage cache
       $options_footprint = sha1(serialize($card_options).
          ($_SESSION['glpiactiveentities_string'] ?? "").
