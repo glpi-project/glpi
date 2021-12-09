@@ -32,10 +32,6 @@
 
 namespace Glpi\Console\Config;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 use Config;
 use Glpi\Console\AbstractCommand;
 use Symfony\Component\Console\Input\InputArgument;

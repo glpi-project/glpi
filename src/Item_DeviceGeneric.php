@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
-}
-
 class Item_DeviceGeneric extends Item_Devices {
 
    static public $itemtype_2 = 'DeviceGeneric';

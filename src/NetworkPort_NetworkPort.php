@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// NetworkPort_NetworkPort class
 class NetworkPort_NetworkPort extends CommonDBRelation {
 

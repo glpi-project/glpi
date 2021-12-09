@@ -41,10 +41,6 @@ use Twig\Loader\ArrayLoader;
 use Twig\Sandbox\SecurityPolicy;
 use Twig\Source;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Handle user defined twig templates :
  *  - followup templates

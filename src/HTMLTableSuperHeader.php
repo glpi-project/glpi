@@ -30,11 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
-
 /**
  * Only an HTMLTableMain can create an HTMLTableSuperHeader.
  * @since 0.84

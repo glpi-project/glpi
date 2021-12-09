@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// NetworkPortAggregate class : aggregate instantiation of NetworkPort. Aggregate can represent a
 /// trunk on switch, specific port under that regroup several ethernet ports to manage Ethernet
 /// Bridging.

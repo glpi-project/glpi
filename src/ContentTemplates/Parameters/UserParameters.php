@@ -43,10 +43,6 @@ use UserCategory;
 use UserEmail;
 use UserTitle;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Parameters for "User" items.
  *

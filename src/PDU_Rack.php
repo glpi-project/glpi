@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
-}
-
 class PDU_Rack extends CommonDBRelation {
 
    static public $itemtype_1 = 'Rack';

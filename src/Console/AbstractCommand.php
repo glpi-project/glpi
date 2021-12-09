@@ -32,10 +32,6 @@
 
 namespace Glpi\Console;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 use DB;
 use Glpi\Console\Command\GlpiCommandInterface;
 use Glpi\System\RequirementsManager;

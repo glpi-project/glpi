@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssetImage;
 use Glpi\Plugin\Hooks;

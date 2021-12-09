@@ -32,10 +32,6 @@
 
 use Glpi\Features\AssetImage;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Supplier class (suppliers)
 **/

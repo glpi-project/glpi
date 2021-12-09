@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// NetworkPortDialup class : dialup instantiation of NetworkPort. A dialup connexion also known as
 /// point-to-point protocol allows connexion between to sites through specific connexion
 /// @since 0.84

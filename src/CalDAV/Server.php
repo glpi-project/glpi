@@ -32,10 +32,6 @@
 
 namespace Glpi\CalDAV;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 use Glpi\Application\ErrorHandler;
 use Glpi\CalDAV\Backend\Auth;
 use Glpi\CalDAV\Backend\Calendar;

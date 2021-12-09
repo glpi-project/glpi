@@ -32,10 +32,6 @@
 
 namespace Glpi\Marketplace\Api;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
-}
-
 use GLPINetwork;
 use GuzzleHttp\Client as Guzzle_Client;
 use GuzzleHttp\Psr7\Message;

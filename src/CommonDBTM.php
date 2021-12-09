@@ -38,10 +38,6 @@ use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
 use Glpi\Toolbox\Sanitizer;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
 *  Common DataBase Table Manager Class - Persistent Object
 **/

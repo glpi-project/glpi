@@ -32,10 +32,6 @@
 
 namespace Glpi\Gantt;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Class used to hold project task link details
  */

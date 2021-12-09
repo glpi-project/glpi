@@ -32,10 +32,6 @@
 
 namespace Glpi\CalDAV\Contracts;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 use Sabre\VObject\Component\VCalendar;
 
 /**

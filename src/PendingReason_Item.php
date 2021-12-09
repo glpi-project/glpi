@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 class PendingReason_Item extends CommonDBRelation
 {
    public static $itemtype_1 = 'PendingReason';

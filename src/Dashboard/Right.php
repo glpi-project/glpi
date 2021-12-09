@@ -32,10 +32,6 @@
 
 namespace Glpi\Dashboard;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 class Right extends \CommonDBChild {
    static public $itemtype = "Glpi\\Dashboard\\Dashboard";
    static public $items_id = 'dashboards_dashboards_id';

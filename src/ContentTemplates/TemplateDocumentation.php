@@ -34,10 +34,6 @@ namespace Glpi\ContentTemplates;
 
 use Glpi\Toolbox\MarkdownBuilder;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Class used to build the twig variable documentation for a given set of
  * parameters

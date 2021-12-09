@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
-}
-
 class Item_DeviceCamera_ImageFormat extends CommonDBRelation {
 
    static public $itemtype_1 = 'Item_DeviceCamera';

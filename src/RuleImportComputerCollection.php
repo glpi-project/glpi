@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// Import rules collection class
 // @deprecated 10.0.0 @see RuleImportAssetCollection
 class RuleImportComputerCollection extends RuleCollection {

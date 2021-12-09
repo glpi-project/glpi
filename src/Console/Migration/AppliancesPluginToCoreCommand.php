@@ -32,10 +32,6 @@
 
 namespace Glpi\Console\Migration;
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access this file directly");
-}
-
 use Appliance;
 use Appliance_Item;
 use Appliance_Item_Relation;

@@ -32,10 +32,6 @@
 
 namespace Glpi\Console\Security;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 use Glpi\Console\AbstractCommand;
 use GLPIKey;
 use Symfony\Component\Console\Input\InputInterface;

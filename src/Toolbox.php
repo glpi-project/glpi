@@ -39,11 +39,6 @@ use Mexitek\PHPColors\Color;
 use Monolog\Logger;
 use Symfony\Component\Console\Output\OutputInterface;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
-
 /**
  * Toolbox Class
 **/

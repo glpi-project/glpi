@@ -34,10 +34,6 @@ namespace Glpi\ContentTemplates\Parameters\ParametersTypes;
 
 use Glpi\ContentTemplates\Parameters\TemplatesParametersInterface;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * AttributeParameter represent a simple parameter value accessed by a key.
  * This can be a simple value from the database (e.g the title of a ticket) or a

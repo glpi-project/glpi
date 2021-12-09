@@ -32,10 +32,6 @@
 
 namespace Glpi\Console\System;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 use Glpi\Console\AbstractCommand;
 use Glpi\System\Status\StatusChecker;
 use Symfony\Component\Console\Input\InputInterface;

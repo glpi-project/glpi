@@ -34,10 +34,6 @@ namespace Glpi\Gantt;
 
 use Glpi\RichText\RichText;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Class used to prepare data for Gantt
  */

@@ -30,11 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
-
 /// Rule collection class for Rights management
 class RuleRightCollection extends RuleCollection {
 

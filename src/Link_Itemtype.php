@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 class Link_Itemtype extends CommonDBChild {
    // From CommonDbChild
    static public $itemtype = 'Link';

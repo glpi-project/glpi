@@ -32,10 +32,6 @@
 
 namespace Glpi\CalDAV\Plugin;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 use Glpi\CalDAV\Backend\Calendar;
 use Glpi\CalDAV\Traits\CalDAVUriUtilTrait;
 use Sabre\CalDAV\Plugin;

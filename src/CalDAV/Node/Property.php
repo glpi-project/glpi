@@ -32,10 +32,6 @@
 
 namespace Glpi\CalDAV\Node;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Calendar node properties constants.
  *

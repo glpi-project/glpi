@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// Class Entity_KnowbaseItem
 /// since version 0.83
 class Entity_KnowbaseItem extends CommonDBRelation {

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// NetworkPortLocal class : local instantiation of NetworkPort. Among others, loopback
 /// (ie.: 127.0.0.1)
 /// @since 0.84

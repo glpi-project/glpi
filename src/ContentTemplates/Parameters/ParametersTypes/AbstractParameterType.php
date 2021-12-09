@@ -32,10 +32,6 @@
 
 namespace Glpi\ContentTemplates\Parameters\ParametersTypes;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Define the base interface for parameters types.
  *

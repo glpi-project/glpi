@@ -32,10 +32,6 @@
 
 namespace Glpi\Application\View;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\Extension\ConfigExtension;
 use Glpi\Application\View\Extension\DataHelpersExtension;

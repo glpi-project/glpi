@@ -32,10 +32,6 @@
 
 use Glpi\Features\Clonable;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Class that manages all the massive actions
  *

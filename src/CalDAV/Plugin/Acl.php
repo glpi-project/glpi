@@ -32,10 +32,6 @@
 
 namespace Glpi\CalDAV\Plugin;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 use CommonDBTM;
 use Glpi\CalDAV\Backend\Principal;
 use Glpi\CalDAV\Traits\CalDAVPrincipalsTrait;

@@ -36,9 +36,6 @@ use Glpi\Application\View\TemplateRenderer;
  * @since 9.2
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
 
 class Line extends CommonDBTM {
    // From CommonDBTM

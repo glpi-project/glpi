@@ -33,10 +33,6 @@
 use Glpi\Console\Application;
 use Symfony\Component\Console\Output\OutputInterface;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Migration Class
  *

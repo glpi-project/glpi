@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// Hidden fields for problem template class
 /// since version 0.83
 class ProblemTemplateHiddenField extends ITILTemplateHiddenField {

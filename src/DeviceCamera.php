@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 class DeviceCamera extends CommonDevice {
 
    static protected $forward_entity_to = ['Item_DeviceCamera', 'Infocom'];

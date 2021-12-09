@@ -34,10 +34,6 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\Parameters\ChangeParameters;
 use Glpi\RichText\RichText;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Change Class
 **/

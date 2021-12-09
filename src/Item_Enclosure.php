@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
-}
-
 class Item_Enclosure extends CommonDBRelation {
 
    static public $itemtype_1 = 'Enclosure';

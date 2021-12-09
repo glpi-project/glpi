@@ -32,10 +32,6 @@
 
 namespace Glpi\CalDAV\Backend;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 use Sabre\DAV\Auth\Backend\AbstractBasic;
 
 /**

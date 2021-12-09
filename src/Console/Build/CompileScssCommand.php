@@ -32,10 +32,6 @@
 
 namespace Glpi\Console\Build;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 use Html;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

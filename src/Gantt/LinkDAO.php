@@ -1,5 +1,4 @@
 <?php
-
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,10 +33,6 @@
 namespace Glpi\Gantt;
 
 use ProjectTaskLink;
-
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
 
 /**
  * DAO class for handling project task links

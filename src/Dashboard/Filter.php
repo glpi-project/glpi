@@ -42,10 +42,6 @@ use RequestType;
 use Session;
 use User;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Filter class
 **/

@@ -32,10 +32,6 @@
 
 namespace Glpi\Console\Ldap;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 use AuthLDAP;
 use Glpi\Console\AbstractCommand;
 use Symfony\Component\Console\Helper\ProgressBar;

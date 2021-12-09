@@ -32,11 +32,6 @@
 
 use Glpi\Plugin\Hooks;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
-
 /**
  * Rule Class store all information about a GLPI rule :
  *   - description

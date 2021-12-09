@@ -34,10 +34,6 @@ namespace Glpi\ContentTemplates\Parameters;
 
 use UserTitle;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Parameters class for "UserTitle" items.
  *

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 class DomainRelation extends CommonDropdown {
    const BELONGS = 1;
    const MANAGE = 2;
