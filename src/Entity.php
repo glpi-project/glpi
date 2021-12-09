@@ -3431,7 +3431,7 @@ class Entity extends CommonTreeDropdown {
 
    public static function badgeCompletename(string $entity_string = ""): string {
       $split  = explode(' > ', trim($entity_string));
-      foreach($split as &$node) {
+      foreach ($split as &$node) {
          $node = "<span class='text-nowrap'>$node</span>";
       }
 
