@@ -1057,6 +1057,28 @@ JAVASCRIPT;
    function display($options = []) {
       global $CFG_GLPI;
 
+      $redirect = false;
+
+      // Manage profile change
+      if (isset($_GET["change_profile"])) {
+         if (isset($_SESSION['glpiprofiles'][$_GET["change_profile"]])) {
+            Session::changeProfile($_GET["change_profile"]);
+         }
+         $redirect = true;
+      }
+
+      // Manage entity change
+      if (isset($_GET["change_entity"])) {
+         Session::changeActiveEntities($_GET["change_entity"], true);
+         $redirect = true;
+      }
+
+      if ($redirect) {
+         Html::redirect(
+            preg_replace("/(\?|&|".urlencode('?')."|".urlencode('&').")?(change_entity|change_profile).*/",
+            "", $_SERVER['HTTP_REFERER']));
+      }
+
       if (isset($options['id'])
           && !$this->isNewID($options['id'])) {
          if (!$this->getFromDB($options['id'])) {
