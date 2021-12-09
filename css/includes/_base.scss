@@ -259,10 +259,10 @@ table {
    align-items: center;
    background: $entity-badge-bg;
    color: $entity-badge-fg !important;
-   padding: calc(.25rem - 1px) .25rem;
+   padding: calc(0.25rem - 1px) 0.25rem;
    border: 1px solid transparent;
    border-radius: 4px;
-   font-size: .7rem;
+   font-size: 0.7rem;
 }
 
 .entity_tree {
