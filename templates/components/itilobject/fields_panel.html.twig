@@ -63,9 +63,9 @@
                   ) }}
                {% else %}
                   {% set entity_html %}
-                     <span class="badge itil-badge bg-secondary">
-                        {{ get_item_name('Entity', item.fields['entities_id']) }}
-                     </span>
+                     {{ call('Entity::badgeCompletename', [
+                        get_item_name('Entity', item.fields['entities_id'])
+                     ])|raw }}
                   {% endset %}
 
                   {{ fields.field(

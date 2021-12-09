@@ -3429,13 +3429,13 @@ class Entity extends CommonTreeDropdown {
       return $entity_default_contract;
    }
 
-   public static function badgeCompletename(string $entity_string): string {
+   public static function badgeCompletename(string $entity_string = ""): string {
       $split  = explode(' > ', trim($entity_string));
       foreach($split as &$node) {
          $node = "<span class='text-nowrap'>$node</span>";
       }
 
-      return "<span class='badge mb-1 bg-blue-lt flex-wrap' style='text-transform: inherit; height: auto; line-height: inherit'>".
+      return "<span class='entity-badge'>".
          implode('<i class="fas fa-caret-right mx-1"></i>', $split).
       "</span>";
    }
