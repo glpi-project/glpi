@@ -818,7 +818,7 @@ var Dashboard = {
    setEditMode: function(activate) {
       Dashboard.edit_mode = typeof activate == "undefined" ? true : activate;
 
-      var edit_ctrl = $(Dashboard.elem_id+" .toolbar .fa-edit");
+      var edit_ctrl = $(Dashboard.elem_id+" .toolbar .edit-dashboard");
       edit_ctrl.toggleClass('active', activate);
       Dashboard.element.toggleClass('edit-mode', activate);
       Dashboard.grid.setStatic(!activate);
