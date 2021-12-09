@@ -145,11 +145,17 @@ class Sanitizer {
     * @return string
     */
    public static function isDbEscaped(string $value): bool {
+      $value_length = strlen($value);
+
       // Search for unprotected control chars `NULL`, `\n`, `\r` and `EOF`.
       $control_chars = ["\x00", "\n", "\r", "\x1a"];
-      for ($i = 0; $i < strlen($value); $i++) {
-         foreach ($control_chars as $char) {
-            if ($i + strlen($char) <= strlen($value) && substr($value, $i, strlen($char)) == $char) {
+      foreach ($control_chars as $char) {
+         if (!str_contains($value, $char)) {
+            continue;
+         }
+         for ($i = 0; $i < $value_length; $i++) {
+            $char_length = strlen($char);
+            if ($i + $char_length <= $value_length && substr($value, $i, $char_length) == $char) {
                return false; // Unprotected control char found
             }
          }
@@ -157,8 +163,11 @@ class Sanitizer {
 
       // Search for unprotected quotes.
       $quotes = ["'", '"'];
-      for ($i = 0; $i < strlen($value); $i++) {
-         foreach ($quotes as $char) {
+      foreach ($quotes as $char) {
+         if (!str_contains($value, $char)) {
+            continue;
+         }
+         for ($i = 0; $i < $value_length; $i++) {
             if (substr($value, $i, 1) != $char) {
                continue;
             }
@@ -171,32 +180,35 @@ class Sanitizer {
       $has_special_chars = false;
 
       // Search for unprotected backslashes.
-      $special_chars = ['\x00', '\n', '\r', "\'", '\"', '\x1a'];
-      $backslashes_count = 0;
-      for ($i = 0; $i < strlen($value); $i++) {
-         if (substr($value, $i, 1) != '\\') {
-            continue;
-         }
-         $has_special_chars = true;
-
-         // Count successive backslashes.
-         $backslashes_count = 1;
-         while ($i + 1 <= strlen($value) && substr($value, $i + 1, 1) == '\\') {
-            $backslashes_count++;
-            $i++;
-         }
-
-         // Check if last backslash is related to an escaped special char.
-         foreach ($special_chars as $char) {
-            if ($i + strlen($char) <= strlen($value) && substr($value, $i, strlen($char)) == $char) {
-               $backslashes_count--;
-               break;
+      if (str_contains($value, '\\')) {
+         $special_chars = ['\x00', '\n', '\r', "\'", '\"', '\x1a'];
+         $backslashes_count = 0;
+         for ($i = 0; $i < $value_length; $i++) {
+            if (substr($value, $i, 1) != '\\') {
+               continue;
             }
-         }
+            $has_special_chars = true;
 
-         // Backslashes are escaped only if there is odd count of them.
-         if ($backslashes_count % 2 === 1) {
-            return false; // Unprotected backslash or quote found
+            // Count successive backslashes.
+            $backslashes_count = 1;
+            while ($i + 1 <= $value_length && substr($value, $i + 1, 1) == '\\') {
+               $backslashes_count++;
+               $i++;
+            }
+
+            // Check if last backslash is related to an escaped special char.
+            foreach ($special_chars as $char) {
+               $char_length = strlen($char);
+               if ($i + $char_length <= $value_length && substr($value, $i, $char_length) == $char) {
+                  $backslashes_count--;
+                  break;
+               }
+            }
+
+            // Backslashes are escaped only if there is odd count of them.
+            if ($backslashes_count % 2 === 1) {
+               return false; // Unprotected backslash or quote found
+            }
          }
       }
 
@@ -274,8 +286,33 @@ class Sanitizer {
    private static function dbUnescape(string $value): string {
       // stripslashes cannot be used here as it would produce "r" and "n" instead of "\r" and \n".
 
-      $search  = ['x00', 'n', 'r', '\\', '\'', '"', 'x1a'];
-      $replace = ["\x00", "\n", "\r", "\\", "'", "\"", "\x1a"];
+      if (!str_contains($value, '\\')) {
+         // Value does not contains backslashes, so it has no escaped char.
+         return $value;
+      }
+
+      $mapping = [
+         'x00' => "\x00",
+         'n'   => "\n",
+         'r'   => "\r",
+         '\\'  => "\\",
+         '\''  => "'",
+         '"'   => "\"",
+         'x1a' => "\x1a",
+      ];
+      $search  = [];
+      $replace = [];
+      foreach ($mapping as $s => $r) {
+         if (str_contains($value, $s)) {
+            $search[]  = $s;
+            $replace[] = $r;
+         }
+      }
+      if (empty($search)) {
+         // Value does not contains any potentially escaped chars.
+         return $value;
+      }
+
       for ($i = 0; $i < strlen($value); $i++) {
          if (substr($value, $i, 1) != '\\') {
             continue;
@@ -287,6 +324,7 @@ class Sanitizer {
             }
          }
       }
+
       return $value;
    }
 }
