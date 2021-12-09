@@ -1104,6 +1104,11 @@ class Ticket extends CommonITILObject {
             $changes[]                             = '_groups_id_of_requester';
          }
 
+         // Special case to make sure rule depending on category completename are also executed
+         if (in_array('itilcategories_id', $changes)) {
+            $changes[] = 'itilcategories_id_cn';
+         }
+
          $input = $rules->processAllRules($input,
                                           $input,
                                           ['recursive'   => true,
