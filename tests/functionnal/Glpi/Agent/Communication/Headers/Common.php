@@ -70,7 +70,8 @@ class Common extends GLPITestCase {
             ->isIdenticalTo($headername);
    }
 
-   public function testGetHeadersWException() {
+   /* Useful only when legacy will no longer be the default */
+   /*public function testGetHeadersWException() {
       $this
          ->exception(
             function() {
@@ -80,7 +81,7 @@ class Common extends GLPITestCase {
                   ->array($this->testedInstance->getHeaders());
             }
          )->hasMessage('Content-Type HTTP header is mandatory!');
-   }
+   }*/
 
    public function testGetHeaders() {
       $instance = $this->newTestedInstance;
