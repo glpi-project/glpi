@@ -324,7 +324,7 @@
          ) }}
       {% endif %}
 
-      {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::INFOCOM'), item) }}
+      {% do call_plugin_hook_func(constant('Glpi\\Plugin\\Hooks::INFOCOM'), item) %}
 
       <div class="card-body mx-n2 mb-4  border-top">
          {% if can_global_update %}
