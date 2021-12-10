@@ -2329,6 +2329,12 @@ JAVASCRIPT;
          }
 
          $(document).on("click", ".remove-search-criteria", function() {
+            // force removal of tooltip
+            var tooltip = bootstrap.Tooltip.getInstance($(this)[0]);
+            if (tooltip !== null) {
+               tooltip.dispose();
+            }
+
             var rowID = $(this).data('rowid');
             $('#' + rowID).remove();
             $('#searchcriteria{$rand_criteria} .criteria-list .list-group-item:first-child').addClass('headerRow').show();
