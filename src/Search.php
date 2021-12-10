@@ -2570,6 +2570,7 @@ JAVASCRIPT;
       $metacriteria = [];
 
       if (!$metacriteria = self::findCriteriaInSession($itemtype, $num, $parents_num)) {
+         $metacriteria = [];
          // Set default field
          $options  = Search::getCleanedOptions($itemtype);
 
