@@ -78,6 +78,7 @@ trait AssetImage {
       }
 
       $pictures = [];
+      $pictures_removed = false;
       if ($this->isField('pictures')) {
          $input_keys = array_keys($input);
          $pictures = importArrayFromDB($this->fields['pictures']);
@@ -94,6 +95,7 @@ trait AssetImage {
          $to_remove = array_reverse($to_remove);
          foreach ($to_remove as $i) {
             unset($pictures[$i]);
+            $pictures_removed = true;
          }
       }
 
@@ -117,7 +119,7 @@ trait AssetImage {
          }
       }
 
-      if (count($pictures) || count($new_pictures)) {
+      if ($pictures_removed || count($pictures) || count($new_pictures)) {
          $input['pictures'] = exportArrayToDB(array_merge($pictures, $new_pictures));
       }
 
