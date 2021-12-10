@@ -241,6 +241,7 @@ class Provider {
       switch ($case) {
          case 'notold':
             $search_criteria = [$notold];
+            $params['label']  = _x('status', 'Not solved');
             $query_criteria['WHERE']+= [
                "$table.status" => Ticket::getNotSolvedStatusArray(),
             ];
