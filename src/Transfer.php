@@ -252,7 +252,7 @@ class Transfer extends CommonDBTM {
             }
             ErrorHandler::getInstance()->handleException($e);
          }
-      } // $to >= 0
+      }
    }
 
 
@@ -396,7 +396,7 @@ class Transfer extends CommonDBTM {
                }
             }
          }
-      } // End of direct connections
+      }
 
       // License / Software :  keep / delete + clean unused / keep unused
       if ($this->options['keep_software']) {
@@ -1692,7 +1692,7 @@ class Transfer extends CommonDBTM {
             // Delete inst software for item
             $DB->delete('glpi_items_softwareversions', ['id' => $data['id']]);
          }
-      } // each installed version
+      }
 
       // Affected licenses
       if ($this->options['keep_software']) {
@@ -1791,7 +1791,7 @@ class Transfer extends CommonDBTM {
                }
             }
          }
-      } // getFromDB
+      }
 
    }
 

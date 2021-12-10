@@ -1626,7 +1626,7 @@ class Problem extends CommonITILObject {
          }
          echo "</table></div>";
 
-      } // Subquery for linked item
+      }
 
    }
 

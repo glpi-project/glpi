@@ -684,7 +684,7 @@ class Infocom extends CommonDBChild {
          return "";
       }
       return Html::formatNumber(($totalcost+$value)); // TCO
-   }// fin showTCO
+   }
 
 
    /**

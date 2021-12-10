@@ -1016,7 +1016,7 @@ class Change extends CommonITILObject {
          }
          echo "</table></div>";
 
-      } // Subquery for linked item
+      }
 
    }
 

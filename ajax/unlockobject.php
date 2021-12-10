@@ -71,7 +71,7 @@ if (isset($_POST['unlock']) && isset($_POST["id"])) {
    $ol = new ObjectLock();
    if ($ol->getFromDB($_GET["id"])) {
       $ret = 1; // found = still locked
-   } // else will return 0 = not found
+   }
 }
 
 echo $ret;

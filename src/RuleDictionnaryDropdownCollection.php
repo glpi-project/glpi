@@ -106,7 +106,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
                   break;
                }
             }
-         } // end while
+         }
       }
 
       if (isCommandLine()) {
@@ -284,7 +284,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
                   }
                }
             }
-         } // each tocheck
+         }
       }
 
       if (isCommandLine()) {

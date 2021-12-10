@@ -892,7 +892,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
 
       $this->showFormButtons($options);
       return true;
-   } // function showForm
+   }
 
 
    /**

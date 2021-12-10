@@ -243,7 +243,7 @@ class PlanningRecall extends CommonDBChild {
       }
       if (!($item = getItemForItemtype($p['itemtype']))) {
          return false;
-      } // Do not check items_id and item get because may be used when creating item (task for example)
+      }
 
       $pr = new self();
       // Get recall for item and user
@@ -316,7 +316,7 @@ class PlanningRecall extends CommonDBChild {
       }
       if (!($item = getItemForItemtype($p['itemtype']))) {
          return false;
-      } // Do not check items_id and item get because may be used when creating item (task for example)
+      }
 
       echo "<form method='post' action='".PlanningRecall::getFormURL()."'>";
       echo "<table width='100%'><tr><td>";

@@ -207,7 +207,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                   break;
                }
             }
-         } // each distinct software
+         }
 
          if (isCommandLine()) {
             printf(__('Replay rules on existing database: %1$s/%2$s')."   \n", $i, $nb);
