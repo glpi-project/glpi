@@ -85,7 +85,12 @@ class ErrorHandler extends \GLPITestCase {
          ];
       } else {
          $data[] = [
-            'error_call'           => function () { $inst = new class { function nonstatic() {} }; $inst::nonstatic(); },
+            'error_call'           => function () {
+               $inst = new class {
+                  public function nonstatic() {}
+               };
+               $inst::nonstatic();
+            },
             'expected_log_level'   => LogLevel::NOTICE,
             'expected_msg_pattern' => $log_prefix
                . preg_quote('PHP Deprecated function (' . E_DEPRECATED . '): Non-static method class@anonymous::nonstatic() should not be called statically', '/')

@@ -185,16 +185,16 @@ class Domain_Item extends CommonDBRelation {
               __('Add an item') . "</th></tr>";
 
          echo "<tr class='tab_bg_1'><td colspan='" . (3 + $colsup) . "' class='center'>";
-         Dropdown::showSelectItemFromItemtypes(['items_id_name' => 'items_id',
-                                                     'itemtypes'     => Domain::getTypes(true),
-                                                     'entity_restrict'
-                                                                     => ($domain->fields['is_recursive']
-                                                        ? getSonsOf('glpi_entities',
-                                                                    $domain->fields['entities_id'])
-                                                                     : $domain->fields['entities_id']),
-                                                     'checkright'
-                                                                     => true,
-                                               ]);
+         Dropdown::showSelectItemFromItemtypes([
+            'items_id_name' => 'items_id',
+            'itemtypes'     => Domain::getTypes(true),
+            'entity_restrict' => (
+            $domain->fields['is_recursive']
+               ? getSonsOf('glpi_entities', $domain->fields['entities_id'])
+               : $domain->fields['entities_id']
+            ),
+            'checkright' => true,
+         ]);
 
          Dropdown::show(
             'DomainRelation', [

@@ -150,12 +150,19 @@ function update91xto920() {
    $migration->addKey("glpi_knowbaseitemtranslations", "users_id");
 
    //set kb translations users...
-   foreach ($DB->request(['SELECT'     => ['glpi_knowbaseitems.id', 'glpi_knowbaseitems.users_id'],
-                          'FROM'       => 'glpi_knowbaseitems',
-                          'INNER JOIN' => ["glpi_knowbaseitemtranslations"
-                                           => ['FKEY' => ['glpi_knowbaseitemtranslations' => 'knowbaseitems_id',
-                                                          'glpi_knowbaseitems'            => 'id']]]])
-            as $knowitems) {
+   $knowitems_iterator = $DB->request([
+      'SELECT' => ['glpi_knowbaseitems.id', 'glpi_knowbaseitems.users_id'],
+      'FROM' => 'glpi_knowbaseitems',
+      'INNER JOIN' => [
+         "glpi_knowbaseitemtranslations" => [
+            'FKEY' => [
+               'glpi_knowbaseitemtranslations' => 'knowbaseitems_id',
+               'glpi_knowbaseitems'            => 'id'
+            ]
+         ]
+      ]
+   ]);
+   foreach ($knowitems_iterator as $knowitems) {
 
       $DB->updateOrDie("glpi_knowbaseitemtranslations",
          ['users_id' => $knowitems['users_id']],

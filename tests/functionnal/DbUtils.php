@@ -227,19 +227,15 @@ class DbUtils extends DbTestCase {
 
       $this
          ->if($this->newTestedInstance)
-         ->when(
-            function () {
+         ->when(function () {
                $this->boolean($this->testedInstance->getItemForItemtype('CommonDevice'))->isFalse();
-            }
-         )->error
+         })->error
             ->withType(E_USER_WARNING)
             ->withMessage('Cannot instanciate "CommonDevice" as it is an abstract class.')
             ->exists()
-         ->when(
-            function () {
+         ->when(function () {
                $this->boolean($this->testedInstance->getItemForItemtype('GlpiPlugin\Bar\AbstractStuff'))->isFalse();
-            }
-         )->error
+         })->error
             ->withType(E_USER_WARNING)
             ->withMessage('Cannot instanciate "GlpiPlugin\Bar\AbstractStuff" as it is an abstract class.')
             ->exists();
@@ -483,11 +479,9 @@ class DbUtils extends DbTestCase {
             ->boolean($this->testedInstance->isIndex('glpi_configs', 'value'))->isFalse()
             ->boolean($this->testedInstance->isIndex('glpi_users', 'locations_id'))->isTrue()
             ->boolean($this->testedInstance->isIndex('glpi_users', 'unicityloginauth'))->isTrue()
-         ->when(
-            function () {
+         ->when(function () {
                $this->boolean($this->testedInstance->isIndex('fakeTable', 'id'))->isFalse();
-            }
-         )->error
+         })->error
             ->withType(E_USER_WARNING)
             ->exists();
 
@@ -497,11 +491,9 @@ class DbUtils extends DbTestCase {
       $this->boolean(isIndex('glpi_users', 'locations_id'))->isTrue();
       $this->boolean(isIndex('glpi_users', 'unicityloginauth'))->isTrue();
 
-      $this->when(
-         function () {
+      $this->when(function () {
             $this->boolean(isIndex('fakeTable', 'id'))->isFalse();
-         }
-      )->error
+      })->error
          ->withType(E_USER_WARNING)
          ->exists();
 
