@@ -1208,8 +1208,8 @@ class Plugin extends CommonDBTM {
                      "update entities_id in glpi_infocoms for $name"
                   );
                }
-            } // each entity
-         } // each plugin type
+            }
+         }
       }
 
       foreach ($typetoname as $num => $name) {

@@ -138,7 +138,7 @@ class RuleRight extends Rule {
                         $output[$action->fields["field"]] = $action->fields["value"];
                         break;
 
-                  } // switch (field)
+                  }
                   break;
 
                case "regex_result" :
@@ -186,12 +186,12 @@ class RuleRight extends Rule {
                            $continue = false;
                         }
                         break;
-                  } // switch (field)
+                  }
                   break;
 
-            } // switch (action_type)
-         } // foreach (action)
-      } // count (actions)
+            }
+         }
+      }
 
       if ($continue) {
          //Nothing to be returned by the function :

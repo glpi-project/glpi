@@ -168,7 +168,7 @@ class Log extends CommonDBTM {
          }
       }
       return $result;
-   } // function construct_history
+   }
 
 
    /**

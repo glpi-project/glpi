@@ -1616,7 +1616,7 @@ class MailCollector  extends CommonDBTM {
                }
             }
          }
-      } // Single part
+      }
    }
 
 

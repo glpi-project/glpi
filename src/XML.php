@@ -176,6 +176,6 @@ class XML {
       //OK free ...;)
       fclose($fp);
 
-   } // End  Function : DoXML
+   }
 
-} // Fine Class XML
+}

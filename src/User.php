@@ -1506,8 +1506,8 @@ class User extends CommonDBTM {
                   }
                }
             }
-         } // for each ldapresult
-      } // count($group_fields)
+         }
+      }
    }
 
 
@@ -1775,7 +1775,7 @@ class User extends CommonDBTM {
       }
       return false;
 
-   } // getFromLDAP()
+   }
 
 
    /**

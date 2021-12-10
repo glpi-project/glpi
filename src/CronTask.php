@@ -985,7 +985,7 @@ class CronTask extends CommonDBTM{
                $msgcron = sprintf(__('%1$s: %2$s'), $msgprefix, __('Nothing to launch'));
                Toolbox::logInFile('cron', $msgcron."\n");
             }
-         } // end for
+         }
          $_SESSION["glpicronuserrunning"]='';
          self::release_lock();
 

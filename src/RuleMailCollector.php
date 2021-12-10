@@ -306,7 +306,7 @@ class RuleMailCollector extends Rule {
                            break;
                         }
                      }
-                  } // switch (field)
+                  }
                break;
                default:
                   //Allow plugins actions

@@ -732,12 +732,12 @@ class Ticket extends CommonITILObject {
                   break;
             }
 
-         } // glpishow_count_on_tabs
+         }
          // Not for Ticket class
          if ($item->getType() != __CLASS__) {
             return self::createTabEntry($title, $nb);
          }
-      } // self::READALL right check
+      }
 
       // Not check self::READALL for Ticket itself
       switch ($item->getType()) {
@@ -5531,7 +5531,7 @@ JAVASCRIPT;
          }
          echo "</table></div>";
 
-      } // Subquery for linked item
+      }
 
    }
 
