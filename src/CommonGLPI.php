@@ -1057,32 +1057,6 @@ JAVASCRIPT;
    function display($options = []) {
       global $CFG_GLPI;
 
-      $redirect = false;
-      $params = $_GET;
-
-      // Manage profile change
-      if (isset($params["change_profile"]) && ($_SESSION['glpiactiveprofile']['id'] ?? -1) != $params["change_profile"]) {
-         if (isset($_SESSION['glpiprofiles'][$params["change_profile"]])) {
-            Session::changeProfile($params["change_profile"]);
-            unset($params["change_profile"]);
-         }
-         $redirect = true;
-      }
-
-      // Manage entity change
-      if (isset($params["change_entity"]) && ($_SESSION["glpiactive_entity"] ?? -1) != $params["change_entity"]) {
-         Session::changeActiveEntities($params["change_entity"], true);
-         unset($params["change_entity"]);
-         $redirect = true;
-      }
-
-      if ($redirect) {
-         $url = $_SERVER['HTTP_REFERER'] ?? $_SERVER['REQUEST_URI'];
-         $url = preg_replace("/(\?|&|".urlencode('?')."|".urlencode('&').").*/", "", $url);
-         $url.= "?".Toolbox::append_params($params);
-         Html::redirect($url);
-      }
-
       if (isset($options['id'])
           && !$this->isNewID($options['id'])) {
          if (!$this->getFromDB($options['id'])) {
