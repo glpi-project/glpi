@@ -29,6 +29,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
 {% if total_number < 1 %}
    <div class="alert alert-info">
       {{ __('No historical') }}
@@ -66,7 +68,16 @@
                <input type="hidden" name="items_id" value="{{ items_id }}" />
             </td>
             <td>
-               <input type="date" class="form-control" name="filters[date]" value="{{ filters['date'] }}" />
+               {{ fields.dateField(
+                  'filters[date]',
+                  filters['date'],
+                  '',
+                  {
+                     no_label: true,
+                     full_width: true,
+                     mb: '',
+                  },
+               ) }}
             </td>
             <td>
                <select name="filters[users_names][]" class="form-select logs-filter-select-mulitple" multiple>
