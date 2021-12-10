@@ -5446,10 +5446,12 @@ class CommonDBTM extends CommonGLPI {
    public function hasItemtypeOrModelPictures(array $picture_fields = ['picture_front', 'picture_rear', 'pictures']): bool {
       $itemtype = $this->getType();
       $modeltype = $itemtype . "Model";
-      /** @var CommonDBTM $model */
-      $model = new $modeltype;
       $fk = getForeignKeyFieldForItemType($modeltype);
       $has_model = class_exists($modeltype) && isset($this->fields[$fk]) && $this->fields[$fk] > 0;
+      if ($has_model) {
+         /** @var CommonDBTM $model */
+         $model = new $modeltype;
+      }
 
       $has_pictures = false;
 
