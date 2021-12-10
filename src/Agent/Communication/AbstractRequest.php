@@ -546,7 +546,7 @@ abstract class AbstractRequest
      *
      * @return array
      */
-   public function getHeaders($legacy = false): array {
+   public function getHeaders($legacy = true): array {
        return $this->headers->getHeaders($legacy);
    }
 
