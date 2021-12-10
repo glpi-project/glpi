@@ -4303,7 +4303,7 @@ class CommonDBTM extends CommonGLPI {
                                                                         'with_future' => true]);
                      return $dates[$value];
                   }
-                  return Html::convDate(Html::computeGenericDateTimeSearch($value, true));
+                  return empty($value) ? $value : Html::convDate(Html::computeGenericDateTimeSearch($value, true));
 
                case "datetime" :
                   if (isset($options['relative_dates']) && $options['relative_dates']) {
@@ -4311,7 +4311,7 @@ class CommonDBTM extends CommonGLPI {
                                                                         'with_future' => true]);
                      return $dates[$value];
                   }
-                  return Html::convDateTime(Html::computeGenericDateTimeSearch($value, false));
+                  return empty($value) ? $value : Html::convDateTime(Html::computeGenericDateTimeSearch($value, false));
 
                case "timestamp" :
                   if (($value == 0)
