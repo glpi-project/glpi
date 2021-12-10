@@ -1390,7 +1390,10 @@ function uniqid(prefix = "", more_entropy = false) {
  * @param {SubmitEvent} e The submit event
  */
 function blockFormSubmit(form, e) {
-   let submitter = $(e.originalEvent.submitter);
+   let submitter = window.clicked_submit_button;
+   if (e.originalEvent && e.originalEvent.submitter) {
+      submitter = $(e.originalEvent.submitter);
+   }
 
    // if submitter is not a button, find the first submit button with add or update as the name
    if (!submitter.is('button')) {
@@ -1419,4 +1422,8 @@ $(document.body).on('submit', 'form[data-submit-once]', (e) => {
    } else {
       blockFormSubmit(form, e);
    }
+});
+
+$(document.body).on('click', 'button[type="submit"]', (e) => {
+   window.clicked_submit_button = $(e.target);
 });
