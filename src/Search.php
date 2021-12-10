@@ -5699,7 +5699,7 @@ JAVASCRIPT;
                          && (strlen(trim($data[$ID][$k]['name'])) > 0)
                          && !in_array($data[$ID][$k]['name']."-".$data[$ID][$k]['profiles_id'],
                                       $added)) {
-                        $text = sprintf(__('%1$s - %2$s'), $data[$ID][$k]['name'],
+                        $text = sprintf(__('%1$s - %2$s'), Entity::badgeCompletename($data[$ID][$k]['name']),
                                         Dropdown::getDropdownName('glpi_profiles',
                                                                   $data[$ID][$k]['profiles_id']));
                         $comp = '';
@@ -5724,6 +5724,8 @@ JAVASCRIPT;
                      }
                   }
                   return $out;
+               } else {
+                  return Entity::badgeCompletename($data[$ID][0]['name']);
                }
                break;
 

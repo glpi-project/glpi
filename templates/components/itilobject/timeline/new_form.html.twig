@@ -47,9 +47,17 @@
                <div class="card-body">
                   {% if item.isNewItem() %}
                      <div class="alert alert-info" role="alert">
+                        {% set entitybadge %}
+                           <span class="ms-1">
+                              {{ call('Entity::badgeCompletename', [
+                                 get_item_name('Entity', item.fields['entities_id'])
+                              ])|raw }}
+                           </span>
+                        {% endset %}
+
                         {{ __('%1$s will be added in entity %2$s')|format(
                            item.getTypeName(1),
-                           '<span class="badge bg-secondary ms-1">' ~ get_item_name('Entity', item.fields['entities_id']) ~ '</span>'
+                           entitybadge
                         )|raw }}
                      </div>
                   {% endif %}
