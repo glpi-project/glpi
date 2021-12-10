@@ -30,12 +30,17 @@
  */
 
 module.exports = {
-   setupFilesAfterEnv: ["jest-extended/all"],
-   setupFiles: ['<rootDir>/bootstrap.js'],
-   transformIgnorePatterns: [
-      // Change MODULE_NAME_HERE to your module that isn't being compiled
-      "/node_modules/(?!@tabler).+\\.js$"
+   "presets": ["@babel/env"],
+   "plugins": [
+      "@babel/plugin-transform-runtime"
    ],
-   testEnvironment: 'jsdom',
-   slowTestThreshold: 10,
+   "env": {
+      "test": {
+         "presets": ["@babel/env"],
+         "plugins": [
+            "@babel/plugin-proposal-class-properties",
+            "@babel/plugin-transform-modules-commonjs"
+         ]
+      }
+   }
 };

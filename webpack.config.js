@@ -196,7 +196,7 @@ var filesToCopy = [
       package: 'select2',
       from: 'src/scss/**/*.scss',
       to: scssOutputPath,
-   }
+   },
 ];
 
 let copyPatterns = [];

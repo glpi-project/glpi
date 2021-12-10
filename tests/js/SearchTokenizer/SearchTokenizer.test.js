@@ -36,16 +36,12 @@ import SearchToken from "../../../js/modules/SearchTokenizer/SearchToken.js";
 
 describe('Search Tokenizer', () => {
 
-   const stripExtraWhitespace = (input) => {
-      return input.replace(/[^\S ]+|[ ]{2,}/gi,'');
-   };
-
    test('Tokenize', () => {
-      const untagged_tokens = [
-         new SearchToken('This', null, false, 0),
-         new SearchToken('is', null, false, 1),
-         new SearchToken('a', null, false, 2),
-         new SearchToken('te:st', null, false, 3),
+      let untagged_tokens = [
+         new SearchToken('This', null, false, 0, 'This'),
+         new SearchToken('is', null, false, 1, 'is'),
+         new SearchToken('a', null, false, 2, 'a'),
+         new SearchToken('te:st', null, false, 3, '"te:st"'),
       ];
       let tokenizer = new SearchTokenizer();
       //strings with colons quoted to be treated as a string when no allowed tags specified (All tags allowed by default)
@@ -55,9 +51,16 @@ describe('Search Tokenizer', () => {
       expect(result.getUntaggedTerms()).toStrictEqual(untagged_tokens);
       expect(result.getTaggedTerms().length).toBe(0);
 
+      untagged_tokens = [
+         new SearchToken('This', null, false, 0, 'This'),
+         new SearchToken('is', null, false, 1, 'is'),
+         new SearchToken('a', null, false, 2, 'a'),
+         new SearchToken('te:st', null, false, 3, 'te:st'),
+      ];
       tokenizer = new SearchTokenizer({
          name: {
-            description: ''
+            description: '',
+            supported_prefixes: ['!']
          }
       });
       expect(tokenizer.isAllowedTag('name')).toBeTrue();
@@ -69,42 +72,57 @@ describe('Search Tokenizer', () => {
       expect(result.getTaggedTerms().length).toBe(1);
       let name_tags = result.getTag('name');
       expect(name_tags.length).toBe(1);
-      expect(name_tags[0]).toStrictEqual(new SearchToken('Test', 'name', false, 4));
+      expect(name_tags[0]).toStrictEqual(new SearchToken('Test', 'name', false, 4, 'name:"Test"'));
 
-      result = tokenizer.tokenize('This is a te:st -name:"Test"');
+      result = tokenizer.tokenize('This is a te:st !name:"Test"');
       expect(result.getFullPhrase()).toBe('This is a te:st');
       expect(result.getUntaggedTerms()).toStrictEqual(untagged_tokens);
       expect(result.getTaggedTerms().length).toBe(1);
       name_tags = result.getTag('name');
       expect(name_tags.length).toBe(1);
-      expect(name_tags[0]).toStrictEqual(new SearchToken('Test', 'name', true, 4));
+      expect(name_tags[0]).toStrictEqual(new SearchToken('Test', 'name', true, 4, '!name:"Test"'));
 
       tokenizer = new SearchTokenizer({
          name: {
-            description: ''
+            description: '',
+            supported_prefixes: ['!']
          }
       }, true);
       // "te" is not an allowed tag so we expect "te:st" to be dropped
-      result = tokenizer.tokenize('This is a te:st -name:"Test"');
+      result = tokenizer.tokenize('This is a te:st !name:"Test"');
       expect(result.getFullPhrase()).toBe('This is a');
       expect(result.getUntaggedTerms()).toStrictEqual([
-         new SearchToken('This', null, false, 0),
-         new SearchToken('is', null, false, 1),
-         new SearchToken('a', null, false, 2),
+         new SearchToken('This', null, false, 0, 'This'),
+         new SearchToken('is', null, false, 1, 'is'),
+         new SearchToken('a', null, false, 2, 'a'),
       ]);
       expect(result.getTaggedTerms().length).toBe(1);
       name_tags = result.getTag('name');
       expect(name_tags.length).toBe(1);
-      expect(name_tags[0]).toStrictEqual(new SearchToken('Test', 'name', true, 3));
+      expect(name_tags[0]).toStrictEqual(new SearchToken('Test', 'name', true, 3, '!name:"Test"'));
 
+      untagged_tokens = [
+         new SearchToken('This', null, false, 0, 'This'),
+         new SearchToken('is', null, false, 1, 'is'),
+         new SearchToken('a', null, false, 2, 'a'),
+         new SearchToken('te:st', null, false, 3, '"te:st"'),
+      ];
       // "te" is not an allowed tag, but it is quoted so we expect it to be treated as a string and not a tagged value
-      result = tokenizer.tokenize('This is a "te:st" -name:"Test"');
+      result = tokenizer.tokenize('This is a "te:st" !name:"Test"');
       expect(result.getFullPhrase()).toBe('This is a te:st');
       expect(result.getUntaggedTerms()).toStrictEqual(untagged_tokens);
       expect(result.getTaggedTerms().length).toBe(1);
       name_tags = result.getTag('name');
       expect(name_tags.length).toBe(1);
-      expect(name_tags[0]).toStrictEqual(new SearchToken('Test', 'name', true, 4));
+      expect(name_tags[0]).toStrictEqual(new SearchToken('Test', 'name', true, 4, '!name:"Test"'));
+
+      result = tokenizer.tokenize('!name:');
+      expect(result.tokens.length).toBe(1);
+      expect(result.getTaggedTerms().length).toBe(1);
+      result.getTag('name').forEach(tag => {
+         expect(tag.exclusion).toBeTrue();
+         expect(tag.term).toBe('');
+      });
    });
 
    test('Allowed Tags', () => {
@@ -122,31 +140,6 @@ describe('Search Tokenizer', () => {
       expect(tokenizer.isAllowedTag('content')).toBeFalse();
    });
 
-   test('Tags Helper Content', () => {
-      const tokenizer = new SearchTokenizer({
-         name: {
-            description: 'The name'
-         },
-         content: {
-            description: 'The content'
-         },
-         milestone: {
-            description: 'Is a milestone',
-            autocomplete_values: ['true', 'false']
-         }
-      });
-
-      let content = stripExtraWhitespace(tokenizer.getTagsHelperContent());
-      expect(content).toBe(stripExtraWhitespace(`
-      Allowed tags:</br>
-      <ul>
-         <li>name: "The name"</li>
-         <li>content: "The content"</li>
-         <li>milestone: "Is a milestone"</li>
-      </ul>
-      `));
-   });
-
    test('Autocomplete', () => {
       const tokenizer = new SearchTokenizer({
          name: {
@@ -158,60 +151,47 @@ describe('Search Tokenizer', () => {
          milestone: {
             description: 'Is a milestone',
             autocomplete_values: ['true', 'false']
+         },
+         itemtype: {
+            description: 'The itemtype'
          }
       });
 
-      let content = tokenizer.getAutocompleteHelperContent('name');
-      expect(stripExtraWhitespace(content)).toBe(`name: The name`);
-      content = tokenizer.getAutocompleteHelperContent('content');
-      expect(stripExtraWhitespace(content)).toBe(`content: The content`);
-      content = tokenizer.getAutocompleteHelperContent('milestone');
-      expect(stripExtraWhitespace(content)).toBe(`milestone: Is a milestone</br><ul><li>true</li><li>false</li></ul>`);
-      expect(tokenizer.getAutocompleteHelperContent('invalid_tag')).toBeNull();
-
-      tokenizer.allowed_tags['itemtype'] = {
-         description: 'The itemtype'
-      };
-      content = tokenizer.getAutocompleteHelperContent('itemtype');
-      expect(stripExtraWhitespace(content)).toBe(`itemtype: The itemtype`);
-
-      tokenizer.setAutocomplete('itemtype', ['Project', 'ProjectTask']);
-      content = tokenizer.getAutocompleteHelperContent('itemtype');
-      expect(stripExtraWhitespace(content)).toBe(`itemtype: The itemtype</br><ul><li>Project</li><li>ProjectTask</li></ul>`);
-
-      tokenizer.clearAutocomplete();
-      content = tokenizer.getAutocompleteHelperContent('itemtype');
-      expect(stripExtraWhitespace(content)).toBe(`itemtype: The itemtype`);
+      expect(tokenizer.getAutocomplete('itemtype')).toBeEmpty();
+      tokenizer.setAutocomplete('itemtype', () => {
+         return ['Project', 'ProjectTask'];
+      });
+      expect(tokenizer.getAutocomplete('itemtype')).toIncludeAllMembers(['Project', 'ProjectTask']);
    });
 
-   test('Popover Content', () => {
+   test('Prefix detection', () => {
       const tokenizer = new SearchTokenizer({
          name: {
-            description: 'The name'
+            description: 'The name',
+            supported_prefixes: ['!', '#']
          },
-         content: {
-            description: 'The content'
-         },
-         milestone: {
-            description: 'Is a milestone',
-            autocomplete_values: ['true', 'false']
+      }, false, {
+         custom_prefixes: {
+            "#": {
+               "label": "Regex",
+               "token_color": "#00800080"
+            }
          }
       });
-      let filter_text = 'This is a test name:Name content:Content milestone:true';
-      const tag_helper = stripExtraWhitespace(tokenizer.getTagsHelperContent());
-      const autocomplete_name = stripExtraWhitespace(tokenizer.getAutocompleteHelperContent('name'));
-      const autocomplete_content = stripExtraWhitespace(tokenizer.getAutocompleteHelperContent('content'));
-      const autocomplete_milestone = stripExtraWhitespace(tokenizer.getAutocompleteHelperContent('milestone'));
 
-      let content = stripExtraWhitespace(tokenizer.getPopoverContent(filter_text, 0));
-      expect(content).toBe(tag_helper);
-      content = stripExtraWhitespace(tokenizer.getPopoverContent(filter_text, 5));
-      expect(content).toBe(tag_helper);
-      content = stripExtraWhitespace(tokenizer.getPopoverContent(filter_text, 21));
-      expect(content).toBe(autocomplete_name);
-      content = stripExtraWhitespace(tokenizer.getPopoverContent(filter_text, 34));
-      expect(content).toBe(autocomplete_content);
-      content = stripExtraWhitespace(tokenizer.getPopoverContent(filter_text, 52));
-      expect(content).toBe(autocomplete_milestone);
+      let result = tokenizer.tokenize('!name:test');
+      expect(result.getTaggedTerms().length).toBe(1);
+      result.getTag('name').forEach(tag => {
+         expect(tag.exclusion).toBeTrue();
+         expect(tag.term).toBe('test');
+      });
+
+      result = tokenizer.tokenize('#name:test');
+      expect(result.getTaggedTerms().length).toBe(1);
+      result.getTag('name').forEach(tag => {
+         expect(tag.exclusion).toBeFalse();
+         expect(tag.term).toBe('test');
+         expect(tag.prefix).toBe('#');
+      });
    });
 });
