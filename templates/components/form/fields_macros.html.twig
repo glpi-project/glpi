@@ -258,8 +258,7 @@
 
 {% macro dateField(name, value, label = '', options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
-   {% set valid_name_id = call("Toolbox::slugify", [name, '']) %}
-   {% set options = {'id': valid_name_id ~ '_' ~ options.rand}|merge(options) %}
+   {% set options = {'id': name|slug ~ '_' ~ options.rand}|merge(options) %}
    {% set locale = get_current_locale() %}
 
    {% set field %}
@@ -288,8 +287,7 @@
 
 {% macro datetimeField(name, value, label = '', options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
-   {% set valid_name_id = call("Toolbox::slugify", [name, '']) %}
-   {% set options = {'id': valid_name_id ~ '_' ~ options.rand}|merge(options) %}
+   {% set options = {'id': name|slug ~ '_' ~ options.rand}|merge(options) %}
    {% set locale = get_current_locale() %}
 
    {% set field %}
