@@ -2331,7 +2331,7 @@ JAVASCRIPT;
          $(document).on("click", ".remove-search-criteria", function() {
             // force removal of tooltip
             var tooltip = bootstrap.Tooltip.getInstance($(this)[0]);
-            if (!!tooltip) {
+            if (tooltip !== null) {
                tooltip.dispose();
             }
 
