@@ -416,7 +416,6 @@ class RuleImportAsset extends DbTestCase {
          ],
          "Computer import (by mac)"
       );
-
    }
 
    public function testCreateComputerIP() {
@@ -444,6 +443,112 @@ class RuleImportAsset extends DbTestCase {
 
    public function testUpdateComputerIP() {
       $this->addComputerIPRules();
+      $input = [
+         'itemtype' => 'Computer',
+         'name'     => 'pc-01',
+         'ip'       => ['192.168.0.10'],
+         'entities_id' => 0
+      ];
+      $ruleCollection = new \RuleImportAssetCollection();
+      $rule = new \RuleImportAsset();
+      $computer = new \Computer();
+      $networkPort = new \NetworkPort();
+
+      $computers_id = (int)$computer->add([
+         'entities_id' => 0,
+         'name'        => 'pc-02', // to be sure the name rule not works before mac rule
+      ]);
+      $this->integer($computers_id)->isGreaterThan(0);
+
+      $ports_id = (int)$networkPort->add([
+         'instantiation_type' => 'NetworkPortEthernet',
+         'itemtype'           => 'Computer',
+         'items_id'           => $computers_id,
+         'ip'                 => '192.168.0.10',
+         '_create_children'   => 1,
+         'NetworkName_name'   => '',
+         'NetworkName_fqdns_id' => 0,
+         'NetworkName__ipaddresses' => [
+            '-1' => '192.168.0.10'
+         ],
+      ]);
+      $this->integer($ports_id)->isGreaterThan(0);
+
+      $data = $ruleCollection->processAllRules($input, [], ['class'=>$this]);
+
+      $this->array($data)->hasKey('_ruleid');
+      $_rule_id = (int)$data['_ruleid'];
+      $this->integer($_rule_id)->isGreaterThan(0);
+
+      $this->boolean($rule->getFromDB($_rule_id))->isTrue();
+      $this->string($rule->fields['name'])->isIdenticalTo("Computer update (by ip)");
+      $this->integer($this->items_id)->isIdenticalTo($computers_id);
+      $this->string($this->itemtype)->isIdenticalTo('Computer');
+      $this->integer($this->ports_id)->isIdenticalTo($ports_id);
+   }
+
+
+   /**
+    * Create rules for Computer based on IP
+    *
+    * @return void
+    */
+   private function addComputerIPLinkOnlyRules() {
+      // Create rules
+      $this->addRule(
+         "Computer update (by ip)",
+         [
+            [
+               'condition' => 0,
+               'criteria'  => 'itemtype',
+               'pattern'   => 'Computer',
+            ],
+            [
+               'condition' => \RuleImportAsset::PATTERN_FIND,
+               'criteria'  => 'ip',
+               'pattern'   => '1',
+            ],
+            [
+               'condition' => \RuleImportAsset::PATTERN_EXISTS,
+               'criteria'  => 'ip',
+               'pattern'   => '1',
+            ],
+         ],
+         [
+            'action_type' => 'assign',
+            'field'       => '_fusion',
+            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT,
+         ],
+         "Computer update (by mac)"
+      );
+   }
+
+   public function testCreateComputerIPLinkOnly() {
+      $this->addComputerIPLinkOnlyRules();
+      $input = [
+         'itemtype' => 'Computer',
+         'name'     => 'pc-01',
+         'ip'       => ['192.168.0.10'],
+         'entities_id' => 0
+      ];
+      $ruleCollection = new \RuleImportAssetCollection();
+      $rule = new \RuleImportAsset();
+
+      $data = $ruleCollection->processAllRules($input, [], ['class'=>$this]);
+
+      $this->array($data)->hasKey('_ruleid');
+      $_rule_id = (int)$data['_ruleid'];
+      $this->integer($_rule_id)->isGreaterThan(0);
+
+      $this->boolean($rule->getFromDB($_rule_id))->isTrue();
+      $this->string($rule->fields['name'])->isIdenticalTo("Computer update (by ip)");
+      //do not exists in database, so not imported.
+      $this->variable($this->items_id)->isNull();
+      $this->variable($this->itemtype)->isNull();
+   }
+
+   public function testUpdateComputerIPLinkOnly() {
+      $this->addComputerIPLinkOnlyRules();
       $input = [
          'itemtype' => 'Computer',
          'name'     => 'pc-01',

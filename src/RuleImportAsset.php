@@ -888,7 +888,8 @@ class RuleImportAsset extends Rule {
                return $output;
             }
 
-            if ($action->fields["value"] == self::RULE_ACTION_LINK_OR_IMPORT) {
+            if ($action->fields["value"] == self::RULE_ACTION_LINK_OR_IMPORT
+            || $action->fields["value"] == self::RULE_ACTION_LINK_OR_NO_IMPORT) {
                if (isset($this->criterias_results['found_inventories'])) {
                   foreach ($this->criterias_results['found_inventories'] as $itemtype => $inventory) {
                      $items_id = current($inventory);
@@ -906,7 +907,7 @@ class RuleImportAsset extends Rule {
                      }
                      return $output;
                   }
-               } else {
+               } else if ($action->fields["value"] != self::RULE_ACTION_LINK_OR_NO_IMPORT) {
                   // Import into new equipment
                   if (count($this->criterias)) {
                      foreach ($this->criterias as $criterion) {
