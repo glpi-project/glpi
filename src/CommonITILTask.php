@@ -1412,6 +1412,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
       }
 
       $prep_req['WHERE'] += getEntitiesRestrictCriteria($fk_table);
+      $prep_req['WHERE'][$fk_table . '.is_deleted'] = 0;
 
       $prep_req['ORDER'] = [self::getTable() . '.date_mod DESC'];
 
