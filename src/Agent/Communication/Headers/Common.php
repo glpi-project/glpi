@@ -140,7 +140,7 @@ class Common {
     *
     * @return array
     */
-   public function getHeaders($legacy = false): array {
+   public function getHeaders($legacy = true): array {
       //parse class attributes and normalize key name
       $reflect = new ReflectionClass($this);
       $props   = $reflect->getProperties(ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED);
