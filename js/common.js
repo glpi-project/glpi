@@ -1390,13 +1390,10 @@ function uniqid(prefix = "", more_entropy = false) {
  * @param {SubmitEvent} e The submit event
  */
 function blockFormSubmit(form, e) {
-   let submitter = window.clicked_submit_button;
-   if (e.originalEvent && e.originalEvent.submitter) {
-      submitter = $(e.originalEvent.submitter);
-   }
+   let submitter = $(e.originalEvent.submitter);
 
    // if submitter is not a button, find the first submit button with add or update as the name
-   if (submitter === undefined || !submitter.is('button')) {
+   if (!submitter.is('button')) {
       submitter = submitter.find('button[name="add"]:first, button[name="update"]:first');
       // If no submit button was found, use the first submit button
       if (submitter.length === 0) {
@@ -1404,7 +1401,7 @@ function blockFormSubmit(form, e) {
       }
    }
 
-   if (submitter !== undefined && submitter.length > 0 && submitter.is('button')) {
+   if (submitter.length > 0 && submitter.is('button')) {
       submitter.html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`);
    }
 
@@ -1422,8 +1419,4 @@ $(document.body).on('submit', 'form[data-submit-once]', (e) => {
    } else {
       blockFormSubmit(form, e);
    }
-});
-
-$(document.body).on('click', 'button[type="submit"]', (e) => {
-   window.clicked_submit_button = $(e.target);
 });
