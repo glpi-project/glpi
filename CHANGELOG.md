@@ -22,6 +22,8 @@ The present file will list all changes made to the project; according to the
 - Autocomplete feature on text fields.
 - Usage of alternative DB connection encoding (`DB::$dbenc` property).
 - Deprecated `scripts/ldap_mass_sync.php` has been removed in favor of `glpi:ldap:synchronize_users` command available using `bin/console`
+- Deprecated `scripts/compute_dictionary.php` has been removed in favor of `glpi:rules:replay_dictionnary_rules` command available using `bin/console`
+- Deprecated `scripts/softcat_mass_compute.php` has been removed in favor of `glpi:rules:process_software_category_rules` command available using `bin/console`
 
 ### API changes
 
