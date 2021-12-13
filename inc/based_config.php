@@ -133,7 +133,7 @@ include_once(GLPI_ROOT . "/inc/autoload.function.php");
            // Replace {GLPI_*} by value of corresponding constant
             $value = preg_replace_callback(
                 '/\{(?<name>GLPI_[\w]+)\}/',
-                public function ($matches) {
+                function ($matches) {
                     return defined($matches['name']) ? constant($matches['name']) : '';
                 },
                 $value
