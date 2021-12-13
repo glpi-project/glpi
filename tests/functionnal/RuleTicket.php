@@ -94,7 +94,7 @@ class RuleTicket extends DbTestCase
         $this->login();
 
        // prepare rule
-        $this->_createTestTriggerRule(\RuleTicket::ONADD);
+        $this->createTestTriggerRule(\RuleTicket::ONADD);
 
        // test create ticket (trigger on title)
         $ticket = new \Ticket();
@@ -126,7 +126,7 @@ class RuleTicket extends DbTestCase
         $users_id = (int) getItemByTypeName('User', 'tech', true);
 
        // prepare rule
-        $this->_createTestTriggerRule(\RuleTicket::ONUPDATE);
+        $this->createTestTriggerRule(\RuleTicket::ONUPDATE);
 
        // test create ticket (for check triggering on title after update)
         $ticket = new \Ticket();
@@ -171,7 +171,7 @@ class RuleTicket extends DbTestCase
         $this->integer((int)$ticket->getField('urgency'))->isEqualTo(5);
     }
 
-    private function _createTestTriggerRule($condition)
+    private function createTestTriggerRule($condition)
     {
         $ruleticket = new \RuleTicket();
         $rulecrit   = new \RuleCriteria();

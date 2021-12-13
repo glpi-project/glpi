@@ -59,6 +59,7 @@ switch ($action) {
         if (RuleCollection::previewImportRules()) {
             break;
         }
+        //seems wanted not to break; I do no understand why
 
     case "import":
         $rulecollection->checkGlobal(UPDATE);

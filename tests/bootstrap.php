@@ -94,6 +94,7 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php') && !file_exists(__DIR__ . '
     die("\nDevelopment dependencies not found\n\nrun: composer install -o\n\n");
 }
 
+// @codingStandardsIgnoreStart
 class GlpitestPHPerror extends \Exception
 {
 }
@@ -106,6 +107,7 @@ class GlpitestPHPnotice extends \Exception
 class GlpitestSQLError extends \Exception
 {
 }
+// @codingStandardsIgnoreEnd
 
 function loadDataset()
 {

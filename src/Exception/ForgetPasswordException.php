@@ -35,4 +35,4 @@ namespace Glpi\Exception;
 
 class ForgetPasswordException extends \Exception
 {
-};
+}

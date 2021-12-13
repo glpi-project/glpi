@@ -782,7 +782,7 @@ class Search extends DbTestCase
         $error = 'Duplicate key 12 (One search option/Any option) in tests\units\DupSearchOpt searchOptions!';
 
         $this->when(
-            public function () {
+            function () {
                 $item = new DupSearchOpt();
                 $item->searchOptions();
             }
@@ -1174,7 +1174,7 @@ class Search extends DbTestCase
     {
         $result = null;
         $this->when(
-            public function () use (&$result, $itemtype, $id, $order) {
+            function () use (&$result, $itemtype, $id, $order) {
                 $result = \Search::addOrderBy($itemtype, $id, $order);
             }
         )->error()
@@ -1189,7 +1189,7 @@ class Search extends DbTestCase
         $_SESSION['glpinames_format'] = \User::FIRSTNAME_BEFORE;
         $user_order_1 = null;
         $this->when(
-            public function () use (&$user_order_1) {
+            function () use (&$user_order_1) {
                 $user_order_1 = \Search::addOrderBy('Ticket', 4, 'ASC');
             }
         )->error()
@@ -1202,7 +1202,7 @@ class Search extends DbTestCase
 
         $user_order_2 = null;
         $this->when(
-            public function () use (&$user_order_2) {
+            function () use (&$user_order_2) {
                 $user_order_2 = \Search::addOrderBy('Ticket', 4, 'DESC');
             }
         )->error()
@@ -1216,7 +1216,7 @@ class Search extends DbTestCase
         $_SESSION['glpinames_format'] = \User::REALNAME_BEFORE;
         $user_order_3 = null;
         $this->when(
-            public function () use (&$user_order_3) {
+            function () use (&$user_order_3) {
                 $user_order_3 = \Search::addOrderBy('Ticket', 4, 'ASC');
             }
         )->error()
@@ -1228,7 +1228,7 @@ class Search extends DbTestCase
                                  `$table_addtable`.`name` ASC ");
         $user_order_4 = null;
         $this->when(
-            public function () use (&$user_order_4) {
+            function () use (&$user_order_4) {
                 $user_order_4 = \Search::addOrderBy('Ticket', 4, 'DESC');
             }
         )->error()
@@ -2041,8 +2041,10 @@ class Search extends DbTestCase
     }
 }
 
+// @codingStandardsIgnoreStart
 class DupSearchOpt extends \CommonDBTM
 {
+    // @codingStandardsIgnoreEnd
     public function rawSearchOptions()
     {
         $tab = [];
@@ -2064,8 +2066,10 @@ class DupSearchOpt extends \CommonDBTM
 // phpcs:ignore SlevomatCodingStandard.Namespaces
 namespace SearchTest;
 
+// @codingStandardsIgnoreStart
 class Computer extends \Computer
 {
+    // @codingStandardsIgnoreEnd
     public static function getTable($classname = null)
     {
         return 'glpi_computers';

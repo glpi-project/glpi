@@ -63,7 +63,7 @@ class RuleAsset extends DbTestCase
         $root_ent_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
        // prepare rule
-        $this->_createRuleComment(\RuleAsset::ONUPDATE);
+        $this->createRuleComment(\RuleAsset::ONUPDATE);
 
        // test create ticket (trigger on title)
         $computer = new \Computer();
@@ -166,8 +166,8 @@ class RuleAsset extends DbTestCase
         $root_ent_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
        // prepare rule
-        $this->_createRuleComment(\RuleAsset::ONUPDATE);
-        $this->_createRuleLocation(\RuleAsset::ONUPDATE);
+        $this->createRuleComment(\RuleAsset::ONUPDATE);
+        $this->createRuleLocation(\RuleAsset::ONUPDATE);
 
         foreach ($CFG_GLPI['asset_types'] as $itemtype) {
             $item     = new $itemtype();
@@ -193,7 +193,7 @@ class RuleAsset extends DbTestCase
         }
     }
 
-    private function _createRuleComment($condition)
+    private function createRuleComment($condition)
     {
         $ruleasset  = new \RuleAsset();
         $rulecrit   = new \RuleCriteria();
@@ -230,7 +230,7 @@ class RuleAsset extends DbTestCase
         $this->checkInput($ruleaction, $act_id, $act_input);
     }
 
-    private function _createRuleLocation($condition)
+    private function createRuleLocation($condition)
     {
         $ruleasset  = new \RuleAsset();
         $rulecrit   = new \RuleCriteria();

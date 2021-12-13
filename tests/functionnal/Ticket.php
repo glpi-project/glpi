@@ -130,20 +130,20 @@ class Ticket extends DbTestCase
                               : '';
                 switch ($actorType) {
                     case '_users_id_requester':
-                       //$this->_testTicketUser($ticket, $actor, \CommonITILActor::REQUESTER, $notify, $alternateEmail);
+                       //$this->testTicketUser($ticket, $actor, \CommonITILActor::REQUESTER, $notify, $alternateEmail);
                         break;
                     case '_users_id_observer':
-                        $this->_testTicketUser($ticket, $actor, \CommonITILActor::OBSERVER, $notify, $alternateEmail);
+                        $this->testTicketUser($ticket, $actor, \CommonITILActor::OBSERVER, $notify, $alternateEmail);
                         break;
                     case '_users_id_assign':
-                        $this->_testTicketUser($ticket, $actor, \CommonITILActor::ASSIGN, $notify, $alternateEmail);
+                        $this->testTicketUser($ticket, $actor, \CommonITILActor::ASSIGN, $notify, $alternateEmail);
                         break;
                 }
             }
         }
     }
 
-    protected function _testTicketUser(\Ticket $ticket, $actor, $role, $notify, $alternateEmail)
+    protected function testTicketUser(\Ticket $ticket, $actor, $role, $notify, $alternateEmail)
     {
         if ($actor > 0) {
             $user = new \User();
@@ -1368,7 +1368,7 @@ class Ticket extends DbTestCase
                     break;
                 default:
                     $this->executeOnFailure(
-                        public function () use ($k) {
+                        function () use ($k) {
                             dump($k);
                         }
                     )->variable($clonedTicket->getField($k))->isEqualTo($ticket->getField($k));
@@ -1376,7 +1376,7 @@ class Ticket extends DbTestCase
         }
     }
 
-    protected function _testGetTimelinePosition($tlp, $tickets_id)
+    protected function testGetTimelinePosition2($tlp, $tickets_id)
     {
         foreach ($tlp as $users_name => $user) {
             $this->login($users_name, $user['pass']);
@@ -1452,7 +1452,7 @@ class Ticket extends DbTestCase
         }
     }
 
-    protected function _testGetTimelinePositionSolution($tlp, $tickets_id)
+    protected function testGetTimelinePositionSolution($tlp, $tickets_id)
     {
         foreach ($tlp as $users_name => $user) {
             $this->login($users_name, $user['pass']);
@@ -1499,14 +1499,14 @@ class Ticket extends DbTestCase
          'normal'    => ['pass' => 'normal',   'pos' => \CommonITILObject::TIMELINE_RIGHT]
         ];
 
-        $this->_testGetTimelinePosition($tlp, $ticket->getID());
+        $this->testGetTimelinePosition2($tlp, $ticket->getID());
 
        // Solution timeline tests
         $tlp = [
          'tech'      => ['pass' => 'tech',     'pos' => \CommonITILObject::TIMELINE_RIGHT]
         ];
 
-        $this->_testGetTimelinePositionSolution($tlp, $ticket->getID());
+        $this->testGetTimelinePositionSolution($tlp, $ticket->getID());
 
         return $ticket->getID();
     }
@@ -3034,7 +3034,7 @@ class Ticket extends DbTestCase
         ];
 
         $this->output(
-            public function () {
+            function () {
                 $instance = new \Ticket();
                 $instance->showForm('-1');
             }
@@ -3172,7 +3172,7 @@ class Ticket extends DbTestCase
         $_SESSION['glpiactiveprofile']['tickettemplates_id'] = $ticketTemplate->getID();
 
         $this->output(
-            public function () use ($session_tpl_id_back) {
+            function () use ($session_tpl_id_back) {
                 $instance = new \Ticket();
                 $instance->showForm('0');
                 $_SESSION['glpiactiveprofile']['tickettemplates_id'] = $session_tpl_id_back;

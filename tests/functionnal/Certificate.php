@@ -59,7 +59,7 @@ class Certificate extends DbTestCase
         $obj = new \Certificate();
 
        // Add
-        $in = $this->_getIn($this->method);
+        $in = $this->getIn($this->method);
         $id = $obj->add($in);
         $this->integer((int)$id)->isGreaterThan(0);
         $this->boolean($obj->getFromDB($id))->isTrue();
@@ -85,7 +85,7 @@ class Certificate extends DbTestCase
 
        // Update
         $id = $obj->getID();
-        $in = array_merge(['id' => $id], $this->_getIn($this->method));
+        $in = array_merge(['id' => $id], $this->getIn($this->method));
         $this->boolean($obj->update($in))->isTrue();
         $this->boolean($obj->getFromDB($id))->isTrue();
 
@@ -127,7 +127,7 @@ class Certificate extends DbTestCase
 
        // Update
         $id = $certificate->getID();
-        $in = array_merge(['id' => $id], $this->_getIn($this->method));
+        $in = array_merge(['id' => $id], $this->getIn($this->method));
         $this->boolean($certificate->update($in))->isTrue();
         $this->boolean($certificate->getFromDB($id))->isTrue();
 
@@ -161,7 +161,7 @@ class Certificate extends DbTestCase
         }
     }
 
-    public function _getIn($method = "")
+    public function getIn($method = "")
     {
         return [
          'name'                => $method,
