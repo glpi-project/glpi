@@ -34,7 +34,6 @@
 /// Rule class for Rights management
 class RuleMailCollector extends Rule
 {
-
    // From Rule
     public static $rightname = 'rule_mailcollector';
     public $orderby   = "name";

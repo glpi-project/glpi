@@ -34,7 +34,6 @@
 /// Class DeviceProcessor
 class DeviceProcessor extends CommonDevice
 {
-
     protected static $forward_entity_to = ['Item_DeviceProcessor', 'Infocom'];
 
     public static function getTypeName($nb = 0)

@@ -39,7 +39,6 @@ use org\bovigo\vfs\vfsStream;
 
 class CommandLoader extends \GLPITestCase
 {
-
     public function testLoader()
     {
 

@@ -40,7 +40,6 @@ use Glpi\Toolbox\VersionParser;
 
 class Plugin extends DbTestCase
 {
-
     private $test_plugin_directory = 'test';
     private $anothertest_plugin_directory = 'anothertest';
 

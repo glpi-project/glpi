@@ -43,7 +43,6 @@ use Ticket;
 
 class Search extends DbTestCase
 {
-
     private function doSearch($itemtype, $params, array $forcedisplay = [])
     {
         global $DEBUG_SQL;

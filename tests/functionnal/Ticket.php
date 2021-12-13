@@ -45,7 +45,6 @@ use User;
 
 class Ticket extends DbTestCase
 {
-
     public function ticketProvider()
     {
         return [

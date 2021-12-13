@@ -59,7 +59,6 @@ use Twig\Loader\FilesystemLoader;
  */
 class TemplateRenderer
 {
-
    /**
     * @var Environment
     */

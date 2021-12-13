@@ -39,7 +39,6 @@ use Glpi\Toolbox\Sanitizer;
  */
 class AuthLDAP extends CommonDBTM
 {
-
     const SIMPLE_INTERFACE = 'simple';
     const EXPERT_INTERFACE = 'expert';
 

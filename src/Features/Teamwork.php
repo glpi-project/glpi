@@ -39,7 +39,6 @@ namespace Glpi\Features;
  */
 trait Teamwork
 {
-
    /**
     * Get an array of all possible roles
     * @return array

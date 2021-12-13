@@ -38,7 +38,6 @@ use Glpi\Dashboard\Widget;
  */
 class PrinterLog extends CommonDBChild
 {
-
     public static $itemtype        = 'Printer';
     public static $items_id        = 'printers_id';
     public $dohistory              = false;

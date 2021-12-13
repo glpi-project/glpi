@@ -38,7 +38,6 @@ use ComputerType;
 
 class Computer extends MainAsset
 {
-
     protected function getModelsFieldName(): string
     {
         return ComputerModel::getForeignKeyField();

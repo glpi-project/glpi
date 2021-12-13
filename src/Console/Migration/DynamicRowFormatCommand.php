@@ -40,7 +40,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DynamicRowFormatCommand extends AbstractCommand
 {
-
    /**
     * Error code returned if migration failed on, at least, one table.
     *

@@ -39,7 +39,6 @@ namespace tests\units;
  */
 class Migration extends \GLPITestCase
 {
-
    /**
     * @var \DB
     */

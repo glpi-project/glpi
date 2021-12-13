@@ -35,7 +35,6 @@ namespace tests\units\Glpi\System\Requirement;
 
 class DbTimezones extends \GLPITestCase
 {
-
     public function testCheckWithUnavailableMysqlDb()
     {
 

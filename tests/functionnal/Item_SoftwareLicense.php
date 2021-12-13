@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Item_SoftwareLicense extends DbTestCase
 {
-
     public function testCountForLicense()
     {
         $this->login();

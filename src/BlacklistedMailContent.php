@@ -38,7 +38,6 @@
 **/
 class BlacklistedMailContent extends CommonDropdown
 {
-
    // From CommonDBTM
     public $dohistory       = false;
 

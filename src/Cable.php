@@ -37,7 +37,6 @@ use Glpi\Socket;
 /// Class Cable
 class Cable extends CommonDBTM
 {
-
    // From CommonDBTM
     public $dohistory         = true;
     public static $rightname         = 'cable_management';

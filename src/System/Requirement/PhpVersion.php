@@ -38,7 +38,6 @@ namespace Glpi\System\Requirement;
  */
 class PhpVersion extends AbstractRequirement
 {
-
    /**
     * Minimal required PHP version.
     *

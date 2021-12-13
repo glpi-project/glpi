@@ -33,7 +33,6 @@
 
 abstract class CommonDeviceType extends CommonType
 {
-
     public static function getTypeName($nb = 0)
     {
         return _n('Device type', 'Device types', $nb);

@@ -40,7 +40,6 @@ use Glpi\RichText\RichText;
 **/
 class Change extends CommonITILObject
 {
-
    // From CommonDBTM
     public $dohistory                   = true;
     protected static $forward_entity_to = ['ChangeValidation', 'ChangeCost'];

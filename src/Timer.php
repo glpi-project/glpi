@@ -36,7 +36,6 @@
  */
 class Timer
 {
-
    //! Timer value
     public $timer = 0;
 

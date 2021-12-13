@@ -44,8 +44,6 @@ use ScssPhp\ScssPhp\Compiler;
 **/
 class Html
 {
-
-
    /**
     * Clean display value deleting html tags
     *

@@ -40,7 +40,6 @@ use org\bovigo\vfs\vfsStream;
 
 class DbUtils extends DbTestCase
 {
-
     public function setUp()
     {
         global $CFG_GLPI;

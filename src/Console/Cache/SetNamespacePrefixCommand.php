@@ -44,7 +44,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SetNamespacePrefixCommand extends AbstractCommand
 {
-
    /**
     * Error code returned if cache configuration file cannot be write.
     *

@@ -39,7 +39,6 @@ use Glpi\Plugin\Hooks;
 **/
 class SavedSearch_Alert extends CommonDBChild
 {
-
    // From CommonDBChild
     public static $itemtype = 'SavedSearch';
     public static $items_id = 'savedsearches_id';

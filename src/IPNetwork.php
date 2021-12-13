@@ -42,7 +42,6 @@
 /// @since 0.84
 class IPNetwork extends CommonImplicitTreeDropdown
 {
-
     public $dohistory = true;
 
     public static $rightname = 'internet';

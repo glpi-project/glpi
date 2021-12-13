@@ -39,7 +39,6 @@ use DbTestCase;
 
 class DatabaseInstance extends DbTestCase
 {
-
     public function testDelete()
     {
         $instance = new \DatabaseInstance();

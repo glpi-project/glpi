@@ -41,7 +41,6 @@ use League\Csv\Reader;
 
 class CsvResponse extends DbTestCase
 {
-
     public function testCsvResponse()
     {
         $_SESSION['glpicronuserrunning'] = "cron_phpunit";

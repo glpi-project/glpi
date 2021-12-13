@@ -36,7 +36,6 @@
  **/
 trait MapGeolocation
 {
-
    /**
     * get openstreetmap
     */

@@ -38,7 +38,6 @@ namespace Glpi\System\Requirement;
  */
 class MysqliMysqlnd extends Extension
 {
-
     public function __construct()
     {
         parent::__construct('mysqli');

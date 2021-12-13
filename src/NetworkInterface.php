@@ -34,7 +34,6 @@
 /// Class NetworkInterface
 class NetworkInterface extends CommonDropdown
 {
-
     public $can_be_translated = false;
 
 

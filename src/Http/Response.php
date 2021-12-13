@@ -40,7 +40,6 @@ use Toolbox;
  */
 class Response
 {
-
    /**
     * "application/json" content type.
     */

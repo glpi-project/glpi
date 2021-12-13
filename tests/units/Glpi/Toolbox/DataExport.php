@@ -40,7 +40,6 @@ use Glpi\Toolbox\Sanitizer;
  */
 class DataExport extends \GLPITestCase
 {
-
     protected function normalizeValueForTextExportProvider(): iterable
     {
        // Standard value

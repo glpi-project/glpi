@@ -43,7 +43,6 @@
 **/
 class ComputerVirtualMachine extends CommonDBChild
 {
-
    // From CommonDBChild
     public static $itemtype = 'Computer';
     public static $items_id = 'computers_id';

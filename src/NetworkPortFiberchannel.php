@@ -40,8 +40,6 @@ use Glpi\Socket;
  */
 class NetworkPortFiberchannel extends NetworkPortInstantiation
 {
-
-
     public static function getTypeName($nb = 0)
     {
         return __('Fiber channel port');

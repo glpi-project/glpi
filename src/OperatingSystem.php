@@ -34,7 +34,6 @@
 /// Class OperatingSystem
 class OperatingSystem extends CommonDropdown
 {
-
     public $can_be_translated = false;
 
 

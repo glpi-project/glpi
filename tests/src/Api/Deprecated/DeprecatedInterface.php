@@ -35,7 +35,6 @@ namespace Glpi\Tests\Api\Deprecated;
 
 interface DeprecatedInterface
 {
-
    /**
     * Get deprecated type
     * @return string

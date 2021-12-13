@@ -43,7 +43,6 @@ use Twig\TwigFunction;
  */
 class I18nExtension extends AbstractExtension
 {
-
     public function getFunctions(): array
     {
         return [

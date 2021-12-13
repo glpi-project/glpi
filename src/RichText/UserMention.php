@@ -47,7 +47,6 @@ use User;
 
 final class UserMention
 {
-
    /**
     * Handle user mentions.
     * Add newly mention users to observers and send them a notification.

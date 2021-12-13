@@ -36,7 +36,6 @@
 **/
 class Profile_User extends CommonDBRelation
 {
-
    // From CommonDBTM
     public $auto_message_on_action               = false;
 

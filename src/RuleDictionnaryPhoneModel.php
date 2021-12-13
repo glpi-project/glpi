@@ -33,8 +33,6 @@
 
 class RuleDictionnaryPhoneModel extends RuleDictionnaryDropdown
 {
-
-
    /**
     * Constructor
    **/

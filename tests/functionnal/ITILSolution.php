@@ -40,7 +40,6 @@ use Ticket;
 
 class ITILSolution extends DbTestCase
 {
-
     public function testTicketSolution()
     {
         $this->login();

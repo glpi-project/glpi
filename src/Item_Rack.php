@@ -33,7 +33,6 @@
 
 class Item_Rack extends CommonDBRelation
 {
-
     public static $itemtype_1 = 'Rack';
     public static $items_id_1 = 'racks_id';
     public static $itemtype_2 = 'itemtype';

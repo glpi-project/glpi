@@ -39,7 +39,6 @@ use Glpi\Toolbox\Sanitizer;
 **/
 class QueuedNotification extends CommonDBTM
 {
-
     public static $rightname = 'queuednotification';
 
 

@@ -35,7 +35,6 @@
 // @deprecated 10.0.0 @see RuleImportAsset
 class RuleImportComputer extends Rule
 {
-
     const RULE_ACTION_LINK_OR_IMPORT    = 0;
     const RULE_ACTION_LINK_OR_NO_IMPORT = 1;
 

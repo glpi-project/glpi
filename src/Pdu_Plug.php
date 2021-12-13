@@ -33,7 +33,6 @@
 
 class Pdu_Plug extends CommonDBRelation
 {
-
     public static $itemtype_1 = 'PDU';
     public static $items_id_1 = 'pdus_id';
     public static $itemtype_2 = 'Plug';

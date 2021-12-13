@@ -33,7 +33,6 @@
 
 class ProblemTask extends CommonITILTask
 {
-
     public static $rightname = 'task';
 
 

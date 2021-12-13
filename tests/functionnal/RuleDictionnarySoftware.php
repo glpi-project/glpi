@@ -39,7 +39,6 @@ use DbTestCase;
 
 class RuleDictionnarySoftware extends DbTestCase
 {
-
     public function testMaxActionsCount()
     {
         $rule = new \RuleDictionnarySoftware();

@@ -39,7 +39,6 @@ use DbTestCase;
 
 class NetworkPortType extends DbTestCase
 {
-
     public function testDefaults()
     {
         global $DB;

@@ -38,7 +38,6 @@ namespace Glpi\System\Requirement;
  */
 abstract class AbstractRequirement implements RequirementInterface
 {
-
    /**
     * Flag that indicates if requirement check has already been done.
     *

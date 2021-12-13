@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Alert extends DbTestCase
 {
-
     public function testAddDelete()
     {
         $alert = new \Alert();

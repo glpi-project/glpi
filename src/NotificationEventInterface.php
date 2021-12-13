@@ -33,7 +33,6 @@
 
 interface NotificationEventInterface
 {
-
    /**
     * Raise a notification event
     *

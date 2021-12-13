@@ -34,7 +34,6 @@
 /// Class InterfaceType (Interface is a reserved keyword)
 class InterfaceType extends CommonDropdown
 {
-
     public $can_be_translated = false;
 
 

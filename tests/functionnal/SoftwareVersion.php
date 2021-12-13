@@ -40,7 +40,6 @@ use SoftwareVersion as CoreSoftwareVersion;
 
 class SoftwareVersion extends DbTestCase
 {
-
     public function testDropdownForOneSoftware()
     {
         $this

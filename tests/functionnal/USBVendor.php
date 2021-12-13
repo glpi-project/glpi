@@ -39,7 +39,6 @@ use DbTestCase;
 
 class USBVendor extends DbTestCase
 {
-
     public function testGetList()
     {
         global $DB;

@@ -39,7 +39,6 @@ use DbTestCase;
 
 class SavedSearch_User extends DbTestCase
 {
-
     public function testGetDefault()
     {
        // needs a user

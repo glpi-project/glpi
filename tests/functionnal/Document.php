@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Document extends DbTestCase
 {
-
     public function canApplyOnProvider()
     {
         return [

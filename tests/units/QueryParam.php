@@ -39,7 +39,6 @@ use DbTestCase;
 
 class QueryParam extends DbTestCase
 {
-
     protected function dataParams()
     {
 

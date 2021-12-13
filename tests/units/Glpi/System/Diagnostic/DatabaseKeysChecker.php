@@ -35,7 +35,6 @@ namespace tests\units\Glpi\System\Diagnostic;
 
 class DatabaseKeysChecker extends \GLPITestCase
 {
-
     protected function sqlProvider()
     {
         return [

@@ -41,5 +41,4 @@ use tests\units\Glpi\AbstractITILChildTemplate;
 
 class TaskTemplate extends AbstractITILChildTemplate
 {
-
 }

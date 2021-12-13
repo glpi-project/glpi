@@ -39,7 +39,6 @@ require_once 'CommonDropdown.php';
 
 class OperatingSystemKernelVersion extends CommonDropdown
 {
-
     public function getObjectClass()
     {
         return '\OperatingSystemKernelVersion';

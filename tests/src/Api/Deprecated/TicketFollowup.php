@@ -35,7 +35,6 @@ namespace Glpi\Tests\Api\Deprecated;
 
 class TicketFollowup implements DeprecatedInterface
 {
-
     public static function getDeprecatedType(): string
     {
         return "TicketFollowup";

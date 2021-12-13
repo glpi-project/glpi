@@ -33,7 +33,6 @@
 
 class Item_Enclosure extends CommonDBRelation
 {
-
     public static $itemtype_1 = 'Enclosure';
     public static $items_id_1 = 'enclosures_id';
     public static $itemtype_2 = 'itemtype';

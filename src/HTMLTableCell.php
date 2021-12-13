@@ -36,7 +36,6 @@
 **/
 class HTMLTableCell extends HTMLTableEntity
 {
-
     private $row;
     private $header;
     private $father;

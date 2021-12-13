@@ -42,7 +42,6 @@ use Sabre\VObject\Component\VCalendar;
  */
 interface CalDAVCompatibleItemInterface
 {
-
    /**
     * Get group items as VCalendar documents.
     *

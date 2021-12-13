@@ -36,7 +36,6 @@ use Glpi\Plugin\Hooks;
 /// Common DataBase Relation Table Manager Class
 abstract class CommonDBChild extends CommonDBConnexity
 {
-
    // Mapping between DB fields
    // * definition
     public static $itemtype; // Class name or field name (start with itemtype) for link to Parent

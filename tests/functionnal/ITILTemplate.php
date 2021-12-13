@@ -38,7 +38,6 @@ use DbTestCase;
 /* Test for inc/itiltemplate.class.php */
 class ITILTemplate extends DbTestCase
 {
-
     protected function itilProvider()
     {
         return [

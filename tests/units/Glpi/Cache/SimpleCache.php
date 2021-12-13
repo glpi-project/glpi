@@ -39,7 +39,6 @@ use Glpi\Cache\CacheManager;
 
 class SimpleCache extends \GLPITestCase
 {
-
    /**
     * Test all possible cache operations.
     */

@@ -38,7 +38,6 @@ namespace Glpi\System\Requirement;
  */
 class ExtensionClass extends Extension
 {
-
    /**
     * Required class or interface name.
     *

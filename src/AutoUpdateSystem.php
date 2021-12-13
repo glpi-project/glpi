@@ -33,7 +33,6 @@
 
 class AutoUpdateSystem extends CommonDropdown
 {
-
     public static function getTypeName($nb = 0)
     {
         return _n('Update Source', 'Update Sources', $nb);

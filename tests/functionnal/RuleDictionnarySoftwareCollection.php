@@ -39,7 +39,6 @@ use DbTestCase;
 
 class RuleDictionnarySoftwareCollection extends DbTestCase
 {
-
     public function testCleanTestOutputCriterias()
     {
         $collection = new \RuleDictionnarySoftwareCollection();

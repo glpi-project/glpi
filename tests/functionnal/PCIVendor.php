@@ -39,7 +39,6 @@ use DbTestCase;
 
 class PCIVendor extends DbTestCase
 {
-
     public function testGetList()
     {
         global $DB;

@@ -41,7 +41,6 @@ use Glpi\System\Status\StatusChecker as GlpiStatusChecker;
 
 class StatusChecker extends DbTestCase
 {
-
     public function testStatusFormats()
     {
         $status = GlpiStatusChecker::getServiceStatus(null, true);

@@ -38,7 +38,6 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class ITILFollowup extends CommonDBChild
 {
-
    // From CommonDBTM
     public $auto_message_on_action = false;
     public static $rightname              = 'followup';

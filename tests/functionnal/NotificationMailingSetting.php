@@ -39,7 +39,6 @@ use DbTestCase;
 
 class NotificationMailingSetting extends DbTestCase
 {
-
     public function testGetTable()
     {
         $this->string(\NotificationMailingSetting::getTable())->isIdenticalTo('glpi_configs');

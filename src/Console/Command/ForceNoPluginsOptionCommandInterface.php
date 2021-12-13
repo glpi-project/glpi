@@ -35,7 +35,6 @@ namespace Glpi\Console\Command;
 
 interface ForceNoPluginsOptionCommandInterface
 {
-
    /**
     * Defines whether or not command prevents plugins to be loaded.
     *

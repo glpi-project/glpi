@@ -39,7 +39,6 @@ use DbTestCase;
 
 class CronTask extends DbTestCase
 {
-
     protected function registerProvider()
     {
         return [

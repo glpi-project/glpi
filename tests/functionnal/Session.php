@@ -37,7 +37,6 @@ namespace tests\units;
 
 class Session extends \DbTestCase
 {
-
     public function testAddMessageAfterRedirect()
     {
         $err_msg = 'Something is broken. Weird.';

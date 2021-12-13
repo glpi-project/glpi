@@ -59,8 +59,6 @@ use User;
 **/
 class Provider
 {
-
-
    /**
     * Retrieve the number of element for a given item
     *

@@ -37,7 +37,6 @@ use DbTestCase;
 
 class Item_DeviceSensor extends DbTestCase
 {
-
     public function testCreate()
     {
         $this->login();

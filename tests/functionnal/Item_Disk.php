@@ -37,7 +37,6 @@ use DbTestCase;
 
 class Item_Disk extends DbTestCase
 {
-
     public function testCreate()
     {
         $this->login();

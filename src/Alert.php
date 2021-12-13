@@ -36,7 +36,6 @@
 **/
 class Alert extends CommonDBTM
 {
-
    // ALERTS TYPE
     const THRESHOLD   = 1;
     const END         = 2;

@@ -36,7 +36,6 @@ use Glpi\Toolbox\Sanitizer;
 
 class Dropdown
 {
-
    //Empty value displayed in a dropdown
     const EMPTY_VALUE = '-----';
 

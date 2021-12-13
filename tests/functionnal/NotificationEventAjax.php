@@ -39,7 +39,6 @@ use DbTestCase;
 
 class NotificationEventAjax extends DbTestCase
 {
-
     public function testGetTargetField()
     {
         $data = [];

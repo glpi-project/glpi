@@ -39,7 +39,6 @@ use org\bovigo\vfs\vfsStream;
 
 class LogsWriteAccess extends \GLPITestCase
 {
-
     public function testCheckOnExistingWritableDir()
     {
 

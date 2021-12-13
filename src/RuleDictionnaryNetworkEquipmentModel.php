@@ -33,8 +33,6 @@
 
 class RuleDictionnaryNetworkEquipmentModel extends RuleDictionnaryDropdown
 {
-
-
    /**
     * Constructor
    **/

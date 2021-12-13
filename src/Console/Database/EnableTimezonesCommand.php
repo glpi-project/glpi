@@ -41,7 +41,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class EnableTimezonesCommand extends AbstractCommand
 {
-
    /**
     * Error code returned if DB configuration file cannot be updated.
     *

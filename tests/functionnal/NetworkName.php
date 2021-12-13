@@ -39,7 +39,6 @@ use DbTestCase;
 
 class NetworkName extends DbTestCase
 {
-
     public function testAddSimpleNetworkName()
     {
         $this->login();

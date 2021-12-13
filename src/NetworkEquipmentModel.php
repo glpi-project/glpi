@@ -34,7 +34,6 @@
 /// Class NetworkEquipmentModel
 class NetworkEquipmentModel extends CommonDCModelDropdown
 {
-
     public static function getTypeName($nb = 0)
     {
         return _n('Networking equipment model', 'Networking equipment models', $nb);

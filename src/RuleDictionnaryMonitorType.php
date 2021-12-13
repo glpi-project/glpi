@@ -33,8 +33,6 @@
 
 class RuleDictionnaryMonitorType extends RuleDictionnaryDropdown
 {
-
-
    /**
     * Constructor
    **/

@@ -36,7 +36,6 @@
  */
 class CalendarSegment extends CommonDBChild
 {
-
    // From CommonDBTM
     public $dohistory       = true;
 

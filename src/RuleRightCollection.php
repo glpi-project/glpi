@@ -34,7 +34,6 @@
 /// Rule collection class for Rights management
 class RuleRightCollection extends RuleCollection
 {
-
    // From RuleCollection
     public $stop_on_first_match = false;
     public static $rightname           = 'rule_ldap';

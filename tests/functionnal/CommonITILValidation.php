@@ -39,7 +39,6 @@ use DbTestCase;
 
 class CommonITILValidation extends DbTestCase
 {
-
     public function testGroupApproval()
     {
         $this->login();

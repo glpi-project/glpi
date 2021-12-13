@@ -37,7 +37,6 @@
 **/
 class GLPIUploadHandler extends UploadHandler
 {
-
     protected function get_error_message($error)
     {
         switch ($error) {

@@ -41,7 +41,6 @@ require_once __DIR__ . '/../Autoload.php';
 
 class Autoload extends DbTestCase
 {
-
     public function dataItemType()
     {
         return [

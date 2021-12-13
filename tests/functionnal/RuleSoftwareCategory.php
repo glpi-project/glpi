@@ -39,7 +39,6 @@ use DbTestCase;
 
 class RuleSoftwareCategory extends DbTestCase
 {
-
     public function testMaxActionsCount()
     {
         $category = new \RuleSoftwareCategory();

@@ -63,7 +63,6 @@
 **/
 class Printer_CartridgeInfo extends CommonDBChild
 {
-
     public static $itemtype        = 'Printer';
     public static $items_id        = 'printers_id';
     public $dohistory              = true;

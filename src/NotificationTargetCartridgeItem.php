@@ -38,8 +38,6 @@
 **/
 class NotificationTargetCartridgeItem extends NotificationTarget
 {
-
-
     public function getEvents()
     {
         return ['alert' => __('Cartridges alarm')];

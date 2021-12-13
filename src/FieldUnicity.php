@@ -36,7 +36,6 @@
 **/
 class FieldUnicity extends CommonDropdown
 {
-
    // From CommonDBTM
     public $dohistory          = true;
 

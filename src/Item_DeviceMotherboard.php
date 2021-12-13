@@ -36,7 +36,6 @@
 **/
 class Item_DeviceMotherboard extends Item_Devices
 {
-
     public static $itemtype_2 = 'DeviceMotherboard';
     public static $items_id_2 = 'devicemotherboards_id';
 

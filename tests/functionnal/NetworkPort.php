@@ -39,7 +39,6 @@ use DbTestCase;
 
 class NetworkPort extends DbTestCase
 {
-
     public function testAddSimpleNetworkPort()
     {
         $this->login();

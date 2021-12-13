@@ -35,7 +35,6 @@ namespace tests\units\Glpi\System\Requirement;
 
 class SessionsConfiguration extends \GLPITestCase
 {
-
     public function testCheckWithGoodConfig()
     {
 

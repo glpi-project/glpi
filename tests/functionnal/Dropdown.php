@@ -41,7 +41,6 @@ use Glpi\Toolbox\Sanitizer;
 
 class Dropdown extends DbTestCase
 {
-
     public function testShowLanguages()
     {
 

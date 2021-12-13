@@ -39,7 +39,6 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 class PowerSupply extends AbstractInventoryAsset
 {
-
     protected function assetProvider(): array
     {
         return [

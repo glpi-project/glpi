@@ -40,8 +40,6 @@ use Glpi\Application\View\TemplateRenderer;
 **/
 class Item_Ticket extends CommonItilObject_Item
 {
-
-
    // From CommonDBRelation
     public static $itemtype_1          = 'Ticket';
     public static $items_id_1          = 'tickets_id';

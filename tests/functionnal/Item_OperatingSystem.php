@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Item_OperatingSystem extends DbTestCase
 {
-
     public function testGetTypeName()
     {
         $this->string(\Item_OperatingSystem::getTypeName())->isIdenticalTo('Item operating systems');

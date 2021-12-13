@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Widget extends DbTestCase
 {
-
     public function testGetAllTypes()
     {
         $types = \Glpi\Dashboard\Widget::getAllTypes();

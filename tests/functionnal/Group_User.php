@@ -37,7 +37,6 @@ namespace tests\units;
 
 class Group_User extends \DbTestCase
 {
-
     public function testGetGroupUsers()
     {
         $group = new \Group();

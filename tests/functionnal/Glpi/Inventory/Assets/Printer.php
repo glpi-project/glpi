@@ -39,7 +39,6 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 class Printer extends AbstractInventoryAsset
 {
-
     const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
 
     protected function assetProvider(): array

@@ -36,8 +36,6 @@
 **/
 class NotificationTargetInfocom extends NotificationTarget
 {
-
-
     public function getEvents()
     {
         return ['alert' => __('Alarms on financial and administrative information')];

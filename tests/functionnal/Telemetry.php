@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Telemetry extends DbTestCase
 {
-
     public function testGrabGlpiInfos()
     {
        //we do not want any error messages

@@ -39,7 +39,6 @@ use org\bovigo\vfs\vfsStream;
 
 class DBConnection extends \GLPITestCase
 {
-
     protected function setConnectionCharsetProvider()
     {
         return [

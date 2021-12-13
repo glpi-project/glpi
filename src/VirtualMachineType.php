@@ -34,7 +34,6 @@
 /// Class VirtualMachineType
 class VirtualMachineType extends CommonDropdown
 {
-
     public $can_be_translated = false;
 
 

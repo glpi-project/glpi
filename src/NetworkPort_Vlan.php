@@ -33,7 +33,6 @@
 
 class NetworkPort_Vlan extends CommonDBRelation
 {
-
    // From CommonDBRelation
     public static $itemtype_1          = 'NetworkPort';
     public static $items_id_1          = 'networkports_id';

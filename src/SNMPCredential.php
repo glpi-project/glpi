@@ -38,7 +38,6 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class SNMPCredential extends CommonDBTM
 {
-
    // From CommonDBTM
     public $dohistory                   = true;
     public static $rightname = 'computer';

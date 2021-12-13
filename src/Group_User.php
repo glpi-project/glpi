@@ -38,7 +38,6 @@
 **/
 class Group_User extends CommonDBRelation
 {
-
    // From CommonDBRelation
     public static $itemtype_1                 = 'User';
     public static $items_id_1                 = 'users_id';

@@ -38,7 +38,6 @@
 **/
 class Notification_NotificationTemplate extends CommonDBRelation
 {
-
    // From CommonDBRelation
     public static $itemtype_1       = 'Notification';
     public static $items_id_1       = 'notifications_id';

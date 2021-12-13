@@ -36,7 +36,6 @@
  */
 class RuleMatchedLog extends CommonDBTM
 {
-
    /**
     * The right name for this class
     *

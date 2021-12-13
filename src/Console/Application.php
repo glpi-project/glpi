@@ -57,7 +57,6 @@ use Toolbox;
 
 class Application extends BaseApplication
 {
-
    /**
     * Error code returned when system requirements are missing.
     *

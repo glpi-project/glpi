@@ -42,7 +42,6 @@ use Sabre\DAV\Auth\Backend\AbstractBasic;
  */
 class Auth extends AbstractBasic
 {
-
     protected $principalPrefix = Principal::PREFIX_USERS . '/';
 
     protected function validateUserPass($username, $password)

@@ -41,7 +41,6 @@ use Glpi\Event;
  */
 class CronTask extends CommonDBTM
 {
-
    // From CommonDBTM
     public $dohistory                   = true;
 

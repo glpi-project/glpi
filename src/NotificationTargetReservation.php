@@ -36,8 +36,6 @@
 **/
 class NotificationTargetReservation extends NotificationTarget
 {
-
-
     public function getEvents()
     {
         return ['new'    => __('New reservation'),

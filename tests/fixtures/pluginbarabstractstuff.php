@@ -35,5 +35,4 @@ namespace GlpiPlugin\Bar;
 
 abstract class AbstractStuff extends \CommonDBTM
 {
-
 }

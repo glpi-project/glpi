@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Computer extends DbTestCase
 {
-
     protected function getUniqueString()
     {
         $string = parent::getUniqueString();

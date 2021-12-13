@@ -42,7 +42,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Utf8mb4Command extends AbstractCommand
 {
-
    /**
     * Error code returned if migration failed on, at least, one table.
     *

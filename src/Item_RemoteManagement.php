@@ -33,7 +33,6 @@
 
 class Item_RemoteManagement extends CommonDBChild
 {
-
     public static $itemtype        = 'itemtype';
     public static $items_id        = 'items_id';
     public $dohistory              = true;

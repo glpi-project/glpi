@@ -34,8 +34,6 @@
 // class Preference for the current connected User
 class Preference extends CommonGLPI
 {
-
-
     public static function getTypeName($nb = 0)
     {
        // Always plural

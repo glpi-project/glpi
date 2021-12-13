@@ -34,8 +34,6 @@
 // Class NotificationTarget
 class NotificationTargetUser extends NotificationTarget
 {
-
-
     public function getEvents()
     {
         return [

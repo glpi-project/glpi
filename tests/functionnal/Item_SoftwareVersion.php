@@ -42,7 +42,6 @@ use DbTestCase;
  */
 class Item_SoftwareVersion extends DbTestCase
 {
-
     public function testTypeName()
     {
         $this->string(\Item_SoftwareVersion::getTypeName(1))->isIdenticalTo('Installation');

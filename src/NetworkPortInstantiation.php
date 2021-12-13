@@ -51,7 +51,6 @@ use Glpi\Socket;
 **/
 class NetworkPortInstantiation extends CommonDBChild
 {
-
    // From CommonDBTM
     public $auto_message_on_action   = false;
 

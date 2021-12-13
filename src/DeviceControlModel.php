@@ -34,7 +34,6 @@
 /// Class DeviceControlModel
 class DeviceControlModel extends CommonDeviceModel
 {
-
     public $additional_fields_for_dictionnary = ['manufacturer'];
 
 

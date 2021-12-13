@@ -38,7 +38,6 @@ namespace Glpi\System\Requirement;
  */
 class DbTimezones extends AbstractRequirement
 {
-
    /**
     * DB instance.
     *

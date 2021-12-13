@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Location extends DbTestCase
 {
-
     public function testInheritGeolocation()
     {
         $location1 = new \Location();

@@ -36,7 +36,6 @@
 **/
 class SoftwareVersion extends CommonDBChild
 {
-
    // From CommonDBTM
     public $dohistory = true;
 

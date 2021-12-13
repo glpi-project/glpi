@@ -34,8 +34,6 @@
 /// SolutionType class
 class SolutionType extends CommonDropdown
 {
-
-
     public static function getTypeName($nb = 0)
     {
         return _n('Solution type', 'Solution types', $nb);

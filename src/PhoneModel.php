@@ -34,7 +34,6 @@
 /// Class PhoneModel
 class PhoneModel extends CommonDropdown
 {
-
     public $additional_fields_for_dictionnary = ['manufacturer'];
 
 

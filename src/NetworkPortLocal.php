@@ -36,8 +36,6 @@
 /// @since 0.84
 class NetworkPortLocal extends NetworkPortInstantiation
 {
-
-
     public $canHaveVLAN = false;
     public $haveMAC     = false;
 

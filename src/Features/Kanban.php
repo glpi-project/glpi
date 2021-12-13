@@ -39,7 +39,6 @@ namespace Glpi\Features;
  */
 trait Kanban
 {
-
    /**
     * Get all data needed to display a Kanban for the item with the specified ID.
     * This function does not format the data for viewing in the kanban.

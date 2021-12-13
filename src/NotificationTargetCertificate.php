@@ -42,8 +42,6 @@
 **/
 class NotificationTargetCertificate extends NotificationTarget
 {
-
-
     public function getEvents()
     {
         return ['alert' => __('Alarms on expired certificates')];

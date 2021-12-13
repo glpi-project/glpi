@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Change extends DbTestCase
 {
-
     public function testAddFromItem()
     {
        // add change from a computer

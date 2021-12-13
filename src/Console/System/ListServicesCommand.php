@@ -40,7 +40,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ListServicesCommand extends AbstractCommand
 {
-
     protected function configure()
     {
         parent::configure();

@@ -36,7 +36,6 @@
 **/
 class Holiday extends CommonDropdown
 {
-
     public static $rightname = 'calendar';
 
     public $can_be_translated = false;

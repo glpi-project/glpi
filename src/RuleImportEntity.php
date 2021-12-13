@@ -35,7 +35,6 @@ use Glpi\Plugin\Hooks;
 
 class RuleImportEntity extends Rule
 {
-
    // From Rule
     public static $rightname = 'rule_import';
     public $can_sort  = true;

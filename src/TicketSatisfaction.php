@@ -33,7 +33,6 @@
 
 class TicketSatisfaction extends CommonDBTM
 {
-
     public static $rightname = 'ticket';
 
     public $dohistory         = true;

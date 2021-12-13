@@ -40,7 +40,6 @@ use User;
 
 class LogCsvExport implements ExportToCsvInterface
 {
-
    /** @var CommonDBTM */
     protected $item;
 

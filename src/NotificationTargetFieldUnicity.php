@@ -34,8 +34,6 @@
 // Class NotificationTarget
 class NotificationTargetFieldUnicity extends NotificationTarget
 {
-
-
     public function getEvents()
     {
         return ['refuse' => __('Alert on duplicate record')];

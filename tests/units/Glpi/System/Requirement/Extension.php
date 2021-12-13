@@ -35,7 +35,6 @@ namespace tests\units\Glpi\System\Requirement;
 
 class Extension extends \GLPITestCase
 {
-
     public function testCheckOnExistingExtension()
     {
 

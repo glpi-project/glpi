@@ -33,7 +33,6 @@
 
 class NotificationEventAjax extends NotificationEventAbstract implements NotificationEventInterface
 {
-
     public static function getTargetFieldName()
     {
         return 'users_id';

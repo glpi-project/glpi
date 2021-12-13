@@ -36,7 +36,6 @@
  */
 class AuthLdapReplicate extends CommonDBTM
 {
-
     public static $rightname = 'config';
 
     public static function canCreate()

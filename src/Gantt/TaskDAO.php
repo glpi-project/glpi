@@ -38,7 +38,6 @@ namespace Glpi\Gantt;
  */
 class TaskDAO
 {
-
     public function addTask($task)
     {
 

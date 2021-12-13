@@ -43,7 +43,6 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 
 abstract class AbstractPluginCommand extends AbstractCommand implements ForceNoPluginsOptionCommandInterface
 {
-
    /**
     * Wildcard value to target all directories.
     *

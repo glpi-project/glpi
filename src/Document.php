@@ -39,7 +39,6 @@ use Glpi\Toolbox\Sanitizer;
 **/
 class Document extends CommonDBTM
 {
-
    // From CommonDBTM
     public $dohistory                   = true;
 

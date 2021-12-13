@@ -35,7 +35,6 @@ namespace tests\units;
 
 class ImpactRelation extends \DbTestCase
 {
-
     public function testPrepareInputForAdd_requiredFields()
     {
         $impactRelationManager = new \ImpactRelation();

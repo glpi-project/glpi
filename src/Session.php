@@ -41,7 +41,6 @@ use Glpi\Plugin\Hooks;
 **/
 class Session
 {
-
    // GLPI MODE
     const NORMAL_MODE       = 0;
     const TRANSLATION_MODE  = 1; // no more used

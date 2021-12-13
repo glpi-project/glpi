@@ -36,7 +36,6 @@
 **/
 class Profile extends CommonDBTM
 {
-
    // Specific ones
 
    /// Helpdesk fields of helpdesk profiles

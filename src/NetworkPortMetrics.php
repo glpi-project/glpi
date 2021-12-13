@@ -38,7 +38,6 @@ use Glpi\Dashboard\Widget;
  */
 class NetworkPortMetrics extends CommonDBChild
 {
-
     public static $itemtype        = 'NetworkPort';
     public static $items_id        = 'networkports_id';
     public $dohistory              = false;

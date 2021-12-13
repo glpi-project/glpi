@@ -35,7 +35,6 @@ namespace Glpi\Tests\Api\Deprecated;
 
 class Computer_SoftwareVersion implements DeprecatedInterface
 {
-
     public static function getDeprecatedType(): string
     {
         return "Computer_SoftwareVersion";

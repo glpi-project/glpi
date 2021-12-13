@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Notification extends DbTestCase
 {
-
     public function testGetMailingSignature()
     {
         global $CFG_GLPI;

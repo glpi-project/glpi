@@ -40,7 +40,6 @@ use org\bovigo\vfs\vfsStream;
 
 class GLPIKey extends \DbTestCase
 {
-
     protected function getExpectedKeyPathProvider()
     {
         return [

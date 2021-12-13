@@ -43,7 +43,6 @@ use Glpi\CalDAV\Backend\Principal;
  */
 class CalendarRoot extends \Sabre\CalDAV\CalendarRoot
 {
-
     public function getName()
     {
 

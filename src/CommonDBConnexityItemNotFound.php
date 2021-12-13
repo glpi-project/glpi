@@ -36,5 +36,4 @@
 **/
 class CommonDBConnexityItemNotFound extends \Exception
 {
-
 }

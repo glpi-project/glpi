@@ -41,7 +41,6 @@
 **/
 class Item_DeviceSoundCard extends Item_Devices
 {
-
     public static $itemtype_2 = 'DeviceSoundCard';
     public static $items_id_2 = 'devicesoundcards_id';
 

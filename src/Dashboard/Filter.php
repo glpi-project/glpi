@@ -48,7 +48,6 @@ use User;
 **/
 class Filter extends \CommonDBChild
 {
-
     public static $itemtype = "Glpi\\Dashboard\\Dashboard";
     public static $items_id = 'dashboards_dashboards_id';
 

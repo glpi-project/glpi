@@ -36,7 +36,6 @@
 **/
 class HTMLTableRow extends HTMLTableEntity
 {
-
     private $group;
     private $empty              = true;
     private $cells              = [];

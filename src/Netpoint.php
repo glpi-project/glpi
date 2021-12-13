@@ -39,7 +39,6 @@ use Glpi\Socket;
  */
 class Netpoint extends Socket
 {
-
     public static function getTable($classname = null)
     {
         return Socket::getTable();

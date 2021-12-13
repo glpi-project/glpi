@@ -36,7 +36,6 @@
 **/
 class Item_DeviceDrive extends Item_Devices
 {
-
     public static $itemtype_2 = 'DeviceDrive';
     public static $items_id_2 = 'devicedrives_id';
 

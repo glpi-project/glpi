@@ -34,8 +34,6 @@
 /// Class Ticket links
 class Ticket_Ticket extends CommonDBRelation
 {
-
-
    // From CommonDBRelation
     public static $itemtype_1     = 'Ticket';
     public static $items_id_1     = 'tickets_id_1';

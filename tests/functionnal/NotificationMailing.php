@@ -39,7 +39,6 @@ use DbTestCase;
 
 class NotificationMailing extends DbTestCase
 {
-
    /**
     * @ignore
     * @see https://gitlab.alpinelinux.org/alpine/aports/issues/7392

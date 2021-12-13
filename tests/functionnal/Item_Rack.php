@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Item_Rack extends DbTestCase
 {
-
    /**
     * Models provider
     *

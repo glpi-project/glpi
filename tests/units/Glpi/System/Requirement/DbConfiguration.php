@@ -35,7 +35,6 @@ namespace tests\units\Glpi\System\Requirement;
 
 class DbConfiguration extends \GLPITestCase
 {
-
     protected function configurationProvider()
     {
         return [

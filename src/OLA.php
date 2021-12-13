@@ -37,7 +37,6 @@
 **/
 class OLA extends LevelAgreement
 {
-
     protected static $prefix            = 'ola';
     protected static $prefixticket      = 'internal_';
     protected static $levelclass        = 'OLALevel';

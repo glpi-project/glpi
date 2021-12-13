@@ -39,7 +39,6 @@ use DbTestCase;
 
 class RuleCriteria extends DbTestCase
 {
-
     public function testGetForbiddenStandardMassiveAction()
     {
         $criteria = new \RuleCriteria();

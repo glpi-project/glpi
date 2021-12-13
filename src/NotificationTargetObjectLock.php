@@ -45,8 +45,6 @@
 **/
 class NotificationTargetObjectLock extends NotificationTarget
 {
-
-
     public function getEvents()
     {
         return ['unlock'               => __('Unlock Item Request')];

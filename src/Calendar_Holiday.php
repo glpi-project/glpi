@@ -33,7 +33,6 @@
 
 class Calendar_Holiday extends CommonDBRelation
 {
-
     public $auto_message_on_action = false;
 
    // From CommonDBRelation

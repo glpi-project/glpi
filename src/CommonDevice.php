@@ -37,7 +37,6 @@
 */
 abstract class CommonDevice extends CommonDropdown
 {
-
     public static $rightname          = 'device';
 
     public $can_be_translated  = false;

@@ -38,7 +38,6 @@ use Glpi\Application\View\TemplateRenderer;
 **/
 class Log extends CommonDBTM
 {
-
     const HISTORY_ADD_DEVICE         = 1;
     const HISTORY_UPDATE_DEVICE      = 2;
     const HISTORY_DELETE_DEVICE      = 3;

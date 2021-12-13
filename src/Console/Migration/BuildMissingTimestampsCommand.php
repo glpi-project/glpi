@@ -41,7 +41,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class BuildMissingTimestampsCommand extends AbstractCommand
 {
-
     protected function configure()
     {
         parent::configure();

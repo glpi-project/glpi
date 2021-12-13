@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Monitor extends DbTestCase
 {
-
     private static function getMonitorFields($id, $date)
     {
         return [

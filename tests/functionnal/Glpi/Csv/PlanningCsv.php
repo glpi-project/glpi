@@ -39,7 +39,6 @@ use CsvTestCase;
 
 class PlanningCsv extends CsvTestCase
 {
-
     public function getTestData(): array
     {
         $this->login();

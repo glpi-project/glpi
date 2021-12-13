@@ -35,7 +35,6 @@ namespace tests\units\Glpi\System\Requirement;
 
 class PhpVersion extends \GLPITestCase
 {
-
     public function testCheckWithUpToDateVersion()
     {
 

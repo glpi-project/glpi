@@ -43,7 +43,6 @@ use Glpi\Toolbox\VersionParser;
 
 class Plugin extends CommonDBTM
 {
-
    // Class constant : Plugin state
    /**
     * @var int Unknown plugin state

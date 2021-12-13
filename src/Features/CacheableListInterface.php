@@ -38,7 +38,6 @@ namespace Glpi\Features;
  **/
 interface CacheableListInterface
 {
-
    /**
     * Get cache key
     *

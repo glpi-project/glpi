@@ -33,7 +33,6 @@
 
 class RuleDictionnaryManufacturer extends RuleDictionnaryDropdown
 {
-
    /**
     * Constructor
    **/

@@ -36,7 +36,6 @@
 **/
 class TaskCategory extends CommonTreeDropdown
 {
-
    // From CommonDBTM
     public $dohistory          = true;
     public $can_be_translated  = true;

@@ -36,7 +36,6 @@
 **/
 abstract class HTMLTableHeader extends HTMLTableEntity
 {
-
     private $name;
     private $father;
     private $itemtypes   = [];

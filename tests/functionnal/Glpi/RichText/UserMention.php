@@ -49,7 +49,6 @@ use User;
 
 class UserMention extends DbTestCase
 {
-
     protected function itilProvider()
     {
         $tech_id = getItemByTypeName('User', 'tech', true);

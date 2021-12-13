@@ -40,8 +40,6 @@ use SoftwareVersion;
 
 class CommonDBTM extends DbTestCase
 {
-
-
     public function testgetIndexNameOtherThanID()
     {
 

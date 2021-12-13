@@ -38,7 +38,6 @@ namespace Glpi\System\Requirement;
  */
 class SeLinux extends AbstractRequirement
 {
-
     public function __construct()
     {
         $this->title = __('SELinux configuration');

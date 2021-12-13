@@ -40,8 +40,6 @@ use Glpi\Toolbox\Sanitizer;
 **/
 class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 {
-
-
    // From CommonDBTM
     public $dohistory    = true;
 

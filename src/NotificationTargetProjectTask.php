@@ -38,8 +38,6 @@
 **/
 class NotificationTargetProjectTask extends NotificationTarget
 {
-
-
    /**
     * Get events related to tickets
     *

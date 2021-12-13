@@ -39,7 +39,6 @@
 **/
 class Problem_Supplier extends CommonITILActor
 {
-
    // From CommonDBRelation
     public static $itemtype_1 = 'Problem';
     public static $items_id_1 = 'problems_id';

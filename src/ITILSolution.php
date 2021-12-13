@@ -39,7 +39,6 @@ use Glpi\ContentTemplates\TemplateManager;
 **/
 class ITILSolution extends CommonDBChild
 {
-
    // From CommonDBTM
     public $dohistory                   = true;
     private $item                       = null;

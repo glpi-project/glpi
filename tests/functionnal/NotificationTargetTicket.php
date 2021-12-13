@@ -41,7 +41,6 @@ use NotificationTarget;
 
 class NotificationTargetTicket extends DbTestCase
 {
-
     public function testgetDataForObject()
     {
         global $CFG_GLPI;

@@ -38,7 +38,6 @@ namespace tests\units\Glpi\Toolbox;
  */
 class VersionParser extends \GLPITestCase
 {
-
     protected function versionsProvider()
     {
         return [

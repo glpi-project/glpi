@@ -39,7 +39,6 @@ use DbTestCase;
 
 class NotificationAjaxSetting extends DbTestCase
 {
-
     public function testGetTable()
     {
         $this->string(\NotificationAjaxSetting::getTable())->isIdenticalTo('glpi_configs');

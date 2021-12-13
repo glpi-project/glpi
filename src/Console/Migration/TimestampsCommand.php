@@ -43,7 +43,6 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class TimestampsCommand extends AbstractCommand
 {
-
    /**
     * Error code returned when failed to migrate one table.
     *

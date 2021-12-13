@@ -37,7 +37,6 @@ namespace tests\units;
 
 class DB extends \GLPITestCase
 {
-
     public function testTableExist()
     {
         $this

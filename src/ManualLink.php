@@ -36,7 +36,6 @@
  */
 class ManualLink extends CommonDBChild
 {
-
     public $dohistory              = false;
     public $auto_message_on_action = false; // Link in message can't work'
     protected $displaylist         = false;

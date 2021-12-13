@@ -40,7 +40,6 @@
 **/
 class Change_Problem extends CommonDBRelation
 {
-
    // From CommonDBRelation
     public static $itemtype_1   = 'Change';
     public static $items_id_1   = 'changes_id';

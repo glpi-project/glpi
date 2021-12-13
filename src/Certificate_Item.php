@@ -36,7 +36,6 @@
  */
 class Certificate_Item extends CommonDBRelation
 {
-
    // From CommonDBRelation
     public static $itemtype_1    = "Certificate";
     public static $items_id_1    = 'certificates_id';

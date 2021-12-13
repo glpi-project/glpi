@@ -39,7 +39,6 @@ namespace Glpi\Team;
  */
 final class Team
 {
-
    /**
     * A team member that is requesting the ticket, change, problem, etc.
     */

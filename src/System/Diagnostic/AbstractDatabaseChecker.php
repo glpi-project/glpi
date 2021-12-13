@@ -40,7 +40,6 @@ use DBmysql;
  */
 abstract class AbstractDatabaseChecker
 {
-
    /**
     * DB instance.
     *

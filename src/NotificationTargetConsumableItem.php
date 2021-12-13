@@ -38,8 +38,6 @@
 **/
 class NotificationTargetConsumableItem extends NotificationTarget
 {
-
-
     public function getEvents()
     {
         return ['alert' => __('Consumables alarm')];

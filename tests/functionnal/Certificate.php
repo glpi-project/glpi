@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Certificate extends DbTestCase
 {
-
     private $method;
 
     public function beforeTestMethod($method)

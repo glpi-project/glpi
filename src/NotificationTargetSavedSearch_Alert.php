@@ -33,8 +33,6 @@
 
 class NotificationTargetSavedSearch_Alert extends NotificationTarget
 {
-
-
     public function getEvents()
     {
         global $DB;

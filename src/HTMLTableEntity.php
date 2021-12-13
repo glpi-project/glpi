@@ -40,7 +40,6 @@
 **/
 abstract class HTMLTableEntity
 {
-
     private $html_id    = '';
     private $html_style = [];
     private $html_class = [];

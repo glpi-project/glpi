@@ -33,7 +33,6 @@
 
 class Item_DeviceCamera_ImageFormat extends CommonDBRelation
 {
-
     public static $itemtype_1 = 'Item_DeviceCamera';
     public static $items_id_1 = 'item_devicecameras_id';
 

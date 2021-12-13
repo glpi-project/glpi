@@ -35,7 +35,6 @@ namespace Glpi\Csv;
 
 class StatCsvExport implements ExportToCsvInterface
 {
-
    /** @var array */
     protected $headers;
 

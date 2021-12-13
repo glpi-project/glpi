@@ -36,7 +36,6 @@
  */
 class NetworkPortConnectionLog extends CommonDBChild
 {
-
     public static $itemtype        = 'NetworkPort';
     public static $items_id        = 'networkports_id';
     public $dohistory              = false;

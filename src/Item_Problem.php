@@ -38,8 +38,6 @@
 **/
 class Item_Problem extends CommonItilObject_Item
 {
-
-
    // From CommonDBRelation
     public static $itemtype_1          = 'Problem';
     public static $items_id_1          = 'problems_id';

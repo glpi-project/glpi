@@ -40,8 +40,6 @@
 **/
 class Item_Project extends CommonDBRelation
 {
-
-
    // From CommonDBRelation
     public static $itemtype_1          = 'Project';
     public static $items_id_1          = 'projects_id';

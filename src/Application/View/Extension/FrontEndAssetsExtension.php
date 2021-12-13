@@ -46,7 +46,6 @@ use Twig\TwigFunction;
  */
 class FrontEndAssetsExtension extends AbstractExtension
 {
-
     public function getFunctions(): array
     {
         return [

@@ -45,7 +45,6 @@ use Rack;
  **/
 trait DCBreadcrumb
 {
-
    /**
     * Get datacenter element breadcrumb
     *

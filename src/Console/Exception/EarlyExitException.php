@@ -42,5 +42,4 @@ use Symfony\Component\Console\Exception\ExceptionInterface;
  */
 class EarlyExitException extends \Exception implements ExceptionInterface
 {
-
 }

@@ -40,7 +40,6 @@ namespace Glpi\System\Requirement;
  */
 class ProtectedWebAccess extends AbstractRequirement
 {
-
    /**
     * Paths of directories to check.
     *

@@ -38,7 +38,6 @@
 **/
 class Itil_Project extends CommonDBRelation
 {
-
     public static $itemtype_1 = 'itemtype';
     public static $items_id_1 = 'items_id';
     public static $itemtype_2 = 'Project';

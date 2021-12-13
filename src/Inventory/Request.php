@@ -47,7 +47,6 @@ use Unmanaged;
  */
 class Request extends AbstractRequest
 {
-
    /** @var Inventory */
     private $inventory;
 

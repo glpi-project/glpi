@@ -38,7 +38,6 @@
 **/
 abstract class CommonITILCost extends CommonDBChild
 {
-
     public $dohistory        = true;
 
 

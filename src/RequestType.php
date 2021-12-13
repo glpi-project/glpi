@@ -34,8 +34,6 @@
 /// Class RequestType
 class RequestType extends CommonDropdown
 {
-
-
     public static function getTypeName($nb = 0)
     {
         return _n('Request source', 'Request sources', $nb);

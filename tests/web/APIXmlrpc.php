@@ -44,7 +44,6 @@ use GuzzleHttp;
  */
 class APIXmlrpc extends APIBaseClass
 {
-
     public function beforeTestMethod($method)
     {
         global $CFG_GLPI;

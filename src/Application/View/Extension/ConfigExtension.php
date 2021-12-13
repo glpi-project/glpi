@@ -42,7 +42,6 @@ use Twig\TwigFunction;
  */
 class ConfigExtension extends AbstractExtension
 {
-
     public function getFunctions(): array
     {
         return [

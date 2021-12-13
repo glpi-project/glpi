@@ -39,7 +39,6 @@ use DbTestCase;
 
 abstract class CommonDropdown extends DbTestCase
 {
-
    /**
     * Get object class name
     *

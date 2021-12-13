@@ -37,7 +37,6 @@ use Psr\Log\LogLevel;
 
 class ErrorHandler extends \GLPITestCase
 {
-
    /**
     * @return array
     */

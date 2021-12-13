@@ -33,7 +33,6 @@
 
 class RuleDictionnaryMonitorTypeCollection extends RuleDictionnaryDropdownCollection
 {
-
    // From RuleCollection
    //public $rule_class_name = 'RuleDictionnaryMonitorType';
 

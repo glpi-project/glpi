@@ -41,7 +41,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 **/
 class Migration
 {
-
     private $change    = [];
     private $fulltexts = [];
     private $uniques   = [];

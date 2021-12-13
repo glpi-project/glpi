@@ -33,7 +33,6 @@
 
 class Item_OperatingSystem extends CommonDBRelation
 {
-
     public static $itemtype_1 = 'OperatingSystem';
     public static $items_id_1 = 'operatingsystems_id';
     public static $itemtype_2 = 'itemtype';

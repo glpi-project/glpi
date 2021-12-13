@@ -39,7 +39,6 @@ use DbTestCase;
 
 class TicketTask extends DbTestCase
 {
-
    /**
     * Create a new ticket
     *

@@ -36,5 +36,4 @@
  */
 class ImpactCompound extends CommonDBTM
 {
-
 }

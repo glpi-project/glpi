@@ -39,7 +39,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CheckDatabaseKeysCommand extends AbstractCommand
 {
-
    /**
     * Error code returned when missing keys are found.
     *

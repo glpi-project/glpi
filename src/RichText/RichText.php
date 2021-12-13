@@ -41,7 +41,6 @@ use Toolbox;
 
 final class RichText
 {
-
    /**
     * Get safe HTML string based on user input content.
     *

@@ -39,7 +39,6 @@ use DbTestCase;
 
 class PrinterLog extends DbTestCase
 {
-
     public function testGetMetrics()
     {
         $printer = new \Printer();

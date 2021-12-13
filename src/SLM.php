@@ -41,7 +41,6 @@
 **/
 class SLM extends CommonDBTM
 {
-
    // From CommonDBTM
     public $dohistory                   = true;
 

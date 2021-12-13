@@ -38,7 +38,6 @@
  */
 class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
 {
-
    // From CommonDBRelation
     public static $itemtype_1          = 'KnowbaseItem';
     public static $items_id_1          = 'knowbaseitems_id';

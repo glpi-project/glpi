@@ -41,7 +41,6 @@ use Monolog\Logger;
 
 class DBmysqlIterator extends DbTestCase
 {
-
     private $it;
 
     public function beforeTestMethod($method)

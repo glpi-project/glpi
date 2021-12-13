@@ -36,7 +36,6 @@ use Glpi\Inventory\FilesToJSON;
 /// Class NetworkPortType
 class NetworkPortType extends CommonDropdown
 {
-
     public const DEFAULT_TYPE = 'NetworkPortEthernet';
 
     public static function getTypeName($nb = 0)

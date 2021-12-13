@@ -36,8 +36,6 @@
 **/
 class NotificationTargetContract extends NotificationTarget
 {
-
-
     public function getEvents()
     {
 

@@ -37,7 +37,6 @@
 **/
 class TaskTemplate extends AbstractITILChildTemplate
 {
-
    // From CommonDBTM
     public $dohistory          = true;
     public $can_be_translated  = true;

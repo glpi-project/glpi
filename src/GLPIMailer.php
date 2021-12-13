@@ -40,7 +40,6 @@ use PHPMailer\PHPMailer\SMTP;
 **/
 class GLPIMailer extends PHPMailer
 {
-
    /**
     * Constructor
     *

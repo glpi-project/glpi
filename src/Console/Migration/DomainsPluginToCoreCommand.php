@@ -50,7 +50,6 @@ use Toolbox;
 
 class DomainsPluginToCoreCommand extends AbstractCommand
 {
-
    /**
     * Error code returned if plugin version or plugin data is invalid.
     *

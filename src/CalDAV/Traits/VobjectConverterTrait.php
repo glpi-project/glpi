@@ -54,7 +54,6 @@ use Sabre\VObject\Reader;
  */
 trait VobjectConverterTrait
 {
-
    /**
     * Get VCalendar object for given item.
     *

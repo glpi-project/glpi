@@ -41,7 +41,6 @@ use Glpi\Toolbox\Sanitizer;
  */
 class Auth extends CommonGLPI
 {
-
    /** @var array Array of errors */
     private $errors = [];
    /** @var User User class variable */

@@ -36,7 +36,6 @@
  */
 class Item_SoftwareLicense extends CommonDBRelation
 {
-
    // From CommonDBRelation
     public static $itemtype_1 = 'itemtype';
     public static $items_id_1 = 'items_id';

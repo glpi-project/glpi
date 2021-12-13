@@ -45,7 +45,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 **/
 class Toolbox
 {
-
    /**
     * Wrapper for max_input_vars
     *

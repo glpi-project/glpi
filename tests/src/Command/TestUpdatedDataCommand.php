@@ -43,7 +43,6 @@ use Toolbox;
 
 class TestUpdatedDataCommand extends Command
 {
-
     protected function configure()
     {
         parent::configure();

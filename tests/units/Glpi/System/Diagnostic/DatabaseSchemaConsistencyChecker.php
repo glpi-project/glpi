@@ -35,7 +35,6 @@ namespace tests\units\Glpi\System\Diagnostic;
 
 class DatabaseSchemaConsistencyChecker extends \GLPITestCase
 {
-
     protected function sqlProvider(): iterable
     {
        // `date_creation` should always be associated with `date_mod`

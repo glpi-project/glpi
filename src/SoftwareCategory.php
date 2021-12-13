@@ -34,7 +34,6 @@
 /// Class SoftwareCategory
 class SoftwareCategory extends CommonTreeDropdown
 {
-
     public $can_be_translated = true;
 
 

@@ -37,7 +37,6 @@ use DbTestCase;
 
 class ComputerVirtualMachine extends DbTestCase
 {
-
     public function testCreateAndGet()
     {
         $this->login();

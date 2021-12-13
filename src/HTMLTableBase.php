@@ -36,7 +36,6 @@
 **/
 abstract class HTMLTableBase
 {
-
     private $headers = [];
     private $headers_order = [];
     private $headers_sub_order = [];

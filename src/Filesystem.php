@@ -34,7 +34,6 @@
 /// Class Filesystem
 class Filesystem extends CommonDropdown
 {
-
     public $can_be_translated = false;
 
 

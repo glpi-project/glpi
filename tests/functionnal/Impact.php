@@ -43,7 +43,6 @@ use Ticket;
 
 class Impact extends \DbTestCase
 {
-
     public function beforeTestMethod($method)
     {
         parent::beforeTestMethod($method);

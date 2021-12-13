@@ -41,7 +41,6 @@ require_once __DIR__ . '/../NotificationSettingInstance.php';
 
 class NotificationSettingInstance extends DbTestCase
 {
-
     public function testGetTable()
     {
         $this->string(\NotificationSetting::getTable())->isIdenticalTo('glpi_configs');

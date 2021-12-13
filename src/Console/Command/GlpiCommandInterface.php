@@ -35,7 +35,6 @@ namespace Glpi\Console\Command;
 
 interface GlpiCommandInterface
 {
-
    /**
     * Defines whether or not mandatory requirements must be checked before running command.
     *

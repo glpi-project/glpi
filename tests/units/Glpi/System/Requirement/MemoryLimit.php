@@ -35,7 +35,6 @@ namespace tests\units\Glpi\System\Requirement;
 
 class MemoryLimit extends \GLPITestCase
 {
-
     public function testCheckWithEnoughMemory()
     {
 

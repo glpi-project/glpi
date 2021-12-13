@@ -37,7 +37,6 @@ namespace tests\units;
 
 class Consumable extends \DbTestCase
 {
-
    /**
     * Test "out" and "back to stock" functions.
     * Test "back" to stock whend linked user or group is deleted.

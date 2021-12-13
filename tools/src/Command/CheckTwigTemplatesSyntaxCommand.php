@@ -44,7 +44,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CheckTwigTemplatesSyntaxCommand extends Command
 {
-
    /**
     * Error code returned when some templates have invalid yntax.
     *

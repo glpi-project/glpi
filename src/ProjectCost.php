@@ -35,7 +35,6 @@
 /// since version 0.85
 class ProjectCost extends CommonDBChild
 {
-
    // From CommonDBChild
     public static $itemtype = 'Project';
     public static $items_id = 'projects_id';

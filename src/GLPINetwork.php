@@ -35,7 +35,6 @@ use Glpi\Toolbox\VersionParser;
 
 class GLPINetwork extends CommonGLPI
 {
-
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         return 'GLPI Network';

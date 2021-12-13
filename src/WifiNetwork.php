@@ -35,7 +35,6 @@
 /// since version 0.84
 class WifiNetwork extends CommonDropdown
 {
-
     public $dohistory          = true;
 
     public static $rightname          = 'internet';

@@ -59,8 +59,6 @@
 /// @since 0.84
 class HTMLTableMain extends HTMLTableBase
 {
-
-
     private $groups    = [];
     private $itemtypes = [];
 

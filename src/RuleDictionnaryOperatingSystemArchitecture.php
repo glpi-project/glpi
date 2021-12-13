@@ -33,8 +33,6 @@
 
 class RuleDictionnaryOperatingSystemArchitecture extends RuleDictionnaryDropdown
 {
-
-
    /**
     * Constructor
    **/

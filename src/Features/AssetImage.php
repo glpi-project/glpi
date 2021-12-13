@@ -41,7 +41,6 @@ use Toolbox;
  **/
 trait AssetImage
 {
-
    /**
     * Add/remove front, rear, and miscellaneous images
     * @param  array $input the form input

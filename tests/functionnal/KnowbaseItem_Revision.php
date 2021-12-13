@@ -39,7 +39,6 @@ use DbTestCase;
 
 class KnowbaseItem_Revision extends DbTestCase
 {
-
     public function afterTestMethod($method)
     {
         global $DB;

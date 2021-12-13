@@ -39,7 +39,6 @@ use DbTestCase;
 
 class NotificationTemplate extends DbTestCase
 {
-
     public function testClone()
     {
         global $DB;

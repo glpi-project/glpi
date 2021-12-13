@@ -42,7 +42,6 @@ use Toolbox;
 
 class CheckStatusCommand extends AbstractCommand
 {
-
     protected function configure()
     {
         parent::configure();

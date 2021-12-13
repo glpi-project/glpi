@@ -39,7 +39,6 @@ use DbTestCase;
 
 class RuleRight extends DbTestCase
 {
-
     public function testGetCriteria()
     {
         $rule = new \RuleRight();

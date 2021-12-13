@@ -41,7 +41,6 @@ use SebastianBergmann\Diff\Differ;
  */
 class DatabaseSchemaIntegrityChecker
 {
-
    /**
     * DB instance.
     *

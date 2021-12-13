@@ -40,7 +40,6 @@ use ReflectionClass;
 
 class Rule extends DbTestCase
 {
-
     public function testGetTable()
     {
         $table = \Rule::getTable('RuleDictionnarySoftware');

@@ -38,7 +38,6 @@ use Glpi\Csv\LogCsvExport as Core_LogCsvExport;
 
 class LogCsvExport extends \CsvTestCase
 {
-
     protected function getTestData(): array
     {
         $date = date('Y_m_d', time());

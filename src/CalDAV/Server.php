@@ -46,7 +46,6 @@ use Sabre\DAVACL;
 
 class Server extends DAV\Server
 {
-
     public function __construct()
     {
         $this->on('exception', [$this, 'logException']);

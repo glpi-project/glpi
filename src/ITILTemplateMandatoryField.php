@@ -40,7 +40,6 @@
 **/
 abstract class ITILTemplateMandatoryField extends ITILTemplateField
 {
-
     public static function getTypeName($nb = 0)
     {
         return _n('Mandatory field', 'Mandatory fields', $nb);

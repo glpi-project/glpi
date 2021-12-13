@@ -38,7 +38,6 @@ namespace Glpi\System\Requirement;
  */
 class DirectoryWriteAccess extends AbstractRequirement
 {
-
    /**
     * Directory path.
     *

@@ -38,7 +38,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CheckDatabaseSchemaConsistencyCommand extends AbstractCommand
 {
-
    /**
     * Error code returned when missing fields are found.
     *

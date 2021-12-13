@@ -39,7 +39,6 @@ use Project;
 
 class QueuedNotification extends DbTestCase
 {
-
     public function testAddNotificationWithDeduplication()
     {
         $queued_notification = new \QueuedNotification();

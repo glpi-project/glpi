@@ -40,8 +40,6 @@ use Glpi\Plugin\Hooks;
 **/
 class Central extends CommonGLPI
 {
-
-
     public static function getTypeName($nb = 0)
     {
 
