@@ -372,6 +372,7 @@ class NetworkPort extends CommonDBChild
                     $network_name->delete($this->input_for_NetworkName, true, $history);
                 } else {
                    // Else, update it
+                    $this->input_for_NetworkName['entities_id'] = $this->fields['entities_id'];
                     $network_name->update($this->input_for_NetworkName, $history);
                 }
             } else {
