@@ -4035,7 +4035,7 @@ JAVASCRIPT;
                             $ORWHERE[] = [
                             [
                             'glpi_profilerights.name'     => 'changevalidation',
-                            'glpi_profilerights.rights'   => ['&', ChangeValidation::CREATE]
+                            'glpi_profilerights.rights'   => ['&', CREATE]
                             ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
                             ];
                             break;
