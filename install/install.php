@@ -273,7 +273,7 @@ function step4($databasename, $newdatabasename)
     $databasename    = $link->real_escape_string($databasename);
     $newdatabasename = $link->real_escape_string($newdatabasename);
 
-    $db = new class () extends DBmysql {
+    $db = new class ($link) extends DBmysql {
         public function __construct($dbh)
         {
             $this->dbh = $dbh;
