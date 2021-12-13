@@ -3651,7 +3651,7 @@ class Entity extends CommonTreeDropdown
             $node = "<span class='text-nowrap'>$node</span>";
         }
 
-        return "<span class='entity-badge'>" .
+        return "<span class='entity-badge' title='$entity_string'>" .
          implode('<i class="fas fa-caret-right mx-1"></i>', $split) .
         "</span>";
     }
