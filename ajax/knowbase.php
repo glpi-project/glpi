@@ -42,11 +42,11 @@ if (
 }
 
 switch ($_REQUEST['action']) {
-   case "getItemslist":
+    case "getItemslist":
         header("Content-Type: application/json; charset=UTF-8");
         KnowbaseItem::showList([
          'knowbaseitemcategories_id' => (int) $_REQUEST['cat_id'],
          'start'                     => (int) $_REQUEST['start'],
         ], 'browse');
-      break;
+        break;
 }
