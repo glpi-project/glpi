@@ -18,9 +18,4 @@ echo "Check for coding standards violations"
 touch ~/phpcs.cache
 vendor/bin/phpcs \
   --cache ~/phpcs.cache \
-  -d memory_limit=512M \
-  -p \
-  --extensions=php \
-  --standard=vendor/glpi-project/coding-standard/GlpiStandard/ \
-  --ignore="/.git/,^$ROOT_DIR/(config|files|lib|marketplace|node_modules|plugins|tests/config|tests/files|vendor)/" \
   .
