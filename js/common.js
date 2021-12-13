@@ -1390,10 +1390,14 @@ function uniqid(prefix = "", more_entropy = false) {
  * @param {SubmitEvent} e The submit event
  */
 function blockFormSubmit(form, e) {
-   let submitter = $(e.originalEvent.submitter);
+   var submitter = null;
+
+   if (e.originalEvent && e.originalEvent.submitter) {
+      submitter = $(e.originalEvent.submitter);
+   }
 
    // if submitter is not a button, find the first submit button with add or update as the name
-   if (!submitter.is('button')) {
+   if (submitter === null || !submitter.is('button')) {
       submitter = submitter.find('button[name="add"]:first, button[name="update"]:first');
       // If no submit button was found, use the first submit button
       if (submitter.length === 0) {
