@@ -159,3 +159,15 @@ if (GLPI_USE_CSRF_CHECK
 }
 // SET new global Token
 $CURRENTCSRFTOKEN = '';
+
+// Manage profile change
+if (isset($_REQUEST["force_profile"]) && ($_SESSION['glpiactiveprofile']['id'] ?? -1) != $_REQUEST["force_profile"]) {
+   if (isset($_SESSION['glpiprofiles'][$_REQUEST["force_profile"]])) {
+      Session::changeProfile($_REQUEST["force_profile"]);
+   }
+}
+
+// Manage entity change
+if (isset($_REQUEST["force_entity"]) && ($_SESSION["glpiactive_entity"] ?? -1) != $_REQUEST["force_entity"]) {
+   Session::changeActiveEntities($_REQUEST["force_entity"], true);
+}
