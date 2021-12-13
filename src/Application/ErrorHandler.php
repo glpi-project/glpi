@@ -402,9 +402,9 @@ class ErrorHandler
             $exit_code = $this->exit_code;
             register_shutdown_function(
                 'register_shutdown_function',
-            static function () use ($exit_code) {
-                exit($exit_code);
-            }
+                static function () use ($exit_code) {
+                    exit($exit_code);
+                }
             );
         }
     }

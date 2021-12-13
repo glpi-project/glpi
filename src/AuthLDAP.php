@@ -3215,7 +3215,7 @@ class AuthLDAP extends CommonDBTM
             $known_servers_id = array_column(iterator_to_array($known_servers), 'auths_id');
             usort(
                 $ldap_methods,
-                 function (array $a, array $b) use ($known_servers_id) {
+                function (array $a, array $b) use ($known_servers_id) {
                     if (in_array($a['id'], $known_servers_id) && !in_array($b['id'], $known_servers_id)) {
                         return -1;
                     }
