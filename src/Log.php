@@ -949,7 +949,7 @@ class Log extends CommonDBTM
 
         uasort(
             $values,
-            public function ($a, $b) {
+            function ($a, $b) {
                 $other = __('Others');
                 if ($a === $other) {
                     return 1;
@@ -1016,7 +1016,7 @@ class Log extends CommonDBTM
 
         uasort(
             $values,
-            public function ($a, $b) {
+            function ($a, $b) {
                 $other = __('Others');
                 if ($a === $other) {
                     return 1;

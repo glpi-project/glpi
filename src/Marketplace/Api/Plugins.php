@@ -215,7 +215,7 @@ class Plugins {
             foreach ($plugins_colct as &$plugin) {
                usort(
                   $plugin['versions'],
-                  public function ($a, $b) {
+                  function ($a, $b) {
                      return version_compare($a['num'], $b['num']);
                   }
                );

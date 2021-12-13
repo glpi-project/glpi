@@ -106,7 +106,7 @@ class DomainRelation extends CommonDropdown
     public static function getDefaults()
     {
         return array_map(
-            public function ($e) {
+            function ($e) {
                 $e['is_recursive'] = 1;
                 return $e;
             },

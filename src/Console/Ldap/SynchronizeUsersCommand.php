@@ -128,7 +128,7 @@ class SynchronizeUsersCommand extends AbstractCommand
         $description .= implode(
             "\n",
             array_map(
-                public static function ($key, $value) {
+                static function ($key, $value) {
                     return '- ' . sprintf(__('%1$s: %2$s'), $key, $value);
                 },
                 array_keys($deleted_strategies),
@@ -151,7 +151,7 @@ class SynchronizeUsersCommand extends AbstractCommand
         $description .= implode(
             "\n",
             array_map(
-                public static function ($key, $value) {
+                static function ($key, $value) {
                     return '- ' . sprintf(__('%1$s: %2$s'), $key, $value);
                 },
                 array_keys($restored_strategies),

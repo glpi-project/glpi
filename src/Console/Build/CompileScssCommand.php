@@ -173,7 +173,7 @@ class CompileScssCommand extends Command
 
        // Add * prefix on all lines
         $lines = array_map(
-            public function ($line) {
+            function ($line) {
                 $line_prefix = ' * ';
                 return (preg_match('/^\s+$/', $line) ? rtrim($line_prefix) : $line_prefix) . $line;
             },

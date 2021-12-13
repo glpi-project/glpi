@@ -5715,7 +5715,7 @@ JAVASCRIPT;
         $map = Sanitizer::unsanitize($map);
         $ret = preg_replace_callback(
             '/%{(.*)}/U',
-            public function ($matches) use ($res) {
+            function ($matches) use ($res) {
                 return (isset($res[0][$matches[1]][0]) ? $res[0][$matches[1]][0] : '');
             },
             $map

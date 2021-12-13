@@ -2381,13 +2381,13 @@ class AuthLDAP extends CommonDBTM
             }
 
             if ($order == 'DESC') {
-                public function local_cmp($b, $a)
+                function local_cmp($b, $a)
                 {
                     return strcasecmp($a['cn'], $b['cn']);
                 }
 
             } else {
-                public function local_cmp($a, $b)
+                function local_cmp($a, $b)
                 {
                     return strcasecmp($a['cn'], $b['cn']);
                 }
@@ -3215,7 +3215,7 @@ class AuthLDAP extends CommonDBTM
             $known_servers_id = array_column(iterator_to_array($known_servers), 'auths_id');
             usort(
                 $ldap_methods,
-                public function (array $a, array $b) use ($known_servers_id) {
+                 function (array $a, array $b) use ($known_servers_id) {
                     if (in_array($a['id'], $known_servers_id) && !in_array($b['id'], $known_servers_id)) {
                         return -1;
                     }

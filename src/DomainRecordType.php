@@ -350,7 +350,7 @@ class DomainRecordType extends CommonDropdown
     public static function getDefaults()
     {
         return array_map(
-            public function ($e) {
+            function ($e) {
                 $e['is_recursive'] = 1;
                 $e['fields'] = json_encode($e['fields']);
                 return $e;

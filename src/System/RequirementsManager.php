@@ -113,7 +113,7 @@ class RequirementsManager
             __('Permissions for GLPI var directories'),
             array_filter(
                 Variables::getDataDirectories(),
-                public function ($directory) {
+                function ($directory) {
                     return $directory !== GLPI_LOG_DIR; // Specifically checked by LogsWriteAccess requirement
                 }
             )

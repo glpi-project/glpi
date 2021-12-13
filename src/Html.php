@@ -6600,7 +6600,7 @@ HTML;
 
        // Enable imports of ".scss" files from "css/lib", when path starts with "~".
         $scss->addImportPath(
-            public function ($path) {
+            function ($path) {
                 $file_chunks = [];
                 if (!preg_match('/^~@?(?<directory>.*)\/(?<file>[^\/]+)(?:(\.scss)?)/', $path, $file_chunks)) {
                     return null;

@@ -395,7 +395,7 @@ class Ticket_Ticket extends CommonDBRelation
 
         $tickets = array_filter(
             $tickets,
-            public function ($data) {
+            function ($data) {
                 $linked_ticket = new Ticket();
                 $linked_ticket->getFromDB($data['tickets_id']);
                 return $linked_ticket->can($data['tickets_id'], UPDATE)

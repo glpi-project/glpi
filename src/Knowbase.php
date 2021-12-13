@@ -296,7 +296,7 @@ JAVASCRIPT;
         foreach ($categories as $index => $category) {
             $children = array_filter(
                 $categories,
-                public function ($element) use ($category, $cat_fk) {
+                function ($element) use ($category, $cat_fk) {
                     return $category['id'] == $element[$cat_fk];
                 }
             );

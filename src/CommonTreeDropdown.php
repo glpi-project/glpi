@@ -518,7 +518,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
         $this->check($ID, READ);
         $fields = array_filter(
             $this->getAdditionalFields(),
-            public function ($field) {
+            function ($field) {
                 return isset($field['list']) && $field['list'];
             }
         );

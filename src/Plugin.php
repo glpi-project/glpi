@@ -1157,7 +1157,7 @@ class Plugin extends CommonDBTM
        // see https://github.com/pluginsGLPI/order/issues/111
         $glpitables = array_filter(
             $glpitables,
-            public function ($table) use ($DB) {
+            function ($table) use ($DB) {
                 return $DB->tableExists($table) && $DB->fieldExists($table, 'itemtype');
             }
         );
