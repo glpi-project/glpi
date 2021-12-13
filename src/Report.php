@@ -145,7 +145,14 @@ class Report extends CommonGLPI
             $group = $title;
             foreach ($names as $key => $val) {
                 if ($opt == $val["plug"]) {
-                    $file                  = $CFG_GLPI["root_doc"] . "/plugins/" . $key;
+                    $path = null;
+                    foreach (PLUGINS_DIRECTORIES as $plugins_dir) {
+                        if (is_dir($plugins_dir . '/' . $val['plug'])) {
+                            $path = $CFG_GLPI['root_doc'] . '/' . basename($plugins_dir);
+                            break;
+                        }
+                    }
+                    $file                  = $path . '/' . $key;
                     $values[$group][$file] = $val["name"];
                     if (stripos($_SERVER['REQUEST_URI'], $file) !== false) {
                         $selected = $file;
