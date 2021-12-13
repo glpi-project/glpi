@@ -47,7 +47,6 @@ use Location;
 use Log;
 use NetworkPort;
 use Session;
-use SocketModel;
 
 /// Socket class
 class Socket extends CommonDBChild

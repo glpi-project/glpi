@@ -31,6 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\SocketModel;
+
 // Current version of GLPI
 define('GLPI_VERSION', '10.0.0-dev');
 define("GLPI_SCHEMA_VERSION", GLPI_VERSION . '@' . sha1_file(GLPI_ROOT . '/install/mysql/glpi-empty.sql'));
@@ -273,7 +275,7 @@ $CFG_GLPI["dictionnary_types"]            = ['ComputerModel', 'ComputerType', 'M
                                                   'Software', 'OperatingSystemArchitecture',
                                                   'OperatingSystemKernel', 'OperatingSystemKernelVersion',
                                                   'OperatingSystemEdition', 'ImageResolution', 'ImageFormat',
-                                                  'DatabaseInstanceType', 'SocketModel', 'CableType'];
+                                                  'DatabaseInstanceType', SocketModel::class, 'CableType'];
 
 $CFG_GLPI["helpdesk_visible_types"]       = ['Software', 'Appliance', 'Database'];
 

@@ -35,6 +35,7 @@ namespace tests\units;
 
 use DbTestCase;
 use Glpi\Socket;
+use Glpi\SocketModel;
 
 /* Test for inc/networkport.class.php */
 
@@ -140,7 +141,7 @@ class Cable extends DbTestCase
 
        //Second step add socket
        //add socket model
-        $socketModel = new \SocketModel();
+        $socketModel = new SocketModel();
         $nb_log = (int)countElementsInTable('glpi_logs');
         $socketModel_id = $socketModel->add([
          'name' => 'socketModel1'
@@ -237,7 +238,7 @@ class Cable extends DbTestCase
         $this->integer((int)countElementsInTable('glpi_logs'))->isGreaterThan($nb_log);
 
        //add socket model
-        $socketModel1 = new \SocketModel();
+        $socketModel1 = new SocketModel();
         $nb_log = (int)countElementsInTable('glpi_logs');
         $socketModel1_id = $socketModel1->add([
          'name' => 'socketModel1'
@@ -301,7 +302,7 @@ class Cable extends DbTestCase
         $this->integer((int)countElementsInTable('glpi_logs'))->isGreaterThan($nb_log);
 
        //add socket model
-        $socketModel2 = new \SocketModel();
+        $socketModel2 = new SocketModel();
         $nb_log = (int)countElementsInTable('glpi_logs');
         $socketModel2_id = $socketModel2->add([
          'name' => 'socketModel2'
