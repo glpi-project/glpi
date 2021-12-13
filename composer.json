@@ -70,7 +70,6 @@
         "ext-xml": "*",
         "atoum/atoum": "^4.0",
         "friendsoftwig/twigcs": "^5.1",
-        "glpi-project/coding-standard": "^0.9",
         "glpi-project/tools": "^0.4",
         "maglnet/composer-require-checker": "^3.5",
         "mikey179/vfsstream": "^1.6",
