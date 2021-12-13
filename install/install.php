@@ -226,7 +226,7 @@ function step4($databasename, $newdatabasename)
    //display the form to return to the previous step.
     echo "<h3>" . __('Initialization of the database') . "</h3>";
 
-    public function prev_form($host, $user, $password)
+    function prev_form($host, $user, $password)
     {
 
         echo "<br><form action='install.php' method='post'>";
@@ -241,7 +241,7 @@ function step4($databasename, $newdatabasename)
     }
 
    //Display the form to go to the next page
-    public function next_form()
+    function next_form()
     {
         (new CacheManager())->getInstallerCacheInstance();
 
@@ -273,7 +273,7 @@ function step4($databasename, $newdatabasename)
     $databasename    = $link->real_escape_string($databasename);
     $newdatabasename = $link->real_escape_string($newdatabasename);
 
-    $db = new class ($mysqli) extends DBmysql {
+    $db = new class () extends DBmysql {
         public function __construct($dbh)
         {
             $this->dbh = $dbh;
@@ -502,6 +502,7 @@ Session::loadLanguage('', false);
 **/
 function checkConfigFile()
 {
+   global $CFG_GLPI;
 
     if (file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
         Html::redirect($CFG_GLPI['root_doc'] . "/index.php");

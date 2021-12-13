@@ -79,8 +79,8 @@ if (isset($_POST['update_end'])) {
 **/
 function displayMigrationMessage($id, $msg = "")
 {
-    public static $created = 0;
-    public static $deb;
+    static $created = 0;
+    static $deb;
 
     if ($created != $id) {
         if (empty($msg)) {
