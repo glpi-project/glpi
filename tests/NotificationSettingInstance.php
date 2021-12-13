@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,19 +31,23 @@
  * ---------------------------------------------------------------------
  */
 
-class NotificationSettingInstance extends NotificationSetting {
+class NotificationSettingInstance extends NotificationSetting
+{
    //Placebo class to get NotificationSetting abtract class tested
    //Just defines required methods.
 
-   static public function getMode() {
-      throw new \BadMethodCallException();
-   }
+    public static function getMode()
+    {
+        throw new \BadMethodCallException();
+    }
 
-   public function getEnableLabel() {
-      throw new \BadMethodCallException();
-   }
+    public function getEnableLabel()
+    {
+        throw new \BadMethodCallException();
+    }
 
-   protected function showFormConfig() {
-      throw new \BadMethodCallException();
-   }
+    protected function showFormConfig()
+    {
+        throw new \BadMethodCallException();
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,21 +37,24 @@ use DbTestCase;
 
 /* Test for inc/dashboard/widget.class.php */
 
-class Widget extends DbTestCase {
+class Widget extends DbTestCase
+{
 
-   public function testGetAllTypes() {
-      $types = \Glpi\Dashboard\Widget::getAllTypes();
+    public function testGetAllTypes()
+    {
+        $types = \Glpi\Dashboard\Widget::getAllTypes();
 
-      $this->array($types)->isNotEmpty();
-      foreach ($types as $specs) {
-         $this->array($specs)
+        $this->array($types)->isNotEmpty();
+        foreach ($types as $specs) {
+            $this->array($specs)
             ->hasKeys(['label', 'function', 'image']);
-      }
-   }
+        }
+    }
 
 
-   protected function palettes() {
-      return [
+    protected function palettes()
+    {
+        return [
          [
             'bg_color'  => "#FFFFFF",
             'nb_series' => 4,
@@ -88,19 +92,19 @@ class Widget extends DbTestCase {
                ],
             ]
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider palettes
     */
-   public function testGetGradientPalette(
-      string $bg_color,
-      int $nb_series,
-      bool $revert,
-      array $expected
-   ) {
-      $this->array(\Glpi\Dashboard\Widget::getGradientPalette($bg_color, $nb_series, $revert))
+    public function testGetGradientPalette(
+        string $bg_color,
+        int $nb_series,
+        bool $revert,
+        array $expected
+    ) {
+        $this->array(\Glpi\Dashboard\Widget::getGradientPalette($bg_color, $nb_series, $revert))
            ->isEqualTo($expected);
-   }
+    }
 }

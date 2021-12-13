@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,11 +37,13 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/networkequipment.class.php */
 
-class NetworkEquipment extends AbstractInventoryAsset {
-   const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
+class NetworkEquipment extends AbstractInventoryAsset
+{
+    const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
 
-   protected function assetProvider() :array {
-      return [
+    protected function assetProvider(): array
+    {
+        return [
          [
             'xml'   => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -151,67 +154,69 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 </REQUEST>",
             'asset'  => '{"autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW","cpu":47,"firmware":"12.2(55)SE6","ips":["10.1.0.100","10.1.0.22","10.1.0.41","10.1.0.45","10.1.0.59","10.11.11.1","10.11.11.5","10.11.13.1","10.11.13.5","172.21.0.1","172.21.0.7","172.22.0.1","172.22.0.5","172.23.0.1","172.23.0.5","172.24.0.1","172.24.0.5","172.25.1.15","172.28.200.1","172.28.200.5","172.28.211.5","172.28.215.1","172.28.221.1","185.10.253.65","185.10.253.97","185.10.254.1","185.10.255.146","185.10.255.224","185.10.255.250"],"location":"paris.pa3","mac":"00:23:ac:6a:01:00","manufacturer":"Cisco","model":"Catalyst 3750-24\\/48","name":"3k-1-pa3.teclib.infra","ram":128,"serial":"FOC1243W0ED","type":"Networking","uptime":"103 days, 13:53:28.28","locations_id":"paris.pa3","networkequipmentmodels_id":"Catalyst 3750-24\\/48","networkequipmenttypes_id":"Networking","manufacturers_id":"Cisco"}'
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider assetProvider
     */
-   public function testPrepare($xml, $asset) {
-      $date_now = date('Y-m-d H:i:s');
-      $_SESSION['glpi_currenttime'] = $date_now;
-      $asset = str_replace('DATE_NOW', $date_now, $asset);
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($xml);
-      $json = json_decode($data);
+    public function testPrepare($xml, $asset)
+    {
+        $date_now = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date_now;
+        $asset = str_replace('DATE_NOW', $date_now, $asset);
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
 
-      $netequ = new \NetworkEquipment();
-      $main = new \Glpi\Inventory\Asset\NetworkEquipment($netequ, $json);
-      $main->setExtraData((array)$json->content);
-      $result = $main->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($asset));
-   }
+        $netequ = new \NetworkEquipment();
+        $main = new \Glpi\Inventory\Asset\NetworkEquipment($netequ, $json);
+        $main->setExtraData((array)$json->content);
+        $result = $main->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($asset));
+    }
 
-   public function testStacked() {
-      //non stacked
-      $json_str = file_get_contents(self::INV_FIXTURES . 'networkequipment_1.json');
-      $json = json_decode($json_str);
+    public function testStacked()
+    {
+       //non stacked
+        $json_str = file_get_contents(self::INV_FIXTURES . 'networkequipment_1.json');
+        $json = json_decode($json_str);
 
-      $netequ = new \NetworkEquipment();
+        $netequ = new \NetworkEquipment();
 
-      $data = (array)$json->content;
-      $inventory = new \Glpi\Inventory\Inventory();
-      $this->boolean($inventory->setData($json_str))->isTrue();
+        $data = (array)$json->content;
+        $inventory = new \Glpi\Inventory\Inventory();
+        $this->boolean($inventory->setData($json_str))->isTrue();
 
-      $agent = new \Agent();
-      $this->integer($agent->handleAgent($inventory->extractMetadata()))->isIdenticalTo(0);
+        $agent = new \Agent();
+        $this->integer($agent->handleAgent($inventory->extractMetadata()))->isIdenticalTo(0);
 
-      $main = new \Glpi\Inventory\Asset\NetworkEquipment($netequ, $json);
-      $main->setAgent($agent)->setExtraData($data);
-      $result = $main->prepare();
-      $this->array($result)->hasSize(1);
+        $main = new \Glpi\Inventory\Asset\NetworkEquipment($netequ, $json);
+        $main->setAgent($agent)->setExtraData($data);
+        $result = $main->prepare();
+        $this->array($result)->hasSize(1);
 
-      $this->boolean($main->isStackedSwitch())->isFalse();
+        $this->boolean($main->isStackedSwitch())->isFalse();
 
-      //stacked
-      $json_str = file_get_contents(self::INV_FIXTURES . 'networkequipment_2.json');
-      $json = json_decode($json_str);
+       //stacked
+        $json_str = file_get_contents(self::INV_FIXTURES . 'networkequipment_2.json');
+        $json = json_decode($json_str);
 
-      $netequ = new \NetworkEquipment();
+        $netequ = new \NetworkEquipment();
 
-      $data = (array)$json->content;
-      $inventory = new \Glpi\Inventory\Inventory();
-      $this->boolean($inventory->setData($json_str))->isTrue();
+        $data = (array)$json->content;
+        $inventory = new \Glpi\Inventory\Inventory();
+        $this->boolean($inventory->setData($json_str))->isTrue();
 
-      $agent = new \Agent();
-      $this->integer($agent->handleAgent($inventory->extractMetadata()))->isGreaterThan(0);
+        $agent = new \Agent();
+        $this->integer($agent->handleAgent($inventory->extractMetadata()))->isGreaterThan(0);
 
-      $main = new \Glpi\Inventory\Asset\NetworkEquipment($netequ, $json);
-      $main->setAgent($agent)->setExtraData($data);
-      $result = $main->prepare();
-      $this->array($result)->hasSize(5);
+        $main = new \Glpi\Inventory\Asset\NetworkEquipment($netequ, $json);
+        $main->setAgent($agent)->setExtraData($data);
+        $result = $main->prepare();
+        $this->array($result)->hasSize(5);
 
-      $expected_stack = [
+        $expected_stack = [
          1001 => [
             'contained_index' => 1,
             'description' => 'WS-C3750G-48TS',
@@ -267,38 +272,39 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'type' => 'chassis',
             'firmware' => '12.2(55)SE6',
          ]
-      ];
+        ];
 
-      $this->boolean($main->isStackedSwitch())->isTrue();
-      $stack = $main->getStackedSwitches();
-      $this->array(array_keys($expected_stack))->isIdenticalTo(array_keys($stack));
-      foreach ($expected_stack as $key => $entry) {
-         $this->array($entry)->isIdenticalTo((array)$stack[$key]);
-      }
-   }
+        $this->boolean($main->isStackedSwitch())->isTrue();
+        $stack = $main->getStackedSwitches();
+        $this->array(array_keys($expected_stack))->isIdenticalTo(array_keys($stack));
+        foreach ($expected_stack as $key => $entry) {
+            $this->array($entry)->isIdenticalTo((array)$stack[$key]);
+        }
+    }
 
-   public function testHandle() {
-      $json_str = file_get_contents(self::INV_FIXTURES . 'networkequipment_2.json');
-      $json = json_decode($json_str);
+    public function testHandle()
+    {
+        $json_str = file_get_contents(self::INV_FIXTURES . 'networkequipment_2.json');
+        $json = json_decode($json_str);
 
-      $netequ = new \NetworkEquipment();
+        $netequ = new \NetworkEquipment();
 
-      $data = (array)$json->content;
-      $inventory = new \Glpi\Inventory\Inventory();
-      $this->boolean($inventory->setData($json_str))->isTrue();
+        $data = (array)$json->content;
+        $inventory = new \Glpi\Inventory\Inventory();
+        $this->boolean($inventory->setData($json_str))->isTrue();
 
-      $agent = new \Agent();
-      $this->integer($agent->handleAgent($inventory->extractMetadata()))->isGreaterThan(0);
+        $agent = new \Agent();
+        $this->integer($agent->handleAgent($inventory->extractMetadata()))->isGreaterThan(0);
 
-      $main = new \Glpi\Inventory\Asset\NetworkEquipment($netequ, $json);
-      $main->setAgent($agent)->setExtraData($data);
-      $main->checkConf(new \Glpi\Inventory\Conf());
-      $result = $main->prepare();
-      $this->array($result)->hasSize(5);
+        $main = new \Glpi\Inventory\Asset\NetworkEquipment($netequ, $json);
+        $main->setAgent($agent)->setExtraData($data);
+        $main->checkConf(new \Glpi\Inventory\Conf());
+        $result = $main->prepare();
+        $this->array($result)->hasSize(5);
 
-      $this->boolean($main->isStackedSwitch())->isTrue();
+        $this->boolean($main->isStackedSwitch())->isTrue();
 
-      $main->handle();
-      $this->boolean($main->areLinksHandled())->isTrue();
-   }
+        $main->handle();
+        $this->boolean($main->areLinksHandled())->isTrue();
+    }
 }

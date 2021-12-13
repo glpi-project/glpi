@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,11 +32,12 @@
  */
 
 /// Class SupplierType
-class SupplierType extends CommonType {
+class SupplierType extends CommonType
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Third party type', 'Third party types', $nb);
-   }
-
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Third party type', 'Third party types', $nb);
+    }
 }

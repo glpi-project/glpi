@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,22 +31,22 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 if (Config::canUpdate()) {
-   $mode = ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? Session::NORMAL_MODE : Session::DEBUG_MODE);
-   $user = new User();
-   $user->update(
-      [
+    $mode = ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? Session::NORMAL_MODE : Session::DEBUG_MODE);
+    $user = new User();
+    $user->update(
+        [
          'id'        => Session::getLoginUserID(),
          'use_mode'  => $mode
-      ]
-   );
-   Session::addMessageAfterRedirect(
-      $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ?
+        ]
+    );
+    Session::addMessageAfterRedirect(
+        $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ?
          __('Debug mode has been enabled!') :
          __('Debug mode has been disabled!')
-   );
+    );
 }
 
 Html::back();

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -40,19 +41,22 @@ $migration->displayMessage("Adding recurrent changes");
 $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 
-$DB->updateOrDie('glpi_crontasks', [
+$DB->updateOrDie(
+    'glpi_crontasks',
+    [
       'itemtype' => 'CommonITILRecurrentCron',
       'name'     => 'RecurrentItems'
-   ], [
+    ],
+    [
       'itemtype' => 'TicketRecurrent',
       'name'     => 'ticketrecurrent',
-   ],
-   "CommonITILReccurent crontask"
+    ],
+    "CommonITILReccurent crontask"
 );
 
 $recurrent_change_table = 'glpi_recurrentchanges';
 if (!$DB->tableExists($recurrent_change_table)) {
-   $DB->queryOrDie("CREATE TABLE `$recurrent_change_table` (
+    $DB->queryOrDie("CREATE TABLE `$recurrent_change_table` (
          `id` int NOT NULL AUTO_INCREMENT,
          `name` varchar(255) DEFAULT NULL,
          `comment` text,
@@ -72,8 +76,7 @@ if (!$DB->tableExists($recurrent_change_table)) {
          KEY `is_active` (`is_active`),
          KEY `changetemplates_id` (`changetemplates_id`),
          KEY `next_creation_date` (`next_creation_date`)
-      ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};"
-   );
+      ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};");
 }
 
 $migration->addRight('recurrentchange', ALLSTANDARDRIGHT, [

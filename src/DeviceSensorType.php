@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,10 +34,11 @@
 /**
  * @since 9.2
  */
-class DeviceSensorType extends CommonDeviceType {
+class DeviceSensorType extends CommonDeviceType
+{
 
-   static function getTypeName($nb = 0) {
-      return _n('Sensor type', 'Sensor types', $nb);
-   }
-
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Sensor type', 'Sensor types', $nb);
+    }
 }

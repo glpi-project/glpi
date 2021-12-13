@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,10 +33,12 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class DbEngine extends \GLPITestCase {
+class DbEngine extends \GLPITestCase
+{
 
-   protected function versionProvider() {
-      return [
+    protected function versionProvider()
+    {
+        return [
          [
             'version'   => '5.5.38-0ubuntu0.14.04.1',
             'validated' => false,
@@ -81,21 +84,22 @@ class DbEngine extends \GLPITestCase {
             'validated' => true,
             'messages'  => ['Database engine version (10.5.9) is supported.'],
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider versionProvider
     */
-   public function testCheck(string $version, bool $validated, array $messages) {
+    public function testCheck(string $version, bool $validated, array $messages)
+    {
 
-      $this->mockGenerator->orphanize('__construct');
-      $db = new \mock\DB();
-      $this->calling($db)->getVersion = $version;
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DB();
+        $this->calling($db)->getVersion = $version;
 
-      $this->newTestedInstance($db);
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo($validated);
-      $this->array($this->testedInstance->getValidationMessages())
+        $this->newTestedInstance($db);
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo($validated);
+        $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo($messages);
-   }
+    }
 }

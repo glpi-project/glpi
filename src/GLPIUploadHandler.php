@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,102 +35,105 @@
  *
  * @since 9.2
 **/
-class GLPIUploadHandler extends UploadHandler {
+class GLPIUploadHandler extends UploadHandler
+{
 
-   protected function get_error_message($error) {
-      switch ($error) {
-         case UPLOAD_ERR_INI_SIZE:
-            return __('The uploaded file exceeds the upload_max_filesize directive in php.ini');
+    protected function get_error_message($error)
+    {
+        switch ($error) {
+            case UPLOAD_ERR_INI_SIZE:
+                return __('The uploaded file exceeds the upload_max_filesize directive in php.ini');
             break;
 
-         case UPLOAD_ERR_FORM_SIZE:
-            return __('The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form');
+            case UPLOAD_ERR_FORM_SIZE:
+                return __('The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form');
             break;
 
-         case UPLOAD_ERR_PARTIAL:
-            return __('The uploaded file was only partially uploaded');
+            case UPLOAD_ERR_PARTIAL:
+                return __('The uploaded file was only partially uploaded');
             break;
 
-         case UPLOAD_ERR_NO_FILE:
-            return __('No file was uploaded');
+            case UPLOAD_ERR_NO_FILE:
+                return __('No file was uploaded');
             break;
 
-         case UPLOAD_ERR_NO_TMP_DIR:
-            return __('Missing a temporary folder');
+            case UPLOAD_ERR_NO_TMP_DIR:
+                return __('Missing a temporary folder');
             break;
 
-         case UPLOAD_ERR_CANT_WRITE:
-            return __('Failed to write file to disk');
+            case UPLOAD_ERR_CANT_WRITE:
+                return __('Failed to write file to disk');
             break;
 
-         case UPLOAD_ERR_EXTENSION:
-            return __('A PHP extension stopped the file upload');
+            case UPLOAD_ERR_EXTENSION:
+                return __('A PHP extension stopped the file upload');
             break;
 
-         case 'post_max_size':
-            return __('The uploaded file exceeds the post_max_size directive in php.ini');
+            case 'post_max_size':
+                return __('The uploaded file exceeds the post_max_size directive in php.ini');
             break;
 
-         case 'max_file_size':
-            return __('File is too big');
+            case 'max_file_size':
+                return __('File is too big');
             break;
 
-         case 'min_file_size':
-            return __('File is too small');
+            case 'min_file_size':
+                return __('File is too small');
             break;
 
-         case 'max_number_of_files':
-            return __('Maximum number of files exceeded');
+            case 'max_number_of_files':
+                return __('Maximum number of files exceeded');
             break;
 
-         case 'max_width':
-            return __('Image exceeds maximum width');
+            case 'max_width':
+                return __('Image exceeds maximum width');
             break;
 
-         case 'min_width':
-            return __('Image requires a minimum width');
+            case 'min_width':
+                return __('Image requires a minimum width');
             break;
 
-         case 'max_height':
-            return __('Image exceeds maximum height');
+            case 'max_height':
+                return __('Image exceeds maximum height');
             break;
 
-         case 'min_height':
-            return __('Image requires a minimum height');
+            case 'min_height':
+                return __('Image requires a minimum height');
             break;
 
-         case 'accept_file_types':
-            return __('Filetype not allowed');
+            case 'accept_file_types':
+                return __('Filetype not allowed');
             break;
 
-         case 'abort':
-            return __('File upload aborted');
+            case 'abort':
+                return __('File upload aborted');
             break;
 
-         case 'image_resize':
-            return __('Failed to resize image');
+            case 'image_resize':
+                return __('Failed to resize image');
             break;
-      }
+        }
 
-      return false;
-   }
+        return false;
+    }
 
-   static function uploadFiles($params = []) {
+    public static function uploadFiles($params = [])
+    {
 
-      global $CFG_GLPI, $DB;
+        global $CFG_GLPI, $DB;
 
-      $default_params = [
+        $default_params = [
          'name'           => '',
          'showfilesize'   => false,
          'print_response' => true
-      ];
-      $params = array_merge($default_params, $params);
+        ];
+        $params = array_merge($default_params, $params);
 
-      $pname = $params['name'];
+        $pname = $params['name'];
 
-      $upload_dir     = GLPI_TMP_DIR.'/';
-      $upload_handler = new self(
-         [
+        $upload_dir     = GLPI_TMP_DIR . '/';
+        $upload_handler = new self(
+            [
             'accept_file_types'         => DocumentType::getUploadableFilePattern(),
             'image_versions'            => [
                'auto_orient' => false,
@@ -138,49 +142,53 @@ class GLPIUploadHandler extends UploadHandler {
             'replace_dots_in_filenames' => false,
             'upload_dir'                => $upload_dir,
             'max_file_size'             => $CFG_GLPI['document_max_size'] * 1024 * 1024,
-         ],
-         false
-      );
-      $response       = $upload_handler->post(false);
+            ],
+            false
+        );
+        $response       = $upload_handler->post(false);
 
-      // clean compute display filesize
-      if (isset($response[$pname]) && is_array($response[$pname])) {
-         foreach ($response[$pname] as &$val) {
-            if (isset($val->error) && file_exists($upload_dir.$val->name)) {
-               unlink($upload_dir.$val->name);
-            } else {
-               if (isset($val->name)) {
-                  $val->prefix = substr($val->name, 0, 23);
-                  $val->display = str_replace($val->prefix, '', $val->name);
-               }
-               if (isset($val->size)) {
-                  $val->filesize = Toolbox::getSize($val->size);
-                  if (isset($params['showfilesize']) && $params['showfilesize']) {
-                     $val->display = sprintf('%1$s %2$s', $val->display, $val->filesize);
-                  }
-               }
+       // clean compute display filesize
+        if (isset($response[$pname]) && is_array($response[$pname])) {
+            foreach ($response[$pname] as &$val) {
+                if (isset($val->error) && file_exists($upload_dir . $val->name)) {
+                    unlink($upload_dir . $val->name);
+                } else {
+                    if (isset($val->name)) {
+                        $val->prefix = substr($val->name, 0, 23);
+                        $val->display = str_replace($val->prefix, '', $val->name);
+                    }
+                    if (isset($val->size)) {
+                        $val->filesize = Toolbox::getSize($val->size);
+                        if (isset($params['showfilesize']) && $params['showfilesize']) {
+                            $val->display = sprintf('%1$s %2$s', $val->display, $val->filesize);
+                        }
+                    }
+                }
+                $val->id = 'doc' . $params['name'] . mt_rand();
             }
-            $val->id = 'doc'.$params['name'].mt_rand();
-         }
-      }
+        }
 
-      // send answer
-      return $upload_handler->generate_response($response, $params['print_response']);
-   }
+       // send answer
+        return $upload_handler->generate_response($response, $params['print_response']);
+    }
 
-   protected function get_upload_data($id) {
-      return array_key_exists($id, $_FILES) ? $_FILES[$id] : null;
-   }
+    protected function get_upload_data($id)
+    {
+        return array_key_exists($id, $_FILES) ? $_FILES[$id] : null;
+    }
 
-   protected function get_post_param($id) {
-      return array_key_exists($id, $_POST) ? $_POST[$id] : null;
-   }
+    protected function get_post_param($id)
+    {
+        return array_key_exists($id, $_POST) ? $_POST[$id] : null;
+    }
 
-   protected function get_query_param($id) {
-      return array_key_exists($id, $_GET) ? $_GET[$id] : null;
-   }
+    protected function get_query_param($id)
+    {
+        return array_key_exists($id, $_GET) ? $_GET[$id] : null;
+    }
 
-   protected function get_server_var($id) {
-      return array_key_exists($id, $_SERVER) ? $_SERVER[$id] : null;
-   }
+    protected function get_server_var($id)
+    {
+        return array_key_exists($id, $_SERVER) ? $_SERVER[$id] : null;
+    }
 }

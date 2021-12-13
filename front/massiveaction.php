@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,29 +31,28 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 if (strpos($_SERVER['HTTP_REFERER'], 'bookmark.php') === false) {
-   Session::checkCentralAccess();
+    Session::checkCentralAccess();
 }
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 try {
-   $ma = new MassiveAction($_POST, $_GET, 'process');
+    $ma = new MassiveAction($_POST, $_GET, 'process');
 } catch (\Exception $e) {
-   Html::popHeader(__('Bulk modification error'), $_SERVER['PHP_SELF']);
+    Html::popHeader(__('Bulk modification error'), $_SERVER['PHP_SELF']);
 
-   echo "<div class='center'><img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='".
-      __s('Warning')."'><br><br>";
-   echo "<span class='b'>".$e->getMessage()."</span><br>";
-   Html::displayBackLink();
-   echo "</div>";
+    echo "<div class='center'><img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='" .
+      __s('Warning') . "'><br><br>";
+    echo "<span class='b'>" . $e->getMessage() . "</span><br>";
+    Html::displayBackLink();
+    echo "</div>";
 
-   Html::popFooter();
-   exit();
-
+    Html::popFooter();
+    exit();
 }
 Html::popHeader(__('Bulk modification'), $_SERVER['PHP_SELF']);
 
@@ -64,24 +64,27 @@ $nbnoright = $results['noright'];
 
 $msg_type = INFO;
 if ($nbok == 0) {
-   $message = __('Failed operation');
-   $msg_type = ERROR;
+    $message = __('Failed operation');
+    $msg_type = ERROR;
 } else if ($nbnoright || $nbko) {
-   $message = __('Operation performed partially successful');
-   $msg_type = WARNING;
+    $message = __('Operation performed partially successful');
+    $msg_type = WARNING;
 } else {
-   $message = __('Operation successful');
+    $message = __('Operation successful');
 }
 if ($nbnoright || $nbko) {
    //TRANS: %$1d and %$2d are numbers
-   $message .= "<br>".sprintf(__('(%1$d authorizations problems, %2$d failures)'),
-                              $nbnoright, $nbko);
+    $message .= "<br>" . sprintf(
+        __('(%1$d authorizations problems, %2$d failures)'),
+        $nbnoright,
+        $nbko
+    );
 }
 Session::addMessageAfterRedirect($message, false, $msg_type);
 if (isset($results['messages']) && is_array($results['messages']) && count($results['messages'])) {
-   foreach ($results['messages'] as $message) {
-      Session::addMessageAfterRedirect($message, false, ERROR);
-   }
+    foreach ($results['messages'] as $message) {
+        Session::addMessageAfterRedirect($message, false, ERROR);
+    }
 }
 Html::redirect($results['redirect']);
 

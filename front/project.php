@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,7 +35,7 @@
  * @since 0.85
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRightsOr('project', [Project::READALL, Project::READMY]);
 

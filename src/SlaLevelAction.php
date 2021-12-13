@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,23 +32,25 @@
  */
 
 /// Class SlaLevelAction
-class SlaLevelAction extends RuleAction {
+class SlaLevelAction extends RuleAction
+{
 
 
-   static public $itemtype  = 'SlaLevel';
-   static public $items_id  = 'slalevels_id';
-   public $dohistory = true;
+    public static $itemtype  = 'SlaLevel';
+    public static $items_id  = 'slalevels_id';
+    public $dohistory = true;
 
    /**
    * Constructor
    **/
-   function __construct() {
-      // Override in order not to use glpi_rules table.
-   }
+    public function __construct()
+    {
+       // Override in order not to use glpi_rules table.
+    }
 
-   function rawSearchOptions() {
-      // RuleAction search options requires value of rules_id field which does not exists here
-      return [];
-   }
-
+    public function rawSearchOptions()
+    {
+       // RuleAction search options requires value of rules_id field which does not exists here
+        return [];
+    }
 }

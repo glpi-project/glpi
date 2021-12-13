@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,11 +32,12 @@
  */
 
 /// Class DeviceMemoryType
-class DeviceMemoryType extends CommonDeviceType {
+class DeviceMemoryType extends CommonDeviceType
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Memory type', 'Memory types', $nb);
-   }
-
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Memory type', 'Memory types', $nb);
+    }
 }

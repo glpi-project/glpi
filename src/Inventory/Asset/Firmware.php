@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,30 +38,33 @@ use Glpi\Inventory\Conf;
 
 class Firmware extends Device
 {
-   public function __construct(CommonDBTM $item, array $data = null) {
-      parent::__construct($item, $data, 'Item_DeviceFirmware');
-   }
+    public function __construct(CommonDBTM $item, array $data = null)
+    {
+        parent::__construct($item, $data, 'Item_DeviceFirmware');
+    }
 
-   public function prepare() :array {
-      $mapping = [
+    public function prepare(): array
+    {
+        $mapping = [
          'name'         => 'designation',
          'manufacturer' => 'manufacturers_id',
          'type'         => 'devicefirmwaretypes_id'
-      ];
+        ];
 
-      foreach ($this->data as &$val) {
-         foreach ($mapping as $origin => $dest) {
-            if (property_exists($val, $origin)) {
-               $val->$dest = $val->$origin;
+        foreach ($this->data as &$val) {
+            foreach ($mapping as $origin => $dest) {
+                if (property_exists($val, $origin)) {
+                    $val->$dest = $val->$origin;
+                }
             }
-         }
-         $val->is_dynamic = 1;
-      }
+            $val->is_dynamic = 1;
+        }
 
-      return $this->data;
-   }
+        return $this->data;
+    }
 
-   public function checkConf(Conf $conf): bool {
-      return true;
-   }
+    public function checkConf(Conf $conf): bool
+    {
+        return true;
+    }
 }

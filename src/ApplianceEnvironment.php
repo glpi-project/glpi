@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,13 +31,16 @@
  * ---------------------------------------------------------------------
  */
 
-class ApplianceEnvironment extends CommonDropdown {
+class ApplianceEnvironment extends CommonDropdown
+{
 
-   static function getTypeName($nb = 0) {
-      return _n('Appliance environment', 'Appliance environments', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Appliance environment', 'Appliance environments', $nb);
+    }
 
-   static function getIcon() {
-      return Appliance::getIcon();
-   }
+    public static function getIcon()
+    {
+        return Appliance::getIcon();
+    }
 }

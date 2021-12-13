@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -56,16 +57,18 @@
 /// For further explaination, refer to NetworkPort and all its dependencies (NetworkName, IPAddress,
 /// IPNetwork, ...) or Computer_Device and each kind of device.
 /// @since 0.84
-class HTMLTableMain extends HTMLTableBase {
+class HTMLTableMain extends HTMLTableBase
+{
 
 
-   private $groups    = [];
-   private $itemtypes = [];
+    private $groups    = [];
+    private $itemtypes = [];
 
 
-   function __construct() {
-      parent::__construct(true);
-   }
+    public function __construct()
+    {
+        parent::__construct(true);
+    }
 
 
    /**
@@ -75,17 +78,19 @@ class HTMLTableMain extends HTMLTableBase {
     *
     * @return void
    **/
-   function setTitle($name) {
-      $this->title = $name;
-   }
+    public function setTitle($name)
+    {
+        $this->title = $name;
+    }
 
 
-   function tryAddHeader() {
+    public function tryAddHeader()
+    {
 
-      if (count($this->groups) > 0) {
-         throw new \Exception('Implementation error: must define all headers before any subgroups');
-      }
-   }
+        if (count($this->groups) > 0) {
+            throw new \Exception('Implementation error: must define all headers before any subgroups');
+        }
+    }
 
 
    /**
@@ -98,24 +103,26 @@ class HTMLTableMain extends HTMLTableBase {
     *
     * @return boolean|HTMLTableGroup
    **/
-   function createGroup($name, $content) {
+    public function createGroup($name, $content)
+    {
 
-      if (!empty($name)) {
-         if (!isset($this->groups[$name])) {
-            $this->groups[$name] = new HTMLTableGroup($this, $name, $content);
-         }
-      }
-      return $this->getGroup($name);
-   }
+        if (!empty($name)) {
+            if (!isset($this->groups[$name])) {
+                $this->groups[$name] = new HTMLTableGroup($this, $name, $content);
+            }
+        }
+        return $this->getGroup($name);
+    }
 
 
    /**
     * @param $itemtype
     * @param $title
    **/
-   function addItemType($itemtype, $title) {
-      $this->itemtypes[$itemtype] = $title;
-   }
+    public function addItemType($itemtype, $title)
+    {
+        $this->itemtypes[$itemtype] = $title;
+    }
 
 
    /**
@@ -125,29 +132,31 @@ class HTMLTableMain extends HTMLTableBase {
     *
     * @return boolean|HTMLTableGroup
    **/
-   function getGroup($group_name) {
+    public function getGroup($group_name)
+    {
 
-      if (isset($this->groups[$group_name])) {
-         return $this->groups[$group_name];
-      }
-      return false;
-   }
+        if (isset($this->groups[$group_name])) {
+            return $this->groups[$group_name];
+        }
+        return false;
+    }
 
 
    /**
     * Display the super headers, for the global table, or the groups
    **/
-   function displaySuperHeader() {
+    public function displaySuperHeader()
+    {
 
-      echo "\t\t<tr class='noHover'>\n";
-      foreach ($this->getHeaderOrder() as $header_name) {
-         $header = $this->getSuperHeaderByName($header_name);
-         echo "\t\t\t";
-         $header->displayTableHeader(true);
-         echo "\n";
-      }
-      echo "\t\t</tr>\n";
-   }
+        echo "\t\t<tr class='noHover'>\n";
+        foreach ($this->getHeaderOrder() as $header_name) {
+            $header = $this->getSuperHeaderByName($header_name);
+            echo "\t\t\t";
+            $header->displayTableHeader(true);
+            echo "\n";
+        }
+        echo "\t\t</tr>\n";
+    }
 
 
    /**
@@ -157,14 +166,15 @@ class HTMLTableMain extends HTMLTableBase {
     *
     * @return integer the total number of rows
    **/
-   function getNumberOfRows() {
+    public function getNumberOfRows()
+    {
 
-      $numberOfRow = 0;
-      foreach ($this->groups as $group) {
-         $numberOfRow += $group->getNumberOfRows();
-      }
-      return $numberOfRow;
-   }
+        $numberOfRow = 0;
+        foreach ($this->groups as $group) {
+            $numberOfRow += $group->getNumberOfRows();
+        }
+        return $numberOfRow;
+    }
 
 
    /**
@@ -181,78 +191,75 @@ class HTMLTableMain extends HTMLTableBase {
     *
     * @return void
    **/
-   function display(array $params) {
+    public function display(array $params)
+    {
 
-      $p['html_id']        = '';
-      $p['display_thead']  = true;
-      $p['display_tfoot']  = true;
+        $p['html_id']        = '';
+        $p['display_thead']  = true;
+        $p['display_tfoot']  = true;
 
-      foreach ($params as $key => $val) {
-         $p[$key] = $val;
-      }
+        foreach ($params as $key => $val) {
+            $p[$key] = $val;
+        }
 
-      foreach ($this->groups as $group) {
-         $group->prepareDisplay();
-      }
+        foreach ($this->groups as $group) {
+            $group->prepareDisplay();
+        }
 
-      $totalNumberOfRow = $this->getNumberOfRows();
+        $totalNumberOfRow = $this->getNumberOfRows();
 
-      $totalNumberOfColumn = 0;
-      foreach ($this->getHeaders() as $header) {
-         $colspan              = $header['']->getColSpan();
-         $totalNumberOfColumn += $colspan;
-      }
+        $totalNumberOfColumn = 0;
+        foreach ($this->getHeaders() as $header) {
+            $colspan              = $header['']->getColSpan();
+            $totalNumberOfColumn += $colspan;
+        }
 
-      foreach ($this->itemtypes as $itemtype => $title) {
-         Session::initNavigateListItems($itemtype, $title);
-      }
+        foreach ($this->itemtypes as $itemtype => $title) {
+            Session::initNavigateListItems($itemtype, $title);
+        }
 
-      echo "\n<table class='tab_cadre_fixehov'";
-      if (!empty($p['html_id'])) {
-         echo " id='".$p['html_id']."'";
-      }
-      echo ">\n";
+        echo "\n<table class='tab_cadre_fixehov'";
+        if (!empty($p['html_id'])) {
+            echo " id='" . $p['html_id'] . "'";
+        }
+        echo ">\n";
 
-      $open_thead = ((!empty($this->title)) || ($p['display_thead']));
-      if ($open_thead) {
-         echo "\t<thead>\n";
-      }
+        $open_thead = ((!empty($this->title)) || ($p['display_thead']));
+        if ($open_thead) {
+            echo "\t<thead>\n";
+        }
 
-      if (!empty($this->title)) {
-         echo "\t\t<tr class='noHover'><th colspan='$totalNumberOfColumn'>".$this->title.
+        if (!empty($this->title)) {
+            echo "\t\t<tr class='noHover'><th colspan='$totalNumberOfColumn'>" . $this->title .
               "</th></tr>\n";
-      }
+        }
 
-      if ($totalNumberOfRow == 0) {
+        if ($totalNumberOfRow == 0) {
+            if ($open_thead) {
+                echo "\t</thead>\n";
+            }
 
-         if ($open_thead) {
-            echo "\t</thead>\n";
-         }
+            echo "\t\t<tr class='tab_bg_1'>" .
+              "<td class='center' colspan='$totalNumberOfColumn'>" . __('None') . "</td></tr>\n";
+        } else {
+            if ($p['display_thead']) {
+                $this->displaySuperHeader();
+            }
 
-         echo "\t\t<tr class='tab_bg_1'>".
-              "<td class='center' colspan='$totalNumberOfColumn'>" . __('None') ."</td></tr>\n";
+            if ($open_thead) {
+                echo "\t</thead>\n";
+            }
 
-      } else {
+            if ($p['display_tfoot']) {
+                echo "\t<tfoot>\n";
+                $this->displaySuperHeader();
+                echo "\t</tfoot>\n";
+            }
 
-         if ($p['display_thead']) {
-            $this->displaySuperHeader();
-         }
-
-         if ($open_thead) {
-            echo "\t</thead>\n";
-         }
-
-         if ($p['display_tfoot']) {
-            echo "\t<tfoot>\n";
-            $this->displaySuperHeader();
-            echo "\t</tfoot>\n";
-         }
-
-         foreach ($this->groups as $group) {
-            $group->displayGroup($totalNumberOfColumn, $p);
-         }
-      }
-      echo "</table>\n";
-   }
-
+            foreach ($this->groups as $group) {
+                $group->displayGroup($totalNumberOfColumn, $p);
+            }
+        }
+        echo "</table>\n";
+    }
 }

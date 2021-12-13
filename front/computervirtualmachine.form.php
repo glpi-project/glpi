@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,58 +33,70 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkCentralAccess();
 
 if (!isset($_GET["id"])) {
-   $_GET["id"] = "";
+    $_GET["id"] = "";
 }
 
 if (!isset($_GET["computers_id"])) {
-   $_GET["computers_id"] = "";
+    $_GET["computers_id"] = "";
 }
 
 $disk = new ComputerVirtualMachine();
 if (isset($_POST["add"])) {
-   $disk->check(-1, CREATE, $_POST);
+    $disk->check(-1, CREATE, $_POST);
 
-   if ($disk->add($_POST)) {
-      Event::log($_POST['computers_id'], "computers", 4, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s adds a virtual machine'), $_SESSION["glpiname"]));
-      if ($_SESSION['glpibackcreated']) {
-         Html::redirect($disk->getLinkURL());
-      }
-   }
-   Html::back();
-
+    if ($disk->add($_POST)) {
+        Event::log(
+            $_POST['computers_id'],
+            "computers",
+            4,
+            "inventory",
+            //TRANS: %s is the user login
+            sprintf(__('%s adds a virtual machine'), $_SESSION["glpiname"])
+        );
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($disk->getLinkURL());
+        }
+    }
+    Html::back();
 } else if (isset($_POST["purge"])) {
-   $disk->check($_POST["id"], PURGE);
+    $disk->check($_POST["id"], PURGE);
 
-   if ($disk->delete($_POST, 1)) {
-      Event::log($disk->fields['computers_id'], "computers", 4, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s purges a virtual machine'), $_SESSION["glpiname"]));
-   }
-   $computer = new Computer();
-   $computer->getFromDB($disk->fields['computers_id']);
-   Html::redirect(Toolbox::getItemTypeFormURL('Computer').'?id='.$disk->fields['computers_id'].
-                  ($computer->fields['is_template']?"&withtemplate=1":""));
-
+    if ($disk->delete($_POST, 1)) {
+        Event::log(
+            $disk->fields['computers_id'],
+            "computers",
+            4,
+            "inventory",
+            //TRANS: %s is the user login
+            sprintf(__('%s purges a virtual machine'), $_SESSION["glpiname"])
+        );
+    }
+    $computer = new Computer();
+    $computer->getFromDB($disk->fields['computers_id']);
+    Html::redirect(Toolbox::getItemTypeFormURL('Computer') . '?id=' . $disk->fields['computers_id'] .
+                  ($computer->fields['is_template'] ? "&withtemplate=1" : ""));
 } else if (isset($_POST["update"])) {
-   $disk->check($_POST["id"], UPDATE);
+    $disk->check($_POST["id"], UPDATE);
 
-   if ($disk->update($_POST)) {
-      Event::log($disk->fields['computers_id'], "computers", 4, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s updates a virtual machine'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
+    if ($disk->update($_POST)) {
+        Event::log(
+            $disk->fields['computers_id'],
+            "computers",
+            4,
+            "inventory",
+            //TRANS: %s is the user login
+            sprintf(__('%s updates a virtual machine'), $_SESSION["glpiname"])
+        );
+    }
+    Html::back();
 } else {
-   Html::header(Computer::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "computer");
-   $disk->display(['id'           => $_GET["id"],
+    Html::header(Computer::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "computer");
+    $disk->display(['id'           => $_GET["id"],
                         'computers_id' => $_GET["computers_id"]]);
-   Html::footer();
+    Html::footer();
 }

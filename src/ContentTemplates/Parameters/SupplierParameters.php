@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -44,20 +45,24 @@ use Supplier;
  */
 class SupplierParameters extends TreeDropdownParameters
 {
-   public static function getDefaultNodeName(): string {
-      return 'supplier';
-   }
+    public static function getDefaultNodeName(): string
+    {
+        return 'supplier';
+    }
 
-   public static function getObjectLabel(): string {
-      return Supplier::getTypeName(1);
-   }
+    public static function getObjectLabel(): string
+    {
+        return Supplier::getTypeName(1);
+    }
 
-   protected function getTargetClasses(): array {
-      return [Supplier::class];
-   }
+    protected function getTargetClasses(): array
+    {
+        return [Supplier::class];
+    }
 
-   public function getAvailableParameters(): array {
-      return [
+    public function getAvailableParameters(): array
+    {
+        return [
          new AttributeParameter("id", __('ID')),
          new AttributeParameter("name", __('Name')),
          new AttributeParameter("address", __('Address')),
@@ -69,15 +74,16 @@ class SupplierParameters extends TreeDropdownParameters
          new AttributeParameter("fax", __('Fax')),
          new AttributeParameter("email", _n('Email', 'Emails', 1)),
          new AttributeParameter("website", __('Website')),
-      ];
-   }
+        ];
+    }
 
-   protected function defineValues(CommonDBTM $user): array {
+    protected function defineValues(CommonDBTM $user): array
+    {
 
-      // Output "unsanitized" values
-      $fields = Sanitizer::unsanitize($user->fields);
+       // Output "unsanitized" values
+        $fields = Sanitizer::unsanitize($user->fields);
 
-      return [
+        return [
          'id'        => $fields['id'],
          'name'      => $fields['name'],
          'address'   => $fields['address'],
@@ -89,6 +95,6 @@ class SupplierParameters extends TreeDropdownParameters
          'fax'       => $fields['fax'],
          'email'     => $fields['email'],
          'website'   => $fields['website'],
-      ];
-   }
+        ];
+    }
 }

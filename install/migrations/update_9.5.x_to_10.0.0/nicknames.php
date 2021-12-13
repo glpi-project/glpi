@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,5 +37,5 @@
  */
 
 if (!$DB->fieldExists("glpi_users", "nickname")) {
-   $migration->addField("glpi_users", "nickname", "string");
+    $migration->addField("glpi_users", "nickname", "string");
 }

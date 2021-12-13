@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -40,14 +41,15 @@ use Twig\Error\Error;
 /**
  * @since 9.5.0
  */
-class ErrorHandler {
+class ErrorHandler
+{
 
    /**
     * Map between error codes and log levels.
     *
     * @var array
     */
-   const ERROR_LEVEL_MAP = [
+    const ERROR_LEVEL_MAP = [
       E_ERROR             => LogLevel::CRITICAL,
       E_WARNING           => LogLevel::WARNING,
       E_PARSE             => LogLevel::ALERT,
@@ -63,56 +65,56 @@ class ErrorHandler {
       E_RECOVERABLE_ERROR => LogLevel::ERROR,
       E_DEPRECATED        => LogLevel::NOTICE,
       E_USER_DEPRECATED   => LogLevel::NOTICE,
-   ];
+    ];
 
    /**
     * Fatal errors list.
     *
     * @var array
     */
-   const FATAL_ERRORS = [
+    const FATAL_ERRORS = [
       E_ERROR,
       E_PARSE,
       E_CORE_ERROR,
       E_COMPILE_ERROR,
       E_USER_ERROR,
       E_RECOVERABLE_ERROR,
-   ];
+    ];
 
    /**
     * Exit code to use on shutdown.
     *
     * @var int|null
     */
-   private $exit_code = null;
+    private $exit_code = null;
 
    /**
     * Flag to indicate if error should be forwarded to PHP internal error handler.
     *
     * @var boolean
     */
-   private $forward_to_internal_handler = true;
+    private $forward_to_internal_handler = true;
 
    /**
     * Logger instance.
     *
     * @var LoggerInterface
     */
-   private $logger;
+    private $logger;
 
    /**
     * Last fatal error trace.
     *
     * @var string
     */
-   private $last_fatal_trace;
+    private $last_fatal_trace;
 
    /**
     * Indicates wether output is disabled.
     *
     * @var bool
     */
-   private $output_disabled = false;
+    private $output_disabled = false;
 
    /**
     * Output handler to use. If not set, output will be directly echoed on a format depending on
@@ -120,55 +122,59 @@ class ErrorHandler {
     *
     * @var OutputInterface|null
     */
-   private $output_handler;
+    private $output_handler;
 
    /**
     * Reserved memory that will be used in case of an "out of memory" error.
     *
     * @var string
     */
-   private $reserved_memory;
+    private $reserved_memory;
 
    /**
     * @param LoggerInterface|null $logger
     */
-   public function __construct(LoggerInterface $logger = null) {
-      $this->logger = $logger;
-   }
+    public function __construct(LoggerInterface $logger = null)
+    {
+        $this->logger = $logger;
+    }
 
    /**
     * Return singleton instance of self.
     *
     * @return ErrorHandler
     */
-   public static function getInstance(): ErrorHandler {
-      static $instance = null;
+    public static function getInstance(): ErrorHandler
+    {
+        static $instance = null;
 
-      if ($instance === null) {
-         global $PHPLOGGER;
-         $instance = new static($PHPLOGGER);
-      }
+        if ($instance === null) {
+            global $PHPLOGGER;
+            $instance = new static($PHPLOGGER);
+        }
 
-      return $instance;
-   }
+        return $instance;
+    }
 
    /**
     * Enable output.
     *
     * @return void
     */
-   public function enableOutput(): void {
-      $this->output_disabled = false;
-   }
+    public function enableOutput(): void
+    {
+        $this->output_disabled = false;
+    }
 
    /**
     * Disable output.
     *
     * @return void
     */
-   public function disableOutput(): void {
-      $this->output_disabled = true;
-   }
+    public function disableOutput(): void
+    {
+        $this->output_disabled = true;
+    }
 
    /**
     * Defines output handler.
@@ -177,21 +183,23 @@ class ErrorHandler {
     *
     * @return void
     */
-   public function setOutputHandler(OutputInterface $output_handler): void {
-      $this->output_handler = $output_handler;
-   }
+    public function setOutputHandler(OutputInterface $output_handler): void
+    {
+        $this->output_handler = $output_handler;
+    }
 
    /**
     * Register error handler callbacks.
     *
     * @return void
     */
-   public function register(): void {
-      set_error_handler([$this, 'handleError']);
-      set_exception_handler([$this, 'handleException']);
-      register_shutdown_function([$this, 'handleFatalError']);
-      $this->reserved_memory = str_repeat('x', 50 * 1024); // reserve 50 kB of memory space
-   }
+    public function register(): void
+    {
+        set_error_handler([$this, 'handleError']);
+        set_exception_handler([$this, 'handleException']);
+        register_shutdown_function([$this, 'handleFatalError']);
+        $this->reserved_memory = str_repeat('x', 50 * 1024); // reserve 50 kB of memory space
+    }
 
    /**
     * Error handler.
@@ -203,48 +211,49 @@ class ErrorHandler {
     *
     * @return boolean
     */
-   public function handleError(int $error_code, string $error_message, string $filename, int $line_number) {
+    public function handleError(int $error_code, string $error_message, string $filename, int $line_number)
+    {
 
-      // Have to false to forward to PHP internal error handler.
-      $return = !$this->forward_to_internal_handler;
+       // Have to false to forward to PHP internal error handler.
+        $return = !$this->forward_to_internal_handler;
 
-      $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-      array_shift($trace);  // Remove current method from trace
-      $error_trace = $this->getTraceAsString($trace);
+        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        array_shift($trace);  // Remove current method from trace
+        $error_trace = $this->getTraceAsString($trace);
 
-      if (in_array($error_code, self::FATAL_ERRORS)) {
-         // Fatal errors are handled by shutdown function
-         // (as some are not recoverable and cannot be handled here).
-         // Store backtrace to be able to use it there.
-         $this->last_fatal_trace = $error_trace;
-         return $return;
-      }
+        if (in_array($error_code, self::FATAL_ERRORS)) {
+           // Fatal errors are handled by shutdown function
+           // (as some are not recoverable and cannot be handled here).
+           // Store backtrace to be able to use it there.
+            $this->last_fatal_trace = $error_trace;
+            return $return;
+        }
 
-      if (!(error_reporting() & $error_code)) {
-         // Do not handle error if '@' operator is used on errored expression
-         // see https://www.php.net/manual/en/language.operators.errorcontrol.php
-         return $return;
-      }
+        if (!(error_reporting() & $error_code)) {
+           // Do not handle error if '@' operator is used on errored expression
+           // see https://www.php.net/manual/en/language.operators.errorcontrol.php
+            return $return;
+        }
 
-      $error_type = sprintf(
-         'PHP %s (%s)',
-         $this->codeToString($error_code),
-         $error_code
-      );
-      $error_description = sprintf(
-         '%s in %s at line %s',
-         $error_message,
-         $filename,
-         $line_number
-      );
+        $error_type = sprintf(
+            'PHP %s (%s)',
+            $this->codeToString($error_code),
+            $error_code
+        );
+        $error_description = sprintf(
+            '%s in %s at line %s',
+            $error_message,
+            $filename,
+            $line_number
+        );
 
-      $log_level = self::ERROR_LEVEL_MAP[$error_code];
+        $log_level = self::ERROR_LEVEL_MAP[$error_code];
 
-      $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
-      $this->outputDebugMessage($error_type, $error_description, $log_level);
+        $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
+        $this->outputDebugMessage($error_type, $error_description, $log_level);
 
-      return $return;
-   }
+        return $return;
+    }
 
    /**
     * Twig error handler.
@@ -255,25 +264,26 @@ class ErrorHandler {
     *
     * @return void
     */
-   public function handleTwigError(Error $error): void {
-      $context = $error->getSourceContext();
+    public function handleTwigError(Error $error): void
+    {
+        $context = $error->getSourceContext();
 
-      $error_type = sprintf(
-         'Twig Error (%s)',
-         get_class($error)
-      );
-      $error_description = sprintf(
-         '"%s" in %s at line %s',
-         $error->getRawMessage(),
-         $context !== null ? sprintf('template "%s"', $context->getPath()) : 'unknown template',
-         $error->getTemplateLine()
-      );
-      $error_trace = $this->getTraceAsString($error->getTrace());
-      $log_level = self::ERROR_LEVEL_MAP[E_ERROR];
+        $error_type = sprintf(
+            'Twig Error (%s)',
+            get_class($error)
+        );
+        $error_description = sprintf(
+            '"%s" in %s at line %s',
+            $error->getRawMessage(),
+            $context !== null ? sprintf('template "%s"', $context->getPath()) : 'unknown template',
+            $error->getTemplateLine()
+        );
+        $error_trace = $this->getTraceAsString($error->getTrace());
+        $log_level = self::ERROR_LEVEL_MAP[E_ERROR];
 
-      $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
-      $this->outputDebugMessage($error_type, $error_description, $log_level, isCommandLine());
-   }
+        $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
+        $this->outputDebugMessage($error_type, $error_description, $log_level, isCommandLine());
+    }
 
    /**
     * SQL error handler.
@@ -286,14 +296,15 @@ class ErrorHandler {
     *
     * @return void
     */
-   public function handleSqlError(int $error_code, string $error_message, string $query) {
-      $this->outputDebugMessage(
-         sprintf('SQL Error "%s"', $error_code),
-         sprintf('%s in query "%s"', $error_message, preg_replace('/\\n/', ' ', $query)),
-         self::ERROR_LEVEL_MAP[E_USER_ERROR],
-         isCommandLine()
-      );
-   }
+    public function handleSqlError(int $error_code, string $error_message, string $query)
+    {
+        $this->outputDebugMessage(
+            sprintf('SQL Error "%s"', $error_code),
+            sprintf('%s in query "%s"', $error_message, preg_replace('/\\n/', ' ', $query)),
+            self::ERROR_LEVEL_MAP[E_USER_ERROR],
+            isCommandLine()
+        );
+    }
 
    /**
     * SQL warnings handler.
@@ -305,13 +316,14 @@ class ErrorHandler {
     *
     * @return void
     */
-   public function handleSqlWarnings(array $warnings, string $query) {
-      $this->outputDebugMessage(
-         'SQL Warnings',
-         "\n" . implode("\n", $warnings) . "\n" . sprintf('in query "%s"', $query),
-         self::ERROR_LEVEL_MAP[E_USER_WARNING]
-      );
-   }
+    public function handleSqlWarnings(array $warnings, string $query)
+    {
+        $this->outputDebugMessage(
+            'SQL Warnings',
+            "\n" . implode("\n", $warnings) . "\n" . sprintf('in query "%s"', $query),
+            self::ERROR_LEVEL_MAP[E_USER_WARNING]
+        );
+    }
 
    /**
     * Exception handler.
@@ -324,74 +336,78 @@ class ErrorHandler {
     *
     * @return void
     */
-   public function handleException(\Throwable $exception, bool $quiet = false): void {
-      $this->exit_code = 255;
+    public function handleException(\Throwable $exception, bool $quiet = false): void
+    {
+        $this->exit_code = 255;
 
-      $error_type = sprintf(
-         'Uncaught Exception %s',
-         get_class($exception)
-      );
-      $error_description = sprintf(
-         '%s in %s at line %s',
-         $exception->getMessage(),
-         $exception->getFile(),
-         $exception->getLine()
-      );
-      $error_trace = $this->getTraceAsString($exception->getTrace());
+        $error_type = sprintf(
+            'Uncaught Exception %s',
+            get_class($exception)
+        );
+        $error_description = sprintf(
+            '%s in %s at line %s',
+            $exception->getMessage(),
+            $exception->getFile(),
+            $exception->getLine()
+        );
+        $error_trace = $this->getTraceAsString($exception->getTrace());
 
-      $log_level = self::ERROR_LEVEL_MAP[E_ERROR];
+        $log_level = self::ERROR_LEVEL_MAP[E_ERROR];
 
-      $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
-      if (!$quiet) {
-         $this->outputDebugMessage($error_type, $error_description, $log_level, isCommandLine());
-      }
-   }
+        $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
+        if (!$quiet) {
+            $this->outputDebugMessage($error_type, $error_description, $log_level, isCommandLine());
+        }
+    }
 
    /**
     * Handle fatal errors.
     *
     * @retun void
     */
-   public function handleFatalError(): void {
-      // Free reserved memory to be able to handle "out of memory" errors
-      $this->reserved_memory = null;
+    public function handleFatalError(): void
+    {
+       // Free reserved memory to be able to handle "out of memory" errors
+        $this->reserved_memory = null;
 
-      $error = error_get_last();
-      if ($error && in_array($error['type'], self::FATAL_ERRORS)) {
-         $this->exit_code = 255;
+        $error = error_get_last();
+        if ($error && in_array($error['type'], self::FATAL_ERRORS)) {
+            $this->exit_code = 255;
 
-         $error_type = sprintf(
-            'PHP %s (%s)',
-            $this->codeToString($error['type']),
-            $error['type']
-         );
-         $error_description = sprintf(
-            '%s in %s at line %s',
-            $error['message'],
-            $error['file'],
-            $error['line']
-         );
+            $error_type = sprintf(
+                'PHP %s (%s)',
+                $this->codeToString($error['type']),
+                $error['type']
+            );
+            $error_description = sprintf(
+                '%s in %s at line %s',
+                $error['message'],
+                $error['file'],
+                $error['line']
+            );
 
-         // debug_backtrace is not available in shutdown function
-         // so get stored trace if any exists
-         $error_trace = $this->last_fatal_trace ?? '';
+           // debug_backtrace is not available in shutdown function
+           // so get stored trace if any exists
+            $error_trace = $this->last_fatal_trace ?? '';
 
-         $log_level = self::ERROR_LEVEL_MAP[$error['type']];
+            $log_level = self::ERROR_LEVEL_MAP[$error['type']];
 
-         $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
-         $this->outputDebugMessage($error_type, $error_description, $log_level);
-      }
+            $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
+            $this->outputDebugMessage($error_type, $error_description, $log_level);
+        }
 
-      if ($this->exit_code !== null) {
-         // If an exit code is defined, register a shutdown function that will be called after
-         // thoose that are already defined, in order to exit the script with the correct code.
-         $exit_code = $this->exit_code;
-         register_shutdown_function(
-            'register_shutdown_function',
-            static function () use ($exit_code) { exit($exit_code); }
-         );
-      }
-   }
+        if ($this->exit_code !== null) {
+           // If an exit code is defined, register a shutdown function that will be called after
+           // thoose that are already defined, in order to exit the script with the correct code.
+            $exit_code = $this->exit_code;
+            register_shutdown_function(
+                'register_shutdown_function',
+            public static function () use ($exit_code) {
+                exit($exit_code);
+            }
+            );
+        }
+    }
 
    /**
     * Defines if errors should be forward to PHP internal error handler.
@@ -400,9 +416,10 @@ class ErrorHandler {
     *
     * @return void
     */
-   public function setForwardToInternalHandler(bool $forward_to_internal_handler): void {
-      $this->forward_to_internal_handler = $forward_to_internal_handler;
-   }
+    public function setForwardToInternalHandler(bool $forward_to_internal_handler): void
+    {
+        $this->forward_to_internal_handler = $forward_to_internal_handler;
+    }
 
    /**
     * Log message related to error.
@@ -414,16 +431,17 @@ class ErrorHandler {
     *
     * @return void
     */
-   private function logErrorMessage(string $type, string $description, string $trace, string $log_level): void {
-      if (!($this->logger instanceof LoggerInterface)) {
-         return;
-      }
+    private function logErrorMessage(string $type, string $description, string $trace, string $log_level): void
+    {
+        if (!($this->logger instanceof LoggerInterface)) {
+            return;
+        }
 
-      $this->logger->log(
-         $log_level,
-         '  *** ' . $type . ': ' . $description . (!empty($trace) ? "\n" . $trace : '')
-      );
-   }
+        $this->logger->log(
+            $log_level,
+            '  *** ' . $type . ': ' . $description . (!empty($trace) ? "\n" . $trace : '')
+        );
+    }
 
    /**
     * Output debug message related to error.
@@ -435,53 +453,54 @@ class ErrorHandler {
     *
     * @return void
     */
-   private function outputDebugMessage(string $error_type, string $message, string $log_level, bool $force = false): void {
+    private function outputDebugMessage(string $error_type, string $message, string $log_level, bool $force = false): void
+    {
 
-      if ($this->output_disabled) {
-         return;
-      }
+        if ($this->output_disabled) {
+            return;
+        }
 
-      $is_debug_mode = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == \Session::DEBUG_MODE;
-      $is_console_context = $this->output_handler instanceof OutputInterface;
+        $is_debug_mode = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == \Session::DEBUG_MODE;
+        $is_console_context = $this->output_handler instanceof OutputInterface;
 
-      if ((!$force && !$is_debug_mode && !$is_console_context) || isAPI()) {
-         return;
-      }
+        if ((!$force && !$is_debug_mode && !$is_console_context) || isAPI()) {
+            return;
+        }
 
-      if ($this->output_handler instanceof OutputInterface) {
-         $format = 'comment';
-         switch ($log_level) {
-            case LogLevel::EMERGENCY:
-            case LogLevel::ALERT:
-            case LogLevel::CRITICAL:
-            case LogLevel::ERROR:
-               $format    = 'error';
-               $verbosity = OutputInterface::VERBOSITY_QUIET;
-               break;
-            case LogLevel::WARNING:
-               $verbosity = OutputInterface::VERBOSITY_NORMAL;
-               break;
-            case LogLevel::NOTICE:
-            case LogLevel::INFO:
-            default:
-               $verbosity = OutputInterface::VERBOSITY_VERBOSE;
-               break;
-            case LogLevel::DEBUG:
-               $verbosity = OutputInterface::VERBOSITY_VERY_VERBOSE;
-               break;
-         }
-         $message = $error_type . ': ' . $message;
-         if (null !== $format) {
-            $message = sprintf('<%1$s>%2$s</%1$s>', $format, $message);
-         }
-         $this->output_handler->writeln($message, $verbosity);
-      } else if (!isCommandLine()) {
-         echo '<div class="alert alert-important alert-danger" style="z-index:10000">'
+        if ($this->output_handler instanceof OutputInterface) {
+            $format = 'comment';
+            switch ($log_level) {
+                case LogLevel::EMERGENCY:
+                case LogLevel::ALERT:
+                case LogLevel::CRITICAL:
+                case LogLevel::ERROR:
+                    $format    = 'error';
+                    $verbosity = OutputInterface::VERBOSITY_QUIET;
+                    break;
+                case LogLevel::WARNING:
+                    $verbosity = OutputInterface::VERBOSITY_NORMAL;
+                    break;
+                case LogLevel::NOTICE:
+                case LogLevel::INFO:
+                default:
+                    $verbosity = OutputInterface::VERBOSITY_VERBOSE;
+                    break;
+                case LogLevel::DEBUG:
+                    $verbosity = OutputInterface::VERBOSITY_VERY_VERBOSE;
+                    break;
+            }
+            $message = $error_type . ': ' . $message;
+            if (null !== $format) {
+                $message = sprintf('<%1$s>%2$s</%1$s>', $format, $message);
+            }
+            $this->output_handler->writeln($message, $verbosity);
+        } else if (!isCommandLine()) {
+            echo '<div class="alert alert-important alert-danger" style="z-index:10000">'
             . '<span class="b">' . $error_type . ': </span>' . $message . '</div>';
-      } else {
-         echo $error_type . ': ' . $message . "\n";
-      }
-   }
+        } else {
+            echo $error_type . ': ' . $message . "\n";
+        }
+    }
 
    /**
     * Get error type as string from error code.
@@ -490,8 +509,9 @@ class ErrorHandler {
     *
     * @return string
     */
-   private function codeToString(int $error_code): string {
-      $map = [
+    private function codeToString(int $error_code): string
+    {
+        $map = [
          E_ERROR             => 'Error',
          E_WARNING           => 'Warning',
          E_PARSE             => 'Parsing Error',
@@ -507,10 +527,10 @@ class ErrorHandler {
          E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
          E_DEPRECATED        => 'Deprecated function',
          E_USER_DEPRECATED   => 'User deprecated function',
-      ];
+        ];
 
-      return $map[$error_code] ?? 'Unknown error';
-   }
+        return $map[$error_code] ?? 'Unknown error';
+    }
 
    /**
     * Get trace as string.
@@ -519,31 +539,32 @@ class ErrorHandler {
     *
     * @return string
     */
-   private function getTraceAsString(array $trace): string {
-      if (empty($trace)) {
-         return '';
-      }
+    private function getTraceAsString(array $trace): string
+    {
+        if (empty($trace)) {
+            return '';
+        }
 
-      $message = "  Backtrace :\n";
+        $message = "  Backtrace :\n";
 
-      foreach ($trace as $item) {
-         $script = ($item['file'] ?? '') . ':' . ($item['line'] ?? '');
-         if (strpos($script, GLPI_ROOT) === 0) {
-            $script = substr($script, strlen(GLPI_ROOT) + 1);
-         }
-         if (strlen($script) > 50) {
-            $script = '...' . substr($script, -47);
-         } else {
-            $script = str_pad($script, 50);
-         }
+        foreach ($trace as $item) {
+            $script = ($item['file'] ?? '') . ':' . ($item['line'] ?? '');
+            if (strpos($script, GLPI_ROOT) === 0) {
+                $script = substr($script, strlen(GLPI_ROOT) + 1);
+            }
+            if (strlen($script) > 50) {
+                $script = '...' . substr($script, -47);
+            } else {
+                $script = str_pad($script, 50);
+            }
 
-         $call = ($item['class'] ?? '') . ($item['type'] ?? '') . ($item['function'] ?? '');
-         if (!empty($call)) {
-            $call .= '()';
-         }
-         $message .= "  $script $call\n";
-      }
+            $call = ($item['class'] ?? '') . ($item['type'] ?? '') . ($item['function'] ?? '');
+            if (!empty($call)) {
+                $call .= '()';
+            }
+            $message .= "  $script $call\n";
+        }
 
-      return $message;
-   }
+        return $message;
+    }
 }

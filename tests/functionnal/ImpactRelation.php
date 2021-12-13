@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,113 +33,121 @@
 
 namespace tests\units;
 
-class ImpactRelation extends \DbTestCase {
+class ImpactRelation extends \DbTestCase
+{
 
-   public function testPrepareInputForAdd_requiredFields() {
-      $impactRelationManager = new \ImpactRelation();
-      $res = $impactRelationManager->add([]);
+    public function testPrepareInputForAdd_requiredFields()
+    {
+        $impactRelationManager = new \ImpactRelation();
+        $res = $impactRelationManager->add([]);
 
-      $this->boolean($res)->isFalse();
-   }
+        $this->boolean($res)->isFalse();
+    }
 
-   public function testPrepareInputForAdd_differentItems() {
-      $computer = getItemByTypeName('Computer', '_test_pc02');
-      $impactRelationManager = new \ImpactRelation();
-      $res = $impactRelationManager->add([
+    public function testPrepareInputForAdd_differentItems()
+    {
+        $computer = getItemByTypeName('Computer', '_test_pc02');
+        $impactRelationManager = new \ImpactRelation();
+        $res = $impactRelationManager->add([
          'itemtype_source'   => "Computer",
          'items_id_source'   => $computer->fields['id'],
          'itemtype_impacted' => "Computer",
          'items_id_impacted' => $computer->fields['id'],
-      ]);
+        ]);
 
-      $this->boolean($res)->isFalse();
-   }
+        $this->boolean($res)->isFalse();
+    }
 
-   public function testPrepareInputForAdd_duplicate() {
-      $computer1 = getItemByTypeName('Computer', '_test_pc01');
-      $computer2 = getItemByTypeName('Computer', '_test_pc02');
-      $impactRelationManager = new \ImpactRelation();
+    public function testPrepareInputForAdd_duplicate()
+    {
+        $computer1 = getItemByTypeName('Computer', '_test_pc01');
+        $computer2 = getItemByTypeName('Computer', '_test_pc02');
+        $impactRelationManager = new \ImpactRelation();
 
-      $impactRelationManager->add([
+        $impactRelationManager->add([
          'itemtype_source'   => "Computer",
          'items_id_source'   => $computer1->fields['id'],
          'itemtype_impacted' => "Computer",
          'items_id_impacted' => $computer2->fields['id'],
-      ]);
+        ]);
 
-      $res = $impactRelationManager->add([
+        $res = $impactRelationManager->add([
          'itemtype_source'   => "Computer",
          'items_id_source'   => $computer1->fields['id'],
          'itemtype_impacted' => "Computer",
          'items_id_impacted' => $computer2->fields['id'],
-      ]);
+        ]);
 
-      $this->boolean($res)->isFalse();
-   }
+        $this->boolean($res)->isFalse();
+    }
 
-   public function testPrepareInputForAdd_assetExist() {
-      $impactRelationManager = new \ImpactRelation();
+    public function testPrepareInputForAdd_assetExist()
+    {
+        $impactRelationManager = new \ImpactRelation();
 
-      $res = $impactRelationManager->add([
+        $res = $impactRelationManager->add([
          'itemtype_source'   => "Computer",
          'items_id_source'   => -40,
          'itemtype_impacted' => "Computer",
          'items_id_impacted' => -78,
-      ]);
+        ]);
 
-      $this->boolean($res)->isFalse();
-   }
+        $this->boolean($res)->isFalse();
+    }
 
-   public function testPrepareInputForAdd_valid() {
-      $computer1 = getItemByTypeName('Computer', '_test_pc01');
-      $computer2 = getItemByTypeName('Computer', '_test_pc02');
-      $impactRelationManager = new \ImpactRelation();
+    public function testPrepareInputForAdd_valid()
+    {
+        $computer1 = getItemByTypeName('Computer', '_test_pc01');
+        $computer2 = getItemByTypeName('Computer', '_test_pc02');
+        $impactRelationManager = new \ImpactRelation();
 
-      $res = $impactRelationManager->add([
+        $res = $impactRelationManager->add([
          'itemtype_source'   => "Computer",
          'items_id_source'   => $computer1->fields['id'],
          'itemtype_impacted' => "Computer",
          'items_id_impacted' => $computer2->fields['id'],
-      ]);
+        ]);
 
-      $this->integer($res);
-   }
+        $this->integer($res);
+    }
 
-   public function testGetIDFromInput_invalid() {
-      $computer1 = getItemByTypeName('Computer', '_test_pc01');
-      $computer2 = getItemByTypeName('Computer', '_test_pc02');
+    public function testGetIDFromInput_invalid()
+    {
+        $computer1 = getItemByTypeName('Computer', '_test_pc01');
+        $computer2 = getItemByTypeName('Computer', '_test_pc02');
 
-      $input = [
+        $input = [
          'itemtype_source'   => "Computer",
          'items_id_source'   => $computer1->fields['id'],
          'itemtype_impacted' => "Computer",
          'items_id_impacted' => $computer2->fields['id'],
-      ];
+        ];
 
-      $id = \ImpactRelation::getIDFromInput($input);
-      $this->boolean($id)->isFalse();
-   }
+        $id = \ImpactRelation::getIDFromInput($input);
+        $this->boolean($id)->isFalse();
+    }
 
-   public function testGetIDFromInput_valid() {
-      $computer1 = getItemByTypeName('Computer', '_test_pc01');
-      $computer2 = getItemByTypeName('Computer', '_test_pc02');
-      $impactRelationManager = new \ImpactRelation();
+    public function testGetIDFromInput_valid()
+    {
+        $computer1 = getItemByTypeName('Computer', '_test_pc01');
+        $computer2 = getItemByTypeName('Computer', '_test_pc02');
+        $impactRelationManager = new \ImpactRelation();
 
-      $id1 = $impactRelationManager->add([
+        $id1 = $impactRelationManager->add([
          'itemtype_source'   => "Computer",
          'items_id_source'   => $computer1->fields['id'],
          'itemtype_impacted' => "Computer",
          'items_id_impacted' => $computer2->fields['id'],
-      ]);
+        ]);
 
-      $input = [
+        $input = [
          'itemtype_source'   => "Computer",
          'items_id_source'   => $computer1->fields['id'],
          'itemtype_impacted' => "Computer",
          'items_id_impacted' => $computer2->fields['id'],
-      ];
+        ];
 
-      $id2 = \ImpactRelation::getIDFromInput($input);
-      $this->integer($id1)->isEqualTo($id2);
-   }
+        $id2 = \ImpactRelation::getIDFromInput($input);
+        $this->integer($id1)->isEqualTo($id2);
+    }
 }

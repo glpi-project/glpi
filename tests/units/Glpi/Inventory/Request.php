@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,53 +36,57 @@ namespace tests\units\Glpi\Inventory;
 /**
  * Test class for src/Glpi/Inventory/Request.php
  */
-class Request extends \GLPITestCase {
-   public function testConstructor() {
-      //no mode
-      $request = new \Glpi\Inventory\Request();
-      $this->variable($request->getMode())->isNull();
-      $this->exception(
-         function () use ($request) {
-            $this->variable($request->getResponse())->isNull();
-         }
-      )
+class Request extends \GLPITestCase
+{
+    public function testConstructor()
+    {
+       //no mode
+        $request = new \Glpi\Inventory\Request();
+        $this->variable($request->getMode())->isNull();
+        $this->exception(
+            public function () use ($request) {
+                $this->variable($request->getResponse())->isNull();
+            }
+        )
          ->isInstanceOf('\RuntimeException')
          ->hasMessage('Mode has not been set');
 
-      $this->exception(
-         function () use ($request) {
-            $this->variable($request->getContentType())->isNull();
-         }
-      )
+        $this->exception(
+            public function () use ($request) {
+                $this->variable($request->getContentType())->isNull();
+            }
+        )
          ->isInstanceOf('\RuntimeException')
          ->hasMessage('Mode has not been set');
 
-      //XML mode
-      $request = new \Glpi\Inventory\Request();
-      $request->handleContentType('application/xml');
-      $this->integer($request->getMode())->isIdenticalTo(\Glpi\Inventory\Request::XML_MODE);
-      $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY/>\n");
-      $this->string($request->getContentType())->isIdenticalTo('application/xml');
+       //XML mode
+        $request = new \Glpi\Inventory\Request();
+        $request->handleContentType('application/xml');
+        $this->integer($request->getMode())->isIdenticalTo(\Glpi\Inventory\Request::XML_MODE);
+        $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY/>\n");
+        $this->string($request->getContentType())->isIdenticalTo('application/xml');
 
-      //JSON mode
-      $request = new \Glpi\Inventory\Request();
-      $request->handleContentType('application/json');
-      $this->integer($request->getMode())->isIdenticalTo(\Glpi\Inventory\Request::JSON_MODE);
-      $response = [];
-      $this->string($request->getResponse())->isIdenticalTo(json_encode($response));
-      $this->string($request->getContentType())->isIdenticalTo('application/json');
-   }
+       //JSON mode
+        $request = new \Glpi\Inventory\Request();
+        $request->handleContentType('application/json');
+        $this->integer($request->getMode())->isIdenticalTo(\Glpi\Inventory\Request::JSON_MODE);
+        $response = [];
+        $this->string($request->getResponse())->isIdenticalTo(json_encode($response));
+        $this->string($request->getContentType())->isIdenticalTo('application/json');
+    }
 
-   public function testProlog() {
-      $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>PROLOG</QUERY></REQUEST>";
-      $request = new \Glpi\Inventory\Request;
-      $request->handleContentType('application/xml');
-      $request->handleRequest($data);
-      $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE></REPLY>\n");
-   }
+    public function testProlog()
+    {
+        $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>PROLOG</QUERY></REQUEST>";
+        $request = new \Glpi\Inventory\Request();
+        $request->handleContentType('application/xml');
+        $request->handleRequest($data);
+        $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE></REPLY>\n");
+    }
 
-   protected function queriesProvider() {
-      return [
+    protected function queriesProvider()
+    {
+        return [
          ['query' => 'INVENTORY'], //Request::INVENT_QUERY | Request::INVENT_ACTION
          ['query' => 'PROLOG'], //Request::PROLOG_QUERY
          ['query' => 'SNMPQUERY'], //Request::OLD_SNMP_QUERY
@@ -90,26 +95,28 @@ class Request extends \GLPITestCase {
          ['query' => 'inventory'], //Request::INVENT_QUERY | Request::INVENT_ACTION
          ['query' => 'prolog'], //Request::PROLOG_QUERY
          ['query' => 'netinventory'], //Request::NETINV_ACTION
-      ];
-   }
+        ];
+    }
 
    /**
     * Test known queries
     *
     * @dataProvider queriesProvider
     */
-   public function testSnmpQuery($query) {
-      $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><CONTENT><DEVICE></DEVICE></CONTENT><QUERY>$query</QUERY></REQUEST>";
-      $request = new \mock\Glpi\Inventory\Request();
-      $this->calling($request)->inventory = null;
-      $this->calling($request)->prolog = null;
-      $request->handleContentType('Application/xml');
-      $request->handleRequest($data);
-      $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY/>\n");
-   }
+    public function testSnmpQuery($query)
+    {
+        $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><CONTENT><DEVICE></DEVICE></CONTENT><QUERY>$query</QUERY></REQUEST>";
+        $request = new \mock\Glpi\Inventory\Request();
+        $this->calling($request)->inventory = null;
+        $this->calling($request)->prolog = null;
+        $request->handleContentType('Application/xml');
+        $request->handleRequest($data);
+        $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY/>\n");
+    }
 
-   protected function unhandledQueriesProvider() {
-      return [
+    protected function unhandledQueriesProvider()
+    {
+        return [
          ['query' => 'register'], //Request::REGISTER_ACTION
          ['query' => 'configuration'], //Request::CONFIG_ACTION
          ['query' => 'ESX'], //Request::ESX_ACTION
@@ -117,32 +124,34 @@ class Request extends \GLPITestCase {
          ['query' => 'DEPLOY'], //Request:: DEPLOY_ACTION
          ['query' => 'wakeonlan'], //Request::WOL_ACTION
          ['query' => 'UNKNOWN'],
-      ];
-   }
+        ];
+    }
 
    /**
     * Test unknown queries
     *
     * @dataProvider unhandledQueriesProvider
     */
-   public function testWrongQuery($query) {
-      $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>$query</QUERY></REQUEST>";
-      $request = new \Glpi\Inventory\Request;
-      $request->handleContentType('application/xml');
-      $request->handleRequest($data);
-      $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR>Query '".strtolower($query)."' is not supported.</ERROR></REPLY>\n");
-   }
+    public function testWrongQuery($query)
+    {
+        $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>$query</QUERY></REQUEST>";
+        $request = new \Glpi\Inventory\Request();
+        $request->handleContentType('application/xml');
+        $request->handleRequest($data);
+        $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR>Query '" . strtolower($query) . "' is not supported.</ERROR></REPLY>\n");
+    }
 
-   public function testAddError() {
-      $request = new \Glpi\Inventory\Request;
-      $request->handleContentType('application/xml');
-      $request->addError('Something went wrong.');
-      $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR>Something went wrong.</ERROR></REPLY>\n");
+    public function testAddError()
+    {
+        $request = new \Glpi\Inventory\Request();
+        $request->handleContentType('application/xml');
+        $request->addError('Something went wrong.');
+        $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR>Something went wrong.</ERROR></REPLY>\n");
 
-      $request = new \Glpi\Inventory\Request;
-      $request->handleContentType('application/xml');
-      //to test nodes with attributes
-      $request->addError([
+        $request = new \Glpi\Inventory\Request();
+        $request->handleContentType('application/xml');
+       //to test nodes with attributes
+        $request->addError([
          'OPTION' => [
             'NAME' => 'NETDISCOVERY',
             'PARAM' => [
@@ -192,13 +201,14 @@ class Request extends \GLPITestCase {
                ]
             ]
          ]
-      ]);
+        ]);
 
-      $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR><OPTION><NAME>NETDISCOVERY</NAME><PARAM THREADS_DISCOVERY=\"5\" TIMEOUT=\"1\" PID=\"16\"/><RANGEIP ID=\"1\" IPSTART=\"192.168.1.1\" IPEND=\"192.168.1.254\" ENTITY=\"0\"/><AUTHENTICATION ID=\"1\" COMMUNITY=\"public\" VERSION=\"1\" USERNAME=\"\" AUTHPROTOCOL=\"\" AUTHPASSPHRASE=\"\" PRIVPROTOCOL=\"\" PRIVPASSPHRASE=\"\"/><AUTHENTICATION ID=\"2\" COMMUNITY=\"public\" VERSION=\"2c\" USERNAME=\"\" AUTHPROTOCOL=\"\" AUTHPASSPHRASE=\"\" PRIVPROTOCOL=\"\" PRIVPASSPHRASE=\"\"/></OPTION></ERROR></REPLY>\n");
-   }
+        $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR><OPTION><NAME>NETDISCOVERY</NAME><PARAM THREADS_DISCOVERY=\"5\" TIMEOUT=\"1\" PID=\"16\"/><RANGEIP ID=\"1\" IPSTART=\"192.168.1.1\" IPEND=\"192.168.1.254\" ENTITY=\"0\"/><AUTHENTICATION ID=\"1\" COMMUNITY=\"public\" VERSION=\"1\" USERNAME=\"\" AUTHPROTOCOL=\"\" AUTHPASSPHRASE=\"\" PRIVPROTOCOL=\"\" PRIVPASSPHRASE=\"\"/><AUTHENTICATION ID=\"2\" COMMUNITY=\"public\" VERSION=\"2c\" USERNAME=\"\" AUTHPROTOCOL=\"\" AUTHPASSPHRASE=\"\" PRIVPROTOCOL=\"\" PRIVPASSPHRASE=\"\"/></OPTION></ERROR></REPLY>\n");
+    }
 
-   protected function compressionProvider(): array {
-      return [
+    protected function compressionProvider(): array
+    {
+        return [
          [
             'function' => 'gzcompress',
             'mime' => 'application/x-compress-zlib'
@@ -218,8 +228,8 @@ class Request extends \GLPITestCase {
             'function' => 'gzdeflate',
             'mime' => 'application/x-deflate'
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * Test request compression
@@ -231,15 +241,15 @@ class Request extends \GLPITestCase {
     *
     * @return void
     */
-   public function testCompression(string $function, string $mime) {
-      $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>PROLOG</QUERY></REQUEST>";
-      $cdata = $function($data);
+    public function testCompression(string $function, string $mime)
+    {
+        $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>PROLOG</QUERY></REQUEST>";
+        $cdata = $function($data);
 
-      $request = new \Glpi\Inventory\Request;
-      $request->handleContentType($mime);
-      $request->handleRequest($cdata);
-      $this->string($request->getDeviceID())->isIdenticalTo('atoumized-device');
-      $this->string($request->getResponse())->isIdenticalTo($function("<?xml version=\"1.0\"?>\n<REPLY><PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE></REPLY>\n"));
-   }
-
+        $request = new \Glpi\Inventory\Request();
+        $request->handleContentType($mime);
+        $request->handleRequest($cdata);
+        $this->string($request->getDeviceID())->isIdenticalTo('atoumized-device');
+        $this->string($request->getResponse())->isIdenticalTo($function("<?xml version=\"1.0\"?>\n<REPLY><PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE></REPLY>\n"));
+    }
 }

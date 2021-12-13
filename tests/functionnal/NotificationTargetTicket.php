@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -38,17 +39,19 @@ use NotificationTarget;
 
 /* Test for inc/notificationtargetticket.class.php */
 
-class NotificationTargetTicket extends DbTestCase {
+class NotificationTargetTicket extends DbTestCase
+{
 
-   public function testgetDataForObject() {
-      global $CFG_GLPI;
+    public function testgetDataForObject()
+    {
+        global $CFG_GLPI;
 
-      $tkt = getItemByTypeName('Ticket', '_ticket01');
-      $notiftargetticket = new \NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $tkt );
-      $notiftargetticket->getTags();
+        $tkt = getItemByTypeName('Ticket', '_ticket01');
+        $notiftargetticket = new \NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $tkt);
+        $notiftargetticket->getTags();
 
-      // basic test for ##task.categorycomment## tag
-      $expected = [
+       // basic test for ##task.categorycomment## tag
+        $expected = [
          'tag'             => 'task.categorycomment',
          'value'           => true,
          'label'           => 'Category comment',
@@ -58,13 +61,13 @@ class NotificationTargetTicket extends DbTestCase {
          'allowed_values'  => [],
          ];
 
-      $this->array($notiftargetticket->tag_descriptions['lang']['##lang.task.categorycomment##'])
+        $this->array($notiftargetticket->tag_descriptions['lang']['##lang.task.categorycomment##'])
          ->isIdenticalTo($expected);
-      $this->array($notiftargetticket->tag_descriptions['tag']['##task.categorycomment##'])
+        $this->array($notiftargetticket->tag_descriptions['tag']['##task.categorycomment##'])
          ->isIdenticalTo($expected);
 
-      // basic test for ##task.categorid## tag
-      $expected = [
+       // basic test for ##task.categorid## tag
+        $expected = [
          'tag'             => 'task.categoryid',
          'value'           => true,
          'label'           => 'Category id',
@@ -73,16 +76,16 @@ class NotificationTargetTicket extends DbTestCase {
          'lang'            => true,
          'allowed_values'  => [],
          ];
-      $this->array($notiftargetticket->tag_descriptions['lang']['##lang.task.categoryid##'])
+        $this->array($notiftargetticket->tag_descriptions['lang']['##lang.task.categoryid##'])
          ->isIdenticalTo($expected);
-      $this->array($notiftargetticket->tag_descriptions['tag']['##task.categoryid##'])
+        $this->array($notiftargetticket->tag_descriptions['tag']['##task.categoryid##'])
          ->isIdenticalTo($expected);
 
-      // advanced test for ##task.categorycomment## and ##task.categoryid## tags
-      // test of the getDataForObject for default language en_GB
-      $taskcat = getItemByTypeName('TaskCategory', '_subcat_1');
-      $encoded_sep = Sanitizer::sanitize('>');
-      $expected = [
+       // advanced test for ##task.categorycomment## and ##task.categoryid## tags
+       // test of the getDataForObject for default language en_GB
+        $taskcat = getItemByTypeName('TaskCategory', '_subcat_1');
+        $encoded_sep = Sanitizer::sanitize('>');
+        $expected = [
                      [
                      '##task.id##'              => 1,
                      '##task.isprivate##'       => 'No',
@@ -101,23 +104,23 @@ class NotificationTargetTicket extends DbTestCase {
                      ]
                   ];
 
-      $basic_options = [
+        $basic_options = [
          'additionnaloption' => [
             'usertype' => ''
          ]
-      ];
-      $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
+        ];
+        $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
 
-      $this->array($ret['tasks'])->isIdenticalTo($expected);
+        $this->array($ret['tasks'])->isIdenticalTo($expected);
 
-      // test of the getDataForObject for default language fr_FR
-      $CFG_GLPI['translate_dropdowns'] = 1;
-      $_SESSION["glpilanguage"] = \Session::loadLanguage( 'fr_FR' );
-      $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
+       // test of the getDataForObject for default language fr_FR
+        $CFG_GLPI['translate_dropdowns'] = 1;
+        $_SESSION["glpilanguage"] = \Session::loadLanguage('fr_FR');
+        $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
 
-      $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
+        $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
 
-      $expected = [
+        $expected = [
                      [
                      '##task.id##'              => 1,
                      '##task.isprivate##'       => 'Non',
@@ -136,22 +139,22 @@ class NotificationTargetTicket extends DbTestCase {
                      ]
                   ];
 
-      $this->array($ret['tasks'])->isIdenticalTo($expected);
+        $this->array($ret['tasks'])->isIdenticalTo($expected);
 
-      // switch back to default language
-      $_SESSION["glpilanguage"] = \Session::loadLanguage('en_GB');
+       // switch back to default language
+        $_SESSION["glpilanguage"] = \Session::loadLanguage('en_GB');
+    }
 
-   }
 
+    public function testTimelineTag()
+    {
 
-   public function testTimelineTag() {
-
-      $entity = getItemByTypeName("Entity", "_test_root_entity");
-      global $DB;
-      // Build test ticket
-      $this->login('tech', 'tech');
-      $ticket = new \Ticket();
-      $tickets_id = $ticket->add($input = [
+        $entity = getItemByTypeName("Entity", "_test_root_entity");
+        global $DB;
+       // Build test ticket
+        $this->login('tech', 'tech');
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add($input = [
          'name'             => 'test',
          'content'          => 'test',
          '_users_id_assign' => getItemByTypeName('User', 'tech', true),
@@ -160,19 +163,19 @@ class NotificationTargetTicket extends DbTestCase {
          'users_id_recipient' => getItemByTypeName('User', 'tech', true),
          'users_id_lastupdater' => getItemByTypeName('User', 'tech', true),
          'requesttypes_id'  => 4,
-      ]);
-      $this->integer($tickets_id)->isGreaterThan(0);
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
 
-      // Unset temporary fields that will not be found in tickets table
-      unset($input['_users_id_assign']);
-      unset($input['_users_id_requester']);
+       // Unset temporary fields that will not be found in tickets table
+        unset($input['_users_id_assign']);
+        unset($input['_users_id_requester']);
 
-      // Check expected fields and reload object from DB
-      $this->checkInput($ticket, $tickets_id, $input);
+       // Check expected fields and reload object from DB
+        $this->checkInput($ticket, $tickets_id, $input);
 
-      // Add followup from tech
-      $fup_tech = new \ITILFollowup();
-      $fup1_id = $fup_tech->add([
+       // Add followup from tech
+        $fup_tech = new \ITILFollowup();
+        $fup1_id = $fup_tech->add([
          'content' => 'test followup',
          'users_id' => getItemByTypeName('User', 'tech', true),
          'users_id_editor' => getItemByTypeName('User', 'tech', true),
@@ -180,12 +183,12 @@ class NotificationTargetTicket extends DbTestCase {
          'is_private' => 0,
          'items_id' => $tickets_id,
          'date' => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 1),
-      ]);
-      $this->integer($fup1_id)->isGreaterThan(0);
+        ]);
+        $this->integer($fup1_id)->isGreaterThan(0);
 
-      // Add followup from post_only
-      $fup_post_only = new \ITILFollowup();
-      $fup2_id = $fup_post_only->add([
+       // Add followup from post_only
+        $fup_post_only = new \ITILFollowup();
+        $fup2_id = $fup_post_only->add([
          'content' => 'test post_only',
          'users_id' => getItemByTypeName('User', 'post-only', true),
          'users_id_editor' => getItemByTypeName('User', 'post-only', true),
@@ -193,12 +196,12 @@ class NotificationTargetTicket extends DbTestCase {
          'is_private' => 0,
          'items_id' => $tickets_id,
          'date' => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 2),
-      ]);
-      $this->integer($fup2_id)->isGreaterThan(0);
+        ]);
+        $this->integer($fup2_id)->isGreaterThan(0);
 
-      // Add private followup to tech
-      $fup_private_tech = new \ITILFollowup();
-      $fup3_id = $fup_private_tech->add([
+       // Add private followup to tech
+        $fup_private_tech = new \ITILFollowup();
+        $fup3_id = $fup_private_tech->add([
          'content' => 'test private followup',
          'users_id' => getItemByTypeName('User', 'tech', true),
          'users_id_editor' => getItemByTypeName('User', 'tech', true),
@@ -206,12 +209,12 @@ class NotificationTargetTicket extends DbTestCase {
          'is_private' => 1,
          'items_id' => $tickets_id,
          'date' => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 3),
-      ]);
-      $this->integer($fup3_id)->isGreaterThan(0);
+        ]);
+        $this->integer($fup3_id)->isGreaterThan(0);
 
-      //add private task from tech
-      $task_private = new \TicketTask();
-      $task1_id = $task_private->add([
+       //add private task from tech
+        $task_private = new \TicketTask();
+        $task1_id = $task_private->add([
          'state'             => \Planning::TODO,
          'tickets_id'        => $tickets_id,
          'tasktemplates_id'  => '0',
@@ -221,12 +224,12 @@ class NotificationTargetTicket extends DbTestCase {
          'content'           => "Private Task",
          'users_id_tech'     => getItemByTypeName('User', 'tech', true),
          'date'     => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 4),
-      ]);
-      $this->integer($task1_id)->isGreaterThan(0);
+        ]);
+        $this->integer($task1_id)->isGreaterThan(0);
 
-      //add task from tech
-      $task_tech = new \TicketTask();
-      $task2_id = $task_tech->add([
+       //add task from tech
+        $task_tech = new \TicketTask();
+        $task2_id = $task_tech->add([
          'state'             => \Planning::TODO,
          'tickets_id'        => $tickets_id,
          'tasktemplates_id'  => '0',
@@ -236,34 +239,34 @@ class NotificationTargetTicket extends DbTestCase {
          'content'           => "Task",
          'users_id_tech'     => getItemByTypeName('User', 'tech', true),
          'date'     => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 5),
-      ]);
-      $this->integer($task2_id)->isGreaterThan(0);
+        ]);
+        $this->integer($task2_id)->isGreaterThan(0);
 
-      // Add solution to test ticket
-      $solution = new \ITILSolution();
-      $solutions_id = $solution->add([
+       // Add solution to test ticket
+        $solution = new \ITILSolution();
+        $solutions_id = $solution->add([
          'content' => 'test',
          'users_id' => getItemByTypeName('User', 'tech', true),
          'users_id_editor' => getItemByTypeName('User', 'tech', true),
          'itemtype' => 'Ticket',
          'items_id' => $tickets_id,
          'date_creation' => date('Y-m-d H:i:s', strtotime($_SESSION['glpi_currenttime']) + 6),
-      ]);
-      $this->integer($solutions_id)->isGreaterThan(0);
+        ]);
+        $this->integer($solutions_id)->isGreaterThan(0);
 
-      $basic_options = [
+        $basic_options = [
          'additionnaloption' => [
             'usertype' => NotificationTarget::GLPI_USER,
             'is_self_service' => false,
             'show_private'    => true,
          ]
-      ];
+        ];
 
-      $notiftargetticket = new \NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $ticket );
-      $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
+        $notiftargetticket = new \NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $ticket);
+        $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
 
-      //get all task / solution / followup (because is tech)
-      $expected = [
+       //get all task / solution / followup (because is tech)
+        $expected = [
          [
             "##timelineitems.type##"        => "ITILSolution",
             "##timelineitems.typename##"    => "Solutions",
@@ -287,11 +290,11 @@ class NotificationTargetTicket extends DbTestCase {
             "##timelineitems.author##"      => "tech",
          ],[
             "##timelineitems.type##" => "ITILFollowup",
-            "##timelineitems.typename##"=> "Followups",
+            "##timelineitems.typename##" => "Followups",
             "##timelineitems.date##"        => $fup_private_tech->fields['date'],
             "##timelineitems.description##" => $fup_private_tech->fields['content'],
-            "##timelineitems.position##"=> "right",
-            "##timelineitems.author##"=> "tech",
+            "##timelineitems.position##" => "right",
+            "##timelineitems.author##" => "tech",
          ],[
             "##timelineitems.type##"        => "ITILFollowup",
             "##timelineitems.typename##"    => "Followups",
@@ -307,24 +310,24 @@ class NotificationTargetTicket extends DbTestCase {
             "##timelineitems.position##" => "right",
             "##timelineitems.author##" => "tech",
          ]
-      ];
+        ];
 
-      $this->array($ret['timelineitems'])->isIdenticalTo($expected);
+        $this->array($ret['timelineitems'])->isIdenticalTo($expected);
 
-      $this->boolean((boolean)$this->login('post-only', 'postonly', true))->isTrue();
+        $this->boolean((bool)$this->login('post-only', 'postonly', true))->isTrue();
 
-      $basic_options = [
+        $basic_options = [
          'additionnaloption' => [
             'usertype' => NotificationTarget::GLPI_USER,
             'is_self_service' => true,
             'show_private'    => false,
          ]
-      ];
+        ];
 
-      $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
+        $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
 
-      //get only public task / followup / Solution (because is post_only)
-      $expected = [
+       //get only public task / followup / Solution (because is post_only)
+        $expected = [
          [
             "##timelineitems.type##"        => "ITILSolution",
             "##timelineitems.typename##"    => "Solutions",
@@ -354,9 +357,8 @@ class NotificationTargetTicket extends DbTestCase {
             "##timelineitems.position##" => "right",
             "##timelineitems.author##" => "tech",
          ]
-      ];
+        ];
 
-      $this->array($ret['timelineitems'])->isIdenticalTo($expected);
-
-   }
+        $this->array($ret['timelineitems'])->isIdenticalTo($expected);
+    }
 }

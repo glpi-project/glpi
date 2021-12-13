@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,7 +32,7 @@
  */
 
 if (!$DB->tableExists('glpi_appliances')) {
-   $query = "CREATE TABLE `glpi_appliances` (
+    $query = "CREATE TABLE `glpi_appliances` (
          `id` int NOT NULL auto_increment,
          `entities_id` int NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -69,11 +70,11 @@ if (!$DB->tableExists('glpi_appliances')) {
          KEY `serial` (`serial`),
          KEY `otherserial` (`otherserial`)
       ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-   $DB->queryOrDie($query, "9.5 add table glpi_appliances");
+    $DB->queryOrDie($query, "9.5 add table glpi_appliances");
 }
 
 if (!$DB->tableExists('glpi_appliances_items')) {
-   $query = "CREATE TABLE `glpi_appliances_items` (
+    $query = "CREATE TABLE `glpi_appliances_items` (
          `id` int NOT NULL auto_increment,
          `appliances_id` int NOT NULL default '0',
          `items_id` int NOT NULL default '0',
@@ -83,11 +84,11 @@ if (!$DB->tableExists('glpi_appliances_items')) {
          KEY `appliances_id` (`appliances_id`),
          KEY `item` (`itemtype`,`items_id`)
       ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-   $DB->queryOrDie($query, "9.5 add table glpi_appliances_items");
+    $DB->queryOrDie($query, "9.5 add table glpi_appliances_items");
 }
 
 if (!$DB->tableExists('glpi_appliancetypes')) {
-   $query = "CREATE TABLE `glpi_appliancetypes` (
+    $query = "CREATE TABLE `glpi_appliancetypes` (
          `id` int NOT NULL auto_increment,
          `entities_id` int NOT NULL default '0',
          `is_recursive` tinyint NOT NULL default '0',
@@ -99,22 +100,22 @@ if (!$DB->tableExists('glpi_appliancetypes')) {
          KEY `entities_id` (`entities_id`),
          UNIQUE (`externalidentifier`)
       ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-   $DB->queryOrDie($query, "9.5 add table glpi_appliancetypes");
+    $DB->queryOrDie($query, "9.5 add table glpi_appliancetypes");
 }
 
 if (!$DB->tableExists('glpi_applianceenvironments')) {
-   $query = "CREATE TABLE `glpi_applianceenvironments` (
+    $query = "CREATE TABLE `glpi_applianceenvironments` (
          `id` int NOT NULL auto_increment,
          `name` varchar(255) default NULL,
          `comment` text,
          PRIMARY KEY (`id`),
          KEY `name` (`name`)
       ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-   $DB->queryOrDie($query, "9.5 add table glpi_applianceenvironments");
+    $DB->queryOrDie($query, "9.5 add table glpi_applianceenvironments");
 }
 
 if (!$DB->tableExists('glpi_appliancerelations')) {
-   $query = "CREATE TABLE `glpi_appliancerelations` (
+    $query = "CREATE TABLE `glpi_appliancerelations` (
          `id` int NOT NULL auto_increment,
          `appliances_items_id` int NOT NULL default '0',
          `relations_id` int NOT NULL default '0' comment 'locations_id,domains_id or networks_id',
@@ -122,7 +123,7 @@ if (!$DB->tableExists('glpi_appliancerelations')) {
          KEY `appliances_items_id` (`appliances_items_id`),
          KEY `relations_id` (`relations_id`)
       ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-   $DB->queryOrDie($query, "9.5 add table glpi_appliancerelations");
+    $DB->queryOrDie($query, "9.5 add table glpi_appliancerelations");
 }
 
 $migration->addRight('appliance', ALLSTANDARDRIGHT);

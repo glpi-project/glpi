@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,14 +34,15 @@
 /**
  * Logs rules used during inventory
  */
-class RuleMatchedLog extends CommonDBTM {
+class RuleMatchedLog extends CommonDBTM
+{
 
    /**
     * The right name for this class
     *
     * @var string
     */
-   static $rightname = 'inventory';
+    public static $rightname = 'inventory';
 
 
    /**
@@ -50,9 +52,10 @@ class RuleMatchedLog extends CommonDBTM {
     *
     * @return string name of this type
     */
-   static function getTypeName($nb = 0) {
-      return __('Matched rules');
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return __('Matched rules');
+    }
 
 
    /**
@@ -62,14 +65,16 @@ class RuleMatchedLog extends CommonDBTM {
     *
     * @return integer
     */
-   static function countForItem(CommonDBTM $item) {
-      return countElementsInTable(
-         self::getTable(), [
+    public static function countForItem(CommonDBTM $item)
+    {
+        return countElementsInTable(
+            self::getTable(),
+            [
             'itemtype' => $item->getType(),
             'items_id' => $item->getField('id'),
-         ]
-      );
-   }
+            ]
+        );
+    }
 
 
    /**
@@ -79,46 +84,46 @@ class RuleMatchedLog extends CommonDBTM {
     * @param integer $withtemplate 1 if is a template form
     * @return string|array name of the tab
     */
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
 
-      $array_ret = [];
+        $array_ret = [];
 
-      if ($item->getType() == 'Agent') {
-         $array_ret[0] = self::createTabEntry(__('Import information'));
-      } else {
-         $continue = true;
+        if ($item->getType() == 'Agent') {
+            $array_ret[0] = self::createTabEntry(__('Import information'));
+        } else {
+            $continue = true;
 
-         switch ($item->getType()) {
-            case 'Agent':
-               $array_ret[0] = self::createTabEntry(__('Import information'));
-               break;
+            switch ($item->getType()) {
+                case 'Agent':
+                    $array_ret[0] = self::createTabEntry(__('Import information'));
+                    break;
 
-            case 'Unmanaged':
-               $cnt = self::countForItem($item);
-               $array_ret[1] = self::createTabEntry(__('Import information'), $cnt);
-               break;
+                case 'Unmanaged':
+                    $cnt = self::countForItem($item);
+                    $array_ret[1] = self::createTabEntry(__('Import information'), $cnt);
+                    break;
 
-            case 'Computer':
-            case 'Monitor':
-            case 'NetworkEquipment':
-            case 'Peripheral':
-            case 'Phone':
-            case 'Printer':
-               $continue = $item->isDynamic();
-               break;
-            default:
-               break;
-
-         }
-         if (!$continue) {
-            return [];
-         } else if (empty($array_ret)) {
-            $cnt = self::countForItem($item);
-            $array_ret[1] = self::createTabEntry(__('Import information'), $cnt);
-         }
-      }
-      return $array_ret;
-   }
+                case 'Computer':
+                case 'Monitor':
+                case 'NetworkEquipment':
+                case 'Peripheral':
+                case 'Phone':
+                case 'Printer':
+                    $continue = $item->isDynamic();
+                    break;
+                default:
+                    break;
+            }
+            if (!$continue) {
+                return [];
+            } else if (empty($array_ret)) {
+                $cnt = self::countForItem($item);
+                $array_ret[1] = self::createTabEntry(__('Import information'), $cnt);
+            }
+        }
+        return $array_ret;
+    }
 
 
    /**
@@ -129,22 +134,23 @@ class RuleMatchedLog extends CommonDBTM {
     * @param integer $withtemplate 1 if is a template form
     * @return boolean
     */
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
 
-      $rulematched = new self();
-      if ($tabnum == '0') {
-         if ($item->getID() > 0) {
-            $rulematched->showFormAgent($item->getID());
-            return true;
-         }
-      } else if ($tabnum == '1') {
-         if ($item->getID() > 0) {
-            $rulematched->showItemForm($item->getID(), $item->getType());
-            return true;
-         }
-      }
-      return false;
-   }
+        $rulematched = new self();
+        if ($tabnum == '0') {
+            if ($item->getID() > 0) {
+                $rulematched->showFormAgent($item->getID());
+                return true;
+            }
+        } else if ($tabnum == '1') {
+            if ($item->getID() > 0) {
+                $rulematched->showItemForm($item->getID(), $item->getType());
+                return true;
+            }
+        }
+        return false;
+    }
 
 
    /**
@@ -154,10 +160,11 @@ class RuleMatchedLog extends CommonDBTM {
     * @param integer $items_id
     * @param string $itemtype
     */
-   function cleanOlddata($items_id, $itemtype) {
-      global $DB;
+    public function cleanOlddata($items_id, $itemtype)
+    {
+        global $DB;
 
-      $iterator = $DB->request([
+        $iterator = $DB->request([
          'SELECT' => 'id',
          'FROM'   => self::getTable(),
          'WHERE'  => [
@@ -167,11 +174,11 @@ class RuleMatchedLog extends CommonDBTM {
          'ORDER'  => 'date DESC',
          'START'  => 30,
          'LIMIT'  => '50000'
-      ]);
-      foreach ($iterator as $data) {
-         $this->delete(['id'=>$data['id']]);
-      }
-   }
+        ]);
+        foreach ($iterator as $data) {
+            $this->delete(['id' => $data['id']]);
+        }
+    }
 
 
    /**
@@ -181,61 +188,62 @@ class RuleMatchedLog extends CommonDBTM {
     * @param string $itemtype
     * @return true
     */
-   function showItemForm($items_id, $itemtype) {
-      global $DB;
+    public function showItemForm($items_id, $itemtype)
+    {
+        global $DB;
 
-      $rule    = new RuleImportAsset();
-      $agent = new Agent();
+        $rule    = new RuleImportAsset();
+        $agent = new Agent();
 
-      if (isset($_GET["start"])) {
-         $start = $_GET["start"];
-      } else {
-         $start = 0;
-      }
+        if (isset($_GET["start"])) {
+            $start = $_GET["start"];
+        } else {
+            $start = 0;
+        }
 
-      $params = [
+        $params = [
          'FROM'   => self::getTable(),
          'WHERE'  => [
             'itemtype'  => $itemtype,
             'items_id'  => intval($items_id)
          ],
          'COUNT'  => 'cpt'
-      ];
-      $iterator = $DB->request($params);
-      $number   = $iterator->current()['cpt'];
+        ];
+        $iterator = $DB->request($params);
+        $number   = $iterator->current()['cpt'];
 
-      // Display the pager
-      Html::printAjaxPager(self::getTypeName(2), $start, $number);
+       // Display the pager
+        Html::printAjaxPager(self::getTypeName(2), $start, $number);
 
-      echo "<table class='tab_cadre_fixe' cellpadding='1'>";
+        echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 
-      echo "<tr>";
-      echo "<th colspan='4'>";
-      echo __('Rule import logs');
+        echo "<tr>";
+        echo "<th colspan='4'>";
+        echo __('Rule import logs');
 
-      echo "</th>";
-      echo "</tr>";
+        echo "</th>";
+        echo "</tr>";
 
-      echo "<tr>";
-      echo "<th>";
-      echo _n('Date', 'Dates', 1);
+        echo "<tr>";
+        echo "<th>";
+        echo _n('Date', 'Dates', 1);
 
-      echo "</th>";
-      echo "<th>";
-      echo __('Rule name');
+        echo "</th>";
+        echo "<th>";
+        echo __('Rule name');
 
-      echo "</th>";
-      echo "<th>";
-      echo Agent::getTypeName(1);
+        echo "</th>";
+        echo "<th>";
+        echo Agent::getTypeName(1);
 
-      echo "</th>";
-      echo "<th>";
-      echo __('Module');
+        echo "</th>";
+        echo "<th>";
+        echo __('Module');
 
-      echo "</th>";
-      echo "</tr>";
+        echo "</th>";
+        echo "</tr>";
 
-      $params = [
+        $params = [
          'FROM'   => self::getTable(),
          'WHERE'  => [
             'itemtype'  => $itemtype,
@@ -244,33 +252,33 @@ class RuleMatchedLog extends CommonDBTM {
          'ORDER'  => 'date DESC',
          'START'  => (int)$start,
          'LIMIT'  => (int)$_SESSION['glpilist_limit']
-      ];
-      foreach ($DB->request($params) as $data) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td align='center'>";
-         echo Html::convDateTime($data['date']);
-         echo "</td>";
-         echo "<td align='center'>";
-         if ($rule->getFromDB($data['rules_id'])) {
-            echo $rule->getLink(1);
-         }
-         echo "</td>";
-         echo "<td align='center'>";
-         if ($agent->getFromDB($data['agents_id'])) {
-            echo $agent->getLink(1);
-         }
-         echo "</td>";
-         echo "<td>";
-         echo "</td>";
-         echo "</tr>";
-      }
-      echo "</table>";
+        ];
+        foreach ($DB->request($params) as $data) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td align='center'>";
+            echo Html::convDateTime($data['date']);
+            echo "</td>";
+            echo "<td align='center'>";
+            if ($rule->getFromDB($data['rules_id'])) {
+                echo $rule->getLink(1);
+            }
+            echo "</td>";
+            echo "<td align='center'>";
+            if ($agent->getFromDB($data['agents_id'])) {
+                echo $agent->getLink(1);
+            }
+            echo "</td>";
+            echo "<td>";
+            echo "</td>";
+            echo "</tr>";
+        }
+        echo "</table>";
 
-      // Display the pager
-      Html::printAjaxPager(self::getTypeName(2), $start, $number);
+       // Display the pager
+        Html::printAjaxPager(self::getTypeName(2), $start, $number);
 
-      return true;
-   }
+        return true;
+    }
 
 
    /**
@@ -278,67 +286,68 @@ class RuleMatchedLog extends CommonDBTM {
     *
     * @param integer $agents_id
     */
-   function showFormAgent($agents_id) {
+    public function showFormAgent($agents_id)
+    {
 
-      $rule = new RuleImportAsset();
+        $rule = new RuleImportAsset();
 
-      echo "<table class='tab_cadre_fixe' cellpadding='1'>";
+        echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 
-      echo "<tr>";
-      echo "<th colspan='5'>";
-      echo __('Rule import logs');
+        echo "<tr>";
+        echo "<th colspan='5'>";
+        echo __('Rule import logs');
 
-      echo "</th>";
-      echo "</tr>";
+        echo "</th>";
+        echo "</tr>";
 
-      echo "<tr>";
-      echo "<th>";
-      echo _n('Date', 'Dates', 1);
+        echo "<tr>";
+        echo "<th>";
+        echo _n('Date', 'Dates', 1);
 
-      echo "</th>";
-      echo "<th>";
-      echo __('Rule name');
+        echo "</th>";
+        echo "<th>";
+        echo __('Rule name');
 
-      echo "</th>";
-      echo "<th>";
-      echo __('Item type');
+        echo "</th>";
+        echo "<th>";
+        echo __('Item type');
 
-      echo "</th>";
-      echo "<th>";
-      echo _n('Item', 'Items', 1);
+        echo "</th>";
+        echo "<th>";
+        echo _n('Item', 'Items', 1);
 
-      echo "</th>";
-      echo "<th>";
-      echo __('Module');
+        echo "</th>";
+        echo "<th>";
+        echo __('Module');
 
-      echo "</th>";
-      echo "</tr>";
+        echo "</th>";
+        echo "</tr>";
 
-      $allData = $this->find(['agents_id' => $agents_id], ['date DESC']);
-      foreach ($allData as $data) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td align='center'>";
-         echo Html::convDateTime($data['date']);
-         echo "</td>";
-         echo "<td align='center'>";
-         if ($rule->getFromDB($data['rules_id'])) {
-            echo $rule->getLink(1);
-         }
-         echo "</td>";
-         echo "<td align='center'>";
-         $itemtype = $data['itemtype'];
-         $item = new $itemtype();
-         echo $item->getTypeName();
-         echo "</td>";
-         echo "<td align='center'>";
-         if ($item->getFromDB($data['items_id'])) {
-            echo $item->getLink(1);
-         }
-         echo "</td>";
-         echo "<td>";
-         echo "</td>";
-         echo "</tr>";
-      }
-      echo "</table>";
-   }
+        $allData = $this->find(['agents_id' => $agents_id], ['date DESC']);
+        foreach ($allData as $data) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td align='center'>";
+            echo Html::convDateTime($data['date']);
+            echo "</td>";
+            echo "<td align='center'>";
+            if ($rule->getFromDB($data['rules_id'])) {
+                echo $rule->getLink(1);
+            }
+            echo "</td>";
+            echo "<td align='center'>";
+            $itemtype = $data['itemtype'];
+            $item = new $itemtype();
+            echo $item->getTypeName();
+            echo "</td>";
+            echo "<td align='center'>";
+            if ($item->getFromDB($data['items_id'])) {
+                echo $item->getLink(1);
+            }
+            echo "</td>";
+            echo "<td>";
+            echo "</td>";
+            echo "</tr>";
+        }
+        echo "</table>";
+    }
 }

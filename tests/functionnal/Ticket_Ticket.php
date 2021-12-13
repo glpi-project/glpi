@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,154 +37,159 @@ use DbTestCase;
 
 /* Test for inc/ticket_ticket.class.php */
 
-class Ticket_Ticket extends DbTestCase {
-   private $tone;
-   private $ttwo;
+class Ticket_Ticket extends DbTestCase
+{
+    private $tone;
+    private $ttwo;
 
-   private function createTickets() {
-      $tone = new \Ticket();
-      $this->integer(
-         (int)$tone->add([
+    private function createTickets()
+    {
+        $tone = new \Ticket();
+        $this->integer(
+            (int)$tone->add([
             'name'         => 'Linked ticket 01',
             'description'  => 'Linked ticket 01',
             'content'            => '',
-         ])
-      )->isGreaterThan(0);
-      $this->boolean($tone->getFromDB($tone->getID()))->isTrue();
-      $this->tone = $tone;
+            ])
+        )->isGreaterThan(0);
+        $this->boolean($tone->getFromDB($tone->getID()))->isTrue();
+        $this->tone = $tone;
 
-      $ttwo = new \Ticket();
-      $this->integer(
-         (int)$ttwo->add([
+        $ttwo = new \Ticket();
+        $this->integer(
+            (int)$ttwo->add([
             'name'         => 'Linked ticket 02',
             'description'  => 'Linked ticket 02',
             'content'            => '',
-         ])
-      )->isGreaterThan(0);
-      $this->boolean($ttwo->getFromDB($ttwo->getID()))->isTrue();
-      $this->ttwo = $ttwo;
-   }
+            ])
+        )->isGreaterThan(0);
+        $this->boolean($ttwo->getFromDB($ttwo->getID()))->isTrue();
+        $this->ttwo = $ttwo;
+    }
 
-   public function testSimpleLink() {
-      $this->createTickets();
-      $tone = $this->tone;
-      $ttwo = $this->ttwo;
+    public function testSimpleLink()
+    {
+        $this->createTickets();
+        $tone = $this->tone;
+        $ttwo = $this->ttwo;
 
-      $link = new \Ticket_Ticket();
-      $lid = (int)$link->add([
+        $link = new \Ticket_Ticket();
+        $lid = (int)$link->add([
          'tickets_id_1' => $tone->getID(),
          'tickets_id_2' => $ttwo->getID(),
          'link'         => \Ticket_Ticket::LINK_TO
-      ]);
-      $this->integer($lid)->isGreaterThan(0);
+        ]);
+        $this->integer($lid)->isGreaterThan(0);
 
-      //cannot add same link twice!
-      $this->integer(
-         (int)$link->add([
+       //cannot add same link twice!
+        $this->integer(
+            (int)$link->add([
             'tickets_id_1' => $tone->getID(),
             'tickets_id_2' => $ttwo->getID(),
             'link'         => \Ticket_Ticket::LINK_TO
-         ])
-      )->isIdenticalTo(0);
+            ])
+        )->isIdenticalTo(0);
 
-      //but can be reclassed as a duplicate
-      $this->integer(
-         (int)$link->add([
+       //but can be reclassed as a duplicate
+        $this->integer(
+            (int)$link->add([
             'tickets_id_1' => $tone->getID(),
             'tickets_id_2' => $ttwo->getID(),
             'link'         => \Ticket_Ticket::DUPLICATE_WITH
-         ])
-      )->isGreaterThan(0);
-      //original link has been removed
-      $this->boolean($link->getFromDB($lid))->isFalse();
+            ])
+        )->isGreaterThan(0);
+       //original link has been removed
+        $this->boolean($link->getFromDB($lid))->isFalse();
 
-      //cannot eclass from duplicate to simple link
-      $this->integer(
-         (int)$link->add([
+       //cannot eclass from duplicate to simple link
+        $this->integer(
+            (int)$link->add([
             'tickets_id_1' => $tone->getID(),
             'tickets_id_2' => $ttwo->getID(),
             'link'         => \Ticket_Ticket::LINK_TO
-         ])
-      )->isIdenticalTo(0);
-   }
+            ])
+        )->isIdenticalTo(0);
+    }
 
-   public function testSonsParents() {
-      $this->createTickets();
-      $tone = $this->tone;
-      $ttwo = $this->ttwo;
+    public function testSonsParents()
+    {
+        $this->createTickets();
+        $tone = $this->tone;
+        $ttwo = $this->ttwo;
 
-      $link = new \Ticket_Ticket();
-      $this->integer(
-         (int)$link->add([
+        $link = new \Ticket_Ticket();
+        $this->integer(
+            (int)$link->add([
             'tickets_id_1' => $tone->getID(),
             'tickets_id_2' => $ttwo->getID(),
             'link'         => \Ticket_Ticket::SON_OF
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      //cannot add same link twice!
-      $link = new \Ticket_Ticket();
-      $this->integer(
-         (int)$link->add([
+       //cannot add same link twice!
+        $link = new \Ticket_Ticket();
+        $this->integer(
+            (int)$link->add([
             'tickets_id_1' => $tone->getID(),
             'tickets_id_2' => $ttwo->getID(),
             'link'         => \Ticket_Ticket::SON_OF
-         ])
-      )->isIdenticalTo(0);
+            ])
+        )->isIdenticalTo(0);
 
-      $this->createTickets();
-      $tone = $this->tone;
-      $ttwo = $this->ttwo;
+        $this->createTickets();
+        $tone = $this->tone;
+        $ttwo = $this->ttwo;
 
-      $link = new \Ticket_Ticket();
-      $this->integer(
-         (int)$link->add([
+        $link = new \Ticket_Ticket();
+        $this->integer(
+            (int)$link->add([
             'tickets_id_1' => $tone->getID(),
             'tickets_id_2' => $ttwo->getID(),
             'link'         => \Ticket_Ticket::PARENT_OF
-         ])
-      )->isGreaterThan(0);
-      $this->boolean($link->getFromDB($link->getID()))->isTrue();
+            ])
+        )->isGreaterThan(0);
+        $this->boolean($link->getFromDB($link->getID()))->isTrue();
 
-      //PARENT_OF is stored as inversed child
-      $this->array($link->fields)
+       //PARENT_OF is stored as inversed child
+        $this->array($link->fields)
          ->integer['tickets_id_1']->isIdenticalTo($ttwo->getID())
          ->integer['tickets_id_2']->isIdenticalTo($tone->getID())
          ->integer['link']->isEqualTo(\Ticket_Ticket::SON_OF);
-   }
+    }
 
-   public function testNumberOpen() {
-      $this->login();
-      $this->createTickets();
-      $tone = $this->tone;
-      $ttwo = $this->ttwo;
+    public function testNumberOpen()
+    {
+        $this->login();
+        $this->createTickets();
+        $tone = $this->tone;
+        $ttwo = $this->ttwo;
 
-      $link = new \Ticket_Ticket();
-      $this->integer(
-         (int)$link->add([
+        $link = new \Ticket_Ticket();
+        $this->integer(
+            (int)$link->add([
             'tickets_id_1' => $tone->getID(),
             'tickets_id_2' => $ttwo->getID(),
             'link'         => \Ticket_Ticket::LINK_TO
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      //not a SON_OF => no child
-      $this->integer(\Ticket_Ticket::countOpenChildren($link->getID()))->isIdenticalTo(0);
+       //not a SON_OF => no child
+        $this->integer(\Ticket_Ticket::countOpenChildren($link->getID()))->isIdenticalTo(0);
 
-      $this->boolean(
-         $link->update([
+        $this->boolean(
+            $link->update([
             'id'     => $link->getID(),
             'link'   => \Ticket_Ticket::SON_OF
-         ])
-      )->isTrue();
-      $this->integer(\Ticket_Ticket::countOpenChildren($ttwo->getID()))->isIdenticalTo(1);
+            ])
+        )->isTrue();
+        $this->integer(\Ticket_Ticket::countOpenChildren($ttwo->getID()))->isIdenticalTo(1);
 
-      $this->boolean(
-         $tone->update([
+        $this->boolean(
+            $tone->update([
             'id'     => $tone->getID(),
             'status' => \Ticket::CLOSED
-         ])
-      )->isTrue();
-      $this->integer(\Ticket_Ticket::countOpenChildren($ttwo->getID()))->isIdenticalTo(0);
-   }
+            ])
+        )->isTrue();
+        $this->integer(\Ticket_Ticket::countOpenChildren($ttwo->getID()))->isIdenticalTo(0);
+    }
 }

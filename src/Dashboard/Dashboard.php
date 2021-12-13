@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,27 +36,30 @@ namespace Glpi\Dashboard;
 use Ramsey\Uuid\Uuid;
 use Session;
 
-class Dashboard extends \CommonDBTM {
-   protected $id      = 0;
-   protected $key     = "";
-   protected $title   = "";
-   protected $embed   = false;
-   protected $items   = null;
-   protected $rights  = null;
-   protected $filters  = "";
+class Dashboard extends \CommonDBTM
+{
+    protected $id      = 0;
+    protected $key     = "";
+    protected $title   = "";
+    protected $embed   = false;
+    protected $items   = null;
+    protected $rights  = null;
+    protected $filters  = "";
 
-   static $all_dashboards = [];
-   static $rightname = 'dashboard';
-
-
-   public function __construct(string $dashboard_key = "") {
-      $this->key = $dashboard_key;
-   }
+    public static $all_dashboards = [];
+    public static $rightname = 'dashboard';
 
 
-   static function getIndexName() {
-      return "key";
-   }
+    public function __construct(string $dashboard_key = "")
+    {
+        $this->key = $dashboard_key;
+    }
+
+
+    public static function getIndexName()
+    {
+        return "key";
+    }
 
 
    /**
@@ -66,53 +70,57 @@ class Dashboard extends \CommonDBTM {
     *
     * @return false|int Id of the loaded dashboard, or false on failure
     */
-   public function load(bool $force = false) {
-      $loaded = true;
-      if ($force
-          || count($this->fields) == 0
-          || $this->fields['id'] == 0
-          || strlen($this->fields['name']) == 0) {
-         $loaded = $this->getFromDB($this->key);
-      }
+    public function load(bool $force = false)
+    {
+        $loaded = true;
+        if (
+            $force
+            || count($this->fields) == 0
+            || $this->fields['id'] == 0
+            || strlen($this->fields['name']) == 0
+        ) {
+            $loaded = $this->getFromDB($this->key);
+        }
 
-      if ($loaded) {
-         if ($force || $this->items === null) {
-            $this->items = Item::getForDashboard($this->fields['id']);
-         }
+        if ($loaded) {
+            if ($force || $this->items === null) {
+                $this->items = Item::getForDashboard($this->fields['id']);
+            }
 
-         if ($force || $this->rights === null) {
-            $this->rights = Right::getForDashboard($this->fields['id']);
-         }
-      }
+            if ($force || $this->rights === null) {
+                $this->rights = Right::getForDashboard($this->fields['id']);
+            }
+        }
 
-      return $this->fields['id'] ?? false;
-   }
+        return $this->fields['id'] ?? false;
+    }
 
 
-   public function getFromDB($ID) {
-      global $DB;
+    public function getFromDB($ID)
+    {
+        global $DB;
 
-      $iterator = $DB->request([
+        $iterator = $DB->request([
          'FROM'  => self::getTable(),
          'WHERE' => [
             'key' => $ID
          ],
          'LIMIT' => 1
-      ]);
-      if (count($iterator) == 1) {
-         $this->fields = $iterator->current();
-         $this->key    = $ID;
-         $this->post_getFromDB();
-         return true;
-      } else if (count($iterator) > 1) {
-         trigger_error(
-            sprintf('getFromDB expects to get one result, %1$s found!', count($iterator)),
-            E_USER_WARNING
-         );
-      }
+        ]);
+        if (count($iterator) == 1) {
+            $this->fields = $iterator->current();
+            $this->key    = $ID;
+            $this->post_getFromDB();
+            return true;
+        } else if (count($iterator) > 1) {
+            trigger_error(
+                sprintf('getFromDB expects to get one result, %1$s found!', count($iterator)),
+                E_USER_WARNING
+            );
+        }
 
-      return false;
-   }
+        return false;
+    }
 
 
    /**
@@ -120,28 +128,30 @@ class Dashboard extends \CommonDBTM {
     *
     * @return string
     */
-   public function getTitle(): string {
-      $this->load();
-      return $this->fields['name'] ?? "";
-   }
+    public function getTitle(): string
+    {
+        $this->load();
+        return $this->fields['name'] ?? "";
+    }
 
    /**
     * Do we have the right to view the current dashboard
     *
     * @return bool
     */
-   public function canViewCurrent(): bool {
-      // check global (admin) right
-      if (self::canView() && !$this->isPrivate()) {
-         return true;
-      }
+    public function canViewCurrent(): bool
+    {
+       // check global (admin) right
+        if (self::canView() && !$this->isPrivate()) {
+            return true;
+        }
 
-      $this->load();
+        $this->load();
 
-      //check shared rights
-      $rights = self::convertRights($this->rights ?? []);
-      return self::checkRights($rights);
-   }
+       //check shared rights
+        $rights = self::convertRights($this->rights ?? []);
+        return self::checkRights($rights);
+    }
 
 
    /**
@@ -154,22 +164,22 @@ class Dashboard extends \CommonDBTM {
     *
     * @return string
     */
-   public function saveNew(
-      string $title = "",
-      string $context = "core",
-      array $items = [],
-      array $rights = []
-   ): string {
-      $this->fields['name']   = $title;
-      $this->fields['context'] = $context;
-      $this->key    = \Toolbox::slugify($title);
-      $this->items  = $items;
-      $this->rights = $rights;
+    public function saveNew(
+        string $title = "",
+        string $context = "core",
+        array $items = [],
+        array $rights = []
+    ): string {
+        $this->fields['name']   = $title;
+        $this->fields['context'] = $context;
+        $this->key    = \Toolbox::slugify($title);
+        $this->items  = $items;
+        $this->rights = $rights;
 
-      $this->save();
+        $this->save();
 
-      return $this->key;
-   }
+        return $this->key;
+    }
 
 
    /**
@@ -179,43 +189,45 @@ class Dashboard extends \CommonDBTM {
     *
     * @return void
     */
-   public function save(bool $skip_child = false) {
-      global $DB, $GLPI_CACHE;
+    public function save(bool $skip_child = false)
+    {
+        global $DB, $GLPI_CACHE;
 
-      $DB->updateOrInsert(self::getTable(), [
+        $DB->updateOrInsert(self::getTable(), [
          'key'     => $this->key,
          'name'    => $this->fields['name'],
          'context' => $this->fields['context']
-      ], [
+        ], [
          'key'  => $this->key
-      ]);
+        ]);
 
-      // reload dashboard
-      $this->getFromDB($this->key);
+       // reload dashboard
+        $this->getFromDB($this->key);
 
-      //save items
-      if (!$skip_child && count($this->items) > 0) {
-         $this->saveItems($this->items);
-      }
+       //save items
+        if (!$skip_child && count($this->items) > 0) {
+            $this->saveItems($this->items);
+        }
 
-      //save rights
-      if (!$skip_child && count($this->rights) > 0) {
-         $this->saveRights($this->rights);
-      }
+       //save rights
+        if (!$skip_child && count($this->rights) > 0) {
+            $this->saveRights($this->rights);
+        }
 
-      // invalidate dashboard cache
-      $cache_key = "dashboard_card_".$this->key;
-      $GLPI_CACHE->delete($cache_key);
-   }
+       // invalidate dashboard cache
+        $cache_key = "dashboard_card_" . $this->key;
+        $GLPI_CACHE->delete($cache_key);
+    }
 
 
-   function cleanDBonPurge() {
-      $this->deleteChildrenAndRelationsFromDb([
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb([
          Item::class,
          Right::class,
          Filter::class,
-      ]);
-   }
+        ]);
+    }
 
    /**
     * Save items in DB for the current dashboard
@@ -231,16 +243,17 @@ class Dashboard extends \CommonDBTM {
     *
     * @return void
     */
-   public function saveItems(array $items = []) {
-      $this->load();
-      $this->items   = $items;
+    public function saveItems(array $items = [])
+    {
+        $this->load();
+        $this->items   = $items;
 
-      $this->deleteChildrenAndRelationsFromDb([
+        $this->deleteChildrenAndRelationsFromDb([
          Item::class,
-      ]);
+        ]);
 
-      Item::addForDashboard($this->fields['id'], $items);
-   }
+        Item::addForDashboard($this->fields['id'], $items);
+    }
 
    /**
     * Save title DB for the current dashboard
@@ -249,15 +262,16 @@ class Dashboard extends \CommonDBTM {
     *
     * @return void
     */
-   public function saveTitle(string $title = "") {
-      if (!strlen($title)) {
-         return;
-      }
+    public function saveTitle(string $title = "")
+    {
+        if (!strlen($title)) {
+            return;
+        }
 
-      $this->load();
-      $this->fields['name'] = $title;
-      $this->save(true);
-   }
+        $this->load();
+        $this->fields['name'] = $title;
+        $this->save(true);
+    }
 
 
    /**
@@ -271,16 +285,17 @@ class Dashboard extends \CommonDBTM {
     *
     * @return void
     */
-   public function saveRights(array $rights = []) {
-      $this->load();
-      $this->rights = $rights;
+    public function saveRights(array $rights = [])
+    {
+        $this->load();
+        $this->rights = $rights;
 
-      $this->deleteChildrenAndRelationsFromDb([
+        $this->deleteChildrenAndRelationsFromDb([
          Right::class,
-      ]);
+        ]);
 
-      Right::addForDashboard($this->fields['id'], $rights);
-   }
+        Right::addForDashboard($this->fields['id'], $rights);
+    }
 
    /**
     * Save filter in DB for the  curent dashboard
@@ -289,12 +304,13 @@ class Dashboard extends \CommonDBTM {
     *
     * @return void
     */
-   public function saveFilter(string $filters = ''): void {
-      $this->load();
-      $this->filters = $filters;
+    public function saveFilter(string $filters = ''): void
+    {
+        $this->load();
+        $this->filters = $filters;
 
-      Filter::addForDashboard($this->fields['id'], $filters);
-   }
+        Filter::addForDashboard($this->fields['id'], $filters);
+    }
 
    /**
     * Save filter in DB for the  curent dashboard
@@ -303,11 +319,12 @@ class Dashboard extends \CommonDBTM {
     *
     * @return string
     */
-   public function getFilter(): string {
-      $this->load();
-      $this->filters = Filter::getForDashboard($this->fields['id']);
-      return $this->filters;
-   }
+    public function getFilter(): string
+    {
+        $this->load();
+        $this->filters = Filter::getForDashboard($this->fields['id']);
+        return $this->filters;
+    }
 
    /**
     * Clone current Dashboard.
@@ -315,29 +332,30 @@ class Dashboard extends \CommonDBTM {
     *
     * @return array with [title, key]
     */
-   function cloneCurrent(): array {
-      $this->load();
+    public function cloneCurrent(): array
+    {
+        $this->load();
 
-      $this->fields['name'] = sprintf(__('Copy of %s'), $this->fields['name']);
-      $this->key = \Toolbox::slugify($this->fields['name']);
+        $this->fields['name'] = sprintf(__('Copy of %s'), $this->fields['name']);
+        $this->key = \Toolbox::slugify($this->fields['name']);
 
-      // replace gridstack_id (with uuid V4) in the copy, to avoid cache issue
-      $this->items = array_map(function(array $item) {
-         $item['gridstack_id'] = $item['card_id'].Uuid::uuid4();
+       // replace gridstack_id (with uuid V4) in the copy, to avoid cache issue
+        $this->items = array_map(function (array $item) {
+            $item['gridstack_id'] = $item['card_id'] . Uuid::uuid4();
 
-         return $item;
-      }, $this->items);
+            return $item;
+        }, $this->items);
 
-      // convert right to the good format
-      $this->rights = self::convertRights($this->rights);
+       // convert right to the good format
+        $this->rights = self::convertRights($this->rights);
 
-      $this->save();
+        $this->save();
 
-      return [
+        return [
          'title' => $this->fields['name'],
          'key'   => $this->key
-      ];
-   }
+        ];
+    }
 
 
    /**
@@ -349,56 +367,56 @@ class Dashboard extends \CommonDBTM {
     *
     * @return array dasboards
     */
-   static function getAll(
-      bool $force = false,
-      bool $check_rights = true,
-      string $context = 'core'
-   ): array {
-      global $DB;
+    public static function getAll(
+        bool $force = false,
+        bool $check_rights = true,
+        string $context = 'core'
+    ): array {
+        global $DB;
 
-      if (!$force && count(self::$all_dashboards) > 0) {
-         return self::$all_dashboards;
-      }
+        if (!$force && count(self::$all_dashboards) > 0) {
+            return self::$all_dashboards;
+        }
 
-      // empty previous data
-      self::$all_dashboards = [];
+       // empty previous data
+        self::$all_dashboards = [];
 
-      $dashboard_criteria = [];
-      if (strlen($context)) {
-         $dashboard_criteria['context'] = $context;
-      }
+        $dashboard_criteria = [];
+        if (strlen($context)) {
+            $dashboard_criteria['context'] = $context;
+        }
 
-      $dashboards = iterator_to_array($DB->request(self::getTable(), ['WHERE' => $dashboard_criteria]));
-      $items      = iterator_to_array($DB->request(Item::getTable()));
-      $rights     = iterator_to_array($DB->request(Right::getTable()));
+        $dashboards = iterator_to_array($DB->request(self::getTable(), ['WHERE' => $dashboard_criteria]));
+        $items      = iterator_to_array($DB->request(Item::getTable()));
+        $rights     = iterator_to_array($DB->request(Right::getTable()));
 
-      foreach ($dashboards as $dashboard) {
-         $key = $dashboard['key'];
-         $id  = $dashboard['id'];
+        foreach ($dashboards as $dashboard) {
+            $key = $dashboard['key'];
+            $id  = $dashboard['id'];
 
-         $d_rights = array_filter($rights, function($right_line) use($id) {
-            return $right_line['dashboards_dashboards_id'] == $id;
-         });
-         $dashboardItem = new self($key);
-         if ($check_rights && !$dashboardItem->canViewCurrent()) {
-            continue;
-         }
-         $dashboard['rights'] = self::convertRights($d_rights);
+            $d_rights = array_filter($rights, function ($right_line) use ($id) {
+                return $right_line['dashboards_dashboards_id'] == $id;
+            });
+            $dashboardItem = new self($key);
+            if ($check_rights && !$dashboardItem->canViewCurrent()) {
+                continue;
+            }
+            $dashboard['rights'] = self::convertRights($d_rights);
 
-         $d_items = array_filter($items, function($item) use($id) {
-            return $item['dashboards_dashboards_id'] == $id;
-         });
-         $d_items = array_map(function($item) {
-            $item['card_options'] = importArrayFromDB($item['card_options']);
-            return $item;
-         }, $d_items);
-         $dashboard['items'] = $d_items;
+            $d_items = array_filter($items, function ($item) use ($id) {
+                return $item['dashboards_dashboards_id'] == $id;
+            });
+            $d_items = array_map(function ($item) {
+                $item['card_options'] = importArrayFromDB($item['card_options']);
+                return $item;
+            }, $d_items);
+            $dashboard['items'] = $d_items;
 
-         self::$all_dashboards[$key] = $dashboard;
-      }
+            self::$all_dashboards[$key] = $dashboard;
+        }
 
-      return self::$all_dashboards;
-   }
+        return self::$all_dashboards;
+    }
 
 
    /**
@@ -426,20 +444,21 @@ class Dashboard extends \CommonDBTM {
     *
     * @return array converter rights
     */
-   static function convertRights(array $raw_rights = []): array {
-      $rights = [
+    public static function convertRights(array $raw_rights = []): array
+    {
+        $rights = [
          'entities_id' => [],
          'profiles_id' => [],
          'users_id'    => [],
          'groups_id'   => [],
-      ];
-      foreach ($raw_rights as $right_line) {
-         $fk = getForeignKeyFieldForItemType($right_line['itemtype']);
-         $rights[$fk][] = $right_line['items_id'];
-      }
+        ];
+        foreach ($raw_rights as $right_line) {
+            $fk = getForeignKeyFieldForItemType($right_line['itemtype']);
+            $rights[$fk][] = $right_line['items_id'];
+        }
 
-      return $rights;
-   }
+        return $rights;
+    }
 
 
    /**
@@ -449,25 +468,28 @@ class Dashboard extends \CommonDBTM {
     *
     * @return bool
     */
-   static function checkRights(array $rights = []): bool {
-      $default_rights = [
+    public static function checkRights(array $rights = []): bool
+    {
+        $default_rights = [
          'entities_id' => [],
          'profiles_id' => [],
          'users_id'    => [],
          'groups_id'   => [],
-      ];
-      $rights = array_merge_recursive($default_rights, $rights);
+        ];
+        $rights = array_merge_recursive($default_rights, $rights);
 
-      // check specific rights
-      if (count(array_intersect($rights['entities_id'], $_SESSION['glpiactiveentities']))
-          || count(array_intersect($rights['profiles_id'], array_keys($_SESSION['glpiprofiles'])))
-          || in_array($_SESSION['glpiID'], $rights['users_id'])
-          || count(array_intersect($rights['groups_id'], $_SESSION['glpigroups']))) {
-         return true;
-      }
+       // check specific rights
+        if (
+            count(array_intersect($rights['entities_id'], $_SESSION['glpiactiveentities']))
+            || count(array_intersect($rights['profiles_id'], array_keys($_SESSION['glpiprofiles'])))
+            || in_array($_SESSION['glpiID'], $rights['users_id'])
+            || count(array_intersect($rights['groups_id'], $_SESSION['glpigroups']))
+        ) {
+            return true;
+        }
 
-      return false;
-   }
+        return false;
+    }
 
 
    /**
@@ -486,52 +508,56 @@ class Dashboard extends \CommonDBTM {
     *
     * @return bool
     */
-   static function importFromJson($import = null) {
-      if (!is_array($import)) {
-         $import = json_decode($import, true);
-         if (json_last_error() !== JSON_ERROR_NONE) {
-            return false;
-         }
-      }
+    public static function importFromJson($import = null)
+    {
+        if (!is_array($import)) {
+            $import = json_decode($import, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return false;
+            }
+        }
 
-      foreach ($import as $key => $dashboard) {
-         $dash_object = new self($key);
-         $dash_object->saveNew(
-            $dashboard['title']  ?? $key,
-            $dashboard['context']  ?? "core",
-            $dashboard['items']  ?? [],
-            $dashboard['rights'] ?? []
-         );
-      }
+        foreach ($import as $key => $dashboard) {
+            $dash_object = new self($key);
+            $dash_object->saveNew(
+                $dashboard['title']  ?? $key,
+                $dashboard['context']  ?? "core",
+                $dashboard['items']  ?? [],
+                $dashboard['rights'] ?? []
+            );
+        }
 
-      return true;
-   }
+        return true;
+    }
 
-   public function setPrivate($is_private) {
-      $this->load();
+    public function setPrivate($is_private)
+    {
+        $this->load();
 
-      return $this->update([
+        return $this->update([
          'id'       => $this->fields['id'],
          'key'      => $this->fields['key'],
          'users_id' => ($is_private ? Session::getLoginUserID() : 0)
-      ]);
-   }
+        ]);
+    }
 
-   public function getPrivate() {
-      $this->load();
-      if (!isset($this->fields['users_id'])) {
-         return '0';
-      }
-      return $this->fields['users_id'] != '0' ? '1' : '0';
-   }
+    public function getPrivate()
+    {
+        $this->load();
+        if (!isset($this->fields['users_id'])) {
+            return '0';
+        }
+        return $this->fields['users_id'] != '0' ? '1' : '0';
+    }
 
    /**
     * Is this dashboard private ?
     *
     * @return bool true if private; false otherwise
     */
-   public function isPrivate(): bool {
-      $this->load();
-      return ($this->fields['users_id'] > 0 && $this->fields['users_id'] != Session::getLoginUserID());
-   }
+    public function isPrivate(): bool
+    {
+        $this->load();
+        return ($this->fields['users_id'] > 0 && $this->fields['users_id'] != Session::getLoginUserID());
+    }
 }

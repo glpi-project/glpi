@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,36 +38,39 @@ use Glpi\Inventory\Conf;
 
 class HardDrive extends Device
 {
-   public function __construct(CommonDBTM $item, array $data = null) {
-      parent::__construct($item, $data, 'Item_DeviceHardDrive');
-   }
+    public function __construct(CommonDBTM $item, array $data = null)
+    {
+        parent::__construct($item, $data, 'Item_DeviceHardDrive');
+    }
 
-   public function prepare() :array {
-      $mapping = [
+    public function prepare(): array
+    {
+        $mapping = [
          'disksize'      => 'capacity',
          'interface'     => 'interfacetypes_id',
          'manufacturer'  => 'manufacturers_id',
          'model'         => 'designation'
-      ];
+        ];
 
-      foreach ($this->data as &$val) {
-         foreach ($mapping as $origin => $dest) {
-            if (property_exists($val, $origin)) {
-               $val->$dest = $val->$origin;
+        foreach ($this->data as &$val) {
+            foreach ($mapping as $origin => $dest) {
+                if (property_exists($val, $origin)) {
+                    $val->$dest = $val->$origin;
+                }
             }
-         }
 
-         if ((!property_exists($val, 'model') || $val->model == '') && property_exists($val, 'name')) {
-            $val->designation = $val->name;
-         }
+            if ((!property_exists($val, 'model') || $val->model == '') && property_exists($val, 'name')) {
+                $val->designation = $val->name;
+            }
 
-         $val->is_dynamic = 1;
-      }
+            $val->is_dynamic = 1;
+        }
 
-      return $this->data;
-   }
+        return $this->data;
+    }
 
-   public function checkConf(Conf $conf): bool {
-      return $conf->component_harddrive == 1;
-   }
+    public function checkConf(Conf $conf): bool
+    {
+        return $conf->component_harddrive == 1;
+    }
 }

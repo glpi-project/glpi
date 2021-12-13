@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,9 +32,11 @@
  */
 
 /// Class ComputerModel
-class ComputerModel extends CommonDCModelDropdown {
+class ComputerModel extends CommonDCModelDropdown
+{
 
-   static function getTypeName($nb = 0) {
-      return _n('Computer model', 'Computer models', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Computer model', 'Computer models', $nb);
+    }
 }

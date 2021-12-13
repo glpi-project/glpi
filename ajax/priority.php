@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,29 +31,28 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (isset($_REQUEST["urgency"])
-    && isset($_REQUEST["impact"])) {
+if (
+    isset($_REQUEST["urgency"])
+    && isset($_REQUEST["impact"])
+) {
+    $priority = Ticket::computePriority($_REQUEST["urgency"], $_REQUEST["impact"]);
 
-   $priority = Ticket::computePriority($_REQUEST["urgency"], $_REQUEST["impact"]);
-
-   if (isset($_REQUEST['getJson'])) {
-      header("Content-Type: application/json; charset=UTF-8");
-      echo json_encode(['priority' => $priority]);
-
-   } else if ($_REQUEST["priority"]) {
-      // Send UTF8 Headers
-      header("Content-Type: text/html; charset=UTF-8");
-      echo "<script type='text/javascript' >\n";
-      echo Html::jsSetDropdownValue($_REQUEST["priority"], $priority);
-      echo "\n</script>";
-
-   } else {
-      echo Ticket::getPriorityName($priority);
-   }
+    if (isset($_REQUEST['getJson'])) {
+        header("Content-Type: application/json; charset=UTF-8");
+        echo json_encode(['priority' => $priority]);
+    } else if ($_REQUEST["priority"]) {
+       // Send UTF8 Headers
+        header("Content-Type: text/html; charset=UTF-8");
+        echo "<script type='text/javascript' >\n";
+        echo Html::jsSetDropdownValue($_REQUEST["priority"], $priority);
+        echo "\n</script>";
+    } else {
+        echo Ticket::getPriorityName($priority);
+    }
 }

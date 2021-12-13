@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,18 +35,19 @@ namespace tests\units\Glpi\ContentTemplates\Parameters;
 
 class UserParameters extends AbstractParameters
 {
-   public function testGetValues(): void {
-      $this->createItem('UserTitle', ['name' => 'test title']);
-      $this->createItem('UserCategory', ['name' => 'test category']);
-      $this->createItem('Location', ['name' => 'test location']);
+    public function testGetValues(): void
+    {
+        $this->createItem('UserTitle', ['name' => 'test title']);
+        $this->createItem('UserCategory', ['name' => 'test category']);
+        $this->createItem('Location', ['name' => 'test location']);
 
-      $test_entity_id    = getItemByTypeName('Entity', '_test_child_2', true);
-      $test_user_id      = getItemByTypeName('User', TU_USER, true);
-      $test_usertitle    = getItemByTypeName('UserTitle', 'test title', true);
-      $test_usercategory = getItemByTypeName('UserCategory', 'test category', true);
-      $test_location     = getItemByTypeName('Location', 'test location', true);
+        $test_entity_id    = getItemByTypeName('Entity', '_test_child_2', true);
+        $test_user_id      = getItemByTypeName('User', TU_USER, true);
+        $test_usertitle    = getItemByTypeName('UserTitle', 'test title', true);
+        $test_usercategory = getItemByTypeName('UserCategory', 'test category', true);
+        $test_location     = getItemByTypeName('Location', 'test location', true);
 
-      $this->createItem('User', [
+        $this->createItem('User', [
          'name'                => 'user_testGetValues',
          'entities_id'         => $test_entity_id,
          'firstname'           => 'firstname',
@@ -58,12 +60,12 @@ class UserParameters extends AbstractParameters
          'usertitles_id'       => $test_usertitle,
          'usercategories_id'   => $test_usercategory,
          'locations_id'        => $test_location,
-      ]);
+        ]);
 
-      $parameters = $this->newTestedInstance();
-      $values = $parameters->getValues(getItemByTypeName('User', 'user_testGetValues'));
+        $parameters = $this->newTestedInstance();
+        $values = $parameters->getValues(getItemByTypeName('User', 'user_testGetValues'));
 
-      $this->array($values)->isEqualTo([
+        $this->array($values)->isEqualTo([
          'id'          => getItemByTypeName('User', 'user_testGetValues', true),
          'login'       => 'user_testGetValues',
          'fullname'    => 'lastname firstname',
@@ -88,8 +90,8 @@ class UserParameters extends AbstractParameters
             'name' => 'test category',
          ],
          'used_items'  => [],
-      ]);
+        ]);
 
-      $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
-   }
+        $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
+    }
 }

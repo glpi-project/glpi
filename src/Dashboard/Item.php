@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,12 +33,13 @@
 
 namespace Glpi\Dashboard;
 
-class Item extends \CommonDBChild {
-   static public $itemtype = "Glpi\\Dashboard\\Dashboard";
-   static public $items_id = 'dashboards_dashboards_id';
+class Item extends \CommonDBChild
+{
+    public static $itemtype = "Glpi\\Dashboard\\Dashboard";
+    public static $items_id = 'dashboards_dashboards_id';
 
    // prevent bad getFromDB when bootstraping tests suite
-   static public $mustBeAttached = false;
+    public static $mustBeAttached = false;
 
    /**
     * Return items for the provided dashboard
@@ -46,25 +48,26 @@ class Item extends \CommonDBChild {
     *
     * @return array the items
     */
-   static function getForDashboard(int $dashboards_id = 0): array {
-      global $DB;
+    public static function getForDashboard(int $dashboards_id = 0): array
+    {
+        global $DB;
 
-      $di_iterator = $DB->request([
+        $di_iterator = $DB->request([
          'FROM'  => self::getTable(),
          'WHERE' => [
             'dashboards_dashboards_id' => $dashboards_id
          ]
-      ]);
+        ]);
 
-      $items = [];
-      foreach ($di_iterator as $item) {
-         unset($item['id']);
-         $item['card_options'] = importArrayFromDB($item['card_options']);
-         $items[] = $item;
-      }
+        $items = [];
+        foreach ($di_iterator as $item) {
+            unset($item['id']);
+            $item['card_options'] = importArrayFromDB($item['card_options']);
+            $items[] = $item;
+        }
 
-      return $items;
-   }
+        return $items;
+    }
 
 
    /**
@@ -82,12 +85,13 @@ class Item extends \CommonDBChild {
     *
     * @return void
     */
-   static function addForDashboard(int $dashboards_id = 0, array $items = []) {
-      global $DB, $_UREQUEST;
+    public static function addForDashboard(int $dashboards_id = 0, array $items = [])
+    {
+        global $DB, $_UREQUEST;
 
-      $query_items = $DB->buildInsert(
-         self::getTable(),
-         [
+        $query_items = $DB->buildInsert(
+            self::getTable(),
+            [
             'dashboards_dashboards_id' => new \QueryParam(),
             'gridstack_id' => new \QueryParam(),
             'card_id'      => new \QueryParam(),
@@ -96,36 +100,36 @@ class Item extends \CommonDBChild {
             'width'        => new \QueryParam(),
             'height'       => new \QueryParam(),
             'card_options' => new \QueryParam(),
-         ]
-      );
-      $stmt = $DB->prepare($query_items);
-      foreach ($items as $item_key => $item) {
-         // card_options should be unescaped as they will be json_encoded after
-         $card_options = $_UREQUEST['items'][$item_key]['card_options'] ?? $item['card_options'] ?? [];
+            ]
+        );
+        $stmt = $DB->prepare($query_items);
+        foreach ($items as $item_key => $item) {
+           // card_options should be unescaped as they will be json_encoded after
+            $card_options = $_UREQUEST['items'][$item_key]['card_options'] ?? $item['card_options'] ?? [];
 
-         // clean
-         unset(
-            $card_options['force'],
-            $card_options['card_id'],
-            $card_options['gridstack_id']
-         );
+           // clean
+            unset(
+                $card_options['force'],
+                $card_options['card_id'],
+                $card_options['gridstack_id']
+            );
 
-         // encode for DB
-         $card_options = exportArrayToDB($card_options);
-         $gridstack_id = $item['gridstack_id'] ?? $item['gs_id'];
+           // encode for DB
+            $card_options = exportArrayToDB($card_options);
+            $gridstack_id = $item['gridstack_id'] ?? $item['gs_id'];
 
-         $stmt->bind_param(
-            'issiiiis',
-            $dashboards_id,
-            $gridstack_id,
-            $item['card_id'],
-            $item['x'],
-            $item['y'],
-            $item['width'],
-            $item['height'],
-            $card_options
-         );
-         $DB->executeStatement($stmt);
-      }
-   }
+            $stmt->bind_param(
+                'issiiiis',
+                $dashboards_id,
+                $gridstack_id,
+                $item['card_id'],
+                $item['x'],
+                $item['y'],
+                $item['width'],
+                $item['height'],
+                $card_options
+            );
+            $DB->executeStatement($stmt);
+        }
+    }
 }

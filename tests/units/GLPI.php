@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,35 +35,38 @@ namespace tests\units;
 
 /* Test for inc/glpi.class.php */
 
-class GLPI extends \GLPITestCase {
-   public function testGetLogLevel() {
-      $glpi = new \GLPI();
-      $glpi->initLogger();
-      $this->integer($glpi->getLogLevel())->isIdenticalTo(\Monolog\Logger::DEBUG);
-   }
+class GLPI extends \GLPITestCase
+{
+    public function testGetLogLevel()
+    {
+        $glpi = new \GLPI();
+        $glpi->initLogger();
+        $this->integer($glpi->getLogLevel())->isIdenticalTo(\Monolog\Logger::DEBUG);
+    }
 
-   public function testMissingLanguages() {
-      global $CFG_GLPI;
+    public function testMissingLanguages()
+    {
+        global $CFG_GLPI;
 
-      $know_languages = $CFG_GLPI['languages'];
-      $list_languages = [];
+        $know_languages = $CFG_GLPI['languages'];
+        $list_languages = [];
 
-      $diterator = new \DirectoryIterator(__DIR__ . '/../../locales');
-      foreach ($diterator as $file) {
-         if (!$file->isDot() && $file->getExtension() == 'po') {
-            $lang = $file->getBasename('.' . $file->getExtension());
-            $list_languages[$lang] = $lang;
-         }
-      }
+        $diterator = new \DirectoryIterator(__DIR__ . '/../../locales');
+        foreach ($diterator as $file) {
+            if (!$file->isDot() && $file->getExtension() == 'po') {
+                $lang = $file->getBasename('.' . $file->getExtension());
+                $list_languages[$lang] = $lang;
+            }
+        }
 
-      $po_missing = array_diff_key($know_languages, $list_languages);
-      $this->array($po_missing)->isEmpty(
-         "Referenced languages in configuration are missing in locales directory:\n" . print_r($po_missing, true)
-      );
+        $po_missing = array_diff_key($know_languages, $list_languages);
+        $this->array($po_missing)->isEmpty(
+            "Referenced languages in configuration are missing in locales directory:\n" . print_r($po_missing, true)
+        );
 
-      $cfg_missing = array_diff_key($list_languages, $know_languages);
-      $this->array($cfg_missing)->isEmpty(
-         "Locales files present in directory are missing from configuration:\n" . print_r($cfg_missing, true)
-      );
-   }
+        $cfg_missing = array_diff_key($list_languages, $know_languages);
+        $this->array($cfg_missing)->isEmpty(
+            "Locales files present in directory are missing from configuration:\n" . print_r($cfg_missing, true)
+        );
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -39,14 +40,16 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class ConfigExtension extends AbstractExtension {
+class ConfigExtension extends AbstractExtension
+{
 
-   public function getFunctions(): array {
-      return [
+    public function getFunctions(): array
+    {
+        return [
          new TwigFunction('config', [$this, 'config']),
          new TwigFunction('entity_config', [$this, 'getEntityConfig']),
-      ];
-   }
+        ];
+    }
 
    /**
     * Get GLPI configuration value.
@@ -55,11 +58,12 @@ class ConfigExtension extends AbstractExtension {
     *
     * @return mixed
     */
-   public function config(string $key) {
-      global $CFG_GLPI;
+    public function config(string $key)
+    {
+        global $CFG_GLPI;
 
-      return $CFG_GLPI[$key] ?? null;
-   }
+        return $CFG_GLPI[$key] ?? null;
+    }
 
    /**
     * Get entity configuration value.
@@ -71,11 +75,12 @@ class ConfigExtension extends AbstractExtension {
     *
     * @return mixed
     */
-   public function getEntityConfig(string $key, ?int $entity_id = null, $default_value = -2, ?string $inheritence_key = null) {
-      if ($inheritence_key === null) {
-         $inheritence_key = $key;
-      }
+    public function getEntityConfig(string $key, ?int $entity_id = null, $default_value = -2, ?string $inheritence_key = null)
+    {
+        if ($inheritence_key === null) {
+            $inheritence_key = $key;
+        }
 
-      return Entity::getUsedConfig($inheritence_key, $entity_id, $key, $default_value);
-   }
+        return Entity::getUsedConfig($inheritence_key, $entity_id, $key, $default_value);
+    }
 }

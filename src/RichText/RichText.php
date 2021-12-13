@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -38,7 +39,8 @@ use Html;
 use Html2Text\Html2Text;
 use Toolbox;
 
-final class RichText {
+final class RichText
+{
 
    /**
     * Get safe HTML string based on user input content.
@@ -50,38 +52,39 @@ final class RichText {
     *
     * @return string
     */
-   public static function getSafeHtml(?string $content, bool $encode_output_entities = false): string {
+    public static function getSafeHtml(?string $content, bool $encode_output_entities = false): string
+    {
 
-      if (empty($content)) {
-         return '';
-      }
+        if (empty($content)) {
+            return '';
+        }
 
-      $content = self::normalizeHtmlContent($content, true);
+        $content = self::normalizeHtmlContent($content, true);
 
-      // Remove unsafe HTML using htmLawed
-      $config = Toolbox::getHtmLawedSafeConfig();
-      $config['keep_bad'] = 6; // remove invalid/disallowed tag but keep content intact
-      $content = htmLawed($content, $config);
+       // Remove unsafe HTML using htmLawed
+        $config = Toolbox::getHtmLawedSafeConfig();
+        $config['keep_bad'] = 6; // remove invalid/disallowed tag but keep content intact
+        $content = htmLawed($content, $config);
 
-      // Special case : remove the 'denied:' for base64 img in case the base64 have characters
-      // combinaison introduce false positive
-      foreach (['png', 'gif', 'jpg', 'jpeg'] as $imgtype) {
-         $content = str_replace(
-            sprintf('src="denied:data:image/%s;base64,', $imgtype),
-            sprintf('src="data:image/%s;base64,', $imgtype),
-            $content
-         );
-      }
+       // Special case : remove the 'denied:' for base64 img in case the base64 have characters
+       // combinaison introduce false positive
+        foreach (['png', 'gif', 'jpg', 'jpeg'] as $imgtype) {
+            $content = str_replace(
+                sprintf('src="denied:data:image/%s;base64,', $imgtype),
+                sprintf('src="data:image/%s;base64,', $imgtype),
+                $content
+            );
+        }
 
-      // Remove extra lines
-      $content = trim($content, "\r\n");
+       // Remove extra lines
+        $content = trim($content, "\r\n");
 
-      if ($encode_output_entities) {
-         $content = Html::entities_deep($content);
-      }
+        if ($encode_output_entities) {
+            $content = Html::entities_deep($content);
+        }
 
-      return $content;
-   }
+        return $content;
+    }
 
    /**
     * Get text from HTML string based on user input content.
@@ -95,55 +98,55 @@ final class RichText {
     *
     * @return string
     */
-   public static function getTextFromHtml(
-      string $content,
-      bool $keep_presentation = true,
-      bool $compact = false,
-      bool $encode_output_entities = false
-   ): string {
-      global $CFG_GLPI;
+    public static function getTextFromHtml(
+        string $content,
+        bool $keep_presentation = true,
+        bool $compact = false,
+        bool $encode_output_entities = false
+    ): string {
+        global $CFG_GLPI;
 
-      $content = self::normalizeHtmlContent($content, false);
+        $content = self::normalizeHtmlContent($content, false);
 
-      if ($keep_presentation) {
-         if ($compact) {
-            $options = ['do_links' => 'none', 'width' => 0,];
-         } else {
-            $options = ['width' => 0];
+        if ($keep_presentation) {
+            if ($compact) {
+                $options = ['do_links' => 'none', 'width' => 0,];
+            } else {
+                $options = ['width' => 0];
 
-            // Convert domain relative links to absolute links
-            $content = preg_replace(
-               '/((?:href|src)=[\'"])(\/[^\/].*)([\'"])/',
-               '$1' . $CFG_GLPI['url_base'] . '$2$3',
-               $content
-            );
-         }
+               // Convert domain relative links to absolute links
+                $content = preg_replace(
+                    '/((?:href|src)=[\'"])(\/[^\/].*)([\'"])/',
+                    '$1' . $CFG_GLPI['url_base'] . '$2$3',
+                    $content
+                );
+            }
 
-         $html = new Html2Text($content, $options);
-         $content = $html->getText();
-      } else {
-         // Remove HTML tags using htmLawed
-         $config = Toolbox::getHtmLawedSafeConfig();
-         $config['elements'] = 'none';
-         $config['keep_bad'] = 6; // remove invalid/disallowed tag but keep content intact
-         $content = htmLawed($content, $config);
+            $html = new Html2Text($content, $options);
+            $content = $html->getText();
+        } else {
+           // Remove HTML tags using htmLawed
+            $config = Toolbox::getHtmLawedSafeConfig();
+            $config['elements'] = 'none';
+            $config['keep_bad'] = 6; // remove invalid/disallowed tag but keep content intact
+            $content = htmLawed($content, $config);
 
-         // Remove supernumeraries whitespaces chars
-         $content = preg_replace('/\s+/', ' ', trim($content));
+           // Remove supernumeraries whitespaces chars
+            $content = preg_replace('/\s+/', ' ', trim($content));
 
-         // Content is no more considered as HTML, decode its entities
-         $content = Html::entity_decode_deep($content);
-      }
+           // Content is no more considered as HTML, decode its entities
+            $content = Html::entity_decode_deep($content);
+        }
 
-      // Remove extra lines
-      $content = trim($content, "\r\n");
+       // Remove extra lines
+        $content = trim($content, "\r\n");
 
-      if ($encode_output_entities) {
-         $content = Html::entities_deep($content);
-      }
+        if ($encode_output_entities) {
+            $content = Html::entities_deep($content);
+        }
 
-      return $content;
-   }
+        return $content;
+    }
 
    /**
     * Check if provided content is rich-text HTML content.
@@ -152,8 +155,9 @@ final class RichText {
     *
     * @return bool
     */
-   public static function isRichTextHtmlContent(string $content): bool {
-      $html_tags = [
+    public static function isRichTextHtmlContent(string $content): bool
+    {
+        $html_tags = [
          // Most common inlined tag (handle manual HTML input, usefull for $CFG_GLPI['text_login'])
          'a',
          'b',
@@ -179,9 +183,9 @@ final class RichText {
          'p',
          'pre',
          'table',
-      ];
-      return preg_match('/<(' . implode('|', $html_tags) . ')(\s+[^>]*)?>/', $content) === 1;
-   }
+        ];
+        return preg_match('/<(' . implode('|', $html_tags) . ')(\s+[^>]*)?>/', $content) === 1;
+    }
 
    /**
     * Normalize HTML content.
@@ -191,51 +195,52 @@ final class RichText {
     *
     * @return string
     */
-   private static function normalizeHtmlContent(string $content, bool $enhanced_html = false) {
+    private static function normalizeHtmlContent(string $content, bool $enhanced_html = false)
+    {
 
-      $content = Sanitizer::getVerbatimValue($content);
+        $content = Sanitizer::getVerbatimValue($content);
 
-      if (self::isRichTextHtmlContent($content)) {
-         // Remove contentless HTML tags
-         // Remove also surrounding spaces:
-         // - only horizontal spacing chars leading the tag in its line (\h*),
-         // - any spacing char that follow the tag unless they are preceded by a newline (\s*\n+?).
-         $leading_spaces = '\h*';
-         $following_spaces = '\s*\n+?';
-         $content = preg_replace(
-            [
-               '/' . $leading_spaces . '<!DOCTYPE[^>]*>' . $following_spaces . '/si',
-               '/' . $leading_spaces . '<head[^>]*>.*?<\/head[^>]*>' . $following_spaces . '/si',
-               '/' . $leading_spaces . '<script[^>]*>.*?<\/script[^>]*>' . $following_spaces . '/si',
-               '/' . $leading_spaces . '<style[^>]*>.*?<\/style[^>]*>' . $following_spaces . '/si',
-            ],
-            '',
-            $content
-         );
-      } else {
-         // If content is not rich text content, convert it to HTML.
-         // Required to correctly render content that came:
-         // - from "simple text mode" from GLPI prior to 9.4.0;
-         // - from a basic textarea;
-         // - from an external input (API, CalDAV client, ...).
+        if (self::isRichTextHtmlContent($content)) {
+           // Remove contentless HTML tags
+           // Remove also surrounding spaces:
+           // - only horizontal spacing chars leading the tag in its line (\h*),
+           // - any spacing char that follow the tag unless they are preceded by a newline (\s*\n+?).
+            $leading_spaces = '\h*';
+            $following_spaces = '\s*\n+?';
+            $content = preg_replace(
+                [
+                '/' . $leading_spaces . '<!DOCTYPE[^>]*>' . $following_spaces . '/si',
+                '/' . $leading_spaces . '<head[^>]*>.*?<\/head[^>]*>' . $following_spaces . '/si',
+                '/' . $leading_spaces . '<script[^>]*>.*?<\/script[^>]*>' . $following_spaces . '/si',
+                '/' . $leading_spaces . '<style[^>]*>.*?<\/style[^>]*>' . $following_spaces . '/si',
+                ],
+                '',
+                $content
+            );
+        } else {
+           // If content is not rich text content, convert it to HTML.
+           // Required to correctly render content that came:
+           // - from "simple text mode" from GLPI prior to 9.4.0;
+           // - from a basic textarea;
+           // - from an external input (API, CalDAV client, ...).
 
-         if (preg_match('/(<|>)/', $content)) {
-            // Input was not HTML, and special chars were not saved as HTML entities.
-            // We have to encode them into HTML entities.
-            $content = Html::entities_deep($content);
-         }
+            if (preg_match('/(<|>)/', $content)) {
+               // Input was not HTML, and special chars were not saved as HTML entities.
+               // We have to encode them into HTML entities.
+                $content = Html::entities_deep($content);
+            }
 
-         // Plain text line breaks have to be transformed into <br /> tags.
-         $content = '<p>' . nl2br($content) . '</p>';
+           // Plain text line breaks have to be transformed into <br /> tags.
+            $content = '<p>' . nl2br($content) . '</p>';
 
-         if ($enhanced_html) {
-            // URLs have to be transformed into <a> tags.
-            $content = autolink($content, false);
-         }
-      }
+            if ($enhanced_html) {
+               // URLs have to be transformed into <a> tags.
+                $content = autolink($content, false);
+            }
+        }
 
-      return $content;
-   }
+        return $content;
+    }
 
    /**
     * Get enhanced HTML string based on user input content.
@@ -247,26 +252,27 @@ final class RichText {
     *
     * @return string
     */
-   public static function getEnhancedHtml(?string $content, array $params = []): string {
-      $p = [
+    public static function getEnhancedHtml(?string $content, array $params = []): string
+    {
+        $p = [
          'images_gallery'           => false,
          'user_mentions'            => true,
-      ];
-      $p = array_replace($p, $params);
+        ];
+        $p = array_replace($p, $params);
 
-      // Sanitize content first (security and to decode HTML entities)
-      $content = self::getSafeHtml($content);
+       // Sanitize content first (security and to decode HTML entities)
+        $content = self::getSafeHtml($content);
 
-      if (isset($p['user_mentions'])) {
-         $content = UserMention::refreshUserMentionsHtmlToDisplay($content);
-      }
+        if (isset($p['user_mentions'])) {
+            $content = UserMention::refreshUserMentionsHtmlToDisplay($content);
+        }
 
-      if (isset($p['images_gallery'])) {
-         $content = self::replaceImagesByGallery($content);
-      }
+        if (isset($p['images_gallery'])) {
+            $content = self::replaceImagesByGallery($content);
+        }
 
-      return $content;
-   }
+        return $content;
+    }
 
    /**
     * Replace images by gallery component in rich text.
@@ -277,38 +283,39 @@ final class RichText {
     *
     * @return string
     */
-   private static function replaceImagesByGallery(string $content): string {
+    private static function replaceImagesByGallery(string $content): string
+    {
 
-      $image_matches = [];
-      preg_match_all(
-         '/<a[^>]*>\s*<img[^>]*src=["\']([^"\']*document\.send\.php\?docid=([0-9]+)(?:&[^"\']+)?)["\'][^>]*>\s*<\/a>/',
-         $content,
-         $image_matches,
-         PREG_SET_ORDER
-      );
-      foreach ($image_matches as $image_match) {
-         $img_tag = $image_match[0];
-         $docsrc  = $image_match[1];
-         $docid   = $image_match[2];
-         $document = new Document();
-         if ($document->getFromDB($docid)) {
-            $docpath = GLPI_DOC_DIR . '/' . $document->fields['filepath'];
-            if (Document::isImage($docpath)) {
-               $imgsize = getimagesize($docpath);
-               $gallery = self::imageGallery([
-                  [
+        $image_matches = [];
+        preg_match_all(
+            '/<a[^>]*>\s*<img[^>]*src=["\']([^"\']*document\.send\.php\?docid=([0-9]+)(?:&[^"\']+)?)["\'][^>]*>\s*<\/a>/',
+            $content,
+            $image_matches,
+            PREG_SET_ORDER
+        );
+        foreach ($image_matches as $image_match) {
+            $img_tag = $image_match[0];
+            $docsrc  = $image_match[1];
+            $docid   = $image_match[2];
+            $document = new Document();
+            if ($document->getFromDB($docid)) {
+                $docpath = GLPI_DOC_DIR . '/' . $document->fields['filepath'];
+                if (Document::isImage($docpath)) {
+                    $imgsize = getimagesize($docpath);
+                    $gallery = self::imageGallery([
+                    [
                      'src' => $docsrc,
                      'w'   => $imgsize[0],
                      'h'   => $imgsize[1]
-                  ]
-               ]);
-               $content = str_replace($img_tag, $gallery, $content);
+                    ]
+                    ]);
+                    $content = str_replace($img_tag, $gallery, $content);
+                }
             }
-         }
-      }
+        }
 
-      return $content;
-   }
+        return $content;
+    }
 
 
    /**
@@ -323,8 +330,9 @@ final class RichText {
     * @param array $options
     * @return string completed gallery
     */
-   private static function imageGallery(array $imgs, array $options = []): string {
-      $p = [
+    private static function imageGallery(array $imgs, array $options = []): string
+    {
+        $p = [
          'controls' => [
             'close'        => true,
             'share'        => true,
@@ -333,81 +341,81 @@ final class RichText {
          ],
          'rand'               => mt_rand(),
          'gallery_item_class' => ''
-      ];
+        ];
 
-      if (is_array($options) && count($options)) {
-         foreach ($options as $key => $val) {
-            $p[$key] = $val;
-         }
-      }
+        if (is_array($options) && count($options)) {
+            foreach ($options as $key => $val) {
+                $p[$key] = $val;
+            }
+        }
 
-      $out = "<div id='psgallery{$p['rand']}' class='pswp' tabindex='-1'
+        $out = "<div id='psgallery{$p['rand']}' class='pswp' tabindex='-1'
          role='dialog' aria-hidden='true'>";
-      $out .= "<div class='pswp__bg'></div>";
-      $out .= "<div class='pswp__scroll-wrap'>";
-      $out .= "<div class='pswp__container'>";
-      $out .= "<div class='pswp__item'></div>";
-      $out .= "<div class='pswp__item'></div>";
-      $out .= "<div class='pswp__item'></div>";
-      $out .= "</div>";
-      $out .= "<div class='pswp__ui pswp__ui--hidden'>";
-      $out .= "<div class='pswp__top-bar'>";
-      $out .= "<div class='pswp__counter'></div>";
+        $out .= "<div class='pswp__bg'></div>";
+        $out .= "<div class='pswp__scroll-wrap'>";
+        $out .= "<div class='pswp__container'>";
+        $out .= "<div class='pswp__item'></div>";
+        $out .= "<div class='pswp__item'></div>";
+        $out .= "<div class='pswp__item'></div>";
+        $out .= "</div>";
+        $out .= "<div class='pswp__ui pswp__ui--hidden'>";
+        $out .= "<div class='pswp__top-bar'>";
+        $out .= "<div class='pswp__counter'></div>";
 
-      if (isset($p['controls']['close']) && $p['controls']['close']) {
-         $out .= "<button class='pswp__button pswp__button--close' title='".__('Close (Esc)')."'></button>";
-      }
+        if (isset($p['controls']['close']) && $p['controls']['close']) {
+            $out .= "<button class='pswp__button pswp__button--close' title='" . __('Close (Esc)') . "'></button>";
+        }
 
-      if (isset($p['controls']['share']) && $p['controls']['share']) {
-         $out .= "<button class='pswp__button pswp__button--share' title='".__('Share')."'></button>";
-      }
+        if (isset($p['controls']['share']) && $p['controls']['share']) {
+            $out .= "<button class='pswp__button pswp__button--share' title='" . __('Share') . "'></button>";
+        }
 
-      if (isset($p['controls']['fullscreen']) && $p['controls']['fullscreen']) {
-         $out .= "<button class='pswp__button pswp__button--fs' title='".__('Toggle fullscreen')."'></button>";
-      }
+        if (isset($p['controls']['fullscreen']) && $p['controls']['fullscreen']) {
+            $out .= "<button class='pswp__button pswp__button--fs' title='" . __('Toggle fullscreen') . "'></button>";
+        }
 
-      if (isset($p['controls']['zoom']) && $p['controls']['zoom']) {
-         $out .= "<button class='pswp__button pswp__button--zoom' title='".__('Zoom in/out')."'></button>";
-      }
+        if (isset($p['controls']['zoom']) && $p['controls']['zoom']) {
+            $out .= "<button class='pswp__button pswp__button--zoom' title='" . __('Zoom in/out') . "'></button>";
+        }
 
-      $out .= "<div class='pswp__preloader'>";
-      $out .= "<div class='pswp__preloader__icn'>";
-      $out .= "<div class='pswp__preloader__cut'>";
-      $out .= "<div class='pswp__preloader__donut'></div>";
-      $out .= "</div></div></div></div>";
-      $out .= "<div class='pswp__share-modal pswp__share-modal--hidden pswp__single-tap'>";
-      $out .= "<div class='pswp__share-tooltip'></div>";
-      $out .= "</div>";
-      $out .= "<button class='pswp__button pswp__button--arrow--left' title='".__('Previous (arrow left)')."'>";
-      $out .= "</button>";
-      $out .= "<button class='pswp__button pswp__button--arrow--right' title='".__('Next (arrow right)')."'>";
-      $out .= "</button>";
-      $out .= "<div class='pswp__caption'>";
-      $out .= "<div class='pswp__caption__center'></div>";
-      $out .= "</div></div></div></div>";
+        $out .= "<div class='pswp__preloader'>";
+        $out .= "<div class='pswp__preloader__icn'>";
+        $out .= "<div class='pswp__preloader__cut'>";
+        $out .= "<div class='pswp__preloader__donut'></div>";
+        $out .= "</div></div></div></div>";
+        $out .= "<div class='pswp__share-modal pswp__share-modal--hidden pswp__single-tap'>";
+        $out .= "<div class='pswp__share-tooltip'></div>";
+        $out .= "</div>";
+        $out .= "<button class='pswp__button pswp__button--arrow--left' title='" . __('Previous (arrow left)') . "'>";
+        $out .= "</button>";
+        $out .= "<button class='pswp__button pswp__button--arrow--right' title='" . __('Next (arrow right)') . "'>";
+        $out .= "</button>";
+        $out .= "<div class='pswp__caption'>";
+        $out .= "<div class='pswp__caption__center'></div>";
+        $out .= "</div></div></div></div>";
 
-      $out .= "<div class='pswp-img{$p['rand']} {$p['gallery_item_class']}' itemscope itemtype='http://schema.org/ImageGallery'>";
-      foreach ($imgs as $img) {
-         if (!isset($img['thumbnail_src'])) {
-            $img['thumbnail_src'] = $img['src'];
-         }
-         $out .= "<figure itemprop='associatedMedia' itemscope itemtype='http://schema.org/ImageObject'>";
-         $out .= "<a href='{$img['src']}' itemprop='contentUrl' data-index='0'>";
-         $out .= "<img src='{$img['thumbnail_src']}' itemprop='thumbnail'>";
-         $out .= "</a>";
-         $out .= "</figure>";
-      }
-      $out .= "</div>";
+        $out .= "<div class='pswp-img{$p['rand']} {$p['gallery_item_class']}' itemscope itemtype='http://schema.org/ImageGallery'>";
+        foreach ($imgs as $img) {
+            if (!isset($img['thumbnail_src'])) {
+                $img['thumbnail_src'] = $img['src'];
+            }
+            $out .= "<figure itemprop='associatedMedia' itemscope itemtype='http://schema.org/ImageObject'>";
+            $out .= "<a href='{$img['src']}' itemprop='contentUrl' data-index='0'>";
+            $out .= "<img src='{$img['thumbnail_src']}' itemprop='thumbnail'>";
+            $out .= "</a>";
+            $out .= "</figure>";
+        }
+        $out .= "</div>";
 
-      // Decode images urls
-      $imgs = array_map(function($img) {
-         $img['src'] = html_entity_decode($img['src']);
-         return $img;
-      }, $imgs);
+       // Decode images urls
+        $imgs = array_map(function ($img) {
+            $img['src'] = html_entity_decode($img['src']);
+            return $img;
+        }, $imgs);
 
-      $items_json = json_encode($imgs);
-      $dltext = __('Download');
-      $js = <<<JAVASCRIPT
+        $items_json = json_encode($imgs);
+        $dltext = __('Download');
+        $js = <<<JAVASCRIPT
       (function($) {
          var pswp = document.getElementById('psgallery{$p['rand']}');
 
@@ -430,8 +438,8 @@ final class RichText {
 
 JAVASCRIPT;
 
-      $out .= Html::scriptBlock($js);
+        $out .= Html::scriptBlock($js);
 
-      return $out;
-   }
+        return $out;
+    }
 }

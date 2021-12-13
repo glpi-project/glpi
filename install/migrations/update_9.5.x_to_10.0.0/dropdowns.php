@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -29,6 +30,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
 /**
  * @var DB $DB
  * @var Migration $migration
@@ -40,13 +42,13 @@ $all_dropdowns = Dropdown::getStandardDropdownItemTypes();
 $dc_model_dropdowns = [];
 
 foreach ($all_dropdowns as $group) {
-   foreach ($group as $dropdown => $dropdown_name) {
-      if (is_subclass_of($dropdown, CommonDCModelDropdown::class)) {
-         $dc_model_dropdowns[] = $dropdown;
-      }
-   }
+    foreach ($group as $dropdown => $dropdown_name) {
+        if (is_subclass_of($dropdown, CommonDCModelDropdown::class)) {
+            $dc_model_dropdowns[] = $dropdown;
+        }
+    }
 }
 
 foreach ($dc_model_dropdowns as $model_dropdown) {
-   $migration->changeSearchOption($model_dropdown, 130, 3);
+    $migration->changeSearchOption($model_dropdown, 130, 3);
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,29 +36,33 @@ use Glpi\Application\View\TemplateRenderer;
 /**
  * Enclosure Class
 **/
-class Enclosure extends CommonDBTM {
-   use Glpi\Features\DCBreadcrumb;
-   use Glpi\Features\Clonable;
+class Enclosure extends CommonDBTM
+{
+    use Glpi\Features\DCBreadcrumb;
+    use Glpi\Features\Clonable;
 
    // From CommonDBTM
-   public $dohistory                   = true;
-   static $rightname                   = 'datacenter';
+    public $dohistory                   = true;
+    public static $rightname                   = 'datacenter';
 
-   public function getCloneRelations() :array {
-      return [
+    public function getCloneRelations(): array
+    {
+        return [
          Item_Enclosure::class,
          Item_Devices::class,
          NetworkPort::class
-      ];
-   }
+        ];
+    }
 
-   static function getTypeName($nb = 0) {
-      return _n('Enclosure', 'Enclosures', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Enclosure', 'Enclosures', $nb);
+    }
 
-   function defineTabs($options = []) {
-      $ong = [];
-      $this->addDefaultFormTab($ong)
+    public function defineTabs($options = [])
+    {
+        $ong = [];
+        $this->addDefaultFormTab($ong)
          ->addImpactTab($ong, $options)
          ->addStandardTab('Item_Enclosure', $ong, $options)
          ->addStandardTab('Item_Devices', $ong, $options)
@@ -69,8 +74,8 @@ class Enclosure extends CommonDBTM {
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
-      return $ong;
-   }
+        return $ong;
+    }
 
 
    /**
@@ -83,98 +88,100 @@ class Enclosure extends CommonDBTM {
     *
     * @return boolean item found
    **/
-   function showForm($ID, array $options = []) {
-      $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('pages/assets/enclosure.html.twig', [
+    public function showForm($ID, array $options = [])
+    {
+        $this->initForm($ID, $options);
+        TemplateRenderer::getInstance()->display('pages/assets/enclosure.html.twig', [
          'item'   => $this,
          'params' => $options,
-      ]);
-      return true;
-   }
+        ]);
+        return true;
+    }
 
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '2',
          'table'              => $this->getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false, // implicit field is id
          'datatype'           => 'number'
-      ];
+        ];
 
-      $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
+        $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '40',
          'table'              => 'glpi_enclosuremodels',
          'field'              => 'name',
          'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '31',
          'table'              => 'glpi_states',
          'field'              => 'completename',
          'name'               => __('Status'),
          'datatype'           => 'dropdown',
          'condition'          => ['is_visible_computer' => 1]
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '5',
          'table'              => $this->getTable(),
          'field'              => 'serial',
          'name'               => __('Serial number'),
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '6',
          'table'              => $this->getTable(),
          'field'              => 'otherserial',
          'name'               => __('Inventory number'),
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '16',
          'table'              => $this->getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '19',
          'table'              => $this->getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '121',
          'table'              => $this->getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '23',
          'table'              => 'glpi_manufacturers',
          'field'              => 'name',
          'name'               => Manufacturer::getTypeName(1),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '24',
          'table'              => 'glpi_users',
          'field'              => 'name',
@@ -182,9 +189,9 @@ class Enclosure extends CommonDBTM {
          'name'               => __('Technician in charge of the hardware'),
          'datatype'           => 'dropdown',
          'right'              => 'own_ticket'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '49',
          'table'              => 'glpi_groups',
          'field'              => 'completename',
@@ -192,9 +199,9 @@ class Enclosure extends CommonDBTM {
          'name'               => __('Group in charge of the hardware'),
          'condition'          => ['is_assign' => 1],
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '61',
          'table'              => $this->getTable(),
          'field'              => 'template_name',
@@ -203,22 +210,22 @@ class Enclosure extends CommonDBTM {
          'massiveaction'      => false,
          'nosearch'           => true,
          'nodisplay'          => true,
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
          'name'               => Entity::getTypeName(1),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
+        $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
-      $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
+        $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
 
-      return $tab;
-   }
+        return $tab;
+    }
 
    /**
     * Get already filled places
@@ -230,48 +237,53 @@ class Enclosure extends CommonDBTM {
     *               orientation will not be available if depth is > 0.5; hpos will not be available
     *               if width is = 1
     */
-   public function getFilled($itemtype = null, $items_id = null) {
-      global $DB;
+    public function getFilled($itemtype = null, $items_id = null)
+    {
+        global $DB;
 
-      $iterator = $DB->request([
+        $iterator = $DB->request([
          'FROM'   => Item_Enclosure::getTable(),
          'WHERE'  => [
             'enclosures_id' => $this->getID()
          ]
-      ]);
+        ]);
 
-      $filled = [];
-      foreach ($iterator as $row) {
-         if (empty($itemtype) || empty($items_id)
-            || $itemtype != $row['itemtype'] || $items_id != $row['items_id']
-         ) {
-            $filled[$row['position']] = $row['position'];
-         }
-      }
-      return $filled;
-   }
+        $filled = [];
+        foreach ($iterator as $row) {
+            if (
+                empty($itemtype) || empty($items_id)
+                || $itemtype != $row['itemtype'] || $items_id != $row['items_id']
+            ) {
+                $filled[$row['position']] = $row['position'];
+            }
+        }
+        return $filled;
+    }
 
-   function cleanDBonPurge() {
+    public function cleanDBonPurge()
+    {
 
-      $this->deleteChildrenAndRelationsFromDb(
-         [
+        $this->deleteChildrenAndRelationsFromDb(
+            [
             Item_Enclosure::class,
-         ]
-      );
-   }
+            ]
+        );
+    }
 
 
-   function prepareInputForAdd($input) {
-      if (isset($input["id"]) && ($input["id"] > 0)) {
-         $input["_oldID"] = $input["id"];
-      }
-      unset($input['id']);
-      unset($input['withtemplate']);
-      return $input;
-   }
+    public function prepareInputForAdd($input)
+    {
+        if (isset($input["id"]) && ($input["id"] > 0)) {
+            $input["_oldID"] = $input["id"];
+        }
+        unset($input['id']);
+        unset($input['withtemplate']);
+        return $input;
+    }
 
 
-   static function getIcon() {
-      return "ti ti-columns";
-   }
+    public static function getIcon()
+    {
+        return "ti ti-columns";
+    }
 }

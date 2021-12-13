@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,9 +34,11 @@
 /**
  * @since 9.5
  **/
-class AgentType extends CommonDBTM {
+class AgentType extends CommonDBTM
+{
 
-   static function getTypeName($nb = 0) {
-      return _n('Agent type', 'Agents types', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Agent type', 'Agents types', $nb);
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,71 +33,91 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("cartridge", READ);
 
 if (!isset($_GET["id"])) {
-   $_GET["id"] = "";
+    $_GET["id"] = "";
 }
 
 $cartype = new CartridgeItem();
 
 if (isset($_POST["add"])) {
-   $cartype->check(-1, CREATE, $_POST);
+    $cartype->check(-1, CREATE, $_POST);
 
-   if ($newID = $cartype->add($_POST)) {
-      Event::log($newID, "cartridgeitems", 4, "inventory",
-                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
-      if ($_SESSION['glpibackcreated']) {
-         Html::redirect($cartype->getLinkURL());
-      }
-   }
-   Html::back();
-
+    if ($newID = $cartype->add($_POST)) {
+        Event::log(
+            $newID,
+            "cartridgeitems",
+            4,
+            "inventory",
+            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
+        );
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($cartype->getLinkURL());
+        }
+    }
+    Html::back();
 } else if (isset($_POST["delete"])) {
-   $cartype->check($_POST["id"], DELETE);
+    $cartype->check($_POST["id"], DELETE);
 
-   if ($cartype->delete($_POST)) {
-      Event::log($_POST["id"], "cartridgeitems", 4, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
-   }
-   $cartype->redirectToList();
-
+    if ($cartype->delete($_POST)) {
+        Event::log(
+            $_POST["id"],
+            "cartridgeitems",
+            4,
+            "inventory",
+            //TRANS: %s is the user login
+            sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
+        );
+    }
+    $cartype->redirectToList();
 } else if (isset($_POST["restore"])) {
-   $cartype->check($_POST["id"], DELETE);
+    $cartype->check($_POST["id"], DELETE);
 
-   if ($cartype->restore($_POST)) {
-      Event::log($_POST["id"], "cartridgeitems", 4, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
-   }
-   $cartype->redirectToList();
-
+    if ($cartype->restore($_POST)) {
+        Event::log(
+            $_POST["id"],
+            "cartridgeitems",
+            4,
+            "inventory",
+            //TRANS: %s is the user login
+            sprintf(__('%s restores an item'), $_SESSION["glpiname"])
+        );
+    }
+    $cartype->redirectToList();
 } else if (isset($_POST["purge"])) {
-   $cartype->check($_POST["id"], PURGE);
+    $cartype->check($_POST["id"], PURGE);
 
-   if ($cartype->delete($_POST, 1)) {
-      Event::log($_POST["id"], "cartridgeitems", 4, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
-   }
-   $cartype->redirectToList();
-
+    if ($cartype->delete($_POST, 1)) {
+        Event::log(
+            $_POST["id"],
+            "cartridgeitems",
+            4,
+            "inventory",
+            //TRANS: %s is the user login
+            sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+        );
+    }
+    $cartype->redirectToList();
 } else if (isset($_POST["update"])) {
-   $cartype->check($_POST["id"], UPDATE);
+    $cartype->check($_POST["id"], UPDATE);
 
-   if ($cartype->update($_POST)) {
-      Event::log($_POST["id"], "cartridgeitems", 4, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
+    if ($cartype->update($_POST)) {
+        Event::log(
+            $_POST["id"],
+            "cartridgeitems",
+            4,
+            "inventory",
+            //TRANS: %s is the user login
+            sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+        );
+    }
+    Html::back();
 } else {
-   Html::header(Cartridge::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "cartridgeitem");
-   $cartype->display(['id' => $_GET["id"],
+    Html::header(Cartridge::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "cartridgeitem");
+    $cartype->display(['id' => $_GET["id"],
       'formoptions'  => "data-track-changes=true"]);
-   Html::footer();
+    Html::footer();
 }

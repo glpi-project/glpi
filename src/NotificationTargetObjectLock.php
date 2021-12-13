@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -42,17 +43,20 @@
  *
  * @since 9.1
 **/
-class NotificationTargetObjectLock extends NotificationTarget {
+class NotificationTargetObjectLock extends NotificationTarget
+{
 
 
-   function getEvents() {
-      return ['unlock'               => __('Unlock Item Request')];
-   }
+    public function getEvents()
+    {
+        return ['unlock'               => __('Unlock Item Request')];
+    }
 
 
-   function getTags() {
+    public function getTags()
+    {
 
-      $tags = ['objectlock.action'               => _n('Event', 'Events', 1),
+        $tags = ['objectlock.action'               => _n('Event', 'Events', 1),
                     'objectlock.name'                 => __('Item Name'),
                     'objectlock.id'                   => __('Item ID'),
                     'objectlock.type'                 => __('Item Type'),
@@ -64,98 +68,110 @@ class NotificationTargetObjectLock extends NotificationTarget {
                     'objectlock.requester.firstname'  => __('Requester Firstname'),
                     'objectlock.url'                  => __('Item URL')];
 
-      foreach ($tags as $tag => $label) {
-         $this->addTagToList(['tag'   => $tag,
+        foreach ($tags as $tag => $label) {
+            $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
                                    'value' => true]);
-      }
-      asort($this->tag_descriptions);
-   }
+        }
+        asort($this->tag_descriptions);
+    }
 
 
    /**
     * @see NotificationTarget::addNotificationTargets()
    **/
-   function addNotificationTargets($entity) {
-      $this->addTarget(Notification::USER, __('Locking User'));
-   }
+    public function addNotificationTargets($entity)
+    {
+        $this->addTarget(Notification::USER, __('Locking User'));
+    }
 
 
    /**
     * @see NotificationTarget::addSpecificTargets()
     **/
-   function addSpecificTargets($data, $options) {
+    public function addSpecificTargets($data, $options)
+    {
 
-      $user = new User();
-      if ($user->getFromDB($this->obj->fields['users_id'])) {
-         $this->addToRecipientsList(['language' => $user->getField('language'),
+        $user = new User();
+        if ($user->getFromDB($this->obj->fields['users_id'])) {
+            $this->addToRecipientsList(['language' => $user->getField('language'),
                                          'users_id' => $user->getID()]);
-      }
-   }
+        }
+    }
 
 
-   function addDataForTemplate($event, $options = []) {
-      global $CFG_GLPI;
+    public function addDataForTemplate($event, $options = [])
+    {
+        global $CFG_GLPI;
 
-      $events = $this->getEvents();
+        $events = $this->getEvents();
 
-      $object = getItemForItemtype($options['item']->fields['itemtype']);
-      $object->getFromDB($options['item']->fields['items_id']);
-      $user = new User();
-      $user->getFromDB($options['item']->fields['users_id']);
+        $object = getItemForItemtype($options['item']->fields['itemtype']);
+        $object->getFromDB($options['item']->fields['items_id']);
+        $user = new User();
+        $user->getFromDB($options['item']->fields['users_id']);
 
-      $this->data['##objectlock.action##']   = $events[$event];
-      $this->data['##objectlock.name##']     = $object->fields['name'];
-      $this->data['##objectlock.id##']       = $options['item']->fields['items_id'];
-      $this->data['##objectlock.type##']     = $options['item']->fields['itemtype'];
-      $this->data['##objectlock.date##']     = Html::convDateTime($options['item']->fields['date_mod'],
-                                                                   $user->fields['date_format']);
-      $this->data['##objectlock.date_mod##'] = $this->data['##objectlock.date##'];
-      $this->data['##objectlock.lockedby.lastname##']
+        $this->data['##objectlock.action##']   = $events[$event];
+        $this->data['##objectlock.name##']     = $object->fields['name'];
+        $this->data['##objectlock.id##']       = $options['item']->fields['items_id'];
+        $this->data['##objectlock.type##']     = $options['item']->fields['itemtype'];
+        $this->data['##objectlock.date##']     = Html::convDateTime(
+            $options['item']->fields['date_mod'],
+            $user->fields['date_format']
+        );
+        $this->data['##objectlock.date_mod##'] = $this->data['##objectlock.date##'];
+        $this->data['##objectlock.lockedby.lastname##']
                                               = $user->fields['realname'];
-      $this->data['##objectlock.lockedby.firstname##']
+        $this->data['##objectlock.lockedby.firstname##']
                                               = $user->fields['firstname'];
-      $this->data['##objectlock.requester.lastname##']
+        $this->data['##objectlock.requester.lastname##']
                                               = $_SESSION['glpirealname'];
-      $this->data['##objectlock.requester.firstname##']
+        $this->data['##objectlock.requester.firstname##']
                                               = $_SESSION['glpifirstname'];
-      $this->data['##objectlock.url##']      = $CFG_GLPI['url_base']."/?redirect=".
-                                                   $options['item']->fields['itemtype']. "_".
+        $this->data['##objectlock.url##']      = $CFG_GLPI['url_base'] . "/?redirect=" .
+                                                   $options['item']->fields['itemtype'] . "_" .
                                                    $options['item']->fields['items_id'];
 
-      $this->getTags();
-      foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         if (!isset($this->data[$tag])) {
-            $this->data[$tag] = $values['label'];
-         }
-      }
-   }
+        $this->getTags();
+        foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
+            if (!isset($this->data[$tag])) {
+                $this->data[$tag] = $values['label'];
+            }
+        }
+    }
 
 
-   function getSender() {
+    public function getSender()
+    {
 
-      $mails = new UserEmail();
-      if (isset( $_SESSION['glpiID']) && ($_SESSION['glpiID'] > 0)
-          && isset($_SESSION['glpilock_directunlock_notification'])
-          && ($_SESSION['glpilock_directunlock_notification'] > 0)
-          && $mails->getFromDBByCrit([
+        $mails = new UserEmail();
+        if (
+            isset($_SESSION['glpiID']) && ($_SESSION['glpiID'] > 0)
+            && isset($_SESSION['glpilock_directunlock_notification'])
+            && ($_SESSION['glpilock_directunlock_notification'] > 0)
+            && $mails->getFromDBByCrit([
              'users_id'    => $_SESSION['glpiID'],
              'is_default'  => 1
-          ])) {
-
+            ])
+        ) {
             $ret = ['email' => $mails->fields['email'],
-                    'name'  => formatUserName(0, $_SESSION["glpiname"], $_SESSION["glpirealname"],
-                                              $_SESSION["glpifirstname"])];
-      } else {
-         $ret = parent::getSender();
-      }
+                    'name'  => formatUserName(
+                        0,
+                        $_SESSION["glpiname"],
+                        $_SESSION["glpirealname"],
+                        $_SESSION["glpifirstname"]
+                    )];
+        } else {
+            $ret = parent::getSender();
+        }
 
-      return $ret;
-   }
+        return $ret;
+    }
 
 
-   function getReplyTo($options = []) {
+    public function getReplyTo($options = [])
+    {
 
-      return $this->getSender();
-   }
+        return $this->getSender();
+    }
 }

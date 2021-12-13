@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -43,17 +44,19 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class FrontEndAssetsExtension extends AbstractExtension {
+class FrontEndAssetsExtension extends AbstractExtension
+{
 
-   public function getFunctions(): array {
-      return [
+    public function getFunctions(): array
+    {
+        return [
          new TwigFunction('asset_path', [$this, 'assetPath']),
          new TwigFunction('css_path', [$this, 'cssPath']),
          new TwigFunction('js_path', [$this, 'jsPath']),
          new TwigFunction('custom_css', [$this, 'customCss'], ['is_safe' => ['html']]),
          new TwigFunction('locales_js', [$this, 'localesJs'], ['is_safe' => ['html']]),
-      ];
-   }
+        ];
+    }
 
    /**
     * Return domain-relative path of an asset.
@@ -62,9 +65,10 @@ class FrontEndAssetsExtension extends AbstractExtension {
     *
     * @return string
     */
-   public function assetPath(string $path): string {
-      return Html::getPrefixedUrl($path);
-   }
+    public function assetPath(string $path): string
+    {
+        return Html::getPrefixedUrl($path);
+    }
 
    /**
     * Return domain-relative path of a CSS file.
@@ -73,30 +77,31 @@ class FrontEndAssetsExtension extends AbstractExtension {
     *
     * @return string
     */
-   public function cssPath(string $path): string {
-      $is_debug = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
+    public function cssPath(string $path): string
+    {
+        $is_debug = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
 
-      if (preg_match('/\.scss$/', $path)) {
-         $compiled_file = Html::getScssCompilePath($path);
+        if (preg_match('/\.scss$/', $path)) {
+            $compiled_file = Html::getScssCompilePath($path);
 
-         if (!$is_debug && file_exists($compiled_file)) {
-            $path = str_replace(GLPI_ROOT, '', $compiled_file);
-         } else {
-            $path = '/front/css.php?file=' . $path . ($is_debug ? '&debug=1' : '');
-         }
-      } else {
-         $minified_path = str_replace('.css', '.min.css', $path);
+            if (!$is_debug && file_exists($compiled_file)) {
+                $path = str_replace(GLPI_ROOT, '', $compiled_file);
+            } else {
+                $path = '/front/css.php?file=' . $path . ($is_debug ? '&debug=1' : '');
+            }
+        } else {
+            $minified_path = str_replace('.css', '.min.css', $path);
 
-         if (!$is_debug && file_exists(GLPI_ROOT . '/' . $minified_path)) {
-            $path = $minified_path;
-         }
-      }
+            if (!$is_debug && file_exists(GLPI_ROOT . '/' . $minified_path)) {
+                $path = $minified_path;
+            }
+        }
 
-      $path = Html::getPrefixedUrl($path);
-      $path = $this->getVersionnedPath($path);
+        $path = Html::getPrefixedUrl($path);
+        $path = $this->getVersionnedPath($path);
 
-      return $path;
-   }
+        return $path;
+    }
 
    /**
     * Return domain-relative path of a JS file.
@@ -105,20 +110,21 @@ class FrontEndAssetsExtension extends AbstractExtension {
     *
     * @return string
     */
-   public function jsPath(string $path): string {
-      $is_debug = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
+    public function jsPath(string $path): string
+    {
+        $is_debug = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
 
-      $minified_path = str_replace('.js', '.min.js', $path);
+        $minified_path = str_replace('.js', '.min.js', $path);
 
-      if (!$is_debug && file_exists(GLPI_ROOT . '/' . $minified_path)) {
-         $path = $minified_path;
-      }
+        if (!$is_debug && file_exists(GLPI_ROOT . '/' . $minified_path)) {
+            $path = $minified_path;
+        }
 
-      $path = Html::getPrefixedUrl($path);
-      $path = $this->getVersionnedPath($path);
+        $path = Html::getPrefixedUrl($path);
+        $path = $this->getVersionnedPath($path);
 
-      return $path;
-   }
+        return $path;
+    }
 
    /**
     * Get path suffixed with asset version.
@@ -127,70 +133,73 @@ class FrontEndAssetsExtension extends AbstractExtension {
     *
     * @return string
     */
-   private function getVersionnedPath(string $path): string {
-      // @TODO Adapt version to plugin version if path is related to a specific plugin
-      $version = GLPI_VERSION;
-      $path .= (strpos($path, '?') !== false ? '&' : '?') . 'v=' . $version;
+    private function getVersionnedPath(string $path): string
+    {
+       // @TODO Adapt version to plugin version if path is related to a specific plugin
+        $version = GLPI_VERSION;
+        $path .= (strpos($path, '?') !== false ? '&' : '?') . 'v=' . $version;
 
-      return $path;
-   }
+        return $path;
+    }
 
    /**
     * Return custom CSS for active entity.
     *
     * @return string
     */
-   public function customCss(): string {
-      global $DB;
+    public function customCss(): string
+    {
+        global $DB;
 
-      $css = '';
+        $css = '';
 
-      if ($DB instanceof DBmysql && $DB->connected) {
-         $entity = new Entity();
-         if (isset($_SESSION['glpiactive_entity'])) {
-            // Apply active entity styles
-            $entity->getFromDB($_SESSION['glpiactive_entity']);
-         } else {
-            // Apply root entity styles
-            $entity->getFromDB('0');
-         }
-         $css = $entity->getCustomCssTag();
-      }
+        if ($DB instanceof DBmysql && $DB->connected) {
+            $entity = new Entity();
+            if (isset($_SESSION['glpiactive_entity'])) {
+                // Apply active entity styles
+                $entity->getFromDB($_SESSION['glpiactive_entity']);
+            } else {
+               // Apply root entity styles
+                $entity->getFromDB('0');
+            }
+            $css = $entity->getCustomCssTag();
+        }
 
-      return $css;
-   }
+        return $css;
+    }
 
    /**
     * Return locales JS code.
     *
     * @return string
     */
-   public function localesJs(): string {
-      if (!isset($_SESSION['glpilanguage'])) {
-         return '';
-      }
+    public function localesJs(): string
+    {
+        if (!isset($_SESSION['glpilanguage'])) {
+            return '';
+        }
 
-      // Compute available translation domains
-      $locales_domains = ['glpi' => GLPI_VERSION];
-      $plugins = Plugin::getPlugins();
-      foreach ($plugins as $plugin) {
-         $locales_domains[$plugin] = Plugin::getInfo($plugin, 'version');
-      }
+       // Compute available translation domains
+        $locales_domains = ['glpi' => GLPI_VERSION];
+        $plugins = Plugin::getPlugins();
+        foreach ($plugins as $plugin) {
+            $locales_domains[$plugin] = Plugin::getInfo($plugin, 'version');
+        }
 
-      $script = <<<JAVASCRIPT
+        $script = <<<JAVASCRIPT
          $(function() {
             i18n.setLocale('{$_SESSION['glpilanguage']}');
          });
 JAVASCRIPT;
 
-      foreach ($locales_domains as $locale_domain => $locale_version) {
-         $locales_path = Html::getPrefixedUrl(
-            '/front/locale.php'
-            . '?domain=' . $locale_domain
-            . '&version=' . $locale_version
-            . ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? '&debug' : '')
-         );
-         $script .= <<<JAVASCRIPT
+        foreach ($locales_domains as $locale_domain => $locale_version) {
+            $locales_path = Html::getPrefixedUrl(
+                '/front/locale.php'
+                . '?domain=' . $locale_domain
+                . '&version=' . $locale_version
+                . ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? '&debug' : '')
+            );
+            $script .= <<<JAVASCRIPT
             $(function() {
                $.ajax({
                   type: 'GET',
@@ -201,8 +210,8 @@ JAVASCRIPT;
                });
             });
 JAVASCRIPT;
-      }
+        }
 
-      return Html::scriptBlock($script);
-   }
+        return Html::scriptBlock($script);
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -39,19 +40,19 @@ interface ExportToCsvInterface
     *
     * @return string
     */
-   public function getFileName(): string;
+    public function getFileName(): string;
 
    /**
     * Get header of the csv file
     *
     * @return array
     */
-   public function getFileHeader(): array;
+    public function getFileHeader(): array;
 
    /**
     * Get content of the csv file
     *
     * @return array
     */
-   public function getFileContent(): array;
+    public function getFileContent(): array;
 }

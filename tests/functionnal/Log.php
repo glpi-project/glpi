@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,22 +37,24 @@ use DbTestCase;
 
 /* Test for inc/log.class.php */
 
-class Log extends DbTestCase {
+class Log extends DbTestCase
+{
 
-   private function createComputer() {
-      $computer = new \Computer();
-      $this->integer(
-         (int)$computer->add(['entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)], [], false)
-      )->isGreaterThan(0);
-      return $computer;
-   }
+    private function createComputer()
+    {
+        $computer = new \Computer();
+        $this->integer(
+            (int)$computer->add(['entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)], [], false)
+        )->isGreaterThan(0);
+        return $computer;
+    }
 
-   private function createLogEntry(
-      \CommonDBTM $item,
-      $log_data
-   ) {
-      $log_data = array_merge(
-         [
+    private function createLogEntry(
+        \CommonDBTM $item,
+        $log_data
+    ) {
+        $log_data = array_merge(
+            [
             'items_id'         => $item->fields['id'],
             'itemtype'         => $item->getType(),
             'itemtype_link'    => '',
@@ -61,55 +64,57 @@ class Log extends DbTestCase {
             'id_search_option' => 0,
             'old_value'        => '',
             'new_value'        => '',
-         ],
-         $log_data
-      );
-      unset($log_data['date_creation']);
-      unset($log_data['date_mod']);
+            ],
+            $log_data
+        );
+        unset($log_data['date_creation']);
+        unset($log_data['date_mod']);
 
-      $log = new \Log();
-      $this->integer((int)$log->add($log_data))->isGreaterThan(0);
+        $log = new \Log();
+        $this->integer((int)$log->add($log_data))->isGreaterThan(0);
 
-      return $log;
-   }
+        return $log;
+    }
 
-   public function testGetDistinctUserNamesValuesInItemLog() {
-      $computer = $this->createComputer();
+    public function testGetDistinctUserNamesValuesInItemLog()
+    {
+        $computer = $this->createComputer();
 
-      $user_names = ['Huey', 'Dewey', 'Louie', 'Phooey'];
+        $user_names = ['Huey', 'Dewey', 'Louie', 'Phooey'];
 
-      // Add at least one item per user
-      foreach ($user_names as $user_name) {
-         $this->createLogEntry(
-            $computer,
+       // Add at least one item per user
+        foreach ($user_names as $user_name) {
+            $this->createLogEntry(
+                $computer,
+                [
+                'linked_action' => \Log::HISTORY_LOG_SIMPLE_MESSAGE,
+                'user_name'     => $user_name,
+                ]
+            );
+        }
+
+       // Add 10 items affected randomly to users
+        for ($i = 0; $i < 10; $i++) {
+            $this->createLogEntry(
+                $computer,
+                [
+                'linked_action' => \Log::HISTORY_LOG_SIMPLE_MESSAGE,
+                'user_name'     => $user_names[array_rand($user_names)],
+                ]
+            );
+        }
+
+        $expected_user_names = ['Dewey', 'Huey', 'Louie', 'Phooey'];
+        $expected_result = array_combine($expected_user_names, $expected_user_names);
+
+        $this->array(\Log::getDistinctUserNamesValuesInItemLog($computer))->isIdenticalTo($expected_result);
+    }
+
+    protected function dataLogToAffectedField()
+    {
+        $item_related_linked_action_values = implode(
+            ',',
             [
-               'linked_action' => \Log::HISTORY_LOG_SIMPLE_MESSAGE,
-               'user_name'     => $user_name,
-            ]
-         );
-      }
-
-      // Add 10 items affected randomly to users
-      for ($i = 0; $i < 10; $i++) {
-         $this->createLogEntry(
-            $computer,
-            [
-               'linked_action' => \Log::HISTORY_LOG_SIMPLE_MESSAGE,
-               'user_name'     => $user_names[array_rand($user_names)],
-            ]
-         );
-      }
-
-      $expected_user_names = ['Dewey', 'Huey', 'Louie', 'Phooey'];
-      $expected_result = array_combine($expected_user_names, $expected_user_names);
-
-      $this->array(\Log::getDistinctUserNamesValuesInItemLog($computer))->isIdenticalTo($expected_result);
-   }
-
-   protected function dataLogToAffectedField() {
-      $item_related_linked_action_values = implode(
-         ',',
-         [
             \Log::HISTORY_ADD_DEVICE,
             \Log::HISTORY_DELETE_DEVICE,
             \Log::HISTORY_LOCK_DEVICE,
@@ -126,33 +131,33 @@ class Log extends DbTestCase {
             \Log::HISTORY_DELETE_SUBITEM,
             \Log::HISTORY_LOCK_SUBITEM,
             \Log::HISTORY_UNLOCK_SUBITEM,
-         ]
-      );
-      $device_related_type_link = 'Item_DeviceHardDrive';
-      $device_related_key = 'linked_action::' . $item_related_linked_action_values . ';itemtype_link::Item_DeviceHardDrive;';
-      $device_related_value = 'Item - Hard drive link';
+            ]
+        );
+        $device_related_type_link = 'Item_DeviceHardDrive';
+        $device_related_key = 'linked_action::' . $item_related_linked_action_values . ';itemtype_link::Item_DeviceHardDrive;';
+        $device_related_value = 'Item - Hard drive link';
 
-      $relation_related_type_link = 'Monitor';
-      $relation_related_key = 'linked_action::' . $item_related_linked_action_values . ';itemtype_link::Monitor;';
-      $relation_related_value = 'Monitor';
+        $relation_related_type_link = 'Monitor';
+        $relation_related_key = 'linked_action::' . $item_related_linked_action_values . ';itemtype_link::Monitor;';
+        $relation_related_value = 'Monitor';
 
-      $sub_item_related_type_link = 'NetworkPort';
-      $sub_item_related_key = 'linked_action::' . $item_related_linked_action_values . ';itemtype_link::NetworkPort;';
-      $sub_item_related_value = 'Network port';
+        $sub_item_related_type_link = 'NetworkPort';
+        $sub_item_related_key = 'linked_action::' . $item_related_linked_action_values . ';itemtype_link::NetworkPort;';
+        $sub_item_related_value = 'Network port';
 
-      $software_related_linked_action_values = implode(
-         ',',
-         [
+        $software_related_linked_action_values = implode(
+            ',',
+            [
             \Log::HISTORY_INSTALL_SOFTWARE,
             \Log::HISTORY_UNINSTALL_SOFTWARE,
-         ]
-      );
-      $software_related_key = 'linked_action::' . $software_related_linked_action_values . ';';
-      $software_related_value = 'Software';
+            ]
+        );
+        $software_related_key = 'linked_action::' . $software_related_linked_action_values . ';';
+        $software_related_value = 'Software';
 
-      $others_linked_action_values_to_exclude = implode(
-         ',',
-         [
+        $others_linked_action_values_to_exclude = implode(
+            ',',
+            [
             0,
             \Log::HISTORY_ADD_DEVICE,
             \Log::HISTORY_DELETE_DEVICE,
@@ -173,12 +178,12 @@ class Log extends DbTestCase {
             \Log::HISTORY_UPDATE_DEVICE,
             \Log::HISTORY_INSTALL_SOFTWARE,
             \Log::HISTORY_UNINSTALL_SOFTWARE,
-         ]
-      );
-      $others_key = 'linked_action:NOT:' . $others_linked_action_values_to_exclude . ';';
-      $others_value = 'Others';
+            ]
+        );
+        $others_key = 'linked_action:NOT:' . $others_linked_action_values_to_exclude . ';';
+        $others_value = 'Others';
 
-      return [
+        return [
          [
             [
                'linked_action' => \Log::HISTORY_ADD_DEVICE,
@@ -412,41 +417,44 @@ class Log extends DbTestCase {
                $others_key => $others_value,
             ]
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider dataLogToAffectedField
     */
-   public function testValuesComputationForGetDistinctAffectedFieldValuesInItemLog($log_data, $expected_result) {
-      $computer = $this->createComputer();
+    public function testValuesComputationForGetDistinctAffectedFieldValuesInItemLog($log_data, $expected_result)
+    {
+        $computer = $this->createComputer();
 
-      $this->createLogEntry($computer, $log_data);
+        $this->createLogEntry($computer, $log_data);
 
-      $this->array(\Log::getDistinctAffectedFieldValuesInItemLog($computer))->isIdenticalTo($expected_result);
-   }
+        $this->array(\Log::getDistinctAffectedFieldValuesInItemLog($computer))->isIdenticalTo($expected_result);
+    }
 
-   public function testValuesSortInGetDistinctAffectedFieldValuesInItemLog() {
-      $computer = $this->createComputer();
+    public function testValuesSortInGetDistinctAffectedFieldValuesInItemLog()
+    {
+        $computer = $this->createComputer();
 
-      foreach ($this->dataLogToAffectedField() as $data) {
-         $this->createLogEntry($computer, $data[0]);
-      }
+        foreach ($this->dataLogToAffectedField() as $data) {
+            $this->createLogEntry($computer, $data[0]);
+        }
 
-      $result = \Log::getDistinctAffectedFieldValuesInItemLog($computer);
+        $result = \Log::getDistinctAffectedFieldValuesInItemLog($computer);
 
-      $previous_value = null;
-      foreach ($result as $key => $value) {
-         if (null !== $previous_value) {
-            $this->boolean('Others' === $value || strcmp($previous_value, $value) < 0)->isTrue();
-         }
+        $previous_value = null;
+        foreach ($result as $key => $value) {
+            if (null !== $previous_value) {
+                $this->boolean('Others' === $value || strcmp($previous_value, $value) < 0)->isTrue();
+            }
 
-         $previous_value = $value;
-      }
-   }
+            $previous_value = $value;
+        }
+    }
 
-   protected function dataLinkedActionLabel() {
-      return [
+    protected function dataLinkedActionLabel()
+    {
+        return [
          [0, null],
          [\Log::HISTORY_ADD_DEVICE, __('Add a component')],
          [\Log::HISTORY_UPDATE_DEVICE, __('Change a component')],
@@ -475,59 +483,63 @@ class Log extends DbTestCase {
          [\Log::HISTORY_UNLOCK_ITEM, __('Unlock the item')],
          [\Log::HISTORY_PLUGIN, null],
          [\Log::HISTORY_PLUGIN + 1, null],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider dataLinkedActionLabel
     */
-   public function testGetLinkedActionLabel($linked_action, $expected_label) {
-      $this->variable(\Log::getLinkedActionLabel($linked_action))->isIdenticalTo($expected_label);
-   }
+    public function testGetLinkedActionLabel($linked_action, $expected_label)
+    {
+        $this->variable(\Log::getLinkedActionLabel($linked_action))->isIdenticalTo($expected_label);
+    }
 
    /**
     * @dataProvider dataLinkedActionLabel
     */
-   public function testValuesComputationForGetDistinctLinkedActionValuesInItemLog($linked_action, $expected_value) {
-      $computer = $this->createComputer();
+    public function testValuesComputationForGetDistinctLinkedActionValuesInItemLog($linked_action, $expected_value)
+    {
+        $computer = $this->createComputer();
 
-      $this->createLogEntry($computer, ['linked_action' => $linked_action]);
+        $this->createLogEntry($computer, ['linked_action' => $linked_action]);
 
-      $expected_key = $linked_action;
-      if (0 === $linked_action) {
-         //Special case for field update
-         $expected_value = __('Update a field');
-      } else if (null === $expected_value) {
-         //Null values fallbacks to 'Others'.
-         $expected_key = 'other';
-         $expected_value = __('Others');
-      }
+        $expected_key = $linked_action;
+        if (0 === $linked_action) {
+           //Special case for field update
+            $expected_value = __('Update a field');
+        } else if (null === $expected_value) {
+           //Null values fallbacks to 'Others'.
+            $expected_key = 'other';
+            $expected_value = __('Others');
+        }
 
-      $this->array(\Log::getDistinctLinkedActionValuesInItemLog($computer))
+        $this->array(\Log::getDistinctLinkedActionValuesInItemLog($computer))
          ->isIdenticalTo([$expected_key => $expected_value]);
-   }
+    }
 
-   public function testValuesSortInGetDistinctLinkedActionValuesInItemLog() {
-      $computer = $this->createComputer();
+    public function testValuesSortInGetDistinctLinkedActionValuesInItemLog()
+    {
+        $computer = $this->createComputer();
 
-      foreach ($this->dataLinkedActionLabel() as $data) {
-         $this->createLogEntry($computer, ['linked_action' => $data[0]]);
-      }
+        foreach ($this->dataLinkedActionLabel() as $data) {
+            $this->createLogEntry($computer, ['linked_action' => $data[0]]);
+        }
 
-      $result = \Log::getDistinctLinkedActionValuesInItemLog($computer);
+        $result = \Log::getDistinctLinkedActionValuesInItemLog($computer);
 
-      $previous_value = null;
-      foreach ($result as $key => $value) {
-         if (null !== $previous_value) {
-            $this->boolean('Others' === $value || strcmp($previous_value, $value) < 0)->isTrue();
-         }
+        $previous_value = null;
+        foreach ($result as $key => $value) {
+            if (null !== $previous_value) {
+                $this->boolean('Others' === $value || strcmp($previous_value, $value) < 0)->isTrue();
+            }
 
-         $previous_value = $value;
-      }
-   }
+            $previous_value = $value;
+        }
+    }
 
-   protected function dataFiltersValuesToSqlCriteria() {
-      return [
+    protected function dataFiltersValuesToSqlCriteria()
+    {
+        return [
          [
             [
                'affected_fields' => ['linked_action::35;'],
@@ -715,15 +727,15 @@ class Log extends DbTestCase {
                'user_name' => ['user1'],
             ]
          ],
-      ];
-   }
+        ];
+    }
 
 
    /**
     * @dataProvider dataFiltersValuesToSqlCriteria
     */
-   public function testConvertFiltersValuesToSqlCriteria($filters_values, $expected_result) {
-      $this->array(\Log::convertFiltersValuesToSqlCriteria($filters_values))->isIdenticalTo($expected_result);
-   }
-
+    public function testConvertFiltersValuesToSqlCriteria($filters_values, $expected_result)
+    {
+        $this->array(\Log::convertFiltersValuesToSqlCriteria($filters_values))->isIdenticalTo($expected_result);
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,12 +33,13 @@
 
 class ShareDashboardDropdown extends AbstractRightsDropdown
 {
-   protected static function getTypes(): array {
-      return [
+    protected static function getTypes(): array
+    {
+        return [
          User::getType(),
          Entity::getType(),
          Profile::getType(),
          Group::getType(),
-      ];
-   }
+        ];
+    }
 }

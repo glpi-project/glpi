@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -48,10 +49,10 @@ $migration->dropField($tmp_table, "is_deleted");
 
 // Add unicity key
 $migration->addKey(
-   $tmp_table,
-   ['itemtype', 'items_id'],
-   'unicity',
-   'UNIQUE'
+    $tmp_table,
+    ['itemtype', 'items_id'],
+    'unicity',
+    'UNIQUE'
 );
 
 // Insert without duplicates

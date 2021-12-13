@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,10 +34,11 @@
 /**
  * @since 0.84
 **/
-class HTMLTableSubHeader extends HTMLTableHeader {
+class HTMLTableSubHeader extends HTMLTableHeader
+{
 
    // The headers of each column
-   private $header;
+    private $header;
 
 
    /**
@@ -45,46 +47,56 @@ class HTMLTableSubHeader extends HTMLTableHeader {
     * @param string               $content
     * @param HTMLTableHeader      $father
    **/
-   function __construct(HTMLTableSuperHeader $header, $name, $content,
-                        HTMLTableHeader $father = null) {
+    public function __construct(
+        HTMLTableSuperHeader $header,
+        $name,
+        $content,
+        HTMLTableHeader $father = null
+    ) {
 
-      $this->header = $header;
-      parent::__construct($name, $content, $father);
-      $this->copyAttributsFrom($this->header);
-   }
-
-
-   function isSuperHeader() {
-      return false;
-   }
-
-
-   function getHeaderAndSubHeaderName(&$header_name, &$subheader_name) {
-
-      $header_name    = $this->header->getName();
-      $subheader_name = $this->getName();
-   }
+        $this->header = $header;
+        parent::__construct($name, $content, $father);
+        $this->copyAttributsFrom($this->header);
+    }
 
 
-   function getCompositeName() {
-      return $this->header->getCompositeName().$this->getName();
-   }
+    public function isSuperHeader()
+    {
+        return false;
+    }
 
 
-   protected function getTable() {
-      return $this->header->getTable();
-   }
+    public function getHeaderAndSubHeaderName(&$header_name, &$subheader_name)
+    {
+
+        $header_name    = $this->header->getName();
+        $subheader_name = $this->getName();
+    }
 
 
-   function getHeader() {
-      return $this->header;
-   }
+    public function getCompositeName()
+    {
+        return $this->header->getCompositeName() . $this->getName();
+    }
+
+
+    protected function getTable()
+    {
+        return $this->header->getTable();
+    }
+
+
+    public function getHeader()
+    {
+        return $this->header;
+    }
 
 
    /**
     * @param $numberOfSubHeaders
    **/
-   function updateColSpan($numberOfSubHeaders) {
-      $this->setColSpan($this->header->getColSpan() / $numberOfSubHeaders);
-   }
+    public function updateColSpan($numberOfSubHeaders)
+    {
+        $this->setColSpan($this->header->getColSpan() / $numberOfSubHeaders);
+    }
 }

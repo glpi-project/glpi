@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,25 +35,28 @@
  * Template for PlanningExternalEvent
  * @since 9.5
 **/
-class PlanningExternalEventTemplate extends CommonDropdown {
-   use Glpi\Features\PlanningEvent {
-      prepareInputForAdd    as protected prepareInputForAddTrait;
-      prepareInputForUpdate as protected prepareInputForUpdateTrait;
-      rawSearchOptions      as protected trait_rawSearchOptions;
-   }
+class PlanningExternalEventTemplate extends CommonDropdown
+{
+    use Glpi\Features\PlanningEvent {
+        prepareInputForAdd as protected prepareInputForAddTrait;
+        prepareInputForUpdate as protected prepareInputForUpdateTrait;
+        rawSearchOptions as protected trait_rawSearchOptions;
+    }
 
    // From CommonDBTM
-   public $dohistory          = true;
-   public $can_be_translated  = true;
+    public $dohistory          = true;
+    public $can_be_translated  = true;
 
 
-   static function getTypeName($nb = 0) {
-      return _n('External events template', 'External events templates', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('External events template', 'External events templates', $nb);
+    }
 
 
-   function getAdditionalFields() {
-      return [
+    public function getAdditionalFields()
+    {
+        return [
          [
             'name'  => 'state',
             'label' => __('Status'),
@@ -79,99 +83,111 @@ class PlanningExternalEventTemplate extends CommonDropdown {
             'label' => __('Description'),
             'type'  => 'tinymce',
          ]
-      ];
-   }
+        ];
+    }
 
 
-   function displaySpecificTypeField($ID, $field = [], array $options = []) {
+    public function displaySpecificTypeField($ID, $field = [], array $options = [])
+    {
 
-      switch ($field['type']) {
-         case 'planningstate' :
-            Planning::dropdownState("state", $this->fields["state"], false, [
-               'width' => '100%',
-            ]);
-            break;
+        switch ($field['type']) {
+            case 'planningstate':
+                Planning::dropdownState("state", $this->fields["state"], false, [
+                 'width' => '100%',
+                ]);
+                break;
 
-         case 'plan' :
-            Planning::showAddEventClassicForm([
-               'duration'       => $this->fields['duration'],
-               'itemtype'       => self::getType(),
-               'items_id'       => $this->fields['id'],
-               '_display_dates' => false,
-            ]);
-            break;
+            case 'plan':
+                Planning::showAddEventClassicForm([
+                'duration'       => $this->fields['duration'],
+                'itemtype'       => self::getType(),
+                'items_id'       => $this->fields['id'],
+                '_display_dates' => false,
+                ]);
+                break;
 
-         case 'rrule' :
-            echo self::showRepetitionForm($this->fields['rrule'] ?? '');
-            break;
-      }
-   }
-
-
-   static function getSpecificValueToDisplay($field, $values, array $options = []) {
-      if (!is_array($values)) {
-         $values = [$field => $values];
-      }
-
-      switch ($field) {
-         case 'state':
-            return Planning::getState($values[$field]);
-      }
-
-      return parent::getSpecificValueToDisplay($field, $values, $options);
-   }
+            case 'rrule':
+                echo self::showRepetitionForm($this->fields['rrule'] ?? '');
+                break;
+        }
+    }
 
 
-   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
-      if (!is_array($values)) {
-         $values = [$field => $values];
-      }
-      $options['display'] = false;
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
 
-      switch ($field) {
-         case 'state':
-            return Planning::dropdownState($name, $values[$field], $options);
-      }
+        switch ($field) {
+            case 'state':
+                return Planning::getState($values[$field]);
+        }
 
-      return parent::getSpecificValueToSelect($field, $name, $values, $options);
-   }
-
-
-   function prepareInputForAdd($input) {
-      $saved_input = $input;
-      $input = $this->prepareInputForAddTrait($input);
-
-      return $this->parseExtraInput($saved_input, $input);
-   }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
 
 
-   function prepareInputForupdate($input) {
-      $saved_input = $input;
-      $input = $this->prepareInputForupdateTrait($input);
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    {
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        $options['display'] = false;
 
-      return $this->parseExtraInput($saved_input, $input);
-   }
+        switch ($field) {
+            case 'state':
+                return Planning::dropdownState($name, $values[$field], $options);
+        }
 
-   function parseExtraInput(array $orig_input = [], array $input = []) {
-      if (isset($orig_input['plan'])
-          && array_key_exists('_duration', $orig_input['plan'])) {
-         $input['duration'] = $orig_input['plan']['_duration'];
-      }
-
-      if (isset($orig_input['_planningrecall'])
-          && array_key_exists('before_time', $orig_input['_planningrecall'])) {
-         $input['before_time'] = $orig_input['_planningrecall']['before_time'];
-      }
-
-      return $input;
-   }
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
 
 
-   function rawSearchOptions() {
-      return $this->trait_rawSearchOptions();
-   }
+    public function prepareInputForAdd($input)
+    {
+        $saved_input = $input;
+        $input = $this->prepareInputForAddTrait($input);
 
-   static function getIcon() {
-      return "fas fa-layer-group";
-   }
+        return $this->parseExtraInput($saved_input, $input);
+    }
+
+
+    public function prepareInputForupdate($input)
+    {
+        $saved_input = $input;
+        $input = $this->prepareInputForupdateTrait($input);
+
+        return $this->parseExtraInput($saved_input, $input);
+    }
+
+    public function parseExtraInput(array $orig_input = [], array $input = [])
+    {
+        if (
+            isset($orig_input['plan'])
+            && array_key_exists('_duration', $orig_input['plan'])
+        ) {
+            $input['duration'] = $orig_input['plan']['_duration'];
+        }
+
+        if (
+            isset($orig_input['_planningrecall'])
+            && array_key_exists('before_time', $orig_input['_planningrecall'])
+        ) {
+            $input['before_time'] = $orig_input['_planningrecall']['before_time'];
+        }
+
+        return $input;
+    }
+
+
+    public function rawSearchOptions()
+    {
+        return $this->trait_rawSearchOptions();
+    }
+
+    public static function getIcon()
+    {
+        return "fas fa-layer-group";
+    }
 }

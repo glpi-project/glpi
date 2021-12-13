@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,11 +31,13 @@
  * ---------------------------------------------------------------------
  */
 
-class DeviceCameraModel extends CommonDeviceModel {
+class DeviceCameraModel extends CommonDeviceModel
+{
 
-   var $additional_fields_for_dictionnary = ['manufacturer'];
+    public $additional_fields_for_dictionnary = ['manufacturer'];
 
-   static function getTypeName($nb = 0) {
-      return _n('Device camera model', 'Device camera models', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Device camera model', 'Device camera models', $nb);
+    }
 }

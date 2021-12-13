@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -39,71 +40,77 @@ use Glpi\Team\Team;
  * @author Julien Dombre
  * @since 0.85
  **/
-class ProjectTeam extends CommonDBRelation {
+class ProjectTeam extends CommonDBRelation
+{
 
    // From CommonDBTM
-   public $dohistory                  = true;
-   public $no_form_page               = true;
+    public $dohistory                  = true;
+    public $no_form_page               = true;
 
    // From CommonDBRelation
-   static public $itemtype_1          = 'Project';
-   static public $items_id_1          = 'projects_id';
+    public static $itemtype_1          = 'Project';
+    public static $items_id_1          = 'projects_id';
 
-   static public $itemtype_2          = 'itemtype';
-   static public $items_id_2          = 'items_id';
-   static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+    public static $itemtype_2          = 'itemtype';
+    public static $items_id_2          = 'items_id';
+    public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
-   static public $available_types     = ['User', 'Group', 'Supplier', 'Contact'];
+    public static $available_types     = ['User', 'Group', 'Supplier', 'Contact'];
 
 
    /**
     * @see CommonDBTM::getNameField()
    **/
-   static function getNameField() {
-      return 'id';
-   }
+    public static function getNameField()
+    {
+        return 'id';
+    }
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Project team', 'Project teams', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Project team', 'Project teams', $nb);
+    }
 
 
-   function getForbiddenStandardMassiveAction() {
+    public function getForbiddenStandardMassiveAction()
+    {
 
-      $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
-      return $forbidden;
-   }
+        $forbidden   = parent::getForbiddenStandardMassiveAction();
+        $forbidden[] = 'update';
+        return $forbidden;
+    }
 
 
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
 
-      if (self::canView()) {
-         $nb = 0;
-         switch ($item->getType()) {
-            case 'Project' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = $item->getTeamCount();
-               }
-               return self::createTabEntry(self::getTypeName(1), $nb);
-         }
-      }
-      return '';
-   }
+        if (self::canView()) {
+            $nb = 0;
+            switch ($item->getType()) {
+                case 'Project':
+                    if ($_SESSION['glpishow_count_on_tabs']) {
+                        $nb = $item->getTeamCount();
+                    }
+                    return self::createTabEntry(self::getTypeName(1), $nb);
+            }
+        }
+        return '';
+    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
 
-      switch ($item->getType()) {
-         case 'Project' :
-            $item->showTeam($item);
-            return true;
-      }
-   }
+        switch ($item->getType()) {
+            case 'Project':
+                $item->showTeam($item);
+                return true;
+        }
+    }
 
    /**
     * Add additional data about the individual members to an array of team members for a Project or ProjectTask.
@@ -113,24 +120,25 @@ class ProjectTeam extends CommonDBRelation {
     * @return array The array of team members with additional information
     * @since 10.0.0
     */
-   public static function expandTeamData(array $team) {
-      global $DB;
-      $subqueries = [];
+    public static function expandTeamData(array $team)
+    {
+        global $DB;
+        $subqueries = [];
 
-      if (count($team['User'])) {
-         $user_ids = array_column($team['User'], 'items_id');
-         $subqueries[] = new QuerySubQuery([
+        if (count($team['User'])) {
+            $user_ids = array_column($team['User'], 'items_id');
+            $subqueries[] = new QuerySubQuery([
             'SELECT' => ['id', 'name', 'realname', 'firstname',
                new QueryExpression('"User" AS itemtype')],
             'FROM' => 'glpi_users',
             'WHERE' => [
                'id'           => $user_ids
             ]
-         ]);
-      }
-      if (count($team['Group'])) {
-         $group_ids = array_column($team['Group'], 'items_id');
-         $subqueries[] = new QuerySubQuery([
+            ]);
+        }
+        if (count($team['Group'])) {
+            $group_ids = array_column($team['Group'], 'items_id');
+            $subqueries[] = new QuerySubQuery([
             'SELECT' => [
                'id',
                'name',
@@ -141,11 +149,11 @@ class ProjectTeam extends CommonDBRelation {
             'WHERE' => [
                'id'           => $group_ids
             ]
-         ]);
-      }
-      if (count($team['Supplier'])) {
-         $supplier_ids = array_column($team['Supplier'], 'items_id');
-         $subqueries[] = new QuerySubQuery([
+            ]);
+        }
+        if (count($team['Supplier'])) {
+            $supplier_ids = array_column($team['Supplier'], 'items_id');
+            $subqueries[] = new QuerySubQuery([
             'SELECT' => [
                'id',
                'name',
@@ -156,11 +164,11 @@ class ProjectTeam extends CommonDBRelation {
             'WHERE' => [
                'id' => $supplier_ids
             ]
-         ]);
-      }
-      if (count($team['Contact'])) {
-         $contact_ids = array_column($team['Contact'], 'items_id');
-         $subqueries[] = new QuerySubQuery([
+            ]);
+        }
+        if (count($team['Contact'])) {
+            $contact_ids = array_column($team['Contact'], 'items_id');
+            $subqueries[] = new QuerySubQuery([
             'SELECT' => [
                'id',
                'name',
@@ -171,32 +179,32 @@ class ProjectTeam extends CommonDBRelation {
             'WHERE' => [
                'id' => $contact_ids
             ]
-         ]);
-      }
+            ]);
+        }
 
-      if (count($subqueries)) {
-         $union = new QueryUnion($subqueries);
-         $criteria = [
+        if (count($subqueries)) {
+            $union = new QueryUnion($subqueries);
+            $criteria = [
             'SELECT' => ['id', 'name', 'realname', 'firstname', 'itemtype'],
             'FROM' => $union,
-         ];
-         $iterator = $DB->request($criteria);
+            ];
+            $iterator = $DB->request($criteria);
 
-         foreach ($iterator as $data) {
-            foreach ($team[$data['itemtype']] as &$member) {
-               if ($member['items_id'] === $data['id']) {
-                  $member['display_name'] = formatUserName($data['id'], $data['name'], $data['realname'], $data['firstname']);
-                  unset($data['id']);
-                  /** @noinspection SlowArrayOperationsInLoopInspection */
-                  $member = array_merge($member, $data);
-                  break;
-               }
+            foreach ($iterator as $data) {
+                foreach ($team[$data['itemtype']] as &$member) {
+                    if ($member['items_id'] === $data['id']) {
+                        $member['display_name'] = formatUserName($data['id'], $data['name'], $data['realname'], $data['firstname']);
+                        unset($data['id']);
+                        /** @noinspection SlowArrayOperationsInLoopInspection */
+                        $member = array_merge($member, $data);
+                        break;
+                    }
+                }
             }
-         }
-      }
+        }
 
-      return $team;
-   }
+        return $team;
+    }
 
    /**
     * Get team for a project
@@ -205,36 +213,36 @@ class ProjectTeam extends CommonDBRelation {
     * @param bool $expand If true, the team member data is expanded to include specific properties like firstname, realname, ...
     * @return array
     */
-   static function getTeamFor($projects_id, bool $expand = false) {
-      global $DB;
+    public static function getTeamFor($projects_id, bool $expand = false)
+    {
+        global $DB;
 
-      $team = [];
+        $team = [];
 
-      // Define empty types
-      foreach (static::$available_types as $type) {
-         if (!isset($team[$type])) {
-            $team[$type] = [];
-         }
-      }
+       // Define empty types
+        foreach (static::$available_types as $type) {
+            if (!isset($team[$type])) {
+                $team[$type] = [];
+            }
+        }
 
-      $iterator = $DB->request([
+        $iterator = $DB->request([
          'FROM'   => self::getTable(),
          'WHERE'  => ['projects_id' => $projects_id]
-      ]);
+        ]);
 
-      foreach ($iterator as $data) {
-         $data['role'] = Team::ROLE_MEMBER;
-         if (!isset($team[$data['itemtype']])) {
-            $team[$data['itemtype']] = [];
-         }
-         $team[$data['itemtype']][] = $data;
-      }
+        foreach ($iterator as $data) {
+            $data['role'] = Team::ROLE_MEMBER;
+            if (!isset($team[$data['itemtype']])) {
+                $team[$data['itemtype']] = [];
+            }
+            $team[$data['itemtype']][] = $data;
+        }
 
-      if ($expand) {
-         $team = self::expandTeamData($team);
-      }
+        if ($expand) {
+            $team = self::expandTeamData($team);
+        }
 
-      return $team;
-   }
-
+        return $team;
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,12 +33,13 @@
 
 /// Import rules collection class
 // @deprecated 10.0.0 @see RuleImportAssetCollection
-class RuleImportComputerCollection extends RuleCollection {
+class RuleImportComputerCollection extends RuleCollection
+{
 
    // From RuleCollection
-   public $stop_on_first_match = true;
-   static $rightname           = 'rule_import';
-   public $menu_option         = 'linkcomputer';
+    public $stop_on_first_match = true;
+    public static $rightname           = 'rule_import';
+    public $menu_option         = 'linkcomputer';
 
 
    /**
@@ -45,17 +47,17 @@ class RuleImportComputerCollection extends RuleCollection {
     *
     * @return boolean
    **/
-   function canList() {
-      if (Plugin::haveImport()) {
-         return static::canView();
-      }
-      return false;
-   }
+    public function canList()
+    {
+        if (Plugin::haveImport()) {
+            return static::canView();
+        }
+        return false;
+    }
 
 
-   function getTitle() {
-      return __('Rules for import and link computers');
-   }
-
-
+    public function getTitle()
+    {
+        return __('Rules for import and link computers');
+    }
 }

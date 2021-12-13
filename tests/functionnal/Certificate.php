@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,126 +37,133 @@ use DbTestCase;
 
 /* Test for inc/alert.class.php */
 
-class Certificate extends DbTestCase {
+class Certificate extends DbTestCase
+{
 
-   private $method;
+    private $method;
 
-   public function beforeTestMethod($method) {
-      parent::beforeTestMethod($method);
-      //to handle GLPI barbarian replacements.
-      $this->method = str_replace(
+    public function beforeTestMethod($method)
+    {
+        parent::beforeTestMethod($method);
+       //to handle GLPI barbarian replacements.
+        $this->method = str_replace(
             ['\\', 'beforeTestMethod'],
             ['', $method],
             __METHOD__
-            );
-   }
+        );
+    }
 
-   public function testAdd() {
-      $this->login();
-      $obj = new \Certificate();
+    public function testAdd()
+    {
+        $this->login();
+        $obj = new \Certificate();
 
-      // Add
-      $in = $this->_getIn($this->method);
-      $id = $obj->add($in);
-      $this->integer((int)$id)->isGreaterThan(0);
-      $this->boolean($obj->getFromDB($id))->isTrue();
+       // Add
+        $in = $this->_getIn($this->method);
+        $id = $obj->add($in);
+        $this->integer((int)$id)->isGreaterThan(0);
+        $this->boolean($obj->getFromDB($id))->isTrue();
 
-      // getField methods
-      $this->variable($obj->getField('id'))->isEqualTo($id);
-      foreach ($in as $k => $v) {
-         $this->variable($obj->getField($k))->isEqualTo($v);
-      }
-   }
+       // getField methods
+        $this->variable($obj->getField('id'))->isEqualTo($id);
+        foreach ($in as $k => $v) {
+            $this->variable($obj->getField($k))->isEqualTo($v);
+        }
+    }
 
-   public function testUpdate() {
-      $this->login();
-      $obj = new \Certificate();
+    public function testUpdate()
+    {
+        $this->login();
+        $obj = new \Certificate();
 
-      // Add
-      $id = $obj->add([
+       // Add
+        $id = $obj->add([
          'name'        => $this->getUniqueString(),
          'entities_id' => 0
-      ]);
-      $this->integer($id)->isGreaterThan(0);
+        ]);
+        $this->integer($id)->isGreaterThan(0);
 
-      // Update
-      $id = $obj->getID();
-      $in = array_merge(['id' => $id], $this->_getIn($this->method));
-      $this->boolean($obj->update($in))->isTrue();
-      $this->boolean($obj->getFromDB($id))->isTrue();
+       // Update
+        $id = $obj->getID();
+        $in = array_merge(['id' => $id], $this->_getIn($this->method));
+        $this->boolean($obj->update($in))->isTrue();
+        $this->boolean($obj->getFromDB($id))->isTrue();
 
-      // getField methods
-      foreach ($in as $k => $v) {
-         $this->variable($obj->getField($k))->isEqualTo($v);
-      }
-   }
+       // getField methods
+        foreach ($in as $k => $v) {
+            $this->variable($obj->getField($k))->isEqualTo($v);
+        }
+    }
 
-   public function testDelete() {
-      $this->login();
-      $obj = new \Certificate();
+    public function testDelete()
+    {
+        $this->login();
+        $obj = new \Certificate();
 
-      // Add
-      $id = $obj->add([
+       // Add
+        $id = $obj->add([
          'name' => $this->method,
-      ]);
-      $this->integer($id)->isGreaterThan(0);
+        ]);
+        $this->integer($id)->isGreaterThan(0);
 
-      // Delete
-      $in = [
+       // Delete
+        $in = [
          'id' => $obj->getID(),
-      ];
-      $this->boolean($obj->delete($in))->isTrue();
-   }
+        ];
+        $this->boolean($obj->delete($in))->isTrue();
+    }
 
-   public function testClone() {
-      $this->login();
-      $certificate = new \Certificate();
+    public function testClone()
+    {
+        $this->login();
+        $certificate = new \Certificate();
 
-      // Add
-      $id = $certificate->add([
+       // Add
+        $id = $certificate->add([
          'name'        => $this->getUniqueString(),
          'entities_id' => 0
-      ]);
-      $this->integer($id)->isGreaterThan(0);
+        ]);
+        $this->integer($id)->isGreaterThan(0);
 
-      // Update
-      $id = $certificate->getID();
-      $in = array_merge(['id' => $id], $this->_getIn($this->method));
-      $this->boolean($certificate->update($in))->isTrue();
-      $this->boolean($certificate->getFromDB($id))->isTrue();
+       // Update
+        $id = $certificate->getID();
+        $in = array_merge(['id' => $id], $this->_getIn($this->method));
+        $this->boolean($certificate->update($in))->isTrue();
+        $this->boolean($certificate->getFromDB($id))->isTrue();
 
-      $date = date('Y-m-d H:i:s');
-      $_SESSION['glpi_currenttime'] = $date;
+        $date = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date;
 
-      // Test item cloning
-      $added = $certificate->clone();
-      $this->integer((int)$added)->isGreaterThan(0);
+       // Test item cloning
+        $added = $certificate->clone();
+        $this->integer((int)$added)->isGreaterThan(0);
 
-      $clonedCertificate = new \Certificate();
-      $this->boolean($clonedCertificate->getFromDB($added))->isTrue();
+        $clonedCertificate = new \Certificate();
+        $this->boolean($clonedCertificate->getFromDB($added))->isTrue();
 
-      $fields = $certificate->fields;
+        $fields = $certificate->fields;
 
-      // Check the certificate values. Id and dates must be different, everything else must be equal
-      foreach ($fields as $k => $v) {
-         switch ($k) {
-            case 'id':
-               $this->variable($clonedCertificate->getField($k))->isNotEqualTo($certificate->getField($k));
-               break;
-            case 'date_mod':
-            case 'date_creation':
-               $dateClone = new \DateTime($clonedCertificate->getField($k));
-               $expectedDate = new \DateTime($date);
-               $this->dateTime($dateClone)->isEqualTo($expectedDate);
-               break;
-            default:
-               $this->variable($clonedCertificate->getField($k))->isEqualTo($certificate->getField($k));
-         }
-      }
-   }
+       // Check the certificate values. Id and dates must be different, everything else must be equal
+        foreach ($fields as $k => $v) {
+            switch ($k) {
+                case 'id':
+                    $this->variable($clonedCertificate->getField($k))->isNotEqualTo($certificate->getField($k));
+                    break;
+                case 'date_mod':
+                case 'date_creation':
+                    $dateClone = new \DateTime($clonedCertificate->getField($k));
+                    $expectedDate = new \DateTime($date);
+                    $this->dateTime($dateClone)->isEqualTo($expectedDate);
+                    break;
+                default:
+                    $this->variable($clonedCertificate->getField($k))->isEqualTo($certificate->getField($k));
+            }
+        }
+    }
 
-   public function _getIn($method = "") {
-      return [
+    public function _getIn($method = "")
+    {
+        return [
          'name'                => $method,
          'entities_id'         => 0,
          'serial'              => $this->getUniqueString(),
@@ -176,50 +184,50 @@ class Certificate extends DbTestCase {
          'command'             => $this->getUniqueString(),
          'certificate_request' => $this->getUniqueString(),
          'certificate_item'    => $this->getUniqueString(),
-      ];
-   }
+        ];
+    }
 
-   public function testCronCertificate() {
-      global $CFG_GLPI;
+    public function testCronCertificate()
+    {
+        global $CFG_GLPI;
 
-      $this->login();
-      $obj = new \Certificate();
+        $this->login();
+        $obj = new \Certificate();
 
-      // Add
-      $id = $obj->add([
+       // Add
+        $id = $obj->add([
          'name'            => $this->getUniqueString(),
          'entities_id'     => 0,
          'date_expiration' => date('Y-m-d', time() - MONTH_TIMESTAMP)
-      ]);
-      $this->integer($id)->isGreaterThan(0);
+        ]);
+        $this->integer($id)->isGreaterThan(0);
 
-      // set root entity config for certificates alerts
-      $entity = new \Entity;
-      $entity->update([
+       // set root entity config for certificates alerts
+        $entity = new \Entity();
+        $entity->update([
          'id'                                   => 0,
          'use_certificates_alert'               => true,
          'send_certificates_alert_before_delay' => true,
-      ]);
+        ]);
 
-      // force usage of notification (no alert sended otherwise)
-      $CFG_GLPI['use_notifications']  = true;
-      $CFG_GLPI['notifications_ajax'] = 1;
+       // force usage of notification (no alert sended otherwise)
+        $CFG_GLPI['use_notifications']  = true;
+        $CFG_GLPI['notifications_ajax'] = 1;
 
-      // lanch glpi cron and force task certificate
-      $crontask = new \CronTask;
-      $force    = -1;
-      $ret      = $crontask->launch($force, 1, 'certificate');
+       // lanch glpi cron and force task certificate
+        $crontask = new \CronTask();
+        $force    = -1;
+        $ret      = $crontask->launch($force, 1, 'certificate');
 
-      // check presence of the id in alerts table
-      $alert  = new \Alert;
-      $alerts = $alert->find();
+       // check presence of the id in alerts table
+        $alert  = new \Alert();
+        $alerts = $alert->find();
 
-      $this->array($alerts)
+        $this->array($alerts)
            ->hasSize(1);
-      $alert_certificate = array_pop($alerts);
-      $this->array($alert_certificate)
+        $alert_certificate = array_pop($alerts);
+        $this->array($alert_certificate)
          ->string['itemtype']->isEqualTo('Certificate')
          ->integer['items_id']->isEqualTo($id);
-
-   }
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -42,10 +43,12 @@ use User;
 /**
  * @since 10.0.0
  */
-class SessionExtension extends AbstractExtension{
+class SessionExtension extends AbstractExtension
+{
 
-   public function getFunctions(): array {
-      return [
+    public function getFunctions(): array
+    {
+        return [
          new TwigFunction('can_view_all_entities', [Session::class, 'canViewAllEntities']),
          new TwigFunction('get_current_interface', [$this, 'getCurrentInterface']),
          new TwigFunction('get_current_user', [$this, 'getCurrentUser']),
@@ -57,29 +60,31 @@ class SessionExtension extends AbstractExtension{
          new TwigFunction('pull_messages', [$this, 'pullMessages']),
          new TwigFunction('session', [$this, 'session']),
          new TwigFunction('user_pref', [$this, 'userPref']),
-      ];
-   }
+        ];
+    }
 
    /**
     * Returns current interface.
     *
     * @return User|null
     */
-   public function getCurrentInterface(): ?string {
-      return $_SESSION['glpiactiveprofile']['interface'] ?? null;
-   }
+    public function getCurrentInterface(): ?string
+    {
+        return $_SESSION['glpiactiveprofile']['interface'] ?? null;
+    }
 
    /**
     * Returns current connected user.
     *
     * @return User|null
     */
-   public function getCurrentUser(): ?User {
-      if (($user = User::getById(Session::getLoginUserID())) !== false) {
-         return $user;
-      }
-      return null;
-   }
+    public function getCurrentUser(): ?User
+    {
+        if (($user = User::getById(Session::getLoginUserID())) !== false) {
+            return $user;
+        }
+        return null;
+    }
 
    /**
     * Check global right on itemtype.
@@ -89,14 +94,15 @@ class SessionExtension extends AbstractExtension{
     *
     * @return bool
     */
-   public function hasItemtypeRight(string $itemtype, int $right): bool {
-      if (!is_a($itemtype, CommonGLPI::class, true)) {
-         throw new \Exception(sprintf('Unable to check rights of itemtype "%s".', $itemtype));
-      }
+    public function hasItemtypeRight(string $itemtype, int $right): bool
+    {
+        if (!is_a($itemtype, CommonGLPI::class, true)) {
+            throw new \Exception(sprintf('Unable to check rights of itemtype "%s".', $itemtype));
+        }
 
-      $item = new $itemtype();
-      return $item->canGlobal($right);
-   }
+        $item = new $itemtype();
+        return $item->canGlobal($right);
+    }
 
    /**
     * Get user preference.
@@ -106,16 +112,17 @@ class SessionExtension extends AbstractExtension{
     *
     * @return null|mixed
     */
-   public function userPref(string $name, bool $decode = false) {
-      global $CFG_GLPI;
+    public function userPref(string $name, bool $decode = false)
+    {
+        global $CFG_GLPI;
 
-      $data = $_SESSION['glpi' . $name] ?? $CFG_GLPI[$name] ?? null;
-      if ($decode) {
-         $data = importArrayFromDB($data);
-      }
+        $data = $_SESSION['glpi' . $name] ?? $CFG_GLPI[$name] ?? null;
+        if ($decode) {
+            $data = importArrayFromDB($data);
+        }
 
-      return $data;
-   }
+        return $data;
+    }
 
    /**
     * Get session value.
@@ -124,10 +131,11 @@ class SessionExtension extends AbstractExtension{
     *
     * @return mixed
     */
-   public function session(string $name) {
+    public function session(string $name)
+    {
 
-      return $_SESSION[$name] ?? null;
-   }
+        return $_SESSION[$name] ?? null;
+    }
 
    /**
     * Check if a current user have access has access to given user entities.
@@ -136,9 +144,10 @@ class SessionExtension extends AbstractExtension{
     *
     * @return bool
     */
-   public function hasAccessToUserEntities(int $users_id): bool {
-      return Session::haveAccessToOneOfEntities(Profile_User::getUserEntities($users_id, false));
-   }
+    public function hasAccessToUserEntities(int $users_id): bool
+    {
+        return Session::haveAccessToOneOfEntities(Profile_User::getUserEntities($users_id, false));
+    }
 
 
    /**
@@ -146,10 +155,11 @@ class SessionExtension extends AbstractExtension{
     *
     * @return string[]
     */
-   public function pullMessages(): array {
-      $messages = $_SESSION['MESSAGE_AFTER_REDIRECT'] ?? [];
-      $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+    public function pullMessages(): array
+    {
+        $messages = $_SESSION['MESSAGE_AFTER_REDIRECT'] ?? [];
+        $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
 
-      return $messages;
-   }
+        return $messages;
+    }
 }

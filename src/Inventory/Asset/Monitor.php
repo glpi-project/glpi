@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -40,62 +41,64 @@ use Toolbox;
 
 class Monitor extends InventoryAsset
 {
-   private $import_monitor_on_partial_sn = false;
+    private $import_monitor_on_partial_sn = false;
 
-   public function prepare() :array {
-      $serials = [];
-      $mapping = [
+    public function prepare(): array
+    {
+        $serials = [];
+        $mapping = [
          'caption'      => 'name',
          'manufacturer' => 'manufacturers_id',
          'description'  => 'comment'
-      ];
+        ];
 
-      foreach ($this->data as &$val) {
-         foreach ($mapping as $origin => $dest) {
-            if (property_exists($val, $origin)) {
-               $val->$dest = $val->$origin;
+        foreach ($this->data as &$val) {
+            foreach ($mapping as $origin => $dest) {
+                if (property_exists($val, $origin)) {
+                    $val->$dest = $val->$origin;
+                }
             }
-         }
 
-         if (!property_exists($val, 'name')) {
-            $val->name = '';
-         }
-
-         if (property_exists($val, 'comment')) {
-            if ($val->name == '') {
-               $val->name = $val->comment;
+            if (!property_exists($val, 'name')) {
+                $val->name = '';
             }
-            unset($val->comment);
-         }
 
-         if (!property_exists($val, 'serial')) {
-            $val->serial = '';
-         }
+            if (property_exists($val, 'comment')) {
+                if ($val->name == '') {
+                    $val->name = $val->comment;
+                }
+                unset($val->comment);
+            }
 
-         if (!property_exists($val, 'manufacturers_id')) {
-            $val->manufacturers_id = '';
-         }
+            if (!property_exists($val, 'serial')) {
+                $val->serial = '';
+            }
 
-         if (!isset($serials[$val->serial])) {
-            $this->linked_items['Monitor'][] = $val;
-            $serials[$val->serial] = 1;
-         }
-      }
+            if (!property_exists($val, 'manufacturers_id')) {
+                $val->manufacturers_id = '';
+            }
 
-      return $this->data;
-   }
+            if (!isset($serials[$val->serial])) {
+                $this->linked_items['Monitor'][] = $val;
+                $serials[$val->serial] = 1;
+            }
+        }
+
+        return $this->data;
+    }
 
    /**
     * Get existing entries from database
     *
     * @return array
     */
-   protected function getExisting(): array {
-      global $DB;
+    protected function getExisting(): array
+    {
+        global $DB;
 
-      $db_existing = [];
+        $db_existing = [];
 
-      $iterator = $DB->request([
+        $iterator = $DB->request([
          'SELECT'    => [
             'glpi_monitors.id',
             'glpi_computers_items.id AS link_id'
@@ -116,110 +119,111 @@ class Monitor extends InventoryAsset
             'glpi_computers_items.is_dynamic'   => 1,
             'glpi_monitors.is_global'           => 0
          ]
-      ]);
+        ]);
 
-      foreach ($iterator as $data) {
-         $idtmp = $data['link_id'];
-         unset($data['link_id']);
-         $db_existing[$idtmp] = $data['id'];
-      }
+        foreach ($iterator as $data) {
+            $idtmp = $data['link_id'];
+            unset($data['link_id']);
+            $db_existing[$idtmp] = $data['id'];
+        }
 
-      return $db_existing;
-   }
+        return $db_existing;
+    }
 
-   public function handle() {
-      $entities_id = $this->entities_id;
-      $monitor = new GMonitor();
-      $computer_Item = new Computer_Item();
-      $rule = new RuleImportAssetCollection();
-      $monitors = [];
+    public function handle()
+    {
+        $entities_id = $this->entities_id;
+        $monitor = new GMonitor();
+        $computer_Item = new Computer_Item();
+        $rule = new RuleImportAssetCollection();
+        $monitors = [];
 
-      foreach ($this->data as $key => $val) {
-         $input = [
+        foreach ($this->data as $key => $val) {
+            $input = [
             'itemtype'     => 'Monitor',
             'name'         => $val->name,
             'serial'       => $val->serial ?? '',
             'is_dynamic'   => 1,
             'entities_id'  => $entities_id
-         ];
-         $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
-
-         if (isset($data['found_inventories'])) {
-            $items_id = null;
-            $itemtype = 'Monitor';
-            if ($data['found_inventories'][0] == 0) {
-               // add monitor
-               $val->entities_id = $entities_id;
-               $val->is_dynamic = 1;
-               $items_id = $monitor->add(Toolbox::addslashes_deep((array)$val), [], $this->withHistory());
-            } else {
-               $items_id = $data['found_inventories'][0];
-            }
-
-            $monitors[] = $items_id;
-            $rulesmatched = new \RuleMatchedLog();
-            $agents_id = $this->agent->fields['id'];
-            if (empty($agents_id)) {
-               $agents_id = 0;
-            }
-            $inputrulelog = [
-               'date'      => date('Y-m-d H:i:s'),
-               'rules_id'  => $data['rules_id'],
-               'items_id'  => $items_id,
-               'itemtype'  => $itemtype,
-               'agents_id' => $agents_id,
-               'method'    => 'inventory'
             ];
-            $rulesmatched->add($inputrulelog, [], false);
-            $rulesmatched->cleanOlddata($items_id, $itemtype);
-         }
-      }
+            $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
 
-      $db_monitors = $this->getExisting();
-      if (count($db_monitors) == 0) {
-         foreach ($monitors as $monitors_id) {
-            $input = [
-               'computers_id' => $this->item->fields['id'],
-               'itemtype'     => 'Monitor',
-               'items_id'     => $monitors_id,
-               'is_dynamic'   => 1,
-            ];
-            $this->addOrMoveItem($input);
-         }
-      } else {
-         // Check all fields from source:
-         foreach ($monitors as $key => $monitors_id) {
-            foreach ($db_monitors as $keydb => $monits_id) {
-               if ($monitors_id == $monits_id) {
-                  unset($monitors[$key]);
-                  unset($db_monitors[$keydb]);
-                  break;
-               }
+            if (isset($data['found_inventories'])) {
+                $items_id = null;
+                $itemtype = 'Monitor';
+                if ($data['found_inventories'][0] == 0) {
+                    // add monitor
+                    $val->entities_id = $entities_id;
+                    $val->is_dynamic = 1;
+                    $items_id = $monitor->add(Toolbox::addslashes_deep((array)$val), [], $this->withHistory());
+                } else {
+                    $items_id = $data['found_inventories'][0];
+                }
+
+                $monitors[] = $items_id;
+                $rulesmatched = new \RuleMatchedLog();
+                $agents_id = $this->agent->fields['id'];
+                if (empty($agents_id)) {
+                    $agents_id = 0;
+                }
+                $inputrulelog = [
+                'date'      => date('Y-m-d H:i:s'),
+                'rules_id'  => $data['rules_id'],
+                'items_id'  => $items_id,
+                'itemtype'  => $itemtype,
+                'agents_id' => $agents_id,
+                'method'    => 'inventory'
+                ];
+                $rulesmatched->add($inputrulelog, [], false);
+                $rulesmatched->cleanOlddata($items_id, $itemtype);
             }
-         }
+        }
 
-         // Delete monitors links in DB
-         if (!$this->main_asset || !$this->main_asset->isPartial()) {
-            foreach ($db_monitors as $idtmp => $monits_id) {
-               $computer_Item->delete(['id'=>$idtmp], 1);
+        $db_monitors = $this->getExisting();
+        if (count($db_monitors) == 0) {
+            foreach ($monitors as $monitors_id) {
+                $input = [
+                'computers_id' => $this->item->fields['id'],
+                'itemtype'     => 'Monitor',
+                'items_id'     => $monitors_id,
+                'is_dynamic'   => 1,
+                ];
+                $this->addOrMoveItem($input);
             }
-         }
+        } else {
+           // Check all fields from source:
+            foreach ($monitors as $key => $monitors_id) {
+                foreach ($db_monitors as $keydb => $monits_id) {
+                    if ($monitors_id == $monits_id) {
+                        unset($monitors[$key]);
+                        unset($db_monitors[$keydb]);
+                        break;
+                    }
+                }
+            }
 
-         foreach ($monitors as $key => $monitors_id) {
-            $input = [
-               'computers_id' => $this->item->fields['id'],
-               'itemtype'     => 'Monitor',
-               'items_id'     => $monitors_id,
-               'is_dynamic'   => 1,
-            ];
-            $this->addOrMoveItem($input);
-         }
-      }
+           // Delete monitors links in DB
+            if (!$this->main_asset || !$this->main_asset->isPartial()) {
+                foreach ($db_monitors as $idtmp => $monits_id) {
+                    $computer_Item->delete(['id' => $idtmp], 1);
+                }
+            }
 
-   }
+            foreach ($monitors as $key => $monitors_id) {
+                $input = [
+                'computers_id' => $this->item->fields['id'],
+                'itemtype'     => 'Monitor',
+                'items_id'     => $monitors_id,
+                'is_dynamic'   => 1,
+                ];
+                $this->addOrMoveItem($input);
+            }
+        }
+    }
 
-   public function checkConf(Conf $conf): bool {
-      $this->import_monitor_on_partial_sn = $conf->import_monitor_on_partial_sn;
-      return true;
-   }
+    public function checkConf(Conf $conf): bool
+    {
+        $this->import_monitor_on_partial_sn = $conf->import_monitor_on_partial_sn;
+        return true;
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,26 +34,24 @@
 /**
  * @since 0.85
  */
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 
 $criteria = new SlaLevelCriteria();
 
 if (isset($_POST["add"])) {
-   $criteria->check(-1, CREATE, $_POST);
-   $criteria->add($_POST);
+    $criteria->check(-1, CREATE, $_POST);
+    $criteria->add($_POST);
 
-   Html::back();
-
+    Html::back();
 } else if (isset($_POST["update"])) {
-   $criteria->check($_POST['id'], UPDATE);
-   $criteria->update($_POST);
+    $criteria->check($_POST['id'], UPDATE);
+    $criteria->update($_POST);
 
-   Html::back();
-
+    Html::back();
 } else if (isset($_POST["purge"])) {
-   $criteria->check($_POST['id'], PURGE);
-   $criteria->delete($_POST, 1);
+    $criteria->check($_POST['id'], PURGE);
+    $criteria->delete($_POST, 1);
 
-   Html::back();
+    Html::back();
 }

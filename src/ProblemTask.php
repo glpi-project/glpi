@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,46 +31,54 @@
  * ---------------------------------------------------------------------
  */
 
-class ProblemTask extends CommonITILTask {
+class ProblemTask extends CommonITILTask
+{
 
-   static $rightname = 'task';
-
-
-   static function getTypeName($nb = 0) {
-      return _n('Problem task', 'Problem tasks', $nb);
-   }
+    public static $rightname = 'task';
 
 
-   static function canCreate() {
-      return Session::haveRight('problem', UPDATE)
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Problem task', 'Problem tasks', $nb);
+    }
+
+
+    public static function canCreate()
+    {
+        return Session::haveRight('problem', UPDATE)
           || Session::haveRight(self::$rightname, parent::ADDALLITEM);
-   }
+    }
 
 
-   static function canView() {
-      return Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
-   }
+    public static function canView()
+    {
+        return Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
+    }
 
 
-   static function canUpdate() {
-      return Session::haveRight('problem', UPDATE)
+    public static function canUpdate()
+    {
+        return Session::haveRight('problem', UPDATE)
           || Session::haveRight(self::$rightname, parent::UPDATEALL);
-   }
+    }
 
 
-   static function canPurge() {
-      return Session::haveRight('problem', UPDATE);
-   }
+    public static function canPurge()
+    {
+        return Session::haveRight('problem', UPDATE);
+    }
 
 
-   function canViewPrivates() {
-      return true;
-   }
+    public function canViewPrivates()
+    {
+        return true;
+    }
 
 
-   function canEditAll() {
-      return Session::haveRightsOr('problem', [CREATE, UPDATE, DELETE, PURGE]);
-   }
+    public function canEditAll()
+    {
+        return Session::haveRightsOr('problem', [CREATE, UPDATE, DELETE, PURGE]);
+    }
 
 
    /**
@@ -77,9 +86,10 @@ class ProblemTask extends CommonITILTask {
     *
     * @return boolean
    **/
-   function canViewItem() {
-      return $this->canReadITILItem();
-   }
+    public function canViewItem()
+    {
+        return $this->canReadITILItem();
+    }
 
 
    /**
@@ -87,23 +97,26 @@ class ProblemTask extends CommonITILTask {
     *
     * @return boolean
    **/
-   function canCreateItem() {
-      if (!$this->canReadITILItem()) {
-         return false;
-      }
+    public function canCreateItem()
+    {
+        if (!$this->canReadITILItem()) {
+            return false;
+        }
 
-      $problem = new Problem();
-      if ($problem->getFromDB($this->fields['problems_id'])) {
-         return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
+        $problem = new Problem();
+        if ($problem->getFromDB($this->fields['problems_id'])) {
+            return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
                  || Session::haveRight('problem', UPDATE)
                  || (Session::haveRight('problem', Problem::READMY)
                      && ($problem->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                          || (isset($_SESSION["glpigroups"])
-                             && $problem->haveAGroup(CommonITILActor::ASSIGN,
-                                                     $_SESSION['glpigroups'])))));
-      }
-      return false;
-   }
+                             && $problem->haveAGroup(
+                                 CommonITILActor::ASSIGN,
+                                 $_SESSION['glpigroups']
+                             )))));
+        }
+        return false;
+    }
 
 
    /**
@@ -111,20 +124,23 @@ class ProblemTask extends CommonITILTask {
     *
     * @return boolean
    **/
-   function canUpdateItem() {
+    public function canUpdateItem()
+    {
 
-      if (!$this->canReadITILItem()) {
-         return false;
-      }
+        if (!$this->canReadITILItem()) {
+            return false;
+        }
 
-      if (($this->fields["users_id"] != Session::getLoginUserID())
-          && !Session::haveRight('problem', UPDATE)
-          && !Session::haveRight(self::$rightname, parent::UPDATEALL)) {
-         return false;
-      }
+        if (
+            ($this->fields["users_id"] != Session::getLoginUserID())
+            && !Session::haveRight('problem', UPDATE)
+            && !Session::haveRight(self::$rightname, parent::UPDATEALL)
+        ) {
+            return false;
+        }
 
-      return true;
-   }
+        return true;
+    }
 
 
    /**
@@ -132,9 +148,10 @@ class ProblemTask extends CommonITILTask {
     *
     * @return boolean
    **/
-   function canPurgeItem() {
-      return $this->canUpdateItem();
-   }
+    public function canPurgeItem()
+    {
+        return $this->canUpdateItem();
+    }
 
 
    /**
@@ -148,9 +165,10 @@ class ProblemTask extends CommonITILTask {
     *
     * @return array of planning item
    **/
-   static function populatePlanning($options = []) :array {
-      return parent::genericPopulatePlanning(__CLASS__, $options);
-   }
+    public static function populatePlanning($options = []): array
+    {
+        return parent::genericPopulatePlanning(__CLASS__, $options);
+    }
 
 
    /**
@@ -163,9 +181,10 @@ class ProblemTask extends CommonITILTask {
     *
     * @return string
     */
-   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
-      return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
-   }
+    public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
+    {
+        return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
+    }
 
    /**
     * Populate the planning with not planned problem tasks
@@ -178,9 +197,8 @@ class ProblemTask extends CommonITILTask {
     *
     * @return array of planning item
    **/
-   static function populateNotPlanned($options = []) :array {
-      return parent::genericPopulateNotPlanned(__CLASS__, $options);
-   }
-
-
+    public static function populateNotPlanned($options = []): array
+    {
+        return parent::genericPopulateNotPlanned(__CLASS__, $options);
+    }
 }

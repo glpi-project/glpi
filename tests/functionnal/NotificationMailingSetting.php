@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,72 +37,81 @@ use DbTestCase;
 
 /* Test for inc/notificationmailingsetting.class.php .class.php */
 
-class NotificationMailingSetting extends DbTestCase {
+class NotificationMailingSetting extends DbTestCase
+{
 
-   public function testGetTable() {
-      $this->string(\NotificationMailingSetting::getTable())->isIdenticalTo('glpi_configs');
-   }
+    public function testGetTable()
+    {
+        $this->string(\NotificationMailingSetting::getTable())->isIdenticalTo('glpi_configs');
+    }
 
-   public function testGetTypeName() {
-      $this->string(\NotificationMailingSetting::getTypeName())->isIdenticalTo('Email followups configuration');
-      $this->string(\NotificationMailingSetting::getTypeName(10))->isIdenticalTo('Email followups configuration');
-   }
+    public function testGetTypeName()
+    {
+        $this->string(\NotificationMailingSetting::getTypeName())->isIdenticalTo('Email followups configuration');
+        $this->string(\NotificationMailingSetting::getTypeName(10))->isIdenticalTo('Email followups configuration');
+    }
 
-   public function testDefineTabs() {
-      $instance = new \NotificationMailingSetting();
-      $tabs = $instance->defineTabs();
-      $this->array($tabs)
+    public function testDefineTabs()
+    {
+        $instance = new \NotificationMailingSetting();
+        $tabs = $instance->defineTabs();
+        $this->array($tabs)
          ->hasSize(1)
          ->isIdenticalTo(['NotificationMailingSetting$1' => 'Setup']);
-   }
+    }
 
-   public function testGetTabNameForItem() {
-      $instance = new \NotificationMailingSetting();
-      $this->array($instance->getTabNameForItem($instance))->isIdenticalTo(['1' => 'Setup']);
-   }
+    public function testGetTabNameForItem()
+    {
+        $instance = new \NotificationMailingSetting();
+        $this->array($instance->getTabNameForItem($instance))->isIdenticalTo(['1' => 'Setup']);
+    }
 
-   public function testDisplayTabContentForItem() {
+    public function testDisplayTabContentForItem()
+    {
 
-      $this->output(
-         function () {
-            $instance = new \NotificationMailingSetting();
-            $instance->displayTabContentForItem($instance);
-         }
-      )->hasLengthGreaterThan(100);
-   }
+        $this->output(
+            public function () {
+                $instance = new \NotificationMailingSetting();
+                $instance->displayTabContentForItem($instance);
+            }
+        )->hasLengthGreaterThan(100);
+    }
 
-   public function testGetEnableLabel() {
-      $settings = new \NotificationMailingSetting();
-      $this->string($settings->getEnableLabel())->isIdenticalTo('Enable followups via email');
-   }
+    public function testGetEnableLabel()
+    {
+        $settings = new \NotificationMailingSetting();
+        $this->string($settings->getEnableLabel())->isIdenticalTo('Enable followups via email');
+    }
 
-   public function testGetMode() {
-      $this->string(\NotificationMailingSetting::getMode())
+    public function testGetMode()
+    {
+        $this->string(\NotificationMailingSetting::getMode())
          ->isIdenticalTo(\Notification_NotificationTemplate::MODE_MAIL);
-   }
+    }
 
-   public function testShowFormConfig() {
-      global $CFG_GLPI;
+    public function testShowFormConfig()
+    {
+        global $CFG_GLPI;
 
-      $this->variable($CFG_GLPI['notifications_mailing'])->isEqualTo(0);
+        $this->variable($CFG_GLPI['notifications_mailing'])->isEqualTo(0);
 
-      $this->output(
-         function () {
-            $instance = new \NotificationMailingSetting();
-            $instance->showFormConfig();
-         }
-      )->contains('Notifications are disabled.');
+        $this->output(
+            public function () {
+                $instance = new \NotificationMailingSetting();
+                $instance->showFormConfig();
+            }
+        )->contains('Notifications are disabled.');
 
-      $CFG_GLPI['notifications_mailing'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
 
-      $this->output(
-         function () {
-            $instance = new \NotificationMailingSetting();
-            $instance->showFormConfig();
-         }
-      )->notContains('Notifications are disabled.');
+        $this->output(
+            public function () {
+                $instance = new \NotificationMailingSetting();
+                $instance->showFormConfig();
+            }
+        )->notContains('Notifications are disabled.');
 
-      //rest to defaults
-      $CFG_GLPI['notifications_mailing'] = 0;
-   }
+       //rest to defaults
+        $CFG_GLPI['notifications_mailing'] = 0;
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -44,8 +45,9 @@ use Toolbox;
 /**
  * Widget class
 **/
-class Widget {
-   static $animation_duration = 1000; // in millseconds
+class Widget
+{
+    public static $animation_duration = 1000; // in millseconds
 
 
    /**
@@ -55,14 +57,15 @@ class Widget {
     *
     * @return array
     */
-   public static function getAllTypes(): array {
-      global $CFG_GLPI;
+    public static function getAllTypes(): array
+    {
+        global $CFG_GLPI;
 
-      $types = [
+        $types = [
          'pie' => [
             'label'    => __("Pie"),
             'function' => 'Glpi\\Dashboard\\Widget::pie',
-            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/pie.png',
+            'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/pie.png',
             'gradient' => true,
             'limit'    => true,
             'width'    => 3,
@@ -71,7 +74,7 @@ class Widget {
          'donut' => [
             'label'    => __("Donut"),
             'function' => 'Glpi\\Dashboard\\Widget::donut',
-            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/donut.png',
+            'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/donut.png',
             'gradient' => true,
             'limit'    => true,
             'width'    => 3,
@@ -80,7 +83,7 @@ class Widget {
          'halfpie' => [
             'label'    => __("Half pie"),
             'function' => 'Glpi\\Dashboard\\Widget::halfPie',
-            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/halfpie.png',
+            'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/halfpie.png',
             'gradient' => true,
             'limit'    => true,
             'width'    => 3,
@@ -89,7 +92,7 @@ class Widget {
          'halfdonut' => [
             'label'    => __("Half donut"),
             'function' => 'Glpi\\Dashboard\\Widget::halfDonut',
-            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/halfdonut.png',
+            'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/halfdonut.png',
             'gradient' => true,
             'limit'    => true,
             'width'    => 3,
@@ -98,7 +101,7 @@ class Widget {
          'bar' => [
             'label'    => __("Bars"),
             'function' => 'Glpi\\Dashboard\\Widget::simpleBar',
-            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/bar.png',
+            'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/bar.png',
             'gradient' => true,
             'limit'    => true,
             'pointlbl' => true,
@@ -108,7 +111,7 @@ class Widget {
          'line' => [
             'label'    => \Line::getTypeName(1),
             'function' => 'Glpi\\Dashboard\\Widget::simpleLine',
-            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/line.png',
+            'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/line.png',
             'limit'    => true,
             'pointlbl' => true,
             'width'    => 4,
@@ -117,7 +120,7 @@ class Widget {
          'lines' => [
             'label'    => __("Multiple lines"),
             'function' => 'Glpi\\Dashboard\\Widget::multipleLines',
-            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/line.png',
+            'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/line.png',
             'gradient' => true,
             'limit'    => true,
             'pointlbl' => true,
@@ -127,7 +130,7 @@ class Widget {
          'area' => [
             'label'    => __("Area"),
             'function' => 'Glpi\\Dashboard\\Widget::simpleArea',
-            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/area.png',
+            'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/area.png',
             'limit'    => true,
             'pointlbl' => true,
             'width'    => 4,
@@ -136,7 +139,7 @@ class Widget {
          'areas' => [
             'label'    => __("Multiple areas"),
             'function' => 'Glpi\\Dashboard\\Widget::multipleAreas',
-            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/area.png',
+            'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/area.png',
             'gradient' => true,
             'limit'    => true,
             'pointlbl' => true,
@@ -146,7 +149,7 @@ class Widget {
          'bars' => [
             'label'    => __("Multiple bars"),
             'function' => 'Glpi\\Dashboard\\Widget::multipleBars',
-            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/bar.png',
+            'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/bar.png',
             'gradient' => true,
             'limit'    => true,
             'pointlbl' => true,
@@ -156,7 +159,7 @@ class Widget {
          'hBars' => [
             'label'    => __("Multiple horizontal bars"),
             'function' => 'Glpi\\Dashboard\\Widget::multipleHBars',
-            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/hbar.png',
+            'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/hbar.png',
             'gradient' => true,
             'limit'    => true,
             'pointlbl' => true,
@@ -166,7 +169,7 @@ class Widget {
          'stackedbars' => [
             'label'    => __("Stacked bars"),
             'function' => 'Glpi\\Dashboard\\Widget::StackedBars',
-            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/stacked.png',
+            'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/stacked.png',
             'gradient' => true,
             'limit'    => true,
             'pointlbl' => true,
@@ -176,7 +179,7 @@ class Widget {
          'stackedHBars' => [
             'label'    => __("Horizontal stacked bars"),
             'function' => 'Glpi\\Dashboard\\Widget::stackedHBars',
-            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/hstacked.png',
+            'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/hstacked.png',
             'gradient' => true,
             'limit'    => true,
             'pointlbl' => true,
@@ -186,7 +189,7 @@ class Widget {
          'hbar' => [
             'label'    => __("Horizontal bars"),
             'function' => 'Glpi\\Dashboard\\Widget::simpleHbar',
-            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/hbar.png',
+            'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/hbar.png',
             'gradient' => true,
             'limit'    => true,
             'pointlbl' => true,
@@ -196,12 +199,12 @@ class Widget {
          'bigNumber' => [
             'label'    => __("Big number"),
             'function' => 'Glpi\\Dashboard\\Widget::bigNumber',
-            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/bignumber.png',
+            'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/bignumber.png',
          ],
          'multipleNumber' => [
             'label'    => __("Multiple numbers"),
             'function' => 'Glpi\\Dashboard\\Widget::multipleNumber',
-            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/multiplenumbers.png',
+            'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/multiplenumbers.png',
             'limit'    => true,
             'gradient' => true,
             'width'    => 3,
@@ -210,14 +213,14 @@ class Widget {
          'markdown' => [
             'label'    => __("Editable markdown"),
             'function' => 'Glpi\\Dashboard\\Widget::markdown',
-            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/markdown.png',
+            'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/markdown.png',
             'width'    => 4,
             'height'   => 4,
          ],
          'searchShowList' => [
             'label'    => __("Search result"),
             'function' => 'Glpi\\Dashboard\\Widget::searchShowList',
-            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/table.png',
+            'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/table.png',
             'limit'    => true,
             'width'    => 5,
             'height'   => 4,
@@ -225,7 +228,7 @@ class Widget {
          'summaryNumbers' => [
             'label'    => __("Summary numbers"),
             'function' => 'Glpi\\Dashboard\\Widget::summaryNumber',
-            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/summarynumber.png',
+            'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/summarynumber.png',
             'limit'    => true,
             'gradient' => true,
             'width'    => 4,
@@ -234,20 +237,20 @@ class Widget {
          'articleList' => [
             'label'    => __("List of articles"),
             'function' => 'Glpi\\Dashboard\\Widget::articleList',
-            'image'    => $CFG_GLPI['root_doc'].'/pics/charts/articles.png',
+            'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/articles.png',
             'limit'    => true,
             'width'    => 3,
             'height'   => 4,
          ],
-      ];
+        ];
 
-      $more_types = Plugin::doHookFunction("dashboard_types");
-      if (is_array($more_types)) {
-         $types = array_merge($types, $more_types);
-      }
+        $more_types = Plugin::doHookFunction("dashboard_types");
+        if (is_array($more_types)) {
+            $types = array_merge($types, $more_types);
+        }
 
-      return $types;
-   }
+        return $types;
+    }
 
 
    /**
@@ -265,32 +268,33 @@ class Widget {
     *
     * @return string html of the widget
     */
-   public static function bigNumber(array $params = []): string {
-      $default = [
+    public static function bigNumber(array $params = []): string
+    {
+        $default = [
          'number'  => 0,
          'url'     => '',
          'label'   => '',
          'alt'     => '',
          'color'   => '',
          'icon'    => '',
-         'id'      => 'bn_'.mt_rand(),
+         'id'      => 'bn_' . mt_rand(),
          'filters' => [],
-      ];
-      $p = array_merge($default, $params);
+        ];
+        $p = array_merge($default, $params);
 
-      $formatted_number = Toolbox::shortenNumber($p['number']);
-      $fg_color         = Toolbox::getFgColor($p['color']);
-      $fg_hover_color   = Toolbox::getFgColor($p['color'], 15);
-      $fg_hover_border  = Toolbox::getFgColor($p['color'], 30);
+        $formatted_number = Toolbox::shortenNumber($p['number']);
+        $fg_color         = Toolbox::getFgColor($p['color']);
+        $fg_hover_color   = Toolbox::getFgColor($p['color'], 15);
+        $fg_hover_border  = Toolbox::getFgColor($p['color'], 30);
 
-      $class = count($p['filters']) > 0 ? " filter-".implode(' filter-', $p['filters']) : "";
+        $class = count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "";
 
-      $href = strlen($p['url'])
+        $href = strlen($p['url'])
          ? "href='{$p['url']}'"
          : "";
 
-      $label = $p['label'];
-      $html = <<<HTML
+        $label = $p['label'];
+        $html = <<<HTML
       <style>
          #{$p['id']} {
             background-color: {$p['color']};
@@ -323,14 +327,15 @@ class Widget {
       </a>
 HTML;
 
-      return $html;
-   }
+        return $html;
+    }
 
 
-   public static function summaryNumber(array $params = []): string {
-      $params['class'] = 'summary-numbers';
-      return self::multipleNumber($params);
-   }
+    public static function summaryNumber(array $params = []): string
+    {
+        $params['class'] = 'summary-numbers';
+        return self::multipleNumber($params);
+    }
 
 
    /**
@@ -353,8 +358,9 @@ HTML;
     *
     * @return string html of the widget
     */
-   public static function multipleNumber(array $params = []): string {
-      $default = [
+    public static function multipleNumber(array $params = []): string
+    {
+        $default = [
          'data'         => [],
          'label'        => '',
          'alt'          => '',
@@ -365,75 +371,75 @@ HTML;
          'class'        => "multiple-numbers",
          'filters'      => [],
          'rand'         => mt_rand(),
-      ];
-      $p = array_merge($default, $params);
-      $default_entry = [
+        ];
+        $p = array_merge($default, $params);
+        $default_entry = [
          'url'    => '',
          'icon'   => '',
          'label'  => '',
          'number' => '',
-      ];
+        ];
 
-      $nb_lines = min($p['limit'], count($p['data']));
-      array_splice($p['data'], $nb_lines);
+        $nb_lines = min($p['limit'], count($p['data']));
+        array_splice($p['data'], $nb_lines);
 
-      $fg_color = Toolbox::getFgColor($p['color']);
+        $fg_color = Toolbox::getFgColor($p['color']);
 
-      $class = $p['class'];
-      $class.= count($p['filters']) > 0 ? " filter-".implode(' filter-', $p['filters']) : "";
+        $class = $p['class'];
+        $class .= count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "";
 
-      $alphabet = range('a', 'z');
-      $numbers_html = "";
-      $i = 0;
-      foreach ($p['data'] as $entry) {
-         if (!is_array($entry)) {
-            continue;
-         }
-         $entry = array_merge($default_entry, $entry);
+        $alphabet = range('a', 'z');
+        $numbers_html = "";
+        $i = 0;
+        foreach ($p['data'] as $entry) {
+            if (!is_array($entry)) {
+                continue;
+            }
+            $entry = array_merge($default_entry, $entry);
 
-         $href = strlen($entry['url'])
+            $href = strlen($entry['url'])
             ? "href='{$entry['url']}'"
             : "";
 
-         $color = isset($entry['color'])
+            $color = isset($entry['color'])
             ? "style=\"color: {$entry['color']};\""
             : "";
 
-         $color2 = isset($entry['color'])
-            ? "style=\"color: ".Toolbox::getFgColor($entry['color'], 20).";\""
+            $color2 = isset($entry['color'])
+            ? "style=\"color: " . Toolbox::getFgColor($entry['color'], 20) . ";\""
             : "";
 
-         $formatted_number = Toolbox::shortenNumber($entry['number']);
+            $formatted_number = Toolbox::shortenNumber($entry['number']);
 
-         $numbers_html.= <<<HTML
+            $numbers_html .= <<<HTML
             <a {$href} class="line line-{$alphabet[$i]}">
                <span class="content" {$color}>$formatted_number</span>
                <i class="icon {$entry['icon']}" {$color2}></i>
                <span class="label" {$color2}>{$entry['label']}</span>
             </a>
 HTML;
-         $i++;
-      }
+            $i++;
+        }
 
-      $nodata = isset($p['data']['nodata']) && $p['data']['nodata'];
-      if ($nodata) {
-         $numbers_html = "<span class='line empty-card no-data'>
+        $nodata = isset($p['data']['nodata']) && $p['data']['nodata'];
+        if ($nodata) {
+            $numbers_html = "<span class='line empty-card no-data'>
                <span class='content'>
                   <i class='icon fas fa-alert-triangle'></i>
                </span>
-               <span class='label'>".__('No data found')."</span>
+               <span class='label'>" . __('No data found') . "</span>
             <span>";
-      }
+        }
 
-      $palette_style = "";
-      if ($p['use_gradient']) {
-         $palette = self::getGradientPalette($p['color'], $i, false);
-         foreach ($palette['names'] as $index => $letter) {
-            $bgcolor   = $palette['colors'][$index];
-            $bgcolor_h = Toolbox::getFgColor($bgcolor, 10);
-            $color     = Toolbox::getFgColor($bgcolor);
+        $palette_style = "";
+        if ($p['use_gradient']) {
+            $palette = self::getGradientPalette($p['color'], $i, false);
+            foreach ($palette['names'] as $index => $letter) {
+                $bgcolor   = $palette['colors'][$index];
+                $bgcolor_h = Toolbox::getFgColor($bgcolor, 10);
+                $color     = Toolbox::getFgColor($bgcolor);
 
-            $palette_style .= "
+                $palette_style .= "
                #chart-{$p['rand']} .line-$letter {
                   background-color: $bgcolor;
                   color: $color;
@@ -444,10 +450,10 @@ HTML;
                   font-weight: bold;
                }
             ";
-         }
-      }
+            }
+        }
 
-      $html = <<<HTML
+        $html = <<<HTML
       <style>
          {$palette_style}
 
@@ -475,8 +481,8 @@ HTML;
       </div>
 HTML;
 
-      return $html;
-   }
+        return $html;
+    }
 
 
    /**
@@ -500,8 +506,9 @@ HTML;
     *
     * @return string html of the widget
     */
-   public static function pie(array $params = []): string {
-      $default = [
+    public static function pie(array $params = []): string
+    {
+        $default = [
          'data'         => [],
          'label'        => '',
          'alt'          => '',
@@ -513,51 +520,51 @@ HTML;
          'limit'        => 99999,
          'filters'      => [],
          'rand'         => mt_rand(),
-      ];
-      $p = array_merge($default, $params);
-      $default_entry = [
+        ];
+        $p = array_merge($default, $params);
+        $default_entry = [
          'url'    => '',
          'icon'   => '',
          'label'  => '',
          'number' => '',
-      ];
+        ];
 
-      $nb_slices = min($p['limit'], count($p['data']));
-      array_splice($p['data'], $nb_slices);
+        $nb_slices = min($p['limit'], count($p['data']));
+        array_splice($p['data'], $nb_slices);
 
-      $nodata   = isset($p['data']['nodata']) && $p['data']['nodata'];
+        $nodata   = isset($p['data']['nodata']) && $p['data']['nodata'];
 
-      $fg_color      = Toolbox::getFgColor($p['color']);
-      $dark_bg_color = Toolbox::getFgColor($p['color'], 80);
-      $dark_fg_color = Toolbox::getFgColor($p['color'], 40);
+        $fg_color      = Toolbox::getFgColor($p['color']);
+        $dark_bg_color = Toolbox::getFgColor($p['color'], 80);
+        $dark_fg_color = Toolbox::getFgColor($p['color'], 40);
 
-      $chart_id = "chart-{$p['cache_key']}";
+        $chart_id = "chart-{$p['cache_key']}";
 
-      $class = "pie";
-      $class.= $p['half'] ? " half": "";
-      $class.= $p['donut'] ? " donut": "";
-      $class.= count($p['filters']) > 0 ? " filter-".implode(' filter-', $p['filters']) : "";
+        $class = "pie";
+        $class .= $p['half'] ? " half" : "";
+        $class .= $p['donut'] ? " donut" : "";
+        $class .= count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "";
 
-      $no_data_html = "";
-      if ($nodata) {
-         $no_data_html = "<span class='empty-card no-data'>
-               <div>".__('No data found')."</div>
+        $no_data_html = "";
+        if ($nodata) {
+            $no_data_html = "<span class='empty-card no-data'>
+               <div>" . __('No data found') . "</div>
             <span>";
-      }
+        }
 
-      $nb_series = min($p['limit'], count($p['data']));
+        $nb_series = min($p['limit'], count($p['data']));
 
-      $palette_style = "";
-      if ($p['use_gradient']) {
-         $palette_style = self::getCssGradientPalette(
-            $p['color'],
-            $nb_series,
-            ".dashboard #{$chart_id}",
-            false
-         );
-      }
+        $palette_style = "";
+        if ($p['use_gradient']) {
+            $palette_style = self::getCssGradientPalette(
+                $p['color'],
+                $nb_series,
+                ".dashboard #{$chart_id}",
+                false
+            );
+        }
 
-      $html = <<<HTML
+        $html = <<<HTML
       <style>
          #{$chart_id} {
             background-color: {$p['color']};
@@ -589,59 +596,59 @@ HTML;
       </div>
 HTML;
 
-      if ($nodata) {
-         return $html;
-      }
+        if ($nodata) {
+            return $html;
+        }
 
-      $labels = [];
-      $series = [];
-      $total = 0;
-      foreach ($p['data'] as $entry) {
-         $entry = array_merge($default_entry, $entry);
-         $total+= $entry['number'];
+        $labels = [];
+        $series = [];
+        $total = 0;
+        foreach ($p['data'] as $entry) {
+            $entry = array_merge($default_entry, $entry);
+            $total += $entry['number'];
 
-         $labels[] = $entry['label'];
-         $series[] = [
+            $labels[] = $entry['label'];
+            $series[] = [
             'meta'  => $entry['label'],
             'value' => $entry['number'],
             'url'   => $entry['url'],
-         ];
-      }
-      $total_txt = Toolbox::shortenNumber($total, 1, false);
+            ];
+        }
+        $total_txt = Toolbox::shortenNumber($total, 1, false);
 
-      $labels = json_encode($labels);
-      $series = json_encode($series);
+        $labels = json_encode($labels);
+        $series = json_encode($series);
 
-      $chartPadding = 4;
-      $height_divider = 1;
-      $half_opts = "";
-      if ($p['half']) {
-         $half_opts = "
+        $chartPadding = 4;
+        $height_divider = 1;
+        $half_opts = "";
+        if ($p['half']) {
+            $half_opts = "
             startAngle: 270,
-            total: ".($total*2).",
+            total: " . ($total * 2) . ",
          ";
-         $chartPadding = 9;
-         $height_divider = 2;
-      }
+            $chartPadding = 9;
+            $height_divider = 2;
+        }
 
-      $donut_opts = "
+        $donut_opts = "
          showLabel: false,
       ";
-      if ($p['donut']) {
-         $donut_opts = "
+        if ($p['donut']) {
+            $donut_opts = "
             donutSolid: true,
             showLabel: true,
             labelInterpolationFnc: function(value) {
                return '{$total_txt}';
             },
          ";
-      }
+        }
 
-      $donut  = $p['donut'] ? 'true' : 'false';
-      $height = $p['half'] ? '180%' : '100%';
-      $animation_duration = self::$animation_duration;
+        $donut  = $p['donut'] ? 'true' : 'false';
+        $height = $p['half'] ? '180%' : '100%';
+        $animation_duration = self::$animation_duration;
 
-      $js = <<<JAVASCRIPT
+        $js = <<<JAVASCRIPT
       $(function () {
          var chart = new Chartist.Pie('#{$chart_id} .chart', {
             labels: {$labels},
@@ -755,10 +762,10 @@ HTML;
          });
       });
 JAVASCRIPT;
-      $js = \Html::scriptBlock($js);
+        $js = \Html::scriptBlock($js);
 
-      return $html.$js;
-   }
+        return $html . $js;
+    }
 
 
    /**
@@ -767,11 +774,12 @@ JAVASCRIPT;
     *
     * @return string html
     */
-   public static function donut(array $params = []): string {
-      return self::pie(array_merge($params, [
+    public static function donut(array $params = []): string
+    {
+        return self::pie(array_merge($params, [
          'donut' => true,
-      ]));
-   }
+        ]));
+    }
 
 
    /**
@@ -780,11 +788,12 @@ JAVASCRIPT;
     *
     * @return string html
     */
-   public static function halfDonut(array $params = []): string {
-      return self::donut(array_merge($params, [
+    public static function halfDonut(array $params = []): string
+    {
+        return self::donut(array_merge($params, [
          'half' => true,
-      ]));
-   }
+        ]));
+    }
 
    /**
     * Display a widget with a half pie chart
@@ -792,11 +801,12 @@ JAVASCRIPT;
     *
     * @return string html
     */
-   public static function halfPie(array $params = []): string {
-      return self::pie(array_merge($params, [
+    public static function halfPie(array $params = []): string
+    {
+        return self::pie(array_merge($params, [
          'half' => true,
-      ]));
-   }
+        ]));
+    }
 
 
    /**
@@ -805,8 +815,9 @@ JAVASCRIPT;
     *
     * @return string html
     */
-   public static function simpleBar(array $params = []): string {
-      $default = [
+    public static function simpleBar(array $params = []): string
+    {
+        $default = [
          'data'        => [],
          'label'       => '',
          'alt'         => '',
@@ -815,40 +826,40 @@ JAVASCRIPT;
          'horizontal'  => false,
          'distributed' => true,
          'rand'        => mt_rand(),
-      ];
-      $params = array_merge($default, $params);
-      $default_entry = [
+        ];
+        $params = array_merge($default, $params);
+        $default_entry = [
          'url'    => '',
          'icon'   => '',
          'label'  => '',
          'number' => '',
-      ];
+        ];
 
-      $labels = [];
-      $series = [];
-      $total = 0;
-      foreach ($params['data'] as $entry) {
-         if (!is_array($entry)) {
-            continue;
-         }
-         $entry = array_merge($default_entry, $entry);
-         $total+= $entry['number'];
+        $labels = [];
+        $series = [];
+        $total = 0;
+        foreach ($params['data'] as $entry) {
+            if (!is_array($entry)) {
+                continue;
+            }
+            $entry = array_merge($default_entry, $entry);
+            $total += $entry['number'];
 
-         $labels[] = $entry['label'];
-         $series[] = [
+            $labels[] = $entry['label'];
+            $series[] = [
             'meta'  => $entry['label'],
             'value' => $entry['number'],
             'url'   => $entry['url'],
-         ];
-      }
+            ];
+        }
 
-      // chartist bar graphs are always multiple lines
-      if (!$params['distributed']) {
-         $series = [$series];
-      }
+       // chartist bar graphs are always multiple lines
+        if (!$params['distributed']) {
+            $series = [$series];
+        }
 
-      return self::getBarsGraph($params, $labels, $series);
-   }
+        return self::getBarsGraph($params, $labels, $series);
+    }
 
 
    /**
@@ -857,18 +868,20 @@ JAVASCRIPT;
     *
     * @return string html
     */
-   public static function simpleHbar(array $params = []): string {
-      return self::simpleBar(array_merge($params, [
+    public static function simpleHbar(array $params = []): string
+    {
+        return self::simpleBar(array_merge($params, [
          'horizontal' => true,
-      ]));
-   }
+        ]));
+    }
 
    /**
     * @inheritdoc self::simpleHbar
     */
-   public static function hbar(array $params = []): string {
-      return self::simpleHbar($params);
-   }
+    public static function hbar(array $params = []): string
+    {
+        return self::simpleHbar($params);
+    }
 
 
    /**
@@ -877,16 +890,17 @@ JAVASCRIPT;
     *
     * @return string html
     */
-   public static function multipleBars(array $params = []): string {
-      return self::getBarsGraph(
-         array_merge($params, [
+    public static function multipleBars(array $params = []): string
+    {
+        return self::getBarsGraph(
+            array_merge($params, [
             'legend'   => true,
             'multiple' => true,
-         ]),
-         $params['data']['labels'],
-         $params['data']['series']
-      );
-   }
+            ]),
+            $params['data']['labels'],
+            $params['data']['series']
+        );
+    }
 
 
    /**
@@ -895,11 +909,12 @@ JAVASCRIPT;
     *
     * @return string html
     */
-   public static function StackedBars(array $params = []): string {
-      return self::multipleBars(array_merge($params, [
+    public static function StackedBars(array $params = []): string
+    {
+        return self::multipleBars(array_merge($params, [
          'stacked' => true,
-      ]));
-   }
+        ]));
+    }
 
 
    /**
@@ -908,11 +923,12 @@ JAVASCRIPT;
     *
     * @return string html
     */
-   public static function stackedHBars(array $params = []): string {
-      return self::StackedBars(array_merge($params, [
+    public static function stackedHBars(array $params = []): string
+    {
+        return self::StackedBars(array_merge($params, [
          'horizontal' => true,
-      ]));
-   }
+        ]));
+    }
 
 
    /**
@@ -921,11 +937,12 @@ JAVASCRIPT;
     *
     * @return string html
     */
-   public static function multipleHBars(array $params = []): string {
-      return self::multipleBars(array_merge($params, [
+    public static function multipleHBars(array $params = []): string
+    {
+        return self::multipleBars(array_merge($params, [
          'horizontal' => true,
-      ]));
-   }
+        ]));
+    }
 
 
    /**
@@ -954,12 +971,13 @@ JAVASCRIPT;
     *
     * @return string html of the widget
     */
-   private static function getBarsGraph(
-      array $params = [],
-      array $labels = [],
-      array $series = []): string {
+    private static function getBarsGraph(
+        array $params = [],
+        array $labels = [],
+        array $series = []
+    ): string {
 
-      $defaults = [
+        $defaults = [
          'label'        => '',
          'alt'          => '',
          'color'        => '',
@@ -974,74 +992,74 @@ JAVASCRIPT;
          'limit'        => 99999,
          'filters'      => [],
          'rand'         => mt_rand(),
-      ];
-      $p = array_merge($defaults, $params);
+        ];
+        $p = array_merge($defaults, $params);
 
-      $nb_series = count($series);
-      $nb_labels = min($p['limit'], count($labels));
-      if ($p['distributed']) {
-         array_splice($labels, $nb_labels);
-      } else {
-         array_splice($labels, 0, -$nb_labels);
-      }
-      if ($p['multiple']) {
-         foreach ($series as &$serie) {
-            if (isset($serie['data'])) {
-               array_splice($serie['data'], 0, -$nb_labels);
+        $nb_series = count($series);
+        $nb_labels = min($p['limit'], count($labels));
+        if ($p['distributed']) {
+            array_splice($labels, $nb_labels);
+        } else {
+            array_splice($labels, 0, -$nb_labels);
+        }
+        if ($p['multiple']) {
+            foreach ($series as &$serie) {
+                if (isset($serie['data'])) {
+                    array_splice($serie['data'], 0, -$nb_labels);
+                }
             }
-         }
-      } else {
-         if ($p['distributed']) {
-            array_splice($series, $nb_labels);
-         } else {
-            array_splice($series[0], 0, -$nb_labels);
-         }
-      }
+        } else {
+            if ($p['distributed']) {
+                array_splice($series, $nb_labels);
+            } else {
+                array_splice($series[0], 0, -$nb_labels);
+            }
+        }
 
-      $json_labels = json_encode($labels);
-      $json_series = json_encode($series);
+        $json_labels = json_encode($labels);
+        $json_series = json_encode($series);
 
-      $fg_color        = Toolbox::getFgColor($p['color']);
-      $line_color      = Toolbox::getFgColor($p['color'], 10);
-      $dark_bg_color   = Toolbox::getFgColor($p['color'], 80);
-      $dark_fg_color   = Toolbox::getFgColor($p['color'], 40);
-      $dark_line_color = Toolbox::getFgColor($p['color'], 90);
+        $fg_color        = Toolbox::getFgColor($p['color']);
+        $line_color      = Toolbox::getFgColor($p['color'], 10);
+        $dark_bg_color   = Toolbox::getFgColor($p['color'], 80);
+        $dark_fg_color   = Toolbox::getFgColor($p['color'], 40);
+        $dark_line_color = Toolbox::getFgColor($p['color'], 90);
 
-      $animation_duration = self::$animation_duration;
+        $animation_duration = self::$animation_duration;
 
-      $chart_id = 'chart_'.$p['cache_key'];
+        $chart_id = 'chart_' . $p['cache_key'];
 
-      $class = "bar";
-      $class.= $p['horizontal'] ? " horizontal": "";
-      $class.= $p['distributed'] ? " distributed": "";
-      $class.= $nb_series <= 10 ? " tab10": "";
-      $class.= $nb_series > 10 ? " tab20": "";
-      $class.= count($p['filters']) > 0 ? " filter-".implode(' filter-', $p['filters']) : "";
+        $class = "bar";
+        $class .= $p['horizontal'] ? " horizontal" : "";
+        $class .= $p['distributed'] ? " distributed" : "";
+        $class .= $nb_series <= 10 ? " tab10" : "";
+        $class .= $nb_series > 10 ? " tab20" : "";
+        $class .= count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "";
 
-      $palette_style = "";
-      if ($p['use_gradient']) {
-         $nb_gradients = $p['distributed'] ? $nb_labels : $nb_series;
-         $palette_style = self::getCssGradientPalette($p['color'], $nb_gradients, "#{$chart_id}");
-      }
+        $palette_style = "";
+        if ($p['use_gradient']) {
+            $nb_gradients = $p['distributed'] ? $nb_labels : $nb_series;
+            $palette_style = self::getCssGradientPalette($p['color'], $nb_gradients, "#{$chart_id}");
+        }
 
-      $nodata = isset($p['data']['nodata']) && $p['data']['nodata']
+        $nodata = isset($p['data']['nodata']) && $p['data']['nodata']
                 || count($series) == 0;
-      $no_data_html = "";
-      if ($nodata) {
-         $no_data_html = "<span class='empty-card no-data'>
-               <div>".__('No data found')."</div>
+        $no_data_html = "";
+        if ($nodata) {
+            $no_data_html = "<span class='empty-card no-data'>
+               <div>" . __('No data found') . "</div>
             <span>";
-      }
+        }
 
-      $height = "calc(100% - 5px)";
-      $legend_options = "";
-      if ($p['legend']) {
-         $height = "calc(100% - 40px)";
-         $legend_options = "
+        $height = "calc(100% - 5px)";
+        $legend_options = "";
+        if ($p['legend']) {
+            $height = "calc(100% - 40px)";
+            $legend_options = "
             Chartist.plugins.legend(),";
-      }
+        }
 
-      $html = <<<HTML
+        $html = <<<HTML
       <style>
       #{$chart_id} {
          background-color: {$p['color']};
@@ -1084,12 +1102,12 @@ JAVASCRIPT;
       </div>
 HTML;
 
-      $horizontal_options = "";
-      $vertical_options   = "";
-      $is_horizontal      = "false";
-      if ($p['horizontal']) {
-         $is_horizontal = "true";
-         $horizontal_options = "
+        $horizontal_options = "";
+        $vertical_options   = "";
+        $is_horizontal      = "false";
+        if ($p['horizontal']) {
+            $is_horizontal = "true";
+            $horizontal_options = "
             horizontalBars: true,
             axisY: {
                offset: 100
@@ -1098,8 +1116,8 @@ HTML;
                onlyInteger: true
             },
          ";
-      } else {
-         $vertical_options = "
+        } else {
+            $vertical_options = "
             axisX: {
                offset: 50,
             },
@@ -1107,25 +1125,25 @@ HTML;
                onlyInteger: true
             },
          ";
-      }
+        }
 
-      $stack_options = "";
-      if ($p['stacked']) {
-         $stack_options = "
+        $stack_options = "";
+        if ($p['stacked']) {
+            $stack_options = "
             stackBars: true,";
-      }
+        }
 
-      $distributed_options = "";
-      if ($p['distributed']) {
-         $distributed_options = "
+        $distributed_options = "";
+        if ($p['distributed']) {
+            $distributed_options = "
             distributeSeries: true,";
-      }
+        }
 
-      // just to avoid issues with syntax coloring
-      $point_labels = $p['point_labels'] ? "true" : "false;";
-      $is_multiple  = $p['multiple'] ? "true" : "false;";
+       // just to avoid issues with syntax coloring
+        $point_labels = $p['point_labels'] ? "true" : "false;";
+        $is_multiple  = $p['multiple'] ? "true" : "false;";
 
-      $js = <<<JAVASCRIPT
+        $js = <<<JAVASCRIPT
       $(function () {
          var chart = new Chartist.Bar('#{$chart_id} .chart', {
             labels: {$json_labels},
@@ -1295,10 +1313,10 @@ HTML;
          });
       });
 JAVASCRIPT;
-      $js = \Html::scriptBlock($js);
+        $js = \Html::scriptBlock($js);
 
-      return $html.$js;
-   }
+        return $html . $js;
+    }
 
 
    /**
@@ -1307,32 +1325,33 @@ JAVASCRIPT;
     *
     * @return string html
     */
-   public static function simpleLine(array $params = []): string {
-      $default_entry = [
+    public static function simpleLine(array $params = []): string
+    {
+        $default_entry = [
          'url'    => '',
          'icon'   => '',
          'label'  => '',
          'number' => '',
-      ];
+        ];
 
-      $labels = [];
-      $series = [];
-      foreach ($params['data'] as $entry) {
-         $entry = array_merge($default_entry, $entry);
+        $labels = [];
+        $series = [];
+        foreach ($params['data'] as $entry) {
+            $entry = array_merge($default_entry, $entry);
 
-         $labels[] = $entry['label'];
-         $series[] = [
+            $labels[] = $entry['label'];
+            $series[] = [
             'meta'  => $entry['label'],
             'value' => $entry['number'],
             'url'   => $entry['url'],
-         ];
-      }
+            ];
+        }
 
-      // chartist line graphs are always multiple lines
-      $series = [$series];
+       // chartist line graphs are always multiple lines
+        $series = [$series];
 
-      return self::getLinesGraph($params, $labels, $series);
-   }
+        return self::getLinesGraph($params, $labels, $series);
+    }
 
 
    /**
@@ -1341,11 +1360,12 @@ JAVASCRIPT;
     *
     * @return string html
     */
-   public static function simpleArea(array $params = []): string {
-      return self::simpleLine(array_merge($params, [
+    public static function simpleArea(array $params = []): string
+    {
+        return self::simpleLine(array_merge($params, [
          'area' => true,
-      ]));
-   }
+        ]));
+    }
 
 
    /**
@@ -1354,17 +1374,18 @@ JAVASCRIPT;
     *
     * @return string html
     */
-   public static function multipleLines(array $params = []): string {
-      return self::getLinesGraph(
-         array_merge($params, [
+    public static function multipleLines(array $params = []): string
+    {
+        return self::getLinesGraph(
+            array_merge($params, [
             'legend'   => true,
             'multiple' => true,
             'cache_key' => mt_rand(),
-         ]),
-         $params['data']['labels'],
-         $params['data']['series']
-      );
-   }
+            ]),
+            $params['data']['labels'],
+            $params['data']['series']
+        );
+    }
 
 
    /**
@@ -1373,12 +1394,13 @@ JAVASCRIPT;
     *
     * @return string html
     */
-   public static function multipleAreas(array $params = []): string {
-      return self::multipleLines(array_merge($params, [
+    public static function multipleAreas(array $params = []): string
+    {
+        return self::multipleLines(array_merge($params, [
          'area' => true,
          'cache_key' => mt_rand(),
-      ]));
-   }
+        ]));
+    }
 
 
    /**
@@ -1405,12 +1427,13 @@ JAVASCRIPT;
     *
     * @return string html of the widget
     */
-   private static function getLinesGraph(
-      array $params = [],
-      array $labels = [],
-      array $series = []): string {
+    private static function getLinesGraph(
+        array $params = [],
+        array $labels = [],
+        array $series = []
+    ): string {
 
-      $defaults = [
+        $defaults = [
          'data'         => [],
          'label'        => '',
          'alt'          => '',
@@ -1424,48 +1447,48 @@ JAVASCRIPT;
          'limit'        => 99999,
          'filters'      => [],
          'rand'         => mt_rand(),
-      ];
-      $p = array_merge($defaults, $params);
+        ];
+        $p = array_merge($defaults, $params);
 
-      $nb_series = count($series);
-      $nb_labels = min($p['limit'], count($labels));
-      array_splice($labels, 0, -$nb_labels);
-      if ($p['multiple']) {
-         foreach ($series as &$serie) {
-            if (isset($serie['data'])) {
-               array_splice($serie['data'], 0, -$nb_labels);
+        $nb_series = count($series);
+        $nb_labels = min($p['limit'], count($labels));
+        array_splice($labels, 0, -$nb_labels);
+        if ($p['multiple']) {
+            foreach ($series as &$serie) {
+                if (isset($serie['data'])) {
+                    array_splice($serie['data'], 0, -$nb_labels);
+                }
             }
-         }
-      } else {
-         array_splice($series[0], 0, -$nb_labels);
-      }
+        } else {
+            array_splice($series[0], 0, -$nb_labels);
+        }
 
-      $json_labels = json_encode($labels);
-      $json_series = json_encode($series);
+        $json_labels = json_encode($labels);
+        $json_series = json_encode($series);
 
-      $chart_id = 'chart_'.$p['cache_key'];
+        $chart_id = 'chart_' . $p['cache_key'];
 
-      $fg_color        = Toolbox::getFgColor($p['color']);
-      $line_color      = Toolbox::getFgColor($p['color'], 10);
-      $dark_bg_color   = Toolbox::getFgColor($p['color'], 80);
-      $dark_fg_color   = Toolbox::getFgColor($p['color'], 40);
-      $dark_line_color = Toolbox::getFgColor($p['color'], 90);
+        $fg_color        = Toolbox::getFgColor($p['color']);
+        $line_color      = Toolbox::getFgColor($p['color'], 10);
+        $dark_bg_color   = Toolbox::getFgColor($p['color'], 80);
+        $dark_fg_color   = Toolbox::getFgColor($p['color'], 40);
+        $dark_line_color = Toolbox::getFgColor($p['color'], 90);
 
-      $class = "line";
-      $class.= $p['area'] ? " area": "";
-      $class.= $p['multiple'] ? " multiple": "";
-      $class.= count($p['filters']) > 0 ? " filter-".implode(' filter-', $p['filters']) : "";
+        $class = "line";
+        $class .= $p['area'] ? " area" : "";
+        $class .= $p['multiple'] ? " multiple" : "";
+        $class .= count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "";
 
-      $animation_duration = self::$animation_duration;
+        $animation_duration = self::$animation_duration;
 
-      $palette_style = "";
-      if (!$p['multiple'] || $p['use_gradient']) {
-         $palette_style = self::getCssGradientPalette($p['color'], $nb_series, "#{$chart_id}");
-      }
+        $palette_style = "";
+        if (!$p['multiple'] || $p['use_gradient']) {
+            $palette_style = self::getCssGradientPalette($p['color'], $nb_series, "#{$chart_id}");
+        }
 
-      $pointlabels_plugins = "";
-      if ($p['point_labels']) {
-         $pointlabels_plugins = ",
+        $pointlabels_plugins = "";
+        if ($p['point_labels']) {
+            $pointlabels_plugins = ",
             Chartist.plugins.ctPointLabels({
                textAnchor: 'middle',
                labelInterpolationFnc: function(value) {
@@ -1475,17 +1498,17 @@ JAVASCRIPT;
                   return value;
                }
             })";
-      }
+        }
 
-      $height = "calc(100% - 1px)";
-      $legend_options = "";
-      if ($p['legend']) {
-         $height = "calc(100% - 40px)";
-         $legend_options = "
+        $height = "calc(100% - 1px)";
+        $legend_options = "";
+        if ($p['legend']) {
+            $height = "calc(100% - 40px)";
+            $legend_options = "
             Chartist.plugins.legend(),";
-      }
+        }
 
-      $html = <<<HTML
+        $html = <<<HTML
       <style>
          /** fix chrome resizing height when animating svg (don't know why) **/
       #{$chart_id} .ct-chart-line {
@@ -1536,13 +1559,13 @@ JAVASCRIPT;
       </div>
 HTML;
 
-      $area_options = "";
-      if ($p['area']) {
-         $area_options = "
+        $area_options = "";
+        if ($p['area']) {
+            $area_options = "
             showArea: true,";
-      }
+        }
 
-      $js = <<<JAVASCRIPT
+        $js = <<<JAVASCRIPT
       $(function () {
          var chart = new Chartist.Line('#{$chart_id} .chart', {
             labels: {$json_labels},
@@ -1629,10 +1652,10 @@ HTML;
          });
       });
 JAVASCRIPT;
-      $js = Html::scriptBlock($js);
+        $js = Html::scriptBlock($js);
 
-      return $html.$js;
-   }
+        return $html . $js;
+    }
 
 
    /**
@@ -1644,27 +1667,32 @@ JAVASCRIPT;
     *
     * @return string html
     */
-   public static function markdown(array $params = []): string {
-      $default = [
+    public static function markdown(array $params = []): string
+    {
+        $default = [
          'color'             => '',
          'markdown_content'  => '',
-      ];
-      $p = array_merge($default, $params);
+        ];
+        $p = array_merge($default, $params);
 
-      // fix auto-escaping
-      if (isset($p['markdown_content'])) {
-         $p['markdown_content'] = \Html::cleanPostForTextArea($p['markdown_content']);
-      }
+       // fix auto-escaping
+        if (isset($p['markdown_content'])) {
+            $p['markdown_content'] = \Html::cleanPostForTextArea($p['markdown_content']);
+        }
 
-      $ph           = __("Type markdown text here");
-      $fg_color     = Toolbox::getFgColor($p['color']);
-      $border_color = Toolbox::getFgColor($p['color'], 10);
-      $md           = new MarkdownExtra();
+        $ph           = __("Type markdown text here");
+        $fg_color     = Toolbox::getFgColor($p['color']);
+        $border_color = Toolbox::getFgColor($p['color'], 10);
+        $md           = new MarkdownExtra();
        // Prevent escaping as code is already escaped by GLPI sanityze
-      $md->code_span_content_func  = function ($code) { return $code; };
-      $md->code_block_content_func = function ($code) { return $code; };
+        $md->code_span_content_func  = function ($code) {
+            return $code;
+        };
+        $md->code_block_content_func = function ($code) {
+            return $code;
+        };
 
-      $html = <<<HTML
+        $html = <<<HTML
       <div
          class="card markdown"
          style="background-color: {$p['color']}; color: {$fg_color}; border-color: {$border_color}">
@@ -1677,8 +1705,8 @@ JAVASCRIPT;
       </div>
 HTML;
 
-      return $html;
-   }
+        return $html;
+    }
 
 
    /**
@@ -1698,8 +1726,9 @@ HTML;
     *
     * @return string html of the widget
     */
-   public static function searchShowList(array $params = []): string {
-      $default = [
+    public static function searchShowList(array $params = []): string
+    {
+        $default = [
          'url'        => '',
          'label'      => '',
          'alt'        => '',
@@ -1710,45 +1739,45 @@ HTML;
          'limit'      => $_SESSION['glpilist_limit'],
          'rand'       => mt_rand(),
          'filters'      => [],
-      ];
-      $p = array_merge($default, $params);
+        ];
+        $p = array_merge($default, $params);
 
-      $id = "search-table-".$p['rand'];
+        $id = "search-table-" . $p['rand'];
 
-      $color = new Color($p['color']);
-      $is_light = $color->isLight();
+        $color = new Color($p['color']);
+        $is_light = $color->isLight();
 
-      $fg_color  = Toolbox::getFgColor($p['color'], $is_light ? 65 : 40);
-      $fg_color2 = Toolbox::getFgColor($p['color'], 5);
+        $fg_color  = Toolbox::getFgColor($p['color'], $is_light ? 65 : 40);
+        $fg_color2 = Toolbox::getFgColor($p['color'], 5);
 
-      $href = strlen($p['url'])
+        $href = strlen($p['url'])
          ? "href='{$p['url']}'"
          : "";
 
-      $class = count($p['filters']) > 0 ? " filter-".implode(' filter-', $p['filters']) : "";
+        $class = count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "";
 
-      // prepare search data
-      $_GET['_in_modal'] = true;
-      $params = [
+       // prepare search data
+        $_GET['_in_modal'] = true;
+        $params = [
          'criteria' => $p['s_criteria'],
          'reset'    => 'reset',
-      ];
+        ];
 
-      ob_start();
-      $params = Search::manageParams($p['itemtype'], $params);
-      // remove parts of search list
-      $params = array_merge($params, [
+        ob_start();
+        $params = Search::manageParams($p['itemtype'], $params);
+       // remove parts of search list
+        $params = array_merge($params, [
          'showmassiveactions' => false,
          'dont_flush'         => true,
          'show_pager'         => false,
          'show_footer'        => false,
          'no_sort'            => true,
          'list_limit'         => $p['limit']
-      ]);
-      Search::showList($p['itemtype'], $params);
-      $search_result = ob_get_clean();
+        ]);
+        Search::showList($p['itemtype'], $params);
+        $search_result = ob_get_clean();
 
-      $html = <<<HTML
+        $html = <<<HTML
       <style>
          #{$id} .tab_cadrehov th {
             background: {$fg_color2};
@@ -1768,12 +1797,13 @@ HTML;
       </div>
 HTML;
 
-      return $html;
-   }
+        return $html;
+    }
 
 
-   public static function articleList(array $params): string {
-      $default = [
+    public static function articleList(array $params): string
+    {
+        $default = [
          'data'         => [],
          'label'        => '',
          'alt'          => '',
@@ -1784,50 +1814,50 @@ HTML;
          'class'        => "articles-list",
          'rand'         => mt_rand(),
          'filters'      => [],
-      ];
-      $p = array_merge($default, $params);
-      $default_entry = [
+        ];
+        $p = array_merge($default, $params);
+        $default_entry = [
          'url'    => '',
          'icon'   => '',
          'label'  => '',
          'number' => '',
-      ];
+        ];
 
-      $nb_lines = min($p['limit'], count($p['data']));
-      array_splice($p['data'], $nb_lines);
-      $fg_color = Toolbox::getFgColor($p['color']);
-      $bg_color_2 = Toolbox::getFgColor($p['color'], 5);
+        $nb_lines = min($p['limit'], count($p['data']));
+        array_splice($p['data'], $nb_lines);
+        $fg_color = Toolbox::getFgColor($p['color']);
+        $bg_color_2 = Toolbox::getFgColor($p['color'], 5);
 
-      $class = $p['class'];
-      $class.= count($p['filters']) > 0 ? " filter-".implode(' filter-', $p['filters']) : "";
+        $class = $p['class'];
+        $class .= count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "";
 
-      $i = 0;
-      $list_html = "";
-      foreach ($p['data'] as $entry) {
-         if (!is_array($entry)) {
-            continue;
-         }
+        $i = 0;
+        $list_html = "";
+        foreach ($p['data'] as $entry) {
+            if (!is_array($entry)) {
+                continue;
+            }
 
-         $entry = array_merge($default_entry, $entry);
+            $entry = array_merge($default_entry, $entry);
 
-         $href = strlen($entry['url'])
+            $href = strlen($entry['url'])
             ? "href='{$entry['url']}'"
             : "";
 
-         $author = strlen($entry['author'])
+            $author = strlen($entry['author'])
             ? "<i class='fas fa-user'></i>&nbsp;{$entry['author']}"
             : "";
 
-         $content_size = strlen($entry['content']);
-         $content = strlen($entry['content'])
-            ? RichText::getEnhancedHtml($entry['content']).
+            $content_size = strlen($entry['content']);
+            $content = strlen($entry['content'])
+            ? RichText::getEnhancedHtml($entry['content']) .
               ($content_size > 300
                ? "<p class='read_more'><span class='read_more_button'>...</span></p>"
                : ""
               )
-            : "";
+             : "";
 
-         $list_html.= <<<HTML
+            $list_html .= <<<HTML
             <li class="line"><a {$href}>
                <span class="label">{$entry['label']}</span>
                <div class="content long_text">{$content}</div>
@@ -1835,24 +1865,24 @@ HTML;
                <span class="date">{$entry['date']}</span>
             </a></li>
 HTML;
-         $i++;
-      }
+            $i++;
+        }
 
-      $nodata = isset($p['data']['nodata']) && $p['data']['nodata'];
-      if ($nodata) {
-         $list_html = "<span class='line empty-card no-data'>
+        $nodata = isset($p['data']['nodata']) && $p['data']['nodata'];
+        if ($nodata) {
+            $list_html = "<span class='line empty-card no-data'>
             <span class='content'>
                <i class='icon fas fa-exclamation-triangle'></i>
             </span>
-            <span class='label'>".__('No data found')."</span>
+            <span class='label'>" . __('No data found') . "</span>
          <span>";
-      }
+        }
 
-      $view_all = strlen($p['url'])
-         ? "<a href='{$p['url']}'><i class='fas fa-eye' title='".__("See all")."'></i></a>"
+        $view_all = strlen($p['url'])
+         ? "<a href='{$p['url']}'><i class='fas fa-eye' title='" . __("See all") . "'></i></a>"
          : "";
 
-      $html = <<<HTML
+        $html = <<<HTML
       <style>
          #chart-{$p['rand']} .line {
             background-color: $bg_color_2;
@@ -1880,7 +1910,7 @@ HTML;
       </div>
 HTML;
 
-      $js = <<<JAVASCRIPT
+        $js = <<<JAVASCRIPT
       $(function () {
          // init readmore controls
          read_more();
@@ -1894,10 +1924,10 @@ HTML;
          });
       });
 JAVASCRIPT;
-      $js = \Html::scriptBlock($js);
+        $js = \Html::scriptBlock($js);
 
-      return $html.$js;
-   }
+        return $html . $js;
+    }
 
    /**
     * Get a gradient palette for a given background color
@@ -1911,106 +1941,106 @@ JAVASCRIPT;
     *    'colors' => [...]
     * ]
     */
-   public static function getGradientPalette(
-      string $bgcolor = "",
-      int $nb_series = 1,
-      bool $revert = true
-   ) {
-      if ($nb_series == 0) {
-         return [
+    public static function getGradientPalette(
+        string $bgcolor = "",
+        int $nb_series = 1,
+        bool $revert = true
+    ) {
+        if ($nb_series == 0) {
+            return [
             'names'  => [],
             'colors' => [],
-         ];
-      }
+            ];
+        }
 
-      if ($nb_series == 1) {
-         return [
+        if ($nb_series == 1) {
+            return [
             'names'  => ['a'],
             'colors' => [Toolbox::getFgColor($bgcolor)],
-         ];
-      }
+            ];
+        }
 
-      $alphabet = range('a', 'z');
-      $min_l = 20; // min for luminosity
-      $max_l = 20; // max ...
-      $min_s = 30; // min for saturation
-      $max_s = 50; // max ...
-      $step_l = (100 - ($min_l + $max_l)) / ($nb_series * 100);
-      $step_s = (100 - ($min_s + $max_s)) / ($nb_series * 100);
+        $alphabet = range('a', 'z');
+        $min_l = 20; // min for luminosity
+        $max_l = 20; // max ...
+        $min_s = 30; // min for saturation
+        $max_s = 50; // max ...
+        $step_l = (100 - ($min_l + $max_l)) / ($nb_series * 100);
+        $step_s = (100 - ($min_s + $max_s)) / ($nb_series * 100);
 
-      $color_instance = new Color($bgcolor);
-      $hsl = $color_instance->getHsl();
+        $color_instance = new Color($bgcolor);
+        $hsl = $color_instance->getHsl();
 
-      $names  = [];
-      $colors = [];
+        $names  = [];
+        $colors = [];
 
-      for ($i = 1; $i <= $nb_series; $i++) {
-         $names[$i - 1] = $alphabet[$i - 1];
+        for ($i = 1; $i <= $nb_series; $i++) {
+            $names[$i - 1] = $alphabet[$i - 1];
 
-         // adjust luminosity
-         $i_l_step = $i * $step_l + $min_l / 100;
-         $hsl['L'] = min(1, $revert
+           // adjust luminosity
+            $i_l_step = $i * $step_l + $min_l / 100;
+            $hsl['L'] = min(1, $revert
             ? 1 - $i_l_step
             : $i_l_step);
-         // adjust saturation
-         if ($hsl['H'] != 0 && $hsl['H'] != 1) {
-            $i_s_step = $i * $step_s + $min_s / 100;
-            $hsl['S'] = min(1, $revert
-               ? $i_s_step
-               : 1 - $i_s_step);
-         }
+           // adjust saturation
+            if ($hsl['H'] != 0 && $hsl['H'] != 1) {
+                $i_s_step = $i * $step_s + $min_s / 100;
+                $hsl['S'] = min(1, $revert
+                 ? $i_s_step
+                 : 1 - $i_s_step);
+            }
 
-         $colors[$i - 1] = "#".Color::hslToHex($hsl);
-      }
+            $colors[$i - 1] = "#" . Color::hslToHex($hsl);
+        }
 
-      return [
+        return [
          'names'  => $names,
          'colors' => $colors,
-      ];
-   }
+        ];
+    }
 
 
    /**
     * Generate a css ruleset for chartist given a starting background color
     * Based on @see self::getGradientPalette
     */
-   public static function getCssGradientPalette(
-      string $bgcolor = "",
-      int $nb_series = 1,
-      string $css_dom_parent = "",
-      bool $revert = true
-   ) {
-      global $GLPI_CACHE;
+    public static function getCssGradientPalette(
+        string $bgcolor = "",
+        int $nb_series = 1,
+        string $css_dom_parent = "",
+        bool $revert = true
+    ) {
+        global $GLPI_CACHE;
 
-      $palette = self::getGradientPalette($bgcolor, $nb_series, $revert);
+        $palette = self::getGradientPalette($bgcolor, $nb_series, $revert);
 
-      $series_names  = implode(',', $palette['names']);
-      $series_colors = implode(',', $palette['colors']);
+        $series_names  = implode(',', $palette['names']);
+        $series_colors = implode(',', $palette['colors']);
 
-      $hash = sha1($series_names.$series_colors);
-      if (($palette_css = $GLPI_CACHE->get($hash)) !== null) {
-         return $palette_css;
-      }
+        $hash = sha1($series_names . $series_colors);
+        if (($palette_css = $GLPI_CACHE->get($hash)) !== null) {
+            return $palette_css;
+        }
 
-      $scss = new Compiler();
-      $generate_scss_path = str_replace(
-         DIRECTORY_SEPARATOR,
-         '/',
-         realpath(GLPI_ROOT . '/css/includes/components/chartist/_generate.scss')
-      );
-      $result = $scss->compileString(
-         "{$css_dom_parent} {
+        $scss = new Compiler();
+        $generate_scss_path = str_replace(
+            DIRECTORY_SEPARATOR,
+            '/',
+            realpath(GLPI_ROOT . '/css/includes/components/chartist/_generate.scss')
+        );
+        $result = $scss->compileString(
+            "{$css_dom_parent} {
             \$ct-series-names: ({$series_names});
             \$ct-series-colors: ({$series_colors});
 
             @import '{$generate_scss_path}';
          }",
-         dirname($generate_scss_path)
-      );
-      $palette_css = $result->getCss();
+            dirname($generate_scss_path)
+        );
+        $palette_css = $result->getCss();
 
-      $GLPI_CACHE->set($hash, $palette_css);
+        $GLPI_CACHE->set($hash, $palette_css);
 
-      return $palette_css;
-   }
+        return $palette_css;
+    }
 }

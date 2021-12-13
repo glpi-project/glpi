@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,17 +37,19 @@ use DbTestCase;
 
 /* Test for inc/notificationtargetuser.class.php */
 
-class NotificationTargetUser extends DbTestCase {
+class NotificationTargetUser extends DbTestCase
+{
 
 
-   protected function addDataForPasswordExpiresTemplateProvider() {
-      global $CFG_GLPI;
+    protected function addDataForPasswordExpiresTemplateProvider()
+    {
+        global $CFG_GLPI;
 
-      $time_in_past   = strtotime('-10 days');
-      $time_in_future = strtotime('+10 days');
-      $update_url     = $CFG_GLPI['url_base'] . '/front/updatepassword.php';
+        $time_in_past   = strtotime('-10 days');
+        $time_in_future = strtotime('+10 days');
+        $update_url     = $CFG_GLPI['url_base'] . '/front/updatepassword.php';
 
-      return [
+        return [
          // case 1: password already expired but account will not be locked
          [
             'expiration_time' => $time_in_past,
@@ -91,32 +94,36 @@ class NotificationTargetUser extends DbTestCase {
                '##user.password.update.url##'      => $update_url,
             ],
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider addDataForPasswordExpiresTemplateProvider
     */
-   public function testAddDataForPasswordExpiresTemplate(int $expiration_time, int $lock_delay, array $expected) {
-      global $CFG_GLPI;
+    public function testAddDataForPasswordExpiresTemplate(int $expiration_time, int $lock_delay, array $expected)
+    {
+        global $CFG_GLPI;
 
-      $user = new \mock\User();
-      $this->calling($user)->getPasswordExpirationTime = $expiration_time;
+        $user = new \mock\User();
+        $this->calling($user)->getPasswordExpirationTime = $expiration_time;
 
-      $cfg_backup = $CFG_GLPI;
-      $CFG_GLPI['password_expiration_lock_delay'] = $lock_delay;$target = new \NotificationTargetUser(
-         getItemByTypeName('Entity', '_test_root_entity', true), 'passwordexpires', $user
-      );
-      $target->addDataForTemplate('passwordexpires');
-      $CFG_GLPI = $cfg_backup;
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['password_expiration_lock_delay'] = $lock_delay;$target = new \NotificationTargetUser(
+            getItemByTypeName('Entity', '_test_root_entity', true),
+            'passwordexpires',
+            $user
+        );
+        $target->addDataForTemplate('passwordexpires');
+        $CFG_GLPI = $cfg_backup;
 
-      $this->checkTemplateData($target->data, $expected);
-   }
+        $this->checkTemplateData($target->data, $expected);
+    }
 
-   private function checkTemplateData(array $data, array $expected) {
-      $this->array($data)->hasKeys(array_keys($expected));
-      foreach ($expected as $key => $value) {
-         $this->variable($data[$key])->isIdenticalTo($value);
-      }
-   }
+    private function checkTemplateData(array $data, array $expected)
+    {
+        $this->array($data)->hasKeys(array_keys($expected));
+        foreach ($expected as $key => $value) {
+            $this->variable($data[$key])->isIdenticalTo($value);
+        }
+    }
 }

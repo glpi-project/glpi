@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,30 +37,33 @@ use DbTestCase;
 
 /* Test for inc/notificationmailing.class.php .class.php */
 
-class NotificationMailing extends DbTestCase {
+class NotificationMailing extends DbTestCase
+{
 
    /**
     * @ignore
     * @see https://gitlab.alpinelinux.org/alpine/aports/issues/7392
     */
-   public function testCheck() {
-      $instance = new \NotificationMailing();
+    public function testCheck()
+    {
+        $instance = new \NotificationMailing();
 
-      $this->boolean($instance->check('user'))->isFalse();
-      $this->boolean($instance->check('user@localhost'))->isTrue();
-      $this->boolean($instance->check('user@localhost.dot'))->isTrue();
-      if (!getenv('GLPI_SKIP_ONLINE')) {
-          $this->boolean($instance->check('user@localhost.dot', ['checkdns' => true]))->isFalse();
-          $this->boolean($instance->check('user@glpi-project.org', ['checkdns' => true]))->isTrue();
-      }
-   }
+        $this->boolean($instance->check('user'))->isFalse();
+        $this->boolean($instance->check('user@localhost'))->isTrue();
+        $this->boolean($instance->check('user@localhost.dot'))->isTrue();
+        if (!getenv('GLPI_SKIP_ONLINE')) {
+            $this->boolean($instance->check('user@localhost.dot', ['checkdns' => true]))->isFalse();
+            $this->boolean($instance->check('user@glpi-project.org', ['checkdns' => true]))->isTrue();
+        }
+    }
 
-   public function testSendNotification() {
-      //setup
-      $this->login();
+    public function testSendNotification()
+    {
+       //setup
+        $this->login();
 
-      $instance = new \NotificationMailing();
-      $res = $instance->sendNotification([
+        $instance = new \NotificationMailing();
+        $res = $instance->sendNotification([
          '_itemtype'                   => 'NotificationMailing',
          '_items_id'                   => 1,
          '_notificationtemplates_id'   => 0,
@@ -70,18 +74,18 @@ class NotificationMailing extends DbTestCase {
          'to'                          => \Session::getLoginUserID(),
          'from'                        => 'glpi@tests',
          'toname'                      => ''
-      ]);
-      $this->boolean($res)->isTrue();
+        ]);
+        $this->boolean($res)->isTrue();
 
-      $data = getAllDataFromTable('glpi_queuednotifications');
-      $this->array($data)->hasSize(1);
+        $data = getAllDataFromTable('glpi_queuednotifications');
+        $this->array($data)->hasSize(1);
 
-      $row = array_pop($data);
-      unset($row['id']);
-      unset($row['create_time']);
-      unset($row['send_time']);
+        $row = array_pop($data);
+        unset($row['id']);
+        unset($row['create_time']);
+        unset($row['send_time']);
 
-      $this->array($row)
+        $this->array($row)
          ->isIdenticalTo([
             'itemtype'                 => 'NotificationMailing',
             'items_id'                 => 1,
@@ -104,5 +108,5 @@ class NotificationMailing extends DbTestCase {
             'documents'                => '',
             'mode'                     => 'mailing'
          ]);
-   }
+    }
 }

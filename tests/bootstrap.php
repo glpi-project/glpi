@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -45,11 +46,11 @@ define('GLPI_VAR_DIR', getenv('GLPI_VAR_DIR') ?: __DIR__ . '/files');
 define('GLPI_URI', getenv('GLPI_URI') ?: 'http://localhost:8088');
 
 define(
-   'PLUGINS_DIRECTORIES',
-   [
+    'PLUGINS_DIRECTORIES',
+    [
       GLPI_ROOT . '/plugins',
       GLPI_ROOT . '/tests/fixtures/plugins',
-   ]
+    ]
 );
 
 define('TU_USER', '_test_user');
@@ -57,10 +58,10 @@ define('TU_PASS', 'PhpUnit_4');
 
 global $CFG_GLPI, $GLPI_CACHE;
 
-include (GLPI_ROOT . "/inc/based_config.php");
+include(GLPI_ROOT . "/inc/based_config.php");
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
-   die("\nConfiguration file for tests not found\n\nrun: bin/console glpi:database:install --config-dir=" . GLPI_CONFIG_DIR . " ...\n\n");
+    die("\nConfiguration file for tests not found\n\nrun: bin/console glpi:database:install --config-dir=" . GLPI_CONFIG_DIR . " ...\n\n");
 }
 
 \Glpi\Tests\BootstrapUtils::initVarDirectories();
@@ -68,11 +69,11 @@ if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
 //init cache
 if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FILENAME)) {
    // Use configured cache for cache tests
-   $cache_manager = new CacheManager();
-   $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
+    $cache_manager = new CacheManager();
+    $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
 } else {
    // Use "in-memory" cache for other tests
-   $GLPI_CACHE = new SimpleCache(new ArrayAdapter());
+    $GLPI_CACHE = new SimpleCache(new ArrayAdapter());
 }
 
 include_once __DIR__ . '/../inc/includes.php';
@@ -90,7 +91,7 @@ include_once __DIR__ . '/functionnal/Glpi/ContentTemplates/Parameters/AbstractPa
 
 // check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes
 if (file_exists(__DIR__ . '/../vendor/autoload.php') && !file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')) {
-   die("\nDevelopment dependencies not found\n\nrun: composer install -o\n\n");
+    die("\nDevelopment dependencies not found\n\nrun: composer install -o\n\n");
 }
 
 class GlpitestPHPerror extends \Exception
@@ -106,11 +107,12 @@ class GlpitestSQLError extends \Exception
 {
 }
 
-function loadDataset() {
-   global $CFG_GLPI, $DB;
+function loadDataset()
+{
+    global $CFG_GLPI, $DB;
 
    // Unit test data definition
-   $data = [
+    $data = [
       // bump this version to force reload of the full dataset, when content change
       '_version' => '4.7',
 
@@ -422,7 +424,7 @@ function loadDataset() {
             'users_id'     => TU_USER,
             'is_default'   => '1',
             'is_dynamic'   => '0',
-            'email'        => TU_USER.'@glpi.com'
+            'email'        => TU_USER . '@glpi.com'
          ]
       ], 'KnowbaseItem' => [
          [
@@ -667,89 +669,89 @@ function loadDataset() {
             'state'        => 1,
          ]
       ],
-   ];
+    ];
 
    // To bypass various right checks
-   $session_bak = $_SESSION;
-   $_SESSION['glpishowallentities'] = 1;
-   $_SESSION['glpicronuserrunning'] = "cron_phpunit";
-   $_SESSION['glpi_use_mode']       = Session::NORMAL_MODE;
-   $_SESSION['glpiactive_entity']   = 0;
-   $_SESSION['glpiactiveentities']  = [0];
-   $_SESSION['glpiactiveentities_string'] = "'0'";
-   $CFG_GLPI['root_doc']            = '/glpi';
+    $session_bak = $_SESSION;
+    $_SESSION['glpishowallentities'] = 1;
+    $_SESSION['glpicronuserrunning'] = "cron_phpunit";
+    $_SESSION['glpi_use_mode']       = Session::NORMAL_MODE;
+    $_SESSION['glpiactive_entity']   = 0;
+    $_SESSION['glpiactiveentities']  = [0];
+    $_SESSION['glpiactiveentities_string'] = "'0'";
+    $CFG_GLPI['root_doc']            = '/glpi';
 
-   $DB->beginTransaction();
+    $DB->beginTransaction();
 
-   Config::setConfigurationValues('core', ['url_base'     => GLPI_URI,
+    Config::setConfigurationValues('core', ['url_base'     => GLPI_URI,
                                            'url_base_api' => GLPI_URI . '/apirest.php']);
-   $CFG_GLPI['url_base']      = GLPI_URI;
-   $CFG_GLPI['url_base_api']  = GLPI_URI . '/apirest.php';
+    $CFG_GLPI['url_base']      = GLPI_URI;
+    $CFG_GLPI['url_base_api']  = GLPI_URI . '/apirest.php';
 
    // make all caldav component available for tests (for default usage we don't VTODO)
-   $CFG_GLPI['caldav_supported_components']  = ['VEVENT', 'VJOURNAL', 'VTODO'];
+    $CFG_GLPI['caldav_supported_components']  = ['VEVENT', 'VJOURNAL', 'VTODO'];
 
-   $conf = Config::getConfigurationValues('phpunit');
-   if (isset($conf['dataset']) && $conf['dataset']==$data['_version']) {
-      printf("\nGLPI dataset version %s already loaded\n\n", $data['_version']);
-   } else {
-      printf("\nLoading GLPI dataset version %s\n", $data['_version']);
+    $conf = Config::getConfigurationValues('phpunit');
+    if (isset($conf['dataset']) && $conf['dataset'] == $data['_version']) {
+        printf("\nGLPI dataset version %s already loaded\n\n", $data['_version']);
+    } else {
+        printf("\nLoading GLPI dataset version %s\n", $data['_version']);
 
-      $ids = [];
-      foreach ($data as $type => $inputs) {
-         if ($type[0] == '_') {
-            continue;
-         }
-         foreach ($inputs as $input) {
-            // Resolve FK
-            foreach ($input as $k => $v) {
-               // $foreigntype = $type; // by default same type than current type (is the case of the dropdowns)
-               $foreigntype = false;
-               $match = [];
-               if (isForeignKeyField($k) && (preg_match("/(.*s)_id$/", $k, $match) || preg_match("/(.*s)_id_/", $k, $match))) {
-                  $foreigntypetxt = array_pop($match);
-                  if (substr($foreigntypetxt, 0, 1) !== '_') {
-                     $foreigntype = getItemTypeForTable("glpi_$foreigntypetxt");
-                  }
-               }
-               if ($foreigntype && isset($ids[$foreigntype][$v]) && !is_numeric($v)) {
-                  $input[$k] = $ids[$foreigntype][$v];
-               } else if ($k == 'items_id'  &&  isset( $input['itemtype'] ) && isset($ids[$input['itemtype']][$v]) && !is_numeric($v)) {
-                  $input[$k] = $ids[$input['itemtype']][$v];
-               } else if ($foreigntype && $foreigntype != 'UNKNOWN' && !is_numeric($v)) {
-                  // not found in ids array, then must get it from DB
-                  if ($obj = getItemByTypeName($foreigntype, $v)) {
-                     $input[$k] = $obj->getID();
-                  }
-               }
+        $ids = [];
+        foreach ($data as $type => $inputs) {
+            if ($type[0] == '_') {
+                continue;
             }
+            foreach ($inputs as $input) {
+               // Resolve FK
+                foreach ($input as $k => $v) {
+                    // $foreigntype = $type; // by default same type than current type (is the case of the dropdowns)
+                    $foreigntype = false;
+                    $match = [];
+                    if (isForeignKeyField($k) && (preg_match("/(.*s)_id$/", $k, $match) || preg_match("/(.*s)_id_/", $k, $match))) {
+                        $foreigntypetxt = array_pop($match);
+                        if (substr($foreigntypetxt, 0, 1) !== '_') {
+                            $foreigntype = getItemTypeForTable("glpi_$foreigntypetxt");
+                        }
+                    }
+                    if ($foreigntype && isset($ids[$foreigntype][$v]) && !is_numeric($v)) {
+                        $input[$k] = $ids[$foreigntype][$v];
+                    } else if ($k == 'items_id'  &&  isset($input['itemtype']) && isset($ids[$input['itemtype']][$v]) && !is_numeric($v)) {
+                        $input[$k] = $ids[$input['itemtype']][$v];
+                    } else if ($foreigntype && $foreigntype != 'UNKNOWN' && !is_numeric($v)) {
+                       // not found in ids array, then must get it from DB
+                        if ($obj = getItemByTypeName($foreigntype, $v)) {
+                            $input[$k] = $obj->getID();
+                        }
+                    }
+                }
 
-            if (isset($input['name']) && $item = getItemByTypeName($type, $input['name'])) {
-               $input['id'] = $ids[$type][$input['name']] = $item->getField('id');
-               $item->update($input);
-               echo ".";
-            } else {
-               // Not found, create it
-               $item = getItemForItemtype($type);
-               $id = $item->add($input);
-               echo "+";
-               if (isset($input['name'])) {
-                  $ids[$type][$input['name']] = $id;
-               }
+                if (isset($input['name']) && $item = getItemByTypeName($type, $input['name'])) {
+                    $input['id'] = $ids[$type][$input['name']] = $item->getField('id');
+                    $item->update($input);
+                    echo ".";
+                } else {
+                   // Not found, create it
+                    $item = getItemForItemtype($type);
+                    $id = $item->add($input);
+                    echo "+";
+                    if (isset($input['name'])) {
+                        $ids[$type][$input['name']] = $id;
+                    }
+                }
             }
-         }
-      }
-      Search::$search = [];
-      echo "\nDone\n\n";
-      Config::setConfigurationValues('phpunit', ['dataset' => $data['_version']]);
-   }
-   $DB->commit();
+        }
+        Search::$search = [];
+        echo "\nDone\n\n";
+        Config::setConfigurationValues('phpunit', ['dataset' => $data['_version']]);
+    }
+    $DB->commit();
 
-   $_SESSION = $session_bak; // Unset force session variables
+    $_SESSION = $session_bak; // Unset force session variables
 
    // Ensure cache is clear after dataset reload
-   global $GLPI_CACHE;
-   $GLPI_CACHE->clear();
+    global $GLPI_CACHE;
+    $GLPI_CACHE->clear();
 }
 
 /**
@@ -760,14 +762,15 @@ function loadDataset() {
  * @param boolean $onlyid
  * @return CommonDBTM|false the item, or its id
  */
-function getItemByTypeName($type, $name, $onlyid = false) {
+function getItemByTypeName($type, $name, $onlyid = false)
+{
 
-   $item = getItemForItemtype($type);
-   $nameField = $type::getNameField();
-   if ($item->getFromDBByCrit([$nameField => $name])) {
-      return ($onlyid ? $item->getField('id') : $item);
-   }
-   return false;
+    $item = getItemForItemtype($type);
+    $nameField = $type::getNameField();
+    if ($item->getFromDBByCrit([$nameField => $name])) {
+        return ($onlyid ? $item->getField('id') : $item);
+    }
+    return false;
 }
 
 loadDataset();

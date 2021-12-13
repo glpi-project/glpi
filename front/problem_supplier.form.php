@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,7 +38,7 @@
 use Glpi\Event;
 
 if (!defined('GLPI_ROOT')) {
-   include ('../inc/includes.php');
+    include('../inc/includes.php');
 }
 
 $link = new Problem_Supplier();
@@ -46,26 +47,29 @@ Session ::checkLoginUser();
 Html::popHeader(__('Email followup'), $_SERVER['PHP_SELF']);
 
 if (isset($_POST["update"])) {
-   $link->check($_POST["id"], UPDATE);
+    $link->check($_POST["id"], UPDATE);
 
-   $link->update($_POST);
-   echo "<script type='text/javascript' >\n";
-   echo "window.parent.location.reload();";
-   echo "</script>";
-
+    $link->update($_POST);
+    echo "<script type='text/javascript' >\n";
+    echo "window.parent.location.reload();";
+    echo "</script>";
 } else if (isset($_POST['delete'])) {
-   $link->check($_POST['id'], DELETE);
-   $link->delete($_POST);
+    $link->check($_POST['id'], DELETE);
+    $link->delete($_POST);
 
-   Event::log($link->fields['problems_id'], "problem", 4, "maintain",
-              //TRANS: %s is the user login
-              sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
-   Html::redirect(Problem::getFormURLWithID($link->fields['problems_id']));
-
+    Event::log(
+        $link->fields['problems_id'],
+        "problem",
+        4,
+        "maintain",
+        //TRANS: %s is the user login
+        sprintf(__('%s deletes an actor'), $_SESSION["glpiname"])
+    );
+    Html::redirect(Problem::getFormURLWithID($link->fields['problems_id']));
 } else if (isset($_GET["id"])) {
-   $link->showSupplierNotificationForm($_GET["id"]);
+    $link->showSupplierNotificationForm($_GET["id"]);
 } else {
-   Html::displayErrorAndDie('Lost');
+    Html::displayErrorAndDie('Lost');
 }
 
 Html::popFooter();

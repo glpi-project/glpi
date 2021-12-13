@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,21 +33,25 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkLoginUser();
 
 $item = new Change_Problem();
 if (isset($_POST["add"])) {
-   $item->check(-1, CREATE, $_POST);
+    $item->check(-1, CREATE, $_POST);
 
-   if ($item->add($_POST)) {
-      Event::log($_POST["changes_id"], "change", 4, "maintain",
-                  //TRANS: %s is the user login
-                  sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
+    if ($item->add($_POST)) {
+        Event::log(
+            $_POST["changes_id"],
+            "change",
+            4,
+            "maintain",
+            //TRANS: %s is the user login
+            sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"])
+        );
+    }
+    Html::back();
 }
 
 Html::displayErrorAndDie("lost");

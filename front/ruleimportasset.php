@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,8 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 $rulecollection = new RuleImportAssetCollection();
 
-include (GLPI_ROOT . "/front/rule.common.php");
+include(GLPI_ROOT . "/front/rule.common.php");

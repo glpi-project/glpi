@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,45 +37,49 @@ use DbTestCase;
 
 /* Test for inc/dashboard/provider.class.php */
 
-class Provider extends DbTestCase {
+class Provider extends DbTestCase
+{
 
-   public function itemProvider() {
-      return [
-         ['item' => new \Computer],
-         ['item' => new \Ticket],
-      ];
-   }
+    public function itemProvider()
+    {
+        return [
+         ['item' => new \Computer()],
+         ['item' => new \Ticket()],
+        ];
+    }
 
    /**
     * @dataProvider itemProvider
     */
-   public function testBigNumber(\CommonDBTM $item) {
-      $this->login();
+    public function testBigNumber(\CommonDBTM $item)
+    {
+        $this->login();
 
-      $itemtype = $item->getType();
-      $data = [
+        $itemtype = $item->getType();
+        $data = [
          \Glpi\Dashboard\Provider::bigNumberItem($item),
          call_user_func(['\\Glpi\\Dashboard\\Provider', "bigNumber$itemtype"])
-      ];
+        ];
 
-      foreach ($data as $result) {
-         $this->array($result)
+        foreach ($data as $result) {
+            $this->array($result)
             ->hasKeys([
                'number',
                'url',
                'label',
                'icon',
             ]);
-         $this->integer($result['number'])->isGreaterThan(0);
-         $this->string($result['url'])->contains($item::getSearchURL());
-         $this->string($result['label'])->isNotEmpty();
-         $this->string($result['icon'])->isEqualTo($item::getIcon());
-      }
-   }
+            $this->integer($result['number'])->isGreaterThan(0);
+            $this->string($result['url'])->contains($item::getSearchURL());
+            $this->string($result['label'])->isNotEmpty();
+            $this->string($result['icon'])->isEqualTo($item::getIcon());
+        }
+    }
 
 
-   public function ticketsCaseProvider() {
-      return [
+    public function ticketsCaseProvider()
+    {
+        return [
          ['case' => 'notold'],
          ['case' => 'late'],
          ['case' => 'waiting_validation'],
@@ -85,17 +90,18 @@ class Provider extends DbTestCase {
          ['case' => 'solved'],
          ['case' => 'closed'],
          ['case' => 'status'],
-      ];
-   }
+        ];
+    }
 
 
    /**
     * @dataProvider ticketsCaseProvider
     */
-   public function testNbTicketsGeneric(string $case) {
-      $result = \Glpi\Dashboard\Provider::nbTicketsGeneric($case);
+    public function testNbTicketsGeneric(string $case)
+    {
+        $result = \Glpi\Dashboard\Provider::nbTicketsGeneric($case);
 
-      $this->array($result)
+        $this->array($result)
          ->hasKeys([
             'number',
             'url',
@@ -104,55 +110,58 @@ class Provider extends DbTestCase {
             's_criteria',
             'itemtype',
          ]);
-      $this->integer($result['number']);
-      $this->string($result['url'])->contains(\Ticket::getSearchURL());
-      $this->string($result['icon']);
-      $this->string($result['label']);
-      $this->array($result['s_criteria'])->size->isGreaterThan(0);
-      $this->string($result['itemtype'])->isEqualTo('Ticket');
-   }
+        $this->integer($result['number']);
+        $this->string($result['url'])->contains(\Ticket::getSearchURL());
+        $this->string($result['icon']);
+        $this->string($result['label']);
+        $this->array($result['s_criteria'])->size->isGreaterThan(0);
+        $this->string($result['itemtype'])->isEqualTo('Ticket');
+    }
 
 
-   public function itemFKProvider() {
-      return [
-         ['item' => new \Computer, 'fk_item' => new \Entity],
-         ['item' => new \Software, 'fk_item' => new \Entity],
-      ];
-   }
+    public function itemFKProvider()
+    {
+        return [
+         ['item' => new \Computer(), 'fk_item' => new \Entity()],
+         ['item' => new \Software(), 'fk_item' => new \Entity()],
+        ];
+    }
 
 
    /**
     * @dataProvider itemFKProvider
     */
-   public function testNbItemByFk(\CommonDBTM $item, \CommonDBTM $fk_item) {
-      $this->login();
+    public function testNbItemByFk(\CommonDBTM $item, \CommonDBTM $fk_item)
+    {
+        $this->login();
 
-      $result = \Glpi\Dashboard\Provider::nbItemByFk($item, $fk_item);
-      $this->array($result)
+        $result = \Glpi\Dashboard\Provider::nbItemByFk($item, $fk_item);
+        $this->array($result)
          ->hasKeys([
             'data',
             'label',
             'icon',
          ]);
 
-      foreach ($result['data'] as $data) {
-         $this->array($data)
+        foreach ($result['data'] as $data) {
+            $this->array($data)
             ->hasKeys([
                'number',
                'label',
                'url',
             ]);
 
-         $this->integer($data['number'])->isGreaterThan(0);
-         $this->string($data['label']);
-         $this->string($data['url'])->contains($item::getSearchURL());
-      }
-   }
+            $this->integer($data['number'])->isGreaterThan(0);
+            $this->string($data['label']);
+            $this->string($data['url'])->contains($item::getSearchURL());
+        }
+    }
 
 
-   public function testTicketsOpened() {
-      $result = \Glpi\Dashboard\Provider::ticketsOpened();
-      $this->array($result)
+    public function testTicketsOpened()
+    {
+        $result = \Glpi\Dashboard\Provider::ticketsOpened();
+        $this->array($result)
          ->hasKeys([
             'data',
             'distributed',
@@ -160,113 +169,117 @@ class Provider extends DbTestCase {
             'icon',
          ]);
 
-      $this->boolean($result['distributed'])->isFalse();
-      $this->string($result['icon']);
-      $this->string($result['label']);
+        $this->boolean($result['distributed'])->isFalse();
+        $this->string($result['icon']);
+        $this->string($result['label']);
 
-      foreach ($result['data'] as $data) {
-         $this->array($data)
+        foreach ($result['data'] as $data) {
+            $this->array($data)
             ->hasKeys([
                'number',
                'label',
                'url',
             ]);
 
-         $this->integer($data['number'])->isGreaterThan(0);
-         $this->string($data['label']);
-         $this->string($data['url'])->contains(\Ticket::getSearchURL());
-      }
-   }
+            $this->integer($data['number'])->isGreaterThan(0);
+            $this->string($data['label']);
+            $this->string($data['url'])->contains(\Ticket::getSearchURL());
+        }
+    }
 
 
-   public function testGetTicketsEvolution() {
-      $result = \Glpi\Dashboard\Provider::getTicketsEvolution();
-      $this->array($result)
+    public function testGetTicketsEvolution()
+    {
+        $result = \Glpi\Dashboard\Provider::getTicketsEvolution();
+        $this->array($result)
          ->hasKeys([
             'data',
             'label',
             'icon',
          ]);
 
-      $this->string($result['icon']);
-      $this->string($result['label']);
-      $this->array($result['data'])->hasKeys(['labels', 'series']);
-      $this->array($result['data']['labels'])->isNotEmpty();
-      $this->array($result['data']['series'])->isNotEmpty();
+        $this->string($result['icon']);
+        $this->string($result['label']);
+        $this->array($result['data'])->hasKeys(['labels', 'series']);
+        $this->array($result['data']['labels'])->isNotEmpty();
+        $this->array($result['data']['series'])->isNotEmpty();
 
-      $nb_labels = count($result['data']['labels']);
-      foreach ($result['data']['series'] as $serie) {
-         $this->array($serie)->hasKey('data');
-         $this->integer(count($serie['data']))->isEqualTo($nb_labels);
+        $nb_labels = count($result['data']['labels']);
+        foreach ($result['data']['series'] as $serie) {
+            $this->array($serie)->hasKey('data');
+            $this->integer(count($serie['data']))->isEqualTo($nb_labels);
 
-         foreach ($serie['data'] as $serie_data) {
-            $this->integer($serie_data['value']);
-            $this->string($serie_data['url'])->contains(\Ticket::getSearchURL());
-         }
-      }
-   }
+            foreach ($serie['data'] as $serie_data) {
+                $this->integer($serie_data['value']);
+                $this->string($serie_data['url'])->contains(\Ticket::getSearchURL());
+            }
+        }
+    }
 
 
-   public function testGetTicketsStatus() {
-      $this->login();
+    public function testGetTicketsStatus()
+    {
+        $this->login();
 
-      $result = \Glpi\Dashboard\Provider::getTicketsStatus();
-      $this->array($result)
+        $result = \Glpi\Dashboard\Provider::getTicketsStatus();
+        $this->array($result)
          ->hasKeys([
             'data',
             'label',
             'icon',
          ]);
 
-      $this->string($result['icon']);
-      $this->string($result['label']);
-      $this->array($result['data'])->hasKeys(['labels', 'series']);
-      $this->array($result['data']['labels'])->isNotEmpty();
-      $this->array($result['data']['series'])->isNotEmpty();
+        $this->string($result['icon']);
+        $this->string($result['label']);
+        $this->array($result['data'])->hasKeys(['labels', 'series']);
+        $this->array($result['data']['labels'])->isNotEmpty();
+        $this->array($result['data']['series'])->isNotEmpty();
 
-      $nb_labels = count($result['data']['labels']);
-      foreach ($result['data']['series'] as $serie) {
-         $this->array($serie)->hasKey('data');
-         $this->integer(count($serie['data']))->isEqualTo($nb_labels);
+        $nb_labels = count($result['data']['labels']);
+        foreach ($result['data']['series'] as $serie) {
+            $this->array($serie)->hasKey('data');
+            $this->integer(count($serie['data']))->isEqualTo($nb_labels);
 
-         foreach ($serie['data'] as $serie_data) {
-            $this->integer($serie_data['value']);
-            $this->string($serie_data['url'])->contains(\Ticket::getSearchURL());
-         }
-      }
-   }
+            foreach ($serie['data'] as $serie_data) {
+                $this->integer($serie_data['value']);
+                $this->string($serie_data['url'])->contains(\Ticket::getSearchURL());
+            }
+        }
+    }
 
 
-   public function testTopTicketsCategories() {
-      $this->login();
+    public function testTopTicketsCategories()
+    {
+        $this->login();
 
-      $result = \Glpi\Dashboard\Provider::multipleNumberTicketByITILCategory();
-      $this->array($result)
+        $result = \Glpi\Dashboard\Provider::multipleNumberTicketByITILCategory();
+        $this->array($result)
          ->hasKeys([
             'data',
             'label',
             'icon',
          ]);
 
-      $this->string($result['icon']);
-      $this->string($result['label']);
+        $this->string($result['icon']);
+        $this->string($result['label']);
 
-      foreach ($result['data'] as $data) {
-         $this->array($data)
+        foreach ($result['data'] as $data) {
+            $this->array($data)
             ->hasKeys([
                'number',
                'label',
                'url',
             ]);
 
-         $this->integer($data['number'])->isGreaterThan(0);
-         $this->string($data['label']);
-         $this->string($data['url'])->contains(\Ticket::getSearchURL());
-      }
-   }
+            $this->integer($data['number'])->isGreaterThan(0);
+            $this->string($data['label']);
+            $this->string($data['url'])->contains(\Ticket::getSearchURL());
+        }
+    }
 
-   public function monthYearProvider() {
-      return [
+    public function monthYearProvider()
+    {
+        return [
          [
             'monthyear' => '2019-01',
             'expected'  => [
@@ -280,15 +293,16 @@ class Provider extends DbTestCase {
                '2020-01-01 00:00:00'
             ]
          ]
-      ];
-   }
+        ];
+    }
 
 
    /**
     * @dataProvider monthYearProvider
     */
-   public function testFormatMonthyearDates(string $monthyear, array $expected) {
-      $this->array(\Glpi\Dashboard\Provider::formatMonthyearDates($monthyear))
+    public function testFormatMonthyearDates(string $monthyear, array $expected)
+    {
+        $this->array(\Glpi\Dashboard\Provider::formatMonthyearDates($monthyear))
          ->isEqualTo($expected);
-   }
+    }
 }

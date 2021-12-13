@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,34 +37,35 @@ define('DO_NOT_CHECK_HTTP_REFERER', 1);
 chdir(__DIR__);
 
 if (isset($_SERVER['argv'])) {
-   for ($i=1; $i<$_SERVER['argc']; $i++) {
-      $it = explode("=", $_SERVER['argv'][$i], 2);
-      $it[0] = preg_replace('/^--/', '', $it[0]);
+    for ($i = 1; $i < $_SERVER['argc']; $i++) {
+        $it = explode("=", $_SERVER['argv'][$i], 2);
+        $it[0] = preg_replace('/^--/', '', $it[0]);
 
-      $_GET[$it[0]] = (isset($it[1]) ? $it[1] : true);
-   }
+        $_GET[$it[0]] = (isset($it[1]) ? $it[1] : true);
+    }
 }
 
-function help () {
-   echo "\nUsage : php getsearchoptions.php --type=<itemtype> [ --lang=<locale> ]\n\n";
+function help()
+{
+    echo "\nUsage : php getsearchoptions.php --type=<itemtype> [ --lang=<locale> ]\n\n";
 }
 
 if (isset($_GET['help'])) {
-   help();
-   exit (0);
+    help();
+    exit(0);
 }
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 if (!isset($_GET['type'])) {
-   help();
-   die("** mandatory option 'type' is missing\n");
+    help();
+    die("** mandatory option 'type' is missing\n");
 }
 if (!class_exists($_GET['type'])) {
-   die("** unknown type\n");
+    die("** unknown type\n");
 }
 if (isset($_GET['lang'])) {
-   Session::loadLanguage($_GET['lang']);
+    Session::loadLanguage($_GET['lang']);
 }
 
 $opts = &Search::getOptions($_GET['type']);
@@ -71,18 +73,18 @@ $sort = [];
 $group = 'N/A';
 
 foreach ($opts as $ref => $opt) {
-   if (isset($opt['field'])) {
-      $sort[$ref] = $group . " / " . $opt['name'];
-   } else {
-      if (is_array($opt)) {
-         $group = $opt['name'];
-      } else {
-         $group = $opt;
-      }
-   }
+    if (isset($opt['field'])) {
+        $sort[$ref] = $group . " / " . $opt['name'];
+    } else {
+        if (is_array($opt)) {
+            $group = $opt['name'];
+        } else {
+            $group = $opt;
+        }
+    }
 }
 ksort($sort);
 if (!isCommandLine()) {
-   header("Content-type: text/plain");
+    header("Content-type: text/plain");
 }
 print_r($sort);

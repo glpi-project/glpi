@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,7 +34,7 @@
 use Glpi\Inventory\Request;
 
 if (!defined('GLPI_ROOT')) {
-   include ('../inc/includes.php');
+    include('../inc/includes.php');
 }
 
 $inventory_request = new Request();
@@ -41,32 +42,32 @@ $inventory_request->handleHeaders();
 
 $handle = true;
 if (isset($_GET['refused'])) {
-   $refused = new RefusedEquipment();
-   $refused->getFromDB($_GET['refused']);
-   $contents = file_get_contents($refused->getInventoryFileName());
+    $refused = new RefusedEquipment();
+    $refused->getFromDB($_GET['refused']);
+    $contents = file_get_contents($refused->getInventoryFileName());
 } else if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-   $inventory_request->addError('Method not allowed');
-   $handle = false;
+    $inventory_request->addError('Method not allowed');
+    $handle = false;
 } else {
-   $contents = file_get_contents("php://input");
+    $contents = file_get_contents("php://input");
 }
 
 if ($handle === true) {
-   try {
-      $inventory_request->handleRequest($contents);
-   } catch (\Exception $e) {
-      $inventory_request->addError($e->getMessage());
-   }
+    try {
+        $inventory_request->handleRequest($contents);
+    } catch (\Exception $e) {
+        $inventory_request->addError($e->getMessage());
+    }
 }
 
 if (isset($_GET['refused'])) {
-   $redirect_url = $refused->handleInventoryRequest($inventory_request);
-   Html::redirect($redirect_url);
+    $redirect_url = $refused->handleInventoryRequest($inventory_request);
+    Html::redirect($redirect_url);
 } else {
-   $headers = $inventory_request->getHeaders(true);
-   http_response_code($inventory_request->getHttpResponseCode());
-   foreach ($headers as $key => $value) {
-      header(sprintf('%1$s: %2$s', $key, $value));
-   }
-   echo $inventory_request->getResponse();
+    $headers = $inventory_request->getHeaders(true);
+    http_response_code($inventory_request->getHttpResponseCode());
+    foreach ($headers as $key => $value) {
+        header(sprintf('%1$s: %2$s', $key, $value));
+    }
+    echo $inventory_request->getResponse();
 }

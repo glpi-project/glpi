@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,25 +35,26 @@ namespace tests\units\Glpi\ContentTemplates\Parameters;
 
 class KnowbaseItemParameters extends AbstractParameters
 {
-   public function testGetValues(): void {
-      $this->login();
+    public function testGetValues(): void
+    {
+        $this->login();
 
-      $this->createItem('KnowbaseItem', [
+        $this->createItem('KnowbaseItem', [
          'name'        => 'kbi_testGetValues',
          'answer'      => "test answer' \"testGetValues",
-      ]);
+        ]);
 
-      $kbi_id = getItemByTypeName('KnowbaseItem', 'kbi_testGetValues', true);
+        $kbi_id = getItemByTypeName('KnowbaseItem', 'kbi_testGetValues', true);
 
-      $parameters = $this->newTestedInstance();
-      $values = $parameters->getValues(getItemByTypeName('KnowbaseItem', 'kbi_testGetValues'));
-      $this->array($values)->isEqualTo([
+        $parameters = $this->newTestedInstance();
+        $values = $parameters->getValues(getItemByTypeName('KnowbaseItem', 'kbi_testGetValues'));
+        $this->array($values)->isEqualTo([
          'id'     => $kbi_id,
          'name'   => 'kbi_testGetValues',
          'answer' => "test answer' \"testGetValues",
          'link'   => "<a  href='/glpi/front/knowbaseitem.form.php?id=$kbi_id'  title=\"kbi_testGetValues\">kbi_testGetValues</a>",
-      ]);
+        ]);
 
-      $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
-   }
+        $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
+    }
 }

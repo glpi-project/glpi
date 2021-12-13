@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,38 +31,40 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkCentralAccess();
 Html::header(__('Search'), $_SERVER['PHP_SELF']);
 
 if (!$CFG_GLPI['allow_search_global']) {
-   Html::displayRightError();
+    Html::displayRightError();
 }
 if (isset($_GET["globalsearch"])) {
-   $searchtext=trim($_GET["globalsearch"]);
+    $searchtext = trim($_GET["globalsearch"]);
 
-   echo "<div class='search_page flex-row flex-wrap'>";
-   foreach ($CFG_GLPI["globalsearch_types"] as $itemtype) {
-      if (($item = getItemForItemtype($itemtype))
-          && $item->canView()) {
-         $_GET["reset"]        = 'reset';
+    echo "<div class='search_page flex-row flex-wrap'>";
+    foreach ($CFG_GLPI["globalsearch_types"] as $itemtype) {
+        if (
+            ($item = getItemForItemtype($itemtype))
+            && $item->canView()
+        ) {
+            $_GET["reset"]        = 'reset';
 
-         $params                 = Search::manageParams($itemtype, $_GET, false, true);
-         $params["display_type"] = Search::GLOBAL_SEARCH;
+            $params                 = Search::manageParams($itemtype, $_GET, false, true);
+            $params["display_type"] = Search::GLOBAL_SEARCH;
 
-         $count                  = count($params["criteria"]);
+            $count                  = count($params["criteria"]);
 
-         $params["criteria"][$count]["field"]       = 'view';
-         $params["criteria"][$count]["searchtype"]  = 'contains';
-         $params["criteria"][$count]["value"]       = $searchtext;
+            $params["criteria"][$count]["field"]       = 'view';
+            $params["criteria"][$count]["searchtype"]  = 'contains';
+            $params["criteria"][$count]["value"]       = $searchtext;
 
-         echo "<div class='my-4 search-container w-100 disable-overflow-y'>";
-         Search::showList($itemtype, $params);
-         echo "</div>";
-      }
-   }
-   echo "</div>";
+            echo "<div class='my-4 search-container w-100 disable-overflow-y'>";
+            Search::showList($itemtype, $params);
+            echo "</div>";
+        }
+    }
+    echo "</div>";
 }
 
 Html::footer();

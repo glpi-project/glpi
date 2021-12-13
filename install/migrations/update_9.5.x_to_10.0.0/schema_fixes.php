@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -29,6 +30,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
 /**
  * @var DB $DB
  * @var Migration $migration
@@ -50,7 +52,7 @@ $tables = [
    'glpi_virtualmachinetypes',
 ];
 foreach ($tables as $table) {
-   $migration->changeField($table, 'comment', 'comment', 'text');
+    $migration->changeField($table, 'comment', 'comment', 'text');
 }
 
 // Add `DEFAULT CURRENT_TIMESTAMP` to some date fields
@@ -60,17 +62,17 @@ $tables = [
    'glpi_notimportedemails',
 ];
 foreach ($tables as $table) {
-   $migration->changeField($table, 'date', 'date', 'timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP');
+    $migration->changeField($table, 'date', 'date', 'timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP');
 }
 
 // Fix charset for glpi_notimportedemails table
 $migration->addPreQuery(
-   sprintf(
-      'ALTER TABLE %s CONVERT TO CHARACTER SET %s COLLATE %s',
-      $DB->quoteName('glpi_notimportedemails'),
-      DBConnection::getDefaultCharset(),
-      DBConnection::getDefaultCollation()
-   )
+    sprintf(
+        'ALTER TABLE %s CONVERT TO CHARACTER SET %s COLLATE %s',
+        $DB->quoteName('glpi_notimportedemails'),
+        DBConnection::getDefaultCharset(),
+        DBConnection::getDefaultCollation()
+    )
 );
 // Put back `subject` type to text (charset convertion changed it from text to mediumtext)
 $migration->changeField('glpi_notimportedemails', 'subject', 'subject', 'text', ['nodefault' => true]);
@@ -89,10 +91,10 @@ $malformed_keys = [
    ],
 ];
 foreach ($malformed_keys as $table => $keys) {
-   foreach ($keys as $key) {
-      $migration->dropKey($table, $key);
-      $migration->migrationOneTable($table);
-   }
+    foreach ($keys as $key) {
+        $migration->dropKey($table, $key);
+        $migration->migrationOneTable($table);
+    }
 }
 
 // Drop useless keys
@@ -247,10 +249,10 @@ $useless_keys = [
    ],
 ];
 foreach ($useless_keys as $table => $keys) {
-   foreach ($keys as $key) {
-      $migration->dropKey($table, $key);
-      $migration->migrationOneTable($table);
-   }
+    foreach ($keys as $key) {
+        $migration->dropKey($table, $key);
+        $migration->migrationOneTable($table);
+    }
 }
 
 // Add missing keys (based on glpi:tools:check_database_keys detection)
@@ -667,9 +669,9 @@ $missing_keys = [
    ],
 ];
 foreach ($missing_keys as $table => $fields) {
-   foreach ($fields as $key => $field) {
-      $migration->addKey($table, $field, is_numeric($key) ? '' : $key);
-   }
+    foreach ($fields as $key => $field) {
+        $migration->addKey($table, $field, is_numeric($key) ? '' : $key);
+    }
 }
 
 // Add missing `date_creation` field on tables that already have `date_mod` field
@@ -680,8 +682,8 @@ $tables = [
    'glpi_transfers',
 ];
 foreach ($tables as $table) {
-   $migration->addField($table, 'date_creation', 'timestamp');
-   $migration->addKey($table, 'date_creation');
+    $migration->addField($table, 'date_creation', 'timestamp');
+    $migration->addKey($table, 'date_creation');
 }
 
 // Add missing `date_mod` field on tables that already have `date_creation` field
@@ -689,8 +691,8 @@ $tables = [
    'glpi_lockedfields',
 ];
 foreach ($tables as $table) {
-   $migration->addField($table, 'date_mod', 'timestamp');
-   $migration->addKey($table, 'date_mod');
+    $migration->addField($table, 'date_mod', 'timestamp');
+    $migration->addKey($table, 'date_mod');
 }
 
 // Rename `date` fields to `date_creation` when value is just a DB insert timestamp
@@ -700,22 +702,22 @@ $tables = [
    'glpi_projecttasks',
 ];
 foreach ($tables as $table) {
-   if ($DB->fieldExists($table, 'date', false)) {
-      $migration->dropKey($table, 'date');
-      $migration->migrationOneTable($table);
-      $migration->changeField($table, 'date', 'date_creation', 'timestamp');
-      $migration->addKey($table, 'date_creation');
-   }
+    if ($DB->fieldExists($table, 'date', false)) {
+        $migration->dropKey($table, 'date');
+        $migration->migrationOneTable($table);
+        $migration->changeField($table, 'date', 'date_creation', 'timestamp');
+        $migration->addKey($table, 'date_creation');
+    }
 }
 $migration->changeSearchOption(KnowbaseItem::class, 5, 121);
 $migration->changeSearchOption(ProjectTask::class, 15, 121);
 
 // Rename `glpi_objectlocks` `date_mod` to `date`
 if ($DB->fieldExists('glpi_objectlocks', 'date_mod', false)) {
-   $migration->dropKey('glpi_objectlocks', 'date_mod');
-   $migration->migrationOneTable('glpi_objectlocks');
-   $migration->changeField('glpi_objectlocks', 'date_mod', 'date', 'timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP');
-   $migration->addKey('glpi_objectlocks', 'date');
+    $migration->dropKey('glpi_objectlocks', 'date_mod');
+    $migration->migrationOneTable('glpi_objectlocks');
+    $migration->changeField('glpi_objectlocks', 'date_mod', 'date', 'timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP');
+    $migration->addKey('glpi_objectlocks', 'date');
 }
 
 // Rename `date_creation` to `date` when field refers to a valuable date and not just to db insert timestamps
@@ -726,10 +728,10 @@ $tables = [
    'glpi_printerlogs',
 ];
 foreach ($tables as $table) {
-   if ($DB->fieldExists($table, 'date_creation', false)) {
-      $migration->dropKey($table, 'date_creation');
-      $migration->migrationOneTable($table);
-      $migration->changeField($table, 'date_creation', 'date', 'timestamp');
-      $migration->addKey($table, 'date');
-   }
+    if ($DB->fieldExists($table, 'date_creation', false)) {
+        $migration->dropKey($table, 'date_creation');
+        $migration->migrationOneTable($table);
+        $migration->changeField($table, 'date_creation', 'date', 'timestamp');
+        $migration->addKey($table, 'date');
+    }
 }

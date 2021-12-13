@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,15 +31,16 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleDictionnaryPeripheralModelCollection extends RuleDictionnaryDropdownCollection {
-   public $item_table  = "glpi_peripheralmodels";
-   public $menu_option = "model.peripheral";
+class RuleDictionnaryPeripheralModelCollection extends RuleDictionnaryDropdownCollection
+{
+    public $item_table  = "glpi_peripheralmodels";
+    public $menu_option = "model.peripheral";
 
    /**
     * @see RuleCollection::getTitle()
    **/
-   function getTitle() {
-      return __('Dictionnary of device models');
-   }
-
+    public function getTitle()
+    {
+        return __('Dictionnary of device models');
+    }
 }

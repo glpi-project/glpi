@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -29,6 +30,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
 /**
  * @var DB $DB
  * @var Migration $migration
@@ -41,25 +43,25 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 
 if (!$DB->tableExists('glpi_agenttypes')) {
-   $query = "CREATE TABLE `glpi_agenttypes` (
+    $query = "CREATE TABLE `glpi_agenttypes` (
          `id` int NOT NULL AUTO_INCREMENT,
          `name` varchar(255) DEFAULT NULL,
          PRIMARY KEY (`id`),
          KEY `name` (`name`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_agenttypes");
-   $migration->addPostQuery(
-      $DB->buildInsert(
-         "glpi_agenttypes",
-         [
+    $DB->queryOrDie($query, "10.0 add table glpi_agenttypes");
+    $migration->addPostQuery(
+        $DB->buildInsert(
+            "glpi_agenttypes",
+            [
             'id'           => 1,
             'name'         => 'Core',
-         ]
-      )
-   );
+            ]
+        )
+    );
 }
 if (!$DB->tableExists('glpi_agents')) {
-   $query = "CREATE TABLE `glpi_agents` (
+    $query = "CREATE TABLE `glpi_agents` (
          `id` int NOT NULL AUTO_INCREMENT,
          `deviceid` VARCHAR(255) NOT NULL,
          `entities_id` int NOT NULL DEFAULT '0',
@@ -87,48 +89,52 @@ if (!$DB->tableExists('glpi_agents')) {
          KEY `agenttypes_id` (`agenttypes_id`),
          CONSTRAINT `agenttypes_id` FOREIGN KEY (`agenttypes_id`) REFERENCES `glpi_agenttypes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_agents");
+    $DB->queryOrDie($query, "10.0 add table glpi_agents");
 } else {
-   $migration->dropKey('glpi_agents', 'items_id');
-   $migration->dropKey('glpi_agents', 'itemtype');
-   $migration->migrationOneTable('glpi_agents');
-   $migration->addKey('glpi_agents', 'agenttypes_id');
-   $migration->addKey('glpi_agents', 'entities_id');
-   $migration->addKey('glpi_agents', 'is_recursive');
-   $migration->addKey('glpi_agents', ['itemtype', 'items_id'], 'item');
-   $migration->addField(
-      'glpi_agents',
-      'threads_networkdiscovery',
-      'int NOT NULL DEFAULT 1', [
+    $migration->dropKey('glpi_agents', 'items_id');
+    $migration->dropKey('glpi_agents', 'itemtype');
+    $migration->migrationOneTable('glpi_agents');
+    $migration->addKey('glpi_agents', 'agenttypes_id');
+    $migration->addKey('glpi_agents', 'entities_id');
+    $migration->addKey('glpi_agents', 'is_recursive');
+    $migration->addKey('glpi_agents', ['itemtype', 'items_id'], 'item');
+    $migration->addField(
+        'glpi_agents',
+        'threads_networkdiscovery',
+        'int NOT NULL DEFAULT 1',
+        [
          'comment' => 'Number of threads for Network Discovery'
-      ]
-   );
-   $migration->addField(
-      'glpi_agents',
-      'threads_networkinventory',
-      "int NOT NULL DEFAULT '1'", [
+        ]
+    );
+    $migration->addField(
+        'glpi_agents',
+        'threads_networkinventory',
+        "int NOT NULL DEFAULT '1'",
+        [
          'comment' => 'Number of threads for Network Inventory'
-      ]
-   );
-   $migration->addField(
-      'glpi_agents',
-      'timeout_networkdiscovery',
-      "int NOT NULL DEFAULT '0'", [
+        ]
+    );
+    $migration->addField(
+        'glpi_agents',
+        'timeout_networkdiscovery',
+        "int NOT NULL DEFAULT '0'",
+        [
          'comment' => 'Network Discovery task timeout (disabled by default)'
-      ]
-   );
-   $migration->addField(
-      'glpi_agents',
-      'timeout_networkinventory',
-      "int NOT NULL DEFAULT '0'", [
+        ]
+    );
+    $migration->addField(
+        'glpi_agents',
+        'timeout_networkinventory',
+        "int NOT NULL DEFAULT '0'",
+        [
          'comment' => 'Network Inventory task timeout (disabled by default)'
-      ]
-   );
+        ]
+    );
 }
 $ADDTODISPLAYPREF['Agent'] = [2, 4, 10, 8, 11, 6];
 
 if (!$DB->tableExists('glpi_rulematchedlogs')) {
-   $query = "CREATE TABLE `glpi_rulematchedlogs` (
+    $query = "CREATE TABLE `glpi_rulematchedlogs` (
          `id` int NOT NULL AUTO_INCREMENT,
          `date` timestamp NULL DEFAULT NULL,
          `items_id` int NOT NULL DEFAULT '0',
@@ -141,10 +147,10 @@ if (!$DB->tableExists('glpi_rulematchedlogs')) {
          KEY `agents_id` (`agents_id`),
          KEY `rules_id` (`rules_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_rulematchedlogs");
+    $DB->queryOrDie($query, "10.0 add table glpi_rulematchedlogs");
 } else {
-   $migration->addKey('glpi_rulematchedlogs', 'agents_id');
-   $migration->addKey('glpi_rulematchedlogs', 'rules_id');
+    $migration->addKey('glpi_rulematchedlogs', 'agents_id');
+    $migration->addKey('glpi_rulematchedlogs', 'rules_id');
 }
 
 
@@ -155,7 +161,7 @@ if (countElementsInTable(Rule::getTable(), ['sub_type' => 'RuleImportAsset']) ==
 
 //locked fields
 if (!$DB->tableExists('glpi_lockedfields')) {
-   $query = "CREATE TABLE `glpi_lockedfields` (
+    $query = "CREATE TABLE `glpi_lockedfields` (
          `id` int NOT NULL AUTO_INCREMENT,
          `itemtype` varchar(100) DEFAULT NULL,
          `items_id` int NOT NULL DEFAULT '0',
@@ -166,109 +172,117 @@ if (!$DB->tableExists('glpi_lockedfields')) {
          UNIQUE KEY `unicity` (`itemtype`, `items_id`, `field`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_lockedfields");
+    $DB->queryOrDie($query, "10.0 add table glpi_lockedfields");
 } else {
-   $migration->dropKey('glpi_lockedfields', 'item');
-   $migration->migrationOneTable('glpi_lockedfields');
-   $migration->addField('glpi_lockedfields', 'value', 'string');
-   $migration->addKey('glpi_lockedfields', 'date_creation');
+    $migration->dropKey('glpi_lockedfields', 'item');
+    $migration->migrationOneTable('glpi_lockedfields');
+    $migration->addField('glpi_lockedfields', 'value', 'string');
+    $migration->addKey('glpi_lockedfields', 'date_creation');
 }
 $ADDTODISPLAYPREF['Lockedfield'] = [3, 13, 5];
 
 
 //transfer configuration per entity
 if (!$DB->fieldExists('glpi_entities', 'transfers_id')) {
-   $migration->addField(
-      'glpi_entities',
-      'transfers_id',
-      'int', [
+    $migration->addField(
+        'glpi_entities',
+        'transfers_id',
+        'int',
+        [
          'value' => -2,
-      ]
-   );
-   $migration->addKey('glpi_entities', 'transfers_id');
+        ]
+    );
+    $migration->addKey('glpi_entities', 'transfers_id');
 }
 
 //agent URL configuration per entity
 if (!$DB->fieldExists('glpi_entities', 'agent_base_url')) {
-   $migration->addField(
-      'glpi_entities',
-      'agent_base_url',
-      'string'
-   );
+    $migration->addField(
+        'glpi_entities',
+        'agent_base_url',
+        'string'
+    );
 }
 
 //missing fields in network related tables
 if (!$DB->fieldExists('glpi_networkequipments', 'autoupdatesystems_id')) {
-   $migration->addField(
-      'glpi_networkequipments',
-      'autoupdatesystems_id',
-      'int', [
+    $migration->addField(
+        'glpi_networkequipments',
+        'autoupdatesystems_id',
+        'int',
+        [
          'after' => 'date_creation',
-      ]
-   );
-   $migration->addKey('glpi_networkequipments', 'autoupdatesystems_id');
+        ]
+    );
+    $migration->addKey('glpi_networkequipments', 'autoupdatesystems_id');
 }
 
 if (!$DB->fieldExists('glpi_networkequipments', 'sysdescr')) {
-   $migration->addField(
-      'glpi_networkequipments',
-      'sysdescr',
-      'text', [
+    $migration->addField(
+        'glpi_networkequipments',
+        'sysdescr',
+        'text',
+        [
          'after' => 'autoupdatesystems_id',
-      ]
-   );
+        ]
+    );
 }
 
 if (!$DB->fieldExists('glpi_networkequipments', 'cpu')) {
-   $migration->addField(
-      'glpi_networkequipments',
-      'cpu',
-      'integer', [
+    $migration->addField(
+        'glpi_networkequipments',
+        'cpu',
+        'integer',
+        [
          'after' => 'sysdescr',
-      ]
-   );
+        ]
+    );
 }
 
 if (!$DB->fieldExists('glpi_networkequipments', 'uptime')) {
-   $migration->addField(
-      'glpi_networkequipments',
-      'uptime',
-      'string', [
+    $migration->addField(
+        'glpi_networkequipments',
+        'uptime',
+        'string',
+        [
          'after' => 'cpu',
          'value' => '0'
 
-      ]
-   );
+        ]
+    );
 }
 
 if (!$DB->fieldExists('glpi_networkequipments', 'last_inventory_update')) {
-   $migration->addField(
-      'glpi_networkequipments',
-      'last_inventory_update',
-      'timestamp', [
+    $migration->addField(
+        'glpi_networkequipments',
+        'last_inventory_update',
+        'timestamp',
+        [
          'after' => 'uptime',
-      ]
-   );
+        ]
+    );
 }
 
 if (!$DB->fieldExists('glpi_printers', 'sysdescr')) {
-   $migration->addField(
-      'glpi_printers',
-      'sysdescr',
-      'text', [
+    $migration->addField(
+        'glpi_printers',
+        'sysdescr',
+        'text',
+        [
          'after' => 'date_creation',
-      ]
-   );
+        ]
+    );
 }
 
 if (!$DB->fieldExists('glpi_printers', 'last_inventory_update')) {
-   $migration->addField(
-      'glpi_printers',
-      'last_inventory_update',
-      'timestamp', [
+    $migration->addField(
+        'glpi_printers',
+        'last_inventory_update',
+        'timestamp',
+        [
          'after' => 'sysdescr',
-      ]
-   );
+        ]
+    );
 }
 
 //new fields in networkports table
@@ -290,13 +304,13 @@ $netport_fields = [
    'lastup'             => "timestamp NULL DEFAULT NULL"
 ];
 foreach ($netport_fields as $netport_field => $definition) {
-   if (!$DB->fieldExists('glpi_networkports', $netport_field)) {
-      $migration->addField('glpi_networkports', $netport_field, $definition);
-   }
+    if (!$DB->fieldExists('glpi_networkports', $netport_field)) {
+        $migration->addField('glpi_networkports', $netport_field, $definition);
+    }
 }
 
 if (!$DB->tableExists('glpi_unmanageds')) {
-   $query = "CREATE TABLE `glpi_unmanageds` (
+    $query = "CREATE TABLE `glpi_unmanageds` (
          `id` int NOT NULL AUTO_INCREMENT,
          `entities_id` int NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -346,14 +360,14 @@ if (!$DB->tableExists('glpi_unmanageds')) {
          KEY `agents_id` (`agents_id`),
          KEY `snmpcredentials_id` (`snmpcredentials_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_unmanageds");
+    $DB->queryOrDie($query, "10.0 add table glpi_unmanageds");
 } else {
-   $migration->addKey('glpi_unmanageds', 'is_recursive');
+    $migration->addKey('glpi_unmanageds', 'is_recursive');
 }
 $ADDTODISPLAYPREF['Unmanaged'] = [2, 4, 3, 5, 7, 10, 18, 14, 15, 9];
 
 if (!$DB->tableExists('glpi_networkporttypes')) {
-   $query = "CREATE TABLE `glpi_networkporttypes` (
+    $query = "CREATE TABLE `glpi_networkporttypes` (
          `id` int NOT NULL AUTO_INCREMENT,
          `entities_id` int NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -373,54 +387,53 @@ if (!$DB->tableExists('glpi_networkporttypes')) {
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_networkporttypes");
+    $DB->queryOrDie($query, "10.0 add table glpi_networkporttypes");
 } else {
-   $migration->addKey('glpi_networkporttypes', 'is_recursive');
+    $migration->addKey('glpi_networkporttypes', 'is_recursive');
 }
 
 $ADDTODISPLAYPREF['NetworkPortType'] = [10, 11, 12];
 
 if (!$DB->tableExists('glpi_networkporttypes') || countElementsInTable(NetworkPortType::getTable()) === 0) {
+    if (!$DB->tableExists('glpi_networkporttypes')) {
+        $migration->migrationOneTable(NetworkPortType::getTable());
+    }
+    $default_types = NetworkPortType::getDefaults();
+    $reference = array_replace(
+        $default_types[0],
+        array_fill_keys(
+            array_keys($default_types[0]),
+            new QueryParam()
+        )
+    );
+    $stmt = $DB->prepare($DB->buildInsert(NetworkPortType::getTable(), $reference));
+    if (false === $stmt) {
+        $msg = "Error preparing statement in table " . NetworkPortType::getTable();
+        throw new \RuntimeException($msg);
+    }
 
-   if (!$DB->tableExists('glpi_networkporttypes')) {
-      $migration->migrationOneTable(NetworkPortType::getTable());
-   }
-   $default_types = NetworkPortType::getDefaults();
-   $reference = array_replace(
-      $default_types[0],
-      array_fill_keys(
-         array_keys($default_types[0]),
-         new QueryParam()
-      )
-   );
-   $stmt = $DB->prepare($DB->buildInsert(NetworkPortType::getTable(), $reference));
-   if (false === $stmt) {
-      $msg = "Error preparing statement in table " . NetworkPortType::getTable();
-      throw new \RuntimeException($msg);
-   }
-
-   $types = str_repeat('s', count($default_types[0]));
-   foreach ($default_types as $row) {
-      $res = $stmt->bind_param($types, ...array_values($row));
-      if (false === $res) {
-         $msg = "Error binding params in table " . NetworkPortType::getTable() ."\n";
-         $msg .= print_r($row, true);
-         throw new \RuntimeException($msg);
-      }
-      $res = $stmt->execute();
-      if (false === $res) {
-         $msg = $stmt->error;
-         $msg .= "\nError execution statement in table " . NetworkPortType::getTable(). "\n";
-         $msg .= print_r($row, true);
-         throw new \RuntimeException($msg);
-      }
-   }
+    $types = str_repeat('s', count($default_types[0]));
+    foreach ($default_types as $row) {
+        $res = $stmt->bind_param($types, ...array_values($row));
+        if (false === $res) {
+            $msg = "Error binding params in table " . NetworkPortType::getTable() . "\n";
+            $msg .= print_r($row, true);
+            throw new \RuntimeException($msg);
+        }
+        $res = $stmt->execute();
+        if (false === $res) {
+            $msg = $stmt->error;
+            $msg .= "\nError execution statement in table " . NetworkPortType::getTable() . "\n";
+            $msg .= print_r($row, true);
+            throw new \RuntimeException($msg);
+        }
+    }
 }
 
 $ADDTODISPLAYPREF['NetworkPort'] = [3, 30, 31, 32, 33, 34, 35, 36, 38, 39, 40];
 
 if (!$DB->tableExists('glpi_printers_cartridgeinfos')) {
-   $query = "CREATE TABLE `glpi_printers_cartridgeinfos` (
+    $query = "CREATE TABLE `glpi_printers_cartridgeinfos` (
          `id` int NOT NULL AUTO_INCREMENT,
          `printers_id` int NOT NULL,
          `property` varchar(255)  NOT NULL,
@@ -432,11 +445,11 @@ if (!$DB->tableExists('glpi_printers_cartridgeinfos')) {
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_printers_cartridgeinfos");
+    $DB->queryOrDie($query, "10.0 add table glpi_printers_cartridgeinfos");
 }
 
 if (!$DB->tableExists('glpi_printerlogs')) {
-   $query = "CREATE TABLE `glpi_printerlogs` (
+    $query = "CREATE TABLE `glpi_printerlogs` (
          `id` int NOT NULL AUTO_INCREMENT,
          `printers_id` int NOT NULL,
          `total_pages` int NOT NULL DEFAULT '0',
@@ -456,11 +469,11 @@ if (!$DB->tableExists('glpi_printerlogs')) {
          KEY `printers_id` (`printers_id`),
          KEY `date` (`date`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_printerlogs");
+    $DB->queryOrDie($query, "10.0 add table glpi_printerlogs");
 }
 
 if (!$DB->tableExists('glpi_networkportconnectionlogs')) {
-   $query = "CREATE TABLE `glpi_networkportconnectionlogs` (
+    $query = "CREATE TABLE `glpi_networkportconnectionlogs` (
          `id` int NOT NULL AUTO_INCREMENT,
          `date` timestamp NULL DEFAULT NULL,
          `connected` tinyint NOT NULL DEFAULT '0',
@@ -471,14 +484,14 @@ if (!$DB->tableExists('glpi_networkportconnectionlogs')) {
          KEY `networkports_id_destination` (`networkports_id_destination`),
          KEY `networkports_id_source` (`networkports_id_source`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_networkportconnectionlogs");
+    $DB->queryOrDie($query, "10.0 add table glpi_networkportconnectionlogs");
 } else {
-   $migration->addKey('glpi_networkportconnectionlogs', 'networkports_id_destination');
-   $migration->addKey('glpi_networkportconnectionlogs', 'networkports_id_source');
+    $migration->addKey('glpi_networkportconnectionlogs', 'networkports_id_destination');
+    $migration->addKey('glpi_networkportconnectionlogs', 'networkports_id_source');
 }
 
 if (!$DB->tableExists('glpi_networkportmetrics')) {
-   $query = "CREATE TABLE `glpi_networkportmetrics` (
+    $query = "CREATE TABLE `glpi_networkportmetrics` (
          `id` int NOT NULL AUTO_INCREMENT,
          `date` timestamp NULL DEFAULT NULL,
          `ifinbytes` bigint NOT NULL DEFAULT '0',
@@ -490,11 +503,11 @@ if (!$DB->tableExists('glpi_networkportmetrics')) {
          KEY `date` (`date`),
          KEY `networkports_id` (`networkports_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_networkportmetrics");
+    $DB->queryOrDie($query, "10.0 add table glpi_networkportmetrics");
 }
 
 if (!$DB->tableExists('glpi_refusedequipments')) {
-   $query = "CREATE TABLE `glpi_refusedequipments` (
+    $query = "CREATE TABLE `glpi_refusedequipments` (
          `id` int NOT NULL AUTO_INCREMENT,
          `name` varchar(255) DEFAULT NULL,
          `itemtype` varchar(100) DEFAULT NULL,
@@ -517,48 +530,49 @@ if (!$DB->tableExists('glpi_refusedequipments')) {
          KEY `date_creation` (`date_creation`),
          KEY `date_mod` (`date_mod`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_refusedequipments");
+    $DB->queryOrDie($query, "10.0 add table glpi_refusedequipments");
 } else {
-   $migration->addKey('glpi_refusedequipments', 'entities_id');
-   $migration->addKey('glpi_refusedequipments', 'agents_id');
-   $migration->addKey('glpi_refusedequipments', 'rules_id');
-   $migration->addKey('glpi_refusedequipments', 'date_creation');
-   $migration->addKey('glpi_refusedequipments', 'date_mod');
-   if (!$DB->fieldExists('glpi_refusedequipments', 'autoupdatesystems_id')) {
-      $migration->addField(
-         'glpi_networkequipments',
-         'autoupdatesystems_id',
-         'int', [
+    $migration->addKey('glpi_refusedequipments', 'entities_id');
+    $migration->addKey('glpi_refusedequipments', 'agents_id');
+    $migration->addKey('glpi_refusedequipments', 'rules_id');
+    $migration->addKey('glpi_refusedequipments', 'date_creation');
+    $migration->addKey('glpi_refusedequipments', 'date_mod');
+    if (!$DB->fieldExists('glpi_refusedequipments', 'autoupdatesystems_id')) {
+        $migration->addField(
+            'glpi_networkequipments',
+            'autoupdatesystems_id',
+            'int',
+            [
             'after' => 'agents_id'
-         ]
-      );
-   }
+            ]
+        );
+    }
 }
 
 $migration->addConfig(['purge_refusedequipment' => 0]);
 
 CronTask::Register(
-   'Glpi\Inventory\Inventory',
-   'cleantemp',
-   1 * DAY_TIMESTAMP,
-   [
+    'Glpi\Inventory\Inventory',
+    'cleantemp',
+    1 * DAY_TIMESTAMP,
+    [
       'mode'  => CronTask::MODE_EXTERNAL,
       'state' => CronTask::STATE_DISABLE
-   ]
+    ]
 );
 
 CronTask::Register(
-   'Glpi\Inventory\Inventory',
-   'cleanorphans',
-   7 * DAY_TIMESTAMP,
-   [
+    'Glpi\Inventory\Inventory',
+    'cleanorphans',
+    7 * DAY_TIMESTAMP,
+    [
       'mode'  => CronTask::MODE_EXTERNAL,
       'state' => CronTask::STATE_WAITING
-   ]
+    ]
 );
 
 if (!$DB->tableExists('glpi_usbvendors')) {
-   $query = "CREATE TABLE `glpi_usbvendors` (
+    $query = "CREATE TABLE `glpi_usbvendors` (
          `id` int NOT NULL AUTO_INCREMENT,
          `entities_id` int NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -577,16 +591,16 @@ if (!$DB->tableExists('glpi_usbvendors')) {
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_usbvendors");
+    $DB->queryOrDie($query, "10.0 add table glpi_usbvendors");
 } else {
-   $migration->dropKey('glpi_usbvendors', 'vendorid');
-   $migration->migrationOneTable('glpi_usbvendors');
-   $migration->addKey('glpi_usbvendors', 'is_recursive');
+    $migration->dropKey('glpi_usbvendors', 'vendorid');
+    $migration->migrationOneTable('glpi_usbvendors');
+    $migration->addKey('glpi_usbvendors', 'is_recursive');
 }
 $ADDTODISPLAYPREF['USBVendor'] = [10, 11];
 
 if (!$DB->tableExists('glpi_pcivendors')) {
-   $query = "CREATE TABLE `glpi_pcivendors` (
+    $query = "CREATE TABLE `glpi_pcivendors` (
          `id` int NOT NULL AUTO_INCREMENT,
          `entities_id` int NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -605,16 +619,16 @@ if (!$DB->tableExists('glpi_pcivendors')) {
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_pcivendors");
+    $DB->queryOrDie($query, "10.0 add table glpi_pcivendors");
 } else {
-   $migration->dropKey('glpi_pcivendors', 'vendorid');
-   $migration->migrationOneTable('glpi_pcivendors');
-   $migration->addKey('glpi_pcivendors', 'is_recursive');
+    $migration->dropKey('glpi_pcivendors', 'vendorid');
+    $migration->migrationOneTable('glpi_pcivendors');
+    $migration->addKey('glpi_pcivendors', 'is_recursive');
 }
 $ADDTODISPLAYPREF['PCIVendor'] = [10, 11];
 
 if (!$DB->tableExists('glpi_snmpcredentials')) {
-   $query = "CREATE TABLE `glpi_snmpcredentials` (
+    $query = "CREATE TABLE `glpi_snmpcredentials` (
          `id` int NOT NULL AUTO_INCREMENT,
          `name` varchar(64) DEFAULT NULL,
          `snmpversion` varchar(8) NOT NULL DEFAULT '1',
@@ -630,75 +644,77 @@ if (!$DB->tableExists('glpi_snmpcredentials')) {
          KEY `snmpversion` (`snmpversion`),
          KEY `is_deleted` (`is_deleted`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_snmpcredentials");
+    $DB->queryOrDie($query, "10.0 add table glpi_snmpcredentials");
 }
 
 $cred_tables = ['glpi_printers', 'glpi_networkequipments', 'glpi_unmanageds'];
 foreach ($cred_tables as $cred_table) {
-   if (!$DB->fieldExists($cred_table, 'snmpcredentials_id')) {
-      $migration->addField(
-         $cred_table,
-         'snmpcredentials_id',
-         'integer'
-      );
-      $migration->addKey($cred_table, 'snmpcredentials_id');
-   }
+    if (!$DB->fieldExists($cred_table, 'snmpcredentials_id')) {
+        $migration->addField(
+            $cred_table,
+            'snmpcredentials_id',
+            'integer'
+        );
+        $migration->addKey($cred_table, 'snmpcredentials_id');
+    }
 }
 
 if (!$DB->fieldExists('glpi_printers', 'autoupdatesystems_id')) {
-   $migration->addField(
-      'glpi_printers',
-      'autoupdatesystems_id',
-      'int', [
+    $migration->addField(
+        'glpi_printers',
+        'autoupdatesystems_id',
+        'int',
+        [
          'after' => 'snmpcredentials_id',
-      ]
-   );
-   $migration->addKey('glpi_printers', 'autoupdatesystems_id');
+        ]
+    );
+    $migration->addKey('glpi_printers', 'autoupdatesystems_id');
 }
 
 if (countElementsInTable(Blacklist::getTable()) === 4) {
-
-   $stmt = $DB->prepare(
-      $DB->buildInsert(
-         Blacklist::getTable(), [
+    $stmt = $DB->prepare(
+        $DB->buildInsert(
+            Blacklist::getTable(),
+            [
             'type' => new QueryParam(),
             'name' => new QueryParam(),
             'value' => new QueryParam()
-         ]
-      )
-   );
-   if (false === $stmt) {
-      $msg = "Error preparing statement in table " . Blacklist::getTable();
-      throw new \RuntimeException($msg);
-   }
+            ]
+        )
+    );
+    if (false === $stmt) {
+        $msg = "Error preparing statement in table " . Blacklist::getTable();
+        throw new \RuntimeException($msg);
+    }
 
-   $types = 'sss';
-   foreach (Blacklist::getDefaults() as $type => $values) {
-      foreach ($values as $props) {
-         $value = $props['value'];
-         $name  = $props['name'];
+    $types = 'sss';
+    foreach (Blacklist::getDefaults() as $type => $values) {
+        foreach ($values as $props) {
+            $value = $props['value'];
+            $name  = $props['name'];
 
-         //defaults already present in database
-         if ($type == Blacklist::IP && in_array($value, ['0.0.0.0', '127.0.0.1', ''])
-            || $type == Blacklist::MAC && $value == ''
-         ) {
-            continue;
-         }
-         $res = $stmt->bind_param($types, $type, $name, $value);
-         if (false === $res) {
-            $msg = "Error binding params in table " . Blacklist::getTable() ."\n";
-            $msg .= "type: $type, value: $value";
-            throw new \RuntimeException($msg);
-         }
-         $res = $stmt->execute();
-         if (false === $res) {
-            $msg = $stmt->error;
-            $msg .= "\nError execution statement in table " . Blacklist::getTable(). "\n";
-            $msg .= "type: $type, value: $value";
-            throw new \RuntimeException($msg);
-         }
-      }
-   }
+           //defaults already present in database
+            if (
+                $type == Blacklist::IP && in_array($value, ['0.0.0.0', '127.0.0.1', ''])
+                || $type == Blacklist::MAC && $value == ''
+            ) {
+                continue;
+            }
+            $res = $stmt->bind_param($types, $type, $name, $value);
+            if (false === $res) {
+                $msg = "Error binding params in table " . Blacklist::getTable() . "\n";
+                $msg .= "type: $type, value: $value";
+                throw new \RuntimeException($msg);
+            }
+            $res = $stmt->execute();
+            if (false === $res) {
+                $msg = $stmt->error;
+                $msg .= "\nError execution statement in table " . Blacklist::getTable() . "\n";
+                $msg .= "type: $type, value: $value";
+                throw new \RuntimeException($msg);
+            }
+        }
+    }
 }
 
 $migration->addRight('inventory', READ);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,18 +32,19 @@
  */
 
 /// XML class
-class XML {
+class XML
+{
 
    /// Array of SQL requests to export
-   public $SqlString    = "";
+    public $SqlString    = "";
    /// 1 there is a problem !!!
-   public $IsError      = 0;
+    public $IsError      = 0;
    /// If there is an error, this string explains it
-   public $ErrorString  = "NO errors;)";
+    public $ErrorString  = "NO errors;)";
    /// Which format do you want your XML ?
-   public $Type         = 1;
+    public $Type         = 1;
    ///path where the file will be saved.
-   public $FilePath;
+    public $FilePath;
 
    // HERE I explain $Type
 
@@ -107,75 +109,74 @@ class XML {
    /**
     * Do XML export
    **/
-   function DoXML() {
-      global $DB;
+    public function DoXML()
+    {
+        global $DB;
 
-      $fp = fopen($this->FilePath, 'wb');
-      fputs($fp, "<?xml version=\"1.0\"?>\n");
-      fputs($fp, "<dataxml>\n");
+        $fp = fopen($this->FilePath, 'wb');
+        fputs($fp, "<?xml version=\"1.0\"?>\n");
+        fputs($fp, "<dataxml>\n");
 
-      foreach ($this->SqlString as $strqry) {
-         if ($strqry == "") {
-            $this->IsError     = 1;
-            $this->ErrorString = "Error the query can't be a null string";
-            return -1;
-         }
-         $result = $DB->query($strqry);
-
-         if ($result == false) {
-            $this->IsError     = 1;
-            $this->ErrorString = "Error in SQL Query: ".$strqry;
-            return -1;
-         }
-         // OK... let's create XML;)
-         fputs($fp, "   <fields>\n");
-         $i = 0;
-         $FieldsVector = [];
-         while ($i < $DB->numFields ($result)) {
-            $name = $DB->fieldName($result, $i);
-            fputs($fp, "      <field>".$name."</field>\n");
-            $FieldsVector[] = $name;
-            $i++;
-         }
-
-         fputs($fp, "   </fields>\n");
-         // And NOW the Data ...
-         fputs($fp, "   <rows>\n");
-         while ($row = $DB->fetchRow($result)) {
-            fputs($fp, "      <row>\n");
-            for ($j=0; $j<$i; $j++) {
-               $FieldName  = "";   // Name of TAG
-               $Attributes = "";
-               switch ($this->Type) {
-                  case 1 :
-                     $FieldName = "data";
-                     break;
-
-                  case 2 :
-                     $FieldName = "data".$j;
-                     break;
-
-                  case 3 :
-                     $FieldName = $FieldsVector[$j];
-                     break;
-
-                  case 4 :
-                     $FieldName = "data";
-                     $Attributes = " fieldname=\"".$FieldsVector[$j]."\"";
-               }
-               fputs($fp, "         <".$FieldName.$Attributes.">".
-                     Toolbox::encodeInUtf8(htmlspecialchars($row[$j]))."</".$FieldName.">\n");
+        foreach ($this->SqlString as $strqry) {
+            if ($strqry == "") {
+                $this->IsError     = 1;
+                $this->ErrorString = "Error the query can't be a null string";
+                return -1;
             }
-            fputs($fp, "      </row>\n");
-         }
-         fputs($fp, "   </rows>\n");
+            $result = $DB->query($strqry);
 
-         $DB->freeResult($result);
-      }
-      fputs($fp, "</dataxml>");
-      //OK free ...;)
-      fclose($fp);
+            if ($result == false) {
+                $this->IsError     = 1;
+                $this->ErrorString = "Error in SQL Query: " . $strqry;
+                return -1;
+            }
+           // OK... let's create XML;)
+            fputs($fp, "   <fields>\n");
+            $i = 0;
+            $FieldsVector = [];
+            while ($i < $DB->numFields($result)) {
+                $name = $DB->fieldName($result, $i);
+                fputs($fp, "      <field>" . $name . "</field>\n");
+                $FieldsVector[] = $name;
+                $i++;
+            }
 
-   }
+            fputs($fp, "   </fields>\n");
+           // And NOW the Data ...
+            fputs($fp, "   <rows>\n");
+            while ($row = $DB->fetchRow($result)) {
+                fputs($fp, "      <row>\n");
+                for ($j = 0; $j < $i; $j++) {
+                    $FieldName  = "";   // Name of TAG
+                    $Attributes = "";
+                    switch ($this->Type) {
+                        case 1:
+                            $FieldName = "data";
+                            break;
 
+                        case 2:
+                            $FieldName = "data" . $j;
+                            break;
+
+                        case 3:
+                            $FieldName = $FieldsVector[$j];
+                            break;
+
+                        case 4:
+                            $FieldName = "data";
+                            $Attributes = " fieldname=\"" . $FieldsVector[$j] . "\"";
+                    }
+                    fputs($fp, "         <" . $FieldName . $Attributes . ">" .
+                     Toolbox::encodeInUtf8(htmlspecialchars($row[$j])) . "</" . $FieldName . ">\n");
+                }
+                fputs($fp, "      </row>\n");
+            }
+            fputs($fp, "   </rows>\n");
+
+            $DB->freeResult($result);
+        }
+        fputs($fp, "</dataxml>");
+       //OK free ...;)
+        fclose($fp);
+    }
 }

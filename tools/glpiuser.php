@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,71 +37,72 @@
 // Ensure current directory when run from CLI
 chdir(__DIR__);
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 if (isset($_SERVER['argv'])) {
-   for ($i=1; $i<$_SERVER['argc']; $i++) {
-      $it    = explode("=", $_SERVER['argv'][$i], 2);
-      $it[0] = preg_replace('/^--/', '', $it[0]);
+    for ($i = 1; $i < $_SERVER['argc']; $i++) {
+        $it    = explode("=", $_SERVER['argv'][$i], 2);
+        $it[0] = preg_replace('/^--/', '', $it[0]);
 
-      $_GET[$it[0]] = (isset($it[1]) ? $DB->escape($it[1]) : true);
-   }
+        $_GET[$it[0]] = (isset($it[1]) ? $DB->escape($it[1]) : true);
+    }
 }
 if (isset($_GET['help']) || !isset($_GET['user'])) {
-   echo "\nusage " . PHP_BINARY .
+    echo "\nusage " . PHP_BINARY .
         " {$_SERVER['argv'][0]} [ --password=<newpassword> ] [ --active ] [ --db ] --user=<login>\n\n";
-   echo "\t--password=secret  change password\n";
-   echo "\t--enable           set active state\n";
-   echo "\t--disable          unset active state\n";
-   echo "\t--db               switch to password authent, for LDAP/IMAP users\n";
-   echo "\t--user=name        the user to edit\n";
-   die("\n");
+    echo "\t--password=secret  change password\n";
+    echo "\t--enable           set active state\n";
+    echo "\t--disable          unset active state\n";
+    echo "\t--db               switch to password authent, for LDAP/IMAP users\n";
+    echo "\t--user=name        the user to edit\n";
+    die("\n");
 }
 
-function displayUser(User $user) {
-   printf("\nLogin:    %s\n", $user->getField('name'));
-   printf("Name:     %s\n", $user->getFriendlyName());
-   printf("Password: %s\n", $user->getField('password'));// ? 'set' : 'sot set');
-   printf("Authent:  %s\n", Auth::getMethodName($user->getField('authtype'), $user->getField('auths_id')));
-   printf("Active:   %s\n\n", $user->getField('is_active') ? 'yes' : 'no');
+function displayUser(User $user)
+{
+    printf("\nLogin:    %s\n", $user->getField('name'));
+    printf("Name:     %s\n", $user->getFriendlyName());
+    printf("Password: %s\n", $user->getField('password'));// ? 'set' : 'sot set');
+    printf("Authent:  %s\n", Auth::getMethodName($user->getField('authtype'), $user->getField('auths_id')));
+    printf("Active:   %s\n\n", $user->getField('is_active') ? 'yes' : 'no');
 }
 
 $user = new User();
 if ($user->getFromDBbyName($_GET['user'])) {
-   displayUser($user);
+    displayUser($user);
 
-   $in = [];
+    $in = [];
 
-   if ($_GET['enable']) {
-      $in['is_active'] = 1;
-   } else if ($_GET['disable']) {
-      $in['is_active'] = 0;
-   }
+    if ($_GET['enable']) {
+        $in['is_active'] = 1;
+    } else if ($_GET['disable']) {
+        $in['is_active'] = 0;
+    }
 
-   if ($_GET['password']) {
-      if (Config::validatePassword($input["password"])) {
-         $_SESSION['glpiID'] = $user->getID(); // to allow change
-         $in['password'] = $in['password2'] = $_GET['password'];
-      } else {
-         die("Invalid new password\n");
-      }
-   }
+    if ($_GET['password']) {
+        if (Config::validatePassword($input["password"])) {
+            $_SESSION['glpiID'] = $user->getID(); // to allow change
+            $in['password'] = $in['password2'] = $_GET['password'];
+        } else {
+            die("Invalid new password\n");
+        }
+    }
 
-   if ($_GET['db']) {
-      $in['authtype'] = 1;
-      $in['auths_id'] = Auth::DB_GLPI;
-   }
+    if ($_GET['db']) {
+        $in['authtype'] = 1;
+        $in['auths_id'] = Auth::DB_GLPI;
+    }
 
-   if (count($in)) {
-      $in['id'] = $user->getID();
-      if ($user->update($in)) {
-         unset($in['id'], $in['password2']);
-         echo "Update:   succes (".implode(', ', array_keys($in)).")\n";
-         displayUser($user);
-      } else {
-         echo "Update:   failed\n";
-      }
-   }
+    if (count($in)) {
+        $in['id'] = $user->getID();
+        if ($user->update($in)) {
+            unset($in['id'], $in['password2']);
+            echo "Update:   succes (" . implode(', ', array_keys($in)) . ")\n";
+            displayUser($user);
+        } else {
+            echo "Update:   failed\n";
+        }
+    }
 } else {
-   die("User not found {$_GET['user']}");
+    die("User not found {$_GET['user']}");
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,38 +37,38 @@ use Glpi\Plugin\Hooks;
 /**
  * Entity class
  */
-class Entity extends CommonTreeDropdown {
+class Entity extends CommonTreeDropdown
+{
+    use MapGeolocation;
 
-   use MapGeolocation;
+    public $must_be_replace              = true;
+    public $dohistory                    = true;
 
-   public $must_be_replace              = true;
-   public $dohistory                    = true;
+    public $first_level_menu             = "admin";
+    public $second_level_menu            = "entity";
 
-   public $first_level_menu             = "admin";
-   public $second_level_menu            = "entity";
+    public static $rightname                    = 'entity';
+    protected $usenotepad                = true;
 
-   static $rightname                    = 'entity';
-   protected $usenotepad                = true;
+    const READHELPDESK                   = 1024;
+    const UPDATEHELPDESK                 = 2048;
 
-   const READHELPDESK                   = 1024;
-   const UPDATEHELPDESK                 = 2048;
+    const CONFIG_PARENT                  = -2;
+    const CONFIG_NEVER                   = -10;
 
-   const CONFIG_PARENT                  = -2;
-   const CONFIG_NEVER                   = -10;
-
-   const AUTO_ASSIGN_HARDWARE_CATEGORY  = 1;
-   const AUTO_ASSIGN_CATEGORY_HARDWARE  = 2;
+    const AUTO_ASSIGN_HARDWARE_CATEGORY  = 1;
+    const AUTO_ASSIGN_CATEGORY_HARDWARE  = 2;
 
    /**
     * Possible values for "anonymize_support_agents" setting
     */
-   const ANONYMIZE_DISABLED     = 0;
-   const ANONYMIZE_USE_GENERIC  = 1;
-   const ANONYMIZE_USE_NICKNAME = 2;
+    const ANONYMIZE_DISABLED     = 0;
+    const ANONYMIZE_USE_GENERIC  = 1;
+    const ANONYMIZE_USE_NICKNAME = 2;
 
    // Array of "right required to update" => array of fields allowed
    // Missing field here couldn't be update (no right)
-   private static $field_right = [
+    private static $field_right = [
       'entity' => [
          // Address
          'address', 'country', 'email', 'fax', 'notepad',
@@ -123,75 +124,83 @@ class Entity extends CommonTreeDropdown {
       ],
       // Configuration
       'config' => ['enable_custom_css', 'custom_css_code']
-   ];
+    ];
 
 
-   function getForbiddenStandardMassiveAction() {
+    public function getForbiddenStandardMassiveAction()
+    {
 
-      $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'delete';
-      $forbidden[] = 'purge';
-      $forbidden[] = 'restore';
-      $forbidden[] = 'CommonDropdown'.MassiveAction::CLASS_ACTION_SEPARATOR.'merge';
-      return $forbidden;
-   }
+        $forbidden   = parent::getForbiddenStandardMassiveAction();
+        $forbidden[] = 'delete';
+        $forbidden[] = 'purge';
+        $forbidden[] = 'restore';
+        $forbidden[] = 'CommonDropdown' . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge';
+        return $forbidden;
+    }
 
    /**
     * @since 0.84
    **/
-   function pre_deleteItem() {
-      global $GLPI_CACHE;
+    public function pre_deleteItem()
+    {
+        global $GLPI_CACHE;
 
-      // Security do not delete root entity
-      if ($this->input['id'] == 0) {
-         return false;
-      }
+       // Security do not delete root entity
+        if ($this->input['id'] == 0) {
+            return false;
+        }
 
-      //Cleaning sons calls getAncestorsOf and thus... Re-create cache. Call it before clean.
-      $this->cleanParentsSons();
-      $ckey = 'ancestors_cache_' . $this->getTable() . '_' . $this->getID();
-      $GLPI_CACHE->delete($ckey);
+       //Cleaning sons calls getAncestorsOf and thus... Re-create cache. Call it before clean.
+        $this->cleanParentsSons();
+        $ckey = 'ancestors_cache_' . $this->getTable() . '_' . $this->getID();
+        $GLPI_CACHE->delete($ckey);
 
-      return true;
-   }
-
-
-   static function getTypeName($nb = 0) {
-      return _n('Entity', 'Entities', $nb);
-   }
+        return true;
+    }
 
 
-   function canCreateItem() {
-      // Check the parent
-      return Session::haveRecursiveAccessToEntity($this->getField('entities_id'));
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Entity', 'Entities', $nb);
+    }
+
+
+    public function canCreateItem()
+    {
+       // Check the parent
+        return Session::haveRecursiveAccessToEntity($this->getField('entities_id'));
+    }
 
 
    /**
    * @since 0.84
    **/
-   static function canUpdate() {
+    public static function canUpdate()
+    {
 
-      return (Session::haveRightsOr(self::$rightname, [UPDATE, self::UPDATEHELPDESK])
+        return (Session::haveRightsOr(self::$rightname, [UPDATE, self::UPDATEHELPDESK])
               || Session::haveRight('notification', UPDATE));
-   }
+    }
 
 
-   function canUpdateItem() {
-      // Check the current entity
-      return Session::haveAccessToEntity($this->getField('id'));
-   }
+    public function canUpdateItem()
+    {
+       // Check the current entity
+        return Session::haveAccessToEntity($this->getField('id'));
+    }
 
 
-   function canViewItem() {
-      // Check the current entity
-      return Session::haveAccessToEntity($this->getField('id'));
-   }
+    public function canViewItem()
+    {
+       // Check the current entity
+        return Session::haveAccessToEntity($this->getField('id'));
+    }
 
 
-   static function isNewID($ID) {
-      return (($ID < 0) || !strlen($ID));
-   }
+    public static function isNewID($ID)
+    {
+        return (($ID < 0) || !strlen($ID));
+    }
 
    /**
     * Can object have a location
@@ -200,9 +209,10 @@ class Entity extends CommonTreeDropdown {
     *
     * @return boolean
     */
-   function maybeLocated() {
-      return true;
-   }
+    public function maybeLocated()
+    {
+        return true;
+    }
 
    /**
     * Check right on each field before add / update
@@ -213,205 +223,220 @@ class Entity extends CommonTreeDropdown {
     *
     * @return array (filtered input)
    **/
-   private function checkRightDatas($input) {
+    private function checkRightDatas($input)
+    {
 
-      $tmp = [];
+        $tmp = [];
 
-      if (isset($input['id'])) {
-         $tmp['id'] = $input['id'];
-      }
+        if (isset($input['id'])) {
+            $tmp['id'] = $input['id'];
+        }
 
-      foreach (self::$field_right as $right => $fields) {
-
-         if ($right == 'entity_helpdesk') {
-            if (Session::haveRight(self::$rightname, self::UPDATEHELPDESK )) {
-               foreach ($fields as $field) {
-                  if (isset($input[$field])) {
-                     $tmp[$field] = $input[$field];
-                  }
-               }
+        foreach (self::$field_right as $right => $fields) {
+            if ($right == 'entity_helpdesk') {
+                if (Session::haveRight(self::$rightname, self::UPDATEHELPDESK)) {
+                    foreach ($fields as $field) {
+                        if (isset($input[$field])) {
+                             $tmp[$field] = $input[$field];
+                        }
+                    }
+                }
+            } else {
+                if (Session::haveRight($right, UPDATE)) {
+                    foreach ($fields as $field) {
+                        if (isset($input[$field])) {
+                            $tmp[$field] = $input[$field];
+                        }
+                    }
+                }
             }
-         } else {
-            if (Session::haveRight($right, UPDATE)) {
-               foreach ($fields as $field) {
-                  if (isset($input[$field])) {
-                     $tmp[$field] = $input[$field];
-                  }
-               }
+        }
+       // Add framework  / internal ones
+        foreach ($input as $key => $val) {
+            if ($key[0] == '_') {
+                $tmp[$key] = $input[$key];
             }
-         }
-      }
-      // Add framework  / internal ones
-      foreach ($input as $key => $val) {
-         if ($key[0] == '_') {
-            $tmp[$key] = $input[$key];
-         }
-      }
+        }
 
-      return $tmp;
-   }
+        return $tmp;
+    }
 
 
    /**
     * @since 0.84 (before in entitydata.class)
    **/
-   function prepareInputForAdd($input) {
-      global $DB;
+    public function prepareInputForAdd($input)
+    {
+        global $DB;
 
-      $input['name'] = isset($input['name']) ? trim($input['name']) : '';
-      if (empty($input["name"])) {
-         Session::addMessageAfterRedirect(__("You can't add an entity without name"),
-                                          false, ERROR);
-         return false;
-      }
+        $input['name'] = isset($input['name']) ? trim($input['name']) : '';
+        if (empty($input["name"])) {
+            Session::addMessageAfterRedirect(
+                __("You can't add an entity without name"),
+                false,
+                ERROR
+            );
+            return false;
+        }
 
-      $input = parent::prepareInputForAdd($input);
+        $input = parent::prepareInputForAdd($input);
 
-      $result = $DB->request([
+        $result = $DB->request([
          'SELECT' => new \QueryExpression(
-            'MAX('.$DB->quoteName('id').')+1 AS newID'
+             'MAX(' . $DB->quoteName('id') . ')+1 AS newID'
          ),
          'FROM'   => $this->getTable()
-      ])->current();
-      $input['id'] = $result['newID'];
+        ])->current();
+        $input['id'] = $result['newID'];
 
-      $input['max_closedate'] = $_SESSION["glpi_currenttime"];
+        $input['max_closedate'] = $_SESSION["glpi_currenttime"];
 
-      if (empty($input['latitude']) && empty($input['longitude']) && empty($input['altitude']) &&
-         !empty($input[static::getForeignKeyField()])) {
-         $parent = new static();
-         $parent->getFromDB($input[static::getForeignKeyField()]);
-         $input['latitude'] = $parent->fields['latitude'];
-         $input['longitude'] = $parent->fields['longitude'];
-         $input['altitude'] = $parent->fields['altitude'];
-      }
+        if (
+            empty($input['latitude']) && empty($input['longitude']) && empty($input['altitude']) &&
+            !empty($input[static::getForeignKeyField()])
+        ) {
+            $parent = new static();
+            $parent->getFromDB($input[static::getForeignKeyField()]);
+            $input['latitude'] = $parent->fields['latitude'];
+            $input['longitude'] = $parent->fields['longitude'];
+            $input['altitude'] = $parent->fields['altitude'];
+        }
 
-      if (!Session::isCron()) { // Filter input for connected
-         $input = $this->checkRightDatas($input);
-      }
-      return $input;
-   }
+        if (!Session::isCron()) { // Filter input for connected
+            $input = $this->checkRightDatas($input);
+        }
+        return $input;
+    }
 
 
    /**
     * @since 0.84 (before in entitydata.class)
    **/
-   function prepareInputForUpdate($input) {
+    public function prepareInputForUpdate($input)
+    {
 
-      $input = parent::prepareInputForUpdate($input);
+        $input = parent::prepareInputForUpdate($input);
 
-      // Si on change le taux de déclenchement de l'enquête (enquête activée) ou le type de l'enquete,
-      // cela s'applique aux prochains tickets - Pas à l'historique
-      if ((isset($input['inquest_rate'])
-           && (($this->fields['inquest_rate'] == 0)
+       // Si on change le taux de déclenchement de l'enquête (enquête activée) ou le type de l'enquete,
+       // cela s'applique aux prochains tickets - Pas à l'historique
+        if (
+            (isset($input['inquest_rate'])
+            && (($this->fields['inquest_rate'] == 0)
                || is_null($this->fields['max_closedate']))
-           && ($input['inquest_rate'] != $this->fields['inquest_rate']))
-          || (isset($input['inquest_config'])
+            && ($input['inquest_rate'] != $this->fields['inquest_rate']))
+            || (isset($input['inquest_config'])
               && (($this->fields['inquest_config'] == self::CONFIG_PARENT)
                   || is_null($this->fields['max_closedate']))
-              && ($input['inquest_config'] != $this->fields['inquest_config']))) {
+              && ($input['inquest_config'] != $this->fields['inquest_config']))
+        ) {
+            $input['max_closedate'] = $_SESSION["glpi_currenttime"];
+        }
 
-         $input['max_closedate'] = $_SESSION["glpi_currenttime"];
-      }
-
-      // Force entities_id = -1 for root entity
-      if ($input['id'] == 0) {
-         $input['entities_id'] = -1;
-         $input['level']       = 1;
-      }
-      if (!Session::isCron()) { // Filter input for connected
-         $input = $this->checkRightDatas($input);
-      }
-      return $input;
-   }
-
-
-   function defineTabs($options = []) {
-
-      $ong = [];
-      $this->addDefaultFormTab($ong);
-      $this->addImpactTab($ong, $options);
-      $this->addStandardTab(__CLASS__, $ong, $options);
-      $this->addStandardTab('Profile_User', $ong, $options);
-      $this->addStandardTab('Rule', $ong, $options);
-      $this->addStandardTab('Document_Item', $ong, $options);
-      $this->addStandardTab('Notepad', $ong, $options);
-      $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
-      $this->addStandardTab('Log', $ong, $options);
-
-      return $ong;
-   }
+       // Force entities_id = -1 for root entity
+        if ($input['id'] == 0) {
+            $input['entities_id'] = -1;
+            $input['level']       = 1;
+        }
+        if (!Session::isCron()) { // Filter input for connected
+            $input = $this->checkRightDatas($input);
+        }
+        return $input;
+    }
 
 
-   /**
-    * @since 0.84 (before in entitydata.class)
-   **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+    public function defineTabs($options = [])
+    {
 
-      if (!$withtemplate) {
-         switch ($item->getType()) {
-            case __CLASS__ :
-               $ong    = [];
-               $ong[1] = $this->getTypeName(Session::getPluralNumber());
-               $ong[2] = __('Address');
-               $ong[3] = __('Advanced information');
-               if (Notification::canView()) {
-                  $ong[4] = _n('Notification', 'Notifications', Session::getPluralNumber());
-               }
-               if (Session::haveRightsOr(self::$rightname,
-                                         [self::READHELPDESK, self::UPDATEHELPDESK])) {
-                  $ong[5] = __('Assistance');
-               }
-               $ong[6] = _n('Asset', 'Assets', Session::getPluralNumber());
-               if (Session::haveRight(Config::$rightname, UPDATE)) {
-                  $ong[7] = __('UI customization');
-               }
+        $ong = [];
+        $this->addDefaultFormTab($ong);
+        $this->addImpactTab($ong, $options);
+        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab('Profile_User', $ong, $options);
+        $this->addStandardTab('Rule', $ong, $options);
+        $this->addStandardTab('Document_Item', $ong, $options);
+        $this->addStandardTab('Notepad', $ong, $options);
+        $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
+        $this->addStandardTab('Log', $ong, $options);
 
-               return $ong;
-         }
-      }
-      return '';
-   }
+        return $ong;
+    }
 
 
    /**
     * @since 0.84 (before in entitydata.class)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
 
-      if ($item->getType()==__CLASS__) {
-         switch ($tabnum) {
-            case 1 :
-               $item->showChildren();
-               break;
+        if (!$withtemplate) {
+            switch ($item->getType()) {
+                case __CLASS__:
+                    $ong    = [];
+                    $ong[1] = $this->getTypeName(Session::getPluralNumber());
+                    $ong[2] = __('Address');
+                    $ong[3] = __('Advanced information');
+                    if (Notification::canView()) {
+                        $ong[4] = _n('Notification', 'Notifications', Session::getPluralNumber());
+                    }
+                    if (
+                        Session::haveRightsOr(
+                            self::$rightname,
+                            [self::READHELPDESK, self::UPDATEHELPDESK]
+                        )
+                    ) {
+                        $ong[5] = __('Assistance');
+                    }
+                    $ong[6] = _n('Asset', 'Assets', Session::getPluralNumber());
+                    if (Session::haveRight(Config::$rightname, UPDATE)) {
+                        $ong[7] = __('UI customization');
+                    }
 
-            case 2 :
-               self::showStandardOptions($item);
-               break;
+                    return $ong;
+            }
+        }
+        return '';
+    }
 
-            case 3 :
-               self::showAdvancedOptions($item);
-               break;
 
-            case 4 :
-               self::showNotificationOptions($item);
-               break;
+   /**
+    * @since 0.84 (before in entitydata.class)
+   **/
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
 
-            case 5 :
-               self::showHelpdeskOptions($item);
-               break;
+        if ($item->getType() == __CLASS__) {
+            switch ($tabnum) {
+                case 1:
+                    $item->showChildren();
+                    break;
 
-            case 6 :
-               self::showInventoryOptions($item);
-               break;
+                case 2:
+                    self::showStandardOptions($item);
+                    break;
 
-            case 7 :
-               self::showUiCustomizationOptions($item);
-               break;
-         }
-      }
-      return true;
-   }
+                case 3:
+                    self::showAdvancedOptions($item);
+                    break;
+
+                case 4:
+                    self::showNotificationOptions($item);
+                    break;
+
+                case 5:
+                    self::showHelpdeskOptions($item);
+                    break;
+
+                case 6:
+                    self::showInventoryOptions($item);
+                    break;
+
+                case 7:
+                    self::showUiCustomizationOptions($item);
+                    break;
+            }
+        }
+        return true;
+    }
 
 
    /**
@@ -419,14 +444,16 @@ class Entity extends CommonTreeDropdown {
     *
     *@return void
     **/
-   function title() {
-      // Empty title for entities
-   }
+    public function title()
+    {
+       // Empty title for entities
+    }
 
 
-   function displayHeader() {
-      Html::header($this->getTypeName(1), '', "admin", "entity");
-   }
+    public function displayHeader()
+    {
+        Html::header($this->getTypeName(1), '', "admin", "entity");
+    }
 
 
    /**
@@ -436,23 +463,26 @@ class Entity extends CommonTreeDropdown {
     *
     * @return integer ID of the entity
    **/
-   function getEntityID() {
+    public function getEntityID()
+    {
 
-      if (isset($this->fields["id"])) {
-         return $this->fields["id"];
-      }
-      return -1;
-   }
-
-
-   function isEntityAssign() {
-      return true;
-   }
+        if (isset($this->fields["id"])) {
+            return $this->fields["id"];
+        }
+        return -1;
+    }
 
 
-   function maybeRecursive() {
-      return true;
-   }
+    public function isEntityAssign()
+    {
+        return true;
+    }
+
+
+    public function maybeRecursive()
+    {
+        return true;
+    }
 
 
    /**
@@ -462,51 +492,55 @@ class Entity extends CommonTreeDropdown {
     *
     * @return integer (0/1)
    **/
-   function isRecursive () {
-      return true;
-   }
+    public function isRecursive()
+    {
+        return true;
+    }
 
 
-   function post_addItem() {
+    public function post_addItem()
+    {
 
-      parent::post_addItem();
+        parent::post_addItem();
 
-      // Add right to current user - Hack to avoid login/logout
-      $_SESSION['glpiactiveentities'][$this->fields['id']] = $this->fields['id'];
-      $_SESSION['glpiactiveentities_string']              .= ",'".$this->fields['id']."'";
+       // Add right to current user - Hack to avoid login/logout
+        $_SESSION['glpiactiveentities'][$this->fields['id']] = $this->fields['id'];
+        $_SESSION['glpiactiveentities_string']              .= ",'" . $this->fields['id'] . "'";
 
-      // clean entity tree cache
-      $this->cleanEntitySelectorCache();
-   }
+       // clean entity tree cache
+        $this->cleanEntitySelectorCache();
+    }
 
-   function post_updateItem($history = 1) {
-      parent::post_updateItem($history);
+    public function post_updateItem($history = 1)
+    {
+        parent::post_updateItem($history);
 
-      // clean entity tree cache
-      $this->cleanEntitySelectorCache();
-   }
+       // clean entity tree cache
+        $this->cleanEntitySelectorCache();
+    }
 
 
-   function cleanDBonPurge() {
+    public function cleanDBonPurge()
+    {
 
-      // most use entities_id, RuleDictionnarySoftwareCollection use new_entities_id
-      Rule::cleanForItemAction($this, '%entities_id');
-      Rule::cleanForItemCriteria($this);
+       // most use entities_id, RuleDictionnarySoftwareCollection use new_entities_id
+        Rule::cleanForItemAction($this, '%entities_id');
+        Rule::cleanForItemCriteria($this);
 
-      $pu = new Profile_User();
-      $pu->deleteByCriteria(['entities_id' => $this->fields['id']]);
+        $pu = new Profile_User();
+        $pu->deleteByCriteria(['entities_id' => $this->fields['id']]);
 
-      $this->deleteChildrenAndRelationsFromDb(
-         [
+        $this->deleteChildrenAndRelationsFromDb(
+            [
             Entity_KnowbaseItem::class,
             Entity_Reminder::class,
             Entity_RSSFeed::class,
-         ]
-      );
+            ]
+        );
 
-      // clean entity tree cache
-      $this->cleanEntitySelectorCache();
-   }
+       // clean entity tree cache
+        $this->cleanEntitySelectorCache();
+    }
 
 
    /**
@@ -516,250 +550,252 @@ class Entity extends CommonTreeDropdown {
     *
     * @return void
     */
-   function cleanEntitySelectorCache() {
-      global $GLPI_CACHE;
+    public function cleanEntitySelectorCache()
+    {
+        global $GLPI_CACHE;
 
-      $GLPI_CACHE->delete('entity_selector');
-   }
+        $GLPI_CACHE->delete('entity_selector');
+    }
 
-   function rawSearchOptions() {
-      $tab = [];
+    public function rawSearchOptions()
+    {
+        $tab = [];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => 'common',
          'name'               => __('Characteristics')
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '1',
          'table'              => $this->getTable(),
          'field'              => 'completename',
          'name'               => __('Complete name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '2',
          'table'              => $this->getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
          'datatype'           => 'number'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '14',
          'table'              => $this->getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '3',
          'table'              => $this->getTable(),
          'field'              => 'address',
          'name'               => __('Address'),
          'massiveaction'      => false,
          'datatype'           => 'text'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '4',
          'table'              => $this->getTable(),
          'field'              => 'website',
          'name'               => __('Website'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '5',
          'table'              => $this->getTable(),
          'field'              => 'phonenumber',
          'name'               => Phone::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '6',
          'table'              => $this->getTable(),
          'field'              => 'email',
          'name'               => _n('Email', 'Emails', 1),
          'datatype'           => 'email',
          'massiveaction'      => false,
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '10',
          'table'              => $this->getTable(),
          'field'              => 'fax',
          'name'               => __('Fax'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '25',
          'table'              => $this->getTable(),
          'field'              => 'postcode',
          'name'               => __('Postal code'),
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '11',
          'table'              => $this->getTable(),
          'field'              => 'town',
          'name'               => __('City'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '12',
          'table'              => $this->getTable(),
          'field'              => 'state',
          'name'               => _x('location', 'State'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '13',
          'table'              => $this->getTable(),
          'field'              => 'country',
          'name'               => __('Country'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '67',
          'table'              => $this->getTable(),
          'field'              => 'latitude',
          'name'               => __('Latitude'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '68',
          'table'              => $this->getTable(),
          'field'              => 'longitude',
          'name'               => __('Longitude'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '69',
          'table'              => $this->getTable(),
          'field'              => 'altitude',
          'name'               => __('Altitude'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '16',
          'table'              => $this->getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '122',
          'table'              => $this->getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '121',
          'table'              => $this->getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '70',
          'table'              => $this->getTable(),
          'field'              => 'registration_number',
          'name'               => __('Administrative number'),
          'datatype'           => 'string',
          'autocomplete'       => true
-      ];
+        ];
 
-      // add objectlock search options
-      $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
+       // add objectlock search options
+        $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
-      $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
+        $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => 'advanced',
          'name'               => __('Advanced information')
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '7',
          'table'              => $this->getTable(),
          'field'              => 'ldap_dn',
          'name'               => __('LDAP directory information attribute representing the entity'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '8',
          'table'              => $this->getTable(),
          'field'              => 'tag',
          'name'               => __('Information in inventory tool (TAG) representing the entity'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '9',
          'table'              => 'glpi_authldaps',
          'field'              => 'name',
          'name'               => __('LDAP directory of an entity'),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '17',
          'table'              => $this->getTable(),
          'field'              => 'entity_ldapfilter',
          'name'               => __('Search filter (if needed)'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '20',
          'table'              => $this->getTable(),
          'field'              => 'mail_domain',
          'name'               => __('Mail domain'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => 'notif',
          'name'               => __('Notification options')
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '60',
          'table'              => $this->getTable(),
          'field'              => 'delay_send_emails',
@@ -772,9 +808,9 @@ class Entity extends CommonTreeDropdown {
          'step'               => 1,
          'unit'               => 'minute',
          'toadd'              => [self::CONFIG_PARENT => __('Inheritance of the parent entity')]
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '61',
          'table'              => $this->getTable(),
          'field'              => 'is_notif_enable_default',
@@ -782,59 +818,59 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'string'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '18',
          'table'              => $this->getTable(),
          'field'              => 'admin_email',
          'name'               => __('Administrator email'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '19',
          'table'              => $this->getTable(),
          'field'              => 'admin_reply',
          'name'               => __('Administrator reply-to email (if needed)'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '21',
          'table'              => $this->getTable(),
          'field'              => 'notification_subject_tag',
          'name'               => __('Prefix for notifications'),
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '22',
          'table'              => $this->getTable(),
          'field'              => 'admin_email_name',
          'name'               => __('Administrator name'),
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '23',
          'table'              => $this->getTable(),
          'field'              => 'admin_reply_name',
          'name'               => __('Response address (if needed)'),
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '24',
          'table'              => $this->getTable(),
          'field'              => 'mailing_signature',
          'name'               => __('Email signature'),
          'datatype'           => 'text'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '26',
          'table'              => $this->getTable(),
          'field'              => 'cartridges_alert_repeat',
@@ -842,9 +878,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '27',
          'table'              => $this->getTable(),
          'field'              => 'consumables_alert_repeat',
@@ -852,9 +888,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '29',
          'table'              => $this->getTable(),
          'field'              => 'use_licenses_alert',
@@ -862,9 +898,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '53',
          'table'              => $this->getTable(),
          'field'              => 'send_licenses_alert_before_delay',
@@ -872,9 +908,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '30',
          'table'              => $this->getTable(),
          'field'              => 'use_contracts_alert',
@@ -882,9 +918,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '54',
          'table'              => $this->getTable(),
          'field'              => 'send_contracts_alert_before_delay',
@@ -892,9 +928,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '31',
          'table'              => $this->getTable(),
          'field'              => 'use_infocoms_alert',
@@ -902,9 +938,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '55',
          'table'              => $this->getTable(),
          'field'              => 'send_infocoms_alert_before_delay',
@@ -912,9 +948,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '32',
          'table'              => $this->getTable(),
          'field'              => 'use_reservations_alert',
@@ -922,9 +958,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '48',
          'table'              => $this->getTable(),
          'field'              => 'default_contract_alert',
@@ -932,9 +968,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '49',
          'table'              => $this->getTable(),
          'field'              => 'default_infocom_alert',
@@ -942,9 +978,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '50',
          'table'              => $this->getTable(),
          'field'              => 'default_cartridges_alarm_threshold',
@@ -952,9 +988,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'number'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '52',
          'table'              => $this->getTable(),
          'field'              => 'default_consumables_alarm_threshold',
@@ -962,9 +998,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'number'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '57',
          'table'              => $this->getTable(),
          'field'              => 'use_certificates_alert',
@@ -972,9 +1008,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '58',
          'table'              => $this->getTable(),
          'field'              => 'send_certificates_alert_before_delay',
@@ -982,14 +1018,14 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => 'helpdesk',
          'name'               => __('Assistance')
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '47',
          'table'              => $this->getTable(),
          'field'              => 'tickettemplates_id', // not a dropdown because of special value
@@ -997,9 +1033,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '33',
          'table'              => $this->getTable(),
          'field'              => 'autoclose_delay',
@@ -1016,9 +1052,9 @@ class Entity extends CommonTreeDropdown {
             self::CONFIG_NEVER   => __('Never'),
             0                  => __('Immediatly')
          ]
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '59',
          'table'              => $this->getTable(),
          'field'              => 'autopurge_delay',
@@ -1035,9 +1071,9 @@ class Entity extends CommonTreeDropdown {
             self::CONFIG_NEVER   => __('Never'),
             0                  => __('Immediatly')
          ]
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '34',
          'table'              => $this->getTable(),
          'field'              => 'notclosed_delay',
@@ -1045,9 +1081,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '35',
          'table'              => $this->getTable(),
          'field'              => 'auto_assign_mode',
@@ -1055,9 +1091,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '36',
          'table'              => $this->getTable(),
          'field'              => 'calendars_id',// not a dropdown because of special valu
@@ -1065,9 +1101,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '37',
          'table'              => $this->getTable(),
          'field'              => 'tickettype',
@@ -1075,14 +1111,14 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => 'assets',
          'name'               => _n('Asset', 'Assets', Session::getPluralNumber())
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '38',
          'table'              => $this->getTable(),
          'field'              => 'autofill_buy_date',
@@ -1090,9 +1126,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '39',
          'table'              => $this->getTable(),
          'field'              => 'autofill_order_date',
@@ -1100,9 +1136,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '40',
          'table'              => $this->getTable(),
          'field'              => 'autofill_delivery_date',
@@ -1110,9 +1146,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '41',
          'table'              => $this->getTable(),
          'field'              => 'autofill_use_date',
@@ -1120,9 +1156,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '42',
          'table'              => $this->getTable(),
          'field'              => 'autofill_warranty_date',
@@ -1130,9 +1166,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '43',
          'table'              => $this->getTable(),
          'field'              => 'inquest_config',
@@ -1140,36 +1176,36 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '44',
          'table'              => $this->getTable(),
          'field'              => 'inquest_rate',
          'name'               => __('Satisfaction survey trigger rate'),
          'massiveaction'      => false,
          'datatype'           => 'number'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '45',
          'table'              => $this->getTable(),
          'field'              => 'inquest_delay',
          'name'               => __('Create survey after'),
          'massiveaction'      => false,
          'datatype'           => 'number'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '46',
          'table'              => $this->getTable(),
          'field'              => 'inquest_URL',
          'name'               => __('URL'),
          'massiveaction'      => false,
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '51',
          'table'              => $this->getTable(),
          'field'              => 'name',
@@ -1179,9 +1215,9 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '56',
          'table'              => $this->getTable(),
          'field'              => 'autofill_decommission_date',
@@ -1189,10 +1225,10 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
 
    /**
@@ -1200,39 +1236,57 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $input array of values
    **/
-   function executeAddRule($input) {
+    public function executeAddRule($input)
+    {
 
-      $this->check($_POST["affectentity"], UPDATE);
+        $this->check($_POST["affectentity"], UPDATE);
 
-      $collection = RuleCollection::getClassByType($_POST['sub_type']);
-      $rule       = $collection->getRuleClass($_POST['sub_type']);
-      $ruleid     = $rule->add($_POST);
+        $collection = RuleCollection::getClassByType($_POST['sub_type']);
+        $rule       = $collection->getRuleClass($_POST['sub_type']);
+        $ruleid     = $rule->add($_POST);
 
-      if ($ruleid) {
-         //Add an action associated to the rule
-         $ruleAction = new RuleAction();
+        if ($ruleid) {
+           //Add an action associated to the rule
+            $ruleAction = new RuleAction();
 
-         //Action is : affect computer to this entity
-         $ruleAction->addActionByAttributes("assign", $ruleid, "entities_id",
-                                            $_POST["affectentity"]);
+           //Action is : affect computer to this entity
+            $ruleAction->addActionByAttributes(
+                "assign",
+                $ruleid,
+                "entities_id",
+                $_POST["affectentity"]
+            );
 
-         switch ($_POST['sub_type']) {
-            case 'RuleRight' :
-               if ($_POST["profiles_id"]) {
-                  $ruleAction->addActionByAttributes("assign", $ruleid, "profiles_id",
-                                                     $_POST["profiles_id"]);
-               }
-               $ruleAction->addActionByAttributes("assign", $ruleid, "is_recursive",
-                                                  $_POST["is_recursive"]);
-         }
-      }
+            switch ($_POST['sub_type']) {
+                case 'RuleRight':
+                    if ($_POST["profiles_id"]) {
+                        $ruleAction->addActionByAttributes(
+                            "assign",
+                            $ruleid,
+                            "profiles_id",
+                            $_POST["profiles_id"]
+                        );
+                    }
+                    $ruleAction->addActionByAttributes(
+                        "assign",
+                        $ruleid,
+                        "is_recursive",
+                        $_POST["is_recursive"]
+                    );
+            }
+        }
 
-      Event::log($ruleid, "rules", 4, "setup",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s adds the item'), $_SESSION["glpiname"]));
+        Event::log(
+            $ruleid,
+            "rules",
+            4,
+            "setup",
+            //TRANS: %s is the user login
+            sprintf(__('%s adds the item'), $_SESSION["glpiname"])
+        );
 
-      Html::back();
-   }
+        Html::back();
+    }
 
 
    /**
@@ -1243,22 +1297,23 @@ class Entity extends CommonTreeDropdown {
     *
     * @return Array of id => value
    **/
-   static function getEntitiesToNotify($field) {
-      global $DB;
+    public static function getEntitiesToNotify($field)
+    {
+        global $DB;
 
-      $entities = [];
+        $entities = [];
 
-      // root entity first
-      $ent = new self();
-      if ($ent->getFromDB(0)) {  // always exists
-         $val = $ent->getField($field);
-         if ($val > 0) {
-            $entities[0] = $val;
-         }
-      }
+       // root entity first
+        $ent = new self();
+        if ($ent->getFromDB(0)) {  // always exists
+            $val = $ent->getField($field);
+            if ($val > 0) {
+                $entities[0] = $val;
+            }
+        }
 
-      // Others entities in level order (parent first)
-      $iterator = $DB->request([
+       // Others entities in level order (parent first)
+        $iterator = $DB->request([
          'SELECT' => [
             'id AS entity',
             'entities_id AS parent',
@@ -1266,25 +1321,24 @@ class Entity extends CommonTreeDropdown {
          ],
          'FROM'   => self::getTable(),
          'ORDER'  => 'level ASC'
-      ]);
+        ]);
 
-      foreach ($iterator as $entitydata) {
-         if ((is_null($entitydata[$field])
-              || ($entitydata[$field] == self::CONFIG_PARENT))
-             && isset($entities[$entitydata['parent']])) {
+        foreach ($iterator as $entitydata) {
+            if (
+                (is_null($entitydata[$field])
+                || ($entitydata[$field] == self::CONFIG_PARENT))
+                && isset($entities[$entitydata['parent']])
+            ) {
+                // config inherit from parent
+                $entities[$entitydata['entity']] = $entities[$entitydata['parent']];
+            } else if ($entitydata[$field] > 0) {
+               // config found in entity
+                $entities[$entitydata['entity']] = $entitydata[$field];
+            }
+        }
 
-            // config inherit from parent
-            $entities[$entitydata['entity']] = $entities[$entitydata['parent']];
-
-         } else if ($entitydata[$field] > 0) {
-
-            // config found in entity
-            $entities[$entitydata['entity']] = $entitydata[$field];
-         }
-      }
-
-      return $entities;
-   }
+        return $entities;
+    }
 
 
    /**
@@ -1292,125 +1346,125 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $entity Entity object
    **/
-   static function showStandardOptions(Entity $entity) {
+    public static function showStandardOptions(Entity $entity)
+    {
 
-      $con_spotted = false;
-      $ID          = $entity->getField('id');
-      if (!$entity->can($ID, READ)) {
-         return false;
-      }
+        $con_spotted = false;
+        $ID          = $entity->getField('id');
+        if (!$entity->can($ID, READ)) {
+            return false;
+        }
 
-      // Entity right applied
-      $canedit = $entity->can($ID, UPDATE);
+       // Entity right applied
+        $canedit = $entity->can($ID, UPDATE);
 
-      echo "<div class='spaced'>";
-      if ($canedit) {
-         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."' data-track-changes='true'>";
-      }
+        echo "<div class='spaced'>";
+        if ($canedit) {
+            echo "<form method='post' name=form action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "' data-track-changes='true'>";
+        }
 
-      echo "<table class='tab_cadre_fixe'>";
+        echo "<table class='tab_cadre_fixe'>";
 
-      Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
+        Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
 
-      echo "<tr><th colspan='4'>".__('Address')."</th></tr>";
+        echo "<tr><th colspan='4'>" . __('Address') . "</th></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>". Phone::getTypeName(1)."</td>";
-      echo "<td>";
-      echo Html::input('phonenumber', ['value' => $entity->fields['phonenumber']]);
-      echo "</td>";
-      echo "<td>".__('Administrative Number')."</td>";
-      echo "<td>";
-      echo Html::input('registration_number', ['value' => $entity->fields['registration_number']]);
-      echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . Phone::getTypeName(1) . "</td>";
+        echo "<td>";
+        echo Html::input('phonenumber', ['value' => $entity->fields['phonenumber']]);
+        echo "</td>";
+        echo "<td>" . __('Administrative Number') . "</td>";
+        echo "<td>";
+        echo Html::input('registration_number', ['value' => $entity->fields['registration_number']]);
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Fax')."</td>";
-      echo "<td>";
-      echo Html::input('fax', ['value' => $entity->fields['fax']]);
-      echo "</td>";
-      echo "<td rowspan='6'>".__('Address')."</td>";
-      echo "<td rowspan='6'>";
-      echo "<textarea name='address' class='form-control'>". $entity->fields["address"]."</textarea>";
-      echo "</td></tr>";
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Website')."</td>";
-      echo "<td>";
-      echo Html::input('website', ['value' => $entity->fields['website']]);
-      echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Fax') . "</td>";
+        echo "<td>";
+        echo Html::input('fax', ['value' => $entity->fields['fax']]);
+        echo "</td>";
+        echo "<td rowspan='6'>" . __('Address') . "</td>";
+        echo "<td rowspan='6'>";
+        echo "<textarea name='address' class='form-control'>" . $entity->fields["address"] . "</textarea>";
+        echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Website') . "</td>";
+        echo "<td>";
+        echo Html::input('website', ['value' => $entity->fields['website']]);
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Email', 'Emails', 1)."</td>";
-      echo "<td>";
-      echo Html::input('email', ['value' => $entity->fields['email']]);
-      echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . _n('Email', 'Emails', 1) . "</td>";
+        echo "<td>";
+        echo Html::input('email', ['value' => $entity->fields['email']]);
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Postal code')."</td>";
-      echo "<td>";
-      echo Html::input('postcode', ['value' => $entity->fields['postcode'], 'size' => 7]);
-      echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Postal code') . "</td>";
+        echo "<td>";
+        echo Html::input('postcode', ['value' => $entity->fields['postcode'], 'size' => 7]);
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('City')."</td>";
-      echo "<td>";
-      echo Html::input('town', ['value' => $entity->fields['town'], 'size' => 27]);
-      echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('City') . "</td>";
+        echo "<td>";
+        echo Html::input('town', ['value' => $entity->fields['town'], 'size' => 27]);
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>"._x('location', 'State')."</td>";
-      echo "<td>";
-      echo Html::input('state', ['value' => $entity->fields['state']]);
-      echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . _x('location', 'State') . "</td>";
+        echo "<td>";
+        echo Html::input('state', ['value' => $entity->fields['state']]);
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Country')."</td>";
-      echo "<td>";
-      echo Html::input('country', ['value' => $entity->fields['country']]);
-      echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Country') . "</td>";
+        echo "<td>";
+        echo Html::input('country', ['value' => $entity->fields['country']]);
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Location on map')."</td>";
-      echo "<td>";
-      $entity->displaySpecificTypeField($ID, [
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Location on map') . "</td>";
+        echo "<td>";
+        $entity->displaySpecificTypeField($ID, [
          'name'   => 'setlocation',
          'type'   => 'setlocation',
          'label'  => __('Location on map'),
          'list'   => false
-      ]);
-      echo "</td></tr>";
+        ]);
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>"._x('location', 'Longitude')."</td>";
-      echo "<td>";
-      echo Html::input('longitude', ['value' => $entity->fields['longitude']]);
-      echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . _x('location', 'Longitude') . "</td>";
+        echo "<td>";
+        echo Html::input('longitude', ['value' => $entity->fields['longitude']]);
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>"._x('location', 'Latitude')."</td>";
-      echo "<td>";
-      echo Html::input('latitude', ['value' => $entity->fields['latitude']]);
-      echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . _x('location', 'Latitude') . "</td>";
+        echo "<td>";
+        echo Html::input('latitude', ['value' => $entity->fields['latitude']]);
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>"._x('location', 'Altitude')."</td>";
-      echo "<td>";
-      echo Html::input('altitude', ['value' => $entity->fields['altitude']]);
-      echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . _x('location', 'Altitude') . "</td>";
+        echo "<td>";
+        echo Html::input('altitude', ['value' => $entity->fields['altitude']]);
+        echo "</td></tr>";
 
-      Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => []]);
-      echo "</table>";
+        Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => []]);
+        echo "</table>";
 
-      if ($canedit) {
-         echo "<div class='center'>";
-         echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary'>";
-         echo "</div>";
-         Html::closeForm();
-      }
-      echo "</div>";
-
-   }
+        if ($canedit) {
+            echo "<div class='center'>";
+            echo "<input type='hidden' name='id' value='" . $entity->fields["id"] . "'>";
+            echo "<input type='submit' name='update' value=\"" . _sx('button', 'Save') . "\" class='btn btn-primary'>";
+            echo "</div>";
+            Html::closeForm();
+        }
+        echo "</div>";
+    }
 
 
    /**
@@ -1418,85 +1472,86 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $entity Entity object
    **/
-   static function showAdvancedOptions(Entity $entity) {
-      $con_spotted = false;
-      $ID          = $entity->getField('id');
-      if (!$entity->can($ID, READ)) {
-         return false;
-      }
+    public static function showAdvancedOptions(Entity $entity)
+    {
+        $con_spotted = false;
+        $ID          = $entity->getField('id');
+        if (!$entity->can($ID, READ)) {
+            return false;
+        }
 
-      // Entity right applied (could be User::UPDATEAUTHENT)
-      $canedit = $entity->can($ID, UPDATE);
+       // Entity right applied (could be User::UPDATEAUTHENT)
+        $canedit = $entity->can($ID, UPDATE);
 
-      if ($canedit) {
-         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."' data-track-changes='true'>";
-      }
+        if ($canedit) {
+            echo "<form method='post' name=form action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "' data-track-changes='true'>";
+        }
 
-      echo "<table class='tab_cadre_fixe'>";
+        echo "<table class='tab_cadre_fixe'>";
 
-      Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
+        Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
 
-      echo "<tr><th colspan='2'>".__('Values for the generic rules for assignment to entities').
+        echo "<tr><th colspan='2'>" . __('Values for the generic rules for assignment to entities') .
            "</th></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='2' class='center'>".
-             __('These parameters are used as actions in generic rules for assignment to entities').
+        echo "<tr class='tab_bg_1'><td colspan='2' class='center'>" .
+             __('These parameters are used as actions in generic rules for assignment to entities') .
            "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Information in inventory tool (TAG) representing the entity')."</td>";
-      echo "<td>";
-      echo Html::input('tag', ['value' => $entity->fields['tag'], 'size' => 100]);
-      echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Information in inventory tool (TAG) representing the entity') . "</td>";
+        echo "<td>";
+        echo Html::input('tag', ['value' => $entity->fields['tag'], 'size' => 100]);
+        echo "</td></tr>";
 
-      if (Toolbox::canUseLdap()) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('LDAP directory information attribute representing the entity')."</td>";
-         echo "<td>";
-         echo Html::input('ldap_dn', ['value' => $entity->fields['ldap_dn'], 'size' => 100]);
-         echo "</td></tr>";
-      }
+        if (Toolbox::canUseLdap()) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>" . __('LDAP directory information attribute representing the entity') . "</td>";
+            echo "<td>";
+            echo Html::input('ldap_dn', ['value' => $entity->fields['ldap_dn'], 'size' => 100]);
+            echo "</td></tr>";
+        }
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Mail domain surrogates entity')."</td>";
-      echo "<td>";
-      echo Html::input('mail_domain', ['value' => $entity->fields['mail_domain'], 'size' => 100]);
-      echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Mail domain surrogates entity') . "</td>";
+        echo "<td>";
+        echo Html::input('mail_domain', ['value' => $entity->fields['mail_domain'], 'size' => 100]);
+        echo "</td></tr>";
 
-      if (Toolbox::canUseLdap()) {
-         echo "<tr><th colspan='2'>".
-                __('Values used in the interface to search users from a LDAP directory').
+        if (Toolbox::canUseLdap()) {
+            echo "<tr><th colspan='2'>" .
+                __('Values used in the interface to search users from a LDAP directory') .
               "</th></tr>";
 
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('LDAP directory of an entity')."</td>";
-         echo "<td>";
-         AuthLDAP::dropdown([
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>" . __('LDAP directory of an entity') . "</td>";
+            echo "<td>";
+            AuthLDAP::dropdown([
             'value'      => $entity->fields['authldaps_id'],
             'emptylabel' => __('Default server'),
             'condition'  => ['is_active' => 1]
-         ]);
-         echo "</td></tr>";
+            ]);
+            echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('LDAP filter associated to the entity (if necessary)')."</td>";
-         echo "<td>";
-         echo Html::input('entity_ldapfilter', ['value' => $entity->fields['entity_ldapfilter'], 'size' => 100]);
-         echo "</td></tr>";
-      }
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>" . __('LDAP filter associated to the entity (if necessary)') . "</td>";
+            echo "<td>";
+            echo Html::input('entity_ldapfilter', ['value' => $entity->fields['entity_ldapfilter'], 'size' => 100]);
+            echo "</td></tr>";
+        }
 
-      Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
+        Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
 
-      echo "</table>";
+        echo "</table>";
 
-      if ($canedit) {
-         echo "<div class='center'>";
-         echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary'>";
-         echo "</div>";
-         Html::closeForm();
-      }
-   }
+        if ($canedit) {
+            echo "<div class='center'>";
+            echo "<input type='hidden' name='id' value='" . $entity->fields["id"] . "'>";
+            echo "<input type='submit' name='update' value=\"" . _sx('button', 'Save') . "\" class='btn btn-primary'>";
+            echo "</div>";
+            Html::closeForm();
+        }
+    }
 
 
    /**
@@ -1504,204 +1559,222 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $entity Entity object
    **/
-   static function showInventoryOptions(Entity $entity) {
+    public static function showInventoryOptions(Entity $entity)
+    {
 
-      $ID = $entity->getField('id');
-      if (!$entity->can($ID, READ)) {
-         return false;
-      }
+        $ID = $entity->getField('id');
+        if (!$entity->can($ID, READ)) {
+            return false;
+        }
 
-      // Notification right applied
-      $canedit = (Infocom::canUpdate() && Session::haveAccessToEntity($ID));
+       // Notification right applied
+        $canedit = (Infocom::canUpdate() && Session::haveAccessToEntity($ID));
 
-      echo "<div class='spaced'>";
-      if ($canedit) {
-         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."' data-track-changes='true'>";
-      }
+        echo "<div class='spaced'>";
+        if ($canedit) {
+            echo "<form method='post' name=form action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "' data-track-changes='true'>";
+        }
 
-      echo "<table class='tab_cadre_fixe'>";
+        echo "<table class='tab_cadre_fixe'>";
 
-      Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
+        Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
 
-      echo "<tr><th colspan='4'>".__('Autofill dates for financial and administrative information').
+        echo "<tr><th colspan='4'>" . __('Autofill dates for financial and administrative information') .
            "</th></tr>";
 
-      $options[0] = __('No autofill');
-      if ($ID > 0) {
-         $options[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
-      }
+        $options[0] = __('No autofill');
+        if ($ID > 0) {
+            $options[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
+        }
 
-      $states = getAllDataFromTable('glpi_states');
-      foreach ($states as $state) {
-         $options[Infocom::ON_STATUS_CHANGE.'_'.$state['id']]
+        $states = getAllDataFromTable('glpi_states');
+        foreach ($states as $state) {
+            $options[Infocom::ON_STATUS_CHANGE . '_' . $state['id']]
                      //TRANS: %s is the name of the state
             = sprintf(__('Fill when shifting to state %s'), $state['name']);
-      }
+        }
 
-      $options[Infocom::COPY_WARRANTY_DATE] = __('Copy the start date of warranty');
-      //Buy date
-      echo "<tr class='tab_bg_2'>";
-      echo "<td> " . __('Date of purchase') . "</td>";
-      echo "<td>";
-      Dropdown::showFromArray('autofill_buy_date', $options,
-                              ['value' => $entity->getField('autofill_buy_date')]);
-      if ($entity->fields['autofill_buy_date'] == self::CONFIG_PARENT) {
-         $inherited_value = self::getUsedConfig('autofill_buy_date', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('autofill_buy_date', $inherited_value));
-      }
-      echo "</td>";
+        $options[Infocom::COPY_WARRANTY_DATE] = __('Copy the start date of warranty');
+       //Buy date
+        echo "<tr class='tab_bg_2'>";
+        echo "<td> " . __('Date of purchase') . "</td>";
+        echo "<td>";
+        Dropdown::showFromArray(
+            'autofill_buy_date',
+            $options,
+            ['value' => $entity->getField('autofill_buy_date')]
+        );
+        if ($entity->fields['autofill_buy_date'] == self::CONFIG_PARENT) {
+            $inherited_value = self::getUsedConfig('autofill_buy_date', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('autofill_buy_date', $inherited_value));
+        }
+        echo "</td>";
 
-      //Order date
-      echo "<td> " . __('Order date') . "</td>";
-      echo "<td>";
-      $options[Infocom::COPY_BUY_DATE] = __('Copy the date of purchase');
-      Dropdown::showFromArray('autofill_order_date', $options,
-                              ['value' => $entity->getField('autofill_order_date')]);
-      if ($entity->fields['autofill_order_date'] == self::CONFIG_PARENT) {
-         $inherited_value = self::getUsedConfig('autofill_order_date', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('autofill_order_date', $inherited_value));
-      }
-      echo "</td></tr>";
+       //Order date
+        echo "<td> " . __('Order date') . "</td>";
+        echo "<td>";
+        $options[Infocom::COPY_BUY_DATE] = __('Copy the date of purchase');
+        Dropdown::showFromArray(
+            'autofill_order_date',
+            $options,
+            ['value' => $entity->getField('autofill_order_date')]
+        );
+        if ($entity->fields['autofill_order_date'] == self::CONFIG_PARENT) {
+            $inherited_value = self::getUsedConfig('autofill_order_date', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('autofill_order_date', $inherited_value));
+        }
+        echo "</td></tr>";
 
-      //Delivery date
-      echo "<tr class='tab_bg_2'>";
-      echo "<td> " . __('Delivery date') . "</td>";
-      echo "<td>";
-      $options[Infocom::COPY_ORDER_DATE] = __('Copy the order date');
-      Dropdown::showFromArray('autofill_delivery_date', $options,
-                              ['value' => $entity->getField('autofill_delivery_date')]);
-      if ($entity->fields['autofill_delivery_date'] == self::CONFIG_PARENT) {
-         $inherited_value = self::getUsedConfig('autofill_delivery_date', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('autofill_delivery_date', $inherited_value));
-      }
-      echo "</td>";
+       //Delivery date
+        echo "<tr class='tab_bg_2'>";
+        echo "<td> " . __('Delivery date') . "</td>";
+        echo "<td>";
+        $options[Infocom::COPY_ORDER_DATE] = __('Copy the order date');
+        Dropdown::showFromArray(
+            'autofill_delivery_date',
+            $options,
+            ['value' => $entity->getField('autofill_delivery_date')]
+        );
+        if ($entity->fields['autofill_delivery_date'] == self::CONFIG_PARENT) {
+            $inherited_value = self::getUsedConfig('autofill_delivery_date', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('autofill_delivery_date', $inherited_value));
+        }
+        echo "</td>";
 
-      //Use date
-      echo "<td> " . __('Startup date') . " </td>";
-      echo "<td>";
-      $options[Infocom::COPY_DELIVERY_DATE] = __('Copy the delivery date');
-      Dropdown::showFromArray('autofill_use_date', $options,
-                              ['value' => $entity->getField('autofill_use_date')]);
-      if ($entity->fields['autofill_use_date'] == self::CONFIG_PARENT) {
-         $inherited_value = self::getUsedConfig('autofill_use_date', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('autofill_use_date', $inherited_value));
-      }
-      echo "</td></tr>";
+       //Use date
+        echo "<td> " . __('Startup date') . " </td>";
+        echo "<td>";
+        $options[Infocom::COPY_DELIVERY_DATE] = __('Copy the delivery date');
+        Dropdown::showFromArray(
+            'autofill_use_date',
+            $options,
+            ['value' => $entity->getField('autofill_use_date')]
+        );
+        if ($entity->fields['autofill_use_date'] == self::CONFIG_PARENT) {
+            $inherited_value = self::getUsedConfig('autofill_use_date', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('autofill_use_date', $inherited_value));
+        }
+        echo "</td></tr>";
 
-      //Warranty date
-      echo "<tr class='tab_bg_2'>";
-      echo "<td> " . __('Start date of warranty') . "</td>";
-      echo "<td>";
-      $options = [0                           => __('No autofill'),
+       //Warranty date
+        echo "<tr class='tab_bg_2'>";
+        echo "<td> " . __('Start date of warranty') . "</td>";
+        echo "<td>";
+        $options = [0                           => __('No autofill'),
                        Infocom::COPY_BUY_DATE      => __('Copy the date of purchase'),
                        Infocom::COPY_ORDER_DATE    => __('Copy the order date'),
                        Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date')];
-      if ($ID > 0) {
-         $options[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
-      }
+        if ($ID > 0) {
+            $options[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
+        }
 
-      Dropdown::showFromArray('autofill_warranty_date', $options,
-                              ['value' => $entity->getField('autofill_warranty_date')]);
-      if ($entity->fields['autofill_warranty_date'] == self::CONFIG_PARENT) {
-         $inherited_value = self::getUsedConfig('autofill_warranty_date', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('autofill_warranty_date', $inherited_value));
-      }
-      echo "</td>";
+        Dropdown::showFromArray(
+            'autofill_warranty_date',
+            $options,
+            ['value' => $entity->getField('autofill_warranty_date')]
+        );
+        if ($entity->fields['autofill_warranty_date'] == self::CONFIG_PARENT) {
+            $inherited_value = self::getUsedConfig('autofill_warranty_date', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('autofill_warranty_date', $inherited_value));
+        }
+        echo "</td>";
 
-      //Decommission date
-      echo "<td> " . __('Decommission date') . "</td>";
-      echo "<td>";
+       //Decommission date
+        echo "<td> " . __('Decommission date') . "</td>";
+        echo "<td>";
 
-      $options = [0                           => __('No autofill'),
+        $options = [0                           => __('No autofill'),
                        Infocom::COPY_BUY_DATE      => __('Copy the date of purchase'),
                        Infocom::COPY_ORDER_DATE    => __('Copy the order date'),
                        Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date')];
-      if ($ID > 0) {
-         $options[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
-      }
+        if ($ID > 0) {
+            $options[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
+        }
 
-      foreach ($states as $state) {
-         $options[Infocom::ON_STATUS_CHANGE.'_'.$state['id']]
+        foreach ($states as $state) {
+            $options[Infocom::ON_STATUS_CHANGE . '_' . $state['id']]
                      //TRANS: %s is the name of the state
             = sprintf(__('Fill when shifting to state %s'), $state['name']);
-      }
+        }
 
-      Dropdown::showFromArray('autofill_decommission_date', $options,
-                              ['value' => $entity->getField('autofill_decommission_date')]);
+        Dropdown::showFromArray(
+            'autofill_decommission_date',
+            $options,
+            ['value' => $entity->getField('autofill_decommission_date')]
+        );
 
-      if ($entity->fields['autofill_decommission_date'] == self::CONFIG_PARENT) {
-         $inherited_value = self::getUsedConfig('autofill_decommission_date', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('autofill_decommission_date', $inherited_value));
-      }
-      echo "</td></tr>";
+        if ($entity->fields['autofill_decommission_date'] == self::CONFIG_PARENT) {
+            $inherited_value = self::getUsedConfig('autofill_decommission_date', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('autofill_decommission_date', $inherited_value));
+        }
+        echo "</td></tr>";
 
-      echo "<tr><th colspan='4'>"._n('Software', 'Software', Session::getPluralNumber())."</th></tr>";
-      echo "<tr class='tab_bg_2'>";
-      echo "<td> " . __('Entity for software creation') . "</td>";
-      echo "<td>";
+        echo "<tr><th colspan='4'>" . _n('Software', 'Software', Session::getPluralNumber()) . "</th></tr>";
+        echo "<tr class='tab_bg_2'>";
+        echo "<td> " . __('Entity for software creation') . "</td>";
+        echo "<td>";
 
-      $toadd = [self::CONFIG_NEVER => __('No change of entity')]; // Keep software in PC entity
-      if ($ID > 0) {
-         $toadd[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
-      }
-      $entities = [$entity->fields['entities_id']];
-      foreach (getAncestorsOf('glpi_entities', $entity->fields['entities_id']) as $ent) {
-         if (Session::haveAccessToEntity($ent)) {
-            $entities[] = $ent;
-         }
-      }
+        $toadd = [self::CONFIG_NEVER => __('No change of entity')]; // Keep software in PC entity
+        if ($ID > 0) {
+            $toadd[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
+        }
+        $entities = [$entity->fields['entities_id']];
+        foreach (getAncestorsOf('glpi_entities', $entity->fields['entities_id']) as $ent) {
+            if (Session::haveAccessToEntity($ent)) {
+                $entities[] = $ent;
+            }
+        }
 
-      self::dropdown(['name'     => 'entities_id_software',
+        self::dropdown(['name'     => 'entities_id_software',
                            'value'    => $entity->getField('entities_id_software'),
                            'toadd'    => $toadd,
                            'entity'   => $entities,
                            'comments' => false]);
 
-      if ($entity->fields['entities_id_software'] == self::CONFIG_PARENT) {
-         $inherited_value = self::getUsedConfig('entities_id_software', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('entities_id_software', $inherited_value));
-      }
-      echo "</td><td colspan='2'></td></tr>";
+        if ($entity->fields['entities_id_software'] == self::CONFIG_PARENT) {
+            $inherited_value = self::getUsedConfig('entities_id_software', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('entities_id_software', $inherited_value));
+        }
+        echo "</td><td colspan='2'></td></tr>";
 
-      echo "<tr><th colspan='4'>" . __('Transfer') . "</th></tr>";
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>";
-      echo __('Model for automatic entity transfer on inventories');
-      echo "</td>";
-      echo "<td>";
-      $params = [
+        echo "<tr><th colspan='4'>" . __('Transfer') . "</th></tr>";
+        echo "<tr class='tab_bg_2'>";
+        echo "<td>";
+        echo __('Model for automatic entity transfer on inventories');
+        echo "</td>";
+        echo "<td>";
+        $params = [
           'name'       => 'transfers_id',
           'value'      => $entity->fields['transfers_id'],
           'emptylabel' => __('No automatic transfer')
-      ];
-      if ($entity->fields['id'] > 0) {
-         $params['toadd'] = ['-1' => __('Inheritance of the parent entity')];
-      }
-      Dropdown::show('Transfer', $params);
-      echo "</td>";
-      echo "</td><td colspan='2'></td></tr>";
+        ];
+        if ($entity->fields['id'] > 0) {
+            $params['toadd'] = ['-1' => __('Inheritance of the parent entity')];
+        }
+        Dropdown::show('Transfer', $params);
+        echo "</td>";
+        echo "</td><td colspan='2'></td></tr>";
 
-      echo "<tr><th colspan='4'>" . __('Automatic inventory') . "</th></tr>";
-      echo "<tr class='tab_bg_2'>";
-      echo "<td><label for='agent_base_url'>".__('Agent base URL')."</label></td>";
-      echo "<td>".Html::input('agent_base_url')."</td>";
-      echo "</td><td colspan='2'></td></tr>";
+        echo "<tr><th colspan='4'>" . __('Automatic inventory') . "</th></tr>";
+        echo "<tr class='tab_bg_2'>";
+        echo "<td><label for='agent_base_url'>" . __('Agent base URL') . "</label></td>";
+        echo "<td>" . Html::input('agent_base_url') . "</td>";
+        echo "</td><td colspan='2'></td></tr>";
 
-      Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
+        Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
 
-      echo "</table>";
+        echo "</table>";
 
-      if ($canedit) {
-         echo "<div class='center'>";
-         echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary'>";
-         echo "</div>";
-         Html::closeForm();
-      }
+        if ($canedit) {
+            echo "<div class='center'>";
+            echo "<input type='hidden' name='id' value='" . $entity->fields["id"] . "'>";
+            echo "<input type='submit' name='update' value=\"" . _sx('button', 'Save') . "\" class='btn btn-primary'>";
+            echo "</div>";
+            Html::closeForm();
+        }
 
-      echo "</div>";
-
-   }
+        echo "</div>";
+    }
 
 
    /**
@@ -1709,422 +1782,453 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $entity Entity object
    **/
-   static function showNotificationOptions(Entity $entity) {
+    public static function showNotificationOptions(Entity $entity)
+    {
 
-      $ID = $entity->getField('id');
-      if (!$entity->can($ID, READ)
-          || !Notification::canView()) {
-         return false;
-      }
+        $ID = $entity->getField('id');
+        if (
+            !$entity->can($ID, READ)
+            || !Notification::canView()
+        ) {
+            return false;
+        }
 
-      // Notification right applied
-      $canedit = (Notification::canUpdate()
+       // Notification right applied
+        $canedit = (Notification::canUpdate()
                   && Session::haveAccessToEntity($ID));
 
-      echo "<div class='spaced'>";
-      if ($canedit) {
-         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."' data-track-changes='true'>";
-      }
+        echo "<div class='spaced'>";
+        if ($canedit) {
+            echo "<form method='post' name=form action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "' data-track-changes='true'>";
+        }
 
-      echo "<table class='tab_cadre_fixe'>";
+        echo "<table class='tab_cadre_fixe'>";
 
-      Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
+        Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
 
-      echo "<tr><th colspan='4'>".__('Notification options')."</th></tr>";
+        echo "<tr><th colspan='4'>" . __('Notification options') . "</th></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Administrator email')."</td>";
-      echo "<td>";
-      echo Html::input('admin_email', ['value' => $entity->fields['admin_email']]);
-      if (strlen($entity->fields['admin_email']) == 0) {
-         self::inheritedValue(self::getUsedConfig('admin_email', $ID, '', ''));
-      }
-      echo "</td>";
-      echo "<td>" . __('Administrator name') . "</td><td>";
-      // we inherit only if email inherit also
-      echo Html::input('admin_email_name', ['value' => $entity->fields['admin_email_name']]);
-      // warning, we rely on email field to inherit name field
-      if (strlen($entity->fields['admin_email']) == 0) {
-         self::inheritedValue(self::getUsedConfig('admin_email_name', $ID, '', ''));
-      }
-      echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Administrator email') . "</td>";
+        echo "<td>";
+        echo Html::input('admin_email', ['value' => $entity->fields['admin_email']]);
+        if (strlen($entity->fields['admin_email']) == 0) {
+            self::inheritedValue(self::getUsedConfig('admin_email', $ID, '', ''));
+        }
+        echo "</td>";
+        echo "<td>" . __('Administrator name') . "</td><td>";
+       // we inherit only if email inherit also
+        echo Html::input('admin_email_name', ['value' => $entity->fields['admin_email_name']]);
+       // warning, we rely on email field to inherit name field
+        if (strlen($entity->fields['admin_email']) == 0) {
+            self::inheritedValue(self::getUsedConfig('admin_email_name', $ID, '', ''));
+        }
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Administrator reply-to email (if needed)')."</td>";
-      echo "<td>";
-      echo Html::input('admin_reply', ['value' => $entity->fields['admin_reply']]);
-      if (strlen($entity->fields['admin_reply']) == 0) {
-         self::inheritedValue(self::getUsedConfig('admin_reply', $ID, '', ''));
-      }
-      echo "</td>";
-      echo "<td>" . __('Response address (if needed)') . "</td><td>";
-      echo Html::input('admin_reply_name', ['value' => $entity->fields['admin_reply_name']]);
-      // warning, we rely on email field to inherit name field
-      if (strlen($entity->fields['admin_reply']) == 0) {
-         self::inheritedValue(self::getUsedConfig('admin_reply_name', $ID, '', ''));
-      }
-      echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Administrator reply-to email (if needed)') . "</td>";
+        echo "<td>";
+        echo Html::input('admin_reply', ['value' => $entity->fields['admin_reply']]);
+        if (strlen($entity->fields['admin_reply']) == 0) {
+            self::inheritedValue(self::getUsedConfig('admin_reply', $ID, '', ''));
+        }
+        echo "</td>";
+        echo "<td>" . __('Response address (if needed)') . "</td><td>";
+        echo Html::input('admin_reply_name', ['value' => $entity->fields['admin_reply_name']]);
+       // warning, we rely on email field to inherit name field
+        if (strlen($entity->fields['admin_reply']) == 0) {
+            self::inheritedValue(self::getUsedConfig('admin_reply_name', $ID, '', ''));
+        }
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Prefix for notifications')."</td>";
-      echo "<td>";
-      echo Html::input('notification_subject_tag', ['value' => $entity->fields['notification_subject_tag']]);
-      if (strlen($entity->fields['notification_subject_tag']) == 0) {
-         self::inheritedValue(self::getUsedConfig('notification_subject_tag', $ID, '', ''));
-      }
-      echo "</td>";
-      echo "<td>".__('Delay to send email notifications')."</td>";
-      echo "<td>";
-      $toadd=[];
-      if ($ID > 0) {
-         $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
-      }
-      Dropdown::showNumber('delay_send_emails', ['value' => $entity->fields["delay_send_emails"],
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Prefix for notifications') . "</td>";
+        echo "<td>";
+        echo Html::input('notification_subject_tag', ['value' => $entity->fields['notification_subject_tag']]);
+        if (strlen($entity->fields['notification_subject_tag']) == 0) {
+            self::inheritedValue(self::getUsedConfig('notification_subject_tag', $ID, '', ''));
+        }
+        echo "</td>";
+        echo "<td>" . __('Delay to send email notifications') . "</td>";
+        echo "<td>";
+        $toadd = [];
+        if ($ID > 0) {
+            $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
+        }
+        Dropdown::showNumber('delay_send_emails', ['value' => $entity->fields["delay_send_emails"],
                                                       'min'   => 0,
                                                       'max'   => 100,
                                                       'unit'  => 'minute',
                                                       'toadd' => $toadd]);
 
-      if ($entity->fields['delay_send_emails'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('delay_send_emails', $entity->getField('entities_id'));
-         self::inheritedValue($entity->getValueToDisplay('delay_send_emails', $tid, ['html' => true]));
-      }
-      echo "</td></tr>";
+        if ($entity->fields['delay_send_emails'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig('delay_send_emails', $entity->getField('entities_id'));
+            self::inheritedValue($entity->getValueToDisplay('delay_send_emails', $tid, ['html' => true]));
+        }
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Enable notifications by default')."</td>";
-      echo "<td>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Enable notifications by default') . "</td>";
+        echo "<td>";
 
-      Alert::dropdownYesNo(['name'           => "is_notif_enable_default",
+        Alert::dropdownYesNo(['name'           => "is_notif_enable_default",
                                  'value'          =>  $entity->getField('is_notif_enable_default'),
                                  'inherit_parent' => (($ID > 0) ? 1 : 0)]);
 
-      if ($entity->fields['is_notif_enable_default'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('is_notif_enable_default', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('is_notif_enable_default', $tid));
-      }
-      echo "</td>";
-      echo "<td colspan='2'>&nbsp;</td>";
+        if ($entity->fields['is_notif_enable_default'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig('is_notif_enable_default', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('is_notif_enable_default', $tid));
+        }
+        echo "</td>";
+        echo "<td colspan='2'>&nbsp;</td>";
 
-      echo "</tr>";
+        echo "</tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Email signature') . "</td>";
-      echo "<td colspan='3'>";
-      echo "<textarea rows='5' name='mailing_signature' class='form-control'>".
-             $entity->fields["mailing_signature"]."</textarea>";
-      if (strlen($entity->fields['mailing_signature']) == 0) {
-         self::inheritedValue(self::getUsedConfig('mailing_signature', $ID, '', ''));
-      }
-      echo "</td></tr>";
-      echo "</table>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Email signature') . "</td>";
+        echo "<td colspan='3'>";
+        echo "<textarea rows='5' name='mailing_signature' class='form-control'>" .
+             $entity->fields["mailing_signature"] . "</textarea>";
+        if (strlen($entity->fields['mailing_signature']) == 0) {
+            self::inheritedValue(self::getUsedConfig('mailing_signature', $ID, '', ''));
+        }
+        echo "</td></tr>";
+        echo "</table>";
 
-      echo "<table class='tab_cadre_fixe tab_spaced'>";
-      echo "<tr><th colspan='4'>".__('Alarms options')."</th></tr>";
+        echo "<table class='tab_cadre_fixe tab_spaced'>";
+        echo "<tr><th colspan='4'>" . __('Alarms options') . "</th></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<th colspan='2' rowspan='2'>";
-      echo _n('Cartridge', 'Cartridges', Session::getPluralNumber());
-      echo "</th>";
-      echo "<td>" . __('Reminders frequency for alarms on cartridges') . "</td><td>";
-      $default_value = $entity->fields['cartridges_alert_repeat'];
-      Alert::dropdown(['name'           => 'cartridges_alert_repeat',
+        echo "<tr class='tab_bg_1'>";
+        echo "<th colspan='2' rowspan='2'>";
+        echo _n('Cartridge', 'Cartridges', Session::getPluralNumber());
+        echo "</th>";
+        echo "<td>" . __('Reminders frequency for alarms on cartridges') . "</td><td>";
+        $default_value = $entity->fields['cartridges_alert_repeat'];
+        Alert::dropdown(['name'           => 'cartridges_alert_repeat',
                             'value'          => $default_value,
                             'inherit_parent' => (($ID > 0) ? 1 : 0)]);
 
-      if ($entity->fields['cartridges_alert_repeat'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('cartridges_alert_repeat', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('cartridges_alert_repeat', $tid), true);
-      }
+        if ($entity->fields['cartridges_alert_repeat'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig('cartridges_alert_repeat', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('cartridges_alert_repeat', $tid), true);
+        }
 
-      echo "</td></tr>";
-      echo "<tr class='tab_bg_1'><td>" . __('Default threshold for cartridges count') ."</td><td>";
-      if ($ID > 0) {
-         $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+        echo "</td></tr>";
+        echo "<tr class='tab_bg_1'><td>" . __('Default threshold for cartridges count') . "</td><td>";
+        if ($ID > 0) {
+            $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity'),
                         self::CONFIG_NEVER => __('Never')];
-      } else {
-         $toadd = [self::CONFIG_NEVER => __('Never')];
-      }
-      Dropdown::showNumber('default_cartridges_alarm_threshold',
-                            ['value' => $entity->fields["default_cartridges_alarm_threshold"],
+        } else {
+            $toadd = [self::CONFIG_NEVER => __('Never')];
+        }
+        Dropdown::showNumber(
+            'default_cartridges_alarm_threshold',
+            ['value' => $entity->fields["default_cartridges_alarm_threshold"],
                                   'min'   => 0,
                                   'max'   => 100,
                                   'step'  => 1,
-                                  'toadd' => $toadd]);
-      if ($entity->fields['default_cartridges_alarm_threshold'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('default_cartridges_alarm_threshold',
-                                    $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('default_cartridges_alarm_threshold', $tid), true);
-      }
-      echo "</td></tr>";
+            'toadd' => $toadd]
+        );
+        if ($entity->fields['default_cartridges_alarm_threshold'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig(
+                'default_cartridges_alarm_threshold',
+                $entity->getField('entities_id')
+            );
+            self::inheritedValue(self::getSpecificValueToDisplay('default_cartridges_alarm_threshold', $tid), true);
+        }
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<th colspan='2' rowspan='2'>";
-      echo _n('Consumable', 'Consumables', Session::getPluralNumber());
-      echo "</th>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<th colspan='2' rowspan='2'>";
+        echo _n('Consumable', 'Consumables', Session::getPluralNumber());
+        echo "</th>";
 
-      echo "<td>" . __('Reminders frequency for alarms on consumables') . "</td><td>";
-      $default_value = $entity->fields['consumables_alert_repeat'];
-      Alert::dropdown(['name'           => 'consumables_alert_repeat',
+        echo "<td>" . __('Reminders frequency for alarms on consumables') . "</td><td>";
+        $default_value = $entity->fields['consumables_alert_repeat'];
+        Alert::dropdown(['name'           => 'consumables_alert_repeat',
                             'value'          => $default_value,
                             'inherit_parent' => (($ID > 0) ? 1 : 0)]);
-      if ($entity->fields['consumables_alert_repeat'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('consumables_alert_repeat', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('consumables_alert_repeat', $tid), true);
-      }
-      echo "</td></tr>";
+        if ($entity->fields['consumables_alert_repeat'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig('consumables_alert_repeat', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('consumables_alert_repeat', $tid), true);
+        }
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . __('Default threshold for consumables count') ."</td><td>";
-      if ($ID > 0) {
-         $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+        echo "<tr class='tab_bg_1'><td>" . __('Default threshold for consumables count') . "</td><td>";
+        if ($ID > 0) {
+            $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity'),
                         self::CONFIG_NEVER => __('Never')];
-      } else {
-         $toadd = [self::CONFIG_NEVER => __('Never')];
-      }
-      Dropdown::showNumber('default_consumables_alarm_threshold',
-                            ['value' => $entity->fields["default_consumables_alarm_threshold"],
+        } else {
+            $toadd = [self::CONFIG_NEVER => __('Never')];
+        }
+        Dropdown::showNumber(
+            'default_consumables_alarm_threshold',
+            ['value' => $entity->fields["default_consumables_alarm_threshold"],
                                   'min'   => 0,
                                   'max'   => 100,
                                   'step'  => 1,
-                                  'toadd' => $toadd]);
-      if ($entity->fields['default_consumables_alarm_threshold'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('default_consumables_alarm_threshold',
-                                    $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('default_consumables_alarm_threshold', $tid), true);
+            'toadd' => $toadd]
+        );
+        if ($entity->fields['default_consumables_alarm_threshold'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig(
+                'default_consumables_alarm_threshold',
+                $entity->getField('entities_id')
+            );
+            self::inheritedValue(self::getSpecificValueToDisplay('default_consumables_alarm_threshold', $tid), true);
+        }
+        echo "</td></tr>";
 
-      }
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<th colspan='2' rowspan='3'>";
-      echo _n('Contract', 'Contracts', Session::getPluralNumber());
-      echo "</th>";
-      echo "<td>" . __('Alarms on contracts') . "</td><td>";
-      $default_value = $entity->fields['use_contracts_alert'];
-      Alert::dropdownYesNo(['name'           => "use_contracts_alert",
+        echo "<tr class='tab_bg_1'>";
+        echo "<th colspan='2' rowspan='3'>";
+        echo _n('Contract', 'Contracts', Session::getPluralNumber());
+        echo "</th>";
+        echo "<td>" . __('Alarms on contracts') . "</td><td>";
+        $default_value = $entity->fields['use_contracts_alert'];
+        Alert::dropdownYesNo(['name'           => "use_contracts_alert",
                                  'value'          => $default_value,
                                  'inherit_parent' => (($ID > 0) ? 1 : 0)]);
-      if ($entity->fields['use_contracts_alert'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('use_contracts_alert', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('use_contracts_alert', $tid), true);
-      }
-      echo "</td></tr>";
+        if ($entity->fields['use_contracts_alert'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig('use_contracts_alert', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('use_contracts_alert', $tid), true);
+        }
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".__('Default value') . "</td><td>";
-      Contract::dropdownAlert(['name'           => "default_contract_alert",
+        echo "<tr class='tab_bg_1'><td>" . __('Default value') . "</td><td>";
+        Contract::dropdownAlert(['name'           => "default_contract_alert",
                                     'value'          => $entity->fields["default_contract_alert"],
                                     'inherit_parent' => (($ID > 0) ? 1 : 0)]);
-      if ($entity->fields['default_contract_alert'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('default_contract_alert', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('default_contract_alert', $tid), true);
-      }
+        if ($entity->fields['default_contract_alert'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig('default_contract_alert', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('default_contract_alert', $tid), true);
+        }
 
-      echo "</td></tr>";
-      echo "<tr class='tab_bg_1'><td>" . __('Send contract alarms before')."</td><td>";
-      Alert::dropdownIntegerNever('send_contracts_alert_before_delay',
-                                  $entity->fields['send_contracts_alert_before_delay'],
-                                  ['max'            => 99,
+        echo "</td></tr>";
+        echo "<tr class='tab_bg_1'><td>" . __('Send contract alarms before') . "</td><td>";
+        Alert::dropdownIntegerNever(
+            'send_contracts_alert_before_delay',
+            $entity->fields['send_contracts_alert_before_delay'],
+            ['max'            => 99,
                                         'inherit_parent' => (($ID > 0) ? 1 : 0),
                                         'unit'           => 'day',
-                                        'never_string'   => __('No')]);
-      if ($entity->fields['send_contracts_alert_before_delay'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('send_contracts_alert_before_delay',
-                                    $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('send_contracts_alert_before_delay', $tid), true);
-      }
-      echo "</td></tr>";
+            'never_string'   => __('No')]
+        );
+        if ($entity->fields['send_contracts_alert_before_delay'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig(
+                'send_contracts_alert_before_delay',
+                $entity->getField('entities_id')
+            );
+            self::inheritedValue(self::getSpecificValueToDisplay('send_contracts_alert_before_delay', $tid), true);
+        }
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<th colspan='2' rowspan='3'>";
-      echo __('Financial and administrative information');
-      echo "</th>";
-      echo "<td>" . __('Alarms on financial and administrative information') . "</td><td>";
-      $default_value = $entity->fields['use_infocoms_alert'];
-      Alert::dropdownYesNo(['name'           => "use_infocoms_alert",
+        echo "<tr class='tab_bg_1'>";
+        echo "<th colspan='2' rowspan='3'>";
+        echo __('Financial and administrative information');
+        echo "</th>";
+        echo "<td>" . __('Alarms on financial and administrative information') . "</td><td>";
+        $default_value = $entity->fields['use_infocoms_alert'];
+        Alert::dropdownYesNo(['name'           => "use_infocoms_alert",
                                  'value'          => $default_value,
                                  'inherit_parent' => (($ID > 0) ? 1 : 0)]);
-      if ($entity->fields['use_infocoms_alert'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('use_infocoms_alert', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('use_infocoms_alert', $tid), true);
-      }
+        if ($entity->fields['use_infocoms_alert'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig('use_infocoms_alert', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('use_infocoms_alert', $tid), true);
+        }
 
-      echo "</td></tr>";
-      echo "<tr class='tab_bg_1'><td>" . __('Default value')."</td><td>";
-      Infocom::dropdownAlert(['name'           => 'default_infocom_alert',
+        echo "</td></tr>";
+        echo "<tr class='tab_bg_1'><td>" . __('Default value') . "</td><td>";
+        Infocom::dropdownAlert(['name'           => 'default_infocom_alert',
                                    'value'          => $entity->fields["default_infocom_alert"],
                                    'inherit_parent' => (($ID > 0) ? 1 : 0)]);
-      if ($entity->fields['default_infocom_alert'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('default_infocom_alert', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('default_infocom_alert', $tid), true);
-      }
+        if ($entity->fields['default_infocom_alert'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig('default_infocom_alert', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('default_infocom_alert', $tid), true);
+        }
 
-      echo "</td></tr>";
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Send financial and administrative information alarms before')."</td><td>";
-      Alert::dropdownIntegerNever('send_infocoms_alert_before_delay',
-                                  $entity->fields['send_infocoms_alert_before_delay'],
-                                  ['max'            => 99,
+        echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Send financial and administrative information alarms before') . "</td><td>";
+        Alert::dropdownIntegerNever(
+            'send_infocoms_alert_before_delay',
+            $entity->fields['send_infocoms_alert_before_delay'],
+            ['max'            => 99,
                                         'inherit_parent' => (($ID > 0) ? 1 : 0),
                                         'unit'           => 'day',
-                                        'never_string'   => __('No')]);
-      if ($entity->fields['send_infocoms_alert_before_delay'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('send_infocoms_alert_before_delay',
-                                    $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('send_infocoms_alert_before_delay', $tid), true);
-      }
-      echo "</td></tr>";
+            'never_string'   => __('No')]
+        );
+        if ($entity->fields['send_infocoms_alert_before_delay'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig(
+                'send_infocoms_alert_before_delay',
+                $entity->getField('entities_id')
+            );
+            self::inheritedValue(self::getSpecificValueToDisplay('send_infocoms_alert_before_delay', $tid), true);
+        }
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<th colspan='2' rowspan='2'>";
-      echo SoftwareLicense::getTypeName(Session::getPluralNumber());
-      echo "</th>";
-      echo "<td>" . __('Alarms on expired licenses') . "</td><td>";
-      $default_value = $entity->fields['use_licenses_alert'];
-      Alert::dropdownYesNo(['name'           => "use_licenses_alert",
+        echo "<tr class='tab_bg_1'>";
+        echo "<th colspan='2' rowspan='2'>";
+        echo SoftwareLicense::getTypeName(Session::getPluralNumber());
+        echo "</th>";
+        echo "<td>" . __('Alarms on expired licenses') . "</td><td>";
+        $default_value = $entity->fields['use_licenses_alert'];
+        Alert::dropdownYesNo(['name'           => "use_licenses_alert",
                                  'value'          => $default_value,
                                  'inherit_parent' => (($ID > 0) ? 1 : 0)]);
-      if ($entity->fields['use_licenses_alert'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('use_licenses_alert', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('use_licenses_alert', $tid), true);
-      }
-      echo "</td></tr>";
-      echo "<tr class='tab_bg_1'><td>" . __('Send license alarms before')."</td><td>";
-      Alert::dropdownIntegerNever('send_licenses_alert_before_delay',
-                                  $entity->fields['send_licenses_alert_before_delay'],
-                                  ['max'            => 99,
+        if ($entity->fields['use_licenses_alert'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig('use_licenses_alert', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('use_licenses_alert', $tid), true);
+        }
+        echo "</td></tr>";
+        echo "<tr class='tab_bg_1'><td>" . __('Send license alarms before') . "</td><td>";
+        Alert::dropdownIntegerNever(
+            'send_licenses_alert_before_delay',
+            $entity->fields['send_licenses_alert_before_delay'],
+            ['max'            => 99,
                                         'inherit_parent' => (($ID > 0) ? 1 : 0),
                                         'unit'           => 'day',
-                                        'never_string'   => __('No')]);
-      if ($entity->fields['send_licenses_alert_before_delay'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('send_licenses_alert_before_delay',
-                                    $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('send_licenses_alert_before_delay', $tid), true);
-      }
+            'never_string'   => __('No')]
+        );
+        if ($entity->fields['send_licenses_alert_before_delay'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig(
+                'send_licenses_alert_before_delay',
+                $entity->getField('entities_id')
+            );
+            self::inheritedValue(self::getSpecificValueToDisplay('send_licenses_alert_before_delay', $tid), true);
+        }
 
-      echo "</td></tr>";
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<th colspan='2' rowspan='2'>";
-      echo _n('Certificate', 'Certificates', Session::getPluralNumber());
-      echo "</th>";
-      echo "<td>" . __('Alarms on expired certificates') . "</td><td>";
-      $default_value = $entity->fields['use_certificates_alert'];
-      Alert::dropdownYesNo(['name'           => "use_certificates_alert",
+        echo "<tr class='tab_bg_1'>";
+        echo "<th colspan='2' rowspan='2'>";
+        echo _n('Certificate', 'Certificates', Session::getPluralNumber());
+        echo "</th>";
+        echo "<td>" . __('Alarms on expired certificates') . "</td><td>";
+        $default_value = $entity->fields['use_certificates_alert'];
+        Alert::dropdownYesNo(['name'           => "use_certificates_alert",
                             'value'          => $default_value,
                             'inherit_parent' => (($ID > 0) ? 1 : 0)]);
-      if ($entity->fields['use_certificates_alert'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('use_certificates_alert', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('use_certificates_alert', $tid), true);
-      }
-      echo "</td></tr>";
-      echo "<tr class='tab_bg_1'><td>" . __('Send certificates alarms before')."</td><td>";
-      Alert::dropdownIntegerNever('send_certificates_alert_before_delay',
-                                  $entity->fields['send_certificates_alert_before_delay'],
-                                  ['max'            => 99,
+        if ($entity->fields['use_certificates_alert'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig('use_certificates_alert', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('use_certificates_alert', $tid), true);
+        }
+        echo "</td></tr>";
+        echo "<tr class='tab_bg_1'><td>" . __('Send certificates alarms before') . "</td><td>";
+        Alert::dropdownIntegerNever(
+            'send_certificates_alert_before_delay',
+            $entity->fields['send_certificates_alert_before_delay'],
+            ['max'            => 99,
                                    'inherit_parent' => (($ID > 0) ? 1 : 0),
                                    'unit'           => 'day',
-                                   'never_string'   => __('No')]);
-      if ($entity->fields['send_certificates_alert_before_delay'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('send_certificates_alert_before_delay',
-                                    $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('send_certificates_alert_before_delay', $tid), true);
-      }
+            'never_string'   => __('No')]
+        );
+        if ($entity->fields['send_certificates_alert_before_delay'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig(
+                'send_certificates_alert_before_delay',
+                $entity->getField('entities_id')
+            );
+            self::inheritedValue(self::getSpecificValueToDisplay('send_certificates_alert_before_delay', $tid), true);
+        }
 
-      echo "</td></tr>";
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<th colspan='2' rowspan='1'>";
-      echo _n('Reservation', 'Reservations', Session::getPluralNumber());
-      echo "</th>";
-      echo "<td>" . __('Alerts on reservations') . "</td><td>";
-      Alert::dropdownIntegerNever('use_reservations_alert',
-                                  $entity->fields['use_reservations_alert'],
-                                  ['max'            => 99,
+        echo "<tr class='tab_bg_1'>";
+        echo "<th colspan='2' rowspan='1'>";
+        echo _n('Reservation', 'Reservations', Session::getPluralNumber());
+        echo "</th>";
+        echo "<td>" . __('Alerts on reservations') . "</td><td>";
+        Alert::dropdownIntegerNever(
+            'use_reservations_alert',
+            $entity->fields['use_reservations_alert'],
+            ['max'            => 99,
                                         'inherit_parent' => (($ID > 0) ? 1 : 0),
-                                        'unit'           => 'hour']);
-      if ($entity->fields['use_reservations_alert'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('use_reservations_alert', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('use_reservations_alert', $tid), true);
-      }
-      echo "</td></tr>";
+            'unit'           => 'hour']
+        );
+        if ($entity->fields['use_reservations_alert'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig('use_reservations_alert', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('use_reservations_alert', $tid), true);
+        }
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<th colspan='2' rowspan='1'>";
-      echo _n('Ticket', 'Tickets', Session::getPluralNumber());
-      echo "</th>";
-      echo "<td >". __('Alerts on tickets which are not solved since'). "</td><td>";
-      Alert::dropdownIntegerNever('notclosed_delay', $entity->fields["notclosed_delay"],
-                                  ['max'            => 99,
+        echo "<tr class='tab_bg_1'>";
+        echo "<th colspan='2' rowspan='1'>";
+        echo _n('Ticket', 'Tickets', Session::getPluralNumber());
+        echo "</th>";
+        echo "<td >" . __('Alerts on tickets which are not solved since') . "</td><td>";
+        Alert::dropdownIntegerNever(
+            'notclosed_delay',
+            $entity->fields["notclosed_delay"],
+            ['max'            => 99,
                                         'inherit_parent' => (($ID > 0) ? 1 : 0),
-                                        'unit'           => 'day']);
-      if ($entity->fields['notclosed_delay'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('notclosed_delay', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('notclosed_delay', $tid), true);
-      }
-      echo "</td></tr>";
+            'unit'           => 'day']
+        );
+        if ($entity->fields['notclosed_delay'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig('notclosed_delay', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('notclosed_delay', $tid), true);
+        }
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<th colspan='2' rowspan='3'>";
-      echo Domain::getTypeName(Session::getPluralNumber());
-      echo "</th>";
-      echo "<td>" . __('Alarms on domains expiries') . "</td><td>";
-      $default_value = $entity->fields['use_domains_alert'];
-      Alert::dropdownYesNo(['name'           => "use_domains_alert",
+        echo "<tr class='tab_bg_1'>";
+        echo "<th colspan='2' rowspan='3'>";
+        echo Domain::getTypeName(Session::getPluralNumber());
+        echo "</th>";
+        echo "<td>" . __('Alarms on domains expiries') . "</td><td>";
+        $default_value = $entity->fields['use_domains_alert'];
+        Alert::dropdownYesNo(['name'           => "use_domains_alert",
                                  'value'          => $default_value,
                                  'inherit_parent' => (($ID > 0) ? 1 : 0)]);
-      if ($entity->fields['use_domains_alert'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('use_domains_alert', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('use_domains_alert', $tid), true);
-      }
-      echo "</td></tr>";
-      echo "<tr class='tab_bg_1'>";
+        if ($entity->fields['use_domains_alert'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig('use_domains_alert', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('use_domains_alert', $tid), true);
+        }
+        echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
 
-      echo "<td>" . __('Domains closes expiries') . "</td><td>";
-      Alert::dropdownIntegerNever(
-         'send_domains_alert_close_expiries_delay',
-         $entity->fields["send_domains_alert_close_expiries_delay"],
-         [
+        echo "<td>" . __('Domains closes expiries') . "</td><td>";
+        Alert::dropdownIntegerNever(
+            'send_domains_alert_close_expiries_delay',
+            $entity->fields["send_domains_alert_close_expiries_delay"],
+            [
             'max'            => 99,
             'inherit_parent' => (($ID > 0) ? 1 : 0),
             'unit'           => 'day'
-         ]
-      );
-      if ($entity->fields['send_domains_alert_close_expiries_delay'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('send_domains_alert_close_expiries_delay', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('send_domains_alert_close_expiries_delay', $tid), true);
-      }
-      echo "</td></tr>";
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Domains expired') . "</td><td>";
-      Alert::dropdownIntegerNever(
-         'send_domains_alert_expired_delay',
-         $entity->fields["send_domains_alert_expired_delay"],
-         [
+            ]
+        );
+        if ($entity->fields['send_domains_alert_close_expiries_delay'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig('send_domains_alert_close_expiries_delay', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('send_domains_alert_close_expiries_delay', $tid), true);
+        }
+        echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Domains expired') . "</td><td>";
+        Alert::dropdownIntegerNever(
+            'send_domains_alert_expired_delay',
+            $entity->fields["send_domains_alert_expired_delay"],
+            [
             'max'            => 99,
             'inherit_parent' => (($ID > 0) ? 1 : 0),
             'unit'           => 'day'
-         ]
-      );
-      if ($entity->fields['send_domains_alert_expired_delay'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('send_domains_alert_expired_delay', $entity->getField('entities_id'));
-         self::inheritedValue(self::getSpecificValueToDisplay('send_domains_alert_expired_delay', $tid), true);
-      }
-      echo "</td></tr>";
+            ]
+        );
+        if ($entity->fields['send_domains_alert_expired_delay'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig('send_domains_alert_expired_delay', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('send_domains_alert_expired_delay', $tid), true);
+        }
+        echo "</td></tr>";
 
-      Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
+        Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
 
-      echo "</table>";
+        echo "</table>";
 
-      if ($canedit) {
-         echo "<div class='center'>";
-         echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary'>";
-         echo "</div>";
-         Html::closeForm();
-      }
+        if ($canedit) {
+            echo "<div class='center'>";
+            echo "<input type='hidden' name='id' value='" . $entity->fields["id"] . "'>";
+            echo "<input type='submit' name='update' value=\"" . _sx('button', 'Save') . "\" class='btn btn-primary'>";
+            echo "</div>";
+            Html::closeForm();
+        }
 
-      echo "</div>";
-   }
+        echo "</div>";
+    }
 
    /**
     * UI customization configuration form.
@@ -2135,124 +2239,126 @@ class Entity extends CommonTreeDropdown {
     *
     * @since 9.5.0
     */
-   static function showUiCustomizationOptions(Entity $entity) {
+    public static function showUiCustomizationOptions(Entity $entity)
+    {
 
-      global $CFG_GLPI;
+        global $CFG_GLPI;
 
-      $ID = $entity->getField('id');
-      if (!$entity->can($ID, READ) || !Session::haveRight(Config::$rightname, UPDATE)) {
-         return false;
-      }
+        $ID = $entity->getField('id');
+        if (!$entity->can($ID, READ) || !Session::haveRight(Config::$rightname, UPDATE)) {
+            return false;
+        }
 
-      // Codemirror lib
-      echo Html::css('public/lib/codemirror.css');
-      echo Html::script("public/lib/codemirror.js");
+       // Codemirror lib
+        echo Html::css('public/lib/codemirror.css');
+        echo Html::script("public/lib/codemirror.js");
 
-      // Notification right applied
-      $canedit = Session::haveRight(Config::$rightname, UPDATE)
+       // Notification right applied
+        $canedit = Session::haveRight(Config::$rightname, UPDATE)
          && Session::haveAccessToEntity($ID);
 
-      echo "<div class='spaced'>";
-      if ($canedit) {
-         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."' data-track-changes='true'>";
-      }
+        echo "<div class='spaced'>";
+        if ($canedit) {
+            echo "<form method='post' name=form action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "' data-track-changes='true'>";
+        }
 
-      echo "<table class='tab_cadre_fixe custom_css_configuration'>";
+        echo "<table class='tab_cadre_fixe custom_css_configuration'>";
 
-      Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
+        Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
 
-      $rand = mt_rand();
+        $rand = mt_rand();
 
-      echo "<tr><th colspan='2'>".__('UI options')."</th></tr>";
+        echo "<tr><th colspan='2'>" . __('UI options') . "</th></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Enable CSS customization')."</td>";
-      echo "<td>";
-      $values = [];
-      if (($ID > 0) ? 1 : 0) {
-         $values[Entity::CONFIG_PARENT] = __('Inherits configuration from the parent entity');
-      }
-      $values[0] = __('No');
-      $values[1] = __('Yes');
-      echo Dropdown::showFromArray(
-         'enable_custom_css',
-         $values,
-         [
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Enable CSS customization') . "</td>";
+        echo "<td>";
+        $values = [];
+        if (($ID > 0) ? 1 : 0) {
+            $values[Entity::CONFIG_PARENT] = __('Inherits configuration from the parent entity');
+        }
+        $values[0] = __('No');
+        $values[1] = __('Yes');
+        echo Dropdown::showFromArray(
+            'enable_custom_css',
+            $values,
+            [
             'display' => false,
             'rand'    => $rand,
             'value'   => $entity->fields['enable_custom_css']
-         ]
-      );
-      echo "</td></tr>";
+            ]
+        );
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2'>";
-      echo "<div id='custom_css_container' class='custom_css_container'>";
-      $value = $entity->fields['enable_custom_css'];
-      // wrap call in function to prevent modifying variables from current scope
-      call_user_func(function() use($value, $ID) {
-         $_POST  = [
+        echo "<tr class='tab_bg_1'>";
+        echo "<td colspan='2'>";
+        echo "<div id='custom_css_container' class='custom_css_container'>";
+        $value = $entity->fields['enable_custom_css'];
+       // wrap call in function to prevent modifying variables from current scope
+        call_user_func(function () use ($value, $ID) {
+            $_POST  = [
             'enable_custom_css' => $value,
             'entities_id'       => $ID
-         ];
-         include GLPI_ROOT . '/ajax/entityCustomCssCode.php';
-      });
-      echo "</div>\n";
-      echo "</td></tr>";
+            ];
+            include GLPI_ROOT . '/ajax/entityCustomCssCode.php';
+        });
+        echo "</div>\n";
+        echo "</td></tr>";
 
-      Ajax::updateItemOnSelectEvent(
-         'dropdown_enable_custom_css' . $rand,
-         'custom_css_container',
-         $CFG_GLPI['root_doc'] . '/ajax/entityCustomCssCode.php',
-         [
+        Ajax::updateItemOnSelectEvent(
+            'dropdown_enable_custom_css' . $rand,
+            'custom_css_container',
+            $CFG_GLPI['root_doc'] . '/ajax/entityCustomCssCode.php',
+            [
             'enable_custom_css' => '__VALUE__',
             'entities_id'       => $ID
-         ]
-      );
+            ]
+        );
 
-      Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
+        Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
 
-      echo "</table>";
+        echo "</table>";
 
-      if ($canedit) {
-         echo "<div class='center'>";
-         echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='btn btn-primary'>";
-         echo "</div>";
-         Html::closeForm();
-      }
+        if ($canedit) {
+            echo "<div class='center'>";
+            echo "<input type='hidden' name='id' value='" . $entity->fields["id"] . "'>";
+            echo "<input type='submit' name='update' value=\"" . _sx('button', 'Save') . "\" class='btn btn-primary'>";
+            echo "</div>";
+            Html::closeForm();
+        }
 
-      echo "</div>";
-   }
+        echo "</div>";
+    }
 
    /**
     * Returns tag containing custom CSS code applied to entity.
     *
     * @return string
     */
-   public function getCustomCssTag() {
+    public function getCustomCssTag()
+    {
 
-      $enable_custom_css = self::getUsedConfig(
-         'enable_custom_css',
-         $this->fields['id']
-      );
+        $enable_custom_css = self::getUsedConfig(
+            'enable_custom_css',
+            $this->fields['id']
+        );
 
-      if (!$enable_custom_css) {
-         return '';
-      }
+        if (!$enable_custom_css) {
+            return '';
+        }
 
-      $custom_css_code = self::getUsedConfig(
-         'enable_custom_css',
-         $this->fields['id'],
-         'custom_css_code'
-      );
+        $custom_css_code = self::getUsedConfig(
+            'enable_custom_css',
+            $this->fields['id'],
+            'custom_css_code'
+        );
 
-      if (empty($custom_css_code)) {
-         return '';
-      }
+        if (empty($custom_css_code)) {
+            return '';
+        }
 
-      return '<style>' . strip_tags($custom_css_code) . '</style>';
-   }
+        return '<style>' . strip_tags($custom_css_code) . '</style>';
+    }
 
    /**
     * @since 0.84 (before in entitydata.class)
@@ -2260,21 +2366,22 @@ class Entity extends CommonTreeDropdown {
     * @param string $field
     * @param string $value  must be addslashes
    **/
-   private static function getEntityIDByField($field, $value) {
-      global $DB;
+    private static function getEntityIDByField($field, $value)
+    {
+        global $DB;
 
-      $iterator = $DB->request([
+        $iterator = $DB->request([
          'SELECT' => 'id',
          'FROM'   => self::getTable(),
          'WHERE'  => [$field => $value]
-      ]);
+        ]);
 
-      if (count($iterator) == 1) {
-         $result = $iterator->current();
-         return $result['id'];
-      }
-      return -1;
-   }
+        if (count($iterator) == 1) {
+            $result = $iterator->current();
+            return $result['id'];
+        }
+        return -1;
+    }
 
 
    /**
@@ -2282,9 +2389,10 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $value
    **/
-   static function getEntityIDByDN($value) {
-      return self::getEntityIDByField("ldap_dn", $value);
-   }
+    public static function getEntityIDByDN($value)
+    {
+        return self::getEntityIDByField("ldap_dn", $value);
+    }
 
 
    /**
@@ -2292,9 +2400,10 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $value
    **/
-   static function getEntityIDByCompletename($value) {
-      return self::getEntityIDByField("completename", $value);
-   }
+    public static function getEntityIDByCompletename($value)
+    {
+        return self::getEntityIDByField("completename", $value);
+    }
 
 
    /**
@@ -2302,9 +2411,10 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $value
    **/
-   static function getEntityIDByTag($value) {
-      return self::getEntityIDByField("tag", $value);
-   }
+    public static function getEntityIDByTag($value)
+    {
+        return self::getEntityIDByField("tag", $value);
+    }
 
 
    /**
@@ -2312,9 +2422,10 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $value
    **/
-   static function getEntityIDByDomain($value) {
-      return self::getEntityIDByField("mail_domain", $value);
-   }
+    public static function getEntityIDByDomain($value)
+    {
+        return self::getEntityIDByField("mail_domain", $value);
+    }
 
 
    /**
@@ -2322,21 +2433,24 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $entities_id
    **/
-   static function isEntityDirectoryConfigured($entities_id) {
+    public static function isEntityDirectoryConfigured($entities_id)
+    {
 
-      $entity = new self();
+        $entity = new self();
 
-      if ($entity->getFromDB($entities_id)
-          && ($entity->getField('authldaps_id') > 0)) {
-         return true;
-      }
+        if (
+            $entity->getFromDB($entities_id)
+            && ($entity->getField('authldaps_id') > 0)
+        ) {
+            return true;
+        }
 
-      //If there's a directory marked as default
-      if (AuthLDAP::getDefault()) {
-         return true;
-      }
-      return false;
-   }
+       //If there's a directory marked as default
+        if (AuthLDAP::getDefault()) {
+            return true;
+        }
+        return false;
+    }
 
 
    /**
@@ -2344,435 +2458,486 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $entity Entity object
    **/
-   static function showHelpdeskOptions(Entity $entity) {
-      global $CFG_GLPI;
+    public static function showHelpdeskOptions(Entity $entity)
+    {
+        global $CFG_GLPI;
 
-      $ID = $entity->getField('id');
-      if (!$entity->can($ID, READ)
-          || !Session::haveRightsOr(self::$rightname,
-                                    [self::READHELPDESK, self::UPDATEHELPDESK])) {
-         return false;
-      }
-      $canedit = (Session::haveRight(self::$rightname, self::UPDATEHELPDESK)
+        $ID = $entity->getField('id');
+        if (
+            !$entity->can($ID, READ)
+            || !Session::haveRightsOr(
+                self::$rightname,
+                [self::READHELPDESK, self::UPDATEHELPDESK]
+            )
+        ) {
+            return false;
+        }
+        $canedit = (Session::haveRight(self::$rightname, self::UPDATEHELPDESK)
                   && Session::haveAccessToEntity($ID));
 
-      echo "<div class='spaced'>";
-      if ($canedit) {
-         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."' data-track-changes='true'>";
-      }
+        echo "<div class='spaced'>";
+        if ($canedit) {
+            echo "<form method='post' name=form action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "' data-track-changes='true'>";
+        }
 
-      echo "<table class='tab_cadre_fixe'>";
+        echo "<table class='tab_cadre_fixe'>";
 
-      Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
+        Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
 
-      echo "<tr><th colspan='4'>".__('Templates configuration')."</th></tr>";
+        echo "<tr><th colspan='4'>" . __('Templates configuration') . "</th></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='2'>"._n('Ticket template', 'Ticket templates', 1).
+        echo "<tr class='tab_bg_1'><td colspan='2'>" . _n('Ticket template', 'Ticket templates', 1) .
            "</td>";
-      echo "<td colspan='2'>";
-      $toadd = [];
-      if ($ID != 0) {
-         $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
-      }
+        echo "<td colspan='2'>";
+        $toadd = [];
+        if ($ID != 0) {
+            $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
+        }
 
-      $options = ['value'  => $entity->fields["tickettemplates_id"],
+        $options = ['value'  => $entity->fields["tickettemplates_id"],
                        'entity' => $ID,
                        'toadd'  => $toadd];
 
-      TicketTemplate::dropdown($options);
+        TicketTemplate::dropdown($options);
 
-      if (($entity->fields["tickettemplates_id"] == self::CONFIG_PARENT)
-          && ($ID != 0)) {
-         $tt  = new TicketTemplate();
-         $tid = self::getUsedConfig('tickettemplates_id', $ID, '', 0);
-         if (!$tid) {
-            self::inheritedValue(Dropdown::EMPTY_VALUE, true);
-         } else if ($tt->getFromDB($tid)) {
-            self::inheritedValue($tt->getLink(), true);
-         }
-      }
-      echo "</td></tr>";
+        if (
+            ($entity->fields["tickettemplates_id"] == self::CONFIG_PARENT)
+            && ($ID != 0)
+        ) {
+            $tt  = new TicketTemplate();
+            $tid = self::getUsedConfig('tickettemplates_id', $ID, '', 0);
+            if (!$tid) {
+                self::inheritedValue(Dropdown::EMPTY_VALUE, true);
+            } else if ($tt->getFromDB($tid)) {
+                self::inheritedValue($tt->getLink(), true);
+            }
+        }
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='2'>"._n('Change template', 'Change templates', 1).
+        echo "<tr class='tab_bg_1'><td colspan='2'>" . _n('Change template', 'Change templates', 1) .
            "</td>";
-      echo "<td colspan='2'>";
-      $toadd = [];
-      if ($ID != 0) {
-         $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
-      }
+        echo "<td colspan='2'>";
+        $toadd = [];
+        if ($ID != 0) {
+            $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
+        }
 
-      $options = ['value'  => $entity->fields["changetemplates_id"],
+        $options = ['value'  => $entity->fields["changetemplates_id"],
                        'entity' => $ID,
                        'toadd'  => $toadd];
 
-      ChangeTemplate::dropdown($options);
+        ChangeTemplate::dropdown($options);
 
-      if (($entity->fields["changetemplates_id"] == self::CONFIG_PARENT)
-          && ($ID != 0)) {
+        if (
+            ($entity->fields["changetemplates_id"] == self::CONFIG_PARENT)
+            && ($ID != 0)
+        ) {
+            $tt  = new ChangeTemplate();
+            $tid = self::getUsedConfig('changetemplates_id', $ID, '', 0);
+            if (!$tid) {
+                self::inheritedValue(Dropdown::EMPTY_VALUE, true);
+            } else if ($tt->getFromDB($tid)) {
+                self::inheritedValue($tt->getLink(), true);
+            }
+        }
+        echo "</td></tr>";
 
-         $tt  = new ChangeTemplate();
-         $tid = self::getUsedConfig('changetemplates_id', $ID, '', 0);
-         if (!$tid) {
-            self::inheritedValue(Dropdown::EMPTY_VALUE, true);
-         } else if ($tt->getFromDB($tid)) {
-            self::inheritedValue($tt->getLink(), true);
-         }
-      }
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'><td colspan='2'>"._n('Problem template', 'Problem templates', 1).
+        echo "<tr class='tab_bg_1'><td colspan='2'>" . _n('Problem template', 'Problem templates', 1) .
            "</td>";
-      echo "<td colspan='2'>";
-      $toadd = [];
-      if ($ID != 0) {
-         $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
-      }
+        echo "<td colspan='2'>";
+        $toadd = [];
+        if ($ID != 0) {
+            $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
+        }
 
-      $options = ['value'  => $entity->fields["problemtemplates_id"],
+        $options = ['value'  => $entity->fields["problemtemplates_id"],
                        'entity' => $ID,
                        'toadd'  => $toadd];
 
-      ProblemTemplate::dropdown($options);
+        ProblemTemplate::dropdown($options);
 
-      if (($entity->fields["problemtemplates_id"] == self::CONFIG_PARENT)
-          && ($ID != 0)) {
+        if (
+            ($entity->fields["problemtemplates_id"] == self::CONFIG_PARENT)
+            && ($ID != 0)
+        ) {
+            $tt  = new ProblemTemplate();
+            $tid = self::getUsedConfig('problemtemplates_id', $ID, '', 0);
+            if (!$tid) {
+                self::inheritedValue(Dropdown::EMPTY_VALUE, true);
+            } else if ($tt->getFromDB($tid)) {
+                self::inheritedValue($tt->getLink(), true);
+            }
+        }
+        echo "</td></tr>";
 
-         $tt  = new ProblemTemplate();
-         $tid = self::getUsedConfig('problemtemplates_id', $ID, '', 0);
-         if (!$tid) {
-            self::inheritedValue(Dropdown::EMPTY_VALUE, true);
-         } else if ($tt->getFromDB($tid)) {
-            self::inheritedValue($tt->getLink(), true);
-         }
-      }
-      echo "</td></tr>";
+        echo "<tr><th colspan='4'>" . __('Tickets configuration') . "</th></tr>";
 
-      echo "<tr><th colspan='4'>".__('Tickets configuration')."</th></tr>";
-
-      echo "<tr class='tab_bg_1'><td colspan='2'>"._n('Calendar', 'Calendars', 1)."</td>";
-      echo "<td colspan='2'>";
-      $options = ['value'      => $entity->fields["calendars_id"],
+        echo "<tr class='tab_bg_1'><td colspan='2'>" . _n('Calendar', 'Calendars', 1) . "</td>";
+        echo "<td colspan='2'>";
+        $options = ['value'      => $entity->fields["calendars_id"],
                        'emptylabel' => __('24/7')];
 
-      if ($ID != 0) {
-         $options['toadd'] = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
-      }
-      Calendar::dropdown($options);
+        if ($ID != 0) {
+            $options['toadd'] = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
+        }
+        Calendar::dropdown($options);
 
-      if (($entity->fields["calendars_id"] == self::CONFIG_PARENT)
-          && ($ID != 0)) {
-         $calendar = new Calendar();
-         $cid = self::getUsedConfig('calendars_id', $ID, '', 0);
-         if (!$cid) {
-            self::inheritedValue(__('24/7'), true);
-         } else if ($calendar->getFromDB($cid)) {
-            self::inheritedValue($calendar->getLink(), true);
-         }
-      }
-      echo "</td></tr>";
+        if (
+            ($entity->fields["calendars_id"] == self::CONFIG_PARENT)
+            && ($ID != 0)
+        ) {
+            $calendar = new Calendar();
+            $cid = self::getUsedConfig('calendars_id', $ID, '', 0);
+            if (!$cid) {
+                self::inheritedValue(__('24/7'), true);
+            } else if ($calendar->getFromDB($cid)) {
+                self::inheritedValue($calendar->getLink(), true);
+            }
+        }
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='2'>".__('Tickets default type')."</td>";
-      echo "<td colspan='2'>";
-      $toadd = [];
-      if ($ID != 0) {
-         $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
-      }
-      Ticket::dropdownType('tickettype', ['value' => $entity->fields["tickettype"],
+        echo "<tr class='tab_bg_1'><td colspan='2'>" . __('Tickets default type') . "</td>";
+        echo "<td colspan='2'>";
+        $toadd = [];
+        if ($ID != 0) {
+            $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
+        }
+        Ticket::dropdownType('tickettype', ['value' => $entity->fields["tickettype"],
                                                'toadd' => $toadd]);
 
-      if (($entity->fields['tickettype'] == self::CONFIG_PARENT)
-          && ($ID != 0)) {
-            self::inheritedValue(Ticket::getTicketTypeName(self::getUsedConfig('tickettype', $ID, '',
-                                                                               Ticket::INCIDENT_TYPE)), true);
-      }
-      echo "</td></tr>";
+        if (
+            ($entity->fields['tickettype'] == self::CONFIG_PARENT)
+            && ($ID != 0)
+        ) {
+            self::inheritedValue(Ticket::getTicketTypeName(self::getUsedConfig(
+                'tickettype',
+                $ID,
+                '',
+                Ticket::INCIDENT_TYPE
+            )), true);
+        }
+        echo "</td></tr>";
 
-      // Auto assign mode
-      echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Automatic assignment of tickets, changes and problems')."</td>";
-      echo "<td colspan='2'>";
-      $autoassign = self::getAutoAssignMode();
+       // Auto assign mode
+        echo "<tr class='tab_bg_1'><td  colspan='2'>" . __('Automatic assignment of tickets, changes and problems') . "</td>";
+        echo "<td colspan='2'>";
+        $autoassign = self::getAutoAssignMode();
 
-      if ($ID == 0) {
-         unset($autoassign[self::CONFIG_PARENT]);
-      }
+        if ($ID == 0) {
+            unset($autoassign[self::CONFIG_PARENT]);
+        }
 
-      Dropdown::showFromArray('auto_assign_mode', $autoassign,
-                              ['value' => $entity->fields["auto_assign_mode"]]);
+        Dropdown::showFromArray(
+            'auto_assign_mode',
+            $autoassign,
+            ['value' => $entity->fields["auto_assign_mode"]]
+        );
 
-      if (($entity->fields['auto_assign_mode'] == self::CONFIG_PARENT)
-          && ($ID != 0)) {
-         $auto_assign_mode = self::getUsedConfig('auto_assign_mode', $entity->fields['entities_id']);
-         self::inheritedValue($autoassign[$auto_assign_mode], true);
-      }
-      echo "</td></tr>";
+        if (
+            ($entity->fields['auto_assign_mode'] == self::CONFIG_PARENT)
+            && ($ID != 0)
+        ) {
+            $auto_assign_mode = self::getUsedConfig('auto_assign_mode', $entity->fields['entities_id']);
+            self::inheritedValue($autoassign[$auto_assign_mode], true);
+        }
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Mark followup added by a supplier though an email collector as private')."</td>";
-      echo "<td colspan='2'>";
-      $supplierValues = self::getSuppliersAsPrivateValues();
-      $currentSupplierValue = $entity->fields['suppliers_as_private'];
+        echo "<tr class='tab_bg_1'><td  colspan='2'>" . __('Mark followup added by a supplier though an email collector as private') . "</td>";
+        echo "<td colspan='2'>";
+        $supplierValues = self::getSuppliersAsPrivateValues();
+        $currentSupplierValue = $entity->fields['suppliers_as_private'];
 
-      if ($ID == 0) { // Remove parent option for root entity
-         unset($supplierValues[self::CONFIG_PARENT]);
-      }
+        if ($ID == 0) { // Remove parent option for root entity
+            unset($supplierValues[self::CONFIG_PARENT]);
+        }
 
-      Dropdown::showFromArray(
-         'suppliers_as_private',
-         $supplierValues,
-         ['value' => $currentSupplierValue]
-      );
-
-      // If the entity is using it's parent value, print it
-      if ($currentSupplierValue == self::CONFIG_PARENT && $ID != 0) {
-         $parentSupplierValue = self::getUsedConfig(
+        Dropdown::showFromArray(
             'suppliers_as_private',
-            $entity->fields['entities_id']
-         );
-         self::inheritedValue($supplierValues[$parentSupplierValue], true);
-      }
-      echo "</td></tr>";
+            $supplierValues,
+            ['value' => $currentSupplierValue]
+        );
 
-      echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Anonymize support agents')."</td>";
-      echo "<td colspan='2'>";
-      $anonymize_values = self::getAnonymizeSupportAgentsValues();
-      $current_anonymize_value = $entity->fields['anonymize_support_agents'];
+       // If the entity is using it's parent value, print it
+        if ($currentSupplierValue == self::CONFIG_PARENT && $ID != 0) {
+            $parentSupplierValue = self::getUsedConfig(
+                'suppliers_as_private',
+                $entity->fields['entities_id']
+            );
+            self::inheritedValue($supplierValues[$parentSupplierValue], true);
+        }
+        echo "</td></tr>";
 
-      if ($ID == 0) { // Remove parent option for root entity
-         unset($anonymize_values[self::CONFIG_PARENT]);
-      }
+        echo "<tr class='tab_bg_1'><td  colspan='2'>" . __('Anonymize support agents') . "</td>";
+        echo "<td colspan='2'>";
+        $anonymize_values = self::getAnonymizeSupportAgentsValues();
+        $current_anonymize_value = $entity->fields['anonymize_support_agents'];
 
-      Dropdown::showFromArray(
-         'anonymize_support_agents',
-         $anonymize_values,
-         ['value' => $current_anonymize_value]
-      );
+        if ($ID == 0) { // Remove parent option for root entity
+            unset($anonymize_values[self::CONFIG_PARENT]);
+        }
 
-      // If the entity is using it's parent value, print it
-      if ($current_anonymize_value == self::CONFIG_PARENT && $ID != 0) {
-         $parent_helpdesk_value = self::getUsedConfig(
+        Dropdown::showFromArray(
             'anonymize_support_agents',
-            $entity->fields['entities_id']
-         );
-         self::inheritedValue($anonymize_values[$parent_helpdesk_value], true);
-      }
-      echo "</td></tr>";
+            $anonymize_values,
+            ['value' => $current_anonymize_value]
+        );
 
-      echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Default contract')."</td>";
-      echo "<td colspan='2'>";
-      $current_default_contract_value = $entity->fields['contracts_id_default'];
+       // If the entity is using it's parent value, print it
+        if ($current_anonymize_value == self::CONFIG_PARENT && $ID != 0) {
+            $parent_helpdesk_value = self::getUsedConfig(
+                'anonymize_support_agents',
+                $entity->fields['entities_id']
+            );
+            self::inheritedValue($anonymize_values[$parent_helpdesk_value], true);
+        }
+        echo "</td></tr>";
 
-      $toadd = [
+        echo "<tr class='tab_bg_1'><td  colspan='2'>" . __('Default contract') . "</td>";
+        echo "<td colspan='2'>";
+        $current_default_contract_value = $entity->fields['contracts_id_default'];
+
+        $toadd = [
          self::CONFIG_PARENT => __('Inheritance of the parent entity'),
          -1 => __('Contract in ticket entity'),
-      ];
+        ];
 
-      if ($ID == 0) { // Remove parent option for root entity
-         unset($toadd[self::CONFIG_PARENT]);
-      }
+        if ($ID == 0) { // Remove parent option for root entity
+            unset($toadd[self::CONFIG_PARENT]);
+        }
 
-      Contract::dropdown([
+        Contract::dropdown([
          'name'      => 'contracts_id_default',
          'condition' => Contract::getExpiredCriteria(),
          'entity'    => $entity->getID(),
          'toadd'     => $toadd,
          'value'     => $current_default_contract_value,
-      ]);
+        ]);
 
-      // If the entity is using it's parent value, print it
-      if ($current_default_contract_value == self::CONFIG_PARENT && $ID != 0) {
-         $parent_default_contract_value = self::getUsedConfig(
-            'contracts_id_default',
-            $entity->fields['entities_id']
-         );
-         if (!$parent_default_contract_value) {
-            $display_value = Dropdown::EMPTY_VALUE;
-         } else if ($parent_default_contract_value == -1) {
-            $display_value = __('Contract in ticket entity');
-         } else {
-            $contract = new Contract();
-            $contract->getFromDB($parent_default_contract_value);
-            $display_value = $contract->fields['name'];
-         }
+       // If the entity is using it's parent value, print it
+        if ($current_default_contract_value == self::CONFIG_PARENT && $ID != 0) {
+            $parent_default_contract_value = self::getUsedConfig(
+                'contracts_id_default',
+                $entity->fields['entities_id']
+            );
+            if (!$parent_default_contract_value) {
+                 $display_value = Dropdown::EMPTY_VALUE;
+            } else if ($parent_default_contract_value == -1) {
+                $display_value = __('Contract in ticket entity');
+            } else {
+                $contract = new Contract();
+                $contract->getFromDB($parent_default_contract_value);
+                $display_value = $contract->fields['name'];
+            }
 
-         self::inheritedValue($display_value, true);
-      }
-      echo "</td></tr>";
+            self::inheritedValue($display_value, true);
+        }
+        echo "</td></tr>";
 
-      echo "<tr><th colspan='4'>".__('Automatic closing configuration')."</th></tr>";
+        echo "<tr><th colspan='4'>" . __('Automatic closing configuration') . "</th></tr>";
 
-      echo "<tr class='tab_bg_1'>".
-         "<td>".__('Automatic closing of solved tickets after');
+        echo "<tr class='tab_bg_1'>" .
+         "<td>" . __('Automatic closing of solved tickets after');
 
-      //Check if crontask is disabled
-      $crontask = new CronTask();
-      $criteria = [
+       //Check if crontask is disabled
+        $crontask = new CronTask();
+        $criteria = [
          'itemtype'  => 'Ticket',
          'name'      => 'closeticket',
          'state'     => CronTask::STATE_DISABLE
-      ];
-      if ($crontask->getFromDBByCrit($criteria)) {
-         echo "<br/><strong>".__('Close ticket action is disabled.')."</strong>";
-      }
+        ];
+        if ($crontask->getFromDBByCrit($criteria)) {
+            echo "<br/><strong>" . __('Close ticket action is disabled.') . "</strong>";
+        }
 
-      echo "</td>";
-      echo "<td>";
-      $autoclose = [self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+        echo "</td>";
+        echo "<td>";
+        $autoclose = [self::CONFIG_PARENT => __('Inheritance of the parent entity'),
                          self::CONFIG_NEVER  => __('Never'),
                          0                   => __('Immediatly')];
-      if ($ID == 0) {
-         unset($autoclose[self::CONFIG_PARENT]);
-      }
+        if ($ID == 0) {
+            unset($autoclose[self::CONFIG_PARENT]);
+        }
 
-      Dropdown::showNumber('autoclose_delay',
-                           ['value' => $entity->fields['autoclose_delay'],
+        Dropdown::showNumber(
+            'autoclose_delay',
+            ['value' => $entity->fields['autoclose_delay'],
                                  'min'   => 1,
                                  'max'   => 99,
                                  'step'  => 1,
                                  'toadd' => $autoclose,
-                                 'unit'  => 'day']);
+            'unit'  => 'day']
+        );
 
-      if (($entity->fields['autoclose_delay'] == self::CONFIG_PARENT)
-          && ($ID != 0)) {
-         $autoclose_mode = self::getUsedConfig('autoclose_delay', $entity->fields['entities_id'],
-                                               '', self::CONFIG_NEVER);
+        if (
+            ($entity->fields['autoclose_delay'] == self::CONFIG_PARENT)
+            && ($ID != 0)
+        ) {
+            $autoclose_mode = self::getUsedConfig(
+                'autoclose_delay',
+                $entity->fields['entities_id'],
+                '',
+                self::CONFIG_NEVER
+            );
 
-         if ($autoclose_mode >= 0) {
-            self::inheritedValue(sprintf(_n('%d day', '%d days', $autoclose_mode), $autoclose_mode), true);
-         } else {
-            self::inheritedValue($autoclose[$autoclose_mode], true);
-         }
-      }
-      echo "<td>".__('Automatic purge of closed tickets after');
+            if ($autoclose_mode >= 0) {
+                self::inheritedValue(sprintf(_n('%d day', '%d days', $autoclose_mode), $autoclose_mode), true);
+            } else {
+                self::inheritedValue($autoclose[$autoclose_mode], true);
+            }
+        }
+        echo "<td>" . __('Automatic purge of closed tickets after');
 
-      //Check if crontask is disabled
-      $crontask = new CronTask();
-      $criteria = [
+       //Check if crontask is disabled
+        $crontask = new CronTask();
+        $criteria = [
          'itemtype'  => 'Ticket',
          'name'      => 'purgeticket',
          'state'     => CronTask::STATE_DISABLE
-      ];
-      if ($crontask->getFromDBByCrit($criteria)) {
-         echo "<br/><strong>".__('Purge ticket action is disabled.')."</strong>";
-      }
-      echo "</td>";
-      echo "<td>";
-      $autopurge = [
+        ];
+        if ($crontask->getFromDBByCrit($criteria)) {
+            echo "<br/><strong>" . __('Purge ticket action is disabled.') . "</strong>";
+        }
+        echo "</td>";
+        echo "<td>";
+        $autopurge = [
          self::CONFIG_PARENT => __('Inheritance of the parent entity'),
          self::CONFIG_NEVER  => __('Never')
-      ];
-      if ($ID == 0) {
-         unset($autopurge[self::CONFIG_PARENT]);
-      }
+        ];
+        if ($ID == 0) {
+            unset($autopurge[self::CONFIG_PARENT]);
+        }
 
-      Dropdown::showNumber(
-         'autopurge_delay',
-         [
+        Dropdown::showNumber(
+            'autopurge_delay',
+            [
             'value' => $entity->fields['autopurge_delay'],
             'min'   => 1,
             'max'   => 3650,
             'step'  => 1,
             'toadd' => $autopurge,
-            'unit'  => 'day']);
+            'unit'  => 'day']
+        );
 
-      if (($entity->fields['autopurge_delay'] == self::CONFIG_PARENT)
-          && ($ID != 0)) {
-          $autopurge_mode = self::getUsedConfig(
-             'autopurge_delay',
-             $entity->fields['entities_id'],
-            '',
-            self::CONFIG_NEVER
-          );
+        if (
+            ($entity->fields['autopurge_delay'] == self::CONFIG_PARENT)
+            && ($ID != 0)
+        ) {
+            $autopurge_mode = self::getUsedConfig(
+                'autopurge_delay',
+                $entity->fields['entities_id'],
+                '',
+                self::CONFIG_NEVER
+            );
 
-         if ($autopurge_mode >= 0) {
-            self::inheritedValue(sprintf(_n('%d day', '%d days', $autopurge_mode), $autopurge_mode), true);
-         } else {
-            self::inheritedValue($autopurge[$autopurge_mode], true);
-         }
-      }
-      echo "</td></tr>";
+            if ($autopurge_mode >= 0) {
+                self::inheritedValue(sprintf(_n('%d day', '%d days', $autopurge_mode), $autopurge_mode), true);
+            } else {
+                self::inheritedValue($autopurge[$autopurge_mode], true);
+            }
+        }
+        echo "</td></tr>";
 
-      echo "<tr><th colspan='4'>".__('Configuring the satisfaction survey')."</th></tr>";
+        echo "<tr><th colspan='4'>" . __('Configuring the satisfaction survey') . "</th></tr>";
 
-      echo "<tr class='tab_bg_1'>".
-           "<td colspan='2'>".__('Configuring the satisfaction survey')."</td>";
-      echo "<td colspan='2'>";
+        echo "<tr class='tab_bg_1'>" .
+           "<td colspan='2'>" . __('Configuring the satisfaction survey') . "</td>";
+        echo "<td colspan='2'>";
 
-      /// no inquest case = rate 0
-      $typeinquest = [self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
+       /// no inquest case = rate 0
+        $typeinquest = [self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
                            1                    => __('Internal survey'),
                            2                    => __('External survey')];
 
-      // No inherit from parent for root entity
-      if ($ID == 0) {
-         unset($typeinquest[self::CONFIG_PARENT]);
-         if ($entity->fields['inquest_config'] == self::CONFIG_PARENT) {
-            $entity->fields['inquest_config'] = 1;
-         }
-      }
-      $rand = Dropdown::showFromArray('inquest_config', $typeinquest,
-                                      $options = ['value' => $entity->fields['inquest_config']]);
-      echo "</td></tr>\n";
-
-      // Do not display for root entity in inherit case
-      if (($entity->fields['inquest_config'] == self::CONFIG_PARENT)
-          && ($ID !=0)) {
-         $inquestconfig = self::getUsedConfig('inquest_config', $entity->fields['entities_id']);
-         $inquestrate   = self::getUsedConfig('inquest_config', $entity->fields['entities_id'],
-                                              'inquest_rate');
-         echo "<tr class='tab_bg_1'><td colspan='4'>";
-
-         $inherit = "";
-         if ($inquestrate == 0) {
-            $inherit.= __('Disabled');
-         } else {
-            $inherit.= $typeinquest[$inquestconfig].'<br>';
-            $inqconf = self::getUsedConfig('inquest_config', $entity->fields['entities_id'],
-                                           'inquest_delay');
-
-            $inherit.= sprintf(_n('%d day', '%d days', $inqconf), $inqconf);
-            $inherit.= "<br>";
-            //TRANS: %d is the percentage. %% to display %
-            $inherit.= sprintf(__('%d%%'), $inquestrate);
-
-            if ($inquestconfig == 2) {
-               $inherit.= "<br>";
-               $inherit.= self::getUsedConfig('inquest_config', $entity->fields['entities_id'],
-                                        'inquest_URL');
+       // No inherit from parent for root entity
+        if ($ID == 0) {
+            unset($typeinquest[self::CONFIG_PARENT]);
+            if ($entity->fields['inquest_config'] == self::CONFIG_PARENT) {
+                $entity->fields['inquest_config'] = 1;
             }
-         }
-         self::inheritedValue($inherit, true);
-         echo "</td></tr>";
-      }
+        }
+        $rand = Dropdown::showFromArray(
+            'inquest_config',
+            $typeinquest,
+            $options = ['value' => $entity->fields['inquest_config']]
+        );
+        echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td colspan='4'>";
+       // Do not display for root entity in inherit case
+        if (
+            ($entity->fields['inquest_config'] == self::CONFIG_PARENT)
+            && ($ID != 0)
+        ) {
+            $inquestconfig = self::getUsedConfig('inquest_config', $entity->fields['entities_id']);
+            $inquestrate   = self::getUsedConfig(
+                'inquest_config',
+                $entity->fields['entities_id'],
+                'inquest_rate'
+            );
+            echo "<tr class='tab_bg_1'><td colspan='4'>";
 
-      $_POST  = ['inquest_config' => $entity->fields['inquest_config'],
+            $inherit = "";
+            if ($inquestrate == 0) {
+                $inherit .= __('Disabled');
+            } else {
+                $inherit .= $typeinquest[$inquestconfig] . '<br>';
+                $inqconf = self::getUsedConfig(
+                    'inquest_config',
+                    $entity->fields['entities_id'],
+                    'inquest_delay'
+                );
+
+                $inherit .= sprintf(_n('%d day', '%d days', $inqconf), $inqconf);
+                $inherit .= "<br>";
+               //TRANS: %d is the percentage. %% to display %
+                $inherit .= sprintf(__('%d%%'), $inquestrate);
+
+                if ($inquestconfig == 2) {
+                    $inherit .= "<br>";
+                    $inherit .= self::getUsedConfig(
+                        'inquest_config',
+                        $entity->fields['entities_id'],
+                        'inquest_URL'
+                    );
+                }
+            }
+            self::inheritedValue($inherit, true);
+            echo "</td></tr>";
+        }
+
+        echo "<tr class='tab_bg_1'><td colspan='4'>";
+
+        $_POST  = ['inquest_config' => $entity->fields['inquest_config'],
                       'entities_id'    => $ID];
-      $params = ['inquest_config' => '__VALUE__',
+        $params = ['inquest_config' => '__VALUE__',
                       'entities_id'    => $ID];
-      echo "<div id='inquestconfig'>";
-      include GLPI_ROOT.'/ajax/ticketsatisfaction.php';
-      echo "</div>\n";
+        echo "<div id='inquestconfig'>";
+        include GLPI_ROOT . '/ajax/ticketsatisfaction.php';
+        echo "</div>\n";
 
-      echo "</td></tr>";
+        echo "</td></tr>";
 
-      Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
+        Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
 
-      echo "</table>";
+        echo "</table>";
 
-      if ($canedit) {
-         echo "<div class='center'>";
-         echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\"
+        if ($canedit) {
+            echo "<div class='center'>";
+            echo "<input type='hidden' name='id' value='" . $entity->fields["id"] . "'>";
+            echo "<input type='submit' name='update' value=\"" . _sx('button', 'Save') . "\"
                   class='btn btn-primary'>";
-         echo "</div>";
-         Html::closeForm();
-      }
+            echo "</div>";
+            Html::closeForm();
+        }
 
-      echo "</div>";
+        echo "</div>";
 
-      Ajax::updateItemOnSelectEvent("dropdown_inquest_config$rand", "inquestconfig",
-                                    $CFG_GLPI["root_doc"]."/ajax/ticketsatisfaction.php", $params);
-   }
+        Ajax::updateItemOnSelectEvent(
+            "dropdown_inquest_config$rand",
+            "inquestconfig",
+            $CFG_GLPI["root_doc"] . "/ajax/ticketsatisfaction.php",
+            $params
+        );
+    }
 
 
    /**
@@ -2785,49 +2950,56 @@ class Entity extends CommonTreeDropdown {
     * @param string  $fieldval       name of the field that we want value (default '')
     * @param mixed   $default_value  value to return (default -2)
    **/
-   static function getUsedConfig($fieldref, $entities_id = null, $fieldval = '', $default_value = -2) {
+    public static function getUsedConfig($fieldref, $entities_id = null, $fieldval = '', $default_value = -2)
+    {
 
-      // Get for current entity
-      if ($entities_id === null) {
-         $entities_id = Session::getActiveEntity();
-      }
+       // Get for current entity
+        if ($entities_id === null) {
+            $entities_id = Session::getActiveEntity();
+        }
 
-      // for calendar
-      if (empty($fieldval)) {
-         $fieldval = $fieldref;
-      }
+       // for calendar
+        if (empty($fieldval)) {
+            $fieldval = $fieldref;
+        }
 
-      $entity = new self();
-      // Search in entity data of the current entity
-      if ($entity->getFromDB($entities_id)) {
-         // Value is defined : use it
-         if (isset($entity->fields[$fieldref])) {
-            // Numerical value
-            if (is_numeric($default_value)
-                && ($entity->fields[$fieldref] != self::CONFIG_PARENT)) {
-               return $entity->fields[$fieldval];
+        $entity = new self();
+       // Search in entity data of the current entity
+        if ($entity->getFromDB($entities_id)) {
+           // Value is defined : use it
+            if (isset($entity->fields[$fieldref])) {
+               // Numerical value
+                if (
+                    is_numeric($default_value)
+                    && ($entity->fields[$fieldref] != self::CONFIG_PARENT)
+                ) {
+                    return $entity->fields[$fieldval];
+                }
+               // String value
+                if (
+                    !is_numeric($default_value)
+                    && $entity->fields[$fieldref]
+                ) {
+                    return $entity->fields[$fieldval];
+                }
             }
-            // String value
-            if (!is_numeric($default_value)
-                && $entity->fields[$fieldref]) {
-               return $entity->fields[$fieldval];
+        }
+
+       // Entity data not found or not defined : search in parent one
+        if ($entities_id > 0) {
+            if ($entity->getFromDB($entities_id)) {
+                $ret = self::getUsedConfig(
+                    $fieldref,
+                    $entity->fields['entities_id'],
+                    $fieldval,
+                    $default_value
+                );
+                return $ret;
             }
-         }
-      }
+        }
 
-      // Entity data not found or not defined : search in parent one
-      if ($entities_id > 0) {
-
-         if ($entity->getFromDB($entities_id)) {
-            $ret = self::getUsedConfig($fieldref, $entity->fields['entities_id'], $fieldval,
-                                       $default_value);
-            return $ret;
-
-         }
-      }
-
-      return $default_value;
-   }
+        return $default_value;
+    }
 
 
    /**
@@ -2839,112 +3011,142 @@ class Entity extends CommonTreeDropdown {
     *
     * @return string url contents
    **/
-   static function generateLinkSatisfaction($ticket) {
-      $url = self::getUsedConfig('inquest_config', $ticket->fields['entities_id'], 'inquest_URL');
+    public static function generateLinkSatisfaction($ticket)
+    {
+        $url = self::getUsedConfig('inquest_config', $ticket->fields['entities_id'], 'inquest_URL');
 
-      if (strstr($url, "[TICKET_ID]")) {
-         $url = str_replace("[TICKET_ID]", $ticket->fields['id'], $url);
-      }
+        if (strstr($url, "[TICKET_ID]")) {
+            $url = str_replace("[TICKET_ID]", $ticket->fields['id'], $url);
+        }
 
-      if (strstr($url, "[TICKET_NAME]")) {
-         $url = str_replace("[TICKET_NAME]", urlencode($ticket->fields['name']), $url);
-      }
+        if (strstr($url, "[TICKET_NAME]")) {
+            $url = str_replace("[TICKET_NAME]", urlencode($ticket->fields['name']), $url);
+        }
 
-      if (strstr($url, "[TICKET_CREATEDATE]")) {
-         $url = str_replace("[TICKET_CREATEDATE]", $ticket->fields['date'], $url);
-      }
+        if (strstr($url, "[TICKET_CREATEDATE]")) {
+            $url = str_replace("[TICKET_CREATEDATE]", $ticket->fields['date'], $url);
+        }
 
-      if (strstr($url, "[TICKET_SOLVEDATE]")) {
-         $url = str_replace("[TICKET_SOLVEDATE]", $ticket->fields['solvedate'], $url);
-      }
+        if (strstr($url, "[TICKET_SOLVEDATE]")) {
+            $url = str_replace("[TICKET_SOLVEDATE]", $ticket->fields['solvedate'], $url);
+        }
 
-      if (strstr($url, "[REQUESTTYPE_ID]")) {
-         $url = str_replace("[REQUESTTYPE_ID]", $ticket->fields['requesttypes_id'], $url);
-      }
+        if (strstr($url, "[REQUESTTYPE_ID]")) {
+            $url = str_replace("[REQUESTTYPE_ID]", $ticket->fields['requesttypes_id'], $url);
+        }
 
-      if (strstr($url, "[REQUESTTYPE_NAME]")) {
-         $url = str_replace("[REQUESTTYPE_NAME]",
-                            urlencode(Dropdown::getDropdownName('glpi_requesttypes',
-                                                                $ticket->fields['requesttypes_id'])),
-                            $url);
-      }
+        if (strstr($url, "[REQUESTTYPE_NAME]")) {
+            $url = str_replace(
+                "[REQUESTTYPE_NAME]",
+                urlencode(Dropdown::getDropdownName(
+                    'glpi_requesttypes',
+                    $ticket->fields['requesttypes_id']
+                )),
+                $url
+            );
+        }
 
-      if (strstr($url, "[TICKET_PRIORITY]")) {
-         $url = str_replace("[TICKET_PRIORITY]", $ticket->fields['priority'], $url);
-      }
+        if (strstr($url, "[TICKET_PRIORITY]")) {
+            $url = str_replace("[TICKET_PRIORITY]", $ticket->fields['priority'], $url);
+        }
 
-      if (strstr($url, "[TICKET_PRIORITYNAME]")) {
-         $url = str_replace("[TICKET_PRIORITYNAME]",
-               urlencode(CommonITILObject::getPriorityName($ticket->fields['priority'])),
-               $url);
-      }
+        if (strstr($url, "[TICKET_PRIORITYNAME]")) {
+            $url = str_replace(
+                "[TICKET_PRIORITYNAME]",
+                urlencode(CommonITILObject::getPriorityName($ticket->fields['priority'])),
+                $url
+            );
+        }
 
-      if (strstr($url, "[TICKETCATEGORY_ID]")) {
-         $url = str_replace("[TICKETCATEGORY_ID]", $ticket->fields['itilcategories_id'], $url);
-      }
+        if (strstr($url, "[TICKETCATEGORY_ID]")) {
+            $url = str_replace("[TICKETCATEGORY_ID]", $ticket->fields['itilcategories_id'], $url);
+        }
 
-      if (strstr($url, "[TICKETCATEGORY_NAME]")) {
-         $url = str_replace("[TICKETCATEGORY_NAME]",
-                            urlencode(Dropdown::getDropdownName('glpi_itilcategories',
-                                                                $ticket->fields['itilcategories_id'])),
-                            $url);
-      }
+        if (strstr($url, "[TICKETCATEGORY_NAME]")) {
+            $url = str_replace(
+                "[TICKETCATEGORY_NAME]",
+                urlencode(Dropdown::getDropdownName(
+                    'glpi_itilcategories',
+                    $ticket->fields['itilcategories_id']
+                )),
+                $url
+            );
+        }
 
-      if (strstr($url, "[TICKETTYPE_ID]")) {
-         $url = str_replace("[TICKETTYPE_ID]", $ticket->fields['type'], $url);
-      }
+        if (strstr($url, "[TICKETTYPE_ID]")) {
+            $url = str_replace("[TICKETTYPE_ID]", $ticket->fields['type'], $url);
+        }
 
-      if (strstr($url, "[TICKET_TYPENAME]")) {
-         $url = str_replace("[TICKET_TYPENAME]",
-                            Ticket::getTicketTypeName($ticket->fields['type']), $url);
-      }
+        if (strstr($url, "[TICKET_TYPENAME]")) {
+            $url = str_replace(
+                "[TICKET_TYPENAME]",
+                Ticket::getTicketTypeName($ticket->fields['type']),
+                $url
+            );
+        }
 
-      if (strstr($url, "[SOLUTIONTYPE_ID]")) {
-         $url = str_replace("[SOLUTIONTYPE_ID]", $ticket->fields['solutiontypes_id'], $url);
-      }
+        if (strstr($url, "[SOLUTIONTYPE_ID]")) {
+            $url = str_replace("[SOLUTIONTYPE_ID]", $ticket->fields['solutiontypes_id'], $url);
+        }
 
-      if (strstr($url, "[SOLUTIONTYPE_NAME]")) {
-         $url = str_replace("[SOLUTIONTYPE_NAME]",
-                            urlencode(Dropdown::getDropdownName('glpi_solutiontypes',
-                                                                $ticket->fields['solutiontypes_id'])),
-                            $url);
-      }
+        if (strstr($url, "[SOLUTIONTYPE_NAME]")) {
+            $url = str_replace(
+                "[SOLUTIONTYPE_NAME]",
+                urlencode(Dropdown::getDropdownName(
+                    'glpi_solutiontypes',
+                    $ticket->fields['solutiontypes_id']
+                )),
+                $url
+            );
+        }
 
-      if (strstr($url, "[SLA_TTO_ID]")) {
-         $url = str_replace("[SLA_TTO_ID]", $ticket->fields['slas_id_tto'], $url);
-      }
+        if (strstr($url, "[SLA_TTO_ID]")) {
+            $url = str_replace("[SLA_TTO_ID]", $ticket->fields['slas_id_tto'], $url);
+        }
 
-      if (strstr($url, "[SLA_TTO_NAME]")) {
-         $url = str_replace("[SLA_TTO_NAME]",
-                            urlencode(Dropdown::getDropdownName('glpi_slas',
-                                                                $ticket->fields['slas_id_tto'])),
-                            $url);
-      }
+        if (strstr($url, "[SLA_TTO_NAME]")) {
+            $url = str_replace(
+                "[SLA_TTO_NAME]",
+                urlencode(Dropdown::getDropdownName(
+                    'glpi_slas',
+                    $ticket->fields['slas_id_tto']
+                )),
+                $url
+            );
+        }
 
-      if (strstr($url, "[SLA_TTR_ID]")) {
-         $url = str_replace("[SLA_TTR_ID]", $ticket->fields['slas_id_ttr'], $url);
-      }
+        if (strstr($url, "[SLA_TTR_ID]")) {
+            $url = str_replace("[SLA_TTR_ID]", $ticket->fields['slas_id_ttr'], $url);
+        }
 
-      if (strstr($url, "[SLA_TTR_NAME]")) {
-         $url = str_replace("[SLA_TTR_NAME]",
-                            urlencode(Dropdown::getDropdownName('glpi_slas',
-                                                                $ticket->fields['slas_id_ttr'])),
-                            $url);
-      }
+        if (strstr($url, "[SLA_TTR_NAME]")) {
+            $url = str_replace(
+                "[SLA_TTR_NAME]",
+                urlencode(Dropdown::getDropdownName(
+                    'glpi_slas',
+                    $ticket->fields['slas_id_ttr']
+                )),
+                $url
+            );
+        }
 
-      if (strstr($url, "[SLALEVEL_ID]")) {
-         $url = str_replace("[SLALEVEL_ID]", $ticket->fields['slalevels_id_ttr'], $url);
-      }
+        if (strstr($url, "[SLALEVEL_ID]")) {
+            $url = str_replace("[SLALEVEL_ID]", $ticket->fields['slalevels_id_ttr'], $url);
+        }
 
-      if (strstr($url, "[SLALEVEL_NAME]")) {
-         $url = str_replace("[SLALEVEL_NAME]",
-                            urlencode(Dropdown::getDropdownName('glpi_slalevels',
-                                                                $ticket->fields['slalevels_id_ttr'])),
-                            $url);
-      }
+        if (strstr($url, "[SLALEVEL_NAME]")) {
+            $url = str_replace(
+                "[SLALEVEL_NAME]",
+                urlencode(Dropdown::getDropdownName(
+                    'glpi_slalevels',
+                    $ticket->fields['slalevels_id_ttr']
+                )),
+                $url
+            );
+        }
 
-      return $url;
-   }
+        return $url;
+    }
 
    /**
     * get value for auto_assign_mode
@@ -2955,23 +3157,24 @@ class Entity extends CommonTreeDropdown {
     *
     * @return string|array
    **/
-   static function getAutoAssignMode($val = null) {
+    public static function getAutoAssignMode($val = null)
+    {
 
-      $tab = [
+        $tab = [
          self::CONFIG_PARENT                  => __('Inheritance of the parent entity'),
          self::CONFIG_NEVER                   => __('No'),
          self::AUTO_ASSIGN_HARDWARE_CATEGORY  => __('Based on the item then the category'),
          self::AUTO_ASSIGN_CATEGORY_HARDWARE  => __('Based on the category then the item'),
-      ];
+        ];
 
-      if (is_null($val)) {
-         return $tab;
-      }
-      if (isset($tab[$val])) {
-         return $tab[$val];
-      }
-      return NOT_AVAILABLE;
-   }
+        if (is_null($val)) {
+            return $tab;
+        }
+        if (isset($tab[$val])) {
+            return $tab[$val];
+        }
+        return NOT_AVAILABLE;
+    }
 
    /**
     * get value for suppliers_as_private
@@ -2982,14 +3185,15 @@ class Entity extends CommonTreeDropdown {
     *
     * @return string|array
    **/
-   static function getSuppliersAsPrivateValues() {
+    public static function getSuppliersAsPrivateValues()
+    {
 
-      return [
+        return [
          self::CONFIG_PARENT => __('Inheritance of the parent entity'),
          0                   => __('No'),
          1                   => __('Yes'),
-      ];
-   }
+        ];
+    }
 
    /**
     * Get values for anonymize_support_agents
@@ -2998,36 +3202,38 @@ class Entity extends CommonTreeDropdown {
     *
     * @return array
    **/
-   static function getAnonymizeSupportAgentsValues() {
+    public static function getAnonymizeSupportAgentsValues()
+    {
 
-      return [
+        return [
          self::CONFIG_PARENT => __('Inheritance of the parent entity'),
          self::ANONYMIZE_DISABLED => __('Disabled'),
          self::ANONYMIZE_USE_GENERIC => __("Replace the agent's name with a generic name"),
          self::ANONYMIZE_USE_NICKNAME => __("Replace the agent's name with a customisable nickname"),
-      ];
-   }
+        ];
+    }
 
    /**
     * @since 0.84
     *
     * @param $options array
    **/
-   static function dropdownAutoAssignMode(array $options) {
+    public static function dropdownAutoAssignMode(array $options)
+    {
 
-      $p['name']    = 'auto_assign_mode';
-      $p['value']   = 0;
-      $p['display'] = true;
+        $p['name']    = 'auto_assign_mode';
+        $p['value']   = 0;
+        $p['display'] = true;
 
-      if (count($options)) {
-         foreach ($options as $key => $val) {
-            $p[$key] = $val;
-         }
-      }
+        if (count($options)) {
+            foreach ($options as $key => $val) {
+                $p[$key] = $val;
+            }
+        }
 
-      $tab = self::getAutoAssignMode();
-      return Dropdown::showFromArray($p['name'], $tab, $p);
-   }
+        $tab = self::getAutoAssignMode();
+        return Dropdown::showFromArray($p['name'], $tab, $p);
+    }
 
 
    /**
@@ -3037,177 +3243,179 @@ class Entity extends CommonTreeDropdown {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
 
-      if (!is_array($values)) {
-         $values = [$field => $values];
-      }
-      switch ($field) {
-         case 'use_licenses_alert' :
-         case 'use_certificates_alert' :
-         case 'use_contracts_alert' :
-         case 'use_domains_alert' :
-         case 'use_infocoms_alert' :
-         case 'is_notif_enable_default' :
-            if ($values[$field] == self::CONFIG_PARENT) {
-               return __('Inheritance of the parent entity');
-            }
-            return Dropdown::getYesNo($values[$field]);
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        switch ($field) {
+            case 'use_licenses_alert':
+            case 'use_certificates_alert':
+            case 'use_contracts_alert':
+            case 'use_domains_alert':
+            case 'use_infocoms_alert':
+            case 'is_notif_enable_default':
+                if ($values[$field] == self::CONFIG_PARENT) {
+                    return __('Inheritance of the parent entity');
+                }
+                return Dropdown::getYesNo($values[$field]);
 
-         case 'use_reservations_alert' :
-            switch ($values[$field]) {
-               case self::CONFIG_PARENT :
-                  return __('Inheritance of the parent entity');
+            case 'use_reservations_alert':
+                switch ($values[$field]) {
+                    case self::CONFIG_PARENT:
+                        return __('Inheritance of the parent entity');
 
-               case 0 :
-                  return __('Never');
-            }
-            return sprintf(_n('%d hour', '%d hours', $values[$field]), $values[$field]);
+                    case 0:
+                        return __('Never');
+                }
+                return sprintf(_n('%d hour', '%d hours', $values[$field]), $values[$field]);
 
-         case 'default_cartridges_alarm_threshold' :
-         case 'default_consumables_alarm_threshold' :
-            switch ($values[$field]) {
-               case self::CONFIG_PARENT :
-                  return __('Inheritance of the parent entity');
+            case 'default_cartridges_alarm_threshold':
+            case 'default_consumables_alarm_threshold':
+                switch ($values[$field]) {
+                    case self::CONFIG_PARENT:
+                        return __('Inheritance of the parent entity');
 
-               case 0 :
-                  return __('Never');
-            }
-            return $values[$field];
+                    case 0:
+                        return __('Never');
+                }
+                return $values[$field];
 
-         case 'send_contracts_alert_before_delay' :
-         case 'send_infocoms_alert_before_delay' :
-         case 'send_licenses_alert_before_delay' :
-         case 'send_certificates_alert_before_delay' :
-         case 'send_domains_alert_close_expiries_delay' :
-         case 'send_domains_alert_expired_delay' :
-            switch ($values[$field]) {
-               case self::CONFIG_PARENT :
-                  return __('Inheritance of the parent entity');
+            case 'send_contracts_alert_before_delay':
+            case 'send_infocoms_alert_before_delay':
+            case 'send_licenses_alert_before_delay':
+            case 'send_certificates_alert_before_delay':
+            case 'send_domains_alert_close_expiries_delay':
+            case 'send_domains_alert_expired_delay':
+                switch ($values[$field]) {
+                    case self::CONFIG_PARENT:
+                        return __('Inheritance of the parent entity');
 
-               case 0 :
-                  return __('No');
-            }
-            return sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]);
+                    case 0:
+                        return __('No');
+                }
+                return sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]);
 
-         case 'cartridges_alert_repeat' :
-         case 'consumables_alert_repeat' :
-            switch ($values[$field]) {
-               case self::CONFIG_PARENT :
-                  return __('Inheritance of the parent entity');
+            case 'cartridges_alert_repeat':
+            case 'consumables_alert_repeat':
+                switch ($values[$field]) {
+                    case self::CONFIG_PARENT:
+                        return __('Inheritance of the parent entity');
 
-               case self::CONFIG_NEVER :
-               case 0 : // For compatibility issue
-                  return __('Never');
+                    case self::CONFIG_NEVER:
+                    case 0: // For compatibility issue
+                        return __('Never');
 
-               case DAY_TIMESTAMP :
-                  return __('Each day');
+                    case DAY_TIMESTAMP:
+                        return __('Each day');
 
-               case WEEK_TIMESTAMP :
-                  return __('Each week');
+                    case WEEK_TIMESTAMP:
+                        return __('Each week');
 
-               case MONTH_TIMESTAMP :
-                  return __('Each month');
+                    case MONTH_TIMESTAMP:
+                        return __('Each month');
 
-               default :
-                  // Display value if not defined
-                  return $values[$field];
-            }
-            break;
+                    default:
+                       // Display value if not defined
+                        return $values[$field];
+                }
+                break;
 
-         case 'notclosed_delay' :   // 0 means never
-            switch ($values[$field]) {
-               case self::CONFIG_PARENT :
-                  return __('Inheritance of the parent entity');
+            case 'notclosed_delay':   // 0 means never
+                switch ($values[$field]) {
+                    case self::CONFIG_PARENT:
+                        return __('Inheritance of the parent entity');
 
-               case 0 :
-                  return __('Never');
-            }
-            return sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]);
+                    case 0:
+                        return __('Never');
+                }
+                return sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]);
 
-         case 'auto_assign_mode' :
-            return self::getAutoAssignMode($values[$field]);
+            case 'auto_assign_mode':
+                return self::getAutoAssignMode($values[$field]);
 
-         case 'tickettype' :
-            if ($values[$field] == self::CONFIG_PARENT) {
-               return __('Inheritance of the parent entity');
-            }
-            return Ticket::getTicketTypeName($values[$field]);
+            case 'tickettype':
+                if ($values[$field] == self::CONFIG_PARENT) {
+                    return __('Inheritance of the parent entity');
+                }
+                return Ticket::getTicketTypeName($values[$field]);
 
-         case 'autofill_buy_date' :
-         case 'autofill_order_date' :
-         case 'autofill_delivery_date' :
-         case 'autofill_use_date' :
-         case 'autofill_warranty_date' :
-         case 'autofill_decommission_date' :
-            switch ($values[$field]) {
-               case self::CONFIG_PARENT :
-                  return __('Inheritance of the parent entity');
+            case 'autofill_buy_date':
+            case 'autofill_order_date':
+            case 'autofill_delivery_date':
+            case 'autofill_use_date':
+            case 'autofill_warranty_date':
+            case 'autofill_decommission_date':
+                switch ($values[$field]) {
+                    case self::CONFIG_PARENT:
+                        return __('Inheritance of the parent entity');
 
-               case Infocom::COPY_WARRANTY_DATE :
-                  return __('Copy the start date of warranty');
+                    case Infocom::COPY_WARRANTY_DATE:
+                        return __('Copy the start date of warranty');
 
-               case Infocom::COPY_BUY_DATE :
-                  return __('Copy the date of purchase');
+                    case Infocom::COPY_BUY_DATE:
+                        return __('Copy the date of purchase');
 
-               case Infocom::COPY_ORDER_DATE :
-                  return __('Copy the order date');
+                    case Infocom::COPY_ORDER_DATE:
+                        return __('Copy the order date');
 
-               case Infocom::COPY_DELIVERY_DATE :
-                  return __('Copy the delivery date');
+                    case Infocom::COPY_DELIVERY_DATE:
+                        return __('Copy the delivery date');
 
-               default :
-                  if (strstr($values[$field], '_')) {
-                     list($type,$sid) = explode('_', $values[$field], 2);
-                     if ($type == Infocom::ON_STATUS_CHANGE) {
+                    default:
+                        if (strstr($values[$field], '_')) {
+                            list($type,$sid) = explode('_', $values[$field], 2);
+                            if ($type == Infocom::ON_STATUS_CHANGE) {
                                        // TRANS %s is the name of the state
-                        return sprintf(__('Fill when shifting to state %s'),
-                                       Dropdown::getDropdownName('glpi_states', $sid));
-                     }
-                  }
-            }
-            return __('No autofill');
+                                return sprintf(
+                                    __('Fill when shifting to state %s'),
+                                    Dropdown::getDropdownName('glpi_states', $sid)
+                                );
+                            }
+                        }
+                }
+                return __('No autofill');
 
-         case 'inquest_config' :
-            if ($values[$field] == self::CONFIG_PARENT) {
-               return __('Inheritance of the parent entity');
-            }
-            return TicketSatisfaction::getTypeInquestName($values[$field]);
+            case 'inquest_config':
+                if ($values[$field] == self::CONFIG_PARENT) {
+                    return __('Inheritance of the parent entity');
+                }
+                return TicketSatisfaction::getTypeInquestName($values[$field]);
 
-         case 'default_contract_alert' :
-            return Contract::getAlertName($values[$field]);
+            case 'default_contract_alert':
+                return Contract::getAlertName($values[$field]);
 
-         case 'default_infocom_alert' :
-            return Infocom::getAlertName($values[$field]);
+            case 'default_infocom_alert':
+                return Infocom::getAlertName($values[$field]);
 
-         case 'entities_id_software' :
-            if ($values[$field] == self::CONFIG_NEVER) {
-               return __('No change of entity');
-            }
-            if ($values[$field] == self::CONFIG_PARENT) {
-               return __('Inheritance of the parent entity');
-            }
-            return Dropdown::getDropdownName('glpi_entities', $values[$field]);
+            case 'entities_id_software':
+                if ($values[$field] == self::CONFIG_NEVER) {
+                    return __('No change of entity');
+                }
+                if ($values[$field] == self::CONFIG_PARENT) {
+                    return __('Inheritance of the parent entity');
+                }
+                return Dropdown::getDropdownName('glpi_entities', $values[$field]);
 
-         case 'tickettemplates_id' :
-            if ($values[$field] == self::CONFIG_PARENT) {
-               return __('Inheritance of the parent entity');
-            }
-            return Dropdown::getDropdownName(TicketTemplate::getTable(), $values[$field]);
+            case 'tickettemplates_id':
+                if ($values[$field] == self::CONFIG_PARENT) {
+                    return __('Inheritance of the parent entity');
+                }
+                return Dropdown::getDropdownName(TicketTemplate::getTable(), $values[$field]);
 
-         case 'calendars_id' :
-            switch ($values[$field]) {
-               case self::CONFIG_PARENT :
-                  return __('Inheritance of the parent entity');
+            case 'calendars_id':
+                switch ($values[$field]) {
+                    case self::CONFIG_PARENT:
+                        return __('Inheritance of the parent entity');
 
-               case 0 :
-                  return __('24/7');
-            }
-            return Dropdown::getDropdownName('glpi_calendars', $values[$field]);
-
-      }
-      return parent::getSpecificValueToDisplay($field, $values, $options);
-   }
+                    case 0:
+                        return __('24/7');
+                }
+                return Dropdown::getDropdownName('glpi_calendars', $values[$field]);
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
 
 
    /**
@@ -3218,160 +3426,164 @@ class Entity extends CommonTreeDropdown {
     * @param $values             (default '')
     * @param $options      array
    **/
-   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
-      if (!is_array($values)) {
-         $values = [$field => $values];
-      }
-      $options['display'] = false;
-      switch ($field) {
-         case 'use_licenses_alert' :
-         case 'use_certificates_alert' :
-         case 'use_contracts_alert' :
-         case 'use_infocoms_alert' :
-            $options['name']  = $name;
-            $options['value'] = $values[$field];
-            return Alert::dropdownYesNo($options);
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    {
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        $options['display'] = false;
+        switch ($field) {
+            case 'use_licenses_alert':
+            case 'use_certificates_alert':
+            case 'use_contracts_alert':
+            case 'use_infocoms_alert':
+                $options['name']  = $name;
+                $options['value'] = $values[$field];
+                return Alert::dropdownYesNo($options);
 
-         case 'cartridges_alert_repeat' :
-         case 'consumables_alert_repeat' :
-            $options['name']  = $name;
-            $options['value'] = $values[$field];
-            return Alert::dropdown($options);
+            case 'cartridges_alert_repeat':
+            case 'consumables_alert_repeat':
+                $options['name']  = $name;
+                $options['value'] = $values[$field];
+                return Alert::dropdown($options);
 
-         case 'send_contracts_alert_before_delay' :
-         case 'send_infocoms_alert_before_delay' :
-         case 'send_licenses_alert_before_delay' :
-         case 'send_certificates_alert_before_delay' :
-            $options['unit']         = 'day';
-            $options['never_string'] = __('No');
-            return Alert::dropdownIntegerNever($name, $values[$field], $options);
+            case 'send_contracts_alert_before_delay':
+            case 'send_infocoms_alert_before_delay':
+            case 'send_licenses_alert_before_delay':
+            case 'send_certificates_alert_before_delay':
+                $options['unit']         = 'day';
+                $options['never_string'] = __('No');
+                return Alert::dropdownIntegerNever($name, $values[$field], $options);
 
-         case 'use_reservations_alert' :
-            $options['unit']  = 'hour';
-            return Alert::dropdownIntegerNever($name, $values[$field], $options);
+            case 'use_reservations_alert':
+                $options['unit']  = 'hour';
+                return Alert::dropdownIntegerNever($name, $values[$field], $options);
 
-         case 'notclosed_delay' :
-            $options['unit']  = 'hour';
-            return Alert::dropdownIntegerNever($name, $values[$field], $options);
+            case 'notclosed_delay':
+                $options['unit']  = 'hour';
+                return Alert::dropdownIntegerNever($name, $values[$field], $options);
 
-         case 'auto_assign_mode' :
-            $options['name']  = $name;
-            $options['value'] = $values[$field];
+            case 'auto_assign_mode':
+                $options['name']  = $name;
+                $options['value'] = $values[$field];
 
-            return self::dropdownAutoAssignMode($options);
+                return self::dropdownAutoAssignMode($options);
 
-         case 'tickettype' :
-            $options['value'] = $values[$field];
-            $options['toadd'] = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
-            return Ticket::dropdownType($name, $options);
+            case 'tickettype':
+                $options['value'] = $values[$field];
+                $options['toadd'] = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
+                return Ticket::dropdownType($name, $options);
 
-         case 'autofill_buy_date' :
-         case 'autofill_order_date' :
-         case 'autofill_delivery_date' :
-         case 'autofill_use_date' :
-         case 'autofill_decommission_date' :
-            $tab[0]                   = __('No autofill');
-            $tab[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
-            $states = getAllDataFromTable('glpi_states');
-            foreach ($states as $state) {
-               $tab[Infocom::ON_STATUS_CHANGE.'_'.$state['id']]
+            case 'autofill_buy_date':
+            case 'autofill_order_date':
+            case 'autofill_delivery_date':
+            case 'autofill_use_date':
+            case 'autofill_decommission_date':
+                $tab[0]                   = __('No autofill');
+                $tab[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
+                $states = getAllDataFromTable('glpi_states');
+                foreach ($states as $state) {
+                    $tab[Infocom::ON_STATUS_CHANGE . '_' . $state['id']]
                            //TRANS: %s is the name of the state
-                  = sprintf(__('Fill when shifting to state %s'), $state['name']);
-            }
-            $tab[Infocom::COPY_WARRANTY_DATE] = __('Copy the start date of warranty');
-            if ($field != 'autofill_buy_date') {
-               $tab[Infocom::COPY_BUY_DATE] = __('Copy the date of purchase');
-               if ($field != 'autofill_order_date') {
-                  $tab[Infocom::COPY_ORDER_DATE] = __('Copy the order date');
-                  if ($field != 'autofill_delivery_date') {
-                     $options[Infocom::COPY_DELIVERY_DATE] = __('Copy the delivery date');
-                  }
-               }
-            }
-            $options['value'] = $values[$field];
-            return Dropdown::showFromArray($name, $tab, $options);
+                    = sprintf(__('Fill when shifting to state %s'), $state['name']);
+                }
+                $tab[Infocom::COPY_WARRANTY_DATE] = __('Copy the start date of warranty');
+                if ($field != 'autofill_buy_date') {
+                    $tab[Infocom::COPY_BUY_DATE] = __('Copy the date of purchase');
+                    if ($field != 'autofill_order_date') {
+                        $tab[Infocom::COPY_ORDER_DATE] = __('Copy the order date');
+                        if ($field != 'autofill_delivery_date') {
+                             $options[Infocom::COPY_DELIVERY_DATE] = __('Copy the delivery date');
+                        }
+                    }
+                }
+                $options['value'] = $values[$field];
+                return Dropdown::showFromArray($name, $tab, $options);
 
-         case 'autofill_warranty_date' :
-            $tab = [0                           => __('No autofill'),
+            case 'autofill_warranty_date':
+                $tab = [0                           => __('No autofill'),
                          Infocom::COPY_BUY_DATE      => __('Copy the date of purchase'),
                          Infocom::COPY_ORDER_DATE    => __('Copy the order date'),
                          Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date'),
                          self::CONFIG_PARENT         => __('Inheritance of the parent entity')];
-            $options['value'] = $values[$field];
-            return Dropdown::showFromArray($name, $tab, $options);
+                $options['value'] = $values[$field];
+                return Dropdown::showFromArray($name, $tab, $options);
 
-         case 'inquest_config' :
-            $typeinquest = [self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
+            case 'inquest_config':
+                $typeinquest = [self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
                                  1                    => __('Internal survey'),
                                  2                    => __('External survey')];
-            $options['value'] = $values[$field];
-            return Dropdown::showFromArray($name, $typeinquest, $options);
+                $options['value'] = $values[$field];
+                return Dropdown::showFromArray($name, $typeinquest, $options);
 
-         case 'default_contract_alert' :
-            $options['name']  = $name;
-            $options['value'] = $values[$field];
-            return Contract::dropdownAlert($options);
+            case 'default_contract_alert':
+                $options['name']  = $name;
+                $options['value'] = $values[$field];
+                return Contract::dropdownAlert($options);
 
-         case 'default_infocom_alert' :
-            $options['name']  = $name;
-            $options['value'] = $values[$field];
-            return Infocom::dropdownAlert($options);
+            case 'default_infocom_alert':
+                $options['name']  = $name;
+                $options['value'] = $values[$field];
+                return Infocom::dropdownAlert($options);
 
-         case 'entities_id_software' :
-            $options['toadd'] = [self::CONFIG_NEVER => __('No change of entity')]; // Keep software in PC entity
-            $options['toadd'][self::CONFIG_PARENT] = __('Inheritance of the parent entity');
+            case 'entities_id_software':
+                $options['toadd'] = [self::CONFIG_NEVER => __('No change of entity')]; // Keep software in PC entity
+                $options['toadd'][self::CONFIG_PARENT] = __('Inheritance of the parent entity');
 
-            return self::dropdown($options);
+                return self::dropdown($options);
+        }
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
 
-      }
-      return parent::getSpecificValueToSelect($field, $name, $values, $options);
-   }
 
+    public function getRights($interface = 'central')
+    {
 
-   function getRights($interface = 'central') {
-
-      $values = parent::getRights();
-      $values[self::READHELPDESK]   = ['short' => __('Read parameters'),
+        $values = parent::getRights();
+        $values[self::READHELPDESK]   = ['short' => __('Read parameters'),
                                             'long'  => __('Read helpdesk parameters')];
-      $values[self::UPDATEHELPDESK] = ['short' => __('Update parameters'),
+        $values[self::UPDATEHELPDESK] = ['short' => __('Update parameters'),
                                             'long'  => __('Update helpdesk parameters')];
 
-      return $values;
-   }
+        return $values;
+    }
 
-   function displaySpecificTypeField($ID, $field = [], array $options = []) {
-      switch ($field['type']) {
-         case 'setlocation':
-            $this->showMap();
-            break;
-         default:
-            throw new \RuntimeException("Unknown {$field['type']}");
-      }
-   }
+    public function displaySpecificTypeField($ID, $field = [], array $options = [])
+    {
+        switch ($field['type']) {
+            case 'setlocation':
+                $this->showMap();
+                break;
+            default:
+                throw new \RuntimeException("Unknown {$field['type']}");
+        }
+    }
 
-   static function inheritedValue($value = "", bool $inline = false, bool $display = true): string {
-      if (trim($value) == "") {
-         return "";
-      }
+    public static function inheritedValue($value = "", bool $inline = false, bool $display = true): string
+    {
+        if (trim($value) == "") {
+            return "";
+        }
 
-      $out = "<div class='badge bg-azure-lt m-1 py-3 ".($inline ? "inline" : "")."'
-                   title='".__("Value inherited from a parent entity")."'
+        $out = "<div class='badge bg-azure-lt m-1 py-3 " . ($inline ? "inline" : "") . "'
+                   title='" . __("Value inherited from a parent entity") . "'
                    data-bs-toggle='tooltip'>
          <i class='fas fa-level-down-alt me-1'></i>
          $value
       </div>";
 
-      if ($display) {
-         echo $out;
-         return "";
-      }
+        if ($display) {
+            echo $out;
+            return "";
+        }
 
-      return $out;
-   }
+        return $out;
+    }
 
-   static function getIcon() {
-      return "ti ti-stack";
-   }
+    public static function getIcon()
+    {
+        return "ti ti-stack";
+    }
 
    /**
     * Get values for contracts_id_default field
@@ -3380,64 +3592,67 @@ class Entity extends CommonTreeDropdown {
     *
     * @return array
     */
-   public static function getDefaultContractValues($entities_id): array {
-      $values = [
+    public static function getDefaultContractValues($entities_id): array
+    {
+        $values = [
          self::CONFIG_PARENT => __('Inheritance of the parent entity'),
          -1 => __('First found valid contract in ticket entity'),
-      ];
+        ];
 
-      $contract = new Contract();
-      $criteria = getEntitiesRestrictCriteria('', '', $entities_id, true);
-      $criteria[] = Contract::getExpiredCriteria();
-      $contracts = $contract->find($criteria);
+        $contract = new Contract();
+        $criteria = getEntitiesRestrictCriteria('', '', $entities_id, true);
+        $criteria[] = Contract::getExpiredCriteria();
+        $contracts = $contract->find($criteria);
 
-      foreach ($contracts as $contract) {
-         $values[$contract['id']] = $contract['name'];
-      }
+        foreach ($contracts as $contract) {
+            $values[$contract['id']] = $contract['name'];
+        }
 
-      return $values;
-   }
+        return $values;
+    }
 
-   public static function getAnonymizeConfig(?int $entities_id = null) {
-      return Entity::getUsedConfig('anonymize_support_agents', $entities_id);
-   }
+    public static function getAnonymizeConfig(?int $entities_id = null)
+    {
+        return Entity::getUsedConfig('anonymize_support_agents', $entities_id);
+    }
 
-   public static function getDefaultContract(int $entities_id): int {
-      $entity_default_contract = self::getUsedConfig('contracts_id_default', $entities_id);
-      if ($entity_default_contract == 0) {
-         // No default contract set
-         return 0;
-      }
-
-      if ($entity_default_contract == -1) {
-         // Contract in current entity
-         $contract = new Contract();
-         $criteria = ['entities_id' => $entities_id];
-         $criteria[] = Contract::getExpiredCriteria();
-         $contracts = $contract->find($criteria);
-
-         if ($contracts) {
-            // Return first contract found
-            return current($contracts)['id'];
-         } else {
-            // No contract found for this entity
+    public static function getDefaultContract(int $entities_id): int
+    {
+        $entity_default_contract = self::getUsedConfig('contracts_id_default', $entities_id);
+        if ($entity_default_contract == 0) {
+           // No default contract set
             return 0;
-         }
-      }
+        }
 
-      // Default contract defined in entity
-      return $entity_default_contract;
-   }
+        if ($entity_default_contract == -1) {
+           // Contract in current entity
+            $contract = new Contract();
+            $criteria = ['entities_id' => $entities_id];
+            $criteria[] = Contract::getExpiredCriteria();
+            $contracts = $contract->find($criteria);
 
-   public static function badgeCompletename(string $entity_string = ""): string {
-      $split  = explode(' > ', trim($entity_string));
-      foreach ($split as &$node) {
-         $node = "<span class='text-nowrap'>$node</span>";
-      }
+            if ($contracts) {
+               // Return first contract found
+                return current($contracts)['id'];
+            } else {
+               // No contract found for this entity
+                return 0;
+            }
+        }
 
-      return "<span class='entity-badge'>".
-         implode('<i class="fas fa-caret-right mx-1"></i>', $split).
-      "</span>";
-   }
+       // Default contract defined in entity
+        return $entity_default_contract;
+    }
 
+    public static function badgeCompletename(string $entity_string = ""): string
+    {
+        $split  = explode(' > ', trim($entity_string));
+        foreach ($split as &$node) {
+            $node = "<span class='text-nowrap'>$node</span>";
+        }
+
+        return "<span class='entity-badge'>" .
+         implode('<i class="fas fa-caret-right mx-1"></i>', $split) .
+        "</span>";
+    }
 }

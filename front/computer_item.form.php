@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,32 +37,41 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkCentralAccess();
 
 $conn = new Computer_Item();
 
 if (isset($_POST["disconnect"])) {
-   $conn->check($_POST["id"], PURGE);
-   $conn->delete($_POST, 1);
-   Event::log($_POST["computers_id"], "computers", 5, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s disconnects an item'), $_SESSION["glpiname"]));
-   Html::back();
+    $conn->check($_POST["id"], PURGE);
+    $conn->delete($_POST, 1);
+    Event::log(
+        $_POST["computers_id"],
+        "computers",
+        5,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s disconnects an item'), $_SESSION["glpiname"])
+    );
+    Html::back();
 
    // Connect a computer to a printer/monitor/phone/peripheral
 } else if (isset($_POST["add"])) {
-   if (isset($_POST["items_id"]) && ($_POST["items_id"] > 0)) {
-      $conn->check(-1, CREATE, $_POST);
-      if ($conn->add($_POST)) {
-         Event::log($_POST["computers_id"], "computers", 5, "inventory",
-                    //TRANS: %s is the user login
-                    sprintf(__('%s connects an item'), $_SESSION["glpiname"]));
-      }
-   }
-   Html::back();
-
+    if (isset($_POST["items_id"]) && ($_POST["items_id"] > 0)) {
+        $conn->check(-1, CREATE, $_POST);
+        if ($conn->add($_POST)) {
+            Event::log(
+                $_POST["computers_id"],
+                "computers",
+                5,
+                "inventory",
+                //TRANS: %s is the user login
+                sprintf(__('%s connects an item'), $_SESSION["glpiname"])
+            );
+        }
+    }
+    Html::back();
 }
 
 Html::displayErrorAndDie('Lost');

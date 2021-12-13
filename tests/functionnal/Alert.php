@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,41 +37,43 @@ use DbTestCase;
 
 /* Test for inc/alert.class.php */
 
-class Alert extends DbTestCase {
+class Alert extends DbTestCase
+{
 
-   public function testAddDelete() {
-      $alert = new \Alert();
-      $nb    = (int)countElementsInTable($alert->getTable());
-      $comp  = getItemByTypeName('Computer', '_test_pc01');
-      $date  = '2016-09-01 12:34:56';
+    public function testAddDelete()
+    {
+        $alert = new \Alert();
+        $nb    = (int)countElementsInTable($alert->getTable());
+        $comp  = getItemByTypeName('Computer', '_test_pc01');
+        $date  = '2016-09-01 12:34:56';
 
-      // Add
-      $id = $alert->add([
+       // Add
+        $id = $alert->add([
          'itemtype' => $comp->getType(),
          'items_id' => $comp->getID(),
          'type'     => \Alert::END,
          'date'     => $date,
-      ]);
-      $this->integer($id)->isGreaterThan(0);
-      $this->integer((int)countElementsInTable($alert->getTable()))->isGreaterThan($nb);
+        ]);
+        $this->integer($id)->isGreaterThan(0);
+        $this->integer((int)countElementsInTable($alert->getTable()))->isGreaterThan($nb);
 
-      // Getters
-      $this->boolean(\Alert::alertExists($comp->getType(), $comp->getID(), \Alert::NOTICE))->isFalse();
-      $this->integer((int)\Alert::alertExists($comp->getType(), $comp->getID(), \Alert::END))->isIdenticalTo($id);
-      $this->string(\Alert::getAlertDate($comp->getType(), $comp->getID(), \Alert::END))->isIdenticalTo($date);
+       // Getters
+        $this->boolean(\Alert::alertExists($comp->getType(), $comp->getID(), \Alert::NOTICE))->isFalse();
+        $this->integer((int)\Alert::alertExists($comp->getType(), $comp->getID(), \Alert::END))->isIdenticalTo($id);
+        $this->string(\Alert::getAlertDate($comp->getType(), $comp->getID(), \Alert::END))->isIdenticalTo($date);
 
-      // Display
-      $this->output(
-         function () use ($comp) {
-            \Alert::displayLastAlert($comp->getType(), $comp->getID());
-         }
-      )->isIdenticalTo(sprintf('Alert sent on %s', \Html::convDateTime($date)));
+       // Display
+        $this->output(
+            public function () use ($comp) {
+                \Alert::displayLastAlert($comp->getType(), $comp->getID());
+            }
+        )->isIdenticalTo(sprintf('Alert sent on %s', \Html::convDateTime($date)));
 
-      // Delete
-      $this->boolean($alert->clear($comp->getType(), $comp->getID(), \Alert::END))->isTrue();
-      $this->integer((int)countElementsInTable($alert->getTable()))->isIdenticalTo($nb);
+       // Delete
+        $this->boolean($alert->clear($comp->getType(), $comp->getID(), \Alert::END))->isTrue();
+        $this->integer((int)countElementsInTable($alert->getTable()))->isIdenticalTo($nb);
 
-      // Still true, nothing to delete but no error
-      $this->boolean($alert->clear($comp->getType(), $comp->getID(), \Alert::END))->isTrue();
-   }
+       // Still true, nothing to delete but no error
+        $this->boolean($alert->clear($comp->getType(), $comp->getID(), \Alert::END))->isTrue();
+    }
 }

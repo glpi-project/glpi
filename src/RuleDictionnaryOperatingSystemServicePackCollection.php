@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,15 +31,16 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleDictionnaryOperatingSystemServicePackCollection extends RuleDictionnaryDropdownCollection {
-   public $item_table  = "glpi_operatingsystemservicepacks";
-   public $menu_option = "os_sp";
+class RuleDictionnaryOperatingSystemServicePackCollection extends RuleDictionnaryDropdownCollection
+{
+    public $item_table  = "glpi_operatingsystemservicepacks";
+    public $menu_option = "os_sp";
 
    /**
     * @see RuleCollection::getTitle()
    **/
-   function getTitle() {
-      return __('Dictionnary of service packs');
-   }
-
+    public function getTitle()
+    {
+        return __('Dictionnary of service packs');
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,15 +34,18 @@
 /**
  * DocumentType Class
 **/
-class BusinessCriticity  extends CommonTreeDropdown {
+class BusinessCriticity extends CommonTreeDropdown
+{
 
-   public $can_be_translated = true;
+    public $can_be_translated = true;
 
-   static function getTypeName($nb = 0) {
-      return _n('Business criticity', 'Business criticities', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Business criticity', 'Business criticities', $nb);
+    }
 
-   static function getIcon() {
-      return "fas fa-briefcase";
-   }
+    public static function getIcon()
+    {
+        return "fas fa-briefcase";
+    }
 }

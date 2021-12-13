@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,10 +37,12 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/controller.class.php */
 
-class Peripheral extends AbstractInventoryAsset {
+class Peripheral extends AbstractInventoryAsset
+{
 
-   protected function assetProvider() :array {
-      return [
+    protected function assetProvider(): array
+    {
+        return [
          [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
          <REQUEST>
@@ -59,64 +62,67 @@ class Peripheral extends AbstractInventoryAsset {
          </REQUEST>",
             'expected'  => '{"caption": "VFS451 Fingerprint Reader", "manufacturer": "Validity Sensors, Inc.", "name": "VFS451 Fingerprint Reader", "productid": "0007", "serial": "00B0FE47AC85", "vendorid": "138A", "manufacturers_id": "Validity Sensors, Inc.", "is_dynamic": 1}'
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider assetProvider
     */
-   public function testPrepare($xml, $expected) {
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($xml);
-      $json = json_decode($data);
+    public function testPrepare($xml, $expected)
+    {
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\Peripheral($computer, $json->content->usbdevices);
-      $asset->setExtraData((array)$json->content);
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected));
-   }
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\Peripheral($computer, $json->content->usbdevices);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected));
+    }
 
 
-   public function testHandle() {
-      $computer = getItemByTypeName('Computer', '_test_pc01');
+    public function testHandle()
+    {
+        $computer = getItemByTypeName('Computer', '_test_pc01');
 
-      //first, check there are no controller linked to this computer
-      $idp = new \Computer_Item();
-      $this->boolean($idp->getFromDbByCrit(['computers_id' => $computer->fields['id'], 'itemtype' => 'Peripheral']))
+       //first, check there are no controller linked to this computer
+        $idp = new \Computer_Item();
+        $this->boolean($idp->getFromDbByCrit(['computers_id' => $computer->fields['id'], 'itemtype' => 'Peripheral']))
            ->isFalse('A peripheral is already linked to computer!');
 
-      //convert data
-      $expected = $this->assetProvider()[0];
+       //convert data
+        $expected = $this->assetProvider()[0];
 
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($expected['xml']);
-      $json = json_decode($data);
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($expected['xml']);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\Peripheral($computer, $json->content->usbdevices);
-      $asset->setExtraData((array)$json->content);
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\Peripheral($computer, $json->content->usbdevices);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
 
-      //handle
-      $asset->handleLinks();
+       //handle
+        $asset->handleLinks();
 
-      $agent = new \Agent();
-      $agent->getEmpty();
-      $asset->setAgent($agent);
+        $agent = new \Agent();
+        $agent->getEmpty();
+        $asset->setAgent($agent);
 
-      $asset->handle();
-      $this->boolean($idp->getFromDbByCrit(['computers_id' => $computer->fields['id'], 'itemtype' => 'Peripheral']))
+        $asset->handle();
+        $this->boolean($idp->getFromDbByCrit(['computers_id' => $computer->fields['id'], 'itemtype' => 'Peripheral']))
            ->isTrue('Peripheral has not been linked to computer :(');
-   }
+    }
 
-   public function testInventoryUpdate() {
-      $computer = new \Computer();
-      $periph = new \Peripheral();
-      $item_periph = new \Computer_Item();
+    public function testInventoryUpdate()
+    {
+        $computer = new \Computer();
+        $periph = new \Peripheral();
+        $item_periph = new \Computer_Item();
 
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <USBDEVICES>
@@ -149,101 +155,101 @@ class Peripheral extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      //create manually a computer, with 3 peripherals
-      $computers_id = $computer->add([
+       //create manually a computer, with 3 peripherals
+        $computers_id = $computer->add([
          'name'   => 'pc002',
          'serial' => 'ggheb7ne7',
          'entities_id' => 0
-      ]);
-      $this->integer($computers_id)->isGreaterThan(0);
+        ]);
+        $this->integer($computers_id)->isGreaterThan(0);
 
-      $manufacturer = new \Manufacturer();
-      $manufacturers_id = $manufacturer->add([
+        $manufacturer = new \Manufacturer();
+        $manufacturers_id = $manufacturer->add([
          'name' => 'Validity Sensors, Inc.'
-      ]);
-      $this->integer($manufacturers_id)->isGreaterThan(0);
+        ]);
+        $this->integer($manufacturers_id)->isGreaterThan(0);
 
-      $periph_1_id = $periph->add([
+        $periph_1_id = $periph->add([
          'name' => 'VFS451 Fingerprint Reader',
          'manufacturers_id' => $manufacturers_id,
          'serial' => '00B0FE47AC85',
          'entities_id'  => 0
-      ]);
-      $this->integer($periph_1_id)->isGreaterThan(0);
+        ]);
+        $this->integer($periph_1_id)->isGreaterThan(0);
 
-      $item_periph_1_id = $item_periph->add([
+        $item_periph_1_id = $item_periph->add([
          'computers_id'     => $computers_id,
          'itemtype'     => \Peripheral::class,
          'items_id' => $periph_1_id
-      ]);
-      $this->integer($item_periph_1_id)->isGreaterThan(0);
+        ]);
+        $this->integer($item_periph_1_id)->isGreaterThan(0);
 
-      $manufacturers_id = $manufacturer->add([
+        $manufacturers_id = $manufacturer->add([
          'name' => 'O2 Micro, Inc.'
-      ]);
-      $this->integer($manufacturers_id)->isGreaterThan(0);
+        ]);
+        $this->integer($manufacturers_id)->isGreaterThan(0);
 
-      $periph_2_id = $periph->add([
+        $periph_2_id = $periph->add([
          'name' => 'OZ776 CCID Smartcard Reader',
          'manufacturers_id' => $manufacturers_id,
          'serial' => 'ABCDEF',
          'entities_id'  => 0
-      ]);
-      $this->integer($periph_2_id)->isGreaterThan(0);
+        ]);
+        $this->integer($periph_2_id)->isGreaterThan(0);
 
-      $item_periph_2_id = $item_periph->add([
+        $item_periph_2_id = $item_periph->add([
          'computers_id' => $computers_id,
          'items_id' => $periph_2_id,
          'itemtype'     => \Peripheral::class
-      ]);
-      $this->integer($item_periph_2_id)->isGreaterThan(0);
+        ]);
+        $this->integer($item_periph_2_id)->isGreaterThan(0);
 
-      $manufacturers_id = $manufacturer->add([
+        $manufacturers_id = $manufacturer->add([
          'name' => 'Logitech, Inc.'
-      ]);
+        ]);
 
-      $periph_3_id = $periph->add([
+        $periph_3_id = $periph->add([
          'name' => 'Unifying Receiver',
          'manufacturers_id' => $manufacturers_id,
          'serial' => 'a0b2c3d4e5',
          'entities_id'  => 0
-      ]);
-      $this->integer($periph_3_id)->isGreaterThan(0);
+        ]);
+        $this->integer($periph_3_id)->isGreaterThan(0);
 
-      $item_periph_3_id = $item_periph->add([
+        $item_periph_3_id = $item_periph->add([
          'computers_id' => $computers_id,
          'items_id' => $periph_3_id,
          'itemtype' => \Peripheral::class
-      ]);
-      $this->integer($item_periph_3_id)->isGreaterThan(0);
+        ]);
+        $this->integer($item_periph_3_id)->isGreaterThan(0);
 
-      $periphs = $item_periph->find(['itemtype' => \Peripheral::class, 'computers_id' => $computers_id]);
-      $this->integer(count($periphs))->isIdenticalTo(3);
-      foreach ($periphs as $p) {
-         $this->variable($p['is_dynamic'])->isEqualTo(0);
-      }
+        $periphs = $item_periph->find(['itemtype' => \Peripheral::class, 'computers_id' => $computers_id]);
+        $this->integer(count($periphs))->isIdenticalTo(3);
+        foreach ($periphs as $p) {
+            $this->variable($p['is_dynamic'])->isEqualTo(0);
+        }
 
-      //computer inventory knows only "Fingerprint" and "Smartcard reader" peripherals
-      $this->doInventory($xml_source, true);
+       //computer inventory knows only "Fingerprint" and "Smartcard reader" peripherals
+        $this->doInventory($xml_source, true);
 
-      //we still have 3 peripherals
-      $periphs = $periph->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
-      $this->integer(count($periphs))->isIdenticalTo(3);
+       //we still have 3 peripherals
+        $periphs = $periph->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($periphs))->isIdenticalTo(3);
 
-      //we still have 3 peripherals items linked to the computer
-      $periphs = $item_periph->find(['itemtype' => \Peripheral::class, 'computers_id' => $computers_id]);
-      $this->integer(count($periphs))->isIdenticalTo(3);
+       //we still have 3 peripherals items linked to the computer
+        $periphs = $item_periph->find(['itemtype' => \Peripheral::class, 'computers_id' => $computers_id]);
+        $this->integer(count($periphs))->isIdenticalTo(3);
 
-      //peripherals present in the inventory source are now dynamic
-      $periphs = $item_periph->find(['itemtype' => \Peripheral::class, 'computers_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($periphs))->isIdenticalTo(2);
+       //peripherals present in the inventory source are now dynamic
+        $periphs = $item_periph->find(['itemtype' => \Peripheral::class, 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($periphs))->isIdenticalTo(2);
 
-      //peripheral not present in the inventory is still not dynamic
-      $periphs = $item_periph->find(['itemtype' => \Peripheral::class, 'computers_id' => $computers_id, 'is_dynamic' => 0]);
-      $this->integer(count($periphs))->isIdenticalTo(1);
+       //peripheral not present in the inventory is still not dynamic
+        $periphs = $item_periph->find(['itemtype' => \Peripheral::class, 'computers_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($periphs))->isIdenticalTo(1);
 
-      //Redo inventory, but with removed "Smartcard reader" peripheral
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+       //Redo inventory, but with removed "Smartcard reader" peripheral
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <USBDEVICES>
@@ -266,31 +272,32 @@ class Peripheral extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      $this->doInventory($xml_source, true);
+        $this->doInventory($xml_source, true);
 
-      //we still have 3 peripherals
-      $periphs = $periph->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
-      $this->integer(count($periphs))->isIdenticalTo(3);
+       //we still have 3 peripherals
+        $periphs = $periph->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($periphs))->isIdenticalTo(3);
 
-      //we now have 2 peripherals linked to computer only
-      $periphs = $item_periph->find();
-      $periphs = $item_periph->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id]);
-      $this->integer(count($periphs))->isIdenticalTo(2);
+       //we now have 2 peripherals linked to computer only
+        $periphs = $item_periph->find();
+        $periphs = $item_periph->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id]);
+        $this->integer(count($periphs))->isIdenticalTo(2);
 
-      //peripheral present in the inventory source is still dynamic
-      $periphs = $item_periph->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($periphs))->isIdenticalTo(1);
+       //peripheral present in the inventory source is still dynamic
+        $periphs = $item_periph->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($periphs))->isIdenticalTo(1);
 
-      //peripheral not present in the inventory is still not dynamic
-      $periphs = $item_periph->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id, 'is_dynamic' => 0]);
-      $this->integer(count($periphs))->isIdenticalTo(1);
-   }
+       //peripheral not present in the inventory is still not dynamic
+        $periphs = $item_periph->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($periphs))->isIdenticalTo(1);
+    }
 
-   public function testInventoryMove() {
-      $peripheral = new \peripheral();
-      $item_peripheral = new \Computer_Item();
+    public function testInventoryMove()
+    {
+        $peripheral = new \peripheral();
+        $item_peripheral = new \Computer_Item();
 
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <USBDEVICES>
@@ -313,40 +320,40 @@ class Peripheral extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      //computer inventory with one peripheral
-      $inventory = $this->doInventory($xml_source, true);
+       //computer inventory with one peripheral
+        $inventory = $this->doInventory($xml_source, true);
 
-      $computers_id = $inventory->getItem()->fields['id'];
-      $this->integer($computers_id)->isGreaterThan(0);
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
 
-      //we have 1 peripheral
-      $peripherals = $peripheral->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
-      $this->integer(count($peripherals))->isIdenticalTo(1);
+       //we have 1 peripheral
+        $peripherals = $peripheral->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($peripherals))->isIdenticalTo(1);
 
-      //we have 1 peripheral items linked to the computer
-      $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id]);
-      $this->integer(count($peripherals))->isIdenticalTo(1);
+       //we have 1 peripheral items linked to the computer
+        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id]);
+        $this->integer(count($peripherals))->isIdenticalTo(1);
 
-      //peripheral present in the inventory source is dynamic
-      $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($peripherals))->isIdenticalTo(1);
+       //peripheral present in the inventory source is dynamic
+        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($peripherals))->isIdenticalTo(1);
 
-      //same inventory again
-      $inventory = $this->doInventory($xml_source, true);
+       //same inventory again
+        $inventory = $this->doInventory($xml_source, true);
 
-      $computers_id = $inventory->getItem()->fields['id'];
-      $this->integer($computers_id)->isGreaterThan(0);
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
 
-      //we still have only 1 peripheral
-      $peripherals = $peripheral->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
-      $this->integer(count($peripherals))->isIdenticalTo(1);
+       //we still have only 1 peripheral
+        $peripherals = $peripheral->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($peripherals))->isIdenticalTo(1);
 
-      //we still have only 1 peripheral items linked to the computer
-      $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id]);
-      $this->integer(count($peripherals))->isIdenticalTo(1);
+       //we still have only 1 peripheral items linked to the computer
+        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id]);
+        $this->integer(count($peripherals))->isIdenticalTo(1);
 
-      //same peripheral, but on another computer
-      $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+       //same peripheral, but on another computer
+        $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <USBDEVICES>
@@ -369,45 +376,45 @@ class Peripheral extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      //computer inventory with one peripheral
-      $inventory = $this->doInventory($xml_source_2, true);
+       //computer inventory with one peripheral
+        $inventory = $this->doInventory($xml_source_2, true);
 
-      $computers_2_id = $inventory->getItem()->fields['id'];
-      $this->integer($computers_2_id)->isGreaterThan(0);
+        $computers_2_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_2_id)->isGreaterThan(0);
 
-      //we still have only 1 peripheral
-      $peripherals = $peripheral->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
-      $this->integer(count($peripherals))->isIdenticalTo(1);
+       //we still have only 1 peripheral
+        $peripherals = $peripheral->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($peripherals))->isIdenticalTo(1);
 
-      //no longer linked on first computer inventoried
-      $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id]);
-      $this->integer(count($peripherals))->isIdenticalTo(0);
+       //no longer linked on first computer inventoried
+        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id]);
+        $this->integer(count($peripherals))->isIdenticalTo(0);
 
-      //but now linked on last inventoried computer
-      $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_2_id]);
-      $this->integer(count($peripherals))->isIdenticalTo(1);
+       //but now linked on last inventoried computer
+        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_2_id]);
+        $this->integer(count($peripherals))->isIdenticalTo(1);
 
-      //peripheral is still dynamic
-      $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
-      $this->integer(count($peripherals))->isIdenticalTo(1);
+       //peripheral is still dynamic
+        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
+        $this->integer(count($peripherals))->isIdenticalTo(1);
 
-      //replay first computer inventory, peripheral is back \o/
-      $inventory = $this->doInventory($xml_source, true);
+       //replay first computer inventory, peripheral is back \o/
+        $inventory = $this->doInventory($xml_source, true);
 
-      //we still have only 1 peripheral
-      $peripherals = $peripheral->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
-      $this->integer(count($peripherals))->isIdenticalTo(1);
+       //we still have only 1 peripheral
+        $peripherals = $peripheral->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($peripherals))->isIdenticalTo(1);
 
-      //linked again on first computer inventoried
-      $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id]);
-      $this->integer(count($peripherals))->isIdenticalTo(1);
+       //linked again on first computer inventoried
+        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id]);
+        $this->integer(count($peripherals))->isIdenticalTo(1);
 
-      //no longer linked on last inventoried computer
-      $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_2_id]);
-      $this->integer(count($peripherals))->isIdenticalTo(0);
+       //no longer linked on last inventoried computer
+        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_2_id]);
+        $this->integer(count($peripherals))->isIdenticalTo(0);
 
-      //peripheral is still dynamic
-      $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($peripherals))->isIdenticalTo(1);
-   }
+       //peripheral is still dynamic
+        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($peripherals))->isIdenticalTo(1);
+    }
 }

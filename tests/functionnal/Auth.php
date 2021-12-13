@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,10 +37,12 @@ use DbTestCase;
 
 /* Test for inc/auth.class.php */
 
-class Auth extends DbTestCase {
+class Auth extends DbTestCase
+{
 
-   protected function loginProvider() {
-      return [
+    protected function loginProvider()
+    {
+        return [
          ['john', true],
          ['john doe', true],
          ['john_doe', true],
@@ -53,118 +56,122 @@ class Auth extends DbTestCase {
          ['john$doe', false],
          [null, false],
          ['', false]
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider loginProvider
     */
-   public function testIsValidLogin($login, $isvalid) {
-      $this->boolean(\Auth::isValidLogin($login))->isIdenticalTo($isvalid);
-   }
+    public function testIsValidLogin($login, $isvalid)
+    {
+        $this->boolean(\Auth::isValidLogin($login))->isIdenticalTo($isvalid);
+    }
 
-   public function testGetLoginAuthMethods() {
-      $methods = \Auth::getLoginAuthMethods();
-      $expected = [
+    public function testGetLoginAuthMethods()
+    {
+        $methods = \Auth::getLoginAuthMethods();
+        $expected = [
          '_default'  => 'local',
          'local'     => 'GLPI internal database'
-      ];
-      $this->array($methods)->isIdenticalTo($expected);
-   }
+        ];
+        $this->array($methods)->isIdenticalTo($expected);
+    }
 
    /**
     * Provides data to test account lock strategy on password expiration.
     *
     * @return array
     */
-   protected function lockStrategyProvider() {
-      $tests = [];
+    protected function lockStrategyProvider()
+    {
+        $tests = [];
 
-      // test with no password expiration
-      $tests[] = [
+       // test with no password expiration
+        $tests[] = [
          'last_update'   => date('Y-m-d H:i:s', strtotime('-10 years')),
          'exp_delay'     => -1,
          'lock_delay'    => -1,
          'expected_lock' => false,
-      ];
+        ];
 
-      // tests with no lock on password expiration
-      $cases = [
+       // tests with no lock on password expiration
+        $cases = [
          '-5 days'  => false,
          '-30 days' => false,
-      ];
-      foreach ($cases as $last_update => $expected_lock) {
-         $tests[] = [
+        ];
+        foreach ($cases as $last_update => $expected_lock) {
+            $tests[] = [
             'last_update'   => date('Y-m-d H:i:s', strtotime($last_update)),
             'exp_delay'     => 15,
             'lock_delay'    => -1,
             'expected_lock' => $expected_lock,
-         ];
-      }
+            ];
+        }
 
-      // tests with immediate lock on password expiration
-      $cases = [
+       // tests with immediate lock on password expiration
+        $cases = [
          '-5 days'  => false,
          '-30 days' => true,
-      ];
-      foreach ($cases as $last_update => $expected_lock) {
-         $tests[] = [
+        ];
+        foreach ($cases as $last_update => $expected_lock) {
+            $tests[] = [
             'last_update'   => date('Y-m-d H:i:s', strtotime($last_update)),
             'exp_delay'     => 15,
             'lock_delay'    => 0,
             'expected_lock' => $expected_lock,
-         ];
-      }
+            ];
+        }
 
-      // tests with delayed lock on password expiration
-      $cases = [
+       // tests with delayed lock on password expiration
+        $cases = [
          '-5 days'  => false,
          '-20 days' => false,
          '-30 days' => true,
-      ];
-      foreach ($cases as $last_update => $expected_lock) {
-         $tests[] = [
+        ];
+        foreach ($cases as $last_update => $expected_lock) {
+            $tests[] = [
             'last_update'   => date('Y-m-d H:i:s', strtotime($last_update)),
             'exp_delay'     => 15,
             'lock_delay'    => 10,
             'expected_lock' => $expected_lock,
-         ];
-      }
+            ];
+        }
 
-      return $tests;
-   }
+        return $tests;
+    }
 
    /**
     * Test that account is lock when authentication is done using an expired password.
     *
     * @dataProvider lockStrategyProvider
     */
-   public function testAccountLockStrategy(string $last_update, int $exp_delay, int $lock_delay, bool $expected_lock) {
-      global $CFG_GLPI;
+    public function testAccountLockStrategy(string $last_update, int $exp_delay, int $lock_delay, bool $expected_lock)
+    {
+        global $CFG_GLPI;
 
-      // reset session to prevent session having less rights to create a user
-      $this->login();
+       // reset session to prevent session having less rights to create a user
+        $this->login();
 
-      $user = new \User();
-      $username = 'test_lock_' . mt_rand();
-      $user_id = (int) $user->add([
+        $user = new \User();
+        $username = 'test_lock_' . mt_rand();
+        $user_id = (int) $user->add([
          'name'         => $username,
          'password'     => 'test',
          'password2'    => 'test',
          '_profiles_id' => 1,
-      ]);
-      $this->integer($user_id)->isGreaterThan(0);
-      $this->boolean($user->update(['id' => $user_id, 'password_last_update' => $last_update]))->isTrue();
+        ]);
+        $this->integer($user_id)->isGreaterThan(0);
+        $this->boolean($user->update(['id' => $user_id, 'password_last_update' => $last_update]))->isTrue();
 
-      $cfg_backup = $CFG_GLPI;
-      $CFG_GLPI['password_expiration_delay'] = $exp_delay;
-      $CFG_GLPI['password_expiration_lock_delay'] = $lock_delay;
-      $auth = new \Auth();
-      $is_logged = $auth->login($username, 'test', true);
-      $CFG_GLPI = $cfg_backup;
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['password_expiration_delay'] = $exp_delay;
+        $CFG_GLPI['password_expiration_lock_delay'] = $lock_delay;
+        $auth = new \Auth();
+        $is_logged = $auth->login($username, 'test', true);
+        $CFG_GLPI = $cfg_backup;
 
-      $this->boolean($is_logged)->isEqualTo(!$expected_lock);
-      $this->boolean($user->getFromDB($user->fields['id']))->isTrue();
-      $this->boolean((bool)$user->fields['is_active'])->isEqualTo(!$expected_lock);
-   }
+        $this->boolean($is_logged)->isEqualTo(!$expected_lock);
+        $this->boolean($user->getFromDB($user->fields['id']))->isTrue();
+        $this->boolean((bool)$user->fields['is_active'])->isEqualTo(!$expected_lock);
+    }
 }

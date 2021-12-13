@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -42,64 +43,76 @@
 use Glpi\Event;
 
 if (!($item_device instanceof Item_Devices)) {
-   Html::displayErrorAndDie('');
+    Html::displayErrorAndDie('');
 }
 if (!$item_device->canView()) {
    // Gestion timeout session
-   Session::redirectIfNotLoggedIn();
-   Html::displayRightError();
+    Session::redirectIfNotLoggedIn();
+    Html::displayRightError();
 }
 
 
 if (isset($_POST["id"])) {
-   $_GET["id"] = $_POST["id"];
+    $_GET["id"] = $_POST["id"];
 } else if (!isset($_GET["id"])) {
-   $_GET["id"] = "";
+    $_GET["id"] = "";
 }
 
 if (isset($_POST["add"])) {
-   $item_device->check(-1, CREATE, $_POST);
-   if ($newID = $item_device->add($_POST)) {
-      Event::log($newID, get_class($item_device), 4, "setup",
-                 sprintf(__('%1$s adds an item'), $_SESSION["glpiname"]));
+    $item_device->check(-1, CREATE, $_POST);
+    if ($newID = $item_device->add($_POST)) {
+        Event::log(
+            $newID,
+            get_class($item_device),
+            4,
+            "setup",
+            sprintf(__('%1$s adds an item'), $_SESSION["glpiname"])
+        );
 
-      if ($_SESSION['glpibackcreated']) {
-         Html::redirect($item_device->getLinkURL());
-      }
-   }
-   Html::back();
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($item_device->getLinkURL());
+        }
+    }
+    Html::back();
 } else if (isset($_POST["purge"])) {
-   $item_device->check($_POST["id"], PURGE);
-   $item_device->delete($_POST, 1);
+    $item_device->check($_POST["id"], PURGE);
+    $item_device->delete($_POST, 1);
 
-   Event::log($_POST["id"], get_class($item_device), 4, "setup",
-              //TRANS: %s is the user login
-              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
+    Event::log(
+        $_POST["id"],
+        get_class($item_device),
+        4,
+        "setup",
+        //TRANS: %s is the user login
+        sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+    );
 
-   $device = $item_device->getOnePeer(1);
-   Html::redirect($device->getLinkURL());
-
+    $device = $item_device->getOnePeer(1);
+    Html::redirect($device->getLinkURL());
 } else if (isset($_POST["update"])) {
-   $item_device->check($_POST["id"], UPDATE);
-   $item_device->update($_POST);
+    $item_device->check($_POST["id"], UPDATE);
+    $item_device->update($_POST);
 
-   Event::log($_POST["id"], get_class($item_device), 4, "setup",
-              //TRANS: %s is the user login
-              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
-   Html::back();
-
+    Event::log(
+        $_POST["id"],
+        get_class($item_device),
+        4,
+        "setup",
+        //TRANS: %s is the user login
+        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+    );
+    Html::back();
 } else {
+    if (in_array($item_device->getType(), $CFG_GLPI['devices_in_menu'])) {
+        Html::header($item_device->getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", strtolower($item_device->getType()));
+    } else {
+        Html::header($item_device->getTypeName(Session::getPluralNumber()), '', "config", "commondevice", $item_device->getDeviceType());
+    }
 
-   if (in_array($item_device->getType(), $CFG_GLPI['devices_in_menu'])) {
-      Html::header($item_device->getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", strtolower($item_device->getType()));
-   } else {
-      Html::header($item_device->getTypeName(Session::getPluralNumber()), '', "config", "commondevice", $item_device->getDeviceType());
-   }
-
-   if (!isset($options)) {
-      $options = [];
-   }
-   $options['id'] = $_GET["id"];
-   $item_device->display($options);
-   Html::footer();
+    if (!isset($options)) {
+        $options = [];
+    }
+    $options['id'] = $_GET["id"];
+    $item_device->display($options);
+    Html::footer();
 }

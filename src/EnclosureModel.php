@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,9 +32,11 @@
  */
 
 /// Class EnclosureModel
-class EnclosureModel extends CommonDCModelDropdown {
+class EnclosureModel extends CommonDCModelDropdown
+{
 
-   static function getTypeName($nb = 0) {
-      return _n('Enclosure model', 'Enclosure models', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Enclosure model', 'Enclosure models', $nb);
+    }
 }

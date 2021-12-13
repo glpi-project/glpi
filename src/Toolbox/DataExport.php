@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,7 +35,8 @@ namespace Glpi\Toolbox;
 
 use Glpi\RichText\RichText;
 
-class DataExport {
+class DataExport
+{
 
    /**
     * Normalize a value for text export (PDF, CSV, SYLK, ...).
@@ -44,30 +46,31 @@ class DataExport {
     *
     * @return string
     */
-   public static function normalizeValueForTextExport(string $value): string {
-      $value = Sanitizer::unsanitize($value);
+    public static function normalizeValueForTextExport(string $value): string
+    {
+        $value = Sanitizer::unsanitize($value);
 
-      if (RichText::isRichTextHtmlContent($value)) {
-         // Remove invisible contents (tooltips for instance)
-         libxml_use_internal_errors(true); // Silent errors
-         $document = new \DOMDocument();
-         $document->loadHTML(
-            mb_convert_encoding('<div>' . $value . '</div>', 'HTML-ENTITIES', 'UTF-8'),
-            LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
-         );
+        if (RichText::isRichTextHtmlContent($value)) {
+           // Remove invisible contents (tooltips for instance)
+            libxml_use_internal_errors(true); // Silent errors
+            $document = new \DOMDocument();
+            $document->loadHTML(
+                mb_convert_encoding('<div>' . $value . '</div>', 'HTML-ENTITIES', 'UTF-8'),
+                LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+            );
 
-         $xpath = new \DOMXPath($document);
-         $invisible_elements = $xpath->query('//div[contains(@class, "invisible")]');
-         foreach ($invisible_elements as $element) {
-            $element->parentNode->removeChild($element);
-         }
+            $xpath = new \DOMXPath($document);
+            $invisible_elements = $xpath->query('//div[contains(@class, "invisible")]');
+            foreach ($invisible_elements as $element) {
+                 $element->parentNode->removeChild($element);
+            }
 
-         $value = $document->saveHTML();
+            $value = $document->saveHTML();
 
-         // Transform into simple text
-         $value = RichText::getTextFromHtml($value, true, true);
-      }
+           // Transform into simple text
+            $value = RichText::getTextFromHtml($value, true, true);
+        }
 
-      return $value;
-   }
+        return $value;
+    }
 }

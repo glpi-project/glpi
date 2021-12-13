@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -40,7 +41,7 @@ define('GLPI_ROOT', __DIR__);
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 ini_set('session.use_cookies', 0);
 
-include_once (GLPI_ROOT . "/inc/based_config.php");
+include_once(GLPI_ROOT . "/inc/based_config.php");
 
 // Init loggers
 $GLPI = new GLPI();
@@ -51,5 +52,5 @@ $GLPI->initErrorHandler();
 $cache_manager = new CacheManager();
 $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
 
-$api = new Glpi\Api\APIRest;
+$api = new Glpi\Api\APIRest();
 $api->call();

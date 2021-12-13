@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,22 +34,23 @@
 use Glpi\Plugin\Hooks;
 
 /// Common DataBase Relation Table Manager Class
-abstract class CommonDBChild extends CommonDBConnexity {
+abstract class CommonDBChild extends CommonDBConnexity
+{
 
    // Mapping between DB fields
    // * definition
-   static public $itemtype; // Class name or field name (start with itemtype) for link to Parent
-   static public $items_id; // Field name
+    public static $itemtype; // Class name or field name (start with itemtype) for link to Parent
+    public static $items_id; // Field name
    // * rights
-   static public $checkParentRights  = self::HAVE_SAME_RIGHT_ON_ITEM;
-   static public $mustBeAttached     = true;
+    public static $checkParentRights  = self::HAVE_SAME_RIGHT_ON_ITEM;
+    public static $mustBeAttached     = true;
    // * log
-   static public $logs_for_parent    = true;
-   static public $log_history_add    = Log::HISTORY_ADD_SUBITEM;
-   static public $log_history_update = Log::HISTORY_UPDATE_SUBITEM;
-   static public $log_history_delete = Log::HISTORY_DELETE_SUBITEM;
-   static public $log_history_lock   = Log::HISTORY_LOCK_SUBITEM;
-   static public $log_history_unlock = Log::HISTORY_UNLOCK_SUBITEM;
+    public static $logs_for_parent    = true;
+    public static $log_history_add    = Log::HISTORY_ADD_SUBITEM;
+    public static $log_history_update = Log::HISTORY_UPDATE_SUBITEM;
+    public static $log_history_delete = Log::HISTORY_DELETE_SUBITEM;
+    public static $log_history_lock   = Log::HISTORY_LOCK_SUBITEM;
+    public static $log_history_unlock = Log::HISTORY_UNLOCK_SUBITEM;
 
 
    /**
@@ -61,8 +63,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @return array|null
    **/
-   static function getSQLCriteriaToSearchForItem($itemtype, $items_id) {
-      $criteria = [
+    public static function getSQLCriteriaToSearchForItem($itemtype, $items_id)
+    {
+        $criteria = [
          'SELECT' => [
             static::getIndexName(),
             static::$items_id . ' AS items_id'
@@ -71,114 +74,125 @@ abstract class CommonDBChild extends CommonDBConnexity {
          'WHERE'  => [
             static::$items_id  => $items_id
          ]
-      ];
+        ];
 
-      // Check item 1 type
-      $request = false;
-      if (preg_match('/^itemtype/', static::$itemtype)) {
-         $criteria['SELECT'][] = static::$itemtype . ' AS itemtype';
-         $criteria['WHERE'][static::$itemtype] = $itemtype;
-         $request = true;
-      } else {
-         $criteria['SELECT'][] = new \QueryExpression("'" . static::$itemtype . "' AS itemtype");
-         if (($itemtype ==  static::$itemtype)
-             || is_subclass_of($itemtype, static::$itemtype)) {
+       // Check item 1 type
+        $request = false;
+        if (preg_match('/^itemtype/', static::$itemtype)) {
+            $criteria['SELECT'][] = static::$itemtype . ' AS itemtype';
+            $criteria['WHERE'][static::$itemtype] = $itemtype;
             $request = true;
-         }
-      }
-      if ($request === true) {
-         return $criteria;
-      }
-      return null;
-   }
+        } else {
+            $criteria['SELECT'][] = new \QueryExpression("'" . static::$itemtype . "' AS itemtype");
+            if (
+                ($itemtype ==  static::$itemtype)
+                || is_subclass_of($itemtype, static::$itemtype)
+            ) {
+                $request = true;
+            }
+        }
+        if ($request === true) {
+            return $criteria;
+        }
+        return null;
+    }
 
 
    /**
     * @since 0.84
    **/
-   static function canCreate() {
+    public static function canCreate()
+    {
 
-      if ((static::$rightname) && (!Session::haveRight(static::$rightname, CREATE))) {
-         return false;
-      }
-      return static::canChild('canUpdate');
-   }
-
-
-   /**
-    * @since 0.84
-   **/
-   static function canView() {
-      if ((static::$rightname) && (!Session::haveRight(static::$rightname, READ))) {
-         return false;
-      }
-      return static::canChild('canView');
-   }
+        if ((static::$rightname) && (!Session::haveRight(static::$rightname, CREATE))) {
+            return false;
+        }
+        return static::canChild('canUpdate');
+    }
 
 
    /**
     * @since 0.84
    **/
-   static function canUpdate() {
-      if ((static::$rightname) && (!Session::haveRight(static::$rightname, UPDATE))) {
-         return false;
-      }
-      return static::canChild('canUpdate');
-   }
+    public static function canView()
+    {
+        if ((static::$rightname) && (!Session::haveRight(static::$rightname, READ))) {
+            return false;
+        }
+        return static::canChild('canView');
+    }
 
 
    /**
     * @since 0.84
    **/
-   static function canDelete() {
-      if ((static::$rightname) && (!Session::haveRight(static::$rightname, DELETE))) {
-         return false;
-      }
-      return static::canChild('canUpdate');
-   }
+    public static function canUpdate()
+    {
+        if ((static::$rightname) && (!Session::haveRight(static::$rightname, UPDATE))) {
+            return false;
+        }
+        return static::canChild('canUpdate');
+    }
+
+
+   /**
+    * @since 0.84
+   **/
+    public static function canDelete()
+    {
+        if ((static::$rightname) && (!Session::haveRight(static::$rightname, DELETE))) {
+            return false;
+        }
+        return static::canChild('canUpdate');
+    }
 
 
    /**
     * @since 0.85
     **/
-   static function canPurge() {
-      if ((static::$rightname) && (!Session::haveRight(static::$rightname, PURGE))) {
-         return false;
-      }
-      return static::canChild('canUpdate');
-   }
+    public static function canPurge()
+    {
+        if ((static::$rightname) && (!Session::haveRight(static::$rightname, PURGE))) {
+            return false;
+        }
+        return static::canChild('canUpdate');
+    }
 
 
    /**
     * @since 0.84
    **/
-   function canCreateItem() {
-      return $this->canChildItem('canUpdateItem', 'canUpdate');
-   }
+    public function canCreateItem()
+    {
+        return $this->canChildItem('canUpdateItem', 'canUpdate');
+    }
 
 
    /**
     * @since 0.84
    **/
-   function canViewItem() {
-      return $this->canChildItem('canViewItem', 'canView');
-   }
+    public function canViewItem()
+    {
+        return $this->canChildItem('canViewItem', 'canView');
+    }
 
 
    /**
     * @since 0.84
    **/
-   function canUpdateItem() {
-      return $this->canChildItem('canUpdateItem', 'canUpdate');
-   }
+    public function canUpdateItem()
+    {
+        return $this->canChildItem('canUpdateItem', 'canUpdate');
+    }
 
 
    /**
     * @since 0.84
    **/
-   function canDeleteItem() {
-      return $this->canChildItem('canUpdateItem', 'canUpdate');
-   }
+    public function canDeleteItem()
+    {
+        return $this->canChildItem('canUpdateItem', 'canUpdate');
+    }
 
 
    /**
@@ -186,11 +200,16 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @param $method
    **/
-   static function canChild($method) {
+    public static function canChild($method)
+    {
 
-      return static::canConnexity($method, static::$checkParentRights, static::$itemtype,
-                                  static::$items_id);
-   }
+        return static::canConnexity(
+            $method,
+            static::$checkParentRights,
+            static::$itemtype,
+            static::$items_id
+        );
+    }
 
 
    /**
@@ -201,15 +220,21 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @return boolean
    **/
-   function canChildItem($methodItem, $methodNotItem) {
+    public function canChildItem($methodItem, $methodNotItem)
+    {
 
-      try {
-         return $this->canConnexityItem($methodItem, $methodNotItem, static::$checkParentRights,
-                                         static::$itemtype, static::$items_id);
-      } catch (CommonDBConnexityItemNotFound $e) {
-         return !static::$mustBeAttached;
-      }
-   }
+        try {
+            return $this->canConnexityItem(
+                $methodItem,
+                $methodNotItem,
+                static::$checkParentRights,
+                static::$itemtype,
+                static::$items_id
+            );
+        } catch (CommonDBConnexityItemNotFound $e) {
+            return !static::$mustBeAttached;
+        }
+    }
 
 
    /**
@@ -222,11 +247,16 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @return object of the concerned item or false on error
    **/
-   function getItem($getFromDB = true, $getEmpty = true) {
+    public function getItem($getFromDB = true, $getEmpty = true)
+    {
 
-      return $this->getConnexityItem(static::$itemtype, static::$items_id,
-                                     $getFromDB, $getEmpty);
-   }
+        return $this->getConnexityItem(
+            static::$itemtype,
+            static::$items_id,
+            $getFromDB,
+            $getEmpty
+        );
+    }
 
 
    /**
@@ -235,33 +265,34 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @param array  $recursiveItems    items of the current elements (see recursivelyGetItems())
     * @param string $elementToDisplay  what to display : 'Type', 'Name', 'Link'
    **/
-   static function displayRecursiveItems(array $recursiveItems, $elementToDisplay) {
+    public static function displayRecursiveItems(array $recursiveItems, $elementToDisplay)
+    {
 
-      if ((!is_array($recursiveItems)) || (count($recursiveItems) == 0)) {
-         echo __('Item not linked to an object');
-         return;
-      }
+        if ((!is_array($recursiveItems)) || (count($recursiveItems) == 0)) {
+            echo __('Item not linked to an object');
+            return;
+        }
 
-      switch ($elementToDisplay) {
-         case 'Type' :
-            $masterItem = $recursiveItems[count($recursiveItems) - 1];
-            echo $masterItem->getTypeName(1);
-            break;
+        switch ($elementToDisplay) {
+            case 'Type':
+                $masterItem = $recursiveItems[count($recursiveItems) - 1];
+                echo $masterItem->getTypeName(1);
+                break;
 
-         case 'Name' :
-         case 'Link' :
-            $items_elements  = [];
-            foreach ($recursiveItems as $item) {
-               if ($elementToDisplay == 'Name') {
-                  $items_elements[] = $item->getName();
-               } else {
-                  $items_elements[] = $item->getLink();
-               }
-            }
-            echo implode(' &lt; ', $items_elements);
-            break;
-      }
-   }
+            case 'Name':
+            case 'Link':
+                $items_elements  = [];
+                foreach ($recursiveItems as $item) {
+                    if ($elementToDisplay == 'Name') {
+                        $items_elements[] = $item->getName();
+                    } else {
+                        $items_elements[] = $item->getLink();
+                    }
+                }
+                echo implode(' &lt; ', $items_elements);
+                break;
+        }
+    }
 
 
    /**
@@ -271,17 +302,18 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @return array
    **/
-   function recursivelyGetItems() {
+    public function recursivelyGetItems()
+    {
 
-      $item = $this->getItem();
-      if ($item !== false) {
-         if ($item instanceof CommonDBChild) {
-            return array_merge([$item], $item->recursivelyGetItems());
-         }
-         return [$item];
-      }
-      return [];
-   }
+        $item = $this->getItem();
+        if ($item !== false) {
+            if ($item instanceof CommonDBChild) {
+                return array_merge([$item], $item->recursivelyGetItems());
+            }
+            return [$item];
+        }
+        return [];
+    }
 
 
    /**
@@ -289,38 +321,38 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @return integer ID of the entity
    **/
-   function getEntityID () {
+    public function getEntityID()
+    {
 
-      // Case of Duplicate Entity info to child
-      if (parent::isEntityAssign()) {
-         return parent::getEntityID();
-      }
+       // Case of Duplicate Entity info to child
+        if (parent::isEntityAssign()) {
+            return parent::getEntityID();
+        }
 
-      $item = $this->getItem();
-      if (($item !== false) && ($item->isEntityAssign())) {
-
-         return $item->getEntityID();
-
-      }
-      return -1;
-   }
+        $item = $this->getItem();
+        if (($item !== false) && ($item->isEntityAssign())) {
+            return $item->getEntityID();
+        }
+        return -1;
+    }
 
 
-   function isEntityAssign() {
+    public function isEntityAssign()
+    {
 
-      // Case of Duplicate Entity info to child
-      if (parent::isEntityAssign()) {
-         return true;
-      }
+       // Case of Duplicate Entity info to child
+        if (parent::isEntityAssign()) {
+            return true;
+        }
 
-      $item = $this->getItem(false);
+        $item = $this->getItem(false);
 
-      if ($item !== false) {
-         return $item->isEntityAssign();
-      }
+        if ($item !== false) {
+            return $item->isEntityAssign();
+        }
 
-      return false;
-   }
+        return false;
+    }
 
 
    /**
@@ -328,21 +360,22 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @return boolean
    **/
-   function maybeRecursive() {
+    public function maybeRecursive()
+    {
 
-      // Case of Duplicate Entity info to child
-      if (parent::maybeRecursive()) {
-         return true;
-      }
+       // Case of Duplicate Entity info to child
+        if (parent::maybeRecursive()) {
+            return true;
+        }
 
-      $item = $this->getItem(false);
+        $item = $this->getItem(false);
 
-      if ($item !== false) {
-         return $item->maybeRecursive();
-      }
+        if ($item !== false) {
+            return $item->maybeRecursive();
+        }
 
-      return false;
-   }
+        return false;
+    }
 
 
    /**
@@ -350,79 +383,92 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @return boolean
    **/
-   function isRecursive () {
+    public function isRecursive()
+    {
 
-      // Case of Duplicate Entity info to child
-      if (parent::maybeRecursive()) {
-          return parent::isRecursive();
-      }
+       // Case of Duplicate Entity info to child
+        if (parent::maybeRecursive()) {
+            return parent::isRecursive();
+        }
 
-      $item = $this->getItem();
+        $item = $this->getItem();
 
-      if ($item !== false) {
-         return $item->isRecursive();
-      }
+        if ($item !== false) {
+            return $item->isRecursive();
+        }
 
-      return false;
-   }
+        return false;
+    }
 
 
-   function addNeededInfoToInput($input) {
+    public function addNeededInfoToInput($input)
+    {
 
-      // is entity missing and forwarding on ?
-      if ($this->tryEntityForwarding() && !isset($input['entities_id'])) {
-         // Merge both arrays to ensure all the fields are defined for the following checks
-         $completeinput = array_merge($this->fields, $input);
-         // Set the item to allow parent::prepareinputforadd to get the right item ...
-         if ($itemToGetEntity = static::getItemFromArray(static::$itemtype, static::$items_id,
-                                                         $completeinput)) {
-            if (($itemToGetEntity instanceof CommonDBTM)
-                && $itemToGetEntity->isEntityForwardTo(get_called_class())) {
-
-               $input['entities_id']  = $itemToGetEntity->getEntityID();
-               $input['is_recursive'] = intval($itemToGetEntity->isRecursive());
-
-            } else {
-               // No entity link : set default values
-               $input['entities_id']  = 0;
-               $input['is_recursive'] = 0;
+       // is entity missing and forwarding on ?
+        if ($this->tryEntityForwarding() && !isset($input['entities_id'])) {
+           // Merge both arrays to ensure all the fields are defined for the following checks
+            $completeinput = array_merge($this->fields, $input);
+           // Set the item to allow parent::prepareinputforadd to get the right item ...
+            if (
+                $itemToGetEntity = static::getItemFromArray(
+                    static::$itemtype,
+                    static::$items_id,
+                    $completeinput
+                )
+            ) {
+                if (
+                    ($itemToGetEntity instanceof CommonDBTM)
+                    && $itemToGetEntity->isEntityForwardTo(get_called_class())
+                ) {
+                    $input['entities_id']  = $itemToGetEntity->getEntityID();
+                    $input['is_recursive'] = intval($itemToGetEntity->isRecursive());
+                } else {
+                 // No entity link : set default values
+                    $input['entities_id']  = 0;
+                    $input['is_recursive'] = 0;
+                }
             }
-         }
-      }
-      return $input;
-   }
+        }
+        return $input;
+    }
 
 
-   function prepareInputForAdd($input) {
+    public function prepareInputForAdd($input)
+    {
 
-      if (!is_array($input)) {
-         return false;
-      }
+        if (!is_array($input)) {
+            return false;
+        }
 
-      // Check item exists
-      if (static::$mustBeAttached
-          && !$this->getItemFromArray(static::$itemtype, static::$items_id, $input)) {
-         return false;
-      }
+       // Check item exists
+        if (
+            static::$mustBeAttached
+            && !$this->getItemFromArray(static::$itemtype, static::$items_id, $input)
+        ) {
+            return false;
+        }
 
-      return $this->addNeededInfoToInput($input);
-   }
+        return $this->addNeededInfoToInput($input);
+    }
 
 
-   function prepareInputForUpdate($input) {
+    public function prepareInputForUpdate($input)
+    {
 
-      if (!is_array($input)) {
-         return false;
-      }
+        if (!is_array($input)) {
+            return false;
+        }
 
-      // True if item changed
-      if (!$this->checkAttachedItemChangesAllowed($input, [static::$itemtype,
-                                                                 static::$items_id])) {
-         return false;
-      }
+       // True if item changed
+        if (
+            !$this->checkAttachedItemChangesAllowed($input, [static::$itemtype,
+                                                                 static::$items_id])
+        ) {
+            return false;
+        }
 
-      return parent::addNeededInfoToInput($input);
-   }
+        return parent::addNeededInfoToInput($input);
+    }
 
 
    /**
@@ -437,11 +483,12 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @return string the name of the entry for the database (ie. : correctly slashed)
    **/
-   function getHistoryNameForItem(CommonDBTM $item, $case) {
+    public function getHistoryNameForItem(CommonDBTM $item, $case)
+    {
 
-      return $this->getNameID(['forceid'    => true,
+        return $this->getNameID(['forceid'    => true,
                                     'additional' => true]);
-   }
+    }
 
 
    /**
@@ -449,27 +496,35 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @return void
    **/
-   function post_addItem() {
+    public function post_addItem()
+    {
 
-      $item = $this->getItem();
-      if ($item === false) {
-         return;
-      }
+        $item = $this->getItem();
+        if ($item === false) {
+            return;
+        }
 
-      if ($item->dohistory
-          && !(isset($this->input['_no_history']) && $this->input['_no_history'])
-          && static::$logs_for_parent) {
-         $changes = [
+        if (
+            $item->dohistory
+            && !(isset($this->input['_no_history']) && $this->input['_no_history'])
+            && static::$logs_for_parent
+        ) {
+            $changes = [
             '0',
             '',
             $this->getHistoryNameForItem($item, 'add'),
-         ];
-         Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
-                      static::$log_history_add);
-      }
+            ];
+            Log::history(
+                $item->getID(),
+                $item->getType(),
+                $changes,
+                $this->getType(),
+                static::$log_history_add
+            );
+        }
 
-      parent::post_addItem();
-   }
+        parent::post_addItem();
+    }
 
 
    /**
@@ -481,89 +536,123 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @return void
    **/
-   function post_updateItem($history = 1) {
+    public function post_updateItem($history = 1)
+    {
 
-      if (!((isset($this->input['_no_history']) && $this->input['_no_history']))
-          && static::$logs_for_parent) {
-         $items_for_log = $this->getItemsForLog(static::$itemtype, static::$items_id);
+        if (
+            !((isset($this->input['_no_history']) && $this->input['_no_history']))
+            && static::$logs_for_parent
+        ) {
+            $items_for_log = $this->getItemsForLog(static::$itemtype, static::$items_id);
 
-         // Whatever case : we log the changes
-         $oldvalues = $this->oldvalues;
-         unset($oldvalues[static::$itemtype]);
-         unset($oldvalues[static::$items_id]);
-         $item      = $items_for_log['new'];
-         if (($item !== false)
-             && $item->dohistory) {
-            foreach (array_keys($oldvalues) as $field) {
-               $changes = $this->getHistoryChangeWhenUpdateField($field);
-               if ((!is_array($changes)) || (count($changes) != 3)) {
-                  continue;
-               }
-               Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
-                            static::$log_history_update);
-            }
-         }
-
-         if (isset($items_for_log['previous'])) {
-            // Have updated the connexity relation
-
-            $prevItem = $items_for_log['previous'];
-            $newItem  = $items_for_log['new'];
-
-            if (($prevItem !== false)
-                && $prevItem->dohistory) {
-               $changes[0] = '0';
-               $changes[1] = addslashes($this->getHistoryNameForItem($prevItem, 'update item previous'));
-               $changes[2] = '';
-               Log::history($prevItem->getID(), $prevItem->getType(), $changes, $this->getType(),
-                            static::$log_history_delete);
+           // Whatever case : we log the changes
+            $oldvalues = $this->oldvalues;
+            unset($oldvalues[static::$itemtype]);
+            unset($oldvalues[static::$items_id]);
+            $item      = $items_for_log['new'];
+            if (
+                ($item !== false)
+                && $item->dohistory
+            ) {
+                foreach (array_keys($oldvalues) as $field) {
+                    $changes = $this->getHistoryChangeWhenUpdateField($field);
+                    if ((!is_array($changes)) || (count($changes) != 3)) {
+                        continue;
+                    }
+                    Log::history(
+                        $item->getID(),
+                        $item->getType(),
+                        $changes,
+                        $this->getType(),
+                        static::$log_history_update
+                    );
+                }
             }
 
-            if (($newItem !== false)
-                && $newItem->dohistory) {
-               $changes[0] = '0';
-               $changes[1] = '';
-               $changes[2] = addslashes($this->getHistoryNameForItem($newItem, 'update item next'));
-               Log::history($newItem->getID(), $newItem->getType(), $changes, $this->getType(),
-                            static::$log_history_add);
-            }
-         }
-      }
+            if (isset($items_for_log['previous'])) {
+               // Have updated the connexity relation
 
-      parent::post_updateItem($history);
-   }
+                $prevItem = $items_for_log['previous'];
+                $newItem  = $items_for_log['new'];
+
+                if (
+                    ($prevItem !== false)
+                    && $prevItem->dohistory
+                ) {
+                    $changes[0] = '0';
+                    $changes[1] = addslashes($this->getHistoryNameForItem($prevItem, 'update item previous'));
+                    $changes[2] = '';
+                    Log::history(
+                        $prevItem->getID(),
+                        $prevItem->getType(),
+                        $changes,
+                        $this->getType(),
+                        static::$log_history_delete
+                    );
+                }
+
+                if (
+                    ($newItem !== false)
+                    && $newItem->dohistory
+                ) {
+                    $changes[0] = '0';
+                    $changes[1] = '';
+                    $changes[2] = addslashes($this->getHistoryNameForItem($newItem, 'update item next'));
+                    Log::history(
+                        $newItem->getID(),
+                        $newItem->getType(),
+                        $changes,
+                        $this->getType(),
+                        static::$log_history_add
+                    );
+                }
+            }
+        }
+
+        parent::post_updateItem($history);
+    }
 
    /**
     * Actions done after the DELETE of the item in the database
     *
     * @return void
    **/
-   function post_deleteFromDB() {
+    public function post_deleteFromDB()
+    {
 
-      if ((isset($this->input['_no_history']) && $this->input['_no_history'])
-          || !static::$logs_for_parent) {
-         return;
-      }
+        if (
+            (isset($this->input['_no_history']) && $this->input['_no_history'])
+            || !static::$logs_for_parent
+        ) {
+            return;
+        }
 
-      $item = $this->getItem();
+        $item = $this->getItem();
 
-      if (($item !== false)
-          && $item->dohistory) {
-         $changes = [
+        if (
+            ($item !== false)
+            && $item->dohistory
+        ) {
+            $changes = [
             '0',
-         ];
+            ];
 
-         if (static::$log_history_delete == Log::HISTORY_LOG_SIMPLE_MESSAGE) {
-            $changes[1] = '';
-            $changes[2] = addslashes($this->getHistoryNameForItem($item, 'delete'));
-         } else {
-            $changes[1] = addslashes($this->getHistoryNameForItem($item, 'delete'));
-            $changes[2] = '';
-         }
-         Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
-                      static::$log_history_delete);
-      }
-   }
+            if (static::$log_history_delete == Log::HISTORY_LOG_SIMPLE_MESSAGE) {
+                $changes[1] = '';
+                $changes[2] = addslashes($this->getHistoryNameForItem($item, 'delete'));
+            } else {
+                $changes[1] = addslashes($this->getHistoryNameForItem($item, 'delete'));
+                $changes[2] = '';
+            }
+            Log::history(
+                $item->getID(),
+                $item->getType(),
+                $changes,
+                $this->getType(),
+                static::$log_history_delete
+            );
+        }
+    }
 
 
    /**
@@ -573,29 +662,41 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @return void
    **/
-   function cleanDBonMarkDeleted() {
+    public function cleanDBonMarkDeleted()
+    {
 
-      if ((isset($this->input['_no_history']) && $this->input['_no_history'])
-          || !static::$logs_for_parent) {
-         return;
-      }
+        if (
+            (isset($this->input['_no_history']) && $this->input['_no_history'])
+            || !static::$logs_for_parent
+        ) {
+            return;
+        }
 
-      if ($this->useDeletedToLockIfDynamic()
-          && $this->isDynamic()) {
-         $item = $this->getItem();
+        if (
+            $this->useDeletedToLockIfDynamic()
+            && $this->isDynamic()
+        ) {
+            $item = $this->getItem();
 
-         if (($item !== false)
-             && $item->dohistory) {
-            $changes = [
-               '0',
-               addslashes($this->getHistoryNameForItem($item, 'lock')),
-               '',
-            ];
-            Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
-                         static::$log_history_lock);
-         }
-      }
-   }
+            if (
+                ($item !== false)
+                && $item->dohistory
+            ) {
+                $changes = [
+                '0',
+                addslashes($this->getHistoryNameForItem($item, 'lock')),
+                '',
+                ];
+                Log::history(
+                    $item->getID(),
+                    $item->getType(),
+                    $changes,
+                    $this->getType(),
+                    static::$log_history_lock
+                );
+            }
+        }
+    }
 
 
    /**
@@ -606,28 +707,40 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @return void
    **/
 
-   function post_restoreItem() {
-      if ((isset($this->input['_no_history']) && $this->input['_no_history'])
-          || !static::$logs_for_parent) {
-         return;
-      }
+    public function post_restoreItem()
+    {
+        if (
+            (isset($this->input['_no_history']) && $this->input['_no_history'])
+            || !static::$logs_for_parent
+        ) {
+            return;
+        }
 
-      if ($this->useDeletedToLockIfDynamic()
-          && $this->isDynamic()) {
-         $item = $this->getItem();
+        if (
+            $this->useDeletedToLockIfDynamic()
+            && $this->isDynamic()
+        ) {
+            $item = $this->getItem();
 
-         if (($item !== false)
-             && $item->dohistory) {
-            $changes = [
-               '0',
-               '',
-               addslashes($this->getHistoryNameForItem($item, 'unlock')),
-            ];
-            Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
-                         static::$log_history_unlock);
-         }
-      }
-   }
+            if (
+                ($item !== false)
+                && $item->dohistory
+            ) {
+                $changes = [
+                '0',
+                '',
+                addslashes($this->getHistoryNameForItem($item, 'unlock')),
+                ];
+                Log::history(
+                    $item->getID(),
+                    $item->getType(),
+                    $changes,
+                    $this->getType(),
+                    static::$log_history_unlock
+                );
+            }
+        }
+    }
 
 
    /**
@@ -643,10 +756,11 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @return string
    **/
-   static function getJSCodeToAddForItemChild($field_name, $child_count_js_var) {
-      return "<input type=\'text\' size=\'40\' ". "name=\'" . $field_name .
+    public static function getJSCodeToAddForItemChild($field_name, $child_count_js_var)
+    {
+        return "<input type=\'text\' size=\'40\' " . "name=\'" . $field_name .
              "[-'+$child_count_js_var+']\'>";
-   }
+    }
 
 
    /**
@@ -662,20 +776,21 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @return void
    **/
-   function showChildForItemForm($canedit, $field_name, $id) {
+    public function showChildForItemForm($canedit, $field_name, $id)
+    {
 
-      if ($this->isNewID($this->getID())) {
-         $value = '';
-      } else {
-         $value = $this->getName();
-      }
-      $field_name = $field_name."[$id]";
-      if ($canedit) {
-         echo "<input type='text' size='40' name='$field_name' value='$value' class='form-select'>";
-      } else {
-         echo "<input type='hidden' name='$field_name' value='$value'>$value";
-      }
-   }
+        if ($this->isNewID($this->getID())) {
+            $value = '';
+        } else {
+            $value = $this->getName();
+        }
+        $field_name = $field_name . "[$id]";
+        if ($canedit) {
+            echo "<input type='text' size='40' name='$field_name' value='$value' class='form-select'>";
+        } else {
+            echo "<input type='hidden' name='$field_name' value='$value'>$value";
+        }
+    }
 
 
    /**
@@ -696,49 +811,53 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @return void|string the button HTML code if $display is true, void otherwise
    **/
-   static function showAddChildButtonForItemForm(CommonDBTM $item, $field_name, $canedit = null,
-                                                 $display = true) {
+    public static function showAddChildButtonForItemForm(
+        CommonDBTM $item,
+        $field_name,
+        $canedit = null,
+        $display = true
+    ) {
 
-      $items_id = $item->getID();
+        $items_id = $item->getID();
 
-      if (is_null($canedit)) {
-         if ($item->isNewItem()) {
-            if (!$item->canCreate()) {
-               return false;
+        if (is_null($canedit)) {
+            if ($item->isNewItem()) {
+                if (!$item->canCreate()) {
+                    return false;
+                }
+                $canedit = $item->canUpdate();
+            } else {
+                if (!$item->can($items_id, READ)) {
+                    return false;
+                }
+
+                $canedit = $item->can($items_id, UPDATE);
             }
-            $canedit = $item->canUpdate();
-         } else {
-            if (!$item->can($items_id, READ)) {
-               return false;
-            }
+        }
 
-            $canedit = $item->can($items_id, UPDATE);
-         }
-      }
+        $result = '';
 
-      $result = '';
+        if ($canedit) {
+            $lower_name         = strtolower(get_called_class());
+            $child_count_js_var = 'nb' . $lower_name . 's';
+            $div_id             = "add_" . $lower_name . "_to_" . $item->getType() . "_" . $items_id;
 
-      if ($canedit) {
-         $lower_name         = strtolower(get_called_class());
-         $child_count_js_var = 'nb'.$lower_name.'s';
-         $div_id             = "add_".$lower_name."_to_".$item->getType()."_".$items_id;
-
-         // Beware : -1 is for the first element added ...
-         $result = "&nbsp;<script type='text/javascript'>var $child_count_js_var=2; </script>";
-         $result .= "<span id='add".$lower_name."button' class='fa fa-plus pointer'".
-              " title=\"".__s('Add')."\"" .
-                "\" onClick=\"var row = ".Html::jsGetElementByID($div_id).";
+           // Beware : -1 is for the first element added ...
+            $result = "&nbsp;<script type='text/javascript'>var $child_count_js_var=2; </script>";
+            $result .= "<span id='add" . $lower_name . "button' class='fa fa-plus pointer'" .
+              " title=\"" . __s('Add') . "\"" .
+                "\" onClick=\"var row = " . Html::jsGetElementByID($div_id) . ";
                              row.append('<br>" .
-               static::getJSCodeToAddForItemChild($field_name, $child_count_js_var)."');
+               static::getJSCodeToAddForItemChild($field_name, $child_count_js_var) . "');
                             $child_count_js_var++;\"
                ><span class='sr-only'>" . __s('Add')  . "</span></span>";
-      }
-      if ($display) {
-         echo $result;
-      } else {
-         return $result;
-      }
-   }
+        }
+        if ($display) {
+            echo $result;
+        } else {
+            return $result;
+        }
+    }
 
 
    /**
@@ -757,76 +876,75 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @return void|boolean (display) Returns false if there is a rights error.
    **/
-   static function showChildsForItemForm(CommonDBTM $item, $field_name, $canedit = null) {
-      global $DB;
+    public static function showChildsForItemForm(CommonDBTM $item, $field_name, $canedit = null)
+    {
+        global $DB;
 
-      $items_id = $item->getID();
+        $items_id = $item->getID();
 
-      if (is_null($canedit)) {
-         if ($item->isNewItem()) {
-            if (!$item->canCreate()) {
-               return false;
+        if (is_null($canedit)) {
+            if ($item->isNewItem()) {
+                if (!$item->canCreate()) {
+                    return false;
+                }
+                $canedit = $item->canUpdate();
+            } else {
+                if (!$item->can($items_id, READ)) {
+                    return false;
+                }
+
+                $canedit = $item->can($items_id, UPDATE);
             }
-            $canedit = $item->canUpdate();
-         } else {
-            if (!$item->can($items_id, READ)) {
-               return false;
-            }
+        }
 
-            $canedit = $item->can($items_id, UPDATE);
-         }
-      }
+        $lower_name = strtolower(get_called_class());
+        $div_id     = "add_" . $lower_name . "_to_" . $item->getType() . "_" . $items_id;
 
-      $lower_name = strtolower(get_called_class());
-      $div_id     = "add_".$lower_name."_to_".$item->getType()."_".$items_id;
+       // To be sure not to load bad datas from this table
+        if ($items_id == 0) {
+            $items_id = -99;
+        }
 
-      // To be sure not to load bad datas from this table
-      if ($items_id == 0) {
-         $items_id = -99;
-      }
-
-      $query = [
+        $query = [
          'FROM'   => static::getTable(),
          'WHERE'  => [
             static::$items_id => $item->getID()
          ]
-      ];
+        ];
 
-      if (preg_match('/^itemtype/', static::$itemtype)) {
-         $query['WHERE']['itemtype'] = $item->getType();
-      }
+        if (preg_match('/^itemtype/', static::$itemtype)) {
+            $query['WHERE']['itemtype'] = $item->getType();
+        }
 
-      $current_item = new static();
+        $current_item = new static();
 
-      if ($current_item->maybeDeleted()) {
-         $query['WHERE']['is_deleted'] = 0;
-      }
+        if ($current_item->maybeDeleted()) {
+            $query['WHERE']['is_deleted'] = 0;
+        }
 
-      $iterator = $DB->request($query);
-      $count = 0;
-      foreach ($iterator as $data) {
+        $iterator = $DB->request($query);
+        $count = 0;
+        foreach ($iterator as $data) {
+            $current_item->fields = $data;
 
-         $current_item->fields = $data;
+            if ($count) {
+                echo '<br>';
+            }
+            $count++;
 
-         if ($count) {
-            echo '<br>';
-         }
-         $count++;
+            $current_item->showChildForItemForm($canedit, $field_name, $current_item->getID());
+        }
 
-         $current_item->showChildForItemForm($canedit, $field_name, $current_item->getID());
-
-      }
-
-      if ($canedit) {
-         echo "<div id='$div_id'>";
-         // No Child display field
-         if ($count == 0) {
-            $current_item->getEmpty();
-            $current_item->showChildForItemForm($canedit, $field_name, -1);
-         }
-         echo "</div>";
-      }
-   }
+        if ($canedit) {
+            echo "<div id='$div_id'>";
+           // No Child display field
+            if ($count == 0) {
+                $current_item->getEmpty();
+                $current_item->showChildForItemForm($canedit, $field_name, -1);
+            }
+            echo "</div>";
+        }
+    }
 
 
    /**
@@ -838,48 +956,51 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @return boolean : true on success
    **/
-   function affectChild($id, $items_id = 0, $itemtype = '') {
+    public function affectChild($id, $items_id = 0, $itemtype = '')
+    {
 
-      $input = [static::getIndexName() => $id,
+        $input = [static::getIndexName() => $id,
                      static::$items_id      => $items_id];
 
-      if (preg_match('/^itemtype/', static::$itemtype)) {
-         $input[static::$itemtype] = $itemtype;
-      }
+        if (preg_match('/^itemtype/', static::$itemtype)) {
+            $input[static::$itemtype] = $itemtype;
+        }
 
-      return $this->update($input);
-   }
+        return $this->update($input);
+    }
 
-   public static final function getItemField($itemtype): string {
-      if (is_subclass_of($itemtype, 'Rule')) {
-         $itemtype = 'Rule';
-      }
+    final public static function getItemField($itemtype): string
+    {
+        if (is_subclass_of($itemtype, 'Rule')) {
+            $itemtype = 'Rule';
+        }
 
-      if (isset(static::$items_id) && getItemtypeForForeignKeyField(static::$items_id) == $itemtype) {
-         return static::$items_id;
-      }
+        if (isset(static::$items_id) && getItemtypeForForeignKeyField(static::$items_id) == $itemtype) {
+            return static::$items_id;
+        }
 
-      if (isset (static::$itemtype) && preg_match('/^itemtype/', static::$itemtype)) {
-         return static::$items_id;
-      }
+        if (isset(static::$itemtype) && preg_match('/^itemtype/', static::$itemtype)) {
+            return static::$items_id;
+        }
 
-      throw new \RuntimeException('Cannot guess field for itemtype ' . $itemtype . ' on ' . static::class);
-   }
+        throw new \RuntimeException('Cannot guess field for itemtype ' . $itemtype . ' on ' . static::class);
+    }
 
-   protected function autoinventoryInformation() {
-      echo "<td>".__('Automatic inventory')."</td>";
-      echo "<td>";
-      if ($this->fields['id'] && $this->fields['is_dynamic']) {
-         ob_start();
-         Plugin::doHook(Hooks::AUTOINVENTORY_INFORMATION, $this);
-         $info = ob_get_clean();
-         if (empty($info)) {
-            $info = __('Yes');
-         }
-         echo $info;
-      } else {
-         echo __('No');
-      }
-      echo "</td>";
-   }
+    protected function autoinventoryInformation()
+    {
+        echo "<td>" . __('Automatic inventory') . "</td>";
+        echo "<td>";
+        if ($this->fields['id'] && $this->fields['is_dynamic']) {
+            ob_start();
+            Plugin::doHook(Hooks::AUTOINVENTORY_INFORMATION, $this);
+            $info = ob_get_clean();
+            if (empty($info)) {
+                $info = __('Yes');
+            }
+            echo $info;
+        } else {
+            echo __('No');
+        }
+        echo "</td>";
+    }
 }

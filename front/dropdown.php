@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session ::checkLoginUser();
 
@@ -40,9 +41,9 @@ echo "<div class='center'>";
 
 $optgroup = Dropdown::getStandardDropdownItemTypes();
 if (count($optgroup) > 0) {
-   Dropdown::showItemTypeList($optgroup);
+    Dropdown::showItemTypeList($optgroup);
 } else {
-   Html::displayRightError();
+    Html::displayRightError();
 }
 
 echo "</div>";

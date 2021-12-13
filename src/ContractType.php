@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,10 +32,12 @@
  */
 
 /// Class ContractType
-class ContractType extends CommonType {
+class ContractType extends CommonType
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Contract type', 'Contract types', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Contract type', 'Contract types', $nb);
+    }
 }

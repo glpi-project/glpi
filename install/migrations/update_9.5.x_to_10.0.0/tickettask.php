@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,7 +32,7 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
+    die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -41,6 +42,6 @@ if (!defined('GLPI_ROOT')) {
 
  /* Add `sourceof_items_id` to some glpi_tickettasks */
 if (!$DB->fieldExists('glpi_tickettasks', 'sourceof_items_id')) {
-   $migration->addField('glpi_tickettasks', 'sourceof_items_id', 'int', ['value' => 0]);
-   $migration->addKey('glpi_tickettasks', 'sourceof_items_id');
+    $migration->addField('glpi_tickettasks', 'sourceof_items_id', 'int', ['value' => 0]);
+    $migration->addKey('glpi_tickettasks', 'sourceof_items_id');
 }

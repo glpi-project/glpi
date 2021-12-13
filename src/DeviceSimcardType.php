@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,9 +36,11 @@
  */
 
 
-class DeviceSimcardType extends CommonDeviceType {
+class DeviceSimcardType extends CommonDeviceType
+{
 
-   static function getTypeName($nb = 0) {
-      return _n('Simcard type', 'Simcard types', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Simcard type', 'Simcard types', $nb);
+    }
 }

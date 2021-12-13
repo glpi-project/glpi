@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,12 +31,13 @@
  * ---------------------------------------------------------------------
  */
 
-class ImageResolution extends CommonDropdown {
+class ImageResolution extends CommonDropdown
+{
 
-   public $can_be_translated = false;
+    public $can_be_translated = false;
 
-   static function getTypeName($nb = 0) {
-      return _nx('image', 'Resolution', 'Resolutions', $nb);
-   }
-
+    public static function getTypeName($nb = 0)
+    {
+        return _nx('image', 'Resolution', 'Resolutions', $nb);
+    }
 }

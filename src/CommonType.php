@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,15 +31,18 @@
  * ---------------------------------------------------------------------
  */
 
-abstract class CommonType extends CommonDropdown {
+abstract class CommonType extends CommonDropdown
+{
 
-   static function getFieldLabel() {
-      return _n('Type', 'Types', 1);
-   }
+    public static function getFieldLabel()
+    {
+        return _n('Type', 'Types', 1);
+    }
 
-   static function getIcon() {
-      $type_class  = get_called_class();
-      $device_class = str_replace('Type', '', $type_class);
-      return $device_class::getIcon();
-   }
+    public static function getIcon()
+    {
+        $type_class  = get_called_class();
+        $device_class = str_replace('Type', '', $type_class);
+        return $device_class::getIcon();
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,10 +37,12 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/volume.class.php */
 
-class Volume extends AbstractInventoryAsset {
+class Volume extends AbstractInventoryAsset
+{
 
-   protected function assetProvider() :array {
-      return [
+    protected function assetProvider(): array
+    {
+        return [
          [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -172,65 +175,68 @@ class Volume extends AbstractInventoryAsset {
   </REQUEST>",
                'expected'  => '{"description": "Disque amovible", "filesystem": "FAT32", "free": 3267, "label": "USB2", "letter": "E:", "serial": "7C4A2931", "total": 7632, "type": "Removable Disk", "volumn": "USB2", "device": "USB2", "filesystems_id": "FAT32", "totalsize": 7632, "freesize": 3267, "name": "USB2", "mountpoint": "E:", "is_dynamic": 1}'
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider assetProvider
     */
-   public function testPrepare($xml, $expected) {
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($xml);
-      $json = json_decode($data);
+    public function testPrepare($xml, $expected)
+    {
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\Volume($computer, $json->content->drives);
-      $asset->setExtraData((array)$json->content);
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\Volume($computer, $json->content->drives);
+        $asset->setExtraData((array)$json->content);
 
-      $conf = new \Glpi\Inventory\Conf();
-      $this->boolean($asset->checkConf($conf))->isTrue();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean($asset->checkConf($conf))->isTrue();
 
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected));
-   }
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected));
+    }
 
-   public function testHandle() {
-      $computer = getItemByTypeName('Computer', '_test_pc01');
+    public function testHandle()
+    {
+        $computer = getItemByTypeName('Computer', '_test_pc01');
 
-      //first, check there are no volume linked to this computer
-      $idd = new \Item_Disk();
-      $this->boolean($idd->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+       //first, check there are no volume linked to this computer
+        $idd = new \Item_Disk();
+        $this->boolean($idd->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isFalse('A volume is already linked to computer!');
 
-      //convert data
-      $expected = $this->assetProvider()[0];
+       //convert data
+        $expected = $this->assetProvider()[0];
 
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($expected['xml']);
-      $json = json_decode($data);
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($expected['xml']);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\Volume($computer, $json->content->drives);
-      $asset->setExtraData((array)$json->content);
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\Volume($computer, $json->content->drives);
+        $asset->setExtraData((array)$json->content);
 
-      $conf = new \Glpi\Inventory\Conf();
-      $this->boolean($asset->checkConf($conf))->isTrue();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean($asset->checkConf($conf))->isTrue();
 
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
 
-      //handle
-      $asset->handleLinks();
-      $asset->handle();
-      $this->boolean($idd->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+       //handle
+        $asset->handleLinks();
+        $asset->handle();
+        $this->boolean($idd->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isTrue('Volume has not been linked to computer :(');
-   }
+    }
 
-   public function testInventoryUpdate() {
-      $computer = new \Computer();
-      $item_disk = new \Item_Disk();
+    public function testInventoryUpdate()
+    {
+        $computer = new \Computer();
+        $item_disk = new \Item_Disk();
 
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <ACCOUNTINFO>
@@ -257,73 +263,73 @@ class Volume extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      //create manually a computer, with 3 disks
-      $computers_id = $computer->add([
+       //create manually a computer, with 3 disks
+        $computers_id = $computer->add([
          'name'   => 'pc002',
          'serial' => 'ggheb7ne7',
          'entities_id' => 0
-      ]);
-      $this->integer($computers_id)->isGreaterThan(0);
+        ]);
+        $this->integer($computers_id)->isGreaterThan(0);
 
-      $cdisk_id = $item_disk->add([
+        $cdisk_id = $item_disk->add([
          "items_id"     => $computers_id,
          "itemtype"     => 'Computer',
          "name"         => "C:",
          "mountpoint"   => "C:",
          "entities_id"  => 0
-      ]);
-      $this->integer($cdisk_id)->isGreaterThan(0);
+        ]);
+        $this->integer($cdisk_id)->isGreaterThan(0);
 
-      $ddisk_id = $item_disk->add([
+        $ddisk_id = $item_disk->add([
          "items_id"     => $computers_id,
          "itemtype"     => 'Computer',
          "name"         => "D:",
          "mountpoint"   => "D:",
          "entities_id"  => 0
-      ]);
-      $this->integer($ddisk_id)->isGreaterThan(0);
+        ]);
+        $this->integer($ddisk_id)->isGreaterThan(0);
 
-      $zdisk_id = $item_disk->add([
+        $zdisk_id = $item_disk->add([
          "items_id"     => $computers_id,
          "itemtype"     => 'Computer',
          "name"         => "Z:",
          "mountpoint"   => "Z:",
          "entities_id"  => 0
-      ]);
-      $this->integer($zdisk_id)->isGreaterThan(0);
+        ]);
+        $this->integer($zdisk_id)->isGreaterThan(0);
 
-      $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($disks))->isIdenticalTo(3);
-      foreach ($disks as $disk) {
-         $this->variable($disk['is_dynamic'])->isEqualTo(0);
-      }
+        $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($disks))->isIdenticalTo(3);
+        foreach ($disks as $disk) {
+            $this->variable($disk['is_dynamic'])->isEqualTo(0);
+        }
 
-      //computer inventory knows only disks C: and Z:
-      $this->doInventory($xml_source, true);
+       //computer inventory knows only disks C: and Z:
+        $this->doInventory($xml_source, true);
 
-      //we still have 3 disks linked to the computer
-      $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($disks))->isIdenticalTo(3);
+       //we still have 3 disks linked to the computer
+        $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($disks))->isIdenticalTo(3);
 
-      //disks present in the inventory source are now dynamic
-      $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($disks))->isIdenticalTo(2);
+       //disks present in the inventory source are now dynamic
+        $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($disks))->isIdenticalTo(2);
 
-      $this->boolean($item_disk->getFromDB($cdisk_id))->isTrue();
-      $this->integer($item_disk->fields['is_dynamic'])->isIdenticalTo(1);
+        $this->boolean($item_disk->getFromDB($cdisk_id))->isTrue();
+        $this->integer($item_disk->fields['is_dynamic'])->isIdenticalTo(1);
 
-      $this->boolean($item_disk->getFromDB($zdisk_id))->isTrue();
-      $this->integer($item_disk->fields['is_dynamic'])->isIdenticalTo(1);
+        $this->boolean($item_disk->getFromDB($zdisk_id))->isTrue();
+        $this->integer($item_disk->fields['is_dynamic'])->isIdenticalTo(1);
 
-      //disk not present in the inventory is still not dynamic
-      $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
-      $this->integer(count($disks))->isIdenticalTo(1);
+       //disk not present in the inventory is still not dynamic
+        $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($disks))->isIdenticalTo(1);
 
-      $this->boolean($item_disk->getFromDB($ddisk_id))->isTrue();
-      $this->integer($item_disk->fields['is_dynamic'])->isIdenticalTo(0);
+        $this->boolean($item_disk->getFromDB($ddisk_id))->isTrue();
+        $this->integer($item_disk->fields['is_dynamic'])->isIdenticalTo(0);
 
-      //Redo inventory, but with removed disk Z:
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+       //Redo inventory, but with removed disk Z:
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <ACCOUNTINFO>
@@ -347,34 +353,35 @@ class Volume extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      $this->doInventory($xml_source, true);
+        $this->doInventory($xml_source, true);
 
-      //we now have 2 disks only
-      $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($disks))->isIdenticalTo(2);
+       //we now have 2 disks only
+        $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($disks))->isIdenticalTo(2);
 
-      //disks present in the inventory source are still dynamic
-      $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($disks))->isIdenticalTo(1);
+       //disks present in the inventory source are still dynamic
+        $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($disks))->isIdenticalTo(1);
 
-      $this->boolean($item_disk->getFromDB($cdisk_id))->isTrue();
-      $this->integer($item_disk->fields['is_dynamic'])->isIdenticalTo(1);
+        $this->boolean($item_disk->getFromDB($cdisk_id))->isTrue();
+        $this->integer($item_disk->fields['is_dynamic'])->isIdenticalTo(1);
 
-      //Z: has been removed
-      $this->boolean($item_disk->getFromDB($zdisk_id))->isFalse();
+       //Z: has been removed
+        $this->boolean($item_disk->getFromDB($zdisk_id))->isFalse();
 
-      //disk not present in the inventory is still not dynamic
-      $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
-      $this->integer(count($disks))->isIdenticalTo(1);
+       //disk not present in the inventory is still not dynamic
+        $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($disks))->isIdenticalTo(1);
 
-      $this->boolean($item_disk->getFromDB($ddisk_id))->isTrue();
-      $this->integer($item_disk->fields['is_dynamic'])->isIdenticalTo(0);
-   }
+        $this->boolean($item_disk->getFromDB($ddisk_id))->isTrue();
+        $this->integer($item_disk->fields['is_dynamic'])->isIdenticalTo(0);
+    }
 
-   public function testInventoryImportOrNot() {
-      $item_disk = new \Item_Disk();
+    public function testInventoryImportOrNot()
+    {
+        $item_disk = new \Item_Disk();
 
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <DRIVES>
@@ -415,114 +422,114 @@ class Volume extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      //per default, configuration allows all volumes import. change that.
-      $this->login();
-      $conf = new \Glpi\Inventory\Conf();
-      $this->boolean(
-         $conf->saveConf([
+       //per default, configuration allows all volumes import. change that.
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean(
+            $conf->saveConf([
             'import_volume' => 0,
             'component_networkdrive' => 0,
             'component_removablemedia' => 0
-         ])
-      )->isTrue();
+            ])
+        )->isTrue();
 
-      //first inventory should import no disk.
-      $inventory = $this->doInventory($xml_source, true);
+       //first inventory should import no disk.
+        $inventory = $this->doInventory($xml_source, true);
 
-      $this->boolean(
-         $conf->saveConf([
+        $this->boolean(
+            $conf->saveConf([
             'import_volume' => 1,
             'component_networkdrive' => 1,
             'component_removablemedia' => 1
-         ])
-      )->isTrue();
+            ])
+        )->isTrue();
 
-      $computer = $inventory->getItem();
-      $computers_id = $computer->fields['id'];
+        $computer = $inventory->getItem();
+        $computers_id = $computer->fields['id'];
 
-      //no disks linked to the computer
-      $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($disks))->isIdenticalTo(0);
+       //no disks linked to the computer
+        $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($disks))->isIdenticalTo(0);
 
-      //set config to inventory disks, but no network nor removable
-      $this->boolean(
-         $conf->saveConf([
+       //set config to inventory disks, but no network nor removable
+        $this->boolean(
+            $conf->saveConf([
             'import_volume' => 1,
             'component_networkdrive' => 0,
             'component_removablemedia' => 0
-         ])
-      )->isTrue();
+            ])
+        )->isTrue();
 
-      //first inventory should import 2 disks (C: and Z:).
-      $inventory = $this->doInventory($xml_source, true);
+       //first inventory should import 2 disks (C: and Z:).
+        $inventory = $this->doInventory($xml_source, true);
 
-      $this->boolean(
-         $conf->saveConf([
+        $this->boolean(
+            $conf->saveConf([
             'import_volume' => 1,
             'component_networkdrive' => 1,
             'component_removablemedia' => 1
-         ])
-      )->isTrue();
+            ])
+        )->isTrue();
 
-      $computer = $inventory->getItem();
-      $computers_id = $computer->fields['id'];
+        $computer = $inventory->getItem();
+        $computers_id = $computer->fields['id'];
 
-      //C: and Z: has been linked to the computer
-      $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($disks))->isIdenticalTo(2);
+       //C: and Z: has been linked to the computer
+        $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($disks))->isIdenticalTo(2);
 
-      //set config to inventory disks, network and removable (the default)
-      $this->boolean(
-         $conf->saveConf([
+       //set config to inventory disks, network and removable (the default)
+        $this->boolean(
+            $conf->saveConf([
             'import_volume' => 1,
             'component_networkdrive' => 1,
             'component_removablemedia' => 1
-         ])
-      )->isTrue();
+            ])
+        )->isTrue();
 
-      //inventory should import all 4 disks.
-      $inventory = $this->doInventory($xml_source, true);
+       //inventory should import all 4 disks.
+        $inventory = $this->doInventory($xml_source, true);
 
-      $computer = $inventory->getItem();
-      $computers_id = $computer->fields['id'];
+        $computer = $inventory->getItem();
+        $computers_id = $computer->fields['id'];
 
-      //all disks has been linked to the computer
-      $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($disks))->isIdenticalTo(4);
+       //all disks has been linked to the computer
+        $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($disks))->isIdenticalTo(4);
 
-      $removables_id = null;
-      foreach ($disks as $disk) {
-         if ($disk['name'] == 'USB2') {
-            $removables_id = $disk['id'];
-            break;
-         }
-      }
-      $this->boolean($item_disk->getFromDB($removables_id))->isTrue();
+        $removables_id = null;
+        foreach ($disks as $disk) {
+            if ($disk['name'] == 'USB2') {
+                $removables_id = $disk['id'];
+                break;
+            }
+        }
+        $this->boolean($item_disk->getFromDB($removables_id))->isTrue();
 
-      //set config to inventory disks and network, but no removable
-      $this->boolean(
-         $conf->saveConf([
+       //set config to inventory disks and network, but no removable
+        $this->boolean(
+            $conf->saveConf([
             'import_volume' => 1,
             'component_networkdrive' => 1,
             'component_removablemedia' => 0
-         ])
-      )->isTrue();
+            ])
+        )->isTrue();
 
-      $inventory = $this->doInventory($xml_source, true);
+        $inventory = $this->doInventory($xml_source, true);
 
-      $this->boolean(
-         $conf->saveConf([
+        $this->boolean(
+            $conf->saveConf([
             'import_volume' => 1,
             'component_networkdrive' => 1,
             'component_removablemedia' => 1
-         ])
-      )->isTrue();
+            ])
+        )->isTrue();
 
-      //3 disks are now been linked to the computer
-      $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($disks))->isIdenticalTo(3);
+       //3 disks are now been linked to the computer
+        $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($disks))->isIdenticalTo(3);
 
-      //ensure removable has been removed!
-      $this->boolean($item_disk->getFromDB($removables_id))->isFalse();
-   }
+       //ensure removable has been removed!
+        $this->boolean($item_disk->getFromDB($removables_id))->isFalse();
+    }
 }

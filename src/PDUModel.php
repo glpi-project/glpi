@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,9 +32,11 @@
  */
 
 /// Class PDUModel
-class PDUModel extends CommonDCModelDropdown {
+class PDUModel extends CommonDCModelDropdown
+{
 
-   static function getTypeName($nb = 0) {
-      return _n('PDU model', 'PDU models', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('PDU model', 'PDU models', $nb);
+    }
 }

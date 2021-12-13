@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,7 +36,7 @@
  * @since 0.84
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 
 Session::checkCentralAccess();
@@ -43,7 +44,7 @@ $default = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('assets');
 
 // Redirect to "/front/computer.php" if no dashboard found
 if ($default == "") {
-   Html::redirect($CFG_GLPI["root_doc"] . "/front/computer.php");
+    Html::redirect($CFG_GLPI["root_doc"] . "/front/computer.php");
 }
 
 Html::header(__('Assets Dashboard'), $_SERVER['PHP_SELF'], "assets", "dashboard");

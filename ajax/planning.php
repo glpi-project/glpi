@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,108 +31,110 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkCentralAccess();
 
 if (!isset($_REQUEST["action"])) {
-   exit;
+    exit;
 }
 
 if ($_REQUEST["action"] == "get_events") {
-   header("Content-Type: application/json; charset=UTF-8");
-   echo json_encode(Planning::constructEventsArray($_REQUEST));
-   exit;
+    header("Content-Type: application/json; charset=UTF-8");
+    echo json_encode(Planning::constructEventsArray($_REQUEST));
+    exit;
 }
 
 if (($_POST["action"] ?? null) == "update_event_times") {
-   echo Planning::updateEventTimes($_POST);
-   exit;
+    echo Planning::updateEventTimes($_POST);
+    exit;
 }
 
 if (($_POST["action"] ?? null) == "view_changed") {
-   echo Planning::viewChanged($_POST['view']);
-   exit;
+    echo Planning::viewChanged($_POST['view']);
+    exit;
 }
 
 if (($_POST["action"] ?? null) == "clone_event") {
-   echo Planning::cloneEvent($_POST['event']);
-   exit;
+    echo Planning::cloneEvent($_POST['event']);
+    exit;
 }
 
 if (($_POST["action"] ?? null) == "delete_event") {
-   echo Planning::deleteEvent($_POST['event']);
-   exit;
+    echo Planning::deleteEvent($_POST['event']);
+    exit;
 }
 
 if ($_REQUEST["action"] == "get_externalevent_template") {
-   $key = 'planningexternaleventtemplates_id';
-   if (isset($_POST[$key])
-       && $_POST[$key] > 0) {
-      $template = new PlanningExternalEventTemplate();
-      $template->getFromDB($_POST[$key]);
+    $key = 'planningexternaleventtemplates_id';
+    if (
+        isset($_POST[$key])
+        && $_POST[$key] > 0
+    ) {
+        $template = new PlanningExternalEventTemplate();
+        $template->getFromDB($_POST[$key]);
 
-      $template->fields = array_map('html_entity_decode', $template->fields);
-      $template->fields['rrule'] = json_decode($template->fields['rrule'], true);
-      header("Content-Type: application/json; charset=UTF-8");
-      echo json_encode($template->fields, JSON_NUMERIC_CHECK);
-      exit;
-   }
+        $template->fields = array_map('html_entity_decode', $template->fields);
+        $template->fields['rrule'] = json_decode($template->fields['rrule'], true);
+        header("Content-Type: application/json; charset=UTF-8");
+        echo json_encode($template->fields, JSON_NUMERIC_CHECK);
+        exit;
+    }
 }
 
 Html::header_nocache();
 header("Content-Type: text/html; charset=UTF-8");
 
 if ($_REQUEST["action"] == "add_event_fromselect") {
-   Planning::showAddEventForm($_REQUEST);
+    Planning::showAddEventForm($_REQUEST);
 }
 
 if ($_REQUEST["action"] == "add_event_sub_form") {
-   Planning::showAddEventSubForm($_REQUEST);
+    Planning::showAddEventSubForm($_REQUEST);
 }
 
 if ($_REQUEST["action"] == "add_planning_form") {
-   Planning::showAddPlanningForm();
+    Planning::showAddPlanningForm();
 }
 
 if ($_REQUEST["action"] == "add_user_form") {
-   Planning::showAddUserForm();
+    Planning::showAddUserForm();
 }
 
 if ($_REQUEST["action"] == "add_group_users_form") {
-   Planning::showAddGroupUsersForm();
+    Planning::showAddGroupUsersForm();
 }
 
 if ($_REQUEST["action"] == "add_group_form") {
-   Planning::showAddGroupForm();
+    Planning::showAddGroupForm();
 }
 
 if ($_REQUEST["action"] == "add_external_form") {
-   Planning::showAddExternalForm();
+    Planning::showAddExternalForm();
 }
 
 if ($_REQUEST["action"] == "add_event_classic_form") {
-   Planning::showAddEventClassicForm($_REQUEST);
+    Planning::showAddEventClassicForm($_REQUEST);
 }
 
 if ($_REQUEST["action"] == "edit_event_form") {
-   Planning::editEventForm($_REQUEST);
+    Planning::editEventForm($_REQUEST);
 }
 
 if ($_REQUEST["action"] == "get_filters_form") {
-   Planning::showPlanningFilter();
+    Planning::showPlanningFilter();
 }
 
 if (($_POST["action"] ?? null) == "toggle_filter") {
-   Planning::toggleFilter($_POST);
+    Planning::toggleFilter($_POST);
 }
 
 if (($_POST["action"] ?? null) == "color_filter") {
-   Planning::colorFilter($_POST);
+    Planning::colorFilter($_POST);
 }
 
 if (($_POST["action"] ?? null) == "delete_filter") {
-   Planning::deleteFilter($_POST);
+    Planning::deleteFilter($_POST);
 }
 
 Html::ajaxFooter();

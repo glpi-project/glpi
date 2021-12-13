@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,16 +38,17 @@ use Session;
 
 class StatDataTicketAverageTime extends StatDataAlwaysDisplay
 {
-   public function __construct(array $params) {
-      parent::__construct($params);
+    public function __construct(array $params)
+    {
+        parent::__construct($params);
 
-      $total  = $this->getDataByType($params, "inter_total");
-      $solved = $this->getDataByType($params, "inter_solved");
-      $closed = $this->getDataByType($params, "inter_closed");
-      $late   = $this->getDataByType($params, "inter_solved_late");
+        $total  = $this->getDataByType($params, "inter_total");
+        $solved = $this->getDataByType($params, "inter_solved");
+        $closed = $this->getDataByType($params, "inter_closed");
+        $late   = $this->getDataByType($params, "inter_solved_late");
 
-      $this->labels = array_keys($total);
-      $this->series = [
+        $this->labels = array_keys($total);
+        $this->series = [
          [
             'name' => _nx('ticket', 'Opened', 'Opened', Session::getPluralNumber()),
             'data' => $total,
@@ -60,11 +62,12 @@ class StatDataTicketAverageTime extends StatDataAlwaysDisplay
             'name' => __('Closed'),
             'data' => $late,
          ]
-      ];
-   }
+        ];
+    }
 
-   public function getTitle(): string {
-      $item = getItemForItemtype($this->params['itemtype']);
-      return _x('Quantity', 'Number') . " - " . $item->getTypeName(Session::getPluralNumber());
-   }
+    public function getTitle(): string
+    {
+        $item = getItemForItemtype($this->params['itemtype']);
+        return _x('Quantity', 'Number') . " - " . $item->getTypeName(Session::getPluralNumber());
+    }
 }

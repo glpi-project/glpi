@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,7 +34,7 @@
 // Check PHP version not to have trouble
 // Need to be the very fist step before any include
 if (version_compare(PHP_VERSION, '7.4.0') < 0) {
-   die('PHP >= 7.4.0 required');
+    die('PHP >= 7.4.0 required');
 }
 
 use Glpi\Application\View\TemplateRenderer;
@@ -41,49 +42,48 @@ use Glpi\Plugin\Hooks;
 
 //Load GLPI constants
 define('GLPI_ROOT', __DIR__);
-include (GLPI_ROOT . "/inc/based_config.php");
+include(GLPI_ROOT . "/inc/based_config.php");
 
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 
 // If config_db doesn't exist -> start installation
 if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
-   Html::redirect("install/install.php");
-   die();
-
+    Html::redirect("install/install.php");
+    die();
 } else {
-   include (GLPI_ROOT . "/inc/includes.php");
-   $_SESSION["glpicookietest"] = 'testcookie';
+    include(GLPI_ROOT . "/inc/includes.php");
+    $_SESSION["glpicookietest"] = 'testcookie';
 
    // For compatibility reason
-   if (isset($_GET["noCAS"])) {
-      $_GET["noAUTO"] = $_GET["noCAS"];
-   }
+    if (isset($_GET["noCAS"])) {
+        $_GET["noAUTO"] = $_GET["noCAS"];
+    }
 
-   if (!isset($_GET["noAUTO"])) {
-      Auth::redirectIfAuthenticated();
-   }
-   Auth::checkAlternateAuthSystems(true, isset($_GET["redirect"])?$_GET["redirect"]:"");
+    if (!isset($_GET["noAUTO"])) {
+        Auth::redirectIfAuthenticated();
+    }
+    Auth::checkAlternateAuthSystems(true, isset($_GET["redirect"]) ? $_GET["redirect"] : "");
 
-   $theme = $_SESSION['glpipalette'] ?? 'auror';
+    $theme = $_SESSION['glpipalette'] ?? 'auror';
 
-   $errors = "";
-   if (isset($_GET['error']) && isset($_GET['redirect'])) {
-      switch ($_GET['error']) {
-         case 1 : // cookie error
-            $errors.= __('You must accept cookies to reach this application');
-            break;
+    $errors = "";
+    if (isset($_GET['error']) && isset($_GET['redirect'])) {
+        switch ($_GET['error']) {
+            case 1: // cookie error
+                $errors .= __('You must accept cookies to reach this application');
+                break;
 
-         case 2 : // GLPI_SESSION_DIR not writable
-            $errors.= __('Checking write permissions for session files');
-            break;
+            case 2: // GLPI_SESSION_DIR not writable
+                $errors .= __('Checking write permissions for session files');
+                break;
 
-         case 3 :
-            $errors.= __('Invalid use of session ID');
-            break;
-      }
-   }
+            case 3:
+                $errors .= __('Invalid use of session ID');
+                break;
+        }
+    }
 
-   TemplateRenderer::getInstance()->display('pages/login.html.twig', [
+    TemplateRenderer::getInstance()->display('pages/login.html.twig', [
       'card_bg_width'       => true,
       'lang'                => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
       'title'               => __('Authentication'),
@@ -111,11 +111,11 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       'auth_dropdown_login' => Auth::dropdownLogin(false),
       'copyright_message'   => Html::getCopyrightMessage(false),
       'errors'              => $errors
-   ]);
+    ]);
 }
 // call cron
 if (!GLPI_DEMO_MODE) {
-   CronTask::callCronForce();
+    CronTask::callCronForce();
 }
 
 echo "</body></html>";

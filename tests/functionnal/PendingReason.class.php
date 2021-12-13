@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -43,10 +44,12 @@ use ProblemTask;
 use Ticket;
 use TicketTask;
 
-class PendingReason extends DbTestCase {
+class PendingReason extends DbTestCase
+{
 
-   protected function testGetNextFollowupDateProvider() {
-      return [
+    protected function testGetNextFollowupDateProvider()
+    {
+        return [
          [
             // Case 1: no auto bump
             'fields' => [
@@ -83,21 +86,23 @@ class PendingReason extends DbTestCase {
             ],
             'expected' => '2021-02-25 13:01:00'
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataprovider testGetNextFollowupDateProvider
     */
-   public function testGetNextFollowupDate(array $fields, $expected) {
-      $pending_reason_item = new \PendingReason_Item();
-      $pending_reason_item->fields = $fields;
+    public function testGetNextFollowupDate(array $fields, $expected)
+    {
+        $pending_reason_item = new \PendingReason_Item();
+        $pending_reason_item->fields = $fields;
 
-      $this->variable($expected)->isEqualTo($pending_reason_item->getNextFollowupDate());
-   }
+        $this->variable($expected)->isEqualTo($pending_reason_item->getNextFollowupDate());
+    }
 
-   protected function testGetAutoResolvedateProvider() {
-      return [
+    protected function testGetAutoResolvedateProvider()
+    {
+        return [
          [
             // Case 1: no auto bump
             'fields' => [
@@ -174,61 +179,65 @@ class PendingReason extends DbTestCase {
             ],
             'expected' => '2021-02-25 19:01:00'
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataprovider testGetAutoResolvedateProvider
     */
-   public function testGetAutoResolvedate(array $fields, $expected) {
-      $pending_reason_item = new \PendingReason_Item();
-      $pending_reason_item->fields = $fields;
+    public function testGetAutoResolvedate(array $fields, $expected)
+    {
+        $pending_reason_item = new \PendingReason_Item();
+        $pending_reason_item->fields = $fields;
 
-      $this->variable($expected)->isEqualTo($pending_reason_item->getAutoResolvedate());
-   }
+        $this->variable($expected)->isEqualTo($pending_reason_item->getAutoResolvedate());
+    }
 
 
-   protected function itemtypeProvider(): array {
-      return [
+    protected function itemtypeProvider(): array
+    {
+        return [
          ['itemtype' => Ticket::class],
          ['itemtype' => Change::class],
          ['itemtype' => Problem::class],
-      ];
-   }
+        ];
+    }
 
-   protected function itemtypeAndActionProvider(): array {
-      $array = [];
-      $itemtypes = [Ticket::class, Change::class, Problem::class];
-      foreach ($itemtypes as $itemtype) {
-         $array[] = [
+    protected function itemtypeAndActionProvider(): array
+    {
+        $array = [];
+        $itemtypes = [Ticket::class, Change::class, Problem::class];
+        foreach ($itemtypes as $itemtype) {
+            $array[] = [
             'itemtype' => $itemtype,
             'action_itemtype' => ITILFollowup::class,
-         ];
-         $array[] = [
+            ];
+            $array[] = [
             'itemtype' => $itemtype,
             'action_itemtype' => $itemtype::getTaskClass(),
-         ];
-      }
+            ];
+        }
 
-      return $array;
-   }
+        return $array;
+    }
 
-   protected static function getBaseActionAddInput($action_item, $item) {
-      if ($action_item instanceof ITILFollowup) {
-         return [
+    protected static function getBaseActionAddInput($action_item, $item)
+    {
+        if ($action_item instanceof ITILFollowup) {
+            return [
             'items_id' => $item->getID(),
             'itemtype' => $item::getType(),
-         ];
-      } else if ($action_item instanceof TicketTask) {
-         return ['tickets_id' => $item->getID()];
-      } else if ($action_item instanceof ChangeTask) {
-         return ['changes_id' => $item->getID()];
-      } else if ($action_item instanceof ProblemTask) {
-         return ['problems_id' => $item->getID()];
-      }
+            ];
+        } else if ($action_item instanceof TicketTask) {
+            return ['tickets_id' => $item->getID()];
+        } else if ($action_item instanceof ChangeTask) {
+            return ['changes_id' => $item->getID()];
+        } else if ($action_item instanceof ProblemTask) {
+            return ['problems_id' => $item->getID()];
+        }
 
-      return [];
-   }
+        return [];
+    }
 
    /**
     * Test that a PendingReason_Item object is created when an item is marked as
@@ -236,38 +245,39 @@ class PendingReason extends DbTestCase {
     *
     * @dataprovider itemtypeAndActionProvider
     */
-   public function testPendingItemCreation($itemtype, $action_itemtype) {
-      $this->login();
+    public function testPendingItemCreation($itemtype, $action_itemtype)
+    {
+        $this->login();
 
-      $item = new $itemtype();
-      $action_item = new $action_itemtype();
+        $item = new $itemtype();
+        $action_item = new $action_itemtype();
 
-      // Create test item
-      $items_id = $item->add([
+       // Create test item
+        $items_id = $item->add([
          'name'    => 'test',
          'content' => 'test',
-      ]);
-      $this->integer($items_id)->isGreaterThan(0);
-      $this->boolean($item->getFromDB($items_id))->isTrue();
+        ]);
+        $this->integer($items_id)->isGreaterThan(0);
+        $this->boolean($item->getFromDB($items_id))->isTrue();
 
-      // Check that no pending item exist
-      $this->boolean(PendingReason_Item::getForItem($item))->isFalse();
+       // Check that no pending item exist
+        $this->boolean(PendingReason_Item::getForItem($item))->isFalse();
 
-      // Add a new action with the "pending" flag set
-      $actions_id = $action_item->add([
+       // Add a new action with the "pending" flag set
+        $actions_id = $action_item->add([
          'content' => 'test',
          'pending' => true,
          'pendingreasons_id' => 0,
-      ] + self::getBaseActionAddInput($action_item, $item));
-      $this->integer($actions_id)->isGreaterThan(0);
+        ] + self::getBaseActionAddInput($action_item, $item));
+        $this->integer($actions_id)->isGreaterThan(0);
 
-      // Check that pending item have been created
-      $this->variable(PendingReason_Item::getForItem($item))->isNotFalse();
+       // Check that pending item have been created
+        $this->variable(PendingReason_Item::getForItem($item))->isNotFalse();
 
-      // Check that parent item status was set to pending
-      $this->boolean($item->getFromDB($items_id))->isTrue();
-      $this->integer($item->fields['status'])->isEqualTo(CommonITILObject::WAITING);
-   }
+       // Check that parent item status was set to pending
+        $this->boolean($item->getFromDB($items_id))->isTrue();
+        $this->integer($item->fields['status'])->isEqualTo(CommonITILObject::WAITING);
+    }
 
    /**
     * A status change from pending to any other should delete any linked
@@ -275,37 +285,38 @@ class PendingReason extends DbTestCase {
     *
     * @dataprovider itemtypeProvider
     */
-   public function testStatusChangeNoLongerPending($itemtype) {
-      $this->login();
+    public function testStatusChangeNoLongerPending($itemtype)
+    {
+        $this->login();
 
-      $item = new $itemtype();
+        $item = new $itemtype();
 
-      // Create test item
-      $items_id = $item->add([
+       // Create test item
+        $items_id = $item->add([
          'name'    => 'test',
          'content' => 'test',
          'status'  => CommonITILObject::WAITING,
-      ]);
-      $this->integer($items_id)->isGreaterThan(0);
-      $this->boolean($item->getFromDB($items_id))->isTrue();
+        ]);
+        $this->integer($items_id)->isGreaterThan(0);
+        $this->boolean($item->getFromDB($items_id))->isTrue();
 
-      // Check item is pending
-      $this->integer($item->fields['status'])->isEqualTo(CommonITILObject::WAITING);
+       // Check item is pending
+        $this->integer($item->fields['status'])->isEqualTo(CommonITILObject::WAITING);
 
-      // Attach pending item
-      $this->boolean(PendingReason_Item::createForItem($item, []))->isTrue();
+       // Attach pending item
+        $this->boolean(PendingReason_Item::createForItem($item, []))->isTrue();
 
-      // Check pending item
-      $this->variable(PendingReason_Item::getForItem($item))->isNotFalse();
+       // Check pending item
+        $this->variable(PendingReason_Item::getForItem($item))->isNotFalse();
 
-      // Change ticket status
-      $success = $item->update([
+       // Change ticket status
+        $success = $item->update([
          'id' => $items_id,
          'status' => CommonITILObject::ASSIGNED,
-      ]);
-      $this->boolean($success)->isTrue();
+        ]);
+        $this->boolean($success)->isTrue();
 
-      // Check pending item again
-      $this->boolean(PendingReason_Item::getForItem($item))->isFalse();
-   }
+       // Check pending item again
+        $this->boolean(PendingReason_Item::getForItem($item))->isFalse();
+    }
 }

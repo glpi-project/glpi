@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,36 +36,39 @@
  */
 class CleanSoftwareCron extends CommonDBTM
 {
-   const TASK_NAME = 'cleansoftware';
+    const TASK_NAME = 'cleansoftware';
 
-   const MAX_BATCH_SIZE = 2000;
+    const MAX_BATCH_SIZE = 2000;
 
-   static protected $notable = true;
+    protected static $notable = true;
 
    /**
     * Get task description
     *
     * @return string
     */
-   public static function getTaskDescription(): string {
-      return __("Remove software versions with no installation and software with no version");
-   }
+    public static function getTaskDescription(): string
+    {
+        return __("Remove software versions with no installation and software with no version");
+    }
 
    /**
     * Get task's parameter description
     *
     * @return string
     */
-   public static function getParameterDescription(): string {
-      return __('Max items to handle in one execution');
-   }
+    public static function getParameterDescription(): string
+    {
+        return __('Max items to handle in one execution');
+    }
 
-   public static function cronInfo($name) {
-      return [
+    public static function cronInfo($name)
+    {
+        return [
          'description' => self::getTaskDescription(),
          'parameter' => self::getParameterDescription(),
-      ];
-   }
+        ];
+    }
 
    /**
     * Clean unused software and software versions
@@ -72,46 +76,49 @@ class CleanSoftwareCron extends CommonDBTM
     * @param int $max Max items to handle
     * @return int Number of deleted items
     */
-   public static function run(?int $max): int {
-      $total = 0;
+    public static function run(?int $max): int
+    {
+        $total = 0;
 
-      // Delete software versions with no installation
-      $total += self::deleteItems(
-         self::getVersionsWithNoInstallationCriteria(),
-         new SoftwareVersion(),
-         $max
-      );
+       // Delete software versions with no installation
+        $total += self::deleteItems(
+            self::getVersionsWithNoInstallationCriteria(),
+            new SoftwareVersion(),
+            $max
+        );
 
-      // Move software with no versions in the thrashbin
-      $total += self::deleteItems(
-         self::getSoftwareWithNoVersionsCriteria(),
-         new Software(),
-         $max - $total
-      );
+       // Move software with no versions in the thrashbin
+        $total += self::deleteItems(
+            self::getSoftwareWithNoVersionsCriteria(),
+            new Software(),
+            $max - $total
+        );
 
-      return $total;
-   }
+        return $total;
+    }
 
    /**
     * Run from cronTask
     *
     * @param CronTask $task
     */
-   public static function cronCleanSoftware(CronTask $task) {
-      $max = $task->fields['param'];
-      $total = self::run($max);
-      $task->addVolume($total);
+    public static function cronCleanSoftware(CronTask $task)
+    {
+        $max = $task->fields['param'];
+        $total = self::run($max);
+        $task->addVolume($total);
 
-      return 1;
-   }
+        return 1;
+    }
 
    /**
     * Get all software versions which are not installed
     *
     * @return array
     */
-   protected static function getVersionsWithNoInstallationCriteria(): array {
-      return [
+    protected static function getVersionsWithNoInstallationCriteria(): array
+    {
+        return [
          'SELECT' => 'id',
          'FROM'   => SoftwareVersion::getTable(),
          'WHERE'  => [
@@ -138,16 +145,17 @@ class CleanSoftwareCron extends CommonDBTM
                ],
             ],
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * Get all software with no versions
     *
     * @return array
     */
-   protected static function getSoftwareWithNoVersionsCriteria(): array {
-      return [
+    protected static function getSoftwareWithNoVersionsCriteria(): array
+    {
+        return [
          'SELECT' => 'id',
          'FROM'   => Software::getTable(),
          'WHERE'  => [
@@ -159,8 +167,8 @@ class CleanSoftwareCron extends CommonDBTM
                ]),
             ]
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * Delete given items
@@ -171,28 +179,28 @@ class CleanSoftwareCron extends CommonDBTM
     *
     * @return int Number of items deleted
     */
-   protected static function deleteItems(
-      array $scope,
-      CommonDBTM $em,
-      int $max
-   ): int {
-      global $DB;
+    protected static function deleteItems(
+        array $scope,
+        CommonDBTM $em,
+        int $max
+    ): int {
+        global $DB;
 
-      $total = 0;
+        $total = 0;
 
-      do {
-         $scope['LIMIT'] = min($max - $total, self::MAX_BATCH_SIZE);
-         $items = $DB->request($scope);
-         $count = count($items);
-         $total += $count;
+        do {
+            $scope['LIMIT'] = min($max - $total, self::MAX_BATCH_SIZE);
+            $items = $DB->request($scope);
+            $count = count($items);
+            $total += $count;
 
-         foreach ($items as $item) {
-            $em->delete($item);
-         }
+            foreach ($items as $item) {
+                $em->delete($item);
+            }
 
-         // Stop if no items found
-      } while ($count > 0);
+           // Stop if no items found
+        } while ($count > 0);
 
-      return $total;
-   }
+        return $total;
+    }
 }

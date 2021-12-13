@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,22 +38,23 @@ use Toolbox;
 /**
  * @since 10.0.0
  */
-class Response {
+class Response
+{
 
    /**
     * "application/json" content type.
     */
-   const CONTENT_TYPE_JSON = 'application/json';
+    const CONTENT_TYPE_JSON = 'application/json';
 
    /**
     * "text/html" content type.
     */
-   const CONTENT_TYPE_TEXT_HTML = 'text/html';
+    const CONTENT_TYPE_TEXT_HTML = 'text/html';
 
    /**
     * "text/plain" content type.
     */
-   const CONTENT_TYPE_TEXT_PLAIN = 'text/plain';
+    const CONTENT_TYPE_TEXT_PLAIN = 'text/plain';
 
    /**
     * Send the given HTTP code then die with the error message in the given format.
@@ -63,23 +65,24 @@ class Response {
     *
     * @return void
     */
-   public static function sendError(int $code, string $message, string $content_type = self::CONTENT_TYPE_JSON): void {
+    public static function sendError(int $code, string $message, string $content_type = self::CONTENT_TYPE_JSON): void
+    {
 
-      switch ($content_type) {
-         case self::CONTENT_TYPE_JSON:
-            $output = json_encode(['message' => $message]);
-            break;
+        switch ($content_type) {
+            case self::CONTENT_TYPE_JSON:
+                $output = json_encode(['message' => $message]);
+                break;
 
-         case self::CONTENT_TYPE_TEXT_HTML:
-         default:
-            $output = $message;
-            break;
-      }
+            case self::CONTENT_TYPE_TEXT_HTML:
+            default:
+                $output = $message;
+                break;
+        }
 
-      header(sprintf('Content-Type: %s; charset=UTF-8', $content_type), true, $code);
+        header(sprintf('Content-Type: %s; charset=UTF-8', $content_type), true, $code);
 
-      Toolbox::logDebug($message);
+        Toolbox::logDebug($message);
 
-      die($output);
-   }
+        die($output);
+    }
 }

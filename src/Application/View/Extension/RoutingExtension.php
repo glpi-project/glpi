@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -40,30 +41,33 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class RoutingExtension extends AbstractExtension {
+class RoutingExtension extends AbstractExtension
+{
 
-   public function getFunctions(): array {
-      return [
+    public function getFunctions(): array
+    {
+        return [
          new TwigFunction('index_path', [$this, 'indexPath']),
          new TwigFunction('path', [$this, 'path']),
          new TwigFunction('url', [$this, 'url']),
-      ];
-   }
+        ];
+    }
 
    /**
     * Return index path.
     *
     * @return string
     */
-   public function indexPath(): string {
-      $index = '/index.php';
-      if (Session::getLoginUserID() !== false) {
-         $index = Session::getCurrentInterface() == 'helpdesk'
+    public function indexPath(): string
+    {
+        $index = '/index.php';
+        if (Session::getLoginUserID() !== false) {
+            $index = Session::getCurrentInterface() == 'helpdesk'
             ? 'front/helpdesk.public.php'
             : 'front/central.php';
-      }
-      return Html::getPrefixedUrl($index);
-   }
+        }
+        return Html::getPrefixedUrl($index);
+    }
 
    /**
     * Return domain-relative path of a resource.
@@ -72,9 +76,10 @@ class RoutingExtension extends AbstractExtension {
     *
     * @return string
     */
-   public function path(string $resource): string {
-      return Html::getPrefixedUrl($resource);
-   }
+    public function path(string $resource): string
+    {
+        return Html::getPrefixedUrl($resource);
+    }
 
    /**
     * Return absolute URL of a resource.
@@ -83,14 +88,15 @@ class RoutingExtension extends AbstractExtension {
     *
     * @return string
     */
-   public function url(string $resource): string {
-      global $CFG_GLPI;
+    public function url(string $resource): string
+    {
+        global $CFG_GLPI;
 
-      $prefix = $CFG_GLPI['url_base'];
-      if (substr($resource, 0, 1) != '/') {
-         $prefix .= '/';
-      }
+        $prefix = $CFG_GLPI['url_base'];
+        if (substr($resource, 0, 1) != '/') {
+            $prefix .= '/';
+        }
 
-      return $prefix . $resource;
-   }
+        return $prefix . $resource;
+    }
 }

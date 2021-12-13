@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,72 +33,92 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("config", READ);
 
 if (!isset($_GET["id"])) {
-   $_GET["id"] = "";
+    $_GET["id"] = "";
 }
 
 if (!isset($_GET["withtemplate"])) {
-   $_GET["withtemplate"] = "";
+    $_GET["withtemplate"] = "";
 }
 
 $cred = new SNMPCredential();
 if (isset($_POST["add"])) {
-   $cred->check(-1, CREATE, $_POST);
-   if ($newID = $cred->add($_POST)) {
-      Event::log($newID, "snmpcredential", 4, "inventory",
-                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+    $cred->check(-1, CREATE, $_POST);
+    if ($newID = $cred->add($_POST)) {
+        Event::log(
+            $newID,
+            "snmpcredential",
+            4,
+            "inventory",
+            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
+        );
 
-      if ($_SESSION['glpibackcreated']) {
-         Html::redirect($cred->getLinkURL());
-      }
-   }
-   Html::back();
-
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($cred->getLinkURL());
+        }
+    }
+    Html::back();
 } else if (isset($_POST["delete"])) {
-   $cred->check($_POST["id"], DELETE);
-   if ($cred->delete($_POST)) {
-      Event::log($_POST["id"], "snmpcredential", 4, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
-   }
-   $cred->redirectToList();
-
+    $cred->check($_POST["id"], DELETE);
+    if ($cred->delete($_POST)) {
+        Event::log(
+            $_POST["id"],
+            "snmpcredential",
+            4,
+            "inventory",
+            //TRANS: %s is the user login
+            sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
+        );
+    }
+    $cred->redirectToList();
 } else if (isset($_POST["restore"])) {
-   $cred->check($_POST["id"], DELETE);
-   if ($cred->restore($_POST)) {
-      Event::log($_POST["id"], "snmpcredential", 4, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
-   }
-   $cred->redirectToList();
-
+    $cred->check($_POST["id"], DELETE);
+    if ($cred->restore($_POST)) {
+        Event::log(
+            $_POST["id"],
+            "snmpcredential",
+            4,
+            "inventory",
+            //TRANS: %s is the user login
+            sprintf(__('%s restores an item'), $_SESSION["glpiname"])
+        );
+    }
+    $cred->redirectToList();
 } else if (isset($_POST["purge"])) {
-   $cred->check($_POST["id"], PURGE);
-   if ($cred->delete($_POST, 1)) {
-      Event::log($_POST["id"], "snmpcredential", 4, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
-   }
-   $cred->redirectToList();
-
+    $cred->check($_POST["id"], PURGE);
+    if ($cred->delete($_POST, 1)) {
+        Event::log(
+            $_POST["id"],
+            "snmpcredential",
+            4,
+            "inventory",
+            //TRANS: %s is the user login
+            sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+        );
+    }
+    $cred->redirectToList();
 } else if (isset($_POST["update"])) {
-   $cred->check($_POST["id"], UPDATE);
-   $cred->update($_POST);
-   Event::log($_POST["id"], "snmpcredential", 4, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
-   Html::back();
-
+    $cred->check($_POST["id"], UPDATE);
+    $cred->update($_POST);
+    Event::log(
+        $_POST["id"],
+        "snmpcredential",
+        4,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+    );
+    Html::back();
 } else {
-   Html::header(SNMPCredential::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "glpi\inventory\inventory", "snmpcredential");
-   $cred->display([
+    Html::header(SNMPCredential::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "glpi\inventory\inventory", "snmpcredential");
+    $cred->display([
       'id'           => $_GET["id"],
       'withtemplate' => $_GET["withtemplate"],
       'formoptions'  => "data-track-changes=true"
-   ]);
-   Html::footer();
+    ]);
+    Html::footer();
 }

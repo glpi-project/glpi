@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,14 +32,17 @@
  */
 
 /// Class UserCategory
-class UserCategory extends CommonDropdown {
+class UserCategory extends CommonDropdown
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('User category', 'User categories', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('User category', 'User categories', $nb);
+    }
 
-   static function getIcon() {
-      return "fas fa-user-tag";
-   }
+    public static function getIcon()
+    {
+        return "fas fa-user-tag";
+    }
 }

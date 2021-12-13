@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,7 +32,7 @@
  */
 
 $AJAX_INCLUDE = 1;
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -39,32 +40,32 @@ Html::header_nocache();
 Session::checkRight('user', User::UPDATEAUTHENT);
 
 if ($_POST["authtype"] > 0) {
-   $name = 'massiveaction';
+    $name = 'massiveaction';
 
-   if (isset($_POST['name'])) {
-      $name = $_POST['name'];
-   }
+    if (isset($_POST['name'])) {
+        $name = $_POST['name'];
+    }
 
-   switch ($_POST["authtype"]) {
-      case Auth::DB_GLPI :
-         echo "<input type='hidden' name='auths_id' value='0'>";
-         break;
+    switch ($_POST["authtype"]) {
+        case Auth::DB_GLPI:
+            echo "<input type='hidden' name='auths_id' value='0'>";
+            break;
 
-      case Auth::LDAP :
-      case Auth::EXTERNAL :
-         AuthLDAP::dropdown([
+        case Auth::LDAP:
+        case Auth::EXTERNAL:
+            AuthLDAP::dropdown([
             'name'      => "auths_id",
             'condition' => ['is_active' => 1]
-         ]);
-         break;
+            ]);
+            break;
 
-      case Auth::MAIL :
-         AuthMail::dropdown([
+        case Auth::MAIL:
+            AuthMail::dropdown([
             'name'      => "auths_id",
             'condition' => ['is_active' => 1]
-         ]);
-         break;
-   }
+            ]);
+            break;
+    }
 
-   echo "&nbsp;<input type='submit' name='$name' class='btn btn-primary' value=\""._sx('button', 'Post')."\">";
+    echo "&nbsp;<input type='submit' name='$name' class='btn btn-primary' value=\"" . _sx('button', 'Post') . "\">";
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,15 +35,18 @@ use Glpi\Features\CacheableListInterface;
 use Glpi\Inventory\FilesToJSON;
 
 /// Class USBVendor
-class USBVendor extends CommonDropdown implements CacheableListInterface {
-   public $cache_key = 'glpi_usbvendors';
+class USBVendor extends CommonDropdown implements CacheableListInterface
+{
+    public $cache_key = 'glpi_usbvendors';
 
-   static function getTypeName($nb = 0) {
-      return _n('USB vendor', 'USB vendors', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('USB vendor', 'USB vendors', $nb);
+    }
 
-   function getAdditionalFields() {
-      return [
+    public function getAdditionalFields()
+    {
+        return [
          [
             'name'   => 'vendorid',
             'label'  => __('Vendor ID'),
@@ -52,91 +56,96 @@ class USBVendor extends CommonDropdown implements CacheableListInterface {
             'label' => __('Device ID'),
             'type'  => 'text'
          ]
-      ];
-   }
+        ];
+    }
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '10',
          'table'              => $this->getTable(),
          'field'              => 'vendorid',
          'name'               => __('Vendor ID'),
          'datatype'           => 'string'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '11',
          'table'              => $this->getTable(),
          'field'              => 'deviceid',
          'name'               => __('Device ID'),
          'datatype'           => 'string'
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
    /**
     * Get list of all known USBIDs
     *
     * @return array
     */
-   public static function getList(): array {
-      global $GLPI_CACHE;
+    public static function getList(): array
+    {
+        global $GLPI_CACHE;
 
-      $vendors = new USBVendor();
-      if (($usbids = $GLPI_CACHE->get($vendors->cache_key)) !== null) {
-         return $usbids;
-      }
+        $vendors = new USBVendor();
+        if (($usbids = $GLPI_CACHE->get($vendors->cache_key)) !== null) {
+            return $usbids;
+        }
 
-      $jsonfile = new FilesToJSON();
-      $file_usbids = json_decode(file_get_contents($jsonfile->getJsonFilePath('usbid')), true);
-      $db_usbids = $vendors->getDbList();
-      $usbids = $db_usbids + $file_usbids;
-      $usbids = array_change_key_case($usbids, CASE_LOWER);
-      $GLPI_CACHE->set($vendors->cache_key, $usbids);
+        $jsonfile = new FilesToJSON();
+        $file_usbids = json_decode(file_get_contents($jsonfile->getJsonFilePath('usbid')), true);
+        $db_usbids = $vendors->getDbList();
+        $usbids = $db_usbids + $file_usbids;
+        $usbids = array_change_key_case($usbids, CASE_LOWER);
+        $GLPI_CACHE->set($vendors->cache_key, $usbids);
 
-      return $usbids;
-   }
+        return $usbids;
+    }
 
    /**
     * Get USBIDs from database
     *
     * @return array
     */
-   private function getDbList(): array {
-      global $DB;
+    private function getDbList(): array
+    {
+        global $DB;
 
-      $list = [];
-      $iterator = $DB->request(['FROM' => $this->getTable()]);
-      foreach ($iterator as $row) {
-         $row_key = $row['vendorid'];
-         if (!empty($row['deviceid'])) {
-            $row_key .= '::' . $row['deviceid'];
-         }
-         $list[$row_key] = $row['name'];
-      }
+        $list = [];
+        $iterator = $DB->request(['FROM' => $this->getTable()]);
+        foreach ($iterator as $row) {
+            $row_key = $row['vendorid'];
+            if (!empty($row['deviceid'])) {
+                $row_key .= '::' . $row['deviceid'];
+            }
+            $list[$row_key] = $row['name'];
+        }
 
-      return $list;
-   }
+        return $list;
+    }
 
-   public function getListCacheKey(): string {
-      return $this->cache_key;
-   }
+    public function getListCacheKey(): string
+    {
+        return $this->cache_key;
+    }
 
    /**
     * Clean cache
     *
     * @return void
     */
-   public function invalidateListCache(): void {
-      global $GLPI_CACHE;
+    public function invalidateListCache(): void
+    {
+        global $GLPI_CACHE;
 
-      if ($GLPI_CACHE->has($this->cache_key)) {
-         $GLPI_CACHE->delete($this->cache_key);
-      }
-   }
+        if ($GLPI_CACHE->has($this->cache_key)) {
+            $GLPI_CACHE->delete($this->cache_key);
+        }
+    }
 
    /**
     * Get manufacturer from vendorid
@@ -145,20 +154,21 @@ class USBVendor extends CommonDropdown implements CacheableListInterface {
     *
     * @return string|false
     */
-   public function getManufacturer($vendorid) {
-      $usbids = $this->getList();
+    public function getManufacturer($vendorid)
+    {
+        $usbids = $this->getList();
 
-      $vendorid = strtolower($vendorid);
+        $vendorid = strtolower($vendorid);
 
-      if (isset($usbids[$vendorid])) {
-         $usb_manufacturer = preg_replace('/&(?!\w+;)/', '&amp;', $usbids[$vendorid]);
-         if (!empty($usb_manufacturer)) {
-            return $usb_manufacturer;
-         }
-      }
+        if (isset($usbids[$vendorid])) {
+            $usb_manufacturer = preg_replace('/&(?!\w+;)/', '&amp;', $usbids[$vendorid]);
+            if (!empty($usb_manufacturer)) {
+                return $usb_manufacturer;
+            }
+        }
 
-      return false;
-   }
+        return false;
+    }
 
    /**
     * Get product name from  vendorid and deviceid
@@ -168,23 +178,25 @@ class USBVendor extends CommonDropdown implements CacheableListInterface {
     *
     * @return string|false
     */
-   public function getProductName($vendorid, $deviceid) {
-      $usbids = $this->getList();
+    public function getProductName($vendorid, $deviceid)
+    {
+        $usbids = $this->getList();
 
-      $vendorid = strtolower($vendorid);
-      $deviceid = strtolower($deviceid);
+        $vendorid = strtolower($vendorid);
+        $deviceid = strtolower($deviceid);
 
-      if (isset($usbids[$vendorid . '::' . $deviceid])) {
-         $usb_product = preg_replace('/&(?!\w+;)/', '&amp;', $usbids[$vendorid . '::' . $deviceid]);
-         if (!empty($usb_product)) {
-            return $usb_product;
-         }
-      }
+        if (isset($usbids[$vendorid . '::' . $deviceid])) {
+            $usb_product = preg_replace('/&(?!\w+;)/', '&amp;', $usbids[$vendorid . '::' . $deviceid]);
+            if (!empty($usb_product)) {
+                return $usb_product;
+            }
+        }
 
-      return false;
-   }
+        return false;
+    }
 
-   static function getIcon() {
-      return "fab fa-usb";
-   }
+    public static function getIcon()
+    {
+        return "fab fa-usb";
+    }
 }

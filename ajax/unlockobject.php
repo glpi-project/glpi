@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -40,7 +41,7 @@
 // to send notification to locker of object
 
 $AJAX_INCLUDE = 1;
-include ('../inc/includes.php');
+include('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 Session::checkLoginUser();
@@ -48,30 +49,40 @@ Session::checkLoginUser();
 $ret = 0;
 if (isset($_POST['unlock']) && isset($_POST["id"])) {
    // then we may have something to unlock
-   $ol = new ObjectLock();
-   if ($ol->getFromDB($_POST["id"])
-       && $ol->deleteFromDB(1)) {
-      if (isset($_POST['force'])) {
-         Log::history($ol->fields['items_id'], $ol->fields['itemtype'], [0, '', ''], 0,
-                      Log::HISTORY_UNLOCK_ITEM);
-      }
-      $ret = 1;
-   }
-
-} else if (isset($_POST['requestunlock'])
-           && isset($_POST["id"])) {
+    $ol = new ObjectLock();
+    if (
+        $ol->getFromDB($_POST["id"])
+        && $ol->deleteFromDB(1)
+    ) {
+        if (isset($_POST['force'])) {
+            Log::history(
+                $ol->fields['items_id'],
+                $ol->fields['itemtype'],
+                [0, '', ''],
+                0,
+                Log::HISTORY_UNLOCK_ITEM
+            );
+        }
+        $ret = 1;
+    }
+} else if (
+    isset($_POST['requestunlock'])
+           && isset($_POST["id"])
+) {
    // the we must ask for unlock
-   $ol = new ObjectLock();
-   if ($ol->getFromDB($_POST["id"])) {
-      NotificationEvent::raiseEvent( 'unlock', $ol );
-      $ret = 1;
-   }
-} else if (isset($_GET['lockstatus'])
-           && isset($_GET["id"])) {
-   $ol = new ObjectLock();
-   if ($ol->getFromDB($_GET["id"])) {
-      $ret = 1; // found = still locked
-   }
+    $ol = new ObjectLock();
+    if ($ol->getFromDB($_POST["id"])) {
+        NotificationEvent::raiseEvent('unlock', $ol);
+        $ret = 1;
+    }
+} else if (
+    isset($_GET['lockstatus'])
+           && isset($_GET["id"])
+) {
+    $ol = new ObjectLock();
+    if ($ol->getFromDB($_GET["id"])) {
+        $ret = 1; // found = still locked
+    }
 }
 
 echo $ret;

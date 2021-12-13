@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,10 +32,12 @@
  */
 
 /// Class ContactType
-class ContactType extends CommonType {
+class ContactType extends CommonType
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Contact type', 'Contact types', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Contact type', 'Contact types', $nb);
+    }
 }

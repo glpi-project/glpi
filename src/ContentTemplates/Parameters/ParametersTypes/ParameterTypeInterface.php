@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -47,14 +48,14 @@ interface ParameterTypeInterface
     *
     * @return array
     */
-   public function compute(): array;
+    public function compute(): array;
 
    /**
     * Label to use for this parameter's documentation
     *
     * @return string
     */
-   public function getDocumentationLabel(): string;
+    public function getDocumentationLabel(): string;
 
    /**
     * Recommended usage (twig code) to use for this parameter's documentation
@@ -63,19 +64,19 @@ interface ParameterTypeInterface
     *
     * @return string
     */
-   public function getDocumentationUsage(?string $parent = null): string;
+    public function getDocumentationUsage(?string $parent = null): string;
 
    /**
     * Reference to others parameters for this parameter's documentation
     *
     * @return TemplatesParametersInterface|null
     */
-   public function getDocumentationReferences(): ?TemplatesParametersInterface;
+    public function getDocumentationReferences(): ?TemplatesParametersInterface;
 
    /**
     * Field name for this parameter's documentation
     *
     * @return string
     */
-   public function getDocumentationField(): string;
+    public function getDocumentationField(): string;
 }

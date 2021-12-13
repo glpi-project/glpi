@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -46,14 +47,14 @@ interface TemplatesParametersInterface
     *
     * @return string
     */
-   public static function getDefaultNodeName(): string;
+    public static function getDefaultNodeName(): string;
 
    /**
     * Get object label to use for this class.
     *
     * @return string
     */
-   public static function getObjectLabel(): string;
+    public static function getObjectLabel(): string;
 
    /**
     * Get values for a given item, used for template rendering
@@ -62,7 +63,7 @@ interface TemplatesParametersInterface
     *
     * @return array
     */
-   public function getValues(CommonDBTM $item): array;
+    public function getValues(CommonDBTM $item): array;
 
    /**
     * To be defined in each subclasses, define all available parameters for one or more itemtypes.
@@ -70,5 +71,5 @@ interface TemplatesParametersInterface
     *
     * @return \Glpi\ContentTemplates\Parameters\ParametersTypes\ParameterTypeInterface[]
     */
-   public function getAvailableParameters(): array;
+    public function getAvailableParameters(): array;
 }

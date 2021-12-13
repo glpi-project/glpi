@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,17 +37,19 @@ use DbTestCase;
 
 /* Test for inc/networkport.class.php */
 
-class NetworkPort extends DbTestCase {
+class NetworkPort extends DbTestCase
+{
 
-   public function testAddSimpleNetworkPort() {
-      $this->login();
+    public function testAddSimpleNetworkPort()
+    {
+        $this->login();
 
-      $computer1 = getItemByTypeName('Computer', '_test_pc01');
-      $networkport = new \NetworkPort();
+        $computer1 = getItemByTypeName('Computer', '_test_pc01');
+        $networkport = new \NetworkPort();
 
-      // Be sure added
-      $nb_log = (int)countElementsInTable('glpi_logs');
-      $new_id = $networkport->add([
+       // Be sure added
+        $nb_log = (int)countElementsInTable('glpi_logs');
+        $new_id = $networkport->add([
          'items_id'           => $computer1->getID(),
          'itemtype'           => 'Computer',
          'entities_id'        => $computer1->fields['entities_id'],
@@ -55,17 +58,17 @@ class NetworkPort extends DbTestCase {
          'mac'                => '00:24:81:eb:c6:d0',
          'instantiation_type' => 'NetworkPortEthernet',
          'name'               => 'eth1',
-      ]);
-      $this->integer((int)$new_id)->isGreaterThan(0);
-      $this->integer((int)countElementsInTable('glpi_logs'))->isGreaterThan($nb_log);
+        ]);
+        $this->integer((int)$new_id)->isGreaterThan(0);
+        $this->integer((int)countElementsInTable('glpi_logs'))->isGreaterThan($nb_log);
 
-      // check data in db
-      $all_netports = getAllDataFromTable('glpi_networkports', ['ORDER' => 'id']);
-      $current_networkport = end($all_netports);
-      unset($current_networkport['id']);
-      unset($current_networkport['date_mod']);
-      unset($current_networkport['date_creation']);
-      $expected = [
+       // check data in db
+        $all_netports = getAllDataFromTable('glpi_networkports', ['ORDER' => 'id']);
+        $current_networkport = end($all_netports);
+        unset($current_networkport['id']);
+        unset($current_networkport['date_mod']);
+        unset($current_networkport['date_creation']);
+        $expected = [
          'items_id' => $computer1->getID(),
          'itemtype' => 'Computer',
          'entities_id' => $computer1->fields['entities_id'],
@@ -92,38 +95,39 @@ class NetworkPort extends DbTestCase {
          'portduplex' => null,
          'trunk' => 0,
          'lastup' => null
-      ];
-      $this->array($current_networkport)->isIdenticalTo($expected);
+        ];
+        $this->array($current_networkport)->isIdenticalTo($expected);
 
-      $all_netportethernets = getAllDataFromTable('glpi_networkportethernets', ['ORDER' => 'id']);
-      $networkportethernet = end($all_netportethernets);
-      $this->boolean($networkportethernet)->isFalse();
+        $all_netportethernets = getAllDataFromTable('glpi_networkportethernets', ['ORDER' => 'id']);
+        $networkportethernet = end($all_netportethernets);
+        $this->boolean($networkportethernet)->isFalse();
 
-      // be sure added and have no logs
-      $nb_log = (int)countElementsInTable('glpi_logs');
-      $new_id = $networkport->add([
+       // be sure added and have no logs
+        $nb_log = (int)countElementsInTable('glpi_logs');
+        $new_id = $networkport->add([
          'items_id'           => $computer1->getID(),
          'itemtype'           => 'Computer',
          'entities_id'        => $computer1->fields['entities_id'],
          'logical_number'     => 2,
          'mac'                => '00:24:81:eb:c6:d1',
          'instantiation_type' => 'NetworkPortEthernet',
-      ], [], false);
-      $this->integer((int)$new_id)->isGreaterThan(0);
-      $this->integer((int)countElementsInTable('glpi_logs'))->isIdenticalTo($nb_log);
-   }
+        ], [], false);
+        $this->integer((int)$new_id)->isGreaterThan(0);
+        $this->integer((int)countElementsInTable('glpi_logs'))->isIdenticalTo($nb_log);
+    }
 
-   public function testAddCompleteNetworkPort() {
-      $this->login();
+    public function testAddCompleteNetworkPort()
+    {
+        $this->login();
 
-      $computer1 = getItemByTypeName('Computer', '_test_pc01');
+        $computer1 = getItemByTypeName('Computer', '_test_pc01');
 
-      // Do some installations
-      $networkport = new \NetworkPort();
+       // Do some installations
+        $networkport = new \NetworkPort();
 
-      // Be sure added
-      $nb_log = (int)countElementsInTable('glpi_logs');
-      $new_id = $networkport->add([
+       // Be sure added
+        $nb_log = (int)countElementsInTable('glpi_logs');
+        $new_id = $networkport->add([
          'items_id'                    => $computer1->getID(),
          'itemtype'                    => 'Computer',
          'entities_id'                 => $computer1->fields['entities_id'],
@@ -142,33 +146,33 @@ class NetworkPort extends DbTestCase {
          'NetworkName_fqdns_id'        => 0,
          'NetworkName__ipaddresses'    => ['-1' => '192.168.20.1'],
          '_create_children'            => true // automatically add instancation, networkname and ipadresses
-      ]);
-      $this->integer($new_id)->isGreaterThan(0);
-      $this->integer((int)countElementsInTable('glpi_logs'))->isGreaterThan($nb_log);
+        ]);
+        $this->integer($new_id)->isGreaterThan(0);
+        $this->integer((int)countElementsInTable('glpi_logs'))->isGreaterThan($nb_log);
 
-      // check data in db
-      // 1 -> NetworkPortEthernet
-      $all_netportethernets = getAllDataFromTable('glpi_networkportethernets', ['ORDER' => 'id']);
-      $networkportethernet = end($all_netportethernets);
-      unset($networkportethernet['id']);
-      unset($networkportethernet['date_mod']);
-      unset($networkportethernet['date_creation']);
-      $expected = [
+       // check data in db
+       // 1 -> NetworkPortEthernet
+        $all_netportethernets = getAllDataFromTable('glpi_networkportethernets', ['ORDER' => 'id']);
+        $networkportethernet = end($all_netportethernets);
+        unset($networkportethernet['id']);
+        unset($networkportethernet['date_mod']);
+        unset($networkportethernet['date_creation']);
+        $expected = [
           'networkports_id'             => $new_id,
           'items_devicenetworkcards_id' => 0,
           'type'                        => 'T',
           'speed'                       => 1000,
-      ];
-      $this->array($networkportethernet)->isIdenticalTo($expected);
+        ];
+        $this->array($networkportethernet)->isIdenticalTo($expected);
 
-      // 2 -> NetworkName
-      $all_networknames = getAllDataFromTable('glpi_networknames', ['ORDER' => 'id']);
-      $networkname = end($all_networknames);
-      $networknames_id = $networkname['id'];
-      unset($networkname['id']);
-      unset($networkname['date_mod']);
-      unset($networkname['date_creation']);
-      $expected = [
+       // 2 -> NetworkName
+        $all_networknames = getAllDataFromTable('glpi_networknames', ['ORDER' => 'id']);
+        $networkname = end($all_networknames);
+        $networknames_id = $networkname['id'];
+        unset($networkname['id']);
+        unset($networkname['date_mod']);
+        unset($networkname['date_creation']);
+        $expected = [
           'entities_id'   => $computer1->fields['entities_id'],
           'items_id'      => $new_id,
           'itemtype'      => 'NetworkPort',
@@ -178,16 +182,16 @@ class NetworkPort extends DbTestCase {
           'ipnetworks_id' => 0,
           'is_deleted'    => 0,
           'is_dynamic'    => 0,
-      ];
-      $this->array($networkname)->isIdenticalTo($expected);
+        ];
+        $this->array($networkname)->isIdenticalTo($expected);
 
-      // 3 -> IPAddress
-      $all_ipadresses = getAllDataFromTable('glpi_ipaddresses', ['ORDER' => 'id']);
-      $ipadress = end($all_ipadresses);
-      unset($ipadress['id']);
-      unset($ipadress['date_mod']);
-      unset($ipadress['date_creation']);
-      $expected = [
+       // 3 -> IPAddress
+        $all_ipadresses = getAllDataFromTable('glpi_ipaddresses', ['ORDER' => 'id']);
+        $ipadress = end($all_ipadresses);
+        unset($ipadress['id']);
+        unset($ipadress['date_mod']);
+        unset($ipadress['date_creation']);
+        $expected = [
           'entities_id'  => $computer1->fields['entities_id'],
           'items_id'     => $networknames_id,
           'itemtype'     => 'NetworkName',
@@ -201,12 +205,12 @@ class NetworkPort extends DbTestCase {
           'is_dynamic'   => 0,
           'mainitems_id' => $computer1->getID(),
           'mainitemtype' => 'Computer',
-      ];
-      $this->array($ipadress)->isIdenticalTo($expected);
+        ];
+        $this->array($ipadress)->isIdenticalTo($expected);
 
-      // be sure added and have no logs
-      $nb_log = (int)countElementsInTable('glpi_logs');
-      $new_id = $networkport->add([
+       // be sure added and have no logs
+        $nb_log = (int)countElementsInTable('glpi_logs');
+        $new_id = $networkport->add([
          'items_id'                    => $computer1->getID(),
          'itemtype'                    => 'Computer',
          'entities_id'                 => $computer1->fields['entities_id'],
@@ -224,25 +228,26 @@ class NetworkPort extends DbTestCase {
          'NetworkName_name'            => 'test2',
          'NetworkName_fqdns_id'        => 0,
          'NetworkName__ipaddresses'    => ['-1' => '192.168.20.2']
-      ], [], false);
-      $this->integer((int)$new_id)->isGreaterThan(0);
-      $this->integer((int)countElementsInTable('glpi_logs'))->isIdenticalTo($nb_log);
-   }
+        ], [], false);
+        $this->integer((int)$new_id)->isGreaterThan(0);
+        $this->integer((int)countElementsInTable('glpi_logs'))->isIdenticalTo($nb_log);
+    }
 
-   public function testClone() {
-      $this->login();
+    public function testClone()
+    {
+        $this->login();
 
-      $date = date('Y-m-d H:i:s');
-      $_SESSION['glpi_currenttime'] = $date;
+        $date = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date;
 
-      $computer1 = getItemByTypeName('Computer', '_test_pc01');
+        $computer1 = getItemByTypeName('Computer', '_test_pc01');
 
-      // Do some installations
-      $networkport = new \NetworkPort();
+       // Do some installations
+        $networkport = new \NetworkPort();
 
-      // Be sure added
-      $nb_log = (int)countElementsInTable('glpi_logs');
-      $new_id = $networkport->add([
+       // Be sure added
+        $nb_log = (int)countElementsInTable('glpi_logs');
+        $new_id = $networkport->add([
          'items_id'                    => $computer1->getID(),
          'itemtype'                    => 'Computer',
          'entities_id'                 => $computer1->fields['entities_id'],
@@ -262,59 +267,59 @@ class NetworkPort extends DbTestCase {
          'NetworkName_fqdns_id'        => 0,
          'NetworkName__ipaddresses'    => ['-1' => '192.168.20.1'],
          '_create_children'            => true // automatically add instancation, networkname and ipadresses
-      ]);
-      $this->integer($new_id)->isGreaterThan(0);
-      $this->integer((int)countElementsInTable('glpi_logs'))->isGreaterThan($nb_log);
+        ]);
+        $this->integer($new_id)->isGreaterThan(0);
+        $this->integer((int)countElementsInTable('glpi_logs'))->isGreaterThan($nb_log);
 
-      // Test item cloning
-      $added = $networkport->clone();
-      $this->integer((int)$added)->isGreaterThan(0);
+       // Test item cloning
+        $added = $networkport->clone();
+        $this->integer((int)$added)->isGreaterThan(0);
 
-      $clonedNetworkport = new \NetworkPort();
-      $this->boolean($clonedNetworkport->getFromDB($added))->isTrue();
+        $clonedNetworkport = new \NetworkPort();
+        $this->boolean($clonedNetworkport->getFromDB($added))->isTrue();
 
-      $fields = $networkport->fields;
+        $fields = $networkport->fields;
 
-      // Check the networkport values. Id and dates must be different, everything else must be equal
-      foreach ($fields as $k => $v) {
-         switch ($k) {
-            case 'id':
-               $this->variable($clonedNetworkport->getField($k))->isNotEqualTo($networkport->getField($k));
-               break;
-            case 'date_mod':
-            case 'date_creation':
-               $dateClone = new \DateTime($clonedNetworkport->getField($k));
-               $expectedDate = new \DateTime($date);
-               $this->dateTime($dateClone)->isEqualTo($expectedDate);
-               break;
-            default:
-               $this->variable($clonedNetworkport->getField($k))->isEqualTo($networkport->getField($k));
-         }
-      }
+       // Check the networkport values. Id and dates must be different, everything else must be equal
+        foreach ($fields as $k => $v) {
+            switch ($k) {
+                case 'id':
+                    $this->variable($clonedNetworkport->getField($k))->isNotEqualTo($networkport->getField($k));
+                    break;
+                case 'date_mod':
+                case 'date_creation':
+                    $dateClone = new \DateTime($clonedNetworkport->getField($k));
+                    $expectedDate = new \DateTime($date);
+                    $this->dateTime($dateClone)->isEqualTo($expectedDate);
+                    break;
+                default:
+                    $this->variable($clonedNetworkport->getField($k))->isEqualTo($networkport->getField($k));
+            }
+        }
 
-      $instantiation = $networkport->getInstantiation();
-      $clonedInstantiation = $clonedNetworkport->getInstantiation();
-      $instantiationFields = $networkport->fields;
+        $instantiation = $networkport->getInstantiation();
+        $clonedInstantiation = $clonedNetworkport->getInstantiation();
+        $instantiationFields = $networkport->fields;
 
-      // Check the networkport instantiation values. Id, networkports_id and dates must be different, everything else must be equal
-      foreach ($fields as $k => $v) {
-         switch ($k) {
-            case 'id':
-               $this->variable($clonedInstantiation->getField($k))->isNotEqualTo($instantiation->getField($k));
-               break;
-            case 'networkports_id':
-               $this->variable($clonedInstantiation->getField($k))->isNotEqualTo($instantiation->getField($k));
-               $this->variable($clonedInstantiation->getField($k))->isEqualTo($clonedNetworkport->getID());
-               break;
-            case 'date_mod':
-            case 'date_creation':
-               $dateClone = new \DateTime($clonedInstantiation->getField($k));
-               $expectedDate = new \DateTime($date);
-               $this->dateTime($dateClone)->isEqualTo($expectedDate);
-               break;
-            default:
-               $this->variable($clonedInstantiation->getField($k))->isEqualTo($instantiation->getField($k));
-         }
-      }
-   }
+       // Check the networkport instantiation values. Id, networkports_id and dates must be different, everything else must be equal
+        foreach ($fields as $k => $v) {
+            switch ($k) {
+                case 'id':
+                    $this->variable($clonedInstantiation->getField($k))->isNotEqualTo($instantiation->getField($k));
+                    break;
+                case 'networkports_id':
+                    $this->variable($clonedInstantiation->getField($k))->isNotEqualTo($instantiation->getField($k));
+                    $this->variable($clonedInstantiation->getField($k))->isEqualTo($clonedNetworkport->getID());
+                    break;
+                case 'date_mod':
+                case 'date_creation':
+                    $dateClone = new \DateTime($clonedInstantiation->getField($k));
+                    $expectedDate = new \DateTime($date);
+                    $this->dateTime($dateClone)->isEqualTo($expectedDate);
+                    break;
+                default:
+                    $this->variable($clonedInstantiation->getField($k))->isEqualTo($instantiation->getField($k));
+            }
+        }
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,17 +32,21 @@
  */
 
 /// Class Cabletype
-class CableType extends CommonDropdown {
+class CableType extends CommonDropdown
+{
 
-   static function getTypeName($nb = 0) {
-      return _n('Cable type', 'Cable types', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Cable type', 'Cable types', $nb);
+    }
 
-   static function getFieldLabel() {
-      return self::getTypeName(1);
-   }
+    public static function getFieldLabel()
+    {
+        return self::getTypeName(1);
+    }
 
-   static function getIcon() {
-      return Cable::getIcon();
-   }
+    public static function getIcon()
+    {
+        return Cable::getIcon();
+    }
 }

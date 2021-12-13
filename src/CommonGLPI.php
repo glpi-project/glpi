@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,42 +37,44 @@ use Glpi\Plugin\Hooks;
 /**
  *  Common GLPI object
 **/
-class CommonGLPI implements CommonGLPIInterface {
+class CommonGLPI implements CommonGLPIInterface
+{
 
    /// GLPI Item type cache : set dynamically calling getType
-   protected $type                 = -1;
+    protected $type                 = -1;
 
    /// Display list on Navigation Header
-   protected $displaylist          = true;
+    protected $displaylist          = true;
 
    /// Show Debug
-   public $showdebug               = false;
+    public $showdebug               = false;
 
    /**
     * Tab orientation : horizontal or vertical.
     *
     * @var string
     */
-   public $taborientation          = 'horizontal';
+    public $taborientation          = 'horizontal';
 
    /**
     * Rightname used to check rights to do actions on item.
     *
     * @var string
     */
-   static $rightname = '';
+    public static $rightname = '';
 
     /**
     * Need to get item to show tab
     *
     * @var boolean
     */
-   public $get_item_to_display_tab = false;
-   static protected $othertabs     = [];
+    public $get_item_to_display_tab = false;
+    protected static $othertabs     = [];
 
 
-   public function __construct() {
-   }
+    public function __construct()
+    {
+    }
 
    /**
     * Return the localized name of the current Type
@@ -81,9 +84,10 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return string
    **/
-   static function getTypeName($nb = 0) {
-      return __('General');
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return __('General');
+    }
 
 
    /**
@@ -94,9 +98,10 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return string
    **/
-   static function getFieldLabel() {
-      return static::getTypeName();
-   }
+    public static function getFieldLabel()
+    {
+        return static::getTypeName();
+    }
 
 
    /**
@@ -104,9 +109,10 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return string
    **/
-   static function getType() {
-      return get_called_class();
-   }
+    public static function getType()
+    {
+        return get_called_class();
+    }
 
    /**
     * Check rights on CommonGLPI Object (without corresponding table)
@@ -119,25 +125,26 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return boolean
    **/
-   function can($ID, $right, array &$input = null) {
-      switch ($right) {
-         case READ :
-            return static::canView();
+    public function can($ID, $right, array &$input = null)
+    {
+        switch ($right) {
+            case READ:
+                return static::canView();
 
-         case UPDATE :
-            return static::canUpdate();
+            case UPDATE:
+                return static::canUpdate();
 
-         case DELETE :
-            return static::canDelete();
+            case DELETE:
+                return static::canDelete();
 
-         case PURGE :
-            return static::canPurge();
+            case PURGE:
+                return static::canPurge();
 
-         case CREATE :
-            return static::canCreate();
-      }
-      return false;
-   }
+            case CREATE:
+                return static::canCreate();
+        }
+        return false;
+    }
 
 
    /**
@@ -146,12 +153,13 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return boolean
    **/
-   static function canCreate() {
-      if (static::$rightname) {
-         return Session::haveRight(static::$rightname, CREATE);
-      }
-      return false;
-   }
+    public static function canCreate()
+    {
+        if (static::$rightname) {
+            return Session::haveRight(static::$rightname, CREATE);
+        }
+        return false;
+    }
 
 
    /**
@@ -163,12 +171,13 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return boolean
    **/
-   static function canView() {
-      if (static::$rightname) {
-         return Session::haveRight(static::$rightname, READ);
-      }
-      return false;
-   }
+    public static function canView()
+    {
+        if (static::$rightname) {
+            return Session::haveRight(static::$rightname, READ);
+        }
+        return false;
+    }
 
 
    /**
@@ -179,11 +188,12 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return boolean
    **/
-   static function canUpdate() {
-      if (static::$rightname) {
-         return Session::haveRight(static::$rightname, UPDATE);
-      }
-   }
+    public static function canUpdate()
+    {
+        if (static::$rightname) {
+            return Session::haveRight(static::$rightname, UPDATE);
+        }
+    }
 
 
    /**
@@ -193,12 +203,13 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return boolean
    **/
-   static function canDelete() {
-      if (static::$rightname) {
-         return Session::haveRight(static::$rightname, DELETE);
-      }
-      return false;
-   }
+    public static function canDelete()
+    {
+        if (static::$rightname) {
+            return Session::haveRight(static::$rightname, DELETE);
+        }
+        return false;
+    }
 
 
    /**
@@ -208,12 +219,13 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return boolean
    **/
-   static function canPurge() {
-      if (static::$rightname) {
-         return Session::haveRight(static::$rightname, PURGE);
-      }
-      return false;
-   }
+    public static function canPurge()
+    {
+        if (static::$rightname) {
+            return Session::haveRight(static::$rightname, PURGE);
+        }
+        return false;
+    }
 
 
    /**
@@ -226,14 +238,15 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return void
    **/
-   static function registerStandardTab($typeform, $typetab) {
+    public static function registerStandardTab($typeform, $typetab)
+    {
 
-      if (isset(self::$othertabs[$typeform])) {
-         self::$othertabs[$typeform][] = $typetab;
-      } else {
-         self::$othertabs[$typeform] = [$typetab];
-      }
-   }
+        if (isset(self::$othertabs[$typeform])) {
+            self::$othertabs[$typeform][] = $typetab;
+        } else {
+            self::$othertabs[$typeform] = [$typetab];
+        }
+    }
 
 
    /**
@@ -246,13 +259,14 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return array array of types
    **/
-   static function getOtherTabs($typeform) {
+    public static function getOtherTabs($typeform)
+    {
 
-      if (isset(self::$othertabs[$typeform])) {
-         return self::$othertabs[$typeform];
-      }
-      return [];
-   }
+        if (isset(self::$othertabs[$typeform])) {
+            return self::$othertabs[$typeform];
+        }
+        return [];
+    }
 
 
    /**
@@ -265,14 +279,15 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return array array containing the tabs
    **/
-   function defineTabs($options = []) {
+    public function defineTabs($options = [])
+    {
 
-      $ong = [];
-      $this->addDefaultFormTab($ong);
-      $this->addImpactTab($ong, $options);
+        $ong = [];
+        $this->addDefaultFormTab($ong);
+        $this->addImpactTab($ong, $options);
 
-      return $ong;
-   }
+        return $ong;
+    }
 
 
    /**
@@ -285,37 +300,40 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return array array containing the tabs
    **/
-   final function defineAllTabs($options = []) {
-      global $CFG_GLPI;
+    final public function defineAllTabs($options = [])
+    {
+        global $CFG_GLPI;
 
-      $onglets = [];
-      // Tabs known by the object
-      if ($this->isNewItem()) {
-         $this->addDefaultFormTab($onglets);
-      } else {
-         $onglets = $this->defineTabs($options);
-      }
+        $onglets = [];
+       // Tabs known by the object
+        if ($this->isNewItem()) {
+            $this->addDefaultFormTab($onglets);
+        } else {
+            $onglets = $this->defineTabs($options);
+        }
 
-      // Object with class with 'addtabon' attribute
-      if (isset(self::$othertabs[$this->getType()])
-          && !$this->isNewItem()) {
+       // Object with class with 'addtabon' attribute
+        if (
+            isset(self::$othertabs[$this->getType()])
+            && !$this->isNewItem()
+        ) {
+            foreach (self::$othertabs[$this->getType()] as $typetab) {
+                $this->addStandardTab($typetab, $onglets, $options);
+            }
+        }
 
-         foreach (self::$othertabs[$this->getType()] as $typetab) {
-            $this->addStandardTab($typetab, $onglets, $options);
-         }
-      }
-
-      $class = $this->getType();
-      if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
-          && (!$this->isNewItem() || $this->showdebug)
-          && (method_exists($class, 'showDebug')
+        $class = $this->getType();
+        if (
+            ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
+            && (!$this->isNewItem() || $this->showdebug)
+            && (method_exists($class, 'showDebug')
               || Infocom::canApplyOn($class)
-              || in_array($class, $CFG_GLPI["reservation_types"]))) {
-
+              || in_array($class, $CFG_GLPI["reservation_types"]))
+        ) {
             $onglets[-2] = __('Debug');
-      }
-      return $onglets;
-   }
+        }
+        return $onglets;
+    }
 
 
    /**
@@ -327,32 +345,35 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return CommonGLPI
    **/
-   function addStandardTab($itemtype, array &$ong, array $options) {
+    public function addStandardTab($itemtype, array &$ong, array $options)
+    {
 
-      $withtemplate = 0;
-      if (isset($options['withtemplate'])) {
-         $withtemplate = $options['withtemplate'];
-      }
+        $withtemplate = 0;
+        if (isset($options['withtemplate'])) {
+            $withtemplate = $options['withtemplate'];
+        }
 
-      switch ($itemtype) {
-         default :
-            if (!is_integer($itemtype)
-                && ($obj = getItemForItemtype($itemtype))) {
-               $titles = $obj->getTabNameForItem($this, $withtemplate);
-               if (!is_array($titles)) {
-                  $titles = [1 => $titles];
-               }
+        switch ($itemtype) {
+            default:
+                if (
+                    !is_integer($itemtype)
+                    && ($obj = getItemForItemtype($itemtype))
+                ) {
+                    $titles = $obj->getTabNameForItem($this, $withtemplate);
+                    if (!is_array($titles)) {
+                        $titles = [1 => $titles];
+                    }
 
-               foreach ($titles as $key => $val) {
-                  if (!empty($val)) {
-                     $ong[$itemtype.'$'.$key] = $val;
-                  }
-               }
-            }
-            break;
-      }
-      return $this;
-   }
+                    foreach ($titles as $key => $val) {
+                        if (!empty($val)) {
+                            $ong[$itemtype . '$' . $key] = $val;
+                        }
+                    }
+                }
+                break;
+        }
+        return $this;
+    }
 
    /**
     * Add the impact tab if enabled for this item type
@@ -362,16 +383,17 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return CommonGLPI
    **/
-   function addImpactTab(array &$ong, array $options) {
-      global $CFG_GLPI;
+    public function addImpactTab(array &$ong, array $options)
+    {
+        global $CFG_GLPI;
 
-      // Check if impact analysis is enabled for this item type
-      if (Impact::isEnabled(static::class)) {
-         $this->addStandardTab('Impact', $ong, $options);
-      }
+       // Check if impact analysis is enabled for this item type
+        if (Impact::isEnabled(static::class)) {
+            $this->addStandardTab('Impact', $ong, $options);
+        }
 
-      return $this;
-   }
+        return $this;
+    }
 
    /**
     * Add default tab for form
@@ -382,11 +404,12 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return CommonGLPI
    **/
-   function addDefaultFormTab(array &$ong) {
+    public function addDefaultFormTab(array &$ong)
+    {
 
-      $ong[$this->getType().'$main'] = $this->getTypeName(1);
-      return $this;
-   }
+        $ong[$this->getType() . '$main'] = $this->getTypeName(1);
+        return $this;
+    }
 
 
    /**
@@ -396,75 +419,78 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return array array for menu
    **/
-   static function getMenuContent() {
+    public static function getMenuContent()
+    {
 
-      $menu       = [];
+        $menu       = [];
 
-      $type       = static::getType();
-      $item       = new $type();
-      $forbidden  = $type::getForbiddenActionsForMenu();
+        $type       = static::getType();
+        $item       = new $type();
+        $forbidden  = $type::getForbiddenActionsForMenu();
 
-      if ($item instanceof CommonDBTM) {
-         if ($type::canView()) {
-            $menu['title']           = static::getMenuName();
-            $menu['shortcut']        = static::getMenuShorcut();
-            $menu['page']            = static::getSearchURL(false);
-            $menu['links']['search'] = static::getSearchURL(false);
-            $menu['links']['lists']  = "";
-            $menu['icon']            = static::getIcon();
+        if ($item instanceof CommonDBTM) {
+            if ($type::canView()) {
+                $menu['title']           = static::getMenuName();
+                $menu['shortcut']        = static::getMenuShorcut();
+                $menu['page']            = static::getSearchURL(false);
+                $menu['links']['search'] = static::getSearchURL(false);
+                $menu['links']['lists']  = "";
+                $menu['icon']            = static::getIcon();
 
-            if (!in_array('add', $forbidden)
-                && $type::canCreate()) {
-
-               if ($item->maybeTemplate()) {
-                  $menu['links']['add'] = '/front/setup.templates.php?'.'itemtype='.$type.
+                if (
+                    !in_array('add', $forbidden)
+                    && $type::canCreate()
+                ) {
+                    if ($item->maybeTemplate()) {
+                        $menu['links']['add'] = '/front/setup.templates.php?' . 'itemtype=' . $type .
                                           '&add=1';
-                  if (!in_array('template', $forbidden)) {
-                     $menu['links']['template'] = '/front/setup.templates.php?'.'itemtype='.$type.
+                        if (!in_array('template', $forbidden)) {
+                              $menu['links']['template'] = '/front/setup.templates.php?' . 'itemtype=' . $type .
                                                   '&add=0';
-                  }
-               } else {
-                  $menu['links']['add'] = static::getFormURL(false);
-               }
-            }
+                        }
+                    } else {
+                        $menu['links']['add'] = static::getFormURL(false);
+                    }
+                }
 
-            $extra_links = static::getAdditionalMenuLinks();
-            if (is_array($extra_links) && count($extra_links)) {
-               $menu['links'] += $extra_links;
+                $extra_links = static::getAdditionalMenuLinks();
+                if (is_array($extra_links) && count($extra_links)) {
+                    $menu['links'] += $extra_links;
+                }
             }
-
-         }
-      } else {
-         if (!method_exists($type, 'canView')
-             || $item->canView()) {
-            $menu['title']           = static::getMenuName();
-            $menu['shortcut']        = static::getMenuShorcut();
-            $menu['page']            = static::getSearchURL(false);
-            $menu['links']['search'] = static::getSearchURL(false);
-            if (method_exists($item, 'getIcon')) {
-               $menu['icon'] = static::getIcon();
+        } else {
+            if (
+                !method_exists($type, 'canView')
+                || $item->canView()
+            ) {
+                $menu['title']           = static::getMenuName();
+                $menu['shortcut']        = static::getMenuShorcut();
+                $menu['page']            = static::getSearchURL(false);
+                $menu['links']['search'] = static::getSearchURL(false);
+                if (method_exists($item, 'getIcon')) {
+                    $menu['icon'] = static::getIcon();
+                }
             }
-         }
-      }
-      if ($data = static::getAdditionalMenuOptions()) {
-         $menu['options'] = $data;
-      }
-      if ($data = static::getAdditionalMenuContent()) {
-         $newmenu = [
+        }
+        if ($data = static::getAdditionalMenuOptions()) {
+            $menu['options'] = $data;
+        }
+        if ($data = static::getAdditionalMenuContent()) {
+            $newmenu = [
             strtolower($type) => $menu,
-         ];
-         // Force overwrite existing menu
-         foreach ($data as $key => $val) {
-            $newmenu[$key] = $val;
-         }
-         $newmenu['is_multi_entries'] = true;
-         $menu = $newmenu;
-      }
-      if (count($menu)) {
-         return $menu;
-      }
-      return false;
-   }
+            ];
+           // Force overwrite existing menu
+            foreach ($data as $key => $val) {
+                $newmenu[$key] = $val;
+            }
+            $newmenu['is_multi_entries'] = true;
+            $menu = $newmenu;
+        }
+        if (count($menu)) {
+            return $menu;
+        }
+        return false;
+    }
 
 
    /**
@@ -474,9 +500,10 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return array array for menu
    **/
-   static function getAdditionalMenuContent() {
-      return false;
-   }
+    public static function getAdditionalMenuContent()
+    {
+        return false;
+    }
 
 
    /**
@@ -486,9 +513,10 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return array array of forbidden actions
    **/
-   static function getForbiddenActionsForMenu() {
-      return [];
-   }
+    public static function getForbiddenActionsForMenu()
+    {
+        return [];
+    }
 
 
    /**
@@ -498,9 +526,10 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return array array of additional options
    **/
-   static function getAdditionalMenuOptions() {
-      return false;
-   }
+    public static function getAdditionalMenuOptions()
+    {
+        return false;
+    }
 
 
    /**
@@ -510,9 +539,10 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return array array of additional options
    **/
-   static function getAdditionalMenuLinks() {
-      return false;
-   }
+    public static function getAdditionalMenuLinks()
+    {
+        return false;
+    }
 
 
    /**
@@ -522,9 +552,10 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return string character menu shortcut key
    **/
-   static function getMenuShorcut() {
-      return '';
-   }
+    public static function getMenuShorcut()
+    {
+        return '';
+    }
 
 
    /**
@@ -534,9 +565,10 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return string character menu shortcut key
    **/
-   static function getMenuName() {
-      return static::getTypeName(Session::getPluralNumber());
-   }
+    public static function getMenuName()
+    {
+        return static::getTypeName(Session::getPluralNumber());
+    }
 
 
    /**
@@ -552,9 +584,10 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     *  @return string tab name
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      return '';
-   }
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
+        return '';
+    }
 
 
    /**
@@ -568,9 +601,10 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return boolean
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-      return false;
-   }
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+        return false;
+    }
 
 
    /**
@@ -583,50 +617,51 @@ class CommonGLPI implements CommonGLPIInterface {
     *
     * @return boolean true
    **/
-   static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate = 0, $options = []) {
-      switch ($tab) {
-         // All tab
-         case -1 :
-            // get tabs and loop over
-            $ong = $item->defineAllTabs(['withtemplate' => $withtemplate]);
+    public static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate = 0, $options = [])
+    {
+        switch ($tab) {
+           // All tab
+            case -1:
+                // get tabs and loop over
+                $ong = $item->defineAllTabs(['withtemplate' => $withtemplate]);
 
-            if (count($ong)) {
-               foreach ($ong as $key => $val) {
-                  if ($key != 'empty') {
-                     echo "<div class='alltab'>$val</div>";
-                     self::displayStandardTab($item, $key, $withtemplate, $options);
-                  }
-               }
-            }
-            return true;
+                if (count($ong)) {
+                    foreach ($ong as $key => $val) {
+                        if ($key != 'empty') {
+                            echo "<div class='alltab'>$val</div>";
+                            self::displayStandardTab($item, $key, $withtemplate, $options);
+                        }
+                    }
+                }
+                return true;
 
-         case -2 :
-            $item->showDebugInfo();
-            return true;
+            case -2:
+                $item->showDebugInfo();
+                return true;
 
-         default :
-            $data     = explode('$', $tab);
-            $itemtype = $data[0];
-            // Default set
-            $tabnum   = 1;
-            if (isset($data[1])) {
-               $tabnum = $data[1];
-            }
+            default:
+                $data     = explode('$', $tab);
+                $itemtype = $data[0];
+               // Default set
+                $tabnum   = 1;
+                if (isset($data[1])) {
+                    $tabnum = $data[1];
+                }
 
-            $options['withtemplate'] = $withtemplate;
+                $options['withtemplate'] = $withtemplate;
 
-            if ($tabnum == 'main') {
-               Plugin::doHook(Hooks::PRE_SHOW_ITEM, ['item' => $item, 'options' => &$options]);
-               $ret = $item->showForm($item->getID(), $options);
+                if ($tabnum == 'main') {
+                    Plugin::doHook(Hooks::PRE_SHOW_ITEM, ['item' => $item, 'options' => &$options]);
+                    $ret = $item->showForm($item->getID(), $options);
 
-               $lockedfield = new Lockedfield();
-               if (!$item->isNewItem() && $lockedfield->isHandled($item)) {
-                  $locks = $lockedfield->getLocks($item->getType(), $item->fields['id']);
-                  if (count($locks)) {
-                     $js_expr = '[name='.implode('], [name=', $locks).']';
-                     $lockedtitle = __s('Field will not be updated from inventory');
+                    $lockedfield = new Lockedfield();
+                    if (!$item->isNewItem() && $lockedfield->isHandled($item)) {
+                        $locks = $lockedfield->getLocks($item->getType(), $item->fields['id']);
+                        if (count($locks)) {
+                             $js_expr = '[name=' . implode('], [name=', $locks) . ']';
+                             $lockedtitle = __s('Field will not be updated from inventory');
 
-                     $locked_js = <<<JAVASCRIPT
+                             $locked_js = <<<JAVASCRIPT
                         $(function() {
                             $("{$js_expr}").closest("td").prev()
                             .append("<i class=\"fas fa-lock\" title=\"{$lockedtitle}\"></i>")
@@ -635,27 +670,28 @@ class CommonGLPI implements CommonGLPIInterface {
                             ;
                         });
 JAVASCRIPT;
-                     echo Html::scriptBlock($locked_js);
-                  }
-               }
-               Plugin::doHook(Hooks::POST_SHOW_ITEM, ['item' => $item, 'options' => $options]);
-               return $ret;
-            }
+                             echo Html::scriptBlock($locked_js);
+                        }
+                    }
+                    Plugin::doHook(Hooks::POST_SHOW_ITEM, ['item' => $item, 'options' => $options]);
+                    return $ret;
+                }
 
-            if (!is_integer($itemtype) && ($itemtype != 'empty')
-                && ($obj = getItemForItemtype($itemtype))) {
-               $options['tabnum'] = $tabnum;
-               $options['itemtype'] = $itemtype;
-               Plugin::doHook(Hooks::PRE_SHOW_TAB, [ 'item' => $item, 'options' => &$options]);
-               $ret = $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
-               Plugin::doHook(Hooks::POST_SHOW_TAB, ['item' => $item, 'options' => $options]);
-               return $ret;
-            }
-            break;
-      }
-      return false;
-
-   }
+                if (
+                    !is_integer($itemtype) && ($itemtype != 'empty')
+                    && ($obj = getItemForItemtype($itemtype))
+                ) {
+                    $options['tabnum'] = $tabnum;
+                    $options['itemtype'] = $itemtype;
+                    Plugin::doHook(Hooks::PRE_SHOW_TAB, [ 'item' => $item, 'options' => &$options]);
+                    $ret = $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
+                    Plugin::doHook(Hooks::POST_SHOW_TAB, ['item' => $item, 'options' => $options]);
+                    return $ret;
+                }
+                break;
+        }
+        return false;
+    }
 
 
    /**
@@ -666,14 +702,15 @@ JAVASCRIPT;
     *
     *  @return array array containing the onglets
    **/
-   static function createTabEntry($text, $nb = 0) {
+    public static function createTabEntry($text, $nb = 0)
+    {
 
-      if ($nb) {
-         //TRANS: %1$s is the name of the tab, $2$d is number of items in the tab between ()
-         $text = sprintf(__('%1$s %2$s'), $text, "<span class='badge'>$nb</span>");
-      }
-      return $text;
-   }
+        if ($nb) {
+           //TRANS: %1$s is the name of the tab, $2$d is number of items in the tab between ()
+            $text = sprintf(__('%1$s %2$s'), $text, "<span class='badge'>$nb</span>");
+        }
+        return $text;
+    }
 
 
    /**
@@ -682,22 +719,25 @@ JAVASCRIPT;
     *
     * @return void
    **/
-   function redirectToList() {
-      global $CFG_GLPI;
+    public function redirectToList()
+    {
+        global $CFG_GLPI;
 
-      if (isset($_GET['withtemplate'])
-          && !empty($_GET['withtemplate'])) {
-         Html::redirect($CFG_GLPI["root_doc"]."/front/setup.templates.php?add=0&itemtype=".
+        if (
+            isset($_GET['withtemplate'])
+            && !empty($_GET['withtemplate'])
+        ) {
+            Html::redirect($CFG_GLPI["root_doc"] . "/front/setup.templates.php?add=0&itemtype=" .
                         $this->getType());
-
-      } else if (isset($_SESSION['glpilisturl'][$this->getType()])
-                 && !empty($_SESSION['glpilisturl'][$this->getType()])) {
-         Html::redirect($_SESSION['glpilisturl'][$this->getType()]);
-
-      } else {
-         Html::redirect($this->getSearchURL());
-      }
-   }
+        } else if (
+            isset($_SESSION['glpilisturl'][$this->getType()])
+                 && !empty($_SESSION['glpilisturl'][$this->getType()])
+        ) {
+            Html::redirect($_SESSION['glpilisturl'][$this->getType()]);
+        } else {
+            Html::redirect($this->getSearchURL());
+        }
+    }
 
 
    /**
@@ -707,9 +747,10 @@ JAVASCRIPT;
     *
     * @return boolean
    **/
-   function isNewItem() {
-      return false;
-   }
+    public function isNewItem()
+    {
+        return false;
+    }
 
 
     /**
@@ -721,9 +762,10 @@ JAVASCRIPT;
     *
     * @return boolean
    **/
-   static function isNewID($ID) {
-      return true;
-   }
+    public static function isNewID($ID)
+    {
+        return true;
+    }
 
 
    /**
@@ -733,9 +775,10 @@ JAVASCRIPT;
     *
     * @return string
    **/
-   static function getTabsURL($full = true) {
-      return Toolbox::getItemTypeTabsURL(get_called_class(), $full);
-   }
+    public static function getTabsURL($full = true)
+    {
+        return Toolbox::getItemTypeTabsURL(get_called_class(), $full);
+    }
 
 
    /**
@@ -745,9 +788,10 @@ JAVASCRIPT;
     *
     * @return string
    **/
-   static function getSearchURL($full = true) {
-      return Toolbox::getItemTypeSearchURL(get_called_class(), $full);
-   }
+    public static function getSearchURL($full = true)
+    {
+        return Toolbox::getItemTypeSearchURL(get_called_class(), $full);
+    }
 
 
    /**
@@ -757,9 +801,10 @@ JAVASCRIPT;
     *
     * @return string
    **/
-   static function getFormURL($full = true) {
-      return Toolbox::getItemTypeFormURL(get_called_class(), $full);
-   }
+    public static function getFormURL($full = true)
+    {
+        return Toolbox::getItemTypeFormURL(get_called_class(), $full);
+    }
 
 
    /**
@@ -772,13 +817,14 @@ JAVASCRIPT;
     *
     * @return string
    **/
-   static function getFormURLWithID($id = 0, $full = true) {
+    public static function getFormURLWithID($id = 0, $full = true)
+    {
 
-      $itemtype = get_called_class();
-      $link     = $itemtype::getFormURL($full);
-      $link    .= (strpos($link, '?') ? '&':'?').'id=' . $id;
-      return $link;
-   }
+        $itemtype = get_called_class();
+        $link     = $itemtype::getFormURL($full);
+        $link    .= (strpos($link, '?') ? '&' : '?') . 'id=' . $id;
+        return $link;
+    }
 
 
    /**
@@ -791,79 +837,89 @@ JAVASCRIPT;
     *
     * @return void
    **/
-   function showTabsContent($options = []) {
+    public function showTabsContent($options = [])
+    {
 
-      // for objects not in table like central
-      if (isset($this->fields['id'])) {
-         $ID = $this->fields['id'];
-      } else {
-         if (isset($options['id'])) {
-            $ID = $options['id'];
-         } else {
-            $ID = 0;
-         }
-      }
+       // for objects not in table like central
+        if (isset($this->fields['id'])) {
+            $ID = $this->fields['id'];
+        } else {
+            if (isset($options['id'])) {
+                $ID = $options['id'];
+            } else {
+                $ID = 0;
+            }
+        }
 
-      $target         = $_SERVER['PHP_SELF'];
-      $extraparamhtml = "";
-      $withtemplate   = "";
-      if (is_array($options) && count($options)) {
-         if (isset($options['withtemplate'])) {
-            $withtemplate = $options['withtemplate'];
-         }
-         $cleaned_options = $options;
-         if (isset($cleaned_options['id'])) {
-            unset($cleaned_options['id']);
-         }
-         if (isset($cleaned_options['stock_image'])) {
-            unset($cleaned_options['stock_image']);
-         }
-         if ($this instanceof CommonITILObject && $this->isNewItem()) {
-            $this->input = $cleaned_options;
-            $this->saveInput();
-            // $extraparamhtml can be tool long in case of ticket with content
-            // (passed in GET in ajax request)
-            unset($cleaned_options['content']);
-         }
+        $target         = $_SERVER['PHP_SELF'];
+        $extraparamhtml = "";
+        $withtemplate   = "";
+        if (is_array($options) && count($options)) {
+            if (isset($options['withtemplate'])) {
+                $withtemplate = $options['withtemplate'];
+            }
+            $cleaned_options = $options;
+            if (isset($cleaned_options['id'])) {
+                unset($cleaned_options['id']);
+            }
+            if (isset($cleaned_options['stock_image'])) {
+                unset($cleaned_options['stock_image']);
+            }
+            if ($this instanceof CommonITILObject && $this->isNewItem()) {
+                $this->input = $cleaned_options;
+                $this->saveInput();
+               // $extraparamhtml can be tool long in case of ticket with content
+               // (passed in GET in ajax request)
+                unset($cleaned_options['content']);
+            }
 
-         // prevent double sanitize, because the includes.php sanitize all data
-         $cleaned_options = Toolbox::stripslashes_deep($cleaned_options);
+           // prevent double sanitize, because the includes.php sanitize all data
+            $cleaned_options = Toolbox::stripslashes_deep($cleaned_options);
 
-         $extraparamhtml = "&amp;".Toolbox::append_params($cleaned_options, '&amp;');
-      }
+            $extraparamhtml = "&amp;" . Toolbox::append_params($cleaned_options, '&amp;');
+        }
 
-      $onglets     = $this->defineAllTabs($options);
-      $display_all = true;
-      if (isset($onglets['no_all_tab'])) {
-         $display_all = false;
-         unset($onglets['no_all_tab']);
-      }
+        $onglets     = $this->defineAllTabs($options);
+        $display_all = true;
+        if (isset($onglets['no_all_tab'])) {
+            $display_all = false;
+            unset($onglets['no_all_tab']);
+        }
 
-      if (count($onglets)) {
-         $tabpage = $this->getTabsURL();
-         $tabs    = [];
+        if (count($onglets)) {
+            $tabpage = $this->getTabsURL();
+            $tabs    = [];
 
-         foreach ($onglets as $key => $val) {
-            $tabs[$key] = ['title'  => $val,
+            foreach ($onglets as $key => $val) {
+                $tabs[$key] = ['title'  => $val,
                                 'url'    => $tabpage,
-                                'params' => "_target=$target&amp;_itemtype=".$this->getType().
+                                'params' => "_target=$target&amp;_itemtype=" . $this->getType() .
                                             "&amp;_glpi_tab=$key&amp;id=$ID$extraparamhtml"];
-         }
+            }
 
-         // Not all tab for templates and if only 1 tab
-         if ($display_all
-             && empty($withtemplate)
-             && (count($tabs) > 1)) {
-            $tabs[-1] = ['title'  => __('All'),
+           // Not all tab for templates and if only 1 tab
+            if (
+                $display_all
+                && empty($withtemplate)
+                && (count($tabs) > 1)
+            ) {
+                $tabs[-1] = ['title'  => __('All'),
                               'url'    => $tabpage,
-                              'params' => "_target=$target&amp;_itemtype=".$this->getType().
+                              'params' => "_target=$target&amp;_itemtype=" . $this->getType() .
                                           "&amp;_glpi_tab=-1&amp;id=$ID$extraparamhtml"];
-         }
+            }
 
-         Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType(), $ID,
-                          $this->taborientation, $options);
-      }
-   }
+            Ajax::createTabs(
+                'tabspanel',
+                'tabcontent',
+                $tabs,
+                $this->getType(),
+                $ID,
+                $this->taborientation,
+                $options
+            );
+        }
+    }
 
 
    /**
@@ -874,175 +930,176 @@ JAVASCRIPT;
     *
     * @return void
    **/
-   function showNavigationHeader($options = []) {
-      global $CFG_GLPI;
+    public function showNavigationHeader($options = [])
+    {
+        global $CFG_GLPI;
 
-      // for objects not in table like central
-      if (isset($this->fields['id'])) {
-         $ID = $this->fields['id'];
-      } else {
-         if (isset($options['id'])) {
-            $ID = $options['id'];
-         } else {
-            $ID = 0;
-         }
-      }
-      $target         = $_SERVER['PHP_SELF'];
-      $extraparamhtml = "";
-      $withtemplate   = "";
-
-      if (is_array($options) && count($options)) {
-         $cleanoptions = $options;
-         if (isset($options['withtemplate'])) {
-            $withtemplate = $options['withtemplate'];
-            unset($cleanoptions['withtemplate']);
-         }
-         foreach (array_keys($cleanoptions) as $key) {
-            // Do not include id options
-            if (($key[0] == '_') || ($key == 'id')) {
-               unset($cleanoptions[$key]);
+       // for objects not in table like central
+        if (isset($this->fields['id'])) {
+            $ID = $this->fields['id'];
+        } else {
+            if (isset($options['id'])) {
+                $ID = $options['id'];
+            } else {
+                $ID = 0;
             }
-         }
-         $extraparamhtml = "&amp;".Toolbox::append_params($cleanoptions, '&amp;');
-      }
+        }
+        $target         = $_SERVER['PHP_SELF'];
+        $extraparamhtml = "";
+        $withtemplate   = "";
 
-      if (empty($withtemplate)
-          && !$this->isNewID($ID)
-          && $this->getType()
-          && $this->displaylist) {
-
-         $glpilistitems =& $_SESSION['glpilistitems'][$this->getType()];
-         $glpilisttitle =& $_SESSION['glpilisttitle'][$this->getType()];
-         $glpilisturl   =& $_SESSION['glpilisturl'][$this->getType()];
-
-         if (empty($glpilisturl)) {
-            $glpilisturl = $this->getSearchURL();
-         }
-
-         // echo "<div id='menu_navigate'>";
-
-         $next = $prev = $first = $last = -1;
-         $current = false;
-         if (is_array($glpilistitems)) {
-            $current = array_search($ID, $glpilistitems);
-            if ($current !== false) {
-
-               if (isset($glpilistitems[$current+1])) {
-                  $next = $glpilistitems[$current+1];
-               }
-
-               if (isset($glpilistitems[$current-1])) {
-                  $prev = $glpilistitems[$current-1];
-               }
-
-               $first = $glpilistitems[0];
-               if ($first == $ID) {
-                  $first = -1;
-               }
-
-               $last = $glpilistitems[count($glpilistitems)-1];
-               if ($last == $ID) {
-                  $last = -1;
-               }
-
+        if (is_array($options) && count($options)) {
+            $cleanoptions = $options;
+            if (isset($options['withtemplate'])) {
+                $withtemplate = $options['withtemplate'];
+                unset($cleanoptions['withtemplate']);
             }
-         }
-         $cleantarget = Html::cleanParametersURL($target);
-         echo "<div class='navigationheader'>";
+            foreach (array_keys($cleanoptions) as $key) {
+               // Do not include id options
+                if (($key[0] == '_') || ($key == 'id')) {
+                    unset($cleanoptions[$key]);
+                }
+            }
+            $extraparamhtml = "&amp;" . Toolbox::append_params($cleanoptions, '&amp;');
+        }
 
-         if ($first >= 0) {
-            echo "<a href='$cleantarget?id=$first$extraparamhtml'
-                     class='btn btn-sm btn-icon btn-ghost-secondary' title=\"".__s('First')."\"
+        if (
+            empty($withtemplate)
+            && !$this->isNewID($ID)
+            && $this->getType()
+            && $this->displaylist
+        ) {
+            $glpilistitems =& $_SESSION['glpilistitems'][$this->getType()];
+            $glpilisttitle =& $_SESSION['glpilisttitle'][$this->getType()];
+            $glpilisturl   =& $_SESSION['glpilisturl'][$this->getType()];
+
+            if (empty($glpilisturl)) {
+                $glpilisturl = $this->getSearchURL();
+            }
+
+           // echo "<div id='menu_navigate'>";
+
+            $next = $prev = $first = $last = -1;
+            $current = false;
+            if (is_array($glpilistitems)) {
+                $current = array_search($ID, $glpilistitems);
+                if ($current !== false) {
+                    if (isset($glpilistitems[$current + 1])) {
+                        $next = $glpilistitems[$current + 1];
+                    }
+
+                    if (isset($glpilistitems[$current - 1])) {
+                        $prev = $glpilistitems[$current - 1];
+                    }
+
+                    $first = $glpilistitems[0];
+                    if ($first == $ID) {
+                        $first = -1;
+                    }
+
+                    $last = $glpilistitems[count($glpilistitems) - 1];
+                    if ($last == $ID) {
+                        $last = -1;
+                    }
+                }
+            }
+            $cleantarget = Html::cleanParametersURL($target);
+            echo "<div class='navigationheader'>";
+
+            if ($first >= 0) {
+                echo "<a href='$cleantarget?id=$first$extraparamhtml'
+                     class='btn btn-sm btn-icon btn-ghost-secondary' title=\"" . __s('First') . "\"
                      data-bs-toggle='tooltip' data-bs-placement='bottom'>
                      <i class='fa-lg ti ti-chevrons-left'></i>
                   </a>";
-         }
+            }
 
-         if ($prev >= 0) {
-            echo "<a href='$cleantarget?id=$prev$extraparamhtml'
+            if ($prev >= 0) {
+                echo "<a href='$cleantarget?id=$prev$extraparamhtml'
                      id='previouspage'
-                     class='btn btn-sm btn-icon btn-ghost-secondary' title=\"".__s('Previous')."\"
+                     class='btn btn-sm btn-icon btn-ghost-secondary' title=\"" . __s('Previous') . "\"
                      data-bs-toggle='tooltip' data-bs-placement='bottom'>
                      <i class='fa-lg ti ti-chevron-left'></i>
                   </a>";
-            $js = '$("body").keydown(function(e) {
+                $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
                           if(e.keyCode == 37 && e.ctrlKey) {
                             window.location = $("#previouspage").attr("href");
                           }
                        }
                   });';
-            echo Html::scriptBlock($js);
-         }
+                echo Html::scriptBlock($js);
+            }
 
-         if (!$glpilisttitle) {
-            $glpilisttitle = __s('List');
-         }
-         echo "<a href='$glpilisturl' title=\"$glpilisttitle\"
+            if (!$glpilisttitle) {
+                $glpilisttitle = __s('List');
+            }
+            echo "<a href='$glpilisturl' title=\"$glpilisttitle\"
                   class='btn btn-sm btn-icon btn-ghost-secondary'
                   data-bs-toggle='tooltip' data-bs-placement='bottom'>
                   <i class='far fa-lg fa-list-alt'></i>
                </a>";
 
-         $name = '';
-         if (isset($this->fields['id']) && ($this instanceof CommonDBTM)) {
-            $name = $this->getName();
-            if ($_SESSION['glpiis_ids_visible'] || empty($name)) {
-               $name = sprintf(__('%1$s - ID %2$d'), $name, $this->fields['id']);
+            $name = '';
+            if (isset($this->fields['id']) && ($this instanceof CommonDBTM)) {
+                $name = $this->getName();
+                if ($_SESSION['glpiis_ids_visible'] || empty($name)) {
+                    $name = sprintf(__('%1$s - ID %2$d'), $name, $this->fields['id']);
+                }
             }
-         }
-         if (isset($this->fields["entities_id"])
-               && Session::isMultiEntitiesMode()
-               && $this->isEntityAssign()) {
-            $entname = Dropdown::getDropdownName("glpi_entities", $this->fields["entities_id"]);
-            if ($this->isRecursive()) {
-               $entname = sprintf(__('%1$s + %2$s'), $entname, __('Child entities'));
+            if (
+                isset($this->fields["entities_id"])
+                && Session::isMultiEntitiesMode()
+                && $this->isEntityAssign()
+            ) {
+                $entname = Dropdown::getDropdownName("glpi_entities", $this->fields["entities_id"]);
+                if ($this->isRecursive()) {
+                    $entname = sprintf(__('%1$s + %2$s'), $entname, __('Child entities'));
+                }
+                $name = sprintf(__('%1$s (%2$s)'), $name, $entname);
             }
-            $name = sprintf(__('%1$s (%2$s)'), $name, $entname);
-
-         }
-         echo "<span class='center nav_title'>&nbsp;";
-         if ($this instanceof CommonITILObject) {
-            echo "<span class='status'>";
-            echo $this->getStatusIcon($this->fields['status']);
+            echo "<span class='center nav_title'>&nbsp;";
+            if ($this instanceof CommonITILObject) {
+                echo "<span class='status'>";
+                echo $this->getStatusIcon($this->fields['status']);
+                echo "</span>";
+            }
+            echo $name;
             echo "</span>";
-         }
-         echo $name;
-         echo "</span>";
 
-         if ($current !== false) {
-            echo "<span class='m-1 ms-3'>" . ($current + 1) . "/" . count($glpilistitems) . "</span>";
-         }
+            if ($current !== false) {
+                echo "<span class='m-1 ms-3'>" . ($current + 1) . "/" . count($glpilistitems) . "</span>";
+            }
 
-         if ($next >= 0) {
-            echo "<a href='$cleantarget?id=$next$extraparamhtml'
+            if ($next >= 0) {
+                echo "<a href='$cleantarget?id=$next$extraparamhtml'
                      id='nextpage'
                      class='btn btn-sm btn-icon btn-ghost-secondary'
-                     title=\"".__s('Next')."\"
+                     title=\"" . __s('Next') . "\"
                      data-bs-toggle='tooltip' data-bs-placement='bottom'>" .
-               "<i class='fa-lg ti ti-chevron-right'></i>
+                "<i class='fa-lg ti ti-chevron-right'></i>
                     </a>";
-            $js = '$("body").keydown(function(e) {
+                $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
                           if(e.keyCode == 39 && e.ctrlKey) {
                             window.location = $("#nextpage").attr("href");
                           }
                        }
                   });';
-            echo Html::scriptBlock($js);
-         }
+                echo Html::scriptBlock($js);
+            }
 
-         if ($last >= 0) {
-            echo "<a href='$cleantarget?id=$last $extraparamhtml'
+            if ($last >= 0) {
+                echo "<a href='$cleantarget?id=$last $extraparamhtml'
                      class='btn btn-sm btn-icon btn-ghost-secondary'
-                     title=\"".__s('Last')."\"
+                     title=\"" . __s('Last') . "\"
                      data-bs-toggle='tooltip' data-bs-placement='bottom'>" .
-               "<i class='fa-lg ti ti-chevrons-right'></i></a>";
-         }
+                "<i class='fa-lg ti ti-chevrons-right'></i></a>";
+            }
 
-         echo "</div>"; // .navigationheader
-      }
-   }
+            echo "</div>"; // .navigationheader
+        }
+    }
 
 
    /**
@@ -1054,52 +1111,57 @@ JAVASCRIPT;
     *
     * @return void
    **/
-   function display($options = []) {
-      global $CFG_GLPI;
+    public function display($options = [])
+    {
+        global $CFG_GLPI;
 
-      if (isset($options['id'])
-          && !$this->isNewID($options['id'])) {
-         if (!$this->getFromDB($options['id'])) {
-            Html::displayNotFoundError();
-         }
-      }
-
-      // in case of lefttab layout, we couldn't see "right error" message
-      if ($this->get_item_to_display_tab) {
-         if (isset($_GET["id"]) && $_GET["id"] && !$this->can($_GET["id"], READ)) {
-            // This triggers from a profile switch.
-            // If we don't have right, redirect instead to central page
-            if (isset($_SESSION['_redirected_from_profile_selector'])
-                && $_SESSION['_redirected_from_profile_selector']) {
-               unset($_SESSION['_redirected_from_profile_selector']);
-               Html::redirect($CFG_GLPI['root_doc']."/front/central.php");
+        if (
+            isset($options['id'])
+            && !$this->isNewID($options['id'])
+        ) {
+            if (!$this->getFromDB($options['id'])) {
+                Html::displayNotFoundError();
             }
-            Html::displayRightError();
-         }
-      }
+        }
 
-      // try to lock object
-      // $options must contains the id of the object, and if locked by manageObjectLock will contains 'locked' => 1
-      ObjectLock::manageObjectLock(get_class($this), $options);
+       // in case of lefttab layout, we couldn't see "right error" message
+        if ($this->get_item_to_display_tab) {
+            if (isset($_GET["id"]) && $_GET["id"] && !$this->can($_GET["id"], READ)) {
+               // This triggers from a profile switch.
+               // If we don't have right, redirect instead to central page
+                if (
+                    isset($_SESSION['_redirected_from_profile_selector'])
+                    && $_SESSION['_redirected_from_profile_selector']
+                ) {
+                    unset($_SESSION['_redirected_from_profile_selector']);
+                    Html::redirect($CFG_GLPI['root_doc'] . "/front/central.php");
+                }
+                Html::displayRightError();
+            }
+        }
 
-      // manage custom options passed to tabs
-      if (isset($_REQUEST['tab_params']) && is_array($_REQUEST['tab_params'])) {
-         $options += $_REQUEST['tab_params'];
-      }
+       // try to lock object
+       // $options must contains the id of the object, and if locked by manageObjectLock will contains 'locked' => 1
+        ObjectLock::manageObjectLock(get_class($this), $options);
 
-      echo "<div class='d-flex flex-column'>";
-      echo "<div class='row'>";
-      if ($this instanceof CommonDBTM) {
-         TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
+       // manage custom options passed to tabs
+        if (isset($_REQUEST['tab_params']) && is_array($_REQUEST['tab_params'])) {
+            $options += $_REQUEST['tab_params'];
+        }
+
+        echo "<div class='d-flex flex-column'>";
+        echo "<div class='row'>";
+        if ($this instanceof CommonDBTM) {
+            TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
             'itemtype' => $this->getType(),
-         ]);
-      }
-      echo "<div class='col'>";
-      $this->showNavigationHeader($options);
-      $this->showTabsContent($options);
-      echo "</div>";
-      echo "</div>";
-   }
+            ]);
+        }
+        echo "<div class='col'>";
+        $this->showNavigationHeader($options);
+        $this->showTabsContent($options);
+        echo "</div>";
+        echo "</div>";
+    }
 
 
    /**
@@ -1107,29 +1169,30 @@ JAVASCRIPT;
     *
     * @return void
    **/
-   function showDebugInfo() {
-      global $CFG_GLPI;
+    public function showDebugInfo()
+    {
+        global $CFG_GLPI;
 
-      if (method_exists($this, 'showDebug')) {
-         $this->showDebug();
-      }
+        if (method_exists($this, 'showDebug')) {
+            $this->showDebug();
+        }
 
-      $class = $this->getType();
+        $class = $this->getType();
 
-      if (Infocom::canApplyOn($class)) {
-         $infocom = new Infocom();
-         if ($infocom->getFromDBforDevice($class, $this->fields['id'])) {
-            $infocom->showDebug();
-         }
-      }
+        if (Infocom::canApplyOn($class)) {
+            $infocom = new Infocom();
+            if ($infocom->getFromDBforDevice($class, $this->fields['id'])) {
+                $infocom->showDebug();
+            }
+        }
 
-      if (in_array($class, $CFG_GLPI["reservation_types"])) {
-         $resitem = new ReservationItem();
-         if ($resitem->getFromDBbyItem($class, $this->fields['id'])) {
-            $resitem->showDebugResa();
-         }
-      }
-   }
+        if (in_array($class, $CFG_GLPI["reservation_types"])) {
+            $resitem = new ReservationItem();
+            if ($resitem->getFromDBbyItem($class, $this->fields['id'])) {
+                $resitem->showDebugResa();
+            }
+        }
+    }
 
 
    /**
@@ -1142,44 +1205,45 @@ JAVASCRIPT;
     *
     * @return void
    **/
-   static function updateDisplayOptions($input = [], $sub_itemtype = '') {
+    public static function updateDisplayOptions($input = [], $sub_itemtype = '')
+    {
 
-      $options = static::getAvailableDisplayOptions();
-      if (count($options)) {
-         if (empty($sub_itemtype)) {
-            $display_options = &$_SESSION['glpi_display_options'][self::getType()];
-         } else {
-            $display_options = &$_SESSION['glpi_display_options'][self::getType()][$sub_itemtype];
-         }
-         // reset
-         if (isset($input['reset'])) {
-            foreach ($options as $option_group) {
-               foreach ($option_group as $option_name => $attributs) {
-                  $display_options[$option_name] = $attributs['default'];
-               }
+        $options = static::getAvailableDisplayOptions();
+        if (count($options)) {
+            if (empty($sub_itemtype)) {
+                $display_options = &$_SESSION['glpi_display_options'][self::getType()];
+            } else {
+                $display_options = &$_SESSION['glpi_display_options'][self::getType()][$sub_itemtype];
             }
-         } else {
-            foreach ($options as $option_group) {
-               foreach ($option_group as $option_name => $attributs) {
-                  if (isset($input[$option_name]) && ($_GET[$option_name] == 'on')) {
-                     $display_options[$option_name] = true;
-                  } else {
-                     $display_options[$option_name] = false;
-                  }
-               }
+           // reset
+            if (isset($input['reset'])) {
+                foreach ($options as $option_group) {
+                    foreach ($option_group as $option_name => $attributs) {
+                        $display_options[$option_name] = $attributs['default'];
+                    }
+                }
+            } else {
+                foreach ($options as $option_group) {
+                    foreach ($option_group as $option_name => $attributs) {
+                        if (isset($input[$option_name]) && ($_GET[$option_name] == 'on')) {
+                            $display_options[$option_name] = true;
+                        } else {
+                            $display_options[$option_name] = false;
+                        }
+                    }
+                }
             }
-         }
-         // Store new display options for user
-         if ($uid = Session::getLoginUserID()) {
-            $user = new User();
-            if ($user->getFromDB($uid)) {
-               $user->update(['id' => $uid,
+           // Store new display options for user
+            if ($uid = Session::getLoginUserID()) {
+                $user = new User();
+                if ($user->getFromDB($uid)) {
+                    $user->update(['id' => $uid,
                                    'display_options'
                                         => exportArrayToDB($_SESSION['glpi_display_options'])]);
+                }
             }
-         }
-      }
-   }
+        }
+    }
 
 
    /**
@@ -1191,44 +1255,45 @@ JAVASCRIPT;
     *
     * @return void
    **/
-   static function getDisplayOptions($sub_itemtype = '') {
+    public static function getDisplayOptions($sub_itemtype = '')
+    {
 
-      if (!isset($_SESSION['glpi_display_options'])) {
-         // Load display_options from user table
-         $_SESSION['glpi_display_options'] = [];
-         if ($uid = Session::getLoginUserID()) {
-            $user = new User();
-            if ($user->getFromDB($uid)) {
-               $_SESSION['glpi_display_options'] = importArrayFromDB($user->fields['display_options']);
+        if (!isset($_SESSION['glpi_display_options'])) {
+           // Load display_options from user table
+            $_SESSION['glpi_display_options'] = [];
+            if ($uid = Session::getLoginUserID()) {
+                $user = new User();
+                if ($user->getFromDB($uid)) {
+                    $_SESSION['glpi_display_options'] = importArrayFromDB($user->fields['display_options']);
+                }
             }
-         }
-      }
-      if (!isset($_SESSION['glpi_display_options'][self::getType()])) {
-         $_SESSION['glpi_display_options'][self::getType()] = [];
-      }
+        }
+        if (!isset($_SESSION['glpi_display_options'][self::getType()])) {
+            $_SESSION['glpi_display_options'][self::getType()] = [];
+        }
 
-      if (!empty($sub_itemtype)) {
-         if (!isset($_SESSION['glpi_display_options'][self::getType()][$sub_itemtype])) {
-            $_SESSION['glpi_display_options'][self::getType()][$sub_itemtype] = [];
-         }
-         $display_options = &$_SESSION['glpi_display_options'][self::getType()][$sub_itemtype];
-      } else {
-         $display_options = &$_SESSION['glpi_display_options'][self::getType()];
-      }
-
-      // Load default values if not set
-      $options = static::getAvailableDisplayOptions();
-      if (count($options)) {
-         foreach ($options as $option_group) {
-            foreach ($option_group as $option_name => $attributs) {
-               if (!isset($display_options[$option_name])) {
-                  $display_options[$option_name] = $attributs['default'];
-               }
+        if (!empty($sub_itemtype)) {
+            if (!isset($_SESSION['glpi_display_options'][self::getType()][$sub_itemtype])) {
+                $_SESSION['glpi_display_options'][self::getType()][$sub_itemtype] = [];
             }
-         }
-      }
-      return $display_options;
-   }
+            $display_options = &$_SESSION['glpi_display_options'][self::getType()][$sub_itemtype];
+        } else {
+            $display_options = &$_SESSION['glpi_display_options'][self::getType()];
+        }
+
+       // Load default values if not set
+        $options = static::getAvailableDisplayOptions();
+        if (count($options)) {
+            foreach ($options as $option_group) {
+                foreach ($option_group as $option_name => $attributs) {
+                    if (!isset($display_options[$option_name])) {
+                        $display_options[$option_name] = $attributs['default'];
+                    }
+                }
+            }
+        }
+        return $display_options;
+    }
 
 
 
@@ -1241,51 +1306,52 @@ JAVASCRIPT;
     *
     * @return void
    **/
-   static function showDislayOptions($sub_itemtype = '') {
-      global $CFG_GLPI;
+    public static function showDislayOptions($sub_itemtype = '')
+    {
+        global $CFG_GLPI;
 
-      $options      = static::getAvailableDisplayOptions($sub_itemtype);
+        $options      = static::getAvailableDisplayOptions($sub_itemtype);
 
-      if (count($options)) {
-         if (empty($sub_itemtype)) {
-            $display_options = $_SESSION['glpi_display_options'][self::getType()];
-         } else {
-            $display_options = $_SESSION['glpi_display_options'][self::getType()][$sub_itemtype];
-         }
-         echo "<div class='center'>";
-         echo "\n<form method='get' action='".$CFG_GLPI['root_doc']."/front/display.options.php'>\n";
-         echo "<input type='hidden' name='itemtype' value='NetworkPort'>\n";
-         echo "<input type='hidden' name='sub_itemtype' value='$sub_itemtype'>\n";
-         echo "<table class='tab_cadre'>";
-         echo "<tr><th colspan='2'>".__s('Display options')."</th></tr>\n";
-         echo "<tr><td colspan='2'>";
-         echo "<input type='submit' class='btn btn-primary' name='reset' value=\"".
-                __('Reset display options')."\">";
-         echo "</td></tr>\n";
-
-         foreach ($options as $option_group_name => $option_group) {
-            if (count($option_group) > 0) {
-               echo "<tr><th colspan='2'>$option_group_name</th></tr>\n";
-               foreach ($option_group as $option_name => $attributs) {
-                  echo "<tr>";
-                  echo "<td>";
-                  echo "<input type='checkbox' name='$option_name' ".
-                        ($display_options[$option_name]?'checked':'').">";
-                  echo "</td>";
-                  echo "<td>".$attributs['name']."</td>";
-                  echo "</tr>\n";
-               }
+        if (count($options)) {
+            if (empty($sub_itemtype)) {
+                $display_options = $_SESSION['glpi_display_options'][self::getType()];
+            } else {
+                $display_options = $_SESSION['glpi_display_options'][self::getType()][$sub_itemtype];
             }
-         }
-         echo "<tr><td colspan='2' class='center'>";
-         echo "<input type='submit' class='btn btn-primary' name='update' value=\""._sx('button', 'Save')."\">";
-         echo "</td></tr>\n";
-         echo "</table>";
-         echo "</form>";
+            echo "<div class='center'>";
+            echo "\n<form method='get' action='" . $CFG_GLPI['root_doc'] . "/front/display.options.php'>\n";
+            echo "<input type='hidden' name='itemtype' value='NetworkPort'>\n";
+            echo "<input type='hidden' name='sub_itemtype' value='$sub_itemtype'>\n";
+            echo "<table class='tab_cadre'>";
+            echo "<tr><th colspan='2'>" . __s('Display options') . "</th></tr>\n";
+            echo "<tr><td colspan='2'>";
+            echo "<input type='submit' class='btn btn-primary' name='reset' value=\"" .
+                __('Reset display options') . "\">";
+            echo "</td></tr>\n";
 
-         echo "</div>";
-      }
-   }
+            foreach ($options as $option_group_name => $option_group) {
+                if (count($option_group) > 0) {
+                    echo "<tr><th colspan='2'>$option_group_name</th></tr>\n";
+                    foreach ($option_group as $option_name => $attributs) {
+                        echo "<tr>";
+                        echo "<td>";
+                        echo "<input type='checkbox' name='$option_name' " .
+                        ($display_options[$option_name] ? 'checked' : '') . ">";
+                        echo "</td>";
+                        echo "<td>" . $attributs['name'] . "</td>";
+                        echo "</tr>\n";
+                    }
+                }
+            }
+            echo "<tr><td colspan='2' class='center'>";
+            echo "<input type='submit' class='btn btn-primary' name='update' value=\"" . _sx('button', 'Save') . "\">";
+            echo "</td></tr>\n";
+            echo "</table>";
+            echo "</form>";
+
+            echo "</div>";
+        }
+    }
 
 
    /**
@@ -1295,9 +1361,10 @@ JAVASCRIPT;
     *
     * @return array all the options
    **/
-   static function getAvailableDisplayOptions() {
-      return [];
-   }
+    public static function getAvailableDisplayOptions()
+    {
+        return [];
+    }
 
 
    /**
@@ -1309,26 +1376,29 @@ JAVASCRIPT;
     *
     * @return string
    **/
-   static function getDisplayOptionsLink($sub_itemtype = '') {
-      global $CFG_GLPI;
+    public static function getDisplayOptionsLink($sub_itemtype = '')
+    {
+        global $CFG_GLPI;
 
-      $rand = mt_rand();
+        $rand = mt_rand();
 
-      $link ="<span class='fa fa-wrench pointer' title=\"";
-      $link .= __s('Display options')."\" ";
-      $link .= " data-bs-toggle='modal' data-bs-target='#displayoptions$rand'";
-      $link .= "><span class='sr-only'>" . __s('Display options') . "</span></span>";
-      $link .= Ajax::createIframeModalWindow("displayoptions".$rand,
-                                             $CFG_GLPI['root_doc'].
-                                                "/front/display.options.php?itemtype=".
-                                                static::getType()."&sub_itemtype=$sub_itemtype",
-                                             ['display'       => false,
+        $link = "<span class='fa fa-wrench pointer' title=\"";
+        $link .= __s('Display options') . "\" ";
+        $link .= " data-bs-toggle='modal' data-bs-target='#displayoptions$rand'";
+        $link .= "><span class='sr-only'>" . __s('Display options') . "</span></span>";
+        $link .= Ajax::createIframeModalWindow(
+            "displayoptions" . $rand,
+            $CFG_GLPI['root_doc'] .
+                                                "/front/display.options.php?itemtype=" .
+                                                static::getType() . "&sub_itemtype=$sub_itemtype",
+            ['display'       => false,
                                                    'width'         => 600,
                                                    'height'        => 500,
-                                                   'reloadonclose' => true]);
+            'reloadonclose' => true]
+        );
 
-      return $link;
-   }
+        return $link;
+    }
 
 
    /**
@@ -1341,26 +1411,27 @@ JAVASCRIPT;
     *
     * @return string
    **/
-   function getErrorMessage($error, $object = '') {
+    public function getErrorMessage($error, $object = '')
+    {
 
-      if (empty($object)) {
-         $object = $this->getLink();
-      }
-      switch ($error) {
-         case ERROR_NOT_FOUND :
-            return sprintf(__('%1$s: %2$s'), $object, __('Unable to get item'));
+        if (empty($object)) {
+            $object = $this->getLink();
+        }
+        switch ($error) {
+            case ERROR_NOT_FOUND:
+                return sprintf(__('%1$s: %2$s'), $object, __('Unable to get item'));
 
-         case ERROR_RIGHT :
-            return sprintf(__('%1$s: %2$s'), $object, __('Authorization error'));
+            case ERROR_RIGHT:
+                return sprintf(__('%1$s: %2$s'), $object, __('Authorization error'));
 
-         case ERROR_COMPAT :
-            return sprintf(__('%1$s: %2$s'), $object, __('Incompatible items'));
+            case ERROR_COMPAT:
+                return sprintf(__('%1$s: %2$s'), $object, __('Incompatible items'));
 
-         case ERROR_ON_ACTION :
-            return sprintf(__('%1$s: %2$s'), $object, __('Error on executing the action'));
+            case ERROR_ON_ACTION:
+                return sprintf(__('%1$s: %2$s'), $object, __('Error on executing the action'));
 
-         case ERROR_ALREADY_DEFINED :
-            return sprintf(__('%1$s: %2$s'), $object, __('Item already defined'));
-      }
-   }
+            case ERROR_ALREADY_DEFINED:
+                return sprintf(__('%1$s: %2$s'), $object, __('Item already defined'));
+        }
+    }
 }

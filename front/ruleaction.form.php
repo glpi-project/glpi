@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,26 +34,26 @@
 /**
  * @since 0.85
  */
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
-$rule = new Rule;
+$rule = new Rule();
 $rule->getFromDB(intval($_POST['rules_id']));
 
 $action = new RuleAction($rule->fields['sub_type']);
 
 if (isset($_POST["add"])) {
-   $action->check(-1, CREATE, $_POST);
-   $action->add($_POST);
+    $action->check(-1, CREATE, $_POST);
+    $action->add($_POST);
 
-   Html::back();
+    Html::back();
 } else if (isset($_POST["update"])) {
-   $action->check($_POST['id'], UPDATE);
-   $action->update($_POST);
+    $action->check($_POST['id'], UPDATE);
+    $action->update($_POST);
 
-   Html::back();
+    Html::back();
 } else if (isset($_POST["purge"])) {
-   $action->check($_POST['id'], PURGE);
-   $action->delete($_POST, 1);
+    $action->check($_POST['id'], PURGE);
+    $action->delete($_POST, 1);
 
-   Html::back();
+    Html::back();
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,30 +36,33 @@ use Glpi\Application\View\TemplateRenderer;
 /**
  * SNMP credentials
  */
-class SNMPCredential extends CommonDBTM {
+class SNMPCredential extends CommonDBTM
+{
 
    // From CommonDBTM
-   public $dohistory                   = true;
-   static $rightname = 'computer';
+    public $dohistory                   = true;
+    public static $rightname = 'computer';
 
-   static function getTypeName($nb = 0) {
-      return _n('SNMP credential', 'SNMP credentials', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('SNMP credential', 'SNMP credentials', $nb);
+    }
 
-   public function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
+        $tab[] = [
          'id'            => '2',
          'table'         => $this->getTable(),
          'field'         => 'community',
          'name'          => __('Community'),
          'datatype'      => 'string',
          'massiveaction' => false,
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
    /**
     * Define tabs to display on form page
@@ -66,102 +70,110 @@ class SNMPCredential extends CommonDBTM {
     * @param array $options
     * @return array containing the tabs name
     */
-   function defineTabs($options = []) {
+    public function defineTabs($options = [])
+    {
 
-      $ong = [];
-      $this->addDefaultFormTab($ong);
-      $this->addStandardTab('Log', $ong, $options);
+        $ong = [];
+        $this->addDefaultFormTab($ong);
+        $this->addStandardTab('Log', $ong, $options);
 
-      return $ong;
-   }
+        return $ong;
+    }
 
-   public function showForm($ID, array $options = []) {
-      $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('components/form/snmpcredential.html.twig', [
+    public function showForm($ID, array $options = [])
+    {
+        $this->initForm($ID, $options);
+        TemplateRenderer::getInstance()->display('components/form/snmpcredential.html.twig', [
          'item'   => $this,
          'params' => $options,
-      ]);
+        ]);
 
-      return true;
-   }
+        return true;
+    }
 
    /**
     * Real version of SNMP
     *
     * @return string
     */
-   public function getRealVersion(): string {
-      switch ($this->fields['snmpversion']) {
-         case 1:
-         case 3:
-            return (string)$this->fields['snmpversion'];
-         case 2:
-            return '2c';
-         default:
-            return '';
-
-      }
-   }
+    public function getRealVersion(): string
+    {
+        switch ($this->fields['snmpversion']) {
+            case 1:
+            case 3:
+                return (string)$this->fields['snmpversion'];
+            case 2:
+                return '2c';
+            default:
+                return '';
+        }
+    }
 
    /**
     * Get SNMP authentication protocol
     *
     * @return string
     */
-   function getAuthProtocol(): string {
-      switch ($this->fields['authentication']) {
-         case 1:
-            return 'MD5';
-         case 2:
-            return 'SHA';
-         default:
-            return '';
-      }
-      return '';
-   }
+    public function getAuthProtocol(): string
+    {
+        switch ($this->fields['authentication']) {
+            case 1:
+                return 'MD5';
+            case 2:
+                return 'SHA';
+            default:
+                return '';
+        }
+        return '';
+    }
 
    /**
     * Get SNMP encryption protocol
     *
     * @return string
     */
-   function getEncryption(): string {
-      switch ($this->fields['encryption']) {
-         case 1:
-            return 'DES';
-         case 2:
-            return 'AES';
-         case 5:
-            return '3DES';
-         default:
-            return '';
-      }
-   }
+    public function getEncryption(): string
+    {
+        switch ($this->fields['encryption']) {
+            case 1:
+                return 'DES';
+            case 2:
+                return 'AES';
+            case 5:
+                return '3DES';
+            default:
+                return '';
+        }
+    }
 
-   protected function prepareInputs(array $input): array {
-      $key = new GLPIKey();
-      if (isset($input['auth_passphrase'])) {
-         $input['auth_passphrase'] = $key->encrypt($input['auth_passphrase']);
-      }
+    protected function prepareInputs(array $input): array
+    {
+        $key = new GLPIKey();
+        if (isset($input['auth_passphrase'])) {
+            $input['auth_passphrase'] = $key->encrypt($input['auth_passphrase']);
+        }
 
-      if (isset($input['priv_passphrase'])) {
-         $input['priv_passphrase'] = $key->encrypt($input['priv_passphrase']);
-      }
+        if (isset($input['priv_passphrase'])) {
+            $input['priv_passphrase'] = $key->encrypt($input['priv_passphrase']);
+        }
 
-      return $input;
-   }
+        return $input;
+    }
 
-   public function prepareInputForAdd($input) {
-      $input = parent::prepareInputForAdd($input);
-      return $this->prepareInputs($input);
-   }
+    public function prepareInputForAdd($input)
+    {
+        $input = parent::prepareInputForAdd($input);
+        return $this->prepareInputs($input);
+    }
 
-   public function prepareInputForUpdate($input) {
-      $input = parent::prepareInputForUpdate($input);
-      return $this->prepareInputs($input);
-   }
+    public function prepareInputForUpdate($input)
+    {
+        $input = parent::prepareInputForUpdate($input);
+        return $this->prepareInputs($input);
+    }
 
-   public static function getIcon() {
-      return "ti ti-key";
-   }
+    public static function getIcon()
+    {
+        return "ti ti-key";
+    }
 }

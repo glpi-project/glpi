@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,18 +31,18 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 $dropdown = new Entity();
 
 // Root entity : no delete
 if (isset($_GET['id']) && ($_GET['id'] == 0)) {
-   $options = ['canedit' => true,
+    $options = ['canedit' => true,
                     'candel'  => false];
 }
 
 if (array_key_exists('custom_css_code', $_POST)) {
-   $_POST['custom_css_code'] = $_UPOST['custom_css_code'];
+    $_POST['custom_css_code'] = $_UPOST['custom_css_code'];
 }
 
-include (GLPI_ROOT . "/front/dropdown.common.form.php");
+include(GLPI_ROOT . "/front/dropdown.common.form.php");

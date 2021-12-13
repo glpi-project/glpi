@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,19 +32,23 @@
  */
 
 /// Class DeviceGraphicCard
-class DeviceGraphicCard extends CommonDevice {
+class DeviceGraphicCard extends CommonDevice
+{
 
-   static protected $forward_entity_to = ['Item_DeviceGraphicCard', 'Infocom'];
+    protected static $forward_entity_to = ['Item_DeviceGraphicCard', 'Infocom'];
 
-   static function getTypeName($nb = 0) {
-      return _n('Graphics card', 'Graphics cards', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Graphics card', 'Graphics cards', $nb);
+    }
 
 
-   function getAdditionalFields() {
+    public function getAdditionalFields()
+    {
 
-      return array_merge(parent::getAdditionalFields(),
-                         [['name'  => 'chipset',
+        return array_merge(
+            parent::getAdditionalFields(),
+            [['name'  => 'chipset',
                                      'label' => __('Chipset'),
                                      'type'  => 'text'],
                                ['name'  => 'memory_default',
@@ -54,54 +59,59 @@ class DeviceGraphicCard extends CommonDevice {
                                      'label' => __('Interface'),
                                      'type'  => 'dropdownValue'],
                                ['name'  => 'none',
-                                     'label' => RegisteredID::getTypeName(Session::getPluralNumber()).
-                                        RegisteredID::showAddChildButtonForItemForm($this,
-                                                                                    '_registeredID',
-                                                                                    null, false),
+                                     'label' => RegisteredID::getTypeName(Session::getPluralNumber()) .
+                                        RegisteredID::showAddChildButtonForItemForm(
+                                            $this,
+                                            '_registeredID',
+                                            null,
+                                            false
+                                        ),
                                      'type'  => 'registeredIDChooser'],
                                ['name'  => 'devicegraphiccardmodels_id',
                                      'label' => _n('Model', 'Models', 1),
-                                     'type'  => 'dropdownValue']]);
-   }
+            'type'  => 'dropdownValue']]
+        );
+    }
 
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '11',
          'table'              => $this->getTable(),
          'field'              => 'chipset',
          'name'               => __('Chipset'),
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '12',
          'table'              => $this->getTable(),
          'field'              => 'memory_default',
          'name'               => __('Memory by default'),
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '14',
          'table'              => 'glpi_interfacetypes',
          'field'              => 'name',
          'name'               => __('Interface'),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '15',
          'table'              => 'glpi_devicegraphiccardmodels',
          'field'              => 'name',
          'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
 
    /**
@@ -110,82 +120,98 @@ class DeviceGraphicCard extends CommonDevice {
     *
     * @return number
    **/
-   function prepareInputForAddOrUpdate($input) {
+    public function prepareInputForAddOrUpdate($input)
+    {
 
-      foreach (['memory_default'] as $field) {
-         if (isset($input[$field]) && !is_numeric($input[$field])) {
-            $input[$field] = 0;
-         }
-      }
-      return $input;
-   }
-
-
-   function prepareInputForAdd($input) {
-      return $this->prepareInputForAddOrUpdate($input);
-   }
-
-
-   function prepareInputForUpdate($input) {
-      return $this->prepareInputForAddOrUpdate($input);
-   }
-
-
-   static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super = null,
-                                      HTMLTableHeader $father = null, array $options = []) {
-
-      $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
-
-      if ($column == $father) {
-         return $father;
-      }
-
-      switch ($itemtype) {
-         case 'Computer' :
-            Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-            InterfaceType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-            $base->addHeader('devicegraphiccard_chipset', __('Chipset'), $super, $father);
-            break;
-      }
-   }
-
-
-   function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
-                                    HTMLTableCell $father = null, array $options = []) {
-
-      $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
-
-      if ($column == $father) {
-         return $father;
-      }
-
-      switch ($item->getType()) {
-         case 'Computer' :
-            Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
-            InterfaceType::getHTMLTableCellsForItem($row, $this, null, $options);
-
-            if (!empty($this->fields["chipset"])) {
-               $row->addCell($row->getHeaderByName('devicegraphiccard_chipset'),
-                             $this->fields["chipset"], $father);
+        foreach (['memory_default'] as $field) {
+            if (isset($input[$field]) && !is_numeric($input[$field])) {
+                $input[$field] = 0;
             }
-            break;
-      }
-   }
+        }
+        return $input;
+    }
 
 
-   function getImportCriteria() {
+    public function prepareInputForAdd($input)
+    {
+        return $this->prepareInputForAddOrUpdate($input);
+    }
 
-      return [
+
+    public function prepareInputForUpdate($input)
+    {
+        return $this->prepareInputForAddOrUpdate($input);
+    }
+
+
+    public static function getHTMLTableHeader(
+        $itemtype,
+        HTMLTableBase $base,
+        HTMLTableSuperHeader $super = null,
+        HTMLTableHeader $father = null,
+        array $options = []
+    ) {
+
+        $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
+
+        if ($column == $father) {
+            return $father;
+        }
+
+        switch ($itemtype) {
+            case 'Computer':
+                Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+                InterfaceType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+                $base->addHeader('devicegraphiccard_chipset', __('Chipset'), $super, $father);
+                break;
+        }
+    }
+
+
+    public function getHTMLTableCellForItem(
+        HTMLTableRow $row = null,
+        CommonDBTM $item = null,
+        HTMLTableCell $father = null,
+        array $options = []
+    ) {
+
+        $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
+
+        if ($column == $father) {
+            return $father;
+        }
+
+        switch ($item->getType()) {
+            case 'Computer':
+                Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
+                InterfaceType::getHTMLTableCellsForItem($row, $this, null, $options);
+
+                if (!empty($this->fields["chipset"])) {
+                    $row->addCell(
+                        $row->getHeaderByName('devicegraphiccard_chipset'),
+                        $this->fields["chipset"],
+                        $father
+                    );
+                }
+                break;
+        }
+    }
+
+
+    public function getImportCriteria()
+    {
+
+        return [
          'designation' => 'equal',
          'chipset'  => 'equal',
-      ];
-   }
+        ];
+    }
 
-   public static function rawSearchOptionsToAdd($itemtype, $main_joinparams) {
-      $tab = [];
+    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
+    {
+        $tab = [];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '13',
          'table'              => 'glpi_devicegraphiccards',
          'field'              => 'designation',
@@ -199,8 +225,8 @@ class DeviceGraphicCard extends CommonDevice {
                'joinparams'         => $main_joinparams
             ]
          ]
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 }

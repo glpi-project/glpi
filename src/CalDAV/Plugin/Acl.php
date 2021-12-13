@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -48,54 +49,57 @@ use Session;
  *
  * @since 9.5.0
  */
-class Acl extends Plugin {
+class Acl extends Plugin
+{
+    use CalDAVPrincipalsTrait;
+    use CalDAVUriUtilTrait;
 
-   use CalDAVPrincipalsTrait;
-   use CalDAVUriUtilTrait;
-
-   public $principalCollectionSet = [
+    public $principalCollectionSet = [
       Principal::PREFIX_GROUPS,
       Principal::PREFIX_USERS,
-   ];
+    ];
 
-   public $allowUnauthenticatedAccess = false;
+    public $allowUnauthenticatedAccess = false;
 
-   public function getAcl($node) {
-      if (is_string($node)) {
-         $node = $this->server->tree->getNodeForPath($node);
-      }
+    public function getAcl($node)
+    {
+        if (is_string($node)) {
+            $node = $this->server->tree->getNodeForPath($node);
+        }
 
-      $acl = parent::getAcl($node);
+        $acl = parent::getAcl($node);
 
-      if (!($node instanceof IACL) || ($owner_path = $node->getOwner()) === null
-          || !$this->canViewPrincipalObjects($owner_path)) {
-         return $acl;
-      }
+        if (
+            !($node instanceof IACL) || ($owner_path = $node->getOwner()) === null
+            || !$this->canViewPrincipalObjects($owner_path)
+        ) {
+            return $acl;
+        }
 
-      $acl[] = [
+        $acl[] = [
          'principal' => '{DAV:}authenticated',
          'privilege' => '{DAV:}read',
          'protected' => true,
-      ];
+        ];
 
-      if ($node instanceof Calendar && Session::haveRight(PlanningExternalEvent::$rightname, UPDATE)) {
-         // If user can update external events, then he is able to write on calendar to create new events.
-         $acl[] = [
+        if ($node instanceof Calendar && Session::haveRight(PlanningExternalEvent::$rightname, UPDATE)) {
+           // If user can update external events, then he is able to write on calendar to create new events.
+            $acl[] = [
             'principal' => '{DAV:}authenticated',
             'privilege' => '{DAV:}write',
             'protected' => true,
-         ];
-      } else if ($node instanceof CalendarObject) {
-         $item = $this->getCalendarItemForPath($node->getName());
-         if ($item instanceof CommonDBTM && $item->can($item->fields['id'], UPDATE)) {
-            $acl[] = [
-               'principal' => '{DAV:}authenticated',
-               'privilege' => '{DAV:}write',
-               'protected' => true,
             ];
-         }
-      }
+        } else if ($node instanceof CalendarObject) {
+            $item = $this->getCalendarItemForPath($node->getName());
+            if ($item instanceof CommonDBTM && $item->can($item->fields['id'], UPDATE)) {
+                $acl[] = [
+                'principal' => '{DAV:}authenticated',
+                'privilege' => '{DAV:}write',
+                'protected' => true,
+                ];
+            }
+        }
 
-      return $acl;
-   }
+        return $acl;
+    }
 }

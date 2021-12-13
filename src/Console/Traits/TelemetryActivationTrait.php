@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -40,7 +41,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Telemetry;
 
-trait TelemetryActivationTrait {
+trait TelemetryActivationTrait
+{
 
    /**
     * Register options related to Telemetry service enablement.
@@ -49,25 +51,26 @@ trait TelemetryActivationTrait {
     *
     * @return void
     */
-   protected function registerTelemetryActivationOptions(InputDefinition $definition): void {
-      $definition->addOption(
-         new InputOption(
-            'enable-telemetry',
-            null,
-            InputOption::VALUE_NONE,
-            sprintf(__('Allow usage statistics sending to Telemetry service (%s)'), GLPI_TELEMETRY_URI)
-         )
-      );
+    protected function registerTelemetryActivationOptions(InputDefinition $definition): void
+    {
+        $definition->addOption(
+            new InputOption(
+                'enable-telemetry',
+                null,
+                InputOption::VALUE_NONE,
+                sprintf(__('Allow usage statistics sending to Telemetry service (%s)'), GLPI_TELEMETRY_URI)
+            )
+        );
 
-      $definition->addOption(
-         new InputOption(
-            'no-telemetry',
-            null,
-            InputOption::VALUE_NONE,
-            sprintf(__('Disallow usage statistics sending to Telemetry service (%s)'), GLPI_TELEMETRY_URI)
-         )
-      );
-   }
+        $definition->addOption(
+            new InputOption(
+                'no-telemetry',
+                null,
+                InputOption::VALUE_NONE,
+                sprintf(__('Disallow usage statistics sending to Telemetry service (%s)'), GLPI_TELEMETRY_URI)
+            )
+        );
+    }
 
    /**
     * Handle telemetry service enablement, depending on
@@ -77,43 +80,46 @@ trait TelemetryActivationTrait {
     *
     * @return void
     */
-   protected function handTelemetryActivation(InputInterface $input, OutputInterface $output): void {
+    protected function handTelemetryActivation(InputInterface $input, OutputInterface $output): void
+    {
 
-      $is_already_enabled = Telemetry::isEnabled();
+        $is_already_enabled = Telemetry::isEnabled();
 
-      $disable_telemetry = false;
-      $enable_telemetry  = false;
+        $disable_telemetry = false;
+        $enable_telemetry  = false;
 
-      // Handle Telemetry service status
-      if (!$input->getOption('no-telemetry') && !$input->getOption('enable-telemetry')
-          && !$is_already_enabled && !$input->getOption('no-interaction')) {
-         // Ask user its consent if no related option was provided (unless service is already active)
-         $output->writeln(
-            [
-               '<comment>' . __('We need your help to improve GLPI and the plugins ecosystem!') . '</comment>',
-               '<comment>' . __('Since GLPI 9.2, we’ve introduced a new statistics feature called “Telemetry”, that anonymously with your permission, sends data to our telemetry website.') . '</comment>',
-               '<comment>' . __('Once sent, usage statistics are aggregated and made available to a broad range of GLPI developers.') . '</comment>',
-               '<comment>' . __('Let us know your usage to improve future versions of GLPI and its plugins!') . '</comment>',
-            ],
-            OutputInterface::VERBOSITY_QUIET
-         );
+       // Handle Telemetry service status
+        if (
+            !$input->getOption('no-telemetry') && !$input->getOption('enable-telemetry')
+            && !$is_already_enabled && !$input->getOption('no-interaction')
+        ) {
+           // Ask user its consent if no related option was provided (unless service is already active)
+            $output->writeln(
+                [
+                '<comment>' . __('We need your help to improve GLPI and the plugins ecosystem!') . '</comment>',
+                '<comment>' . __('Since GLPI 9.2, we’ve introduced a new statistics feature called “Telemetry”, that anonymously with your permission, sends data to our telemetry website.') . '</comment>',
+                '<comment>' . __('Once sent, usage statistics are aggregated and made available to a broad range of GLPI developers.') . '</comment>',
+                '<comment>' . __('Let us know your usage to improve future versions of GLPI and its plugins!') . '</comment>',
+                ],
+                OutputInterface::VERBOSITY_QUIET
+            );
 
-         $question_helper = new QuestionHelper();
-         $enable_telemetry = $question_helper->ask(
-            $input,
-            $output,
-            new ConfirmationQuestion(__('Do you want to send "usage statistics"?') . ' [Yes/no]', true)
-         );
-      } else if ($input->getOption('no-telemetry')) {
-         $disable_telemetry = true;
-      } else if ($input->getOption('enable-telemetry')) {
-         $enable_telemetry = true;
-      }
+            $question_helper = new QuestionHelper();
+            $enable_telemetry = $question_helper->ask(
+                $input,
+                $output,
+                new ConfirmationQuestion(__('Do you want to send "usage statistics"?') . ' [Yes/no]', true)
+            );
+        } else if ($input->getOption('no-telemetry')) {
+            $disable_telemetry = true;
+        } else if ($input->getOption('enable-telemetry')) {
+            $enable_telemetry = true;
+        }
 
-      if (!$is_already_enabled && $enable_telemetry) {
-         Telemetry::enable();
-      } else if ($is_already_enabled && $disable_telemetry) {
-         Telemetry::disable();
-      }
-   }
+        if (!$is_already_enabled && $enable_telemetry) {
+            Telemetry::enable();
+        } else if ($is_already_enabled && $disable_telemetry) {
+            Telemetry::disable();
+        }
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -39,12 +40,14 @@ use Sabre\DAV\Auth\Backend\AbstractBasic;
  *
  * @since 9.5.0
  */
-class Auth extends AbstractBasic {
+class Auth extends AbstractBasic
+{
 
-   protected $principalPrefix = Principal::PREFIX_USERS . '/';
+    protected $principalPrefix = Principal::PREFIX_USERS . '/';
 
-   protected function validateUserPass($username, $password) {
-      $auth = new \Auth();
-      return $auth->login($username, $password);
-   }
+    protected function validateUserPass($username, $password)
+    {
+        $auth = new \Auth();
+        return $auth->login($username, $password);
+    }
 }

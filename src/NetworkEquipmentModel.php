@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,9 +32,11 @@
  */
 
 /// Class NetworkEquipmentModel
-class NetworkEquipmentModel extends CommonDCModelDropdown {
+class NetworkEquipmentModel extends CommonDCModelDropdown
+{
 
-   static function getTypeName($nb = 0) {
-      return _n('Networking equipment model', 'Networking equipment models', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Networking equipment model', 'Networking equipment models', $nb);
+    }
 }

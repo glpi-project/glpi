@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,11 +37,13 @@ use org\bovigo\vfs\vfsStream;
 
 /* Test for inc/console/commandloader.class.php */
 
-class CommandLoader extends \GLPITestCase {
+class CommandLoader extends \GLPITestCase
+{
 
-   public function testLoader() {
+    public function testLoader()
+    {
 
-      $structure = [
+        $structure = [
          'src' => [
             // Not instanciable case
             'AbstractCommand.php' => <<<PHP
@@ -250,19 +253,19 @@ PHP
                ],
             ],
          ]
-      ];
-      vfsStream::setup('glpi', null, $structure);
+        ];
+        vfsStream::setup('glpi', null, $structure);
 
-      $core_names_to_class = [
+        $core_names_to_class = [
          'glpi:database:install' => 'InstallCommand',
          'db:install'            => 'InstallCommand',
          'glpi:validate'         => 'Glpi\\ValidateCommand',
          'glpi:test'             => 'Glpi\\Console\\TestCommand',
          'glpi:tools:debug'      => 'DebugCommand',
          'tools:debug'           => 'DebugCommand',
-      ];
+        ];
 
-      $plugins_names_to_class = [
+        $plugins_names_to_class = [
          'plugin_awesome:update'     => 'PluginAwesomeUpdateCommand',
          'plugin_awesome:namespaced' => 'GlpiPlugin\\Awesome\\NamespacedCommand',
          'plugin_awesome:another'    => 'GlpiPlugin\\Awesome\\Console\\AnotherCommand',
@@ -271,36 +274,36 @@ PHP
          'plugin_random:random'      => 'PluginRandomRandomCommand',
          'plugin_random:check'       => 'GlpiPlugin\\Random\\CheckCommand',
          'plugin_random:foo'         => 'GlpiPlugin\\Random\\Console\\FooCommand',
-      ];
+        ];
 
-      $all_names_to_class = array_merge($core_names_to_class, $plugins_names_to_class);
+        $all_names_to_class = array_merge($core_names_to_class, $plugins_names_to_class);
 
-      // Mock plugin
-      $plugin = $this->newMockInstance('Plugin');
-      $this->calling($plugin)->isActivated = true;
+       // Mock plugin
+        $plugin = $this->newMockInstance('Plugin');
+        $this->calling($plugin)->isActivated = true;
 
-      // Check with plugins
-      $command_loader = new \Glpi\Console\CommandLoader(true, vfsStream::url('glpi'), $plugin);
-      $this->array($command_loader->getNames())->isIdenticalTo(array_keys($all_names_to_class));
-      foreach ($all_names_to_class as $name => $classname) {
-         $this->boolean($command_loader->has($name))->isTrue();
-         $this->object($command_loader->get($name))->isInstanceOf($classname);
-      }
+       // Check with plugins
+        $command_loader = new \Glpi\Console\CommandLoader(true, vfsStream::url('glpi'), $plugin);
+        $this->array($command_loader->getNames())->isIdenticalTo(array_keys($all_names_to_class));
+        foreach ($all_names_to_class as $name => $classname) {
+            $this->boolean($command_loader->has($name))->isTrue();
+            $this->object($command_loader->get($name))->isInstanceOf($classname);
+        }
 
-      // Check without plugins
-      $command_loader = new \Glpi\Console\CommandLoader(false, vfsStream::url('glpi'), $plugin);
-      $this->array($command_loader->getNames())->isIdenticalTo(array_keys($core_names_to_class));
-      foreach ($core_names_to_class as $name => $classname) {
-         $this->boolean($command_loader->has($name))->isTrue();
-         $this->object($command_loader->get($name))->isInstanceOf($classname);
-      }
+       // Check without plugins
+        $command_loader = new \Glpi\Console\CommandLoader(false, vfsStream::url('glpi'), $plugin);
+        $this->array($command_loader->getNames())->isIdenticalTo(array_keys($core_names_to_class));
+        foreach ($core_names_to_class as $name => $classname) {
+            $this->boolean($command_loader->has($name))->isTrue();
+            $this->object($command_loader->get($name))->isInstanceOf($classname);
+        }
 
-      // Check async plugin registration
-      $command_loader->setIncludePlugins(true);
-      $this->array($command_loader->getNames())->isIdenticalTo(array_keys($all_names_to_class));
-      foreach ($all_names_to_class as $name => $classname) {
-         $this->boolean($command_loader->has($name))->isTrue();
-         $this->object($command_loader->get($name))->isInstanceOf($classname);
-      }
-   }
+       // Check async plugin registration
+        $command_loader->setIncludePlugins(true);
+        $this->array($command_loader->getNames())->isIdenticalTo(array_keys($all_names_to_class));
+        foreach ($all_names_to_class as $name => $classname) {
+            $this->boolean($command_loader->has($name))->isTrue();
+            $this->object($command_loader->get($name))->isInstanceOf($classname);
+        }
+    }
 }

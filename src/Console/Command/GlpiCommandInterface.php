@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,19 +33,20 @@
 
 namespace Glpi\Console\Command;
 
-interface GlpiCommandInterface {
+interface GlpiCommandInterface
+{
 
    /**
     * Defines whether or not mandatory requirements must be checked before running command.
     *
     * @return boolean
     */
-   public function mustCheckMandatoryRequirements(): bool;
+    public function mustCheckMandatoryRequirements(): bool;
 
    /**
     * Defines whether or not command requires an up-to-date database to be executed.
     *
     * @return boolean
     */
-   public function requiresUpToDateDb(): bool;
+    public function requiresUpToDateDb(): bool;
 }

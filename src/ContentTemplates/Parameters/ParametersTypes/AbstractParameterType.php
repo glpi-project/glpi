@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -44,7 +45,7 @@ abstract class AbstractParameterType implements ParameterTypeInterface
     *
     * @var string
     */
-   protected $key;
+    protected $key;
 
    /**
     * The parameter label, to be displayed in the client side autocompletion.
@@ -57,16 +58,19 @@ abstract class AbstractParameterType implements ParameterTypeInterface
     * @param string  $key     Key to access this value
     * @param string  $label   Label to display in the autocompletion widget
     */
-   public function __construct(string $key, string $label) {
-      $this->key = $key;
-      $this->label = $label;
-   }
+    public function __construct(string $key, string $label)
+    {
+        $this->key = $key;
+        $this->label = $label;
+    }
 
-   public function getDocumentationField(): string {
-      return $this->key;
-   }
+    public function getDocumentationField(): string
+    {
+        return $this->key;
+    }
 
-   public function getDocumentationLabel(): string {
-      return $this->label;
-   }
+    public function getDocumentationLabel(): string
+    {
+        return $this->label;
+    }
 }

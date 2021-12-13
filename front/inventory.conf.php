@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,7 +33,7 @@
 
 use Glpi\Inventory\Conf;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("config", READ);
 
@@ -41,19 +42,19 @@ Html::header(__('Inventory'), $_SERVER['PHP_SELF'], "admin", "glpi\inventory\inv
 $conf = new Conf();
 
 if (isset($_FILES['importfile']) && $_FILES['importfile']['tmp_name'] != '') {
-   $conf->importFile($_FILES);
-   Html::back();
+    $conf->importFile($_FILES);
+    Html::back();
 }
 
 if (isset($_POST['update'])) {
-   unset($_POST['update']);
-   $conf->saveConf($_POST);
-   Session::addMessageAfterRedirect(
-      __('Configuration has been updated'),
-      false,
-      INFO
-   );
-   Html::back();
+    unset($_POST['update']);
+    $conf->saveConf($_POST);
+    Session::addMessageAfterRedirect(
+        __('Configuration has been updated'),
+        false,
+        INFO
+    );
+    Html::back();
 }
 
 $conf->display(['id' => 1]);

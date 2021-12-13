@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,71 +33,93 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("group", READ);
 
 if (empty($_GET["id"])) {
-   $_GET["id"] = "";
+    $_GET["id"] = "";
 }
 
 $group = new Group();
 
 if (isset($_POST["add"])) {
-   $group->check(-1, CREATE, $_POST);
-   if ($newID=$group->add($_POST)) {
-      Event::log($newID, "groups", 4, "setup",
-                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
-      if ($_SESSION['glpibackcreated']) {
-         Html::redirect($group->getLinkURL());
-      }
-   }
-   Html::back();
-
+    $group->check(-1, CREATE, $_POST);
+    if ($newID = $group->add($_POST)) {
+        Event::log(
+            $newID,
+            "groups",
+            4,
+            "setup",
+            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
+        );
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($group->getLinkURL());
+        }
+    }
+    Html::back();
 } else if (isset($_POST["purge"])) {
-   $group->check($_POST["id"], PURGE);
-   if ($group->isUsed()
-         && empty($_POST["forcepurge"])) {
-      Html::header($group->getTypeName(1), $_SERVER['PHP_SELF'], "admin", "group",
-      str_replace('glpi_', '', $group->getTable()));
+    $group->check($_POST["id"], PURGE);
+    if (
+        $group->isUsed()
+         && empty($_POST["forcepurge"])
+    ) {
+        Html::header(
+            $group->getTypeName(1),
+            $_SERVER['PHP_SELF'],
+            "admin",
+            "group",
+            str_replace('glpi_', '', $group->getTable())
+        );
 
-      $group->showDeleteConfirmForm($_SERVER['PHP_SELF']);
-      Html::footer();
-   } else {
-      $group->delete($_POST, 1);
-      Event::log($_POST["id"], "groups", 4, "setup",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
-      $group->redirectToList();
-   }
-
+        $group->showDeleteConfirmForm($_SERVER['PHP_SELF']);
+        Html::footer();
+    } else {
+        $group->delete($_POST, 1);
+        Event::log(
+            $_POST["id"],
+            "groups",
+            4,
+            "setup",
+            //TRANS: %s is the user login
+            sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+        );
+        $group->redirectToList();
+    }
 } else if (isset($_POST["update"])) {
-   $group->check($_POST["id"], UPDATE);
-   $group->update($_POST);
-   Event::log($_POST["id"], "groups", 4, "setup",
-              //TRANS: %s is the user login
-              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
-   Html::back();
-
+    $group->check($_POST["id"], UPDATE);
+    $group->update($_POST);
+    Event::log(
+        $_POST["id"],
+        "groups",
+        4,
+        "setup",
+        //TRANS: %s is the user login
+        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+    );
+    Html::back();
 } else if (isset($_GET['_in_modal'])) {
-   Html::popHeader(Group::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF']);
-   $group->showForm($_GET["id"]);
-   Html::popFooter();
-
+    Html::popHeader(Group::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF']);
+    $group->showForm($_GET["id"]);
+    Html::popFooter();
 } else if (isset($_POST["replace"])) {
-   $group->check($_POST["id"], PURGE);
-   $group->delete($_POST, 1);
+    $group->check($_POST["id"], PURGE);
+    $group->delete($_POST, 1);
 
-   Event::log($_POST["id"], "groups", 4, "setup",
-              //TRANS: %s is the user login
-              sprintf(__('%s replaces an item'), $_SESSION["glpiname"]));
-   $group->redirectToList();
-
+    Event::log(
+        $_POST["id"],
+        "groups",
+        4,
+        "setup",
+        //TRANS: %s is the user login
+        sprintf(__('%s replaces an item'), $_SESSION["glpiname"])
+    );
+    $group->redirectToList();
 } else {
-   Html::header(Group::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "group");
-   $group->display([
+    Html::header(Group::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "group");
+    $group->display([
       'id'           => $_GET["id"],
       'formoptions'  => "data-track-changes=true"
-   ]);
-   Html::footer();
+    ]);
+    Html::footer();
 }

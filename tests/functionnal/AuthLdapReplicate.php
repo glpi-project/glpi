@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,63 +37,68 @@ use DbTestCase;
 
 /* Test for inc/authldapreplicate.class.php */
 
-class AuthLdapReplicate extends DbTestCase {
+class AuthLdapReplicate extends DbTestCase
+{
 
-   public function testCanCreate() {
-      $this->login();
-      $this->boolean((boolean)\AuthLdapReplicate::canCreate())->isTrue();
+    public function testCanCreate()
+    {
+        $this->login();
+        $this->boolean((bool)\AuthLdapReplicate::canCreate())->isTrue();
 
-      $_SESSION['glpiactiveprofile']['config'] = READ;
-      $this->boolean((boolean)\AuthLdapReplicate::canCreate())->isFalse();
+        $_SESSION['glpiactiveprofile']['config'] = READ;
+        $this->boolean((bool)\AuthLdapReplicate::canCreate())->isFalse();
 
-      $_SESSION['glpiactiveprofile']['config'] = 0;
-      $this->boolean((boolean)\AuthLdapReplicate::canCreate())->isFalse();
-   }
+        $_SESSION['glpiactiveprofile']['config'] = 0;
+        $this->boolean((bool)\AuthLdapReplicate::canCreate())->isFalse();
+    }
 
-   public function testCanPurge() {
-      $this->login();
-      $this->boolean((boolean)\AuthLdapReplicate::canPurge())->isTrue();
+    public function testCanPurge()
+    {
+        $this->login();
+        $this->boolean((bool)\AuthLdapReplicate::canPurge())->isTrue();
 
-      $_SESSION['glpiactiveprofile']['config'] = READ;
-      $this->boolean((boolean)\AuthLdapReplicate::canCreate())->isFalse();
+        $_SESSION['glpiactiveprofile']['config'] = READ;
+        $this->boolean((bool)\AuthLdapReplicate::canCreate())->isFalse();
 
-      $_SESSION['glpiactiveprofile']['config'] = 0;
-      $this->boolean((boolean)\AuthLdapReplicate::canCreate())->isFalse();
-   }
+        $_SESSION['glpiactiveprofile']['config'] = 0;
+        $this->boolean((bool)\AuthLdapReplicate::canCreate())->isFalse();
+    }
 
-   public function testGetForbiddenStandardMassiveAction() {
-      $this->login();
-      $replicate = new \AuthLdapReplicate();
-      $result    = $replicate->getForbiddenStandardMassiveAction();
-      $this->array($result)->isIdenticalTo([0 => 'update']);
-   }
+    public function testGetForbiddenStandardMassiveAction()
+    {
+        $this->login();
+        $replicate = new \AuthLdapReplicate();
+        $result    = $replicate->getForbiddenStandardMassiveAction();
+        $this->array($result)->isIdenticalTo([0 => 'update']);
+    }
 
-   public function testPrepareInputForAddAndUpdate() {
-      $replicate = new \AuthLdapReplicate();
+    public function testPrepareInputForAddAndUpdate()
+    {
+        $replicate = new \AuthLdapReplicate();
 
-      foreach (['prepareInputForAdd', 'prepareInputForUpdate'] as $method) {
-         //Do not set a port : no port added
-         $result = $replicate->$method([
+        foreach (['prepareInputForAdd', 'prepareInputForUpdate'] as $method) {
+           //Do not set a port : no port added
+            $result = $replicate->$method([
             'name' => 'test',
             'host' => 'host'
-         ]);
-         $this->array($result)->nothasKey('port');
+            ]);
+            $this->array($result)->nothasKey('port');
 
-         //Port=0, change value to 389
-         $result = $replicate->$method([
-            'name' => 'test',
-            'host' => 'host',
-            'port' => 0
-         ]);
-         $this->integer($result['port'])->isIdenticalTo(389);
+           //Port=0, change value to 389
+            $result = $replicate->$method([
+             'name' => 'test',
+             'host' => 'host',
+             'port' => 0
+            ]);
+            $this->integer($result['port'])->isIdenticalTo(389);
 
-         //Port set : do not change it's value
-         $result = $replicate->$method([
-            'name' => 'test',
-            'host' => 'host',
-            'port' => 3389
-         ]);
-         $this->integer($result['port'])->isIdenticalTo(3389);
-      }
-   }
+           //Port set : do not change it's value
+            $result = $replicate->$method([
+             'name' => 'test',
+             'host' => 'host',
+             'port' => 3389
+            ]);
+            $this->integer($result['port'])->isIdenticalTo(3389);
+        }
+    }
 }

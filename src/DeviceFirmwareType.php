@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,11 +31,12 @@
  * ---------------------------------------------------------------------
  */
 
-class DeviceFirmwareType extends CommonDeviceType {
+class DeviceFirmwareType extends CommonDeviceType
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Firmware type', 'Firmware types', $nb);
-   }
-
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Firmware type', 'Firmware types', $nb);
+    }
 }

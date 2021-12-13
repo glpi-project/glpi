@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,46 +31,49 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleDictionnaryOperatingSystemVersion extends RuleDictionnaryDropdown {
+class RuleDictionnaryOperatingSystemVersion extends RuleDictionnaryDropdown
+{
 
 
    /**
     * Constructor
    **/
-   function __construct() {
-      parent::__construct('RuleDictionnaryOperatingSystemVersion');
-   }
+    public function __construct()
+    {
+        parent::__construct('RuleDictionnaryOperatingSystemVersion');
+    }
 
 
    /**
     * @see Rule::getCriterias()
    **/
-   function getCriterias() {
+    public function getCriterias()
+    {
 
-      static $criterias = [];
+        static $criterias = [];
 
-      if (count($criterias)) {
-         return $criterias;
-      }
+        if (count($criterias)) {
+            return $criterias;
+        }
 
-      $criterias['name']['field'] = 'name';
-      $criterias['name']['name']  = _n('Version', 'Versions', 1);
-      $criterias['name']['table'] = 'glpi_operatingsystemversions';
+        $criterias['name']['field'] = 'name';
+        $criterias['name']['name']  = _n('Version', 'Versions', 1);
+        $criterias['name']['table'] = 'glpi_operatingsystemversions';
 
-      return $criterias;
-   }
+        return $criterias;
+    }
 
 
    /**
     * @see Rule::getActions()
    **/
-   function getActions() {
+    public function getActions()
+    {
 
-      $actions                          = [];
-      $actions['name']['name']          = _n('Version', 'Versions', 1);
-      $actions['name']['force_actions'] = ['append_regex_result', 'assign', 'regex_result'];
+        $actions                          = [];
+        $actions['name']['name']          = _n('Version', 'Versions', 1);
+        $actions['name']['force_actions'] = ['append_regex_result', 'assign', 'regex_result'];
 
-      return $actions;
-   }
-
+        return $actions;
+    }
 }

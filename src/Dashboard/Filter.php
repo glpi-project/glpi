@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -45,10 +46,11 @@ use User;
 /**
  * Filter class
 **/
-class Filter extends \CommonDBChild {
+class Filter extends \CommonDBChild
+{
 
-   static public $itemtype = "Glpi\\Dashboard\\Dashboard";
-   static public $items_id = 'dashboards_dashboards_id';
+    public static $itemtype = "Glpi\\Dashboard\\Dashboard";
+    public static $items_id = 'dashboards_dashboards_id';
 
    /**
     * Return all available filters
@@ -56,8 +58,9 @@ class Filter extends \CommonDBChild {
     *
     * @return array of filters
     */
-   static function getAll(): array {
-      $filters = [
+    public static function getAll(): array
+    {
+        $filters = [
          'dates'        => __("Creation date"),
          'dates_mod'    => __("Last update"),
          'itilcategory' => ITILCategory::getTypeName(Session::getPluralNumber()),
@@ -66,15 +69,15 @@ class Filter extends \CommonDBChild {
          'manufacturer' => Manufacturer::getTypeName(Session::getPluralNumber()),
          'group_tech'   => __("Technician group"),
          'user_tech'    => __("Technician"),
-      ];
+        ];
 
-      $more_filters = Plugin::doHookFunction("dashboard_filters");
-      if (is_array($more_filters)) {
-         $filters = array_merge($filters, $more_filters);
-      }
+        $more_filters = Plugin::doHookFunction("dashboard_filters");
+        if (is_array($more_filters)) {
+            $filters = array_merge($filters, $more_filters);
+        }
 
-      return $filters;
-   }
+        return $filters;
+    }
 
    /**
     * Get HTML for a dates range filter
@@ -85,15 +88,16 @@ class Filter extends \CommonDBChild {
     *
     * @return string
     */
-   static function dates($values = "", string $fieldname = 'dates'): string {
-      // string mean empty value
-      if (is_string($values)) {
-         $values = [];
-      }
+    public static function dates($values = "", string $fieldname = 'dates'): string
+    {
+       // string mean empty value
+        if (is_string($values)) {
+            $values = [];
+        }
 
-      $rand  = mt_rand();
-      $label = self::getAll()[$fieldname];
-      $field = Html::showDateField('filter-dates', [
+        $rand  = mt_rand();
+        $label = self::getAll()[$fieldname];
+        $field = Html::showDateField('filter-dates', [
          'value'        => $values,
          'rand'         => $rand,
          'range'        => true,
@@ -101,9 +105,9 @@ class Filter extends \CommonDBChild {
          'calendar_btn' => false,
          'placeholder'  => $label,
          'on_change'    => "on_change_{$rand}(selectedDates, dateStr, instance)",
-      ]);
+        ]);
 
-      $js = <<<JAVASCRIPT
+        $js = <<<JAVASCRIPT
       var on_change_{$rand} = function(selectedDates, dateStr, instance) {
          // we are waiting for empty value or a range of dates,
          // don't trigger when only the first date is selected
@@ -114,10 +118,10 @@ class Filter extends \CommonDBChild {
          }
       };
 JAVASCRIPT;
-      $field.= Html::scriptBlock($js);
+        $field .= Html::scriptBlock($js);
 
-      return self::field($fieldname, $field, $label, is_array($values) && count($values) > 0);
-   }
+        return self::field($fieldname, $field, $label, is_array($values) && count($values) > 0);
+    }
 
    /**
     * Get HTML for a dates range filter. Same as date but for last update field
@@ -126,33 +130,40 @@ JAVASCRIPT;
     *
     * @return string
     */
-   static function dates_mod($values): string {
-      return self::dates($values, "dates_mod");
-   }
+    public static function dates_mod($values): string
+    {
+        return self::dates($values, "dates_mod");
+    }
 
 
-   static function itilcategory(string $value = ""): string {
-      return self::displayList($value, 'itilcategory', ITILCategory::class);
-   }
+    public static function itilcategory(string $value = ""): string
+    {
+        return self::displayList($value, 'itilcategory', ITILCategory::class);
+    }
 
-   static function requesttype(string $value = ""): string {
-      return self::displayList($value, 'requesttype', RequestType::class);
-   }
+    public static function requesttype(string $value = ""): string
+    {
+        return self::displayList($value, 'requesttype', RequestType::class);
+    }
 
-   static function location(string $value = ""): string {
-      return self::displayList($value, 'location', Location::class);
-   }
+    public static function location(string $value = ""): string
+    {
+        return self::displayList($value, 'location', Location::class);
+    }
 
-   static function manufacturer(string $value = ""): string {
-      return self::displayList($value, 'manufacturer', Manufacturer::class);
-   }
+    public static function manufacturer(string $value = ""): string
+    {
+        return self::displayList($value, 'manufacturer', Manufacturer::class);
+    }
 
-   static function group_tech(string $value = ""): string {
-      return self::displayList($value, 'group_tech', Group::class, ['toadd' => ['mygroups' => __("My groups")]]);
-   }
+    public static function group_tech(string $value = ""): string
+    {
+        return self::displayList($value, 'group_tech', Group::class, ['toadd' => ['mygroups' => __("My groups")]]);
+    }
 
-   static function user_tech(string $value = ""): string {
-      return self::displayList($value, 'user_tech', User::class, [
+    public static function user_tech(string $value = ""): string
+    {
+        return self::displayList($value, 'user_tech', User::class, [
          'right' => 'own_ticket',
          'toadd' => [
             [
@@ -160,19 +171,19 @@ JAVASCRIPT;
                'text'  => __('Myself'),
             ]
          ]
-      ]);
-   }
+        ]);
+    }
 
-   static function displayList(
-      string $value = "",
-      string $fieldname = "",
-      string $itemtype = "",
-      array $add_params = []
-   ): string {
-      $value     = !empty($value) ? $value : null;
-      $rand      = mt_rand();
-      $label     = self::getAll()[$fieldname];
-      $field     = $itemtype::dropdown([
+    public static function displayList(
+        string $value = "",
+        string $fieldname = "",
+        string $itemtype = "",
+        array $add_params = []
+    ): string {
+        $value     = !empty($value) ? $value : null;
+        $rand      = mt_rand();
+        $label     = self::getAll()[$fieldname];
+        $field     = $itemtype::dropdown([
          'name'                => $fieldname,
          'value'               => $value,
          'rand'                => $rand,
@@ -183,9 +194,9 @@ JAVASCRIPT;
          'on_change'           => "on_change_{$rand}()",
          'allowClear'          => true,
          'width'               => ''
-      ] + $add_params);
+        ] + $add_params);
 
-      $js = <<<JAVASCRIPT
+        $js = <<<JAVASCRIPT
       var on_change_{$rand} = function() {
          var dom_elem    = $('#dropdown_{$fieldname}{$rand}');
          var selected    = dom_elem.find(':selected').val();
@@ -196,10 +207,10 @@ JAVASCRIPT;
       };
 
 JAVASCRIPT;
-      $field.= Html::scriptBlock($js);
+        $field .= Html::scriptBlock($js);
 
-      return self::field($fieldname, $field, $label, $value !== null);
-   }
+        return self::field($fieldname, $field, $label, $value !== null);
+    }
 
    /**
     * Get generic HTML for a filter
@@ -211,17 +222,17 @@ JAVASCRIPT;
     *
     * @return string the html for the complete field
     */
-   static function field(
-      string $id = "",
-      string $field = "",
-      string $label = "",
-      bool $filled = false
-   ): string {
+    public static function field(
+        string $id = "",
+        string $field = "",
+        string $label = "",
+        bool $filled = false
+    ): string {
 
-      $rand  = mt_rand();
-      $class = $filled ? "filled" : "";
+        $rand  = mt_rand();
+        $class = $filled ? "filled" : "";
 
-      $js = <<<JAVASCRIPT
+        $js = <<<JAVASCRIPT
       $(function () {
          $('#filter-{$rand} input')
             .on('input', function() {
@@ -243,9 +254,9 @@ JAVASCRIPT;
             });
       });
 JAVASCRIPT;
-      $js = Html::scriptBlock($js);
+        $js = Html::scriptBlock($js);
 
-      $html  = <<<HTML
+        $html  = <<<HTML
       <fieldset id='filter-{$rand}' class='filter $class' data-filter-id='{$id}'>
          $field
          <legend>$label</legend>
@@ -254,8 +265,8 @@ JAVASCRIPT;
       </fieldset>
 HTML;
 
-      return $html;
-   }
+        return $html;
+    }
 
    /**
     * Return filters for the provided dashboard
@@ -264,21 +275,22 @@ HTML;
     *
     * @return array the JSON representation of the filter data
     */
-   static function getForDashboard(int $dashboards_id = 0): string {
-      global $DB;
+    public static function getForDashboard(int $dashboards_id = 0): string
+    {
+        global $DB;
 
-      $dr_iterator = $DB->request([
+        $dr_iterator = $DB->request([
          'FROM'  => self::getTable(),
          'WHERE' => [
             'dashboards_dashboards_id' => $dashboards_id,
             'users_id'                 => Session::getLoginUserID(),
          ]
-      ]);
+        ]);
 
-      $settings = $dr_iterator->count() === 1 ? $dr_iterator->current()['filter'] : null;
+        $settings = $dr_iterator->count() === 1 ? $dr_iterator->current()['filter'] : null;
 
-      return is_string($settings) ? $settings : '{}';
-   }
+        return is_string($settings) ? $settings : '{}';
+    }
 
    /**
     * Save filter in DB for the provided dashboard
@@ -288,17 +300,19 @@ HTML;
     *
     * @return void
     */
-   public static function addForDashboard(int $dashboards_id = 0, string $settings = '') {
-      global $DB;
+    public static function addForDashboard(int $dashboards_id = 0, string $settings = '')
+    {
+        global $DB;
 
-      $DB->updateOrInsert(
-         self::getTable(),
-         [
+        $DB->updateOrInsert(
+            self::getTable(),
+            [
             'filter'                   => $settings,
-         ], [
+            ],
+            [
             'dashboards_dashboards_id' => $dashboards_id,
             'users_id'                 => Session::getLoginUserID(),
-         ]
-      );
-   }
+            ]
+        );
+    }
 }

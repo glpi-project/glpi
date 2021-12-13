@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,18 +35,19 @@ namespace tests\units\Glpi\ContentTemplates\Parameters;
 
 class AssetParameters extends AbstractParameters
 {
-   public function testGetValues(): void {
-      $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+    public function testGetValues(): void
+    {
+        $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
-      $this->createItem('Computer', [
+        $this->createItem('Computer', [
          'name'        => 'pc_testGetValues',
          'serial'      => 'abcd1234',
          'entities_id' => $test_entity_id
-      ]);
+        ]);
 
-      $parameters = $this->newTestedInstance();
-      $values = $parameters->getValues(getItemByTypeName('Computer', 'pc_testGetValues'));
-      $this->array($values)->isEqualTo([
+        $parameters = $this->newTestedInstance();
+        $values = $parameters->getValues(getItemByTypeName('Computer', 'pc_testGetValues'));
+        $this->array($values)->isEqualTo([
          'id'          => getItemByTypeName('Computer', 'pc_testGetValues', true),
          'name'        => 'pc_testGetValues',
          'itemtype'    => 'Computer',
@@ -55,8 +57,8 @@ class AssetParameters extends AbstractParameters
             'name'         => '_test_child_2',
             'completename' => 'Root entity > _test_root_entity > _test_child_2',
          ]
-      ]);
+        ]);
 
-      $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
-   }
+        $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,9 +32,11 @@
  */
 
 /// Class PassiveDCEquipmentModel
-class PassiveDCEquipmentModel extends CommonDCModelDropdown {
+class PassiveDCEquipmentModel extends CommonDCModelDropdown
+{
 
-   static function getTypeName($nb = 0) {
-      return _n('Passive device model', 'Passive device models', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Passive device model', 'Passive device models', $nb);
+    }
 }

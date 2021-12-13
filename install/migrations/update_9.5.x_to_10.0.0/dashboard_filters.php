@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -29,6 +30,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
 /**
  * @var DB $DB
  * @var Migration $migration
@@ -38,10 +40,10 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 
 if (!$DB->tableExists('glpi_dashboards_filters')) {
-   $migration->addField('glpi_dashboards_dashboards', 'users_id', 'integer', ['after' => 'context']);
-   $migration->addKey('glpi_dashboards_dashboards', 'users_id');
+    $migration->addField('glpi_dashboards_dashboards', 'users_id', 'integer', ['after' => 'context']);
+    $migration->addKey('glpi_dashboards_dashboards', 'users_id');
 
-   $query = "CREATE TABLE `glpi_dashboards_filters` (
+    $query = "CREATE TABLE `glpi_dashboards_filters` (
          `id` int NOT NULL AUTO_INCREMENT,
          `dashboards_dashboards_id` int NOT NULL DEFAULT '0',
          `users_id` int NOT NULL DEFAULT '0',
@@ -50,5 +52,5 @@ if (!$DB->tableExists('glpi_dashboards_filters')) {
          KEY `dashboards_dashboards_id` (`dashboards_dashboards_id`),
          KEY `users_id` (`users_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_dashboards_filters");
+    $DB->queryOrDie($query, "10.0 add table glpi_dashboards_filters");
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,23 +37,25 @@ use DbTestCase;
 
 /* Test for inc/printerlog.class.php */
 
-class PrinterLog extends DbTestCase {
+class PrinterLog extends DbTestCase
+{
 
-   public function testGetMetrics() {
-      $printer = new \Printer();
-      $printers_id = $printer->add([
+    public function testGetMetrics()
+    {
+        $printer = new \Printer();
+        $printers_id = $printer->add([
          'name'   => 'Inventoried printer',
          'entities_id'  => 0
-      ]);
-      $this->integer($printers_id)->isGreaterThan(0);
+        ]);
+        $this->integer($printers_id)->isGreaterThan(0);
 
-      $now = new \DateTime();
+        $now = new \DateTime();
 
-      $log = new \PrinterLog();
+        $log = new \PrinterLog();
 
-      $cdate1 = clone $now;
-      $cdate1->sub(new \DateInterval('P14M'));
-      $input = [
+        $cdate1 = clone $now;
+        $cdate1->sub(new \DateInterval('P14M'));
+        $input = [
          'printers_id' => $printers_id,
          'total_pages' => 5132,
          'bw_pages' => 3333,
@@ -60,12 +63,12 @@ class PrinterLog extends DbTestCase {
          'rv_pages' => 4389,
          'scanned' => 7846,
          'date' => $cdate1->format('Y-m-d')
-      ];
-      $this->integer($log->add($input))->isGreaterThan(0);
+        ];
+        $this->integer($log->add($input))->isGreaterThan(0);
 
-      $cdate2 = clone $now;
-      $cdate2->sub(new \DateInterval('P6M'));
-      $input = [
+        $cdate2 = clone $now;
+        $cdate2->sub(new \DateInterval('P6M'));
+        $input = [
          'printers_id' => $printers_id,
          'total_pages' => 6521,
          'bw_pages' => 4100,
@@ -73,10 +76,10 @@ class PrinterLog extends DbTestCase {
          'rv_pages' => 5987,
          'scanned' => 15542,
          'date' => $cdate2->format('Y-m-d')
-      ];
-      $this->integer($log->add($input))->isGreaterThan(0);
+        ];
+        $this->integer($log->add($input))->isGreaterThan(0);
 
-      $input = [
+        $input = [
          'printers_id' => $printers_id,
          'total_pages' => 9299,
          'bw_pages' => 6258,
@@ -84,13 +87,13 @@ class PrinterLog extends DbTestCase {
          'rv_pages' => 7654,
          'scanned' => 28177,
          'date' => $now->format('Y-m-d')
-      ];
-      $this->integer($log->add($input))->isGreaterThan(0);
+        ];
+        $this->integer($log->add($input))->isGreaterThan(0);
 
-      //per default, get 1Y old, first not included
-      $this->array($log->getMetrics($printer))->hasSize(2);
+       //per default, get 1Y old, first not included
+        $this->array($log->getMetrics($printer))->hasSize(2);
 
-      //change filter to include first one
-      $this->array($log->getMetrics($printer, ['date' => ['>=', $cdate1->format('Y-m-d')]]))->hasSize(3);
-   }
+       //change filter to include first one
+        $this->array($log->getMetrics($printer, ['date' => ['>=', $cdate1->format('Y-m-d')]]))->hasSize(3);
+    }
 }

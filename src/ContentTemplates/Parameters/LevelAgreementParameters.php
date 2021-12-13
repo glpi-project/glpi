@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -44,27 +45,29 @@ use LevelAgreement;
  */
 abstract class LevelAgreementParameters extends AbstractParameters
 {
-   public function getAvailableParameters(): array {
-      return [
+    public function getAvailableParameters(): array
+    {
+        return [
          new AttributeParameter("id", __('ID')),
          new AttributeParameter("name", __('Name')),
          new AttributeParameter("type", _n('Type', 'Types', 1)),
          new AttributeParameter("duration", __('Duration')),
          new AttributeParameter("unit", __('Duration unit')),
-      ];
-   }
+        ];
+    }
 
-   protected function defineValues(CommonDBTM $sla): array {
+    protected function defineValues(CommonDBTM $sla): array
+    {
 
-      // Output "unsanitized" values
-      $fields = Sanitizer::unsanitize($sla->fields);
+       // Output "unsanitized" values
+        $fields = Sanitizer::unsanitize($sla->fields);
 
-      return [
+        return [
          'id'       => $fields['id'],
          'name'     => $fields['name'],
          'type'     => LevelAgreement::getOneTypeName($fields['type']),
          'duration' => $fields['number_time'],
          'unit'     => strtolower(LevelAgreement::getDefinitionTimeLabel($fields['definition_time'])),
-      ];
-   }
+        ];
+    }
 }

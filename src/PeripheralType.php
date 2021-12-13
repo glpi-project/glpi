@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,11 +32,12 @@
  */
 
 /// Class PeripheralType
-class PeripheralType extends CommonType {
+class PeripheralType extends CommonType
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Devices type', 'Devices types', $nb);
-   }
-
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Devices type', 'Devices types', $nb);
+    }
 }

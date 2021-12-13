@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,10 +37,12 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/processos.class.php */
 
-class NetworkPort extends AbstractInventoryAsset {
+class NetworkPort extends AbstractInventoryAsset
+{
 
-   protected function assetProvider() :array {
-      return [
+    protected function assetProvider(): array
+    {
+        return [
          [
             'xml'    => "<?xml version=\"1.0\"?>
 <REQUEST>
@@ -314,38 +317,39 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'vlans'        => '{"5006":[{"name":"san-replication","tag":"206"}],"11646":[{"name":"san-replication","tag":"206"}],"13645":[{"name":"san-replication","tag":"206"}]}',
             'aggregates'   => '{"5006":{"aggregates":{"11646":0,"13645":0}}}'
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider assetProvider
     */
-   public function testPrepare($xml, $ports, $connections, $vlans, $aggregates) {
-      $this->login();
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($xml);
-      $json = json_decode($data);
+    public function testPrepare($xml, $ports, $connections, $vlans, $aggregates)
+    {
+        $this->login();
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
 
-      $neteq = getItemByTypeName('NetworkEquipment', 'My network equipment');
-      if ($neteq === false) {
-         $neteq = new \NetworkEquipment();
-         $this->integer(
-            $neteq->add([
-               'name'   => 'My network equipment',
-               'entities_id'  => 0
-            ])
-         )->isGreaterThan(0);
-      }
+        $neteq = getItemByTypeName('NetworkEquipment', 'My network equipment');
+        if ($neteq === false) {
+            $neteq = new \NetworkEquipment();
+            $this->integer(
+                $neteq->add([
+                'name'   => 'My network equipment',
+                'entities_id'  => 0
+                ])
+            )->isGreaterThan(0);
+        }
 
-      $asset = new \Glpi\Inventory\Asset\NetworkPort($neteq, $json->content->network_ports);
-      $asset->setExtraData((array)$json->content);
-      $results = $asset->prepare();
+        $asset = new \Glpi\Inventory\Asset\NetworkPort($neteq, $json->content->network_ports);
+        $asset->setExtraData((array)$json->content);
+        $results = $asset->prepare();
 
-      foreach ($results as $key => $result) {
-         $this->object($result)->isEqualTo(json_decode($ports[$key]), json_encode($result));
-      }
-      $this->array($asset->getPart('connections'))->isEqualTo((array)json_decode($connections), json_encode($asset->getPart('connections')));
-      $this->array($asset->getPart('vlans'))->isEqualTo((array)json_decode($vlans), json_encode($asset->getPart('vlans')));
-      $this->array($asset->getPart('aggregates'))->isEqualTo(json_decode($aggregates, true), json_encode($asset->getPart('aggregates')));
-   }
+        foreach ($results as $key => $result) {
+            $this->object($result)->isEqualTo(json_decode($ports[$key]), json_encode($result));
+        }
+        $this->array($asset->getPart('connections'))->isEqualTo((array)json_decode($connections), json_encode($asset->getPart('connections')));
+        $this->array($asset->getPart('vlans'))->isEqualTo((array)json_decode($vlans), json_encode($asset->getPart('vlans')));
+        $this->array($asset->getPart('aggregates'))->isEqualTo(json_decode($aggregates, true), json_encode($asset->getPart('aggregates')));
+    }
 }

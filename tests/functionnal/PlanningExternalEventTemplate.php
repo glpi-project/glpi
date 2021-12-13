@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,25 +35,28 @@ namespace tests\units;
 
 include_once __DIR__ . '/../abstracts/AbstractPlanningEvent.php';
 
-class PlanningExternalEventTemplate extends \AbstractPlanningEvent {
-   protected $myclass = "\PlanningExternalEventTemplate";
+class PlanningExternalEventTemplate extends \AbstractPlanningEvent
+{
+    protected $myclass = "\PlanningExternalEventTemplate";
 
-   public function beforeTestMethod($method) {
-      parent::beforeTestMethod($method);
+    public function beforeTestMethod($method)
+    {
+        parent::beforeTestMethod($method);
 
-      $this->input = array_merge($this->input, [
+        $this->input = array_merge($this->input, [
          '_planningrecall' => [
             'before_time' => 2 * \HOUR_TIMESTAMP,
          ],
-      ]);
-   }
+        ]);
+    }
 
-   public function testAdd() {
-      $event = parent::testAdd();
+    public function testAdd()
+    {
+        $event = parent::testAdd();
 
-      $this->integer((int) $event->fields['before_time'])
+        $this->integer((int) $event->fields['before_time'])
          ->isEqualTo(2 * \HOUR_TIMESTAMP);
-      $this->integer((int) $event->fields['duration'])
+        $this->integer((int) $event->fields['duration'])
          ->isEqualTo(2 * \HOUR_TIMESTAMP);
-   }
+    }
 }

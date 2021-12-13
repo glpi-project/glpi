@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,41 +31,41 @@
  * ---------------------------------------------------------------------
  */
 
-include (__DIR__ . '/../inc/includes.php');
+include(__DIR__ . '/../inc/includes.php');
 
 $printers_id = false;
 $networkports_id = false;
 
 if ($printers_id !== false) {
-   $metrics = new PrinterLog();
+    $metrics = new PrinterLog();
 
-   $now = new DateTime();
-   $begin = clone $now;
-   $begin->sub(new DateInterval('P1Y'));
+    $now = new DateTime();
+    $begin = clone $now;
+    $begin->sub(new DateInterval('P1Y'));
 
-   $interval = DateInterval::createFromDateString('1 day');
-   $period = new DatePeriod($begin, $interval, $now);
+    $interval = DateInterval::createFromDateString('1 day');
+    $period = new DatePeriod($begin, $interval, $now);
 
-   $total_pages = 0;
-   $bw_pages = 0;
-   $color_pages = 0;
-   $rv_pages = 0;
-   $scanned = 0;
+    $total_pages = 0;
+    $bw_pages = 0;
+    $color_pages = 0;
+    $rv_pages = 0;
+    $scanned = 0;
 
-   foreach ($period as $dt) {
-      $total = random_int(10, 95);
-      $rvs = (int)round($total * random_int(70, 95) / 100);
-      $bws = (int)round($total * random_int(55, 80) / 100);
-      $colors = $total - $bws;
-      $scans = random_int(20, 100);
+    foreach ($period as $dt) {
+        $total = random_int(10, 95);
+        $rvs = (int)round($total * random_int(70, 95) / 100);
+        $bws = (int)round($total * random_int(55, 80) / 100);
+        $colors = $total - $bws;
+        $scans = random_int(20, 100);
 
-      $total_pages += $total;
-      $rv_pages += $rvs;
-      $bw_pages += $bws;
-      $color_pages += $colors;
-      $scanned += $scans;
+        $total_pages += $total;
+        $rv_pages += $rvs;
+        $bw_pages += $bws;
+        $color_pages += $colors;
+        $scanned += $scans;
 
-      $input = [
+        $input = [
          'date'           => $dt->format('Y-m-d'),
          'total_pages'    => $total_pages,
          'bw_pages'       => $bw_pages,
@@ -72,39 +73,39 @@ if ($printers_id !== false) {
          'scanned'        => $scanned,
          'rv_pages'       => $rv_pages,
          'printers_id'    => $printers_id
-      ];
-      $metrics->add($input, [], false);
-   }
+        ];
+        $metrics->add($input, [], false);
+    }
 }
 
 if ($networkports_id !== false) {
-   $metrics = new NetworkPortMetrics();
+    $metrics = new NetworkPortMetrics();
 
-   $now = new DateTime();
-   $begin = clone $now;
-   $begin->sub(new DateInterval('P1Y'));
-   $mini = new DateTime('2020-01-01');
-   if ($begin > $mini) {
-      $begin = clone $mini;
-   }
+    $now = new DateTime();
+    $begin = clone $now;
+    $begin->sub(new DateInterval('P1Y'));
+    $mini = new DateTime('2020-01-01');
+    if ($begin > $mini) {
+        $begin = clone $mini;
+    }
 
-   $interval = DateInterval::createFromDateString('1 day');
-   $period = new DatePeriod($begin, $interval, $now);
+    $interval = DateInterval::createFromDateString('1 day');
+    $period = new DatePeriod($begin, $interval, $now);
 
-   foreach ($period as $dt) {
-      $inbytes = random_int(0, 40000000000);
-      $outbytes = random_int(0, 4000000000);
-      $inerrors = random_int(0, 1500);
-      $outerrors = random_int(0, 750);
+    foreach ($period as $dt) {
+        $inbytes = random_int(0, 40000000000);
+        $outbytes = random_int(0, 4000000000);
+        $inerrors = random_int(0, 1500);
+        $outerrors = random_int(0, 750);
 
-      $input = [
+        $input = [
          'date'            => $dt->format('Y-m-d'),
          'ifinbytes'       => $inbytes,
          'ifoutbytes'      => $outbytes,
          'ifinerrors'      => $inerrors,
          'ifouterrors'     => $outerrors,
          'networkports_id' => $networkports_id
-      ];
-      $metrics->add($input, [], false);
-   }
+        ];
+        $metrics->add($input, [], false);
+    }
 }

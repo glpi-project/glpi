@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,47 +34,51 @@
 /**
  * NotImportedEmail Class
 **/
-class NotImportedEmail extends CommonDBTM {
+class NotImportedEmail extends CommonDBTM
+{
 
-   static $rightname = 'config';
+    public static $rightname = 'config';
 
-   const MATCH_NO_RULE     = 0;
-   const USER_UNKNOWN      = 1;
-   const FAILED_OPERATION  = 2;
-   const FAILED_INSERT     = self::FAILED_OPERATION;
-   const NOT_ENOUGH_RIGHTS = 3;
-
-
-   function getForbiddenStandardMassiveAction() {
-
-      $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'delete';
-      $forbidden[] = 'purge';
-      $forbidden[] = 'restore';
-      return $forbidden;
-   }
+    const MATCH_NO_RULE     = 0;
+    const USER_UNKNOWN      = 1;
+    const FAILED_OPERATION  = 2;
+    const FAILED_INSERT     = self::FAILED_OPERATION;
+    const NOT_ENOUGH_RIGHTS = 3;
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Refused email', 'Refused emails', $nb);
-   }
+    public function getForbiddenStandardMassiveAction()
+    {
+
+        $forbidden   = parent::getForbiddenStandardMassiveAction();
+        $forbidden[] = 'delete';
+        $forbidden[] = 'purge';
+        $forbidden[] = 'restore';
+        return $forbidden;
+    }
+
+
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Refused email', 'Refused emails', $nb);
+    }
 
 
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
     **/
-   function getSpecificMassiveActions($checkitem = null) {
+    public function getSpecificMassiveActions($checkitem = null)
+    {
 
-      $isadmin = static::canUpdate();
-      $actions = parent::getSpecificMassiveActions($checkitem);
+        $isadmin = static::canUpdate();
+        $actions = parent::getSpecificMassiveActions($checkitem);
 
-      if ($isadmin) {
-         $prefix                          = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
-         $actions[$prefix.'delete_email'] = __('Delete emails');
-         $actions[$prefix.'import_email'] = _x('button', 'Import');
-      }
-      return $actions;
-   }
+        if ($isadmin) {
+            $prefix                          = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
+            $actions[$prefix . 'delete_email'] = __('Delete emails');
+            $actions[$prefix . 'import_email'] = _x('button', 'Import');
+        }
+        return $actions;
+    }
 
 
    /**
@@ -81,17 +86,18 @@ class NotImportedEmail extends CommonDBTM {
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
-   static function showMassiveActionsSubForm(MassiveAction $ma) {
+    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    {
 
-      switch ($ma->getAction()) {
-         case 'import_email' :
-            Entity::dropdown();
-            echo "<br><br>";
-            echo Html::submit(_x('button', 'Import'), ['name' => 'massiveaction']);
-            return true;
-      }
-      return parent::showMassiveActionsSubForm($ma);
-   }
+        switch ($ma->getAction()) {
+            case 'import_email':
+                Entity::dropdown();
+                echo "<br><br>";
+                echo Html::submit(_x('button', 'Import'), ['name' => 'massiveaction']);
+                return true;
+        }
+        return parent::showMassiveActionsSubForm($ma);
+    }
 
 
    /**
@@ -99,128 +105,134 @@ class NotImportedEmail extends CommonDBTM {
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
-                                                       array $ids) {
+    public static function processMassiveActionsForOneItemtype(
+        MassiveAction $ma,
+        CommonDBTM $item,
+        array $ids
+    ) {
 
-      switch ($ma->getAction()) {
-         case 'delete_email' :
-         case 'import_email' :
-            if (!$item->canUpdate()) {
-               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
-            } else {
-               $input = $ma->getInput();
-               if (count($ids)) {
-                  $mailcollector = new MailCollector();
-                  if ($ma->getAction() == 'delete_email') {
-                     $mailcollector->deleteOrImportSeveralEmails($ids, 0);
-                  } else {
-                     $mailcollector->deleteOrImportSeveralEmails($ids, 1, $input['entities_id']);
-                  }
-               }
-               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
-            }
-            return;
-      }
-      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
-   }
+        switch ($ma->getAction()) {
+            case 'delete_email':
+            case 'import_email':
+                if (!$item->canUpdate()) {
+                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                } else {
+                    $input = $ma->getInput();
+                    if (count($ids)) {
+                        $mailcollector = new MailCollector();
+                        if ($ma->getAction() == 'delete_email') {
+                              $mailcollector->deleteOrImportSeveralEmails($ids, 0);
+                        } else {
+                             $mailcollector->deleteOrImportSeveralEmails($ids, 1, $input['entities_id']);
+                        }
+                    }
+                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
+                }
+                return;
+        }
+        parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+    }
 
 
-   function rawSearchOptions() {
-      $tab = [];
+    public function rawSearchOptions()
+    {
+        $tab = [];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '1',
          'table'              => $this->getTable(),
          'field'              => 'from',
          'name'               => __('From email header'),
          'massiveaction'      => false,
          'datatype'           => 'string'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '2',
          'table'              => $this->getTable(),
          'field'              => 'to',
          'name'               => __('To email header'),
          'massiveaction'      => false,
          'datatype'           => 'string'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '3',
          'table'              => $this->getTable(),
          'field'              => 'subject',
          'name'               => __('Subject email header'),
          'massiveaction'      => false,
          'datatype'           => 'string'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '4',
          'table'              => 'glpi_mailcollectors',
          'field'              => 'name',
          'name'               => __('Mails receiver'),
          'datatype'           => 'itemlink'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '5',
          'table'              => $this->getTable(),
          'field'              => 'messageid',
          'name'               => __('Message-ID email header'),
          'massiveaction'      => false,
          'datatype'           => 'string'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '6',
          'table'              => 'glpi_users',
          'field'              => 'name',
          'name'               => _n('Requester', 'Requesters', 1),
          'datatype'           => 'dropdown',
          'right'              => 'all'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '16',
          'table'              => $this->getTable(),
          'field'              => 'reason',
          'name'               => __('Reason of rejection'),
          'datatype'           => 'specific',
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '19',
          'table'              => $this->getTable(),
          'field'              => 'date',
          'name'               => _n('Date', 'Dates', 1),
          'datatype'           => 'datetime',
          'massiveaction'      => false
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
 
-   static function deleteLog() {
-      global $DB;
+    public static function deleteLog()
+    {
+        global $DB;
 
-      $DB->truncate('glpi_notimportedemails');
-   }
+        $DB->truncate('glpi_notimportedemails');
+    }
 
 
    /**
     * @param $reason_id
    **/
-   static function getReason($reason_id) {
+    public static function getReason($reason_id)
+    {
 
-      $tab = self::getAllReasons();
-      if (isset($tab[$reason_id])) {
-         return $tab[$reason_id];
-      }
-      return NOT_AVAILABLE;
-   }
+        $tab = self::getAllReasons();
+        if (isset($tab[$reason_id])) {
+            return $tab[$reason_id];
+        }
+        return NOT_AVAILABLE;
+    }
 
 
    /**
@@ -228,15 +240,16 @@ class NotImportedEmail extends CommonDBTM {
     *
     * Get All possible reasons array
    **/
-   static function getAllReasons() {
+    public static function getAllReasons()
+    {
 
-      return [
+        return [
          self::MATCH_NO_RULE     => __('Unable to affect the email to an entity'),
          self::USER_UNKNOWN      => __('Email not found. Impossible import'),
          self::FAILED_OPERATION  => __('Failed operation'),
          self::NOT_ENOUGH_RIGHTS => __('Not enough rights'),
-      ];
-   }
+        ];
+    }
 
 
    /**
@@ -246,22 +259,23 @@ class NotImportedEmail extends CommonDBTM {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
 
-      if (!is_array($values)) {
-         $values = [$field => $values];
-      }
-      switch ($field) {
-         case 'reason' :
-            return self::getReason($values[$field]);
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        switch ($field) {
+            case 'reason':
+                return self::getReason($values[$field]);
 
-         case 'messageid' :
-            $clean = ['<' => '',
+            case 'messageid':
+                $clean = ['<' => '',
                            '>' => ''];
-            return strtr($values[$field], $clean);
-      }
-      return parent::getSpecificValueToDisplay($field, $values, $options);
-   }
+                return strtr($values[$field], $clean);
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
 
 
    /**
@@ -272,20 +286,19 @@ class NotImportedEmail extends CommonDBTM {
     * @param $values             (default '')
     * @param $options      array
    **/
-   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    {
 
-      if (!is_array($values)) {
-         $values = [$field => $values];
-      }
-      $options['display'] = false;
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        $options['display'] = false;
 
-      switch ($field) {
-         case 'reason' :
-            $options['value'] = $values[$field];
-            return Dropdown::showFromArray($name, self::getAllReasons(), $options);
-      }
-      return parent::getSpecificValueToSelect($field, $name, $values, $options);
-   }
-
-
+        switch ($field) {
+            case 'reason':
+                $options['value'] = $values[$field];
+                return Dropdown::showFromArray($name, self::getAllReasons(), $options);
+        }
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
 }

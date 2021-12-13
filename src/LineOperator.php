@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,18 +36,21 @@
  */
 
 
-class LineOperator extends CommonDropdown {
+class LineOperator extends CommonDropdown
+{
 
-   static $rightname = 'lineoperator';
+    public static $rightname = 'lineoperator';
 
-   public $can_be_translated = false;
+    public $can_be_translated = false;
 
-   static function getTypeName($nb = 0) {
-      return _n('Line operator', 'Line operators', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Line operator', 'Line operators', $nb);
+    }
 
-   function getAdditionalFields() {
-      return [['name'  => 'mcc',
+    public function getAdditionalFields()
+    {
+        return [['name'  => 'mcc',
                   'label' => __('Mobile Country Code'),
                   'type'  => 'text',
                   'list'  => true],
@@ -54,62 +58,64 @@ class LineOperator extends CommonDropdown {
                   'label' => __('Mobile Network Code'),
                   'type'  => 'text',
                   'list'  => true],
-      ];
-   }
+        ];
+    }
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
+        $tab[] = [
             'id'                 => '11',
             'table'              => $this->getTable(),
             'field'              => 'mcc',
             'name'               => __('Mobile Country Code'),
             'datatype'           => 'text',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
             'id'                 => '12',
             'table'              => $this->getTable(),
             'field'              => 'mnc',
             'name'               => __('Mobile Network Code'),
             'datatype'           => 'text',
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
-   public function prepareInputForAdd($input) {
-      global $DB;
+    public function prepareInputForAdd($input)
+    {
+        global $DB;
 
-      $input = parent::prepareInputForAdd($input);
+        $input = parent::prepareInputForAdd($input);
 
-      if (!isset($input['mcc'])) {
-         $input['mcc'] = 0;
-      }
-      if (!isset($input['mnc'])) {
-         $input['mnc'] = 0;
-      }
+        if (!isset($input['mcc'])) {
+            $input['mcc'] = 0;
+        }
+        if (!isset($input['mnc'])) {
+            $input['mnc'] = 0;
+        }
 
-      //check for mcc/mnc unicity
-      $result = $DB->request([
+       //check for mcc/mnc unicity
+        $result = $DB->request([
          'COUNT'  => 'cpt',
          'FROM'   => self::getTable(),
          'WHERE'  => [
             'mcc' => $input['mcc'],
             'mnc' => $input['mnc']
          ]
-      ])->current();
+        ])->current();
 
-      if ($result['cpt'] > 0) {
-         Session::addMessageAfterRedirect(
-            __('Mobile country code and network code combination must be unique!'),
-            ERROR,
-            true
-         );
-         return false;
-      }
+        if ($result['cpt'] > 0) {
+            Session::addMessageAfterRedirect(
+                __('Mobile country code and network code combination must be unique!'),
+                ERROR,
+                true
+            );
+            return false;
+        }
 
-      return $input;
-   }
+        return $input;
+    }
 }

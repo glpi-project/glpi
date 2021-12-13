@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,7 +34,8 @@
 /**
  * @since 9.5.0
  */
-class ImpactContext extends CommonDBTM {
+class ImpactContext extends CommonDBTM
+{
 
    /**
     * Get ImpactContext for the given ImpactItem
@@ -41,10 +43,11 @@ class ImpactContext extends CommonDBTM {
     * @param ImpactItem $item
     * @return ImpactContext|false
     */
-   public static function findForImpactItem(\ImpactItem $item) {
-      $impactContext = new self();
-      $exist = $impactContext->getFromDB($item->fields['impactcontexts_id']);
+    public static function findForImpactItem(\ImpactItem $item)
+    {
+        $impactContext = new self();
+        $exist = $impactContext->getFromDB($item->fields['impactcontexts_id']);
 
-      return $exist ? $impactContext : false;
-   }
+        return $exist ? $impactContext : false;
+    }
 }

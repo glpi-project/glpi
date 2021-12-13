@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -38,70 +39,73 @@ use Glpi\System\Requirement\DbTimezones;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class EnableTimezonesCommand extends AbstractCommand {
+class EnableTimezonesCommand extends AbstractCommand
+{
 
    /**
     * Error code returned if DB configuration file cannot be updated.
     *
     * @var integer
     */
-   const ERROR_UNABLE_TO_UPDATE_CONFIG = 1;
+    const ERROR_UNABLE_TO_UPDATE_CONFIG = 1;
 
    /**
     * Error code returned if prerequisites are missing.
     *
     * @var integer
     */
-   const ERROR_MISSING_PREREQUISITES = 2;
+    const ERROR_MISSING_PREREQUISITES = 2;
 
    /**
     * Error code returned if some tables are still using datetime field type.
     *
     * @var integer
     */
-   const ERROR_TIMESTAMP_FIELDS_REQUIRED = 3;
+    const ERROR_TIMESTAMP_FIELDS_REQUIRED = 3;
 
-   protected function configure() {
-      parent::configure();
+    protected function configure()
+    {
+        parent::configure();
 
-      $this->setName('glpi:database:enable_timezones');
-      $this->setAliases(['db:enable_timezones']);
-      $this->setDescription(__('Enable timezones usage.'));
-   }
+        $this->setName('glpi:database:enable_timezones');
+        $this->setAliases(['db:enable_timezones']);
+        $this->setDescription(__('Enable timezones usage.'));
+    }
 
-   protected function execute(InputInterface $input, OutputInterface $output) {
-      $timezones_requirement = new DbTimezones($this->db);
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $timezones_requirement = new DbTimezones($this->db);
 
-      if (!$timezones_requirement->isValidated()) {
-         $message = __('Timezones usage cannot be activated due to following errors:');
-         foreach ($timezones_requirement->getValidationMessages() as $validation_message) {
-            $message .= "\n - " . $validation_message;
-         }
-         throw new \Glpi\Console\Exception\EarlyExitException(
-            '<error>' . $message . '</error>',
-            self::ERROR_MISSING_PREREQUISITES
-         );
-      }
+        if (!$timezones_requirement->isValidated()) {
+            $message = __('Timezones usage cannot be activated due to following errors:');
+            foreach ($timezones_requirement->getValidationMessages() as $validation_message) {
+                $message .= "\n - " . $validation_message;
+            }
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<error>' . $message . '</error>',
+                self::ERROR_MISSING_PREREQUISITES
+            );
+        }
 
-      if (($datetime_count = $this->db->getTzIncompatibleTables()->count()) > 0) {
-         $message = sprintf(__('%1$s columns are using the deprecated datetime storage field type.'), $datetime_count)
+        if (($datetime_count = $this->db->getTzIncompatibleTables()->count()) > 0) {
+            $message = sprintf(__('%1$s columns are using the deprecated datetime storage field type.'), $datetime_count)
             . ' '
             . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:timestamps');
-         throw new \Glpi\Console\Exception\EarlyExitException(
-            '<error>' . $message . '</error>',
-            self::ERROR_TIMESTAMP_FIELDS_REQUIRED
-         );
-      }
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<error>' . $message . '</error>',
+                self::ERROR_TIMESTAMP_FIELDS_REQUIRED
+            );
+        }
 
-      if (!DBConnection::updateConfigProperty(DBConnection::PROPERTY_USE_TIMEZONES, true)) {
-         throw new \Glpi\Console\Exception\EarlyExitException(
-            '<error>' . __('Unable to update DB configuration file.') . '</error>',
-            self::ERROR_UNABLE_TO_UPDATE_CONFIG
-         );
-      }
+        if (!DBConnection::updateConfigProperty(DBConnection::PROPERTY_USE_TIMEZONES, true)) {
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<error>' . __('Unable to update DB configuration file.') . '</error>',
+                self::ERROR_UNABLE_TO_UPDATE_CONFIG
+            );
+        }
 
-      $output->writeln('<info>' . __('Timezone usage has been enabled.') . '</info>');
+        $output->writeln('<info>' . __('Timezone usage has been enabled.') . '</info>');
 
-      return 0; // Success
-   }
+        return 0; // Success
+    }
 }

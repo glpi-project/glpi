@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,68 +37,76 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 
 $item = new OlaLevel();
 
 if (isset($_POST["update"])) {
-   $item->check($_POST["id"], UPDATE);
+    $item->check($_POST["id"], UPDATE);
 
-   $item->update($_POST);
+    $item->update($_POST);
 
-   Event::log($_POST["id"], "olas", 4, "setup",
-              //TRANS: %s is the user login
-              sprintf(__('%s updates an ola level'), $_SESSION["glpiname"]));
+    Event::log(
+        $_POST["id"],
+        "olas",
+        4,
+        "setup",
+        //TRANS: %s is the user login
+        sprintf(__('%s updates an ola level'), $_SESSION["glpiname"])
+    );
 
-   Html::back();
-
+    Html::back();
 } else if (isset($_POST["add"])) {
-   $item->check(-1, CREATE, $_POST);
+    $item->check(-1, CREATE, $_POST);
 
-   if ($item->add($_POST)) {
-      Event::log($_POST["olas_id"], "olas", 4, "setup",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
-      if ($_SESSION['glpibackcreated']) {
-         Html::redirect($item->getLinkURL());
-      }
-   }
-   Html::back();
-
+    if ($item->add($_POST)) {
+        Event::log(
+            $_POST["olas_id"],
+            "olas",
+            4,
+            "setup",
+            //TRANS: %s is the user login
+            sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"])
+        );
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($item->getLinkURL());
+        }
+    }
+    Html::back();
 } else if (isset($_POST["purge"])) {
+    if (isset($_POST['id'])) {
+        $item->check($_POST['id'], PURGE);
+        if ($item->delete($_POST, 1)) {
+            Event::log(
+                $_POST["id"],
+                "olas",
+                4,
+                "setup",
+                //TRANS: %s is the user login
+                sprintf(__('%s purges an ola level'), $_SESSION["glpiname"])
+            );
+        }
+        $item->redirectToList();
+    }
 
-   if (isset($_POST['id'])) {
-      $item->check($_POST['id'], PURGE);
-      if ($item->delete($_POST, 1)) {
-         Event::log($_POST["id"], "olas", 4, "setup",
-                    //TRANS: %s is the user login
-                    sprintf(__('%s purges an ola level'), $_SESSION["glpiname"]));
-      }
-      $item->redirectToList();
-   }
-
-   Html::back();
-
+    Html::back();
 } else if (isset($_POST["add_action"])) {
-   $item->check($_POST['olalevels_id'], UPDATE);
+    $item->check($_POST['olalevels_id'], UPDATE);
 
-   $action = new OlaLevelAction();
-   $action->add($_POST);
+    $action = new OlaLevelAction();
+    $action->add($_POST);
 
-   Html::back();
-
+    Html::back();
 } else if (isset($_POST["add_criteria"])) {
+    $item->check($_POST['olalevels_id'], UPDATE);
+    $criteria = new OlaLevelCriteria();
+    $criteria->add($_POST);
 
-   $item->check($_POST['olalevels_id'], UPDATE);
-   $criteria = new OlaLevelCriteria();
-   $criteria->add($_POST);
-
-   Html::back();
-
+    Html::back();
 } else if (isset($_GET["id"]) && ($_GET["id"] > 0)) { //print computer information
-   Html::header(OlaLevel::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "slm", "olalevel");
+    Html::header(OlaLevel::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "slm", "olalevel");
    //show computer form to add
-   $item->display(['id' => $_GET["id"]]);
-   Html::footer();
+    $item->display(['id' => $_GET["id"]]);
+    Html::footer();
 }

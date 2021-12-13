@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -41,5 +42,5 @@ interface ExtraVisibilityCriteria
     *
     * @return array
     */
-   public static function getVisibilityCriteria(bool $forceall = false): array;
+    public static function getVisibilityCriteria(bool $forceall = false): array;
 }

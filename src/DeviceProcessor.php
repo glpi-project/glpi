@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,19 +32,23 @@
  */
 
 /// Class DeviceProcessor
-class DeviceProcessor extends CommonDevice {
+class DeviceProcessor extends CommonDevice
+{
 
-   static protected $forward_entity_to = ['Item_DeviceProcessor', 'Infocom'];
+    protected static $forward_entity_to = ['Item_DeviceProcessor', 'Infocom'];
 
-   static function getTypeName($nb = 0) {
-      return _n('Processor', 'Processors', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Processor', 'Processors', $nb);
+    }
 
 
-   function getAdditionalFields() {
+    public function getAdditionalFields()
+    {
 
-      return array_merge(parent::getAdditionalFields(),
-                         [['name'  => 'frequency_default',
+        return array_merge(
+            parent::getAdditionalFields(),
+            [['name'  => 'frequency_default',
                                      'label' => __('Frequency by default'),
                                      'type'  => 'text',
                                      'unit'  => __('MHz')],
@@ -60,55 +65,57 @@ class DeviceProcessor extends CommonDevice {
                                ['name'  => 'deviceprocessormodels_id',
                                      'label' => _n('Model', 'Models', 1),
                                      'type'  => 'dropdownValue']
-                           ]);
-   }
+            ]
+        );
+    }
 
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '11',
          'table'              => $this->getTable(),
          'field'              => 'frequency_default',
          'name'               => __('Frequency by default'),
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '12',
          'table'              => $this->getTable(),
          'field'              => 'frequence',
          'name'               => __('Frequency'),
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '13',
          'table'              => $this->getTable(),
          'field'              => 'nbcores_default',
          'name'               => __('Number of cores'),
          'datatype'           => 'integer'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '14',
          'table'              => $this->getTable(),
          'field'              => 'nbthreads_default',
          'name'               => __('Number of threads'),
          'datatype'           => 'integer'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '15',
          'table'              => 'glpi_deviceprocessormodels',
          'field'              => 'name',
          'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
 
    /**
@@ -117,76 +124,91 @@ class DeviceProcessor extends CommonDevice {
     *
     * @return number
    **/
-   function prepareInputForAddOrUpdate($input) {
+    public function prepareInputForAddOrUpdate($input)
+    {
 
-      foreach (['frequence', 'frequency_default', 'nbcores_default',
-                     'nbthreads_default'] as $field) {
-         if (isset($input[$field]) && !is_numeric($input[$field])) {
-            $input[$field] = 0;
-         }
-      }
-      return $input;
-   }
-
-
-   function prepareInputForAdd($input) {
-      return $this->prepareInputForAddOrUpdate($input);
-   }
+        foreach (
+            ['frequence', 'frequency_default', 'nbcores_default',
+                     'nbthreads_default'] as $field
+        ) {
+            if (isset($input[$field]) && !is_numeric($input[$field])) {
+                $input[$field] = 0;
+            }
+        }
+        return $input;
+    }
 
 
-   function prepareInputForUpdate($input) {
-      return $this->prepareInputForAddOrUpdate($input);
-   }
+    public function prepareInputForAdd($input)
+    {
+        return $this->prepareInputForAddOrUpdate($input);
+    }
 
 
-   static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super = null,
-                                      HTMLTableHeader $father = null, array $options = []) {
-
-      $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
-
-      if ($column == $father) {
-         return $father;
-      }
-
-      switch ($itemtype) {
-         case 'Computer' :
-            Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-            break;
-      }
-   }
+    public function prepareInputForUpdate($input)
+    {
+        return $this->prepareInputForAddOrUpdate($input);
+    }
 
 
-   function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
-                                    HTMLTableCell $father = null, array $options = []) {
+    public static function getHTMLTableHeader(
+        $itemtype,
+        HTMLTableBase $base,
+        HTMLTableSuperHeader $super = null,
+        HTMLTableHeader $father = null,
+        array $options = []
+    ) {
 
-      $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
+        $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
-      if ($column == $father) {
-         return $father;
-      }
+        if ($column == $father) {
+            return $father;
+        }
 
-      switch ($item->getType()) {
-         case 'Computer' :
-            Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
-            break;
-      }
-   }
+        switch ($itemtype) {
+            case 'Computer':
+                Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+                break;
+        }
+    }
 
 
-   function getImportCriteria() {
+    public function getHTMLTableCellForItem(
+        HTMLTableRow $row = null,
+        CommonDBTM $item = null,
+        HTMLTableCell $father = null,
+        array $options = []
+    ) {
 
-      return ['designation'          => 'equal',
+        $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
+
+        if ($column == $father) {
+            return $father;
+        }
+
+        switch ($item->getType()) {
+            case 'Computer':
+                Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
+                break;
+        }
+    }
+
+
+    public function getImportCriteria()
+    {
+
+        return ['designation'          => 'equal',
                    'manufacturers_id'     => 'equal',
                    'frequence'            => 'delta:10'];
-   }
+    }
 
-   public static function rawSearchOptionsToAdd($itemtype, $main_joinparams) {
-      global $DB;
+    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
+    {
+        global $DB;
 
-      $tab = [];
+        $tab = [];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '17',
          'table'              => 'glpi_deviceprocessors',
          'field'              => 'designation',
@@ -201,9 +223,9 @@ class DeviceProcessor extends CommonDevice {
                'joinparams'         => $main_joinparams
             ]
          ]
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '18',
          'table'              => 'glpi_items_deviceprocessors',
          'field'              => 'nbcores',
@@ -217,9 +239,9 @@ class DeviceProcessor extends CommonDevice {
             'SUM(' . $DB->quoteName('TABLE.nbcores') . ') * COUNT(DISTINCT ' .
             $DB->quoteName('TABLE.id') . ') / COUNT(*)',
          'nometa'             => true, // cannot GROUP_CONCAT a SUM
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '34',
          'table'              => 'glpi_items_deviceprocessors',
          'field'              => 'nbthreads',
@@ -233,9 +255,9 @@ class DeviceProcessor extends CommonDevice {
             'SUM(' . $DB->quoteName('TABLE.nbthreads') . ') * COUNT(DISTINCT ' .
             $DB->quoteName('TABLE.id') . ') / COUNT(*)',
          'nometa'             => true, // cannot GROUP_CONCAT a SUM
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '36',
          'table'              => 'glpi_items_deviceprocessors',
          'field'              => 'frequency',
@@ -251,13 +273,14 @@ class DeviceProcessor extends CommonDevice {
             'SUM(' . $DB->quoteName('TABLE.frequency') . ') / COUNT(' .
             $DB->quoteName('TABLE.id') . ')',
          'nometa'             => true, // cannot GROUP_CONCAT a SUM
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
 
-   static function getIcon() {
-      return "fas fa-microchip";
-   }
+    public static function getIcon()
+    {
+        return "fas fa-microchip";
+    }
 }

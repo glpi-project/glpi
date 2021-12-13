@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -38,17 +39,19 @@
 /**
  * Relation between item and devices
 **/
-class Item_DeviceNetworkCard extends Item_Devices {
+class Item_DeviceNetworkCard extends Item_Devices
+{
 
-   static public $itemtype_2 = 'DeviceNetworkCard';
-   static public $items_id_2 = 'devicenetworkcards_id';
+    public static $itemtype_2 = 'DeviceNetworkCard';
+    public static $items_id_2 = 'devicenetworkcards_id';
 
-   static protected $notable = false;
+    protected static $notable = false;
 
 
-   static function getSpecificities($specif = '') {
+    public static function getSpecificities($specif = '')
+    {
 
-      return ['mac'    => ['long name'  => __('MAC address'),
+        return ['mac'    => ['long name'  => __('MAC address'),
                                      'short name' => __('MAC address'),
                                      'size'       => 18,
                                      'id'         => 20,
@@ -59,5 +62,5 @@ class Item_DeviceNetworkCard extends Item_Devices {
                    'locations_id' => parent::getSpecificities('locations_id'),
                    'states_id' => parent::getSpecificities('states_id'),
                    'busID'  => parent::getSpecificities('busID')];
-   }
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,13 +31,13 @@
  * ---------------------------------------------------------------------
  */
 
-include ("../inc/includes.php");
+include("../inc/includes.php");
 
 Session::checkRight("config", UPDATE);
 
 use Glpi\Marketplace\Controller as MarketplaceController;
 
 if (isset($_REQUEST['key'])) {
-   $marketplace_ctrl = new MarketplaceController($_REQUEST['key']);
-   $marketplace_ctrl->proxifyPluginArchive();
+    $marketplace_ctrl = new MarketplaceController($_REQUEST['key']);
+    $marketplace_ctrl->proxifyPluginArchive();
 }

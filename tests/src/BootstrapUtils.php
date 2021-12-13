@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,20 +33,24 @@
 
 namespace Glpi\Tests;
 
-class BootstrapUtils {
+class BootstrapUtils
+{
 
    /**
     * Create subdirectories of GLPI_VAR_DIR based on defined constants.
     *
     * @return void
     */
-   public static function initVarDirectories(): void {
-      foreach (get_defined_constants() as $name => $value) {
-         if (preg_match('/^GLPI_[\w]+_DIR$/', $name)
-             && preg_match('/^' . preg_quote(GLPI_VAR_DIR, '/') . '\//', $value)
-             && !is_dir($value)) {
-            mkdir($value, 0755, true);
-         }
-      }
-   }
+    public static function initVarDirectories(): void
+    {
+        foreach (get_defined_constants() as $name => $value) {
+            if (
+                preg_match('/^GLPI_[\w]+_DIR$/', $name)
+                && preg_match('/^' . preg_quote(GLPI_VAR_DIR, '/') . '\//', $value)
+                && !is_dir($value)
+            ) {
+                mkdir($value, 0755, true);
+            }
+        }
+    }
 }

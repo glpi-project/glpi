@@ -60,9 +60,9 @@ class Plugins {
     */
    protected $is_list_truncated = false;
 
-   static $plugins = null;
+  public static  $plugins = null;
 
-   function __construct(bool $connect = false) {
+   public function __construct(bool $connect = false) {
       global $CFG_GLPI;
 
       $options = [
@@ -191,7 +191,7 @@ class Plugins {
     *
     * @return array collection of plugins
     */
-   function getAllPlugins(
+   public function getAllPlugins(
       bool $force_refresh = false,
       string $tag_filter = "",
       string $string_filter = "",
@@ -215,7 +215,7 @@ class Plugins {
             foreach ($plugins_colct as &$plugin) {
                usort(
                   $plugin['versions'],
-                  function ($a, $b) {
+                  public function ($a, $b) {
                      return version_compare($a['num'], $b['num']);
                   }
                );
@@ -300,7 +300,7 @@ class Plugins {
     *
     * @return array full collection
     */
-   function getPaginatedPlugins(
+   public function getPaginatedPlugins(
       bool $force_refresh = false,
       string $tag_filter = "",
       string $string_filter = "",
@@ -322,7 +322,7 @@ class Plugins {
     *
     * @return int number of plugins
     */
-   function getNbPlugins(string $tag_filter = "") {
+   public function getNbPlugins(string $tag_filter = "") {
       $plugins = $this->getAllPlugins(false, $tag_filter);
 
       return count($plugins);

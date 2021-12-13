@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,96 +37,99 @@ use DbTestCase;
 
 /* Test for inc/cartridge.class.php */
 
-class Cartridge extends DbTestCase {
+class Cartridge extends DbTestCase
+{
 
-   public function testInstall() {
-      $printer = new \Printer();
-      $pid = $printer->add([
+    public function testInstall()
+    {
+        $printer = new \Printer();
+        $pid = $printer->add([
          'name'         => 'Test printer',
          'entities_id'  => getItemByTypeName('Entity', '_test_root_entity', true)
-      ]);
-      $this->integer((int)$pid)->isGreaterThan(0);
-      $this->boolean($printer->getFromDB($pid))->isTrue();
+        ]);
+        $this->integer((int)$pid)->isGreaterThan(0);
+        $this->boolean($printer->getFromDB($pid))->isTrue();
 
-      $ctype = new \CartridgeItemType();
-      $tid = $ctype->add([
+        $ctype = new \CartridgeItemType();
+        $tid = $ctype->add([
          'name'         => 'Test cartridge type',
-      ]);
-      $this->integer((int)$tid)->isGreaterThan(0);
-      $this->boolean($ctype->getFromDB($tid))->isTrue();
+        ]);
+        $this->integer((int)$tid)->isGreaterThan(0);
+        $this->boolean($ctype->getFromDB($tid))->isTrue();
 
-      $citem = new \CartridgeItem();
-      $ciid = $citem->add([
+        $citem = new \CartridgeItem();
+        $ciid = $citem->add([
          'name'                  => 'Test cartridge item',
          'cartridgeitemtypes_id' => $tid
-      ]);
-      $this->integer((int)$ciid)->isGreaterThan(0);
-      $this->boolean($citem->getFromDB($ciid))->isTrue();
+        ]);
+        $this->integer((int)$ciid)->isGreaterThan(0);
+        $this->boolean($citem->getFromDB($ciid))->isTrue();
 
-      $cartridge = new \Cartridge();
-      $cid = $cartridge->add([
+        $cartridge = new \Cartridge();
+        $cid = $cartridge->add([
          'name'               => 'Test cartridge',
          'cartridgeitems_id'  => $ciid
-      ]);
-      $this->integer((int)$cid)->isGreaterThan(0);
-      $this->boolean($cartridge->getFromDB($cid))->isTrue();
-      $this->integer($cartridge->getUsedNumber($ciid))->isIdenticalTo(0);
-      $this->integer($cartridge->getTotalNumberForPrinter($pid))->isIdenticalTo(0);
+        ]);
+        $this->integer((int)$cid)->isGreaterThan(0);
+        $this->boolean($cartridge->getFromDB($cid))->isTrue();
+        $this->integer($cartridge->getUsedNumber($ciid))->isIdenticalTo(0);
+        $this->integer($cartridge->getTotalNumberForPrinter($pid))->isIdenticalTo(0);
 
-      //install
-      $this->boolean($cartridge->install($pid, $ciid))->isTrue();
-      //check install
-      $this->boolean($cartridge->getFromDB($cid))->isTrue();
-      $this->array($cartridge->fields)
+       //install
+        $this->boolean($cartridge->install($pid, $ciid))->isTrue();
+       //check install
+        $this->boolean($cartridge->getFromDB($cid))->isTrue();
+        $this->array($cartridge->fields)
          ->variable['printers_id']->isEqualTo($pid)
          ->string['date_use']->matches('#\d{4}-\d{2}-\d{2}$#');
-      $this->variable($cartridge->fields['date_out'])->isNull();
-      //already installed
-      $this->boolean($cartridge->install($pid, $ciid))->isFalse();
-      $this->hasSessionMessages(ERROR, ['No free cartridge']);
+        $this->variable($cartridge->fields['date_out'])->isNull();
+       //already installed
+        $this->boolean($cartridge->install($pid, $ciid))->isFalse();
+        $this->hasSessionMessages(ERROR, ['No free cartridge']);
 
-      $this->integer($cartridge->getUsedNumber($ciid))->isIdenticalTo(1);
-      $this->integer($cartridge->getTotalNumberForPrinter($pid))->isIdenticalTo(1);
+        $this->integer($cartridge->getUsedNumber($ciid))->isIdenticalTo(1);
+        $this->integer($cartridge->getTotalNumberForPrinter($pid))->isIdenticalTo(1);
 
-      $this->boolean($cartridge->uninstall($cid))->isTrue();
-      //this is not possible... But don't know if this is expected
-      //$this->boolean($cartridge->install($pid, $ciid))->isTrue();
-      //check uninstall
-      $this->boolean($cartridge->getFromDB($cid))->isTrue();
-      $this->string($cartridge->fields['date_out'])->matches('#\d{4}-\d{2}-\d{2}$#');
-      $this->integer($cartridge->getUsedNumber($ciid))->isIdenticalTo(0);
-   }
+        $this->boolean($cartridge->uninstall($cid))->isTrue();
+       //this is not possible... But don't know if this is expected
+       //$this->boolean($cartridge->install($pid, $ciid))->isTrue();
+       //check uninstall
+        $this->boolean($cartridge->getFromDB($cid))->isTrue();
+        $this->string($cartridge->fields['date_out'])->matches('#\d{4}-\d{2}-\d{2}$#');
+        $this->integer($cartridge->getUsedNumber($ciid))->isIdenticalTo(0);
+    }
 
-   function testInfocomInheritance() {
-      $cartridge = new \Cartridge();
+    public function testInfocomInheritance()
+    {
+        $cartridge = new \Cartridge();
 
-      $cartridge_item = new \CartridgeItem();
-      $cu_id = (int) $cartridge_item->add([
+        $cartridge_item = new \CartridgeItem();
+        $cu_id = (int) $cartridge_item->add([
          'name' => 'Test cartridge item'
-      ]);
-      $this->integer($cu_id)->isGreaterThan(0);
+        ]);
+        $this->integer($cu_id)->isGreaterThan(0);
 
-      $infocom = new \Infocom();
-      $infocom_id = (int) $infocom->add([
+        $infocom = new \Infocom();
+        $infocom_id = (int) $infocom->add([
          'itemtype'  => \CartridgeItem::getType(),
          'items_id'  => $cu_id,
          'buy_date'  => '2020-10-21',
          'value'     => '500'
-      ]);
-      $this->integer($infocom_id)->isGreaterThan(0);
+        ]);
+        $this->integer($infocom_id)->isGreaterThan(0);
 
-      $cartridge_id = $cartridge->add([
+        $cartridge_id = $cartridge->add([
          'cartridgeitems_id' => $cu_id
-      ]);
-      $this->integer($cartridge_id)->isGreaterThan(0);
+        ]);
+        $this->integer($cartridge_id)->isGreaterThan(0);
 
-      $infocom2 = new \Infocom();
-      $infocom2_id = (int) $infocom2->getFromDBByCrit([
+        $infocom2 = new \Infocom();
+        $infocom2_id = (int) $infocom2->getFromDBByCrit([
          'itemtype'  => \Cartridge::getType(),
          'items_id'  => $cartridge_id
-      ]);
-      $this->integer($infocom2_id)->isGreaterThan(0);
-      $this->string($infocom2->fields['buy_date'])->isEqualTo($infocom->fields['buy_date']);
-      $this->string($infocom2->fields['value'])->isEqualTo($infocom->fields['value']);
-   }
+        ]);
+        $this->integer($infocom2_id)->isGreaterThan(0);
+        $this->string($infocom2->fields['buy_date'])->isEqualTo($infocom->fields['buy_date']);
+        $this->string($infocom2->fields['value'])->isEqualTo($infocom->fields['value']);
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -38,77 +39,81 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CheckRequirementsCommand extends AbstractCommand {
+class CheckRequirementsCommand extends AbstractCommand
+{
 
-   protected $requires_db = false;
+    protected $requires_db = false;
 
-   protected function configure() {
-      parent::configure();
+    protected function configure()
+    {
+        parent::configure();
 
-      $this->setName('glpi:system:check_requirements');
-      $this->setAliases(['system:check_requirements']);
-      $this->setDescription(__('Check system requirements'));
-   }
+        $this->setName('glpi:system:check_requirements');
+        $this->setAliases(['system:check_requirements']);
+        $this->setDescription(__('Check system requirements'));
+    }
 
-   protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
 
-      $requirements_manager = new RequirementsManager();
-      $core_requirements = $requirements_manager->getCoreRequirementList(
-         $this->db instanceof \DBmysql && $this->db->connected ? $this->db : null
-      );
+        $requirements_manager = new RequirementsManager();
+        $core_requirements = $requirements_manager->getCoreRequirementList(
+            $this->db instanceof \DBmysql && $this->db->connected ? $this->db : null
+        );
 
-      $informations = new Table($output);
-      $informations->setHeaders(
-         [
+        $informations = new Table($output);
+        $informations->setHeaders(
+            [
             __('Requirement'),
             __('Status'),
             __('Messages'),
-         ]
-      );
+            ]
+        );
 
-      /* @var \Glpi\System\Requirement\RequirementInterface $requirement */
-      foreach ($core_requirements as $requirement) {
-         if ($requirement->isOutOfContext()) {
-            continue; // skip requirement if not relevant
-         }
+       /* @var \Glpi\System\Requirement\RequirementInterface $requirement */
+        foreach ($core_requirements as $requirement) {
+            if ($requirement->isOutOfContext()) {
+                continue; // skip requirement if not relevant
+            }
 
-         if ($requirement->isValidated()) {
-            $status = sprintf('<%s>[%s]</>', 'fg=black;bg=green', __('OK'));
-         } else {
-            $status = $requirement->isOptional()
-               ? sprintf('<%s>[%s]</> ', 'fg=white;bg=yellow', __('INFO'))
-               : sprintf('<%s>[%s]</> ', 'fg=white;bg=red', __('ERROR'));
-         }
+            if ($requirement->isValidated()) {
+                $status = sprintf('<%s>[%s]</>', 'fg=black;bg=green', __('OK'));
+            } else {
+                $status = $requirement->isOptional()
+                ? sprintf('<%s>[%s]</> ', 'fg=white;bg=yellow', __('INFO'))
+                : sprintf('<%s>[%s]</> ', 'fg=white;bg=red', __('ERROR'));
+            }
 
-         $badge = $requirement->isOptional()
+            $badge = $requirement->isOptional()
             ? sprintf('<%s>[%s]</> ', 'fg=black;bg=bright-blue', mb_strtoupper(__('Suggested')))
             : sprintf('<%s>[%s]</> ', 'fg=black;bg=bright-yellow', mb_strtoupper(__('Required')));
-         $title = $badge . '<options=bold>' . $requirement->getTitle() . '</>';
-         if (!empty($description = $requirement->getDescription())) {
-            // wordwrap to to keep table width acceptable
-            $wrapped = wordwrap($description, 70, '-----');
-            $lines = explode('-----', $wrapped);
-            foreach ($lines as $line) {
-               $title .= "\n\e[2m\e[3m" . $line . "\e[0m";
+            $title = $badge . '<options=bold>' . $requirement->getTitle() . '</>';
+            if (!empty($description = $requirement->getDescription())) {
+               // wordwrap to to keep table width acceptable
+                $wrapped = wordwrap($description, 70, '-----');
+                $lines = explode('-----', $wrapped);
+                foreach ($lines as $line) {
+                    $title .= "\n\e[2m\e[3m" . $line . "\e[0m";
+                }
             }
-         }
 
-         $informations->addRow(
-            [
-               $title,
-               $status,
-               $requirement->isValidated() ? '' : implode("\n", $requirement->getValidationMessages())
-            ]
-         );
-      }
+            $informations->addRow(
+                [
+                $title,
+                $status,
+                $requirement->isValidated() ? '' : implode("\n", $requirement->getValidationMessages())
+                ]
+            );
+        }
 
-      $informations->render();
+        $informations->render();
 
-      return 0; // Success
-   }
+        return 0; // Success
+    }
 
-   public function mustCheckMandatoryRequirements(): bool {
+    public function mustCheckMandatoryRequirements(): bool
+    {
 
-      return false;
-   }
+        return false;
+    }
 }

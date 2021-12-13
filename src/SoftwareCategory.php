@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,46 +32,51 @@
  */
 
 /// Class SoftwareCategory
-class SoftwareCategory extends CommonTreeDropdown {
+class SoftwareCategory extends CommonTreeDropdown
+{
 
-   public $can_be_translated = true;
-
-
-   static function getTypeName($nb = 0) {
-      return _n('Software category', 'Software categories', $nb);
-   }
+    public $can_be_translated = true;
 
 
-   function cleanDBonPurge() {
-      Rule::cleanForItemAction($this);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Software category', 'Software categories', $nb);
+    }
 
 
-   function cleanRelationData() {
-
-      parent::cleanRelationData();
-
-      if ($this->isUsedAsCategoryOnSoftwareDeletion()) {
-         $newval = (isset($this->input['_replace_by']) ? $this->input['_replace_by'] : 0);
-
-         Config::setConfigurationValues(
-            'core',
-            [
-               'softwarecategories_id_ondelete' => $newval,
-            ]
-         );
-      }
-   }
+    public function cleanDBonPurge()
+    {
+        Rule::cleanForItemAction($this);
+    }
 
 
-   function isUsed() {
+    public function cleanRelationData()
+    {
 
-      if (parent::isUsed()) {
-         return true;
-      }
+        parent::cleanRelationData();
 
-      return $this->isUsedAsCategoryOnSoftwareDeletion();
-   }
+        if ($this->isUsedAsCategoryOnSoftwareDeletion()) {
+            $newval = (isset($this->input['_replace_by']) ? $this->input['_replace_by'] : 0);
+
+            Config::setConfigurationValues(
+                'core',
+                [
+                'softwarecategories_id_ondelete' => $newval,
+                ]
+            );
+        }
+    }
+
+
+    public function isUsed()
+    {
+
+        if (parent::isUsed()) {
+            return true;
+        }
+
+        return $this->isUsedAsCategoryOnSoftwareDeletion();
+    }
 
 
    /**
@@ -78,15 +84,17 @@ class SoftwareCategory extends CommonTreeDropdown {
     *
     * @return boolean
     */
-   private function isUsedAsCategoryOnSoftwareDeletion() {
+    private function isUsedAsCategoryOnSoftwareDeletion()
+    {
 
-      $config_values = Config::getConfigurationValues('core', ['softwarecategories_id_ondelete']);
+        $config_values = Config::getConfigurationValues('core', ['softwarecategories_id_ondelete']);
 
-      return array_key_exists('softwarecategories_id_ondelete', $config_values)
+        return array_key_exists('softwarecategories_id_ondelete', $config_values)
          && $config_values['softwarecategories_id_ondelete'] == $this->fields['id'];
-   }
+    }
 
-   static function getIcon() {
-      return Software::getIcon();
-   }
+    public static function getIcon()
+    {
+        return Software::getIcon();
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,178 +34,192 @@
 /**
  * Calendar Class
 **/
-class Calendar extends CommonDropdown {
-   use Glpi\Features\Clonable;
+class Calendar extends CommonDropdown
+{
+    use Glpi\Features\Clonable;
 
    // From CommonDBTM
-   public $dohistory                   = true;
-   public $can_be_translated           = false;
+    public $dohistory                   = true;
+    public $can_be_translated           = false;
 
-   static protected $forward_entity_to = ['CalendarSegment'];
+    protected static $forward_entity_to = ['CalendarSegment'];
 
-   static $rightname = 'calendar';
+    public static $rightname = 'calendar';
 
 
-   public function getCloneRelations() :array {
-      return [
+    public function getCloneRelations(): array
+    {
+        return [
          Calendar_Holiday::class,
          CalendarSegment::class
-      ];
-   }
+        ];
+    }
 
 
    /**
     * @since 0.84
    **/
-   function getForbiddenStandardMassiveAction() {
+    public function getForbiddenStandardMassiveAction()
+    {
 
-      $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'CommonDropdown'.MassiveAction::CLASS_ACTION_SEPARATOR.'merge';
-      return $forbidden;
-   }
-
-
-   static function getTypeName($nb = 0) {
-      return _n('Calendar', 'Calendars', $nb);
-   }
+        $forbidden   = parent::getForbiddenStandardMassiveAction();
+        $forbidden[] = 'CommonDropdown' . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge';
+        return $forbidden;
+    }
 
 
-   function defineTabs($options = []) {
-
-      $ong = parent::defineTabs($options);
-      $this->addStandardTab('CalendarSegment', $ong, $options);
-      $this->addStandardTab('Calendar_Holiday', $ong, $options);
-
-      return $ong;
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Calendar', 'Calendars', $nb);
+    }
 
 
-   function getSpecificMassiveActions($checkitem = null) {
+    public function defineTabs($options = [])
+    {
 
-      $isadmin = static::canUpdate();
-      $actions = parent::getSpecificMassiveActions($checkitem);
+        $ong = parent::defineTabs($options);
+        $this->addStandardTab('CalendarSegment', $ong, $options);
+        $this->addStandardTab('Calendar_Holiday', $ong, $options);
 
-      if ($isadmin) {
-         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'duplicate'] = _x('button', 'Duplicate');
-         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'addholiday'] = __('Add a close time');
-      }
-      return $actions;
-   }
+        return $ong;
+    }
 
 
-   static function showMassiveActionsSubForm(MassiveAction $ma) {
+    public function getSpecificMassiveActions($checkitem = null)
+    {
 
-      switch ($ma->getAction()) {
-         case 'duplicate' :
-            Entity::dropdown();
-            echo "<br><br>";
-            echo Html::submit(_x('button', 'Duplicate'), ['name' => 'massiveaction'])."</span>";
-            return true;
+        $isadmin = static::canUpdate();
+        $actions = parent::getSpecificMassiveActions($checkitem);
 
-         case 'addholiday' :
-            Holiday::dropdown();
-            echo "<br><br>";
-            echo Html::submit(_x('button', 'Add'), ['name' => 'massiveaction'])."</span>";
-            return true;
-      }
-
-      return parent::showMassiveActionsSubForm($ma);
-   }
+        if ($isadmin) {
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'duplicate'] = _x('button', 'Duplicate');
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'addholiday'] = __('Add a close time');
+        }
+        return $actions;
+    }
 
 
-   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
-                                                       array $ids) {
+    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    {
 
-      switch ($ma->getAction()) {
-         case 'duplicate' : // For calendar duplicate in another entity
-            if (Toolbox::hasTrait($item, \Glpi\Features\Clonable::class)) {
-               $input = $ma->getInput();
-               $options = [];
-               if ($item->isEntityAssign()) {
-                  $options = ['entities_id' => $input['entities_id']];
-               }
-               foreach ($ids as $id) {
-                  if ($item->getFromDB($id)) {
-                     if (!$item->isEntityAssign()
-                         || ($input['entities_id'] != $item->getEntityID())) {
-                        if ($item->can(-1, CREATE, $options)) {
-                           if ($item->clone($options)) {
-                              $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                           } else {
-                              $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                              $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
-                           }
+        switch ($ma->getAction()) {
+            case 'duplicate':
+                Entity::dropdown();
+                echo "<br><br>";
+                echo Html::submit(_x('button', 'Duplicate'), ['name' => 'massiveaction']) . "</span>";
+                return true;
+
+            case 'addholiday':
+                Holiday::dropdown();
+                echo "<br><br>";
+                echo Html::submit(_x('button', 'Add'), ['name' => 'massiveaction']) . "</span>";
+                return true;
+        }
+
+        return parent::showMassiveActionsSubForm($ma);
+    }
+
+
+    public static function processMassiveActionsForOneItemtype(
+        MassiveAction $ma,
+        CommonDBTM $item,
+        array $ids
+    ) {
+
+        switch ($ma->getAction()) {
+            case 'duplicate': // For calendar duplicate in another entity
+                if (Toolbox::hasTrait($item, \Glpi\Features\Clonable::class)) {
+                    $input = $ma->getInput();
+                    $options = [];
+                    if ($item->isEntityAssign()) {
+                        $options = ['entities_id' => $input['entities_id']];
+                    }
+                    foreach ($ids as $id) {
+                        if ($item->getFromDB($id)) {
+                            if (
+                                !$item->isEntityAssign()
+                                 || ($input['entities_id'] != $item->getEntityID())
+                            ) {
+                                if ($item->can(-1, CREATE, $options)) {
+                                    if ($item->clone($options)) {
+                                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                    } else {
+                                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                                    }
+                                } else {
+                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                                    $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                                }
+                            } else {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
+                            }
                         } else {
-                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
-                           $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                             $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                         }
-                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                        $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
-                     }
-                  } else {
-                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                     $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
-                  }
-               }
-            } else {
-               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
-            }
-            return;
+                    }
+                } else {
+                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                }
+                return;
 
-         case 'addholiday' : // add an holiday with massive action
-            $input = $ma->getInput();
-            if ($input['holidays_id'] > 0) {
-               $holiday          = new Holiday();
-               $calendar_holiday = new Calendar_Holiday();
+            case 'addholiday': // add an holiday with massive action
+                $input = $ma->getInput();
+                if ($input['holidays_id'] > 0) {
+                    $holiday          = new Holiday();
+                    $calendar_holiday = new Calendar_Holiday();
 
-               $holiday->getFromDB($input['holidays_id']);
-               $entities = [$holiday->getEntityID() => $holiday->getEntityID()];
-               if ($holiday->isRecursive()) {
-                  $entities = getSonsOf("glpi_entities", $holiday->getEntityID());
-               }
+                    $holiday->getFromDB($input['holidays_id']);
+                    $entities = [$holiday->getEntityID() => $holiday->getEntityID()];
+                    if ($holiday->isRecursive()) {
+                        $entities = getSonsOf("glpi_entities", $holiday->getEntityID());
+                    }
 
-               foreach ($ids as $id) {
-                  $entities_id = CommonDBTM::getItemEntity('Calendar', $id);
-                  if (isset($entities[$entities_id])) {
-                     $input = ['calendars_id' => $id,
+                    foreach ($ids as $id) {
+                        $entities_id = CommonDBTM::getItemEntity('Calendar', $id);
+                        if (isset($entities[$entities_id])) {
+                            $input = ['calendars_id' => $id,
                                     'holidays_id'  => $input['holidays_id']];
-                     if ($calendar_holiday->add($input)) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
-                     }
-                  } else {
-                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
-                  }
-               }
-            } else {
-               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
-            }
-            return;
-      }
-      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
-   }
+                            if ($calendar_holiday->add($input)) {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            } else {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                            }
+                        } else {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                        }
+                    }
+                } else {
+                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                }
+                return;
+        }
+        parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+    }
 
    /**
     * @see Glpi\Features\Clonable::post_clone
     */
-   public function post_clone($source, $history) {
-      $this->updateDurationCache($this->getID());
-   }
+    public function post_clone($source, $history)
+    {
+        $this->updateDurationCache($this->getID());
+    }
 
 
-   function cleanDBonPurge() {
+    public function cleanDBonPurge()
+    {
 
-      $this->deleteChildrenAndRelationsFromDb(
-         [
+        $this->deleteChildrenAndRelationsFromDb(
+            [
             Calendar_Holiday::class,
             CalendarSegment::class,
-         ]
-      );
-   }
+            ]
+        );
+    }
 
    /**
     * Check if the given date is a holiday
@@ -213,30 +228,31 @@ class Calendar extends CommonDropdown {
     *
     * @return boolean
    **/
-   function isHoliday($date) {
-      $calendar_holiday = new Calendar_Holiday();
-      $holidays = $calendar_holiday->getHolidaysForCalendar($this->fields['id']);
+    public function isHoliday($date)
+    {
+        $calendar_holiday = new Calendar_Holiday();
+        $holidays = $calendar_holiday->getHolidaysForCalendar($this->fields['id']);
 
-      foreach ($holidays as $holiday) {
-         if ($holiday['is_perpetual']) {
-            // Compare only month and day for holidays that occurs every year.
-            $date_to_compare = date('m-d', strtotime($date));
-            $begin_date      = date('m-d', strtotime($holiday['begin_date']));
-            $end_date        = date('m-d', strtotime($holiday['end_date']));
-         } else {
-            // Normalize dates to Y-m-d
-            $date_to_compare = date('Y-m-d', strtotime($date));
-            $begin_date      = date('Y-m-d', strtotime($holiday['begin_date']));
-            $end_date        = date('Y-m-d', strtotime($holiday['end_date']));
-         }
+        foreach ($holidays as $holiday) {
+            if ($holiday['is_perpetual']) {
+                // Compare only month and day for holidays that occurs every year.
+                $date_to_compare = date('m-d', strtotime($date));
+                $begin_date      = date('m-d', strtotime($holiday['begin_date']));
+                $end_date        = date('m-d', strtotime($holiday['end_date']));
+            } else {
+               // Normalize dates to Y-m-d
+                $date_to_compare = date('Y-m-d', strtotime($date));
+                $begin_date      = date('Y-m-d', strtotime($holiday['begin_date']));
+                $end_date        = date('Y-m-d', strtotime($holiday['end_date']));
+            }
 
-         if ($begin_date <= $date_to_compare && $date_to_compare <= $end_date) {
-            return true;
-         }
-      }
+            if ($begin_date <= $date_to_compare && $date_to_compare <= $end_date) {
+                return true;
+            }
+        }
 
-      return false;
-   }
+        return false;
+    }
 
 
    /**
@@ -248,63 +264,68 @@ class Calendar extends CommonDropdown {
     *
     * @return integer timestamp of delay
     */
-   function getActiveTimeBetween($start, $end, $work_in_days = false) {
+    public function getActiveTimeBetween($start, $end, $work_in_days = false)
+    {
 
-      if (!isset($this->fields['id'])) {
-         return false;
-      }
+        if (!isset($this->fields['id'])) {
+            return false;
+        }
 
-      if ($end < $start) {
-         return 0;
-      }
+        if ($end < $start) {
+            return 0;
+        }
 
-      $timestart  = strtotime($start);
-      $timeend    = strtotime($end);
-      $datestart  = date('Y-m-d', $timestart);
-      $dateend    = date('Y-m-d', $timeend);
-      // Need to finish at the closing day : set hour to midnight (23:59:59 for PHP)
-      $timerealend = strtotime($dateend.' 23:59:59');
+        $timestart  = strtotime($start);
+        $timeend    = strtotime($end);
+        $datestart  = date('Y-m-d', $timestart);
+        $dateend    = date('Y-m-d', $timeend);
+       // Need to finish at the closing day : set hour to midnight (23:59:59 for PHP)
+        $timerealend = strtotime($dateend . ' 23:59:59');
 
-      $activetime = 0;
+        $activetime = 0;
 
-      if ($work_in_days) {
-         $activetime = $timeend-$timestart;
+        if ($work_in_days) {
+            $activetime = $timeend - $timestart;
+        } else {
+            $cache_duration = $this->getDurationsCache();
 
-      } else {
-         $cache_duration = $this->getDurationsCache();
+            for ($actualtime = $timestart; $actualtime <= $timerealend; $actualtime += DAY_TIMESTAMP) {
+                $actualdate = date('Y-m-d', $actualtime);
 
-         for ($actualtime=$timestart; $actualtime<=$timerealend; $actualtime+=DAY_TIMESTAMP) {
-            $actualdate = date('Y-m-d', $actualtime);
+                if (!$this->isHoliday($actualdate)) {
+                    $beginhour    = '00:00:00';
+                    // Calendar segment work with '24:00:00' format for midnight
+                    $endhour      = '24:00:00';
+                    $dayofweek    = self::getDayNumberInWeek($actualtime);
+                    $timeoftheday = 0;
 
-            if (!$this->isHoliday($actualdate)) {
-               $beginhour    = '00:00:00';
-               // Calendar segment work with '24:00:00' format for midnight
-               $endhour      = '24:00:00';
-               $dayofweek    = self::getDayNumberInWeek($actualtime);
-               $timeoftheday = 0;
+                    if ($actualdate == $datestart) { // First day : cannot use cache
+                        $beginhour = date('H:i:s', $timestart);
+                    }
 
-               if ($actualdate == $datestart) { // First day : cannot use cache
-                  $beginhour = date('H:i:s', $timestart);
-               }
+                    if ($actualdate == $dateend) { // Last day : cannot use cache
+                        $endhour = date('H:i:s', $timeend);
+                    }
 
-               if ($actualdate == $dateend) { // Last day : cannot use cache
-                  $endhour = date('H:i:s', $timeend);
-               }
-
-               if ((($actualdate == $datestart) || ($actualdate == $dateend))
-                   && ($cache_duration[$dayofweek] > 0)) {
-                  $timeoftheday = CalendarSegment::getActiveTimeBetween($this->fields['id'],
-                                                                        $dayofweek, $beginhour,
-                                                                        $endhour);
-               } else {
-                  $timeoftheday = $cache_duration[$dayofweek];
-               }
-               $activetime += $timeoftheday;
+                    if (
+                        (($actualdate == $datestart) || ($actualdate == $dateend))
+                        && ($cache_duration[$dayofweek] > 0)
+                    ) {
+                         $timeoftheday = CalendarSegment::getActiveTimeBetween(
+                             $this->fields['id'],
+                             $dayofweek,
+                             $beginhour,
+                             $endhour
+                         );
+                    } else {
+                        $timeoftheday = $cache_duration[$dayofweek];
+                    }
+                    $activetime += $timeoftheday;
+                }
             }
-         }
-      }
-      return $activetime;
-   }
+        }
+        return $activetime;
+    }
 
 
    /**
@@ -316,13 +337,14 @@ class Calendar extends CommonDropdown {
     *
     * @return boolean
     */
-   function isAWorkingDay($time) {
+    public function isAWorkingDay($time)
+    {
 
-      $cache_duration   = $this->getDurationsCache();
-      $dayofweek        = self::getDayNumberInWeek($time);
-      $date             = date('Y-m-d', $time);
-      return (($cache_duration[$dayofweek] > 0) && !$this->isHoliday($date));
-   }
+        $cache_duration   = $this->getDurationsCache();
+        $dayofweek        = self::getDayNumberInWeek($time);
+        $date             = date('Y-m-d', $time);
+        return (($cache_duration[$dayofweek] > 0) && !$this->isHoliday($date));
+    }
 
 
    /**
@@ -332,11 +354,12 @@ class Calendar extends CommonDropdown {
     *
     * @return boolean
     */
-   public function hasAWorkingDay() {
+    public function hasAWorkingDay()
+    {
 
-      $durations = $this->getDurationsCache();
-      return false !== $durations && array_sum($durations) > 0;
-   }
+        $durations = $this->getDurationsCache();
+        return false !== $durations && array_sum($durations) > 0;
+    }
 
 
    /**
@@ -349,15 +372,19 @@ class Calendar extends CommonDropdown {
     *
     * @return boolean
     */
-   function isAWorkingHour($time) {
+    public function isAWorkingHour($time)
+    {
 
-      if ($this->isAWorkingDay($time)) {
-         $dayofweek = self::getDayNumberInWeek($time);
-         return CalendarSegment::isAWorkingHour($this->fields['id'], $dayofweek,
-                                                date('H:i:s', $time));
-      }
-      return false;
-   }
+        if ($this->isAWorkingDay($time)) {
+            $dayofweek = self::getDayNumberInWeek($time);
+            return CalendarSegment::isAWorkingHour(
+                $this->fields['id'],
+                $dayofweek,
+                date('H:i:s', $time)
+            );
+        }
+        return false;
+    }
 
 
    /**
@@ -374,175 +401,204 @@ class Calendar extends CommonDropdown {
     *
     * @return boolean|string end date
    **/
-   function computeEndDate($start, $delay, $additional_delay = 0, $work_in_days = false, $end_of_working_day = false) {
+    public function computeEndDate($start, $delay, $additional_delay = 0, $work_in_days = false, $end_of_working_day = false)
+    {
 
-      if (!isset($this->fields['id'])) {
-         return false;
-      }
+        if (!isset($this->fields['id'])) {
+            return false;
+        }
 
-      if (!$this->hasAWorkingDay()) {
-         // Invalid calendar (no working day = unable to find any date inside calendar hours)
-         return false;
-      }
+        if (!$this->hasAWorkingDay()) {
+           // Invalid calendar (no working day = unable to find any date inside calendar hours)
+            return false;
+        }
 
-      $actualtime = strtotime($start);
-      $timestart  = strtotime($start);
-      $datestart  = date('Y-m-d', $timestart);
+        $actualtime = strtotime($start);
+        $timestart  = strtotime($start);
+        $datestart  = date('Y-m-d', $timestart);
 
-      // manage dates in past
-      $negative_delay = false;
-      if ($delay < 0) {
-         $delay = -$delay;
-         $negative_delay = true;
-      }
+       // manage dates in past
+        $negative_delay = false;
+        if ($delay < 0) {
+            $delay = -$delay;
+            $negative_delay = true;
+        }
 
-      // End of working day
-      if ($end_of_working_day) {
-         $numberofdays = $delay / DAY_TIMESTAMP;
-         // Add $additional_delay to start time.
-         // If start + delay is next day : +1 day
-         $actualtime += $additional_delay;
-         $cache_duration = $this->getDurationsCache();
-         $dayofweek      = self::getDayNumberInWeek($actualtime);
-         $actualdate     = date('Y-m-d', $actualtime);
+       // End of working day
+        if ($end_of_working_day) {
+            $numberofdays = $delay / DAY_TIMESTAMP;
+           // Add $additional_delay to start time.
+           // If start + delay is next day : +1 day
+            $actualtime += $additional_delay;
+            $cache_duration = $this->getDurationsCache();
+            $dayofweek      = self::getDayNumberInWeek($actualtime);
+            $actualdate     = date('Y-m-d', $actualtime);
 
-         // Begin next day working
-         if ($this->isHoliday($actualdate)
-             || ($cache_duration[$dayofweek] == 0)) {
-
-            while ($this->isHoliday($actualdate)
-                   || ($cache_duration[$dayofweek] == 0)) {
-               $actualtime = self::getActualTime($actualtime, DAY_TIMESTAMP, $negative_delay);
-               $actualdate  = date('Y-m-d', $actualtime);
-               $dayofweek   = self::getDayNumberInWeek($actualtime);
+           // Begin next day working
+            if (
+                $this->isHoliday($actualdate)
+                || ($cache_duration[$dayofweek] == 0)
+            ) {
+                while (
+                    $this->isHoliday($actualdate)
+                    || ($cache_duration[$dayofweek] == 0)
+                ) {
+                    $actualtime = self::getActualTime($actualtime, DAY_TIMESTAMP, $negative_delay);
+                    $actualdate  = date('Y-m-d', $actualtime);
+                    $dayofweek   = self::getDayNumberInWeek($actualtime);
+                }
             }
-         }
 
-         while ($numberofdays > 0) {
-            if (!$this->isHoliday($actualdate)
-                && ($cache_duration[$dayofweek] > 0)) {
-               $numberofdays --;
+            while ($numberofdays > 0) {
+                if (
+                    !$this->isHoliday($actualdate)
+                    && ($cache_duration[$dayofweek] > 0)
+                ) {
+                    $numberofdays--;
+                }
+                $actualtime = self::getActualTime($actualtime, DAY_TIMESTAMP, $negative_delay);
+                $actualdate  = date('Y-m-d', $actualtime);
+                $dayofweek   = self::getDayNumberInWeek($actualtime);
             }
-            $actualtime = self::getActualTime($actualtime, DAY_TIMESTAMP, $negative_delay);
-            $actualdate  = date('Y-m-d', $actualtime);
-            $dayofweek   = self::getDayNumberInWeek($actualtime);
-         }
 
-         // Get next working day
-         if ($this->isHoliday($actualdate)
-             || ($cache_duration[$dayofweek] == 0)) {
-
-            while ($this->isHoliday($actualdate)
-                   || ($cache_duration[$dayofweek] == 0)) {
-               $actualtime = self::getActualTime($actualtime, DAY_TIMESTAMP, $negative_delay);
-               $actualdate  = date('Y-m-d', $actualtime);
-               $dayofweek   = self::getDayNumberInWeek($actualtime);
+           // Get next working day
+            if (
+                $this->isHoliday($actualdate)
+                || ($cache_duration[$dayofweek] == 0)
+            ) {
+                while (
+                    $this->isHoliday($actualdate)
+                    || ($cache_duration[$dayofweek] == 0)
+                ) {
+                    $actualtime = self::getActualTime($actualtime, DAY_TIMESTAMP, $negative_delay);
+                    $actualdate  = date('Y-m-d', $actualtime);
+                    $dayofweek   = self::getDayNumberInWeek($actualtime);
+                }
             }
-         }
 
-         $lastworkinghour = CalendarSegment::getLastWorkingHour($this->fields['id'], $dayofweek);
-         $actualtime      = strtotime(date('Y-m-d', $actualtime).' '.$lastworkinghour);
-         return date('Y-m-d H:i:s', $actualtime);
-      }
+            $lastworkinghour = CalendarSegment::getLastWorkingHour($this->fields['id'], $dayofweek);
+            $actualtime      = strtotime(date('Y-m-d', $actualtime) . ' ' . $lastworkinghour);
+            return date('Y-m-d H:i:s', $actualtime);
+        }
 
-      // Add additional delay to initial delay
-      $delay += $additional_delay;
+       // Add additional delay to initial delay
+        $delay += $additional_delay;
 
-      if ($work_in_days) { // only based on days
-         $cache_duration = $this->getDurationsCache();
+        if ($work_in_days) { // only based on days
+            $cache_duration = $this->getDurationsCache();
 
-         // Compute Real starting time
-         // If day is an holiday must start on the begin of next working day
-         $actualdate = date('Y-m-d', $actualtime);
-         $dayofweek  = self::getDayNumberInWeek($actualtime);
-         if ($this->isHoliday($actualdate)
-             || ($cache_duration[$dayofweek] == 0)) {
-
-            while ($this->isHoliday($actualdate)
-                   || ($cache_duration[$dayofweek] == 0)) {
-               $actualtime = self::getActualTime($actualtime, DAY_TIMESTAMP, $negative_delay);
-               $actualdate = date('Y-m-d', $actualtime);
-               $dayofweek  = self::getDayNumberInWeek($actualtime);
-            }
-            $firstworkhour = CalendarSegment::getFirstWorkingHour($this->fields['id'],
-                                                                  $dayofweek);
-            $actualtime    = strtotime($actualdate.' '.$firstworkhour);
-         }
-
-         while ($delay > 0) {
-            // Begin next day : do not take into account first day : must finish to a working day
-            $actualtime = self::getActualTime($actualtime, DAY_TIMESTAMP, $negative_delay);
+           // Compute Real starting time
+           // If day is an holiday must start on the begin of next working day
             $actualdate = date('Y-m-d', $actualtime);
             $dayofweek  = self::getDayNumberInWeek($actualtime);
-
-            if (!$this->isHoliday($actualdate)
-                && ($cache_duration[$dayofweek] > 0)) {
-               $delay -= DAY_TIMESTAMP;
+            if (
+                $this->isHoliday($actualdate)
+                || ($cache_duration[$dayofweek] == 0)
+            ) {
+                while (
+                    $this->isHoliday($actualdate)
+                    || ($cache_duration[$dayofweek] == 0)
+                ) {
+                    $actualtime = self::getActualTime($actualtime, DAY_TIMESTAMP, $negative_delay);
+                    $actualdate = date('Y-m-d', $actualtime);
+                    $dayofweek  = self::getDayNumberInWeek($actualtime);
+                }
+                $firstworkhour = CalendarSegment::getFirstWorkingHour(
+                    $this->fields['id'],
+                    $dayofweek
+                );
+                $actualtime    = strtotime($actualdate . ' ' . $firstworkhour);
             }
-            if ($delay < 0) { // delay done : if < 0 delete hours
-               $actualtime = self::getActualTime($actualtime, $delay, $negative_delay);
+
+            while ($delay > 0) {
+               // Begin next day : do not take into account first day : must finish to a working day
+                $actualtime = self::getActualTime($actualtime, DAY_TIMESTAMP, $negative_delay);
+                $actualdate = date('Y-m-d', $actualtime);
+                $dayofweek  = self::getDayNumberInWeek($actualtime);
+
+                if (
+                    !$this->isHoliday($actualdate)
+                    && ($cache_duration[$dayofweek] > 0)
+                ) {
+                    $delay -= DAY_TIMESTAMP;
+                }
+                if ($delay < 0) { // delay done : if < 0 delete hours
+                    $actualtime = self::getActualTime($actualtime, $delay, $negative_delay);
+                }
             }
-         }
 
-         // If > last working hour set last working hour
-         $dayofweek       = self::getDayNumberInWeek($actualtime);
-         $lastworkinghour = CalendarSegment::getLastWorkingHour($this->fields['id'], $dayofweek);
-         if ($lastworkinghour < date('H:i:s', $actualtime)) {
-            $actualtime   = strtotime(date('Y-m-d', $actualtime).' '.$lastworkinghour);
-         }
-
-         return date('Y-m-d H:i:s', $actualtime);
-      }
-
-      // else  // based on working hours
-      $cache_duration = $this->getDurationsCache();
-
-      // Only if segments exists
-      if (countElementsInTable('glpi_calendarsegments',
-                               ['calendars_id' => $this->fields['id']])) {
-         while ($delay >= 0) {
-            $actualdate = date('Y-m-d', $actualtime);
-            if (!$this->isHoliday($actualdate)) {
-               $dayofweek = self::getDayNumberInWeek($actualtime);
-               $beginhour = '00:00:00';
-
-               if ($actualdate == $datestart) { // First day cannot use cache
-                  $beginhour    = date('H:i:s', $timestart);
-                  $timeoftheday = CalendarSegment::getActiveTimeBetween($this->fields['id'],
-                                                                        $dayofweek, $beginhour,
-                                                                        '24:00:00');
-               } else {
-                  $timeoftheday = $cache_duration[$dayofweek];
-               }
-
-               if ($timeoftheday <= $delay && !$negative_delay
-                  || $timeoftheday >= $delay && $negative_delay) {
-                  // Delay is greater or equal than remaining time in day
-                  // -> pass to next day
-                  $actualtime = self::getActualTime($actualtime, DAY_TIMESTAMP, $negative_delay);
-                  $delay      -= $timeoftheday;
-               } else {
-                  // End of the delay in the day : get hours with this delay
-                  $endhour = CalendarSegment::addDelayInDay($this->fields['id'], $dayofweek,
-                                                            $beginhour, $delay);
-                  return $actualdate.' '.$endhour;
-               }
-
-            } else { // Holiday : pass to next day
-               $actualtime = self::getActualTime($actualtime, DAY_TIMESTAMP, $negative_delay);
+           // If > last working hour set last working hour
+            $dayofweek       = self::getDayNumberInWeek($actualtime);
+            $lastworkinghour = CalendarSegment::getLastWorkingHour($this->fields['id'], $dayofweek);
+            if ($lastworkinghour < date('H:i:s', $actualtime)) {
+                $actualtime   = strtotime(date('Y-m-d', $actualtime) . ' ' . $lastworkinghour);
             }
-         }
-      }
-      return false;
-   }
 
-   static function getActualTime($current_time, $number = 0, $negative = false) {
-      if ($negative) {
-         return $current_time - $number;
-      } else {
-         return $current_time + $number;
-      }
-   }
+            return date('Y-m-d H:i:s', $actualtime);
+        }
+
+       // else  // based on working hours
+        $cache_duration = $this->getDurationsCache();
+
+       // Only if segments exists
+        if (
+            countElementsInTable(
+                'glpi_calendarsegments',
+                ['calendars_id' => $this->fields['id']]
+            )
+        ) {
+            while ($delay >= 0) {
+                $actualdate = date('Y-m-d', $actualtime);
+                if (!$this->isHoliday($actualdate)) {
+                    $dayofweek = self::getDayNumberInWeek($actualtime);
+                    $beginhour = '00:00:00';
+
+                    if ($actualdate == $datestart) { // First day cannot use cache
+                        $beginhour    = date('H:i:s', $timestart);
+                        $timeoftheday = CalendarSegment::getActiveTimeBetween(
+                            $this->fields['id'],
+                            $dayofweek,
+                            $beginhour,
+                            '24:00:00'
+                        );
+                    } else {
+                        $timeoftheday = $cache_duration[$dayofweek];
+                    }
+
+                    if (
+                        $timeoftheday <= $delay && !$negative_delay
+                        || $timeoftheday >= $delay && $negative_delay
+                    ) {
+                         // Delay is greater or equal than remaining time in day
+                         // -> pass to next day
+                         $actualtime = self::getActualTime($actualtime, DAY_TIMESTAMP, $negative_delay);
+                         $delay      -= $timeoftheday;
+                    } else {
+                    // End of the delay in the day : get hours with this delay
+                        $endhour = CalendarSegment::addDelayInDay(
+                            $this->fields['id'],
+                            $dayofweek,
+                            $beginhour,
+                            $delay
+                        );
+                        return $actualdate . ' ' . $endhour;
+                    }
+                } else { // Holiday : pass to next day
+                    $actualtime = self::getActualTime($actualtime, DAY_TIMESTAMP, $negative_delay);
+                }
+            }
+        }
+        return false;
+    }
+
+    public static function getActualTime($current_time, $number = 0, $negative = false)
+    {
+        if ($negative) {
+            return $current_time - $number;
+        } else {
+            return $current_time + $number;
+        }
+    }
 
 
    /**
@@ -550,21 +606,22 @@ class Calendar extends CommonDropdown {
     *
     * @return boolean|array
    **/
-   function getDurationsCache() {
+    public function getDurationsCache()
+    {
 
-      if (!isset($this->fields['id'])) {
-         return false;
-      }
-      $cache_duration = importArrayFromDB($this->fields['cache_duration']);
+        if (!isset($this->fields['id'])) {
+            return false;
+        }
+        $cache_duration = importArrayFromDB($this->fields['cache_duration']);
 
-      // Invalid cache duration : recompute it
-      if (!isset($cache_duration[0])) {
-         $this->updateDurationCache($this->fields['id']);
-         $cache_duration = importArrayFromDB($this->fields['cache_duration']);
-      }
+       // Invalid cache duration : recompute it
+        if (!isset($cache_duration[0])) {
+            $this->updateDurationCache($this->fields['id']);
+            $cache_duration = importArrayFromDB($this->fields['cache_duration']);
+        }
 
-      return $cache_duration;
-   }
+        return $cache_duration;
+    }
 
 
    /**
@@ -572,19 +629,24 @@ class Calendar extends CommonDropdown {
     *
     * @return boolean|array
    **/
-   function getDaysDurations() {
+    public function getDaysDurations()
+    {
 
-      if (!isset($this->fields['id'])) {
-         return false;
-      }
+        if (!isset($this->fields['id'])) {
+            return false;
+        }
 
-      $results = [];
-      for ($i=0; $i<7; $i++) {
-         $results[$i] = CalendarSegment::getActiveTimeBetween($this->fields['id'], $i, '00:00:00',
-                                                              '24:00:00');
-      }
-      return $results;
-   }
+        $results = [];
+        for ($i = 0; $i < 7; $i++) {
+            $results[$i] = CalendarSegment::getActiveTimeBetween(
+                $this->fields['id'],
+                $i,
+                '00:00:00',
+                '24:00:00'
+            );
+        }
+        return $results;
+    }
 
 
    /**
@@ -594,17 +656,18 @@ class Calendar extends CommonDropdown {
     *
     * @return bool True if successful in updating the cache, otherwise returns false.
     */
-   function updateDurationCache($calendars_id) {
+    public function updateDurationCache($calendars_id)
+    {
 
-      if ($this->getFromDB($calendars_id)) {
-         $input = [
+        if ($this->getFromDB($calendars_id)) {
+            $input = [
             'id'             => $calendars_id,
             'cache_duration' => exportArrayToDB($this->getDaysDurations()),
-         ];
-         return $this->update($input);
-      }
-      return false;
-   }
+            ];
+            return $this->update($input);
+        }
+        return false;
+    }
 
 
    /**
@@ -614,11 +677,13 @@ class Calendar extends CommonDropdown {
     *
     * @return integer
     */
-   static function getDayNumberInWeek($date) {
-      return (int)date('w', $date);
-   }
+    public static function getDayNumberInWeek($date)
+    {
+        return (int)date('w', $date);
+    }
 
-   static function getIcon() {
-      return "far fa-calendar-alt";
-   }
+    public static function getIcon()
+    {
+        return "far fa-calendar-alt";
+    }
 }

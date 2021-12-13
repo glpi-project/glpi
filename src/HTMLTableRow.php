@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,50 +34,57 @@
 /**
  * @since 0.84
 **/
-class HTMLTableRow extends HTMLTableEntity {
+class HTMLTableRow extends HTMLTableEntity
+{
 
-   private $group;
-   private $empty              = true;
-   private $cells              = [];
-   private $numberOfSubRows    = 1;
-   private $linesWithAttributs = [];
+    private $group;
+    private $empty              = true;
+    private $cells              = [];
+    private $numberOfSubRows    = 1;
+    private $linesWithAttributs = [];
 
 
    /**
     * @param $group
    **/
-   function __construct($group) {
-      $this->group = $group;
-   }
+    public function __construct($group)
+    {
+        $this->group = $group;
+    }
 
 
-   function getGroup() {
-      return $this->group;
-   }
+    public function getGroup()
+    {
+        return $this->group;
+    }
 
 
-   function notEmpty() {
-      return !$this->empty;
-   }
+    public function notEmpty()
+    {
+        return !$this->empty;
+    }
 
 
-   function getNumberOfsubRows() {
-      return $this->numberOfSubRows;
-   }
+    public function getNumberOfsubRows()
+    {
+        return $this->numberOfSubRows;
+    }
 
 
-   function createAnotherRow() {
-      return $this->group->createRow();
-   }
+    public function createAnotherRow()
+    {
+        return $this->group->createRow();
+    }
 
 
    /**
     * @param $lineIndex
     * @param $attributs
    **/
-   function addAttributForLine($lineIndex, $attributs) {
-      $this->linesWithAttributs[$lineIndex] = $attributs;
-   }
+    public function addAttributForLine($lineIndex, $attributs)
+    {
+        $this->linesWithAttributs[$lineIndex] = $attributs;
+    }
 
 
    /**
@@ -85,118 +93,121 @@ class HTMLTableRow extends HTMLTableEntity {
     * @param $father    HTMLTableCell object (default NULL)
     * @param $item      CommonDBTM object: The item associated with the current cell (default NULL)
    **/
-   function addCell(HTMLTableHeader $header, $content, HTMLTableCell $father = null,
-                    CommonDBTM $item = null) {
+    public function addCell(
+        HTMLTableHeader $header,
+        $content,
+        HTMLTableCell $father = null,
+        CommonDBTM $item = null
+    ) {
 
-      if (!$this->group->haveHeader($header)) {
-         throw new \Exception('Unavailable header!');
-      }
+        if (!$this->group->haveHeader($header)) {
+            throw new \Exception('Unavailable header!');
+        }
 
-      $header_name = $header->getCompositeName();
-      if (!isset($this->cells[$header_name])) {
-         $this->cells[$header_name] = [];
-      }
+        $header_name = $header->getCompositeName();
+        if (!isset($this->cells[$header_name])) {
+            $this->cells[$header_name] = [];
+        }
 
-      $cell = new HTMLTableCell($this, $header, $content, $father, $item);
-      $this->cells[$header_name][] = $cell;
-      $this->empty = false;
-      return $cell;
-   }
+        $cell = new HTMLTableCell($this, $header, $content, $father, $item);
+        $this->cells[$header_name][] = $cell;
+        $this->empty = false;
+        return $cell;
+    }
 
 
-   function prepareDisplay() {
+    public function prepareDisplay()
+    {
 
-      if ($this->empty) {
-         return false;
-      }
+        if ($this->empty) {
+            return false;
+        }
 
-      // First, compute the total nomber of rows ...
-      $this->numberOfSubRows = 0;
-      foreach ($this->cells as $cellsOfHeader) {
-
-         if (isset($cellsOfHeader[0])) {
-            $header = $cellsOfHeader[0]->getHeader();
-            if (is_null($header->getFather())) {
-
-               $numberOfSubRowsPerHeader = 0;
-               foreach ($cellsOfHeader as $cell) {
-                  $cell->computeNumberOfLines();
-                  $numberOfSubRowsPerHeader += $cell->getNumberOfLines();
-               }
-               if ($this->numberOfSubRows < $numberOfSubRowsPerHeader) {
-                  $this->numberOfSubRows = $numberOfSubRowsPerHeader;
-               }
+       // First, compute the total nomber of rows ...
+        $this->numberOfSubRows = 0;
+        foreach ($this->cells as $cellsOfHeader) {
+            if (isset($cellsOfHeader[0])) {
+                $header = $cellsOfHeader[0]->getHeader();
+                if (is_null($header->getFather())) {
+                    $numberOfSubRowsPerHeader = 0;
+                    foreach ($cellsOfHeader as $cell) {
+                        $cell->computeNumberOfLines();
+                        $numberOfSubRowsPerHeader += $cell->getNumberOfLines();
+                    }
+                    if ($this->numberOfSubRows < $numberOfSubRowsPerHeader) {
+                        $this->numberOfSubRows = $numberOfSubRowsPerHeader;
+                    }
+                }
             }
-         }
-      }
+        }
 
-      // Then notify each cell and compute its starting row
-      foreach ($this->cells as $cellsOfHeader) {
+       // Then notify each cell and compute its starting row
+        foreach ($this->cells as $cellsOfHeader) {
+            if (isset($cellsOfHeader[0])) {
+                $header = $cellsOfHeader[0]->getHeader();
 
-         if (isset($cellsOfHeader[0])) {
-            $header = $cellsOfHeader[0]->getHeader();
+               // Only do this for cells that don't have father: they will propagate this to there sons
+                if (is_null($header->getFather())) {
+                    HTMLTableCell::updateCellSteps($cellsOfHeader, $this->numberOfSubRows);
 
-            // Only do this for cells that don't have father: they will propagate this to there sons
-            if (is_null($header->getFather())) {
-
-               HTMLTableCell::updateCellSteps($cellsOfHeader, $this->numberOfSubRows);
-
-               $start = 0;
-               foreach ($cellsOfHeader as $cell) {
-                  $cell->computeStartEnd($start);
-               }
+                    $start = 0;
+                    foreach ($cellsOfHeader as $cell) {
+                        $cell->computeStartEnd($start);
+                    }
+                }
             }
-         }
-      }
+        }
 
-      return true;
-   }
+        return true;
+    }
 
 
    /**
     * @param $headers
    **/
-   function displayRow($headers) {
+    public function displayRow($headers)
+    {
 
-      echo "\t<tbody";
-      $this->displayEntityAttributs();
-      echo ">\n";
-      for ($i = 0; $i < $this->numberOfSubRows; $i++) {
-         if (isset($this->linesWithAttributs[$i])) {
-            $options = $this->linesWithAttributs[$i];
-         } else {
-            $options = [];
-         }
-         echo "\t\t<tr class='tab_bg_1'>\n";
-         foreach ($headers as $header) {
-            $header_name = $header->getCompositeName();
-            if (isset($this->cells[$header_name])) {
-               $display = false;
-               foreach ($this->cells[$header_name] as $cell) {
-                  $display |= $cell->displayCell($i, $options);
-               }
-               if (!$display) {
-                  echo "\t\t\t<td colspan='".$header->getColSpan()."'";
-                  $header->displayEntityAttributs($options);
-                  echo "></td>\n";
-               }
+        echo "\t<tbody";
+        $this->displayEntityAttributs();
+        echo ">\n";
+        for ($i = 0; $i < $this->numberOfSubRows; $i++) {
+            if (isset($this->linesWithAttributs[$i])) {
+                $options = $this->linesWithAttributs[$i];
             } else {
-               echo "\t\t\t<td colspan='".$header->getColSpan()."'";
-               $header->displayEntityAttributs($options);
-               echo "></td>\n";
+                $options = [];
             }
-         }
-         echo "\t\t</tr>\n";
-      }
-      echo "\t</tbody>\n";
-   }
+            echo "\t\t<tr class='tab_bg_1'>\n";
+            foreach ($headers as $header) {
+                $header_name = $header->getCompositeName();
+                if (isset($this->cells[$header_name])) {
+                    $display = false;
+                    foreach ($this->cells[$header_name] as $cell) {
+                        $display |= $cell->displayCell($i, $options);
+                    }
+                    if (!$display) {
+                        echo "\t\t\t<td colspan='" . $header->getColSpan() . "'";
+                        $header->displayEntityAttributs($options);
+                        echo "></td>\n";
+                    }
+                } else {
+                    echo "\t\t\t<td colspan='" . $header->getColSpan() . "'";
+                    $header->displayEntityAttributs($options);
+                    echo "></td>\n";
+                }
+            }
+            echo "\t\t</tr>\n";
+        }
+        echo "\t</tbody>\n";
+    }
 
 
    /**
     * @param $name
     * @param $sub_name  (default NULL)
    */
-   function getHeaderByName($name, $sub_name = null) {
-      return $this->group->getHeaderByName($name, $sub_name);
-   }
+    public function getHeaderByName($name, $sub_name = null)
+    {
+        return $this->group->getHeaderByName($name, $sub_name);
+    }
 }

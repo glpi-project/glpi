@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,4 +31,6 @@
  * ---------------------------------------------------------------------
  */
 
-class HTMLTableCellFatherSameRow         extends \Exception {}
+class HTMLTableCellFatherSameRow extends \Exception
+{
+}

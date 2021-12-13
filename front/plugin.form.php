@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,21 +35,22 @@
  * @since 0.84
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("config", UPDATE);
 
 $plugin = new Plugin();
 
-if (isset($_POST['action'])
-    && isset($_POST['id'])) {
-
-   if (method_exists($plugin, $_POST['action'])) {
-      call_user_func([$plugin, $_POST['action']], $_POST['id']);
-   } else {
-      echo "Action ".$_POST['action']." undefined";
-   }
-   Html::back();
+if (
+    isset($_POST['action'])
+    && isset($_POST['id'])
+) {
+    if (method_exists($plugin, $_POST['action'])) {
+        call_user_func([$plugin, $_POST['action']], $_POST['id']);
+    } else {
+        echo "Action " . $_POST['action'] . " undefined";
+    }
+    Html::back();
 }
 
 Html::displayErrorAndDie('Lost');

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,62 +37,64 @@ use DbTestCase;
 
 /* Test for inc/savedsearch.class.php */
 
-class Lockedfield extends DbTestCase {
+class Lockedfield extends DbTestCase
+{
 
-   public function testWithComputer() {
-      $computer = new \Computer();
-      $cid = (int)$computer->add([
+    public function testWithComputer()
+    {
+        $computer = new \Computer();
+        $cid = (int)$computer->add([
          'name'         => 'Computer from inventory',
          'serial'       => '123456',
          'otherserial'  => '789012',
          'entities_id'  => 0,
          'is_dynamic'   => 1
-      ]);
-      $this->integer($cid)->isGreaterThan(0);
+        ]);
+        $this->integer($cid)->isGreaterThan(0);
 
-      $lockedfield = new \Lockedfield();
-      $this->boolean($lockedfield->isHandled($computer))->isTrue();
-      $this->array($lockedfield->getLocks($computer->getType(), $cid))->isEmpty();
+        $lockedfield = new \Lockedfield();
+        $this->boolean($lockedfield->isHandled($computer))->isTrue();
+        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isEmpty();
 
-      //update computer manually, to add a locked field
-      $this->boolean(
-         (bool)$computer->update(['id' => $cid, 'otherserial' => 'AZERTY'])
-      )->isTrue();
+       //update computer manually, to add a locked field
+        $this->boolean(
+            (bool)$computer->update(['id' => $cid, 'otherserial' => 'AZERTY'])
+        )->isTrue();
 
-      $this->boolean($computer->getFromDB($cid))->isTrue();
-      $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
+        $this->boolean($computer->getFromDB($cid))->isTrue();
+        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
 
-      //ensure new dynamic update does not override otherserial again
-      $this->boolean(
-         (bool)$computer->update([
+       //ensure new dynamic update does not override otherserial again
+        $this->boolean(
+            (bool)$computer->update([
             'id' => $cid,
             'otherserial'  => '789012',
             'is_dynamic'   => 1
-         ])
-      )->isTrue();
+            ])
+        )->isTrue();
 
-      $this->boolean($computer->getFromDB($cid))->isTrue();
-      $this->variable($computer->fields['otherserial'])->isEqualTo('AZERTY');
-      $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
+        $this->boolean($computer->getFromDB($cid))->isTrue();
+        $this->variable($computer->fields['otherserial'])->isEqualTo('AZERTY');
+        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
 
-      //ensure new dynamic update do not set new lock on regular update
-      $this->boolean(
-         (bool)$computer->update([
+       //ensure new dynamic update do not set new lock on regular update
+        $this->boolean(
+            (bool)$computer->update([
             'id' => $cid,
             'name'         => 'Computer name changed',
             'is_dynamic'   => 1
-         ])
-      )->isTrue();
+            ])
+        )->isTrue();
 
-      $this->boolean($computer->getFromDB($cid))->isTrue();
-      $this->variable($computer->fields['name'])->isEqualTo('Computer name changed');
-      $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
+        $this->boolean($computer->getFromDB($cid))->isTrue();
+        $this->variable($computer->fields['name'])->isEqualTo('Computer name changed');
+        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
 
-      //ensure regular update do work on locked field
-      $this->boolean(
-         (bool)$computer->update(['id' => $cid, 'otherserial' => 'QWERTY'])
-      )->isTrue();
-      $this->boolean($computer->getFromDB($cid))->isTrue();
-      $this->variable($computer->fields['otherserial'])->isEqualTo('QWERTY');
-   }
+       //ensure regular update do work on locked field
+        $this->boolean(
+            (bool)$computer->update(['id' => $cid, 'otherserial' => 'QWERTY'])
+        )->isTrue();
+        $this->boolean($computer->getFromDB($cid))->isTrue();
+        $this->variable($computer->fields['otherserial'])->isEqualTo('QWERTY');
+    }
 }

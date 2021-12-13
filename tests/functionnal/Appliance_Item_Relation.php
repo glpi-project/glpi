@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,76 +35,79 @@ namespace tests\units;
 
 use DbTestCase;
 
-class Appliance_Item_Relation extends DbTestCase {
+class Appliance_Item_Relation extends DbTestCase
+{
 
-   public function testGetForbiddenStandardMassiveAction() {
-      $this->newTestedInstance();
-      $this->array(
-         $this->testedInstance->getForbiddenStandardMassiveAction()
-      )->isIdenticalTo(['clone'/*, 'update', 'CommonDBConnexity:unaffect', 'CommonDBConnexity:affect'*/]);
-   }
+    public function testGetForbiddenStandardMassiveAction()
+    {
+        $this->newTestedInstance();
+        $this->array(
+            $this->testedInstance->getForbiddenStandardMassiveAction()
+        )->isIdenticalTo(['clone'/*, 'update', 'CommonDBConnexity:unaffect', 'CommonDBConnexity:affect'*/]);
+    }
 
-   public function testCountForApplianceItem() {
-      global $DB;
+    public function testCountForApplianceItem()
+    {
+        global $DB;
 
-      $appliance = new \Appliance;
+        $appliance = new \Appliance();
 
-      $appliances_id = (int)$appliance->add([
+        $appliances_id = (int)$appliance->add([
          'name'   => 'Test appliance'
-      ]);
-      $this->integer($appliances_id)->isGreaterThan(0);
+        ]);
+        $this->integer($appliances_id)->isGreaterThan(0);
 
-      $items_id = getItemByTypeName('Computer', '_test_pc01', true);
-      $input = [
+        $items_id = getItemByTypeName('Computer', '_test_pc01', true);
+        $input = [
          'appliances_id'   => $appliances_id,
          'itemtype'        => 'Computer',
          'items_id'        => $items_id
-      ];
-      $appitem = new \Appliance_Item();
-      $appliances_items_id = $appitem->add($input);
-      $this->integer($appliances_items_id)->isGreaterThan(0);
+        ];
+        $appitem = new \Appliance_Item();
+        $appliances_items_id = $appitem->add($input);
+        $this->integer($appliances_items_id)->isGreaterThan(0);
 
-      $input = [
+        $input = [
          'appliances_items_id'   => $appliances_items_id,
          'itemtype'              => 'Location',
          'items_id'              => getItemByTypeName('Location', '_location01', true)
-      ];
-      $this
+        ];
+        $this
          ->given($this->newTestedInstance)
             ->then
                ->integer($this->testedInstance->add($input))
                ->isGreaterThan(0);
 
-      $iterator = $DB->request([
+        $iterator = $DB->request([
          'FROM'   => \Appliance_Item_Relation::getTable(),
          'WHERE'  => ['appliances_items_id' => $appliances_items_id]
-      ]);
+        ]);
 
-      $this->boolean($appliance->getFromDB($appliances_id))->isTrue();
-      $this->boolean($appitem->getFromDB($appliances_items_id))->isTrue();
-      //not logged, no Appliances types
-      $this->integer(\Appliance_Item_Relation::countForMainItem($appitem))->isIdenticalTo(0);
+        $this->boolean($appliance->getFromDB($appliances_id))->isTrue();
+        $this->boolean($appitem->getFromDB($appliances_items_id))->isTrue();
+       //not logged, no Appliances types
+        $this->integer(\Appliance_Item_Relation::countForMainItem($appitem))->isIdenticalTo(0);
 
-      $this->login();
-      $this->setEntity(0, true); //locations are in root entity not recursive
-      $this->integer(\Appliance_Item_Relation::countForMainItem($appitem))->isIdenticalTo(1);
-      $relations = \Appliance_Item_Relation::getForApplianceItem($appliances_items_id);
-      $this->array($relations)->hasSize(1);
-      $this->string(array_pop($relations))->contains('_location01');
+        $this->login();
+        $this->setEntity(0, true); //locations are in root entity not recursive
+        $this->integer(\Appliance_Item_Relation::countForMainItem($appitem))->isIdenticalTo(1);
+        $relations = \Appliance_Item_Relation::getForApplianceItem($appliances_items_id);
+        $this->array($relations)->hasSize(1);
+        $this->string(array_pop($relations))->contains('_location01');
 
-      $this->boolean($appliance->delete(['id' => $appliances_id], true))->isTrue();
-      $iterator = $DB->request([
+        $this->boolean($appliance->delete(['id' => $appliances_id], true))->isTrue();
+        $iterator = $DB->request([
          'FROM'   => \Appliance_Item::getTable(),
          'WHERE'  => ['appliances_id' => $appliances_id]
-      ]);
-      $this->integer(count($iterator))->isIdenticalTo(0);
+        ]);
+        $this->integer(count($iterator))->isIdenticalTo(0);
 
-      $iterator = $DB->request([
+        $iterator = $DB->request([
          'FROM'   => \Appliance_Item_Relation::getTable(),
          'WHERE'  => ['appliances_items_id' => $appliances_items_id]
-      ]);
-      $this->integer(count($iterator))->isIdenticalTo(0);
+        ]);
+        $this->integer(count($iterator))->isIdenticalTo(0);
 
-      $this->array(\Appliance_Item_Relation::getForApplianceItem($appliances_items_id))->isEmpty();
-   }
+        $this->array(\Appliance_Item_Relation::getForApplianceItem($appliances_items_id))->isEmpty();
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,7 +34,7 @@
 use Glpi\Event;
 
 if (!defined('GLPI_ROOT')) {
-   include ('../inc/includes.php');
+    include('../inc/includes.php');
 }
 
 $link = new Ticket_User();
@@ -43,35 +44,41 @@ Session ::checkLoginUser();
 Html::popHeader(__('Email followup'), $_SERVER['PHP_SELF']);
 
 if (isset($_POST["update"])) {
-   $link->check($_POST["id"], UPDATE);
+    $link->check($_POST["id"], UPDATE);
 
-   if ($link->update($_POST)) {
-      echo "<script type='text/javascript' >\n";
-      echo "window.parent.location.reload();";
-      echo "</script>";
-   } else {
-      Html::back();
-   }
-
+    if ($link->update($_POST)) {
+        echo "<script type='text/javascript' >\n";
+        echo "window.parent.location.reload();";
+        echo "</script>";
+    } else {
+        Html::back();
+    }
 } else if (isset($_POST['delete'])) {
-   $link->check($_POST['id'], DELETE);
-   $link->delete($_POST);
+    $link->check($_POST['id'], DELETE);
+    $link->delete($_POST);
 
-   Event::log($link->fields['tickets_id'], "ticket", 4, "tracking",
-              //TRANS: %s is the user login
-              sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
-   if ($item->can($link->fields["tickets_id"], READ)) {
-      Html::redirect(Ticket::getFormURLWithID($link->fields['tickets_id']));
-   }
-   Session::addMessageAfterRedirect(__('You have been redirected because you no longer have access to this item'),
-                                    true, ERROR);
+    Event::log(
+        $link->fields['tickets_id'],
+        "ticket",
+        4,
+        "tracking",
+        //TRANS: %s is the user login
+        sprintf(__('%s deletes an actor'), $_SESSION["glpiname"])
+    );
+    if ($item->can($link->fields["tickets_id"], READ)) {
+        Html::redirect(Ticket::getFormURLWithID($link->fields['tickets_id']));
+    }
+    Session::addMessageAfterRedirect(
+        __('You have been redirected because you no longer have access to this item'),
+        true,
+        ERROR
+    );
 
-   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.php");
-
+    Html::redirect($CFG_GLPI["root_doc"] . "/front/ticket.php");
 } else if (isset($_GET["id"])) {
-   $link->showUserNotificationForm($_GET["id"]);
+    $link->showUserNotificationForm($_GET["id"]);
 } else {
-   Html::displayErrorAndDie('Lost');
+    Html::displayErrorAndDie('Lost');
 }
 
 Html::popFooter();

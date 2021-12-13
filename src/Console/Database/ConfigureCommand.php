@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,25 +36,28 @@ namespace Glpi\Console\Database;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ConfigureCommand extends AbstractConfigureCommand {
+class ConfigureCommand extends AbstractConfigureCommand
+{
 
-   protected function configure() {
+    protected function configure()
+    {
 
-      parent::configure();
+        parent::configure();
 
-      $this->setName('glpi:database:configure');
-      $this->setAliases(['db:configure']);
-      $this->setDescription('Define database configuration');
-   }
+        $this->setName('glpi:database:configure');
+        $this->setAliases(['db:configure']);
+        $this->setDescription('Define database configuration');
+    }
 
-   protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
 
-      $result = $this->configureDatabase($input, $output);
+        $result = $this->configureDatabase($input, $output);
 
-      if (self::ABORTED_BY_USER === $result) {
-         return 0; // Considered as success
-      }
+        if (self::ABORTED_BY_USER === $result) {
+            return 0; // Considered as success
+        }
 
-      return $result;
-   }
+        return $result;
+    }
 }

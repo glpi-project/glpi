@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -38,50 +39,54 @@ use Glpi\Inventory\Conf;
 
 class Bios extends Device
 {
-   public function __construct(CommonDBTM $item, array $data = null) {
-      parent::__construct($item, $data, 'Item_DeviceFirmware');
-   }
+    public function __construct(CommonDBTM $item, array $data = null)
+    {
+        parent::__construct($item, $data, 'Item_DeviceFirmware');
+    }
 
-   public function prepare() :array {
-      $type = new DeviceFirmwareType();
-      $type->getFromDBByCrit([
+    public function prepare(): array
+    {
+        $type = new DeviceFirmwareType();
+        $type->getFromDBByCrit([
          'name' => 'BIOS'
-      ]);
-      $type_id = $type->getID();
+        ]);
+        $type_id = $type->getID();
 
-      $mapping = [
+        $mapping = [
          'bdate'           => 'date',
          'bversion'        => 'version',
          'bmanufacturer'   => 'manufacturers_id',
          'biosserial'      => 'serial'
-      ];
+        ];
 
-      $val = (object)$this->data;
-      foreach ($mapping as $origin => $dest) {
-         if (property_exists($val, $origin)) {
-            $val->$dest = $val->$origin;
-         }
-      }
+        $val = (object)$this->data;
+        foreach ($mapping as $origin => $dest) {
+            if (property_exists($val, $origin)) {
+                $val->$dest = $val->$origin;
+            }
+        }
 
-      $val->designation = sprintf(
-         __('%1$s BIOS'),
-         property_exists($val, 'bmanufacturer') ? $val->bmanufacturer : ''
-      );
-      $val->devicefirmwaretypes_id = $type_id;
+        $val->designation = sprintf(
+            __('%1$s BIOS'),
+            property_exists($val, 'bmanufacturer') ? $val->bmanufacturer : ''
+        );
+        $val->devicefirmwaretypes_id = $type_id;
 
-      $this->data = [$val];
-      return $this->data;
-   }
+        $this->data = [$val];
+        return $this->data;
+    }
 
-   public function handle() {
-      if (isset($this->main_item) && $this->main_item->isPartial()) {
-         return;
-      }
+    public function handle()
+    {
+        if (isset($this->main_item) && $this->main_item->isPartial()) {
+            return;
+        }
 
-      parent::handle();
-   }
+        parent::handle();
+    }
 
-   public function checkConf(Conf $conf): bool {
-      return true;
-   }
+    public function checkConf(Conf $conf): bool
+    {
+        return true;
+    }
 }

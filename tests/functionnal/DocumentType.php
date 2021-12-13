@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,30 +38,32 @@ use Toolbox;
 
 /* Test for inc/documenttype.class.php */
 
-class DocumentType extends DbTestCase {
+class DocumentType extends DbTestCase
+{
 
-   public function testGetUploadableFilePattern() {
-      $doctype = new \DocumentType();
+    public function testGetUploadableFilePattern()
+    {
+        $doctype = new \DocumentType();
 
-      // Clear types to prevent test to be impacted by potential default types changes
-      $this->boolean($doctype->deleteByCriteria(['1']))->isTrue();
+       // Clear types to prevent test to be impacted by potential default types changes
+        $this->boolean($doctype->deleteByCriteria(['1']))->isTrue();
 
-      $this->integer((int)$doctype->add(Toolbox::addslashes_deep(['name' => 'JPG' ,'ext' => '/\.jpe?g$/'])))->isGreaterThan(0);
-      $this->integer((int)$doctype->add(Toolbox::addslashes_deep(['name' => 'DOC' ,'ext' => 'doc'])))->isGreaterThan(0);
-      $this->integer((int)$doctype->add(Toolbox::addslashes_deep(['name' => 'XML' ,'ext' => 'xml'])))->isGreaterThan(0);
-      $this->integer((int)$doctype->add(Toolbox::addslashes_deep(['name' => 'Tarball' ,'ext' => 'tar.gz'])))->isGreaterThan(0);
+        $this->integer((int)$doctype->add(Toolbox::addslashes_deep(['name' => 'JPG' ,'ext' => '/\.jpe?g$/'])))->isGreaterThan(0);
+        $this->integer((int)$doctype->add(Toolbox::addslashes_deep(['name' => 'DOC' ,'ext' => 'doc'])))->isGreaterThan(0);
+        $this->integer((int)$doctype->add(Toolbox::addslashes_deep(['name' => 'XML' ,'ext' => 'xml'])))->isGreaterThan(0);
+        $this->integer((int)$doctype->add(Toolbox::addslashes_deep(['name' => 'Tarball' ,'ext' => 'tar.gz'])))->isGreaterThan(0);
 
-      // Validate generated pattern
-      $pattern = \DocumentType::getUploadableFilePattern();
-      $this->string($pattern)->isIdenticalTo('/((\.jpe?g$)|\.doc$|\.xml$|\.tar\.gz$)/i');
+       // Validate generated pattern
+        $pattern = \DocumentType::getUploadableFilePattern();
+        $this->string($pattern)->isIdenticalTo('/((\.jpe?g$)|\.doc$|\.xml$|\.tar\.gz$)/i');
 
-      // Validate matches
-      $this->integer(preg_match($pattern, 'test.jpg'))->isEqualTo(1);
-      $this->integer(preg_match($pattern, 'test.jpeg'))->isEqualTo(1);
-      $this->integer(preg_match($pattern, 'test.jpag'))->isEqualTo(0);
-      $this->integer(preg_match($pattern, 'test.doc'))->isEqualTo(1);
-      $this->integer(preg_match($pattern, 'test.xml'))->isEqualTo(1);
-      $this->integer(preg_match($pattern, 'testxml'))->isEqualTo(0);
-      $this->integer(preg_match($pattern, 'test.tar.gz'))->isEqualTo(1);
-   }
+       // Validate matches
+        $this->integer(preg_match($pattern, 'test.jpg'))->isEqualTo(1);
+        $this->integer(preg_match($pattern, 'test.jpeg'))->isEqualTo(1);
+        $this->integer(preg_match($pattern, 'test.jpag'))->isEqualTo(0);
+        $this->integer(preg_match($pattern, 'test.doc'))->isEqualTo(1);
+        $this->integer(preg_match($pattern, 'test.xml'))->isEqualTo(1);
+        $this->integer(preg_match($pattern, 'testxml'))->isEqualTo(0);
+        $this->integer(preg_match($pattern, 'test.tar.gz'))->isEqualTo(1);
+    }
 }

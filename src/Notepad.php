@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,72 +36,84 @@
  *
  * @since 0.85
 **/
-class Notepad extends CommonDBChild {
+class Notepad extends CommonDBChild
+{
 
    // From CommonDBChild
-   static public $itemtype        = 'itemtype';
-   static public $items_id        = 'items_id';
-   public $dohistory              = false;
-   public $auto_message_on_action = false; // Link in message can't work'
-   static public $logs_for_parent = true;
+    public static $itemtype        = 'itemtype';
+    public static $items_id        = 'items_id';
+    public $dohistory              = false;
+    public $auto_message_on_action = false; // Link in message can't work'
+    public static $logs_for_parent = true;
 
 
-   static function getTypeName($nb = 0) {
-      //TRANS: Always plural
-      return _n('Note', 'Notes', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+       //TRANS: Always plural
+        return _n('Note', 'Notes', $nb);
+    }
 
 
-   function getLogTypeID() {
-      return [$this->fields['itemtype'], $this->fields['items_id']];
-   }
+    public function getLogTypeID()
+    {
+        return [$this->fields['itemtype'], $this->fields['items_id']];
+    }
 
 
-   function canCreateItem() {
+    public function canCreateItem()
+    {
 
-      if (isset($this->fields['itemtype'])
-          && ($item = getItemForItemtype($this->fields['itemtype']))) {
-         return Session::haveRight($item::$rightname, UPDATENOTE);
-      }
-      return false;
-   }
-
-
-   function canUpdateItem() {
-
-      if (isset($this->fields['itemtype'])
-          && ($item = getItemForItemtype($this->fields['itemtype']))) {
-         return Session::haveRight($item::$rightname, UPDATENOTE);
-      }
-      return false;
-   }
+        if (
+            isset($this->fields['itemtype'])
+            && ($item = getItemForItemtype($this->fields['itemtype']))
+        ) {
+            return Session::haveRight($item::$rightname, UPDATENOTE);
+        }
+        return false;
+    }
 
 
-   function prepareInputForAdd($input) {
+    public function canUpdateItem()
+    {
 
-      $input['users_id']             = Session::getLoginUserID();
-      $input['users_id_lastupdater'] = Session::getLoginUserID();
-      return $input;
-   }
+        if (
+            isset($this->fields['itemtype'])
+            && ($item = getItemForItemtype($this->fields['itemtype']))
+        ) {
+            return Session::haveRight($item::$rightname, UPDATENOTE);
+        }
+        return false;
+    }
 
 
-   function prepareInputForUpdate($input) {
+    public function prepareInputForAdd($input)
+    {
 
-      $input['users_id_lastupdater'] = Session::getLoginUserID();
-      return $input;
-   }
+        $input['users_id']             = Session::getLoginUserID();
+        $input['users_id_lastupdater'] = Session::getLoginUserID();
+        return $input;
+    }
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (Session::haveRight($item::$rightname, READNOTE)) {
-         $nb = 0;
-         if ($_SESSION['glpishow_count_on_tabs']) {
-            $nb = self::countForItem($item);
-         }
-         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
-      }
-      return false;
-   }
+    public function prepareInputForUpdate($input)
+    {
+
+        $input['users_id_lastupdater'] = Session::getLoginUserID();
+        return $input;
+    }
+
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
+
+        if (Session::haveRight($item::$rightname, READNOTE)) {
+            $nb = 0;
+            if ($_SESSION['glpishow_count_on_tabs']) {
+                $nb = self::countForItem($item);
+            }
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+        }
+        return false;
+    }
 
 
    /**
@@ -108,9 +121,10 @@ class Notepad extends CommonDBChild {
     * @param $tabnum          (default 1)
     * @param $withtemplate    (default 0)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-      static::showForItem($item, $withtemplate);
-   }
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+        static::showForItem($item, $withtemplate);
+    }
 
 
    /**
@@ -118,22 +132,26 @@ class Notepad extends CommonDBChild {
     *
     * @return number
    **/
-   static function countForItem(CommonDBTM $item) {
+    public static function countForItem(CommonDBTM $item)
+    {
 
-      return countElementsInTable('glpi_notepads',
-                                  ['itemtype' => $item->getType(),
-                                   'items_id' => $item->getID()]);
-   }
+        return countElementsInTable(
+            'glpi_notepads',
+            ['itemtype' => $item->getType(),
+            'items_id' => $item->getID()]
+        );
+    }
 
 
    /**
     * @param $item   CommonDBTM object
    **/
-   static function getAllForItem(CommonDBTM $item) {
-      global $DB;
+    public static function getAllForItem(CommonDBTM $item)
+    {
+        global $DB;
 
-      $data = [];
-      $iterator = $DB->request([
+        $data = [];
+        $iterator = $DB->request([
          'SELECT'    => [
             'glpi_notepads.*',
             'glpi_users.picture'
@@ -152,25 +170,26 @@ class Notepad extends CommonDBChild {
             'items_id'  => $item->getID()
          ],
          'ORDERBY'   => 'date_mod DESC'
-      ]);
+        ]);
 
-      foreach ($iterator as $note) {
-         $data[] = $note;
-      }
-      return $data;
-   }
+        foreach ($iterator as $note) {
+            $data[] = $note;
+        }
+        return $data;
+    }
 
 
-   static public function rawSearchOptionsToAdd() {
-      $tab = [];
-      $name = _n('Note', 'Notes', Session::getPluralNumber());
+    public static function rawSearchOptionsToAdd()
+    {
+        $tab = [];
+        $name = _n('Note', 'Notes', Session::getPluralNumber());
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => 'notepad',
          'name'               => $name
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '200',
          'table'              => 'glpi_notepads',
          'field'              => 'content',
@@ -182,9 +201,9 @@ class Notepad extends CommonDBChild {
          'forcegroupby'       => true,
          'splititems'         => true,
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '201',
          'table'              => 'glpi_notepads',
          'field'              => 'date_creation',
@@ -195,9 +214,9 @@ class Notepad extends CommonDBChild {
          ],
          'forcegroupby'       => true,
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '202',
          'table'              => 'glpi_users',
          'field'              => 'name',
@@ -213,9 +232,9 @@ class Notepad extends CommonDBChild {
                ]
             ]
          ]
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '203',
          'table'              => 'glpi_notepads',
          'field'              => 'date_mod',
@@ -226,9 +245,9 @@ class Notepad extends CommonDBChild {
          ],
          'forcegroupby'       => true,
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '204',
          'table'              => 'glpi_users',
          'field'              => 'name',
@@ -245,10 +264,10 @@ class Notepad extends CommonDBChild {
                ]
             ]
          ]
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
    /**
     * Show notepads for an item
@@ -256,119 +275,130 @@ class Notepad extends CommonDBChild {
     * @param $item                  CommonDBTM object
     * @param $withtemplate integer  template or basic item (default 0)
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate = 0) {
-      if (!Session::haveRight($item::$rightname, READNOTE)) {
-         return false;
-      }
-      $notes   = static::getAllForItem($item);
-      $rand    = mt_rand();
-      $canedit = Session::haveRight($item::$rightname, UPDATENOTE);
+    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    {
+        if (!Session::haveRight($item::$rightname, READNOTE)) {
+            return false;
+        }
+        $notes   = static::getAllForItem($item);
+        $rand    = mt_rand();
+        $canedit = Session::haveRight($item::$rightname, UPDATENOTE);
 
-      $showuserlink = 0;
-      if (User::canView()) {
-         $showuserlink = 1;
-      }
+        $showuserlink = 0;
+        if (User::canView()) {
+            $showuserlink = 1;
+        }
 
-      if ($canedit
-          && !(!empty($withtemplate) && ($withtemplate == 2))) {
-         echo "<div class='boxnote center'>";
+        if (
+            $canedit
+            && !(!empty($withtemplate) && ($withtemplate == 2))
+        ) {
+            echo "<div class='boxnote center'>";
 
-         echo "<div class='boxnoteleft'></div>";
-         echo "<form name='addnote_form$rand' id='addnote_form$rand' ";
-         echo " method='post' action='".Toolbox::getItemTypeFormURL('Notepad')."'>";
-         echo Html::hidden('itemtype', ['value' => $item->getType()]);
-         echo Html::hidden('items_id', ['value' => $item->getID()]);
-
-         echo "<div class='boxnotecontent'>";
-         echo "<textarea name='content' class='form-control' rows='7'></textarea>";
-         echo "</div>"; // box notecontent
-
-         echo "<div class='boxnoteright'><br>";
-         echo Html::submit(_x('button', 'Add'), ['name' => 'add', 'class' => 'btn btn-primary']);
-         echo "</div>";
-
-         Html::closeForm();
-         echo "</div>"; // boxnote
-      }
-
-      if (count($notes)) {
-         foreach ($notes as $note) {
-            $id = 'note'.$note['id'].$rand;
-            $classtoadd = '';
-            if ($canedit) {
-               $classtoadd = " pointer";
-            }
-            echo "<div class='boxnote' id='view$id'>";
-
-            echo "<div class='boxnoteleft'>";
-            echo "<img class='user_picture_verysmall' alt=\""._sn('Picture', 'Pictures', 1)."\" src='".
-                User::getThumbnailURLForPicture($note['picture'])."'>";
-            echo "</div>"; // boxnoteleft
+            echo "<div class='boxnoteleft'></div>";
+            echo "<form name='addnote_form$rand' id='addnote_form$rand' ";
+            echo " method='post' action='" . Toolbox::getItemTypeFormURL('Notepad') . "'>";
+            echo Html::hidden('itemtype', ['value' => $item->getType()]);
+            echo Html::hidden('items_id', ['value' => $item->getID()]);
 
             echo "<div class='boxnotecontent'>";
+            echo "<textarea name='content' class='form-control' rows='7'></textarea>";
+            echo "</div>"; // box notecontent
 
-            echo "<div class='boxnotefloatright'>";
-            $username = NOT_AVAILABLE;
-            if ($note['users_id_lastupdater']) {
-               $username = getUserName($note['users_id_lastupdater'], $showuserlink);
-            }
-            $update = sprintf(__('Last update by %1$s on %2$s'), $username,
-                              Html::convDateTime($note['date_mod']));
-            $username = NOT_AVAILABLE;
-            if ($note['users_id']) {
-               $username = getUserName($note['users_id'], $showuserlink);
-            }
-            $create = sprintf(__('Create by %1$s on %2$s'), $username,
-                              Html::convDateTime($note['date_creation']));
-            printf(__('%1$s / %2$s'), $update, $create);
-            echo "</div>"; // floatright
+            echo "<div class='boxnoteright'><br>";
+            echo Html::submit(_x('button', 'Add'), ['name' => 'add', 'class' => 'btn btn-primary']);
+            echo "</div>";
 
-            echo "<div class='boxnotetext $classtoadd' ";
-            if ($canedit) {
-               echo "onclick=\"".Html::jsHide("view$id")." ".
-                              Html::jsShow("edit$id")."\"";
-            }
-            echo ">";
-            $content = nl2br($note['content']);
-            if (empty($content)) {
-               $content = NOT_AVAILABLE;
-            }
-            echo $content.'</div>'; // boxnotetext
-
-            echo "</div>"; // boxnotecontent
-            echo "<div class='boxnoteright'>";
-            if ($canedit) {
-               Html::showSimpleForm(Toolbox::getItemTypeFormURL('Notepad'),
-                                    ['purge' => 'purge'],
-                                    _x('button', 'Delete permanently'),
-                                    ['id'   => $note['id']],
-                                    'ti ti-circle-x',
-                                    '',
-                                     __('Confirm the final deletion?'));
-            }
-            echo "</div>"; // boxnoteright
+            Html::closeForm();
             echo "</div>"; // boxnote
+        }
 
-            if ($canedit) {
-                echo "<div class='boxnote starthidden' id='edit$id'>";
-                echo "<form name='update_form$id$rand' id='update_form$id$rand' ";
-                echo " method='post' action='".Toolbox::getItemTypeFormURL('Notepad')."'>";
+        if (count($notes)) {
+            foreach ($notes as $note) {
+                $id = 'note' . $note['id'] . $rand;
+                $classtoadd = '';
+                if ($canedit) {
+                    $classtoadd = " pointer";
+                }
+                echo "<div class='boxnote' id='view$id'>";
 
-                echo "<div class='boxnoteleft'></div>";
+                echo "<div class='boxnoteleft'>";
+                echo "<img class='user_picture_verysmall' alt=\"" . _sn('Picture', 'Pictures', 1) . "\" src='" .
+                User::getThumbnailURLForPicture($note['picture']) . "'>";
+                echo "</div>"; // boxnoteleft
+
                 echo "<div class='boxnotecontent'>";
-                echo Html::hidden('id', ['value' => $note['id']]);
-                echo "<textarea name='content' rows=5 cols=100>".$note['content']."</textarea>";
+
+                echo "<div class='boxnotefloatright'>";
+                $username = NOT_AVAILABLE;
+                if ($note['users_id_lastupdater']) {
+                    $username = getUserName($note['users_id_lastupdater'], $showuserlink);
+                }
+                $update = sprintf(
+                    __('Last update by %1$s on %2$s'),
+                    $username,
+                    Html::convDateTime($note['date_mod'])
+                );
+                $username = NOT_AVAILABLE;
+                if ($note['users_id']) {
+                     $username = getUserName($note['users_id'], $showuserlink);
+                }
+                $create = sprintf(
+                    __('Create by %1$s on %2$s'),
+                    $username,
+                    Html::convDateTime($note['date_creation'])
+                );
+                printf(__('%1$s / %2$s'), $update, $create);
+                echo "</div>"; // floatright
+
+                echo "<div class='boxnotetext $classtoadd' ";
+                if ($canedit) {
+                     echo "onclick=\"" . Html::jsHide("view$id") . " " .
+                              Html::jsShow("edit$id") . "\"";
+                }
+                echo ">";
+                $content = nl2br($note['content']);
+                if (empty($content)) {
+                    $content = NOT_AVAILABLE;
+                }
+                echo $content . '</div>'; // boxnotetext
+
                 echo "</div>"; // boxnotecontent
-
-                echo "<div class='boxnoteright'><br>";
-                echo Html::submit(_x('button', 'Update'), ['name' => 'update']);
+                echo "<div class='boxnoteright'>";
+                if ($canedit) {
+                    Html::showSimpleForm(
+                        Toolbox::getItemTypeFormURL('Notepad'),
+                        ['purge' => 'purge'],
+                        _x('button', 'Delete permanently'),
+                        ['id'   => $note['id']],
+                        'ti ti-circle-x',
+                        '',
+                        __('Confirm the final deletion?')
+                    );
+                }
                 echo "</div>"; // boxnoteright
-
-                Html::closeForm();
                 echo "</div>"; // boxnote
+
+                if ($canedit) {
+                    echo "<div class='boxnote starthidden' id='edit$id'>";
+                    echo "<form name='update_form$id$rand' id='update_form$id$rand' ";
+                    echo " method='post' action='" . Toolbox::getItemTypeFormURL('Notepad') . "'>";
+
+                    echo "<div class='boxnoteleft'></div>";
+                    echo "<div class='boxnotecontent'>";
+                    echo Html::hidden('id', ['value' => $note['id']]);
+                    echo "<textarea name='content' rows=5 cols=100>" . $note['content'] . "</textarea>";
+                    echo "</div>"; // boxnotecontent
+
+                    echo "<div class='boxnoteright'><br>";
+                    echo Html::submit(_x('button', 'Update'), ['name' => 'update']);
+                    echo "</div>"; // boxnoteright
+
+                    Html::closeForm();
+                    echo "</div>"; // boxnote
+                }
             }
-         }
-      }
-      return true;
-   }
+        }
+        return true;
+    }
 }

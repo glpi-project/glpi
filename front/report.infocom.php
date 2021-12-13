@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,25 +31,26 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("reports", READ);
 
 Html::header(Report::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "report");
 
 if (empty($_POST["date1"]) && empty($_POST["date2"])) {
-   $year           = date("Y")-1;
-   $_POST["date1"] = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), $year));
-   $_POST["date2"] = date("Y-m-d");
+    $year           = date("Y") - 1;
+    $_POST["date1"] = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), $year));
+    $_POST["date2"] = date("Y-m-d");
 }
 
-if (!empty($_POST["date1"])
+if (
+    !empty($_POST["date1"])
     && !empty($_POST["date2"])
-    && (strcmp($_POST["date2"], $_POST["date1"]) < 0)) {
-
-   $tmp            = $_POST["date1"];
-   $_POST["date1"] = $_POST["date2"];
-   $_POST["date2"] = $tmp;
+    && (strcmp($_POST["date2"], $_POST["date1"]) < 0)
+) {
+    $tmp            = $_POST["date1"];
+    $_POST["date1"] = $_POST["date2"];
+    $_POST["date2"] = $tmp;
 }
 
 $stat = new Stat();
@@ -60,14 +62,14 @@ $chart_opts =  [
 
 Report::title();
 
-echo "<div class='center'><form method='post' name='form' action='".$_SERVER['PHP_SELF']."'>";
+echo "<div class='center'><form method='post' name='form' action='" . $_SERVER['PHP_SELF'] . "'>";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
-echo "<td class='right'>".__('Start date')."</td><td>";
+echo "<td class='right'>" . __('Start date') . "</td><td>";
 Html::showDateField("date1", ['value' => $_POST["date1"]]);
 echo "</td><td rowspan='2' class='center'>";
-echo "<input type='submit' class='btn btn-primary' name='submit' value=\"".__s('Display report')."\"></td>".
+echo "<input type='submit' class='btn btn-primary' name='submit' value=\"" . __s('Display report') . "\"></td>" .
      "</tr>";
-echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
+echo "<tr class='tab_bg_2'><td class='right'>" . __('End date') . "</td><td>";
 Html::showDateField("date2", ['value' => $_POST["date2"]]);
 echo "</td></tr>";
 echo "</table>";
@@ -87,15 +89,16 @@ $valeurgraphtot      = [];
  * @param string $begin     begin date
  * @param string $end       end date
 **/
-function display_infocoms_report($itemtype, $begin, $end) {
-   global $DB, $valeurtot, $valeurnettetot, $valeurnettegraphtot, $valeurgraphtot, $CFG_GLPI, $stat, $chart_opts;
+function display_infocoms_report($itemtype, $begin, $end)
+{
+    global $DB, $valeurtot, $valeurnettetot, $valeurnettegraphtot, $valeurgraphtot, $CFG_GLPI, $stat, $chart_opts;
 
-   $itemtable = getTableForItemType($itemtype);
+    $itemtable = getTableForItemType($itemtype);
    // report need name and ticket_tco, many asset type don't have it therefore are not compatible
-   if (!$DB->fieldExists($itemtable, "ticket_tco", false)) {
-      return false;
-   }
-   $criteria = [
+    if (!$DB->fieldExists($itemtable, "ticket_tco", false)) {
+        return false;
+    }
+    $criteria = [
       'SELECT'       => [
          'glpi_infocoms.*',
          "$itemtable.name AS name",
@@ -127,169 +130,192 @@ function display_infocoms_report($itemtype, $begin, $end) {
       ],
       'WHERE'        => ["$itemtable.is_template" => 0] + getEntitiesRestrictCriteria($itemtable),
       'ORDERBY'      => ['entname ASC', 'buy_date', 'use_date']
-   ];
+    ];
 
-   if (!empty($begin)) {
-      $criteria['WHERE'][] = [
+    if (!empty($begin)) {
+        $criteria['WHERE'][] = [
          'OR'  => [
             'glpi_infocoms.buy_date'   => ['>=', $begin],
             'glpi_infocoms.use_date'   => ['>=', $begin]
          ]
-      ];
-   }
+        ];
+    }
 
-   if (!empty($end)) {
-      $criteria['WHERE'][] = [
+    if (!empty($end)) {
+        $criteria['WHERE'][] = [
          'OR'  => [
             'glpi_infocoms.buy_date'   => ['<=', $end],
             'glpi_infocoms.use_date'   => ['<=', $end]
          ]
-      ];
-   }
+        ];
+    }
 
-   $display_entity = Session::isMultiEntitiesMode();
-   $iterator = $DB->request($criteria);
+    $display_entity = Session::isMultiEntitiesMode();
+    $iterator = $DB->request($criteria);
 
-   if (count($iterator)
-       && ($item = getItemForItemtype($itemtype))) {
+    if (
+        count($iterator)
+        && ($item = getItemForItemtype($itemtype))
+    ) {
+        echo "<h2>" . $item->getTypeName(1) . "</h2>";
 
-      echo "<h2>".$item->getTypeName(1)."</h2>";
+        echo "<table class='tab_cadre'><tr><th>" . __('Name') . "</th>";
+        if ($display_entity) {
+            echo "<th>" . Entity::getTypeName(1) . "</th>";
+        }
 
-      echo "<table class='tab_cadre'><tr><th>".__('Name')."</th>";
-      if ($display_entity) {
-         echo "<th>".Entity::getTypeName(1)."</th>";
-      }
+        echo "<th>" . _x('price', 'Value') . "</th><th>" . __('ANV') . "</th>";
+        echo "<th>" . __('TCO') . "</th><th>" . __('Date of purchase') . "</th>";
+        echo "<th>" . __('Startup date') . "</th><th>" . __('Warranty expiration date') . "</th></tr>";
 
-      echo "<th>"._x('price', 'Value')."</th><th>".__('ANV')."</th>";
-      echo "<th>".__('TCO')."</th><th>".__('Date of purchase')."</th>";
-      echo "<th>".__('Startup date')."</th><th>".__('Warranty expiration date')."</th></tr>";
+        $valeursoustot      = 0;
+        $valeurnettesoustot = 0;
+        $valeurnettegraph   = [];
+        $valeurgraph        = [];
 
-      $valeursoustot      = 0;
-      $valeurnettesoustot = 0;
-      $valeurnettegraph   = [];
-      $valeurgraph        = [];
-
-      foreach ($iterator as $line) {
-         if (isset($line["is_global"]) && $line["is_global"]
-             && $item->getFromDB($line["items_id"])) {
-            $line["value"] *= Computer_Item::countForItem($item);
-         }
-
-         if ($line["value"]>0) {
-            $valeursoustot += $line["value"];
-         }
-         $valeurnette = Infocom::Amort($line["sink_type"], $line["value"], $line["sink_time"],
-                                       $line["sink_coeff"], $line["buy_date"], $line["use_date"],
-                                       $CFG_GLPI["date_tax"], "n");
-
-         $tmp         = Infocom::Amort($line["sink_type"], $line["value"], $line["sink_time"],
-                                       $line["sink_coeff"], $line["buy_date"], $line["use_date"],
-                                       $CFG_GLPI["date_tax"], "all");
-
-         if (is_array($tmp) && (count($tmp) > 0)) {
-            foreach ($tmp["annee"] as $key => $val) {
-               if ($tmp["vcnetfin"][$key] > 0) {
-                  if (!isset($valeurnettegraph[$val])) {
-                     $valeurnettegraph[$val] = 0;
-                  }
-                  $valeurnettegraph[$val] += $tmp["vcnetdeb"][$key];
-               }
+        foreach ($iterator as $line) {
+            if (
+                isset($line["is_global"]) && $line["is_global"]
+                && $item->getFromDB($line["items_id"])
+            ) {
+                $line["value"] *= Computer_Item::countForItem($item);
             }
-         }
 
-         if (!empty($line["buy_date"])) {
-            $year = substr($line["buy_date"], 0, 4);
             if ($line["value"] > 0) {
-               if (!isset($valeurgraph[$year])) {
-                  $valeurgraph[$year] = 0;
-               }
-               $valeurgraph[$year] += $line["value"];
+                $valeursoustot += $line["value"];
             }
-         }
+            $valeurnette = Infocom::Amort(
+                $line["sink_type"],
+                $line["value"],
+                $line["sink_time"],
+                $line["sink_coeff"],
+                $line["buy_date"],
+                $line["use_date"],
+                $CFG_GLPI["date_tax"],
+                "n"
+            );
 
-         $valeurnette = str_replace([" ", "-"], ["", ""], $valeurnette);
-         if (!empty($valeurnette)) {
-            $valeurnettesoustot += $valeurnette;
-         }
+            $tmp         = Infocom::Amort(
+                $line["sink_type"],
+                $line["value"],
+                $line["sink_time"],
+                $line["sink_coeff"],
+                $line["buy_date"],
+                $line["use_date"],
+                $CFG_GLPI["date_tax"],
+                "all"
+            );
 
-         echo "<tr class='tab_bg_1'><td>".$line["name"]."</td>";
-         if ($display_entity) {
-            echo "<td>".$line['entname']."</td>";
-         }
+            if (is_array($tmp) && (count($tmp) > 0)) {
+                foreach ($tmp["annee"] as $key => $val) {
+                    if ($tmp["vcnetfin"][$key] > 0) {
+                        if (!isset($valeurnettegraph[$val])) {
+                            $valeurnettegraph[$val] = 0;
+                        }
+                        $valeurnettegraph[$val] += $tmp["vcnetdeb"][$key];
+                    }
+                }
+            }
 
-         echo "<td class='right'>".Html::formatNumber($line["value"])."</td>".
-              "<td class='right'>".Html::formatNumber($valeurnette)."</td>".
-              "<td class='right'>".Infocom::showTco($line["ticket_tco"], $line["value"])."</td>".
-              "<td>".Html::convDate($line["buy_date"])."</td>".
-              "<td>".Html::convDate($line["use_date"])."</td>".
-              "<td>".Infocom::getWarrantyExpir($line["buy_date"], $line["warranty_duration"]).
+            if (!empty($line["buy_date"])) {
+                $year = substr($line["buy_date"], 0, 4);
+                if ($line["value"] > 0) {
+                    if (!isset($valeurgraph[$year])) {
+                        $valeurgraph[$year] = 0;
+                    }
+                    $valeurgraph[$year] += $line["value"];
+                }
+            }
+
+            $valeurnette = str_replace([" ", "-"], ["", ""], $valeurnette);
+            if (!empty($valeurnette)) {
+                $valeurnettesoustot += $valeurnette;
+            }
+
+            echo "<tr class='tab_bg_1'><td>" . $line["name"] . "</td>";
+            if ($display_entity) {
+                echo "<td>" . $line['entname'] . "</td>";
+            }
+
+            echo "<td class='right'>" . Html::formatNumber($line["value"]) . "</td>" .
+              "<td class='right'>" . Html::formatNumber($valeurnette) . "</td>" .
+              "<td class='right'>" . Infocom::showTco($line["ticket_tco"], $line["value"]) . "</td>" .
+              "<td>" . Html::convDate($line["buy_date"]) . "</td>" .
+              "<td>" . Html::convDate($line["use_date"]) . "</td>" .
+              "<td>" . Infocom::getWarrantyExpir($line["buy_date"], $line["warranty_duration"]) .
               "</td></tr>";
-      }
+        }
 
-      $valeurtot      += $valeursoustot;
-      $valeurnettetot += $valeurnettesoustot;
+        $valeurtot      += $valeursoustot;
+        $valeurnettetot += $valeurnettesoustot;
 
-      $tmpmsg = sprintf(__('Total: Value=%1$s - Account net value=%2$s'),
-                        Html::formatNumber($valeursoustot),
-                        Html::formatNumber($valeurnettesoustot));
-      echo "<tr><td colspan='6' class='center'><h3>$tmpmsg</h3></td></tr>";
+        $tmpmsg = sprintf(
+            __('Total: Value=%1$s - Account net value=%2$s'),
+            Html::formatNumber($valeursoustot),
+            Html::formatNumber($valeurnettesoustot)
+        );
+        echo "<tr><td colspan='6' class='center'><h3>$tmpmsg</h3></td></tr>";
 
-      if (count($valeurnettegraph) > 0) {
-         echo "<tr><td colspan='8' class='center'>";
-         ksort($valeurnettegraph);
-         $valeurnettegraphdisplay = array_map('round', $valeurnettegraph);
+        if (count($valeurnettegraph) > 0) {
+            echo "<tr><td colspan='8' class='center'>";
+            ksort($valeurnettegraph);
+            $valeurnettegraphdisplay = array_map('round', $valeurnettegraph);
 
-         foreach ($valeurnettegraph as $key => $val) {
-            if (!isset($valeurnettegraphtot[$key])) {
-               $valeurnettegraphtot[$key] = 0;
+            foreach ($valeurnettegraph as $key => $val) {
+                if (!isset($valeurnettegraphtot[$key])) {
+                    $valeurnettegraphtot[$key] = 0;
+                }
+                $valeurnettegraphtot[$key] += $valeurnettegraph[$key];
             }
-            $valeurnettegraphtot[$key] += $valeurnettegraph[$key];
-         }
 
-         $stat->displayLineGraph(
-            sprintf(
-                __('%1$s account net value'),
-                $item->getTypeName(1)
-            ),
-            array_keys($valeurnettegraphdisplay), [
-               [
+            $stat->displayLineGraph(
+                sprintf(
+                    __('%1$s account net value'),
+                    $item->getTypeName(1)
+                ),
+                array_keys($valeurnettegraphdisplay),
+                [
+                [
                   'data' => $valeurnettegraphdisplay
-               ]
-            ], $chart_opts
-         );
-         echo "</td></tr>";
-      }
+                ]
+                ],
+                $chart_opts
+            );
+            echo "</td></tr>";
+        }
 
-      if (count($valeurgraph) > 0) {
-         echo "<tr><td colspan='8' class='center'>";
+        if (count($valeurgraph) > 0) {
+            echo "<tr><td colspan='8' class='center'>";
 
-         ksort($valeurgraph);
-         $valeurgraphdisplay = array_map('round', $valeurgraph);
+            ksort($valeurgraph);
+            $valeurgraphdisplay = array_map('round', $valeurgraph);
 
-         foreach ($valeurgraph as $key => $val) {
-            if (!isset($valeurgraphtot[$key])) {
-               $valeurgraphtot[$key] = 0;
+            foreach ($valeurgraph as $key => $val) {
+                if (!isset($valeurgraphtot[$key])) {
+                    $valeurgraphtot[$key] = 0;
+                }
+                $valeurgraphtot[$key] += $valeurgraph[$key];
             }
-            $valeurgraphtot[$key] += $valeurgraph[$key];
-         }
 
-         $stat->displayLineGraph(
-            sprintf(
-                __('%1$s value'),
-                $item->getTypeName(1)
-            ),
-            array_keys($valeurgraphdisplay), [
-               [
+            $stat->displayLineGraph(
+                sprintf(
+                    __('%1$s value'),
+                    $item->getTypeName(1)
+                ),
+                array_keys($valeurgraphdisplay),
+                [
+                [
                   'data' => $valeurgraphdisplay
-               ]
-            ], $chart_opts
-         );
-         echo "</td></tr>";
-      }
-      echo "</table>";
-      return true;
-   }
-   return false;
+                ]
+                ],
+                $chart_opts
+            );
+            echo "</td></tr>";
+        }
+        echo "</table>";
+        return true;
+    }
+    return false;
 }
 
 $types = $CFG_GLPI["infocom_types"];
@@ -298,54 +324,60 @@ $i = 0;
 echo "<table><tr><td class='top'>";
 
 while (count($types) > 0) {
-   $type = array_shift($types);
+    $type = array_shift($types);
 
-   if (display_infocoms_report($type, $_POST["date1"], $_POST["date2"])) {
-      echo "</td>";
-      $i++;
+    if (display_infocoms_report($type, $_POST["date1"], $_POST["date2"])) {
+        echo "</td>";
+        $i++;
 
-      if (($i%2) == 0) {
-         echo "</tr><tr>";
-      }
-      echo "<td class='top'>";
-   }
+        if (($i % 2) == 0) {
+            echo "</tr><tr>";
+        }
+        echo "<td class='top'>";
+    }
 }
 
-if (($i%2) == 0) {
-   echo "&nbsp;</td><td>&nbsp;";
+if (($i % 2) == 0) {
+    echo "&nbsp;</td><td>&nbsp;";
 }
 
 echo "</td></tr></table>";
 
 
-$tmpmsg = sprintf(__('Total: Value=%1$s - Account net value=%2$s'),
-                  Html::formatNumber($valeurtot),
-                  Html::formatNumber($valeurnettetot));
+$tmpmsg = sprintf(
+    __('Total: Value=%1$s - Account net value=%2$s'),
+    Html::formatNumber($valeurtot),
+    Html::formatNumber($valeurnettetot)
+);
 echo "<div class='center'><h3>$tmpmsg</h3></div>";
 
 if (count($valeurnettegraphtot) > 0) {
-   $valeurnettegraphtotdisplay = array_map('round', $valeurnettegraphtot);
+    $valeurnettegraphtotdisplay = array_map('round', $valeurnettegraphtot);
 
-   $stat->displayLineGraph(
-      __('Total account net value'),
-      array_keys($valeurnettegraphtotdisplay), [
+    $stat->displayLineGraph(
+        __('Total account net value'),
+        array_keys($valeurnettegraphtotdisplay),
+        [
          [
             'data' => $valeurnettegraphtotdisplay
          ]
-      ], $chart_opts
-   );
+        ],
+        $chart_opts
+    );
 }
 if (count($valeurgraphtot) > 0) {
-   $valeurgraphtotdisplay = array_map('round', $valeurgraphtot);
+    $valeurgraphtotdisplay = array_map('round', $valeurgraphtot);
 
-   $stat->displayLineGraph(
-      __('Total value'),
-      array_keys($valeurgraphtotdisplay), [
+    $stat->displayLineGraph(
+        __('Total value'),
+        array_keys($valeurgraphtotdisplay),
+        [
          [
             'data' => $valeurgraphtotdisplay
          ]
-      ], $chart_opts
-   );
+        ],
+        $chart_opts
+    );
 }
 
 Html::footer();

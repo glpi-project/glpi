@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -55,20 +56,24 @@ use TicketValidation;
  */
 class TicketParameters extends CommonITILObjectParameters
 {
-   public static function getDefaultNodeName(): string {
-      return 'ticket';
-   }
+    public static function getDefaultNodeName(): string
+    {
+        return 'ticket';
+    }
 
-   public static function getObjectLabel(): string {
-      return Ticket::getTypeName(1);
-   }
+    public static function getObjectLabel(): string
+    {
+        return Ticket::getTypeName(1);
+    }
 
-   protected function getTargetClasses(): array {
-      return [Ticket::class];
-   }
+    protected function getTargetClasses(): array
+    {
+        return [Ticket::class];
+    }
 
-   public function getAvailableParameters(): array {
-      return array_merge(parent::getAvailableParameters(), [
+    public function getAvailableParameters(): array
+    {
+        return array_merge(parent::getAvailableParameters(), [
          new AttributeParameter("type", _n('Type', 'Types', 1)),
          new AttributeParameter("global_validation", _n('Approval', 'Approvals', 1)),
          new AttributeParameter("tto", __('Time to own'), 'date("d/m/y H:i")'),
@@ -81,71 +86,72 @@ class TicketParameters extends CommonITILObjectParameters
          new ObjectParameter(new LocationParameters()),
          new ArrayParameter("knowbaseitems", new KnowbaseItemParameters(), KnowbaseItem_Item::getTypeName(Session::getPluralNumber())),
          new ArrayParameter("assets", new AssetParameters(), Item_Ticket::getTypeName(Session::getPluralNumber())),
-      ]);
-   }
+        ]);
+    }
 
-   protected function defineValues(CommonDBTM $ticket): array {
-      /** @var Ticket $ticket  */
+    protected function defineValues(CommonDBTM $ticket): array
+    {
+       /** @var Ticket $ticket  */
 
-      // Output "unsanitized" values
-      $fields = Sanitizer::unsanitize($ticket->fields);
+       // Output "unsanitized" values
+        $fields = Sanitizer::unsanitize($ticket->fields);
 
-      $values = parent::defineValues($ticket);
+        $values = parent::defineValues($ticket);
 
-      $values['type'] = $ticket::getTicketTypeName($fields['type']);
-      $values['global_validation'] = TicketValidation::getStatus($fields['global_validation']);
-      $values['tto'] = $fields['time_to_own'];
-      $values['ttr'] = $fields['time_to_resolve'];
+        $values['type'] = $ticket::getTicketTypeName($fields['type']);
+        $values['global_validation'] = TicketValidation::getStatus($fields['global_validation']);
+        $values['tto'] = $fields['time_to_own'];
+        $values['ttr'] = $fields['time_to_resolve'];
 
-      // Add ticket's SLA / OLA
-      $sla_parameters = new SLAParameters();
-      if ($sla = SLA::getById($fields['slas_id_tto'])) {
-         $values['sla_tto'] = $sla_parameters->getValues($sla);
-      }
-      if ($sla = SLA::getById($fields['slas_id_ttr'])) {
-         $values['sla_ttr'] = $sla_parameters->getValues($sla);
-      }
-      $ola_parameters = new OLAParameters();
-      if ($ola = OLA::getById($fields['olas_id_tto'])) {
-         $values['ola_tto'] = $ola_parameters->getValues($ola);
-      }
-      if ($ola = OLA::getById($fields['olas_id_ttr'])) {
-         $values['ola_ttr'] = $ola_parameters->getValues($ola);
-      }
+       // Add ticket's SLA / OLA
+        $sla_parameters = new SLAParameters();
+        if ($sla = SLA::getById($fields['slas_id_tto'])) {
+            $values['sla_tto'] = $sla_parameters->getValues($sla);
+        }
+        if ($sla = SLA::getById($fields['slas_id_ttr'])) {
+            $values['sla_ttr'] = $sla_parameters->getValues($sla);
+        }
+        $ola_parameters = new OLAParameters();
+        if ($ola = OLA::getById($fields['olas_id_tto'])) {
+            $values['ola_tto'] = $ola_parameters->getValues($ola);
+        }
+        if ($ola = OLA::getById($fields['olas_id_ttr'])) {
+            $values['ola_ttr'] = $ola_parameters->getValues($ola);
+        }
 
-      // Add ticket's request type
-      if ($requesttype = RequestType::getById($fields['requesttypes_id'])) {
-         $requesttype_parameters = new RequestTypeParameters();
-         $values['requesttype'] = $requesttype_parameters->getValues($requesttype);
-      }
+       // Add ticket's request type
+        if ($requesttype = RequestType::getById($fields['requesttypes_id'])) {
+            $requesttype_parameters = new RequestTypeParameters();
+            $values['requesttype'] = $requesttype_parameters->getValues($requesttype);
+        }
 
-      // Add location
-      if ($location = Location::getById($fields['locations_id'])) {
-         $location_parameters = new LocationParameters();
-         $values['location'] = $location_parameters->getValues($location);
-      }
+       // Add location
+        if ($location = Location::getById($fields['locations_id'])) {
+            $location_parameters = new LocationParameters();
+            $values['location'] = $location_parameters->getValues($location);
+        }
 
-      // Add KBs
-      $kbis = KnowbaseItem_Item::getItems($ticket);
-      $values['knowbaseitems'] = [];
-      foreach ($kbis as $data) {
-         if ($kbi = KnowbaseItem::getById($data['id'])) {
-            $kbi_parameters = new KnowbaseItemParameters();
-            $values['knowbaseitems'][] = $kbi_parameters->getValues($kbi);
-         }
-      }
+       // Add KBs
+        $kbis = KnowbaseItem_Item::getItems($ticket);
+        $values['knowbaseitems'] = [];
+        foreach ($kbis as $data) {
+            if ($kbi = KnowbaseItem::getById($data['id'])) {
+                $kbi_parameters = new KnowbaseItemParameters();
+                $values['knowbaseitems'][] = $kbi_parameters->getValues($kbi);
+            }
+        }
 
-      // Add assets
-      $values['assets'] = [];
-      $items_ticket = Item_Ticket::getItemsAssociatedTo($ticket::getType(), $fields['id']);
-      foreach ($items_ticket as $item_ticket) {
-         $itemtype = $item_ticket->fields['itemtype'];
-         if ($item = $itemtype::getById($item_ticket->fields['items_id'])) {
-            $asset_parameters = new AssetParameters();
-            $values['assets'][] = $asset_parameters->getValues($item);
-         }
-      }
+       // Add assets
+        $values['assets'] = [];
+        $items_ticket = Item_Ticket::getItemsAssociatedTo($ticket::getType(), $fields['id']);
+        foreach ($items_ticket as $item_ticket) {
+            $itemtype = $item_ticket->fields['itemtype'];
+            if ($item = $itemtype::getById($item_ticket->fields['items_id'])) {
+                $asset_parameters = new AssetParameters();
+                $values['assets'][] = $asset_parameters->getValues($item);
+            }
+        }
 
-      return $values;
-   }
+        return $values;
+    }
 }

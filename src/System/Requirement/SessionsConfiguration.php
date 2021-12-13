@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,42 +36,44 @@ namespace Glpi\System\Requirement;
 /**
  * @since 9.5.0
  */
-class SessionsConfiguration extends AbstractRequirement {
+class SessionsConfiguration extends AbstractRequirement
+{
 
-   public function __construct() {
-      $this->title = __('Sessions configuration');
-   }
+    public function __construct()
+    {
+        $this->title = __('Sessions configuration');
+    }
 
-   protected function check() {
-      // Check session extension
-      if (!extension_loaded('session')) {
-         $this->validated = false;
-         $this->validation_messages[] = __('session extension is not installed.');
-         return;
-      }
+    protected function check()
+    {
+       // Check session extension
+        if (!extension_loaded('session')) {
+            $this->validated = false;
+            $this->validation_messages[] = __('session extension is not installed.');
+            return;
+        }
 
-      // Check configuration values
-      $is_autostart_on   = ini_get('session.auto_start') == 1;
-      $is_usetranssid_on = ini_get('session.use_trans_sid') == 1
+       // Check configuration values
+        $is_autostart_on   = ini_get('session.auto_start') == 1;
+        $is_usetranssid_on = ini_get('session.use_trans_sid') == 1
          || isset($_POST[session_name()]) || isset($_GET[session_name()]);
 
-      if ($is_autostart_on || $is_usetranssid_on) {
-         if ($is_autostart_on && $is_usetranssid_on) {
-            $this->validation_messages[] = __('"session.auto_start" and "session.use_trans_sid" must be set to off.');
-         } else if ($is_autostart_on) {
-            $this->validation_messages[] = __('"session.auto_start" must be set to off.');
-         } else {
-            $this->validation_messages[] = __('"session.use_trans_sid" must be set to off.');
-         }
+        if ($is_autostart_on || $is_usetranssid_on) {
+            if ($is_autostart_on && $is_usetranssid_on) {
+                $this->validation_messages[] = __('"session.auto_start" and "session.use_trans_sid" must be set to off.');
+            } else if ($is_autostart_on) {
+                $this->validation_messages[] = __('"session.auto_start" must be set to off.');
+            } else {
+                $this->validation_messages[] = __('"session.use_trans_sid" must be set to off.');
+            }
 
-         $this->validated = false;
-         $this->validation_messages[] = __('See .htaccess file in the GLPI root for more information.');
+            $this->validated = false;
+            $this->validation_messages[] = __('See .htaccess file in the GLPI root for more information.');
 
-         return;
-      }
+            return;
+        }
 
-      $this->validated = true;
-      $this->validation_messages[] = __s('Sessions configuration is OK.');
-   }
-
+        $this->validated = true;
+        $this->validation_messages[] = __s('Sessions configuration is OK.');
+    }
 }

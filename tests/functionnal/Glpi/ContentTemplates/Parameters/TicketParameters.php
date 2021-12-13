@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,21 +35,22 @@ namespace tests\units\Glpi\ContentTemplates\Parameters;
 
 class TicketParameters extends AbstractParameters
 {
-   public function testGetValues(): void {
-      $this->login();
-      $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+    public function testGetValues(): void
+    {
+        $this->login();
+        $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
-      $this->createItem('ITILCategory', [
+        $this->createItem('ITILCategory', [
          'name' => 'category_testGetValues'
-      ]);
-      $itilcategories_id = getItemByTypeName('ITILCategory', 'category_testGetValues', true);
+        ]);
+        $itilcategories_id = getItemByTypeName('ITILCategory', 'category_testGetValues', true);
 
-      $this->createItem('Location', [
+        $this->createItem('Location', [
          'name' => 'location_testGetValues'
-      ]);
-      $locations_id = getItemByTypeName('Location', 'location_testGetValues', true);
+        ]);
+        $locations_id = getItemByTypeName('Location', 'location_testGetValues', true);
 
-      $this->createItems('SLA', [
+        $this->createItems('SLA', [
          [
             'name'            => 'sla_tto_testGetValue',
             'entities_id'     => $test_entity_id,
@@ -63,11 +65,11 @@ class TicketParameters extends AbstractParameters
             'number_time'     => 3,
             'definition_time' => 'hour',
          ],
-      ]);
-      $slas_id_tto = getItemByTypeName('SLA', 'sla_tto_testGetValue', true);
-      $slas_id_ttr = getItemByTypeName('SLA', 'sla_ttr_testGetValue', true);
+        ]);
+        $slas_id_tto = getItemByTypeName('SLA', 'sla_tto_testGetValue', true);
+        $slas_id_ttr = getItemByTypeName('SLA', 'sla_ttr_testGetValue', true);
 
-      $this->createItems('OLA', [
+        $this->createItems('OLA', [
          [
             'name'            => 'ola_tto_testGetValue',
             'entities_id'     => $test_entity_id,
@@ -82,18 +84,18 @@ class TicketParameters extends AbstractParameters
             'number_time'     => 4,
             'definition_time' => 'hour',
          ],
-      ]);
-      $olas_id_tto = getItemByTypeName('OLA', 'ola_tto_testGetValue', true);
-      $olas_id_ttr = getItemByTypeName('OLA', 'ola_ttr_testGetValue', true);
+        ]);
+        $olas_id_tto = getItemByTypeName('OLA', 'ola_tto_testGetValue', true);
+        $olas_id_ttr = getItemByTypeName('OLA', 'ola_ttr_testGetValue', true);
 
-      $requester_groups_id = getItemByTypeName('Group', '_test_group_1', true);
-      $observer_users_id1  = getItemByTypeName('User', 'normal', true);
-      $observer_users_id2  = getItemByTypeName('User', 'post-only', true);
-      $assigned_groups_id  = getItemByTypeName('Group', '_test_group_2', true);
-      $suppliers_id        = getItemByTypeName('Supplier', '_suplier01_name', true);
+        $requester_groups_id = getItemByTypeName('Group', '_test_group_1', true);
+        $observer_users_id1  = getItemByTypeName('User', 'normal', true);
+        $observer_users_id2  = getItemByTypeName('User', 'post-only', true);
+        $assigned_groups_id  = getItemByTypeName('Group', '_test_group_2', true);
+        $suppliers_id        = getItemByTypeName('Supplier', '_suplier01_name', true);
 
-      $now = date('Y-m-d H:i:s');
-      $this->createItem('Ticket', [
+        $now = date('Y-m-d H:i:s');
+        $this->createItem('Ticket', [
          'name'                  => 'ticket_testGetValues',
          'content'               => '<p>ticket_testGetValues content</p>',
          'entities_id'           => $test_entity_id,
@@ -109,13 +111,13 @@ class TicketParameters extends AbstractParameters
          '_users_id_observer'    => [$observer_users_id1, $observer_users_id2],
          '_groups_id_assign'     => [$assigned_groups_id],
          '_suppliers_id_assign'  => [$suppliers_id],
-      ]);
+        ]);
 
-      $tickets_id = getItemByTypeName('Ticket', 'ticket_testGetValues', true);
+        $tickets_id = getItemByTypeName('Ticket', 'ticket_testGetValues', true);
 
-      $parameters = $this->newTestedInstance();
-      $values = $parameters->getValues(getItemByTypeName('Ticket', 'ticket_testGetValues'));
-      $this->array($values)->isEqualTo([
+        $parameters = $this->newTestedInstance();
+        $values = $parameters->getValues(getItemByTypeName('Ticket', 'ticket_testGetValues'));
+        $this->array($values)->isEqualTo([
          'id'        => $tickets_id,
          'ref'       => "#$tickets_id",
          'link'      => "<a  href='/glpi/front/ticket.form.php?id=$tickets_id'  title=\"ticket_testGetValues\">ticket_testGetValues</a>",
@@ -231,7 +233,7 @@ class TicketParameters extends AbstractParameters
          'type'      => 'Incident',
          'global_validation' => "Not subject to approval",
          'tto' => date('Y-m-d H:i:s', strtotime($now) + 10 * 60),
-         'ttr' => date('Y-m-d H:i:s', strtotime($now) + 3* 3600),
+         'ttr' => date('Y-m-d H:i:s', strtotime($now) + 3 * 3600),
          'sla_tto' => [
             'id'       => $slas_id_tto,
             'name'     => 'sla_tto_testGetValue',
@@ -271,8 +273,8 @@ class TicketParameters extends AbstractParameters
          ],
          'knowbaseitems' => [],
          'assets'        => [],
-      ]);
+        ]);
 
-      $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
-   }
+        $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
+    }
 }

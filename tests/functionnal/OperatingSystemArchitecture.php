@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,40 +37,45 @@ require_once 'CommonDropdown.php';
 
 /* Test for inc/operatingsystemarchitecture.class.php */
 
-class OperatingSystemArchitecture extends CommonDropdown {
+class OperatingSystemArchitecture extends CommonDropdown
+{
 
-   public function getObjectClass() {
-      return '\OperatingSystemArchitecture';
-   }
+    public function getObjectClass()
+    {
+        return '\OperatingSystemArchitecture';
+    }
 
-   public function typenameProvider() {
-      return [
+    public function typenameProvider()
+    {
+        return [
          [\OperatingSystemArchitecture::getTypeName(), 'Operating system architectures'],
          [\OperatingSystemArchitecture::getTypeName(0), 'Operating system architectures'],
          [\OperatingSystemArchitecture::getTypeName(10), 'Operating system architectures'],
          [\OperatingSystemArchitecture::getTypeName(1), 'Operating system architecture']
-      ];
-   }
+        ];
+    }
 
-   protected function getTabs() {
-      return [
-         'OperatingSystemArchitecture$main'  =>'Operating system architecture',
+    protected function getTabs()
+    {
+        return [
+         'OperatingSystemArchitecture$main'  => 'Operating system architecture',
          'Log$1'                             => 'Historical'
-      ];
-   }
+        ];
+    }
 
    /**
     * Create new Architecture system in database
     *
     * @return void
     */
-   protected function newInstance() {
-      $this->newTestedInstance();
-      $this->integer(
-         (int)$this->testedInstance->add([
+    protected function newInstance()
+    {
+        $this->newTestedInstance();
+        $this->integer(
+            (int)$this->testedInstance->add([
             'name' => 'Arch name ' . $this->getUniqueString()
-         ])
-      )->isGreaterThan(0);
-      $this->boolean($this->testedInstance->getFromDB($this->testedInstance->getID()))->isTrue();
-   }
+            ])
+        )->isGreaterThan(0);
+        $this->boolean($this->testedInstance->getFromDB($this->testedInstance->getID()))->isTrue();
+    }
 }

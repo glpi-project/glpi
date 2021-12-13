@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,12 +32,14 @@
  */
 
 /// Class DeviceBatteryModel
-class DeviceBatteryModel extends CommonDeviceModel {
+class DeviceBatteryModel extends CommonDeviceModel
+{
 
-   var $additional_fields_for_dictionnary = ['manufacturer'];
+    public $additional_fields_for_dictionnary = ['manufacturer'];
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Device battery model', 'Device batteries models', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Device battery model', 'Device batteries models', $nb);
+    }
 }

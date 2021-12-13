@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,14 +36,15 @@ namespace Glpi\Agent\Communication\Headers;
 use ReflectionClass;
 use ReflectionProperty;
 
-class Common {
+class Common
+{
    //Global headers
    /**
     * "Content-Type" HTTP header
     *
     * @var string
     */
-   protected $content_type;
+    protected $content_type;
 
    /**
     * "Accept" HTTP header
@@ -51,7 +53,7 @@ class Common {
     *
     * @var string
     */
-   protected $accept;
+    protected $accept;
 
     /**
      * "Cache-Control" HTTP header
@@ -59,7 +61,7 @@ class Common {
      *
      * @var string
      */
-   protected $cache_control = 'no-cache,no-store';
+    protected $cache_control = 'no-cache,no-store';
 
     /**
      * "Connection" HTTP header
@@ -67,7 +69,7 @@ class Common {
      *
      * @var string
      */
-   protected $connection = 'close';
+    protected $connection = 'close';
 
    /**
     * "Pragma" HTTP header
@@ -77,7 +79,7 @@ class Common {
     *
     * @var string
     */
-   protected $pragma = 'no-cache';
+    protected $pragma = 'no-cache';
 
    //GLPI agent headers
    /**
@@ -88,7 +90,7 @@ class Common {
     *
     * @var string
     */
-   protected $glpi_agent_id;
+    protected $glpi_agent_id;
 
    /**
     * "GLPI-Request-ID" HTTP header
@@ -97,7 +99,7 @@ class Common {
     *
     * @var string
     */
-   protected $glpi_request_id;
+    protected $glpi_request_id;
 
    /**
     * "GLPI-CryptoKey-ID" HTTP header
@@ -106,7 +108,7 @@ class Common {
     *
     * @var string
     */
-   protected $glpi_cryptokey_id;
+    protected $glpi_cryptokey_id;
 
    /**
     * "GLPI-Proxy-ID" HTTP header
@@ -115,23 +117,25 @@ class Common {
     *
     * @var string
     */
-   protected $glpi_proxy_id;
+    protected $glpi_proxy_id;
 
-   public function getRequireds(): array {
-      return [
+    public function getRequireds(): array
+    {
+        return [
          'content_type',
          'pragma',
          'glpi_agent_id',
          'cache_control',
          'connection'
-      ];
-   }
+        ];
+    }
 
-   public function getHeadersNames(): array {
-      return [
+    public function getHeadersNames(): array
+    {
+        return [
          'glpi_cryptokey_id' => 'GLPI-CryptoKey-ID'
-      ];
-   }
+        ];
+    }
 
    /**
     * Get HTTP headers
@@ -140,42 +144,44 @@ class Common {
     *
     * @return array
     */
-   public function getHeaders($legacy = true): array {
-      //parse class attributes and normalize key name
-      $reflect = new ReflectionClass($this);
-      $props   = $reflect->getProperties(ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED);
+    public function getHeaders($legacy = true): array
+    {
+       //parse class attributes and normalize key name
+        $reflect = new ReflectionClass($this);
+        $props   = $reflect->getProperties(ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED);
 
-      $headers = [];
+        $headers = [];
 
-      foreach ($props as $prop) {
-         $propname = $prop->getName();
-         $headername = $this->getHeaderName($propname);
-         if (!empty($this->$propname)) {
-            $headers[$headername] = $this->$propname;
-         } else if (in_array($propname, $this->getRequireds()) && $legacy === false) {
-            throw new \RuntimeException(
-               sprintf(
-                  '%1$s HTTP header is mandatory!',
-                  $headername
-               )
-            );
-         }
-      }
+        foreach ($props as $prop) {
+            $propname = $prop->getName();
+            $headername = $this->getHeaderName($propname);
+            if (!empty($this->$propname)) {
+                $headers[$headername] = $this->$propname;
+            } else if (in_array($propname, $this->getRequireds()) && $legacy === false) {
+                throw new \RuntimeException(
+                    sprintf(
+                        '%1$s HTTP header is mandatory!',
+                        $headername
+                    )
+                );
+            }
+        }
 
-      return $headers;
-   }
+        return $headers;
+    }
 
     /**
      * Get header value
      *
      * @param string $name Header name
      */
-   public function getHeader($name) {
-       $propname = strtolower(str_replace('-', '_', $name));
+    public function getHeader($name)
+    {
+        $propname = strtolower(str_replace('-', '_', $name));
 
-       //TODO: check header does exists, and has expected value
-       return $this->$propname;
-   }
+        //TODO: check header does exists, and has expected value
+        return $this->$propname;
+    }
 
    /**
     * Return HTTP header name from class property name
@@ -184,29 +190,30 @@ class Common {
     *
     * @return string
     */
-   public final function getHeaderName($prop): string {
-      $name = $prop;
+    final public function getHeaderName($prop): string
+    {
+        $name = $prop;
 
-      if (isset($this->getHeadersNames()[$prop])) {
-         return $this->getHeadersNames()[$prop];
-      }
+        if (isset($this->getHeadersNames()[$prop])) {
+            return $this->getHeadersNames()[$prop];
+        }
 
-      $exploded = explode('_', $prop);
-      foreach ($exploded as &$entry) {
-         $lowered = strtolower($entry);
-         switch ($lowered) {
-            case 'glpi':
-            case 'id':
-               $entry = strtoupper($entry);
-               break;
-            default:
-               $entry = ucfirst($entry);
-               break;
-         }
-      }
+        $exploded = explode('_', $prop);
+        foreach ($exploded as &$entry) {
+            $lowered = strtolower($entry);
+            switch ($lowered) {
+                case 'glpi':
+                case 'id':
+                    $entry = strtoupper($entry);
+                    break;
+                default:
+                    $entry = ucfirst($entry);
+                    break;
+            }
+        }
 
-      return implode('-', $exploded);
-   }
+        return implode('-', $exploded);
+    }
 
    /**
     * Set multiple HTTP header values at once
@@ -215,13 +222,14 @@ class Common {
     *
     * @return $this
     */
-   public function setHeaders($headers): self {
-      foreach ($headers as $header => $value) {
-         $this->setHeader($header, $value);
-      }
+    public function setHeaders($headers): self
+    {
+        foreach ($headers as $header => $value) {
+            $this->setHeader($header, $value);
+        }
 
-      return $this;
-   }
+        return $this;
+    }
    /**
     * Set HTTP header value
     *
@@ -230,11 +238,12 @@ class Common {
     *
     * @return $this
     */
-   public function setHeader($name, $value): self {
-      $propname = strtolower(str_replace('-', '_', $name));
-      $this->$propname = $value;
-      return $this;
-   }
+    public function setHeader($name, $value): self
+    {
+        $propname = strtolower(str_replace('-', '_', $name));
+        $this->$propname = $value;
+        return $this;
+    }
 
     /**
      * Is header set
@@ -243,8 +252,9 @@ class Common {
      *
      * @return bool
      */
-   public function hasHeader($name): bool {
-      $propname = strtolower(str_replace('-', '_', $name));
-       return (isset($this->$propname) && !empty($this->$propname));
-   }
+    public function hasHeader($name): bool
+    {
+        $propname = strtolower(str_replace('-', '_', $name));
+        return (isset($this->$propname) && !empty($this->$propname));
+    }
 }

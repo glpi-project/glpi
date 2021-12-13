@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,121 +36,129 @@
  *
  * @since 0.84
 **/
-class Knowbase extends CommonGLPI {
+class Knowbase extends CommonGLPI
+{
 
 
-   static function getTypeName($nb = 0) {
+    public static function getTypeName($nb = 0)
+    {
 
-      // No plural
-      return __('Knowledge base');
-   }
-
-
-   function defineTabs($options = []) {
-
-      $ong = [];
-      $this->addStandardTab(__CLASS__, $ong, $options);
-
-      $ong['no_all_tab'] = true;
-      return $ong;
-   }
+       // No plural
+        return __('Knowledge base');
+    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+    public function defineTabs($options = [])
+    {
 
-      if ($item->getType() == __CLASS__) {
-         $tabs[1] = _x('button', 'Search');
-         $tabs[2] = _x('button', 'Browse');
-         if (KnowbaseItem::canUpdate()) {
-            $tabs[3] = _x('button', 'Manage');
-         }
+        $ong = [];
+        $this->addStandardTab(__CLASS__, $ong, $options);
 
-         return $tabs;
-      }
-      return '';
-   }
+        $ong['no_all_tab'] = true;
+        return $ong;
+    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
 
-      if ($item->getType() == __CLASS__) {
-         switch ($tabnum) {
-            case 1 : // all
-               $item->showSearchView();
-               break;
+        if ($item->getType() == __CLASS__) {
+            $tabs[1] = _x('button', 'Search');
+            $tabs[2] = _x('button', 'Browse');
+            if (KnowbaseItem::canUpdate()) {
+                $tabs[3] = _x('button', 'Manage');
+            }
 
-            case 2 :
-               $item->showBrowseView();
-               break;
+            return $tabs;
+        }
+        return '';
+    }
 
-            case 3 :
-               $item->showManageView();
-               break;
-         }
-      }
-      return true;
-   }
+
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+
+        if ($item->getType() == __CLASS__) {
+            switch ($tabnum) {
+                case 1: // all
+                    $item->showSearchView();
+                    break;
+
+                case 2:
+                    $item->showBrowseView();
+                    break;
+
+                case 3:
+                    $item->showManageView();
+                    break;
+            }
+        }
+        return true;
+    }
 
 
    /**
     * Show the knowbase search view
    **/
-   static function showSearchView() {
+    public static function showSearchView()
+    {
 
-      global $CFG_GLPI;
+        global $CFG_GLPI;
 
-      // Search a solution
-      if (!isset($_GET["contains"])
-          && isset($_GET["itemtype"])
-          && isset($_GET["items_id"])) {
-
-         if (in_array($_GET["item_itemtype"], $CFG_GLPI['kb_types']) && $item = getItemForItemtype($_GET["itemtype"])) {
-            if ($item->can($_GET["item_items_id"], READ)) {
-               $_GET["contains"] = addslashes($item->getField('name'));
+       // Search a solution
+        if (
+            !isset($_GET["contains"])
+            && isset($_GET["itemtype"])
+            && isset($_GET["items_id"])
+        ) {
+            if (in_array($_GET["item_itemtype"], $CFG_GLPI['kb_types']) && $item = getItemForItemtype($_GET["itemtype"])) {
+                if ($item->can($_GET["item_items_id"], READ)) {
+                    $_GET["contains"] = addslashes($item->getField('name'));
+                }
             }
-         }
-      }
+        }
 
-      if (isset($_GET["contains"])) {
-         $_SESSION['kbcontains'] = $_GET["contains"];
-      } else if (isset($_SESSION['kbcontains'])) {
-         $_GET['contains'] = $_SESSION["kbcontains"];
-      }
-      $ki = new KnowbaseItem();
-      $ki->searchForm($_GET);
+        if (isset($_GET["contains"])) {
+            $_SESSION['kbcontains'] = $_GET["contains"];
+        } else if (isset($_SESSION['kbcontains'])) {
+            $_GET['contains'] = $_SESSION["kbcontains"];
+        }
+        $ki = new KnowbaseItem();
+        $ki->searchForm($_GET);
 
-      if (!isset($_GET['contains']) || empty($_GET['contains'])) {
-         echo "<div><table class='mx-auto' width='950px'><tr class='noHover'><td class='center top'>";
-         KnowbaseItem::showRecentPopular("recent");
-         echo "</td><td class='center top'>";
-         KnowbaseItem::showRecentPopular("lastupdate");
-         echo "</td><td class='center top'>";
-         KnowbaseItem::showRecentPopular("popular");
-         echo "</td></tr>";
-         echo "</table></div>";
-      } else {
-         KnowbaseItem::showList($_GET, 'search');
-      }
-   }
+        if (!isset($_GET['contains']) || empty($_GET['contains'])) {
+            echo "<div><table class='mx-auto' width='950px'><tr class='noHover'><td class='center top'>";
+            KnowbaseItem::showRecentPopular("recent");
+            echo "</td><td class='center top'>";
+            KnowbaseItem::showRecentPopular("lastupdate");
+            echo "</td><td class='center top'>";
+            KnowbaseItem::showRecentPopular("popular");
+            echo "</td></tr>";
+            echo "</table></div>";
+        } else {
+            KnowbaseItem::showList($_GET, 'search');
+        }
+    }
 
 
    /**
     * Show the knowbase browse view
    **/
-   static function showBrowseView() {
-      global $CFG_GLPI;
+    public static function showBrowseView()
+    {
+        global $CFG_GLPI;
 
-      $rand        = mt_rand();
-      $ajax_url    = $CFG_GLPI["root_doc"]."/ajax/knowbase.php";
-      $loading_txt = addslashes(__('Loading...'));
-      $start       = isset($_REQUEST['start'])
+        $rand        = mt_rand();
+        $ajax_url    = $CFG_GLPI["root_doc"] . "/ajax/knowbase.php";
+        $loading_txt = addslashes(__('Loading...'));
+        $start       = isset($_REQUEST['start'])
                         ? $_REQUEST['start']
                         : 0;
 
-      $category_list = json_encode(self::getTreeCategoryList());
-      $no_cat_found  = __("No category found");
+        $category_list = json_encode(self::getTreeCategoryList());
+        $no_cat_found  = __("No category found");
 
-      $JS = <<<JAVASCRIPT
+        $JS = <<<JAVASCRIPT
          $(function() {
             $('#tree_category$rand').fancytree({
                // load plugins
@@ -202,15 +211,15 @@ class Knowbase extends CommonGLPI {
             });
          });
 JAVASCRIPT;
-      echo Html::scriptBlock($JS);
-      echo "<div id='kb_browse'>
+        echo Html::scriptBlock($JS);
+        echo "<div id='kb_browse'>
          <div class='kb_tree'>
             <input type='text' class='kb_tree_search' id='kb_tree_search$rand'>
             <div id='tree_category$rand'></div>
          </div>
          <div id='items_list$rand' class='kb_items'></div>
       </div>";
-   }
+    }
 
    /**
     * Get list of knowbase categories in fancytree format.
@@ -219,40 +228,41 @@ JAVASCRIPT;
     *
     * @return array
     */
-   static function getTreeCategoryList() {
+    public static function getTreeCategoryList()
+    {
 
-      global $DB;
+        global $DB;
 
-      $cat_table = KnowbaseItemCategory::getTable();
-      $cat_fk    = KnowbaseItemCategory::getForeignKeyField();
+        $cat_table = KnowbaseItemCategory::getTable();
+        $cat_fk    = KnowbaseItemCategory::getForeignKeyField();
 
-      $kbitem_visibility_crit = KnowbaseItem::getVisibilityCriteria(true);
+        $kbitem_visibility_crit = KnowbaseItem::getVisibilityCriteria(true);
 
-      $items_subquery = new QuerySubQuery(
-         array_merge_recursive(
-            [
-               'SELECT' => ['COUNT DISTINCT' => KnowbaseItem::getTableField('id') . ' as cpt'],
-               'FROM'   => KnowbaseItem::getTable(),
-               'INNER JOIN' => [
+        $items_subquery = new QuerySubQuery(
+            array_merge_recursive(
+                [
+                'SELECT' => ['COUNT DISTINCT' => KnowbaseItem::getTableField('id') . ' as cpt'],
+                'FROM'   => KnowbaseItem::getTable(),
+                'INNER JOIN' => [
                   KnowbaseItem_KnowbaseItemCategory::getTable() => [
                      'ON'  => [
                         KnowbaseItem_KnowbaseItemCategory::getTable()   => KnowbaseItem::getForeignKeyField(),
                         KnowbaseItem::getTable()            => 'id'
                      ]
                   ]
-               ],
-               'WHERE'  => [
+                ],
+                'WHERE'  => [
                   KnowbaseItem_KnowbaseItemCategory::getTableField($cat_fk) => new QueryExpression(
-                     DB::quoteName(KnowbaseItemCategory::getTableField('id'))
+                      DB::quoteName(KnowbaseItemCategory::getTableField('id'))
                   ),
-               ]
-            ],
-            $kbitem_visibility_crit
-         ),
-         'items_count'
-      );
+                ]
+                ],
+                $kbitem_visibility_crit
+            ),
+            'items_count'
+        );
 
-      $cat_iterator = $DB->request([
+        $cat_iterator = $DB->request([
          'SELECT' => [
             KnowbaseItemCategory::getTableField('id'),
             KnowbaseItemCategory::getTableField('name'),
@@ -264,45 +274,45 @@ JAVASCRIPT;
             KnowbaseItemCategory::getTableField('level') . ' DESC',
             KnowbaseItemCategory::getTableField('name'),
          ]
-      ]);
+        ]);
 
-      $inst = new KnowbaseItemCategory;
-      $categories = [];
-      foreach ($cat_iterator as $category) {
-         if (DropdownTranslation::canBeTranslated($inst)) {
-            $tname = DropdownTranslation::getTranslatedValue(
-               $category['id'],
-               $inst->getType()
+        $inst = new KnowbaseItemCategory();
+        $categories = [];
+        foreach ($cat_iterator as $category) {
+            if (DropdownTranslation::canBeTranslated($inst)) {
+                $tname = DropdownTranslation::getTranslatedValue(
+                    $category['id'],
+                    $inst->getType()
+                );
+                if (!empty($tname)) {
+                     $category['name'] = $tname;
+                }
+            }
+            $categories[] = $category;
+        }
+
+       // Remove categories that have no items and no children
+       // Requires category list to be sorted by level DESC
+        foreach ($categories as $index => $category) {
+            $children = array_filter(
+                $categories,
+                public function ($element) use ($category, $cat_fk) {
+                    return $category['id'] == $element[$cat_fk];
+                }
             );
-            if (!empty($tname)) {
-               $category['name'] = $tname;
+
+            if (empty($children) && 0 == $category['items_count']) {
+                unset($categories[$index]);
             }
-         }
-         $categories[] = $category;
-      }
+        }
 
-      // Remove categories that have no items and no children
-      // Requires category list to be sorted by level DESC
-      foreach ($categories as $index => $category) {
-         $children = array_filter(
-            $categories,
-            function ($element) use ($category, $cat_fk) {
-               return $category['id'] == $element[$cat_fk];
-            }
-         );
-
-         if (empty($children) && 0 == $category['items_count']) {
-            unset($categories[$index]);
-         }
-      }
-
-      // Add root category (which is not a real category)
-      $root_items_count = $DB->request(
-         array_merge_recursive(
-            [
-               'SELECT' => ['COUNT DISTINCT' => KnowbaseItem::getTableField('id') . ' as cpt'],
-               'FROM'   => KnowbaseItem::getTable(),
-               'LEFT JOIN' => [
+       // Add root category (which is not a real category)
+        $root_items_count = $DB->request(
+            array_merge_recursive(
+                [
+                'SELECT' => ['COUNT DISTINCT' => KnowbaseItem::getTableField('id') . ' as cpt'],
+                'FROM'   => KnowbaseItem::getTable(),
+                'LEFT JOIN' => [
                   KnowbaseItem_KnowbaseItemCategory::getTable() => [
                      'ON'  => [
                         KnowbaseItem_KnowbaseItemCategory::getTable()   => KnowbaseItem::getForeignKeyField(),
@@ -315,81 +325,80 @@ JAVASCRIPT;
                         KnowbaseItemCategory::getTable()    => 'id'
                      ]
                   ]
-               ],
-               'WHERE'  => [
+                ],
+                'WHERE'  => [
                   KnowbaseItemCategory::getTableField('id') => null,
-               ]
-            ],
-            $kbitem_visibility_crit
-         )
-      )->current();
-      $categories[] = [
+                ]
+                ],
+                $kbitem_visibility_crit
+            )
+        )->current();
+        $categories[] = [
          'id'          => 0,
          'name'        => __('Root category'),
          'items_count' => $root_items_count['cpt'],
-      ];
+        ];
 
-      // construct flat data
-      $nodes   = [];
-      foreach ($categories as $category) {
-         $cat_id = intval($category['id']);
-         $node = [
+       // construct flat data
+        $nodes   = [];
+        foreach ($categories as $category) {
+            $cat_id = intval($category['id']);
+            $node = [
             'key'    => $cat_id,
             'title'  => $category['name'],
             'parent' => $category[$cat_fk] ?? null,
             'a_attr' => [
                'data-id' => $cat_id
             ],
-         ];
+            ];
 
-         if ($category['items_count'] > 0) {
-            $node['title'] .= ' <span class="badge bg-azure-lt" title="' . __('This category contains articles') . '">'
-               . $category['items_count']
-               . '</span>';
-         }
-
-         $nodes[] = $node;
-      }
-
-      // recursive construct tree data
-      $buildtree = function(array &$elements, $parent = null) use (&$buildtree) {
-         $branch = [];
-
-         foreach ($elements as $index => $element) {
-            if ($element['parent'] === $parent) {
-               $children = $buildtree($elements, $element['key']);
-               if (count($children) > 0) {
-                  $element['children'] = $children;
-               }
-               $branch[] = $element;
-               unset($elements[$index]);
+            if ($category['items_count'] > 0) {
+                $node['title'] .= ' <span class="badge bg-azure-lt" title="' . __('This category contains articles') . '">'
+                . $category['items_count']
+                . '</span>';
             }
-         }
-         return $branch;
-      };
 
-      $newtree = $buildtree($nodes);
+            $nodes[] = $node;
+        }
 
-      return $newtree;
-   }
+       // recursive construct tree data
+        $buildtree = function (array &$elements, $parent = null) use (&$buildtree) {
+            $branch = [];
+
+            foreach ($elements as $index => $element) {
+                if ($element['parent'] === $parent) {
+                    $children = $buildtree($elements, $element['key']);
+                    if (count($children) > 0) {
+                         $element['children'] = $children;
+                    }
+                    $branch[] = $element;
+                    unset($elements[$index]);
+                }
+            }
+            return $branch;
+        };
+
+        $newtree = $buildtree($nodes);
+
+        return $newtree;
+    }
 
    /**
     * Show the knowbase Manage view
    **/
-   static function showManageView() {
+    public static function showManageView()
+    {
 
-      if (isset($_GET["unpublished"])) {
-         $_SESSION['kbunpublished'] = $_GET["unpublished"];
-      } else if (isset($_SESSION['kbunpublished'])) {
-         $_GET["unpublished"] = $_SESSION['kbunpublished'];
-      }
-      if (!isset($_GET["unpublished"])) {
-         $_GET["unpublished"] = 'myunpublished';
-      }
-      $ki = new KnowbaseItem();
-      $ki->showManageForm($_GET);
-      KnowbaseItem::showList($_GET, $_GET["unpublished"]);
-   }
-
-
+        if (isset($_GET["unpublished"])) {
+            $_SESSION['kbunpublished'] = $_GET["unpublished"];
+        } else if (isset($_SESSION['kbunpublished'])) {
+            $_GET["unpublished"] = $_SESSION['kbunpublished'];
+        }
+        if (!isset($_GET["unpublished"])) {
+            $_GET["unpublished"] = 'myunpublished';
+        }
+        $ki = new KnowbaseItem();
+        $ki->showManageForm($_GET);
+        KnowbaseItem::showList($_GET, $_GET["unpublished"]);
+    }
 }

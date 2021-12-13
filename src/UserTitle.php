@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,14 +32,17 @@
  */
 
 /// Class UserTitle
-class UserTitle extends CommonDropdown {
+class UserTitle extends CommonDropdown
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('User title', 'Users titles', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('User title', 'Users titles', $nb);
+    }
 
-   static function getIcon() {
-      return "fas fa-user-tie";
-   }
+    public static function getIcon()
+    {
+        return "fas fa-user-tie";
+    }
 }

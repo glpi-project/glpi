@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,14 +34,15 @@
 /**
  *  Interface to implement for each notification mode
  */
-interface NotificationInterface {
+interface NotificationInterface
+{
 
    /**
     * Send notifications
     *
     * @return 0|1
    **/
-   function sendNotification();
+    public function sendNotification();
 
 
    /**
@@ -51,7 +53,7 @@ interface NotificationInterface {
     *
     * @return boolean
    **/
-   static function check($value, $options = []);
+    public static function check($value, $options = []);
 
 
    /**
@@ -59,5 +61,5 @@ interface NotificationInterface {
     *
     * @return mixed
    **/
-   static function testNotification();
+    public static function testNotification();
 }

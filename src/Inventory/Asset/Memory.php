@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,68 +38,74 @@ use Glpi\Inventory\Conf;
 
 class Memory extends Device
 {
-   public function __construct(CommonDBTM $item, array $data = null) {
-      parent::__construct($item, $data, 'Item_DeviceMemory');
-   }
+    public function __construct(CommonDBTM $item, array $data = null)
+    {
+        parent::__construct($item, $data, 'Item_DeviceMemory');
+    }
 
-   public function prepare() :array {
-      $mapping = [
+    public function prepare(): array
+    {
+        $mapping = [
          'capacity'     => 'size',
          'speed'        => 'frequence',
          'type'         => 'devicememorytypes_id',
          'manufacturer' => 'manufacturers_id',
          'serialnumber' => 'serial',
          'numslots'     => 'busID'
-      ];
+        ];
 
-      foreach ($this->data as $k => &$val) {
-         if (property_exists($val, 'capacity') && $val->capacity > 0) {
-            foreach ($mapping as $origin => $dest) {
-               if (property_exists($val, $origin)) {
-                  $val->$dest = $val->$origin;
-               }
+        foreach ($this->data as $k => &$val) {
+            if (property_exists($val, 'capacity') && $val->capacity > 0) {
+                foreach ($mapping as $origin => $dest) {
+                    if (property_exists($val, $origin)) {
+                        $val->$dest = $val->$origin;
+                    }
+                }
+            } else {
+                unset($this->data[$k]);
+                continue;
             }
-         } else {
-            unset($this->data[$k]);
-            continue;
-         }
 
-         // Hack to remove Memories with Flash types see ticket
-         // http://forge.fusioninventory.org/issues/1337
-         if (property_exists($val, 'type')
-               && preg_match('/Flash/', $val->type)) {
-            unset($this->data[$k]);
-            continue;
-         }
+           // Hack to remove Memories with Flash types see ticket
+           // http://forge.fusioninventory.org/issues/1337
+            if (
+                property_exists($val, 'type')
+                && preg_match('/Flash/', $val->type)
+            ) {
+                unset($this->data[$k]);
+                continue;
+            }
 
-         $designation = '';
-         if (property_exists($val, 'type')
-            && $val->type != 'Empty Slot'
-            && $val->type != 'Unknown'
-         ) {
-            $designation = $val->type;
-         }
-         if (property_exists($val, 'description')) {
+            $designation = '';
+            if (
+                property_exists($val, 'type')
+                && $val->type != 'Empty Slot'
+                && $val->type != 'Unknown'
+            ) {
+                $designation = $val->type;
+            }
+            if (property_exists($val, 'description')) {
+                if ($designation != '') {
+                    $designation .= ' - ';
+                }
+                $designation .= $val->description;
+            }
+
             if ($designation != '') {
-               $designation .= ' - ';
+                $val->designation = $designation;
             }
-            $designation .= $val->description;
-         }
 
-         if ($designation != '') {
-            $val->designation = $designation;
-         }
+            if (property_exists($val, 'frequence')) {
+                $val->frequence = str_replace([' MHz', ' MT/s'], '', $val->frequence);
+            }
 
-         if (property_exists($val, 'frequence')) {
-            $val->frequence = str_replace([' MHz', ' MT/s'], '', $val->frequence);
-         }
+            $val->is_dynamic = 1;
+        }
+        return $this->data;
+    }
 
-         $val->is_dynamic = 1;
-      }
-      return $this->data;
-   }
-
-   public function checkConf(Conf $conf): bool {
-      return $conf->component_memory == 1;
-   }
+    public function checkConf(Conf $conf): bool
+    {
+        return $conf->component_memory == 1;
+    }
 }

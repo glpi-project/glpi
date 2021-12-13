@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -41,57 +42,61 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @since 10.0.0
  */
-class SetNamespacePrefixCommand extends AbstractCommand {
+class SetNamespacePrefixCommand extends AbstractCommand
+{
 
    /**
     * Error code returned if cache configuration file cannot be write.
     *
     * @var int
     */
-   const ERROR_UNABLE_TO_WRITE_CONFIG = 1;
+    const ERROR_UNABLE_TO_WRITE_CONFIG = 1;
 
-   protected $requires_db = false;
+    protected $requires_db = false;
 
    /**
     * Cache manager.
     * @var CacheManager
     */
-   private $cache_manager;
+    private $cache_manager;
 
-   public function __construct(string $name = null) {
-      $this->cache_manager = new CacheManager();
+    public function __construct(string $name = null)
+    {
+        $this->cache_manager = new CacheManager();
 
-      parent::__construct();
-   }
+        parent::__construct();
+    }
 
-   protected function configure() {
+    protected function configure()
+    {
 
-      $this->setName('glpi:cache:set_namespace_prefix');
-      $this->setAliases(['cache:set_namespace_prefix']);
-      $this->setDescription('Define cache namespace prefix');
+        $this->setName('glpi:cache:set_namespace_prefix');
+        $this->setAliases(['cache:set_namespace_prefix']);
+        $this->setDescription('Define cache namespace prefix');
 
-      $this->addArgument('prefix', InputArgument::REQUIRED, 'Namespace prefix');
-   }
+        $this->addArgument('prefix', InputArgument::REQUIRED, 'Namespace prefix');
+    }
 
-   protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
 
-      $prefix = $input->getArgument('prefix');
+        $prefix = $input->getArgument('prefix');
 
-      // Store configuration
-      $success = $this->cache_manager->setNamespacePrefix($prefix);
+       // Store configuration
+        $success = $this->cache_manager->setNamespacePrefix($prefix);
 
-      if (!$success) {
-         throw new \Glpi\Console\Exception\EarlyExitException(
-            '<error>' . __('Unable to write cache configuration file.') . '</error>',
-            self::ERROR_UNABLE_TO_WRITE_CONFIG
-         );
-      }
+        if (!$success) {
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<error>' . __('Unable to write cache configuration file.') . '</error>',
+                self::ERROR_UNABLE_TO_WRITE_CONFIG
+            );
+        }
 
-      $output->writeln(
-         '<info>' . __('Cache configuration saved successfully.') . '</info>',
-         OutputInterface::VERBOSITY_NORMAL
-      );
+        $output->writeln(
+            '<info>' . __('Cache configuration saved successfully.') . '</info>',
+            OutputInterface::VERBOSITY_NORMAL
+        );
 
-      return 0; // Success
-   }
+        return 0; // Success
+    }
 }

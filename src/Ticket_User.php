@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,28 +32,30 @@
  */
 
 /// Class Ticket_User
-class Ticket_User extends CommonITILActor {
+class Ticket_User extends CommonITILActor
+{
 
    // From CommonDBRelation
-   static public $itemtype_1 = 'Ticket';
-   static public $items_id_1 = 'tickets_id';
-   static public $itemtype_2 = 'User';
-   static public $items_id_2 = 'users_id';
+    public static $itemtype_1 = 'Ticket';
+    public static $items_id_1 = 'tickets_id';
+    public static $itemtype_2 = 'User';
+    public static $items_id_2 = 'users_id';
 
-   function post_addItem() {
+    public function post_addItem()
+    {
 
-      switch ($this->input['type']) { // Values from CommonITILObject::getSearchOptionsActors()
-         case CommonITILActor::REQUESTER:
-            $this->_force_log_option = 4;
-            break;
-         case CommonITILActor::OBSERVER:
-            $this->_force_log_option = 66;
-            break;
-         case CommonITILActor::ASSIGN:
-            $this->_force_log_option = 5;
-            break;
-      }
-      parent::post_addItem();
-      unset($this->_force_log_option);
-   }
+        switch ($this->input['type']) { // Values from CommonITILObject::getSearchOptionsActors()
+            case CommonITILActor::REQUESTER:
+                $this->_force_log_option = 4;
+                break;
+            case CommonITILActor::OBSERVER:
+                $this->_force_log_option = 66;
+                break;
+            case CommonITILActor::ASSIGN:
+                $this->_force_log_option = 5;
+                break;
+        }
+        parent::post_addItem();
+        unset($this->_force_log_option);
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,41 +31,40 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 // Redirect management
 if (isset($_GET["redirect"])) {
-   Toolbox::manageRedirect($_GET["redirect"]);
+    Toolbox::manageRedirect($_GET["redirect"]);
 }
 
 Session::checkFaqAccess();
 
 if (Session::getLoginUserID()) {
-   Html::helpHeader(__('FAQ'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
+    Html::helpHeader(__('FAQ'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
 } else {
-   $_SESSION["glpilanguage"] = $_SESSION['glpilanguage'] ?? $CFG_GLPI['language'];
+    $_SESSION["glpilanguage"] = $_SESSION['glpilanguage'] ?? $CFG_GLPI['language'];
    // Anonymous FAQ
-   Html::simpleHeader(__('FAQ'), [
+    Html::simpleHeader(__('FAQ'), [
       __('Authentication') => '/',
       __('FAQ')            => '/front/helpdesk.faq.php'
-   ]);
+    ]);
 }
 
 if (isset($_GET["id"])) {
-   $kb = new KnowbaseItem();
-   if ($kb->getFromDB($_GET["id"])) {
-      $kb->showFull();
-   }
-
+    $kb = new KnowbaseItem();
+    if ($kb->getFromDB($_GET["id"])) {
+        $kb->showFull();
+    }
 } else {
    // Manage forcetab : non standard system (file name <> class name)
-   if (isset($_GET['forcetab'])) {
-      Session::setActiveTab('Knowbase', $_GET['forcetab']);
-      unset($_GET['forcetab']);
-   }
+    if (isset($_GET['forcetab'])) {
+        Session::setActiveTab('Knowbase', $_GET['forcetab']);
+        unset($_GET['forcetab']);
+    }
 
-   $kb = new Knowbase();
-   $kb->display($_GET);
+    $kb = new Knowbase();
+    $kb->display($_GET);
 }
 
 Html::helpFooter();

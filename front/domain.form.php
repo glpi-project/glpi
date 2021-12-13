@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,86 +31,77 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("domain", READ);
 
 if (empty($_GET["id"])) {
-   $_GET["id"] = '';
+    $_GET["id"] = '';
 }
 if (!isset($_GET["withtemplate"])) {
-   $_GET["withtemplate"] = '';
+    $_GET["withtemplate"] = '';
 }
 
 $domain = new Domain();
 $ditem  = new Domain_Item();
 
 if (isset($_POST["add"])) {
-   $domain->check(-1, CREATE, $_POST);
-   $newID = $domain->add($_POST);
-   if ($_SESSION['glpibackcreated']) {
-      Html::redirect($domain->getLinkURL());
-   }
-   Html::back();
+    $domain->check(-1, CREATE, $_POST);
+    $newID = $domain->add($_POST);
+    if ($_SESSION['glpibackcreated']) {
+        Html::redirect($domain->getLinkURL());
+    }
+    Html::back();
 } else if (isset($_POST["delete"])) {
-   $domain->check($_POST['id'], DELETE);
-   $domain->delete($_POST);
-   $domain->redirectToList();
-
+    $domain->check($_POST['id'], DELETE);
+    $domain->delete($_POST);
+    $domain->redirectToList();
 } else if (isset($_POST["restore"])) {
-   $domain->check($_POST['id'], PURGE);
-   $domain->restore($_POST);
-   $domain->redirectToList();
-
+    $domain->check($_POST['id'], PURGE);
+    $domain->restore($_POST);
+    $domain->redirectToList();
 } else if (isset($_POST["purge"])) {
-   $domain->check($_POST['id'], PURGE);
-   $domain->delete($_POST, 1);
-   $domain->redirectToList();
-
+    $domain->check($_POST['id'], PURGE);
+    $domain->delete($_POST, 1);
+    $domain->redirectToList();
 } else if (isset($_POST["update"])) {
-   $domain->check($_POST['id'], UPDATE);
-   $domain->update($_POST);
-   Html::back();
-
+    $domain->check($_POST['id'], UPDATE);
+    $domain->update($_POST);
+    Html::back();
 } else if (isset($_POST["additem"])) {
-   if (!empty($_POST['itemtype']) && $_POST['items_id'] > 0) {
-      $ditem->check(-1, UPDATE, $_POST);
-      $ditem->addItem($_POST);
-   }
-   Html::back();
-
+    if (!empty($_POST['itemtype']) && $_POST['items_id'] > 0) {
+        $ditem->check(-1, UPDATE, $_POST);
+        $ditem->addItem($_POST);
+    }
+    Html::back();
 } else if (isset($_POST["addrecord"])) {
-   $record = new \DomainRecord();
-   $_POST['id'] = $_POST['domainrecords_id'];
-   unset($_POST['domainrecords_id']);
-   $record->check(-1, UPDATE, $_POST);
-   $record->update($_POST);
-   Html::redirect($domain->getFormURLWithID($_POST['domains_id']));
-
+    $record = new \DomainRecord();
+    $_POST['id'] = $_POST['domainrecords_id'];
+    unset($_POST['domainrecords_id']);
+    $record->check(-1, UPDATE, $_POST);
+    $record->update($_POST);
+    Html::redirect($domain->getFormURLWithID($_POST['domains_id']));
 } else if (isset($_POST["deleteitem"])) {
-   foreach ($_POST["item"] as $key => $val) {
-      $input = ['id' => $key];
-      if ($val == 1) {
-         $ditem->check($key, UPDATE);
-         $ditem->delete($input);
-      }
-   }
-   Html::back();
-
+    foreach ($_POST["item"] as $key => $val) {
+        $input = ['id' => $key];
+        if ($val == 1) {
+            $ditem->check($key, UPDATE);
+            $ditem->delete($input);
+        }
+    }
+    Html::back();
 } else if (isset($_POST["deletedomains"])) {
-   $input = ['id' => $_POST["id"]];
-   $ditem->check($_POST["id"], UPDATE);
-   $ditem->delete($input);
-   Html::back();
-
+    $input = ['id' => $_POST["id"]];
+    $ditem->check($_POST["id"], UPDATE);
+    $ditem->delete($input);
+    Html::back();
 } else {
-
-   Html::header(Domain::getTypeName(1), $_SERVER['PHP_SELF'], "management", "domain");
-   $domain->display([
+    Html::header(Domain::getTypeName(1), $_SERVER['PHP_SELF'], "management", "domain");
+    $domain->display([
       'id'           => $_GET["id"],
       'withtemplate' => $_GET["withtemplate"],
       'formoptions'  => "data-track-changes=true"
-   ]);
+    ]);
 
-   Html::footer();
+    Html::footer();
 }

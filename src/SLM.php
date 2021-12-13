@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -38,55 +39,60 @@
 /**
  * SLM Class
 **/
-class SLM extends CommonDBTM {
+class SLM extends CommonDBTM
+{
 
    // From CommonDBTM
-   public $dohistory                   = true;
+    public $dohistory                   = true;
 
-   static protected $forward_entity_to = ['SLA', 'OLA'];
+    protected static $forward_entity_to = ['SLA', 'OLA'];
 
-   static $rightname                   = 'slm';
+    public static $rightname                   = 'slm';
 
-   const TTR = 0; // Time to resolve
-   const TTO = 1; // Time to own
+    const TTR = 0; // Time to resolve
+    const TTO = 1; // Time to own
 
-   static function getTypeName($nb = 0) {
-      return _n('Service level', 'Service levels', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Service level', 'Service levels', $nb);
+    }
 
    /**
     * Force calendar of the SLM if value -1: calendar of the entity
     *
     * @param integer $calendars_id calendars_id of the ticket
    **/
-   function setTicketCalendar($calendars_id) {
+    public function setTicketCalendar($calendars_id)
+    {
 
-      if ($this->fields['calendars_id'] == -1) {
-         $this->fields['calendars_id'] = $calendars_id;
-      }
-   }
+        if ($this->fields['calendars_id'] == -1) {
+            $this->fields['calendars_id'] = $calendars_id;
+        }
+    }
 
-   function defineTabs($options = []) {
+    public function defineTabs($options = [])
+    {
 
-      $ong = [];
-      $this->addDefaultFormTab($ong);
-      $this->addImpactTab($ong, $options);
-      $this->addStandardTab('SLA', $ong, $options);
-      $this->addStandardTab('OLA', $ong, $options);
-      $this->addStandardTab('Log', $ong, $options);
+        $ong = [];
+        $this->addDefaultFormTab($ong);
+        $this->addImpactTab($ong, $options);
+        $this->addStandardTab('SLA', $ong, $options);
+        $this->addStandardTab('OLA', $ong, $options);
+        $this->addStandardTab('Log', $ong, $options);
 
-      return $ong;
-   }
+        return $ong;
+    }
 
-   function cleanDBonPurge() {
+    public function cleanDBonPurge()
+    {
 
-      $this->deleteChildrenAndRelationsFromDb(
-         [
+        $this->deleteChildrenAndRelationsFromDb(
+            [
             SLA::class,
             OLA::class,
-         ]
-      );
-   }
+            ]
+        );
+    }
 
    /**
     * Print the slm form
@@ -98,118 +104,121 @@ class SLM extends CommonDBTM {
     *
     * @return boolean item found
    **/
-   function showForm($ID, array $options = []) {
+    public function showForm($ID, array $options = [])
+    {
 
-      $rowspan = 2;
+        $rowspan = 2;
 
-      $this->initForm($ID, $options);
-      $this->showFormHeader($options);
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Name')."</td>";
-      echo "<td>";
-      echo Html::input('name', ['value' => $this->fields['name']]);
-      echo "<td rowspan='".$rowspan."'>".__('Comments')."</td>";
-      echo "<td rowspan='".$rowspan."'>
-            <textarea class='form-control' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>";
+        $this->initForm($ID, $options);
+        $this->showFormHeader($options);
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Name') . "</td>";
+        echo "<td>";
+        echo Html::input('name', ['value' => $this->fields['name']]);
+        echo "<td rowspan='" . $rowspan . "'>" . __('Comments') . "</td>";
+        echo "<td rowspan='" . $rowspan . "'>
+            <textarea class='form-control' name='comment' >" . $this->fields["comment"] . "</textarea>";
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>"._n('Calendar', 'Calendars', 1)."</td>";
-      echo "<td>";
+        echo "<tr class='tab_bg_1'><td>" . _n('Calendar', 'Calendars', 1) . "</td>";
+        echo "<td>";
 
-      Calendar::dropdown(['value'      => $this->fields["calendars_id"],
+        Calendar::dropdown(['value'      => $this->fields["calendars_id"],
                           'emptylabel' => __('24/7'),
                           'toadd'      => ['-1' => __('Calendar of the ticket')]]);
-      echo "</td></tr>";
+        echo "</td></tr>";
 
-      $this->showFormButtons($options);
+        $this->showFormButtons($options);
 
-      return true;
-   }
+        return true;
+    }
 
 
-   function rawSearchOptions() {
-      $tab = [];
+    public function rawSearchOptions()
+    {
+        $tab = [];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => 'common',
          'name'               => __('Characteristics')
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '1',
          'table'              => $this->getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '2',
          'table'              => $this->getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
          'datatype'           => 'number'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '4',
          'table'              => 'glpi_calendars',
          'field'              => 'name',
          'name'               => _n('Calendar', 'Calendars', 1),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '16',
          'table'              => $this->getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
-      ];
+        ];
 
-      return $tab;
-   }
-
-
-   static function getMenuContent() {
-
-      $menu = [];
-      if (static::canView()) {
-         $menu['title']           = self::getTypeName(2);
-         $menu['page']            = static::getSearchURL(false);
-         $menu['icon']            = static::getIcon();
-         $menu['links']['search'] = static::getSearchURL(false);
-         if (static::canCreate()) {
-            $menu['links']['add'] = SLM::getFormURL(false);
-         }
-
-         $menu['options']['sla']['title']           = SLA::getTypeName(1);
-         $menu['options']['sla']['page']            = SLA::getSearchURL(false);
-         $menu['options']['sla']['links']['search'] = SLA::getSearchURL(false);
-
-         $menu['options']['ola']['title']           = OLA::getTypeName(1);
-         $menu['options']['ola']['page']            = OLA::getSearchURL(false);
-         $menu['options']['ola']['links']['search'] = OLA::getSearchURL(false);
-
-         $menu['options']['slalevel']['title']           = SlaLevel::getTypeName(Session::getPluralNumber());
-         $menu['options']['slalevel']['page']            = SlaLevel::getSearchURL(false);
-         $menu['options']['slalevel']['links']['search'] = SlaLevel::getSearchURL(false);
-
-         $menu['options']['olalevel']['title']           = OlaLevel::getTypeName(Session::getPluralNumber());
-         $menu['options']['olalevel']['page']            = OlaLevel::getSearchURL(false);
-         $menu['options']['olalevel']['links']['search'] = OlaLevel::getSearchURL(false);
-
-      }
-      if (count($menu)) {
-         return $menu;
-      }
-      return false;
-   }
+        return $tab;
+    }
 
 
-   static function getIcon() {
-      return "ti ti-checkup-list";
-   }
+    public static function getMenuContent()
+    {
+
+        $menu = [];
+        if (static::canView()) {
+            $menu['title']           = self::getTypeName(2);
+            $menu['page']            = static::getSearchURL(false);
+            $menu['icon']            = static::getIcon();
+            $menu['links']['search'] = static::getSearchURL(false);
+            if (static::canCreate()) {
+                $menu['links']['add'] = SLM::getFormURL(false);
+            }
+
+            $menu['options']['sla']['title']           = SLA::getTypeName(1);
+            $menu['options']['sla']['page']            = SLA::getSearchURL(false);
+            $menu['options']['sla']['links']['search'] = SLA::getSearchURL(false);
+
+            $menu['options']['ola']['title']           = OLA::getTypeName(1);
+            $menu['options']['ola']['page']            = OLA::getSearchURL(false);
+            $menu['options']['ola']['links']['search'] = OLA::getSearchURL(false);
+
+            $menu['options']['slalevel']['title']           = SlaLevel::getTypeName(Session::getPluralNumber());
+            $menu['options']['slalevel']['page']            = SlaLevel::getSearchURL(false);
+            $menu['options']['slalevel']['links']['search'] = SlaLevel::getSearchURL(false);
+
+            $menu['options']['olalevel']['title']           = OlaLevel::getTypeName(Session::getPluralNumber());
+            $menu['options']['olalevel']['page']            = OlaLevel::getSearchURL(false);
+            $menu['options']['olalevel']['links']['search'] = OlaLevel::getSearchURL(false);
+        }
+        if (count($menu)) {
+            return $menu;
+        }
+        return false;
+    }
+
+
+    public static function getIcon()
+    {
+        return "ti ti-checkup-list";
+    }
 }

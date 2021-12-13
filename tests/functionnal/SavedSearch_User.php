@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,48 +37,50 @@ use DbTestCase;
 
 /* Test for inc/savedsearch_user.class.php */
 
-class SavedSearch_User extends DbTestCase {
+class SavedSearch_User extends DbTestCase
+{
 
-   function testGetDefault() {
-      // needs a user
-      // let's use TU_USER
-      $this->login();
-      $uid =  getItemByTypeName('User', TU_USER, true);
+    public function testGetDefault()
+    {
+       // needs a user
+       // let's use TU_USER
+        $this->login();
+        $uid =  getItemByTypeName('User', TU_USER, true);
 
-      // with no default bookmark
-      $this->boolean(
-         (boolean)\SavedSearch_User::getDefault($uid, 'Ticket')
-      )->isFalse();
+       // with no default bookmark
+        $this->boolean(
+            (bool)\SavedSearch_User::getDefault($uid, 'Ticket')
+        )->isFalse();
 
-      // now add a bookmark on Ticket view
-      $bk = new \SavedSearch();
-      $this->boolean(
-         (boolean)$bk->add(['name'         => 'All my tickets',
+       // now add a bookmark on Ticket view
+        $bk = new \SavedSearch();
+        $this->boolean(
+            (bool)$bk->add(['name'         => 'All my tickets',
                             'type'         => 1,
                             'itemtype'     => 'Ticket',
                             'users_id'     => $uid,
                             'is_private'   => 1,
                             'entities_id'  => 0,
                             'is_recursive' => 1,
-                            'url'         => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]='.$uid
+                            'url'         => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $uid
                            ])
-      )->isTrue();
+        )->isTrue();
 
-      $bk_id = $bk->fields['id'];
+        $bk_id = $bk->fields['id'];
 
-      $bk_user = new \SavedSearch_User();
-      $this->boolean(
-         (boolean)$bk_user->add(['users_id' => $uid,
+        $bk_user = new \SavedSearch_User();
+        $this->boolean(
+            (bool)$bk_user->add(['users_id' => $uid,
                                  'itemtype' => 'Ticket',
                                  'savedsearches_id' => $bk_id
                                 ])
-      )->isTrue();
+        )->isTrue();
 
-      // should get a default bookmark
-      $bk = \SavedSearch_User::getDefault($uid, 'Ticket');
-      $this->array(
-         $bk
-      )->isEqualTo(['itemtype'         => 'Ticket',
+       // should get a default bookmark
+        $bk = \SavedSearch_User::getDefault($uid, 'Ticket');
+        $this->array(
+            $bk
+        )->isEqualTo(['itemtype'         => 'Ticket',
                     'sort'             => '2',
                     'order'            => 'DESC',
                     'savedsearches_id' => $bk_id,
@@ -88,7 +91,5 @@ class SavedSearch_User extends DbTestCase {
                                           ],
                     'reset'            => 'reset',
                    ]);
-
-   }
-
+    }
 }

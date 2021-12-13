@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,7 +37,8 @@ namespace Glpi\Features;
  * Trait Kanban.
  * @since 9.5.0
  */
-trait Timeline {
+trait Timeline
+{
 
-   abstract public function getTimelineItemtypes(): array;
+    abstract public function getTimelineItemtypes(): array;
 }

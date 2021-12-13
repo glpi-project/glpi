@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,7 +37,7 @@
 
 $AJAX_INCLUDE = 1;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 header('Content-type: application/json');
 Html::header_nocache();
@@ -44,12 +45,12 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (isset($_POST['data'])) {
-   $response = [];
+    $response = [];
 
-   foreach (array_keys($_POST['data']) as $key) {
-      $unique_name = Rule::getUuid();
-      $response[$key] = ['tag' => Document::getImageTag($unique_name), 'name' => $unique_name];
-   }
+    foreach (array_keys($_POST['data']) as $key) {
+        $unique_name = Rule::getUuid();
+        $response[$key] = ['tag' => Document::getImageTag($unique_name), 'name' => $unique_name];
+    }
 
-   echo json_encode($response);
+    echo json_encode($response);
 }

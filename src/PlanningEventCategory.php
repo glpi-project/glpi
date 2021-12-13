@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,24 +31,28 @@
  * ---------------------------------------------------------------------
  */
 
-class PlanningEventCategory extends CommonDropdown {
+class PlanningEventCategory extends CommonDropdown
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Event category', 'Event categories', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Event category', 'Event categories', $nb);
+    }
 
-   function getAdditionalFields() {
-      return [
+    public function getAdditionalFields()
+    {
+        return [
          [
             'name'  => 'color',
             'label' => __('Color'),
             'type'  => 'color',
          ]
-      ];
-   }
+        ];
+    }
 
-   static function getIcon() {
-      return "fas fa-tag";
-   }
+    public static function getIcon()
+    {
+        return "fas fa-tag";
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,28 +35,32 @@
  * OLA Class
  * @since 9.2
 **/
-class OLA extends LevelAgreement {
+class OLA extends LevelAgreement
+{
 
-   static protected $prefix            = 'ola';
-   static protected $prefixticket      = 'internal_';
-   static protected $levelclass        = 'OLALevel';
-   static protected $levelticketclass  = 'OlaLevel_Ticket';
-   static protected $forward_entity_to = ['OLALevel'];
+    protected static $prefix            = 'ola';
+    protected static $prefixticket      = 'internal_';
+    protected static $levelclass        = 'OLALevel';
+    protected static $levelticketclass  = 'OlaLevel_Ticket';
+    protected static $forward_entity_to = ['OLALevel'];
 
-   static function getTypeName($nb = 0) {
-      // Acronymous, no plural
-      return __('OLA');
-   }
+    public static function getTypeName($nb = 0)
+    {
+       // Acronymous, no plural
+        return __('OLA');
+    }
 
-   function showFormWarning() {
-      global $CFG_GLPI;
+    public function showFormWarning()
+    {
+        global $CFG_GLPI;
 
-      echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='".__s('Warning')."'>";
-      echo __('The internal time is recalculated when assigning the OLA');
-   }
+        echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='" . __s('Warning') . "'>";
+        echo __('The internal time is recalculated when assigning the OLA');
+    }
 
-   function getAddConfirmation() {
-      return [__("The assignment of an OLA to a ticket causes the recalculation of the date."),
+    public function getAddConfirmation()
+    {
+        return [__("The assignment of an OLA to a ticket causes the recalculation of the date."),
               __("Escalations defined in the OLA will be triggered under this new date.")];
-   }
+    }
 }

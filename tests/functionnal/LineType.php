@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,80 +35,85 @@ namespace tests\units;
 
 use DbTestCase;
 
-class LineType extends DbTestCase {
-   private $method;
+class LineType extends DbTestCase
+{
+    private $method;
 
-   public function beforeTestMethod($method) {
-      parent::beforeTestMethod($method);
-      //to handle GLPI barbarian replacements.
-      $this->method = str_replace(
+    public function beforeTestMethod($method)
+    {
+        parent::beforeTestMethod($method);
+       //to handle GLPI barbarian replacements.
+        $this->method = str_replace(
             ['\\', 'beforeTestMethod'],
             ['', $method],
             __METHOD__
-      );
-   }
+        );
+    }
 
-   public function testAdd() {
-      $this->login();
-      $obj = new \LineType();
+    public function testAdd()
+    {
+        $this->login();
+        $obj = new \LineType();
 
-      // Add
-      $in = [
+       // Add
+        $in = [
             'name'                     => $this->method,
             'comment'                  => $this->getUniqueString(),
-      ];
-      $id = $obj->add($in);
-      $this->integer((int)$id)->isGreaterThan(0);
-      $this->boolean($obj->getFromDB($id))->isTrue();
+        ];
+        $id = $obj->add($in);
+        $this->integer((int)$id)->isGreaterThan(0);
+        $this->boolean($obj->getFromDB($id))->isTrue();
 
-      // getField methods
-      $this->variable($obj->getField('id'))->isEqualTo($id);
-      foreach ($in as $k => $v) {
-         $this->variable($obj->getField($k))->isEqualTo($v, "The property $k does not match: expected $v, got " . $obj->getField($k));
-      }
-   }
+       // getField methods
+        $this->variable($obj->getField('id'))->isEqualTo($id);
+        foreach ($in as $k => $v) {
+            $this->variable($obj->getField($k))->isEqualTo($v, "The property $k does not match: expected $v, got " . $obj->getField($k));
+        }
+    }
 
-   public function testUpdate() {
-      $this->login();
-      $obj = new \LineType();
+    public function testUpdate()
+    {
+        $this->login();
+        $obj = new \LineType();
 
-      // Add
-      $id = $obj->add([
+       // Add
+        $id = $obj->add([
             'name'                     => $this->getUniqueString(),
             'comment'                  => $this->getUniqueString(),
-      ]);
-      $this->integer($id)->isGreaterThan(0);
+        ]);
+        $this->integer($id)->isGreaterThan(0);
 
-      // Update
-      $id = $obj->getID();
-      $in = [
+       // Update
+        $id = $obj->getID();
+        $in = [
             'id'                       => $id,
             'name'                     => $this->method,
             'comment'                  => $this->getUniqueString(),
-      ];
-      $this->boolean($obj->update($in))->isTrue();
-      $this->boolean($obj->getFromDB($id))->isTrue();
+        ];
+        $this->boolean($obj->update($in))->isTrue();
+        $this->boolean($obj->getFromDB($id))->isTrue();
 
-      // getField methods
-      foreach ($in as $k => $v) {
-         $this->variable($obj->getField($k))->isEqualTo($v);
-      }
-   }
+       // getField methods
+        foreach ($in as $k => $v) {
+            $this->variable($obj->getField($k))->isEqualTo($v);
+        }
+    }
 
-   public function testDelete() {
-      $this->login();
-      $obj = new \LineType();
+    public function testDelete()
+    {
+        $this->login();
+        $obj = new \LineType();
 
-      // Add
-      $id = $obj->add([
+       // Add
+        $id = $obj->add([
             'name'                     => $this->method,
-      ]);
-      $this->integer($id)->isGreaterThan(0);
+        ]);
+        $this->integer($id)->isGreaterThan(0);
 
-      // Delete
-      $in = [
+       // Delete
+        $in = [
             'id'                       => $obj->getID(),
-      ];
-      $this->boolean($obj->delete($in))->isTrue();
-   }
+        ];
+        $this->boolean($obj->delete($in))->isTrue();
+    }
 }

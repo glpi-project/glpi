@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,78 +36,81 @@ use Glpi\Application\View\TemplateRenderer;
 /**
  * Notifications settings configuration class
  */
-class NotificationSettingConfig extends CommonDBTM {
+class NotificationSettingConfig extends CommonDBTM
+{
 
-   public $table           = 'glpi_configs';
-   protected $displaylist  = false;
-   static $rightname       = 'config';
+    public $table           = 'glpi_configs';
+    protected $displaylist  = false;
+    public static $rightname       = 'config';
 
-   public function update(array $input, $history = 1, $options = []) {
-      if (isset($input['use_notifications'])) {
-         $config = new Config();
-         $tmp = [
+    public function update(array $input, $history = 1, $options = [])
+    {
+        if (isset($input['use_notifications'])) {
+            $config = new Config();
+            $tmp = [
             'id'                 => 1,
             'use_notifications'  => $input['use_notifications']
-         ];
-         $config->update($tmp);
-         //disable all notifications types if notifications has been disabled
-         if ($tmp['use_notifications'] == 0) {
-            $modes = Notification_NotificationTemplate::getModes();
-            foreach (array_keys($modes) as $mode) {
-               $input['notifications_' . $mode] = 0;
-            }
-         }
-      }
-
-      $config = new Config();
-      foreach ($input as $k => $v) {
-         if (substr($k, 0, strlen('notifications_')) === 'notifications_') {
-            $tmp = [
-               'id'  => 1,
-               $k    => $v
             ];
             $config->update($tmp);
-         }
-      }
-   }
+           //disable all notifications types if notifications has been disabled
+            if ($tmp['use_notifications'] == 0) {
+                $modes = Notification_NotificationTemplate::getModes();
+                foreach (array_keys($modes) as $mode) {
+                    $input['notifications_' . $mode] = 0;
+                }
+            }
+        }
+
+        $config = new Config();
+        foreach ($input as $k => $v) {
+            if (substr($k, 0, strlen('notifications_')) === 'notifications_') {
+                $tmp = [
+                'id'  => 1,
+                $k    => $v
+                ];
+                $config->update($tmp);
+            }
+        }
+    }
 
    /**
     * Show configuration form
     *
     * @return string|void
     */
-   public function showConfigForm($options = []) {
-      global $CFG_GLPI;
+    public function showConfigForm($options = [])
+    {
+        global $CFG_GLPI;
 
-      if (!isset($options['display'])) {
-         $options['display'] = true;
-      }
+        if (!isset($options['display'])) {
+            $options['display'] = true;
+        }
 
-      $modes = Notification_NotificationTemplate::getModes();
-      foreach ($modes as $mode_key => &$mode) {
-         $settings_class = Notification_NotificationTemplate::getModeClass($mode_key, 'setting');
-         $settings = new $settings_class();
-         $mode['label']          = $settings->getEnableLabel();
-         $mode['label_settings'] = $settings->getTypeName();
-         $mode['is_active']      = (bool) $CFG_GLPI["notifications_$mode_key"];
-         $mode['setting_url']    = $settings->getFormURL();
-         $mode['icon']           = $settings::getIcon();
-      }
+        $modes = Notification_NotificationTemplate::getModes();
+        foreach ($modes as $mode_key => &$mode) {
+            $settings_class = Notification_NotificationTemplate::getModeClass($mode_key, 'setting');
+            $settings = new $settings_class();
+            $mode['label']          = $settings->getEnableLabel();
+            $mode['label_settings'] = $settings->getTypeName();
+            $mode['is_active']      = (bool) $CFG_GLPI["notifications_$mode_key"];
+            $mode['setting_url']    = $settings->getFormURL();
+            $mode['icon']           = $settings::getIcon();
+        }
 
-      $out = TemplateRenderer::getInstance()->render(
-         'pages/setup/setup_notifications.html.twig',
-         [
+        $out = TemplateRenderer::getInstance()->render(
+            'pages/setup/setup_notifications.html.twig',
+            [
             'use_notifications' => (bool) $CFG_GLPI['use_notifications'],
             'has_active_mode'   => Notification_NotificationTemplate::hasActiveMode(),
             'can_update_config' => Session::haveRight("config", UPDATE) > 0,
             'modes'             => $modes,
-         ]
-      );
+            ]
+        );
 
-      if ($options['display']) {
-         echo $out;
-      } else {
-         return $out;
-      }
-   }
+        if ($options['display']) {
+            echo $out;
+        } else {
+            return $out;
+        }
+    }
 }

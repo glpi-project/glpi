@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -29,6 +30,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
 /**
  * @var DB $DB
  * @var Migration $migration
@@ -39,9 +41,9 @@
 $to_add_uuid = ['Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer'];
 
 foreach ($to_add_uuid as $class) {
-   $migration->addField($class::getTable(), 'uuid', 'string', [
+    $migration->addField($class::getTable(), 'uuid', 'string', [
       'after'  => 'is_dynamic',
       'null'   => true
-   ]);
-   $migration->addKey($class::getTable(), 'uuid');
+    ]);
+    $migration->addKey($class::getTable(), 'uuid');
 }

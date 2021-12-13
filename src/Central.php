@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,265 +38,273 @@ use Glpi\Plugin\Hooks;
 /**
  * Central class
 **/
-class Central extends CommonGLPI {
+class Central extends CommonGLPI
+{
 
 
-   static function getTypeName($nb = 0) {
+    public static function getTypeName($nb = 0)
+    {
 
-      // No plural
-      return __('Standard interface');
-   }
-
-
-   function defineTabs($options = []) {
-
-      $ong = [];
-      $this->addStandardTab(__CLASS__, $ong, $options);
-
-      return $ong;
-   }
+       // No plural
+        return __('Standard interface');
+    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+    public function defineTabs($options = [])
+    {
 
-      if ($item->getType() == __CLASS__) {
-         $tabs = [
+        $ong = [];
+        $this->addStandardTab(__CLASS__, $ong, $options);
+
+        return $ong;
+    }
+
+
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
+
+        if ($item->getType() == __CLASS__) {
+            $tabs = [
             1 => __('Personal View'),
             2 => __('Group View'),
             3 => __('Global View'),
             4 => _n('RSS feed', 'RSS feeds', Session::getPluralNumber()),
-         ];
+            ];
 
-         $grid = new Glpi\Dashboard\Grid('central');
-         if ($grid->canViewOneDashboard()) {
-            array_unshift($tabs, __('Dashboard'));
-         }
+            $grid = new Glpi\Dashboard\Grid('central');
+            if ($grid->canViewOneDashboard()) {
+                array_unshift($tabs, __('Dashboard'));
+            }
 
-         return $tabs;
-      }
-      return '';
-   }
+            return $tabs;
+        }
+        return '';
+    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
 
-      if ($item->getType() == __CLASS__) {
-         switch ($tabnum) {
-            case 0 :
-               $item->showGlobalDashboard();
-               break;
+        if ($item->getType() == __CLASS__) {
+            switch ($tabnum) {
+                case 0:
+                    $item->showGlobalDashboard();
+                    break;
 
-            case 1 :
-               $item->showMyView();
-               break;
+                case 1:
+                    $item->showMyView();
+                    break;
 
-            case 2 :
-               $item->showGroupView();
-               break;
+                case 2:
+                    $item->showGroupView();
+                    break;
 
-            case 3 :
-               $item->showGlobalView();
-               break;
+                case 3:
+                    $item->showGlobalView();
+                    break;
 
-            case 4 :
-               $item->showRSSView();
-               break;
-         }
-      }
-      return true;
-   }
+                case 4:
+                    $item->showRSSView();
+                    break;
+            }
+        }
+        return true;
+    }
 
-   public function showGlobalDashboard() {
-      echo "<table class='tab_cadre_central'>";
-      Plugin::doHook(Hooks::DISPLAY_CENTRAL);
-      echo "</table>";
+    public function showGlobalDashboard()
+    {
+        echo "<table class='tab_cadre_central'>";
+        Plugin::doHook(Hooks::DISPLAY_CENTRAL);
+        echo "</table>";
 
-      self::showMessages();
+        self::showMessages();
 
-      $default   = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('central');
-      $dashboard = new Glpi\Dashboard\Grid($default);
-      $dashboard->show();
-   }
+        $default   = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('central');
+        $dashboard = new Glpi\Dashboard\Grid($default);
+        $dashboard->show();
+    }
 
 
    /**
     * Show the central global view
    **/
-   static function showGlobalView() {
+    public static function showGlobalView()
+    {
 
-      $showticket  = Session::haveRight("ticket", Ticket::READALL);
-      $showproblem = Session::haveRight("problem", Problem::READALL);
-      $show_change = Session::haveRight('change', Change::READALL);
+        $showticket  = Session::haveRight("ticket", Ticket::READALL);
+        $showproblem = Session::haveRight("problem", Problem::READALL);
+        $show_change = Session::haveRight('change', Change::READALL);
 
-      $grid_items = [];
+        $grid_items = [];
 
-      $grid_items[] = Ticket::showCentralCount(!$showticket, false);
-      if ($showproblem) {
-         $grid_items[] = Problem::showCentralCount(false, false);
-      }
-      if ($show_change) {
-         $grid_items[] = Change::showCentralCount(false, false);
-      }
-      if (Contract::canView()) {
-         $grid_items[] = Contract::showCentral(false);
-      }
-      if (Session::haveRight("logs", READ)) {
-         //Show last add events
-         $grid_items[] = Event::showForUser($_SESSION["glpiname"], false);
-      }
+        $grid_items[] = Ticket::showCentralCount(!$showticket, false);
+        if ($showproblem) {
+            $grid_items[] = Problem::showCentralCount(false, false);
+        }
+        if ($show_change) {
+            $grid_items[] = Change::showCentralCount(false, false);
+        }
+        if (Contract::canView()) {
+            $grid_items[] = Contract::showCentral(false);
+        }
+        if (Session::haveRight("logs", READ)) {
+           //Show last add events
+            $grid_items[] = Event::showForUser($_SESSION["glpiname"], false);
+        }
 
-      if ($_SESSION["glpishow_jobs_at_login"] && $showticket) {
-         Ticket::showCentralNewList();
-      }
+        if ($_SESSION["glpishow_jobs_at_login"] && $showticket) {
+            Ticket::showCentralNewList();
+        }
 
-      TemplateRenderer::getInstance()->display('components/masonry_grid.html.twig', [
+        TemplateRenderer::getInstance()->display('components/masonry_grid.html.twig', [
          'grid_items' => $grid_items,
-      ]);
-   }
+        ]);
+    }
 
 
    /**
     * Show the central personal view
    **/
-   static function showMyView() {
-      $showticket  = Session::haveRightsOr("ticket",
-                                           [Ticket::READMY, Ticket::READALL, Ticket::READASSIGN]);
+    public static function showMyView()
+    {
+        $showticket  = Session::haveRightsOr(
+            "ticket",
+            [Ticket::READMY, Ticket::READALL, Ticket::READASSIGN]
+        );
 
-      $showproblem = Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
+        $showproblem = Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
 
-      $showchanges = Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
+        $showchanges = Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
 
-      $lists = [];
+        $lists = [];
 
-      if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
-         $lists[] = [
+        if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
+            $lists[] = [
             'itemtype'  => Ticket::class,
             'status'    => 'tovalidate'
-         ];
-      }
-
-      if ($showticket) {
-
-         if (Ticket::isAllowedStatus(Ticket::SOLVED, Ticket::CLOSED)) {
-            $lists[] = [
-               'itemtype'  => Ticket::class,
-               'status'    => 'toapprove'
             ];
-         }
+        }
 
-         $lists[] = [
+        if ($showticket) {
+            if (Ticket::isAllowedStatus(Ticket::SOLVED, Ticket::CLOSED)) {
+                $lists[] = [
+                'itemtype'  => Ticket::class,
+                'status'    => 'toapprove'
+                ];
+            }
+
+            $lists[] = [
             'itemtype'  => Ticket::class,
             'status'    => 'survey'
-         ];
-         $lists[] = [
+            ];
+            $lists[] = [
             'itemtype'  => Ticket::class,
             'status'    => 'validation.rejected'
-         ];
-         $lists[] = [
+            ];
+            $lists[] = [
             'itemtype'  => Ticket::class,
             'status'    => 'solution.rejected'
-         ];
-         $lists[] = [
+            ];
+            $lists[] = [
             'itemtype'  => Ticket::class,
             'status'    => 'requestbyself'
-         ];
-         $lists[] = [
+            ];
+            $lists[] = [
             'itemtype'  => Ticket::class,
             'status'    => 'observed'
-         ];
-         $lists[] = [
+            ];
+            $lists[] = [
             'itemtype'  => Ticket::class,
             'status'    => 'process'
-         ];
-         $lists[] = [
+            ];
+            $lists[] = [
             'itemtype'  => Ticket::class,
             'status'    => 'waiting'
-         ];
-         $lists[] = [
+            ];
+            $lists[] = [
             'itemtype'  => TicketTask::class,
             'status'    => 'todo'
-         ];
+            ];
+        }
 
-      }
-
-      if ($showproblem) {
-         $lists[] = [
+        if ($showproblem) {
+            $lists[] = [
             'itemtype'  => Problem::class,
             'status'    => 'process'
-         ];
-         $lists[] = [
+            ];
+            $lists[] = [
             'itemtype'  => ProblemTask::class,
             'status'    => 'todo'
-         ];
-      }
+            ];
+        }
 
-      if ($showchanges) {
-         $lists[] = [
+        if ($showchanges) {
+            $lists[] = [
             'itemtype'  => Change::class,
             'status'    => 'process'
-         ];
-         $lists[] = [
+            ];
+            $lists[] = [
             'itemtype'  => ChangeTask::class,
             'status'    => 'todo'
-         ];
-      }
+            ];
+        }
 
-      $twig_params = [
+        $twig_params = [
          'messages'  => self::getMessages(),
          'cards'     => []
-      ];
-      foreach ($lists as $list) {
-         $card_params = [
+        ];
+        foreach ($lists as $list) {
+            $card_params = [
             'start'              => 0,
             'status'             => $list['status'],
             'showgrouptickets'   => 'false'
-         ];
-         $idor = Session::getNewIDORToken($list['itemtype'], $card_params);
-         $twig_params['cards'][] = [
+            ];
+            $idor = Session::getNewIDORToken($list['itemtype'], $card_params);
+            $twig_params['cards'][] = [
             'itemtype'  => $list['itemtype'],
             'widget'    => 'central_list',
             'params'    => $card_params + [
                '_idor_token'  => $idor
             ]
-         ];
-      }
+            ];
+        }
 
-      $card_params = [
+        $card_params = [
          'who' => Session::getLoginUserID()
-      ];
-      $idor = Session::getNewIDORToken(Planning::class, $card_params);
-      $twig_params['cards'][] = [
+        ];
+        $idor = Session::getNewIDORToken(Planning::class, $card_params);
+        $twig_params['cards'][] = [
          'itemtype'  => Planning::class,
          'widget'    => 'central_list',
          'params'    => $card_params + [
             '_idor_token'  => $idor
          ]
-      ];
+        ];
 
-      $idor = Session::getNewIDORToken(Reminder::class);
-      $twig_params['cards'][] = [
+        $idor = Session::getNewIDORToken(Reminder::class);
+        $twig_params['cards'][] = [
          'itemtype'  => Reminder::class,
          'widget'    => 'central_list',
          'params'    => [
             '_idor_token'  => $idor
          ]
-      ];
-      $idor = Session::getNewIDORToken(Reminder::class, [
+        ];
+        $idor = Session::getNewIDORToken(Reminder::class, [
          'personal'  => 'false'
-      ]);
-      if (Session::haveRight("reminder_public", READ)) {
-         $twig_params['cards'][] = [
+        ]);
+        if (Session::haveRight("reminder_public", READ)) {
+            $twig_params['cards'][] = [
             'itemtype'  => Reminder::class,
             'widget'    => 'central_list',
             'params'    => [
                'personal'     => 'false',
                '_idor_token'  => $idor
             ]
-         ];
-      }
+            ];
+        }
 
-      TemplateRenderer::getInstance()->display('central/widget_tab.html.twig', $twig_params);
-   }
+        TemplateRenderer::getInstance()->display('central/widget_tab.html.twig', $twig_params);
+    }
 
 
    /**
@@ -303,12 +312,13 @@ class Central extends CommonGLPI {
     *
     * @since 0.84
    **/
-   static function showRSSView() {
+    public static function showRSSView()
+    {
 
-      $idor = Session::getNewIDORToken(RSSFeed::class, [
+        $idor = Session::getNewIDORToken(RSSFeed::class, [
          'personal'  => 'true'
-      ]);
-      $twig_params = [
+        ]);
+        $twig_params = [
          'messages'  => self::getMessages(),
          'cards'     => [
             [
@@ -320,185 +330,191 @@ class Central extends CommonGLPI {
                ]
             ]
          ]
-      ];
-      if (RSSFeed::canView()) {
-         $idor = Session::getNewIDORToken(RSSFeed::class, [
+        ];
+        if (RSSFeed::canView()) {
+            $idor = Session::getNewIDORToken(RSSFeed::class, [
             'personal'  => 'false'
-         ]);
-         $twig_params['cards'][] = [
-            'itemtype'  => RSSFeed::class,
-            'widget'    => 'central_list',
-            'params'    => [
+            ]);
+            $twig_params['cards'][] = [
+             'itemtype'  => RSSFeed::class,
+             'widget'    => 'central_list',
+             'params'    => [
                'personal'     => 'false',
                '_idor_token'  => $idor
-            ]
-         ];
-      }
-      TemplateRenderer::getInstance()->display('central/widget_tab.html.twig', $twig_params);
-   }
+             ]
+            ];
+        }
+        TemplateRenderer::getInstance()->display('central/widget_tab.html.twig', $twig_params);
+    }
 
 
    /**
     * Show the central group view
    **/
-   static function showGroupView() {
+    public static function showGroupView()
+    {
 
-      $showticket = Session::haveRightsOr("ticket", [Ticket::READALL, Ticket::READASSIGN]);
+        $showticket = Session::haveRightsOr("ticket", [Ticket::READALL, Ticket::READASSIGN]);
 
-      $showproblem = Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
+        $showproblem = Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
 
-      $showchange = Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
+        $showchange = Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
 
-      $lists = [];
+        $lists = [];
 
-      if ($showticket) {
-         $lists[] = [
+        if ($showticket) {
+            $lists[] = [
             'itemtype'  => Ticket::class,
             'status'    => 'process'
-         ];
-         $lists[] = [
+            ];
+            $lists[] = [
             'itemtype'  => TicketTask::class,
             'status'    => 'todo'
-         ];
-      }
-      if (Session::haveRight('ticket', Ticket::READGROUP)) {
-         $lists[] = [
+            ];
+        }
+        if (Session::haveRight('ticket', Ticket::READGROUP)) {
+            $lists[] = [
             'itemtype'  => Ticket::class,
             'status'    => 'waiting'
-         ];
-      }
-      if ($showproblem) {
-         $lists[] = [
+            ];
+        }
+        if ($showproblem) {
+            $lists[] = [
             'itemtype'  => Problem::class,
             'status'    => 'process'
-         ];
-         $lists[] = [
+            ];
+            $lists[] = [
             'itemtype'  => ProblemTask::class,
             'status'    => 'todo'
-         ];
-      }
+            ];
+        }
 
-      if ($showchange) {
-         $lists[] = [
+        if ($showchange) {
+            $lists[] = [
             'itemtype'  => Change::class,
             'status'    => 'process'
-         ];
-         $lists[] = [
+            ];
+            $lists[] = [
             'itemtype'  => ChangeTask::class,
             'status'    => 'todo'
-         ];
-      }
+            ];
+        }
 
-      if (Session::haveRight('ticket', Ticket::READGROUP)) {
-         $lists[] = [
+        if (Session::haveRight('ticket', Ticket::READGROUP)) {
+            $lists[] = [
             'itemtype'  => Ticket::class,
             'status'    => 'observed'
-         ];
-         $lists[] = [
+            ];
+            $lists[] = [
             'itemtype'  => Ticket::class,
             'status'    => 'toapprove'
-         ];
-         $lists[] = [
+            ];
+            $lists[] = [
             'itemtype'  => Ticket::class,
             'status'    => 'requestbyself'
-         ];
-      } else {
-         $lists[] = [
+            ];
+        } else {
+            $lists[] = [
             'itemtype'  => Ticket::class,
             'status'    => 'waiting'
-         ];
-      }
+            ];
+        }
 
-      $twig_params = [
+        $twig_params = [
          'cards' => [],
-      ];
-      foreach ($lists as $list) {
-         $card_params = [
+        ];
+        foreach ($lists as $list) {
+            $card_params = [
             'start'              => 0,
             'status'             => $list['status'],
             'showgrouptickets'   => 'true'
-         ];
-         $idor = Session::getNewIDORToken($list['itemtype'], $card_params);
-         $twig_params['cards'][] = [
+            ];
+            $idor = Session::getNewIDORToken($list['itemtype'], $card_params);
+            $twig_params['cards'][] = [
             'itemtype'  => $list['itemtype'],
             'widget'    => 'central_list',
             'params'    => $card_params + [
                '_idor_token'  => $idor
             ]
-         ];
-      }
-      TemplateRenderer::getInstance()->display('central/widget_tab.html.twig', $twig_params);
-   }
+            ];
+        }
+        TemplateRenderer::getInstance()->display('central/widget_tab.html.twig', $twig_params);
+    }
 
 
-   private static function getMessages(): array {
-      global $DB, $CFG_GLPI;
+    private static function getMessages(): array
+    {
+        global $DB, $CFG_GLPI;
 
-      $messages = [];
+        $messages = [];
 
-      $user = new User();
-      $user->getFromDB(Session::getLoginUserID());
-      if ($user->fields['authtype'] == Auth::DB_GLPI && $user->shouldChangePassword()) {
-         $expiration_msg = sprintf(
-            __('Your password will expire on %s.'),
-            Html::convDateTime(date('Y-m-d H:i:s', $user->getPasswordExpirationTime()))
-         );
-         $messages['warnings'][] = $expiration_msg
-            . ' '
-            . '<a href="' . $CFG_GLPI['root_doc'] . '/front/updatepassword.php">'
-            . __('Update my password')
-            . '</a>';
-      }
+        $user = new User();
+        $user->getFromDB(Session::getLoginUserID());
+        if ($user->fields['authtype'] == Auth::DB_GLPI && $user->shouldChangePassword()) {
+            $expiration_msg = sprintf(
+                __('Your password will expire on %s.'),
+                Html::convDateTime(date('Y-m-d H:i:s', $user->getPasswordExpirationTime()))
+            );
+            $messages['warnings'][] = $expiration_msg
+             . ' '
+             . '<a href="' . $CFG_GLPI['root_doc'] . '/front/updatepassword.php">'
+             . __('Update my password')
+             . '</a>';
+        }
 
-      if (Session::haveRight("config", UPDATE)) {
-         $logins = User::checkDefaultPasswords();
-         $user   = new User();
-         if (!empty($logins)) {
-            $accounts = [];
-            foreach ($logins as $login) {
-               $user->getFromDBbyNameAndAuth($login, Auth::DB_GLPI, 0);
-               $accounts[] = $user->getLink();
+        if (Session::haveRight("config", UPDATE)) {
+            $logins = User::checkDefaultPasswords();
+            $user   = new User();
+            if (!empty($logins)) {
+                $accounts = [];
+                foreach ($logins as $login) {
+                    $user->getFromDBbyNameAndAuth($login, Auth::DB_GLPI, 0);
+                    $accounts[] = $user->getLink();
+                }
+                $messages['warnings'][] = sprintf(
+                    __('For security reasons, please change the password for the default users: %s'),
+                    implode(" ", $accounts)
+                );
             }
-            $messages['warnings'][] = sprintf(__('For security reasons, please change the password for the default users: %s'),
-               implode(" ", $accounts));
-         }
 
-         if (file_exists(GLPI_ROOT . "/install/install.php")) {
-            $messages['warnings'][] = sprintf(__('For security reasons, please remove file: %s'),
-               "install/install.php");
-         }
+            if (file_exists(GLPI_ROOT . "/install/install.php")) {
+                $messages['warnings'][] = sprintf(
+                    __('For security reasons, please remove file: %s'),
+                    "install/install.php"
+                );
+            }
 
-         if (($myisam_count = $DB->getMyIsamTables()->count()) > 0) {
-            $messages['warnings'][] = sprintf(__('%d tables are using the deprecated MyISAM storage engine.'), $myisam_count)
-               . ' '
-               . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:myisam_to_innodb');
-         }
-         if (($datetime_count = $DB->getTzIncompatibleTables()->count()) > 0) {
-            $messages['warnings'][] = sprintf(__('%1$s columns are using the deprecated datetime storage field type.'), $datetime_count)
-               . ' '
-               . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:timestamps');
-         }
-         if (($non_utf8mb4_count = $DB->getNonUtf8mb4Tables()->count()) > 0) {
-            $messages['warnings'][] = sprintf(__('%1$s tables are using the deprecated utf8mb3 storage charset.'), $non_utf8mb4_count)
-               . ' '
-               . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:utf8mb4');
-         }
-      }
+            if (($myisam_count = $DB->getMyIsamTables()->count()) > 0) {
+                $messages['warnings'][] = sprintf(__('%d tables are using the deprecated MyISAM storage engine.'), $myisam_count)
+                . ' '
+                . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:myisam_to_innodb');
+            }
+            if (($datetime_count = $DB->getTzIncompatibleTables()->count()) > 0) {
+                $messages['warnings'][] = sprintf(__('%1$s columns are using the deprecated datetime storage field type.'), $datetime_count)
+                . ' '
+                . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:timestamps');
+            }
+            if (($non_utf8mb4_count = $DB->getNonUtf8mb4Tables()->count()) > 0) {
+                $messages['warnings'][] = sprintf(__('%1$s tables are using the deprecated utf8mb3 storage charset.'), $non_utf8mb4_count)
+                . ' '
+                . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:utf8mb4');
+            }
+        }
 
-      if ($DB->isSlave() && !$DB->first_connection) {
-         $messages['warnings'][] = __('SQL replica: read only');
-      }
+        if ($DB->isSlave() && !$DB->first_connection) {
+            $messages['warnings'][] = __('SQL replica: read only');
+        }
 
-      return $messages;
-   }
+        return $messages;
+    }
 
 
-   static function showMessages() {
+    public static function showMessages()
+    {
 
-      $messages = self::getMessages();
-      TemplateRenderer::getInstance()->display('central/messages.html.twig', [
+        $messages = self::getMessages();
+        TemplateRenderer::getInstance()->display('central/messages.html.twig', [
          'messages'  => $messages
-      ]);
-   }
-
+        ]);
+    }
 }

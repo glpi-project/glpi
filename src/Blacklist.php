@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,44 +36,49 @@
  *
  * @since 0.84
 **/
-class Blacklist extends CommonDropdown {
+class Blacklist extends CommonDropdown
+{
 
    // From CommonDBTM
-   public $dohistory = true;
+    public $dohistory = true;
 
-   static $rightname = 'config';
+    public static $rightname = 'config';
 
-   public $can_be_translated = false;
+    public $can_be_translated = false;
 
-   const IP             = 1;
-   const MAC            = 2;
-   const SERIAL         = 3;
-   const UUID           = 4;
-   const EMAIL          = 5;
-   const MODEL          = 6;
-   const NAME           = 7;
-   const MANUFACTURER   = 8;
+    const IP             = 1;
+    const MAC            = 2;
+    const SERIAL         = 3;
+    const UUID           = 4;
+    const EMAIL          = 5;
+    const MODEL          = 6;
+    const NAME           = 7;
+    const MANUFACTURER   = 8;
 
-   function maxActionsCount() {
-      return 0;
-   }
+    public function maxActionsCount()
+    {
+        return 0;
+    }
 
-   static function canCreate() {
-      return static::canUpdate();
-   }
+    public static function canCreate()
+    {
+        return static::canUpdate();
+    }
 
 
    /**
     * @since 0.85
     */
-   static function canPurge() {
-      return static::canUpdate();
-   }
+    public static function canPurge()
+    {
+        return static::canUpdate();
+    }
 
 
-   function getAdditionalFields() {
+    public function getAdditionalFields()
+    {
 
-      return [['name'  => 'value',
+        return [['name'  => 'value',
                          'label' => __('Value'),
                          'type'  => 'text',
                          'list'  => true],
@@ -80,12 +86,13 @@ class Blacklist extends CommonDropdown {
                          'label' => _n('Type', 'Types', 1),
                          'type'  => '',
                          'list'  => true]];
-   }
+    }
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Blacklist', 'Blacklists', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Blacklist', 'Blacklists', $nb);
+    }
 
 
    /**
@@ -93,78 +100,85 @@ class Blacklist extends CommonDropdown {
     *
     * @return array of search option
     */
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '11',
          'table'              => $this->getTable(),
          'field'              => 'value',
          'name'               => __('Value'),
          'datatype'           => 'text',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '12',
          'table'              => $this->getTable(),
          'field'              => 'type',
          'name'               => _n('Type', 'Types', 1),
          'searchtype'         => ['equals', 'notequals'],
          'datatype'           => 'specific'
-      ];
+        ];
 
-      return $tab;
-   }
-
-
-   function prepareInputForAdd($input) {
-
-      if ((!isset($input['name']) || empty($input['name']))
-          && isset($input['value'])) {
-         $input['name'] = $input['value'];
-      }
-      return $input;
-   }
+        return $tab;
+    }
 
 
-   function displaySpecificTypeField($ID, $field = [], array $options = []) {
+    public function prepareInputForAdd($input)
+    {
 
-      if ($field['name'] == 'type') {
-         self::dropdownType($field['name'], [
+        if (
+            (!isset($input['name']) || empty($input['name']))
+            && isset($input['value'])
+        ) {
+            $input['name'] = $input['value'];
+        }
+        return $input;
+    }
+
+
+    public function displaySpecificTypeField($ID, $field = [], array $options = [])
+    {
+
+        if ($field['name'] == 'type') {
+            self::dropdownType($field['name'], [
             'value' => $this->fields['type'],
             'width' => '100%',
-         ]);
-      }
-   }
+            ]);
+        }
+    }
 
 
-   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
 
-      if (!is_array($values)) {
-         $values = [$field => $values];
-      }
-      switch ($field) {
-         case 'type' :
-            $types = self::getTypes();
-            return $types[$values[$field]];
-      }
-      return parent::getSpecificValueToDisplay($field, $values, $options);
-   }
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        switch ($field) {
+            case 'type':
+                $types = self::getTypes();
+                return $types[$values[$field]];
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
 
 
-   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    {
 
-      if (!is_array($values)) {
-         $values = [$field => $values];
-      }
-      $options['display'] = false;
-      switch ($field) {
-         case 'type' :
-            $options['value']  = $values[$field];
-            return self::dropdownType($name, $options);
-      }
-      return parent::getSpecificValueToSelect($field, $name, $values, $options);
-   }
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        $options['display'] = false;
+        switch ($field) {
+            case 'type':
+                $options['value']  = $values[$field];
+                return self::dropdownType($name, $options);
+        }
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
 
 
    /**
@@ -179,30 +193,31 @@ class Blacklist extends CommonDropdown {
     *
     * @return string ID of the select
    **/
-   static function dropdownType($name, $options = []) {
+    public static function dropdownType($name, $options = [])
+    {
 
-      $params = [
+        $params = [
          'value'     => 0,
          'toadd'     => [],
          'on_change' => '',
          'display'   => true,
-      ];
+        ];
 
-      if (is_array($options) && count($options)) {
-         foreach ($options as $key => $val) {
-            $params[$key] = $val;
-         }
-      }
+        if (is_array($options) && count($options)) {
+            foreach ($options as $key => $val) {
+                $params[$key] = $val;
+            }
+        }
 
-      $items = [];
-      if (count($params['toadd'])>0) {
-         $items = $params['toadd'];
-      }
+        $items = [];
+        if (count($params['toadd']) > 0) {
+            $items = $params['toadd'];
+        }
 
-      $items += self::getTypes();
+        $items += self::getTypes();
 
-      return Dropdown::showFromArray($name, $items, $params);
-   }
+        return Dropdown::showFromArray($name, $items, $params);
+    }
 
 
    /**
@@ -210,9 +225,10 @@ class Blacklist extends CommonDropdown {
     *
     * @return array Array of types
    **/
-   static function getTypes() {
+    public static function getTypes()
+    {
 
-      $options = [
+        $options = [
          self::IP               => __('IP'),
          self::MAC              => __('MAC'),
          self::SERIAL           => __('Serial number'),
@@ -222,28 +238,30 @@ class Blacklist extends CommonDropdown {
          self::MODEL            => _n('Model', 'Models', 1),
          self::NAME             => __('Name'),
          self::MANUFACTURER     => _n('Manufacturer', 'Manufacturers', 1)
-      ];
+        ];
 
-      return $options;
-   }
+        return $options;
+    }
 
-   public function getBlacklists(): array {
-      return $this->blacklists ?? $this->loadBlacklists();
-   }
+    public function getBlacklists(): array
+    {
+        return $this->blacklists ?? $this->loadBlacklists();
+    }
 
-   private function loadBlacklists() {
-      global $DB;
+    private function loadBlacklists()
+    {
+        global $DB;
 
-      $iterator = $DB->request(['FROM' => self::getTable()]);
+        $iterator = $DB->request(['FROM' => self::getTable()]);
 
-      $blacklists = array_fill_keys(array_keys(self::getTypes()), []);
-      foreach ($iterator as $row) {
-         $blacklists[$row['type']][] = $row;
-      }
+        $blacklists = array_fill_keys(array_keys(self::getTypes()), []);
+        foreach ($iterator as $row) {
+            $blacklists[$row['type']][] = $row;
+        }
 
-      $this->blacklists = $blacklists;
-      return $this->blacklists;
-   }
+        $this->blacklists = $blacklists;
+        return $this->blacklists;
+    }
 
    /**
     * Get blacklisted items for a specific type
@@ -252,26 +270,28 @@ class Blacklist extends CommonDropdown {
     *
     * @return array Array of blacklisted items
    **/
-   static function getBlacklistedItems($type) {
+    public static function getBlacklistedItems($type)
+    {
 
-      $data = getAllDataFromTable('glpi_blacklists', ['type' => $type]);
-      $items = [];
-      if (count($data)) {
-         foreach ($data as $val) {
-            $items[] = $val['value'];
-         }
-      }
-      return $items;
-   }
+        $data = getAllDataFromTable('glpi_blacklists', ['type' => $type]);
+        $items = [];
+        if (count($data)) {
+            foreach ($data as $val) {
+                $items[] = $val['value'];
+            }
+        }
+        return $items;
+    }
 
    /**
     * Get blacklisted IP
     *
     * @return array Array of blacklisted IP
    **/
-   static function getIPs() {
-      return self::getBlacklistedItems(self::IP);
-   }
+    public static function getIPs()
+    {
+        return self::getBlacklistedItems(self::IP);
+    }
 
 
    /**
@@ -279,9 +299,10 @@ class Blacklist extends CommonDropdown {
     *
     * @return array Array of blacklisted MAC
    **/
-   static function getMACs() {
-      return self::getBlacklistedItems(self::MAC);
-   }
+    public static function getMACs()
+    {
+        return self::getBlacklistedItems(self::MAC);
+    }
 
 
    /**
@@ -289,9 +310,10 @@ class Blacklist extends CommonDropdown {
     *
     * @return array Array of blacklisted Serial number
    **/
-   static function getSerialNumbers() {
-      return self::getBlacklistedItems(self::SERIAL);
-   }
+    public static function getSerialNumbers()
+    {
+        return self::getBlacklistedItems(self::SERIAL);
+    }
 
 
    /**
@@ -299,9 +321,10 @@ class Blacklist extends CommonDropdown {
     *
     * @return array Array of blacklisted UUID
    **/
-   static function getUUIDs() {
-      return self::getBlacklistedItems(self::UUID);
-   }
+    public static function getUUIDs()
+    {
+        return self::getBlacklistedItems(self::UUID);
+    }
 
 
    /**
@@ -309,14 +332,16 @@ class Blacklist extends CommonDropdown {
     *
     * @return array Array of blacklisted Emails
    **/
-   static function getEmails() {
-      return self::getBlacklistedItems(self::EMAIL);
-   }
+    public static function getEmails()
+    {
+        return self::getBlacklistedItems(self::EMAIL);
+    }
 
-   public static function getDefaults(): array {
-      $defaults = [];
+    public static function getDefaults(): array
+    {
+        $defaults = [];
 
-      $serials = [
+        $serials = [
          'N/A',
          '(null string)',
          'INVALID',
@@ -357,30 +382,30 @@ class Blacklist extends CommonDropdown {
          'Not Specified',
          'OEM_Serial',
          'SystemSerialNumb'
-      ];
-      foreach ($serials as $serial) {
-         $defaults[self::SERIAL][] = [
+        ];
+        foreach ($serials as $serial) {
+            $defaults[self::SERIAL][] = [
             'name' => 'invalid serial',
              'value' => $serial
-         ];
-      }
+            ];
+        }
 
-      $uuids = [
+        $uuids = [
          'FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF',
          '03000200-0400-0500-0006-000700080009',
          '6AB5B300-538D-1014-9FB5-B0684D007B53',
          '01010101-0101-0101-0101-010101010101',
          '2'
-      ];
-      foreach ($uuids as $uuid) {
-          $defaults[self::UUID][] = [
+        ];
+        foreach ($uuids as $uuid) {
+            $defaults[self::UUID][] = [
               'name' => 'invalid UUID',
               'value' => $uuid
-          ];
-      }
+            ];
+        }
 
-      $defaults[self::MAC] = [['name' => 'empty MAC', 'value' => '']];
-      $macs = [
+        $defaults[self::MAC] = [['name' => 'empty MAC', 'value' => '']];
+        $macs = [
          '20:41:53:59:4e:ff', //RACK Async Adaptater
          '02:00:4e:43:50:49', //NCP Secure Client Virtual NDIS6 Adapter
          'e2:e6:16:20:0a:35', //Fireware
@@ -399,15 +424,15 @@ class Blacklist extends CommonDropdown {
          'FE:FF:FF:FF:FF:FF',
          '00:00:00:00:00:00',
          '00:0b:ca:fe:00:00'
-      ];
-      foreach ($macs as $mac) {
-         $defaults[self::MAC][] = [
-            'name' =>'invalid MAC',
+        ];
+        foreach ($macs as $mac) {
+            $defaults[self::MAC][] = [
+            'name' => 'invalid MAC',
             'value' => $mac
-         ];
-      }
+            ];
+        }
 
-      $models = [
+        $models = [
          'Unknow',
          'To Be Filled By O.E.M.',
          '*',
@@ -415,17 +440,17 @@ class Blacklist extends CommonDropdown {
          'Product Name',
          'System Name',
          'All Series'
-      ];
-      foreach ($models as $model) {
-         $defaults[self::MODEL][] = [
+        ];
+        foreach ($models as $model) {
+            $defaults[self::MODEL][] = [
             'name' => $model,
             'value' => $model
-         ];
-      }
+            ];
+        }
 
-      $defaults[self::MANUFACTURER] = [['name' => 'System manufacturer', 'value' => 'System manufacturer']];
+        $defaults[self::MANUFACTURER] = [['name' => 'System manufacturer', 'value' => 'System manufacturer']];
 
-      $defaults[self::IP] = [
+        $defaults[self::IP] = [
          [
             'name' => 'empty IP',
             'value' => ''
@@ -436,77 +461,85 @@ class Blacklist extends CommonDropdown {
             'name' => 'localhost',
             'value' => '127.0.0.1'
          ]
-      ];
+        ];
 
-      return $defaults;
-   }
+        return $defaults;
+    }
 
-   public function process(int $type, string $value) {
-      $criteria = $this->getBlacklists()[$type] ?? [];
+    public function process(int $type, string $value)
+    {
+        $criteria = $this->getBlacklists()[$type] ?? [];
 
-      foreach ($criteria as $criterion) {
-         if (preg_match('|/.+/(a-zZ-a)?|', $criterion['value']) && preg_match($criterion['value'], $value)) {
-            return '';
-         } else if (strcasecmp($value, $criterion['value']) === 0) {
-            return '';
-         }
-      }
-
-      return $value;
-   }
-
-   public function processBlackList(&$value) {
-
-      if (property_exists($value, 'manufacturers_id')
-         && !is_numeric($value->manufacturers_id)
-         && '' == $this->process(self::MANUFACTURER, $value->manufacturers_id)
-      ) {
-         unset($value->manufacturers_id);
-      }
-
-      if (property_exists($value, 'uuid')
-         && '' == $this->process(self::UUID, $value->uuid)
-      ) {
-         unset($value->uuid);
-      }
-
-      if (property_exists($value, 'mac')
-         && '' == $this->process(self::MAC, $value->mac)
-      ) {
-         unset($value->mac);
-      }
-
-      if (property_exists($value, 'serial')
-         && '' == $this->process(self::SERIAL, $value->serial)
-      ) {
-         unset($value->serial);
-      }
-
-      if (property_exists($value, 'ipaddress') || property_exists($value, 'ip')) {
-         $property = property_exists($value, 'ipaddress') ? 'ipaddress' : 'ip';
-         $ips = &$value->$property;
-         if (is_array($ips)) {
-            foreach ($ips as $k => $ip) {
-               if ('' == $this->process(self::IP, $ip)) {
-                  unset($ips[$k]);
-               }
+        foreach ($criteria as $criterion) {
+            if (preg_match('|/.+/(a-zZ-a)?|', $criterion['value']) && preg_match($criterion['value'], $value)) {
+                return '';
+            } else if (strcasecmp($value, $criterion['value']) === 0) {
+                return '';
             }
-         } else if ('' == $this->process(self::IP, $ips)) {
-            unset($value->$property);
-         }
-      }
+        }
 
-      foreach ($value as $key => $val) {
-         if (!is_numeric($value->$key)
-            && preg_match('/^.+models_id/', $key)
-            && '' == $this->process(self::MODEL, $value->$key)
-         ) {
-            unset($value->$key);
-         }
-      }
-   }
+        return $value;
+    }
 
-   static function getIcon() {
-      return "fas fa-ban";
-   }
+    public function processBlackList(&$value)
+    {
+
+        if (
+            property_exists($value, 'manufacturers_id')
+            && !is_numeric($value->manufacturers_id)
+            && '' == $this->process(self::MANUFACTURER, $value->manufacturers_id)
+        ) {
+            unset($value->manufacturers_id);
+        }
+
+        if (
+            property_exists($value, 'uuid')
+            && '' == $this->process(self::UUID, $value->uuid)
+        ) {
+            unset($value->uuid);
+        }
+
+        if (
+            property_exists($value, 'mac')
+            && '' == $this->process(self::MAC, $value->mac)
+        ) {
+            unset($value->mac);
+        }
+
+        if (
+            property_exists($value, 'serial')
+            && '' == $this->process(self::SERIAL, $value->serial)
+        ) {
+            unset($value->serial);
+        }
+
+        if (property_exists($value, 'ipaddress') || property_exists($value, 'ip')) {
+            $property = property_exists($value, 'ipaddress') ? 'ipaddress' : 'ip';
+            $ips = &$value->$property;
+            if (is_array($ips)) {
+                foreach ($ips as $k => $ip) {
+                    if ('' == $this->process(self::IP, $ip)) {
+                        unset($ips[$k]);
+                    }
+                }
+            } else if ('' == $this->process(self::IP, $ips)) {
+                unset($value->$property);
+            }
+        }
+
+        foreach ($value as $key => $val) {
+            if (
+                !is_numeric($value->$key)
+                && preg_match('/^.+models_id/', $key)
+                && '' == $this->process(self::MODEL, $value->$key)
+            ) {
+                unset($value->$key);
+            }
+        }
+    }
+
+    public static function getIcon()
+    {
+        return "fas fa-ban";
+    }
 }

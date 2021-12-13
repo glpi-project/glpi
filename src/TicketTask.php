@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,42 +31,49 @@
  * ---------------------------------------------------------------------
  */
 
-class TicketTask extends CommonITILTask {
+class TicketTask extends CommonITILTask
+{
 
-   static $rightname = 'task';
-
-
-   static function getTypeName($nb = 0) {
-      return _n('Ticket task', 'Ticket tasks', $nb);
-   }
+    public static $rightname = 'task';
 
 
-   static function canCreate() {
-      return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Ticket task', 'Ticket tasks', $nb);
+    }
+
+
+    public static function canCreate()
+    {
+        return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
               || Session::haveRight('ticket', Ticket::OWN));
-   }
+    }
 
 
-   static function canView() {
-      return (Session::haveRightsOr(self::$rightname, [parent::SEEPUBLIC, parent::SEEPRIVATE])
+    public static function canView()
+    {
+        return (Session::haveRightsOr(self::$rightname, [parent::SEEPUBLIC, parent::SEEPRIVATE])
               || Session::haveRight('ticket', Ticket::OWN));
-   }
+    }
 
 
-   static function canUpdate() {
-      return (Session::haveRight(self::$rightname, parent::UPDATEALL)
+    public static function canUpdate()
+    {
+        return (Session::haveRight(self::$rightname, parent::UPDATEALL)
               || Session::haveRight('ticket', Ticket::OWN));
-   }
+    }
 
 
-   function canViewPrivates() {
-      return Session::haveRight(self::$rightname, parent::SEEPRIVATE);
-   }
+    public function canViewPrivates()
+    {
+        return Session::haveRight(self::$rightname, parent::SEEPRIVATE);
+    }
 
 
-   function canEditAll() {
-      return Session::haveRight(self::$rightname, parent::UPDATEALL);
-   }
+    public function canEditAll()
+    {
+        return Session::haveRight(self::$rightname, parent::UPDATEALL);
+    }
 
 
    /**
@@ -73,36 +81,43 @@ class TicketTask extends CommonITILTask {
     *
     * @return boolean
    **/
-   function canViewItem() {
+    public function canViewItem()
+    {
 
-      if (!$this->canReadITILItem()) {
-         return false;
-      }
+        if (!$this->canReadITILItem()) {
+            return false;
+        }
 
-      if (Session::haveRight(self::$rightname, parent::SEEPRIVATE)) {
-         return true;
-      }
+        if (Session::haveRight(self::$rightname, parent::SEEPRIVATE)) {
+            return true;
+        }
 
-      if (!$this->fields['is_private']
-          && Session::haveRight(self::$rightname, parent::SEEPUBLIC)) {
-         return true;
-      }
+        if (
+            !$this->fields['is_private']
+            && Session::haveRight(self::$rightname, parent::SEEPUBLIC)
+        ) {
+            return true;
+        }
 
-      // see task created or affected to me
-      if (Session::getCurrentInterface() == "central"
-          && ($this->fields["users_id"] === Session::getLoginUserID())
-              || ($this->fields["users_id_tech"] === Session::getLoginUserID())) {
-         return true;
-      }
+       // see task created or affected to me
+        if (
+            Session::getCurrentInterface() == "central"
+            && ($this->fields["users_id"] === Session::getLoginUserID())
+              || ($this->fields["users_id_tech"] === Session::getLoginUserID())
+        ) {
+            return true;
+        }
 
-      if ($this->fields["groups_id_tech"] && ($this->fields["groups_id_tech"] > 0)
-          && isset($_SESSION["glpigroups"])
-          && in_array($this->fields["groups_id_tech"], $_SESSION["glpigroups"])) {
-         return true;
-      }
+        if (
+            $this->fields["groups_id_tech"] && ($this->fields["groups_id_tech"] > 0)
+            && isset($_SESSION["glpigroups"])
+            && in_array($this->fields["groups_id_tech"], $_SESSION["glpigroups"])
+        ) {
+            return true;
+        }
 
-      return false;
-   }
+        return false;
+    }
 
 
    /**
@@ -110,24 +125,29 @@ class TicketTask extends CommonITILTask {
     *
     * @return boolean
    **/
-   function canCreateItem() {
+    public function canCreateItem()
+    {
 
-      if (!$this->canReadITILItem()) {
-         return false;
-      }
+        if (!$this->canReadITILItem()) {
+            return false;
+        }
 
-      $ticket = new Ticket();
-      if ($ticket->getFromDB($this->fields['tickets_id'])
-          // No validation for closed tickets
-          && !in_array($ticket->fields['status'], $ticket->getClosedStatusArray())) {
-         return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
+        $ticket = new Ticket();
+        if (
+            $ticket->getFromDB($this->fields['tickets_id'])
+            // No validation for closed tickets
+            && !in_array($ticket->fields['status'], $ticket->getClosedStatusArray())
+        ) {
+            return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
                  || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                  || (isset($_SESSION["glpigroups"])
-                     && $ticket->haveAGroup(CommonITILActor::ASSIGN,
-                                            $_SESSION['glpigroups'])));
-      }
-      return false;
-   }
+                     && $ticket->haveAGroup(
+                         CommonITILActor::ASSIGN,
+                         $_SESSION['glpigroups']
+                     )));
+        }
+        return false;
+    }
 
 
    /**
@@ -135,25 +155,30 @@ class TicketTask extends CommonITILTask {
     *
     * @return boolean
    **/
-   function canUpdateItem() {
+    public function canUpdateItem()
+    {
 
-      if (!$this->canReadITILItem()) {
-         return false;
-      }
+        if (!$this->canReadITILItem()) {
+            return false;
+        }
 
-      $ticket = new Ticket();
-      if ($ticket->getFromDB($this->fields['tickets_id'])
-         && in_array($ticket->fields['status'], $ticket->getClosedStatusArray())) {
-         return false;
-      }
+        $ticket = new Ticket();
+        if (
+            $ticket->getFromDB($this->fields['tickets_id'])
+            && in_array($ticket->fields['status'], $ticket->getClosedStatusArray())
+        ) {
+            return false;
+        }
 
-      if (($this->fields["users_id"] != Session::getLoginUserID())
-          && !Session::haveRight(self::$rightname, parent::UPDATEALL)) {
-         return false;
-      }
+        if (
+            ($this->fields["users_id"] != Session::getLoginUserID())
+            && !Session::haveRight(self::$rightname, parent::UPDATEALL)
+        ) {
+            return false;
+        }
 
-      return true;
-   }
+        return true;
+    }
 
 
    /**
@@ -161,31 +186,18 @@ class TicketTask extends CommonITILTask {
     *
     * @return boolean
    **/
-   function canPurgeItem() {
-      $ticket = new Ticket();
-      if ($ticket->getFromDB($this->fields['tickets_id'])
-         && in_array($ticket->fields['status'], $ticket->getClosedStatusArray())) {
-         return false;
-      }
+    public function canPurgeItem()
+    {
+        $ticket = new Ticket();
+        if (
+            $ticket->getFromDB($this->fields['tickets_id'])
+            && in_array($ticket->fields['status'], $ticket->getClosedStatusArray())
+        ) {
+            return false;
+        }
 
-      return Session::haveRight(self::$rightname, PURGE);
-   }
-
-
-   /**
-    * Populate the planning with planned ticket tasks
-    *
-    * @param $options   array of possible options:
-    *    - who          ID of the user (0 = undefined)
-    *    - whogroup     ID of the group of users (0 = undefined)
-    *    - begin        Date
-    *    - end          Date
-    *
-    * @return array of planning item
-   **/
-   static function populatePlanning($options = []) :array {
-      return parent::genericPopulatePlanning(__CLASS__, $options);
-   }
+        return Session::haveRight(self::$rightname, PURGE);
+    }
 
 
    /**
@@ -199,9 +211,27 @@ class TicketTask extends CommonITILTask {
     *
     * @return array of planning item
    **/
-   static function populateNotPlanned($options = []) :array {
-      return parent::genericPopulateNotPlanned(__CLASS__, $options);
-   }
+    public static function populatePlanning($options = []): array
+    {
+        return parent::genericPopulatePlanning(__CLASS__, $options);
+    }
+
+
+   /**
+    * Populate the planning with planned ticket tasks
+    *
+    * @param $options   array of possible options:
+    *    - who          ID of the user (0 = undefined)
+    *    - whogroup     ID of the group of users (0 = undefined)
+    *    - begin        Date
+    *    - end          Date
+    *
+    * @return array of planning item
+   **/
+    public static function populateNotPlanned($options = []): array
+    {
+        return parent::genericPopulateNotPlanned(__CLASS__, $options);
+    }
 
 
    /**
@@ -214,9 +244,10 @@ class TicketTask extends CommonITILTask {
     *
     * @return string
     */
-   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
-      return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
-   }
+    public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
+    {
+        return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
+    }
 
 
    /**
@@ -224,32 +255,34 @@ class TicketTask extends CommonITILTask {
     *
     * @see commonDBTM::getRights()
     **/
-   function getRights($interface = 'central') {
+    public function getRights($interface = 'central')
+    {
 
-      $values = parent::getRights();
-      unset($values[UPDATE], $values[CREATE], $values[READ]);
+        $values = parent::getRights();
+        unset($values[UPDATE], $values[CREATE], $values[READ]);
 
-      if ($interface == 'central') {
-         $values[parent::UPDATEALL]      = __('Update all');
-         $values[parent::ADDALLITEM  ]   = __('Add to all items');
-         $values[parent::SEEPRIVATE]     = __('See private ones');
-      }
+        if ($interface == 'central') {
+            $values[parent::UPDATEALL]      = __('Update all');
+            $values[parent::ADDALLITEM  ]   = __('Add to all items');
+            $values[parent::SEEPRIVATE]     = __('See private ones');
+        }
 
-      $values[parent::SEEPUBLIC]   = __('See public ones');
+        $values[parent::SEEPUBLIC]   = __('See public ones');
 
-      if ($interface == 'helpdesk') {
-         unset($values[PURGE]);
-      }
+        if ($interface == 'helpdesk') {
+            unset($values[PURGE]);
+        }
 
-      return $values;
-   }
+        return $values;
+    }
 
    /**
     * Build parent condition for search
     *
     * @return string
     */
-   public static function buildParentCondition() {
-      return "(0 = 1 " . Ticket::buildCanViewCondition("tickets_id") . ") ";
-   }
+    public static function buildParentCondition()
+    {
+        return "(0 = 1 " . Ticket::buildCanViewCondition("tickets_id") . ") ";
+    }
 }

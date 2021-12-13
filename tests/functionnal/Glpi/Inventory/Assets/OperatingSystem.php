@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,10 +37,12 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/operatingsystem.class.php */
 
-class OperatingSystem extends AbstractInventoryAsset {
+class OperatingSystem extends AbstractInventoryAsset
+{
 
-   protected function assetProvider() :array {
-      return [
+    protected function assetProvider(): array
+    {
+        return [
          [
             'nodes'  => [
                'ARCH'            => 'x86_64',
@@ -70,97 +73,100 @@ class OperatingSystem extends AbstractInventoryAsset {
                'operatingsystems_id'               => 'Microsoft Windows 7 Enterprise',
             ]
          ]
-      ] + $this->fusionProvider();
-   }
+        ] + $this->fusionProvider();
+    }
 
    /**
     * @dataProvider assetProvider
     */
-   public function testPrepare($nodes, $expected) {
-      $xml = $this->buildXml($nodes);
+    public function testPrepare($nodes, $expected)
+    {
+        $xml = $this->buildXml($nodes);
 
-      $this->login();
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($xml);
-      $json = json_decode($data);
+        $this->login();
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\OperatingSystem($computer, (array)$json->content->operatingsystem);
-      $asset->setExtraData((array)$json->content);
-      $conf = new \Glpi\Inventory\Conf();
-      $this->boolean(
-         $asset->checkConf($conf)
-      )->isTrue();
-      $result = $asset->prepare();
-      if (!is_array($expected)) {
-         $object = json_decode($expected);
-      } else {
-         $object = clone $json->content->operatingsystem;
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\OperatingSystem($computer, (array)$json->content->operatingsystem);
+        $asset->setExtraData((array)$json->content);
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean(
+            $asset->checkConf($conf)
+        )->isTrue();
+        $result = $asset->prepare();
+        if (!is_array($expected)) {
+            $object = json_decode($expected);
+        } else {
+            $object = clone $json->content->operatingsystem;
 
-         foreach ($expected as $name => $value) {
-            $object->$name = $value;
-         }
-         $tz = new \stdClass();
-         $tz->name = 'CEST';
-         $tz->offset = '+0200';
-         $object->timezone = $tz;
-      }
-      $this->object($result[0])->isEqualTo($object);
-   }
+            foreach ($expected as $name => $value) {
+                $object->$name = $value;
+            }
+            $tz = new \stdClass();
+            $tz->name = 'CEST';
+            $tz->offset = '+0200';
+            $object->timezone = $tz;
+        }
+        $this->object($result[0])->isEqualTo($object);
+    }
 
-   private function buildXml($nodes) {
-      $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+    private function buildXml($nodes)
+    {
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <OPERATINGSYSTEM>";
 
-      foreach ($nodes as $name => $value) {
-         $xml .= "\t\t\t<$name>$value</$name>\n";
-      }
+        foreach ($nodes as $name => $value) {
+            $xml .= "\t\t\t<$name>$value</$name>\n";
+        }
 
-      $xml .= "      <TIMEZONE>
+        $xml .= "      <TIMEZONE>
         <NAME>CEST</NAME>
         <OFFSET>+0200</OFFSET>
       </TIMEZONE>";
-      $xml .= "    </OPERATINGSYSTEM>
+        $xml .= "    </OPERATINGSYSTEM>
     <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
   </CONTENT>
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>";
-      return $xml;
-   }
+        return $xml;
+    }
 
-   protected function fusionProvider() :array {
-      $data = [
-      //          array(
-      //              array(
-      //                  'ARCH'           => '',
-      //                  'FULL_NAME'      => '',
-      //                  'KERNEL_NAME'    => '',
-      //                  'KERNEL_VERSION' => '',
-      //                  'NAME'           => '',
-      //                  'SERVICE_PACK'   => ''
-      //              ),
-      //              array(
-      //                  'arch'        => '',
-      //                  'kernname'    => '',
-      //                  'kernversion' => '',
-      //                  'os'          => '',
-      //                  'osversion'   => '',
-      //                  'servicepack' => '',
-      //                  'edition'     => ''
-      //              ),
-      //              array(
-      //                  'arch'        => '',
-      //                  'kernname'    => '',
-      //                  'kernversion' => '',
-      //                  'os'          => '',
-      //                  'osversion'   => '',
-      //                  'servicepack' => '',
-      //                  'edition'     => ''
-      //              )
-      //          ),
+    protected function fusionProvider(): array
+    {
+        $data = [
+       //          array(
+       //              array(
+       //                  'ARCH'           => '',
+       //                  'FULL_NAME'      => '',
+       //                  'KERNEL_NAME'    => '',
+       //                  'KERNEL_VERSION' => '',
+       //                  'NAME'           => '',
+       //                  'SERVICE_PACK'   => ''
+       //              ),
+       //              array(
+       //                  'arch'        => '',
+       //                  'kernname'    => '',
+       //                  'kernversion' => '',
+       //                  'os'          => '',
+       //                  'osversion'   => '',
+       //                  'servicepack' => '',
+       //                  'edition'     => ''
+       //              ),
+       //              array(
+       //                  'arch'        => '',
+       //                  'kernname'    => '',
+       //                  'kernversion' => '',
+       //                  'os'          => '',
+       //                  'osversion'   => '',
+       //                  'servicepack' => '',
+       //                  'edition'     => ''
+       //              )
+       //          ),
           [
               [
                   'ARCH'           => '64-bit',
@@ -703,69 +709,71 @@ class OperatingSystem extends AbstractInventoryAsset {
                   'edition'     => ''
               ]
           ]
-      ];
+        ];
 
-      $mapping = [
+        $mapping = [
           'arch'        => 'operatingsystemarchitectures_id',
           'kernname'    => 'operatingsystemkernels_id',
           'kernversion' => 'operatingsystemkernelversions_id',
           'os'          => 'operatingsystems_id',
           'osversion'   => 'operatingsystemversions_id',
           'servicepack' => 'operatingsystemservicepacks_id'
-      ];
+        ];
 
-      $result = [];
-      foreach ($data as $row) {
-         $standard = [];
-         foreach ($row[2] as $name => $value) {
-            if (isset($mapping[$name]) && (!empty($value) || $name == 'edition')) {
-               $standard[$mapping[$name]] = $value;
+        $result = [];
+        foreach ($data as $row) {
+            $standard = [];
+            foreach ($row[2] as $name => $value) {
+                if (isset($mapping[$name]) && (!empty($value) || $name == 'edition')) {
+                    $standard[$mapping[$name]] = $value;
+                }
             }
-         }
 
-         $result[] = [
+            $result[] = [
             'nodes'  => $row[0],
             'expected' => $standard
-         ];
-      }
-      return $result;
-   }
+            ];
+        }
+        return $result;
+    }
 
-   public function testHandle() {
-      $computer = getItemByTypeName('Computer', '_test_pc01');
+    public function testHandle()
+    {
+        $computer = getItemByTypeName('Computer', '_test_pc01');
 
-      //first, check there are no controller linked to this computer
-      $ios = new \Item_OperatingSystem();
-      $this->boolean($ios->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+       //first, check there are no controller linked to this computer
+        $ios = new \Item_OperatingSystem();
+        $this->boolean($ios->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isFalse('An operating system is already linked to computer!');
 
-      //convert data
-      $expected = $this->assetProvider()[0];
+       //convert data
+        $expected = $this->assetProvider()[0];
 
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($this->buildXml($expected['nodes']));
-      $json = json_decode($data);
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($this->buildXml($expected['nodes']));
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\OperatingSystem($computer, (array)$json->content->operatingsystem);
-      $asset->setExtraData((array)$json->content);
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\OperatingSystem($computer, (array)$json->content->operatingsystem);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
 
-      //handle
-      $asset->handleLinks();
-      $asset->handle();
-      $this->boolean($ios->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+       //handle
+        $asset->handleLinks();
+        $asset->handle();
+        $this->boolean($ios->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isTrue('Operating system has not been linked to computer :(');
-   }
+    }
 
-   public function testInventoryUpdate() {
-      $this->login();
-      $computer = new \Computer();
-      $os = new \OperatingSystem();
-      $cos = new \Item_OperatingSystem();
+    public function testInventoryUpdate()
+    {
+        $this->login();
+        $computer = new \Computer();
+        $os = new \OperatingSystem();
+        $cos = new \Item_OperatingSystem();
 
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <OPERATINGSYSTEM>
@@ -795,40 +803,40 @@ class OperatingSystem extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      //create manually a computer, with an operating system
-      $computers_id = $computer->add([
+       //create manually a computer, with an operating system
+        $computers_id = $computer->add([
          'name'   => 'pc002',
          'serial' => 'ggheb7ne7',
          'entities_id' => 0
-      ]);
-      $this->integer($computers_id)->isGreaterThan(0);
+        ]);
+        $this->integer($computers_id)->isGreaterThan(0);
 
-      $os_id = $os->add([
+        $os_id = $os->add([
          'name' => 'Fedora 28 (Workstation Edition)'
-      ]);
-      $this->integer($os_id)->isGreaterThan(0);
+        ]);
+        $this->integer($os_id)->isGreaterThan(0);
 
-      $cos_id = $cos->add([
+        $cos_id = $cos->add([
          'itemtype' => 'Computer',
          'items_id' => $computers_id,
          'operatingsystems_id' => $os_id
-      ]);
-      $this->integer($cos_id)->isGreaterThan(0);
+        ]);
+        $this->integer($cos_id)->isGreaterThan(0);
 
-      $this->doInventory($xml_source, true);
+        $this->doInventory($xml_source, true);
 
-      $list = $os->find();
-      $this->integer(count($list))->isIdenticalTo(1);
+        $list = $os->find();
+        $this->integer(count($list))->isIdenticalTo(1);
 
-      //check that OS is linked to computer, and is now dynamic
-      $list = $cos->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($list))->isIdenticalTo(1);
-      $theos = current($list);
-      $this->integer($theos['operatingsystems_id'])->isIdenticalTo($os_id);
-      $this->integer($theos['is_dynamic'])->isIdenticalTo(1);
+       //check that OS is linked to computer, and is now dynamic
+        $list = $cos->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($list))->isIdenticalTo(1);
+        $theos = current($list);
+        $this->integer($theos['operatingsystems_id'])->isIdenticalTo($os_id);
+        $this->integer($theos['is_dynamic'])->isIdenticalTo(1);
 
-      //Redo inventory, but with updated operating system
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+       //Redo inventory, but with updated operating system
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <OPERATINGSYSTEM>
@@ -859,17 +867,17 @@ class OperatingSystem extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      $this->doInventory($xml_source, true);
+        $this->doInventory($xml_source, true);
 
-      //We now have 2 operating systems
-      $list = $os->find();
-      $this->integer(count($list))->isIdenticalTo(2);
+       //We now have 2 operating systems
+        $list = $os->find();
+        $this->integer(count($list))->isIdenticalTo(2);
 
-      //but still only one linked to computer
-      $list = $cos->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($list))->isIdenticalTo(1);
-      $theos = current($list);
-      $this->integer($theos['operatingsystems_id'])->isNotIdenticalTo($os_id, 'Operating system link has not been updated');
-      $this->integer($theos['is_dynamic'])->isIdenticalTo(1);
-   }
+       //but still only one linked to computer
+        $list = $cos->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($list))->isIdenticalTo(1);
+        $theos = current($list);
+        $this->integer($theos['operatingsystems_id'])->isNotIdenticalTo($os_id, 'Operating system link has not been updated');
+        $this->integer($theos['is_dynamic'])->isIdenticalTo(1);
+    }
 }

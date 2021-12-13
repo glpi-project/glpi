@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,10 +35,12 @@ namespace tests\units;
 
 /* Test for inc/infocom.class.php */
 
-class Infocom extends \GLPITestCase {
+class Infocom extends \GLPITestCase
+{
 
-   public function dataLinearAmortise() {
-      return [
+    public function dataLinearAmortise()
+    {
+        return [
          [
             100000,        //value
             5,             //duration
@@ -177,26 +180,27 @@ class Infocom extends \GLPITestCase {
             ]
          ]
 
-      ];
-   }
+        ];
+    }
 
 
    /**
     * @dataProvider dataLinearAmortise
     */
-   public function testLinearAmortise($value, $duration, $fiscaldate, $buydate, $usedate, $expected, $oldmft) {
-      $amortise = \Infocom::linearAmortise(
-         $value,
-         $duration,
-         $fiscaldate,
-         $buydate,
-         $usedate
-      );
-      foreach ($expected as $year => $values) {
-         $this->array($amortise[$year])->isIdenticalTo($values);
-      }
-      if (count($oldmft)) {
-         $this->array(\Infocom::mapOldAmortiseFormat($amortise, false))->isIdenticalTo($oldmft);
-      }
-   }
+    public function testLinearAmortise($value, $duration, $fiscaldate, $buydate, $usedate, $expected, $oldmft)
+    {
+        $amortise = \Infocom::linearAmortise(
+            $value,
+            $duration,
+            $fiscaldate,
+            $buydate,
+            $usedate
+        );
+        foreach ($expected as $year => $values) {
+            $this->array($amortise[$year])->isIdenticalTo($values);
+        }
+        if (count($oldmft)) {
+            $this->array(\Infocom::mapOldAmortiseFormat($amortise, false))->isIdenticalTo($oldmft);
+        }
+    }
 }

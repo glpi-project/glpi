@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,34 +37,39 @@ use DbTestCase;
 
 /* Test for inc/ruledictionnarysoftware.class.php */
 
-class RuleDictionnarySoftware extends DbTestCase {
+class RuleDictionnarySoftware extends DbTestCase
+{
 
-   public function testMaxActionsCount() {
-      $rule = new \RuleDictionnarySoftware();
-      $this->integer($rule->maxActionsCount())->isIdenticalTo(4);
-   }
+    public function testMaxActionsCount()
+    {
+        $rule = new \RuleDictionnarySoftware();
+        $this->integer($rule->maxActionsCount())->isIdenticalTo(4);
+    }
 
-   public function testGetCriteria() {
-      $rule     = new \RuleDictionnarySoftware();
-      $criteria = $rule->getCriterias();
-      $this->array($criteria)->hasSize(4);
-   }
+    public function testGetCriteria()
+    {
+        $rule     = new \RuleDictionnarySoftware();
+        $criteria = $rule->getCriterias();
+        $this->array($criteria)->hasSize(4);
+    }
 
-   public function testGetActions() {
-      $rule    = new \RuleDictionnarySoftware();
-      $actions = $rule->getActions();
-      $this->array($actions)->hasSize(7);
-   }
+    public function testGetActions()
+    {
+        $rule    = new \RuleDictionnarySoftware();
+        $actions = $rule->getActions();
+        $this->array($actions)->hasSize(7);
+    }
 
-   public function testAddSpecificParamsForPreview() {
-      $rule    = new \RuleDictionnarySoftware();
+    public function testAddSpecificParamsForPreview()
+    {
+        $rule    = new \RuleDictionnarySoftware();
 
-      $input = ['param1' => 'test'];
-      $result = $rule->addSpecificParamsForPreview($input);
-      $this->array($result)->isIdenticalTo(['param1' => 'test']);
+        $input = ['param1' => 'test'];
+        $result = $rule->addSpecificParamsForPreview($input);
+        $this->array($result)->isIdenticalTo(['param1' => 'test']);
 
-      $_POST['version'] = '1.0';
-      $result = $rule->addSpecificParamsForPreview($input);
-      $this->array($result)->isIdenticalTo(['param1' => 'test', 'version' => '1.0']);
-   }
+        $_POST['version'] = '1.0';
+        $result = $rule->addSpecificParamsForPreview($input);
+        $this->array($result)->isIdenticalTo(['param1' => 'test', 'version' => '1.0']);
+    }
 }

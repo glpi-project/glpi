@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -41,50 +42,54 @@ class LogCsvExport implements ExportToCsvInterface
 {
 
    /** @var CommonDBTM */
-   protected $item;
+    protected $item;
 
    /** @var array */
-   protected $filter;
+    protected $filter;
 
-   public function __construct(CommonDBTM $item, array $filter) {
-      $this->item   = $item;
-      $this->filter = $filter;
-   }
+    public function __construct(CommonDBTM $item, array $filter)
+    {
+        $this->item   = $item;
+        $this->filter = $filter;
+    }
 
-   public function getFileName(): string {
-      $name = $this->item->getFriendlyName();
-      $date = date('Y_m_d', time());
+    public function getFileName(): string
+    {
+        $name = $this->item->getFriendlyName();
+        $date = date('Y_m_d', time());
 
-      // Replace name by itemtype + id if empty
-      if ($name === '') {
-         $name = "{$this->item->getTypeName(1)}_{$this->item->getId()}";
-      }
+       // Replace name by itemtype + id if empty
+        if ($name === '') {
+            $name = "{$this->item->getTypeName(1)}_{$this->item->getId()}";
+        }
 
-      return Toolbox::filename("{$name}_$date") . ".csv";
-   }
+        return Toolbox::filename("{$name}_$date") . ".csv";
+    }
 
-   public function getFileHeader(): array {
-      return [
+    public function getFileHeader(): array
+    {
+        return [
          __('ID'),
          _n('Date', 'Dates', 1),
          User::getTypeName(1),
          _n('Field', 'Fields', 1),
          _x('name', 'Update'),
-      ];
-   }
+        ];
+    }
 
-   public function getFileContent(): array {
-      // Get logs from DB
-      $filter = Log::convertFiltersValuesToSqlCriteria($this->filter);
-      $logs = Log::getHistoryData($this->item, 0, 0, $filter);
+    public function getFileContent(): array
+    {
+       // Get logs from DB
+        $filter = Log::convertFiltersValuesToSqlCriteria($this->filter);
+        $logs = Log::getHistoryData($this->item, 0, 0, $filter);
 
-      // Remove uneeded rows
-      $logs = array_map(function($log) {
-         unset($log['display_history']);
-         unset($log['datatype']);
-         return $log;
-      }, $logs);
+       // Remove uneeded rows
+        $logs = array_map(function ($log) {
+            unset($log['display_history']);
+            unset($log['datatype']);
+            return $log;
+        }, $logs);
 
-      return $logs;
-   }
+        return $logs;
+    }
 }

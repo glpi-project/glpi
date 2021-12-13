@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,11 +32,12 @@
  */
 
 /// Class PhoneType
-class PhoneType extends CommonType {
+class PhoneType extends CommonType
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Phone type', 'Phone types', $nb);
-   }
-
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Phone type', 'Phone types', $nb);
+    }
 }

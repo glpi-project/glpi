@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,7 +36,8 @@ namespace tests\units;
 /* Test for inc/recurrentchange.class.php */
 class RecurrentChange extends CommonITILRecurrent
 {
-   protected function getChildClass() {
-      return \RecurrentChange::class;
-   }
+    protected function getChildClass()
+    {
+        return \RecurrentChange::class;
+    }
 }

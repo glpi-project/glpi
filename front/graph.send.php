@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,7 +36,7 @@ use Glpi\Csv\StatCsvExport;
 use Glpi\Http\Response;
 use Glpi\Stat\StatData;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 // Check rights
 Session::checkRight("statistic", READ);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,83 +33,102 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("budget", READ);
 
 if (empty($_GET["id"])) {
-   $_GET["id"] = '';
+    $_GET["id"] = '';
 }
 if (!isset($_GET["withtemplate"])) {
-   $_GET["withtemplate"] = '';
+    $_GET["withtemplate"] = '';
 }
 
 $budget = new Budget();
 if (isset($_POST["add"])) {
-   $budget->check(-1, CREATE, $_POST);
+    $budget->check(-1, CREATE, $_POST);
 
-   if ($newID = $budget->add($_POST)) {
-      Event::log($newID, "budget", 4, "financial",
-                  //TRANS: %1$s is the user login, %2$s is the name of the item to add
-                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
-      if ($_SESSION['glpibackcreated']) {
-         Html::redirect($budget->getLinkURL());
-      }
-   }
-   Html::back();
-
+    if ($newID = $budget->add($_POST)) {
+        Event::log(
+            $newID,
+            "budget",
+            4,
+            "financial",
+            //TRANS: %1$s is the user login, %2$s is the name of the item to add
+            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
+        );
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($budget->getLinkURL());
+        }
+    }
+    Html::back();
 } else if (isset($_POST["delete"])) {
-   $budget->check($_POST["id"], DELETE);
+    $budget->check($_POST["id"], DELETE);
 
-   if ($budget->delete($_POST)) {
-      Event::log($_POST["id"], "budget", 4, "financial",
-                  //TRANS: %s is the user login
-                  sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
-   }
-   $budget->redirectToList();
-
+    if ($budget->delete($_POST)) {
+        Event::log(
+            $_POST["id"],
+            "budget",
+            4,
+            "financial",
+            //TRANS: %s is the user login
+            sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
+        );
+    }
+    $budget->redirectToList();
 } else if (isset($_POST["restore"])) {
-   $budget->check($_POST["id"], DELETE);
+    $budget->check($_POST["id"], DELETE);
 
-   if ($budget->restore($_POST)) {
-      Event::log($_POST["id"], "budget", 4, "financial",
-                  //TRANS: %s is the user login
-                  sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
-   }
-   $budget->redirectToList();
-
+    if ($budget->restore($_POST)) {
+        Event::log(
+            $_POST["id"],
+            "budget",
+            4,
+            "financial",
+            //TRANS: %s is the user login
+            sprintf(__('%s restores an item'), $_SESSION["glpiname"])
+        );
+    }
+    $budget->redirectToList();
 } else if (isset($_POST["purge"])) {
-   $budget->check($_POST["id"], PURGE);
+    $budget->check($_POST["id"], PURGE);
 
-   if ($budget->delete($_POST, 1)) {
-      Event::log($_POST["id"], "budget", 4, "financial",
-                  //TRANS: %s is the user login
-                  sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
-   }
-   $budget->redirectToList();
-
+    if ($budget->delete($_POST, 1)) {
+        Event::log(
+            $_POST["id"],
+            "budget",
+            4,
+            "financial",
+            //TRANS: %s is the user login
+            sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+        );
+    }
+    $budget->redirectToList();
 } else if (isset($_POST["update"])) {
-   $budget->check($_POST["id"], UPDATE);
+    $budget->check($_POST["id"], UPDATE);
 
-   if ($budget->update($_POST)) {
-      Event::log($_POST["id"], "budget", 4, "financial",
-                  //TRANS: %s is the user login
-                  sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
+    if ($budget->update($_POST)) {
+        Event::log(
+            $_POST["id"],
+            "budget",
+            4,
+            "financial",
+            //TRANS: %s is the user login
+            sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+        );
+    }
+    Html::back();
 } else if (isset($_GET['_in_modal'])) {
       Html::popHeader(Budget::getTypeName(1), $_SERVER['PHP_SELF']);
       $budget->showForm($_GET["id"], ['withtemplate' => $_GET["withtemplate"]]);
       Html::popFooter();
-
 } else {
-   Html::header(Budget::getTypeName(1), $_SERVER['PHP_SELF'], "management", "budget");
-   $budget->display([
+    Html::header(Budget::getTypeName(1), $_SERVER['PHP_SELF'], "management", "budget");
+    $budget->display([
       'id'           => $_GET["id"],
       'withtemplate' => $_GET["withtemplate"],
       'formoptions'  => "data-track-changes=true"
-   ]);
+    ]);
 
-   Html::footer();
+    Html::footer();
 }

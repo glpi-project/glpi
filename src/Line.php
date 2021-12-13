@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,17 +38,19 @@ use Glpi\Application\View\TemplateRenderer;
  */
 
 
-class Line extends CommonDBTM {
+class Line extends CommonDBTM
+{
    // From CommonDBTM
-   public $dohistory                   = true;
+    public $dohistory                   = true;
 
-   static $rightname                   = 'line';
-   protected $usenotepad               = true;
+    public static $rightname                   = 'line';
+    protected $usenotepad               = true;
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Line', 'Lines', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Line', 'Lines', $nb);
+    }
 
 
    /**
@@ -55,24 +58,26 @@ class Line extends CommonDBTM {
     *
     * @since 0.84
     **/
-   function useDeletedToLockIfDynamic() {
-      return false;
-   }
+    public function useDeletedToLockIfDynamic()
+    {
+        return false;
+    }
 
 
-   function defineTabs($options = []) {
+    public function defineTabs($options = [])
+    {
 
-      $ong = [];
-      $this->addDefaultFormTab($ong);
-      $this->addImpactTab($ong, $options);
-      $this->addStandardTab('Infocom', $ong, $options);
-      $this->addStandardTab('Contract_Item', $ong, $options);
-      $this->addStandardTab('Document_Item', $ong, $options);
-      $this->addStandardTab('Notepad', $ong, $options);
-      $this->addStandardTab('Log', $ong, $options);
+        $ong = [];
+        $this->addDefaultFormTab($ong);
+        $this->addImpactTab($ong, $options);
+        $this->addStandardTab('Infocom', $ong, $options);
+        $this->addStandardTab('Contract_Item', $ong, $options);
+        $this->addStandardTab('Document_Item', $ong, $options);
+        $this->addStandardTab('Notepad', $ong, $options);
+        $this->addStandardTab('Log', $ong, $options);
 
-      return $ong;
-   }
+        return $ong;
+    }
 
 
    /**
@@ -85,130 +90,133 @@ class Line extends CommonDBTM {
     *
     * @return boolean item found
    **/
-   function showForm($ID, array $options = []) {
-      $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('pages/management/line.html.twig', [
+    public function showForm($ID, array $options = [])
+    {
+        $this->initForm($ID, $options);
+        TemplateRenderer::getInstance()->display('pages/management/line.html.twig', [
          'item'   => $this,
          'params' => $options,
-      ]);
-      return true;
-   }
+        ]);
+        return true;
+    }
 
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
+        $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
-      $tab[] = [
+        $tab[] = [
             'id'                 => '2',
             'table'              => $this->getTable(),
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
             'datatype'           => 'number'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
             'id'                 => '4',
             'table'              => 'glpi_linetypes',
             'field'              => 'name',
             'name'               => LineType::getTypeName(1),
             'datatype'           => 'dropdown',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
             'id'                 => '16',
             'table'              => $this->getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
             'datatype'           => 'text'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
             'id'                 => '19',
             'table'              => $this->getTable(),
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
             'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
             'id'                 => '31',
             'table'              => 'glpi_states',
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
             'condition'          => ['is_visible_line' => 1]
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
             'id'                 => '70',
             'table'              => 'glpi_users',
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',
             'right'              => 'all'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
             'id'                 => '71',
             'table'              => 'glpi_groups',
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_itemgroup' => 1],
             'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
             'id'                 => '80',
             'table'              => 'glpi_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
             'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
             'id'                 => '121',
             'table'              => $this->getTable(),
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
             'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
             'id'                 => '184',
             'table'              => 'glpi_lineoperators',
             'field'              => 'name',
             'name'               => LineOperator::getTypeName(1),
             'massiveaction'      => true,
             'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
             'id'                 => '185',
             'table'              => $this->getTable(),
             'field'              => 'caller_num',
             'name'               => __('Caller number'),
             'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
             'id'                 => '186',
             'table'              => $this->getTable(),
             'field'              => 'caller_name',
             'name'               => __('Caller name'),
             'datatype'           => 'string',
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
 
-   static function getIcon() {
-      return "ti ti-phone-calling";
-   }
+    public static function getIcon()
+    {
+        return "ti ti-phone-calling";
+    }
 }

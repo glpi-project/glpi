@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,10 +36,12 @@ namespace tests\units\Glpi\Toolbox;
 /**
  * Test class for src/Glpi/Toolbox/versionparser.class.php
  */
-class VersionParser extends \GLPITestCase {
+class VersionParser extends \GLPITestCase
+{
 
-   protected function versionsProvider() {
-      return [
+    protected function versionsProvider()
+    {
+        return [
          [
             'version'             => '',
             'keep_stability_flag' => false,
@@ -144,30 +147,33 @@ class VersionParser extends \GLPITestCase {
             'stable'              => true,
             'dev'                 => false,
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider versionsProvider
     */
-   public function testGetNormalizeVersion(string $version, bool $keep_stability_flag, string $normalized, bool $stable, bool $dev): void {
-      $version_parser = $this->newTestedInstance();
-      $this->string($version_parser->getNormalizedVersion($version, $keep_stability_flag))->isEqualTo($normalized);
-   }
+    public function testGetNormalizeVersion(string $version, bool $keep_stability_flag, string $normalized, bool $stable, bool $dev): void
+    {
+        $version_parser = $this->newTestedInstance();
+        $this->string($version_parser->getNormalizedVersion($version, $keep_stability_flag))->isEqualTo($normalized);
+    }
 
    /**
     * @dataProvider versionsProvider
     */
-   public function testIsStableRelease(string $version, bool $keep_stability_flag, string $normalized, bool $stable, bool $dev): void {
-      $version_parser = $this->newTestedInstance();
-      $this->boolean($version_parser->isStableRelease($version))->isEqualTo($stable);
-   }
+    public function testIsStableRelease(string $version, bool $keep_stability_flag, string $normalized, bool $stable, bool $dev): void
+    {
+        $version_parser = $this->newTestedInstance();
+        $this->boolean($version_parser->isStableRelease($version))->isEqualTo($stable);
+    }
 
    /**
     * @dataProvider versionsProvider
     */
-   public function testIsDevVersion(string $version, bool $keep_stability_flag, string $normalized, bool $stable, bool $dev): void {
-      $version_parser = $this->newTestedInstance();
-      $this->boolean($version_parser->isDevVersion($version))->isEqualTo($dev);
-   }
+    public function testIsDevVersion(string $version, bool $keep_stability_flag, string $normalized, bool $stable, bool $dev): void
+    {
+        $version_parser = $this->newTestedInstance();
+        $this->boolean($version_parser->isDevVersion($version))->isEqualTo($dev);
+    }
 }

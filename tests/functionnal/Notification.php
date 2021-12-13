@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,59 +37,61 @@ use DbTestCase;
 
 /* Test for inc/notification.class.php */
 
-class Notification extends DbTestCase {
+class Notification extends DbTestCase
+{
 
-   public function testGetMailingSignature() {
-      global $CFG_GLPI;
+    public function testGetMailingSignature()
+    {
+        global $CFG_GLPI;
 
-      $this->login();
+        $this->login();
 
-      $root    = getItemByTypeName('Entity', 'Root entity', true);
-      $parent  = getItemByTypeName('Entity', '_test_root_entity', true);
-      $child_1 = getItemByTypeName('Entity', '_test_child_1', true);
-      $child_2 = getItemByTypeName('Entity', '_test_child_2', true);
+        $root    = getItemByTypeName('Entity', 'Root entity', true);
+        $parent  = getItemByTypeName('Entity', '_test_root_entity', true);
+        $child_1 = getItemByTypeName('Entity', '_test_child_1', true);
+        $child_2 = getItemByTypeName('Entity', '_test_child_2', true);
 
-      $CFG_GLPI['mailing_signature'] = 'global_signature';
+        $CFG_GLPI['mailing_signature'] = 'global_signature';
 
-      $this->string(\Notification::getMailingSignature($parent))->isEqualTo("global_signature");
-      $this->string(\Notification::getMailingSignature($child_1))->isEqualTo("global_signature");
-      $this->string(\Notification::getMailingSignature($child_2))->isEqualTo("global_signature");
+        $this->string(\Notification::getMailingSignature($parent))->isEqualTo("global_signature");
+        $this->string(\Notification::getMailingSignature($child_1))->isEqualTo("global_signature");
+        $this->string(\Notification::getMailingSignature($child_2))->isEqualTo("global_signature");
 
-      $entity = new \Entity;
-      $this->boolean($entity->update([
+        $entity = new \Entity();
+        $this->boolean($entity->update([
          'id'                => $root,
          'mailing_signature' => "signature_root",
-      ]))->isTrue();
+        ]))->isTrue();
 
-      $this->string(\Notification::getMailingSignature($parent))->isEqualTo("signature_root");
-      $this->string(\Notification::getMailingSignature($child_1))->isEqualTo("signature_root");
-      $this->string(\Notification::getMailingSignature($child_2))->isEqualTo("signature_root");
+        $this->string(\Notification::getMailingSignature($parent))->isEqualTo("signature_root");
+        $this->string(\Notification::getMailingSignature($child_1))->isEqualTo("signature_root");
+        $this->string(\Notification::getMailingSignature($child_2))->isEqualTo("signature_root");
 
-      $this->boolean($entity->update([
+        $this->boolean($entity->update([
          'id'                => $parent,
          'mailing_signature' => "signature_parent",
-      ]))->isTrue();
+        ]))->isTrue();
 
-      $this->string(\Notification::getMailingSignature($parent))->isEqualTo("signature_parent");
-      $this->string(\Notification::getMailingSignature($child_1))->isEqualTo("signature_parent");
-      $this->string(\Notification::getMailingSignature($child_2))->isEqualTo("signature_parent");
+        $this->string(\Notification::getMailingSignature($parent))->isEqualTo("signature_parent");
+        $this->string(\Notification::getMailingSignature($child_1))->isEqualTo("signature_parent");
+        $this->string(\Notification::getMailingSignature($child_2))->isEqualTo("signature_parent");
 
-      $this->boolean($entity->update([
+        $this->boolean($entity->update([
          'id'                => $child_1,
          'mailing_signature' => "signature_child_1",
-      ]))->isTrue();
+        ]))->isTrue();
 
-      $this->string(\Notification::getMailingSignature($parent))->isEqualTo("signature_parent");
-      $this->string(\Notification::getMailingSignature($child_1))->isEqualTo("signature_child_1");
-      $this->string(\Notification::getMailingSignature($child_2))->isEqualTo("signature_parent");
+        $this->string(\Notification::getMailingSignature($parent))->isEqualTo("signature_parent");
+        $this->string(\Notification::getMailingSignature($child_1))->isEqualTo("signature_child_1");
+        $this->string(\Notification::getMailingSignature($child_2))->isEqualTo("signature_parent");
 
-      $this->boolean($entity->update([
+        $this->boolean($entity->update([
          'id'                => $child_2,
          'mailing_signature' => "signature_child_2",
-      ]))->isTrue();
+        ]))->isTrue();
 
-      $this->string(\Notification::getMailingSignature($parent))->isEqualTo("signature_parent");
-      $this->string(\Notification::getMailingSignature($child_1))->isEqualTo("signature_child_1");
-      $this->string(\Notification::getMailingSignature($child_2))->isEqualTo("signature_child_2");
-   }
+        $this->string(\Notification::getMailingSignature($parent))->isEqualTo("signature_parent");
+        $this->string(\Notification::getMailingSignature($child_1))->isEqualTo("signature_child_1");
+        $this->string(\Notification::getMailingSignature($child_2))->isEqualTo("signature_child_2");
+    }
 }

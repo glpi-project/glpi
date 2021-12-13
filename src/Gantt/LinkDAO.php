@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,20 +38,22 @@ use ProjectTaskLink;
 /**
  * DAO class for handling project task links
  */
-class LinkDAO {
+class LinkDAO
+{
 
-   public function getLinksForItemIDs($ids) {
-      $links = [];
-      $tasklink = new ProjectTaskLink();
+    public function getLinksForItemIDs($ids)
+    {
+        $links = [];
+        $tasklink = new ProjectTaskLink();
 
-      $ids = implode(',', $ids);
-      $iterator = $tasklink->getFromDBForItemIDs($ids);
-      foreach ($iterator as $data) {
-         array_push($links, $this->populateFromDB($data));
-      }
+        $ids = implode(',', $ids);
+        $iterator = $tasklink->getFromDBForItemIDs($ids);
+        foreach ($iterator as $data) {
+            array_push($links, $this->populateFromDB($data));
+        }
 
-      return $links;
-   }
+        return $links;
+    }
 
    /**
     * Populates a Link object with data
@@ -59,14 +62,15 @@ class LinkDAO {
     *
     * @return Link object
     */
-   function populateFromDB($data) {
-      $link = new Link();
-      $link->id = $data["id"];
-      $link->source = $data["source_uuid"];
-      $link->target = $data["target_uuid"];
-      $link->type = $data["type"];
-      $link->lag = $data["lag"];
-      $link->lead = $data["lead"];
-      return $link;
-   }
+    public function populateFromDB($data)
+    {
+        $link = new Link();
+        $link->id = $data["id"];
+        $link->source = $data["source_uuid"];
+        $link->target = $data["target_uuid"];
+        $link->type = $data["type"];
+        $link->lag = $data["lag"];
+        $link->lead = $data["lead"];
+        return $link;
+    }
 }

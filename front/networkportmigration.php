@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,16 +31,21 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("networking", UPDATE);
 
 if (!$DB->tableExists('glpi_networkportmigrations')) {
-   Html::displayNotFoundError();
+    Html::displayNotFoundError();
 }
 
-Html::header(NetworkPortMigration::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools",
-             "migration", "networkportmigration");
+Html::header(
+    NetworkPortMigration::getTypeName(Session::getPluralNumber()),
+    $_SERVER['PHP_SELF'],
+    "tools",
+    "migration",
+    "networkportmigration"
+);
 
 Search::show('NetworkPortMigration');
 

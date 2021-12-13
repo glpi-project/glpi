@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,69 +31,68 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
-if (empty($_POST["_type"])
+if (
+    empty($_POST["_type"])
     || ($_POST["_type"] != "Helpdesk")
-    || !$CFG_GLPI["use_anonymous_helpdesk"]) {
-   Session::checkRight("ticket", CREATE);
+    || !$CFG_GLPI["use_anonymous_helpdesk"]
+) {
+    Session::checkRight("ticket", CREATE);
 }
 
 $track = new Ticket();
 
 // Security check
 if (empty($_POST) || (count($_POST) == 0)) {
-   Html::redirect($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
+    Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php");
 }
 
 if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
-   Html::nullHeader(Ticket::getTypeName(Session::getPluralNumber()));
+    Html::nullHeader(Ticket::getTypeName(Session::getPluralNumber()));
 } else if ($_POST["_from_helpdesk"]) {
-   Html::helpHeader(__('Simplified interface'), '', $_SESSION["glpiname"]);
+    Html::helpHeader(__('Simplified interface'), '', $_SESSION["glpiname"]);
 } else {
-   Html::header(__('Simplified interface'), '', $_SESSION["glpiname"], "helpdesk", "tracking");
+    Html::header(__('Simplified interface'), '', $_SESSION["glpiname"], "helpdesk", "tracking");
 }
 
 if (isset($_POST['add'])) {
-   if (!$CFG_GLPI["use_anonymous_helpdesk"]) {
-      $track->check(-1, CREATE, $_POST);
-   } else {
-      $track->getEmpty();
-   }
-   $_POST['check_delegatee'] = true;
-   if (isset($_UPOST['_actors'])) {
-      $_POST['_actors'] = json_decode($_UPOST['_actors'], true);
-      // with self-service, we only have observers
-      unset($_POST['_actors']['requester'], $_POST['_actors']['assign']);
-   }
-   if ($track->add($_POST)) {
-      if ($_SESSION['glpibackcreated']) {
-         Html::redirect($track->getLinkURL());
-      }
-      if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
-         echo "<div class='center spaced'>".
+    if (!$CFG_GLPI["use_anonymous_helpdesk"]) {
+        $track->check(-1, CREATE, $_POST);
+    } else {
+        $track->getEmpty();
+    }
+    $_POST['check_delegatee'] = true;
+    if (isset($_UPOST['_actors'])) {
+        $_POST['_actors'] = json_decode($_UPOST['_actors'], true);
+       // with self-service, we only have observers
+        unset($_POST['_actors']['requester'], $_POST['_actors']['assign']);
+    }
+    if ($track->add($_POST)) {
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($track->getLinkURL());
+        }
+        if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
+            echo "<div class='center spaced'>" .
                 __('Your ticket has been registered, its treatment is in progress.');
-         Html::displayBackLink();
-         echo "</div>";
-      } else {
-         echo "<div class='center b spaced'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' alt='".__s('OK')."'>";
-         Session::addMessageAfterRedirect(__('Thank you for using our automatic helpdesk system.'));
-         Html::displayMessageAfterRedirect();
-         echo "</div>";
-      }
-
-   } else {
-      echo "<div class='center'>";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='".__s('Warning')."'><br>";
-      Html::displayMessageAfterRedirect();
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1'>".
-            __('Back')."</a></div>";
-
-   }
-   Html::nullFooter();
-
+            Html::displayBackLink();
+            echo "</div>";
+        } else {
+            echo "<div class='center b spaced'>";
+            echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/ok.png' alt='" . __s('OK') . "'>";
+            Session::addMessageAfterRedirect(__('Thank you for using our automatic helpdesk system.'));
+            Html::displayMessageAfterRedirect();
+            echo "</div>";
+        }
+    } else {
+        echo "<div class='center'>";
+        echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='" . __s('Warning') . "'><br>";
+        Html::displayMessageAfterRedirect();
+        echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/helpdesk.public.php?create_ticket=1'>" .
+            __('Back') . "</a></div>";
+    }
+    Html::nullFooter();
 } else { // reload display form
-   $track->showFormHelpdesk(Session::getLoginUserID());
-   Html::helpFooter();
+    $track->showFormHelpdesk(Session::getLoginUserID());
+    Html::helpFooter();
 }

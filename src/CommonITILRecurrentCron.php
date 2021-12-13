@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -42,11 +43,12 @@ class CommonITILRecurrentCron extends CommonDBTM
     *
     * @return array
     */
-   public static function cronInfo(): array {
-      return [
+    public static function cronInfo(): array
+    {
+        return [
          'description' => __("Create recurrent tickets and changes")
-      ];
-   }
+        ];
+    }
 
    /**
     * Run the cron task
@@ -55,19 +57,20 @@ class CommonITILRecurrentCron extends CommonDBTM
     *
     * @return int task status (0: no work to do, 1: work done)
     */
-   public static function cronRecurrentItems(CronTask $task) {
-      global $DB;
+    public static function cronRecurrentItems(CronTask $task)
+    {
+        global $DB;
 
-      $total = 0;
+        $total = 0;
 
-      // Concrete classes for which recurrent items can be created
-      $targets = [
+       // Concrete classes for which recurrent items can be created
+        $targets = [
          TicketRecurrent::class,
          RecurrentChange::class,
-      ];
+        ];
 
-      foreach ($targets as $itemtype) {
-         $iterator = $DB->request([
+        foreach ($targets as $itemtype) {
+            $iterator = $DB->request([
             'FROM'   => $itemtype::getTable(),
             'WHERE'  => [
                'next_creation_date' => ['<', new \QueryExpression('NOW()')],
@@ -77,28 +80,28 @@ class CommonITILRecurrentCron extends CommonDBTM
                   ['end_date' => ['>', new \QueryExpression('NOW()')]]
                ]
             ]
-         ]);
+            ]);
 
-         foreach ($iterator as $data) {
-            /** @var CommonITILRecurrent */
-            $item = new $itemtype();
-            $item->fields = $data;
+            foreach ($iterator as $data) {
+                /** @var CommonITILRecurrent */
+                $item = new $itemtype();
+                $item->fields = $data;
 
-            if ($item->createItem()) {
-               $total++;
-            } else {
-               //TRANS: %s is a name
-               $task->log(
-                  sprintf(
-                     __('Failed to create recurrent item %s'),
-                     $data['name']
-                  )
-               );
+                if ($item->createItem()) {
+                    $total++;
+                } else {
+                 //TRANS: %s is a name
+                    $task->log(
+                        sprintf(
+                            __('Failed to create recurrent item %s'),
+                            $data['name']
+                        )
+                    );
+                }
             }
-         }
-      }
+        }
 
-      $task->setVolume($total);
-      return (int) ($total > 0);
-   }
+        $task->setVolume($total);
+        return (int) ($total > 0);
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,19 +36,20 @@ namespace Glpi\Features;
 /**
  * Objects lists that can be cached
  **/
-interface CacheableListInterface {
+interface CacheableListInterface
+{
 
    /**
     * Get cache key
     *
     * @return string
     */
-   public function getListCacheKey(): string;
+    public function getListCacheKey(): string;
 
    /**
     * Clean cache
     *
     * @return void
     */
-   public function invalidateListCache(): void;
+    public function invalidateListCache(): void;
 }

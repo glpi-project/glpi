@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,8 +38,9 @@ use Twig\Sandbox\SecurityPolicy;
 
 class TemplateManager extends GLPITestCase
 {
-   protected function testTemplatesProvider(): array {
-      return [
+    protected function testTemplatesProvider(): array
+    {
+        return [
          [
             'content'   => "{{ test_var }}",
             'params'    => ['test_var' => 'test_value'],
@@ -105,59 +107,60 @@ class TemplateManager extends GLPITestCase
             'expected'  => '<h1>Test safe HTML2</h1><hr />Fill this form:',
             'error'     => null,
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider testTemplatesProvider
     */
-   public function testRender(
-      string $content,
-      array $params,
-      string $expected,
-      ?string $error = null
-   ): void {
-      $manager = $this->newTestedInstance();
+    public function testRender(
+        string $content,
+        array $params,
+        string $expected,
+        ?string $error = null
+    ): void {
+        $manager = $this->newTestedInstance();
 
-      $html = null;
+        $html = null;
 
-      if ($error !== null) {
-         $this->exception(
-            function () use ($manager, $content, $params, &$html) {
-               $html = $manager->render($content, $params);
-            }
-         );
-         return;
-      } else {
-         $html = $manager->render($content, $params);
-      }
+        if ($error !== null) {
+            $this->exception(
+                public function () use ($manager, $content, $params, &$html) {
+                    $html = $manager->render($content, $params);
+                }
+            );
+            return;
+        } else {
+            $html = $manager->render($content, $params);
+        }
 
-      $this->string($html)->isEqualTo($expected);
-   }
+        $this->string($html)->isEqualTo($expected);
+    }
 
    /**
     * @dataProvider testTemplatesProvider
     */
-   public function testValidate(
-      string $content,
-      array $params,
-      string $expected,
-      ?string $error = null
-   ): void {
-      $manager = $this->newTestedInstance();
-      $err_msg = null;
-      $is_valid = $manager->validate($content, $err_msg);
-      $this->boolean($is_valid)->isEqualTo(empty($error));
+    public function testValidate(
+        string $content,
+        array $params,
+        string $expected,
+        ?string $error = null
+    ): void {
+        $manager = $this->newTestedInstance();
+        $err_msg = null;
+        $is_valid = $manager->validate($content, $err_msg);
+        $this->boolean($is_valid)->isEqualTo(empty($error));
 
-      // Handle error if neeced
-      if ($error !== null) {
-         $this->string($err_msg)->contains($error);
-      }
-   }
+       // Handle error if neeced
+        if ($error !== null) {
+            $this->string($err_msg)->contains($error);
+        }
+    }
 
-   public function testGetSecurityPolicy(): void {
-      // Not much to test here, maybe keepk this for code coverage ?
-      $manager = $this->newTestedInstance();
-      $this->object($manager->getSecurityPolicy())->isInstanceOf(SecurityPolicy::class);
-   }
+    public function testGetSecurityPolicy(): void
+    {
+       // Not much to test here, maybe keepk this for code coverage ?
+        $manager = $this->newTestedInstance();
+        $this->object($manager->getSecurityPolicy())->isInstanceOf(SecurityPolicy::class);
+    }
 }

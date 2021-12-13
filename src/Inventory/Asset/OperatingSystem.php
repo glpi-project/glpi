@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -39,73 +40,76 @@ use Toolbox;
 
 class OperatingSystem extends InventoryAsset
 {
-   protected $extra_data = ['hardware' => null];
-   private $operatingsystems_id;
+    protected $extra_data = ['hardware' => null];
+    private $operatingsystems_id;
 
-   public function prepare() :array {
-      $mapping = [
+    public function prepare(): array
+    {
+        $mapping = [
          'name'           => 'operatingsystems_id',
          'version'        => 'operatingsystemversions_id',
          'service_pack'   => 'operatingsystemservicepacks_id',
          'arch'           => 'operatingsystemarchitectures_id',
          'kernel_name'    => 'operatingsystemkernels_id',
          'kernel_version' => 'operatingsystemkernelversions_id'
-      ];
+        ];
 
-      $val = (object)$this->data;
-      foreach ($mapping as $origin => $dest) {
-         if (property_exists($val, $origin)) {
-            $val->$dest = $val->$origin;
-         }
-      }
+        $val = (object)$this->data;
+        foreach ($mapping as $origin => $dest) {
+            if (property_exists($val, $origin)) {
+                $val->$dest = $val->$origin;
+            }
+        }
 
-      if (isset($this->extra_data['hardware'])) {
-         if (property_exists($this->extra_data['hardware'], 'winprodid')) {
-            $val->licenseid = $this->extra_data['hardware']->winprodid;
-         }
+        if (isset($this->extra_data['hardware'])) {
+            if (property_exists($this->extra_data['hardware'], 'winprodid')) {
+                $val->licenseid = $this->extra_data['hardware']->winprodid;
+            }
 
-         if (property_exists($this->extra_data['hardware'], 'winprodkey')) {
-            $val->license_number = $this->extra_data['hardware']->winprodkey;
-         }
-      }
+            if (property_exists($this->extra_data['hardware'], 'winprodkey')) {
+                $val->license_number = $this->extra_data['hardware']->winprodkey;
+            }
+        }
 
-      if (property_exists($val, 'full_name')) {
-         $val->operatingsystems_id = $val->full_name;
-      }
+        if (property_exists($val, 'full_name')) {
+            $val->operatingsystems_id = $val->full_name;
+        }
 
-      if (property_exists($val, 'operatingsystemarchitectures_id')
-         && $val->operatingsystemarchitectures_id != ''
-      ) {
-         $rulecollection = new RuleDictionnaryOperatingSystemArchitectureCollection();
-         $res_rule = $rulecollection->processAllRules(['name' => $val->operatingsystemarchitectures_id]);
-         if (isset($res_rule['name'])) {
-            $val->operatingsystemarchitectures_id = $res_rule['name'];
-         }
-         if ($val->operatingsystemarchitectures_id == '0') {
-            $val->operatingsystemarchitectures_id = '';
-         }
-      }
-      if (property_exists($val, 'operatingsystemservicepacks_id') && $val->operatingsystemservicepacks_id == '0') {
-         $val->operatingsystemservicepacks_id = '';
-      }
+        if (
+            property_exists($val, 'operatingsystemarchitectures_id')
+            && $val->operatingsystemarchitectures_id != ''
+        ) {
+            $rulecollection = new RuleDictionnaryOperatingSystemArchitectureCollection();
+            $res_rule = $rulecollection->processAllRules(['name' => $val->operatingsystemarchitectures_id]);
+            if (isset($res_rule['name'])) {
+                $val->operatingsystemarchitectures_id = $res_rule['name'];
+            }
+            if ($val->operatingsystemarchitectures_id == '0') {
+                $val->operatingsystemarchitectures_id = '';
+            }
+        }
+        if (property_exists($val, 'operatingsystemservicepacks_id') && $val->operatingsystemservicepacks_id == '0') {
+            $val->operatingsystemservicepacks_id = '';
+        }
 
-      $this->data = [$val];
-      return $this->data;
-   }
+        $this->data = [$val];
+        return $this->data;
+    }
 
-   public function handle() {
-      global $DB;
+    public function handle()
+    {
+        global $DB;
 
-      $ios = new Item_OperatingSystem();
+        $ios = new Item_OperatingSystem();
 
-      $val = $this->data[0];
+        $val = $this->data[0];
 
-      $ios->getFromDBByCrit([
+        $ios->getFromDBByCrit([
          'itemtype'  => $this->item->getType(),
          'items_id'  => $this->item->fields['id']
-      ]);
+        ]);
 
-      $input_os = [
+        $input_os = [
          'itemtype'                          => $this->item->getType(),
          'items_id'                          => $this->item->fields['id'],
          'operatingsystemarchitectures_id'   => $val->operatingsystemarchitectures_id ?? 0,
@@ -117,56 +121,58 @@ class OperatingSystem extends InventoryAsset
          'license_number'                    => $val->license_number ?? '',
          'is_dynamic'                        => 1,
          'entities_id'                       => $this->item->fields['entities_id']
-      ];
+        ];
 
-      $this->withHistory(true);//always store history for OS
-      if (!$ios->isNewItem()) {
-         //OS exists, check for updates
-         $same = true;
-         foreach ($input_os as $key => $value) {
-            if ($ios->fields[$key] != $value) {
-               $same = false;
-               break;
+        $this->withHistory(true);//always store history for OS
+        if (!$ios->isNewItem()) {
+           //OS exists, check for updates
+            $same = true;
+            foreach ($input_os as $key => $value) {
+                if ($ios->fields[$key] != $value) {
+                    $same = false;
+                    break;
+                }
             }
-         }
-         if ($same === false) {
-            $ios->update(['id' => $ios->getID()] + Toolbox::addslashes_deep($input_os), $this->withHistory());
-         }
-      } else {
-         $ios->add(Toolbox::addslashes_deep($input_os), [], $this->withHistory());
-      }
+            if ($same === false) {
+                $ios->update(['id' => $ios->getID()] + Toolbox::addslashes_deep($input_os), $this->withHistory());
+            }
+        } else {
+            $ios->add(Toolbox::addslashes_deep($input_os), [], $this->withHistory());
+        }
 
-      $val->operatingsystems_id = $ios->fields['id'];;
-      $this->operatingsystems_id = $val->operatingsystems_id;
+        $val->operatingsystems_id = $ios->fields['id'];
+        ;
+        $this->operatingsystems_id = $val->operatingsystems_id;
 
-      //cleanup
-      if (!$this->main_asset || !$this->main_asset->isPartial()) {
-         $iterator = $DB->request([
+       //cleanup
+        if (!$this->main_asset || !$this->main_asset->isPartial()) {
+            $iterator = $DB->request([
             'FROM' => $ios->getTable(),
             'WHERE' => [
                'itemtype'  => $this->item->getType(),
                'items_id'  => $this->item->fields['id'],
                'NOT'       => ['id' => $ios->fields['id']]
             ]
-         ]);
+            ]);
 
-         foreach ($iterator as $row) {
-            $ios->delete($row['id'], true);
-         }
-      }
+            foreach ($iterator as $row) {
+                $ios->delete($row['id'], true);
+            }
+        }
+    }
 
-   }
-
-   public function checkConf(Conf $conf): bool {
-      return true;
-   }
+    public function checkConf(Conf $conf): bool
+    {
+        return true;
+    }
 
    /**
     * Get current OS id
     *
     * @return integer
     */
-   public function getId() {
-      return $this->operatingsystems_id;
-   }
+    public function getId()
+    {
+        return $this->operatingsystems_id;
+    }
 }

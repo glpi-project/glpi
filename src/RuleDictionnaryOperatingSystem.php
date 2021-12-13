@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,42 +31,45 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleDictionnaryOperatingSystem extends RuleDictionnaryDropdown {
+class RuleDictionnaryOperatingSystem extends RuleDictionnaryDropdown
+{
 
 
    /**
     * Constructor
    **/
-   function __construct() {
-      parent::__construct('RuleDictionnaryOperatingSystem');
-   }
+    public function __construct()
+    {
+        parent::__construct('RuleDictionnaryOperatingSystem');
+    }
 
 
-   function getCriterias() {
+    public function getCriterias()
+    {
 
-      static $criterias = [];
+        static $criterias = [];
 
-      if (count($criterias)) {
-         return $criterias;
-      }
+        if (count($criterias)) {
+            return $criterias;
+        }
 
-      $criterias['name']['field'] = 'name';
-      $criterias['name']['name']  = OperatingSystem::getTypeName(1);
-      $criterias['name']['table'] = 'glpi_operatingsystems';
-      return $criterias;
-   }
+        $criterias['name']['field'] = 'name';
+        $criterias['name']['name']  = OperatingSystem::getTypeName(1);
+        $criterias['name']['table'] = 'glpi_operatingsystems';
+        return $criterias;
+    }
 
 
    /**
     * @see Rule::getActions()
    **/
-   function getActions() {
+    public function getActions()
+    {
 
-      $actions                          = [];
-      $actions['name']['name']          = OperatingSystem::getTypeName(1);
-      $actions['name']['force_actions'] = ['append_regex_result', 'assign', 'regex_result'];
+        $actions                          = [];
+        $actions['name']['name']          = OperatingSystem::getTypeName(1);
+        $actions['name']['force_actions'] = ['append_regex_result', 'assign', 'regex_result'];
 
-      return $actions;
-   }
-
+        return $actions;
+    }
 }

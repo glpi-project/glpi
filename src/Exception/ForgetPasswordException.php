@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,4 +33,6 @@
 
 namespace Glpi\Exception;
 
-class ForgetPasswordException extends \Exception {};
+class ForgetPasswordException extends \Exception
+{
+};

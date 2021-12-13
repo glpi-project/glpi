@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,17 +31,19 @@
  * ---------------------------------------------------------------------
  */
 
-class ImageFormat extends CommonDropdown {
+class ImageFormat extends CommonDropdown
+{
 
-   public $can_be_translated = false;
+    public $can_be_translated = false;
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Image format', 'Image formats', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Image format', 'Image formats', $nb);
+    }
 
-   static function getIcon() {
-      return "far fa-file-image";
-   }
-
+    public static function getIcon()
+    {
+        return "far fa-file-image";
+    }
 }

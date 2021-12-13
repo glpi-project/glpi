@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -46,13 +47,13 @@ $tables['glpi_apiclients'] = [
 ];
 
 foreach (Blacklist::getDefaults() as $type => $values) {
-   foreach ($values as $value) {
-      $tables['glpi_blacklists'][] = [
+    foreach ($values as $value) {
+        $tables['glpi_blacklists'][] = [
          'type' => $type,
           'name'    => $value['name'],
          'value'   => $value['value'],
-      ];
-   }
+        ];
+    }
 }
 
 
@@ -69,7 +70,7 @@ $tables['glpi_calendars'] = [
 
 $tables['glpi_calendarsegments'] = [];
 for ($i = 1; $i < 6; ++$i) {
-   $tables['glpi_calendarsegments'][] = [
+    $tables['glpi_calendarsegments'][] = [
       'id'           => $i,
       'calendars_id' => 1,
       'entities_id'  => 0,
@@ -77,7 +78,7 @@ for ($i = 1; $i < 6; ++$i) {
       'day'          => $i,
       'begin'        => '08:00:00',
       'end'          => '20:00:00',
-   ];
+    ];
 }
 
 $default_prefs = [
@@ -307,19 +308,19 @@ $default_prefs = [
 
 $tables['glpi_configs'] = [];
 foreach ($default_prefs as $name => $value) {
-   $tables['glpi_configs'][] = [
+    $tables['glpi_configs'][] = [
       'context' => 'core',
       'name'    => $name,
       'value'   => $value,
-   ];
+    ];
 }
 
 foreach (\Glpi\Inventory\Conf::$defaults as $name => $value) {
-   $tables['glpi_configs'][] = [
+    $tables['glpi_configs'][] = [
       'context' => 'inventory',
       'name'    => $name,
       'value'   => $value,
-   ];
+    ];
 }
 
 $tables['glpi_crontasks'] = [
@@ -726,27 +727,27 @@ $tables['glpi_crontasks'] = [
    ],
 ];
 
-$dashboards_data = include_once __DIR__."/migrations/update_9.4.x_to_9.5.0/dashboards.php";
+$dashboards_data = include_once __DIR__ . "/migrations/update_9.4.x_to_9.5.0/dashboards.php";
 $tables['glpi_dashboards_dashboards'] = [];
 $tables['glpi_dashboards_items'] = [];
 $i = $j = 1;
 foreach ($dashboards_data as $default_dashboard) {
-   $items = $default_dashboard['_items'];
-   unset($default_dashboard['_items']);
-   $tables['glpi_dashboards_dashboards'][] = array_merge([
+    $items = $default_dashboard['_items'];
+    unset($default_dashboard['_items']);
+    $tables['glpi_dashboards_dashboards'][] = array_merge([
       'id' => $i
-   ], $default_dashboard);
+    ], $default_dashboard);
 
-   foreach ($items as $item) {
-      $tables['glpi_dashboards_items'][] = array_merge([
+    foreach ($items as $item) {
+        $tables['glpi_dashboards_items'][] = array_merge([
          'id' => $j,
          'dashboards_dashboards_id' => $i,
-      ], $item);
+        ], $item);
 
-      $j++;
-   }
+        $j++;
+    }
 
-   $i++;
+    $i++;
 }
 
 $tables['glpi_devicememorytypes'] = [
@@ -1751,14 +1752,14 @@ $ADDTODISPLAYPREF['Socket'] = [5, 6, 9, 8, 7];
 $ADDTODISPLAYPREF['Cable'] = [4, 31, 6, 15, 24, 8, 10, 13, 14];
 
 foreach ($ADDTODISPLAYPREF as $type => $options) {
-   $rank = 1;
-   foreach ($options as $newval) {
-      $tables['glpi_displaypreferences'][] = [
+    $rank = 1;
+    foreach ($options as $newval) {
+        $tables['glpi_displaypreferences'][] = [
          'itemtype'  => $type,
          'num'       => $newval,
          'rank'      => $rank++,
-      ];
-   }
+        ];
+    }
 }
 
 $tables['glpi_documenttypes'] = [
@@ -4412,7 +4413,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 ##lang.ticket.closedate## : ##ticket.closedate##
 
 ##lang.satisfaction.text## ##ticket.urlsatisfaction##',
-      'content_html'             =>'&lt;p&gt;##lang.ticket.title## : ##ticket.title##&lt;/p&gt;
+      'content_html'             => '&lt;p&gt;##lang.ticket.title## : ##ticket.title##&lt;/p&gt;
 &lt;p&gt;##lang.ticket.closedate## : ##ticket.closedate##&lt;/p&gt;
 &lt;p&gt;##lang.satisfaction.text## &lt;a href="##ticket.urlsatisfaction##"&gt;##ticket.urlsatisfaction##&lt;/a&gt;&lt;/p&gt;',
    ], [

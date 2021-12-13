@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,11 +34,13 @@
 /**
  * Class to manage certificate types
  */
-class CertificateType extends CommonType {
+class CertificateType extends CommonType
+{
 
-   var $can_be_translated = true;
+    public $can_be_translated = true;
 
-   static function getTypeName($nb = 0) {
-      return _n('Certificate type', 'Certificate types', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Certificate type', 'Certificate types', $nb);
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,21 +31,23 @@
  * ---------------------------------------------------------------------
  */
 
-class Link_Itemtype extends CommonDBChild {
+class Link_Itemtype extends CommonDBChild
+{
    // From CommonDbChild
-   static public $itemtype = 'Link';
-   static public $items_id = 'links_id';
+    public static $itemtype = 'Link';
+    public static $items_id = 'links_id';
 
 
    /**
     * @since 0.84
    **/
-   function getForbiddenStandardMassiveAction() {
+    public function getForbiddenStandardMassiveAction()
+    {
 
-      $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
-      return $forbidden;
-   }
+        $forbidden   = parent::getForbiddenStandardMassiveAction();
+        $forbidden[] = 'update';
+        return $forbidden;
+    }
 
 
    /**
@@ -54,124 +57,134 @@ class Link_Itemtype extends CommonDBChild {
     *
     * @return void
    **/
-   static function showForLink($link) {
-      global $DB,$CFG_GLPI;
+    public static function showForLink($link)
+    {
+        global $DB,$CFG_GLPI;
 
-      $links_id = $link->getField('id');
+        $links_id = $link->getField('id');
 
-      $canedit  = $link->canEdit($links_id);
-      $rand     = mt_rand();
+        $canedit  = $link->canEdit($links_id);
+        $rand     = mt_rand();
 
-      if (!Link::canView()
-          || !$link->can($links_id, READ)) {
-         return false;
-      }
+        if (
+            !Link::canView()
+            || !$link->can($links_id, READ)
+        ) {
+            return false;
+        }
 
-      $iterator = $DB->request([
+        $iterator = $DB->request([
          'FROM'   => 'glpi_links_itemtypes',
          'WHERE'  => ['links_id' => $links_id],
          'ORDER'  => 'itemtype'
-      ]);
-      $types  = [];
-      $used   = [];
-      $numrows = count($iterator);
-      foreach ($iterator as $data) {
-         $types[$data['id']]      = $data;
-         $used[$data['itemtype']] = $data['itemtype'];
-      }
+        ]);
+        $types  = [];
+        $used   = [];
+        $numrows = count($iterator);
+        foreach ($iterator as $data) {
+            $types[$data['id']]      = $data;
+            $used[$data['itemtype']] = $data['itemtype'];
+        }
 
-      if ($canedit) {
-         echo "<div class='firstbloc'>";
-         echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
-                action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+        if ($canedit) {
+            echo "<div class='firstbloc'>";
+            echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
+                action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
 
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add an item type')."</th></tr>";
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr class='tab_bg_2'><th colspan='2'>" . __('Add an item type') . "</th></tr>";
 
-         echo "<tr class='tab_bg_2'><td class='right'>";
-         echo "<input type='hidden' name='links_id' value='$links_id'>";
-         Dropdown::showItemTypes('itemtype', $CFG_GLPI["link_types"], ['used' => $used]);
-         echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
-         echo "</td></tr>";
+            echo "<tr class='tab_bg_2'><td class='right'>";
+            echo "<input type='hidden' name='links_id' value='$links_id'>";
+            Dropdown::showItemTypes('itemtype', $CFG_GLPI["link_types"], ['used' => $used]);
+            echo "</td><td class='center'>";
+            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
+            echo "</td></tr>";
 
-         echo "</table>";
-         Html::closeForm();
-         echo "</div>";
-      }
+            echo "</table>";
+            Html::closeForm();
+            echo "</div>";
+        }
 
-      echo "<div class='spaced'>";
-      if ($canedit && $numrows) {
-         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = ['num_displayed'  => min($_SESSION['glpilist_limit'], $numrows),
-                                      'container'      => 'mass'.__CLASS__.$rand];
-         Html::showMassiveActions($massiveactionparams);
-      }
-      echo "<table class='tab_cadre_fixe'>";
-      $header_begin  = "<tr>";
-      $header_top    = '';
-      $header_bottom = '';
-      $header_end    = '';
-      if ($canedit && $numrows) {
-         $header_top    .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-         $header_top    .= "</th>";
-         $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-         $header_bottom .= "</th>";
-      }
-      $header_end .= "<th>"._n('Type', 'Types', 1)."</th>";
-      $header_end .= "</tr>";
-      echo $header_begin.$header_top.$header_end;
+        echo "<div class='spaced'>";
+        if ($canedit && $numrows) {
+            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
+            $massiveactionparams = ['num_displayed'  => min($_SESSION['glpilist_limit'], $numrows),
+                                      'container'      => 'mass' . __CLASS__ . $rand];
+            Html::showMassiveActions($massiveactionparams);
+        }
+        echo "<table class='tab_cadre_fixe'>";
+        $header_begin  = "<tr>";
+        $header_top    = '';
+        $header_bottom = '';
+        $header_end    = '';
+        if ($canedit && $numrows) {
+            $header_top    .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+            $header_top    .= "</th>";
+            $header_bottom .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+            $header_bottom .= "</th>";
+        }
+        $header_end .= "<th>" . _n('Type', 'Types', 1) . "</th>";
+        $header_end .= "</tr>";
+        echo $header_begin . $header_top . $header_end;
 
-      foreach ($types as $data) {
-         $typename = NOT_AVAILABLE;
-         if ($item = getItemForItemtype($data['itemtype'])) {
-            $typename = $item->getTypeName(1);
-            echo "<tr class='tab_bg_1'>";
-            if ($canedit) {
-               echo "<td>";
-               Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
-               echo "</td>";
+        foreach ($types as $data) {
+            $typename = NOT_AVAILABLE;
+            if ($item = getItemForItemtype($data['itemtype'])) {
+                $typename = $item->getTypeName(1);
+                echo "<tr class='tab_bg_1'>";
+                if ($canedit) {
+                    echo "<td>";
+                    Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+                    echo "</td>";
+                }
+                echo "<td class='center'>$typename</td>";
+                echo "</tr>";
             }
-            echo "<td class='center'>$typename</td>";
-            echo "</tr>";
-         }
-      }
-      echo $header_begin.$header_bottom.$header_end;
-      echo "</table>";
-      if ($canedit && $numrows) {
-         $massiveactionparams['ontop'] = false;
-         Html::showMassiveActions($massiveactionparams);
-         Html::closeForm();
-      }
-      echo "</div>";
-   }
+        }
+        echo $header_begin . $header_bottom . $header_end;
+        echo "</table>";
+        if ($canedit && $numrows) {
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions($massiveactionparams);
+            Html::closeForm();
+        }
+        echo "</div>";
+    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
 
-      if (!$withtemplate) {
-         $nb = 0;
-         switch ($item->getType()) {
-            case 'Link' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($this->getTable(),
-                                             ['links_id' => $item->getID()]);
-               }
-               return self::createTabEntry(_n('Associated item type', 'Associated item types',
-                                              Session::getPluralNumber()), $nb);
-         }
-      }
-      return '';
-   }
+        if (!$withtemplate) {
+            $nb = 0;
+            switch ($item->getType()) {
+                case 'Link':
+                    if ($_SESSION['glpishow_count_on_tabs']) {
+                        $nb = countElementsInTable(
+                            $this->getTable(),
+                            ['links_id' => $item->getID()]
+                        );
+                    }
+                    return self::createTabEntry(_n(
+                        'Associated item type',
+                        'Associated item types',
+                        Session::getPluralNumber()
+                    ), $nb);
+            }
+        }
+        return '';
+    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
 
-      if ($item->getType() == 'Link') {
-         self::showForLink($item);
-      }
-      return true;
-   }
+        if ($item->getType() == 'Link') {
+            self::showForLink($item);
+        }
+        return true;
+    }
 
 
    /**
@@ -182,14 +195,15 @@ class Link_Itemtype extends CommonDBChild {
     *
     * @param string $itemtype  itemtype for which all link associations must be removed
     */
-   static function deleteForItemtype($itemtype) {
-      global $DB;
+    public static function deleteForItemtype($itemtype)
+    {
+        global $DB;
 
-      $DB->delete(
-         self::getTable(), [
+        $DB->delete(
+            self::getTable(),
+            [
             'itemtype'  => ['LIKE', "%Plugin$itemtype%"]
-         ]
-      );
-   }
-
+            ]
+        );
+    }
 }

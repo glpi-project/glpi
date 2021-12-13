@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,21 +31,20 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkCentralAccess();
 
 $app_item_rel = new Appliance_Item_Relation();
 
 if (isset($_POST['add'])) {
-   $app_item_rel->check(-1, CREATE, $_POST);
-   $app_item_rel->add($_POST);
-   Html::back();
-
+    $app_item_rel->check(-1, CREATE, $_POST);
+    $app_item_rel->add($_POST);
+    Html::back();
 } else if (isset($_POST['purge'])) {
-   $app_item_rel->check($_POST['id'], PURGE);
-   $app_item_rel->delete($_POST, 1);
-   Html::back();
+    $app_item_rel->check($_POST['id'], PURGE);
+    $app_item_rel->delete($_POST, 1);
+    Html::back();
 }
 
 Html::displayErrorAndDie("lost");

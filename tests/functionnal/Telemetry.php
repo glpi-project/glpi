@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,13 +37,15 @@ use DbTestCase;
 
 /* Test for inc/telemetry.class.php NOT requiring the Web server*/
 
-class Telemetry extends DbTestCase {
+class Telemetry extends DbTestCase
+{
 
-   public function testGrabGlpiInfos() {
-      //we do not want any error messages
-      $_SESSION['glpicronuserrunning'] = "cron_phpunit";
+    public function testGrabGlpiInfos()
+    {
+       //we do not want any error messages
+        $_SESSION['glpicronuserrunning'] = "cron_phpunit";
 
-      $expected = [
+        $expected = [
          'uuid'               => 'TO BE SET',
          'version'            => GLPI_VERSION,
          'plugins'            => [],
@@ -62,97 +65,99 @@ class Telemetry extends DbTestCase {
             'mailcollector_enabled' => false,
             'notifications_modes'   => [],
          ]
-      ];
+        ];
 
-      $result = \Telemetry::grabGlpiInfos();
-      $this->string($result['uuid'])
+        $result = \Telemetry::grabGlpiInfos();
+        $this->string($result['uuid'])
          ->hasLength(40);
-      $expected['uuid'] = $result['uuid'];
-      $expected['plugins'] = $result['plugins'];
-      $this->array($result)->isIdenticalTo($expected);
+        $expected['uuid'] = $result['uuid'];
+        $expected['plugins'] = $result['plugins'];
+        $this->array($result)->isIdenticalTo($expected);
 
-      $plugins = new \Plugin();
-      $this->integer((int)$plugins->add(['directory' => 'testplugin',
+        $plugins = new \Plugin();
+        $this->integer((int)$plugins->add(['directory' => 'testplugin',
                                          'name'      => 'testplugin',
                                          'version'   => '0.x.z']))
          ->isGreaterThan(0);
 
-      $expected['plugins'][] = [
+        $expected['plugins'][] = [
          'key'       => 'testplugin',
          'version'   => '0.x.z'
-      ];
-      $this->array(\Telemetry::grabGlpiInfos())->isIdenticalTo($expected);
+        ];
+        $this->array(\Telemetry::grabGlpiInfos())->isIdenticalTo($expected);
 
-      //enable ldap server
-      $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
-      $this->boolean($ldap->update([
+       //enable ldap server
+        $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
+        $this->boolean($ldap->update([
          'id'        => $ldap->getID(),
          'is_active' => true
-      ]))->isTrue();
+        ]))->isTrue();
 
-      $expected['usage']['ldap_enabled'] = true;
-      $this->array(\Telemetry::grabGlpiInfos())->isIdenticalTo($expected);
+        $expected['usage']['ldap_enabled'] = true;
+        $this->array(\Telemetry::grabGlpiInfos())->isIdenticalTo($expected);
 
-      $groups = new \Group();
-      for ($i = 0; $i < 501; $i++) {
-         $this->integer(
-            (int)$groups->add(['name' => 'Tele test'])
-         )->isGreaterThan(0);
-      }
+        $groups = new \Group();
+        for ($i = 0; $i < 501; $i++) {
+            $this->integer(
+                (int)$groups->add(['name' => 'Tele test'])
+            )->isGreaterThan(0);
+        }
 
-      $expected['usage']['avg_groups'] = '500-1000';
-      $this->array(\Telemetry::grabGlpiInfos())->isIdenticalTo($expected);
+        $expected['usage']['avg_groups'] = '500-1000';
+        $this->array(\Telemetry::grabGlpiInfos())->isIdenticalTo($expected);
 
-      global $CFG_GLPI;
-      $CFG_GLPI['use_notifications'] = 1;
+        global $CFG_GLPI;
+        $CFG_GLPI['use_notifications'] = 1;
 
-      $this->array(\Telemetry::grabGlpiInfos())->isIdenticalTo($expected);
+        $this->array(\Telemetry::grabGlpiInfos())->isIdenticalTo($expected);
 
-      $CFG_GLPI['notifications_mailing'] = 1;
-      $CFG_GLPI['notifications_ajax']    = 1;
-      $expected['usage']['notifications'] = ['mailing', 'ajax'];
-      $this->array(\Telemetry::grabGlpiInfos())->isIdenticalTo($expected);
+        $CFG_GLPI['notifications_mailing'] = 1;
+        $CFG_GLPI['notifications_ajax']    = 1;
+        $expected['usage']['notifications'] = ['mailing', 'ajax'];
+        $this->array(\Telemetry::grabGlpiInfos())->isIdenticalTo($expected);
 
-      $collector = new \MailCollector();
-      $this->integer(
-         (int)$collector->add([
+        $collector = new \MailCollector();
+        $this->integer(
+            (int)$collector->add([
             'name'        => 'Collector1',
             'is_active'   => 1
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      $expected['usage']['mailcollector_enabled'] = true;
-      $this->array(\Telemetry::grabGlpiInfos())->isIdenticalTo($expected);
+        $expected['usage']['mailcollector_enabled'] = true;
+        $this->array(\Telemetry::grabGlpiInfos())->isIdenticalTo($expected);
 
-      $this->boolean($collector->update([
+        $this->boolean($collector->update([
          'id'        => $collector->getID(),
          'is_active' => false
-      ]))->isTrue();
+        ]))->isTrue();
 
-      $expected['usage']['mailcollector_enabled'] = false;
-      $this->array(\Telemetry::grabGlpiInfos())->isIdenticalTo($expected);
-   }
+        $expected['usage']['mailcollector_enabled'] = false;
+        $this->array(\Telemetry::grabGlpiInfos())->isIdenticalTo($expected);
+    }
 
-   public function testGrabDbInfos() {
-      global $DB;
+    public function testGrabDbInfos()
+    {
+        global $DB;
 
-      $dbinfos = $DB->getInfo();
+        $dbinfos = $DB->getInfo();
 
-      $expected = [
+        $expected = [
          'engine'    => $dbinfos['Server Software'],
          'version'   => $dbinfos['Server Version'],
          'size'      => '',
          'log_size'  => '',
          'sql_mode'  => $dbinfos['Server SQL Mode']
-      ];
-      $infos = \Telemetry::grabDbInfos();
-      $this->string($infos['size'])->isNotEmpty();
-      $expected['size'] = $infos['size'];
-      $this->array($infos)->isIdenticalTo($expected);
-   }
+        ];
+        $infos = \Telemetry::grabDbInfos();
+        $this->string($infos['size'])->isNotEmpty();
+        $expected['size'] = $infos['size'];
+        $this->array($infos)->isIdenticalTo($expected);
+    }
 
-   public function testGrabPhpInfos() {
-      $expected = [
+    public function testGrabPhpInfos()
+    {
+        $expected = [
          'version'   => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
          'modules'   => get_loaded_extensions(),
          'setup'     => [
@@ -163,18 +168,19 @@ class Telemetry extends DbTestCase {
             'session'               => ini_get('session.save_handler'),
             'upload_max_filesize'   => ini_get('upload_max_filesize')
          ]
-      ];
+        ];
 
-      $this->array(\Telemetry::grabPhpInfos())->isIdenticalTo($expected);
-   }
+        $this->array(\Telemetry::grabPhpInfos())->isIdenticalTo($expected);
+    }
 
-   public function testGrabOsInfos() {
-      $expected = [
+    public function testGrabOsInfos()
+    {
+        $expected = [
          'family',
          'distribution',
          'version'
-      ];
-      $osinfos = \Telemetry::grabOsInfos();
-      $this->array($osinfos)->hasKeys($expected);
-   }
+        ];
+        $osinfos = \Telemetry::grabOsInfos();
+        $this->array($osinfos)->hasKeys($expected);
+    }
 }

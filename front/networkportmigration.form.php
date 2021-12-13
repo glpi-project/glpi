@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,71 +33,83 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 if (!$DB->tableExists('glpi_networkportmigrations')) {
-   Html::displayNotFoundError();
+    Html::displayNotFoundError();
 }
 
 $np = new NetworkPortMigration();
 
 if (!isset($_GET["id"])) {
-   $_GET["id"] = "";
+    $_GET["id"] = "";
 }
 
 if (isset($_POST["purge"])) {
-   $np->check($_POST['id'], PURGE);
-   $np->delete($_POST, 1);
-   Event::log($_POST['id'], "networkport", 5, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
+    $np->check($_POST['id'], PURGE);
+    $np->delete($_POST, 1);
+    Event::log(
+        $_POST['id'],
+        "networkport",
+        5,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+    );
 
-   Html::redirect($CFG_GLPI["root_doc"]."/front/networkportmigration.php");
-
+    Html::redirect($CFG_GLPI["root_doc"] . "/front/networkportmigration.php");
 } else if (isset($_POST["delete_several"])) {
-   Session::checkRight("networking", UPDATE);
+    Session::checkRight("networking", UPDATE);
 
-   if (isset($_POST["del_port"]) && count($_POST["del_port"])) {
-      foreach ($_POST["del_port"] as $port_id => $val) {
-         if ($np->can($port_id, PURGE)) {
-            $np->delete(["id" => $port_id]);
-         }
-      }
-   }
-   Event::log(0, "networkport", 5, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s deletes several network ports'), $_SESSION["glpiname"]));
+    if (isset($_POST["del_port"]) && count($_POST["del_port"])) {
+        foreach ($_POST["del_port"] as $port_id => $val) {
+            if ($np->can($port_id, PURGE)) {
+                $np->delete(["id" => $port_id]);
+            }
+        }
+    }
+    Event::log(
+        0,
+        "networkport",
+        5,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s deletes several network ports'), $_SESSION["glpiname"])
+    );
 
-   Html::back();
-
+    Html::back();
 } else if (isset($_POST["update"])) {
-   $np->check($_POST['id'], PURGE);
+    $np->check($_POST['id'], PURGE);
 
-   $networkport = new NetworkPort();
-   if ($networkport->can($_POST['id'], UPDATE)) {
-      if ($networkport->switchInstantiationType($_POST['transform_to']) !== false) {
-         $instantiation             = $networkport->getInstantiation();
-         $input                     = $np->fields;
-         $input['networkports_id']  = $input['id'];
-         unset($input['id']);
-         if ($instantiation->add($input)) {
-            $np->delete($_POST);
-         }
-      } else {
-         Session::addMessageAfterRedirect(__('Cannot change a migration network port to an unknown one'));
-      }
-   } else {
-      Session::addMessageAfterRedirect(__('Network port is not available...'));
-      $np->delete($_POST);
-   }
+    $networkport = new NetworkPort();
+    if ($networkport->can($_POST['id'], UPDATE)) {
+        if ($networkport->switchInstantiationType($_POST['transform_to']) !== false) {
+            $instantiation             = $networkport->getInstantiation();
+            $input                     = $np->fields;
+            $input['networkports_id']  = $input['id'];
+            unset($input['id']);
+            if ($instantiation->add($input)) {
+                $np->delete($_POST);
+            }
+        } else {
+            Session::addMessageAfterRedirect(__('Cannot change a migration network port to an unknown one'));
+        }
+    } else {
+        Session::addMessageAfterRedirect(__('Network port is not available...'));
+        $np->delete($_POST);
+    }
 
-   Html::redirect($CFG_GLPI["root_doc"]."/front/networkportmigration.php");
-
+    Html::redirect($CFG_GLPI["root_doc"] . "/front/networkportmigration.php");
 } else {
-   Session::checkRight("networking", UPDATE);
-   Html::header(NetworkPort::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools",
-                "migration", "networkportmigration");
+    Session::checkRight("networking", UPDATE);
+    Html::header(
+        NetworkPort::getTypeName(Session::getPluralNumber()),
+        $_SERVER['PHP_SELF'],
+        "tools",
+        "migration",
+        "networkportmigration"
+    );
 
-   $np->display(['id' => $_GET["id"]]);
-   Html::footer();
+    $np->display(['id' => $_GET["id"]]);
+    Html::footer();
 }

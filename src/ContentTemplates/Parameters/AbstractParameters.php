@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -51,29 +52,30 @@ abstract class AbstractParameters implements TemplatesParametersInterface
     *
     * @return array
     */
-   abstract protected function defineValues(CommonDBTM $item): array;
+    abstract protected function defineValues(CommonDBTM $item): array;
 
    /**
     * Get supported classes by this parameter type.
     *
     * @return array
     */
-   abstract protected function getTargetClasses(): array;
+    abstract protected function getTargetClasses(): array;
 
-   public function getValues(CommonDBTM $item): array {
-      $valid_class = false;
-      foreach ($this->getTargetClasses() as $class) {
-         if ($item instanceof $class) {
-            $valid_class = true;
-            break;
-         }
-      }
+    public function getValues(CommonDBTM $item): array
+    {
+        $valid_class = false;
+        foreach ($this->getTargetClasses() as $class) {
+            if ($item instanceof $class) {
+                $valid_class = true;
+                break;
+            }
+        }
 
-      if (!$valid_class) {
-         trigger_error(get_class($item) . " is not allowed for this parameter type.", E_USER_WARNING);
-         return [];
-      }
+        if (!$valid_class) {
+            trigger_error(get_class($item) . " is not allowed for this parameter type.", E_USER_WARNING);
+            return [];
+        }
 
-      return $this->defineValues($item);
-   }
+        return $this->defineValues($item);
+    }
 }

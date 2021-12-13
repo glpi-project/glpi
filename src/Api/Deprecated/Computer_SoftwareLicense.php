@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,46 +38,52 @@ namespace Glpi\Api\Deprecated;
  */
 class Computer_SoftwareLicense implements DeprecatedInterface
 {
-   use CommonDeprecatedTrait;
+    use CommonDeprecatedTrait;
 
-   public function getType(): string {
-      return "Item_SoftwareLicense";
-   }
+    public function getType(): string
+    {
+        return "Item_SoftwareLicense";
+    }
 
-   public function mapCurrentToDeprecatedHateoas(array $hateoas): array {
-      $hateoas = $this->replaceCurrentHateoasRefByDeprecated($hateoas);
-      return $hateoas;
-   }
+    public function mapCurrentToDeprecatedHateoas(array $hateoas): array
+    {
+        $hateoas = $this->replaceCurrentHateoasRefByDeprecated($hateoas);
+        return $hateoas;
+    }
 
-   public function mapDeprecatedToCurrentFields(object $fields): object {
-      $this
+    public function mapDeprecatedToCurrentFields(object $fields): object
+    {
+        $this
          ->renameField($fields, "computers_id", "items_id")
          ->addField($fields, "itemtype", "Computer");
 
-      return $fields;
-   }
+        return $fields;
+    }
 
-   public function mapCurrentToDeprecatedFields(array $fields): array {
-      $this
+    public function mapCurrentToDeprecatedFields(array $fields): array
+    {
+        $this
          ->renameField($fields, "items_id", "computers_id")
          ->deleteField($fields, "itemtype");
 
-      return $fields;
-   }
+        return $fields;
+    }
 
-   public function mapDeprecatedToCurrentCriteria(array $criteria): array {
-      $criteria[] = [
+    public function mapDeprecatedToCurrentCriteria(array $criteria): array
+    {
+        $criteria[] = [
          "link"       => 'AND',
          "field"      => "6",
          "searchtype" => 'equals',
          "value"      => "Computer"
-      ];
+        ];
 
-      return $criteria;
-   }
+        return $criteria;
+    }
 
-   public function mapCurrentToDeprecatedSearchOptions(array $soptions): array {
-      $this
+    public function mapCurrentToDeprecatedSearchOptions(array $soptions): array
+    {
+        $this
          ->updateSearchOptionsUids($soptions)
          ->updateSearchOptionsTables($soptions)
          ->alterSearchOption($soptions, "5", [
@@ -94,6 +101,6 @@ class Computer_SoftwareLicense implements DeprecatedInterface
          ])
          ->deleteSearchOption($soptions, "6");
 
-      return $soptions;
-   }
+        return $soptions;
+    }
 }

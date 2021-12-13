@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,8 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 if ((int)$CFG_GLPI['use_anonymous_helpdesk'] === 0) {
     Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");

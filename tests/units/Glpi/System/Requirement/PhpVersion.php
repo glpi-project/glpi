@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,25 +33,28 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class PhpVersion extends \GLPITestCase {
+class PhpVersion extends \GLPITestCase
+{
 
-   public function testCheckWithUpToDateVersion() {
+    public function testCheckWithUpToDateVersion()
+    {
 
-      $this->newTestedInstance(GLPI_MIN_PHP);
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-      $this->array($this->testedInstance->getValidationMessages())
+        $this->newTestedInstance(GLPI_MIN_PHP);
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
+        $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(['PHP version (' . PHP_VERSION . ') is supported.']);
-   }
+    }
 
-   public function testCheckOutdatedVersion() {
+    public function testCheckOutdatedVersion()
+    {
 
-      $this->newTestedInstance('20.7');
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-      $this->array($this->testedInstance->getValidationMessages())
+        $this->newTestedInstance('20.7');
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
+        $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(
-            [
+             [
                'PHP version must be at least 20.7.'
-            ]
+             ]
          );
-   }
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,80 +37,85 @@ use DbTestCase;
 
 /* Test for inc/notificationeventajax.class.php */
 
-class NotificationEventMailing extends DbTestCase {
+class NotificationEventMailing extends DbTestCase
+{
 
-   public function testGetTargetField() {
-      $data = [];
-      $this->string(\NotificationEventMailing::getTargetField($data))->isIdenticalTo('email');
+    public function testGetTargetField()
+    {
+        $data = [];
+        $this->string(\NotificationEventMailing::getTargetField($data))->isIdenticalTo('email');
 
-      $expected = ['email' => null];
-      $this->array($data)->isIdenticalTo($expected);
+        $expected = ['email' => null];
+        $this->array($data)->isIdenticalTo($expected);
 
-      $data = ['email' => 'user'];
-      $this->string(\NotificationEventMailing::getTargetField($data))->isIdenticalTo('email');
+        $data = ['email' => 'user'];
+        $this->string(\NotificationEventMailing::getTargetField($data))->isIdenticalTo('email');
 
-      $expected = ['email' => null];
-      $this->array($data)->isIdenticalTo($expected);
+        $expected = ['email' => null];
+        $this->array($data)->isIdenticalTo($expected);
 
-      $data = ['email' => 'user@localhost'];
-      $this->string(\NotificationEventMailing::getTargetField($data))->isIdenticalTo('email');
+        $data = ['email' => 'user@localhost'];
+        $this->string(\NotificationEventMailing::getTargetField($data))->isIdenticalTo('email');
 
-      $expected = ['email' => 'user@localhost'];
-      $this->array($data)->isIdenticalTo($expected);
+        $expected = ['email' => 'user@localhost'];
+        $this->array($data)->isIdenticalTo($expected);
 
-      $uid = getItemByTypeName('User', TU_USER, true);
-      $data = ['users_id' => $uid];
+        $uid = getItemByTypeName('User', TU_USER, true);
+        $data = ['users_id' => $uid];
 
-      $this->string(\NotificationEventMailing::getTargetField($data))->isIdenticalTo('email');
-      $expected = [
+        $this->string(\NotificationEventMailing::getTargetField($data))->isIdenticalTo('email');
+        $expected = [
          'users_id'  => $uid,
          'email'     => TU_USER . '@glpi.com'
-      ];
-      $this->array($data)->isIdenticalTo($expected);
-   }
+        ];
+        $this->array($data)->isIdenticalTo($expected);
+    }
 
-   public function testCanCron() {
-      $this->boolean(\NotificationEventMailing::canCron())->isTrue();
-   }
+    public function testCanCron()
+    {
+        $this->boolean(\NotificationEventMailing::canCron())->isTrue();
+    }
 
-   public function testGetAdminData() {
-      global $CFG_GLPI;
+    public function testGetAdminData()
+    {
+        global $CFG_GLPI;
 
-      $this->array(\NotificationEventMailing::getAdminData())
+        $this->array(\NotificationEventMailing::getAdminData())
          ->isIdenticalTo([
             'email'     => $CFG_GLPI['admin_email'],
             'name'      => $CFG_GLPI['admin_email_name'],
             'language'  => $CFG_GLPI['language']
          ]);
 
-      $CFG_GLPI['admin_email'] = 'adminlocalhost';
-      $this->boolean(\NotificationEventMailing::getAdminData())->isFalse();
-   }
+        $CFG_GLPI['admin_email'] = 'adminlocalhost';
+        $this->boolean(\NotificationEventMailing::getAdminData())->isFalse();
+    }
 
-   public function testGetEntityAdminsData() {
-      $this->boolean(\NotificationEventMailing::getEntityAdminsData(0))->isFalse();
+    public function testGetEntityAdminsData()
+    {
+        $this->boolean(\NotificationEventMailing::getEntityAdminsData(0))->isFalse();
 
-      $this->login();
+        $this->login();
 
-      $entity1 = getItemByTypeName('Entity', '_test_child_1');
-      $this->boolean(
-         $entity1->update([
+        $entity1 = getItemByTypeName('Entity', '_test_child_1');
+        $this->boolean(
+            $entity1->update([
             'id'                 => $entity1->getId(),
             'admin_email'        => 'entadmin@localhost',
             'admin_email_name'   => 'Entity admin ONE'
-         ])
-      )->isTrue();
+            ])
+        )->isTrue();
 
-      $entity2 = getItemByTypeName('Entity', '_test_child_2');
-      $this->boolean(
-         $entity2->update([
+        $entity2 = getItemByTypeName('Entity', '_test_child_2');
+        $this->boolean(
+            $entity2->update([
             'id'                 => $entity2->getId(),
             'admin_email'        => 'entadmin2localhost',
             'admin_email_name'   => 'Entity admin TWO'
-         ])
-      )->isTrue();
+            ])
+        )->isTrue();
 
-      $this->array(\NotificationEventMailing::getEntityAdminsData($entity1->getID()))
+        $this->array(\NotificationEventMailing::getEntityAdminsData($entity1->getID()))
          ->isIdenticalTo([
             [
                'language' => 'en_GB',
@@ -117,22 +123,22 @@ class NotificationEventMailing extends DbTestCase {
                'name' => 'Entity admin ONE'
             ]
          ]);
-      $this->boolean(\NotificationEventMailing::getEntityAdminsData($entity2->getID()))->isFalse();
+        $this->boolean(\NotificationEventMailing::getEntityAdminsData($entity2->getID()))->isFalse();
 
-      //reset
-      $this->boolean(
-         $entity1->update([
+       //reset
+        $this->boolean(
+            $entity1->update([
             'id'                 => $entity1->getId(),
             'admin_email'        => 'NULL',
             'admin_email_name'   => 'NULL'
-         ])
-      )->isTrue();
-      $this->boolean(
-         $entity2->update([
+            ])
+        )->isTrue();
+        $this->boolean(
+            $entity2->update([
             'id'                 => $entity2->getId(),
             'admin_email'        => 'NULL',
             'admin_email_name'   => 'NULL'
-         ])
-      )->isTrue();
-   }
+            ])
+        )->isTrue();
+    }
 }

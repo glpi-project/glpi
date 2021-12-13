@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,27 +38,30 @@ use org\bovigo\vfs\vfsStream;
 /**
  * Nota: Complex ACL are not tested.
  */
-class DirectoryWriteAccess extends \GLPITestCase {
+class DirectoryWriteAccess extends \GLPITestCase
+{
 
-   public function testCheckOnExistingWritableDir() {
+    public function testCheckOnExistingWritableDir()
+    {
 
-      vfsStream::setup('root', 0777, []);
-      $path = vfsStream::url('root');
+        vfsStream::setup('root', 0777, []);
+        $path = vfsStream::url('root');
 
-      $this->newTestedInstance($path);
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-      $this->array($this->testedInstance->getValidationMessages())
+        $this->newTestedInstance($path);
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
+        $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(['Write access to ' . $path . ' has been validated.']);
-   }
+    }
 
-   public function testCheckOnUnexistingDir() {
+    public function testCheckOnUnexistingDir()
+    {
 
-      vfsStream::setup('root', 0777, []);
-      $path = vfsStream::url('root/not-existing');
+        vfsStream::setup('root', 0777, []);
+        $path = vfsStream::url('root/not-existing');
 
-      $this->newTestedInstance($path);
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-      $this->array($this->testedInstance->getValidationMessages())
+        $this->newTestedInstance($path);
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
+        $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(['The directory could not be created in ' . $path . '.']);
-   }
+    }
 }

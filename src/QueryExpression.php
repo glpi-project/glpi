@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,32 +34,36 @@
 /**
  *  Query expression class
 **/
-class QueryExpression {
-   private $expression;
+class QueryExpression
+{
+    private $expression;
 
    /**
     * Create a query expression
     *
     * @param string $value Query parameter value, defaults to '?'
     */
-   public function __construct($expression) {
-      if (empty($expression)) {
-         throw new \RuntimeException('Cannot build an empty expression');
-      }
-      $this->expression = $expression;
-   }
+    public function __construct($expression)
+    {
+        if (empty($expression)) {
+            throw new \RuntimeException('Cannot build an empty expression');
+        }
+        $this->expression = $expression;
+    }
 
    /**
     * Query expression value
     *
     * @return string
     */
-   public function getValue() {
-      return $this->expression;
-   }
+    public function getValue()
+    {
+        return $this->expression;
+    }
 
 
-   public function __toString() {
-      return $this->getValue();
-   }
+    public function __toString()
+    {
+        return $this->getValue();
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("config", UPDATE);
 
@@ -38,9 +39,9 @@ $config = new Config();
 
 //Update CAS configuration
 if (isset($_POST["update"])) {
-   $_POST['id'] = 1;
-   $config->update($_POST);
-   Html::redirect($CFG_GLPI["root_doc"] . "/front/auth.others.php");
+    $_POST['id'] = 1;
+    $config->update($_POST);
+    Html::redirect($CFG_GLPI["root_doc"] . "/front/auth.others.php");
 }
 
 Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'], "config", "auth", "others");

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,33 +36,34 @@
  *
  * @return bool for success (will die for most error)
  **/
-function update956to957() {
+function update956to957()
+{
    /** @global Migration $migration */
-   global $DB, $migration, $CFG_GLPI;
+    global $DB, $migration, $CFG_GLPI;
 
-   $current_config   = Config::getConfigurationValues('core');
-   $updateresult     = true;
-   $ADDTODISPLAYPREF = [];
+    $current_config   = Config::getConfigurationValues('core');
+    $updateresult     = true;
+    $ADDTODISPLAYPREF = [];
 
    //TRANS: %s is the number of new version
-   $migration->displayTitle(sprintf(__('Update to %s'), '9.5.7'));
-   $migration->setVersion('9.5.7');
+    $migration->displayTitle(sprintf(__('Update to %s'), '9.5.7'));
+    $migration->setVersion('9.5.7');
 
    /* Fix null `date` in ITIL tables */
-   $itil_tables = ['glpi_changes', 'glpi_problems', 'glpi_tickets'];
-   foreach ($itil_tables as $itil_table) {
-      $migration->addPostQuery(
-         $DB->buildUpdate(
-            $itil_table,
-            ['date' => new QueryExpression($DB->quoteName($itil_table . '.date_creation'))],
-            ['date' => null]
-         )
-      );
-   }
+    $itil_tables = ['glpi_changes', 'glpi_problems', 'glpi_tickets'];
+    foreach ($itil_tables as $itil_table) {
+        $migration->addPostQuery(
+            $DB->buildUpdate(
+                $itil_table,
+                ['date' => new QueryExpression($DB->quoteName($itil_table . '.date_creation'))],
+                ['date' => null]
+            )
+        );
+    }
    /* /Fix null `date` in ITIL tables */
 
    // ************ Keep it at the end **************
-   $migration->executeMigration();
+    $migration->executeMigration();
 
-   return $updateresult;
+    return $updateresult;
 }

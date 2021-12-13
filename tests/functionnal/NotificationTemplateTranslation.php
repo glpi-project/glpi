@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,59 +37,62 @@ use DbTestCase;
 
 /* Test for inc/notificationtemplatetranslation.class.php */
 
-class NotificationTemplateTranslation extends DbTestCase {
+class NotificationTemplateTranslation extends DbTestCase
+{
 
-   public function testClone() {
-      global $DB;
+    public function testClone()
+    {
+        global $DB;
 
-      $iterator = $DB->request([
+        $iterator = $DB->request([
          'SELECT' => 'id',
          'FROM'   => \NotificationTemplateTranslation::getTable(),
          'LIMIT'  => 1
-      ]);
+        ]);
 
-      $data = $iterator->current();
-      $translation = new \NotificationTemplateTranslation();
-      $translation->getFromDB($data['id']);
-      $added = $translation->clone();
-      $this->integer((int)$added)->isGreaterThan(0);
+        $data = $iterator->current();
+        $translation = new \NotificationTemplateTranslation();
+        $translation->getFromDB($data['id']);
+        $added = $translation->clone();
+        $this->integer((int)$added)->isGreaterThan(0);
 
-      $clonedTranslation = new \NotificationTemplateTranslation();
-      $this->boolean($clonedTranslation->getFromDB($added))->isTrue();
+        $clonedTranslation = new \NotificationTemplateTranslation();
+        $this->boolean($clonedTranslation->getFromDB($added))->isTrue();
 
-      unset($translation->fields['id']);
-      unset($clonedTranslation->fields['id']);
+        unset($translation->fields['id']);
+        unset($clonedTranslation->fields['id']);
 
-      $this->array($translation->fields)->isIdenticalTo($clonedTranslation->fields);
-   }
+        $this->array($translation->fields)->isIdenticalTo($clonedTranslation->fields);
+    }
 
-   public function testCloneFromTemplate() {
-      global $DB;
+    public function testCloneFromTemplate()
+    {
+        global $DB;
 
-      $iterator = $DB->request([
+        $iterator = $DB->request([
          'SELECT' => [
             'id',
             'notificationtemplates_id'
          ],
          'FROM'   => \NotificationTemplateTranslation::getTable(),
          'LIMIT'  => 1
-      ]);
+        ]);
 
-      $data = $iterator->current();
-      $template = new \NotificationTemplate();
-      $template->getFromDB($data['notificationtemplates_id']);
-      $added = $template->clone();
+        $data = $iterator->current();
+        $template = new \NotificationTemplate();
+        $template->getFromDB($data['notificationtemplates_id']);
+        $added = $template->clone();
 
-      $translations = $DB->request([
+        $translations = $DB->request([
          'FROM'   => \NotificationTemplateTranslation::getTable(),
          'WHERE'  => ['notificationtemplates_id' => $data['notificationtemplates_id']]
-      ]);
+        ]);
 
-      $clonedTranslations = $DB->request([
+        $clonedTranslations = $DB->request([
          'FROM'   => \NotificationTemplateTranslation::getTable(),
          'WHERE'  => ['notificationtemplates_id' => $added]
-      ]);
+        ]);
 
-      $this->integer(count($translations))->isIdenticalTo(count($clonedTranslations));
-   }
+        $this->integer(count($translations))->isIdenticalTo(count($clonedTranslations));
+    }
 }

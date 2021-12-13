@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,22 +33,29 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkCentralAccess();
 $npv = new NetworkPort_Vlan();
 if (isset($_POST["add"])) {
-   $npv->check(-1, UPDATE, $_POST);
+    $npv->check(-1, UPDATE, $_POST);
 
-   if (isset($_POST["vlans_id"]) && ($_POST["vlans_id"] > 0)) {
-      $npv->assignVlan($_POST["networkports_id"], $_POST["vlans_id"],
-                       (isset($_POST['tagged']) ? '1' : '0'));
-      Event::log(0, "networkport", 5, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s associates a VLAN to a network port'), $_SESSION["glpiname"]));
-
-   }
-   Html::back();
+    if (isset($_POST["vlans_id"]) && ($_POST["vlans_id"] > 0)) {
+        $npv->assignVlan(
+            $_POST["networkports_id"],
+            $_POST["vlans_id"],
+            (isset($_POST['tagged']) ? '1' : '0')
+        );
+        Event::log(
+            0,
+            "networkport",
+            5,
+            "inventory",
+            //TRANS: %s is the user login
+            sprintf(__('%s associates a VLAN to a network port'), $_SESSION["glpiname"])
+        );
+    }
+    Html::back();
 }
 
 Html::displayErrorAndDie('Lost');

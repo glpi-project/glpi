@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,10 +34,11 @@
 /**
  *  Timer class for debug and some other cases
  */
-class Timer {
+class Timer
+{
 
    //! Timer value
-   public $timer=0;
+    public $timer = 0;
 
 
    /**
@@ -44,11 +46,12 @@ class Timer {
     *
     * @return true
     */
-   function start () {
+    public function start()
+    {
 
-      $this->timer = microtime(true);
-      return true;
-   }
+        $this->timer = microtime(true);
+        return true;
+    }
 
 
    /**
@@ -59,13 +62,14 @@ class Timer {
     *
     * @return time past from start
    **/
-   function getTime ($decimals = 3, $raw = false) {
-      $elapsed = microtime(true) - $this->timer;
-      if ($raw === true) {
-         return $elapsed * 1000;
-      } else {
-         // $decimals will set the number of decimals you want for your milliseconds.
-         return number_format($elapsed, $decimals, '.', ' ');
-      }
-   }
+    public function getTime($decimals = 3, $raw = false)
+    {
+        $elapsed = microtime(true) - $this->timer;
+        if ($raw === true) {
+            return $elapsed * 1000;
+        } else {
+           // $decimals will set the number of decimals you want for your milliseconds.
+            return number_format($elapsed, $decimals, '.', ' ');
+        }
+    }
 }

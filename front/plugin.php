@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("config", UPDATE);
 
@@ -46,7 +47,7 @@ Html::header(__('Setup'), $_SERVER['PHP_SELF'], "config", "plugin");
 $catalog_btn = '<div class="center my-2">'
    . '<a href="http://plugins.glpi-project.org" class="btn btn-primary" target="_blank">'
    . "<i class='fas fa-eye'></i>"
-   . "<span>".__('See the catalog of plugins')."</span>"
+   . "<span>" . __('See the catalog of plugins') . "</span>"
    . '</a>'
    . '</div>';
 

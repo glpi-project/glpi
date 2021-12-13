@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,113 +34,115 @@
 /**
  * Notification Class
 **/
-class Notification extends CommonDBTM {
+class Notification extends CommonDBTM
+{
 
    // MAILING TYPE
    //Notification to a user (sse mailing users type below)
-   const USER_TYPE             = 1;
+    const USER_TYPE             = 1;
    //Notification to users of a profile
-   const PROFILE_TYPE          = 2;
+    const PROFILE_TYPE          = 2;
    //Notification to users of a group
-   const GROUP_TYPE            = 3;
+    const GROUP_TYPE            = 3;
    //Notification to the people in charge of the database synchronisation
-   const MAILING_TYPE          = 4;
+    const MAILING_TYPE          = 4;
    //Notification to the supervisor of a group
-   const SUPERVISOR_GROUP_TYPE = 5;
+    const SUPERVISOR_GROUP_TYPE = 5;
    //Notification to all users of a group except supervisor
-   const GROUP_WITHOUT_SUPERVISOR_TYPE = 6;
+    const GROUP_WITHOUT_SUPERVISOR_TYPE = 6;
 
    // MAILING USERS TYPE
 
    //Notification to the GLPI global administrator
-   const GLOBAL_ADMINISTRATOR                = 1;
+    const GLOBAL_ADMINISTRATOR                = 1;
    //Notification to the technicial who's assign to a ticket
-   const ASSIGN_TECH                         = 2;
+    const ASSIGN_TECH                         = 2;
    //Notification to the owner of the item
-   const AUTHOR                              = 3;
+    const AUTHOR                              = 3;
    //Notification to the technician previously in charge of the ticket
-   const OLD_TECH_IN_CHARGE                  = 4;
+    const OLD_TECH_IN_CHARGE                  = 4;
    //Notification to the technician in charge of the item
-   const ITEM_TECH_IN_CHARGE                 = 5;
+    const ITEM_TECH_IN_CHARGE                 = 5;
    //Notification to the item's user
-   const ITEM_USER                           = 6;
+    const ITEM_USER                           = 6;
    //Notification to the ticket's recipient
-   const RECIPIENT                           = 7;
+    const RECIPIENT                           = 7;
    //Notificartion to the ticket's assigned supplier
-   const SUPPLIER                            = 8;
+    const SUPPLIER                            = 8;
    //Notification to the ticket's assigned group
-   const ASSIGN_GROUP                        = 9;
+    const ASSIGN_GROUP                        = 9;
    //Notification to the supervisor of the ticket's assigned group
-   const SUPERVISOR_ASSIGN_GROUP             = 10;
+    const SUPERVISOR_ASSIGN_GROUP             = 10;
    //Notification to the entity administrator
-   const ENTITY_ADMINISTRATOR                = 11;
+    const ENTITY_ADMINISTRATOR                = 11;
    //Notification to the supervisor of the ticket's requester group
-   const SUPERVISOR_REQUESTER_GROUP          = 12;
+    const SUPERVISOR_REQUESTER_GROUP          = 12;
    //Notification to the ticket's requester group
-   const REQUESTER_GROUP                     = 13;
+    const REQUESTER_GROUP                     = 13;
    //Notification to the ticket's validation approver
-   const VALIDATION_APPROVER                 = 14;
+    const VALIDATION_APPROVER                 = 14;
    //Notification to the ticket's validation requester
-   const VALIDATION_REQUESTER                = 15;
+    const VALIDATION_REQUESTER                = 15;
    //Notification to the task assigned user
-   const TASK_ASSIGN_TECH                    = 16;
+    const TASK_ASSIGN_TECH                    = 16;
    //Notification to the task author
-   const TASK_AUTHOR                         = 17;
+    const TASK_AUTHOR                         = 17;
    //Notification to the followup author
-   const FOLLOWUP_AUTHOR                     = 18;
+    const FOLLOWUP_AUTHOR                     = 18;
    //Notification to the user
-   const USER                                = 19;
+    const USER                                = 19;
    //Notification to the ticket's observer group
-   const OBSERVER_GROUP                      = 20;
+    const OBSERVER_GROUP                      = 20;
    //Notification to the ticket's observer user
-   const OBSERVER                            = 21;
+    const OBSERVER                            = 21;
    //Notification to the supervisor of the ticket's observer group
-   const SUPERVISOR_OBSERVER_GROUP           = 22;
+    const SUPERVISOR_OBSERVER_GROUP           = 22;
    //Notification to the group of technicians in charge of the item
-   const ITEM_TECH_GROUP_IN_CHARGE           = 23;
+    const ITEM_TECH_GROUP_IN_CHARGE           = 23;
    // Notification to the ticket's assigned group without supervisor
-   const ASSIGN_GROUP_WITHOUT_SUPERVISOR     = 24;
+    const ASSIGN_GROUP_WITHOUT_SUPERVISOR     = 24;
    //Notification to the ticket's requester group without supervisor
-   const REQUESTER_GROUP_WITHOUT_SUPERVISOR  = 25;
+    const REQUESTER_GROUP_WITHOUT_SUPERVISOR  = 25;
    //Notification to the ticket's observer group without supervisor
-   const OBSERVER_GROUP_WITHOUT_SUPERVISOR   = 26;
+    const OBSERVER_GROUP_WITHOUT_SUPERVISOR   = 26;
    // Notification to manager users
-   const MANAGER_USER                        = 27;
+    const MANAGER_USER                        = 27;
    // Notification to manager groups
-   const MANAGER_GROUP                       = 28;
+    const MANAGER_GROUP                       = 28;
    // Notification to supervisor of manager group
-   const MANAGER_GROUP_SUPERVISOR            = 29;
+    const MANAGER_GROUP_SUPERVISOR            = 29;
    // Notification to manager group without supervisor
-   const MANAGER_GROUP_WITHOUT_SUPERVISOR    = 30;
+    const MANAGER_GROUP_WITHOUT_SUPERVISOR    = 30;
    // Notification to team users
-   const TEAM_USER                           = 31;
+    const TEAM_USER                           = 31;
    // Notification to team groups
-   const TEAM_GROUP                          = 32;
+    const TEAM_GROUP                          = 32;
    // Notification to supervisor of team groups
-   const TEAM_GROUP_SUPERVISOR               = 33;
+    const TEAM_GROUP_SUPERVISOR               = 33;
    // Notification to team groups without supervisor
-   const TEAM_GROUP_WITHOUT_SUPERVISOR       = 34;
+    const TEAM_GROUP_WITHOUT_SUPERVISOR       = 34;
    // Notification to team contacts
-   const TEAM_CONTACT                        = 35;
+    const TEAM_CONTACT                        = 35;
    // Notification to team suppliers
-   const TEAM_SUPPLIER                       = 36;
+    const TEAM_SUPPLIER                       = 36;
    //Notification to the task assigned group
-   const TASK_ASSIGN_GROUP                   = 37;
+    const TASK_ASSIGN_GROUP                   = 37;
    //Notification to planning event's guests
-   const PLANNING_EVENT_GUESTS               = 38;
+    const PLANNING_EVENT_GUESTS               = 38;
    //Notification to the mentionned user
-   const MENTIONNED_USER                     = 39;
+    const MENTIONNED_USER                     = 39;
 
    // From CommonDBTM
-   public $dohistory = true;
+    public $dohistory = true;
 
-   static $rightname = 'notification';
+    public static $rightname = 'notification';
 
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Notification', 'Notifications', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Notification', 'Notifications', $nb);
+    }
 
 
    /**
@@ -147,109 +150,130 @@ class Notification extends CommonDBTM {
     *
     *  @since 0.85
    **/
-   static function getMenuContent() {
-      $menu = [];
+    public static function getMenuContent()
+    {
+        $menu = [];
 
-      if (Notification::canView()
-          || Config::canView()) {
-         $menu['title']                                      = _n('Notification', 'Notifications', Session::getPluralNumber());
-         $menu['page']                                       = '/front/setup.notification.php';
-         $menu['icon']                                       = self::getIcon();
-         $menu['options']['notification']['title']           = _n('Notification', 'Notifications', Session::getPluralNumber());
-         $menu['options']['notification']['page']            = Notification::getSearchURL(false);
-         $menu['options']['notification']['links']['add']    = Notification::getFormURL(false);
-         $menu['options']['notification']['links']['search'] = Notification::getSearchURL(false);
+        if (
+            Notification::canView()
+            || Config::canView()
+        ) {
+            $menu['title']                                      = _n('Notification', 'Notifications', Session::getPluralNumber());
+            $menu['page']                                       = '/front/setup.notification.php';
+            $menu['icon']                                       = self::getIcon();
+            $menu['options']['notification']['title']           = _n('Notification', 'Notifications', Session::getPluralNumber());
+            $menu['options']['notification']['page']            = Notification::getSearchURL(false);
+            $menu['options']['notification']['links']['add']    = Notification::getFormURL(false);
+            $menu['options']['notification']['links']['search'] = Notification::getSearchURL(false);
 
-         $menu['options']['notificationtemplate']['title']
+            $menu['options']['notificationtemplate']['title']
                         = _n('Notification template', 'Notification templates', Session::getPluralNumber());
-         $menu['options']['notificationtemplate']['page']
+            $menu['options']['notificationtemplate']['page']
                         = NotificationTemplate::getSearchURL(false);
-         $menu['options']['notificationtemplate']['links']['add']
+            $menu['options']['notificationtemplate']['links']['add']
                         = NotificationTemplate::getFormURL(false);
-         $menu['options']['notificationtemplate']['links']['search']
+            $menu['options']['notificationtemplate']['links']['search']
                         = NotificationTemplate::getSearchURL(false);
-
-      }
-      if (count($menu)) {
-         return $menu;
-      }
-      return false;
-   }
-
-
-   function defineTabs($options = []) {
-
-      $ong = [];
-      $this->addDefaultFormTab($ong);
-      $this->addImpactTab($ong, $options);
-      $this->addStandardTab('Notification_NotificationTemplate', $ong, $options);
-      $this->addStandardTab('NotificationTarget', $ong, $options);
-      $this->addStandardTab('Log', $ong, $options);
-
-      return $ong;
-   }
+        }
+        if (count($menu)) {
+            return $menu;
+        }
+        return false;
+    }
 
 
-   function showForm($ID, array $options = []) {
-      global $CFG_GLPI;
+    public function defineTabs($options = [])
+    {
 
-      $this->initForm($ID, $options);
-      $this->showFormHeader($options);
+        $ong = [];
+        $this->addDefaultFormTab($ong);
+        $this->addImpactTab($ong, $options);
+        $this->addStandardTab('Notification_NotificationTemplate', $ong, $options);
+        $this->addStandardTab('NotificationTarget', $ong, $options);
+        $this->addStandardTab('Log', $ong, $options);
 
-      echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
-      echo "<td>";
-      echo Html::input('name', ['value' => $this->fields['name']]);
-      echo "</td>";
+        return $ong;
+    }
 
-      echo "<td rowspan='4' class='middle right'>".__('Comments')."</td>";
-      echo "<td class='center middle' rowspan='4'><textarea class='form-control' rows='9' name='comment' >".
-             $this->fields["comment"]."</textarea></td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . __('Active') . "</td>";
-      echo "<td>";
-      Dropdown::showYesNo('is_active', $this->fields['is_active']);
-      echo "</td></tr>";
+    public function showForm($ID, array $options = [])
+    {
+        global $CFG_GLPI;
 
-      echo "<tr class='tab_bg_1'><td>" . __('Allow response') . "</td>";
-      echo "<td>";
-      Dropdown::showYesNo('allow_response', $this->allowResponse());
-      echo "</td></tr>";
+        $this->initForm($ID, $options);
+        $this->showFormHeader($options);
 
-      echo "<tr class='tab_bg_1'><td>" . _n('Type', 'Types', 1) . "</td>";
-      echo "<td>";
-      if (!Session::haveRight(static::$rightname, UPDATE)) {
-         $itemtype = $this->fields['itemtype'];
-         echo $itemtype::getTypeName(1);
-         $rand ='';
-      } else if (Config::canUpdate()
-          && ($this->getEntityID() == 0)) {
-         $rand = Dropdown::showItemTypes('itemtype', $CFG_GLPI["notificationtemplates_types"],
-                                          ['value' => $this->fields['itemtype']]);
-      } else {
-         $rand = Dropdown::showItemTypes('itemtype',
-                                         array_diff($CFG_GLPI["notificationtemplates_types"],
-                                                    ['CronTask', 'DBConnection', 'User']),
-                                         ['value' => $this->fields['itemtype']]);
-      }
+        echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
+        echo "<td>";
+        echo Html::input('name', ['value' => $this->fields['name']]);
+        echo "</td>";
 
-      $params = ['itemtype' => '__VALUE__'];
-      Ajax::updateItemOnSelectEvent("dropdown_itemtype$rand", "show_events",
-                                    $CFG_GLPI["root_doc"]."/ajax/dropdownNotificationEvent.php",
-                                    $params);
-      Ajax::updateItemOnSelectEvent("dropdown_itemtype$rand", "show_templates",
-                                    $CFG_GLPI["root_doc"]."/ajax/dropdownNotificationTemplate.php",
-                                    $params);
-      echo "</td></tr>";
+        echo "<td rowspan='4' class='middle right'>" . __('Comments') . "</td>";
+        echo "<td class='center middle' rowspan='4'><textarea class='form-control' rows='9' name='comment' >" .
+             $this->fields["comment"] . "</textarea></td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . NotificationEvent::getTypeName(1) . "</td>";
-      echo "<td><span id='show_events'>";
-      NotificationEvent::dropdownEvents($this->fields['itemtype'],
-                                        ['value'=>$this->fields['event']]);
-      echo "</span></td></tr>";
+        echo "<tr class='tab_bg_1'><td>" . __('Active') . "</td>";
+        echo "<td>";
+        Dropdown::showYesNo('is_active', $this->fields['is_active']);
+        echo "</td></tr>";
 
-      $this->showFormButtons($options);
-      return true;
-   }
+        echo "<tr class='tab_bg_1'><td>" . __('Allow response') . "</td>";
+        echo "<td>";
+        Dropdown::showYesNo('allow_response', $this->allowResponse());
+        echo "</td></tr>";
+
+        echo "<tr class='tab_bg_1'><td>" . _n('Type', 'Types', 1) . "</td>";
+        echo "<td>";
+        if (!Session::haveRight(static::$rightname, UPDATE)) {
+            $itemtype = $this->fields['itemtype'];
+            echo $itemtype::getTypeName(1);
+            $rand = '';
+        } else if (
+            Config::canUpdate()
+            && ($this->getEntityID() == 0)
+        ) {
+            $rand = Dropdown::showItemTypes(
+                'itemtype',
+                $CFG_GLPI["notificationtemplates_types"],
+                ['value' => $this->fields['itemtype']]
+            );
+        } else {
+            $rand = Dropdown::showItemTypes(
+                'itemtype',
+                array_diff(
+                    $CFG_GLPI["notificationtemplates_types"],
+                    ['CronTask', 'DBConnection', 'User']
+                ),
+                ['value' => $this->fields['itemtype']]
+            );
+        }
+
+        $params = ['itemtype' => '__VALUE__'];
+        Ajax::updateItemOnSelectEvent(
+            "dropdown_itemtype$rand",
+            "show_events",
+            $CFG_GLPI["root_doc"] . "/ajax/dropdownNotificationEvent.php",
+            $params
+        );
+        Ajax::updateItemOnSelectEvent(
+            "dropdown_itemtype$rand",
+            "show_templates",
+            $CFG_GLPI["root_doc"] . "/ajax/dropdownNotificationTemplate.php",
+            $params
+        );
+        echo "</td></tr>";
+
+        echo "<tr class='tab_bg_1'><td>" . NotificationEvent::getTypeName(1) . "</td>";
+        echo "<td><span id='show_events'>";
+        NotificationEvent::dropdownEvents(
+            $this->fields['itemtype'],
+            ['value' => $this->fields['event']]
+        );
+        echo "</span></td></tr>";
+
+        $this->showFormButtons($options);
+        return true;
+    }
 
 
    /**
@@ -259,20 +283,21 @@ class Notification extends CommonDBTM {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
 
-      if (!is_array($values)) {
-         $values = [$field => $values];
-      }
-      switch ($field) {
-         case 'event':
-            if (isset($values['itemtype']) && !empty($values['itemtype'])) {
-               return NotificationEvent::getEventName($values['itemtype'], $values[$field]);
-            }
-            break;
-      }
-      return parent::getSpecificValueToDisplay($field, $values, $options);
-   }
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        switch ($field) {
+            case 'event':
+                if (isset($values['itemtype']) && !empty($values['itemtype'])) {
+                    return NotificationEvent::getEventName($values['itemtype'], $values[$field]);
+                }
+                break;
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
 
 
    /**
@@ -283,64 +308,66 @@ class Notification extends CommonDBTM {
     * @param $values             (default '')
     * @param $options      array
    **/
-   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    {
 
-      global $CFG_GLPI;
+        global $CFG_GLPI;
 
-      if (!is_array($values)) {
-         $values = [$field => $values];
-      }
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
 
-      switch ($field) {
-         case 'event' :
-            $itemtypes = (isset($values['itemtype']) && !empty($values['itemtype']))
-               ? $values['itemtype']
-               : $CFG_GLPI["notificationtemplates_types"];
+        switch ($field) {
+            case 'event':
+                $itemtypes = (isset($values['itemtype']) && !empty($values['itemtype']))
+                ? $values['itemtype']
+                : $CFG_GLPI["notificationtemplates_types"];
 
-            $events = [];
-            foreach ($itemtypes as $itemtype) {
-               $target = NotificationTarget::getInstanceByType($itemtype);
-               if ($target) {
-                  $target_events = $target->getAllEvents();
-                  foreach ($target_events as $key => $label) {
-                     $events[$itemtype][$itemtype . Search::SHORTSEP . $key] = $label;
-                  }
-               }
-            }
+                $events = [];
+                foreach ($itemtypes as $itemtype) {
+                    $target = NotificationTarget::getInstanceByType($itemtype);
+                    if ($target) {
+                        $target_events = $target->getAllEvents();
+                        foreach ($target_events as $key => $label) {
+                             $events[$itemtype][$itemtype . Search::SHORTSEP . $key] = $label;
+                        }
+                    }
+                }
 
-            return Dropdown::showFromArray(
-               $name,
-               $events,
-               [
-                  'display'             => false,
-                  'display_emptychoice' => true,
-                  'value'               => $values[$field],
-               ]
-            );
-            break;
-      }
-      return parent::getSpecificValueToSelect($field, $name, $values, $options);
-   }
+                return Dropdown::showFromArray(
+                    $name,
+                    $events,
+                    [
+                    'display'             => false,
+                    'display_emptychoice' => true,
+                    'value'               => $values[$field],
+                    ]
+                );
+             break;
+        }
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
 
 
-   function rawSearchOptions() {
-      $tab = [];
+    public function rawSearchOptions()
+    {
+        $tab = [];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => 'common',
          'name'               => __('Characteristics')
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '1',
          'table'              => $this->getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '2',
          'table'              => $this->getTable(),
          'field'              => 'event',
@@ -354,15 +381,15 @@ class Notification extends CommonDBTM {
             'equals',
             'notequals'
          ]
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '3',
          'table'              => Notification_NotificationTemplate::getTable(),
          'field'              => 'mode',
          'name'               => __('Notification method'),
          'massiveaction'      => false,
-         'searchequalsonfield'=> true,
+         'searchequalsonfield' => true,
          'datatype'           => 'specific',
          'joinparams'         => [
             'jointype'  => 'child'
@@ -371,9 +398,9 @@ class Notification extends CommonDBTM {
             '0'                  => 'equals',
             '1'                  => 'notequals'
          ]
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '4',
          'table'              => 'glpi_notificationtemplates',
          'field'              => 'name',
@@ -389,9 +416,9 @@ class Notification extends CommonDBTM {
                ]
             ]
          ]
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '5',
          'table'              => $this->getTable(),
          'field'              => 'itemtype',
@@ -399,43 +426,43 @@ class Notification extends CommonDBTM {
          'datatype'           => 'itemtypename',
          'itemtype_list'      => 'notificationtemplates_types',
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '6',
          'table'              => $this->getTable(),
          'field'              => 'is_active',
          'name'               => __('Active'),
          'datatype'           => 'bool'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '16',
          'table'              => $this->getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
          'name'               => Entity::getTypeName(1),
          'massiveaction'      => false,
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '86',
          'table'              => $this->getTable(),
          'field'              => 'is_recursive',
          'name'               => __('Child entities'),
          'datatype'           => 'bool'
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
    /**
     * Get the massive actions for this object
@@ -443,95 +470,98 @@ class Notification extends CommonDBTM {
     * @param object|null $checkitem
     * @return array list of actions
     */
-   function getSpecificMassiveActions($checkitem = null) {
+    public function getSpecificMassiveActions($checkitem = null)
+    {
 
-      $isadmin = static::canUpdate();
-      $actions = parent::getSpecificMassiveActions($checkitem);
+        $isadmin = static::canUpdate();
+        $actions = parent::getSpecificMassiveActions($checkitem);
 
-      if ($isadmin) {
-         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_template'] = _x('button', 'Add notification template');
-         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'remove_all_template'] = _x('button', 'Remove all notification templates');
-      }
+        if ($isadmin) {
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_template'] = _x('button', 'Add notification template');
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'remove_all_template'] = _x('button', 'Remove all notification templates');
+        }
 
-      return $actions;
-   }
+        return $actions;
+    }
 
-   static function showMassiveActionsSubForm(MassiveAction $ma) {
-      switch ($ma->getAction()) {
-         case 'add_template':
-            $notification_notificationtemplate = new Notification_NotificationTemplate();
-            $notification_notificationtemplate->showFormMassiveAction($ma);
-            return true;
-         case 'remove_all_template':
-            echo Html::submit(__('Delete'), ['name' => 'massiveaction']);
-            return true;
-      }
-      return false;
-   }
-
-
-   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids) {
-
-      switch ($ma->getAction()) {
-         case 'add_template' :
-            foreach ($ids as $id) {
-               //load notification
-               $notification = new Notification();
-               $notification->getFromDB($id);
-
-               //check if selected template
-               $notification_template = new NotificationTemplate();
-               $notification_template->getFromDB($ma->POST['notificationtemplates_id']);
-
-               if ($notification_template->fields['itemtype'] == $notification->fields['itemtype']) {
-
-                  //check if already exist
-                  $notification_notificationtemplate = new Notification_NotificationTemplate();
-                  $data = [
-                     'mode'                     => $ma->POST['mode'],
-                     'notificationtemplates_id' => $ma->POST['notificationtemplates_id'],
-                     'notifications_id'         => $id
-                  ];
-                  if ($notification_notificationtemplate->getFromDBByCrit($data)) {
-                     $ma->itemDone(Notification::getType(), $ma->POST['notificationtemplates_id'], MassiveAction::ACTION_OK);
-                  } else {
-                     $notification_notificationtemplate->add($data);
-                     $ma->itemDone(Notification::getType(), $ma->POST['notificationtemplates_id'], MassiveAction::ACTION_OK);
-                  }
-
-               } else {
-                  $ma->itemDone(Notification::getType(), 0, MassiveAction::ACTION_KO);
-                  $ma->addMessage($notification->getErrorMessage(ERROR_COMPAT)." (".$notification_template->getLink().")");
-               }
-
-            }
-            return;
-         case 'remove_all_template' :
-            foreach ($ids as $id) {
-               //load notification
-               $notification = new Notification();
-               $notification->getFromDB($id);
-
-               //delete all links between notification and template
-               $notification_notificationtemplate = new Notification_NotificationTemplate();
-               $notification_notificationtemplate->deleteByCriteria(['notifications_id' => $id]);
-               $ma->itemDone(Notification::getType(), $id, MassiveAction::ACTION_OK);
-            }
-            return;
-      }
-      return;
-   }
+    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    {
+        switch ($ma->getAction()) {
+            case 'add_template':
+                $notification_notificationtemplate = new Notification_NotificationTemplate();
+                $notification_notificationtemplate->showFormMassiveAction($ma);
+                return true;
+            case 'remove_all_template':
+                echo Html::submit(__('Delete'), ['name' => 'massiveaction']);
+                return true;
+        }
+        return false;
+    }
 
 
-   function canViewItem() {
+    public static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids)
+    {
 
-      if ((($this->fields['itemtype'] == 'CronTask')
-           || ($this->fields['itemtype'] == 'DBConnection'))
-          && !Config::canView()) {
-          return false;
-      }
-      return Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive());
-   }
+        switch ($ma->getAction()) {
+            case 'add_template':
+                foreach ($ids as $id) {
+                   //load notification
+                    $notification = new Notification();
+                    $notification->getFromDB($id);
+
+                   //check if selected template
+                    $notification_template = new NotificationTemplate();
+                    $notification_template->getFromDB($ma->POST['notificationtemplates_id']);
+
+                    if ($notification_template->fields['itemtype'] == $notification->fields['itemtype']) {
+                        //check if already exist
+                        $notification_notificationtemplate = new Notification_NotificationTemplate();
+                        $data = [
+                        'mode'                     => $ma->POST['mode'],
+                        'notificationtemplates_id' => $ma->POST['notificationtemplates_id'],
+                        'notifications_id'         => $id
+                        ];
+                        if ($notification_notificationtemplate->getFromDBByCrit($data)) {
+                            $ma->itemDone(Notification::getType(), $ma->POST['notificationtemplates_id'], MassiveAction::ACTION_OK);
+                        } else {
+                            $notification_notificationtemplate->add($data);
+                            $ma->itemDone(Notification::getType(), $ma->POST['notificationtemplates_id'], MassiveAction::ACTION_OK);
+                        }
+                    } else {
+                        $ma->itemDone(Notification::getType(), 0, MassiveAction::ACTION_KO);
+                        $ma->addMessage($notification->getErrorMessage(ERROR_COMPAT) . " (" . $notification_template->getLink() . ")");
+                    }
+                }
+                return;
+            case 'remove_all_template':
+                foreach ($ids as $id) {
+                    //load notification
+                    $notification = new Notification();
+                    $notification->getFromDB($id);
+
+                    //delete all links between notification and template
+                    $notification_notificationtemplate = new Notification_NotificationTemplate();
+                    $notification_notificationtemplate->deleteByCriteria(['notifications_id' => $id]);
+                    $ma->itemDone(Notification::getType(), $id, MassiveAction::ACTION_OK);
+                }
+                return;
+        }
+        return;
+    }
+
+
+    public function canViewItem()
+    {
+
+        if (
+            (($this->fields['itemtype'] == 'CronTask')
+            || ($this->fields['itemtype'] == 'DBConnection'))
+            && !Config::canView()
+        ) {
+            return false;
+        }
+        return Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive());
+    }
 
 
    /**
@@ -539,26 +569,30 @@ class Notification extends CommonDBTM {
     *
     * @return boolean
    **/
-   function canCreateItem() {
+    public function canCreateItem()
+    {
 
-      if ((($this->fields['itemtype'] == 'CronTask')
-           || ($this->fields['itemtype'] == 'DBConnection'))
-          && !Config::canUpdate()) {
-          return false;
-      }
-      return Session::haveAccessToEntity($this->getEntityID());
-   }
+        if (
+            (($this->fields['itemtype'] == 'CronTask')
+            || ($this->fields['itemtype'] == 'DBConnection'))
+            && !Config::canUpdate()
+        ) {
+            return false;
+        }
+        return Session::haveAccessToEntity($this->getEntityID());
+    }
 
 
-   function cleanDBonPurge() {
+    public function cleanDBonPurge()
+    {
 
-      $this->deleteChildrenAndRelationsFromDb(
-         [
+        $this->deleteChildrenAndRelationsFromDb(
+            [
             Notification_NotificationTemplate::class,
             NotificationTarget::class,
-         ]
-      );
-   }
+            ]
+        );
+    }
 
 
    /**
@@ -568,11 +602,12 @@ class Notification extends CommonDBTM {
     *
     * @return void
    **/
-   static function send($options) {
-      $classname = Notification_NotificationTemplate::getModeClass($options['mode']);
-      $notif = new $classname();
-      $notif->sendNotification($options);
-   }
+    public static function send($options)
+    {
+        $classname = Notification_NotificationTemplate::getModeClass($options['mode']);
+        $notif = new $classname();
+        $notif->sendNotification($options);
+    }
 
 
    /**
@@ -580,16 +615,17 @@ class Notification extends CommonDBTM {
     *
     * @param $entity
    **/
-   static function getMailingSignature($entity) {
-      global $CFG_GLPI;
+    public static function getMailingSignature($entity)
+    {
+        global $CFG_GLPI;
 
-      $signature = trim(Entity::getUsedConfig('mailing_signature', $entity, '', ''));
-      if (strlen($signature) > 0) {
-         return $signature;
-      }
+        $signature = trim(Entity::getUsedConfig('mailing_signature', $entity, '', ''));
+        if (strlen($signature) > 0) {
+            return $signature;
+        }
 
-      return $CFG_GLPI['mailing_signature'];
-   }
+        return $CFG_GLPI['mailing_signature'];
+    }
 
 
    /**
@@ -599,10 +635,11 @@ class Notification extends CommonDBTM {
     *
     * @return ResultSet
    **/
-   static function getNotificationsByEventAndType($event, $itemtype, $entity) {
-      global $DB, $CFG_GLPI;
+    public static function getNotificationsByEventAndType($event, $itemtype, $entity)
+    {
+        global $DB, $CFG_GLPI;
 
-      $criteria = [
+        $criteria = [
          'SELECT'    => [
             Notification::getTable() . '.*',
             Notification_NotificationTemplate::getTable() . '.mode',
@@ -628,58 +665,62 @@ class Notification extends CommonDBTM {
             Notification::getTable() . '.event'    => $event,
             Notification::getTable() . '.is_active' => 1,
          ] + getEntitiesRestrictCriteria(
-            Notification::getTable(),
-            'entities_id',
-            $entity,
-            true
+             Notification::getTable(),
+             'entities_id',
+             $entity,
+             true
          ),
          'ORDER'     => Entity::getTable() . '.level DESC'
-      ];
+        ];
 
-      $modes = Notification_NotificationTemplate::getModes();
-      $restrict_modes = [];
-      foreach ($modes as $mode => $conf) {
-         if ($CFG_GLPI['notifications_' . $mode]) {
-            $restrict_modes[] = $mode;
-         }
-      }
-      if (count($restrict_modes)) {
-         $criteria['WHERE'][Notification_NotificationTemplate::getTable() . '.mode'] = $restrict_modes;
-      }
+        $modes = Notification_NotificationTemplate::getModes();
+        $restrict_modes = [];
+        foreach ($modes as $mode => $conf) {
+            if ($CFG_GLPI['notifications_' . $mode]) {
+                $restrict_modes[] = $mode;
+            }
+        }
+        if (count($restrict_modes)) {
+            $criteria['WHERE'][Notification_NotificationTemplate::getTable() . '.mode'] = $restrict_modes;
+        }
 
-      return $DB->request($criteria);
-   }
-
-
-   function prepareInputForAdd($input) {
-
-      if (isset($input["itemtype"]) && empty($input["itemtype"])) {
-         $message = __('Field itemtype is mandatory');
-         Session::addMessageAfterRedirect($message, false, ERROR);
-         return false;
-      }
-
-      return $input;
-   }
+        return $DB->request($criteria);
+    }
 
 
-   function prepareInputForUpdate($input) {
+    public function prepareInputForAdd($input)
+    {
 
-      if (isset($input["itemtype"]) && empty($input["itemtype"])) {
-         $message = __('Field itemtype is mandatory');
-         Session::addMessageAfterRedirect($message, false, ERROR);
-         return false;
-      }
+        if (isset($input["itemtype"]) && empty($input["itemtype"])) {
+            $message = __('Field itemtype is mandatory');
+            Session::addMessageAfterRedirect($message, false, ERROR);
+            return false;
+        }
 
-      return $input;
-   }
+        return $input;
+    }
 
 
-   static function getIcon() {
-      return "ti ti-bell";
-   }
+    public function prepareInputForUpdate($input)
+    {
 
-   public function allowResponse() {
-      return $this->fields['allow_response'];
-   }
+        if (isset($input["itemtype"]) && empty($input["itemtype"])) {
+            $message = __('Field itemtype is mandatory');
+            Session::addMessageAfterRedirect($message, false, ERROR);
+            return false;
+        }
+
+        return $input;
+    }
+
+
+    public static function getIcon()
+    {
+        return "ti ti-bell";
+    }
+
+    public function allowResponse()
+    {
+        return $this->fields['allow_response'];
+    }
 }

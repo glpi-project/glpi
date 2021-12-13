@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,14 +32,17 @@
  */
 
 /// Class Network
-class Network extends CommonDropdown {
+class Network extends CommonDropdown
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Network', 'Networks', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Network', 'Networks', $nb);
+    }
 
-   static function getiCon() {
-      return "fas fa-network-wired";
-   }
+    public static function getiCon()
+    {
+        return "fas fa-network-wired";
+    }
 }

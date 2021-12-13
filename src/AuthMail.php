@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,122 +34,130 @@
 /**
  *  Class used to manage Auth mail config
  */
-class AuthMail extends CommonDBTM {
+class AuthMail extends CommonDBTM
+{
 
 
    // From CommonDBTM
-   public $dohistory = true;
+    public $dohistory = true;
 
-   static $rightname = 'config';
+    public static $rightname = 'config';
 
-   static function getTypeName($nb = 0) {
-      return _n('Mail server', 'Mail servers', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Mail server', 'Mail servers', $nb);
+    }
 
-   function prepareInputForUpdate($input) {
+    public function prepareInputForUpdate($input)
+    {
 
-      if (isset($input['mail_server']) && !empty($input['mail_server'])) {
-         $input["connect_string"] = Toolbox::constructMailServerConfig($input);
-      }
-      return $input;
-   }
+        if (isset($input['mail_server']) && !empty($input['mail_server'])) {
+            $input["connect_string"] = Toolbox::constructMailServerConfig($input);
+        }
+        return $input;
+    }
 
-   static function canCreate() {
-      return static::canUpdate();
-   }
+    public static function canCreate()
+    {
+        return static::canUpdate();
+    }
 
-   static function canPurge() {
-      return static::canUpdate();
-   }
+    public static function canPurge()
+    {
+        return static::canUpdate();
+    }
 
-   function prepareInputForAdd($input) {
+    public function prepareInputForAdd($input)
+    {
 
-      if (isset($input['mail_server']) && !empty($input['mail_server'])) {
-         $input["connect_string"] = Toolbox::constructMailServerConfig($input);
-      }
-      return $input;
-   }
+        if (isset($input['mail_server']) && !empty($input['mail_server'])) {
+            $input["connect_string"] = Toolbox::constructMailServerConfig($input);
+        }
+        return $input;
+    }
 
-   function defineTabs($options = []) {
+    public function defineTabs($options = [])
+    {
 
-      $ong = [];
-      $this->addDefaultFormTab($ong);
-      $this->addStandardTab(__CLASS__, $ong, $options);
-      $this->addStandardTab('Log', $ong, $options);
+        $ong = [];
+        $this->addDefaultFormTab($ong);
+        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab('Log', $ong, $options);
 
-      return $ong;
-   }
+        return $ong;
+    }
 
-   function rawSearchOptions() {
-      $tab = [];
+    public function rawSearchOptions()
+    {
+        $tab = [];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => 'common',
          'name'               => __('Email server')
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '1',
          'table'              => $this->getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '2',
          'table'              => $this->getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'datatype'           => 'number',
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '3',
          'table'              => $this->getTable(),
          'field'              => 'host',
          'name'               => __('Server'),
          'datatype'           => 'string'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '4',
          'table'              => $this->getTable(),
          'field'              => 'connect_string',
          'name'               => __('Connection string'),
          'massiveaction'      => false,
          'datatype'           => 'string'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '6',
          'table'              => $this->getTable(),
          'field'              => 'is_active',
          'name'               => __('Active'),
          'datatype'           => 'bool'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '19',
          'table'              => $this->getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '16',
          'table'              => $this->getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
    /**
     * Print the auth mail form
@@ -158,80 +167,82 @@ class AuthMail extends CommonDBTM {
     *
     * @return void|boolean (display) Returns false if there is a rights error.
     */
-   function showForm($ID, array $options = []) {
+    public function showForm($ID, array $options = [])
+    {
 
-      if (!Config::canUpdate()) {
-         return false;
-      }
-      if (empty($ID)) {
-         $this->getEmpty();
-      } else {
-         $this->getFromDB($ID);
-      }
+        if (!Config::canUpdate()) {
+            return false;
+        }
+        if (empty($ID)) {
+            $this->getEmpty();
+        } else {
+            $this->getFromDB($ID);
+        }
 
-      $options['colspan'] = 1;
-      $this->showFormHeader($options);
+        $options['colspan'] = 1;
+        $this->showFormHeader($options);
 
-      echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
-      echo "<td><input class='form-control' type='text' name='name' value='". $this->fields["name"] ."'>";
-      echo "</td></tr>";
+        echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
+        echo "<td><input class='form-control' type='text' name='name' value='" . $this->fields["name"] . "'>";
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Active') . "</td>";
-      echo "<td colspan='3'>";
-      Dropdown::showYesNo('is_active', $this->fields['is_active']);
-      echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Active') . "</td>";
+        echo "<td colspan='3'>";
+        Dropdown::showYesNo('is_active', $this->fields['is_active']);
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>". __('Email domain Name (users email will be login@domain)') ."</td>";
-      echo "<td><input class='form-control' type='text' name='host' value='" . $this->fields["host"] . "'>";
-      echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Email domain Name (users email will be login@domain)') . "</td>";
+        echo "<td><input class='form-control' type='text' name='host' value='" . $this->fields["host"] . "'>";
+        echo "</td></tr>";
 
-      Toolbox::showMailServerConfig($this->fields["connect_string"]);
+        Toolbox::showMailServerConfig($this->fields["connect_string"]);
 
-      echo "<tr class='tab_bg_1'><td>" . __('Comments') . "</td>";
-      echo "<td>";
-      echo "<textarea class='form-control' name='comment'>".$this->fields["comment"]."</textarea>";
-      if ($ID>0) {
-         echo "<br>";
-         //TRANS: %s is the datetime of update
-         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
-      }
+        echo "<tr class='tab_bg_1'><td>" . __('Comments') . "</td>";
+        echo "<td>";
+        echo "<textarea class='form-control' name='comment'>" . $this->fields["comment"] . "</textarea>";
+        if ($ID > 0) {
+            echo "<br>";
+           //TRANS: %s is the datetime of update
+            printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
+        }
 
-      echo "</td></tr>";
+        echo "</td></tr>";
 
-      $this->showFormButtons($options);
-   }
+        $this->showFormButtons($options);
+    }
 
    /**
     * Show test mail form
     *
     * @return void
     */
-   function showFormTestMail() {
+    public function showFormTestMail()
+    {
 
-      $ID = $this->getField('id');
+        $ID = $this->getField('id');
 
-      if ($this->getFromDB($ID)) {
-         echo "<form method='post' action='".$this->getFormURL()."'>";
-         echo "<input type='hidden' name='imap_string' value=\"".$this->fields['connect_string']."\">";
-         echo "<div class='center'><table class='tab_cadre'>";
-         echo "<tr><th colspan='2'>" . __('Test connection to email server') . "</th></tr>";
+        if ($this->getFromDB($ID)) {
+            echo "<form method='post' action='" . $this->getFormURL() . "'>";
+            echo "<input type='hidden' name='imap_string' value=\"" . $this->fields['connect_string'] . "\">";
+            echo "<div class='center'><table class='tab_cadre'>";
+            echo "<tr><th colspan='2'>" . __('Test connection to email server') . "</th></tr>";
 
-         echo "<tr class='tab_bg_2'><td class='center'>" . __('Login') . "</td>";
-         echo "<td><input class='form-control' type='text' name='imap_login' value=''></td></tr>";
+            echo "<tr class='tab_bg_2'><td class='center'>" . __('Login') . "</td>";
+            echo "<td><input class='form-control' type='text' name='imap_login' value=''></td></tr>";
 
-         echo "<tr class='tab_bg_2'><td class='center'>" . __('Password') . "</td>";
-         echo "<td><input class='form-control' type='password' name='imap_password' value=''
+            echo "<tr class='tab_bg_2'><td class='center'>" . __('Password') . "</td>";
+            echo "<td><input class='form-control' type='password' name='imap_password' value=''
                     autocomplete='new-password'></td></tr>";
 
-         echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-         echo "<input type='submit' name='test' class='btn btn-primary' value=\""._sx('button', 'Test')."\">".
+            echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
+            echo "<input type='submit' name='test' class='btn btn-primary' value=\"" . _sx('button', 'Test') . "\">" .
               "</td>";
-         echo "</tr></table></div>";
-         Html::closeForm();
-      }
-   }
+            echo "</tr></table></div>";
+            Html::closeForm();
+        }
+    }
 
 
    /**
@@ -239,9 +250,10 @@ class AuthMail extends CommonDBTM {
     *
     * @return boolean
     */
-   static function useAuthMail() {
-      return (countElementsInTable('glpi_authmails', ['is_active' => 1]) > 0);
-   }
+    public static function useAuthMail()
+    {
+        return (countElementsInTable('glpi_authmails', ['is_active' => 1]) > 0);
+    }
 
 
    /**
@@ -253,12 +265,16 @@ class AuthMail extends CommonDBTM {
     *
     * @return boolean Authentication succeeded?
     */
-   static function testAuth($connect_string, $login, $password) {
+    public static function testAuth($connect_string, $login, $password)
+    {
 
-      $auth = new Auth();
-      return $auth->connection_imap($connect_string, Toolbox::decodeFromUtf8($login),
-                                    Toolbox::decodeFromUtf8($password));
-   }
+        $auth = new Auth();
+        return $auth->connection_imap(
+            $connect_string,
+            Toolbox::decodeFromUtf8($login),
+            Toolbox::decodeFromUtf8($password)
+        );
+    }
 
 
    /**
@@ -271,25 +287,26 @@ class AuthMail extends CommonDBTM {
     *
     * @return object identification object
     */
-   static function mailAuth($auth, $login, $password, $mail_method) {
+    public static function mailAuth($auth, $login, $password, $mail_method)
+    {
 
-      if (isset($mail_method["connect_string"]) && !empty($mail_method["connect_string"])) {
-         $auth->auth_succeded = $auth->connection_imap(
-            $mail_method["connect_string"],
-            $login,
-            $password
-         );
-         if ($auth->auth_succeded) {
-            $auth->extauth      = 1;
-            $auth->user_present = $auth->user->getFromDBbyName(addslashes($login));
-            $auth->user->getFromIMAP($mail_method, Toolbox::decodeFromUtf8($login));
-            //Update the authentication method for the current user
-            $auth->user->fields["authtype"] = Auth::MAIL;
-            $auth->user->fields["auths_id"] = $mail_method["id"];
-         }
-      }
-      return $auth;
-   }
+        if (isset($mail_method["connect_string"]) && !empty($mail_method["connect_string"])) {
+            $auth->auth_succeded = $auth->connection_imap(
+                $mail_method["connect_string"],
+                $login,
+                $password
+            );
+            if ($auth->auth_succeded) {
+                 $auth->extauth      = 1;
+                 $auth->user_present = $auth->user->getFromDBbyName(addslashes($login));
+                 $auth->user->getFromIMAP($mail_method, Toolbox::decodeFromUtf8($login));
+                 //Update the authentication method for the current user
+                 $auth->user->fields["authtype"] = Auth::MAIL;
+                 $auth->user->fields["auths_id"] = $mail_method["id"];
+            }
+        }
+        return $auth;
+    }
 
 
    /**
@@ -304,49 +321,51 @@ class AuthMail extends CommonDBTM {
     *
     * @return object identification object
     */
-   static function tryMailAuth($auth, $login, $password, $auths_id = 0, $break = true) {
+    public static function tryMailAuth($auth, $login, $password, $auths_id = 0, $break = true)
+    {
 
-      if ($auths_id <= 0) {
-         foreach ($auth->authtypes["mail"] as $mail_method) {
-            if (!$auth->auth_succeded && $mail_method['is_active']) {
-               $auth = self::mailAuth($auth, $login, $password, $mail_method);
-            } else {
-               if ($break) {
-                  break;
-               }
+        if ($auths_id <= 0) {
+            foreach ($auth->authtypes["mail"] as $mail_method) {
+                if (!$auth->auth_succeded && $mail_method['is_active']) {
+                    $auth = self::mailAuth($auth, $login, $password, $mail_method);
+                } else {
+                    if ($break) {
+                        break;
+                    }
+                }
             }
-         }
+        } else if (array_key_exists($auths_id, $auth->authtypes["mail"])) {
+           //Check if the mail server indicated as the last good one still exists !
+            $auth = self::mailAuth($auth, $login, $password, $auth->authtypes["mail"][$auths_id]);
+        }
+        return $auth;
+    }
 
-      } else if (array_key_exists($auths_id, $auth->authtypes["mail"])) {
-         //Check if the mail server indicated as the last good one still exists !
-         $auth = self::mailAuth($auth, $login, $password, $auth->authtypes["mail"][$auths_id]);
-      }
-      return $auth;
-   }
+    public function cleanDBonPurge()
+    {
+        Rule::cleanForItemCriteria($this, 'MAIL_SERVER');
+    }
 
-   function cleanDBonPurge() {
-      Rule::cleanForItemCriteria($this, 'MAIL_SERVER');
-   }
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+        if (!$withtemplate && $item->can($item->getField('id'), READ)) {
+            $ong = [];
+            $ong[1] = _sx('button', 'Test');    // test connexion
 
-      if (!$withtemplate && $item->can($item->getField('id'), READ)) {
-         $ong = [];
-         $ong[1] = _sx('button', 'Test');    // test connexion
+            return $ong;
+        }
+        return '';
+    }
 
-         return $ong;
-      }
-      return '';
-   }
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-
-      switch ($tabnum) {
-         case 1 :
-            $item->showFormTestMail();
-            break;
-      }
-      return true;
-   }
-
+        switch ($tabnum) {
+            case 1:
+                $item->showFormTestMail();
+                break;
+        }
+        return true;
+    }
 }

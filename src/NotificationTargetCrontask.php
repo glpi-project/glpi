@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,72 +34,77 @@
 /**
  * NotificationTargetCrontask Class
 **/
-class NotificationTargetCrontask extends NotificationTarget {
+class NotificationTargetCrontask extends NotificationTarget
+{
 
 
-   function getEvents() {
-      return ['alert' => __('Monitoring of automatic actions')];
-   }
+    public function getEvents()
+    {
+        return ['alert' => __('Monitoring of automatic actions')];
+    }
 
 
-   function addDataForTemplate($event, $options = []) {
+    public function addDataForTemplate($event, $options = [])
+    {
 
-      $events                             = $this->getAllEvents();
-      $this->data['##crontask.action##'] = $events[$event];
+        $events                             = $this->getAllEvents();
+        $this->data['##crontask.action##'] = $events[$event];
 
-      $cron                               = new CronTask();
-      foreach ($options['items'] as $id => $crontask) {
-         $tmp                      = [];
-         $tmp['##crontask.name##'] = '';
+        $cron                               = new CronTask();
+        foreach ($options['items'] as $id => $crontask) {
+            $tmp                      = [];
+            $tmp['##crontask.name##'] = '';
 
-         if ($isplug=isPluginItemType($crontask["itemtype"])) {
-            $tmp['##crontask.name##'] = $isplug["plugin"]." - ";
-         }
+            if ($isplug = isPluginItemType($crontask["itemtype"])) {
+                $tmp['##crontask.name##'] = $isplug["plugin"] . " - ";
+            }
 
-         $tmp['##crontask.name##']       .= $crontask['name'];
-         $tmp['##crontask.description##'] = $cron->getDescription($id);
-         $tmp['##crontask.url##']         = $this->formatURL($options['additionnaloption']['usertype'],
-                                                             "CronTask_".$id);
-         $this->data['crontasks'][] = $tmp;
-      }
+            $tmp['##crontask.name##']       .= $crontask['name'];
+            $tmp['##crontask.description##'] = $cron->getDescription($id);
+            $tmp['##crontask.url##']         = $this->formatURL(
+                $options['additionnaloption']['usertype'],
+                "CronTask_" . $id
+            );
+            $this->data['crontasks'][] = $tmp;
+        }
 
-      $this->getTags();
-      foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         if (!isset($this->data[$tag])) {
-            $this->data[$tag] = $values['label'];
-         }
-      }
-   }
+        $this->getTags();
+        foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
+            if (!isset($this->data[$tag])) {
+                $this->data[$tag] = $values['label'];
+            }
+        }
+    }
 
 
-   function getTags() {
+    public function getTags()
+    {
 
-      $tags = ['crontask.action'      => __('Monitoring of automatic actions'),
+        $tags = ['crontask.action'      => __('Monitoring of automatic actions'),
                     'crontask.url'         => __('URL'),
                     'crontask.name'        => __('Name'),
                     'crontask.description' => __('Description')];
 
-      foreach ($tags as $tag => $label) {
-         $this->addTagToList(['tag'   => $tag,
+        foreach ($tags as $tag => $label) {
+            $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
                                    'value' => true]);
-      }
+        }
 
-      $this->addTagToList(['tag'     => 'crontasks',
+        $this->addTagToList(['tag'     => 'crontasks',
                                 'label'   => __('Automatic actions list'),
                                 'value'   => false,
                                 'foreach' => true]);
 
-      //Tags with just lang
-      $tags = ['crontask.warning'
+       //Tags with just lang
+        $tags = ['crontask.warning'
                      => __('The following automatic actions are in error. They require intervention.')];
-      foreach ($tags as $tag => $label) {
-         $this->addTagToList(['tag'   => $tag,
+        foreach ($tags as $tag => $label) {
+            $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
                                    'value' => false,
                                    'lang'  => true]);
-      }
-      asort($this->tag_descriptions);
-   }
-
+        }
+        asort($this->tag_descriptions);
+    }
 }

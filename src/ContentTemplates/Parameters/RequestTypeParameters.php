@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -41,15 +42,18 @@ use RequestType;
  */
 class RequestTypeParameters extends DropdownParameters
 {
-   public static function getDefaultNodeName(): string {
-      return 'requesttype';
-   }
+    public static function getDefaultNodeName(): string
+    {
+        return 'requesttype';
+    }
 
-   public static function getObjectLabel(): string {
-      return RequestType::getTypeName(1);
-   }
+    public static function getObjectLabel(): string
+    {
+        return RequestType::getTypeName(1);
+    }
 
-   protected function getTargetClasses(): array {
-      return [RequestType::class];
-   }
+    protected function getTargetClasses(): array
+    {
+        return [RequestType::class];
+    }
 }

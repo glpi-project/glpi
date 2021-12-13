@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,14 +36,16 @@ namespace tests\units\Glpi\System\Requirement;
 /**
  * Nota: Web access cannot be tested on CLI context.
  */
-class ProtectedWebAccess extends \GLPITestCase {
+class ProtectedWebAccess extends \GLPITestCase
+{
 
-   public function testCheckOutOfContext() {
+    public function testCheckOutOfContext()
+    {
 
-      $this->newTestedInstance([]);
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-      $this->boolean($this->testedInstance->isOutOfContext())->isEqualTo(true);
-      $this->array($this->testedInstance->getValidationMessages())
+        $this->newTestedInstance([]);
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
+        $this->boolean($this->testedInstance->isOutOfContext())->isEqualTo(true);
+        $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(['Checking that web access to files directory is protected cannot be done on CLI context.']);
-   }
+    }
 }

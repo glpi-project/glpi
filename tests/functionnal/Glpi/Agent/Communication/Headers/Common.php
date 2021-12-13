@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,10 +37,12 @@ use GLPITestCase;
 
 /* Test for inc/glpi/agent/communication/headers/common.class.php */
 
-class Common extends GLPITestCase {
+class Common extends GLPITestCase
+{
 
-   protected function namesProvider(): array {
-      return [
+    protected function namesProvider(): array
+    {
+        return [
          [
             'propname' => 'content_type',
             'headername' => 'Content-Type'
@@ -56,19 +59,20 @@ class Common extends GLPITestCase {
             'propname' => 'header_with_id_in',
             'headername' => 'Header-With-ID-In'
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider namesProvider
     */
-   public function testHeaders($propname, $headername) {
-      $this
+    public function testHeaders($propname, $headername)
+    {
+        $this
         ->if($this->newTestedInstance)
         ->then
          ->string($this->testedInstance->getHeaderName($propname))
             ->isIdenticalTo($headername);
-   }
+    }
 
    /* Useful only when legacy will no longer be the default */
    /*public function testGetHeadersWException() {
@@ -83,37 +87,40 @@ class Common extends GLPITestCase {
          )->hasMessage('Content-Type HTTP header is mandatory!');
    }*/
 
-   public function testGetHeaders() {
-      $instance = $this->newTestedInstance;
-      $instance->setHeader('Content-Type', 'application/xml');
-      $instance->setHeader('GLPI-Agent-ID', 'anything');
+    public function testGetHeaders()
+    {
+        $instance = $this->newTestedInstance;
+        $instance->setHeader('Content-Type', 'application/xml');
+        $instance->setHeader('GLPI-Agent-ID', 'anything');
 
-      $this->array($instance->getHeaders())
+        $this->array($instance->getHeaders())
          ->hasKeys(['Content-Type', 'Pragma', 'GLPI-Agent-ID']);
 
-      $instance = $this->newTestedInstance;
-      $instance->setHeaders([
+        $instance = $this->newTestedInstance;
+        $instance->setHeaders([
          'Content-Type' => 'application/xml',
          'GLPI-Agent-ID' => 'anything'
-      ]);
+        ]);
 
-      $this->array($instance->getHeaders())
+        $this->array($instance->getHeaders())
          ->hasKeys(['Content-Type', 'Pragma', 'GLPI-Agent-ID']);
-   }
+    }
 
-   public function testGetRequireds() {
-      $this
+    public function testGetRequireds()
+    {
+        $this
          ->if($this->newTestedInstance)
          ->then
          ->array($this->testedInstance->getRequireds())
          ->hasSize(5);
-   }
+    }
 
-   public function testGetHeadersNames() {
-      $this
+    public function testGetHeadersNames()
+    {
+        $this
          ->if($this->newTestedInstance)
          ->then
          ->array($this->testedInstance->getHeadersNames())
          ->hasSize(1);
-   }
+    }
 }
