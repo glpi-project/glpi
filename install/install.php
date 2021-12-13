@@ -502,7 +502,7 @@ Session::loadLanguage('', false);
 **/
 function checkConfigFile()
 {
-   global $CFG_GLPI;
+    global $CFG_GLPI;
 
     if (file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
         Html::redirect($CFG_GLPI['root_doc'] . "/index.php");

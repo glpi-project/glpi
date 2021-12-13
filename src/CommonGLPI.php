@@ -969,9 +969,9 @@ JAVASCRIPT;
             && $this->getType()
             && $this->displaylist
         ) {
-            $glpilistitems =& $_SESSION['glpilistitems'][$this->getType()];
-            $glpilisttitle =& $_SESSION['glpilisttitle'][$this->getType()];
-            $glpilisturl   =& $_SESSION['glpilisturl'][$this->getType()];
+            $glpilistitems = & $_SESSION['glpilistitems'][$this->getType()];
+            $glpilisttitle = & $_SESSION['glpilisttitle'][$this->getType()];
+            $glpilisturl   = & $_SESSION['glpilisturl'][$this->getType()];
 
             if (empty($glpilisturl)) {
                 $glpilisturl = $this->getSearchURL();
