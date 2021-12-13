@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,12 +33,13 @@
 
 namespace Glpi\Console\Command;
 
-interface ForceNoPluginsOptionCommandInterface {
+interface ForceNoPluginsOptionCommandInterface
+{
 
    /**
     * Defines whether or not command prevents plugins to be loaded.
     *
     * @return boolean
     */
-   public function getNoPluginsOptionValue();
+    public function getNoPluginsOptionValue();
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,14 +36,14 @@
  * @since 0.85
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkSeveralRightsOr(["networking" => UPDATE,
                                     "internet"   => UPDATE]);
 
 if (!$DB->tableExists('glpi_networkportmigrations')) {
-   Session::addMessageAfterRedirect(__('You don\'t need the "migration cleaner" tool anymore...'));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
+    Session::addMessageAfterRedirect(__('You don\'t need the "migration cleaner" tool anymore...'));
+    Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
 }
 
 Html::header(__('Migration cleaner'), $_SERVER['PHP_SELF'], "tools", "migration");
@@ -52,19 +53,24 @@ echo "<table class='tab_cadre_fixe'>";
 
 echo "<tr><th>" . __('"Migration cleaner" tool') . "</td></tr>";
 
-if (Session::haveRight('internet', UPDATE)
+if (
+    Session::haveRight('internet', UPDATE)
     // Check access to all entities
-    && Session::canViewAllEntities()) {
-   echo "<tr class='tab_bg_1'><td class='center'>";
-   Html::showSimpleForm(IPNetwork::getFormURL(), 'reinit_network',
-                        __('Reinit the network topology'));
-   echo "</td></tr>";
+    && Session::canViewAllEntities()
+) {
+    echo "<tr class='tab_bg_1'><td class='center'>";
+    Html::showSimpleForm(
+        IPNetwork::getFormURL(),
+        'reinit_network',
+        __('Reinit the network topology')
+    );
+    echo "</td></tr>";
 }
 if (Session::haveRight('networking', UPDATE)) {
-   echo "<tr class='tab_bg_1'><td class='center'>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/front/networkportmigration.php'>".
+    echo "<tr class='tab_bg_1'><td class='center'>";
+    echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/networkportmigration.php'>" .
          __('Clean the network port migration errors') . "</a>";
-   echo "</td></tr>";
+    echo "</td></tr>";
 }
 echo "</table>";
 echo "</div>";

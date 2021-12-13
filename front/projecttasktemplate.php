@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,7 +35,7 @@
  * @since 9.2
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 $dropdown = new ProjectTaskTemplate();
-include (GLPI_ROOT . "/front/dropdown.common.php");
+include(GLPI_ROOT . "/front/dropdown.common.php");

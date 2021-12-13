@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,20 +32,23 @@
  */
 
 /// Class SoftwareLicenseType
-class SoftwareLicenseType extends CommonTreeDropdown {
+class SoftwareLicenseType extends CommonTreeDropdown
+{
 
-   public $can_be_translated       = true;
+    public $can_be_translated       = true;
 
-   static function getTypeName($nb = 0) {
-      return _n('License type', 'License types', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('License type', 'License types', $nb);
+    }
 
-   static function getFieldLabel() {
-      return _n('Type', 'Types', 1);
-   }
+    public static function getFieldLabel()
+    {
+        return _n('Type', 'Types', 1);
+    }
 
-   static function getIcon() {
-      return SoftwareLicense::getIcon();
-   }
-
+    public static function getIcon()
+    {
+        return SoftwareLicense::getIcon();
+    }
 }

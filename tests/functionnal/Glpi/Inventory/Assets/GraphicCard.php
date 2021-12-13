@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,10 +37,12 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/graphiccard.class.php */
 
-class GraphicCard extends AbstractInventoryAsset {
+class GraphicCard extends AbstractInventoryAsset
+{
 
-   protected function assetProvider() :array {
-      return [
+    protected function assetProvider(): array
+    {
+        return [
          [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -72,58 +75,61 @@ class GraphicCard extends AbstractInventoryAsset {
   </REQUEST>",
             'expected'  => '{"chipset": "Intel(R) HD Graphics Family", "name": "Intel(R) HD Graphics 530", "resolution": "1920x1080", "designation": "Intel(R) HD Graphics 530", "is_dynamic": 1}'
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider assetProvider
     */
-   public function testPrepare($xml, $expected) {
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($xml);
-      $json = json_decode($data);
+    public function testPrepare($xml, $expected)
+    {
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\GraphicCard($computer, $json->content->videos);
-      $asset->setExtraData((array)$json->content);
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected));
-   }
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\GraphicCard($computer, $json->content->videos);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected));
+    }
 
-   public function testHandle() {
-      $computer = getItemByTypeName('Computer', '_test_pc01');
+    public function testHandle()
+    {
+        $computer = getItemByTypeName('Computer', '_test_pc01');
 
-      //first, check there are no controller linked to this computer
-      $idg = new \Item_DeviceGraphicCard();
-      $this->boolean($idg->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+       //first, check there are no controller linked to this computer
+        $idg = new \Item_DeviceGraphicCard();
+        $this->boolean($idg->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isFalse('A graphic cardis already linked to computer!');
 
-      //convert data
-      $expected = $this->assetProvider()[0];
+       //convert data
+        $expected = $this->assetProvider()[0];
 
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($expected['xml']);
-      $json = json_decode($data);
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($expected['xml']);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\GraphicCard($computer, $json->content->videos);
-      $asset->setExtraData((array)$json->content);
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\GraphicCard($computer, $json->content->videos);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
 
-      //handle
-      $asset->handleLinks();
-      $asset->handle();
-      $this->boolean($idg->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+       //handle
+        $asset->handleLinks();
+        $asset->handle();
+        $this->boolean($idg->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isTrue('Graphic card has not been linked to computer :(');
-   }
+    }
 
-   public function testInventoryUpdate() {
-      $computer = new \Computer();
-      $device_gc = new \DeviceGraphicCard();
-      $item_gc = new \Item_DeviceGraphicCard();
+    public function testInventoryUpdate()
+    {
+        $computer = new \Computer();
+        $device_gc = new \DeviceGraphicCard();
+        $item_gc = new \Item_DeviceGraphicCard();
 
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <VIDEOS>
@@ -149,83 +155,83 @@ class GraphicCard extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      //create manually a computer, with 3 graphic cards
-      $computers_id = $computer->add([
+       //create manually a computer, with 3 graphic cards
+        $computers_id = $computer->add([
          'name'   => 'pc002',
          'serial' => 'ggheb7ne7',
          'entities_id' => 0
-      ]);
-      $this->integer($computers_id)->isGreaterThan(0);
+        ]);
+        $this->integer($computers_id)->isGreaterThan(0);
 
-      $gc_1_id = $device_gc->add([
+        $gc_1_id = $device_gc->add([
          'designation' => 'ATI Radeon X1600',
          'chipset' => 'ATY,RadeonX1600',
          'entities_id'  => 0
-      ]);
-      $this->integer($gc_1_id)->isGreaterThan(0);
+        ]);
+        $this->integer($gc_1_id)->isGreaterThan(0);
 
-      $item_gc_1_id = $item_gc->add([
+        $item_gc_1_id = $item_gc->add([
          'items_id'     => $computers_id,
          'itemtype'     => 'Computer',
          'devicegraphiccards_id' => $gc_1_id
-      ]);
-      $this->integer($item_gc_1_id)->isGreaterThan(0);
+        ]);
+        $this->integer($item_gc_1_id)->isGreaterThan(0);
 
-      $gc_2_id = $device_gc->add([
+        $gc_2_id = $device_gc->add([
          'designation' => 'Intel(R) HD Graphics 530',
          'chipset' => 'Intel(R) HD Graphics Family',
          'entities_id'  => 0
-      ]);
-      $this->integer($gc_2_id)->isGreaterThan(0);
+        ]);
+        $this->integer($gc_2_id)->isGreaterThan(0);
 
-      $item_gc_2_id = $item_gc->add([
+        $item_gc_2_id = $item_gc->add([
          'items_id'     => $computers_id,
          'itemtype'     => 'Computer',
          'devicegraphiccards_id' => $gc_2_id
-      ]);
-      $this->integer($item_gc_2_id)->isGreaterThan(0);
+        ]);
+        $this->integer($item_gc_2_id)->isGreaterThan(0);
 
-      $gc_3_id = $device_gc->add([
+        $gc_3_id = $device_gc->add([
          'designation' => 'My Graphic Card',
          'chipset' => 'My chipset',
          'entities_id'  => 0
-      ]);
-      $this->integer($gc_3_id)->isGreaterThan(0);
+        ]);
+        $this->integer($gc_3_id)->isGreaterThan(0);
 
-      $item_gc_3_id = $item_gc->add([
+        $item_gc_3_id = $item_gc->add([
          'items_id'     => $computers_id,
          'itemtype'     => 'Computer',
          'devicegraphiccards_id' => $gc_3_id
-      ]);
-      $this->integer($item_gc_3_id)->isGreaterThan(0);
+        ]);
+        $this->integer($item_gc_3_id)->isGreaterThan(0);
 
-      $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($gcs))->isIdenticalTo(3);
-      foreach ($gcs as $gc) {
-         $this->variable($gc['is_dynamic'])->isEqualTo(0);
-      }
+        $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($gcs))->isIdenticalTo(3);
+        foreach ($gcs as $gc) {
+            $this->variable($gc['is_dynamic'])->isEqualTo(0);
+        }
 
-      //computer inventory knows only "ATI" and "Intel" graphic cards
-      $this->doInventory($xml_source, true);
+       //computer inventory knows only "ATI" and "Intel" graphic cards
+        $this->doInventory($xml_source, true);
 
-      //we still have 3 graphic cards
-      $gcs = $device_gc->find();
-      $this->integer(count($gcs))->isIdenticalTo(3);
+       //we still have 3 graphic cards
+        $gcs = $device_gc->find();
+        $this->integer(count($gcs))->isIdenticalTo(3);
 
-      //we still have 3 graphic cards items linked to the computer
-      $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($gcs))->isIdenticalTo(3);
+       //we still have 3 graphic cards items linked to the computer
+        $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($gcs))->isIdenticalTo(3);
 
-      //graphic cards present in the inventory source are now dynamic
-      $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($gcs))->isIdenticalTo(2);
+       //graphic cards present in the inventory source are now dynamic
+        $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($gcs))->isIdenticalTo(2);
 
-      //graphic card not present in the inventory is still not dynamic
-      $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
-      $this->integer(count($gcs))->isIdenticalTo(1);
+       //graphic card not present in the inventory is still not dynamic
+        $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($gcs))->isIdenticalTo(1);
 
-      //Redo inventory, but with removed "Intel" graphic card
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+       //Redo inventory, but with removed "Intel" graphic card
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <VIDEOS>
@@ -246,22 +252,22 @@ class GraphicCard extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      $this->doInventory($xml_source, true);
+        $this->doInventory($xml_source, true);
 
-      //we still have 3 graphic cards
-      $gcs = $device_gc->find();
-      $this->integer(count($gcs))->isIdenticalTo(3);
+       //we still have 3 graphic cards
+        $gcs = $device_gc->find();
+        $this->integer(count($gcs))->isIdenticalTo(3);
 
-      //we now have 2 graphic cards linked to computer only
-      $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($gcs))->isIdenticalTo(2);
+       //we now have 2 graphic cards linked to computer only
+        $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($gcs))->isIdenticalTo(2);
 
-      //graphic card present in the inventory source is still dynamic
-      $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($gcs))->isIdenticalTo(1);
+       //graphic card present in the inventory source is still dynamic
+        $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($gcs))->isIdenticalTo(1);
 
-      //graphic card not present in the inventory is still not dynamic
-      $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
-      $this->integer(count($gcs))->isIdenticalTo(1);
-   }
+       //graphic card not present in the inventory is still not dynamic
+        $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($gcs))->isIdenticalTo(1);
+    }
 }

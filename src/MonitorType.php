@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,11 +32,12 @@
  */
 
 /// Class MonitorType
-class MonitorType extends CommonType {
+class MonitorType extends CommonType
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Monitor type', 'Monitor types', $nb);
-   }
-
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Monitor type', 'Monitor types', $nb);
+    }
 }

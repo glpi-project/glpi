@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -49,91 +50,92 @@ abstract class MainAsset extends InventoryAsset
     use InventoryNetworkPort;
 
    /** @var array */
-   protected $extra_data = [
+    protected $extra_data = [
       'hardware'     => null,
       'bios'         => null,
       'users'        => null,
       '\Glpi\Inventory\Asset\NetworkCard' => null
-   ];
+    ];
    /** @var mixed */
-   protected $raw_data;
+    protected $raw_data;
    /* @var array */
-   protected $hardware;
+    protected $hardware;
    /** @var integer */
-   protected $states_id_default;
+    protected $states_id_default;
    /** @var \stdClass */
-   private $current_data;
+    private $current_data;
    /** @var array */
-   protected $assets = [];
+    protected $assets = [];
    /** @var Conf */
-   protected $conf;
+    protected $conf;
    /** @var array */
-   protected $refused = [];
+    protected $refused = [];
    /** @var array */
-   protected $inventoried = [];
+    protected $inventoried = [];
    /** @var boolean */
-   protected $partial = false;
+    protected $partial = false;
 
-   public function __construct(CommonDBTM $item, $data) {
-      $namespaced = explode('\\', static::class);
-      $this->itemtype = array_pop($namespaced);
-      $this->item = $item;
-      //store raw data for reference
-      $this->raw_data = $data;
-   }
-
-   /**
-    * Get model foregien key field name
-    *
-    * @return string
-    */
-   abstract protected function getModelsFieldName();
+    public function __construct(CommonDBTM $item, $data)
+    {
+        $namespaced = explode('\\', static::class);
+        $this->itemtype = array_pop($namespaced);
+        $this->item = $item;
+       //store raw data for reference
+        $this->raw_data = $data;
+    }
 
    /**
     * Get model foregien key field name
     *
     * @return string
     */
-   abstract protected function getTypesFieldName();
+    abstract protected function getModelsFieldName();
 
-   public function prepare() :array {
-      $raw_data = $this->raw_data;
-      if (!is_array($raw_data)) {
-          $raw_data = [$raw_data];
-      }
+   /**
+    * Get model foregien key field name
+    *
+    * @return string
+    */
+    abstract protected function getTypesFieldName();
 
-      $this->data = [];
-      foreach ($raw_data as $entry) {
+    public function prepare(): array
+    {
+        $raw_data = $this->raw_data;
+        if (!is_array($raw_data)) {
+            $raw_data = [$raw_data];
+        }
 
-         if (property_exists($entry, 'partial') && $entry->partial) {
-            $this->setPartial();
-         }
+        $this->data = [];
+        foreach ($raw_data as $entry) {
+            if (property_exists($entry, 'partial') && $entry->partial) {
+                $this->setPartial();
+            }
 
-         $val = new \stdClass();
+            $val = new \stdClass();
 
-         //set update system
-         $val->autoupdatesystems_id = $entry->content->autoupdatesystems_id ?? 'GLPI Native Inventory';
-         $val->last_inventory_update = $_SESSION["glpi_currenttime"];
+           //set update system
+            $val->autoupdatesystems_id = $entry->content->autoupdatesystems_id ?? 'GLPI Native Inventory';
+            $val->last_inventory_update = $_SESSION["glpi_currenttime"];
 
-         if (isset($this->extra_data['hardware'])) {
-            $this->prepareForHardware($val);
-         }
+            if (isset($this->extra_data['hardware'])) {
+                $this->prepareForHardware($val);
+            }
 
-         $this->prepareForUsers($val);
+            $this->prepareForUsers($val);
 
-         if (isset($this->extra_data['bios'])) {
-            $this->prepareForBios($val);
-         }
+            if (isset($this->extra_data['bios'])) {
+                $this->prepareForBios($val);
+            }
 
-         if (method_exists($this, 'postPrepare')) {
-            $this->postPrepare($val);
-         }
+            if (method_exists($this, 'postPrepare')) {
+                $this->postPrepare($val);
+            }
 
-         $this->data[] = $val;
-      }
+            $this->data[] = $val;
+        }
 
-      return $this->data;
-   }
+        return $this->data;
+    }
 
    /**
     * Prepare hardware information
@@ -142,58 +144,66 @@ abstract class MainAsset extends InventoryAsset
     *
     * @return void
     */
-   protected function prepareForHardware($val) {
-      $hardware = (object)$this->extra_data['hardware'];
+    protected function prepareForHardware($val)
+    {
+        $hardware = (object)$this->extra_data['hardware'];
 
-      $hw_mapping = [
+        $hw_mapping = [
          'name'           => 'name',
          'winprodid'      => 'licenseid',
          'winprodkey'     => 'license_number',
          'workgroup'      => 'domains_id',
          'lastloggeduser' => 'users_id',
-      ];
+        ];
 
-      foreach ($hw_mapping as $origin => $dest) {
-         if (property_exists($hardware, $origin)) {
-            $hardware->$dest = $hardware->$origin;
-         }
-      }
-      $this->hardware = $hardware;
-
-      foreach ($hardware as $key => $property) {
-         $val->$key = $property;
-      }
-
-      // * Type of the asset
-      if (isset($hardware)) {
-         $types_id = $this->getTypesFieldName();
-         if (property_exists($hardware, 'vmsystem')
-            && $hardware->vmsystem != ''
-            && $hardware->vmsystem != 'Physical'
-         ) {
-            $val->$types_id = $hardware->vmsystem;
-            // HACK FOR BSDJail, remove serial and UUID (because it's of host, not container)
-            if ($hardware->vmsystem == 'BSDJail') {
-               if (property_exists($val, 'serial')) {
-                  $val->serial = '';
-               }
-               $val->uuid .= '-' . $val->name;
+        foreach ($hw_mapping as $origin => $dest) {
+            if (property_exists($hardware, $origin)) {
+                $hardware->$dest = $hardware->$origin;
             }
-         } else {
-            $bios = (object)$this->extra_data['bios'];
-            if (property_exists($hardware, 'chassis_type')
-                  && !empty($hardware->chassis_type)) {
-               $val->$types_id = $hardware->chassis_type;
-            } else if (isset($bios) && property_exists($bios, 'type')
-                  && !empty($bios->type)) {
-               $val->$types_id = $bios->type;
-            } else if (isset($bios) && property_exists($bios, 'mmodel')
-                  && !empty($bios->mmodel)) {
-               $val->$types_id = $bios->mmodel;
+        }
+        $this->hardware = $hardware;
+
+        foreach ($hardware as $key => $property) {
+            $val->$key = $property;
+        }
+
+       // * Type of the asset
+        if (isset($hardware)) {
+            $types_id = $this->getTypesFieldName();
+            if (
+                property_exists($hardware, 'vmsystem')
+                && $hardware->vmsystem != ''
+                && $hardware->vmsystem != 'Physical'
+            ) {
+                $val->$types_id = $hardware->vmsystem;
+               // HACK FOR BSDJail, remove serial and UUID (because it's of host, not container)
+                if ($hardware->vmsystem == 'BSDJail') {
+                    if (property_exists($val, 'serial')) {
+                        $val->serial = '';
+                    }
+                    $val->uuid .= '-' . $val->name;
+                }
+            } else {
+                $bios = (object)$this->extra_data['bios'];
+                if (
+                    property_exists($hardware, 'chassis_type')
+                    && !empty($hardware->chassis_type)
+                ) {
+                    $val->$types_id = $hardware->chassis_type;
+                } else if (
+                    isset($bios) && property_exists($bios, 'type')
+                    && !empty($bios->type)
+                ) {
+                    $val->$types_id = $bios->type;
+                } else if (
+                    isset($bios) && property_exists($bios, 'mmodel')
+                    && !empty($bios->mmodel)
+                ) {
+                    $val->$types_id = $bios->mmodel;
+                }
             }
-         }
-      }
-   }
+        }
+    }
 
    /**
     * Prepare users information
@@ -202,153 +212,162 @@ abstract class MainAsset extends InventoryAsset
     *
     * @return void
     */
-   protected function prepareForUsers($val) {
-      global $DB;
+    protected function prepareForUsers($val)
+    {
+        global $DB;
 
-      if ($this->isPartial()) {
-         unset($val->users_id);
-         return;
-      }
-
-      if (property_exists($val, 'users_id')) {
-         if ($val->users_id == '') {
+        if ($this->isPartial()) {
             unset($val->users_id);
-         } else {
-            $val->contact = $val->users_id;
-            $split_user = explode("@", $val->users_id);
-            $iterator = $DB->request([
-               'SELECT' => 'id',
-               'FROM'   => 'glpi_users',
-               'WHERE'  => [
-                  'name'   => $split_user[0]
-               ],
-               'LIMIT'  => 1
-            ]);
+            return;
+        }
 
-            if (count($iterator)) {
-               $result = $iterator->current();
-               $val->users_id = $result['id'];
+        if (property_exists($val, 'users_id')) {
+            if ($val->users_id == '') {
+                unset($val->users_id);
             } else {
-               $val->users_id = 0;
-            }
-         }
-      }
+                $val->contact = $val->users_id;
+                $split_user = explode("@", $val->users_id);
+                $iterator = $DB->request([
+                'SELECT' => 'id',
+                'FROM'   => 'glpi_users',
+                'WHERE'  => [
+                  'name'   => $split_user[0]
+                ],
+                'LIMIT'  => 1
+                ]);
 
-      // * USERS
-      $cnt = 0;
-      if (isset($this->extra_data['users'])) {
-         if (count($this->extra_data['users']) > 0) {
-            $user_temp = '';
-            if (property_exists($val, 'contact')) {
-               $user_temp = $val->contact;
+                if (count($iterator)) {
+                    $result = $iterator->current();
+                    $val->users_id = $result['id'];
+                } else {
+                    $val->users_id = 0;
+                }
             }
-            $val->contact = '';
-         }
-         foreach ($this->extra_data['users'] as $a_users) {
-            $user = '';
-            if (property_exists($a_users, 'login')) {
-               $user = $a_users->login;
-               if (property_exists($a_users, 'domain')
-                        && !empty($a_users->domain)) {
-                  $user .= "@" . $a_users->domain;
-               }
+        }
+
+       // * USERS
+        $cnt = 0;
+        if (isset($this->extra_data['users'])) {
+            if (count($this->extra_data['users']) > 0) {
+                $user_temp = '';
+                if (property_exists($val, 'contact')) {
+                    $user_temp = $val->contact;
+                }
+                $val->contact = '';
             }
-            if ($cnt == 0) {
-               if (property_exists($a_users, 'login')) {
-                  // Search on domain
-                  $where_add = [];
-                  if (property_exists($a_users, 'domain')
-                           && !empty($a_users->domain)) {
-                     $ldaps = $DB->request('glpi_authldaps',
-                           ['WHERE'  => ['inventory_domain' => $a_users->domain]]
-                     );
-                     $ldaps_ids = [];
-                     foreach ($ldaps as $data_LDAP) {
-                        $ldaps_ids[] = $data_LDAP['id'];
-                     }
-                     if (count($ldaps_ids)) {
-                        $where_add['authtype'] = Auth::LDAP;
-                        $where_add['auths_id'] = $ldaps_ids;
-                     }
-                  }
-                  $iterator = $DB->request([
-                     'SELECT' => ['id'],
-                     'FROM'   => 'glpi_users',
-                     'WHERE'  => [
+            foreach ($this->extra_data['users'] as $a_users) {
+                $user = '';
+                if (property_exists($a_users, 'login')) {
+                    $user = $a_users->login;
+                    if (
+                        property_exists($a_users, 'domain')
+                        && !empty($a_users->domain)
+                    ) {
+                        $user .= "@" . $a_users->domain;
+                    }
+                }
+                if ($cnt == 0) {
+                    if (property_exists($a_users, 'login')) {
+                       // Search on domain
+                        $where_add = [];
+                        if (
+                            property_exists($a_users, 'domain')
+                            && !empty($a_users->domain)
+                        ) {
+                            $ldaps = $DB->request(
+                                'glpi_authldaps',
+                                ['WHERE'  => ['inventory_domain' => $a_users->domain]]
+                            );
+                             $ldaps_ids = [];
+                            foreach ($ldaps as $data_LDAP) {
+                                $ldaps_ids[] = $data_LDAP['id'];
+                            }
+                            if (count($ldaps_ids)) {
+                                $where_add['authtype'] = Auth::LDAP;
+                                $where_add['auths_id'] = $ldaps_ids;
+                            }
+                        }
+                        $iterator = $DB->request([
+                        'SELECT' => ['id'],
+                        'FROM'   => 'glpi_users',
+                        'WHERE'  => [
                         'name'   => $a_users->login
-                     ] + $where_add,
-                     'LIMIT'  => 1
-                  ]);
-                  if ($row = $iterator->current()) {
-                     $val->users_id = $row['id'];
-                  }
-               }
+                        ] + $where_add,
+                        'LIMIT'  => 1
+                        ]);
+                        if ($row = $iterator->current()) {
+                              $val->users_id = $row['id'];
+                        }
+                    }
+                }
+
+                if ($user != '') {
+                    if (property_exists($val, 'contact')) {
+                        if ($val->contact == '') {
+                             $val->contact = $user;
+                        } else {
+                            $val->contact .= "/" . $user;
+                        }
+                    } else {
+                        $val->contact = $user;
+                    }
+                }
+                $cnt++;
             }
-
-            if ($user != '') {
-               if (property_exists($val, 'contact')) {
-                  if ($val->contact == '') {
-                     $val->contact = $user;
-                  } else {
-                     $val->contact .= "/" . $user;
-                  }
-               } else {
-                  $val->contact = $user;
-               }
+            if (empty($val->contact)) {
+                $val->contact = $user_temp;
             }
-            $cnt++;
-         }
-         if (empty($val->contact)) {
-            $val->contact = $user_temp;
-         }
-      }
-   }
+        }
+    }
 
-   protected function prepareForBios($val) {
-      $bios = (object)$this->extra_data['bios'];
+    protected function prepareForBios($val)
+    {
+        $bios = (object)$this->extra_data['bios'];
 
-      if (property_exists($bios, 'assettag') && !empty($bios->assettag)) {
-         $val->otherserial = $bios->assettag;
-      }
+        if (property_exists($bios, 'assettag') && !empty($bios->assettag)) {
+            $val->otherserial = $bios->assettag;
+        }
 
-      if (property_exists($bios, 'smanufacturer') && !empty($bios->smanufacturer)) {
-         $val->manufacturers_id = $bios->smanufacturer;
-      } else if (property_exists($bios, 'mmanufacturer') && !empty($bios->mmanufacturer)) {
-         $val->manufacturers_id = $bios->mmanufacturer;
-         $val->mmanufacturer = $bios->mmanufacturer;
-      } else if (property_exists($bios, 'bmanufacturer') && !empty($bios->bmanufacturer)) {
-         $val->manufacturers_id = $bios->bmanufacturer;
-         $val->bmanufacturer = $bios->bmanufacturer;
-      }
+        if (property_exists($bios, 'smanufacturer') && !empty($bios->smanufacturer)) {
+            $val->manufacturers_id = $bios->smanufacturer;
+        } else if (property_exists($bios, 'mmanufacturer') && !empty($bios->mmanufacturer)) {
+            $val->manufacturers_id = $bios->mmanufacturer;
+            $val->mmanufacturer = $bios->mmanufacturer;
+        } else if (property_exists($bios, 'bmanufacturer') && !empty($bios->bmanufacturer)) {
+            $val->manufacturers_id = $bios->bmanufacturer;
+            $val->bmanufacturer = $bios->bmanufacturer;
+        }
 
-      $models_id = $this->getModelsFieldName();
-      if (property_exists($bios, 'smodel') && $bios->smodel != '') {
-         $val->$models_id = $bios->smodel;
-      } else if (property_exists($bios, 'mmodel') && $bios->mmodel != '') {
-         $val->$models_id = $bios->mmodel;
-         $val->model = $bios->mmodel;
-      }
+        $models_id = $this->getModelsFieldName();
+        if (property_exists($bios, 'smodel') && $bios->smodel != '') {
+            $val->$models_id = $bios->smodel;
+        } else if (property_exists($bios, 'mmodel') && $bios->mmodel != '') {
+            $val->$models_id = $bios->mmodel;
+            $val->model = $bios->mmodel;
+        }
 
-      if (property_exists($bios, 'ssn')) {
-         $val->serial = trim($bios->ssn);
-         // HP patch for serial begin with 'S'
-         if (property_exists($val, 'manufacturers_id')
-            && strstr($val->manufacturers_id, "ewlett")
-            && preg_match("/^[sS]/", $val->serial)) {
-            $val->serial = trim(
-               preg_replace(
-                  "/^[sS]/",
-                  "",
-                  $val->serial
-               )
-            );
-         }
-      }
+        if (property_exists($bios, 'ssn')) {
+            $val->serial = trim($bios->ssn);
+           // HP patch for serial begin with 'S'
+            if (
+                property_exists($val, 'manufacturers_id')
+                && strstr($val->manufacturers_id, "ewlett")
+                && preg_match("/^[sS]/", $val->serial)
+            ) {
+                $val->serial = trim(
+                    preg_replace(
+                        "/^[sS]/",
+                        "",
+                        $val->serial
+                    )
+                );
+            }
+        }
 
-      if (property_exists($bios, 'msn')) {
-          $val->mserial = $bios->msn;
-      }
-   }
+        if (property_exists($bios, 'msn')) {
+            $val->mserial = $bios->msn;
+        }
+    }
 
    /**
     * Prepare input rules input, for both Entities rules and Import ones
@@ -357,85 +376,89 @@ abstract class MainAsset extends InventoryAsset
     *
     * @return array
     */
-   public function prepareAllRulesInput(\stdClass $val): array {
-      $input = [];
+    public function prepareAllRulesInput(\stdClass $val): array
+    {
+        $input = [];
 
-      if (isset($this->getAgent()->fields['tag'])) {
-         $input['tag'] = $this->getAgent()->fields['tag'];
-      }
+        if (isset($this->getAgent()->fields['tag'])) {
+            $input['tag'] = $this->getAgent()->fields['tag'];
+        }
 
-      $models_id = $this->getModelsFieldName();
-      foreach ($val as $prop => $value) {
-         switch ($prop) {
-            case $models_id:
-               $prop = 'model';
-               break;
-            case 'domains_id':
-               $prop = 'domain';
-               break;
-            case 'ips':
-               $prop = 'ip';
-               break;
-         }
-         if (!empty($value)) {
-            $input[$prop] = $value;
-         }
-      }
-
-      if (!isset($input['name'])) {
-         $input['name'] = '';
-      }
-
-      if (isset($this->extra_data['\Glpi\Inventory\Asset\NetworkCard'])) {
-         foreach ($this->extra_data['\Glpi\Inventory\Asset\NetworkCard'] as $networkcard) {
-            $netports = $networkcard->getNetworkPorts();
-            $this->ports += $netports;
-            foreach ($netports as $network) {
-               if (property_exists($network, 'virtualdev')
-                  && $network->virtualdev != 1
-                  || !property_exists($network, 'virtualdev')
-               ) {
-                  if (property_exists($network, 'mac') && !empty($network->mac)) {
-                     $input['mac'][] = $network->mac;
-                  }
-                  foreach ($network->ipaddress as $ip) {
-                     if ($ip != '127.0.0.1' && $ip != '::1') {
-                        $input['ip'][] = $ip;
-                     }
-                  }
-                  if (property_exists($network, 'subnet') && !empty($network->subnet)) {
-                     $input['subnet'][] = $network->subnet;
-                  }
-               }
+        $models_id = $this->getModelsFieldName();
+        foreach ($val as $prop => $value) {
+            switch ($prop) {
+                case $models_id:
+                    $prop = 'model';
+                    break;
+                case 'domains_id':
+                    $prop = 'domain';
+                    break;
+                case 'ips':
+                    $prop = 'ip';
+                    break;
             }
-
-            // Case of virtualmachines
-            if (!isset($input['mac'])
-                     && !isset($input['ip'])) {
-               foreach ($netports as $network) {
-                  if (property_exists($network, 'mac') && !empty($network->mac)) {
-                     $input['mac'][] = $network->mac;
-                  }
-                  foreach ($network->ipaddress as $ip) {
-                     if ($ip != '127.0.0.1' && $ip != '::1') {
-                        $input['ip'][] = $ip;
-                     }
-                  }
-                  if (property_exists($network, 'subnet') && !empty($network->subnet)) {
-                     $input['subnet'][] = $network->subnet;
-                  }
-               }
+            if (!empty($value)) {
+                $input[$prop] = $value;
             }
-         }
-      }
+        }
 
-      $input['itemtype'] = $this->item->getType();
+        if (!isset($input['name'])) {
+            $input['name'] = '';
+        }
 
-      // * entity rules
-      $input['entities_id'] = $this->entities_id;
+        if (isset($this->extra_data['\Glpi\Inventory\Asset\NetworkCard'])) {
+            foreach ($this->extra_data['\Glpi\Inventory\Asset\NetworkCard'] as $networkcard) {
+                $netports = $networkcard->getNetworkPorts();
+                $this->ports += $netports;
+                foreach ($netports as $network) {
+                    if (
+                        property_exists($network, 'virtualdev')
+                        && $network->virtualdev != 1
+                        || !property_exists($network, 'virtualdev')
+                    ) {
+                        if (property_exists($network, 'mac') && !empty($network->mac)) {
+                            $input['mac'][] = $network->mac;
+                        }
+                        foreach ($network->ipaddress as $ip) {
+                            if ($ip != '127.0.0.1' && $ip != '::1') {
+                                $input['ip'][] = $ip;
+                            }
+                        }
+                        if (property_exists($network, 'subnet') && !empty($network->subnet)) {
+                                $input['subnet'][] = $network->subnet;
+                        }
+                    }
+                }
 
-      return $input;
-   }
+               // Case of virtualmachines
+                if (
+                    !isset($input['mac'])
+                     && !isset($input['ip'])
+                ) {
+                    foreach ($netports as $network) {
+                        if (property_exists($network, 'mac') && !empty($network->mac)) {
+                             $input['mac'][] = $network->mac;
+                        }
+                        foreach ($network->ipaddress as $ip) {
+                            if ($ip != '127.0.0.1' && $ip != '::1') {
+                                $input['ip'][] = $ip;
+                            }
+                        }
+                        if (property_exists($network, 'subnet') && !empty($network->subnet)) {
+                            $input['subnet'][] = $network->subnet;
+                        }
+                    }
+                }
+            }
+        }
+
+        $input['itemtype'] = $this->item->getType();
+
+       // * entity rules
+        $input['entities_id'] = $this->entities_id;
+
+        return $input;
+    }
 
    /**
     * Prepare input for Entities rules
@@ -445,67 +468,70 @@ abstract class MainAsset extends InventoryAsset
     *
     * @return array
     */
-   public function prepareEntitiesRulesInput(\stdClass $val, array $input): array {
-      if (property_exists($val, 'domains_id') && (!empty($val->domains_id))) {
-         $input['domain'] = $val->domains_id;
-      }
+    public function prepareEntitiesRulesInput(\stdClass $val, array $input): array
+    {
+        if (property_exists($val, 'domains_id') && (!empty($val->domains_id))) {
+            $input['domain'] = $val->domains_id;
+        }
 
-      if (isset($input['serial'])) {
-         $input['serialnumber'] = $input['serial'];
-      }
+        if (isset($input['serial'])) {
+            $input['serialnumber'] = $input['serial'];
+        }
 
-      return $input;
-   }
+        return $input;
+    }
 
-   public function handle() {
-      foreach ($this->data as $key => $data) {
-         $this->current_key = $key;
-         $input = $this->prepareAllRulesInput($data);
+    public function handle()
+    {
+        foreach ($this->data as $key => $data) {
+            $this->current_key = $key;
+            $input = $this->prepareAllRulesInput($data);
 
-         if (!$this->isAccessPoint($data)) {
-            $entity_input = $this->prepareEntitiesRulesInput($data, $input);
+            if (!$this->isAccessPoint($data)) {
+                $entity_input = $this->prepareEntitiesRulesInput($data, $input);
 
-            $ruleEntity = new RuleImportEntityCollection();
-            $ruleEntity->getCollectionPart();
-            $dataEntity = $ruleEntity->processAllRules($entity_input, []);
+                $ruleEntity = new RuleImportEntityCollection();
+                $ruleEntity->getCollectionPart();
+                $dataEntity = $ruleEntity->processAllRules($entity_input, []);
 
-            if (isset($dataEntity['_ignore_import'])) {
-               $input['rules_id'] = $dataEntity['rules_id'];
-               $this->addRefused($input);
-               return;
+                if (isset($dataEntity['_ignore_import'])) {
+                    $input['rules_id'] = $dataEntity['rules_id'];
+                    $this->addRefused($input);
+                    return;
+                }
+
+                if (!isset($dataEntity['entities_id']) || $dataEntity['entities_id'] == -1) {
+                    $input['entities_id'] = 0;
+                } else {
+                    $input['entities_id'] = $dataEntity['entities_id'];
+                }
+                $this->entities_id = $input['entities_id'];
             }
 
-            if (!isset($dataEntity['entities_id']) || $dataEntity['entities_id'] == -1) {
-               $input['entities_id'] = 0;
-            } else {
-               $input['entities_id'] = $dataEntity['entities_id'];
+           //call rules on current collected data to find item
+           //a callback on rulepassed() will be done if one is found.
+            $rule = new RuleImportAssetCollection();
+            $rule->getCollectionPart();
+            $datarules = $rule->processAllRules($input, [], ['class' => $this]);
+
+            if (isset($datarules['_no_rule_matches']) and ($datarules['_no_rule_matches'] == '1')) {
+               //no rule matched, this is a new one
+                $this->rulepassed(0, $this->item->getType(), null);
+            } else if (!isset($datarules['found_inventories'])) {
+                if ($this->isAccessPoint($data)) {
+                   //Only main item is stored as refused, not all APs
+                    unset($this->data[$key]);
+                } else {
+                    $input['rules_id'] = $datarules['rules_id'];
+                    $this->addRefused($input);
+                }
             }
-            $this->entities_id = $input['entities_id'];
-         }
+        }
+    }
 
-         //call rules on current collected data to find item
-         //a callback on rulepassed() will be done if one is found.
-         $rule = new RuleImportAssetCollection();
-         $rule->getCollectionPart();
-         $datarules = $rule->processAllRules($input, [], ['class' => $this]);
-
-         if (isset($datarules['_no_rule_matches']) AND ($datarules['_no_rule_matches'] == '1')) {
-            //no rule matched, this is a new one
-            $this->rulepassed(0, $this->item->getType(), null);
-         } else if (!isset($datarules['found_inventories'])) {
-            if ($this->isAccessPoint($data)) {
-               //Only main item is stored as refused, not all APs
-               unset($this->data[$key]);
-            } else {
-               $input['rules_id'] = $datarules['rules_id'];
-               $this->addRefused($input);
-            }
-         }
-      }
-   }
-
-   protected function addRefused(array $input) {
-      $refused_input = [
+    protected function addRefused(array $input)
+    {
+        $refused_input = [
         'name'         => $input['name'],
         'itemtype'     => $input['itemtype'],
         'serial'       => $input['serial'] ?? '',
@@ -515,33 +541,34 @@ abstract class MainAsset extends InventoryAsset
         'rules_id'     => $input['rules_id'],
         'entities_id'  => $input['entities_id'],
         'autoupdatesystems_id' => $input['autoupdatesystems_id']
-      ];
+        ];
 
-      foreach (['ip', 'mac'] as $array) {
-         if (is_array($refused_input[$array])) {
-            $refused_input[$array] = exportArrayToDB($refused_input[$array]);
-         }
-      }
+        foreach (['ip', 'mac'] as $array) {
+            if (is_array($refused_input[$array])) {
+                $refused_input[$array] = exportArrayToDB($refused_input[$array]);
+            }
+        }
 
-      if (!is_numeric($input['autoupdatesystems_id'])) {
-         $input['autoupdatesystems_id'] = Dropdown::importExternal(
-            getItemtypeForForeignKeyField('autoupdatesystems_id'),
-            addslashes($input['autoupdatesystems_id']),
-            $input['entities_id']
-         );
-      }
-      $refused_input['autoupdatesystems_id'] = $input['autoupdatesystems_id'];
+        if (!is_numeric($input['autoupdatesystems_id'])) {
+            $input['autoupdatesystems_id'] = Dropdown::importExternal(
+                getItemtypeForForeignKeyField('autoupdatesystems_id'),
+                addslashes($input['autoupdatesystems_id']),
+                $input['entities_id']
+            );
+        }
+        $refused_input['autoupdatesystems_id'] = $input['autoupdatesystems_id'];
 
-      $refused = new \RefusedEquipment();
-      $refused->add(Toolbox::addslashes_deep($refused_input));
-      $this->refused[] = $refused;
-   }
+        $refused = new \RefusedEquipment();
+        $refused->add(Toolbox::addslashes_deep($refused_input));
+        $this->refused[] = $refused;
+    }
 
-   public function checkConf(Conf $conf): bool {
-      $this->conf = $conf;
-      $this->states_id_default = $conf->states_id_default;
-      return true;
-   }
+    public function checkConf(Conf $conf): bool
+    {
+        $this->conf = $conf;
+        $this->states_id_default = $conf->states_id_default;
+        return true;
+    }
 
    /**
     * After rule engine passed, update task (log) and create item if required
@@ -551,187 +578,191 @@ abstract class MainAsset extends InventoryAsset
     * @param integer $rules_id Matched rule id, if any
     * @param integer $ports_id Matched port id, if any
     */
-   public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = 0) {
-      global $CFG_GLPI;
+    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = 0)
+    {
+        global $CFG_GLPI;
 
-      $key = $this->current_key;
-      $val = &$this->data[$key];
-      $entities_id = $this->entities_id;
-      $val->is_dynamic = 1;
-      $val->entities_id = $entities_id;
+        $key = $this->current_key;
+        $val = &$this->data[$key];
+        $entities_id = $this->entities_id;
+        $val->is_dynamic = 1;
+        $val->entities_id = $entities_id;
 
-      $val->states_id = $this->states_id_default ?? $this->item->fields['states_id'] ?? 0;
-      $val->locations_id = $this->locations_id ?? $val->locations_id ?? $this->item->fields['locations_id'] ?? 0;
+        $val->states_id = $this->states_id_default ?? $this->item->fields['states_id'] ?? 0;
+        $val->locations_id = $this->locations_id ?? $val->locations_id ?? $this->item->fields['locations_id'] ?? 0;
 
-      $orig_glpiactive_entity = $_SESSION['glpiactive_entity'] ?? null;
-      $orig_glpiactiveentities = $_SESSION['glpiactiveentities'] ?? null;
-      $orig_glpiactiveentities_string = $_SESSION['glpiactiveentities_string'] ?? null;
+        $orig_glpiactive_entity = $_SESSION['glpiactive_entity'] ?? null;
+        $orig_glpiactiveentities = $_SESSION['glpiactiveentities'] ?? null;
+        $orig_glpiactiveentities_string = $_SESSION['glpiactiveentities_string'] ?? null;
 
-      //set entity in session
-      $_SESSION['glpiactiveentities']        = [$entities_id];
-      $_SESSION['glpiactiveentities_string'] = $entities_id;
-      $_SESSION['glpiactive_entity']         = $entities_id;
+       //set entity in session
+        $_SESSION['glpiactiveentities']        = [$entities_id];
+        $_SESSION['glpiactiveentities_string'] = $entities_id;
+        $_SESSION['glpiactive_entity']         = $entities_id;
 
-      //handleLinks relies on $this->data; update it before the call
-      $this->handleLinks();
+       //handleLinks relies on $this->data; update it before the call
+        $this->handleLinks();
 
-      if ($items_id == 0) {
-         $input = (array)$val;
-         unset($input['ap_port']);
-         unset($input['firmware']);
-         $items_id = $this->item->add(Toolbox::addslashes_deep($input));
-         $this->agent->update(['id' => $this->agent->fields['id'], 'items_id' => $items_id, 'entities_id' => $entities_id]);
-
-         $this->with_history = false;//do not handle history on main item first import
-      } else {
-         $this->item->getFromDB($items_id);
-         if (($this->agent->fields['items_id'] ?? 0) != $items_id) {
+        if ($items_id == 0) {
+            $input = (array)$val;
+            unset($input['ap_port']);
+            unset($input['firmware']);
+            $items_id = $this->item->add(Toolbox::addslashes_deep($input));
             $this->agent->update(['id' => $this->agent->fields['id'], 'items_id' => $items_id, 'entities_id' => $entities_id]);
-         }
-      }
 
-      $val->id = $this->item->fields['id'];
-
-      if ($entities_id == -1) {
-         $entities_id = $this->item->fields['entities_id'];
-      }
-      $val->entities_id = $entities_id;
-
-      if ($entities_id != $this->item->fields['entities_id']) {
-         //asset entity has changed in rules; do transfer
-         $doTransfer = \Entity::getUsedConfig('transfers_id', $this->item->fields['entities_id']);
-         if ($doTransfer) {
-            $transfer = new Transfer();
-            $transfer->getFromDB($doTransfer);
-            $item_to_transfer = [$this->itemtype => [$items_id => $items_id]];
-            $transfer->moveItems($item_to_transfer, $entities_id, $transfer->fields);
-         }
-
-         //and set new entity in session
-         $_SESSION['glpiactiveentities']        = [$entities_id];
-         $_SESSION['glpiactiveentities_string'] = $entities_id;
-         $_SESSION['glpiactive_entity']         = $entities_id;
-      }
-
-      //Ports are handled a different way on network equipments
-      if ($this->item->getType() != 'NetworkEquipment') {
-          $this->handlePorts();
-      }
-
-      if (method_exists($this, 'isWirelessController') && $this->isWirelessController()) {
-         if (property_exists($val, 'firmware') && $val->firmware instanceof \stdClass) {
-            $fw = new Firmware($this->item, [$val->firmware]);
-            if ($fw->checkConf($this->conf)) {
-               $fw->setAgent($this->getAgent());
-               $fw->setEntityID($this->getEntityID());
-               $fw->prepare();
-               $fw->handleLinks();
-               $this->assets['Glpi\Inventory\Asset\Firmware'] = [$fw];
-               unset($val->firmware);
+            $this->with_history = false;//do not handle history on main item first import
+        } else {
+            $this->item->getFromDB($items_id);
+            if (($this->agent->fields['items_id'] ?? 0) != $items_id) {
+                $this->agent->update(['id' => $this->agent->fields['id'], 'items_id' => $items_id, 'entities_id' => $entities_id]);
             }
-         }
+        }
 
-         if (property_exists($val, 'ap_port')) {
-            $this->setManagementPorts(['management' => $val->ap_port]);
-            unset($val->ap_port);
-         }
-      }
+        $val->id = $this->item->fields['id'];
 
-      $input = (array)$val;
-      $this->item->update(Toolbox::addslashes_deep($input), $this->withHistory());
+        if ($entities_id == -1) {
+            $entities_id = $this->item->fields['entities_id'];
+        }
+        $val->entities_id = $entities_id;
 
-      if (!($this->item instanceof RefusedEquipment)) {
-         $this->handleAssets();
-      }
+        if ($entities_id != $this->item->fields['entities_id']) {
+           //asset entity has changed in rules; do transfer
+            $doTransfer = \Entity::getUsedConfig('transfers_id', $this->item->fields['entities_id']);
+            if ($doTransfer) {
+                $transfer = new Transfer();
+                $transfer->getFromDB($doTransfer);
+                $item_to_transfer = [$this->itemtype => [$items_id => $items_id]];
+                $transfer->moveItems($item_to_transfer, $entities_id, $transfer->fields);
+            }
 
-      $rulesmatched = new RuleMatchedLog();
-      $inputrulelog = [
+           //and set new entity in session
+            $_SESSION['glpiactiveentities']        = [$entities_id];
+            $_SESSION['glpiactiveentities_string'] = $entities_id;
+            $_SESSION['glpiactive_entity']         = $entities_id;
+        }
+
+       //Ports are handled a different way on network equipments
+        if ($this->item->getType() != 'NetworkEquipment') {
+            $this->handlePorts();
+        }
+
+        if (method_exists($this, 'isWirelessController') && $this->isWirelessController()) {
+            if (property_exists($val, 'firmware') && $val->firmware instanceof \stdClass) {
+                $fw = new Firmware($this->item, [$val->firmware]);
+                if ($fw->checkConf($this->conf)) {
+                    $fw->setAgent($this->getAgent());
+                    $fw->setEntityID($this->getEntityID());
+                    $fw->prepare();
+                    $fw->handleLinks();
+                    $this->assets['Glpi\Inventory\Asset\Firmware'] = [$fw];
+                    unset($val->firmware);
+                }
+            }
+
+            if (property_exists($val, 'ap_port')) {
+                $this->setManagementPorts(['management' => $val->ap_port]);
+                unset($val->ap_port);
+            }
+        }
+
+        $input = (array)$val;
+        $this->item->update(Toolbox::addslashes_deep($input), $this->withHistory());
+
+        if (!($this->item instanceof RefusedEquipment)) {
+            $this->handleAssets();
+        }
+
+        $rulesmatched = new RuleMatchedLog();
+        $inputrulelog = [
          'date'      => date('Y-m-d H:i:s'),
          'rules_id'  => $rules_id,
          'items_id'  => $items_id,
          'itemtype'  => $itemtype,
          'agents_id' => $this->agent->fields['id'],
          'method'    => $this->request_query ?? Request::INVENT_QUERY
-      ];
-      $rulesmatched->add($inputrulelog, [], false);
-      $rulesmatched->cleanOlddata($items_id, $itemtype);
+        ];
+        $rulesmatched->add($inputrulelog, [], false);
+        $rulesmatched->cleanOlddata($items_id, $itemtype);
 
-      //keep trace of inventoried assets, but not APs.
-      if (!$this->isAccessPoint($val)) {
-         $this->inventoried[] = clone $this->item;
-      }
+       //keep trace of inventoried assets, but not APs.
+        if (!$this->isAccessPoint($val)) {
+            $this->inventoried[] = clone $this->item;
+        }
 
-      //Restore entities in session
-      if ($orig_glpiactive_entity !== null) {
-         $_SESSION['glpiactive_entity'] = $orig_glpiactive_entity;
-      }
+       //Restore entities in session
+        if ($orig_glpiactive_entity !== null) {
+            $_SESSION['glpiactive_entity'] = $orig_glpiactive_entity;
+        }
 
-      if ($orig_glpiactiveentities !== null) {
-         $_SESSION['glpiactiveentities'] = $orig_glpiactiveentities;
-      }
+        if ($orig_glpiactiveentities !== null) {
+            $_SESSION['glpiactiveentities'] = $orig_glpiactiveentities;
+        }
 
-      if ($orig_glpiactiveentities_string !== null) {
-         $_SESSION['glpiactiveentities_string'] = $orig_glpiactiveentities_string;
-      }
-   }
+        if ($orig_glpiactiveentities_string !== null) {
+            $_SESSION['glpiactiveentities_string'] = $orig_glpiactiveentities_string;
+        }
+    }
 
    /**
     * Get modified hardware
     *
     * @return \stdClass
     */
-   public function getHardware() {
-      return $this->hardware;
-   }
+    public function getHardware()
+    {
+        return $this->hardware;
+    }
 
    /**
     * Retrieve computer entities id
     *
     * @return integer
     */
-   public function getEntityID() {
-      return $this->entities_id;
-   }
+    public function getEntityID()
+    {
+        return $this->entities_id;
+    }
 
-   public function handleAssets() {
-      $key = $this->current_key;
-      $val = $this->data[$key];
+    public function handleAssets()
+    {
+        $key = $this->current_key;
+        $val = $this->data[$key];
 
-      $mainasset = clone $this;
-      $mainasset->setData([$key => $val]);
+        $mainasset = clone $this;
+        $mainasset->setData([$key => $val]);
 
-      $assets_list = $this->assets;
+        $assets_list = $this->assets;
 
-      $controllers = [];
-      $ignored_controllers = [];
+        $controllers = [];
+        $ignored_controllers = [];
 
-      //ensure controllers are done last, some components will
-      //ask to ignore their associated controller
-      if (isset($assets_list['\Glpi\Inventory\Asset\Controller'])) {
-         $controllers = $assets_list['\Glpi\Inventory\Asset\Controller'];
-         unset($assets_list['\Glpi\Inventory\Asset\Controller']);
-      }
+       //ensure controllers are done last, some components will
+       //ask to ignore their associated controller
+        if (isset($assets_list['\Glpi\Inventory\Asset\Controller'])) {
+            $controllers = $assets_list['\Glpi\Inventory\Asset\Controller'];
+            unset($assets_list['\Glpi\Inventory\Asset\Controller']);
+        }
 
-      foreach ($assets_list as $assets) {
-         foreach ($assets as $asset) {
+        foreach ($assets_list as $assets) {
+            foreach ($assets as $asset) {
+                $asset->setExtraData($this->assets);
+                $asset->setExtraData(['\\' . get_class($this) => $mainasset]);
+                $asset->handleLinks();
+                $asset->handle();
+                $ignored_controllers = array_merge($ignored_controllers, $asset->getIgnored('controllers'));
+            }
+        }
+
+       //do controllers
+        foreach ($controllers as $asset) {
             $asset->setExtraData($this->assets);
             $asset->setExtraData(['\\' . get_class($this) => $mainasset]);
+           //do not handle ignored controllers
+            $asset->setExtraData(['ignored' => $ignored_controllers]);
             $asset->handleLinks();
             $asset->handle();
-            $ignored_controllers = array_merge($ignored_controllers, $asset->getIgnored('controllers'));
-         }
-      }
-
-      //do controllers
-      foreach ($controllers as $asset) {
-         $asset->setExtraData($this->assets);
-         $asset->setExtraData(['\\' . get_class($this) => $mainasset]);
-         //do not handle ignored controllers
-         $asset->setExtraData(['ignored' => $ignored_controllers]);
-         $asset->handleLinks();
-         $asset->handle();
-      }
-   }
+        }
+    }
 
    /**
     * Set prepared assets
@@ -740,57 +771,63 @@ abstract class MainAsset extends InventoryAsset
     *
     * @return MainAsset
     */
-   public function setAssets(array $assets): MainAsset {
-      $this->assets = $assets;
-      $this->setExtraData($assets);
-      return $this;
-   }
+    public function setAssets(array $assets): MainAsset
+    {
+        $this->assets = $assets;
+        $this->setExtraData($assets);
+        return $this;
+    }
 
    /**
     * Get current item
     *
     * @return CommonDBTM
     */
-   public function getItem(): CommonDBTM {
-      return $this->item;
-   }
+    public function getItem(): CommonDBTM
+    {
+        return $this->item;
+    }
 
    /**
     * Get inventoried assets
     *
     * @return CommonDBTM[]
     */
-   public function getInventoried(): array {
-       return $this->inventoried;
-   }
+    public function getInventoried(): array
+    {
+        return $this->inventoried;
+    }
 
    /**
     * Get refused entries
     *
     * @return RefusedEquipment[]
     */
-   public function getRefused(): array {
-      return $this->refused;
-   }
+    public function getRefused(): array
+    {
+        return $this->refused;
+    }
 
    /**
     * Set partial inventory
     *
     * @return Inventory
     */
-   protected function setPartial(): self {
-      $this->partial = true;
-      return $this;
-   }
+    protected function setPartial(): self
+    {
+        $this->partial = true;
+        return $this;
+    }
 
    /**
     * Is inventory partial
     *
     * @return boolean
     */
-   public function isPartial(): bool {
-      return $this->partial;
-   }
+    public function isPartial(): bool
+    {
+        return $this->partial;
+    }
 
 
    /**
@@ -798,7 +835,8 @@ abstract class MainAsset extends InventoryAsset
     *
     * @return boolean
     */
-   protected function isAccessPoint($object): bool {
-      return property_exists($object, 'is_ap') && $object->is_ap == true;
-   }
+    protected function isAccessPoint($object): bool
+    {
+        return property_exists($object, 'is_ap') && $object->is_ap == true;
+    }
 }

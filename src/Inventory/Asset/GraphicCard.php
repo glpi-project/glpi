@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,39 +38,42 @@ use Glpi\Inventory\Conf;
 
 class GraphicCard extends Device
 {
-   protected $ignored = ['controllers' => null];
+    protected $ignored = ['controllers' => null];
 
-   public function __construct(CommonDBTM $item, array $data = null) {
-      parent::__construct($item, $data, 'Item_DeviceGraphicCard');
-   }
+    public function __construct(CommonDBTM $item, array $data = null)
+    {
+        parent::__construct($item, $data, 'Item_DeviceGraphicCard');
+    }
 
-   public function prepare() :array {
-      $mapping = [
+    public function prepare(): array
+    {
+        $mapping = [
          'name'   => 'designation'
-      ];
+        ];
 
-      foreach ($this->data as $k => &$val) {
-         if (property_exists($val, 'name')) {
-            foreach ($mapping as $origin => $dest) {
-               if (property_exists($val, $origin)) {
-                  $val->$dest = $val->$origin;
-               }
+        foreach ($this->data as $k => &$val) {
+            if (property_exists($val, 'name')) {
+                foreach ($mapping as $origin => $dest) {
+                    if (property_exists($val, $origin)) {
+                        $val->$dest = $val->$origin;
+                    }
+                }
+
+                $this->ignored['controllers'][$val->name] = $val->name;
+                if (isset($val->chipset)) {
+                    $this->ignored['controllers'][$val->chipset] = $val->chipset;
+                }
+
+                $val->is_dynamic = 1;
+            } else {
+                unset($this->data[$k]);
             }
+        }
+        return $this->data;
+    }
 
-            $this->ignored['controllers'][$val->name] = $val->name;
-            if (isset($val->chipset)) {
-               $this->ignored['controllers'][$val->chipset] = $val->chipset;
-            }
-
-            $val->is_dynamic = 1;
-         } else {
-            unset($this->data[$k]);
-         }
-      }
-      return $this->data;
-   }
-
-   public function checkConf(Conf $conf): bool {
-      return $conf->component_graphiccard == 1;
-   }
+    public function checkConf(Conf $conf): bool
+    {
+        return $conf->component_graphiccard == 1;
+    }
 }

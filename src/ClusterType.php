@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,9 +31,11 @@
  * ---------------------------------------------------------------------
  */
 
-class ClusterType extends CommonType {
+class ClusterType extends CommonType
+{
 
-   static function getTypeName($nb = 0) {
-      return _n('Cluster type', 'Cluster types', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Cluster type', 'Cluster types', $nb);
+    }
 }

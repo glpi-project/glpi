@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -45,7 +46,7 @@ class TemplateDocumentation
     *
     * @var array
     */
-   protected $summary;
+    protected $summary;
 
    /**
     * Sections of the documentations.
@@ -54,49 +55,51 @@ class TemplateDocumentation
     *
     * @var array
     */
-   protected $sections;
+    protected $sections;
 
    /**
     * Context of the displayed variables
     *
     * @var string
     */
-   protected $context;
+    protected $context;
 
-   public function __construct(string $context) {
-      $this->context = $context;
-      $this->sections = [];
-      $this->summary = [];
-   }
+    public function __construct(string $context)
+    {
+        $this->context = $context;
+        $this->sections = [];
+        $this->summary = [];
+    }
 
    /**
     * Build the documentation as markdown
     *
     * @return string
     */
-   public function build(): string {
-      $content = "";
+    public function build(): string
+    {
+        $content = "";
 
-      // Build header
-      $header = new MarkdownBuilder();
-      $header->addH1(sprintf(__("Available variables (%s)"), $this->context));
-      $content .= $header->getMarkdown();
+       // Build header
+        $header = new MarkdownBuilder();
+        $header->addH1(sprintf(__("Available variables (%s)"), $this->context));
+        $content .= $header->getMarkdown();
 
-      // Build summary
-      $summary = new MarkdownBuilder();
-      $summary->addH2(_x("Documentation", "Summary"), "summary");
-      foreach ($this->summary as $section_title) {
-         $summary->addSummaryEntry($section_title);
-      }
-      $content .= $summary->getMarkdown();
+       // Build summary
+        $summary = new MarkdownBuilder();
+        $summary->addH2(_x("Documentation", "Summary"), "summary");
+        foreach ($this->summary as $section_title) {
+            $summary->addSummaryEntry($section_title);
+        }
+        $content .= $summary->getMarkdown();
 
-      // Build main content
-      foreach ($this->sections as $section) {
-         $content .= $section->getMarkdown();
-      }
+       // Build main content
+        foreach ($this->sections as $section) {
+            $content .= $section->getMarkdown();
+        }
 
-      return $content;
-   }
+        return $content;
+    }
 
    /**
     * Add a section to the documentation.
@@ -105,61 +108,61 @@ class TemplateDocumentation
     * @param array $parameters          Parameters to be displayed in this section
     * @param string|null $fields_prefix Prefix to happen to the parameters fields name
     */
-   public function addSection(
-      string $title,
-      array $parameters,
-      ?string $fields_prefix = null
-   ) {
-      // Check if this section is already defined, needed as some parameters
-      // might have the same references
-      if (isset($this->sections[$title])) {
-         return;
-      }
+    public function addSection(
+        string $title,
+        array $parameters,
+        ?string $fields_prefix = null
+    ) {
+       // Check if this section is already defined, needed as some parameters
+       // might have the same references
+        if (isset($this->sections[$title])) {
+            return;
+        }
 
-      // Keep track of this section in the summary
-      $this->summary[] = $title;
+       // Keep track of this section in the summary
+        $this->summary[] = $title;
 
-      $new_section = new MarkdownBuilder();
-      $new_section->addH2($title);
+        $new_section = new MarkdownBuilder();
+        $new_section->addH2($title);
 
-      // Set table header
-      $new_section->addTableHeader([
+       // Set table header
+        $new_section->addTableHeader([
          __("Variable"),
          __("Label"),
          __("Usage"),
          __("References"),
-      ]);
+        ]);
 
-      // Keep track of parameters needing aditionnal references
-      $references = [];
+       // Keep track of parameters needing aditionnal references
+        $references = [];
 
-      // Add a row for each parameters
-      foreach ($parameters as $parameter) {
-         /** @var \Glpi\ContentTemplates\Parameters\ParametersTypes\ParameterTypeInterface $parameter */
-         $row = [
+       // Add a row for each parameters
+        foreach ($parameters as $parameter) {
+           /** @var \Glpi\ContentTemplates\Parameters\ParametersTypes\ParameterTypeInterface $parameter */
+            $row = [
             $parameter->getDocumentationField(),
             $parameter->getDocumentationLabel(),
             MarkdownBuilder::code($parameter->getDocumentationUsage($fields_prefix)),
-         ];
+            ];
 
-         $ref = $parameter->getDocumentationReferences();
-         if (!is_null($ref)) {
-            $row[] = MarkdownBuilder::navigationLink($ref->getObjectLabel());
-            $references[] = $ref;
-         }
+            $ref = $parameter->getDocumentationReferences();
+            if (!is_null($ref)) {
+                $row[] = MarkdownBuilder::navigationLink($ref->getObjectLabel());
+                $references[] = $ref;
+            }
 
-         $new_section->addTableRow($row);
-      }
+            $new_section->addTableRow($row);
+        }
 
-      $this->sections[$title] = $new_section;
+        $this->sections[$title] = $new_section;
 
-      // Add sections for each references
-      foreach ($references as $reference) {
-         $this->addSection(
-            $reference->getObjectLabel(),
-            $reference->getAvailableParameters(),
-            $reference->getDefaultNodeName()
-         );
-      }
-   }
+       // Add sections for each references
+        foreach ($references as $reference) {
+            $this->addSection(
+                $reference->getObjectLabel(),
+                $reference->getAvailableParameters(),
+                $reference->getDefaultNodeName()
+            );
+        }
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,15 +36,17 @@ namespace Glpi\Gantt;
 /**
  * DAO class for handling project records
  */
-class ProjectDAO {
+class ProjectDAO
+{
 
-   function addProject($project) {
+    public function addProject($project)
+    {
 
-      if (!\Project::canCreate()) {
-         throw new \Exception(__('Not enough rights'));
-      }
+        if (!\Project::canCreate()) {
+            throw new \Exception(__('Not enough rights'));
+        }
 
-      $input = [
+        $input = [
          'name' => $project->text,
          'comment' => $project->comment,
          'projects_id' => $project->parent,
@@ -54,41 +57,42 @@ class ProjectDAO {
          'projectstates_id' => 1,
          'users_id' => \Session::getLoginUserID(),
          'show_on_global_gantt' => 1
-      ];
-      $proj = new \Project();
-      $proj->add($input);
-      return $proj;
-   }
+        ];
+        $proj = new \Project();
+        $proj->add($input);
+        return $proj;
+    }
 
-   function updateProject($project) {
-      $p = new \Project();
-      $p->getFromDB($project->id);
+    public function updateProject($project)
+    {
+        $p = new \Project();
+        $p->getFromDB($project->id);
 
-      if (!$p::canUpdate() || !$p->canUpdateItem()) {
-         throw new \Exception(__('Not enough rights'));
-      }
+        if (!$p::canUpdate() || !$p->canUpdateItem()) {
+            throw new \Exception(__('Not enough rights'));
+        }
 
-      $p->update([
+        $p->update([
          'id' => $project->id,
          'percent_done' => ($project->progress * 100),
          'name' => $project->text
-      ]);
-      return true;
-   }
+        ]);
+        return true;
+    }
 
-   function updateParent($project) {
-      $p = new \Project();
-      $p->getFromDB($project->id);
+    public function updateParent($project)
+    {
+        $p = new \Project();
+        $p->getFromDB($project->id);
 
-      if (!$p::canUpdate() || !$p->canUpdateItem()) {
-         throw new \Exception(__('Not enough rights'));
-      }
+        if (!$p::canUpdate() || !$p->canUpdateItem()) {
+            throw new \Exception(__('Not enough rights'));
+        }
 
-      $input = [
+        $input = [
          'id' => $project->id,
          'projects_id' => $project->parent
-      ];
-      $p->update($input);
-   }
-
+        ];
+        $p->update($input);
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,19 +32,23 @@
  */
 
 /// Class DeviceDrive
-class DeviceDrive extends CommonDevice {
+class DeviceDrive extends CommonDevice
+{
 
-   static protected $forward_entity_to = ['Item_DeviceDrive', 'Infocom'];
+    protected static $forward_entity_to = ['Item_DeviceDrive', 'Infocom'];
 
-   static function getTypeName($nb = 0) {
-      return _n('Drive', 'Drives', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Drive', 'Drives', $nb);
+    }
 
 
-   function getAdditionalFields() {
+    public function getAdditionalFields()
+    {
 
-      return array_merge(parent::getAdditionalFields(),
-                         [['name'  => 'is_writer',
+        return array_merge(
+            parent::getAdditionalFields(),
+            [['name'  => 'is_writer',
                                      'label' => __('Writing ability'),
                                      'type'  => 'bool'],
                                ['name'  => 'speed',
@@ -54,96 +59,111 @@ class DeviceDrive extends CommonDevice {
                                      'type'  => 'dropdownValue'],
                                ['name'  => 'devicedrivemodels_id',
                                      'label' => _n('Model', 'Models', 1),
-                                     'type'  => 'dropdownValue']]);
-   }
+            'type'  => 'dropdownValue']]
+        );
+    }
 
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '12',
          'table'              => $this->getTable(),
          'field'              => 'is_writer',
          'name'               => __('Writing ability'),
          'datatype'           => 'bool'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '13',
          'table'              => $this->getTable(),
          'field'              => 'speed',
          'name'               => __('Speed'),
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '14',
          'table'              => 'glpi_interfacetypes',
          'field'              => 'name',
          'name'               => __('Interface'),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '15',
          'table'              => 'glpi_devicedrivemodels',
          'field'              => 'name',
          'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      return $tab;
-   }
-
-
-   static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super = null,
-                                      HTMLTableHeader $father = null, array $options = []) {
-
-      $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
-
-      if ($column == $father) {
-         return $father;
-      }
-
-      switch ($itemtype) {
-         case 'Computer' :
-            Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-            $base->addHeader('devicedrive_writer', __('Writing ability'), $super, $father);
-            $base->addHeader('devicedrive_speed', __('Speed'), $super, $father);
-            InterfaceType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-            break;
-      }
-
-   }
+        return $tab;
+    }
 
 
-   function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
-                                    HTMLTableCell $father = null, array $options = []) {
+    public static function getHTMLTableHeader(
+        $itemtype,
+        HTMLTableBase $base,
+        HTMLTableSuperHeader $super = null,
+        HTMLTableHeader $father = null,
+        array $options = []
+    ) {
 
-      $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
+        $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
-      if ($column == $father) {
-         return $father;
-      }
+        if ($column == $father) {
+            return $father;
+        }
 
-      switch ($item->getType()) {
-         case 'Computer' :
-            Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
-            if ($this->fields["is_writer"]) {
-               $row->addCell($row->getHeaderByName('devicedrive_writer'),
-                             Dropdown::getYesNo($this->fields["is_writer"]), $father);
-            }
+        switch ($itemtype) {
+            case 'Computer':
+                Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+                $base->addHeader('devicedrive_writer', __('Writing ability'), $super, $father);
+                $base->addHeader('devicedrive_speed', __('Speed'), $super, $father);
+                InterfaceType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+                break;
+        }
+    }
 
-            if ($this->fields["speed"]) {
-               $row->addCell($row->getHeaderByName('devicedrive_speed'),
-                             $this->fields["speed"], $father);
-            }
 
-            InterfaceType::getHTMLTableCellsForItem($row, $this, null, $options);
-      }
-   }
+    public function getHTMLTableCellForItem(
+        HTMLTableRow $row = null,
+        CommonDBTM $item = null,
+        HTMLTableCell $father = null,
+        array $options = []
+    ) {
+
+        $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
+
+        if ($column == $father) {
+            return $father;
+        }
+
+        switch ($item->getType()) {
+            case 'Computer':
+                Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
+                if ($this->fields["is_writer"]) {
+                    $row->addCell(
+                        $row->getHeaderByName('devicedrive_writer'),
+                        Dropdown::getYesNo($this->fields["is_writer"]),
+                        $father
+                    );
+                }
+
+                if ($this->fields["speed"]) {
+                    $row->addCell(
+                        $row->getHeaderByName('devicedrive_speed'),
+                        $this->fields["speed"],
+                        $father
+                    );
+                }
+
+                InterfaceType::getHTMLTableCellsForItem($row, $this, null, $options);
+        }
+    }
 
 
    /**
@@ -153,15 +173,17 @@ class DeviceDrive extends CommonDevice {
     *
     * @since 0.84
    **/
-   function getImportCriteria() {
+    public function getImportCriteria()
+    {
 
-      return ['designation'       => 'equal',
+        return ['designation'       => 'equal',
                    'manufacturers_id'  => 'equal',
                    'interfacetypes_id' => 'equal'];
-   }
+    }
 
 
-   static function getIcon() {
-      return "fas fa-hdd";
-   }
+    public static function getIcon()
+    {
+        return "fas fa-hdd";
+    }
 }

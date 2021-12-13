@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,18 +32,21 @@
  */
 
 /// Class DeviceSimcard
-class DeviceSimcard extends CommonDevice {
-   static protected $forward_entity_to = ['Item_DeviceSimcard', 'Infocom'];
+class DeviceSimcard extends CommonDevice
+{
+    protected static $forward_entity_to = ['Item_DeviceSimcard', 'Infocom'];
 
-   static function getTypeName($nb = 0) {
-      return _n('Simcard', 'Simcards', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Simcard', 'Simcards', $nb);
+    }
 
-   function getAdditionalFields() {
+    public function getAdditionalFields()
+    {
 
-      return array_merge(
-         parent::getAdditionalFields(),
-         [
+        return array_merge(
+            parent::getAdditionalFields(),
+            [
             [
                'name'  => 'devicesimcardtypes_id',
                'label' => _n('Type', 'Types', 1),
@@ -59,39 +63,40 @@ class DeviceSimcard extends CommonDevice {
                   'label' => __('Allow VOIP'),
                   'type'  => 'bool'
             ],
-         ]
-      );
-   }
+            ]
+        );
+    }
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
+        $tab[] = [
             'id'                 => '12',
             'table'              => $this->getTable(),
             'field'              => 'voltage',
             'name'               => __('Voltage'),
             'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
             'id'                 => '13',
             'table'              => 'glpi_devicesimcardtypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
             'id'                 => '14',
             'table'              => $this->getTable(),
             'field'              => 'allow_voip',
             'name'               => __('Allow VOIP'),
             'datatype'           => 'bool'
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
    /**
     * Criteria used for import function
@@ -100,17 +105,19 @@ class DeviceSimcard extends CommonDevice {
     *
     * @since 9.2
     **/
-   function getImportCriteria() {
+    public function getImportCriteria()
+    {
 
-      return [
+        return [
             'designation'             => 'equal',
             'manufacturers_id'        => 'equal',
             'devicesensortypes_id'    => 'equal',
-      ];
-   }
+        ];
+    }
 
 
-   static function getIcon() {
-      return "fas fa-sim-card";
-   }
+    public static function getIcon()
+    {
+        return "fas fa-sim-card";
+    }
 }

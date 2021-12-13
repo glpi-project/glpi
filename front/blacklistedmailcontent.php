@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,8 +35,8 @@
  * @since 0.85
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 $dropdown = new BlacklistedMailContent();
 
-include (GLPI_ROOT . "/front/dropdown.common.php");
+include(GLPI_ROOT . "/front/dropdown.common.php");

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -41,15 +42,18 @@ use Entity;
  */
 class EntityParameters extends TreeDropdownParameters
 {
-   public static function getDefaultNodeName(): string {
-      return 'entity';
-   }
+    public static function getDefaultNodeName(): string
+    {
+        return 'entity';
+    }
 
-   public static function getObjectLabel(): string {
-      return Entity::getTypeName(1);
-   }
+    public static function getObjectLabel(): string
+    {
+        return Entity::getTypeName(1);
+    }
 
-   protected function getTargetClasses(): array {
-      return [Entity::class];
-   }
+    protected function getTargetClasses(): array
+    {
+        return [Entity::class];
+    }
 }

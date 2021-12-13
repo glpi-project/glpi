@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,10 +37,12 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/powersupply.class.php */
 
-class PowerSupply extends AbstractInventoryAsset {
+class PowerSupply extends AbstractInventoryAsset
+{
 
-   protected function assetProvider() :array {
-      return [
+    protected function assetProvider(): array
+    {
+        return [
          [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -57,58 +60,61 @@ class PowerSupply extends AbstractInventoryAsset {
   </REQUEST>",
             'expected'  => '{"hotreplaceable": 1, "partnum": "High Efficiency", "plugged": 1, "status": "Present, Unknown", "designation": "High Efficiency", "is_dynamic": 1}'
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider assetProvider
     */
-   public function testPrepare($xml, $expected) {
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($xml);
-      $json = json_decode($data);
+    public function testPrepare($xml, $expected)
+    {
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\PowerSupply($computer, $json->content->powersupplies);
-      $asset->setExtraData((array)$json->content);
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected));
-   }
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\PowerSupply($computer, $json->content->powersupplies);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected));
+    }
 
-   public function testHandle() {
-      $computer = getItemByTypeName('Computer', '_test_pc01');
+    public function testHandle()
+    {
+        $computer = getItemByTypeName('Computer', '_test_pc01');
 
-      //first, check there are no power supply linked to this computer
-      $idp = new \Item_DevicePowerSupply();
-      $this->boolean($idp->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+       //first, check there are no power supply linked to this computer
+        $idp = new \Item_DevicePowerSupply();
+        $this->boolean($idp->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isFalse('A power supply is already linked to computer!');
 
-      //convert data
-      $expected = $this->assetProvider()[0];
+       //convert data
+        $expected = $this->assetProvider()[0];
 
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($expected['xml']);
-      $json = json_decode($data);
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($expected['xml']);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\PowerSupply($computer, $json->content->powersupplies);
-      $asset->setExtraData((array)$json->content);
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\PowerSupply($computer, $json->content->powersupplies);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
 
-      //handle
-      $asset->handleLinks();
-      $asset->handle();
-      $this->boolean($idp->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+       //handle
+        $asset->handleLinks();
+        $asset->handle();
+        $this->boolean($idp->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isTrue('Power supply has not been linked to computer :(');
-   }
+    }
 
-   public function testInventoryUpdate() {
-      $computer = new \Computer();
-      $device_ps = new \DevicePowerSupply();
-      $item_ps = new \Item_DevicePowerSupply();
+    public function testInventoryUpdate()
+    {
+        $computer = new \Computer();
+        $device_ps = new \DevicePowerSupply();
+        $item_ps = new \Item_DevicePowerSupply();
 
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <POWERSUPPLIES>
@@ -129,22 +135,22 @@ class PowerSupply extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      //computer inventory knows only 1 power supply
-      $inventory = $this->doInventory($xml_source, true);
+       //computer inventory knows only 1 power supply
+        $inventory = $this->doInventory($xml_source, true);
 
-      $computer = $inventory->getItem();
-      $computers_id = $computer->fields['id'];
+        $computer = $inventory->getItem();
+        $computers_id = $computer->fields['id'];
 
-      //we have 1 power supply
-      $pws = $device_ps->find();
-      $this->integer(count($pws))->isIdenticalTo(1);
+       //we have 1 power supply
+        $pws = $device_ps->find();
+        $this->integer(count($pws))->isIdenticalTo(1);
 
-      //we have 1 power supply items linked to the computer
-      $pws = $item_ps->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($pws))->isIdenticalTo(1);
+       //we have 1 power supply items linked to the computer
+        $pws = $item_ps->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($pws))->isIdenticalTo(1);
 
-      //power supply present in the inventory source is dynamic
-      $pws = $item_ps->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($pws))->isIdenticalTo(1);
-   }
+       //power supply present in the inventory source is dynamic
+        $pws = $item_ps->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($pws))->isIdenticalTo(1);
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,30 +31,27 @@
  * ---------------------------------------------------------------------
  */
 
-include ("../inc/includes.php");
+include("../inc/includes.php");
 
 if (!isset($_GET["id"])) {
-   $_GET["id"] = "";
+    $_GET["id"] = "";
 }
 $client = new APIClient();
 
 if (isset($_POST["add"])) {
-   $client->check(-1, CREATE, $_POST);
-   $client->add($_POST);
-   Html::back();
-
+    $client->check(-1, CREATE, $_POST);
+    $client->add($_POST);
+    Html::back();
 } else if (isset($_POST["update"])) {
-   $client->check($_POST["id"], UPDATE);
-   $client->update($_POST);
-   Html::back();
-
+    $client->check($_POST["id"], UPDATE);
+    $client->update($_POST);
+    Html::back();
 } else if (isset($_POST["purge"])) {
-   $client->check($_POST["id"], PURGE);
-   $client->delete($_POST);
-   Html::redirect($CFG_GLPI["root_doc"]."/front/config.form.php");
-
+    $client->check($_POST["id"], PURGE);
+    $client->delete($_POST);
+    Html::redirect($CFG_GLPI["root_doc"] . "/front/config.form.php");
 } else {
-   Html::header(APIClient::getTypeName(1), $_SERVER['PHP_SELF'], "config", "config", "apiclient");
-   $client->display(['id' => $_GET["id"]]);
-   Html::footer();
+    Html::header(APIClient::getTypeName(1), $_SERVER['PHP_SELF'], "config", "config", "apiclient");
+    $client->display(['id' => $_GET["id"]]);
+    Html::footer();
 }

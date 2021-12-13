@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,7 +33,7 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("logs", READ);
 

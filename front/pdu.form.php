@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,73 +33,93 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("datacenter", READ);
 
 if (empty($_GET["id"])) {
-   $_GET["id"] = "";
+    $_GET["id"] = "";
 }
 if (!isset($_GET["withtemplate"])) {
-   $_GET["withtemplate"] = "";
+    $_GET["withtemplate"] = "";
 }
 
 $pdu = new PDU();
 
 if (isset($_POST["add"])) {
-   $pdu->check(-1, CREATE, $_POST);
+    $pdu->check(-1, CREATE, $_POST);
 
-   if ($newID = $pdu->add($_POST)) {
-      Event::log($newID, "pdus", 4, "inventory",
-                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
-      if ($_SESSION['glpibackcreated']) {
-         Html::redirect($pdu->getLinkURL());
-      }
-   }
-   Html::back();
-
+    if ($newID = $pdu->add($_POST)) {
+        Event::log(
+            $newID,
+            "pdus",
+            4,
+            "inventory",
+            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
+        );
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($pdu->getLinkURL());
+        }
+    }
+    Html::back();
 } else if (isset($_POST["delete"])) {
-   $pdu->check($_POST["id"], DELETE);
-   $pdu->delete($_POST);
+    $pdu->check($_POST["id"], DELETE);
+    $pdu->delete($_POST);
 
-   Event::log($_POST["id"], "pdus", 4, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
-   $pdu->redirectToList();
-
+    Event::log(
+        $_POST["id"],
+        "pdus",
+        4,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
+    );
+    $pdu->redirectToList();
 } else if (isset($_POST["restore"])) {
-   $pdu->check($_POST["id"], DELETE);
+    $pdu->check($_POST["id"], DELETE);
 
-   $pdu->restore($_POST);
-   Event::log($_POST["id"], "pdus", 4, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
-   $pdu->redirectToList();
-
+    $pdu->restore($_POST);
+    Event::log(
+        $_POST["id"],
+        "pdus",
+        4,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s restores an item'), $_SESSION["glpiname"])
+    );
+    $pdu->redirectToList();
 } else if (isset($_POST["purge"])) {
-   $pdu->check($_POST["id"], PURGE);
+    $pdu->check($_POST["id"], PURGE);
 
-   $pdu->delete($_POST, 1);
-   Event::log($_POST["id"], "pdus", 4, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
-   $pdu->redirectToList();
-
+    $pdu->delete($_POST, 1);
+    Event::log(
+        $_POST["id"],
+        "pdus",
+        4,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+    );
+    $pdu->redirectToList();
 } else if (isset($_POST["update"])) {
-   $pdu->check($_POST["id"], UPDATE);
+    $pdu->check($_POST["id"], UPDATE);
 
-   $pdu->update($_POST);
-   Event::log($_POST["id"], "pdus", 4, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
-   Html::back();
-
+    $pdu->update($_POST);
+    Event::log(
+        $_POST["id"],
+        "pdus",
+        4,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+    );
+    Html::back();
 } else {
-   Html::header(PDU::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "pdu");
-   $pdu->display([
+    Html::header(PDU::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "pdu");
+    $pdu->display([
       'id'           => $_GET["id"],
       'withtemplate' => $_GET["withtemplate"],
       'formoptions'  => "data-track-changes=true"
-   ]);
-   Html::footer();
+    ]);
+    Html::footer();
 }

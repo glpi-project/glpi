@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,35 +36,37 @@ namespace Glpi\System\Requirement;
 /**
  * @since 10.0.0
  */
-class DirectoriesWriteAccess extends AbstractRequirement {
+class DirectoriesWriteAccess extends AbstractRequirement
+{
 
    /**
     * Directories paths.
     *
     * @var string[]
     */
-   private $paths;
+    private $paths;
 
    /**
     * @param string   $title     Requirement title.
     * @param string[] $paths     Directories paths.
     * @param bool     $optional  Indicated if write access is optional.
     */
-   public function __construct(string $title, array $paths, bool $optional = false) {
-      $this->title = $title;
-      $this->paths = $paths;
-      $this->optional = $optional;
-   }
+    public function __construct(string $title, array $paths, bool $optional = false)
+    {
+        $this->title = $title;
+        $this->paths = $paths;
+        $this->optional = $optional;
+    }
 
-   protected function check() {
+    protected function check()
+    {
 
-      $this->validated = true;
+        $this->validated = true;
 
-      foreach ($this->paths as $path) {
-         $directory_write_access = new DirectoryWriteAccess($path);
-         $this->validated = $this->validated && $directory_write_access->isValidated();
-         $this->validation_messages = array_merge($this->validation_messages, $directory_write_access->getValidationMessages());
-      }
-   }
-
+        foreach ($this->paths as $path) {
+            $directory_write_access = new DirectoryWriteAccess($path);
+            $this->validated = $this->validated && $directory_write_access->isValidated();
+            $this->validation_messages = array_merge($this->validation_messages, $directory_write_access->getValidationMessages());
+        }
+    }
 }

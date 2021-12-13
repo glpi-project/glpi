@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -29,6 +30,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
 /**
  * @var DB $DB
  * @var Migration $migration
@@ -39,7 +41,7 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 
 if (!$DB->tableExists('glpi_items_remotemanagements')) {
-   $query = "CREATE TABLE `glpi_items_remotemanagements` (
+    $query = "CREATE TABLE `glpi_items_remotemanagements` (
          `id` int NOT NULL AUTO_INCREMENT,
          `itemtype` varchar(100) DEFAULT NULL,
          `items_id` int NOT NULL DEFAULT '0',
@@ -50,5 +52,5 @@ if (!$DB->tableExists('glpi_items_remotemanagements')) {
          KEY `is_dynamic` (`is_dynamic`),
          KEY `item` (`itemtype`,`items_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_items_remotemanagements");
+    $DB->queryOrDie($query, "10.0 add table glpi_items_remotemanagements");
 }

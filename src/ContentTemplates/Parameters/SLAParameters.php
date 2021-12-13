@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -41,15 +42,18 @@ use SLA;
  */
 class SLAParameters extends LevelAgreementParameters
 {
-   public static function getDefaultNodeName(): string {
-      return 'sla';
-   }
+    public static function getDefaultNodeName(): string
+    {
+        return 'sla';
+    }
 
-   public static function getObjectLabel(): string {
-      return SLA::getTypeName(1);
-   }
+    public static function getObjectLabel(): string
+    {
+        return SLA::getTypeName(1);
+    }
 
-   protected function getTargetClasses(): array {
-      return [SLA::class];
-   }
+    protected function getTargetClasses(): array
+    {
+        return [SLA::class];
+    }
 }

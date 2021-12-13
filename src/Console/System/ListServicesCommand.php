@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,20 +38,23 @@ use Glpi\System\Status\StatusChecker;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ListServicesCommand extends AbstractCommand {
+class ListServicesCommand extends AbstractCommand
+{
 
-   protected function configure() {
-      parent::configure();
+    protected function configure()
+    {
+        parent::configure();
 
-      $this->setName('glpi:system:list_services');
-      $this->setAliases(['system:list_services']);
-      $this->setDescription(__('List system services'));
-   }
+        $this->setName('glpi:system:list_services');
+        $this->setAliases(['system:list_services']);
+        $this->setDescription(__('List system services'));
+    }
 
-   protected function execute(InputInterface $input, OutputInterface $output) {
-      $services = array_keys(StatusChecker::getServices());
-      $output->writeln(json_encode($services, JSON_PRETTY_PRINT));
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $services = array_keys(StatusChecker::getServices());
+        $output->writeln(json_encode($services, JSON_PRETTY_PRINT));
 
-      return 0; // Success
-   }
+        return 0; // Success
+    }
 }

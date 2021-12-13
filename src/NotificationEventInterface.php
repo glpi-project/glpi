@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,7 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
-interface NotificationEventInterface {
+interface NotificationEventInterface
+{
 
    /**
     * Raise a notification event
@@ -46,17 +48,17 @@ interface NotificationEventInterface {
     *
     * @return void
     */
-   static public function raise(
-      $event,
-      CommonGLPI $item,
-      array $options,
-      $label,
-      array $data,
-      NotificationTarget $notificationtarget,
-      NotificationTemplate $template,
-      $notify_me,
-      $emitter = null
-   );
+    public static function raise(
+        $event,
+        CommonGLPI $item,
+        array $options,
+        $label,
+        array $data,
+        NotificationTarget $notificationtarget,
+        NotificationTemplate $template,
+        $notify_me,
+        $emitter = null
+    );
 
 
    /**
@@ -64,7 +66,7 @@ interface NotificationEventInterface {
     *
     * @return string
     */
-   static public function getTargetFieldName();
+    public static function getTargetFieldName();
 
    /**
     * Get (and populate if needed) target field for notification
@@ -73,21 +75,21 @@ interface NotificationEventInterface {
     *
     * @return string
     */
-   static public function getTargetField(&$data);
+    public static function getTargetField(&$data);
 
    /**
     * Whether notifications can be handled by a crontab
     *
     * @return boolean
     */
-   static public function canCron();
+    public static function canCron();
 
    /**
     * Get admin data
     *
     * @return array
     */
-   static public function getAdminData();
+    public static function getAdminData();
 
    /**
     * Get entity admin data
@@ -96,7 +98,7 @@ interface NotificationEventInterface {
     *
     * @return array
     */
-   static public function getEntityAdminsData($entity);
+    public static function getEntityAdminsData($entity);
 
 
    /**
@@ -106,5 +108,5 @@ interface NotificationEventInterface {
     *
     * @return false|integer False if something went wrong, number of send notifications otherwise
     */
-   static public function send(array $data);
+    public static function send(array $data);
 }

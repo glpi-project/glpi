@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -51,34 +52,38 @@ class AttributeParameter extends AbstractParameterType
     *
     * @var string
     */
-   protected $filter;
+    protected $filter;
 
    /**
     * @param string $key    Key to access this value
     * @param string $label  Label to display in the autocompletion widget
     * @param string $filter Recommanded twig filter to apply on this value
     */
-   public function __construct(string $key, string $label, string $filter = "") {
-      parent::__construct($key, $label);
-      $this->filter = $filter;
-   }
+    public function __construct(string $key, string $label, string $filter = "")
+    {
+        parent::__construct($key, $label);
+        $this->filter = $filter;
+    }
 
-   public function compute(): array {
-      return [
+    public function compute(): array
+    {
+        return [
          'type'   => "AttributeParameter",
          'key'    => $this->key,
          'label'  => $this->label,
          'filter' => $this->filter,
-      ];
-   }
+        ];
+    }
 
-   public function getDocumentationUsage(?string $parent = null): string {
-      $parent = !empty($parent)       ? "$parent."          : "";
-      $filter = !empty($this->filter) ? "| {$this->filter}" : "";
-      return "{{ {$parent}{$this->key} $filter }}";
-   }
+    public function getDocumentationUsage(?string $parent = null): string
+    {
+        $parent = !empty($parent)       ? "$parent."          : "";
+        $filter = !empty($this->filter) ? "| {$this->filter}" : "";
+        return "{{ {$parent}{$this->key} $filter }}";
+    }
 
-   public function getDocumentationReferences(): ?TemplatesParametersInterface {
-      return null;
-   }
+    public function getDocumentationReferences(): ?TemplatesParametersInterface
+    {
+        return null;
+    }
 }

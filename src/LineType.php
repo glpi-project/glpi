@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,9 +31,11 @@
  * ---------------------------------------------------------------------
  */
 
-class LineType extends CommonType {
+class LineType extends CommonType
+{
 
-   static function getTypeName($nb = 0) {
-      return _n('Line type', 'Line types', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Line type', 'Line types', $nb);
+    }
 }

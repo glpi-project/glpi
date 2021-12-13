@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,12 +32,14 @@
  */
 
 /// Class DeviceControlModel
-class DeviceControlModel extends CommonDeviceModel {
+class DeviceControlModel extends CommonDeviceModel
+{
 
-   var $additional_fields_for_dictionnary = ['manufacturer'];
+    public $additional_fields_for_dictionnary = ['manufacturer'];
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Device control model', 'Device control models', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Device control model', 'Device control models', $nb);
+    }
 }

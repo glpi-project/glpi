@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,5 +38,7 @@
 **/
 
 if (!class_exists('Bookmark')) {
-   class Bookmark extends SavedSearch {}
+    class Bookmark extends SavedSearch
+    {
+    }
 }

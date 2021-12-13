@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,12 +37,14 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/computer.class.php */
 
-class Computer extends AbstractInventoryAsset {
+class Computer extends AbstractInventoryAsset
+{
 
-   const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
+    const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
 
-   protected function assetProvider() :array {
-      return [
+    protected function assetProvider(): array
+    {
+        return [
          [ //both bios and hardware
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -166,46 +169,48 @@ class Computer extends AbstractInventoryAsset {
   </REQUEST>",
             'asset'  => '{"manufacturers_id":"Dell Inc.","computermodels_id":"XPS 13 9350","serial":"640HP72","mserial":"\\/640HP72\\/CN129636460078\\/","otherserial":"SER1234","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW"}'
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider assetProvider
     */
-   public function testPrepare($xml, $asset) {
-      $date_now = date('Y-m-d H:i:s');
-      $_SESSION['glpi_currenttime'] = $date_now;
-      $asset = str_replace('DATE_NOW', $date_now, $asset);
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($xml);
-      $json = json_decode($data);
+    public function testPrepare($xml, $asset)
+    {
+        $date_now = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date_now;
+        $asset = str_replace('DATE_NOW', $date_now, $asset);
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $main = new \Glpi\Inventory\Asset\Computer($computer, $json);
-      $main->setExtraData((array)$json->content);
-      $result = $main->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($asset));
-   }
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $main = new \Glpi\Inventory\Asset\Computer($computer, $json);
+        $main->setExtraData((array)$json->content);
+        $result = $main->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($asset));
+    }
 
-   public function testHandle() {
-      $json_str = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
-      $json = json_decode($json_str);
+    public function testHandle()
+    {
+        $json_str = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
+        $json = json_decode($json_str);
 
-      $computer = new \Computer();
+        $computer = new \Computer();
 
-      $data = (array)$json->content;
-      $inventory = new \Glpi\Inventory\Inventory();
-      $this->boolean($inventory->setData($json_str))->isTrue();
+        $data = (array)$json->content;
+        $inventory = new \Glpi\Inventory\Inventory();
+        $this->boolean($inventory->setData($json_str))->isTrue();
 
-      $agent = new \Agent();
-      $this->integer($agent->handleAgent($inventory->extractMetadata()))->isGreaterThan(0);
+        $agent = new \Agent();
+        $this->integer($agent->handleAgent($inventory->extractMetadata()))->isGreaterThan(0);
 
-      $main = new \Glpi\Inventory\Asset\Computer($computer, $json);
-      $main->setAgent($agent)->setExtraData($data);
-      $result = $main->prepare();
-      $this->array($result)->hasSize(1);
+        $main = new \Glpi\Inventory\Asset\Computer($computer, $json);
+        $main->setAgent($agent)->setExtraData($data);
+        $result = $main->prepare();
+        $this->array($result)->hasSize(1);
 
-      $main->handle();
-      $this->boolean($main->areLinksHandled())->isTrue();
-   }
+        $main->handle();
+        $this->boolean($main->areLinksHandled())->isTrue();
+    }
 }

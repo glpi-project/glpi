@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,21 +33,21 @@
 
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "dropdownDelegationUsers.php")) {
-   $AJAX_INCLUDE = 1;
-   include ('../inc/includes.php');
-   header("Content-Type: text/html; charset=UTF-8");
-   Html::header_nocache();
+    $AJAX_INCLUDE = 1;
+    include('../inc/includes.php');
+    header("Content-Type: text/html; charset=UTF-8");
+    Html::header_nocache();
 } else if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
+    die("Sorry. You can't access this file directly");
 }
 
 Session::checkLoginUser();
 
 if ($_POST["nodelegate"] == 1) {
-   $_POST['_users_id_requester'] = Session::getLoginUserID();
-   $_POST['_right']              = "id";
+    $_POST['_users_id_requester'] = Session::getLoginUserID();
+    $_POST['_right']              = "id";
 } else {
-   $_POST['_right'] = "delegate";
+    $_POST['_right'] = "delegate";
 }
 
 $ticket = new Ticket();

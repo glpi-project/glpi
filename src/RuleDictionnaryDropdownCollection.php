@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,92 +31,98 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleDictionnaryDropdownCollection extends RuleCollection {
+class RuleDictionnaryDropdownCollection extends RuleCollection
+{
 
-   static $rightname = 'rule_dictionnary_dropdown';
+    public static $rightname = 'rule_dictionnary_dropdown';
 
-   public $menu_type = 'dictionnary';
+    public $menu_type = 'dictionnary';
 
    // Specific ones
    /// dropdown table
-   public $item_table = "";
+    public $item_table = "";
 
-   public $stop_on_first_match = true;
-   public $can_replay_rules    = true;
+    public $stop_on_first_match = true;
+    public $can_replay_rules    = true;
 
 
 
    /**
     * @see RuleCollection::replayRulesOnExistingDB()
    **/
-   function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = []) {
-      global $DB;
+    public function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = [])
+    {
+        global $DB;
 
-      // Model check : need to check using manufacturer extra data so specific function
-      if (strpos($this->item_table, 'models')) {
-         return $this->replayRulesOnExistingDBForModel($offset, $maxtime);
-      }
+       // Model check : need to check using manufacturer extra data so specific function
+        if (strpos($this->item_table, 'models')) {
+            return $this->replayRulesOnExistingDBForModel($offset, $maxtime);
+        }
 
-      if (isCommandLine()) {
-         printf(__('Replay rules on existing database started on %s')."\n", date("r"));
-      }
+        if (isCommandLine()) {
+            printf(__('Replay rules on existing database started on %s') . "\n", date("r"));
+        }
 
-      // Get All items
-      $criteria = ['FROM' => $this->item_table];
-      if ($offset) {
-         $criteria['START'] = $offset;
-         $criteria['LIMIT'] = 999999999;
-      }
-      $iterator   = $DB->request($criteria);
-      $nb         = count($iterator)+$offset;
-      $i          = $offset;
-      if ($nb > $offset) {
-         // Step to refresh progressbar
-         $step              = (($nb > 20) ? floor($nb/20) : 1);
-         $send              = [];
-         $send["tablename"] = $this->item_table;
+       // Get All items
+        $criteria = ['FROM' => $this->item_table];
+        if ($offset) {
+            $criteria['START'] = $offset;
+            $criteria['LIMIT'] = 999999999;
+        }
+        $iterator   = $DB->request($criteria);
+        $nb         = count($iterator) + $offset;
+        $i          = $offset;
+        if ($nb > $offset) {
+           // Step to refresh progressbar
+            $step              = (($nb > 20) ? floor($nb / 20) : 1);
+            $send              = [];
+            $send["tablename"] = $this->item_table;
 
-         foreach ($iterator as $data) {
-            if (!($i % $step)) {
-               if (isCommandLine()) {
-                  //TRANS: %1$s is a row, %2$s is total rows
-                  printf(__('Replay rules on existing database: %1$s/%2$s')."\r", $i, $nb);
-               } else {
-                  Html::changeProgressBarPosition($i, $nb, "$i / $nb");
-               }
+            foreach ($iterator as $data) {
+                if (!($i % $step)) {
+                    if (isCommandLine()) {
+                      //TRANS: %1$s is a row, %2$s is total rows
+                        printf(__('Replay rules on existing database: %1$s/%2$s') . "\r", $i, $nb);
+                    } else {
+                        Html::changeProgressBarPosition($i, $nb, "$i / $nb");
+                    }
+                }
+
+               //Replay Type dictionnary
+                $ID = Dropdown::importExternal(
+                    getItemTypeForTable($this->item_table),
+                    addslashes($data["name"]),
+                    -1,
+                    [],
+                    addslashes($data["comment"])
+                );
+                if ($data['id'] != $ID) {
+                     $tomove[$data['id']] = $ID;
+                     $type                = getItemTypeForTable($this->item_table);
+
+                    if ($dropdown = getItemForItemtype($type)) {
+                        $dropdown->delete(['id'          => $data['id'],
+                                         '_replace_by' => $ID]);
+                    }
+                }
+                $i++;
+
+                if ($maxtime) {
+                    $crt = explode(" ", microtime());
+                    if (($crt[0] + $crt[1]) > $maxtime) {
+                        break;
+                    }
+                }
             }
+        }
 
-            //Replay Type dictionnary
-            $ID = Dropdown::importExternal(getItemTypeForTable($this->item_table),
-                                           addslashes($data["name"]), -1, [],
-                                           addslashes($data["comment"]));
-            if ($data['id'] != $ID) {
-               $tomove[$data['id']] = $ID;
-               $type                = getItemTypeForTable($this->item_table);
-
-               if ($dropdown = getItemForItemtype($type)) {
-                  $dropdown->delete(['id'          => $data['id'],
-                                          '_replace_by' => $ID]);
-               }
-            }
-            $i++;
-
-            if ($maxtime) {
-               $crt = explode(" ", microtime());
-               if (($crt[0]+$crt[1]) > $maxtime) {
-                  break;
-               }
-            }
-         }
-      }
-
-      if (isCommandLine()) {
-         printf(__('Replay rules on existing database started on %s')."\n", date("r"));
-      } else {
-         Html::changeProgressBarPosition($i, $nb, "$i / $nb");
-      }
-      return (($i == $nb) ? -1 : $i);
-   }
+        if (isCommandLine()) {
+            printf(__('Replay rules on existing database started on %s') . "\n", date("r"));
+        } else {
+            Html::changeProgressBarPosition($i, $nb, "$i / $nb");
+        }
+        return (($i == $nb) ? -1 : $i);
+    }
 
 
    /**
@@ -126,24 +133,25 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
     *
     * @return -1 on completion else current offset
    **/
-   function replayRulesOnExistingDBForModel($offset = 0, $maxtime = 0) {
-      global $DB;
+    public function replayRulesOnExistingDBForModel($offset = 0, $maxtime = 0)
+    {
+        global $DB;
 
-      if (isCommandLine()) {
-         printf(__('Replay rules on existing database started on %s')."\n", date("r"));
-      }
+        if (isCommandLine()) {
+            printf(__('Replay rules on existing database started on %s') . "\n", date("r"));
+        }
 
-      // Model check : need to check using manufacturer extra data
-      if (strpos($this->item_table, 'models') === false) {
-         echo __('Error replaying rules');
-         return false;
-      }
+       // Model check : need to check using manufacturer extra data
+        if (strpos($this->item_table, 'models') === false) {
+            echo __('Error replaying rules');
+            return false;
+        }
 
-      $model_table = getPlural(str_replace('models', '', $this->item_table));
-      $model_field = getForeignKeyFieldForTable($this->item_table);
+        $model_table = getPlural(str_replace('models', '', $this->item_table));
+        $model_field = getForeignKeyFieldForTable($this->item_table);
 
-      // Need to give manufacturer from item table
-      $criteria =[
+       // Need to give manufacturer from item table
+        $criteria = [
          'SELECT'          => [
             'glpi_manufacturers.id AS idmanu',
             'glpi_manufacturers.name AS manufacturer',
@@ -169,130 +177,136 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
                ]
             ]
          ]
-      ];
+        ];
 
-      if ($offset) {
-         $criteria['START'] = (int)$offset;
-      }
+        if ($offset) {
+            $criteria['START'] = (int)$offset;
+        }
 
-      $iterator = $DB->request($criteria);
-      $nb      = count($iterator) + $offset;
-      $i       = $offset;
+        $iterator = $DB->request($criteria);
+        $nb      = count($iterator) + $offset;
+        $i       = $offset;
 
-      if ($nb > $offset) {
-         // Step to refresh progressbar
-         $step    = (($nb > 20) ? floor($nb/20) : 1);
-         $tocheck = [];
+        if ($nb > $offset) {
+           // Step to refresh progressbar
+            $step    = (($nb > 20) ? floor($nb / 20) : 1);
+            $tocheck = [];
 
-         foreach ($iterator as $data) {
-            if (!($i % $step)) {
+            foreach ($iterator as $data) {
+                if (!($i % $step)) {
+                    if (isCommandLine()) {
+                        printf(__('Replay rules on existing database: %1$s/%2$s') . "\r", $i, $nb);
+                    } else {
+                        Html::changeProgressBarPosition($i, $nb, "$i / $nb");
+                    }
+                }
 
-               if (isCommandLine()) {
-                  printf(__('Replay rules on existing database: %1$s/%2$s')."\r", $i, $nb);
-               } else {
-                  Html::changeProgressBarPosition($i, $nb, "$i / $nb");
-               }
-            }
+               // Model case
+                if (isset($data["manufacturer"])) {
+                    $data["manufacturer"] = Manufacturer::processName(addslashes($data["manufacturer"]));
+                }
 
-            // Model case
-            if (isset($data["manufacturer"])) {
-               $data["manufacturer"] = Manufacturer::processName(addslashes($data["manufacturer"]));
-            }
+               //Replay Type dictionnary
+                $ID = Dropdown::importExternal(
+                    getItemTypeForTable($this->item_table),
+                    addslashes($data["name"]),
+                    -1,
+                    $data,
+                    addslashes($data["comment"])
+                );
 
-            //Replay Type dictionnary
-            $ID = Dropdown::importExternal(getItemTypeForTable($this->item_table),
-                                           addslashes($data["name"]), -1, $data,
-                                           addslashes($data["comment"]));
+                if ($data['id'] != $ID) {
+                     $tocheck[$data["id"]][] = $ID;
+                     $where = [
+                     $model_field => $data['id']
+                     ];
 
-            if ($data['id'] != $ID) {
-               $tocheck[$data["id"]][] = $ID;
-               $where = [
-                  $model_field => $data['id']
-               ];
-
-               if (empty($data['idmanu'])) {
-                  $where['OR'] = [
-                     ['manufacturers_id'  => null],
-                     ['manufacturers_id'  => 0]
-                  ];
-               } else {
-                  $where['manufacturers_id'] = $data['idmanu'];
-               }
-               $DB->update(
-                  $model_table,
-                  [$model_field => $ID],
-                  $where
-               );
-            }
-
-            $i++;
-            if ($maxtime) {
-               $crt = explode(" ", microtime());
-               if (($crt[0]+$crt[1]) > $maxtime) {
-                  break;
-               }
-            }
-         }
-
-         foreach ($tocheck AS $ID => $tab) {
-            $result = $DB->request([
-               'COUNT'  => 'cpt',
-               'FROM'   => $model_table,
-               'WHERE'  => [$model_field => $ID]
-            ])->current();
-
-            $deletecartmodel  = false;
-
-            // No item left : delete old item
-            if ($result
-                && ($result['cpt'] == 0)) {
-               $DB->delete(
-                  $this->item_table, [
-                     'id'  => $ID
-                  ]
-               );
-               $deletecartmodel  = true;
-            }
-
-            // Manage cartridge assoc Update items
-            if ($this->getRuleClassName()=='RuleDictionnaryPrinterModel') {
-               $iterator2 = $DB->request([
-                  'FROM'   => 'glpi_cartridgeitems_printermodels',
-                  'WHERE'  => ['printermodels_id' => $ID]
-               ]);
-
-               if (count($iterator2)) {
-                  // Get compatible cartridge type
-                  $carttype = [];
-                  foreach ($iterator2 as $data) {
-                     $carttype[] = $data['cartridgeitems_id'];
-                  }
-                  // Delete cartrodges_assoc
-                  if ($deletecartmodel) {
-                     $DB->delete(
-                        'glpi_cartridgeitems_printermodels', [
-                           'printermodels_id'   => $ID
-                        ]
-                     );
-                  }
-                  // Add new assoc
-                  $ct = new CartridgeItem();
-                  foreach ($carttype as $cartID) {
-                     foreach ($tab as $model) {
-                        $ct->addCompatibleType($cartID, $model);
+                     if (empty($data['idmanu'])) {
+                         $where['OR'] = [
+                         ['manufacturers_id'  => null],
+                         ['manufacturers_id'  => 0]
+                         ];
+                     } else {
+                         $where['manufacturers_id'] = $data['idmanu'];
                      }
-                  }
-               }
+                     $DB->update(
+                         $model_table,
+                         [$model_field => $ID],
+                         $where
+                     );
+                }
+
+                $i++;
+                if ($maxtime) {
+                    $crt = explode(" ", microtime());
+                    if (($crt[0] + $crt[1]) > $maxtime) {
+                        break;
+                    }
+                }
             }
-         }
-      }
 
-      if (isCommandLine()) {
-         printf(__('Replay rules on existing database ended on %s')."\n", date("r"));
-      } else {
-         Html::changeProgressBarPosition($i, $nb, "$i / $nb");
-      }
-      return ($i==$nb ? -1 : $i);
-   }
+            foreach ($tocheck as $ID => $tab) {
+                $result = $DB->request([
+                'COUNT'  => 'cpt',
+                'FROM'   => $model_table,
+                'WHERE'  => [$model_field => $ID]
+                ])->current();
 
+                $deletecartmodel  = false;
+
+               // No item left : delete old item
+                if (
+                    $result
+                    && ($result['cpt'] == 0)
+                ) {
+                     $DB->delete(
+                         $this->item_table,
+                         [
+                         'id'  => $ID
+                         ]
+                     );
+                     $deletecartmodel  = true;
+                }
+
+               // Manage cartridge assoc Update items
+                if ($this->getRuleClassName() == 'RuleDictionnaryPrinterModel') {
+                    $iterator2 = $DB->request([
+                    'FROM'   => 'glpi_cartridgeitems_printermodels',
+                    'WHERE'  => ['printermodels_id' => $ID]
+                    ]);
+
+                    if (count($iterator2)) {
+                           // Get compatible cartridge type
+                           $carttype = [];
+                        foreach ($iterator2 as $data) {
+                            $carttype[] = $data['cartridgeitems_id'];
+                        }
+                          // Delete cartrodges_assoc
+                        if ($deletecartmodel) {
+                            $DB->delete(
+                                'glpi_cartridgeitems_printermodels',
+                                [
+                                'printermodels_id'   => $ID
+                                ]
+                            );
+                        }
+                        // Add new assoc
+                        $ct = new CartridgeItem();
+                        foreach ($carttype as $cartID) {
+                            foreach ($tab as $model) {
+                                $ct->addCompatibleType($cartID, $model);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (isCommandLine()) {
+            printf(__('Replay rules on existing database ended on %s') . "\n", date("r"));
+        } else {
+            Html::changeProgressBarPosition($i, $nb, "$i / $nb");
+        }
+        return ($i == $nb ? -1 : $i);
+    }
 }

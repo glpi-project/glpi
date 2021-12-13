@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,10 +33,11 @@
 
 /// Mandatory fields for ticket template class
 /// since version 0.83
-class TicketTemplateMandatoryField extends ITILTemplateMandatoryField {
+class TicketTemplateMandatoryField extends ITILTemplateMandatoryField
+{
 
    // From CommonDBChild
-   static public $itemtype  = 'TicketTemplate';
-   static public $items_id  = 'tickettemplates_id';
-   static public $itiltype = 'Ticket';
+    public static $itemtype  = 'TicketTemplate';
+    public static $items_id  = 'tickettemplates_id';
+    public static $itiltype = 'Ticket';
 }

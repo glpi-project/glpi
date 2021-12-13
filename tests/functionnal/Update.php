@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,60 +35,65 @@ namespace tests\units;
 
 /* Test for inc/update.class.php */
 
-class Update extends \GLPITestCase {
+class Update extends \GLPITestCase
+{
 
-   public function testCurrents() {
-      global $DB;
-      $update = new \Update($DB);
+    public function testCurrents()
+    {
+        global $DB;
+        $update = new \Update($DB);
 
-      $expected = [
+        $expected = [
          'dbversion' => GLPI_SCHEMA_VERSION,
          'language'  => 'en_GB',
          'version'   => GLPI_VERSION
-      ];
-      $this->array($update->getCurrents())->isEqualTo($expected);
-   }
+        ];
+        $this->array($update->getCurrents())->isEqualTo($expected);
+    }
 
-   public function testInitSession() {
-      global $DB;
+    public function testInitSession()
+    {
+        global $DB;
 
-      $update = new \Update($DB);
-      session_destroy();
-      $this->variable(session_status())->isIdenticalTo(PHP_SESSION_NONE);
+        $update = new \Update($DB);
+        session_destroy();
+        $this->variable(session_status())->isIdenticalTo(PHP_SESSION_NONE);
 
-      $update->initSession();
-      $this->variable(session_status())->isIdenticalTo(PHP_SESSION_ACTIVE);
+        $update->initSession();
+        $this->variable(session_status())->isIdenticalTo(PHP_SESSION_ACTIVE);
 
-      $this->array($_SESSION)->hasKeys([
+        $this->array($_SESSION)->hasKeys([
          'glpilanguage',
          'glpi_currenttime',
          'glpi_use_mode'
-      ])->notHasKeys([
+        ])->notHasKeys([
          'debug_sql',
          'debug_vars',
          'use_log_in_files'
-      ]);
-      $this->variable($_SESSION['glpi_use_mode'])->isIdenticalTo(\Session::DEBUG_MODE);
-      $this->variable(error_reporting())->isIdenticalTo(E_ALL | E_STRICT);
-   }
+        ]);
+        $this->variable($_SESSION['glpi_use_mode'])->isIdenticalTo(\Session::DEBUG_MODE);
+        $this->variable(error_reporting())->isIdenticalTo(E_ALL | E_STRICT);
+    }
 
-   public function testSetMigration() {
-      global $DB;
-      $update = new \Update($DB);
-      $migration = null;
-      $this->output(
-         function () use (&$migration) {
-            $migration = new \Migration(GLPI_VERSION);
-         }
-      )->isEmpty();
+    public function testSetMigration()
+    {
+        global $DB;
+        $update = new \Update($DB);
+        $migration = null;
+        $this->output(
+            function () use (&$migration) {
+                $migration = new \Migration(GLPI_VERSION);
+            }
+        )->isEmpty();
 
-      $this->object($update->setMigration($migration))->isInstanceOf('Update');
-   }
+        $this->object($update->setMigration($migration))->isInstanceOf('Update');
+    }
 
 
-   public function migrationsProvider() {
-      $path = realpath(GLPI_ROOT . '/install/migrations');
-      return [
+    public function migrationsProvider()
+    {
+        $path = realpath(GLPI_ROOT . '/install/migrations');
+        return [
          [
             // Validates version normalization (9.1 -> 9.1.0).
             'current_version'     => '9.1',
@@ -245,15 +251,16 @@ class Update extends \GLPITestCase {
                $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
             ],
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider migrationsProvider
     */
-   public function testGetMigrationsToDo(string $current_version, bool $force_latest, array $expected_migrations) {
-      global $DB;
-      $update = new \Update($DB);
-      $this->array($update->getMigrationsToDo($current_version, $force_latest))->isIdenticalTo($expected_migrations);
-   }
+    public function testGetMigrationsToDo(string $current_version, bool $force_latest, array $expected_migrations)
+    {
+        global $DB;
+        $update = new \Update($DB);
+        $this->array($update->getMigrationsToDo($current_version, $force_latest))->isIdenticalTo($expected_migrations);
+    }
 }

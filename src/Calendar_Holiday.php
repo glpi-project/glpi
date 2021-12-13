@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,28 +31,30 @@
  * ---------------------------------------------------------------------
  */
 
-class Calendar_Holiday extends CommonDBRelation {
+class Calendar_Holiday extends CommonDBRelation
+{
 
-   public $auto_message_on_action = false;
+    public $auto_message_on_action = false;
 
    // From CommonDBRelation
-   static public $itemtype_1 = 'Calendar';
-   static public $items_id_1 = 'calendars_id';
-   static public $itemtype_2 = 'Holiday';
-   static public $items_id_2 = 'holidays_id';
+    public static $itemtype_1 = 'Calendar';
+    public static $items_id_1 = 'calendars_id';
+    public static $itemtype_2 = 'Holiday';
+    public static $items_id_2 = 'holidays_id';
 
-   static public $checkItem_2_Rights = self::DONT_CHECK_ITEM_RIGHTS;
+    public static $checkItem_2_Rights = self::DONT_CHECK_ITEM_RIGHTS;
 
 
    /**
     * @since 0.84
    **/
-   function getForbiddenStandardMassiveAction() {
+    public function getForbiddenStandardMassiveAction()
+    {
 
-      $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
-      return $forbidden;
-   }
+        $forbidden   = parent::getForbiddenStandardMassiveAction();
+        $forbidden[] = 'update';
+        return $forbidden;
+    }
 
 
    /**
@@ -61,19 +64,20 @@ class Calendar_Holiday extends CommonDBRelation {
     *
     * @return void|boolean (HTML display) False if there is a rights error.
     */
-   static function showForCalendar(Calendar $calendar) {
-      global $DB;
+    public static function showForCalendar(Calendar $calendar)
+    {
+        global $DB;
 
-      $ID = $calendar->getField('id');
-      if (!$calendar->can($ID, READ)) {
-         return false;
-      }
+        $ID = $calendar->getField('id');
+        if (!$calendar->can($ID, READ)) {
+            return false;
+        }
 
-      $canedit = $calendar->can($ID, UPDATE);
+        $canedit = $calendar->can($ID, UPDATE);
 
-      $rand    = mt_rand();
+        $rand    = mt_rand();
 
-      $iterator = $DB->request([
+        $iterator = $DB->request([
          'SELECT' => [
             'glpi_calendars_holidays.id AS linkid',
             'glpi_holidays.*'
@@ -92,141 +96,152 @@ class Calendar_Holiday extends CommonDBRelation {
             'glpi_calendars_holidays.calendars_id' => $ID
          ],
          'ORDERBY'         => 'glpi_holidays.name'
-      ]);
+        ]);
 
-      $numrows = count($iterator);
-      $holidays = [];
-      $used     = [];
-      foreach ($iterator as $data) {
-         $holidays[$data['id']] = $data;
-         $used[$data['id']]     = $data['id'];
-      }
+        $numrows = count($iterator);
+        $holidays = [];
+        $used     = [];
+        foreach ($iterator as $data) {
+            $holidays[$data['id']] = $data;
+            $used[$data['id']]     = $data['id'];
+        }
 
-      if ($canedit) {
-         echo "<div class='firstbloc'>";
-         echo "<form name='calendarsegment_form$rand' id='calendarsegment_form$rand' method='post'
+        if ($canedit) {
+            echo "<div class='firstbloc'>";
+            echo "<form name='calendarsegment_form$rand' id='calendarsegment_form$rand' method='post'
                 action='";
-         echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><th colspan='7'>".__('Add a close time')."</tr>";
-         echo "<tr class='tab_bg_2'><td class='right'  colspan='4'>";
-         echo "<input type='hidden' name='calendars_id' value='$ID'>";
-         Holiday::dropdown(['used'   => $used,
+            echo Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr class='tab_bg_1'><th colspan='7'>" . __('Add a close time') . "</tr>";
+            echo "<tr class='tab_bg_2'><td class='right'  colspan='4'>";
+            echo "<input type='hidden' name='calendars_id' value='$ID'>";
+            Holiday::dropdown(['used'   => $used,
                                  'entity' => $calendar->fields["entities_id"]]);
-         echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
-         echo "</td></tr>";
-         echo "</table>";
-         Html::closeForm();
-         echo "</div>";
-      }
+            echo "</td><td class='center'>";
+            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
+            echo "</td></tr>";
+            echo "</table>";
+            Html::closeForm();
+            echo "</div>";
+        }
 
-      echo "<div class='spaced'>";
+        echo "<div class='spaced'>";
 
-      if ($canedit && $numrows) {
-         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                           'container'     => 'mass'.__CLASS__.$rand];
-         Html::showMassiveActions($massiveactionparams);
-      }
-      echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr>";
-      if ($canedit && $numrows) {
-         echo "<th width='10'>";
-         echo Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-         echo "</th>";
-      }
-      echo "<th>".__('Name')."</th>";
-      echo "<th>".__('Start')."</th>";
-      echo "<th>".__('End')."</th>";
-      echo "<th>".__('Recurrent')."</th>";
-      echo "</tr>";
+        if ($canedit && $numrows) {
+            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
+            $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
+                           'container'     => 'mass' . __CLASS__ . $rand];
+            Html::showMassiveActions($massiveactionparams);
+        }
+        echo "<table class='tab_cadre_fixehov'>";
+        echo "<tr>";
+        if ($canedit && $numrows) {
+            echo "<th width='10'>";
+            echo Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+            echo "</th>";
+        }
+        echo "<th>" . __('Name') . "</th>";
+        echo "<th>" . __('Start') . "</th>";
+        echo "<th>" . __('End') . "</th>";
+        echo "<th>" . __('Recurrent') . "</th>";
+        echo "</tr>";
 
-      $used = [];
+        $used = [];
 
-      if ($numrows) {
+        if ($numrows) {
+            Session::initNavigateListItems(
+                'Holiday',
+                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+                                        sprintf(
+                                            __('%1$s = %2$s'),
+                                            Calendar::getTypeName(1),
+                                            $calendar->fields["name"]
+                                        )
+            );
 
-         Session::initNavigateListItems('Holiday',
-         //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                        sprintf(__('%1$s = %2$s'), Calendar::getTypeName(1),
-                                                $calendar->fields["name"]));
-
-         foreach ($holidays as $data) {
-            Session::addToNavigateListItems('Holiday', $data["id"]);
-            echo "<tr class='tab_bg_1'>";
-            if ($canedit) {
-               echo "<td>";
-               Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
-               echo "</td>";
+            foreach ($holidays as $data) {
+                Session::addToNavigateListItems('Holiday', $data["id"]);
+                echo "<tr class='tab_bg_1'>";
+                if ($canedit) {
+                    echo "<td>";
+                    Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
+                    echo "</td>";
+                }
+                echo "<td><a href='" . Toolbox::getItemTypeFormURL('Holiday') . "?id=" . $data['id'] . "'>" .
+                       $data["name"] . "</a></td>";
+                echo "<td>" . Html::convDate($data["begin_date"]) . "</td>";
+                echo "<td>" . Html::convDate($data["end_date"]) . "</td>";
+                echo "<td>" . Dropdown::getYesNo($data["is_perpetual"]) . "</td>";
+                echo "</tr>";
             }
-            echo "<td><a href='".Toolbox::getItemTypeFormURL('Holiday')."?id=".$data['id']."'>".
-                       $data["name"]."</a></td>";
-            echo "<td>".Html::convDate($data["begin_date"])."</td>";
-            echo "<td>".Html::convDate($data["end_date"])."</td>";
-            echo "<td>".Dropdown::getYesNo($data["is_perpetual"])."</td>";
-            echo "</tr>";
-         }
-      }
-      echo "</table>";
+        }
+        echo "</table>";
 
-      if ($canedit && $numrows) {
-         $massiveactionparams['ontop'] = false;
-         Html::showMassiveActions($massiveactionparams);
-         Html::closeForm();
-      }
-      echo "</div>";
-   }
+        if ($canedit && $numrows) {
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions($massiveactionparams);
+            Html::closeForm();
+        }
+        echo "</div>";
+    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
 
-      if (!$withtemplate) {
-         $nb = 0;
-         switch ($item->getType()) {
-            case 'Calendar' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($this->getTable(), ['calendars_id' => $item->getID()]);
-               }
-               return self::createTabEntry(_n('Close time', 'Close times', Session::getPluralNumber()),
-                                            $nb);
-         }
-      }
-      return '';
-   }
+        if (!$withtemplate) {
+            $nb = 0;
+            switch ($item->getType()) {
+                case 'Calendar':
+                    if ($_SESSION['glpishow_count_on_tabs']) {
+                        $nb = countElementsInTable($this->getTable(), ['calendars_id' => $item->getID()]);
+                    }
+                    return self::createTabEntry(
+                        _n('Close time', 'Close times', Session::getPluralNumber()),
+                        $nb
+                    );
+            }
+        }
+        return '';
+    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
 
-      if ($item->getType()=='Calendar') {
-         self::showForCalendar($item);
-      }
-      return true;
-   }
+        if ($item->getType() == 'Calendar') {
+            self::showForCalendar($item);
+        }
+        return true;
+    }
 
-   function post_addItem() {
+    public function post_addItem()
+    {
 
-      $this->invalidateCalendarCache($this->fields['calendars_id']);
+        $this->invalidateCalendarCache($this->fields['calendars_id']);
 
-      parent::post_addItem();
-   }
+        parent::post_addItem();
+    }
 
-   function post_updateItem($history = 1) {
+    public function post_updateItem($history = 1)
+    {
 
-      if (in_array('calendars_id', $this->updates)) {
-         $this->invalidateCalendarCache($this->oldvalues['calendars_id']);
-      }
+        if (in_array('calendars_id', $this->updates)) {
+            $this->invalidateCalendarCache($this->oldvalues['calendars_id']);
+        }
 
-      $this->invalidateCalendarCache($this->fields['calendars_id']);
+        $this->invalidateCalendarCache($this->fields['calendars_id']);
 
-      parent::post_updateItem($history);
-   }
+        parent::post_updateItem($history);
+    }
 
-   function post_deleteFromDB() {
+    public function post_deleteFromDB()
+    {
 
-      $this->invalidateCalendarCache($this->fields['calendars_id']);
+        $this->invalidateCalendarCache($this->fields['calendars_id']);
 
-      parent::post_deleteFromDB();
-   }
+        parent::post_deleteFromDB();
+    }
 
    /**
     * Return holidays related to given calendar.
@@ -235,34 +250,35 @@ class Calendar_Holiday extends CommonDBRelation {
     *
     * @return array
     */
-   public function getHolidaysForCalendar(int $calendars_id): array {
-      global $DB, $GLPI_CACHE;
+    public function getHolidaysForCalendar(int $calendars_id): array
+    {
+        global $DB, $GLPI_CACHE;
 
-      $cache_key = $this->getCalendarHolidaysCacheKey($calendars_id);
-      if (($holidays = $GLPI_CACHE->get($cache_key)) === null) {
-         $holidays_iterator = $DB->request(
-            [
-               'SELECT'     => ['begin_date', 'end_date', 'is_perpetual'],
-               'FROM'       => Holiday::getTable(),
-               'INNER JOIN' => [
+        $cache_key = $this->getCalendarHolidaysCacheKey($calendars_id);
+        if (($holidays = $GLPI_CACHE->get($cache_key)) === null) {
+            $holidays_iterator = $DB->request(
+                [
+                'SELECT'     => ['begin_date', 'end_date', 'is_perpetual'],
+                'FROM'       => Holiday::getTable(),
+                'INNER JOIN' => [
                   Calendar_Holiday::getTable() => [
                      'FKEY'   => [
                         Calendar_Holiday::getTable() => Holiday::getForeignKeyField(),
                         Holiday::getTable()          => 'id',
                      ],
                   ],
-               ],
-               'WHERE'      => [
+                ],
+                'WHERE'      => [
                   Calendar_Holiday::getTableField(Calendar::getForeignKeyField()) => $calendars_id,
-               ],
-            ]
-         );
-         $holidays = iterator_to_array($holidays_iterator);
-         $GLPI_CACHE->set($cache_key, $holidays);
-      }
+                ],
+                ]
+            );
+            $holidays = iterator_to_array($holidays_iterator);
+            $GLPI_CACHE->set($cache_key, $holidays);
+        }
 
-      return $holidays;
-   }
+        return $holidays;
+    }
 
    /**
     * Invalidate cache for given holiday.
@@ -271,26 +287,27 @@ class Calendar_Holiday extends CommonDBRelation {
     *
     * @return bool
     */
-   public function invalidateHolidayCache(int $holidays_id): bool {
-      global $DB;
+    public function invalidateHolidayCache(int $holidays_id): bool
+    {
+        global $DB;
 
-      $success = true;
+        $success = true;
 
-      $iterator = $DB->request(
-         [
+        $iterator = $DB->request(
+            [
             'SELECT'     => [Calendar::getForeignKeyField()],
             'FROM'       => self::getTable(),
             'WHERE'      => [
                Holiday::getForeignKeyField() => $holidays_id,
             ],
-         ]
-      );
-      foreach ($iterator as $link) {
-         $success = $success && $this->invalidateCalendarCache($link[Calendar::getForeignKeyField()]);
-      }
+            ]
+        );
+        foreach ($iterator as $link) {
+            $success = $success && $this->invalidateCalendarCache($link[Calendar::getForeignKeyField()]);
+        }
 
-      return $success;
-   }
+        return $success;
+    }
 
    /**
     * Get cache key of cache entry containing holidays of given calendar.
@@ -299,9 +316,10 @@ class Calendar_Holiday extends CommonDBRelation {
     *
     * @return string
     */
-   private function getCalendarHolidaysCacheKey(int $calendars_id): string {
-      return sprintf('calendar-%s-holidays', $calendars_id);
-   }
+    private function getCalendarHolidaysCacheKey(int $calendars_id): string
+    {
+        return sprintf('calendar-%s-holidays', $calendars_id);
+    }
 
    /**
     * Invalidate holidays cache of given calendar.
@@ -310,8 +328,9 @@ class Calendar_Holiday extends CommonDBRelation {
     *
     * @return bool
     */
-   private function invalidateCalendarCache(int $calendars_id): bool {
-      global $GLPI_CACHE;
-      return $GLPI_CACHE->delete($this->getCalendarHolidaysCacheKey($calendars_id));
-   }
+    private function invalidateCalendarCache(int $calendars_id): bool
+    {
+        global $GLPI_CACHE;
+        return $GLPI_CACHE->delete($this->getCalendarHolidaysCacheKey($calendars_id));
+    }
 }

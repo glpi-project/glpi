@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,15 +36,17 @@
  *
  * @since 0.85
 **/
-class ProjectType extends CommonDropdown {
+class ProjectType extends CommonDropdown
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Project type', 'Project types', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Project type', 'Project types', $nb);
+    }
 
-   static function getIcon() {
-      return "fas fa-columns";
-   }
-
+    public static function getIcon()
+    {
+        return "fas fa-columns";
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -41,15 +42,18 @@ use Group;
  */
 class GroupParameters extends TreeDropdownParameters
 {
-   public static function getDefaultNodeName(): string {
-      return 'group';
-   }
+    public static function getDefaultNodeName(): string
+    {
+        return 'group';
+    }
 
-   public static function getObjectLabel(): string {
-      return Group::getTypeName(1);
-   }
+    public static function getObjectLabel(): string
+    {
+        return Group::getTypeName(1);
+    }
 
-   protected function getTargetClasses(): array {
-      return [Group::class];
-   }
+    protected function getTargetClasses(): array
+    {
+        return [Group::class];
+    }
 }

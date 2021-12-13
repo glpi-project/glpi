@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,7 +32,8 @@
  */
 
 // Class NotificationTarget
-class NotificationTargetDBConnection extends NotificationTarget {
+class NotificationTargetDBConnection extends NotificationTarget
+{
 
 
    /**
@@ -39,63 +41,65 @@ class NotificationTargetDBConnection extends NotificationTarget {
     *
     * @see NotificationTarget::addNotificationTargets()
    **/
-   function addNotificationTargets($entity) {
+    public function addNotificationTargets($entity)
+    {
 
-      $this->addProfilesToTargets();
-      $this->addGroupsToTargets($entity);
-      $this->addTarget(Notification::GLOBAL_ADMINISTRATOR, __('Administrator'));
-   }
-
-
-   function getEvents() {
-      return ['desynchronization' => __('Desynchronization SQL replica')];
-   }
+        $this->addProfilesToTargets();
+        $this->addGroupsToTargets($entity);
+        $this->addTarget(Notification::GLOBAL_ADMINISTRATOR, __('Administrator'));
+    }
 
 
-   function addDataForTemplate($event, $options = []) {
-
-      if ($options['diff'] > 1000000000) {
-         $tmp = __("Can't connect to the database.");
-      } else {
-         $tmp = Html::timestampToString($options['diff'], true);
-      }
-      $this->data['##dbconnection.delay##'] = $tmp." (".$options['name'].")";
-
-      $this->getTags();
-      foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         if (!isset($this->data[$tag])) {
-            $this->data[$tag] = $values['label'];
-         }
-      }
-
-   }
+    public function getEvents()
+    {
+        return ['desynchronization' => __('Desynchronization SQL replica')];
+    }
 
 
-   function getTags() {
+    public function addDataForTemplate($event, $options = [])
+    {
 
-      $tags = ['dbconnection.delay' => __('Difference between master and slave')];
+        if ($options['diff'] > 1000000000) {
+            $tmp = __("Can't connect to the database.");
+        } else {
+            $tmp = Html::timestampToString($options['diff'], true);
+        }
+        $this->data['##dbconnection.delay##'] = $tmp . " (" . $options['name'] . ")";
 
-      foreach ($tags as $tag => $label) {
-         $this->addTagToList(['tag'   => $tag,
+        $this->getTags();
+        foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
+            if (!isset($this->data[$tag])) {
+                $this->data[$tag] = $values['label'];
+            }
+        }
+    }
+
+
+    public function getTags()
+    {
+
+        $tags = ['dbconnection.delay' => __('Difference between master and slave')];
+
+        foreach ($tags as $tag => $label) {
+            $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
                                    'value' => true,
                                    'lang'  => true]);
-      }
+        }
 
-      //Tags with just lang
-      $tags = ['dbconnection.title'
+       //Tags with just lang
+        $tags = ['dbconnection.title'
                                  => __('Slave database out of sync!'),
                     'dbconnection.delay'
                                  => __('The slave database is desynchronized. The difference is of:')];
 
-      foreach ($tags as $tag => $label) {
-         $this->addTagToList(['tag'   => $tag,
+        foreach ($tags as $tag => $label) {
+            $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
                                    'value' => false,
                                    'lang'  => true]);
-      }
+        }
 
-      asort($this->tag_descriptions);
-   }
-
+        asort($this->tag_descriptions);
+    }
 }

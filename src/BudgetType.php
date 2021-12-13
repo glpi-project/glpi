@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,11 +35,12 @@
  * Class BudgetType
  * @since 9.1
 **/
-class BudgetType extends CommonType {
+class BudgetType extends CommonType
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Budget type', 'Budget types', $nb);
-   }
-
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Budget type', 'Budget types', $nb);
+    }
 }

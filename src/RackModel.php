@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,15 +32,18 @@
  */
 
 /// Class RackModel
-class RackModel extends CommonDropdown {
+class RackModel extends CommonDropdown
+{
 
-   public $additional_fields_for_dictionnary = ['manufacturer'];
+    public $additional_fields_for_dictionnary = ['manufacturer'];
 
-   static function getTypeName($nb = 0) {
-      return _n('Rack model', 'Rack models', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Rack model', 'Rack models', $nb);
+    }
 
-   static function getIcon() {
-      return Rack::getIcon();
-   }
+    public static function getIcon()
+    {
+        return Rack::getIcon();
+    }
 }

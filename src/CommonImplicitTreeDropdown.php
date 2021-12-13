@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,18 +34,20 @@
 /// Class CommonImplicitTreeDropdown : Manage implicit tree, ie., trees that cannot be manage by
 /// the user. For instance, Network hierarchy only depends on network addresses and netmasks.
 /// @since 0.84
-class CommonImplicitTreeDropdown extends CommonTreeDropdown {
+class CommonImplicitTreeDropdown extends CommonTreeDropdown
+{
 
-   public $can_be_translated = true;
+    public $can_be_translated = true;
 
 
 
-   function getForbiddenStandardMassiveAction() {
+    public function getForbiddenStandardMassiveAction()
+    {
 
-      $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'CommonTreeDropdown'.MassiveAction::CLASS_ACTION_SEPARATOR.'move_under';
-      return $forbidden;
-   }
+        $forbidden   = parent::getForbiddenStandardMassiveAction();
+        $forbidden[] = 'CommonTreeDropdown' . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_under';
+        return $forbidden;
+    }
 
 
    /**
@@ -53,9 +56,10 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
     *
     * @return integer the id of the current object ancestor
    **/
-   function getNewAncestor() {
-      return 0; // By default, we rattach to the root element
-   }
+    public function getNewAncestor()
+    {
+        return 0; // By default, we rattach to the root element
+    }
 
 
    /**
@@ -64,137 +68,149 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
     *
     * @return array of IDs of the potential sons
    **/
-   function getPotentialSons() {
-      return []; // By default, we don't have any son
-   }
+    public function getPotentialSons()
+    {
+        return []; // By default, we don't have any son
+    }
 
-   function prepareInputForAdd($input) {
+    public function prepareInputForAdd($input)
+    {
 
-      $input[$this->getForeignKeyField()] = $this->getNewAncestor();
-      // We call the parent to manage tree
-      return parent::prepareInputForAdd($input);
-   }
+        $input[$this->getForeignKeyField()] = $this->getNewAncestor();
+       // We call the parent to manage tree
+        return parent::prepareInputForAdd($input);
+    }
 
-   function prepareInputForUpdate($input) {
+    public function prepareInputForUpdate($input)
+    {
 
-      $input[$this->getForeignKeyField()] = $this->getNewAncestor();
-      // We call the parent to manage tree
-      return parent::prepareInputForUpdate($input);
-   }
+        $input[$this->getForeignKeyField()] = $this->getNewAncestor();
+       // We call the parent to manage tree
+        return parent::prepareInputForUpdate($input);
+    }
 
-   function post_addItem() {
+    public function post_addItem()
+    {
 
-      $this->alterElementInsideTree("add");
-      parent::post_addItem();
-   }
+        $this->alterElementInsideTree("add");
+        parent::post_addItem();
+    }
 
-   function post_updateItem($history = 1) {
+    public function post_updateItem($history = 1)
+    {
 
-      $this->alterElementInsideTree("update");
-      parent::post_updateItem($history);
-   }
+        $this->alterElementInsideTree("update");
+        parent::post_updateItem($history);
+    }
 
-   function pre_deleteItem() {
+    public function pre_deleteItem()
+    {
 
-      $this->alterElementInsideTree("delete");
-      return parent::pre_deleteItem();
-   }
+        $this->alterElementInsideTree("delete");
+        return parent::pre_deleteItem();
+    }
 
 
    /**
     * The haveChildren=false must be define to be sure that CommonDropdown allows the deletion of a
     * node of the tree
    **/
-   function haveChildren() {
-      return false;
-   }
+    public function haveChildren()
+    {
+        return false;
+    }
 
 
    // Key function to manage the children of the node
-   private function alterElementInsideTree($step) {
-      global $DB;
+    private function alterElementInsideTree($step)
+    {
+        global $DB;
 
-      switch ($step) {
-         case 'add' :
-            $newParent     = $this->input[$this->getForeignKeyField()];
-            $potentialSons = $this->getPotentialSons();
-            break;
+        switch ($step) {
+            case 'add':
+                $newParent     = $this->input[$this->getForeignKeyField()];
+                $potentialSons = $this->getPotentialSons();
+                break;
 
-         case 'update' :
-            $oldParent     = $this->fields[$this->getForeignKeyField()];
-            $newParent     = $this->input[$this->getForeignKeyField()];
-            $potentialSons = $this->getPotentialSons();
-            break;
+            case 'update':
+                $oldParent     = $this->fields[$this->getForeignKeyField()];
+                $newParent     = $this->input[$this->getForeignKeyField()];
+                $potentialSons = $this->getPotentialSons();
+                break;
 
-         case 'delete' :
-            $oldParent     = $this->fields[$this->getForeignKeyField()];
-            $potentialSons = []; // Because there is no future sons !
-            break;
-      }
+            case 'delete':
+                $oldParent     = $this->fields[$this->getForeignKeyField()];
+                $potentialSons = []; // Because there is no future sons !
+                break;
+        }
 
-      /** Here :
-       * $oldParent contains the old parent, to check its sons to attach them to it
-       * $newParent contains the new parent, to check its sons to potentially attach them to this
-       *            item.
-       * $potentialSons list ALL potential childrens (sons as well as grandsons). That is use to
-       *                update them. (See getPotentialSons())
-      **/
+       /** Here :
+        * $oldParent contains the old parent, to check its sons to attach them to it
+        * $newParent contains the new parent, to check its sons to potentially attach them to this
+        *            item.
+        * $potentialSons list ALL potential childrens (sons as well as grandsons). That is use to
+        *                update them. (See getPotentialSons())
+       **/
 
-      if ($step != "add" && count($potentialSons)) { // Because there is no old sons of new node
-         // First, get all my current direct sons (old ones) that are not new potential sons
-         $iterator = $DB->request([
+        if ($step != "add" && count($potentialSons)) { // Because there is no old sons of new node
+           // First, get all my current direct sons (old ones) that are not new potential sons
+            $iterator = $DB->request([
             'SELECT' => ['id'],
             'FROM'   => $this->getTable(),
             'WHERE'  => [
                $this->getForeignKeyField()   => $this->getID(),
                'NOT'                         => ['id' => $potentialSons]
             ]
-         ]);
-         $oldSons = [];
-         foreach ($iterator as $oldSon) {
-            $oldSons[] = $oldSon["id"];
-         }
-         if (count($oldSons) > 0) { // Then make them pointing to old parent
-            $DB->update(
-               $this->getTable(), [
-                  $this->getForeignKeyField() => $oldParent
-               ], [
-                  'id' => $oldSons
-               ]
-            );
-            // Then, regenerate the old sons to reflect there new ancestors
-            $this->regenerateTreeUnderID($oldParent, true, true);
-            $this->cleanParentsSons($oldParent);
-         }
-      }
+            ]);
+            $oldSons = [];
+            foreach ($iterator as $oldSon) {
+                $oldSons[] = $oldSon["id"];
+            }
+            if (count($oldSons) > 0) { // Then make them pointing to old parent
+                $DB->update(
+                    $this->getTable(),
+                    [
+                    $this->getForeignKeyField() => $oldParent
+                    ],
+                    [
+                    'id' => $oldSons
+                    ]
+                );
+               // Then, regenerate the old sons to reflect there new ancestors
+                $this->regenerateTreeUnderID($oldParent, true, true);
+                $this->cleanParentsSons($oldParent);
+            }
+        }
 
-      if ($step != "delete" && count($potentialSons)) { // Because ther is no new sons for deleted nodes
-         // And, get all direct sons of my new Father that must be attached to me (ie : that are
-         // potential sons
-         $iterator = $DB->request([
+        if ($step != "delete" && count($potentialSons)) { // Because ther is no new sons for deleted nodes
+           // And, get all direct sons of my new Father that must be attached to me (ie : that are
+           // potential sons
+            $iterator = $DB->request([
             'SELECT' => ['id'],
             'FROM'   => $this->getTable(),
             'WHERE'  => [
                $this->getForeignKeyField()   => $newParent,
                'id'                          => $potentialSons
             ]
-         ]);
-         $newSons = [];
-         foreach ($iterator as $newSon) {
-            $newSons[] = $newSon["id"];
-         }
-         if (count($newSons) > 0) { // Then make them pointing to me
-            $DB->update(
-               $this->getTable(), [
-                  $this->getForeignKeyField() => $this->getID()
-               ], [
-                  'id' => $newSons
-               ]
-            );
-            // Then, regenerate the new sons to reflect there new ancestors
-            $this->regenerateTreeUnderID($this->getID(), true, true);
-            $this->cleanParentsSons();
-         }
-      }
-   }
+            ]);
+            $newSons = [];
+            foreach ($iterator as $newSon) {
+                $newSons[] = $newSon["id"];
+            }
+            if (count($newSons) > 0) { // Then make them pointing to me
+                $DB->update(
+                    $this->getTable(),
+                    [
+                    $this->getForeignKeyField() => $this->getID()
+                    ],
+                    [
+                    'id' => $newSons
+                    ]
+                );
+               // Then, regenerate the new sons to reflect there new ancestors
+                $this->regenerateTreeUnderID($this->getID(), true, true);
+                $this->cleanParentsSons();
+            }
+        }
+    }
 }

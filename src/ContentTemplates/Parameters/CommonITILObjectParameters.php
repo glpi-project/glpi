@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -53,8 +54,9 @@ use User;
  */
 abstract class CommonITILObjectParameters extends AbstractParameters
 {
-   public function getAvailableParameters(): array {
-      return [
+    public function getAvailableParameters(): array
+    {
+        return [
          new AttributeParameter("id", __('ID')),
          new AttributeParameter("ref", __("Reference (# + id)")),
          new AttributeParameter("link", _n('Link', 'Links', 1), "raw"),
@@ -76,17 +78,18 @@ abstract class CommonITILObjectParameters extends AbstractParameters
          new ArrayParameter("observers.groups", new GroupParameters(), _n('Watcher group', 'Watcher groups', Session::getPluralNumber())),
          new ArrayParameter("assignees.groups", new GroupParameters(), _n('Assigned group', 'Assigned groups', Session::getPluralNumber())),
          new ArrayParameter("assignees.suppliers", new SupplierParameters(), _n('Assigned supplier', 'Assigned suppliers', Session::getPluralNumber())),
-      ];
-   }
+        ];
+    }
 
-   protected function defineValues(CommonDBTM $commonitil): array {
-      /** @var CommonITILObject $commonitil  */
+    protected function defineValues(CommonDBTM $commonitil): array
+    {
+       /** @var CommonITILObject $commonitil  */
 
-      // Output "unsanitized" values
-      $fields = Sanitizer::unsanitize($commonitil->fields);
+       // Output "unsanitized" values
+        $fields = Sanitizer::unsanitize($commonitil->fields);
 
-      // Base values from ticket property
-      $values = [
+       // Base values from ticket property
+        $values = [
          'id'        => $fields['id'],
          'ref'       => "#" . $fields['id'],
          'link'      => $commonitil->getLink(),
@@ -99,72 +102,72 @@ abstract class CommonITILObjectParameters extends AbstractParameters
          'urgency'   => $commonitil::getUrgencyName($fields['urgency']),
          'impact'    => $commonitil::getImpactName($fields['impact']),
          'priority'  => $commonitil::getPriorityName($fields['priority']),
-      ];
+        ];
 
-      // Add ticket's entity
-      if ($entity = Entity::getById($fields['entities_id'])) {
-         $entity_parameters = new EntityParameters();
-         $values['entity'] = $entity_parameters->getValues($entity);
-      }
+       // Add ticket's entity
+        if ($entity = Entity::getById($fields['entities_id'])) {
+            $entity_parameters = new EntityParameters();
+            $values['entity'] = $entity_parameters->getValues($entity);
+        }
 
-      // Add ticket's category
-      if ($itilcategory = ITILCategory::getById($fields['itilcategories_id'])) {
-         $itilcategory_parameters = new ITILCategoryParameters();
-         $values['itilcategory'] = $itilcategory_parameters->getValues($itilcategory);
-      }
+       // Add ticket's category
+        if ($itilcategory = ITILCategory::getById($fields['itilcategories_id'])) {
+            $itilcategory_parameters = new ITILCategoryParameters();
+            $values['itilcategory'] = $itilcategory_parameters->getValues($itilcategory);
+        }
 
-      // Add requesters / observers / assigned data
-      $commonitil->loadActors();
+       // Add requesters / observers / assigned data
+        $commonitil->loadActors();
 
-      $values['requesters'] = [
+        $values['requesters'] = [
          'users'  => [],
          'groups' => [],
-      ];
-      $values['observers'] = [
+        ];
+        $values['observers'] = [
          'users'  => [],
          'groups' => [],
-      ];
-      $values['assignees'] = [
+        ];
+        $values['assignees'] = [
          'users'     => [],
          'groups'    => [],
          'suppliers' => [],
-      ];
+        ];
 
-      $user_parameters = new UserParameters();
-      $users_to_add = [
+        $user_parameters = new UserParameters();
+        $users_to_add = [
          'requesters' => CommonITILActor::REQUESTER,
          'observers'  => CommonITILActor::OBSERVER,
          'assignees'  => CommonITILActor::ASSIGN,
-      ];
-      foreach ($users_to_add as $key => $type) {
-         foreach ($commonitil->getUsers($type) as $data) {
-            if ($user = User::getById($data['users_id'])) {
-               $values[$key]['users'][] = $user_parameters->getValues($user);
+        ];
+        foreach ($users_to_add as $key => $type) {
+            foreach ($commonitil->getUsers($type) as $data) {
+                if ($user = User::getById($data['users_id'])) {
+                    $values[$key]['users'][] = $user_parameters->getValues($user);
+                }
             }
-         }
-      }
+        }
 
-      $group_parameters = new GroupParameters();
-      $groups_to_add = [
+        $group_parameters = new GroupParameters();
+        $groups_to_add = [
          'requesters' => CommonITILActor::REQUESTER,
          'observers'  => CommonITILActor::OBSERVER,
          'assignees'  => CommonITILActor::ASSIGN,
-      ];
-      foreach ($groups_to_add as $key => $type) {
-         foreach ($commonitil->getGroups($type) as $data) {
-            if ($group = Group::getById($data['groups_id'])) {
-               $values[$key]['groups'][] = $group_parameters->getValues($group);
+        ];
+        foreach ($groups_to_add as $key => $type) {
+            foreach ($commonitil->getGroups($type) as $data) {
+                if ($group = Group::getById($data['groups_id'])) {
+                    $values[$key]['groups'][] = $group_parameters->getValues($group);
+                }
             }
-         }
-      }
+        }
 
-      $supplier_parameters = new SupplierParameters();
-      foreach ($commonitil->getSuppliers(CommonITILActor::ASSIGN) as $data) {
-         if ($supplier = Supplier::getById($data['suppliers_id'])) {
-            $values['assignees']['suppliers'][] = $supplier_parameters->getValues($supplier);
-         }
-      }
+        $supplier_parameters = new SupplierParameters();
+        foreach ($commonitil->getSuppliers(CommonITILActor::ASSIGN) as $data) {
+            if ($supplier = Supplier::getById($data['suppliers_id'])) {
+                $values['assignees']['suppliers'][] = $supplier_parameters->getValues($supplier);
+            }
+        }
 
-      return $values;
-   }
+        return $values;
+    }
 }

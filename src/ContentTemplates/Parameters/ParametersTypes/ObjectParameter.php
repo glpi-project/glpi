@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -48,38 +49,42 @@ class ObjectParameter extends AbstractParameterType
     *
     * @var TemplatesParametersInterface
     */
-   protected $template_parameters;
+    protected $template_parameters;
 
    /**
     * @param TemplatesParametersInterface $template_parameters Parameters to add
     * @param null|string                  $key                 Key to access this value
     */
-   public function __construct(TemplatesParametersInterface $template_parameters, ?string $key = null) {
-      parent::__construct(
-         $key ?? $template_parameters->getDefaultNodeName(),
-         $template_parameters->getObjectLabel()
-      );
-      $this->template_parameters = $template_parameters;
-   }
+    public function __construct(TemplatesParametersInterface $template_parameters, ?string $key = null)
+    {
+        parent::__construct(
+            $key ?? $template_parameters->getDefaultNodeName(),
+            $template_parameters->getObjectLabel()
+        );
+        $this->template_parameters = $template_parameters;
+    }
 
-   public function compute(): array {
-      $sub_parameters = $this->template_parameters->getAvailableParameters();
-      $properties =  TemplateManager::computeParameters($sub_parameters);
+    public function compute(): array
+    {
+        $sub_parameters = $this->template_parameters->getAvailableParameters();
+        $properties =  TemplateManager::computeParameters($sub_parameters);
 
-      return [
+        return [
          'type'       => "ObjectParameter",
          'key'        => $this->key,
          'label'      => $this->label,
          'properties' => $properties,
-      ];
-   }
+        ];
+    }
 
-   public function getDocumentationUsage(?string $parent = null): string {
-      $parent = !empty($parent) ? "$parent." : "";
-      return "{{ {$parent}{$this->key}.XXX }}";
-   }
+    public function getDocumentationUsage(?string $parent = null): string
+    {
+        $parent = !empty($parent) ? "$parent." : "";
+        return "{{ {$parent}{$this->key}.XXX }}";
+    }
 
-   public function getDocumentationReferences(): ?TemplatesParametersInterface {
-      return $this->template_parameters;
-   }
+    public function getDocumentationReferences(): ?TemplatesParametersInterface
+    {
+        return $this->template_parameters;
+    }
 }

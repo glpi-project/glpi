@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,7 +36,8 @@ use Glpi\Toolbox\Sanitizer;
 /**
  *  NotificationMailing class implements the NotificationInterface
 **/
-class NotificationMailing implements NotificationInterface {
+class NotificationMailing implements NotificationInterface
+{
 
    /**
     * Check data
@@ -45,9 +47,10 @@ class NotificationMailing implements NotificationInterface {
     *
     * @return boolean
    **/
-   static function check($value, $options = []) {
-      return self::isUserAddressValid($value, $options);
-   }
+    public static function check($value, $options = [])
+    {
+        return self::isUserAddressValid($value, $options);
+    }
 
    /**
     * Determine if email is valid
@@ -58,114 +61,128 @@ class NotificationMailing implements NotificationInterface {
     *
     * @return boolean
    **/
-   static function isUserAddressValid($address, $options = ['checkdns'=>false]) {
-      //drop sanitize...
-      $address = Toolbox::stripslashes_deep($address);
-      $isValid = GLPIMailer::ValidateAddress($address);
+    public static function isUserAddressValid($address, $options = ['checkdns' => false])
+    {
+       //drop sanitize...
+        $address = Toolbox::stripslashes_deep($address);
+        $isValid = GLPIMailer::ValidateAddress($address);
 
-      $checkdns = (isset($options['checkdns']) ? $options['checkdns'] :  false);
-      if ($checkdns) {
-         $domain    = substr($address, strrpos($address, '@')+1);
-         if ($isValid
-               && !(checkdnsrr($domain, "MX") || checkdnsrr($domain, "A"))) {
-            // domain not found in DNS
-            $isValid = false;
-         }
-      }
-      return $isValid;
-   }
-
-
-   static function testNotification() {
-      global $CFG_GLPI;
-
-      $mmail = new GLPIMailer();
-
-      $mmail->AddCustomHeader("Auto-Submitted: auto-generated");
-      // For exchange
-      $mmail->AddCustomHeader("X-Auto-Response-Suppress: OOF, DR, NDR, RN, NRN");
-      $mmail->SetFrom($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"], false);
-
-      $text = __('This is a test email.')."\n-- \n".$CFG_GLPI["mailing_signature"];
-      $recipient = $CFG_GLPI['admin_email'];
-      if (defined('GLPI_FORCE_MAIL')) {
-         //force recipient to configured email address
-         $recipient = GLPI_FORCE_MAIL;
-         //add original email addess to message body
-         $text .= "\n" . sprintf(__('Original email address was %1$s'), $CFG_GLPI['admin_email']);
-      }
-
-      $mmail->AddAddress($recipient, $CFG_GLPI["admin_email_name"]);
-      $mmail->Subject = "[GLPI] ".__('Mail test');
-      $mmail->Body    = $text;
-
-      if (!$mmail->Send()) {
-         Session::addMessageAfterRedirect(__('Failed to send test email to administrator'), false,
-                                          ERROR);
-         GLPINetwork::addErrorMessageAfterRedirect();
-         return false;
-      } else {
-         Session::addMessageAfterRedirect(__('Test email sent to administrator'));
-         return true;
-      }
-   }
+        $checkdns = (isset($options['checkdns']) ? $options['checkdns'] :  false);
+        if ($checkdns) {
+            $domain    = substr($address, strrpos($address, '@') + 1);
+            if (
+                $isValid
+                && !(checkdnsrr($domain, "MX") || checkdnsrr($domain, "A"))
+            ) {
+                // domain not found in DNS
+                $isValid = false;
+            }
+        }
+        return $isValid;
+    }
 
 
-   function sendNotification($options = []) {
+    public static function testNotification()
+    {
+        global $CFG_GLPI;
 
-      $data = [];
-      $data['itemtype']                             = $options['_itemtype'];
-      $data['items_id']                             = $options['_items_id'];
-      $data['notificationtemplates_id']             = $options['_notificationtemplates_id'];
-      $data['entities_id']                          = $options['_entities_id'];
+        $mmail = new GLPIMailer();
 
-      $data["headers"]['Auto-Submitted']            = "auto-generated";
-      $data["headers"]['X-Auto-Response-Suppress']  = "OOF, DR, NDR, RN, NRN";
+        $mmail->AddCustomHeader("Auto-Submitted: auto-generated");
+       // For exchange
+        $mmail->AddCustomHeader("X-Auto-Response-Suppress: OOF, DR, NDR, RN, NRN");
+        $mmail->SetFrom($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"], false);
 
-      $data['sender']                               = $options['from'];
-      $data['sendername']                           = $options['fromname'];
+        $text = __('This is a test email.') . "\n-- \n" . $CFG_GLPI["mailing_signature"];
+        $recipient = $CFG_GLPI['admin_email'];
+        if (defined('GLPI_FORCE_MAIL')) {
+           //force recipient to configured email address
+            $recipient = GLPI_FORCE_MAIL;
+           //add original email addess to message body
+            $text .= "\n" . sprintf(__('Original email address was %1$s'), $CFG_GLPI['admin_email']);
+        }
 
-      if (isset($options['replyto']) && $options['replyto']) {
-         $data['replyto']       = $options['replyto'];
-         if (isset($options['replytoname'])) {
-            $data['replytoname']   = $options['replytoname'];
-         }
-      }
+        $mmail->AddAddress($recipient, $CFG_GLPI["admin_email_name"]);
+        $mmail->Subject = "[GLPI] " . __('Mail test');
+        $mmail->Body    = $text;
 
-      $data['name']                                 = $options['subject'];
+        if (!$mmail->Send()) {
+            Session::addMessageAfterRedirect(
+                __('Failed to send test email to administrator'),
+                false,
+                ERROR
+            );
+            GLPINetwork::addErrorMessageAfterRedirect();
+            return false;
+        } else {
+            Session::addMessageAfterRedirect(__('Test email sent to administrator'));
+            return true;
+        }
+    }
 
-      $data['body_text']                            = $options['content_text'];
-      if (!empty($options['content_html'])) {
-         $data['body_html'] = $options['content_html'];
-      }
 
-      $data['recipient']                            = Toolbox::stripslashes_deep($options['to']);
-      $data['recipientname']                        = $options['toname'];
+    public function sendNotification($options = [])
+    {
 
-      if (!empty($options['messageid'])) {
-         $data['messageid'] = $options['messageid'];
-      }
+        $data = [];
+        $data['itemtype']                             = $options['_itemtype'];
+        $data['items_id']                             = $options['_items_id'];
+        $data['notificationtemplates_id']             = $options['_notificationtemplates_id'];
+        $data['entities_id']                          = $options['_entities_id'];
 
-      if (isset($options['documents'])) {
-         $data['documents'] = $options['documents'];
-      }
+        $data["headers"]['Auto-Submitted']            = "auto-generated";
+        $data["headers"]['X-Auto-Response-Suppress']  = "OOF, DR, NDR, RN, NRN";
 
-      $data['mode'] = Notification_NotificationTemplate::MODE_MAIL;
+        $data['sender']                               = $options['from'];
+        $data['sendername']                           = $options['fromname'];
 
-      $queue = new QueuedNotification();
+        if (isset($options['replyto']) && $options['replyto']) {
+            $data['replyto']       = $options['replyto'];
+            if (isset($options['replytoname'])) {
+                $data['replytoname']   = $options['replytoname'];
+            }
+        }
 
-      if (!$queue->add(Sanitizer::sanitize($data))) {
-         Session::addMessageAfterRedirect(__('Error inserting email to queue'), true, ERROR);
-         return false;
-      } else {
-         //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
-         Toolbox::logInFile("mail",
-                            sprintf(__('%1$s: %2$s'),
-                                    sprintf(__('An email to %s was added to queue'),
-                                            $options['to']),
-                                    $options['subject']."\n"));
-      }
+        $data['name']                                 = $options['subject'];
 
-      return true;
-   }
+        $data['body_text']                            = $options['content_text'];
+        if (!empty($options['content_html'])) {
+            $data['body_html'] = $options['content_html'];
+        }
+
+        $data['recipient']                            = Toolbox::stripslashes_deep($options['to']);
+        $data['recipientname']                        = $options['toname'];
+
+        if (!empty($options['messageid'])) {
+            $data['messageid'] = $options['messageid'];
+        }
+
+        if (isset($options['documents'])) {
+            $data['documents'] = $options['documents'];
+        }
+
+        $data['mode'] = Notification_NotificationTemplate::MODE_MAIL;
+
+        $queue = new QueuedNotification();
+
+        if (!$queue->add(Sanitizer::sanitize($data))) {
+            Session::addMessageAfterRedirect(__('Error inserting email to queue'), true, ERROR);
+            return false;
+        } else {
+           //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
+            Toolbox::logInFile(
+                "mail",
+                sprintf(
+                    __('%1$s: %2$s'),
+                    sprintf(
+                        __('An email to %s was added to queue'),
+                        $options['to']
+                    ),
+                    $options['subject'] . "\n"
+                )
+            );
+        }
+
+        return true;
+    }
 }

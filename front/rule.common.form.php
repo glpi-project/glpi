@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -38,53 +39,70 @@
 use Glpi\Event;
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
+    die("Sorry. You can't access this file directly");
 }
 
 $rule = $rulecollection->getRuleClass();
 $rulecollection->checkGlobal(READ);
 
 if (!isset($_GET["id"])) {
-   $_GET["id"] = "";
+    $_GET["id"] = "";
 }
 $ruleaction   = new RuleAction(get_class($rule));
 
 if (isset($_POST["add_action"])) {
-   $rulecollection->checkGlobal(CREATE);
-   $ruleaction->add($_POST);
+    $rulecollection->checkGlobal(CREATE);
+    $ruleaction->add($_POST);
 
-   Html::back();
-
+    Html::back();
 } else if (isset($_POST["update"])) {
-   $rulecollection->checkGlobal(UPDATE);
-   $rule->update($_POST);
+    $rulecollection->checkGlobal(UPDATE);
+    $rule->update($_POST);
 
-   Event::log($_POST['id'], "rules", 4, "setup",
-              //TRANS: %s is the user login
-              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
-   Html::back();
-
+    Event::log(
+        $_POST['id'],
+        "rules",
+        4,
+        "setup",
+        //TRANS: %s is the user login
+        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+    );
+    Html::back();
 } else if (isset($_POST["add"])) {
-   $rulecollection->checkGlobal(CREATE);
+    $rulecollection->checkGlobal(CREATE);
 
-   $newID = $rule->add($_POST);
-   Event::log($newID, "rules", 4, "setup",
-              sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID));
-   Html::redirect($_SERVER['HTTP_REFERER']."?id=$newID");
-
+    $newID = $rule->add($_POST);
+    Event::log(
+        $newID,
+        "rules",
+        4,
+        "setup",
+        sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID)
+    );
+    Html::redirect($_SERVER['HTTP_REFERER'] . "?id=$newID");
 } else if (isset($_POST["purge"])) {
-   $rulecollection->checkGlobal(PURGE);
-   $rulecollection->deleteRuleOrder($_POST["ranking"]);
-   $rule->delete($_POST, 1);
+    $rulecollection->checkGlobal(PURGE);
+    $rulecollection->deleteRuleOrder($_POST["ranking"]);
+    $rule->delete($_POST, 1);
 
-   Event::log($_POST["id"], "rules", 4, "setup",
-              //TRANS: %s is the user login
-              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
-   $rule->redirectToList();
+    Event::log(
+        $_POST["id"],
+        "rules",
+        4,
+        "setup",
+        //TRANS: %s is the user login
+        sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+    );
+    $rule->redirectToList();
 }
 
-Html::header(Rule::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'admin',
-             $rulecollection->menu_type, $rulecollection->menu_option);
+Html::header(
+    Rule::getTypeName(Session::getPluralNumber()),
+    $_SERVER['PHP_SELF'],
+    'admin',
+    $rulecollection->menu_type,
+    $rulecollection->menu_option
+);
 
 $rule->display([
    'id'           => $_GET["id"],

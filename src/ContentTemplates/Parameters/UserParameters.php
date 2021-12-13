@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -50,20 +51,24 @@ use UserTitle;
  */
 class UserParameters extends AbstractParameters
 {
-   public static function getDefaultNodeName(): string {
-      return 'user';
-   }
+    public static function getDefaultNodeName(): string
+    {
+        return 'user';
+    }
 
-   public static function getObjectLabel(): string {
-      return User::getTypeName(1);
-   }
+    public static function getObjectLabel(): string
+    {
+        return User::getTypeName(1);
+    }
 
-   protected function getTargetClasses(): array {
-      return [User::class];
-   }
+    protected function getTargetClasses(): array
+    {
+        return [User::class];
+    }
 
-   public function getAvailableParameters(): array {
-      return [
+    public function getAvailableParameters(): array
+    {
+        return [
          new AttributeParameter("id", __('ID')),
          new AttributeParameter("login", __('Login')),
          new AttributeParameter("fullname", __('Full name')),
@@ -78,16 +83,17 @@ class UserParameters extends AbstractParameters
          new ObjectParameter(new UserTitleParameters()),
          new ObjectParameter(new UserCategoryParameters()),
          new ArrayParameter('used_items', new AssetParameters(), "Used items"),
-      ];
-   }
+        ];
+    }
 
-   protected function defineValues(CommonDBTM $user): array {
-      global $CFG_GLPI;
+    protected function defineValues(CommonDBTM $user): array
+    {
+        global $CFG_GLPI;
 
-      // Output "unsanitized" values
-      $fields = Sanitizer::unsanitize($user->fields);
+       // Output "unsanitized" values
+        $fields = Sanitizer::unsanitize($user->fields);
 
-      $values = [
+        $values = [
          'id'        => $fields['id'],
          'login'     => $fields['name'],
          'fullname'  => $user->getFriendlyName(),
@@ -97,43 +103,43 @@ class UserParameters extends AbstractParameters
          'mobile'    => $fields['mobile'],
          'firstname' => $fields['firstname'],
          'realname'  => $fields['realname'],
-      ];
+        ];
 
-      // Add responsible
-      if ($responsible = User::getById($fields['users_id_supervisor'])) {
-         $values['responsible'] = $responsible->getFriendlyName();
-      }
+       // Add responsible
+        if ($responsible = User::getById($fields['users_id_supervisor'])) {
+            $values['responsible'] = $responsible->getFriendlyName();
+        }
 
-      // Add location
-      if ($location = Location::getById($fields['locations_id'])) {
-         $location_parameters = new LocationParameters();
-         $values['location'] = $location_parameters->getValues($location);
-      }
+       // Add location
+        if ($location = Location::getById($fields['locations_id'])) {
+            $location_parameters = new LocationParameters();
+            $values['location'] = $location_parameters->getValues($location);
+        }
 
-      // Add usertitle
-      if ($usertitle = UserTitle::getById($fields['usertitles_id'])) {
-         $usertitle_parameters = new UserTitleParameters();
-         $values['usertitle'] = $usertitle_parameters->getValues($usertitle);
-      }
+       // Add usertitle
+        if ($usertitle = UserTitle::getById($fields['usertitles_id'])) {
+            $usertitle_parameters = new UserTitleParameters();
+            $values['usertitle'] = $usertitle_parameters->getValues($usertitle);
+        }
 
-      // Add usercategory
-      if ($usercategory = UserCategory::getById($fields['usercategories_id'])) {
-         $usercategory_parameters = new UserCategoryParameters();
-         $values['usercategory'] = $usercategory_parameters->getValues($usercategory);
-      }
+       // Add usercategory
+        if ($usercategory = UserCategory::getById($fields['usercategories_id'])) {
+            $usercategory_parameters = new UserCategoryParameters();
+            $values['usercategory'] = $usercategory_parameters->getValues($usercategory);
+        }
 
-      // Add assets
-      $values['used_items'] = [];
-      foreach ($CFG_GLPI["asset_types"] as $asset_type) {
-         $item = new $asset_type();
-         foreach ($item->find(['users_id' => $fields['id']]) as $asset_item_data) {
-            $asset_parameters = new AssetParameters();
-            if ($asset_item = $item::getById($asset_item_data['id'])) {
-               $values['used_items'][] = $asset_parameters->getValues($asset_item);
+       // Add assets
+        $values['used_items'] = [];
+        foreach ($CFG_GLPI["asset_types"] as $asset_type) {
+            $item = new $asset_type();
+            foreach ($item->find(['users_id' => $fields['id']]) as $asset_item_data) {
+                $asset_parameters = new AssetParameters();
+                if ($asset_item = $item::getById($asset_item_data['id'])) {
+                    $values['used_items'][] = $asset_parameters->getValues($asset_item);
+                }
             }
-         }
-      }
+        }
 
-      return $values;
-   }
+        return $values;
+    }
 }

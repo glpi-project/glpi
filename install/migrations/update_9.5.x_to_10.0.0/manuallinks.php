@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -29,6 +30,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
 /**
  * @var DB $DB
  * @var Migration $migration
@@ -38,7 +40,7 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 
 if (!$DB->tableExists('glpi_manuallinks')) {
-   $query = "CREATE TABLE `glpi_manuallinks` (
+    $query = "CREATE TABLE `glpi_manuallinks` (
       `id` int NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
       `url` varchar(8096) NOT NULL,
@@ -55,5 +57,5 @@ if (!$DB->tableExists('glpi_manuallinks')) {
       KEY `date_creation` (`date_creation`),
       KEY `date_mod` (`date_mod`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_manuallinks");
+    $DB->queryOrDie($query, "10.0 add table glpi_manuallinks");
 }

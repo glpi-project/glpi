@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,22 +33,22 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkCentralAccess();
 
 Html::header(Rule::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "rule", -1);
 
 echo TemplateRenderer::getInstance()->render(
-   'pages/admin/rules_list.html.twig',
-   [
+    'pages/admin/rules_list.html.twig',
+    [
       'rules_group' => [
          [
             'type'    => __('Rule type'),
             'entries' => RuleCollection::getRules(),
          ],
       ]
-   ]
+    ]
 );
 
 Html::footer();

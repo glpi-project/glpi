@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,28 +38,29 @@ use Session;
 
 class StatDataTicketNumber extends StatDataAlwaysDisplay
 {
-   public function __construct(array $params) {
-      parent::__construct($params);
+    public function __construct(array $params)
+    {
+        parent::__construct($params);
 
-      $avgsolved     = $this->getDataByType($params, "inter_avgsolvedtime");
-      $avgclosed     = $this->getDataByType($params, "inter_avgclosedtime");
-      $avgactiontime = $this->getDataByType($params, "inter_avgactiontime");
+        $avgsolved     = $this->getDataByType($params, "inter_avgsolvedtime");
+        $avgclosed     = $this->getDataByType($params, "inter_avgclosedtime");
+        $avgactiontime = $this->getDataByType($params, "inter_avgactiontime");
 
-      foreach ($avgsolved as $key => &$val) {
-         $val = round($val / HOUR_TIMESTAMP, 2);
-      }
-      unset($val);
-      foreach ($avgclosed as $key => &$val) {
-         $val = round($val / HOUR_TIMESTAMP, 2);
-      }
-      unset($val);
-      foreach ($avgactiontime as $key => &$val) {
-         $val = round($val / HOUR_TIMESTAMP, 2);
-      }
-      unset($val);
+        foreach ($avgsolved as $key => &$val) {
+            $val = round($val / HOUR_TIMESTAMP, 2);
+        }
+        unset($val);
+        foreach ($avgclosed as $key => &$val) {
+            $val = round($val / HOUR_TIMESTAMP, 2);
+        }
+        unset($val);
+        foreach ($avgactiontime as $key => &$val) {
+            $val = round($val / HOUR_TIMESTAMP, 2);
+        }
+        unset($val);
 
-      $this->labels = array_keys($avgsolved);
-      $this->series = [
+        $this->labels = array_keys($avgsolved);
+        $this->series = [
          [
             'name' => __('Closure'),
             'data' => $avgsolved,
@@ -69,23 +71,24 @@ class StatDataTicketNumber extends StatDataAlwaysDisplay
             'name' => __('Real duration'),
             'data' => $avgactiontime,
          ]
-      ];
+        ];
 
-      if ($params['itemtype'] == 'Ticket') {
-         $avgtaketime = $this->getDataByType($params, "inter_avgtakeaccount");
-         foreach ($avgtaketime as $key => &$val) {
-            $val = round($val / HOUR_TIMESTAMP, 2);
-         }
-         unset($val);
+        if ($params['itemtype'] == 'Ticket') {
+            $avgtaketime = $this->getDataByType($params, "inter_avgtakeaccount");
+            foreach ($avgtaketime as $key => &$val) {
+                $val = round($val / HOUR_TIMESTAMP, 2);
+            }
+            unset($val);
 
-         $this->series[] = [
+            $this->series[] = [
             'name' => __('Take into account'),
             'data' => $avgtaketime
-         ];
-      }
-   }
+            ];
+        }
+    }
 
-   public function getTitle(): string {
-      return __('Average time') . " - " .  _n('Hour', 'Hours', Session::getPluralNumber());
-   }
+    public function getTitle(): string
+    {
+        return __('Average time') . " - " .  _n('Hour', 'Hours', Session::getPluralNumber());
+    }
 }

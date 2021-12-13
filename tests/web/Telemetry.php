@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,38 +37,41 @@ use DbTestCase;
 
 /* Test for inc/telemetry.class.php requiring the Web server*/
 
-class Telemetry extends DbTestCase {
+class Telemetry extends DbTestCase
+{
 
-   public function testGrabWebserverInfos() {
-      $infos = \Telemetry::grabWebserverInfos();
-      $this->array($infos)
+    public function testGrabWebserverInfos()
+    {
+        $infos = \Telemetry::grabWebserverInfos();
+        $this->array($infos)
          ->hasSize(2)
          ->hasKeys(['engine', 'version']);
-      $this->string($infos['engine'])->isNotNull();
-      $this->string($infos['version'])->isNotNull();
-   }
+        $this->string($infos['engine'])->isNotNull();
+        $this->string($infos['version'])->isNotNull();
+    }
 
-   public function testGetTelemetryInfos() {
-      $infos = \Telemetry::getTelemetryInfos();
-      $this->array($infos)->keys->isEqualTo([
+    public function testGetTelemetryInfos()
+    {
+        $infos = \Telemetry::getTelemetryInfos();
+        $this->array($infos)->keys->isEqualTo([
          'glpi',
          'system'
-      ]);
+        ]);
 
-      $this->array($infos['glpi'])->keys->isEqualTo([
+        $this->array($infos['glpi'])->keys->isEqualTo([
          'uuid',
          'version',
          'plugins',
          'default_language',
          'install_mode',
          'usage'
-      ]);
+        ]);
 
-      $this->array($infos['system'])->keys->isEqualTo([
+        $this->array($infos['system'])->keys->isEqualTo([
          'db',
          'web_server',
          'php',
          'os'
-      ]);
-   }
+        ]);
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,11 +31,12 @@
  * ---------------------------------------------------------------------
  */
 
-class DeviceBatteryType extends CommonDeviceType {
+class DeviceBatteryType extends CommonDeviceType
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Battery type', 'Battery types', $nb);
-   }
-
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Battery type', 'Battery types', $nb);
+    }
 }

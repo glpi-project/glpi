@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,88 +35,91 @@ namespace tests\units;
 
 use DbTestCase;
 
-class Item_DeviceSensor extends DbTestCase {
+class Item_DeviceSensor extends DbTestCase
+{
 
-   public function testCreate() {
-      $this->login();
-      $obj = new \Item_DeviceSensor();
+    public function testCreate()
+    {
+        $this->login();
+        $obj = new \Item_DeviceSensor();
 
-      // Add
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $this->object($computer)->isInstanceOf('\Computer');
-      $deviceSensor = getItemByTypeName('DeviceSensor', '_test_sensor_1');
-      $this->object($deviceSensor)->isInstanceOf('\DeviceSensor');
-      $in = [
+       // Add
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $this->object($computer)->isInstanceOf('\Computer');
+        $deviceSensor = getItemByTypeName('DeviceSensor', '_test_sensor_1');
+        $this->object($deviceSensor)->isInstanceOf('\DeviceSensor');
+        $in = [
             'itemtype'           => 'Computer',
             'items_id'           => $computer->getID(),
             'devicesensors_id'  => $deviceSensor->getID(),
             'entities_id'        => 0,
-      ];
-      $id = $obj->add($in);
-      $this->integer((int)$id)->isGreaterThan(0);
-      $this->boolean($obj->getFromDB($id))->isTrue();
+        ];
+        $id = $obj->add($in);
+        $this->integer((int)$id)->isGreaterThan(0);
+        $this->boolean($obj->getFromDB($id))->isTrue();
 
-      // getField methods
-      $this->variable($obj->getField('id'))->isEqualTo($id);
-      foreach ($in as $k => $v) {
-         $this->variable($obj->getField($k))->isEqualTo($v);
-      }
-   }
+       // getField methods
+        $this->variable($obj->getField('id'))->isEqualTo($id);
+        foreach ($in as $k => $v) {
+            $this->variable($obj->getField($k))->isEqualTo($v);
+        }
+    }
 
-   public function testUpdate() {
-      $this->login();
-      $obj = new \Item_DeviceSensor();
+    public function testUpdate()
+    {
+        $this->login();
+        $obj = new \Item_DeviceSensor();
 
-      // Add
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $this->object($computer)->isInstanceOf('\Computer');
-      $deviceSensor = getItemByTypeName('DeviceSensor', '_test_sensor_1');
-      $this->object($deviceSensor)->isInstanceOf('\DeviceSensor');
-      $id = $obj->add([
+       // Add
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $this->object($computer)->isInstanceOf('\Computer');
+        $deviceSensor = getItemByTypeName('DeviceSensor', '_test_sensor_1');
+        $this->object($deviceSensor)->isInstanceOf('\DeviceSensor');
+        $id = $obj->add([
             'itemtype'           => 'Computer',
             'items_id'           => $computer->getID(),
             'devicesensors_id'   => $deviceSensor->getID(),
             'entities_id'        => 0,
-      ]);
-       $this->integer($id)->isGreaterThan(0);
+        ]);
+        $this->integer($id)->isGreaterThan(0);
 
-      // Update
-      $id = $obj->getID();
-      $in = [
+       // Update
+        $id = $obj->getID();
+        $in = [
             'id'                       => $id,
             'serial'                   => $this->getUniqueString(),
-      ];
-      $this->boolean($obj->update($in))->isTrue();
-      $this->boolean($obj->getFromDB($id))->isTrue();
+        ];
+        $this->boolean($obj->update($in))->isTrue();
+        $this->boolean($obj->getFromDB($id))->isTrue();
 
-      // getField methods
-      foreach ($in as $k => $v) {
-         $this->variable($obj->getField($k))->isEqualTo($v);
-      }
-   }
+       // getField methods
+        foreach ($in as $k => $v) {
+            $this->variable($obj->getField($k))->isEqualTo($v);
+        }
+    }
 
-   public function testDelete() {
-      $this->login();
-      $obj = new \Item_DeviceSensor();
+    public function testDelete()
+    {
+        $this->login();
+        $obj = new \Item_DeviceSensor();
 
-      // Add
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $this->object($computer)->isInstanceOf('\Computer');
-      $deviceSensor = getItemByTypeName('DeviceSensor', '_test_sensor_1');
-      $this->object($deviceSensor)->isInstanceOf('\DeviceSensor');
-      $id = $obj->add([
+       // Add
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $this->object($computer)->isInstanceOf('\Computer');
+        $deviceSensor = getItemByTypeName('DeviceSensor', '_test_sensor_1');
+        $this->object($deviceSensor)->isInstanceOf('\DeviceSensor');
+        $id = $obj->add([
             'itemtype'           => 'Computer',
             'items_id'           => $computer->getID(),
             'devicesensors_id'   => $deviceSensor->getID(),
             'entities_id'        => 0,
-      ]);
-      $this->integer($id)->isGreaterThan(0);
+        ]);
+        $this->integer($id)->isGreaterThan(0);
 
-      // Delete
-      $in = [
+       // Delete
+        $in = [
             'id'                       => $obj->getID(),
-      ];
-      $this->boolean($obj->delete($in))->isTrue();
-   }
-
+        ];
+        $this->boolean($obj->delete($in))->isTrue();
+    }
 }

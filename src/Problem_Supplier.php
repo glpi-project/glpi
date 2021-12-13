@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,13 +37,12 @@
  * @since 0.84
  *
 **/
-class Problem_Supplier extends CommonITILActor {
+class Problem_Supplier extends CommonITILActor
+{
 
    // From CommonDBRelation
-   static public $itemtype_1 = 'Problem';
-   static public $items_id_1 = 'problems_id';
-   static public $itemtype_2 = 'Supplier';
-   static public $items_id_2 = 'suppliers_id';
-
-
+    public static $itemtype_1 = 'Problem';
+    public static $items_id_1 = 'problems_id';
+    public static $itemtype_2 = 'Supplier';
+    public static $items_id_2 = 'suppliers_id';
 }

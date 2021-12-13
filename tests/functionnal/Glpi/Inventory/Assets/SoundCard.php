@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,10 +37,12 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/controller.class.php */
 
-class SoundCard extends AbstractInventoryAsset {
+class SoundCard extends AbstractInventoryAsset
+{
 
-   protected function assetProvider() :array {
-      return [
+    protected function assetProvider(): array
+    {
+        return [
          [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -56,58 +59,61 @@ class SoundCard extends AbstractInventoryAsset {
   </REQUEST>",
             'expected'  => '{"description": "rev 21", "manufacturer": "Intel Corporation Sunrise Point-LP HD Audio", "name": "Audio device", "designation": "Audio device", "manufacturers_id": "Intel Corporation Sunrise Point-LP HD Audio", "comment": "rev 21", "is_dynamic": 1}'
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider assetProvider
     */
-   public function testPrepare($xml, $expected) {
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($xml);
-      $json = json_decode($data);
+    public function testPrepare($xml, $expected)
+    {
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\SoundCard($computer, $json->content->sounds);
-      $asset->setExtraData((array)$json->content);
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected));
-   }
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\SoundCard($computer, $json->content->sounds);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected));
+    }
 
-   public function testHandle() {
-      $computer = getItemByTypeName('Computer', '_test_pc01');
+    public function testHandle()
+    {
+        $computer = getItemByTypeName('Computer', '_test_pc01');
 
-      //first, check there are no soundcard linked to this computer
-      $ids = new \Item_DeviceSoundCard();
-      $this->boolean($ids->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+       //first, check there are no soundcard linked to this computer
+        $ids = new \Item_DeviceSoundCard();
+        $this->boolean($ids->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isFalse('A soundcard is already linked to computer!');
 
-      //convert data
-      $expected = $this->assetProvider()[0];
+       //convert data
+        $expected = $this->assetProvider()[0];
 
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($expected['xml']);
-      $json = json_decode($data);
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($expected['xml']);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\SoundCard($computer, $json->content->sounds);
-      $asset->setExtraData((array)$json->content);
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\SoundCard($computer, $json->content->sounds);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
 
-      //handle
-      $asset->handleLinks();
-      $asset->handle();
-      $this->boolean($ids->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+       //handle
+        $asset->handleLinks();
+        $asset->handle();
+        $this->boolean($ids->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isTrue('Soundcard has not been linked to computer :(');
-   }
+    }
 
-   public function testInventoryUpdate() {
-      $computer = new \Computer();
-      $device_sound = new \DeviceSoundCard();
-      $item_sound = new \Item_DeviceSoundCard();
+    public function testInventoryUpdate()
+    {
+        $computer = new \Computer();
+        $device_sound = new \DeviceSoundCard();
+        $item_sound = new \Item_DeviceSoundCard();
 
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <SOUNDS>
@@ -133,94 +139,94 @@ class SoundCard extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      //create manually a computer, with 3 sound cards
-      $computers_id = $computer->add([
+       //create manually a computer, with 3 sound cards
+        $computers_id = $computer->add([
          'name'   => 'pc002',
          'serial' => 'ggheb7ne7',
          'entities_id' => 0
-      ]);
-      $this->integer($computers_id)->isGreaterThan(0);
+        ]);
+        $this->integer($computers_id)->isGreaterThan(0);
 
-      $manufacturer = new \Manufacturer();
-      $manufacturers_id = $manufacturer->add([
+        $manufacturer = new \Manufacturer();
+        $manufacturers_id = $manufacturer->add([
          'name' => 'Intel Corporation'
-      ]);
-      $this->integer($manufacturers_id)->isGreaterThan(0);
+        ]);
+        $this->integer($manufacturers_id)->isGreaterThan(0);
 
-      $sound_1_id = $device_sound->add([
+        $sound_1_id = $device_sound->add([
          'designation' => 'Audio device',
          'manufacturers_id' => $manufacturers_id,
          'entities_id'  => 0
-      ]);
-      $this->integer($sound_1_id)->isGreaterThan(0);
+        ]);
+        $this->integer($sound_1_id)->isGreaterThan(0);
 
-      $item_sound_1_id = $item_sound->add([
+        $item_sound_1_id = $item_sound->add([
          'items_id'     => $computers_id,
          'itemtype'     => 'Computer',
          'devicesoundcards_id' => $sound_1_id
-      ]);
-      $this->integer($item_sound_1_id)->isGreaterThan(0);
+        ]);
+        $this->integer($item_sound_1_id)->isGreaterThan(0);
 
-      $manufacturers_id = $manufacturer->add([
+        $manufacturers_id = $manufacturer->add([
          'name' => 'Realtek'
-      ]);
-      $this->integer($manufacturers_id)->isGreaterThan(0);
+        ]);
+        $this->integer($manufacturers_id)->isGreaterThan(0);
 
-      $sound_2_id = $device_sound->add([
+        $sound_2_id = $device_sound->add([
          'designation' => 'Realtek High Definition Audio',
          'manufacturers_id' => $manufacturers_id,
          'entities_id'  => 0
-      ]);
-      $this->integer($sound_2_id)->isGreaterThan(0);
+        ]);
+        $this->integer($sound_2_id)->isGreaterThan(0);
 
-      $item_sound_2_id = $item_sound->add([
+        $item_sound_2_id = $item_sound->add([
          'items_id'     => $computers_id,
          'itemtype'     => 'Computer',
          'devicesoundcards_id' => $sound_2_id
-      ]);
-      $this->integer($item_sound_2_id)->isGreaterThan(0);
+        ]);
+        $this->integer($item_sound_2_id)->isGreaterThan(0);
 
-      $sound_3_id = $device_sound->add([
+        $sound_3_id = $device_sound->add([
          'designation' => 'My Sound Card',
          'manufacturers_id' => $manufacturers_id,
          'entities_id'  => 0
-      ]);
-      $this->integer($sound_3_id)->isGreaterThan(0);
+        ]);
+        $this->integer($sound_3_id)->isGreaterThan(0);
 
-      $item_sound_3_id = $item_sound->add([
+        $item_sound_3_id = $item_sound->add([
          'items_id'     => $computers_id,
          'itemtype'     => 'Computer',
          'devicesoundcards_id' => $sound_3_id
-      ]);
-      $this->integer($item_sound_3_id)->isGreaterThan(0);
+        ]);
+        $this->integer($item_sound_3_id)->isGreaterThan(0);
 
-      $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($sounds))->isIdenticalTo(3);
-      foreach ($sounds as $sound) {
-         $this->variable($sound['is_dynamic'])->isEqualTo(0);
-      }
+        $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($sounds))->isIdenticalTo(3);
+        foreach ($sounds as $sound) {
+            $this->variable($sound['is_dynamic'])->isEqualTo(0);
+        }
 
-      //computer inventory knows only "Intel" and "Realtek" sound cards
-      $this->doInventory($xml_source, true);
+       //computer inventory knows only "Intel" and "Realtek" sound cards
+        $this->doInventory($xml_source, true);
 
-      //we still have 3 sound cards
-      $sounds = $device_sound->find();
-      $this->integer(count($sounds))->isIdenticalTo(3);
+       //we still have 3 sound cards
+        $sounds = $device_sound->find();
+        $this->integer(count($sounds))->isIdenticalTo(3);
 
-      //we still have 3 sound cards items linked to the computer
-      $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($sounds))->isIdenticalTo(3);
+       //we still have 3 sound cards items linked to the computer
+        $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($sounds))->isIdenticalTo(3);
 
-      //sound cards present in the inventory source are now dynamic
-      $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($sounds))->isIdenticalTo(2);
+       //sound cards present in the inventory source are now dynamic
+        $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($sounds))->isIdenticalTo(2);
 
-      //sound card not present in the inventory is still not dynamic
-      $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
-      $this->integer(count($sounds))->isIdenticalTo(1);
+       //sound card not present in the inventory is still not dynamic
+        $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($sounds))->isIdenticalTo(1);
 
-      //Redo inventory, but with removed "Realtek" sound card
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+       //Redo inventory, but with removed "Realtek" sound card
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <SOUNDS>
@@ -240,22 +246,22 @@ class SoundCard extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      $this->doInventory($xml_source, true);
+        $this->doInventory($xml_source, true);
 
-      //we still have 3 sound cards
-      $sounds = $device_sound->find();
-      $this->integer(count($sounds))->isIdenticalTo(3);
+       //we still have 3 sound cards
+        $sounds = $device_sound->find();
+        $this->integer(count($sounds))->isIdenticalTo(3);
 
-      //we now have 2 sound cards linked to computer only
-      $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($sounds))->isIdenticalTo(2);
+       //we now have 2 sound cards linked to computer only
+        $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($sounds))->isIdenticalTo(2);
 
-      //sound card present in the inventory source is still dynamic
-      $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($sounds))->isIdenticalTo(1);
+       //sound card present in the inventory source is still dynamic
+        $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($sounds))->isIdenticalTo(1);
 
-      //sound card not present in the inventory is still not dynamic
-      $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
-      $this->integer(count($sounds))->isIdenticalTo(1);
-   }
+       //sound card not present in the inventory is still not dynamic
+        $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($sounds))->isIdenticalTo(1);
+    }
 }

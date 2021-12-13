@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -38,56 +39,59 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DebugCommand extends Command {
+class DebugCommand extends Command
+{
 
-   protected $requires_db_up_to_date = false;
+    protected $requires_db_up_to_date = false;
 
-   protected function configure() {
-      parent::configure();
+    protected function configure()
+    {
+        parent::configure();
 
-      $this->setName('glpi:cache:debug');
-      $this->setAliases(['cache:debug']);
-      $this->setDescription('Debug GLPI cache.');
+        $this->setName('glpi:cache:debug');
+        $this->setAliases(['cache:debug']);
+        $this->setDescription('Debug GLPI cache.');
 
-      $this->addOption(
-         'key',
-         'k',
-         InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-         __('Cache key to debug.')
-      );
+        $this->addOption(
+            'key',
+            'k',
+            InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+            __('Cache key to debug.')
+        );
 
-      $this->addOption(
-         'context',
-         'c',
-         InputOption::VALUE_REQUIRED,
-         __('Cache context to clear (i.e. \'core\' or \'plugin:plugin_name\').'),
-         CacheManager::CONTEXT_CORE
-      );
-   }
+        $this->addOption(
+            'context',
+            'c',
+            InputOption::VALUE_REQUIRED,
+            __('Cache context to clear (i.e. \'core\' or \'plugin:plugin_name\').'),
+            CacheManager::CONTEXT_CORE
+        );
+    }
 
-   protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
 
-      $cache_manager = new CacheManager();
+        $cache_manager = new CacheManager();
 
-      $keys = $input->getOption('key');
-      $context = $input->getOption('context');
-      if (!in_array($context, $cache_manager->getKnownContexts())) {
-         throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
-            sprintf(__('Invalid cache context: "%s".'), $context)
-         );
-      }
+        $keys = $input->getOption('key');
+        $context = $input->getOption('context');
+        if (!in_array($context, $cache_manager->getKnownContexts())) {
+            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+                sprintf(__('Invalid cache context: "%s".'), $context)
+            );
+        }
 
-      $cache_instance = $cache_manager->getCacheInstance($context);
+        $cache_instance = $cache_manager->getCacheInstance($context);
 
-      foreach ($keys as $key) {
-         if (!$cache_instance->has($key)) {
-            $output->writeln('<comment>'. sprintf(__('Cache key "%s" is not set.'), $key) . '</comment>');
-         } else {
-            $output->writeln('<comment>'. sprintf(__('Cache key "%s" value:'), $key) . '</comment>');
-            $output->writeln(json_encode($cache_instance->get($key), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-         }
-      }
+        foreach ($keys as $key) {
+            if (!$cache_instance->has($key)) {
+                $output->writeln('<comment>' . sprintf(__('Cache key "%s" is not set.'), $key) . '</comment>');
+            } else {
+                $output->writeln('<comment>' . sprintf(__('Cache key "%s" value:'), $key) . '</comment>');
+                $output->writeln(json_encode($cache_instance->get($key), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+            }
+        }
 
-      return 0; // Success
-   }
+        return 0; // Success
+    }
 }

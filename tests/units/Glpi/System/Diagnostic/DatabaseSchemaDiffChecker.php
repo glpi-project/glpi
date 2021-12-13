@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,10 +33,12 @@
 
 namespace tests\units\Glpi\System\Diagnostic;
 
-class DatabaseSchemaIntegrityChecker extends \GLPITestCase {
+class DatabaseSchemaIntegrityChecker extends \GLPITestCase
+{
 
-   protected function sqlProvider() {
-      return [
+    protected function sqlProvider()
+    {
+        return [
          // AUTO_INCREMENT, integer display width, and comments should not be included in differences.
          [
             'proper_sql'     => <<<SQL
@@ -849,42 +852,42 @@ SQL
             'expected_has'   => false,
             'expected_diff'  => '',
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider sqlProvider
     */
-   public function testDifferences(
-      string $proper_sql,
-      string $effective_sql,
-      string $version_string,
-      array $args,
-      bool $expected_has,
-      string $expected_diff
-   ) {
+    public function testDifferences(
+        string $proper_sql,
+        string $effective_sql,
+        string $version_string,
+        array $args,
+        bool $expected_has,
+        string $expected_diff
+    ) {
 
-      $this->mockGenerator->orphanize('__construct');
+        $this->mockGenerator->orphanize('__construct');
 
-      $db = new \mock\DBmysql();
-      $db->use_utf8mb4 = $args['use_utf8mb4'] ?? true;
-      $this->calling($db)->getVersion = $version_string;
+        $db = new \mock\DBmysql();
+        $db->use_utf8mb4 = $args['use_utf8mb4'] ?? true;
+        $this->calling($db)->getVersion = $version_string;
 
-      $this->mockGenerator->orphanize('__construct');
-      $query_result = new \mock\mysqli_result();
-      $this->calling($query_result)->fetch_assoc = ['Create Table' => $effective_sql];
-      $this->calling($db)->query = $query_result;
+        $this->mockGenerator->orphanize('__construct');
+        $query_result = new \mock\mysqli_result();
+        $this->calling($query_result)->fetch_assoc = ['Create Table' => $effective_sql];
+        $this->calling($db)->query = $query_result;
 
-      $this->newTestedInstance(
-         $db,
-         $args['strict'] ?? true,
-         $args['ignore_innodb_migration'] ?? false,
-         $args['ignore_timestamps_migration'] ?? false,
-         $args['ignore_utf8mb4_migration'] ?? false,
-         $args['ignore_dynamic_row_format_migration'] ?? false
-      );
+        $this->newTestedInstance(
+            $db,
+            $args['strict'] ?? true,
+            $args['ignore_innodb_migration'] ?? false,
+            $args['ignore_timestamps_migration'] ?? false,
+            $args['ignore_utf8mb4_migration'] ?? false,
+            $args['ignore_dynamic_row_format_migration'] ?? false
+        );
 
-      $this->boolean($this->testedInstance->hasDifferences('table', $proper_sql))->isEqualTo($expected_has);
-      $this->string($this->testedInstance->getDiff('table', $proper_sql))->isEqualTo($expected_diff);
-   }
+        $this->boolean($this->testedInstance->hasDifferences('table', $proper_sql))->isEqualTo($expected_has);
+        $this->string($this->testedInstance->getDiff('table', $proper_sql))->isEqualTo($expected_diff);
+    }
 }

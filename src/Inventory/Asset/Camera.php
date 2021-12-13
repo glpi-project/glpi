@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -38,112 +39,116 @@ use Item_Devices;
 
 class Camera extends Device
 {
-   public function __construct(CommonDBTM $item, array $data = null) {
-      parent::__construct($item, $data, 'Item_DeviceCamera');
-   }
+    public function __construct(CommonDBTM $item, array $data = null)
+    {
+        parent::__construct($item, $data, 'Item_DeviceCamera');
+    }
 
-   public function prepare() :array {
+    public function prepare(): array
+    {
 
-      $mapping = [
+        $mapping = [
          'manufacturer'    => 'manufacturers_id',
          'model'           => 'devicecameramodels_id',
          'designation'     => 'name'
-      ];
+        ];
 
-      foreach ($this->data as &$val) {
-         foreach ($mapping as $origin => $dest) {
-            if (property_exists($val, $origin)) {
-               $val->$dest = $val->$origin;
+        foreach ($this->data as &$val) {
+            foreach ($mapping as $origin => $dest) {
+                if (property_exists($val, $origin)) {
+                    $val->$dest = $val->$origin;
+                }
             }
-         }
-         $val->is_dynamic = 1;
-      }
+            $val->is_dynamic = 1;
+        }
 
-      return $this->data;
-   }
+        return $this->data;
+    }
 
 
-   protected function itemdeviceAdded(Item_Devices $itemdevice, $val) {
+    protected function itemdeviceAdded(Item_Devices $itemdevice, $val)
+    {
 
-      //handle resolutions
-      if (property_exists($val, 'resolution')) {
-         $this->handleResolution($itemdevice, $val->resolution);
-      }
+       //handle resolutions
+        if (property_exists($val, 'resolution')) {
+            $this->handleResolution($itemdevice, $val->resolution);
+        }
 
-      if (property_exists($val, 'resolutionvideo')) {
-         $this->handleResolution($itemdevice, $val->resolutionvideo, true);
-      }
+        if (property_exists($val, 'resolutionvideo')) {
+            $this->handleResolution($itemdevice, $val->resolutionvideo, true);
+        }
 
-      if (property_exists($val, 'imageformats')) {
-         $this->handleFormats($itemdevice, $val->imageformats);
-      }
+        if (property_exists($val, 'imageformats')) {
+            $this->handleFormats($itemdevice, $val->imageformats);
+        }
+    }
 
-   }
+    private function handleResolution($itemdevice, $val, $is_video = false)
+    {
+        if (!is_array($val)) {
+            $val = [$val];
+        }
 
-   private function handleResolution($itemdevice, $val, $is_video = false) {
-      if (!is_array($val)) {
-         $val = [$val];
-      }
+        foreach ($val as $rsl) {
+            if (empty($rsl)) {
+                continue;
+            }
 
-      foreach ($val as $rsl) {
-         if (empty($rsl)) {
-            continue;
-         }
+            $resolution = new \ImageResolution();
+            if (!$resolution->getFromDBByCrit(['name' => addslashes($rsl)])) {
+                $resolution->add([
+                'name'         => addslashes($rsl),
+                'is_video'     => $is_video,
+                'is_dynamic'   => 1
+                ]);
+            }
 
-         $resolution = new \ImageResolution();
-         if (!$resolution->getFromDBByCrit(['name' => addslashes($rsl)])) {
-            $resolution->add([
-               'name'         => addslashes($rsl),
-               'is_video'     => $is_video,
-               'is_dynamic'   => 1
-            ]);
-         }
-
-         $cam_resolutions = new \Item_DeviceCamera_ImageResolution();
-         $data = [
+            $cam_resolutions = new \Item_DeviceCamera_ImageResolution();
+            $data = [
             'item_devicecameras_id' => $itemdevice->fields['devicecameras_id'],
             'imageresolutions_id' => $resolution->fields['id'],
             'is_dynamic' => 1
-         ];
+            ];
 
-         if (!$cam_resolutions->getFromDBByCrit($data)) {
-            $cam_resolutions->add($data);
-         }
-      }
-   }
+            if (!$cam_resolutions->getFromDBByCrit($data)) {
+                $cam_resolutions->add($data);
+            }
+        }
+    }
 
-   private function handleFormats($itemdevice, $val) {
-      if (!is_array($val)) {
-         $val = [$val];
-      }
+    private function handleFormats($itemdevice, $val)
+    {
+        if (!is_array($val)) {
+            $val = [$val];
+        }
 
-      $format = new \ImageFormat();
-      foreach ($val as $fmt) {
-         if (empty($val)) {
-            continue;
-         }
-         if (!$format->getFromDBByCrit(['name' => addslashes($fmt)])) {
-            $format->add([
-               'name' => addslashes($fmt),
-               'is_dynamic' => 1
-            ]);
-         }
+        $format = new \ImageFormat();
+        foreach ($val as $fmt) {
+            if (empty($val)) {
+                continue;
+            }
+            if (!$format->getFromDBByCrit(['name' => addslashes($fmt)])) {
+                $format->add([
+                'name' => addslashes($fmt),
+                'is_dynamic' => 1
+                ]);
+            }
 
-         $cam_formats = new \Item_DeviceCamera_ImageFormat();
-         $data = [
+            $cam_formats = new \Item_DeviceCamera_ImageFormat();
+            $data = [
             'item_devicecameras_id' => $itemdevice->fields['devicecameras_id'],
             'imageformats_id' => $format->fields['id'],
             'is_dynamic' => 1
-         ];
+            ];
 
-         if (!$cam_formats->getFromDBByCrit($data)) {
-            $cam_formats->add($data);
-         }
+            if (!$cam_formats->getFromDBByCrit($data)) {
+                $cam_formats->add($data);
+            }
+        }
+    }
 
-      }
-   }
-
-   public function checkConf(Conf $conf): bool {
-      return true;
-   }
+    public function checkConf(Conf $conf): bool
+    {
+        return true;
+    }
 }

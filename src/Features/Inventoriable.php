@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -43,19 +44,21 @@ use Html;
 use Plugin;
 use RefusedEquipment;
 
-trait Inventoriable {
+trait Inventoriable
+{
    /** @var CommonDBTM|null */
-   protected ?CommonDBTM $agent = null;
+    protected ?CommonDBTM $agent = null;
 
-   public function pre_purgeInventory() {
-      $file_name = $this->getInventoryFileName();
-      if ($file_name === null) {
-         //file does not exists
-         return true;
-      }
+    public function pre_purgeInventory()
+    {
+        $file_name = $this->getInventoryFileName();
+        if ($file_name === null) {
+           //file does not exists
+            return true;
+        }
 
-      return unlink($file_name);
-   }
+        return unlink($file_name);
+    }
 
 
    /**
@@ -65,138 +68,142 @@ trait Inventoriable {
     *
     * @return void|string
     */
-   public function getInventoryFileName(bool $prepend_dir_path = true): ?string {
-      $source = new \AutoUpdateSystem();
-      $source->getFromDBByCrit(['name' => 'GLPI Native Inventory']);
+    public function getInventoryFileName(bool $prepend_dir_path = true): ?string
+    {
+        $source = new \AutoUpdateSystem();
+        $source->getFromDBByCrit(['name' => 'GLPI Native Inventory']);
 
-      if (!$this->isDynamic() || !isset($source->fields['id']) || $this->fields['autoupdatesystems_id'] != $source->fields['id']) {
-         return null;
-      }
-
-      $inventory_dir_path = GLPI_INVENTORY_DIR . '/';
-      $itemtype = $this->agent->fields['itemtype'] ?? $this->getType();
-      $items_id = $this->agent->fields['items_id'] ?? $this->fields['id'];
-
-      $conf = new Conf();
-      //most files will be XML for now
-      $filename = $conf->buildInventoryFileName($itemtype, $items_id, 'xml');
-      if (!file_exists($inventory_dir_path . $filename)) {
-         $filename = $conf->buildInventoryFileName($itemtype, $items_id, 'json');
-         if (!file_exists($inventory_dir_path . $filename)) {
-            trigger_error('Inventory file missing: ' . $filename, E_USER_WARNING);
+        if (!$this->isDynamic() || !isset($source->fields['id']) || $this->fields['autoupdatesystems_id'] != $source->fields['id']) {
             return null;
-         }
-      }
+        }
 
-      return ($prepend_dir_path ? $inventory_dir_path : '') . $filename;
-   }
+        $inventory_dir_path = GLPI_INVENTORY_DIR . '/';
+        $itemtype = $this->agent->fields['itemtype'] ?? $this->getType();
+        $items_id = $this->agent->fields['items_id'] ?? $this->fields['id'];
+
+        $conf = new Conf();
+       //most files will be XML for now
+        $filename = $conf->buildInventoryFileName($itemtype, $items_id, 'xml');
+        if (!file_exists($inventory_dir_path . $filename)) {
+            $filename = $conf->buildInventoryFileName($itemtype, $items_id, 'json');
+            if (!file_exists($inventory_dir_path . $filename)) {
+                trigger_error('Inventory file missing: ' . $filename, E_USER_WARNING);
+                return null;
+            }
+        }
+
+        return ($prepend_dir_path ? $inventory_dir_path : '') . $filename;
+    }
 
    /**
     * Display information on inventory
     *
     * @return void
     */
-   protected function showInventoryInfo() {
-      global $CFG_GLPI, $DB;
+    protected function showInventoryInfo()
+    {
+        global $CFG_GLPI, $DB;
 
-      if (!$this->isDynamic()) {
-         return;
-      }
+        if (!$this->isDynamic()) {
+            return;
+        }
 
-      echo '<tr>';
-      echo '<th colspan="4">'.__('Inventory information');
+        echo '<tr>';
+        echo '<th colspan="4">' . __('Inventory information');
 
-      $agent = $this->getInventoryAgent();
+        $agent = $this->getInventoryAgent();
 
-      $download_file = $this->getInventoryFileName(false);
-      if ($download_file !== null) {
-          $href = sprintf(
-             "%s/front/document.send.php?file=_inventory/%s",
-             $CFG_GLPI["root_doc"],
-             $download_file
-          );
-          $title = sprintf(
-             //TRANS: parameter is the name of the asset
-             __('Download "%1$s" inventory file'),
-             $this->getName()
-          );
-
-         echo sprintf(
-            "<a href='%s' style='float: right;' target='_blank'><i class='fas fa-download' title='%s'></i></a>",
-            $href,
-            $title
-         );
-
-         if (static::class == RefusedEquipment::class) {
-            echo sprintf(
-               "<a href='%s' target='_blank' style='float: right;margin-right: .5em;'><i class='fas fa-redo' title='%s'></i></a>",
-               $CFG_GLPI['root_doc'] . '/front/inventory.php?refused=' . $this->fields['id'],
-               __('Try a reimport from stored inventory file')
+        $download_file = $this->getInventoryFileName(false);
+        if ($download_file !== null) {
+            $href = sprintf(
+                "%s/front/document.send.php?file=_inventory/%s",
+                $CFG_GLPI["root_doc"],
+                $download_file
             );
-         }
+            $title = sprintf(
+             //TRANS: parameter is the name of the asset
+                __('Download "%1$s" inventory file'),
+                $this->getName()
+            );
 
-      } else {
-         echo sprintf(
-            "<span style='float: right;'><i class='fas fa-ban'></i> <span class='sr-only'>%s</span></span>",
-            __('Inventory file missing')
-         );
-      }
+            echo sprintf(
+                "<a href='%s' style='float: right;' target='_blank'><i class='fas fa-download' title='%s'></i></a>",
+                $href,
+                $title
+            );
 
-      echo '</th>';
-      echo '</tr>';
+            if (static::class == RefusedEquipment::class) {
+                echo sprintf(
+                    "<a href='%s' target='_blank' style='float: right;margin-right: .5em;'><i class='fas fa-redo' title='%s'></i></a>",
+                    $CFG_GLPI['root_doc'] . '/front/inventory.php?refused=' . $this->fields['id'],
+                    __('Try a reimport from stored inventory file')
+                );
+            }
+        } else {
+            echo sprintf(
+                "<span style='float: right;'><i class='fas fa-ban'></i> <span class='sr-only'>%s</span></span>",
+                __('Inventory file missing')
+            );
+        }
 
-      if ($agent === null) {
-         echo '<tr class="tab_bg_1">';
-         echo '<td colspan="4">'.__('No agent has been linked.').'</td>';
-         echo "</tr>";
-      } else {
-         $this->displayAgentInformation();
-      }
+        echo '</th>';
+        echo '</tr>';
 
-      // Display auto inventory information
-      if (!empty($this->fields['id'])
-          && $this->fields["is_dynamic"]) {
-         echo "<tr class='tab_bg_1'><td colspan='4'>";
-         Plugin::doHook(Hooks::AUTOINVENTORY_INFORMATION, $this);
-         echo "</td></tr>";
-      }
-   }
+        if ($agent === null) {
+            echo '<tr class="tab_bg_1">';
+            echo '<td colspan="4">' . __('No agent has been linked.') . '</td>';
+            echo "</tr>";
+        } else {
+            $this->displayAgentInformation();
+        }
+
+       // Display auto inventory information
+        if (
+            !empty($this->fields['id'])
+            && $this->fields["is_dynamic"]
+        ) {
+            echo "<tr class='tab_bg_1'><td colspan='4'>";
+            Plugin::doHook(Hooks::AUTOINVENTORY_INFORMATION, $this);
+            echo "</td></tr>";
+        }
+    }
 
    /**
     * Display agent information
     */
-   protected function displayAgentInformation() {
-      global $CFG_GLPI;
+    protected function displayAgentInformation()
+    {
+        global $CFG_GLPI;
 
-      echo '<tr class="tab_bg_1">';
-      echo '<td>'.Agent::getTypeName(1).'</td>';
-      echo '<td>'.$this->agent->getLink().'</td>';
+        echo '<tr class="tab_bg_1">';
+        echo '<td>' . Agent::getTypeName(1) . '</td>';
+        echo '<td>' . $this->agent->getLink() . '</td>';
 
-      echo '<td>'.__('Useragent').'</td>';
-      echo '<td>'.$this->agent->fields['useragent'].'</td>';
-      echo '</tr>';
+        echo '<td>' . __('Useragent') . '</td>';
+        echo '<td>' . $this->agent->fields['useragent'] . '</td>';
+        echo '</tr>';
 
-      echo '<tr class="tab_bg_1">';
-      echo '<td>'.__('Inventory tag').'</td>';
-      echo '<td>'.$this->agent->fields['tag'].'</td>';
-      echo '<td>' . __('Last inventory') . '</td>';
-      echo '<td>' . Html::convDateTime($this->agent->fields['last_contact']) . '</td>';
-      echo '</tr>';
+        echo '<tr class="tab_bg_1">';
+        echo '<td>' . __('Inventory tag') . '</td>';
+        echo '<td>' . $this->agent->fields['tag'] . '</td>';
+        echo '<td>' . __('Last inventory') . '</td>';
+        echo '<td>' . Html::convDateTime($this->agent->fields['last_contact']) . '</td>';
+        echo '</tr>';
 
-      echo '<tr class="tab_bg_1">';
-      echo '<td>'.__('Agent status');
-      echo "<i id='update-status' class='fas fa-sync' style='float: right;cursor: pointer;' title='".__s('Ask agent about its current status')."'></i>";
-      echo '</td>';
-      echo '<td id="agent_status">' . __('Unknown') . '</td>';
-      echo '<td>' .  __('Request inventory');
-      echo "<i id='update-inventory' class='fas fa-sync' style='float: right;cursor: pointer;' title='".__s('Request agent to proceed an new inventory')."'></i>";
-      echo '</td>';
-      echo '<td id="inventory_status">' . __('None') . '</td>';
-      echo '</tr>';
+        echo '<tr class="tab_bg_1">';
+        echo '<td>' . __('Agent status');
+        echo "<i id='update-status' class='fas fa-sync' style='float: right;cursor: pointer;' title='" . __s('Ask agent about its current status') . "'></i>";
+        echo '</td>';
+        echo '<td id="agent_status">' . __('Unknown') . '</td>';
+        echo '<td>' .  __('Request inventory');
+        echo "<i id='update-inventory' class='fas fa-sync' style='float: right;cursor: pointer;' title='" . __s('Request agent to proceed an new inventory') . "'></i>";
+        echo '</td>';
+        echo '<td id="inventory_status">' . __('None') . '</td>';
+        echo '</tr>';
 
-      $status = Agent::ACTION_STATUS;
-      $inventory = Agent::ACTION_INVENTORY;
-      $js = <<<JAVASCRIPT
+        $status = Agent::ACTION_STATUS;
+        $inventory = Agent::ACTION_INVENTORY;
+        $js = <<<JAVASCRIPT
          $(function() {
             $('#update-status').on('click', function() {
                $.post({
@@ -222,14 +229,15 @@ trait Inventoriable {
 
          });
 JAVASCRIPT;
-      echo Html::scriptBlock($js);
-   }
+        echo Html::scriptBlock($js);
+    }
 
-   public function getInventoryAgent(): ?Agent {
-      global $DB;
+    public function getInventoryAgent(): ?Agent
+    {
+        global $DB;
 
-      $agent = new Agent();
-      $iterator = $DB->request([
+        $agent = new Agent();
+        $iterator = $DB->request([
          'SELECT'    => ['id'],
          'FROM'      => Agent::getTable(),
          'WHERE'     => [
@@ -238,42 +246,42 @@ JAVASCRIPT;
          ],
          'ORDERBY'   => ['last_contact DESC'],
          'LIMIT'     => 1
-      ]);
+        ]);
 
-      $has_agent = false;
-      if (count($iterator)) {
-         $has_agent = true;
-         $agent->getFromDB($iterator->current()['id']);
-      }
+        $has_agent = false;
+        if (count($iterator)) {
+            $has_agent = true;
+            $agent->getFromDB($iterator->current()['id']);
+        }
 
-      //if no agent has been found, check if there is a linked item for databases
-      if (!$has_agent && $this instanceof DatabaseInstance) {
-         if (!empty($this->fields['itemtype'] && !empty($this->fields['items_id']))) {
-            $has_agent = $agent->getFromDBByCrit([
-               'itemtype' => $this->fields['itemtype'],
-               'items_id' => $this->fields['items_id']
-            ]);
-         }
-      }
+       //if no agent has been found, check if there is a linked item for databases
+        if (!$has_agent && $this instanceof DatabaseInstance) {
+            if (!empty($this->fields['itemtype'] && !empty($this->fields['items_id']))) {
+                $has_agent = $agent->getFromDBByCrit([
+                'itemtype' => $this->fields['itemtype'],
+                'items_id' => $this->fields['items_id']
+                ]);
+            }
+        }
 
-      //if no agent has been found, check if there is a linked item, and find its agent
-      if (!$has_agent && $this instanceof Computer) {
-         $citem = new Computer_Item();
-         $has_relation = $citem->getFromDBByCrit([
+       //if no agent has been found, check if there is a linked item, and find its agent
+        if (!$has_agent && $this instanceof Computer) {
+            $citem = new Computer_Item();
+            $has_relation = $citem->getFromDBByCrit([
             'itemtype' => $this->getType(),
             'items_id' => $this->fields['id']
-         ]);
-         if ($has_relation) {
-            $has_agent = $agent->getFromDBByCrit([
-               'itemtype' => Computer::getType(),
-               'items_id' => $citem->fields['computers_id']
             ]);
-         }
-      }
+            if ($has_relation) {
+                $has_agent = $agent->getFromDBByCrit([
+                 'itemtype' => Computer::getType(),
+                 'items_id' => $citem->fields['computers_id']
+                ]);
+            }
+        }
 
-      if ($has_agent) {
-         $this->agent = $agent;
-      }
-      return $this->agent;
-   }
+        if ($has_agent) {
+            $this->agent = $agent;
+        }
+        return $this->agent;
+    }
 }

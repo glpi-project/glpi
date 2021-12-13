@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,19 +38,20 @@ use Glpi\ContentTemplates\TemplateManager;
 
 class AbstractParameters extends DbTestCase
 {
-   protected function testGetAvailableParameters($values, $parameters): void {
-      $parameters = TemplateManager::computeParameters($parameters);
+    protected function testGetAvailableParameters($values, $parameters): void
+    {
+        $parameters = TemplateManager::computeParameters($parameters);
 
-      $values_keys = array_keys($values);
-      $parameters_keys = array_column($parameters, 'key');
+        $values_keys = array_keys($values);
+        $parameters_keys = array_column($parameters, 'key');
 
-      // Remove "flat" arrays (requester.user, requester.groups, ...)
-      $parameters_keys = array_map(function($parameter) {
-         $properties = explode('.', $parameter);
-         return array_shift($properties);
-      }, $parameters_keys);
-      $parameters_keys = array_values(array_unique($parameters_keys));
+       // Remove "flat" arrays (requester.user, requester.groups, ...)
+        $parameters_keys = array_map(function ($parameter) {
+            $properties = explode('.', $parameter);
+            return array_shift($properties);
+        }, $parameters_keys);
+        $parameters_keys = array_values(array_unique($parameters_keys));
 
-      $this->array($parameters_keys)->isEqualTo($values_keys);
-   }
+        $this->array($parameters_keys)->isEqualTo($values_keys);
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,35 +32,40 @@
  */
 
 /// Class DeviceBatteryModel
-abstract class CommonDeviceModel extends CommonDropdown {
+abstract class CommonDeviceModel extends CommonDropdown
+{
 
-   static function getTypeName($nb = 0) {
-      return _n('Device model', 'Device models', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Device model', 'Device models', $nb);
+    }
 
-   static function getFormURL($full = true) {
-      global $CFG_GLPI;
+    public static function getFormURL($full = true)
+    {
+        global $CFG_GLPI;
 
-      $dir = ($full ? $CFG_GLPI['root_doc'] : '');
-      $itemtype = get_called_class();
-      $link = "$dir/front/devicemodel.form.php?itemtype=$itemtype";
+        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+        $itemtype = get_called_class();
+        $link = "$dir/front/devicemodel.form.php?itemtype=$itemtype";
 
-      return $link;
-   }
+        return $link;
+    }
 
-   static function getSearchURL($full = true) {
-      global $CFG_GLPI;
+    public static function getSearchURL($full = true)
+    {
+        global $CFG_GLPI;
 
-      $dir = ($full ? $CFG_GLPI['root_doc'] : '');
-      $itemtype = get_called_class();
-      $link = "$dir/front/devicemodel.php?itemtype=$itemtype";
+        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+        $itemtype = get_called_class();
+        $link = "$dir/front/devicemodel.php?itemtype=$itemtype";
 
-      return $link;
-   }
+        return $link;
+    }
 
-   static function getIcon() {
-      $model_class  = get_called_class();
-      $device_class = str_replace('Model', '', $model_class);
-      return $device_class::getIcon();
-   }
+    public static function getIcon()
+    {
+        $model_class  = get_called_class();
+        $device_class = str_replace('Model', '', $model_class);
+        return $device_class::getIcon();
+    }
 }

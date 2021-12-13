@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,12 +31,17 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("internet", READ);
 
-Html::header(NetworkName::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'config', 'commondropdown',
-            'NetworkName');
+Html::header(
+    NetworkName::getTypeName(Session::getPluralNumber()),
+    $_SERVER['PHP_SELF'],
+    'config',
+    'commondropdown',
+    'NetworkName'
+);
 
 Search::show('NetworkName');
 

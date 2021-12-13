@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -63,23 +64,24 @@
  *
  * @since 0.84
 **/
-abstract class CommonDBConnexity extends CommonDBTM {
+abstract class CommonDBConnexity extends CommonDBTM
+{
+    use Glpi\Features\Clonable;
 
-   use Glpi\Features\Clonable;
+    const DONT_CHECK_ITEM_RIGHTS  = 1; // Don't check the parent => always can*Child
+    const HAVE_VIEW_RIGHT_ON_ITEM = 2; // canXXXChild = true if parent::canView == true
+    const HAVE_SAME_RIGHT_ON_ITEM = 3; // canXXXChild = true if parent::canXXX == true
 
-   const DONT_CHECK_ITEM_RIGHTS  = 1; // Don't check the parent => always can*Child
-   const HAVE_VIEW_RIGHT_ON_ITEM = 2; // canXXXChild = true if parent::canView == true
-   const HAVE_SAME_RIGHT_ON_ITEM = 3; // canXXXChild = true if parent::canXXX == true
-
-   static public $canDeleteOnItemClean          = true;
+    public static $canDeleteOnItemClean          = true;
    /// Disable auto forwarding information about entities ?
-   static public $disableAutoEntityForwarding   = false;
+    public static $disableAutoEntityForwarding   = false;
 
 
-   public function getCloneRelations() :array {
-      return [
-      ];
-   }
+    public function getCloneRelations(): array
+    {
+        return [
+        ];
+    }
 
    /**
     * Return the SQL request to get all the connexities corresponding to $itemtype[$items_id]
@@ -93,9 +95,10 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @return array|null
     */
-   static function getSQLCriteriaToSearchForItem($itemtype, $items_id) {
-      return null;
-   }
+    public static function getSQLCriteriaToSearchForItem($itemtype, $items_id)
+    {
+        return null;
+    }
 
 
    /**
@@ -105,23 +108,24 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * @param string  $itemtype  type of the item
     * @param integer $items_id  id of the item
    **/
-   function cleanDBonItemDelete ($itemtype, $items_id) {
-      global $DB;
+    public function cleanDBonItemDelete($itemtype, $items_id)
+    {
+        global $DB;
 
-      $criteria = static::getSQLCriteriaToSearchForItem($itemtype, $items_id);
-      if ($criteria !== null) {
-         $input = [
+        $criteria = static::getSQLCriteriaToSearchForItem($itemtype, $items_id);
+        if ($criteria !== null) {
+            $input = [
             '_no_history'     => true,
             '_no_notif'       => true
-         ];
+            ];
 
-         $iterator = $DB->request($criteria);
-         foreach ($iterator as $data) {
-            $input[$this->getIndexName()] = $data[$this->getIndexName()];
-            $this->delete($input, 1);
-         }
-      }
-   }
+            $iterator = $DB->request($criteria);
+            foreach ($iterator as $data) {
+                $input[$this->getIndexName()] = $data[$this->getIndexName()];
+                $this->delete($input, 1);
+            }
+        }
+    }
 
 
    /**
@@ -137,12 +141,23 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @return CommonDBTM|boolean the item or false if we cannot load the item
    **/
-   function getConnexityItem($itemtype, $items_id, $getFromDB = true, $getEmpty = true,
-                             $getFromDBOrEmpty = false) {
+    public function getConnexityItem(
+        $itemtype,
+        $items_id,
+        $getFromDB = true,
+        $getEmpty = true,
+        $getFromDBOrEmpty = false
+    ) {
 
-      return static::getItemFromArray($itemtype, $items_id, $this->fields, $getFromDB,
-                                      $getEmpty, $getFromDBOrEmpty);
-   }
+        return static::getItemFromArray(
+            $itemtype,
+            $items_id,
+            $this->fields,
+            $getFromDB,
+            $getEmpty,
+            $getFromDBOrEmpty
+        );
+    }
 
    /**
     * get items associated to the given one (defined by $itemtype and $items_id)
@@ -155,18 +170,19 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @return array the items associated to the given one (empty if none was found)
    **/
-   static function getItemsAssociatedTo($itemtype, $items_id) {
-      $res = [];
-      $iterator = static::getItemsAssociationRequest($itemtype, $items_id);
+    public static function getItemsAssociatedTo($itemtype, $items_id)
+    {
+        $res = [];
+        $iterator = static::getItemsAssociationRequest($itemtype, $items_id);
 
-      foreach ($iterator as $row) {
-         $input = Toolbox::addslashes_deep($row);
-         $item = new static();
-         $item->getFromDB($input[static::getIndexName()]);
-         $res[] = $item;
-      }
-      return $res;
-   }
+        foreach ($iterator as $row) {
+            $input = Toolbox::addslashes_deep($row);
+            $item = new static();
+            $item->getFromDB($input[static::getIndexName()]);
+            $res[] = $item;
+        }
+        return $res;
+    }
 
    /**
     * get the request results to get items associated to the given one (defined by $itemtype and $items_id)
@@ -178,10 +194,11 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @return array the items associated to the given one (empty if none was found)
     */
-   static function getItemsAssociationRequest($itemtype, $items_id) {
-      global $DB;
-      return $DB->request(static::getSQLCriteriaToSearchForItem($itemtype, $items_id));
-   }
+    public static function getItemsAssociationRequest($itemtype, $items_id)
+    {
+        global $DB;
+        return $DB->request(static::getSQLCriteriaToSearchForItem($itemtype, $items_id));
+    }
 
    /**
     * Get item field name for cloning
@@ -190,7 +207,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @return string
     */
-   abstract public static function getItemField($itemtype): string;
+    abstract public static function getItemField($itemtype): string;
 
    /**
     * get associated item (defined by $itemtype and $items_id)
@@ -204,44 +221,54 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @return CommonDBTM|boolean the item or false if we cannot load the item
    **/
-   static function getItemFromArray($itemtype, $items_id, array $array, $getFromDB = true,
-                                    $getEmpty = true, $getFromDBOrEmpty = false) {
+    public static function getItemFromArray(
+        $itemtype,
+        $items_id,
+        array $array,
+        $getFromDB = true,
+        $getEmpty = true,
+        $getFromDBOrEmpty = false
+    ) {
 
-      if (preg_match('/^itemtype/', $itemtype)) {
-         if (isset($array[$itemtype])) {
-            $type = $array[$itemtype];
-         } else {
-            $type = '';
-         }
-      } else {
-         $type = $itemtype;
-      }
-      $item = ($type ? getItemForItemtype($type) : false);
+        if (preg_match('/^itemtype/', $itemtype)) {
+            if (isset($array[$itemtype])) {
+                $type = $array[$itemtype];
+            } else {
+                $type = '';
+            }
+        } else {
+            $type = $itemtype;
+        }
+        $item = ($type ? getItemForItemtype($type) : false);
 
-      if ($item !== false) {
-         if ($getFromDB
-             || $getFromDBOrEmpty) {
-            if (isset($array[$items_id])
-                && $item->getFromDB($array[$items_id])) {
-               return $item;
+        if ($item !== false) {
+            if (
+                $getFromDB
+                || $getFromDBOrEmpty
+            ) {
+                if (
+                    isset($array[$items_id])
+                    && $item->getFromDB($array[$items_id])
+                ) {
+                    return $item;
+                }
+                if ($getFromDBOrEmpty) {
+                    if ($item->getEmpty()) {
+                        return $item;
+                    }
+                }
+            } else if ($getEmpty) {
+                if ($item->getEmpty()) {
+                    return $item;
+                }
+            } else {
+                return $item;
             }
-            if ($getFromDBOrEmpty) {
-               if ($item->getEmpty()) {
-                  return $item;
-               }
-            }
-         } else if ($getEmpty) {
-            if ($item->getEmpty()) {
-               return $item;
-            }
-         } else {
-            return $item;
-         }
-         unset($item);
-      }
+            unset($item);
+        }
 
-      return false;
-   }
+        return false;
+    }
 
 
    /**
@@ -255,55 +282,62 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @return true if the attached item has changed, false if the attached items has not changed
     **/
-   function checkAttachedItemChangesAllowed(array $input, array $fields) {
+    public function checkAttachedItemChangesAllowed(array $input, array $fields)
+    {
 
-      // Merge both arrays to ensure all the fields are defined for the following checks
-      $input = array_merge($this->fields, $input);
+       // Merge both arrays to ensure all the fields are defined for the following checks
+        $input = array_merge($this->fields, $input);
 
-      $have_to_check = false;
-      foreach ($fields as $field_name) {
-         if ((isset($this->fields[$field_name]))
-             && ($input[$field_name] != $this->fields[$field_name])) {
+        $have_to_check = false;
+        foreach ($fields as $field_name) {
+            if (
+                (isset($this->fields[$field_name]))
+                && ($input[$field_name] != $this->fields[$field_name])
+            ) {
+                $have_to_check = true;
+                break;
+            }
+        }
 
-            $have_to_check = true;
-            break;
-         }
-      }
+        if ($have_to_check) {
+            $new_item = clone $this;
 
-      if ($have_to_check) {
+           // Solution 1 : If we cannot create the new item or delete the old item,
+           // then we cannot update the item
+            unset($new_item->fields);
+            if (
+                !$new_item->can(-1, CREATE, $input)
+                || !$this->can($this->getID(), DELETE)
+                || !$this->can($this->getID(), PURGE)
+            ) {
+                Session::addMessageAfterRedirect(
+                    __('Cannot update item: not enough right on the parent(s) item(s)'),
+                    INFO,
+                    true
+                );
+                return false;
+            }
 
-         $new_item = clone $this;
+           // Solution 2 : simple check ! Can we update the item with new values ?
+           // if (!$new_item->can($input['id'], 'w')) {
+           //    Session::addMessageAfterRedirect(__('Cannot update item: not enough right on the parent(s) item(s)'),
+           //                                     INFO, true);
+           //    return false;
+           // }
+        }
 
-         // Solution 1 : If we cannot create the new item or delete the old item,
-         // then we cannot update the item
-         unset($new_item->fields);
-         if (!$new_item->can(-1, CREATE, $input)
-              || !$this->can($this->getID(), DELETE)
-              || !$this->can($this->getID(), PURGE)) {
-            Session::addMessageAfterRedirect(__('Cannot update item: not enough right on the parent(s) item(s)'),
-                                             INFO, true);
-            return false;
-         }
-
-         // Solution 2 : simple check ! Can we update the item with new values ?
-         // if (!$new_item->can($input['id'], 'w')) {
-         //    Session::addMessageAfterRedirect(__('Cannot update item: not enough right on the parent(s) item(s)'),
-         //                                     INFO, true);
-         //    return false;
-         // }
-      }
-
-      return true;
-   }
+        return true;
+    }
 
    /**
     * Is auto entityForwarding needed ?
     *
     * @return boolean
     **/
-   function tryEntityForwarding() {
-      return (!static::$disableAutoEntityForwarding && $this->isEntityAssign());
-   }
+    public function tryEntityForwarding()
+    {
+        return (!static::$disableAutoEntityForwarding && $this->isEntityAssign());
+    }
 
 
    /**
@@ -325,19 +359,22 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @return boolean true if we have absolute right to create the current connexity
    **/
-   static function canConnexity($method, $item_right, $itemtype, $items_id) {
+    public static function canConnexity($method, $item_right, $itemtype, $items_id)
+    {
 
-      if (($item_right != self::DONT_CHECK_ITEM_RIGHTS)
-          && (!preg_match('/^itemtype/', $itemtype))) {
-         if ($item_right == self::HAVE_VIEW_RIGHT_ON_ITEM) {
-            $method = 'canView';
-         }
-         if (!$itemtype::$method()) {
-            return false;
-         }
-      }
-      return true;
-   }
+        if (
+            ($item_right != self::DONT_CHECK_ITEM_RIGHTS)
+            && (!preg_match('/^itemtype/', $itemtype))
+        ) {
+            if ($item_right == self::HAVE_VIEW_RIGHT_ON_ITEM) {
+                $method = 'canView';
+            }
+            if (!$itemtype::$method()) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 
    /**
@@ -355,39 +392,45 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @return true if we have absolute right to create the current connexity
    **/
-   function canConnexityItem($methodItem, $methodNotItem, $item_right, $itemtype, $items_id,
-                             CommonDBTM &$item = null) {
+    public function canConnexityItem(
+        $methodItem,
+        $methodNotItem,
+        $item_right,
+        $itemtype,
+        $items_id,
+        CommonDBTM &$item = null
+    ) {
 
-      // Do not get it twice
-      $connexityItem = $item;
-      if (is_null($connexityItem)) {
-         $connexityItem = $this->getConnexityItem($itemtype, $items_id);
+       // Do not get it twice
+        $connexityItem = $item;
+        if (is_null($connexityItem)) {
+            $connexityItem = $this->getConnexityItem($itemtype, $items_id);
 
-         // Set value in $item to reuse it on future calls
-         if ($connexityItem instanceof CommonDBTM) {
-            $item = $this->getConnexityItem($itemtype, $items_id);
-         }
-      }
-      if ($item_right != self::DONT_CHECK_ITEM_RIGHTS) {
-         if ($connexityItem !== false) {
-            if ($item_right == self::HAVE_VIEW_RIGHT_ON_ITEM) {
-               $methodNotItem = 'canView';
-               $methodItem    = 'canViewItem';
+           // Set value in $item to reuse it on future calls
+            if ($connexityItem instanceof CommonDBTM) {
+                $item = $this->getConnexityItem($itemtype, $items_id);
             }
-            // here, we can check item's global rights
-            if (preg_match('/^itemtype/', $itemtype)) {
-               if (!$connexityItem->$methodNotItem()) {
-                  return false;
-               }
+        }
+        if ($item_right != self::DONT_CHECK_ITEM_RIGHTS) {
+            if ($connexityItem !== false) {
+                if ($item_right == self::HAVE_VIEW_RIGHT_ON_ITEM) {
+                    $methodNotItem = 'canView';
+                    $methodItem    = 'canViewItem';
+                }
+               // here, we can check item's global rights
+                if (preg_match('/^itemtype/', $itemtype)) {
+                    if (!$connexityItem->$methodNotItem()) {
+                        return false;
+                    }
+                }
+                return $connexityItem->$methodItem();
+            } else {
+               // if we cannot get the parent, then we throw an exception
+                throw new CommonDBConnexityItemNotFound();
             }
-            return $connexityItem->$methodItem();
-         } else {
-            // if we cannot get the parent, then we throw an exception
-            throw new CommonDBConnexityItemNotFound();
-         }
-      }
-      return true;
-   }
+        }
+        return true;
+    }
 
 
    /**
@@ -401,10 +444,11 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * @return array as the third parameter of Log::history() method or false if we don't want to
     *         log for the given field
    **/
-   function getHistoryChangeWhenUpdateField($field) {
+    public function getHistoryChangeWhenUpdateField($field)
+    {
 
-      return ['0', addslashes($this->oldvalues[$field] ?? ''), addslashes($this->fields[$field] ?? '')];
-   }
+        return ['0', addslashes($this->oldvalues[$field] ?? ''), addslashes($this->fields[$field] ?? '')];
+    }
 
 
    /**
@@ -417,35 +461,36 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * @return array containing "previous" (if exists) and "new". Beware that both can be equal
     *         to false
    **/
-   function getItemsForLog($itemtype, $items_id) {
+    public function getItemsForLog($itemtype, $items_id)
+    {
 
-      $newItemArray = [
+        $newItemArray = [
          $items_id => $this->fields[$items_id],
-      ];
-      $previousItemArray = [];
+        ];
+        $previousItemArray = [];
 
-      if (isset($this->oldvalues[$items_id])) {
-         $previousItemArray[$items_id] = $this->oldvalues[$items_id];
-      } else {
-         $previousItemArray[$items_id] = $this->fields[$items_id];
-      }
+        if (isset($this->oldvalues[$items_id])) {
+            $previousItemArray[$items_id] = $this->oldvalues[$items_id];
+        } else {
+            $previousItemArray[$items_id] = $this->fields[$items_id];
+        }
 
-      if (preg_match('/^itemtype/', $itemtype)) {
-         $newItemArray[$itemtype] = $this->fields[$itemtype];
-         if (isset($this->oldvalues[$itemtype])) {
-            $previousItemArray[$itemtype] = $this->oldvalues[$itemtype];
-         } else {
-            $previousItemArray[$itemtype] = $this->fields[$itemtype];
-         }
-      }
+        if (preg_match('/^itemtype/', $itemtype)) {
+            $newItemArray[$itemtype] = $this->fields[$itemtype];
+            if (isset($this->oldvalues[$itemtype])) {
+                $previousItemArray[$itemtype] = $this->oldvalues[$itemtype];
+            } else {
+                $previousItemArray[$itemtype] = $this->fields[$itemtype];
+            }
+        }
 
-      $result = ['new' => self::getItemFromArray($itemtype, $items_id, $newItemArray)];
-      if ($previousItemArray !== $newItemArray) {
-         $result['previous'] = self::getItemFromArray($itemtype, $items_id, $previousItemArray);
-      }
+        $result = ['new' => self::getItemFromArray($itemtype, $items_id, $newItemArray)];
+        if ($previousItemArray !== $newItemArray) {
+            $result['previous'] = self::getItemFromArray($itemtype, $items_id, $previousItemArray);
+        }
 
-      return $result;
-   }
+        return $result;
+    }
 
    /**
     * Get all specificities of the current itemtype concerning the massive actions
@@ -458,15 +503,16 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *        'normalized' array('affect', 'unaffect') of arrays containing each action
     *        'button_labels'          array of the labels of the button indexed by the action name
    **/
-   static function getConnexityMassiveActionsSpecificities() {
+    public static function getConnexityMassiveActionsSpecificities()
+    {
 
-      return ['reaffect'      => false,
+        return ['reaffect'      => false,
                    'itemtypes'     => [],
                    'normalized'    => ['affect'   => ['affect'],
                                             'unaffect' => ['unaffect']],
                    'action_name'   => ['affect'   => _x('button', 'Associate'),
                                             'unaffect' => _x('button', 'Dissociate')]];
-   }
+    }
 
 
    /**
@@ -474,43 +520,47 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
-   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
-                                                CommonDBTM $checkitem = null) {
+    public static function getMassiveActionsForItemtype(
+        array &$actions,
+        $itemtype,
+        $is_deleted = 0,
+        CommonDBTM $checkitem = null
+    ) {
 
-      $unaffect = false;
-      $affect   = false;
-      if (is_a($itemtype, 'CommonDBChild', true)) {
-         $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
-         if (!$itemtype::$mustBeAttached) {
-            $unaffect = true;
-            $affect   = true;
-         } else if ($specificities['reaffect']) {
-            $affect = true;
-         }
-      } else if (is_a($itemtype, 'CommonDBRelation', true)) {
-         $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
-         if ((!$itemtype::$mustBeAttached_1) || (!$itemtype::$mustBeAttached_2)) {
-            $unaffect = true;
-            $affect   = true;
-         } else if ($specificities['reaffect']) {
-            $affect = true;
-         }
-      } else {
-         return;
-      }
+        $unaffect = false;
+        $affect   = false;
+        if (is_a($itemtype, 'CommonDBChild', true)) {
+            $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
+            if (!$itemtype::$mustBeAttached) {
+                $unaffect = true;
+                $affect   = true;
+            } else if ($specificities['reaffect']) {
+                $affect = true;
+            }
+        } else if (is_a($itemtype, 'CommonDBRelation', true)) {
+            $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
+            if ((!$itemtype::$mustBeAttached_1) || (!$itemtype::$mustBeAttached_2)) {
+                $unaffect = true;
+                $affect   = true;
+            } else if ($specificities['reaffect']) {
+                $affect = true;
+            }
+        } else {
+            return;
+        }
 
-      $prefix = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
+        $prefix = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
 
-      if ($unaffect) {
-         $actions[$prefix.'unaffect'] = $specificities['action_name']['unaffect'];
-      }
+        if ($unaffect) {
+            $actions[$prefix . 'unaffect'] = $specificities['action_name']['unaffect'];
+        }
 
-      if ($affect) {
-         $actions[$prefix.'affect'] = $specificities['action_name']['affect'];
-      }
+        if ($affect) {
+            $actions[$prefix . 'affect'] = $specificities['action_name']['affect'];
+        }
 
-      parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
-   }
+        parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
+    }
 
 
    /**
@@ -518,120 +568,125 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
-   static function showMassiveActionsSubForm(MassiveAction $ma) {
+    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    {
 
-      $action = $ma->getAction();
-      $items  = $ma->getItems();
+        $action = $ma->getAction();
+        $items  = $ma->getItems();
 
-      $itemtypes_affect   = [];
-      $itemtypes_unaffect = [];
-      foreach (array_keys($items) as $itemtype) {
-         if (!is_a($itemtype, __CLASS__, true)) {
-            continue;
-         }
-         $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
-         if (in_array($action, $specificities['normalized']['affect'])) {
-            $itemtypes_affect[$itemtype] = $specificities;
-            continue;
-         }
-         if (in_array($action, $specificities['normalized']['unaffect'])) {
-            $itemtypes_unaffect[$itemtype] = $specificities;
-            continue;
-         }
-      }
-
-      if (count($itemtypes_affect) > count($itemtypes_unaffect)) {
-         $normalized_action = 'affect';
-         $itemtypes         = $itemtypes_affect;
-      } else if (count($itemtypes_affect) < count($itemtypes_unaffect)) {
-         $normalized_action = 'unaffect';
-         $itemtypes         = $itemtypes_unaffect;
-      } else {
-         return parent::showMassiveActionsSubForm($ma);
-      }
-
-      switch ($normalized_action) {
-         case 'unaffect' :
-            foreach ($itemtypes as $itemtype => $specificities) {
-               if (is_a($itemtype, 'CommonDBRelation', true)) {
-                  $peer_field = "peer[$itemtype]";
-                  if ((!$itemtype::$mustBeAttached_1) && (!$itemtype::$mustBeAttached_2)) {
-                     // Should never occur ... But we must care !
-                     $values = [];
-                     if ((empty($itemtype::$itemtype_1))
-                      || (preg_match('/^itemtype/', $itemtype::$itemtype_1))) {
-                        $values[0] = __('First Item');
-                     } else {
-                        $itemtype_1 = $itemtype::$itemtype_1;
-                        $values[0]  = $itemtype_1::getTypeName(Session::getPluralNumber());
-                     }
-                     if ((empty($itemtype::$itemtype_2))
-                         || (preg_match('/^itemtype/', $itemtype::$itemtype_2))) {
-                        $values[1] = __('Second Item');
-                     } else {
-                        $itemtype_2 = $itemtype::$itemtype_2;
-                        $values[1]  = $itemtype_2::getTypeName(Session::getPluralNumber());
-                     }
-                     echo sprintf(__('Select a peer for %s:'), $itemtype::getTypeName());
-                     Dropdown::showFromArray($peer_field, $values);
-                     echo "<br>\n";
-                  } else if (!$itemtype::$mustBeAttached_1) {
-                     echo "<input type='hidden' name='$peer_field' value='0'>";
-                  } else if (!$itemtype::$mustBeAttached_2) {
-                     echo "<input type='hidden' name='$peer_field' value='1'>";
-                  }
-               }
+        $itemtypes_affect   = [];
+        $itemtypes_unaffect = [];
+        foreach (array_keys($items) as $itemtype) {
+            if (!is_a($itemtype, __CLASS__, true)) {
+                continue;
             }
-            echo "<br><br>".Html::submit(_x('button', 'Dissociate'), ['name' => 'massiveaction']);
-            return true;
-
-         case 'affect' :
-            $peertypes = [];
-            foreach ($itemtypes as $itemtype => $specificities) {
-               if (!$specificities['reaffect']) {
-                  continue;
-               }
-               if (is_a($itemtype, 'CommonDBRelation', true)) {
-                  if ($specificities['reaffect'] == 1) {
-                     $peertype = $itemtype::$itemtype_1;
-                  } else {
-                     $peertype = $itemtype::$itemtype_2;
-                  }
-               } else {
-                  $peertype = $itemtype::$itemtype;
-               }
-               if (preg_match('/^itemtype/', $peertype)) {
-                  $peertypes = array_merge($peertypes, $specificities['itemtypes']);
-               } else {
-                  $peertypes[] = $peertype;
-               }
+            $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
+            if (in_array($action, $specificities['normalized']['affect'])) {
+                $itemtypes_affect[$itemtype] = $specificities;
+                continue;
             }
-            $peertypes = array_unique($peertypes);
-            if (count($peertypes) == 0) {
-               echo __('Unable to reaffect given elements!');
-               exit();
+            if (in_array($action, $specificities['normalized']['unaffect'])) {
+                $itemtypes_unaffect[$itemtype] = $specificities;
+                continue;
             }
-            $options = [];
-            if (count($peertypes) == 1) {
-               $options['name']   = 'peers_id';
-               $type_for_dropdown = $peertypes[0];
-               if (preg_match('/^itemtype/', $peertype)) {
-                  echo Html::hidden('peertype', ['value' => $type_for_dropdown]);
-               }
-               $type_for_dropdown::dropdown($options);
-            } else {
-               $options['itemtype_name'] = 'peertype';
-               $options['items_id_name'] = 'peers_id';
-               $options['itemtypes']     = $peertypes;
-               Dropdown::showSelectItemFromItemtypes($options);
-            }
+        }
 
-            echo "<br><br>".Html::submit(_x('button', 'Associate'), ['name' => 'massiveaction']);
-            return true;
-      }
+        if (count($itemtypes_affect) > count($itemtypes_unaffect)) {
+            $normalized_action = 'affect';
+            $itemtypes         = $itemtypes_affect;
+        } else if (count($itemtypes_affect) < count($itemtypes_unaffect)) {
+            $normalized_action = 'unaffect';
+            $itemtypes         = $itemtypes_unaffect;
+        } else {
+            return parent::showMassiveActionsSubForm($ma);
+        }
 
-      return parent::showMassiveActionsSubForm($ma);
-   }
+        switch ($normalized_action) {
+            case 'unaffect':
+                foreach ($itemtypes as $itemtype => $specificities) {
+                    if (is_a($itemtype, 'CommonDBRelation', true)) {
+                        $peer_field = "peer[$itemtype]";
+                        if ((!$itemtype::$mustBeAttached_1) && (!$itemtype::$mustBeAttached_2)) {
+                             // Should never occur ... But we must care !
+                             $values = [];
+                            if (
+                                (empty($itemtype::$itemtype_1))
+                                 || (preg_match('/^itemtype/', $itemtype::$itemtype_1))
+                            ) {
+                                $values[0] = __('First Item');
+                            } else {
+                                $itemtype_1 = $itemtype::$itemtype_1;
+                                $values[0]  = $itemtype_1::getTypeName(Session::getPluralNumber());
+                            }
+                            if (
+                                (empty($itemtype::$itemtype_2))
+                                || (preg_match('/^itemtype/', $itemtype::$itemtype_2))
+                            ) {
+                                $values[1] = __('Second Item');
+                            } else {
+                                $itemtype_2 = $itemtype::$itemtype_2;
+                                $values[1]  = $itemtype_2::getTypeName(Session::getPluralNumber());
+                            }
+                            echo sprintf(__('Select a peer for %s:'), $itemtype::getTypeName());
+                            Dropdown::showFromArray($peer_field, $values);
+                            echo "<br>\n";
+                        } else if (!$itemtype::$mustBeAttached_1) {
+                              echo "<input type='hidden' name='$peer_field' value='0'>";
+                        } else if (!$itemtype::$mustBeAttached_2) {
+                            echo "<input type='hidden' name='$peer_field' value='1'>";
+                        }
+                    }
+                }
+                echo "<br><br>" . Html::submit(_x('button', 'Dissociate'), ['name' => 'massiveaction']);
+                return true;
+
+            case 'affect':
+                $peertypes = [];
+                foreach ($itemtypes as $itemtype => $specificities) {
+                    if (!$specificities['reaffect']) {
+                        continue;
+                    }
+                    if (is_a($itemtype, 'CommonDBRelation', true)) {
+                        if ($specificities['reaffect'] == 1) {
+                            $peertype = $itemtype::$itemtype_1;
+                        } else {
+                            $peertype = $itemtype::$itemtype_2;
+                        }
+                    } else {
+                        $peertype = $itemtype::$itemtype;
+                    }
+                    if (preg_match('/^itemtype/', $peertype)) {
+                        $peertypes = array_merge($peertypes, $specificities['itemtypes']);
+                    } else {
+                        $peertypes[] = $peertype;
+                    }
+                }
+                $peertypes = array_unique($peertypes);
+                if (count($peertypes) == 0) {
+                    echo __('Unable to reaffect given elements!');
+                    exit();
+                }
+                $options = [];
+                if (count($peertypes) == 1) {
+                    $options['name']   = 'peers_id';
+                    $type_for_dropdown = $peertypes[0];
+                    if (preg_match('/^itemtype/', $peertype)) {
+                        echo Html::hidden('peertype', ['value' => $type_for_dropdown]);
+                    }
+                    $type_for_dropdown::dropdown($options);
+                } else {
+                    $options['itemtype_name'] = 'peertype';
+                    $options['items_id_name'] = 'peers_id';
+                    $options['itemtypes']     = $peertypes;
+                    Dropdown::showSelectItemFromItemtypes($options);
+                }
+
+                echo "<br><br>" . Html::submit(_x('button', 'Associate'), ['name' => 'massiveaction']);
+                return true;
+        }
+
+        return parent::showMassiveActionsSubForm($ma);
+    }
 
 
    /**
@@ -647,10 +702,14 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @return array containing the elements
    **/
-   static function getConnexityInputForProcessingOfMassiveActions($action, CommonDBTM $item,
-                                                                  array $ids, array $input) {
-      return [];
-   }
+    public static function getConnexityInputForProcessingOfMassiveActions(
+        $action,
+        CommonDBTM $item,
+        array $ids,
+        array $input
+    ) {
+        return [];
+    }
 
 
    /**
@@ -658,134 +717,142 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
-                                                       array $ids) {
+    public static function processMassiveActionsForOneItemtype(
+        MassiveAction $ma,
+        CommonDBTM $item,
+        array $ids
+    ) {
 
-      if (!is_a($item, __CLASS__, true)) {
-         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
-         return;
-      }
+        if (!is_a($item, __CLASS__, true)) {
+            parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+            return;
+        }
 
-      $itemtype      = $item->getType();
-      $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
+        $itemtype      = $item->getType();
+        $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
 
-      $action        = $ma->getAction();
-      $input         = $ma->getInput();
+        $action        = $ma->getAction();
+        $input         = $ma->getInput();
 
-      // First, get normalized action : affect or unaffect
-      if (in_array($action, $specificities['normalized']['affect'])) {
-         $normalized_action = 'affect';
-      } else if (in_array($action, $specificities['normalized']['unaffect'])) {
-         $normalized_action = 'unaffect';
-      } else {
-         // If we cannot get normalized action, then, its not for this method !
-         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
-         return;
-      }
+       // First, get normalized action : affect or unaffect
+        if (in_array($action, $specificities['normalized']['affect'])) {
+            $normalized_action = 'affect';
+        } else if (in_array($action, $specificities['normalized']['unaffect'])) {
+            $normalized_action = 'unaffect';
+        } else {
+           // If we cannot get normalized action, then, its not for this method !
+            parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+            return;
+        }
 
-      switch ($normalized_action) {
-         case 'unaffect' :
-            foreach ($ids as $key) {
-               if ($item->can($key, UPDATE)) {
-                  if ($item instanceof CommonDBRelation) {
-                     if (isset($input['peer'][$item->getType()])) {
-                        if ($item->affectRelation($key, $input['peer'][$item->getType()])) {
-                           $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
-                        } else {
-                           $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
-                           $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+        switch ($normalized_action) {
+            case 'unaffect':
+                foreach ($ids as $key) {
+                    if ($item->can($key, UPDATE)) {
+                        if ($item instanceof CommonDBRelation) {
+                            if (isset($input['peer'][$item->getType()])) {
+                                if ($item->affectRelation($key, $input['peer'][$item->getType()])) {
+                                       $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                                } else {
+                                    $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                    $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                                }
+                            } else {
+                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                            }
+                        } else if ($item instanceof CommonDBChild) {
+                            if ($item->affectChild($key)) {
+                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                            } else {
+                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                            }
                         }
-                     } else {
+                    } else {
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                    }
+                }
+                return;
+
+            case 'affect':
+                if (!$specificities['reaffect']) {
+                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                    return;
+                }
+                if (is_a($item, 'CommonDBRelation', true)) {
+                    if ($specificities['reaffect'] == 1) {
+                        $peertype = $itemtype::$itemtype_1;
+                        $peers_id = $itemtype::$items_id_1;
+                    } else {
+                        $peertype = $itemtype::$itemtype_2;
+                        $peers_id = $itemtype::$items_id_2;
+                    }
+                } else {
+                    $peertype = $itemtype::$itemtype;
+                    $peers_id = $itemtype::$items_id;
+                }
+                $input2 = $itemtype::getConnexityInputForProcessingOfMassiveActions(
+                    $action,
+                    $item,
+                    $ids,
+                    $input
+                );
+                $input2[$peers_id] = $input['peers_id'];
+                if (preg_match('/^itemtype/', $peertype)) {
+                    if (!in_array($input['peertype'], $specificities['itemtypes'])) {
+                        $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+                        return;
+                    }
+                     $input2[$peertype] = $input['peertype'];
+                } else {
+                    if ($peertype != $input['peertype']) {
+                        $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+                        return;
+                    }
+                }
+                foreach ($ids as $key) {
+                    if (!$item->getFromDB($key)) {
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
-                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
-                     }
-                  } else if ($item instanceof CommonDBChild) {
-                     if ($item->affectChild($key)) {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
-                     } else {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
-                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
-                     }
-                  }
-               } else {
-                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
-                  $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
-               }
-            }
-            return;
+                        $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+                        continue;
+                    }
+                    if (preg_match('/^itemtype/', $peertype)) {
+                        if (
+                            ($input2[$peertype] == $item->fields[$peertype])
+                            && ($input2[$peers_id] == $item->fields[$peers_id])
+                        ) {
+                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                            $ma->addMessage($item->getErrorMessage(ERROR_ALREADY_DEFINED));
+                            continue;
+                        }
+                    } else {
+                        if ($input2[$peers_id] == $item->fields[$peers_id]) {
+                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                            $ma->addMessage($item->getErrorMessage(ERROR_ALREADY_DEFINED));
+                            continue;
+                        }
+                    }
+                    $input2[$item->getIndexName()] = $item->getID();
+                    if ($item->can($item->getID(), UPDATE, $input2)) {
+                        if ($item->update($input2)) {
+                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                        } else {
+                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                            $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                        }
+                    } else {
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                    }
+                }
+                return;
+        }
 
-         case 'affect' :
-            if (!$specificities['reaffect']) {
-               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
-               $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
-               return;
-            }
-            if (is_a($item, 'CommonDBRelation', true)) {
-               if ($specificities['reaffect'] == 1) {
-                  $peertype = $itemtype::$itemtype_1;
-                  $peers_id = $itemtype::$items_id_1;
-               } else {
-                  $peertype = $itemtype::$itemtype_2;
-                  $peers_id = $itemtype::$items_id_2;
-               }
-            } else {
-               $peertype = $itemtype::$itemtype;
-               $peers_id = $itemtype::$items_id;
-            }
-            $input2 = $itemtype::getConnexityInputForProcessingOfMassiveActions($action, $item,
-                                                                                $ids, $input);
-            $input2[$peers_id] = $input['peers_id'];
-            if (preg_match('/^itemtype/', $peertype)) {
-               if (!in_array($input['peertype'], $specificities['itemtypes'])) {
-                  $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
-                  $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
-                  return;
-               }
-               $input2[$peertype] = $input['peertype'];
-            } else {
-               if ($peertype != $input['peertype']) {
-                  $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
-                  $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
-                  return;
-               }
-            }
-            foreach ($ids as $key) {
-               if (!$item->getFromDB($key)) {
-                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
-                  $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
-                  continue;
-               }
-               if (preg_match('/^itemtype/', $peertype)) {
-                  if (($input2[$peertype] == $item->fields[$peertype])
-                      && ($input2[$peers_id] == $item->fields[$peers_id])) {
-                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
-                     $ma->addMessage($item->getErrorMessage(ERROR_ALREADY_DEFINED));
-                     continue;
-                  }
-               } else {
-                  if ($input2[$peers_id] == $item->fields[$peers_id]) {
-                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
-                     $ma->addMessage($item->getErrorMessage(ERROR_ALREADY_DEFINED));
-                     continue;
-                  }
-               }
-               $input2[$item->getIndexName()] = $item->getID();
-               if ($item->can($item->getID(), UPDATE, $input2)) {
-                  if ($item->update($input2)) {
-                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
-                  } else {
-                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
-                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
-                  }
-               } else {
-                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
-                  $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
-               }
-            }
-            return;
-      }
-
-      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
-   }
-
+        parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+    }
 }

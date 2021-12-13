@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,7 +37,8 @@ namespace Glpi\Features;
  * Trait Kanban.
  * @since 9.5.0
  */
-trait Kanban {
+trait Kanban
+{
 
    /**
     * Get all data needed to display a Kanban for the item with the specified ID.
@@ -48,7 +50,7 @@ trait Kanban {
     * @return array Array of the data.
     *       This can be in any format as long as the getKanbanColumns function in this class can interpret it.
     **/
-   abstract static function getDataToDisplayOnKanban($ID, $criteria = []);
+    abstract public static function getDataToDisplayOnKanban($ID, $criteria = []);
 
    /**
     * Get Kanban columns data for the specified item to pass to the Kanban JS component.
@@ -61,7 +63,7 @@ trait Kanban {
     * @param bool $get_default If true, the default columns are returned in addition to the requested ones in $column_ids.
     * @return array Array of constructed columns data for the Kanban
     **/
-   abstract static function getKanbanColumns($ID, $column_field = null, $column_ids = [], $get_default = false);
+    abstract public static function getKanbanColumns($ID, $column_field = null, $column_ids = [], $get_default = false);
 
    /**
     * Show Kanban for a single item, or a global view for the itemtype.
@@ -69,7 +71,7 @@ trait Kanban {
     * @param int $ID ID of the item or -1 for a global view.
     * @return void|bool
     **/
-   abstract static function showKanban($ID);
+    abstract public static function showKanban($ID);
 
    /**
     * Get a list of all items to be included in the 'switch board' dropdown.
@@ -80,7 +82,7 @@ trait Kanban {
     * @return array Array of items that can have a Kanban view.
     *       Array format must be item_id => item_name.
     */
-   abstract static function getAllForKanban($active = true, $current_id = -1);
+    abstract public static function getAllForKanban($active = true, $current_id = -1);
 
    /**
     * Get a list of all valid columns (without items) for the column based on the specified column field.
@@ -91,16 +93,17 @@ trait Kanban {
     * @return array Array of columns in the format:
     *       column_field => [id => [name, header_color, etc]]
     */
-   abstract static function getAllKanbanColumns($column_field = null, $column_ids = [], $get_default = false);
+    abstract public static function getAllKanbanColumns($column_field = null, $column_ids = [], $get_default = false);
 
    /**
     * Check if the current user can modify the global Kanban state.
     * @since 9.5.0
     * @return bool
     */
-   public function canModifyGlobalState() {
-      return false;
-   }
+    public function canModifyGlobalState()
+    {
+        return false;
+    }
 
    /**
     * Force the current user to use the global state when loading and saving (if they are allowed).
@@ -108,9 +111,10 @@ trait Kanban {
     * @return bool
     * @see Kanban::canModifyGlobalState()
     */
-   public function forceGlobalState() {
-      return false;
-   }
+    public function forceGlobalState()
+    {
+        return false;
+    }
 
    /**
     * Modify the state before it gets saved to the DB.
@@ -120,9 +124,10 @@ trait Kanban {
     * @param int $users_id The ID of the user this state is for. If 0, it is the global/default state.
     * @return mixed The modified state or false/null to deny the save.
     */
-   public function prepareKanbanStateForUpdate($oldstate, $newstate, $users_id) {
-      return $newstate;
-   }
+    public function prepareKanbanStateForUpdate($oldstate, $newstate, $users_id)
+    {
+        return $newstate;
+    }
 
    /**
     * Check if the current user can move Kanban cards inside the same column.
@@ -130,7 +135,8 @@ trait Kanban {
     * @param integer $ID Item's ID
     * @return bool
     */
-   public function canOrderKanbanCard($ID) {
-      return true;
-   }
+    public function canOrderKanbanCard($ID)
+    {
+        return true;
+    }
 }

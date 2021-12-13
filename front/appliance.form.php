@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,73 +33,93 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight('appliance', READ);
 
 if (empty($_GET["id"])) {
-   $_GET["id"] = "";
+    $_GET["id"] = "";
 }
 if (!isset($_GET["withtemplate"])) {
-   $_GET["withtemplate"] = "";
+    $_GET["withtemplate"] = "";
 }
 
 $app = new Appliance();
 
 if (isset($_POST["add"])) {
-   $app->check(-1, CREATE, $_POST);
+    $app->check(-1, CREATE, $_POST);
 
-   if ($newID = $app->add($_POST)) {
-      Event::log($newID, "appliance", 4, "inventory",
-                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
-      if ($_SESSION['glpibackcreated']) {
-         Html::redirect($app->getLinkURL());
-      }
-   }
-   Html::back();
-
+    if ($newID = $app->add($_POST)) {
+        Event::log(
+            $newID,
+            "appliance",
+            4,
+            "inventory",
+            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
+        );
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($app->getLinkURL());
+        }
+    }
+    Html::back();
 } else if (isset($_POST["delete"])) {
-   $app->check($_POST["id"], DELETE);
-   $app->delete($_POST);
+    $app->check($_POST["id"], DELETE);
+    $app->delete($_POST);
 
-   Event::log($_POST["id"], "appliance", 4, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
-   $app->redirectToList();
-
+    Event::log(
+        $_POST["id"],
+        "appliance",
+        4,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
+    );
+    $app->redirectToList();
 } else if (isset($_POST["restore"])) {
-   $app->check($_POST["id"], DELETE);
+    $app->check($_POST["id"], DELETE);
 
-   $app->restore($_POST);
-   Event::log($_POST["id"], "appliance", 4, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
-   $app->redirectToList();
-
+    $app->restore($_POST);
+    Event::log(
+        $_POST["id"],
+        "appliance",
+        4,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s restores an item'), $_SESSION["glpiname"])
+    );
+    $app->redirectToList();
 } else if (isset($_POST["purge"])) {
-   $app->check($_POST["id"], PURGE);
+    $app->check($_POST["id"], PURGE);
 
-   $app->delete($_POST, 1);
-   Event::log($_POST["id"], "appliance", 4, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
-   $app->redirectToList();
-
+    $app->delete($_POST, 1);
+    Event::log(
+        $_POST["id"],
+        "appliance",
+        4,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+    );
+    $app->redirectToList();
 } else if (isset($_POST["update"])) {
-   $app->check($_POST["id"], UPDATE);
+    $app->check($_POST["id"], UPDATE);
 
-   $app->update($_POST);
-   Event::log($_POST["id"], "appliance", 4, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
-   Html::back();
-
+    $app->update($_POST);
+    Event::log(
+        $_POST["id"],
+        "appliance",
+        4,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+    );
+    Html::back();
 } else {
-   Html::header(Appliance::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "appliance");
-   $options = [
+    Html::header(Appliance::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "appliance");
+    $options = [
       'id'           => $_GET['id'],
       'withtemplate' => $_GET['withtemplate']
-   ];
-   $app->display($options);
-   Html::footer();
+    ];
+    $app->display($options);
+    Html::footer();
 }

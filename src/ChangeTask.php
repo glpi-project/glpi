@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,41 +31,48 @@
  * ---------------------------------------------------------------------
  */
 
-class ChangeTask extends CommonITILTask {
+class ChangeTask extends CommonITILTask
+{
 
-   static $rightname = 'task';
-
-
-   static function getTypeName($nb = 0) {
-      return _n('Change task', 'Change tasks', $nb);
-   }
+    public static $rightname = 'task';
 
 
-   static function canCreate() {
-      return Session::haveRight('change', UPDATE)
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Change task', 'Change tasks', $nb);
+    }
+
+
+    public static function canCreate()
+    {
+        return Session::haveRight('change', UPDATE)
           || Session::haveRight(self::$rightname, parent::ADDALLITEM);
-   }
+    }
 
 
-   static function canView() {
-      return Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
-   }
+    public static function canView()
+    {
+        return Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
+    }
 
 
-   static function canUpdate() {
-      return Session::haveRight('change', UPDATE)
+    public static function canUpdate()
+    {
+        return Session::haveRight('change', UPDATE)
           || Session::haveRight(self::$rightname, parent::UPDATEALL);
-   }
+    }
 
 
-   function canViewPrivates() {
-      return true;
-   }
+    public function canViewPrivates()
+    {
+        return true;
+    }
 
 
-   function canEditAll() {
-      return Session::haveRightsOr('change', [CREATE, UPDATE, DELETE, PURGE]);
-   }
+    public function canEditAll()
+    {
+        return Session::haveRightsOr('change', [CREATE, UPDATE, DELETE, PURGE]);
+    }
 
 
    /**
@@ -72,9 +80,10 @@ class ChangeTask extends CommonITILTask {
     *
     * @return boolean
    **/
-   function canViewItem() {
-      return $this->canReadITILItem();
-   }
+    public function canViewItem()
+    {
+        return $this->canReadITILItem();
+    }
 
 
    /**
@@ -82,25 +91,27 @@ class ChangeTask extends CommonITILTask {
     *
     * @return boolean
    **/
-   function canCreateItem() {
+    public function canCreateItem()
+    {
 
-      if (!$this->canReadITILItem()) {
-         return false;
-      }
+        if (!$this->canReadITILItem()) {
+            return false;
+        }
 
-      $change = new Change();
-      if ($change->getFromDB($this->fields['changes_id'])) {
-         return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
+        $change = new Change();
+        if ($change->getFromDB($this->fields['changes_id'])) {
+            return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
                  || Session::haveRight('change', UPDATE)
                  || (Session::haveRight('change', Change::READMY)
                      && ($change->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                          || (isset($_SESSION["glpigroups"])
-                             && $change->haveAGroup(CommonITILActor::ASSIGN,
-                                                    $_SESSION['glpigroups'])))));
-      }
-      return false;
-
-   }
+                             && $change->haveAGroup(
+                                 CommonITILActor::ASSIGN,
+                                 $_SESSION['glpigroups']
+                             )))));
+        }
+        return false;
+    }
 
 
    /**
@@ -108,20 +119,23 @@ class ChangeTask extends CommonITILTask {
     *
     * @return boolean
    **/
-   function canUpdateItem() {
+    public function canUpdateItem()
+    {
 
-      if (!$this->canReadITILItem()) {
-         return false;
-      }
+        if (!$this->canReadITILItem()) {
+            return false;
+        }
 
-      if (($this->fields["users_id"] != Session::getLoginUserID())
-          && !Session::haveRight('change', UPDATE)
-          && !Session::haveRight(self::$rightname, parent::UPDATEALL)) {
-         return false;
-      }
+        if (
+            ($this->fields["users_id"] != Session::getLoginUserID())
+            && !Session::haveRight('change', UPDATE)
+            && !Session::haveRight(self::$rightname, parent::UPDATEALL)
+        ) {
+            return false;
+        }
 
-      return true;
-   }
+        return true;
+    }
 
 
    /**
@@ -129,9 +143,10 @@ class ChangeTask extends CommonITILTask {
     *
     * @return boolean
    **/
-   function canPurgeItem() {
-      return $this->canUpdateItem();
-   }
+    public function canPurgeItem()
+    {
+        return $this->canUpdateItem();
+    }
 
 
    /**
@@ -145,9 +160,10 @@ class ChangeTask extends CommonITILTask {
     *
     * @return array of planning item
    **/
-   static function populatePlanning($options = []) :array {
-      return parent::genericPopulatePlanning(__CLASS__, $options);
-   }
+    public static function populatePlanning($options = []): array
+    {
+        return parent::genericPopulatePlanning(__CLASS__, $options);
+    }
 
 
    /**
@@ -160,9 +176,10 @@ class ChangeTask extends CommonITILTask {
     *
     * @return string
     */
-   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
-      return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
-   }
+    public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
+    {
+        return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
+    }
 
    /**
     * Populate the planning with not planned ticket tasks
@@ -175,7 +192,8 @@ class ChangeTask extends CommonITILTask {
     *
     * @return array of planning item
    **/
-   static function populateNotPlanned($options = []) :array {
-      return parent::genericPopulateNotPlanned(__CLASS__, $options);
-   }
+    public static function populateNotPlanned($options = []): array
+    {
+        return parent::genericPopulateNotPlanned(__CLASS__, $options);
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,11 +31,13 @@
  * ---------------------------------------------------------------------
  */
 
-class OperatingSystemEdition extends CommonDropdown {
+class OperatingSystemEdition extends CommonDropdown
+{
 
-   public $can_be_translated = true;
+    public $can_be_translated = true;
 
-   static function getTypeName($nb = 0) {
-      return _n('Edition', 'Editions', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Edition', 'Editions', $nb);
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,20 +34,21 @@
 /**
  * Relation between item and devices
 **/
-class Item_DevicePowerSupply extends Item_Devices {
+class Item_DevicePowerSupply extends Item_Devices
+{
 
-   static public $itemtype_2 = 'DevicePowerSupply';
-   static public $items_id_2 = 'devicepowersupplies_id';
+    public static $itemtype_2 = 'DevicePowerSupply';
+    public static $items_id_2 = 'devicepowersupplies_id';
 
-   static protected $notable = false;
+    protected static $notable = false;
 
-   static function getSpecificities($specif = '') {
+    public static function getSpecificities($specif = '')
+    {
 
-      return ['serial' => parent::getSpecificities('serial'),
+        return ['serial' => parent::getSpecificities('serial'),
                    'otherserial' => parent::getSpecificities('otherserial'),
                    'locations_id' => parent::getSpecificities('locations_id'),
                    'states_id' => parent::getSpecificities('states_id')
                   ];
-   }
-
+    }
 }

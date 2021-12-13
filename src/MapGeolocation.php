@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,16 +34,18 @@
 /**
  * Map geolocation
  **/
-trait MapGeolocation {
+trait MapGeolocation
+{
 
    /**
     * get openstreetmap
     */
-   public function showMap() {
-      $rand = mt_rand();
+    public function showMap()
+    {
+        $rand = mt_rand();
 
-      echo "<div id='setlocation_container_{$rand}'></div>";
-      $js = "
+        echo "<div id='setlocation_container_{$rand}'></div>";
+        $js = "
       $(function(){
          var map_elt, _marker;
          var _setLocation = function(lat, lng) {
@@ -84,13 +87,13 @@ trait MapGeolocation {
          var finalizeMap = function() {
             var osmGeocoder = new L.Control.OSMGeocoder({
                collapsed: false,
-               placeholder: '".__s('Search')."',
-               text: '".__s('Search')."'
+               placeholder: '" . __s('Search') . "',
+               text: '" . __s('Search') . "'
             });
             map_elt.addControl(osmGeocoder);
             _autoSearch();
 
-            function onMapClick(e) {
+            public function onMapClick(e) {
                var popup = L.popup();
                popup
                   .setLatLng(e.latlng)
@@ -107,7 +110,7 @@ trait MapGeolocation {
                var _clat = _popup._latlng.lat.toString();
                var _clng = _popup._latlng.lng.toString();
 
-               _popup.setContent('<p><a href=\'#\'>".__s('Set location here')."</a></p>');
+               _popup.setContent('<p><a href=\'#\'>" . __s('Set location here') . "</a></p>');
 
                $(_container).find('a').on('click', function(e){
                   e.preventDefault();
@@ -160,6 +163,6 @@ trait MapGeolocation {
          }, {enableHighAccuracy: true});
 
       });";
-      echo Html::scriptBlock($js);
-   }
+        echo Html::scriptBlock($js);
+    }
 }

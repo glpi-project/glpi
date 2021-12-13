@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -39,22 +40,27 @@ use Psr\SimpleCache\CacheInterface;
  *
  * /!\ For internal use only.
  */
-class I18nCache {
-   private $cache;
+class I18nCache
+{
+    private $cache;
 
-   public function __construct(CacheInterface $cache) {
-      $this->cache = $cache;
-   }
+    public function __construct(CacheInterface $cache)
+    {
+        $this->cache = $cache;
+    }
 
-   public function getItem($key) {
-      return $this->cache->get($key);
-   }
+    public function getItem($key)
+    {
+        return $this->cache->get($key);
+    }
 
-   public function setItem($key, $value) {
-      return $this->cache->set($key, $value);
-   }
+    public function setItem($key, $value)
+    {
+        return $this->cache->set($key, $value);
+    }
 
-   public function removeItem($key) {
-      return $this->cache->delete($key);
-   }
+    public function removeItem($key)
+    {
+        return $this->cache->delete($key);
+    }
 }

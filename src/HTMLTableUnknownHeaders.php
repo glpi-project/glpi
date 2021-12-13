@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,4 +31,6 @@
  * ---------------------------------------------------------------------
  */
 
-class HTMLTableUnknownHeaders      extends \Exception {}
+class HTMLTableUnknownHeaders extends \Exception
+{
+}

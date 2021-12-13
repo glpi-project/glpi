@@ -50,19 +50,19 @@ use wapmorgan\UnifiedArchive\UnifiedArchive;
 class Controller extends CommonGLPI {
    protected $plugin_key = "";
 
-   static $rightname = 'config';
-   static $api       = null;
+  public static  $rightname = 'config';
+  public static  $api       = null;
 
    const MP_REPLACE_ASK   = 1;
    const MP_REPLACE_YES   = 2;
    const MP_REPLACE_NEVER = 3;
 
-   function __construct(string $plugin_key = "") {
+   public function __construct(string $plugin_key = "") {
       $this->plugin_key = $plugin_key;
    }
 
 
-   static function getTypeName($nb = 0) {
+   public static function getTypeName($nb = 0) {
       return __('Marketplace');
    }
 
@@ -71,7 +71,7 @@ class Controller extends CommonGLPI {
     *
     * @return PluginsApi
     */
-   static function getAPI(): PluginsApi {
+   public static function getAPI(): PluginsApi {
       return self::$api ?? (self::$api = new PluginsApi());
    }
 
@@ -81,7 +81,7 @@ class Controller extends CommonGLPI {
     *
     * @return int plugin status, @see properties of \Plugin class
     */
-   function downloadPlugin():int {
+   public function downloadPlugin():int {
       if (!self::hasWriteAccess()) {
          return Plugin::UNKNOWN;
       }
@@ -163,7 +163,7 @@ class Controller extends CommonGLPI {
     *
     * @return void
     */
-   function proxifyPluginArchive(): void {
+   public function proxifyPluginArchive(): void {
       // close session to prevent blocking other requests
       session_write_close();
 
@@ -241,7 +241,7 @@ class Controller extends CommonGLPI {
     *
     * @return string|false new version number
     */
-   function checkUpdate(Plugin $plugin_inst = null) {
+   public function checkUpdate(Plugin $plugin_inst = null) {
       $api          = self::getAPI();
       $api_plugin   = $api->getPlugin($this->plugin_key);
       $local_plugin = $plugin_inst->fields;
@@ -263,7 +263,7 @@ class Controller extends CommonGLPI {
     *
     * @return array of [plugin_key => new_version_num]
     */
-   static function getAllUpdates() {
+   public static function getAllUpdates() {
       $plugin_inst = new Plugin;
       $plugin_inst->init(true);
       $installed   = $plugin_inst->getList();
@@ -284,7 +284,7 @@ class Controller extends CommonGLPI {
    }
 
 
-   static function cronInfo($name) {
+   public static function cronInfo($name) {
       return ['description' => __('Check all plugin updates')];
    }
 
@@ -296,7 +296,7 @@ class Controller extends CommonGLPI {
     *
     * @return integer 0 : nothing to do 1 : done with success
     */
-   static function cronCheckAllUpdates(CronTask $task = null):int {
+   public static function cronCheckAllUpdates(CronTask $task = null):int {
       global $CFG_GLPI;
 
       $cron_status = 0;
@@ -331,7 +331,7 @@ class Controller extends CommonGLPI {
     *
     * @return array [offer ref => offer title]
     */
-   function getRequiredOffers(): array {
+   public function getRequiredOffers(): array {
       $api        = self::getAPI();
       $api_plugin = $api->getPlugin($this->plugin_key);
       $offers     = array_column(GLPINetwork::getOffers(), 'title', 'offer_reference');
@@ -347,7 +347,7 @@ class Controller extends CommonGLPI {
     *
     * @return bool
     */
-   function canBeDownloaded() {
+   public function canBeDownloaded() {
       $api        = self::getAPI();
       $api_plugin = $api->getPlugin($this->plugin_key);
 
@@ -396,7 +396,7 @@ class Controller extends CommonGLPI {
     *
     * @return bool
     */
-   function installPlugin(bool $disable_messages = false):bool {
+   public function installPlugin(bool $disable_messages = false):bool {
       $state =  $this->setPluginState("install");
 
       if ($disable_messages) {
@@ -412,7 +412,7 @@ class Controller extends CommonGLPI {
     *
     * @return bool
     */
-   function uninstallPlugin():bool {
+   public function uninstallPlugin():bool {
       return $this->setPluginState("uninstall") == Plugin::NOTINSTALLED;
    }
 
@@ -422,7 +422,7 @@ class Controller extends CommonGLPI {
     *
     * @return bool
     */
-   function enablePlugin():bool {
+   public function enablePlugin():bool {
       return $this->setPluginState("activate") == Plugin::ACTIVATED;
    }
 
@@ -432,7 +432,7 @@ class Controller extends CommonGLPI {
     *
     * @return bool
     */
-   function disablePlugin():bool {
+   public function disablePlugin():bool {
       return $this->setPluginState("unactivate") == Plugin::NOTACTIVATED;
    }
 
@@ -442,7 +442,7 @@ class Controller extends CommonGLPI {
     *
     * @return bool
     */
-   function cleanPlugin():bool {
+   public function cleanPlugin():bool {
       $plugin   = new Plugin;
       if ($plugin->getFromDBbyDir($this->plugin_key)) {
          $plugin->clean($plugin->fields['id']);
@@ -498,7 +498,7 @@ class Controller extends CommonGLPI {
     *
     * @return int config status (self::MP_REPLACE_ASK, self::MP_REPLACE_YES, self::MP_REPLACE_NEVER)
     */
-   static function getPluginPageConfig() {
+   public static function getPluginPageConfig() {
       $config = Config::getConfigurationValues('core', ['marketplace_replace_plugins']);
 
       return (int) ($config['marketplace_replace_plugins'] ?? self::MP_REPLACE_ASK);

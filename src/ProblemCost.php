@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,25 +36,28 @@
  *
  * @since 0.85
 **/
-class ProblemCost extends CommonITILCost {
+class ProblemCost extends CommonITILCost
+{
 
    // From CommonDBChild
-   static public $itemtype  = 'Problem';
-   static public $items_id  = 'problems_id';
+    public static $itemtype  = 'Problem';
+    public static $items_id  = 'problems_id';
 
 
-   static function canCreate() {
-      return Session::haveRight('problem', UPDATE);
-   }
+    public static function canCreate()
+    {
+        return Session::haveRight('problem', UPDATE);
+    }
 
 
-   static function canView() {
-      return Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
-   }
+    public static function canView()
+    {
+        return Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
+    }
 
 
-   static function canUpdate() {
-      return Session::haveRight('problem', UPDATE);
-   }
-
+    public static function canUpdate()
+    {
+        return Session::haveRight('problem', UPDATE);
+    }
 }

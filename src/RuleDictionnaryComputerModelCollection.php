@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,19 +31,20 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleDictionnaryComputerModelCollection extends RuleDictionnaryDropdownCollection {
+class RuleDictionnaryComputerModelCollection extends RuleDictionnaryDropdownCollection
+{
 
    // From RuleCollection
    //public $rule_class_name = 'RuleDictionnaryComputerModel';
 
-   public $item_table  = "glpi_computermodels";
-   public $menu_option = "model.computer";
+    public $item_table  = "glpi_computermodels";
+    public $menu_option = "model.computer";
 
    /**
     * @see RuleCollection::getTitle()
    **/
-   function getTitle() {
-      return __('Dictionnary of computer models');
-   }
-
+    public function getTitle()
+    {
+        return __('Dictionnary of computer models');
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,19 +31,18 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("config", UPDATE);
 $notificationmail = new NotificationMailingSetting();
 
 if (isset($_POST["test_smtp_send"])) {
-   NotificationMailing::testNotification();
-   Html::back();
-
+    NotificationMailing::testNotification();
+    Html::back();
 } else if (isset($_POST["update"])) {
-   $config = new Config();
-   $config->update($_POST);
-   Html::back();
+    $config = new Config();
+    $config->update($_POST);
+    Html::back();
 }
 
 Html::header(Notification::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "notification", "config");

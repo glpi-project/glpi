@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,31 +38,34 @@ use Glpi\Inventory\Conf;
 
 class SoundCard extends Device
 {
-   protected $ignored = ['controllers' => null];
+    protected $ignored = ['controllers' => null];
 
-   public function __construct(CommonDBTM $item, array $data = null) {
-      parent::__construct($item, $data, 'Item_DeviceSoundCard');
-   }
+    public function __construct(CommonDBTM $item, array $data = null)
+    {
+        parent::__construct($item, $data, 'Item_DeviceSoundCard');
+    }
 
-   public function prepare() :array {
-      $mapping = [
+    public function prepare(): array
+    {
+        $mapping = [
          'name'          => 'designation',
          'manufacturer'  => 'manufacturers_id',
          'description'   => 'comment'
-      ];
-      foreach ($this->data as &$val) {
-         foreach ($mapping as $origin => $dest) {
-            if (property_exists($val, $origin)) {
-               $val->$dest = $val->$origin;
+        ];
+        foreach ($this->data as &$val) {
+            foreach ($mapping as $origin => $dest) {
+                if (property_exists($val, $origin)) {
+                    $val->$dest = $val->$origin;
+                }
             }
-         }
-         $val->is_dynamic = 1;
-         $this->ignored['controllers'][$val->name] = $val->name;
-      }
-      return $this->data;
-   }
+            $val->is_dynamic = 1;
+            $this->ignored['controllers'][$val->name] = $val->name;
+        }
+        return $this->data;
+    }
 
-   public function checkConf(Conf $conf): bool {
-      return $conf->component_soundcard == 1;
-   }
+    public function checkConf(Conf $conf): bool
+    {
+        return $conf->component_soundcard == 1;
+    }
 }

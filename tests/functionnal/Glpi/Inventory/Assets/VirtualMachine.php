@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,10 +37,12 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/controller.class.php */
 
-class VirtualMachine extends AbstractInventoryAsset {
+class VirtualMachine extends AbstractInventoryAsset
+{
 
-   protected function assetProvider() :array {
-      return [
+    protected function assetProvider(): array
+    {
+        return [
          [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -98,66 +101,68 @@ class VirtualMachine extends AbstractInventoryAsset {
   </REQUEST>",
             'expected'  => '{"memory": 4194, "name": "win8.1", "status": "off", "subsystem": "kvm", "uuid": "fcb505ed-0ffa-419e-a5a0-fd20bed80f1e", "vcpu": 2, "vmtype": "libvirt", "ram": 4194, "virtualmachinetypes_id": "libvirt", "virtualmachinesystems_id": "kvm", "virtualmachinestates_id": "off"}'
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider assetProvider
     */
-   public function testPrepare($xml, $expected) {
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($xml);
-      $json = json_decode($data);
+    public function testPrepare($xml, $expected)
+    {
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\VirtualMachine($computer, $json->content->virtualmachines);
-      $asset->setExtraData((array)$json->content);
-      $conf = new \Glpi\Inventory\Conf();
-      $this->boolean(
-         $asset->checkConf($conf)
-      )->isTrue();
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected));
-   }
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\VirtualMachine($computer, $json->content->virtualmachines);
+        $asset->setExtraData((array)$json->content);
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean(
+            $asset->checkConf($conf)
+        )->isTrue();
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected));
+    }
 
-   public function testHandle() {
-      $computer = getItemByTypeName('Computer', '_test_pc01');
+    public function testHandle()
+    {
+        $computer = getItemByTypeName('Computer', '_test_pc01');
 
-      //first, check there are no vms linked to this computer
-      $cvm = new \ComputerVirtualMachine();
-      $this->boolean($cvm->getFromDbByCrit(['computers_id' => $computer->fields['id']]))
+       //first, check there are no vms linked to this computer
+        $cvm = new \ComputerVirtualMachine();
+        $this->boolean($cvm->getFromDbByCrit(['computers_id' => $computer->fields['id']]))
            ->isFalse('A virtual machine is already linked to computer!');
 
-      //convert data
-      $expected = $this->assetProvider()[0];
+       //convert data
+        $expected = $this->assetProvider()[0];
 
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($expected['xml']);
-      $json = json_decode($data);
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($expected['xml']);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\VirtualMachine($computer, $json->content->virtualmachines);
-      $asset->setExtraData((array)$json->content);
-      $conf = new \Glpi\Inventory\Conf();
-      $this->boolean(
-         $asset->checkConf($conf)
-      )->isTrue();
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\VirtualMachine($computer, $json->content->virtualmachines);
+        $asset->setExtraData((array)$json->content);
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean(
+            $asset->checkConf($conf)
+        )->isTrue();
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
 
-      $agent = new \Agent();
-      $agent->getEmpty();
-      $asset->setAgent($agent);
+        $agent = new \Agent();
+        $agent->getEmpty();
+        $asset->setAgent($agent);
 
-      $conf = new \Glpi\Inventory\Conf();
-      $this->boolean(
-         $asset->checkConf($conf)
-      )->isTrue();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean(
+            $asset->checkConf($conf)
+        )->isTrue();
 
-      //handle
-      $asset->handleLinks();
-      $asset->handle();
-      $this->boolean($cvm->getFromDbByCrit(['computers_id' => $computer->fields['id']]))
+       //handle
+        $asset->handleLinks();
+        $asset->handle();
+        $this->boolean($cvm->getFromDbByCrit(['computers_id' => $computer->fields['id']]))
            ->isTrue('Virtual machine has not been linked to computer :(');
-   }
+    }
 }

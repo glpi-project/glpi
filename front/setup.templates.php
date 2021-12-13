@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,31 +31,31 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkCentralAccess();
 
 if (isset($_GET["itemtype"])) {
-   $itemtype = $_GET['itemtype'];
-   $link     = $itemtype::getFormURL();
+    $itemtype = $_GET['itemtype'];
+    $link     = $itemtype::getFormURL();
 
    // Get right sector
-   $sector   = 'assets';
+    $sector   = 'assets';
 
    //Get sectors from the menu
-   $menu     = Html::getMenuInfos();
+    $menu     = Html::getMenuInfos();
 
    //Try to find to which sector the itemtype belongs
-   foreach ($menu as $menusector => $infos) {
-      if (isset($infos['types']) && in_array($itemtype, $infos['types'])) {
-         $sector = $menusector;
-         break;
-      }
-   }
+    foreach ($menu as $menusector => $infos) {
+        if (isset($infos['types']) && in_array($itemtype, $infos['types'])) {
+            $sector = $menusector;
+            break;
+        }
+    }
 
-   Html::header(__('Manage templates...'), $_SERVER['PHP_SELF'], $sector, $itemtype);
+    Html::header(__('Manage templates...'), $_SERVER['PHP_SELF'], $sector, $itemtype);
 
-   CommonDBTM::listTemplates($itemtype, $link, $_GET["add"]);
+    CommonDBTM::listTemplates($itemtype, $link, $_GET["add"]);
 
-   Html::footer();
+    Html::footer();
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,18 +35,20 @@ namespace tests\units\Glpi\Inventory;
 
 use GuzzleHttp;
 
-class Request extends \GLPITestCase {
-   private $http_client;
-   private $base_uri;
+class Request extends \GLPITestCase
+{
+    private $http_client;
+    private $base_uri;
 
-   public function beforeTestMethod($method) {
-      global $CFG_GLPI;
+    public function beforeTestMethod($method)
+    {
+        global $CFG_GLPI;
 
-      $this->http_client = new GuzzleHttp\Client();
-      $this->base_uri    = trim($CFG_GLPI['url_base'], "/")."/";
+        $this->http_client = new GuzzleHttp\Client();
+        $this->base_uri    = trim($CFG_GLPI['url_base'], "/") . "/";
 
-      parent::beforeTestMethod($method);
-   }
+        parent::beforeTestMethod($method);
+    }
 
    /**
     * Check a response
@@ -55,45 +58,48 @@ class Request extends \GLPITestCase {
     *
     * @return void
     */
-   private function checkResponse (GuzzleHttp\Psr7\Response $res, $reply) {
-      $this->integer($res->getStatusCode())->isIdenticalTo(200);
-      $this->string($res->getHeader('content-type')[0])->isIdenticalTo('application/xml');
-      $this->string((string)$res->getBody())
+    private function checkResponse(GuzzleHttp\Psr7\Response $res, $reply)
+    {
+        $this->integer($res->getStatusCode())->isIdenticalTo(200);
+        $this->string($res->getHeader('content-type')[0])->isIdenticalTo('application/xml');
+        $this->string((string)$res->getBody())
          ->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY>$reply</REPLY>\n");
+    }
 
-   }
-
-   public function testWrongHttpMethod() {
-      $res = $this->http_client->request(
-         'GET',
-         $this->base_uri . 'front/inventory.php',
-         [
+    public function testWrongHttpMethod()
+    {
+        $res = $this->http_client->request(
+            'GET',
+            $this->base_uri . 'front/inventory.php',
+            [
             'headers' => [
                'Content-Type' => 'application/xml'
             ]
-         ]
-      );
-      $this->checkResponse($res, '<ERROR>Method not allowed</ERROR>');
-   }
+            ]
+        );
+        $this->checkResponse($res, '<ERROR>Method not allowed</ERROR>');
+    }
 
-   public function testRequestInvalidContent() {
-      $res = $this->http_client->request(
-         'POST',
-         $this->base_uri . 'front/inventory.php',
-         [
+    public function testRequestInvalidContent()
+    {
+        $res = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'front/inventory.php',
+            [
             'headers' => [
                'Content-Type' => 'application/xml'
             ]
-         ]
-      );
-      $this->checkResponse($res, '<ERROR>XML not well formed!</ERROR>');
-   }
+            ]
+        );
+        $this->checkResponse($res, '<ERROR>XML not well formed!</ERROR>');
+    }
 
-   public function testPrologRequest() {
-      $res = $this->http_client->request(
-         'POST',
-         $this->base_uri . 'front/inventory.php',
-         [
+    public function testPrologRequest()
+    {
+        $res = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'front/inventory.php',
+            [
             'headers' => [
                'Content-Type' => 'application/xml'
             ],
@@ -102,11 +108,11 @@ class Request extends \GLPITestCase {
                   '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
                   '<QUERY>PROLOG</QUERY>' .
                '</REQUEST>'
-         ]
-      );
-      $this->integer($res->getStatusCode())->isIdenticalTo(200);
-      $this->string($res->getHeader('content-type')[0])->isIdenticalTo('application/xml');
-      $this->string((string)$res->getBody())
+            ]
+        );
+        $this->integer($res->getStatusCode())->isIdenticalTo(200);
+        $this->string($res->getHeader('content-type')[0])->isIdenticalTo('application/xml');
+        $this->string((string)$res->getBody())
          ->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE></REPLY>\n");
-   }
+    }
 }

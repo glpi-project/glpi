@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -45,282 +46,308 @@ use Notepad;
 /**
  * @engine isolate
  */
-class APIRest extends APIBaseClass {
+class APIRest extends APIBaseClass
+{
 
-   public function beforeTestMethod($method) {
-      global $CFG_GLPI;
+    public function beforeTestMethod($method)
+    {
+        global $CFG_GLPI;
 
-      // Clear test server log
-      if (!file_exists(__DIR__ . '/error.log')) {
-         touch(__DIR__ . '/error.log');
-      }
-      file_put_contents(__DIR__ . '/error.log', "");
+       // Clear test server log
+        if (!file_exists(__DIR__ . '/error.log')) {
+            touch(__DIR__ . '/error.log');
+        }
+        file_put_contents(__DIR__ . '/error.log', "");
 
-      $this->http_client = new GuzzleHttp\Client();
-      $this->base_uri    = trim($CFG_GLPI['url_base_api'], "/")."/";
+        $this->http_client = new GuzzleHttp\Client();
+        $this->base_uri    = trim($CFG_GLPI['url_base_api'], "/") . "/";
 
-      parent::beforeTestMethod($method);
-   }
+        parent::beforeTestMethod($method);
+    }
 
-   public function afterTestMethod($method) {
-      global $CFG_GLPI;
+    public function afterTestMethod($method)
+    {
+        global $CFG_GLPI;
 
-      // Check that no errors occured on the test server
-      $this->string(file_get_contents(__DIR__ . '/error.log'))->isEmpty();
-   }
+       // Check that no errors occured on the test server
+        $this->string(file_get_contents(__DIR__ . '/error.log'))->isEmpty();
+    }
 
-   protected function doHttpRequest($verb = "get", $relative_uri = "", $params = []) {
-      if (!empty($relative_uri)) {
-         $params['headers']['Content-Type'] = "application/json";
-      }
-      if (isset($params['multipart'])) {
-         // Guzzle lib will automatically push the correct Content-type
-         unset($params['headers']['Content-Type']);
-      }
-      $verb = strtolower($verb);
-      if (in_array($verb, ['get', 'post', 'delete', 'put', 'options', 'patch'])) {
-         try {
-            return $this->http_client->{$verb}($this->base_uri.$relative_uri,
-                                                 $params);
-         } catch (\Exception $e) {
-            throw $e;
-         }
-      }
-   }
+    protected function doHttpRequest($verb = "get", $relative_uri = "", $params = [])
+    {
+        if (!empty($relative_uri)) {
+            $params['headers']['Content-Type'] = "application/json";
+        }
+        if (isset($params['multipart'])) {
+           // Guzzle lib will automatically push the correct Content-type
+            unset($params['headers']['Content-Type']);
+        }
+        $verb = strtolower($verb);
+        if (in_array($verb, ['get', 'post', 'delete', 'put', 'options', 'patch'])) {
+            try {
+                return $this->http_client->{$verb}(
+                    $this->base_uri . $relative_uri,
+                    $params
+                );
+            } catch (\Exception $e) {
+                throw $e;
+            }
+        }
+    }
 
-   protected function query(
-      $resource = "",
-      $params = [],
-      $expected_codes = [200],
-      $expected_symbol = '',
-      bool $no_decode = false
-   ) {
-      if (!is_array($expected_codes)) {
-         $expected_codes = [$expected_codes];
-      }
+    protected function query(
+        $resource = "",
+        $params = [],
+        $expected_codes = [200],
+        $expected_symbol = '',
+        bool $no_decode = false
+    ) {
+        if (!is_array($expected_codes)) {
+            $expected_codes = [$expected_codes];
+        }
 
-      $verb         = isset($params['verb'])
+        $verb         = isset($params['verb'])
                         ? $params['verb']
                         : 'GET';
 
-      $resource_path  = parse_url($resource, PHP_URL_PATH);
-      $resource_query = parse_url($resource, PHP_URL_QUERY);
+        $resource_path  = parse_url($resource, PHP_URL_PATH);
+        $resource_query = parse_url($resource, PHP_URL_QUERY);
 
-      $relative_uri = (!in_array($resource_path, ['getItem', 'getItems', 'createItems',
+        $relative_uri = (!in_array($resource_path, ['getItem', 'getItems', 'createItems',
                                              'updateItems', 'deleteItems'])
-                         ? $resource_path.'/'
-                         : '').
+                         ? $resource_path . '/'
+                         : '') .
                       (isset($params['parent_itemtype'])
-                         ? $params['parent_itemtype'].'/'
-                         : '').
+                         ? $params['parent_itemtype'] . '/'
+                         : '') .
                       (isset($params['parent_id'])
-                         ? $params['parent_id'].'/'
-                         : '').
+                         ? $params['parent_id'] . '/'
+                         : '') .
                       (isset($params['itemtype'])
-                         ? $params['itemtype'].'/'
-                         : '').
+                         ? $params['itemtype'] . '/'
+                         : '') .
                       (isset($params['id'])
                          ? $params['id']
-                         : '').
+                         : '') .
                       (!empty($resource_query)
                          ? '?' . $resource_query
                          : '');
-      unset($params['itemtype'],
+        unset(
+            $params['itemtype'],
             $params['id'],
             $params['parent_itemtype'],
             $params['parent_id'],
-            $params['verb']);
-      // launch query
-      try {
-         $res = $this->doHttpRequest($verb, $relative_uri, $params);
-      } catch (\GuzzleHttp\Exception\ClientException $e) {
-         $response = $e->getResponse();
-         if (!in_array($response->getStatusCode(), $expected_codes)) {
-            //throw exceptions not expected
-            throw $e;
-         }
-         $this->array($expected_codes)->contains($response->getStatusCode());
-         $body = json_decode($e->getResponse()->getBody());
-         $this->array($body)
+            $params['verb']
+        );
+       // launch query
+        try {
+            $res = $this->doHttpRequest($verb, $relative_uri, $params);
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
+            $response = $e->getResponse();
+            if (!in_array($response->getStatusCode(), $expected_codes)) {
+               //throw exceptions not expected
+                throw $e;
+            }
+            $this->array($expected_codes)->contains($response->getStatusCode());
+            $body = json_decode($e->getResponse()->getBody());
+            $this->array($body)
             ->hasKey('0')
             ->string[0]->isIdenticalTo($expected_symbol);
-         return $body;
-      }
+            return $body;
+        }
 
-      // retrieve data
-      $body = $res->getBody();
+       // retrieve data
+        $body = $res->getBody();
 
-      if ($no_decode) {
-         $data = $body;
-      } else {
-         $data = json_decode($body, true);
-         if (is_array($data)) {
-            $data['headers'] = $res->getHeaders();
-         }
-      }
+        if ($no_decode) {
+            $data = $body;
+        } else {
+            $data = json_decode($body, true);
+            if (is_array($data)) {
+                $data['headers'] = $res->getHeaders();
+            }
+        }
 
-      // common tests
-      $this->variable($res)->isNotNull();
-      $this->array($expected_codes)->contains($res->getStatusCode());
-      return $data;
-   }
+       // common tests
+        $this->variable($res)->isNotNull();
+        $this->array($expected_codes)->contains($res->getStatusCode());
+        return $data;
+    }
 
    /**
     * @tags   api
     * @covers API::cors
    **/
-   public function testCORS() {
-      $res = $this->doHttpRequest('OPTIONS', '',
-                                         ['headers' => [
+    public function testCORS()
+    {
+        $res = $this->doHttpRequest(
+            'OPTIONS',
+            '',
+            ['headers' => [
                                              'Origin' => "http://localhost",
                                              'Access-Control-Request-Method'  => 'GET',
                                              'Access-Control-Request-Headers' => 'X-Requested-With'
-                                         ]]);
+            ]]
+        );
 
-      $this->variable($res)->isNotNull();
-      $this->variable($res->getStatusCode())->isEqualTo(200);
-      $headers = $res->getHeaders();
-      $this->array($headers)
+        $this->variable($res)->isNotNull();
+        $this->variable($res->getStatusCode())->isEqualTo(200);
+        $headers = $res->getHeaders();
+        $this->array($headers)
          ->hasKey('Access-Control-Allow-Methods')
          ->hasKey('Access-Control-Allow-Headers');
 
-      $this->string($headers['Access-Control-Allow-Methods'][0])
+        $this->string($headers['Access-Control-Allow-Methods'][0])
          ->contains('GET')
          ->contains('PUT')
          ->contains('POST')
          ->contains('DELETE')
          ->contains('OPTIONS');
 
-      $this->string($headers['Access-Control-Allow-Headers'][0])
+        $this->string($headers['Access-Control-Allow-Headers'][0])
          ->contains('origin')
          ->contains('content-type')
          ->contains('accept')
          ->contains('session-token')
          ->contains('authorization');
-   }
+    }
 
    /**
     * @tags   api
     * @covers API::inlineDocumentation
    **/
-   public function testInlineDocumentation() {
-      $res = $this->doHttpRequest('GET');
-      $this->variable($res)->isNotNull();
-      $this->variable($res->getStatusCode())->isEqualTo(200);
-      $headers = $res->getHeaders();
-      $this->array($headers)->hasKey('Content-Type');
-      $this->string($headers['Content-Type'][0])->isIdenticalTo('text/html; charset=UTF-8');
-   }
+    public function testInlineDocumentation()
+    {
+        $res = $this->doHttpRequest('GET');
+        $this->variable($res)->isNotNull();
+        $this->variable($res->getStatusCode())->isEqualTo(200);
+        $headers = $res->getHeaders();
+        $this->array($headers)->hasKey('Content-Type');
+        $this->string($headers['Content-Type'][0])->isIdenticalTo('text/html; charset=UTF-8');
+    }
 
    /**
     * @tags   api
     * @covers API::initSession
    **/
-   public function initSessionCredentials() {
-      $res = $this->doHttpRequest('GET', 'initSession/', ['auth' => [TU_USER, TU_PASS]]);
+    public function initSessionCredentials()
+    {
+        $res = $this->doHttpRequest('GET', 'initSession/', ['auth' => [TU_USER, TU_PASS]]);
 
-      $this->variable($res)->isNotNull();
-      $this->variable($res->getStatusCode())->isEqualTo(200);
-      $this->array($res->getHeader('content-type'))->contains('application/json; charset=UTF-8');
+        $this->variable($res)->isNotNull();
+        $this->variable($res->getStatusCode())->isEqualTo(200);
+        $this->array($res->getHeader('content-type'))->contains('application/json; charset=UTF-8');
 
-      $body = $res->getBody();
-      $data = json_decode($body, true);
-      $this->variable($data)->isNotFalse();
-      $this->array($data)->hasKey('session_token');
-      $this->session_token = $data['session_token'];
-   }
+        $body = $res->getBody();
+        $data = json_decode($body, true);
+        $this->variable($data)->isNotFalse();
+        $this->array($data)->hasKey('session_token');
+        $this->session_token = $data['session_token'];
+    }
 
    /**
     * @tags   api
     * @covers API::initSession
    **/
-   public function testInitSessionUserToken() {
-      // retrieve personnal token of TU_USER user
-      $user = new \User;
-      $uid = getItemByTypeName('User', TU_USER, true);
-      $this->boolean((bool)$user->getFromDB($uid))->isTrue();
-      $token = isset($user->fields['api_token'])?$user->fields['api_token']:"";
-      if (empty($token)) {
-         $token = $user->getAuthToken('api_token');
-      }
+    public function testInitSessionUserToken()
+    {
+       // retrieve personnal token of TU_USER user
+        $user = new \User();
+        $uid = getItemByTypeName('User', TU_USER, true);
+        $this->boolean((bool)$user->getFromDB($uid))->isTrue();
+        $token = isset($user->fields['api_token']) ? $user->fields['api_token'] : "";
+        if (empty($token)) {
+            $token = $user->getAuthToken('api_token');
+        }
 
-      $res = $this->doHttpRequest('GET', 'initSession?get_full_session=true',
-                                         ['headers' => [
+        $res = $this->doHttpRequest(
+            'GET',
+            'initSession?get_full_session=true',
+            ['headers' => [
                                              'Authorization' => "user_token $token"
-                                         ]]);
+            ]]
+        );
 
-      $this->variable($res)->isNotNull();
-      $this->variable($res->getStatusCode())->isEqualTo(200);
+        $this->variable($res)->isNotNull();
+        $this->variable($res->getStatusCode())->isEqualTo(200);
 
-      $body = $res->getBody();
-      $data = json_decode($body, true);
-      $this->variable($data)->isNotFalse();
-      $this->array($data)->hasKey('session_token');
-      $this->array($data)->hasKey('session');
-      $this->integer((int) $data['session']['glpiID'])->isEqualTo($uid);
-   }
+        $body = $res->getBody();
+        $data = json_decode($body, true);
+        $this->variable($data)->isNotFalse();
+        $this->array($data)->hasKey('session_token');
+        $this->array($data)->hasKey('session');
+        $this->integer((int) $data['session']['glpiID'])->isEqualTo($uid);
+    }
 
    /**
     * @tags    api
     */
-   public function testBadEndpoint() {
-      parent::badEndpoint(400, 'ERROR_RESOURCE_NOT_FOUND_NOR_COMMONDBTM');
+    public function testBadEndpoint()
+    {
+        parent::badEndpoint(400, 'ERROR_RESOURCE_NOT_FOUND_NOR_COMMONDBTM');
 
-      $data = $this->query('getItems',
-                           ['itemtype'        => 'badEndpoint',
+        $data = $this->query(
+            'getItems',
+            ['itemtype'        => 'badEndpoint',
                             'parent_id'       => 0,
                             'parent_itemtype' => 'Entity',
                             'headers'         => [
                             'Session-Token' => $this->session_token]],
-                           400,
-                           'ERROR_RESOURCE_NOT_FOUND_NOR_COMMONDBTM');
-   }
+            400,
+            'ERROR_RESOURCE_NOT_FOUND_NOR_COMMONDBTM'
+        );
+    }
 
    /**
      * @tags    api
      */
-   public function testUpdateItemWithIdInQueryString() {
-      $computer = $this->createComputer();
-      $computers_id = $computer->getID();
+    public function testUpdateItemWithIdInQueryString()
+    {
+        $computer = $this->createComputer();
+        $computers_id = $computer->getID();
 
-      $data = $this->query('updateItems',
-                           ['itemtype' => 'Computer',
+        $data = $this->query(
+            'updateItems',
+            ['itemtype' => 'Computer',
                             'id'       => $computers_id,
                             'verb'     => 'PUT',
                             'headers'  => [
                                'Session-Token' => $this->session_token],
                             'json'     => [
                                'input' => [
-                                  'serial' => "abcdefg"]]]);
+            'serial' => "abcdefg"]]]
+        );
 
-      $this->variable($data)->isNotFalse();
+        $this->variable($data)->isNotFalse();
 
-      $this->array($data)->hasKey('headers');
-      unset($data['headers']);
+        $this->array($data)->hasKey('headers');
+        unset($data['headers']);
 
-      $computer = array_shift($data);
-      $this->array($computer)
+        $computer = array_shift($data);
+        $this->array($computer)
          ->hasKey($computers_id)
          ->hasKey('message');
-      $this->boolean((bool)$computer[$computers_id])->isTrue();
+        $this->boolean((bool)$computer[$computers_id])->isTrue();
 
-      $computer = new \Computer;
-      $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
-      $this->string($computer->fields['serial'])->isIdenticalTo('abcdefg');
-   }
+        $computer = new \Computer();
+        $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
+        $this->string($computer->fields['serial'])->isIdenticalTo('abcdefg');
+    }
 
 
    /**
     * @tags    api
     */
-   public function testUploadDocument() {
-      // we will try to upload the README.md file
-      $document_name = "My document uploaded by api";
-      $filename      = "README.md";
-      $filecontent   = file_get_contents($filename);
+    public function testUploadDocument()
+    {
+       // we will try to upload the README.md file
+        $document_name = "My document uploaded by api";
+        $filename      = "README.md";
+        $filecontent   = file_get_contents($filename);
 
-      $data = $this->query('createItems',
-                           ['verb'      => 'POST',
+        $data = $this->query(
+            'createItems',
+            ['verb'      => 'POST',
                             'itemtype'  => 'Document',
                             'headers'   => [
                               'Session-Token' => $this->session_token
@@ -343,369 +370,386 @@ class APIRest extends APIBaseClass {
                                  'filename' => $filename
                               ]
                             ]],
-                           201);
+            201
+        );
 
-      $this->array($data)
+        $this->array($data)
          ->hasKey('id')
          ->hasKey('message');
-      $documents_id = $data['id'];
-      $this->boolean(is_numeric($documents_id))->isTrue();
-      $this->integer((int)$documents_id)->isGreaterThan(0);
+        $documents_id = $data['id'];
+        $this->boolean(is_numeric($documents_id))->isTrue();
+        $this->integer((int)$documents_id)->isGreaterThan(0);
 
-      $document        = new \Document;
-      $this->boolean((bool)$document->getFromDB($documents_id));
+        $document        = new \Document();
+        $this->boolean((bool)$document->getFromDB($documents_id));
 
-      $this->array($document->fields)
+        $this->array($document->fields)
          ->string['mime']->isIdenticalTo('text/plain')
          ->string['name']->isIdenticalTo($document_name)
          ->string['filename']->isIdenticalTo($filename);
 
-      $this->string($document->fields['filepath'])->contains('MD/');
-   }
+        $this->string($document->fields['filepath'])->contains('MD/');
+    }
 
    /**
     * @tags    api
     * @covers  API::updateItems
     */
-   public function testUpdateItem() {
-      //parent::testUpdateItem($session_token, $computers_id);
+    public function testUpdateItem()
+    {
+       //parent::testUpdateItem($session_token, $computers_id);
 
-      //try to update an item without input
-      $data = $this->query('updateItems',
+       //try to update an item without input
+        $data = $this->query(
+            'updateItems',
             ['itemtype' => 'Computer',
                   'verb'     => 'PUT',
                   'headers'  => ['Session-Token' => $this->session_token],
                   'json'     => []],
             400,
-            'ERROR_JSON_PAYLOAD_INVALID');
-   }
+            'ERROR_JSON_PAYLOAD_INVALID'
+        );
+    }
 
    /**
     * @tags    api
     * @covers  API::getItems
     */
-   public function testGetItemsCommonDBChild() {
-      // test the case have DBChild not have entities_id
-      $ticketTemplate = new \TicketTemplate();
-      $ticketTMF = new \TicketTemplateMandatoryField();
+    public function testGetItemsCommonDBChild()
+    {
+       // test the case have DBChild not have entities_id
+        $ticketTemplate = new \TicketTemplate();
+        $ticketTMF = new \TicketTemplateMandatoryField();
 
-      $tt_id = $ticketTemplate->add([
+        $tt_id = $ticketTemplate->add([
          'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
          'name'        => 'test'
-      ]);
-      $this->boolean((bool)$tt_id)->isTrue();
+        ]);
+        $this->boolean((bool)$tt_id)->isTrue();
 
-      $ttmf_id = $ticketTMF->add([
+        $ttmf_id = $ticketTMF->add([
          'tickettemplates_id' => $tt_id,
          'num'                => 7
-      ]);
-      $this->boolean((bool)$ttmf_id)->isTrue();
+        ]);
+        $this->boolean((bool)$ttmf_id)->isTrue();
 
-      $data = $this->query('getItems',
-                           ['query'     => [
-                               'searchText' => ['tickettemplates_id' => "^".$tt_id."$"]],
+        $data = $this->query(
+            'getItems',
+            ['query'     => [
+                               'searchText' => ['tickettemplates_id' => "^" . $tt_id . "$"]],
                             'itemtype'   => 'TicketTemplateMandatoryField',
                             'headers'    => ['Session-Token' => $this->session_token]],
-                           200);
-      if (isset($data['headers'])) {
-         unset($data['headers']);
-      }
-      $this->integer(count($data))->isEqualTo(1);
-   }
+            200
+        );
+        if (isset($data['headers'])) {
+            unset($data['headers']);
+        }
+        $this->integer(count($data))->isEqualTo(1);
+    }
 
    /**
     * @tags   api
     * @covers API::userPicture
     */
-   public function testUserPicture() {
-      $pic = "test_picture.png";
-      $params = ['headers' => ['Session-Token' => $this->session_token]];
-      $id = getItemByTypeName('User', 'glpi', true);
-      $user = new \User();
+    public function testUserPicture()
+    {
+        $pic = "test_picture.png";
+        $params = ['headers' => ['Session-Token' => $this->session_token]];
+        $id = getItemByTypeName('User', 'glpi', true);
+        $user = new \User();
 
-      /**
-       * Case 1: normal execution
-       */
+       /**
+        * Case 1: normal execution
+        */
 
-      // Copy pic to tmp folder so it can be set to a user
-      copy("tests/$pic", GLPI_TMP_DIR . "/$pic");
+       // Copy pic to tmp folder so it can be set to a user
+        copy("tests/$pic", GLPI_TMP_DIR . "/$pic");
 
-      // Load GLPI user
-      $this->boolean($user->getFromDB($id))->isTrue();
+       // Load GLPI user
+        $this->boolean($user->getFromDB($id))->isTrue();
 
-      // Set a pic URL
-      $success = $user->update([
+       // Set a pic URL
+        $success = $user->update([
          'id'      => $id,
          '_picture' => [$pic],
-      ]);
-      $this->boolean($success)->isTrue();
+        ]);
+        $this->boolean($success)->isTrue();
 
-      // Get updated pic url
-      $pic = $user->fields['picture'];
-      $this->string($pic)->isNotEmpty();
+       // Get updated pic url
+        $pic = $user->fields['picture'];
+        $this->string($pic)->isNotEmpty();
 
-      // Check pic was moved correctly into _picture folder
-      $this->boolean(file_exists(GLPI_PICTURE_DIR . "/$pic"))->isTrue();
-      $file_content = file_get_contents(GLPI_PICTURE_DIR . "/$pic");
-      $this->string($file_content)->isNotEmpty();
+       // Check pic was moved correctly into _picture folder
+        $this->boolean(file_exists(GLPI_PICTURE_DIR . "/$pic"))->isTrue();
+        $file_content = file_get_contents(GLPI_PICTURE_DIR . "/$pic");
+        $this->string($file_content)->isNotEmpty();
 
-      // Request
-      $response = $this->query("User/$id/Picture", $params, 200, '', true);
-      $this->string($response->__toString())->isEqualTo($file_content);
+       // Request
+        $response = $this->query("User/$id/Picture", $params, 200, '', true);
+        $this->string($response->__toString())->isEqualTo($file_content);
 
-      /**
-       * Case 2: user doens't exist
-       */
+       /**
+        * Case 2: user doens't exist
+        */
 
-      // Request
-      $response = $this->query("User/99999999/Picture", $params, 400, "ERROR");
-      $this->array($response)->hasSize(2);
-      $this->string($response[1])->contains("Bad request: user with id '99999999' not found");
+       // Request
+        $response = $this->query("User/99999999/Picture", $params, 400, "ERROR");
+        $this->array($response)->hasSize(2);
+        $this->string($response[1])->contains("Bad request: user with id '99999999' not found");
 
-      /**
-       * Case 3: user with no pictures
-       */
+       /**
+        * Case 3: user with no pictures
+        */
 
-      // Remove pic URL
-      $success = $user->update([
+       // Remove pic URL
+        $success = $user->update([
          'id'             => $id,
          '_blank_picture' => true,
-      ]);
-      $this->boolean($success)->isTrue();
+        ]);
+        $this->boolean($success)->isTrue();
 
-      // Request
-      $response = $this->query("User/$id/Picture", $params, 204);
-      $this->variable($response)->isNull();
-   }
+       // Request
+        $response = $this->query("User/$id/Picture", $params, 204);
+        $this->variable($response)->isNull();
+    }
 
-   protected function deprecatedProvider() {
-      return [
+    protected function deprecatedProvider()
+    {
+        return [
          ['provider' => TicketFollowup::class],
          ['provider' => Computer_SoftwareVersion::class],
          ['provider' => Computer_SoftwareLicense::class],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider deprecatedProvider
     */
-   public function testDeprecatedGetItem(string $provider) {
-      // Get params from provider
-      $deprecated_itemtype = $provider::getDeprecatedType();
-      $itemtype            = $provider::getCurrentType();
-      $deprecated_fields   = $provider::getDeprecatedFields();
-      $add_input           = $provider::getCurrentAddInput();
+    public function testDeprecatedGetItem(string $provider)
+    {
+       // Get params from provider
+        $deprecated_itemtype = $provider::getDeprecatedType();
+        $itemtype            = $provider::getCurrentType();
+        $deprecated_fields   = $provider::getDeprecatedFields();
+        $add_input           = $provider::getCurrentAddInput();
 
-      $headers = ['Session-Token' => $this->session_token];
+        $headers = ['Session-Token' => $this->session_token];
 
-      // Insert data for tests
-      $item = new $itemtype();
-      $item_id = $item->add($add_input);
-      $this->integer($item_id);
+       // Insert data for tests
+        $item = new $itemtype();
+        $item_id = $item->add($add_input);
+        $this->integer($item_id);
 
-      // Call API
-      $data = $this->query("$deprecated_itemtype/$item_id", [
+       // Call API
+        $data = $this->query("$deprecated_itemtype/$item_id", [
          'headers' => $headers,
-      ], 200);
-      $this->array($data)
+        ], 200);
+        $this->array($data)
          ->hasSize(count($deprecated_fields) + 1) // + 1 for headers
          ->hasKeys($deprecated_fields);
 
-      // Clean db to prevent unicity failure on next run
-      $item->delete(['id' => $item_id], true);
-   }
+       // Clean db to prevent unicity failure on next run
+        $item->delete(['id' => $item_id], true);
+    }
 
    /**
     * @dataProvider deprecatedProvider
     */
-   public function testDeprecatedGetItems(string $provider) {
-      // Get params from provider
-      $deprecated_itemtype = $provider::getDeprecatedType();
-      $itemtype            = $provider::getCurrentType();
-      $deprecated_fields   = $provider::getDeprecatedFields();
-      $add_input           = $provider::getCurrentAddInput();
+    public function testDeprecatedGetItems(string $provider)
+    {
+       // Get params from provider
+        $deprecated_itemtype = $provider::getDeprecatedType();
+        $itemtype            = $provider::getCurrentType();
+        $deprecated_fields   = $provider::getDeprecatedFields();
+        $add_input           = $provider::getCurrentAddInput();
 
-      $headers = ['Session-Token' => $this->session_token];
+        $headers = ['Session-Token' => $this->session_token];
 
-      // Insert data for tests (we need at least one item)
-      $item = new $itemtype();
-      $item_id = $item->add($add_input);
-      $this->integer($item_id);
+       // Insert data for tests (we need at least one item)
+        $item = new $itemtype();
+        $item_id = $item->add($add_input);
+        $this->integer($item_id);
 
-      // Call API
-      $data = $this->query("$deprecated_itemtype", [
+       // Call API
+        $data = $this->query("$deprecated_itemtype", [
          'headers' => $headers,
-      ], [200, 206]);
-      $this->array($data);
-      unset($data["headers"]);
+        ], [200, 206]);
+        $this->array($data);
+        unset($data["headers"]);
 
-      foreach ($data as $row) {
-         $this->array($row)
+        foreach ($data as $row) {
+            $this->array($row)
             ->hasSize(count($deprecated_fields))
             ->hasKeys($deprecated_fields);
-      }
+        }
 
-      // Clean db to prevent unicity failure on next run
-      $item->delete(['id' => $item_id], true);
-   }
+       // Clean db to prevent unicity failure on next run
+        $item->delete(['id' => $item_id], true);
+    }
 
    /**
     * @dataProvider deprecatedProvider
     */
-   public function testDeprecatedCreateItems(string $provider) {
-      // Get params from provider
-      $deprecated_itemtype   = $provider::getDeprecatedType();
-      $itemtype              = $provider::getCurrentType();
-      $input                 = $provider::getDeprecatedAddInput();
-      $expected_after_insert = $provider::getExpectedAfterInsert();
+    public function testDeprecatedCreateItems(string $provider)
+    {
+       // Get params from provider
+        $deprecated_itemtype   = $provider::getDeprecatedType();
+        $itemtype              = $provider::getCurrentType();
+        $input                 = $provider::getDeprecatedAddInput();
+        $expected_after_insert = $provider::getExpectedAfterInsert();
 
-      $headers = ['Session-Token' => $this->session_token];
+        $headers = ['Session-Token' => $this->session_token];
 
-      $item = new $itemtype();
+        $item = new $itemtype();
 
-      // Call API
-      $data = $this->query("$deprecated_itemtype", [
+       // Call API
+        $data = $this->query("$deprecated_itemtype", [
          'headers' => $headers,
          'verb'    => "POST",
          'json'    => ['input' => $input]
-      ], 201);
+        ], 201);
 
-      $this->integer($data['id']);
-      $this->boolean($item->getFromDB($data['id']))->isTrue();
+        $this->integer($data['id']);
+        $this->boolean($item->getFromDB($data['id']))->isTrue();
 
-      foreach ($expected_after_insert as $field => $value) {
-         $this->variable($item->fields[$field])->isEqualTo($value);
-      }
+        foreach ($expected_after_insert as $field => $value) {
+            $this->variable($item->fields[$field])->isEqualTo($value);
+        }
 
-      // Clean db to prevent unicity failure on next run
-      $item->delete(['id' => $data['id']], true);
-   }
+       // Clean db to prevent unicity failure on next run
+        $item->delete(['id' => $data['id']], true);
+    }
 
    /**
     * @dataProvider deprecatedProvider
     */
-   public function testDeprecatedUpdateItems(string $provider) {
-      // Get params from provider
-      $deprecated_itemtype   = $provider::getDeprecatedType();
-      $itemtype              = $provider::getCurrentType();
-      $add_input             = $provider::getCurrentAddInput();
-      $update_input          = $provider::getDeprecatedUpdateInput();
-      $expected_after_update = $provider::getExpectedAfterUpdate();
+    public function testDeprecatedUpdateItems(string $provider)
+    {
+       // Get params from provider
+        $deprecated_itemtype   = $provider::getDeprecatedType();
+        $itemtype              = $provider::getCurrentType();
+        $add_input             = $provider::getCurrentAddInput();
+        $update_input          = $provider::getDeprecatedUpdateInput();
+        $expected_after_update = $provider::getExpectedAfterUpdate();
 
-      $headers = ['Session-Token' => $this->session_token];
+        $headers = ['Session-Token' => $this->session_token];
 
-      // Insert data for tests
-      $item = new $itemtype();
-      $item_id = $item->add($add_input);
-      $this->integer($item_id);
+       // Insert data for tests
+        $item = new $itemtype();
+        $item_id = $item->add($add_input);
+        $this->integer($item_id);
 
-      // Call API
-      $this->query("$deprecated_itemtype/$item_id", [
+       // Call API
+        $this->query("$deprecated_itemtype/$item_id", [
          'headers' => $headers,
          'verb'    => "PUT",
          'json'    => ['input' => $update_input]
-      ], 200);
+        ], 200);
 
-      // Check expected values
-      $this->boolean($item->getFromDB($item_id))->isTrue();
+       // Check expected values
+        $this->boolean($item->getFromDB($item_id))->isTrue();
 
-      foreach ($expected_after_update as $field => $value) {
-         $this->variable($item->fields[$field])->isEqualTo($value);
-      }
+        foreach ($expected_after_update as $field => $value) {
+            $this->variable($item->fields[$field])->isEqualTo($value);
+        }
 
-      // Clean db to prevent unicity failure on next run
-      $item->delete(['id' => $item_id], true);
-   }
+       // Clean db to prevent unicity failure on next run
+        $item->delete(['id' => $item_id], true);
+    }
 
    /**
     * @dataProvider deprecatedProvider
     */
-   public function testDeprecatedDeleteItems(string $provider) {
-      // Get params from provider
-      $deprecated_itemtype   = $provider::getDeprecatedType();
-      $itemtype              = $provider::getCurrentType();
-      $add_input             = $provider::getCurrentAddInput();
+    public function testDeprecatedDeleteItems(string $provider)
+    {
+       // Get params from provider
+        $deprecated_itemtype   = $provider::getDeprecatedType();
+        $itemtype              = $provider::getCurrentType();
+        $add_input             = $provider::getCurrentAddInput();
 
-      $headers = ['Session-Token' => $this->session_token];
+        $headers = ['Session-Token' => $this->session_token];
 
-      // Insert data for tests
-      $item = new $itemtype();
-      $item_id = $item->add($add_input);
-      $this->integer($item_id);
+       // Insert data for tests
+        $item = new $itemtype();
+        $item_id = $item->add($add_input);
+        $this->integer($item_id);
 
-      // Call API
-      $this->query("$deprecated_itemtype/$item_id?force_purge=1", [
+       // Call API
+        $this->query("$deprecated_itemtype/$item_id?force_purge=1", [
          'headers' => $headers,
          'verb'    => "DELETE",
-      ], 200, "", true);
+        ], 200, "", true);
 
-      $this->boolean($item->getFromDB($item_id))->isFalse();
-   }
+        $this->boolean($item->getFromDB($item_id))->isFalse();
+    }
 
    /**
     * @dataProvider deprecatedProvider
     */
-   public function testDeprecatedListSearchOptions(string $provider) {
-      // Get params from provider
-      $deprecated_itemtype   = $provider::getDeprecatedType();
+    public function testDeprecatedListSearchOptions(string $provider)
+    {
+       // Get params from provider
+        $deprecated_itemtype   = $provider::getDeprecatedType();
 
-      $headers = ['Session-Token' => $this->session_token];
+        $headers = ['Session-Token' => $this->session_token];
 
-      $data = $this->query("listSearchOptions/$deprecated_itemtype/", [
+        $data = $this->query("listSearchOptions/$deprecated_itemtype/", [
          'headers' => $headers,
-      ]);
+        ]);
 
-      $expected = file_get_contents(
-         __DIR__ . "/../deprecated-searchoptions/$deprecated_itemtype.json"
-      );
-      $this->string($expected)->isNotEmpty();
+        $expected = file_get_contents(
+            __DIR__ . "/../deprecated-searchoptions/$deprecated_itemtype.json"
+        );
+        $this->string($expected)->isNotEmpty();
 
-      unset($data['headers']);
-      $json_data = json_encode($data, JSON_PRETTY_PRINT);
-      $this->string($json_data)->isEqualTo($expected);
-   }
+        unset($data['headers']);
+        $json_data = json_encode($data, JSON_PRETTY_PRINT);
+        $this->string($json_data)->isEqualTo($expected);
+    }
 
    /**
     * @dataProvider deprecatedProvider
     */
-   public function testDeprecatedSearch(string $provider) {
-      // Get params from provider
-      $deprecated_itemtype       = $provider::getDeprecatedType();
-      $deprecated_itemtype_query = $provider::getDeprecatedSearchQuery();
-      $itemtype                  = $provider::getCurrentType();
-      $itemtype_query            = $provider::getCurrentSearchQuery();
+    public function testDeprecatedSearch(string $provider)
+    {
+       // Get params from provider
+        $deprecated_itemtype       = $provider::getDeprecatedType();
+        $deprecated_itemtype_query = $provider::getDeprecatedSearchQuery();
+        $itemtype                  = $provider::getCurrentType();
+        $itemtype_query            = $provider::getCurrentSearchQuery();
 
-      $headers = ['Session-Token' => $this->session_token];
+        $headers = ['Session-Token' => $this->session_token];
 
-      $deprecated_data = $this->query(
-         "search/$deprecated_itemtype?$deprecated_itemtype_query",
-         ['headers' => $headers],
-         [200, 206]
-      );
+        $deprecated_data = $this->query(
+            "search/$deprecated_itemtype?$deprecated_itemtype_query",
+            ['headers' => $headers],
+            [200, 206]
+        );
 
-      $data = $this->query(
-         "search/$itemtype?$itemtype_query",
-         ['headers' => $headers],
-         [200, 206]
-      );
-      $this->string($deprecated_data['rawdata']['sql']['search'])
+        $data = $this->query(
+            "search/$itemtype?$itemtype_query",
+            ['headers' => $headers],
+            [200, 206]
+        );
+        $this->string($deprecated_data['rawdata']['sql']['search'])
          ->isEqualTo($data['rawdata']['sql']['search']);
-   }
+    }
 
 
-   protected function testGetMassiveActionsProvider(): array {
-      // Create a computer with "is_deleted = 1" for our tests
-      $computer = new Computer();
-      $deleted_computers_id = $computer->add([
+    protected function testGetMassiveActionsProvider(): array
+    {
+       // Create a computer with "is_deleted = 1" for our tests
+        $computer = new Computer();
+        $deleted_computers_id = $computer->add([
          'name' => 'test deleted PC',
          'entities_id' => getItemByTypeName("Entity", '_test_root_entity', true)
-      ]);
-      $this->integer($deleted_computers_id)->isGreaterThan(0);
-      $this->boolean($computer->delete(['id' => $deleted_computers_id]))->isTrue();
-      $this->boolean($computer->getFromDB($deleted_computers_id))->isTrue();
-      $this->integer($computer->fields['is_deleted'])->isEqualTo(1);
+        ]);
+        $this->integer($deleted_computers_id)->isGreaterThan(0);
+        $this->boolean($computer->delete(['id' => $deleted_computers_id]))->isTrue();
+        $this->boolean($computer->getFromDB($deleted_computers_id))->isTrue();
+        $this->integer($computer->fields['is_deleted'])->isEqualTo(1);
 
-      return [
+        return [
          [
             'url' => 'getMassiveActions/Computersefjhfs',
             'status' => 400,
@@ -788,34 +832,35 @@ class APIRest extends APIBaseClass {
                ["key" => "Lock:unlock",                           "label" => "Unlock components"],
             ],
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * Tests for the "getMassiveActions" endpoint
     *
     * @dataProvider testGetMassiveActionsProvider
     */
-   public function testGetMassiveActions(
-      string $url,
-      int $status,
-      ?array $response,
-      string $error = ""
-   ): void {
-      $headers = ['Session-Token' => $this->session_token];
-      $data    = $this->query($url, [
+    public function testGetMassiveActions(
+        string $url,
+        int $status,
+        ?array $response,
+        string $error = ""
+    ): void {
+        $headers = ['Session-Token' => $this->session_token];
+        $data    = $this->query($url, [
          'headers' => $headers,
-      ], $status, $error);
+        ], $status, $error);
 
-      // If no errors are expected, check results
-      if (empty($error)) {
-         unset($data['headers']);
-         $this->array($data)->isEqualTo($response);
-      }
-   }
+       // If no errors are expected, check results
+        if (empty($error)) {
+            unset($data['headers']);
+            $this->array($data)->isEqualTo($response);
+        }
+    }
 
-   protected function testGetMassiveActionParametersProvider(): array {
-      return [
+    protected function testGetMassiveActionParametersProvider(): array
+    {
+        return [
          [
             'url' => 'getMassiveActionParameters/Computer',
             'status' => 400,
@@ -942,34 +987,35 @@ class APIRest extends APIBaseClass {
                ["name" => "attached_item[]", "type" => "dropdown"],
             ],
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * Tests for the "getMassiveActionParameters" endpoint
     *
     * @dataProvider testGetMassiveActionParametersProvider
     */
-   public function testGetMassiveActionParameters(
-      string $url,
-      int $status,
-      ?array $response,
-      string $error = ""
-   ): void {
-      $headers = ['Session-Token' => $this->session_token];
-      $data    = $this->query($url, [
+    public function testGetMassiveActionParameters(
+        string $url,
+        int $status,
+        ?array $response,
+        string $error = ""
+    ): void {
+        $headers = ['Session-Token' => $this->session_token];
+        $data    = $this->query($url, [
          'headers' => $headers,
-      ], $status, $error);
+        ], $status, $error);
 
-      // If no errors are expected, check results
-      if (empty($error)) {
-         unset($data['headers']);
-         $this->array($data)->isEqualTo($response);
-      }
-   }
+       // If no errors are expected, check results
+        if (empty($error)) {
+            unset($data['headers']);
+            $this->array($data)->isEqualTo($response);
+        }
+    }
 
-   protected function testApplyMassiveActionProvider(): array {
-      return [
+    protected function testApplyMassiveActionProvider(): array
+    {
+        return [
          [
             'url' => 'applyMassiveAction/Computer',
             'payload' => [
@@ -1016,26 +1062,26 @@ class APIRest extends APIBaseClass {
                'messages' => [],
             ],
             'error' => "",
-            'before_test' => function() {
-               $computers = ['_test_pc01', '_test_pc02'];
-               foreach ($computers as $computer) {
-                  // Init "comment" field for all targets
-                  $computer = getItemByTypeName('Computer', $computer);
-                  $update = $computer->update([
+            'before_test' => function () {
+                $computers = ['_test_pc01', '_test_pc02'];
+                foreach ($computers as $computer) {
+                   // Init "comment" field for all targets
+                    $computer = getItemByTypeName('Computer', $computer);
+                    $update = $computer->update([
                      'id'      => $computer->getId(),
                      'comment' => "test comment",
-                  ]);
-                  $this->boolean($update)->isTrue();
-                  $this->string($computer->fields['comment'])->isEqualTo("test comment");
-               }
+                    ]);
+                    $this->boolean($update)->isTrue();
+                    $this->string($computer->fields['comment'])->isEqualTo("test comment");
+                }
             },
-            'after_test' => function() {
-               $computers = ['_test_pc01', '_test_pc02'];
-               foreach ($computers as $computer) {
-                  // Check that "comment" field was modified as expected
-                  $computer = getItemByTypeName('Computer', $computer);
-                  $this->string($computer->fields['comment'])->isEqualTo("test comment\n\nnewtexttoadd");
-               }
+            'after_test' => function () {
+                $computers = ['_test_pc01', '_test_pc02'];
+                foreach ($computers as $computer) {
+                   // Check that "comment" field was modified as expected
+                    $computer = getItemByTypeName('Computer', $computer);
+                    $this->string($computer->fields['comment'])->isEqualTo("test comment\n\nnewtexttoadd");
+                }
             }
          ],
          [
@@ -1057,82 +1103,82 @@ class APIRest extends APIBaseClass {
                'messages' => [],
             ],
             'error' => "",
-            'before_test' => function() {
-               $computers = ['_test_pc01', '_test_pc02'];
-               foreach ($computers as $computer) {
-                  $note = new Notepad();
-                  $existing_notes = $note->find([
+            'before_test' => function () {
+                $computers = ['_test_pc01', '_test_pc02'];
+                foreach ($computers as $computer) {
+                    $note = new Notepad();
+                    $existing_notes = $note->find([
                      'itemtype' => 'Computer',
                      'items_id' => getItemByTypeName('Computer', $computer, true),
-                  ]);
+                    ]);
 
-                  // Delete all existing note for this item
-                  foreach ($existing_notes as $existing_note) {
-                     $deletion = $note->delete(['id' => $existing_note['id']]);
-                     $this->boolean($deletion)->isTrue();
-                  }
+                   // Delete all existing note for this item
+                    foreach ($existing_notes as $existing_note) {
+                        $deletion = $note->delete(['id' => $existing_note['id']]);
+                        $this->boolean($deletion)->isTrue();
+                    }
 
-                  // Check that the items have no notes remaining
-                  $this->array($note->find([
+                   // Check that the items have no notes remaining
+                    $this->array($note->find([
                      'itemtype' => 'Computer',
                      'items_id' => getItemByTypeName('Computer', $computer, true),
-                  ]))->hasSize(0);
-               }
+                    ]))->hasSize(0);
+                }
             },
-            'after_test' => function() {
-               $computers = ['_test_pc01', '_test_pc02'];
-               foreach ($computers as $computer) {
-                  $note = new Notepad();
-                  $existing_notes = $note->find([
+            'after_test' => function () {
+                $computers = ['_test_pc01', '_test_pc02'];
+                foreach ($computers as $computer) {
+                    $note = new Notepad();
+                    $existing_notes = $note->find([
                      'itemtype' => 'Computer',
                      'items_id' => getItemByTypeName('Computer', $computer, true),
-                  ]);
+                    ]);
 
-                  // Check that the items have one note
-                  $this->array($existing_notes)->hasSize(1);
+                   // Check that the items have one note
+                    $this->array($existing_notes)->hasSize(1);
 
-                  foreach ($existing_notes as $existing_note) {
-                     $this->string($existing_note['content'])->isEqualTo("new note");
-                  }
-               }
+                    foreach ($existing_notes as $existing_note) {
+                        $this->string($existing_note['content'])->isEqualTo("new note");
+                    }
+                }
             }
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * Tests for the "applyMassiveAction" endpoint
     *
     * @dataProvider testApplyMassiveActionProvider
     */
-   public function testApplyMassiveAction(
-      string $url,
-      array $payload,
-      int $status,
-      ?array $response,
-      string $error = "",
-      ?callable $before_test = null,
-      ?callable $after_test = null
-   ): void {
-      if (!is_null($before_test)) {
-         $before_test();
-      }
+    public function testApplyMassiveAction(
+        string $url,
+        array $payload,
+        int $status,
+        ?array $response,
+        string $error = "",
+        ?callable $before_test = null,
+        ?callable $after_test = null
+    ): void {
+        if (!is_null($before_test)) {
+            $before_test();
+        }
 
-      $headers = ['Session-Token' => $this->session_token];
-      $data    = $this->query($url, [
+        $headers = ['Session-Token' => $this->session_token];
+        $data    = $this->query($url, [
          'headers' => $headers,
          'verb'    => 'POST',
          'json'    => $payload,
-      ], $status, $error);
+        ], $status, $error);
 
-      // If no errors are expected, check results
-      if (empty($error)) {
-         unset($data['headers']);
-         $this->array($data)->isEqualTo($response);
-      }
+       // If no errors are expected, check results
+        if (empty($error)) {
+            unset($data['headers']);
+            $this->array($data)->isEqualTo($response);
+        }
 
-      if (!is_null($after_test)) {
-         $after_test();
-      }
-   }
+        if (!is_null($after_test)) {
+            $after_test();
+        }
+    }
 }

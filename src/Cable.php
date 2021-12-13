@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,55 +35,61 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Socket;
 
 /// Class Cable
-class Cable extends CommonDBTM {
+class Cable extends CommonDBTM
+{
 
    // From CommonDBTM
-   public $dohistory         = true;
-   static $rightname         = 'cable_management';
+    public $dohistory         = true;
+    public static $rightname         = 'cable_management';
 
-   static function getTypeName($nb = 0) {
-      return _n('Cable', 'Cables', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Cable', 'Cables', $nb);
+    }
 
-   static function getFieldLabel() {
-      return self::getTypeName(1);
-   }
+    public static function getFieldLabel()
+    {
+        return self::getTypeName(1);
+    }
 
-   function defineTabs($options = []) {
-      $ong = [];
-      $this->addDefaultFormTab($ong)
+    public function defineTabs($options = [])
+    {
+        $ong = [];
+        $this->addDefaultFormTab($ong)
          ->addStandardTab('Infocom', $ong, $options)
          ->addStandardTab('Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
 
-      return $ong;
-   }
+        return $ong;
+    }
 
-   function post_getEmpty() {
-      $this->fields['color'] = '#dddddd';
-      $this->fields['itemtype_endpoint_a'] = 'Computer';
-      $this->fields['itemtype_endpoint_b'] = 'Computer';
-   }
+    public function post_getEmpty()
+    {
+        $this->fields['color'] = '#dddddd';
+        $this->fields['itemtype_endpoint_a'] = 'Computer';
+        $this->fields['itemtype_endpoint_b'] = 'Computer';
+    }
 
-   static function getAdditionalMenuLinks() {
-      $links = [];
-      if (static::canView()) {
-         $insts = "<i class=\"fas fa-ethernet pointer\" title=\"" . Socket::getTypeName(Session::getPluralNumber()) .
-            "\"></i><span class=\"sr-only\">" . Socket::getTypeName(Session::getPluralNumber()). "</span>";
-         $links[$insts] = Socket::getSearchURL(false);
+    public static function getAdditionalMenuLinks()
+    {
+        $links = [];
+        if (static::canView()) {
+            $insts = "<i class=\"fas fa-ethernet pointer\" title=\"" . Socket::getTypeName(Session::getPluralNumber()) .
+            "\"></i><span class=\"sr-only\">" . Socket::getTypeName(Session::getPluralNumber()) . "</span>";
+            $links[$insts] = Socket::getSearchURL(false);
+        }
+        if (count($links)) {
+            return $links;
+        }
+        return false;
+    }
 
-      }
-      if (count($links)) {
-         return $links;
-      }
-      return false;
-   }
-
-   static function getAdditionalMenuOptions() {
-      if (static::canView()) {
-         return [
+    public static function getAdditionalMenuOptions()
+    {
+        if (static::canView()) {
+            return [
             'socket' => [
                'title' => Socket::getTypeName(Session::getPluralNumber()),
                'page'  => Socket::getSearchURL(false),
@@ -91,19 +98,20 @@ class Cable extends CommonDBTM {
                   'search' => '/front/socket.php',
                ]
             ]
-         ];
-      }
-   }
+            ];
+        }
+    }
 
-   function rawSearchOptions() {
-      $tab = [];
+    public function rawSearchOptions()
+    {
+        $tab = [];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => 'common',
          'name'               => __('Characteristics')
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '1',
          'table'              => $this->getTable(),
          'field'              => 'name',
@@ -111,43 +119,43 @@ class Cable extends CommonDBTM {
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
          'autocomplete'       => true,
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '2',
          'table'              => $this->getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
          'datatype'           => 'number'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '4',
          'table'              => 'glpi_cabletypes',
          'field'              => 'name',
          'name'               => _n('Cable type', 'Cable types', 1),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '5',
          'table'              => 'glpi_cablestrands',
          'field'              => 'name',
          'name'               => _n('Cable strand', 'Cable strands', 1),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '6',
          'table'              => $this->getTable(),
          'field'              => 'otherserial',
          'name'               => __('Inventory number'),
          'datatype'           => 'string',
          'autocomplete'       => true,
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '7',
          'table'              => $this->getTable(),
          'field'              => 'itemtype_endpoint_a',
@@ -156,9 +164,9 @@ class Cable extends CommonDBTM {
          'itemtype_list'      => 'socket_types',
          'forcegroupby'       => true,
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '8',
          'table'              => $this->getTable(),
          'field'              => 'items_id_endpoint_b',
@@ -167,9 +175,9 @@ class Cable extends CommonDBTM {
          'datatype'           => 'specific',
          'searchtype'         => 'equals',
          'additionalfields'   => ['itemtype_endpoint_b']
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '9',
          'table'              => $this->getTable(),
          'field'              => 'itemtype_endpoint_b',
@@ -178,9 +186,9 @@ class Cable extends CommonDBTM {
          'itemtype_list'      => 'socket_types',
          'forcegroupby'       => true,
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '10',
          'table'              => $this->getTable(),
          'field'              => 'items_id_endpoint_a',
@@ -189,9 +197,9 @@ class Cable extends CommonDBTM {
          'datatype'           => 'specific',
          'searchtype'         => 'equals',
          'additionalfields'   => ['itemtype_endpoint_a']
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '11',
          'table'              => SocketModel::getTable(),
          'field'              => 'name',
@@ -199,9 +207,9 @@ class Cable extends CommonDBTM {
          'name'               => sprintf(__('%s (%s)'), SocketModel::getTypeName(1), __('Endpoint A')),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '12',
          'table'              => SocketModel::getTable(),
          'field'              => 'name',
@@ -209,9 +217,9 @@ class Cable extends CommonDBTM {
          'name'               => sprintf(__('%s (%s)'), SocketModel::getTypeName(1), __('Endpoint B')),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '13',
          'table'              => Socket::getTable(),
          'field'              => 'name',
@@ -219,9 +227,9 @@ class Cable extends CommonDBTM {
          'name'               => sprintf(__('%s (%s)'), Socket::getTypeName(1), __('Endpoint B')),
          'datatype'           => 'dropdown',
          'massiveaction'       => false,
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '14',
          'table'              => Socket::getTable(),
          'field'              => 'name',
@@ -229,61 +237,61 @@ class Cable extends CommonDBTM {
          'name'               => sprintf(__('%s (%s)'), Socket::getTypeName(1), __('Endpoint A')),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '15',
          'table'              => $this->getTable(),
          'field'              => 'color',
          'name'               => __('Color'),
          'datatype'           => 'color'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '16',
          'table'              => $this->getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '19',
          'table'              => $this->getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '24',
          'table'              => 'glpi_users',
          'field'              => 'name',
          'linkfield'          => 'users_id_tech',
          'name'               => __('Technician in charge of the hardware'),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '121',
          'table'              => $this->getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '31',
          'table'              => 'glpi_states',
          'field'              => 'completename',
          'name'               => __('Status'),
          'datatype'           => 'dropdown',
          'condition'          => ['is_visible_cable' => 1]
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '87',
          'table'              => $this->getTable(),
          'field'              => '_virtual_datacenter_position', // virtual field
@@ -296,9 +304,9 @@ class Cable extends CommonDBTM {
          'nosearch'           => true,
          'nosort'             => true,
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '88',
          'table'              => $this->getTable(),
          'field'              => '_virtual_datacenter_position', // virtual field
@@ -311,68 +319,70 @@ class Cable extends CommonDBTM {
          'nosearch'           => true,
          'nosort'             => true,
          'massiveaction'      => false
-      ];
+        ];
 
-      return $tab;
-   }
-
-
-   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
-
-      if (!is_array($values)) {
-         $values = [$field => $values];
-      }
-      $options['display'] = false;
-      switch ($field) {
-         case 'items_id_endpoint_a' :
-            if (isset($values['itemtype_endpoint_a']) && !empty($values['itemtype_endpoint_a'])) {
-               $options['name']  = $name;
-               $options['value'] = $values[$field];
-               return Dropdown::show($values['itemtype_endpoint_a'], $options);
-            }
-            break;
-         case 'items_id_endpoint_b' :
-            if (isset($values['itemtype_endpoint_b']) && !empty($values['itemtype_endpoint_b'])) {
-               $options['name']  = $name;
-               $options['value'] = $values[$field];
-               return Dropdown::show($values['itemtype_endpoint_b'], $options);
-            }
-            break;
-      }
-      return parent::getSpecificValueToSelect($field, $name, $values, $options);
-   }
+        return $tab;
+    }
 
 
-   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    {
 
-      if (!is_array($values)) {
-         $values = [$field => $values];
-      }
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        $options['display'] = false;
+        switch ($field) {
+            case 'items_id_endpoint_a':
+                if (isset($values['itemtype_endpoint_a']) && !empty($values['itemtype_endpoint_a'])) {
+                    $options['name']  = $name;
+                    $options['value'] = $values[$field];
+                    return Dropdown::show($values['itemtype_endpoint_a'], $options);
+                }
+                break;
+            case 'items_id_endpoint_b':
+                if (isset($values['itemtype_endpoint_b']) && !empty($values['itemtype_endpoint_b'])) {
+                    $options['name']  = $name;
+                    $options['value'] = $values[$field];
+                    return Dropdown::show($values['itemtype_endpoint_b'], $options);
+                }
+                break;
+        }
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
 
-      switch ($field) {
-         case 'items_id_endpoint_a' :
-         case 'items_id_endpoint_b' :
-            $itemtype = $values[str_replace('items_id', 'itemtype', $field)] ?? null;
-            if ($itemtype !== null && class_exists($itemtype)) {
-               if ($values[$field] > 0) {
-                  $item = new $itemtype();
-                  $item->getFromDB($values[$field]);
-                  return "<a href='" . $item->getLinkURL(). "'>".$item->fields['name']."</a>";
-               }
-            } else {
-               return ' ';
-            }
-            break;
-         case '_virtual_datacenter_position':
-            $itemtype = isset($values['itemtype_endpoint_b']) ? $values['itemtype_endpoint_b'] : $values['itemtype_endpoint_a'];
-            $items_id = isset($values['items_id_endpoint_b']) ? $values['items_id_endpoint_b'] : $values['items_id_endpoint_a'];
 
-            if (method_exists($itemtype, 'getDcBreadcrumbSpecificValueToDisplay')) {
-               return $itemtype::getDcBreadcrumbSpecificValueToDisplay($items_id);
-            }
-      }
-      return parent::getSpecificValueToDisplay($field, $values, $options);
-   }
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+
+        switch ($field) {
+            case 'items_id_endpoint_a':
+            case 'items_id_endpoint_b':
+                $itemtype = $values[str_replace('items_id', 'itemtype', $field)] ?? null;
+                if ($itemtype !== null && class_exists($itemtype)) {
+                    if ($values[$field] > 0) {
+                        $item = new $itemtype();
+                        $item->getFromDB($values[$field]);
+                        return "<a href='" . $item->getLinkURL() . "'>" . $item->fields['name'] . "</a>";
+                    }
+                } else {
+                    return ' ';
+                }
+                break;
+            case '_virtual_datacenter_position':
+                $itemtype = isset($values['itemtype_endpoint_b']) ? $values['itemtype_endpoint_b'] : $values['itemtype_endpoint_a'];
+                $items_id = isset($values['items_id_endpoint_b']) ? $values['items_id_endpoint_b'] : $values['items_id_endpoint_a'];
+
+                if (method_exists($itemtype, 'getDcBreadcrumbSpecificValueToDisplay')) {
+                    return $itemtype::getDcBreadcrumbSpecificValueToDisplay($items_id);
+                }
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
 
    /**
    * Print the main form
@@ -384,17 +394,18 @@ class Cable extends CommonDBTM {
    *
    * @return void|boolean (display) Returns false if there is a rights error.
    **/
-   function showForm($ID, array $options = []) {
-      $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('pages/assets/cable.html.twig', [
+    public function showForm($ID, array $options = [])
+    {
+        $this->initForm($ID, $options);
+        TemplateRenderer::getInstance()->display('pages/assets/cable.html.twig', [
          'item'   => $this,
          'params' => $options,
-      ]);
-      return true;
-   }
+        ]);
+        return true;
+    }
 
-   static function getIcon() {
-      return "ti ti-line";
-   }
-
+    public static function getIcon()
+    {
+        return "ti ti-line";
+    }
 }

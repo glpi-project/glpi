@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -29,6 +30,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
 /**
  * @var DB $DB
  * @var Migration $migration
@@ -37,9 +39,9 @@
 /** User mention notification */
 $notification_exists = countElementsInTable('glpi_notifications', ['itemtype' => 'Ticket', 'event' => 'user_mention']) > 0;
 if (!$notification_exists) {
-   $DB->insertOrDie(
-      'glpi_notifications',
-      [
+    $DB->insertOrDie(
+        'glpi_notifications',
+        [
          'id'              => null,
          'name'            => 'New user mentionned',
          'entities_id'     => 0,
@@ -50,32 +52,32 @@ if (!$notification_exists) {
          'is_active'       => 1,
          'date_creation'   => new \QueryExpression('NOW()'),
          'date_mod'        => new \QueryExpression('NOW()')
-      ],
-      '10.0 Add user mention notification'
-   );
-   $notification_id = $DB->insertId();
+        ],
+        '10.0 Add user mention notification'
+    );
+    $notification_id = $DB->insertId();
 
-   $notificationtemplate = new NotificationTemplate();
-   if ($notificationtemplate->getFromDBByCrit(['name' => 'Tickets', 'itemtype' => 'Ticket'])) {
-      $DB->insertOrDie(
-         'glpi_notifications_notificationtemplates',
-         [
+    $notificationtemplate = new NotificationTemplate();
+    if ($notificationtemplate->getFromDBByCrit(['name' => 'Tickets', 'itemtype' => 'Ticket'])) {
+        $DB->insertOrDie(
+            'glpi_notifications_notificationtemplates',
+            [
             'notifications_id'         => $notification_id,
             'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
             'notificationtemplates_id' => $notificationtemplate->fields['id'],
-         ],
-         '10.0 Add user mention notification template'
-      );
-   }
+            ],
+            '10.0 Add user mention notification template'
+        );
+    }
 
-   $DB->insertOrDie(
-      'glpi_notificationtargets',
-      [
+    $DB->insertOrDie(
+        'glpi_notificationtargets',
+        [
          'items_id'         => '39',
          'type'             => '1',
          'notifications_id' => $notification_id,
-      ],
-      '10.0 Add user mention notification target'
-   );
+        ],
+        '10.0 Add user mention notification target'
+    );
 }
 /** /User mention notification */

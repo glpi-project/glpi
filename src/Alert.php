@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,23 +34,25 @@
 /**
  * Alert class
 **/
-class Alert extends CommonDBTM {
+class Alert extends CommonDBTM
+{
 
    // ALERTS TYPE
-   const THRESHOLD   = 1;
-   const END         = 2;
-   const NOTICE      = 3;
-   const NOTCLOSED   = 4;
-   const ACTION      = 5;
-   const PERIODICITY = 6;
+    const THRESHOLD   = 1;
+    const END         = 2;
+    const NOTICE      = 3;
+    const NOTCLOSED   = 4;
+    const ACTION      = 5;
+    const PERIODICITY = 6;
 
-   function prepareInputForAdd($input) {
+    public function prepareInputForAdd($input)
+    {
 
-      if (!isset($input['date']) || empty($input['date'])) {
-         $input['date'] = date("Y-m-d H:i:s");
-      }
-      return $input;
-   }
+        if (!isset($input['date']) || empty($input['date'])) {
+            $input['date'] = date("Y-m-d H:i:s");
+        }
+        return $input;
+    }
 
 
    /**
@@ -61,10 +64,11 @@ class Alert extends CommonDBTM {
     *
     * @return boolean
     */
-   function clear($itemtype, $ID, $alert_type) {
+    public function clear($itemtype, $ID, $alert_type)
+    {
 
-      return $this->deleteByCriteria(['itemtype' => $itemtype, 'items_id' => $ID, 'type' => $alert_type], 1);
-   }
+        return $this->deleteByCriteria(['itemtype' => $itemtype, 'items_id' => $ID, 'type' => $alert_type], 1);
+    }
 
 
    /**
@@ -77,39 +81,41 @@ class Alert extends CommonDBTM {
     *
     * @return boolean
     */
-   function cleanDBonItemDelete($itemtype, $ID) {
+    public function cleanDBonItemDelete($itemtype, $ID)
+    {
 
-      return $this->deleteByCriteria(['itemtype' => $itemtype, 'items_id' => $ID], 1);
-   }
+        return $this->deleteByCriteria(['itemtype' => $itemtype, 'items_id' => $ID], 1);
+    }
 
-   static function dropdown($options = []) {
+    public static function dropdown($options = [])
+    {
 
-      $p = [
+        $p = [
          'name'           => 'alert',
          'value'          => 0,
          'display'        => true,
          'inherit_parent' => false,
-      ];
+        ];
 
-      if (count($options)) {
-         foreach ($options as $key => $val) {
-            $p[$key] = $val;
-         }
-      }
+        if (count($options)) {
+            foreach ($options as $key => $val) {
+                $p[$key] = $val;
+            }
+        }
 
-      $times = [];
+        $times = [];
 
-      if ($p['inherit_parent']) {
-         $times[Entity::CONFIG_PARENT] = __('Inheritance of the parent entity');
-      }
+        if ($p['inherit_parent']) {
+            $times[Entity::CONFIG_PARENT] = __('Inheritance of the parent entity');
+        }
 
-      $times[Entity::CONFIG_NEVER]  = __('Never');
-      $times[DAY_TIMESTAMP]         = __('Each day');
-      $times[WEEK_TIMESTAMP]        = __('Each week');
-      $times[MONTH_TIMESTAMP]       = __('Each month');
+        $times[Entity::CONFIG_NEVER]  = __('Never');
+        $times[DAY_TIMESTAMP]         = __('Each day');
+        $times[WEEK_TIMESTAMP]        = __('Each week');
+        $times[MONTH_TIMESTAMP]       = __('Each month');
 
-      return Dropdown::showFromArray($p['name'], $times, $p);
-   }
+        return Dropdown::showFromArray($p['name'], $times, $p);
+    }
 
 
    /**
@@ -119,32 +125,33 @@ class Alert extends CommonDBTM {
     *
     * @return void|string (see $options['display'])
     */
-   static function dropdownYesNo($options = []) {
+    public static function dropdownYesNo($options = [])
+    {
 
-      $p = [
+        $p = [
          'name'           => 'alert',
          'value'          => 0,
          'display'        => true,
          'inherit_parent' => false,
-      ];
+        ];
 
-      if (count($options)) {
-         foreach ($options as $key => $val) {
-            $p[$key] = $val;
-         }
-      }
+        if (count($options)) {
+            foreach ($options as $key => $val) {
+                $p[$key] = $val;
+            }
+        }
 
-      $times = [];
+        $times = [];
 
-      if ($p['inherit_parent']) {
-         $times[Entity::CONFIG_PARENT] = __('Inheritance of the parent entity');
-      }
+        if ($p['inherit_parent']) {
+            $times[Entity::CONFIG_PARENT] = __('Inheritance of the parent entity');
+        }
 
-      $times[0] = __('No');
-      $times[1] = __('Yes');
+        $times[0] = __('No');
+        $times[1] = __('Yes');
 
-      return Dropdown::showFromArray($p['name'], $times, $p);
-   }
+        return Dropdown::showFromArray($p['name'], $times, $p);
+    }
 
 
    /**
@@ -156,37 +163,38 @@ class Alert extends CommonDBTM {
     *
     * @return void|string (see $options['display'])
     */
-   static function dropdownIntegerNever($name, $value, $options = []) {
+    public static function dropdownIntegerNever($name, $value, $options = [])
+    {
 
-      $p = [
+        $p = [
          'min'     => 1,
          'max'     => 100,
          'step'    => 1,
          'toadd'   => [],
          'display' => true,
-      ];
+        ];
 
-      if (isset($options['inherit_parent']) && $options['inherit_parent']) {
-         $p['toadd'][-2] = __('Inheritance of the parent entity');
-      }
+        if (isset($options['inherit_parent']) && $options['inherit_parent']) {
+            $p['toadd'][-2] = __('Inheritance of the parent entity');
+        }
 
-      $never_string = __('Never');
-      if (isset($options['never_string']) && $options['never_string']) {
-         $never_string = $options['never_string'];
-      }
-      if (isset($options['never_value']) && $options['never_value']) {
-         $p['toadd'][$options['never_value']] = $never_string;
-      } else {
-         $p['toadd'][0] = $never_string;
-      }
-      $p['value'] = $value;
+        $never_string = __('Never');
+        if (isset($options['never_string']) && $options['never_string']) {
+            $never_string = $options['never_string'];
+        }
+        if (isset($options['never_value']) && $options['never_value']) {
+            $p['toadd'][$options['never_value']] = $never_string;
+        } else {
+            $p['toadd'][0] = $never_string;
+        }
+        $p['value'] = $value;
 
-      foreach ($options as $key=>$val) {
-         $p[$key] = $val;
-      }
+        foreach ($options as $key => $val) {
+            $p[$key] = $val;
+        }
 
-      return Dropdown::showNumber($name, $p);
-   }
+        return Dropdown::showNumber($name, $p);
+    }
 
 
    /**
@@ -199,18 +207,19 @@ class Alert extends CommonDBTM {
     *
     * @return integer|boolean
     */
-   static function alertExists($itemtype, $items_id, $type) {
-      global $DB;
+    public static function alertExists($itemtype, $items_id, $type)
+    {
+        global $DB;
 
-      if ($items_id <= 0 || $type <= 0) {
-         return false;
-      }
-      $iter = $DB->request(self::getTable(), ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]);
-      if ($row = $iter->current()) {
-         return $row['id'];
-      }
-      return false;
-   }
+        if ($items_id <= 0 || $type <= 0) {
+            return false;
+        }
+        $iter = $DB->request(self::getTable(), ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]);
+        if ($row = $iter->current()) {
+            return $row['id'];
+        }
+        return false;
+    }
 
 
    /**
@@ -225,18 +234,19 @@ class Alert extends CommonDBTM {
     *
     * @return mixed|boolean
     */
-   static function getAlertDate($itemtype, $items_id, $type) {
-      global $DB;
+    public static function getAlertDate($itemtype, $items_id, $type)
+    {
+        global $DB;
 
-      if ($items_id <= 0 || $type <= 0) {
-         return false;
-      }
-      $iter = $DB->request(self::getTable(), ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]);
-      if ($row = $iter->current()) {
-         return $row['date'];
-      }
-      return false;
-   }
+        if ($items_id <= 0 || $type <= 0) {
+            return false;
+        }
+        $iter = $DB->request(self::getTable(), ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]);
+        if ($row = $iter->current()) {
+            return $row['date'];
+        }
+        return false;
+    }
 
 
    /**
@@ -247,20 +257,20 @@ class Alert extends CommonDBTM {
     *
     * @return void
     */
-   static function displayLastAlert($itemtype, $items_id) {
-      global $DB;
+    public static function displayLastAlert($itemtype, $items_id)
+    {
+        global $DB;
 
-      if ($items_id) {
-         $iter = $DB->request(self::getTable(), ['FIELDS'   => 'date',
+        if ($items_id) {
+            $iter = $DB->request(self::getTable(), ['FIELDS'   => 'date',
                                                  'ORDER'    => 'date DESC',
                                                  'LIMIT'    => 1,
                                                  'itemtype' => $itemtype,
                                                  'items_id' => $items_id]);
-         if ($row = $iter->current()) {
-            //TRANS: %s is the date
-            echo sprintf(__('Alert sent on %s'), Html::convDateTime($row['date']));
-         }
-      }
-   }
-
+            if ($row = $iter->current()) {
+                 //TRANS: %s is the date
+                 echo sprintf(__('Alert sent on %s'), Html::convDateTime($row['date']));
+            }
+        }
+    }
 }

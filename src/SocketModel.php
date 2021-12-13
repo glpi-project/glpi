@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,16 +32,18 @@
  */
 
 /// Class ConnectorModel
-class SocketModel extends CommonDropdown {
+class SocketModel extends CommonDropdown
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Socket model', 'Socket models', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Socket model', 'Socket models', $nb);
+    }
 
 
-   static function getFieldLabel() {
-      return _n('Model', 'Models', 1);
-   }
-
+    public static function getFieldLabel()
+    {
+        return _n('Model', 'Models', 1);
+    }
 }

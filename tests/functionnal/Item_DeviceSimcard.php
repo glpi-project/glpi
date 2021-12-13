@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,99 +35,105 @@ namespace tests\units;
 
 use DbTestCase;
 
-class Item_DeviceSimcard extends DbTestCase {
+class Item_DeviceSimcard extends DbTestCase
+{
 
-   public function testCreate() {
-      $this->login();
-      $obj = new \Item_DeviceSimcard();
+    public function testCreate()
+    {
+        $this->login();
+        $obj = new \Item_DeviceSimcard();
 
-      // Add
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $this->object($computer)->isInstanceOf('\Computer');
-      $deviceSimcard = getItemForItemtype('DeviceSimcard', '_test_simcard_1');
-      $this->object($deviceSimcard)->isInstanceOf('\DeviceSimcard');
-      $in = [
+       // Add
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $this->object($computer)->isInstanceOf('\Computer');
+        $deviceSimcard = getItemForItemtype('DeviceSimcard', '_test_simcard_1');
+        $this->object($deviceSimcard)->isInstanceOf('\DeviceSimcard');
+        $in = [
             'itemtype'           => 'Computer',
             'items_id'           => $computer->getID(),
             'devicesimcards_id'  => $deviceSimcard->getID(),
             'entities_id'        => 0,
-      ];
-      $id = $obj->add($in);
-      $this->integer((int)$id)->isGreaterThan(0);
-      $this->boolean($obj->getFromDB($id))->isTrue();
+        ];
+        $id = $obj->add($in);
+        $this->integer((int)$id)->isGreaterThan(0);
+        $this->boolean($obj->getFromDB($id))->isTrue();
 
-      // getField methods
-      $this->variable($obj->getField('id'))->isEqualTo($id);
-      foreach ($in as $k => $v) {
-         $this->variable($obj->getField($k))->isEqualTo($v);
-      }
-   }
+       // getField methods
+        $this->variable($obj->getField('id'))->isEqualTo($id);
+        foreach ($in as $k => $v) {
+            $this->variable($obj->getField($k))->isEqualTo($v);
+        }
+    }
 
-   public function testUpdate() {
-      $this->login();
-      $obj = new \Item_DeviceSimcard();
+    public function testUpdate()
+    {
+        $this->login();
+        $obj = new \Item_DeviceSimcard();
 
-      // Add
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $this->object($computer)->isInstanceOf('\Computer');
-      $deviceSimcard = getItemForItemtype('DeviceSimcard', '_test_simcard_1');
-      $this->object($deviceSimcard)->isInstanceOf('\DeviceSimcard');
-      $id = $obj->add([
+       // Add
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $this->object($computer)->isInstanceOf('\Computer');
+        $deviceSimcard = getItemForItemtype('DeviceSimcard', '_test_simcard_1');
+        $this->object($deviceSimcard)->isInstanceOf('\DeviceSimcard');
+        $id = $obj->add([
             'itemtype'           => 'Computer',
             'items_id'           => $computer->getID(),
             'devicesimcards_id'  => $deviceSimcard->getID(),
             'entities_id'        => 0,
-      ]);
-       $this->integer($id)->isGreaterThan(0);
+        ]);
+        $this->integer($id)->isGreaterThan(0);
 
-      // Update
-      $id = $obj->getID();
-      $in = [
+       // Update
+        $id = $obj->getID();
+        $in = [
             'id'                       => $id,
             'pin'                      => '0123',
             'pin2'                     => '1234',
             'puk'                      => '2345',
             'puk2'                     => '3456',
-      ];
-      $this->boolean($obj->update($in))->isTrue();
-      $this->boolean($obj->getFromDB($id))->isTrue();
+        ];
+        $this->boolean($obj->update($in))->isTrue();
+        $this->boolean($obj->getFromDB($id))->isTrue();
 
-      // getField methods
-      foreach ($in as $k => $v) {
-         $this->variable($obj->getField($k))->isEqualTo($v);
-      }
-   }
+       // getField methods
+        foreach ($in as $k => $v) {
+            $this->variable($obj->getField($k))->isEqualTo($v);
+        }
+    }
 
-   public function testDenyPinPukUpdate() {
-      global $DB;
-      //drop update access on item_devicesimcard
-      $DB->update(
-         'glpi_profilerights',
-         ['rights' => 1], [
+    public function testDenyPinPukUpdate()
+    {
+        global $DB;
+       //drop update access on item_devicesimcard
+        $DB->update(
+            'glpi_profilerights',
+            ['rights' => 1],
+            [
             'profiles_id'  => 4,
             'name'         => 'devicesimcard_pinpuk'
-         ]
-      );
+            ]
+        );
 
-      // Profile changed then login
-      $this->login();
-      //reset rights. Done here so ACLs are reset even if tests fails.
-      $DB->update(
-         'glpi_profilerights',
-         ['rights' => 3], [
+       // Profile changed then login
+        $this->login();
+       //reset rights. Done here so ACLs are reset even if tests fails.
+        $DB->update(
+            'glpi_profilerights',
+            ['rights' => 3],
+            [
             'profiles_id'  => 4,
             'name'         => 'devicesimcard_pinpuk'
-         ]
-      );
+            ]
+        );
 
-      $obj = new \Item_DeviceSimcard();
+        $obj = new \Item_DeviceSimcard();
 
-      // Add
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $this->object($computer)->isInstanceOf('\Computer');
-      $deviceSimcard = getItemForItemtype('DeviceSimcard', '_test_simcard_1');
-      $this->object($deviceSimcard)->isInstanceOf('\DeviceSimcard');
-      $id = $obj->add([
+       // Add
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $this->object($computer)->isInstanceOf('\Computer');
+        $deviceSimcard = getItemForItemtype('DeviceSimcard', '_test_simcard_1');
+        $this->object($deviceSimcard)->isInstanceOf('\DeviceSimcard');
+        $id = $obj->add([
             'itemtype'           => 'Computer',
             'items_id'           => $computer->getID(),
             'devicesimcards_id'  => $deviceSimcard->getID(),
@@ -135,51 +142,51 @@ class Item_DeviceSimcard extends DbTestCase {
             'pin2'               => '1234',
             'puk'                => '2345',
             'puk2'               => '3456',
-      ]);
-      $this->integer($id)->isGreaterThan(0);
+        ]);
+        $this->integer($id)->isGreaterThan(0);
 
-      // Update
-      $id = $obj->getID();
-      $in = [
+       // Update
+        $id = $obj->getID();
+        $in = [
             'id'                 => $id,
             'pin'                => '0000',
             'pin2'               => '0000',
             'puk'                => '0000',
             'puk2'               => '0000',
-      ];
-      $this->boolean($obj->update($in))->isTrue();
-      $this->boolean($obj->getFromDB($id))->isTrue();
+        ];
+        $this->boolean($obj->update($in))->isTrue();
+        $this->boolean($obj->getFromDB($id))->isTrue();
 
-      // getField methods
-      unset($in['id']);
-      foreach ($in as $k => $v) {
-         $this->variable($obj->getField($k))->isNotEqualTo($v);
-      }
-   }
+       // getField methods
+        unset($in['id']);
+        foreach ($in as $k => $v) {
+            $this->variable($obj->getField($k))->isNotEqualTo($v);
+        }
+    }
 
 
-   public function testDelete() {
-      $this->login();
-      $obj = new \Item_DeviceSimcard();
+    public function testDelete()
+    {
+        $this->login();
+        $obj = new \Item_DeviceSimcard();
 
-      // Add
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $this->object($computer)->isInstanceOf('\Computer');
-      $deviceSimcard = getItemForItemtype('DeviceSimcard', '_test_simcard_1');
-      $this->object($deviceSimcard)->isInstanceOf('\DeviceSimcard');
-      $id = $obj->add([
+       // Add
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $this->object($computer)->isInstanceOf('\Computer');
+        $deviceSimcard = getItemForItemtype('DeviceSimcard', '_test_simcard_1');
+        $this->object($deviceSimcard)->isInstanceOf('\DeviceSimcard');
+        $id = $obj->add([
             'itemtype'           => 'Computer',
             'items_id'           => $computer->getID(),
             'devicesimcards_id'  => $deviceSimcard->getID(),
             'entities_id'        => 0,
-      ]);
-      $this->integer($id)->isGreaterThan(0);
+        ]);
+        $this->integer($id)->isGreaterThan(0);
 
-      // Delete
-      $in = [
+       // Delete
+        $in = [
             'id'                       => $obj->getID(),
-      ];
-      $this->boolean($obj->delete($in))->isTrue();
-   }
-
+        ];
+        $this->boolean($obj->delete($in))->isTrue();
+    }
 }

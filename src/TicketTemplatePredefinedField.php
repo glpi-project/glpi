@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,10 +38,11 @@
  *
  * @since 0.83
 **/
-class TicketTemplatePredefinedField extends ITILTemplatePredefinedField {
+class TicketTemplatePredefinedField extends ITILTemplatePredefinedField
+{
 
    // From CommonDBChild
-   static public $itemtype = 'TicketTemplate';
-   static public $items_id = 'tickettemplates_id';
-   static public $itiltype = 'Ticket';
+    public static $itemtype = 'TicketTemplate';
+    public static $items_id = 'tickettemplates_id';
+    public static $itiltype = 'Ticket';
 }

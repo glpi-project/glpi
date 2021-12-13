@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -63,27 +64,27 @@ $fonts_mapping = [
 ];
 
 foreach ($fonts_mapping as $new_value => $old_values) {
-   $migration->addPostQuery(
-      $DB->buildUpdate(
-         'glpi_configs',
-         [
+    $migration->addPostQuery(
+        $DB->buildUpdate(
+            'glpi_configs',
+            [
             'value' => $new_value,
-         ],
-         [
+            ],
+            [
             'name'  => 'pdffont',
             'value' => $old_values,
-         ]
-      )
-   );
-   $migration->addPostQuery(
-      $DB->buildUpdate(
-         'glpi_users',
-         [
+            ]
+        )
+    );
+    $migration->addPostQuery(
+        $DB->buildUpdate(
+            'glpi_users',
+            [
             'pdffont' => $new_value,
-         ],
-         [
+            ],
+            [
             'pdffont' => $old_values,
-         ]
-      )
-   );
+            ]
+        )
+    );
 }

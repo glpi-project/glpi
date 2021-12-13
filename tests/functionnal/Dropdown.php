@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -38,56 +39,61 @@ use Glpi\Toolbox\Sanitizer;
 
 /* Test for inc/dropdown.class.php */
 
-class Dropdown extends DbTestCase {
+class Dropdown extends DbTestCase
+{
 
-   public function testShowLanguages() {
+    public function testShowLanguages()
+    {
 
-      $opt = [ 'display_emptychoice' => true, 'display' => false ];
-      $out = \Dropdown::showLanguages('dropfoo', $opt);
-      $this->string($out)
+        $opt = [ 'display_emptychoice' => true, 'display' => false ];
+        $out = \Dropdown::showLanguages('dropfoo', $opt);
+        $this->string($out)
          ->contains("name='dropfoo'")
          ->contains("value='' selected")
          ->notContains("value='0'")
          ->contains("value='fr_FR'");
 
-      $opt = ['display' => false, 'value' => 'cs_CZ', 'rand' => '1234'];
-      $out = \Dropdown::showLanguages('language', $opt);
-      $this->string($out)
+        $opt = ['display' => false, 'value' => 'cs_CZ', 'rand' => '1234'];
+        $out = \Dropdown::showLanguages('language', $opt);
+        $this->string($out)
          ->notContains("value=''")
          ->notContains("value='0'")
          ->contains("name='language' id='dropdown_language1234")
          ->contains("value='cs_CZ' selected")
          ->contains("value='fr_FR'");
-   }
+    }
 
-   public function dataTestImport() {
-      return [
+    public function dataTestImport()
+    {
+        return [
             // input,             name,  message
             [ [ ],                '',    'missing name'],
             [ [ 'name' => ''],    '',    'empty name'],
             [ [ 'name' => ' '],   '',    'space name'],
             [ [ 'name' => ' a '], 'a',   'simple name'],
             [ [ 'name' => 'foo'], 'foo', 'simple name'],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider dataTestImport
     */
-   public function testImport($input, $result, $msg) {
-      $id = \Dropdown::import('UserTitle', $input);
-      if ($result) {
-         $this->integer((int)$id)->isGreaterThan(0);
-         $ut = new \UserTitle();
-         $this->boolean($ut->getFromDB($id))->isTrue();
-         $this->string($ut->getField('name'))->isIdenticalTo($result);
-      } else {
-         $this->integer((int)$id)->isLessThan(0);
-      }
-   }
+    public function testImport($input, $result, $msg)
+    {
+        $id = \Dropdown::import('UserTitle', $input);
+        if ($result) {
+            $this->integer((int)$id)->isGreaterThan(0);
+            $ut = new \UserTitle();
+            $this->boolean($ut->getFromDB($id))->isTrue();
+            $this->string($ut->getField('name'))->isIdenticalTo($result);
+        } else {
+            $this->integer((int)$id)->isLessThan(0);
+        }
+    }
 
-   public function dataTestTreeImport() {
-      return [
+    public function dataTestTreeImport()
+    {
+        return [
             // input,                                  name,    completename, message
             [ [ ],                                     '',      '',           'missing name'],
             [ [ 'name' => ''],                          '',     '',           'empty name'],
@@ -101,149 +107,152 @@ class Dropdown extends DbTestCase {
             [ [ 'completename' => 'foo>bar'],           'bar',  'foo > bar',  'two names with no space'],
             [ [ 'completename' => '>foo>>bar>'],        'bar',  'foo > bar',  'two names with additional >'],
             [ [ 'completename' => ' foo >   > bar > '], 'bar',  'foo > bar',  'two names with garbage'],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider dataTestTreeImport
     */
-   public function testTreeImport($input, $result, $complete, $msg) {
-      $input['entities_id'] = getItemByTypeName('Entity', '_test_root_entity', true);
-      $id = \Dropdown::import('Location', $input);
-      if ($result) {
-         $this->integer((int)$id, $msg)->isGreaterThan(0);
-         $ut = new \Location();
-         $this->boolean($ut->getFromDB($id))->isTrue();
-         $this->string($ut->getField('name'))->isIdenticalTo($result);
-         $this->string($ut->getField('completename'))->isIdenticalTo($complete);
-      } else {
-         $this->integer((int)$id)->isLessThanOrEqualTo(0);
-      }
-   }
+    public function testTreeImport($input, $result, $complete, $msg)
+    {
+        $input['entities_id'] = getItemByTypeName('Entity', '_test_root_entity', true);
+        $id = \Dropdown::import('Location', $input);
+        if ($result) {
+            $this->integer((int)$id, $msg)->isGreaterThan(0);
+            $ut = new \Location();
+            $this->boolean($ut->getFromDB($id))->isTrue();
+            $this->string($ut->getField('name'))->isIdenticalTo($result);
+            $this->string($ut->getField('completename'))->isIdenticalTo($complete);
+        } else {
+            $this->integer((int)$id)->isLessThanOrEqualTo(0);
+        }
+    }
 
-   public function testGetDropdownName() {
-      global $CFG_GLPI;
+    public function testGetDropdownName()
+    {
+        global $CFG_GLPI;
 
-      $encoded_sep = Sanitizer::sanitize(' > ');
+        $encoded_sep = Sanitizer::sanitize(' > ');
 
-      $ret = \Dropdown::getDropdownName('not_a_known_table', 1);
-      $this->string($ret)->isIdenticalTo('&nbsp;');
+        $ret = \Dropdown::getDropdownName('not_a_known_table', 1);
+        $this->string($ret)->isIdenticalTo('&nbsp;');
 
-      $cat = getItemByTypeName('TaskCategory', '_cat_1');
+        $cat = getItemByTypeName('TaskCategory', '_cat_1');
 
-      $subCat = getItemByTypeName('TaskCategory', '_subcat_1');
+        $subCat = getItemByTypeName('TaskCategory', '_subcat_1');
 
-      // basic test returns string only
-      $expected = $cat->fields['name'].$encoded_sep.$subCat->fields['name'];
-      $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subCat->getID());
-      $this->string($ret)->isIdenticalTo($expected);
+       // basic test returns string only
+        $expected = $cat->fields['name'] . $encoded_sep . $subCat->fields['name'];
+        $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subCat->getID());
+        $this->string($ret)->isIdenticalTo($expected);
 
-      // test of return with comments
-      $expected = ['name'    => $cat->fields['name'].$encoded_sep.$subCat->fields['name'],
-                        'comment' => "<span class='b'>Complete name</span>: ".$cat->fields['name'].$encoded_sep
-                                    .$subCat->fields['name']."<br><span class='b'>&nbsp;Comments&nbsp;</span>"
-                                    .$subCat->fields['comment']];
-      $ret = \Dropdown::getDropdownName( 'glpi_taskcategories', $subCat->getID(), true );
-      $this->array($ret)->isIdenticalTo($expected);
+       // test of return with comments
+        $expected = ['name'    => $cat->fields['name'] . $encoded_sep . $subCat->fields['name'],
+                        'comment' => "<span class='b'>Complete name</span>: " . $cat->fields['name'] . $encoded_sep
+                                    . $subCat->fields['name'] . "<br><span class='b'>&nbsp;Comments&nbsp;</span>"
+                                    . $subCat->fields['comment']];
+        $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subCat->getID(), true);
+        $this->array($ret)->isIdenticalTo($expected);
 
-      // test of return without $tooltip
-      $expected = ['name'    => $cat->fields['name'].$encoded_sep.$subCat->fields['name'],
+       // test of return without $tooltip
+        $expected = ['name'    => $cat->fields['name'] . $encoded_sep . $subCat->fields['name'],
                         'comment' => $subCat->fields['comment']];
-      $ret = \Dropdown::getDropdownName( 'glpi_taskcategories', $subCat->getID(), true, true, false );
-      $this->array($ret)->isIdenticalTo($expected);
+        $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subCat->getID(), true, true, false);
+        $this->array($ret)->isIdenticalTo($expected);
 
-      // test of return with translations
-      $CFG_GLPI['translate_dropdowns'] = 1;
-      $_SESSION["glpilanguage"] = \Session::loadLanguage( 'fr_FR' );
-      $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
-      $expected = ['name'    => 'FR - _cat_1' . $encoded_sep . 'FR - _subcat_1',
+       // test of return with translations
+        $CFG_GLPI['translate_dropdowns'] = 1;
+        $_SESSION["glpilanguage"] = \Session::loadLanguage('fr_FR');
+        $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
+        $expected = ['name'    => 'FR - _cat_1' . $encoded_sep . 'FR - _subcat_1',
                         'comment' => 'FR - Commentaire pour sous-catégorie _subcat_1'];
-      $ret = \Dropdown::getDropdownName( 'glpi_taskcategories', $subCat->getID(), true, true, false );
-      // switch back to default language
-      $_SESSION["glpilanguage"] = \Session::loadLanguage('en_GB');
-      $this->array($ret)->isIdenticalTo($expected);
+        $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subCat->getID(), true, true, false);
+       // switch back to default language
+        $_SESSION["glpilanguage"] = \Session::loadLanguage('en_GB');
+        $this->array($ret)->isIdenticalTo($expected);
 
-      ////////////////////////////////
-      // test for other dropdown types
-      ////////////////////////////////
+       ////////////////////////////////
+       // test for other dropdown types
+       ////////////////////////////////
 
-      ///////////
-      // Computer
-      $computer = getItemByTypeName( 'Computer', '_test_pc01' );
-      $ret = \Dropdown::getDropdownName( 'glpi_computers', $computer->getID());
-      $this->string($ret)->isIdenticalTo($computer->getName());
+       ///////////
+       // Computer
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $ret = \Dropdown::getDropdownName('glpi_computers', $computer->getID());
+        $this->string($ret)->isIdenticalTo($computer->getName());
 
-      $expected = ['name'    => $computer->getName(),
+        $expected = ['name'    => $computer->getName(),
                         'comment' => $computer->fields['comment']];
-      $ret = \Dropdown::getDropdownName( 'glpi_computers', $computer->getID(), true);
-      $this->array($ret)->isIdenticalTo($expected);
+        $ret = \Dropdown::getDropdownName('glpi_computers', $computer->getID(), true);
+        $this->array($ret)->isIdenticalTo($expected);
 
-      //////////
-      // Contact
-      $contact = getItemByTypeName( 'Contact', '_contact01_name' );
-      $expected = $contact->getName();
-      $ret = \Dropdown::getDropdownName( 'glpi_contacts', $contact->getID());
-      $this->string($ret)->isIdenticalTo($expected);
+       //////////
+       // Contact
+        $contact = getItemByTypeName('Contact', '_contact01_name');
+        $expected = $contact->getName();
+        $ret = \Dropdown::getDropdownName('glpi_contacts', $contact->getID());
+        $this->string($ret)->isIdenticalTo($expected);
 
-      // test of return with comments
-      $expected = ['name'    => $contact->getName(),
-                        'comment' => "Comment for contact _contact01_name<br><span class='b'>".
-                                    "Phone: </span>0123456789<br><span class='b'>Phone 2: </span>0123456788<br><span class='b'>".
-                                    "Mobile phone: </span>0623456789<br><span class='b'>Fax: </span>0123456787<br>".
+       // test of return with comments
+        $expected = ['name'    => $contact->getName(),
+                        'comment' => "Comment for contact _contact01_name<br><span class='b'>" .
+                                    "Phone: </span>0123456789<br><span class='b'>Phone 2: </span>0123456788<br><span class='b'>" .
+                                    "Mobile phone: </span>0623456789<br><span class='b'>Fax: </span>0123456787<br>" .
                                     "<span class='b'>Email: </span>_contact01_firstname._contact01_name@glpi.com"];
-      $ret = \Dropdown::getDropdownName( 'glpi_contacts', $contact->getID(), true );
-      $this->array($ret)->isIdenticalTo($expected);
+        $ret = \Dropdown::getDropdownName('glpi_contacts', $contact->getID(), true);
+        $this->array($ret)->isIdenticalTo($expected);
 
-      // test of return without $tooltip
-      $expected = ['name'    => $contact->getName(),
+       // test of return without $tooltip
+        $expected = ['name'    => $contact->getName(),
                         'comment' => $contact->fields['comment']];
-      $ret = \Dropdown::getDropdownName( 'glpi_contacts', $contact->getID(), true, true, false );
-      $this->array($ret)->isIdenticalTo($expected);
+        $ret = \Dropdown::getDropdownName('glpi_contacts', $contact->getID(), true, true, false);
+        $this->array($ret)->isIdenticalTo($expected);
 
-      ///////////
-      // Supplier
-      $supplier = getItemByTypeName( 'Supplier', '_suplier01_name' );
-      $expected = $supplier->getName();
-      $ret = \Dropdown::getDropdownName( 'glpi_suppliers', $supplier->getID());
-      $this->string($ret)->isIdenticalTo($expected);
+       ///////////
+       // Supplier
+        $supplier = getItemByTypeName('Supplier', '_suplier01_name');
+        $expected = $supplier->getName();
+        $ret = \Dropdown::getDropdownName('glpi_suppliers', $supplier->getID());
+        $this->string($ret)->isIdenticalTo($expected);
 
-      // test of return with comments
-      $expected = ['name'    => $supplier->getName(),
-                        'comment' => "Comment for supplier _suplier01_name<br><span class='b'>Phone: </span>0123456789<br>".
+       // test of return with comments
+        $expected = ['name'    => $supplier->getName(),
+                        'comment' => "Comment for supplier _suplier01_name<br><span class='b'>Phone: </span>0123456789<br>" .
                                      "<span class='b'>Fax: </span>0123456787<br><span class='b'>Email: </span>info@_supplier01_name.com"];
-      $ret = \Dropdown::getDropdownName( 'glpi_suppliers', $supplier->getID(), true );
-      $this->array($ret)->isIdenticalTo($expected);
+        $ret = \Dropdown::getDropdownName('glpi_suppliers', $supplier->getID(), true);
+        $this->array($ret)->isIdenticalTo($expected);
 
-      // test of return without $tooltip
-      $expected = ['name'    => $supplier->getName(),
+       // test of return without $tooltip
+        $expected = ['name'    => $supplier->getName(),
                         'comment' => $supplier->fields['comment']];
-      $ret = \Dropdown::getDropdownName( 'glpi_suppliers', $supplier->getID(), true, true, false );
-      $this->array($ret)->isIdenticalTo($expected);
+        $ret = \Dropdown::getDropdownName('glpi_suppliers', $supplier->getID(), true, true, false);
+        $this->array($ret)->isIdenticalTo($expected);
 
-      ///////////
-      // Budget
-      $budget = getItemByTypeName( 'Budget', '_budget01' );
-      $expected = $budget->getName();
-      $ret = \Dropdown::getDropdownName( 'glpi_budgets', $budget->getID());
-      $this->string($ret)->isIdenticalTo($expected);
+       ///////////
+       // Budget
+        $budget = getItemByTypeName('Budget', '_budget01');
+        $expected = $budget->getName();
+        $ret = \Dropdown::getDropdownName('glpi_budgets', $budget->getID());
+        $this->string($ret)->isIdenticalTo($expected);
 
-      // test of return with comments
-      $expected = ['name'    =>  $budget->getName(),
-                        'comment' => "Comment for budget _budget01<br><span class='b'>Location</span>: ".
-                                       "_location01<br><span class='b'>Type</span>: _budgettype01<br><span class='b'>".
+       // test of return with comments
+        $expected = ['name'    =>  $budget->getName(),
+                        'comment' => "Comment for budget _budget01<br><span class='b'>Location</span>: " .
+                                       "_location01<br><span class='b'>Type</span>: _budgettype01<br><span class='b'>" .
                                        "Start date</span>: 2016-10-18 <br><span class='b'>End date</span>: 2016-12-31 "];
-      $ret = \Dropdown::getDropdownName( 'glpi_budgets', $budget->getID(), true );
-      $this->array($ret)->isIdenticalTo($expected);
+        $ret = \Dropdown::getDropdownName('glpi_budgets', $budget->getID(), true);
+        $this->array($ret)->isIdenticalTo($expected);
 
-      // test of return without $tooltip
-      $expected = ['name'    => $budget->getName(),
+       // test of return without $tooltip
+        $expected = ['name'    => $budget->getName(),
                         'comment' => $budget->fields['comment']];
-      $ret = \Dropdown::getDropdownName( 'glpi_budgets', $budget->getID(), true, true, false );
-      $this->array($ret)->isIdenticalTo($expected);
-   }
+        $ret = \Dropdown::getDropdownName('glpi_budgets', $budget->getID(), true, true, false);
+        $this->array($ret)->isIdenticalTo($expected);
+    }
 
-   public function dataGetValueWithUnit() {
-      return [
+    public function dataGetValueWithUnit()
+    {
+        return [
             [1,      'auto',        null, '1024 Kio'],
             [1,      'auto',        null, '1024 Kio'],
             [1025,   'auto',        null, '1 Gio'],
@@ -270,21 +279,23 @@ class Dropdown extends DbTestCase {
             [3.3597, '%',           2,    '3.36%'],
             [3.3597, '%',           6,    '3.359700%'],
             [3579,   'day',         0,    '3 579 days'],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider dataGetValueWithUnit
     */
-   public function testGetValueWithUnit($input, $unit, $decimals, $expected) {
-      $value = $decimals !== null
+    public function testGetValueWithUnit($input, $unit, $decimals, $expected)
+    {
+        $value = $decimals !== null
          ? \Dropdown::getValueWithUnit($input, $unit, $decimals)
          : \Dropdown::getValueWithUnit($input, $unit);
-      $this->string($value)->isIdenticalTo($expected);
-   }
+        $this->string($value)->isIdenticalTo($expected);
+    }
 
-   protected function getDropdownValueProvider() {
-      return [
+    protected function getDropdownValueProvider()
+    {
+        return [
          [
             'params' => [
                'display_emptychoice'   => 0,
@@ -441,7 +452,7 @@ class Dropdown extends DbTestCase {
             'params' => [
                'display_emptychoice'   => 0,
                'itemtype'              => 'Computer',
-               'entity_restrict'       => '[' . getItemByTypeName('Entity', '_test_child_2', true) .']'
+               'entity_restrict'       => '[' . getItemByTypeName('Entity', '_test_child_2', true) . ']'
             ],
             'expected'  => [
                'results'   => [
@@ -751,48 +762,50 @@ class Dropdown extends DbTestCase {
                'count'     => 1
             ]
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider getDropdownValueProvider
     */
-   public function testGetDropdownValue($params, $expected, $session_params = []) {
-      $this->login();
+    public function testGetDropdownValue($params, $expected, $session_params = [])
+    {
+        $this->login();
 
-      $bkp_params = [];
-      //set session params if any
-      if (count($session_params)) {
-         foreach ($session_params as $param => $value) {
-            if (isset($_SESSION[$param])) {
-               $bkp_params[$param] = $_SESSION[$param];
+        $bkp_params = [];
+       //set session params if any
+        if (count($session_params)) {
+            foreach ($session_params as $param => $value) {
+                if (isset($_SESSION[$param])) {
+                    $bkp_params[$param] = $_SESSION[$param];
+                }
+                $_SESSION[$param] = $value;
             }
-            $_SESSION[$param] = $value;
-         }
-      }
+        }
 
-      $params['_idor_token'] = $this->generateIdor($params);
+        $params['_idor_token'] = $this->generateIdor($params);
 
-      $result = \Dropdown::getDropdownValue($params, false);
+        $result = \Dropdown::getDropdownValue($params, false);
 
-      //reset session params before executing test
-      if (count($session_params)) {
-         foreach ($session_params as $param => $value) {
-            if (isset($bkp_params[$param])) {
-               $_SESSION[$param] = $bkp_params[$param];
-            } else {
-               unset($_SESSION[$param]);
+       //reset session params before executing test
+        if (count($session_params)) {
+            foreach ($session_params as $param => $value) {
+                if (isset($bkp_params[$param])) {
+                    $_SESSION[$param] = $bkp_params[$param];
+                } else {
+                    unset($_SESSION[$param]);
+                }
             }
-         }
-      }
+        }
 
-      $this->array($result)->isIdenticalTo($expected);
-   }
+        $this->array($result)->isIdenticalTo($expected);
+    }
 
-   protected function getDropdownConnectProvider() {
-      $encoded_sep = Sanitizer::sanitize('>');
+    protected function getDropdownConnectProvider()
+    {
+        $encoded_sep = Sanitizer::sanitize('>');
 
-      return [
+        return [
          [
             'params'    => [
                'fromtype'  => 'Computer',
@@ -906,7 +919,7 @@ class Dropdown extends DbTestCase {
                      'children' => [
                         0 => [
                            'id'     => getItemByTypeName('Printer', '_test_printer_ent0', true),
-                           'text'   => '_test_printer_ent0 (' .getItemByTypeName('Printer', '_test_printer_ent0', true) . ')',
+                           'text'   => '_test_printer_ent0 (' . getItemByTypeName('Printer', '_test_printer_ent0', true) . ')',
                         ]
                      ]
                   ]
@@ -916,46 +929,48 @@ class Dropdown extends DbTestCase {
                'glpiis_ids_visible' => true
             ]
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider getDropdownConnectProvider
     */
-   public function testGetDropdownConnect($params, $expected, $session_params = []) {
-      $this->login();
+    public function testGetDropdownConnect($params, $expected, $session_params = [])
+    {
+        $this->login();
 
-      $bkp_params = [];
-      //set session params if any
-      if (count($session_params)) {
-         foreach ($session_params as $param => $value) {
-            if (isset($_SESSION[$param])) {
-               $bkp_params[$param] = $_SESSION[$param];
+        $bkp_params = [];
+       //set session params if any
+        if (count($session_params)) {
+            foreach ($session_params as $param => $value) {
+                if (isset($_SESSION[$param])) {
+                    $bkp_params[$param] = $_SESSION[$param];
+                }
+                $_SESSION[$param] = $value;
             }
-            $_SESSION[$param] = $value;
-         }
-      }
+        }
 
-      $params['_idor_token'] = $this->generateIdor($params);
+        $params['_idor_token'] = $this->generateIdor($params);
 
-      $result = \Dropdown::getDropdownConnect($params, false);
+        $result = \Dropdown::getDropdownConnect($params, false);
 
-      //reset session params before executing test
-      if (count($session_params)) {
-         foreach ($session_params as $param => $value) {
-            if (isset($bkp_params[$param])) {
-               $_SESSION[$param] = $bkp_params[$param];
-            } else {
-               unset($_SESSION[$param]);
+       //reset session params before executing test
+        if (count($session_params)) {
+            foreach ($session_params as $param => $value) {
+                if (isset($bkp_params[$param])) {
+                    $_SESSION[$param] = $bkp_params[$param];
+                } else {
+                    unset($_SESSION[$param]);
+                }
             }
-         }
-      }
+        }
 
-      $this->array($result)->isIdenticalTo($expected);
-   }
+        $this->array($result)->isIdenticalTo($expected);
+    }
 
-   protected function getDropdownNumberProvider() {
-      return [
+    protected function getDropdownNumberProvider()
+    {
+        return [
          [
             'params'    => [],
             'expected'  => [
@@ -1058,7 +1073,7 @@ class Dropdown extends DbTestCase {
                'results'   => [
                   0 => [
                      'id'     => 5,
-                     'text'   =>'five'
+                     'text'   => 'five'
                   ],
                   1 => [
                      'id'     => 10,
@@ -1093,23 +1108,25 @@ class Dropdown extends DbTestCase {
                'count'     => 2
             ]
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider getDropdownNumberProvider
     */
-   public function testGetDropdownNumber($params, $expected) {
-      global $CFG_GLPI;
-      $orig_max = $CFG_GLPI['dropdown_max'];
-      $CFG_GLPI['dropdown_max'] = 10;
-      $result = \Dropdown::getDropdownNumber($params, false);
-      $CFG_GLPI['dropdown_max'] = $orig_max;
-      $this->array($result)->isIdenticalTo($expected);
-   }
+    public function testGetDropdownNumber($params, $expected)
+    {
+        global $CFG_GLPI;
+        $orig_max = $CFG_GLPI['dropdown_max'];
+        $CFG_GLPI['dropdown_max'] = 10;
+        $result = \Dropdown::getDropdownNumber($params, false);
+        $CFG_GLPI['dropdown_max'] = $orig_max;
+        $this->array($result)->isIdenticalTo($expected);
+    }
 
-   protected function getDropdownUsersProvider() {
-      return [
+    protected function getDropdownUsersProvider()
+    {
+        return [
          [
             'params'    => [],
             'expected'  => [
@@ -1202,19 +1219,20 @@ class Dropdown extends DbTestCase {
                'count' => 1
             ]
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider getDropdownUsersProvider
     */
-   public function testGetDropdownUsers($params, $expected) {
-      $this->login();
+    public function testGetDropdownUsers($params, $expected)
+    {
+        $this->login();
 
-      $params['_idor_token'] = \Session::getNewIDORToken('User');
-      $result = \Dropdown::getDropdownUsers($params, false);
-      $this->array($result)->isIdenticalTo($expected);
-   }
+        $params['_idor_token'] = \Session::getNewIDORToken('User');
+        $result = \Dropdown::getDropdownUsers($params, false);
+        $this->array($result)->isIdenticalTo($expected);
+    }
 
    /**
     * Test getDropdownValue with paginated results on
@@ -1222,49 +1240,50 @@ class Dropdown extends DbTestCase {
     *
     * @return void
     */
-   public function testGetDropdownValuePaginate() {
-      //let's add some content in Locations
-      $location = new \Location();
-      for ($i = 0; $i <= 20; ++$i) {
-         $this->integer(
-            (int)$location->add([
-               'name'   => "Test location $i"
-            ])
-         )->isGreaterThan(0);
-      }
+    public function testGetDropdownValuePaginate()
+    {
+       //let's add some content in Locations
+        $location = new \Location();
+        for ($i = 0; $i <= 20; ++$i) {
+            $this->integer(
+                (int)$location->add([
+                'name'   => "Test location $i"
+                ])
+            )->isGreaterThan(0);
+        }
 
-      $post = [
+        $post = [
          'itemtype'              => $location::getType(),
          'display_emptychoice'   => true,
          'entity_restrict'       => 0,
          'page'                  => 1,
          'page_limit'            => 10,
          '_idor_token'           => \Session::getNewIDORToken($location::getType())
-      ];
-      $values = \Dropdown::getDropdownValue($post);
-      $values = (array)json_decode($values);
+        ];
+        $values = \Dropdown::getDropdownValue($post);
+        $values = (array)json_decode($values);
 
-      $this->array($values)
+        $this->array($values)
          ->integer['count']->isEqualTo(10)
          ->array['results']
             ->hasSize(2);
 
-      $results = (array)$values['results'];
-      $this->array((array)$results[0])
+        $results = (array)$values['results'];
+        $this->array((array)$results[0])
          ->isIdenticalTo([
             'id'     => 0,
             'text'   => '-----'
          ]);
 
-      $list_results = (array)$results[1];
-      $this->array($list_results)
+        $list_results = (array)$results[1];
+        $this->array($list_results)
          ->hasSize(3)
          ->string['text']->isIdenticalTo('Root entity')
          ->string['itemtype']->isIdenticalTo('Entity');
 
-      $children = (array)$list_results['children'];
-      $this->array($children)->hasSize(10);
-      $this->array((array)$children[0])
+        $children = (array)$list_results['children'];
+        $this->array($children)->hasSize(10);
+        $this->array((array)$children[0])
          ->hasKeys([
             'id',
             'text',
@@ -1273,15 +1292,15 @@ class Dropdown extends DbTestCase {
             'selection_text'
          ]);
 
-      $post['page'] = 2;
-      $values = \Dropdown::getDropdownValue($post);
-      $values = (array)json_decode($values);
+        $post['page'] = 2;
+        $values = \Dropdown::getDropdownValue($post);
+        $values = (array)json_decode($values);
 
-      $this->array($values)
+        $this->array($values)
          ->integer['count']->isEqualTo(10);
 
-      $this->array($values['results'])->hasSize(10);
-      $this->array((array)$values['results'][0])
+        $this->array($values['results'])->hasSize(10);
+        $this->array((array)$values['results'][0])
          ->hasKeys([
             'id',
             'text',
@@ -1290,8 +1309,8 @@ class Dropdown extends DbTestCase {
             'selection_text'
          ]);
 
-      //use a array condition
-      $post = [
+       //use a array condition
+        $post = [
          'itemtype'              => $location::getType(),
          'condition'             => ['name' => ['LIKE', "%3%"]],
          'display_emptychoice'   => true,
@@ -1299,30 +1318,30 @@ class Dropdown extends DbTestCase {
          'page'                  => 1,
          'page_limit'            => 10,
          '_idor_token'           => \Session::getNewIDORToken($location::getType())
-      ];
-      $values = \Dropdown::getDropdownValue($post);
-      $values = (array)json_decode($values);
+        ];
+        $values = \Dropdown::getDropdownValue($post);
+        $values = (array)json_decode($values);
 
-      $this->array($values)
+        $this->array($values)
          ->integer['count']->isEqualTo(2)
          ->array['results']
             ->hasSize(2);
 
-      //use a string condition
-      // Put condition in session and post its key
-      $condition_key = sha1(serialize($post['condition']));
-      $_SESSION['glpicondition'][$condition_key] = $post['condition'];
-      $post['condition'] = $condition_key;
-      $values = \Dropdown::getDropdownValue($post);
-      $values = (array)json_decode($values);
+       //use a string condition
+       // Put condition in session and post its key
+        $condition_key = sha1(serialize($post['condition']));
+        $_SESSION['glpicondition'][$condition_key] = $post['condition'];
+        $post['condition'] = $condition_key;
+        $values = \Dropdown::getDropdownValue($post);
+        $values = (array)json_decode($values);
 
-      $this->array($values)
+        $this->array($values)
          ->integer['count']->isEqualTo(2)
          ->array['results']
             ->hasSize(2);
 
-      //use a condition that does not exists in session
-      $post = [
+       //use a condition that does not exists in session
+        $post = [
          'itemtype'              => $location::getType(),
          'condition'             => '`name` LIKE "%4%"',
          'display_emptychoice'   => true,
@@ -1330,22 +1349,22 @@ class Dropdown extends DbTestCase {
          'page'                  => 1,
          'page_limit'            => 10,
          '_idor_token'           => \Session::getNewIDORToken($location::getType())
-      ];
-      $values = \Dropdown::getDropdownValue($post);
-      $values = (array)json_decode($values);
+        ];
+        $values = \Dropdown::getDropdownValue($post);
+        $values = (array)json_decode($values);
 
-      $this->array($values)
+        $this->array($values)
          ->integer['count']->isEqualTo(10)
          ->array['results']
             ->hasSize(2);
+    }
 
-   }
-
-   private function generateIdor(array $params = []) {
-      $idor_add_params = [];
-      if (isset($params['entity_restrict'])) {
-         $idor_add_params['entity_restrict'] = $params['entity_restrict'];
-      }
-      return \Session::getNewIDORToken(($params['itemtype'] ?? ''), $idor_add_params);
-   }
+    private function generateIdor(array $params = [])
+    {
+        $idor_add_params = [];
+        if (isset($params['entity_restrict'])) {
+            $idor_add_params['entity_restrict'] = $params['entity_restrict'];
+        }
+        return \Session::getNewIDORToken(($params['itemtype'] ?? ''), $idor_add_params);
+    }
 }

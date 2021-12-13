@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,13 +31,12 @@
  * ---------------------------------------------------------------------
  */
 
-
 // Current version of GLPI
 define('GLPI_VERSION', '10.0.0-dev');
 define("GLPI_SCHEMA_VERSION", GLPI_VERSION . '@' . sha1_file(GLPI_ROOT . '/install/mysql/glpi-empty.sql'));
 
 if (!defined('GLPI_MARKETPLACE_PRERELEASES')) {
-   define('GLPI_MARKETPLACE_PRERELEASES', preg_match('/-(dev|alpha\d*|beta\d*|rc\d*)$/', GLPI_VERSION) === 1);
+    define('GLPI_MARKETPLACE_PRERELEASES', preg_match('/-(dev|alpha\d*|beta\d*|rc\d*)$/', GLPI_VERSION) === 1);
 }
 
 define('GLPI_MIN_PHP', '7.4.0'); // Must also be changed in top of index.php
@@ -299,8 +299,8 @@ $CFG_GLPI["socket_types"]                  = ['Computer','NetworkEquipment',
 
 $CFG_GLPI['itemdevices'] = [];
 foreach ($CFG_GLPI['device_types'] as $dtype) {
-   $CFG_GLPI['location_types'][] = 'Item_' . $dtype;
-   $CFG_GLPI["itemdevices"][] = 'Item_' . $dtype;
+    $CFG_GLPI['location_types'][] = 'Item_' . $dtype;
+    $CFG_GLPI["itemdevices"][] = 'Item_' . $dtype;
 }
 
 $CFG_GLPI["itemdevices_types"]            = ['Computer', 'NetworkEquipment', 'Peripheral',
@@ -347,12 +347,14 @@ $CFG_GLPI["notificationtemplates_types"]  = ['CartridgeItem', 'Change', 'Consuma
                                              'SavedSearch_Alert', 'Certificate', 'Glpi\\Marketplace\\Controller',
                                              'Domain'];
 
-$CFG_GLPI["contract_types"]               = array_merge(['Computer', 'Monitor', 'NetworkEquipment',
+$CFG_GLPI["contract_types"]               = array_merge(
+    ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Project', 'Line',
                                                   'Software', 'SoftwareLicense', 'Certificate',
                                                   'DCRoom', 'Rack', 'Enclosure', 'Cluster', 'PDU', 'Appliance', 'Domain',
                                                   'DatabaseInstance'],
-                                                  $CFG_GLPI['itemdevices']);
+    $CFG_GLPI['itemdevices']
+);
 
 
 $CFG_GLPI["union_search_type"]            = ['ReservationItem' => "reservation_types",
@@ -531,7 +533,7 @@ $CFG_GLPI['javascript'] = [
       'notification' => [
          'notificationtemplate' => ['tinymce']
       ],
-      'plugin'=> [
+      'plugin' => [
          'marketplace' => ['marketplace']
       ],
       'config' => ['clipboard']
@@ -543,10 +545,10 @@ $CFG_GLPI['javascript'] = [
 
 // push reservations libs to reservations itemtypes (they shoul in asset sector)
 foreach ($CFG_GLPI['reservation_types'] as $reservation_type) {
-   $CFG_GLPI['javascript']['assets'][strtolower($reservation_type)] = array_merge(
-      $CFG_GLPI['javascript']['assets'][strtolower($reservation_type)] ?? [],
-      $reservations_libs
-   );
+    $CFG_GLPI['javascript']['assets'][strtolower($reservation_type)] = array_merge(
+        $CFG_GLPI['javascript']['assets'][strtolower($reservation_type)] ?? [],
+        $reservations_libs
+    );
 }
 
 //Maximum time, in miliseconds a saved search should not exeed

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,7 +35,7 @@
  * @since 0.84
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -43,20 +44,20 @@ Session::checkRight("networking", UPDATE);
 
 // Make a select box
 if (class_exists($_POST["itemtype"])) {
-   $rand     = mt_rand();
+    $rand     = mt_rand();
 
-   $toupdate = [
+    $toupdate = [
       'value_fieldname' => 'item',
       'to_update'       => "results_item_$rand",
-      'url'             => $CFG_GLPI["root_doc"]."/ajax/dropdownConnectNetworkPort.php",
+      'url'             => $CFG_GLPI["root_doc"] . "/ajax/dropdownConnectNetworkPort.php",
       'moreparams'      => [
          'networkports_id'    => $_POST['networkports_id'],
          'itemtype'           => $_POST['itemtype'],
          'myname'             => $_POST['myname'],
          'instantiation_type' => $_POST['instantiation_type']
       ]
-   ];
-   $params   = [
+    ];
+    $params   = [
       'rand'      => $rand,
       'name'      => "items",
       'entity'    => $_POST["entity_restrict"],
@@ -71,11 +72,10 @@ if (class_exists($_POST["itemtype"])) {
          ])
       ],
       'toupdate'  => $toupdate
-   ];
+    ];
 
-   Dropdown::show($_POST['itemtype'], $params);
+    Dropdown::show($_POST['itemtype'], $params);
 
-   echo "<span id='results_item_$rand'>";
-   echo "</span>\n";
-
+    echo "<span id='results_item_$rand'>";
+    echo "</span>\n";
 }

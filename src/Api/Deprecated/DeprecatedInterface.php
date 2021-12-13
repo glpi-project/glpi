@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -43,7 +44,7 @@ interface DeprecatedInterface
     *
     * @return string
     */
-   public function getType(): string;
+    public function getType(): string;
 
    /**
     * Convert current hateoas to deprecated hateoas
@@ -51,7 +52,7 @@ interface DeprecatedInterface
     * @param array $hateoas
     * @return array
     */
-   public function mapCurrentToDeprecatedHateoas(array $hateoas): array;
+    public function mapCurrentToDeprecatedHateoas(array $hateoas): array;
 
    /**
     * Convert current fields to deprecated fields
@@ -59,7 +60,7 @@ interface DeprecatedInterface
     * @param array $fields
     * @return array
     */
-   public function mapCurrentToDeprecatedFields(array $fields): array;
+    public function mapCurrentToDeprecatedFields(array $fields): array;
 
    /**
     * Convert current searchoptions to deprecated searchoptions
@@ -67,7 +68,7 @@ interface DeprecatedInterface
     * @param array $soptions
     * @return array
     */
-   public function mapCurrentToDeprecatedSearchOptions(array $soptions): array;
+    public function mapCurrentToDeprecatedSearchOptions(array $soptions): array;
 
    /**
     * Convert deprecated fields to current fields
@@ -75,7 +76,7 @@ interface DeprecatedInterface
     * @param object $fields
     * @return object
     */
-   public function mapDeprecatedToCurrentFields(object $fields): object;
+    public function mapDeprecatedToCurrentFields(object $fields): object;
 
    /**
     * Convert deprecated search criteria to current search criteria
@@ -83,5 +84,5 @@ interface DeprecatedInterface
     * @param array $criteria
     * @return array
     */
-   public function mapDeprecatedToCurrentCriteria(array $criteria): array;
+    public function mapDeprecatedToCurrentCriteria(array $criteria): array;
 }

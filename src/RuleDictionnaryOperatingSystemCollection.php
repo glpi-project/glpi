@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,15 +31,16 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleDictionnaryOperatingSystemCollection extends RuleDictionnaryDropdownCollection {
-   public $item_table  = "glpi_operatingsystems";
-   public $menu_option = "os";
+class RuleDictionnaryOperatingSystemCollection extends RuleDictionnaryDropdownCollection
+{
+    public $item_table  = "glpi_operatingsystems";
+    public $menu_option = "os";
 
    /**
     * @see RuleCollection::getTitle()
    **/
-   function getTitle() {
-      return __('Dictionnary of operating systems');
-   }
-
+    public function getTitle()
+    {
+        return __('Dictionnary of operating systems');
+    }
 }

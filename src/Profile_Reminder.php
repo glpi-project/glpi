@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,16 +33,17 @@
 
 /// Class Profile_Reminder
 /// @since 0.83
-class Profile_Reminder extends CommonDBRelation {
+class Profile_Reminder extends CommonDBRelation
+{
 
    // From CommonDBRelation
-   static public $itemtype_1          = 'Reminder';
-   static public $items_id_1          = 'reminders_id';
-   static public $itemtype_2          = 'Profile';
-   static public $items_id_2          = 'profiles_id';
+    public static $itemtype_1          = 'Reminder';
+    public static $items_id_1          = 'reminders_id';
+    public static $itemtype_2          = 'Profile';
+    public static $items_id_2          = 'profiles_id';
 
-   static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
-   static public $logs_for_item_2     = false;
+    public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+    public static $logs_for_item_2     = false;
 
 
    /**
@@ -51,21 +53,21 @@ class Profile_Reminder extends CommonDBRelation {
     *
     * @return array of profiles linked to a reminder
    **/
-   static function getProfiles($reminders_id) {
-      global $DB;
+    public static function getProfiles($reminders_id)
+    {
+        global $DB;
 
-      $prof  = [];
-      $iterator = $DB->request([
+        $prof  = [];
+        $iterator = $DB->request([
          'FROM'   => self::getTable(),
          'WHERE'  => [
             'reminders_id' => $reminders_id
          ]
-      ]);
+        ]);
 
-      foreach ($iterator as $data) {
-         $prof[$data['profiles_id']][] = $data;
-      }
-      return $prof;
-   }
-
+        foreach ($iterator as $data) {
+            $prof[$data['profiles_id']][] = $data;
+        }
+        return $prof;
+    }
 }

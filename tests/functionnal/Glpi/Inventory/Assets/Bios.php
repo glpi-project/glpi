@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,10 +37,12 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/firmware.class.php */
 
-class Bios extends AbstractInventoryAsset {
+class Bios extends AbstractInventoryAsset
+{
 
-   protected function assetProvider() :array {
-      return [
+    protected function assetProvider(): array
+    {
+        return [
          [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -79,58 +82,61 @@ class Bios extends AbstractInventoryAsset {
   </REQUEST>",
             'expected'  => '{"bversion": "IM51.0090.B09", "smanufacturer": "Apple Computer, Inc.", "smodel": "iMac5,1", "ssn": "W87051UGVUV", "version": "IM51.0090.B09", "designation": " BIOS", "devicefirmwaretypes_id": 1}'
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider assetProvider
     */
-   public function testPrepare($xml, $expected) {
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($xml);
-      $json = json_decode($data);
+    public function testPrepare($xml, $expected)
+    {
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\Bios($computer, (array)$json->content->bios);
-      $asset->setExtraData((array)$json->content);
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected));
-   }
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\Bios($computer, (array)$json->content->bios);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected));
+    }
 
-   public function testHandle() {
-      $computer = getItemByTypeName('Computer', '_test_pc01');
+    public function testHandle()
+    {
+        $computer = getItemByTypeName('Computer', '_test_pc01');
 
-      //first, check there are no controller linked to this computer
-      $idf = new \Item_DeviceFirmware();
-      $this->boolean($idf->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+       //first, check there are no controller linked to this computer
+        $idf = new \Item_DeviceFirmware();
+        $this->boolean($idf->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isFalse('A firmware is already linked to computer!');
 
-      //convert data
-      $expected = $this->assetProvider()[0];
+       //convert data
+        $expected = $this->assetProvider()[0];
 
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($expected['xml']);
-      $json = json_decode($data);
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($expected['xml']);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\Bios($computer, (array)$json->content->bios);
-      $asset->setExtraData((array)$json->content);
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\Bios($computer, (array)$json->content->bios);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
 
-      //handle
-      $asset->handleLinks();
-      $asset->handle();
-      $this->boolean($idf->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+       //handle
+        $asset->handleLinks();
+        $asset->handle();
+        $this->boolean($idf->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isTrue('Firmware has not been linked to computer :(');
-   }
+    }
 
-   public function testInventoryUpdate() {
-      $computer = new \Computer();
-      $device_bios = new \DeviceFirmware();
-      $item_bios = new \Item_DeviceFirmware();
+    public function testInventoryUpdate()
+    {
+        $computer = new \Computer();
+        $device_bios = new \DeviceFirmware();
+        $item_bios = new \Item_DeviceFirmware();
 
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <HARDWARE>
@@ -153,59 +159,59 @@ class Bios extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      $type = new \DeviceFirmwareType();
-      $type->getFromDBByCrit([
+        $type = new \DeviceFirmwareType();
+        $type->getFromDBByCrit([
          'name' => 'BIOS'
-      ]);
-      $types_id = $type->getID();
+        ]);
+        $types_id = $type->getID();
 
-      $manufacturer = new \Manufacturer();
-      $manufacturers_id = $manufacturer->add([
+        $manufacturer = new \Manufacturer();
+        $manufacturers_id = $manufacturer->add([
          'name' => 'Dell Inc.'
-      ]);
-      $this->integer($manufacturers_id)->isGreaterThan(0);
+        ]);
+        $this->integer($manufacturers_id)->isGreaterThan(0);
 
-      //create manually a computer, with a bios
-      $computers_id = $computer->add([
+       //create manually a computer, with a bios
+        $computers_id = $computer->add([
          'name'   => 'pc002',
          'serial' => 'ggheb7ne7',
          'entities_id' => 0
-      ]);
-      $this->integer($computers_id)->isGreaterThan(0);
+        ]);
+        $this->integer($computers_id)->isGreaterThan(0);
 
-      $bios_id = $device_bios->add([
+        $bios_id = $device_bios->add([
          'designation' => 'Dell Inc. BIOS',
          'devicefirmwaretypes_id' => $types_id,
          'manufacturers_id' => $manufacturers_id,
          'version' => '1.4.3'
-      ]);
+        ]);
 
-      $item_bios_id = $item_bios->add([
+        $item_bios_id = $item_bios->add([
          'items_id' => $computers_id,
          'itemtype' => 'Computer',
          'devicefirmwares_id' => $bios_id
-      ]);
-      $this->integer($item_bios_id)->isGreaterThan(0);
+        ]);
+        $this->integer($item_bios_id)->isGreaterThan(0);
 
-      $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($firmwares))->isIdenticalTo(1);
-      foreach ($firmwares as $firmware) {
-         $this->variable($firmware['is_dynamic'])->isEqualTo(0);
-      }
+        $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($firmwares))->isIdenticalTo(1);
+        foreach ($firmwares as $firmware) {
+            $this->variable($firmware['is_dynamic'])->isEqualTo(0);
+        }
 
-      //computer inventory knows bios
-      $this->doInventory($xml_source, true);
+       //computer inventory knows bios
+        $this->doInventory($xml_source, true);
 
-      //we still have 1 bios linked to the computer
-      $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($firmwares))->isIdenticalTo(1);
+       //we still have 1 bios linked to the computer
+        $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($firmwares))->isIdenticalTo(1);
 
-      //bios present in the inventory source is now dynamic
-      $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($firmwares))->isIdenticalTo(1);
+       //bios present in the inventory source is now dynamic
+        $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($firmwares))->isIdenticalTo(1);
 
-      //Redo inventory, but with modified firmware => will create a new one
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+       //Redo inventory, but with modified firmware => will create a new one
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <HARDWARE>
@@ -228,17 +234,17 @@ class Bios extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      $this->doInventory($xml_source, true);
+        $this->doInventory($xml_source, true);
 
-      //we still have one firmware
-      $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($firmwares))->isIdenticalTo(1);
+       //we still have one firmware
+        $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($firmwares))->isIdenticalTo(1);
 
-      //bios present in the inventory source is still dynamic
-      $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($firmwares))->isIdenticalTo(1);
+       //bios present in the inventory source is still dynamic
+        $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($firmwares))->isIdenticalTo(1);
 
-      //"original" firmware has been removed
-      $this->boolean($item_bios->getFromDB($item_bios_id))->isFalse();
-   }
+       //"original" firmware has been removed
+        $this->boolean($item_bios->getFromDB($item_bios_id))->isFalse();
+    }
 }

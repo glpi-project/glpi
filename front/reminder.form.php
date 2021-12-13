@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,95 +33,113 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 if (!isset($_GET["id"])) {
-   $_GET["id"] = "";
+    $_GET["id"] = "";
 }
 $remind = new Reminder();
 Session::checkLoginUser();
 
 if (isset($_POST["add"])) {
-   $remind->check(-1, CREATE, $_POST);
+    $remind->check(-1, CREATE, $_POST);
 
-   if ($newID = $remind->add($_POST)) {
-      Event::log($newID, "reminder", 4, "tools",
-                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
-      if ($_SESSION['glpibackcreated']) {
-         Html::redirect($remind->getLinkURL());
-      }
-   }
-   Html::back();
-
+    if ($newID = $remind->add($_POST)) {
+        Event::log(
+            $newID,
+            "reminder",
+            4,
+            "tools",
+            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
+        );
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($remind->getLinkURL());
+        }
+    }
+    Html::back();
 } else if (isset($_POST["purge"])) {
-   $remind->check($_POST["id"], PURGE);
-   $remind->delete($_POST, 1);
-   Event::log($_POST["id"], "reminder", 4, "tools",
-              //TRANS: %s is the user login
-              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
-   if (!isset($_POST["from_planning_edit_ajax"])) {
-      $remind->redirectToList();
-   } else {
-      Html::back();
-   }
-
+    $remind->check($_POST["id"], PURGE);
+    $remind->delete($_POST, 1);
+    Event::log(
+        $_POST["id"],
+        "reminder",
+        4,
+        "tools",
+        //TRANS: %s is the user login
+        sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+    );
+    if (!isset($_POST["from_planning_edit_ajax"])) {
+        $remind->redirectToList();
+    } else {
+        Html::back();
+    }
 } else if (isset($_POST["update"])) {
-   $remind->check($_POST["id"], UPDATE);   // Right to update the reminder
+    $remind->check($_POST["id"], UPDATE);   // Right to update the reminder
 
-   $remind->update($_POST);
-   Event::log($_POST["id"], "reminder", 4, "tools",
-              //TRANS: %s is the user login
-              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
-   Html::back();
-
+    $remind->update($_POST);
+    Event::log(
+        $_POST["id"],
+        "reminder",
+        4,
+        "tools",
+        //TRANS: %s is the user login
+        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+    );
+    Html::back();
 } else if (isset($_POST["addvisibility"])) {
-   if (isset($_POST["_type"]) && !empty($_POST["_type"])
-       && isset($_POST["reminders_id"]) && $_POST["reminders_id"]) {
-      $item = null;
-      switch ($_POST["_type"]) {
-         case 'User' :
-            if (isset($_POST['users_id']) && $_POST['users_id']) {
-               $item = new Reminder_User();
-            }
-            break;
+    if (
+        isset($_POST["_type"]) && !empty($_POST["_type"])
+        && isset($_POST["reminders_id"]) && $_POST["reminders_id"]
+    ) {
+        $item = null;
+        switch ($_POST["_type"]) {
+            case 'User':
+                if (isset($_POST['users_id']) && $_POST['users_id']) {
+                    $item = new Reminder_User();
+                }
+                break;
 
-         case 'Group' :
-            if (isset($_POST['groups_id']) && $_POST['groups_id']) {
-               $item = new Group_Reminder();
-            }
-            break;
+            case 'Group':
+                if (isset($_POST['groups_id']) && $_POST['groups_id']) {
+                    $item = new Group_Reminder();
+                }
+                break;
 
-         case 'Profile' :
-            if (isset($_POST['profiles_id']) && $_POST['profiles_id']) {
-               $item = new Profile_Reminder();
-            }
-            break;
+            case 'Profile':
+                if (isset($_POST['profiles_id']) && $_POST['profiles_id']) {
+                    $item = new Profile_Reminder();
+                }
+                break;
 
-         case 'Entity' :
-            $item = new Entity_Reminder();
-            break;
-      }
-      if (!is_null($item)) {
-         $item->add($_POST);
-         Event::log($_POST["reminders_id"], "reminder", 4, "tools",
-                    //TRANS: %s is the user login
-                    sprintf(__('%s adds a target'), $_SESSION["glpiname"]));
-      }
-   }
-   Html::back();
-
+            case 'Entity':
+                $item = new Entity_Reminder();
+                break;
+        }
+        if (!is_null($item)) {
+            $item->add($_POST);
+            Event::log(
+                $_POST["reminders_id"],
+                "reminder",
+                4,
+                "tools",
+                //TRANS: %s is the user login
+                sprintf(__('%s adds a target'), $_SESSION["glpiname"])
+            );
+        }
+    }
+    Html::back();
 } else {
-   if (Session::getCurrentInterface() == "helpdesk") {
-      Html::helpHeader(Reminder::getTypeName(Session::getPluralNumber()), '', $_SESSION["glpiname"]);
-   } else {
-      Html::header(Reminder::getTypeName(Session::getPluralNumber()), '', "tools", "reminder");
-   }
+    if (Session::getCurrentInterface() == "helpdesk") {
+        Html::helpHeader(Reminder::getTypeName(Session::getPluralNumber()), '', $_SESSION["glpiname"]);
+    } else {
+        Html::header(Reminder::getTypeName(Session::getPluralNumber()), '', "tools", "reminder");
+    }
 
-   $remind->display(['id' =>$_GET["id"]]);
+    $remind->display(['id' => $_GET["id"]]);
 
-   if (Session::getCurrentInterface() == "helpdesk") {
-      Html::helpFooter();
-   } else {
-      Html::footer();
-   }
+    if (Session::getCurrentInterface() == "helpdesk") {
+        Html::helpFooter();
+    } else {
+        Html::footer();
+    }
 }

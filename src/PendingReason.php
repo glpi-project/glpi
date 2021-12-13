@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,20 +37,22 @@
 class PendingReason extends CommonDropdown
 {
    // From CommonDBTM
-   public $dohistory = true;
+    public $dohistory = true;
 
    // From CommonDBTM
-   public $can_be_translated = true;
+    public $can_be_translated = true;
 
    // Rights managment
-   public static $rightname = 'pendingreason';
+    public static $rightname = 'pendingreason';
 
-   public static function getTypeName($nb = 0) {
-      return _n('Pending reason', 'Pending reasons', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Pending reason', 'Pending reasons', $nb);
+    }
 
-   public function getAdditionalFields() {
-      return [
+    public function getAdditionalFields()
+    {
+        return [
          [
             'name'  => 'followup_frequency',
             'label' => __('Automatic follow-up frequency'),
@@ -74,31 +77,32 @@ class PendingReason extends CommonDropdown
             'type'      => 'dropdownValue',
             'list'      => true
          ],
-      ];
-   }
+        ];
+    }
 
-   public function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '200',
          'table'              => $this->getTable(),
          'field'              => 'followup_frequency',
          'name'               => __('Automatic follow-up frequency'),
          'searchtype'         => ['equals', 'notequals'],
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '201',
          'table'              => $this->getTable(),
          'field'              => 'followups_before_resolution',
          'name'               => __('Follow-ups before automatic resolution'),
          'searchtype'         => ['equals', 'notequals'],
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '202',
          'table'              => ITILFollowupTemplate::getTable(),
          'field'              => 'name',
@@ -107,9 +111,9 @@ class PendingReason extends CommonDropdown
          'massiveaction'      => false,
          'searchtype'         => ['equals', 'notequals'],
          'datatype'           => 'dropdown',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '203',
          'table'              => SolutionTemplate::getTable(),
          'field'              => 'name',
@@ -118,10 +122,10 @@ class PendingReason extends CommonDropdown
          'massiveaction'      => false,
          'searchtype'         => ['equals', 'notequals'],
          'datatype'           => 'dropdown',
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
    /**
     * Display specific "followup_frequency" field
@@ -131,53 +135,54 @@ class PendingReason extends CommonDropdown
     * @param $options
     * @param $long_label If false give less details in the default label
     */
-   public static function displayFollowupFrequencyfield(
-      $value = null,
-      $name = "",
-      $options = [],
-      $long_label = true
-   ) {
-      $values = self::getFollowupFrequencyValues();
+    public static function displayFollowupFrequencyfield(
+        $value = null,
+        $name = "",
+        $options = [],
+        $long_label = true
+    ) {
+        $values = self::getFollowupFrequencyValues();
 
-      // Short label for forms with input labels
-      $label = __("Disabled");
+       // Short label for forms with input labels
+        $label = __("Disabled");
 
-      if ($long_label) {
-         // Long default value label for forms with icons instead of labels
-         $label = __("Automatic follow-up disabled");
-      }
+        if ($long_label) {
+           // Long default value label for forms with icons instead of labels
+            $label = __("Automatic follow-up disabled");
+        }
 
-      if ($value) {
-         if (!isset($values[$value])) {
-            $value = null;
-         }
-      }
+        if ($value) {
+            if (!isset($values[$value])) {
+                $value = null;
+            }
+        }
 
-      $options['value']               = $value;
-      $options['emptylabel']          = $label;
-      $options['display_emptychoice'] = true;
-      $options['display']             = false;
-      $options['width']               = '95%';
+        $options['value']               = $value;
+        $options['emptylabel']          = $label;
+        $options['display_emptychoice'] = true;
+        $options['display']             = false;
+        $options['width']               = '95%';
 
-      if (empty($name)) {
-         $name = "followup_frequency";
-      }
+        if (empty($name)) {
+            $name = "followup_frequency";
+        }
 
-      return Dropdown::showFromArray($name, $values, $options);
-   }
+        return Dropdown::showFromArray($name, $values, $options);
+    }
 
    /**
     * Get possibles followup frequency values for pending reasons
     * @return array timestamp before each bump => label
     */
-   public static function getFollowupFrequencyValues(): array {
-      return [
+    public static function getFollowupFrequencyValues(): array
+    {
+        return [
          WEEK_TIMESTAMP     => __("Every week"),
          2 * WEEK_TIMESTAMP => __("Every two weeks"),
          3 * WEEK_TIMESTAMP => __("Every three weeks"),
          4 * WEEK_TIMESTAMP => __("Every four weeks"),
-      ];
-   }
+        ];
+    }
 
    /**
     * Display specific "followups_before_resolution" field
@@ -187,87 +192,90 @@ class PendingReason extends CommonDropdown
     * @param $options
     * @param $long_label If false give less details in the default label
     */
-   public static function displayFollowupsNumberBeforeResolutionField(
-      $value = null,
-      $name = "",
-      $options = [],
-      $long_label = true
-   ) {
-      $values = self::getFollowupsBeforeResolutionValues();
+    public static function displayFollowupsNumberBeforeResolutionField(
+        $value = null,
+        $name = "",
+        $options = [],
+        $long_label = true
+    ) {
+        $values = self::getFollowupsBeforeResolutionValues();
 
-      // Short label for forms with input labels
-      $label = __("Disabled");
+       // Short label for forms with input labels
+        $label = __("Disabled");
 
-      if ($long_label) {
-         // Long default value label for forms with icons instead of labels
-         $label = __("Automatic resolution disabled");
-      }
+        if ($long_label) {
+           // Long default value label for forms with icons instead of labels
+            $label = __("Automatic resolution disabled");
+        }
 
-      if ($value) {
-         if (!isset($values[$value])) {
-            $value = null;
-         }
-      }
+        if ($value) {
+            if (!isset($values[$value])) {
+                $value = null;
+            }
+        }
 
-      if (empty($name)) {
-         $name = "followups_before_resolution";
-      }
+        if (empty($name)) {
+            $name = "followups_before_resolution";
+        }
 
-      $options['value']               = $value;
-      $options['emptylabel']          = $label;
-      $options['display_emptychoice'] = true;
-      $options['display']             = false;
-      $options['width']               = '95%';
+        $options['value']               = $value;
+        $options['emptylabel']          = $label;
+        $options['display_emptychoice'] = true;
+        $options['display']             = false;
+        $options['width']               = '95%';
 
-      return Dropdown::showFromArray($name, $values, $options);
-   }
+        return Dropdown::showFromArray($name, $values, $options);
+    }
 
    /**
     * Get possibles values for 'followups_before_resolution' field of pending reasons
     * @return array number of bump before resolution => label
     */
-   public static function getFollowupsBeforeResolutionValues(): array {
-      return [
+    public static function getFollowupsBeforeResolutionValues(): array
+    {
+        return [
          1 => __("After one follow-up"),
          2 => __("After two follow-ups"),
          3 => __("After three follow-ups"),
-      ];
-   }
+        ];
+    }
 
-   public function displaySpecificTypeField($ID, $field = [], array $options = []) {
+    public function displaySpecificTypeField($ID, $field = [], array $options = [])
+    {
 
-      if ($field['name'] == 'followup_frequency') {
-         echo self::displayFollowupFrequencyfield($this->fields['followup_frequency'], "", [], false);
-      } else if ($field['name'] == 'followups_before_resolution') {
-         echo self::displayFollowupsNumberBeforeResolutionField($this->fields['followups_before_resolution'], "", [], false);
-      }
-   }
+        if ($field['name'] == 'followup_frequency') {
+            echo self::displayFollowupFrequencyfield($this->fields['followup_frequency'], "", [], false);
+        } else if ($field['name'] == 'followups_before_resolution') {
+            echo self::displayFollowupsNumberBeforeResolutionField($this->fields['followups_before_resolution'], "", [], false);
+        }
+    }
 
-   public static function getSpecificValueToDisplay($field, $values, array $options = []) {
-      if ($field == 'followup_frequency') {
-         if ($values[$field] == 0) {
-            return __("Disabled");
-         }
-         return self::getFollowupFrequencyValues()[$values[$field]];
-      } else if ($field == 'followups_before_resolution') {
-         if ($values[$field] == 0) {
-            return __("Disabled");
-         }
-         return self::getFollowupsBeforeResolutionValues()[$values[$field]];
-      }
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+        if ($field == 'followup_frequency') {
+            if ($values[$field] == 0) {
+                return __("Disabled");
+            }
+            return self::getFollowupFrequencyValues()[$values[$field]];
+        } else if ($field == 'followups_before_resolution') {
+            if ($values[$field] == 0) {
+                return __("Disabled");
+            }
+            return self::getFollowupsBeforeResolutionValues()[$values[$field]];
+        }
 
-      return parent::getSpecificValueToDisplay($field, $values, $options);
-   }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
 
-   public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    {
 
-      if ($field == 'followup_frequency') {
-         return self::displayFollowupFrequencyfield($values[$field], $name, $options, false);
-      } else if ($field == 'followups_before_resolution') {
-         return self::displayFollowupsNumberBeforeResolutionField($values[$field], $name, $options, false);
-      }
+        if ($field == 'followup_frequency') {
+            return self::displayFollowupFrequencyfield($values[$field], $name, $options, false);
+        } else if ($field == 'followups_before_resolution') {
+            return self::displayFollowupsNumberBeforeResolutionField($values[$field], $name, $options, false);
+        }
 
-      return parent::getSpecificValueToSelect($field, $name, $values, $options);
-   }
-
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
 }

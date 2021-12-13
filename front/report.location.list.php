@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,33 +33,33 @@
 
 use Glpi\Socket;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("reports", READ);
 
 if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
-   Html::header(Report::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "report");
+    Html::header(Report::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "report");
 
-   Report::title();
+    Report::title();
 
    // Titre
-   $name = Dropdown::getDropdownName("glpi_locations", $_POST["locations_id"]);
-   echo "<div class='center spaced'><h2>".sprintf(__('Network report by location: %s'), $name).
+    $name = Dropdown::getDropdownName("glpi_locations", $_POST["locations_id"]);
+    echo "<div class='center spaced'><h2>" . sprintf(__('Network report by location: %s'), $name) .
         "</h2></div>";
 
-   $where = [];
-   if (!empty($_POST['locations_id'])) {
-      $sons = getSonsOf('glpi_locations', $_POST['locations_id']);
-      $where = ['glpi_locations.id' => $sons];
-   }
+    $where = [];
+    if (!empty($_POST['locations_id'])) {
+        $sons = getSonsOf('glpi_locations', $_POST['locations_id']);
+        $where = ['glpi_locations.id' => $sons];
+    }
 
-   Report::reportForNetworkInformations(
-      'glpi_locations', //from
-      ['PORT_1' => 'id', 'glpi_networkportethernets' => 'networkports_id'], //joincrit
-      $where, //where
-      ['glpi_sockets.name AS extra'], //select
-      [], //left join
-      [
+    Report::reportForNetworkInformations(
+        'glpi_locations', //from
+        ['PORT_1' => 'id', 'glpi_networkportethernets' => 'networkports_id'], //joincrit
+        $where, //where
+        ['glpi_sockets.name AS extra'], //select
+        [], //left join
+        [
          'glpi_sockets'  => [
             'ON'  => [
                'glpi_sockets'  => 'locations_id',
@@ -71,13 +72,12 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
                'glpi_sockets'              => 'id'
             ]
          ]
-      ], //inner join
-      ['glpi_locations.completename', 'PORT_1.name'], //order
-      Socket::getTypeName()
-   );
+        ], //inner join
+        ['glpi_locations.completename', 'PORT_1.name'], //order
+        Socket::getTypeName()
+    );
 
-   Html::footer();
-
+    Html::footer();
 } else {
-   Html::redirect($CFG_GLPI['root_doc']."/front/report.networking.php");
+    Html::redirect($CFG_GLPI['root_doc'] . "/front/report.networking.php");
 }

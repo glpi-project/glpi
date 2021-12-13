@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -38,11 +39,13 @@ use ComputerType;
 class Computer extends MainAsset
 {
 
-   protected function getModelsFieldName(): string {
-      return ComputerModel::getForeignKeyField();
-   }
+    protected function getModelsFieldName(): string
+    {
+        return ComputerModel::getForeignKeyField();
+    }
 
-   protected function getTypesFieldName(): string {
-      return ComputerType::getForeignKeyField();
-   }
+    protected function getTypesFieldName(): string
+    {
+        return ComputerType::getForeignKeyField();
+    }
 }

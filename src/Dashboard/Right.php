@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,12 +33,13 @@
 
 namespace Glpi\Dashboard;
 
-class Right extends \CommonDBChild {
-   static public $itemtype = "Glpi\\Dashboard\\Dashboard";
-   static public $items_id = 'dashboards_dashboards_id';
+class Right extends \CommonDBChild
+{
+    public static $itemtype = "Glpi\\Dashboard\\Dashboard";
+    public static $items_id = 'dashboards_dashboards_id';
 
    // prevent bad getFromDB when bootstraping tests suite
-   static public $mustBeAttached = false;
+    public static $mustBeAttached = false;
 
    /**
     * Return rights for the provided dashboard
@@ -46,24 +48,25 @@ class Right extends \CommonDBChild {
     *
     * @return array the rights
     */
-   static function getForDashboard(int $dashboards_id = 0): array {
-      global $DB;
+    public static function getForDashboard(int $dashboards_id = 0): array
+    {
+        global $DB;
 
-      $dr_iterator = $DB->request([
+        $dr_iterator = $DB->request([
          'FROM'  => self::getTable(),
          'WHERE' => [
             'dashboards_dashboards_id' => $dashboards_id
          ]
-      ]);
+        ]);
 
-      $rights = [];
-      foreach ($dr_iterator as $right) {
-         unset($right['id']);
-         $rights[] = $right;
-      }
+        $rights = [];
+        foreach ($dr_iterator as $right) {
+            unset($right['id']);
+            $rights[] = $right;
+        }
 
-      return $rights;
-   }
+        return $rights;
+    }
 
 
    /**
@@ -78,29 +81,30 @@ class Right extends \CommonDBChild {
     *
     * @return void
     */
-   static function addForDashboard(int $dashboards_id = 0, array $rights = []) {
-      global $DB;
+    public static function addForDashboard(int $dashboards_id = 0, array $rights = [])
+    {
+        global $DB;
 
-      $query_rights = $DB->buildInsert(
-         self::getTable(),
-         [
+        $query_rights = $DB->buildInsert(
+            self::getTable(),
+            [
             'dashboards_dashboards_id' => new \QueryParam(),
             'itemtype' => new \QueryParam(),
             'items_id' => new \QueryParam(),
-         ]
-      );
-      $stmt = $DB->prepare($query_rights);
-      foreach ($rights as $fk => $right_line) {
-         $itemtype = getItemtypeForForeignKeyField($fk);
-         foreach ($right_line as $items_id) {
-            $stmt->bind_param(
-               'isi',
-               $dashboards_id,
-               $itemtype,
-               $items_id
-            );
-            $DB->executeStatement($stmt);
-         }
-      }
-   }
+            ]
+        );
+        $stmt = $DB->prepare($query_rights);
+        foreach ($rights as $fk => $right_line) {
+            $itemtype = getItemtypeForForeignKeyField($fk);
+            foreach ($right_line as $items_id) {
+                $stmt->bind_param(
+                    'isi',
+                    $dashboards_id,
+                    $itemtype,
+                    $items_id
+                );
+                $DB->executeStatement($stmt);
+            }
+        }
+    }
 }

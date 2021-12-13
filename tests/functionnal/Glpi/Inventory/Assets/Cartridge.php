@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,10 +37,12 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/cartridge.class.php */
 
-class Cartridge extends AbstractInventoryAsset {
+class Cartridge extends AbstractInventoryAsset
+{
 
-   protected function assetProvider() :array {
-      return [
+    protected function assetProvider(): array
+    {
+        return [
          [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST><CONTENT><DEVICE>
@@ -77,66 +80,69 @@ class Cartridge extends AbstractInventoryAsset {
     </DEVICE></CONTENT><QUERY>SNMP</QUERY><DEVICEID>foo</DEVICEID></REQUEST>",
             'expected'  => '{"tonerblack":"71","name":"","serial":"","manufacturers_id":""}'
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider assetProvider
     */
-   public function testPrepare($xml, $expected) {
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($xml);
-      $json = json_decode($data);
+    public function testPrepare($xml, $expected)
+    {
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
 
-      $printer = getItemByTypeName('Printer', '_test_printer_all');
-      $asset = new \Glpi\Inventory\Asset\Monitor($printer, $json->content->cartridges);
-      $asset->setExtraData((array)$json->content);
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected));
-   }
+        $printer = getItemByTypeName('Printer', '_test_printer_all');
+        $asset = new \Glpi\Inventory\Asset\Monitor($printer, $json->content->cartridges);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected));
+    }
 
-   public function testKnownTags() {
-      $cart = new \Glpi\Inventory\Asset\Cartridge(getItemByTypeName('Printer', '_test_printer_all'));
+    public function testKnownTags()
+    {
+        $cart = new \Glpi\Inventory\Asset\Cartridge(getItemByTypeName('Printer', '_test_printer_all'));
 
-      $tags = $cart->knownTags();
-      $this->array($tags)->hasSize(194);
-      foreach ($tags as $tag) {
-         $this->array($tag)->hasKey('name');
-      }
-   }
+        $tags = $cart->knownTags();
+        $this->array($tags)->hasSize(194);
+        foreach ($tags as $tag) {
+            $this->array($tag)->hasKey('name');
+        }
+    }
 
-   public function testHandle() {
-      //convert data
-      $expected = $this->assetProvider()[0];
+    public function testHandle()
+    {
+       //convert data
+        $expected = $this->assetProvider()[0];
 
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($expected['xml']);
-      $json = json_decode($data);
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($expected['xml']);
+        $json = json_decode($data);
 
-      $printer = getItemByTypeName('Printer', '_test_printer_all');
-      $asset = new \Glpi\Inventory\Asset\Cartridge($printer, $json->content->cartridges);
-      $asset->setExtraData((array)$json->content);
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode('{"tonerblack":"71"}'));
+        $printer = getItemByTypeName('Printer', '_test_printer_all');
+        $asset = new \Glpi\Inventory\Asset\Cartridge($printer, $json->content->cartridges);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode('{"tonerblack":"71"}'));
 
-      $agent = new \Agent();
-      $agent->getEmpty();
-      $asset->setAgent($agent);
+        $agent = new \Agent();
+        $agent->getEmpty();
+        $asset->setAgent($agent);
 
-      //handle
-      $asset->handleLinks();
-      $asset->handle();
+       //handle
+        $asset->handleLinks();
+        $asset->handle();
 
-      global $DB;
-      $iterator = $DB->request([
+        global $DB;
+        $iterator = $DB->request([
          'FROM'   => \Printer_CartridgeInfo::getTable(),
          'WHERE'  => ['printers_id' => $printer->fields['id']]
-      ]);
-      $this->integer(count($iterator))->isIdenticalTo(1);
+        ]);
+        $this->integer(count($iterator))->isIdenticalTo(1);
 
-      $result = $iterator->current();
-      $this->array($result)
+        $result = $iterator->current();
+        $this->array($result)
          ->string['property']->isIdenticalTo('tonerblack')
          ->string['value']->isIdenticalTo('71');
-   }
+    }
 }

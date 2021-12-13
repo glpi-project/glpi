@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,38 +37,40 @@ use DbTestCase;
 
 /* Test for inc/databaseinstance.class.php */
 
-class DatabaseInstance extends DbTestCase {
+class DatabaseInstance extends DbTestCase
+{
 
-   public function testDelete() {
-      $instance = new \DatabaseInstance();
+    public function testDelete()
+    {
+        $instance = new \DatabaseInstance();
 
-      $instid = $instance->add([
+        $instid = $instance->add([
          'name' => 'To be removed',
          'port' => 3306,
          'size' => 52000
-      ]);
+        ]);
 
-      //check DB is created, and load it
-      $this->integer($instid)->isGreaterThan(0);
-      $this->boolean($instance->getFromDB($instid))->isTrue();
+       //check DB is created, and load it
+        $this->integer($instid)->isGreaterThan(0);
+        $this->boolean($instance->getFromDB($instid))->isTrue();
 
-      //create databases
-      for ($i = 0; $i < 5; ++$i) {
-         $database = new \Database();
-         $this->integer(
-            $database->add([
-               'name'                   => 'Database ' . $i,
-               'databaseinstances_id'   => $instid
-            ])
-         )->isGreaterThan(0);
-      }
-      $this->integer(countElementsInTable(\Database::getTable()))->isIdenticalTo(5);
+       //create databases
+        for ($i = 0; $i < 5; ++$i) {
+            $database = new \Database();
+            $this->integer(
+                $database->add([
+                'name'                   => 'Database ' . $i,
+                'databaseinstances_id'   => $instid
+                ])
+            )->isGreaterThan(0);
+        }
+        $this->integer(countElementsInTable(\Database::getTable()))->isIdenticalTo(5);
 
-      //test removal
-      $this->boolean($instance->delete(['id' => $instid], 1))->isTrue();
-      $this->boolean($instance->getFromDB($instid))->isFalse();
+       //test removal
+        $this->boolean($instance->delete(['id' => $instid], 1))->isTrue();
+        $this->boolean($instance->getFromDB($instid))->isFalse();
 
-      //ensure databases has been dropped aswell
-      $this->integer(countElementsInTable(\Database::getTable()))->isIdenticalTo(0);
-   }
+       //ensure databases has been dropped aswell
+        $this->integer(countElementsInTable(\Database::getTable()))->isIdenticalTo(0);
+    }
 }

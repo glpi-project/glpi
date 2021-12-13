@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,34 +37,46 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 $note = new Notepad();
 
 if (isset($_POST['add'])) {
-   $note->check(-1, CREATE, $_POST);
+    $note->check(-1, CREATE, $_POST);
 
-   $newID = $note->add($_POST, false);
-   Event::log($newID, "notepad", 4, "tools",
-              sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID));
-   Html::back();
-
+    $newID = $note->add($_POST, false);
+    Event::log(
+        $newID,
+        "notepad",
+        4,
+        "tools",
+        sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID)
+    );
+    Html::back();
 } else if (isset($_POST["purge"])) {
-   $note->check($_POST["id"], PURGE);
-   $note->delete($_POST, 1);
-   Event::log($_POST["id"], "notepad", 4, "tools",
-              //TRANS: %s is the user login
-              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
-   Html::back();
-
+    $note->check($_POST["id"], PURGE);
+    $note->delete($_POST, 1);
+    Event::log(
+        $_POST["id"],
+        "notepad",
+        4,
+        "tools",
+        //TRANS: %s is the user login
+        sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+    );
+    Html::back();
 } else if (isset($_POST["update"])) {
-   $note->check($_POST["id"], UPDATE);
+    $note->check($_POST["id"], UPDATE);
 
-   $note->update($_POST);
-   Event::log($_POST["id"], "notepad", 4, "tools",
-              //TRANS: %s is the user login
-              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
-   Html::back();
-
+    $note->update($_POST);
+    Event::log(
+        $_POST["id"],
+        "notepad",
+        4,
+        "tools",
+        //TRANS: %s is the user login
+        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+    );
+    Html::back();
 }
 Html::displayErrorAndDie("lost");

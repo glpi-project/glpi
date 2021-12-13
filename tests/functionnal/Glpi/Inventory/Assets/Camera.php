@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,10 +37,12 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/camera.class.php */
 
-class Camera extends AbstractInventoryAsset {
+class Camera extends AbstractInventoryAsset
+{
 
-   protected function assetProvider() :array {
-      return [
+    protected function assetProvider(): array
+    {
+        return [
          [
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -71,76 +74,79 @@ class Camera extends AbstractInventoryAsset {
   </REQUEST>",
             'expected'  => '{"resolution":["800x600","8000x6000"],"lensfacing":"BACK","flashunit":"1","imageformats":["RAW_SENSOR","JPEG","YUV_420_888","RAW10"],"orientation":"90","focallength":"4.77","sensorsize":"6.4x4.8","resolutionvideo":["176x144","1760x1440"], "is_dynamic": 1}'
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider assetProvider
     */
-   public function testPrepare($xml, $expected) {
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($xml);
-      $json = json_decode($data);
+    public function testPrepare($xml, $expected)
+    {
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\Camera($computer, $json->content->cameras);
-      $asset->setExtraData((array)$json->content);
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected));
-   }
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\Camera($computer, $json->content->cameras);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected));
+    }
 
-   public function testHandle() {
-      $computer = getItemByTypeName('Computer', '_test_pc01');
+    public function testHandle()
+    {
+        $computer = getItemByTypeName('Computer', '_test_pc01');
 
-      //first, check there are no camera linked to this computer
-      $idc = new \Item_DeviceCamera();
-      $this->boolean($idc->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+       //first, check there are no camera linked to this computer
+        $idc = new \Item_DeviceCamera();
+        $this->boolean($idc->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isFalse('A camera is already linked to computer!');
 
-      //convert data
-      $expected = $this->assetProvider()[0];
+       //convert data
+        $expected = $this->assetProvider()[0];
 
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($expected['xml']);
-      $json = json_decode($data);
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($expected['xml']);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\Camera($computer, $json->content->cameras);
-      $asset->setExtraData((array)$json->content);
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\Camera($computer, $json->content->cameras);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
 
-      //handle
-      $asset->handleLinks();
-      $asset->handle();
-      $this->boolean($idc->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+       //handle
+        $asset->handleLinks();
+        $asset->handle();
+        $this->boolean($idc->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isTrue('Camera has not been linked to computer :(');
 
-      global $DB;
+        global $DB;
 
-      //four resolutions has been created
-      $iterator = $DB->request(['FROM' => \ImageResolution::getTable()]);
-      $this->integer(count($iterator))->isIdenticalTo(4);
+       //four resolutions has been created
+        $iterator = $DB->request(['FROM' => \ImageResolution::getTable()]);
+        $this->integer(count($iterator))->isIdenticalTo(4);
 
-      //four images formats has been created
-      $iterator = $DB->request(['FROM' => \ImageFormat::getTable()]);
-      $this->integer(count($iterator))->isIdenticalTo(4);
+       //four images formats has been created
+        $iterator = $DB->request(['FROM' => \ImageFormat::getTable()]);
+        $this->integer(count($iterator))->isIdenticalTo(4);
 
-      //four links between images  formats and camera has been created
-      $iterator = $DB->request(['FROM' => \Item_DeviceCamera_ImageFormat::getTable()]);
-      $this->integer(count($iterator))->isIdenticalTo(4);
+       //four links between images  formats and camera has been created
+        $iterator = $DB->request(['FROM' => \Item_DeviceCamera_ImageFormat::getTable()]);
+        $this->integer(count($iterator))->isIdenticalTo(4);
 
-      //four links between images resolutions and camera has been created
-      $iterator = $DB->request(['FROM' => \Item_DeviceCamera_ImageResolution::getTable()]);
-      $this->integer(count($iterator))->isIdenticalTo(4);
-   }
+       //four links between images resolutions and camera has been created
+        $iterator = $DB->request(['FROM' => \Item_DeviceCamera_ImageResolution::getTable()]);
+        $this->integer(count($iterator))->isIdenticalTo(4);
+    }
 
-   public function testInventoryUpdate() {
-      $computer = new \Computer();
-      $device_cam = new \DeviceCamera();
-      $item_cam = new \Item_DeviceCamera();
+    public function testInventoryUpdate()
+    {
+        $computer = new \Computer();
+        $device_cam = new \DeviceCamera();
+        $item_cam = new \Item_DeviceCamera();
 
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <CAMERAS>
@@ -165,95 +171,95 @@ class Camera extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      //create manually a computer, with 3 cameras
-      $computers_id = $computer->add([
+       //create manually a computer, with 3 cameras
+        $computers_id = $computer->add([
          'name'   => 'pc002',
          'serial' => 'ggheb7ne7',
          'entities_id' => 0
-      ]);
-      $this->integer($computers_id)->isGreaterThan(0);
+        ]);
+        $this->integer($computers_id)->isGreaterThan(0);
 
-      $manufacturer = new \Manufacturer();
-      $manufacturers_id = $manufacturer->add([
+        $manufacturer = new \Manufacturer();
+        $manufacturers_id = $manufacturer->add([
          'name' => 'Xiaomi'
-      ]);
-      $this->integer($manufacturers_id)->isGreaterThan(0);
+        ]);
+        $this->integer($manufacturers_id)->isGreaterThan(0);
 
-      $model = new \DeviceCameraModel();
-      $models_id = $model->add([
+        $model = new \DeviceCameraModel();
+        $models_id = $model->add([
          'name' => 'test'
-      ]);
-      $this->integer($models_id)->isGreaterThan(0);
+        ]);
+        $this->integer($models_id)->isGreaterThan(0);
 
-      $cam_1_id = $device_cam->add([
+        $cam_1_id = $device_cam->add([
          'designation' => 'Front cam',
          'manufacturers_id' => $manufacturers_id,
          'devicecameramodels_id' => $models_id,
          'entities_id'  => 0
-      ]);
-      $this->integer($cam_1_id)->isGreaterThan(0);
+        ]);
+        $this->integer($cam_1_id)->isGreaterThan(0);
 
-      $item_cam_1_id = $item_cam->add([
+        $item_cam_1_id = $item_cam->add([
          'items_id'     => $computers_id,
          'itemtype'     => 'Computer',
          'devicecameras_id' => $cam_1_id
-      ]);
+        ]);
 
-      $cam_2_id = $device_cam->add([
+        $cam_2_id = $device_cam->add([
          'designation' => 'Rear cam',
          'manufacturers_id' => $manufacturers_id,
          'devicecameramodels_id' => $models_id,
          'entities_id'  => 0
-      ]);
-      $this->integer($cam_2_id)->isGreaterThan(0);
+        ]);
+        $this->integer($cam_2_id)->isGreaterThan(0);
 
-      $item_cam_2_id = $item_cam->add([
+        $item_cam_2_id = $item_cam->add([
          'items_id'     => $computers_id,
          'itemtype'     => 'Computer',
          'devicecameras_id' => $cam_2_id
-      ]);
+        ]);
 
-      $cam_3_id = $device_cam->add([
+        $cam_3_id = $device_cam->add([
          'designation' => 'Other cam',
          'manufacturers_id' => $manufacturers_id,
          'devicecameramodels_id' => $models_id,
          'entities_id'  => 0
-      ]);
-      $this->integer($cam_3_id)->isGreaterThan(0);
+        ]);
+        $this->integer($cam_3_id)->isGreaterThan(0);
 
-      $item_cam_3_id = $item_cam->add([
+        $item_cam_3_id = $item_cam->add([
          'items_id'     => $computers_id,
          'itemtype'     => 'Computer',
          'devicecameras_id' => $cam_3_id
-      ]);
+        ]);
 
-      $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($cams))->isIdenticalTo(3);
-      foreach ($cams as $cam) {
-         $this->variable($cam['is_dynamic'])->isEqualTo(0);
-      }
+        $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($cams))->isIdenticalTo(3);
+        foreach ($cams as $cam) {
+            $this->variable($cam['is_dynamic'])->isEqualTo(0);
+        }
 
-      //computer inventory knows only "Front" and "Rear" cameras
-      $this->doInventory($xml_source, true);
+       //computer inventory knows only "Front" and "Rear" cameras
+        $this->doInventory($xml_source, true);
 
-      //we still have 3 cameras
-      $cams = $device_cam->find();
-      $this->integer(count($cams))->isIdenticalTo(3);
+       //we still have 3 cameras
+        $cams = $device_cam->find();
+        $this->integer(count($cams))->isIdenticalTo(3);
 
-      //we still have 3 cameras items linked to the computer
-      $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($cams))->isIdenticalTo(3);
+       //we still have 3 cameras items linked to the computer
+        $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($cams))->isIdenticalTo(3);
 
-      //cameras present in the inventory source are now dynamic
-      $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($cams))->isIdenticalTo(2);
+       //cameras present in the inventory source are now dynamic
+        $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($cams))->isIdenticalTo(2);
 
-      //camera not present in the inventory is still not dynamic
-      $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
-      $this->integer(count($cams))->isIdenticalTo(1);
+       //camera not present in the inventory is still not dynamic
+        $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($cams))->isIdenticalTo(1);
 
-      //Redo inventory, but with removed "Rear" camera
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+       //Redo inventory, but with removed "Rear" camera
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <CAMERAS>
@@ -273,22 +279,22 @@ class Camera extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      $this->doInventory($xml_source, true);
+        $this->doInventory($xml_source, true);
 
-      //we still have 3 cameras
-      $cams = $device_cam->find();
-      $this->integer(count($cams))->isIdenticalTo(3);
+       //we still have 3 cameras
+        $cams = $device_cam->find();
+        $this->integer(count($cams))->isIdenticalTo(3);
 
-      //we now have 2 cameras linked to computer only
-      $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($cams))->isIdenticalTo(2);
+       //we now have 2 cameras linked to computer only
+        $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($cams))->isIdenticalTo(2);
 
-      //camera present in the inventory source is still dynamic
-      $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($cams))->isIdenticalTo(1);
+       //camera present in the inventory source is still dynamic
+        $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($cams))->isIdenticalTo(1);
 
-      //camera not present in the inventory is still not dynamic
-      $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
-      $this->integer(count($cams))->isIdenticalTo(1);
-   }
+       //camera not present in the inventory is still not dynamic
+        $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($cams))->isIdenticalTo(1);
+    }
 }

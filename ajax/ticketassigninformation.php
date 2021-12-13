@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,10 +33,10 @@
 
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "ticketassigninformation.php")) {
-   $AJAX_INCLUDE = 1;
-   include ('../inc/includes.php');
-   header("Content-Type: text/html; charset=UTF-8");
-   Html::header_nocache();
+    $AJAX_INCLUDE = 1;
+    include('../inc/includes.php');
+    header("Content-Type: text/html; charset=UTF-8");
+    Html::header_nocache();
 }
 
 Session::checkLoginUser();
@@ -43,10 +44,9 @@ Session::checkLoginUser();
 $only_number = boolval($_REQUEST['only_number'] ?? false);
 
 if (isset($_REQUEST['users_id_assign']) && ($_REQUEST['users_id_assign'] > 0)) {
+    $ticket = new Ticket();
 
-   $ticket = new Ticket();
-
-   $options2 = [
+    $options2 = [
       'criteria' => [
          [
             'field'      => 5, // users_id assign
@@ -62,25 +62,24 @@ if (isset($_REQUEST['users_id_assign']) && ($_REQUEST['users_id_assign'] > 0)) {
          ],
       ],
       'reset' => 'reset',
-   ];
+    ];
 
-   $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2, '&amp;');
-   $nb  = $ticket->countActiveObjectsForTech($_REQUEST['users_id_assign']);
+    $url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
+    $nb  = $ticket->countActiveObjectsForTech($_REQUEST['users_id_assign']);
 
-   if ($only_number) {
-      if ($nb > 0) {
-         echo "<a href='$url'>".$nb."</a>";
-      }
-   } else {
-      echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\">(";
-      printf(__('%1$s: %2$s'), __('Processing'), $nb);
-      echo ")</a>";
-   }
-
+    if ($only_number) {
+        if ($nb > 0) {
+            echo "<a href='$url'>" . $nb . "</a>";
+        }
+    } else {
+        echo "&nbsp;<a href='$url' title=\"" . __s('Processing') . "\">(";
+        printf(__('%1$s: %2$s'), __('Processing'), $nb);
+        echo ")</a>";
+    }
 } else if (isset($_REQUEST['groups_id_assign']) && ($_REQUEST['groups_id_assign'] > 0)) {
-   $ticket = new Ticket();
+    $ticket = new Ticket();
 
-   $options2 = [
+    $options2 = [
       'criteria' => [
          [
             'field'      => 8, // groups_id assign
@@ -96,26 +95,24 @@ if (isset($_REQUEST['users_id_assign']) && ($_REQUEST['users_id_assign'] > 0)) {
          ],
       ],
       'reset' => 'reset',
-   ];
+    ];
 
-   $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2, '&amp;');
-   $nb  = $ticket->countActiveObjectsForTechGroup($_REQUEST['groups_id_assign']);
+    $url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
+    $nb  = $ticket->countActiveObjectsForTechGroup($_REQUEST['groups_id_assign']);
 
-   if ($only_number) {
-      if ($nb > 0) {
-         echo "<a href='$url'>".$nb."</a>";
-      }
-   } else {
-      echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\">(";
-      printf(__('%1$s: %2$s'), __('Processing'), $nb);
-      echo ")</a>";
-   }
-
+    if ($only_number) {
+        if ($nb > 0) {
+            echo "<a href='$url'>" . $nb . "</a>";
+        }
+    } else {
+        echo "&nbsp;<a href='$url' title=\"" . __s('Processing') . "\">(";
+        printf(__('%1$s: %2$s'), __('Processing'), $nb);
+        echo ")</a>";
+    }
 } else if (isset($_REQUEST['suppliers_id_assign']) && ($_REQUEST['suppliers_id_assign'] > 0)) {
+    $ticket = new Ticket();
 
-   $ticket = new Ticket();
-
-   $options2 = [
+    $options2 = [
       'criteria' => [
          [
             'field'      => 6, // suppliers_id assign
@@ -131,18 +128,18 @@ if (isset($_REQUEST['users_id_assign']) && ($_REQUEST['users_id_assign'] > 0)) {
          ],
       ],
       'reset' => 'reset',
-   ];
+    ];
 
-   $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2, '&amp;');
-   $nb  = $ticket->countActiveObjectsForSupplier($_REQUEST['suppliers_id_assign']);
+    $url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
+    $nb  = $ticket->countActiveObjectsForSupplier($_REQUEST['suppliers_id_assign']);
 
-   if ($only_number) {
-      if ($nb > 0) {
-         echo "<a href='$url'>".$nb."</a>";
-      }
-   } else {
-      echo "<a href='$url' title=\"".__s('Processing')."\" class='badge rounded-pill bg-secondary'>
+    if ($only_number) {
+        if ($nb > 0) {
+            echo "<a href='$url'>" . $nb . "</a>";
+        }
+    } else {
+        echo "<a href='$url' title=\"" . __s('Processing') . "\" class='badge rounded-pill bg-secondary'>
          $nb
       </a>";
-   }
+    }
 }

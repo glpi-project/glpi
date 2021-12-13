@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,7 +36,7 @@
  * @since   9.2
 */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
@@ -43,23 +44,27 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (isset($_POST["table"])
-    && isset($_POST["value"])) {
+if (
+    isset($_POST["table"])
+    && isset($_POST["value"])
+) {
    // Security
-   if (!$DB->tableExists($_POST['table'])) {
-      exit();
-   }
+    if (!$DB->tableExists($_POST['table'])) {
+        exit();
+    }
 
-   if (isset($_POST['withlink'])) {
-      $itemtype = getItemTypeForTable($_POST["table"]);
-      if (!Session::validateIDOR([
-         'itemtype'    => $itemtype,
-         '_idor_token' => $_POST['_idor_token'] ?? ""
-      ])) {
-         exit();
-      }
-      $item = new $itemtype;
-      $item->getFromDB(intval($_POST["value"]));
-      echo '&nbsp;'.$item->getLinks();
-   }
+    if (isset($_POST['withlink'])) {
+        $itemtype = getItemTypeForTable($_POST["table"]);
+        if (
+            !Session::validateIDOR([
+            'itemtype'    => $itemtype,
+            '_idor_token' => $_POST['_idor_token'] ?? ""
+            ])
+        ) {
+            exit();
+        }
+        $item = new $itemtype();
+        $item->getFromDB(intval($_POST["value"]));
+        echo '&nbsp;' . $item->getLinks();
+    }
 }

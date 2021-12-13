@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,141 +35,148 @@
  * @since 9.1
  */
 
-class APIClient extends CommonDBTM {
+class APIClient extends CommonDBTM
+{
 
-   const DOLOG_DISABLED   = 0;
-   const DOLOG_LOGS       = 1;
-   const DOLOG_HISTORICAL = 2;
+    const DOLOG_DISABLED   = 0;
+    const DOLOG_LOGS       = 1;
+    const DOLOG_HISTORICAL = 2;
 
-   static $rightname = 'config';
+    public static $rightname = 'config';
 
    // From CommonDBTM
-   public $dohistory                   = true;
+    public $dohistory                   = true;
 
-   static $undisclosedFields = [
+    public static $undisclosedFields = [
       'app_token'
-   ];
+    ];
 
-   static function canCreate() {
-      return Session::haveRight(static::$rightname, UPDATE);
-   }
+    public static function canCreate()
+    {
+        return Session::haveRight(static::$rightname, UPDATE);
+    }
 
-   static function canPurge() {
-      return Session::haveRight(static::$rightname, UPDATE);
-   }
+    public static function canPurge()
+    {
+        return Session::haveRight(static::$rightname, UPDATE);
+    }
 
-   static function getTypeName($nb = 0) {
-      return _n("API client", "API clients", $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n("API client", "API clients", $nb);
+    }
 
-   function defineTabs($options = []) {
+    public function defineTabs($options = [])
+    {
 
-      $ong = [];
-      $this->addDefaultFormTab($ong)
+        $ong = [];
+        $this->addDefaultFormTab($ong)
            ->addStandardTab('Log', $ong, $options);
 
-      return $ong;
-   }
+        return $ong;
+    }
 
-   function rawSearchOptions() {
-      $tab = [];
+    public function rawSearchOptions()
+    {
+        $tab = [];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => 'common',
          'name'               => self::GetTypeName()
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '1',
          'table'              => $this->getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '2',
          'table'              => $this->getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
          'datatype'           => 'number'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '3',
          'table'              => $this->getTable(),
          'field'              => 'is_active',
          'name'               => __('Active'),
          'datatype'           => 'bool'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '4',
          'table'              => $this->getTable(),
          'field'              => 'dolog_method',
          'name'               => __('Log connections'),
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => 'filter',
          'name'               => __('Filter access')
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '5',
          'table'              => $this->getTable(),
          'field'              => 'ipv4_range_start',
-         'name'               => __('IPv4 address range')." - ".__("Start"),
+         'name'               => __('IPv4 address range') . " - " . __("Start"),
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '6',
          'table'              => $this->getTable(),
          'field'              => 'ipv4_range_end',
-         'name'               => __('IPv4 address range')." - ".__("End"),
+         'name'               => __('IPv4 address range') . " - " . __("End"),
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '7',
          'table'              => $this->getTable(),
          'field'              => 'ipv6',
          'name'               => __('IPv6 address'),
          'datatype'           => 'text',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '8',
          'table'              => $this->getTable(),
          'field'              => 'app_token',
          'name'               => __('Application token'),
          'massiveaction'      => false,
          'datatype'           => 'text',
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
-   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
 
-      switch ($field) {
-         case 'dolog_method' :
-            $methods = self::getLogMethod();
-            return $methods[$values[$field]];
+        switch ($field) {
+            case 'dolog_method':
+                $methods = self::getLogMethod();
+                return $methods[$values[$field]];
 
-         case 'ipv4_range_start':
-         case 'ipv4_range_end':
-            if (empty($values[$field])) {
-               return '';
-            }
-            return long2ip((int)$values[$field]);
-      }
+            case 'ipv4_range_start':
+            case 'ipv4_range_end':
+                if (empty($values[$field])) {
+                    return '';
+                }
+                return long2ip((int)$values[$field]);
+        }
 
-      return parent::getSpecificValueToDisplay($field, $values, $options);
-   }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
 
    /**
     * Show form
@@ -178,145 +186,155 @@ class APIClient extends CommonDBTM {
     *
     * @return void
     */
-   function showForm ($ID, $options = []) {
+    public function showForm($ID, $options = [])
+    {
 
-      $this->initForm($ID, $options);
-      $this->showFormHeader($options);
+        $this->initForm($ID, $options);
+        $this->showFormHeader($options);
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Name')."</td>";
-      echo "<td>";
-      echo Html::input('name', ['value' => $this->fields['name']]);
-      echo "</td>";
-      echo "<td rowspan='3'>".__('Comments')."</td>";
-      echo "<td rowspan='3'>";
-      echo "<textarea name='comment' class='form-control' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Name') . "</td>";
+        echo "<td>";
+        echo Html::input('name', ['value' => $this->fields['name']]);
+        echo "</td>";
+        echo "<td rowspan='3'>" . __('Comments') . "</td>";
+        echo "<td rowspan='3'>";
+        echo "<textarea name='comment' class='form-control' >" . $this->fields["comment"] . "</textarea>";
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td >".__('Active')."</td>";
-      echo "<td>";
-      Dropdown::showYesNo("is_active", $this->fields["is_active"]);
-      echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td >" . __('Active') . "</td>";
+        echo "<td>";
+        Dropdown::showYesNo("is_active", $this->fields["is_active"]);
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td >".__('Log connections')."</td>";
-      echo "<td>";
-      Dropdown::showFromArray("dolog_method",
-                              self::getLogMethod(),
-                              ['value' => $this->fields["dolog_method"]]);
-      echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td >" . __('Log connections') . "</td>";
+        echo "<td>";
+        Dropdown::showFromArray(
+            "dolog_method",
+            self::getLogMethod(),
+            ['value' => $this->fields["dolog_method"]]
+        );
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<th colspan='4'>";
-      echo "<div class='center'>". __("Filter access")."</div>";
-      echo "</th></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<th colspan='4'>";
+        echo "<div class='center'>" . __("Filter access") . "</div>";
+        echo "</th></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='4'>";
-      echo "<i>".__('Leave these parameters empty to disable API access restriction')."</i>";
-      echo "<br><br><br>";
-      echo "</td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td colspan='4'>";
+        echo "<i>" . __('Leave these parameters empty to disable API access restriction') . "</i>";
+        echo "<br><br><br>";
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('IPv4 address range')."</td>";
-      echo "<td colspan='3'>";
-      echo "<input type='text' class='form-control' name='ipv4_range_start' value='".
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('IPv4 address range') . "</td>";
+        echo "<td colspan='3'>";
+        echo "<input type='text' class='form-control' name='ipv4_range_start' value='" .
             ($this->fields["ipv4_range_start"] ? long2ip($this->fields["ipv4_range_start"]) : '') .
             "' size='17'> - ";
-      echo "<input type='text' class='form-control' name='ipv4_range_end' value='" .
+        echo "<input type='text' class='form-control' name='ipv4_range_end' value='" .
             ($this->fields["ipv4_range_end"] ? long2ip($this->fields["ipv4_range_end"]) : '') .
             "' size='17'>";
-      echo "</td></tr>";
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('IPv6 address')."</td>";
-      echo "<td>";
-      echo Html::input('ipv6', ['value' => $this->fields['ipv6']]);
-      echo "</td>";
-      echo "<td colspan='2'></td>";
-      echo "</tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('IPv6 address') . "</td>";
+        echo "<td>";
+        echo Html::input('ipv6', ['value' => $this->fields['ipv6']]);
+        echo "</td>";
+        echo "<td colspan='2'></td>";
+        echo "</tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".sprintf(__('%1$s (%2$s)'), __('Application token'), "app_token")."</td>";
-      echo "<td colspan='2'>";
-      echo Html::input('app_token', ['value' => $this->fields['app_token']]);
-      echo "<br><input type='checkbox' name='_reset_app_token' id='app_token'>&nbsp;";
-      echo "<label for='app_token'>".__('Regenerate')."</label>";
-      echo "</td><td></td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . sprintf(__('%1$s (%2$s)'), __('Application token'), "app_token") . "</td>";
+        echo "<td colspan='2'>";
+        echo Html::input('app_token', ['value' => $this->fields['app_token']]);
+        echo "<br><input type='checkbox' name='_reset_app_token' id='app_token'>&nbsp;";
+        echo "<label for='app_token'>" . __('Regenerate') . "</label>";
+        echo "</td><td></td></tr>";
 
-      $this->showFormButtons($options);
-   }
+        $this->showFormButtons($options);
+    }
 
-   function prepareInputForAdd($input) {
-      return $this->prepareInputForUpdate($input);
-   }
+    public function prepareInputForAdd($input)
+    {
+        return $this->prepareInputForUpdate($input);
+    }
 
-   function prepareInputForUpdate($input) {
+    public function prepareInputForUpdate($input)
+    {
 
-      if (isset($input['ipv4_range_start'])) {
-         $input['ipv4_range_start'] = ip2long($input['ipv4_range_start']);
-      }
+        if (isset($input['ipv4_range_start'])) {
+            $input['ipv4_range_start'] = ip2long($input['ipv4_range_start']);
+        }
 
-      if (isset($input['ipv4_range_end'])) {
-         $input['ipv4_range_end'] = ip2long($input['ipv4_range_end']);
-      }
+        if (isset($input['ipv4_range_end'])) {
+            $input['ipv4_range_end'] = ip2long($input['ipv4_range_end']);
+        }
 
-      if (isset($input['ipv4_range_start']) && isset($input['ipv4_range_end'])) {
-         if (empty($input['ipv4_range_start'])) {
-            $input['ipv4_range_start'] = "NULL";
-            $input['ipv4_range_end'] = "NULL";
-         } else {
-            if (empty($input['ipv4_range_end'])) {
-               $input['ipv4_range_end'] = $input['ipv4_range_start'];
+        if (isset($input['ipv4_range_start']) && isset($input['ipv4_range_end'])) {
+            if (empty($input['ipv4_range_start'])) {
+                $input['ipv4_range_start'] = "NULL";
+                $input['ipv4_range_end'] = "NULL";
+            } else {
+                if (empty($input['ipv4_range_end'])) {
+                    $input['ipv4_range_end'] = $input['ipv4_range_start'];
+                }
+
+                if ($input['ipv4_range_end'] < $input['ipv4_range_start']) {
+                    $tmp = $input['ipv4_range_end'];
+                    $input['ipv4_range_end'] = $input['ipv4_range_start'];
+                    $input['ipv4_range_start'] = $tmp;
+                }
             }
+        }
 
-            if ($input['ipv4_range_end'] < $input['ipv4_range_start']) {
-               $tmp = $input['ipv4_range_end'];
-               $input['ipv4_range_end'] = $input['ipv4_range_start'];
-               $input['ipv4_range_start'] = $tmp;
-            }
-         }
-      }
+        if (isset($input['ipv6']) && empty($input['ipv6'])) {
+            $input['ipv6'] = "NULL";
+        }
 
-      if (isset($input['ipv6']) && empty($input['ipv6'])) {
-         $input['ipv6'] = "NULL";
-      }
+        if (isset($input['_reset_app_token'])) {
+            $input['app_token']      = self::getUniqueAppToken();
+            $input['app_token_date'] = $_SESSION['glpi_currenttime'];
+        }
 
-      if (isset($input['_reset_app_token'])) {
-         $input['app_token']      = self::getUniqueAppToken();
-         $input['app_token_date'] = $_SESSION['glpi_currenttime'];
-      }
-
-      return $input;
-   }
+        return $input;
+    }
 
    /**
     * Get log methods
     *
     * @return array
     */
-   static function getLogMethod() {
+    public static function getLogMethod()
+    {
 
-      return [self::DOLOG_DISABLED   => __('Disabled'),
+        return [self::DOLOG_DISABLED   => __('Disabled'),
                    self::DOLOG_HISTORICAL => __('Historical'),
-                   self::DOLOG_LOGS       => _n('Log', 'Logs',
-                                                Session::getPluralNumber())];
-   }
+                   self::DOLOG_LOGS       => _n(
+                       'Log',
+                       'Logs',
+                       Session::getPluralNumber()
+                   )];
+    }
 
    /**
     * Get app token checking that it is unique
     *
     * @return string app token
     */
-   static function getUniqueAppToken() {
+    public static function getUniqueAppToken()
+    {
 
-      $ok = false;
-      do {
-         $key    = Toolbox::getRandomString(40);
-         if (countElementsInTable(self::getTable(), ['app_token' => $key]) == 0) {
-            return $key;
-         }
-      } while (!$ok);
-   }
+        $ok = false;
+        do {
+            $key    = Toolbox::getRandomString(40);
+            if (countElementsInTable(self::getTable(), ['app_token' => $key]) == 0) {
+                return $key;
+            }
+        } while (!$ok);
+    }
 }

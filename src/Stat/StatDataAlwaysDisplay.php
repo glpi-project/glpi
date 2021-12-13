@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,8 +38,9 @@ namespace Glpi\Stat;
  */
 abstract class StatDataAlwaysDisplay extends StatData
 {
-   public function isEmpty(): bool {
-      // Force display even if no data
-      return false;
-   }
+    public function isEmpty(): bool
+    {
+       // Force display even if no data
+        return false;
+    }
 }

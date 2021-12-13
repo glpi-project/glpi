@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,43 +34,52 @@
 /// NetworkPortDialup class : dialup instantiation of NetworkPort. A dialup connexion also known as
 /// point-to-point protocol allows connexion between to sites through specific connexion
 /// @since 0.84
-class NetworkPortDialup extends NetworkPortInstantiation {
+class NetworkPortDialup extends NetworkPortInstantiation
+{
 
 
-   static function getTypeName($nb = 0) {
-      return __('Connection by dial line - Dialup Port');
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return __('Connection by dial line - Dialup Port');
+    }
 
 
-   function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
-                                             HTMLTableSuperHeader $internet_super = null,
-                                             HTMLTableHeader $father = null,
-                                             array $options = []) {
+    public function getInstantiationHTMLTableHeaders(
+        HTMLTableGroup $group,
+        HTMLTableSuperHeader $super,
+        HTMLTableSuperHeader $internet_super = null,
+        HTMLTableHeader $father = null,
+        array $options = []
+    ) {
 
-      $header = $group->addHeader('Connected', __('Connected to'), $super);
+        $header = $group->addHeader('Connected', __('Connected to'), $super);
 
-      parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $header, $options);
-      return null;
-   }
-
-
-   function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                      HTMLTableCell $father = null, array $options = []) {
-
-      return $this->getInstantiationHTMLTableWithPeer($netport, $row, $father, $options);
-   }
+        parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $header, $options);
+        return null;
+    }
 
 
-   function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems) {
+    public function getInstantiationHTMLTable(
+        NetworkPort $netport,
+        HTMLTableRow $row,
+        HTMLTableCell $father = null,
+        array $options = []
+    ) {
 
-      echo "<tr class='tab_bg_1'>";
-      $this->showMacField($netport, $options);
+        return $this->getInstantiationHTMLTableWithPeer($netport, $row, $father, $options);
+    }
 
-      echo "<td>".__('Connected to').'</td><td>';
-      self::showConnection($netport, true);
-      echo "</td>";
 
-      echo "</tr>";
-   }
+    public function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems)
+    {
 
+        echo "<tr class='tab_bg_1'>";
+        $this->showMacField($netport, $options);
+
+        echo "<td>" . __('Connected to') . '</td><td>';
+        self::showConnection($netport, true);
+        echo "</td>";
+
+        echo "</tr>";
+    }
 }

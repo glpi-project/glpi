@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,7 +35,7 @@
  * Search engine from cron tasks
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("config", UPDATE);
 
@@ -42,22 +43,40 @@ Html::header(CronTask::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SE
 
 $crontask = new CronTask();
 if ($crontask->getNeedToRun(CronTask::MODE_INTERNAL)) {
-   $name = sprintf(__('%1$s %2$s'), $crontask->fields['name'],
-                   Html::getSimpleForm($crontask->getFormURL(),
-                                       ['execute' => $crontask->fields['name']],
-                                             __('Execute')));
-   Html::displayTitle("", __('Next run'),
-                      "<i class='fas fa-step-forward fa-lg me-2'></i>".sprintf(__('Next task to run: %s'), $name));
+    $name = sprintf(
+        __('%1$s %2$s'),
+        $crontask->fields['name'],
+        Html::getSimpleForm(
+            $crontask->getFormURL(),
+            ['execute' => $crontask->fields['name']],
+            __('Execute')
+        )
+    );
+    Html::displayTitle(
+        "",
+        __('Next run'),
+        "<i class='fas fa-step-forward fa-lg me-2'></i>" . sprintf(__('Next task to run: %s'), $name)
+    );
 } else {
-   Html::displayTitle("", __('No action pending'),
-                      "<i class='fas fa-check fa-lg me-2'></i>".__('No action pending'));
+    Html::displayTitle(
+        "",
+        __('No action pending'),
+        "<i class='fas fa-check fa-lg me-2'></i>" . __('No action pending')
+    );
 }
 
-if ($CFG_GLPI['cron_limit'] < countElementsInTable('glpi_crontasks',
-                                                   ['frequency' => MINUTE_TIMESTAMP])) {
-   Html::displayTitle('', '',
-                      "<i class='fas fa-exclamation-triangle fa-lg me-2'></i>".
-                      __('You have more automatic actions which need to run each minute than the number allow each run. Increase this config.'));
+if (
+    $CFG_GLPI['cron_limit'] < countElementsInTable(
+        'glpi_crontasks',
+        ['frequency' => MINUTE_TIMESTAMP]
+    )
+) {
+    Html::displayTitle(
+        '',
+        '',
+        "<i class='fas fa-exclamation-triangle fa-lg me-2'></i>" .
+        __('You have more automatic actions which need to run each minute than the number allow each run. Increase this config.')
+    );
 }
 
 Search::show('CronTask');

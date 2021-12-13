@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,110 +32,114 @@
  */
 
 /// Rule collection class for Rights management
-class RuleRightCollection extends RuleCollection {
+class RuleRightCollection extends RuleCollection
+{
 
    // From RuleCollection
-   public $stop_on_first_match = false;
-   static $rightname           = 'rule_ldap';
-   public $orderby             = "name";
-   public $menu_option         = 'right';
+    public $stop_on_first_match = false;
+    public static $rightname           = 'rule_ldap';
+    public $orderby             = "name";
+    public $menu_option         = 'right';
 
    // Specific ones
    /// Array containing results : entity + right
-   public $rules_entity_rights = [];
+    public $rules_entity_rights = [];
    /// Array containing results : only entity
-   public $rules_entity        = [];
+    public $rules_entity        = [];
    /// Array containing results : only right
-   public $rules_rights        = [];
+    public $rules_rights        = [];
 
 
-   function getTitle() {
-      return __('Authorizations assignment rules');
-   }
+    public function getTitle()
+    {
+        return __('Authorizations assignment rules');
+    }
 
 
    /**
     * @see RuleCollection::cleanTestOutputCriterias()
    */
-   function cleanTestOutputCriterias(array $output) {
+    public function cleanTestOutputCriterias(array $output)
+    {
 
-      if (isset($output["_rule_process"])) {
-         unset($output["_rule_process"]);
-      }
-      return $output;
-   }
+        if (isset($output["_rule_process"])) {
+            unset($output["_rule_process"]);
+        }
+        return $output;
+    }
 
 
    /**
     * @see RuleCollection::showTestResults()
    */
-   function showTestResults($rule, array $output, $global_result) {
+    public function showTestResults($rule, array $output, $global_result)
+    {
 
-      $actions = $rule->getActions();
-      echo "<tr><th colspan='4'>" . __('Rule results') . "</th></tr>";
-      echo "<tr class='tab_bg_2'>";
-      echo "<td class='center' colspan='2'>"._n('Validation', 'Validations', 1)."</td><td colspan='2'>".
-           "<span class='b'>".Dropdown::getYesNo($global_result)."</span></td>";
+        $actions = $rule->getActions();
+        echo "<tr><th colspan='4'>" . __('Rule results') . "</th></tr>";
+        echo "<tr class='tab_bg_2'>";
+        echo "<td class='center' colspan='2'>" . _n('Validation', 'Validations', 1) . "</td><td colspan='2'>" .
+           "<span class='b'>" . Dropdown::getYesNo($global_result) . "</span></td>";
 
-      if (isset($output["_ldap_rules"]["rules_entities"])) {
-         echo "<tr class='tab_bg_2'>";
-         echo "<td class='center' colspan='4'>".__('Entities assignment')."</td>";
-         foreach ($output["_ldap_rules"]["rules_entities"] as $entities) {
-            foreach ($entities as $entity) {
-               $this->displayActionByName("entity", $entity[0]);
-               if (isset($entity[1])) {
-                  $this->displayActionByName("recursive", $entity[1]);
-               }
-            }
-         }
-      }
-
-      if (isset($output["_ldap_rules"]["rules_rights"])) {
-         echo "<tr class='tab_bg_2'>";
-         echo "<td colspan='4' class='center'>".__('Rights assignment')."</td>";
-         foreach ($output["_ldap_rules"]["rules_rights"] as $val) {
-            $this->displayActionByName("profile", $val[0]);
-         }
-      }
-
-      if (isset($output["_ldap_rules"]["rules_entities_rights"])) {
-         echo "<tr class='tab_bg_2'>";
-         echo "<td colspan='4' class='center'>".__('Rights and entities assignment')."</td>";
-         foreach ($output["_ldap_rules"]["rules_entities_rights"] as $val) {
-            if (is_array($val[0])) {
-               foreach ($val[0] as $tmp) {
-                  $this->displayActionByName("entity", $tmp);
-               }
-            } else {
-               $this->displayActionByName("entity", $val[0]);
-            }
-            if (isset($val[1])) {
-               $this->displayActionByName("profile", $val[1]);
-            }
-            if (isset($val[2])) {
-               $this->displayActionByName("is_recursive", $val[2]);
-            }
-         }
-      }
-
-      if (isset($output["_ldap_rules"])) {
-         unset($output["_ldap_rules"]);
-      }
-      foreach ($output as $criteria => $value) {
-         if (isset($actions[$criteria])) { // ignore _* fields
-            if (isset($actions[$criteria]['action_type'])) {
-               $actiontype = $actions[$criteria]['action_type'];
-            } else {
-               $actiontype ='';
-            }
+        if (isset($output["_ldap_rules"]["rules_entities"])) {
             echo "<tr class='tab_bg_2'>";
-            echo "<td class='center'>".$actions[$criteria]["name"]."</td>";
-            echo "<td class='center'>".$rule->getActionValue($criteria, $actiontype, $value);
-            echo "</td></tr>\n";
-         }
-      }
-      echo "</tr>";
-   }
+            echo "<td class='center' colspan='4'>" . __('Entities assignment') . "</td>";
+            foreach ($output["_ldap_rules"]["rules_entities"] as $entities) {
+                foreach ($entities as $entity) {
+                    $this->displayActionByName("entity", $entity[0]);
+                    if (isset($entity[1])) {
+                        $this->displayActionByName("recursive", $entity[1]);
+                    }
+                }
+            }
+        }
+
+        if (isset($output["_ldap_rules"]["rules_rights"])) {
+            echo "<tr class='tab_bg_2'>";
+            echo "<td colspan='4' class='center'>" . __('Rights assignment') . "</td>";
+            foreach ($output["_ldap_rules"]["rules_rights"] as $val) {
+                $this->displayActionByName("profile", $val[0]);
+            }
+        }
+
+        if (isset($output["_ldap_rules"]["rules_entities_rights"])) {
+            echo "<tr class='tab_bg_2'>";
+            echo "<td colspan='4' class='center'>" . __('Rights and entities assignment') . "</td>";
+            foreach ($output["_ldap_rules"]["rules_entities_rights"] as $val) {
+                if (is_array($val[0])) {
+                    foreach ($val[0] as $tmp) {
+                        $this->displayActionByName("entity", $tmp);
+                    }
+                } else {
+                    $this->displayActionByName("entity", $val[0]);
+                }
+                if (isset($val[1])) {
+                    $this->displayActionByName("profile", $val[1]);
+                }
+                if (isset($val[2])) {
+                    $this->displayActionByName("is_recursive", $val[2]);
+                }
+            }
+        }
+
+        if (isset($output["_ldap_rules"])) {
+            unset($output["_ldap_rules"]);
+        }
+        foreach ($output as $criteria => $value) {
+            if (isset($actions[$criteria])) { // ignore _* fields
+                if (isset($actions[$criteria]['action_type'])) {
+                    $actiontype = $actions[$criteria]['action_type'];
+                } else {
+                    $actiontype = '';
+                }
+                echo "<tr class='tab_bg_2'>";
+                echo "<td class='center'>" . $actions[$criteria]["name"] . "</td>";
+                echo "<td class='center'>" . $rule->getActionValue($criteria, $actiontype, $value);
+                echo "</td></tr>\n";
+            }
+        }
+        echo "</tr>";
+    }
 
 
    /**
@@ -143,27 +148,28 @@ class RuleRightCollection extends RuleCollection {
     * @param $name   action name
     * @param $value  default value
    **/
-   function displayActionByName($name, $value) {
+    public function displayActionByName($name, $value)
+    {
 
-      echo "<tr class='tab_bg_2'>";
-      switch ($name) {
-         case "entity" :
-            echo "<td class='center'>".Entity::getTypeName(1)." </td>\n";
-            echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities", $value)."</td>";
-            break;
+        echo "<tr class='tab_bg_2'>";
+        switch ($name) {
+            case "entity":
+                echo "<td class='center'>" . Entity::getTypeName(1) . " </td>\n";
+                echo "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $value) . "</td>";
+                break;
 
-         case "profile" :
-            echo "<td class='center'>"._n('Profile', 'Profiles', Session::getPluralNumber())." </td>\n";
-            echo "<td class='center'>".Dropdown::getDropdownName("glpi_profiles", $value)."</td>";
-            break;
+            case "profile":
+                echo "<td class='center'>" . _n('Profile', 'Profiles', Session::getPluralNumber()) . " </td>\n";
+                echo "<td class='center'>" . Dropdown::getDropdownName("glpi_profiles", $value) . "</td>";
+                break;
 
-         case "is_recursive" :
-            echo "<td class='center'>".__('Recursive')." </td>\n";
-            echo "<td class='center'>".Dropdown::getYesNo($value)."</td>";
-            break;
-      }
-      echo "</tr>";
-   }
+            case "is_recursive":
+                echo "<td class='center'>" . __('Recursive') . " </td>\n";
+                echo "<td class='center'>" . Dropdown::getYesNo($value) . "</td>";
+                break;
+        }
+        echo "</tr>";
+    }
 
 
    /**
@@ -171,11 +177,12 @@ class RuleRightCollection extends RuleCollection {
     *
     * @see RuleCollection::getFieldsToLookFor()
    **/
-   function getFieldsToLookFor() {
-      global $DB;
+    public function getFieldsToLookFor()
+    {
+        global $DB;
 
-      $params = [];
-      $iterator = $DB->request([
+        $params = [];
+        $iterator = $DB->request([
          'SELECT'          => 'value',
          'DISTINCT'        => true,
          'FROM'            => 'glpi_rulerightparameters',
@@ -194,16 +201,16 @@ class RuleRightCollection extends RuleCollection {
             ]
          ],
          'WHERE'           => ['glpi_rules.sub_type' => 'RuleRight']
-      ]);
+        ]);
 
-      foreach ($iterator as $param) {
-         //Dn is alwsays retreived from ldap : don't need to ask for it !
-         if ($param["value"] != "dn") {
-            $params[] = Toolbox::strtolower($param["value"]);
-         }
-      }
-      return $params;
-   }
+        foreach ($iterator as $param) {
+            //Dn is alwsays retreived from ldap : don't need to ask for it !
+            if ($param["value"] != "dn") {
+                $params[] = Toolbox::strtolower($param["value"]);
+            }
+        }
+        return $params;
+    }
 
 
    /**
@@ -216,90 +223,95 @@ class RuleRightCollection extends RuleCollection {
     *
     * @return an array of attributes
    **/
-   function prepareInputDataForProcess($input, $params) {
-      $groups = [];
-      if (isset($input) && is_array($input)) {
-         $groups = $input;
-      }
+    public function prepareInputDataForProcess($input, $params)
+    {
+        $groups = [];
+        if (isset($input) && is_array($input)) {
+            $groups = $input;
+        }
 
-      //common parameters
-      $rule_parameters = [
+       //common parameters
+        $rule_parameters = [
          'TYPE'       => $params["type"] ?? "",
          'LOGIN'      => $params["login"] ?? "",
          'MAIL_EMAIL' => $params["email"] ?? $params["mail_email"] ?? "",
          '_groups_id' => $groups
-      ];
+        ];
 
-      //IMAP/POP login method
-      if ($params["type"] == Auth::MAIL) {
-         $rule_parameters["MAIL_SERVER"] = $params["mail_server"] ?? "";
-      }
+       //IMAP/POP login method
+        if ($params["type"] == Auth::MAIL) {
+            $rule_parameters["MAIL_SERVER"] = $params["mail_server"] ?? "";
+        }
 
-      //LDAP type method
-      if ($params["type"] == Auth::LDAP) {
-         //Get all the field to retrieve to be able to process rule matching
-         $rule_fields = $this->getFieldsToLookFor();
+       //LDAP type method
+        if ($params["type"] == Auth::LDAP) {
+           //Get all the field to retrieve to be able to process rule matching
+            $rule_fields = $this->getFieldsToLookFor();
 
-         //Get all the datas we need from ldap to process the rules
-         $sz         = @ldap_read($params["connection"], $params["userdn"], "objectClass=*",
-                                  $rule_fields);
-         $rule_input = AuthLDAP::get_entries_clean($params["connection"], $sz);
+           //Get all the datas we need from ldap to process the rules
+            $sz         = @ldap_read(
+                $params["connection"],
+                $params["userdn"],
+                "objectClass=*",
+                $rule_fields
+            );
+            $rule_input = AuthLDAP::get_entries_clean($params["connection"], $sz);
 
-         if (count($rule_input)) {
-            $rule_input = $rule_input[0];
-            //Get all the ldap fields
-            $fields = $this->getFieldsForQuery();
-            foreach ($fields as $field) {
-               switch (Toolbox::strtoupper($field)) {
-                  case "LDAP_SERVER" :
-                     $rule_parameters["LDAP_SERVER"] = $params["ldap_server"];
-                     break;
+            if (count($rule_input)) {
+                $rule_input = $rule_input[0];
+                //Get all the ldap fields
+                $fields = $this->getFieldsForQuery();
+                foreach ($fields as $field) {
+                    switch (Toolbox::strtoupper($field)) {
+                        case "LDAP_SERVER":
+                            $rule_parameters["LDAP_SERVER"] = $params["ldap_server"];
+                            break;
 
-                  default : // ldap criteria (added by user)
-                     if (isset($rule_input[$field])) {
-                        if (!is_array($rule_input[$field])) {
-                           $rule_parameters[$field] = $rule_input[$field];
-                        } else {
-                           if (count($rule_input[$field])) {
-                              foreach ($rule_input[$field] as $key => $val) {
-                                 if ($key !== 'count') {
-                                    $rule_parameters[$field][] = $val;
-                                 }
-                              }
-                           }
-                        }
-                     }
-               }
+                        default: // ldap criteria (added by user)
+                            if (isset($rule_input[$field])) {
+                                if (!is_array($rule_input[$field])) {
+                                     $rule_parameters[$field] = $rule_input[$field];
+                                } else {
+                                    if (count($rule_input[$field])) {
+                                        foreach ($rule_input[$field] as $key => $val) {
+                                            if ($key !== 'count') {
+                                                $rule_parameters[$field][] = $val;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                    }
+                }
+                return $rule_parameters;
             }
-            return $rule_parameters;
-         }
-         return $rule_input;
-      }
+            return $rule_input;
+        }
 
-      return $rule_parameters;
-   }
+        return $rule_parameters;
+    }
 
 
    /**
     * Get the list of fields to be retreived to process rules
    **/
-   function getFieldsForQuery() {
+    public function getFieldsForQuery()
+    {
 
-      $rule      = new RuleRight();
-      $criterias = $rule->getCriterias();
+        $rule      = new RuleRight();
+        $criterias = $rule->getCriterias();
 
-      $fields = [];
-      foreach ($criterias as $criteria) {
-         if (!is_array($criteria)) {
-            continue;
-         }
-         if (isset($criteria['virtual']) && $criteria['virtual']) {
-            $fields[] = $criteria['id'];
-         } else {
-            $fields[] = $criteria['field'];
-         }
-      }
-      return $fields;
-   }
-
+        $fields = [];
+        foreach ($criterias as $criteria) {
+            if (!is_array($criteria)) {
+                continue;
+            }
+            if (isset($criteria['virtual']) && $criteria['virtual']) {
+                $fields[] = $criteria['id'];
+            } else {
+                $fields[] = $criteria['field'];
+            }
+        }
+        return $fields;
+    }
 }

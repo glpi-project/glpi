@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,118 +36,126 @@
  *
  * @return bool for success (will die for most error)
 **/
-function update0800to0801() {
-   global $DB, $migration;
+function update0800to0801()
+{
+    global $DB, $migration;
 
-   $updateresult     = true;
-   $ADDTODISPLAYPREF = [];
+    $updateresult     = true;
+    $ADDTODISPLAYPREF = [];
 
    //TRANS: %s is the number of new version
-   $migration->displayTitle(sprintf(__('Update to %s'), '0.80.1'));
-   $migration->setVersion('0.80.1');
+    $migration->displayTitle(sprintf(__('Update to %s'), '0.80.1'));
+    $migration->setVersion('0.80.1');
 
    // Clean duplicates
-   $query = "SELECT COUNT(*) AS CPT, `tickets_id`, `type`, `groups_id`
+    $query = "SELECT COUNT(*) AS CPT, `tickets_id`, `type`, `groups_id`
              FROM `glpi_groups_tickets`
              GROUP BY `tickets_id`, `type`, `groups_id`
              HAVING CPT > 1";
-   if ($result=$DB->query($query)) {
-      if ($DB->numrows($result)>0) {
-         while ($data=$DB->fetchArray($result)) {
-            // Skip first
-            $query = "SELECT `id`
+    if ($result = $DB->query($query)) {
+        if ($DB->numrows($result) > 0) {
+            while ($data = $DB->fetchArray($result)) {
+                // Skip first
+                $query = "SELECT `id`
                       FROM `glpi_groups_tickets`
-                      WHERE `tickets_id` = '".$data['tickets_id']."'
-                            AND `type` = '".$data['type']."'
-                            AND `groups_id` = '".$data['groups_id']."'
+                      WHERE `tickets_id` = '" . $data['tickets_id'] . "'
+                            AND `type` = '" . $data['type'] . "'
+                            AND `groups_id` = '" . $data['groups_id'] . "'
                       ORDER BY `id` DESC
                       LIMIT 1,99999";
-            if ($result2=$DB->query($query)) {
-               if ($DB->numrows($result2)) {
-                  while ($data2=$DB->fetchArray($result2)) {
-                     $query = "DELETE
+                if ($result2 = $DB->query($query)) {
+                    if ($DB->numrows($result2)) {
+                        while ($data2 = $DB->fetchArray($result2)) {
+                            $query = "DELETE
                                FROM `glpi_groups_tickets`
-                               WHERE `id` ='".$data2['id']."'";
-                     $DB->queryOrDie($query, "0.80.1 clean to update glpi_groups_tickets");
-                  }
-               }
+                               WHERE `id` ='" . $data2['id'] . "'";
+                            $DB->queryOrDie($query, "0.80.1 clean to update glpi_groups_tickets");
+                        }
+                    }
+                }
             }
-         }
-      }
-   }
-   $migration->dropKey('glpi_groups_tickets', 'unicity');
-   $migration->migrationOneTable('glpi_groups_tickets');
-   $migration->addKey("glpi_groups_tickets", ['tickets_id', 'type','groups_id'],
-                      "unicity", "UNIQUE");
+        }
+    }
+    $migration->dropKey('glpi_groups_tickets', 'unicity');
+    $migration->migrationOneTable('glpi_groups_tickets');
+    $migration->addKey(
+        "glpi_groups_tickets",
+        ['tickets_id', 'type','groups_id'],
+        "unicity",
+        "UNIQUE"
+    );
 
    // Clean duplicates
-   $query = "SELECT COUNT(*) AS CPT, `tickets_id`, `type`, `users_id`, `alternative_email`
+    $query = "SELECT COUNT(*) AS CPT, `tickets_id`, `type`, `users_id`, `alternative_email`
              FROM `glpi_tickets_users`
              GROUP BY `tickets_id`, `type`, `users_id`, `alternative_email`
              HAVING CPT > 1";
-   if ($result=$DB->query($query)) {
-      if ($DB->numrows($result)>0) {
-         while ($data=$DB->fetchArray($result)) {
-            // Skip first
-            $query = "SELECT `id`
+    if ($result = $DB->query($query)) {
+        if ($DB->numrows($result) > 0) {
+            while ($data = $DB->fetchArray($result)) {
+                // Skip first
+                $query = "SELECT `id`
                       FROM `glpi_tickets_users`
-                      WHERE `tickets_id` = '".$data['tickets_id']."'
-                            AND `type` = '".$data['type']."'
-                            AND `users_id` = '".$data['users_id']."'
-                            AND `alternative_email` = '".$data['alternative_email']."'
+                      WHERE `tickets_id` = '" . $data['tickets_id'] . "'
+                            AND `type` = '" . $data['type'] . "'
+                            AND `users_id` = '" . $data['users_id'] . "'
+                            AND `alternative_email` = '" . $data['alternative_email'] . "'
                       ORDER BY `id` DESC
                       LIMIT 1,99999";
-            if ($result2=$DB->query($query)) {
-               if ($DB->numrows($result2)) {
-                  while ($data2=$DB->fetchArray($result2)) {
-                     $query = "DELETE
+                if ($result2 = $DB->query($query)) {
+                    if ($DB->numrows($result2)) {
+                        while ($data2 = $DB->fetchArray($result2)) {
+                            $query = "DELETE
                                FROM `glpi_tickets_users`
-                               WHERE `id` ='".$data2['id']."'";
-                     $DB->queryOrDie($query, "0.80.1 clean to update glpi_tickets_users");
-                  }
-               }
+                               WHERE `id` ='" . $data2['id'] . "'";
+                            $DB->queryOrDie($query, "0.80.1 clean to update glpi_tickets_users");
+                        }
+                    }
+                }
             }
-         }
-      }
-   }
-   $migration->dropKey('glpi_tickets_users', 'tickets_id');
-   $migration->migrationOneTable('glpi_tickets_users');
-   $migration->addKey("glpi_tickets_users",
-                      ['tickets_id', 'type','users_id','alternative_email'],
-                      "unicity", "UNIQUE");
+        }
+    }
+    $migration->dropKey('glpi_tickets_users', 'tickets_id');
+    $migration->migrationOneTable('glpi_tickets_users');
+    $migration->addKey(
+        "glpi_tickets_users",
+        ['tickets_id', 'type','users_id','alternative_email'],
+        "unicity",
+        "UNIQUE"
+    );
 
-   $migration->addField("glpi_ocsservers", "ocs_version", "VARCHAR( 255 ) NULL");
+    $migration->addField("glpi_ocsservers", "ocs_version", "VARCHAR( 255 ) NULL");
 
-   if ($migration->addField("glpi_slalevels", "entities_id", "INT NOT NULL DEFAULT 0")) {
-      $migration->addField("glpi_slalevels", "is_recursive", "TINYINT NOT NULL DEFAULT 0");
-      $migration->migrationOneTable('glpi_slalevels');
+    if ($migration->addField("glpi_slalevels", "entities_id", "INT NOT NULL DEFAULT 0")) {
+        $migration->addField("glpi_slalevels", "is_recursive", "TINYINT NOT NULL DEFAULT 0");
+        $migration->migrationOneTable('glpi_slalevels');
 
-      $entities    = getAllDataFromTable('glpi_entities');
-      $entities[0] = "Root";
+        $entities    = getAllDataFromTable('glpi_entities');
+        $entities[0] = "Root";
 
-      foreach (array_keys($entities) as $entID) {
-         // Non recursive ones
-         $query3 = "UPDATE `glpi_slalevels`
+        foreach (array_keys($entities) as $entID) {
+           // Non recursive ones
+            $query3 = "UPDATE `glpi_slalevels`
                     SET `entities_id` = $entID, `is_recursive` = 0
                     WHERE `slas_id` IN (SELECT `id`
                                         FROM `glpi_slas`
                                         WHERE `entities_id` = $entID
                                               AND `is_recursive` = 0)";
-         $DB->queryOrDie($query3, "0.80.1 update entities_id and is_recursive=0 in glpi_slalevels");
+            $DB->queryOrDie($query3, "0.80.1 update entities_id and is_recursive=0 in glpi_slalevels");
 
-         // Recursive ones
-         $query3 = "UPDATE `glpi_slalevels`
+           // Recursive ones
+            $query3 = "UPDATE `glpi_slalevels`
                     SET `entities_id` = $entID, `is_recursive` = 1
                     WHERE `slas_id` IN (SELECT `id`
                                         FROM `glpi_slas`
                                         WHERE `entities_id` = $entID
                                               AND `is_recursive` = 1)";
-         $DB->queryOrDie($query3, "0.80.1 update entities_id and is_recursive=1 in glpi_slalevels");
-      }
-   }
+            $DB->queryOrDie($query3, "0.80.1 update entities_id and is_recursive=1 in glpi_slalevels");
+        }
+    }
 
    // must always be at the end
-   $migration->executeMigration();
+    $migration->executeMigration();
 
-   return $updateresult;
+    return $updateresult;
 }

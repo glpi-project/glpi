@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,13 +31,13 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 if (!isset($_GET['itemtype']) || !class_exists($_GET['itemtype'])) {
-   throw new \RuntimeException(
-      'Missing or incorrect device type called!'
-   );
+    throw new \RuntimeException(
+        'Missing or incorrect device type called!'
+    );
 }
 
-$dropdown = new $_GET['itemtype'];
-include (GLPI_ROOT . "/front/dropdown.common.form.php");
+$dropdown = new $_GET['itemtype']();
+include(GLPI_ROOT . "/front/dropdown.common.form.php");

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,73 +33,93 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight('database', READ);
 
 if (empty($_GET["id"])) {
-   $_GET["id"] = "";
+    $_GET["id"] = "";
 }
 if (!isset($_GET['databaseinstances_id'])) {
-   $_GET['databaseinstances_id'] = '';
+    $_GET['databaseinstances_id'] = '';
 }
 
 $database = new Database();
 
 if (isset($_POST["add"])) {
-   $database->check(-1, CREATE, $_POST);
+    $database->check(-1, CREATE, $_POST);
 
-   if ($newID = $database->add($_POST)) {
-      Event::log($newID, "database", 4, "management",
-                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
-      if ($_SESSION['glpibackcreated']) {
-         Html::redirect($database->getLinkURL());
-      }
-   }
-   Html::back();
-
+    if ($newID = $database->add($_POST)) {
+        Event::log(
+            $newID,
+            "database",
+            4,
+            "management",
+            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
+        );
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($database->getLinkURL());
+        }
+    }
+    Html::back();
 } else if (isset($_POST["delete"])) {
-   $database->check($_POST["id"], DELETE);
-   $database->delete($_POST);
+    $database->check($_POST["id"], DELETE);
+    $database->delete($_POST);
 
-   Event::log($_POST["id"], "database", 4, "management",
-              //TRANS: %s is the user login
-              sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
-   $database->redirectToList();
-
+    Event::log(
+        $_POST["id"],
+        "database",
+        4,
+        "management",
+        //TRANS: %s is the user login
+        sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
+    );
+    $database->redirectToList();
 } else if (isset($_POST["restore"])) {
-   $database->check($_POST["id"], DELETE);
+    $database->check($_POST["id"], DELETE);
 
-   $database->restore($_POST);
-   Event::log($_POST["id"], "database", 4, "management",
-              //TRANS: %s is the user login
-              sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
-   $database->redirectToList();
-
+    $database->restore($_POST);
+    Event::log(
+        $_POST["id"],
+        "database",
+        4,
+        "management",
+        //TRANS: %s is the user login
+        sprintf(__('%s restores an item'), $_SESSION["glpiname"])
+    );
+    $database->redirectToList();
 } else if (isset($_POST["purge"])) {
-   $database->check($_POST["id"], PURGE);
+    $database->check($_POST["id"], PURGE);
 
-   $database->delete($_POST, 1);
-   Event::log($_POST["id"], "database", 4, "management",
-              //TRANS: %s is the user login
-              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
-   $database->redirectToList();
-
+    $database->delete($_POST, 1);
+    Event::log(
+        $_POST["id"],
+        "database",
+        4,
+        "management",
+        //TRANS: %s is the user login
+        sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+    );
+    $database->redirectToList();
 } else if (isset($_POST["update"])) {
-   $database->check($_POST["id"], UPDATE);
+    $database->check($_POST["id"], UPDATE);
 
-   $database->update($_POST);
-   Event::log($_POST["id"], "database", 4, "management",
-              //TRANS: %s is the user login
-              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
-   Html::back();
-
+    $database->update($_POST);
+    Event::log(
+        $_POST["id"],
+        "database",
+        4,
+        "management",
+        //TRANS: %s is the user login
+        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+    );
+    Html::back();
 } else {
-   Html::header(Database::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "database");
-   $options = [
+    Html::header(Database::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "database");
+    $options = [
       'id'           => $_GET['id'],
       'databaseinstances_id' => $_GET['databaseinstances_id']
-   ];
-   $database->display($options);
-   Html::footer();
+    ];
+    $database->display($options);
+    Html::footer();
 }

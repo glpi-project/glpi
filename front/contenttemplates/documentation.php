@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../../inc/includes.php');
+include('../../inc/includes.php');
 
 use Glpi\ContentTemplates\TemplateManager;
 use Glpi\Http\Response;
@@ -39,7 +40,7 @@ use Michelf\MarkdownExtra;
 // Check mandatory parameter
 $preset = $_GET['preset'] ?? null;
 if (is_null($preset)) {
-   Response::sendError(400, "Missing mandatory 'preset' parameter", Response::CONTENT_TYPE_TEXT_HTML);
+    Response::sendError(400, "Missing mandatory 'preset' parameter", Response::CONTENT_TYPE_TEXT_HTML);
 }
 
 echo Html::includeHeader(__("Template variables documentation"));
@@ -49,8 +50,8 @@ echo "<div class='documentation documentation-large'>";
 
 // Parse markdown
 $md = new MarkdownExtra();
-$md->header_id_func = function($headerName) {
-   return Toolbox::slugify($headerName, '');
+$md->header_id_func = function ($headerName) {
+    return Toolbox::slugify($headerName, '');
 };
 echo $md->transform(TemplateManager::generateMarkdownDocumentation($preset));
 

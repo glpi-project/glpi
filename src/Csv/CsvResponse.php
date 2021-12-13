@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -41,11 +42,12 @@ class CsvResponse
     *
     * @param ExportToCsvInterface $export
     */
-   public static function output(ExportToCsvInterface $export): void {
-      $csv = Writer::createFromString('');
-      $csv->setDelimiter($_SESSION["glpicsv_delimiter"] ?? ";");
-      $csv->insertOne($export->getFileHeader());
-      $csv->insertAll($export->getFileContent());
-      $csv->output($export->getFileName());
-   }
+    public static function output(ExportToCsvInterface $export): void
+    {
+        $csv = Writer::createFromString('');
+        $csv->setDelimiter($_SESSION["glpicsv_delimiter"] ?? ";");
+        $csv->insertOne($export->getFileHeader());
+        $csv->insertAll($export->getFileContent());
+        $csv->output($export->getFileName());
+    }
 }

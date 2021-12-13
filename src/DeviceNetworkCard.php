@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,13 +34,15 @@
 /**
  * DeviceNetworkCard Class
 **/
-class DeviceNetworkCard extends CommonDevice {
+class DeviceNetworkCard extends CommonDevice
+{
 
-   static protected $forward_entity_to = ['Item_DeviceNetworkCard', 'Infocom'];
+    protected static $forward_entity_to = ['Item_DeviceNetworkCard', 'Infocom'];
 
-   static function getTypeName($nb = 0) {
-      return _n('Network card', 'Network cards', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Network card', 'Network cards', $nb);
+    }
 
 
    /**
@@ -47,19 +50,22 @@ class DeviceNetworkCard extends CommonDevice {
     *
     * @since 0.84
    **/
-   function getImportCriteria() {
+    public function getImportCriteria()
+    {
 
-      return [
+        return [
          'designation' => 'equal',
          'bandwidth' => 'equal',
-      ];
-   }
+        ];
+    }
 
 
-   function getAdditionalFields() {
+    public function getAdditionalFields()
+    {
 
-      return array_merge(parent::getAdditionalFields(),
-                         [['name'  => 'mac_default',
+        return array_merge(
+            parent::getAdditionalFields(),
+            [['name'  => 'mac_default',
                                      'label' => __('MAC address by default'),
                                      'type'  => 'text'],
                                ['name'  => 'bandwidth',
@@ -69,120 +75,141 @@ class DeviceNetworkCard extends CommonDevice {
                                      'label' => _n('Model', 'Models', 1),
                                      'type'  => 'dropdownValue'],
                                ['name'  => 'none',
-                                     'label' => RegisteredID::getTypeName(Session::getPluralNumber()).
-                                        RegisteredID::showAddChildButtonForItemForm($this,
-                                                                                    '_registeredID',
-                                                                                    null, false),
-                                     'type'  => 'registeredIDChooser']]);
-   }
+                                     'label' => RegisteredID::getTypeName(Session::getPluralNumber()) .
+                                        RegisteredID::showAddChildButtonForItemForm(
+                                            $this,
+                                            '_registeredID',
+                                            null,
+                                            false
+                                        ),
+            'type'  => 'registeredIDChooser']]
+        );
+    }
 
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '11',
          'table'              => $this->getTable(),
          'field'              => 'mac_default',
          'name'               => __('MAC address by default'),
          'datatype'           => 'mac',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '12',
          'table'              => $this->getTable(),
          'field'              => 'bandwidth',
          'name'               => __('Flow'),
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '13',
          'table'              => 'glpi_devicenetworkcardmodels',
          'field'              => 'name',
          'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      return $tab;
-   }
-
-
-   static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super = null,
-                                      HTMLTableHeader $father = null, array $options = []) {
-
-      $column_name = __CLASS__;
-
-      if (isset($options['dont_display'][$column_name])) {
-         return;
-      }
-
-      if (in_array($itemtype, NetworkPort::getNetworkPortInstantiations())) {
-         $base->addHeader($column_name, __('Interface'), $super, $father);
-      } else {
-         $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
-         if ($column == $father) {
-            return $father;
-         }
-         Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-         $base->addHeader('devicenetworkcard_bandwidth', __('Flow'), $super, $father);
-      }
-   }
+        return $tab;
+    }
 
 
-   static function getHTMLTableCellsForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
-                                            HTMLTableCell $father = null, array $options = []) {
+    public static function getHTMLTableHeader(
+        $itemtype,
+        HTMLTableBase $base,
+        HTMLTableSuperHeader $super = null,
+        HTMLTableHeader $father = null,
+        array $options = []
+    ) {
 
-      $column_name = __CLASS__;
+        $column_name = __CLASS__;
 
-      if (isset($options['dont_display'][$column_name])) {
-         return;
-      }
-
-      if (empty($item)) {
-         if (empty($father)) {
+        if (isset($options['dont_display'][$column_name])) {
             return;
-         }
-         $item = $father->getItem();
-      }
+        }
 
-      if (in_array($item->getType(), NetworkPort::getNetworkPortInstantiations())) {
-         $link = new Item_DeviceNetworkCard();
-         if ($link->getFromDB($item->fields['items_devicenetworkcards_id'])) {
-            $device = $link->getOnePeer(1);
-            if ($device) {
-               $row->addCell($row->getHeaderByName($column_name), $device->getLink(), $father);
+        if (in_array($itemtype, NetworkPort::getNetworkPortInstantiations())) {
+            $base->addHeader($column_name, __('Interface'), $super, $father);
+        } else {
+            $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
+            if ($column == $father) {
+                return $father;
             }
-         }
-      }
-   }
+            Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+            $base->addHeader('devicenetworkcard_bandwidth', __('Flow'), $super, $father);
+        }
+    }
 
 
-   function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
-                                    HTMLTableCell $father = null, array $options = []) {
+    public static function getHTMLTableCellsForItem(
+        HTMLTableRow $row = null,
+        CommonDBTM $item = null,
+        HTMLTableCell $father = null,
+        array $options = []
+    ) {
 
-      $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
+        $column_name = __CLASS__;
 
-      if ($column == $father) {
-         return $father;
-      }
+        if (isset($options['dont_display'][$column_name])) {
+            return;
+        }
 
-      switch ($item->getType()) {
-         case 'Computer' :
-            Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
-            if ($this->fields["bandwidth"]) {
-               $row->addCell($row->getHeaderByName('devicenetworkcard_bandwidth'),
-                             $this->fields["bandwidth"], $father);
+        if (empty($item)) {
+            if (empty($father)) {
+                return;
             }
-            break;
-      }
-   }
+            $item = $father->getItem();
+        }
 
-   public static function rawSearchOptionsToAdd($itemtype, $main_joinparams) {
-      $tab = [];
+        if (in_array($item->getType(), NetworkPort::getNetworkPortInstantiations())) {
+            $link = new Item_DeviceNetworkCard();
+            if ($link->getFromDB($item->fields['items_devicenetworkcards_id'])) {
+                $device = $link->getOnePeer(1);
+                if ($device) {
+                    $row->addCell($row->getHeaderByName($column_name), $device->getLink(), $father);
+                }
+            }
+        }
+    }
 
-      $tab[] = [
+
+    public function getHTMLTableCellForItem(
+        HTMLTableRow $row = null,
+        CommonDBTM $item = null,
+        HTMLTableCell $father = null,
+        array $options = []
+    ) {
+
+        $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
+
+        if ($column == $father) {
+            return $father;
+        }
+
+        switch ($item->getType()) {
+            case 'Computer':
+                Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
+                if ($this->fields["bandwidth"]) {
+                    $row->addCell(
+                        $row->getHeaderByName('devicenetworkcard_bandwidth'),
+                        $this->fields["bandwidth"],
+                        $father
+                    );
+                }
+                break;
+        }
+    }
+
+    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
+    {
+        $tab = [];
+
+        $tab[] = [
          'id'                 => '112',
          'table'              => 'glpi_devicenetworkcards',
          'field'              => 'designation',
@@ -196,9 +223,9 @@ class DeviceNetworkCard extends CommonDevice {
                'joinparams'         => $main_joinparams
             ]
          ]
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '113',
          'table'              => 'glpi_items_devicenetworkcards',
          'field'              => 'mac',
@@ -207,13 +234,14 @@ class DeviceNetworkCard extends CommonDevice {
          'massiveaction'      => false,
          'datatype'           => 'string',
          'joinparams'         => $main_joinparams
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
 
-   static function getIcon() {
-      return "fas fa-network-wired";
-   }
+    public static function getIcon()
+    {
+        return "fas fa-network-wired";
+    }
 }

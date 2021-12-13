@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,19 +31,19 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleDictionnaryDropdown extends Rule {
+class RuleDictionnaryDropdown extends Rule
+{
 
    // From Rule
-   public $can_sort      = true;
+    public $can_sort      = true;
 
-   static $rightname     = 'rule_dictionnary_dropdown';
+    public static $rightname     = 'rule_dictionnary_dropdown';
 
    /**
     * @see Rule::maxActionsCount()
    **/
-   function maxActionsCount() {
-      return 1;
-   }
-
-
+    public function maxActionsCount()
+    {
+        return 1;
+    }
 }

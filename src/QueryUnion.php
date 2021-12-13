@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,9 +34,10 @@
 /**
  * UNION query class
 **/
-class QueryUnion extends AbstractQuery {
-   private $queries = [];
-   private $distinct = false;
+class QueryUnion extends AbstractQuery
+{
+    private $queries = [];
+    private $distinct = false;
 
    /**
     * Create a sub query
@@ -47,14 +49,15 @@ class QueryUnion extends AbstractQuery {
     *                          huge cost on queries performances.
     * @param string  $alias    Union ALIAS. Defaults to null.
     */
-   public function __construct(array $queries = [], $distinct = false, $alias = null) {
-      parent::__construct($alias);
-      $this->distinct = $distinct;
+    public function __construct(array $queries = [], $distinct = false, $alias = null)
+    {
+        parent::__construct($alias);
+        $this->distinct = $distinct;
 
-      foreach ($queries as $query) {
-         $this->addQuery($query);
-      }
-   }
+        foreach ($queries as $query) {
+            $this->addQuery($query);
+        }
+    }
 
    /**
     * Add a query
@@ -62,12 +65,13 @@ class QueryUnion extends AbstractQuery {
     * @param QuerySubQuery|array $query Either a SubQuery object
     *                                   or an array of criteria to build it.
     */
-   public function addQuery($query) {
-      if (!$query instanceof \QuerySubQuery) {
-         $query = new \QuerySubQuery($query);
-      }
-      $this->queries[] = $query;
-   }
+    public function addQuery($query)
+    {
+        if (!$query instanceof \QuerySubQuery) {
+            $query = new \QuerySubQuery($query);
+        }
+        $this->queries[] = $query;
+    }
 
 
    /**
@@ -75,9 +79,10 @@ class QueryUnion extends AbstractQuery {
     *
     * @return array
     */
-   public function getQueries() {
-      return $this->queries;
-   }
+    public function getQueries()
+    {
+        return $this->queries;
+    }
 
    /**
     *
@@ -85,29 +90,31 @@ class QueryUnion extends AbstractQuery {
     *
     * @return string
     */
-   public function getQuery() {
-      $union_queries = $this->getQueries();
-      if (empty($union_queries
-      )) {
-         throw new \RuntimeException('Cannot build an empty union query');
-      }
+    public function getQuery()
+    {
+        $union_queries = $this->getQueries();
+        if (
+            empty($union_queries)
+        ) {
+            throw new \RuntimeException('Cannot build an empty union query');
+        }
 
-      $queries = [];
-      foreach ($union_queries as $uquery) {
-         $queries[] = $uquery->getQuery();
-      }
+        $queries = [];
+        foreach ($union_queries as $uquery) {
+            $queries[] = $uquery->getQuery();
+        }
 
-      $keyword = 'UNION';
-      if (!$this->distinct) {
-         $keyword .= ' ALL';
-      }
-      $query = '(' . implode(" $keyword ", $queries) . ')';
+        $keyword = 'UNION';
+        if (!$this->distinct) {
+            $keyword .= ' ALL';
+        }
+        $query = '(' . implode(" $keyword ", $queries) . ')';
 
-      $alias = $this->alias !== null
+        $alias = $this->alias !== null
          ? $this->alias
          : 'union_' . md5($query);
-      $query .= ' AS ' . DBmysql::quoteName($alias);
+        $query .= ' AS ' . DBmysql::quoteName($alias);
 
-      return $query;
-   }
+        return $query;
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -40,14 +41,15 @@ use Toolbox;
 /**
  * Clonable objects
  **/
-trait Clonable {
+trait Clonable
+{
 
    /**
     * Get relations class to clone along with current element.
     *
     * @return CommonDBTM::class[]
     */
-   abstract public function getCloneRelations() :array;
+    abstract public function getCloneRelations(): array;
 
    /**
     * Clean input used to clone.
@@ -58,22 +60,23 @@ trait Clonable {
     *
     * @since 10.0.0
     */
-   private function cleanCloneInput(array $input): array {
-      $properties_to_clean = [
+    private function cleanCloneInput(array $input): array
+    {
+        $properties_to_clean = [
          'id',
          'date_mod',
          'date_creation',
          'template_name',
          'is_template'
-      ];
-      foreach ($properties_to_clean as $property) {
-         if (array_key_exists($property, $input)) {
-            unset($input[$property]);
-         }
-      }
+        ];
+        foreach ($properties_to_clean as $property) {
+            if (array_key_exists($property, $input)) {
+                unset($input[$property]);
+            }
+        }
 
-      return $input;
-   }
+        return $input;
+    }
 
    /**
     * Clone the item's relations.
@@ -85,34 +88,35 @@ trait Clonable {
     *
     * @since 10.0.0
     */
-   private function cloneRelations(CommonDBTM $source, bool $history): void {
-      $clone_relations = $this->getCloneRelations();
-      foreach ($clone_relations as $classname) {
-         $override_input = [];
+    private function cloneRelations(CommonDBTM $source, bool $history): void
+    {
+        $clone_relations = $this->getCloneRelations();
+        foreach ($clone_relations as $classname) {
+            $override_input = [];
 
-         if (!is_a($classname, CommonDBConnexity::class, true)) {
-            trigger_error(
-               sprintf(
-                  'Unable to clone elements of class %s as it does not extends "CommonDBConnexity"',
-                  $classname
-               ),
-               E_USER_WARNING
-            );
-            continue;
-         }
+            if (!is_a($classname, CommonDBConnexity::class, true)) {
+                trigger_error(
+                    sprintf(
+                        'Unable to clone elements of class %s as it does not extends "CommonDBConnexity"',
+                        $classname
+                    ),
+                    E_USER_WARNING
+                );
+                continue;
+            }
 
-         $override_input[$classname::getItemField($this->getType())] = $this->getID();
+            $override_input[$classname::getItemField($this->getType())] = $this->getID();
 
-         // Force entity / recursivity based on cloned parent, with fallback on session values
-         $override_input['entities_id'] = $this->isEntityAssign() ? $this->getEntityID() : Session::getActiveEntity();
-         $override_input['is_recursive'] = $this->maybeRecursive() ? $this->isRecursive() : Session::getIsActiveEntityRecursive();
+           // Force entity / recursivity based on cloned parent, with fallback on session values
+            $override_input['entities_id'] = $this->isEntityAssign() ? $this->getEntityID() : Session::getActiveEntity();
+            $override_input['is_recursive'] = $this->maybeRecursive() ? $this->isRecursive() : Session::getIsActiveEntityRecursive();
 
-         $relation_items = $classname::getItemsAssociatedTo($this->getType(), $source->getID());
-         foreach ($relation_items as $relation_item) {
-            $relation_item->clone($override_input, $history);
-         }
-      }
-   }
+            $relation_items = $classname::getItemsAssociatedTo($this->getType(), $source->getID());
+            foreach ($relation_items as $relation_item) {
+                $relation_item->clone($override_input, $history);
+            }
+        }
+    }
 
    /**
     * Prepare input datas for cloning the item.
@@ -124,9 +128,10 @@ trait Clonable {
     *
     * @return array the modified $input array
     */
-   public function prepareInputForClone($input) {
-      return $input;
-   }
+    public function prepareInputForClone($input)
+    {
+        return $input;
+    }
 
    /**
     * Clones the current item
@@ -138,30 +143,31 @@ trait Clonable {
     *
     * @return integer The new ID of the clone (or false if fail)
     */
-   public function clone(array $override_input = [], bool $history = true) {
-      global $DB;
+    public function clone(array $override_input = [], bool $history = true)
+    {
+        global $DB;
 
-      if ($DB->isSlave()) {
-         return false;
-      }
-      $new_item = new static();
-      $input = Toolbox::addslashes_deep($this->fields);
-      foreach ($override_input as $key => $value) {
-         $input[$key] = $value;
-      }
-      $input = $new_item->cleanCloneInput($input);
-      $input = $new_item->prepareInputForClone($input);
+        if ($DB->isSlave()) {
+            return false;
+        }
+        $new_item = new static();
+        $input = Toolbox::addslashes_deep($this->fields);
+        foreach ($override_input as $key => $value) {
+            $input[$key] = $value;
+        }
+        $input = $new_item->cleanCloneInput($input);
+        $input = $new_item->prepareInputForClone($input);
 
-      $input['clone'] = true;
-      $newID = $new_item->add($input, [], $history);
+        $input['clone'] = true;
+        $newID = $new_item->add($input, [], $history);
 
-      if ($newID !== false) {
-         $new_item->cloneRelations($this, $history);
-         $new_item->post_clone($this, $history);
-      }
+        if ($newID !== false) {
+            $new_item->cloneRelations($this, $history);
+            $new_item->post_clone($this, $history);
+        }
 
-      return $newID;
-   }
+        return $newID;
+    }
 
    /**
     * Post clone logic.
@@ -170,6 +176,7 @@ trait Clonable {
     * @param $source
     * @param $history
     */
-   public function post_clone($source, $history) {
-   }
+    public function post_clone($source, $history)
+    {
+    }
 }

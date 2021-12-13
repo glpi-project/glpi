@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,43 +36,46 @@ use Glpi\Application\View\TemplateRenderer;
 /**
  * @since 9.4.0
  */
-class ITILFollowup  extends CommonDBChild {
+class ITILFollowup extends CommonDBChild
+{
 
    // From CommonDBTM
-   public $auto_message_on_action = false;
-   static $rightname              = 'followup';
-   private $item                  = null;
+    public $auto_message_on_action = false;
+    public static $rightname              = 'followup';
+    private $item                  = null;
 
-   static public $log_history_add    = Log::HISTORY_LOG_SIMPLE_MESSAGE;
-   static public $log_history_update = Log::HISTORY_LOG_SIMPLE_MESSAGE;
-   static public $log_history_delete = Log::HISTORY_LOG_SIMPLE_MESSAGE;
+    public static $log_history_add    = Log::HISTORY_LOG_SIMPLE_MESSAGE;
+    public static $log_history_update = Log::HISTORY_LOG_SIMPLE_MESSAGE;
+    public static $log_history_delete = Log::HISTORY_LOG_SIMPLE_MESSAGE;
 
-   const SEEPUBLIC       =    1;
-   const UPDATEMY        =    2;
-   const ADDMYTICKET     =    4;
-   const UPDATEALL       = 1024;
-   const ADDGROUPTICKET  = 2048;
-   const ADDALLTICKET    = 4096;
-   const SEEPRIVATE      = 8192;
+    const SEEPUBLIC       =    1;
+    const UPDATEMY        =    2;
+    const ADDMYTICKET     =    4;
+    const UPDATEALL       = 1024;
+    const ADDGROUPTICKET  = 2048;
+    const ADDALLTICKET    = 4096;
+    const SEEPRIVATE      = 8192;
 
    /**
     * Right allowing the user to add a follow-up as soon as he is an observer of an ITIL object.
     * @var integer
     */
-   const ADD_AS_OBSERVER = 16384;
+    const ADD_AS_OBSERVER = 16384;
 
-   static public $itemtype = 'itemtype';
-   static public $items_id = 'items_id';
-
-
-   function getItilObjectItemType() {
-      return str_replace('Followup', '', $this->getType());
-   }
+    public static $itemtype = 'itemtype';
+    public static $items_id = 'items_id';
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Followup', 'Followups', $nb);
-   }
+    public function getItilObjectItemType()
+    {
+        return str_replace('Followup', '', $this->getType());
+    }
+
+
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Followup', 'Followups', $nb);
+    }
 
 
    /**
@@ -79,569 +83,633 @@ class ITILFollowup  extends CommonDBChild {
     *
     * @return boolean
     */
-   function canReadITILItem() {
+    public function canReadITILItem()
+    {
 
-      $itemtype = $this->getItilObjectItemType();
-      $item     = new $itemtype();
-      if (!$item->can($this->getField($item->getForeignKeyField()), READ)) {
-         return false;
-      }
-      return true;
-   }
+        $itemtype = $this->getItilObjectItemType();
+        $item     = new $itemtype();
+        if (!$item->can($this->getField($item->getForeignKeyField()), READ)) {
+            return false;
+        }
+        return true;
+    }
 
 
-   static function canView() {
-      return (Session::haveRightsOr(self::$rightname, [self::SEEPUBLIC, self::SEEPRIVATE])
+    public static function canView()
+    {
+        return (Session::haveRightsOr(self::$rightname, [self::SEEPUBLIC, self::SEEPRIVATE])
               || Session::haveRight('ticket', Ticket::OWN))
               || Session::haveRight('ticket', READ)
               || Session::haveRight('change', READ)
               || Session::haveRight('problem', READ);
-   }
+    }
 
 
-   static function canCreate() {
-      return Session::haveRight('change', UPDATE)
+    public static function canCreate()
+    {
+        return Session::haveRight('change', UPDATE)
              || Session::haveRight('problem', UPDATE)
-             || (Session::haveRightsOr(self::$rightname,
-                    [self::ADDALLTICKET, self::ADDMYTICKET, self::ADDGROUPTICKET])
+             || (Session::haveRightsOr(
+                 self::$rightname,
+                 [self::ADDALLTICKET, self::ADDMYTICKET, self::ADDGROUPTICKET]
+             )
              || Session::haveRight('ticket', Ticket::OWN));
-   }
+    }
 
 
-   function canViewItem() {
+    public function canViewItem()
+    {
 
-      $itilobject = new $this->fields['itemtype'];
-      if (!$itilobject->can($this->getField('items_id'), READ)) {
-         return false;
-      }
-      if (Session::haveRight(self::$rightname, self::SEEPRIVATE)) {
-         return true;
-      }
-      if (!$this->fields['is_private']
-          && Session::haveRight(self::$rightname, self::SEEPUBLIC)) {
-         return true;
-      }
-      if ($itilobject instanceof Ticket) {
-         if ($this->fields["users_id"] === Session::getLoginUserID()) {
-            return true;
-         }
-      } else {
-         return Session::haveRight($itilobject::$rightname, READ);
-      }
-      return false;
-   }
-
-
-   function canCreateItem() {
-      if (!isset($this->fields['itemtype'])
-          || strlen($this->fields['itemtype']) == 0) {
-         return false;
-      }
-
-      $itilobject = new $this->fields['itemtype'];
-
-      if (!$itilobject->can($this->getField('items_id'), READ)
-         // No validation for closed tickets
-         || in_array($itilobject->fields['status'], $itilobject->getClosedStatusArray())
-         && !$itilobject->canReopen()
-      ) {
-         return false;
-      }
-      return $itilobject->canAddFollowups();
-   }
-
-
-   function canPurgeItem() {
-
-      $itilobject = new $this->fields['itemtype'];
-      if (!$itilobject->can($this->getField('items_id'), READ)) {
-         return false;
-      }
-
-      if (Session::haveRight(self::$rightname, PURGE)) {
-         return true;
-      }
-
-      return false;
-   }
-
-
-   function canUpdateItem() {
-
-      if (($this->fields["users_id"] != Session::getLoginUserID())
-          && !Session::haveRight(self::$rightname, self::UPDATEALL)) {
-         return false;
-      }
-
-      $itilobject = new $this->fields['itemtype'];
-      if (!$itilobject->can($this->getField('items_id'), READ)) {
-         return false;
-      }
-
-      if ($this->fields["users_id"] === Session::getLoginUserID()) {
-         if (!Session::haveRight(self::$rightname, self::UPDATEMY)) {
+        $itilobject = new $this->fields['itemtype']();
+        if (!$itilobject->can($this->getField('items_id'), READ)) {
             return false;
-         }
-         return true;
-      }
+        }
+        if (Session::haveRight(self::$rightname, self::SEEPRIVATE)) {
+            return true;
+        }
+        if (
+            !$this->fields['is_private']
+            && Session::haveRight(self::$rightname, self::SEEPUBLIC)
+        ) {
+            return true;
+        }
+        if ($itilobject instanceof Ticket) {
+            if ($this->fields["users_id"] === Session::getLoginUserID()) {
+                return true;
+            }
+        } else {
+            return Session::haveRight($itilobject::$rightname, READ);
+        }
+        return false;
+    }
 
-      // Only the technician
-      return (Session::haveRight(self::$rightname, self::UPDATEALL)
+
+    public function canCreateItem()
+    {
+        if (
+            !isset($this->fields['itemtype'])
+            || strlen($this->fields['itemtype']) == 0
+        ) {
+            return false;
+        }
+
+        $itilobject = new $this->fields['itemtype']();
+
+        if (
+            !$itilobject->can($this->getField('items_id'), READ)
+            // No validation for closed tickets
+            || in_array($itilobject->fields['status'], $itilobject->getClosedStatusArray())
+            && !$itilobject->canReopen()
+        ) {
+            return false;
+        }
+        return $itilobject->canAddFollowups();
+    }
+
+
+    public function canPurgeItem()
+    {
+
+        $itilobject = new $this->fields['itemtype']();
+        if (!$itilobject->can($this->getField('items_id'), READ)) {
+            return false;
+        }
+
+        if (Session::haveRight(self::$rightname, PURGE)) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    public function canUpdateItem()
+    {
+
+        if (
+            ($this->fields["users_id"] != Session::getLoginUserID())
+            && !Session::haveRight(self::$rightname, self::UPDATEALL)
+        ) {
+            return false;
+        }
+
+        $itilobject = new $this->fields['itemtype']();
+        if (!$itilobject->can($this->getField('items_id'), READ)) {
+            return false;
+        }
+
+        if ($this->fields["users_id"] === Session::getLoginUserID()) {
+            if (!Session::haveRight(self::$rightname, self::UPDATEMY)) {
+                return false;
+            }
+            return true;
+        }
+
+       // Only the technician
+        return (Session::haveRight(self::$rightname, self::UPDATEALL)
               || $itilobject->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && $itilobject->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
-   }
+    }
 
 
-   function post_getEmpty() {
+    public function post_getEmpty()
+    {
 
-      if (isset($_SESSION['glpifollowup_private']) && $_SESSION['glpifollowup_private']) {
-         $this->fields['is_private'] = 1;
-      }
+        if (isset($_SESSION['glpifollowup_private']) && $_SESSION['glpifollowup_private']) {
+            $this->fields['is_private'] = 1;
+        }
 
-      if (isset($_SESSION["glpiname"])) {
-         $this->fields['requesttypes_id'] = RequestType::getDefault('followup');
-      }
-   }
+        if (isset($_SESSION["glpiname"])) {
+            $this->fields['requesttypes_id'] = RequestType::getDefault('followup');
+        }
+    }
 
 
-   function post_addItem() {
+    public function post_addItem()
+    {
 
-      global $CFG_GLPI;
+        global $CFG_GLPI;
 
-      // Add screenshots if needed, without notification
-      $this->input = $this->addFiles($this->input, [
+       // Add screenshots if needed, without notification
+        $this->input = $this->addFiles($this->input, [
          'force_update'  => true,
          'name'          => 'content',
          'content_field' => 'content',
          'date' => $this->fields['date'],
-      ]);
+        ]);
 
-      // Add documents if needed, without notification
-      $this->input = $this->addFiles($this->input, [
+       // Add documents if needed, without notification
+        $this->input = $this->addFiles($this->input, [
          'force_update'  => true,
          'date' => $this->fields['date'],
-      ]);
+        ]);
 
-      $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
+        $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
 
-      // Check if stats should be computed after this change
-      $no_stat = isset($this->input['_do_not_compute_takeintoaccount']);
+       // Check if stats should be computed after this change
+        $no_stat = isset($this->input['_do_not_compute_takeintoaccount']);
 
-      $parentitem = $this->input['_job'];
-      $parentitem->updateDateMod(
-         $this->input["items_id"],
-         $no_stat,
-         $this->input["users_id"]
-      );
+        $parentitem = $this->input['_job'];
+        $parentitem->updateDateMod(
+            $this->input["items_id"],
+            $no_stat,
+            $this->input["users_id"]
+        );
 
-      // Set pending reason data on parent and self
-      if ($this->input['pending'] ?? 0) {
-         PendingReason_Item::createForItem($parentitem, [
-            'pendingreasons_id'           => $this->input['pendingreasons_id'] ?? 0,
-            'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
-            'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
-         ]);
-         PendingReason_Item::createForItem($this, [
-            'pendingreasons_id'           => $this->input['pendingreasons_id'] ?? 0,
-            'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
-            'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
-         ]);
-      }
+       // Set pending reason data on parent and self
+        if ($this->input['pending'] ?? 0) {
+            PendingReason_Item::createForItem($parentitem, [
+              'pendingreasons_id'           => $this->input['pendingreasons_id'] ?? 0,
+              'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
+              'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
+            ]);
+            PendingReason_Item::createForItem($this, [
+              'pendingreasons_id'           => $this->input['pendingreasons_id'] ?? 0,
+              'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
+              'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
+            ]);
+        }
 
-      if (isset($this->input["_close"])
-          && $this->input["_close"]
-          && ($parentitem->fields["status"] == CommonITILObject::SOLVED)) {
-
-         $update = [
+        if (
+            isset($this->input["_close"])
+            && $this->input["_close"]
+            && ($parentitem->fields["status"] == CommonITILObject::SOLVED)
+        ) {
+            $update = [
             'id'        => $parentitem->fields['id'],
             'status'    => CommonITILObject::CLOSED,
             'closedate' => $_SESSION["glpi_currenttime"],
             '_accepted' => true,
-         ];
+            ];
 
-         // Use update method for history
-         $this->input["_job"]->update($update);
-         $donotif = false; // Done for ITILObject update (new status)
-      }
+           // Use update method for history
+            $this->input["_job"]->update($update);
+            $donotif = false; // Done for ITILObject update (new status)
+        }
 
-      // Set parent status to pending
-      if ($this->input['pending'] ?? 0) {
-         $this->input['_status'] = CommonITILObject::WAITING;
-      }
+       // Set parent status to pending
+        if ($this->input['pending'] ?? 0) {
+            $this->input['_status'] = CommonITILObject::WAITING;
+        }
 
-      //manage reopening of ITILObject
-      $reopened = false;
-      if (!isset($this->input['_status'])) {
-         $this->input['_status'] = $parentitem->fields["status"];
-      }
-      // if reopen set (from followup form or mailcollector)
-      // and status is reopenable and not changed in form
-      $is_set_pending = $this->input['pending'] ?? 0;
-      if (isset($this->input["_reopen"])
-          && $this->input["_reopen"]
-          && in_array($parentitem->fields["status"], $parentitem::getReopenableStatusArray())
-          && $this->input['_status'] == $parentitem->fields["status"]
-          && !$is_set_pending
-      ) {
-
-         $needupdateparent = false;
-         if (($parentitem->countUsers(CommonITILActor::ASSIGN) > 0)
-             || ($parentitem->countGroups(CommonITILActor::ASSIGN) > 0)
-             || ($parentitem->countSuppliers(CommonITILActor::ASSIGN) > 0)) {
-
-            //check if lifecycle allowed new status
-            if (Session::isCron()
-                || Session::getCurrentInterface() == "helpdesk"
-                || $parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::ASSIGNED)) {
-               $needupdateparent = true;
-               $update['status'] = CommonITILObject::ASSIGNED;
+       //manage reopening of ITILObject
+        $reopened = false;
+        if (!isset($this->input['_status'])) {
+            $this->input['_status'] = $parentitem->fields["status"];
+        }
+       // if reopen set (from followup form or mailcollector)
+       // and status is reopenable and not changed in form
+        $is_set_pending = $this->input['pending'] ?? 0;
+        if (
+            isset($this->input["_reopen"])
+            && $this->input["_reopen"]
+            && in_array($parentitem->fields["status"], $parentitem::getReopenableStatusArray())
+            && $this->input['_status'] == $parentitem->fields["status"]
+            && !$is_set_pending
+        ) {
+            $needupdateparent = false;
+            if (
+                ($parentitem->countUsers(CommonITILActor::ASSIGN) > 0)
+                || ($parentitem->countGroups(CommonITILActor::ASSIGN) > 0)
+                || ($parentitem->countSuppliers(CommonITILActor::ASSIGN) > 0)
+            ) {
+               //check if lifecycle allowed new status
+                if (
+                    Session::isCron()
+                    || Session::getCurrentInterface() == "helpdesk"
+                    || $parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::ASSIGNED)
+                ) {
+                    $needupdateparent = true;
+                    $update['status'] = CommonITILObject::ASSIGNED;
+                }
+            } else {
+               //check if lifecycle allowed new status
+                if (
+                    Session::isCron()
+                    || Session::getCurrentInterface() == "helpdesk"
+                    || $parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::INCOMING)
+                ) {
+                    $needupdateparent = true;
+                    $update['status'] = CommonITILObject::INCOMING;
+                }
             }
-         } else {
-            //check if lifecycle allowed new status
-            if (Session::isCron()
-                || Session::getCurrentInterface() == "helpdesk"
-                || $parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::INCOMING)) {
-               $needupdateparent = true;
-               $update['status'] = CommonITILObject::INCOMING;
+
+            if ($needupdateparent) {
+                $update['id'] = $parentitem->fields['id'];
+
+               // Use update method for history
+                $parentitem->update($update);
+                $reopened     = true;
             }
-         }
+        }
 
-         if ($needupdateparent) {
-            $update['id'] = $parentitem->fields['id'];
+       //change ITILObject status only if imput change
+        if (
+            !$reopened
+            && $this->input['_status'] != $parentitem->fields['status']
+        ) {
+            $update['status'] = $this->input['_status'];
+            $update['id']     = $parentitem->fields['id'];
 
-            // Use update method for history
+           // don't notify on ITILObject - update event
+            $update['_disablenotif'] = true;
+
+           // Use update method for history
             $parentitem->update($update);
-            $reopened     = true;
-         }
+        }
 
-      }
-
-      //change ITILObject status only if imput change
-      if (!$reopened
-          && $this->input['_status'] != $parentitem->fields['status']) {
-
-         $update['status'] = $this->input['_status'];
-         $update['id']     = $parentitem->fields['id'];
-
-         // don't notify on ITILObject - update event
-         $update['_disablenotif'] = true;
-
-         // Use update method for history
-         $parentitem->update($update);
-      }
-
-      if ($donotif) {
-         $options = ['followup_id' => $this->fields["id"],
+        if ($donotif) {
+            $options = ['followup_id' => $this->fields["id"],
                           'is_private'  => $this->fields['is_private']];
-         NotificationEvent::raiseEvent("add_followup", $parentitem, $options);
-      }
+            NotificationEvent::raiseEvent("add_followup", $parentitem, $options);
+        }
 
-      // Add log entry in the ITILObject
-      $changes = [
+       // Add log entry in the ITILObject
+        $changes = [
          0,
          '',
          $this->fields['id'],
-      ];
-      Log::history($this->getField('items_id'), get_class($parentitem), $changes, $this->getType(),
-                   Log::HISTORY_ADD_SUBITEM);
+        ];
+        Log::history(
+            $this->getField('items_id'),
+            get_class($parentitem),
+            $changes,
+            $this->getType(),
+            Log::HISTORY_ADD_SUBITEM
+        );
 
-      parent::post_addItem();
-   }
+        parent::post_addItem();
+    }
 
 
-   function post_deleteFromDB() {
-      global $CFG_GLPI;
+    public function post_deleteFromDB()
+    {
+        global $CFG_GLPI;
 
-      $donotif = $CFG_GLPI["use_notifications"];
-      if (isset($this->input['_disablenotif'])) {
-         $donotif = false;
-      }
+        $donotif = $CFG_GLPI["use_notifications"];
+        if (isset($this->input['_disablenotif'])) {
+            $donotif = false;
+        }
 
-      $job = new $this->fields['itemtype'];
-      $job->getFromDB($this->fields[self::$items_id]);
-      $job->updateDateMod($this->fields[self::$items_id]);
+        $job = new $this->fields['itemtype']();
+        $job->getFromDB($this->fields[self::$items_id]);
+        $job->updateDateMod($this->fields[self::$items_id]);
 
-      // Add log entry in the ITIL Object
-      $changes = [
+       // Add log entry in the ITIL Object
+        $changes = [
          0,
          '',
          $this->fields['id'],
-      ];
-      Log::history($this->getField(self::$items_id), $this->fields['itemtype'], $changes, $this->getType(),
-                   Log::HISTORY_DELETE_SUBITEM);
+        ];
+        Log::history(
+            $this->getField(self::$items_id),
+            $this->fields['itemtype'],
+            $changes,
+            $this->getType(),
+            Log::HISTORY_DELETE_SUBITEM
+        );
 
-      if ($donotif) {
-         $options = ['followup_id' => $this->fields["id"],
+        if ($donotif) {
+            $options = ['followup_id' => $this->fields["id"],
                            // Force is_private with data / not available
                           'is_private'  => $this->fields['is_private']];
-         NotificationEvent::raiseEvent('delete_followup', $job, $options);
-      }
-   }
+            NotificationEvent::raiseEvent('delete_followup', $job, $options);
+        }
+    }
 
 
-   function prepareInputForAdd($input) {
-      $input["_job"] = new $input['itemtype']();
+    public function prepareInputForAdd($input)
+    {
+        $input["_job"] = new $input['itemtype']();
 
-      if (empty($input['content'])
-          && !isset($input['add_close'])
-          && !isset($input['add_reopen'])) {
-         Session::addMessageAfterRedirect(__("You can't add a followup without description"),
-                                          false, ERROR);
-         return false;
-      }
-      if (!$input["_job"]->getFromDB($input["items_id"])) {
-         return false;
-      }
-
-      $input['_close'] = 0;
-
-      if (!isset($input["users_id"])) {
-         $input["users_id"] = 0;
-         if ($uid = Session::getLoginUserID()) {
-            $input["users_id"] = $uid;
-         }
-      }
-      // if ($input["_isadmin"] && $input["_type"]!="update") {
-      if (isset($input["add_close"])) {
-         $input['_close'] = 1;
-         if (empty($input['content'])) {
-            $input['content'] = __('Solution approved');
-         }
-      }
-
-      unset($input["add_close"]);
-
-      if (!isset($input["is_private"])) {
-         $input['is_private'] = 0;
-      }
-
-      if (isset($input["add_reopen"])) {
-         if ($input["content"] == '') {
-            if (isset($input["_add"])) {
-               // Reopen using add form
-               Session::addMessageAfterRedirect(__('If you want to reopen this item, you must specify a reason'),
-                                                false, ERROR);
-            } else {
-               // Refuse solution
-               Session::addMessageAfterRedirect(__('If you reject the solution, you must specify a reason'),
-                                                false, ERROR);
-            }
+        if (
+            empty($input['content'])
+            && !isset($input['add_close'])
+            && !isset($input['add_reopen'])
+        ) {
+            Session::addMessageAfterRedirect(
+                __("You can't add a followup without description"),
+                false,
+                ERROR
+            );
             return false;
-         }
-         $input['_reopen'] = 1;
-      }
-      unset($input["add_reopen"]);
-      // }
-      unset($input["add"]);
+        }
+        if (!$input["_job"]->getFromDB($input["items_id"])) {
+            return false;
+        }
 
-      $itemtype = $input['itemtype'];
+        $input['_close'] = 0;
 
-      // Only calculate timeline_position if not already specified in the input
-      if (!isset($input['timeline_position'])) {
-         $input['timeline_position'] = $itemtype::getTimelinePosition($input["items_id"], $this->getType(), $input["users_id"]);
-      }
+        if (!isset($input["users_id"])) {
+            $input["users_id"] = 0;
+            if ($uid = Session::getLoginUserID()) {
+                $input["users_id"] = $uid;
+            }
+        }
+       // if ($input["_isadmin"] && $input["_type"]!="update") {
+        if (isset($input["add_close"])) {
+            $input['_close'] = 1;
+            if (empty($input['content'])) {
+                $input['content'] = __('Solution approved');
+            }
+        }
 
-      if (!isset($input['date'])) {
-         $input["date"] = $_SESSION["glpi_currenttime"];
-      }
-      return $input;
-   }
+        unset($input["add_close"]);
+
+        if (!isset($input["is_private"])) {
+            $input['is_private'] = 0;
+        }
+
+        if (isset($input["add_reopen"])) {
+            if ($input["content"] == '') {
+                if (isset($input["_add"])) {
+                    // Reopen using add form
+                    Session::addMessageAfterRedirect(
+                        __('If you want to reopen this item, you must specify a reason'),
+                        false,
+                        ERROR
+                    );
+                } else {
+                   // Refuse solution
+                    Session::addMessageAfterRedirect(
+                        __('If you reject the solution, you must specify a reason'),
+                        false,
+                        ERROR
+                    );
+                }
+                return false;
+            }
+            $input['_reopen'] = 1;
+        }
+        unset($input["add_reopen"]);
+       // }
+        unset($input["add"]);
+
+        $itemtype = $input['itemtype'];
+
+       // Only calculate timeline_position if not already specified in the input
+        if (!isset($input['timeline_position'])) {
+            $input['timeline_position'] = $itemtype::getTimelinePosition($input["items_id"], $this->getType(), $input["users_id"]);
+        }
+
+        if (!isset($input['date'])) {
+            $input["date"] = $_SESSION["glpi_currenttime"];
+        }
+        return $input;
+    }
 
 
-   function prepareInputForUpdate($input) {
-      if (!isset($this->fields['itemtype'])) {
-         return false;
-      }
-      $input["_job"] = new $this->fields['itemtype']();
-      if (!$input["_job"]->getFromDB($this->fields["items_id"])) {
-         return false;
-      }
+    public function prepareInputForUpdate($input)
+    {
+        if (!isset($this->fields['itemtype'])) {
+            return false;
+        }
+        $input["_job"] = new $this->fields['itemtype']();
+        if (!$input["_job"]->getFromDB($this->fields["items_id"])) {
+            return false;
+        }
 
-      // update last editor if content change
-      if (($uid = Session::getLoginUserID())
-          && isset($input['content']) && ($input['content'] != $this->fields['content'])) {
-         $input["users_id_editor"] = $uid;
-      }
+       // update last editor if content change
+        if (
+            ($uid = Session::getLoginUserID())
+            && isset($input['content']) && ($input['content'] != $this->fields['content'])
+        ) {
+            $input["users_id_editor"] = $uid;
+        }
 
-      return $input;
-   }
+        return $input;
+    }
 
 
-   function post_updateItem($history = 1) {
-      global $CFG_GLPI;
+    public function post_updateItem($history = 1)
+    {
+        global $CFG_GLPI;
 
-      $job      = new $this->fields['itemtype']();
+        $job      = new $this->fields['itemtype']();
 
-      if (!$job->getFromDB($this->fields['items_id'])) {
-         return;
-      }
+        if (!$job->getFromDB($this->fields['items_id'])) {
+            return;
+        }
 
-      // Add screenshots if needed, without notification
-      $this->input = $this->addFiles($this->input, [
+       // Add screenshots if needed, without notification
+        $this->input = $this->addFiles($this->input, [
          'force_update' => true,
          'name'          => 'content',
          'content_field' => 'content',
-      ]);
+        ]);
 
-      // Add documents if needed, without notification
-      $this->input = $this->addFiles($this->input, [
+       // Add documents if needed, without notification
+        $this->input = $this->addFiles($this->input, [
          'force_update' => true,
-      ]);
+        ]);
 
-      //Get user_id when not logged (from mailgate)
-      $uid = Session::getLoginUserID();
-      if ($uid === false) {
-         if (isset($this->fields['users_id_editor'])) {
-            $uid = $this->fields['users_id_editor'];
-         } else {
-            $uid = $this->fields['users_id'];
-         }
-      }
-      $job->updateDateMod($this->fields['items_id'], false, $uid);
+       //Get user_id when not logged (from mailgate)
+        $uid = Session::getLoginUserID();
+        if ($uid === false) {
+            if (isset($this->fields['users_id_editor'])) {
+                $uid = $this->fields['users_id_editor'];
+            } else {
+                $uid = $this->fields['users_id'];
+            }
+        }
+        $job->updateDateMod($this->fields['items_id'], false, $uid);
 
-      if (count($this->updates)) {
-         if (!isset($this->input['_disablenotif'])
-             && $CFG_GLPI["use_notifications"]
-             && (in_array("content", $this->updates)
-                 || isset($this->input['_need_send_mail']))) {
-            //FIXME: _need_send_mail does not seems to be used
+        if (count($this->updates)) {
+            if (
+                !isset($this->input['_disablenotif'])
+                && $CFG_GLPI["use_notifications"]
+                && (in_array("content", $this->updates)
+                 || isset($this->input['_need_send_mail']))
+            ) {
+                //FIXME: _need_send_mail does not seems to be used
 
-            $options = ['followup_id' => $this->fields["id"],
+                $options = ['followup_id' => $this->fields["id"],
                              'is_private'  => $this->fields['is_private']];
 
-            NotificationEvent::raiseEvent("update_followup", $job, $options);
-         }
-      }
+                NotificationEvent::raiseEvent("update_followup", $job, $options);
+            }
+        }
 
-      $this->input = PendingReason_Item::handleTimelineEdits($this);
+        $this->input = PendingReason_Item::handleTimelineEdits($this);
 
-      // change ITIL Object status (from splitted button)
-      if (isset($this->input['_status'])
-          && ($this->input['_status'] != $this->input['_job']->fields['status'])) {
-          $update = [
+       // change ITIL Object status (from splitted button)
+        if (
+            isset($this->input['_status'])
+            && ($this->input['_status'] != $this->input['_job']->fields['status'])
+        ) {
+            $update = [
              'status'        => $this->input['_status'],
              'id'            => $this->input['_job']->fields['id'],
              '_disablenotif' => true,
-          ];
-          $this->input['_job']->update($update);
-      }
+            ];
+            $this->input['_job']->update($update);
+        }
 
-      // Add log entry in the ITIL Object
-      $changes = [
+       // Add log entry in the ITIL Object
+        $changes = [
          0,
          '',
          $this->fields['id'],
-      ];
-      Log::history($this->getField('items_id'), $this->fields['itemtype'], $changes, $this->getType(),
-                   Log::HISTORY_UPDATE_SUBITEM);
+        ];
+        Log::history(
+            $this->getField('items_id'),
+            $this->fields['itemtype'],
+            $changes,
+            $this->getType(),
+            Log::HISTORY_UPDATE_SUBITEM
+        );
 
-      parent::post_updateItem($history);
-   }
-
-
-   function post_getFromDB() {
-
-      $this->item = new $this->fields['itemtype'];
-      $this->item->getFromDB($this->fields['items_id']);
-   }
+        parent::post_updateItem($history);
+    }
 
 
-   protected function computeFriendlyName() {
+    public function post_getFromDB()
+    {
 
-      if (isset($this->fields['requesttypes_id'])) {
-         if ($this->fields['requesttypes_id']) {
-            return Dropdown::getDropdownName('glpi_requesttypes', $this->fields['requesttypes_id']);
-         }
-         return $this->getTypeName();
-      }
-      return '';
-   }
+        $this->item = new $this->fields['itemtype']();
+        $this->item->getFromDB($this->fields['items_id']);
+    }
 
 
-   function rawSearchOptions() {
+    protected function computeFriendlyName()
+    {
 
-      $tab = [];
+        if (isset($this->fields['requesttypes_id'])) {
+            if ($this->fields['requesttypes_id']) {
+                return Dropdown::getDropdownName('glpi_requesttypes', $this->fields['requesttypes_id']);
+            }
+            return $this->getTypeName();
+        }
+        return '';
+    }
 
-      $tab[] = [
+
+    public function rawSearchOptions()
+    {
+
+        $tab = [];
+
+        $tab[] = [
          'id'                 => 'common',
          'name'               => __('Characteristics')
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '1',
          'table'              => $this->getTable(),
          'field'              => 'content',
          'name'               => __('Description'),
          'datatype'           => 'text'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '2',
          'table'              => 'glpi_requesttypes',
          'field'              => 'name',
          'name'               => RequestType::getTypeName(1),
          'forcegroupby'       => true,
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '3',
          'table'              => $this->getTable(),
          'field'              => 'date',
          'name'               => _n('Date', 'Dates', 1),
          'datatype'           => 'datetime'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '4',
          'table'              => $this->getTable(),
          'field'              => 'is_private',
          'name'               => __('Private'),
          'datatype'           => 'bool'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '5',
          'table'              => 'glpi_users',
          'field'              => 'name',
          'name'               => User::getTypeName(1),
          'datatype'           => 'dropdown',
          'right'              => 'all'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '6',
          'table'              => $this->getTable(),
          'field'              => 'itemtype',
          'name'               => RequestType::getTypeName(1),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
 
-   static function rawSearchOptionsToAdd($itemtype = null) {
+    public static function rawSearchOptionsToAdd($itemtype = null)
+    {
 
-      $tab = [];
+        $tab = [];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => 'followup',
          'name'               => _n('Followup', 'Followups', Session::getPluralNumber())
-      ];
+        ];
 
-      $followup_condition = '';
-      if (!Session::haveRight('followup', self::SEEPRIVATE)) {
-         $followup_condition = [
+        $followup_condition = '';
+        if (!Session::haveRight('followup', self::SEEPRIVATE)) {
+            $followup_condition = [
             'OR' => [
                'NEWTABLE.is_private'   => 0,
                'NEWTABLE.users_id'     => Session::getLoginUserID()
             ]
-         ];
-      }
+            ];
+        }
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '25',
          'table'              => static::getTable(),
          'field'              => 'content',
@@ -655,9 +723,9 @@ class ITILFollowup  extends CommonDBChild {
          ],
          'datatype'           => 'text',
          'htmltext'           => true
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '36',
          'table'              => static::getTable(),
          'field'              => 'date',
@@ -669,9 +737,9 @@ class ITILFollowup  extends CommonDBChild {
             'jointype'           => 'itemtype_item',
             'condition'          => $followup_condition
          ]
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '27',
          'table'              => static::getTable(),
          'field'              => 'id',
@@ -682,11 +750,11 @@ class ITILFollowup  extends CommonDBChild {
          'massiveaction'      => false,
          'joinparams'         => [
             'jointype'           => 'itemtype_item',
-            'condition'          =>$followup_condition
+            'condition'          => $followup_condition
          ]
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '29',
          'table'              => 'glpi_requesttypes',
          'field'              => 'name',
@@ -703,9 +771,9 @@ class ITILFollowup  extends CommonDBChild {
                ]
             ]
          ]
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '91',
          'table'              => static::getTable(),
          'field'              => 'is_private',
@@ -718,9 +786,9 @@ class ITILFollowup  extends CommonDBChild {
             'jointype'           => 'itemtype_item',
             'condition'          => $followup_condition
          ]
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '93',
          'table'              => 'glpi_users',
          'field'              => 'name',
@@ -738,15 +806,16 @@ class ITILFollowup  extends CommonDBChild {
                ]
             ]
          ]
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
 
-   static function getFormURL($full = true) {
-      return Toolbox::getItemTypeFormURL("ITILFollowup", $full);
-   }
+    public static function getFormURL($full = true)
+    {
+        return Toolbox::getItemTypeFormURL("ITILFollowup", $full);
+    }
 
 
    /** form for Followup
@@ -755,127 +824,134 @@ class ITILFollowup  extends CommonDBChild {
     *@param $options array of possible options:
     *     - item Object : the ITILObject parent
    **/
-   function showForm($ID, array $options = []) {
-      if ($this->isNewItem()) {
-         $this->getEmpty();
-      }
+    public function showForm($ID, array $options = [])
+    {
+        if ($this->isNewItem()) {
+            $this->getEmpty();
+        }
 
-      TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_followup.html.twig', [
+        TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_followup.html.twig', [
          'item'      => $options['parent'],
          'subitem'   => $this
-      ]);
-   }
+        ]);
+    }
 
 
-   function getRights($interface = 'central') {
+    public function getRights($interface = 'central')
+    {
 
-      $values = parent::getRights();
-      unset($values[UPDATE], $values[CREATE], $values[READ]);
+        $values = parent::getRights();
+        unset($values[UPDATE], $values[CREATE], $values[READ]);
 
-      if ($interface == 'central') {
-         $values[self::UPDATEALL]      = __('Update all');
-         $values[self::ADDALLTICKET]   = __('Add to all tickets');
-         $values[self::SEEPRIVATE]     = __('See private ones');
-      }
+        if ($interface == 'central') {
+            $values[self::UPDATEALL]      = __('Update all');
+            $values[self::ADDALLTICKET]   = __('Add to all tickets');
+            $values[self::SEEPRIVATE]     = __('See private ones');
+        }
 
-      $values[self::ADDGROUPTICKET]
+        $values[self::ADDGROUPTICKET]
                                  = ['short' => __('Add followup (associated groups)'),
                                          'long'  => __('Add a followup to tickets of associated groups')];
-      $values[self::UPDATEMY]    = __('Update followups (author)');
-      $values[self::ADDMYTICKET] = ['short' => __('Add followup (requester)'),
+        $values[self::UPDATEMY]    = __('Update followups (author)');
+        $values[self::ADDMYTICKET] = ['short' => __('Add followup (requester)'),
                                          'long'  => __('Add a followup to tickets (requester)')];
-      $values[self::ADD_AS_OBSERVER] = ['short' => __('Add followup (watcher)'),
+        $values[self::ADD_AS_OBSERVER] = ['short' => __('Add followup (watcher)'),
                                          'long'  => __('Add a followup to tickets (watcher)')];
-      $values[self::SEEPUBLIC]   = __('See public ones');
+        $values[self::SEEPUBLIC]   = __('See public ones');
 
-      if ($interface == 'helpdesk') {
-         unset($values[PURGE]);
-      }
+        if ($interface == 'helpdesk') {
+            unset($values[PURGE]);
+        }
 
-      return $values;
-   }
+        return $values;
+    }
 
-   static function showMassiveActionAddFollowupForm() {
-      echo "<table class='tab_cadre_fixe'>";
-      echo '<tr><th colspan=4>'.__('Add a new followup').'</th></tr>';
+    public static function showMassiveActionAddFollowupForm()
+    {
+        echo "<table class='tab_cadre_fixe'>";
+        echo '<tr><th colspan=4>' . __('Add a new followup') . '</th></tr>';
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Source of followup')."</td>";
-      echo "<td>";
-      RequestType::dropdown(
-         [
+        echo "<tr class='tab_bg_2'>";
+        echo "<td>" . __('Source of followup') . "</td>";
+        echo "<td>";
+        RequestType::dropdown(
+            [
             'value' => RequestType::getDefault('followup'),
             'condition' => ['is_active' => 1, 'is_itilfollowup' => 1]
-         ]
-      );
-      echo "</td>";
-      echo "</tr>";
+            ]
+        );
+        echo "</td>";
+        echo "</tr>";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Description')."</td>";
-      echo "<td><textarea name='content' cols='50' rows='6'></textarea></td>";
-      echo "</tr>";
+        echo "<tr class='tab_bg_2'>";
+        echo "<td>" . __('Description') . "</td>";
+        echo "<td><textarea name='content' cols='50' rows='6'></textarea></td>";
+        echo "</tr>";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td class='center' colspan='2'>";
-      echo "<input type='hidden' name='is_private' value='".$_SESSION['glpifollowup_private']."'>";
-      echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='btn btn-primary'>";
-      echo "</td>";
-      echo "</tr>";
+        echo "<tr class='tab_bg_2'>";
+        echo "<td class='center' colspan='2'>";
+        echo "<input type='hidden' name='is_private' value='" . $_SESSION['glpifollowup_private'] . "'>";
+        echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
+        echo "</td>";
+        echo "</tr>";
 
-      echo "</table>";
-   }
+        echo "</table>";
+    }
 
-   static function showMassiveActionsSubForm(MassiveAction $ma) {
+    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    {
 
-      switch ($ma->getAction()) {
-         case 'add_followup' :
-            static::showMassiveActionAddFollowupForm();
-            return true;
-      }
+        switch ($ma->getAction()) {
+            case 'add_followup':
+                static::showMassiveActionAddFollowupForm();
+                return true;
+        }
 
-      return parent::showMassiveActionsSubForm($ma);
-   }
+        return parent::showMassiveActionsSubForm($ma);
+    }
 
-   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
-                                                       array $ids) {
-      switch ($ma->getAction()) {
-         case 'add_followup' :
-            $input = $ma->getInput();
-            $fup   = new self();
-            foreach ($ids as $id) {
-               if ($item->getFromDB($id)) {
-                  if (in_array($item->fields['status'], $item->getClosedStatusArray())) {
-                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
-                  } else {
-                     $input2 = [
-                        'items_id'        => $id,
-                        'itemtype'        => $item->getType(),
-                        'is_private'      => $input['is_private'],
-                        'requesttypes_id' => $input['requesttypes_id'],
-                        'content'         => $input['content']
-                     ];
-                     if ($fup->can(-1, CREATE, $input2)) {
-                        if ($fup->add($input2)) {
-                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+    public static function processMassiveActionsForOneItemtype(
+        MassiveAction $ma,
+        CommonDBTM $item,
+        array $ids
+    ) {
+        switch ($ma->getAction()) {
+            case 'add_followup':
+                $input = $ma->getInput();
+                $fup   = new self();
+                foreach ($ids as $id) {
+                    if ($item->getFromDB($id)) {
+                        if (in_array($item->fields['status'], $item->getClosedStatusArray())) {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         } else {
-                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                           $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                            $input2 = [
+                            'items_id'        => $id,
+                            'itemtype'        => $item->getType(),
+                            'is_private'      => $input['is_private'],
+                            'requesttypes_id' => $input['requesttypes_id'],
+                            'content'         => $input['content']
+                            ];
+                            if ($fup->can(-1, CREATE, $input2)) {
+                                if ($fup->add($input2)) {
+                                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                } else {
+                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                    $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                                }
+                            } else {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                                $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            }
                         }
-                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
-                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
-                     }
-                  }
-               } else {
-                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                  $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
-               }
-            }
-      }
-      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
-   }
+                    } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+                    }
+                }
+        }
+        parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+    }
 
    /**
     * Build parent condition for ITILFollowup, used in addDefaultWhere
@@ -889,102 +965,104 @@ class ITILFollowup  extends CommonDBChild {
     *
     * @throws InvalidArgumentException
     */
-   public static function buildParentCondition(
-      $itemtype,
-      $target = "",
-      $user_table = "",
-      $group_table = ""
-   ) {
-      $itilfup_table = static::getTable();
+    public static function buildParentCondition(
+        $itemtype,
+        $target = "",
+        $user_table = "",
+        $group_table = ""
+    ) {
+        $itilfup_table = static::getTable();
 
-      // An ITILFollowup parent can only by a CommonItilObject
-      if (!is_a($itemtype, "CommonITILObject", true)) {
-         throw new \InvalidArgumentException(
-            "'$itemtype' is not a CommonITILObject"
-         );
-      }
+       // An ITILFollowup parent can only by a CommonItilObject
+        if (!is_a($itemtype, "CommonITILObject", true)) {
+            throw new \InvalidArgumentException(
+                "'$itemtype' is not a CommonITILObject"
+            );
+        }
 
-      $rightname = $itemtype::$rightname;
-      // Can see all items, no need to go further
-      if (Session::haveRight($rightname, $itemtype::READALL)) {
-         return "(`$itilfup_table`.`itemtype` = '$itemtype') ";
-      }
+        $rightname = $itemtype::$rightname;
+       // Can see all items, no need to go further
+        if (Session::haveRight($rightname, $itemtype::READALL)) {
+            return "(`$itilfup_table`.`itemtype` = '$itemtype') ";
+        }
 
-      $user   = Session::getLoginUserID();
-      $groups = "'" . implode("','", $_SESSION['glpigroups']) . "'";
-      $table = getTableNameForForeignKeyField(
-         getForeignKeyFieldForItemType($itemtype)
-      );
+        $user   = Session::getLoginUserID();
+        $groups = "'" . implode("','", $_SESSION['glpigroups']) . "'";
+        $table = getTableNameForForeignKeyField(
+            getForeignKeyFieldForItemType($itemtype)
+        );
 
-      // Avoid empty IN ()
-      if ($groups == "''") {
-         $groups = '-1';
-      }
+       // Avoid empty IN ()
+        if ($groups == "''") {
+            $groups = '-1';
+        }
 
-      // We need to do some specific checks for tickets
-      if ($itemtype == "Ticket") {
-         // Default condition
-         $condition = "(`itemtype` = '$itemtype' AND (0 = 1 ";
-         return $condition . Ticket::buildCanViewCondition("items_id") . ")) ";
-      } else {
-         if (Session::haveRight($rightname, $itemtype::READMY)) {
-            // Subquery for affected/assigned/observer user
-            $user_query = "SELECT `$target`
+       // We need to do some specific checks for tickets
+        if ($itemtype == "Ticket") {
+           // Default condition
+            $condition = "(`itemtype` = '$itemtype' AND (0 = 1 ";
+            return $condition . Ticket::buildCanViewCondition("items_id") . ")) ";
+        } else {
+            if (Session::haveRight($rightname, $itemtype::READMY)) {
+               // Subquery for affected/assigned/observer user
+                $user_query = "SELECT `$target`
                FROM `$user_table`
                WHERE `users_id` = '$user'";
 
-            // Subquery for affected/assigned/observer group
-            $group_query = "SELECT `$target`
+               // Subquery for affected/assigned/observer group
+                $group_query = "SELECT `$target`
                FROM `$group_table`
                WHERE `groups_id` IN ($groups)";
 
-            // Subquery for recipient
-            $recipient_query = "SELECT `id`
+               // Subquery for recipient
+                $recipient_query = "SELECT `id`
                FROM `$table`
                WHERE `users_id_recipient` = '$user'";
 
-            return "(
+                return "(
                `$itilfup_table`.`itemtype` = '$itemtype' AND (
                   `$itilfup_table`.`items_id` IN ($user_query) OR
                   `$itilfup_table`.`items_id` IN ($group_query) OR
                   `$itilfup_table`.`items_id` IN ($recipient_query)
                )
             ) ";
-         } else {
-            // Can't see any items
-            return "(`$itilfup_table`.`itemtype` = '$itemtype' AND 0 = 1) ";
-         }
-      }
-   }
+            } else {
+               // Can't see any items
+                return "(`$itilfup_table`.`itemtype` = '$itemtype' AND 0 = 1) ";
+            }
+        }
+    }
 
-   public static function getNameField() {
-      return 'id';
-   }
+    public static function getNameField()
+    {
+        return 'id';
+    }
 
    /**
     * Check if this item author is a support agent
     *
     * @return bool
     */
-   public function isFromSupportAgent() {
-      global $DB;
+    public function isFromSupportAgent()
+    {
+        global $DB;
 
-      // Get parent item
-      $commonITILObject = new $this->fields['itemtype']();
-      $commonITILObject->getFromDB($this->fields['items_id']);
+       // Get parent item
+        $commonITILObject = new $this->fields['itemtype']();
+        $commonITILObject->getFromDB($this->fields['items_id']);
 
-      $actors = $commonITILObject->getITILActors();
-      $user_id = $this->fields['users_id'];
-      $roles = $actors[$user_id] ?? [];
+        $actors = $commonITILObject->getITILActors();
+        $user_id = $this->fields['users_id'];
+        $roles = $actors[$user_id] ?? [];
 
-      if (in_array(CommonITILActor::ASSIGN, $roles)) {
-         // The author is assigned -> support agent
-         return true;
-      } else if (in_array(CommonITILActor::OBSERVER, $roles)) {
-         // The author is an observer or a requester -> can be support agent OR
-         // requester depending on how GLPI is used so we must check the user's
-         // profiles
-         $central_profiles = $DB->request([
+        if (in_array(CommonITILActor::ASSIGN, $roles)) {
+           // The author is assigned -> support agent
+            return true;
+        } else if (in_array(CommonITILActor::OBSERVER, $roles)) {
+           // The author is an observer or a requester -> can be support agent OR
+           // requester depending on how GLPI is used so we must check the user's
+           // profiles
+            $central_profiles = $DB->request([
             'COUNT' => 'total',
             'FROM' => Profile::getTable(),
             'WHERE' => [
@@ -997,21 +1075,21 @@ class ITILFollowup  extends CommonDBChild {
                   ]
                ])
             ]
-         ]);
+            ]);
 
-         // No profiles, let's assume it is a support agent to be safe
-         if (!count($central_profiles)) {
+           // No profiles, let's assume it is a support agent to be safe
+            if (!count($central_profiles)) {
+                return false;
+            }
+
+            return $central_profiles->current()['total'] > 0;
+        } else if (in_array(CommonITILActor::REQUESTER, $roles)) {
+           // The author is a requester -> not from support agent
             return false;
-         }
-
-         return $central_profiles->current()['total'] > 0;
-      } else if (in_array(CommonITILActor::REQUESTER, $roles)) {
-         // The author is a requester -> not from support agent
-         return false;
-      } else {
-         // The author is not an actor of the ticket -> he was most likely a
-         // support agent that is no longer assigned to the ticket
-         return true;
-      }
-   }
+        } else {
+           // The author is not an actor of the ticket -> he was most likely a
+           // support agent that is no longer assigned to the ticket
+            return true;
+        }
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,24 +31,24 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 if (!isset($_GET['itemtype']) || !class_exists($_GET['itemtype'])) {
-   throw new \RuntimeException(
-      'Missing or incorrect item device type called!'
-   );
+    throw new \RuntimeException(
+        'Missing or incorrect item device type called!'
+    );
 }
 
 $itemDevice = new $_GET['itemtype']();
 if (!$itemDevice->canView()) {
-   Session::redirectIfNotLoggedIn();
-   Html::displayRightError();
+    Session::redirectIfNotLoggedIn();
+    Html::displayRightError();
 }
 
 if (in_array($itemDevice->getType(), $CFG_GLPI['devices_in_menu'])) {
-   Html::header($itemDevice->getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", strtolower($itemDevice->getType()));
+    Html::header($itemDevice->getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", strtolower($itemDevice->getType()));
 } else {
-   Html::header($itemDevice->getTypeName(Session::getPluralNumber()), '', "config", "commondevice", $itemDevice->getDeviceType());
+    Html::header($itemDevice->getTypeName(Session::getPluralNumber()), '', "config", "commondevice", $itemDevice->getDeviceType());
 }
 
 Search::show($_GET['itemtype']);

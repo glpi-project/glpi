@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,23 +32,27 @@
  */
 
 /// Class Plug
-class Plug extends CommonDropdown {
+class Plug extends CommonDropdown
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Plug', 'Plugs', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Plug', 'Plugs', $nb);
+    }
 
-   function cleanDBonPurge() {
+    public function cleanDBonPurge()
+    {
 
-      $this->deleteChildrenAndRelationsFromDb(
-         [
+        $this->deleteChildrenAndRelationsFromDb(
+            [
             Pdu_Plug::class,
-         ]
-      );
-   }
+            ]
+        );
+    }
 
-   static function getIcon() {
-      return "ti ti-plug";
-   }
+    public static function getIcon()
+    {
+        return "ti ti-plug";
+    }
 }

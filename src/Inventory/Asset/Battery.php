@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,12 +38,14 @@ use Glpi\Inventory\Conf;
 
 class Battery extends Device
 {
-   public function __construct(CommonDBTM $item, array $data = null) {
-      parent::__construct($item, $data, 'Item_DeviceBattery');
-   }
+    public function __construct(CommonDBTM $item, array $data = null)
+    {
+        parent::__construct($item, $data, 'Item_DeviceBattery');
+    }
 
-   public function prepare() :array {
-      $mapping = [
+    public function prepare(): array
+    {
+        $mapping = [
          'name'         => 'designation',
          'manufacturer' => 'manufacturers_id',
          'serial'       => 'serial',
@@ -50,26 +53,27 @@ class Battery extends Device
          'capacity'     => 'capacity',
          'chemistry'    => 'devicebatterytypes_id',
          'voltage'      => 'voltage'
-      ];
+        ];
 
-      foreach ($this->data as &$val) {
-         foreach ($mapping as $origin => $dest) {
-            if (property_exists($val, $origin)) {
-               $val->$dest = $val->$origin;
+        foreach ($this->data as &$val) {
+            foreach ($mapping as $origin => $dest) {
+                if (property_exists($val, $origin)) {
+                    $val->$dest = $val->$origin;
+                }
             }
-         }
 
-         if (!isset($val->voltage) || $val->voltage == '') {
-            //a numeric value is expected here
-            $val->voltage = 0;
-         }
+            if (!isset($val->voltage) || $val->voltage == '') {
+               //a numeric value is expected here
+                $val->voltage = 0;
+            }
 
-         $val->is_dynamic = 1;
-      }
-      return $this->data;
-   }
+            $val->is_dynamic = 1;
+        }
+        return $this->data;
+    }
 
-   public function checkConf(Conf $conf): bool {
-      return $conf->component_battery == 1;
-   }
+    public function checkConf(Conf $conf): bool
+    {
+        return $conf->component_battery == 1;
+    }
 }

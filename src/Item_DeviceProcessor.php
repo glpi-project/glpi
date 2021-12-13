@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,18 +34,23 @@
 /**
  * Relation between item and devices
 **/
-class Item_DeviceProcessor extends Item_Devices {
+class Item_DeviceProcessor extends Item_Devices
+{
 
-   static public $itemtype_2 = 'DeviceProcessor';
-   static public $items_id_2 = 'deviceprocessors_id';
+    public static $itemtype_2 = 'DeviceProcessor';
+    public static $items_id_2 = 'deviceprocessors_id';
 
-   static protected $notable = false;
+    protected static $notable = false;
 
 
-   static function getSpecificities($specif = '') {
+    public static function getSpecificities($specif = '')
+    {
 
-      return ['frequency' => ['long name'  => sprintf(__('%1$s (%2$s)'), __('Frequency'),
-                                                                __('MHz')),
+        return ['frequency' => ['long name'  => sprintf(
+            __('%1$s (%2$s)'),
+            __('Frequency'),
+            __('MHz')
+        ),
                                         'short name' => __('Frequency'),
                                         'size'       => 10,
                                         'id'         => 20,
@@ -64,6 +70,5 @@ class Item_DeviceProcessor extends Item_Devices {
                                         'id'         => 22,
                    ],
                    'busID'     => parent::getSpecificities('busID')];
-   }
-
+    }
 }

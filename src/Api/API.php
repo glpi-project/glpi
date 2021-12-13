@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -68,19 +69,20 @@ use Ticket;
 use Toolbox;
 use User;
 
-abstract class API {
+abstract class API
+{
 
    // permit writing to $_SESSION
-   protected $session_write = false;
+    protected $session_write = false;
 
-   static $api_url = "";
-   static $content_type = "application/json";
-   protected $format;
-   protected $iptxt         = "";
-   protected $ipnum         = "";
-   protected $app_tokens    = [];
-   protected $apiclients_id = 0;
-   protected $deprecated_item = null;
+    public static $api_url = "";
+    public static $content_type = "application/json";
+    protected $format;
+    protected $iptxt         = "";
+    protected $ipnum         = "";
+    protected $app_tokens    = [];
+    protected $apiclients_id = 0;
+    protected $deprecated_item = null;
 
    /**
     * First function used on api call
@@ -88,14 +90,14 @@ abstract class API {
     *
     * @return void self::returnResponse called for output
     */
-   abstract public function call();
+    abstract public function call();
 
    /**
     * Needed to transform params of called api in $this->parameters attribute
     *
     * @return string endpoint called
     */
-   abstract protected function parseIncomingParams();
+    abstract protected function parseIncomingParams();
 
    /**
     * Generic messages
@@ -108,14 +110,14 @@ abstract class API {
     *
     * @return void
     */
-   abstract protected function returnResponse($response, $httpcode = 200, $additionalheaders = []);
+    abstract protected function returnResponse($response, $httpcode = 200, $additionalheaders = []);
 
    /**
     * Upload and validate files from request and append to $this->parameters['input']
     *
     * @return void
     */
-   abstract protected function manageUploadedFiles();
+    abstract protected function manageUploadedFiles();
 
    /**
     * Constructor
@@ -125,42 +127,43 @@ abstract class API {
     *
     * @return void
     */
-   public function initApi() {
-      global $CFG_GLPI;
+    public function initApi()
+    {
+        global $CFG_GLPI;
 
-      // Load GLPI configuration
-      include_once (GLPI_ROOT . '/inc/includes.php');
-      $variables = get_defined_vars();
-      foreach ($variables as $var => $value) {
-         if ($var === strtoupper($var)) {
-            $GLOBALS[$var] = $value;
-         }
-      }
+       // Load GLPI configuration
+        include_once(GLPI_ROOT . '/inc/includes.php');
+        $variables = get_defined_vars();
+        foreach ($variables as $var => $value) {
+            if ($var === strtoupper($var)) {
+                $GLOBALS[$var] = $value;
+            }
+        }
 
-      // construct api url
-      self::$api_url = trim($CFG_GLPI['url_base_api'], "/");
+       // construct api url
+        self::$api_url = trim($CFG_GLPI['url_base_api'], "/");
 
-      // Don't display error in result
-      ini_set('display_errors', 'Off');
+       // Don't display error in result
+        ini_set('display_errors', 'Off');
 
-      // Avoid keeping messages between api calls
-      $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
+       // Avoid keeping messages between api calls
+        $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
 
-      // check if api is enabled
-      if (!$CFG_GLPI['enable_api']) {
-         $this->returnError(__("API disabled"), "", "", false);
-         exit;
-      }
+       // check if api is enabled
+        if (!$CFG_GLPI['enable_api']) {
+            $this->returnError(__("API disabled"), "", "", false);
+            exit;
+        }
 
-      // retrieve ip of client
-      $this->iptxt = Toolbox::getRemoteIpAddress();
-      $this->ipnum = (strstr($this->iptxt, ':')===false ? ip2long($this->iptxt) : '');
+       // retrieve ip of client
+        $this->iptxt = Toolbox::getRemoteIpAddress();
+        $this->ipnum = (strstr($this->iptxt, ':') === false ? ip2long($this->iptxt) : '');
 
-      // check ip access
-      $apiclient = new APIClient;
-      $where_ip = [];
-      if ($this->ipnum) {
-         $where_ip = [
+       // check ip access
+        $apiclient = new APIClient();
+        $where_ip = [];
+        if ($this->ipnum) {
+            $where_ip = [
             'OR' => [
                'ipv4_range_start' => null,
                [
@@ -168,25 +171,29 @@ abstract class API {
                   'ipv4_range_end'     => ['>=', $this->ipnum]
                ]
             ]
-         ];
-      } else {
-         $where_ip = [
+            ];
+        } else {
+            $where_ip = [
             'OR' => [
                ['ipv6'  => null],
                ['ipv6'  => $this->iptxt]
             ]
-         ];
-      }
-      $found_clients = $apiclient->find(['is_active' => 1] + $where_ip);
-      if (count($found_clients) <= 0) {
-         $this->returnError(__("There isn't an active API client matching your IP address in the configuration").
-                            " (".$this->iptxt.")",
-                            "", "ERROR_NOT_ALLOWED_IP", false);
-      }
-      $app_tokens = array_column($found_clients, 'app_token');
-      $apiclients_id = array_column($found_clients, 'id');
-      $this->app_tokens = array_combine($apiclients_id, $app_tokens);
-   }
+            ];
+        }
+        $found_clients = $apiclient->find(['is_active' => 1] + $where_ip);
+        if (count($found_clients) <= 0) {
+            $this->returnError(
+                __("There isn't an active API client matching your IP address in the configuration") .
+                            " (" . $this->iptxt . ")",
+                "",
+                "ERROR_NOT_ALLOWED_IP",
+                false
+            );
+        }
+        $app_tokens = array_column($found_clients, 'app_token');
+        $apiclients_id = array_column($found_clients, 'id');
+        $this->app_tokens = array_combine($apiclients_id, $app_tokens);
+    }
 
    /**
     * Set headers according to cross origin ressource sharing
@@ -195,27 +202,28 @@ abstract class API {
     *
     * @return void
     */
-   protected function cors($verb = 'GET') {
-      if (isset($_SERVER['HTTP_ORIGIN'])) {
-         header("Access-Control-Allow-Origin: *");
-      }
+    protected function cors($verb = 'GET')
+    {
+        if (isset($_SERVER['HTTP_ORIGIN'])) {
+            header("Access-Control-Allow-Origin: *");
+        }
 
-      if ($this->verb == 'GET' || $this->verb == 'OPTIONS') {
-         header("Access-Control-Expose-Headers: content-type, content-range, accept-range");
-      }
+        if ($this->verb == 'GET' || $this->verb == 'OPTIONS') {
+            header("Access-Control-Expose-Headers: content-type, content-range, accept-range");
+        }
 
-      if ($this->verb == "OPTIONS") {
-         if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
-            header("Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS");
-         }
+        if ($this->verb == "OPTIONS") {
+            if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
+                header("Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS");
+            }
 
-         if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
-            header("Access-Control-Allow-Headers: ".
+            if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
+                header("Access-Control-Allow-Headers: " .
                    "origin, content-type, accept, session-token, authorization");
-         }
-         exit(0);
-      }
-   }
+            }
+            exit(0);
+        }
+    }
 
 
    /**
@@ -228,68 +236,79 @@ abstract class API {
     *
     * @return array with session_token
     */
-   protected function initSession($params = []) {
-      global $CFG_GLPI;
+    protected function initSession($params = [])
+    {
+        global $CFG_GLPI;
 
-      $this->checkAppToken();
-      $this->logEndpointUsage(__FUNCTION__);
+        $this->checkAppToken();
+        $this->logEndpointUsage(__FUNCTION__);
 
-      if ((!isset($params['login'])
-           || empty($params['login'])
-           || !isset($params['password'])
-           || empty($params['password']))
-         && (!isset($params['user_token'])
-             || empty($params['user_token']))) {
-         $this->returnError(__("parameter(s) login, password or user_token are missing"), 400,
-                            "ERROR_LOGIN_PARAMETERS_MISSING");
-      }
+        if (
+            (!isset($params['login'])
+            || empty($params['login'])
+            || !isset($params['password'])
+            || empty($params['password']))
+            && (!isset($params['user_token'])
+             || empty($params['user_token']))
+        ) {
+            $this->returnError(
+                __("parameter(s) login, password or user_token are missing"),
+                400,
+                "ERROR_LOGIN_PARAMETERS_MISSING"
+            );
+        }
 
-      $auth = new Auth();
+        $auth = new Auth();
 
-      // fill missing params (in case of user_token)
-      if (!isset($params['login'])) {
-         $params['login'] = '';
-      }
-      if (!isset($params['password'])) {
-         $params['password'] = '';
-      }
+       // fill missing params (in case of user_token)
+        if (!isset($params['login'])) {
+            $params['login'] = '';
+        }
+        if (!isset($params['password'])) {
+            $params['password'] = '';
+        }
 
-      $noAuto = true;
-      if (isset($params['user_token']) && !empty($params['user_token'])) {
-         $_REQUEST['user_token'] = $params['user_token'];
-         $noAuto = false;
+        $noAuto = true;
+        if (isset($params['user_token']) && !empty($params['user_token'])) {
+            $_REQUEST['user_token'] = $params['user_token'];
+            $noAuto = false;
+        } else if (!$CFG_GLPI['enable_api_login_credentials']) {
+            $this->returnError(
+                __("usage of initSession resource with credentials is disabled"),
+                400,
+                "ERROR_LOGIN_WITH_CREDENTIALS_DISABLED",
+                false
+            );
+        }
 
-      } else if (!$CFG_GLPI['enable_api_login_credentials']) {
-         $this->returnError(__("usage of initSession resource with credentials is disabled"), 400,
-                            "ERROR_LOGIN_WITH_CREDENTIALS_DISABLED", false);
-      }
+        if (!isset($params['auth'])) {
+            $params['auth'] = '';
+        }
 
-      if (!isset($params['auth'])) {
-         $params['auth'] = '';
-      }
+       // login on glpi
+        if (!$auth->login($params['login'], $params['password'], $noAuto, false, $params['auth'])) {
+            $err = Toolbox::stripTags($auth->getErr());
+            if (
+                isset($params['user_token'])
+                && !empty($params['user_token'])
+            ) {
+                return $this->returnError(__("parameter user_token seems invalid"), 401, "ERROR_GLPI_LOGIN_USER_TOKEN", false);
+            }
+            return $this->returnError($err, 401, "ERROR_GLPI_LOGIN", false);
+        }
 
-      // login on glpi
-      if (!$auth->login($params['login'], $params['password'], $noAuto, false, $params['auth'])) {
-         $err = Toolbox::stripTags($auth->getErr());
-         if (isset($params['user_token'])
-             && !empty($params['user_token'])) {
-            return $this->returnError(__("parameter user_token seems invalid"), 401, "ERROR_GLPI_LOGIN_USER_TOKEN", false);
-         }
-         return $this->returnError($err, 401, "ERROR_GLPI_LOGIN", false);
-      }
+       // stop session and return session key
+        session_write_close();
+        $data = ['session_token' => $_SESSION['valid_id']];
 
-      // stop session and return session key
-      session_write_close();
-      $data = ['session_token' => $_SESSION['valid_id']];
+       // Insert session data if requested
+        $get_full_session = $params['get_full_session'] ?? false;
+        if ($get_full_session) {
+            $data['session'] = $_SESSION;
+        }
 
-      // Insert session data if requested
-      $get_full_session = $params['get_full_session'] ?? false;
-      if ($get_full_session) {
-         $data['session'] = $_SESSION;
-      }
-
-      return $data;
-   }
+        return $data;
+    }
 
 
    /**
@@ -298,11 +317,12 @@ abstract class API {
     *
     * @return boolean
     */
-   protected function killSession() {
+    protected function killSession()
+    {
 
-      $this->initEndpoint(false, __FUNCTION__);
-      return Session::destroy();
-   }
+        $this->initEndpoint(false, __FUNCTION__);
+        return Session::destroy();
+    }
 
 
    /**
@@ -311,25 +331,28 @@ abstract class API {
     *
     * @return void
     */
-   protected function retrieveSession() {
+    protected function retrieveSession()
+    {
 
-      if (isset($this->parameters['session_token'])
-          && !empty($this->parameters['session_token'])) {
-         $current = session_id();
-         $session = trim($this->parameters['session_token']);
+        if (
+            isset($this->parameters['session_token'])
+            && !empty($this->parameters['session_token'])
+        ) {
+            $current = session_id();
+            $session = trim($this->parameters['session_token']);
 
-         if (file_exists(GLPI_ROOT . '/inc/downstream.php')) {
-            include_once (GLPI_ROOT . '/inc/downstream.php');
-         }
+            if (file_exists(GLPI_ROOT . '/inc/downstream.php')) {
+                include_once(GLPI_ROOT . '/inc/downstream.php');
+            }
 
-         if ($session!=$current && !empty($current)) {
-            session_destroy();
-         }
-         if ($session!=$current && !empty($session)) {
-            session_id($session);
-         }
-      }
-   }
+            if ($session != $current && !empty($current)) {
+                session_destroy();
+            }
+            if ($session != $current && !empty($session)) {
+                session_id($session);
+            }
+        }
+    }
 
 
    /**
@@ -341,28 +364,29 @@ abstract class API {
     *
     * @return array|bool
     */
-   protected function changeActiveEntities($params = []) {
+    protected function changeActiveEntities($params = [])
+    {
 
-      $this->initEndpoint();
+        $this->initEndpoint();
 
-      if (!isset($params['entities_id'])) {
-         $entities_id = 'all';
-      } else {
-         $entities_id = intval($params['entities_id']);
-      }
+        if (!isset($params['entities_id'])) {
+            $entities_id = 'all';
+        } else {
+            $entities_id = intval($params['entities_id']);
+        }
 
-      if (!isset($params['is_recursive'])) {
-         $params['is_recursive'] = false;
-      } else if (!is_bool($params['is_recursive'])) {
-         return $this->returnError();
-      }
+        if (!isset($params['is_recursive'])) {
+            $params['is_recursive'] = false;
+        } else if (!is_bool($params['is_recursive'])) {
+            return $this->returnError();
+        }
 
-      if (!Session::changeActiveEntities($entities_id, $params['is_recursive'])) {
-         return $this->returnError();
-      }
+        if (!Session::changeActiveEntities($entities_id, $params['is_recursive'])) {
+            return $this->returnError();
+        }
 
-      return true;
-   }
+        return true;
+    }
 
 
    /**
@@ -373,32 +397,37 @@ abstract class API {
     *
     * @return array of entities (with id and name)
     */
-   protected function getMyEntities($params = []) {
+    protected function getMyEntities($params = [])
+    {
 
-      $this->initEndpoint();
+        $this->initEndpoint();
 
-      if (!isset($params['is_recursive'])) {
-         $params['is_recursive'] = false;
-      }
+        if (!isset($params['is_recursive'])) {
+            $params['is_recursive'] = false;
+        }
 
-      $myentities = [];
-      foreach ($_SESSION['glpiactiveprofile']['entities'] as $entity) {
-         if ($entity['is_recursive'] == 1 && $params['is_recursive'] == 1) {
-            $sons = getSonsOf('glpi_entities', $entity['id']);
-            foreach ($sons as $entity_id) {
-               if ($entity_id != $entity['id']) {
-                  $myentities[] = ['id'   => $entity_id,
-                                   'name' => Dropdown::getDropdownName("glpi_entities",
-                                                                       $entity_id)];
-               }
+        $myentities = [];
+        foreach ($_SESSION['glpiactiveprofile']['entities'] as $entity) {
+            if ($entity['is_recursive'] == 1 && $params['is_recursive'] == 1) {
+                $sons = getSonsOf('glpi_entities', $entity['id']);
+                foreach ($sons as $entity_id) {
+                    if ($entity_id != $entity['id']) {
+                        $myentities[] = ['id'   => $entity_id,
+                                   'name' => Dropdown::getDropdownName(
+                                       "glpi_entities",
+                                       $entity_id
+                                   )];
+                    }
+                }
             }
-         }
-         $myentities[] = ['id' => $entity['id'],
-                          'name' => Dropdown::getDropdownName("glpi_entities",
-                                                                   $entity['id'])];
-      }
-      return ['myentities' => $myentities];
-   }
+            $myentities[] = ['id' => $entity['id'],
+                          'name' => Dropdown::getDropdownName(
+                              "glpi_entities",
+                              $entity['id']
+                          )];
+        }
+        return ['myentities' => $myentities];
+    }
 
 
 
@@ -411,21 +440,21 @@ abstract class API {
     *  - active_entity_recursive : boolean, if we see sons of this entity
     *  - active_entities : array all active entities (active_entity and its sons)
     */
-   protected function getActiveEntities() {
+    protected function getActiveEntities()
+    {
 
-      $this->initEndpoint();
+        $this->initEndpoint();
 
-      $actives_entities = [];
-      foreach (array_values($_SESSION['glpiactiveentities']) as $active_entity) {
-         $actives_entities[] = ['id' => $active_entity];
-      }
+        $actives_entities = [];
+        foreach (array_values($_SESSION['glpiactiveentities']) as $active_entity) {
+            $actives_entities[] = ['id' => $active_entity];
+        }
 
-      return ["active_entity" => [
+        return ["active_entity" => [
                      "id"                      => $_SESSION['glpiactive_entity'],
                      "active_entity_recursive" => $_SESSION['glpiactive_entity_recursive'],
                      "active_entities"         => $actives_entities]];
-
-   }
+    }
 
 
 
@@ -438,21 +467,22 @@ abstract class API {
     *
     * @return boolean
     */
-   protected function changeActiveProfile($params = []) {
+    protected function changeActiveProfile($params = [])
+    {
 
-      $this->initEndpoint();
+        $this->initEndpoint();
 
-      if (!isset($params['profiles_id'])) {
-         $this->returnError();
-      }
+        if (!isset($params['profiles_id'])) {
+            $this->returnError();
+        }
 
-      $profiles_id = intval($params['profiles_id']);
-      if (isset($_SESSION['glpiprofiles'][$profiles_id])) {
-         return Session::changeProfile($profiles_id);
-      }
+        $profiles_id = intval($params['profiles_id']);
+        if (isset($_SESSION['glpiprofiles'][$profiles_id])) {
+            return Session::changeProfile($profiles_id);
+        }
 
-      $this->messageNotfoundError();
-   }
+        $this->messageNotfoundError();
+    }
 
 
 
@@ -462,23 +492,24 @@ abstract class API {
     *
     * @return array of profiles (with associated rights)
     */
-   protected function getMyProfiles() {
+    protected function getMyProfiles()
+    {
 
-      $this->initEndpoint();
+        $this->initEndpoint();
 
-      $myprofiles = [];
-      foreach ($_SESSION['glpiprofiles'] as $profiles_id => $profile) {
-         // append if of the profile into values
-         $profile = ['id' => $profiles_id] + $profile;
+        $myprofiles = [];
+        foreach ($_SESSION['glpiprofiles'] as $profiles_id => $profile) {
+           // append if of the profile into values
+            $profile = ['id' => $profiles_id] + $profile;
 
-         // don't keep keys for entities
-         $profile['entities'] = array_values($profile['entities']);
+           // don't keep keys for entities
+            $profile['entities'] = array_values($profile['entities']);
 
-         // don't keep keys for profiles
-         $myprofiles[] = $profile;
-      }
-      return ['myprofiles' => $myprofiles];
-   }
+           // don't keep keys for profiles
+            $myprofiles[] = $profile;
+        }
+        return ['myprofiles' => $myprofiles];
+    }
 
 
 
@@ -488,11 +519,12 @@ abstract class API {
     *
     * @return integer the profiles_id
     */
-   protected function getActiveProfile() {
+    protected function getActiveProfile()
+    {
 
-      $this->initEndpoint();
-      return ["active_profile" => $_SESSION['glpiactiveprofile']];
-   }
+        $this->initEndpoint();
+        return ["active_profile" => $_SESSION['glpiactiveprofile']];
+    }
 
 
 
@@ -502,11 +534,12 @@ abstract class API {
     *
     * @return array
     */
-   protected function getFullSession() {
+    protected function getFullSession()
+    {
 
-      $this->initEndpoint();
-      return ['session' => $_SESSION];
-   }
+        $this->initEndpoint();
+        return ['session' => $_SESSION];
+    }
 
 
 
@@ -515,11 +548,12 @@ abstract class API {
     *
     * @return array
      */
-   protected function getGlpiConfig() {
-      $this->initEndpoint();
+    protected function getGlpiConfig()
+    {
+        $this->initEndpoint();
 
-      return ['cfg_glpi' => Config::getSafeConfig()];
-   }
+        return ['cfg_glpi' => Config::getSafeConfig()];
+    }
 
 
    /**
@@ -548,14 +582,15 @@ abstract class API {
     *
     * @return array    fields of found object
     */
-   protected function getItem($itemtype, $id, $params = []) {
-      global $CFG_GLPI, $DB;
+    protected function getItem($itemtype, $id, $params = [])
+    {
+        global $CFG_GLPI, $DB;
 
-      $this->initEndpoint();
-      $itemtype = $this->handleDepreciation($itemtype);
+        $this->initEndpoint();
+        $itemtype = $this->handleDepreciation($itemtype);
 
-      // default params
-      $default = ['expand_dropdowns'  => false,
+       // default params
+        $default = ['expand_dropdowns'  => false,
                        'get_hateoas'       => true,
                        'get_sha1'          => false,
                        'with_devices'   => false,
@@ -572,56 +607,61 @@ abstract class API {
                        'with_notes'        => false,
                        'with_logs'         => false,
                        'add_keys_names'    => [],
-      ];
-      $params = array_merge($default, $params);
+        ];
+        $params = array_merge($default, $params);
 
-      $item = new $itemtype;
-      if (!$item->getFromDB($id)) {
-         return $this->messageNotfoundError();
-      }
-      if (!$item->can($id, READ)) {
-         return $this->messageRightError();
-      }
+        $item = new $itemtype();
+        if (!$item->getFromDB($id)) {
+            return $this->messageNotfoundError();
+        }
+        if (!$item->can($id, READ)) {
+            return $this->messageRightError();
+        }
 
-      $fields = $item->fields;
+        $fields = $item->fields;
 
-      // avoid disclosure of critical fields
-      $item::unsetUndisclosedFields($fields);
+       // avoid disclosure of critical fields
+        $item::unsetUndisclosedFields($fields);
 
-      // retrieve devices
-      if (isset($params['with_devices'])
-          && $params['with_devices']
-          && in_array($itemtype, Item_Devices::getConcernedItems())) {
-         $all_devices = [];
-         foreach (Item_Devices::getItemAffinities($item->getType()) as $device_type) {
-            $found_devices = getAllDataFromTable(
-               $device_type::getTable(), [
-                  'items_id'     => $item->getID(),
-                  'itemtype'     => $item->getType(),
-                  'is_deleted'   => 0
-               ],
-               true
-            );
+       // retrieve devices
+        if (
+            isset($params['with_devices'])
+            && $params['with_devices']
+            && in_array($itemtype, Item_Devices::getConcernedItems())
+        ) {
+            $all_devices = [];
+            foreach (Item_Devices::getItemAffinities($item->getType()) as $device_type) {
+                $found_devices = getAllDataFromTable(
+                    $device_type::getTable(),
+                    [
+                    'items_id'     => $item->getID(),
+                    'itemtype'     => $item->getType(),
+                    'is_deleted'   => 0
+                    ],
+                    true
+                );
 
-            foreach ($found_devices as &$device) {
-               unset($device['items_id']);
-               unset($device['itemtype']);
-               unset($device['is_deleted']);
+                foreach ($found_devices as &$device) {
+                     unset($device['items_id']);
+                     unset($device['itemtype']);
+                     unset($device['is_deleted']);
+                }
+
+                if (!empty($found_devices)) {
+                    $all_devices[$device_type] = $found_devices;
+                }
             }
+            $fields['_devices'] = $all_devices;
+        }
 
-            if (!empty($found_devices)) {
-               $all_devices[$device_type] = $found_devices;
-            }
-         }
-         $fields['_devices'] = $all_devices;
-      }
-
-      // retrieve computer disks
-      if (isset($params['with_disks'])
-          && $params['with_disks']
-          && in_array($itemtype, $CFG_GLPI['itemdeviceharddrive_types'])) {
-         // build query to retrive filesystems
-         $fs_iterator = $DB->request([
+       // retrieve computer disks
+        if (
+            isset($params['with_disks'])
+            && $params['with_disks']
+            && in_array($itemtype, $CFG_GLPI['itemdeviceharddrive_types'])
+        ) {
+           // build query to retrive filesystems
+            $fs_iterator = $DB->request([
             'SELECT'    => [
                'glpi_filesystems.name AS fsname',
                'glpi_items_disks.*'
@@ -640,34 +680,36 @@ abstract class API {
                'itemtype'     => $itemtype,
                'is_deleted'   => 0
             ]
-         ]);
-         $fields['_disks'] = [];
-         foreach ($fs_iterator as $data) {
-            unset($data['items_id']);
-            unset($data['is_deleted']);
-            $fields['_disks'][] = ['name' => $data];
-         }
-      }
+            ]);
+            $fields['_disks'] = [];
+            foreach ($fs_iterator as $data) {
+                unset($data['items_id']);
+                unset($data['is_deleted']);
+                $fields['_disks'][] = ['name' => $data];
+            }
+        }
 
-      // retrieve computer softwares
-      if (isset($params['with_softwares'])
+       // retrieve computer softwares
+        if (
+            isset($params['with_softwares'])
             && $params['with_softwares']
-            && in_array($itemtype, $CFG_GLPI['software_types'])) {
-         $fields['_softwares'] = [];
-         if (!Software::canView()) {
-            $fields['_softwares'] = $this->arrayRightError();
-         } else {
-            $soft_iterator = $DB->request([
-               'SELECT'    => [
+            && in_array($itemtype, $CFG_GLPI['software_types'])
+        ) {
+            $fields['_softwares'] = [];
+            if (!Software::canView()) {
+                $fields['_softwares'] = $this->arrayRightError();
+            } else {
+                $soft_iterator = $DB->request([
+                'SELECT'    => [
                   'glpi_softwares.softwarecategories_id',
                   'glpi_softwares.id AS softwares_id',
                   'glpi_softwareversions.id AS softwareversions_id',
                   'glpi_items_softwareversions.is_dynamic',
                   'glpi_softwareversions.states_id',
                   'glpi_softwares.is_valid'
-               ],
-               'FROM'      => 'glpi_items_softwareversions',
-               'LEFT JOIN' => [
+                ],
+                'FROM'      => 'glpi_items_softwareversions',
+                'LEFT JOIN' => [
                   'glpi_softwareversions' => [
                      'ON' => [
                         'glpi_items_softwareversions' => 'softwareversions_id',
@@ -680,93 +722,99 @@ abstract class API {
                         'glpi_softwares'        => 'id'
                      ]
                   ]
-               ],
-               'WHERE'     => [
+                ],
+                'WHERE'     => [
                   'glpi_items_softwareversions.items_id'   => $id,
                   'glpi_items_softwareversions.itemtype'   => $itemtype,
                   'glpi_items_softwareversions.is_deleted' => 0
-               ],
-               'ORDERBY'   => [
+                ],
+                'ORDERBY'   => [
                   'glpi_softwares.name',
                   'glpi_softwareversions.name'
-               ]
-            ]);
-            foreach ($soft_iterator as $data) {
-               $fields['_softwares'][] = $data;
+                ]
+                ]);
+                foreach ($soft_iterator as $data) {
+                    $fields['_softwares'][] = $data;
+                }
             }
-         }
-      }
+        }
 
-      // retrieve item connections
-      if (isset($params['with_connections'])
-          && $params['with_connections']
-          && $itemtype == "Computer") {
-         $fields['_connections'] = [];
-         foreach ($CFG_GLPI["directconnect_types"] as $connect_type) {
-            $connect_item = new $connect_type();
-            if ($connect_item->canView()) {
-               $connect_table = getTableForItemType($connect_type);
-               $iterator = $DB->request([
-                  'SELECT'    => [
+       // retrieve item connections
+        if (
+            isset($params['with_connections'])
+            && $params['with_connections']
+            && $itemtype == "Computer"
+        ) {
+            $fields['_connections'] = [];
+            foreach ($CFG_GLPI["directconnect_types"] as $connect_type) {
+                $connect_item = new $connect_type();
+                if ($connect_item->canView()) {
+                    $connect_table = getTableForItemType($connect_type);
+                    $iterator = $DB->request([
+                    'SELECT'    => [
                      'glpi_computers_items.id AS assoc_id',
                      'glpi_computers_items.computers_id AS assoc_computers_id',
                      'glpi_computers_items.itemtype AS assoc_itemtype',
                      'glpi_computers_items.items_id AS assoc_items_id',
                      'glpi_computers_items.is_dynamic AS assoc_is_dynamic',
                      "$connect_table.*"
-                  ],
-                  'FROM'      => 'glpi_computers_items',
-                  'LEFT JOIN' => [
+                    ],
+                    'FROM'      => 'glpi_computers_items',
+                    'LEFT JOIN' => [
                      $connect_table => [
                         'ON' => [
                            'glpi_computers_items'  => 'items_id',
                            $connect_table          => 'id'
                         ]
                      ]
-                  ],
-                  'WHERE'     => [
+                    ],
+                    'WHERE'     => [
                      'computers_id'                      => $id,
                      'itemtype'                          => $connect_type,
                      'glpi_computers_items.is_deleted'   => 0
-                  ]
-               ]);
-               foreach ($iterator as $data) {
-                  $fields['_connections'][$connect_type][] = $data;
-               }
+                    ]
+                    ]);
+                    foreach ($iterator as $data) {
+                        $fields['_connections'][$connect_type][] = $data;
+                    }
+                }
             }
-         }
-      }
+        }
 
-      // retrieve item networkports
-      if (isset($params['with_networkports']) && $params['with_networkports']) {
-         $fields['_networkports'] = $this->getNetworkPorts($id, $itemtype);
-      }
+       // retrieve item networkports
+        if (isset($params['with_networkports']) && $params['with_networkports']) {
+            $fields['_networkports'] = $this->getNetworkPorts($id, $itemtype);
+        }
 
-      // retrieve item infocoms
-      if (isset($params['with_infocoms'])
-          && $params['with_infocoms']) {
-         $fields['_infocoms'] = [];
-         if (!Infocom::canView()) {
-            $fields['_infocoms'] = $this->arrayRightError();
-         } else {
-            $ic = new Infocom();
-            if ($ic->getFromDBforDevice($itemtype, $id)) {
-               $fields['_infocoms'] = $ic->fields;
+       // retrieve item infocoms
+        if (
+            isset($params['with_infocoms'])
+            && $params['with_infocoms']
+        ) {
+            $fields['_infocoms'] = [];
+            if (!Infocom::canView()) {
+                $fields['_infocoms'] = $this->arrayRightError();
+            } else {
+                $ic = new Infocom();
+                if ($ic->getFromDBforDevice($itemtype, $id)) {
+                    $fields['_infocoms'] = $ic->fields;
+                }
             }
-         }
-      }
+        }
 
-      // retrieve item contracts
-      if (isset($params['with_contracts'])
-          && $params['with_contracts']) {
-         $fields['_contracts'] = [];
-         if (!Contract::canView()) {
-            $fields['_contracts'] = $this->arrayRightError();
-         } else {
-            $iterator = $DB->request([
-               'SELECT'    => ['glpi_contracts_items.*'],
-               'FROM'      => 'glpi_contracts_items',
-               'LEFT JOIN' => [
+       // retrieve item contracts
+        if (
+            isset($params['with_contracts'])
+            && $params['with_contracts']
+        ) {
+            $fields['_contracts'] = [];
+            if (!Contract::canView()) {
+                $fields['_contracts'] = $this->arrayRightError();
+            } else {
+                $iterator = $DB->request([
+                'SELECT'    => ['glpi_contracts_items.*'],
+                'FROM'      => 'glpi_contracts_items',
+                'LEFT JOIN' => [
                   'glpi_contracts'  => [
                      'ON' => [
                         'glpi_contracts_items'  => 'contracts_id',
@@ -779,50 +827,54 @@ abstract class API {
                         'glpi_entities'         => 'id'
                      ]
                   ]
-               ],
-               'WHERE'     => [
+                ],
+                'WHERE'     => [
                   'glpi_contracts_items.items_id'  => $id,
                   'glpi_contracts_items.itemtype'  => $itemtype
-               ] + getEntitiesRestrictCriteria('glpi_contracts', '', '', true),
-               'ORDERBY'   => 'glpi_contracts.name'
-            ]);
-            foreach ($iterator as $data) {
-               $fields['_contracts'][] = $data;
+                ] + getEntitiesRestrictCriteria('glpi_contracts', '', '', true),
+                'ORDERBY'   => 'glpi_contracts.name'
+                ]);
+                foreach ($iterator as $data) {
+                    $fields['_contracts'][] = $data;
+                }
             }
-         }
-      }
+        }
 
-      // retrieve item documents
-      if (isset($params['with_documents'])
-          && $params['with_documents']) {
-         $fields['_documents'] = [];
-         if (!($item instanceof CommonITILObject)
-             && $itemtype != 'KnowbaseItem'
-             && $itemtype != 'Reminder'
-             && !Document::canView()) {
-            $fields['_documents'] = $this->arrayRightError();
-         } else {
-            $doc_criteria = [
-               'glpi_documents_items.items_id'  => $id,
-               'glpi_documents_items.itemtype'  => $itemtype
-            ];
-            if ($item instanceof CommonITILObject) {
-               $doc_criteria = [
-                  $item->getAssociatedDocumentsCriteria(),
-                  'timeline_position' => ['>', CommonITILObject::NO_TIMELINE], // skip inlined images
-               ];
-            }
-            $doc_iterator = $DB->request([
-               'SELECT'    => [
+       // retrieve item documents
+        if (
+            isset($params['with_documents'])
+            && $params['with_documents']
+        ) {
+            $fields['_documents'] = [];
+            if (
+                !($item instanceof CommonITILObject)
+                && $itemtype != 'KnowbaseItem'
+                && $itemtype != 'Reminder'
+                && !Document::canView()
+            ) {
+                $fields['_documents'] = $this->arrayRightError();
+            } else {
+                $doc_criteria = [
+                'glpi_documents_items.items_id'  => $id,
+                'glpi_documents_items.itemtype'  => $itemtype
+                ];
+                if ($item instanceof CommonITILObject) {
+                    $doc_criteria = [
+                    $item->getAssociatedDocumentsCriteria(),
+                    'timeline_position' => ['>', CommonITILObject::NO_TIMELINE], // skip inlined images
+                    ];
+                }
+                $doc_iterator = $DB->request([
+                'SELECT'    => [
                   'glpi_documents_items.id AS assocID',
                   'glpi_documents_items.date_creation AS assocdate',
                   'glpi_entities.id AS entityID',
                   'glpi_entities.completename AS entity',
                   'glpi_documentcategories.completename AS headings',
                   'glpi_documents.*'
-               ],
-               'FROM'      => 'glpi_documents_items',
-               'LEFT JOIN' => [
+                ],
+                'FROM'      => 'glpi_documents_items',
+                'LEFT JOIN' => [
                   'glpi_documents'           => [
                      'ON' => [
                         'glpi_documents_items'  => 'documents_id',
@@ -841,136 +893,147 @@ abstract class API {
                         'glpi_documentcategories'  => 'id'
                      ]
                   ]
-               ],
-               'WHERE'     => $doc_criteria,
-            ]);
-            foreach ($doc_iterator as $data) {
-               $fields['_documents'][] = $data;
+                ],
+                'WHERE'     => $doc_criteria,
+                ]);
+                foreach ($doc_iterator as $data) {
+                    $fields['_documents'][] = $data;
+                }
             }
-         }
-      }
+        }
 
-      // retrieve item tickets
-      if (isset($params['with_tickets'])
-          && $params['with_tickets']) {
-         $fields['_tickets'] = [];
-         if (!Ticket::canView()) {
-            $fields['_tickets'] = $this->arrayRightError();
-         } else {
-            $criteria = Ticket::getCommonCriteria();
-            $criteria['WHERE'] = [
-               'glpi_items_tickets.items_id' => $id,
-               'glpi_items_tickets.itemtype' => $itemtype
-            ] + getEntitiesRestrictCriteria(Ticket::getTable());
-            $iterator = $DB->request($criteria);
-            foreach ($iterator as $data) {
-               $fields['_tickets'][] = $data;
+       // retrieve item tickets
+        if (
+            isset($params['with_tickets'])
+            && $params['with_tickets']
+        ) {
+            $fields['_tickets'] = [];
+            if (!Ticket::canView()) {
+                $fields['_tickets'] = $this->arrayRightError();
+            } else {
+                $criteria = Ticket::getCommonCriteria();
+                $criteria['WHERE'] = [
+                'glpi_items_tickets.items_id' => $id,
+                'glpi_items_tickets.itemtype' => $itemtype
+                ] + getEntitiesRestrictCriteria(Ticket::getTable());
+                $iterator = $DB->request($criteria);
+                foreach ($iterator as $data) {
+                    $fields['_tickets'][] = $data;
+                }
             }
-         }
-      }
+        }
 
-      // retrieve item problems
-      if (isset($params['with_problems'])
-          && $params['with_problems']) {
-         $fields['_problems'] = [];
-         if (!Problem::canView()) {
-            $fields['_problems'] = $this->arrayRightError();
-         } else {
-            $criteria = Problem::getCommonCriteria();
-            $criteria['WHERE'] = [
-               'glpi_items_problems.items_id' => $id,
-               'glpi_items_problems.itemtype' => $itemtype
-            ] + getEntitiesRestrictCriteria(Problem::getTable());
-            $iterator = $DB->request($criteria);
-            foreach ($iterator as $data) {
-               $fields['_problems'][] = $data;
+       // retrieve item problems
+        if (
+            isset($params['with_problems'])
+            && $params['with_problems']
+        ) {
+            $fields['_problems'] = [];
+            if (!Problem::canView()) {
+                $fields['_problems'] = $this->arrayRightError();
+            } else {
+                $criteria = Problem::getCommonCriteria();
+                $criteria['WHERE'] = [
+                'glpi_items_problems.items_id' => $id,
+                'glpi_items_problems.itemtype' => $itemtype
+                ] + getEntitiesRestrictCriteria(Problem::getTable());
+                $iterator = $DB->request($criteria);
+                foreach ($iterator as $data) {
+                    $fields['_problems'][] = $data;
+                }
             }
-         }
-      }
+        }
 
-      // retrieve item changes
-      if (isset($params['with_changes'])
-          && $params['with_changes']) {
-         $fields['_changes'] = [];
-         if (!Change::canView()) {
-            $fields['_changes'] = $this->arrayRightError();
-         } else {
-            $criteria = Change::getCommonCriteria();
-            $criteria['WHERE'] = [
-               'glpi_changes_items.items_id' => $id,
-               'glpi_changes_items.itemtype' => $itemtype
-            ] + getEntitiesRestrictCriteria(Change::getTable());
-            $iterator = $DB->request($criteria);
-            foreach ($iterator as $data) {
-               $fields['_changes'][] = $data;
+       // retrieve item changes
+        if (
+            isset($params['with_changes'])
+            && $params['with_changes']
+        ) {
+            $fields['_changes'] = [];
+            if (!Change::canView()) {
+                $fields['_changes'] = $this->arrayRightError();
+            } else {
+                $criteria = Change::getCommonCriteria();
+                $criteria['WHERE'] = [
+                'glpi_changes_items.items_id' => $id,
+                'glpi_changes_items.itemtype' => $itemtype
+                ] + getEntitiesRestrictCriteria(Change::getTable());
+                $iterator = $DB->request($criteria);
+                foreach ($iterator as $data) {
+                    $fields['_changes'][] = $data;
+                }
             }
-         }
-      }
+        }
 
-      // retrieve item notes
-      if (isset($params['with_notes'])
-          && $params['with_notes']) {
-         $fields['_notes'] = [];
-         if (!Session::haveRight($itemtype::$rightname, READNOTE)) {
-            $fields['_notes'] = $this->arrayRightError();
-         } else {
-            $fields['_notes'] = Notepad::getAllForItem($item);
-         }
-      }
+       // retrieve item notes
+        if (
+            isset($params['with_notes'])
+            && $params['with_notes']
+        ) {
+            $fields['_notes'] = [];
+            if (!Session::haveRight($itemtype::$rightname, READNOTE)) {
+                $fields['_notes'] = $this->arrayRightError();
+            } else {
+                $fields['_notes'] = Notepad::getAllForItem($item);
+            }
+        }
 
-      // retrieve item logs
-      if (isset($params['with_logs'])
-          && $params['with_logs']) {
-         $fields['_logs'] = [];
-         if (!Session::haveRight($itemtype::$rightname, READNOTE)) {
-            $fields['_logs'] = $this->arrayRightError();
-         } else {
-            $fields['_logs'] = getAllDataFromTable(
-               "glpi_logs", [
-                  'items_id'  => $item->getID(),
-                  'itemtype'  => $item->getType()
-               ]
-            );
-         }
-      }
+       // retrieve item logs
+        if (
+            isset($params['with_logs'])
+            && $params['with_logs']
+        ) {
+            $fields['_logs'] = [];
+            if (!Session::haveRight($itemtype::$rightname, READNOTE)) {
+                $fields['_logs'] = $this->arrayRightError();
+            } else {
+                $fields['_logs'] = getAllDataFromTable(
+                    "glpi_logs",
+                    [
+                    'items_id'  => $item->getID(),
+                    'itemtype'  => $item->getType()
+                    ]
+                );
+            }
+        }
 
-      // expand dropdown (retrieve name of dropdowns) and get hateoas from foreign keys
-      $fields = self::parseDropdowns($fields, $params);
+       // expand dropdown (retrieve name of dropdowns) and get hateoas from foreign keys
+        $fields = self::parseDropdowns($fields, $params);
 
-      // get hateoas from children
-      if ($params['get_hateoas']) {
-         $hclasses = self::getHatoasClasses($itemtype);
-         foreach ($hclasses as $hclass) {
-            $fields['links'][] = ['rel'  => $hclass,
-                                       'href' => self::$api_url."/$itemtype/".$item->getID()."/$hclass/"];
-         }
-      }
+       // get hateoas from children
+        if ($params['get_hateoas']) {
+            $hclasses = self::getHatoasClasses($itemtype);
+            foreach ($hclasses as $hclass) {
+                $fields['links'][] = ['rel'  => $hclass,
+                                       'href' => self::$api_url . "/$itemtype/" . $item->getID() . "/$hclass/"];
+            }
+        }
 
-      // get sha1 footprint if needed
-      if ($params['get_sha1']) {
-         $fields = sha1(json_encode($fields, JSON_UNESCAPED_UNICODE
+       // get sha1 footprint if needed
+        if ($params['get_sha1']) {
+            $fields = sha1(json_encode($fields, JSON_UNESCAPED_UNICODE
                                              | JSON_UNESCAPED_SLASHES
                                              | JSON_NUMERIC_CHECK));
-      }
+        }
 
-      if (count($params['add_keys_names']) > 0) {
-         $fields["_keys_names"] = $this->getFriendlyNames(
-            $fields,
-            $params,
-            $itemtype
-         );
-      }
+        if (count($params['add_keys_names']) > 0) {
+            $fields["_keys_names"] = $this->getFriendlyNames(
+                $fields,
+                $params,
+                $itemtype
+            );
+        }
 
-      // Convert fields to the format expected by the deprecated type
-      if ($this->isDeprecated()) {
-         $fields = $this->deprecated_item->mapCurrentToDeprecatedFields($fields);
-         $fields["links"] = $this->deprecated_item->mapCurrentToDeprecatedHateoas(
-            $fields["links"] ?? []
-         );
-      }
+       // Convert fields to the format expected by the deprecated type
+        if ($this->isDeprecated()) {
+            $fields = $this->deprecated_item->mapCurrentToDeprecatedFields($fields);
+            $fields["links"] = $this->deprecated_item->mapCurrentToDeprecatedHateoas(
+                $fields["links"] ?? []
+            );
+        }
 
-      return $fields;
-   }
+        return $fields;
+    }
 
 
 
@@ -979,11 +1042,12 @@ abstract class API {
     *
     * @return array
     */
-   protected function arrayRightError() {
+    protected function arrayRightError()
+    {
 
-      return ['error'   => 401,
+        return ['error'   => 401,
                    'message' => __("You don't have permission to perform this action.")];
-   }
+    }
 
 
 
@@ -1010,231 +1074,248 @@ abstract class API {
     *
     * @return array collection of fields
     */
-   protected function getItems($itemtype, $params = [], &$totalcount = 0) {
-      global $DB;
+    protected function getItems($itemtype, $params = [], &$totalcount = 0)
+    {
+        global $DB;
 
-      $this->initEndpoint();
-      $itemtype = $this->handleDepreciation($itemtype);
+        $this->initEndpoint();
+        $itemtype = $this->handleDepreciation($itemtype);
 
-      // default params
-      $default = ['expand_dropdowns' => false,
+       // default params
+        $default = ['expand_dropdowns' => false,
                        'get_hateoas'       => true,
                        'only_id'           => false,
-                       'range'             => "0-".$_SESSION['glpilist_limit'],
+                       'range'             => "0-" . $_SESSION['glpilist_limit'],
                        'sort'              => "id",
                        'order'             => "ASC",
                        'searchText'        => null,
                        'is_deleted'        => false,
                        'add_keys_names'    => [],
                        'with_networkports' => false,
-      ];
-      $params = array_merge($default, $params);
+        ];
+        $params = array_merge($default, $params);
 
-      if (!$itemtype::canView()) {
-         return $this->messageRightError();
-      }
-
-      $found = [];
-      $item = new $itemtype();
-      $item->getEmpty();
-      $table = getTableForItemType($itemtype);
-
-      // transform range parameter in start and limit variables
-      if (isset($params['range']) > 0) {
-         if (preg_match("/^[0-9]+-[0-9]+\$/", $params['range'])) {
-            $range = explode("-", $params['range']);
-            $params['start']      = $range[0];
-            $params['list_limit'] = $range[1]-$range[0]+1;
-            $params['range']      = $range;
-         } else {
-            $this->returnError("range must be in format : [start-end] with integers");
-         }
-      } else {
-         $params['range'] = [0, $_SESSION['glpilist_limit']];
-      }
-
-      // check parameters
-      if (isset($params['order'])
-          && !in_array(strtoupper($params['order']), ['DESC', 'ASC'])) {
-         $this->returnError("order must be DESC or ASC");
-      }
-      if (!isset($item->fields[$params['sort']])) {
-         $this->returnError("sort param is not a field of $table");
-      }
-
-      //specific case for restriction
-      $already_linked_table = [];
-      $join = Search::addDefaultJoin($itemtype, $table, $already_linked_table);
-      $where = Search::addDefaultWhere($itemtype);
-
-      if ($where == '') {
-         $where = "1=1 ";
-      }
-      if ($item->maybeDeleted()) {
-         $where.= "AND ".$DB->quoteName("$table.is_deleted")." = ".(int)$params['is_deleted'];
-      }
-
-      // add filter for a parent itemtype
-      if (isset($this->parameters['parent_itemtype'])
-          && isset($this->parameters['parent_id'])) {
-
-         // check parent itemtype
-         if (!Toolbox::isCommonDBTM($this->parameters['parent_itemtype'])
-            && !Toolbox::isAPIDeprecated($this->parameters['parent_itemtype'])
-         ) {
-            $this->returnError(__("parent itemtype not found or not an instance of CommonDBTM"),
-                               400,
-                               "ERROR_ITEMTYPE_NOT_FOUND_NOR_COMMONDBTM");
-         }
-
-         $fk_parent = getForeignKeyFieldForItemType($this->parameters['parent_itemtype']);
-         $fk_child = getForeignKeyFieldForItemType($itemtype);
-
-         // check parent rights
-         $parent_item = new $this->parameters['parent_itemtype'];
-         if (!$parent_item->getFromDB($this->parameters['parent_id'])) {
-            return $this->messageNotfoundError();
-         }
-         if (!$parent_item->can($this->parameters['parent_id'], READ)) {
+        if (!$itemtype::canView()) {
             return $this->messageRightError();
-         }
+        }
 
-         // filter with parents fields
-         if (isset($item->fields[$fk_parent])) {
-            $where.= " AND ".$DB->quoteName("$table.$fk_parent")." = ".(int)$this->parameters['parent_id'];
-         } else if (isset($item->fields['itemtype'])
-                 && isset($item->fields['items_id'])) {
-            $where.= " AND ".$DB->quoteName("$table.itemtype")." = ".$DB->quoteValue($this->parameters['parent_itemtype'])."
-                       AND ".$DB->quoteName("$table.items_id")." = ".(int)$this->parameters['parent_id'];
-         } else if (isset($parent_item->fields[$fk_child])) {
-            $parentTable = getTableForItemType($this->parameters['parent_itemtype']);
-            $join.= " LEFT JOIN ".$DB->quoteName($parentTable)." ON ".$DB->quoteName("$parentTable.$fk_child")." = ".$DB->quoteName("$table.id");
-            $where.= " AND ".$DB->quoteName("$parentTable.id")." = " . (int)$this->parameters['parent_id'];
-         } else if (isset($parent_item->fields['itemtype'])
-                 && isset($parent_item->fields['items_id'])) {
-            $parentTable = getTableForItemType($this->parameters['parent_itemtype']);
-            $join.= " LEFT JOIN ".$DB->quoteName($parentTable)." ON ".$DB->quoteName("itemtype")."=".$DB->quoteValue($itemtype)." AND ".$DB->quoteName("$parentTable.items_id")." = ".$DB->quoteName("$table.id");
-            $where.= " AND ".$DB->quoteName("$parentTable.id")." = " . (int)$this->parameters['parent_id'];
-         }
-      }
+        $found = [];
+        $item = new $itemtype();
+        $item->getEmpty();
+        $table = getTableForItemType($itemtype);
 
-      // filter by searchText parameter
-      if (is_array($params['searchText'])) {
-         if (array_keys($params['searchText']) == ['all']) {
-            $labelfield = "name";
-            if ($item instanceof CommonDevice) {
-               $labelfield = "designation";
-            } else if ($item instanceof Item_Devices) {
-               $labelfield = "itemtype";
+       // transform range parameter in start and limit variables
+        if (isset($params['range']) > 0) {
+            if (preg_match("/^[0-9]+-[0-9]+\$/", $params['range'])) {
+                $range = explode("-", $params['range']);
+                $params['start']      = $range[0];
+                $params['list_limit'] = $range[1] - $range[0] + 1;
+                $params['range']      = $range;
+            } else {
+                $this->returnError("range must be in format : [start-end] with integers");
             }
-            $search_value                      = $params['searchText']['all'];
-            $params['searchText'][$labelfield] = $search_value;
-            if ($DB->fieldExists($table, 'comment')) {
-               $params['searchText']['comment'] = $search_value;
+        } else {
+            $params['range'] = [0, $_SESSION['glpilist_limit']];
+        }
+
+       // check parameters
+        if (
+            isset($params['order'])
+            && !in_array(strtoupper($params['order']), ['DESC', 'ASC'])
+        ) {
+            $this->returnError("order must be DESC or ASC");
+        }
+        if (!isset($item->fields[$params['sort']])) {
+            $this->returnError("sort param is not a field of $table");
+        }
+
+       //specific case for restriction
+        $already_linked_table = [];
+        $join = Search::addDefaultJoin($itemtype, $table, $already_linked_table);
+        $where = Search::addDefaultWhere($itemtype);
+
+        if ($where == '') {
+            $where = "1=1 ";
+        }
+        if ($item->maybeDeleted()) {
+            $where .= "AND " . $DB->quoteName("$table.is_deleted") . " = " . (int)$params['is_deleted'];
+        }
+
+       // add filter for a parent itemtype
+        if (
+            isset($this->parameters['parent_itemtype'])
+            && isset($this->parameters['parent_id'])
+        ) {
+           // check parent itemtype
+            if (
+                !Toolbox::isCommonDBTM($this->parameters['parent_itemtype'])
+                && !Toolbox::isAPIDeprecated($this->parameters['parent_itemtype'])
+            ) {
+                $this->returnError(
+                    __("parent itemtype not found or not an instance of CommonDBTM"),
+                    400,
+                    "ERROR_ITEMTYPE_NOT_FOUND_NOR_COMMONDBTM"
+                );
             }
-         }
 
-         // make text search
-         foreach ($params['searchText']  as $filter_field => $filter_value) {
-            if (!empty($filter_value)) {
-               $search_value = Search::makeTextSearch($DB->escape($filter_value));
-               $where.= " AND (".$DB->quoteName("$table.$filter_field")." $search_value)";
+            $fk_parent = getForeignKeyFieldForItemType($this->parameters['parent_itemtype']);
+            $fk_child = getForeignKeyFieldForItemType($itemtype);
+
+           // check parent rights
+            $parent_item = new $this->parameters['parent_itemtype']();
+            if (!$parent_item->getFromDB($this->parameters['parent_id'])) {
+                return $this->messageNotfoundError();
             }
-         }
-      }
+            if (!$parent_item->can($this->parameters['parent_id'], READ)) {
+                return $this->messageRightError();
+            }
 
-      // filter with entity
-      if ($item->getType() == 'Entity') {
-         $where.= " AND (" . getEntitiesRestrictRequest("", $itemtype::getTable()) . ")";
-      } else if ($item->isEntityAssign()
-          // some CommonDBChild classes may not have entities_id fields and isEntityAssign still return true (like ITILTemplateMandatoryField)
-          && array_key_exists('entities_id', $item->fields)) {
-         $where.= " AND (". getEntitiesRestrictRequest("",
-                                             $itemtype::getTable(),
-                                             '',
-                                             $_SESSION['glpiactiveentities'],
-                                             $item->maybeRecursive(),
-                                             true);
+           // filter with parents fields
+            if (isset($item->fields[$fk_parent])) {
+                $where .= " AND " . $DB->quoteName("$table.$fk_parent") . " = " . (int)$this->parameters['parent_id'];
+            } else if (
+                isset($item->fields['itemtype'])
+                 && isset($item->fields['items_id'])
+            ) {
+                $where .= " AND " . $DB->quoteName("$table.itemtype") . " = " . $DB->quoteValue($this->parameters['parent_itemtype']) . "
+                       AND " . $DB->quoteName("$table.items_id") . " = " . (int)$this->parameters['parent_id'];
+            } else if (isset($parent_item->fields[$fk_child])) {
+                $parentTable = getTableForItemType($this->parameters['parent_itemtype']);
+                $join .= " LEFT JOIN " . $DB->quoteName($parentTable) . " ON " . $DB->quoteName("$parentTable.$fk_child") . " = " . $DB->quoteName("$table.id");
+                $where .= " AND " . $DB->quoteName("$parentTable.id") . " = " . (int)$this->parameters['parent_id'];
+            } else if (
+                isset($parent_item->fields['itemtype'])
+                 && isset($parent_item->fields['items_id'])
+            ) {
+                $parentTable = getTableForItemType($this->parameters['parent_itemtype']);
+                $join .= " LEFT JOIN " . $DB->quoteName($parentTable) . " ON " . $DB->quoteName("itemtype") . "=" . $DB->quoteValue($itemtype) . " AND " . $DB->quoteName("$parentTable.items_id") . " = " . $DB->quoteName("$table.id");
+                $where .= " AND " . $DB->quoteName("$parentTable.id") . " = " . (int)$this->parameters['parent_id'];
+            }
+        }
 
-         if ($item instanceof SavedSearch) {
-            $where.= " OR ".$itemtype::getTable().".is_private = 1";
-         }
+       // filter by searchText parameter
+        if (is_array($params['searchText'])) {
+            if (array_keys($params['searchText']) == ['all']) {
+                $labelfield = "name";
+                if ($item instanceof CommonDevice) {
+                    $labelfield = "designation";
+                } else if ($item instanceof Item_Devices) {
+                    $labelfield = "itemtype";
+                }
+                $search_value                      = $params['searchText']['all'];
+                $params['searchText'][$labelfield] = $search_value;
+                if ($DB->fieldExists($table, 'comment')) {
+                    $params['searchText']['comment'] = $search_value;
+                }
+            }
 
-         $where.= ")";
-      }
+           // make text search
+            foreach ($params['searchText'] as $filter_field => $filter_value) {
+                if (!empty($filter_value)) {
+                    $search_value = Search::makeTextSearch($DB->escape($filter_value));
+                    $where .= " AND (" . $DB->quoteName("$table.$filter_field") . " $search_value)";
+                }
+            }
+        }
 
-      // Check if we need to add raw names later on
-      $add_keys_names = count($params['add_keys_names']) > 0;
+       // filter with entity
+        if ($item->getType() == 'Entity') {
+            $where .= " AND (" . getEntitiesRestrictRequest("", $itemtype::getTable()) . ")";
+        } else if (
+            $item->isEntityAssign()
+            // some CommonDBChild classes may not have entities_id fields and isEntityAssign still return true (like ITILTemplateMandatoryField)
+            && array_key_exists('entities_id', $item->fields)
+        ) {
+            $where .= " AND (" . getEntitiesRestrictRequest(
+                "",
+                $itemtype::getTable(),
+                '',
+                $_SESSION['glpiactiveentities'],
+                $item->maybeRecursive(),
+                true
+            );
 
-      // build query
-      $query = "SELECT DISTINCT ".$DB->quoteName("$table.id").",  ".$DB->quoteName("$table.*")."
-                FROM ".$DB->quoteName($table)."
+            if ($item instanceof SavedSearch) {
+                $where .= " OR " . $itemtype::getTable() . ".is_private = 1";
+            }
+
+            $where .= ")";
+        }
+
+       // Check if we need to add raw names later on
+        $add_keys_names = count($params['add_keys_names']) > 0;
+
+       // build query
+        $query = "SELECT DISTINCT " . $DB->quoteName("$table.id") . ",  " . $DB->quoteName("$table.*") . "
+                FROM " . $DB->quoteName($table) . "
                 $join
                 WHERE $where
-                ORDER BY ".$DB->quoteName($params['sort'])." ".$params['order']."
-                LIMIT ".(int)$params['start'].", ".(int)$params['list_limit'];
-      if ($result = $DB->query($query)) {
-         while ($data = $DB->fetchAssoc($result)) {
-            if ($add_keys_names) {
-               // Insert raw names into the data row
-               $data["_keys_names"] = $this->getFriendlyNames(
-                  $data,
-                  $params,
-                  $itemtype
-               );
+                ORDER BY " . $DB->quoteName($params['sort']) . " " . $params['order'] . "
+                LIMIT " . (int)$params['start'] . ", " . (int)$params['list_limit'];
+        if ($result = $DB->query($query)) {
+            while ($data = $DB->fetchAssoc($result)) {
+                if ($add_keys_names) {
+                    // Insert raw names into the data row
+                    $data["_keys_names"] = $this->getFriendlyNames(
+                        $data,
+                        $params,
+                        $itemtype
+                    );
+                }
+
+                if (isset($params['with_networkports']) && $params['with_networkports']) {
+                    $data['_networkports'] = $this->getNetworkPorts($data['id'], $itemtype);
+                }
+
+                $found[] = $data;
+            }
+        }
+
+       // get result full row counts
+        $count_query = "SELECT COUNT(*) FROM {$DB->quoteName($table)} $join WHERE $where";
+        $totalcount = $DB->query($count_query)->fetch_row()[0];
+
+        if ($params['range'][0] > $totalcount) {
+            $this->returnError(
+                "Provided range exceed total count of data: " . $totalcount,
+                400,
+                "ERROR_RANGE_EXCEED_TOTAL"
+            );
+        }
+
+        foreach ($found as &$fields) {
+           // only keep id in field list
+            if ($params['only_id']) {
+                $fields = ['id' => $fields['id']];
             }
 
-            if (isset($params['with_networkports']) && $params['with_networkports']) {
-               $data['_networkports'] = $this->getNetworkPorts($data['id'], $itemtype);
+           // avioid disclosure of critical fields
+            $item::unsetUndisclosedFields($fields);
+
+           // expand dropdown (retrieve name of dropdowns) and get hateoas
+            $fields = self::parseDropdowns($fields, $params);
+
+           // get hateoas from children
+            if ($params['get_hateoas']) {
+                $hclasses = self::getHatoasClasses($itemtype);
+                foreach ($hclasses as $hclass) {
+                    $fields['links'][] = ['rel' => $hclass,
+                                          'href' => self::$api_url . "/$itemtype/" . $fields['id'] . "/$hclass/"];
+                }
             }
+        }
+       // Break reference
+        unset($fields);
 
-            $found[] = $data;
-         }
-      }
+       // Map values for deprecated itemtypes
+        if ($this->isDeprecated()) {
+            $found = array_map(function ($fields) {
+                return $this->deprecated_item->mapCurrentToDeprecatedFields($fields);
+            }, $found);
+        }
 
-      // get result full row counts
-      $count_query = "SELECT COUNT(*) FROM {$DB->quoteName($table)} $join WHERE $where";
-      $totalcount = $DB->query($count_query)->fetch_row()[0];
-
-      if ($params['range'][0] > $totalcount) {
-         $this->returnError("Provided range exceed total count of data: ".$totalcount,
-                            400,
-                            "ERROR_RANGE_EXCEED_TOTAL");
-      }
-
-      foreach ($found as &$fields) {
-         // only keep id in field list
-         if ($params['only_id']) {
-            $fields = ['id' => $fields['id']];
-         }
-
-         // avioid disclosure of critical fields
-         $item::unsetUndisclosedFields($fields);
-
-         // expand dropdown (retrieve name of dropdowns) and get hateoas
-         $fields = self::parseDropdowns($fields, $params);
-
-         // get hateoas from children
-         if ($params['get_hateoas']) {
-            $hclasses = self::getHatoasClasses($itemtype);
-            foreach ($hclasses as $hclass) {
-               $fields['links'][] = ['rel' => $hclass,
-                                          'href' => self::$api_url."/$itemtype/".$fields['id']."/$hclass/"];
-            }
-         }
-      }
-      // Break reference
-      unset($fields);
-
-      // Map values for deprecated itemtypes
-      if ($this->isDeprecated()) {
-         $found = array_map(function($fields) {
-            return $this->deprecated_item->mapCurrentToDeprecatedFields($fields);
-         }, $found);
-      }
-
-      return array_values($found);
-   }
+        return array_values($found);
+    }
 
    /**
     * Return a collection of items queried in input ($items)
@@ -1267,24 +1348,25 @@ abstract class API {
     *
     * @return array collection of glpi object's fields
     */
-   protected function getMultipleItems($params = []) {
+    protected function getMultipleItems($params = [])
+    {
 
-      if (!is_array($params['items'])) {
-         return $this->messageBadArrayError();
-      }
-
-      $allitems = [];
-      foreach ($params['items'] as $item) {
-         if (!isset($item['items_id']) && !isset($item['itemtype'])) {
+        if (!is_array($params['items'])) {
             return $this->messageBadArrayError();
-         }
+        }
 
-         $fields = $this->getItem($item['itemtype'], $item['items_id'], $params);
-         $allitems[] = $fields;
-      }
+        $allitems = [];
+        foreach ($params['items'] as $item) {
+            if (!isset($item['items_id']) && !isset($item['itemtype'])) {
+                return $this->messageBadArrayError();
+            }
 
-      return $allitems;
-   }
+            $fields = $this->getItem($item['itemtype'], $item['items_id'], $params);
+            $allitems[] = $fields;
+        }
+
+        return $allitems;
+    }
 
 
    /**
@@ -1298,56 +1380,58 @@ abstract class API {
     *
     * @return array all searchoptions of specified itemtype
     */
-   protected function listSearchOptions(
-      $itemtype,
-      $params = [],
-      bool $check_depreciation = true
-   ) {
-      $this->initEndpoint();
+    protected function listSearchOptions(
+        $itemtype,
+        $params = [],
+        bool $check_depreciation = true
+    ) {
+        $this->initEndpoint();
 
-      if ($check_depreciation) {
-         $itemtype = $this->handleDepreciation($itemtype);
-      }
+        if ($check_depreciation) {
+            $itemtype = $this->handleDepreciation($itemtype);
+        }
 
-      $soptions = Search::getOptions($itemtype);
+        $soptions = Search::getOptions($itemtype);
 
-      if (isset($params['raw'])) {
-         return $soptions;
-      }
+        if (isset($params['raw'])) {
+            return $soptions;
+        }
 
-      $cleaned_soptions = [];
-      foreach ($soptions as $sID => $option) {
-         if (is_int($sID)) {
-            $available_searchtypes = Search::getActionsFor($itemtype, $sID);
-            unset($available_searchtypes['searchopt']);
-            $available_searchtypes = array_keys($available_searchtypes);
+        $cleaned_soptions = [];
+        foreach ($soptions as $sID => $option) {
+            if (is_int($sID)) {
+                $available_searchtypes = Search::getActionsFor($itemtype, $sID);
+                unset($available_searchtypes['searchopt']);
+                $available_searchtypes = array_keys($available_searchtypes);
 
-            $cleaned_soptions[$sID] = ['name'                  => $option['name'],
+                $cleaned_soptions[$sID] = ['name'                  => $option['name'],
                                             'table'                 => $option['table'],
                                             'field'                 => $option['field'],
                                             'datatype'              => isset($option['datatype'])
-                                                                       ?$option['datatype']
-                                                                       :"",
+                                                                       ? $option['datatype']
+                                                                       : "",
                                             'nosearch'              => isset($option['nosearch'])
-                                                                       ?$option['nosearch']
-                                                                       :false,
+                                                                       ? $option['nosearch']
+                                                                       : false,
                                             'nodisplay'             => isset($option['nodisplay'])
-                                                                       ?$option['nodisplay']
-                                                                       :false,
+                                                                       ? $option['nodisplay']
+                                                                       : false,
                                             'available_searchtypes' => $available_searchtypes];
-            $cleaned_soptions[$sID]['uid'] = $this->getSearchOptionUniqID($itemtype,
-                                                                               $option);
-         } else {
-            $cleaned_soptions[$sID] = $option;
-         }
-      }
+                $cleaned_soptions[$sID]['uid'] = $this->getSearchOptionUniqID(
+                    $itemtype,
+                    $option
+                );
+            } else {
+                $cleaned_soptions[$sID] = $option;
+            }
+        }
 
-      if ($check_depreciation && $this->isDeprecated()) {
-         $cleaned_soptions = $this->deprecated_item->mapCurrentToDeprecatedSearchOptions($cleaned_soptions);
-      }
+        if ($check_depreciation && $this->isDeprecated()) {
+            $cleaned_soptions = $this->deprecated_item->mapCurrentToDeprecatedSearchOptions($cleaned_soptions);
+        }
 
-      return $cleaned_soptions;
-   }
+        return $cleaned_soptions;
+    }
 
 
    /**
@@ -1364,37 +1448,42 @@ abstract class API {
     *
     * @return string the unique id
     */
-   private function getSearchOptionUniqID($itemtype, $option = []) {
+    private function getSearchOptionUniqID($itemtype, $option = [])
+    {
 
-      $uid_parts = [$itemtype];
+        $uid_parts = [$itemtype];
 
-      $sub_itemtype = getItemTypeForTable($option['table']);
+        $sub_itemtype = getItemTypeForTable($option['table']);
 
-      if ((isset($option['joinparams']['beforejoin']['table'])
-           || empty($option['joinparams']))
-          && $option['linkfield'] != getForeignKeyFieldForItemType($sub_itemtype)
-          && $option['linkfield'] != $option['field']) {
-         $uid_parts[] = $option['linkfield'];
-      }
+        if (
+            (isset($option['joinparams']['beforejoin']['table'])
+            || empty($option['joinparams']))
+            && $option['linkfield'] != getForeignKeyFieldForItemType($sub_itemtype)
+            && $option['linkfield'] != $option['field']
+        ) {
+            $uid_parts[] = $option['linkfield'];
+        }
 
-      if (isset($option['joinparams'])) {
-         if (isset($option['joinparams']['beforejoin'])) {
-            $sub_parts  = $this->getSearchOptionUniqIDJoins($option['joinparams']['beforejoin']);
-            $uid_parts = array_merge($uid_parts, $sub_parts);
-         }
-      }
+        if (isset($option['joinparams'])) {
+            if (isset($option['joinparams']['beforejoin'])) {
+                $sub_parts  = $this->getSearchOptionUniqIDJoins($option['joinparams']['beforejoin']);
+                $uid_parts = array_merge($uid_parts, $sub_parts);
+            }
+        }
 
-      if (isset($option['joinparams']['beforejoin']['table'])
-          || $sub_itemtype != $itemtype) {
-         $uid_parts[] = $sub_itemtype;
-      }
+        if (
+            isset($option['joinparams']['beforejoin']['table'])
+            || $sub_itemtype != $itemtype
+        ) {
+            $uid_parts[] = $sub_itemtype;
+        }
 
-      $uid_parts[] = $option['field'];
+        $uid_parts[] = $option['field'];
 
-      $uuid = implode('.', $uid_parts);
+        $uuid = implode('.', $uid_parts);
 
-      return $uuid;
-   }
+        return $uuid;
+    }
 
 
    /**
@@ -1404,20 +1493,21 @@ abstract class API {
     *
     * @return array unique id parts
     */
-   private function getSearchOptionUniqIDJoins($option) {
+    private function getSearchOptionUniqIDJoins($option)
+    {
 
-      $uid_parts = [];
-      if (isset($option['joinparams']['beforejoin'])) {
-         $sub_parts  = $this->getSearchOptionUniqIDJoins($option['joinparams']['beforejoin']);
-         $uid_parts = array_merge($uid_parts, $sub_parts);
-      }
+        $uid_parts = [];
+        if (isset($option['joinparams']['beforejoin'])) {
+            $sub_parts  = $this->getSearchOptionUniqIDJoins($option['joinparams']['beforejoin']);
+            $uid_parts = array_merge($uid_parts, $sub_parts);
+        }
 
-      if (isset($option['table'])) {
-         $uid_parts[] = getItemTypeForTable($option['table']);
-      }
+        if (isset($option['table'])) {
+            $uid_parts[] = getItemTypeForTable($option['table']);
+        }
 
-      return $uid_parts;
-   }
+        return $uid_parts;
+    }
 
 
    /**
@@ -1453,222 +1543,238 @@ abstract class API {
     *
     * @return array of raw rows from Search class
     */
-   protected function searchItems($itemtype, $params = []) {
-      global $DEBUG_SQL;
+    protected function searchItems($itemtype, $params = [])
+    {
+        global $DEBUG_SQL;
 
-      $this->initEndpoint();
-      $itemtype = $this->handleDepreciation($itemtype);
+        $this->initEndpoint();
+        $itemtype = $this->handleDepreciation($itemtype);
 
-      // check rights
-      if (!$itemtype::canView()) {
-         return $this->messageRightError();
-      }
+       // check rights
+        if (!$itemtype::canView()) {
+            return $this->messageRightError();
+        }
 
-      // retrieve searchoptions
-      $soptions = $this->listSearchOptions($itemtype, [], false);
+       // retrieve searchoptions
+        $soptions = $this->listSearchOptions($itemtype, [], false);
 
-      if ($this->isDeprecated()) {
-         $criteria = $this->deprecated_item->mapDeprecatedToCurrentCriteria(
-            $params['criteria'] ?? []
-         );
+        if ($this->isDeprecated()) {
+            $criteria = $this->deprecated_item->mapDeprecatedToCurrentCriteria(
+                $params['criteria'] ?? []
+            );
 
-         if (count($criteria)) {
-            $params['criteria'] = $criteria;
-         }
-      }
-
-      // Check the criterias are valid
-      if (isset($params['criteria']) && is_array($params['criteria'])) {
-
-         // use a recursive closure to check each nested criteria
-         $check_criteria = function(&$criteria) use (&$check_criteria, $soptions) {
-            foreach ($criteria as &$criterion) {
-               // recursive call
-               if (isset($criterion['criteria'])) {
-                  return $check_criteria($criterion['criteria']);
-               }
-
-               if (!isset($criterion['field']) || !isset($criterion['searchtype'])
-                   || !isset($criterion['value'])) {
-                  return __("Malformed search criteria");
-               }
-
-               if (!ctype_digit((string) $criterion['field'])
-                   || !array_key_exists($criterion['field'], $soptions)) {
-                  return __("Bad field ID in search criteria");
-               }
-
-               if (isset($soptions[$criterion['field']])
-                   && isset($soptions[$criterion['field']]['nosearch'])
-                   && $soptions[$criterion['field']]['nosearch']) {
-                  return __("Forbidden field ID in search criteria");
-               }
-
-               // Escape value to prevent SQL injection
-               $criterion['value'] = Toolbox::addslashes_deep($criterion['value']);
+            if (count($criteria)) {
+                $params['criteria'] = $criteria;
             }
+        }
 
-            return true;
-         };
+       // Check the criterias are valid
+        if (isset($params['criteria']) && is_array($params['criteria'])) {
+           // use a recursive closure to check each nested criteria
+            $check_criteria = function (&$criteria) use (&$check_criteria, $soptions) {
+                foreach ($criteria as &$criterion) {
+                     // recursive call
+                    if (isset($criterion['criteria'])) {
+                        return $check_criteria($criterion['criteria']);
+                    }
 
-         // call the closure
-         $check_criteria_result = $check_criteria($params['criteria']);
-         if ($check_criteria_result !== true) {
-            return $this->returnError($check_criteria_result);
-         }
-      }
+                    if (
+                        !isset($criterion['field']) || !isset($criterion['searchtype'])
+                        || !isset($criterion['value'])
+                    ) {
+                        return __("Malformed search criteria");
+                    }
 
-      // manage forcedisplay
-      if (isset($params['forcedisplay'])) {
-         if (!is_array($params['forcedisplay'])) {
-            $params['forcedisplay'] = [intval($params['forcedisplay'])];
-         }
-         $params['forcedisplay'] = array_combine($params['forcedisplay'], $params['forcedisplay']);
-      } else {
-         $params['forcedisplay'] = [];
-      }
-      foreach ($params['forcedisplay'] as $forcedisplay) {
-         if (isset($soptions[$forcedisplay]) && isset($soptions[$forcedisplay]['nodisplay'])
-             && $soptions[$forcedisplay]['nodisplay']) {
-            return $this->returnError(__("ID is forbidden along with 'forcedisplay' parameter."));
-         }
-      }
+                    if (
+                        !ctype_digit((string) $criterion['field'])
+                        || !array_key_exists($criterion['field'], $soptions)
+                    ) {
+                        return __("Bad field ID in search criteria");
+                    }
 
-      // transform range parameter in start and limit variables
-      if (isset($params['range']) > 0) {
-         if (preg_match("/^[0-9]+-[0-9]+\$/", $params['range'])) {
-            $range = explode("-", $params['range']);
-            $params['start']      = $range[0];
-            $params['list_limit'] = $range[1]-$range[0]+1;
-            $params['range']      = $range;
-         } else {
-            $this->returnError("range must be in format : [start-end] with integers");
-         }
-      } else {
-         $params['range'] = [0, $_SESSION['glpilist_limit']];
-      }
+                    if (
+                        isset($soptions[$criterion['field']])
+                        && isset($soptions[$criterion['field']]['nosearch'])
+                        && $soptions[$criterion['field']]['nosearch']
+                    ) {
+                        return __("Forbidden field ID in search criteria");
+                    }
 
-      // force reset
-      $params['reset'] = 'reset';
+                  // Escape value to prevent SQL injection
+                    $criterion['value'] = Toolbox::addslashes_deep($criterion['value']);
+                }
 
-      // force logging sql queries
-      $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
+                return true;
+            };
 
-      // call Core Search method
-      $rawdata = Search::getDatas($itemtype, $params, $params['forcedisplay']);
+           // call the closure
+            $check_criteria_result = $check_criteria($params['criteria']);
+            if ($check_criteria_result !== true) {
+                return $this->returnError($check_criteria_result);
+            }
+        }
 
-      // probably a sql error
-      if (!isset($rawdata['data']) || count($rawdata['data']) === 0) {
-         $this->returnError("Unexpected SQL Error : ".array_splice($DEBUG_SQL['errors'], -2)[0],
-                            500, "ERROR_SQL", false);
-      }
+       // manage forcedisplay
+        if (isset($params['forcedisplay'])) {
+            if (!is_array($params['forcedisplay'])) {
+                $params['forcedisplay'] = [intval($params['forcedisplay'])];
+            }
+            $params['forcedisplay'] = array_combine($params['forcedisplay'], $params['forcedisplay']);
+        } else {
+            $params['forcedisplay'] = [];
+        }
+        foreach ($params['forcedisplay'] as $forcedisplay) {
+            if (
+                isset($soptions[$forcedisplay]) && isset($soptions[$forcedisplay]['nodisplay'])
+                && $soptions[$forcedisplay]['nodisplay']
+            ) {
+                return $this->returnError(__("ID is forbidden along with 'forcedisplay' parameter."));
+            }
+        }
 
-      $cleaned_data = ['totalcount' => $rawdata['data']['totalcount'],
+       // transform range parameter in start and limit variables
+        if (isset($params['range']) > 0) {
+            if (preg_match("/^[0-9]+-[0-9]+\$/", $params['range'])) {
+                $range = explode("-", $params['range']);
+                $params['start']      = $range[0];
+                $params['list_limit'] = $range[1] - $range[0] + 1;
+                $params['range']      = $range;
+            } else {
+                $this->returnError("range must be in format : [start-end] with integers");
+            }
+        } else {
+            $params['range'] = [0, $_SESSION['glpilist_limit']];
+        }
+
+       // force reset
+        $params['reset'] = 'reset';
+
+       // force logging sql queries
+        $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
+
+       // call Core Search method
+        $rawdata = Search::getDatas($itemtype, $params, $params['forcedisplay']);
+
+       // probably a sql error
+        if (!isset($rawdata['data']) || count($rawdata['data']) === 0) {
+            $this->returnError(
+                "Unexpected SQL Error : " . array_splice($DEBUG_SQL['errors'], -2)[0],
+                500,
+                "ERROR_SQL",
+                false
+            );
+        }
+
+        $cleaned_data = ['totalcount' => $rawdata['data']['totalcount'],
                             'count'      => count($rawdata['data']['rows']),
                             'sort'       => $rawdata['search']['sort'],
                             'order'      => $rawdata['search']['order']];
 
-      if ($params['range'][0] > $cleaned_data['totalcount']) {
-         $this->returnError("Provided range exceed total count of data: ".$cleaned_data['totalcount'],
-                            400,
-                            "ERROR_RANGE_EXCEED_TOTAL");
-      }
+        if ($params['range'][0] > $cleaned_data['totalcount']) {
+            $this->returnError(
+                "Provided range exceed total count of data: " . $cleaned_data['totalcount'],
+                400,
+                "ERROR_RANGE_EXCEED_TOTAL"
+            );
+        }
 
-      // fix end range
-      if ($params['range'][1] > $cleaned_data['totalcount'] - 1) {
-         $params['range'][1] = $cleaned_data['totalcount'] - 1;
-      }
+       // fix end range
+        if ($params['range'][1] > $cleaned_data['totalcount'] - 1) {
+            $params['range'][1] = $cleaned_data['totalcount'] - 1;
+        }
 
-      //prepare cols (searchoptions_id) for cleaned data
-      $cleaned_cols = [];
-      $uid_cols = [];
-      foreach ($rawdata['data']['cols'] as $col) {
-         $cleaned_cols[] = $col['id'];
-         if (isset($params['uid_cols'])) {
-            // prepare cols with uid
-            $uid_cols[] = $soptions[$col['id']]['uid'];
-         }
-      }
-
-      foreach ($rawdata['data']['rows'] as $row) {
-         $raw = $row['raw'];
-         $id = $raw['id'];
-
-         // keep row itemtype for all asset
-         if ($itemtype == AllAssets::getType()) {
-            $current_id       = $raw['id'];
-            $current_itemtype = $raw['TYPE'];
-         }
-
-         // retrive value (and manage multiple values)
-         $clean_values = [];
-         foreach ($rawdata['data']['cols'] as $col) {
-            $rvalues = $row[$col['itemtype'] . '_' . $col['id']];
-
-            // manage multiple values (ex: IP adresses)
-            $current_values = [];
-            for ($valindex= 0; $valindex < $rvalues['count']; $valindex++) {
-               $current_values[] = $rvalues[$valindex]['name'];
+       //prepare cols (searchoptions_id) for cleaned data
+        $cleaned_cols = [];
+        $uid_cols = [];
+        foreach ($rawdata['data']['cols'] as $col) {
+            $cleaned_cols[] = $col['id'];
+            if (isset($params['uid_cols'])) {
+               // prepare cols with uid
+                $uid_cols[] = $soptions[$col['id']]['uid'];
             }
-            if (count($current_values) == 1) {
-               $current_values = $current_values[0];
+        }
+
+        foreach ($rawdata['data']['rows'] as $row) {
+            $raw = $row['raw'];
+            $id = $raw['id'];
+
+           // keep row itemtype for all asset
+            if ($itemtype == AllAssets::getType()) {
+                $current_id       = $raw['id'];
+                $current_itemtype = $raw['TYPE'];
             }
 
-            $clean_values[] = $current_values;
-         }
+           // retrive value (and manage multiple values)
+            $clean_values = [];
+            foreach ($rawdata['data']['cols'] as $col) {
+                $rvalues = $row[$col['itemtype'] . '_' . $col['id']];
 
-         // combine cols (searchoptions_id) with values (raws data)
-         if (isset($params['uid_cols'])) {
-            $current_line = array_combine($uid_cols, $clean_values);
-         } else {
-            $current_line = array_combine($cleaned_cols, $clean_values);
-         }
+               // manage multiple values (ex: IP adresses)
+                $current_values = [];
+                for ($valindex = 0; $valindex < $rvalues['count']; $valindex++) {
+                    $current_values[] = $rvalues[$valindex]['name'];
+                }
+                if (count($current_values) == 1) {
+                    $current_values = $current_values[0];
+                }
 
-         // if all asset, provide type in returned data
-         if ($itemtype == AllAssets::getType()) {
-            $current_line['id']       = $current_id;
-            $current_line['itemtype'] = $current_itemtype;
-         }
-
-         // append to final array
-         if (isset($params['withindexes'])) {
-            $cleaned_data['data'][$id] = $current_line;
-         } else {
-            $cleaned_data['data'][] = $current_line;
-         }
-      }
-
-      // add rows with their html
-      if (isset($params['giveItems'])) {
-         $cleaned_data['data_html'] = [];
-         foreach ($rawdata['data']['rows'] as $row) {
-            $new_row = [];
-            foreach ($row as $cell_key => $cell) {
-               if (isset($cell['displayname'])) {
-                  $new_row[$cell_key] = $cell['displayname'];
-               }
+                $clean_values[] = $current_values;
             }
-            $new_row = array_combine($cleaned_cols, $new_row);
 
-            if (isset($params['withindexes'])) {
-               $cleaned_data['data_html'][$row['id']] = $new_row;
+           // combine cols (searchoptions_id) with values (raws data)
+            if (isset($params['uid_cols'])) {
+                $current_line = array_combine($uid_cols, $clean_values);
             } else {
-               $cleaned_data['data_html'][] = $new_row;
+                $current_line = array_combine($cleaned_cols, $clean_values);
             }
-         }
-      }
 
-      if (isset($params['rawdata'])
-          && $params['rawdata']) {
-         $cleaned_data['rawdata'] = $rawdata;
-      }
+           // if all asset, provide type in returned data
+            if ($itemtype == AllAssets::getType()) {
+                $current_line['id']       = $current_id;
+                $current_line['itemtype'] = $current_itemtype;
+            }
 
-      $cleaned_data['content-range'] = implode('-', $params['range']).
-                                       "/".$cleaned_data['totalcount'];
+           // append to final array
+            if (isset($params['withindexes'])) {
+                $cleaned_data['data'][$id] = $current_line;
+            } else {
+                $cleaned_data['data'][] = $current_line;
+            }
+        }
 
-      // return data
-      return $cleaned_data;
-   }
+       // add rows with their html
+        if (isset($params['giveItems'])) {
+            $cleaned_data['data_html'] = [];
+            foreach ($rawdata['data']['rows'] as $row) {
+                $new_row = [];
+                foreach ($row as $cell_key => $cell) {
+                    if (isset($cell['displayname'])) {
+                        $new_row[$cell_key] = $cell['displayname'];
+                    }
+                }
+                $new_row = array_combine($cleaned_cols, $new_row);
+
+                if (isset($params['withindexes'])) {
+                    $cleaned_data['data_html'][$row['id']] = $new_row;
+                } else {
+                    $cleaned_data['data_html'][] = $new_row;
+                }
+            }
+        }
+
+        if (
+            isset($params['rawdata'])
+            && $params['rawdata']
+        ) {
+            $cleaned_data['rawdata'] = $rawdata;
+        }
+
+        $cleaned_data['content-range'] = implode('-', $params['range']) .
+                                       "/" . $cleaned_data['totalcount'];
+
+       // return data
+        return $cleaned_data;
+    }
 
 
    /**
@@ -1682,89 +1788,91 @@ abstract class API {
     *
     * @return array of id
     */
-   protected function createItems($itemtype, $params = []) {
-      $this->initEndpoint();
-      $itemtype = $this->handleDepreciation($itemtype);
+    protected function createItems($itemtype, $params = [])
+    {
+        $this->initEndpoint();
+        $itemtype = $this->handleDepreciation($itemtype);
 
-      $input    = isset($params['input']) ? $params["input"] : null;
-      $item     = new $itemtype;
+        $input    = isset($params['input']) ? $params["input"] : null;
+        $item     = new $itemtype();
 
-      if (is_object($input)) {
-         $input = [$input];
-         $isMultiple = false;
-      } else {
-         $isMultiple = true;
-      }
+        if (is_object($input)) {
+            $input = [$input];
+            $isMultiple = false;
+        } else {
+            $isMultiple = true;
+        }
 
-      if ($this->isDeprecated()) {
-         $input = array_map(function($item) {
-            return $this->deprecated_item->mapDeprecatedToCurrentFields($item);
-         }, $input);
-      }
+        if ($this->isDeprecated()) {
+            $input = array_map(function ($item) {
+                return $this->deprecated_item->mapDeprecatedToCurrentFields($item);
+            }, $input);
+        }
 
-      if (is_array($input)) {
-         $idCollection = [];
-         $failed       = 0;
-         $index        = 0;
-         foreach ($input as $object) {
-            $object      = $this->inputObjectToArray($object);
-            $current_res = [];
+        if (is_array($input)) {
+            $idCollection = [];
+            $failed       = 0;
+            $index        = 0;
+            foreach ($input as $object) {
+                $object      = $this->inputObjectToArray($object);
+                $current_res = [];
 
-            //check rights
-            if (!$item->can(-1, CREATE, $object)) {
-               $failed++;
-               $current_res = ['id'      => false,
+               //check rights
+                if (!$item->can(-1, CREATE, $object)) {
+                    $failed++;
+                    $current_res = ['id'      => false,
                                'message' => __("You don't have permission to perform this action.")];
-            } else {
-               // add missing entity
-               if (!isset($object['entities_id'])) {
-                  $object['entities_id'] = $_SESSION['glpiactive_entity'];
-               }
+                } else {
+                   // add missing entity
+                    if (!isset($object['entities_id'])) {
+                        $object['entities_id'] = $_SESSION['glpiactive_entity'];
+                    }
 
-               // add an entry to match gui post (which contains submit button)
-               // to force having messages after redirect
-               $object["_add"] = true;
+                   // add an entry to match gui post (which contains submit button)
+                   // to force having messages after redirect
+                    $object["_add"] = true;
 
-               //add current item
-               $object = Sanitizer::sanitize($object);
-               $new_id = $item->add($object);
-               if ($new_id === false) {
-                  $failed++;
-               }
-               $current_res = ['id'      => $new_id,
+                   //add current item
+                    $object = Sanitizer::sanitize($object);
+                    $new_id = $item->add($object);
+                    if ($new_id === false) {
+                        $failed++;
+                    }
+                    $current_res = ['id'      => $new_id,
                                'message' => $this->getGlpiLastMessage()];
+                }
+
+               // attach fileupload answer
+                if (
+                    isset($params['upload_result'])
+                    && isset($params['upload_result'][$index])
+                ) {
+                    $current_res['upload_result'] = $params['upload_result'][$index];
+                }
+
+               // append current result to final collection
+                $idCollection[] = $current_res;
+                $index++;
             }
 
-            // attach fileupload answer
-            if (isset($params['upload_result'])
-                && isset($params['upload_result'][$index])) {
-               $current_res['upload_result'] = $params['upload_result'][$index];
-            }
-
-            // append current result to final collection
-            $idCollection[] = $current_res;
-            $index++;
-         }
-
-         if ($isMultiple) {
-            if ($failed == count($input)) {
-               $this->returnError($idCollection, 400, "ERROR_GLPI_ADD", false);
-            } else if ($failed > 0) {
-               $this->returnError($idCollection, 207, "ERROR_GLPI_PARTIAL_ADD", false);
-            }
-         } else {
-            if ($failed > 0) {
-               $this->returnError($idCollection[0]['message'], 400, "ERROR_GLPI_ADD", false);
+            if ($isMultiple) {
+                if ($failed == count($input)) {
+                    $this->returnError($idCollection, 400, "ERROR_GLPI_ADD", false);
+                } else if ($failed > 0) {
+                    $this->returnError($idCollection, 207, "ERROR_GLPI_PARTIAL_ADD", false);
+                }
             } else {
-               return $idCollection[0];
+                if ($failed > 0) {
+                    $this->returnError($idCollection[0]['message'], 400, "ERROR_GLPI_ADD", false);
+                } else {
+                    return $idCollection[0];
+                }
             }
-         }
-         return $idCollection;
-
-      } else {
-         $this->messageBadArrayError();
-      }
-   }
+            return $idCollection;
+        } else {
+            $this->messageBadArrayError();
+        }
+    }
 
    /**
     * Transform all stdobject retrieved from a json_decode into arrays
@@ -1775,19 +1883,20 @@ abstract class API {
     *
     * @return array the cleaned input
     */
-   private function inputObjectToArray($input) {
-      if (is_object($input)) {
-         $input = get_object_vars($input);
-      }
+    private function inputObjectToArray($input)
+    {
+        if (is_object($input)) {
+            $input = get_object_vars($input);
+        }
 
-      if (is_array($input)) {
-         foreach ($input as &$sub_input) {
-            $sub_input = self::inputObjectToArray($sub_input);
-         }
-      }
+        if (is_array($input)) {
+            foreach ($input as &$sub_input) {
+                $sub_input = self::inputObjectToArray($sub_input);
+            }
+        }
 
-      return $input;
-   }
+        return $input;
+    }
 
 
    /**
@@ -1801,98 +1910,101 @@ abstract class API {
     *
     * @return   array of boolean
     */
-   protected function updateItems($itemtype, $params = []) {
-      $this->initEndpoint();
-      $itemtype = $this->handleDepreciation($itemtype);
+    protected function updateItems($itemtype, $params = [])
+    {
+        $this->initEndpoint();
+        $itemtype = $this->handleDepreciation($itemtype);
 
-      $input    = isset($params['input']) ? $params["input"] : null;
-      $item     = new $itemtype;
+        $input    = isset($params['input']) ? $params["input"] : null;
+        $item     = new $itemtype();
 
-      if (is_object($input)) {
-         $input = [$input];
-         $isMultiple = false;
-      } else {
-         $isMultiple = true;
-      }
+        if (is_object($input)) {
+            $input = [$input];
+            $isMultiple = false;
+        } else {
+            $isMultiple = true;
+        }
 
-      if ($this->isDeprecated()) {
-         $input = array_map(function($item) {
-            return $this->deprecated_item->mapDeprecatedToCurrentFields($item);
-         }, $input);
-      }
+        if ($this->isDeprecated()) {
+            $input = array_map(function ($item) {
+                return $this->deprecated_item->mapDeprecatedToCurrentFields($item);
+            }, $input);
+        }
 
-      if (is_array($input)) {
-         $idCollection = [];
-         $failed       = 0;
-         $index        = 0;
-         foreach ($input as $object) {
-            $current_res = [];
-            if (isset($object->id)) {
-               if (!$item->getFromDB($object->id)) {
-                  $failed++;
-                  $current_res = [$object->id => false,
+        if (is_array($input)) {
+            $idCollection = [];
+            $failed       = 0;
+            $index        = 0;
+            foreach ($input as $object) {
+                $current_res = [];
+                if (isset($object->id)) {
+                    if (!$item->getFromDB($object->id)) {
+                        $failed++;
+                        $current_res = [$object->id => false,
                                   'message'   => __("Item not found")];
-                  continue;
-               }
+                        continue;
+                    }
 
-               //check rights
-               if (!$item->can($object->id, UPDATE)) {
-                  $failed++;
-                  $current_res = [$object->id => false,
-                                 'message'    => __("You don't have permission to perform this action.")];
-               } else {
-                  // if parent key not provided in input and present in parameter
-                  // (detected from url for example), try to appent it do input
-                  // This is usefull to have logs in parent (and avoid some warnings in commonDBTM)
-                  if (isset($params['parent_itemtype'])
-                      && isset($params['parent_id'])) {
-                     $fk_parent = getForeignKeyFieldForItemType($params['parent_itemtype']);
-                     if (!property_exists($input, $fk_parent)) {
-                        $input->$fk_parent = $params['parent_id'];
-                     }
-                  }
+                    //check rights
+                    if (!$item->can($object->id, UPDATE)) {
+                        $failed++;
+                        $current_res = [$object->id => false,
+                                'message'    => __("You don't have permission to perform this action.")];
+                    } else {
+                     // if parent key not provided in input and present in parameter
+                     // (detected from url for example), try to appent it do input
+                     // This is usefull to have logs in parent (and avoid some warnings in commonDBTM)
+                        if (
+                            isset($params['parent_itemtype'])
+                            && isset($params['parent_id'])
+                        ) {
+                              $fk_parent = getForeignKeyFieldForItemType($params['parent_itemtype']);
+                            if (!property_exists($input, $fk_parent)) {
+                                $input->$fk_parent = $params['parent_id'];
+                            }
+                        }
 
-                  //update item
-                  $object = Sanitizer::sanitize((array)$object);
-                  $update_return = $item->update($object);
-                  if ($update_return === false) {
-                     $failed++;
-                  }
-                  $current_res = [$item->fields["id"] => $update_return,
-                                  'message'           => $this->getGlpiLastMessage()];
-               }
+                     //update item
+                        $object = Sanitizer::sanitize((array)$object);
+                        $update_return = $item->update($object);
+                        if ($update_return === false) {
+                             $failed++;
+                        }
+                        $current_res = [$item->fields["id"] => $update_return,
+                               'message'           => $this->getGlpiLastMessage()];
+                    }
+                }
 
+               // attach fileupload answer
+                if (
+                    isset($params['upload_result'])
+                    && isset($params['upload_result'][$index])
+                ) {
+                    $current_res['upload_result'] = $params['upload_result'][$index];
+                }
+
+               // append current result to final collection
+                $idCollection[] = $current_res;
+                $index++;
             }
-
-            // attach fileupload answer
-            if (isset($params['upload_result'])
-                && isset($params['upload_result'][$index])) {
-               $current_res['upload_result'] = $params['upload_result'][$index];
-            }
-
-            // append current result to final collection
-            $idCollection[] = $current_res;
-            $index++;
-         }
-         if ($isMultiple) {
-            if ($failed == count($input)) {
-               $this->returnError($idCollection, 400, "ERROR_GLPI_UPDATE", false);
-            } else if ($failed > 0) {
-               $this->returnError($idCollection, 207, "ERROR_GLPI_PARTIAL_UPDATE", false);
-            }
-         } else {
-            if ($failed > 0) {
-               $this->returnError($idCollection[0]['message'], 400, "ERROR_GLPI_UPDATE", false);
+            if ($isMultiple) {
+                if ($failed == count($input)) {
+                    $this->returnError($idCollection, 400, "ERROR_GLPI_UPDATE", false);
+                } else if ($failed > 0) {
+                    $this->returnError($idCollection, 207, "ERROR_GLPI_PARTIAL_UPDATE", false);
+                }
             } else {
-               return $idCollection; // Return collection, even if the request affects a single item
+                if ($failed > 0) {
+                    $this->returnError($idCollection[0]['message'], 400, "ERROR_GLPI_UPDATE", false);
+                } else {
+                    return $idCollection; // Return collection, even if the request affects a single item
+                }
             }
-         }
-         return $idCollection;
-
-      } else {
-         $this->messageBadArrayError();
-      }
-   }
+            return $idCollection;
+        } else {
+            $this->messageBadArrayError();
+        }
+    }
 
 
    /**
@@ -1910,143 +2022,150 @@ abstract class API {
     *
     * @return boolean|boolean[]
     */
-   protected function deleteItems($itemtype, $params = []) {
+    protected function deleteItems($itemtype, $params = [])
+    {
 
-      $this->initEndpoint();
-      $itemtype = $this->handleDepreciation($itemtype);
+        $this->initEndpoint();
+        $itemtype = $this->handleDepreciation($itemtype);
 
-      $default  = ['force_purge' => false,
+        $default  = ['force_purge' => false,
                         'history'     => true];
-      $params   = array_merge($default, $params);
-      $input    = $params['input'];
-      $item     = new $itemtype;
+        $params   = array_merge($default, $params);
+        $input    = $params['input'];
+        $item     = new $itemtype();
 
-      if (is_object($input)) {
-         $input = [$input];
-         $isMultiple = false;
-      } else {
-         $isMultiple = true;
-      }
+        if (is_object($input)) {
+            $input = [$input];
+            $isMultiple = false;
+        } else {
+            $isMultiple = true;
+        }
 
-      if ($this->isDeprecated()) {
-         $input = array_map(function($item) {
-            return $this->deprecated_item->mapDeprecatedToCurrentFields($item);
-         }, $input);
-      }
+        if ($this->isDeprecated()) {
+            $input = array_map(function ($item) {
+                return $this->deprecated_item->mapDeprecatedToCurrentFields($item);
+            }, $input);
+        }
 
-      if (is_array($input)) {
-         $idCollection = [];
-         $failed = 0;
-         foreach ($input as $object) {
-            if (isset($object->id)) {
-               if (!$item->getFromDB($object->id)) {
-                  $failed++;
-                  $idCollection[] = [$object->id => false, 'message' => __("Item not found")];
-                  continue;
-               }
+        if (is_array($input)) {
+            $idCollection = [];
+            $failed = 0;
+            foreach ($input as $object) {
+                if (isset($object->id)) {
+                    if (!$item->getFromDB($object->id)) {
+                        $failed++;
+                        $idCollection[] = [$object->id => false, 'message' => __("Item not found")];
+                        continue;
+                    }
 
-               // Force purge for templates / may not to be deleted / not dynamic lockable items
-               // see CommonDBTM::delete()
-               // TODO Needs factorization
-               if ($item->isTemplate()
-                  || !$item->maybeDeleted()
-                  // Do not take into account deleted field if maybe dynamic but not dynamic
-                  || ($item->useDeletedToLockIfDynamic()
-                        && !$item->isDynamic())) {
-                  $params['force_purge'] = 1;
-               } else {
-                  $params['force_purge'] = filter_var($params['force_purge'], FILTER_VALIDATE_BOOLEAN);
-               }
+                    // Force purge for templates / may not to be deleted / not dynamic lockable items
+                    // see CommonDBTM::delete()
+                    // TODO Needs factorization
+                    if (
+                        $item->isTemplate()
+                        || !$item->maybeDeleted()
+                        // Do not take into account deleted field if maybe dynamic but not dynamic
+                        || ($item->useDeletedToLockIfDynamic()
+                        && !$item->isDynamic())
+                    ) {
+                        $params['force_purge'] = 1;
+                    } else {
+                        $params['force_purge'] = filter_var($params['force_purge'], FILTER_VALIDATE_BOOLEAN);
+                    }
 
-               //check rights
-               if (($params['force_purge']
-                    && !$item->can($object->id, PURGE))
-                   || (!$params['force_purge']
-                       && !$item->can($object->id, DELETE))) {
-                  $failed++;
-                  $idCollection[] = [
-                        $object->id => false,
-                        'message' => __("You don't have permission to perform this action.")
-                  ];
-               } else {
-                  //delete item
-                  $delete_return = $item->delete((array) $object,
-                                                 $params['force_purge'],
-                                                 $params['history']);
-                  if ($delete_return === false) {
-                     $failed++;
-                  }
-                  $idCollection[] = [$object->id => $delete_return, 'message' => $this->getGlpiLastMessage()];
-               }
+                   //check rights
+                    if (
+                        ($params['force_purge']
+                        && !$item->can($object->id, PURGE))
+                        || (!$params['force_purge']
+                        && !$item->can($object->id, DELETE))
+                    ) {
+                          $failed++;
+                          $idCollection[] = [
+                          $object->id => false,
+                          'message' => __("You don't have permission to perform this action.")
+                            ];
+                    } else {
+                   //delete item
+                        $delete_return = $item->delete(
+                            (array) $object,
+                            $params['force_purge'],
+                            $params['history']
+                        );
+                        if ($delete_return === false) {
+                             $failed++;
+                        }
+                        $idCollection[] = [$object->id => $delete_return, 'message' => $this->getGlpiLastMessage()];
+                    }
+                }
             }
-         }
-         if ($isMultiple) {
-            if ($failed == count($input)) {
-               $this->returnError($idCollection, 400, "ERROR_GLPI_DELETE", false);
-            } else if ($failed > 0) {
-               $this->returnError($idCollection, 207, "ERROR_GLPI_PARTIAL_DELETE", false);
-            }
-         } else {
-            if ($failed > 0) {
-               $this->returnError($idCollection[0]['message'], 400, "ERROR_GLPI_DELETE", false);
+            if ($isMultiple) {
+                if ($failed == count($input)) {
+                    $this->returnError($idCollection, 400, "ERROR_GLPI_DELETE", false);
+                } else if ($failed > 0) {
+                    $this->returnError($idCollection, 207, "ERROR_GLPI_PARTIAL_DELETE", false);
+                }
             } else {
-               return $idCollection; // Return collection, even if the request affects a single item
+                if ($failed > 0) {
+                    $this->returnError($idCollection[0]['message'], 400, "ERROR_GLPI_DELETE", false);
+                } else {
+                    return $idCollection; // Return collection, even if the request affects a single item
+                }
             }
-         }
 
-         return $idCollection;
-
-      } else {
-         $this->messageBadArrayError();
-      }
-   }
+            return $idCollection;
+        } else {
+            $this->messageBadArrayError();
+        }
+    }
 
 
-   protected function lostPassword($params = []) {
-      global $CFG_GLPI;
+    protected function lostPassword($params = [])
+    {
+        global $CFG_GLPI;
 
-      if ($CFG_GLPI['use_notifications'] == '0' || $CFG_GLPI['notifications_mailing'] == '0') {
-         return $this->returnError(__("Email notifications are disabled"));
-      }
+        if ($CFG_GLPI['use_notifications'] == '0' || $CFG_GLPI['notifications_mailing'] == '0') {
+            return $this->returnError(__("Email notifications are disabled"));
+        }
 
-      if (!isset($params['email'])) {
-         return $this->returnError(__("email parameter missing"));
-      }
+        if (!isset($params['email'])) {
+            return $this->returnError(__("email parameter missing"));
+        }
 
-      if (isset($_SESSION['glpiID'])) {
-         return $this->returnError(__("A session is active"));
-      }
+        if (isset($_SESSION['glpiID'])) {
+            return $this->returnError(__("A session is active"));
+        }
 
-      $user = new User();
-      if (!isset($params['password_forget_token'])) {
-         $email = Toolbox::addslashes_deep($params['email']);
-         try {
-            $user->forgetPassword($email);
-         } catch (\Glpi\Exception\ForgetPasswordException $e) {
-            return $this->returnError($e->getMessage());
-         }
-         return $this->returnResponse([
+        $user = new User();
+        if (!isset($params['password_forget_token'])) {
+            $email = Toolbox::addslashes_deep($params['email']);
+            try {
+                $user->forgetPassword($email);
+            } catch (\Glpi\Exception\ForgetPasswordException $e) {
+                return $this->returnError($e->getMessage());
+            }
+            return $this->returnResponse([
             __("An email has been sent to your email address. The email contains information for reset your password.")
-         ]);
-      } else {
-         $password = isset($params['password']) ? $params['password'] : '';
-         $input = [
+            ]);
+        } else {
+            $password = isset($params['password']) ? $params['password'] : '';
+            $input = [
             'email'                    => Toolbox::addslashes_deep($params['email']),
             'password_forget_token'    => Toolbox::addslashes_deep($params['password_forget_token']),
             'password'                 => Toolbox::addslashes_deep($password),
             'password2'                => Toolbox::addslashes_deep($password),
-         ];
-         try {
-            $user->updateForgottenPassword($input);
-            return $this->returnResponse([__("Reset password successful.")]);
-         } catch (\Glpi\Exception\ForgetPasswordException $e) {
-            return $this->returnError($e->getMessage());
-         } catch (\Glpi\Exception\PasswordTooWeakException $e) {
-            implode('\n', $e->getMessages());
-            return $this->returnError(implode('\n', $e->getMessages()));
-         }
-      }
-   }
+            ];
+            try {
+                $user->updateForgottenPassword($input);
+                return $this->returnResponse([__("Reset password successful.")]);
+            } catch (\Glpi\Exception\ForgetPasswordException $e) {
+                return $this->returnError($e->getMessage());
+            } catch (\Glpi\Exception\PasswordTooWeakException $e) {
+                implode('\n', $e->getMessages());
+                return $this->returnError(implode('\n', $e->getMessages()));
+            }
+        }
+    }
 
 
    /**
@@ -2063,19 +2182,20 @@ abstract class API {
     *
     * @return void
     */
-   private function initEndpoint($unlock_session = true, $endpoint = "") {
+    private function initEndpoint($unlock_session = true, $endpoint = "")
+    {
 
-      if ($endpoint === "") {
-         $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
-         $endpoint = $backtrace[1]['function'];
-      }
-      $this->checkAppToken();
-      $this->logEndpointUsage($endpoint);
-      $this->checkSessionToken();
-      if ($unlock_session) {
-         $this->unlockSessionIfPossible();
-      }
-   }
+        if ($endpoint === "") {
+            $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+            $endpoint = $backtrace[1]['function'];
+        }
+        $this->checkAppToken();
+        $this->logEndpointUsage($endpoint);
+        $this->checkSessionToken();
+        if ($unlock_session) {
+            $this->unlockSessionIfPossible();
+        }
+    }
 
 
    /**
@@ -2083,22 +2203,29 @@ abstract class API {
     *
     * @return void
     */
-   private function checkAppToken() {
+    private function checkAppToken()
+    {
 
-      // check app token (if needed)
-      if (!isset($this->parameters['app_token'])) {
-         $this->parameters['app_token'] = "";
-      }
-      if (!$this->apiclients_id = array_search($this->parameters['app_token'], $this->app_tokens)) {
-         if ($this->parameters['app_token'] != "") {
-            $this->returnError(__("parameter app_token seems wrong"), 400,
-                               "ERROR_WRONG_APP_TOKEN_PARAMETER");
-         } else {
-            $this->returnError(__("missing parameter app_token"), 400,
-                               "ERROR_APP_TOKEN_PARAMETERS_MISSING");
-         }
-      }
-   }
+       // check app token (if needed)
+        if (!isset($this->parameters['app_token'])) {
+            $this->parameters['app_token'] = "";
+        }
+        if (!$this->apiclients_id = array_search($this->parameters['app_token'], $this->app_tokens)) {
+            if ($this->parameters['app_token'] != "") {
+                $this->returnError(
+                    __("parameter app_token seems wrong"),
+                    400,
+                    "ERROR_WRONG_APP_TOKEN_PARAMETER"
+                );
+            } else {
+                $this->returnError(
+                    __("missing parameter app_token"),
+                    400,
+                    "ERROR_APP_TOKEN_PARAMETERS_MISSING"
+                );
+            }
+        }
+    }
 
 
    /**
@@ -2110,33 +2237,39 @@ abstract class API {
     *
     * @return void
     */
-   private function logEndpointUsage($endpoint = "") {
+    private function logEndpointUsage($endpoint = "")
+    {
 
-      $username = "";
-      if (isset($_SESSION['glpiname'])) {
-         $username = "(".$_SESSION['glpiname'].")";
-      }
+        $username = "";
+        if (isset($_SESSION['glpiname'])) {
+            $username = "(" . $_SESSION['glpiname'] . ")";
+        }
 
-      $apiclient = new APIClient;
-      if ($apiclient->getFromDB($this->apiclients_id)) {
-         $changes = [
+        $apiclient = new APIClient();
+        if ($apiclient->getFromDB($this->apiclients_id)) {
+            $changes = [
             0,
             "",
-            "Enpoint '$endpoint' called by ".$this->iptxt." $username"
-         ];
+            "Enpoint '$endpoint' called by " . $this->iptxt . " $username"
+            ];
 
-         switch ($apiclient->fields['dolog_method']) {
-            case APIClient::DOLOG_HISTORICAL:
-               Log::history($this->apiclients_id, 'APIClient', $changes, 0,
-                            Log::HISTORY_LOG_SIMPLE_MESSAGE);
-               break;
+            switch ($apiclient->fields['dolog_method']) {
+                case APIClient::DOLOG_HISTORICAL:
+                    Log::history(
+                        $this->apiclients_id,
+                        'APIClient',
+                        $changes,
+                        0,
+                        Log::HISTORY_LOG_SIMPLE_MESSAGE
+                    );
+                    break;
 
-            case APIClient::DOLOG_LOGS:
-               Toolbox::logInFile("api", $changes[2]."\n");
-               break;
-         }
-      }
-   }
+                case APIClient::DOLOG_LOGS:
+                    Toolbox::logInFile("api", $changes[2] . "\n");
+                    break;
+            }
+        }
+    }
 
 
    /**
@@ -2144,20 +2277,25 @@ abstract class API {
     *
     * @return boolean
     */
-   protected function checkSessionToken() {
+    protected function checkSessionToken()
+    {
 
-      if (!isset($this->parameters['session_token'])
-          || empty($this->parameters['session_token'])) {
-         return $this->messageSessionTokenMissing();
-      }
+        if (
+            !isset($this->parameters['session_token'])
+            || empty($this->parameters['session_token'])
+        ) {
+            return $this->messageSessionTokenMissing();
+        }
 
-      $current = session_id();
-      if ($this->parameters['session_token'] != $current
-          && !empty($current)
-          || !isset($_SESSION['glpiID'])) {
-         return $this->messageSessionError();
-      }
-   }
+        $current = session_id();
+        if (
+            $this->parameters['session_token'] != $current
+            && !empty($current)
+            || !isset($_SESSION['glpiID'])
+        ) {
+            return $this->messageSessionError();
+        }
+    }
 
 
    /**
@@ -2165,12 +2303,13 @@ abstract class API {
     *
     * @return void
     */
-   private function unlockSessionIfPossible() {
+    private function unlockSessionIfPossible()
+    {
 
-      if (!$this->session_write) {
-         session_write_close();
-      }
-   }
+        if (!$this->session_write) {
+            session_write_close();
+        }
+    }
 
 
    /**
@@ -2178,38 +2317,43 @@ abstract class API {
     *
     * @return array  of messages
     */
-   private function getGlpiLastMessage() {
-      global $DEBUG_SQL;
+    private function getGlpiLastMessage()
+    {
+        global $DEBUG_SQL;
 
-      $all_messages             = [];
+        $all_messages             = [];
 
-      $messages_after_redirect  = [];
+        $messages_after_redirect  = [];
 
-      if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])
-          && count($_SESSION["MESSAGE_AFTER_REDIRECT"]) > 0) {
-         $messages_after_redirect = $_SESSION["MESSAGE_AFTER_REDIRECT"];
-         // Clean messages
-         $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
-      };
+        if (
+            isset($_SESSION["MESSAGE_AFTER_REDIRECT"])
+            && count($_SESSION["MESSAGE_AFTER_REDIRECT"]) > 0
+        ) {
+            $messages_after_redirect = $_SESSION["MESSAGE_AFTER_REDIRECT"];
+           // Clean messages
+            $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
+        };
 
-      // clean html
-      foreach ($messages_after_redirect as $messages) {
-         foreach ($messages as $message) {
-            $all_messages[] = Toolbox::stripTags($message);
-         }
-      }
+       // clean html
+        foreach ($messages_after_redirect as $messages) {
+            foreach ($messages as $message) {
+                $all_messages[] = Toolbox::stripTags($message);
+            }
+        }
 
-      // get sql errors
-      if (count($all_messages) <= 0
-          && $DEBUG_SQL['errors'] !== null) {
-         $all_messages = $DEBUG_SQL['errors'];
-      }
+       // get sql errors
+        if (
+            count($all_messages) <= 0
+            && $DEBUG_SQL['errors'] !== null
+        ) {
+            $all_messages = $DEBUG_SQL['errors'];
+        }
 
-      if (!end($all_messages)) {
-         return '';
-      }
-      return end($all_messages);
-   }
+        if (!end($all_messages)) {
+            return '';
+        }
+        return end($all_messages);
+    }
 
 
    /**
@@ -2217,9 +2361,10 @@ abstract class API {
     *
     * @return void
     */
-   protected function showDebug() {
-      Html::printCleanArray($this);
-   }
+    protected function showDebug()
+    {
+        Html::printCleanArray($this);
+    }
 
 
    /**
@@ -2233,30 +2378,31 @@ abstract class API {
     *
     * @return void
     */
-   protected function header($html = false, $title = "") {
+    protected function header($html = false, $title = "")
+    {
 
-      // Send UTF8 Headers
-      $content_type = static::$content_type;
-      if ($html) {
-         $content_type = "text/html";
-      }
-      header("Content-Type: $content_type; charset=UTF-8");
+       // Send UTF8 Headers
+        $content_type = static::$content_type;
+        if ($html) {
+            $content_type = "text/html";
+        }
+        header("Content-Type: $content_type; charset=UTF-8");
 
        // Send extra expires header
-      Html::header_nocache();
+        Html::header_nocache();
 
-      if ($html) {
-         if (empty($title)) {
-            $title = $this->getTypeName();
-         }
+        if ($html) {
+            if (empty($title)) {
+                $title = $this->getTypeName();
+            }
 
-         Html::includeHeader($title);
+            Html::includeHeader($title);
 
-         // Body with configured stuff
-         echo "<body>";
-         echo "<div id='page'>";
-      }
-   }
+           // Body with configured stuff
+            echo "<body>";
+            echo "<div id='page'>";
+        }
+    }
 
 
    /**
@@ -2266,24 +2412,25 @@ abstract class API {
     *
     * @return void
     */
-   public function inlineDocumentation($file) {
-      $this->header(true, __("API Documentation"));
-      echo Html::css("public/lib/prismjs.css");
-      echo Html::script("public/lib/prismjs.js");
+    public function inlineDocumentation($file)
+    {
+        $this->header(true, __("API Documentation"));
+        echo Html::css("public/lib/prismjs.css");
+        echo Html::script("public/lib/prismjs.js");
 
-      echo "<div class='documentation'>";
-      $documentation = file_get_contents(GLPI_ROOT.'/'.$file);
-      $md = new MarkdownExtra();
-      $md->code_class_prefix = "language-";
-      $md->header_id_func = function($headerName) {
-         $headerName = str_replace(['(', ')'], '', $headerName);
-         return rawurlencode(strtolower(strtr($headerName, [' ' => '-'])));
-      };
-      echo $md->transform($documentation);
-      echo "</div>";
+        echo "<div class='documentation'>";
+        $documentation = file_get_contents(GLPI_ROOT . '/' . $file);
+        $md = new MarkdownExtra();
+        $md->code_class_prefix = "language-";
+        $md->header_id_func = function ($headerName) {
+            $headerName = str_replace(['(', ')'], '', $headerName);
+            return rawurlencode(strtolower(strtr($headerName, [' ' => '-'])));
+        };
+        echo $md->transform($documentation);
+        echo "</div>";
 
-      Html::nullFooter();
-   }
+        Html::nullFooter();
+    }
 
 
    /**
@@ -2298,59 +2445,63 @@ abstract class API {
     *
     * @return array altered $fields
     */
-   protected static function parseDropdowns($fields, $params = []) {
+    protected static function parseDropdowns($fields, $params = [])
+    {
 
-      // default params
-      $default = ['expand_dropdowns' => false,
+       // default params
+        $default = ['expand_dropdowns' => false,
                        'get_hateoas'      => true];
-      $params = array_merge($default, $params);
+        $params = array_merge($default, $params);
 
-      // parse fields recursively
-      foreach ($fields as $key => &$value) {
-         if (is_array($value)) {
-            $value = self::parseDropdowns($value, $params);
-         }
-         if (is_integer($key)) {
-            continue;
-         }
-         if (isForeignKeyField($key)) {
-            // specific key transformations
-            if ($key == "items_id" && isset($fields['itemtype'])) {
-               $key = getForeignKeyFieldForItemType($fields['itemtype']);
+       // parse fields recursively
+        foreach ($fields as $key => &$value) {
+            if (is_array($value)) {
+                $value = self::parseDropdowns($value, $params);
             }
-            if ($key == "auths_id"
-                && isset($fields['authtype']) && $fields['authtype'] == Auth::LDAP) {
-               $key = "authldaps_id";
+            if (is_integer($key)) {
+                continue;
             }
-            if ($key == "default_requesttypes_id") {
-               $key = "requesttypes_id";
-            }
-            // mainitems_id mainitemtype
-            if ($key == "mainitems_id" && isset($fields['mainitemtype'])) {
-               $key = getForeignKeyFieldForItemType($fields['mainitemtype']);
-            }
+            if (isForeignKeyField($key)) {
+               // specific key transformations
+                if ($key == "items_id" && isset($fields['itemtype'])) {
+                    $key = getForeignKeyFieldForItemType($fields['itemtype']);
+                }
+                if (
+                    $key == "auths_id"
+                    && isset($fields['authtype']) && $fields['authtype'] == Auth::LDAP
+                ) {
+                    $key = "authldaps_id";
+                }
+                if ($key == "default_requesttypes_id") {
+                    $key = "requesttypes_id";
+                }
+               // mainitems_id mainitemtype
+                if ($key == "mainitems_id" && isset($fields['mainitemtype'])) {
+                    $key = getForeignKeyFieldForItemType($fields['mainitemtype']);
+                }
 
-            if (!empty($value)
-                || $key == 'entities_id' && $value >= 0) {
+                if (
+                    !empty($value)
+                    || $key == 'entities_id' && $value >= 0
+                ) {
+                    $tablename = getTableNameForForeignKeyField($key);
+                    $itemtype = getItemTypeForTable($tablename);
 
-               $tablename = getTableNameForForeignKeyField($key);
-               $itemtype = getItemTypeForTable($tablename);
+                   // get hateoas
+                    if ($params['get_hateoas'] && is_integer($value)) {
+                        $fields['links'][] = ['rel'  => $itemtype,
+                                             'href' => self::$api_url . "/$itemtype/" . $value];
+                    }
 
-               // get hateoas
-               if ($params['get_hateoas'] && is_integer($value)) {
-                  $fields['links'][] = ['rel'  => $itemtype,
-                                             'href' => self::$api_url."/$itemtype/".$value];
-               }
-
-               // expand dropdown
-               if ($params['expand_dropdowns']) {
-                  $value = Dropdown::getDropdownName($tablename, $value, false, true, false, '');
-               }
+                   // expand dropdown
+                    if ($params['expand_dropdowns']) {
+                        $value = Dropdown::getDropdownName($tablename, $value, false, true, false, '');
+                    }
+                }
             }
-         }
-      }
-      return $fields;
-   }
+        }
+        return $fields;
+    }
 
 
    /**
@@ -2360,98 +2511,101 @@ abstract class API {
     *
     * @return array child classes
     */
-   static function getHatoasClasses($itemtype) {
-      global $CFG_GLPI;
+    public static function getHatoasClasses($itemtype)
+    {
+        global $CFG_GLPI;
 
-      $hclasses = [];
-      if (in_array($itemtype, $CFG_GLPI["reservation_types"])) {
-         $hclasses[] = "ReservationItem";
-      }
-      if (in_array($itemtype, $CFG_GLPI["document_types"])) {
-         $hclasses[] = "Document_Item";
-      }
-      if (in_array($itemtype, $CFG_GLPI["contract_types"])) {
-         $hclasses[] = "Contract_Item";
-      }
-      if (in_array($itemtype, $CFG_GLPI["infocom_types"])) {
-         $hclasses[] = "Infocom";
-      }
-      if (in_array($itemtype, $CFG_GLPI["ticket_types"])) {
-         $hclasses[] = "Item_Ticket";
-      }if (in_array($itemtype, $CFG_GLPI["project_asset_types"])) {
-         $hclasses[] = "Item_Project";
-      }
-      if (in_array($itemtype, $CFG_GLPI["networkport_types"])) {
-         $hclasses[] = "NetworkPort";
-      }
-      if (in_array($itemtype, $CFG_GLPI["itemdevices_types"])) {
-         //$hclasses[] = "Item_Devices";
-         foreach ($CFG_GLPI['device_types'] as $device_type) {
-            if ((($device_type =="DeviceMemory")
-                 && !in_array($itemtype, $CFG_GLPI["itemdevicememory_types"]))
-                || (($device_type =="DevicePowerSupply")
-                    && !in_array($itemtype, $CFG_GLPI["itemdevicepowersupply_types"]))
-                || (($device_type =="DeviceNetworkCard")
-                    && !in_array($itemtype, $CFG_GLPI["itemdevicenetworkcard_types"]))) {
-               continue;
-            }
-            $hclasses[] = "Item_".$device_type;
-         }
-      }
-
-      //specific case
-      switch ($itemtype) {
-         case 'Ticket' :
-            $hclasses[] = "TicketTask";
-            $hclasses[] = "TicketValidation";
-            $hclasses[] = "TicketCost";
-            $hclasses[] = "Problem_Ticket";
-            $hclasses[] = "Change_Ticket";
+        $hclasses = [];
+        if (in_array($itemtype, $CFG_GLPI["reservation_types"])) {
+            $hclasses[] = "ReservationItem";
+        }
+        if (in_array($itemtype, $CFG_GLPI["document_types"])) {
+            $hclasses[] = "Document_Item";
+        }
+        if (in_array($itemtype, $CFG_GLPI["contract_types"])) {
+            $hclasses[] = "Contract_Item";
+        }
+        if (in_array($itemtype, $CFG_GLPI["infocom_types"])) {
+            $hclasses[] = "Infocom";
+        }
+        if (in_array($itemtype, $CFG_GLPI["ticket_types"])) {
             $hclasses[] = "Item_Ticket";
-            $hclasses[] = "ITILSolution";
-            $hclasses[] = "ITILFollowup";
-            $hclasses[] = "Ticket_User";
-            $hclasses[] = "Group_Ticket";
-            $hclasses[] = "Supplier_Ticket";
-            break;
-
-         case 'Problem' :
-            $hclasses[] = "ProblemTask";
-            $hclasses[] = "ProblemCost";
-            $hclasses[] = "Change_Problem";
-            $hclasses[] = "Problem_Ticket";
-            $hclasses[] = "Item_Problem";
-            $hclasses[] = "ITILSolution";
-            $hclasses[] = "ITILFollowup";
-            $hclasses[] = "Problem_User";
-            $hclasses[] = "Group_Problem";
-            $hclasses[] = "Supplier_Problem";
-            break;
-
-         case 'Change' :
-            $hclasses[] = "ChangeTask";
-            $hclasses[] = "ChangeCost";
-            $hclasses[] = "Itil_Project";
-            $hclasses[] = "Change_Problem";
-            $hclasses[] = "Change_Ticket";
-            $hclasses[] = "Change_Item";
-            $hclasses[] = "ITILSolution";
-            $hclasses[] = "ITILFollowup";
-            $hclasses[] = "Change_User";
-            $hclasses[] = "Group_Change";
-            $hclasses[] = "Supplier_Change";
-            break;
-
-         case 'Project' :
-            $hclasses[] = "ProjectTask";
-            $hclasses[] = "ProjectCost";
-            $hclasses[] = "Itil_Project";
+        }if (in_array($itemtype, $CFG_GLPI["project_asset_types"])) {
             $hclasses[] = "Item_Project";
-            break;
-      }
+        }
+        if (in_array($itemtype, $CFG_GLPI["networkport_types"])) {
+            $hclasses[] = "NetworkPort";
+        }
+        if (in_array($itemtype, $CFG_GLPI["itemdevices_types"])) {
+           //$hclasses[] = "Item_Devices";
+            foreach ($CFG_GLPI['device_types'] as $device_type) {
+                if (
+                    (($device_type == "DeviceMemory")
+                    && !in_array($itemtype, $CFG_GLPI["itemdevicememory_types"]))
+                    || (($device_type == "DevicePowerSupply")
+                    && !in_array($itemtype, $CFG_GLPI["itemdevicepowersupply_types"]))
+                    || (($device_type == "DeviceNetworkCard")
+                    && !in_array($itemtype, $CFG_GLPI["itemdevicenetworkcard_types"]))
+                ) {
+                    continue;
+                }
+                $hclasses[] = "Item_" . $device_type;
+            }
+        }
 
-      return $hclasses;
-   }
+       //specific case
+        switch ($itemtype) {
+            case 'Ticket':
+                $hclasses[] = "TicketTask";
+                $hclasses[] = "TicketValidation";
+                $hclasses[] = "TicketCost";
+                $hclasses[] = "Problem_Ticket";
+                $hclasses[] = "Change_Ticket";
+                $hclasses[] = "Item_Ticket";
+                $hclasses[] = "ITILSolution";
+                $hclasses[] = "ITILFollowup";
+                $hclasses[] = "Ticket_User";
+                $hclasses[] = "Group_Ticket";
+                $hclasses[] = "Supplier_Ticket";
+                break;
+
+            case 'Problem':
+                $hclasses[] = "ProblemTask";
+                $hclasses[] = "ProblemCost";
+                $hclasses[] = "Change_Problem";
+                $hclasses[] = "Problem_Ticket";
+                $hclasses[] = "Item_Problem";
+                $hclasses[] = "ITILSolution";
+                $hclasses[] = "ITILFollowup";
+                $hclasses[] = "Problem_User";
+                $hclasses[] = "Group_Problem";
+                $hclasses[] = "Supplier_Problem";
+                break;
+
+            case 'Change':
+                $hclasses[] = "ChangeTask";
+                $hclasses[] = "ChangeCost";
+                $hclasses[] = "Itil_Project";
+                $hclasses[] = "Change_Problem";
+                $hclasses[] = "Change_Ticket";
+                $hclasses[] = "Change_Item";
+                $hclasses[] = "ITILSolution";
+                $hclasses[] = "ITILFollowup";
+                $hclasses[] = "Change_User";
+                $hclasses[] = "Group_Change";
+                $hclasses[] = "Supplier_Change";
+                break;
+
+            case 'Project':
+                $hclasses[] = "ProjectTask";
+                $hclasses[] = "ProjectCost";
+                $hclasses[] = "Itil_Project";
+                $hclasses[] = "Item_Project";
+                break;
+        }
+
+        return $hclasses;
+    }
 
 
    /**
@@ -2461,14 +2615,17 @@ abstract class API {
     *
     * @return void
     */
-   public function messageNotfoundError($return_error = true) {
+    public function messageNotfoundError($return_error = true)
+    {
 
-      $this->returnError(__("Item not found"),
-                         404,
-                         "ERROR_ITEM_NOT_FOUND",
-                         false,
-                         $return_error);
-   }
+        $this->returnError(
+            __("Item not found"),
+            404,
+            "ERROR_ITEM_NOT_FOUND",
+            false,
+            $return_error
+        );
+    }
 
 
    /**
@@ -2478,14 +2635,17 @@ abstract class API {
     *
     * @return void
     */
-   public function messageBadArrayError($return_error = true) {
+    public function messageBadArrayError($return_error = true)
+    {
 
-      $this->returnError(__("input parameter must be an array of objects"),
-                         400,
-                         "ERROR_BAD_ARRAY",
-                         true,
-                         $return_error);
-   }
+        $this->returnError(
+            __("input parameter must be an array of objects"),
+            400,
+            "ERROR_BAD_ARRAY",
+            true,
+            $return_error
+        );
+    }
 
 
    /**
@@ -2495,14 +2655,17 @@ abstract class API {
     *
     * @return void
     */
-   public function messageLostError($return_error = true) {
+    public function messageLostError($return_error = true)
+    {
 
-      $this->returnError(__("Method Not Allowed"),
-                         405,
-                         "ERROR_METHOD_NOT_ALLOWED",
-                         true,
-                         $return_error);
-   }
+        $this->returnError(
+            __("Method Not Allowed"),
+            405,
+            "ERROR_METHOD_NOT_ALLOWED",
+            true,
+            $return_error
+        );
+    }
 
 
    /**
@@ -2512,14 +2675,17 @@ abstract class API {
     *
     * @return void
     */
-   public function messageRightError($return_error = true) {
+    public function messageRightError($return_error = true)
+    {
 
-      $this->returnError(__("You don't have permission to perform this action."),
-                         403,
-                         "ERROR_RIGHT_MISSING",
-                         false,
-                         $return_error);
-   }
+        $this->returnError(
+            __("You don't have permission to perform this action."),
+            403,
+            "ERROR_RIGHT_MISSING",
+            false,
+            $return_error
+        );
+    }
 
 
    /**
@@ -2529,13 +2695,16 @@ abstract class API {
     *
     * @return void
     */
-   public function messageSessionError($return_error = true) {
-      $this->returnError(__("session_token seems invalid"),
-                         401,
-                         "ERROR_SESSION_TOKEN_INVALID",
-                         false,
-                         $return_error);
-   }
+    public function messageSessionError($return_error = true)
+    {
+        $this->returnError(
+            __("session_token seems invalid"),
+            401,
+            "ERROR_SESSION_TOKEN_INVALID",
+            false,
+            $return_error
+        );
+    }
 
 
    /**
@@ -2545,14 +2714,17 @@ abstract class API {
     *
     * @return void
     */
-   public function messageSessionTokenMissing($return_error = true) {
+    public function messageSessionTokenMissing($return_error = true)
+    {
 
-      $this->returnError(__("parameter session_token is missing or empty"),
-                         400,
-                         "ERROR_SESSION_TOKEN_MISSING",
-                         true,
-                         $return_error);
-   }
+        $this->returnError(
+            __("parameter session_token is missing or empty"),
+            400,
+            "ERROR_SESSION_TOKEN_MISSING",
+            true,
+            $return_error
+        );
+    }
 
 
    /**
@@ -2572,25 +2744,32 @@ abstract class API {
     *
     * @return array
     */
-   public function returnError($message = "Bad Request", $httpcode = 400, $statuscode = "ERROR",
-                               $docmessage = true, $return_response = true) {
+    public function returnError(
+        $message = "Bad Request",
+        $httpcode = 400,
+        $statuscode = "ERROR",
+        $docmessage = true,
+        $return_response = true
+    ) {
 
-      if (empty($httpcode)) {
-         $httpcode = 400;
-      }
-      if (empty($statuscode)) {
-         $statuscode = "ERROR";
-      }
+        if (empty($httpcode)) {
+            $httpcode = 400;
+        }
+        if (empty($statuscode)) {
+            $statuscode = "ERROR";
+        }
 
-      if ($docmessage) {
-         $message .= "; ".sprintf(__("view documentation in your browser at %s"),
-                                  self::$api_url."/#$statuscode");
-      }
-      if ($return_response) {
-         return $this->returnResponse([$statuscode, $message], $httpcode);
-      }
-      return [$statuscode, $message];
-   }
+        if ($docmessage) {
+            $message .= "; " . sprintf(
+                __("view documentation in your browser at %s"),
+                self::$api_url . "/#$statuscode"
+            );
+        }
+        if ($return_response) {
+            return $this->returnResponse([$statuscode, $message], $httpcode);
+        }
+        return [$statuscode, $message];
+    }
 
 
    /**
@@ -2598,9 +2777,10 @@ abstract class API {
     *
     * @return string
     */
-   protected function getHttpBody() {
-      return file_get_contents('php://input');
-   }
+    protected function getHttpBody()
+    {
+        return file_get_contents('php://input');
+    }
 
    /**
     * Get raw names
@@ -2613,43 +2793,42 @@ abstract class API {
     *
     * @return array
     */
-   protected function getFriendlyNames(
-      array $data,
-      array $params,
-      string $self_itemtype
-   ) {
-      $_names = [];
+    protected function getFriendlyNames(
+        array $data,
+        array $params,
+        string $self_itemtype
+    ) {
+        $_names = [];
 
-      foreach ($params['add_keys_names'] as $kn_fkey) {
-         if ($kn_fkey == "id") {
-            // Get friendlyname for current item
-            $kn_itemtype = $self_itemtype;
-            $kn_id = $data[$kn_itemtype::getIndexName()];
-         } else {
+        foreach ($params['add_keys_names'] as $kn_fkey) {
+            if ($kn_fkey == "id") {
+                // Get friendlyname for current item
+                $kn_itemtype = $self_itemtype;
+                $kn_id = $data[$kn_itemtype::getIndexName()];
+            } else {
+                if (!isset($data[$kn_fkey])) {
+                    trigger_error(sprintf('Invalid value: "%s" doesn\'t exist.', $kn_fkey), E_USER_WARNING);
+                    continue;
+                }
 
-            if (!isset($data[$kn_fkey])) {
-               trigger_error(sprintf('Invalid value: "%s" doesn\'t exist.', $kn_fkey), E_USER_WARNING);
-               continue;
+               // Get friendlyname for given fkey
+                $kn_itemtype = getItemtypeForForeignKeyField($kn_fkey);
+                $kn_id = $data[$kn_fkey];
             }
 
-            // Get friendlyname for given fkey
-            $kn_itemtype = getItemtypeForForeignKeyField($kn_fkey);
-            $kn_id = $data[$kn_fkey];
-         }
+           // Check itemtype is valid
+            $kn_item = getItemForItemtype($kn_itemtype);
+            if (!$kn_item) {
+                trigger_error(sprintf('Invalid itemtype "%s" for fkey "%s".', $kn_itemtype, $kn_fkey), E_USER_WARNING);
+                continue;
+            }
 
-         // Check itemtype is valid
-         $kn_item = getItemForItemtype($kn_itemtype);
-         if (!$kn_item) {
-            trigger_error(sprintf('Invalid itemtype "%s" for fkey "%s".', $kn_itemtype, $kn_fkey), E_USER_WARNING);
-            continue;
-         }
+            $kn_name = $kn_item::getFriendlyNameById($kn_id);
+            $_names[$kn_fkey] = $kn_name;
+        }
 
-         $kn_name = $kn_item::getFriendlyNameById($kn_id);
-         $_names[$kn_fkey] = $kn_name;
-      }
-
-      return $_names;
-   }
+        return $_names;
+    }
 
    /**
     * Get network ports
@@ -2661,22 +2840,22 @@ abstract class API {
     *
     * @return array
     */
-   protected function getNetworkPorts(
-      int $id,
-      string $itemtype
-   ): array {
-      global $DB;
+    protected function getNetworkPorts(
+        int $id,
+        string $itemtype
+    ): array {
+        global $DB;
 
-      $_networkports = [];
+        $_networkports = [];
 
-      if (!NetworkEquipment::canView()) {
-         $_networkports = $this->arrayRightError();
-      } else {
-         $networkport_types = NetworkPort::getNetworkPortInstantiations();
-         foreach ($networkport_types as $networkport_type) {
-            $netport_table = $networkport_type::getTable();
-            $netp_iterator = $DB->request([
-               'SELECT'    => [
+        if (!NetworkEquipment::canView()) {
+            $_networkports = $this->arrayRightError();
+        } else {
+            $networkport_types = NetworkPort::getNetworkPortInstantiations();
+            foreach ($networkport_types as $networkport_type) {
+                $netport_table = $networkport_type::getTable();
+                $netp_iterator = $DB->request([
+                'SELECT'    => [
                   'netp.id AS netport_id',
                   'netp.entities_id',
                   'netp.is_recursive',
@@ -2686,151 +2865,151 @@ abstract class API {
                   'netp.comment',
                   'netp.is_dynamic',
                   'netp_subtable.*'
-               ],
-               'FROM'      => 'glpi_networkports AS netp',
-               'LEFT JOIN' => [
+                ],
+                'FROM'      => 'glpi_networkports AS netp',
+                'LEFT JOIN' => [
                   "$netport_table AS netp_subtable" => [
                      'ON' => [
                         'netp_subtable'   => 'networkports_id',
                         'netp'            => 'id'
                      ]
                   ]
-               ],
-               'WHERE'     => [
+                ],
+                'WHERE'     => [
                   'netp.instantiation_type'  => $networkport_type,
                   'netp.items_id'            => $id,
                   'netp.itemtype'            => $itemtype,
                   'netp.is_deleted'          => 0
-               ]
-            ]);
+                ]
+                ]);
 
-            foreach ($netp_iterator as $data) {
-               if (isset($data['netport_id'])) {
-                  // append network name
-                  $concat_expr = new QueryExpression(
-                     "GROUP_CONCAT(CONCAT(".$DB->quoteName('ipadr.id').", ".$DB->quoteValue(Search::SHORTSEP)." , ".$DB->quoteName('ipadr.name').")
-                     SEPARATOR ".$DB->quoteValue(Search::LONGSEP).") AS ".$DB->quoteName('ipadresses')
-                  );
-                  $netn_iterator = $DB->request([
-                     'SELECT'    => [
-                        $concat_expr,
-                        'netn.id AS networknames_id',
-                        'netn.name AS networkname',
-                        'netn.fqdns_id',
-                        'fqdn.name AS fqdn_name',
-                        'fqdn.fqdn'
-                     ],
-                     'FROM'      => [
-                        'glpi_networknames AS netn'
-                     ],
-                     'LEFT JOIN' => [
-                        'glpi_ipaddresses AS ipadr'               => [
-                           'ON' => [
-                              'ipadr'  => 'items_id',
-                              'netn'   => 'id',
-                              [
-                                 'AND' => ['ipadr.itemtype' => 'NetworkName']
-                              ]
-                           ]
-                        ],
-                        'glpi_fqdns AS fqdn'                      => [
-                           'ON' => [
-                              'fqdn'   => 'id',
-                              'netn'   => 'fqdns_id'
-                           ]
-                        ],
-                        'glpi_ipaddresses_ipnetworks AS ipadnet'  => [
-                           'ON' => [
-                              'ipadnet'   => 'ipaddresses_id',
-                              'ipadr'     => 'id'
-                           ]
-                        ],
-                        'glpi_ipnetworks AS ipnet'                => [
-                           'ON' => [
-                              'ipnet'     => 'id',
-                              'ipadnet'   => 'ipnetworks_id'
-                           ]
-                        ]
-                     ],
-                     'WHERE'     => [
-                        'netn.itemtype'   => 'NetworkPort',
-                        'netn.items_id'   => $data['netport_id']
-                     ],
-                     'GROUPBY'   => [
-                        'netn.id',
-                        'netn.name',
-                        'netn.fqdns_id',
-                        'fqdn.name',
-                        'fqdn.fqdn'
-                     ]
-                  ]);
-
-                  if (count($netn_iterator)) {
-                     $data_netn = $netn_iterator->current();
-
-                     $raw_ipadresses = explode(Search::LONGSEP, $data_netn['ipadresses']);
-                     $ipadresses = [];
-                     foreach ($raw_ipadresses as $ipadress) {
-                        $ipadress = explode(Search::SHORTSEP, $ipadress);
-
-                        //find ip network attached to these ip
-                        $ipnetworks = [];
-                        $ipnet_iterator = $DB->request([
-                           'SELECT'       => [
-                              'ipnet.id',
-                              'ipnet.completename',
-                              'ipnet.name',
-                              'ipnet.address',
-                              'ipnet.netmask',
-                              'ipnet.gateway',
-                              'ipnet.ipnetworks_id',
-                              'ipnet.comment'
-                           ],
-                           'FROM'         => 'glpi_ipnetworks AS ipnet',
-                           'INNER JOIN'   => [
-                              'glpi_ipaddresses_ipnetworks AS ipadnet' => [
-                                 'ON' => [
-                                    'ipadnet'   => 'ipnetworks_id',
-                                    'ipnet'     => 'id'
-                                 ]
-                              ]
-                           ],
-                           'WHERE'        => [
-                              'ipadnet.ipaddresses_id'  => $ipadress[0]
-                           ]
+                foreach ($netp_iterator as $data) {
+                    if (isset($data['netport_id'])) {
+                       // append network name
+                        $concat_expr = new QueryExpression(
+                            "GROUP_CONCAT(CONCAT(" . $DB->quoteName('ipadr.id') . ", " . $DB->quoteValue(Search::SHORTSEP) . " , " . $DB->quoteName('ipadr.name') . ")
+                     SEPARATOR " . $DB->quoteValue(Search::LONGSEP) . ") AS " . $DB->quoteName('ipadresses')
+                        );
+                        $netn_iterator = $DB->request([
+                         'SELECT'    => [
+                            $concat_expr,
+                            'netn.id AS networknames_id',
+                            'netn.name AS networkname',
+                            'netn.fqdns_id',
+                            'fqdn.name AS fqdn_name',
+                            'fqdn.fqdn'
+                         ],
+                         'FROM'      => [
+                          'glpi_networknames AS netn'
+                         ],
+                         'LEFT JOIN' => [
+                          'glpi_ipaddresses AS ipadr'               => [
+                          'ON' => [
+                             'ipadr'  => 'items_id',
+                             'netn'   => 'id',
+                             [
+                                'AND' => ['ipadr.itemtype' => 'NetworkName']
+                             ]
+                          ]
+                          ],
+                          'glpi_fqdns AS fqdn'                      => [
+                          'ON' => [
+                             'fqdn'   => 'id',
+                             'netn'   => 'fqdns_id'
+                          ]
+                          ],
+                          'glpi_ipaddresses_ipnetworks AS ipadnet'  => [
+                          'ON' => [
+                             'ipadnet'   => 'ipaddresses_id',
+                             'ipadr'     => 'id'
+                          ]
+                          ],
+                          'glpi_ipnetworks AS ipnet'                => [
+                          'ON' => [
+                             'ipnet'     => 'id',
+                             'ipadnet'   => 'ipnetworks_id'
+                          ]
+                          ]
+                         ],
+                         'WHERE'     => [
+                          'netn.itemtype'   => 'NetworkPort',
+                          'netn.items_id'   => $data['netport_id']
+                         ],
+                         'GROUPBY'   => [
+                          'netn.id',
+                          'netn.name',
+                          'netn.fqdns_id',
+                          'fqdn.name',
+                          'fqdn.fqdn'
+                         ]
                         ]);
-                        foreach ($ipnet_iterator as $data_ipnet) {
-                           $ipnetworks[] = $data_ipnet;
+
+                        if (count($netn_iterator)) {
+                               $data_netn = $netn_iterator->current();
+
+                               $raw_ipadresses = explode(Search::LONGSEP, $data_netn['ipadresses']);
+                               $ipadresses = [];
+                            foreach ($raw_ipadresses as $ipadress) {
+                                $ipadress = explode(Search::SHORTSEP, $ipadress);
+
+                               //find ip network attached to these ip
+                                $ipnetworks = [];
+                                $ipnet_iterator = $DB->request([
+                                'SELECT'       => [
+                                  'ipnet.id',
+                                  'ipnet.completename',
+                                  'ipnet.name',
+                                  'ipnet.address',
+                                  'ipnet.netmask',
+                                  'ipnet.gateway',
+                                  'ipnet.ipnetworks_id',
+                                  'ipnet.comment'
+                                   ],
+                                   'FROM'         => 'glpi_ipnetworks AS ipnet',
+                                   'INNER JOIN'   => [
+                                   'glpi_ipaddresses_ipnetworks AS ipadnet' => [
+                                   'ON' => [
+                                   'ipadnet'   => 'ipnetworks_id',
+                                   'ipnet'     => 'id'
+                                   ]
+                                   ]
+                                   ],
+                                   'WHERE'        => [
+                                   'ipadnet.ipaddresses_id'  => $ipadress[0]
+                                   ]
+                                ]);
+                                foreach ($ipnet_iterator as $data_ipnet) {
+                                              $ipnetworks[] = $data_ipnet;
+                                }
+
+                                $ipadresses[] = [
+                                'id'        => $ipadress[0],
+                                'name'      => $ipadress[1],
+                                'IPNetwork' => $ipnetworks
+                                ];
+                            }
+
+                               $data['NetworkName'] = [
+                            'id'         => $data_netn['networknames_id'],
+                            'name'       => $data_netn['networkname'],
+                            'fqdns_id'   => $data_netn['fqdns_id'],
+                            'FQDN'       => [
+                               'id'   => $data_netn['fqdns_id'],
+                               'name' => $data_netn['fqdn_name'],
+                               'fqdn' => $data_netn['fqdn']
+                            ],
+                            'IPAddress' => $ipadresses
+                               ];
                         }
+                    }
 
-                        $ipadresses[] = [
-                           'id'        => $ipadress[0],
-                           'name'      => $ipadress[1],
-                           'IPNetwork' => $ipnetworks
-                        ];
-                     }
-
-                     $data['NetworkName'] = [
-                        'id'         => $data_netn['networknames_id'],
-                        'name'       => $data_netn['networkname'],
-                        'fqdns_id'   => $data_netn['fqdns_id'],
-                        'FQDN'       => [
-                           'id'   => $data_netn['fqdns_id'],
-                           'name' => $data_netn['fqdn_name'],
-                           'fqdn' => $data_netn['fqdn']
-                        ],
-                        'IPAddress' => $ipadresses
-                     ];
-                  }
-               }
-
-               $_networkports[$networkport_type][] = $data;
+                     $_networkports[$networkport_type][] = $data;
+                }
             }
-         }
-      }
+        }
 
-      return $_networkports;
-   }
+        return $_networkports;
+    }
 
    /**
     * Get the profile picture of the given user
@@ -2839,25 +3018,26 @@ abstract class API {
     *
     * @param int|boolean $user_id
     */
-   public function userPicture($user_id) {
-      $this->initEndpoint();
+    public function userPicture($user_id)
+    {
+        $this->initEndpoint();
 
-      // Try to load target user
-      $user = new User();
-      if (!$user->getFromDB($user_id)) {
-         $this->returnError("Bad request: user with id '$user_id' not found");
-      }
+       // Try to load target user
+        $user = new User();
+        if (!$user->getFromDB($user_id)) {
+            $this->returnError("Bad request: user with id '$user_id' not found");
+        }
 
-      if (!empty($user->fields['picture'])) {
-         // Send file
-         $file = GLPI_PICTURE_DIR . '/' . $user->fields['picture'];
-         Toolbox::sendFile($file, $user->fields['picture']);
-      } else {
-         // No content
-         http_response_code(204);
-      }
-      die;
-   }
+        if (!empty($user->fields['picture'])) {
+           // Send file
+            $file = GLPI_PICTURE_DIR . '/' . $user->fields['picture'];
+            Toolbox::sendFile($file, $user->fields['picture']);
+        } else {
+           // No content
+            http_response_code(204);
+        }
+        die;
+    }
 
    /**
     * If the given itemtype is deprecated, replace it by it's current
@@ -2867,29 +3047,31 @@ abstract class API {
     * @param string  $itemtype
     * @return string The corrected itemtype.
     */
-   public function handleDepreciation(string $itemtype): string {
-      $deprecated = Toolbox::isAPIDeprecated($itemtype);
+    public function handleDepreciation(string $itemtype): string
+    {
+        $deprecated = Toolbox::isAPIDeprecated($itemtype);
 
-      if ($deprecated) {
-         // Keep a reference to deprecated item
-         $class = "Glpi\Api\Deprecated\\$itemtype";
-         $this->deprecated_item = new $class();
+        if ($deprecated) {
+           // Keep a reference to deprecated item
+            $class = "Glpi\Api\Deprecated\\$itemtype";
+            $this->deprecated_item = new $class();
 
-         // Get correct itemtype
-         $itemtype = $this->deprecated_item->getType();
-      }
+           // Get correct itemtype
+            $itemtype = $this->deprecated_item->getType();
+        }
 
-      return $itemtype;
-   }
+        return $itemtype;
+    }
 
    /**
     * Check if the current call is using a deprecated item
     *
     * @return bool
     */
-   public function isDeprecated(): bool {
-      return $this->deprecated_item !== null;
-   }
+    public function isDeprecated(): bool
+    {
+        return $this->deprecated_item !== null;
+    }
 
    /**
     * "getMassiveActions" endpoint.
@@ -2900,43 +3082,43 @@ abstract class API {
     * @param bool   $is_deleted  Should we show massive action in "deleted" mode ?
     * @return array
     */
-   public function getMassiveActions(
-      string $itemtype,
-      ?int $id = null,
-      bool $is_deleted = false
-   ) {
-      if (is_null($id)) {
-         // No id supplied, show massive actions for the given itemtype
-         $actions = $this->getMassiveActionsForItemtype(
-            $itemtype,
-            $is_deleted
-         );
-      } else {
-         $item = new $itemtype();
-         if (!$item->getFromDB($id)) {
-            // Id was supplied but item can't be loaded -> error
-            return $this->returnError(
-               "Failed to load item (itemtype = '$itemtype', id = '$id')",
-               400,
-               "ERROR_ITEM_NOT_FOUND"
+    public function getMassiveActions(
+        string $itemtype,
+        ?int $id = null,
+        bool $is_deleted = false
+    ) {
+        if (is_null($id)) {
+           // No id supplied, show massive actions for the given itemtype
+            $actions = $this->getMassiveActionsForItemtype(
+                $itemtype,
+                $is_deleted
             );
-         }
+        } else {
+            $item = new $itemtype();
+            if (!$item->getFromDB($id)) {
+               // Id was supplied but item can't be loaded -> error
+                return $this->returnError(
+                    "Failed to load item (itemtype = '$itemtype', id = '$id')",
+                    400,
+                    "ERROR_ITEM_NOT_FOUND"
+                );
+            }
 
-         // Id supplied and item was loaded, show massive action for this
-         // specific item
-         $actions = $this->getMassiveActionsForItem($item);
-      }
+           // Id supplied and item was loaded, show massive action for this
+           // specific item
+            $actions = $this->getMassiveActionsForItem($item);
+        }
 
-      // Build response array
-      $response = [];
-      foreach ($actions as $key => $label) {
-         $response[] = [
+       // Build response array
+        $response = [];
+        foreach ($actions as $key => $label) {
+            $response[] = [
             'key'   => $key,
             'label' => $label,
-         ];
-      }
-      $this->returnResponse($response);
-   }
+            ];
+        }
+        $this->returnResponse($response);
+    }
 
    /**
     * Return possible massive actions for a given itemtype.
@@ -2945,13 +3127,13 @@ abstract class API {
     * @param bool   $is_deleted  Should we show massive action in "deleted" mode ?
     * @return array
     */
-   public function getMassiveActionsForItemtype(
-      string $itemtype,
-      bool $is_deleted = false
-   ): array {
-      // Return massive actions for a given itemtype
-      return MassiveAction::getAllMassiveActions($itemtype, $is_deleted);
-   }
+    public function getMassiveActionsForItemtype(
+        string $itemtype,
+        bool $is_deleted = false
+    ): array {
+       // Return massive actions for a given itemtype
+        return MassiveAction::getAllMassiveActions($itemtype, $is_deleted);
+    }
 
    /**
     * Return possible massive actions for a given item.
@@ -2959,15 +3141,16 @@ abstract class API {
     * @param CommonDBTM $item    Item for which to show possible massive actions
     * @return array
     */
-   public function getMassiveActionsForItem(CommonDBTM $item): array {
-      // Return massive actions for a given item
-      return MassiveAction::getAllMassiveActions(
-         $item::getType(),
-         $item->isDeleted(),
-         $item,
-         true
-      );
-   }
+    public function getMassiveActionsForItem(CommonDBTM $item): array
+    {
+       // Return massive actions for a given item
+        return MassiveAction::getAllMassiveActions(
+            $item::getType(),
+            $item->isDeleted(),
+            $item,
+            true
+        );
+    }
 
    /**
     * "getMassiveActionParameters" endpoint.
@@ -2978,77 +3161,77 @@ abstract class API {
     * @param bool          $is_deleted    Is this massive action to be used on items in the trashbin ?
     * @return array
     */
-   public function getMassiveActionParameters(
-      string $itemtype,
-      ?string $action_key,
-      bool $is_deleted
-   ) {
-      if (is_null($action_key)) {
-         return $this->returnError(
-            "Missing action key, run 'getMassiveActions' endpoint to see available keys",
-            400,
-            "ERROR_MASSIVEACTION_KEY"
-         );
-      }
+    public function getMassiveActionParameters(
+        string $itemtype,
+        ?string $action_key,
+        bool $is_deleted
+    ) {
+        if (is_null($action_key)) {
+            return $this->returnError(
+                "Missing action key, run 'getMassiveActions' endpoint to see available keys",
+                400,
+                "ERROR_MASSIVEACTION_KEY"
+            );
+        }
 
-      $action = explode(':', $action_key);
-      if (($action[1] ?? "") == 'update') {
-         // Specific case, update form call "exit" function so we don't want to run the actual code
-         return $this->returnResponse([]);
-      }
+        $action = explode(':', $action_key);
+        if (($action[1] ?? "") == 'update') {
+           // Specific case, update form call "exit" function so we don't want to run the actual code
+            return $this->returnResponse([]);
+        }
 
-      $actions = MassiveAction::getAllMassiveActions($itemtype, false, null, $is_deleted);
-      if (!isset($actions[$action_key])) {
-         return $this->returnError(
-            "Invalid action key parameter, run 'getMassiveActions' endpoint to see available keys",
-            400,
-            "ERROR_MASSIVEACTION_KEY"
-         );
-      }
+        $actions = MassiveAction::getAllMassiveActions($itemtype, false, null, $is_deleted);
+        if (!isset($actions[$action_key])) {
+            return $this->returnError(
+                "Invalid action key parameter, run 'getMassiveActions' endpoint to see available keys",
+                400,
+                "ERROR_MASSIVEACTION_KEY"
+            );
+        }
 
-      // Get massive action for the given key
-      $ma = new MassiveAction([
+       // Get massive action for the given key
+        $ma = new MassiveAction([
          'action'     => $action_key,
          'actions'    => $actions,
          'items'      => [],
          'is_deleted' => $is_deleted
-      ], [], 'specialize');
+        ], [], 'specialize');
 
-      // Capture form display
-      ob_start();
-      $ma->showSubForm();
-      $html = ob_get_clean();
+       // Capture form display
+        ob_start();
+        $ma->showSubForm();
+        $html = ob_get_clean();
 
-      // Parse html to find all non hidden inputs, textareas and select
-      $inputs = [];
-      $crawler = new Crawler($html);
-      $crawler->filterXPath('//input')->each(function (Crawler $node, $i) use (&$inputs) {
-         if ($node->attr('type') != "hidden") {
+       // Parse html to find all non hidden inputs, textareas and select
+        $inputs = [];
+        $crawler = new Crawler($html);
+        $crawler->filterXPath('//input')->each(function (Crawler $node, $i) use (&$inputs) {
+            if ($node->attr('type') != "hidden") {
+                  $inputs[] = [
+                 'name' => $node->attr('name'),
+                 'type' => $node->attr('type'),
+                  ];
+            }
+        });
+        $crawler->filterXPath('//select')->each(function (Crawler $node, $i) use (&$inputs) {
+            $type = 'select';
+            if (str_starts_with($node->attr('id'), 'dropdown_')) {
+                  $type = 'dropdown';
+            }
             $inputs[] = [
-               'name' => $node->attr('name'),
-               'type' => $node->attr('type'),
-            ];
-         }
-      });
-      $crawler->filterXPath('//select')->each(function (Crawler $node, $i) use (&$inputs) {
-         $type = 'select';
-         if (str_starts_with($node->attr('id'), 'dropdown_')) {
-            $type = 'dropdown';
-         }
-         $inputs[] = [
             'name' => $node->attr('name'),
             'type' => $type,
-         ];
-      });
-      $crawler->filterXPath('//textarea')->each(function (Crawler $node, $i) use (&$inputs) {
-         $inputs[] = [
+            ];
+        });
+        $crawler->filterXPath('//textarea')->each(function (Crawler $node, $i) use (&$inputs) {
+            $inputs[] = [
             'name' => $node->attr('name'),
             'type' => 'text',
-         ];
-      });
+            ];
+        });
 
-      return $this->returnResponse($inputs);
-   }
+        return $this->returnResponse($inputs);
+    }
 
 
    /**
@@ -3061,52 +3244,52 @@ abstract class API {
     * @param array         $params        Action parameters
     * @return array
     */
-   public function applyMassiveAction(
-      string $itemtype,
-      ?string $action_key,
-      array $ids,
-      array $params
-   ) {
-      if (is_null($action_key)) {
-         return $this->returnError(
-            "Missing action key, run 'getMassiveActions' endpoint to see available keys",
-            400,
-            "ERROR_MASSIVEACTION_KEY"
-         );
-      }
+    public function applyMassiveAction(
+        string $itemtype,
+        ?string $action_key,
+        array $ids,
+        array $params
+    ) {
+        if (is_null($action_key)) {
+            return $this->returnError(
+                "Missing action key, run 'getMassiveActions' endpoint to see available keys",
+                400,
+                "ERROR_MASSIVEACTION_KEY"
+            );
+        }
 
-      // Get processor
-      $action = explode(':', $action_key);
-      $processor = $action[0];
+       // Get processor
+        $action = explode(':', $action_key);
+        $processor = $action[0];
 
-      $ma = new MassiveAction([
+        $ma = new MassiveAction([
          'action'      => $action[1],
          'action_name' => $action_key,
          'items'       => [$itemtype => $ids],
          'processor'   => $processor,
-      ] + $params, [], 'process');
+        ] + $params, [], 'process');
 
-      $results = $ma->process();
-      unset($results['redirect']);
+        $results = $ma->process();
+        unset($results['redirect']);
 
-      if ($results['ok'] == 0 && $results['ko'] == 0 && $results['noright'] == 0) {
-         // No items were processed, invalid action key -> 400
-         return $this->returnError(
-            "Invalid action key parameter, run 'getMassiveActions' endpoint to see available keys",
-            400,
-            "ERROR_MASSIVEACTION_KEY"
-         );
-      } else if ($results['ok'] > 0 && $results['ko'] == 0) {
-         // Success -> 200
-         $code = 200;
-      } else if ($results['ko'] > 0 && $results['ok'] > 0) {
-         // Failure AND success -> 207
-         $code = 207;
-      } else {
-         // Failure -> 422
-         $code = 422;
-      }
+        if ($results['ok'] == 0 && $results['ko'] == 0 && $results['noright'] == 0) {
+           // No items were processed, invalid action key -> 400
+            return $this->returnError(
+                "Invalid action key parameter, run 'getMassiveActions' endpoint to see available keys",
+                400,
+                "ERROR_MASSIVEACTION_KEY"
+            );
+        } else if ($results['ok'] > 0 && $results['ko'] == 0) {
+           // Success -> 200
+            $code = 200;
+        } else if ($results['ko'] > 0 && $results['ok'] > 0) {
+           // Failure AND success -> 207
+            $code = 207;
+        } else {
+           // Failure -> 422
+            $code = 422;
+        }
 
-      return $this->returnResponse($results, $code);
-   }
+        return $this->returnResponse($results, $code);
+    }
 }

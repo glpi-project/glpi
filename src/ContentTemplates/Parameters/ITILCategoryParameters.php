@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -41,15 +42,18 @@ use ITILCategory;
  */
 class ITILCategoryParameters extends TreeDropdownParameters
 {
-   public static function getDefaultNodeName(): string {
-      return 'itilcategory';
-   }
+    public static function getDefaultNodeName(): string
+    {
+        return 'itilcategory';
+    }
 
-   public static function getObjectLabel(): string {
-      return ITILCategory::getTypeName(1);
-   }
+    public static function getObjectLabel(): string
+    {
+        return ITILCategory::getTypeName(1);
+    }
 
-   protected function getTargetClasses(): array {
-      return [ITILCategory::class];
-   }
+    protected function getTargetClasses(): array
+    {
+        return [ITILCategory::class];
+    }
 }

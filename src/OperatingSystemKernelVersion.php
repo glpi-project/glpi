@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,34 +31,38 @@
  * ---------------------------------------------------------------------
  */
 
-class OperatingSystemKernelVersion extends CommonDropdown {
+class OperatingSystemKernelVersion extends CommonDropdown
+{
 
-   public $can_be_translated = false;
+    public $can_be_translated = false;
 
-   static function getTypeName($nb = 0) {
-      return _n('Kernel version', 'Kernel versions', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Kernel version', 'Kernel versions', $nb);
+    }
 
-   function getAdditionalFields() {
-      $fields   = parent::getAdditionalFields();
-      $fields[] = [
+    public function getAdditionalFields()
+    {
+        $fields   = parent::getAdditionalFields();
+        $fields[] = [
          'label'  => OperatingSystemKernel::getTypeName(1),
          'name'   => OperatingSystemKernel::getTypeName(Session::getPluralNumber()),
          'list'   => true,
          'type'   => 'oskernel'
-      ];
+        ];
 
-      return $fields;
-   }
+        return $fields;
+    }
 
-   function displaySpecificTypeField($ID, $field = [], array $options = []) {
-      switch ($field['type']) {
-         case 'oskernel':
-            OperatingSystemKernel::dropdown([
-               'value'     => $this->fields['operatingsystemkernels_id'],
-               'width'     => '100%'
-            ]);
-            break;
-      }
-   }
+    public function displaySpecificTypeField($ID, $field = [], array $options = [])
+    {
+        switch ($field['type']) {
+            case 'oskernel':
+                OperatingSystemKernel::dropdown([
+                 'value'     => $this->fields['operatingsystemkernels_id'],
+                 'width'     => '100%'
+                ]);
+                break;
+        }
+    }
 }

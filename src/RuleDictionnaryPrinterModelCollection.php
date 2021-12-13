@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,15 +31,16 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleDictionnaryPrinterModelCollection extends RuleDictionnaryDropdownCollection {
-   public $item_table  = "glpi_printermodels";
-   public $menu_option = "model.printer";
+class RuleDictionnaryPrinterModelCollection extends RuleDictionnaryDropdownCollection
+{
+    public $item_table  = "glpi_printermodels";
+    public $menu_option = "model.printer";
 
    /**
     * @see RuleCollection::getTitle()
    **/
-   function getTitle() {
-      return __('Dictionnary of printer models');
-   }
-
+    public function getTitle()
+    {
+        return __('Dictionnary of printer models');
+    }
 }

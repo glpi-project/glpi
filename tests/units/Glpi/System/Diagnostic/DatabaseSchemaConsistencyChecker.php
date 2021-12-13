@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,11 +33,13 @@
 
 namespace tests\units\Glpi\System\Diagnostic;
 
-class DatabaseSchemaConsistencyChecker extends \GLPITestCase {
+class DatabaseSchemaConsistencyChecker extends \GLPITestCase
+{
 
-   protected function sqlProvider(): iterable {
-      // `date_creation` should always be associated with `date_mod`
-      yield [
+    protected function sqlProvider(): iterable
+    {
+       // `date_creation` should always be associated with `date_mod`
+        yield [
          'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -49,8 +52,8 @@ SQL
          'expected_missing'   => [
             'date_mod'
          ],
-      ];
-      yield [
+        ];
+        yield [
          'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -63,8 +66,8 @@ SQL
          'expected_missing'   => [
             'date_creation'
          ],
-      ];
-      yield [
+        ];
+        yield [
          'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -76,26 +79,26 @@ CREATE TABLE `%s` (
 SQL
          ,
          'expected_missing'   => [],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider sqlProvider
     */
-   public function testGetMissingFields(
-      string $create_table_sql,
-      array $expected_missing
-   ) {
+    public function testGetMissingFields(
+        string $create_table_sql,
+        array $expected_missing
+    ) {
 
-      global $DB;
+        global $DB;
 
-      $table_name = sprintf('glpitests_%s', uniqid());
+        $table_name = sprintf('glpitests_%s', uniqid());
 
-      $this->newTestedInstance($DB);
-      $DB->query(sprintf($create_table_sql, $table_name));
-      $missing_fields = $this->testedInstance->getMissingFields($table_name);
-      $DB->query(sprintf('DROP TABLE `%s`', $table_name));
+        $this->newTestedInstance($DB);
+        $DB->query(sprintf($create_table_sql, $table_name));
+        $missing_fields = $this->testedInstance->getMissingFields($table_name);
+        $DB->query(sprintf('DROP TABLE `%s`', $table_name));
 
-      $this->array($missing_fields)->isEqualTo($expected_missing);
-   }
+        $this->array($missing_fields)->isEqualTo($expected_missing);
+    }
 }

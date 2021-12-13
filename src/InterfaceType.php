@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,14 +32,16 @@
  */
 
 /// Class InterfaceType (Interface is a reserved keyword)
-class InterfaceType extends CommonDropdown {
+class InterfaceType extends CommonDropdown
+{
 
-   public $can_be_translated = false;
+    public $can_be_translated = false;
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Interface type (Hard drive...)', 'Interface types (Hard drive...)', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Interface type (Hard drive...)', 'Interface types (Hard drive...)', $nb);
+    }
 
 
    /**
@@ -50,18 +53,22 @@ class InterfaceType extends CommonDropdown {
     * @param $father             HTMLTableHeader object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super = null,
-                                      HTMLTableHeader $father = null, array $options = []) {
+    public static function getHTMLTableHeader(
+        $itemtype,
+        HTMLTableBase $base,
+        HTMLTableSuperHeader $super = null,
+        HTMLTableHeader $father = null,
+        array $options = []
+    ) {
 
-      $column_name = __CLASS__;
+        $column_name = __CLASS__;
 
-      if (isset($options['dont_display'][$column_name])) {
-         return;
-      }
+        if (isset($options['dont_display'][$column_name])) {
+            return;
+        }
 
-      $base->addHeader($column_name, __('Interface'), $super, $father);
-   }
+        $base->addHeader($column_name, __('Interface'), $super, $father);
+    }
 
 
    /**
@@ -72,19 +79,26 @@ class InterfaceType extends CommonDropdown {
     * @param $father             HTMLTableCell object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableCellsForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
-                                            HTMLTableCell $father = null, array $options = []) {
-      $column_name = __CLASS__;
+    public static function getHTMLTableCellsForItem(
+        HTMLTableRow $row = null,
+        CommonDBTM $item = null,
+        HTMLTableCell $father = null,
+        array $options = []
+    ) {
+        $column_name = __CLASS__;
 
-      if (isset($options['dont_display'][$column_name])) {
-         return;
-      }
+        if (isset($options['dont_display'][$column_name])) {
+            return;
+        }
 
-      if ($item->fields["interfacetypes_id"]) {
-         $row->addCell($row->getHeaderByName($column_name),
-                       Dropdown::getDropdownName("glpi_interfacetypes",
-                                                 $item->fields["interfacetypes_id"]));
-      }
-   }
-
+        if ($item->fields["interfacetypes_id"]) {
+            $row->addCell(
+                $row->getHeaderByName($column_name),
+                Dropdown::getDropdownName(
+                    "glpi_interfacetypes",
+                    $item->fields["interfacetypes_id"]
+                )
+            );
+        }
+    }
 }

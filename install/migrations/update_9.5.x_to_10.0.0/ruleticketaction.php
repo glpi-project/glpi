@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -29,6 +30,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
 /**
  * @var DB $DB
  * @var Migration $migration
@@ -36,16 +38,16 @@
 
 // Change action type for "itilfollowup_template" and "task_template"
 $query = $DB->buildUpdate(
-   "glpi_ruleactions",
-   [
+    "glpi_ruleactions",
+    [
       "action_type" => "append"
-   ],
-   [
+    ],
+    [
       "action_type" => "assign",
       "OR" => [
          ["field" => "itilfollowup_template"],
          ["field" => "task_template"],
       ]
-   ]
+    ]
 );
 $migration->addPostQuery($query);

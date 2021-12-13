@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,15 +34,15 @@
 use Glpi\Csv\CsvResponse;
 use Glpi\Csv\ImpactCsvExport;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 $itemtype = $_GET['itemtype'] ?? '';
 $items_id = $_GET['items_id'] ?? '';
 
 // Check for mandatory params
 if (empty($itemtype) || empty($items_id)) {
-   http_response_code(400);
-   die();
+    http_response_code(400);
+    die();
 }
 
 // Check right

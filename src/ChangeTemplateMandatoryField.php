@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,11 +33,11 @@
 
 /// Mandatory fields for change template class
 /// since version 0.83
-class ChangeTemplateMandatoryField extends ITILTemplateMandatoryField {
+class ChangeTemplateMandatoryField extends ITILTemplateMandatoryField
+{
 
    // From CommonDBChild
-   static public $itemtype  = 'ChangeTemplate';
-   static public $items_id  = 'changetemplates_id';
-   static public $itiltype = 'Change';
-
+    public static $itemtype  = 'ChangeTemplate';
+    public static $items_id  = 'changetemplates_id';
+    public static $itiltype = 'Change';
 }

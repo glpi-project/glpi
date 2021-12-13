@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,7 +36,8 @@ use Glpi\Application\View\TemplateRenderer;
 /**
  * Ajax Class
 **/
-class Ajax {
+class Ajax
+{
 
    /**
     * Create modal window
@@ -55,9 +57,10 @@ class Ajax {
     *
     * @return void|string (see $options['display'])
     */
-   static function createModalWindow($name, $url, $options = []) {
+    public static function createModalWindow($name, $url, $options = [])
+    {
 
-      $param = [
+        $param = [
          'width'           => 800,
          'height'          => 400,
          'modal'           => true,
@@ -67,61 +70,61 @@ class Ajax {
          'extraparams'     => [],
          'display'         => true,
          'js_modal_fields' => ''
-      ];
+        ];
 
-      if (count($options)) {
-         foreach ($options as $key => $val) {
-            if (isset($param[$key])) {
-               $param[$key] = $val;
+        if (count($options)) {
+            foreach ($options as $key => $val) {
+                if (isset($param[$key])) {
+                    $param[$key] = $val;
+                }
             }
-         }
-      }
+        }
 
-      $html = TemplateRenderer::getInstance()->render(
-         'components/modal.html.twig',
-         [
+        $html = TemplateRenderer::getInstance()->render(
+            'components/modal.html.twig',
+            [
             'title'       => $param['title'],
             'modal_class' => $param['modal_class'],
-         ]
-      );
+            ]
+        );
 
-      $out = "<script type='text/javascript'>\n";
-      $out .= "var {$name};\n";
-      $out .= "$(function() {\n";
-      if (!empty($param['container'])) {
-         $out .= "   var el = $('#".Html::cleanId($param['container'])."');\n";
-         $out .= "   el.addClass('modal');\n";
-      } else {
-         $out .= "   var el = $('<div class=\"modal\"></div>');";
-         $out .= "   $('body').append(el);\n";
-      }
-      $out .= "   el.html(" . json_encode($html) . ");\n";
-      $out .= "   {$name} = new bootstrap.Modal(el.get(0), {show: false});\n";
-      $out .= "   el.on(\n";
-      $out .= "      'show.bs.modal',\n";
-      $out .= "      function(evt) {\n";
-      $out .= "         var fields = ";
-      if (is_array($param['extraparams']) && count($param['extraparams'])) {
-         $out .= json_encode($param['extraparams'], JSON_FORCE_OBJECT);
-      } else {
-         $out .= '{}';
-      }
-      $out .= ";\n";
-      if (!empty($param['js_modal_fields'])) {
-         $out .= $param['js_modal_fields']."\n";
-      }
-      $out .= "         el.find('.modal-body').load('$url', fields);\n";
-      $out .= "      }\n";
-      $out .= "   );\n";
-      $out .= "});\n";
-      $out .= "</script>\n";
+        $out = "<script type='text/javascript'>\n";
+        $out .= "var {$name};\n";
+        $out .= "$(function() {\n";
+        if (!empty($param['container'])) {
+            $out .= "   var el = $('#" . Html::cleanId($param['container']) . "');\n";
+            $out .= "   el.addClass('modal');\n";
+        } else {
+            $out .= "   var el = $('<div class=\"modal\"></div>');";
+            $out .= "   $('body').append(el);\n";
+        }
+        $out .= "   el.html(" . json_encode($html) . ");\n";
+        $out .= "   {$name} = new bootstrap.Modal(el.get(0), {show: false});\n";
+        $out .= "   el.on(\n";
+        $out .= "      'show.bs.modal',\n";
+        $out .= "      function(evt) {\n";
+        $out .= "         var fields = ";
+        if (is_array($param['extraparams']) && count($param['extraparams'])) {
+            $out .= json_encode($param['extraparams'], JSON_FORCE_OBJECT);
+        } else {
+            $out .= '{}';
+        }
+        $out .= ";\n";
+        if (!empty($param['js_modal_fields'])) {
+            $out .= $param['js_modal_fields'] . "\n";
+        }
+        $out .= "         el.find('.modal-body').load('$url', fields);\n";
+        $out .= "      }\n";
+        $out .= "   );\n";
+        $out .= "});\n";
+        $out .= "</script>\n";
 
-      if ($param['display']) {
-         echo $out;
-      } else {
-         return $out;
-      }
-   }
+        if ($param['display']) {
+            echo $out;
+        } else {
+            return $out;
+        }
+    }
 
 
    /**
@@ -142,9 +145,10 @@ class Ajax {
     *
     * @return void|string (see $options['display'])
     */
-   static function createIframeModalWindow($domid, $url, $options = []) {
+    public static function createIframeModalWindow($domid, $url, $options = [])
+    {
 
-      $param = [
+        $param = [
          'width'         => 1050,
          'height'        => 500,
          'modal'         => true,
@@ -153,20 +157,20 @@ class Ajax {
          'dialog_class'  => 'modal-lg',
          'autoopen'      => false,
          'reloadonclose' => false
-      ];
+        ];
 
-      if (count($options)) {
-         foreach ($options as $key => $val) {
-            if (isset($param[$key])) {
-               $param[$key] = $val;
+        if (count($options)) {
+            foreach ($options as $key => $val) {
+                if (isset($param[$key])) {
+                    $param[$key] = $val;
+                }
             }
-         }
-      }
-      $url .= (strstr($url, '?') ?'&' :  '?').'_in_modal=1';
+        }
+        $url .= (strstr($url, '?') ? '&' :  '?') . '_in_modal=1';
 
-      $rand = mt_rand();
+        $rand = mt_rand();
 
-      $html = <<<HTML
+        $html = <<<HTML
          <div id="$domid" class="modal fade" tabindex="-1" role="dialog">
             <div class="modal-dialog {$param['dialog_class']}">
                <div class="modal-content">
@@ -184,9 +188,9 @@ class Ajax {
          </div>
 HTML;
 
-      $reloadonclose = $param['reloadonclose'] ? "true" : "false";
-      $autoopen      = $param['autoopen'] ? "true" : "false";
-      $js = <<<JAVASCRIPT
+        $reloadonclose = $param['reloadonclose'] ? "true" : "false";
+        $autoopen      = $param['autoopen'] ? "true" : "false";
+        $js = <<<JAVASCRIPT
       $(function() {
          myModalEl{$rand} = document.getElementById('{$domid}');
          myModal{$rand}   = new bootstrap.Modal(myModalEl{$rand});
@@ -236,14 +240,14 @@ HTML;
       });
 JAVASCRIPT;
 
-      $out = "<script type='text/javascript'>$js</script>".trim($html);
+        $out = "<script type='text/javascript'>$js</script>" . trim($html);
 
-      if ($param['display']) {
-         echo $out;
-      } else {
-         return $out;
-      }
-   }
+        if ($param['display']) {
+            echo $out;
+        } else {
+            return $out;
+        }
+    }
 
 
    /**
@@ -262,86 +266,86 @@ JAVASCRIPT;
     *
     * @return void
     */
-   static function createTabs(
-      $tabdiv_id = 'tabspanel',
-      $tabdivcontent_id = 'tabcontent',
-      $tabs = [],
-      $type = '',
-      $ID = 0,
-      $orientation = 'vertical',
-      $options = []
-   ) {
-      global $CFG_GLPI;
+    public static function createTabs(
+        $tabdiv_id = 'tabspanel',
+        $tabdivcontent_id = 'tabcontent',
+        $tabs = [],
+        $type = '',
+        $ID = 0,
+        $orientation = 'vertical',
+        $options = []
+    ) {
+        global $CFG_GLPI;
 
-      if (count($tabs) === 0) {
-         return;
-      }
+        if (count($tabs) === 0) {
+            return;
+        }
 
-      $active_tab = Session::getActiveTab($type);
+        $active_tab = Session::getActiveTab($type);
 
-      // Compute tabs ids.
-      $active_id = null;
-      foreach ($tabs as $key => $val) {
-         $id = sprintf('tab-%s-%s', str_replace('$', '_', $key), mt_rand());
+       // Compute tabs ids.
+        $active_id = null;
+        foreach ($tabs as $key => $val) {
+            $id = sprintf('tab-%s-%s', str_replace('$', '_', $key), mt_rand());
 
-         $tabs[$key]['id'] = $id;
+            $tabs[$key]['id'] = $id;
 
-         if ($key == $active_tab || $active_id === null) {
-            $active_id = $id;
-         }
-      }
-      $active_id = str_replace('\\', '_', $active_id);
+            if ($key == $active_tab || $active_id === null) {
+                $active_id = $id;
+            }
+        }
+        $active_id = str_replace('\\', '_', $active_id);
 
-      // Display tabs
-      if (count($tabs) > 0) {
-         if (count($tabs) == 1) {
-            $orientation = "horizontal";
-         }
+       // Display tabs
+        if (count($tabs) > 0) {
+            if (count($tabs) == 1) {
+                $orientation = "horizontal";
+            }
 
-         $flex_container = "flex-column flex-md-row";
-         $flex_tab       = "flex-row flex-md-column d-none d-md-block";
-         $border         = "border-start-0";
-         $navitemml      = "ms-0";
-         $navlinkp       = "pe-1";
-         $nav_width      = "style='min-width: 200px'";
-         if ($orientation == "horizontal") {
-            $flex_container = "flex-column";
-            $flex_tab       = "flex-row";
-            $border         = "";
-            $navitemml      = "";
-            $navlinkp       = "";
-            $nav_width      = "";
-         }
+            $flex_container = "flex-column flex-md-row";
+            $flex_tab       = "flex-row flex-md-column d-none d-md-block";
+            $border         = "border-start-0";
+            $navitemml      = "ms-0";
+            $navlinkp       = "pe-1";
+            $nav_width      = "style='min-width: 200px'";
+            if ($orientation == "horizontal") {
+                $flex_container = "flex-column";
+                $flex_tab       = "flex-row";
+                $border         = "";
+                $navitemml      = "";
+                $navlinkp       = "";
+                $nav_width      = "";
+            }
 
-         echo "<div class='d-flex card-tabs $flex_container $orientation'>";
-         echo "<ul class='nav nav-tabs $flex_tab' id='$tabdiv_id' $nav_width role='tablist'>";
-         $html_tabs = "";
-         $html_sele = "";
-         $i = 0;
-         foreach ($tabs as $val) {
-            $target = str_replace('\\', '_', $val['id']);
-            $html_tabs.= "<li class='nav-item $navitemml'>
-               <a class='nav-link justify-content-between $navlinkp' data-bs-toggle='tab' title='".strip_tags($val['title'])."' ";
-            $html_tabs.= " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."' data-bs-target='#{$target}'>";
-            $html_tabs.= $val['title']."</a></li>";
+            echo "<div class='d-flex card-tabs $flex_container $orientation'>";
+            echo "<ul class='nav nav-tabs $flex_tab' id='$tabdiv_id' $nav_width role='tablist'>";
+            $html_tabs = "";
+            $html_sele = "";
+            $i = 0;
+            foreach ($tabs as $val) {
+                $target = str_replace('\\', '_', $val['id']);
+                $html_tabs .= "<li class='nav-item $navitemml'>
+               <a class='nav-link justify-content-between $navlinkp' data-bs-toggle='tab' title='" . strip_tags($val['title']) . "' ";
+                $html_tabs .= " href='" . $val['url'] . (isset($val['params']) ? '?' . $val['params'] : '') . "' data-bs-target='#{$target}'>";
+                $html_tabs .= $val['title'] . "</a></li>";
 
-            $html_sele.= "<option value='$i' ".($active_id == $target ? "selected" : "").">
+                $html_sele .= "<option value='$i' " . ($active_id == $target ? "selected" : "") . ">
                {$val['title']}
             </option>";
-            $i++;
-         }
-         echo $html_tabs;
-         echo "</ul>";
-         echo "<select class='form-select border-2 border-secondary rounded-0 rounded-top d-md-none mb-2' id='$tabdiv_id-select'>$html_sele</select>";
+                $i++;
+            }
+            echo $html_tabs;
+            echo "</ul>";
+            echo "<select class='form-select border-2 border-secondary rounded-0 rounded-top d-md-none mb-2' id='$tabdiv_id-select'>$html_sele</select>";
 
-         echo "<div class='tab-content p-2 flex-grow-1 card $border' style='min-height: 150px'>";
-         foreach ($tabs as $val) {
-            $id = str_replace('\\', '_', $val['id']);
-            echo "<div class='tab-pane fade' role='tabpanel' id='{$id}'></div>";
-         }
-         echo  "</div>"; // .tab-content
-         echo "</div>"; // .container-fluid
-         $js = "
+            echo "<div class='tab-content p-2 flex-grow-1 card $border' style='min-height: 150px'>";
+            foreach ($tabs as $val) {
+                $id = str_replace('\\', '_', $val['id']);
+                echo "<div class='tab-pane fade' role='tabpanel' id='{$id}'></div>";
+            }
+            echo  "</div>"; // .tab-content
+            echo "</div>"; // .container-fluid
+            $js = "
          var loadTabContents = function (tablink, force_reload = false) {
             var url = tablink.attr('href');
             var target = tablink.attr('data-bs-target');
@@ -359,7 +363,7 @@ JAVASCRIPT;
                $.get(
                   '{$CFG_GLPI['root_doc']}/ajax/updatecurrenttab.php',
                   {
-                     itemtype: '".addslashes($type)."',
+                     itemtype: '" . addslashes($type) . "',
                      id: '$ID',
                      tab: index,
                   }
@@ -395,9 +399,9 @@ JAVASCRIPT;
          });
          ";
 
-         echo Html::scriptBlock($js);
-      }
-   }
+            echo Html::scriptBlock($js);
+        }
+    }
 
 
    /**
@@ -415,21 +419,38 @@ JAVASCRIPT;
     *
     * @return void|string (see $display)
     */
-   static function updateItemOnEvent($toobserve, $toupdate, $url, $parameters = [],
-                                     $events = ["change"], $minsize = -1, $buffertime = -1,
-                                     $forceloadfor = [], $display = true) {
+    public static function updateItemOnEvent(
+        $toobserve,
+        $toupdate,
+        $url,
+        $parameters = [],
+        $events = ["change"],
+        $minsize = -1,
+        $buffertime = -1,
+        $forceloadfor = [],
+        $display = true
+    ) {
 
-      $output  = "<script type='text/javascript'>";
-      $output .= "$(function() {";
-      $output .= self::updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters, $events,
-                                               $minsize, $buffertime, $forceloadfor, false);
-      $output .=  "});</script>";
-      if ($display) {
-         echo $output;
-      } else {
-         return $output;
-      }
-   }
+        $output  = "<script type='text/javascript'>";
+        $output .= "$(function() {";
+        $output .= self::updateItemOnEventJsCode(
+            $toobserve,
+            $toupdate,
+            $url,
+            $parameters,
+            $events,
+            $minsize,
+            $buffertime,
+            $forceloadfor,
+            false
+        );
+        $output .=  "});</script>";
+        if ($display) {
+            echo $output;
+        } else {
+            return $output;
+        }
+    }
 
 
    /**
@@ -443,12 +464,26 @@ JAVASCRIPT;
     *
     * @return void|string (see $display)
     */
-   static function updateItemOnSelectEvent($toobserve, $toupdate, $url, $parameters = [],
-                                           $display = true) {
+    public static function updateItemOnSelectEvent(
+        $toobserve,
+        $toupdate,
+        $url,
+        $parameters = [],
+        $display = true
+    ) {
 
-      return self::updateItemOnEvent($toobserve, $toupdate, $url, $parameters, ["change"],
-                                     -1, -1, [], $display);
-   }
+        return self::updateItemOnEvent(
+            $toobserve,
+            $toupdate,
+            $url,
+            $parameters,
+            ["change"],
+            -1,
+            -1,
+            [],
+            $display
+        );
+    }
 
 
    /**
@@ -465,24 +500,39 @@ JAVASCRIPT;
     *
     * @return void|string (see $display)
     */
-   static function updateItemOnInputTextEvent($toobserve, $toupdate, $url, $parameters = [],
-                                              $minsize = -1, $buffertime = -1, $forceloadfor = [],
-                                              $display = true) {
+    public static function updateItemOnInputTextEvent(
+        $toobserve,
+        $toupdate,
+        $url,
+        $parameters = [],
+        $minsize = -1,
+        $buffertime = -1,
+        $forceloadfor = [],
+        $display = true
+    ) {
 
-      if (count($forceloadfor) == 0) {
-         $forceloadfor = ['*'];
-      }
-      // Need to define min size for text search
-      if ($minsize < 0) {
-         $minsize = 0;
-      }
-      if ($buffertime < 0) {
-         $buffertime = 0;
-      }
-      return self::updateItemOnEvent($toobserve, $toupdate, $url, $parameters,
-                                     ["dblclick", "keyup"], $minsize, $buffertime,
-                                     $forceloadfor, $display);
-   }
+        if (count($forceloadfor) == 0) {
+            $forceloadfor = ['*'];
+        }
+       // Need to define min size for text search
+        if ($minsize < 0) {
+            $minsize = 0;
+        }
+        if ($buffertime < 0) {
+            $buffertime = 0;
+        }
+        return self::updateItemOnEvent(
+            $toobserve,
+            $toupdate,
+            $url,
+            $parameters,
+            ["dblclick", "keyup"],
+            $minsize,
+            $buffertime,
+            $forceloadfor,
+            $display
+        );
+    }
 
 
    /**
@@ -500,62 +550,70 @@ JAVASCRIPT;
     *
     * @return void|string (see $display)
     */
-   static function updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters = [],
-                                           $events = ["change"], $minsize = -1, $buffertime = -1,
-                                           $forceloadfor = [], $display = true) {
+    public static function updateItemOnEventJsCode(
+        $toobserve,
+        $toupdate,
+        $url,
+        $parameters = [],
+        $events = ["change"],
+        $minsize = -1,
+        $buffertime = -1,
+        $forceloadfor = [],
+        $display = true
+    ) {
 
-      if (is_array($toobserve)) {
-         $zones = $toobserve;
-      } else {
-         $zones = [$toobserve];
-      }
-      $output = '';
-      foreach ($zones as $zone) {
-         foreach ($events as $event) {
-            if ($buffertime > 0) {
-               $output .= "var last$zone$event = 0;";
-            }
-            $output .= Html::jsGetElementbyID(Html::cleanId($zone)).".on(
+        if (is_array($toobserve)) {
+            $zones = $toobserve;
+        } else {
+            $zones = [$toobserve];
+        }
+        $output = '';
+        foreach ($zones as $zone) {
+            foreach ($events as $event) {
+                if ($buffertime > 0) {
+                    $output .= "var last$zone$event = 0;";
+                }
+                $output .= Html::jsGetElementbyID(Html::cleanId($zone)) . ".on(
                '$event',
                function(event) {";
-            // TODO manage buffer time !!?
-            // if ($buffertime > 0) {
-            //    $output.= "var elapsed = new Date().getTime() - last$zone$event;
-            //          last$zone$event = new Date().getTime();
-            //          if (elapsed < $buffertime) {
-            //             return;
-            //          }";
-            // }
+               // TODO manage buffer time !!?
+               // if ($buffertime > 0) {
+               //    $output.= "var elapsed = new Date().getTime() - last$zone$event;
+               //          last$zone$event = new Date().getTime();
+               //          if (elapsed < $buffertime) {
+               //             return;
+               //          }";
+               // }
 
-            $condition = '';
-            if ($minsize >= 0) {
-               $condition = Html::jsGetElementbyID(Html::cleanId($zone)).".val().length >= $minsize ";
+                $condition = '';
+                if ($minsize >= 0) {
+                    $condition = Html::jsGetElementbyID(Html::cleanId($zone)) . ".val().length >= $minsize ";
+                }
+                if (count($forceloadfor)) {
+                    foreach ($forceloadfor as $value) {
+                        if (!empty($condition)) {
+                             $condition .= " || ";
+                        }
+                        $condition .= Html::jsGetElementbyID(Html::cleanId($zone)) . ".val() == '$value'";
+                    }
+                }
+                if (!empty($condition)) {
+                    $output .= "if ($condition) {";
+                }
+                $output .= self::updateItemJsCode($toupdate, $url, $parameters, $toobserve, false);
+                if (!empty($condition)) {
+                    $output .= "}";
+                }
+                $output .=  "}";
+                $output .= ");\n";
             }
-            if (count($forceloadfor)) {
-               foreach ($forceloadfor as $value) {
-                  if (!empty($condition)) {
-                     $condition .= " || ";
-                  }
-                  $condition .= Html::jsGetElementbyID(Html::cleanId($zone)).".val() == '$value'";
-               }
-            }
-            if (!empty($condition)) {
-               $output .= "if ($condition) {";
-            }
-            $output .= self::updateItemJsCode($toupdate, $url, $parameters, $toobserve, false);
-            if (!empty($condition)) {
-               $output .= "}";
-            }
-            $output .=  "}";
-            $output .=");\n";
-         }
-      }
-      if ($display) {
-         echo $output;
-      } else {
-         return $output;
-      }
-   }
+        }
+        if ($display) {
+            echo $output;
+        } else {
+            return $output;
+        }
+    }
 
 
    /**
@@ -570,56 +628,66 @@ JAVASCRIPT;
     *
     * @return void|string (see $display)
     */
-   static function commonDropdownUpdateItem($options, $display = true) {
+    public static function commonDropdownUpdateItem($options, $display = true)
+    {
 
-      $field     = '';
+        $field     = '';
 
-      $output    = '';
-      // Old scheme
-      if (isset($options["update_item"])
-          && (is_array($options["update_item"]) || (strlen($options["update_item"]) > 0))) {
-         $field     = "update_item";
-      }
-      // New scheme
-      if (isset($options["toupdate"])
-          && (is_array($options["toupdate"]) || (strlen($options["toupdate"]) > 0))) {
-         $field     = "toupdate";
-      }
+        $output    = '';
+       // Old scheme
+        if (
+            isset($options["update_item"])
+            && (is_array($options["update_item"]) || (strlen($options["update_item"]) > 0))
+        ) {
+            $field     = "update_item";
+        }
+       // New scheme
+        if (
+            isset($options["toupdate"])
+            && (is_array($options["toupdate"]) || (strlen($options["toupdate"]) > 0))
+        ) {
+            $field     = "toupdate";
+        }
 
-      if (!empty($field)) {
-         $datas = $options[$field];
-         if (is_array($datas) && count($datas)) {
-            // Put it in array
-            if (isset($datas['to_update'])) {
-               $datas = [$datas];
+        if (!empty($field)) {
+            $datas = $options[$field];
+            if (is_array($datas) && count($datas)) {
+               // Put it in array
+                if (isset($datas['to_update'])) {
+                    $datas = [$datas];
+                }
+                foreach ($datas as $data) {
+                    $paramsupdate = [];
+                    if (isset($data['value_fieldname'])) {
+                        $paramsupdate = [$data['value_fieldname'] => '__VALUE__'];
+                    }
+
+                    if (
+                        isset($data["moreparams"])
+                        && is_array($data["moreparams"])
+                        && count($data["moreparams"])
+                    ) {
+                        foreach ($data["moreparams"] as $key => $val) {
+                            $paramsupdate[$key] = $val;
+                        }
+                    }
+
+                    $output .= self::updateItemOnSelectEvent(
+                        "dropdown_" . $options["name"] . $options["rand"],
+                        $data['to_update'],
+                        $data['url'],
+                        $paramsupdate,
+                        $display
+                    );
+                }
             }
-            foreach ($datas as $data) {
-               $paramsupdate = [];
-               if (isset($data['value_fieldname'])) {
-                  $paramsupdate = [$data['value_fieldname'] => '__VALUE__'];
-               }
-
-               if (isset($data["moreparams"])
-                   && is_array($data["moreparams"])
-                   && count($data["moreparams"])) {
-
-                  foreach ($data["moreparams"] as $key => $val) {
-                     $paramsupdate[$key] = $val;
-                  }
-               }
-
-               $output .= self::updateItemOnSelectEvent("dropdown_".$options["name"].$options["rand"],
-                                                        $data['to_update'], $data['url'],
-                                                        $paramsupdate, $display);
-            }
-         }
-      }
-      if ($display) {
-         echo $output;
-      } else {
-         return $output;
-      }
-   }
+        }
+        if ($display) {
+            echo $output;
+        } else {
+            return $output;
+        }
+    }
 
 
    /**
@@ -635,47 +703,49 @@ JAVASCRIPT;
     *
     * @return void|string (see $display)
     */
-   static function updateItemJsCode($toupdate, $url, $parameters = [], $toobserve = "",
-                                    $display = true) {
+    public static function updateItemJsCode(
+        $toupdate,
+        $url,
+        $parameters = [],
+        $toobserve = "",
+        $display = true
+    ) {
 
-      $out = Html::jsGetElementbyID($toupdate).".load('$url'\n";
-      if (count($parameters)) {
-         $out .= ",{";
-         $first = true;
-         foreach ($parameters as $key => $val) {
-            // prevent xss attacks
-            if (!preg_match('/^[a-zA-Z_$][0-9a-zA-Z_$]*$/', $key)) {
-               continue;
+        $out = Html::jsGetElementbyID($toupdate) . ".load('$url'\n";
+        if (count($parameters)) {
+            $out .= ",{";
+            $first = true;
+            foreach ($parameters as $key => $val) {
+               // prevent xss attacks
+                if (!preg_match('/^[a-zA-Z_$][0-9a-zA-Z_$]*$/', $key)) {
+                    continue;
+                }
+
+                if ($first) {
+                    $first = false;
+                } else {
+                    $out .= ",";
+                }
+
+                $out .= $key . ":";
+                $regs = [];
+                if (!is_array($val) && preg_match('/^__VALUE(\d+)__$/', $val, $regs)) {
+                    $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve[$regs[1]])) . ".val()";
+                } else if (!is_array($val) && $val === "__VALUE__") {
+                    $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve)) . ".val()";
+                } else {
+                    $out .=  json_encode($val);
+                }
             }
-
-            if ($first) {
-               $first = false;
-            } else {
-               $out .= ",";
-            }
-
-            $out .= $key.":";
-            $regs = [];
-            if (!is_array($val) && preg_match('/^__VALUE(\d+)__$/', $val, $regs)) {
-               $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve[$regs[1]])).".val()";
-
-            } else if (!is_array($val) && $val==="__VALUE__") {
-               $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve)).".val()";
-
-            } else {
-               $out .=  json_encode($val);
-            }
-         }
-         $out .= "}\n";
-
-      }
-      $out.= ")\n";
-      if ($display) {
-         echo $out;
-      } else {
-         return $out;
-      }
-   }
+            $out .= "}\n";
+        }
+        $out .= ")\n";
+        if ($display) {
+            echo $out;
+        } else {
+            return $out;
+        }
+    }
 
    /**
     * Javascript code for update an item
@@ -689,17 +759,17 @@ JAVASCRIPT;
     *
     * @return void|string (see $display)
     */
-   static function updateItem($toupdate, $url, $parameters = [], $toobserve = "", $display = true) {
+    public static function updateItem($toupdate, $url, $parameters = [], $toobserve = "", $display = true)
+    {
 
-      $output  = "<script type='text/javascript'>";
-      $output .= "$(function() {";
-      $output .= self::updateItemJsCode($toupdate, $url, $parameters, $toobserve, false);
-      $output .= "});</script>";
-      if ($display) {
-         echo $output;
-      } else {
-         return $output;
-      }
-   }
-
+        $output  = "<script type='text/javascript'>";
+        $output .= "$(function() {";
+        $output .= self::updateItemJsCode($toupdate, $url, $parameters, $toobserve, false);
+        $output .= "});</script>";
+        if ($display) {
+            echo $output;
+        } else {
+            return $output;
+        }
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,9 +32,11 @@
  */
 
 /// Class RackType
-class RackType extends CommonType {
+class RackType extends CommonType
+{
 
-   static function getTypeName($nb = 0) {
-      return _n('Rack type', 'Rack types', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Rack type', 'Rack types', $nb);
+    }
 }

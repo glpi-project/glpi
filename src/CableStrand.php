@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,77 +34,86 @@
 use Glpi\Socket;
 
 /// Class CableStrand
-class CableStrand extends CommonDropdown {
+class CableStrand extends CommonDropdown
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Cable strand', 'Cable strands', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Cable strand', 'Cable strands', $nb);
+    }
 
 
-   static function getFieldLabel() {
-      return _n('Cable strand', 'Cable strands', 1);
-   }
+    public static function getFieldLabel()
+    {
+        return _n('Cable strand', 'Cable strands', 1);
+    }
 
-   function defineTabs($options = []) {
+    public function defineTabs($options = [])
+    {
 
-      $ong = parent::defineTabs($options);
-      $this->addStandardTab(__CLASS__, $ong, $options);
+        $ong = parent::defineTabs($options);
+        $this->addStandardTab(__CLASS__, $ong, $options);
 
-      return $ong;
-   }
+        return $ong;
+    }
 
-   function cleanDBonPurge() {
-      Rule::cleanForItemAction($this);
-      Rule::cleanForItemCriteria($this, '_cablestrands_id%');
-   }
+    public function cleanDBonPurge()
+    {
+        Rule::cleanForItemAction($this);
+        Rule::cleanForItemCriteria($this, '_cablestrands_id%');
+    }
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
 
-      if (!$withtemplate) {
-         $nb = 0;
-         switch ($item->getType()) {
-            case __CLASS__ :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable(Cable::getTable(),
-                                             ['cablestrands_id' => $item->getID()]);
-               }
-               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+        if (!$withtemplate) {
+            $nb = 0;
+            switch ($item->getType()) {
+                case __CLASS__:
+                    if ($_SESSION['glpishow_count_on_tabs']) {
+                        $nb = countElementsInTable(
+                            Cable::getTable(),
+                            ['cablestrands_id' => $item->getID()]
+                        );
+                    }
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            }
+        }
+        return '';
+    }
 
-         }
-      }
-      return '';
-   }
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-
-      if ($item->getType() == __CLASS__) {
-         switch ($tabnum) {
-            case 1 :
-               $item->showItems();
-               break;
-         }
-      }
-      return true;
-   }
+        if ($item->getType() == __CLASS__) {
+            switch ($tabnum) {
+                case 1:
+                    $item->showItems();
+                    break;
+            }
+        }
+        return true;
+    }
 
    /**
     * Print the HTML array of items related to cable strand.
     *
     * @return void
     */
-   function showItems() {
-      global $DB;
+    public function showItems()
+    {
+        global $DB;
 
-      $cablestrands_id = $this->fields['id'];
+        $cablestrands_id = $this->fields['id'];
 
-      if (!$this->can($cablestrands_id, READ)) {
-         return false;
-      }
+        if (!$this->can($cablestrands_id, READ)) {
+            return false;
+        }
 
-      $cable = new Cable();
+        $cable = new Cable();
 
-      $criteria = [
+        $criteria = [
          'SELECT' => [
             'id'
          ],
@@ -111,100 +121,100 @@ class CableStrand extends CommonDropdown {
          'WHERE'  => [
             'cablestrands_id' => $cablestrands_id,
          ]
-      ];
-      if ($cable->maybeDeleted()) {
-         $criteria['WHERE']['is_deleted'] = 0;
-      }
+        ];
+        if ($cable->maybeDeleted()) {
+            $criteria['WHERE']['is_deleted'] = 0;
+        }
 
-      $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
-      $criteria['START'] = $start;
-      $criteria['LIMIT'] = $_SESSION['glpilist_limit'];
+        $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
+        $criteria['START'] = $start;
+        $criteria['LIMIT'] = $_SESSION['glpilist_limit'];
 
-      $iterator = $DB->request($criteria);
+        $iterator = $DB->request($criteria);
 
-      // Execute a second request to get the total number of rows
-      unset($criteria['SELECT']);
-      unset($criteria['START']);
-      unset($criteria['LIMIT']);
+       // Execute a second request to get the total number of rows
+        unset($criteria['SELECT']);
+        unset($criteria['START']);
+        unset($criteria['LIMIT']);
 
-      $criteria['COUNT'] = 'total';
-      $number = $DB->request($criteria)->current()['total'];
+        $criteria['COUNT'] = 'total';
+        $number = $DB->request($criteria)->current()['total'];
 
-      if ($number) {
-         echo "<div class='spaced'>";
-         Html::printAjaxPager('', $start, $number);
+        if ($number) {
+            echo "<div class='spaced'>";
+            Html::printAjaxPager('', $start, $number);
 
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th>"._n('Type', 'Types', 1)."</th>";
-         echo "<th>".Entity::getTypeName(1)."</th>";
-         echo "<th>".__('Name')."</th>";
-         echo "<th>".__('Inventory number')."</th>";
-         echo "<th>".sprintf(__('%s (%s)'), _n('Associated item', 'Associated items', 1), __('Endpoint B'))."</th>";
-         echo "<th>".sprintf(__('%s (%s)'), Socket::getTypeName(1), __('Endpoint B'))."</th>";
-         echo "<th>".sprintf(__('%s (%s)'), _n('Associated item', 'Associated items', 1), __('Endpoint A'))."</th>";
-         echo "<th>".sprintf(__('%s (%s)'), Socket::getTypeName(1), __('Endpoint A'))."</th>";
-         echo "</tr>";
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr><th>" . _n('Type', 'Types', 1) . "</th>";
+            echo "<th>" . Entity::getTypeName(1) . "</th>";
+            echo "<th>" . __('Name') . "</th>";
+            echo "<th>" . __('Inventory number') . "</th>";
+            echo "<th>" . sprintf(__('%s (%s)'), _n('Associated item', 'Associated items', 1), __('Endpoint B')) . "</th>";
+            echo "<th>" . sprintf(__('%s (%s)'), Socket::getTypeName(1), __('Endpoint B')) . "</th>";
+            echo "<th>" . sprintf(__('%s (%s)'), _n('Associated item', 'Associated items', 1), __('Endpoint A')) . "</th>";
+            echo "<th>" . sprintf(__('%s (%s)'), Socket::getTypeName(1), __('Endpoint A')) . "</th>";
+            echo "</tr>";
 
-         foreach ($iterator as $data) {
-            if (!$cable->getFromDB($data['id'])) {
-               trigger_error(sprintf('Unable to load item %s (%s).', $cable->getType(), $data['id']), E_USER_WARNING);
-               continue;
+            foreach ($iterator as $data) {
+                if (!$cable->getFromDB($data['id'])) {
+                    trigger_error(sprintf('Unable to load item %s (%s).', $cable->getType(), $data['id']), E_USER_WARNING);
+                    continue;
+                }
+
+                echo "<tr class='tab_bg_1'><td>" . $cable->getTypeName() . "</td>";
+                echo "<td>" . Dropdown::getDropdownName("glpi_entities", $cable->getEntityID()) . "</td>";
+                echo "<td>" . $cable->getLink() . "</td>";
+                echo "<td>" . (isset($cable->fields["otherserial"]) ? "" . $cable->fields["otherserial"] . "" : "-") . "</td>";
+                echo "<td>";
+                if ($cable->fields["items_id_endpoint_b"] > 0) {
+                    $item_endpoint_b = getItemForItemtype($cable->fields["itemtype_endpoint_b"]);
+                    if (!$item_endpoint_b->getFromDB($cable->fields["items_id_endpoint_b"])) {
+                        trigger_error(sprintf('Unable to load item %s (%s).', $cable->fields["itemtype_endpoint_b"], $cable->fields["items_id_endpoint_b"]), E_USER_WARNING);
+                    } else {
+                        echo $item_endpoint_b->getLink();
+                    }
+                }
+                echo "</td>";
+                echo "<td>";
+                if ($cable->fields["sockets_id_endpoint_b"] > 0) {
+                    $sockets_endpoint_b = new Socket();
+                    if (!$sockets_endpoint_b->getFromDB($cable->fields["sockets_id_endpoint_b"])) {
+                        trigger_error(sprintf('Unable to load item %s (%s).', Socket::getType(), $cable->fields["sockets_id_endpoint_b"]), E_USER_WARNING);
+                    } else {
+                        echo $sockets_endpoint_b->getLink();
+                    }
+                }
+                echo "</td>";
+                echo "<td>";
+                if ($cable->fields["items_id_endpoint_a"] > 0) {
+                    $item_endpoint_a = getItemForItemtype($cable->fields["itemtype_endpoint_a"]);
+                    if (!$item_endpoint_a->getFromDB($cable->fields["items_id_endpoint_a"])) {
+                        trigger_error(sprintf('Unable to load item %s (%s).', $cable->fields["itemtype_endpoint_a"], $cable->fields["items_id_endpoint_a"]), E_USER_WARNING);
+                    } else {
+                        echo $item_endpoint_a->getLink();
+                    }
+                }
+                echo "</td>";
+                echo "<td>";
+                if ($cable->fields["sockets_id_endpoint_a"] > 0) {
+                    $sockets_endpoint_a = new Socket();
+                    if (!$sockets_endpoint_a->getFromDB($cable->fields["sockets_id_endpoint_a"])) {
+                        trigger_error(sprintf('Unable to load item %s (%s).', Socket::getType(), $cable->fields["sockets_id_endpoint_a"]), E_USER_WARNING);
+                    } else {
+                        echo $sockets_endpoint_a->getLink();
+                    }
+                }
+                echo "</td>";
+                echo"</tr>";
             }
+        } else {
+            echo "<p class='center b'>" . __('No item found') . "</p>";
+        }
+        echo "</table></div>";
+    }
 
-            echo "<tr class='tab_bg_1'><td>".$cable->getTypeName()."</td>";
-            echo "<td>".Dropdown::getDropdownName("glpi_entities", $cable->getEntityID())."</td>";
-            echo "<td>".$cable->getLink()."</td>";
-            echo "<td>".(isset($cable->fields["otherserial"])? "".$cable->fields["otherserial"]."" :"-")."</td>";
-            echo "<td>";
-            if ($cable->fields["items_id_endpoint_b"] > 0) {
-               $item_endpoint_b = getItemForItemtype($cable->fields["itemtype_endpoint_b"]);
-               if (!$item_endpoint_b->getFromDB($cable->fields["items_id_endpoint_b"])) {
-                  trigger_error(sprintf('Unable to load item %s (%s).', $cable->fields["itemtype_endpoint_b"], $cable->fields["items_id_endpoint_b"]), E_USER_WARNING);
-               } else {
-                  echo $item_endpoint_b->getLink();
-               }
-            }
-            echo "</td>";
-            echo "<td>";
-            if ($cable->fields["sockets_id_endpoint_b"] > 0) {
-               $sockets_endpoint_b = new Socket();
-               if (!$sockets_endpoint_b->getFromDB($cable->fields["sockets_id_endpoint_b"])) {
-                  trigger_error(sprintf('Unable to load item %s (%s).', Socket::getType(), $cable->fields["sockets_id_endpoint_b"]), E_USER_WARNING);
-               } else {
-                  echo $sockets_endpoint_b->getLink();
-               }
-            }
-            echo "</td>";
-            echo "<td>";
-            if ($cable->fields["items_id_endpoint_a"] > 0) {
-               $item_endpoint_a = getItemForItemtype($cable->fields["itemtype_endpoint_a"]);
-               if (!$item_endpoint_a->getFromDB($cable->fields["items_id_endpoint_a"])) {
-                  trigger_error(sprintf('Unable to load item %s (%s).', $cable->fields["itemtype_endpoint_a"], $cable->fields["items_id_endpoint_a"]), E_USER_WARNING);
-               } else {
-                  echo $item_endpoint_a->getLink();
-               }
-            }
-            echo "</td>";
-            echo "<td>";
-            if ($cable->fields["sockets_id_endpoint_a"] > 0) {
-               $sockets_endpoint_a = new Socket();
-               if (!$sockets_endpoint_a->getFromDB($cable->fields["sockets_id_endpoint_a"])) {
-                  trigger_error(sprintf('Unable to load item %s (%s).', Socket::getType(), $cable->fields["sockets_id_endpoint_a"]), E_USER_WARNING);
-               } else {
-                  echo $sockets_endpoint_a->getLink();
-               }
-            }
-            echo "</td>";
-            echo"</tr>";
-         }
-      } else {
-         echo "<p class='center b'>".__('No item found')."</p>";
-      }
-      echo "</table></div>";
-
-   }
-
-   static function getIcon() {
-      return Cable::getIcon();
-   }
+    public static function getIcon()
+    {
+        return Cable::getIcon();
+    }
 }

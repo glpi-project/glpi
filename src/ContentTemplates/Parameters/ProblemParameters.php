@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -41,15 +42,18 @@ use Problem;
  */
 class ProblemParameters extends CommonITILObjectParameters
 {
-   public static function getDefaultNodeName(): string {
-      return 'problem';
-   }
+    public static function getDefaultNodeName(): string
+    {
+        return 'problem';
+    }
 
-   public static function getObjectLabel(): string {
-      return Problem::getTypeName(1);
-   }
+    public static function getObjectLabel(): string
+    {
+        return Problem::getTypeName(1);
+    }
 
-   protected function getTargetClasses(): array {
-      return [Problem::class];
-   }
+    protected function getTargetClasses(): array
+    {
+        return [Problem::class];
+    }
 }

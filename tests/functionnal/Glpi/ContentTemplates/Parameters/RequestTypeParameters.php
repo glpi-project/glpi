@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,18 +35,19 @@ namespace tests\units\Glpi\ContentTemplates\Parameters;
 
 class RequestTypeParameters extends AbstractParameters
 {
-   public function testGetValues(): void {
-      $this->createItem('RequestType', [
+    public function testGetValues(): void
+    {
+        $this->createItem('RequestType', [
          'name' => 'requesttype_testGetValues',
-      ]);
+        ]);
 
-      $parameters = $this->newTestedInstance();
-      $values = $parameters->getValues(getItemByTypeName('RequestType', 'requesttype_testGetValues'));
-      $this->array($values)->isEqualTo([
+        $parameters = $this->newTestedInstance();
+        $values = $parameters->getValues(getItemByTypeName('RequestType', 'requesttype_testGetValues'));
+        $this->array($values)->isEqualTo([
          'id'   => getItemByTypeName('RequestType', 'requesttype_testGetValues', true),
          'name' => 'requesttype_testGetValues',
-      ]);
+        ]);
 
-      $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
-   }
+        $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
+    }
 }

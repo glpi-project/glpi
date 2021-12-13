@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -40,21 +41,24 @@ use Twig\TwigTest;
 /**
  * @since 10.0.0
  */
-class PhpExtension extends AbstractExtension {
+class PhpExtension extends AbstractExtension
+{
 
-   public function getFunctions(): array {
-      return [
+    public function getFunctions(): array
+    {
+        return [
          new TwigFunction('php_config', [$this, 'phpConfig']),
          new TwigFunction('call', [$this, 'call']),
-      ];
-   }
+        ];
+    }
 
-   public function getTests(): array {
-      return [
+    public function getTests(): array
+    {
+        return [
          new TwigTest('instanceof', [$this, 'isInstanceOf']),
          new TwigTest('usingtrait', [$this, 'isUsingTrait']),
-      ];
-   }
+        ];
+    }
 
    /**
     * Get PHP configuration value.
@@ -63,9 +67,10 @@ class PhpExtension extends AbstractExtension {
     *
     * @return mixed
     */
-   public function phpConfig(string $name) {
-      return ini_get($name);
-   }
+    public function phpConfig(string $name)
+    {
+        return ini_get($name);
+    }
 
    /**
     * Call function of static method.
@@ -75,12 +80,13 @@ class PhpExtension extends AbstractExtension {
     *
     * @return mixed
     */
-   public function call(string $callable, array $parameters = []) {
-      if (is_callable($callable)) {
-         return call_user_func_array($callable, $parameters);
-      }
-      return null;
-   }
+    public function call(string $callable, array $parameters = [])
+    {
+        if (is_callable($callable)) {
+            return call_user_func_array($callable, $parameters);
+        }
+        return null;
+    }
 
    /**
     * Checks if a given value is an instance of given class name.
@@ -90,9 +96,10 @@ class PhpExtension extends AbstractExtension {
     *
     * @return bool
     */
-   public function isInstanceof($value, $classname): bool {
-      return is_object($value) && $value instanceof $classname;
-   }
+    public function isInstanceof($value, $classname): bool
+    {
+        return is_object($value) && $value instanceof $classname;
+    }
 
    /**
     * Checks if a given value is an instance of class using given trait name.
@@ -102,7 +109,8 @@ class PhpExtension extends AbstractExtension {
     *
     * @return bool
     */
-   public function isUsingTrait($value, $trait): bool {
-      return is_object($value) && Toolbox::hasTrait($value, $trait);
-   }
+    public function isUsingTrait($value, $trait): bool
+    {
+        return is_object($value) && Toolbox::hasTrait($value, $trait);
+    }
 }

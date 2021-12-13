@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,7 +32,7 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
+    die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -40,12 +41,12 @@ if (!defined('GLPI_ROOT')) {
  */
 
 if (!$DB->fieldExists("glpi_contacts", "registration_number")) {
-   $migration->addField(
-      "glpi_contacts",
-      "registration_number",
-      "string",
-      [
+    $migration->addField(
+        "glpi_contacts",
+        "registration_number",
+        "string",
+        [
          'after'     => "firstname",
-      ]
-   );
+        ]
+    );
 }

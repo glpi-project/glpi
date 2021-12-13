@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,23 +37,25 @@ use DbTestCase;
 
 /* Test for inc/networkporttype.class.php */
 
-class NetworkPortType extends DbTestCase {
+class NetworkPortType extends DbTestCase
+{
 
-   public function testDefaults() {
-      global $DB;
+    public function testDefaults()
+    {
+        global $DB;
 
-      $iterator = $DB->request([
+        $iterator = $DB->request([
          'FROM'   => \NetworkPortType::getTable()
-      ]);
-      $this->integer(count($iterator))->isGreaterThanOrEqualTo(300);
+        ]);
+        $this->integer(count($iterator))->isGreaterThanOrEqualTo(300);
 
-      $iterator = $DB->request([
+        $iterator = $DB->request([
          'FROM'   => \NetworkPortType::getTable(),
          'WHERE'  => ['is_importable' => true]
-      ]);
-      $this->integer(count($iterator))->isIdenticalTo(7);
+        ]);
+        $this->integer(count($iterator))->isIdenticalTo(7);
 
-      $expecteds = [
+        $expecteds = [
          [
             'value_decimal' => 6,
             'name' => 'ethernet-csmacd',
@@ -96,18 +99,18 @@ class NetworkPortType extends DbTestCase {
             'is_importable' => 1,
             'instantiation_type' => 'NetworkPortEthernet',
          ]
-      ];
+        ];
 
-      foreach ($iterator as $row) {
-         $expected = array_shift($expecteds);
-         $expected += [
+        foreach ($iterator as $row) {
+            $expected = array_shift($expecteds);
+            $expected += [
             'id' => $row['id'],
             'entities_id' => 0,
             'is_recursive' => 0,
             'date_creation' => $row['date_creation'],
             'date_mod' => $row['date_mod'],
-         ];
-         $this->array($row)->isEqualTo($expected);
-      }
-   }
+            ];
+            $this->array($row)->isEqualTo($expected);
+        }
+    }
 }

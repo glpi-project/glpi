@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -38,105 +39,109 @@ use Toolbox;
 
 class Antivirus extends InventoryAsset
 {
-   public function prepare() :array {
-      if ($this->item->getType() != 'Computer') {
-         throw new \RuntimeException('Antivirus are handled for computers only.');
-      }
-      $mapping = [
+    public function prepare(): array
+    {
+        if ($this->item->getType() != 'Computer') {
+            throw new \RuntimeException('Antivirus are handled for computers only.');
+        }
+        $mapping = [
          'company'      => 'manufacturers_id',
          'version'      => 'antivirus_version',
          'base_version' => 'signature_version',
          'enabled'      => 'is_active',
          'uptodate'     => 'is_uptodate',
          'expiration'   => 'date_expiration'
-      ];
+        ];
 
-      foreach ($this->data as &$val) {
-         foreach ($mapping as $origin => $dest) {
-            if (property_exists($val, $origin)) {
-               $val->$dest = $val->$origin;
+        foreach ($this->data as &$val) {
+            foreach ($mapping as $origin => $dest) {
+                if (property_exists($val, $origin)) {
+                    $val->$dest = $val->$origin;
+                }
             }
-         }
 
-         if (!property_exists($val, 'antivirus_version')) {
-            $val->antivirus_version = '';
-         }
+            if (!property_exists($val, 'antivirus_version')) {
+                $val->antivirus_version = '';
+            }
 
-         $val->is_dynamic = 1;
-      }
+            $val->is_dynamic = 1;
+        }
 
-      return $this->data;
-   }
+        return $this->data;
+    }
 
    /**
     * Get existing entries from database
     *
     * @return array
     */
-   protected function getExisting(): array {
-      global $DB;
+    protected function getExisting(): array
+    {
+        global $DB;
 
-      $db_existing = [];
+        $db_existing = [];
 
-      $iterator = $DB->request([
+        $iterator = $DB->request([
          'SELECT' => ['id', 'name', 'antivirus_version', 'is_dynamic'],
          'FROM'   => ComputerAntivirus::getTable(),
          'WHERE'  => ['computers_id' => $this->item->fields['id']]
-      ]);
+        ]);
 
-      foreach ($iterator as $data) {
-         $idtmp = $data['id'];
-         unset($data['id']);
-         $data = array_map('strtolower', $data);
-         $db_existing[$idtmp] = $data;
-      }
+        foreach ($iterator as $data) {
+            $idtmp = $data['id'];
+            unset($data['id']);
+            $data = array_map('strtolower', $data);
+            $db_existing[$idtmp] = $data;
+        }
 
-      return $db_existing;
-   }
+        return $db_existing;
+    }
 
-   public function handle() {
-      global $DB;
+    public function handle()
+    {
+        global $DB;
 
-      $db_antivirus = $this->getExisting();
-      $value = $this->data;
-      $computerAntivirus = new ComputerAntivirus();
+        $db_antivirus = $this->getExisting();
+        $value = $this->data;
+        $computerAntivirus = new ComputerAntivirus();
 
-      //check for existing
-      foreach ($value as $k => $val) {
-         $compare = ['name' => $val->name, 'antivirus_version' => $val->antivirus_version];
-         $compare = array_map('strtolower', $compare);
-         foreach ($db_antivirus as $keydb => $arraydb) {
-            unset($arraydb['is_dynamic']);
-            if ($compare == $arraydb) {
-               $input = (array)$val + [
-                  'id'           => $keydb
-               ];
-               $computerAntivirus->update(Toolbox::addslashes_deep($input), $this->withHistory());
-               unset($value[$k]);
-               unset($db_antivirus[$keydb]);
-               break;
+       //check for existing
+        foreach ($value as $k => $val) {
+            $compare = ['name' => $val->name, 'antivirus_version' => $val->antivirus_version];
+            $compare = array_map('strtolower', $compare);
+            foreach ($db_antivirus as $keydb => $arraydb) {
+                unset($arraydb['is_dynamic']);
+                if ($compare == $arraydb) {
+                    $input = (array)$val + [
+                    'id'           => $keydb
+                    ];
+                    $computerAntivirus->update(Toolbox::addslashes_deep($input), $this->withHistory());
+                    unset($value[$k]);
+                    unset($db_antivirus[$keydb]);
+                    break;
+                }
             }
-         }
-      }
+        }
 
-      if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_antivirus) != 0) {
-         foreach ($db_antivirus as $idtmp => $data) {
-            if ($data['is_dynamic'] == 1) {
-               $computerAntivirus->delete(['id' => $idtmp], 1);
+        if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_antivirus) != 0) {
+            foreach ($db_antivirus as $idtmp => $data) {
+                if ($data['is_dynamic'] == 1) {
+                    $computerAntivirus->delete(['id' => $idtmp], 1);
+                }
             }
-         }
-      }
+        }
 
-      if (count($value) != 0) {
-         foreach ($value as $val) {
-            $val->computers_id = $this->item->fields['id'];
-            $val->is_dynamic = 1;
-            $computerAntivirus->add(Toolbox::addslashes_deep((array)$val), [], $this->withHistory());
-         }
-      }
-   }
+        if (count($value) != 0) {
+            foreach ($value as $val) {
+                $val->computers_id = $this->item->fields['id'];
+                $val->is_dynamic = 1;
+                $computerAntivirus->add(Toolbox::addslashes_deep((array)$val), [], $this->withHistory());
+            }
+        }
+    }
 
-   public function checkConf(Conf $conf): bool {
-      return $conf->import_antivirus == 1;
-   }
+    public function checkConf(Conf $conf): bool
+    {
+        return $conf->import_antivirus == 1;
+    }
 }

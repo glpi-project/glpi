@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,16 +33,17 @@
 
 /// Class Entity_Reminder
 /// @since 0.83
-class Entity_Reminder extends CommonDBRelation {
+class Entity_Reminder extends CommonDBRelation
+{
 
    // From CommonDBRelation
-   static public $itemtype_1          = 'Reminder';
-   static public $items_id_1          = 'reminders_id';
-   static public $itemtype_2          = 'Entity';
-   static public $items_id_2          = 'entities_id';
+    public static $itemtype_1          = 'Reminder';
+    public static $items_id_1          = 'reminders_id';
+    public static $itemtype_2          = 'Entity';
+    public static $items_id_2          = 'entities_id';
 
-   static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
-   static public $logs_for_item_2     = false;
+    public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+    public static $logs_for_item_2     = false;
 
 
    /**
@@ -51,21 +53,21 @@ class Entity_Reminder extends CommonDBRelation {
     *
     * @return array of entities linked to a reminder
    **/
-   static function getEntities($reminder) {
-      global $DB;
+    public static function getEntities($reminder)
+    {
+        global $DB;
 
-      $ent   = [];
-      $iterator = $DB->request([
+        $ent   = [];
+        $iterator = $DB->request([
          'FROM'   => self::getTable(),
          'WHERE'  => [
             'reminders_id' => $reminder->fields['id']
          ]
-      ]);
+        ]);
 
-      foreach ($iterator as $data) {
-         $ent[$data['entities_id']][] = $data;
-      }
-      return $ent;
-   }
-
+        foreach ($iterator as $data) {
+            $ent[$data['entities_id']][] = $data;
+        }
+        return $ent;
+    }
 }

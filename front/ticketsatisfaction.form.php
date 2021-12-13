@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,20 +33,25 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkLoginUser();
 
 $inquest = new TicketSatisfaction();
 
 if (isset($_POST["update"])) {
-   $inquest->check($_POST["tickets_id"], UPDATE);
-   $inquest->update($_POST);
+    $inquest->check($_POST["tickets_id"], UPDATE);
+    $inquest->update($_POST);
 
-   Event::log($inquest->getField('tickets_id'), "ticket", 4, "tracking",
-              //TRANS: %s is the user login
-              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
-   Html::back();
+    Event::log(
+        $inquest->getField('tickets_id'),
+        "ticket",
+        4,
+        "tracking",
+        //TRANS: %s is the user login
+        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+    );
+    Html::back();
 }
 
 Html::displayErrorAndDie('Lost');

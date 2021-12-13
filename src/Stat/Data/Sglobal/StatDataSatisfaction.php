@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -40,14 +41,15 @@ use Session;
 
 class StatDataSatisfaction extends StatDataAlwaysDisplay
 {
-   public function __construct(array $params) {
-      parent::__construct($params);
+    public function __construct(array $params)
+    {
+        parent::__construct($params);
 
-      $opensatisfaction   = $this->getDataByType($params, "inter_opensatisfaction");
-      $answersatisfaction = $this->getDataByType($params, "answersatisfaction");
+        $opensatisfaction   = $this->getDataByType($params, "inter_opensatisfaction");
+        $answersatisfaction = $this->getDataByType($params, "answersatisfaction");
 
-      $this->labels = array_keys($opensatisfaction);
-      $this->series = [
+        $this->labels = array_keys($opensatisfaction);
+        $this->series = [
          [
             'name' => _nx('survey', 'Opened', 'Opened', Session::getPluralNumber()),
             'data' => $opensatisfaction,
@@ -55,10 +57,11 @@ class StatDataSatisfaction extends StatDataAlwaysDisplay
             'name' => _nx('survey', 'Answered', 'Answered', Session::getPluralNumber()),
             'data' => $answersatisfaction,
          ]
-      ];
-   }
+        ];
+    }
 
-   public function getTitle(): string {
-      return __('Satisfaction survey') . " - " .  __('Tickets');
-   }
+    public function getTitle(): string
+    {
+        return __('Satisfaction survey') . " - " .  __('Tickets');
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -42,10 +43,12 @@ use User;
 
 /* Test for inc/ticket.class.php */
 
-class Ticket extends DbTestCase {
+class Ticket extends DbTestCase
+{
 
-   public function ticketProvider() {
-      return [
+    public function ticketProvider()
+    {
+        return [
          'single requester' => [
             [
                '_users_id_requester' => '3'
@@ -94,86 +97,89 @@ class Ticket extends DbTestCase {
                '_users_id_assign' => ['3', '5'],
             ],
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider ticketProvider
     */
-   public function testCreateTicketWithActors($ticketActors) {
-      $ticket = new \Ticket();
-      $this->integer((int)$ticket->add([
+    public function testCreateTicketWithActors($ticketActors)
+    {
+        $ticket = new \Ticket();
+        $this->integer((int)$ticket->add([
             'name'    => 'ticket title',
             'content' => 'a description',
-      ] + $ticketActors))->isGreaterThan(0);
+        ] + $ticketActors))->isGreaterThan(0);
 
-      $this->boolean($ticket->isNewItem())->isFalse();
-      $ticketId = $ticket->getID();
+        $this->boolean($ticket->isNewItem())->isFalse();
+        $ticketId = $ticket->getID();
 
-      foreach ($ticketActors as $actorType => $actorsList) {
-         // Convert single actor (scalar value) to array
-         if (!is_array($actorsList)) {
-            $actorsList = [$actorsList];
-         }
+        foreach ($ticketActors as $actorType => $actorsList) {
+           // Convert single actor (scalar value) to array
+            if (!is_array($actorsList)) {
+                $actorsList = [$actorsList];
+            }
 
-         // Check all actors are assigned to the ticket
-         foreach ($actorsList as $index => $actor) {
-            $notify = isset($actorList['_users_id_requester_notif']['use_notification'][$index])
+           // Check all actors are assigned to the ticket
+            foreach ($actorsList as $index => $actor) {
+                $notify = isset($actorList['_users_id_requester_notif']['use_notification'][$index])
                       ? $actorList['_users_id_requester_notif']['use_notification'][$index]
                       : 1;
-            $alternateEmail = isset($actorList['_users_id_requester_notif']['use_notification'][$index])
+                $alternateEmail = isset($actorList['_users_id_requester_notif']['use_notification'][$index])
                               ? $actorList['_users_id_requester_notif']['alternative_email'][$index]
                               : '';
-            switch ($actorType) {
-               case '_users_id_requester':
-                  //$this->_testTicketUser($ticket, $actor, \CommonITILActor::REQUESTER, $notify, $alternateEmail);
-                  break;
-               case '_users_id_observer':
-                  $this->_testTicketUser($ticket, $actor, \CommonITILActor::OBSERVER, $notify, $alternateEmail);
-                  break;
-               case '_users_id_assign':
-                  $this->_testTicketUser($ticket, $actor, \CommonITILActor::ASSIGN, $notify, $alternateEmail);
-                  break;
+                switch ($actorType) {
+                    case '_users_id_requester':
+                       //$this->testTicketUser($ticket, $actor, \CommonITILActor::REQUESTER, $notify, $alternateEmail);
+                        break;
+                    case '_users_id_observer':
+                        $this->testTicketUser($ticket, $actor, \CommonITILActor::OBSERVER, $notify, $alternateEmail);
+                        break;
+                    case '_users_id_assign':
+                        $this->testTicketUser($ticket, $actor, \CommonITILActor::ASSIGN, $notify, $alternateEmail);
+                        break;
+                }
             }
-         }
-      }
-   }
+        }
+    }
 
-   protected function _testTicketUser(\Ticket $ticket, $actor, $role, $notify, $alternateEmail) {
-      if ($actor > 0) {
-         $user = new \User();
-         $this->boolean($user->getFromDB($actor))->isTrue();
-         $this->boolean($user->isNewItem())->isFalse();
+    protected function testTicketUser(\Ticket $ticket, $actor, $role, $notify, $alternateEmail)
+    {
+        if ($actor > 0) {
+            $user = new \User();
+            $this->boolean($user->getFromDB($actor))->isTrue();
+            $this->boolean($user->isNewItem())->isFalse();
 
-         $ticketUser = new \Ticket_User();
-         $this->boolean($ticketUser->getFromDBForItems($ticket, $user))->isTrue();
-      } else {
-         $ticketId = $ticket->getID();
-         $ticketUser = new \Ticket_User();
-         $this->boolean(
-            $ticketUser->getFromDBByCrit([
-               'tickets_id'         => $ticketId,
-               'users_id'           => 0,
-               'alternative_email'  => $alternateEmail
-            ])
-         )->isTrue();
-      }
-      $this->boolean($ticketUser->isNewItem())->isFalse();
-      $this->variable($ticketUser->getField('type'))->isEqualTo($role);
-      $this->variable($ticketUser->getField('use_notification'))->isEqualTo($notify);
-   }
+            $ticketUser = new \Ticket_User();
+            $this->boolean($ticketUser->getFromDBForItems($ticket, $user))->isTrue();
+        } else {
+            $ticketId = $ticket->getID();
+            $ticketUser = new \Ticket_User();
+            $this->boolean(
+                $ticketUser->getFromDBByCrit([
+                'tickets_id'         => $ticketId,
+                'users_id'           => 0,
+                'alternative_email'  => $alternateEmail
+                ])
+            )->isTrue();
+        }
+        $this->boolean($ticketUser->isNewItem())->isFalse();
+        $this->variable($ticketUser->getField('type'))->isEqualTo($role);
+        $this->variable($ticketUser->getField('use_notification'))->isEqualTo($notify);
+    }
 
-   public function testTasksFromTemplate() {
-      // 1- create a task category
-      $taskcat    = new \TaskCategory;
-      $taskcat_id = $taskcat->add([
+    public function testTasksFromTemplate()
+    {
+       // 1- create a task category
+        $taskcat    = new \TaskCategory();
+        $taskcat_id = $taskcat->add([
          'name' => 'my task cat',
-      ]);
-      $this->boolean($taskcat->isNewItem())->isFalse();
+        ]);
+        $this->boolean($taskcat->isNewItem())->isFalse();
 
-      // 2- create some task templates
-      $tasktemplate = new \TaskTemplate;
-      $ttA_id          = $tasktemplate->add([
+       // 2- create some task templates
+        $tasktemplate = new \TaskTemplate();
+        $ttA_id          = $tasktemplate->add([
          'name'              => 'my task template A',
          'content'           => '<p>my task template A</p>',
          'taskcategories_id' => $taskcat_id,
@@ -182,9 +188,9 @@ class Ticket extends DbTestCase {
          'users_id_tech'     => 2,
          'groups_id_tech'    => 0,
          'state'             => \Planning::INFO,
-      ]);
-      $this->boolean($tasktemplate->isNewItem())->isFalse();
-      $ttB_id          = $tasktemplate->add([
+        ]);
+        $this->boolean($tasktemplate->isNewItem())->isFalse();
+        $ttB_id          = $tasktemplate->add([
          'name'              => 'my task template B',
          'content'           => '<p>my task template B</p>',
          'taskcategories_id' => $taskcat_id,
@@ -193,533 +199,541 @@ class Ticket extends DbTestCase {
          'users_id_tech'     => 2,
          'groups_id_tech'    => 0,
          'state'             => \Planning::TODO,
-      ]);
-      $this->boolean($tasktemplate->isNewItem())->isFalse();
+        ]);
+        $this->boolean($tasktemplate->isNewItem())->isFalse();
 
-      // 3 - create a ticket template with the task templates in predefined fields
-      $itiltemplate    = new \TicketTemplate;
-      $itiltemplate_id = $itiltemplate->add([
+       // 3 - create a ticket template with the task templates in predefined fields
+        $itiltemplate    = new \TicketTemplate();
+        $itiltemplate_id = $itiltemplate->add([
          'name' => 'my ticket template',
-      ]);
-      $this->boolean($itiltemplate->isNewItem())->isFalse();
-      $ttp = new \TicketTemplatePredefinedField();
-      $ttp->add([
+        ]);
+        $this->boolean($itiltemplate->isNewItem())->isFalse();
+        $ttp = new \TicketTemplatePredefinedField();
+        $ttp->add([
          'tickettemplates_id' => $itiltemplate_id,
          'num'                => '175',
          'value'              => $ttA_id,
-      ]);
-      $this->boolean($ttp->isNewItem())->isFalse();
-      $ttp->add([
+        ]);
+        $this->boolean($ttp->isNewItem())->isFalse();
+        $ttp->add([
          'tickettemplates_id' => $itiltemplate_id,
          'num'                => '176',
          'value'              => $ttB_id,
-      ]);
-      $this->boolean($ttp->isNewItem())->isFalse();
+        ]);
+        $this->boolean($ttp->isNewItem())->isFalse();
 
-      // 4 - create a ticket category using the ticket template
-      $itilcat    = new \ITILCategory;
-      $itilcat_id = $itilcat->add([
+       // 4 - create a ticket category using the ticket template
+        $itilcat    = new \ITILCategory();
+        $itilcat_id = $itilcat->add([
          'name'                        => 'my itil category',
-         'ticketltemplates_id_incident'=> $itiltemplate_id,
+         'ticketltemplates_id_incident' => $itiltemplate_id,
          'tickettemplates_id_demand'   => $itiltemplate_id,
          'is_incident'                 => true,
          'is_request'                  => true,
-      ]);
-      $this->boolean($itilcat->isNewItem())->isFalse();
+        ]);
+        $this->boolean($itilcat->isNewItem())->isFalse();
 
-      // 5 - create a ticket using the ticket category
-      $ticket     = new \Ticket;
-      $tickets_id = $ticket->add([
+       // 5 - create a ticket using the ticket category
+        $ticket     = new \Ticket();
+        $tickets_id = $ticket->add([
          'name'                => 'test task template',
          'content'             => 'test task template',
          'itilcategories_id'   => $itilcat_id,
          '_tickettemplates_id' => $itiltemplate_id,
          '_tasktemplates_id'   => [$ttA_id, $ttB_id],
-      ]);
-      $this->boolean($ticket->isNewItem())->isFalse();
+        ]);
+        $this->boolean($ticket->isNewItem())->isFalse();
 
-      // 6 - check creation of the tasks
-      $tickettask = new \TicketTask;
-      $found_tasks = $tickettask->find(['tickets_id' => $tickets_id], "id ASC");
+       // 6 - check creation of the tasks
+        $tickettask = new \TicketTask();
+        $found_tasks = $tickettask->find(['tickets_id' => $tickets_id], "id ASC");
 
-      // 6.1 -> check first task
-      $taskA = array_shift($found_tasks);
-      $this->string($taskA['content'])->isIdenticalTo(Sanitizer::sanitize('<p>my task template A</p>', false));
-      $this->variable($taskA['taskcategories_id'])->isEqualTo($taskcat_id);
-      $this->variable($taskA['actiontime'])->isEqualTo(60);
-      $this->variable($taskA['is_private'])->isEqualTo(1);
-      $this->variable($taskA['users_id_tech'])->isEqualTo(2);
-      $this->variable($taskA['groups_id_tech'])->isEqualTo(0);
-      $this->variable($taskA['state'])->isEqualTo(\Planning::INFO);
+       // 6.1 -> check first task
+        $taskA = array_shift($found_tasks);
+        $this->string($taskA['content'])->isIdenticalTo(Sanitizer::sanitize('<p>my task template A</p>', false));
+        $this->variable($taskA['taskcategories_id'])->isEqualTo($taskcat_id);
+        $this->variable($taskA['actiontime'])->isEqualTo(60);
+        $this->variable($taskA['is_private'])->isEqualTo(1);
+        $this->variable($taskA['users_id_tech'])->isEqualTo(2);
+        $this->variable($taskA['groups_id_tech'])->isEqualTo(0);
+        $this->variable($taskA['state'])->isEqualTo(\Planning::INFO);
 
-      // 6.2 -> check second task
-      $taskB = array_shift($found_tasks);
-      $this->string($taskB['content'])->isIdenticalTo(Sanitizer::sanitize('<p>my task template B</p>', false));
-      $this->variable($taskB['taskcategories_id'])->isEqualTo($taskcat_id);
-      $this->variable($taskB['actiontime'])->isEqualTo(120);
-      $this->variable($taskB['is_private'])->isEqualTo(0);
-      $this->variable($taskB['users_id_tech'])->isEqualTo(2);
-      $this->variable($taskB['groups_id_tech'])->isEqualTo(0);
-      $this->variable($taskB['state'])->isEqualTo(\Planning::TODO);
-   }
+       // 6.2 -> check second task
+        $taskB = array_shift($found_tasks);
+        $this->string($taskB['content'])->isIdenticalTo(Sanitizer::sanitize('<p>my task template B</p>', false));
+        $this->variable($taskB['taskcategories_id'])->isEqualTo($taskcat_id);
+        $this->variable($taskB['actiontime'])->isEqualTo(120);
+        $this->variable($taskB['is_private'])->isEqualTo(0);
+        $this->variable($taskB['users_id_tech'])->isEqualTo(2);
+        $this->variable($taskB['groups_id_tech'])->isEqualTo(0);
+        $this->variable($taskB['state'])->isEqualTo(\Planning::TODO);
+    }
 
-   public function testAcls() {
-      $ticket = new \Ticket();
-      //to fix an undefined index
-      $_SESSION["glpiactiveprofile"]["interface"] = '';
-      $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
-      $this->boolean((boolean)$ticket->canAssign())->isFalse();
-      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
-      $this->boolean((boolean)$ticket->canUpdate())->isFalse();
-      $this->boolean((boolean)$ticket->canView())->isFalse();
-      $this->boolean((boolean)$ticket->canViewItem())->isFalse();
-      $this->boolean((boolean)$ticket->canSolve())->isFalse();
-      $this->boolean((boolean)$ticket->canApprove())->isFalse();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canCreateItem())->isFalse();
-      $this->boolean((boolean)$ticket->canUpdateItem())->isFalse();
-      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
-      $this->boolean((boolean)$ticket->canDelete())->isFalse();
-      $this->boolean((boolean)$ticket->canDeleteItem())->isFalse();
-      $this->boolean((boolean)$ticket->canAddItem('Document'))->isFalse();
-      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
-      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
-      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isFalse();
+    public function testAcls()
+    {
+        $ticket = new \Ticket();
+       //to fix an undefined index
+        $_SESSION["glpiactiveprofile"]["interface"] = '';
+        $this->boolean((bool)$ticket->canAdminActors())->isFalse();
+        $this->boolean((bool)$ticket->canAssign())->isFalse();
+        $this->boolean((bool)$ticket->canAssignToMe())->isFalse();
+        $this->boolean((bool)$ticket->canUpdate())->isFalse();
+        $this->boolean((bool)$ticket->canView())->isFalse();
+        $this->boolean((bool)$ticket->canViewItem())->isFalse();
+        $this->boolean((bool)$ticket->canSolve())->isFalse();
+        $this->boolean((bool)$ticket->canApprove())->isFalse();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canCreateItem())->isFalse();
+        $this->boolean((bool)$ticket->canUpdateItem())->isFalse();
+        $this->boolean((bool)$ticket->canRequesterUpdateItem())->isFalse();
+        $this->boolean((bool)$ticket->canDelete())->isFalse();
+        $this->boolean((bool)$ticket->canDeleteItem())->isFalse();
+        $this->boolean((bool)$ticket->canAddItem('Document'))->isFalse();
+        $this->boolean((bool)$ticket->canAddItem('Ticket_Cost'))->isFalse();
+        $this->boolean((bool)$ticket->canAddFollowups())->isFalse();
+        $this->boolean((bool)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isFalse();
 
-      $this->login();
-      $this->setEntity('Root entity', true);
-      $ticket = new \Ticket();
-      $this->boolean((boolean)$ticket->canAdminActors())->isTrue(); //=> get 2
-      $this->boolean((boolean)$ticket->canAssign())->isTrue(); //=> get 8192
-      $this->boolean((boolean)$ticket->canAssignToMe())->isTrue();
-      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
-      $this->boolean((boolean)$ticket->canView())->isTrue();
-      $this->boolean((boolean)$ticket->canViewItem())->isTrue();
-      $this->boolean((boolean)$ticket->canSolve())->isTrue();
-      $this->boolean((boolean)$ticket->canApprove())->isFalse();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canUpdateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
-      $this->boolean((boolean)$ticket->canDelete())->isTrue();
-      $this->boolean((boolean)$ticket->canDeleteItem())->isTrue();
-      $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
-      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
-      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
-      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
+        $this->login();
+        $this->setEntity('Root entity', true);
+        $ticket = new \Ticket();
+        $this->boolean((bool)$ticket->canAdminActors())->isTrue(); //=> get 2
+        $this->boolean((bool)$ticket->canAssign())->isTrue(); //=> get 8192
+        $this->boolean((bool)$ticket->canAssignToMe())->isTrue();
+        $this->boolean((bool)$ticket->canUpdate())->isTrue();
+        $this->boolean((bool)$ticket->canView())->isTrue();
+        $this->boolean((bool)$ticket->canViewItem())->isTrue();
+        $this->boolean((bool)$ticket->canSolve())->isTrue();
+        $this->boolean((bool)$ticket->canApprove())->isFalse();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canCreateItem())->isTrue();
+        $this->boolean((bool)$ticket->canUpdateItem())->isTrue();
+        $this->boolean((bool)$ticket->canRequesterUpdateItem())->isFalse();
+        $this->boolean((bool)$ticket->canDelete())->isTrue();
+        $this->boolean((bool)$ticket->canDeleteItem())->isTrue();
+        $this->boolean((bool)$ticket->canAddItem('Document'))->isTrue();
+        $this->boolean((bool)$ticket->canAddItem('Ticket_Cost'))->isTrue();
+        $this->boolean((bool)$ticket->canAddFollowups())->isTrue();
+        $this->boolean((bool)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
-      $ticket = getItemByTypeName('Ticket', '_ticket01');
-      $this->boolean((boolean)$ticket->canAdminActors())->isTrue(); //=> get 2
-      $this->boolean((boolean)$ticket->canAssign())->isTrue(); //=> get 8192
-      $this->boolean((boolean)$ticket->canAssignToMe())->isTrue();
-      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
-      $this->boolean((boolean)$ticket->canView())->isTrue();
-      $this->boolean((boolean)$ticket->canViewItem())->isTrue();
-      $this->boolean((boolean)$ticket->canSolve())->isTrue();
-      $this->boolean((boolean)$ticket->canApprove())->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canUpdateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
-      $this->boolean((boolean)$ticket->canDelete())->isTrue();
-      $this->boolean((boolean)$ticket->canDeleteItem())->isTrue();
-      $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
-      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
-      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
-      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
-   }
+        $ticket = getItemByTypeName('Ticket', '_ticket01');
+        $this->boolean((bool)$ticket->canAdminActors())->isTrue(); //=> get 2
+        $this->boolean((bool)$ticket->canAssign())->isTrue(); //=> get 8192
+        $this->boolean((bool)$ticket->canAssignToMe())->isTrue();
+        $this->boolean((bool)$ticket->canUpdate())->isTrue();
+        $this->boolean((bool)$ticket->canView())->isTrue();
+        $this->boolean((bool)$ticket->canViewItem())->isTrue();
+        $this->boolean((bool)$ticket->canSolve())->isTrue();
+        $this->boolean((bool)$ticket->canApprove())->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canCreateItem())->isTrue();
+        $this->boolean((bool)$ticket->canUpdateItem())->isTrue();
+        $this->boolean((bool)$ticket->canRequesterUpdateItem())->isFalse();
+        $this->boolean((bool)$ticket->canDelete())->isTrue();
+        $this->boolean((bool)$ticket->canDeleteItem())->isTrue();
+        $this->boolean((bool)$ticket->canAddItem('Document'))->isTrue();
+        $this->boolean((bool)$ticket->canAddItem('Ticket_Cost'))->isTrue();
+        $this->boolean((bool)$ticket->canAddFollowups())->isTrue();
+        $this->boolean((bool)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
+    }
 
-   public function testPostOnlyAcls() {
-      $auth = new \Auth();
-      $this->boolean((boolean)$auth->login('post-only', 'postonly', true))->isTrue();
+    public function testPostOnlyAcls()
+    {
+        $auth = new \Auth();
+        $this->boolean((bool)$auth->login('post-only', 'postonly', true))->isTrue();
 
-      $ticket = new \Ticket();
-      $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
-      $this->boolean((boolean)$ticket->canAssign())->isFalse();
-      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
-      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
-      $this->boolean((boolean)$ticket->canView())->isTrue();
-      $this->boolean((boolean)$ticket->canViewItem())->isFalse();
-      $this->boolean((boolean)$ticket->canSolve())->isFalse();
-      $this->boolean((boolean)$ticket->canApprove())->isFalse();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canUpdateItem())->isFalse();
-      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
-      $this->boolean((boolean)$ticket->canDelete())->isTrue();
-      $this->boolean((boolean)$ticket->canDeleteItem());
-      $this->boolean((boolean)$ticket->canAddItem('Document'));
-      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
-      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
-      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isFalse();
+        $ticket = new \Ticket();
+        $this->boolean((bool)$ticket->canAdminActors())->isFalse();
+        $this->boolean((bool)$ticket->canAssign())->isFalse();
+        $this->boolean((bool)$ticket->canAssignToMe())->isFalse();
+        $this->boolean((bool)$ticket->canUpdate())->isTrue();
+        $this->boolean((bool)$ticket->canView())->isTrue();
+        $this->boolean((bool)$ticket->canViewItem())->isFalse();
+        $this->boolean((bool)$ticket->canSolve())->isFalse();
+        $this->boolean((bool)$ticket->canApprove())->isFalse();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canCreateItem())->isTrue();
+        $this->boolean((bool)$ticket->canUpdateItem())->isFalse();
+        $this->boolean((bool)$ticket->canRequesterUpdateItem())->isFalse();
+        $this->boolean((bool)$ticket->canDelete())->isTrue();
+        $this->boolean((bool)$ticket->canDeleteItem());
+        $this->boolean((bool)$ticket->canAddItem('Document'));
+        $this->boolean((bool)$ticket->canAddItem('Ticket_Cost'))->isFalse();
+        $this->boolean((bool)$ticket->canAddFollowups())->isFalse();
+        $this->boolean((bool)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isFalse();
 
-      $this->integer(
-         (int)$ticket->add([
+        $this->integer(
+            (int)$ticket->add([
             'name'    => '',
             'content' => 'A ticket to check ACLS',
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      //reload ticket from DB
-      $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
-      $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
-      $this->boolean((boolean)$ticket->canAssign())->isFalse();
-      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
-      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
-      $this->boolean((boolean)$ticket->canView())->isTrue();
-      $this->boolean((boolean)$ticket->canViewItem())->isTrue();
-      $this->boolean((boolean)$ticket->canSolve())->isFalse();
-      $this->boolean((boolean)$ticket->canApprove())->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canUpdateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canDelete())->isTrue();
-      $this->boolean((boolean)$ticket->canDeleteItem())->isTrue();
-      $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
-      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
-      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
-      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
+       //reload ticket from DB
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->boolean((bool)$ticket->canAdminActors())->isFalse();
+        $this->boolean((bool)$ticket->canAssign())->isFalse();
+        $this->boolean((bool)$ticket->canAssignToMe())->isFalse();
+        $this->boolean((bool)$ticket->canUpdate())->isTrue();
+        $this->boolean((bool)$ticket->canView())->isTrue();
+        $this->boolean((bool)$ticket->canViewItem())->isTrue();
+        $this->boolean((bool)$ticket->canSolve())->isFalse();
+        $this->boolean((bool)$ticket->canApprove())->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canCreateItem())->isTrue();
+        $this->boolean((bool)$ticket->canUpdateItem())->isTrue();
+        $this->boolean((bool)$ticket->canRequesterUpdateItem())->isTrue();
+        $this->boolean((bool)$ticket->canDelete())->isTrue();
+        $this->boolean((bool)$ticket->canDeleteItem())->isTrue();
+        $this->boolean((bool)$ticket->canAddItem('Document'))->isTrue();
+        $this->boolean((bool)$ticket->canAddItem('Ticket_Cost'))->isTrue();
+        $this->boolean((bool)$ticket->canAddFollowups())->isTrue();
+        $this->boolean((bool)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
-      $uid = getItemByTypeName('User', TU_USER, true);
-      //add a followup to the ticket
-      $fup = new \ITILFollowup();
-      $this->integer(
-         (int)$fup->add([
+        $uid = getItemByTypeName('User', TU_USER, true);
+       //add a followup to the ticket
+        $fup = new \ITILFollowup();
+        $this->integer(
+            (int)$fup->add([
             'itemtype'  => 'Ticket',
             'items_id'   => $ticket->getID(),
             'users_id'     => $uid,
             'content'      => 'A simple followup'
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
-      $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
-      $this->boolean((boolean)$ticket->canAssign())->isFalse();
-      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
-      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
-      $this->boolean((boolean)$ticket->canView())->isTrue();
-      $this->boolean((boolean)$ticket->canViewItem())->isTrue();
-      $this->boolean((boolean)$ticket->canSolve())->isFalse();
-      $this->boolean((boolean)$ticket->canApprove())->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canUpdateItem())->isFalse();
-      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
-      $this->boolean((boolean)$ticket->canDelete())->isTrue();
-      $this->boolean((boolean)$ticket->canDeleteItem())->isFalse();
-      $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
-      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
-      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
-      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
-   }
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->boolean((bool)$ticket->canAdminActors())->isFalse();
+        $this->boolean((bool)$ticket->canAssign())->isFalse();
+        $this->boolean((bool)$ticket->canAssignToMe())->isFalse();
+        $this->boolean((bool)$ticket->canUpdate())->isTrue();
+        $this->boolean((bool)$ticket->canView())->isTrue();
+        $this->boolean((bool)$ticket->canViewItem())->isTrue();
+        $this->boolean((bool)$ticket->canSolve())->isFalse();
+        $this->boolean((bool)$ticket->canApprove())->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canCreateItem())->isTrue();
+        $this->boolean((bool)$ticket->canUpdateItem())->isFalse();
+        $this->boolean((bool)$ticket->canRequesterUpdateItem())->isFalse();
+        $this->boolean((bool)$ticket->canDelete())->isTrue();
+        $this->boolean((bool)$ticket->canDeleteItem())->isFalse();
+        $this->boolean((bool)$ticket->canAddItem('Document'))->isTrue();
+        $this->boolean((bool)$ticket->canAddItem('Ticket_Cost'))->isFalse();
+        $this->boolean((bool)$ticket->canAddFollowups())->isTrue();
+        $this->boolean((bool)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
+    }
 
-   public function testTechAcls() {
-      $auth = new \Auth();
-      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
+    public function testTechAcls()
+    {
+        $auth = new \Auth();
+        $this->boolean((bool)$auth->login('tech', 'tech', true))->isTrue();
 
-      $ticket = new \Ticket();
-      $this->boolean((boolean)$ticket->canAdminActors())->isTrue();
-      $this->boolean((boolean)$ticket->canAssign())->isFalse();
-      $this->boolean((boolean)$ticket->canAssignToMe())->isTrue();
-      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
-      $this->boolean((boolean)$ticket->canView())->isTrue();
-      $this->boolean((boolean)$ticket->canViewItem())->isTrue();
-      $this->boolean((boolean)$ticket->canSolve())->isTrue();
-      $this->boolean((boolean)$ticket->canApprove())->isFalse();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canUpdateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
-      $this->boolean((boolean)$ticket->canDelete())->isFalse();
-      $this->boolean((boolean)$ticket->canDeleteItem())->isFalse();
-      $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
-      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
-      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
-      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
+        $ticket = new \Ticket();
+        $this->boolean((bool)$ticket->canAdminActors())->isTrue();
+        $this->boolean((bool)$ticket->canAssign())->isFalse();
+        $this->boolean((bool)$ticket->canAssignToMe())->isTrue();
+        $this->boolean((bool)$ticket->canUpdate())->isTrue();
+        $this->boolean((bool)$ticket->canView())->isTrue();
+        $this->boolean((bool)$ticket->canViewItem())->isTrue();
+        $this->boolean((bool)$ticket->canSolve())->isTrue();
+        $this->boolean((bool)$ticket->canApprove())->isFalse();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canCreateItem())->isTrue();
+        $this->boolean((bool)$ticket->canUpdateItem())->isTrue();
+        $this->boolean((bool)$ticket->canRequesterUpdateItem())->isFalse();
+        $this->boolean((bool)$ticket->canDelete())->isFalse();
+        $this->boolean((bool)$ticket->canDeleteItem())->isFalse();
+        $this->boolean((bool)$ticket->canAddItem('Document'))->isTrue();
+        $this->boolean((bool)$ticket->canAddItem('Ticket_Cost'))->isTrue();
+        $this->boolean((bool)$ticket->canAddFollowups())->isTrue();
+        $this->boolean((bool)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
-      $this->integer(
-         (int)$ticket->add([
+        $this->integer(
+            (int)$ticket->add([
             'name'    => '',
             'content' => 'A ticket to check ACLS',
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      //reload ticket from DB
-      $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
-      $this->boolean((boolean)$ticket->canAdminActors())->isTrue();
-      $this->boolean((boolean)$ticket->canAssign())->isFalse();
-      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
-      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
-      $this->boolean((boolean)$ticket->canView())->isTrue();
-      $this->boolean((boolean)$ticket->canViewItem())->isTrue();
-      $this->boolean((boolean)$ticket->canSolve())->isTrue();
-      $this->boolean((boolean)$ticket->canApprove())->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canUpdateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canDelete())->isFalse();
-      $this->boolean((boolean)$ticket->canDeleteItem())->isFalse();
-      $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
-      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
-      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
-      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
+       //reload ticket from DB
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->boolean((bool)$ticket->canAdminActors())->isTrue();
+        $this->boolean((bool)$ticket->canAssign())->isFalse();
+        $this->boolean((bool)$ticket->canAssignToMe())->isFalse();
+        $this->boolean((bool)$ticket->canUpdate())->isTrue();
+        $this->boolean((bool)$ticket->canView())->isTrue();
+        $this->boolean((bool)$ticket->canViewItem())->isTrue();
+        $this->boolean((bool)$ticket->canSolve())->isTrue();
+        $this->boolean((bool)$ticket->canApprove())->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canCreateItem())->isTrue();
+        $this->boolean((bool)$ticket->canUpdateItem())->isTrue();
+        $this->boolean((bool)$ticket->canRequesterUpdateItem())->isTrue();
+        $this->boolean((bool)$ticket->canDelete())->isFalse();
+        $this->boolean((bool)$ticket->canDeleteItem())->isFalse();
+        $this->boolean((bool)$ticket->canAddItem('Document'))->isTrue();
+        $this->boolean((bool)$ticket->canAddItem('Ticket_Cost'))->isTrue();
+        $this->boolean((bool)$ticket->canAddFollowups())->isTrue();
+        $this->boolean((bool)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
-      $uid = getItemByTypeName('User', TU_USER, true);
-      //add a followup to the ticket
-      $fup = new \ITILFollowup();
-      $this->integer(
-         (int)$fup->add([
+        $uid = getItemByTypeName('User', TU_USER, true);
+       //add a followup to the ticket
+        $fup = new \ITILFollowup();
+        $this->integer(
+            (int)$fup->add([
             'itemtype'  => 'Ticket',
             'items_id'   => $ticket->getID(),
             'users_id'     => $uid,
             'content'      => 'A simple followup'
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
-      $this->boolean((boolean)$ticket->canAdminActors())->isTrue();
-      $this->boolean((boolean)$ticket->canAssign())->isFalse();
-      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
-      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
-      $this->boolean((boolean)$ticket->canView())->isTrue();
-      $this->boolean((boolean)$ticket->canViewItem())->isTrue();
-      $this->boolean((boolean)$ticket->canSolve())->isTrue();
-      $this->boolean((boolean)$ticket->canApprove())->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canUpdateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
-      $this->boolean((boolean)$ticket->canDelete())->isFalse();
-      $this->boolean((boolean)$ticket->canDeleteItem())->isFalse();
-      $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
-      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
-      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
-      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->boolean((bool)$ticket->canAdminActors())->isTrue();
+        $this->boolean((bool)$ticket->canAssign())->isFalse();
+        $this->boolean((bool)$ticket->canAssignToMe())->isFalse();
+        $this->boolean((bool)$ticket->canUpdate())->isTrue();
+        $this->boolean((bool)$ticket->canView())->isTrue();
+        $this->boolean((bool)$ticket->canViewItem())->isTrue();
+        $this->boolean((bool)$ticket->canSolve())->isTrue();
+        $this->boolean((bool)$ticket->canApprove())->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canCreateItem())->isTrue();
+        $this->boolean((bool)$ticket->canUpdateItem())->isTrue();
+        $this->boolean((bool)$ticket->canRequesterUpdateItem())->isFalse();
+        $this->boolean((bool)$ticket->canDelete())->isFalse();
+        $this->boolean((bool)$ticket->canDeleteItem())->isFalse();
+        $this->boolean((bool)$ticket->canAddItem('Document'))->isTrue();
+        $this->boolean((bool)$ticket->canAddItem('Ticket_Cost'))->isTrue();
+        $this->boolean((bool)$ticket->canAddFollowups())->isTrue();
+        $this->boolean((bool)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
-      //drop update ticket right from tech profile
-      global $DB;
-      $DB->update(
-         'glpi_profilerights',
-         ['rights' => 168965], [
+       //drop update ticket right from tech profile
+        global $DB;
+        $DB->update(
+            'glpi_profilerights',
+            ['rights' => 168965],
+            [
             'profiles_id'  => 6,
             'name'         => 'ticket'
-         ]
-      );
-      //ACLs have changed: login again.
-      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
+            ]
+        );
+       //ACLs have changed: login again.
+        $this->boolean((bool)$auth->login('tech', 'tech', true))->isTrue();
 
-      //reset rights. Done here so ACLs are reset even if tests fails.
-      $DB->update(
-         'glpi_profilerights',
-         ['rights' => 168967], [
+       //reset rights. Done here so ACLs are reset even if tests fails.
+        $DB->update(
+            'glpi_profilerights',
+            ['rights' => 168967],
+            [
             'profiles_id'  => 6,
             'name'         => 'ticket'
-         ]
-      );
+            ]
+        );
 
-      $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
-      $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
-      $this->boolean((boolean)$ticket->canAssign())->isFalse();
-      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
-      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
-      $this->boolean((boolean)$ticket->canView())->isTrue();
-      $this->boolean((boolean)$ticket->canViewItem())->isTrue();
-      $this->boolean((boolean)$ticket->canSolve())->isTrue();
-      $this->boolean((boolean)$ticket->canApprove())->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canUpdateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
-      $this->boolean((boolean)$ticket->canDelete())->isFalse();
-      $this->boolean((boolean)$ticket->canDeleteItem())->isFalse();
-      $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
-      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
-      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
-      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->boolean((bool)$ticket->canAdminActors())->isFalse();
+        $this->boolean((bool)$ticket->canAssign())->isFalse();
+        $this->boolean((bool)$ticket->canAssignToMe())->isFalse();
+        $this->boolean((bool)$ticket->canUpdate())->isTrue();
+        $this->boolean((bool)$ticket->canView())->isTrue();
+        $this->boolean((bool)$ticket->canViewItem())->isTrue();
+        $this->boolean((bool)$ticket->canSolve())->isTrue();
+        $this->boolean((bool)$ticket->canApprove())->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canCreateItem())->isTrue();
+        $this->boolean((bool)$ticket->canUpdateItem())->isTrue();
+        $this->boolean((bool)$ticket->canRequesterUpdateItem())->isFalse();
+        $this->boolean((bool)$ticket->canDelete())->isFalse();
+        $this->boolean((bool)$ticket->canDeleteItem())->isFalse();
+        $this->boolean((bool)$ticket->canAddItem('Document'))->isTrue();
+        $this->boolean((bool)$ticket->canAddItem('Ticket_Cost'))->isFalse();
+        $this->boolean((bool)$ticket->canAddFollowups())->isTrue();
+        $this->boolean((bool)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
-      $this->integer(
-         (int)$ticket->add([
+        $this->integer(
+            (int)$ticket->add([
             'name'    => '',
             'content' => 'Another ticket to check ACLS',
-         ])
-      )->isGreaterThan(0);
-      $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
-      $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
-      $this->boolean((boolean)$ticket->canAssign())->isFalse();
-      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
-      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
-      $this->boolean((boolean)$ticket->canView())->isTrue();
-      $this->boolean((boolean)$ticket->canViewItem())->isTrue();
-      $this->boolean((boolean)$ticket->canSolve())->isTrue();
-      $this->boolean((boolean)$ticket->canApprove())->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canUpdateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canDelete())->isFalse();
-      $this->boolean((boolean)$ticket->canDeleteItem())->isFalse();
-      $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
-      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
-      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
-      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
-   }
+            ])
+        )->isGreaterThan(0);
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->boolean((bool)$ticket->canAdminActors())->isFalse();
+        $this->boolean((bool)$ticket->canAssign())->isFalse();
+        $this->boolean((bool)$ticket->canAssignToMe())->isFalse();
+        $this->boolean((bool)$ticket->canUpdate())->isTrue();
+        $this->boolean((bool)$ticket->canView())->isTrue();
+        $this->boolean((bool)$ticket->canViewItem())->isTrue();
+        $this->boolean((bool)$ticket->canSolve())->isTrue();
+        $this->boolean((bool)$ticket->canApprove())->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canCreateItem())->isTrue();
+        $this->boolean((bool)$ticket->canUpdateItem())->isTrue();
+        $this->boolean((bool)$ticket->canRequesterUpdateItem())->isTrue();
+        $this->boolean((bool)$ticket->canDelete())->isFalse();
+        $this->boolean((bool)$ticket->canDeleteItem())->isFalse();
+        $this->boolean((bool)$ticket->canAddItem('Document'))->isTrue();
+        $this->boolean((bool)$ticket->canAddItem('Ticket_Cost'))->isTrue();
+        $this->boolean((bool)$ticket->canAddFollowups())->isTrue();
+        $this->boolean((bool)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
+    }
 
-   public function testNotOwnerAcls() {
-      $this->login();
+    public function testNotOwnerAcls()
+    {
+        $this->login();
 
-      $ticket = new \Ticket();
-      $this->integer(
-         (int)$ticket->add([
+        $ticket = new \Ticket();
+        $this->integer(
+            (int)$ticket->add([
             'name'    => '',
             'content' => 'A ticket to check ACLS',
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      $auth = new \Auth();
-      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
+        $auth = new \Auth();
+        $this->boolean((bool)$auth->login('tech', 'tech', true))->isTrue();
 
-      //reload ticket from DB
-      $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
-      $this->boolean((boolean)$ticket->canAdminActors())->isTrue();
-      $this->boolean((boolean)$ticket->canAssign())->isFalse();
-      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
-      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
-      $this->boolean((boolean)$ticket->canView())->isTrue();
-      $this->boolean((boolean)$ticket->canViewItem())->isTrue();
-      $this->boolean((boolean)$ticket->canSolve())->isTrue();
-      $this->boolean((boolean)$ticket->canApprove())->isFalse();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canUpdateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
-      $this->boolean((boolean)$ticket->canDelete())->isFalse();
-      $this->boolean((boolean)$ticket->canDeleteItem())->isFalse();
-      $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
-      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
-      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
-      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
+       //reload ticket from DB
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->boolean((bool)$ticket->canAdminActors())->isTrue();
+        $this->boolean((bool)$ticket->canAssign())->isFalse();
+        $this->boolean((bool)$ticket->canAssignToMe())->isFalse();
+        $this->boolean((bool)$ticket->canUpdate())->isTrue();
+        $this->boolean((bool)$ticket->canView())->isTrue();
+        $this->boolean((bool)$ticket->canViewItem())->isTrue();
+        $this->boolean((bool)$ticket->canSolve())->isTrue();
+        $this->boolean((bool)$ticket->canApprove())->isFalse();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canCreateItem())->isTrue();
+        $this->boolean((bool)$ticket->canUpdateItem())->isTrue();
+        $this->boolean((bool)$ticket->canRequesterUpdateItem())->isFalse();
+        $this->boolean((bool)$ticket->canDelete())->isFalse();
+        $this->boolean((bool)$ticket->canDeleteItem())->isFalse();
+        $this->boolean((bool)$ticket->canAddItem('Document'))->isTrue();
+        $this->boolean((bool)$ticket->canAddItem('Ticket_Cost'))->isTrue();
+        $this->boolean((bool)$ticket->canAddFollowups())->isTrue();
+        $this->boolean((bool)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
-      //drop update ticket right from tech profile
-      global $DB;
-      $DB->update(
-         'glpi_profilerights',
-         ['rights' => 168965], [
+       //drop update ticket right from tech profile
+        global $DB;
+        $DB->update(
+            'glpi_profilerights',
+            ['rights' => 168965],
+            [
             'profiles_id'  => 6,
             'name'         => 'ticket'
-         ]
-      );
-      //ACLs have changed: login again.
-      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
+            ]
+        );
+       //ACLs have changed: login again.
+        $this->boolean((bool)$auth->login('tech', 'tech', true))->isTrue();
 
-      //reset rights. Done here so ACLs are reset even if tests fails.
-      $DB->update(
-         'glpi_profilerights',
-         ['rights' => 168967], [
+       //reset rights. Done here so ACLs are reset even if tests fails.
+        $DB->update(
+            'glpi_profilerights',
+            ['rights' => 168967],
+            [
             'profiles_id'  => 6,
             'name'         => 'ticket'
-         ]
-      );
+            ]
+        );
 
-      $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
-      $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
-      $this->boolean((boolean)$ticket->canAssign())->isFalse();
-      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
-      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
-      $this->boolean((boolean)$ticket->canView())->isTrue();
-      $this->boolean((boolean)$ticket->canViewItem())->isTrue();
-      $this->boolean((boolean)$ticket->canSolve())->isFalse();
-      $this->boolean((boolean)$ticket->canApprove())->isFalse();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canUpdateItem())->isFalse();
-      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
-      $this->boolean((boolean)$ticket->canDelete())->isFalse();
-      $this->boolean((boolean)$ticket->canDeleteItem())->isFalse();
-      $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
-      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
-      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
-      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->boolean((bool)$ticket->canAdminActors())->isFalse();
+        $this->boolean((bool)$ticket->canAssign())->isFalse();
+        $this->boolean((bool)$ticket->canAssignToMe())->isFalse();
+        $this->boolean((bool)$ticket->canUpdate())->isTrue();
+        $this->boolean((bool)$ticket->canView())->isTrue();
+        $this->boolean((bool)$ticket->canViewItem())->isTrue();
+        $this->boolean((bool)$ticket->canSolve())->isFalse();
+        $this->boolean((bool)$ticket->canApprove())->isFalse();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canCreateItem())->isTrue();
+        $this->boolean((bool)$ticket->canUpdateItem())->isFalse();
+        $this->boolean((bool)$ticket->canRequesterUpdateItem())->isFalse();
+        $this->boolean((bool)$ticket->canDelete())->isFalse();
+        $this->boolean((bool)$ticket->canDeleteItem())->isFalse();
+        $this->boolean((bool)$ticket->canAddItem('Document'))->isTrue();
+        $this->boolean((bool)$ticket->canAddItem('Ticket_Cost'))->isFalse();
+        $this->boolean((bool)$ticket->canAddFollowups())->isTrue();
+        $this->boolean((bool)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
-      // post only tests
-      $this->boolean((boolean)$auth->login('post-only', 'postonly', true))->isTrue();
-      $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
-      $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
-      $this->boolean((boolean)$ticket->canAssign())->isFalse();
-      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
-      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
-      $this->boolean((boolean)$ticket->canView())->isTrue();
-      $this->boolean((boolean)$ticket->canViewItem())->isFalse();
-      $this->boolean((boolean)$ticket->canSolve())->isFalse();
-      $this->boolean((boolean)$ticket->canApprove())->isFalse();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
-      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canUpdateItem())->isFalse();
-      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
-      $this->boolean((boolean)$ticket->canDelete())->isTrue();
-      $this->boolean((boolean)$ticket->canDeleteItem())->isFalse();
-      $this->boolean((boolean)$ticket->canAddItem('Document'))->isFalse();
-      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
-      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
-      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isFalse();
-   }
+       // post only tests
+        $this->boolean((bool)$auth->login('post-only', 'postonly', true))->isTrue();
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->boolean((bool)$ticket->canAdminActors())->isFalse();
+        $this->boolean((bool)$ticket->canAssign())->isFalse();
+        $this->boolean((bool)$ticket->canAssignToMe())->isFalse();
+        $this->boolean((bool)$ticket->canUpdate())->isTrue();
+        $this->boolean((bool)$ticket->canView())->isTrue();
+        $this->boolean((bool)$ticket->canViewItem())->isFalse();
+        $this->boolean((bool)$ticket->canSolve())->isFalse();
+        $this->boolean((bool)$ticket->canApprove())->isFalse();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+        $this->boolean((bool)$ticket->canCreateItem())->isTrue();
+        $this->boolean((bool)$ticket->canUpdateItem())->isFalse();
+        $this->boolean((bool)$ticket->canRequesterUpdateItem())->isFalse();
+        $this->boolean((bool)$ticket->canDelete())->isTrue();
+        $this->boolean((bool)$ticket->canDeleteItem())->isFalse();
+        $this->boolean((bool)$ticket->canAddItem('Document'))->isFalse();
+        $this->boolean((bool)$ticket->canAddItem('Ticket_Cost'))->isFalse();
+        $this->boolean((bool)$ticket->canAddFollowups())->isFalse();
+        $this->boolean((bool)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isFalse();
+    }
 
    /**
     * Checks showForm() output
@@ -733,787 +747,808 @@ class Ticket extends DbTestCase {
     *
     * @return void
     */
-   private function checkFormOutput(
-      \Ticket $ticket,
-      $name = true,
-      $textarea = true,
-      $priority = true,
-      $save = true,
-      $assign = true,
-      $openDate = true,
-      $timeOwnResolve = true,
-      $type = true,
-      $status = true,
-      $urgency = true,
-      $impact = true,
-      $category = true,
-      $requestSource = true,
-      $location = true
-   ) {
-      ob_start();
-      $ticket->showForm($ticket->getID());
-      $output = ob_get_contents();
-      ob_end_clean();
-      $crawler = new Crawler($output);
+    private function checkFormOutput(
+        \Ticket $ticket,
+        $name = true,
+        $textarea = true,
+        $priority = true,
+        $save = true,
+        $assign = true,
+        $openDate = true,
+        $timeOwnResolve = true,
+        $type = true,
+        $status = true,
+        $urgency = true,
+        $impact = true,
+        $category = true,
+        $requestSource = true,
+        $location = true
+    ) {
+        ob_start();
+        $ticket->showForm($ticket->getID());
+        $output = ob_get_contents();
+        ob_end_clean();
+        $crawler = new Crawler($output);
 
-      // Opening date, editable
-      $matches = iterator_to_array($crawler->filter("#itil-data input[name=date]:not([disabled])"));
-      $this->array($matches)->hasSize(($openDate === true ? 1 : 0), 'RW Opening date');
+       // Opening date, editable
+        $matches = iterator_to_array($crawler->filter("#itil-data input[name=date]:not([disabled])"));
+        $this->array($matches)->hasSize(($openDate === true ? 1 : 0), 'RW Opening date');
 
-      // Time to own, editable
-      $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_own]:not([disabled])"));
-      $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Time to own editable');
+       // Time to own, editable
+        $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_own]:not([disabled])"));
+        $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Time to own editable');
 
-      // Internal time to own, editable
-      $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_own]:not([disabled])"));
-      $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Internal time to own editable');
+       // Internal time to own, editable
+        $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_own]:not([disabled])"));
+        $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Internal time to own editable');
 
-      // Time to resolve, editable
-      $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_resolve]:not([disabled])"));
-      $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Time to resolve');
+       // Time to resolve, editable
+        $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_resolve]:not([disabled])"));
+        $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Time to resolve');
 
-      // Internal time to resolve, editable
-      $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_resolve]:not([disabled])"));
-      $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Internal time to resolve');
+       // Internal time to resolve, editable
+        $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_resolve]:not([disabled])"));
+        $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Internal time to resolve');
 
-      //Type
-      $matches = iterator_to_array($crawler->filter("#itil-data select[name=type]:not([disabled])"));
-      $this->array($matches)->hasSize(($type === true ? 1 : 0), 'Type');
+       //Type
+        $matches = iterator_to_array($crawler->filter("#itil-data select[name=type]:not([disabled])"));
+        $this->array($matches)->hasSize(($type === true ? 1 : 0), 'Type');
 
-      //Status
-      $matches = iterator_to_array($crawler->filter("#itil-data select[name=status]:not([disabled])"));
-      $this->array($matches)->hasSize(($status === true ? 1 : 0), 'Status');
+       //Status
+        $matches = iterator_to_array($crawler->filter("#itil-data select[name=status]:not([disabled])"));
+        $this->array($matches)->hasSize(($status === true ? 1 : 0), 'Status');
 
-      //Urgency
-      $matches = iterator_to_array($crawler->filter("#itil-data select[name=urgency]:not([disabled])"));
-      $this->array($matches)->hasSize(($urgency === true ? 1 : 0), 'Urgency');
+       //Urgency
+        $matches = iterator_to_array($crawler->filter("#itil-data select[name=urgency]:not([disabled])"));
+        $this->array($matches)->hasSize(($urgency === true ? 1 : 0), 'Urgency');
 
-      //Impact
-      $matches = iterator_to_array($crawler->filter("#itil-data select[name=impact]:not([disabled])"));
-      $this->array($matches)->hasSize(($impact === true ? 1 : 0), 'Impact');
+       //Impact
+        $matches = iterator_to_array($crawler->filter("#itil-data select[name=impact]:not([disabled])"));
+        $this->array($matches)->hasSize(($impact === true ? 1 : 0), 'Impact');
 
-      //Category
-      $matches = iterator_to_array($crawler->filter("#itil-data select[name=itilcategories_id]:not([disabled])"));
-      $this->array($matches)->hasSize(($category === true ? 1 : 0), 'Category');
+       //Category
+        $matches = iterator_to_array($crawler->filter("#itil-data select[name=itilcategories_id]:not([disabled])"));
+        $this->array($matches)->hasSize(($category === true ? 1 : 0), 'Category');
 
-      //Request source file_put_contents('/tmp/out.html', $output)
-      $matches = iterator_to_array($crawler->filter("#itil-data select[name=requesttypes_id]:not([disabled])"));
-      $this->array($matches)->hasSize($requestSource === true ? 1 : 0, 'Request source');
+       //Request source file_put_contents('/tmp/out.html', $output)
+        $matches = iterator_to_array($crawler->filter("#itil-data select[name=requesttypes_id]:not([disabled])"));
+        $this->array($matches)->hasSize($requestSource === true ? 1 : 0, 'Request source');
 
-      //Location
-      $matches = iterator_to_array($crawler->filter("#itil-data select[name=locations_id]:not([disabled])"));
-      $this->array($matches)->hasSize(($location === true ? 1 : 0), 'Location');
+       //Location
+        $matches = iterator_to_array($crawler->filter("#itil-data select[name=locations_id]:not([disabled])"));
+        $this->array($matches)->hasSize(($location === true ? 1 : 0), 'Location');
 
-      //Priority, editable
-      $matches = iterator_to_array($crawler->filter("#itil-data select[name=priority]:not([disabled])"));
-      $this->array($matches)->hasSize(($priority === true ? 1 : 0), 'RW priority');
+       //Priority, editable
+        $matches = iterator_to_array($crawler->filter("#itil-data select[name=priority]:not([disabled])"));
+        $this->array($matches)->hasSize(($priority === true ? 1 : 0), 'RW priority');
 
-      //Save button
-      $matches = iterator_to_array($crawler->filter("#itil-footer button[type=submit][name=update]:not([disabled])"));
-      $this->array($matches)->hasSize(($save === true ? 1 : 0), ($save === true ? 'Save button missing' : 'Save button present'));
+       //Save button
+        $matches = iterator_to_array($crawler->filter("#itil-footer button[type=submit][name=update]:not([disabled])"));
+        $this->array($matches)->hasSize(($save === true ? 1 : 0), ($save === true ? 'Save button missing' : 'Save button present'));
 
-      //Assign to
-      /*preg_match(
+       //Assign to
+       /*preg_match(
          '|.*<select name=\'_itil_assign\[_type\]\'[^>]*>.*|',
          $output,
          $matches
-      );
-      $this->array($matches)->hasSize(($assign === true ? 1 : 0));*/
-   }
+       );
+       $this->array($matches)->hasSize(($assign === true ? 1 : 0));*/
+    }
 
-   public function testForm() {
-      $this->login();
-      $this->setEntity('Root entity', true);
-      $ticket = getItemByTypeName('Ticket', '_ticket01');
+    public function testForm()
+    {
+        $this->login();
+        $this->setEntity('Root entity', true);
+        $ticket = getItemByTypeName('Ticket', '_ticket01');
 
-      $this->checkFormOutput($ticket);
-   }
+        $this->checkFormOutput($ticket);
+    }
 
-   public function testFormPostOnly() {
-      $auth = new \Auth();
-      $this->boolean((boolean)$auth->login('post-only', 'postonly', true))->isTrue();
+    public function testFormPostOnly()
+    {
+        $auth = new \Auth();
+        $this->boolean((bool)$auth->login('post-only', 'postonly', true))->isTrue();
 
-      //create a new ticket
-      $ticket = new \Ticket();
-      $this->integer(
-         (int)$ticket->add([
+       //create a new ticket
+        $ticket = new \Ticket();
+        $this->integer(
+            (int)$ticket->add([
             'name'    => '',
             'content' => 'A ticket to check displayed postonly form',
-         ])
-      )->isGreaterThan(0);
-      $this->boolean($ticket->getFromDB($ticket->getId()))->isTrue();
+            ])
+        )->isGreaterThan(0);
+        $this->boolean($ticket->getFromDB($ticket->getId()))->isTrue();
 
-      $this->checkFormOutput(
-         $ticket,
-         $name = false,
-         $textarea = true,
-         $priority = false,
-         $save = true,
-         $assign = false,
-         $openDate = false,
-         $timeOwnResolve = false,
-         $type = false,
-         $status = false,
-         $urgency = true,
-         $impact = false,
-         $category = true,
-         $requestSource = false,
-         $location = false
-      );
+        $this->checkFormOutput(
+            $ticket,
+            $name = false,
+            $textarea = true,
+            $priority = false,
+            $save = true,
+            $assign = false,
+            $openDate = false,
+            $timeOwnResolve = false,
+            $type = false,
+            $status = false,
+            $urgency = true,
+            $impact = false,
+            $category = true,
+            $requestSource = false,
+            $location = false
+        );
 
-      $uid = getItemByTypeName('User', TU_USER, true);
-      //add a followup to the ticket
-      $fup = new \ITILFollowup();
-      $this->integer(
-         (int)$fup->add([
+        $uid = getItemByTypeName('User', TU_USER, true);
+       //add a followup to the ticket
+        $fup = new \ITILFollowup();
+        $this->integer(
+            (int)$fup->add([
             'itemtype'  => 'Ticket',
             'items_id'   => $ticket->getID(),
             'users_id'     => $uid,
             'content'      => 'A simple followup'
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      $this->checkFormOutput(
-         $ticket,
-         $name = false,
-         $textarea = false,
-         $priority = false,
-         $save = false,
-         $assign = false,
-         $openDate = false,
-         $timeOwnResolve = false,
-         $type = false,
-         $status = false,
-         $urgency = false,
-         $impact = false,
-         $category = false,
-         $requestSource = false,
-         $location = false
-      );
-   }
+        $this->checkFormOutput(
+            $ticket,
+            $name = false,
+            $textarea = false,
+            $priority = false,
+            $save = false,
+            $assign = false,
+            $openDate = false,
+            $timeOwnResolve = false,
+            $type = false,
+            $status = false,
+            $urgency = false,
+            $impact = false,
+            $category = false,
+            $requestSource = false,
+            $location = false
+        );
+    }
 
-   public function testFormTech() {
-      //create a new ticket with tu user
-      $auth = new \Auth();
-      $this->login();
-      $ticket = new \Ticket();
-      $this->integer(
-         (int)$ticket->add([
+    public function testFormTech()
+    {
+       //create a new ticket with tu user
+        $auth = new \Auth();
+        $this->login();
+        $ticket = new \Ticket();
+        $this->integer(
+            (int)$ticket->add([
             'name'                => '',
             'content'             => 'A ticket to check displayed tech form',
             '_users_id_requester' => '3', // post-only
             '_users_id_assign'    => '4', // tech
-         ])
-      )->isGreaterThan(0);
-      $this->boolean($ticket->getFromDB($ticket->getId()))->isTrue();
+            ])
+        )->isGreaterThan(0);
+        $this->boolean($ticket->getFromDB($ticket->getId()))->isTrue();
 
-      //check output with default ACLs
-      $this->changeTechRight();
-      $this->checkFormOutput(
-         $ticket,
-         $name = false,
-         $textarea = true,
-         $priority = false,
-         $save = true,
-         $assign = false,
-         $openDate = true,
-         $timeOwnResolve = true,
-         $type = true,
-         $status = true,
-         $urgency = true,
-         $impact = true,
-         $category = true,
-         $requestSource = true,
-         $location = true
-      );
+       //check output with default ACLs
+        $this->changeTechRight();
+        $this->checkFormOutput(
+            $ticket,
+            $name = false,
+            $textarea = true,
+            $priority = false,
+            $save = true,
+            $assign = false,
+            $openDate = true,
+            $timeOwnResolve = true,
+            $type = true,
+            $status = true,
+            $urgency = true,
+            $impact = true,
+            $category = true,
+            $requestSource = true,
+            $location = true
+        );
 
-      //drop UPDATE ticket right from tech profile (still with OWN)
-      $this->changeTechRight(168965);
-      $this->checkFormOutput(
-         $ticket,
-         $name = false,
-         $textarea = true,
-         $priority = false,
-         $save = true,
-         $assign = false,
-         $openDate = true,
-         $timeOwnResolve = true,
-         $type = true,
-         $status = true,
-         $urgency = true,
-         $impact = true,
-         $category = true,
-         $requestSource = true,
-         $location = true
-      );
+       //drop UPDATE ticket right from tech profile (still with OWN)
+        $this->changeTechRight(168965);
+        $this->checkFormOutput(
+            $ticket,
+            $name = false,
+            $textarea = true,
+            $priority = false,
+            $save = true,
+            $assign = false,
+            $openDate = true,
+            $timeOwnResolve = true,
+            $type = true,
+            $status = true,
+            $urgency = true,
+            $impact = true,
+            $category = true,
+            $requestSource = true,
+            $location = true
+        );
 
-      //drop UPDATE ticket right from tech profile (without OWN)
-      $this->changeTechRight(136197);
-      $this->checkFormOutput(
-         $ticket,
-         $name = false,
-         $textarea = false,
-         $priority = false,
-         $save = false,
-         $assign = false,
-         $openDate = false,
-         $timeOwnResolve = false,
-         $type = false,
-         $status = false,
-         $urgency = false,
-         $impact = false,
-         $category = false,
-         $requestSource = false,
-         $location = false
-      );
+       //drop UPDATE ticket right from tech profile (without OWN)
+        $this->changeTechRight(136197);
+        $this->checkFormOutput(
+            $ticket,
+            $name = false,
+            $textarea = false,
+            $priority = false,
+            $save = false,
+            $assign = false,
+            $openDate = false,
+            $timeOwnResolve = false,
+            $type = false,
+            $status = false,
+            $urgency = false,
+            $impact = false,
+            $category = false,
+            $requestSource = false,
+            $location = false
+        );
 
-      // only assign and priority right for tech (without UPDATE and OWN rights)
-      $this->changeTechRight(94209);
-      $this->checkFormOutput(
-         $ticket,
-         $name = false,
-         $textarea = false,
-         $priority = true,
-         $save = true,
-         $assign = true,
-         $openDate = false,
-         $timeOwnResolve = false,
-         $type = false,
-         $status = false,
-         $urgency = false,
-         $impact = false,
-         $category = false,
-         $requestSource = false,
-         $location = false
-      );
+       // only assign and priority right for tech (without UPDATE and OWN rights)
+        $this->changeTechRight(94209);
+        $this->checkFormOutput(
+            $ticket,
+            $name = false,
+            $textarea = false,
+            $priority = true,
+            $save = true,
+            $assign = true,
+            $openDate = false,
+            $timeOwnResolve = false,
+            $type = false,
+            $status = false,
+            $urgency = false,
+            $impact = false,
+            $category = false,
+            $requestSource = false,
+            $location = false
+        );
 
-      // no update rights, only display for tech
-      $this->changeTechRight(3077);
-      $this->checkFormOutput(
-         $ticket,
-         $name = false,
-         $textarea = false,
-         $priority = false,
-         $save = false,
-         $assign = false,
-         $openDate = false,
-         $timeOwnResolve = false,
-         $type = false,
-         $status = false,
-         $urgency = false,
-         $impact = false,
-         $category = false,
-         $requestSource = false,
-         $location = false
-      );
+       // no update rights, only display for tech
+        $this->changeTechRight(3077);
+        $this->checkFormOutput(
+            $ticket,
+            $name = false,
+            $textarea = false,
+            $priority = false,
+            $save = false,
+            $assign = false,
+            $openDate = false,
+            $timeOwnResolve = false,
+            $type = false,
+            $status = false,
+            $urgency = false,
+            $impact = false,
+            $category = false,
+            $requestSource = false,
+            $location = false
+        );
 
-      $uid = getItemByTypeName('User', TU_USER, true);
-      //add a followup to the ticket
-      $fup = new \ITILFollowup();
-      $this->integer(
-         (int)$fup->add([
+        $uid = getItemByTypeName('User', TU_USER, true);
+       //add a followup to the ticket
+        $fup = new \ITILFollowup();
+        $this->integer(
+            (int)$fup->add([
             'itemtype'  => 'Ticket',
             'items_id'   => $ticket->getID(),
             'users_id'     => $uid,
             'content'      => 'A simple followup'
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      //check output with changed ACLs when a followup has been added
-      $this->checkFormOutput(
-         $ticket,
-         $name = false,
-         $textarea = false,
-         $priority = false,
-         $save = false,
-         $assign = false,
-         $openDate = false,
-         $timeOwnResolve = false,
-         $type = false,
-         $status = false,
-         $urgency = false,
-         $impact = false,
-         $category = false,
-         $requestSource = false,
-         $location = false
-      );
-   }
+       //check output with changed ACLs when a followup has been added
+        $this->checkFormOutput(
+            $ticket,
+            $name = false,
+            $textarea = false,
+            $priority = false,
+            $save = false,
+            $assign = false,
+            $openDate = false,
+            $timeOwnResolve = false,
+            $type = false,
+            $status = false,
+            $urgency = false,
+            $impact = false,
+            $category = false,
+            $requestSource = false,
+            $location = false
+        );
+    }
 
-   public function changeTechRight($rights = 168967) {
-      global $DB;
+    public function changeTechRight($rights = 168967)
+    {
+        global $DB;
 
-      $this->dump("changeTechRight: $rights");
+        $this->dump("changeTechRight: $rights");
 
-      // set new rights
-      $DB->update(
-         'glpi_profilerights',
-         ['rights' => $rights], [
+       // set new rights
+        $DB->update(
+            'glpi_profilerights',
+            ['rights' => $rights],
+            [
             'profiles_id'  => 6,
             'name'         => 'ticket'
-         ]
-      );
-
-      //ACLs have changed: login again.
-      $auth = new \Auth();
-      $this->boolean((boolean) $auth->Login('tech', 'tech', true))->isTrue();
-
-      if ($rights != 168967) {
-         //reset rights. Done here so ACLs are reset even if tests fails.
-         $DB->update(
-            'glpi_profilerights',
-            ['rights' => 168967], [
-               'profiles_id'  => 6,
-               'name'         => 'ticket'
             ]
-         );
-      }
-   }
+        );
 
-   public function testPriorityAcl() {
-      $this->login();
+       //ACLs have changed: login again.
+        $auth = new \Auth();
+        $this->boolean((bool) $auth->Login('tech', 'tech', true))->isTrue();
 
-      $ticket = new \Ticket();
-      $this->integer(
-         (int)$ticket->add([
+        if ($rights != 168967) {
+           //reset rights. Done here so ACLs are reset even if tests fails.
+            $DB->update(
+                'glpi_profilerights',
+                ['rights' => 168967],
+                [
+                'profiles_id'  => 6,
+                'name'         => 'ticket'
+                ]
+            );
+        }
+    }
+
+    public function testPriorityAcl()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $this->integer(
+            (int)$ticket->add([
             'name'    => '',
             'content' => 'A ticket to check priority ACLS',
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      $auth = new \Auth();
-      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
-      $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $auth = new \Auth();
+        $this->boolean((bool)$auth->login('tech', 'tech', true))->isTrue();
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
 
-      $this->boolean((boolean)\Session::haveRight(\Ticket::$rightname, \Ticket::CHANGEPRIORITY))->isFalse();
-      //check output with default ACLs
-      $this->checkFormOutput(
-         $ticket,
-         $name = false,
-         $textarea = true,
-         $priority = false,
-         $save = true,
-         $assign = false,
-         $openDate = true,
-         $timeOwnResolve = true,
-         $type = true,
-         $status = true,
-         $urgency = true,
-         $impact = true,
-         $category = true,
-         $requestSource = true,
-         $location = true
-      );
+        $this->boolean((bool)\Session::haveRight(\Ticket::$rightname, \Ticket::CHANGEPRIORITY))->isFalse();
+       //check output with default ACLs
+        $this->checkFormOutput(
+            $ticket,
+            $name = false,
+            $textarea = true,
+            $priority = false,
+            $save = true,
+            $assign = false,
+            $openDate = true,
+            $timeOwnResolve = true,
+            $type = true,
+            $status = true,
+            $urgency = true,
+            $impact = true,
+            $category = true,
+            $requestSource = true,
+            $location = true
+        );
 
-      //Add priority right from tech profile
-      global $DB;
-      $DB->update(
-         'glpi_profilerights',
-         ['rights' => 234503], [
+       //Add priority right from tech profile
+        global $DB;
+        $DB->update(
+            'glpi_profilerights',
+            ['rights' => 234503],
+            [
             'profiles_id'  => 6,
             'name'         => 'ticket'
-         ]
-      );
+            ]
+        );
 
-      //ACLs have changed: login again.
-      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
+       //ACLs have changed: login again.
+        $this->boolean((bool)$auth->login('tech', 'tech', true))->isTrue();
 
-      //reset rights. Done here so ACLs are reset even if tests fails.
-      $DB->update(
-         'glpi_profilerights',
-         ['rights' => 168967], [
+       //reset rights. Done here so ACLs are reset even if tests fails.
+        $DB->update(
+            'glpi_profilerights',
+            ['rights' => 168967],
+            [
             'profiles_id'  => 6,
             'name'         => 'ticket'
-         ]
-      );
+            ]
+        );
 
-      $this->boolean((boolean)\Session::haveRight(\Ticket::$rightname, \Ticket::CHANGEPRIORITY))->isTrue();
-      //check output with changed ACLs
-      $this->checkFormOutput(
-         $ticket,
-         $name = false,
-         $textarea = true,
-         $priority = true,
-         $save = true,
-         $assign = false,
-         $openDate = true,
-         $timeOwnResolve = true,
-         $type = true,
-         $status = true,
-         $urgency = true,
-         $impact = true,
-         $category = true,
-         $requestSource = true,
-         $location = true
-      );
-   }
+        $this->boolean((bool)\Session::haveRight(\Ticket::$rightname, \Ticket::CHANGEPRIORITY))->isTrue();
+       //check output with changed ACLs
+        $this->checkFormOutput(
+            $ticket,
+            $name = false,
+            $textarea = true,
+            $priority = true,
+            $save = true,
+            $assign = false,
+            $openDate = true,
+            $timeOwnResolve = true,
+            $type = true,
+            $status = true,
+            $urgency = true,
+            $impact = true,
+            $category = true,
+            $requestSource = true,
+            $location = true
+        );
+    }
 
-   public function testAssignAcl() {
-      $this->login();
+    public function testAssignAcl()
+    {
+        $this->login();
 
-      $ticket = new \Ticket();
-      $this->integer(
-         (int)$ticket->add([
+        $ticket = new \Ticket();
+        $this->integer(
+            (int)$ticket->add([
             'name'    => '',
             'content' => 'A ticket to check assign ACLS',
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      $auth = new \Auth();
-      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
-      $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $auth = new \Auth();
+        $this->boolean((bool)$auth->login('tech', 'tech', true))->isTrue();
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
 
-      $this->boolean((boolean)$ticket->canAssign())->isFalse();
-      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
-      //check output with default ACLs
-      $this->checkFormOutput(
-         $ticket,
-         $name = false,
-         $textarea = true,
-         $priority = false,
-         $save = true,
-         $assign = false,
-         $openDate = true,
-         $timeOwnResolve = true,
-         $type = true,
-         $status = true,
-         $urgency = true,
-         $impact = true,
-         $category = true,
-         $requestSource = true,
-         $location = true
-      );
+        $this->boolean((bool)$ticket->canAssign())->isFalse();
+        $this->boolean((bool)$ticket->canAssignToMe())->isFalse();
+       //check output with default ACLs
+        $this->checkFormOutput(
+            $ticket,
+            $name = false,
+            $textarea = true,
+            $priority = false,
+            $save = true,
+            $assign = false,
+            $openDate = true,
+            $timeOwnResolve = true,
+            $type = true,
+            $status = true,
+            $urgency = true,
+            $impact = true,
+            $category = true,
+            $requestSource = true,
+            $location = true
+        );
 
-      //Drop being in charge from tech profile
-      global $DB;
-      $DB->update(
-         'glpi_profilerights',
-         ['rights' => 136199], [
+       //Drop being in charge from tech profile
+        global $DB;
+        $DB->update(
+            'glpi_profilerights',
+            ['rights' => 136199],
+            [
             'profiles_id'  => 6,
             'name'         => 'ticket'
-         ]
-      );
+            ]
+        );
 
-      //ACLs have changed: login again.
-      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
+       //ACLs have changed: login again.
+        $this->boolean((bool)$auth->login('tech', 'tech', true))->isTrue();
 
-      //reset rights. Done here so ACLs are reset even if tests fails.
-      $DB->update(
-         'glpi_profilerights',
-         ['rights' => 168967], [
+       //reset rights. Done here so ACLs are reset even if tests fails.
+        $DB->update(
+            'glpi_profilerights',
+            ['rights' => 168967],
+            [
             'profiles_id'  => 6,
             'name'         => 'ticket'
-         ]
-      );
+            ]
+        );
 
-      $this->boolean((boolean)$ticket->canAssign())->isFalse();
-      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
-      //check output with changed ACLs
-      $this->checkFormOutput(
-         $ticket,
-         $name = false,
-         $textarea = true,
-         $priority = false,
-         $save = true,
-         $assign = false,
-         $openDate = true,
-         $timeOwnResolve = true,
-         $type = true,
-         $status = true,
-         $urgency = true,
-         $impact = true,
-         $category = true,
-         $requestSource = true,
-         $location = true
-      );
+        $this->boolean((bool)$ticket->canAssign())->isFalse();
+        $this->boolean((bool)$ticket->canAssignToMe())->isFalse();
+       //check output with changed ACLs
+        $this->checkFormOutput(
+            $ticket,
+            $name = false,
+            $textarea = true,
+            $priority = false,
+            $save = true,
+            $assign = false,
+            $openDate = true,
+            $timeOwnResolve = true,
+            $type = true,
+            $status = true,
+            $urgency = true,
+            $impact = true,
+            $category = true,
+            $requestSource = true,
+            $location = true
+        );
 
-      //Add assign in charge from tech profile
-      $DB->update(
-         'glpi_profilerights',
-         ['rights' => 144391], [
+       //Add assign in charge from tech profile
+        $DB->update(
+            'glpi_profilerights',
+            ['rights' => 144391],
+            [
             'profiles_id'  => 6,
             'name'         => 'ticket'
-         ]
-      );
+            ]
+        );
 
-      //ACLs have changed: login again.
-      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
+       //ACLs have changed: login again.
+        $this->boolean((bool)$auth->login('tech', 'tech', true))->isTrue();
 
-      //reset rights. Done here so ACLs are reset even if tests fails.
-      $DB->update(
-         'glpi_profilerights',
-         ['rights' => 168967], [
+       //reset rights. Done here so ACLs are reset even if tests fails.
+        $DB->update(
+            'glpi_profilerights',
+            ['rights' => 168967],
+            [
             'profiles_id'  => 6,
             'name'         => 'ticket'
-         ]
-      );
+            ]
+        );
 
-      $this->boolean((boolean)$ticket->canAssign())->isTrue();
-      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
-      //check output with changed ACLs
-      $this->checkFormOutput(
-         $ticket,
-         $name = false,
-         $textarea = true,
-         $priority = false,
-         $save = true,
-         $assign = true,
-         $openDate = true,
-         $timeOwnResolve = true,
-         $type = true,
-         $status = true,
-         $urgency = true,
-         $impact = true,
-         $category = true,
-         $requestSource = true,
-         $location = true
-      );
-   }
+        $this->boolean((bool)$ticket->canAssign())->isTrue();
+        $this->boolean((bool)$ticket->canAssignToMe())->isFalse();
+       //check output with changed ACLs
+        $this->checkFormOutput(
+            $ticket,
+            $name = false,
+            $textarea = true,
+            $priority = false,
+            $save = true,
+            $assign = true,
+            $openDate = true,
+            $timeOwnResolve = true,
+            $type = true,
+            $status = true,
+            $urgency = true,
+            $impact = true,
+            $category = true,
+            $requestSource = true,
+            $location = true
+        );
+    }
 
-   public function testUpdateFollowup() {
-      $uid = getItemByTypeName('User', 'tech', true);
-      $auth = new \Auth();
-      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
+    public function testUpdateFollowup()
+    {
+        $uid = getItemByTypeName('User', 'tech', true);
+        $auth = new \Auth();
+        $this->boolean((bool)$auth->login('tech', 'tech', true))->isTrue();
 
-      $ticket = new \Ticket();
-      $this->integer(
-         (int)$ticket->add([
+        $ticket = new \Ticket();
+        $this->integer(
+            (int)$ticket->add([
             'name'    => '',
             'content' => 'A ticket to check followup updates',
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      //add a followup to the ticket
-      $fup = new \ITILFollowup();
-      $this->integer(
-         (int)$fup->add([
+       //add a followup to the ticket
+        $fup = new \ITILFollowup();
+        $this->integer(
+            (int)$fup->add([
             'itemtype'  => $ticket::getType(),
             'items_id'   => $ticket->getID(),
             'users_id'     => $uid,
             'content'      => 'A simple followup'
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      $this->login();
-      $uid2 = getItemByTypeName('User', TU_USER, true);
-      $this->boolean($fup->getFromDB($fup->getID()))->isTrue();
-      $this->boolean($fup->update([
+        $this->login();
+        $uid2 = getItemByTypeName('User', TU_USER, true);
+        $this->boolean($fup->getFromDB($fup->getID()))->isTrue();
+        $this->boolean($fup->update([
          'id'        => $fup->getID(),
          'content'   => 'A simple edited followup'
-      ]))->isTrue();
+        ]))->isTrue();
 
-      $this->boolean($fup->getFromDB($fup->getID()))->isTrue();
-      $this->array($fup->fields)
+        $this->boolean($fup->getFromDB($fup->getID()))->isTrue();
+        $this->array($fup->fields)
          ->variable['users_id']->isEqualTo($uid)
          ->variable['users_id_editor']->isEqualTo($uid2);
-   }
+    }
 
-   public function testClone() {
-      $this->login();
-      $this->setEntity('Root entity', true);
-      $ticket = getItemByTypeName('Ticket', '_ticket01');
+    public function testClone()
+    {
+        $this->login();
+        $this->setEntity('Root entity', true);
+        $ticket = getItemByTypeName('Ticket', '_ticket01');
 
-      $date = date('Y-m-d H:i:s');
-      $_SESSION['glpi_currenttime'] = $date;
+        $date = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date;
 
-      // Test item cloning
-      $added = $ticket->clone();
-      $this->integer((int)$added)->isGreaterThan(0);
+       // Test item cloning
+        $added = $ticket->clone();
+        $this->integer((int)$added)->isGreaterThan(0);
 
-      $clonedTicket = new \Ticket();
-      $this->boolean($clonedTicket->getFromDB($added))->isTrue();
+        $clonedTicket = new \Ticket();
+        $this->boolean($clonedTicket->getFromDB($added))->isTrue();
 
-      $fields = $ticket->fields;
+        $fields = $ticket->fields;
 
-      // Check the ticket values. Id and dates must be different, everything else must be equal
-      foreach ($fields as $k => $v) {
-         switch ($k) {
-            case 'id':
-               $this->variable($clonedTicket->getField($k))->isNotEqualTo($ticket->getField($k));
-               break;
-            case 'date_mod':
-            case 'date_creation':
-               $dateClone = new \DateTime($clonedTicket->getField($k));
-               $expectedDate = new \DateTime($date);
-               $this->dateTime($dateClone)->isEqualTo($expectedDate);
-               break;
-            default:
-               $this->executeOnFailure(
-                  function() use ($k) {
-                      dump($k);
-                  }
-               )->variable($clonedTicket->getField($k))->isEqualTo($ticket->getField($k));
-         }
-      }
-   }
+       // Check the ticket values. Id and dates must be different, everything else must be equal
+        foreach ($fields as $k => $v) {
+            switch ($k) {
+                case 'id':
+                    $this->variable($clonedTicket->getField($k))->isNotEqualTo($ticket->getField($k));
+                    break;
+                case 'date_mod':
+                case 'date_creation':
+                    $dateClone = new \DateTime($clonedTicket->getField($k));
+                    $expectedDate = new \DateTime($date);
+                    $this->dateTime($dateClone)->isEqualTo($expectedDate);
+                    break;
+                default:
+                    $this->executeOnFailure(
+                        function () use ($k) {
+                            dump($k);
+                        }
+                    )->variable($clonedTicket->getField($k))->isEqualTo($ticket->getField($k));
+            }
+        }
+    }
 
-   protected function _testGetTimelinePosition($tlp, $tickets_id) {
-      foreach ($tlp as $users_name => $user) {
-         $this->login($users_name, $user['pass']);
-         $uid = getItemByTypeName('User', $users_name, true);
+    protected function testGetTimelinePosition2($tlp, $tickets_id)
+    {
+        foreach ($tlp as $users_name => $user) {
+            $this->login($users_name, $user['pass']);
+            $uid = getItemByTypeName('User', $users_name, true);
 
-         // ITILFollowup
-         $fup = new \ITILFollowup();
-         $this->integer(
-            (int)$fup->add([
-               'itemtype'  => 'Ticket',
-               'items_id'   => $tickets_id,
-               'users_id'     => $uid,
-               'content'      => 'A simple followup'
-            ])
-         )->isGreaterThan(0);
+           // ITILFollowup
+            $fup = new \ITILFollowup();
+            $this->integer(
+                (int)$fup->add([
+                'itemtype'  => 'Ticket',
+                'items_id'   => $tickets_id,
+                'users_id'     => $uid,
+                'content'      => 'A simple followup'
+                ])
+            )->isGreaterThan(0);
 
-         $this->integer(
-            (int)$fup->fields['timeline_position']
-         )->isEqualTo($user['pos']);
+            $this->integer(
+                (int)$fup->fields['timeline_position']
+            )->isEqualTo($user['pos']);
 
-         // TicketTask
-         $task = new \TicketTask();
-         $this->integer(
-            (int)$task->add([
-               'tickets_id'   => $tickets_id,
-               'users_id'     => $uid,
-               'content'      => 'A simple Task'
-            ])
-         )->isGreaterThan(0);
+           // TicketTask
+            $task = new \TicketTask();
+            $this->integer(
+                (int)$task->add([
+                'tickets_id'   => $tickets_id,
+                'users_id'     => $uid,
+                'content'      => 'A simple Task'
+                ])
+            )->isGreaterThan(0);
 
-         $this->integer(
-            (int)$task->fields['timeline_position']
-         )->isEqualTo($user['pos']);
+            $this->integer(
+                (int)$task->fields['timeline_position']
+            )->isEqualTo($user['pos']);
 
-         // Document and Document_Item
-         $doc = new \Document();
-         $this->integer(
-            (int)$doc->add([
-               'users_id'     => $uid,
-               'tickets_id'   => $tickets_id,
-               'name'         => 'A simple document object'
-            ])
-         )->isGreaterThan(0);
+           // Document and Document_Item
+            $doc = new \Document();
+            $this->integer(
+                (int)$doc->add([
+                'users_id'     => $uid,
+                'tickets_id'   => $tickets_id,
+                'name'         => 'A simple document object'
+                ])
+            )->isGreaterThan(0);
 
-         $doc_item = new \Document_Item();
-         $this->integer(
-            (int)$doc_item->add([
-               'users_id'      => $uid,
-               'items_id'      => $tickets_id,
-               'itemtype'      => 'Ticket',
-               'documents_id'  => $doc->getID()
-            ])
-         )->isGreaterThan(0);
+            $doc_item = new \Document_Item();
+            $this->integer(
+                (int)$doc_item->add([
+                'users_id'      => $uid,
+                'items_id'      => $tickets_id,
+                'itemtype'      => 'Ticket',
+                'documents_id'  => $doc->getID()
+                ])
+            )->isGreaterThan(0);
 
-         $this->integer(
-            (int)$doc_item->fields['timeline_position']
-         )->isEqualTo($user['pos']);
+            $this->integer(
+                (int)$doc_item->fields['timeline_position']
+            )->isEqualTo($user['pos']);
 
-         // TicketValidation
-         $val = new \TicketValidation();
-         $this->integer(
-            (int)$val->add([
-               'tickets_id'   => $tickets_id,
-               'comment_submission'      => 'A simple validation',
-               'users_id_validate' => 5, // normal
-               'status' => 2
-            ])
-         )->isGreaterThan(0);
+           // TicketValidation
+            $val = new \TicketValidation();
+            $this->integer(
+                (int)$val->add([
+                'tickets_id'   => $tickets_id,
+                'comment_submission'      => 'A simple validation',
+                'users_id_validate' => 5, // normal
+                'status' => 2
+                ])
+            )->isGreaterThan(0);
 
-         $this->integer(
-            (int)$val->fields['timeline_position']
-         )->isEqualTo($user['pos']);
-      }
-   }
+            $this->integer(
+                (int)$val->fields['timeline_position']
+            )->isEqualTo($user['pos']);
+        }
+    }
 
-   protected function _testGetTimelinePositionSolution($tlp, $tickets_id) {
-      foreach ($tlp as $users_name => $user) {
-         $this->login($users_name, $user['pass']);
-         $uid = getItemByTypeName('User', $users_name, true);
+    protected function testGetTimelinePositionSolution($tlp, $tickets_id)
+    {
+        foreach ($tlp as $users_name => $user) {
+            $this->login($users_name, $user['pass']);
+            $uid = getItemByTypeName('User', $users_name, true);
 
-         // Ticket Solution
-         $tkt = new \Ticket();
-         $this->boolean(
-            (boolean)$tkt->update([
-               'id'   => $tickets_id,
-               'solution'      => 'A simple solution from '.$users_name
-            ])
-         )->isEqualto(true);
+           // Ticket Solution
+            $tkt = new \Ticket();
+            $this->boolean(
+                (bool)$tkt->update([
+                'id'   => $tickets_id,
+                'solution'      => 'A simple solution from ' . $users_name
+                ])
+            )->isEqualto(true);
 
-         $this->integer(
-            (int)$tkt->getTimelinePosition($tickets_id, 'Solution', $uid)
-         )->isEqualTo($user['pos']);
-      }
-   }
+            $this->integer(
+                (int)$tkt->getTimelinePosition($tickets_id, 'Solution', $uid)
+            )->isEqualTo($user['pos']);
+        }
+    }
 
-   function testGetTimelinePosition() {
+    public function testGetTimelinePosition()
+    {
 
-      // login TU_USER
-      $this->login();
+       // login TU_USER
+        $this->login();
 
-      // create ticket
-      // with post-only as requester
-      // tech as assigned to
-      // normal as observer
-      $ticket = new \Ticket();
-      $this->integer((int)$ticket->add([
+       // create ticket
+       // with post-only as requester
+       // tech as assigned to
+       // normal as observer
+        $ticket = new \Ticket();
+        $this->integer((int)$ticket->add([
             'name'                => 'ticket title',
             'content'             => 'a description',
             '_users_id_requester' => '3', // post-only
             '_users_id_observer'  => '5', // normal
             '_users_id_assign'    => ['4', '5'] // tech and normal
-      ] ))->isGreaterThan(0);
+        ]))->isGreaterThan(0);
 
-      $tlp = [
+        $tlp = [
          'glpi'      => ['pass' => 'glpi',     'pos' => \CommonITILObject::TIMELINE_LEFT],
          'post-only' => ['pass' => 'postonly', 'pos' => \CommonITILObject::TIMELINE_LEFT],
          'tech'      => ['pass' => 'tech',     'pos' => \CommonITILObject::TIMELINE_RIGHT],
          'normal'    => ['pass' => 'normal',   'pos' => \CommonITILObject::TIMELINE_RIGHT]
-      ];
+        ];
 
-      $this->_testGetTimelinePosition($tlp, $ticket->getID());
+        $this->testGetTimelinePosition2($tlp, $ticket->getID());
 
-      // Solution timeline tests
-      $tlp = [
+       // Solution timeline tests
+        $tlp = [
          'tech'      => ['pass' => 'tech',     'pos' => \CommonITILObject::TIMELINE_RIGHT]
-      ];
+        ];
 
-      $this->_testGetTimelinePositionSolution($tlp, $ticket->getID());
+        $this->testGetTimelinePositionSolution($tlp, $ticket->getID());
 
-      return $ticket->getID();
-   }
+        return $ticket->getID();
+    }
 
-   function testGetTimelineItems() {
+    public function testGetTimelineItems()
+    {
 
-      $tkt_id = $this->testGetTimelinePosition();
+        $tkt_id = $this->testGetTimelinePosition();
 
-      // login TU_USER
-      $this->login();
+       // login TU_USER
+        $this->login();
 
-      $ticket = new \Ticket();
-      $this->boolean(
-         (boolean)$ticket->getFromDB($tkt_id)
-      )->isTrue();
+        $ticket = new \Ticket();
+        $this->boolean(
+            (bool)$ticket->getFromDB($tkt_id)
+        )->isTrue();
 
-      // test timeline_position from getTimelineItems()
-      $timeline_items = $ticket->getTimelineItems();
+       // test timeline_position from getTimelineItems()
+        $timeline_items = $ticket->getTimelineItems();
 
-      foreach ($timeline_items as $item) {
-         switch ($item['type']) {
-            case 'ITILFollowup':
-            case 'TicketTask':
-            case 'TicketValidation':
-            case 'Document_Item':
-               if (in_array($item['item']['users_id'], [2, 3])) {
-                  $this->integer((int)$item['item']['timeline_position'])->isEqualTo(\CommonITILObject::TIMELINE_LEFT);
-               } else {
-                  $this->integer((int)$item['item']['timeline_position'])->isEqualTo(\CommonITILObject::TIMELINE_RIGHT);
-               }
-               break;
-            case 'Solution':
-               $this->integer((int)$item['item']['timeline_position'])->isEqualTo(\CommonITILObject::TIMELINE_RIGHT);
-               break;
-         }
-      }
-   }
+        foreach ($timeline_items as $item) {
+            switch ($item['type']) {
+                case 'ITILFollowup':
+                case 'TicketTask':
+                case 'TicketValidation':
+                case 'Document_Item':
+                    if (in_array($item['item']['users_id'], [2, 3])) {
+                        $this->integer((int)$item['item']['timeline_position'])->isEqualTo(\CommonITILObject::TIMELINE_LEFT);
+                    } else {
+                        $this->integer((int)$item['item']['timeline_position'])->isEqualTo(\CommonITILObject::TIMELINE_RIGHT);
+                    }
+                    break;
+                case 'Solution':
+                    $this->integer((int)$item['item']['timeline_position'])->isEqualTo(\CommonITILObject::TIMELINE_RIGHT);
+                    break;
+            }
+        }
+    }
 
-   public function inputProvider() {
-      return [
+    public function inputProvider()
+    {
+        return [
          [
             'input'     => [
                'name'     => 'This is a title',
@@ -1587,151 +1622,155 @@ class Ticket extends DbTestCase {
                'content'   => 'Test for buggy \\\' character',
             ]
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider inputProvider
     */
-   public function testPrepareInputForAdd($input, $expected) {
-      $this
+    public function testPrepareInputForAdd($input, $expected)
+    {
+        $this
          ->if($this->newTestedInstance)
          ->then
             ->array($this->testedInstance->prepareInputForAdd(\Toolbox::addslashes_deep($input)))
                ->string['name']->isIdenticalTo($expected['name'])
                ->string['content']->isIdenticalTo($expected['content']);
-   }
+    }
 
-   public function testAssignChangeStatus() {
-      // login postonly
-      $this->login('post-only', 'postonly');
+    public function testAssignChangeStatus()
+    {
+       // login postonly
+        $this->login('post-only', 'postonly');
 
-      //create a new ticket
-      $ticket = new \Ticket();
-      $this->integer(
-         (int)$ticket->add([
+       //create a new ticket
+        $ticket = new \Ticket();
+        $this->integer(
+            (int)$ticket->add([
             'name'    => '',
             'content' => 'A ticket to check change of status when using "associate myself" feature',
-         ])
-      )->isGreaterThan(0);
-      $tickets_id = $ticket->getID();
-      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+            ])
+        )->isGreaterThan(0);
+        $tickets_id = $ticket->getID();
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
 
-      // login TU_USER
-      $this->login();
+       // login TU_USER
+        $this->login();
 
-      // simulate "associate myself" feature
-      $ticket_user = new \Ticket_User();
-      $input_ticket_user = [
+       // simulate "associate myself" feature
+        $ticket_user = new \Ticket_User();
+        $input_ticket_user = [
          'tickets_id'       => $tickets_id,
          'users_id'         => \Session::getLoginUserID(),
          'use_notification' => 1,
          'type'             => \CommonITILActor::ASSIGN
-      ];
-      $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
-      $this->boolean($ticket_user->getFromDB($ticket_user->getId()))->isTrue();
+        ];
+        $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
+        $this->boolean($ticket_user->getFromDB($ticket_user->getId()))->isTrue();
 
-      // check status (should be ASSIGNED)
-      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
-      $this->integer((int) $ticket->fields['status'])
+       // check status (should be ASSIGNED)
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $this->integer((int) $ticket->fields['status'])
            ->isEqualto(\CommonITILObject::ASSIGNED);
 
-      // remove associated user
-      $ticket_user->delete([
+       // remove associated user
+        $ticket_user->delete([
          'id' => $ticket_user->getId()
-      ]);
+        ]);
 
-      // check status (should be INCOMING)
-      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
-      $this->integer((int) $ticket->fields['status'])
+       // check status (should be INCOMING)
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $this->integer((int) $ticket->fields['status'])
            ->isEqualto(\CommonITILObject::INCOMING);
 
-      // drop UPDATE right to TU_USER and redo "associate myself"
-      $saverights = $_SESSION['glpiactiveprofile'];
-      $_SESSION['glpiactiveprofile']['ticket'] -= \UPDATE;
-      $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
-      // restore rights
-      $_SESSION['glpiactiveprofile'] = $saverights;
-      //check ticket creation
-      $this->boolean($ticket_user->getFromDB($ticket_user->getId()))->isTrue();
+       // drop UPDATE right to TU_USER and redo "associate myself"
+        $saverights = $_SESSION['glpiactiveprofile'];
+        $_SESSION['glpiactiveprofile']['ticket'] -= \UPDATE;
+        $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
+       // restore rights
+        $_SESSION['glpiactiveprofile'] = $saverights;
+       //check ticket creation
+        $this->boolean($ticket_user->getFromDB($ticket_user->getId()))->isTrue();
 
-      // check status (should be ASSIGNED)
-      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
-      $this->integer((int) $ticket->fields['status'])
+       // check status (should be ASSIGNED)
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $this->integer((int) $ticket->fields['status'])
            ->isEqualto(\CommonITILObject::ASSIGNED);
 
-      // remove associated user
-      $ticket_user->delete([
+       // remove associated user
+        $ticket_user->delete([
          'id' => $ticket_user->getId()
-      ]);
+        ]);
 
-      // check status (should be INCOMING)
-      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
-      $this->integer((int) $ticket->fields['status'])
+       // check status (should be INCOMING)
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $this->integer((int) $ticket->fields['status'])
            ->isEqualto(\CommonITILObject::INCOMING);
 
-      // remove associated user
-      $ticket_user->delete([
+       // remove associated user
+        $ticket_user->delete([
          'id' => $ticket_user->getId()
-      ]);
+        ]);
 
-      // check with very limited rights and redo "associate myself"
-      $_SESSION['glpiactiveprofile']['ticket'] = \CREATE
+       // check with very limited rights and redo "associate myself"
+        $_SESSION['glpiactiveprofile']['ticket'] = \CREATE
                                                + \Ticket::READMY
                                                + \Ticket::READALL
                                                + \Ticket::READGROUP
                                                + \Ticket::OWN; // OWN right must allow self-assign
-      $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
-      // restore rights
-      $_SESSION['glpiactiveprofile'] = $saverights;
-      //check ticket creation
-      $this->boolean($ticket_user->getFromDB($ticket_user->getId()))->isTrue();
+        $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
+       // restore rights
+        $_SESSION['glpiactiveprofile'] = $saverights;
+       //check ticket creation
+        $this->boolean($ticket_user->getFromDB($ticket_user->getId()))->isTrue();
 
-      // check status (should still be ASSIGNED)
-      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
-      $this->integer((int) $ticket->fields['status'])
+       // check status (should still be ASSIGNED)
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $this->integer((int) $ticket->fields['status'])
            ->isEqualto(\CommonITILObject::ASSIGNED);
-   }
+    }
 
-   public function testClosedTicketTransfer() {
+    public function testClosedTicketTransfer()
+    {
 
-      // 1- create a category
-      $itilcat      = new \ITILCategory;
-      $first_cat_id = $itilcat->add([
+       // 1- create a category
+        $itilcat      = new \ITILCategory();
+        $first_cat_id = $itilcat->add([
                                        'name' => 'my first cat',
                                     ]);
-      $this->boolean($itilcat->isNewItem())->isFalse();
+        $this->boolean($itilcat->isNewItem())->isFalse();
 
-      // 2- create a category
-      $second_cat    = new \ITILCategory;
-      $second_cat_id = $second_cat->add([
+       // 2- create a category
+        $second_cat    = new \ITILCategory();
+        $second_cat_id = $second_cat->add([
                                            'name' => 'my second cat',
                                         ]);
-      $this->boolean($second_cat->isNewItem())->isFalse();
+        $this->boolean($second_cat->isNewItem())->isFalse();
 
-      // 3- create ticket
-      $ticket    = new \Ticket;
-      $ticket_id = $ticket->add([
+       // 3- create ticket
+        $ticket    = new \Ticket();
+        $ticket_id = $ticket->add([
                                    'name'              => 'A ticket to check the category change when using the "transfer" function.',
                                    'content'           => 'A ticket to check the category change when using the "transfer" function.',
                                    'itilcategories_id' => $first_cat_id,
                                    'status'            => \CommonITILObject::CLOSED
                                 ]);
 
-      $this->boolean($ticket->isNewItem())->isFalse();
+        $this->boolean($ticket->isNewItem())->isFalse();
 
-      // 4 - delete category with replacement
-      $itilcat->delete(['id'          => $first_cat_id,
+       // 4 - delete category with replacement
+        $itilcat->delete(['id'          => $first_cat_id,
                         '_replace_by' => $second_cat_id], 1);
 
-      // 5 - check that the category has been replaced in the ticket
-      $ticket->getFromDB($ticket_id);
-      $this->integer((int)$ticket->fields['itilcategories_id'])
+       // 5 - check that the category has been replaced in the ticket
+        $ticket->getFromDB($ticket_id);
+        $this->integer((int)$ticket->fields['itilcategories_id'])
            ->isEqualto($second_cat_id);
-   }
+    }
 
-   protected function computePriorityProvider() {
-      return [
+    protected function computePriorityProvider()
+    {
+        return [
          [
             'input'    => [
                'urgency'   => 2,
@@ -1771,87 +1810,90 @@ class Ticket extends DbTestCase {
             'impact'   => '1',
             'priority' => '2'
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider computePriorityProvider
     */
-   public function testComputePriority($input, $urgency, $impact, $priority) {
-      $this->login();
-      $ticket = getItemByTypeName('Ticket', '_ticket01');
-      $input['id'] = $ticket->fields['id'];
-      $result = $ticket->prepareInputForUpdate($input);
-      $this->array($result)
+    public function testComputePriority($input, $urgency, $impact, $priority)
+    {
+        $this->login();
+        $ticket = getItemByTypeName('Ticket', '_ticket01');
+        $input['id'] = $ticket->fields['id'];
+        $result = $ticket->prepareInputForUpdate($input);
+        $this->array($result)
          ->string['urgency']->isIdenticalTo($urgency)
          ->string['impact']->isIdenticalTo($impact)
          ->string['priority']->isIdenticalTo($priority);
-   }
+    }
 
-   public function testGetDefaultValues() {
-      $input = \Ticket::getDefaultValues();
+    public function testGetDefaultValues()
+    {
+        $input = \Ticket::getDefaultValues();
 
-      $this->integer($input['_users_id_requester'])->isEqualTo(0);
-      $this->array($input['_users_id_requester_notif']['use_notification'])->contains('1');
-      $this->array($input['_users_id_requester_notif']['alternative_email'])->contains('');
+        $this->integer($input['_users_id_requester'])->isEqualTo(0);
+        $this->array($input['_users_id_requester_notif']['use_notification'])->contains('1');
+        $this->array($input['_users_id_requester_notif']['alternative_email'])->contains('');
 
-      $this->integer($input['_groups_id_requester'])->isEqualTo(0);
+        $this->integer($input['_groups_id_requester'])->isEqualTo(0);
 
-      $this->integer($input['_users_id_assign'])->isEqualTo(0);
-      $this->array($input['_users_id_assign_notif']['use_notification'])->contains('1');
-      $this->array($input['_users_id_assign_notif']['alternative_email'])->contains('');
+        $this->integer($input['_users_id_assign'])->isEqualTo(0);
+        $this->array($input['_users_id_assign_notif']['use_notification'])->contains('1');
+        $this->array($input['_users_id_assign_notif']['alternative_email'])->contains('');
 
-      $this->integer($input['_groups_id_assign'])->isEqualTo(0);
+        $this->integer($input['_groups_id_assign'])->isEqualTo(0);
 
-      $this->integer($input['_users_id_observer'])->isEqualTo(0);
-      $this->array($input['_users_id_observer_notif']['use_notification'])->contains('1');
-      $this->array($input['_users_id_observer_notif']['alternative_email'])->contains('');
+        $this->integer($input['_users_id_observer'])->isEqualTo(0);
+        $this->array($input['_users_id_observer_notif']['use_notification'])->contains('1');
+        $this->array($input['_users_id_observer_notif']['alternative_email'])->contains('');
 
-      $this->integer($input['_suppliers_id_assign'])->isEqualTo(0);
-      $this->array($input['_suppliers_id_assign_notif']['use_notification'])->contains('1');
-      $this->array($input['_suppliers_id_assign_notif']['alternative_email'])->contains('');
+        $this->integer($input['_suppliers_id_assign'])->isEqualTo(0);
+        $this->array($input['_suppliers_id_assign_notif']['use_notification'])->contains('1');
+        $this->array($input['_suppliers_id_assign_notif']['alternative_email'])->contains('');
 
-      $this->string($input['name'])->isEqualTo('');
-      $this->string($input['content'])->isEqualTo('');
-      $this->integer((int) $input['itilcategories_id'])->isEqualTo(0);
-      $this->integer((int) $input['urgency'])->isEqualTo(3);
-      $this->integer((int) $input['impact'])->isEqualTo(3);
-      $this->integer((int) $input['priority'])->isEqualTo(3);
-      $this->integer((int) $input['requesttypes_id'])->isEqualTo(1);
-      $this->integer((int) $input['actiontime'])->isEqualTo(0);
-      $this->integer((int) $input['entities_id'])->isEqualTo(0);
-      $this->integer((int) $input['status'])->isEqualTo(\Ticket::INCOMING);
-      $this->array($input['followup'])->size->isEqualTo(0);
-      $this->string($input['itemtype'])->isEqualTo('');
-      $this->integer((int) $input['items_id'])->isEqualTo(0);
-      $this->array($input['plan'])->size->isEqualTo(0);
-      $this->integer((int) $input['global_validation'])->isEqualTo(\CommonITILValidation::NONE);
+        $this->string($input['name'])->isEqualTo('');
+        $this->string($input['content'])->isEqualTo('');
+        $this->integer((int) $input['itilcategories_id'])->isEqualTo(0);
+        $this->integer((int) $input['urgency'])->isEqualTo(3);
+        $this->integer((int) $input['impact'])->isEqualTo(3);
+        $this->integer((int) $input['priority'])->isEqualTo(3);
+        $this->integer((int) $input['requesttypes_id'])->isEqualTo(1);
+        $this->integer((int) $input['actiontime'])->isEqualTo(0);
+        $this->integer((int) $input['entities_id'])->isEqualTo(0);
+        $this->integer((int) $input['status'])->isEqualTo(\Ticket::INCOMING);
+        $this->array($input['followup'])->size->isEqualTo(0);
+        $this->string($input['itemtype'])->isEqualTo('');
+        $this->integer((int) $input['items_id'])->isEqualTo(0);
+        $this->array($input['plan'])->size->isEqualTo(0);
+        $this->integer((int) $input['global_validation'])->isEqualTo(\CommonITILValidation::NONE);
 
-      $this->string($input['time_to_resolve'])->isEqualTo('NULL');
-      $this->string($input['time_to_own'])->isEqualTo('NULL');
-      $this->integer((int) $input['slas_id_tto'])->isEqualTo(0);
-      $this->integer((int) $input['slas_id_ttr'])->isEqualTo(0);
+        $this->string($input['time_to_resolve'])->isEqualTo('NULL');
+        $this->string($input['time_to_own'])->isEqualTo('NULL');
+        $this->integer((int) $input['slas_id_tto'])->isEqualTo(0);
+        $this->integer((int) $input['slas_id_ttr'])->isEqualTo(0);
 
-      $this->string($input['internal_time_to_resolve'])->isEqualTo('NULL');
-      $this->string($input['internal_time_to_own'])->isEqualTo('NULL');
-      $this->integer((int) $input['olas_id_tto'])->isEqualTo(0);
-      $this->integer((int) $input['olas_id_ttr'])->isEqualTo(0);
+        $this->string($input['internal_time_to_resolve'])->isEqualTo('NULL');
+        $this->string($input['internal_time_to_own'])->isEqualTo('NULL');
+        $this->integer((int) $input['olas_id_tto'])->isEqualTo(0);
+        $this->integer((int) $input['olas_id_ttr'])->isEqualTo(0);
 
-      $this->integer((int) $input['_add_validation'])->isEqualTo(0);
+        $this->integer((int) $input['_add_validation'])->isEqualTo(0);
 
-      $this->array($input['users_id_validate'])->size->isEqualTo(0);
-      $this->integer((int) $input['type'])->isEqualTo(\Ticket::INCIDENT_TYPE);
-      $this->array($input['_documents_id'])->size->isEqualTo(0);
-      $this->array($input['_tasktemplates_id'])->size->isEqualTo(0);
-      $this->array($input['_filename'])->size->isEqualTo(0);
-      $this->array($input['_tag_filename'])->size->isEqualTo(0);
-   }
+        $this->array($input['users_id_validate'])->size->isEqualTo(0);
+        $this->integer((int) $input['type'])->isEqualTo(\Ticket::INCIDENT_TYPE);
+        $this->array($input['_documents_id'])->size->isEqualTo(0);
+        $this->array($input['_tasktemplates_id'])->size->isEqualTo(0);
+        $this->array($input['_filename'])->size->isEqualTo(0);
+        $this->array($input['_tag_filename'])->size->isEqualTo(0);
+    }
 
    /**
     * @see self::testCanTakeIntoAccount()
     */
-   protected function canTakeIntoAccountProvider() {
-      return [
+    protected function canTakeIntoAccountProvider()
+    {
+        return [
          [
             'input'    => [
                '_users_id_requester' => ['3'], // "post-only"
@@ -1966,8 +2008,8 @@ class Ticket extends DbTestCase {
             // this is only possible if "_do_not_compute_takeintoaccount" flag is set by business rules
             'expected' => true,
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * Tests ability to take a ticket into account.
@@ -1979,172 +2021,176 @@ class Ticket extends DbTestCase {
     *
     * @dataProvider canTakeIntoAccountProvider
     */
-   public function testCanTakeIntoAccount(array $input, array $user, $expected) {
-      // Create a ticket
-      $this->login();
-      $_SESSION['glpiset_default_tech'] = false;
-      $ticket = new \Ticket();
-      $ticketId = $ticket->add(
-         $input + [
+    public function testCanTakeIntoAccount(array $input, array $user, $expected)
+    {
+       // Create a ticket
+        $this->login();
+        $_SESSION['glpiset_default_tech'] = false;
+        $ticket = new \Ticket();
+        $ticketId = $ticket->add(
+            $input + [
             'name'    => '',
             'content' => 'A ticket to check canTakeIntoAccount() results',
             'status'  => CommonITILObject::ASSIGNED
-         ]
-      );
-      $this->integer((int)$ticketId)->isGreaterThan(0);
-      // Reload ticket to get all default fields values
-      $this->boolean($ticket->getFromDB($ticketId))->isTrue();
-      // Validate that "takeintoaccount_delay_stat" is not automatically defined
-      $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
-      // Login with tested user
-      $this->login($user['login'], $user['password']);
-      // Apply specific rights if defined
-      if (array_key_exists('rights', $user)) {
-         foreach ($user['rights'] as $rightname => $rightvalue) {
-            $_SESSION['glpiactiveprofile'][$rightname] = $rightvalue;
-         }
-      }
-      // Verify result
-      $this->boolean($ticket->canTakeIntoAccount())->isEqualTo($expected);
-
-      // Check that computation of "takeintoaccount_delay_stat" can be prevented
-      sleep(1); // be sure to wait at least one second before updating
-      $this->boolean(
-         $ticket->update(
-            [
-               'id'                              => $ticketId,
-               'content'                         => 'Updated ticket 1',
-               '_do_not_compute_takeintoaccount' => 1
             ]
-         )
-      )->isTrue();
-      $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+        );
+        $this->integer((int)$ticketId)->isGreaterThan(0);
+       // Reload ticket to get all default fields values
+        $this->boolean($ticket->getFromDB($ticketId))->isTrue();
+       // Validate that "takeintoaccount_delay_stat" is not automatically defined
+        $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+       // Login with tested user
+        $this->login($user['login'], $user['password']);
+       // Apply specific rights if defined
+        if (array_key_exists('rights', $user)) {
+            foreach ($user['rights'] as $rightname => $rightvalue) {
+                $_SESSION['glpiactiveprofile'][$rightname] = $rightvalue;
+            }
+        }
+       // Verify result
+        $this->boolean($ticket->canTakeIntoAccount())->isEqualTo($expected);
 
-      // Check that computation of "takeintoaccount_delay_stat" is done if user can take into account
-      $this->boolean(
-         $ticket->update(
-            [
-               'id'      => $ticketId,
-               'content' => 'Updated ticket 2',
-            ]
-         )
-      )->isTrue();
-      if (!$expected) {
-         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
-      } else {
-         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isGreaterThan(0);
-      }
-   }
+       // Check that computation of "takeintoaccount_delay_stat" can be prevented
+        sleep(1); // be sure to wait at least one second before updating
+        $this->boolean(
+            $ticket->update(
+                [
+                'id'                              => $ticketId,
+                'content'                         => 'Updated ticket 1',
+                '_do_not_compute_takeintoaccount' => 1
+                ]
+            )
+        )->isTrue();
+        $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+
+       // Check that computation of "takeintoaccount_delay_stat" is done if user can take into account
+        $this->boolean(
+            $ticket->update(
+                [
+                'id'      => $ticketId,
+                'content' => 'Updated ticket 2',
+                ]
+            )
+        )->isTrue();
+        if (!$expected) {
+            $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+        } else {
+            $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isGreaterThan(0);
+        }
+    }
 
    /**
     * Tests taken into account state.
     */
-   public function testIsAlreadyTakenIntoAccount() {
+    public function testIsAlreadyTakenIntoAccount()
+    {
 
-      // Create a ticket
-      $this->login();
-      $_SESSION['glpiset_default_tech'] = false;
-      $ticket = new \Ticket();
-      $ticket_id = $ticket->add(
-         [
+       // Create a ticket
+        $this->login();
+        $_SESSION['glpiset_default_tech'] = false;
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add(
+            [
             'name'    => '',
             'content' => 'A ticket to check isAlreadyTakenIntoAccount() results',
-         ]
-      );
-      $this->integer((int)$ticket_id)->isGreaterThan(0);
+            ]
+        );
+        $this->integer((int)$ticket_id)->isGreaterThan(0);
 
-      // Reload ticket to get all default fields values
-      $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+       // Reload ticket to get all default fields values
+        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
 
-      // Empty ticket is not taken into account
-      $this->boolean($ticket->isAlreadyTakenIntoAccount())->isFalse();
+       // Empty ticket is not taken into account
+        $this->boolean($ticket->isAlreadyTakenIntoAccount())->isFalse();
 
-      // Take into account
-      $this->login('tech', 'tech');
-      $ticket_user = new \Ticket_User();
-      $ticket_user_id = $ticket_user->add(
-         [
+       // Take into account
+        $this->login('tech', 'tech');
+        $ticket_user = new \Ticket_User();
+        $ticket_user_id = $ticket_user->add(
+            [
             'tickets_id'       => $ticket_id,
             'users_id'         => \Session::getLoginUserID(),
             'use_notification' => 1,
             'type'             => \CommonITILActor::ASSIGN
-         ]
-      );
-      $this->integer((int)$ticket_user_id)->isGreaterThan(0);
+            ]
+        );
+        $this->integer((int)$ticket_user_id)->isGreaterThan(0);
 
-      // Assign to tech made ticket taken into account
-      $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
-      $this->boolean($ticket->isAlreadyTakenIntoAccount())->isTrue();
-   }
+       // Assign to tech made ticket taken into account
+        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+        $this->boolean($ticket->isAlreadyTakenIntoAccount())->isTrue();
+    }
 
-   public function testCronCloseTicket() {
-      global $DB;
-      $this->login();
-      // set default calendar and autoclose delay in root entity
-      $entity = new \Entity;
-      $this->boolean($entity->update([
+    public function testCronCloseTicket()
+    {
+        global $DB;
+        $this->login();
+       // set default calendar and autoclose delay in root entity
+        $entity = new \Entity();
+        $this->boolean($entity->update([
          'id'              => 0,
          'calendars_id'    => 1,
          'autoclose_delay' => 5,
-      ]))->isTrue();
+        ]))->isTrue();
 
-      // create some solved tickets at various solvedate
-      $ticket = new \Ticket;
-      $tickets_id_1 = $ticket->add([
+       // create some solved tickets at various solvedate
+        $ticket = new \Ticket();
+        $tickets_id_1 = $ticket->add([
          'name'        => "test autoclose 1",
          'content'     => "test autoclose 1",
          'entities_id' => 0,
          'status'      => \CommonITILObject::SOLVED,
-      ]);
-      $this->integer((int)$tickets_id_1)->isGreaterThan(0);
-      $DB->update('glpi_tickets', [
+        ]);
+        $this->integer((int)$tickets_id_1)->isGreaterThan(0);
+        $DB->update('glpi_tickets', [
          'solvedate' => date('Y-m-d 10:00:00', time() - 10 * DAY_TIMESTAMP),
-      ], [
+        ], [
          'id' => $tickets_id_1,
-      ]);
-      $tickets_id_2 = $ticket->add([
+        ]);
+        $tickets_id_2 = $ticket->add([
          'name'        => "test autoclose 1",
          'content'     => "test autoclose 1",
          'entities_id' => 0,
          'status'      => \CommonITILObject::SOLVED,
-      ]);
-      $DB->update('glpi_tickets', [
+        ]);
+        $DB->update('glpi_tickets', [
          'solvedate' => date('Y-m-d 10:00:00', time()),
-      ], [
+        ], [
          'id' => $tickets_id_2,
-      ]);
-      $this->integer((int)$tickets_id_2)->isGreaterThan(0);
+        ]);
+        $this->integer((int)$tickets_id_2)->isGreaterThan(0);
 
-      // launch Cron for closing tickets
-      $mode = - \CronTask::MODE_EXTERNAL; // force
-      \CronTask::launch($mode, 5, 'closeticket');
+       // launch Cron for closing tickets
+        $mode = - \CronTask::MODE_EXTERNAL; // force
+        \CronTask::launch($mode, 5, 'closeticket');
 
-      // check ticket status
-      $this->boolean($ticket->getFromDB($tickets_id_1))->isTrue();
-      $this->integer((int)$ticket->fields['status'])->isEqualTo(\CommonITILObject::CLOSED);
-      $this->boolean($ticket->getFromDB($tickets_id_2))->isTrue();
-      $this->integer((int)$ticket->fields['status'])->isEqualTo(\CommonITILObject::SOLVED);
-   }
+       // check ticket status
+        $this->boolean($ticket->getFromDB($tickets_id_1))->isTrue();
+        $this->integer((int)$ticket->fields['status'])->isEqualTo(\CommonITILObject::CLOSED);
+        $this->boolean($ticket->getFromDB($tickets_id_2))->isTrue();
+        $this->integer((int)$ticket->fields['status'])->isEqualTo(\CommonITILObject::SOLVED);
+    }
 
    /**
     * @see self::testTakeIntoAccountDelayComputationOnCreate()
     * @see self::testTakeIntoAccountDelayComputationOnUpdate()
     */
-   protected function takeIntoAccountDelayComputationProvider() {
-      $this->login();
-      $group = new \Group();
-      $group_id = $group->add(['name' => 'Test group']);
-      $this->integer((int)$group_id)->isGreaterThan(0);
+    protected function takeIntoAccountDelayComputationProvider()
+    {
+        $this->login();
+        $group = new \Group();
+        $group_id = $group->add(['name' => 'Test group']);
+        $this->integer((int)$group_id)->isGreaterThan(0);
 
-      $group_user = new \Group_User();
-      $this->integer(
-         (int)$group_user->add([
+        $group_user = new \Group_User();
+        $this->integer(
+            (int)$group_user->add([
             'groups_id' => $group_id,
             'users_id'  => '4', // "tech"
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      $test_cases = [
+        $test_cases = [
          [
             'input'    => [
                'content' => 'test',
@@ -2247,18 +2293,18 @@ class Ticket extends DbTestCase {
             ],
             'computed' => true, // computed on asignment
          ],
-      ];
+        ];
 
-      // for all test cases that expect a computation
-      // add a test case with '_do_not_compute_takeintoaccount' flag to check that computation is prevented
-      foreach ($test_cases as $test_case) {
-         $test_case['input']['_do_not_compute_takeintoaccount'] = 1;
-         $test_case['computed'] = false;
-         $test_cases[] = $test_case;
-      }
+       // for all test cases that expect a computation
+       // add a test case with '_do_not_compute_takeintoaccount' flag to check that computation is prevented
+        foreach ($test_cases as $test_case) {
+            $test_case['input']['_do_not_compute_takeintoaccount'] = 1;
+            $test_case['computed'] = false;
+            $test_cases[] = $test_case;
+        }
 
-      return $test_cases;
-   }
+        return $test_cases;
+    }
 
    /**
     * Tests that "takeintoaccount_delay_stat" is computed (or not) as expected on ticket creation.
@@ -2268,29 +2314,30 @@ class Ticket extends DbTestCase {
     *
     * @dataProvider takeIntoAccountDelayComputationProvider
     */
-   public function testTakeIntoAccountDelayComputationOnCreate(array $input, $computed) {
+    public function testTakeIntoAccountDelayComputationOnCreate(array $input, $computed)
+    {
 
-      // Create a ticket
-      $this->login('tech', 'tech'); // Login with tech to be sure to be the requester
-      $_SESSION['glpiset_default_tech'] = false;
-      $ticket = new \Ticket();
-      $ticketId = $ticket->add(
-         $input + [
+       // Create a ticket
+        $this->login('tech', 'tech'); // Login with tech to be sure to be the requester
+        $_SESSION['glpiset_default_tech'] = false;
+        $ticket = new \Ticket();
+        $ticketId = $ticket->add(
+            $input + [
             'name'    => '',
             'content' => 'A ticket to check takeintoaccount_delay_stat computation state',
-         ]
-      );
-      $this->integer((int)$ticketId)->isGreaterThan(0);
+            ]
+        );
+        $this->integer((int)$ticketId)->isGreaterThan(0);
 
-      // Reload ticket to get all default fields values
-      $this->boolean($ticket->getFromDB($ticketId))->isTrue();
+       // Reload ticket to get all default fields values
+        $this->boolean($ticket->getFromDB($ticketId))->isTrue();
 
-      if (!$computed) {
-         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
-      } else {
-         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isGreaterThan(0);
-      }
-   }
+        if (!$computed) {
+            $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+        } else {
+            $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isGreaterThan(0);
+        }
+    }
 
    /**
     * Tests that "takeintoaccount_delay_stat" is computed (or not) as expected on ticket update.
@@ -2300,58 +2347,60 @@ class Ticket extends DbTestCase {
     *
     * @dataProvider takeIntoAccountDelayComputationProvider
     */
-   public function testTakeIntoAccountDelayComputationOnUpdate(array $input, $computed) {
+    public function testTakeIntoAccountDelayComputationOnUpdate(array $input, $computed)
+    {
 
-      // Create a ticket
-      $this->login('tech', 'tech'); // Login with tech to be sure to be the requester
-      $_SESSION['glpiset_default_tech'] = false;
-      $ticket = new \Ticket();
-      $ticketId = $ticket->add(
-         [
+       // Create a ticket
+        $this->login('tech', 'tech'); // Login with tech to be sure to be the requester
+        $_SESSION['glpiset_default_tech'] = false;
+        $ticket = new \Ticket();
+        $ticketId = $ticket->add(
+            [
             'name'    => '',
             'content' => 'A ticket to check takeintoaccount_delay_stat computation state',
-         ]
-      );
-      $this->integer((int)$ticketId)->isGreaterThan(0);
-
-      // Reload ticket to get all default fields values
-      $this->boolean($ticket->getFromDB($ticketId))->isTrue();
-
-      // Validate that "takeintoaccount_delay_stat" is not automatically defined
-      $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
-
-      // Login with tech to be sure to be have rights to take into account
-      $this->login('tech', 'tech');
-
-      sleep(1); // be sure to wait at least one second before updating
-      $this->boolean(
-         $ticket->update(
-            $input + [
-               'id' => $ticketId,
             ]
-         )
-      )->isTrue();
+        );
+        $this->integer((int)$ticketId)->isGreaterThan(0);
 
-      // Reload ticket to get fresh values that can be defined by a tier object
-      $this->boolean($ticket->getFromDB($ticketId))->isTrue();
+       // Reload ticket to get all default fields values
+        $this->boolean($ticket->getFromDB($ticketId))->isTrue();
 
-      if (!$computed) {
-         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
-      } else {
-         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isGreaterThan(0);
-      }
-   }
+       // Validate that "takeintoaccount_delay_stat" is not automatically defined
+        $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+
+       // Login with tech to be sure to be have rights to take into account
+        $this->login('tech', 'tech');
+
+        sleep(1); // be sure to wait at least one second before updating
+        $this->boolean(
+            $ticket->update(
+                $input + [
+                'id' => $ticketId,
+                ]
+            )
+        )->isTrue();
+
+       // Reload ticket to get fresh values that can be defined by a tier object
+        $this->boolean($ticket->getFromDB($ticketId))->isTrue();
+
+        if (!$computed) {
+            $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+        } else {
+            $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isGreaterThan(0);
+        }
+    }
 
    /**
     * @see self::testStatusComputationOnCreate()
     */
-   protected function statusComputationOnCreateProvider() {
+    protected function statusComputationOnCreateProvider()
+    {
 
-      $group = new \Group();
-      $group_id = $group->add(['name' => 'Test group']);
-      $this->integer((int)$group_id)->isGreaterThan(0);
+        $group = new \Group();
+        $group_id = $group->add(['name' => 'Test group']);
+        $this->integer((int)$group_id)->isGreaterThan(0);
 
-      return [
+        return [
          [
             'input'    => [
                '_users_id_assign' => ['4'], // "tech"
@@ -2418,8 +2467,8 @@ class Ticket extends DbTestCase {
             ],
             'expected' => \CommonITILObject::WAITING, // status not changed as not "new"
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * Check computed status on ticket creation..
@@ -2429,421 +2478,426 @@ class Ticket extends DbTestCase {
     *
     * @dataProvider statusComputationOnCreateProvider
     */
-   public function testStatusComputationOnCreate(array $input, $expected) {
+    public function testStatusComputationOnCreate(array $input, $expected)
+    {
 
-      // Create a ticket
-      $this->login();
-      $_SESSION['glpiset_default_tech'] = false;
-      $ticket = new \Ticket();
-      $ticketId = $this->integer(
-         (int)$ticket->add([
+       // Create a ticket
+        $this->login();
+        $_SESSION['glpiset_default_tech'] = false;
+        $ticket = new \Ticket();
+        $ticketId = $this->integer(
+            (int)$ticket->add([
             'name'    => '',
             'content' => 'A ticket to check status computation',
-         ] + $input)
-      )->isGreaterThan(0);
+            ] + $input)
+        )->isGreaterThan(0);
 
-      // Reload ticket to get computed fields values
-      $this->boolean($ticket->getFromDB($ticketId))->isTrue();
+       // Reload ticket to get computed fields values
+        $this->boolean($ticket->getFromDB($ticketId))->isTrue();
 
-      // Check status
-      $this->integer((int)$ticket->fields['status'])->isEqualTo($expected);
-   }
+       // Check status
+        $this->integer((int)$ticket->fields['status'])->isEqualTo($expected);
+    }
 
-   public function testLocationAssignment() {
-      $rule = new \Rule();
-      $rule->getFromDBByCrit([
+    public function testLocationAssignment()
+    {
+        $rule = new \Rule();
+        $rule->getFromDBByCrit([
          'sub_type' => 'RuleTicket',
          'name' => 'Ticket location from user',
-      ]);
-      $location = new \Location;
-      $location->getFromDBByCrit([
+        ]);
+        $location = new \Location();
+        $location->getFromDBByCrit([
          'name' => '_location01'
-      ]);
-      $user = new \User;
-      $user->add([
+        ]);
+        $user = new \User();
+        $user->add([
          'name' => $this->getUniqueString(),
          'locations_id' => $location->getID(),
-      ]);
+        ]);
 
-      // test ad ticket with single requester
-      $ticket = new \Ticket;
-      $rule->update([
+       // test ad ticket with single requester
+        $ticket = new \Ticket();
+        $rule->update([
          'id' => $rule->getID(),
          'is_active' => '1'
-      ]);
-      $ticket->add([
+        ]);
+        $ticket->add([
          '_users_id_requester' => $user->getID(),
          'name' => 'test location assignment',
          'content' => 'test location assignment',
-      ]);
-      $rule->update([
+        ]);
+        $rule->update([
          'id' => $rule->getID(),
          'is_active' => '0'
-      ]);
-      $ticket->getFromDB($ticket->getID());
-      $this->integer((int) $ticket->fields['locations_id'])->isEqualTo($location->getID());
+        ]);
+        $ticket->getFromDB($ticket->getID());
+        $this->integer((int) $ticket->fields['locations_id'])->isEqualTo($location->getID());
 
-      // test add ticket with multiple requesters
-      $ticket = new \Ticket;
-      $rule->update([
+       // test add ticket with multiple requesters
+        $ticket = new \Ticket();
+        $rule->update([
          'id' => $rule->getID(),
          'is_active' => '1'
-      ]);
-      $ticket->add([
+        ]);
+        $ticket->add([
          '_users_id_requester' => [$user->getID(), 2],
          'name' => 'test location assignment',
          'content' => 'test location assignment',
-      ]);
-      $rule->update([
+        ]);
+        $rule->update([
          'id' => $rule->getID(),
          'is_active' => '0'
-      ]);
-      $ticket->getFromDB($ticket->getID());
-      $this->integer((int) $ticket->fields['locations_id'])->isEqualTo($location->getID());
+        ]);
+        $ticket->getFromDB($ticket->getID());
+        $this->integer((int) $ticket->fields['locations_id'])->isEqualTo($location->getID());
 
-      // test add ticket with multiple requesters
-      $ticket = new \Ticket;
-      $rule->update([
+       // test add ticket with multiple requesters
+        $ticket = new \Ticket();
+        $rule->update([
          'id' => $rule->getID(),
          'is_active' => '1'
-      ]);
-      $ticket->add([
+        ]);
+        $ticket->add([
          '_users_id_requester' => [2, $user->getID()],
          'name' => 'test location assignment',
          'content' => 'test location assignment',
-      ]);
-      $rule->update([
+        ]);
+        $rule->update([
          'id' => $rule->getID(),
          'is_active' => '0'
-      ]);
-      $ticket->getFromDB($ticket->getID());
-      $this->integer((int) $ticket->fields['locations_id'])->isEqualTo(0);
-   }
+        ]);
+        $ticket->getFromDB($ticket->getID());
+        $this->integer((int) $ticket->fields['locations_id'])->isEqualTo(0);
+    }
 
-   public function testCronPurgeTicket() {
+    public function testCronPurgeTicket()
+    {
 
-      $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
+        $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
 
-      global $DB;
-      // set default calendar and autoclose delay in root entity
-      $entity = new \Entity;
-      $this->boolean($entity->update([
+        global $DB;
+       // set default calendar and autoclose delay in root entity
+        $entity = new \Entity();
+        $this->boolean($entity->update([
          'id'              => 0,
          'calendars_id'    => 1,
          'autopurge_delay' => 5,
-      ]))->isTrue();
+        ]))->isTrue();
 
-      $doc = new \Document();
-      $did = (int)$doc->add([
+        $doc = new \Document();
+        $did = (int)$doc->add([
          'name'   => 'test doc'
-      ]);
-      $this->integer($did)->isGreaterThan(0);
+        ]);
+        $this->integer($did)->isGreaterThan(0);
 
-      // create some closed tickets at various solvedate
-      $ticket = new \Ticket;
-      $tickets_id_1 = $ticket->add([
+       // create some closed tickets at various solvedate
+        $ticket = new \Ticket();
+        $tickets_id_1 = $ticket->add([
          'name'            => "test autopurge 1",
          'content'         => "test autopurge 1",
          'entities_id'     => 0,
          'status'          => \CommonITILObject::CLOSED,
          '_documents_id'   => [$did]
-      ]);
-      $this->integer((int)$tickets_id_1)->isGreaterThan(0);
-      $this->boolean(
-         $DB->update('glpi_tickets', [
+        ]);
+        $this->integer((int)$tickets_id_1)->isGreaterThan(0);
+        $this->boolean(
+            $DB->update('glpi_tickets', [
             'closedate' => date('Y-m-d 10:00:00', time() - 10 * DAY_TIMESTAMP),
-         ], [
+            ], [
             'id' => $tickets_id_1,
-         ])
-      )->isTrue();
-      $this->boolean($ticket->getFromDB($tickets_id_1))->isTrue();
+            ])
+        )->isTrue();
+        $this->boolean($ticket->getFromDB($tickets_id_1))->isTrue();
 
-      $docitem = new \Document_Item();
-      $this->boolean($docitem->getFromDBByCrit(['itemtype' => 'Ticket', 'items_id' => $tickets_id_1]))->isTrue();
+        $docitem = new \Document_Item();
+        $this->boolean($docitem->getFromDBByCrit(['itemtype' => 'Ticket', 'items_id' => $tickets_id_1]))->isTrue();
 
-      $tickets_id_2 = $ticket->add([
+        $tickets_id_2 = $ticket->add([
          'name'        => "test autopurge 2",
          'content'     => "test autopurge 2",
          'entities_id' => 0,
          'status'      => \CommonITILObject::CLOSED,
-      ]);
-      $this->integer((int)$tickets_id_2)->isGreaterThan(0);
-      $this->boolean(
-         $DB->update('glpi_tickets', [
+        ]);
+        $this->integer((int)$tickets_id_2)->isGreaterThan(0);
+        $this->boolean(
+            $DB->update('glpi_tickets', [
             'closedate' => date('Y-m-d 10:00:00', time()),
-         ], [
+            ], [
             'id' => $tickets_id_2,
-         ])
-      );
+            ])
+        );
 
-      // launch Cron for closing tickets
-      $mode = - \CronTask::MODE_EXTERNAL; // force
-      \CronTask::launch($mode, 5, 'purgeticket');
+       // launch Cron for closing tickets
+        $mode = - \CronTask::MODE_EXTERNAL; // force
+        \CronTask::launch($mode, 5, 'purgeticket');
 
-      // check ticket presence
-      // first ticket should have been removed
-      $this->boolean($ticket->getFromDB($tickets_id_1))->isFalse();
-      //also ensure linked document has been dropped
-      $this->boolean($docitem->getFromDBByCrit(['itemtype' => 'Ticket', 'items_id' => $tickets_id_1]))->isFalse();
-      $this->boolean($doc->getFromDB($did))->isTrue(); //document itself remains
-      //second ticket is still present
-      $this->boolean($ticket->getFromDB($tickets_id_2))->isTrue();
-      $this->integer((int)$ticket->fields['status'])->isEqualTo(\CommonITILObject::CLOSED);
-   }
+       // check ticket presence
+       // first ticket should have been removed
+        $this->boolean($ticket->getFromDB($tickets_id_1))->isFalse();
+       //also ensure linked document has been dropped
+        $this->boolean($docitem->getFromDBByCrit(['itemtype' => 'Ticket', 'items_id' => $tickets_id_1]))->isFalse();
+        $this->boolean($doc->getFromDB($did))->isTrue(); //document itself remains
+       //second ticket is still present
+        $this->boolean($ticket->getFromDB($tickets_id_2))->isTrue();
+        $this->integer((int)$ticket->fields['status'])->isEqualTo(\CommonITILObject::CLOSED);
+    }
 
-   public function testMerge() {
-      $this->login();
-      $_SESSION['glpiactiveprofile']['interface'] = '';
-      $this->setEntity('Root entity', true);
+    public function testMerge()
+    {
+        $this->login();
+        $_SESSION['glpiactiveprofile']['interface'] = '';
+        $this->setEntity('Root entity', true);
 
-      $ticket = new \Ticket();
-      $ticket1 = $ticket->add([
+        $ticket = new \Ticket();
+        $ticket1 = $ticket->add([
          'name'        => "test merge 1",
          'content'     => "test merge 1",
          'entities_id' => 0,
          'status'      => \CommonITILObject::INCOMING,
-      ]);
-      $ticket2 = $ticket->add([
+        ]);
+        $ticket2 = $ticket->add([
          'name'        => "test merge 2",
          'content'     => "test merge 2",
          'entities_id' => 0,
          'status'      => \CommonITILObject::INCOMING,
-      ]);
-      $ticket3 = $ticket->add([
+        ]);
+        $ticket3 = $ticket->add([
          'name'        => "test merge 3",
          'content'     => "test merge 3",
          'entities_id' => 0,
          'status'      => \CommonITILObject::INCOMING,
-      ]);
+        ]);
 
-      $task = new \TicketTask();
-      $fup = new \ITILFollowup();
-      $task->add([
+        $task = new \TicketTask();
+        $fup = new \ITILFollowup();
+        $task->add([
          'tickets_id'   => $ticket2,
          'content'      => 'ticket 2 task 1'
-      ]);
-      $task->add([
+        ]);
+        $task->add([
          'tickets_id'   => $ticket3,
          'content'      => 'ticket 3 task 1'
-      ]);
-      $fup->add([
+        ]);
+        $fup->add([
          'itemtype'  => 'Ticket',
          'items_id'  => $ticket2,
          'content'   => 'ticket 2 fup 1'
-      ]);
-      $fup->add([
+        ]);
+        $fup->add([
          'itemtype'  => 'Ticket',
          'items_id'  => $ticket3,
          'content'   => 'ticket 3 fup 1'
-      ]);
+        ]);
 
-      $document = new \Document();
-      $documents_id = $document->add([
+        $document = new \Document();
+        $documents_id = $document->add([
          'name'     => 'basic document in both',
          'filename' => 'doc.xls',
          'users_id' => '2', // user "glpi"
-      ]);
-      $documents_id2 = $document->add([
+        ]);
+        $documents_id2 = $document->add([
          'name'     => 'basic document in target',
          'filename' => 'doc.xls',
          'users_id' => '2', // user "glpi"
-      ]);
-      $documents_id3 = $document->add([
+        ]);
+        $documents_id3 = $document->add([
          'name'     => 'basic document in sources',
          'filename' => 'doc.xls',
          'users_id' => '2', // user "glpi"
-      ]);
+        ]);
 
-      $document_item = new \Document_Item();
-      // Add document to two tickets to test merging duplicates
-      $document_item->add([
+        $document_item = new \Document_Item();
+       // Add document to two tickets to test merging duplicates
+        $document_item->add([
          'itemtype'     => 'Ticket',
          'items_id'     => $ticket2,
          'documents_id' => $documents_id,
          'entities_id'  => '0',
          'is_recursive' => 0
-      ]);
-      $document_item->add([
+        ]);
+        $document_item->add([
          'itemtype'     => 'Ticket',
          'items_id'     => $ticket1,
          'documents_id' => $documents_id,
          'entities_id'  => '0',
          'is_recursive' => 0
-      ]);
-      $document_item->add([
+        ]);
+        $document_item->add([
          'itemtype'     => 'Ticket',
          'items_id'     => $ticket1,
          'documents_id' => $documents_id2,
          'entities_id'  => '0',
          'is_recursive' => 0
-      ]);
-      $document_item->add([
+        ]);
+        $document_item->add([
          'itemtype'     => 'Ticket',
          'items_id'     => $ticket2,
          'documents_id' => $documents_id3,
          'entities_id'  => '0',
          'is_recursive' => 0
-      ]);
-      $document_item->add([
+        ]);
+        $document_item->add([
          'itemtype'     => 'Ticket',
          'items_id'     => $ticket3,
          'documents_id' => $documents_id3,
          'entities_id'  => '0',
          'is_recursive' => 0
-      ]);
+        ]);
 
-      $ticket_user = new \Ticket_User();
-      $ticket_user->add([
+        $ticket_user = new \Ticket_User();
+        $ticket_user->add([
          'tickets_id'         => $ticket1,
          'type'               => \Ticket_User::REQUESTER,
          'users_id'           => 2
-      ]);
-      $ticket_user->add([ // Duplicate with #1
+        ]);
+        $ticket_user->add([ // Duplicate with #1
          'tickets_id'         => $ticket3,
          'type'               => \Ticket_User::REQUESTER,
          'users_id'           => 2
-      ]);
-      $ticket_user->add([
+        ]);
+        $ticket_user->add([
          'tickets_id'         => $ticket1,
          'users_id'           => 0,
          'type'               => \Ticket_User::REQUESTER,
          'alternative_email'  => 'test@glpi.com'
-      ]);
-      $ticket_user->add([ // Duplicate with #3
+        ]);
+        $ticket_user->add([ // Duplicate with #3
          'tickets_id'         => $ticket2,
          'users_id'           => 0,
          'type'               => \Ticket_User::REQUESTER,
          'alternative_email'  => 'test@glpi.com'
-      ]);
-      $ticket_user->add([ // Duplicate with #1
+        ]);
+        $ticket_user->add([ // Duplicate with #1
          'tickets_id'         => $ticket2,
          'users_id'           => 2,
          'type'               => \Ticket_User::REQUESTER,
          'alternative_email'  => 'test@glpi.com'
-      ]);
-      $ticket_user->add([
+        ]);
+        $ticket_user->add([
          'tickets_id'         => $ticket3,
          'users_id'           => 2,
          'type'               => \Ticket_User::ASSIGN,
          'alternative_email'  => 'test@glpi.com'
-      ]);
+        ]);
 
-      $ticket_group = new \Group_Ticket();
-      $ticket_group->add([
+        $ticket_group = new \Group_Ticket();
+        $ticket_group->add([
          'tickets_id'         => $ticket1,
          'groups_id'          => 1,
          'type'               => \Group_Ticket::REQUESTER
-      ]);
-      $ticket_group->add([ // Duplicate with #1
+        ]);
+        $ticket_group->add([ // Duplicate with #1
          'tickets_id'         => $ticket3,
          'groups_id'          => 1,
          'type'               => \Group_Ticket::REQUESTER
-      ]);
-      $ticket_group->add([
+        ]);
+        $ticket_group->add([
          'tickets_id'         => $ticket3,
          'groups_id'          => 1,
          'type'               => \Group_Ticket::ASSIGN
-      ]);
+        ]);
 
-      $ticket_supplier = new \Supplier_Ticket();
-      $ticket_supplier->add([
+        $ticket_supplier = new \Supplier_Ticket();
+        $ticket_supplier->add([
          'tickets_id'         => $ticket1,
          'type'               => \Supplier_Ticket::REQUESTER,
          'suppliers_id'       => 2
-      ]);
-      $ticket_supplier->add([ // Duplicate with #1
+        ]);
+        $ticket_supplier->add([ // Duplicate with #1
          'tickets_id'         => $ticket3,
          'type'               => \Supplier_Ticket::REQUESTER,
          'suppliers_id'       => 2
-      ]);
-      $ticket_supplier->add([
+        ]);
+        $ticket_supplier->add([
          'tickets_id'         => $ticket1,
          'suppliers_id'       => 0,
          'type'               => \Supplier_Ticket::REQUESTER,
          'alternative_email'  => 'test@glpi.com'
-      ]);
-      $ticket_supplier->add([ // Duplicate with #3
+        ]);
+        $ticket_supplier->add([ // Duplicate with #3
          'tickets_id'         => $ticket2,
          'suppliers_id'       => 0,
          'type'               => \Supplier_Ticket::REQUESTER,
          'alternative_email'  => 'test@glpi.com'
-      ]);
-      $ticket_supplier->add([ // Duplicate with #1
+        ]);
+        $ticket_supplier->add([ // Duplicate with #1
          'tickets_id'         => $ticket2,
          'suppliers_id'       => 2,
          'type'               => \Supplier_Ticket::REQUESTER,
          'alternative_email'  => 'test@glpi.com'
-      ]);
-      $ticket_supplier->add([
+        ]);
+        $ticket_supplier->add([
          'tickets_id'         => $ticket3,
          'suppliers_id'       => 2,
          'type'               => \Supplier_Ticket::ASSIGN,
          'alternative_email'  => 'test@glpi.com'
-      ]);
+        ]);
 
-      $status = [];
-      $mergeparams = [
+        $status = [];
+        $mergeparams = [
          'linktypes' => [
             'ITILFollowup',
             'TicketTask',
             'Document'
          ],
          'link_type'  => \Ticket_Ticket::SON_OF
-      ];
+        ];
 
-      \Ticket::merge($ticket1, [$ticket2, $ticket3], $status, $mergeparams);
+        \Ticket::merge($ticket1, [$ticket2, $ticket3], $status, $mergeparams);
 
-      $status_counts = array_count_values($status);
-      $failure_count = 0;
-      if (array_key_exists(1, $status_counts)) {
-         $failure_count += $status_counts[1];
-      }
-      if (array_key_exists(2, $status_counts)) {
-         $failure_count += $status_counts[2];
-      }
+        $status_counts = array_count_values($status);
+        $failure_count = 0;
+        if (array_key_exists(1, $status_counts)) {
+            $failure_count += $status_counts[1];
+        }
+        if (array_key_exists(2, $status_counts)) {
+            $failure_count += $status_counts[2];
+        }
 
-      $this->integer((int)$failure_count)->isEqualTo(0);
+        $this->integer((int)$failure_count)->isEqualTo(0);
 
-      $task_count = count($task->find(['tickets_id' => $ticket1]));
-      $fup_count = count($fup->find([
+        $task_count = count($task->find(['tickets_id' => $ticket1]));
+        $fup_count = count($fup->find([
          'itemtype' => 'Ticket',
          'items_id' => $ticket1]));
-      $doc_count = count($document_item->find([
+        $doc_count = count($document_item->find([
          'itemtype' => 'Ticket',
          'items_id' => $ticket1]));
-      $user_count = count($ticket_user->find([
+        $user_count = count($ticket_user->find([
          'tickets_id' => $ticket1]));
-      $group_count = count($ticket_group->find([
+        $group_count = count($ticket_group->find([
          'tickets_id' => $ticket1]));
-      $supplier_count = count($ticket_supplier->find([
+        $supplier_count = count($ticket_supplier->find([
          'tickets_id' => $ticket1]));
 
-      // Target ticket should have all tasks
-      $this->integer((int)$task_count)->isEqualTo(2);
-      // Target ticket should have all followups + 1 for each source ticket description
-      $this->integer((int)$fup_count)->isEqualTo(4);
-      // Target ticket should have the original document, one instance of the duplicate, and the new document from one of the source tickets
-      $this->integer((int)$doc_count)->isEqualTo(3);
-      // Target ticket should have all users not marked as duplicates above + original requester (ID: 6)
-      $this->integer((int)$user_count)->isEqualTo(4);
-      // Target ticket should have all groups not marked as duplicates above
-      $this->integer((int)$group_count)->isEqualTo(2);
-      // Target ticket should have all suppliers not marked as duplicates above
-      $this->integer((int)$supplier_count)->isEqualTo(3);
-   }
+       // Target ticket should have all tasks
+        $this->integer((int)$task_count)->isEqualTo(2);
+       // Target ticket should have all followups + 1 for each source ticket description
+        $this->integer((int)$fup_count)->isEqualTo(4);
+       // Target ticket should have the original document, one instance of the duplicate, and the new document from one of the source tickets
+        $this->integer((int)$doc_count)->isEqualTo(3);
+       // Target ticket should have all users not marked as duplicates above + original requester (ID: 6)
+        $this->integer((int)$user_count)->isEqualTo(4);
+       // Target ticket should have all groups not marked as duplicates above
+        $this->integer((int)$group_count)->isEqualTo(2);
+       // Target ticket should have all suppliers not marked as duplicates above
+        $this->integer((int)$supplier_count)->isEqualTo(3);
+    }
 
    /**
     * @see self::testGetAssociatedDocumentsCriteria()
     */
-   protected function getAssociatedDocumentsCriteriaProvider() {
-      $ticket = new \Ticket();
-      $ticket_id = $ticket->add([
+    protected function getAssociatedDocumentsCriteriaProvider()
+    {
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add([
          'name'            => "test",
          'content'         => "test",
-      ]);
-      $this->integer((int)$ticket_id)->isGreaterThan(0);
+        ]);
+        $this->integer((int)$ticket_id)->isGreaterThan(0);
 
-      return [
+        return [
          [
             'rights'   => [
                \Change::$rightname       => 0,
@@ -2855,8 +2909,8 @@ class Ticket extends DbTestCase {
             'ticket_id'      => $ticket_id,
             'bypass_rights'  => false,
             'expected_where' => sprintf(
-               "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s') OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))",
-               $ticket_id
+                "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s') OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))",
+                $ticket_id
             ),
          ],
          [
@@ -2870,12 +2924,12 @@ class Ticket extends DbTestCase {
             'ticket_id'      => $ticket_id,
             'bypass_rights'  => false,
             'expected_where' => sprintf(
-               "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
-               . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))"
-               . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
-               . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))",
-               $ticket_id,
-               getItemByTypeName('User', TU_USER, true)
+                "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
+                . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))"
+                . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
+                . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))",
+                $ticket_id,
+                getItemByTypeName('User', TU_USER, true)
             ),
          ],
          [
@@ -2889,13 +2943,13 @@ class Ticket extends DbTestCase {
             'ticket_id'      => $ticket_id,
             'bypass_rights'  => false,
             'expected_where' => sprintf(
-               "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
-               . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))"
-               . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
-               . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))"
-               . " OR (`glpi_documents_items`.`itemtype` = 'TicketTask' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_tickettasks` WHERE `tickets_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))",
-               $ticket_id,
-               getItemByTypeName('User', TU_USER, true)
+                "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
+                . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))"
+                . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
+                . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))"
+                . " OR (`glpi_documents_items`.`itemtype` = 'TicketTask' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_tickettasks` WHERE `tickets_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))",
+                $ticket_id,
+                getItemByTypeName('User', TU_USER, true)
             ),
          ],
          [
@@ -2909,12 +2963,12 @@ class Ticket extends DbTestCase {
             'ticket_id'      => $ticket_id,
             'bypass_rights'  => false,
             'expected_where' => sprintf(
-               "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
-               . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s'))"
-               . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
-               . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))",
-               $ticket_id,
-               getItemByTypeName('User', TU_USER, true)
+                "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
+                . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s'))"
+                . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
+                . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))",
+                $ticket_id,
+                getItemByTypeName('User', TU_USER, true)
             ),
          ],
          [
@@ -2928,72 +2982,75 @@ class Ticket extends DbTestCase {
             'ticket_id'      => $ticket_id,
             'bypass_rights'  => false,
             'expected_where' => sprintf(
-               "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
-               . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))"
-               . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
-               . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))"
-               . " OR (`glpi_documents_items`.`itemtype` = 'TicketTask' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_tickettasks` WHERE `tickets_id` = '%1\$s'))",
-               $ticket_id,
-               getItemByTypeName('User', TU_USER, true)
+                "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
+                . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))"
+                . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
+                . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))"
+                . " OR (`glpi_documents_items`.`itemtype` = 'TicketTask' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_tickettasks` WHERE `tickets_id` = '%1\$s'))",
+                $ticket_id,
+                getItemByTypeName('User', TU_USER, true)
             ),
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider getAssociatedDocumentsCriteriaProvider
     */
-   public function testGetAssociatedDocumentsCriteria($rights, $ticket_id, $bypass_rights, $expected_where) {
-      $this->login();
+    public function testGetAssociatedDocumentsCriteria($rights, $ticket_id, $bypass_rights, $expected_where)
+    {
+        $this->login();
 
-      $ticket = new \Ticket();
-      $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+        $ticket = new \Ticket();
+        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
 
-      $session_backup = $_SESSION['glpiactiveprofile'];
-      foreach ($rights as $rightname => $rightvalue) {
-         $_SESSION['glpiactiveprofile'][$rightname] = $rightvalue;
-      }
-      $crit = $ticket->getAssociatedDocumentsCriteria($bypass_rights);
-      $_SESSION['glpiactiveprofile'] = $session_backup;
+        $session_backup = $_SESSION['glpiactiveprofile'];
+        foreach ($rights as $rightname => $rightvalue) {
+            $_SESSION['glpiactiveprofile'][$rightname] = $rightvalue;
+        }
+        $crit = $ticket->getAssociatedDocumentsCriteria($bypass_rights);
+        $_SESSION['glpiactiveprofile'] = $session_backup;
 
-      $it = new \DBmysqlIterator(null);
-      $it->execute('glpi_tickets', $crit);
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `glpi_tickets` WHERE (' . $expected_where . ')');
-   }
+        $it = new \DBmysqlIterator(null);
+        $it->execute('glpi_tickets', $crit);
+        $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `glpi_tickets` WHERE (' . $expected_where . ')');
+    }
 
-   public function testKeepScreenshotsOnFormReload() {
-      //FIXME: temporary commented for other tests to work; must be fixed on modernui
-      return true;
+    public function testKeepScreenshotsOnFormReload()
+    {
+       //FIXME: temporary commented for other tests to work; must be fixed on modernui
+        return true;
 
-      //login to get session
-      $auth = new \Auth();
-      $this->boolean($auth->login(TU_USER, TU_PASS, true))->isTrue();
+       //login to get session
+        $auth = new \Auth();
+        $this->boolean($auth->login(TU_USER, TU_PASS, true))->isTrue();
 
-      $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/foo.png'));
+        $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/foo.png'));
 
-      // Test display of saved inputs from a previous submit
-      $_SESSION['saveInput'][\Ticket::class] = [
+       // Test display of saved inputs from a previous submit
+        $_SESSION['saveInput'][\Ticket::class] = [
          'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.77230247"'
          . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
-      ];
+        ];
 
-      $this->output(
-         function () {
-            $instance = new \Ticket();
-            $instance->showForm('-1');
-         }
-      )->contains('src=&quot;data:image/png;base64,' . $base64Image . '&quot;');
-   }
+        $this->output(
+            function () {
+                $instance = new \Ticket();
+                $instance->showForm('-1');
+            }
+        )->contains('src=&quot;data:image/png;base64,' . $base64Image . '&quot;');
+    }
 
-   public function testScreenshotConvertedIntoDocument() {
+    public function testScreenshotConvertedIntoDocument()
+    {
 
-      $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
+        $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
 
-      // Test uploads for item creation
-      $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/foo.png'));
-      $filename = '5e5e92ffd9bd91.11111111image_paste22222222.png';
-      $instance = new \Ticket();
-      $input = [
+       // Test uploads for item creation
+        $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/foo.png'));
+        $filename = '5e5e92ffd9bd91.11111111image_paste22222222.png';
+        $instance = new \Ticket();
+        $input = [
          'name'    => 'a ticket',
          'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000"'
          . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
@@ -3006,17 +3063,17 @@ class Ticket extends DbTestCase {
          '_prefix_content' => [
             '5e5e92ffd9bd91.11111111',
          ]
-      ];
-      copy(__DIR__ . '/../fixtures/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
-      $instance->add($input);
-      $expected = 'a href="/front/document.send.php?docid=';
-      $this->string($instance->fields['content'])->contains($expected);
+        ];
+        copy(__DIR__ . '/../fixtures/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
+        $instance->add($input);
+        $expected = 'a href="/front/document.send.php?docid=';
+        $this->string($instance->fields['content'])->contains($expected);
 
-      // Test uploads for item update
-      $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/bar.png'));
-      $filename = '5e5e92ffd9bd91.44444444image_paste55555555.png';
-      copy(__DIR__ . '/../fixtures/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
-      $instance->update([
+       // Test uploads for item update
+        $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/bar.png'));
+        $filename = '5e5e92ffd9bd91.44444444image_paste55555555.png';
+        copy(__DIR__ . '/../fixtures/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
+        $instance->update([
          'id' => $instance->getID(),
          'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333"'
          . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
@@ -3029,19 +3086,20 @@ class Ticket extends DbTestCase {
          '_prefix_content' => [
             '5e5e92ffd9bd91.44444444',
          ]
-      ]);
-      $expected = 'a href="/front/document.send.php?docid=';
-      $this->string($instance->fields['content'])->contains($expected);
-   }
+        ]);
+        $expected = 'a href="/front/document.send.php?docid=';
+        $this->string($instance->fields['content'])->contains($expected);
+    }
 
-   public function testUploadDocuments() {
+    public function testUploadDocuments()
+    {
 
-      $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
+        $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
 
-      // Test uploads for item creation
-      $filename = '5e5e92ffd9bd91.11111111' . 'foo.txt';
-      $instance = new \Ticket();
-      $input = [
+       // Test uploads for item creation
+        $filename = '5e5e92ffd9bd91.11111111' . 'foo.txt';
+        $instance = new \Ticket();
+        $input = [
          'name'    => 'a ticket',
          'content' => 'testUploadDocuments',
          '_filename' => [
@@ -3053,20 +3111,20 @@ class Ticket extends DbTestCase {
          '_prefix_filename' => [
             '5e5e92ffd9bd91.11111111',
          ]
-      ];
-      copy(__DIR__ . '/../fixtures/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
-      $instance->add($input);
-      $this->string($instance->fields['content'])->contains('testUploadDocuments');
-      $count = (new \DBUtils())->countElementsInTable(\Document_Item::getTable(), [
+        ];
+        copy(__DIR__ . '/../fixtures/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        $instance->add($input);
+        $this->string($instance->fields['content'])->contains('testUploadDocuments');
+        $count = (new \DBUtils())->countElementsInTable(\Document_Item::getTable(), [
          'itemtype' => 'Ticket',
          'items_id' => $instance->getID(),
-      ]);
-      $this->integer($count)->isEqualTo(1);
+        ]);
+        $this->integer($count)->isEqualTo(1);
 
-      // Test uploads for item update (adds a 2nd document)
-      $filename = '5e5e92ffd9bd91.44444444bar.txt';
-      copy(__DIR__ . '/../fixtures/uploads/bar.txt', GLPI_TMP_DIR . '/' . $filename);
-      $instance->update([
+       // Test uploads for item update (adds a 2nd document)
+        $filename = '5e5e92ffd9bd91.44444444bar.txt';
+        copy(__DIR__ . '/../fixtures/uploads/bar.txt', GLPI_TMP_DIR . '/' . $filename);
+        $instance->update([
          'id' => $instance->getID(),
          'content' => 'update testUploadDocuments',
          '_filename' => [
@@ -3078,499 +3136,509 @@ class Ticket extends DbTestCase {
          '_prefix_filename' => [
             '5e5e92ffd9bd91.44444444',
          ]
-      ]);
-      $this->string($instance->fields['content'])->contains('update testUploadDocuments');
-      $count = (new \DBUtils())->countElementsInTable(\Document_Item::getTable(), [
+        ]);
+        $this->string($instance->fields['content'])->contains('update testUploadDocuments');
+        $count = (new \DBUtils())->countElementsInTable(\Document_Item::getTable(), [
          'itemtype' => 'Ticket',
          'items_id' => $instance->getID(),
-      ]);
-      $this->integer($count)->isEqualTo(2);
-   }
+        ]);
+        $this->integer($count)->isEqualTo(2);
+    }
 
-   public function testKeepScreenshotFromTemplate() {
-      //FIXME: temporary commented for other tests to work; must be fixed on modernui
-      return true;
+    public function testKeepScreenshotFromTemplate()
+    {
+       //FIXME: temporary commented for other tests to work; must be fixed on modernui
+        return true;
 
-      //login to get session
-      $auth = new \Auth();
-      $this->boolean($auth->login(TU_USER, TU_PASS, true))->isTrue();
+       //login to get session
+        $auth = new \Auth();
+        $this->boolean($auth->login(TU_USER, TU_PASS, true))->isTrue();
 
-      // create a template with a predeined description
-      $ticketTemplate = new \TicketTemplate();
-      $ticketTemplate->add([
+       // create a template with a predeined description
+        $ticketTemplate = new \TicketTemplate();
+        $ticketTemplate->add([
          'name' => $this->getUniqueString(),
-      ]);
-      $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/foo.png'));
-      $content = '&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e57d2c8895d55.57735524"'
-      . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;';
-      $predefinedField = new \TicketTemplatePredefinedField();
-      $predefinedField->add([
+        ]);
+        $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/foo.png'));
+        $content = '&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e57d2c8895d55.57735524"'
+        . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;';
+        $predefinedField = new \TicketTemplatePredefinedField();
+        $predefinedField->add([
          'tickettemplates_id' => $ticketTemplate->getID(),
          'num' => '21',
          'value' => $content
-      ]);
-      $session_tpl_id_back = $_SESSION['glpiactiveprofile']['tickettemplates_id'];
-      $_SESSION['glpiactiveprofile']['tickettemplates_id'] = $ticketTemplate->getID();
+        ]);
+        $session_tpl_id_back = $_SESSION['glpiactiveprofile']['tickettemplates_id'];
+        $_SESSION['glpiactiveprofile']['tickettemplates_id'] = $ticketTemplate->getID();
 
-      $this->output(
-         function () use ($session_tpl_id_back) {
-            $instance = new \Ticket();
-            $instance->showForm('0');
-            $_SESSION['glpiactiveprofile']['tickettemplates_id'] = $session_tpl_id_back;
-         }
-      )->contains('src=&quot;data:image/png;base64,' . $base64Image . '&quot;');
-   }
+        $this->output(
+            function () use ($session_tpl_id_back) {
+                $instance = new \Ticket();
+                $instance->showForm('0');
+                $_SESSION['glpiactiveprofile']['tickettemplates_id'] = $session_tpl_id_back;
+            }
+        )->contains('src=&quot;data:image/png;base64,' . $base64Image . '&quot;');
+    }
 
 
-   public function testCanDelegateeCreateTicket() {
-      $normal_id   = getItemByTypeName('User', 'normal', true);
-      $tech_id     = getItemByTypeName('User', 'tech', true);
-      $postonly_id = getItemByTypeName('User', 'post-only', true);
-      $tuser_id    = getItemByTypeName('User', TU_USER, true);
+    public function testCanDelegateeCreateTicket()
+    {
+        $normal_id   = getItemByTypeName('User', 'normal', true);
+        $tech_id     = getItemByTypeName('User', 'tech', true);
+        $postonly_id = getItemByTypeName('User', 'post-only', true);
+        $tuser_id    = getItemByTypeName('User', TU_USER, true);
 
-      // check base behavior (only standard interface can create for other users)
-      $this->login();
-      $this->boolean(\Ticket::canDelegateeCreateTicket($normal_id))->isTrue();
-      $this->login('tech', 'tech');
-      $this->boolean(\Ticket::canDelegateeCreateTicket($normal_id))->isTrue();
-      $this->login('post-only', 'postonly');
-      $this->boolean(\Ticket::canDelegateeCreateTicket($normal_id))->isFalse();
+       // check base behavior (only standard interface can create for other users)
+        $this->login();
+        $this->boolean(\Ticket::canDelegateeCreateTicket($normal_id))->isTrue();
+        $this->login('tech', 'tech');
+        $this->boolean(\Ticket::canDelegateeCreateTicket($normal_id))->isTrue();
+        $this->login('post-only', 'postonly');
+        $this->boolean(\Ticket::canDelegateeCreateTicket($normal_id))->isFalse();
 
-      // create a test group
-      $group = new \Group;
-      $groups_id = $group->add(['name' => 'test delegatee']);
-      $this->integer($groups_id)->isGreaterThan(0);
+       // create a test group
+        $group = new \Group();
+        $groups_id = $group->add(['name' => 'test delegatee']);
+        $this->integer($groups_id)->isGreaterThan(0);
 
-      // make postonly delegate of the group
-      $gu = new \Group_User;
-      $this->integer($gu->add([
+       // make postonly delegate of the group
+        $gu = new \Group_User();
+        $this->integer($gu->add([
          'users_id'         => $postonly_id,
          'groups_id'        => $groups_id,
          'is_userdelegate' => 1,
-      ]))->isGreaterThan(0);
-      $this->integer($gu->add([
+        ]))->isGreaterThan(0);
+        $this->integer($gu->add([
          'users_id'  => $normal_id,
          'groups_id' => $groups_id,
-      ]))->isGreaterThan(0);
+        ]))->isGreaterThan(0);
 
-      // check postonly can now create (yes for normal and himself) or not (no for others) for other users
-      $this->login('post-only', 'postonly');
-      $this->boolean(\Ticket::canDelegateeCreateTicket($postonly_id))->isTrue();
-      $this->boolean(\Ticket::canDelegateeCreateTicket($normal_id))->isTrue();
-      $this->boolean(\Ticket::canDelegateeCreateTicket($tech_id))->isFalse();
-      $this->boolean(\Ticket::canDelegateeCreateTicket($tuser_id))->isFalse();
-   }
+       // check postonly can now create (yes for normal and himself) or not (no for others) for other users
+        $this->login('post-only', 'postonly');
+        $this->boolean(\Ticket::canDelegateeCreateTicket($postonly_id))->isTrue();
+        $this->boolean(\Ticket::canDelegateeCreateTicket($normal_id))->isTrue();
+        $this->boolean(\Ticket::canDelegateeCreateTicket($tech_id))->isFalse();
+        $this->boolean(\Ticket::canDelegateeCreateTicket($tuser_id))->isFalse();
+    }
 
-   public function testCanAddFollowupsDefaults() {
-      $tech_id = getItemByTypeName('User', 'tech', true);
-      $normal_id = getItemByTypeName('User', 'normal', true);
-      $post_only_id = getItemByTypeName('User', 'post-only', true);
+    public function testCanAddFollowupsDefaults()
+    {
+        $tech_id = getItemByTypeName('User', 'tech', true);
+        $normal_id = getItemByTypeName('User', 'normal', true);
+        $post_only_id = getItemByTypeName('User', 'post-only', true);
 
-      $this->login();
+        $this->login();
 
-      $ticket = new \Ticket();
-      $this->integer(
-         (int)$ticket->add([
+        $ticket = new \Ticket();
+        $this->integer(
+            (int)$ticket->add([
             'name'    => '',
             'content' => 'A ticket to check ACLS',
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      $this->boolean((boolean)$ticket->canUserAddFollowups($tech_id))->isTrue();
-      $this->boolean((boolean)$ticket->canUserAddFollowups($normal_id))->isFalse();
-      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isFalse();
+        $this->boolean((bool)$ticket->canUserAddFollowups($tech_id))->isTrue();
+        $this->boolean((bool)$ticket->canUserAddFollowups($normal_id))->isFalse();
+        $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isFalse();
 
-      $this->login('tech', 'tech');
-      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
-      $this->login('normal', 'normal');
-      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
-      $this->login('post-only', 'postonly');
-      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
-   }
+        $this->login('tech', 'tech');
+        $this->boolean((bool)$ticket->canAddFollowups())->isTrue();
+        $this->login('normal', 'normal');
+        $this->boolean((bool)$ticket->canAddFollowups())->isFalse();
+        $this->login('post-only', 'postonly');
+        $this->boolean((bool)$ticket->canAddFollowups())->isFalse();
+    }
 
-   public function testCanAddFollowupsAsRecipient() {
-      global $DB;
+    public function testCanAddFollowupsAsRecipient()
+    {
+        global $DB;
 
-      $post_only_id = getItemByTypeName('User', 'post-only', true);
+        $post_only_id = getItemByTypeName('User', 'post-only', true);
 
-      $this->login();
+        $this->login();
 
-      $ticket = new \Ticket();
-      $this->integer(
-         (int)$ticket->add([
+        $ticket = new \Ticket();
+        $this->integer(
+            (int)$ticket->add([
             'name'               => '',
             'content'            => 'A ticket to check ACLS',
             'users_id_recipient' => $post_only_id,
             '_auto_import'       => false,
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      // Drop all followup rights
-      $DB->update(
-         'glpi_profilerights',
-         [
+       // Drop all followup rights
+        $DB->update(
+            'glpi_profilerights',
+            [
             'rights' => 0
-         ],
-         [
+            ],
+            [
             'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
             'name'        => \ITILFollowup::$rightname,
-         ]
-      );
+            ]
+        );
 
-      // Cannot add followup as user do not have ADDMYTICKET right
-      $this->login();
-      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isFalse();
-      $this->login('post-only', 'postonly');
-      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+       // Cannot add followup as user do not have ADDMYTICKET right
+        $this->login();
+        $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isFalse();
+        $this->login('post-only', 'postonly');
+        $this->boolean((bool)$ticket->canAddFollowups())->isFalse();
 
-      // Add user right
-      $DB->update(
-         'glpi_profilerights',
-         [
+       // Add user right
+        $DB->update(
+            'glpi_profilerights',
+            [
             'rights' => \ITILFollowup::ADDMYTICKET
-         ],
-         [
+            ],
+            [
             'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
             'name'        => \ITILFollowup::$rightname,
-         ]
-      );
+            ]
+        );
 
-      // User is recipient and have ADDMYTICKET, he should be able to add followup
-      $this->login();
-      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isTrue();
-      $this->login('post-only', 'postonly');
-      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
-   }
+       // User is recipient and have ADDMYTICKET, he should be able to add followup
+        $this->login();
+        $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isTrue();
+        $this->login('post-only', 'postonly');
+        $this->boolean((bool)$ticket->canAddFollowups())->isTrue();
+    }
 
-   public function testCanAddFollowupsAsRequester() {
-      global $DB;
+    public function testCanAddFollowupsAsRequester()
+    {
+        global $DB;
 
-      $post_only_id = getItemByTypeName('User', 'post-only', true);
+        $post_only_id = getItemByTypeName('User', 'post-only', true);
 
-      $this->login();
+        $this->login();
 
-      $ticket = new \Ticket();
-      $this->integer(
-         (int)$ticket->add([
+        $ticket = new \Ticket();
+        $this->integer(
+            (int)$ticket->add([
             'name'    => '',
             'content' => 'A ticket to check ACLS',
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      // Drop all followup rights
-      $DB->update(
-         'glpi_profilerights',
-         [
+       // Drop all followup rights
+        $DB->update(
+            'glpi_profilerights',
+            [
             'rights' => 0
-         ],
-         [
+            ],
+            [
             'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
             'name'        => \ITILFollowup::$rightname,
-         ]
-      );
+            ]
+        );
 
-      // Cannot add followups by default
-      $this->login();
-      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isFalse();
-      $this->login('post-only', 'postonly');
-      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+       // Cannot add followups by default
+        $this->login();
+        $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isFalse();
+        $this->login('post-only', 'postonly');
+        $this->boolean((bool)$ticket->canAddFollowups())->isFalse();
 
-      // Add user as requester
-      $this->login();
-      $ticket_user = new \Ticket_User();
-      $input_ticket_user = [
+       // Add user as requester
+        $this->login();
+        $ticket_user = new \Ticket_User();
+        $input_ticket_user = [
          'tickets_id' => $ticket->getID(),
          'users_id'   => $post_only_id,
          'type'       => \CommonITILActor::REQUESTER
-      ];
-      $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
-      $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
+        ];
+        $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
+        $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
 
-      // Cannot add followup as user do not have ADDMYTICKET right
-      $this->login();
-      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isFalse();
-      $this->login('post-only', 'postonly');
-      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+       // Cannot add followup as user do not have ADDMYTICKET right
+        $this->login();
+        $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isFalse();
+        $this->login('post-only', 'postonly');
+        $this->boolean((bool)$ticket->canAddFollowups())->isFalse();
 
-      // Add user right
-      $DB->update(
-         'glpi_profilerights',
-         [
+       // Add user right
+        $DB->update(
+            'glpi_profilerights',
+            [
             'rights' => \ITILFollowup::ADDMYTICKET
-         ],
-         [
+            ],
+            [
             'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
             'name'        => \ITILFollowup::$rightname,
-         ]
-      );
+            ]
+        );
 
-      // User is requester and have ADDMYTICKET, he should be able to add followup
-      $this->login();
-      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isTrue();
-      $this->login('post-only', 'postonly');
-      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
-   }
+       // User is requester and have ADDMYTICKET, he should be able to add followup
+        $this->login();
+        $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isTrue();
+        $this->login('post-only', 'postonly');
+        $this->boolean((bool)$ticket->canAddFollowups())->isTrue();
+    }
 
-   public function testCanAddFollowupsAsRequesterGroup() {
-      global $DB;
+    public function testCanAddFollowupsAsRequesterGroup()
+    {
+        global $DB;
 
-      $post_only_id = getItemByTypeName('User', 'post-only', true);
+        $post_only_id = getItemByTypeName('User', 'post-only', true);
 
-      $this->login();
+        $this->login();
 
-      $ticket = new \Ticket();
-      $this->integer(
-         (int)$ticket->add([
+        $ticket = new \Ticket();
+        $this->integer(
+            (int)$ticket->add([
             'name'    => '',
             'content' => 'A ticket to check ACLS',
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      // Drop all followup rights
-      $DB->update(
-         'glpi_profilerights',
-         [
+       // Drop all followup rights
+        $DB->update(
+            'glpi_profilerights',
+            [
             'rights' => 0
-         ],
-         [
+            ],
+            [
             'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
             'name'        => \ITILFollowup::$rightname,
-         ]
-      );
+            ]
+        );
 
-      // Cannot add followups by default
-      $this->login();
-      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isFalse();
-      $this->login('post-only', 'postonly');
-      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+       // Cannot add followups by default
+        $this->login();
+        $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isFalse();
+        $this->login('post-only', 'postonly');
+        $this->boolean((bool)$ticket->canAddFollowups())->isFalse();
 
-      // Add user's group as requester
-      $this->login();
-      $group = new \Group();
-      $group_id = $group->add(['name' => 'Test group']);
-      $this->integer((int)$group_id)->isGreaterThan(0);
-      $group_user = new \Group_User();
-      $this->integer(
-         (int)$group_user->add([
+       // Add user's group as requester
+        $this->login();
+        $group = new \Group();
+        $group_id = $group->add(['name' => 'Test group']);
+        $this->integer((int)$group_id)->isGreaterThan(0);
+        $group_user = new \Group_User();
+        $this->integer(
+            (int)$group_user->add([
             'groups_id' => $group_id,
             'users_id'  => $post_only_id,
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      $group_ticket = new \Group_Ticket();
-      $input_group_ticket = [
+        $group_ticket = new \Group_Ticket();
+        $input_group_ticket = [
          'tickets_id' => $ticket->getID(),
          'groups_id'  => $group_id,
          'type'       => \CommonITILActor::REQUESTER
-      ];
-      $this->integer((int) $group_ticket->add($input_group_ticket))->isGreaterThan(0);
-      $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
+        ];
+        $this->integer((int) $group_ticket->add($input_group_ticket))->isGreaterThan(0);
+        $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
 
-      // Cannot add followup as user do not have ADDGROUPTICKET right
-      $this->login();
-      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isFalse();
-      $this->login('post-only', 'postonly');
-      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+       // Cannot add followup as user do not have ADDGROUPTICKET right
+        $this->login();
+        $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isFalse();
+        $this->login('post-only', 'postonly');
+        $this->boolean((bool)$ticket->canAddFollowups())->isFalse();
 
-      // Add user right
-      $DB->update(
-         'glpi_profilerights',
-         [
+       // Add user right
+        $DB->update(
+            'glpi_profilerights',
+            [
             'rights' => \ITILFollowup::ADDGROUPTICKET
-         ],
-         [
+            ],
+            [
             'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
             'name'        => \ITILFollowup::$rightname,
-         ]
-      );
+            ]
+        );
 
-      // User is requester and have ADDGROUPTICKET, he should be able to add followup
-      $this->login();
-      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isTrue();
-      $this->login('post-only', 'postonly');
-      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
-   }
+       // User is requester and have ADDGROUPTICKET, he should be able to add followup
+        $this->login();
+        $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isTrue();
+        $this->login('post-only', 'postonly');
+        $this->boolean((bool)$ticket->canAddFollowups())->isTrue();
+    }
 
-   public function testCanAddFollowupsAsAssigned() {
-      global $DB;
+    public function testCanAddFollowupsAsAssigned()
+    {
+        global $DB;
 
-      $post_only_id = getItemByTypeName('User', 'post-only', true);
+        $post_only_id = getItemByTypeName('User', 'post-only', true);
 
-      $this->login();
+        $this->login();
 
-      $ticket = new \Ticket();
-      $this->integer(
-         (int)$ticket->add([
+        $ticket = new \Ticket();
+        $this->integer(
+            (int)$ticket->add([
             'name'    => '',
             'content' => 'A ticket to check ACLS',
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      // Drop all followup rights
-      $DB->update(
-         'glpi_profilerights',
-         [
+       // Drop all followup rights
+        $DB->update(
+            'glpi_profilerights',
+            [
             'rights' => 0
-         ],
-         [
+            ],
+            [
             'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
             'name'        => \ITILFollowup::$rightname,
-         ]
-      );
+            ]
+        );
 
-      // Cannot add followups by default
-      $this->login();
-      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isFalse();
-      $this->login('post-only', 'postonly');
-      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+       // Cannot add followups by default
+        $this->login();
+        $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isFalse();
+        $this->login('post-only', 'postonly');
+        $this->boolean((bool)$ticket->canAddFollowups())->isFalse();
 
-      // Add user as requester
-      $this->login();
-      $ticket_user = new \Ticket_User();
-      $input_ticket_user = [
+       // Add user as requester
+        $this->login();
+        $ticket_user = new \Ticket_User();
+        $input_ticket_user = [
          'tickets_id' => $ticket->getID(),
          'users_id'   => $post_only_id,
          'type'       => \CommonITILActor::ASSIGN
-      ];
-      $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
-      $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
+        ];
+        $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
+        $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
 
-      // Can add followup as user is assigned
-      $this->login();
-      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isTrue();
-      $this->login('post-only', 'postonly');
-      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
-   }
+       // Can add followup as user is assigned
+        $this->login();
+        $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isTrue();
+        $this->login('post-only', 'postonly');
+        $this->boolean((bool)$ticket->canAddFollowups())->isTrue();
+    }
 
-   public function testCanAddFollowupsAsAssignedGroup() {
-      global $DB;
+    public function testCanAddFollowupsAsAssignedGroup()
+    {
+        global $DB;
 
-      $post_only_id = getItemByTypeName('User', 'post-only', true);
+        $post_only_id = getItemByTypeName('User', 'post-only', true);
 
-      $this->login();
+        $this->login();
 
-      $ticket = new \Ticket();
-      $this->integer(
-         (int)$ticket->add([
+        $ticket = new \Ticket();
+        $this->integer(
+            (int)$ticket->add([
             'name'    => '',
             'content' => 'A ticket to check ACLS',
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      // Drop all followup rights
-      $DB->update(
-         'glpi_profilerights',
-         [
+       // Drop all followup rights
+        $DB->update(
+            'glpi_profilerights',
+            [
             'rights' => 0
-         ],
-         [
+            ],
+            [
             'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
             'name'        => \ITILFollowup::$rightname,
-         ]
-      );
+            ]
+        );
 
-      // Cannot add followups by default
-      $this->login();
-      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isFalse();
-      $this->login('post-only', 'postonly');
-      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+       // Cannot add followups by default
+        $this->login();
+        $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isFalse();
+        $this->login('post-only', 'postonly');
+        $this->boolean((bool)$ticket->canAddFollowups())->isFalse();
 
-      // Add user's group as requester
-      $this->login();
-      $group = new \Group();
-      $group_id = $group->add(['name' => 'Test group']);
-      $this->integer((int)$group_id)->isGreaterThan(0);
-      $group_user = new \Group_User();
-      $this->integer(
-         (int)$group_user->add([
+       // Add user's group as requester
+        $this->login();
+        $group = new \Group();
+        $group_id = $group->add(['name' => 'Test group']);
+        $this->integer((int)$group_id)->isGreaterThan(0);
+        $group_user = new \Group_User();
+        $this->integer(
+            (int)$group_user->add([
             'groups_id' => $group_id,
             'users_id'  => $post_only_id,
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      $group_ticket = new \Group_Ticket();
-      $input_group_ticket = [
+        $group_ticket = new \Group_Ticket();
+        $input_group_ticket = [
          'tickets_id' => $ticket->getID(),
          'groups_id'  => $group_id,
          'type'       => \CommonITILActor::ASSIGN
-      ];
-      $this->integer((int) $group_ticket->add($input_group_ticket))->isGreaterThan(0);
-      $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
+        ];
+        $this->integer((int) $group_ticket->add($input_group_ticket))->isGreaterThan(0);
+        $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
 
-      // Can add followup as user is assigned
-      $this->login();
-      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isTrue();
-      $this->login('post-only', 'postonly');
-      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
-   }
+       // Can add followup as user is assigned
+        $this->login();
+        $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isTrue();
+        $this->login('post-only', 'postonly');
+        $this->boolean((bool)$ticket->canAddFollowups())->isTrue();
+    }
 
-   public function testCanAddFollowupsAsObserver() {
-      global $DB;
+    public function testCanAddFollowupsAsObserver()
+    {
+        global $DB;
 
-      $post_only_id = getItemByTypeName('User', 'post-only', true);
+        $post_only_id = getItemByTypeName('User', 'post-only', true);
 
-      $this->login();
+        $this->login();
 
-      $ticket = new \Ticket();
-      $this->integer(
-         (int)$ticket->add([
+        $ticket = new \Ticket();
+        $this->integer(
+            (int)$ticket->add([
             'name'    => '',
             'content' => 'A ticket to check ACLS',
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      // Cannot add followups by default
-      $this->login();
-      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isFalse();
-      $this->login('post-only', 'postonly');
-      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+       // Cannot add followups by default
+        $this->login();
+        $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isFalse();
+        $this->login('post-only', 'postonly');
+        $this->boolean((bool)$ticket->canAddFollowups())->isFalse();
 
-      // Add user as observer
-      $this->login();
-      $ticket_user = new \Ticket_User();
-      $input_ticket_user = [
+       // Add user as observer
+        $this->login();
+        $ticket_user = new \Ticket_User();
+        $input_ticket_user = [
          'tickets_id' => $ticket->getID(),
          'users_id'   => $post_only_id,
          'type'       => \CommonITILActor::OBSERVER
-      ];
-      $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
-      $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
+        ];
+        $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
+        $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
 
-      // Cannot add followup as user do not have ADD_AS_FOLLOWUP right
-      $this->login();
-      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isFalse();
-      $this->login('post-only', 'postonly');
-      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+       // Cannot add followup as user do not have ADD_AS_FOLLOWUP right
+        $this->login();
+        $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isFalse();
+        $this->login('post-only', 'postonly');
+        $this->boolean((bool)$ticket->canAddFollowups())->isFalse();
 
-      // Add user right
-      $DB->update(
-         'glpi_profilerights',
-         [
+       // Add user right
+        $DB->update(
+            'glpi_profilerights',
+            [
             'rights' => \ITILFollowup::ADD_AS_OBSERVER
-         ],
-         [
+            ],
+            [
             'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
             'name'        => \ITILFollowup::$rightname,
-         ]
-      );
+            ]
+        );
 
-      // User is observer and have ADD_AS_OBSERVER, he should be able to add followup
-      $this->login();
-      $this->boolean((boolean)$ticket->canUserAddFollowups($post_only_id))->isTrue();
-      $this->login('post-only', 'postonly');
-      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
-   }
+       // User is observer and have ADD_AS_OBSERVER, he should be able to add followup
+        $this->login();
+        $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isTrue();
+        $this->login('post-only', 'postonly');
+        $this->boolean((bool)$ticket->canAddFollowups())->isTrue();
+    }
 
-   protected function convertContentForTicketProvider(): iterable {
-      yield [
+    protected function convertContentForTicketProvider(): iterable
+    {
+        yield [
          'content'  => '',
          'files'    => [],
          'tags'     => [],
          'expected' => '',
-      ];
+        ];
 
-      // Content with embedded image.
-      yield [
+       // Content with embedded image.
+        yield [
          'content'  => <<<HTML
 Here is the screenshot:
 <img src="screenshot.png" />
@@ -3589,10 +3657,10 @@ Here is the screenshot:
 blabla
 HTML
          ,
-      ];
+        ];
 
-      // Content with leading external image that will not be replaced by a tag.
-      yield [
+       // Content with leading external image that will not be replaced by a tag.
+        yield [
          'content'  => <<<HTML
 <img src="http://test.glpi-project.org/logo.png" />
 Here is the screenshot:
@@ -3613,27 +3681,29 @@ Here is the screenshot:
 blabla
 HTML
          ,
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider convertContentForTicketProvider
     */
-   public function testConvertContentForTicket(string $content, array $files, array $tags, string $expected) {
-      $this->newTestedInstance();
+    public function testConvertContentForTicket(string $content, array $files, array $tags, string $expected)
+    {
+        $this->newTestedInstance();
 
-      $this->string($this->testedInstance->convertContentForTicket($content, $files, $tags))->isEqualTo($expected);
-   }
+        $this->string($this->testedInstance->convertContentForTicket($content, $files, $tags))->isEqualTo($expected);
+    }
 
-   protected function testIsValidatorProvider(): array {
-      $this->login();
+    protected function testIsValidatorProvider(): array
+    {
+        $this->login();
 
-      // Existing ursers from databaser
-      $users_id_1 = getItemByTypeName(User::class, "glpi", true);
-      $users_id_2 = getItemByTypeName(User::class, "tech", true);
+       // Existing ursers from databaser
+        $users_id_1 = getItemByTypeName(User::class, "glpi", true);
+        $users_id_2 = getItemByTypeName(User::class, "tech", true);
 
-      // Tickets to create before tests
-      $this->createItems(\Ticket::class, [
+       // Tickets to create before tests
+        $this->createItems(\Ticket::class, [
          [
             'name'    => 'testIsValidatorProvider 1',
             'content' => 'testIsValidatorProvider 1',
@@ -3642,14 +3712,14 @@ HTML
             'name'    => 'testIsValidatorProvider 2',
             'content' => 'testIsValidatorProvider 2',
          ],
-      ]);
+        ]);
 
-      // Get id of created tickets to reuse later
-      $tickets_id_1 = getItemByTypeName(\Ticket::class, "testIsValidatorProvider 1", true);
-      $tickets_id_2 = getItemByTypeName(\Ticket::class, "testIsValidatorProvider 2", true);
+       // Get id of created tickets to reuse later
+        $tickets_id_1 = getItemByTypeName(\Ticket::class, "testIsValidatorProvider 1", true);
+        $tickets_id_2 = getItemByTypeName(\Ticket::class, "testIsValidatorProvider 2", true);
 
-      // TicketValidation items to create before tests
-      $this->createItems(TicketValidation::class, [
+       // TicketValidation items to create before tests
+        $this->createItems(TicketValidation::class, [
          [
             'tickets_id'        => $tickets_id_1,
             'users_id_validate' => $users_id_1,
@@ -3658,9 +3728,9 @@ HTML
             'tickets_id'        => $tickets_id_2,
             'users_id_validate' => $users_id_2,
          ],
-      ]);
+        ]);
 
-      return [
+        return [
          [
             'tickets_id' => $tickets_id_1,
             'users_id'   => $users_id_1,
@@ -3681,90 +3751,93 @@ HTML
             'users_id'   => $users_id_2,
             'expected'   => true,
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider testIsValidatorProvider
     */
-   public function testIsValidator(
-      int $tickets_id,
-      int $users_id,
-      bool $expected
-   ) {
-      $ticket = new \Ticket();
-      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
-      $this->boolean($ticket->isValidator($users_id))->isEqualTo($expected);
-   }
+    public function testIsValidator(
+        int $tickets_id,
+        int $users_id,
+        bool $expected
+    ) {
+        $ticket = new \Ticket();
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $this->boolean($ticket->isValidator($users_id))->isEqualTo($expected);
+    }
 
-   public function testGetTeamRoles(): void {
-      $roles = \Ticket::getTeamRoles();
-      $this->array($roles)->containsValues([
+    public function testGetTeamRoles(): void
+    {
+        $roles = \Ticket::getTeamRoles();
+        $this->array($roles)->containsValues([
          \CommonITILActor::ASSIGN,
          \CommonITILActor::OBSERVER,
          \CommonITILActor::REQUESTER,
-      ]);
-   }
+        ]);
+    }
 
-   public function testGetTeamRoleName(): void {
-      $roles = \Ticket::getTeamRoles();
-      foreach ($roles as $role) {
-         $this->string(\Ticket::getTeamRoleName($role))->isNotEmpty();
-      }
-   }
+    public function testGetTeamRoleName(): void
+    {
+        $roles = \Ticket::getTeamRoles();
+        foreach ($roles as $role) {
+            $this->string(\Ticket::getTeamRoleName($role))->isNotEmpty();
+        }
+    }
 
    /**
     * Tests addTeamMember, deleteTeamMember, and getTeamMembers methods
     */
-   public function testTeamManagement(): void {
+    public function testTeamManagement(): void
+    {
 
-      $ticket = new \Ticket();
+        $ticket = new \Ticket();
 
-      $tickets_id = $ticket->add([
+        $tickets_id = $ticket->add([
          'name'      => 'Team test',
          'content'   => 'Team test'
-      ]);
-      $this->integer($tickets_id)->isGreaterThan(0);
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
 
-      // Check team members array has keys for all team itemtypes
-      $team = $ticket->getTeam();
-      $this->array($team)->isEmpty();
+       // Check team members array has keys for all team itemtypes
+        $team = $ticket->getTeam();
+        $this->array($team)->isEmpty();
 
-      // Add team members
-      $this->boolean($ticket->addTeamMember(\User::class, 1, ['role' => Team::ROLE_ASSIGNED]))->isTrue();
+       // Add team members
+        $this->boolean($ticket->addTeamMember(\User::class, 1, ['role' => Team::ROLE_ASSIGNED]))->isTrue();
 
-      // Reload ticket from DB
-      $ticket->getFromDB($tickets_id);
+       // Reload ticket from DB
+        $ticket->getFromDB($tickets_id);
 
-      // Check team members
-      $team = $ticket->getTeam();
-      $this->array($team)->hasSize(1);
-      $this->array($team[0])->hasKeys(['itemtype', 'items_id', 'role']);
-      $this->string($team[0]['itemtype'])->isEqualTo(\User::class);
-      $this->integer($team[0]['items_id'])->isEqualTo(1);
-      $this->integer($team[0]['role'])->isEqualTo(Team::ROLE_ASSIGNED);
+       // Check team members
+        $team = $ticket->getTeam();
+        $this->array($team)->hasSize(1);
+        $this->array($team[0])->hasKeys(['itemtype', 'items_id', 'role']);
+        $this->string($team[0]['itemtype'])->isEqualTo(\User::class);
+        $this->integer($team[0]['items_id'])->isEqualTo(1);
+        $this->integer($team[0]['role'])->isEqualTo(Team::ROLE_ASSIGNED);
 
-      // Delete team members
-      $this->boolean($ticket->deleteTeamMember(\User::class, 1, ['role' => Team::ROLE_ASSIGNED]))->isTrue();
+       // Delete team members
+        $this->boolean($ticket->deleteTeamMember(\User::class, 1, ['role' => Team::ROLE_ASSIGNED]))->isTrue();
 
-      //Reload ticket from DB
-      $ticket->getFromDB($tickets_id);
-      $team = $ticket->getTeam();
+       //Reload ticket from DB
+        $ticket->getFromDB($tickets_id);
+        $team = $ticket->getTeam();
 
-      $this->array($team)->isEmpty();
+        $this->array($team)->isEmpty();
 
-      // Add team members
-      $this->boolean($ticket->addTeamMember(\Group::class, 5, ['role' => Team::ROLE_ASSIGNED]))->isTrue();
+       // Add team members
+        $this->boolean($ticket->addTeamMember(\Group::class, 5, ['role' => Team::ROLE_ASSIGNED]))->isTrue();
 
-      // Reload ticket from DB
-      $ticket->getFromDB($tickets_id);
+       // Reload ticket from DB
+        $ticket->getFromDB($tickets_id);
 
-      // Check team members
-      $team = $ticket->getTeam();
-      $this->array($team)->hasSize(1);
-      $this->array($team[0])->hasKeys(['itemtype', 'items_id', 'role']);
-      $this->string($team[0]['itemtype'])->isEqualTo(\Group::class);
-      $this->integer($team[0]['items_id'])->isEqualTo(5);
-      $this->integer($team[0]['role'])->isEqualTo(Team::ROLE_ASSIGNED);
-   }
+       // Check team members
+        $team = $ticket->getTeam();
+        $this->array($team)->hasSize(1);
+        $this->array($team[0])->hasKeys(['itemtype', 'items_id', 'role']);
+        $this->string($team[0]['itemtype'])->isEqualTo(\Group::class);
+        $this->integer($team[0]['items_id'])->isEqualTo(5);
+        $this->integer($team[0]['role'])->isEqualTo(Team::ROLE_ASSIGNED);
+    }
 }

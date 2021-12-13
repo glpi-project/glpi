@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,48 +34,51 @@
 /**
  *  Locked fields for inventory
 **/
-class Lockedfield extends CommonDBTM {
+class Lockedfield extends CommonDBTM
+{
    /** @var CommonDBTM */
-   private $item;
+    private $item;
 
    // From CommonDBTM
-   public $dohistory                   = false;
+    public $dohistory                   = false;
 
-   static $rightname                   = 'config';
+    public static $rightname                   = 'config';
 
-   static function getTypeName($nb = 0) {
-      return _n('Locked field', 'Locked fields', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Locked field', 'Locked fields', $nb);
+    }
 
-   function rawSearchOptions() {
-      $tab = [];
+    public function rawSearchOptions()
+    {
+        $tab = [];
 
-      $tab = parent::rawSearchOptions();
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => 1,
          'table'              => $this->getTable(),
          'field'              => 'field',
          'name'               => __('Field name'),
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '3',
          'table'              => $this->getTable(),
          'field'              => 'itemtype',
          'name'               => __('Item type'),
          'datatype'           => 'dropdown',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '5',
          'table'              => $this->getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'date'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '6',
          'table'              => $this->getTable(),
          'field'              => 'value',
@@ -82,9 +86,9 @@ class Lockedfield extends CommonDBTM {
          //'datatype'           => '',
          'nosort'             => true,
          'nosearch'           => true,
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '13',
          'table'              => $this->getTable(),
          'field'              => 'items_id',
@@ -98,14 +102,15 @@ class Lockedfield extends CommonDBTM {
             'jointype'           => 'child'
          ],
          'forcegroupby'       => true,
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
-   static function getIcon() {
-      return "ti ti-lock";
-   }
+    public static function getIcon()
+    {
+        return "ti ti-lock";
+    }
 
    /**
     * Can item have locked fields
@@ -114,13 +119,14 @@ class Lockedfield extends CommonDBTM {
     *
     * @retrun boolean
     */
-   public function isHandled(CommonGLPI $item) {
-      if (!$item instanceof CommonDBTM) {
-         return false;
-      }
-      $this->item = $item;
-      return (bool)$item->isDynamic();
-   }
+    public function isHandled(CommonGLPI $item)
+    {
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
+        $this->item = $item;
+        return (bool)$item->isDynamic();
+    }
 
    /**
     * Get locked fields
@@ -130,80 +136,89 @@ class Lockedfield extends CommonDBTM {
     *
     * return array
     */
-   public function getLocks($itemtype, $items_id) {
-      global $DB;
+    public function getLocks($itemtype, $items_id)
+    {
+        global $DB;
 
-      $iterator = $DB->request([
+        $iterator = $DB->request([
          'FROM'   => $this->getTable(),
          'WHERE'  => [
             'itemtype'  => $itemtype,
             'items_id'  => $items_id
          ]
-      ]);
+        ]);
 
-      $locks = [];
-      foreach ($iterator as $row) {
-         $locks[] = $row['field'];
-      }
-      return $locks;
-   }
+        $locks = [];
+        foreach ($iterator as $row) {
+            $locks[] = $row['field'];
+        }
+        return $locks;
+    }
 
    /**
     * Item has been deleted, remove all locks
     *
     * @return boolean
     */
-   public function itemDeleted() {
-      global $DB;
-      return $DB->delete(
-         $this->getTable(), [
+    public function itemDeleted()
+    {
+        global $DB;
+        return $DB->delete(
+            $this->getTable(),
+            [
             'itemtype'  => $this->item->getType(),
             'items_id'  => $this->item->fields['id']
-         ]
-      );
-   }
+            ]
+        );
+    }
 
    /**
     * Store value from inventory on locked fields
     *
     * @return boolean
     */
-   public function setLastValue($itemtype, $items_id, $field, $value) {
-      global $DB;
-      return $DB->update(
-         $this->getTable(), [
+    public function setLastValue($itemtype, $items_id, $field, $value)
+    {
+        global $DB;
+        return $DB->update(
+            $this->getTable(),
+            [
             'value'  => $value
-         ], [
+            ],
+            [
             'itemtype'  => $itemtype,
             'items_id'  => $items_id,
             'field'     => $field
-         ]
-      );
-   }
+            ]
+        );
+    }
 
-   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
 
-      if (!is_array($values)) {
-         $values = [$field => $values];
-      }
-      switch ($field) {
-         case 'items_id':
-            if (isset($values['itemtype'])) {
-               $itemtype = $values['itemtype'];
-               $item = new $itemtype;
-               $item->getFromDB($values['items_id']);
-               return $item->getLink(['comments' => $options['comments'] ?? false]);
-            }
-            break;
-      }
-      return parent::getSpecificValueToDisplay($field, $values, $options);
-   }
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        switch ($field) {
+            case 'items_id':
+                if (isset($values['itemtype'])) {
+                    $itemtype = $values['itemtype'];
+                    $item = new $itemtype();
+                    $item->getFromDB($values['items_id']);
+                    return $item->getLink(['comments' => $options['comments'] ?? false]);
+                }
+                break;
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
 
-   function getForbiddenStandardMassiveAction() {
-      return ['update', 'clone'];
-   }
+    public function getForbiddenStandardMassiveAction()
+    {
+        return ['update', 'clone'];
+    }
 
-   static function canPurge() {
-      return true;
-   }
+    public static function canPurge()
+    {
+        return true;
+    }
 }

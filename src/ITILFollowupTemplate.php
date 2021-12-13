@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,20 +35,23 @@
  * Template for followups
  * @since 9.5
 **/
-class ITILFollowupTemplate extends AbstractITILChildTemplate {
+class ITILFollowupTemplate extends AbstractITILChildTemplate
+{
 
    // From CommonDBTM
-   public $dohistory          = true;
-   public $can_be_translated  = true;
+    public $dohistory          = true;
+    public $can_be_translated  = true;
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Followup template', 'Followup templates', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Followup template', 'Followup templates', $nb);
+    }
 
 
-   function getAdditionalFields() {
-      return [
+    public function getAdditionalFields()
+    {
+        return [
          [
             'name'           => 'content',
             'label'          => __('Content'),
@@ -68,42 +72,44 @@ class ITILFollowupTemplate extends AbstractITILChildTemplate {
             'label' => __('Private'),
             'type'  => 'bool'
          ]
-      ];
-   }
+        ];
+    }
 
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '4',
          'name'               => __('Content'),
          'field'              => 'content',
          'table'              => self::getTable(),
          'datatype'           => 'text',
          'htmltext'           => true
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '5',
          'name'               => __('Source of followup'),
          'field'              => 'name',
          'table'              => getTableForItemType('RequestType'),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '6',
          'name'               => __('Private'),
          'field'              => 'is_private',
          'table'              => self::getTable(),
          'datatype'           => 'bool'
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
-   static function getIcon() {
-      return "fas fa-layer-group";
-   }
+    public static function getIcon()
+    {
+        return "fas fa-layer-group";
+    }
 }

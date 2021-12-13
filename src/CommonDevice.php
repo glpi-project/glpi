@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,19 +35,21 @@
  * CommonDevice Class
  * for Device*class
 */
-abstract class CommonDevice extends CommonDropdown {
+abstract class CommonDevice extends CommonDropdown
+{
 
-   static $rightname          = 'device';
+    public static $rightname          = 'device';
 
-   public $can_be_translated  = false;
+    public $can_be_translated  = false;
 
    // From CommonDBTM
-   public $dohistory           = true;
+    public $dohistory           = true;
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Component', 'Components', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Component', 'Components', $nb);
+    }
 
 
    /**
@@ -56,11 +59,12 @@ abstract class CommonDevice extends CommonDropdown {
     *
     * @return array of the types of CommonDevice available
    **/
-   static function getDeviceTypes() {
-      global $CFG_GLPI;
+    public static function getDeviceTypes()
+    {
+        global $CFG_GLPI;
 
-      return $CFG_GLPI['device_types'];
-   }
+        return $CFG_GLPI['device_types'];
+    }
 
 
 
@@ -75,16 +79,17 @@ abstract class CommonDevice extends CommonDropdown {
     *
     * @return array of the types of CommonDevice available
    **/
-   static function getItem_DeviceType($devicetype = null) {
+    public static function getItem_DeviceType($devicetype = null)
+    {
 
-      if (null === $devicetype) {
-         $devicetype = get_called_class();
-      }
-      if ($plug = isPluginItemType($devicetype)) {
-         return 'Plugin'.$plug['plugin'].'Item_'.$plug['class'];
-      }
-      return "Item_$devicetype";
-   }
+        if (null === $devicetype) {
+            $devicetype = get_called_class();
+        }
+        if ($plug = isPluginItemType($devicetype)) {
+            return 'Plugin' . $plug['plugin'] . 'Item_' . $plug['class'];
+        }
+        return "Item_$devicetype";
+    }
 
 
    /**
@@ -92,58 +97,61 @@ abstract class CommonDevice extends CommonDropdown {
     *
     *  @since 0.85
    **/
-   static function getMenuContent() {
+    public static function getMenuContent()
+    {
 
-      $menu = [];
-      if (self::canView()) {
-         $menu['title'] = static::getTypeName(Session::getPluralNumber());
-         $menu['page']  = '/front/devices.php';
-         $menu['icon']  = self::getIcon();
+        $menu = [];
+        if (self::canView()) {
+            $menu['title'] = static::getTypeName(Session::getPluralNumber());
+            $menu['page']  = '/front/devices.php';
+            $menu['icon']  = self::getIcon();
 
-         $dps = Dropdown::getDeviceItemTypes();
+            $dps = Dropdown::getDeviceItemTypes();
 
-         foreach ($dps as $tab) {
-            foreach ($tab as $key => $val) {
-               if ($tmp = getItemForItemtype($key)) {
-                  $menu['options'][$key]['title']           = $val;
-                  $menu['options'][$key]['page']            = $tmp->getSearchURL(false);
-                  $menu['options'][$key]['links']['search'] = $tmp->getSearchURL(false);
-                  if ($tmp->canCreate()) {
-                     $menu['options'][$key]['links']['add'] = $tmp->getFormURL(false);
-                  }
-                  if ($itemClass = getItemForItemtype(self::getItem_DeviceType($key))) {
-                     $itemTypeName = sprintf(__('%1$s items'), $key::getTypeName(1));
+            foreach ($dps as $tab) {
+                foreach ($tab as $key => $val) {
+                    if ($tmp = getItemForItemtype($key)) {
+                        $menu['options'][$key]['title']           = $val;
+                        $menu['options'][$key]['page']            = $tmp->getSearchURL(false);
+                        $menu['options'][$key]['links']['search'] = $tmp->getSearchURL(false);
+                        if ($tmp->canCreate()) {
+                            $menu['options'][$key]['links']['add'] = $tmp->getFormURL(false);
+                        }
+                        if ($itemClass = getItemForItemtype(self::getItem_DeviceType($key))) {
+                            $itemTypeName = sprintf(__('%1$s items'), $key::getTypeName(1));
 
-                     $listLabel = '<i class="fa fa-list pointer" title="' . $itemTypeName . '"></i>'
-                        . '<span class="sr-only">' . $itemTypeName . '</span>';
-                     $menu['options'][$key]['links'][$listLabel] = $itemClass->getSearchURL(false);
-                  }
-               }
+                            $listLabel = '<i class="fa fa-list pointer" title="' . $itemTypeName . '"></i>'
+                            . '<span class="sr-only">' . $itemTypeName . '</span>';
+                            $menu['options'][$key]['links'][$listLabel] = $itemClass->getSearchURL(false);
+                        }
+                    }
+                }
             }
-         }
-      }
-      if (count($menu)) {
-         return $menu;
-      }
-      return false;
-   }
+        }
+        if (count($menu)) {
+            return $menu;
+        }
+        return false;
+    }
 
-   function displaySpecificTypeField($ID, $field = [], array $options = []) {
+    public function displaySpecificTypeField($ID, $field = [], array $options = [])
+    {
 
-      switch ($field['type']) {
-         case 'registeredIDChooser' :
-            RegisteredID::showChildsForItemForm($this, '_registeredID');
-            break;
-      }
-   }
+        switch ($field['type']) {
+            case 'registeredIDChooser':
+                RegisteredID::showChildsForItemForm($this, '_registeredID');
+                break;
+        }
+    }
 
 
-   function getAdditionalFields() {
+    public function getAdditionalFields()
+    {
 
-      return [['name'  => 'manufacturers_id',
+        return [['name'  => 'manufacturers_id',
                          'label' => Manufacturer::getTypeName(1),
                          'type'  => 'dropdownValue']];
-   }
+    }
 
    /**
     * Can I change recursive flag to false
@@ -155,26 +163,29 @@ abstract class CommonDevice extends CommonDropdown {
     *
     * @return boolean
    **/
-   function canUnrecurs() {
-      global $DB;
+    public function canUnrecurs()
+    {
+        global $DB;
 
-      $ID = $this->fields['id'];
-      if (($ID < 0)
-          || !$this->fields['is_recursive']) {
-         return true;
-      }
-      if (!parent::canUnrecurs()) {
-         return false;
-      }
-      $entities = getAncestorsOf("glpi_entities", $this->fields['entities_id']);
-      $entities[] = $this->fields['entities_id'];
+        $ID = $this->fields['id'];
+        if (
+            ($ID < 0)
+            || !$this->fields['is_recursive']
+        ) {
+            return true;
+        }
+        if (!parent::canUnrecurs()) {
+            return false;
+        }
+        $entities = getAncestorsOf("glpi_entities", $this->fields['entities_id']);
+        $entities[] = $this->fields['entities_id'];
 
-      // RELATION : device -> item_device -> item
-      $linktype  = static::getItem_DeviceType();
-      $linktable = getTableForItemType($linktype);
+       // RELATION : device -> item_device -> item
+        $linktype  = static::getItem_DeviceType();
+        $linktable = getTableForItemType($linktype);
 
-      $result = $DB->request(
-         [
+        $result = $DB->request(
+            [
             'SELECT'    => [
                'itemtype',
                new QueryExpression('GROUP_CONCAT(DISTINCT ' . DBmysql::quoteName('items_id') . ') AS ids'),
@@ -186,109 +197,117 @@ abstract class CommonDevice extends CommonDropdown {
             'GROUPBY'   => [
                'itemtype',
             ]
-         ]
-      );
+            ]
+        );
 
-      foreach ($result as $data) {
-         if (!empty($data["itemtype"])) {
-            $itemtable = getTableForItemType($data["itemtype"]);
-            if ($item = getItemForItemtype($data["itemtype"])) {
-               // For each itemtype which are entity dependant
-               if ($item->isEntityAssign()) {
-                  if (countElementsInTable($itemtable, ['id'  => $data["ids"],
-                                                        'NOT' => ['entities_id' => $entities ]]) > 0) {
-                     return false;
-                  }
-               }
+        foreach ($result as $data) {
+            if (!empty($data["itemtype"])) {
+                $itemtable = getTableForItemType($data["itemtype"]);
+                if ($item = getItemForItemtype($data["itemtype"])) {
+                    // For each itemtype which are entity dependant
+                    if ($item->isEntityAssign()) {
+                        if (
+                            countElementsInTable($itemtable, ['id'  => $data["ids"],
+                                                        'NOT' => ['entities_id' => $entities ]]) > 0
+                        ) {
+                            return false;
+                        }
+                    }
+                }
             }
-         }
-      }
-      return true;
-   }
+        }
+        return true;
+    }
 
 
-   function rawSearchOptions() {
-      $tab = [];
+    public function rawSearchOptions()
+    {
+        $tab = [];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => 'common',
          'name'               => __('Characteristics')
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '1',
          'table'              => $this->getTable(),
          'field'              => 'designation',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '2',
          'table'              => $this->getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'datatype'           => 'number',
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '23',
          'table'              => 'glpi_manufacturers',
          'field'              => 'name',
          'name'               => Manufacturer::getTypeName(1),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '16',
          'table'              => $this->getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '19',
          'table'              => $this->getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '121',
          'table'              => $this->getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
          'name'               => Entity::getTypeName(1),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      return $tab;
-   }
-
-
-   function title() {
-
-      Dropdown::showItemTypeMenu(_n('Component', 'Components', Session::getPluralNumber()),
-                                 Dropdown::getDeviceItemTypes(), $this->getSearchURL());
-   }
+        return $tab;
+    }
 
 
-   function displayHeader() {
-      Html::header($this->getTypeName(1), '', "config", "commondevice", get_class($this));
-   }
+    public function title()
+    {
+
+        Dropdown::showItemTypeMenu(
+            _n('Component', 'Components', Session::getPluralNumber()),
+            Dropdown::getDeviceItemTypes(),
+            $this->getSearchURL()
+        );
+    }
+
+
+    public function displayHeader()
+    {
+        Html::header($this->getTypeName(1), '', "config", "commondevice", get_class($this));
+    }
 
 
    /**
@@ -298,9 +317,10 @@ abstract class CommonDevice extends CommonDropdown {
     *
     * @return string
    **/
-   static function getNameField() {
-      return 'designation';
-   }
+    public static function getNameField()
+    {
+        return 'designation';
+    }
 
 
    /**
@@ -319,34 +339,39 @@ abstract class CommonDevice extends CommonDropdown {
     *
     * @return HTMLTableHeader
    **/
-   static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super = null,
-                                      HTMLTableHeader $father = null, array $options = []) {
+    public static function getHTMLTableHeader(
+        $itemtype,
+        HTMLTableBase $base,
+        HTMLTableSuperHeader $super = null,
+        HTMLTableHeader $father = null,
+        array $options = []
+    ) {
 
-      $this_type = get_called_class();
+        $this_type = get_called_class();
 
-      if (isset($options['dont_display'][$this_type])) {
-         return $father;
-      }
+        if (isset($options['dont_display'][$this_type])) {
+            return $father;
+        }
 
-      if (static::canView()) {
-         $content = "<a href='".static::getSearchURL()."'>" . static::getTypeName(1) . "</a>";
-      } else {
-         $content = static::getTypeName(1);
-      }
+        if (static::canView()) {
+            $content = "<a href='" . static::getSearchURL() . "'>" . static::getTypeName(1) . "</a>";
+        } else {
+            $content = static::getTypeName(1);
+        }
 
-      $linktype = static::getItem_DeviceType();
-      if (in_array($itemtype, $linktype::itemAffinity()) || in_array('*', $linktype::itemAffinity())) {
-         $column = $base->addHeader('device', $content, $super, $father);
-         $column->setItemType($this_type,
-                              isset($options['itemtype_title']) ? $options['itemtype_title'] : '');
-      } else {
+        $linktype = static::getItem_DeviceType();
+        if (in_array($itemtype, $linktype::itemAffinity()) || in_array('*', $linktype::itemAffinity())) {
+            $column = $base->addHeader('device', $content, $super, $father);
+            $column->setItemType(
+                $this_type,
+                isset($options['itemtype_title']) ? $options['itemtype_title'] : ''
+            );
+        } else {
             $column = $father;
-      }
+        }
 
-      return $column;
-
-   }
+        return $column;
+    }
 
 
    /**
@@ -359,48 +384,55 @@ abstract class CommonDevice extends CommonDropdown {
     * @param $father             HTMLTableCell object (default NULL)
     * @param $options   array
    **/
-   function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
-                                    HTMLTableCell $father = null, array $options = []) {
+    public function getHTMLTableCellForItem(
+        HTMLTableRow $row = null,
+        CommonDBTM $item = null,
+        HTMLTableCell $father = null,
+        array $options = []
+    ) {
 
-      $this_type = $this->getType();
+        $this_type = $this->getType();
 
-      if (isset($options['dont_display'][$this_type])) {
-         return $father;
-      }
+        if (isset($options['dont_display'][$this_type])) {
+            return $father;
+        }
 
-      if (static::canView()) {
-         $content = $this->getLink();
-      } else {
-         $content = $this->getName();
-      }
+        if (static::canView()) {
+            $content = $this->getLink();
+        } else {
+            $content = $this->getName();
+        }
 
-      if ($options['canedit']) {
-         $field_name  = 'quantity_'.$this->getType().'_'.$this->getID();
-         $content .= "&nbsp;<span class='fa fa-plus pointer' title='".__s('Add')."'
-                      onClick=\"".Html::jsShow($field_name)."\"
+        if ($options['canedit']) {
+            $field_name  = 'quantity_' . $this->getType() . '_' . $this->getID();
+            $content .= "&nbsp;<span class='fa fa-plus pointer' title='" . __s('Add') . "'
+                      onClick=\"" . Html::jsShow($field_name) . "\"
                       ><span class='sr-only'>" .  __s('Add') . "</span></span>";
-         $content .= "<span id='$field_name' style='display:none'><br>";
-         $content .= __('Add')."&nbsp;";
+            $content .= "<span id='$field_name' style='display:none'><br>";
+            $content .= __('Add') . "&nbsp;";
 
-         $content  = [$content,
+            $content  = [$content,
                      ['function'   => 'Dropdown::showNumber',
                       'parameters' => [$field_name, ['value' => 0,
                                                      'min'   => 0,
                                                      'max'   => 10]]],
                      "</span>"];
-      }
+        }
 
-      $linktype = static::getItem_DeviceType();
-      if (in_array($item->getType(), $linktype::itemAffinity()) || in_array('*', $linktype::itemAffinity())) {
-         $cell = $row->addCell($row->getHeaderByName('common', 'device'),
-                               $content, $father, $this);
-      } else {
-         $cell = $father;
-      }
+        $linktype = static::getItem_DeviceType();
+        if (in_array($item->getType(), $linktype::itemAffinity()) || in_array('*', $linktype::itemAffinity())) {
+            $cell = $row->addCell(
+                $row->getHeaderByName('common', 'device'),
+                $content,
+                $father,
+                $this
+            );
+        } else {
+            $cell = $father;
+        }
 
-      return $cell;
-
-   }
+        return $cell;
+    }
 
 
    /**
@@ -410,45 +442,46 @@ abstract class CommonDevice extends CommonDropdown {
     *
     * @return integer ID of existing or new Device
    **/
-   function import(array $input) {
-      global $DB;
+    public function import(array $input)
+    {
+        global $DB;
 
-      if (!isset($input['designation']) || empty($input['designation'])) {
-         return 0;
-      }
-      $where      = [];
-      $a_criteria = $this->getImportCriteria();
-      foreach ($a_criteria as $field => $compare) {
-         if (isset($input[$field])) {
-            $compare = explode(':', $compare);
-            switch ($compare[0]) {
-               case 'equal':
-                  $where[$field] = $input[$field];
-                  break;
+        if (!isset($input['designation']) || empty($input['designation'])) {
+            return 0;
+        }
+        $where      = [];
+        $a_criteria = $this->getImportCriteria();
+        foreach ($a_criteria as $field => $compare) {
+            if (isset($input[$field])) {
+                $compare = explode(':', $compare);
+                switch ($compare[0]) {
+                    case 'equal':
+                        $where[$field] = $input[$field];
+                        break;
 
-               case 'delta':
-                  $where[] = [
-                     [$field => ['>', ((int) $input[$field] - (int) $compare[1])]],
-                     [$field => ['<', ((int) $input[$field] + (int) $compare[1])]]
-                  ];
-                  break;
+                    case 'delta':
+                        $where[] = [
+                        [$field => ['>', ((int) $input[$field] - (int) $compare[1])]],
+                        [$field => ['<', ((int) $input[$field] + (int) $compare[1])]]
+                        ];
+                        break;
+                }
             }
-         }
-      }
+        }
 
-      $iterator = $DB->request([
+        $iterator = $DB->request([
          'SELECT' => ['id'],
          'FROM'   => $this->getTable(),
          'WHERE'  => $where
-      ]);
+        ]);
 
-      if (count($iterator) > 0) {
-         $line = $iterator->current();
-         return $line['id'];
-      }
+        if (count($iterator) > 0) {
+            $line = $iterator->current();
+            return $line['id'];
+        }
 
-      return $this->add($input);
-   }
+        return $this->add($input);
+    }
 
 
    /**
@@ -456,11 +489,12 @@ abstract class CommonDevice extends CommonDropdown {
     *
     * @since 0.84
    **/
-   function getImportCriteria() {
+    public function getImportCriteria()
+    {
 
-      return ['designation'      => 'equal',
+        return ['designation'      => 'equal',
                    'manufacturers_id' => 'equal'];
-   }
+    }
 
 
    /**
@@ -468,102 +502,110 @@ abstract class CommonDevice extends CommonDropdown {
     *
     * @since 0.85
     */
-   function defineTabs($options = []) {
+    public function defineTabs($options = [])
+    {
 
-      $ong = [];
-      $this->addDefaultFormTab($ong);
-      $this->addImpactTab($ong, $options);
-      $this->addStandardTab(static::getItem_DeviceType(), $ong, $options);
-      $this->addStandardTab('Document_Item', $ong, $options);
-      $this->addStandardTab('Log', $ong, $options);
+        $ong = [];
+        $this->addDefaultFormTab($ong);
+        $this->addImpactTab($ong, $options);
+        $this->addStandardTab(static::getItem_DeviceType(), $ong, $options);
+        $this->addStandardTab('Document_Item', $ong, $options);
+        $this->addStandardTab('Log', $ong, $options);
 
-      return $ong;
-   }
+        return $ong;
+    }
 
 
    /**
     * @since 0.85
    **/
-   function post_workOnItem() {
+    public function post_workOnItem()
+    {
 
-      if ((isset($this->input['_registeredID']))
-          && (is_array($this->input['_registeredID']))) {
-
-         $input = ['itemtype' => $this->getType(),
+        if (
+            (isset($this->input['_registeredID']))
+            && (is_array($this->input['_registeredID']))
+        ) {
+            $input = ['itemtype' => $this->getType(),
                         'items_id' => $this->getID()];
 
-         foreach ($this->input['_registeredID'] as $id => $registered_id) {
-            $id_object     = new RegisteredID();
-            $input['name'] = $registered_id;
+            foreach ($this->input['_registeredID'] as $id => $registered_id) {
+                $id_object     = new RegisteredID();
+                $input['name'] = $registered_id;
 
-            if (isset($this->input['_registeredID_type'][$id])) {
-               $input['device_type'] = $this->input['_registeredID_type'][$id];
-            } else {
-               $input['device_type'] = '';
+                if (isset($this->input['_registeredID_type'][$id])) {
+                    $input['device_type'] = $this->input['_registeredID_type'][$id];
+                } else {
+                    $input['device_type'] = '';
+                }
+               //$input['device_type'] = '';
+                if ($id < 0) {
+                    if (!empty($registered_id)) {
+                        $id_object->add($input);
+                    }
+                } else {
+                    if (!empty($registered_id)) {
+                        $input['id'] = $id;
+                        $id_object->update($input);
+                        unset($input['id']);
+                    } else {
+                        $id_object->delete(['id' => $id]);
+                    }
+                }
             }
-            //$input['device_type'] = '';
-            if ($id < 0) {
-               if (!empty($registered_id)) {
-                  $id_object->add($input);
-               }
-            } else {
-               if (!empty($registered_id)) {
-                  $input['id'] = $id;
-                  $id_object->update($input);
-                  unset($input['id']);
-               } else {
-                  $id_object->delete(['id' => $id]);
-               }
-            }
-         }
-         unset($this->input['_registeredID']);
-      }
-   }
+            unset($this->input['_registeredID']);
+        }
+    }
 
 
    /**
     * @since 0.85
     * @see CommonDBTM::post_addItem()
    **/
-   function post_addItem() {
+    public function post_addItem()
+    {
 
-      $this->post_workOnItem();
-      parent::post_addItem();
-   }
+        $this->post_workOnItem();
+        parent::post_addItem();
+    }
 
 
    /**
     * @since 0.85
     * @see CommonDBTM::post_updateItem()
    **/
-   function post_updateItem($history = 1) {
+    public function post_updateItem($history = 1)
+    {
 
-      $this->post_workOnItem();
-      parent::post_updateItem($history);
-   }
+        $this->post_workOnItem();
+        parent::post_updateItem($history);
+    }
 
-   static function getFormURL($full = true) {
-      global $CFG_GLPI;
+    public static function getFormURL($full = true)
+    {
+        global $CFG_GLPI;
 
-      $dir = ($full ? $CFG_GLPI['root_doc'] : '');
-      $itemtype = get_called_class();
-      $link = "$dir/front/device.form.php?itemtype=$itemtype";
+        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+        $itemtype = get_called_class();
+        $link = "$dir/front/device.form.php?itemtype=$itemtype";
 
-      return $link;
-   }
+        return $link;
+    }
 
-   static function getSearchURL($full = true) {
-      global $CFG_GLPI;
+    public static function getSearchURL($full = true)
+    {
+        global $CFG_GLPI;
 
-      $dir = ($full ? $CFG_GLPI['root_doc'] : '');
-      $itemtype = get_called_class();
-      $link = "$dir/front/device.php?itemtype=$itemtype";
+        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+        $itemtype = get_called_class();
+        $link = "$dir/front/device.php?itemtype=$itemtype";
 
-      return $link;
-   }
+        return $link;
+    }
 
 
-   static function getIcon() {
-      return "far fa-square";
-   }
+    public static function getIcon()
+    {
+        return "far fa-square";
+    }
 }

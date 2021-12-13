@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,12 +31,17 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("notification", READ);
 
-Html::header(Notification::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "notification",
-             "notification");
+Html::header(
+    Notification::getTypeName(Session::getPluralNumber()),
+    $_SERVER['PHP_SELF'],
+    "config",
+    "notification",
+    "notification"
+);
 
 Search::show('Notification');
 

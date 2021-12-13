@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,31 +37,34 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use org\bovigo\vfs\vfsStream;
 
-class LogsWriteAccess extends \GLPITestCase {
+class LogsWriteAccess extends \GLPITestCase
+{
 
-   public function testCheckOnExistingWritableDir() {
+    public function testCheckOnExistingWritableDir()
+    {
 
-      vfsStream::setup('root', 0777, []);
+        vfsStream::setup('root', 0777, []);
 
-      $logger = new Logger('test_log');
-      $logger->pushHandler(new StreamHandler(vfsStream::url('root/test.log')));
+        $logger = new Logger('test_log');
+        $logger->pushHandler(new StreamHandler(vfsStream::url('root/test.log')));
 
-      $this->newTestedInstance($logger);
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-      $this->array($this->testedInstance->getValidationMessages())
+        $this->newTestedInstance($logger);
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
+        $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(['The log file has been created successfully.']);
-   }
+    }
 
-   public function testCheckOnExistingProtectedDir() {
+    public function testCheckOnExistingProtectedDir()
+    {
 
-      vfsStream::setup('root', 0555, []);
+        vfsStream::setup('root', 0555, []);
 
-      $logger = new Logger('test_log');
-      $logger->pushHandler(new StreamHandler(vfsStream::url('root/test.log')));
+        $logger = new Logger('test_log');
+        $logger->pushHandler(new StreamHandler(vfsStream::url('root/test.log')));
 
-      $this->newTestedInstance($logger);
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-      $this->array($this->testedInstance->getValidationMessages())
+        $this->newTestedInstance($logger);
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
+        $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(['The log file could not be created in ' . GLPI_LOG_DIR . '.']);
-   }
+    }
 }

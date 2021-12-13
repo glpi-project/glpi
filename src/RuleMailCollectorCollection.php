@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,104 +32,111 @@
  */
 
 /// Collector Rules collection class
-class RuleMailCollectorCollection extends RuleCollection {
+class RuleMailCollectorCollection extends RuleCollection
+{
 
    // From RuleCollection
-   public $stop_on_first_match = true;
-   static $rightname           = 'rule_mailcollector';
-   public $menu_option         = 'mailcollector';
+    public $stop_on_first_match = true;
+    public static $rightname           = 'rule_mailcollector';
+    public $menu_option         = 'mailcollector';
 
 
-   function getTitle() {
-      return __('Rules for assigning a ticket created through a mails receiver');
-   }
+    public function getTitle()
+    {
+        return __('Rules for assigning a ticket created through a mails receiver');
+    }
 
 
    /**
     * @see RuleCollection::prepareInputDataForProcess()
    **/
-   function prepareInputDataForProcess($input, $params) {
+    public function prepareInputDataForProcess($input, $params)
+    {
 
-      $input['mailcollector']       = $params['mailcollector'];
-      $input['_users_id_requester'] = $params['_users_id_requester'];
+        $input['mailcollector']       = $params['mailcollector'];
+        $input['_users_id_requester'] = $params['_users_id_requester'];
 
-      $fields = $this->getFieldsToLookFor();
+        $fields = $this->getFieldsToLookFor();
 
-      //Add needed ticket datas for rules processing
-      if (isset($params['ticket']) && is_array($params['ticket'])) {
-         foreach ($params['ticket'] as $key => $value) {
-            if (in_array($key, $fields) && !isset($input[$key])) {
-               $input[$key] = $value;
+       //Add needed ticket datas for rules processing
+        if (isset($params['ticket']) && is_array($params['ticket'])) {
+            foreach ($params['ticket'] as $key => $value) {
+                if (in_array($key, $fields) && !isset($input[$key])) {
+                    $input[$key] = $value;
+                }
             }
-         }
-      }
+        }
 
-      //Add needed headers for rules processing
-      if (isset($params['headers']) && is_array($params['headers'])) {
-         foreach ($params['headers'] as $key => $value) {
-            if (in_array($key, $fields) && !isset($input[$key])) {
-               $input[$key] = $value;
+       //Add needed headers for rules processing
+        if (isset($params['headers']) && is_array($params['headers'])) {
+            foreach ($params['headers'] as $key => $value) {
+                if (in_array($key, $fields) && !isset($input[$key])) {
+                    $input[$key] = $value;
+                }
             }
-         }
-      }
+        }
 
-      //Add all user's groups
-      if (in_array('_groups_id_requester', $fields)) {
-         foreach (Group_User::getUserGroups($input['_users_id_requester']) as $group) {
-            $input['_groups_id_requester'][] = $group['id'];
-         }
-      }
-
-      //Add all user's profiles
-      if (in_array('profiles', $fields)) {
-         foreach (Profile_User::getForUser($input['_users_id_requester']) as $profile) {
-            $input['PROFILES'][$profile['profiles_id']] = $profile['profiles_id'];
-         }
-      }
-
-      //If the criteria is "user has only one time the profile xxx"
-      if (in_array('unique_profile', $fields)) {
-         //Get all profiles
-         $profiles = Profile_User::getForUser($input['_users_id_requester']);
-         foreach ($profiles as $profile) {
-            if (Profile_User::haveUniqueRight($input['_users_id_requester'],
-                                              $profile['profiles_id'])) {
-               $input['UNIQUE_PROFILE'][$profile['profiles_id']] = $profile['profiles_id'];
+       //Add all user's groups
+        if (in_array('_groups_id_requester', $fields)) {
+            foreach (Group_User::getUserGroups($input['_users_id_requester']) as $group) {
+                $input['_groups_id_requester'][] = $group['id'];
             }
-         }
-      }
+        }
 
-      //Store the number of profiles of which the user belongs to
-      if (in_array('one_profile', $fields)) {
-         $profiles = Profile_User::getForUser($input['_users_id_requester']);
-         if (count($profiles) == 1) {
-            $tmp = array_pop($profiles);
-            $input['ONE_PROFILE'] = $tmp['profiles_id'];
-         }
-      }
-
-      //Store the number of profiles of which the user belongs to
-      if (in_array('known_domain', $fields)) {
-         if (preg_match("/@(.*)/", $input['from'], $results)) {
-            if (Entity::getEntityIDByDomain($results[1]) != -1) {
-               $input['KNOWN_DOMAIN'] = 1;
-            } else {
-               $input['KNOWN_DOMAIN'] = 0;
+       //Add all user's profiles
+        if (in_array('profiles', $fields)) {
+            foreach (Profile_User::getForUser($input['_users_id_requester']) as $profile) {
+                $input['PROFILES'][$profile['profiles_id']] = $profile['profiles_id'];
             }
-         }
-      }
+        }
 
-      return $input;
-   }
+       //If the criteria is "user has only one time the profile xxx"
+        if (in_array('unique_profile', $fields)) {
+           //Get all profiles
+            $profiles = Profile_User::getForUser($input['_users_id_requester']);
+            foreach ($profiles as $profile) {
+                if (
+                    Profile_User::haveUniqueRight(
+                        $input['_users_id_requester'],
+                        $profile['profiles_id']
+                    )
+                ) {
+                    $input['UNIQUE_PROFILE'][$profile['profiles_id']] = $profile['profiles_id'];
+                }
+            }
+        }
+
+       //Store the number of profiles of which the user belongs to
+        if (in_array('one_profile', $fields)) {
+            $profiles = Profile_User::getForUser($input['_users_id_requester']);
+            if (count($profiles) == 1) {
+                $tmp = array_pop($profiles);
+                $input['ONE_PROFILE'] = $tmp['profiles_id'];
+            }
+        }
+
+       //Store the number of profiles of which the user belongs to
+        if (in_array('known_domain', $fields)) {
+            if (preg_match("/@(.*)/", $input['from'], $results)) {
+                if (Entity::getEntityIDByDomain($results[1]) != -1) {
+                    $input['KNOWN_DOMAIN'] = 1;
+                } else {
+                    $input['KNOWN_DOMAIN'] = 0;
+                }
+            }
+        }
+
+        return $input;
+    }
 
 
    /**
     * @see RuleCollection::canList()
    **/
-   function canList() {
+    public function canList()
+    {
 
-      return static::canView()
+        return static::canView()
              && MailCollector::countCollectors();
-   }
-
+    }
 }

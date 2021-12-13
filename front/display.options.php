@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,25 +36,25 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   include ('../inc/includes.php');
+    include('../inc/includes.php');
 }
 
 Html::popHeader(__('Display options'), $_SERVER['PHP_SELF']);
 
 if (!isset($_GET['itemtype'])) {
-   Html::displayErrorAndDie("lost");
+    Html::displayErrorAndDie("lost");
 }
 $itemtype = $_GET['itemtype'];
 if (!isset($_GET["sub_itemtype"])) {
-   $_GET["sub_itemtype"] = '';
+    $_GET["sub_itemtype"] = '';
 }
 
 if ($item = getItemForItemtype($itemtype)) {
-   if (isset($_GET['update']) || isset($_GET['reset'])) {
-      $item->updateDisplayOptions($_GET, $_GET["sub_itemtype"]);
-   }
-   $item->checkGlobal(READ);
-   $item->showDislayOptions($_GET["sub_itemtype"]);
+    if (isset($_GET['update']) || isset($_GET['reset'])) {
+        $item->updateDisplayOptions($_GET, $_GET["sub_itemtype"]);
+    }
+    $item->checkGlobal(READ);
+    $item->showDislayOptions($_GET["sub_itemtype"]);
 }
 
 Html::popFooter();

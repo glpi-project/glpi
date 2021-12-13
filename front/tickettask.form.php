@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 $task = new TicketTask();
-include (GLPI_ROOT . "/front/commonitiltask.form.php");
+include(GLPI_ROOT . "/front/commonitiltask.form.php");

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkCentralAccess();
 
@@ -38,37 +39,37 @@ $icl = new \Item_Cluster();
 $cluster = new Cluster();
 
 if (isset($_POST['update'])) {
-   $icl->check($_POST['id'], UPDATE);
+    $icl->check($_POST['id'], UPDATE);
    //update existing relation
-   if ($icl->update($_POST)) {
-      $url = $cluster->getFormURLWithID($_POST['clusters_id']);
-   } else {
-      $url = $icl->getFormURLWithID($_POST['id']);
-   }
-   Html::redirect($url);
+    if ($icl->update($_POST)) {
+        $url = $cluster->getFormURLWithID($_POST['clusters_id']);
+    } else {
+        $url = $icl->getFormURLWithID($_POST['id']);
+    }
+    Html::redirect($url);
 } else if (isset($_POST['add'])) {
-   $icl->check(-1, CREATE, $_POST);
-   $icl->add($_POST);
-   $url = $cluster->getFormURLWithID($_POST['clusters_id']);
-   Html::redirect($url);
+    $icl->check(-1, CREATE, $_POST);
+    $icl->add($_POST);
+    $url = $cluster->getFormURLWithID($_POST['clusters_id']);
+    Html::redirect($url);
 } else if (isset($_POST['purge'])) {
-   $icl->check($_POST['id'], PURGE);
-   $icl->delete($_POST, 1);
-   $url = $cluster->getFormURLWithID($_POST['clusters_id']);
-   Html::redirect($url);
+    $icl->check($_POST['id'], PURGE);
+    $icl->delete($_POST, 1);
+    $url = $cluster->getFormURLWithID($_POST['clusters_id']);
+    Html::redirect($url);
 }
 
 if (!isset($_REQUEST['cluster']) && !isset($_REQUEST['id'])) {
-   Html::displayErrorAndDie('Lost');
+    Html::displayErrorAndDie('Lost');
 }
 
 $params = [];
 if (isset($_REQUEST['id'])) {
-   $params['id'] = $_REQUEST['id'];
+    $params['id'] = $_REQUEST['id'];
 } else {
-   $params = [
+    $params = [
       'clusters_id'   => $_REQUEST['cluster']
-   ];
+    ];
 }
 
 Html::header(Cluster::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "cluster");

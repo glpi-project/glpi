@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,12 +32,14 @@
  */
 
 /// Class DeviceProcessorModel
-class DeviceProcessorModel extends CommonDeviceModel {
+class DeviceProcessorModel extends CommonDeviceModel
+{
 
-   var $additional_fields_for_dictionnary = ['manufacturer'];
+    public $additional_fields_for_dictionnary = ['manufacturer'];
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Device processor model', 'Device processor models', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Device processor model', 'Device processor models', $nb);
+    }
 }

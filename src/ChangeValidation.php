@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,12 +34,12 @@
 /**
  * ChangeValidation class
  */
-class ChangeValidation  extends CommonITILValidation {
+class ChangeValidation extends CommonITILValidation
+{
 
    // From CommonDBChild
-   static public $itemtype           = 'Change';
-   static public $items_id           = 'changes_id';
+    public static $itemtype           = 'Change';
+    public static $items_id           = 'changes_id';
 
-   static $rightname                 = 'changevalidation';
-
+    public static $rightname                 = 'changevalidation';
 }

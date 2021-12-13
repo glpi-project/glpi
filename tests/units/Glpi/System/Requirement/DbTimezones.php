@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,95 +33,100 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class DbTimezones extends \GLPITestCase {
+class DbTimezones extends \GLPITestCase
+{
 
-   public function testCheckWithUnavailableMysqlDb() {
+    public function testCheckWithUnavailableMysqlDb()
+    {
 
-      $this->mockGenerator->orphanize('__construct');
-      $db = new \mock\DB();
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DB();
 
-      $that = $this;
+        $that = $this;
 
-      $this->calling($db)->request = function ($query) use ($that) {
-         $result = new \mock\DBmysqlIterator(null);
-         if ($query === "SHOW DATABASES LIKE 'mysql'") {
-            $that->calling($result)->count = 0;
-         }
-         return $result;
-      };
+        $this->calling($db)->request = function ($query) use ($that) {
+            $result = new \mock\DBmysqlIterator(null);
+            if ($query === "SHOW DATABASES LIKE 'mysql'") {
+                  $that->calling($result)->count = 0;
+            }
+            return $result;
+        };
 
-      $this->newTestedInstance($db);
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-      $this->array($this->testedInstance->getValidationMessages())->isEqualTo(['Access to timezone database (mysql) is not allowed.']);
-   }
+        $this->newTestedInstance($db);
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
+        $this->array($this->testedInstance->getValidationMessages())->isEqualTo(['Access to timezone database (mysql) is not allowed.']);
+    }
 
-   public function testCheckWithUnavailableTimezonenameTable() {
+    public function testCheckWithUnavailableTimezonenameTable()
+    {
 
-      $this->mockGenerator->orphanize('__construct');
-      $db = new \mock\DB();
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DB();
 
-      $that = $this;
+        $that = $this;
 
-      $this->calling($db)->request = function ($query) use ($that) {
-         $result = new \mock\DBmysqlIterator(null);
-         if ($query === "SHOW DATABASES LIKE 'mysql'") {
-            $that->calling($result)->count = 1;
-         } else if ($query === "SHOW TABLES FROM `mysql` LIKE 'time_zone_name'") {
-            $that->calling($result)->count = 0;
-         }
-         return $result;
-      };
+        $this->calling($db)->request = function ($query) use ($that) {
+            $result = new \mock\DBmysqlIterator(null);
+            if ($query === "SHOW DATABASES LIKE 'mysql'") {
+                  $that->calling($result)->count = 1;
+            } else if ($query === "SHOW TABLES FROM `mysql` LIKE 'time_zone_name'") {
+                $that->calling($result)->count = 0;
+            }
+            return $result;
+        };
 
-      $this->newTestedInstance($db);
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-      $this->array($this->testedInstance->getValidationMessages())->isEqualTo(['Access to timezone table (mysql.time_zone_name) is not allowed.']);
-   }
+        $this->newTestedInstance($db);
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
+        $this->array($this->testedInstance->getValidationMessages())->isEqualTo(['Access to timezone table (mysql.time_zone_name) is not allowed.']);
+    }
 
-   public function testCheckWithTimezonenameEmptyTable() {
+    public function testCheckWithTimezonenameEmptyTable()
+    {
 
-      $this->mockGenerator->orphanize('__construct');
-      $db = new \mock\DB();
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DB();
 
-      $that = $this;
+        $that = $this;
 
-      $this->calling($db)->request = function ($query) use ($that) {
-         $result = new \mock\DBmysqlIterator(null);
-         if ($query === "SHOW DATABASES LIKE 'mysql'") {
-            $that->calling($result)->count = 1;
-         } else if ($query === "SHOW TABLES FROM `mysql` LIKE 'time_zone_name'") {
-            $that->calling($result)->count = 1;
-         } else {
-            $that->calling($result)->current = ['cpt' => 0];
-         }
-         return $result;
-      };
+        $this->calling($db)->request = function ($query) use ($that) {
+            $result = new \mock\DBmysqlIterator(null);
+            if ($query === "SHOW DATABASES LIKE 'mysql'") {
+                  $that->calling($result)->count = 1;
+            } else if ($query === "SHOW TABLES FROM `mysql` LIKE 'time_zone_name'") {
+                $that->calling($result)->count = 1;
+            } else {
+                $that->calling($result)->current = ['cpt' => 0];
+            }
+            return $result;
+        };
 
-      $this->newTestedInstance($db);
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-      $this->array($this->testedInstance->getValidationMessages())->isEqualTo(['Timezones seems not loaded, see https://glpi-install.readthedocs.io/en/latest/timezones.html.']);
-   }
+        $this->newTestedInstance($db);
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
+        $this->array($this->testedInstance->getValidationMessages())->isEqualTo(['Timezones seems not loaded, see https://glpi-install.readthedocs.io/en/latest/timezones.html.']);
+    }
 
-   public function testCheckWithAvailableData() {
+    public function testCheckWithAvailableData()
+    {
 
-      $this->mockGenerator->orphanize('__construct');
-      $db = new \mock\DB();
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DB();
 
-      $that = $this;
+        $that = $this;
 
-      $this->calling($db)->request = function ($query) use ($that) {
-         $result = new \mock\DBmysqlIterator(null);
-         if ($query === "SHOW DATABASES LIKE 'mysql'") {
-            $that->calling($result)->count = 1;
-         } else if ($query === "SHOW TABLES FROM `mysql` LIKE 'time_zone_name'") {
-            $that->calling($result)->count = 1;
-         } else {
-            $that->calling($result)->current = ['cpt' => 30];
-         }
-         return $result;
-      };
+        $this->calling($db)->request = function ($query) use ($that) {
+            $result = new \mock\DBmysqlIterator(null);
+            if ($query === "SHOW DATABASES LIKE 'mysql'") {
+                  $that->calling($result)->count = 1;
+            } else if ($query === "SHOW TABLES FROM `mysql` LIKE 'time_zone_name'") {
+                $that->calling($result)->count = 1;
+            } else {
+                $that->calling($result)->current = ['cpt' => 30];
+            }
+            return $result;
+        };
 
-      $this->newTestedInstance($db);
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-      $this->array($this->testedInstance->getValidationMessages())->isEqualTo(['Timezones seems loaded in database.']);
-   }
+        $this->newTestedInstance($db);
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
+        $this->array($this->testedInstance->getValidationMessages())->isEqualTo(['Timezones seems loaded in database.']);
+    }
 }

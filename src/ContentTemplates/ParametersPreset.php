@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -50,13 +51,13 @@ class ParametersPreset
    /**
     * Twig parameters that will be avaiable in solution/task/followup form
     */
-   public const ITIL_CHILD_TEMPLATE = 'itilchildtemplate';
+    public const ITIL_CHILD_TEMPLATE = 'itilchildtemplate';
 
    /**
     * Twig parameters that will be available in the solution massive actions
     * form for tickets
     */
-   public const TICKET_SOLUTION = 'ticketsolution';
+    public const TICKET_SOLUTION = 'ticketsolution';
 
    /**
     * Get parameters from their unique key (one of the contant above).
@@ -67,18 +68,19 @@ class ParametersPreset
     *
     * @return array
     */
-   public static function getByKey(string $key): array {
-      switch ($key) {
-         case self::ITIL_CHILD_TEMPLATE:
-            return self::getForAbstractTemplates();
+    public static function getByKey(string $key): array
+    {
+        switch ($key) {
+            case self::ITIL_CHILD_TEMPLATE:
+                return self::getForAbstractTemplates();
 
-         case self::TICKET_SOLUTION:
-            return self::getForTicketSolution();
+            case self::TICKET_SOLUTION:
+                return self::getForTicketSolution();
 
-         default:
-            return [];
-      }
-   }
+            default:
+                return [];
+        }
+    }
 
    /**
     * Get context to be displayed in the variable list page for each keys
@@ -87,38 +89,40 @@ class ParametersPreset
     *
     * @return string
     */
-   public static function getContextByKey(string $key): string {
-      switch ($key) {
-         case self::ITIL_CHILD_TEMPLATE:
-            $types = [
-               TicketTemplate::getTypeName(1),
-               TaskTemplate::getTypeName(1),
-               SolutionTemplate::getTypeName(1),
-            ];
+    public static function getContextByKey(string $key): string
+    {
+        switch ($key) {
+            case self::ITIL_CHILD_TEMPLATE:
+                $types = [
+                 TicketTemplate::getTypeName(1),
+                 TaskTemplate::getTypeName(1),
+                 SolutionTemplate::getTypeName(1),
+                ];
 
-            return implode("/", $types);
+                return implode("/", $types);
 
-         case self::TICKET_SOLUTION:
-            return ITILSolution::getTypeName(1);
+            case self::TICKET_SOLUTION:
+                return ITILSolution::getTypeName(1);
 
-         default:
-            return "";
-      }
-   }
+            default:
+                return "";
+        }
+    }
 
    /**
     * Twig parameters that will be avaiable in solution/task/followup form
     *
     * @return array
     */
-   public static function getForAbstractTemplates(): array {
-      return [
+    public static function getForAbstractTemplates(): array
+    {
+        return [
          new AttributeParameter('itemtype', __('Itemtype')),
          new ObjectParameter(new TicketParameters()),
          new ObjectParameter(new ChangeParameters()),
          new ObjectParameter(new ProblemParameters())
-      ];
-   }
+        ];
+    }
 
    /**
     * Twig parameters that will be available in the solution massive actions
@@ -126,11 +130,11 @@ class ParametersPreset
     *
     * @return array
     */
-   public static function getForTicketSolution(): array {
-      return [
+    public static function getForTicketSolution(): array
+    {
+        return [
          new AttributeParameter('itemtype', __('Itemtype')),
          new ObjectParameter(new TicketParameters()),
-      ];
-   }
-
+        ];
+    }
 }

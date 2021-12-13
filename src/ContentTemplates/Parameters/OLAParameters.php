@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -41,15 +42,18 @@ use OLA;
  */
 class OLAParameters extends LevelAgreementParameters
 {
-   public static function getDefaultNodeName(): string {
-      return 'ola';
-   }
+    public static function getDefaultNodeName(): string
+    {
+        return 'ola';
+    }
 
-   public static function getObjectLabel(): string {
-      return OLA::getTypeName(1);
-   }
+    public static function getObjectLabel(): string
+    {
+        return OLA::getTypeName(1);
+    }
 
-   protected function getTargetClasses(): array {
-      return [OLA::class];
-   }
+    protected function getTargetClasses(): array
+    {
+        return [OLA::class];
+    }
 }

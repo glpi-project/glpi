@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,76 +33,102 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("certificate", READ);
 
 if (empty($_GET["id"])) {
-   $_GET["id"] = "";
+    $_GET["id"] = "";
 }
 if (!isset($_GET["withtemplate"])) {
-   $_GET["withtemplate"] = "";
+    $_GET["withtemplate"] = "";
 }
 
 $certificate = new Certificate();
 
 if (isset($_POST["add"])) {
-   $certificate->check(-1, CREATE, $_POST);
+    $certificate->check(-1, CREATE, $_POST);
 
-   if ($newID = $certificate->add($_POST)) {
-      Event::log($newID, "certificates", 4, "inventory",
-                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"],
-                         $_POST["name"]));
-      if ($_SESSION['glpibackcreated']) {
-         Html::redirect($certificate->getLinkURL());
-      }
-   }
-   Html::back();
-
+    if ($newID = $certificate->add($_POST)) {
+        Event::log(
+            $newID,
+            "certificates",
+            4,
+            "inventory",
+            sprintf(
+                __('%1$s adds the item %2$s'),
+                $_SESSION["glpiname"],
+                $_POST["name"]
+            )
+        );
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($certificate->getLinkURL());
+        }
+    }
+    Html::back();
 } else if (isset($_POST["delete"])) {
-   $certificate->check($_POST["id"], DELETE);
-   $certificate->delete($_POST);
+    $certificate->check($_POST["id"], DELETE);
+    $certificate->delete($_POST);
 
-   Event::log($_POST["id"], "certificates", 4, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
-   $certificate->redirectToList();
-
+    Event::log(
+        $_POST["id"],
+        "certificates",
+        4,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
+    );
+    $certificate->redirectToList();
 } else if (isset($_POST["restore"])) {
-   $certificate->check($_POST["id"], DELETE);
+    $certificate->check($_POST["id"], DELETE);
 
-   $certificate->restore($_POST);
-   Event::log($_POST["id"], "certificates", 4, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
-   $certificate->redirectToList();
-
+    $certificate->restore($_POST);
+    Event::log(
+        $_POST["id"],
+        "certificates",
+        4,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s restores an item'), $_SESSION["glpiname"])
+    );
+    $certificate->redirectToList();
 } else if (isset($_POST["purge"])) {
-   $certificate->check($_POST["id"], PURGE);
+    $certificate->check($_POST["id"], PURGE);
 
-   $certificate->delete($_POST, 1);
-   Event::log($_POST["id"], "certificates", 4, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
-   $certificate->redirectToList();
-
+    $certificate->delete($_POST, 1);
+    Event::log(
+        $_POST["id"],
+        "certificates",
+        4,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+    );
+    $certificate->redirectToList();
 } else if (isset($_POST["update"])) {
-   $certificate->check($_POST["id"], UPDATE);
+    $certificate->check($_POST["id"], UPDATE);
 
-   $certificate->update($_POST);
-   Event::log($_POST["id"], "certificates", 4, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
-   Html::back();
-
-
+    $certificate->update($_POST);
+    Event::log(
+        $_POST["id"],
+        "certificates",
+        4,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+    );
+    Html::back();
 } else {
-   Html::header(Certificate::getTypeName(Session::getPluralNumber()),
-                $_SERVER['PHP_SELF'], 'management', 'certificate');
-   $certificate->display([
+    Html::header(
+        Certificate::getTypeName(Session::getPluralNumber()),
+        $_SERVER['PHP_SELF'],
+        'management',
+        'certificate'
+    );
+    $certificate->display([
       'id'           => $_GET["id"],
       'withtemplate' => $_GET["withtemplate"],
       'formoptions'  => "data-track-changes=true"
-   ]);
-   Html::footer();
+    ]);
+    Html::footer();
 }

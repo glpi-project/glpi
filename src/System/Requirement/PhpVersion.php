@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,29 +36,31 @@ namespace Glpi\System\Requirement;
 /**
  * @since 9.5.0
  */
-class PhpVersion extends AbstractRequirement {
+class PhpVersion extends AbstractRequirement
+{
 
    /**
     * Minimal required PHP version.
     *
     * @var string
     */
-   private $min_version;
+    private $min_version;
 
    /**
     * @param string $min_version  Minimal required PHP version
     */
-   public function __construct(string $min_version) {
-      $this->title = __('PHP Parser');
-      $this->min_version = $min_version;
-   }
+    public function __construct(string $min_version)
+    {
+        $this->title = __('PHP Parser');
+        $this->min_version = $min_version;
+    }
 
-   protected function check() {
-      $this->validated = version_compare(PHP_VERSION, $this->min_version, '>=');
+    protected function check()
+    {
+        $this->validated = version_compare(PHP_VERSION, $this->min_version, '>=');
 
-      $this->validation_messages[] = $this->validated
+        $this->validation_messages[] = $this->validated
          ? sprintf(__('PHP version (%s) is supported.'), PHP_VERSION)
          : sprintf(__('PHP version must be at least %s.'), $this->min_version);
-   }
-
+    }
 }

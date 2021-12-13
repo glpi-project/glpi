@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,7 +33,8 @@
 
 namespace Glpi\Mail\Protocol;
 
-interface ProtocolInterface {
+interface ProtocolInterface
+{
 
    /**
     * Do not validate SSL certificate
@@ -41,7 +43,7 @@ interface ProtocolInterface {
     *
     * @return self
     */
-   public function setNoValidateCert(bool $novalidatecert);
+    public function setNoValidateCert(bool $novalidatecert);
 
    /**
     * Open connection to server.
@@ -50,7 +52,7 @@ interface ProtocolInterface {
     * @param  int|null    $port  server port, null value with fallback to default port
     * @param  string|bool $ssl   use 'SSL', 'TLS' or false
     */
-   public function connect($host, $port = null, $ssl = false);
+    public function connect($host, $port = null, $ssl = false);
 
    /**
     * Login to server.
@@ -60,5 +62,5 @@ interface ProtocolInterface {
     *
     * @return bool
     */
-   public function login($user, $password);
+    public function login($user, $password);
 }

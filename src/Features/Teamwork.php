@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,13 +37,14 @@ namespace Glpi\Features;
  * Trait for itemtypes that can have a team
  * @since 10.0.0
  */
-trait Teamwork {
+trait Teamwork
+{
 
    /**
     * Get an array of all possible roles
     * @return array
     */
-   abstract public static function getTeamRoles(): array;
+    abstract public static function getTeamRoles(): array;
 
    /**
     * Get the localized name for a team role
@@ -50,13 +52,13 @@ trait Teamwork {
     * @param int $nb
     * @return string
     */
-   abstract public static function getTeamRoleName(int $role, int $nb = 1): string;
+    abstract public static function getTeamRoleName(int $role, int $nb = 1): string;
 
    /**
     * Get all types of team members that are supported by this item type
     * @return array
     */
-   abstract public static function getTeamItemtypes(): array;
+    abstract public static function getTeamItemtypes(): array;
 
    /**
     * Add a team member to this item
@@ -66,7 +68,7 @@ trait Teamwork {
     * @return bool
     * @since 10.0.0
     */
-   abstract public function addTeamMember(string $itemtype, int $items_id, array $params = []): bool;
+    abstract public function addTeamMember(string $itemtype, int $items_id, array $params = []): bool;
 
    /**
     * Remove a team member to this item
@@ -76,12 +78,12 @@ trait Teamwork {
     * @return bool
     * @since 10.0.0
     */
-   abstract public function deleteTeamMember(string $itemtype, int $items_id, array $params = []): bool;
+    abstract public function deleteTeamMember(string $itemtype, int $items_id, array $params = []): bool;
 
    /**
     * Get all team members
     * @return array
     * @since 10.0.0
     */
-   abstract public function getTeam(): array;
+    abstract public function getTeam(): array;
 }

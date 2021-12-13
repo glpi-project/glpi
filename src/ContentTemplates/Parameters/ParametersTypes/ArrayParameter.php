@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -48,39 +49,42 @@ class ArrayParameter extends AbstractParameterType
     *
     * @var TemplatesParametersInterface
     */
-   protected $template_parameters;
+    protected $template_parameters;
 
    /**
     * @param string                       $key        Key to access this value
     * @param TemplatesParametersInterface $parameters Parameters of each item contained in this array
     * @param string                       $label      Label to display in the autocompletion widget
     */
-   public function __construct(
-      string $key,
-      TemplatesParametersInterface $parameters,
-      string $label
-   ) {
-      parent::__construct($key, $label);
-      $this->template_parameters = $parameters;
-   }
+    public function __construct(
+        string $key,
+        TemplatesParametersInterface $parameters,
+        string $label
+    ) {
+        parent::__construct($key, $label);
+        $this->template_parameters = $parameters;
+    }
 
-   public function compute(): array {
-      $object_parameters = new ObjectParameter($this->template_parameters);
-      return [
+    public function compute(): array
+    {
+        $object_parameters = new ObjectParameter($this->template_parameters);
+        return [
          'type'      => "ArrayParameter",
          'key'       => $this->key,
          'label'     => $this->label,
          'items_key' => $this->template_parameters->getDefaultNodeName(),
          'content'   => $object_parameters->compute(),
-      ];
-   }
+        ];
+    }
 
-   public function getDocumentationUsage(?string $parent = null): string {
-      $parent = !empty($parent) ? "$parent." : "";
-      return "{% for {$this->template_parameters->getDefaultNodeName()} in {$parent}{$this->key} %}";
-   }
+    public function getDocumentationUsage(?string $parent = null): string
+    {
+        $parent = !empty($parent) ? "$parent." : "";
+        return "{% for {$this->template_parameters->getDefaultNodeName()} in {$parent}{$this->key} %}";
+    }
 
-   public function getDocumentationReferences(): ?TemplatesParametersInterface {
-      return $this->template_parameters;
-   }
+    public function getDocumentationReferences(): ?TemplatesParametersInterface
+    {
+        return $this->template_parameters;
+    }
 }

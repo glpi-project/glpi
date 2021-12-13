@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,13 +34,14 @@
 /**
  * @since 0.84
 **/
-abstract class HTMLTableHeader extends HTMLTableEntity {
+abstract class HTMLTableHeader extends HTMLTableEntity
+{
 
-   private $name;
-   private $father;
-   private $itemtypes   = [];
-   private $colSpan     = 1;
-   private $numberCells = 0;
+    private $name;
+    private $father;
+    private $itemtypes   = [];
+    private $colSpan     = 1;
+    private $numberCells = 0;
 
 
    /**
@@ -47,7 +49,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
     *
     * @return HTMLTableMain the table owning the current header
    **/
-   abstract protected function getTable();
+    abstract protected function getTable();
 
 
    /**
@@ -58,7 +60,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
     *
     * @return void
    **/
-   abstract function getHeaderAndSubHeaderName(&$header_name, &$subheader_name);
+    abstract public function getHeaderAndSubHeaderName(&$header_name, &$subheader_name);
 
 
    /**
@@ -66,7 +68,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
     *
     * @return true if this is a super header
    **/
-   abstract function isSuperHeader();
+    abstract public function isSuperHeader();
 
 
    /**
@@ -75,95 +77,105 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
     * @param HTMLTableHeader $father   HTMLTableHeader object:
     *                                  the father of the current column (default NULL)
    **/
-   function __construct($name, $content, HTMLTableHeader $father = null) {
+    public function __construct($name, $content, HTMLTableHeader $father = null)
+    {
 
-      parent::__construct($content);
+        parent::__construct($content);
 
-      $this->name           = $name;
-      $this->father         = $father;
-   }
+        $this->name           = $name;
+        $this->father         = $father;
+    }
 
 
    /**
     * @param $itemtype
     * @param $title         (default '')
    **/
-   function setItemType($itemtype, $title = '') {
-      $this->itemtypes[$itemtype] = $title;
-   }
+    public function setItemType($itemtype, $title = '')
+    {
+        $this->itemtypes[$itemtype] = $title;
+    }
 
 
    /**
     * @param $item      CommonDBTM object (default NULL)
    **/
-   function checkItemType(CommonDBTM $item = null) {
+    public function checkItemType(CommonDBTM $item = null)
+    {
 
-      if (($item === null) && (count($this->itemtypes) > 0)) {
-         throw new \Exception('Implementation error: header requires an item');
-      }
-      if ($item !== null) {
-         if (!isset($this->itemtypes[$item->getType()])) {
-            throw new \Exception('Implementation error: type mismatch between header and cell');
-         }
-         $this->getTable()->addItemType($item->getType(), $this->itemtypes[$item->getType()]);
-      }
-   }
+        if (($item === null) && (count($this->itemtypes) > 0)) {
+            throw new \Exception('Implementation error: header requires an item');
+        }
+        if ($item !== null) {
+            if (!isset($this->itemtypes[$item->getType()])) {
+                throw new \Exception('Implementation error: type mismatch between header and cell');
+            }
+            $this->getTable()->addItemType($item->getType(), $this->itemtypes[$item->getType()]);
+        }
+    }
 
 
-   function getName() {
-      return $this->name;
-   }
+    public function getName()
+    {
+        return $this->name;
+    }
 
 
    /**
     * @param $colSpan
    **/
-   function setColSpan($colSpan) {
-      $this->colSpan = $colSpan;
-   }
+    public function setColSpan($colSpan)
+    {
+        $this->colSpan = $colSpan;
+    }
 
 
-   function addCell() {
-      $this->numberCells++;
-   }
+    public function addCell()
+    {
+        $this->numberCells++;
+    }
 
 
-   function hasToDisplay() {
-      return ($this->numberCells > 0);
-   }
+    public function hasToDisplay()
+    {
+        return ($this->numberCells > 0);
+    }
 
 
-   function getColSpan() {
-      return $this->colSpan;
-   }
+    public function getColSpan()
+    {
+        return $this->colSpan;
+    }
 
 
    /**
     * @param boolean $with_content do we displaye the content ?
     * @param boolean $main_header  main header (from table) or secondary (from group) ? (true by default)
    **/
-   function displayTableHeader($with_content, $main_header = true) {
+    public function displayTableHeader($with_content, $main_header = true)
+    {
 
-      if ($main_header) {
-         echo "<th";
-      } else {
-         echo "<td class='subheader'";
-      }
-      echo " colspan='".$this->colSpan."'>";
-      if ($with_content) {
-         $this->displayContent();
-      } else {
-         echo "&nbsp;";
-      }
-      if ($main_header) {
-         echo "</th>";
-      } else {
-         echo "</td>";
-      }
-   }
+        if ($main_header) {
+            echo "<th";
+        } else {
+            echo "<td class='subheader'";
+        }
+        echo " colspan='" . $this->colSpan . "'>";
+        if ($with_content) {
+            $this->displayContent();
+        } else {
+            echo "&nbsp;";
+        }
+        if ($main_header) {
+            echo "</th>";
+        } else {
+            echo "</td>";
+        }
+    }
 
 
-   function getFather() {
-      return $this->father;
-   }
+    public function getFather()
+    {
+        return $this->father;
+    }
 }

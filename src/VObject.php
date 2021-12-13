@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,9 +34,9 @@
 /**
  * @since 9.5.0
  */
-class VObject extends CommonDBChild {
+class VObject extends CommonDBChild
+{
 
-   static public $itemtype          = 'itemtype';
-   static public $items_id          = 'items_id';
-
+    public static $itemtype          = 'itemtype';
+    public static $items_id          = 'items_id';
 }

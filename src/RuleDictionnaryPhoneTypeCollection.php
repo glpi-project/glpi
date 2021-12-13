@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,15 +31,16 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleDictionnaryPhoneTypeCollection extends RuleDictionnaryDropdownCollection {
-   public $item_table  = "glpi_phonetypes";
-   public $menu_option = "type.phone";
+class RuleDictionnaryPhoneTypeCollection extends RuleDictionnaryDropdownCollection
+{
+    public $item_table  = "glpi_phonetypes";
+    public $menu_option = "type.phone";
 
    /**
     * @see RuleCollection::getTitle()
    **/
-   function getTitle() {
-      return __('Dictionnary of phone types');
-   }
-
+    public function getTitle()
+    {
+        return __('Dictionnary of phone types');
+    }
 }

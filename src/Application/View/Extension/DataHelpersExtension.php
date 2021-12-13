@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -42,10 +43,12 @@ use Twig\TwigFilter;
 /**
  * @since 10.0.0
  */
-class DataHelpersExtension extends AbstractExtension {
+class DataHelpersExtension extends AbstractExtension
+{
 
-   public function getFilters(): array {
-      return [
+    public function getFilters(): array
+    {
+        return [
          new TwigFilter('formatted_datetime', [$this, 'getFormattedDatetime']),
          new TwigFilter('formatted_duration', [$this, 'getFormattedDuration']),
          new TwigFilter('formatted_number', [$this, 'getFormattedNumber']),
@@ -56,8 +59,8 @@ class DataHelpersExtension extends AbstractExtension {
          new TwigFilter('verbatim_value', [$this, 'getVerbatimValue']),
          new TwigFilter('shortcut', [$this, 'underlineShortcutLetter'], ['is_safe' => ['html']]),
          new TwigFilter('enhanced_html', [$this, 'getEnhancedHtml'], ['is_safe' => ['html']]),
-      ];
-   }
+        ];
+    }
 
    /**
     * Return date formatted to user preferred format.
@@ -66,12 +69,13 @@ class DataHelpersExtension extends AbstractExtension {
     *
     * @return string|null
     */
-   public function getFormattedDatetime($datetime): ?string {
-      if (!is_string($datetime)) {
-         return null;
-      }
-      return Html::convDateTime($datetime);
-   }
+    public function getFormattedDatetime($datetime): ?string
+    {
+        if (!is_string($datetime)) {
+            return null;
+        }
+        return Html::convDateTime($datetime);
+    }
 
    /**
     * Return relative representation of given date.
@@ -80,12 +84,13 @@ class DataHelpersExtension extends AbstractExtension {
     *
     * @return string|null
     */
-   public function getRelativeDatetime($datetime): ?string {
-      if (!is_string($datetime)) {
-         return null;
-      }
-      return Html::timestampToRelativeStr($datetime);
-   }
+    public function getRelativeDatetime($datetime): ?string
+    {
+        if (!is_string($datetime)) {
+            return null;
+        }
+        return Html::timestampToRelativeStr($datetime);
+    }
 
    /**
     * Return human readable duration.
@@ -94,12 +99,13 @@ class DataHelpersExtension extends AbstractExtension {
     *
     * @return string|null
     */
-   public function getFormattedDuration($duration): ?string {
-      if (!is_numeric($duration)) {
-         return null;
-      }
-      return Html::timestampToString($duration);
-   }
+    public function getFormattedDuration($duration): ?string
+    {
+        if (!is_numeric($duration)) {
+            return null;
+        }
+        return Html::timestampToString($duration);
+    }
 
    /**
     * Return number formatted to user preferred format.
@@ -108,9 +114,10 @@ class DataHelpersExtension extends AbstractExtension {
     *
     * @return string
     */
-   public function getFormattedNumber($number): string {
-      return Html::formatNumber($number);
-   }
+    public function getFormattedNumber($number): string
+    {
+        return Html::formatNumber($number);
+    }
 
    /**
     * Return URL for given picture.
@@ -119,13 +126,14 @@ class DataHelpersExtension extends AbstractExtension {
     *
     * @return null|string
     */
-   public function getPictureUrl($path): ?string {
-      if (!is_string($path)) {
-         return null;
-      }
+    public function getPictureUrl($path): ?string
+    {
+        if (!is_string($path)) {
+            return null;
+        }
 
-      return Toolbox::getPictureUrl($path, true);
-   }
+        return Toolbox::getPictureUrl($path, true);
+    }
 
    /**
     * Return string having its shortcut letter underlined.
@@ -135,12 +143,13 @@ class DataHelpersExtension extends AbstractExtension {
     *
     * @return string
     */
-   public function underlineShortcutLetter(string $string, string $shortcut_letter):string {
-      if (empty($shortcut_letter)) {
-         return $string;
-      }
-      return Toolbox::shortcut($string, $shortcut_letter);
-   }
+    public function underlineShortcutLetter(string $string, string $shortcut_letter): string
+    {
+        if (empty($shortcut_letter)) {
+            return $string;
+        }
+        return Toolbox::shortcut($string, $shortcut_letter);
+    }
 
    /**
     * Return plain text from HTML (rich text).
@@ -151,13 +160,14 @@ class DataHelpersExtension extends AbstractExtension {
     *
     * @return mixed
     */
-   public function getTextFromHtml($string, bool $keep_presentation = true, bool $compact = false) {
-      if (!is_string($string)) {
-         return $string;
-      }
+    public function getTextFromHtml($string, bool $keep_presentation = true, bool $compact = false)
+    {
+        if (!is_string($string)) {
+            return $string;
+        }
 
-      return RichText::getTextFromHtml($string, $keep_presentation, $compact);
-   }
+        return RichText::getTextFromHtml($string, $keep_presentation, $compact);
+    }
 
    /**
     * Return safe HTML (rich text).
@@ -169,13 +179,14 @@ class DataHelpersExtension extends AbstractExtension {
     *
     * @return mixed
     */
-   public function getSafeHtml($string) {
-      if (!is_string($string)) {
-         return $string;
-      }
+    public function getSafeHtml($string)
+    {
+        if (!is_string($string)) {
+            return $string;
+        }
 
-      return RichText::getSafeHtml($string);
-   }
+        return RichText::getSafeHtml($string);
+    }
 
    /**
     * Return enhanced HTML (rich text).
@@ -187,13 +198,14 @@ class DataHelpersExtension extends AbstractExtension {
     *
     * @return mixed
     */
-   public function getEnhancedHtml($string, array $params = []) {
-      if (!is_string($string)) {
-         return $string;
-      }
+    public function getEnhancedHtml($string, array $params = [])
+    {
+        if (!is_string($string)) {
+            return $string;
+        }
 
-      return RichText::getEnhancedHtml($string, $params);
-   }
+        return RichText::getEnhancedHtml($string, $params);
+    }
 
    /**
     * Return verbatim value for an itemtype field.
@@ -204,11 +216,12 @@ class DataHelpersExtension extends AbstractExtension {
     *
     * @return mixed
     */
-   public function getVerbatimValue($string) {
-      if (!is_string($string)) {
-         return $string;
-      }
+    public function getVerbatimValue($string)
+    {
+        if (!is_string($string)) {
+            return $string;
+        }
 
-      return Sanitizer::getVerbatimValue($string);
-   }
+        return Sanitizer::getVerbatimValue($string);
+    }
 }

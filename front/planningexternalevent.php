@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,16 +31,16 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("planning", READ);
 
 Html::header(
-   PlanningExternalEvent::getTypeName(Session::getPluralNumber()),
-   $_SERVER['PHP_SELF'],
-   "helpdesk",
-   "planning",
-   "external"
+    PlanningExternalEvent::getTypeName(Session::getPluralNumber()),
+    $_SERVER['PHP_SELF'],
+    "helpdesk",
+    "planning",
+    "external"
 );
 
 Search::show('PlanningExternalEvent');

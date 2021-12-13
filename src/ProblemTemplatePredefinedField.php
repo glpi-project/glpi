@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,10 +38,11 @@
  *
  * @since 0.83
 **/
-class ProblemTemplatePredefinedField extends ITILTemplatePredefinedField {
+class ProblemTemplatePredefinedField extends ITILTemplatePredefinedField
+{
 
    // From CommonDBChild
-   static public $itemtype = 'ProblemTemplate';
-   static public $items_id = 'problemtemplates_id';
-   static public $itiltype = 'Problem';
+    public static $itemtype = 'ProblemTemplate';
+    public static $items_id = 'problemtemplates_id';
+    public static $itiltype = 'Problem';
 }

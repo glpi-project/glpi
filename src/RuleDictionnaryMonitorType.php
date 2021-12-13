@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,46 +31,49 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleDictionnaryMonitorType extends RuleDictionnaryDropdown {
+class RuleDictionnaryMonitorType extends RuleDictionnaryDropdown
+{
 
 
    /**
     * Constructor
    **/
-   function __construct() {
-      parent::__construct('RuleDictionnaryMonitorType');
-   }
+    public function __construct()
+    {
+        parent::__construct('RuleDictionnaryMonitorType');
+    }
 
 
    /**
     * @see Rule::getCriterias()
    **/
-   function getCriterias() {
+    public function getCriterias()
+    {
 
-      static $criterias = [];
+        static $criterias = [];
 
-      if (count($criterias)) {
-         return $criterias;
-      }
+        if (count($criterias)) {
+            return $criterias;
+        }
 
-      $criterias['name']['field'] = 'name';
-      $criterias['name']['name']  = _n('Type', 'Types', 1);
-      $criterias['name']['table'] = 'glpi_monitortypes';
+        $criterias['name']['field'] = 'name';
+        $criterias['name']['name']  = _n('Type', 'Types', 1);
+        $criterias['name']['table'] = 'glpi_monitortypes';
 
-      return $criterias;
-   }
+        return $criterias;
+    }
 
 
    /**
     * @see Rule::getActions()
    **/
-   function getActions() {
+    public function getActions()
+    {
 
-      $actions                          = [];
-      $actions['name']['name']          = _n('Type', 'Types', 1);
-      $actions['name']['force_actions'] = ['append_regex_result', 'assign', 'regex_result'];
+        $actions                          = [];
+        $actions['name']['name']          = _n('Type', 'Types', 1);
+        $actions['name']['force_actions'] = ['append_regex_result', 'assign', 'regex_result'];
 
-      return $actions;
-   }
-
+        return $actions;
+    }
 }

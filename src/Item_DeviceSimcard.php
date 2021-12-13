@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -38,21 +39,24 @@
 /**
  * Relation between item and devices
  **/
-class Item_DeviceSimcard extends Item_Devices {
+class Item_DeviceSimcard extends Item_Devices
+{
 
-   static public $itemtype_2 = 'DeviceSimcard';
-   static public $items_id_2 = 'devicesimcards_id';
+    public static $itemtype_2 = 'DeviceSimcard';
+    public static $items_id_2 = 'devicesimcards_id';
 
-   static protected $notable = false;
+    protected static $notable = false;
 
-   static $undisclosedFields      = ['pin', 'pin2', 'puk', 'puk2'];
+    public static $undisclosedFields      = ['pin', 'pin2', 'puk', 'puk2'];
 
-   static function getTypeName($nb = 0) {
-      return _n('Simcard', 'Simcards', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Simcard', 'Simcards', $nb);
+    }
 
-   static function getSpecificities($specif = '') {
-      return [
+    public static function getSpecificities($specif = '')
+    {
+        return [
              'serial'         => parent::getSpecificities('serial'),
              'otherserial'    => parent::getSpecificities('otherserial'),
              'locations_id'   => parent::getSpecificities('locations_id'),
@@ -115,10 +119,11 @@ class Item_DeviceSimcard extends Item_Devices {
                                   'size'       => 20,
                                   'id'         => 22,
                                   'datatype'   => 'dropdown'],
-      ];
-   }
+        ];
+    }
 
-   static function getNameField() {
-      return 'serial';
-   }
+    public static function getNameField()
+    {
+        return 'serial';
+    }
 }

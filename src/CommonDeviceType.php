@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,29 +31,33 @@
  * ---------------------------------------------------------------------
  */
 
-abstract class CommonDeviceType extends CommonType {
+abstract class CommonDeviceType extends CommonType
+{
 
-   static function getTypeName($nb = 0) {
-      return _n('Device type', 'Device types', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Device type', 'Device types', $nb);
+    }
 
-   static function getFormURL($full = true) {
-      global $CFG_GLPI;
+    public static function getFormURL($full = true)
+    {
+        global $CFG_GLPI;
 
-      $dir = ($full ? $CFG_GLPI['root_doc'] : '');
-      $itemtype = get_called_class();
-      $link = "$dir/front/devicetype.form.php?itemtype=$itemtype";
+        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+        $itemtype = get_called_class();
+        $link = "$dir/front/devicetype.form.php?itemtype=$itemtype";
 
-      return $link;
-   }
+        return $link;
+    }
 
-   static function getSearchURL($full = true) {
-      global $CFG_GLPI;
+    public static function getSearchURL($full = true)
+    {
+        global $CFG_GLPI;
 
-      $dir = ($full ? $CFG_GLPI['root_doc'] : '');
-      $itemtype = get_called_class();
-      $link = "$dir/front/devicetype.php?itemtype=$itemtype";
+        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+        $itemtype = get_called_class();
+        $link = "$dir/front/devicetype.php?itemtype=$itemtype";
 
-      return $link;
-   }
+        return $link;
+    }
 }

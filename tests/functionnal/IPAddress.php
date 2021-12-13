@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,19 +37,21 @@ use DbTestCase;
 
 /* Test for inc/networkport.class.php */
 
-class IPAddress extends DbTestCase {
+class IPAddress extends DbTestCase
+{
 
 
-   public function testAddIPV4() {
-      $this->login();
+    public function testAddIPV4()
+    {
+        $this->login();
 
-      //first create NetworkName
-      $networkName = new \NetworkName();
-      $networkName_id = $networkName->add(["name" => "test", "itemtype" => ""]);
-      $this->integer($networkName_id)->isGreaterThan(0);
+       //first create NetworkName
+        $networkName = new \NetworkName();
+        $networkName_id = $networkName->add(["name" => "test", "itemtype" => ""]);
+        $this->integer($networkName_id)->isGreaterThan(0);
 
-      $IPV4ShouldWork = [];
-      $IPV4ShouldWork["1.0.1.0"] = ["items_id" => $networkName_id,
+        $IPV4ShouldWork = [];
+        $IPV4ShouldWork["1.0.1.0"] = ["items_id" => $networkName_id,
                                     "itemtype" => "NetworkName",
                                     "version"  => 4,
                                     "name" => "1.0.1.0",
@@ -56,7 +59,7 @@ class IPAddress extends DbTestCase {
                                     "binary_1" => 0,
                                     "binary_2" => 65535 ,
                                     "binary_3" => 16777472];
-      $IPV4ShouldWork["8.8.8.8"] = ["items_id" => $networkName_id,
+        $IPV4ShouldWork["8.8.8.8"] = ["items_id" => $networkName_id,
                                     "itemtype" => "NetworkName",
                                     "version"  => 4,
                                     "name" => "8.8.8.8",
@@ -64,7 +67,7 @@ class IPAddress extends DbTestCase {
                                     "binary_1" => 0,
                                     "binary_2" => 65535 ,
                                     "binary_3" => 134744072];
-      $IPV4ShouldWork["100.1.2.3"] = ["items_id" => $networkName_id,
+        $IPV4ShouldWork["100.1.2.3"] = ["items_id" => $networkName_id,
                                       "itemtype" => "NetworkName",
                                        "version"  => 4,
                                        "name" => "100.1.2.3",
@@ -72,7 +75,7 @@ class IPAddress extends DbTestCase {
                                        "binary_1" => 0,
                                        "binary_2" => 65535 ,
                                        "binary_3" => 1677787651];
-      $IPV4ShouldWork["100.1.2.3"] = ["items_id" => $networkName_id,
+        $IPV4ShouldWork["100.1.2.3"] = ["items_id" => $networkName_id,
                                        "itemtype" => "NetworkName",
                                        "version"  => 4,
                                        "name" => "100.1.2.3",
@@ -80,7 +83,7 @@ class IPAddress extends DbTestCase {
                                        "binary_1" => 0,
                                        "binary_2" => 65535 ,
                                        "binary_3" => 1677787651];
-      $IPV4ShouldWork["172.15.1.2"] = ["items_id" => $networkName_id,
+        $IPV4ShouldWork["172.15.1.2"] = ["items_id" => $networkName_id,
                                        "itemtype" => "NetworkName",
                                        "version"  => 4,
                                        "name" => "172.15.1.2",
@@ -88,7 +91,7 @@ class IPAddress extends DbTestCase {
                                        "binary_1" => 0,
                                        "binary_2" => 65535 ,
                                        "binary_3" => 2886664450];
-      $IPV4ShouldWork["172.32.1.2"] = ["items_id" => $networkName_id,
+        $IPV4ShouldWork["172.32.1.2"] = ["items_id" => $networkName_id,
                                        "itemtype" => "NetworkName",
                                        "version"  => 4,
                                        "name" => "172.32.1.2",
@@ -96,7 +99,7 @@ class IPAddress extends DbTestCase {
                                        "binary_1" => 0,
                                        "binary_2" => 65535 ,
                                        "binary_3" => 2887778562];
-      $IPV4ShouldWork["192.167.1.8"] = ["items_id" => $networkName_id,
+        $IPV4ShouldWork["192.167.1.8"] = ["items_id" => $networkName_id,
                                        "itemtype" => "NetworkName",
                                        "version"  => 4,
                                        "name" => "192.167.1.8",
@@ -104,7 +107,7 @@ class IPAddress extends DbTestCase {
                                        "binary_1" => 0,
                                        "binary_2" => 65535 ,
                                        "binary_3" => 3232170248];
-      $IPV4ShouldWork["::ffff:192.168.0.1"] = ["items_id" => $networkName_id,
+        $IPV4ShouldWork["::ffff:192.168.0.1"] = ["items_id" => $networkName_id,
                                                 "itemtype" => "NetworkName",
                                                 "version"  => 4,
                                                 "name" => "::ffff:192.168.0.1",
@@ -113,31 +116,31 @@ class IPAddress extends DbTestCase {
                                                 "binary_2" => 65535 ,
                                                 "binary_3" => 3232235521];
 
-      //try to create each IPV4
-      foreach ($IPV4ShouldWork as $name => $expected) {
-         $ipAdress = new \IPAddress();
-         $input = [
+       //try to create each IPV4
+        foreach ($IPV4ShouldWork as $name => $expected) {
+            $ipAdress = new \IPAddress();
+            $input = [
             "name" => $name,
             "itemtype" => "NetworkName",
             "items_id" => "$networkName_id"];
-         $id = $ipAdress->add($input);
-         $this->integer($id)->isGreaterThan(0);
+            $id = $ipAdress->add($input);
+            $this->integer($id)->isGreaterThan(0);
 
-         //check name store in DB
-         $all_IP = getAllDataFromTable('glpi_ipaddresses', ['ORDER' => 'id']);
-         $currentIP = end($all_IP);
-         unset($currentIP['id']);
-         unset($currentIP['entities_id']);
-         unset($currentIP['date_mod']);
-         unset($currentIP['date_creation']);
-         unset($currentIP['is_deleted']);
-         unset($currentIP['is_dynamic']);
-         unset($currentIP['mainitems_id']);
-         unset($currentIP['mainitemtype']);
-         $this->array($currentIP)->isIdenticalTo($expected);
-      }
+           //check name store in DB
+            $all_IP = getAllDataFromTable('glpi_ipaddresses', ['ORDER' => 'id']);
+            $currentIP = end($all_IP);
+            unset($currentIP['id']);
+            unset($currentIP['entities_id']);
+            unset($currentIP['date_mod']);
+            unset($currentIP['date_creation']);
+            unset($currentIP['is_deleted']);
+            unset($currentIP['is_dynamic']);
+            unset($currentIP['mainitems_id']);
+            unset($currentIP['mainitemtype']);
+            $this->array($currentIP)->isIdenticalTo($expected);
+        }
 
-      $IPV4ShouldNotWork = [
+        $IPV4ShouldNotWork = [
          ".2.3.4",
          "1.2.3.",
          "1.2.3.256",
@@ -146,38 +149,38 @@ class IPAddress extends DbTestCase {
          "256.2.3.4",
          "1.2.3.4.5",
          "1..3.4",
-      ];
+        ];
 
-      unset($_SESSION['glpicronuserrunning']);
-      foreach ($IPV4ShouldNotWork as $name) {
-         $ipAdress = new \IPAddress();
-         $id = $ipAdress->add([
+        unset($_SESSION['glpicronuserrunning']);
+        foreach ($IPV4ShouldNotWork as $name) {
+            $ipAdress = new \IPAddress();
+            $id = $ipAdress->add([
             "name" => $name,
             "itemtype" => "NetworkName",
             "items_id" => "$networkName_id"]);
 
-         $expectedSession = [];
-         $expectedSession[ERROR] = [
-            "Invalid IP address: ".$name,
-         ];
+            $expectedSession = [];
+            $expectedSession[ERROR] = [
+             "Invalid IP address: " . $name,
+            ];
 
-         $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo($expectedSession);
-          $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+            $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo($expectedSession);
+            $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+        }
+    }
 
-      }
-   }
 
+    public function testAddIPV6()
+    {
+        $this->login();
 
-   public function testAddIPV6() {
-      $this->login();
+       //first create NetworkName
+        $networkName = new \NetworkName();
+        $networkName_id = $networkName->add(["name" => "test", "itemtype" => ""]);
+        $this->integer($networkName_id)->isGreaterThan(0);
 
-      //first create NetworkName
-      $networkName = new \NetworkName();
-      $networkName_id = $networkName->add(["name" => "test", "itemtype" => ""]);
-      $this->integer($networkName_id)->isGreaterThan(0);
-
-      $IPV6ShouldWork = [];
-      $IPV6ShouldWork["59FB::1005:CC57:6571"] = ["items_id" => $networkName_id,
+        $IPV6ShouldWork = [];
+        $IPV6ShouldWork["59FB::1005:CC57:6571"] = ["items_id" => $networkName_id,
                                                 "itemtype" => "NetworkName",
                                                 "version"  => 6,
                                                 "name"     => "59fb::1005:cc57:6571",   //tolower
@@ -185,7 +188,7 @@ class IPAddress extends DbTestCase {
                                                 "binary_1" => 0,
                                                 "binary_2" => 4101,
                                                 "binary_3" => 3428279665];
-      $IPV6ShouldWork["21e5:69aa:ffff:1:e100:b691:1285:f56e"] = ["items_id" => $networkName_id,
+        $IPV6ShouldWork["21e5:69aa:ffff:1:e100:b691:1285:f56e"] = ["items_id" => $networkName_id,
                                                                   "itemtype" => "NetworkName",
                                                                   "version"  => 6,
                                                                   "name"     => "21e5:69aa:ffff:1:e100:b691:1285:f56e",
@@ -193,7 +196,7 @@ class IPAddress extends DbTestCase {
                                                                   "binary_1" => 4294901761,
                                                                   "binary_2" => 3774920337,
                                                                   "binary_3" => 310769006];
-      $IPV6ShouldWork["::1"] = ["items_id" => $networkName_id,
+        $IPV6ShouldWork["::1"] = ["items_id" => $networkName_id,
                                  "itemtype" => "NetworkName",
                                  "version"  => 6,
                                  "name"     => "::1",           //loopback
@@ -201,7 +204,7 @@ class IPAddress extends DbTestCase {
                                  "binary_1" => 0,
                                  "binary_2" => 0,
                                  "binary_3" => 1];
-      $IPV6ShouldWork["2001:db8:0:85a3:0:0:ac1f:8001"] = ["items_id" => $networkName_id,
+        $IPV6ShouldWork["2001:db8:0:85a3:0:0:ac1f:8001"] = ["items_id" => $networkName_id,
                                                          "itemtype" => "NetworkName",
                                                          "version"  => 6,
                                                          "name"     => "2001:db8:0:85a3::ac1f:8001",
@@ -209,7 +212,7 @@ class IPAddress extends DbTestCase {
                                                          "binary_1" => 34211,
                                                          "binary_2" => 0,
                                                          "binary_3" => 2887745537];
-      $IPV6ShouldWork["2001:db8:1f89:ffff:ffff:ffff:ffff:ffff"] = ["items_id" => $networkName_id,
+        $IPV6ShouldWork["2001:db8:1f89:ffff:ffff:ffff:ffff:ffff"] = ["items_id" => $networkName_id,
                                                                      "itemtype" => "NetworkName",
                                                                      "version"  => 6,
                                                                      "name"     => "2001:db8:1f89:ffff:ffff:ffff:ffff:ffff",
@@ -218,32 +221,32 @@ class IPAddress extends DbTestCase {
                                                                      "binary_2" => 4294967295,
                                                                      "binary_3" => 4294967295];
 
-      //try to create each IPV6
-      foreach ($IPV6ShouldWork as $name => $expected) {
-         $ipAdress = new \IPAddress();
-         $input = [
+       //try to create each IPV6
+        foreach ($IPV6ShouldWork as $name => $expected) {
+            $ipAdress = new \IPAddress();
+            $input = [
             "name" => $name,
             "itemtype" => "NetworkName",
             "items_id" => "$networkName_id"];
-         $id = $ipAdress->add($input);
-         $this->integer($id)->isGreaterThan(0);
+            $id = $ipAdress->add($input);
+            $this->integer($id)->isGreaterThan(0);
 
-         //check name store in DB
-         $all_IP = getAllDataFromTable('glpi_ipaddresses', ['ORDER' => 'id']);
-         $currentIP = end($all_IP);
-         unset($currentIP['id']);
-         unset($currentIP['entities_id']);
-         unset($currentIP['date_mod']);
-         unset($currentIP['date_creation']);
-         unset($currentIP['is_deleted']);
-         unset($currentIP['is_dynamic']);
-         unset($currentIP['mainitems_id']);
-         unset($currentIP['mainitemtype']);
-         //var_dump($currentIP);
-         $this->array($currentIP)->isIdenticalTo($expected);
-      }
+           //check name store in DB
+            $all_IP = getAllDataFromTable('glpi_ipaddresses', ['ORDER' => 'id']);
+            $currentIP = end($all_IP);
+            unset($currentIP['id']);
+            unset($currentIP['entities_id']);
+            unset($currentIP['date_mod']);
+            unset($currentIP['date_creation']);
+            unset($currentIP['is_deleted']);
+            unset($currentIP['is_dynamic']);
+            unset($currentIP['mainitems_id']);
+            unset($currentIP['mainitemtype']);
+           //var_dump($currentIP);
+            $this->array($currentIP)->isIdenticalTo($expected);
+        }
 
-      $IPV6ShouldNotWork = [
+        $IPV6ShouldNotWork = [
          "56FE::2159:5BBC::6594",
          "2002:0001:3238:DFE1:0063:0000:0000:FEFB:0045", // more than 8 groups
          "1200:0000:AB00:1234:O000:2552:7777:1313",    // invalid characters present
@@ -254,24 +257,23 @@ class IPAddress extends DbTestCase {
          "", //empty "::"
          "1:2:3::4:5::7:8",  // Double "::""
          "12345::6:7:8" //more than 4 digit
-      ];
+        ];
 
-      unset($_SESSION['glpicronuserrunning']);
-      foreach ($IPV6ShouldNotWork as $name) {
-         $ipAdress = new \IPAddress();
-         $id = $ipAdress->add([
+        unset($_SESSION['glpicronuserrunning']);
+        foreach ($IPV6ShouldNotWork as $name) {
+            $ipAdress = new \IPAddress();
+            $id = $ipAdress->add([
             "name" => $name,
             "itemtype" => "NetworkName",
             "items_id" => "$networkName_id"]);
 
-         $expectedSession = [];
-         $expectedSession[ERROR] = [
-            "Invalid IP address: ".$name,
-         ];
+            $expectedSession = [];
+            $expectedSession[ERROR] = [
+             "Invalid IP address: " . $name,
+            ];
 
-         $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo($expectedSession);
-          $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
-
-      }
-   }
+            $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo($expectedSession);
+            $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+        }
+    }
 }

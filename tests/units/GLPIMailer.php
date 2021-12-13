@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,10 +37,12 @@ use DbTestCase;
 
 /* Test for inc/notificationmailing.class.php .class.php */
 
-class GLPIMailer extends DbTestCase {
+class GLPIMailer extends DbTestCase
+{
 
-   protected function valideAddressProvider() {
-      return [
+    protected function valideAddressProvider()
+    {
+        return [
          // Test local part
          ["!#$%&+-=?^_`.{|}~@localhost.dot", true],
          ["test.test@localhost.dot", true],
@@ -63,27 +66,29 @@ class GLPIMailer extends DbTestCase {
          ["test@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.dot", true],
          ["test@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.dot", false],
          ["test@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", true],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider valideAddressProvider
     */
-   public function testValidateAddress($address, $is_valid) {
-      $mailer = new \GLPIMailer;
+    public function testValidateAddress($address, $is_valid)
+    {
+        $mailer = new \GLPIMailer();
 
-      $this->boolean($mailer->validateAddress($address))->isEqualTo($is_valid);
-   }
+        $this->boolean($mailer->validateAddress($address))->isEqualTo($is_valid);
+    }
 
-   public function testPhpMailerLang() {
-      $mailer = new \GLPIMailer;
+    public function testPhpMailerLang()
+    {
+        $mailer = new \GLPIMailer();
 
-      $mailer->setLanguage();
-      $tr = $mailer->getTranslations();
-      $this->string($tr['empty_message'])->isIdenticalTo('Message body empty');
+        $mailer->setLanguage();
+        $tr = $mailer->getTranslations();
+        $this->string($tr['empty_message'])->isIdenticalTo('Message body empty');
 
-      $mailer->setLanguage('fr');
-      $tr = $mailer->getTranslations();
-      $this->string($tr['empty_message'])->isIdenticalTo('Corps du message vide.');
-   }
+        $mailer->setLanguage('fr');
+        $tr = $mailer->getTranslations();
+        $this->string($tr['empty_message'])->isIdenticalTo('Corps du message vide.');
+    }
 }

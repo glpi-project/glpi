@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,14 +32,17 @@
  */
 
 /// Class NetworkEquipementType
-class NetworkEquipmentType extends CommonDropdown {
+class NetworkEquipmentType extends CommonDropdown
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Networking equipment type', 'Networking equipment types', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Networking equipment type', 'Networking equipment types', $nb);
+    }
 
-   static function getFieldLabel() {
-      return _n('Type', 'Types', 1);
-   }
+    public static function getFieldLabel()
+    {
+        return _n('Type', 'Types', 1);
+    }
 }

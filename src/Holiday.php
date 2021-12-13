@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,21 +34,24 @@
 /**
  * Holiday Class
 **/
-class Holiday extends CommonDropdown {
+class Holiday extends CommonDropdown
+{
 
-   static $rightname = 'calendar';
+    public static $rightname = 'calendar';
 
-   public $can_be_translated = false;
-
-
-   static function getTypeName($nb = 0) {
-      return _n('Close time', 'Close times', $nb);
-   }
+    public $can_be_translated = false;
 
 
-   function getAdditionalFields() {
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Close time', 'Close times', $nb);
+    }
 
-      return [['name'  => 'begin_date',
+
+    public function getAdditionalFields()
+    {
+
+        return [['name'  => 'begin_date',
                          'label' => __('Start'),
                          'type'  => 'date'],
                    ['name'  => 'end_date',
@@ -56,102 +60,112 @@ class Holiday extends CommonDropdown {
                    ['name'  => 'is_perpetual',
                          'label' => __('Recurrent'),
                          'type'  => 'bool']];
-   }
+    }
 
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '11',
          'table'              => $this->getTable(),
          'field'              => 'begin_date',
          'name'               => __('Start'),
          'datatype'           => 'date'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '12',
          'table'              => $this->getTable(),
          'field'              => 'end_date',
          'name'               => __('End'),
          'datatype'           => 'date'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '13',
          'table'              => $this->getTable(),
          'field'              => 'is_perpetual',
          'name'               => __('Recurrent'),
          'datatype'           => 'bool'
-      ];
+        ];
 
-      return $tab;
-   }
-
-
-   function prepareInputForAdd($input) {
-
-      $input = parent::prepareInputForAdd($input);
-
-      if (empty($input['end_date'])
-          || ($input['end_date'] == 'NULL')
-          || ($input['end_date'] < $input['begin_date'])) {
-
-         $input['end_date'] = $input['begin_date'];
-      }
-      return $input;
-   }
+        return $tab;
+    }
 
 
-   function prepareInputForUpdate($input) {
+    public function prepareInputForAdd($input)
+    {
 
-      $input = parent::prepareInputForUpdate($input);
+        $input = parent::prepareInputForAdd($input);
 
-      if (isset($input['begin_date']) && (empty($input['end_date'])
-          || ($input['end_date'] == 'NULL')
-          || ($input['end_date'] < $input['begin_date']))) {
+        if (
+            empty($input['end_date'])
+            || ($input['end_date'] == 'NULL')
+            || ($input['end_date'] < $input['begin_date'])
+        ) {
+            $input['end_date'] = $input['begin_date'];
+        }
+        return $input;
+    }
 
-         $input['end_date'] = $input['begin_date'];
-      }
 
-      return $input;
-   }
+    public function prepareInputForUpdate($input)
+    {
 
-   function post_updateItem($history = 1) {
+        $input = parent::prepareInputForUpdate($input);
 
-      $this->invalidateCalendarHolidayCache();
+        if (
+            isset($input['begin_date']) && (empty($input['end_date'])
+            || ($input['end_date'] == 'NULL')
+            || ($input['end_date'] < $input['begin_date']))
+        ) {
+            $input['end_date'] = $input['begin_date'];
+        }
 
-      parent::post_updateItem($history);
-   }
+        return $input;
+    }
 
-   function post_deleteFromDB() {
+    public function post_updateItem($history = 1)
+    {
 
-      $this->invalidateCalendarHolidayCache();
+        $this->invalidateCalendarHolidayCache();
 
-      parent::post_deleteFromDB();
-   }
+        parent::post_updateItem($history);
+    }
 
-   function cleanDBonPurge() {
+    public function post_deleteFromDB()
+    {
 
-      $this->deleteChildrenAndRelationsFromDb(
-         [
+        $this->invalidateCalendarHolidayCache();
+
+        parent::post_deleteFromDB();
+    }
+
+    public function cleanDBonPurge()
+    {
+
+        $this->deleteChildrenAndRelationsFromDb(
+            [
             Calendar_Holiday::class,
-         ]
-      );
-   }
+            ]
+        );
+    }
 
    /**
     * Invalidate holidays cache on linked calendars.
     *
     * @return void
     */
-   private function invalidateCalendarHolidayCache(): void {
-      $calendar_holiday = new Calendar_Holiday();
-      $calendar_holiday->invalidateHolidayCache($this->fields['id']);
-   }
+    private function invalidateCalendarHolidayCache(): void
+    {
+        $calendar_holiday = new Calendar_Holiday();
+        $calendar_holiday->invalidateHolidayCache($this->fields['id']);
+    }
 
-   static function getIcon() {
-      return "far fa-calendar-times";
-   }
+    public static function getIcon()
+    {
+        return "far fa-calendar-times";
+    }
 }

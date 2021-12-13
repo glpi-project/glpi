@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -41,34 +42,35 @@ use Toolbox;
  */
 abstract class StatDataLocation extends StatData
 {
-   public function __construct(array $params) {
-      parent::__construct($params);
+    public function __construct(array $params)
+    {
+        parent::__construct($params);
 
-      $data_key = $this->getKey();
+        $data_key = $this->getKey();
 
-      $data = Stat::getData(
-         $params['itemtype'],
-         $params['type'],
-         $params['date1'],
-         $params['date2'],
-         $params['start'],
-         $params['val'],
-         $params['value2']
-      );
+        $data = Stat::getData(
+            $params['itemtype'],
+            $params['type'],
+            $params['date1'],
+            $params['date2'],
+            $params['start'],
+            $params['val'],
+            $params['value2']
+        );
 
-      if (!isset($data[$data_key]) || !is_array($data[$data_key])) {
-         return;
-      }
+        if (!isset($data[$data_key]) || !is_array($data[$data_key])) {
+            return;
+        }
 
-      foreach ($data[$data_key] as $key => $val) {
-         if ($val > 0) {
-            $newkey = Toolbox::stripTags($key, true);
-            $this->labels[] = $newkey;
-            $this->series[] = ['name' => $newkey, 'data' => $val];
-            $this->total += $val;
-         }
-      }
-   }
+        foreach ($data[$data_key] as $key => $val) {
+            if ($val > 0) {
+                $newkey = Toolbox::stripTags($key, true);
+                $this->labels[] = $newkey;
+                $this->series[] = ['name' => $newkey, 'data' => $val];
+                $this->total += $val;
+            }
+        }
+    }
 
-   public abstract function getKey(): string;
+    abstract public function getKey(): string;
 }

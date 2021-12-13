@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,15 +31,17 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 Html::header_nocache();
 
 Session::checkLoginUser();
 
 $domainrecordtype = new DomainRecordType();
-if (!array_key_exists('domainrecordtypes_id', $_REQUEST)
-    || !$domainrecordtype->getFromDB($_REQUEST['domainrecordtypes_id'])) {
-   $domainrecordtype->getEmpty();
+if (
+    !array_key_exists('domainrecordtypes_id', $_REQUEST)
+    || !$domainrecordtype->getFromDB($_REQUEST['domainrecordtypes_id'])
+) {
+    $domainrecordtype->getEmpty();
 }
 
 Html::popHeader($domainrecordtype->fields['name']);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,9 +33,9 @@
 
 class DomainRecordType extends CommonDropdown
 {
-   static $rightname = 'dropdown';
+    public static $rightname = 'dropdown';
 
-   static public $knowtypes = [
+    public static $knowtypes = [
       [
          'id'        => 1,
          'name'      => 'A',
@@ -194,82 +195,87 @@ class DomainRecordType extends CommonDropdown
             ],
          ],
       ]
-   ];
+    ];
 
 
-   function getAdditionalFields() {
-      return [
+    public function getAdditionalFields()
+    {
+        return [
          [
             'name'  => 'fields',
             'label' => __('Fields'),
             'type'  => 'fields',
          ]
-      ];
-   }
+        ];
+    }
 
-   public function displaySpecificTypeField($ID, $field = [], array $options = []) {
-      $field_name  = $field['name'];
-      $field_type  = $field['type'];
-      $field_value = $this->fields[$field_name];
+    public function displaySpecificTypeField($ID, $field = [], array $options = [])
+    {
+        $field_name  = $field['name'];
+        $field_type  = $field['type'];
+        $field_value = $this->fields[$field_name];
 
-      switch ($field_type) {
-         case 'fields':
-            $printable = json_encode(json_decode($field_value), JSON_PRETTY_PRINT);
-            echo '<textarea name="' . $field_name . '" cols="75" rows="25">' . $printable . '</textarea >';
-            break;
-      }
-   }
+        switch ($field_type) {
+            case 'fields':
+                $printable = json_encode(json_decode($field_value), JSON_PRETTY_PRINT);
+                echo '<textarea name="' . $field_name . '" cols="75" rows="25">' . $printable . '</textarea >';
+                break;
+        }
+    }
 
-   public function prepareInputForAdd($input) {
-      if (!array_key_exists('fields', $input)) {
-         $input['fields'] = '[]';
-      } else {
-         $input['fields'] = Toolbox::cleanNewLines($input['fields']);
-      }
+    public function prepareInputForAdd($input)
+    {
+        if (!array_key_exists('fields', $input)) {
+            $input['fields'] = '[]';
+        } else {
+            $input['fields'] = Toolbox::cleanNewLines($input['fields']);
+        }
 
-      if (!$this->validateFieldsDescriptor($input['fields'])) {
-         return false;
-      }
-
-      return parent::prepareInputForAdd($input);
-   }
-
-   public function prepareInputForUpdate($input) {
-      if (array_key_exists('fields', $input)) {
-         $input['fields'] = Toolbox::cleanNewLines($input['fields']);
-         if (!$this->validateFieldsDescriptor($input['fields'])) {
+        if (!$this->validateFieldsDescriptor($input['fields'])) {
             return false;
-         }
-      }
+        }
 
-      return parent::prepareInputForUpdate($input);
-   }
+        return parent::prepareInputForAdd($input);
+    }
 
-   public function post_updateItem($history = 1) {
-      global $DB;
+    public function prepareInputForUpdate($input)
+    {
+        if (array_key_exists('fields', $input)) {
+            $input['fields'] = Toolbox::cleanNewLines($input['fields']);
+            if (!$this->validateFieldsDescriptor($input['fields'])) {
+                return false;
+            }
+        }
 
-      if (in_array('fields', $this->updates)) {
-         $old_fields = self::decodeFields($this->oldvalues['fields']);
-         $new_fields = self::decodeFields($this->fields['fields']);
+        return parent::prepareInputForUpdate($input);
+    }
 
-         // Checks only for keys changes as fields order, label, placeholder or quote_value properties changes
-         // should have no impact on object representation.
-         $old_keys = array_column($old_fields, 'key');
-         $new_keys = array_column($new_fields, 'key');
-         sort($old_keys);
-         sort($new_keys);
+    public function post_updateItem($history = 1)
+    {
+        global $DB;
 
-         if ($old_keys != $new_keys) {
-            // Remove data stored as obj as properties changed.
-            // Do not remove data stored as string as this representation may still be valid.
-            $DB->update(
-               DomainRecord::getTable(),
-               ['data_obj' => null],
-               [self::getForeignKeyField() => $this->fields['id']]
-            );
-         }
-      }
-   }
+        if (in_array('fields', $this->updates)) {
+            $old_fields = self::decodeFields($this->oldvalues['fields']);
+            $new_fields = self::decodeFields($this->fields['fields']);
+
+           // Checks only for keys changes as fields order, label, placeholder or quote_value properties changes
+           // should have no impact on object representation.
+            $old_keys = array_column($old_fields, 'key');
+            $new_keys = array_column($new_fields, 'key');
+            sort($old_keys);
+            sort($new_keys);
+
+            if ($old_keys != $new_keys) {
+                // Remove data stored as obj as properties changed.
+                // Do not remove data stored as string as this representation may still be valid.
+                $DB->update(
+                    DomainRecord::getTable(),
+                    ['data_obj' => null],
+                    [self::getForeignKeyField() => $this->fields['id']]
+                );
+            }
+        }
+    }
 
    /**
     * Validate fields descriptor.
@@ -278,37 +284,40 @@ class DomainRecordType extends CommonDropdown
     *
     * @return bool
     */
-   private function validateFieldsDescriptor($fields_str): bool {
-      if (!is_string($fields_str)) {
-         Session::addMessageAfterRedirect(__('Invalid JSON used to define fields.'), true, ERROR);
-         return false;
-      }
-
-      $fields = self::decodeFields($fields_str);
-      if (!is_array($fields)) {
-         Session::addMessageAfterRedirect(__('Invalid JSON used to define fields.'), true, ERROR);
-         return false;
-      }
-
-      foreach ($fields as $field) {
-         if (!is_array($field)
-             || !array_key_exists('key', $field) || !is_string($field['key'])
-             || !array_key_exists('label', $field) || !is_string($field['label'])
-             || (array_key_exists('placeholder', $field) && !is_string($field['placeholder']))
-             || (array_key_exists('quote_value', $field) && !is_bool($field['quote_value']))
-             || (array_key_exists('is_fqdn', $field) && !is_bool($field['is_fqdn']))
-             || count(array_diff(array_keys($field), ['key', 'label', 'placeholder', 'quote_value', 'is_fqdn'])) > 0) {
-            Session::addMessageAfterRedirect(
-               __('Valid field descriptor properties are: key (string, mandatory), label (string, mandatory), placeholder (string, optionnal), quote_value (boolean, optional), is_fqdn (boolean, optional).'),
-               true,
-               ERROR
-            );
+    private function validateFieldsDescriptor($fields_str): bool
+    {
+        if (!is_string($fields_str)) {
+            Session::addMessageAfterRedirect(__('Invalid JSON used to define fields.'), true, ERROR);
             return false;
-         }
-      }
+        }
 
-      return true;
-   }
+        $fields = self::decodeFields($fields_str);
+        if (!is_array($fields)) {
+            Session::addMessageAfterRedirect(__('Invalid JSON used to define fields.'), true, ERROR);
+            return false;
+        }
+
+        foreach ($fields as $field) {
+            if (
+                !is_array($field)
+                || !array_key_exists('key', $field) || !is_string($field['key'])
+                || !array_key_exists('label', $field) || !is_string($field['label'])
+                || (array_key_exists('placeholder', $field) && !is_string($field['placeholder']))
+                || (array_key_exists('quote_value', $field) && !is_bool($field['quote_value']))
+                || (array_key_exists('is_fqdn', $field) && !is_bool($field['is_fqdn']))
+                || count(array_diff(array_keys($field), ['key', 'label', 'placeholder', 'quote_value', 'is_fqdn'])) > 0
+            ) {
+                Session::addMessageAfterRedirect(
+                    __('Valid field descriptor properties are: key (string, mandatory), label (string, mandatory), placeholder (string, optionnal), quote_value (boolean, optional), is_fqdn (boolean, optional).'),
+                    true,
+                    ERROR
+                );
+                return false;
+            }
+        }
+
+        return true;
+    }
 
    /**
     * Decode JSON encoded fields.
@@ -319,33 +328,36 @@ class DomainRecordType extends CommonDropdown
     *
     * @return array|null
     */
-   public static function decodeFields(string $json_encoded_fields): ?array {
-      $fields = json_decode($json_encoded_fields, true);
-      if (json_last_error() !== JSON_ERROR_NONE) {
-         $fields_str = stripslashes(preg_replace('/(\\\r|\\\n)/', '', $json_encoded_fields));
-         $fields = json_decode($fields_str, true);
-      }
-      if (json_last_error() !== JSON_ERROR_NONE || !is_array($fields)) {
-         return null;
-      }
+    public static function decodeFields(string $json_encoded_fields): ?array
+    {
+        $fields = json_decode($json_encoded_fields, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $fields_str = stripslashes(preg_replace('/(\\\r|\\\n)/', '', $json_encoded_fields));
+            $fields = json_decode($fields_str, true);
+        }
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($fields)) {
+            return null;
+        }
 
-      return $fields;
-   }
+        return $fields;
+    }
 
-   static function getTypeName($nb = 0) {
-      return _n('Record type', 'Records types', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Record type', 'Records types', $nb);
+    }
 
-   public static function getDefaults() {
-      return array_map(
-         function($e) {
-            $e['is_recursive'] = 1;
-            $e['fields'] = json_encode($e['fields']);
-            return $e;
-         },
-         self::$knowtypes
-      );
-   }
+    public static function getDefaults()
+    {
+        return array_map(
+            function ($e) {
+                $e['is_recursive'] = 1;
+                $e['fields'] = json_encode($e['fields']);
+                return $e;
+            },
+            self::$knowtypes
+        );
+    }
 
    /**
     * Display ajax form used to fill record data.
@@ -353,58 +365,59 @@ class DomainRecordType extends CommonDropdown
     * @param string $str_input_id    Id of input used to get/store record data as string.
     * @param string $obj_input_id    Id of input used to get/store record data as object.
     */
-   function showDataAjaxForm(string $str_input_id, string $obj_input_id) {
-      $rand = mt_rand();
+    public function showDataAjaxForm(string $str_input_id, string $obj_input_id)
+    {
+        $rand = mt_rand();
 
-      echo '<form id="domain_record_data' . $rand . '">';
-      echo '<table class="tab_cadre_fixe">';
+        echo '<form id="domain_record_data' . $rand . '">';
+        echo '<table class="tab_cadre_fixe">';
 
-      $fields = json_decode($this->fields['fields'] ?? '[]', true);
-      if (empty($fields)) {
-         $fields = [
+        $fields = json_decode($this->fields['fields'] ?? '[]', true);
+        if (empty($fields)) {
+            $fields = [
             [
                'key'   => 'data',
                'label' => __('Data'),
             ],
-         ];
-      }
+            ];
+        }
 
-      foreach ($fields as $field) {
-         $placeholder = Html::entities_deep($field['placeholder'] ?? '');
-         $quote_value = $field['quote_value'] ?? false;
-         $is_fqdn = $field['is_fqdn'] ?? false;
+        foreach ($fields as $field) {
+            $placeholder = Html::entities_deep($field['placeholder'] ?? '');
+            $quote_value = $field['quote_value'] ?? false;
+            $is_fqdn = $field['is_fqdn'] ?? false;
 
-         echo '<tr class="tab_bg_1">';
-         echo '<td>' . $field['label'] . '</td>';
-         echo '<td>';
-         echo '<input name="' . $field['key'] . '" '
+            echo '<tr class="tab_bg_1">';
+            echo '<td>' . $field['label'] . '</td>';
+            echo '<td>';
+            echo '<input name="' . $field['key'] . '" '
             . 'placeholder="' . $placeholder . '" '
             . 'data-quote-value="' . ($quote_value ? 'true' : 'false') . '" '
             . (!$quote_value ? 'pattern="[^\s]+" ' : '') // prevent usage of spaces in unquoted values
             . 'data-is-fqdn="' . ($is_fqdn ? 'true' : 'false') . '" '
             . ' />';
-         echo '</td>';
-         echo '</tr>';
-      }
+            echo '</td>';
+            echo '</tr>';
+        }
 
-      echo '<tr class="tab_bg_2">';
-      echo '<td colspan="2" class="right">';
-      echo Html::submit('<i class="fas fa-save"></i> ' . _x('button', 'Save'));
-      echo '</td>';
-      echo '</tr>';
+        echo '<tr class="tab_bg_2">';
+        echo '<td colspan="2" class="right">';
+        echo Html::submit('<i class="fas fa-save"></i> ' . _x('button', 'Save'));
+        echo '</td>';
+        echo '</tr>';
 
-      echo '</table>';
-      echo '</form>';
+        echo '</table>';
+        echo '</form>';
 
-      $js = <<<JAVASCRIPT
+        $js = <<<JAVASCRIPT
          $(
-            function () {
+            public function () {
                var form = $('#domain_record_data{$rand}');
 
                // Put existing data into fields
                var data_to_copy = $('#{$str_input_id}').val();
                form.find('input').each(
-                  function () {
+                  public function () {
                      var endoffset = 0;
                      if ($(this).data('quote-value')) {
                         // Search for closing quote (quote inside value are escaped by a \)
@@ -445,7 +458,7 @@ class DomainRecordType extends CommonDropdown
                      var data_tokens = [];
                      var data_obj = {};
                      $(this).find('input').each(
-                        function () {
+                        public function () {
                            var value = $(this).val();
                            data_obj[$(this).attr('name')] = value; // keep raw value
 
@@ -466,6 +479,6 @@ class DomainRecordType extends CommonDropdown
             }
          );
 JAVASCRIPT;
-      echo Html::scriptBlock($js);
-   }
+        echo Html::scriptBlock($js);
+    }
 }

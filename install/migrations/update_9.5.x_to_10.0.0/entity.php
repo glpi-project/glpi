@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,7 +32,7 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
+    die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -43,12 +44,12 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 
 if (!$DB->fieldExists("glpi_entities", "registration_number")) {
-   $migration->addField(
-      "glpi_entities",
-      "registration_number",
-      "string",
-      [
+    $migration->addField(
+        "glpi_entities",
+        "registration_number",
+        "string",
+        [
          'after'     => "ancestors_cache",
-      ]
-   );
+        ]
+    );
 }

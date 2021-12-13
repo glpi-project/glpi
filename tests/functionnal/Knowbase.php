@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,115 +37,117 @@ use DbTestCase;
 
 /* Test for inc/knowbase.class.php */
 
-class Knowbase extends DbTestCase {
+class Knowbase extends DbTestCase
+{
 
-   public function testGetTreeCategoryList() {
+    public function testGetTreeCategoryList()
+    {
 
-      // Create empty categories
-      $kbcat = new \KnowbaseItemCategory();
+       // Create empty categories
+        $kbcat = new \KnowbaseItemCategory();
 
-      $cat_1_id = $kbcat->add(
-         [
+        $cat_1_id = $kbcat->add(
+            [
             'name' => 'cat 1',
             'knowbaseitemcategories_id' => 0,
-         ]
-      );
-      $this->integer($cat_1_id)->isGreaterThan(0);
+            ]
+        );
+        $this->integer($cat_1_id)->isGreaterThan(0);
 
-      $cat_1_1_id = $kbcat->add(
-         [
+        $cat_1_1_id = $kbcat->add(
+            [
             'name' => 'cat 1.1',
             'knowbaseitemcategories_id' => $cat_1_id,
-         ]
-      );
-      $this->integer($cat_1_1_id)->isGreaterThan(0);
+            ]
+        );
+        $this->integer($cat_1_1_id)->isGreaterThan(0);
 
-      $cat_1_1_1_id = $kbcat->add(
-         [
+        $cat_1_1_1_id = $kbcat->add(
+            [
             'name' => 'cat 1.1.1',
             'knowbaseitemcategories_id' => $cat_1_1_id,
-         ]
-      );
-      $this->integer($cat_1_1_1_id)->isGreaterThan(0);
+            ]
+        );
+        $this->integer($cat_1_1_1_id)->isGreaterThan(0);
 
-      $cat_1_1_2_id = $kbcat->add(
-         [
+        $cat_1_1_2_id = $kbcat->add(
+            [
             'name' => 'cat 1.1.2',
             'knowbaseitemcategories_id' => $cat_1_1_id,
-         ]
-      );
-      $this->integer($cat_1_1_2_id)->isGreaterThan(0);
+            ]
+        );
+        $this->integer($cat_1_1_2_id)->isGreaterThan(0);
 
-      $cat_1_2_id = $kbcat->add(
-         [
+        $cat_1_2_id = $kbcat->add(
+            [
             'name' => 'cat 1.2',
             'knowbaseitemcategories_id' => $cat_1_id,
-         ]
-      );
-      $this->integer($cat_1_2_id)->isGreaterThan(0);
+            ]
+        );
+        $this->integer($cat_1_2_id)->isGreaterThan(0);
 
-      $cat_1_2_1_id = $kbcat->add(
-         [
+        $cat_1_2_1_id = $kbcat->add(
+            [
             'name' => 'cat 1.2.1',
             'knowbaseitemcategories_id' => $cat_1_2_id,
-         ]
-      );
-      $this->integer($cat_1_2_1_id)->isGreaterThan(0);
+            ]
+        );
+        $this->integer($cat_1_2_1_id)->isGreaterThan(0);
 
-      $cat_1_3_id = $kbcat->add(
-         [
+        $cat_1_3_id = $kbcat->add(
+            [
             'name' => 'cat 1.3',
             'knowbaseitemcategories_id' => $cat_1_id,
-         ]
-      );
-      $this->integer($cat_1_3_id)->isGreaterThan(0);
+            ]
+        );
+        $this->integer($cat_1_3_id)->isGreaterThan(0);
 
-      // Returned tree should only containes root, as categories does not contains any elements
-      $this->login('normal', 'normal');
+       // Returned tree should only containes root, as categories does not contains any elements
+        $this->login('normal', 'normal');
 
-      // Expected root category item for normal user
-      $expected_root_cat = [
+       // Expected root category item for normal user
+        $expected_root_cat = [
          'key'    => 0,
          'parent' => null,
          'title'  => 'Root category <span class="badge bg-azure-lt" title="This category contains articles">2</span>',
          'a_attr' => ['data-id' => 0]
-      ];
+        ];
 
-      $tree = \Knowbase::getTreeCategoryList();
-      $this->array($tree)->isEqualTo([$expected_root_cat]);
+        $tree = \Knowbase::getTreeCategoryList();
+        $this->array($tree)->isEqualTo([$expected_root_cat]);
 
-      // Add a private item (not FAQ)
-      $kbitem = new \KnowbaseItem();
-      $kbitem_id = $kbitem->add(
-         [
+       // Add a private item (not FAQ)
+        $kbitem = new \KnowbaseItem();
+        $kbitem_id = $kbitem->add(
+            [
             'users_id' => \Session::getLoginUserID(),
-         ]
-      );
-      $this->integer($kbitem_id)->isGreaterThan(0);
+            ]
+        );
+        $this->integer($kbitem_id)->isGreaterThan(0);
 
-      $kbitem_cat = new \KnowbaseItem_KnowbaseItemCategory();
-      $kbitem_cat_id = $kbitem_cat->add(
-         [
+        $kbitem_cat = new \KnowbaseItem_KnowbaseItemCategory();
+        $kbitem_cat_id = $kbitem_cat->add(
+            [
             'knowbaseitemcategories_id' => "$cat_1_1_2_id",
             'knowbaseitems_id' => "$kbitem_id",
-         ]
-      );
-      $this->integer($kbitem_cat_id)->isGreaterThan(0);
+            ]
+        );
+        $this->integer($kbitem_cat_id)->isGreaterThan(0);
 
-      $kbitem_target = new \Entity_KnowbaseItem();
-      $kbitem_target_id = $kbitem_target->add(
-         [
+        $kbitem_target = new \Entity_KnowbaseItem();
+        $kbitem_target_id = $kbitem_target->add(
+            [
             'knowbaseitems_id' => $kbitem_id,
             'entities_id' => 0,
             'is_recursive' => 1,
-         ]
-      );
-      $this->integer($kbitem_target_id)->isGreaterThan(0);
+            ]
+        );
+        $this->integer($kbitem_target_id)->isGreaterThan(0);
 
-      // Check that tree contains root + category branch containing kb item of user
-      $tree = \Knowbase::getTreeCategoryList();
-      $this->array($tree)->isEqualTo(
-         [
+       // Check that tree contains root + category branch containing kb item of user
+        $tree = \Knowbase::getTreeCategoryList();
+        $this->array($tree)->isEqualTo(
+            [
             array_merge($expected_root_cat, [
                'children' => [
                   [
@@ -171,32 +174,32 @@ class Knowbase extends DbTestCase {
                   ],
                ]
             ]),
-         ]
-      );
+            ]
+        );
 
-      // Add 2nd category
-      $kbitem_cat_id = $kbitem_cat->add(
-         [
+       // Add 2nd category
+        $kbitem_cat_id = $kbitem_cat->add(
+            [
             'knowbaseitemcategories_id' => "$cat_1_3_id",
             'knowbaseitems_id' => "$kbitem_id",
-         ]
-      );
-      $this->integer($kbitem_cat_id)->isGreaterThan(0);
+            ]
+        );
+        $this->integer($kbitem_cat_id)->isGreaterThan(0);
 
-      $kbitem_target = new \Entity_KnowbaseItem();
-      $kbitem_target_id = $kbitem_target->add(
-         [
+        $kbitem_target = new \Entity_KnowbaseItem();
+        $kbitem_target_id = $kbitem_target->add(
+            [
             'knowbaseitems_id' => $kbitem_id,
             'entities_id' => 0,
             'is_recursive' => 1,
-         ]
-      );
-      $this->integer($kbitem_target_id)->isGreaterThan(0);
+            ]
+        );
+        $this->integer($kbitem_target_id)->isGreaterThan(0);
 
-      // Check that tree contains root + category branch containing kb item of user
-      $tree = \Knowbase::getTreeCategoryList();
-      $this->array($tree)->isEqualTo(
-         [
+       // Check that tree contains root + category branch containing kb item of user
+        $tree = \Knowbase::getTreeCategoryList();
+        $this->array($tree)->isEqualTo(
+            [
             array_merge($expected_root_cat, [
                'children' => [
                   [
@@ -229,64 +232,64 @@ class Knowbase extends DbTestCase {
                   ],
                ]
             ]),
-         ]
-      );
+            ]
+        );
 
-      // Add a FAQ item
-      $kbitem = new \KnowbaseItem();
-      $kbitem_id = $kbitem->add(
-         [
+       // Add a FAQ item
+        $kbitem = new \KnowbaseItem();
+        $kbitem_id = $kbitem->add(
+            [
             'is_faq' => 1,
-         ]
-      );
-      $this->integer($kbitem_id)->isGreaterThan(0);
+            ]
+        );
+        $this->integer($kbitem_id)->isGreaterThan(0);
 
-      $kbitem_cat = new \KnowbaseItem_KnowbaseItemCategory();
-      $kbitem_cat_id = $kbitem_cat->add(
-         [
+        $kbitem_cat = new \KnowbaseItem_KnowbaseItemCategory();
+        $kbitem_cat_id = $kbitem_cat->add(
+            [
             'knowbaseitemcategories_id' => "$cat_1_2_1_id",
             'knowbaseitems_id' => "$kbitem_id",
-         ]
-      );
-      $this->integer($kbitem_cat_id)->isGreaterThan(0);
+            ]
+        );
+        $this->integer($kbitem_cat_id)->isGreaterThan(0);
 
-      $kbitem_target = new \Entity_KnowbaseItem();
-      $kbitem_target_id = $kbitem_target->add(
-         [
+        $kbitem_target = new \Entity_KnowbaseItem();
+        $kbitem_target_id = $kbitem_target->add(
+            [
             'knowbaseitems_id' => $kbitem_id,
             'entities_id' => 0,
             'is_recursive' => 1,
-         ]
-      );
-      $this->integer($kbitem_target_id)->isGreaterThan(0);
+            ]
+        );
+        $this->integer($kbitem_target_id)->isGreaterThan(0);
 
-      // Expected root category item for anonymous user
-      $expected_root_cat = [
+       // Expected root category item for anonymous user
+        $expected_root_cat = [
          'key'    => 0,
          'parent' => null,
          'title'  => 'Root category',
          'a_attr' => ['data-id' => 0]
-      ];
+        ];
 
-      // Check that tree contains root only (FAQ is not public) for anonymous user
-      // Force session reset
-      $session_bck = $_SESSION;
-      $this->resetSession();
-      $tree_with_no_public_faq = \Knowbase::getTreeCategoryList();
+       // Check that tree contains root only (FAQ is not public) for anonymous user
+       // Force session reset
+        $session_bck = $_SESSION;
+        $this->resetSession();
+        $tree_with_no_public_faq = \Knowbase::getTreeCategoryList();
 
-      // Check that tree contains root + category branch containing FAQ item (FAQ is public) for anonymous user
-      global $CFG_GLPI;
-      $use_public_faq_bck = $CFG_GLPI['use_public_faq'];
-      $CFG_GLPI['use_public_faq'] = 1;
-      $tree_with_public_faq = \Knowbase::getTreeCategoryList();
+       // Check that tree contains root + category branch containing FAQ item (FAQ is public) for anonymous user
+        global $CFG_GLPI;
+        $use_public_faq_bck = $CFG_GLPI['use_public_faq'];
+        $CFG_GLPI['use_public_faq'] = 1;
+        $tree_with_public_faq = \Knowbase::getTreeCategoryList();
 
-      // Put back globals
-      $_SESSION = $session_bck;
-      $CFG_GLPI['use_public_faq'] = $use_public_faq_bck;
+       // Put back globals
+        $_SESSION = $session_bck;
+        $CFG_GLPI['use_public_faq'] = $use_public_faq_bck;
 
-      $this->array($tree_with_no_public_faq)->isEqualTo([$expected_root_cat]);
-      $this->array($tree_with_public_faq)->isEqualTo(
-         [
+        $this->array($tree_with_no_public_faq)->isEqualTo([$expected_root_cat]);
+        $this->array($tree_with_public_faq)->isEqualTo(
+            [
             array_merge($expected_root_cat, [
                'children' => [
                   [
@@ -313,7 +316,7 @@ class Knowbase extends DbTestCase {
                   ]
                ],
             ]),
-         ]
-      );
-   }
+            ]
+        );
+    }
 }

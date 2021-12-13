@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,10 +37,12 @@ use DbTestCase;
 
 /* Test for inc/monitor.class.php */
 
-class Monitor extends DbTestCase {
+class Monitor extends DbTestCase
+{
 
-   private static function getMonitorFields($id, $date) {
-      return [
+    private static function getMonitorFields($id, $date)
+    {
+        return [
          'id' => $id,
          'entities_id' => 0,
          'name' => '_test_monitor01',
@@ -76,50 +79,53 @@ class Monitor extends DbTestCase {
          'date_creation' => $date,
          'is_recursive' => 0,
          'uuid' => null,
-      ];
-   }
+        ];
+    }
 
-   private function getNewMonitor() {
-      $this->login();
-      $this->setEntity('_test_root_entity', true);
+    private function getNewMonitor()
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
 
-      $date = date('Y-m-d H:i:s');
-      $_SESSION['glpi_currenttime'] = $date;
+        $date = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date;
 
-      $data = [
+        $data = [
          'name'         => '_test_monitor01',
          'entities_id'  => 0
-      ];
+        ];
 
-      $monitor = new \Monitor();
-      $added = $monitor->add($data);
-      $this->integer((int)$added)->isGreaterThan(0);
+        $monitor = new \Monitor();
+        $added = $monitor->add($data);
+        $this->integer((int)$added)->isGreaterThan(0);
 
-      $monitor = getItemByTypeName('Monitor', '_test_monitor01');
+        $monitor = getItemByTypeName('Monitor', '_test_monitor01');
 
-      $expected = Monitor::getMonitorFields($added, $date);
-      $this->array($monitor->fields)->isEqualTo($expected);
-      return $monitor;
-   }
+        $expected = Monitor::getMonitorFields($added, $date);
+        $this->array($monitor->fields)->isEqualTo($expected);
+        return $monitor;
+    }
 
-   public function testBasicMonitor() {
-      $monitor = $this->getNewMonitor();
-   }
+    public function testBasicMonitor()
+    {
+        $monitor = $this->getNewMonitor();
+    }
 
-   public function testClone() {
-      $monitor = $this->getNewMonitor();
+    public function testClone()
+    {
+        $monitor = $this->getNewMonitor();
 
-      $date = date('Y-m-d H:i:s');
-      $_SESSION['glpi_currenttime'] = $date;
+        $date = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date;
 
-      $added = $monitor->clone();
-      $this->integer((int)$added)->isGreaterThan(0);
+        $added = $monitor->clone();
+        $this->integer((int)$added)->isGreaterThan(0);
 
-      $clonedMonitor = new \Monitor();
-      $this->boolean($clonedMonitor->getFromDB($added))->isTrue();
+        $clonedMonitor = new \Monitor();
+        $this->boolean($clonedMonitor->getFromDB($added))->isTrue();
 
-      $expected = Monitor::getMonitorFields($added, $date);
+        $expected = Monitor::getMonitorFields($added, $date);
 
-      $this->array($clonedMonitor->fields)->isEqualTo($expected);
-   }
+        $this->array($clonedMonitor->fields)->isEqualTo($expected);
+    }
 }

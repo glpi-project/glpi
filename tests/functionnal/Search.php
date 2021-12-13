@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -40,52 +41,55 @@ use Ticket;
 
 /* Test for inc/search.class.php */
 
-class Search extends DbTestCase {
+class Search extends DbTestCase
+{
 
-   private function doSearch($itemtype, $params, array $forcedisplay = []) {
-      global $DEBUG_SQL;
+    private function doSearch($itemtype, $params, array $forcedisplay = [])
+    {
+        global $DEBUG_SQL;
 
-      // check param itemtype exists (to avoid search errors)
-      if ($itemtype !== 'AllAssets') {
-         $this->class($itemtype)->isSubClassof('CommonDBTM');
-      }
+       // check param itemtype exists (to avoid search errors)
+        if ($itemtype !== 'AllAssets') {
+            $this->class($itemtype)->isSubClassof('CommonDBTM');
+        }
 
-      // login to glpi if needed
-      if (!isset($_SESSION['glpiname'])) {
-         $this->login();
-      }
+       // login to glpi if needed
+        if (!isset($_SESSION['glpiname'])) {
+            $this->login();
+        }
 
-      // force session in debug mode (to store & retrieve sql errors)
-      $glpi_use_mode             = $_SESSION['glpi_use_mode'];
-      $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
+       // force session in debug mode (to store & retrieve sql errors)
+        $glpi_use_mode             = $_SESSION['glpi_use_mode'];
+        $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
 
-      // don't compute last request from session
-      $params['reset'] = 'reset';
+       // don't compute last request from session
+        $params['reset'] = 'reset';
 
-      // do search
-      $params = \Search::manageParams($itemtype, $params);
-      $data   = \Search::getDatas($itemtype, $params, $forcedisplay);
+       // do search
+        $params = \Search::manageParams($itemtype, $params);
+        $data   = \Search::getDatas($itemtype, $params, $forcedisplay);
 
-      // append existing errors to returned data
-      $data['last_errors'] = [];
-      if (isset($DEBUG_SQL['errors'])) {
-         $data['last_errors'] = implode(', ', $DEBUG_SQL['errors']);
-         unset($DEBUG_SQL['errors']);
-      }
+       // append existing errors to returned data
+        $data['last_errors'] = [];
+        if (isset($DEBUG_SQL['errors'])) {
+            $data['last_errors'] = implode(', ', $DEBUG_SQL['errors']);
+            unset($DEBUG_SQL['errors']);
+        }
 
-      // restore glpi mode to previous
-      $_SESSION['glpi_use_mode'] = $glpi_use_mode;
+       // restore glpi mode to previous
+        $_SESSION['glpi_use_mode'] = $glpi_use_mode;
 
-      // do not store this search from session
-      \Search::resetSaveSearch();
+       // do not store this search from session
+        \Search::resetSaveSearch();
 
-      $this->checkSearchResult($data);
+        $this->checkSearchResult($data);
 
-      return $data;
-   }
+        return $data;
+    }
 
-   public function testMetaComputerOS() {
-      $search_params = ['is_deleted'   => 0,
+    public function testMetaComputerOS()
+    {
+        $search_params = ['is_deleted'   => 0,
                         'start'        => 0,
                         'criteria'     => [0 => ['field'      => 'view',
                                                  'searchtype' => 'contains',
@@ -96,27 +100,28 @@ class Search extends DbTestCase {
                                                  'searchtype' => 'contains',
                                                  'value'      => 'windows']]];
 
-      $data = $this->doSearch('Computer', $search_params);
+        $data = $this->doSearch('Computer', $search_params);
 
-      //try to find LEFT JOIN clauses
-      $this->string($data['sql']['search'])
+       //try to find LEFT JOIN clauses
+        $this->string($data['sql']['search'])
          ->matches("/"
-         ."LEFT\s*JOIN\s*`glpi_items_operatingsystems`\s*AS\s*`glpi_items_operatingsystems_OperatingSystem`\s*"
-         ."ON\s*\(`glpi_items_operatingsystems_OperatingSystem`\.`items_id`\s*=\s*`glpi_computers`\.`id`\s*"
-         ."AND `glpi_items_operatingsystems_OperatingSystem`\.`itemtype`\s*=\s*'Computer'\s*"
-         ."AND `glpi_items_operatingsystems_OperatingSystem`\.`is_deleted`\s*=\s*0\s*\)\s*"
-         ."LEFT\s*JOIN\s*`glpi_operatingsystems`\s*"
-         ."ON\s*\(`glpi_items_operatingsystems_OperatingSystem`\.`operatingsystems_id`\s*=\s*`glpi_operatingsystems`\.`id`\s*\)"
-         ."/im");
+         . "LEFT\s*JOIN\s*`glpi_items_operatingsystems`\s*AS\s*`glpi_items_operatingsystems_OperatingSystem`\s*"
+         . "ON\s*\(`glpi_items_operatingsystems_OperatingSystem`\.`items_id`\s*=\s*`glpi_computers`\.`id`\s*"
+         . "AND `glpi_items_operatingsystems_OperatingSystem`\.`itemtype`\s*=\s*'Computer'\s*"
+         . "AND `glpi_items_operatingsystems_OperatingSystem`\.`is_deleted`\s*=\s*0\s*\)\s*"
+         . "LEFT\s*JOIN\s*`glpi_operatingsystems`\s*"
+         . "ON\s*\(`glpi_items_operatingsystems_OperatingSystem`\.`operatingsystems_id`\s*=\s*`glpi_operatingsystems`\.`id`\s*\)"
+         . "/im");
 
-      //try to match WHERE clause
-      $this->string($data['sql']['search'])
+       //try to match WHERE clause
+        $this->string($data['sql']['search'])
          ->matches("/(\(`glpi_operatingsystems`\.`name`\s*LIKE\s*'%windows%'\s*\)\s*\))/im");
-   }
+    }
 
 
-   public function testMetaComputerSoftwareLicense() {
-      $search_params = ['is_deleted'   => 0,
+    public function testMetaComputerSoftwareLicense()
+    {
+        $search_params = ['is_deleted'   => 0,
                         'start'        => 0,
                         'criteria'     => [0 => ['field'      => 'view',
                                                  'searchtype' => 'contains',
@@ -132,19 +137,20 @@ class Search extends DbTestCase {
                                                  'searchtype' => 'contains',
                                                  'value'      => 'firefox']]];
 
-      $data = $this->doSearch('Computer', $search_params);
+        $data = $this->doSearch('Computer', $search_params);
 
-      $this->string($data['sql']['search'])
+        $this->string($data['sql']['search'])
          ->matches('/'
             . 'LEFT JOIN\s*`glpi_items_softwareversions`\s*AS\s*`glpi_items_softwareversions_[^`]+_Software`\s*ON\s*\('
             . '`glpi_items_softwareversions_[^`]+_Software`\.`items_id`\s*=\s*`glpi_computers`.`id`'
             . '\s*AND\s*`glpi_items_softwareversions_[^`]+_Software`\.`itemtype`\s*=\s*\'Computer\''
             . '\s*AND\s*`glpi_items_softwareversions_[^`]+_Software`\.`is_deleted`\s*=\s*0'
             . '\)/im');
-   }
+    }
 
-   public function testSoftwareLinkedToAnyComputer() {
-      $search_params = [
+    public function testSoftwareLinkedToAnyComputer()
+    {
+        $search_params = [
          'is_deleted'   => 0,
          'start'        => 0,
          'criteria'     => [
@@ -163,16 +169,17 @@ class Search extends DbTestCase {
                'value'      => '^$', // search for "null" id
             ],
          ],
-      ];
+        ];
 
-      $data = $this->doSearch('Software', $search_params);
+        $data = $this->doSearch('Software', $search_params);
 
-      $this->string($data['sql']['search'])
+        $this->string($data['sql']['search'])
          ->matches("/HAVING\s*\(`ITEM_Computer_2`\s+IS\s+NOT\s+NULL\s*\)/");
-   }
+    }
 
-   public function testMetaComputerUser() {
-      $search_params = ['is_deleted'   => 0,
+    public function testMetaComputerUser()
+    {
+        $search_params = ['is_deleted'   => 0,
                         'start'        => 0,
                         'search'       => 'Search',
                         'criteria'     => [0 => ['field'      => 'view',
@@ -203,11 +210,12 @@ class Search extends DbTestCase {
                                                  'searchtype' => 'equals',
                                                  'value'      => 1]]];
 
-      $this->doSearch('Computer', $search_params);
-   }
+        $this->doSearch('Computer', $search_params);
+    }
 
-   public function testSubMetaTicketComputer() {
-      $search_params = [
+    public function testSubMetaTicketComputer()
+    {
+        $search_params = [
          'is_deleted'   => 0,
          'start'        => 0,
          'search'       => 'Search',
@@ -242,13 +250,14 @@ class Search extends DbTestCase {
                ]
             ],
          ],
-      ];
+        ];
 
-      $this->doSearch('Ticket', $search_params);
-   }
+        $this->doSearch('Ticket', $search_params);
+    }
 
-   public function testFlagMetaComputerUser() {
-      $search_params = [
+    public function testFlagMetaComputerUser()
+    {
+        $search_params = [
          'reset'        => 'reset',
          'is_deleted'   => 0,
          'start'        => 0,
@@ -296,18 +305,19 @@ class Search extends DbTestCase {
                'value'      => 1
             ]
          ]
-      ];
+        ];
 
-      $data = $this->doSearch('Computer', $search_params);
+        $data = $this->doSearch('Computer', $search_params);
 
-      $this->string($data['sql']['search'])
+        $this->string($data['sql']['search'])
          ->contains("LEFT JOIN  `glpi_users`")
          ->contains("LEFT JOIN `glpi_profiles`  AS `glpi_profiles_")
          ->contains("LEFT JOIN `glpi_entities`  AS `glpi_entities_");
-   }
+    }
 
-   public function testNestedAndMetaComputer() {
-      $search_params = [
+    public function testNestedAndMetaComputer()
+    {
+        $search_params = [
          'reset'      => 'reset',
          'is_deleted' => 0,
          'start'      => 0,
@@ -375,11 +385,11 @@ class Search extends DbTestCase {
                'value'      => 'HP',
             ]
          ]
-      ];
+        ];
 
-      $data = $this->doSearch('Computer', $search_params);
+        $data = $this->doSearch('Computer', $search_params);
 
-      $this->string($data['sql']['search'])
+        $this->string($data['sql']['search'])
          // join parts
          ->matches('/LEFT JOIN\s*`glpi_items_softwareversions`\s*AS `glpi_items_softwareversions_Software`/im')
          ->matches('/LEFT JOIN\s*`glpi_softwareversions`\s*AS `glpi_softwareversions_Software`/im')
@@ -392,7 +402,7 @@ class Search extends DbTestCase {
          ->contains("`glpi_computers`.`is_deleted` = 0")
          ->contains("AND `glpi_computers`.`is_template` = 0")
          ->contains("`glpi_computers`.`entities_id` IN ('1', '2', '3')")
-         ->contains("OR (`glpi_computers`.`is_recursive`='1'".
+         ->contains("OR (`glpi_computers`.`is_recursive`='1'" .
                     " AND `glpi_computers`.`entities_id` IN (0))")
          ->contains("`glpi_computers`.`name`  LIKE '%test%'")
          ->contains("AND (`glpi_softwares`.`id` = '10784')")
@@ -402,10 +412,11 @@ class Search extends DbTestCase {
          ->contains("OR (`glpi_users`.`id` = '3')")
          // match having
          ->matches("/HAVING\s*\(`ITEM_Budget_2`\s+<>\s+5\)\s+AND\s+\(\(`ITEM_Printer_1`\s+NOT LIKE\s+'%HP%'\s+OR\s+`ITEM_Printer_1`\s+IS NULL\)\s*\)/");
-   }
+    }
 
-   function testViewCriterion() {
-      $data = $this->doSearch('Computer', [
+    public function testViewCriterion()
+    {
+        $data = $this->doSearch('Computer', [
          'reset'      => 'reset',
          'is_deleted' => 0,
          'start'      => 0,
@@ -418,15 +429,15 @@ class Search extends DbTestCase {
                'value'      => 'test',
             ],
          ]
-      ]);
+        ]);
 
-      $default_charset = DBConnection::getDefaultCharset();
+        $default_charset = DBConnection::getDefaultCharset();
 
-      $this->string($data['sql']['search'])
+        $this->string($data['sql']['search'])
          ->contains("`glpi_computers`.`is_deleted` = 0")
          ->contains("AND `glpi_computers`.`is_template` = 0")
          ->contains("`glpi_computers`.`entities_id` IN ('1', '2', '3')")
-         ->contains("OR (`glpi_computers`.`is_recursive`='1'".
+         ->contains("OR (`glpi_computers`.`is_recursive`='1'" .
                     " AND `glpi_computers`.`entities_id` IN (0))")
          ->matches("/`glpi_computers`\.`name`  LIKE '%test%'/")
          ->matches("/OR\s*\(`glpi_entities`\.`completename`\s*LIKE '%test%'\s*\)/")
@@ -437,10 +448,11 @@ class Search extends DbTestCase {
          ->matches("/OR\s*\(`glpi_computermodels`\.`name`\s*LIKE '%test%'\s*\)/")
          ->matches("/OR\s*\(`glpi_locations`\.`completename`\s*LIKE '%test%'\s*\)/")
          ->matches("/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING {$default_charset}\)\s*LIKE '%test%'\s*\)\)/");
-   }
+    }
 
-   public function testSearchOnRelationTable() {
-      $data = $this->doSearch(\Change_Ticket::class, [
+    public function testSearchOnRelationTable()
+    {
+        $data = $this->doSearch(\Change_Ticket::class, [
          'reset'      => 'reset',
          'is_deleted' => 0,
          'start'      => 0,
@@ -453,16 +465,17 @@ class Search extends DbTestCase {
                'value'      => '1',
             ],
          ]
-      ]);
+        ]);
 
-      $this->string($data['sql']['search'])
+        $this->string($data['sql']['search'])
          ->contains("`glpi_changes`.`id` AS `ITEM_Change_Ticket_3`")
          ->contains("`glpi_changes_tickets`.`changes_id` = `glpi_changes`.`id`")
          ->contains("`glpi_changes`.`id` = '1'");
-   }
+    }
 
-   public function testUser() {
-      $search_params = ['is_deleted'   => 0,
+    public function testUser()
+    {
+        $search_params = ['is_deleted'   => 0,
                         'start'        => 0,
                         'search'       => 'Search',
                                                      // profile
@@ -484,11 +497,11 @@ class Search extends DbTestCase {
                                                  'field'      => '8',
                                                  'searchtype' => 'notequals',
                                                  'value'      => 0]]];
-      $data = $this->doSearch('User', $search_params);
+        $data = $this->doSearch('User', $search_params);
 
-      //expecting one result
-      $this->integer($data['data']['totalcount'])->isIdenticalTo(1);
-   }
+       //expecting one result
+        $this->integer($data['data']['totalcount'])->isIdenticalTo(1);
+    }
 
    /**
     * This test will add all searchoptions in each itemtype and check if the
@@ -496,119 +509,121 @@ class Search extends DbTestCase {
     *
     * @return void
     */
-   public function testSearchOptions() {
-      $classes = $this->getSearchableClasses();
-      foreach ($classes as $class) {
-         $item = new $class();
+    public function testSearchOptions()
+    {
+        $classes = $this->getSearchableClasses();
+        foreach ($classes as $class) {
+            $item = new $class();
 
-         //load all options; so rawSearchOptionsToAdd to be tested
-         $options = \Search::getCleanedOptions($item->getType());
+           //load all options; so rawSearchOptionsToAdd to be tested
+            $options = \Search::getCleanedOptions($item->getType());
 
-         $multi_criteria = [];
-         foreach ($options as $key => $data) {
-            if (!is_int($key) || ($criterion_params = $this->getCriterionParams($item, $key, $data)) === null) {
-               continue;
+            $multi_criteria = [];
+            foreach ($options as $key => $data) {
+                if (!is_int($key) || ($criterion_params = $this->getCriterionParams($item, $key, $data)) === null) {
+                    continue;
+                }
+
+                // do a search query based on current search option
+                $this->doSearch(
+                    $class,
+                    [
+                    'is_deleted'   => 0,
+                    'start'        => 0,
+                    'criteria'     => [$criterion_params],
+                    'metacriteria' => []
+                    ]
+                );
+
+                $multi_criteria[] = $criterion_params;
+
+                if (count($multi_criteria) > 50) {
+                     // Limit criteria count to 50 to prevent performances issues
+                     // and also prevent exceeding of MySQL join limit.
+                     break;
+                }
             }
 
-            // do a search query based on current search option
-            $this->doSearch(
-               $class,
-               [
-                  'is_deleted'   => 0,
-                  'start'        => 0,
-                  'criteria'     => [$criterion_params],
-                  'metacriteria' => []
-               ]
-            );
-
-            $multi_criteria[] = $criterion_params;
-
-            if (count($multi_criteria) > 50) {
-               // Limit criteria count to 50 to prevent performances issues
-               // and also prevent exceeding of MySQL join limit.
-               break;
-            }
-         }
-
-         // do a search query with all criteria at the same time
-         $search_params = ['is_deleted'   => 0,
+          // do a search query with all criteria at the same time
+            $search_params = ['is_deleted'   => 0,
                            'start'        => 0,
                            'criteria'     => $multi_criteria,
                            'metacriteria' => []];
-         $this->doSearch($class, $search_params);
-      }
-   }
+            $this->doSearch($class, $search_params);
+        }
+    }
 
    /**
     * Test search with all meta to not have SQL errors
     *
     * @return void
     */
-   public function testSearchAllMeta() {
+    public function testSearchAllMeta()
+    {
 
-      $classes = $this->getSearchableClasses();
+        $classes = $this->getSearchableClasses();
 
-      // extract metacriteria
-      $itemtype_criteria = [];
-      foreach ($classes as $class) {
-         $itemtype = $class::getType();
-         $itemtype_criteria[$itemtype] = [];
-         $metaList = \Search::getMetaItemtypeAvailable($itemtype);
-         foreach ($metaList as $metaitemtype) {
-            $item = getItemForItemtype($metaitemtype);
-            foreach ($item->searchOptions() as $key => $data) {
-               if (is_array($data) && array_key_exists('nometa', $data) && $data['nometa'] === true) {
-                  continue;
-               }
-               if (!is_int($key) || ($criterion_params = $this->getCriterionParams($item, $key, $data)) === null) {
-                  continue;
-               }
+       // extract metacriteria
+        $itemtype_criteria = [];
+        foreach ($classes as $class) {
+            $itemtype = $class::getType();
+            $itemtype_criteria[$itemtype] = [];
+            $metaList = \Search::getMetaItemtypeAvailable($itemtype);
+            foreach ($metaList as $metaitemtype) {
+                $item = getItemForItemtype($metaitemtype);
+                foreach ($item->searchOptions() as $key => $data) {
+                    if (is_array($data) && array_key_exists('nometa', $data) && $data['nometa'] === true) {
+                        continue;
+                    }
+                    if (!is_int($key) || ($criterion_params = $this->getCriterionParams($item, $key, $data)) === null) {
+                        continue;
+                    }
 
-               $criterion_params['itemtype'] = $metaitemtype;
-               $criterion_params['link'] = 'AND';
+                    $criterion_params['itemtype'] = $metaitemtype;
+                    $criterion_params['link'] = 'AND';
 
-               $itemtype_criteria[$itemtype][] = $criterion_params;
+                    $itemtype_criteria[$itemtype][] = $criterion_params;
+                }
             }
-         }
-      }
+        }
 
-      foreach ($itemtype_criteria as $itemtype => $criteria) {
-         if (empty($criteria)) {
-            continue;
-         }
-
-         $first_criteria_by_metatype = [];
-
-         // Search with each meta criteria independently.
-         foreach ($criteria as $criterion_params) {
-            if (!array_key_exists($criterion_params['itemtype'], $first_criteria_by_metatype)) {
-               $first_criteria_by_metatype[$criterion_params['itemtype']] = $criterion_params;
+        foreach ($itemtype_criteria as $itemtype => $criteria) {
+            if (empty($criteria)) {
+                continue;
             }
 
-            $search_params = ['is_deleted'   => 0,
+            $first_criteria_by_metatype = [];
+
+           // Search with each meta criteria independently.
+            foreach ($criteria as $criterion_params) {
+                if (!array_key_exists($criterion_params['itemtype'], $first_criteria_by_metatype)) {
+                    $first_criteria_by_metatype[$criterion_params['itemtype']] = $criterion_params;
+                }
+
+                $search_params = ['is_deleted'   => 0,
                               'start'        => 0,
                               'criteria'     => [0 => ['field'      => 'view',
                                                        'searchtype' => 'contains',
                                                        'value'      => '']],
                               'metacriteria' => [$criterion_params]];
-            $this->doSearch($itemtype, $search_params);
-         }
+                $this->doSearch($itemtype, $search_params);
+            }
 
-         // Search with criteria related to multiple meta items.
-         // Limit criteria count to 5 to prevent performances issues (mainly on MariaDB).
-         // Test would take hours if done using too many criteria on each request.
-         // Thus, using 5 different meta items on a request seems already more than a normal usage.
-         foreach (array_chunk($first_criteria_by_metatype, 3) as $criteria_chunk) {
-            $search_params = ['is_deleted'   => 0,
+           // Search with criteria related to multiple meta items.
+           // Limit criteria count to 5 to prevent performances issues (mainly on MariaDB).
+           // Test would take hours if done using too many criteria on each request.
+           // Thus, using 5 different meta items on a request seems already more than a normal usage.
+            foreach (array_chunk($first_criteria_by_metatype, 3) as $criteria_chunk) {
+                $search_params = ['is_deleted'   => 0,
                               'start'        => 0,
                               'criteria'     => [0 => ['field'      => 'view',
                                                        'searchtype' => 'contains',
                                                        'value'      => '']],
                               'metacriteria' => $criteria_chunk];
-            $this->doSearch($itemtype, $search_params);
-         }
-      }
-   }
+                $this->doSearch($itemtype, $search_params);
+            }
+        }
+    }
 
    /**
     * Get criterion params for corresponding SO.
@@ -618,54 +633,56 @@ class Search extends DbTestCase {
     * @param array $so_data
     * @return null|array
     */
-   private function getCriterionParams(CommonDBTM $item, int $so_key, array $so_data): ?array {
-      global $DB;
+    private function getCriterionParams(CommonDBTM $item, int $so_key, array $so_data): ?array
+    {
+        global $DB;
 
-      if ((array_key_exists('nosearch', $so_data) && $so_data['nosearch'])) {
-         return null;
-      }
-      $actions = \Search::getActionsFor($item->getType(), $so_key);
-      $searchtype = array_keys($actions)[0];
+        if ((array_key_exists('nosearch', $so_data) && $so_data['nosearch'])) {
+            return null;
+        }
+        $actions = \Search::getActionsFor($item->getType(), $so_key);
+        $searchtype = array_keys($actions)[0];
 
-      switch ($so_data['datatype'] ?? null) {
-         case 'bool':
-         case 'integer':
-         case 'number':
-            $val = 0;
-            break;
-         case 'date':
-         case 'date_delay':
-            $val = date('Y-m-d');
-            break;
-         case 'datetime':
-            // Search class expects seconds to be ":00".
-            $val = date('Y-m-d H:i:00');
-            break;
-         case 'right':
-            $val = READ;
-            break;
-         default:
-            if (array_key_exists('table', $so_data) && array_key_exists('field', $so_data)) {
-               $field = $DB->tableExists($so_data['table']) ? $DB->getField($so_data['table'], $so_data['field']) : null;
-               if (preg_match('/int(\(\d+\))?$/', $field['Type'] ?? '')) {
-                  $val = 1;
-                  break;
-               }
-            }
+        switch ($so_data['datatype'] ?? null) {
+            case 'bool':
+            case 'integer':
+            case 'number':
+                $val = 0;
+                break;
+            case 'date':
+            case 'date_delay':
+                $val = date('Y-m-d');
+                break;
+            case 'datetime':
+               // Search class expects seconds to be ":00".
+                $val = date('Y-m-d H:i:00');
+                break;
+            case 'right':
+                $val = READ;
+                break;
+            default:
+                if (array_key_exists('table', $so_data) && array_key_exists('field', $so_data)) {
+                    $field = $DB->tableExists($so_data['table']) ? $DB->getField($so_data['table'], $so_data['field']) : null;
+                    if (preg_match('/int(\(\d+\))?$/', $field['Type'] ?? '')) {
+                        $val = 1;
+                        break;
+                    }
+                }
 
-            $val = 'val';
-            break;
-      }
+                $val = 'val';
+                break;
+        }
 
-      return [
+        return [
          'field'      => $so_key,
          'searchtype' => $searchtype,
          'value'      => $val
-      ];
-   }
+        ];
+    }
 
-   public function testIsNotifyComputerGroup() {
-      $search_params = ['is_deleted'   => 0,
+    public function testIsNotifyComputerGroup()
+    {
+        $search_params = ['is_deleted'   => 0,
                         'start'        => 0,
                         'search'       => 'Search',
                         'criteria'     => [0 => ['field'      => 'view',
@@ -677,54 +694,55 @@ class Search extends DbTestCase {
                                                  'field'      => 20,
                                                  'searchtype' => 'equals',
                                                  'value'      => 1]]];
-      $this->login();
-      $this->setEntity('_test_root_entity', true);
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
 
-      $data = $this->doSearch('Computer', $search_params);
+        $data = $this->doSearch('Computer', $search_params);
 
-      //expecting no result
-      $this->integer($data['data']['totalcount'])->isIdenticalTo(0);
+       //expecting no result
+        $this->integer($data['data']['totalcount'])->isIdenticalTo(0);
 
-      $computer1 = getItemByTypeName('Computer', '_test_pc01');
+        $computer1 = getItemByTypeName('Computer', '_test_pc01');
 
-      //create group that can be notified
-      $group = new \Group();
-      $gid = $group->add(
-         [
+       //create group that can be notified
+        $group = new \Group();
+        $gid = $group->add(
+            [
             'name'         => '_test_group01',
             'is_notify'    => '1',
             'entities_id'  => $computer1->fields['entities_id'],
             'is_recursive' => 1
-         ]
-      );
-      $this->integer($gid)->isGreaterThan(0);
+            ]
+        );
+        $this->integer($gid)->isGreaterThan(0);
 
-      //attach group to computer
-      $updated = $computer1->update(
-         [
+       //attach group to computer
+        $updated = $computer1->update(
+            [
             'id'        => $computer1->getID(),
             'groups_id' => $gid
-         ]
-      );
-      $this->boolean($updated)->isTrue();
+            ]
+        );
+        $this->boolean($updated)->isTrue();
 
-      $data = $this->doSearch('Computer', $search_params);
+        $data = $this->doSearch('Computer', $search_params);
 
-      //reset computer
-      $updated = $computer1->update(
-         [
+       //reset computer
+        $updated = $computer1->update(
+            [
             'id'        => $computer1->getID(),
             'groups_id' => 0
-         ]
-      );
-      $this->boolean($updated)->isTrue();
+            ]
+        );
+        $this->boolean($updated)->isTrue();
 
-      $this->integer($data['data']['totalcount'])->isIdenticalTo(1);
-   }
+        $this->integer($data['data']['totalcount'])->isIdenticalTo(1);
+    }
 
-   public function testDateBeforeOrNot() {
-      //tickets created since one week
-      $search_params = [
+    public function testDateBeforeOrNot()
+    {
+       //tickets created since one week
+        $search_params = [
          'is_deleted'   => 0,
          'start'        => 0,
          'criteria'     => [
@@ -741,47 +759,49 @@ class Search extends DbTestCase {
                'value'      => '-1WEEK'
             ]
          ]
-      ];
+        ];
 
-      $data = $this->doSearch('Ticket', $search_params);
+        $data = $this->doSearch('Ticket', $search_params);
 
-      $this->integer($data['data']['totalcount'])->isGreaterThan(1);
+        $this->integer($data['data']['totalcount'])->isGreaterThan(1);
 
-      //negate previous search
-      $search_params['criteria'][1]['link'] = 'AND NOT';
-      $data = $this->doSearch('Ticket', $search_params);
+       //negate previous search
+        $search_params['criteria'][1]['link'] = 'AND NOT';
+        $data = $this->doSearch('Ticket', $search_params);
 
-      $this->integer($data['data']['totalcount'])->isIdenticalTo(0);
-   }
+        $this->integer($data['data']['totalcount'])->isIdenticalTo(0);
+    }
 
    /**
     * Test that searchOptions throws an exception when it finds a duplicate
     *
     * @return void
     */
-   public function testGetSearchOptionsWException() {
-      $error = 'Duplicate key 12 (One search option/Any option) in tests\units\DupSearchOpt searchOptions!';
+    public function testGetSearchOptionsWException()
+    {
+        $error = 'Duplicate key 12 (One search option/Any option) in tests\units\DupSearchOpt searchOptions!';
 
-      $this->when(
-         function () {
-            $item = new DupSearchOpt();
-            $item->searchOptions();
-         }
-      )->error
+        $this->when(
+            function () {
+                $item = new DupSearchOpt();
+                $item->searchOptions();
+            }
+        )->error
          ->withType(E_USER_WARNING)
          ->withMessage($error)
          ->exists();
-   }
+    }
 
-   function testManageParams() {
-      // let's use TU_USER
-      $this->login();
-      $uid =  getItemByTypeName('User', TU_USER, true);
+    public function testManageParams()
+    {
+       // let's use TU_USER
+        $this->login();
+        $uid =  getItemByTypeName('User', TU_USER, true);
 
-      $search = \Search::manageParams('Ticket', ['reset' => 1], false, false);
-      $this->array(
-         $search
-      )->isEqualTo(['reset'        => 1,
+        $search = \Search::manageParams('Ticket', ['reset' => 1], false, false);
+        $this->array(
+            $search
+        )->isEqualTo(['reset'        => 1,
                     'start'        => 0,
                     'order'        => 'DESC',
                     'sort'         => 19,
@@ -795,34 +815,34 @@ class Search extends DbTestCase {
                     'as_map'       => 0
                    ]);
 
-      // now add a bookmark on Ticket view
-      $bk = new \SavedSearch();
-      $this->boolean(
-         (boolean)$bk->add(['name'         => 'All my tickets',
+       // now add a bookmark on Ticket view
+        $bk = new \SavedSearch();
+        $this->boolean(
+            (bool)$bk->add(['name'         => 'All my tickets',
                             'type'         => 1,
                             'itemtype'     => 'Ticket',
                             'users_id'     => $uid,
                             'is_private'   => 1,
                             'entities_id'  => 0,
                             'is_recursive' => 1,
-                            'url'         => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]='.$uid
+                            'url'         => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $uid
                            ])
-      )->isTrue();
+        )->isTrue();
 
-      $bk_id = $bk->fields['id'];
+        $bk_id = $bk->fields['id'];
 
-      $bk_user = new \SavedSearch_User();
-      $this->boolean(
-         (boolean)$bk_user->add(['users_id' => $uid,
+        $bk_user = new \SavedSearch_User();
+        $this->boolean(
+            (bool)$bk_user->add(['users_id' => $uid,
                                  'itemtype' => 'Ticket',
                                  'savedsearches_id' => $bk_id
                                 ])
-      )->isTrue();
+        )->isTrue();
 
-      $search = \Search::manageParams('Ticket', ['reset' => 1], true, false);
-      $this->array(
-         $search
-      )->isEqualTo(['reset'        => 1,
+        $search = \Search::manageParams('Ticket', ['reset' => 1], true, false);
+        $this->array(
+            $search
+        )->isEqualTo(['reset'        => 1,
                     'start'        => 0,
                     'order'        => 'DESC',
                     'sort'         => 2,
@@ -838,11 +858,11 @@ class Search extends DbTestCase {
                     'as_map'           => 0
                    ]);
 
-      // let's test for Computers
-      $search = \Search::manageParams('Computer', ['reset' => 1], false, false);
-      $this->array(
-         $search
-      )->isEqualTo(['reset'        => 1,
+       // let's test for Computers
+        $search = \Search::manageParams('Computer', ['reset' => 1], false, false);
+        $this->array(
+            $search
+        )->isEqualTo(['reset'        => 1,
                     'start'        => 0,
                     'order'        => 'ASC',
                     'sort'         => 1,
@@ -858,10 +878,10 @@ class Search extends DbTestCase {
                     'as_map'       => 0
                    ]);
 
-      // now add a bookmark on Computer view
-      $bk = new \SavedSearch();
-      $this->boolean(
-         (boolean)$bk->add(['name'         => 'Computer test',
+       // now add a bookmark on Computer view
+        $bk = new \SavedSearch();
+        $this->boolean(
+            (bool)$bk->add(['name'         => 'Computer test',
                             'type'         => 1,
                             'itemtype'     => 'Computer',
                             'users_id'     => $uid,
@@ -870,22 +890,22 @@ class Search extends DbTestCase {
                             'is_recursive' => 1,
                             'url'         => 'front/computer.php?itemtype=Computer&sort=31&order=DESC&criteria%5B0%5D%5Bfield%5D=view&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=test'
                            ])
-      )->isTrue();
+        )->isTrue();
 
-      $bk_id = $bk->fields['id'];
+        $bk_id = $bk->fields['id'];
 
-      $bk_user = new \SavedSearch_User();
-      $this->boolean(
-         (boolean)$bk_user->add(['users_id' => $uid,
+        $bk_user = new \SavedSearch_User();
+        $this->boolean(
+            (bool)$bk_user->add(['users_id' => $uid,
                                  'itemtype' => 'Computer',
                                  'savedsearches_id' => $bk_id
                                 ])
-      )->isTrue();
+        )->isTrue();
 
-      $search = \Search::manageParams('Computer', ['reset' => 1], true, false);
-      $this->array(
-         $search
-      )->isEqualTo(['reset'        => 1,
+        $search = \Search::manageParams('Computer', ['reset' => 1], true, false);
+        $this->array(
+            $search
+        )->isEqualTo(['reset'        => 1,
                     'start'        => 0,
                     'order'        => 'DESC',
                     'sort'         => 31,
@@ -900,11 +920,11 @@ class Search extends DbTestCase {
                     'savedsearches_id' => $bk_id,
                     'as_map'           => 0
                    ]);
+    }
 
-   }
-
-   public function addSelectProvider() {
-      return [
+    public function addSelectProvider()
+    {
+        return [
          'special_fk' => [[
             'itemtype'  => 'Computer',
             'ID'        => 24, // users_id_tech
@@ -917,21 +937,23 @@ class Search extends DbTestCase {
             'sql'       => '`glpi_users`.`name` AS `ITEM_Computer_70`, `glpi_users`.`realname` AS `ITEM_Computer_70_realname`,
                            `glpi_users`.`id` AS `ITEM_Computer_70_id`, `glpi_users`.`firstname` AS `ITEM_Computer_70_firstname`,'
          ]],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider addSelectProvider
     */
-   public function testAddSelect($provider) {
-      $sql_select = \Search::addSelect($provider['itemtype'], $provider['ID']);
+    public function testAddSelect($provider)
+    {
+        $sql_select = \Search::addSelect($provider['itemtype'], $provider['ID']);
 
-      $this->string($this->cleanSQL($sql_select))
+        $this->string($this->cleanSQL($sql_select))
          ->isEqualTo($this->cleanSQL($provider['sql']));
-   }
+    }
 
-   public function addLeftJoinProvider() {
-      return [
+    public function addLeftJoinProvider()
+    {
+        return [
          'itemtype_item_revert' => [[
             'itemtype'           => 'Project',
             'table'              => \Contact::getTable(),
@@ -977,33 +999,35 @@ class Search extends DbTestCase {
             'joinparams'         => [],
             'sql' => "LEFT JOIN `glpi_users` ON (`glpi_computers`.`users_id` = `glpi_users`.`id` )"
          ]],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider addLeftJoinProvider
     */
-   public function testAddLeftJoin($lj_provider) {
-      $already_link_tables = [];
+    public function testAddLeftJoin($lj_provider)
+    {
+        $already_link_tables = [];
 
-      $sql_join = \Search::addLeftJoin(
-         $lj_provider['itemtype'],
-         getTableForItemType($lj_provider['itemtype']),
-         $already_link_tables,
-         $lj_provider['table'],
-         $lj_provider['linkfield'],
-         $lj_provider['meta'],
-         $lj_provider['meta_type'],
-         $lj_provider['joinparams'],
-         $lj_provider['field']
-      );
+        $sql_join = \Search::addLeftJoin(
+            $lj_provider['itemtype'],
+            getTableForItemType($lj_provider['itemtype']),
+            $already_link_tables,
+            $lj_provider['table'],
+            $lj_provider['linkfield'],
+            $lj_provider['meta'],
+            $lj_provider['meta_type'],
+            $lj_provider['joinparams'],
+            $lj_provider['field']
+        );
 
-      $this->string($this->cleanSQL($sql_join))
+        $this->string($this->cleanSQL($sql_join))
            ->isEqualTo($this->cleanSQL($lj_provider['sql']));
-   }
+    }
 
-   protected function addOrderByBCProvider(): array {
-      return [
+    protected function addOrderByBCProvider(): array
+    {
+        return [
          // Generic examples
          [
             'Computer', 5, 'ASC',
@@ -1034,11 +1058,12 @@ class Search extends DbTestCase {
             'User', 1, 'DESC',
             ' ORDER BY `glpi_users`.`name` DESC '
          ],
-      ];
-   }
+        ];
+    }
 
-   protected function addOrderByProvider(): array {
-      return [
+    protected function addOrderByProvider(): array
+    {
+        return [
          // Generic examples
          [
             'Computer',
@@ -1139,148 +1164,152 @@ class Search extends DbTestCase {
                ],
             ], ' ORDER BY `ITEM_Computer_5` ASC, `ITEM_Computer_6` DESC '
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider addOrderByBCProvider
     */
-   public function testAddOrderByBC($itemtype, $id, $order, $expected) {
-      $result = null;
-      $this->when(
-         function () use (&$result, $itemtype, $id, $order) {
-            $result = \Search::addOrderBy($itemtype, $id, $order);
-         }
-      )->error()
+    public function testAddOrderByBC($itemtype, $id, $order, $expected)
+    {
+        $result = null;
+        $this->when(
+            function () use (&$result, $itemtype, $id, $order) {
+                $result = \Search::addOrderBy($itemtype, $id, $order);
+            }
+        )->error()
          ->withType(E_USER_DEPRECATED)
          ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
             ->exists();
-      $this->string($result)->isEqualTo($expected);
+        $this->string($result)->isEqualTo($expected);
 
-      // Complex cases
-      $table_addtable = 'glpi_users_af1042e23ce6565cfe58c6db91f84692';
+       // Complex cases
+        $table_addtable = 'glpi_users_af1042e23ce6565cfe58c6db91f84692';
 
-      $_SESSION['glpinames_format'] = \User::FIRSTNAME_BEFORE;
-      $user_order_1 = null;
-      $this->when(
-         function () use (&$user_order_1) {
-            $user_order_1 = \Search::addOrderBy('Ticket', 4, 'ASC');
-         }
-      )->error()
+        $_SESSION['glpinames_format'] = \User::FIRSTNAME_BEFORE;
+        $user_order_1 = null;
+        $this->when(
+            function () use (&$user_order_1) {
+                $user_order_1 = \Search::addOrderBy('Ticket', 4, 'ASC');
+            }
+        )->error()
          ->withType(E_USER_DEPRECATED)
          ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
             ->exists();
-      $this->string($user_order_1)->isEqualTo(" ORDER BY `$table_addtable`.`firstname` ASC,
+        $this->string($user_order_1)->isEqualTo(" ORDER BY `$table_addtable`.`firstname` ASC,
                                  `$table_addtable`.`realname` ASC,
                                  `$table_addtable`.`name` ASC ");
 
-      $user_order_2 = null;
-      $this->when(
-         function () use (&$user_order_2) {
-            $user_order_2 = \Search::addOrderBy('Ticket', 4, 'DESC');
-         }
-      )->error()
+        $user_order_2 = null;
+        $this->when(
+            function () use (&$user_order_2) {
+                $user_order_2 = \Search::addOrderBy('Ticket', 4, 'DESC');
+            }
+        )->error()
          ->withType(E_USER_DEPRECATED)
          ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
             ->exists();
-      $this->string($user_order_2)->isEqualTo(" ORDER BY `$table_addtable`.`firstname` DESC,
+        $this->string($user_order_2)->isEqualTo(" ORDER BY `$table_addtable`.`firstname` DESC,
                                  `$table_addtable`.`realname` DESC,
                                  `$table_addtable`.`name` DESC ");
 
-      $_SESSION['glpinames_format'] = \User::REALNAME_BEFORE;
-      $user_order_3 = null;
-      $this->when(
-         function () use (&$user_order_3) {
-            $user_order_3 = \Search::addOrderBy('Ticket', 4, 'ASC');
-         }
-      )->error()
+        $_SESSION['glpinames_format'] = \User::REALNAME_BEFORE;
+        $user_order_3 = null;
+        $this->when(
+            function () use (&$user_order_3) {
+                $user_order_3 = \Search::addOrderBy('Ticket', 4, 'ASC');
+            }
+        )->error()
          ->withType(E_USER_DEPRECATED)
          ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
             ->exists();
-      $this->string($user_order_3)->isEqualTo(" ORDER BY `$table_addtable`.`realname` ASC,
+        $this->string($user_order_3)->isEqualTo(" ORDER BY `$table_addtable`.`realname` ASC,
                                  `$table_addtable`.`firstname` ASC,
                                  `$table_addtable`.`name` ASC ");
-      $user_order_4 = null;
-      $this->when(
-         function () use (&$user_order_4) {
-            $user_order_4 = \Search::addOrderBy('Ticket', 4, 'DESC');
-         }
-      )->error()
+        $user_order_4 = null;
+        $this->when(
+            function () use (&$user_order_4) {
+                $user_order_4 = \Search::addOrderBy('Ticket', 4, 'DESC');
+            }
+        )->error()
          ->withType(E_USER_DEPRECATED)
          ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
             ->exists();
-      $this->string($user_order_4)->isEqualTo(" ORDER BY `$table_addtable`.`realname` DESC,
+        $this->string($user_order_4)->isEqualTo(" ORDER BY `$table_addtable`.`realname` DESC,
                                  `$table_addtable`.`firstname` DESC,
                                  `$table_addtable`.`name` DESC ");
-   }
+    }
 
    /**
     * @dataProvider addOrderByProvider
     */
-   public function testAddOrderBy($itemtype, $sort_fields, $expected) {
-      $result = \Search::addOrderBy($itemtype, $sort_fields);
-      $this->string($result)->isEqualTo($expected);
+    public function testAddOrderBy($itemtype, $sort_fields, $expected)
+    {
+        $result = \Search::addOrderBy($itemtype, $sort_fields);
+        $this->string($result)->isEqualTo($expected);
 
-      // Complex cases
-      $table_addtable = 'glpi_users_af1042e23ce6565cfe58c6db91f84692';
+       // Complex cases
+        $table_addtable = 'glpi_users_af1042e23ce6565cfe58c6db91f84692';
 
-      $_SESSION['glpinames_format'] = \User::FIRSTNAME_BEFORE;
-      $user_order_1 = \Search::addOrderBy('Ticket', [
+        $_SESSION['glpinames_format'] = \User::FIRSTNAME_BEFORE;
+        $user_order_1 = \Search::addOrderBy('Ticket', [
          [
             'searchopt_id' => 4,
             'order'        => 'ASC'
          ]
-      ]);
-      $this->string($user_order_1)->isEqualTo(" ORDER BY `$table_addtable`.`firstname` ASC,
+        ]);
+        $this->string($user_order_1)->isEqualTo(" ORDER BY `$table_addtable`.`firstname` ASC,
                                  `$table_addtable`.`realname` ASC,
                                  `$table_addtable`.`name` ASC ");
-      $user_order_2 = \Search::addOrderBy('Ticket', [
+        $user_order_2 = \Search::addOrderBy('Ticket', [
          [
             'searchopt_id' => 4,
             'order'        => 'DESC'
          ]
-      ]);
-      $this->string($user_order_2)->isEqualTo(" ORDER BY `$table_addtable`.`firstname` DESC,
+        ]);
+        $this->string($user_order_2)->isEqualTo(" ORDER BY `$table_addtable`.`firstname` DESC,
                                  `$table_addtable`.`realname` DESC,
                                  `$table_addtable`.`name` DESC ");
 
-      $_SESSION['glpinames_format'] = \User::REALNAME_BEFORE;
-      $user_order_3 = \Search::addOrderBy('Ticket', [
+        $_SESSION['glpinames_format'] = \User::REALNAME_BEFORE;
+        $user_order_3 = \Search::addOrderBy('Ticket', [
          [
             'searchopt_id' => 4,
             'order'        => 'ASC'
          ]
-      ]);
-      $this->string($user_order_3)->isEqualTo(" ORDER BY `$table_addtable`.`realname` ASC,
+        ]);
+        $this->string($user_order_3)->isEqualTo(" ORDER BY `$table_addtable`.`realname` ASC,
                                  `$table_addtable`.`firstname` ASC,
                                  `$table_addtable`.`name` ASC ");
-      $user_order_4 = \Search::addOrderBy('Ticket', [
+        $user_order_4 = \Search::addOrderBy('Ticket', [
          [
             'searchopt_id' => 4,
             'order'        => 'DESC'
          ]
-      ]);
-      $this->string($user_order_4)->isEqualTo(" ORDER BY `$table_addtable`.`realname` DESC,
+        ]);
+        $this->string($user_order_4)->isEqualTo(" ORDER BY `$table_addtable`.`realname` DESC,
                                  `$table_addtable`.`firstname` DESC,
                                  `$table_addtable`.`name` DESC ");
-   }
+    }
 
-   private function cleanSQL($sql) {
-      $sql = str_replace("\r\n", ' ', $sql);
-      $sql = str_replace("\n", ' ', $sql);
-      while (strpos($sql, '  ') !== false) {
-         $sql = str_replace('  ', ' ', $sql);
-      }
+    private function cleanSQL($sql)
+    {
+        $sql = str_replace("\r\n", ' ', $sql);
+        $sql = str_replace("\n", ' ', $sql);
+        while (strpos($sql, '  ') !== false) {
+            $sql = str_replace('  ', ' ', $sql);
+        }
 
-      $sql = trim($sql);
+        $sql = trim($sql);
 
-      return $sql;
-   }
+        return $sql;
+    }
 
-   public function testAllAssetsFields() {
-      global $CFG_GLPI, $DB;
+    public function testAllAssetsFields()
+    {
+        global $CFG_GLPI, $DB;
 
-      $needed_fields = [
+        $needed_fields = [
          'id',
          'name',
          'states_id',
@@ -1296,152 +1325,153 @@ class Search extends DbTestCase {
          'manufacturers_id',
          'groups_id_tech',
          'entities_id',
-      ];
+        ];
 
-      foreach ($CFG_GLPI["asset_types"] as $itemtype) {
-         $table = getTableForItemType($itemtype);
+        foreach ($CFG_GLPI["asset_types"] as $itemtype) {
+            $table = getTableForItemType($itemtype);
 
-         foreach ($needed_fields as $field) {
-            $this->boolean($DB->fieldExists($table, $field))
+            foreach ($needed_fields as $field) {
+                $this->boolean($DB->fieldExists($table, $field))
                  ->isTrue("$table.$field is missing");
-         }
-      }
-   }
+            }
+        }
+    }
 
-   public function testProblems() {
-      $tech_users_id = getItemByTypeName('User', "tech", true);
+    public function testProblems()
+    {
+        $tech_users_id = getItemByTypeName('User', "tech", true);
 
-      // reduce the right of tech profile
-      // to have only the right of display their own problems (created, assign)
-      \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
+       // reduce the right of tech profile
+       // to have only the right of display their own problems (created, assign)
+        \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
          'Problem' => (\Problem::READMY + READNOTE + UPDATENOTE)
-      ]);
+        ]);
 
-      // add a group for tech user
-      $group = new \Group;
-      $groups_id = $group->add([
+       // add a group for tech user
+        $group = new \Group();
+        $groups_id = $group->add([
          'name' => "test group for tech user"
-      ]);
-      $this->integer((int)$groups_id)->isGreaterThan(0);
-      $group_user = new \Group_User;
-      $this->integer(
-         (int)$group_user->add([
+        ]);
+        $this->integer((int)$groups_id)->isGreaterThan(0);
+        $group_user = new \Group_User();
+        $this->integer(
+            (int)$group_user->add([
             'groups_id' => $groups_id,
             'users_id'  => $tech_users_id
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      // create a problem and assign group with tech user
-      $problem = new \Problem;
-      $this->integer(
-         (int)$problem->add([
+       // create a problem and assign group with tech user
+        $problem = new \Problem();
+        $this->integer(
+            (int)$problem->add([
             'name'              => "test problem visibility for tech",
             'content'           => "test problem visibility for tech",
             '_groups_id_assign' => $groups_id
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      // let's use tech user
-      $this->login('tech', 'tech');
+       // let's use tech user
+        $this->login('tech', 'tech');
 
-      // do search and check presence of the created problem
-      $data = \Search::prepareDatasForSearch('Problem', ['reset' => 'reset']);
-      \Search::constructSQL($data);
-      \Search::constructData($data);
+       // do search and check presence of the created problem
+        $data = \Search::prepareDatasForSearch('Problem', ['reset' => 'reset']);
+        \Search::constructSQL($data);
+        \Search::constructData($data);
 
-      $this->integer($data['data']['totalcount'])->isEqualTo(1);
-      $this->array($data)
+        $this->integer($data['data']['totalcount'])->isEqualTo(1);
+        $this->array($data)
          ->array['data']
          ->array['rows']
          ->array[0]
          ->array['raw']
          ->string['ITEM_Problem_1']->isEqualTo('test problem visibility for tech');
+    }
 
-   }
+    public function testChanges()
+    {
+        $tech_users_id = getItemByTypeName('User', "tech", true);
 
-   public function testChanges() {
-      $tech_users_id = getItemByTypeName('User', "tech", true);
-
-      // reduce the right of tech profile
-      // to have only the right of display their own changes (created, assign)
-      \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
+       // reduce the right of tech profile
+       // to have only the right of display their own changes (created, assign)
+        \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
          'Change' => (\Change::READMY + READNOTE + UPDATENOTE)
-      ]);
+        ]);
 
-      // add a group for tech user
-      $group = new \Group;
-      $groups_id = $group->add([
+       // add a group for tech user
+        $group = new \Group();
+        $groups_id = $group->add([
          'name' => "test group for tech user"
-      ]);
-      $this->integer((int)$groups_id)->isGreaterThan(0);
+        ]);
+        $this->integer((int)$groups_id)->isGreaterThan(0);
 
-      $group_user = new \Group_User;
-      $this->integer(
-         (int)$group_user->add([
+        $group_user = new \Group_User();
+        $this->integer(
+            (int)$group_user->add([
             'groups_id' => $groups_id,
             'users_id'  => $tech_users_id
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      // create a Change and assign group with tech user
-      $change = new \Change;
-      $this->integer(
-         (int)$change->add([
+       // create a Change and assign group with tech user
+        $change = new \Change();
+        $this->integer(
+            (int)$change->add([
             'name'              => "test Change visibility for tech",
             'content'           => "test Change visibility for tech",
             '_groups_id_assign' => $groups_id
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      // let's use tech user
-      $this->login('tech', 'tech');
+       // let's use tech user
+        $this->login('tech', 'tech');
 
-      // do search and check presence of the created Change
-      $data = \Search::prepareDatasForSearch('Change', ['reset' => 'reset']);
-      \Search::constructSQL($data);
-      \Search::constructData($data);
+       // do search and check presence of the created Change
+        $data = \Search::prepareDatasForSearch('Change', ['reset' => 'reset']);
+        \Search::constructSQL($data);
+        \Search::constructData($data);
 
-      $this->integer($data['data']['totalcount'])->isEqualTo(1);
-      $this->array($data)
+        $this->integer($data['data']['totalcount'])->isEqualTo(1);
+        $this->array($data)
          ->array['data']
          ->array['rows']
          ->array[0]
          ->array['raw']
          ->string['ITEM_Change_1']->isEqualTo('test Change visibility for tech');
+    }
 
-   }
+    public function testSearchDdTranslation()
+    {
+        global $CFG_GLPI;
 
-   public function testSearchDdTranslation() {
-      global $CFG_GLPI;
+        $this->login();
+        $conf = new \Config();
+        $conf->setConfigurationValues('core', ['translate_dropdowns' => 1]);
+        $CFG_GLPI['translate_dropdowns'] = 1;
 
-      $this->login();
-      $conf = new \Config();
-      $conf->setConfigurationValues('core', ['translate_dropdowns' => 1]);
-      $CFG_GLPI['translate_dropdowns'] = 1;
+        $state = new \State();
+        $this->boolean($state->maybeTranslated())->isTrue();
 
-      $state = new \State();
-      $this->boolean($state->maybeTranslated())->isTrue();
-
-      $sid = $state->add([
+        $sid = $state->add([
          'name'         => 'A test state',
          'is_recursive' => 1
-      ]);
-      $this->integer($sid)->isGreaterThan(0);
+        ]);
+        $this->integer($sid)->isGreaterThan(0);
 
-      $ddtrans = new \DropdownTranslation();
-      $this->integer(
-         $ddtrans->add([
+        $ddtrans = new \DropdownTranslation();
+        $this->integer(
+            $ddtrans->add([
             'itemtype'  => $state->getType(),
             'items_id'  => $state->fields['id'],
             'language'  => 'fr_FR',
             'field'     => 'completename',
             'value'     => 'Un status de test'
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      $_SESSION['glpi_dropdowntranslations'] = [$state->getType() => ['completename' => '']];
+        $_SESSION['glpi_dropdowntranslations'] = [$state->getType() => ['completename' => '']];
 
-      $search_params = [
+        $search_params = [
          'is_deleted'   => 0,
          'start'        => 0,
          'criteria'     => [
@@ -1452,19 +1482,20 @@ class Search extends DbTestCase {
             ]
          ],
          'metacriteria' => []
-      ];
+        ];
 
-      $data = $this->doSearch('State', $search_params);
+        $data = $this->doSearch('State', $search_params);
 
-      $this->integer($data['data']['totalcount'])->isIdenticalTo(1);
+        $this->integer($data['data']['totalcount'])->isIdenticalTo(1);
 
-      $conf->setConfigurationValues('core', ['translate_dropdowns' => 0]);
-      $CFG_GLPI['translate_dropdowns'] = 0;
-      unset($_SESSION['glpi_dropdowntranslations']);
-   }
+        $conf->setConfigurationValues('core', ['translate_dropdowns' => 0]);
+        $CFG_GLPI['translate_dropdowns'] = 0;
+        unset($_SESSION['glpi_dropdowntranslations']);
+    }
 
-   public function dataInfocomOptions() {
-      return [
+    public function dataInfocomOptions()
+    {
+        return [
          [1, false],
          [2, false],
          [4, false],
@@ -1495,18 +1526,20 @@ class Search extends DbTestCase {
          [142, true],
          [159, true],
          [173, true],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider dataInfocomOptions
     */
-   public function testIsInfocomOption($index, $expected) {
-      $this->boolean(\Search::isInfocomOption('Computer', $index))->isIdenticalTo($expected);
-   }
+    public function testIsInfocomOption($index, $expected)
+    {
+        $this->boolean(\Search::isInfocomOption('Computer', $index))->isIdenticalTo($expected);
+    }
 
-   protected function makeTextSearchValueProvider() {
-      return [
+    protected function makeTextSearchValueProvider()
+    {
+        return [
          ['NULL', null],
          ['null', null],
          ['', ''],
@@ -1525,18 +1558,20 @@ class Search extends DbTestCase {
          ['rtim this   $', '%rtim this'],
          ['  extra spaces ', '%extra spaces%'],
          ['^ exactval $', 'exactval'],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider makeTextSearchValueProvider
     */
-   public function testMakeTextSearchValue($value, $expected) {
-      $this->variable(\Search::makeTextSearchValue($value))->isIdenticalTo($expected);
-   }
+    public function testMakeTextSearchValue($value, $expected)
+    {
+        $this->variable(\Search::makeTextSearchValue($value))->isIdenticalTo($expected);
+    }
 
-   public function providerAddWhere() {
-      return [
+    public function providerAddWhere()
+    {
+        return [
          [
             'link' => ' ',
             'nott' => 0,
@@ -1557,21 +1592,22 @@ class Search extends DbTestCase {
             'meta' => false,
             'expected' => "  AND  (`glpi_users_users_id_tech`.`id` = '2') ",
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider providerAddWhere
     */
-   public function testAddWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta, $expected) {
-      $output = \Search::addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta);
-      $this->string($output)->isEqualTo($expected);
+    public function testAddWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta, $expected)
+    {
+        $output = \Search::addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta);
+        $this->string($output)->isEqualTo($expected);
 
-      if ($meta) {
-         return; // Do not know how to run search on meta here
-      }
+        if ($meta) {
+            return; // Do not know how to run search on meta here
+        }
 
-      $search_params = [
+        $search_params = [
          'is_deleted'   => 0,
          'start'        => 0,
          'criteria'     => [
@@ -1582,47 +1618,49 @@ class Search extends DbTestCase {
             ]
          ],
          'metacriteria' => []
-      ];
+        ];
 
-      // Run a search to trigger a test failure if anything goes wrong.
-      $this->doSearch($itemtype, $search_params);
-   }
+       // Run a search to trigger a test failure if anything goes wrong.
+        $this->doSearch($itemtype, $search_params);
+    }
 
-   public function testSearchWGroups() {
-      $this->login();
-      $this->setEntity('_test_root_entity', true);
+    public function testSearchWGroups()
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
 
-      $search_params = ['is_deleted'   => 0,
+        $search_params = ['is_deleted'   => 0,
                         'start'        => 0,
                         'search'       => 'Search',
                         'criteria'     => [0 => ['field'      => 'view',
                                                  'searchtype' => 'contains',
                                                  'value'      => 'pc']]];
-      $data = $this->doSearch('Computer', $search_params);
+        $data = $this->doSearch('Computer', $search_params);
 
-      $this->integer($data['data']['totalcount'])->isIdenticalTo(8);
+        $this->integer($data['data']['totalcount'])->isIdenticalTo(8);
 
-      $displaypref = new \DisplayPreference();
-      $input = [
+        $displaypref = new \DisplayPreference();
+        $input = [
             'itemtype'  => 'Computer',
             'users_id'  => \Session::getLoginUserID(),
             'num'       => 49, //Computer groups_id_tech SO
-      ];
-      $this->integer((int)$displaypref->add($input))->isGreaterThan(0);
+        ];
+        $this->integer((int)$displaypref->add($input))->isGreaterThan(0);
 
-      $data = $this->doSearch('Computer', $search_params);
+        $data = $this->doSearch('Computer', $search_params);
 
-      $this->integer($data['data']['totalcount'])->isIdenticalTo(8);
-   }
+        $this->integer($data['data']['totalcount'])->isIdenticalTo(8);
+    }
 
-   public function testSearchWithMultipleFkeysOnSameTable() {
-      $this->login();
-      $this->setEntity('_test_root_entity', true);
+    public function testSearchWithMultipleFkeysOnSameTable()
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
 
-      $user_tech_id   = getItemByTypeName('User', 'tech', true);
-      $user_normal_id = getItemByTypeName('User', 'normal', true);
+        $user_tech_id   = getItemByTypeName('User', 'tech', true);
+        $user_normal_id = getItemByTypeName('User', 'normal', true);
 
-      $search_params = [
+        $search_params = [
          'is_deleted'   => 0,
          'start'        => 0,
          'sort'         => 22,
@@ -1642,10 +1680,10 @@ class Search extends DbTestCase {
                'value'      => $user_normal_id,
             ]
          ]
-      ];
-      $data = $this->doSearch('Ticket', $search_params);
+        ];
+        $data = $this->doSearch('Ticket', $search_params);
 
-      $this->string($data['sql']['search'])
+        $this->string($data['sql']['search'])
          // Check that we have two different joins
          ->contains("LEFT JOIN `glpi_users`  AS `glpi_users_users_id_lastupdater`")
          ->contains("LEFT JOIN `glpi_users`  AS `glpi_users_users_id_recipient`")
@@ -1660,10 +1698,11 @@ class Search extends DbTestCase {
 
          // Check that ORDER applies on corresponding table alias
          ->contains("`glpi_users_users_id_recipient`.`name` ASC");
-   }
+    }
 
-   function testSearchAllAssets() {
-      $data = $this->doSearch('AllAssets', [
+    public function testSearchAllAssets()
+    {
+        $data = $this->doSearch('AllAssets', [
          'reset'      => 'reset',
          'is_deleted' => 0,
          'start'      => 0,
@@ -1676,52 +1715,54 @@ class Search extends DbTestCase {
                'value'      => 'test',
             ],
          ]
-      ]);
+        ]);
 
-      $this->string($data['sql']['search'])
+        $this->string($data['sql']['search'])
          ->matches("/OR\s*\(`glpi_entities`\.`completename`\s*LIKE '%test%'\s*\)/")
          ->matches("/OR\s*\(`glpi_states`\.`completename`\s*LIKE '%test%'\s*\)/");
 
-      $types = [
+        $types = [
          \Computer::getTable(),
          \Monitor::getTable(),
          \NetworkEquipment::getTable(),
          \Peripheral::getTable(),
          \Phone::getTable(),
          \Printer::getTable(),
-      ];
+        ];
 
-      foreach ($types as $type) {
-         $this->string($data['sql']['search'])
+        foreach ($types as $type) {
+            $this->string($data['sql']['search'])
             ->contains("`$type`.`is_deleted` = 0")
             ->contains("AND `$type`.`is_template` = 0")
             ->contains("`$type`.`entities_id` IN ('1', '2', '3')")
-            ->contains("OR (`$type`.`is_recursive`='1'".
+            ->contains("OR (`$type`.`is_recursive`='1'" .
                         " AND `$type`.`entities_id` IN (0))")
-            ->matches("/`$type`\.`name`  LIKE '%test%'/");
-      }
-   }
+             ->matches("/`$type`\.`name`  LIKE '%test%'/");
+        }
+    }
 
-   public function testSearchWithNamespacedItem() {
-      $search_params = [
+    public function testSearchWithNamespacedItem()
+    {
+        $search_params = [
          'is_deleted'   => 0,
          'start'        => 0,
          'search'       => 'Search',
-      ];
-      $this->login();
-      $this->setEntity('_test_root_entity', true);
+        ];
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
 
-      $data = $this->doSearch('SearchTest\\Computer', $search_params);
+        $data = $this->doSearch('SearchTest\\Computer', $search_params);
 
-      $this->string($data['sql']['search'])
+        $this->string($data['sql']['search'])
          ->contains("`glpi_computers`.`name` AS `ITEM_SearchTest\Computer_1`")
          ->contains("`glpi_computers`.`id` AS `ITEM_SearchTest\Computer_1_id`")
          ->contains("ORDER BY `ITEM_SearchTest\Computer_1` ASC");
-   }
+    }
 
-   public function testGroupParamAfterMeta() {
-      // Try to run this query without warnings
-      $this->doSearch('Ticket', [
+    public function testGroupParamAfterMeta()
+    {
+       // Try to run this query without warnings
+        $this->doSearch('Ticket', [
          'reset'      => 'reset',
          'is_deleted' => 0,
          'start'      => 0,
@@ -1753,67 +1794,70 @@ class Search extends DbTestCase {
                ]
             ]
          ]
-      ]);
-   }
+        ]);
+    }
 
    /**
     * Check that search result is valid.
     *
     * @param array $result
     */
-   private function checkSearchResult($result) {
-      $this->array($result)->hasKey('data');
-      $this->array($result['data'])->hasKeys(['count', 'begin', 'end', 'totalcount', 'cols', 'rows', 'items']);
-      $this->integer($result['data']['count']);
-      $this->integer($result['data']['begin']);
-      $this->integer($result['data']['end']);
-      $this->integer($result['data']['totalcount']);
-      $this->array($result['data']['cols']);
-      $this->array($result['data']['rows']);
-      $this->array($result['data']['items']);
+    private function checkSearchResult($result)
+    {
+        $this->array($result)->hasKey('data');
+        $this->array($result['data'])->hasKeys(['count', 'begin', 'end', 'totalcount', 'cols', 'rows', 'items']);
+        $this->integer($result['data']['count']);
+        $this->integer($result['data']['begin']);
+        $this->integer($result['data']['end']);
+        $this->integer($result['data']['totalcount']);
+        $this->array($result['data']['cols']);
+        $this->array($result['data']['rows']);
+        $this->array($result['data']['items']);
 
-      // No errors
-      $this->array($result)->hasKey('last_errors');
-      $this->array($result['last_errors'])->isIdenticalTo([]);
+       // No errors
+        $this->array($result)->hasKey('last_errors');
+        $this->array($result['last_errors'])->isIdenticalTo([]);
 
-      $this->array($result)->hasKey('sql');
-      $this->array($result['sql'])->hasKey('search');
-      $this->string($result['sql']['search']);
-   }
+        $this->array($result)->hasKey('sql');
+        $this->array($result['sql'])->hasKey('search');
+        $this->string($result['sql']['search']);
+    }
 
    /**
     * Returns list of searchable classes.
     *
     * @return array
     */
-   private function getSearchableClasses(): array {
-      $classes = $this->getClasses(
-         'searchOptions',
-         [
+    private function getSearchableClasses(): array
+    {
+        $classes = $this->getClasses(
+            'searchOptions',
+            [
             '/^Common.*/', // Should be abstract
             'NetworkPortInstantiation', // Should be abstract (or have $notable = true)
             'NetworkPortMigration', // Tables only exists in specific cases
             'NotificationSettingConfig', // Stores its data in glpi_configs, does not acts as a CommonDBTM
             'PendingReasonCron'
-         ]
-      );
-      $searchable_classes = [];
-      foreach ($classes as $class) {
-         $item_class = new \ReflectionClass($class);
-         if ($item_class->isAbstract() || $class::getTable() === '' || !is_a($class, CommonDBTM::class, true)) {
-            // abstract class or class with "static protected $notable = true;" (which is a kind of abstract)
-            continue;
-         }
+            ]
+        );
+        $searchable_classes = [];
+        foreach ($classes as $class) {
+            $item_class = new \ReflectionClass($class);
+            if ($item_class->isAbstract() || $class::getTable() === '' || !is_a($class, CommonDBTM::class, true)) {
+                // abstract class or class with "static protected $notable = true;" (which is a kind of abstract)
+                continue;
+            }
 
-         $searchable_classes[] = $class;
-      }
-      sort($searchable_classes);
+            $searchable_classes[] = $class;
+        }
+        sort($searchable_classes);
 
-      return $searchable_classes;
-   }
+        return $searchable_classes;
+    }
 
-   protected function testNamesOutputProvider(): array {
-      return [
+    protected function testNamesOutputProvider(): array
+    {
+        return [
          [
             'params' => [
                'display_type' => \Search::NAMES_OUTPUT,
@@ -1851,36 +1895,38 @@ class Search extends DbTestCase {
                '_test_pc22',
             ]
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider testNamesOutputProvider
     */
-   public function testNamesOutput(array $params, array $expected) {
-      $this->login();
+    public function testNamesOutput(array $params, array $expected)
+    {
+        $this->login();
 
-      // Run search and capture results
-      ob_start();
-      \Search::showList($params['item_type'], $params);
-      $names = ob_get_contents();
-      ob_end_clean();
+       // Run search and capture results
+        ob_start();
+        \Search::showList($params['item_type'], $params);
+        $names = ob_get_contents();
+        ob_end_clean();
 
-      // Convert results to array and remove last row (always empty)
-      $names = explode("\n", $names);
-      array_pop($names);
+       // Convert results to array and remove last row (always empty)
+        $names = explode("\n", $names);
+        array_pop($names);
 
-      // Check results
-      $this->array($names)->isEqualTo($expected);
-   }
+       // Check results
+        $this->array($names)->isEqualTo($expected);
+    }
 
-   protected function testMyselfSearchCriteriaProvider(): array {
-      $TU_USER_users_id = getItemByTypeName('User', TU_USER, true);
-      $tech_users_id = getItemByTypeName('User', 'tech', true);
-      $root_entity = getItemByTypeName('Entity', '_test_root_entity', true);
+    protected function testMyselfSearchCriteriaProvider(): array
+    {
+        $TU_USER_users_id = getItemByTypeName('User', TU_USER, true);
+        $tech_users_id = getItemByTypeName('User', 'tech', true);
+        $root_entity = getItemByTypeName('Entity', '_test_root_entity', true);
 
-      // Create test data
-      $to_create = [
+       // Create test data
+        $to_create = [
          [
             'name' => 'testMyselfSearchCriteriaProvider 1',
             'observer' => $TU_USER_users_id,
@@ -1897,22 +1943,22 @@ class Search extends DbTestCase {
             'name' => 'testMyselfSearchCriteriaProvider 4',
             'observer' => $tech_users_id,
          ],
-      ];
+        ];
 
-      foreach ($to_create as $params) {
-         $ticket = new Ticket();
-         $tickets_id = $ticket->add([
+        foreach ($to_create as $params) {
+            $ticket = new Ticket();
+            $tickets_id = $ticket->add([
             'name'               => $params['name'],
             'content'            => 'testMyselfSearchCriteriaProvider',
             '_users_id_observer' => $params['observer'],
             'entities_id'        => $root_entity,
-         ]);
-         $this->integer($tickets_id)->isGreaterThan(0);
-         $actors = $ticket->getITILActors();
-         $this->integer($actors[$params['observer']][0])->isEqualTo(CommonITILActor::OBSERVER);
-      }
+            ]);
+            $this->integer($tickets_id)->isGreaterThan(0);
+            $actors = $ticket->getITILActors();
+            $this->integer($actors[$params['observer']][0])->isEqualTo(CommonITILActor::OBSERVER);
+        }
 
-      return [
+        return [
          // Case 1: Search for tickets where 'TU_USER' is an observer
          [
             'criteria' => [
@@ -1959,8 +2005,8 @@ class Search extends DbTestCase {
                'testMyselfSearchCriteriaProvider 3',
             ]
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * Functionnal test for the 'myself' search criteria.
@@ -1969,54 +2015,63 @@ class Search extends DbTestCase {
     *
     * @dataProvider testMyselfSearchCriteriaProvider
     */
-   public function testMyselfSearchCriteria(array $criteria, array $expected) {
-      $this->login();
+    public function testMyselfSearchCriteria(array $criteria, array $expected)
+    {
+        $this->login();
 
-      // Run search and capture results
-      ob_start();
-      \Search::showList('Ticket', [
+       // Run search and capture results
+        ob_start();
+        \Search::showList('Ticket', [
          'display_type' => \Search::NAMES_OUTPUT,
          'export_all'   => 1,
          'criteria'     => $criteria,
          'item_type'    => 'Ticket',
          'is_deleted'   => 0,
          'as_map'       => 0,
-      ]);
-      $names = ob_get_contents();
-      ob_end_clean();
+        ]);
+        $names = ob_get_contents();
+        ob_end_clean();
 
-      // Convert results to array and remove last row (always empty for NAMES_OUTPUT)
-      $names = explode("\n", $names);
-      array_pop($names);
+       // Convert results to array and remove last row (always empty for NAMES_OUTPUT)
+        $names = explode("\n", $names);
+        array_pop($names);
 
-      // Check results
-      $this->array($names)->isEqualTo($expected);
-   }
+       // Check results
+        $this->array($names)->isEqualTo($expected);
+    }
 }
 
-class DupSearchOpt extends \CommonDBTM {
-   public function rawSearchOptions() {
-      $tab = [];
+// @codingStandardsIgnoreStart
+class DupSearchOpt extends \CommonDBTM
+{
+    // @codingStandardsIgnoreEnd
+    public function rawSearchOptions()
+    {
+        $tab = [];
 
-      $tab[] = [
+        $tab[] = [
          'id'     => '12',
          'name'   => 'One search option'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'     => '12',
          'name'   => 'Any option'
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 }
 
 // phpcs:ignore SlevomatCodingStandard.Namespaces
 namespace SearchTest;
 
-class Computer extends \Computer {
-   static function getTable($classname = null) {
-      return 'glpi_computers';
-   }
+// @codingStandardsIgnoreStart
+class Computer extends \Computer
+{
+    // @codingStandardsIgnoreEnd
+    public static function getTable($classname = null)
+    {
+        return 'glpi_computers';
+    }
 }

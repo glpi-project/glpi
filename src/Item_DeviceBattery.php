@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,16 +34,18 @@
 /**
  * Relation between item and devices
 **/
-class Item_DeviceBattery extends Item_Devices {
+class Item_DeviceBattery extends Item_Devices
+{
 
-   static public $itemtype_2 = 'DeviceBattery';
-   static public $items_id_2 = 'devicebatteries_id';
+    public static $itemtype_2 = 'DeviceBattery';
+    public static $items_id_2 = 'devicebatteries_id';
 
-   static protected $notable = false;
+    protected static $notable = false;
 
 
-   static function getSpecificities($specif = '') {
-      return [
+    public static function getSpecificities($specif = '')
+    {
+        return [
          'serial'             => parent::getSpecificities('serial'),
          'otherserial'        => parent::getSpecificities('otherserial'),
          'locations_id'       => parent::getSpecificities('locations_id'),
@@ -62,6 +65,6 @@ class Item_DeviceBattery extends Item_Devices {
             'datatype'   => 'progressbar',
             'max'       => 'capacity',    // Field used to represent 100% capacity value
          ]
-      ];
-   }
+        ];
+    }
 }

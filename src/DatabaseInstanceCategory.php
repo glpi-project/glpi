@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,14 +31,16 @@
  * ---------------------------------------------------------------------
  */
 
-class DatabaseInstanceCategory extends CommonDropdown {
+class DatabaseInstanceCategory extends CommonDropdown
+{
 
-   static function getTypeName($nb = 0) {
-      return _n('Database instance category', 'Database instance categories', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Database instance category', 'Database instance categories', $nb);
+    }
 
-   static function getFieldLabel() {
-      return _n('Category', 'Categories', 1);
-   }
-
+    public static function getFieldLabel()
+    {
+        return _n('Category', 'Categories', 1);
+    }
 }

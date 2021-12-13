@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,21 +37,25 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkCentralAccess();
 
 $group_user = new Group_User();
 
 if (isset($_POST["add"])) {
-   $group_user->check(-1, CREATE, $_POST);
-   if ($group_user->add($_POST)) {
-      Event::log($_POST["groups_id"], "groups", 4, "setup",
-                  //TRANS: %s is the user login
-                  sprintf(__('%s adds a user to a group'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
+    $group_user->check(-1, CREATE, $_POST);
+    if ($group_user->add($_POST)) {
+        Event::log(
+            $_POST["groups_id"],
+            "groups",
+            4,
+            "setup",
+            //TRANS: %s is the user login
+            sprintf(__('%s adds a user to a group'), $_SESSION["glpiname"])
+        );
+    }
+    Html::back();
 }
 
 Html::displayErrorAndDie("lost");

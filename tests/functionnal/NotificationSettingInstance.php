@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -38,42 +39,47 @@ require_once __DIR__ . '/../NotificationSettingInstance.php';
 
 /* Test for inc/notificationmailingsetting.class.php */
 
-class NotificationSettingInstance extends DbTestCase {
+class NotificationSettingInstance extends DbTestCase
+{
 
-   public function testGetTable() {
-      $this->string(\NotificationSetting::getTable())->isIdenticalTo('glpi_configs');
-   }
+    public function testGetTable()
+    {
+        $this->string(\NotificationSetting::getTable())->isIdenticalTo('glpi_configs');
+    }
 
-   public function testGetTypeName() {
-      $this->exception(
-         function () {
-            \NotificationSetting::getTypeName();
-         }
-      )
+    public function testGetTypeName()
+    {
+        $this->exception(
+            function () {
+                \NotificationSetting::getTypeName();
+            }
+        )
          ->isInstanceOf('RuntimeException')
          ->hasMessage('getTypeName must be implemented');
-   }
+    }
 
-   public function testDisplayTabContentForItem() {
-      $instance = new \mock\NotificationMailingSetting();
-      $this->boolean(\NotificationSetting::displayTabContentForItem($instance))->isTrue();
-   }
+    public function testDisplayTabContentForItem()
+    {
+        $instance = new \mock\NotificationMailingSetting();
+        $this->boolean(\NotificationSetting::displayTabContentForItem($instance))->isTrue();
+    }
 
-   public function testDisableAll() {
-      global $CFG_GLPI;
+    public function testDisableAll()
+    {
+        global $CFG_GLPI;
 
-      $this->variable($CFG_GLPI['use_notifications'])->isEqualTo(0);
-      $this->variable($CFG_GLPI['notifications_mailing'])->isEqualTo(0);
-      $this->array($CFG_GLPI)->notHasKey('notifications_xyz');
+        $this->variable($CFG_GLPI['use_notifications'])->isEqualTo(0);
+        $this->variable($CFG_GLPI['notifications_mailing'])->isEqualTo(0);
+        $this->array($CFG_GLPI)->notHasKey('notifications_xyz');
 
-      $CFG_GLPI['use_notifications'] = 1;
-      $CFG_GLPI['notifications_mailing'] = 1;
-      $CFG_GLPI['notifications_xyz'] = 1;
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+        $CFG_GLPI['notifications_xyz'] = 1;
 
-      \NotificationSetting::disableAll();
+        \NotificationSetting::disableAll();
 
-      $this->variable($CFG_GLPI['use_notifications'])->isEqualTo(0);
-      $this->variable($CFG_GLPI['notifications_mailing'])->isEqualTo(0);
-      $this->variable($CFG_GLPI['notifications_xyz'])->isEqualTo(0);
-   }
+        $this->variable($CFG_GLPI['use_notifications'])->isEqualTo(0);
+        $this->variable($CFG_GLPI['notifications_mailing'])->isEqualTo(0);
+        $this->variable($CFG_GLPI['notifications_xyz'])->isEqualTo(0);
+    }
 }

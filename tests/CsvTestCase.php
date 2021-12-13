@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,7 +36,8 @@
 use Glpi\Csv\ExportToCsvInterface;
 
 /* Test for inc/log.class.php */
-abstract class CsvTestCase extends DbTestCase {
+abstract class CsvTestCase extends DbTestCase
+{
 
    /**
     * Get data to test.
@@ -56,54 +58,55 @@ abstract class CsvTestCase extends DbTestCase {
     *
     * @return array
     */
-   protected abstract function getTestData(): array;
+    abstract protected function getTestData(): array;
 
-   protected function csvTestProvider(): array {
-       return $this->getTestData();
-   }
-
-   /**
-    * @dataprovider csvTestProvider
-    */
-   public function testGetFileName(
-      ExportToCsvInterface $export,
-      array $expected
-   ): void {
-      $filename = $export->getFileName();
-      $this->string($filename)->isEqualTo($expected['filename']);
-   }
+    protected function csvTestProvider(): array
+    {
+        return $this->getTestData();
+    }
 
    /**
     * @dataprovider csvTestProvider
     */
-   public function testGetFileHeader(
-      ExportToCsvInterface $export,
-      array $expected
-   ): void {
-      $header = $export->getFileHeader();
-      $this->array($header)->hasSize($expected['cols']);
-
-      if (isset($expected['header'])) {
-         $this->array($header)->isEqualTo($expected['header']);
-      }
-   }
+    public function testGetFileName(
+        ExportToCsvInterface $export,
+        array $expected
+    ): void {
+        $filename = $export->getFileName();
+        $this->string($filename)->isEqualTo($expected['filename']);
+    }
 
    /**
     * @dataprovider csvTestProvider
     */
-   public function testGetFileContent(
-      ExportToCsvInterface $export,
-      array $expected
-   ): void {
-      $content = $export->getFileContent();
-      $this->array($content)->hasSize($expected['rows']);
+    public function testGetFileHeader(
+        ExportToCsvInterface $export,
+        array $expected
+    ): void {
+        $header = $export->getFileHeader();
+        $this->array($header)->hasSize($expected['cols']);
 
-      foreach ($content as $content_row) {
-         $this->array($content_row)->hasSize($expected['cols']);
-      }
+        if (isset($expected['header'])) {
+            $this->array($header)->isEqualTo($expected['header']);
+        }
+    }
 
-      if (isset($expected['content'])) {
-         $this->array($content)->isEqualTo($expected['content']);
-      }
-   }
+   /**
+    * @dataprovider csvTestProvider
+    */
+    public function testGetFileContent(
+        ExportToCsvInterface $export,
+        array $expected
+    ): void {
+        $content = $export->getFileContent();
+        $this->array($content)->hasSize($expected['rows']);
+
+        foreach ($content as $content_row) {
+            $this->array($content_row)->hasSize($expected['cols']);
+        }
+
+        if (isset($expected['content'])) {
+            $this->array($content)->isEqualTo($expected['content']);
+        }
+    }
 }

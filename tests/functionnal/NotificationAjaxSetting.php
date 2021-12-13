@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,71 +37,80 @@ use DbTestCase;
 
 /* Test for inc/notificationajaxsetting.class.php .class.php */
 
-class NotificationAjaxSetting extends DbTestCase {
+class NotificationAjaxSetting extends DbTestCase
+{
 
-   public function testGetTable() {
-      $this->string(\NotificationAjaxSetting::getTable())->isIdenticalTo('glpi_configs');
-   }
+    public function testGetTable()
+    {
+        $this->string(\NotificationAjaxSetting::getTable())->isIdenticalTo('glpi_configs');
+    }
 
-   public function testGetTypeName() {
-      $this->string(\NotificationAjaxSetting::getTypeName())->isIdenticalTo('Browser followups configuration');
-      $this->string(\NotificationAjaxSetting::getTypeName(10))->isIdenticalTo('Browser followups configuration');
-   }
+    public function testGetTypeName()
+    {
+        $this->string(\NotificationAjaxSetting::getTypeName())->isIdenticalTo('Browser followups configuration');
+        $this->string(\NotificationAjaxSetting::getTypeName(10))->isIdenticalTo('Browser followups configuration');
+    }
 
-   public function testDefineTabs() {
-      $instance = new \NotificationAjaxSetting();
-      $tabs = $instance->defineTabs();
-      $this->array($tabs)
+    public function testDefineTabs()
+    {
+        $instance = new \NotificationAjaxSetting();
+        $tabs = $instance->defineTabs();
+        $this->array($tabs)
          ->hasSize(1)
          ->isIdenticalTo(['NotificationAjaxSetting$1' => 'Setup']);
-   }
+    }
 
-   public function testGetTabNameForItem() {
-      $instance = new \NotificationAjaxSetting();
-      $this->array($instance->getTabNameForItem($instance))->isIdenticalTo(['1' => 'Setup']);
-   }
+    public function testGetTabNameForItem()
+    {
+        $instance = new \NotificationAjaxSetting();
+        $this->array($instance->getTabNameForItem($instance))->isIdenticalTo(['1' => 'Setup']);
+    }
 
-   public function testDisplayTabContentForItem() {
-      $this->output(
-         function () {
-            $instance = new \NotificationAjaxSetting();
-            $instance->displayTabContentForItem($instance);
-         }
-      )->hasLengthGreaterThan(100);
-   }
+    public function testDisplayTabContentForItem()
+    {
+        $this->output(
+            function () {
+                $instance = new \NotificationAjaxSetting();
+                $instance->displayTabContentForItem($instance);
+            }
+        )->hasLengthGreaterThan(100);
+    }
 
-   public function testGetEnableLabel() {
-      $settings = new \NotificationAjaxSetting();
-      $this->string($settings->getEnableLabel())->isIdenticalTo('Enable followups from browser');
-   }
+    public function testGetEnableLabel()
+    {
+        $settings = new \NotificationAjaxSetting();
+        $this->string($settings->getEnableLabel())->isIdenticalTo('Enable followups from browser');
+    }
 
-   public function testGetMode() {
-      $this->string(\NotificationAjaxSetting::getMode())
+    public function testGetMode()
+    {
+        $this->string(\NotificationAjaxSetting::getMode())
          ->isIdenticalTo(\Notification_NotificationTemplate::MODE_AJAX);
-   }
+    }
 
-   public function testShowFormConfig() {
-      global $CFG_GLPI;
+    public function testShowFormConfig()
+    {
+        global $CFG_GLPI;
 
-      $this->variable($CFG_GLPI['notifications_ajax'])->isEqualTo(0);
+        $this->variable($CFG_GLPI['notifications_ajax'])->isEqualTo(0);
 
-      $this->output(
-         function () {
-            $instance = new \NotificationAjaxSetting();
-            $instance->showFormConfig();
-         }
-      )->contains('Notifications are disabled.');
+        $this->output(
+            function () {
+                $instance = new \NotificationAjaxSetting();
+                $instance->showFormConfig();
+            }
+        )->contains('Notifications are disabled.');
 
-      $CFG_GLPI['notifications_ajax'] = 1;
+        $CFG_GLPI['notifications_ajax'] = 1;
 
-      $this->output(
-         function () {
-            $instance = new \NotificationAjaxSetting();
-            $instance->showFormConfig();
-         }
-      )->notContains('Notifications are disabled.');
+        $this->output(
+            function () {
+                $instance = new \NotificationAjaxSetting();
+                $instance->showFormConfig();
+            }
+        )->notContains('Notifications are disabled.');
 
-      //rest to defaults
-      $CFG_GLPI['notifications_ajax'] = 0;
-   }
+       //rest to defaults
+        $CFG_GLPI['notifications_ajax'] = 0;
+    }
 }

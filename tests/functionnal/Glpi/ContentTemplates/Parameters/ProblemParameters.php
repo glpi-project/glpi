@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,21 +35,22 @@ namespace tests\units\Glpi\ContentTemplates\Parameters;
 
 class ProblemParameters extends AbstractParameters
 {
-   public function testGetValues(): void {
-      $this->login();
-      $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+    public function testGetValues(): void
+    {
+        $this->login();
+        $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
-      $this->createItem('ITILCategory', [
+        $this->createItem('ITILCategory', [
          'name' => 'category_testGetValues'
-      ]);
+        ]);
 
-      $itilcategories_id = getItemByTypeName('ITILCategory', 'category_testGetValues', true);
+        $itilcategories_id = getItemByTypeName('ITILCategory', 'category_testGetValues', true);
 
-      $observer_groups_id1 = getItemByTypeName('Group', '_test_group_1', true);
-      $observer_groups_id2 = getItemByTypeName('Group', '_test_group_2', true);
-      $assigned_users_id   = getItemByTypeName('User', 'tech', true);
+        $observer_groups_id1 = getItemByTypeName('Group', '_test_group_1', true);
+        $observer_groups_id2 = getItemByTypeName('Group', '_test_group_2', true);
+        $assigned_users_id   = getItemByTypeName('User', 'tech', true);
 
-      $this->createItem('Problem', [
+        $this->createItem('Problem', [
          'name'                  => 'problem_testGetValues',
          'content'               => '<p>problem_testGetValues content</p>',
          'entities_id'           => $test_entity_id,
@@ -56,13 +58,13 @@ class ProblemParameters extends AbstractParameters
          'itilcategories_id'     => $itilcategories_id,
          '_groups_id_observer'   => [$observer_groups_id1, $observer_groups_id2],
          '_users_id_assign'      => [$assigned_users_id],
-      ]);
+        ]);
 
-      $problems_id = getItemByTypeName('Problem', 'problem_testGetValues', true);
+        $problems_id = getItemByTypeName('Problem', 'problem_testGetValues', true);
 
-      $parameters = $this->newTestedInstance();
-      $values = $parameters->getValues(getItemByTypeName('Problem', 'problem_testGetValues'));
-      $this->array($values)->isEqualTo([
+        $parameters = $this->newTestedInstance();
+        $values = $parameters->getValues(getItemByTypeName('Problem', 'problem_testGetValues'));
+        $this->array($values)->isEqualTo([
          'id'        => $problems_id,
          'ref'       => "#$problems_id",
          'link'      => "<a  href='/glpi/front/problem.form.php?id=$problems_id'  title=\"problem_testGetValues\">problem_testGetValues</a>",
@@ -135,8 +137,8 @@ class ProblemParameters extends AbstractParameters
             'groups'    => [],
             'suppliers' => [],
          ],
-      ]);
+        ]);
 
-      $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
-   }
+        $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
+    }
 }

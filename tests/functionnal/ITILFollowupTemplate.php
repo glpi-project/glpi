@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -38,6 +39,7 @@ use tests\units\Glpi\AbstractITILChildTemplate;
 
 /* Test for inc/itilfollowuptemplate.class.php */
 
-class ITILFollowupTemplate extends AbstractITILChildTemplate {
+class ITILFollowupTemplate extends AbstractITILChildTemplate
+{
 
 }

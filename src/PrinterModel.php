@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,33 +32,37 @@
  */
 
 /// Class PrinterModel
-class PrinterModel extends CommonDropdown {
+class PrinterModel extends CommonDropdown
+{
 
-   public $additional_fields_for_dictionnary = ['manufacturer'];
-
-
-   static function getTypeName($nb = 0) {
-      return _n('Printer model', 'Printer models', $nb);
-   }
+    public $additional_fields_for_dictionnary = ['manufacturer'];
 
 
-   static function getFieldLabel() {
-      return _n('Model', 'Models', 1);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Printer model', 'Printer models', $nb);
+    }
 
 
-   function cleanDBonPurge() {
+    public static function getFieldLabel()
+    {
+        return _n('Model', 'Models', 1);
+    }
 
-      // Temporary solution to clean wrong updated items
-      $this->deleteChildrenAndRelationsFromDb(
-         [
+
+    public function cleanDBonPurge()
+    {
+
+       // Temporary solution to clean wrong updated items
+        $this->deleteChildrenAndRelationsFromDb(
+            [
             CartridgeItem_PrinterModel::class,
-         ]
-      );
-   }
+            ]
+        );
+    }
 
-   static function getIcon() {
-      return Printer::getIcon();
-   }
-
+    public static function getIcon()
+    {
+        return Printer::getIcon();
+    }
 }

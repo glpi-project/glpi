@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -39,7 +40,8 @@ use Sabre\VObject\Component\VCalendar;
  *
  * @since 9.5.0
  */
-interface CalDAVCompatibleItemInterface {
+interface CalDAVCompatibleItemInterface
+{
 
    /**
     * Get group items as VCalendar documents.
@@ -48,7 +50,7 @@ interface CalDAVCompatibleItemInterface {
     *
     * @return VCalendar[]
     */
-   public static function getGroupItemsAsVCalendars($groups_id);
+    public static function getGroupItemsAsVCalendars($groups_id);
 
    /**
     * Get user items as VCalendar documents.
@@ -57,7 +59,7 @@ interface CalDAVCompatibleItemInterface {
     *
     * @return VCalendar[]
     */
-   public static function getUserItemsAsVCalendars($users_id);
+    public static function getUserItemsAsVCalendars($users_id);
 
    /**
     * Get current item as a VCalendar document.
@@ -66,7 +68,7 @@ interface CalDAVCompatibleItemInterface {
     *
     * @see https://tools.ietf.org/html/rfc2445
     */
-   public function getAsVCalendar();
+    public function getAsVCalendar();
 
    /**
     * Get input array from a VCalendar object.
@@ -77,5 +79,5 @@ interface CalDAVCompatibleItemInterface {
     *
     * @see https://tools.ietf.org/html/rfc2445
     */
-   public function getInputFromVCalendar(VCalendar $vcalendar);
+    public function getInputFromVCalendar(VCalendar $vcalendar);
 }

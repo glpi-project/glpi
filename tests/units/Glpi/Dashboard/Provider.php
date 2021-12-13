@@ -41,272 +41,275 @@ use Ticket;
 
 /* Test for inc/dashboard/widget.class.php */
 
-class Provider extends DbTestCase {
-   public function testNbTicketsByAgreementStatusAndTechnician() {
-      global $DB;
+class Provider extends DbTestCase
+{
+    public function testNbTicketsByAgreementStatusAndTechnician()
+    {
+        global $DB;
 
-      // Prepare context
-      $slm = new Slm();
-      $slm->add([
+       // Prepare context
+        $slm = new Slm();
+        $slm->add([
          'name' => 'SLM',
-      ]);
+        ]);
 
-      $slaTto = new SLA();
-      $slaTto->add([
+        $slaTto = new SLA();
+        $slaTto->add([
          'name' => 'sla tto',
          'type' => '1', // TTO
          'number_time' => 4,
          'definition_time' => 'hour',
          'slms_id' => $slm->getID(),
-      ]);
+        ]);
 
-      $slaTtr = new SLA();
-      $slaTtr->add([
+        $slaTtr = new SLA();
+        $slaTtr->add([
          'name' => 'sla ttr',
          'type' => '0', // TTR
          'number_time' => 4,
          'definition_time' => 'hour',
          'slms_id' => $slm->getID(),
-      ]);
+        ]);
 
-      $ticket = new Ticket();
-      $ticket->add([
+        $ticket = new Ticket();
+        $ticket->add([
          'name' => "test dashboard card SLA / tech",
          'content' => 'foo',
          '_users_id_assign' => 2, // glpi
          'sla_id_tto'       => $slaTto->getID(),
          'sla_id_ttr'       => $slaTtr->getID(),
          'status'           => Ticket::ASSIGNED,
-      ]);
-      $this->boolean($ticket->isNewItem())->isFalse();
+        ]);
+        $this->boolean($ticket->isNewItem())->isFalse();
 
-      $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnician();
-      $this->array($output)
+        $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnician();
+        $this->array($output)
          ->hasKeys([
             'label',
             'data',
             'icon'
          ]);
-      $this->array($output['data'])
+        $this->array($output['data'])
          ->hasKeys([
             'series',
             'labels',
          ]);
 
-      // 1 label: the user glpi
-      $this->integer(count($output['data']['labels']))->isEqualTo(1);
-      $this->string($output['data']['labels'][0])->isEqualTo('glpi');
+       // 1 label: the user glpi
+        $this->integer(count($output['data']['labels']))->isEqualTo(1);
+        $this->string($output['data']['labels'][0])->isEqualTo('glpi');
 
-      $this->array($output['data']['series']);
-      $this->integer(count($output['data']['series']))->isEqualTo(4);
+        $this->array($output['data']['series']);
+        $this->integer(count($output['data']['series']))->isEqualTo(4);
 
-      // labels of series
-      $this->string($output['data']['series'][0]['name'])->isEqualTo('Late own and resolve');
-      $this->string($output['data']['series'][1]['name'])->isEqualTo('Late resolve');
-      $this->string($output['data']['series'][2]['name'])->isEqualTo('Late own');
-      $this->string($output['data']['series'][3]['name'])->isEqualTo('On time');
+       // labels of series
+        $this->string($output['data']['series'][0]['name'])->isEqualTo('Late own and resolve');
+        $this->string($output['data']['series'][1]['name'])->isEqualTo('Late resolve');
+        $this->string($output['data']['series'][2]['name'])->isEqualTo('Late own');
+        $this->string($output['data']['series'][3]['name'])->isEqualTo('On time');
 
-      $this->integer($output['data']['series'][0]['data'][0])->isEqualTo(0);
-      $this->integer($output['data']['series'][1]['data'][0])->isEqualTo(0);
-      $this->integer($output['data']['series'][2]['data'][0])->isEqualTo(0);
-      $this->integer($output['data']['series'][3]['data'][0])->isEqualTo(1);
+        $this->integer($output['data']['series'][0]['data'][0])->isEqualTo(0);
+        $this->integer($output['data']['series'][1]['data'][0])->isEqualTo(0);
+        $this->integer($output['data']['series'][2]['data'][0])->isEqualTo(0);
+        $this->integer($output['data']['series'][3]['data'][0])->isEqualTo(1);
 
-      $DB->update(
-         $ticket::getTable(),
-         [
+        $DB->update(
+            $ticket::getTable(),
+            [
             'date'                       => '2021-01-01 00:00',
             'time_to_own'                => '2021-01-01 01:00',
             'takeintoaccount_delay_stat' => 50000,
-         ],
-         [
+            ],
+            [
             'id' => $ticket->getID()
-         ]
-      );
-      $ticket->getFromDB($ticket->getID());
+            ]
+        );
+        $ticket->getFromDB($ticket->getID());
 
-      $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnician();
-      $this->integer($output['data']['series'][0]['data'][0])->isEqualTo(0);
-      $this->integer($output['data']['series'][1]['data'][0])->isEqualTo(0);
-      $this->integer($output['data']['series'][2]['data'][0])->isEqualTo(1);
-      $this->integer($output['data']['series'][3]['data'][0])->isEqualTo(0);
+        $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnician();
+        $this->integer($output['data']['series'][0]['data'][0])->isEqualTo(0);
+        $this->integer($output['data']['series'][1]['data'][0])->isEqualTo(0);
+        $this->integer($output['data']['series'][2]['data'][0])->isEqualTo(1);
+        $this->integer($output['data']['series'][3]['data'][0])->isEqualTo(0);
 
-      $DB->update(
-         $ticket::getTable(),
-         [
+        $DB->update(
+            $ticket::getTable(),
+            [
             'date'                       => '2021-01-01 00:00',
             'time_to_own'                => '2021-01-01 01:00',
             'takeintoaccount_delay_stat' => 60,
             'solvedate'                  => '2021-02-01 00:00',
             'time_to_resolve'            => '2021-01-02 00:00'
-         ],
-         [
+            ],
+            [
             'id' => $ticket->getID()
-         ]
-      );
-      $ticket->getFromDB($ticket->getID());
-      $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnician();
-      $this->integer($output['data']['series'][0]['data'][0])->isEqualTo(0);
-      $this->integer($output['data']['series'][1]['data'][0])->isEqualTo(1);
-      $this->integer($output['data']['series'][2]['data'][0])->isEqualTo(0);
-      $this->integer($output['data']['series'][3]['data'][0])->isEqualTo(0);
+            ]
+        );
+        $ticket->getFromDB($ticket->getID());
+        $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnician();
+        $this->integer($output['data']['series'][0]['data'][0])->isEqualTo(0);
+        $this->integer($output['data']['series'][1]['data'][0])->isEqualTo(1);
+        $this->integer($output['data']['series'][2]['data'][0])->isEqualTo(0);
+        $this->integer($output['data']['series'][3]['data'][0])->isEqualTo(0);
 
-      $DB->update(
-         $ticket::getTable(),
-         [
+        $DB->update(
+            $ticket::getTable(),
+            [
             'date'                       => '2021-01-01 00:00',
             'time_to_own'                => '2021-01-01 01:00',
             'takeintoaccount_delay_stat' => 50000,
             'solvedate'                  => '2021-02-01 00:00',
             'time_to_resolve'            => '2021-01-02 00:00'
-         ],
-         [
+            ],
+            [
             'id' => $ticket->getID()
-         ]
-      );
-      $ticket->getFromDB($ticket->getID());
-      $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnician();
-      $this->integer($output['data']['series'][0]['data'][0])->isEqualTo(1);
-      $this->integer($output['data']['series'][1]['data'][0])->isEqualTo(0);
-      $this->integer($output['data']['series'][2]['data'][0])->isEqualTo(0);
-      $this->integer($output['data']['series'][3]['data'][0])->isEqualTo(0);
-   }
+            ]
+        );
+        $ticket->getFromDB($ticket->getID());
+        $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnician();
+        $this->integer($output['data']['series'][0]['data'][0])->isEqualTo(1);
+        $this->integer($output['data']['series'][1]['data'][0])->isEqualTo(0);
+        $this->integer($output['data']['series'][2]['data'][0])->isEqualTo(0);
+        $this->integer($output['data']['series'][3]['data'][0])->isEqualTo(0);
+    }
 
 
-   public function testNbTicketsByAgreementStatusAndTechnicianGroup() {
-      global $DB;
+    public function testNbTicketsByAgreementStatusAndTechnicianGroup()
+    {
+        global $DB;
 
-      // Prepare context
-      $slm = new Slm();
-      $slm->add([
+       // Prepare context
+        $slm = new Slm();
+        $slm->add([
          'name' => 'SLM',
-      ]);
+        ]);
 
-      $slaTto = new SLA();
-      $slaTto->add([
+        $slaTto = new SLA();
+        $slaTto->add([
          'name' => 'sla tto',
          'type' => '1', // TTO
          'number_time' => 4,
          'definition_time' => 'hour',
          'slms_id' => $slm->getID(),
-      ]);
+        ]);
 
-      $slaTtr = new SLA();
-      $slaTtr->add([
+        $slaTtr = new SLA();
+        $slaTtr->add([
          'name' => 'sla ttr',
          'type' => '0', // TTR
          'number_time' => 4,
          'definition_time' => 'hour',
          'slms_id' => $slm->getID(),
-      ]);
+        ]);
 
-      $group = new Group();
-      $group->add([
+        $group = new Group();
+        $group->add([
          'entities_id' => 0,
          'name'        => 'group sla test',
          'level'       => 1,
          'groups_id'   => 0,
-      ]);
-      $this->boolean($group->isNewItem())->isFalse();
+        ]);
+        $this->boolean($group->isNewItem())->isFalse();
 
-      $ticket = new Ticket();
-      $ticket->add([
+        $ticket = new Ticket();
+        $ticket->add([
          'name' => "test dashboard card SLA / tech",
          'content' => 'foo',
          '_groups_id_assign' => $group->getID(),
          'sla_id_tto'       => $slaTto->getID(),
          'sla_id_ttr'       => $slaTtr->getID(),
          'status'           => Ticket::ASSIGNED,
-      ]);
-      $this->boolean($ticket->isNewItem())->isFalse();
+        ]);
+        $this->boolean($ticket->isNewItem())->isFalse();
 
-      $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
-      $this->array($output)
+        $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
+        $this->array($output)
          ->hasKeys([
             'label',
             'data',
             'icon'
          ]);
-      $this->array($output['data'])
+        $this->array($output['data'])
          ->hasKeys([
             'series',
             'labels',
          ]);
 
-      // 1 label: the user glpi
-      $this->integer(count($output['data']['labels']))->isEqualTo(1);
-      $this->string($output['data']['labels'][0])->isEqualTo('group sla test');
+       // 1 label: the user glpi
+        $this->integer(count($output['data']['labels']))->isEqualTo(1);
+        $this->string($output['data']['labels'][0])->isEqualTo('group sla test');
 
-      $this->array($output['data']['series']);
-      $this->integer(count($output['data']['series']))->isEqualTo(4);
+        $this->array($output['data']['series']);
+        $this->integer(count($output['data']['series']))->isEqualTo(4);
 
-      // labels of series
-      $this->string($output['data']['series'][0]['name'])->isEqualTo('Late own and resolve');
-      $this->string($output['data']['series'][1]['name'])->isEqualTo('Late resolve');
-      $this->string($output['data']['series'][2]['name'])->isEqualTo('Late own');
-      $this->string($output['data']['series'][3]['name'])->isEqualTo('On time');
+       // labels of series
+        $this->string($output['data']['series'][0]['name'])->isEqualTo('Late own and resolve');
+        $this->string($output['data']['series'][1]['name'])->isEqualTo('Late resolve');
+        $this->string($output['data']['series'][2]['name'])->isEqualTo('Late own');
+        $this->string($output['data']['series'][3]['name'])->isEqualTo('On time');
 
-      $this->integer($output['data']['series'][0]['data'][0])->isEqualTo(0);
-      $this->integer($output['data']['series'][1]['data'][0])->isEqualTo(0);
-      $this->integer($output['data']['series'][2]['data'][0])->isEqualTo(0);
-      $this->integer($output['data']['series'][3]['data'][0])->isEqualTo(1);
+        $this->integer($output['data']['series'][0]['data'][0])->isEqualTo(0);
+        $this->integer($output['data']['series'][1]['data'][0])->isEqualTo(0);
+        $this->integer($output['data']['series'][2]['data'][0])->isEqualTo(0);
+        $this->integer($output['data']['series'][3]['data'][0])->isEqualTo(1);
 
-      $DB->update(
-         $ticket::getTable(),
-         [
+        $DB->update(
+            $ticket::getTable(),
+            [
             'date'                       => '2021-01-01 00:00',
             'time_to_own'                => '2021-01-01 01:00',
             'takeintoaccount_delay_stat' => 50000,
-         ],
-         [
+            ],
+            [
             'id' => $ticket->getID()
-         ]
-      );
-      $ticket->getFromDB($ticket->getID());
+            ]
+        );
+        $ticket->getFromDB($ticket->getID());
 
-      $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
-      $this->integer($output['data']['series'][0]['data'][0])->isEqualTo(0);
-      $this->integer($output['data']['series'][1]['data'][0])->isEqualTo(0);
-      $this->integer($output['data']['series'][2]['data'][0])->isEqualTo(1);
-      $this->integer($output['data']['series'][3]['data'][0])->isEqualTo(0);
+        $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
+        $this->integer($output['data']['series'][0]['data'][0])->isEqualTo(0);
+        $this->integer($output['data']['series'][1]['data'][0])->isEqualTo(0);
+        $this->integer($output['data']['series'][2]['data'][0])->isEqualTo(1);
+        $this->integer($output['data']['series'][3]['data'][0])->isEqualTo(0);
 
-      $DB->update(
-         $ticket::getTable(),
-         [
+        $DB->update(
+            $ticket::getTable(),
+            [
             'date'                       => '2021-01-01 00:00',
             'time_to_own'                => '2021-01-01 01:00',
             'takeintoaccount_delay_stat' => 60,
             'solvedate'                  => '2021-02-01 00:00',
             'time_to_resolve'            => '2021-01-02 00:00'
-         ],
-         [
+            ],
+            [
             'id' => $ticket->getID()
-         ]
-      );
-      $ticket->getFromDB($ticket->getID());
-      $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
-      $this->integer($output['data']['series'][0]['data'][0])->isEqualTo(0);
-      $this->integer($output['data']['series'][1]['data'][0])->isEqualTo(1);
-      $this->integer($output['data']['series'][2]['data'][0])->isEqualTo(0);
-      $this->integer($output['data']['series'][3]['data'][0])->isEqualTo(0);
+            ]
+        );
+        $ticket->getFromDB($ticket->getID());
+        $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
+        $this->integer($output['data']['series'][0]['data'][0])->isEqualTo(0);
+        $this->integer($output['data']['series'][1]['data'][0])->isEqualTo(1);
+        $this->integer($output['data']['series'][2]['data'][0])->isEqualTo(0);
+        $this->integer($output['data']['series'][3]['data'][0])->isEqualTo(0);
 
-      $DB->update(
-         $ticket::getTable(),
-         [
+        $DB->update(
+            $ticket::getTable(),
+            [
             'date'                       => '2021-01-01 00:00',
             'time_to_own'                => '2021-01-01 01:00',
             'takeintoaccount_delay_stat' => 50000,
             'solvedate'                  => '2021-02-01 00:00',
             'time_to_resolve'            => '2021-01-02 00:00'
-         ],
-         [
+            ],
+            [
             'id' => $ticket->getID()
-         ]
-      );
-      $ticket->getFromDB($ticket->getID());
-      $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
-      $this->integer($output['data']['series'][0]['data'][0])->isEqualTo(1);
-      $this->integer($output['data']['series'][1]['data'][0])->isEqualTo(0);
-      $this->integer($output['data']['series'][2]['data'][0])->isEqualTo(0);
-      $this->integer($output['data']['series'][3]['data'][0])->isEqualTo(0);
-   }
+            ]
+        );
+        $ticket->getFromDB($ticket->getID());
+        $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
+        $this->integer($output['data']['series'][0]['data'][0])->isEqualTo(1);
+        $this->integer($output['data']['series'][1]['data'][0])->isEqualTo(0);
+        $this->integer($output['data']['series'][2]['data'][0])->isEqualTo(0);
+        $this->integer($output['data']['series'][3]['data'][0])->isEqualTo(0);
+    }
 }

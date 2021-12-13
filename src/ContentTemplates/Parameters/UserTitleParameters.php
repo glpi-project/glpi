@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -41,15 +42,18 @@ use UserTitle;
  */
 class UserTitleParameters extends DropdownParameters
 {
-   public static function getDefaultNodeName(): string {
-      return 'usertitle';
-   }
+    public static function getDefaultNodeName(): string
+    {
+        return 'usertitle';
+    }
 
-   public static function getObjectLabel(): string {
-      return UserTitle::getTypeName(1);
-   }
+    public static function getObjectLabel(): string
+    {
+        return UserTitle::getTypeName(1);
+    }
 
-   protected function getTargetClasses(): array {
-      return [UserTitle::class];
-   }
+    protected function getTargetClasses(): array
+    {
+        return [UserTitle::class];
+    }
 }

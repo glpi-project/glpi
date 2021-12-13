@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,57 +38,60 @@ use org\bovigo\vfs\vfsStream;
 /**
  * Nota: Complex ACL are not tested.
  */
-class DirectoriesWriteAccess extends \GLPITestCase {
+class DirectoriesWriteAccess extends \GLPITestCase
+{
 
-   public function testCheckOnExistingWritableDirs() {
+    public function testCheckOnExistingWritableDirs()
+    {
 
-      vfsStream::setup(
-         'root',
-         null,
-         [
+        vfsStream::setup(
+            'root',
+            null,
+            [
             'a' => [],
             'b' => [],
-         ]
-      );
-      $path_a = vfsStream::url('root/a');
-      $path_b = vfsStream::url('root/b');
+            ]
+        );
+        $path_a = vfsStream::url('root/a');
+        $path_b = vfsStream::url('root/b');
 
-      $this->newTestedInstance('test', [$path_a, $path_b]);
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-      $this->array($this->testedInstance->getValidationMessages())
+        $this->newTestedInstance('test', [$path_a, $path_b]);
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
+        $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(
-            [
+             [
                'Write access to ' . $path_a . ' has been validated.',
                'Write access to ' . $path_b . ' has been validated.',
-            ]
+             ]
          );
-   }
+    }
 
-   public function testCheckOnFaultyDirs() {
+    public function testCheckOnFaultyDirs()
+    {
 
-      $structure = vfsStream::setup(
-         'root',
-         null,
-         [
+        $structure = vfsStream::setup(
+            'root',
+            null,
+            [
             'writable' => [],
             'not_writable' => [],
-         ]
-      );
-      $structure->getChild('not_writable')->chmod(0444);
+            ]
+        );
+        $structure->getChild('not_writable')->chmod(0444);
 
-      $writable_path = vfsStream::url('root/writable');
-      $not_writable_path = vfsStream::url('root/not_writable');
-      $invalid_path = vfsStream::url('root/invalid');
+        $writable_path = vfsStream::url('root/writable');
+        $not_writable_path = vfsStream::url('root/not_writable');
+        $invalid_path = vfsStream::url('root/invalid');
 
-      $this->newTestedInstance('test', [$writable_path, $not_writable_path, $invalid_path]);
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-      $this->array($this->testedInstance->getValidationMessages())
+        $this->newTestedInstance('test', [$writable_path, $not_writable_path, $invalid_path]);
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
+        $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(
-            [
+             [
                'Write access to ' . $writable_path . ' has been validated.',
                'The directory could not be created in ' . $not_writable_path . '.',
                'The directory could not be created in ' . $invalid_path . '.',
-            ]
+             ]
          );
-   }
+    }
 }

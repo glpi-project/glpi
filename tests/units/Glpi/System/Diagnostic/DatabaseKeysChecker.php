@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,10 +33,12 @@
 
 namespace tests\units\Glpi\System\Diagnostic;
 
-class DatabaseKeysChecker extends \GLPITestCase {
+class DatabaseKeysChecker extends \GLPITestCase
+{
 
-   protected function sqlProvider() {
-      return [
+    protected function sqlProvider()
+    {
+        return [
          [
             // Uncommon is_ flags and dates may have no entry in index
             'create_table_sql'   => <<<SQL
@@ -244,7 +247,8 @@ SQL
             ],
             'expected_misnamed'  => [],
             'expected_useless'   => [],
-            'item_class'         => new class extends \CommonDBTM { },
+            'item_class'         => new class extends \CommonDBTM {
+            },
          ],
          [
             // name field should be indexed (custom name field)
@@ -264,9 +268,10 @@ SQL
             'expected_misnamed'  => [],
             'expected_useless'   => [],
             'item_class'         => new class extends \CommonDBTM {
-               static function getNameField() {
-                  return 'test';
-               }
+                public static function getNameField()
+                {
+                    return 'test';
+                }
             },
          ],
          [
@@ -282,7 +287,8 @@ SQL
             'expected_missing'   => [],
             'expected_misnamed'  => [],
             'expected_useless'   => [],
-            'item_class'         => new class extends \CommonDBTM { },
+            'item_class'         => new class extends \CommonDBTM {
+            },
          ],
          [
             // name field cannot be indexed if it is a text field
@@ -297,41 +303,43 @@ SQL
             'expected_missing'   => [],
             'expected_misnamed'  => [],
             'expected_useless'   => [],
-            'item_class'         => new class extends \CommonDBTM { },
+            'item_class'         => new class extends \CommonDBTM {
+            },
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider sqlProvider
     */
-   public function testMissingMisnamedUseless(
-      string $create_table_sql,
-      array $expected_missing,
-      array $expected_misnamed,
-      array $expected_useless,
-      $item_class = null
-   ) {
+    public function testMissingMisnamedUseless(
+        string $create_table_sql,
+        array $expected_missing,
+        array $expected_misnamed,
+        array $expected_useless,
+        $item_class = null
+    ) {
 
-      global $DB;
+        global $DB;
 
-      $itemtype = sprintf('Test%s', uniqid());
-      $table_name = getTableForItemType($itemtype);
+        $itemtype = sprintf('Test%s', uniqid());
+        $table_name = getTableForItemType($itemtype);
 
-      if ($item_class === null) {
-         $item_class = new class { };
-      }
-      class_alias(get_class($item_class), $itemtype);
+        if ($item_class === null) {
+            $item_class = new class {
+            };
+        }
+        class_alias(get_class($item_class), $itemtype);
 
-      $this->newTestedInstance($DB);
-      $DB->query(sprintf($create_table_sql, $table_name));
-      $missing_keys  = $this->testedInstance->getMissingKeys($table_name);
-      $misnamed_keys = $this->testedInstance->getMisnamedKeys($table_name);
-      $useless_keys = $this->testedInstance->getUselessKeys($table_name);
-      $DB->query(sprintf('DROP TABLE `%s`', $table_name));
+        $this->newTestedInstance($DB);
+        $DB->query(sprintf($create_table_sql, $table_name));
+        $missing_keys  = $this->testedInstance->getMissingKeys($table_name);
+        $misnamed_keys = $this->testedInstance->getMisnamedKeys($table_name);
+        $useless_keys = $this->testedInstance->getUselessKeys($table_name);
+        $DB->query(sprintf('DROP TABLE `%s`', $table_name));
 
-      $this->array($missing_keys)->isEqualTo($expected_missing);
-      $this->array($misnamed_keys)->isEqualTo($expected_misnamed);
-      $this->array($useless_keys)->isEqualTo($expected_useless);
-   }
+        $this->array($missing_keys)->isEqualTo($expected_missing);
+        $this->array($misnamed_keys)->isEqualTo($expected_misnamed);
+        $this->array($useless_keys)->isEqualTo($expected_useless);
+    }
 }

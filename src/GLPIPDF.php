@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,13 +37,14 @@ use Mpdf\Mpdf;
 /**
  * @since 0.85
  */
-class GLPIPDF extends Mpdf {
+class GLPIPDF extends Mpdf
+{
    /**
     * @var int
     */
-   private $total_count;
+    private $total_count;
 
-   private static $default_config = [
+    private static $default_config = [
       'mode'               => 'utf-8',
       'format'             => 'A4',
       'margin_left'        => 10,
@@ -56,63 +58,66 @@ class GLPIPDF extends Mpdf {
       'packTableData'      => true, // Reduce memory usage processing tables
 
       'tempDir'            => GLPI_TMP_DIR,
-   ];
+    ];
 
-   public function __construct(array $config = []) {
-      $config += self::$default_config;
+    public function __construct(array $config = [])
+    {
+        $config += self::$default_config;
 
-      parent::__construct($config);
+        parent::__construct($config);
 
-      $this->SetCreator('GLPI');
-      $this->SetAuthor('GLPI');
-      $this->SetAutoPageBreak(true, 15);
+        $this->SetCreator('GLPI');
+        $this->SetAuthor('GLPI');
+        $this->SetAutoPageBreak(true, 15);
 
-      $this->defineHeaderTemplate();
-      $this->definesFooterTemplate();
-   }
+        $this->defineHeaderTemplate();
+        $this->definesFooterTemplate();
+    }
 
-   public function SetTitle($title) {
-      parent::SetTitle($title);
-      $this->defineHeaderTemplate();
-   }
+    public function SetTitle($title)
+    {
+        parent::SetTitle($title);
+        $this->defineHeaderTemplate();
+    }
 
    /**
     * Get the list of available fonts.
     *
     * @return Array of "font key" => "font name"
    **/
-   public static function getFontList() {
+    public static function getFontList()
+    {
 
-      $list = [];
+        $list = [];
 
-      $mpdf = new Mpdf(self::$default_config);
+        $mpdf = new Mpdf(self::$default_config);
 
-      // Extract PDF core fonts
-      foreach ($mpdf->CoreFonts as $key => $name) {
-         if (preg_match('/(B|I)$/', $key)) {
-            continue; // Ignore Bold / Italic variants
-         }
-         $key = preg_replace('/^c/', '', $key);
-         $list[$key] = $name;
-      }
+       // Extract PDF core fonts
+        foreach ($mpdf->CoreFonts as $key => $name) {
+            if (preg_match('/(B|I)$/', $key)) {
+                continue; // Ignore Bold / Italic variants
+            }
+            $key = preg_replace('/^c/', '', $key);
+            $list[$key] = $name;
+        }
 
-      // Extract embedded fonts
-      $default_font_config = (new FontVariables())->getDefaults();
-      foreach (array_keys($default_font_config['fontdata']) as $font_key) {
-         try {
-            $mpdf->AddFont($font_key);
-         } catch (\Exception $e) {
-            continue; // Ignore fonts that cannot be loaded.
-         }
-      }
-      foreach ($mpdf->fonts as $key => $font) {
-         $list[$key] = $font['name'];
-      }
+       // Extract embedded fonts
+        $default_font_config = (new FontVariables())->getDefaults();
+        foreach (array_keys($default_font_config['fontdata']) as $font_key) {
+            try {
+                $mpdf->AddFont($font_key);
+            } catch (\Exception $e) {
+                continue; // Ignore fonts that cannot be loaded.
+            }
+        }
+        foreach ($mpdf->fonts as $key => $font) {
+            $list[$key] = $font['name'];
+        }
 
-      asort($list);
+        asort($list);
 
-      return $list;
-   }
+        return $list;
+    }
 
    /**
     * Set total results count
@@ -121,20 +126,22 @@ class GLPIPDF extends Mpdf {
     *
     * @return GLPIPDF
     */
-   public function setTotalCount($count) {
-      $this->total_count = $count;
-      $this->definesFooterTemplate();
-      return $this;
-   }
+    public function setTotalCount($count)
+    {
+        $this->total_count = $count;
+        $this->definesFooterTemplate();
+        return $this;
+    }
 
    /**
     * Defines the header template.
     *
     * @return void
     */
-   private function defineHeaderTemplate(): void {
+    private function defineHeaderTemplate(): void
+    {
 
-      $html = <<<HTML
+        $html = <<<HTML
 <table width="100%">
    <tr>
       <td align="center">
@@ -144,22 +151,23 @@ class GLPIPDF extends Mpdf {
 </table>
 HTML;
 
-      $this->SetHTMLHeader($html);
-   }
+        $this->SetHTMLHeader($html);
+    }
 
    /**
     * Defines the footer template.
     *
     * @return void
     */
-   private function definesFooterTemplate(): void {
+    private function definesFooterTemplate(): void
+    {
 
-      $date = Html::convDate(date("Y-m-d"));
-      $count = $this->total_count != null
+        $date = Html::convDate(date("Y-m-d"));
+        $count = $this->total_count != null
          ? ' - ' . sprintf(_n('%s item', '%s items', $this->total_count), $this->total_count)
          : '';
 
-      $html = <<<HTML
+        $html = <<<HTML
 <table width="100%">
    <tr>
       <td align="center">
@@ -169,6 +177,6 @@ HTML;
 </table>
 HTML;
 
-      $this->SetHTMLFooter($html);
-   }
+        $this->SetHTMLFooter($html);
+    }
 }

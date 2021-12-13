@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,133 +36,138 @@ namespace tests\units;
 use DbTestCase;
 
 /* Test for inc/itiltemplate.class.php */
-class ITILTemplate extends DbTestCase {
+class ITILTemplate extends DbTestCase
+{
 
-   protected function itilProvider() {
-      return [
+    protected function itilProvider()
+    {
+        return [
          ['Ticket'],
          ['Change'],
          ['Problem']
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider itilProvider
     */
-   public function testTemplateUsage($itiltype) {
-      $this->login();
+    public function testTemplateUsage($itiltype)
+    {
+        $this->login();
 
-      //create template
-      $tpl_class = '\\' . $itiltype . 'Template';
-      $tpl = new $tpl_class;
-      $tpl_id = (int)$tpl->add([
+       //create template
+        $tpl_class = '\\' . $itiltype . 'Template';
+        $tpl = new $tpl_class();
+        $tpl_id = (int)$tpl->add([
          'name'   => 'Template for ' . $itiltype
-      ]);
-      $this->integer($tpl_id)->isGreaterThan(0);
+        ]);
+        $this->integer($tpl_id)->isGreaterThan(0);
 
-      //add a mandatory field
-      $mandat_class = '\\' . $itiltype . 'TemplateMandatoryField';
-      $mandat = new $mandat_class;
-      $this->integer(
-         (int)$mandat->add([
+       //add a mandatory field
+        $mandat_class = '\\' . $itiltype . 'TemplateMandatoryField';
+        $mandat = new $mandat_class();
+        $this->integer(
+            (int)$mandat->add([
             $mandat::$items_id   => $tpl_id,
             'num'                => $mandat->getFieldNum($tpl, 'Title')
-         ])
-      )->isGreaterThan(0);
-
-      if ($itiltype === \Ticket::getType()) {
-         $this->integer(
-            (int)$mandat->add([
-               $mandat::$items_id   => $tpl_id,
-               'num'                => $mandat->getFieldNum($tpl, 'Location')
             ])
-         )->isGreaterThan(0);
-      }
+        )->isGreaterThan(0);
 
-      $this->integer(
-         (int)$mandat->add([
+        if ($itiltype === \Ticket::getType()) {
+            $this->integer(
+                (int)$mandat->add([
+                $mandat::$items_id   => $tpl_id,
+                'num'                => $mandat->getFieldNum($tpl, 'Location')
+                ])
+            )->isGreaterThan(0);
+        }
+
+        $this->integer(
+            (int)$mandat->add([
             $mandat::$items_id   => $tpl_id,
             'num'                => $mandat->getFieldNum($tpl, 'Description')
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      //add a predefined field
-      $predef_class = '\\' . $itiltype . 'TemplatePredefinedField';
-      $predef = new $predef_class;
-      $this->integer(
-         (int)$predef->add([
+       //add a predefined field
+        $predef_class = '\\' . $itiltype . 'TemplatePredefinedField';
+        $predef = new $predef_class();
+        $this->integer(
+            (int)$predef->add([
             $mandat::$items_id   => $tpl_id,
             'num'                => $predef->getFieldNum($tpl, 'Description'), //Description
             'value'              => 'Description from template'
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      $category = new \ITILCategory();
-      $cat_field = strtolower($itiltype) . 'templates_id';
-      if ($itiltype === \Ticket::getType()) {
-         $cat_field .= '_demand';
-      }
-      $cat_id = (int)$category->add([
+        $category = new \ITILCategory();
+        $cat_field = strtolower($itiltype) . 'templates_id';
+        if ($itiltype === \Ticket::getType()) {
+            $cat_field .= '_demand';
+        }
+        $cat_id = (int)$category->add([
          'name'      => 'Category for a template',
          $cat_field  => $tpl_id
-      ]);
-      $this->integer($cat_id)->isGreaterThan(0);
+        ]);
+        $this->integer($cat_id)->isGreaterThan(0);
 
-      $object = new $itiltype;
-      $tpl_key = $object->getTemplateFormFieldName();
-      $content = [
+        $object = new $itiltype();
+        $tpl_key = $object->getTemplateFormFieldName();
+        $content = [
          'name'                  => '',
          'content'               => '',
          'itilcategories_id'     => $cat_id,
          $tpl_key                => $tpl_id,
          'entities_id'           => 0,
          'locations_id'          => 'NULL'
-      ];
-      if ($itiltype === \Ticket::getType()) {
-         $content['type'] = \Ticket::INCIDENT_TYPE;
-      }
-      $tid = (int)$object->add($content);
-      $this->integer($tid)->isIdenticalTo(0);
+        ];
+        if ($itiltype === \Ticket::getType()) {
+            $content['type'] = \Ticket::INCIDENT_TYPE;
+        }
+        $tid = (int)$object->add($content);
+        $this->integer($tid)->isIdenticalTo(0);
 
-      $err_msg = 'Mandatory fields are not filled. Please correct: Title' .
+        $err_msg = 'Mandatory fields are not filled. Please correct: Title' .
          ($itiltype === \Ticket::getType() ? ', Location' : '') . ', Description';
-      $this->hasSessionMessages(ERROR, [$err_msg]);
+        $this->hasSessionMessages(ERROR, [$err_msg]);
 
-      $content['name']           = 'Title is required';
-      $content['content']        = 'Description from template';
-      $content['locations_id']   = getItemByTypeName('Location', '_location01', true);
+        $content['name']           = 'Title is required';
+        $content['content']        = 'Description from template';
+        $content['locations_id']   = getItemByTypeName('Location', '_location01', true);
 
-      $tid = (int)$object->add($content);
-      $this->integer($tid)->isIdenticalTo(0);
+        $tid = (int)$object->add($content);
+        $this->integer($tid)->isIdenticalTo(0);
 
-      $this->hasSessionMessages(
-         ERROR, [
+        $this->hasSessionMessages(
+            ERROR,
+            [
             'You cannot use predefined description verbatim',
             'Mandatory fields are not filled. Please correct: Description'
-         ]
-      );
+            ]
+        );
 
-      $content['content'] = 'A content for our ' . $itiltype;
-      $tid = (int)$object->add($content);
-      $this->integer($tid)->isGreaterThan(0);
-   }
+        $content['content'] = 'A content for our ' . $itiltype;
+        $tid = (int)$object->add($content);
+        $this->integer($tid)->isGreaterThan(0);
+    }
 
    /**
     * @dataProvider itilProvider
     */
-   public function testGetAllowedFields($itiltype) {
-      $class = $itiltype.'Template';
-      $fields = $class::getAllowedFields();
-      foreach ($fields as $field) {
-         if (is_array($field)) {
-            foreach ($field as $sfield) {
-               $this->checkField($itiltype, $sfield);
+    public function testGetAllowedFields($itiltype)
+    {
+        $class = $itiltype . 'Template';
+        $fields = $class::getAllowedFields();
+        foreach ($fields as $field) {
+            if (is_array($field)) {
+                foreach ($field as $sfield) {
+                    $this->checkField($itiltype, $sfield);
+                }
+            } else {
+                $this->checkField($itiltype, $field);
             }
-         } else {
-            $this->checkField($itiltype, $field);
-         }
-      }
-   }
+        }
+    }
 
    /**
     * Check one field
@@ -171,22 +177,24 @@ class ITILTemplate extends DbTestCase {
     *
     * @return void
     */
-   private function checkField($itiltype, $field) {
-      global $DB;
+    private function checkField($itiltype, $field)
+    {
+        global $DB;
 
-      if (!str_starts_with($field, '_') && 'items_id' != $field) {
-         $this->boolean(
-            $DB->fieldExists($itiltype::getTable(), $field)
-         )->isTrue("$field in $itiltype");
-      } else {
-         //howto test dynamic fields (those wich names begin with a "_")?
-         //howto test items_id (from Ticket at least)?
-         $empty = true;
-      }
-   }
+        if (!str_starts_with($field, '_') && 'items_id' != $field) {
+            $this->boolean(
+                $DB->fieldExists($itiltype::getTable(), $field)
+            )->isTrue("$field in $itiltype");
+        } else {
+           //howto test dynamic fields (those wich names begin with a "_")?
+           //howto test items_id (from Ticket at least)?
+            $empty = true;
+        }
+    }
 
-   protected function fieldsProvider() {
-      return [
+    protected function fieldsProvider()
+    {
+        return [
          [
             'Ticket',
             [
@@ -273,115 +281,118 @@ class ITILTemplate extends DbTestCase {
                142 => 'Documents',
             ]
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider fieldsProvider
     * */
-   public function testGetFields($itemtype, $fields) {
-      $tpl_class = '\\' . $itemtype . 'Template';
-      $tpl = new $tpl_class;
-      $class = $tpl_class . 'MandatoryField';
-      $tpl_field = new $class();
-      $result = $tpl_field->getAllFields($tpl);
-      $this->array($result)->isIdenticalTo($fields);
-   }
+    public function testGetFields($itemtype, $fields)
+    {
+        $tpl_class = '\\' . $itemtype . 'Template';
+        $tpl = new $tpl_class();
+        $class = $tpl_class . 'MandatoryField';
+        $tpl_field = new $class();
+        $result = $tpl_field->getAllFields($tpl);
+        $this->array($result)->isIdenticalTo($fields);
+    }
 
    /**
     * @dataProvider itilProvider
     */
-   public function testGetTabNameForItem($itiltype) {
-      $this->login();
+    public function testGetTabNameForItem($itiltype)
+    {
+        $this->login();
 
-      $tpl_class = '\\' . $itiltype . 'Template';
-      $tpl = new $tpl_class;
+        $tpl_class = '\\' . $itiltype . 'Template';
+        $tpl = new $tpl_class();
 
-      switch ($itiltype) {
-         case 'Ticket':
-            $expected = [
-               1 => 'Standard interface',
-               2 => 'Simplified interface'
-            ];
-            break;
-         default:
-            $expected = [
-               1 => 'Preview'
-            ];
-            break;
-      }
-      $this->array($tpl->getTabNameForItem($tpl))->isIdenticalTo($expected);
-   }
+        switch ($itiltype) {
+            case 'Ticket':
+                $expected = [
+                 1 => 'Standard interface',
+                 2 => 'Simplified interface'
+                ];
+                break;
+            default:
+                $expected = [
+                 1 => 'Preview'
+                ];
+                break;
+        }
+        $this->array($tpl->getTabNameForItem($tpl))->isIdenticalTo($expected);
+    }
 
    /**
     * @dataProvider itilProvider
     */
-   public function testTasks($itiltype) {
-      $this->login();
+    public function testTasks($itiltype)
+    {
+        $this->login();
 
-      //create template
-      $tpl_class = '\\' . $itiltype . 'Template';
-      $tpl = new $tpl_class;
+       //create template
+        $tpl_class = '\\' . $itiltype . 'Template';
+        $tpl = new $tpl_class();
 
-      $mandat_class = '\\' . $itiltype . 'TemplateMandatoryField';
-      $mandat = new $mandat_class;
+        $mandat_class = '\\' . $itiltype . 'TemplateMandatoryField';
+        $mandat = new $mandat_class();
 
-      $tpl_id = (int)$tpl->add([
+        $tpl_id = (int)$tpl->add([
          'name'   => 'Template for ' . $itiltype
-      ]);
-      $this->integer($tpl_id)->isGreaterThan(0);
+        ]);
+        $this->integer($tpl_id)->isGreaterThan(0);
 
-      $task_tpl = new \TaskTemplate();
-      $tid1 = (int)$task_tpl->add([
+        $task_tpl = new \TaskTemplate();
+        $tid1 = (int)$task_tpl->add([
          'name'         => 'First task template',
          'content'      => 'First task content',
          'is_recursive' => 1
-      ]);
-      $this->integer($tid1)->isGreaterThan(0);
-      $this->boolean($task_tpl->getFromDB($tid1))->isTrue();
+        ]);
+        $this->integer($tid1)->isGreaterThan(0);
+        $this->boolean($task_tpl->getFromDB($tid1))->isTrue();
 
-      $tid2 = (int)$task_tpl->add([
+        $tid2 = (int)$task_tpl->add([
          'name'         => 'Second task template',
          'content'      => 'Second task content',
          'is_recursive' => 1
-      ]);
-      $this->integer($tid1)->isGreaterThan(0);
+        ]);
+        $this->integer($tid1)->isGreaterThan(0);
 
-      //add predefined tasks
-      $predef_class = '\\' . $itiltype . 'TemplatePredefinedField';
-      $predef = new $predef_class;
-      $puid = (int)$predef->add([
+       //add predefined tasks
+        $predef_class = '\\' . $itiltype . 'TemplatePredefinedField';
+        $predef = new $predef_class();
+        $puid = (int)$predef->add([
          $mandat::$items_id   => $tpl_id,
          'num'                => $predef->getFieldNum($tpl, 'Tasks'),
          'value'              => $tid1,
          'is_recursive'       => 1
-      ]);
-      $this->integer($puid)->isGreaterThan(0);
-      $this->boolean($predef->getFromDB($puid))->isTrue();
+        ]);
+        $this->integer($puid)->isGreaterThan(0);
+        $this->boolean($predef->getFromDB($puid))->isTrue();
 
-      $puid = (int)$predef->add([
+        $puid = (int)$predef->add([
          $mandat::$items_id   => $tpl_id,
          'num'                => $predef->getFieldNum($tpl, 'Tasks'),
          'value'              => $tid2,
          'is_recursive'       => 1
-      ]);
-      $this->integer($puid)->isGreaterThan(0);
-      $this->boolean($predef->getFromDB($puid))->isTrue();
+        ]);
+        $this->integer($puid)->isGreaterThan(0);
+        $this->boolean($predef->getFromDB($puid))->isTrue();
 
-      $category = new \ITILCategory();
-      $cat_field = strtolower($itiltype) . 'templates_id';
-      if ($itiltype === \Ticket::getType()) {
-         $cat_field .= '_demand';
-      }
-      $cat_id = (int)$category->add([
+        $category = new \ITILCategory();
+        $cat_field = strtolower($itiltype) . 'templates_id';
+        if ($itiltype === \Ticket::getType()) {
+            $cat_field .= '_demand';
+        }
+        $cat_id = (int)$category->add([
          'name'      => 'Category for a template',
          $cat_field  => $tpl_id
-      ]);
-      $this->integer($cat_id)->isGreaterThan(0);
+        ]);
+        $this->integer($cat_id)->isGreaterThan(0);
 
-      $object = new $itiltype;
-      $tpl_key = $object->getTemplateFormFieldName();
-      $content = [
+        $object = new $itiltype();
+        $tpl_key = $object->getTemplateFormFieldName();
+        $content = [
          'name'                  => 'Title is required',
          'content'               => 'A content for our ' . $itiltype,
          'itilcategories_id'     => $cat_id,
@@ -391,120 +402,122 @@ class ITILTemplate extends DbTestCase {
             $tid1,
             $tid2
          ]
-      ];
-      if ($itiltype === \Ticket::getType()) {
-         $content['type'] = \Ticket::INCIDENT_TYPE;
-      }
+        ];
+        if ($itiltype === \Ticket::getType()) {
+            $content['type'] = \Ticket::INCIDENT_TYPE;
+        }
 
-      $tid = (int)$object->add($content);
-      $this->integer($tid)->isGreaterThan(0);
+        $tid = (int)$object->add($content);
+        $this->integer($tid)->isGreaterThan(0);
 
-      global $DB;
-      $task_class = $itiltype . 'Task';
-      $iterator = $DB->request([
+        global $DB;
+        $task_class = $itiltype . 'Task';
+        $iterator = $DB->request([
          'FROM'   => $task_class::getTable(),
          'WHERE'  => [
             $object->getForeignKeyField() => $tid
          ]
-      ]);
-      $this->integer(count($iterator))->isIdenticalTo(2);
-   }
+        ]);
+        $this->integer(count($iterator))->isIdenticalTo(2);
+    }
 
    /**
     * @dataProvider itilProvider
     */
-   public function testGetITILTemplateToUse($itiltype) {
-      $this->login('tech', 'tech');
-      $itilobject = new $itiltype;
+    public function testGetITILTemplateToUse($itiltype)
+    {
+        $this->login('tech', 'tech');
+        $itilobject = new $itiltype();
 
-      //1- per default, no template is assigned
-      $tt = $itilobject->getITILTemplateToUse();
-      $this->boolean($tt->isNewItem())->isTrue('Not an empty template');
+       //1- per default, no template is assigned
+        $tt = $itilobject->getITILTemplateToUse();
+        $this->boolean($tt->isNewItem())->isTrue('Not an empty template');
 
-      //2- create a category with an new template for it,
-      //   and check the correct template is returned
-      $category_tpl_id = $this->createTemplate($itiltype);
-      $category = new \ITILCategory();
+       //2- create a category with an new template for it,
+       //   and check the correct template is returned
+        $category_tpl_id = $this->createTemplate($itiltype);
+        $category = new \ITILCategory();
 
-      $field = strtolower($itiltype) . 'templates_id';
-      $cat_field = $field;
-      if ($itiltype === \Ticket::getType()) {
-         $cat_field .= '_demand';
-      }
-      $cat_id = (int)$category->add([
+        $field = strtolower($itiltype) . 'templates_id';
+        $cat_field = $field;
+        if ($itiltype === \Ticket::getType()) {
+            $cat_field .= '_demand';
+        }
+        $cat_id = (int)$category->add([
          'name'      => 'Category for a ' . $itiltype . ' template',
          $cat_field  => $category_tpl_id
-      ]);
-      $this->integer($cat_id)->isGreaterThan(0);
+        ]);
+        $this->integer($cat_id)->isGreaterThan(0);
 
-      $type = ($itiltype == 'Ticket' ? \Ticket::DEMAND_TYPE : null);
-      $tt = $itilobject->getITILTemplateToUse(0, $type, $cat_id);
-      $this->boolean($tt->isNewItem())
+        $type = ($itiltype == 'Ticket' ? \Ticket::DEMAND_TYPE : null);
+        $tt = $itilobject->getITILTemplateToUse(0, $type, $cat_id);
+        $this->boolean($tt->isNewItem())
            ->isFalse('Not template expected from category assignment');
-      $this->integer((int)$tt->fields['id'])->isIdenticalTo($category_tpl_id);
+        $this->integer((int)$tt->fields['id'])->isIdenticalTo($category_tpl_id);
 
-      //3- edit existing entity with new template as default
-      //   and check the correct template is returned
-      //   check if category has precedence
-      $entity_tpl_id = $this->createTemplate($itiltype);
-      //login as admin to change entity conf
-      $this->login();
-      $entity = getItemByTypeName('Entity', '_test_child_1');
-      $this->boolean($entity->update(['id' => $entity->fields['id'], $field => $entity_tpl_id]))->isTrue();
+       //3- edit existing entity with new template as default
+       //   and check the correct template is returned
+       //   check if category has precedence
+        $entity_tpl_id = $this->createTemplate($itiltype);
+       //login as admin to change entity conf
+        $this->login();
+        $entity = getItemByTypeName('Entity', '_test_child_1');
+        $this->boolean($entity->update(['id' => $entity->fields['id'], $field => $entity_tpl_id]))->isTrue();
 
-      //login back as tech
-      $this->login('tech', 'tech');
+       //login back as tech
+        $this->login('tech', 'tech');
 
-      $tt = $itilobject->getITILTemplateToUse(0, $type, 0, $entity->fields['id']);
-      $this->boolean($tt->isNewItem())
+        $tt = $itilobject->getITILTemplateToUse(0, $type, 0, $entity->fields['id']);
+        $this->boolean($tt->isNewItem())
            ->isFalse('Not template expected from entity assignment');
-      $this->integer((int)$tt->fields['id'])->isIdenticalTo($entity_tpl_id);
+        $this->integer((int)$tt->fields['id'])->isIdenticalTo($entity_tpl_id);
 
-      $tt = $itilobject->getITILTemplateToUse(0, $type, $cat_id, $entity->fields['id']);
-      $this->boolean($tt->isNewItem())
+        $tt = $itilobject->getITILTemplateToUse(0, $type, $cat_id, $entity->fields['id']);
+        $this->boolean($tt->isNewItem())
            ->isFalse('Not template expected from entity assignment overrided with category');
-      $this->integer((int)$tt->fields['id'])->isIdenticalTo($category_tpl_id);
+        $this->integer((int)$tt->fields['id'])->isIdenticalTo($category_tpl_id);
 
-      //4- set default to a new template fo tech profile
-      //   check the correct template is returned
-      //   check if profile has precedence on entity
-      //   check if category has precedence
-      $profile_tpl_id = $this->createTemplate($itiltype);
-      $profile = getItemByTypeName('Profile', 'Technician');
-      $this->boolean($profile->update(['id' => $profile->fields['id'], $field => $profile_tpl_id]))->isTrue();
+       //4- set default to a new template fo tech profile
+       //   check the correct template is returned
+       //   check if profile has precedence on entity
+       //   check if category has precedence
+        $profile_tpl_id = $this->createTemplate($itiltype);
+        $profile = getItemByTypeName('Profile', 'Technician');
+        $this->boolean($profile->update(['id' => $profile->fields['id'], $field => $profile_tpl_id]))->isTrue();
 
-      //login again to refresh profile
-      $this->login('tech', 'tech');
+       //login again to refresh profile
+        $this->login('tech', 'tech');
 
-      $tt = $itilobject->getITILTemplateToUse(0, $type, 0);
-      $this->boolean($tt->isNewItem())
+        $tt = $itilobject->getITILTemplateToUse(0, $type, 0);
+        $this->boolean($tt->isNewItem())
            ->isFalse('Not template expected from profile assignment');
-      $this->integer((int)$tt->fields['id'])->isIdenticalTo($profile_tpl_id);
+        $this->integer((int)$tt->fields['id'])->isIdenticalTo($profile_tpl_id);
 
-      $tt = $itilobject->getITILTemplateToUse(0, $type, 0, $entity->fields['id']);
-      $this->boolean($tt->isNewItem())
+        $tt = $itilobject->getITILTemplateToUse(0, $type, 0, $entity->fields['id']);
+        $this->boolean($tt->isNewItem())
            ->isFalse('Not template expected from entity assignment overrided by profile');
-      $this->integer((int)$tt->fields['id'])->isIdenticalTo($profile_tpl_id);
+        $this->integer((int)$tt->fields['id'])->isIdenticalTo($profile_tpl_id);
 
-      $tt = $itilobject->getITILTemplateToUse(0, $type, $cat_id, $entity->fields['id']);
-      $this->boolean($tt->isNewItem())
+        $tt = $itilobject->getITILTemplateToUse(0, $type, $cat_id, $entity->fields['id']);
+        $this->boolean($tt->isNewItem())
            ->isFalse('Not template expected');
-      $this->integer((int)$tt->fields['id'])->isIdenticalTo($category_tpl_id);
+        $this->integer((int)$tt->fields['id'])->isIdenticalTo($category_tpl_id);
 
-      //reset entities and profiles to default, for next entry in dataProvider
-      $this->login();
-      $this->boolean($entity->update(['id' => $entity->fields['id'], $field => -2]))->isTrue();
-      $this->boolean($profile->update(['id' => $profile->fields['id'], $field => -2]))->isTrue();
-   }
+       //reset entities and profiles to default, for next entry in dataProvider
+        $this->login();
+        $this->boolean($entity->update(['id' => $entity->fields['id'], $field => -2]))->isTrue();
+        $this->boolean($profile->update(['id' => $profile->fields['id'], $field => -2]))->isTrue();
+    }
 
-   private function createTemplate($itiltype) {
-      //create template
-      $tpl_class = '\\' . $itiltype . 'Template';
-      $tpl = new $tpl_class;
-      $tpl_id = (int)$tpl->add([
+    private function createTemplate($itiltype)
+    {
+       //create template
+        $tpl_class = '\\' . $itiltype . 'Template';
+        $tpl = new $tpl_class();
+        $tpl_id = (int)$tpl->add([
          'name'   => 'Template for ' . $itiltype
-      ]);
-      $this->integer($tpl_id)->isGreaterThan(0);
-      return $tpl_id;
-   }
+        ]);
+        $this->integer($tpl_id)->isGreaterThan(0);
+        return $tpl_id;
+    }
 }

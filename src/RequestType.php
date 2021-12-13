@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,17 +32,20 @@
  */
 
 /// Class RequestType
-class RequestType extends CommonDropdown {
+class RequestType extends CommonDropdown
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Request source', 'Request sources', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Request source', 'Request sources', $nb);
+    }
 
 
-   function getAdditionalFields() {
+    public function getAdditionalFields()
+    {
 
-      return [['name'  => 'is_active',
+        return [['name'  => 'is_active',
                          'label' => __('Active'),
                          'type'  => 'bool'],
                    ['name'  => 'is_helpdesk_default',
@@ -63,156 +67,161 @@ class RequestType extends CommonDropdown {
                          'label' => __('Request source visible for followups'),
                          'type'  => 'bool'],
                          ];
-   }
+    }
 
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '14',
          'table'              => $this->getTable(),
          'field'              => 'is_helpdesk_default',
          'name'               => __('Default for tickets'),
          'datatype'           => 'bool',
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '182',
          'table'              => $this->getTable(),
          'field'              => 'is_followup_default',
          'name'               => __('Default for followups'),
          'datatype'           => 'bool',
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '15',
          'table'              => $this->getTable(),
          'field'              => 'is_mail_default',
          'name'               => __('Default for mail recipients'),
          'datatype'           => 'bool',
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '183',
          'table'              => $this->getTable(),
          'field'              => 'is_mailfollowup_default',
          'name'               => __('Default for followup mail recipients'),
          'datatype'           => 'bool',
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '8',
          'table'              => $this->getTable(),
          'field'              => 'is_active',
          'name'               => __('Active'),
          'datatype'           => 'bool'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '180',
          'table'              => $this->getTable(),
          'field'              => 'is_ticketheader',
          'name'               => __('Request source visible for tickets'),
          'datatype'           => 'bool'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '181',
          'table'              => $this->getTable(),
          'field'              => 'is_itilfollowup',
          'name'               => __('Request source visible for followups'),
          'datatype'           => 'bool'
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
 
-   function post_addItem() {
-      global $DB;
+    public function post_addItem()
+    {
+        global $DB;
 
-      $update = [];
+        $update = [];
 
-      if (isset($this->input["is_helpdesk_default"]) && $this->input["is_helpdesk_default"]) {
-         $update['is_helpdesk_default'] = 0;
-      }
+        if (isset($this->input["is_helpdesk_default"]) && $this->input["is_helpdesk_default"]) {
+            $update['is_helpdesk_default'] = 0;
+        }
 
-      if (isset($this->input["is_followup_default"]) && $this->input["is_followup_default"]) {
-         $update['is_followup_default'] = 0;
-      }
+        if (isset($this->input["is_followup_default"]) && $this->input["is_followup_default"]) {
+            $update['is_followup_default'] = 0;
+        }
 
-      if (isset($this->input["is_mail_default"]) && $this->input["is_mail_default"]) {
-         $update['is_mail_default'] = 0;
-      }
+        if (isset($this->input["is_mail_default"]) && $this->input["is_mail_default"]) {
+            $update['is_mail_default'] = 0;
+        }
 
-      if (isset($this->input["is_mailfollowup_default"]) && $this->input["is_mailfollowup_default"]) {
-         $update['is_mailfollowup_default'] = 0;
-      }
+        if (isset($this->input["is_mailfollowup_default"]) && $this->input["is_mailfollowup_default"]) {
+            $update['is_mailfollowup_default'] = 0;
+        }
 
-      if (count($update)) {
-         $DB->update(
-            $this->getTable(),
-            $update, [
-               'id' => ['<>', $this->fields['id']]
-            ]
-         );
-      }
-   }
+        if (count($update)) {
+            $DB->update(
+                $this->getTable(),
+                $update,
+                [
+                'id' => ['<>', $this->fields['id']]
+                ]
+            );
+        }
+    }
 
 
    /**
     * @see CommonDBTM::post_updateItem()
    **/
-   function post_updateItem($history = 1) {
-      global $DB;
-      $update =[];
+    public function post_updateItem($history = 1)
+    {
+        global $DB;
+        $update = [];
 
-      if (in_array('is_helpdesk_default', $this->updates)) {
-         if ($this->input["is_helpdesk_default"]) {
-            $update['is_helpdesk_default'] = 0;
-         } else {
-            Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
-         }
-      }
+        if (in_array('is_helpdesk_default', $this->updates)) {
+            if ($this->input["is_helpdesk_default"]) {
+                $update['is_helpdesk_default'] = 0;
+            } else {
+                Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
+            }
+        }
 
-      if (in_array('is_followup_default', $this->updates)) {
-         if ($this->input["is_followup_default"]) {
-            $update['is_followup_default'] = 0;
-         } else {
-            Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
-         }
-      }
+        if (in_array('is_followup_default', $this->updates)) {
+            if ($this->input["is_followup_default"]) {
+                $update['is_followup_default'] = 0;
+            } else {
+                Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
+            }
+        }
 
-      if (in_array('is_mail_default', $this->updates)) {
-         if ($this->input["is_mail_default"]) {
-            $update['is_mail_default'] = 0;
-         } else {
-            Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
-         }
-      }
+        if (in_array('is_mail_default', $this->updates)) {
+            if ($this->input["is_mail_default"]) {
+                $update['is_mail_default'] = 0;
+            } else {
+                Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
+            }
+        }
 
-      if (in_array('is_mailfollowup_default', $this->updates)) {
-         if ($this->input["is_mailfollowup_default"]) {
-            $update['is_mailfollowup_default'] = 0;
-         } else {
-            Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
-         }
-      }
+        if (in_array('is_mailfollowup_default', $this->updates)) {
+            if ($this->input["is_mailfollowup_default"]) {
+                $update['is_mailfollowup_default'] = 0;
+            } else {
+                Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
+            }
+        }
 
-      if (count($update)) {
-         $DB->update(
-            $this->getTable(),
-            $update, [
-               'id' => ['<>', $this->fields['id']]
-            ]
-         );
-      }
-   }
+        if (count($update)) {
+            $DB->update(
+                $this->getTable(),
+                $update,
+                [
+                'id' => ['<>', $this->fields['id']]
+                ]
+            );
+        }
+    }
 
 
    /**
@@ -222,50 +231,54 @@ class RequestType extends CommonDropdown {
     *
     * @return requesttypes_id
    **/
-   static function getDefault($source) {
-      global $DB;
+    public static function getDefault($source)
+    {
+        global $DB;
 
-      if (!in_array($source, ['mail', 'mailfollowup', 'helpdesk', 'followup'])) {
-         return 0;
-      }
+        if (!in_array($source, ['mail', 'mailfollowup', 'helpdesk', 'followup'])) {
+            return 0;
+        }
 
-      foreach ($DB->request('glpi_requesttypes', ['is_'.$source.'_default' => 1, 'is_active' => 1]) as $data) {
-         return $data['id'];
-      }
-      return 0;
-   }
-
-
-   function cleanDBonPurge() {
-      Rule::cleanForItemCriteria($this);
-   }
+        foreach ($DB->request('glpi_requesttypes', ['is_' . $source . '_default' => 1, 'is_active' => 1]) as $data) {
+            return $data['id'];
+        }
+        return 0;
+    }
 
 
-   function cleanRelationData() {
-
-      parent::cleanRelationData();
-
-      if ($this->isUsedAsDefaultRequestType()) {
-         $newval = (isset($this->input['_replace_by']) ? $this->input['_replace_by'] : 0);
-
-         Config::setConfigurationValues(
-            'core',
-            [
-               'default_requesttypes_id' => $newval,
-            ]
-         );
-      }
-   }
+    public function cleanDBonPurge()
+    {
+        Rule::cleanForItemCriteria($this);
+    }
 
 
-   function isUsed() {
+    public function cleanRelationData()
+    {
 
-      if (parent::isUsed()) {
-         return true;
-      }
+        parent::cleanRelationData();
 
-      return $this->isUsedAsDefaultRequestType();
-   }
+        if ($this->isUsedAsDefaultRequestType()) {
+            $newval = (isset($this->input['_replace_by']) ? $this->input['_replace_by'] : 0);
+
+            Config::setConfigurationValues(
+                'core',
+                [
+                'default_requesttypes_id' => $newval,
+                ]
+            );
+        }
+    }
+
+
+    public function isUsed()
+    {
+
+        if (parent::isUsed()) {
+            return true;
+        }
+
+        return $this->isUsedAsDefaultRequestType();
+    }
 
 
    /**
@@ -273,11 +286,12 @@ class RequestType extends CommonDropdown {
     *
     * @return boolean
     */
-   private function isUsedAsDefaultRequestType() {
+    private function isUsedAsDefaultRequestType()
+    {
 
-      $config_values = Config::getConfigurationValues('core', ['default_requesttypes_id']);
+        $config_values = Config::getConfigurationValues('core', ['default_requesttypes_id']);
 
-      return array_key_exists('default_requesttypes_id', $config_values)
+        return array_key_exists('default_requesttypes_id', $config_values)
          && $config_values['default_requesttypes_id'] == $this->fields['id'];
-   }
+    }
 }

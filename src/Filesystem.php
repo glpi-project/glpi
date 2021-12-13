@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,17 +32,19 @@
  */
 
 /// Class Filesystem
-class Filesystem extends CommonDropdown {
+class Filesystem extends CommonDropdown
+{
 
-   public $can_be_translated = false;
+    public $can_be_translated = false;
 
 
-   static function getTypeName($nb = 0) {
-      return _n('File system', 'File systems', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('File system', 'File systems', $nb);
+    }
 
-   static function getIcon() {
-      return "far fa-folder";
-   }
-
+    public static function getIcon()
+    {
+        return "far fa-folder";
+    }
 }

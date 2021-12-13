@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,12 +35,13 @@
  * Only an HTMLTableMain can create an HTMLTableSuperHeader.
  * @since 0.84
 **/
-class HTMLTableSuperHeader extends HTMLTableHeader {
+class HTMLTableSuperHeader extends HTMLTableHeader
+{
 
    /// The headers of each column
-   private $headerSets = [];
+    private $headerSets = [];
    /// The table that owns the current super header
-   private $table;
+    private $table;
 
 
    /**
@@ -48,11 +50,12 @@ class HTMLTableSuperHeader extends HTMLTableHeader {
     * @param string               $content  see inc/HTMLTableEntity#__construct()
     * @param HTMLTableSuperHeader $father   HTMLTableSuperHeader objet (default NULL)
    **/
-   function __construct(HTMLTableMain $table, $name, $content, HTMLTableSuperHeader $father = null) {
+    public function __construct(HTMLTableMain $table, $name, $content, HTMLTableSuperHeader $father = null)
+    {
 
-      $this->table = $table;
-      parent::__construct($name, $content, $father);
-   }
+        $this->table = $table;
+        parent::__construct($name, $content, $father);
+    }
 
 
    /**
@@ -63,45 +66,50 @@ class HTMLTableSuperHeader extends HTMLTableHeader {
     *
     * @return integer LCM of $first and $second
    **/
-   private static function LCM($first, $second) {
+    private static function LCM($first, $second)
+    {
 
-      $result = $first * $second;
-      while ($first > 1) {
-         $reste = $first % $second;
-         if ($reste == 0) {
-            $result = $result / $second;
-            break;  // leave when LCM is found
-         }
-         $first = $second;
-         $second = $reste;
-      }
-      return $result;
-   }
+        $result = $first * $second;
+        while ($first > 1) {
+            $reste = $first % $second;
+            if ($reste == 0) {
+                $result = $result / $second;
+                break;  // leave when LCM is found
+            }
+            $first = $second;
+            $second = $reste;
+        }
+        return $result;
+    }
 
 
-   function isSuperHeader() {
-      return true;
-   }
+    public function isSuperHeader()
+    {
+        return true;
+    }
 
 
    /**
     * @see HTMLTableHeader::getHeaderAndSubHeaderName()
    **/
-   function getHeaderAndSubHeaderName(&$header_name, &$subheader_name) {
+    public function getHeaderAndSubHeaderName(&$header_name, &$subheader_name)
+    {
 
-      $header_name    = $this->getName();
-      $subheader_name = '';
-   }
-
-
-   function getCompositeName() {
-      return $this->getName().':';
-   }
+        $header_name    = $this->getName();
+        $subheader_name = '';
+    }
 
 
-   protected function getTable() {
-      return $this->table;
-   }
+    public function getCompositeName()
+    {
+        return $this->getName() . ':';
+    }
+
+
+    protected function getTable()
+    {
+        return $this->table;
+    }
 
 
    /**
@@ -110,9 +118,10 @@ class HTMLTableSuperHeader extends HTMLTableHeader {
     *
     * @param integer $number the colspan for this header given by the group
    **/
-   function updateNumberOfSubHeader($number) {
-      $this->setColSpan(self::LCM($number, $this->getColSpan()));
-   }
+    public function updateNumberOfSubHeader($number)
+    {
+        $this->setColSpan(self::LCM($number, $this->getColSpan()));
+    }
 
 
    /**
@@ -120,8 +129,8 @@ class HTMLTableSuperHeader extends HTMLTableHeader {
     *
     * @return true
    **/
-   function hasToDisplay() {
-      return true;
-   }
-
+    public function hasToDisplay()
+    {
+        return true;
+    }
 }

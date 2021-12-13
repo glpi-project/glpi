@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,32 +36,36 @@ use Glpi\Application\View\TemplateRenderer;
 /**
  * Appliances Class
 **/
-class Appliance extends CommonDBTM {
-   use Glpi\Features\Clonable;
+class Appliance extends CommonDBTM
+{
+    use Glpi\Features\Clonable;
 
    // From CommonDBTM
-   public $dohistory                   = true;
-   static $rightname                   = 'appliance';
-   protected $usenotepad               = true;
+    public $dohistory                   = true;
+    public static $rightname                   = 'appliance';
+    protected $usenotepad               = true;
 
-   public function getCloneRelations() :array {
-      return [
+    public function getCloneRelations(): array
+    {
+        return [
          Appliance_Item::class,
          Contract_Item::class,
          Document_Item::class,
          Infocom::class,
          Notepad::class,
          KnowbaseItem_Item::class
-      ];
-   }
+        ];
+    }
 
-   static function getTypeName($nb = 0) {
-      return _n('Appliance', 'Appliances', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Appliance', 'Appliances', $nb);
+    }
 
-   function defineTabs($options = []) {
-      $ong = [];
-      $this->addDefaultFormTab($ong)
+    public function defineTabs($options = [])
+    {
+        $ong = [];
+        $this->addDefaultFormTab($ong)
          ->addImpactTab($ong, $options)
          ->addStandardTab('Appliance_Item', $ong, $options)
          ->addStandardTab('Contract_Item', $ong, $options)
@@ -77,8 +82,8 @@ class Appliance extends CommonDBTM {
          ->addStandardTab('Notepad', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
 
-      return $ong;
-   }
+        return $ong;
+    }
 
 
    /**
@@ -91,29 +96,31 @@ class Appliance extends CommonDBTM {
     *
     * @return boolean item found
     */
-   function showForm($ID, array $options = []) {
-      $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('pages/management/appliance.html.twig', [
+    public function showForm($ID, array $options = [])
+    {
+        $this->initForm($ID, $options);
+        TemplateRenderer::getInstance()->display('pages/management/appliance.html.twig', [
          'item'   => $this,
          'params' => $options,
-      ]);
-      return true;
-   }
+        ]);
+        return true;
+    }
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
+        $tab[] = [
          'id'            => '4',
          'table'         => self::getTable(),
          'field'         =>  'comment',
          'name'          =>  __('Comments'),
          'datatype'      =>  'text'
-      ];
+        ];
 
-      $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
+        $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
-      $tab[] = [
+        $tab[] = [
          'id'            => '5',
          'table'         =>  Appliance_Item::getTable(),
          'field'         => 'items_id',
@@ -123,34 +130,34 @@ class Appliance extends CommonDBTM {
          'forcegroupby'  =>  true,
          'additionalfields'   => ['itemtype'],
          'joinparams'    => ['jointype' => 'child']
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'            => '6',
          'table'         => User::getTable(),
          'field'         => 'name',
          'name'          => User::getTypeName(1),
          'datatype'      => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'            => '8',
          'table'         => Group::getTable(),
          'field'         => 'completename',
          'name'          => Group::getTypeName(1),
          'condition'     => ['is_itemgroup' => 1],
          'datatype'      => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'            => '23',
          'table'         => 'glpi_manufacturers',
          'field'         => 'name',
          'name'          => Manufacturer::getTypeName(1),
          'datatype'      => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'            => '24',
          'table'         => User::getTable(),
          'field'         => 'name',
@@ -158,9 +165,9 @@ class Appliance extends CommonDBTM {
          'name'          => __('Technician in charge'),
          'datatype'      => 'dropdown',
          'right'         => 'own_ticket'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'            => '49',
          'table'         => Group::getTable(),
          'field'         => 'completename',
@@ -168,112 +175,113 @@ class Appliance extends CommonDBTM {
          'name'          => __('Group in charge'),
          'condition'     => ['is_assign' => 1],
          'datatype'      => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'            => '9',
          'table'         => self::getTable(),
          'field'         => 'date_mod',
          'name'          => __('Last update'),
          'massiveaction' => false,
          'datatype'      => 'datetime'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'            => '10',
          'table'         => ApplianceEnvironment::getTable(),
          'field'         => 'name',
          'name'          => __('Environment'),
          'datatype'      => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'            => '11',
          'table'         => ApplianceType::getTable(),
          'field'         => 'name',
          'name'          => _n('Type', 'Types', 1),
          'datatype'      => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'            => '12',
          'table'         => self::getTable(),
          'field'         => 'serial',
          'name'          => __('Serial number'),
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'            => '13',
          'table'         => self::getTable(),
          'field'         => 'otherserial',
          'name'          => __('Inventory number'),
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'            => '31',
          'table'         => self::getTable(),
          'field'         => 'id',
          'name'          => __('ID'),
          'datatype'      => 'number',
          'massiveaction' => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'            => '80',
          'table'         => 'glpi_entities',
          'field'         => 'completename',
          'name'          => Entity::getTypeName(1),
          'datatype'      => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'            => '7',
          'table'         => self::getTable(),
          'field'         => 'is_recursive',
          'name'          => __('Child entities'),
          'massiveaction' => false,
          'datatype'      => 'bool'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'            => '81',
          'table'         => Entity::getTable(),
          'field'         => 'entities_id',
          'name'          => sprintf('%s-%s', Entity::getTypeName(1), __('ID'))
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '61',
          'table'              => $this->getTable(),
          'field'              => 'is_helpdesk_visible',
          'name'               => __('Associable to a ticket'),
          'datatype'           => 'bool'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '32',
          'table'              => 'glpi_states',
          'field'              => 'completename',
          'name'               => __('Status'),
          'datatype'           => 'dropdown',
          'condition'          => ['is_visible_appliance' => 1]
-      ];
+        ];
 
-      $tab = array_merge($tab, Certificate::rawSearchOptionsToAdd());
+        $tab = array_merge($tab, Certificate::rawSearchOptionsToAdd());
 
-      return $tab;
-   }
+        return $tab;
+    }
 
 
-   public static function rawSearchOptionsToAdd(string $itemtype) {
-      $tab = [];
+    public static function rawSearchOptionsToAdd(string $itemtype)
+    {
+        $tab = [];
 
-      $tab[] = [
+        $tab[] = [
          'id' => 'appliance',
          'name' => self::getTypeName(Session::getPluralNumber())
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '1210',
          'table'              => self::getTable(),
          'field'              => 'name',
@@ -288,9 +296,9 @@ class Appliance extends CommonDBTM {
                'joinparams' => ['jointype' => 'itemtype_item']
             ]
          ]
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '1211',
          'table'              => ApplianceType::getTable(),
          'field'              => 'name',
@@ -308,9 +316,9 @@ class Appliance extends CommonDBTM {
                ]
             ]
          ]
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '1212',
          'table'              => User::getTable(),
          'field'              => 'name',
@@ -329,9 +337,9 @@ class Appliance extends CommonDBTM {
                ]
             ]
          ]
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '1213',
          'table'              => Group::getTable(),
          'field'              => 'name',
@@ -350,25 +358,27 @@ class Appliance extends CommonDBTM {
                ]
             ]
          ]
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
 
-   function cleanDBonPurge() {
+    public function cleanDBonPurge()
+    {
 
-      $this->deleteChildrenAndRelationsFromDb(
-         [
+        $this->deleteChildrenAndRelationsFromDb(
+            [
             Appliance_Item::class,
-         ]
-      );
-   }
+            ]
+        );
+    }
 
 
-   static function getIcon() {
-      return "ti ti-versions";
-   }
+    public static function getIcon()
+    {
+        return "ti ti-versions";
+    }
 
    /**
     * Get item types that can be linked to an appliance
@@ -377,98 +387,101 @@ class Appliance extends CommonDBTM {
     *
     * @return array
     */
-   public static function getTypes($all = false): array {
-      global $CFG_GLPI;
+    public static function getTypes($all = false): array
+    {
+        global $CFG_GLPI;
 
-      $types = $CFG_GLPI['appliance_types'];
+        $types = $CFG_GLPI['appliance_types'];
 
-      foreach ($types as $key => $type) {
-         if (!class_exists($type)) {
-            continue;
-         }
-
-         if ($all === false && !$type::canView()) {
-            unset($types[$key]);
-         }
-      }
-      return $types;
-   }
-
-   function getSpecificMassiveActions($checkitem = null) {
-
-      $isadmin = static::canUpdate();
-      $actions = parent::getSpecificMassiveActions($checkitem);
-
-      if ($isadmin) {
-         $prefix                    = 'Appliance_Item'.MassiveAction::CLASS_ACTION_SEPARATOR;
-         $actions[$prefix.'add']    = _x('button', 'Add an item');
-         $actions[$prefix.'remove'] = _x('button', 'Remove an item');
-      }
-
-      KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
-
-      return $actions;
-   }
-
-   static function getMassiveActionsForItemtype(
-      array &$actions,
-      $itemtype,
-      $is_deleted = 0,
-      CommonDBTM $checkitem = null
-   ) {
-      if (in_array($itemtype, self::getTypes())) {
-         if (self::canUpdate()) {
-            $action_prefix                    = 'Appliance_Item'.MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$action_prefix.'add']    = "<i class='fa-fw fas fa-file-contract'></i>".
-                                                _x('button', 'Add to an appliance');
-            $actions[$action_prefix.'remove'] = _x('button', 'Remove from an appliance');
-         }
-      }
-   }
-
-   static function showMassiveActionsSubForm(MassiveAction $ma) {
-
-      switch ($ma->getAction()) {
-         case 'add_item' :
-            Appliance::dropdown([
-               'entity'  => $_POST['entity_restrict'] ?? 0
-            ]);
-            echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
-            return true;
-            break;
-      }
-      return parent::showMassiveActionsSubForm($ma);
-   }
-
-   static function processMassiveActionsForOneItemtype(
-      MassiveAction $ma,
-      CommonDBTM $item,
-      array $ids
-   ) {
-      $appli_item = new Appliance_Item();
-
-      switch ($ma->getAction()) {
-         case 'add_item':
-            $input = $ma->getInput();
-            foreach ($ids as $id) {
-               $input = [
-                  'appliances_id'   => $input['appliances_id'],
-                  'items_id'        => $id,
-                  'itemtype'        => $item->getType()
-               ];
-               if ($appli_item->can(-1, UPDATE, $input)) {
-                  if ($appli_item->add($input)) {
-                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                  } else {
-                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                  }
-               } else {
-                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-               }
+        foreach ($types as $key => $type) {
+            if (!class_exists($type)) {
+                continue;
             }
 
-            return;
-      }
-      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
-   }
+            if ($all === false && !$type::canView()) {
+                unset($types[$key]);
+            }
+        }
+        return $types;
+    }
+
+    public function getSpecificMassiveActions($checkitem = null)
+    {
+
+        $isadmin = static::canUpdate();
+        $actions = parent::getSpecificMassiveActions($checkitem);
+
+        if ($isadmin) {
+            $prefix                    = 'Appliance_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
+            $actions[$prefix . 'add']    = _x('button', 'Add an item');
+            $actions[$prefix . 'remove'] = _x('button', 'Remove an item');
+        }
+
+        KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
+
+        return $actions;
+    }
+
+    public static function getMassiveActionsForItemtype(
+        array &$actions,
+        $itemtype,
+        $is_deleted = 0,
+        CommonDBTM $checkitem = null
+    ) {
+        if (in_array($itemtype, self::getTypes())) {
+            if (self::canUpdate()) {
+                $action_prefix                    = 'Appliance_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
+                $actions[$action_prefix . 'add']    = "<i class='fa-fw fas fa-file-contract'></i>" .
+                                                _x('button', 'Add to an appliance');
+                $actions[$action_prefix . 'remove'] = _x('button', 'Remove from an appliance');
+            }
+        }
+    }
+
+    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    {
+
+        switch ($ma->getAction()) {
+            case 'add_item':
+                Appliance::dropdown([
+                 'entity'  => $_POST['entity_restrict'] ?? 0
+                ]);
+                echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
+                return true;
+            break;
+        }
+        return parent::showMassiveActionsSubForm($ma);
+    }
+
+    public static function processMassiveActionsForOneItemtype(
+        MassiveAction $ma,
+        CommonDBTM $item,
+        array $ids
+    ) {
+        $appli_item = new Appliance_Item();
+
+        switch ($ma->getAction()) {
+            case 'add_item':
+                $input = $ma->getInput();
+                foreach ($ids as $id) {
+                    $input = [
+                    'appliances_id'   => $input['appliances_id'],
+                    'items_id'        => $id,
+                    'itemtype'        => $item->getType()
+                    ];
+                    if ($appli_item->can(-1, UPDATE, $input)) {
+                        if ($appli_item->add($input)) {
+                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        } else {
+                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        }
+                    } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                    }
+                }
+
+                return;
+        }
+        parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+    }
 }

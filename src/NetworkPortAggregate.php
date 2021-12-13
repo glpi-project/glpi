@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,78 +35,94 @@
 /// trunk on switch, specific port under that regroup several ethernet ports to manage Ethernet
 /// Bridging.
 /// @since 0.84
-class NetworkPortAggregate extends NetworkPortInstantiation {
+class NetworkPortAggregate extends NetworkPortInstantiation
+{
 
 
-   static function getTypeName($nb = 0) {
-      return __('Aggregation port');
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return __('Aggregation port');
+    }
 
 
-   function prepareInputForAdd($input) {
+    public function prepareInputForAdd($input)
+    {
 
-      if ((isset($input['networkports_id_list'])) && is_array($input['networkports_id_list'])) {
-         $input['networkports_id_list'] = exportArrayToDB($input['networkports_id_list']);
-      } else {
-         $input['networkports_id_list'] = exportArrayToDB([]);
-      }
-      return parent::prepareInputForAdd($input);
-   }
-
-
-   function prepareInputForUpdate($input) {
-
-      if ((isset($input['networkports_id_list'])) && is_array($input['networkports_id_list'])) {
-         $input['networkports_id_list'] = exportArrayToDB($input['networkports_id_list']);
-      } else {
-         $input['networkports_id_list'] = exportArrayToDB([]);
-      }
-      return parent::prepareInputForAdd($input);
-   }
+        if ((isset($input['networkports_id_list'])) && is_array($input['networkports_id_list'])) {
+            $input['networkports_id_list'] = exportArrayToDB($input['networkports_id_list']);
+        } else {
+            $input['networkports_id_list'] = exportArrayToDB([]);
+        }
+        return parent::prepareInputForAdd($input);
+    }
 
 
-   function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems) {
+    public function prepareInputForUpdate($input)
+    {
 
-      if (isset($this->fields['networkports_id_list'])
-          && is_string($this->fields['networkports_id_list'])) {
-         $this->fields['networkports_id_list']
+        if ((isset($input['networkports_id_list'])) && is_array($input['networkports_id_list'])) {
+            $input['networkports_id_list'] = exportArrayToDB($input['networkports_id_list']);
+        } else {
+            $input['networkports_id_list'] = exportArrayToDB([]);
+        }
+        return parent::prepareInputForAdd($input);
+    }
+
+
+    public function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems)
+    {
+
+        if (
+            isset($this->fields['networkports_id_list'])
+            && is_string($this->fields['networkports_id_list'])
+        ) {
+            $this->fields['networkports_id_list']
                         = importArrayFromDB($this->fields['networkports_id_list']);
-      }
+        }
 
-      echo "<tr class='tab_bg_1'>";
-      $this->showMacField($netport, $options);
-      $this->showNetworkPortSelector($recursiveItems, $this->getType());
-      echo "</tr>";
-   }
-
-
-   function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
-                                             HTMLTableSuperHeader $internet_super = null,
-                                             HTMLTableHeader $father = null,
-                                             array $options = []) {
-
-      $group->addHeader('Origin', __('Origin port'), $super);
-
-      parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $father, $options);
-      return null;
-
-   }
+        echo "<tr class='tab_bg_1'>";
+        $this->showMacField($netport, $options);
+        $this->showNetworkPortSelector($recursiveItems, $this->getType());
+        echo "</tr>";
+    }
 
 
-   function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                      HTMLTableCell $father = null, array $options = []) {
+    public function getInstantiationHTMLTableHeaders(
+        HTMLTableGroup $group,
+        HTMLTableSuperHeader $super,
+        HTMLTableSuperHeader $internet_super = null,
+        HTMLTableHeader $father = null,
+        array $options = []
+    ) {
 
-      if (isset($this->fields['networkports_id_list'])
-          && is_string($this->fields['networkports_id_list'])) {
-         $this->fields['networkports_id_list']
+        $group->addHeader('Origin', __('Origin port'), $super);
+
+        parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $father, $options);
+        return null;
+    }
+
+
+    public function getInstantiationHTMLTable(
+        NetworkPort $netport,
+        HTMLTableRow $row,
+        HTMLTableCell $father = null,
+        array $options = []
+    ) {
+
+        if (
+            isset($this->fields['networkports_id_list'])
+            && is_string($this->fields['networkports_id_list'])
+        ) {
+            $this->fields['networkports_id_list']
                         = importArrayFromDB($this->fields['networkports_id_list']);
-      }
+        }
 
-      $row->addCell($row->getHeaderByName('Instantiation', 'Origin'),
-                    $this->getInstantiationNetworkPortHTMLTable());
+        $row->addCell(
+            $row->getHeaderByName('Instantiation', 'Origin'),
+            $this->getInstantiationNetworkPortHTMLTable()
+        );
 
-      parent::getInstantiationHTMLTable($netport, $row, $father, $options);
-      return null;
-   }
-
+        parent::getInstantiationHTMLTable($netport, $row, $father, $options);
+        return null;
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,11 +32,12 @@
  */
 
 /// Class PrinterType
-class PrinterType extends CommonType {
+class PrinterType extends CommonType
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Printer type', 'Printer types', $nb);
-   }
-
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Printer type', 'Printer types', $nb);
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,12 +35,17 @@
  * @since 9.2
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("slm", READ);
 
-Html::header(OlaLevel::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config",
-             "ola", "olalevel");
+Html::header(
+    OlaLevel::getTypeName(Session::getPluralNumber()),
+    $_SERVER['PHP_SELF'],
+    "config",
+    "ola",
+    "olalevel"
+);
 
 Search::show('OlaLevel');
 

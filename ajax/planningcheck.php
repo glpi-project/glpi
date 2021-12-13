@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,23 +37,25 @@
 
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "planningcheck.php")) {
-   $AJAX_INCLUDE = 1;
-   include ('../inc/includes.php');
-   header("Content-Type: text/html; charset=UTF-8");
-   Html::header_nocache();
+    $AJAX_INCLUDE = 1;
+    include('../inc/includes.php');
+    header("Content-Type: text/html; charset=UTF-8");
+    Html::header_nocache();
 }
 
 Session::checkLoginUser();
 
 if (isset($_POST['users_id']) && ($_POST['users_id'] > 0)) {
       $rand = mt_rand();
-      echo "<a href='#' title=\"".__s('Availability')."\" data-bs-toggle='modal' data-bs-target='#planningcheck$rand'>";
+      echo "<a href='#' title=\"" . __s('Availability') . "\" data-bs-toggle='modal' data-bs-target='#planningcheck$rand'>";
       echo "<i class='far fa-calendar-alt'></i>";
-      echo "<span class='sr-only'>".__('Availability')."</span>";
+      echo "<span class='sr-only'>" . __('Availability') . "</span>";
       echo "</a>";
-      Ajax::createIframeModalWindow('planningcheck'.$rand,
-                                    $CFG_GLPI["root_doc"].
-                                          "/front/planning.php?checkavailability=checkavailability".
-                                          "&itemtype=User&users_id=".$_POST['users_id'],
-                                    ['title'  => __('Availability')]);
+      Ajax::createIframeModalWindow(
+          'planningcheck' . $rand,
+          $CFG_GLPI["root_doc"] .
+                                          "/front/planning.php?checkavailability=checkavailability" .
+                                          "&itemtype=User&users_id=" . $_POST['users_id'],
+          ['title'  => __('Availability')]
+      );
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -39,14 +40,16 @@ use Twig\TwigFilter;
 /**
  * @since 10.0.0
  */
-class DocumentExtension extends AbstractExtension {
+class DocumentExtension extends AbstractExtension
+{
 
-   public function getFilters(): array {
-      return [
+    public function getFilters(): array
+    {
+        return [
          new TwigFilter('document_icon', [$this, 'getDocumentIcon']),
          new TwigFilter('document_size', [$this, 'getDocumentSize']),
-      ];
-   }
+        ];
+    }
 
    /**
     * Returns icon URL for given document filename.
@@ -55,13 +58,14 @@ class DocumentExtension extends AbstractExtension {
     *
     * @return string
     */
-   public function getDocumentIcon(string $filename): string {
-      global $CFG_GLPI;
+    public function getDocumentIcon(string $filename): string
+    {
+        global $CFG_GLPI;
 
-      $icon = sprintf('/pics/icones/%s-dist.png', strtolower(pathinfo($filename, PATHINFO_EXTENSION)));
+        $icon = sprintf('/pics/icones/%s-dist.png', strtolower(pathinfo($filename, PATHINFO_EXTENSION)));
 
-      return $CFG_GLPI['root_doc'] . (file_exists(GLPI_ROOT . $icon) ? $icon : '/pics/timeline/file.png');
-   }
+        return $CFG_GLPI['root_doc'] . (file_exists(GLPI_ROOT . $icon) ? $icon : '/pics/timeline/file.png');
+    }
 
    /**
     * Returns human readable size of file matching given path (relative to GLPI_DOC_DIR).
@@ -70,9 +74,10 @@ class DocumentExtension extends AbstractExtension {
     *
     * @return null|string
     */
-   public function getDocumentSize(string $filepath): ?string {
-      $fullpath = GLPI_DOC_DIR . '/' . $filepath;
+    public function getDocumentSize(string $filepath): ?string
+    {
+        $fullpath = GLPI_DOC_DIR . '/' . $filepath;
 
-      return is_readable($fullpath) ? Toolbox::getSize(filesize($fullpath)) : null;
-   }
+        return is_readable($fullpath) ? Toolbox::getSize(filesize($fullpath)) : null;
+    }
 }

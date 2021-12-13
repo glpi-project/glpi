@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,24 +35,24 @@
  * @since 9.1
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkLoginUser();
 
 if ($_REQUEST["action"] == "send_add_user_form") {
-   Planning::sendAddUserForm($_REQUEST);
+    Planning::sendAddUserForm($_REQUEST);
 }
 
 if ($_REQUEST["action"] == "send_add_group_users_form") {
-   Planning::sendAddGroupUsersForm($_REQUEST);
+    Planning::sendAddGroupUsersForm($_REQUEST);
 }
 
 if ($_REQUEST["action"] == "send_add_group_form") {
-   Planning::sendAddGroupForm($_REQUEST);
+    Planning::sendAddGroupForm($_REQUEST);
 }
 
 if ($_REQUEST["action"] == "send_add_external_form") {
-   Planning::sendAddExternalForm($_REQUEST);
+    Planning::sendAddExternalForm($_REQUEST);
 }
 
 Html::back();

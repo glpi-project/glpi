@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,11 +31,13 @@
  * ---------------------------------------------------------------------
  */
 
-class OperatingSystemKernel extends CommonDropdown {
+class OperatingSystemKernel extends CommonDropdown
+{
 
-   public $can_be_translated = false;
+    public $can_be_translated = false;
 
-   static function getTypeName($nb = 0) {
-      return _n('Kernel', 'Kernels', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Kernel', 'Kernels', $nb);
+    }
 }

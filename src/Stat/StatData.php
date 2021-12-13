@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -39,67 +40,76 @@ use Stat;
  */
 abstract class StatData
 {
-   protected $labels;
-   protected $series;
-   protected $total;
-   protected $csv_link;
-   protected $options;
-   protected $params;
+    protected $labels;
+    protected $series;
+    protected $total;
+    protected $csv_link;
+    protected $options;
+    protected $params;
 
-   public function __construct(array $params = []) {
-      global $CFG_GLPI;
+    public function __construct(array $params = [])
+    {
+        global $CFG_GLPI;
 
-      // Set up link to the download as csv page with the same parameters
-      if (count($params)) {
-         $base_link = $CFG_GLPI['root_doc'] . '/front/graph.send.php?';
-         $params['statdata_itemtype'] = static::class;
-         $this->csv_link = $base_link . http_build_query($params);
-      }
+       // Set up link to the download as csv page with the same parameters
+        if (count($params)) {
+            $base_link = $CFG_GLPI['root_doc'] . '/front/graph.send.php?';
+            $params['statdata_itemtype'] = static::class;
+            $this->csv_link = $base_link . http_build_query($params);
+        }
 
-      $this->params = $params;
-      $this->labels = [];
-      $this->series = [];
-      $this->options = [];
-      $this->total  = 0;
-   }
+        $this->params = $params;
+        $this->labels = [];
+        $this->series = [];
+        $this->options = [];
+        $this->total  = 0;
+    }
 
-   public function getDataByType(array $params, string $type) {
-      return Stat::constructEntryValues(
-         $params['itemtype'],
-         $type,
-         $params['date1'],
-         $params['date2'],
-         $params['type'] ?? "",
-         $params['val1'] ?? "",
-         $params['val2'] ?? ""
-      );
-   }
+    public function getDataByType(array $params, string $type)
+    {
+        return Stat::constructEntryValues(
+            $params['itemtype'],
+            $type,
+            $params['date1'],
+            $params['date2'],
+            $params['type'] ?? "",
+            $params['val1'] ?? "",
+            $params['val2'] ?? ""
+        );
+    }
 
-   public function getLabels(): array {
-      return $this->labels;
-   }
+    public function getLabels(): array
+    {
+        return $this->labels;
+    }
 
-   public function getSeries(): array {
-      return $this->series;
-   }
+    public function getSeries(): array
+    {
+        return $this->series;
+    }
 
-   public function getOptions(): array {
-      return $this->options;
-   }
+    public function getOptions(): array
+    {
+        return $this->options;
+    }
 
-   public function isEmpty(): bool {
-      return $this->total === 0;
-   }
+    public function isEmpty(): bool
+    {
+        return $this->total === 0;
+    }
 
-   public function getTotal(): int {
-      return $this->total;
-   }
+    public function getTotal(): int
+    {
+        return $this->total;
+    }
 
-   public function getCsvLink(): ?string {
-      return $this->csv_link;
-   }
+    public function getCsvLink(): ?string
+    {
+        return $this->csv_link;
+    }
 
-   public function getTitle(): string {
-      return "";
-   }
+    public function getTitle(): string
+    {
+        return "";
+    }
 }

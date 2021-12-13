@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,49 +36,54 @@
  *
  * @since 0.83
 **/
-class TicketRecurrent extends CommonITILRecurrent {
+class TicketRecurrent extends CommonITILRecurrent
+{
 
    /**
     * @var string CommonDropdown
     */
-   public $second_level_menu = "ticketrecurrent";
+    public $second_level_menu = "ticketrecurrent";
 
    /**
     * @var string Right managements
     */
-   public static $rightname = 'ticketrecurrent';
+    public static $rightname = 'ticketrecurrent';
 
-   public static function getTypeName($nb = 0) {
-      return __('Recurrent tickets');
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return __('Recurrent tickets');
+    }
 
-   public static function getConcreteClass() {
-      return Ticket::class;
-   }
+    public static function getConcreteClass()
+    {
+        return Ticket::class;
+    }
 
-   public static function getTemplateClass() {
-      return TicketTemplate::class;
-   }
+    public static function getTemplateClass()
+    {
+        return TicketTemplate::class;
+    }
 
-   public static function getPredefinedFieldsClass() {
-      return TicketTemplatePredefinedField::class;
-   }
+    public static function getPredefinedFieldsClass()
+    {
+        return TicketTemplatePredefinedField::class;
+    }
 
-   public function handlePredefinedFields(
-      array $predefined,
-      array $input
-   ): array {
-      $input = parent::handlePredefinedFields($predefined, $input);
+    public function handlePredefinedFields(
+        array $predefined,
+        array $input
+    ): array {
+        $input = parent::handlePredefinedFields($predefined, $input);
 
-      // Compute internal_time_to_resolve if predefined based on create date
-      if (isset($predefined['internal_time_to_resolve'])) {
-         $input['internal_time_to_resolve'] = Html::computeGenericDateTimeSearch(
-            $predefined['internal_time_to_resolve'],
-            false,
-            $this->getCreateTime()
-         );
-      }
+       // Compute internal_time_to_resolve if predefined based on create date
+        if (isset($predefined['internal_time_to_resolve'])) {
+            $input['internal_time_to_resolve'] = Html::computeGenericDateTimeSearch(
+                $predefined['internal_time_to_resolve'],
+                false,
+                $this->getCreateTime()
+            );
+        }
 
-      return $input;
-   }
+        return $input;
+    }
 }

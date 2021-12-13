@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,47 +34,55 @@
 /**
  * NotificationTargetSoftwareLicense Class
 **/
-class NotificationTargetSoftwareLicense extends NotificationTarget {
+class NotificationTargetSoftwareLicense extends NotificationTarget
+{
 
 
-   function getEvents() {
-      return ['alert' => __('Alarms on expired licenses')];
-   }
+    public function getEvents()
+    {
+        return ['alert' => __('Alarms on expired licenses')];
+    }
 
 
-   function addDataForTemplate($event, $options = []) {
+    public function addDataForTemplate($event, $options = [])
+    {
 
-      $events                            = $this->getAllEvents();
+        $events                            = $this->getAllEvents();
 
-      $this->data['##license.action##'] = $events[$event];
+        $this->data['##license.action##'] = $events[$event];
 
-      $this->data['##license.entity##'] = Dropdown::getDropdownName('glpi_entities',
-                                                                     $options['entities_id']);
+        $this->data['##license.entity##'] = Dropdown::getDropdownName(
+            'glpi_entities',
+            $options['entities_id']
+        );
 
-      foreach ($options['licenses'] as $id => $license) {
-         $tmp                       = [];
-         $tmp['##license.item##']   = $license['softname'];
-         $tmp['##license.name##']   = $license['name'];
-         $tmp['##license.serial##'] = $license['serial'];
-         $tmp['##license.expirationdate##']
+        foreach ($options['licenses'] as $id => $license) {
+            $tmp                       = [];
+            $tmp['##license.item##']   = $license['softname'];
+            $tmp['##license.name##']   = $license['name'];
+            $tmp['##license.serial##'] = $license['serial'];
+            $tmp['##license.expirationdate##']
                                     = Html::convDate($license["expire"]);
-         $tmp['##license.url##']    = $this->formatURL($options['additionnaloption']['usertype'],
-                                                       "SoftwareLicense_".$id);
-         $this->data['licenses'][] = $tmp;
-      }
+            $tmp['##license.url##']    = $this->formatURL(
+                $options['additionnaloption']['usertype'],
+                "SoftwareLicense_" . $id
+            );
+            $this->data['licenses'][] = $tmp;
+        }
 
-      $this->getTags();
-      foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         if (!isset($this->data[$tag])) {
-            $this->data[$tag] = $values['label'];
-         }
-      }
-   }
+        $this->getTags();
+        foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
+            if (!isset($this->data[$tag])) {
+                $this->data[$tag] = $values['label'];
+            }
+        }
+    }
 
 
-   function getTags() {
+    public function getTags()
+    {
 
-      $tags = ['license.expirationdate' => __('Expiration date'),
+        $tags = ['license.expirationdate' => __('Expiration date'),
                     'license.item'           => _n('Software', 'Software', 1),
                     'license.name'           => __('Name'),
                     'license.serial'         => __('Serial number'),
@@ -81,18 +90,17 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
                     'license.url'            => __('URL'),
                     'license.action'         => _n('Event', 'Events', 1)];
 
-      foreach ($tags as $tag => $label) {
-         $this->addTagToList(['tag'   => $tag,
+        foreach ($tags as $tag => $label) {
+            $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
                                    'value' => true]);
-      }
+        }
 
-      $this->addTagToList(['tag'     => 'licenses',
+        $this->addTagToList(['tag'     => 'licenses',
                                 'label'   => __('Device list'),
                                 'value'   => false,
                                 'foreach' => true]);
 
-      asort($this->tag_descriptions);
-   }
-
+        asort($this->tag_descriptions);
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,34 +36,37 @@ use Glpi\Application\View\TemplateRenderer;
 /**
  * Rack Class
 **/
-class Rack extends CommonDBTM {
-   use Glpi\Features\DCBreadcrumb;
+class Rack extends CommonDBTM
+{
+    use Glpi\Features\DCBreadcrumb;
 
-   const FRONT    = 0;
-   const REAR     = 1;
+    const FRONT    = 0;
+    const REAR     = 1;
 
-   const POS_NONE = 0;
-   const POS_LEFT = 1;
-   const POS_RIGHT = 2;
+    const POS_NONE = 0;
+    const POS_LEFT = 1;
+    const POS_RIGHT = 2;
 
    // orientation in room
-   const ROOM_O_NORTH = 1;
-   const ROOM_O_EAST  = 2;
-   const ROOM_O_SOUTH = 3;
-   const ROOM_O_WEST  = 4;
+    const ROOM_O_NORTH = 1;
+    const ROOM_O_EAST  = 2;
+    const ROOM_O_SOUTH = 3;
+    const ROOM_O_WEST  = 4;
 
    // From CommonDBTM
-   public $dohistory                   = true;
-   static $rightname                   = 'datacenter';
+    public $dohistory                   = true;
+    public static $rightname                   = 'datacenter';
 
-   static function getTypeName($nb = 0) {
-      //TRANS: Test of comment for translation (mark : //TRANS)
-      return _n('Rack', 'Racks', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+       //TRANS: Test of comment for translation (mark : //TRANS)
+        return _n('Rack', 'Racks', $nb);
+    }
 
-   function defineTabs($options = []) {
-      $ong = [];
-      $this
+    public function defineTabs($options = [])
+    {
+        $ong = [];
+        $this
          ->addStandardTab('Item_Rack', $ong, $options)
          ->addDefaultFormTab($ong)
          ->addImpactTab($ong, $options)
@@ -73,8 +77,8 @@ class Rack extends CommonDBTM {
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
-      return $ong;
-   }
+        return $ong;
+    }
 
 
    /**
@@ -87,122 +91,124 @@ class Rack extends CommonDBTM {
     *
     * @return boolean item found
    **/
-   function showForm($ID, array $options = []) {
-      $this->initForm($ID, $options);
-      TemplateRenderer::getInstance()->display('pages/assets/rack.html.twig', [
+    public function showForm($ID, array $options = [])
+    {
+        $this->initForm($ID, $options);
+        TemplateRenderer::getInstance()->display('pages/assets/rack.html.twig', [
          'item'   => $this,
          'params' => $options,
-      ]);
-      return true;
-   }
+        ]);
+        return true;
+    }
 
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '2',
          'table'              => $this->getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false, // implicit field is id
          'datatype'           => 'number'
-      ];
+        ];
 
-      $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
+        $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '4',
          'table'              => 'glpi_racktypes',
          'field'              => 'name',
          'name'               => _n('Type', 'Types', 1),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '40',
          'table'              => 'glpi_rackmodels',
          'field'              => 'name',
          'name'               => _n('Model', 'Models', 1),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '31',
          'table'              => 'glpi_states',
          'field'              => 'completename',
          'name'               => __('Status'),
          'datatype'           => 'dropdown',
          'condition'          => ['is_visible_rack' => 1]
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '5',
          'table'              => $this->getTable(),
          'field'              => 'serial',
          'name'               => __('Serial number'),
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '6',
          'table'              => $this->getTable(),
          'field'              => 'otherserial',
          'name'               => __('Inventory number'),
          'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '7',
          'table'              => DCRoom::getTable(),
          'field'              => 'name',
          'name'               => DCRoom::getTypeName(1),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '8',
          'table'              => $this->getTable(),
          'field'              => 'number_units',
          'name'               => __('Number of units'),
          'datatype'           => 'number'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '16',
          'table'              => $this->getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '19',
          'table'              => $this->getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '121',
          'table'              => $this->getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
          'massiveaction'      => false
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '23',
          'table'              => 'glpi_manufacturers',
          'field'              => 'name',
          'name'               => Manufacturer::getTypeName(1),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '24',
          'table'              => 'glpi_users',
          'field'              => 'name',
@@ -210,9 +216,9 @@ class Rack extends CommonDBTM {
          'name'               => __('Technician in charge of the hardware'),
          'datatype'           => 'dropdown',
          'right'              => 'own_ticket'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '49',
          'table'              => 'glpi_groups',
          'field'              => 'completename',
@@ -220,9 +226,9 @@ class Rack extends CommonDBTM {
          'name'               => __('Group in charge of the hardware'),
          'condition'          => ['is_assign' => 1],
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '61',
          'table'              => $this->getTable(),
          'field'              => 'template_name',
@@ -231,51 +237,54 @@ class Rack extends CommonDBTM {
          'massiveaction'      => false,
          'nosearch'           => true,
          'nodisplay'          => true,
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
          'name'               => Entity::getTypeName(1),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
+        $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
-      $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
+        $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
 
-      return $tab;
-   }
+        return $tab;
+    }
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
 
-      switch ($item->getType()) {
-         case DCRoom::getType():
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-               $nb = countElementsInTable(
-                  self::getTable(), [
-                     'dcrooms_id'   => $item->getID(),
-                     'is_deleted'   => 0
-                  ]
-               );
-            }
-            return self::createTabEntry(
-               self::getTypeName(Session::getPluralNumber()),
-               $nb
-            );
-            break;
-      }
-   }
+        switch ($item->getType()) {
+            case DCRoom::getType():
+                $nb = 0;
+                if ($_SESSION['glpishow_count_on_tabs']) {
+                    $nb = countElementsInTable(
+                        self::getTable(),
+                        [
+                        'dcrooms_id'   => $item->getID(),
+                        'is_deleted'   => 0
+                        ]
+                    );
+                }
+                return self::createTabEntry(
+                    self::getTypeName(Session::getPluralNumber()),
+                    $nb
+                );
+             break;
+        }
+    }
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-      switch ($item->getType()) {
-         case DCRoom::getType():
-            self::showForRoom($item);
-            break;
-      }
-   }
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+        switch ($item->getType()) {
+            case DCRoom::getType():
+                self::showForRoom($item);
+                break;
+        }
+    }
 
    /**
     * Print room's racks
@@ -284,195 +293,198 @@ class Rack extends CommonDBTM {
     *
     * @return void
    **/
-   static function showForRoom(DCRoom $room) {
-      global $DB, $CFG_GLPI;
+    public static function showForRoom(DCRoom $room)
+    {
+        global $DB, $CFG_GLPI;
 
-      $room_id = $room->getID();
-      $rand = mt_rand();
+        $room_id = $room->getID();
+        $rand = mt_rand();
 
-      if (!$room->getFromDB($room_id)
-          || !$room->can($room_id, READ)) {
-         return false;
-      }
-      $canedit = $room->canEdit($room_id);
+        if (
+            !$room->getFromDB($room_id)
+            || !$room->can($room_id, READ)
+        ) {
+            return false;
+        }
+        $canedit = $room->canEdit($room_id);
 
-      $racks = $DB->request([
+        $racks = $DB->request([
          'FROM'   => self::getTable(),
          'WHERE'  => [
             'dcrooms_id'   => $room->getID(),
             'is_deleted'   => 0
          ]
-      ]);
+        ]);
 
-      Session::initNavigateListItems(
-         self::getType(),
-         //TRANS : %1$s is the itemtype name,
-         //        %2$s is the name of the item (used for headings of a list)
-         sprintf(
-            __('%1$s = %2$s'),
-            $room->getTypeName(1),
-            $room->getName()
-         )
-      );
+        Session::initNavigateListItems(
+            self::getType(),
+            //TRANS : %1$s is the itemtype name,
+            //        %2$s is the name of the item (used for headings of a list)
+            sprintf(
+                __('%1$s = %2$s'),
+                $room->getTypeName(1),
+                $room->getName()
+            )
+        );
 
-      echo "<div id='switchview'>";
-      echo "<i id='sviewlist' class='pointer ti ti-list' title='".__('View as list')."'></i>";
-      echo "<i id='sviewgraph' class='pointer ti ti-layout-grid selected' title='".__('View graphical representation')."'></i>";
-      echo "</div>";
+        echo "<div id='switchview'>";
+        echo "<i id='sviewlist' class='pointer ti ti-list' title='" . __('View as list') . "'></i>";
+        echo "<i id='sviewgraph' class='pointer ti ti-layout-grid selected' title='" . __('View graphical representation') . "'></i>";
+        echo "</div>";
 
-      $racks = iterator_to_array($racks);
-      echo "<div id='viewlist'>";
+        $racks = iterator_to_array($racks);
+        echo "<div id='viewlist'>";
 
-      $rack = new self();
-      if (!count($racks)) {
-         echo "<table class='tab_cadre_fixe'><tr><th>".__('No rack found')."</th></tr>";
-         echo "</table>";
-      } else {
-         if ($canedit) {
-            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams = [
-               'num_displayed'   => min($_SESSION['glpilist_limit'], count($racks)),
-               'container'       => 'mass'.__CLASS__.$rand
-            ];
-            Html::showMassiveActions($massiveactionparams);
-         }
-
-         echo "<table class='tab_cadre_fixehov'>";
-         $header = "<tr>";
-         if ($canedit) {
-            $header .= "<th width='10'>";
-            $header .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-            $header .= "</th>";
-         }
-         $header .= "<th>".__('Name')."</th>";
-         $header .= "</tr>";
-
-         echo $header;
-         foreach ($racks as $row) {
-            $rack->getFromResultSet($row);
-            echo "<tr lass='tab_bg_1'>";
+        $rack = new self();
+        if (!count($racks)) {
+            echo "<table class='tab_cadre_fixe'><tr><th>" . __('No rack found') . "</th></tr>";
+            echo "</table>";
+        } else {
             if ($canedit) {
-               echo "<td>";
-               Html::showMassiveActionCheckBox(__CLASS__, $row["id"]);
-               echo "</td>";
+                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
+                $massiveactionparams = [
+                'num_displayed'   => min($_SESSION['glpilist_limit'], count($racks)),
+                'container'       => 'mass' . __CLASS__ . $rand
+                ];
+                Html::showMassiveActions($massiveactionparams);
             }
-            echo "<td>" . $rack->getLink() . "</td>";
-            echo "</tr>";
-         }
-         echo $header;
-         echo "</table>";
 
-         if ($canedit && count($racks)) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-         }
-         if ($canedit) {
-            Html::closeForm();
-         }
-      }
-      echo "</div>";
+            echo "<table class='tab_cadre_fixehov'>";
+            $header = "<tr>";
+            if ($canedit) {
+                $header .= "<th width='10'>";
+                $header .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+                $header .= "</th>";
+            }
+            $header .= "<th>" . __('Name') . "</th>";
+            $header .= "</tr>";
 
-      echo "<div id='viewgraph'>";
+            echo $header;
+            foreach ($racks as $row) {
+                $rack->getFromResultSet($row);
+                echo "<tr lass='tab_bg_1'>";
+                if ($canedit) {
+                    echo "<td>";
+                    Html::showMassiveActionCheckBox(__CLASS__, $row["id"]);
+                    echo "</td>";
+                }
+                echo "<td>" . $rack->getLink() . "</td>";
+                echo "</tr>";
+            }
+            echo $header;
+            echo "</table>";
 
-      $data = [];
+            if ($canedit && count($racks)) {
+                $massiveactionparams['ontop'] = false;
+                Html::showMassiveActions($massiveactionparams);
+            }
+            if ($canedit) {
+                Html::closeForm();
+            }
+        }
+        echo "</div>";
 
-      $rows     = (int) $room->fields['vis_rows'];
-      $cols     = (int) $room->fields['vis_cols'];
-      $w_prct   = 100 / $cols;
-      $grid_w   = 40 * $cols;
-      $grid_h   = (39 * $rows) + 16;
-      $ajax_url = $CFG_GLPI['root_doc']."/ajax/rack.php";
+        echo "<div id='viewgraph'>";
 
-      //fill rows
-      $cells    = [];
-      $outbound = [];
-      foreach ($racks as &$item) {
-         $rack->getFromResultSet($item);
-         $in = false;
+        $data = [];
 
-         $x = $y = 0;
-         $coord = explode(',', $item['position']);
-         if (is_array($coord) && count($coord) == 2) {
-            list($x, $y) = $coord;
-            $item['_x'] = $x - 1;
-            $item['_y'] = $y - 1;
-         } else {
-            $item['_x'] = null;
-            $item['_y'] = null;
-         }
+        $rows     = (int) $room->fields['vis_rows'];
+        $cols     = (int) $room->fields['vis_cols'];
+        $w_prct   = 100 / $cols;
+        $grid_w   = 40 * $cols;
+        $grid_h   = (39 * $rows) + 16;
+        $ajax_url = $CFG_GLPI['root_doc'] . "/ajax/rack.php";
 
-         if ($x <= $cols && $y <= $rows && $x > 0 && $y > 0) {
-            $in = true;
-            $cells[] = $item;
-         }
+       //fill rows
+        $cells    = [];
+        $outbound = [];
+        foreach ($racks as &$item) {
+            $rack->getFromResultSet($item);
+            $in = false;
 
-         if ($in === false) {
-            $outbound[] = $item;
-         }
-      }
+            $x = $y = 0;
+            $coord = explode(',', $item['position']);
+            if (is_array($coord) && count($coord) == 2) {
+                list($x, $y) = $coord;
+                $item['_x'] = $x - 1;
+                $item['_y'] = $y - 1;
+            } else {
+                $item['_x'] = null;
+                $item['_y'] = null;
+            }
 
-      if (count($outbound)) {
-         echo "<table class='outbound'><thead><th>";
-         echo __('Following elements are out of room bounds');
-         echo "</th></thead><tbody>";
-         foreach ($outbound as $out) {
-            $rack->getFromResultSet($out);
-            echo "<tr><td>".self::getCell($rack, $out)."</td></tr>";
-         }
-         echo "</tbody></table>";
-      }
+            if ($x <= $cols && $y <= $rows && $x > 0 && $y > 0) {
+                $in = true;
+                $cells[] = $item;
+            }
 
-      echo "<style>";
-      for ($i = 0; $i < $cols; $i++) {
-         $left  = $i * $w_prct;
-         $width = ($i+1) * $w_prct;
-         echo "
+            if ($in === false) {
+                $outbound[] = $item;
+            }
+        }
+
+        if (count($outbound)) {
+            echo "<table class='outbound'><thead><th>";
+            echo __('Following elements are out of room bounds');
+            echo "</th></thead><tbody>";
+            foreach ($outbound as $out) {
+                $rack->getFromResultSet($out);
+                echo "<tr><td>" . self::getCell($rack, $out) . "</td></tr>";
+            }
+            echo "</tbody></table>";
+        }
+
+        echo "<style>";
+        for ($i = 0; $i < $cols; $i++) {
+            $left  = $i * $w_prct;
+            $width = ($i + 1) * $w_prct;
+            echo "
          .grid-stack > .grid-stack-item[gs-x='$i'] { left: $left%;}
-         .grid-stack > .grid-stack-item[gs-w='".($i+1)."'] {
+         .grid-stack > .grid-stack-item[gs-w='" . ($i + 1) . "'] {
             min-width: $width%;
             width: $width%;
          }";
-      }
-      echo "</style>";
+        }
+        echo "</style>";
 
-      $blueprint = "";
-      $blueprint_ctrl = "";
-      if (!empty($room->fields['blueprint'])) {
-         $blueprint_url = Toolbox::getPictureUrl($room->fields['blueprint']);
-         $blueprint = "
+        $blueprint = "";
+        $blueprint_ctrl = "";
+        if (!empty($room->fields['blueprint'])) {
+            $blueprint_url = Toolbox::getPictureUrl($room->fields['blueprint']);
+            $blueprint = "
             <div class='blueprint'
                  style='background: url({$blueprint_url}) no-repeat top left/100% 100%;
-                        height: ".$grid_h."px;></div>";
-         $blueprint_ctrl = "<span class='mini_toggle active'
-                                  id='toggle_blueprint'>".__('Blueprint')."</span>";
-      }
+                        height: " . $grid_h . "px;></div>";
+            $blueprint_ctrl = "<span class='mini_toggle active'
+                                  id='toggle_blueprint'>" . __('Blueprint') . "</span>";
+        }
 
-      echo "
-      <div class='grid-room' style='width: ".($grid_w + 16)."px; min-height: ".$grid_h."px'>
+        echo "
+      <div class='grid-room' style='width: " . ($grid_w + 16) . "px; min-height: " . $grid_h . "px'>
          <span class='racks_view_controls'>
             $blueprint_ctrl
             <span class='mini_toggle active'
-                  id='toggle_grid'>".__('Grid')."</span>
+                  id='toggle_grid'>" . __('Grid') . "</span>
             <div class='clearfix'></div>
          </span>
          <ul class='indexes indexes-x'></ul>
          <ul class='indexes indexes-y'></ul>";
 
-      $dcroom = new DCRoom();
-      if ($dcroom->canCreate()) {
-         echo "<div class='racks_add' style='width: ".$grid_w."px'></div>";
-      }
+        $dcroom = new DCRoom();
+        if ($dcroom->canCreate()) {
+            echo "<div class='racks_add' style='width: " . $grid_w . "px'></div>";
+        }
 
-      echo "<div class='grid-stack grid-stack-$cols' style='width: ".$grid_w."px'>";
+        echo "<div class='grid-stack grid-stack-$cols' style='width: " . $grid_w . "px'>";
 
-      foreach ($cells as $cell) {
-         if ($rack->getFromDB($cell['id'])) {
-            echo self::getCell($rack, $cell);
-         }
-      }
+        foreach ($cells as $cell) {
+            if ($rack->getFromDB($cell['id'])) {
+                echo self::getCell($rack, $cell);
+            }
+        }
 
-      // add a locked element to bottom to display a full grid
-      echo "<div class='grid-stack-item lock-bottom'
+       // add a locked element to bottom to display a full grid
+        echo "<div class='grid-stack-item lock-bottom'
                  gs-no-resize='true'
                  gs-no-move='true'
                  gs-h='1'
@@ -480,13 +492,13 @@ class Rack extends CommonDBTM {
                  gs-x='0'
                  gs-y='$rows'></div>";
 
-      echo "</div>"; //.grid-stack
-      echo $blueprint;
-      echo "</div>"; //.grid-room
-      echo "</div>"; // #viewgraph
+        echo "</div>"; //.grid-stack
+        echo $blueprint;
+        echo "</div>"; //.grid-room
+        echo "</div>"; // #viewgraph
 
-      $rack_add_tip = __s('Insert a rack here');
-      $js = <<<JAVASCRIPT
+        $rack_add_tip = __s('Insert a rack here');
+        $js = <<<JAVASCRIPT
       $(function() {
          $(document)
             .on('click', '#sviewlist', function() {
@@ -630,29 +642,32 @@ class Rack extends CommonDBTM {
       });
 JAVASCRIPT;
 
-      echo Html::scriptBlock($js);
-   }
+        echo Html::scriptBlock($js);
+    }
 
-   function prepareInputForAdd($input) {
-      if ($this->prepareInput($input)) {
-         if (isset($input["id"]) && ($input["id"] > 0)) {
-            $input["_oldID"] = $input["id"];
-         }
-         unset($input['id']);
-         unset($input['withtemplate']);
+    public function prepareInputForAdd($input)
+    {
+        if ($this->prepareInput($input)) {
+            if (isset($input["id"]) && ($input["id"] > 0)) {
+                $input["_oldID"] = $input["id"];
+            }
+            unset($input['id']);
+            unset($input['withtemplate']);
 
-         return $input;
-      }
-      return false;
-   }
+            return $input;
+        }
+        return false;
+    }
 
-   function prepareInputForUpdate($input) {
-      return $this->prepareInput($input);
-   }
+    public function prepareInputForUpdate($input)
+    {
+        return $this->prepareInput($input);
+    }
 
-   function post_getEmpty() {
-      $this->fields['bgcolor'] = '#FEC95C';
-   }
+    public function post_getEmpty()
+    {
+        $this->fields['bgcolor'] = '#FEC95C';
+    }
 
    /**
     * Prepares input (for update and add)
@@ -661,47 +676,48 @@ JAVASCRIPT;
     *
     * @return array
     */
-   private function prepareInput($input) {
+    private function prepareInput($input)
+    {
 
-      if (!array_key_exists('dcrooms_id', $input) || $input['dcrooms_id'] == 0) {
-         // Position is not set if room not selected
-         return $input;
-      }
+        if (!array_key_exists('dcrooms_id', $input) || $input['dcrooms_id'] == 0) {
+           // Position is not set if room not selected
+            return $input;
+        }
 
-      if ($input['position'] == 0) {
-         return $input;
-         Session::addMessageAfterRedirect(
-            __('Position must be set'),
-            true,
-            ERROR
-         );
-         return false;
-      }
+        if ($input['position'] == 0) {
+            return $input;
+            Session::addMessageAfterRedirect(
+                __('Position must be set'),
+                true,
+                ERROR
+            );
+            return false;
+        }
 
-      $where = [
+        $where = [
          'dcrooms_id'   => $input['dcrooms_id'],
          'position'     => $input['position'],
          'is_deleted'   => false
-      ];
+        ];
 
-      if (!$this->isNewItem()) {
-         $where['NOT'] = ['id' => $input['id']];
-      }
-      $existing = countElementsInTable(self::getTable(), $where);
+        if (!$this->isNewItem()) {
+            $where['NOT'] = ['id' => $input['id']];
+        }
+        $existing = countElementsInTable(self::getTable(), $where);
 
-      if ($existing > 0) {
-         Session::addMessageAfterRedirect(
-            sprintf(
-               __('%1$s position is not available'),
-               $input['position']
-            ),
-            true,
-            ERROR
-         );
-         return false;
-      }
-      return $input;
-   }
+        if ($existing > 0) {
+            Session::addMessageAfterRedirect(
+                sprintf(
+                    __('%1$s position is not available'),
+                    $input['position']
+                ),
+                true,
+                ERROR
+            );
+            return false;
+        }
+        return $input;
+    }
 
    /**
     * Get already filled places
@@ -710,102 +726,106 @@ JAVASCRIPT;
     *
     * @return array [x => [left => [depth, depth, depth, depth]], [right => [depth, depth, depth, depth]]]
     */
-   public function getFilled($itemtype = null, $items_id = null) {
-      global $DB;
+    public function getFilled($itemtype = null, $items_id = null)
+    {
+        global $DB;
 
-      $iterator = $DB->request([
+        $iterator = $DB->request([
          'FROM'   => Item_Rack::getTable(),
          'WHERE'  => [
             'racks_id'   => $this->getID()
          ]
-      ]);
+        ]);
 
-      $filled = [];
-      foreach ($iterator as $row) {
-         $item = new $row['itemtype'];
-         if (!$item->getFromDB($row['items_id'])) {
-            continue;
-         }
-         $units = 1;
-         $width = 1;
-         $depth = 1;
-         if ($item->fields[strtolower($item->getType()) . 'models_id'] != 0) {
-            $model_class = $item->getType() . 'Model';
-            $modelsfield = strtolower($item->getType()) . 'models_id';
-            $model = new $model_class;
-            if ($model->getFromDB($item->fields[$modelsfield])) {
-               $units = $model->fields['required_units'];
-               $depth = $model->fields['depth'];
-               $width = $model->fields['is_half_rack'] == 0 ? 1 : 0.5;
+        $filled = [];
+        foreach ($iterator as $row) {
+            $item = new $row['itemtype']();
+            if (!$item->getFromDB($row['items_id'])) {
+                continue;
             }
-         }
-         $position = $row['position'];
-         if (empty($itemtype) || empty($items_id)
-            || $itemtype != $row['itemtype'] || $items_id != $row['items_id']
-         ) {
-            while (--$units >= 0) {
-               $content_filled = [
-                  self::POS_LEFT    => [0, 0, 0, 0],
-                  self::POS_RIGHT   => [0, 0, 0, 0]
-               ];
-
-               if (isset($filled[$position + $units])) {
-                  $content_filled = $filled[$position + $units];
-               }
-
-               if ($row['hpos'] == self::POS_NONE || $row['hpos'] == self::POS_LEFT) {
-                  $d = 0;
-                  while ($d/4 < $depth) {
-                     $pos = ($row['orientation'] == self::REAR) ? 3 - $d : $d;
-                     $val = 1;
-                     if (isset($content_filled[self::POS_LEFT][$pos]) && $content_filled[self::POS_LEFT][$pos] != 0) {
-                        trigger_error('Several elements exists in rack at same place :(', E_USER_WARNING);
-                        $val += $content_filled[self::POS_LEFT][$pos];
-                     }
-                     $content_filled[self::POS_LEFT][$pos] = $val;
-                     ++$d;
-                  }
-               }
-
-               if ($row['hpos'] == self::POS_NONE || $row['hpos'] == self::POS_RIGHT) {
-                  $d = 0;
-                  while ($d/4 < $depth) {
-                     $pos = ($row['orientation'] == self::REAR) ? 3 - $d : $d;
-                     $val = 1;
-                     if (isset($content_filled[self::POS_RIGHT][$pos]) && $content_filled[self::POS_RIGHT][$pos] != 0) {
-                        trigger_error('Several elements exists in rack at same place :(', E_USER_WARNING);
-                        $val += $content_filled[self::POS_RIGHT][$pos];
-                     }
-                     $content_filled[self::POS_RIGHT][$pos] = $val;
-                     ++$d;
-                  }
-               }
-
-               $filled[$position + $units] = $content_filled;
+            $units = 1;
+            $width = 1;
+            $depth = 1;
+            if ($item->fields[strtolower($item->getType()) . 'models_id'] != 0) {
+                $model_class = $item->getType() . 'Model';
+                $modelsfield = strtolower($item->getType()) . 'models_id';
+                $model = new $model_class();
+                if ($model->getFromDB($item->fields[$modelsfield])) {
+                    $units = $model->fields['required_units'];
+                    $depth = $model->fields['depth'];
+                    $width = $model->fields['is_half_rack'] == 0 ? 1 : 0.5;
+                }
             }
-         }
-      }
+            $position = $row['position'];
+            if (
+                empty($itemtype) || empty($items_id)
+                || $itemtype != $row['itemtype'] || $items_id != $row['items_id']
+            ) {
+                while (--$units >= 0) {
+                    $content_filled = [
+                    self::POS_LEFT    => [0, 0, 0, 0],
+                    self::POS_RIGHT   => [0, 0, 0, 0]
+                    ];
 
-      return $filled;
-   }
+                    if (isset($filled[$position + $units])) {
+                        $content_filled = $filled[$position + $units];
+                    }
 
-   public function getEmpty() {
-      if (!parent::getEmpty()) {
-         return false;
-      }
-      $this->fields['number_units'] = 42;
-      return true;
-   }
+                    if ($row['hpos'] == self::POS_NONE || $row['hpos'] == self::POS_LEFT) {
+                        $d = 0;
+                        while ($d / 4 < $depth) {
+                            $pos = ($row['orientation'] == self::REAR) ? 3 - $d : $d;
+                            $val = 1;
+                            if (isset($content_filled[self::POS_LEFT][$pos]) && $content_filled[self::POS_LEFT][$pos] != 0) {
+                                trigger_error('Several elements exists in rack at same place :(', E_USER_WARNING);
+                                $val += $content_filled[self::POS_LEFT][$pos];
+                            }
+                            $content_filled[self::POS_LEFT][$pos] = $val;
+                            ++$d;
+                        }
+                    }
 
-   function cleanDBonPurge() {
+                    if ($row['hpos'] == self::POS_NONE || $row['hpos'] == self::POS_RIGHT) {
+                        $d = 0;
+                        while ($d / 4 < $depth) {
+                            $pos = ($row['orientation'] == self::REAR) ? 3 - $d : $d;
+                            $val = 1;
+                            if (isset($content_filled[self::POS_RIGHT][$pos]) && $content_filled[self::POS_RIGHT][$pos] != 0) {
+                                trigger_error('Several elements exists in rack at same place :(', E_USER_WARNING);
+                                $val += $content_filled[self::POS_RIGHT][$pos];
+                            }
+                            $content_filled[self::POS_RIGHT][$pos] = $val;
+                            ++$d;
+                        }
+                    }
 
-      $this->deleteChildrenAndRelationsFromDb(
-         [
+                    $filled[$position + $units] = $content_filled;
+                }
+            }
+        }
+
+        return $filled;
+    }
+
+    public function getEmpty()
+    {
+        if (!parent::getEmpty()) {
+            return false;
+        }
+        $this->fields['number_units'] = 42;
+        return true;
+    }
+
+    public function cleanDBonPurge()
+    {
+
+        $this->deleteChildrenAndRelationsFromDb(
+            [
             Item_Rack::class,
             PDU_Rack::class,
-         ]
-      );
-   }
+            ]
+        );
+    }
 
    /**
     * Get cell content
@@ -815,42 +835,44 @@ JAVASCRIPT;
     *
     * @return string
     */
-   private static function getCell(Rack $rack, $cell) {
-      $bgcolor = $rack->getField('bgcolor');
-      $fgcolor = Html::getInvertedColor($bgcolor);
-      return "<div class='grid-stack-item room_orientation_".$cell['room_orientation']."'
-                  gs-id='".$cell['id']."'
+    private static function getCell(Rack $rack, $cell)
+    {
+        $bgcolor = $rack->getField('bgcolor');
+        $fgcolor = Html::getInvertedColor($bgcolor);
+        return "<div class='grid-stack-item room_orientation_" . $cell['room_orientation'] . "'
+                  gs-id='" . $cell['id'] . "'
                   gs-locked='true'
                   gs-h='1'
                   gs-w='1'
-                  gs-x='".$cell['_x']."'
-                  gs-y='".$cell['_y']."'>
+                  gs-x='" . $cell['_x'] . "'
+                  gs-y='" . $cell['_y'] . "'>
             <div class='grid-stack-item-content'
                   style='background-color: $bgcolor;
                         color: $fgcolor;'>
-               <a href='".$rack->getLinkURL()."'
-                  style='color: $fgcolor'>".
-                  $cell['name']."</a>
+               <a href='" . $rack->getLinkURL() . "'
+                  style='color: $fgcolor'>" .
+                  $cell['name'] . "</a>
                <span class='tipcontent'>
                   <span>
-                     <label>".__('name').":</label>".
-                     $cell['name']."
+                     <label>" . __('name') . ":</label>" .
+                     $cell['name'] . "
                   </span>
                   <span>
-                     <label>".__('serial').":</label>".
-                     $cell['serial']."
+                     <label>" . __('serial') . ":</label>" .
+                     $cell['serial'] . "
                   </span>
                   <span>
-                     <label>".__('Inventory number').":</label>".
-                     $cell['otherserial']."
+                     <label>" . __('Inventory number') . ":</label>" .
+                     $cell['otherserial'] . "
                   </span>
                </span>
             </div><!-- // .grid-stack-item-content -->
          </div>"; // .grid-stack-item
-   }
+    }
 
 
-   static function getIcon() {
-      return "ti ti-server";
-   }
+    public static function getIcon()
+    {
+        return "ti ti-server";
+    }
 }

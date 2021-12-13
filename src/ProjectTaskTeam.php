@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -39,80 +40,87 @@ use Glpi\Team\Team;
  * @author Julien Dombre
  * @since 0.85
  **/
-class ProjectTaskTeam extends CommonDBRelation {
+class ProjectTaskTeam extends CommonDBRelation
+{
 
    // From CommonDBTM
-   public $dohistory                  = true;
-   public $no_form_page               = true;
+    public $dohistory                  = true;
+    public $no_form_page               = true;
 
    // From CommonDBRelation
-   static public $itemtype_1          = 'ProjectTask';
-   static public $items_id_1          = 'projecttasks_id';
+    public static $itemtype_1          = 'ProjectTask';
+    public static $items_id_1          = 'projecttasks_id';
 
-   static public $itemtype_2          = 'itemtype';
-   static public $items_id_2          = 'items_id';
-   static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+    public static $itemtype_2          = 'itemtype';
+    public static $items_id_2          = 'items_id';
+    public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
-   static public $available_types     = ['User', 'Group', 'Supplier', 'Contact'];
+    public static $available_types     = ['User', 'Group', 'Supplier', 'Contact'];
 
 
    /**
     * @see CommonDBTM::getNameField()
    **/
-   static function getNameField() {
-      return 'id';
-   }
+    public static function getNameField()
+    {
+        return 'id';
+    }
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Task team', 'Task teams', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Task team', 'Task teams', $nb);
+    }
 
 
-   function getForbiddenStandardMassiveAction() {
+    public function getForbiddenStandardMassiveAction()
+    {
 
-      $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
-      return $forbidden;
-   }
-
-
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-
-      if (!$withtemplate && static::canView()) {
-         $nb = 0;
-         switch ($item->getType()) {
-            case 'ProjectTask' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = $item->getTeamCount();
-               }
-               return self::createTabEntry(self::getTypeName(1), $nb);
-         }
-      }
-      return '';
-   }
+        $forbidden   = parent::getForbiddenStandardMassiveAction();
+        $forbidden[] = 'update';
+        return $forbidden;
+    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
 
-      switch ($item->getType()) {
-         case 'ProjectTask' :
-            $item->showTeam($item);
-            return true;
-      }
-   }
+        if (!$withtemplate && static::canView()) {
+            $nb = 0;
+            switch ($item->getType()) {
+                case 'ProjectTask':
+                    if ($_SESSION['glpishow_count_on_tabs']) {
+                        $nb = $item->getTeamCount();
+                    }
+                    return self::createTabEntry(self::getTypeName(1), $nb);
+            }
+        }
+        return '';
+    }
 
-   public function post_addItem() {
-      if (!isset($this->input['_disablenotif'])) {
-         // Read again to be sure that the data is up to date
-         $this->getFromDB($this->fields['id']);
-         // Get linked task
-         $task = new ProjectTask();
-         $task->getFromDB($this->fields['projecttasks_id']);
-         // Raise update event on task
-         NotificationEvent::raiseEvent("update", $task);
-      }
-   }
+
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+
+        switch ($item->getType()) {
+            case 'ProjectTask':
+                $item->showTeam($item);
+                return true;
+        }
+    }
+
+    public function post_addItem()
+    {
+        if (!isset($this->input['_disablenotif'])) {
+           // Read again to be sure that the data is up to date
+            $this->getFromDB($this->fields['id']);
+           // Get linked task
+            $task = new ProjectTask();
+            $task->getFromDB($this->fields['projecttasks_id']);
+           // Raise update event on task
+            NotificationEvent::raiseEvent("update", $task);
+        }
+    }
 
 
    /**
@@ -122,98 +130,100 @@ class ProjectTaskTeam extends CommonDBRelation {
     * @param bool $expand If true, the team member data is expanded to include specific properties like firstname, realname, ...
     * @return array
    **/
-   static function getTeamFor($tasks_id, bool $expand = false) {
-      global $DB;
+    public static function getTeamFor($tasks_id, bool $expand = false)
+    {
+        global $DB;
 
-      $team = [];
-      // Define empty types
-      foreach (static::$available_types as $type) {
-         if (!isset($team[$type])) {
-            $team[$type] = [];
-         }
-      }
+        $team = [];
+       // Define empty types
+        foreach (static::$available_types as $type) {
+            if (!isset($team[$type])) {
+                $team[$type] = [];
+            }
+        }
 
-      $criteria = [
+        $criteria = [
          'FROM'   => self::getTable(),
          'WHERE'  => ['projecttasks_id' => $tasks_id]
-      ];
-      $iterator = $DB->request($criteria);
+        ];
+        $iterator = $DB->request($criteria);
 
-      foreach ($iterator as $data) {
-         $data['role'] = Team::ROLE_MEMBER;
-         $team[$data['itemtype']][] = $data;
-      }
+        foreach ($iterator as $data) {
+            $data['role'] = Team::ROLE_MEMBER;
+            $team[$data['itemtype']][] = $data;
+        }
 
-      if ($expand) {
-         // This call is purposefully going to ProjectTeam because the code would be the same for both it and this (ProjectTaskTeam)
-         $team = ProjectTeam::expandTeamData($team);
-      }
+        if ($expand) {
+           // This call is purposefully going to ProjectTeam because the code would be the same for both it and this (ProjectTaskTeam)
+            $team = ProjectTeam::expandTeamData($team);
+        }
 
-      return $team;
-   }
+        return $team;
+    }
 
-   function prepareInputForAdd($input) {
-      global $DB;
+    public function prepareInputForAdd($input)
+    {
+        global $DB;
 
-      if (!isset($input['itemtype'])) {
-         Session::addMessageAfterRedirect(
-            __('An item type is mandatory'),
-            false,
-            ERROR
-         );
-         return false;
-      }
-
-      if (!isset($input['items_id'])) {
-         Session::addMessageAfterRedirect(
-            __('An item ID is mandatory'),
-            false,
-            ERROR
-         );
-         return false;
-      }
-
-      if (!isset($input['projecttasks_id'])) {
-         Session::addMessageAfterRedirect(
-            __('A project task is mandatory'),
-            false,
-            ERROR
-         );
-         return false;
-      }
-
-      $task = new ProjectTask();
-      $task->getFromDB($input['projecttasks_id']);
-      switch ($input['itemtype']) {
-         case User::getType():
-            Planning::checkAlreadyPlanned(
-               $input['items_id'],
-               $task->fields['plan_start_date'],
-               $task->fields['plan_end_date']
+        if (!isset($input['itemtype'])) {
+            Session::addMessageAfterRedirect(
+                __('An item type is mandatory'),
+                false,
+                ERROR
             );
-            break;
-         case Group::getType():
-            $group_iterator = $DB->request([
-               'SELECT' => 'users_id',
-               'FROM'   => Group_User::getTable(),
-               'WHERE'  => ['groups_id' => $input['items_id']]
-            ]);
-            foreach ($group_iterator as $row) {
-               Planning::checkAlreadyPlanned(
-                  $row['users_id'],
-                  $task->fields['plan_start_date'],
-                  $task->fields['plan_end_date']
-               );
-            }
-            break;
-         case Supplier::getType():
-         case Contact::getType():
-            //only Users can be checked for planning conflicts
-            break;
-         default:
-            throw new \RuntimeException($input['itemtype'] . " is not (yet?) handled.");
-      }
+            return false;
+        }
 
-      return $input;
-   }
+        if (!isset($input['items_id'])) {
+            Session::addMessageAfterRedirect(
+                __('An item ID is mandatory'),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
+        if (!isset($input['projecttasks_id'])) {
+            Session::addMessageAfterRedirect(
+                __('A project task is mandatory'),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
+        $task = new ProjectTask();
+        $task->getFromDB($input['projecttasks_id']);
+        switch ($input['itemtype']) {
+            case User::getType():
+                Planning::checkAlreadyPlanned(
+                    $input['items_id'],
+                    $task->fields['plan_start_date'],
+                    $task->fields['plan_end_date']
+                );
+                break;
+            case Group::getType():
+                $group_iterator = $DB->request([
+                'SELECT' => 'users_id',
+                'FROM'   => Group_User::getTable(),
+                'WHERE'  => ['groups_id' => $input['items_id']]
+                ]);
+                foreach ($group_iterator as $row) {
+                     Planning::checkAlreadyPlanned(
+                         $row['users_id'],
+                         $task->fields['plan_start_date'],
+                         $task->fields['plan_end_date']
+                     );
+                }
+                break;
+            case Supplier::getType():
+            case Contact::getType():
+               //only Users can be checked for planning conflicts
+                break;
+            default:
+                throw new \RuntimeException($input['itemtype'] . " is not (yet?) handled.");
+        }
+
+        return $input;
+    }
 }

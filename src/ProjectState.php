@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,22 +36,26 @@
  *
  * @since 0.85
 **/
-class ProjectState extends CommonDropdown {
+class ProjectState extends CommonDropdown
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Project state', 'Project states', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Project state', 'Project states', $nb);
+    }
 
 
-   function post_getEmpty() {
-      $this->fields['color'] = '#dddddd';
-   }
+    public function post_getEmpty()
+    {
+        $this->fields['color'] = '#dddddd';
+    }
 
 
-   function getAdditionalFields() {
+    public function getAdditionalFields()
+    {
 
-      return [['name'     => 'color',
+        return [['name'     => 'color',
                          'label'    => __('Color'),
                          'type'     => 'color',
                          'list'     => true],
@@ -58,32 +63,34 @@ class ProjectState extends CommonDropdown {
                          'label'    => __('Finished state'),
                          'type'     => 'bool',
                          'list'     => true],];
-   }
+    }
 
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '11',
          'table'              => $this->getTable(),
          'field'              => 'color',
          'name'               => __('Color'),
          'datatype'           => 'color'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '12',
          'table'              => $this->getTable(),
          'field'              => 'is_finished',
          'name'               => __('Finished state'),
          'datatype'           => 'bool'
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
-   static function getIcon() {
-      return "fas fa-columns";
-   }
+    public static function getIcon()
+    {
+        return "fas fa-columns";
+    }
 }

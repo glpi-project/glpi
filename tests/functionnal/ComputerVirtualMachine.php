@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,43 +35,45 @@ namespace tests\units;
 
 use DbTestCase;
 
-class ComputerVirtualMachine extends DbTestCase {
+class ComputerVirtualMachine extends DbTestCase
+{
 
-   public function testCreateAndGet() {
-      $this->login();
+    public function testCreateAndGet()
+    {
+        $this->login();
 
-      $this->newTestedInstance();
-      $obj = $this->testedInstance;
-      $uuid = 'c37f7ce8-af95-4676-b454-0959f2c5e162';
+        $this->newTestedInstance();
+        $obj = $this->testedInstance;
+        $uuid = 'c37f7ce8-af95-4676-b454-0959f2c5e162';
 
-      // Add
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $this->object($computer)->isInstanceOf('\Computer');
+       // Add
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $this->object($computer)->isInstanceOf('\Computer');
 
-      $this->integer(
-         $id = (int)$obj->add([
+        $this->integer(
+            $id = (int)$obj->add([
             'computers_id' => $computer->fields['id'],
             'name'         => 'Virtu Hall',
-            'uuid'         =>$uuid,
+            'uuid'         => $uuid,
             'vcpu'         => 1,
             'ram'          => 1024
-         ])
-      )->isGreaterThan(0);
-      $this->boolean($obj->getFromDB($id))->isTrue();
-      $this->string($obj->fields['uuid'])->isIdenticalTo($uuid);
+            ])
+        )->isGreaterThan(0);
+        $this->boolean($obj->getFromDB($id))->isTrue();
+        $this->string($obj->fields['uuid'])->isIdenticalTo($uuid);
 
-      $this->boolean($obj->findVirtualMachine(['name' => 'Virtu Hall']))->isFalse();
-      //n machin exists yet
-      $this->boolean($obj->findVirtualMachine(['uuid' => $uuid]))->isFalse();
+        $this->boolean($obj->findVirtualMachine(['name' => 'Virtu Hall']))->isFalse();
+       //n machin exists yet
+        $this->boolean($obj->findVirtualMachine(['uuid' => $uuid]))->isFalse();
 
-      $this->integer(
-         $cid = (int)$computer->add([
+        $this->integer(
+            $cid = (int)$computer->add([
             'name'         => 'Virtu Hall',
             'uuid'         => $uuid,
             'entities_id'  => 0
-         ])
-      )->isGreaterThan(0);
+            ])
+        )->isGreaterThan(0);
 
-      $this->variable($obj->findVirtualMachine(['uuid' => $uuid]))->isEqualTo($cid);
-   }
+        $this->variable($obj->findVirtualMachine(['uuid' => $uuid]))->isEqualTo($cid);
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -42,44 +43,46 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-abstract class AbstractCommand extends Command implements GlpiCommandInterface {
+abstract class AbstractCommand extends Command implements GlpiCommandInterface
+{
 
    /**
     * @var DB
     */
-   protected $db;
+    protected $db;
 
    /**
     * @var InputInterface
     */
-   protected $input;
+    protected $input;
 
    /**
     * @var OutputInterface
     */
-   protected $output;
+    protected $output;
 
    /**
     * Flag to indicate if command requires a DB connection.
     *
     * @var boolean
     */
-   protected $requires_db = true;
+    protected $requires_db = true;
 
    /**
     * Flag to indicate if command requires an up-to-date DB.
     *
     * @var boolean
     */
-   protected $requires_db_up_to_date = true;
+    protected $requires_db_up_to_date = true;
 
-   protected function initialize(InputInterface $input, OutputInterface $output) {
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
 
-      $this->input = $input;
-      $this->output = $output;
+        $this->input = $input;
+        $this->output = $output;
 
-      $this->initDbConnection();
-   }
+        $this->initDbConnection();
+    }
 
    /**
     * Check database connection.
@@ -88,16 +91,17 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface {
     *
     * @return void
     */
-   protected function initDbConnection() {
+    protected function initDbConnection()
+    {
 
-      global $DB;
+        global $DB;
 
-      if ($this->requires_db && (!($DB instanceof DB) || !$DB->connected)) {
-         throw new \Symfony\Component\Console\Exception\RuntimeException(__('Unable to connect to database.'));
-      }
+        if ($this->requires_db && (!($DB instanceof DB) || !$DB->connected)) {
+            throw new \Symfony\Component\Console\Exception\RuntimeException(__('Unable to connect to database.'));
+        }
 
-      $this->db = $DB;
-   }
+        $this->db = $DB;
+    }
 
    /**
     * Correctly write output messages when a progress bar is displayed.
@@ -108,21 +112,23 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface {
     *
     * @return void
     */
-   protected function writelnOutputWithProgressBar($messages,
-                                                   ProgressBar $progress_bar,
-                                                   $verbosity = OutputInterface::VERBOSITY_NORMAL) {
+    protected function writelnOutputWithProgressBar(
+        $messages,
+        ProgressBar $progress_bar,
+        $verbosity = OutputInterface::VERBOSITY_NORMAL
+    ) {
 
-      if ($verbosity > $this->output->getVerbosity()) {
-         return; // Do nothing if message will not be output due to its too high verbosity
-      }
+        if ($verbosity > $this->output->getVerbosity()) {
+            return; // Do nothing if message will not be output due to its too high verbosity
+        }
 
-      $progress_bar->clear();
-      $this->output->writeln(
-         $messages,
-         $verbosity
-      );
-      $progress_bar->display();
-   }
+        $progress_bar->clear();
+        $this->output->writeln(
+            $messages,
+            $verbosity
+        );
+        $progress_bar->display();
+    }
 
    /**
     * Output session buffered messages.
@@ -131,13 +137,14 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface {
     *
     * @return void
     */
-   protected function outputSessionBufferedMessages($levels_to_output = [INFO, WARNING, ERROR]) {
+    protected function outputSessionBufferedMessages($levels_to_output = [INFO, WARNING, ERROR])
+    {
 
-      if (empty($_SESSION['MESSAGE_AFTER_REDIRECT'])) {
-         return;
-      }
+        if (empty($_SESSION['MESSAGE_AFTER_REDIRECT'])) {
+            return;
+        }
 
-      $msg_levels = [
+        $msg_levels = [
          INFO    => [
             'tag'       => 'info',
             'verbosity' => OutputInterface::VERBOSITY_VERBOSE,
@@ -150,83 +157,87 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface {
             'tag'       => 'error',
             'verbosity' => OutputInterface::VERBOSITY_QUIET,
          ],
-      ];
+        ];
 
-      foreach ($msg_levels as $key => $options) {
-         if (!in_array($key, $levels_to_output)) {
-            continue;
-         }
+        foreach ($msg_levels as $key => $options) {
+            if (!in_array($key, $levels_to_output)) {
+                continue;
+            }
 
-         if (!array_key_exists($key, $_SESSION['MESSAGE_AFTER_REDIRECT'])) {
-            continue;
-         }
+            if (!array_key_exists($key, $_SESSION['MESSAGE_AFTER_REDIRECT'])) {
+                continue;
+            }
 
-         foreach ($_SESSION['MESSAGE_AFTER_REDIRECT'][$key] as $message) {
-            $message = strip_tags(preg_replace('/<br\s*\/?>/', ' ', $message)); // Output raw text
-            $this->output->writeln(
-               "<{$options['tag']}>{$message}</{$options['tag']}>",
-               $options['verbosity']
-            );
-         }
-      }
-   }
+            foreach ($_SESSION['MESSAGE_AFTER_REDIRECT'][$key] as $message) {
+                $message = strip_tags(preg_replace('/<br\s*\/?>/', ' ', $message)); // Output raw text
+                $this->output->writeln(
+                    "<{$options['tag']}>{$message}</{$options['tag']}>",
+                    $options['verbosity']
+                );
+            }
+        }
+    }
 
    /**
     * Output a warning in an optionnal requirement is missing.
     *
     * @return void
     */
-   protected function outputWarningOnMissingOptionnalRequirements() {
-      if ($this->output->isQuiet()) {
-         return;
-      }
+    protected function outputWarningOnMissingOptionnalRequirements()
+    {
+        if ($this->output->isQuiet()) {
+            return;
+        }
 
-      $db = property_exists($this, 'db') ? $this->db : null;
+        $db = property_exists($this, 'db') ? $this->db : null;
 
-      $requirements_manager = new RequirementsManager();
-      $core_requirements = $requirements_manager->getCoreRequirementList(
-         $db instanceof \DBmysql && $db->connected ? $db : null
-      );
-      if ($core_requirements->hasMissingOptionalRequirements()) {
-         $message = __('Some optional system requirements are missing.')
+        $requirements_manager = new RequirementsManager();
+        $core_requirements = $requirements_manager->getCoreRequirementList(
+            $db instanceof \DBmysql && $db->connected ? $db : null
+        );
+        if ($core_requirements->hasMissingOptionalRequirements()) {
+            $message = __('Some optional system requirements are missing.')
             . ' '
             . __('Run "php bin/console glpi:system:check_requirements" for more details.');
-         $this->output->writeln(
-            '<comment>' . $message . '</comment>',
-            OutputInterface::VERBOSITY_NORMAL
-         );
-      }
-   }
+            $this->output->writeln(
+                '<comment>' . $message . '</comment>',
+                OutputInterface::VERBOSITY_NORMAL
+            );
+        }
+    }
 
-   public function mustCheckMandatoryRequirements(): bool {
+    public function mustCheckMandatoryRequirements(): bool
+    {
 
-      return true;
-   }
+        return true;
+    }
 
-   public function requiresUpToDateDb(): bool {
+    public function requiresUpToDateDb(): bool
+    {
 
-      return $this->requires_db && $this->requires_db_up_to_date;
-   }
+        return $this->requires_db && $this->requires_db_up_to_date;
+    }
 
    /**
     * Ask for user confirmation before continuing command execution.
     *
     * @return void
     */
-   protected function askForConfirmation(): void {
-      if (!$this->input->getOption('no-interaction')) {
-         $question_helper = $this->getHelper('question');
-         $run = $question_helper->ask(
-            $this->input,
-            $this->output,
-            new ConfirmationQuestion(__('Do you want to continue?') . ' [Yes/no]', true)
-         );
-         if (!$run) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
-               '<comment>' . __('Aborted.') . '</comment>',
-               0 // Success code
+    protected function askForConfirmation(): void
+    {
+        if (!$this->input->getOption('no-interaction')) {
+            $question_helper = $this->getHelper('question');
+            $run = $question_helper->ask(
+                $this->input,
+                $this->output,
+                new ConfirmationQuestion(__('Do you want to continue?') . ' [Yes/no]', true)
             );
-         }
-      }
-   }
+            if (!$run) {
+                 throw new \Glpi\Console\Exception\EarlyExitException(
+                     '<comment>' . __('Aborted.') . '</comment>',
+                     0 // Success code
+                 );
+            }
+        }
+    }
 }

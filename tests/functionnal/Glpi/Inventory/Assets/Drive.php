@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,10 +37,12 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/drive.class.php and inc/inventory/asset/harddrive.class.php */
 
-class Drive extends AbstractInventoryAsset {
+class Drive extends AbstractInventoryAsset
+{
 
-   protected function assetProvider() :array {
-      return [
+    protected function assetProvider(): array
+    {
+        return [
          [ //hdd
             'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -82,70 +85,73 @@ class Drive extends AbstractInventoryAsset {
   </REQUEST>",
             'expected'  => '{"description": "Lecteur de CD-ROM", "manufacturer": "(Lecteurs de CD-ROM standard)", "model": "VBOX CD-ROM ATA Device", "name": "VBOX CD-ROM ATA Device", "scsi_coid": "1", "scsi_lun": "0", "scsi_unid": "0", "type": "UNKNOWN", "designation": "Lecteur de CD-ROM", "interfacetypes_id": "UNKNOWN", "manufacturers_id": "(Lecteurs de CD-ROM standard)", "is_dynamic": 1}'
          ]
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider assetProvider
     */
-   public function testPrepare($xml, $expected) {
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($xml);
-      $json = json_decode($data);
+    public function testPrepare($xml, $expected)
+    {
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\Drive($computer, $json->content->storages);
-      $asset->setExtraData((array)$json->content);
-      $result = $asset->prepare();
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\Drive($computer, $json->content->storages);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
 
-      if (!$asset->isDrive($json->content->storages[0])) {
-         //work with a HDD
-         $this->array($result)->isEmpty();
-         $result = $asset->getPreparedHarddrives();
-      }
-      $this->object($result[0])->isEqualTo(json_decode($expected));
-   }
+        if (!$asset->isDrive($json->content->storages[0])) {
+           //work with a HDD
+            $this->array($result)->isEmpty();
+            $result = $asset->getPreparedHarddrives();
+        }
+        $this->object($result[0])->isEqualTo(json_decode($expected));
+    }
 
-   public function testHandle() {
-      $computer = getItemByTypeName('Computer', '_test_pc01');
+    public function testHandle()
+    {
+        $computer = getItemByTypeName('Computer', '_test_pc01');
 
-      //first, check there are no controller linked to this computer
-      $idd = new \Item_DeviceDrive();
-      $idh = new \Item_DeviceHardDrive();
-      $this->boolean($idd->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+       //first, check there are no controller linked to this computer
+        $idd = new \Item_DeviceDrive();
+        $idh = new \Item_DeviceHardDrive();
+        $this->boolean($idd->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isFalse('A drive is already linked to computer!');
-      $this->boolean($idh->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+        $this->boolean($idh->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isFalse('A hard drive is already linked to computer!');
 
-      //convert data
-      $expected = $this->assetProvider()[0];
+       //convert data
+        $expected = $this->assetProvider()[0];
 
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($expected['xml']);
-      $json = json_decode($data);
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($expected['xml']);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\Drive($computer, $json->content->storages);
-      $asset->setExtraData((array)$json->content);
-      $result = $asset->prepare();
-      //is a harddrive
-      $this->array($result)->isEmpty();
-      $result = $asset->getPreparedHarddrives();
-      $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\Drive($computer, $json->content->storages);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
+       //is a harddrive
+        $this->array($result)->isEmpty();
+        $result = $asset->getPreparedHarddrives();
+        $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
 
-      //handle
-      $asset->handleLinks();
-      $asset->handle();
-      $this->boolean($idh->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+       //handle
+        $asset->handleLinks();
+        $asset->handle();
+        $this->boolean($idh->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isTrue('Hard disk has not been linked to computer :(');
-   }
+    }
 
-   public function testInventoryUpdate() {
-      $computer = new \Computer();
-      $device_drive = new \DeviceDrive();
-      $item_drive = new \Item_DeviceDrive();
+    public function testInventoryUpdate()
+    {
+        $computer = new \Computer();
+        $device_drive = new \DeviceDrive();
+        $item_drive = new \Item_DeviceDrive();
 
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <STORAGES>
@@ -180,107 +186,107 @@ class Drive extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      //create manually a computer, with 3 drives
-      $computers_id = $computer->add([
+       //create manually a computer, with 3 drives
+        $computers_id = $computer->add([
          'name'   => 'pc002',
          'serial' => 'ggheb7ne7',
          'entities_id' => 0
-      ]);
-      $this->integer($computers_id)->isGreaterThan(0);
+        ]);
+        $this->integer($computers_id)->isGreaterThan(0);
 
-      $manufacturer = new \Manufacturer();
-      $manufacturers_id = $manufacturer->add([
+        $manufacturer = new \Manufacturer();
+        $manufacturers_id = $manufacturer->add([
          'name' => 'Samsung'
-      ]);
-      $this->integer($manufacturers_id)->isGreaterThan(0);
+        ]);
+        $this->integer($manufacturers_id)->isGreaterThan(0);
 
-      $interface = new \InterfaceType();
-      $interfacetypes_id = $interface->add([
+        $interface = new \InterfaceType();
+        $interfacetypes_id = $interface->add([
          'name' => 'CDROM'
-      ]);
-      $this->integer($interfacetypes_id)->isGreaterThan(0);
+        ]);
+        $this->integer($interfacetypes_id)->isGreaterThan(0);
 
-      $drive_1_id = $device_drive->add([
+        $drive_1_id = $device_drive->add([
          'designation' => 'CD-ROM drive',
          'manufacturers_id' => $manufacturers_id,
          'interfacetypes_id' => $interfacetypes_id,
          'entities_id'  => 0
-      ]);
-      $this->integer($drive_1_id)->isGreaterThan(0);
+        ]);
+        $this->integer($drive_1_id)->isGreaterThan(0);
 
-      $item_drive_1_id = $item_drive->add([
+        $item_drive_1_id = $item_drive->add([
          'items_id'     => $computers_id,
          'itemtype'     => 'Computer',
          'devicedrives_id' => $drive_1_id
-      ]);
-      $this->integer($item_drive_1_id)->isGreaterThan(0);
+        ]);
+        $this->integer($item_drive_1_id)->isGreaterThan(0);
 
-      $interfacetypes_id = $interface->add([
+        $interfacetypes_id = $interface->add([
          'name' => 'CD-ROM'
-      ]);
-      $this->integer($interfacetypes_id)->isGreaterThan(0);
+        ]);
+        $this->integer($interfacetypes_id)->isGreaterThan(0);
 
-      $drive_2_id = $device_drive->add([
+        $drive_2_id = $device_drive->add([
          'designation' => 'Lecteur de CD-ROM',
          'manufacturers_id' => $manufacturers_id,
          'interfacetypes_id' => $interfacetypes_id,
          'entities_id'  => 0
-      ]);
-      $this->integer($drive_2_id)->isGreaterThan(0);
+        ]);
+        $this->integer($drive_2_id)->isGreaterThan(0);
 
-      $item_drive_2_id = $item_drive->add([
+        $item_drive_2_id = $item_drive->add([
          'items_id'     => $computers_id,
          'itemtype'     => 'Computer',
          'devicedrives_id' => $drive_2_id
-      ]);
-      $this->integer($item_drive_2_id)->isGreaterThan(0);
+        ]);
+        $this->integer($item_drive_2_id)->isGreaterThan(0);
 
-      $interfacetypes_id = $interface->add([
+        $interfacetypes_id = $interface->add([
          'name' => 'DVD Writer'
-      ]);
+        ]);
 
-      $drive_3_id = $device_drive->add([
+        $drive_3_id = $device_drive->add([
          'designation' => 'My Drive',
          'manufacturers_id' => $manufacturers_id,
          'interfacetypes_id' => $interfacetypes_id,
          'entities_id'  => 0
-      ]);
-      $this->integer($drive_3_id)->isGreaterThan(0);
+        ]);
+        $this->integer($drive_3_id)->isGreaterThan(0);
 
-      $item_drive_3_id = $item_drive->add([
+        $item_drive_3_id = $item_drive->add([
          'items_id'     => $computers_id,
          'itemtype'     => 'Computer',
          'devicedrives_id' => $drive_3_id
-      ]);
-      $this->integer($item_drive_3_id)->isGreaterThan(0);
+        ]);
+        $this->integer($item_drive_3_id)->isGreaterThan(0);
 
-      $drives = $item_drive->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($drives))->isIdenticalTo(3);
-      foreach ($drives as $drive) {
-         $this->variable($drive['is_dynamic'])->isEqualTo(0);
-      }
+        $drives = $item_drive->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($drives))->isIdenticalTo(3);
+        foreach ($drives as $drive) {
+            $this->variable($drive['is_dynamic'])->isEqualTo(0);
+        }
 
-      //computer inventory knows only "hp" and "lite-on" drives
-      $this->doInventory($xml_source, true);
+       //computer inventory knows only "hp" and "lite-on" drives
+        $this->doInventory($xml_source, true);
 
-      //we still have 3 drives
-      $drives = $device_drive->find();
-      $this->integer(count($drives))->isIdenticalTo(3);
+       //we still have 3 drives
+        $drives = $device_drive->find();
+        $this->integer(count($drives))->isIdenticalTo(3);
 
-      //we still have 3 drives items linked to the computer
-      $drives = $item_drive->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($drives))->isIdenticalTo(3);
+       //we still have 3 drives items linked to the computer
+        $drives = $item_drive->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($drives))->isIdenticalTo(3);
 
-      //drives present in the inventory source are now dynamic
-      $drives = $item_drive->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($drives))->isIdenticalTo(2);
+       //drives present in the inventory source are now dynamic
+        $drives = $item_drive->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($drives))->isIdenticalTo(2);
 
-      //drive not present in the inventory is still not dynamic
-      $drives = $item_drive->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
-      $this->integer(count($drives))->isIdenticalTo(1);
+       //drive not present in the inventory is still not dynamic
+        $drives = $item_drive->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($drives))->isIdenticalTo(1);
 
-      //Redo inventory, but with removed "lite-on" drive
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+       //Redo inventory, but with removed "lite-on" drive
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <STORAGES>
@@ -305,31 +311,32 @@ class Drive extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      $this->doInventory($xml_source, true);
+        $this->doInventory($xml_source, true);
 
-      //we still have 3 drives
-      $drives = $device_drive->find();
-      $this->integer(count($drives))->isIdenticalTo(3);
+       //we still have 3 drives
+        $drives = $device_drive->find();
+        $this->integer(count($drives))->isIdenticalTo(3);
 
-      //we now have 2 drives linked to computer only
-      $drives = $item_drive->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($drives))->isIdenticalTo(2);
+       //we now have 2 drives linked to computer only
+        $drives = $item_drive->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($drives))->isIdenticalTo(2);
 
-      //drive present in the inventory source is still dynamic
-      $drives = $item_drive->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($drives))->isIdenticalTo(1);
+       //drive present in the inventory source is still dynamic
+        $drives = $item_drive->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($drives))->isIdenticalTo(1);
 
-      //drive not present in the inventory is still not dynamic
-      $drives = $item_drive->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
-      $this->integer(count($drives))->isIdenticalTo(1);
-   }
+       //drive not present in the inventory is still not dynamic
+        $drives = $item_drive->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($drives))->isIdenticalTo(1);
+    }
 
-   public function testInventoryUpdateHardDrive() {
-      $computer = new \Computer();
-      $device_hdd = new \DeviceHardDrive();
-      $item_hdd = new \Item_DeviceHardDrive();
+    public function testInventoryUpdateHardDrive()
+    {
+        $computer = new \Computer();
+        $device_hdd = new \DeviceHardDrive();
+        $item_hdd = new \Item_DeviceHardDrive();
 
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <STORAGES>
@@ -370,99 +377,99 @@ class Drive extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      //create manually a computer, with 3 harddrives
-      $computers_id = $computer->add([
+       //create manually a computer, with 3 harddrives
+        $computers_id = $computer->add([
          'name'   => 'pc002',
          'serial' => 'ggheb7ne7',
          'entities_id' => 0
-      ]);
-      $this->integer($computers_id)->isGreaterThan(0);
+        ]);
+        $this->integer($computers_id)->isGreaterThan(0);
 
-      $manufacturer = new \Manufacturer();
-      $manufacturers_id = $manufacturer->add([
+        $manufacturer = new \Manufacturer();
+        $manufacturers_id = $manufacturer->add([
          'name' => 'Samsung'
-      ]);
-      $this->integer($manufacturers_id)->isGreaterThan(0);
+        ]);
+        $this->integer($manufacturers_id)->isGreaterThan(0);
 
-      $interface = new \InterfaceType();
-      $this->boolean(
-         $interface->getFromDBByCrit(['name' => 'IDE'])
-      )->isTrue();
-      $interfacetypes_id = $interface->fields['id'];
-      $this->integer($interfacetypes_id)->isGreaterThan(0);
+        $interface = new \InterfaceType();
+        $this->boolean(
+            $interface->getFromDBByCrit(['name' => 'IDE'])
+        )->isTrue();
+        $interfacetypes_id = $interface->fields['id'];
+        $this->integer($interfacetypes_id)->isGreaterThan(0);
 
-      $harddrive_1_id = $device_hdd->add([
+        $harddrive_1_id = $device_hdd->add([
          'designation' => 'PM951 NVMe SAMSUNG 256GB',
          'manufacturers_id' => $manufacturers_id,
          'interfacetypes_id' => $interfacetypes_id,
          'entities_id'  => 0
-      ]);
-      $this->integer($harddrive_1_id)->isGreaterThan(0);
+        ]);
+        $this->integer($harddrive_1_id)->isGreaterThan(0);
 
-      $item_harddrive_1_id = $item_hdd->add([
+        $item_harddrive_1_id = $item_hdd->add([
          'items_id'     => $computers_id,
          'itemtype'     => 'Computer',
          'deviceharddrives_id' => $harddrive_1_id
-      ]);
-      $this->integer($item_harddrive_1_id)->isGreaterThan(0);
+        ]);
+        $this->integer($item_harddrive_1_id)->isGreaterThan(0);
 
-      $harddrive_2_id = $device_hdd->add([
+        $harddrive_2_id = $device_hdd->add([
          'designation' => 'HGST HTS725032A7E630',
          'manufacturers_id' => $manufacturers_id,
          'interfacetypes_id' => $interfacetypes_id,
          'entities_id'  => 0
-      ]);
-      $this->integer($harddrive_2_id)->isGreaterThan(0);
+        ]);
+        $this->integer($harddrive_2_id)->isGreaterThan(0);
 
-      $item_harddrive_2_id = $item_hdd->add([
+        $item_harddrive_2_id = $item_hdd->add([
          'items_id'     => $computers_id,
          'itemtype'     => 'Computer',
          'deviceharddrives_id' => $harddrive_2_id
-      ]);
-      $this->integer($item_harddrive_2_id)->isGreaterThan(0);
+        ]);
+        $this->integer($item_harddrive_2_id)->isGreaterThan(0);
 
-      $harddrive_3_id = $device_hdd->add([
+        $harddrive_3_id = $device_hdd->add([
          'designation' => 'My Hard Drive',
          'manufacturers_id' => $manufacturers_id,
          'interfacetypes_id' => $interfacetypes_id,
          'entities_id'  => 0
-      ]);
-      $this->integer($harddrive_3_id)->isGreaterThan(0);
+        ]);
+        $this->integer($harddrive_3_id)->isGreaterThan(0);
 
-      $item_harddrive_3_id = $item_hdd->add([
+        $item_harddrive_3_id = $item_hdd->add([
          'items_id'     => $computers_id,
          'itemtype'     => 'Computer',
          'deviceharddrives_id' => $harddrive_3_id
-      ]);
-      $this->integer($item_harddrive_3_id)->isGreaterThan(0);
+        ]);
+        $this->integer($item_harddrive_3_id)->isGreaterThan(0);
 
-      $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($harddrives))->isIdenticalTo(3);
-      foreach ($harddrives as $harddrive) {
-         $this->variable($harddrive['is_dynamic'])->isEqualTo(0);
-      }
+        $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($harddrives))->isIdenticalTo(3);
+        foreach ($harddrives as $harddrive) {
+            $this->variable($harddrive['is_dynamic'])->isEqualTo(0);
+        }
 
-      //computer inventory knows only "PM951 NVMe SAMSUNG 256GB" and "HGST HTS725032A7E630" harddrives
-      $this->doInventory($xml_source, true);
+       //computer inventory knows only "PM951 NVMe SAMSUNG 256GB" and "HGST HTS725032A7E630" harddrives
+        $this->doInventory($xml_source, true);
 
-      //we still have 3 harddrives
-      $harddrives = $device_hdd->find();
-      $this->integer(count($harddrives))->isIdenticalTo(3);
+       //we still have 3 harddrives
+        $harddrives = $device_hdd->find();
+        $this->integer(count($harddrives))->isIdenticalTo(3);
 
-      //we still have 3 harddrives items linked to the computer
-      $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($harddrives))->isIdenticalTo(3);
+       //we still have 3 harddrives items linked to the computer
+        $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($harddrives))->isIdenticalTo(3);
 
-      //harddrives present in the inventory source are now dynamic
-      $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($harddrives))->isIdenticalTo(2);
+       //harddrives present in the inventory source are now dynamic
+        $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($harddrives))->isIdenticalTo(2);
 
-      //harddrive not present in the inventory is still not dynamic
-      $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
-      $this->integer(count($harddrives))->isIdenticalTo(1);
+       //harddrive not present in the inventory is still not dynamic
+        $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($harddrives))->isIdenticalTo(1);
 
-      //Redo inventory, but with removed "HGST HTS725032A7E630" harddrive
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+       //Redo inventory, but with removed "HGST HTS725032A7E630" harddrive
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <STORAGES>
@@ -487,22 +494,22 @@ class Drive extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      $this->doInventory($xml_source, true);
+        $this->doInventory($xml_source, true);
 
-      //we still have 3 harddrives
-      $harddrives = $device_hdd->find();
-      $this->integer(count($harddrives))->isIdenticalTo(3);
+       //we still have 3 harddrives
+        $harddrives = $device_hdd->find();
+        $this->integer(count($harddrives))->isIdenticalTo(3);
 
-      //we now have 2 harddrives linked to computer only
-      $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($harddrives))->isIdenticalTo(2);
+       //we now have 2 harddrives linked to computer only
+        $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($harddrives))->isIdenticalTo(2);
 
-      //harddrive present in the inventory source is still dynamic
-      $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($harddrives))->isIdenticalTo(1);
+       //harddrive present in the inventory source is still dynamic
+        $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($harddrives))->isIdenticalTo(1);
 
-      //harddrive not present in the inventory is still not dynamic
-      $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
-      $this->integer(count($harddrives))->isIdenticalTo(1);
-   }
+       //harddrive not present in the inventory is still not dynamic
+        $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($harddrives))->isIdenticalTo(1);
+    }
 }

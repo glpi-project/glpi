@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,7 +32,7 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   include ('../inc/includes.php');
+    include('../inc/includes.php');
 }
 
 
@@ -45,29 +46,25 @@ $setupdisplay = new DisplayPreference();
 
 
 if (isset($_POST["activate"])) {
-   $setupdisplay->activatePerso($_POST);
-
+    $setupdisplay->activatePerso($_POST);
 } else if (isset($_POST["disable"])) {
-   if ($_POST['users_id'] == Session::getLoginUserID()) {
-       $setupdisplay->deleteByCriteria(['users_id' => $_POST['users_id'],
+    if ($_POST['users_id'] == Session::getLoginUserID()) {
+        $setupdisplay->deleteByCriteria(['users_id' => $_POST['users_id'],
                                                        'itemtype' => $_POST['itemtype']]);
-   }
+    }
 } else if (isset($_POST["add"])) {
-   $setupdisplay->add($_POST);
-
+    $setupdisplay->add($_POST);
 } else if (isset($_POST["purge"]) || isset($_POST["purge_x"])) {
-   $setupdisplay->delete($_POST, 1);
-
+    $setupdisplay->delete($_POST, 1);
 } else if (isset($_POST["up"]) || isset($_POST["up_x"])) {
-   $setupdisplay->orderItem($_POST, 'up');
-
+    $setupdisplay->orderItem($_POST, 'up');
 } else if (isset($_POST["down"]) || isset($_POST["down_x"])) {
-   $setupdisplay->orderItem($_POST, 'down');
+    $setupdisplay->orderItem($_POST, 'down');
 }
 
 // Datas may come from GET or POST : use REQUEST
 if (isset($_REQUEST["itemtype"])) {
-   $setupdisplay->display(['displaytype' => $_REQUEST['itemtype']]);
+    $setupdisplay->display(['displaytype' => $_REQUEST['itemtype']]);
 }
 
 Html::popFooter();

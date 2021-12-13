@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -38,51 +39,56 @@ use Traversable;
 /**
  * @since 9.5.0
  */
-class RequirementsList implements \IteratorAggregate {
+class RequirementsList implements \IteratorAggregate
+{
 
    /**
     * Requirements.
     *
     * @var RequirementInterface[]
     */
-   private $requirements;
+    private $requirements;
 
    /**
     * @param RequirementInterface[] $requirements
     */
-   public function __construct(array $requirements = []) {
-      $this->requirements = $requirements;
-   }
+    public function __construct(array $requirements = [])
+    {
+        $this->requirements = $requirements;
+    }
 
-   public function getIterator(): Traversable {
-      return new \ArrayIterator($this->requirements);
-   }
+    public function getIterator(): Traversable
+    {
+        return new \ArrayIterator($this->requirements);
+    }
 
    /**
     * Indicates if a mandatory requirement is missing.
     *
     * @return boolean
     */
-   public function hasMissingMandatoryRequirements() {
-      foreach ($this->requirements as $requirement) {
-         if (!$requirement->isOutOfContext() && $requirement->isMissing() && !$requirement->isOptional()) {
-            return true;
-         }
-      }
-      return false;
-   }
+    public function hasMissingMandatoryRequirements()
+    {
+        foreach ($this->requirements as $requirement) {
+            if (!$requirement->isOutOfContext() && $requirement->isMissing() && !$requirement->isOptional()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
    /**
     * Indicates if an optional requirement is missing.
     *
     * @return boolean
     */
-   public function hasMissingOptionalRequirements() {
-      foreach ($this->requirements as $requirement) {
-         if (!$requirement->isOutOfContext() && $requirement->isMissing() && $requirement->isOptional()) {
-            return true;
-         }
-      }
-      return false;
-   }
+    public function hasMissingOptionalRequirements()
+    {
+        foreach ($this->requirements as $requirement) {
+            if (!$requirement->isOutOfContext() && $requirement->isMissing() && $requirement->isOptional()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

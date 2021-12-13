@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,32 +38,35 @@ use Glpi\Inventory\Conf;
 
 class Sensor extends Device
 {
-   public function __construct(CommonDBTM $item, array $data = null) {
-      parent::__construct($item, $data, 'Item_DeviceSensor');
-   }
+    public function __construct(CommonDBTM $item, array $data = null)
+    {
+        parent::__construct($item, $data, 'Item_DeviceSensor');
+    }
 
-   public function prepare() :array {
+    public function prepare(): array
+    {
 
-      $mapping = [
+        $mapping = [
          'manufacturer' => 'manufacturers_id',
          'type'         => 'devicesensortypes_id',
          'name'         => 'designation'
-      ];
+        ];
 
-      foreach ($this->data as &$val) {
-         foreach ($mapping as $origin => $dest) {
-            if (property_exists($val, $origin)) {
-               $val->$dest = $val->$origin;
+        foreach ($this->data as &$val) {
+            foreach ($mapping as $origin => $dest) {
+                if (property_exists($val, $origin)) {
+                    $val->$dest = $val->$origin;
+                }
             }
-         }
 
-         $val->is_dynamic = 1;
-      }
+            $val->is_dynamic = 1;
+        }
 
-      return $this->data;
-   }
+        return $this->data;
+    }
 
-   public function checkConf(Conf $conf): bool {
-      return true;
-   }
+    public function checkConf(Conf $conf): bool
+    {
+        return true;
+    }
 }

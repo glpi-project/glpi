@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,11 +32,12 @@
  */
 
 /// Class CartridgeItemType
-class CartridgeItemType extends CommonType {
+class CartridgeItemType extends CommonType
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Cartridge type', 'Cartridge types', $nb);
-   }
-
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Cartridge type', 'Cartridge types', $nb);
+    }
 }

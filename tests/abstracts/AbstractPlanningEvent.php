@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,28 +31,30 @@
  * ---------------------------------------------------------------------
  */
 
-abstract class AbstractPlanningEvent extends \DbTestCase {
-   protected $myclass = "";
-   protected $input   = [];
+abstract class AbstractPlanningEvent extends \DbTestCase
+{
+    protected $myclass = "";
+    protected $input   = [];
 
-   protected $now       = "";
-   protected $begin     = "";
-   protected $end       = "";
-   protected $duration  = "";
-   protected $exdate1   = "";
-   protected $exdate2   = "";
+    protected $now       = "";
+    protected $begin     = "";
+    protected $end       = "";
+    protected $duration  = "";
+    protected $exdate1   = "";
+    protected $exdate2   = "";
 
-   public function beforeTestMethod($method) {
-      parent::beforeTestMethod($method);
+    public function beforeTestMethod($method)
+    {
+        parent::beforeTestMethod($method);
 
-      $this->now      = time();
-      $this->duration = 2 * \HOUR_TIMESTAMP;
-      $this->begin    = date('Y-m-d H:i:s', $this->now);
-      $this->end      = date('Y-m-d H:i:s', $this->now + $this->duration);
-      $this->exdate1  = date('Y-m-d', $this->now + (2 * \DAY_TIMESTAMP));
-      $this->exdate2  = date('Y-m-d', $this->now + (3 * \DAY_TIMESTAMP));
+        $this->now      = time();
+        $this->duration = 2 * \HOUR_TIMESTAMP;
+        $this->begin    = date('Y-m-d H:i:s', $this->now);
+        $this->end      = date('Y-m-d H:i:s', $this->now + $this->duration);
+        $this->exdate1  = date('Y-m-d', $this->now + (2 * \DAY_TIMESTAMP));
+        $this->exdate2  = date('Y-m-d', $this->now + (3 * \DAY_TIMESTAMP));
 
-      $this->input = [
+        $this->input = [
          'name'       => 'test add external event',
          'test'       => 'comment for external event',
          'plan'       => [
@@ -67,42 +70,44 @@ abstract class AbstractPlanningEvent extends \DbTestCase {
          ],
          'state'      => \Planning::TODO,
          'background' => 1,
-      ];
-   }
+        ];
+    }
 
-   public function testAdd() {
-      $this->login();
+    public function testAdd()
+    {
+        $this->login();
 
-      $event = new $this->myclass;
-      $id    = $event->add($this->input);
+        $event = new $this->myclass();
+        $id    = $event->add($this->input);
 
-      $this->integer((int) $id)->isGreaterThan(0);
-      $this->boolean($event->getFromDB($id))->isTrue();
+        $this->integer((int) $id)->isGreaterThan(0);
+        $this->boolean($event->getFromDB($id))->isTrue();
 
-      // check end date
-      if (isset($event->fields['end'])) {
-         $this->string($event->fields['end'])->isEqualTo($this->end);
-      }
+       // check end date
+        if (isset($event->fields['end'])) {
+            $this->string($event->fields['end'])->isEqualTo($this->end);
+        }
 
-      // check rrule encoding
-      $exp_exdates = '"exceptions":["'.$this->exdate1.'","'.$this->exdate2.'"]';
-      $this->string($event->fields['rrule'])
-           ->isEqualTo('{"freq":"daily","interval":1,"byweekday":"MO","bymonth":1,'.$exp_exdates.'}');
+       // check rrule encoding
+        $exp_exdates = '"exceptions":["' . $this->exdate1 . '","' . $this->exdate2 . '"]';
+        $this->string($event->fields['rrule'])
+           ->isEqualTo('{"freq":"daily","interval":1,"byweekday":"MO","bymonth":1,' . $exp_exdates . '}');
 
-      return $event;
-   }
+        return $event;
+    }
 
 
-   public function testUpdate() {
-      $this->login();
+    public function testUpdate()
+    {
+        $this->login();
 
-      $event = new $this->myclass;
-      $id    = $event->add($this->input);
+        $event = new $this->myclass();
+        $id    = $event->add($this->input);
 
-      $new_begin = date("Y-m-d H:i:s", strtotime($this->begin) + $this->duration);
-      $new_end   = date("Y-m-d H:i:s", strtotime($this->end) + $this->duration);
+        $new_begin = date("Y-m-d H:i:s", strtotime($this->begin) + $this->duration);
+        $new_end   = date("Y-m-d H:i:s", strtotime($this->end) + $this->duration);
 
-      $update = array_merge($this->input, [
+        $update = array_merge($this->input, [
          'id'         => $id,
          'name'       => 'updated external event',
          'test'       => 'updated comment for external event',
@@ -118,35 +123,36 @@ abstract class AbstractPlanningEvent extends \DbTestCase {
          ],
          'state'      => \Planning::INFO,
          'background' => 0,
-      ]);
-      $this->boolean($event->update($update))->isTrue();
+        ]);
+        $this->boolean($event->update($update))->isTrue();
 
-      // check dates (we added duration to both dates on update)
-      if (isset($event->fields['begin'])) {
-         $this->string($event->fields['begin'])
+       // check dates (we added duration to both dates on update)
+        if (isset($event->fields['begin'])) {
+            $this->string($event->fields['begin'])
             ->isEqualTo($new_begin);
-      }
-      if (isset($event->fields['end'])) {
-         $this->string($event->fields['end'])
+        }
+        if (isset($event->fields['end'])) {
+            $this->string($event->fields['end'])
             ->isEqualTo($new_end);
-      }
+        }
 
-      // check rrule encoding
-      $this->string($event->fields['rrule'])
+       // check rrule encoding
+        $this->string($event->fields['rrule'])
            ->isEqualTo('{"freq":"monthly","interval":2,"byweekday":"TU","bymonth":2}');
-   }
+    }
 
 
-   public function testDelete() {
-      $this->login();
+    public function testDelete()
+    {
+        $this->login();
 
-      $event = new $this->myclass;
-      $id    = $event->add($this->input);
-      $this->integer((int)$id)->isGreaterThan(0);
+        $event = new $this->myclass();
+        $id    = $event->add($this->input);
+        $this->integer((int)$id)->isGreaterThan(0);
 
-      $this->boolean($event->delete([
+        $this->boolean($event->delete([
          'id' => $id,
-      ]))->isTrue();
-      $this->boolean($event->getFromDB($id))->isFalse();
-   }
+        ]))->isTrue();
+        $this->boolean($event->getFromDB($id))->isFalse();
+    }
 }

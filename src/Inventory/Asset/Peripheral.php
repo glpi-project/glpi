@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -41,59 +42,62 @@ use Toolbox;
 
 class Peripheral extends InventoryAsset
 {
-   protected $extra_data = ['inputs' => null];
+    protected $extra_data = ['inputs' => null];
 
-   public function prepare() :array {
-      $mapping = [
+    public function prepare(): array
+    {
+        $mapping = [
          'manufacturer' => 'manufacturers_id',
-      ];
+        ];
 
-      $existing = [];
-      $usbvendor = new \USBVendor();
+        $existing = [];
+        $usbvendor = new \USBVendor();
 
-      foreach ($this->data as $k => &$val) {
-         if (property_exists($val, 'name')) {
-            foreach ($mapping as $origin => $dest) {
-               if (property_exists($val, $origin)) {
-                  $val->$dest = $val->$origin;
-               }
+        foreach ($this->data as $k => &$val) {
+            if (property_exists($val, 'name')) {
+                foreach ($mapping as $origin => $dest) {
+                    if (property_exists($val, $origin)) {
+                        $val->$dest = $val->$origin;
+                    }
+                }
+
+                if (
+                    property_exists($val, 'vendorid')
+                    && property_exists($val, 'productid')
+                    && $val->vendorid != ''
+                ) {
+                   //manufacturer
+                    if (
+                        empty($val->manufacturers_id)
+                        && $usb_manufacturer = $usbvendor->getManufacturer($val->vendorid)
+                    ) {
+                        $val->manufacturers_id = $usb_manufacturer;
+                    }
+
+                   //product name
+                    if (
+                        empty($val->productname)
+                        && $usb_product = $usbvendor->getProductName($val->vendorid, $val->productid)
+                    ) {
+                        $val->productname = $usb_product;
+                    }
+                }
+
+                if (property_exists($val, 'productname') && $val->productname != '') {
+                    $val->name = $val->productname;
+                }
+                unset($val->productname);
+                $val->is_dynamic = 1;
+
+                $existing[$val->name] = $k;
+            } else {
+                unset($this->data[$k]);
             }
+        }
 
-            if (property_exists($val, 'vendorid')
-               && property_exists($val, 'productid')
-               && $val->vendorid != ''
-            ) {
-               //manufacturer
-               if (empty($val->manufacturers_id)
-                  && $usb_manufacturer = $usbvendor->getManufacturer($val->vendorid)
-               ) {
-                  $val->manufacturers_id = $usb_manufacturer;
-               }
-
-               //product name
-               if (empty($val->productname)
-                  && $usb_product = $usbvendor->getProductName($val->vendorid, $val->productid)
-               ) {
-                  $val->productname = $usb_product;
-               }
-            }
-
-            if (property_exists($val, 'productname') && $val->productname != '') {
-               $val->name = $val->productname;
-            }
-            unset($val->productname);
-            $val->is_dynamic = 1;
-
-            $existing[$val->name] = $k;
-
-         } else {
-            unset($this->data[$k]);
-         }
-      }
-
-      if ($this->extra_data['inputs'] !== null) {
-         //hanlde inputs
-         $point_types = [
+        if ($this->extra_data['inputs'] !== null) {
+           //hanlde inputs
+            $point_types = [
             3 => 'Mouse',
             4 => 'Trackball',
             5 => 'Track Point',
@@ -101,87 +105,88 @@ class Peripheral extends InventoryAsset
             7 => 'Touch Pad',
             8 => 'Touch Screen',
             9 => 'Mouse - Optical Sensor'
-         ];
+            ];
 
-         foreach ($this->extra_data['inputs'] as $k => &$val) {
-            foreach ($mapping as $origin => $dest) {
-               if (property_exists($val, $origin)) {
-                  $val->$dest = $val->$origin;
-               }
+            foreach ($this->extra_data['inputs'] as $k => &$val) {
+                foreach ($mapping as $origin => $dest) {
+                    if (property_exists($val, $origin)) {
+                        $val->$dest = $val->$origin;
+                    }
+                }
+
+                $val->serial = '';
+                $val->peripheraltypes_id = '';
+
+                if (property_exists($val, 'layout')) {
+                    $val->peripheraltypes_id = 'keyboard';
+                } else if (property_exists($val, 'pointingtype') && isset($point_types[$val->pointingtype])) {
+                    $val->peripheraltypes_id = $point_types[$val->pointingtype];
+                }
+
+                if (property_exists($val, 'name') && isset($existing[$val->name])) {
+                    $this->data[$existing[$val->name]]->peripheraltypes_id = $val->peripheraltypes_id;
+                } else {
+                    $this->data[] = $val;
+                }
             }
+        }
 
-            $val->serial = '';
-            $val->peripheraltypes_id = '';
+        return $this->data;
+    }
 
-            if (property_exists($val, 'layout')) {
-               $val->peripheraltypes_id = 'keyboard';
-            } else if (property_exists($val, 'pointingtype') && isset($point_types[$val->pointingtype])) {
-               $val->peripheraltypes_id = $point_types[$val->pointingtype];
-            }
+    public function handle()
+    {
+        global $DB;
 
-            if (property_exists($val, 'name') && isset($existing[$val->name])) {
-               $this->data[$existing[$val->name]]->peripheraltypes_id = $val->peripheraltypes_id;
-            } else {
-               $this->data[] = $val;
-            }
-         }
-      }
+        $rule = new RuleImportAssetCollection();
+        $peripheral = new GPeripheral();
+        $computer_Item = new Computer_Item();
 
-      return $this->data;
-   }
+        $peripherals = [];
+        $value = $this->data;
 
-   public function handle() {
-      global $DB;
-
-      $rule = new RuleImportAssetCollection();
-      $peripheral = new GPeripheral();
-      $computer_Item = new Computer_Item();
-
-      $peripherals = [];
-      $value = $this->data;
-
-      foreach ($value as $key => $val) {
-         $input = [
+        foreach ($value as $key => $val) {
+            $input = [
             'itemtype'     => 'Peripheral',
             'name'         => $val->name ?? '',
             'serial'       => $val->serial ?? '',
             'entities_id'  => $this->item->fields['entities_id']
-         ];
-         $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
-
-         if (isset($data['found_inventories'])) {
-            $items_id = null;
-            $itemtype = 'Peripheral';
-            if ($data['found_inventories'][0] == 0) {
-               // add peripheral
-               $val->entities_id = $this->entities_id;
-               $items_id = $peripheral->add(Toolbox::addslashes_deep((array)$val), [], $this->withHistory());
-            } else {
-               $items_id = $data['found_inventories'][0];
-               $peripheral->update(Toolbox::addslashes_deep(['id' => $items_id] + (array)$val), $this->withHistory());
-            }
-
-            $peripherals[] = $items_id;
-            $rulesmatched = new RuleMatchedLog();
-            $agents_id = $this->agent->fields['id'];
-            if (empty($agents_id)) {
-               $agents_id = 0;
-            }
-            $inputrulelog = [
-               'date'      => date('Y-m-d H:i:s'),
-               'rules_id'  => $data['rules_id'],
-               'items_id'  => $items_id,
-               'itemtype'  => $itemtype,
-               'agents_id' => $agents_id,
-               'method'    => 'inventory'
             ];
-            $rulesmatched->add($inputrulelog, [], false);
-            $rulesmatched->cleanOlddata($items_id, $itemtype);
-         }
-      }
+            $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
 
-      $db_peripherals = [];
-      $iterator = $DB->request([
+            if (isset($data['found_inventories'])) {
+                $items_id = null;
+                $itemtype = 'Peripheral';
+                if ($data['found_inventories'][0] == 0) {
+                    // add peripheral
+                    $val->entities_id = $this->entities_id;
+                    $items_id = $peripheral->add(Toolbox::addslashes_deep((array)$val), [], $this->withHistory());
+                } else {
+                    $items_id = $data['found_inventories'][0];
+                    $peripheral->update(Toolbox::addslashes_deep(['id' => $items_id] + (array)$val), $this->withHistory());
+                }
+
+                $peripherals[] = $items_id;
+                $rulesmatched = new RuleMatchedLog();
+                $agents_id = $this->agent->fields['id'];
+                if (empty($agents_id)) {
+                    $agents_id = 0;
+                }
+                $inputrulelog = [
+                'date'      => date('Y-m-d H:i:s'),
+                'rules_id'  => $data['rules_id'],
+                'items_id'  => $items_id,
+                'itemtype'  => $itemtype,
+                'agents_id' => $agents_id,
+                'method'    => 'inventory'
+                ];
+                $rulesmatched->add($inputrulelog, [], false);
+                $rulesmatched->cleanOlddata($items_id, $itemtype);
+            }
+        }
+
+        $db_peripherals = [];
+        $iterator = $DB->request([
          'SELECT'    => [
             'glpi_peripherals.id',
             'glpi_computers_items.id AS link_id',
@@ -202,49 +207,50 @@ class Peripheral extends InventoryAsset
             'entities_id' => $this->entities_id,
             'glpi_peripherals.is_global' => 0
          ]
-      ]);
+        ]);
 
-      foreach ($iterator as $data) {
-         $idtmp = $data['link_id'];
-         unset($data['link_id']);
-         $db_peripherals[$idtmp] = $data;
-      }
+        foreach ($iterator as $data) {
+            $idtmp = $data['link_id'];
+            unset($data['link_id']);
+            $db_peripherals[$idtmp] = $data;
+        }
 
-      if (count($db_peripherals) && count($peripherals)) {
-         foreach ($peripherals as $key => $peripherals_id) {
+        if (count($db_peripherals) && count($peripherals)) {
+            foreach ($peripherals as $key => $peripherals_id) {
+                foreach ($db_peripherals as $keydb => $data) {
+                    if ($peripherals_id == $data['id']) {
+                        unset($peripherals[$key]);
+                        unset($db_peripherals[$keydb]);
+                        $computer_Item->update(['id' => $keydb, 'is_dynamic' => 1], $this->withHistory());
+                        break;
+                    }
+                }
+            }
+        }
+
+        if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_peripherals)) {
+           // Delete peripherals links in DB
             foreach ($db_peripherals as $keydb => $data) {
-               if ($peripherals_id == $data['id']) {
-                  unset($peripherals[$key]);
-                  unset($db_peripherals[$keydb]);
-                  $computer_Item->update(['id' => $keydb, 'is_dynamic' => 1], $this->withHistory());
-                  break;
-               }
+                if ($data['is_dynamic']) {
+                    $computer_Item->delete(['id' => $keydb], 1);
+                }
             }
-         }
-      }
-
-      if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_peripherals)) {
-         // Delete peripherals links in DB
-         foreach ($db_peripherals as $keydb => $data) {
-            if ($data['is_dynamic']) {
-               $computer_Item->delete(['id' => $keydb], 1);
+        }
+        if (count($peripherals)) {
+            foreach ($peripherals as $peripherals_id) {
+                $input = [
+                'computers_id'    => $this->item->fields['id'],
+                'itemtype'        => 'Peripheral',
+                'items_id'        => $peripherals_id,
+                'is_dynamic'      => 1,
+                ];
+                $this->addOrMoveItem($input);
             }
-         }
-      }
-      if (count($peripherals)) {
-         foreach ($peripherals as $peripherals_id) {
-            $input = [
-               'computers_id'    => $this->item->fields['id'],
-               'itemtype'        => 'Peripheral',
-               'items_id'        => $peripherals_id,
-               'is_dynamic'      => 1,
-            ];
-            $this->addOrMoveItem($input);
-         }
-      }
-   }
+        }
+    }
 
-   public function checkConf(Conf $conf): bool {
-      return true;
-   }
+    public function checkConf(Conf $conf): bool
+    {
+        return true;
+    }
 }

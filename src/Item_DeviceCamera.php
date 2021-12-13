@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,14 +34,16 @@
 /**
  * Relation between item and devices
 **/
-class Item_DeviceCamera extends Item_Devices {
+class Item_DeviceCamera extends Item_Devices
+{
 
-   static public $itemtype_2 = 'DeviceCamera';
-   static public $items_id_2 = 'devicecameras_id';
+    public static $itemtype_2 = 'DeviceCamera';
+    public static $items_id_2 = 'devicecameras_id';
 
-   static protected $notable = false;
+    protected static $notable = false;
 
-   static function getSpecificities($specif = '') {
-      return [];
-   }
+    public static function getSpecificities($specif = '')
+    {
+        return [];
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,56 +34,63 @@
 /**
  * @since 0.85 (before migration_cleaner)
 **/
-class MigrationCleaner extends CommonGLPI {
+class MigrationCleaner extends CommonGLPI
+{
 
-   static $rightname = 'networking';
+    public static $rightname = 'networking';
 
 
-   static function getTypeName($nb = 0) {
-      return __('Migration cleaner');
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return __('Migration cleaner');
+    }
 
 
    /**
     * @see CommonGLPI::getAdditionalMenuOptions()
    **/
-   static function getAdditionalMenuOptions() {
+    public static function getAdditionalMenuOptions()
+    {
 
-      if (static::canView()) {
-         $options['networkportmigration']['title']  = NetworkPortMigration::getTypeName(Session::getPluralNumber());
-         $options['networkportmigration']['page']   = NetworkPortMigration::getSearchURL(false);
-         $options['networkportmigration']['search'] = NetworkPortMigration::getSearchURL(false);
+        if (static::canView()) {
+            $options['networkportmigration']['title']  = NetworkPortMigration::getTypeName(Session::getPluralNumber());
+            $options['networkportmigration']['page']   = NetworkPortMigration::getSearchURL(false);
+            $options['networkportmigration']['search'] = NetworkPortMigration::getSearchURL(false);
 
-         return $options;
-      }
-      return false;
-   }
+            return $options;
+        }
+        return false;
+    }
 
 
-   static function canView() {
-      global $DB;
+    public static function canView()
+    {
+        global $DB;
 
-      if (!isset($_SESSION['glpishowmigrationcleaner'])) {
+        if (!isset($_SESSION['glpishowmigrationcleaner'])) {
+            if (
+                $DB->tableExists('glpi_networkportmigrations')
+                && (countElementsInTable('glpi_networkportmigrations') > 0)
+            ) {
+                $_SESSION['glpishowmigrationcleaner'] = true;
+            } else {
+                $_SESSION['glpishowmigrationcleaner'] = false;
+            }
+        }
 
-         if ($DB->tableExists('glpi_networkportmigrations')
-             && (countElementsInTable('glpi_networkportmigrations') > 0)) {
-            $_SESSION['glpishowmigrationcleaner'] = true;
-         } else {
-            $_SESSION['glpishowmigrationcleaner'] = false;
-         }
-      }
+        if (
+            $_SESSION['glpishowmigrationcleaner']
+            && (Session::haveRight("networking", UPDATE)
+              || Session::haveRight("internet", UPDATE))
+        ) {
+            return true;
+        }
 
-      if ($_SESSION['glpishowmigrationcleaner']
-          && (Session::haveRight("networking", UPDATE)
-              || Session::haveRight("internet", UPDATE))) {
-         return true;
-      }
+        return false;
+    }
 
-      return false;
-   }
-
-   static function getIcon() {
-      return "fas fa-broom";
-   }
-
+    public static function getIcon()
+    {
+        return "fas fa-broom";
+    }
 }

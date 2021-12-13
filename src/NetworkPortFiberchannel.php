@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,145 +38,176 @@ use Glpi\Socket;
  *
  * @since 9.1
  */
-class NetworkPortFiberchannel extends NetworkPortInstantiation {
+class NetworkPortFiberchannel extends NetworkPortInstantiation
+{
 
 
-   static function getTypeName($nb = 0) {
-      return __('Fiber channel port');
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return __('Fiber channel port');
+    }
 
 
-   function getNetworkCardInterestingFields() {
-      return ['link.mac' => 'mac'];
-   }
+    public function getNetworkCardInterestingFields()
+    {
+        return ['link.mac' => 'mac'];
+    }
 
 
-   function prepareInput($input) {
+    public function prepareInput($input)
+    {
 
-      if (isset($input['speed']) && ($input['speed'] == 'speed_other_value')) {
-         if (!isset($input['speed_other_value'])) {
-            unset($input['speed']);
-         } else {
-            $speed = self::transformPortSpeed($input['speed_other_value'], false);
-            if ($speed === false) {
-               unset($input['speed']);
+        if (isset($input['speed']) && ($input['speed'] == 'speed_other_value')) {
+            if (!isset($input['speed_other_value'])) {
+                unset($input['speed']);
             } else {
-               $input['speed'] = $speed;
+                $speed = self::transformPortSpeed($input['speed_other_value'], false);
+                if ($speed === false) {
+                    unset($input['speed']);
+                } else {
+                    $input['speed'] = $speed;
+                }
             }
-         }
-      }
-      return $input;
-   }
+        }
+        return $input;
+    }
 
 
-   function prepareInputForAdd($input) {
-      return parent::prepareInputForAdd($this->prepareInput($input));
-   }
+    public function prepareInputForAdd($input)
+    {
+        return parent::prepareInputForAdd($this->prepareInput($input));
+    }
 
 
-   function prepareInputForUpdate($input) {
-      return parent::prepareInputForUpdate($this->prepareInput($input));
-   }
+    public function prepareInputForUpdate($input)
+    {
+        return parent::prepareInputForUpdate($this->prepareInput($input));
+    }
 
 
-   function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems) {
+    public function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems)
+    {
 
-      if (!$options['several']) {
-         echo "<tr class='tab_bg_1'>";
-         $this->showSocketField($netport, $options, $recursiveItems);
-         $this->showNetworkCardField($netport, $options, $recursiveItems);
-         echo "</tr>\n";
-      }
+        if (!$options['several']) {
+            echo "<tr class='tab_bg_1'>";
+            $this->showSocketField($netport, $options, $recursiveItems);
+            $this->showNetworkCardField($netport, $options, $recursiveItems);
+            echo "</tr>\n";
+        }
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('World Wide Name') . "</td><td>\n";
-      echo Html::input('wwn', ['value' => $this->fields['wwn']]);
-      echo "</td>";
-      echo "<td>" . __('Fiber channel port speed') . "</td><td>\n";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('World Wide Name') . "</td><td>\n";
+        echo Html::input('wwn', ['value' => $this->fields['wwn']]);
+        echo "</td>";
+        echo "<td>" . __('Fiber channel port speed') . "</td><td>\n";
 
-      $standard_speeds = self::getPortSpeed();
-      if (!isset($standard_speeds[$this->fields['speed']])
-          && !empty($this->fields['speed'])) {
-         $speed = self::transformPortSpeed($this->fields['speed'], true);
-      } else {
-         $speed = true;
-      }
+        $standard_speeds = self::getPortSpeed();
+        if (
+            !isset($standard_speeds[$this->fields['speed']])
+            && !empty($this->fields['speed'])
+        ) {
+            $speed = self::transformPortSpeed($this->fields['speed'], true);
+        } else {
+            $speed = true;
+        }
 
-      Dropdown::showFromArray('speed', $standard_speeds,
-                              ['value' => $this->fields['speed'],
-                                    'other' => $speed]);
-      echo "</td></tr>\n";
+        Dropdown::showFromArray(
+            'speed',
+            $standard_speeds,
+            ['value' => $this->fields['speed'],
+            'other' => $speed]
+        );
+        echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'>\n";
-      $this->showMacField($netport, $options);
-      echo "<td>".__('Connected to').'</td><td>';
-      self::showConnection($netport, true);
-      echo "</td></tr>\n";
+        echo "<tr class='tab_bg_1'>\n";
+        $this->showMacField($netport, $options);
+        echo "<td>" . __('Connected to') . '</td><td>';
+        self::showConnection($netport, true);
+        echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . NetworkPortFiberchannelType::getTypeName(0) . "</td><td>\n";
-      Dropdown::show('NetworkPortFiberchannelType', ['name' => 'networkportfiberchanneltypes_id', 'value' => $this->fields['networkportfiberchanneltypes_id']]);
-      echo "</td></tr>\n";
-   }
-
-
-   function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
-                                             HTMLTableSuperHeader $internet_super = null,
-                                             HTMLTableHeader $father = null,
-                                             array $options = []) {
-
-      $display_options = &$options['display_options'];
-      $header          = $group->addHeader('Connected', __('Connected to'), $super);
-
-      DeviceNetworkCard::getHTMLTableHeader('NetworkPortFiberchannel', $group, $super, $header,
-                                            $options);
-
-      $group->addHeader('speed', __('Fiber channel port speed'), $super, $header);
-      $group->addHeader('wwn', __('World Wide Name'), $super, $header);
-      $group->addHeader('Socket', _n('Network socket', 'Network sockets', 1), $super, $header);
-
-      parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $header, $options);
-      return $header;
-   }
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . NetworkPortFiberchannelType::getTypeName(0) . "</td><td>\n";
+        Dropdown::show('NetworkPortFiberchannelType', ['name' => 'networkportfiberchanneltypes_id', 'value' => $this->fields['networkportfiberchanneltypes_id']]);
+        echo "</td></tr>\n";
+    }
 
 
-   protected function getPeerInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                                    HTMLTableCell $father = null,
-                                                    array $options = []) {
+    public function getInstantiationHTMLTableHeaders(
+        HTMLTableGroup $group,
+        HTMLTableSuperHeader $super,
+        HTMLTableSuperHeader $internet_super = null,
+        HTMLTableHeader $father = null,
+        array $options = []
+    ) {
 
-      DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, $father, $options);
+        $display_options = &$options['display_options'];
+        $header          = $group->addHeader('Connected', __('Connected to'), $super);
 
-      if (!empty($this->fields['speed'])) {
-         $row->addCell($row->getHeaderByName('Instantiation', 'speed'),
-                       self::getPortSpeed($this->fields["speed"]), $father);
-      }
+        DeviceNetworkCard::getHTMLTableHeader(
+            'NetworkPortFiberchannel',
+            $group,
+            $super,
+            $header,
+            $options
+        );
 
-      if (!empty($this->fields['wwn'])) {
-         $row->addCell($row->getHeaderByName('Instantiation', 'wwn'), $this->fields["wwn"], $father);
-      }
+        $group->addHeader('speed', __('Fiber channel port speed'), $super, $header);
+        $group->addHeader('wwn', __('World Wide Name'), $super, $header);
+        $group->addHeader('Socket', _n('Network socket', 'Network sockets', 1), $super, $header);
 
-      parent::getInstantiationHTMLTable($netport, $row, $father, $options);
-      Socket::getHTMLTableCellsForItem($row, $this, $father, $options);
-   }
+        parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $header, $options);
+        return $header;
+    }
 
 
-   function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                      HTMLTableCell $father = null, array $options = []) {
+    protected function getPeerInstantiationHTMLTable(
+        NetworkPort $netport,
+        HTMLTableRow $row,
+        HTMLTableCell $father = null,
+        array $options = []
+    ) {
 
-      return $this->getInstantiationHTMLTableWithPeer($netport, $row, $father, $options);
-   }
+        DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, $father, $options);
+
+        if (!empty($this->fields['speed'])) {
+            $row->addCell(
+                $row->getHeaderByName('Instantiation', 'speed'),
+                self::getPortSpeed($this->fields["speed"]),
+                $father
+            );
+        }
+
+        if (!empty($this->fields['wwn'])) {
+            $row->addCell($row->getHeaderByName('Instantiation', 'wwn'), $this->fields["wwn"], $father);
+        }
+
+        parent::getInstantiationHTMLTable($netport, $row, $father, $options);
+        Socket::getHTMLTableCellsForItem($row, $this, $father, $options);
+    }
+
+
+    public function getInstantiationHTMLTable(
+        NetworkPort $netport,
+        HTMLTableRow $row,
+        HTMLTableCell $father = null,
+        array $options = []
+    ) {
+
+        return $this->getInstantiationHTMLTableWithPeer($netport, $row, $father, $options);
+    }
 
 
    // TODO why this? you don't have search engine for this object
-   function rawSearchOptions() {
-      $tab = [];
+    public function rawSearchOptions()
+    {
+        $tab = [];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => 'common',
          'name'               => __('Characteristics')
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '10',
          'table'              => NetworkPort::getTable(),
          'field'              => 'mac',
@@ -185,35 +217,35 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
          'joinparams'         => [
             'jointype'           => 'empty'
          ]
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '11',
          'table'              => $this->getTable(),
          'field'              => 'wwn',
          'name'               => __('World Wide Name'),
          'massiveaction'      => false,
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '12',
          'table'              => $this->getTable(),
          'field'              => 'speed',
          'name'               => __('Fiber channel port speed'),
          'massiveaction'      => false,
          'datatype'           => 'specific'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
          'id'                 => '13',
          'table'              => 'glpi_networkportfiberchanneltypes',
          'field'              => 'name',
          'name'               => __('Fiber port type'),
          'datatype'           => 'dropdown'
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
 
    /**
@@ -224,41 +256,42 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
     *
     * @return integer|string (regarding what is requested)
    **/
-   static function transformPortSpeed($val, $to_string) {
+    public static function transformPortSpeed($val, $to_string)
+    {
 
-      if ($to_string) {
-         if (($val % 1000) == 0) {
-            //TRANS: %d is the speed
-            return sprintf(__('%d Gbit/s'), $val / 1000);
-         }
+        if ($to_string) {
+            if (($val % 1000) == 0) {
+                //TRANS: %d is the speed
+                return sprintf(__('%d Gbit/s'), $val / 1000);
+            }
 
-         if ((($val % 100) == 0) && ($val > 1000)) {
-            $val /= 100;
-            //TRANS: %f is the speed
-            return sprintf(__('%.1f Gbit/s'), $val / 10);
-         }
+            if ((($val % 100) == 0) && ($val > 1000)) {
+                $val /= 100;
+               //TRANS: %f is the speed
+                return sprintf(__('%.1f Gbit/s'), $val / 10);
+            }
 
-         //TRANS: %d is the speed
-         return sprintf(__('%d Mbit/s'), $val);
-      }
+           //TRANS: %d is the speed
+            return sprintf(__('%d Mbit/s'), $val);
+        }
 
-      $val = preg_replace( '/\s+/', '', strtolower($val));
+        $val = preg_replace('/\s+/', '', strtolower($val));
 
-      $number = sscanf($val, "%f%s", $speed, $unit);
-      if ($number != 2) {
-         return false;
-      }
+        $number = sscanf($val, "%f%s", $speed, $unit);
+        if ($number != 2) {
+            return false;
+        }
 
-      if (($unit == 'mbit/s') || ($unit == 'mb/s')) {
-         return (int)$speed;
-      }
+        if (($unit == 'mbit/s') || ($unit == 'mb/s')) {
+            return (int)$speed;
+        }
 
-      if (($unit == 'gbit/s') || ($unit == 'gb/s')) {
-         return (int)($speed * 1000);
-      }
+        if (($unit == 'gbit/s') || ($unit == 'gb/s')) {
+            return (int)($speed * 1000);
+        }
 
-      return false;
-   }
+        return false;
+    }
 
 
    /**
@@ -268,9 +301,10 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
     *
     * @return array|string
    **/
-   static function getPortSpeed($val = null) {
+    public static function getPortSpeed($val = null)
+    {
 
-      $tmp = [0     => '',
+        $tmp = [0     => '',
                    //TRANS: %d is the speed
                    10    => sprintf(__('%d Mbit/s'), 10),
                    100   => sprintf(__('%d Mbit/s'), 100),
@@ -278,14 +312,14 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
                    1000  => sprintf(__('%d Gbit/s'), 1),
                    10000 => sprintf(__('%d Gbit/s'), 10)];
 
-      if (is_null($val)) {
-         return $tmp;
-      }
-      if (isset($tmp[$val])) {
-         return $tmp[$val];
-      }
-      return self::transformPortSpeed($val, true);
-   }
+        if (is_null($val)) {
+            return $tmp;
+        }
+        if (isset($tmp[$val])) {
+            return $tmp[$val];
+        }
+        return self::transformPortSpeed($val, true);
+    }
 
 
    /**
@@ -293,17 +327,18 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
 
-      if (!is_array($values)) {
-         $values = [$field => $values];
-      }
-      switch ($field) {
-         case 'speed':
-            return self::getPortSpeed($values[$field]);
-      }
-      return parent::getSpecificValueToDisplay($field, $values, $options);
-   }
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        switch ($field) {
+            case 'speed':
+                return self::getPortSpeed($values[$field]);
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
 
 
    /**
@@ -312,29 +347,30 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
     * @param $values          (defaul '')
     * @param $options   array
     */
-   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    {
 
-      if (!is_array($values)) {
-         $values = [$field => $values];
-      }
-      $options['display'] = false;
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        $options['display'] = false;
 
-      switch ($field) {
-
-         case 'speed':
-            $options['value'] = $values[$field];
-            return Dropdown::showFromArray($name, self::getPortSpeed(), $options);
-      }
-      return parent::getSpecificValueToSelect($field, $name, $values, $options);
-   }
+        switch ($field) {
+            case 'speed':
+                $options['value'] = $values[$field];
+                return Dropdown::showFromArray($name, self::getPortSpeed(), $options);
+        }
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
 
 
    /**
     * @param $tab         array
     * @param $joinparams  array
    **/
-   static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams) {
-      $tab[] = [
+    public static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams)
+    {
+        $tab[] = [
          'id'                 => '62',
          'table'              => 'glpi_sockets',
          'field'              => 'name',
@@ -350,6 +386,6 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
                'joinparams'         => $joinparams
             ]
          ]
-      ];
-   }
+        ];
+    }
 }

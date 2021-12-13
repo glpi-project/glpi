@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,25 +34,28 @@
 /**
  * Abstract notifications settings class
  */
-abstract class NotificationSetting extends CommonDBTM {
+abstract class NotificationSetting extends CommonDBTM
+{
 
-   public $table           = 'glpi_configs';
-   protected $displaylist  = false;
-   static $rightname       = 'config';
+    public $table           = 'glpi_configs';
+    protected $displaylist  = false;
+    public static $rightname       = 'config';
 
-   static public function getTypeName($nb = 0) {
-      throw new \RuntimeException('getTypeName must be implemented');
-   }
+    public static function getTypeName($nb = 0)
+    {
+        throw new \RuntimeException('getTypeName must be implemented');
+    }
 
    /**
     * Get associated mode
     *
     * @return string
     */
-   static public function getMode() {
-      //For PHP 5.x; a method cannot be abstract and static
-      throw new \RuntimeException('getMode must be implemented');
-   }
+    public static function getMode()
+    {
+       //For PHP 5.x; a method cannot be abstract and static
+        throw new \RuntimeException('getMode must be implemented');
+    }
 
 
    /**
@@ -59,49 +63,53 @@ abstract class NotificationSetting extends CommonDBTM {
     *
     * @return string
     */
-   abstract public function getEnableLabel();
+    abstract public function getEnableLabel();
 
    /**
     * Print the config form
     *
     * @return void
     */
-   abstract protected function showFormConfig();
+    abstract protected function showFormConfig();
 
 
-   public static function getTable($classname = null) {
-      return parent::getTable('Config');
-   }
+    public static function getTable($classname = null)
+    {
+        return parent::getTable('Config');
+    }
 
 
-   function defineTabs($options = []) {
-      $ong = [];
-      $this->addStandardTab(static::class, $ong, $options);
+    public function defineTabs($options = [])
+    {
+        $ong = [];
+        $this->addStandardTab(static::class, $ong, $options);
 
-      return $ong;
-   }
-
-
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      switch ($item->getType()) {
-         case static::class:
-            $tabs[1] = __('Setup');
-            return $tabs;
-      }
-      return '';
-   }
+        return $ong;
+    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-      if ($item->getType() == static::class) {
-         switch ($tabnum) {
-            case 1 :
-               $item->showFormConfig();
-               break;
-         }
-      }
-      return true;
-   }
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
+        switch ($item->getType()) {
+            case static::class:
+                $tabs[1] = __('Setup');
+                return $tabs;
+        }
+        return '';
+    }
+
+
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+        if ($item->getType() == static::class) {
+            switch ($tabnum) {
+                case 1:
+                    $item->showFormConfig();
+                    break;
+            }
+        }
+        return true;
+    }
 
 
    /**
@@ -109,18 +117,20 @@ abstract class NotificationSetting extends CommonDBTM {
     *
     * @return void
     */
-   static public function disableAll() {
-      global $CFG_GLPI;
+    public static function disableAll()
+    {
+        global $CFG_GLPI;
 
-      $CFG_GLPI['use_notifications'] = 0;
-      foreach (array_keys($CFG_GLPI) as $key) {
-         if (substr($key, 0, strlen('notifications_')) === 'notifications_') {
-            $CFG_GLPI[$key] = 0;
-         }
-      }
-   }
+        $CFG_GLPI['use_notifications'] = 0;
+        foreach (array_keys($CFG_GLPI) as $key) {
+            if (substr($key, 0, strlen('notifications_')) === 'notifications_') {
+                $CFG_GLPI[$key] = 0;
+            }
+        }
+    }
 
-   static function getIcon() {
-      return "fas fa-bell";
-   }
+    public static function getIcon()
+    {
+        return "fas fa-bell";
+    }
 }

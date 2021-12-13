@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,10 +33,12 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class DbConfiguration extends \GLPITestCase {
+class DbConfiguration extends \GLPITestCase
+{
 
-   protected function configurationProvider() {
-      return [
+    protected function configurationProvider()
+    {
+        return [
          [
             // Default variables on MySQL 5.7
             'version'   => '5.7.34-standard',
@@ -229,37 +232,38 @@ class DbConfiguration extends \GLPITestCase {
                '"innodb_page_size" must be >= 8KB.',
             ]
          ],
-      ];
-   }
+        ];
+    }
 
    /**
     * @dataProvider configurationProvider
     */
-   public function testCheck(string $version, array $variables, bool $validated, array $messages) {
+    public function testCheck(string $version, array $variables, bool $validated, array $messages)
+    {
 
-      $that = $this;
+        $that = $this;
 
-      $this->mockGenerator->orphanize('__construct');
-      $db = new \mock\DB();
-      $this->calling($db)->getVersion = $version;
-      $this->calling($db)->query = function ($query) use ($that, $variables) {
-         $matches = [];
-         if (preg_match_all('/@@GLOBAL\.`(?<name>[^`]+)`/', $query, $matches) > 0) {
-            $row = [];
-            foreach ($matches['name'] as $name) {
-               $row[$name] = $variables[$name] ?? null;
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DB();
+        $this->calling($db)->getVersion = $version;
+        $this->calling($db)->query = function ($query) use ($that, $variables) {
+            $matches = [];
+            if (preg_match_all('/@@GLOBAL\.`(?<name>[^`]+)`/', $query, $matches) > 0) {
+                  $row = [];
+                foreach ($matches['name'] as $name) {
+                    $row[$name] = $variables[$name] ?? null;
+                }
+                $that->mockGenerator->orphanize('__construct');
+                $res = new \mock\mysqli_result();
+                $that->calling($res)->fetch_assoc = $row;
+                return $res;
             }
-            $that->mockGenerator->orphanize('__construct');
-            $res = new \mock\mysqli_result();
-            $that->calling($res)->fetch_assoc = $row;
-            return $res;
-         }
-         return false;
-      };
+            return false;
+        };
 
-      $this->newTestedInstance($db);
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo($validated);
-      $this->array($this->testedInstance->getValidationMessages())
+        $this->newTestedInstance($db);
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo($validated);
+        $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo($messages);
-   }
+    }
 }

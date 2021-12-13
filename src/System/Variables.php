@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,15 +36,17 @@ namespace Glpi\System;
 /**
  * @since 9.5.4
  */
-class Variables {
+class Variables
+{
 
    /**
     * Returns list of directories that contains custom data.
     *
     * @return string[]
     */
-   public static function getDataDirectories() {
-      return [
+    public static function getDataDirectories()
+    {
+        return [
          GLPI_CACHE_DIR,
          GLPI_CONFIG_DIR,
          GLPI_CRON_DIR,
@@ -58,6 +61,6 @@ class Variables {
          GLPI_SESSION_DIR,
          GLPI_TMP_DIR,
          GLPI_UPLOAD_DIR,
-      ];
-   }
+        ];
+    }
 }

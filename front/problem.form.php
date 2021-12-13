@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,157 +33,191 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 if (empty($_GET["id"])) {
-   $_GET["id"] = '';
+    $_GET["id"] = '';
 }
 
 Session::checkLoginUser();
 
 // as _actors virtual field stores json, bypass automatic escaping
 if (isset($_UPOST['_actors'])) {
-   $_POST['_actors'] = json_decode($_UPOST['_actors'], true);
-   $_REQUEST['_actors'] = $_POST['_actors'];
+    $_POST['_actors'] = json_decode($_UPOST['_actors'], true);
+    $_REQUEST['_actors'] = $_POST['_actors'];
 }
 
 $problem = new Problem();
 if (isset($_POST["add"])) {
-   $problem->check(-1, CREATE, $_POST);
+    $problem->check(-1, CREATE, $_POST);
 
-   if ($newID = $problem->add($_POST)) {
-      Event::log($newID, "problem", 4, "maintain",
-                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
-      if ($_SESSION['glpibackcreated']) {
-         Html::redirect($problem->getLinkURL());
-      }
-   }
-   Html::back();
-
+    if ($newID = $problem->add($_POST)) {
+        Event::log(
+            $newID,
+            "problem",
+            4,
+            "maintain",
+            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
+        );
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($problem->getLinkURL());
+        }
+    }
+    Html::back();
 } else if (isset($_POST["delete"])) {
-   $problem->check($_POST["id"], DELETE);
+    $problem->check($_POST["id"], DELETE);
 
-   $problem->delete($_POST);
-   Event::log($_POST["id"], "problem", 4, "maintain",
-              //TRANS: %s is the user login
-              sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
-   $problem->redirectToList();
-
+    $problem->delete($_POST);
+    Event::log(
+        $_POST["id"],
+        "problem",
+        4,
+        "maintain",
+        //TRANS: %s is the user login
+        sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
+    );
+    $problem->redirectToList();
 } else if (isset($_POST["restore"])) {
-   $problem->check($_POST["id"], DELETE);
+    $problem->check($_POST["id"], DELETE);
 
-   $problem->restore($_POST);
-   Event::log($_POST["id"], "problem", 4, "maintain",
-              //TRANS: %s is the user login
-              sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
-   $problem->redirectToList();
-
+    $problem->restore($_POST);
+    Event::log(
+        $_POST["id"],
+        "problem",
+        4,
+        "maintain",
+        //TRANS: %s is the user login
+        sprintf(__('%s restores an item'), $_SESSION["glpiname"])
+    );
+    $problem->redirectToList();
 } else if (isset($_POST["purge"])) {
-   $problem->check($_POST["id"], PURGE);
+    $problem->check($_POST["id"], PURGE);
 
-   $problem->delete($_POST, 1);
-   Event::log($_POST["id"], "problem", 4, "maintain",
-              //TRANS: %s is the user login
-              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
-   $problem->redirectToList();
-
+    $problem->delete($_POST, 1);
+    Event::log(
+        $_POST["id"],
+        "problem",
+        4,
+        "maintain",
+        //TRANS: %s is the user login
+        sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+    );
+    $problem->redirectToList();
 } else if (isset($_POST["update"])) {
-   $problem->check($_POST["id"], UPDATE);
+    $problem->check($_POST["id"], UPDATE);
 
-   $problem->update($_POST);
-   Event::log($_POST["id"], "problem", 4, "maintain",
-              //TRANS: %s is the user login
-              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
+    $problem->update($_POST);
+    Event::log(
+        $_POST["id"],
+        "problem",
+        4,
+        "maintain",
+        //TRANS: %s is the user login
+        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+    );
 
    // Copy solution to KB redirect to KB
-   if (isset($_POST['_sol_to_kb']) && $_POST['_sol_to_kb']) {
-      Html::redirect(KnowbaseItem::getFormURL()."?id=new&item_itemtype=Problem&item_items_id=". $_POST["id"]);
-   } else {
-      Html::back();
-   }
-
+    if (isset($_POST['_sol_to_kb']) && $_POST['_sol_to_kb']) {
+        Html::redirect(KnowbaseItem::getFormURL() . "?id=new&item_itemtype=Problem&item_items_id=" . $_POST["id"]);
+    } else {
+        Html::back();
+    }
 } else if (isset($_POST['addme_observer'])) {
-   $problem->check($_POST['problems_id'], READ);
-   $input = array_merge(Toolbox::addslashes_deep($problem->fields), [
+    $problem->check($_POST['problems_id'], READ);
+    $input = array_merge(Toolbox::addslashes_deep($problem->fields), [
       'id' => $_POST['problems_id'],
       '_itil_observer' => [
          '_type' => "user",
          'users_id' => Session::getLoginUserID(),
          'use_notification' => 1,
       ]
-   ]);
-   $problem->update($input);
-   Event::log($_POST['problems_id'], "problem", 4, "maintain",
-              //TRANS: %s is the user login
-              sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
-   Html::redirect($problem->getFormURLWithID($_POST['problems_id']));
-
+    ]);
+    $problem->update($input);
+    Event::log(
+        $_POST['problems_id'],
+        "problem",
+        4,
+        "maintain",
+        //TRANS: %s is the user login
+        sprintf(__('%s adds an actor'), $_SESSION["glpiname"])
+    );
+    Html::redirect($problem->getFormURLWithID($_POST['problems_id']));
 } else if (isset($_POST['addme_assign'])) {
-   $problem_user = new Problem_User();
-   $problem->check($_POST['problems_id'], READ);
-   $input = ['problems_id'       => $_POST['problems_id'],
+    $problem_user = new Problem_User();
+    $problem->check($_POST['problems_id'], READ);
+    $input = ['problems_id'       => $_POST['problems_id'],
                   'users_id'         => Session::getLoginUserID(),
                   'use_notification' => 1,
                   'type'             => CommonITILActor::ASSIGN];
-   $problem_user->add($input);
-   Event::log($_POST['problems_id'], "problem", 4, "maintain",
-              //TRANS: %s is the user login
-              sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
-   Html::redirect($problem->getFormURLWithID($_POST['problems_id']));
+    $problem_user->add($input);
+    Event::log(
+        $_POST['problems_id'],
+        "problem",
+        4,
+        "maintain",
+        //TRANS: %s is the user login
+        sprintf(__('%s adds an actor'), $_SESSION["glpiname"])
+    );
+    Html::redirect($problem->getFormURLWithID($_POST['problems_id']));
 } else if (isset($_POST['delete_document'])) {
-   $problem->getFromDB((int)$_POST['problems_id']);
-   $doc = new Document();
-   $doc->getFromDB(intval($_POST['documents_id']));
-   if ($doc->can($doc->getID(), UPDATE)) {
-      $document_item = new Document_Item;
-      $found_document_items = $document_item->find([
+    $problem->getFromDB((int)$_POST['problems_id']);
+    $doc = new Document();
+    $doc->getFromDB(intval($_POST['documents_id']));
+    if ($doc->can($doc->getID(), UPDATE)) {
+        $document_item = new Document_Item();
+        $found_document_items = $document_item->find([
          $problem->getAssociatedDocumentsCriteria(),
          'documents_id' => $doc->getID()
-      ]);
-      foreach ($found_document_items  as $item) {
-         $document_item->delete(Toolbox::addslashes_deep($item), true);
-      }
-   }
-   Html::back();
+        ]);
+        foreach ($found_document_items as $item) {
+            $document_item->delete(Toolbox::addslashes_deep($item), true);
+        }
+    }
+    Html::back();
 } else if (isset($_POST['addme_as_actor'])) {
-   $id = (int) $_POST['id'];
-   $problem->check($id, READ);
-   $input = array_merge(Toolbox::addslashes_deep($problem->fields), [
+    $id = (int) $_POST['id'];
+    $problem->check($id, READ);
+    $input = array_merge(Toolbox::addslashes_deep($problem->fields), [
       'id' => $id,
-      '_itil_'.$_POST['actortype'] => [
+      '_itil_' . $_POST['actortype'] => [
          '_type' => "user",
          'users_id' => Session::getLoginUserID(),
          'use_notification' => 1,
       ]
-   ]);
-   $problem->update($input);
-   Event::log($id, "problem", 4, "tracking",
-              //TRANS: %s is the user login
-              sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
-   Html::redirect(Problem::getFormURLWithID($id));
+    ]);
+    $problem->update($input);
+    Event::log(
+        $id,
+        "problem",
+        4,
+        "tracking",
+        //TRANS: %s is the user login
+        sprintf(__('%s adds an actor'), $_SESSION["glpiname"])
+    );
+    Html::redirect(Problem::getFormURLWithID($id));
 } else {
-   if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
-      Html::header(sprintf(__('%s Kanban'), Problem::getTypeName(1)), $_SERVER['PHP_SELF'], "helpdesk", "problem");
-      $problem::showKanban(0);
-   } else {
-      Html::header(Problem::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "problem");
-      $problem->display($_REQUEST);
-   }
+    if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
+        Html::header(sprintf(__('%s Kanban'), Problem::getTypeName(1)), $_SERVER['PHP_SELF'], "helpdesk", "problem");
+        $problem::showKanban(0);
+    } else {
+        Html::header(Problem::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "problem");
+        $problem->display($_REQUEST);
+    }
 
-   if (isset($_GET['id']) && ($_GET['id'] > 0)) {
-      $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Ticket&item_items_id=' . $_GET['id'];
-      if (strpos($url, '_to_kb=') !== false) {
-         Ajax::createIframeModalWindow(
-            'savetokb',
-            $url,
-            [
-               'title'         => __('Save and add to the knowledge base'),
-               'reloadonclose' => false,
-               'autoopen'      => true,
-            ]
-         );
-      }
-   }
+    if (isset($_GET['id']) && ($_GET['id'] > 0)) {
+        $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Ticket&item_items_id=' . $_GET['id'];
+        if (strpos($url, '_to_kb=') !== false) {
+            Ajax::createIframeModalWindow(
+                'savetokb',
+                $url,
+                [
+                'title'         => __('Save and add to the knowledge base'),
+                'reloadonclose' => false,
+                'autoopen'      => true,
+                ]
+            );
+        }
+    }
 
-   Html::footer();
+    Html::footer();
 }

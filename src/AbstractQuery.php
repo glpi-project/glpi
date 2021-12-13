@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,26 +34,29 @@
 /**
  *  Sub query class
 **/
-abstract class AbstractQuery {
-   protected $alias = null;
+abstract class AbstractQuery
+{
+    protected $alias = null;
 
    /**
     * Create a query
     *
     * @param string $alias Alias for the whole subquery
     */
-   public function __construct($alias = null) {
-      $this->alias = $alias;
-   }
+    public function __construct($alias = null)
+    {
+        $this->alias = $alias;
+    }
 
    /**
     * Get alias
     *
     * @return string|null
     */
-   public function getAlias() {
-      return $this->alias;
-   }
+    public function getAlias()
+    {
+        return $this->alias;
+    }
 
    /**
     *
@@ -60,9 +64,10 @@ abstract class AbstractQuery {
     *
     * @return string
     */
-   abstract public function getQuery();
+    abstract public function getQuery();
 
-   public function __toString() {
-      return $this->getQuery();
-   }
+    public function __toString()
+    {
+        return $this->getQuery();
+    }
 }

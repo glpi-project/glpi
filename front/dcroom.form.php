@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,79 +33,101 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("datacenter", READ);
 
 if (empty($_GET["id"])) {
-   $_GET["id"] = "";
+    $_GET["id"] = "";
 }
 if (!isset($_GET["withtemplate"])) {
-   $_GET["withtemplate"] = "";
+    $_GET["withtemplate"] = "";
 }
 
 $room = new DCRoom();
 
 if (isset($_POST["add"])) {
-   $room->check(-1, CREATE, $_POST);
+    $room->check(-1, CREATE, $_POST);
 
-   if ($newID = $room->add($_POST)) {
-      Event::log($newID, "dcrooms", 4, "inventory",
-                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
-      if ($_SESSION['glpibackcreated']) {
-         Html::redirect($room->getLinkURL());
-      }
-   }
-   Html::back();
-
+    if ($newID = $room->add($_POST)) {
+        Event::log(
+            $newID,
+            "dcrooms",
+            4,
+            "inventory",
+            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
+        );
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($room->getLinkURL());
+        }
+    }
+    Html::back();
 } else if (isset($_POST["delete"])) {
-   $room->check($_POST["id"], DELETE);
-   $room->delete($_POST);
+    $room->check($_POST["id"], DELETE);
+    $room->delete($_POST);
 
-   Event::log($_POST["id"], "dcrooms", 4, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
-   $room->redirectToList();
-
+    Event::log(
+        $_POST["id"],
+        "dcrooms",
+        4,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
+    );
+    $room->redirectToList();
 } else if (isset($_POST["restore"])) {
-   $room->check($_POST["id"], DELETE);
+    $room->check($_POST["id"], DELETE);
 
-   $room->restore($_POST);
-   Event::log($_POST["id"], "dcrooms", 4, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
-   $room->redirectToList();
-
+    $room->restore($_POST);
+    Event::log(
+        $_POST["id"],
+        "dcrooms",
+        4,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s restores an item'), $_SESSION["glpiname"])
+    );
+    $room->redirectToList();
 } else if (isset($_POST["purge"])) {
-   $room->check($_POST["id"], PURGE);
+    $room->check($_POST["id"], PURGE);
 
-   $room->delete($_POST, 1);
-   Event::log($_POST["id"], "dcrooms", 4, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
-   $room->redirectToList();
-
+    $room->delete($_POST, 1);
+    Event::log(
+        $_POST["id"],
+        "dcrooms",
+        4,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+    );
+    $room->redirectToList();
 } else if (isset($_POST["update"])) {
-   $room->check($_POST["id"], UPDATE);
+    $room->check($_POST["id"], UPDATE);
 
-   $room->update($_POST);
-   Event::log($_POST["id"], "dcrooms", 4, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
-   Html::back();
-
+    $room->update($_POST);
+    Event::log(
+        $_POST["id"],
+        "dcrooms",
+        4,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+    );
+    Html::back();
 } else {
-   Html::header(DCRoom::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "datacenter", "dcroom");
-   $options = [
+    Html::header(DCRoom::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "datacenter", "dcroom");
+    $options = [
       'id' => $_GET["id"],
-   ];
-   if (isset($_REQUEST['_add_fromitem'])
-       && isset($_REQUEST['datacenters_id'])) {
-      $options['datacenters_id'] = $_REQUEST['datacenters_id'];
-      $datacenter = new Datacenter;
-      $datacenter->getFromDB($options['datacenters_id']);
-      $options['locations_id'] = $datacenter->fields['locations_id'];
-   }
-   $room->display($options);
-   Html::footer();
+    ];
+    if (
+        isset($_REQUEST['_add_fromitem'])
+        && isset($_REQUEST['datacenters_id'])
+    ) {
+        $options['datacenters_id'] = $_REQUEST['datacenters_id'];
+        $datacenter = new Datacenter();
+        $datacenter->getFromDB($options['datacenters_id']);
+        $options['locations_id'] = $datacenter->fields['locations_id'];
+    }
+    $room->display($options);
+    Html::footer();
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,14 +31,15 @@
  * ---------------------------------------------------------------------
  */
 
-class DomainRelation extends CommonDropdown {
-   const BELONGS = 1;
-   const MANAGE = 2;
+class DomainRelation extends CommonDropdown
+{
+    const BELONGS = 1;
+    const MANAGE = 2;
    // From CommonDBTM
-   public $dohistory                   = true;
-   static $rightname                   = 'domain';
+    public $dohistory                   = true;
+    public static $rightname                   = 'domain';
 
-   static public $knowrelations = [
+    public static $knowrelations = [
       [
          'id'        => self::BELONGS,
          'name'      => 'Belongs',
@@ -47,21 +49,23 @@ class DomainRelation extends CommonDropdown {
          'name'      => 'Manage',
          'comment'   => 'Item manages domain'
       ]
-   ];
+    ];
 
-   static function getTypeName($nb = 0) {
-      return _n('Domain relation', 'Domains relations', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Domain relation', 'Domains relations', $nb);
+    }
 
-   function defineTabs($options = []) {
+    public function defineTabs($options = [])
+    {
 
-      $ong = [];
-      $this->addDefaultFormTab($ong);
-      $this->addStandardTab('Domain_Item', $ong, $options);
-      $this->addStandardTab('Log', $ong, $options);
+        $ong = [];
+        $this->addDefaultFormTab($ong);
+        $this->addStandardTab('Domain_Item', $ong, $options);
+        $this->addStandardTab('Log', $ong, $options);
 
-      return $ong;
-   }
+        return $ong;
+    }
 
    /**
     * Print the form
@@ -73,46 +77,49 @@ class DomainRelation extends CommonDropdown {
     *
     * @return void|boolean (display) Returns false if there is a rights error.
     **/
-   function showForm($ID, array $options = []) {
+    public function showForm($ID, array $options = [])
+    {
 
-      $rowspan = 3;
-      if ($ID > 0) {
-         $rowspan++;
-      }
+        $rowspan = 3;
+        if ($ID > 0) {
+            $rowspan++;
+        }
 
-      $this->initForm($ID, $options);
-      $this->showFormHeader($options);
+        $this->initForm($ID, $options);
+        $this->showFormHeader($options);
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Name')."</td>";
-      echo "<td>";
-      echo Html::input('name', ['value' => $this->fields['name']]);
-      echo "</td>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Name') . "</td>";
+        echo "<td>";
+        echo Html::input('name', ['value' => $this->fields['name']]);
+        echo "</td>";
 
-      echo "<td>" . __('Comments')."</td>";
-      echo "<td>
-      <textarea class='form-control' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>";
+        echo "<td>" . __('Comments') . "</td>";
+        echo "<td>
+      <textarea class='form-control' name='comment' >" . $this->fields["comment"] . "</textarea>";
+        echo "</td></tr>";
 
-      $this->showFormButtons($options);
-      return true;
-   }
+        $this->showFormButtons($options);
+        return true;
+    }
 
-   public static function getDefaults() {
-      return array_map(
-         function($e) {
-            $e['is_recursive'] = 1;
-            return $e;
-         },
-         self::$knowrelations
-      );
-   }
+    public static function getDefaults()
+    {
+        return array_map(
+            function ($e) {
+                $e['is_recursive'] = 1;
+                return $e;
+            },
+            self::$knowrelations
+        );
+    }
 
-   public function pre_deleteItem() {
-      if (in_array([self::BELONGS, self::MANAGE], $this->fields['id'])) {
-         //keep defaults
-         return false;
-      }
-      return true;
-   }
+    public function pre_deleteItem()
+    {
+        if (in_array([self::BELONGS, self::MANAGE], $this->fields['id'])) {
+           //keep defaults
+            return false;
+        }
+        return true;
+    }
 }

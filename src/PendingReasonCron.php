@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,53 +36,56 @@
  */
 class PendingReasonCron extends CommonDBTM
 {
-   const TASK_NAME = 'pendingreason_autobump_autosolve';
+    const TASK_NAME = 'pendingreason_autobump_autosolve';
 
    /**
     * Get task description
     *
     * @return string
     */
-   public static function getTaskDescription(): string {
-      return __("Send automated follow-ups on pending tickets and solve them if necessary");
-   }
+    public static function getTaskDescription(): string
+    {
+        return __("Send automated follow-ups on pending tickets and solve them if necessary");
+    }
 
-   public static function cronInfo($name) {
-      return [
+    public static function cronInfo($name)
+    {
+        return [
          'description' => self::getTaskDescription(),
-      ];
-   }
+        ];
+    }
 
    /**
     * Run from cronTask
     *
     * @param CronTask $task
     */
-   public static function cronPendingreason_autobump_autosolve(CronTask $task) {
-      global $DB;
+    public static function cronPendingreason_autobump_autosolve(CronTask $task)
+    {
+        global $DB;
 
-      $config = Config::getConfigurationValues('core', ['system_user']);
+        $config = Config::getConfigurationValues('core', ['system_user']);
 
-      if (empty($config['system_user'])) {
-         trigger_error("Mising system_user config", E_USER_WARNING);
-         return 0;
-      }
+        if (empty($config['system_user'])) {
+            trigger_error("Mising system_user config", E_USER_WARNING);
+            return 0;
+        }
 
-      $user = User::getById($config['system_user']);
-      if (!$user) {
-         trigger_error("Mising system_user user", E_USER_WARNING);
-         return 0;
-      }
+        $user = User::getById($config['system_user']);
+        if (!$user) {
+            trigger_error("Mising system_user user", E_USER_WARNING);
+            return 0;
+        }
 
-      $targets = [
+        $targets = [
          Ticket::getType(),
          Change::getType(),
          Problem::getType(),
-      ];
+        ];
 
-      $now = date("Y-m-d H:i:s");
+        $now = date("Y-m-d H:i:s");
 
-      $data = $DB->request([
+        $data = $DB->request([
          'SELECT' => 'id',
          'FROM'   => PendingReason_Item::getTable(),
          'WHERE'  => [
@@ -89,93 +93,93 @@ class PendingReasonCron extends CommonDBTM
             'followup_frequency' => ['>', 0],
             'itemtype'           => $targets
          ]
-      ]);
+        ]);
 
-      foreach ($data as $row) {
-         $pending_item = PendingReason_Item::getById($row['id']);
-         $itemtype = $pending_item->fields['itemtype'];
-         $item = $itemtype::getById($pending_item->fields['items_id']);
-         if (!$item) {
-            trigger_error("Failed to load item", E_USER_WARNING);
-            continue;
-         }
-
-         if ($item->fields['status'] != CommonITILObject::WAITING) {
-            trigger_error("Status is not pending", E_USER_WARNING);
-            continue;
-         }
-
-         $next_bump = $pending_item->getNextFollowupDate();
-         $resolve = $pending_item->getAutoResolvedate();
-
-         if ($next_bump && $now > $next_bump) {
-            // Load pending reason
-            $pending_reason = PendingReason::getById($pending_item->fields['pendingreasons_id']);
-            if (!$pending_reason) {
-               trigger_error("Failed to load PendingReason", E_USER_WARNING);
-               continue;
+        foreach ($data as $row) {
+            $pending_item = PendingReason_Item::getById($row['id']);
+            $itemtype = $pending_item->fields['itemtype'];
+            $item = $itemtype::getById($pending_item->fields['items_id']);
+            if (!$item) {
+                trigger_error("Failed to load item", E_USER_WARNING);
+                continue;
             }
 
-            // Load followup template
-            $fup_template = ITILFollowupTemplate::getById($pending_reason->fields['itilfollowuptemplates_id']);
-            if (!$fup_template) {
-               trigger_error("Failed to load ITILFollowupTemplate::{$pending_reason->fields['itilfollowuptemplates_id']}", E_USER_WARNING);
-               continue;
+            if ($item->fields['status'] != CommonITILObject::WAITING) {
+                trigger_error("Status is not pending", E_USER_WARNING);
+                continue;
             }
 
-            $success = $pending_item->update([
-               'id'             => $pending_item->getID(),
-               'bump_count'     => $pending_item->fields['bump_count'] + 1,
-               'last_bump_date' => date("Y-m-d H:i:s"),
-            ]);
+            $next_bump = $pending_item->getNextFollowupDate();
+            $resolve = $pending_item->getAutoResolvedate();
 
-            if (!$success) {
-               trigger_error("Can't bump, unable to update pending item", E_USER_WARNING);
-               continue;
+            if ($next_bump && $now > $next_bump) {
+               // Load pending reason
+                $pending_reason = PendingReason::getById($pending_item->fields['pendingreasons_id']);
+                if (!$pending_reason) {
+                    trigger_error("Failed to load PendingReason", E_USER_WARNING);
+                    continue;
+                }
+
+               // Load followup template
+                $fup_template = ITILFollowupTemplate::getById($pending_reason->fields['itilfollowuptemplates_id']);
+                if (!$fup_template) {
+                    trigger_error("Failed to load ITILFollowupTemplate::{$pending_reason->fields['itilfollowuptemplates_id']}", E_USER_WARNING);
+                    continue;
+                }
+
+                $success = $pending_item->update([
+                'id'             => $pending_item->getID(),
+                'bump_count'     => $pending_item->fields['bump_count'] + 1,
+                'last_bump_date' => date("Y-m-d H:i:s"),
+                ]);
+
+                if (!$success) {
+                     trigger_error("Can't bump, unable to update pending item", E_USER_WARNING);
+                     continue;
+                }
+
+               // Add bump (new followup from template)
+                $fup = new ITILFollowup();
+                $fup->add([
+                'itemtype' => $item::getType(),
+                'items_id' => $item->getID(),
+                'users_id' => $config['system_user'],
+                'content' => addslashes($fup_template->fields['content']),
+                'is_private' => $fup_template->fields['is_private'],
+                'requesttypes_id' => $fup_template->fields['requesttypes_id'],
+                'timeline_position' => CommonITILObject::TIMELINE_RIGHT,
+                ]);
+                $task->addVolume(1);
+            } else if ($resolve && $now > $resolve) {
+               // Load pending reason
+                $pending_reason = PendingReason::getById($pending_item->fields['pendingreasons_id']);
+                if (!$pending_reason) {
+                    trigger_error("Failed to load PendingReason", E_USER_WARNING);
+                    continue;
+                }
+
+               // Load solution template
+                $solution_template = SolutionTemplate::getById($pending_reason->fields['solutiontemplates_id']);
+                if (!$solution_template) {
+                    trigger_error("Failed to load SolutionTemplate::{$pending_reason->fields['solutiontemplates_id']}", E_USER_WARNING);
+                    continue;
+                }
+
+               // Add solution
+                $solution = new ITILSolution();
+                $solution->add([
+                'itemtype'         => $item::getType(),
+                'items_id'         => $item->getID(),
+                'solutiontypes_id' => $solution_template->fields['solutiontypes_id'],
+                'content'          => addslashes($solution_template->fields['content']),
+                'users_id'         => $config['system_user'],
+                ]);
+                $task->addVolume(1);
             }
+        }
 
-            // Add bump (new followup from template)
-            $fup = new ITILFollowup();
-            $fup->add([
-               'itemtype' => $item::getType(),
-               'items_id' => $item->getID(),
-               'users_id' => $config['system_user'],
-               'content' => addslashes($fup_template->fields['content']),
-               'is_private' => $fup_template->fields['is_private'],
-               'requesttypes_id' => $fup_template->fields['requesttypes_id'],
-               'timeline_position' => CommonITILObject::TIMELINE_RIGHT,
-            ]);
-            $task->addVolume(1);
-         } else if ($resolve && $now > $resolve) {
-            // Load pending reason
-            $pending_reason = PendingReason::getById($pending_item->fields['pendingreasons_id']);
-            if (!$pending_reason) {
-               trigger_error("Failed to load PendingReason", E_USER_WARNING);
-               continue;
-            }
-
-            // Load solution template
-            $solution_template = SolutionTemplate::getById($pending_reason->fields['solutiontemplates_id']);
-            if (!$solution_template) {
-               trigger_error("Failed to load SolutionTemplate::{$pending_reason->fields['solutiontemplates_id']}", E_USER_WARNING);
-               continue;
-            }
-
-            // Add solution
-            $solution = new ITILSolution();
-            $solution->add([
-               'itemtype'         => $item::getType(),
-               'items_id'         => $item->getID(),
-               'solutiontypes_id' => $solution_template->fields['solutiontypes_id'],
-               'content'          => addslashes($solution_template->fields['content']),
-               'users_id'         => $config['system_user'],
-            ]);
-            $task->addVolume(1);
-         }
-      }
-
-      return 1;
-   }
+        return 1;
+    }
 
    /**
     * Return the localized name of the current Type
@@ -185,7 +189,8 @@ class PendingReasonCron extends CommonDBTM
     *
     * @return string
    **/
-   public static function getTypeName($nb = 0) {
-      return __('Automatic followups / resolution');
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return __('Automatic followups / resolution');
+    }
 }

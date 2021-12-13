@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,20 +33,20 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
 
 Html::header(__('LDAP directory link'), $_SERVER['PHP_SELF'], "admin", "user", "ldap");
 
 if (isset($_SESSION["ldap_sortorder"])) {
-   unset($_SESSION["ldap_sortorder"]);
+    unset($_SESSION["ldap_sortorder"]);
 }
 
 AuthLDAP::manageValuesInSession([], true);
 
 echo TemplateRenderer::getInstance()->render(
-   'pages/admin/users_ldap.html.twig'
+    'pages/admin/users_ldap.html.twig'
 );
 
 Html::footer();

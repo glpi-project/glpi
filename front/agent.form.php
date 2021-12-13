@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,75 +33,97 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("config", READ);
 
 if (!isset($_GET["id"])) {
-   $_GET["id"] = "";
+    $_GET["id"] = "";
 }
 
 if (!isset($_GET["withtemplate"])) {
-   $_GET["withtemplate"] = "";
+    $_GET["withtemplate"] = "";
 }
 
 $agent = new Agent();
 //Add a new agent
 if (isset($_POST["add"])) {
-   $agent->check(-1, CREATE, $_POST);
-   if ($newID = $agent->add($_POST)) {
-      Event::log($newID, "agents", 4, "inventory",
-                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+    $agent->check(-1, CREATE, $_POST);
+    if ($newID = $agent->add($_POST)) {
+        Event::log(
+            $newID,
+            "agents",
+            4,
+            "inventory",
+            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
+        );
 
-      if ($_SESSION['glpibackcreated']) {
-         Html::redirect($agent->getLinkURL());
-      }
-   }
-   Html::back();
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($agent->getLinkURL());
+        }
+    }
+    Html::back();
 
    // delete an agent
 } else if (isset($_POST["delete"])) {
-   $agent->check($_POST['id'], DELETE);
-   $ok = $agent->delete($_POST);
-   if ($ok) {
-      Event::log($_POST["id"], "agents", 4, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
-   }
-   $agent->redirectToList();
-
+    $agent->check($_POST['id'], DELETE);
+    $ok = $agent->delete($_POST);
+    if ($ok) {
+        Event::log(
+            $_POST["id"],
+            "agents",
+            4,
+            "inventory",
+            //TRANS: %s is the user login
+            sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
+        );
+    }
+    $agent->redirectToList();
 } else if (isset($_POST["restore"])) {
-   $agent->check($_POST['id'], DELETE);
-   if ($agent->restore($_POST)) {
-      Event::log($_POST["id"], "agents", 4, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
-   }
-   $agent->redirectToList();
-
+    $agent->check($_POST['id'], DELETE);
+    if ($agent->restore($_POST)) {
+        Event::log(
+            $_POST["id"],
+            "agents",
+            4,
+            "inventory",
+            //TRANS: %s is the user login
+            sprintf(__('%s restores an item'), $_SESSION["glpiname"])
+        );
+    }
+    $agent->redirectToList();
 } else if (isset($_POST["purge"])) {
-   $agent->check($_POST['id'], PURGE);
-   if ($agent->delete($_POST, 1)) {
-      Event::log($_POST["id"], "agents", 4, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
-   }
-   $agent->redirectToList();
+    $agent->check($_POST['id'], PURGE);
+    if ($agent->delete($_POST, 1)) {
+        Event::log(
+            $_POST["id"],
+            "agents",
+            4,
+            "inventory",
+            //TRANS: %s is the user login
+            sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+        );
+    }
+    $agent->redirectToList();
 
    //update an agent
 } else if (isset($_POST["update"])) {
-   $agent->check($_POST['id'], UPDATE);
-   $agent->update($_POST);
-   Event::log($_POST["id"], "agents", 4, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
-   Html::back();
-
+    $agent->check($_POST['id'], UPDATE);
+    $agent->update($_POST);
+    Event::log(
+        $_POST["id"],
+        "agents",
+        4,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+    );
+    Html::back();
 } else {//print agent information
-   Html::header(Agent::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "glpi\inventory\inventory", "agent");
+    Html::header(Agent::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "glpi\inventory\inventory", "agent");
    //show agent form to add
-   $agent->display([
+    $agent->display([
       'id'           => $_GET["id"],
       'withtemplate' => $_GET["withtemplate"]]);
-   Html::footer();
+    Html::footer();
 }

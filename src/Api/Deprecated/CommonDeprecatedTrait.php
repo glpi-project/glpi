@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -38,16 +39,17 @@ namespace Glpi\Api\Deprecated;
 
 trait CommonDeprecatedTrait
 {
-   abstract public function getType(): string;
+    abstract public function getType(): string;
 
    /**
     * Get the class short name for the deprecated itemtpe
     *
     * @return string
     */
-   private function getDeprecatedClass(): string {
-      return (new \ReflectionClass(static::class))->getShortName();
-   }
+    private function getDeprecatedClass(): string
+    {
+        return (new \ReflectionClass(static::class))->getShortName();
+    }
 
    /**
     * For each hateoas, update the href ref to match the deprecated type
@@ -55,19 +57,20 @@ trait CommonDeprecatedTrait
     * @param array $hateoas Current hateoas
     * @return array Updated hateoas
     */
-   public function replaceCurrentHateoasRefByDeprecated(array $hateoas): array {
-      foreach ($hateoas as $key => $value) {
-         if (isset($value["href"])) {
-            $hateoas[$key]["href"] = str_replace(
-               $this->getType(),
-               $this->getDeprecatedClass(),
-               $value["href"]
-            );
-         }
-      }
+    public function replaceCurrentHateoasRefByDeprecated(array $hateoas): array
+    {
+        foreach ($hateoas as $key => $value) {
+            if (isset($value["href"])) {
+                $hateoas[$key]["href"] = str_replace(
+                    $this->getType(),
+                    $this->getDeprecatedClass(),
+                    $value["href"]
+                );
+            }
+        }
 
-      return $hateoas;
-   }
+        return $hateoas;
+    }
 
    /**
     * For each searchoption, update the UID ref to match the deprecated type
@@ -75,22 +78,23 @@ trait CommonDeprecatedTrait
     * @param array $soptions
     * @return CommonDeprecatedTrait Return self to allow method chaining
     */
-   public function updateSearchOptionsUids(array &$soptions) {
-      $soptions = array_map(function($soption) {
-         if (isset($soption['uid'])) {
-            $new_uid = str_replace(
-               $this->getType(),
-               $this->getDeprecatedClass(),
-               $soption['uid']
-            );
-            $soption['uid'] = $new_uid;
-         }
+    public function updateSearchOptionsUids(array &$soptions)
+    {
+        $soptions = array_map(function ($soption) {
+            if (isset($soption['uid'])) {
+                  $new_uid = str_replace(
+                      $this->getType(),
+                      $this->getDeprecatedClass(),
+                      $soption['uid']
+                  );
+                 $soption['uid'] = $new_uid;
+            }
 
-         return $soption;
-      }, $soptions);
+            return $soption;
+        }, $soptions);
 
-      return $this;
-   }
+        return $this;
+    }
 
    /**
     * For each searchoption, update the table ref to match the deprecated type
@@ -98,22 +102,23 @@ trait CommonDeprecatedTrait
     * @param array $soptions
     * @return CommonDeprecatedTrait Return self to allow method chaining
     */
-   public function updateSearchOptionsTables(array &$soptions) {
-      $soptions = array_map(function($soption) {
-         if (isset($soption['table'])) {
-            $new_table = str_replace(
-               getTableForItemType($this->getType()),
-               getTableForItemType($this->getDeprecatedClass()),
-               $soption['table']
-            );
-            $soption['table'] = $new_table;
-         }
+    public function updateSearchOptionsTables(array &$soptions)
+    {
+        $soptions = array_map(function ($soption) {
+            if (isset($soption['table'])) {
+                  $new_table = str_replace(
+                      getTableForItemType($this->getType()),
+                      getTableForItemType($this->getDeprecatedClass()),
+                      $soption['table']
+                  );
+                 $soption['table'] = $new_table;
+            }
 
-         return $soption;
-      }, $soptions);
+            return $soption;
+        }, $soptions);
 
-      return $this;
-   }
+        return $this;
+    }
 
    /**
     * Add a field in an array or an object
@@ -123,19 +128,20 @@ trait CommonDeprecatedTrait
     * @param string $value
     * @return CommonDeprecatedTrait Return self to allow method chaining
     */
-   public function addField(&$fields, string $name, string $value) {
-      if (is_object($fields)) {
-         if (!isset($fields->$name)) {
-            $fields->$name = $value;
-         }
-      } else if (is_array($fields)) {
-         if (!isset($fields[$name])) {
-            $fields[$name] = $value;
-         }
-      }
+    public function addField(&$fields, string $name, string $value)
+    {
+        if (is_object($fields)) {
+            if (!isset($fields->$name)) {
+                $fields->$name = $value;
+            }
+        } else if (is_array($fields)) {
+            if (!isset($fields[$name])) {
+                $fields[$name] = $value;
+            }
+        }
 
-      return $this;
-   }
+        return $this;
+    }
 
    /**
     * Rename a field in an array or an object
@@ -145,21 +151,22 @@ trait CommonDeprecatedTrait
     * @param string $new
     * @return CommonDeprecatedTrait Return self to allow method chaining
     */
-   public function renameField(&$fields, string $old, string $new) {
-      if (is_object($fields)) {
-         if (isset($fields->$old)) {
-            $fields->$new = $fields->$old;
-            unset($fields->$old);
-         }
-      } else if (is_array($fields)) {
-         if (isset($fields[$old])) {
-            $fields[$new] = $fields[$old];
-            unset($fields[$old]);
-         }
-      }
+    public function renameField(&$fields, string $old, string $new)
+    {
+        if (is_object($fields)) {
+            if (isset($fields->$old)) {
+                $fields->$new = $fields->$old;
+                unset($fields->$old);
+            }
+        } else if (is_array($fields)) {
+            if (isset($fields[$old])) {
+                $fields[$new] = $fields[$old];
+                unset($fields[$old]);
+            }
+        }
 
-      return $this;
-   }
+        return $this;
+    }
 
    /**
     * Delete a field in an array or an object
@@ -168,19 +175,20 @@ trait CommonDeprecatedTrait
     * @param string $name
     * @return CommonDeprecatedTrait Return self to allow method chaining
     */
-   public function deleteField(&$fields, string $name) {
-      if (is_object($fields)) {
-         if (isset($fields->$name)) {
-            unset($fields->$name);
-         }
-      } else if (is_array($fields)) {
-         if (isset($fields[$name])) {
-            unset($fields[$name]);
-         }
-      }
+    public function deleteField(&$fields, string $name)
+    {
+        if (is_object($fields)) {
+            if (isset($fields->$name)) {
+                unset($fields->$name);
+            }
+        } else if (is_array($fields)) {
+            if (isset($fields[$name])) {
+                unset($fields[$name]);
+            }
+        }
 
-      return $this;
-   }
+        return $this;
+    }
 
    /**
     * Add a searchoption
@@ -190,15 +198,15 @@ trait CommonDeprecatedTrait
     * @param array $values
     * @return CommonDeprecatedTrait Return self to allow method chaining
     */
-   public function addSearchOption(
-      array &$soptions,
-      string $key,
-      array $values
-   ) {
-      $soptions[$key] = $values;
+    public function addSearchOption(
+        array &$soptions,
+        string $key,
+        array $values
+    ) {
+        $soptions[$key] = $values;
 
-      return $this;
-   }
+        return $this;
+    }
 
    /**
     * Edit an existing searchoption
@@ -208,17 +216,17 @@ trait CommonDeprecatedTrait
     * @param array $values
     * @return CommonDeprecatedTrait Return self to allow method chaining
     */
-   public function alterSearchOption(
-      array &$soptions,
-      string $key,
-      array $values
-   ) {
-      foreach ($values as $v_key => $v_value) {
-         $soptions[$key][$v_key] = $v_value;
-      }
+    public function alterSearchOption(
+        array &$soptions,
+        string $key,
+        array $values
+    ) {
+        foreach ($values as $v_key => $v_value) {
+            $soptions[$key][$v_key] = $v_value;
+        }
 
-      return $this;
-   }
+        return $this;
+    }
 
    /**
     * Delete an existing searchoption
@@ -228,10 +236,11 @@ trait CommonDeprecatedTrait
     * @param array $values
     * @return CommonDeprecatedTrait Return self to allow method chaining
     */
-   public function deleteSearchOption(array &$soptions, string $key) {
-      if (isset($soptions[$key])) {
-         unset($soptions[$key]);
-      }
-      return $this;
-   }
+    public function deleteSearchOption(array &$soptions, string $key)
+    {
+        if (isset($soptions[$key])) {
+            unset($soptions[$key]);
+        }
+        return $this;
+    }
 }

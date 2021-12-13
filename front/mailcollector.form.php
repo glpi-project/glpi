@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,65 +33,76 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("config", READ);
 
 if (!isset($_GET["id"])) {
-   $_GET["id"] = "";
+    $_GET["id"] = "";
 }
 
 $mailgate = new MailCollector();
 
 if (isset($_POST["add"])) {
-   $mailgate->check(-1, CREATE, $_POST);
+    $mailgate->check(-1, CREATE, $_POST);
 
-   if (array_key_exists('passwd', $_POST)) {
-      // Password must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
-      $_POST['passwd'] = $_UPOST['passwd'];
-   }
+    if (array_key_exists('passwd', $_POST)) {
+       // Password must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
+        $_POST['passwd'] = $_UPOST['passwd'];
+    }
 
-   if ($newID = $mailgate->add($_POST)) {
-      Event::log($newID, "mailcollector", 4, "setup",
-                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
-      if ($_SESSION['glpibackcreated']) {
-         Html::redirect($mailgate->getLinkURL());
-      }
-   }
-   Html::back();
-
+    if ($newID = $mailgate->add($_POST)) {
+        Event::log(
+            $newID,
+            "mailcollector",
+            4,
+            "setup",
+            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
+        );
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($mailgate->getLinkURL());
+        }
+    }
+    Html::back();
 } else if (isset($_POST["purge"])) {
-   $mailgate->check($_POST['id'], PURGE);
-   $mailgate->delete($_POST, 1);
+    $mailgate->check($_POST['id'], PURGE);
+    $mailgate->delete($_POST, 1);
 
-   Event::log($_POST["id"], "mailcollector", 4, "setup",
-              //TRANS: %s is the user login
-              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
-   $mailgate->redirectToList();
-
+    Event::log(
+        $_POST["id"],
+        "mailcollector",
+        4,
+        "setup",
+        //TRANS: %s is the user login
+        sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+    );
+    $mailgate->redirectToList();
 } else if (isset($_POST["update"])) {
-   $mailgate->check($_POST['id'], UPDATE);
+    $mailgate->check($_POST['id'], UPDATE);
 
-   if (array_key_exists('passwd', $_POST)) {
-      // Password must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
-      $_POST['passwd'] = $_UPOST['passwd'];
-   }
+    if (array_key_exists('passwd', $_POST)) {
+       // Password must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
+        $_POST['passwd'] = $_UPOST['passwd'];
+    }
 
-   $mailgate->update($_POST);
+    $mailgate->update($_POST);
 
-   Event::log($_POST["id"], "mailcollector", 4, "setup",
-              //TRANS: %s is the user login
-              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
-   Html::back();
-
+    Event::log(
+        $_POST["id"],
+        "mailcollector",
+        4,
+        "setup",
+        //TRANS: %s is the user login
+        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+    );
+    Html::back();
 } else if (isset($_POST["get_mails"])) {
-   $mailgate->check($_POST['id'], UPDATE);
-   $mailgate->collect($_POST["id"], 1);
+    $mailgate->check($_POST['id'], UPDATE);
+    $mailgate->collect($_POST["id"], 1);
 
-   Html::back();
-
+    Html::back();
 } else {
-   Html::header(MailCollector::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "mailcollector");
-   $mailgate->display(['id' =>$_GET["id"]]);
-   Html::footer();
+    Html::header(MailCollector::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "mailcollector");
+    $mailgate->display(['id' => $_GET["id"]]);
+    Html::footer();
 }

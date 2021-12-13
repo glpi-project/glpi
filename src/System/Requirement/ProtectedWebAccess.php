@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,89 +38,94 @@ namespace Glpi\System\Requirement;
  *
  * @TODO Check access to each directory, not only to log file.
  */
-class ProtectedWebAccess extends AbstractRequirement {
+class ProtectedWebAccess extends AbstractRequirement
+{
 
    /**
     * Paths of directories to check.
     *
     * @var string[]
     */
-   private $directories;
+    private $directories;
 
    /**
     * @param array $directories  Paths of directories to check.
     */
-   public function __construct(array $directories) {
-      $this->title = __('Protected access to files directory');
-      $this->description = __('Web access to GLPI var directories should be disabled to prevent unauthorized access to them.');
-      $this->optional = true;
+    public function __construct(array $directories)
+    {
+        $this->title = __('Protected access to files directory');
+        $this->description = __('Web access to GLPI var directories should be disabled to prevent unauthorized access to them.');
+        $this->optional = true;
 
-      $this->directories = $directories;
-   }
+        $this->directories = $directories;
+    }
 
-   protected function check() {
-      global $CFG_GLPI;
+    protected function check()
+    {
+        global $CFG_GLPI;
 
-      if (isCommandLine()) {
-         $this->out_of_context = true;
-         $this->validated = false;
-         $this->validation_messages[] = __('Checking that web access to files directory is protected cannot be done on CLI context.');
-         return;
-      }
+        if (isCommandLine()) {
+            $this->out_of_context = true;
+            $this->validated = false;
+            $this->validation_messages[] = __('Checking that web access to files directory is protected cannot be done on CLI context.');
+            return;
+        }
 
-      $check_access = false;
-      foreach ($this->directories as $dir) {
-         if (str_starts_with($dir, GLPI_ROOT)) {
-            // Only check access if one of the data directories is under GLPI document root.
-            $check_access = true;
-            break;
-         }
-      }
+        $check_access = false;
+        foreach ($this->directories as $dir) {
+            if (str_starts_with($dir, GLPI_ROOT)) {
+               // Only check access if one of the data directories is under GLPI document root.
+                $check_access = true;
+                break;
+            }
+        }
 
-      if (isset($_REQUEST['skipCheckWriteAccessToDirs']) || !$check_access) {
-         $this->out_of_context = true;
-         return;
-      }
+        if (isset($_REQUEST['skipCheckWriteAccessToDirs']) || !$check_access) {
+            $this->out_of_context = true;
+            return;
+        }
 
-      $oldhand = set_error_handler(function($errno, $errmsg, $filename, $linenum){return true;});
-      $oldlevel = error_reporting(0);
+        $oldhand = set_error_handler(function ($errno, $errmsg, $filename, $linenum) {
+            return true;
+        });
+        $oldlevel = error_reporting(0);
 
-      //create a context to set timeout
-      $context = stream_context_create([
+       //create a context to set timeout
+        $context = stream_context_create([
          'http' => [
             'timeout' => 2.0
          ]
-      ]);
+        ]);
 
-      $protocol = 'http';
-      if (isset($_SERVER['HTTPS'])) {
-         $protocol = 'https';
-      }
-      $uri = $protocol . '://' . $_SERVER['SERVER_NAME'] . $CFG_GLPI['root_doc'];
+        $protocol = 'http';
+        if (isset($_SERVER['HTTPS'])) {
+            $protocol = 'https';
+        }
+        $uri = $protocol . '://' . $_SERVER['SERVER_NAME'] . $CFG_GLPI['root_doc'];
 
-      if ($fic = fopen($uri.'/index.php?skipCheckWriteAccessToDirs=1', 'r', false, $context)) {
-         fclose($fic);
-         if ($fic = fopen($uri.'/files/_log/php-errors.log', 'r', false, $context)) {
+        if ($fic = fopen($uri . '/index.php?skipCheckWriteAccessToDirs=1', 'r', false, $context)) {
             fclose($fic);
+            if ($fic = fopen($uri . '/files/_log/php-errors.log', 'r', false, $context)) {
+                fclose($fic);
 
+                $this->validated = false;
+                $this->validation_messages[] = __('Web access to the files directory should not be allowed');
+                $this->validation_messages[] = __('Check the .htaccess file and the web server configuration.');
+            } else {
+                $this->validated = true;
+                $this->validation_messages[] = __('Web access to files directory is protected');
+            }
+        } else {
             $this->validated = false;
-            $this->validation_messages[] = __('Web access to the files directory should not be allowed');
-            $this->validation_messages[] = __('Check the .htaccess file and the web server configuration.');
-         } else {
-            $this->validated = true;
-            $this->validation_messages[] = __('Web access to files directory is protected');
-         }
-      } else {
-         $this->validated = false;
-         $this->validation_messages[] = __('Web access to the files directory should not be allowed but this cannot be checked automatically on this instance.');
-         $this->validation_messages[] = sprintf(
-            __('Make sure access to %s (%s) is forbidden; otherwise review .htaccess file and web server configuration.'),
-            __('error log file'),
-            $CFG_GLPI['root_doc'] . '/files/_log/php-errors.log'
-         );
-      }
+            $this->validation_messages[] = __('Web access to the files directory should not be allowed but this cannot be checked automatically on this instance.');
+            $this->validation_messages[] = sprintf(
+                __('Make sure access to %s (%s) is forbidden; otherwise review .htaccess file and web server configuration.'),
+                __('error log file'),
+                $CFG_GLPI['root_doc'] . '/files/_log/php-errors.log'
+            );
+        }
 
-      error_reporting($oldlevel);
-      set_error_handler($oldhand);
-   }
+        error_reporting($oldlevel);
+        set_error_handler($oldhand);
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,7 +37,7 @@
 
 use Glpi\Application\ErrorHandler;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkLoginUser();
 

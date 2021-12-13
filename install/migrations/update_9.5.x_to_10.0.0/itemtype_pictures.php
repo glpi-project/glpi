@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -47,22 +48,22 @@ $misc_pictures_itemtypes = array_merge([PhoneModel::class, PrinterModel::class, 
 
 /** @var CommonDBTM $itemtype */
 foreach ($front_rear_picture_itemtypes as $itemtype) {
-   $table = $itemtype::getTable();
-   if (!$DB->fieldExists($table, 'picture_front')) {
-      $migration->addField($itemtype::getTable(), 'picture_front', 'text');
-   }
-   if (!$DB->fieldExists($table, 'picture_rear')) {
-      $migration->addField($itemtype::getTable(), 'picture_rear', 'text');
-   }
+    $table = $itemtype::getTable();
+    if (!$DB->fieldExists($table, 'picture_front')) {
+        $migration->addField($itemtype::getTable(), 'picture_front', 'text');
+    }
+    if (!$DB->fieldExists($table, 'picture_rear')) {
+        $migration->addField($itemtype::getTable(), 'picture_rear', 'text');
+    }
 }
 
 /** @var CommonDBTM $itemtype */
 foreach ($misc_pictures_itemtypes as $itemtype) {
-   $table = $itemtype::getTable();
-   if (!$DB->fieldExists($table, 'pictures')) {
-      $after = ($DB->fieldExists($table, 'picture_rear')) ? 'picture_rear' : '';
-      $migration->addField($table, 'pictures', 'text', [
+    $table = $itemtype::getTable();
+    if (!$DB->fieldExists($table, 'pictures')) {
+        $after = ($DB->fieldExists($table, 'picture_rear')) ? 'picture_rear' : '';
+        $migration->addField($table, 'pictures', 'text', [
          'after'  => $after
-      ]);
-   }
+        ]);
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -35,11 +36,12 @@ use Glpi\Dashboard\Widget;
 /**
  * Store printer metrics
  */
-class PrinterLog extends CommonDBChild {
+class PrinterLog extends CommonDBChild
+{
 
-   static public $itemtype        = 'Printer';
-   static public $items_id        = 'printers_id';
-   public $dohistory              = false;
+    public static $itemtype        = 'Printer';
+    public static $items_id        = 'printers_id';
+    public $dohistory              = false;
 
 
    /**
@@ -49,9 +51,10 @@ class PrinterLog extends CommonDBChild {
     *
     * @return string name of this type
     */
-   static function getTypeName($nb = 0) {
-      return __('Page counters');
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return __('Page counters');
+    }
 
    /**
     * Get the tab name used for item
@@ -60,16 +63,17 @@ class PrinterLog extends CommonDBChild {
     * @param integer $withtemplate 1 if is a template form
     * @return string|array name of the tab
     */
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
 
-      $array_ret = [];
+        $array_ret = [];
 
-      if ($item->getType() == 'Printer') {
-         $cnt = countElementsInTable([static::getTable()], [static::$items_id => $item->getField('id')]);
-         $array_ret[] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $cnt);
-      }
-      return $array_ret;
-   }
+        if ($item->getType() == 'Printer') {
+            $cnt = countElementsInTable([static::getTable()], [static::$items_id => $item->getField('id')]);
+            $array_ret[] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $cnt);
+        }
+        return $array_ret;
+    }
 
 
    /**
@@ -80,14 +84,15 @@ class PrinterLog extends CommonDBChild {
     * @param integer $withtemplate 1 if is a template form
     * @return boolean
     */
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-      if ($item->getType() == Printer::getType() && $item->getID() > 0) {
-         $printerlog = new self();
-         $printerlog->showMetrics($item);
-         return true;
-      }
-      return false;
-   }
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+        if ($item->getType() == Printer::getType() && $item->getID() > 0) {
+            $printerlog = new self();
+            $printerlog->showMetrics($item);
+            return true;
+        }
+        return false;
+    }
 
    /**
     * Get metrics
@@ -97,59 +102,61 @@ class PrinterLog extends CommonDBChild {
     *
     * @return array
     */
-   public function getMetrics(Printer $printer, $user_filters = []): array {
-      global $DB;
+    public function getMetrics(Printer $printer, $user_filters = []): array
+    {
+        global $DB;
 
-      $bdate = new DateTime();
-      $bdate->sub(new DateInterval('P1Y'));
-      $filters = [
+        $bdate = new DateTime();
+        $bdate->sub(new DateInterval('P1Y'));
+        $filters = [
          'date' => ['>', $bdate->format('Y-m-d')]
-      ];
-      $filters = array_merge($filters, $user_filters);
+        ];
+        $filters = array_merge($filters, $user_filters);
 
-      $iterator = $DB->request([
+        $iterator = $DB->request([
          'FROM'   => $this->getTable(),
          'WHERE'  => [
             'printers_id'  => $printer->fields['id']
          ] + $filters
-      ]);
+        ]);
 
-      return iterator_to_array($iterator);
-   }
+        return iterator_to_array($iterator);
+    }
 
    /**
     * Display form for agent
     *
     * @param Printer $printer Printer instance
     */
-   public function showMetrics(Printer $printer) {
-      $raw_metrics = $this->getMetrics($printer);
+    public function showMetrics(Printer $printer)
+    {
+        $raw_metrics = $this->getMetrics($printer);
 
-      //build graph data
-      $params = [
+       //build graph data
+        $params = [
          'label'         => $this->getTypeName(),
          'icon'          => Printer::getIcon(),
          'apply_filters' => [],
-      ];
+        ];
 
-      $series = [];
-      $labels = [];
-      $i = 0;
-      foreach ($raw_metrics as $metrics) {
-         $date = new DateTime($metrics['date']);
-         $labels[] = $date->format(__('Y-m-d'));
-         unset($metrics['id'], $metrics['date'], $metrics['printers_id']);
+        $series = [];
+        $labels = [];
+        $i = 0;
+        foreach ($raw_metrics as $metrics) {
+            $date = new DateTime($metrics['date']);
+            $labels[] = $date->format(__('Y-m-d'));
+            unset($metrics['id'], $metrics['date'], $metrics['printers_id']);
 
-         foreach ($metrics as $key => $value) {
-            if ($value > 0) {
-               $series[$key]['name'] = $this->getLabelFor($key);
-               $series[$key]['data'][] = $value;
+            foreach ($metrics as $key => $value) {
+                if ($value > 0) {
+                    $series[$key]['name'] = $this->getLabelFor($key);
+                    $series[$key]['data'][] = $value;
+                }
             }
-         }
-         ++$i;
-      }
+            ++$i;
+        }
 
-      $bar_conf = [
+        $bar_conf = [
          'data'  => [
             'labels' => $labels,
             'series' => array_values($series),
@@ -158,40 +165,41 @@ class PrinterLog extends CommonDBChild {
          'icon'  => $params['icon'],
          'color' => '#ffffff',
          'distributed' => false
-      ];
+        ];
 
-      //display graph
-      echo "<div class='dashboard printer_barchart'>";
-      echo Widget::multipleBars($bar_conf);
-      echo "</div>";
-   }
+       //display graph
+        echo "<div class='dashboard printer_barchart'>";
+        echo Widget::multipleBars($bar_conf);
+        echo "</div>";
+    }
 
-   private function getLabelFor($key) {
-      switch ($key) {
-         case 'total_pages':
-            return __('Total pages');
-         case 'bw_pages':
-            return __('Black & White pages');
-         case 'color_pages':
-            return __('Color pages');
-         case 'scanned':
-            return __('Scans');
-         case 'rv_pages':
-            return __('Recto/Verso pages');
-         case 'prints':
-            return __('Prints');
-         case 'bw_prints':
-            return __('Black & White prints');
-         case 'color_prints':
-            return __('Color prints');
-         case 'copies':
-            return __('Copies');
-         case 'bw_copies':
-            return __('Black & White copies');
-         case 'color_copies':
-            return __('Color copies');
-         case 'faxed':
-            return __('Fax');
-      }
-   }
+    private function getLabelFor($key)
+    {
+        switch ($key) {
+            case 'total_pages':
+                return __('Total pages');
+            case 'bw_pages':
+                return __('Black & White pages');
+            case 'color_pages':
+                return __('Color pages');
+            case 'scanned':
+                return __('Scans');
+            case 'rv_pages':
+                return __('Recto/Verso pages');
+            case 'prints':
+                return __('Prints');
+            case 'bw_prints':
+                return __('Black & White prints');
+            case 'color_prints':
+                return __('Color prints');
+            case 'copies':
+                return __('Copies');
+            case 'bw_copies':
+                return __('Black & White copies');
+            case 'color_copies':
+                return __('Color copies');
+            case 'faxed':
+                return __('Fax');
+        }
+    }
 }

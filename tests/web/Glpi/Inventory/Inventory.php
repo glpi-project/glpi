@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -34,24 +35,27 @@ namespace tests\units\Glpi\Inventory;
 
 use GuzzleHttp;
 
-class Inventory extends \GLPITestCase {
-   private $http_client;
-   private $base_uri;
+class Inventory extends \GLPITestCase
+{
+    private $http_client;
+    private $base_uri;
 
-   public function beforeTestMethod($method) {
-      global $CFG_GLPI;
+    public function beforeTestMethod($method)
+    {
+        global $CFG_GLPI;
 
-      $this->http_client = new GuzzleHttp\Client();
-      $this->base_uri    = trim($CFG_GLPI['url_base'], "/")."/";
+        $this->http_client = new GuzzleHttp\Client();
+        $this->base_uri    = trim($CFG_GLPI['url_base'], "/") . "/";
 
-      parent::beforeTestMethod($method);
-   }
+        parent::beforeTestMethod($method);
+    }
 
-   public function testInventoryRequest() {
-      $res = $this->http_client->request(
-         'POST',
-         $this->base_uri . 'front/inventory.php',
-         [
+    public function testInventoryRequest()
+    {
+        $res = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'front/inventory.php',
+            [
             'headers' => [
                'Content-Type' => 'application/xml'
             ],
@@ -121,33 +125,33 @@ class Inventory extends \GLPITestCase {
                   <DEVICEID>computer-2018-07-09-09-07-13</DEVICEID>
                   <QUERY>INVENTORY</QUERY>
                   </REQUEST>"
-         ]
-      );
-      $this->integer($res->getStatusCode())->isIdenticalTo(200);
-      $this->string((string)$res->getBody())
+            ]
+        );
+        $this->integer($res->getStatusCode())->isIdenticalTo(200);
+        $this->string((string)$res->getBody())
          ->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><RESPONSE>SEND</RESPONSE></REPLY>\n");
-      $this->string($res->getHeader('content-type')[0])->isIdenticalTo('application/xml');
+        $this->string($res->getHeader('content-type')[0])->isIdenticalTo('application/xml');
 
-      //check agent in database
-      $agent = new \Agent();
-      $this->boolean($agent->getFromDBByCrit(['deviceid' => 'computer-2018-07-09-09-07-13']))->isTrue();
+       //check agent in database
+        $agent = new \Agent();
+        $this->boolean($agent->getFromDBByCrit(['deviceid' => 'computer-2018-07-09-09-07-13']))->isTrue();
 
-      $expected = [
+        $expected = [
          'deviceid'        => 'computer-2018-07-09-09-07-13',
          'version'         => '2.5.1-1.fc30',
          'agenttypes_id'   => 1,
          'locked'          => 0,
          'itemtype'        => 'Computer',
          'items_id'        => 0
-      ];
+        ];
 
-      foreach ($expected as $key => $value) {
-         if ($key === 'items_id') {
-            //FIXME: retrieve created items_id
-            $this->integer((int)$agent->fields[$key])->isGreaterThan(0);
-         } else {
-            $this->variable($agent->fields[$key])->isEqualTo($value, "$key differs");
-         }
-      }
-   }
+        foreach ($expected as $key => $value) {
+            if ($key === 'items_id') {
+               //FIXME: retrieve created items_id
+                $this->integer((int)$agent->fields[$key])->isGreaterThan(0);
+            } else {
+                $this->variable($agent->fields[$key])->isEqualTo($value, "$key differs");
+            }
+        }
+    }
 }

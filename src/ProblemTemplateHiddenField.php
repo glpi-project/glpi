@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,11 +33,11 @@
 
 /// Hidden fields for problem template class
 /// since version 0.83
-class ProblemTemplateHiddenField extends ITILTemplateHiddenField {
+class ProblemTemplateHiddenField extends ITILTemplateHiddenField
+{
 
    // From CommonDBChild
-   static public $itemtype  = 'ProblemTemplate';
-   static public $items_id  = 'problemtemplates_id';
-   static public $itiltype = 'Problem';
-
+    public static $itemtype  = 'ProblemTemplate';
+    public static $items_id  = 'problemtemplates_id';
+    public static $itiltype = 'Problem';
 }

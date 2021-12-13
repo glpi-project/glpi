@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,40 +37,45 @@ require_once 'CommonDropdown.php';
 
 /* Test for inc/operatingsystem.class.php */
 
-class OperatingSystem extends CommonDropdown {
+class OperatingSystem extends CommonDropdown
+{
 
-   public function getObjectClass() {
-      return '\OperatingSystem';
-   }
+    public function getObjectClass()
+    {
+        return '\OperatingSystem';
+    }
 
-   public function typenameProvider() {
-      return [
+    public function typenameProvider()
+    {
+        return [
          [\OperatingSystem::getTypeName(), 'Operating systems'],
          [\OperatingSystem::getTypeName(0), 'Operating systems'],
          [\OperatingSystem::getTypeName(10), 'Operating systems'],
          [\OperatingSystem::getTypeName(1), 'Operating system']
-      ];
-   }
+        ];
+    }
 
-   protected function getTabs() {
-      return [
-         'OperatingSystem$main'  =>'Operating system',
+    protected function getTabs()
+    {
+        return [
+         'OperatingSystem$main'  => 'Operating system',
          'Log$1'                 => 'Historical'
-      ];
-   }
+        ];
+    }
 
    /**
     * Create new Operating system in database
     *
     * @return void
     */
-   protected function newInstance() {
-      $this->newTestedInstance();
-      $this->integer(
-         (int)$this->testedInstance->add([
+    protected function newInstance()
+    {
+        $this->newTestedInstance();
+        $this->integer(
+            (int)$this->testedInstance->add([
             'name' => 'OS name ' . $this->getUniqueString()
-         ])
-      )->isGreaterThan(0);
-      $this->boolean($this->testedInstance->getFromDB($this->testedInstance->getID()))->isTrue();
-   }
+            ])
+        )->isGreaterThan(0);
+        $this->boolean($this->testedInstance->getFromDB($this->testedInstance->getID()))->isTrue();
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,15 +32,17 @@
  */
 
 /// SolutionType class
-class SolutionType extends CommonDropdown {
+class SolutionType extends CommonDropdown
+{
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Solution type', 'Solution types', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Solution type', 'Solution types', $nb);
+    }
 
-   static function getIcon() {
-      return "fas fa-check";
-   }
-
+    public static function getIcon()
+    {
+        return "fas fa-check";
+    }
 }

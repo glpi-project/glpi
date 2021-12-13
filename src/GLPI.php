@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -39,83 +40,89 @@ use Monolog\Logger;
 /**
  *  GLPI (instantiation and so on)
 **/
-class GLPI {
+class GLPI
+{
 
-   private $error_handler;
-   private $log_level;
+    private $error_handler;
+    private $log_level;
 
    /**
     * Init logger
     *
     * @return void
     */
-   public function initLogger() {
-      global $PHPLOGGER, $PHP_LOG_HANDLER, $SQLLOGGER, $SQL_LOG_HANDLER;
+    public function initLogger()
+    {
+        global $PHPLOGGER, $PHP_LOG_HANDLER, $SQLLOGGER, $SQL_LOG_HANDLER;
 
-      $this->log_level = Logger::WARNING;
-      if (defined('TU_USER')) {
-         $this->log_level = Logger::DEBUG;
-      } else if (defined('GLPI_LOG_LVL')) {
-         $this->log_level = GLPI_LOG_LVL;
-      } else if (!isset($_SESSION['glpi_use_mode'])
-         || ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
-      ) {
-         $this->log_level = Logger::DEBUG;
-      }
+        $this->log_level = Logger::WARNING;
+        if (defined('TU_USER')) {
+            $this->log_level = Logger::DEBUG;
+        } else if (defined('GLPI_LOG_LVL')) {
+            $this->log_level = GLPI_LOG_LVL;
+        } else if (
+            !isset($_SESSION['glpi_use_mode'])
+            || ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
+        ) {
+            $this->log_level = Logger::DEBUG;
+        }
 
-      foreach (['php', 'sql'] as $type) {
-         $logger = new Logger('glpi' . $type . 'log');
-         if (defined('TU_USER')) {
-            $handler = new TestHandler($this->log_level);
-         } else {
-            $handler = new StreamHandler(
-               GLPI_LOG_DIR . "/{$type}-errors.log",
-               $this->log_level
-            );
-            $formatter = new LineFormatter(null, 'Y-m-d H:i:s', true, true);
-            $handler->setFormatter($formatter);
-         }
-         $logger->pushHandler($handler);
-         switch ($type) {
-            case 'php':
-               $PHPLOGGER = $logger;
-               $PHP_LOG_HANDLER = $handler;
-               break;
-            case 'sql':
-               $SQLLOGGER = $logger;
-               $SQL_LOG_HANDLER = $handler;
-               break;
-         }
-      }
-   }
+        foreach (['php', 'sql'] as $type) {
+            $logger = new Logger('glpi' . $type . 'log');
+            if (defined('TU_USER')) {
+                $handler = new TestHandler($this->log_level);
+            } else {
+                $handler = new StreamHandler(
+                    GLPI_LOG_DIR . "/{$type}-errors.log",
+                    $this->log_level
+                );
+                $formatter = new LineFormatter(null, 'Y-m-d H:i:s', true, true);
+                $handler->setFormatter($formatter);
+            }
+            $logger->pushHandler($handler);
+            switch ($type) {
+                case 'php':
+                    $PHPLOGGER = $logger;
+                    $PHP_LOG_HANDLER = $handler;
+                    break;
+                case 'sql':
+                    $SQLLOGGER = $logger;
+                    $SQL_LOG_HANDLER = $handler;
+                    break;
+            }
+        }
+    }
 
    /**
     * Get log level
     *
     * @return string
     */
-   public function getLogLevel() {
-      return $this->log_level;
-   }
+    public function getLogLevel()
+    {
+        return $this->log_level;
+    }
 
    /**
     * Init and register error handler.
     *
     * @return ErrorHandler
     */
-   public function initErrorHandler() {
-      $this->error_handler = ErrorHandler::getInstance();
-      $this->error_handler->register();
+    public function initErrorHandler()
+    {
+        $this->error_handler = ErrorHandler::getInstance();
+        $this->error_handler->register();
 
-      return $this->error_handler;
-   }
+        return $this->error_handler;
+    }
 
    /**
     * Get registered error handler.
     *
     * @return null|ErrorHandler
     */
-   public function getErrorHandler() {
-      return $this->error_handler;
-   }
+    public function getErrorHandler()
+    {
+        return $this->error_handler;
+    }
 }

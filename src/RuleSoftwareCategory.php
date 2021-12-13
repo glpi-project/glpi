@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,73 +38,78 @@
 *   - actions
 *
 **/
-class RuleSoftwareCategory extends Rule {
+class RuleSoftwareCategory extends Rule
+{
 
    // From Rule
-   static $rightname = 'rule_softwarecategories';
-   public $can_sort  = true;
+    public static $rightname = 'rule_softwarecategories';
+    public $can_sort  = true;
 
 
-   function getTitle() {
-      return __('Rules for assigning a category to software');
-   }
+    public function getTitle()
+    {
+        return __('Rules for assigning a category to software');
+    }
 
 
    /**
     * @see Rule::maxActionsCount()
    **/
-   function maxActionsCount() {
-      return 1;
-   }
+    public function maxActionsCount()
+    {
+        return 1;
+    }
 
 
-   function getCriterias() {
+    public function getCriterias()
+    {
 
-      static $criterias = [];
+        static $criterias = [];
 
-      if (count($criterias)) {
-         return $criterias;
-      }
+        if (count($criterias)) {
+            return $criterias;
+        }
 
-      $criterias['name']['field']         = 'name';
-      $criterias['name']['name']          = _n('Software', 'Software', Session::getPluralNumber());
-      $criterias['name']['table']         = 'glpi_softwares';
+        $criterias['name']['field']         = 'name';
+        $criterias['name']['name']          = _n('Software', 'Software', Session::getPluralNumber());
+        $criterias['name']['table']         = 'glpi_softwares';
 
-      $criterias['manufacturer']['field'] = 'name';
-      $criterias['manufacturer']['name']  = __('Publisher');
-      $criterias['manufacturer']['table'] = 'glpi_manufacturers';
+        $criterias['manufacturer']['field'] = 'name';
+        $criterias['manufacturer']['name']  = __('Publisher');
+        $criterias['manufacturer']['table'] = 'glpi_manufacturers';
 
-      $criterias['comment']['field']      = 'comment';
-      $criterias['comment']['name']       = __('Comments');
-      $criterias['comment']['table']      = 'glpi_softwares';
+        $criterias['comment']['field']      = 'comment';
+        $criterias['comment']['name']       = __('Comments');
+        $criterias['comment']['table']      = 'glpi_softwares';
 
-      $criterias['_system_category']['field'] = 'name';
-      $criterias['_system_category']['name']  = __('Category from inventory tool');
+        $criterias['_system_category']['field'] = 'name';
+        $criterias['_system_category']['name']  = __('Category from inventory tool');
 
-      return $criterias;
-   }
+        return $criterias;
+    }
 
 
-   function getActions() {
+    public function getActions()
+    {
 
-      $actions                                   = [];
+        $actions                                   = [];
 
-      $actions['softwarecategories_id']['name']  = _n('Category', 'Categories', 1);
-      $actions['softwarecategories_id']['type']  = 'dropdown';
-      $actions['softwarecategories_id']['table'] = 'glpi_softwarecategories';
-      $actions['softwarecategories_id']['force_actions'] = ['assign','regex_result'];
+        $actions['softwarecategories_id']['name']  = _n('Category', 'Categories', 1);
+        $actions['softwarecategories_id']['type']  = 'dropdown';
+        $actions['softwarecategories_id']['table'] = 'glpi_softwarecategories';
+        $actions['softwarecategories_id']['force_actions'] = ['assign','regex_result'];
 
-      $actions['_import_category']['name'] = __('Import category from inventory tool');
-      $actions['_import_category']['type'] = 'yesonly';
+        $actions['_import_category']['name'] = __('Import category from inventory tool');
+        $actions['_import_category']['type'] = 'yesonly';
 
-      $actions['_ignore_import']['name']  = __('To be unaware of import');
-      $actions['_ignore_import']['type']  = 'yesonly';
+        $actions['_ignore_import']['name']  = __('To be unaware of import');
+        $actions['_ignore_import']['type']  = 'yesonly';
 
-      return $actions;
-   }
+        return $actions;
+    }
 
-   static function getIcon() {
-      return SoftwareCategory::getIcon();
-   }
-
+    public static function getIcon()
+    {
+        return SoftwareCategory::getIcon();
+    }
 }

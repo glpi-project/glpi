@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,36 +37,38 @@ use DbTestCase;
 
 /* Test for inc/notificationtemplate.class.php */
 
-class NotificationTemplate extends DbTestCase {
+class NotificationTemplate extends DbTestCase
+{
 
-   public function testClone() {
-      global $DB;
+    public function testClone()
+    {
+        global $DB;
 
-      $iterator = $DB->request([
+        $iterator = $DB->request([
          'SELECT' => 'notificationtemplates_id',
          'FROM'   => \NotificationTemplateTranslation::getTable(),
          'LIMIT'  => 1
-      ]);
+        ]);
 
-      $data = $iterator->current();
-      $template = new \NotificationTemplate();
-      $template->getFromDB($data['notificationtemplates_id']);
-      $added = $template->clone();
-      $this->integer((int)$added)->isGreaterThan(0);
+        $data = $iterator->current();
+        $template = new \NotificationTemplate();
+        $template->getFromDB($data['notificationtemplates_id']);
+        $added = $template->clone();
+        $this->integer((int)$added)->isGreaterThan(0);
 
-      $clonedTemplate = new \NotificationTemplate();
-      $this->boolean($clonedTemplate->getFromDB($added))->isTrue();
+        $clonedTemplate = new \NotificationTemplate();
+        $this->boolean($clonedTemplate->getFromDB($added))->isTrue();
 
-      unset($template->fields['id']);
-      unset($template->fields['name']);
-      unset($template->fields['date_creation']);
-      unset($template->fields['date_mod']);
+        unset($template->fields['id']);
+        unset($template->fields['name']);
+        unset($template->fields['date_creation']);
+        unset($template->fields['date_mod']);
 
-      unset($clonedTemplate->fields['id']);
-      unset($clonedTemplate->fields['name']);
-      unset($clonedTemplate->fields['date_creation']);
-      unset($clonedTemplate->fields['date_mod']);
+        unset($clonedTemplate->fields['id']);
+        unset($clonedTemplate->fields['name']);
+        unset($clonedTemplate->fields['date_creation']);
+        unset($clonedTemplate->fields['date_mod']);
 
-      $this->array($template->fields)->isIdenticalTo($clonedTemplate->fields);
-   }
+        $this->array($template->fields)->isIdenticalTo($clonedTemplate->fields);
+    }
 }

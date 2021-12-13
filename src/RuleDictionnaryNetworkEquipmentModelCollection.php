@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,15 +31,16 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleDictionnaryNetworkEquipmentModelCollection extends RuleDictionnaryDropdownCollection {
-   public $item_table  = "glpi_networkequipmentmodels";
-   public $menu_option = "model.networking";
+class RuleDictionnaryNetworkEquipmentModelCollection extends RuleDictionnaryDropdownCollection
+{
+    public $item_table  = "glpi_networkequipmentmodels";
+    public $menu_option = "model.networking";
 
    /**
     * @see RuleCollection::getTitle()
    **/
-   function getTitle() {
-      return __('Dictionnary of networking equipment models');
-   }
-
+    public function getTitle()
+    {
+        return __('Dictionnary of networking equipment models');
+    }
 }

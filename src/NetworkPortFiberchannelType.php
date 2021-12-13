@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,13 +32,16 @@
  */
 
 /// Class ComputerType
-class NetworkPortFiberchannelType extends CommonDropdown {
+class NetworkPortFiberchannelType extends CommonDropdown
+{
 
-   static function getTypeName($nb = 0) {
-      return _n('Fiber type', 'Fiber types', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Fiber type', 'Fiber types', $nb);
+    }
 
-   static function getFieldLabel() {
-      return _n('Type', 'Types', 1);
-   }
+    public static function getFieldLabel()
+    {
+        return _n('Type', 'Types', 1);
+    }
 }

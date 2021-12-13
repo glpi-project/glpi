@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,10 +31,10 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 if (!$CFG_GLPI["use_anonymous_helpdesk"]) {
-   exit();
+    exit();
 }
 
 // Send UTF8 Headers
@@ -49,9 +50,9 @@ echo "<html lang=\"{$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]}\">";
 $theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
 echo Html::scss('css/palettes/' . $theme);
 if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
-   echo Html::scss('css/legacy/highcontrast');
+    echo Html::scss('css/legacy/highcontrast');
 }
-echo Html::script($CFG_GLPI["root_doc"].'/script.js');
+echo Html::script($CFG_GLPI["root_doc"] . '/script.js');
 ?>
 
 </head>
@@ -69,38 +70,38 @@ function fillidfield(Type,Id) {
 <?php
 
 echo "<div class='center'>";
-echo "<p class='b'>".__('Search the ID of your hardware')."</p>";
-echo " <form name='form1' method='post' action='".$_SERVER['PHP_SELF']."'>";
+echo "<p class='b'>" . __('Search the ID of your hardware') . "</p>";
+echo " <form name='form1' method='post' action='" . $_SERVER['PHP_SELF'] . "'>";
 
 echo "<table class='tab_cadre_fixe'>";
-echo "<tr><th height='29'>".__('Enter the first letters (user, item name, serial or asset number)').
+echo "<tr><th height='29'>" . __('Enter the first letters (user, item name, serial or asset number)') .
      "</th></tr>";
 echo "<tr><td class='tab_bg_1 center'>";
 echo "<input name='NomContact' type='text' id='NomContact' >";
 echo "<input type='hidden' name='send' value='1'>"; // bug IE ! La validation par enter ne fonctionne pas sans cette ligne  incroyable mais vrai !
-echo "<input type='submit' name='send' value='". _sx('button', 'Search')."'>";
+echo "<input type='submit' name='send' value='" . _sx('button', 'Search') . "'>";
 echo "</td></tr></table>";
 Html::closeForm();
 echo "</div>";
 
 if (isset($_POST["send"])) {
-   echo "<table class='tab_cadre_fixe'>";
-   echo " <tr class='tab_bg3'>";
-   echo " <td class='center b' width='30%'>".__('Alternate username')."</td>";
-   echo " <td class='center b' width='20%'>".__('Hardware type')."</td>";
-   echo " <td class='center b' width='30%'>"._n('Associated element', 'Associated elements', Session::getPluralNumber())."</td>";
-   echo " <td class='center b' width='5%'>".__('ID')."</td>";
-   echo " <td class='center b' width='10%'>".__('Serial number')."</td>";
-   echo " <td class='center b' width='10%'>".__('Inventory number')."</td>";
-   echo " </tr>";
+    echo "<table class='tab_cadre_fixe'>";
+    echo " <tr class='tab_bg3'>";
+    echo " <td class='center b' width='30%'>" . __('Alternate username') . "</td>";
+    echo " <td class='center b' width='20%'>" . __('Hardware type') . "</td>";
+    echo " <td class='center b' width='30%'>" . _n('Associated element', 'Associated elements', Session::getPluralNumber()) . "</td>";
+    echo " <td class='center b' width='5%'>" . __('ID') . "</td>";
+    echo " <td class='center b' width='10%'>" . __('Serial number') . "</td>";
+    echo " <td class='center b' width='10%'>" . __('Inventory number') . "</td>";
+    echo " </tr>";
 
-   $types = ['Computer'         => Computer::getTypeName(1),
+    $types = ['Computer'         => Computer::getTypeName(1),
                   'NetworkEquipment' => NetworkEquipment::getTypeName(1),
                   'Printer'          => Printer::getTypeName(1),
                   'Monitor'          => Monitor::getTypeName(1),
                   'Peripheral'       => Peripheral::getTypeName(1)];
-   foreach ($types as $type => $label) {
-      $iterator = $DB->request([
+    foreach ($types as $type => $label) {
+        $iterator = $DB->request([
          'SELECT' => ['name', 'id', 'contact', 'serial', 'otherserial'],
          'FROM'   => getTableForItemType($type),
          'WHERE'  => [
@@ -114,27 +115,27 @@ if (isset($_POST["send"])) {
             ]
          ],
          'ORDER'           => ['name']
-      ]);
+        ]);
 
-      foreach ($iterator as $ligne) {
-         $Comp_num = $ligne['id'];
-         $Contact  = $ligne['contact'];
-         $Computer = $ligne['name'];
-         $s1       = $ligne['serial'];
-         $s2       = $ligne['otherserial'];
-         echo " <tr class='tab_bg_1' onClick=\"fillidfield(".$type.",".$Comp_num.")\">";
-         echo "<td class='center'>&nbsp;$Contact&nbsp;</td>";
-         echo "<td class='center'>&nbsp;$label&nbsp;</td>";
-         echo "<td class='center b'>&nbsp;$Computer&nbsp;</td>";
-         echo "<td class='center'>&nbsp;$Comp_num&nbsp;</td>";
-         echo "<td class='center'>&nbsp;$s1&nbsp;</td>";
-         echo "<td class='center'>&nbsp;$s2&nbsp;</td>";
-         echo "<td class='center'>";
-         echo "</td></tr>";
-      }
-   }
+        foreach ($iterator as $ligne) {
+            $Comp_num = $ligne['id'];
+            $Contact  = $ligne['contact'];
+            $Computer = $ligne['name'];
+            $s1       = $ligne['serial'];
+            $s2       = $ligne['otherserial'];
+            echo " <tr class='tab_bg_1' onClick=\"fillidfield(" . $type . "," . $Comp_num . ")\">";
+            echo "<td class='center'>&nbsp;$Contact&nbsp;</td>";
+            echo "<td class='center'>&nbsp;$label&nbsp;</td>";
+            echo "<td class='center b'>&nbsp;$Computer&nbsp;</td>";
+            echo "<td class='center'>&nbsp;$Comp_num&nbsp;</td>";
+            echo "<td class='center'>&nbsp;$s1&nbsp;</td>";
+            echo "<td class='center'>&nbsp;$s2&nbsp;</td>";
+            echo "<td class='center'>";
+            echo "</td></tr>";
+        }
+    }
 
-   $iterator = $DB->request([
+    $iterator = $DB->request([
       'SELECT' => ['name', 'id'],
       'FROM'   => 'glpi_softwares',
       'WHERE'  => [
@@ -143,19 +144,19 @@ if (isset($_POST["send"])) {
          'name'         => ['LIKE', "%{$_POST['NomContact']}%"]
       ],
       'ORDER'  => ['name']
-   ]);
+    ]);
 
-   foreach ($iterator as $ligne) {
-      $Comp_num = $ligne['id'];
-      $Computer = $ligne['name'];
-      echo " <tr class='tab_find' onClick=\"fillidfield('Software',".$Comp_num.")\">";
-      echo "<td class='center'>&nbsp;</td>";
-      echo "<td class='center'>&nbsp;"._n('Software', 'Software', 1)."&nbsp;</td>";
-      echo "<td class='center b'>&nbsp;$Computer&nbsp;</td>";
-      echo "<td class='center'>&nbsp;$Comp_num&nbsp;</td>";
-      echo "<td class='center'>&nbsp;</td></tr>";
-   }
+    foreach ($iterator as $ligne) {
+        $Comp_num = $ligne['id'];
+        $Computer = $ligne['name'];
+        echo " <tr class='tab_find' onClick=\"fillidfield('Software'," . $Comp_num . ")\">";
+        echo "<td class='center'>&nbsp;</td>";
+        echo "<td class='center'>&nbsp;" . _n('Software', 'Software', 1) . "&nbsp;</td>";
+        echo "<td class='center b'>&nbsp;$Computer&nbsp;</td>";
+        echo "<td class='center'>&nbsp;$Comp_num&nbsp;</td>";
+        echo "<td class='center'>&nbsp;</td></tr>";
+    }
 
-   echo "</table>";
+    echo "</table>";
 }
 echo '</body></html>';

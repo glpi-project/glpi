@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,68 +37,71 @@ use Glpi\Socket;
  * Manage Netpoint.
  * @deprecated 9.5.0 Use Socket
  */
-class Netpoint extends Socket {
+class Netpoint extends Socket
+{
 
-   static function getTable($classname = null) {
-      return Socket::getTable();
-   }
+    public static function getTable($classname = null)
+    {
+        return Socket::getTable();
+    }
 
-   public function prepareInputForAdd($input) {
-      //Copy input to match new format
+    public function prepareInputForAdd($input)
+    {
+       //Copy input to match new format
 
-      if (!isset($input['wiring_side'])) {
-         $input['wiring_side'] = Socket::FRONT;
-      }
+        if (!isset($input['wiring_side'])) {
+            $input['wiring_side'] = Socket::FRONT;
+        }
 
-      if (!isset($input['itemtype'])) {
-         $input['itemtype'] = 'Computer';
-      }
+        if (!isset($input['itemtype'])) {
+            $input['itemtype'] = 'Computer';
+        }
 
-      if (!isset($input['items_id'])) {
-         $input['items_id'] = 0;
-      }
+        if (!isset($input['items_id'])) {
+            $input['items_id'] = 0;
+        }
 
-      if (!isset($input['socketmodels_id'])) {
-         $input['socketmodels_id'] = 0;
-      }
+        if (!isset($input['socketmodels_id'])) {
+            $input['socketmodels_id'] = 0;
+        }
 
-      if (!isset($input['networkports_id'])) {
-         $input['networkports_id'] = 0;
-      }
+        if (!isset($input['networkports_id'])) {
+            $input['networkports_id'] = 0;
+        }
 
-      return parent::prepareInputForAdd($input);
-   }
+        return parent::prepareInputForAdd($input);
+    }
 
-   public function prepareInputForUpdate($input) {
+    public function prepareInputForUpdate($input)
+    {
 
-      if (!isset($input['wiring_side'])) {
-         $input['wiring_side'] = Socket::FRONT;
-      }
+        if (!isset($input['wiring_side'])) {
+            $input['wiring_side'] = Socket::FRONT;
+        }
 
-      if (!isset($input['itemtype'])) {
-         $input['itemtype'] = 'Computer';
-      }
+        if (!isset($input['itemtype'])) {
+            $input['itemtype'] = 'Computer';
+        }
 
-      if (!isset($input['items_id'])) {
-         $input['items_id'] = 0;
-      }
+        if (!isset($input['items_id'])) {
+            $input['items_id'] = 0;
+        }
 
-      if (!isset($input['socketmodels_id'])) {
-         $input['socketmodels_id'] = 0;
-      }
+        if (!isset($input['socketmodels_id'])) {
+            $input['socketmodels_id'] = 0;
+        }
 
-      if (!isset($input['networkports_id'])) {
-         $input['networkports_id'] = 0;
-      }
+        if (!isset($input['networkports_id'])) {
+            $input['networkports_id'] = 0;
+        }
 
-      //Copy input to match new format
-      return parent::prepareInputForUpdate($input);
-   }
+       //Copy input to match new format
+        return parent::prepareInputForUpdate($input);
+    }
 
-   public function post_getFromDB() {
-      //Copy fields to match new format
-      return parent::post_getFromDB();
-   }
-
-
+    public function post_getFromDB()
+    {
+       //Copy fields to match new format
+        return parent::post_getFromDB();
+    }
 }

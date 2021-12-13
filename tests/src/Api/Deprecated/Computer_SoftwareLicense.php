@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,79 +33,90 @@
 
 namespace Glpi\Tests\Api\Deprecated;
 
-class Computer_SoftwareLicense implements DeprecatedInterface {
+class Computer_SoftwareLicense implements DeprecatedInterface
+{
 
-   public static function getDeprecatedType(): string {
-      return "Computer_SoftwareLicense";
-   }
+    public static function getDeprecatedType(): string
+    {
+        return "Computer_SoftwareLicense";
+    }
 
-   public static function getCurrentType(): string {
-      return "Item_SoftwareLicense";
-   }
+    public static function getCurrentType(): string
+    {
+        return "Item_SoftwareLicense";
+    }
 
-   public static function getDeprecatedFields(): array {
-      return [
+    public static function getDeprecatedFields(): array
+    {
+        return [
         "id", "computers_id", "softwarelicenses_id", "is_deleted", "is_dynamic",
         "links"
-      ];
-   }
+        ];
+    }
 
-   public static function getCurrentAddInput(): array {
-      return [
+    public static function getCurrentAddInput(): array
+    {
+        return [
          "itemtype" => "Computer",
          "items_id" => getItemByTypeName(
-            'Computer',
-            '_test_pc01',
-            true
+             'Computer',
+             '_test_pc01',
+             true
          ),
          "softwarelicenses_id" => getItemByTypeName(
-            'SoftwareLicense',
-            '_test_softlic_1',
-            true
+             'SoftwareLicense',
+             '_test_softlic_1',
+             true
          ),
-      ];
-   }
+        ];
+    }
 
-   public static function getDeprecatedAddInput(): array {
-      return [
+    public static function getDeprecatedAddInput(): array
+    {
+        return [
          "computers_id" => getItemByTypeName(
-            'Computer',
-            '_test_pc01',
-            true
+             'Computer',
+             '_test_pc01',
+             true
          ),
          "softwarelicenses_id" => getItemByTypeName(
-            'SoftwareLicense',
-            '_test_softlic_1',
-            true
+             'SoftwareLicense',
+             '_test_softlic_1',
+             true
          ),
-      ];
-   }
+        ];
+    }
 
-   public static function getDeprecatedUpdateInput(): array {
-      return [
+    public static function getDeprecatedUpdateInput(): array
+    {
+        return [
          'computers_id' => getItemByTypeName('Computer', '_test_pc02', true),
-      ];
-   }
+        ];
+    }
 
-   public static function getExpectedAfterInsert(): array {
-      return [
+    public static function getExpectedAfterInsert(): array
+    {
+        return [
          "itemtype" => "Computer",
          "items_id" => getItemByTypeName('Computer', '_test_pc01', true),
-      ];
-   }
+        ];
+    }
 
-   public static function getExpectedAfterUpdate(): array {
-      return [
+    public static function getExpectedAfterUpdate(): array
+    {
+        return [
          "itemtype" => "Computer",
          "items_id" => getItemByTypeName('Computer', '_test_pc02', true),
-      ];
-   }
+        ];
+    }
 
-   public static function getDeprecatedSearchQuery(): string {
-      return "forcedisplay[0]=2&rawdata=1";
-   }
+    public static function getDeprecatedSearchQuery(): string
+    {
+        return "forcedisplay[0]=2&rawdata=1";
+    }
 
-   public static function getCurrentSearchQuery(): string {
-      return "forcedisplay[0]=2&criteria[0][field]=6&criteria[0][searchtype]=equals&criteria[0][value]=Computer&rawdata=1";
-   }
+    public static function getCurrentSearchQuery(): string
+    {
+        return "forcedisplay[0]=2&criteria[0][field]=6&criteria[0][searchtype]=equals&criteria[0][value]=Computer&rawdata=1";
+    }
 }

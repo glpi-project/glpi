@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,37 +34,43 @@
 /**
  *  Class used to manage LDAP replicate config
  */
-class AuthLdapReplicate extends CommonDBTM {
+class AuthLdapReplicate extends CommonDBTM
+{
 
-   static $rightname = 'config';
+    public static $rightname = 'config';
 
-   static function canCreate() {
-      return static::canUpdate();
-   }
+    public static function canCreate()
+    {
+        return static::canUpdate();
+    }
 
-   static function canPurge() {
-      return static::canUpdate();
-   }
+    public static function canPurge()
+    {
+        return static::canUpdate();
+    }
 
-   function getForbiddenStandardMassiveAction() {
+    public function getForbiddenStandardMassiveAction()
+    {
 
-      $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
-      return $forbidden;
-   }
+        $forbidden   = parent::getForbiddenStandardMassiveAction();
+        $forbidden[] = 'update';
+        return $forbidden;
+    }
 
-   function prepareInputForAdd($input) {
+    public function prepareInputForAdd($input)
+    {
 
-      if (isset($input["port"]) && (intval($input["port"]) == 0)) {
-         $input["port"] = 389;
-      }
-      return $input;
-   }
+        if (isset($input["port"]) && (intval($input["port"]) == 0)) {
+            $input["port"] = 389;
+        }
+        return $input;
+    }
 
-   function prepareInputForUpdate($input) {
+    public function prepareInputForUpdate($input)
+    {
 
-      return $this->prepareInputForAdd($input);
-   }
+        return $this->prepareInputForAdd($input);
+    }
 
    /**
     * Form to add a replicate to a ldap server
@@ -73,33 +80,33 @@ class AuthLdapReplicate extends CommonDBTM {
     *
     * @return void
     */
-   static function addNewReplicateForm($target, $master_id) {
+    public static function addNewReplicateForm($target, $master_id)
+    {
 
-      echo "<form action='$target' method='post' name='add_replicate_form' id='add_replicate_form'>";
-      echo "<div class='center'>";
-      echo "<table class='tab_cadre_fixe'>";
+        echo "<form action='$target' method='post' name='add_replicate_form' id='add_replicate_form'>";
+        echo "<div class='center'>";
+        echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='5'>".__('Add a LDAP directory replica'). "</th></tr>";
-      echo "<tr class='tab_bg_1'><td class='center'>".__('Name')."</td>";
-      echo "<td class='center'>".__('Server')."</td>";
-      echo "<td class='center'>"._n('Port', 'Ports', 1)."</td>";
-      echo "<td class='center'>".__('Timeout')."</td><td></td></tr>";
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='center'><input type='text' class='form-control' name='name'></td>";
-      echo "<td class='center'><input type='text' class='form-control' name='host'></td>";
-      echo "<td class='center'><input type='text' class='form-control' name='port'></td>";
-      echo "<td class='center'>";
-      Dropdown::showNumber('timeout', ['value'  => 10,
+        echo "<tr><th colspan='5'>" . __('Add a LDAP directory replica') . "</th></tr>";
+        echo "<tr class='tab_bg_1'><td class='center'>" . __('Name') . "</td>";
+        echo "<td class='center'>" . __('Server') . "</td>";
+        echo "<td class='center'>" . _n('Port', 'Ports', 1) . "</td>";
+        echo "<td class='center'>" . __('Timeout') . "</td><td></td></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td class='center'><input type='text' class='form-control' name='name'></td>";
+        echo "<td class='center'><input type='text' class='form-control' name='host'></td>";
+        echo "<td class='center'><input type='text' class='form-control' name='port'></td>";
+        echo "<td class='center'>";
+        Dropdown::showNumber('timeout', ['value'  => 10,
                                        'min'    => 1,
                                        'max'    => 30,
                                        'step'   => 1,
                                        'toadd'  => [0 => __('No timeout')]]);
-      echo "</td>";
-      echo "<td class='center'><input type='hidden' name='next' value='extauth_ldap'>";
-      echo "<input type='hidden' name='authldaps_id' value='$master_id'>";
-      echo "<input type='submit' name='add_replicate' value='"._sx('button', 'Add') ."' class='btn btn-primary'></td>";
-      echo "</tr></table></div>";
-      Html::closeForm();
-   }
-
+        echo "</td>";
+        echo "<td class='center'><input type='hidden' name='next' value='extauth_ldap'>";
+        echo "<input type='hidden' name='authldaps_id' value='$master_id'>";
+        echo "<input type='submit' name='add_replicate' value='" . _sx('button', 'Add') . "' class='btn btn-primary'></td>";
+        echo "</tr></table></div>";
+        Html::closeForm();
+    }
 }

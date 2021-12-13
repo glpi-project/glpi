@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -32,72 +33,78 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class SessionsConfiguration extends \GLPITestCase {
+class SessionsConfiguration extends \GLPITestCase
+{
 
-   public function testCheckWithGoodConfig() {
+    public function testCheckWithGoodConfig()
+    {
 
-      $this->newTestedInstance();
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-      $this->array($this->testedInstance->getValidationMessages())
+        $this->newTestedInstance();
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
+        $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(['Sessions configuration is OK.']);
-   }
+    }
 
-   public function testCheckWithMissingExtension() {
+    public function testCheckWithMissingExtension()
+    {
 
-      $this->function->extension_loaded = false;
+        $this->function->extension_loaded = false;
 
-      $this->newTestedInstance();
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-      $this->array($this->testedInstance->getValidationMessages())
+        $this->newTestedInstance();
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
+        $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(['session extension is not installed.']);
-   }
+    }
 
-   public function testCheckWithAutostart() {
+    public function testCheckWithAutostart()
+    {
 
-      $this->function->ini_get = function($name) {
-         return $name == 'session.auto_start' ? '1' : '0';
-      };
+        $this->function->ini_get = function ($name) {
+            return $name == 'session.auto_start' ? '1' : '0';
+        };
 
-      $this->newTestedInstance();
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-      $this->array($this->testedInstance->getValidationMessages())
+        $this->newTestedInstance();
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
+        $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(
-            [
+             [
                '"session.auto_start" must be set to off.',
                'See .htaccess file in the GLPI root for more information.',
-            ]
+             ]
          );
-   }
+    }
 
-   public function testCheckWithUseTransId() {
+    public function testCheckWithUseTransId()
+    {
 
-      $this->function->ini_get = function($name) {
-         return $name == 'session.use_trans_sid' ? '1' : '0';
-      };
+        $this->function->ini_get = function ($name) {
+            return $name == 'session.use_trans_sid' ? '1' : '0';
+        };
 
-      $this->newTestedInstance();
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-      $this->array($this->testedInstance->getValidationMessages())
+        $this->newTestedInstance();
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
+        $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(
-            [
+             [
                '"session.use_trans_sid" must be set to off.',
                'See .htaccess file in the GLPI root for more information.',
-            ]
+             ]
          );
-   }
+    }
 
-   public function testCheckWithAutostartAndUseTransId() {
+    public function testCheckWithAutostartAndUseTransId()
+    {
 
-      $this->function->ini_get = '1';
+        $this->function->ini_get = '1';
 
-      $this->newTestedInstance();
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-      $this->array($this->testedInstance->getValidationMessages())
+        $this->newTestedInstance();
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
+        $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(
-            [
+             [
                '"session.auto_start" and "session.use_trans_sid" must be set to off.',
                'See .htaccess file in the GLPI root for more information.',
-            ]
+             ]
          );
-   }
+    }
 }

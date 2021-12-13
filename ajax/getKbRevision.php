@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -36,14 +37,14 @@
 
 use Glpi\RichText\RichText;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
 
 if (!isset($_POST['revid'])) {
-   throw new \RuntimeException('Required argument missing!');
+    throw new \RuntimeException('Required argument missing!');
 }
 
 $revid = $_POST['revid'];

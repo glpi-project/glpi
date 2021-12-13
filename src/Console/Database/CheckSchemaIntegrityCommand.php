@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -38,126 +39,131 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CheckSchemaIntegrityCommand extends AbstractCommand {
+class CheckSchemaIntegrityCommand extends AbstractCommand
+{
 
    /**
     * Error code returned when failed to read empty SQL file.
     *
     * @var integer
     */
-   const ERROR_UNABLE_TO_READ_EMPTYSQL = 1;
+    const ERROR_UNABLE_TO_READ_EMPTYSQL = 1;
 
    /**
     * Error code returned when differences are found.
     *
     * @var integer
     */
-   const ERROR_FOUND_DIFFERENCES = 2;
+    const ERROR_FOUND_DIFFERENCES = 2;
 
-   protected function configure() {
-      parent::configure();
+    protected function configure()
+    {
+        parent::configure();
 
-      $this->setName('glpi:database:check_schema_integrity');
-      $this->setAliases(
-         [
+        $this->setName('glpi:database:check_schema_integrity');
+        $this->setAliases(
+            [
             'db:check_schema_integrity',
             'glpi:database:check', // old name
             'db:check', // old alias
-         ]
-      );
-      $this->setDescription(__('Check for schema differences between current database and installation file.'));
+            ]
+        );
+        $this->setDescription(__('Check for schema differences between current database and installation file.'));
 
-      $this->addOption(
-         'strict',
-         null,
-         InputOption::VALUE_NONE,
-         __('Strict comparison of definitions')
-      );
+        $this->addOption(
+            'strict',
+            null,
+            InputOption::VALUE_NONE,
+            __('Strict comparison of definitions')
+        );
 
-      $this->addOption(
-         'ignore-innodb-migration',
-         null,
-         InputOption::VALUE_NONE,
-         __('Do not check tokens related to migration from "MyISAM" to "InnoDB".')
-      );
+        $this->addOption(
+            'ignore-innodb-migration',
+            null,
+            InputOption::VALUE_NONE,
+            __('Do not check tokens related to migration from "MyISAM" to "InnoDB".')
+        );
 
-      $this->addOption(
-         'ignore-timestamps-migration',
-         null,
-         InputOption::VALUE_NONE,
-         __('Do not check tokens related to migration from "datetime" to "timestamp".')
-      );
+        $this->addOption(
+            'ignore-timestamps-migration',
+            null,
+            InputOption::VALUE_NONE,
+            __('Do not check tokens related to migration from "datetime" to "timestamp".')
+        );
 
-      $this->addOption(
-         'ignore-utf8mb4-migration',
-         null,
-         InputOption::VALUE_NONE,
-         __('Do not check tokens related to migration from "utf8" to "utf8mb4".')
-      );
+        $this->addOption(
+            'ignore-utf8mb4-migration',
+            null,
+            InputOption::VALUE_NONE,
+            __('Do not check tokens related to migration from "utf8" to "utf8mb4".')
+        );
 
-      $this->addOption(
-         'ignore-dynamic-row-format-migration',
-         null,
-         InputOption::VALUE_NONE,
-         __('Do not check tokens related to "DYNAMIC" row format migration.')
-      );
-   }
+        $this->addOption(
+            'ignore-dynamic-row-format-migration',
+            null,
+            InputOption::VALUE_NONE,
+            __('Do not check tokens related to "DYNAMIC" row format migration.')
+        );
+    }
 
-   protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
 
-      $checker = new DatabaseSchemaIntegrityChecker(
-         $this->db,
-         $input->getOption('strict'),
-         $input->getOption('ignore-innodb-migration'),
-         $input->getOption('ignore-timestamps-migration'),
-         $input->getOption('ignore-utf8mb4-migration'),
-         $input->getOption('ignore-dynamic-row-format-migration')
-      );
+        $checker = new DatabaseSchemaIntegrityChecker(
+            $this->db,
+            $input->getOption('strict'),
+            $input->getOption('ignore-innodb-migration'),
+            $input->getOption('ignore-timestamps-migration'),
+            $input->getOption('ignore-utf8mb4-migration'),
+            $input->getOption('ignore-dynamic-row-format-migration')
+        );
 
-      if (false === ($empty_file = realpath(GLPI_ROOT . '/install/mysql/glpi-empty.sql'))
-          || false === ($empty_sql = file_get_contents($empty_file))) {
-         $message = sprintf(__('Unable to read installation file "%s".'), $empty_file);
-         $output->writeln(
-            '<error>' . $message . '</error>',
-            OutputInterface::VERBOSITY_QUIET
-         );
-         return self::ERROR_UNABLE_TO_READ_EMPTYSQL;
-      }
-
-      $matches = [];
-      preg_match_all('/CREATE TABLE[^`]*`(.+)`[^;]+/', $empty_sql, $matches);
-      $empty_tables_names   = $matches[1];
-      $empty_tables_schemas = $matches[0];
-
-      $has_differences = false;
-
-      foreach ($empty_tables_schemas as $index => $table_schema) {
-         $table_name = $empty_tables_names[$index];
-
-         $output->writeln(
-            sprintf(__('Processing table "%s"...'), $table_name),
-            OutputInterface::VERBOSITY_VERY_VERBOSE
-         );
-
-         if ($checker->hasDifferences($table_name, $table_schema)) {
-            $diff = $checker->getDiff($table_name, $table_schema);
-
-            $has_differences = true;
-            $message = sprintf(__('Table schema differs for table "%s".'), $table_name);
+        if (
+            false === ($empty_file = realpath(GLPI_ROOT . '/install/mysql/glpi-empty.sql'))
+            || false === ($empty_sql = file_get_contents($empty_file))
+        ) {
+            $message = sprintf(__('Unable to read installation file "%s".'), $empty_file);
             $output->writeln(
-               '<info>' . $message . '</info>',
-               OutputInterface::VERBOSITY_QUIET
+                '<error>' . $message . '</error>',
+                OutputInterface::VERBOSITY_QUIET
             );
-            $output->write($diff);
-         }
-      }
+            return self::ERROR_UNABLE_TO_READ_EMPTYSQL;
+        }
 
-      if ($has_differences) {
-         return self::ERROR_FOUND_DIFFERENCES;
-      }
+        $matches = [];
+        preg_match_all('/CREATE TABLE[^`]*`(.+)`[^;]+/', $empty_sql, $matches);
+        $empty_tables_names   = $matches[1];
+        $empty_tables_schemas = $matches[0];
 
-      $output->writeln('<info>' . __('Database schema is OK.') . '</info>');
+        $has_differences = false;
 
-      return 0; // Success
-   }
+        foreach ($empty_tables_schemas as $index => $table_schema) {
+            $table_name = $empty_tables_names[$index];
+
+            $output->writeln(
+                sprintf(__('Processing table "%s"...'), $table_name),
+                OutputInterface::VERBOSITY_VERY_VERBOSE
+            );
+
+            if ($checker->hasDifferences($table_name, $table_schema)) {
+                $diff = $checker->getDiff($table_name, $table_schema);
+
+                $has_differences = true;
+                $message = sprintf(__('Table schema differs for table "%s".'), $table_name);
+                $output->writeln(
+                    '<info>' . $message . '</info>',
+                    OutputInterface::VERBOSITY_QUIET
+                );
+                 $output->write($diff);
+            }
+        }
+
+        if ($has_differences) {
+            return self::ERROR_FOUND_DIFFERENCES;
+        }
+
+        $output->writeln('<info>' . __('Database schema is OK.') . '</info>');
+
+        return 0; // Success
+    }
 }

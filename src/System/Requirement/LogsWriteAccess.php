@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -37,33 +38,36 @@ use Psr\Log\LoggerInterface;
 /**
  * @since 9.5.0
  */
-class LogsWriteAccess extends AbstractRequirement {
+class LogsWriteAccess extends AbstractRequirement
+{
 
    /**
     * Logger.
     *
     * @var LoggerInterface
     */
-   private $logger;
+    private $logger;
 
    /**
     *
     * @param LoggerInterface $logger
     */
-   public function __construct(LoggerInterface $logger) {
-      $this->logger = $logger;
-      $this->title = __('Permissions for log files');
-   }
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+        $this->title = __('Permissions for log files');
+    }
 
-   protected function check() {
-      // Only write test for GLPI_LOG as SElinux prevent removing log file.
-      try {
-         $this->logger->warning('Test logger');
-         $this->validated = true;
-         $this->validation_messages[] = __('The log file has been created successfully.');
-      } catch (\UnexpectedValueException $e) {
-         $this->validated = false;
-         $this->validation_messages[] = sprintf(__('The log file could not be created in %s.'), GLPI_LOG_DIR);
-      }
-   }
+    protected function check()
+    {
+       // Only write test for GLPI_LOG as SElinux prevent removing log file.
+        try {
+            $this->logger->warning('Test logger');
+            $this->validated = true;
+            $this->validation_messages[] = __('The log file has been created successfully.');
+        } catch (\UnexpectedValueException $e) {
+            $this->validated = false;
+            $this->validation_messages[] = sprintf(__('The log file could not be created in %s.'), GLPI_LOG_DIR);
+        }
+    }
 }

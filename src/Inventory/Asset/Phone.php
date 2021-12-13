@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -38,11 +39,13 @@ use PhoneType;
 class Phone extends MainAsset
 {
 
-   protected function getModelsFieldName(): string {
-      return PhoneModel::getForeignKeyField();
-   }
+    protected function getModelsFieldName(): string
+    {
+        return PhoneModel::getForeignKeyField();
+    }
 
-   protected function getTypesFieldName(): string {
-      return PhoneType::getForeignKeyField();
-   }
+    protected function getTypesFieldName(): string
+    {
+        return PhoneType::getForeignKeyField();
+    }
 }
