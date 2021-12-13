@@ -290,7 +290,7 @@ function glpi_autoload($classname)
         return true;
     }
 
-   // Deprecation warn for RuleImportComputer* classes
+    // Deprecation warn for RuleImportComputer* classes
     if (in_array($classname, ['RuleImportComputer', 'RuleImportComputerCollection'])) {
         Toolbox::deprecated(
             sprintf(
@@ -307,11 +307,19 @@ function glpi_autoload($classname)
     }
 
     $plugname = strtolower($plug['plugin']);
-    $dir      = GLPI_ROOT . "/plugins/$plugname/inc/";
+    $dir      = null;
     $item     = str_replace('\\', '/', strtolower($plug['class']));
 
     if (!Plugin::isPluginLoaded($plugname)) {
         return false;
+    }
+
+    foreach (PLUGINS_DIRECTORIES as $plugins_dir) {
+        $dir_to_check = "{$plugins_dir}/$plugname/inc/";
+        if (is_dir($dir_to_check)) {
+            $dir = $dir_to_check;
+            break;
+        }
     }
 
     if (file_exists("$dir$item.class.php")) {
