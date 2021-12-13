@@ -46,7 +46,6 @@ use TicketTask;
 
 class PendingReason extends DbTestCase
 {
-
     protected function testGetNextFollowupDateProvider()
     {
         return [

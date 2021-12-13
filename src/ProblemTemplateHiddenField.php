@@ -35,7 +35,6 @@
 /// since version 0.83
 class ProblemTemplateHiddenField extends ITILTemplateHiddenField
 {
-
    // From CommonDBChild
     public static $itemtype  = 'ProblemTemplate';
     public static $items_id  = 'problemtemplates_id';

@@ -47,7 +47,6 @@ use User;
  */
 trait CalDAVPrincipalsTrait
 {
-
    /**
     * Check if principal objects are visible for current session.
     *

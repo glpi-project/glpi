@@ -38,7 +38,6 @@
 **/
 class TicketCost extends CommonITILCost
 {
-
    // From CommonDBChild
     public static $itemtype  = 'Ticket';
     public static $items_id  = 'tickets_id';

@@ -35,7 +35,6 @@ namespace Glpi\Mail\Protocol;
 
 interface ProtocolInterface
 {
-
    /**
     * Do not validate SSL certificate
     *

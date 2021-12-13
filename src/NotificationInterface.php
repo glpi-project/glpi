@@ -36,7 +36,6 @@
  */
 interface NotificationInterface
 {
-
    /**
     * Send notifications
     *

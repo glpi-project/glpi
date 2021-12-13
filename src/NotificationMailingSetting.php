@@ -36,7 +36,6 @@
  */
 class NotificationMailingSetting extends NotificationSetting
 {
-
     public static function getTypeName($nb = 0)
     {
         return __('Email followups configuration');

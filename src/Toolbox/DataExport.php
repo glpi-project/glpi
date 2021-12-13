@@ -37,7 +37,6 @@ use Glpi\RichText\RichText;
 
 class DataExport
 {
-
    /**
     * Normalize a value for text export (PDF, CSV, SYLK, ...).
     * Assume value cames from DB and has been processed by GLPI sanitize process.

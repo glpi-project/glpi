@@ -47,7 +47,6 @@ use Glpi\Plugin\Hooks;
  **/
 class Lock extends CommonGLPI
 {
-
     public static function getTypeName($nb = 0)
     {
         return _n('Lock', 'Locks', $nb);

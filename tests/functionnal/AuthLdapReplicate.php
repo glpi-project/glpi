@@ -39,7 +39,6 @@ use DbTestCase;
 
 class AuthLdapReplicate extends DbTestCase
 {
-
     public function testCanCreate()
     {
         $this->login();

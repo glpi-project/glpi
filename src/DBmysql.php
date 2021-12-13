@@ -39,7 +39,6 @@ use Glpi\System\Requirement\DbTimezones;
 **/
 class DBmysql
 {
-
    //! Database Host - string or Array of string (round robin)
     public $dbhost             = "";
    //! Database User

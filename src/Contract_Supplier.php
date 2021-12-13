@@ -34,7 +34,6 @@
 // Relation between Contracts and Suppliers
 class Contract_Supplier extends CommonDBRelation
 {
-
    // From CommonDBRelation
     public static $itemtype_1 = 'Contract';
     public static $items_id_1 = 'contracts_id';

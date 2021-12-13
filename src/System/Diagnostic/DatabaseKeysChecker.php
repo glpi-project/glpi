@@ -40,7 +40,6 @@ use CommonDBTM;
  */
 class DatabaseKeysChecker extends AbstractDatabaseChecker
 {
-
    /**
     * Get list of missing keys, basing detection on column names.
     *

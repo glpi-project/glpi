@@ -39,8 +39,6 @@ use DbTestCase;
 
 class IPAddress extends DbTestCase
 {
-
-
     public function testAddIPV4()
     {
         $this->login();

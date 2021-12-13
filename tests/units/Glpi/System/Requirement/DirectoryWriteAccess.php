@@ -40,7 +40,6 @@ use org\bovigo\vfs\vfsStream;
  */
 class DirectoryWriteAccess extends \GLPITestCase
 {
-
     public function testCheckOnExistingWritableDir()
     {
 

@@ -38,7 +38,6 @@ namespace tests\units\Glpi\Toolbox;
  */
 class Sanitizer extends \GLPITestCase
 {
-
     protected function rawValueProvider(): iterable
     {
        // Non string values should not be altered

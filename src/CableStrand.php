@@ -36,8 +36,6 @@ use Glpi\Socket;
 /// Class CableStrand
 class CableStrand extends CommonDropdown
 {
-
-
     public static function getTypeName($nb = 0)
     {
         return _n('Cable strand', 'Cable strands', $nb);

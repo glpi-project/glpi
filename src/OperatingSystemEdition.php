@@ -33,7 +33,6 @@
 
 class OperatingSystemEdition extends CommonDropdown
 {
-
     public $can_be_translated = true;
 
     public static function getTypeName($nb = 0)

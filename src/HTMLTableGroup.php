@@ -36,7 +36,6 @@
 **/
 class HTMLTableGroup extends HTMLTableBase
 {
-
     private $name;
     private $content;
     private $new_headers = [];

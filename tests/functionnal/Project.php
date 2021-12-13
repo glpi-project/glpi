@@ -41,7 +41,6 @@ use ProjectTeam;
 /* Test for inc/project.class.php */
 class Project extends DbTestCase
 {
-
     public function testAutocalculatePercentDone()
     {
 

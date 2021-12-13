@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Contract extends DbTestCase
 {
-
     public function testClone()
     {
         $this->login();

@@ -71,7 +71,6 @@ use User;
 
 abstract class API
 {
-
    // permit writing to $_SESSION
     protected $session_write = false;
 

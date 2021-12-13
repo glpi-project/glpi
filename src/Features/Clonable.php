@@ -43,7 +43,6 @@ use Toolbox;
  **/
 trait Clonable
 {
-
    /**
     * Get relations class to clone along with current element.
     *

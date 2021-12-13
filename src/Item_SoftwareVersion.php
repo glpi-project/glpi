@@ -33,7 +33,6 @@
 
 class Item_SoftwareVersion extends CommonDBRelation
 {
-
    // From CommonDBRelation
     public static $itemtype_1 = 'itemtype';
     public static $items_id_1 = 'items_id';

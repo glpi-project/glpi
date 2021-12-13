@@ -38,7 +38,6 @@ namespace tests\units\Glpi\System\Requirement;
  */
 class ProtectedWebAccess extends \GLPITestCase
 {
-
     public function testCheckOutOfContext()
     {
 

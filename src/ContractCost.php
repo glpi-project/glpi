@@ -35,7 +35,6 @@
 /// since version 0.84
 class ContractCost extends CommonDBChild
 {
-
    // From CommonDBChild
     public static $itemtype = 'Contract';
     public static $items_id = 'contracts_id';

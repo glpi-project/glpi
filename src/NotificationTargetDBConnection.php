@@ -34,8 +34,6 @@
 // Class NotificationTarget
 class NotificationTargetDBConnection extends NotificationTarget
 {
-
-
    /**
     * Overwrite the function in NotificationTarget because there's only one target to be notified
     *

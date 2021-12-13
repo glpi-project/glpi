@@ -39,7 +39,6 @@ use DbTestCase;
 
 class RuleAsset extends DbTestCase
 {
-
     public function testGetCriteria()
     {
         $rule = new \RuleAsset();

@@ -40,7 +40,6 @@ use DBmysql;
  */
 class DbConfiguration extends AbstractRequirement
 {
-
    /**
     * DB instance.
     *

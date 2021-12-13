@@ -39,7 +39,6 @@ use DbTestCase;
 
 class NotificationTarget extends DbTestCase
 {
-
     public function testGetSubjectPrefix()
     {
         $this->login();

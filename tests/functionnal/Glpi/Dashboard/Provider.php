@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Provider extends DbTestCase
 {
-
     public function itemProvider()
     {
         return [

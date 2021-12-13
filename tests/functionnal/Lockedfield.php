@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Lockedfield extends DbTestCase
 {
-
     public function testWithComputer()
     {
         $computer = new \Computer();

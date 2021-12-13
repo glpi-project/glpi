@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Auth extends DbTestCase
 {
-
     protected function loginProvider()
     {
         return [

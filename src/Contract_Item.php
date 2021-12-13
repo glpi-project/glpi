@@ -38,7 +38,6 @@
 **/
 class Contract_Item extends CommonDBRelation
 {
-
    // From CommonDBRelation
     public static $itemtype_1 = 'Contract';
     public static $items_id_1 = 'contracts_id';

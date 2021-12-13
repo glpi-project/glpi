@@ -39,7 +39,6 @@ use DbTestCase;
 
 class NetworkEquipment extends DbTestCase
 {
-
     public function testNetEquipmentCRUD()
     {
         $this->login();

@@ -34,7 +34,6 @@
 /// Class SLALevel
 class SlaLevel_Ticket extends CommonDBTM
 {
-
     public static function getTypeName($nb = 0)
     {
         return __('SLA level for Ticket');

@@ -39,7 +39,6 @@ use DbTestCase;
 
 class RuleImportEntity extends DbTestCase
 {
-
     public function testTwoRegexpEntitiesTest()
     {
         global $DB;

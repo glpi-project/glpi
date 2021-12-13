@@ -47,7 +47,6 @@ use Ticket;
 
 class Toolbox extends DbTestCase
 {
-
     public function testGetRandomString()
     {
         for ($len = 20; $len < 50; $len += 5) {

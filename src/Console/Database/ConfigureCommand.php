@@ -38,7 +38,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ConfigureCommand extends AbstractConfigureCommand
 {
-
     protected function configure()
     {
 

@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Log extends DbTestCase
 {
-
     private function createComputer()
     {
         $computer = new \Computer();

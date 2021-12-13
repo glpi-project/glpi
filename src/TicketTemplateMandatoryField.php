@@ -35,7 +35,6 @@
 /// since version 0.83
 class TicketTemplateMandatoryField extends ITILTemplateMandatoryField
 {
-
    // From CommonDBChild
     public static $itemtype  = 'TicketTemplate';
     public static $items_id  = 'tickettemplates_id';

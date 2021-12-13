@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Certificate_Item extends DbTestCase
 {
-
     public function testRelations()
     {
         $this->login();

@@ -43,7 +43,6 @@ use Telemetry;
 
 trait TelemetryActivationTrait
 {
-
    /**
     * Register options related to Telemetry service enablement.
     *

@@ -34,7 +34,6 @@
 /// Class DeviceProcessorModel
 class DeviceProcessorModel extends CommonDeviceModel
 {
-
     public $additional_fields_for_dictionnary = ['manufacturer'];
 
 

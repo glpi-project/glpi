@@ -36,7 +36,6 @@
 **/
 class State extends CommonTreeDropdown
 {
-
     public $can_be_translated       = true;
 
     public static $rightname               = 'state';

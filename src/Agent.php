@@ -40,7 +40,6 @@ use GuzzleHttp\Psr7\Response;
  **/
 class Agent extends CommonDBTM
 {
-
    /** @var integer */
     public const DEFAULT_PORT = 62354;
 

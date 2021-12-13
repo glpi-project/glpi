@@ -49,7 +49,6 @@ use Ticket_User;
 
 class Entity extends DbTestCase
 {
-
     public function testSonsAncestors()
     {
         $ent0 = getItemByTypeName('Entity', '_test_root_entity');

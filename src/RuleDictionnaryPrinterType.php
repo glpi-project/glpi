@@ -33,8 +33,6 @@
 
 class RuleDictionnaryPrinterType extends RuleDictionnaryDropdown
 {
-
-
    /**
     * Constructor
    **/

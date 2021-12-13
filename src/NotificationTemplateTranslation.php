@@ -39,7 +39,6 @@ use Glpi\Toolbox\Sanitizer;
 **/
 class NotificationTemplateTranslation extends CommonDBChild
 {
-
    // From CommonDBChild
     public static $itemtype  = 'NotificationTemplate';
     public static $items_id  = 'notificationtemplates_id';

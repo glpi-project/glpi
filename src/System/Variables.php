@@ -38,7 +38,6 @@ namespace Glpi\System;
  */
 class Variables
 {
-
    /**
     * Returns list of directories that contains custom data.
     *

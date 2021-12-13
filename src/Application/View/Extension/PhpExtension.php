@@ -43,7 +43,6 @@ use Twig\TwigTest;
  */
 class PhpExtension extends AbstractExtension
 {
-
     public function getFunctions(): array
     {
         return [

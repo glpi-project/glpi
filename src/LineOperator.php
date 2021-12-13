@@ -38,7 +38,6 @@
 
 class LineOperator extends CommonDropdown
 {
-
     public static $rightname = 'lineoperator';
 
     public $can_be_translated = false;

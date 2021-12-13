@@ -39,7 +39,6 @@ use DbTestCase;
 
 class RuleSoftwareCategoryCollection extends DbTestCase
 {
-
     public function testPrepareInputDataForProcess()
     {
         $this->login();

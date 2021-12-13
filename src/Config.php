@@ -44,7 +44,6 @@ use PHPMailer\PHPMailer\PHPMailer;
 **/
 class Config extends CommonDBTM
 {
-
     const DELETE_ALL = -1;
     const KEEP_ALL = 0;
 

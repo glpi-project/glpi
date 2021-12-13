@@ -33,7 +33,6 @@
 
 class NotificationTargetDomain extends NotificationTarget
 {
-
     public function getEvents()
     {
         return [

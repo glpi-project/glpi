@@ -46,7 +46,6 @@ use Glpi\Socket;
 **/
 class NetworkPort extends CommonDBChild
 {
-
    // From CommonDBChild
     public static $itemtype             = 'itemtype';
     public static $items_id             = 'items_id';

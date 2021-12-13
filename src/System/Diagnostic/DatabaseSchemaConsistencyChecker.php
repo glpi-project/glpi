@@ -38,7 +38,6 @@ namespace Glpi\System\Diagnostic;
  */
 class DatabaseSchemaConsistencyChecker extends AbstractDatabaseChecker
 {
-
    /**
     * Get list of missing fields, basing detection on other fields.
     *

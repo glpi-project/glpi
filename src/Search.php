@@ -43,7 +43,6 @@ use Glpi\Toolbox\Sanitizer;
 **/
 class Search
 {
-
    // Default number of items displayed in global search
     const GLOBAL_DISPLAY_COUNT = 10;
    // EXPORT TYPE

@@ -52,7 +52,6 @@ use Glpi\System\Requirement\SessionsConfiguration;
  */
 class RequirementsManager
 {
-
    /**
     * Returns core requirement list.
     *

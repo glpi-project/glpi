@@ -39,7 +39,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DeactivateCommand extends AbstractPluginCommand
 {
-
     protected function configure()
     {
         parent::configure();

@@ -38,7 +38,6 @@
 **/
 class TicketRecurrent extends CommonITILRecurrent
 {
-
    /**
     * @var string CommonDropdown
     */

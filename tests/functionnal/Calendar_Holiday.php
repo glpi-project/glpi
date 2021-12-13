@@ -41,7 +41,6 @@ use Holiday;
 
 class Calendar_Holiday extends DbTestCase
 {
-
     public function testGetHolidaysForCalendar()
     {
 

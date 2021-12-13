@@ -36,7 +36,6 @@
 **/
 class SolutionTemplate extends AbstractITILChildTemplate
 {
-
    // From CommonDBTM
     public $dohistory = true;
 

@@ -52,7 +52,6 @@
  */
 class XHProf
 {
-
    // this can be overloaded in config/local_define.php
     const XHPROF_PATH = '/usr/share/xhprof/xhprof_lib';
     const XHPROF_URL  = '/xhprof';

@@ -38,7 +38,6 @@
 **/
 class Computer_Item extends CommonDBRelation
 {
-
    // From CommonDBRelation
     public static $itemtype_1          = 'Computer';
     public static $items_id_1          = 'computers_id';

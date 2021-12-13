@@ -36,7 +36,6 @@
  */
 class ImpactItem extends CommonDBTM
 {
-
    /**
     * Find ImpactItem for a given CommonDBTM item
     *

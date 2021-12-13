@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Reminder extends DbTestCase
 {
-
     public function testAddVisibilityRestrict()
     {
        //first, as a super-admin

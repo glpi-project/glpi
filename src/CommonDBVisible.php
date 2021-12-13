@@ -36,7 +36,6 @@
  */
 abstract class CommonDBVisible extends CommonDBTM
 {
-
    /**
     * Is the login user have access to item based on visibility configuration
     *

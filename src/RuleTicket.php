@@ -35,7 +35,6 @@ use Glpi\Toolbox\Sanitizer;
 
 class RuleTicket extends Rule
 {
-
    // From Rule
     public static $rightname = 'rule_ticket';
     public $can_sort  = true;

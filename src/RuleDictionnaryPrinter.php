@@ -39,7 +39,6 @@
 **/
 class RuleDictionnaryPrinter extends Rule
 {
-
    // From Rule
     public $can_sort  = true;
 

@@ -36,7 +36,6 @@ use Glpi\Toolbox\Sanitizer;
 /// Criteria Rule class
 class RuleCriteria extends CommonDBChild
 {
-
    // From CommonDBChild
     public static $itemtype        = 'Rule';
     public static $items_id        = 'rules_id';

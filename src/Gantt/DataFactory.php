@@ -40,7 +40,6 @@ use Glpi\RichText\RichText;
  */
 class DataFactory
 {
-
    /**
     * Recursive function used to get all subitems of a project, when $id > 0.
     * Returns all projects with their subitems if $id == -1 (for global gantt view).

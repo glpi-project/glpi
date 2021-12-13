@@ -33,7 +33,6 @@
 
 class TicketTask extends CommonITILTask
 {
-
     public static $rightname = 'task';
 
 

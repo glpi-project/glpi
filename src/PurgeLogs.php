@@ -33,7 +33,6 @@
 
 class PurgeLogs extends CommonDBTM
 {
-
     protected static $notable = true;
 
     public static function getTypeName($nb = 0)

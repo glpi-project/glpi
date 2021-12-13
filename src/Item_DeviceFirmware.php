@@ -36,7 +36,6 @@
 **/
 class Item_DeviceFirmware extends Item_Devices
 {
-
     public static $itemtype_2 = 'DeviceFirmware';
     public static $items_id_2 = 'devicefirmwares_id';
 

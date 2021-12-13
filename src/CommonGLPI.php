@@ -39,7 +39,6 @@ use Glpi\Plugin\Hooks;
 **/
 class CommonGLPI implements CommonGLPIInterface
 {
-
    /// GLPI Item type cache : set dynamically calling getType
     protected $type                 = -1;
 

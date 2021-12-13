@@ -36,8 +36,6 @@
 **/
 class NotificationTargetCrontask extends NotificationTarget
 {
-
-
     public function getEvents()
     {
         return ['alert' => __('Monitoring of automatic actions')];

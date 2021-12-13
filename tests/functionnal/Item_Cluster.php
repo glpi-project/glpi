@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Item_Cluster extends DbTestCase
 {
-
    /**
     * Computers provider
     *

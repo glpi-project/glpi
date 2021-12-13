@@ -37,7 +37,6 @@ namespace tests\units;
 
 class Update extends \GLPITestCase
 {
-
     public function testCurrents()
     {
         global $DB;

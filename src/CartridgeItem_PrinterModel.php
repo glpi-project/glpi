@@ -35,7 +35,6 @@
 // since version 0.84
 class CartridgeItem_PrinterModel extends CommonDBRelation
 {
-
    // From CommonDBRelation
     public static $itemtype_1          = 'CartridgeItem';
     public static $items_id_1          = 'cartridgeitems_id';

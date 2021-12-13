@@ -69,7 +69,6 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class RacksPluginToCoreCommand extends AbstractCommand
 {
-
    /**
     * Error code returned if plugin version or plugin data is invalid.
     *

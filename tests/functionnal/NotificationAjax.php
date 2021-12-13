@@ -39,7 +39,6 @@ use DbTestCase;
 
 class NotificationAjax extends DbTestCase
 {
-
     public function testCheck()
     {
         $instance = new \NotificationAjax();

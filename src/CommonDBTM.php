@@ -44,7 +44,6 @@ use Glpi\Toolbox\Sanitizer;
 **/
 class CommonDBTM extends CommonGLPI
 {
-
    /**
     * Data fields of the Item.
     *

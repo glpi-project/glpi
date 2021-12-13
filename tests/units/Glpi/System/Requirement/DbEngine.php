@@ -35,7 +35,6 @@ namespace tests\units\Glpi\System\Requirement;
 
 class DbEngine extends \GLPITestCase
 {
-
     protected function versionProvider()
     {
         return [

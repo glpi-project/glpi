@@ -33,7 +33,6 @@
 
 class RuleTicketCollection extends RuleCollection
 {
-
    // From RuleCollection
     public static $rightname                             = 'rule_ticket';
     public $use_output_rule_process_as_next_input = true;

@@ -38,7 +38,6 @@ namespace Glpi\Gantt;
  */
 class ProjectDAO
 {
-
     public function addProject($project)
     {
 

@@ -41,8 +41,6 @@
  */
 class OlaLevelCriteria extends RuleCriteria
 {
-
-
     public static $itemtype  = 'OlaLevel';
     public static $items_id  = 'olalevels_id';
     public $dohistory        = true;

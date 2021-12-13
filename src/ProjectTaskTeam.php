@@ -42,7 +42,6 @@ use Glpi\Team\Team;
  **/
 class ProjectTaskTeam extends CommonDBRelation
 {
-
    // From CommonDBTM
     public $dohistory                  = true;
     public $no_form_page               = true;

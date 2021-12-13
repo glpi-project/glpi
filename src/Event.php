@@ -49,7 +49,6 @@ use Toolbox;
 **/
 class Event extends CommonDBTM
 {
-
     public static $rightname = 'logs';
 
 

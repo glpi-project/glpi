@@ -44,7 +44,6 @@ use Toolbox;
 
 class APIRest extends API
 {
-
     protected $request_uri;
     protected $url_elements;
     protected $verb;

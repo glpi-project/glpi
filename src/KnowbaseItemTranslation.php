@@ -41,7 +41,6 @@ use Glpi\RichText\RichText;
 **/
 class KnowbaseItemTranslation extends CommonDBChild
 {
-
     public static $itemtype = 'KnowbaseItem';
     public static $items_id = 'knowbaseitems_id';
     public $dohistory       = true;

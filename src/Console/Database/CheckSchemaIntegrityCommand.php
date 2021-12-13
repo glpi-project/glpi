@@ -41,7 +41,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CheckSchemaIntegrityCommand extends AbstractCommand
 {
-
    /**
     * Error code returned when failed to read empty SQL file.
     *

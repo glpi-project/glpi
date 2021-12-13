@@ -44,7 +44,6 @@ use Toolbox;
 
 class CacheManager
 {
-
    /**
     * GLPI core cache context.
     * @var string

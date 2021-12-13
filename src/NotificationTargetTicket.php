@@ -36,7 +36,6 @@
 **/
 class NotificationTargetTicket extends NotificationTargetCommonITILObject
 {
-
     const HEADERTAG = '=-=-=-=';
     const FOOTERTAG = '=_=_=_=';
 

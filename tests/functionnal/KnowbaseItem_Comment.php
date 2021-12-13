@@ -42,7 +42,6 @@ use DbTestCase;
  */
 class KnowbaseItem_Comment extends DbTestCase
 {
-
     public function testGetTypeName()
     {
         $expected = 'Comment';

@@ -37,7 +37,6 @@ use DbTestCase;
 
 class Appliance_Item extends DbTestCase
 {
-
     public function testGetForbiddenStandardMassiveAction()
     {
         $this->newTestedInstance();

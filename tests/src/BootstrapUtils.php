@@ -35,7 +35,6 @@ namespace Glpi\Tests;
 
 class BootstrapUtils
 {
-
    /**
     * Create subdirectories of GLPI_VAR_DIR based on defined constants.
     *

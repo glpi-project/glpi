@@ -57,7 +57,6 @@ use User;
 
 trait PlanningEvent
 {
-
     public function post_getEmpty()
     {
         if (isset($this->fields["users_id"])) {

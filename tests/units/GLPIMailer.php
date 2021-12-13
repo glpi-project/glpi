@@ -39,7 +39,6 @@ use DbTestCase;
 
 class GLPIMailer extends DbTestCase
 {
-
     protected function valideAddressProvider()
     {
         return [

@@ -36,7 +36,6 @@
  */
 interface CommonGLPIInterface
 {
-
    /**
     * Constructor.
     *

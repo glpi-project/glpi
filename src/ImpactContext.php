@@ -36,7 +36,6 @@
  */
 class ImpactContext extends CommonDBTM
 {
-
    /**
     * Get ImpactContext for the given ImpactItem
     *

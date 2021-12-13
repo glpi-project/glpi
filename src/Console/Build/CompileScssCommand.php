@@ -43,7 +43,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CompileScssCommand extends Command
 {
-
    /**
     * Error code returned if unable to write compiled CSS.
     *

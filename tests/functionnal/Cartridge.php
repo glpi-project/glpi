@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Cartridge extends DbTestCase
 {
-
     public function testInstall()
     {
         $printer = new \Printer();

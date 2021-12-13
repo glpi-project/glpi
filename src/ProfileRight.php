@@ -38,7 +38,6 @@
 **/
 class ProfileRight extends CommonDBChild
 {
-
    // From CommonDBChild:
     public static $itemtype = 'Profile';
     public static $items_id = 'profiles_id'; // Field name

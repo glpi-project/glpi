@@ -42,7 +42,6 @@
 **/
 class Item_Devices extends CommonDBRelation
 {
-
     public static $itemtype_1            = 'itemtype';
     public static $items_id_1            = 'items_id';
     public static $mustBeAttached_1      = false;

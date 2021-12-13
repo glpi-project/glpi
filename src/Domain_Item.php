@@ -33,7 +33,6 @@
 
 class Domain_Item extends CommonDBRelation
 {
-
    // From CommonDBRelation
     public static $itemtype_1 = "Domain";
     public static $items_id_1 = 'domains_id';

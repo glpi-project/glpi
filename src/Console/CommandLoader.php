@@ -50,7 +50,6 @@ use Symfony\Component\Console\CommandLoader\CommandLoaderInterface;
  */
 class CommandLoader implements CommandLoaderInterface
 {
-
    /**
     * Indicates if plugin commands should be included.
     *

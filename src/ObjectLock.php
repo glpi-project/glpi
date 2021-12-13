@@ -47,7 +47,6 @@
 **/
 class ObjectLock extends CommonDBTM
 {
-
     private $itemtype     = "";
     private $itemtypename = "";
     private $itemid       = 0;

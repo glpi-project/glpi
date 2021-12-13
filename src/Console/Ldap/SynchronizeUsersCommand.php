@@ -45,7 +45,6 @@ use User;
 
 class SynchronizeUsersCommand extends AbstractCommand
 {
-
    /**
     * Error code returned if LDAP connection failed.
     *

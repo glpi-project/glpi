@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Calendar extends DbTestCase
 {
-
     public function testComputeEndDate()
     {
         $calendar = new \Calendar();

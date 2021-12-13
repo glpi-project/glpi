@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Domain extends DbTestCase
 {
-
     public function testTypeName()
     {
         $this->string(\Domain::getTypeName(1))->isIdenticalTo('Domain');

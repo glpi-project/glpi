@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Server extends DbTestCase
 {
-
     protected function propfindMainEndpointsProvider()
     {
         $dataset = [];

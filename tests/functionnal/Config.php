@@ -43,7 +43,6 @@ use Session;
 
 class Config extends DbTestCase
 {
-
     public function testGetTypeName()
     {
         $this->string(\Config::getTypeName())->isIdenticalTo('Setup');

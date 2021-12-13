@@ -33,8 +33,6 @@
 
 class RuleDictionnaryOperatingSystemVersion extends RuleDictionnaryDropdown
 {
-
-
    /**
     * Constructor
    **/

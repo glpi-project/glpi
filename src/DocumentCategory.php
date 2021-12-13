@@ -34,7 +34,6 @@
 /// Class DocumentCategory
 class DocumentCategory extends CommonTreeDropdown
 {
-
     public $can_be_translated = true;
 
 

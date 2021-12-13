@@ -40,7 +40,6 @@ use Glpi\Team\Team;
 
 class ProjectTask extends DbTestCase
 {
-
     public function testPlanningConflict()
     {
         $this->login();

@@ -39,7 +39,6 @@ use DbTestCase;
 
 abstract class CommonITILRecurrent extends DbTestCase
 {
-
     abstract protected function getChildClass();
 
    /**

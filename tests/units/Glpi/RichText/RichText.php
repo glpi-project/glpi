@@ -40,7 +40,6 @@ use Glpi\Toolbox\Sanitizer;
  */
 class RichText extends \GLPITestCase
 {
-
     protected function getSafeHtmlProvider(): iterable
     {
        // Empty content would not be altered

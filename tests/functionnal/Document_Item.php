@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Document_Item extends DbTestCase
 {
-
     public function testGetForbiddenStandardMassiveAction()
     {
         $this->newTestedInstance();

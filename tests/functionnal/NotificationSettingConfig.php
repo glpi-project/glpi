@@ -39,7 +39,6 @@ use DbTestCase;
 
 class NotificationSettingConfig extends DbTestCase
 {
-
     public function testUpdate()
     {
         $current_config = \Config::getConfigurationValues('core');

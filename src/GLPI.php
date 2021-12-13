@@ -42,7 +42,6 @@ use Monolog\Logger;
 **/
 class GLPI
 {
-
     private $error_handler;
     private $log_level;
 

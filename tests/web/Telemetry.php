@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Telemetry extends DbTestCase
 {
-
     public function testGrabWebserverInfos()
     {
         $infos = \Telemetry::grabWebserverInfos();

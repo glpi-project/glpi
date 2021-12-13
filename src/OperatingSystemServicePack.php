@@ -34,7 +34,6 @@
 /// Class OperatingSystemServicePack
 class OperatingSystemServicePack extends CommonDropdown
 {
-
     public $can_be_translated = false;
 
 

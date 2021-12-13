@@ -33,7 +33,6 @@
 
 class ChangeTask extends CommonITILTask
 {
-
     public static $rightname = 'task';
 
 

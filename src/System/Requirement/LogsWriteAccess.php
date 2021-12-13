@@ -40,7 +40,6 @@ use Psr\Log\LoggerInterface;
  */
 class LogsWriteAccess extends AbstractRequirement
 {
-
    /**
     * Logger.
     *

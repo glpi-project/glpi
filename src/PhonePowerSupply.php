@@ -34,7 +34,6 @@
 /// Class PhonePowerSupply
 class PhonePowerSupply extends CommonDropdown
 {
-
     public $can_be_translated = false;
 
 

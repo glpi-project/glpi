@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Problem extends DbTestCase
 {
-
     public function testAddFromItem()
     {
        // add problem from a computer

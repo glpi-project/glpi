@@ -45,7 +45,6 @@ use User;
 
 class InstallCommand extends AbstractPluginCommand
 {
-
     protected function configure()
     {
         parent::configure();

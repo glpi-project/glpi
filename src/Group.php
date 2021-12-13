@@ -36,7 +36,6 @@
 **/
 class Group extends CommonTreeDropdown
 {
-
     public $dohistory       = true;
 
     public static $rightname       = 'group';

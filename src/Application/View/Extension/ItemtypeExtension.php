@@ -49,7 +49,6 @@ use User;
  */
 class ItemtypeExtension extends AbstractExtension
 {
-
     public function getFilters(): array
     {
         return [

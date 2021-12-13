@@ -38,7 +38,6 @@ namespace Glpi\System\Requirement;
  */
 class ExtensionGroup extends AbstractRequirement
 {
-
    /**
     * Required extensions names.
     *

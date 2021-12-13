@@ -35,7 +35,6 @@
 /// @since 0.83
 class Profile_Reminder extends CommonDBRelation
 {
-
    // From CommonDBRelation
     public static $itemtype_1          = 'Reminder';
     public static $items_id_1          = 'reminders_id';

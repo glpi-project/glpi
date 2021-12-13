@@ -38,7 +38,6 @@ namespace Glpi\System\Requirement;
  */
 class SessionsConfiguration extends AbstractRequirement
 {
-
     public function __construct()
     {
         $this->title = __('Sessions configuration');

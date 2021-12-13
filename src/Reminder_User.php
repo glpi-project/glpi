@@ -35,7 +35,6 @@
 /// @since 0.83
 class Reminder_User extends CommonDBRelation
 {
-
    // From CommonDBRelation
     public static $itemtype_1          = 'Reminder';
     public static $items_id_1          = 'reminders_id';

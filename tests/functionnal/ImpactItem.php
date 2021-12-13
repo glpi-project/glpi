@@ -35,7 +35,6 @@ namespace tests\units;
 
 class ImpactItem extends \DbTestCase
 {
-
     public function testFindForItem_inexistent()
     {
         $computer = getItemByTypeName('Computer', '_test_pc02');

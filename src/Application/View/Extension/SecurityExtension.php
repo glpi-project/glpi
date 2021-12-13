@@ -42,7 +42,6 @@ use Twig\TwigFunction;
  */
 class SecurityExtension extends AbstractExtension
 {
-
     public function getFunctions(): array
     {
         return [

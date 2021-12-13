@@ -38,7 +38,6 @@ use Glpi\Application\View\TemplateRenderer;
 **/
 class Ajax
 {
-
    /**
     * Create modal window
     * After display it using data-bs-toggle and data-bs-target attributes

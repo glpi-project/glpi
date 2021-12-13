@@ -38,7 +38,6 @@ namespace tests\units\Glpi\Features;
  */
 class DCBreadcrumb extends \DbTestCase
 {
-
     public function DCBreadcrumbProvider()
     {
         return [

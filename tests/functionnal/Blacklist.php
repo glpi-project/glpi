@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Blacklist extends DbTestCase
 {
-
     public function testGetDefaults()
     {
         $defaults = \Blacklist::getDefaults();

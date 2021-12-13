@@ -36,7 +36,6 @@
 **/
 class DBConnection extends CommonDBTM
 {
-
    /**
     * "Use timezones" property name.
     * @var string

@@ -36,7 +36,6 @@
 **/
 class Notification extends CommonDBTM
 {
-
    // MAILING TYPE
    //Notification to a user (sse mailing users type below)
     const USER_TYPE             = 1;

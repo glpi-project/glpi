@@ -37,7 +37,6 @@ use DbTestCase;
 
 class Appliance extends DbTestCase
 {
-
     public function testDefineTabs()
     {
         $expected = [

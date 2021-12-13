@@ -38,7 +38,6 @@ use DbTestCase;
 /* Test for inc/projectteam.class.php */
 class ProjectTeam extends DbTestCase
 {
-
     public function testExpandTeamData()
     {
         $user = getItemByTypeName('User', TU_USER);

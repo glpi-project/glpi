@@ -39,7 +39,6 @@ use DbTestCase;
 
 class NetworkPortMetrics extends DbTestCase
 {
-
     public function testNetworkPortithMetrics()
     {
 

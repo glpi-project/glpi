@@ -43,7 +43,6 @@ use RuleMailCollectorCollection;
 
 class RuleMailCollector extends DbTestCase
 {
-
     public function testAssignEntityBasedOnGroup()
     {
         $entity_id      = getItemByTypeName('Entity', '_test_child_1', true);

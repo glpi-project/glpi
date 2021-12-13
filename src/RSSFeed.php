@@ -62,7 +62,6 @@ use Glpi\RichText\RichText;
 **/
 class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 {
-
    // From CommonDBTM
     public $dohistory                   = true;
 

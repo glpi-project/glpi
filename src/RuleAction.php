@@ -33,7 +33,6 @@
 
 class RuleAction extends CommonDBChild
 {
-
    // From CommonDBChild
     public static $itemtype        = "Rule";
     public static $items_id        = 'rules_id';

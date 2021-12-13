@@ -45,7 +45,6 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 abstract class AbstractCommand extends Command implements GlpiCommandInterface
 {
-
    /**
     * @var DB
     */

@@ -33,8 +33,6 @@
 
 class RuleDictionnaryPhoneType extends RuleDictionnaryDropdown
 {
-
-
    /**
     * Constructor
    **/

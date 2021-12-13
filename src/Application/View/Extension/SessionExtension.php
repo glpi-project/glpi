@@ -45,7 +45,6 @@ use User;
  */
 class SessionExtension extends AbstractExtension
 {
-
     public function getFunctions(): array
     {
         return [

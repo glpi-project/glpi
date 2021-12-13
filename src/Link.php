@@ -35,7 +35,6 @@
 **/
 class Link extends CommonDBTM
 {
-
    // From CommonDBTM
     public $dohistory                   = true;
 

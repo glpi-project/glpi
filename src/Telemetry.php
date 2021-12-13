@@ -33,7 +33,6 @@
 
 class Telemetry extends CommonGLPI
 {
-
     public static function getTypeName($nb = 0)
     {
         return __('Telemetry');

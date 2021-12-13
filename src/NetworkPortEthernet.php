@@ -37,8 +37,6 @@ use Glpi\Socket;
 /// @since 0.84
 class NetworkPortEthernet extends NetworkPortInstantiation
 {
-
-
     public static function getTypeName($nb = 0)
     {
         return __('Ethernet port');

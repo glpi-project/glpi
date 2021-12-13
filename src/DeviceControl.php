@@ -36,7 +36,6 @@
 **/
 class DeviceControl extends CommonDevice
 {
-
     protected static $forward_entity_to = ['Item_DeviceControl', 'Infocom'];
 
     public static function getTypeName($nb = 0)

@@ -39,8 +39,6 @@ use DbTestCase;
 
 class NotificationTargetUser extends DbTestCase
 {
-
-
     protected function addDataForPasswordExpiresTemplateProvider()
     {
         global $CFG_GLPI;

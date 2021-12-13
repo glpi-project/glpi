@@ -38,7 +38,6 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class Unmanaged extends CommonDBTM
 {
-
    // From CommonDBTM
     public $dohistory                   = true;
     public static $rightname                   = 'config';

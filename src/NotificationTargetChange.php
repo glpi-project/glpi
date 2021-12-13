@@ -38,7 +38,6 @@
 **/
 class NotificationTargetChange extends NotificationTargetCommonITILObject
 {
-
     public $private_profiles = [];
 
    /**

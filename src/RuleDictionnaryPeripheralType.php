@@ -33,8 +33,6 @@
 
 class RuleDictionnaryPeripheralType extends RuleDictionnaryDropdown
 {
-
-
    /**
     * Constructor
    **/

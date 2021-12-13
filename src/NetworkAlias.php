@@ -39,7 +39,6 @@
  */
 class NetworkAlias extends FQDNLabel
 {
-
    // From CommonDBChild
     public static $itemtype           = 'NetworkName';
     public static $items_id           = 'networknames_id';

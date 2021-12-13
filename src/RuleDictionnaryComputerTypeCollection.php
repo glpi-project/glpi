@@ -33,7 +33,6 @@
 
 class RuleDictionnaryComputerTypeCollection extends RuleDictionnaryDropdownCollection
 {
-
    // From RuleCollection
    //public $rule_class_name = 'RuleDictionnaryComputerType';
 

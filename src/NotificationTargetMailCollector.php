@@ -38,8 +38,6 @@
 **/
 class NotificationTargetMailCollector extends NotificationTarget
 {
-
-
     public function getEvents()
     {
         return ['error' => __('Receiver errors')];

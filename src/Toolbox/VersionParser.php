@@ -35,7 +35,6 @@ namespace Glpi\Toolbox;
 
 class VersionParser
 {
-
    /**
     * Pattern used to detect/extract unstable flag.
     * @var string

@@ -37,7 +37,6 @@ namespace tests\units;
 
 class Planning extends \DbTestCase
 {
-
     public function testCloneEvent()
     {
         $this->login();

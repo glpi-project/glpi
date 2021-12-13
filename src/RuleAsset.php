@@ -33,7 +33,6 @@
 
 class RuleAsset extends Rule
 {
-
    // From Rule
     public static $rightname = 'rule_asset';
     public $can_sort  = true;

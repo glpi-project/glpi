@@ -36,7 +36,6 @@
 **/
 class MigrationCleaner extends CommonGLPI
 {
-
     public static $rightname = 'networking';
 
 

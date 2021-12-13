@@ -36,7 +36,6 @@
 **/
 class SlaLevel extends LevelAgreementLevel
 {
-
     protected $rules_id_field     = 'slalevels_id';
     protected $ruleactionclass    = 'SlaLevelAction';
     protected static $parentclass = 'SLA';

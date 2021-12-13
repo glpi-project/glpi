@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Knowbase extends DbTestCase
 {
-
     public function testGetTreeCategoryList()
     {
 

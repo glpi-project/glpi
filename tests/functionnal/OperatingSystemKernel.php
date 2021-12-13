@@ -39,7 +39,6 @@ require_once 'CommonDropdown.php';
 
 class OperatingSystemKernel extends CommonDropdown
 {
-
     public function getObjectClass()
     {
         return '\OperatingSystemKernel';

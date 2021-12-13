@@ -40,7 +40,6 @@ use RecursiveIteratorIterator;
 
 class Crontask extends \GLPITestCase
 {
-
     public function testCronTemp()
     {
 

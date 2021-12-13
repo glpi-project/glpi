@@ -37,7 +37,6 @@
 
 class APIClient extends CommonDBTM
 {
-
     const DOLOG_DISABLED   = 0;
     const DOLOG_LOGS       = 1;
     const DOLOG_HISTORICAL = 2;

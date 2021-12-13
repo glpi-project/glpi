@@ -52,7 +52,6 @@ use Toolbox;
 
 class RuleTicket extends DbTestCase
 {
-
     public function testGetCriteria()
     {
         $rule = new \RuleTicket();

@@ -45,7 +45,6 @@ use Ticket;
 
 class MassiveAction extends DbTestCase
 {
-
     protected function actionsProvider()
     {
         return [

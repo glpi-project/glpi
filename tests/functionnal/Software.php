@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Software extends DbTestCase
 {
-
     public function testTypeName()
     {
         $this->string(\Software::getTypeName(1))->isIdenticalTo('Software');

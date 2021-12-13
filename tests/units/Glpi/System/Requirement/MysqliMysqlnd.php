@@ -35,7 +35,6 @@ namespace tests\units\Glpi\System\Requirement;
 
 class MysqliMysqlnd extends \GLPITestCase
 {
-
     public function testCheckUsingMysqlnd()
     {
 

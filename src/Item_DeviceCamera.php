@@ -36,7 +36,6 @@
 **/
 class Item_DeviceCamera extends Item_Devices
 {
-
     public static $itemtype_2 = 'DeviceCamera';
     public static $items_id_2 = 'devicecameras_id';
 

@@ -38,7 +38,6 @@
 **/
 class NotificationTargetPlanningRecall extends NotificationTarget
 {
-
     public function getEvents()
     {
         return ['planningrecall' => __('Planning recall')];

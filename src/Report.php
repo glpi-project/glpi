@@ -38,7 +38,6 @@
 **/
 class Report extends CommonGLPI
 {
-
     protected static $notable = false;
     public static $rightname         = 'reports';
 

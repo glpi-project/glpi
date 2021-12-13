@@ -43,7 +43,6 @@ use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
  */
 trait CalDAVUriUtilTrait
 {
-
    /**
     * Get principal URI, relative to CalDAV server root.
     *

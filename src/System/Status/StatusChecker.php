@@ -46,7 +46,6 @@ use Toolbox;
  */
 final class StatusChecker
 {
-
    /**
     * The plugin or service is working as expected.
     */

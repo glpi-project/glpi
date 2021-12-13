@@ -34,7 +34,6 @@
 /// XML class
 class XML
 {
-
    /// Array of SQL requests to export
     public $SqlString    = "";
    /// 1 there is a problem !!!

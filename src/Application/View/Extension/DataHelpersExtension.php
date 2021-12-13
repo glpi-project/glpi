@@ -45,7 +45,6 @@ use Twig\TwigFilter;
  */
 class DataHelpersExtension extends AbstractExtension
 {
-
     public function getFilters(): array
     {
         return [

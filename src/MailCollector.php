@@ -53,7 +53,6 @@ use LitEmoji\LitEmoji;
 **/
 class MailCollector extends CommonDBTM
 {
-
    // Specific one
    /**
     * IMAP / POP connection

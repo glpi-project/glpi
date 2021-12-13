@@ -37,7 +37,6 @@ use Glpi\Socket;
 
 class Transfer extends CommonDBTM
 {
-
    // Specific ones
    /// Already transfer item
     public $already_transfer      = [];

@@ -38,7 +38,6 @@
 **/
 abstract class ITILTemplate extends CommonDropdown
 {
-
    // From CommonDBTM
     public $dohistory                 = true;
 

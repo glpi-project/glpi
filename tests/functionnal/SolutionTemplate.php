@@ -41,5 +41,4 @@ use tests\units\Glpi\AbstractITILChildTemplate;
 
 class SolutionTemplate extends AbstractITILChildTemplate
 {
-
 }

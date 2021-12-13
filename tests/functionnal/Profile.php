@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Profile extends DbTestCase
 {
-
    /**
     * @see self::testHaveUserRight()
     *

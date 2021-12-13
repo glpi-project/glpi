@@ -36,7 +36,6 @@
 **/
 class Item_DeviceProcessor extends Item_Devices
 {
-
     public static $itemtype_2 = 'DeviceProcessor';
     public static $items_id_2 = 'deviceprocessors_id';
 

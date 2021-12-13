@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Notification_NotificationTemplate extends DbTestCase
 {
-
     public function testGetTypeName()
     {
         $this->string(\Notification_NotificationTemplate::getTypeName(0))->isIdenticalTo('Templates');

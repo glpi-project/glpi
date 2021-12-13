@@ -37,7 +37,6 @@ namespace tests\units;
 
 class User extends \DbTestCase
 {
-
     public function testGenerateUserToken()
     {
         $user = getItemByTypeName('User', TU_USER);

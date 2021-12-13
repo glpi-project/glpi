@@ -36,7 +36,6 @@
 **/
 class Database extends CommonDBChild
 {
-
    // From CommonDBTM
     public $auto_message_on_action   = true;
     public static $rightname                = 'database';

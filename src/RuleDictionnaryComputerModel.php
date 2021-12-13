@@ -33,8 +33,6 @@
 
 class RuleDictionnaryComputerModel extends RuleDictionnaryDropdown
 {
-
-
    /**
     * Constructor
    **/

@@ -40,7 +40,6 @@
 **/
 abstract class LevelAgreementLevel extends RuleTicket
 {
-
     public static $rightname            = 'slm';
 
    /**

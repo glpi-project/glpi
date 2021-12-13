@@ -35,7 +35,6 @@
 /// @since 0.84
 class RSSFeed_User extends CommonDBRelation
 {
-
    // From CommonDBRelation
     public static $itemtype_1          = 'RSSFeed';
     public static $items_id_1          = 'rssfeeds_id';

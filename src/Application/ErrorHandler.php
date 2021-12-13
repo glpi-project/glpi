@@ -43,7 +43,6 @@ use Twig\Error\Error;
  */
 class ErrorHandler
 {
-
    /**
     * Map between error codes and log levels.
     *

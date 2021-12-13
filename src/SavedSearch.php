@@ -41,7 +41,6 @@ use Glpi\Application\View\TemplateRenderer;
 **/
 class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 {
-
     public static $rightname               = 'bookmark_public';
 
     const SEARCH = 1; //SEARCH SYSTEM bookmark

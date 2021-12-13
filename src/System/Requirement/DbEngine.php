@@ -38,7 +38,6 @@ namespace Glpi\System\Requirement;
  */
 class DbEngine extends AbstractRequirement
 {
-
    /**
     * DB instance.
     *

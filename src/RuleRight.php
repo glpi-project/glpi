@@ -40,7 +40,6 @@ use Glpi\Toolbox\Sanitizer;
 **/
 class RuleRight extends Rule
 {
-
    // From Rule
     public static $rightname           = 'rule_ldap';
     public $orderby             = "name";

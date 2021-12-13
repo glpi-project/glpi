@@ -34,7 +34,6 @@
 /// Common DataBase Relation Table Manager Class
 abstract class CommonDBRelation extends CommonDBConnexity
 {
-
    // Item 1 information
    // * definition
     public static $itemtype_1; // Type ref or field name (must start with itemtype)

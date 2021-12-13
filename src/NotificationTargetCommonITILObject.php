@@ -33,7 +33,6 @@
 
 abstract class NotificationTargetCommonITILObject extends NotificationTarget
 {
-
     public $private_profiles = [];
 
    /**

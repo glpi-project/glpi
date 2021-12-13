@@ -35,7 +35,6 @@ namespace Glpi\Toolbox;
 
 class Sanitizer
 {
-
     private const CHARS_MAPPING = [
       '&'  => '&#38;',
       '<'  => '&#60;',

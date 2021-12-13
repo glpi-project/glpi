@@ -38,7 +38,6 @@
 **/
 abstract class CommonTreeDropdown extends CommonDropdown
 {
-
     public $can_be_translated = false;
 
 

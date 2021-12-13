@@ -41,7 +41,6 @@ use Symfony\Component\Cache\Adapter\RedisAdapter;
 
 class CacheManager extends \GLPITestCase
 {
-
     protected function contextProvider(): iterable
     {
         yield [

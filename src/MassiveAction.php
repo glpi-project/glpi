@@ -42,7 +42,6 @@ use Glpi\Features\Clonable;
 **/
 class MassiveAction
 {
-
     const CLASS_ACTION_SEPARATOR  = ':';
 
     const NO_ACTION               = 0;

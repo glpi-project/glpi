@@ -40,7 +40,6 @@ use ProjectTaskLink;
  */
 class LinkDAO
 {
-
     public function getLinksForItemIDs($ids)
     {
         $links = [];

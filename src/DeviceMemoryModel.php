@@ -34,7 +34,6 @@
 /// Class DeviceMemoryModel
 class DeviceMemoryModel extends CommonDeviceModel
 {
-
     public $additional_fields_for_dictionnary = ['manufacturer'];
 
 

@@ -38,7 +38,6 @@ use PhoneType;
 
 class Phone extends MainAsset
 {
-
     protected function getModelsFieldName(): string
     {
         return PhoneModel::getForeignKeyField();

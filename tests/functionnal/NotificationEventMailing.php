@@ -39,7 +39,6 @@ use DbTestCase;
 
 class NotificationEventMailing extends DbTestCase
 {
-
     public function testGetTargetField()
     {
         $data = [];

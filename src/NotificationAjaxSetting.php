@@ -36,7 +36,6 @@
  */
 class NotificationAjaxSetting extends NotificationSetting
 {
-
     public static function getTypeName($nb = 0)
     {
         return __('Browser followups configuration');

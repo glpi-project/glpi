@@ -39,7 +39,6 @@ use org\bovigo\vfs\vfsStream;
 
 class Html extends \GLPITestCase
 {
-
     public function testConvDate()
     {
         $this->variable(\Html::convDate(null))->isNull();

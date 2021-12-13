@@ -33,7 +33,6 @@
 
 class DisplayPreference extends CommonDBTM
 {
-
    // From CommonGLPI
     public $taborientation          = 'horizontal';
     public $get_item_to_display_tab = false;

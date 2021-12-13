@@ -35,7 +35,6 @@ namespace tests\units\Glpi\System\Requirement;
 
 class SeLinux extends \GLPITestCase
 {
-
     public function testCheckOutOfContext()
     {
 

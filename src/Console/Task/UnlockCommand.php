@@ -44,7 +44,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UnlockCommand extends AbstractCommand
 {
-
     protected function configure()
     {
         parent::configure();

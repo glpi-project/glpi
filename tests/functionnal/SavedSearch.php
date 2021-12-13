@@ -39,7 +39,6 @@ use DbTestCase;
 
 class SavedSearch extends DbTestCase
 {
-
     public function testAddVisibilityRestrict()
     {
        //first, as a super-admin

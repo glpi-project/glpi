@@ -33,8 +33,6 @@
 
 class RuleDictionnaryOperatingSystemServicePack extends RuleDictionnaryDropdown
 {
-
-
    /**
     * Constructor
    **/

@@ -41,7 +41,6 @@ use Glpi\Toolbox\Sanitizer;
  */
 final class DbUtils
 {
-
    /**
     * Return foreign key field name for a table
     *

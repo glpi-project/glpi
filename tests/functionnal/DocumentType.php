@@ -40,7 +40,6 @@ use Toolbox;
 
 class DocumentType extends DbTestCase
 {
-
     public function testGetUploadableFilePattern()
     {
         $doctype = new \DocumentType();

@@ -38,7 +38,6 @@ namespace tests\units\Glpi\Inventory;
  */
 class Conf extends \GLPITestCase
 {
-
     public function testKnownInventoryExtensions()
     {
         $expected = [

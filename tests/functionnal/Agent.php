@@ -37,7 +37,6 @@ use DbTestCase;
 
 class Agent extends DbTestCase
 {
-
     const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
 
     public function testDefineTabs()

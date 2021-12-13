@@ -34,7 +34,6 @@
 /// Class DeviceBatteryModel
 class DeviceBatteryModel extends CommonDeviceModel
 {
-
     public $additional_fields_for_dictionnary = ['manufacturer'];
 
 

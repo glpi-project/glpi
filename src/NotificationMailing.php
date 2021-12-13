@@ -38,7 +38,6 @@ use Glpi\Toolbox\Sanitizer;
 **/
 class NotificationMailing implements NotificationInterface
 {
-
    /**
     * Check data
     *

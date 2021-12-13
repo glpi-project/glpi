@@ -41,7 +41,6 @@ use Traversable;
  */
 class RequirementsList implements \IteratorAggregate
 {
-
    /**
     * Requirements.
     *

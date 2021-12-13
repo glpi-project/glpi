@@ -38,7 +38,6 @@
 **/
 class Blacklist extends CommonDropdown
 {
-
    // From CommonDBTM
     public $dohistory = true;
 

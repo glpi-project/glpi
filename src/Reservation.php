@@ -36,7 +36,6 @@
 **/
 class Reservation extends CommonDBChild
 {
-
    // From CommonDBChild
     public static $itemtype          = 'ReservationItem';
     public static $items_id          = 'reservationitems_id';

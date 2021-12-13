@@ -38,7 +38,6 @@ namespace Glpi\System\Requirement;
  */
 interface RequirementInterface
 {
-
    /**
     * Get the title of the requirement.
     *

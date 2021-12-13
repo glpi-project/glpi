@@ -38,8 +38,6 @@
 **/
 class Knowbase extends CommonGLPI
 {
-
-
     public static function getTypeName($nb = 0)
     {
 

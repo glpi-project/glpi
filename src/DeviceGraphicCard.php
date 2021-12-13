@@ -34,7 +34,6 @@
 /// Class DeviceGraphicCard
 class DeviceGraphicCard extends CommonDevice
 {
-
     protected static $forward_entity_to = ['Item_DeviceGraphicCard', 'Infocom'];
 
     public static function getTypeName($nb = 0)

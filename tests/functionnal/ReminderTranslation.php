@@ -42,7 +42,6 @@ use DbTestCase;
  */
 class ReminderTranslation extends DbTestCase
 {
-
     public function testGetTranslationForReminder()
     {
 

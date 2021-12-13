@@ -35,7 +35,6 @@
 /// @todo study if we should integrate getHTMLTableHeader and getHTMLTableCellsForItem ...
 class Manufacturer extends CommonDropdown
 {
-
     public $can_be_translated = false;
 
 

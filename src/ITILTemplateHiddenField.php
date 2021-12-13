@@ -40,7 +40,6 @@
 **/
 abstract class ITILTemplateHiddenField extends ITILTemplateField
 {
-
     public static function getTypeName($nb = 0)
     {
         return _n('Hidden field', 'Hidden fields', $nb);

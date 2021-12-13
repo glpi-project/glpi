@@ -39,7 +39,6 @@ use DbTestCase;
 
 class NetworkPort_NetworkPort extends DbTestCase
 {
-
     private function createPort(\CommonDBTM $asset, string $mac): int
     {
         $port = new \NetworkPort();

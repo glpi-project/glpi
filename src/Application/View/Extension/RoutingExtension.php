@@ -43,7 +43,6 @@ use Twig\TwigFunction;
  */
 class RoutingExtension extends AbstractExtension
 {
-
     public function getFunctions(): array
     {
         return [

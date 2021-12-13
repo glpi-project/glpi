@@ -33,7 +33,6 @@
 
 abstract class CommonType extends CommonDropdown
 {
-
     public static function getFieldLabel()
     {
         return _n('Type', 'Types', 1);

@@ -37,7 +37,6 @@ use Glpi\Toolbox\Sanitizer;
 
 class DbTestCase extends \GLPITestCase
 {
-
     public function beforeTestMethod($method)
     {
         global $DB;

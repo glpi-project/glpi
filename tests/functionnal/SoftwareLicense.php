@@ -42,7 +42,6 @@ use DbTestCase;
  */
 class SoftwareLicense extends DbTestCase
 {
-
     public function testTypeName()
     {
         $this->string(\SoftwareLicense::getTypeName(1))->isIdenticalTo('License');

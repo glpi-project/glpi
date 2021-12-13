@@ -40,7 +40,6 @@ use Glpi\Socket;
 
 class Cable extends DbTestCase
 {
-
     public function testAddSocket()
     {
 

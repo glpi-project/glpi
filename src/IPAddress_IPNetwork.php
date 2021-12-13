@@ -38,7 +38,6 @@
 **/
 class IPAddress_IPNetwork extends CommonDBRelation
 {
-
    // From CommonDBRelation
     public static $itemtype_1 = 'IPAddress';
     public static $items_id_1 = 'ipaddresses_id';

@@ -38,7 +38,6 @@ use Glpi\Stat\StatData;
 **/
 class Stat extends CommonGLPI
 {
-
     public static $rightname = 'statistic';
 
     public static $cache = [];

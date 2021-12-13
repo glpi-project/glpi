@@ -38,7 +38,6 @@ namespace Glpi\System\Requirement;
  */
 class MemoryLimit extends AbstractRequirement
 {
-
    /**
     * Minimal allocated memory size.
     *

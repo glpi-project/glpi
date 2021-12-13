@@ -36,7 +36,6 @@
 **/
 class HTMLTableSubHeader extends HTMLTableHeader
 {
-
    // The headers of each column
     private $header;
 

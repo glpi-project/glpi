@@ -36,8 +36,6 @@
  */
 class AuthMail extends CommonDBTM
 {
-
-
    // From CommonDBTM
     public $dohistory = true;
 

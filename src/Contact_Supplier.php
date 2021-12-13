@@ -33,7 +33,6 @@
 
 class Contact_Supplier extends CommonDBRelation
 {
-
    // From CommonDBRelation
     public static $itemtype_1 = 'Contact';
     public static $items_id_1 = 'contacts_id';

@@ -48,7 +48,6 @@ use Notepad;
  */
 class APIRest extends APIBaseClass
 {
-
     public function beforeTestMethod($method)
     {
         global $CFG_GLPI;

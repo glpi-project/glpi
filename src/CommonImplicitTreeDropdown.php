@@ -36,7 +36,6 @@
 /// @since 0.84
 class CommonImplicitTreeDropdown extends CommonTreeDropdown
 {
-
     public $can_be_translated = true;
 
 

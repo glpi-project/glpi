@@ -39,7 +39,6 @@ use GLPITestCase;
 
 class Common extends GLPITestCase
 {
-
     protected function namesProvider(): array
     {
         return [

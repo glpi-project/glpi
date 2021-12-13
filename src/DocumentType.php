@@ -36,7 +36,6 @@
 **/
 class DocumentType extends CommonDropdown
 {
-
     public static $rightname      = 'typedoc';
 
 

@@ -38,7 +38,6 @@ use Glpi\Toolbox\Sanitizer;
 **/
 class NotificationAjax implements NotificationInterface
 {
-
    /**
     * Check data
     *

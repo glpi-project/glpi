@@ -45,7 +45,6 @@ use SoftwareVersion;
 
 class Transfer extends DbTestCase
 {
-
     public function testTransfer()
     {
         $this->login();

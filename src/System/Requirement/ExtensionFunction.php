@@ -38,7 +38,6 @@ namespace Glpi\System\Requirement;
  */
 class ExtensionFunction extends Extension
 {
-
    /**
     * Required function name.
     *

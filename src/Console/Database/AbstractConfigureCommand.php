@@ -50,7 +50,6 @@ use Symfony\Component\Console\Question\Question;
 
 abstract class AbstractConfigureCommand extends AbstractCommand implements ForceNoPluginsOptionCommandInterface
 {
-
    /**
     * Error code returned if DB configuration is aborted by user.
     *

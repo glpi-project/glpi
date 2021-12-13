@@ -38,7 +38,6 @@ use Symfony\Component\Cache\Psr16Cache;
 
 class SimpleCache extends Psr16Cache implements CacheInterface
 {
-
     public function get($key, $default = null)
     {
         $normalized_key = $this->getNormalizedKey($key);

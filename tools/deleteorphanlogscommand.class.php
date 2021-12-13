@@ -41,7 +41,6 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class DeleteOrphanLogsCommand extends AbstractCommand
 {
-
     protected function configure()
     {
         parent::configure();

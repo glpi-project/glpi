@@ -41,7 +41,6 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 
 class ReplayDictionnaryRulesCommand extends AbstractCommand
 {
-
     protected function configure()
     {
         parent::configure();

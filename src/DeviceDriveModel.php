@@ -34,7 +34,6 @@
 /// Class DeviceDriveModel
 class DeviceDriveModel extends CommonDeviceModel
 {
-
     public $additional_fields_for_dictionnary = ['manufacturer'];
 
 

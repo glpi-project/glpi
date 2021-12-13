@@ -40,7 +40,6 @@
 **/
 class ProblemTemplatePredefinedField extends ITILTemplatePredefinedField
 {
-
    // From CommonDBChild
     public static $itemtype = 'ProblemTemplate';
     public static $items_id = 'problemtemplates_id';

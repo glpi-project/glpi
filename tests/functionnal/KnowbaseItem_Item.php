@@ -39,7 +39,6 @@ use DbTestCase;
 
 class KnowbaseItem_Item extends DbTestCase
 {
-
     public function testGetTypeName()
     {
         $expected = 'Knowledge base item';

@@ -39,6 +39,5 @@ namespace Glpi\Features;
  */
 trait Timeline
 {
-
     abstract public function getTimelineItemtypes(): array;
 }
