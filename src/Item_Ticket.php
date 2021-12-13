@@ -320,9 +320,10 @@ class Item_Ticket extends CommonItilObject_Item
     public static function showItemToAdd($tickets_id, $itemtype, $items_id, $options)
     {
         $params = [
-         'rand'      => mt_rand(),
-         'delete'    => true,
-         'visible'   => true
+            'rand'      => mt_rand(),
+            'delete'    => true,
+            'visible'   => true,
+            'kblink'    => true
         ];
 
         foreach ($options as $key => $val) {
@@ -339,6 +340,9 @@ class Item_Ticket extends CommonItilObject_Item
                 $result .= Html::hidden("items_id[$itemtype][$items_id]", ['value' => $items_id]);
                 if ($params['delete']) {
                     $result .= " <i class='fas fa-times-circle pointer' onclick=\"itemAction" . $params['rand'] . "('delete', '$itemtype', '$items_id');\"></i>";
+                }
+                if ($params['kblink']) {
+                    $result .= ' ' . $item->getKBLinks();
                 }
                 $result .= "</div>";
             } else {
