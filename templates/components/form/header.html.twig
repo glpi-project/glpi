@@ -34,6 +34,7 @@
 {% set withtemplate = params['withtemplate'] ?? '' %}
 {% set rand         = random() %}
 {% set nametype     = params['formtitle'] ?? item.getTypeName(1) %}
+{% set friendlyname = params['friendlyname'] ?? item.getHeaderName() %}
 {% set no_id        = params['noid'] ?? false %}
 {% set id           = item.fields['id'] ?? -1 %}
 {% set formoptions  = params['formoptions'] ?? '' %}
@@ -86,7 +87,7 @@
                   </div>
                {% endif %}
                <span>
-               {{ nametype }}
+               {{ nametype }} - {{ friendlyname }}
                </span>
                {% if header_toolbar %}
                   <div class="d-inline-block toolbar ms-2">
