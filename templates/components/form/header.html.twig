@@ -98,13 +98,13 @@
             </h3>
 
             {% if is_multi_entities_mode() and item is not instanceof('Entity') %}
-               <span class="badge entity-name mx-1 px-2 py-3 ms-auto">
+               <span class="badge entity-name mx-1 px-2 py-3 ms-auto" title="{{ entity_name }}">
                   <i class="ti ti-stack me-2"></i>
                   {{ entity_name }}
                </span>
 
                {% if item.maybeRecursive() %}
-                  <span class="badge entity-name mx-1 px-2 py-3">
+                  <span class="badge is_recursive-toggle mx-1 px-2 py-3">
                      <label class="form-check mt-1">
                         {% set disabled = canedit == false %}
                         {% set checked  = item.fields['is_recursive'] ? true : false %}
