@@ -33,6 +33,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
+use Glpi\Toolbox\Sanitizer;
 
 /**
  *  Common GLPI object
@@ -1003,7 +1004,10 @@ JAVASCRIPT;
                 }
             }
             $cleantarget = Html::cleanParametersURL($target);
-            echo "<div class='navigationheader'>";
+            echo "<div class='navigationheader justify-content-sm-between'>";
+
+            // First set of header pagination actions, displayed on the left side of the page
+            echo "<div>";
 
             if ($first >= 0) {
                 echo "<a href='$cleantarget?id=$first$extraparamhtml'
@@ -1039,32 +1043,10 @@ JAVASCRIPT;
                   <i class='far fa-lg fa-list-alt'></i>
                </a>";
 
-            $name = '';
-            if (isset($this->fields['id']) && ($this instanceof CommonDBTM)) {
-                $name = $this->getName();
-                if ($_SESSION['glpiis_ids_visible'] || empty($name)) {
-                    $name = sprintf(__('%1$s - ID %2$d'), $name, $this->fields['id']);
-                }
-            }
-            if (
-                isset($this->fields["entities_id"])
-                && Session::isMultiEntitiesMode()
-                && $this->isEntityAssign()
-            ) {
-                $entname = Dropdown::getDropdownName("glpi_entities", $this->fields["entities_id"]);
-                if ($this->isRecursive()) {
-                    $entname = sprintf(__('%1$s + %2$s'), $entname, __('Child entities'));
-                }
-                $name = sprintf(__('%1$s (%2$s)'), $name, $entname);
-            }
-            echo "<span class='center nav_title'>&nbsp;";
-            if ($this instanceof CommonITILObject) {
-                echo "<span class='status'>";
-                echo $this->getStatusIcon($this->fields['status']);
-                echo "</span>";
-            }
-            echo $name;
-            echo "</span>";
+            echo "</div>";
+
+            // Second set of header pagination actions, displayed on the right side of the page
+            echo "<div>";
 
             if ($current !== false) {
                 echo "<span class='m-1 ms-3'>" . ($current + 1) . "/" . count($glpilistitems) . "</span>";
@@ -1096,10 +1078,29 @@ JAVASCRIPT;
                 "<i class='fa-lg ti ti-chevrons-right'></i></a>";
             }
 
+            echo "</div>";
+
             echo "</div>"; // .navigationheader
         }
     }
 
+    /**
+     * Compute the name to be used in the main header of this item
+     *
+     * @return string
+     */
+    public function getHeaderName(): string
+    {
+        $name = '';
+        if (isset($this->fields['id']) && ($this instanceof CommonDBTM)) {
+            $name = $this->getName();
+            if ($_SESSION['glpiis_ids_visible'] || empty($name)) {
+                $name = sprintf(__('%1$s - ID %2$d'), $name, $this->fields['id']);
+            }
+        }
+
+        return Sanitizer::unsanitize($name);
+    }
 
    /**
     * Display item with tabs
