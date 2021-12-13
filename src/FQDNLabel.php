@@ -142,7 +142,7 @@ abstract class FQDNLabel extends CommonDBChild
                         // see IPNetwork::searchNetworks
                         // By ordering on the netmask, we ensure that the first element is the nearest one (ie:
                         // the last should be 0.0.0.0/0.0.0.0 of x.y.z.a/255.255.255.255 regarding the interested element
-                        $ipnetworks_ids = IPNetwork::searchNetworksContainingIP($value, $input['entities_id'] ?? 0);
+                        $ipnetworks_ids = IPNetwork::searchNetworksContainingIP($value, $input['entities_id']);
                         $input['ipnetworks_id'] = reset($ipnetworks_ids);
                     }
                 }
