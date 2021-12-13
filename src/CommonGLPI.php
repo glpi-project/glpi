@@ -1434,4 +1434,88 @@ JAVASCRIPT;
                 return sprintf(__('%1$s: %2$s'), $object, __('Item already defined'));
         }
     }
+
+   /**
+    * Get links to Faq
+   **/
+    public function getKBLinks()
+    {
+        global $CFG_GLPI, $DB;
+
+        $ret = '';
+        $title = __s('FAQ');
+        if (Session::getCurrentInterface() == 'central') {
+            $title = __s('Knowledge base');
+        }
+
+        $iterator = $DB->request([
+            'SELECT' => [KnowbaseItem::getTable() . '.*'],
+            'FROM'   => KnowbaseItem::getTable(),
+            'WHERE'  => [
+                KnowbaseItem_Item::getTable() . '.items_id'  => $this->fields['id'],
+                KnowbaseItem_Item::getTable() . '.itemtype'  => $this->getType(),
+            ],
+            'INNER JOIN'   => [
+                KnowbaseItem_Item::getTable() => [
+                    'ON'  => [
+                        KnowbaseItem_Item::getTable() => KnowbaseItem::getForeignKeyField(),
+                        KnowbaseItem::getTable()      => 'id'
+                    ]
+                ]
+            ]
+        ]);
+
+        $found_kbitem = [];
+        foreach ($iterator as $line) {
+            $found_kbitem[$line['id']] = $line;
+            $kbitem_ids[$line['id']] = $line['id'];
+        }
+
+        if (count($found_kbitem)) {
+            $rand = mt_rand();
+            $kbitem = new KnowbaseItem();
+            $kbitem->getFromDB(reset($found_kbitem)['id']);
+            $ret .= "<div class='faqadd_block'>";
+            $ret .= "<label for='display_faq_chkbox$rand'>";
+            $ret .= "<img src='" . $CFG_GLPI["root_doc"] . "/pics/faqadd.png' class='middle pointer'
+                    alt=\"$title\" title=\"$title\">";
+            $ret .= "</label>";
+            $ret .= "<input type='checkbox'  class='display_faq_chkbox' id='display_faq_chkbox$rand'>";
+            $ret .= "<div class='faqadd_entries' style='position:relative;'>";
+            if (count($found_kbitem) == 1) {
+                $ret .= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";
+                $ret .= $kbitem->showFull(['display' => false]);
+                $ret .= "</div>"; // .faqadd_block_content
+            } else {
+                $ret .= Html::scriptBlock("
+                var getKnowbaseItemAnswer$rand = function() {
+                    var knowbaseitems_id = $('#dropdown_knowbaseitems_id$rand').val();
+                    $('#faqadd_block_content$rand').load(
+                        '" . $CFG_GLPI['root_doc'] . "/ajax/getKnowbaseItemAnswer.php',
+                        {
+                            'knowbaseitems_id': knowbaseitems_id
+                        }
+                    );
+                };
+                ");
+                $ret .= "<label for='dropdown_knowbaseitems_id$rand'>" .
+                    KnowbaseItem::getTypeName() . "</label>&nbsp;";
+                $ret .= KnowbaseItem::dropdown([
+                'value'     => reset($found_kbitem)['id'],
+                'display'   => false,
+                'rand'      => $rand,
+                'condition' => [
+                    KnowbaseItem::getTable() . '.id' => $kbitem_ids
+                ],
+                'on_change' => "getKnowbaseItemAnswer$rand()"
+                ]);
+                $ret .= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";
+                $ret .= $kbitem->showFull(['display' => false]);
+                $ret .= "</div>"; // .faqadd_block_content
+            }
+            $ret .= "</div>"; // .faqadd_entries
+            $ret .= "</div>"; // .faqadd_block
+        }
+        return $ret;
+    }
 }
