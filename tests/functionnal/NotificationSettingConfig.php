@@ -93,7 +93,7 @@ class NotificationSettingConfig extends DbTestCase
         $this->login();
 
         $this->output(
-            public function () use ($settingconfig) {
+            function () use ($settingconfig) {
                 $settingconfig->showConfigForm();
             }
         )
@@ -103,7 +103,7 @@ class NotificationSettingConfig extends DbTestCase
         $CFG_GLPI['use_notifications'] = 1;
 
         $this->output(
-            public function () use ($settingconfig) {
+            function () use ($settingconfig) {
                 $settingconfig->showConfigForm();
             }
         )
@@ -113,7 +113,7 @@ class NotificationSettingConfig extends DbTestCase
         $CFG_GLPI['notifications_ajax'] = 1;
 
         $this->output(
-            public function () use ($settingconfig) {
+            function () use ($settingconfig) {
                 $settingconfig->showConfigForm();
             }
         )
@@ -125,7 +125,7 @@ class NotificationSettingConfig extends DbTestCase
         $CFG_GLPI['notifications_mailing'] = 1;
 
         $this->output(
-            public function () use ($settingconfig) {
+            function () use ($settingconfig) {
                 $settingconfig->showConfigForm();
             }
         )

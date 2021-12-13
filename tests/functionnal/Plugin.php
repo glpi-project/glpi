@@ -78,7 +78,7 @@ class Plugin extends DbTestCase
 
         $this->calling($plugin)->getGlpiVersion = '0.89.0';
         $this->output(
-            public function () use ($plugin, $infos) {
+            function () use ($plugin, $infos) {
                 $this->boolean($plugin->checkGlpiVersion($infos))->isFalse();
             }
         )->isIdenticalTo('This plugin requires GLPI >= 0.90.');
@@ -91,7 +91,7 @@ class Plugin extends DbTestCase
 
         $this->calling($plugin)->getGlpiVersion = '9.3.0';
         $this->output(
-            public function () use ($plugin, $infos) {
+            function () use ($plugin, $infos) {
                 $this->boolean($plugin->checkGlpiVersion($infos))->isFalse();
             }
         )->isIdenticalTo('This plugin requires GLPI < 9.3.');
@@ -104,14 +104,14 @@ class Plugin extends DbTestCase
 
         $this->calling($plugin)->getGlpiVersion = '0.89.0';
         $this->output(
-            public function () use ($plugin, $infos) {
+            function () use ($plugin, $infos) {
                 $this->boolean($plugin->checkGlpiVersion($infos, true))->isFalse();
             }
         )->isIdenticalTo('This plugin requires GLPI >= 0.90 and < 9.3.');
 
         $this->calling($plugin)->getGlpiVersion = '9.3.0';
         $this->output(
-            public function () use ($plugin, $infos) {
+            function () use ($plugin, $infos) {
                 $this->boolean($plugin->checkGlpiVersion($infos))->isFalse();
             }
         )->isIdenticalTo('This plugin requires GLPI >= 0.90 and < 9.3.');
@@ -127,7 +127,7 @@ class Plugin extends DbTestCase
 
         $this->calling($plugin)->getPhpVersion = '5.4';
         $this->output(
-            public function () use ($plugin, $infos) {
+            function () use ($plugin, $infos) {
                 $this->boolean($plugin->checkPhpVersion($infos))->isFalse();
             }
         )->isIdenticalTo('This plugin requires PHP >= 5.6.');
@@ -136,7 +136,7 @@ class Plugin extends DbTestCase
         $this->boolean($plugin->checkPhpVersion($infos))->isTrue();
 
         $this->output(
-            public function () use ($plugin) {
+            function () use ($plugin) {
                 $infos = ['min' => '5.6', 'max' => '7.0'];
                 $this->boolean($plugin->checkPhpVersion($infos))->isFalse();
             }
@@ -151,14 +151,14 @@ class Plugin extends DbTestCase
         $plugin = new \Plugin();
 
         $this->output(
-            public function () use ($plugin) {
+            function () use ($plugin) {
                 $exts = ['gd' => ['required' => true]];
                 $this->boolean($plugin->checkPhpExtensions($exts))->isTrue();
             }
         )->isEmpty();
 
         $this->output(
-            public function () use ($plugin) {
+            function () use ($plugin) {
                 $exts = ['myext' => ['required' => true]];
                 $this->boolean($plugin->checkPhpExtensions($exts))->isFalse();
             }
@@ -174,28 +174,28 @@ class Plugin extends DbTestCase
         $plugin = new \Plugin();
 
         $this->output(
-            public function () use ($plugin, $params) {
+            function () use ($plugin, $params) {
                 $this->boolean($plugin->checkGlpiParameters($params))->isFalse();
             }
         )->isIdenticalTo('This plugin requires GLPI parameter my_param<br/>');
 
         $CFG_GLPI['my_param'] = '';
         $this->output(
-            public function () use ($plugin, $params) {
+            function () use ($plugin, $params) {
                 $this->boolean($plugin->checkGlpiParameters($params))->isFalse();
             }
         )->isIdenticalTo('This plugin requires GLPI parameter my_param<br/>');
 
         $CFG_GLPI['my_param'] = '0';
         $this->output(
-            public function () use ($plugin, $params) {
+            function () use ($plugin, $params) {
                 $this->boolean($plugin->checkGlpiParameters($params))->isFalse();
             }
         )->isIdenticalTo('This plugin requires GLPI parameter my_param<br/>');
 
         $CFG_GLPI['my_param'] = 'abc';
         $this->output(
-            public function () use ($plugin, $params) {
+            function () use ($plugin, $params) {
                 $this->boolean($plugin->checkGlpiParameters($params))->isTrue();
             }
         )->isEmpty();
@@ -209,7 +209,7 @@ class Plugin extends DbTestCase
         $this->calling($plugin)->isActivated = false;
 
         $this->output(
-            public function () use ($plugin) {
+            function () use ($plugin) {
                 $this->boolean($plugin->checkGlpiPlugins(['myplugin']))->isFalse();
             }
         )->isIdenticalTo('This plugin requires myplugin plugin<br/>');
@@ -217,7 +217,7 @@ class Plugin extends DbTestCase
         $this->calling($plugin)->isInstalled = true;
 
         $this->output(
-            public function () use ($plugin) {
+            function () use ($plugin) {
                 $this->boolean($plugin->checkGlpiPlugins(['myplugin']))->isFalse();
             }
         )->isIdenticalTo('This plugin requires myplugin plugin<br/>');
@@ -226,7 +226,7 @@ class Plugin extends DbTestCase
         $this->calling($plugin)->isActivated = true;
 
         $this->output(
-            public function () use ($plugin) {
+            function () use ($plugin) {
                 $this->boolean($plugin->checkGlpiPlugins(['myplugin']))->isTrue();
             }
         )->isEmpty();
@@ -435,7 +435,7 @@ class Plugin extends DbTestCase
 
        // Check state
         $this->when(
-            public function () use ($plugin, $old_directory) {
+            function () use ($plugin, $old_directory) {
                 $plugin->checkPluginState($old_directory);
             }
         )->error()
@@ -765,7 +765,7 @@ class Plugin extends DbTestCase
        // Check state
         if (null !== $expected_warning) {
             $this->when(
-                public function () use ($plugin, $plugin_directory) {
+                function () use ($plugin, $plugin_directory) {
                     $plugin->checkPluginState($plugin_directory);
                 }
             )->error()
@@ -837,7 +837,7 @@ class Plugin extends DbTestCase
 function plugin_version_{$directory}() {
    return {$informations_str};
 }
-     PHP
+PHP
                 )
             )->isNotEqualTo(false);
         }

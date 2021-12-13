@@ -130,7 +130,7 @@ class GLPIKey extends \DbTestCase
         $this->newTestedInstance(vfsStream::url('glpi/config'));
 
         $this->when(
-            public function () {
+            function () {
                 $this->testedInstance->get();
             }
         )->error
@@ -147,7 +147,7 @@ class GLPIKey extends \DbTestCase
         $this->newTestedInstance(vfsStream::url('glpi/config'));
 
         $this->when(
-            public function () {
+            function () {
                 $this->testedInstance->get();
             }
         )->error
@@ -163,7 +163,7 @@ class GLPIKey extends \DbTestCase
         $this->newTestedInstance(vfsStream::url('glpi/config'));
 
         $this->when(
-            public function () {
+            function () {
                 $this->testedInstance->get();
             }
         )->error
@@ -214,7 +214,7 @@ class GLPIKey extends \DbTestCase
         $this->newTestedInstance(vfsStream::url('glpi/config'));
 
         $this->when(
-            public function () {
+            function () {
                 $this->testedInstance->getLegacyKey();
             }
         )->error
@@ -266,7 +266,7 @@ class GLPIKey extends \DbTestCase
 
         $result = null;
         $this->when(
-            public function () use (&$result) {
+            function () use (&$result) {
                 $result = $this->testedInstance->generate();
             }
         )->error
@@ -281,7 +281,7 @@ class GLPIKey extends \DbTestCase
 
         $result = null;
         $this->when(
-            public function () use (&$result) {
+            function () use (&$result) {
                 $result = $this->testedInstance->generate();
             }
         )->error
@@ -300,7 +300,7 @@ class GLPIKey extends \DbTestCase
 
         $result = null;
         $this->when(
-            public function () use (&$result) {
+            function () use (&$result) {
                 $result = $this->testedInstance->generate();
             }
         )->error
@@ -318,7 +318,7 @@ class GLPIKey extends \DbTestCase
 
         $result = null;
         $this->when(
-            public function () use (&$result) {
+            function () use (&$result) {
                 $result = $this->testedInstance->generate();
             }
         )->error
@@ -434,7 +434,7 @@ class GLPIKey extends \DbTestCase
         $result = null;
 
         $this->when(
-            public function () use (&$result) {
+            function () use (&$result) {
                 $result = $this->testedInstance->decrypt('not a valid value');
             }
         )->error
@@ -455,7 +455,7 @@ class GLPIKey extends \DbTestCase
         $result = null;
 
         $this->when(
-            public function () use (&$result) {
+            function () use (&$result) {
                // 'test' string crypted with a valid key used just for that
                 $result = $this->testedInstance->decrypt('CUdPSEgzKroDOwM1F8lbC8WDcQUkGCxIZpdTEpp5W/PLSb70WmkaKP0Q7QY=');
             }

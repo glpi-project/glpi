@@ -69,7 +69,7 @@ class Migration extends \GLPITestCase
             $this->calling($this->db)->freeResult = true;
 
             $this->output(
-                public function () {
+                function () {
                     $this->migration = new \mock\Migration(GLPI_VERSION);
                     $this->calling($this->migration)->displayMessage = function ($msg) {
                         echo $msg;
@@ -85,7 +85,7 @@ class Migration extends \GLPITestCase
     public function testConstructor()
     {
         $this->output(
-            public function () {
+            function () {
                 new \Migration(GLPI_VERSION);
             }
         )->isEmpty();
@@ -97,7 +97,7 @@ class Migration extends \GLPITestCase
         $DB = $this->db;
 
         $this->output(
-            public function () {
+            function () {
                 $this->migration->addPostQuery('UPDATE post_table SET mfield = "myvalue"');
                 $this->migration->addPreQuery('UPDATE pre_table SET mfield = "myvalue"');
                 $this->migration->addPostQuery('UPDATE post_otable SET ofield = "myvalue"');
@@ -134,7 +134,7 @@ class Migration extends \GLPITestCase
         ]);
 
         $this->output(
-            public function () {
+            function () {
                 $this->migration->executeMigration();
             }
         )->isIdenticalTo('Configuration values added for one, two (core).Task completed.');
@@ -160,7 +160,7 @@ class Migration extends \GLPITestCase
         ], 'test-context');
 
         $this->output(
-            public function () {
+            function () {
                 $this->migration->executeMigration();
             }
         )->isIdenticalTo('Configuration values added for one, two (test-context).Task completed.');
@@ -203,7 +203,7 @@ class Migration extends \GLPITestCase
         $DB = $this->db;
 
         $this->output(
-            public function () {
+            function () {
                 $this->migration->executeMigration();
             }
         )->isIdenticalTo('Configuration values added for two (core).Task completed.');
@@ -222,7 +222,7 @@ class Migration extends \GLPITestCase
 
        //try to backup non existant tables
         $this->output(
-            public function () {
+            function () {
                 $this->migration->backupTables(['table1', 'table2']);
                 $this->migration->executeMigration();
             }
@@ -242,7 +242,7 @@ class Migration extends \GLPITestCase
         $this->calling($this->db)->tableExists = true;
         $DB = $this->db;
         $this->exception(
-            public function () {
+            function () {
                 $this->migration->backupTables(['glpi_existingtest']);
                 $this->migration->executeMigration();
             }
@@ -261,7 +261,7 @@ class Migration extends \GLPITestCase
         };
         $DB = $this->db;
         $this->output(
-            public function () {
+            function () {
                 $this->migration->backupTables(['glpi_existingtest']);
                 $this->migration->executeMigration();
             }
@@ -283,7 +283,7 @@ class Migration extends \GLPITestCase
         $this->calling($this->db)->fieldExists = true;
 
         $this->output(
-            public function () {
+            function () {
                 $this->migration->changeField('change_table', 'ID', 'id', 'integer', ['first' => 'first']);
                 $this->migration->executeMigration();
             }
@@ -299,7 +299,7 @@ class Migration extends \GLPITestCase
         $this->calling($this->db)->fieldExists = true;
 
         $this->output(
-            public function () {
+            function () {
                 $this->migration->changeField('change_table', 'NAME', 'name', 'string', ['after' => 'id']);
                 $this->migration->executeMigration();
             }
@@ -535,7 +535,7 @@ class Migration extends \GLPITestCase
         $this->queries = [];
 
         $this->output(
-            public function () use ($table, $field, $format, $options) {
+            function () use ($table, $field, $format, $options) {
                 $this->migration->addField($table, $field, $format, $options);
                 $this->migration->executeMigration();
             }
@@ -556,7 +556,7 @@ class Migration extends \GLPITestCase
         $this->queries = [];
 
         $this->when(
-            public function () {
+            function () {
                 $this->migration->addField('my_table', 'my_field', 'bool', ['value' => 2]);
                 $this->migration->executeMigration();
             }
@@ -574,7 +574,7 @@ class Migration extends \GLPITestCase
         $this->queries = [];
 
         $this->when(
-            public function () {
+            function () {
                 $this->migration->addField('my_table', 'my_field', 'integer', ['value' => 'foo']);
                 $this->migration->executeMigration();
             }
@@ -744,7 +744,7 @@ class Migration extends \GLPITestCase
 
         $migration = $this->migration;
         $this->exception(
-            public function () use ($migration) {
+            function () use ($migration) {
                 $migration->renameItemtype('SomeOldType', 'NewName');
             }
         )->isInstanceOf(\RuntimeException::class)
@@ -764,7 +764,7 @@ class Migration extends \GLPITestCase
         $this->calling($this->db)->tableExists = true;
 
         $this->exception(
-            public function () {
+            function () {
                 $this->migration->renameItemtype('SomeOldType', 'NewName');
             }
         )->isInstanceOf(\RuntimeException::class)
@@ -792,7 +792,7 @@ class Migration extends \GLPITestCase
         ]);
 
         $this->exception(
-            public function () {
+            function () {
                 $this->migration->renameItemtype('SomeOldType', 'NewName');
             }
         )->isInstanceOf(\RuntimeException::class)
@@ -844,7 +844,7 @@ class Migration extends \GLPITestCase
 
        // Test renaming with DB structure update
         $this->output(
-            public function () {
+            function () {
                 $this->migration->renameItemtype('SomeOldType', 'NewName');
                 $this->migration->executeMigration();
             }
@@ -878,7 +878,7 @@ class Migration extends \GLPITestCase
         $this->queries = [];
 
         $this->output(
-            public function () {
+            function () {
                 $this->migration->renameItemtype('SomeOldType', 'NewName', false);
                 $this->migration->executeMigration();
             }

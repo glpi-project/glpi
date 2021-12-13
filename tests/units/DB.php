@@ -56,14 +56,14 @@ class DB extends \GLPITestCase
             ->boolean($this->testedInstance->fieldExists('glpi_configs', 'ID'))->isFalse()
             ->boolean($this->testedInstance->fieldExists('glpi_configs', 'fakeField'))->isFalse()
             ->when(
-                public function () {
+                function () {
                     $this->boolean($this->testedInstance->fieldExists('fakeTable', 'id'))->isFalse();
                 }
             )->error
                ->withType(E_USER_WARNING)
                ->exists()
             ->when(
-                public function () {
+                function () {
                     $this->boolean($this->testedInstance->fieldExists('fakeTable', 'fakeField'))->isFalse();
                 }
             )->error
@@ -265,7 +265,7 @@ class DB extends \GLPITestCase
     public function testBuildUpdateWException()
     {
         $this->exception(
-            public function () {
+            function () {
                 $this
                   ->if($this->newTestedInstance)
                   ->then
@@ -349,7 +349,7 @@ class DB extends \GLPITestCase
     public function testBuildDeleteWException()
     {
         $this->exception(
-            public function () {
+            function () {
                 $this
                   ->if($this->newTestedInstance)
                   ->then
@@ -588,7 +588,7 @@ SQL;
         $asserter = $warning === null ? 'notExists' : 'exists';
 
         $this->when(
-            public function () use ($db, $create_query_template, $drop_query_template, $extra_fields, $table_options) {
+            function () use ($db, $create_query_template, $drop_query_template, $extra_fields, $table_options) {
                 $table = sprintf('glpitests_%s', uniqid());
                 $db->query(sprintf($create_query_template, $table, $extra_fields, $table_options));
                 $db->query(sprintf($drop_query_template, $table));

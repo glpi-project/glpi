@@ -63,7 +63,7 @@ class User extends \DbTestCase
 
        // Test request for a password with invalid email
         $this->exception(
-            public function () use ($user) {
+            function () use ($user) {
                 $user->forgetPassword('this-email-does-not-exists@example.com');
             }
         )
@@ -82,7 +82,7 @@ class User extends \DbTestCase
          'password2' => TU_PASS
         ];
         $this->exception(
-            public function () use ($user, $input) {
+            function () use ($user, $input) {
                 $result = $user->updateForgottenPassword($input);
             }
         )
@@ -172,7 +172,7 @@ class User extends \DbTestCase
         $this->array($user2->fields)->isIdenticalTo($user->fields);
 
         $this->when(
-            public function () use ($uid) {
+            function () use ($uid) {
                 $this->testedInstance->getFromDBbyToken($uid, 'my_field');
             }
         )->error

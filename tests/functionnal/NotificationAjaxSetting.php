@@ -69,7 +69,7 @@ class NotificationAjaxSetting extends DbTestCase
     public function testDisplayTabContentForItem()
     {
         $this->output(
-            public function () {
+            function () {
                 $instance = new \NotificationAjaxSetting();
                 $instance->displayTabContentForItem($instance);
             }
@@ -95,7 +95,7 @@ class NotificationAjaxSetting extends DbTestCase
         $this->variable($CFG_GLPI['notifications_ajax'])->isEqualTo(0);
 
         $this->output(
-            public function () {
+            function () {
                 $instance = new \NotificationAjaxSetting();
                 $instance->showFormConfig();
             }
@@ -104,7 +104,7 @@ class NotificationAjaxSetting extends DbTestCase
         $CFG_GLPI['notifications_ajax'] = 1;
 
         $this->output(
-            public function () {
+            function () {
                 $instance = new \NotificationAjaxSetting();
                 $instance->showFormConfig();
             }

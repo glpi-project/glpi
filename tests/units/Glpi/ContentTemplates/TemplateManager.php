@@ -125,7 +125,7 @@ class TemplateManager extends GLPITestCase
 
         if ($error !== null) {
             $this->exception(
-                public function () use ($manager, $content, $params, &$html) {
+                function () use ($manager, $content, $params, &$html) {
                     $html = $manager->render($content, $params);
                 }
             );

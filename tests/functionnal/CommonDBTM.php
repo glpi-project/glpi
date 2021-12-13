@@ -141,7 +141,7 @@ class CommonDBTM extends DbTestCase
         $instance = new \Computer();
         $result = null;
         $this->when(
-            public function () use ($instance, &$result) {
+            function () use ($instance, &$result) {
                 $result = $instance->getFromDbByRequest([
                   'WHERE' => ['contact' => 'johndoe'],
                 ]);
@@ -238,7 +238,7 @@ class CommonDBTM extends DbTestCase
 
        // Exception if field argument is empty
         $this->exception(
-            public function () {
+            function () {
                 \Computer::getTableField('');
             }
         )->isInstanceOf(\InvalidArgumentException::class)
@@ -246,7 +246,7 @@ class CommonDBTM extends DbTestCase
 
        // Exception if class has no table
         $this->exception(
-            public function () {
+            function () {
                 \Item_Devices::getTableField('id');
             }
         )->isInstanceOf(\LogicException::class)
@@ -316,7 +316,7 @@ class CommonDBTM extends DbTestCase
 
        //multiple update case
         $this->when(
-            public function () use ($DB) {
+            function () use ($DB) {
                 $res = $DB->updateOrInsert(
                     \Computer::getTable(),
                     [
@@ -400,7 +400,7 @@ class CommonDBTM extends DbTestCase
 
        //multiple update case
         $this->when(
-            public function () use ($DB) {
+            function () use ($DB) {
                 $res = $DB->updateOrInsert(
                     \Computer::getTable(),
                     [

@@ -67,7 +67,7 @@ class DBmysqlIterator extends DbTestCase
         global $DB;
 
         $this->exception(
-            public function () use ($DB) {
+            function () use ($DB) {
                 $DB->request('fakeTable');
             }
         )
@@ -97,7 +97,7 @@ class DBmysqlIterator extends DbTestCase
     public function testNoTableWithWhere()
     {
         $this->when(
-            public function () {
+            function () {
                 $it = $this->it->execute('', ['foo' => 1]);
                 $this->string($it->getSql())->isIdenticalTo('SELECT * WHERE `foo` = \'1\'');
             }
@@ -114,7 +114,7 @@ class DBmysqlIterator extends DbTestCase
     public function testNoTableWithoutWhere()
     {
         $this->when(
-            public function () {
+            function () {
                 $it = $this->it->execute('');
                 $this->string($it->getSql())->isIdenticalTo('SELECT *');
             }
@@ -131,7 +131,7 @@ class DBmysqlIterator extends DbTestCase
     public function testNoTableWithoutWhereBis()
     {
         $this->when(
-            public function () {
+            function () {
                 $it = $this->it->execute(['FROM' => []]);
                 $this->string('SELECT *', $it->getSql(), 'No table');
             }
@@ -287,7 +287,7 @@ class DBmysqlIterator extends DbTestCase
         $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END, `bar` ASC, `baz` DESC");
 
         $this->when(
-            public function () {
+            function () {
                 $it = $this->it->execute('foo', ['ORDER' => [new \stdClass()]]);
             }
         )->error()
@@ -345,7 +345,7 @@ class DBmysqlIterator extends DbTestCase
         $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(DISTINCT `bar`) AS cpt FROM `foo`');
 
         $this->when(
-            public function () {
+            function () {
                 $it = $this->it->execute('foo', ['COUNT' => 'cpt', 'DISTINCT' => true]);
             }
         )->error()
@@ -410,7 +410,7 @@ class DBmysqlIterator extends DbTestCase
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` RIGHT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
 
         $this->exception(
-            public function () {
+            function () {
                 $it = $this->it->execute('foo', ['LEFT JOIN' => ['ON' => ['a' => 'id', 'b' => 'a_id']]]);
             }
         )
@@ -418,7 +418,7 @@ class DBmysqlIterator extends DbTestCase
          ->hasMessage('BAD JOIN');
 
         $this->when(
-            public function () {
+            function () {
                 $it = $this->it->execute('foo', ['LEFT JOIN' => 'bar']);
             }
         )->error()
@@ -427,7 +427,7 @@ class DBmysqlIterator extends DbTestCase
          ->exists();
 
         $this->when(
-            public function () {
+            function () {
                 $it = $this->it->execute('foo', ['INNER JOIN' => ['bar' => ['FKEY' => 'akey']]]);
             }
         )->error()
@@ -500,7 +500,7 @@ class DBmysqlIterator extends DbTestCase
         $this->string($join)->isIdenticalTo(' LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
 
         $this->exception(
-            public function () {
+            function () {
                 $it = $this->it->analyseJoins(['LEFT OUTER JOIN' => ['ON' => ['a' => 'id', 'b' => 'a_id']]]);
             }
         )
@@ -568,7 +568,7 @@ class DBmysqlIterator extends DbTestCase
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = \'1\'');
 
         $this->exception(
-            public function () {
+            function () {
                 $it = $this->it->execute('foo', ['bar' => []]);
             }
         )
@@ -636,7 +636,7 @@ class DBmysqlIterator extends DbTestCase
     public function testNoFieldGroupBy()
     {
         $this->when(
-            public function () {
+            function () {
                 $it = $this->it->execute(['foo'], ['GROUPBY' => []]);
                 $this->string('SELECT * FROM `foo`', $it->getSql(), 'No group by field');
             }
@@ -646,7 +646,7 @@ class DBmysqlIterator extends DbTestCase
          ->exists();
 
         $this->when(
-            public function () {
+            function () {
                 $it = $this->it->execute(['foo'], ['GROUP' => []]);
                 $this->string('SELECT * FROM `foo`', $it->getSql(), 'No group by field');
             }
@@ -1411,7 +1411,7 @@ class DBmysqlIterator extends DbTestCase
         $this->array($iterator->current())->isEqualTo(['id' => 5, 'name' => 'psmith']);
 
         $this->exception(
-            public function () use ($iterator) {
+            function () use ($iterator) {
                 $iterator->seek(3);
             }
         )->isInstanceOf('OutOfBoundsException');

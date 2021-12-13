@@ -122,7 +122,7 @@ class Antivirus extends AbstractInventoryAsset
         $mainitem = getItemByTypeName('Printer', '_test_printer_all');
         $asset = new \Glpi\Inventory\Asset\Antivirus($mainitem);
         $this->exception(
-            public function () use ($asset) {
+            function () use ($asset) {
                 $asset->prepare();
             }
         )->message->contains('Antivirus are handled for computers only.');

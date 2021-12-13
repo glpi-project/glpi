@@ -638,7 +638,7 @@ DTSTART:20191010T113000Z
 DTEND:20191010T123000Z
 END:VEVENT
 END:VCALENDAR
-   VCALENDAR
+VCALENDAR
         );
 
         $this->validateThatAuthenticationIsRequired($server);
@@ -691,7 +691,7 @@ DTSTART:20191010T110000Z
 DTEND:20191010T120000Z
 END:VEVENT
 END:VCALENDAR
-   VCALENDAR
+VCALENDAR
         );
 
         $this->validateThatAuthenticationIsRequired($server);
@@ -802,7 +802,7 @@ DTSTART;TZID=Europe/Paris:20191101T090000
 DTEND;TZID=Europe/Paris:20191101T120000
 END:VEVENT
 END:VCALENDAR
-   VCALENDAR
+VCALENDAR
         );
 
         $response = new \Sabre\HTTP\Response();
@@ -946,7 +946,7 @@ DTSTART;TZID=Europe/Paris:20191101T090000
 DUE;TZID=Europe/Paris:20191101T091500
 END:VTODO
 END:VCALENDAR
-   VCALENDAR
+VCALENDAR
         );
 
         $response = new \Sabre\HTTP\Response();
@@ -987,7 +987,7 @@ DESCRIPTION:Description of the task.
 STATUS:COMPLETED
 END:VTODO
 END:VCALENDAR
-   VCALENDAR
+VCALENDAR
         );
 
         $response = new \Sabre\HTTP\Response();
@@ -1085,7 +1085,7 @@ SUMMARY:Note created from external source
 DESCRIPTION:Description of the note.
 END:VJOURNAL
 END:VCALENDAR
-   VCALENDAR
+VCALENDAR
         );
 
         $response = new \Sabre\HTTP\Response();
@@ -1164,7 +1164,7 @@ SUMMARY:Test reminder updated from external source
 DESCRIPTION:Updated description.
 END:VJOURNAL
 END:VCALENDAR
-   VCALENDAR
+VCALENDAR
         );
 
         $response = new \Sabre\HTTP\Response();
@@ -1247,7 +1247,7 @@ DTSTART;TZID=Europe/Paris:20191101T090000
 DUE;TZID=Europe/Paris:20191101T091500
 END:VTODO
 END:VCALENDAR
-   VCALENDAR
+VCALENDAR
         );
 
         $response = new \Sabre\HTTP\Response();
@@ -1334,7 +1334,7 @@ DESCRIPTION:Updated description.
 STATUS:NEEDS-ACTION
 END:VTODO
 END:VCALENDAR
-   VCALENDAR
+VCALENDAR
         );
 
         $response = new \Sabre\HTTP\Response();
@@ -1369,7 +1369,7 @@ DTSTART;TZID=Europe/Paris:20191101T090000
 DUE;TZID=Europe/Paris:20191101T091500
 END:VTODO
 END:VCALENDAR
-   VCALENDAR
+VCALENDAR
         );
 
         $response = new \Sabre\HTTP\Response();
@@ -1466,7 +1466,7 @@ STATUS:NEEDS-ACTION
 PERCENT-COMPLETE:35
 END:VTODO
 END:VCALENDAR
-   VCALENDAR
+VCALENDAR
         );
 
         $response = new \Sabre\HTTP\Response();
@@ -1501,7 +1501,7 @@ DTSTART;TZID=Europe/Paris:20191101T090000
 DUE;TZID=Europe/Paris:20191101T091500
 END:VTODO
 END:VCALENDAR
-   VCALENDAR
+VCALENDAR
         );
 
         $response = new \Sabre\HTTP\Response();
@@ -1557,7 +1557,7 @@ CATEGORIES:Another cat
 LOCATION:Here
 END:VEVENT
 END:VCALENDAR
-   VCALENDAR
+VCALENDAR
         );
 
         $response = new \Sabre\HTTP\Response();
@@ -1595,7 +1595,7 @@ END:VCALENDAR
     private function validateThatAuthenticationIsRequired(\Glpi\CalDAV\Server $server)
     {
         $this->exception(
-            public function () use ($server) {
+            function () use ($server) {
                 $response = new \Sabre\HTTP\Response();
                 $server->invokeMethod($server->httpRequest, $response, false);
             }

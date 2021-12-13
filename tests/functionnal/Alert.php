@@ -64,7 +64,7 @@ class Alert extends DbTestCase
 
        // Display
         $this->output(
-            public function () use ($comp) {
+            function () use ($comp) {
                 \Alert::displayLastAlert($comp->getType(), $comp->getID());
             }
         )->isIdenticalTo(sprintf('Alert sent on %s', \Html::convDateTime($date)));

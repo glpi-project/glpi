@@ -259,7 +259,7 @@ class TicketTask extends DbTestCase
 
        //How could we test there are 4 matching links?
         $this->output(
-            public function () {
+            function () {
                 \TicketTask::showCentralList(0, 'todo', false);
             }
         )
@@ -268,7 +268,7 @@ class TicketTask extends DbTestCase
 
        //How could we test there are 2 matching links?
         $this->output(
-            public function () {
+            function () {
                 $_SESSION['glpidisplay_count_on_home'] = 2;
                 \TicketTask::showCentralList(0, 'todo', false);
                 unset($_SESSION['glpidisplay_count_on_home']);

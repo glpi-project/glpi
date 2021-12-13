@@ -87,7 +87,7 @@ class Notification_NotificationTemplate extends DbTestCase
 
        //not logged, no ACLs
         $this->output(
-            public function () use ($notif) {
+            function () use ($notif) {
                 \Notification_NotificationTemplate::showForNotification($notif);
             }
         )->isEmpty();
@@ -95,7 +95,7 @@ class Notification_NotificationTemplate extends DbTestCase
         $this->login();
 
         $this->output(
-            public function () use ($notif) {
+            function () use ($notif) {
                 \Notification_NotificationTemplate::showForNotification($notif);
             }
         )->isIdenticalTo("<div class='center'><table class='tab_cadre_fixehov'><tr><th>ID</th><th>Template</th><th>Mode</th></tr><tr class='tab_bg_2'><td><a  href='/glpi/front/notification_notificationtemplate.form.php?id=1'  title=\"1\">1</a></td><td><a  href='/glpi/front/notificationtemplate.form.php?id=6'  title=\"Alert Tickets not closed\">Alert Tickets not closed</a></td><td>Email</td></tr><tr><th>ID</th><th>Template</th><th>Mode</th></tr></table></div>");
@@ -112,7 +112,7 @@ class Notification_NotificationTemplate extends DbTestCase
     {
        //not logged, no ACLs
         $this->output(
-            public function () {
+            function () {
                 $n_nt = new \Notification_NotificationTemplate();
                 $n_nt->showForm(1);
             }
@@ -124,7 +124,7 @@ class Notification_NotificationTemplate extends DbTestCase
 
         $this->login();
         $this->output(
-            public function () {
+            function () {
                 $n_nt = new \Notification_NotificationTemplate();
                 $n_nt->showForm(1);
             }

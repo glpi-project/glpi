@@ -81,7 +81,7 @@ class Update extends \GLPITestCase
         $update = new \Update($DB);
         $migration = null;
         $this->output(
-            public function () use (&$migration) {
+            function () use (&$migration) {
                 $migration = new \Migration(GLPI_VERSION);
             }
         )->isEmpty();

@@ -68,7 +68,7 @@ class Session extends \DbTestCase
         $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo($expected);
 
         $this->output(
-            public function () {
+            function () {
                 \Html::displayMessageAfterRedirect();
             }
         )
@@ -89,7 +89,7 @@ class Session extends \DbTestCase
         $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo($expected);
 
         $this->output(
-            public function () {
+            function () {
                 \Html::displayMessageAfterRedirect();
             }
         )->matches('/' . str_replace('.', '\.', $err_msg)  . '/');
@@ -109,7 +109,7 @@ class Session extends \DbTestCase
         $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo($expected);
 
         $this->output(
-            public function () {
+            function () {
                 \Html::displayMessageAfterRedirect();
             }
         )
@@ -129,7 +129,7 @@ class Session extends \DbTestCase
         $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo($expected);
 
         $this->output(
-            public function () {
+            function () {
                 \Html::displayMessageAfterRedirect();
             }
         )->matches('/' . str_replace(['.', ')'], ['\.', '\)'], $info_msg)  . '/');
@@ -194,7 +194,7 @@ class Session extends \DbTestCase
         $groups = $_SESSION['glpigroups'];
         $_SESSION = $session_backup;
         $expected_groups = array_map(
-            public function ($group) {
+            function ($group) {
                 return (string)$group['id'];
             },
             $user_groups

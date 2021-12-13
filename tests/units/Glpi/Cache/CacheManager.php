@@ -88,13 +88,13 @@ class CacheManager extends \GLPITestCase
         if (!$is_configurable) {
             $exception_msg = sprintf('Invalid or non configurable context: "%s".', $context);
             $this->exception(
-                public function () use ($context) {
+                function () use ($context) {
                     $this->testedInstance->setConfiguration($context, 'memcached://localhost');
                 }
             )->message->isEqualTo($exception_msg);
 
             $this->exception(
-                public function () use ($context) {
+                function () use ($context) {
                     $this->testedInstance->unsetConfiguration($context);
                 }
             )->message->isEqualTo($exception_msg);
@@ -105,7 +105,7 @@ class CacheManager extends \GLPITestCase
         if (!$is_valid) {
             $exception_msg = sprintf('Invalid context: "%s".', $context);
             $this->exception(
-                public function () use ($context) {
+                function () use ($context) {
                     $this->testedInstance->getCacheInstance($context);
                 }
             )->message->isEqualTo($exception_msg);
@@ -209,7 +209,7 @@ class CacheManager extends \GLPITestCase
 
         if ($expected_error !== null) {
             $this->exception(
-                public function () use ($context, $dsn, $options) {
+                function () use ($context, $dsn, $options) {
                     $this->testedInstance->setConfiguration($context, $dsn, $options);
                 }
             )->message->isEqualTo($expected_error);
@@ -270,7 +270,7 @@ class CacheManager extends \GLPITestCase
 
        // Unsetting an invalid context does not alter config file
         $this->exception(
-            public function () {
+            function () {
                 $this->testedInstance->unsetConfiguration('notavalidcontext');
             }
         )->message->isEqualTo('Invalid or non configurable context: "notavalidcontext".');
@@ -325,7 +325,7 @@ class CacheManager extends \GLPITestCase
 
         if ($expected_error !== null) {
             $this->when(
-                public function () use ($context) {
+                function () use ($context) {
                     $this->testedInstance->getCacheInstance($context);
                 }
             )->error()

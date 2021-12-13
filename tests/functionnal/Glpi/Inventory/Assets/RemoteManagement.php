@@ -110,7 +110,7 @@ class RemoteManagement extends AbstractInventoryAsset
         $mainasset = getItemByTypeName('Printer', '_test_printer_all');
         $asset = new \Glpi\Inventory\Asset\RemoteManagement($mainasset);
         $this->exception(
-            public function () use ($asset) {
+            function () use ($asset) {
                 $asset->prepare();
             }
         )->message->contains('Remote Management are handled for following types only:');

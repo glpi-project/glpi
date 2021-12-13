@@ -241,7 +241,7 @@ class Toolbox extends DbTestCase
     public function testJsonDecodeWException()
     {
         $this->exception(
-            public function () {
+            function () {
                 $this
                   ->variable(\Toolbox::jsonDecode('"Monitor":"6","Computer":"35"', true));
             }
@@ -972,7 +972,7 @@ class Toolbox extends DbTestCase
     public function testDeprecated()
     {
         $this->when(
-            public function () {
+            function () {
                 \Toolbox::deprecated('Calling this function is deprecated');
             }
         )->error()

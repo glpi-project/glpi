@@ -98,7 +98,7 @@ class Item_OperatingSystem extends DbTestCase
         )->isIdenticalTo(1);
 
         $this->exception(
-            public function () use ($ios, $input) {
+            function () use ($ios, $input) {
                 $ios->add($input);
             }
         )
@@ -141,7 +141,7 @@ class Item_OperatingSystem extends DbTestCase
 
         foreach (['showForItem', 'displayTabContentForItem'] as $method) {
             $this->output(
-                public function () use ($method, $computer) {
+                function () use ($method, $computer) {
                     \Item_OperatingSystem::$method($computer);
                 }
             )->contains('operatingsystems_id');
@@ -166,7 +166,7 @@ class Item_OperatingSystem extends DbTestCase
 
         foreach (['showForItem', 'displayTabContentForItem'] as $method) {
             $this->output(
-                public function () use ($method, $computer) {
+                function () use ($method, $computer) {
                     \Item_OperatingSystem::$method($computer);
                 }
             )->contains('operatingsystems_id');
@@ -192,7 +192,7 @@ class Item_OperatingSystem extends DbTestCase
        //thera are now 2 OS linked, we will no longer show a form, but a list.
         foreach (['showForItem', 'displayTabContentForItem'] as $method) {
             $this->output(
-                public function () use ($method, $computer) {
+                function () use ($method, $computer) {
                     \Item_OperatingSystem::$method($computer);
                 }
             )->notContains('operatingsystems_id');

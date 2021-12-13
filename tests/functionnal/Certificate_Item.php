@@ -125,7 +125,7 @@ class Certificate_Item extends DbTestCase
 
         $this->boolean($cert->getFromDB($cid1))->isTrue();
         $this->exception(
-            public function () use ($cert) {
+            function () use ($cert) {
                 $this->boolean($this->testedInstance->getListForItem($cert))->isFalse();
             }
         )->message->contains('Cannot use getListForItemParams() for a Certificate');
@@ -149,7 +149,7 @@ class Certificate_Item extends DbTestCase
         $this->integer($this->testedInstance->countForItem($computer))->isIdenticalTo(0);
 
         $this->exception(
-            public function () use ($cert) {
+            function () use ($cert) {
                 $this->testedInstance->countForItem($cert);
             }
         )->message->contains('Cannot use getListForItemParams() for a Certificate');

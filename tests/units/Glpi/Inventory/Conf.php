@@ -117,7 +117,7 @@ class Conf extends \GLPITestCase
          ->if($this->newTestedInstance)
          ->then
             ->when(
-                public function () {
+                function () {
                     $this->variable($this->testedInstance->doesNotExists)->isEqualTo(null);
                     $this->hasSessionMessages(WARNING, ['Property doesNotExists does not exists!']);
                 }

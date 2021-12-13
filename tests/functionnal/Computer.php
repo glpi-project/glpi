@@ -360,7 +360,7 @@ class Computer extends DbTestCase
         $this->string($comp->getField('name'))->isIdenticalTo('_test_pc01');
 
         $this->when(
-            public function () use ($comp) {
+            function () use ($comp) {
                 $this->boolean($comp->getFromDBByCrit(['name' => ['LIKE', '_test%']]))->isFalse();
             }
         )->error()

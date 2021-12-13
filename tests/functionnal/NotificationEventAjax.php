@@ -73,7 +73,7 @@ class NotificationEventAjax extends DbTestCase
     public function testSend()
     {
         $this->when(
-            public function () {
+            function () {
                 $this->boolean(\NotificationEventAjax::send([]))->isFalse();
             }
         )->error

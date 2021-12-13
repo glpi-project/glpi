@@ -70,7 +70,7 @@ class NotificationMailingSetting extends DbTestCase
     {
 
         $this->output(
-            public function () {
+            function () {
                 $instance = new \NotificationMailingSetting();
                 $instance->displayTabContentForItem($instance);
             }
@@ -96,7 +96,7 @@ class NotificationMailingSetting extends DbTestCase
         $this->variable($CFG_GLPI['notifications_mailing'])->isEqualTo(0);
 
         $this->output(
-            public function () {
+            function () {
                 $instance = new \NotificationMailingSetting();
                 $instance->showFormConfig();
             }
@@ -105,7 +105,7 @@ class NotificationMailingSetting extends DbTestCase
         $CFG_GLPI['notifications_mailing'] = 1;
 
         $this->output(
-            public function () {
+            function () {
                 $instance = new \NotificationMailingSetting();
                 $instance->showFormConfig();
             }

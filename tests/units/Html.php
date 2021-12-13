@@ -704,7 +704,7 @@ class Html extends \GLPITestCase
         ];
 
         $this->output(
-            public function () {
+            function () {
                 \Html::displayMessageAfterRedirect();
             }
         )
@@ -724,14 +724,14 @@ class Html extends \GLPITestCase
     public function testDisplayBackLink()
     {
         $this->output(
-            public function () {
+            function () {
                 \Html::displayBackLink();
             }
         )->isIdenticalTo("<a href='javascript:history.back();'>Back</a>");
 
         $_SERVER['HTTP_REFERER'] = 'originalpage.html';
         $this->output(
-            public function () {
+            function () {
                 \Html::displayBackLink();
             }
         )->isIdenticalTo("<a href='originalpage.html'>Back</a>");

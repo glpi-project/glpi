@@ -170,7 +170,7 @@ class MassiveAction extends DbTestCase
         };
         $ma->getMockController()->getInput = $input;
         $ma->getMockController()->itemDone =
-            public function ($item, $id, $res) use (&$ma_ok, &$ma_ko) {
+            function ($item, $id, $res) use (&$ma_ok, &$ma_ko) {
                 if ($res == \MassiveAction::ACTION_OK) {
                     $ma_ok++;
                 } else {

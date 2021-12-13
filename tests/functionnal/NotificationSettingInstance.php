@@ -50,7 +50,7 @@ class NotificationSettingInstance extends DbTestCase
     public function testGetTypeName()
     {
         $this->exception(
-            public function () {
+            function () {
                 \NotificationSetting::getTypeName();
             }
         )

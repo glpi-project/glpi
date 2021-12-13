@@ -44,7 +44,7 @@ class Request extends \GLPITestCase
         $request = new \Glpi\Inventory\Request();
         $this->variable($request->getMode())->isNull();
         $this->exception(
-            public function () use ($request) {
+            function () use ($request) {
                 $this->variable($request->getResponse())->isNull();
             }
         )
@@ -52,7 +52,7 @@ class Request extends \GLPITestCase
          ->hasMessage('Mode has not been set');
 
         $this->exception(
-            public function () use ($request) {
+            function () use ($request) {
                 $this->variable($request->getContentType())->isNull();
             }
         )

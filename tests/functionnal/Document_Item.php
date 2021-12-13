@@ -54,7 +54,7 @@ class Document_Item extends DbTestCase
         $ditem = $this->newTestedInstance;
 
         $this->when(
-            public function () use ($input) {
+            function () use ($input) {
                 $this->boolean($this->testedInstance->add($input))->isFalse();
             }
         )->error
@@ -64,7 +64,7 @@ class Document_Item extends DbTestCase
 
         $input['itemtype'] = '';
         $this->when(
-            public function () use ($input) {
+            function () use ($input) {
                 $this->boolean($this->testedInstance->add($input))->isFalse();
             }
         )->error
@@ -74,7 +74,7 @@ class Document_Item extends DbTestCase
 
         $input['itemtype'] = 'NotAClass';
         $this->when(
-            public function () use ($input) {
+            function () use ($input) {
                 $this->boolean($this->testedInstance->add($input))->isFalse();
             }
         )->error
@@ -84,7 +84,7 @@ class Document_Item extends DbTestCase
 
         $input['itemtype'] = 'Computer';
         $this->when(
-            public function () use ($input) {
+            function () use ($input) {
                 $this->boolean($this->testedInstance->add($input))->isFalse();
             }
         )->error
@@ -94,7 +94,7 @@ class Document_Item extends DbTestCase
 
         $input['items_id'] = 0;
         $this->when(
-            public function () use ($input) {
+            function () use ($input) {
                 $this->boolean($this->testedInstance->add($input))->isFalse();
             }
         )->error
@@ -106,7 +106,7 @@ class Document_Item extends DbTestCase
         $input['items_id'] = $cid;
 
         $this->when(
-            public function () use ($input) {
+            function () use ($input) {
                 $this->boolean($this->testedInstance->add($input))->isFalse();
             }
         )->error
@@ -116,7 +116,7 @@ class Document_Item extends DbTestCase
 
         $input['documents_id'] = 0;
         $this->when(
-            public function () use ($input) {
+            function () use ($input) {
                 $this->boolean($this->testedInstance->add($input))->isFalse();
             }
         )->error
