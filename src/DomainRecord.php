@@ -410,14 +410,14 @@ class DomainRecord extends CommonDBChild
 
         $js = <<<JAVASCRIPT
          $(
-            public function () {
+            function () {
                $('#data{$rand}, #dropdown_domainrecordtypes_id{$rand}').change(
-                  public function (event) {
+                  function (event) {
                      $('#data_obj{$rand}').val(''); // empty "data_obj" value if "data" or "record type" changed
                   }
                );
                $('#data{$rand} + a').click(
-                  public function (event) {
+                  function (event) {
                      event.preventDefault();
 
                      var select = $(this).closest('form').find('[name="domainrecordtypes_id"]');

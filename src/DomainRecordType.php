@@ -411,13 +411,13 @@ class DomainRecordType extends CommonDropdown
 
         $js = <<<JAVASCRIPT
          $(
-            public function () {
+            function () {
                var form = $('#domain_record_data{$rand}');
 
                // Put existing data into fields
                var data_to_copy = $('#{$str_input_id}').val();
                form.find('input').each(
-                  public function () {
+                  function () {
                      var endoffset = 0;
                      if ($(this).data('quote-value')) {
                         // Search for closing quote (quote inside value are escaped by a \)
@@ -458,7 +458,7 @@ class DomainRecordType extends CommonDropdown
                      var data_tokens = [];
                      var data_obj = {};
                      $(this).find('input').each(
-                        public function () {
+                        function () {
                            var value = $(this).val();
                            data_obj[$(this).attr('name')] = value; // keep raw value
 
