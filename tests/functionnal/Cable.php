@@ -86,7 +86,7 @@ class Cable extends DbTestCase
 
        //Second step add socket
        //add socket model
-        $socketModel = new \SocketModel();
+        $socketModel = new SocketModel();
         $nb_log = (int)countElementsInTable('glpi_logs');
         $socketModel_id = $socketModel->add([
          'name' => 'socketModel1'
