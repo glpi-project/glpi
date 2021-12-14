@@ -56,7 +56,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
     //Try to detect GLPI agent calls
     $rawdata = file_get_contents("php://input");
-    if (!empty($rawdata)) {
+    if (!empty($rawdata) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         include_once(GLPI_ROOT . '/front/inventory.php');
         die();
     }
