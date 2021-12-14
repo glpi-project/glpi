@@ -2288,7 +2288,7 @@ class User extends CommonDBTM
                 $impersonate_js = <<<JAVASCRIPT
                (function($) {
                   $('button[type="button"][name="impersonate"]').click(
-                     public function () {
+                     function () {
                         $(this).attr('type', 'submit');
                      }
                   );
