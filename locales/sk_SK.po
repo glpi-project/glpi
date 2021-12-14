@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-14 11:10+0000\n"
+"POT-Creation-Date: 2021-12-14 12:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
 "Last-Translator: feonsu <feonsu@gmail.com>, 2021\n"
 "Language-Team: Slovak (Slovakia) (https://www.transifex.com/glpi/teams/1637/sk_SK/)\n"
@@ -120,16 +120,7 @@ msgstr "Nastaviť verejné"
 #: src/ReservationItem.php:680 src/ReservationItem.php:795
 #: src/RuleTicket.php:873 src/RuleTicket.php:881 src/RuleTicket.php:889
 #: src/RuleTicket.php:897 src/IPNetwork.php:1070 src/Stat.php:1644
-#: src/Item_SoftwareLicense.php:809 tests/functionnal/Rule.php:331
-#: tests/functionnal/Rule.php:336 tests/functionnal/Rule.php:341
-#: tests/files/_cache/templates/54/541698b9965a85a811622d6ec97f91f698891b53db7037b15d5a6e4998539b3e.php:151
-#: tests/files/_cache/templates/54/541698b9965a85a811622d6ec97f91f698891b53db7037b15d5a6e4998539b3e.php:160
-#: tests/files/_cache/templates/53/53b696dfcb43cb837a1f1cc8f2039249617f7ada30ec42cf8fe071b2306ad710.php:151
-#: tests/files/_cache/templates/53/53b696dfcb43cb837a1f1cc8f2039249617f7ada30ec42cf8fe071b2306ad710.php:160
-#: tests/files/_cache/templates/fc/fcd4bb1c1011c8a257fcdbcb92a74826c1a401c28fde6f060108aa1e473f50d8.php:151
-#: tests/files/_cache/templates/fc/fcd4bb1c1011c8a257fcdbcb92a74826c1a401c28fde6f060108aa1e473f50d8.php:160
-#: tests/files/_cache/templates/6c/6cb776653e176d86ed5e032cd185be3d7df39dc9dcca4b79a6aeb2c27267a7db.php:154
-#: tests/files/_cache/templates/6c/6cb776653e176d86ed5e032cd185be3d7df39dc9dcca4b79a6aeb2c27267a7db.php:163
+#: src/Item_SoftwareLicense.php:809
 #, php-format
 msgid "%1$s - %2$s"
 msgstr "%1$s - %2$s"
@@ -149,16 +140,7 @@ msgstr "Verejné"
 #: src/CommonDropdown.php:447 src/Infocom.php:1686 src/Rule.php:771
 #: src/CommonDBTM.php:3678 src/Project.php:758 src/ProjectTask.php:1161
 #: src/Supplier.php:312 src/Domain.php:186 src/SoftwareLicense.php:532
-#: src/FieldUnicity.php:382
-#: tests/files/_cache/templates/54/541698b9965a85a811622d6ec97f91f698891b53db7037b15d5a6e4998539b3e.php:317
-#: tests/files/_cache/templates/c9/c9551503c1a965e55c70a545b7eb30a74d88dc7da066cc07ffc932d21dd247cf.php:105
-#: tests/files/_cache/templates/d0/d04302c5e524245f01cbcb00e6a4d8d8178f7dedfab5a3df5fb0d0cca8d55c93.php:105
-#: tests/files/_cache/templates/a3/a3407b290116d75d02ec511bcea4e39d84c3f13b6b7e3f3e37796cd6665a5856.php:105
-#: tests/files/_cache/templates/53/53b696dfcb43cb837a1f1cc8f2039249617f7ada30ec42cf8fe071b2306ad710.php:298
-#: tests/files/_cache/templates/a8/a8a5045af2f11c67abf82f0901b5cbe2f3e92702a3d5221f0deb986abee3b766.php:113
-#: tests/files/_cache/templates/fc/fcd4bb1c1011c8a257fcdbcb92a74826c1a401c28fde6f060108aa1e473f50d8.php:317
-#: tests/files/_cache/templates/6c/6cb776653e176d86ed5e032cd185be3d7df39dc9dcca4b79a6aeb2c27267a7db.php:301
-#: templates/components/form/header.html.twig:128
+#: src/FieldUnicity.php:382 templates/components/form/header.html.twig:128
 #: templates/components/itilobject/fields_panel.html.twig:85
 msgid "Child entities"
 msgstr "Podriadené entity"
@@ -247,17 +229,7 @@ msgstr[3] ""
 #: ajax/massiveaction.php:49 ajax/dropdownMassiveAction.php:43
 #: front/tracking.injector.php:89 front/massiveaction.php:49
 #: src/MassiveAction.php:899 src/AuthLDAP.php:1602 src/Html.php:592
-#: src/OLA.php:56
-#: tests/files/_cache/templates/02/0213af5c2e4d4039275793d38ecce99c96f01753ac0584e9b3d0ffef7d2741c6.php:286
-#: tests/files/_cache/templates/42/427a8f2383fb9a7d8ea6fda1f5225d5c1e6832d595fe8b9f08387fff6e4caba3.php:74
-#: tests/files/_cache/templates/89/899ff0126ba2793b130d2f0c66a39bae2718b3390d8b4bc374d7d648724ff0c8.php:286
-#: tests/files/_cache/templates/2e/2e4e2ce6f6456e15077ca7f3c04f0b9524c815cad383e040d7d0c490211d18ff.php:74
-#: tests/files/_cache/templates/75/7537adceddd40d018ee4ca912f6dc7276fb2dc01769adc67620e3d8d5f2dd78a.php:77
-#: tests/files/_cache/templates/79/79fd59d45331bcfaacab15252f7b6ac49ba394c19d681abcbedd3128a503500c.php:289
-#: tests/files/_cache/templates/05/054dc53d4ed1514b7332e18286877a70f36b69584d731eeb23562fd8032aaf33.php:77
-#: tests/files/_cache/templates/0f/0fc09a3264c0206fe8c5ff87b715856bc3c279f0d82555bb4cfa80e99ef870d1.php:286
-#: tests/files/_cache/templates/6f/6fa19a2016824f7baeea2c99b7f6e00a27a7016c1436b30f0b022e0b74ef4c2f.php:74
-#: templates/components/itilobject/service_levels.html.twig:189
+#: src/OLA.php:56 templates/components/itilobject/service_levels.html.twig:189
 msgid "Warning"
 msgstr "Upozornenie"
 
@@ -307,35 +279,6 @@ msgstr[3] "Akcie"
 #: src/Calendar.php:115 src/Notification_NotificationTemplate.php:301
 #: src/Document_Item.php:371 src/Link_Itemtype.php:101
 #: src/Appliance_Item_Relation.php:260 src/Item_SoftwareLicense.php:597
-#: tests/files/_cache/templates/60/609093cd4b376a0b579fde9a14ec0428cfbfaf3bb561077d76767bf75ba3ef41.php:572
-#: tests/files/_cache/templates/d5/d55ebd2978a100583cb2cda10e8b63743f25c06ece28b248a910814b8f7f06fc.php:162
-#: tests/files/_cache/templates/d5/d55ebd2978a100583cb2cda10e8b63743f25c06ece28b248a910814b8f7f06fc.php:167
-#: tests/files/_cache/templates/91/915df68d9d66da8a76354a67f5ee6831097d1009e69d13cc8c115d78e80c6bd2.php:169
-#: tests/files/_cache/templates/91/915df68d9d66da8a76354a67f5ee6831097d1009e69d13cc8c115d78e80c6bd2.php:174
-#: tests/files/_cache/templates/ca/ca1147f88b73f6dd31fbdf36d43efff26ac0773dde7ba8a6ef42661db255028c.php:72
-#: tests/files/_cache/templates/d2/d29ab1811ed2717431f6530a6811185702b5d1e38d4cc87fa93cee70ed937521.php:230
-#: tests/files/_cache/templates/aa/aa3958dc91e53fa205aa57d010768ad473cfa2f71666e8c28919c0736e35113a.php:339
-#: tests/files/_cache/templates/92/92cc4f06f7651dc2e81c0eaee60752041f3587d3702a468fc22e21e9bd7ba289.php:572
-#: tests/files/_cache/templates/34/3469b1acf26f7378601172eefa8fb4128d638cb7d1dee721278b4040c8eea96e.php:229
-#: tests/files/_cache/templates/fe/feaa6b374d0d0767bdde2f0cd4ae428033e2288edd4b8cdf751364ea94dd0eb5.php:515
-#: tests/files/_cache/templates/16/1670adea735a32c8f12d713812f9c81dbbb19f566d2b8ae90da0a14db6099c59.php:162
-#: tests/files/_cache/templates/16/1670adea735a32c8f12d713812f9c81dbbb19f566d2b8ae90da0a14db6099c59.php:167
-#: tests/files/_cache/templates/78/781d7e174df36a609eaea5a057531a13c804675d5659937378609cbd475dd324.php:588
-#: tests/files/_cache/templates/7c/7c19ba03b099dfa7dd9f68a985472e79d2a9a996a4c29b5afb81fa8bf28ce66f.php:229
-#: tests/files/_cache/templates/84/8451440f1e5aba265c66e7a555c4082b15b6fcdf79451988c787bfa5ec237f6e.php:69
-#: tests/files/_cache/templates/5a/5a84ecedda1b5fbc7ddad723a88152a58645ed134748fa7a490627286e1de2df.php:237
-#: tests/files/_cache/templates/3f/3f1777a642c6a740ef8d3060d3c16522f1f5b960d63147a80fc6b21cbb1b1fc1.php:162
-#: tests/files/_cache/templates/3f/3f1777a642c6a740ef8d3060d3c16522f1f5b960d63147a80fc6b21cbb1b1fc1.php:167
-#: tests/files/_cache/templates/a2/a213d47a9da1f99c75aa7740f924f0a7bc869fc69b2fd2e8eed30e1f6eda98b6.php:60
-#: tests/files/_cache/templates/47/475b56c8138b8da82981cd93d900300b439bb7b405db83d27ecf9764ef9e9be8.php:304
-#: tests/files/_cache/templates/cd/cd10fe8567d7c5442eda04afac64a083d37306564baee63feb4fed9779d0989a.php:69
-#: tests/files/_cache/templates/f2/f262bc2f67d5729f1ee98298e1bd3b5fb1523bd23b3301291d60127c4e25f0e7.php:339
-#: tests/files/_cache/templates/65/65a21c01746225e9a16497097984783e3ef9780be4e11cfa24a3369206cbc51d.php:346
-#: tests/files/_cache/templates/bc/bcc4581ae3e84f6e01a39bb3810e1ddfcbd0ebcab42e895cf567a1ce09c69ba9.php:288
-#: tests/files/_cache/templates/c7/c727dda47fb564b415967f165f3d365b6c7f0bdfccfd22ac4fe5a0322a19753f.php:69
-#: tests/files/_cache/templates/e9/e955220750f35332778b52613aa24889857e353a96affb37a7c0db2dfcb1dc75.php:229
-#: tests/files/_cache/templates/ea/eaac299052d58bad6083cc45f72662d7132c95b16ad889c9c6d981dfd650fb9a.php:288
-#: tests/files/_cache/templates/52/52c2286f94e588a7071b76e569a876729d0bb8123eb88949b798b933d1b8c090.php:339
 #: templates/components/dashboard/widget_form.html.twig:138
 #: templates/components/form/buttons.html.twig:47
 #: templates/components/itilobject/add_items.html.twig:38
@@ -431,14 +374,6 @@ msgstr ""
 #: front/supplier_ticket.form.php:47 front/change_user.form.php:48
 #: front/problem_user.form.php:48 front/change_supplier.form.php:47
 #: front/ticket_user.form.php:44 src/CommonITILObject.php:4277
-#: tests/files/_cache/templates/c2/c27b9c1fd86b306d14771dd9106b7881c1ef0672d9ef70b504d2dd85006a3653.php:219
-#: tests/files/_cache/templates/d2/d23223d7aa38f8b358f274f3c7c8bb4e234bac24be14d3ffa1f55cdf24bd8bea.php:216
-#: tests/files/_cache/templates/0c/0c79af2fcb69fe657552cdcf03e937c27375bb68a332301745ad0334f335b08e.php:216
-#: tests/files/_cache/templates/68/68f60ababbb53debb42b0bb39dcdf2ea337a82aa3a4ad12280fb0843d056464e.php:236
-#: tests/files/_cache/templates/86/86657a801e7166a614b1e7b92d38fc64c436cad6583e986226c891c6d1be9d84.php:239
-#: tests/files/_cache/templates/51/51711915f18c44d74a119387c2754ba53f8fd99c386bd5c8f9b9c05301c929d6.php:216
-#: tests/files/_cache/templates/f2/f2ae590c50114a8896993372971b34396942bea8143f3757720dfc88e59fa6f1.php:236
-#: tests/files/_cache/templates/06/06be0bf8f8e53495353bdf5d9ebfa20151a5de5cf303c55c9eb74877022abea3.php:236
 #: templates/components/itilobject/actors/field.html.twig:119
 #: templates/components/itilobject/actors/main.html.twig:158
 msgid "Email followup"
@@ -618,10 +553,6 @@ msgstr "E-mailové reakcie"
 #: src/Console/Ldap/SynchronizeUsersCommand.php:154
 #: src/System/Requirement/MemoryLimit.php:73 src/SoftwareLicense.php:778
 #: src/SoftwareLicense.php:782 src/SoftwareLicense.php:800
-#: tests/files/_cache/templates/02/0213af5c2e4d4039275793d38ecce99c96f01753ac0584e9b3d0ffef7d2741c6.php:155
-#: tests/files/_cache/templates/89/899ff0126ba2793b130d2f0c66a39bae2718b3390d8b4bc374d7d648724ff0c8.php:155
-#: tests/files/_cache/templates/79/79fd59d45331bcfaacab15252f7b6ac49ba394c19d681abcbedd3128a503500c.php:158
-#: tests/files/_cache/templates/0f/0fc09a3264c0206fe8c5ff87b715856bc3c279f0d82555bb4cfa80e99ef870d1.php:155
 #: templates/components/itilobject/service_levels.html.twig:116
 #, php-format
 msgid "%1$s: %2$s"
@@ -793,10 +724,6 @@ msgstr "%1$s (%2$s)"
 #: src/SoftwareLicense.php:646 src/SoftwareLicense.php:1253
 #: src/TicketSatisfaction.php:153 src/FieldUnicity.php:390
 #: src/NetworkAlias.php:140 src/NetworkAlias.php:420
-#: tests/files/_cache/templates/32/32dc67280adbc21a3adb18de2008d6f8d2fbfc60bb654d9eee02d1d3d079f039.php:85
-#: tests/files/_cache/templates/cd/cd19b1af160be10f646f34ae0062d31253e09263c7f1bc53e2c046fb5e21b9e9.php:85
-#: tests/files/_cache/templates/eb/ebc11dd6d05776f1020d0a443cb5190d7a0397d5f7a5a53acbca1b4e101cdf35.php:88
-#: tests/files/_cache/templates/74/7451aed2e5f95820d3095df35873ac9ee9aa39930e217a029c60a1505e45dad1.php:85
 #: templates/components/itilobject/timeline/approbation_form.html.twig:56
 msgid "Comments"
 msgstr "Komentáre"
@@ -898,11 +825,6 @@ msgstr "%1$s - Sieťová zásuvka %2$s"
 #: front/knowbaseitemtranslation.form.php:84
 #: front/knowbaseitemtranslation.form.php:86 src/Html.php:1864
 #: src/Profile.php:895 src/CommonDropdown.php:901 src/KnowbaseItem.php:96
-#: tests/files/_cache/templates/8e/8e3c4a4e7d8d3c3fc89ad035ed5a62ade7226d13ba08ec10daa1f5c17d5d6bb0.php:229
-#: tests/files/_cache/templates/36/36eb9015fc68aa6561ad72c485744343fb510c69d629267fc56ad04fde21685e.php:229
-#: tests/files/_cache/templates/10/104080a47a2c862d5b04e8f402eb55a73bed4e4e5b72c3a71eca625314ec69fd.php:229
-#: tests/files/_cache/templates/41/41f85d772a9cb812227556c776936fec56495fa1a3ba6e04d4efbd73dd5d2907.php:229
-#: tests/files/_cache/templates/fd/fdcd2667d3217eb7471a30f03bca7f4bb3066d7166b0bc4a3483e0b92fb6dd89.php:229
 #: templates/pages/login.html.twig:113
 msgid "FAQ"
 msgstr "FAQ"
@@ -1277,7 +1199,6 @@ msgstr "Štatistiky"
 #: front/stat.graph.php:89 front/stat.graph.php:100
 #: src/Dashboard/Filter.php:70 src/CommonITILTask.php:755
 #: src/CommonITILObject.php:4215 src/RuleTicket.php:589 src/RuleTicket.php:761
-#: tests/functionnal/Rule.php:306
 msgid "Technician"
 msgstr "Technik"
 
@@ -1297,19 +1218,6 @@ msgstr "Technik"
 #: src/KnowbaseItem.php:1719 src/CommonITILObject.php:3837
 #: src/CommonITILObject.php:6359 src/RuleTicket.php:518 src/RuleTicket.php:524
 #: src/RuleTicket.php:733 src/PlanningExternalEvent.php:289
-#: tests/functionnal/Rule.php:303
-#: tests/files/_cache/templates/60/609093cd4b376a0b579fde9a14ec0428cfbfaf3bb561077d76767bf75ba3ef41.php:345
-#: tests/files/_cache/templates/8e/8e859b2960bf8fad3ead870e79bc627f7555a08ff3b37e6c4117e593ac19da67.php:146
-#: tests/files/_cache/templates/c9/c9551503c1a965e55c70a545b7eb30a74d88dc7da066cc07ffc932d21dd247cf.php:252
-#: tests/files/_cache/templates/d0/d04302c5e524245f01cbcb00e6a4d8d8178f7dedfab5a3df5fb0d0cca8d55c93.php:252
-#: tests/files/_cache/templates/92/92cc4f06f7651dc2e81c0eaee60752041f3587d3702a468fc22e21e9bd7ba289.php:345
-#: tests/files/_cache/templates/fe/feaa6b374d0d0767bdde2f0cd4ae428033e2288edd4b8cdf751364ea94dd0eb5.php:337
-#: tests/files/_cache/templates/6e/6e7465bb5b2f3a1dd4659cedbe0b7ec364f0de042e73dfeced89d33c8df4b660.php:146
-#: tests/files/_cache/templates/a3/a3407b290116d75d02ec511bcea4e39d84c3f13b6b7e3f3e37796cd6665a5856.php:252
-#: tests/files/_cache/templates/78/781d7e174df36a609eaea5a057531a13c804675d5659937378609cbd475dd324.php:356
-#: tests/files/_cache/templates/a8/a8a5045af2f11c67abf82f0901b5cbe2f3e92702a3d5221f0deb986abee3b766.php:260
-#: tests/files/_cache/templates/88/88154961dd43c4088073f1089512a3598eed03da3665603f545beb4de06d7bed.php:149
-#: tests/files/_cache/templates/59/5938cdc4aba8e454c25413d25f7413ba73f73e4e5d2e1a52fdd858f29d00b595.php:146
 #: templates/components/user/info_card.html.twig:81
 #: templates/components/itilobject/selfservice.html.twig:142
 #: templates/components/itilobject/timeline/form_task.html.twig:202
@@ -1388,11 +1296,6 @@ msgstr[3] "Kategórie"
 #: src/SoftwareLicense.php:915 src/RuleDictionnaryComputerType.php:55
 #: src/RuleDictionnaryComputerType.php:69 src/FieldUnicity.php:81
 #: src/FieldUnicity.php:356 src/NotificationTargetFieldUnicity.php:82
-#: tests/functionnal/Rule.php:302
-#: tests/files/_cache/templates/c9/c9551503c1a965e55c70a545b7eb30a74d88dc7da066cc07ffc932d21dd247cf.php:186
-#: tests/files/_cache/templates/d0/d04302c5e524245f01cbcb00e6a4d8d8178f7dedfab5a3df5fb0d0cca8d55c93.php:186
-#: tests/files/_cache/templates/a3/a3407b290116d75d02ec511bcea4e39d84c3f13b6b7e3f3e37796cd6665a5856.php:186
-#: tests/files/_cache/templates/a8/a8a5045af2f11c67abf82f0901b5cbe2f3e92702a3d5221f0deb986abee3b766.php:194
 #: templates/components/itilobject/selfservice.html.twig:123
 #: templates/components/itilobject/fields_panel.html.twig:137
 #: templates/generic_show_form.html.twig:149
@@ -1411,7 +1314,6 @@ msgstr[3] "Typy"
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:71
 #: src/CommonITILObject.php:3761 src/CommonITILObject.php:6351
 #: src/RuleTicket.php:648 src/RuleTicket.php:808
-#: tests/functionnal/Rule.php:313
 msgid "Priority"
 msgstr "Priorita"
 
@@ -1419,11 +1321,7 @@ msgstr "Priorita"
 #: src/NotificationTargetCommonITILObject.php:1691
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:69
 #: src/Config.php:1052 src/CommonITILObject.php:3743 src/RuleTicket.php:642
-#: src/RuleTicket.php:802 tests/functionnal/Rule.php:311
-#: tests/files/_cache/templates/a6/a6c6a097a4d4d66e0baecfcd6661c26a3da2077faaa0dd4fee735230fc93b303.php:60
-#: tests/files/_cache/templates/d2/d28213be07718475fc6f476f82527a6d85dc5ce64cc25b3be84c0205fb2b090d.php:60
-#: tests/files/_cache/templates/f6/f606b1d43e7044bd73f35e7f579a617079451bb66bcb69f2090c2f808e85fba8.php:60
-#: tests/files/_cache/templates/6c/6cc5f93316ab4eaf267dd27bc8033f386c2e4cfc6167f43bf11aca9ff87fdbc7.php:63
+#: src/RuleTicket.php:802
 #: templates/components/itilobject/selfservice.html.twig:154
 #: templates/components/itilobject/fields/priority_matrix.html.twig:52
 msgid "Urgency"
@@ -1436,17 +1334,12 @@ msgstr "Naliehavosť"
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:70
 #: src/Config.php:1034 src/CommonITILObject.php:3752 src/RuleTicket.php:645
 #: src/RuleTicket.php:805 src/Impact.php:262 src/Impact.php:1087
-#: tests/functionnal/Rule.php:312
 msgid "Impact"
 msgstr "Dopad"
 
 #: front/stat.graph.php:239 front/stat.tracking.php:89 src/AuthLDAP.php:893
 #: src/AuthLDAP.php:1101 src/AuthLDAP.php:3715 src/Auth.php:1725
 #: src/NotificationTargetCommonITILObject.php:1707
-#: tests/files/_cache/templates/8e/8e859b2960bf8fad3ead870e79bc627f7555a08ff3b37e6c4117e593ac19da67.php:131
-#: tests/files/_cache/templates/6e/6e7465bb5b2f3a1dd4659cedbe0b7ec364f0de042e73dfeced89d33c8df4b660.php:131
-#: tests/files/_cache/templates/88/88154961dd43c4088073f1089512a3598eed03da3665603f545beb4de06d7bed.php:134
-#: tests/files/_cache/templates/59/5938cdc4aba8e454c25413d25f7413ba73f73e4e5d2e1a52fdd858f29d00b595.php:131
 #: templates/components/user/info_card.html.twig:75
 msgctxt "person"
 msgid "Title"
@@ -1521,7 +1414,6 @@ msgstr "Povinné polia nie sú vyplnené. Prosím vyplňte: %s"
 #: src/KnowbaseItem.php:1722 src/CommonITILObject.php:6357
 #: src/RuleTicket.php:815 src/RuleTicket.php:820 src/Stat.php:1620
 #: src/Item_SoftwareLicense.php:96 src/Lockedfield.php:95
-#: tests/functionnal/Rule.php:316
 #: templates/components/itilobject/selfservice.html.twig:177
 msgid "Associated element"
 msgid_plural "Associated elements"
@@ -1578,15 +1470,6 @@ msgstr ""
 #: src/CommonITILObject.php:3553 src/CommonITILObject.php:4079
 #: src/CommonITILObject.php:4088 src/CommonITILObject.php:6352
 #: src/CommonITILObject.php:8309 src/RuleTicket.php:540 src/RuleTicket.php:745
-#: tests/functionnal/Rule.php:304
-#: tests/files/_cache/templates/34/3469b1acf26f7378601172eefa8fb4128d638cb7d1dee721278b4040c8eea96e.php:143
-#: tests/files/_cache/templates/68/68f60ababbb53debb42b0bb39dcdf2ea337a82aa3a4ad12280fb0843d056464e.php:97
-#: tests/files/_cache/templates/86/86657a801e7166a614b1e7b92d38fc64c436cad6583e986226c891c6d1be9d84.php:100
-#: tests/files/_cache/templates/7c/7c19ba03b099dfa7dd9f68a985472e79d2a9a996a4c29b5afb81fa8bf28ce66f.php:143
-#: tests/files/_cache/templates/5a/5a84ecedda1b5fbc7ddad723a88152a58645ed134748fa7a490627286e1de2df.php:147
-#: tests/files/_cache/templates/f2/f2ae590c50114a8896993372971b34396942bea8143f3757720dfc88e59fa6f1.php:97
-#: tests/files/_cache/templates/e9/e955220750f35332778b52613aa24889857e353a96affb37a7c0db2dfcb1dc75.php:143
-#: tests/files/_cache/templates/06/06be0bf8f8e53495353bdf5d9ebfa20151a5de5cf303c55c9eb74877022abea3.php:97
 #: templates/components/itilobject/timeline/form_validation.html.twig:94
 #: templates/components/itilobject/actors/main.html.twig:68
 msgid "Requester"
@@ -1654,10 +1537,6 @@ msgstr "Vlastnosti"
 #: front/stat.tracking.php:109 src/Group.php:266 src/Group.php:478
 #: src/NotificationTargetCommonITILObject.php:1894 src/Log.php:536
 #: src/CommonITILObject.php:3555 src/CommonITILObject.php:4206
-#: tests/files/_cache/templates/68/68f60ababbb53debb42b0bb39dcdf2ea337a82aa3a4ad12280fb0843d056464e.php:181
-#: tests/files/_cache/templates/86/86657a801e7166a614b1e7b92d38fc64c436cad6583e986226c891c6d1be9d84.php:184
-#: tests/files/_cache/templates/f2/f2ae590c50114a8896993372971b34396942bea8143f3757720dfc88e59fa6f1.php:181
-#: tests/files/_cache/templates/06/06be0bf8f8e53495353bdf5d9ebfa20151a5de5cf303c55c9eb74877022abea3.php:181
 #: templates/components/itilobject/actors/main.html.twig:124
 msgid "Assigned to"
 msgstr "Priradené komu"
@@ -1961,16 +1840,6 @@ msgstr ""
 
 #: front/change.form.php:211 front/ticket.form.php:252
 #: front/problem.form.php:214
-#: tests/files/_cache/templates/60/609093cd4b376a0b579fde9a14ec0428cfbfaf3bb561077d76767bf75ba3ef41.php:430
-#: tests/files/_cache/templates/aa/aa3958dc91e53fa205aa57d010768ad473cfa2f71666e8c28919c0736e35113a.php:307
-#: tests/files/_cache/templates/92/92cc4f06f7651dc2e81c0eaee60752041f3587d3702a468fc22e21e9bd7ba289.php:430
-#: tests/files/_cache/templates/78/781d7e174df36a609eaea5a057531a13c804675d5659937378609cbd475dd324.php:441
-#: tests/files/_cache/templates/47/475b56c8138b8da82981cd93d900300b439bb7b405db83d27ecf9764ef9e9be8.php:271
-#: tests/files/_cache/templates/f2/f262bc2f67d5729f1ee98298e1bd3b5fb1523bd23b3301291d60127c4e25f0e7.php:307
-#: tests/files/_cache/templates/65/65a21c01746225e9a16497097984783e3ef9780be4e11cfa24a3369206cbc51d.php:311
-#: tests/files/_cache/templates/bc/bcc4581ae3e84f6e01a39bb3810e1ddfcbd0ebcab42e895cf567a1ce09c69ba9.php:260
-#: tests/files/_cache/templates/ea/eaac299052d58bad6083cc45f72662d7132c95b16ad889c9c6d981dfd650fb9a.php:260
-#: tests/files/_cache/templates/52/52c2286f94e588a7071b76e569a876729d0bb8123eb88949b798b933d1b8c090.php:307
 #: templates/components/itilobject/timeline/form_task.html.twig:266
 #: templates/components/itilobject/timeline/form_followup.html.twig:175
 #: templates/components/itilobject/timeline/form_solution.html.twig:194
@@ -2227,8 +2096,7 @@ msgstr "Test zlyhal"
 #: src/CommonITILObject.php:6277 src/RuleTicket.php:667 src/RuleTicket.php:678
 #: src/RuleTicket.php:689 src/RuleTicket.php:700 src/RuleTicket.php:831
 #: src/RuleTicket.php:842 src/RuleTicket.php:853 src/RuleTicket.php:864
-#: src/UserEmail.php:187 tests/functionnal/Rule.php:321
-#: tests/functionnal/Rule.php:326
+#: src/UserEmail.php:187
 #, php-format
 msgid "%1$s %2$s"
 msgstr "%1$s %2$s"
@@ -2751,9 +2619,6 @@ msgstr "%s pridal používateľa do skupiny"
 #: src/Item_Rack.php:156 src/Item_Rack.php:584 src/Appliance_Item.php:55
 #: src/Appliance_Item.php:192 src/ReservationItem.php:404 src/Impact.php:285
 #: src/Item_SoftwareLicense.php:998
-#: tests/functionnal/Item_SoftwareLicense.php:224
-#: tests/functionnal/Item_SoftwareLicense.php:230
-#: tests/files/_cache/templates/a8/a8a5045af2f11c67abf82f0901b5cbe2f3e92702a3d5221f0deb986abee3b766.php:380
 #: templates/components/itilobject/fields_panel.html.twig:257
 msgid "Item"
 msgid_plural "Items"
@@ -3047,14 +2912,6 @@ msgstr "%s  pridal spojenie s databázou znalostí"
 #: src/Entity.php:379 src/CommonITILObject.php:4270
 #: src/Notification_NotificationTemplate.php:240
 #: src/Notification_NotificationTemplate.php:343
-#: tests/files/_cache/templates/83/83b1ef2f31126a24a3cc38b618f023d8e0035602bdc22c327955503875e25b09.php:172
-#: tests/files/_cache/templates/83/83b1ef2f31126a24a3cc38b618f023d8e0035602bdc22c327955503875e25b09.php:204
-#: tests/files/_cache/templates/f4/f4600da52df28b6e5443b0d1b2e4beb75c3498c24805a6b55b08cbc0b14e3f43.php:169
-#: tests/files/_cache/templates/f4/f4600da52df28b6e5443b0d1b2e4beb75c3498c24805a6b55b08cbc0b14e3f43.php:201
-#: tests/files/_cache/templates/b5/b5357edd83fdcfd4282fee6862ca237db6286b975add84f02be14f4f0a64d8be.php:169
-#: tests/files/_cache/templates/b5/b5357edd83fdcfd4282fee6862ca237db6286b975add84f02be14f4f0a64d8be.php:201
-#: tests/files/_cache/templates/95/955e7d7757201d693963f6327124278582e1dc846c109918e9871bf5472617f4.php:172
-#: tests/files/_cache/templates/95/955e7d7757201d693963f6327124278582e1dc846c109918e9871bf5472617f4.php:204
 #: templates/pages/setup/setup_notifications.html.twig:93
 #: templates/pages/setup/setup_notifications.html.twig:107
 msgid "Notification"
@@ -3502,42 +3359,6 @@ msgstr "Zmazať natrvalo a odstrániť zariadenia"
 #: src/Cartridge.php:773 src/Cartridge.php:1060 src/Rule.php:3021
 #: src/CommonDBTM.php:5069 src/CommonDBTM.php:5160 src/LevelAgreement.php:494
 #: src/Problem_Ticket.php:326 src/Item_SoftwareLicense.php:788
-#: tests/files/_cache/templates/60/609093cd4b376a0b579fde9a14ec0428cfbfaf3bb561077d76767bf75ba3ef41.php:601
-#: tests/files/_cache/templates/d5/d55ebd2978a100583cb2cda10e8b63743f25c06ece28b248a910814b8f7f06fc.php:197
-#: tests/files/_cache/templates/d5/d55ebd2978a100583cb2cda10e8b63743f25c06ece28b248a910814b8f7f06fc.php:206
-#: tests/files/_cache/templates/4f/4ffa409ee53884ce4b1299eb701b51fbe66223e2e8b1c8a3c0a35e087e4712f7.php:112
-#: tests/files/_cache/templates/91/915df68d9d66da8a76354a67f5ee6831097d1009e69d13cc8c115d78e80c6bd2.php:204
-#: tests/files/_cache/templates/91/915df68d9d66da8a76354a67f5ee6831097d1009e69d13cc8c115d78e80c6bd2.php:213
-#: tests/files/_cache/templates/ca/ca1147f88b73f6dd31fbdf36d43efff26ac0773dde7ba8a6ef42661db255028c.php:151
-#: tests/files/_cache/templates/ca/ca1147f88b73f6dd31fbdf36d43efff26ac0773dde7ba8a6ef42661db255028c.php:186
-#: tests/files/_cache/templates/a9/a9d13d629a9446bee91840e40ab5e95762ce69a5b871bffb449966a31d34b496.php:114
-#: tests/files/_cache/templates/d2/d29ab1811ed2717431f6530a6811185702b5d1e38d4cc87fa93cee70ed937521.php:259
-#: tests/files/_cache/templates/92/92cc4f06f7651dc2e81c0eaee60752041f3587d3702a468fc22e21e9bd7ba289.php:601
-#: tests/files/_cache/templates/34/3469b1acf26f7378601172eefa8fb4128d638cb7d1dee721278b4040c8eea96e.php:258
-#: tests/files/_cache/templates/02/0213af5c2e4d4039275793d38ecce99c96f01753ac0584e9b3d0ffef7d2741c6.php:128
-#: tests/files/_cache/templates/fe/feaa6b374d0d0767bdde2f0cd4ae428033e2288edd4b8cdf751364ea94dd0eb5.php:544
-#: tests/files/_cache/templates/16/1670adea735a32c8f12d713812f9c81dbbb19f566d2b8ae90da0a14db6099c59.php:197
-#: tests/files/_cache/templates/16/1670adea735a32c8f12d713812f9c81dbbb19f566d2b8ae90da0a14db6099c59.php:206
-#: tests/files/_cache/templates/78/781d7e174df36a609eaea5a057531a13c804675d5659937378609cbd475dd324.php:653
-#: tests/files/_cache/templates/7c/7c19ba03b099dfa7dd9f68a985472e79d2a9a996a4c29b5afb81fa8bf28ce66f.php:258
-#: tests/files/_cache/templates/84/8451440f1e5aba265c66e7a555c4082b15b6fcdf79451988c787bfa5ec237f6e.php:146
-#: tests/files/_cache/templates/84/8451440f1e5aba265c66e7a555c4082b15b6fcdf79451988c787bfa5ec237f6e.php:180
-#: tests/files/_cache/templates/5a/5a84ecedda1b5fbc7ddad723a88152a58645ed134748fa7a490627286e1de2df.php:266
-#: tests/files/_cache/templates/3f/3f1777a642c6a740ef8d3060d3c16522f1f5b960d63147a80fc6b21cbb1b1fc1.php:197
-#: tests/files/_cache/templates/3f/3f1777a642c6a740ef8d3060d3c16522f1f5b960d63147a80fc6b21cbb1b1fc1.php:206
-#: tests/files/_cache/templates/8d/8dcfce6117f1dc24fc890bbc11f53889ea55a00dd8d673dc9e14d9d68462e3f8.php:112
-#: tests/files/_cache/templates/89/899ff0126ba2793b130d2f0c66a39bae2718b3390d8b4bc374d7d648724ff0c8.php:128
-#: tests/files/_cache/templates/47/475b56c8138b8da82981cd93d900300b439bb7b405db83d27ecf9764ef9e9be8.php:369
-#: tests/files/_cache/templates/cd/cd10fe8567d7c5442eda04afac64a083d37306564baee63feb4fed9779d0989a.php:146
-#: tests/files/_cache/templates/cd/cd10fe8567d7c5442eda04afac64a083d37306564baee63feb4fed9779d0989a.php:180
-#: tests/files/_cache/templates/79/79fd59d45331bcfaacab15252f7b6ac49ba394c19d681abcbedd3128a503500c.php:131
-#: tests/files/_cache/templates/bc/bcc4581ae3e84f6e01a39bb3810e1ddfcbd0ebcab42e895cf567a1ce09c69ba9.php:317
-#: tests/files/_cache/templates/c7/c727dda47fb564b415967f165f3d365b6c7f0bdfccfd22ac4fe5a0322a19753f.php:146
-#: tests/files/_cache/templates/c7/c727dda47fb564b415967f165f3d365b6c7f0bdfccfd22ac4fe5a0322a19753f.php:180
-#: tests/files/_cache/templates/e9/e955220750f35332778b52613aa24889857e353a96affb37a7c0db2dfcb1dc75.php:258
-#: tests/files/_cache/templates/5c/5ccc9ea81e433a68011ae1c0caec5b995f8e9dfa236d4258045d33e0db7260b7.php:112
-#: tests/files/_cache/templates/0f/0fc09a3264c0206fe8c5ff87b715856bc3c279f0d82555bb4cfa80e99ef870d1.php:128
-#: tests/files/_cache/templates/ea/eaac299052d58bad6083cc45f72662d7132c95b16ad889c9c6d981dfd650fb9a.php:317
 #: templates/components/form/buttons.html.twig:83
 #: templates/components/form/buttons.html.twig:102
 #: templates/components/itilobject/footer.html.twig:93
@@ -3554,20 +3375,7 @@ msgctxt "button"
 msgid "Delete permanently"
 msgstr "Zmazať natrvalo"
 
-#: src/MassiveAction.php:547
-#: tests/files/_cache/templates/d5/d55ebd2978a100583cb2cda10e8b63743f25c06ece28b248a910814b8f7f06fc.php:185
-#: tests/files/_cache/templates/d5/d55ebd2978a100583cb2cda10e8b63743f25c06ece28b248a910814b8f7f06fc.php:190
-#: tests/files/_cache/templates/91/915df68d9d66da8a76354a67f5ee6831097d1009e69d13cc8c115d78e80c6bd2.php:192
-#: tests/files/_cache/templates/91/915df68d9d66da8a76354a67f5ee6831097d1009e69d13cc8c115d78e80c6bd2.php:197
-#: tests/files/_cache/templates/ca/ca1147f88b73f6dd31fbdf36d43efff26ac0773dde7ba8a6ef42661db255028c.php:131
-#: tests/files/_cache/templates/16/1670adea735a32c8f12d713812f9c81dbbb19f566d2b8ae90da0a14db6099c59.php:185
-#: tests/files/_cache/templates/16/1670adea735a32c8f12d713812f9c81dbbb19f566d2b8ae90da0a14db6099c59.php:190
-#: tests/files/_cache/templates/84/8451440f1e5aba265c66e7a555c4082b15b6fcdf79451988c787bfa5ec237f6e.php:127
-#: tests/files/_cache/templates/3f/3f1777a642c6a740ef8d3060d3c16522f1f5b960d63147a80fc6b21cbb1b1fc1.php:185
-#: tests/files/_cache/templates/3f/3f1777a642c6a740ef8d3060d3c16522f1f5b960d63147a80fc6b21cbb1b1fc1.php:190
-#: tests/files/_cache/templates/cd/cd10fe8567d7c5442eda04afac64a083d37306564baee63feb4fed9779d0989a.php:127
-#: tests/files/_cache/templates/c7/c727dda47fb564b415967f165f3d365b6c7f0bdfccfd22ac4fe5a0322a19753f.php:127
-#: templates/components/form/buttons.html.twig:73
+#: src/MassiveAction.php:547 templates/components/form/buttons.html.twig:73
 #: templates/components/itilobject/footer.html.twig:87
 #: templates/components/itilobject/footer.html.twig:89
 msgctxt "button"
@@ -3575,14 +3383,6 @@ msgid "Restore"
 msgstr "Obnoviť"
 
 #: src/MassiveAction.php:579 src/Transfer.php:3810 src/CommonDBTM.php:5166
-#: tests/files/_cache/templates/d5/d55ebd2978a100583cb2cda10e8b63743f25c06ece28b248a910814b8f7f06fc.php:215
-#: tests/files/_cache/templates/91/915df68d9d66da8a76354a67f5ee6831097d1009e69d13cc8c115d78e80c6bd2.php:222
-#: tests/files/_cache/templates/ca/ca1147f88b73f6dd31fbdf36d43efff26ac0773dde7ba8a6ef42661db255028c.php:200
-#: tests/files/_cache/templates/16/1670adea735a32c8f12d713812f9c81dbbb19f566d2b8ae90da0a14db6099c59.php:215
-#: tests/files/_cache/templates/84/8451440f1e5aba265c66e7a555c4082b15b6fcdf79451988c787bfa5ec237f6e.php:193
-#: tests/files/_cache/templates/3f/3f1777a642c6a740ef8d3060d3c16522f1f5b960d63147a80fc6b21cbb1b1fc1.php:215
-#: tests/files/_cache/templates/cd/cd10fe8567d7c5442eda04afac64a083d37306564baee63feb4fed9779d0989a.php:193
-#: tests/files/_cache/templates/c7/c727dda47fb564b415967f165f3d365b6c7f0bdfccfd22ac4fe5a0322a19753f.php:193
 #: templates/components/form/buttons.html.twig:109
 #: templates/components/itilobject/footer.html.twig:100
 msgctxt "button"
@@ -3899,14 +3699,6 @@ msgstr ""
 #: src/AuthLDAP.php:606 src/AuthLDAP.php:792 src/AuthLDAP.php:920
 #: src/AuthLDAP.php:956 src/Auth.php:1742 src/Dashboard/Grid.php:855
 #: src/Impact.php:402 src/Impact.php:1106 src/Impact.php:1804
-#: tests/files/_cache/templates/68/68f60ababbb53debb42b0bb39dcdf2ea337a82aa3a4ad12280fb0843d056464e.php:254
-#: tests/files/_cache/templates/83/83b1ef2f31126a24a3cc38b618f023d8e0035602bdc22c327955503875e25b09.php:149
-#: tests/files/_cache/templates/f4/f4600da52df28b6e5443b0d1b2e4beb75c3498c24805a6b55b08cbc0b14e3f43.php:146
-#: tests/files/_cache/templates/86/86657a801e7166a614b1e7b92d38fc64c436cad6583e986226c891c6d1be9d84.php:257
-#: tests/files/_cache/templates/b5/b5357edd83fdcfd4282fee6862ca237db6286b975add84f02be14f4f0a64d8be.php:146
-#: tests/files/_cache/templates/f2/f2ae590c50114a8896993372971b34396942bea8143f3757720dfc88e59fa6f1.php:254
-#: tests/files/_cache/templates/95/955e7d7757201d693963f6327124278582e1dc846c109918e9871bf5472617f4.php:149
-#: tests/files/_cache/templates/06/06be0bf8f8e53495353bdf5d9ebfa20151a5de5cf303c55c9eb74877022abea3.php:254
 #: js/gantt-helper.js:383
 #: templates/components/itilobject/actors/main.html.twig:170
 #: templates/pages/setup/setup_notifications.html.twig:81
@@ -4020,11 +3812,6 @@ msgstr "Mobilný telefón"
 #: src/ReminderTranslation.php:225 src/NotificationTemplateTranslation.php:129
 #: src/NotificationTemplateTranslation.php:221
 #: src/NotificationTemplateTranslation.php:312 src/Config.php:1148
-#: tests/files/_cache/templates/8e/8e3c4a4e7d8d3c3fc89ad035ed5a62ade7226d13ba08ec10daa1f5c17d5d6bb0.php:124
-#: tests/files/_cache/templates/36/36eb9015fc68aa6561ad72c485744343fb510c69d629267fc56ad04fde21685e.php:124
-#: tests/files/_cache/templates/10/104080a47a2c862d5b04e8f402eb55a73bed4e4e5b72c3a71eca625314ec69fd.php:124
-#: tests/files/_cache/templates/41/41f85d772a9cb812227556c776936fec56495fa1a3ba6e04d4efbd73dd5d2907.php:124
-#: tests/files/_cache/templates/fd/fdcd2667d3217eb7471a30f03bca7f4bb3066d7166b0bc4a3483e0b92fb6dd89.php:124
 #: templates/pages/login.html.twig:65
 msgid "Language"
 msgstr "Jazyk"
@@ -4215,13 +4002,6 @@ msgstr "Vyberte požadovanú entitu"
 #: src/MailCollector.php:255 src/MailCollector.php:490
 #: src/NotificationTargetUser.php:147
 #: src/ContentTemplates/Parameters/UserParameters.php:73 src/Config.php:2129
-#: tests/functionnal/Session.php:228 tests/functionnal/Session.php:242
-#: tests/functionnal/Session.php:252
-#: tests/files/_cache/templates/8e/8e3c4a4e7d8d3c3fc89ad035ed5a62ade7226d13ba08ec10daa1f5c17d5d6bb0.php:78
-#: tests/files/_cache/templates/36/36eb9015fc68aa6561ad72c485744343fb510c69d629267fc56ad04fde21685e.php:78
-#: tests/files/_cache/templates/10/104080a47a2c862d5b04e8f402eb55a73bed4e4e5b72c3a71eca625314ec69fd.php:78
-#: tests/files/_cache/templates/41/41f85d772a9cb812227556c776936fec56495fa1a3ba6e04d4efbd73dd5d2907.php:78
-#: tests/files/_cache/templates/fd/fdcd2667d3217eb7471a30f03bca7f4bb3066d7166b0bc4a3483e0b92fb6dd89.php:78
 #: templates/pages/login.html.twig:45
 msgid "Login"
 msgstr "Prihlasovacie meno"
@@ -4329,10 +4109,6 @@ msgstr "D=Dynamicky, R=Rekurzívne"
 #: src/Profile_User.php:595 src/Profile_User.php:598 src/Profile_User.php:600
 #: src/Search.php:6266 src/Search.php:6270 src/Search.php:6313
 #: src/Search.php:6317
-#: tests/files/_cache/templates/16/16056ed62f8a29f4aa94e376f3535f25a49991d346f14687b73ff34f15208253.php:306
-#: tests/files/_cache/templates/13/13c4fd574929b6e787673c27e3fd076e90ec58826e9c2aebc4b63b1837271b0e.php:306
-#: tests/files/_cache/templates/e5/e5eb38847527ec37e0eea700c09c857e33f52c6455c5f9005a30fcc08628550b.php:309
-#: tests/files/_cache/templates/c3/c31fc71263d37dc197c8e03c9c39e0511131277323e2de603c65abb8f269fba0.php:306
 #, php-format
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
@@ -4709,15 +4485,6 @@ msgstr[3] "Verzie"
 #: src/Console/System/CheckRequirementsCommand.php:67 src/Computer.php:405
 #: src/SoftwareLicense.php:476 src/SoftwareLicense.php:919
 #: src/PlanningExternalEvent.php:275 src/Item_SoftwareLicense.php:821
-#: tests/functionnal/Rule.php:314
-#: tests/files/_cache/templates/60/609093cd4b376a0b579fde9a14ec0428cfbfaf3bb561077d76767bf75ba3ef41.php:365
-#: tests/files/_cache/templates/20/2028f0929112efb430f191d9a160dae6974ef8e5ed3e312a74d4ce90a79cff13.php:104
-#: tests/files/_cache/templates/92/92cc4f06f7651dc2e81c0eaee60752041f3587d3702a468fc22e21e9bd7ba289.php:365
-#: tests/files/_cache/templates/0c/0cef44ffc64a1fc1a6529cb2259c2d95ab95e083056370b8ac52d9ba46b20b50.php:109
-#: tests/files/_cache/templates/fe/feaa6b374d0d0767bdde2f0cd4ae428033e2288edd4b8cdf751364ea94dd0eb5.php:357
-#: tests/files/_cache/templates/78/781d7e174df36a609eaea5a057531a13c804675d5659937378609cbd475dd324.php:376
-#: tests/files/_cache/templates/28/28d7bf537b4388308ce199acc3460b3f629e082dd46cd15bf9a84f569df5df2d.php:104
-#: tests/files/_cache/templates/e0/e075f0a8af50ed856b2ab3bd0b5eb55cae7b5a6209d2978422ec2877ef37f443.php:104
 #: templates/components/itilobject/fields/status.html.twig:66
 #: templates/components/itilobject/timeline/form_task.html.twig:220
 #: templates/generic_show_form.html.twig:87
@@ -4739,14 +4506,6 @@ msgid "Website"
 msgstr "Webová stránka"
 
 #: src/Plugin.php:2238 src/User.php:2178
-#: tests/files/_cache/templates/01/0145f9087cfdfd99680b38e7c4eef049656df8fb3f329dcc23857383a3472297.php:55
-#: tests/files/_cache/templates/01/0145f9087cfdfd99680b38e7c4eef049656df8fb3f329dcc23857383a3472297.php:75
-#: tests/files/_cache/templates/db/dba15ff4b4da6c550a3e0f5bc3ce06bd1ed88b409317ef8bf92a609877ed9141.php:55
-#: tests/files/_cache/templates/db/dba15ff4b4da6c550a3e0f5bc3ce06bd1ed88b409317ef8bf92a609877ed9141.php:75
-#: tests/files/_cache/templates/9d/9d368c31c32ea8ffa3c9e20783604c2de93c0939097fcb4bcde7e57410302d30.php:55
-#: tests/files/_cache/templates/9d/9d368c31c32ea8ffa3c9e20783604c2de93c0939097fcb4bcde7e57410302d30.php:75
-#: tests/files/_cache/templates/6f/6f132fa7ed7c556de892ffbeb7512f7b5d24ddc9c3d862cd8d4609d1dc7468ed.php:58
-#: tests/files/_cache/templates/6f/6f132fa7ed7c556de892ffbeb7512f7b5d24ddc9c3d862cd8d4609d1dc7468ed.php:78
 #: templates/components/form/single-action.html.twig:39
 #: templates/components/form/single-action.html.twig:46
 msgid "Actions"
@@ -4846,10 +4605,6 @@ msgid_plural "%1$s templates"
 msgstr[0] "%1$s šablóny"
 
 #: src/ITILTemplate.php:317 src/Ticket.php:2730
-#: tests/files/_cache/templates/2b/2b587057e5495304e6b819e18f81cfe37eea5928816d1b658de77469e9548b1e.php:90
-#: tests/files/_cache/templates/8b/8bd3394d2a6fdf19c35d15397e3edb6043e4d7a16bb4482623034dedc2a90ae9.php:90
-#: tests/files/_cache/templates/dc/dcba30ce4db05238b7ddf5b5b92b8c11169baa474a5a7f5e495ce8dc79b328a8.php:90
-#: tests/files/_cache/templates/e0/e0d337349ad4284db21706c7941170b36e85c78eb1767804bab53e3ffcea5a44.php:93
 #: templates/components/itilobject/fields/global_validation.html.twig:61
 msgid "Approval request"
 msgstr "Požiadavka na schválenie"
@@ -4992,10 +4747,6 @@ msgid "After three follow-ups"
 msgstr ""
 
 #: src/LevelAgreementLevel.php:78 src/Ticket.php:3382 src/Ticket.php:3433
-#: tests/files/_cache/templates/02/0213af5c2e4d4039275793d38ecce99c96f01753ac0584e9b3d0ffef7d2741c6.php:155
-#: tests/files/_cache/templates/89/899ff0126ba2793b130d2f0c66a39bae2718b3390d8b4bc374d7d648724ff0c8.php:155
-#: tests/files/_cache/templates/79/79fd59d45331bcfaacab15252f7b6ac49ba394c19d681abcbedd3128a503500c.php:158
-#: tests/files/_cache/templates/0f/0fc09a3264c0206fe8c5ff87b715856bc3c279f0d82555bb4cfa80e99ef870d1.php:155
 #: templates/components/itilobject/service_levels.html.twig:116
 msgid "Escalation level"
 msgid_plural "Escalation levels"
@@ -5057,11 +4808,7 @@ msgstr[0] "- %d dní"
 #: src/LevelAgreement.php:905
 #: src/ContentTemplates/Parameters/TicketParameters.php:79
 #: src/RuleTicket.php:680 src/RuleTicket.php:702 src/RuleTicket.php:844
-#: src/RuleTicket.php:866 tests/functionnal/Rule.php:328
-#: tests/files/_cache/templates/02/0213af5c2e4d4039275793d38ecce99c96f01753ac0584e9b3d0ffef7d2741c6.php:50
-#: tests/files/_cache/templates/89/899ff0126ba2793b130d2f0c66a39bae2718b3390d8b4bc374d7d648724ff0c8.php:50
-#: tests/files/_cache/templates/79/79fd59d45331bcfaacab15252f7b6ac49ba394c19d681abcbedd3128a503500c.php:53
-#: tests/files/_cache/templates/0f/0fc09a3264c0206fe8c5ff87b715856bc3c279f0d82555bb4cfa80e99ef870d1.php:50
+#: src/RuleTicket.php:866
 msgid "Time to own"
 msgstr "Termín priradenia"
 
@@ -5073,15 +4820,6 @@ msgstr "Termín priradenia"
 #: src/CommonITILObject.php:3788 src/CommonITILObject.php:5033
 #: src/CommonITILObject.php:6034 src/RuleTicket.php:669 src/RuleTicket.php:691
 #: src/RuleTicket.php:833 src/RuleTicket.php:855
-#: tests/functionnal/Rule.php:323
-#: tests/files/_cache/templates/c9/c9551503c1a965e55c70a545b7eb30a74d88dc7da066cc07ffc932d21dd247cf.php:130
-#: tests/files/_cache/templates/d0/d04302c5e524245f01cbcb00e6a4d8d8178f7dedfab5a3df5fb0d0cca8d55c93.php:130
-#: tests/files/_cache/templates/02/0213af5c2e4d4039275793d38ecce99c96f01753ac0584e9b3d0ffef7d2741c6.php:51
-#: tests/files/_cache/templates/a3/a3407b290116d75d02ec511bcea4e39d84c3f13b6b7e3f3e37796cd6665a5856.php:130
-#: tests/files/_cache/templates/89/899ff0126ba2793b130d2f0c66a39bae2718b3390d8b4bc374d7d648724ff0c8.php:51
-#: tests/files/_cache/templates/a8/a8a5045af2f11c67abf82f0901b5cbe2f3e92702a3d5221f0deb986abee3b766.php:138
-#: tests/files/_cache/templates/79/79fd59d45331bcfaacab15252f7b6ac49ba394c19d681abcbedd3128a503500c.php:54
-#: tests/files/_cache/templates/0f/0fc09a3264c0206fe8c5ff87b715856bc3c279f0d82555bb4cfa80e99ef870d1.php:51
 #: templates/components/itilobject/fields_panel.html.twig:102
 msgid "Time to resolve"
 msgstr "Termín splnenia"
@@ -5217,8 +4955,7 @@ msgstr "Nie"
 #: src/MailCollector.php:301 src/Rule.php:2297 src/Search.php:4990
 #: src/Config.php:422 src/Config.php:423 src/Config.php:440
 #: src/Config.php:1214 src/Entity.php:2281 src/Entity.php:3194
-#: src/Marketplace/View.php:1009 tests/functionnal/Rule.php:557
-#: tests/functionnal/Rule.php:558 tests/functionnal/Rule.php:559
+#: src/Marketplace/View.php:1009
 msgid "Yes"
 msgstr "Áno"
 
@@ -5264,10 +5001,6 @@ msgstr "Monitorovanie automatických akcií"
 #: src/ProjectTask.php:1004 src/CommonITILObject.php:3715
 #: src/RuleTicket.php:508 src/ProjectTaskTemplate.php:90
 #: src/ProjectTaskTemplate.php:193 src/PlanningExternalEvent.php:337
-#: tests/files/_cache/templates/d9/d9ff0defb7a6902cec90dc43c390b93929de38bace13f1f0cd5aaef94cf91d8c.php:37
-#: tests/files/_cache/templates/45/453aa105311be3868bc59885140445aedd60d69ca06c4b863a6086e8c9ac7c9e.php:40
-#: tests/files/_cache/templates/7a/7ab5a51262ece5562ef47b92f852a73636e0ef3708dc5bc5dac94fb8f532792c.php:37
-#: tests/files/_cache/templates/bf/bff8a29a623919e2b5e4eac46a1a441bfa0667073855b8819448426ea91d8bc4.php:37
 #: templates/components/itilobject/selfservice.html.twig:255
 #: templates/components/itilobject/timeline/simple_form.html.twig:67
 msgid "Description"
@@ -5420,10 +5153,6 @@ msgid "Update"
 msgstr "Aktualizácia"
 
 #: src/Csv/PlanningCsv.php:69 src/Planning.php:1078
-#: tests/files/_cache/templates/68/68f60ababbb53debb42b0bb39dcdf2ea337a82aa3a4ad12280fb0843d056464e.php:221
-#: tests/files/_cache/templates/86/86657a801e7166a614b1e7b92d38fc64c436cad6583e986226c891c6d1be9d84.php:224
-#: tests/files/_cache/templates/f2/f2ae590c50114a8896993372971b34396942bea8143f3757720dfc88e59fa6f1.php:221
-#: tests/files/_cache/templates/06/06be0bf8f8e53495353bdf5d9ebfa20151a5de5cf303c55c9eb74877022abea3.php:221
 #: templates/components/itilobject/actors/main.html.twig:149
 msgid "Actor"
 msgstr "Účastník"
@@ -5547,7 +5276,6 @@ msgstr "Zrušiť priradenie"
 #: src/Certificate_Item.php:227 src/Contract_Item.php:565 src/Log.php:1124
 #: src/Item_Project.php:105 src/Domain_Item.php:197 src/Item_Problem.php:101
 #: src/Appliance_Item.php:145 src/Document_Item.php:356
-#: tests/functionnal/Log.php:472
 msgid "Add an item"
 msgstr "Pridanie položky"
 
@@ -5970,10 +5698,6 @@ msgstr "Počet členov tímu"
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:65
 #: src/NotificationTargetProjectTask.php:530 src/CommonITILObject.php:3770
 #: src/CommonITILObject.php:5030
-#: tests/files/_cache/templates/c9/c9551503c1a965e55c70a545b7eb30a74d88dc7da066cc07ffc932d21dd247cf.php:119
-#: tests/files/_cache/templates/d0/d04302c5e524245f01cbcb00e6a4d8d8178f7dedfab5a3df5fb0d0cca8d55c93.php:119
-#: tests/files/_cache/templates/a3/a3407b290116d75d02ec511bcea4e39d84c3f13b6b7e3f3e37796cd6665a5856.php:119
-#: tests/files/_cache/templates/a8/a8a5045af2f11c67abf82f0901b5cbe2f3e92702a3d5221f0deb986abee3b766.php:127
 #: templates/components/itilobject/fields_panel.html.twig:94
 msgid "Opening date"
 msgstr "Dátum otvorenia"
@@ -6001,10 +5725,6 @@ msgstr "Počet nákladov"
 #: src/NotificationTargetProjectTask.php:568
 #: src/NotificationTargetProjectTask.php:663
 #: src/NotificationTargetProjectTask.php:676 src/APIClient.php:315
-#: tests/files/_cache/templates/d9/d9ff0defb7a6902cec90dc43c390b93929de38bace13f1f0cd5aaef94cf91d8c.php:46
-#: tests/files/_cache/templates/45/453aa105311be3868bc59885140445aedd60d69ca06c4b863a6086e8c9ac7c9e.php:49
-#: tests/files/_cache/templates/7a/7ab5a51262ece5562ef47b92f852a73636e0ef3708dc5bc5dac94fb8f532792c.php:46
-#: tests/files/_cache/templates/bf/bff8a29a623919e2b5e4eac46a1a441bfa0667073855b8819448426ea91d8bc4.php:46
 msgid "Historical"
 msgstr "História"
 
@@ -6124,16 +5844,8 @@ msgstr[0] "Členovia tímu"
 #: src/Profile.php:1174 src/Profile.php:1283 src/Profile.php:1285
 #: src/CommonITILTask.php:144 src/CommonITILTask.php:789
 #: src/NotificationTargetProjectTask.php:664
-#: src/NotificationTargetProjectTask.php:677
-#: tests/files/_cache/templates/d9/d9ff0defb7a6902cec90dc43c390b93929de38bace13f1f0cd5aaef94cf91d8c.php:38
-#: tests/files/_cache/templates/45/453aa105311be3868bc59885140445aedd60d69ca06c4b863a6086e8c9ac7c9e.php:41
-#: tests/files/_cache/templates/5a/5ad532dbb7e0f1703c7e886e1656b362f893b93de7bf1af058787bbc36bae4aa.php:422
-#: tests/files/_cache/templates/57/57d574eff33e342e65407f9d1e50a7c0e3db26e30e4b8a94179d14c3948f1dfa.php:423
-#: tests/files/_cache/templates/7a/7ab5a51262ece5562ef47b92f852a73636e0ef3708dc5bc5dac94fb8f532792c.php:38
-#: tests/files/_cache/templates/bf/bff8a29a623919e2b5e4eac46a1a441bfa0667073855b8819448426ea91d8bc4.php:38
-#: tests/files/_cache/templates/0b/0bf66f8931a0e42fe5606d956a435a034dbe4971a05c20e27899cdc1053c2a49.php:422
-#: tests/files/_cache/templates/82/82b845299eef77cb8e264c50261291d56a493dc91dae0e71c6f7ae713b86e979.php:422
-#: js/gantt-helper.js:48 js/gantt-helper.js:53
+#: src/NotificationTargetProjectTask.php:677 js/gantt-helper.js:48
+#: js/gantt-helper.js:53
 #: templates/components/itilobject/timeline/timeline.html.twig:169
 msgid "Task"
 msgid_plural "Tasks"
@@ -6224,10 +5936,6 @@ msgid "Local loop port"
 msgstr "Port spätnej slučky (loopback)"
 
 #: src/ITILFollowupTemplate.php:47
-#: tests/files/_cache/templates/d2/d29ab1811ed2717431f6530a6811185702b5d1e38d4cc87fa93cee70ed937521.php:168
-#: tests/files/_cache/templates/47/475b56c8138b8da82981cd93d900300b439bb7b405db83d27ecf9764ef9e9be8.php:187
-#: tests/files/_cache/templates/bc/bcc4581ae3e84f6e01a39bb3810e1ddfcbd0ebcab42e895cf567a1ce09c69ba9.php:176
-#: tests/files/_cache/templates/ea/eaac299052d58bad6083cc45f72662d7132c95b16ad889c9c6d981dfd650fb9a.php:176
 #: templates/components/itilobject/timeline/form_followup.html.twig:110
 msgid "Followup template"
 msgid_plural "Followup templates"
@@ -6252,10 +5960,6 @@ msgstr "Obsah"
 
 #: src/ITILFollowupTemplate.php:66 src/ITILFollowupTemplate.php:93
 #: src/ITILFollowup.php:874
-#: tests/files/_cache/templates/d2/d29ab1811ed2717431f6530a6811185702b5d1e38d4cc87fa93cee70ed937521.php:187
-#: tests/files/_cache/templates/47/475b56c8138b8da82981cd93d900300b439bb7b405db83d27ecf9764ef9e9be8.php:206
-#: tests/files/_cache/templates/bc/bcc4581ae3e84f6e01a39bb3810e1ddfcbd0ebcab42e895cf567a1ce09c69ba9.php:195
-#: tests/files/_cache/templates/ea/eaac299052d58bad6083cc45f72662d7132c95b16ad889c9c6d981dfd650fb9a.php:195
 #: templates/components/itilobject/timeline/form_followup.html.twig:126
 msgid "Source of followup"
 msgstr "Zdroj reakcie"
@@ -6265,22 +5969,6 @@ msgstr "Zdroj reakcie"
 #: src/NotificationTargetPlanningRecall.php:245 src/SavedSearch.php:443
 #: src/SavedSearch.php:460 src/NotificationTargetCommonITILObject.php:1739
 #: src/NotificationTargetCommonITILObject.php:1802 src/ITILFollowup.php:666
-#: tests/files/_cache/templates/60/609093cd4b376a0b579fde9a14ec0428cfbfaf3bb561077d76767bf75ba3ef41.php:383
-#: tests/files/_cache/templates/d2/d29ab1811ed2717431f6530a6811185702b5d1e38d4cc87fa93cee70ed937521.php:205
-#: tests/files/_cache/templates/b9/b9e7f5353092ccb93ed960e221189d8bdb75646d78fa7bb0587762e170e012c6.php:86
-#: tests/files/_cache/templates/b9/b9e7f5353092ccb93ed960e221189d8bdb75646d78fa7bb0587762e170e012c6.php:91
-#: tests/files/_cache/templates/92/92cc4f06f7651dc2e81c0eaee60752041f3587d3702a468fc22e21e9bd7ba289.php:383
-#: tests/files/_cache/templates/fe/feaa6b374d0d0767bdde2f0cd4ae428033e2288edd4b8cdf751364ea94dd0eb5.php:375
-#: tests/files/_cache/templates/78/781d7e174df36a609eaea5a057531a13c804675d5659937378609cbd475dd324.php:394
-#: tests/files/_cache/templates/df/dfc641764740defc49cfb9ef99aa7d35a212e56ecd8d307e2eb2bfd9c2080d13.php:87
-#: tests/files/_cache/templates/df/dfc641764740defc49cfb9ef99aa7d35a212e56ecd8d307e2eb2bfd9c2080d13.php:92
-#: tests/files/_cache/templates/47/475b56c8138b8da82981cd93d900300b439bb7b405db83d27ecf9764ef9e9be8.php:224
-#: tests/files/_cache/templates/9a/9ae7eb640ec9b96a0154cf9e2d7539f7c180fb16607ededd189be57abf741f2d.php:86
-#: tests/files/_cache/templates/9a/9ae7eb640ec9b96a0154cf9e2d7539f7c180fb16607ededd189be57abf741f2d.php:91
-#: tests/files/_cache/templates/ac/ac04b4d69b9b3e6646fe85b55addc493dc2098d5fcbed3ef5346d2a5fa22b56d.php:86
-#: tests/files/_cache/templates/ac/ac04b4d69b9b3e6646fe85b55addc493dc2098d5fcbed3ef5346d2a5fa22b56d.php:91
-#: tests/files/_cache/templates/bc/bcc4581ae3e84f6e01a39bb3810e1ddfcbd0ebcab42e895cf567a1ce09c69ba9.php:213
-#: tests/files/_cache/templates/ea/eaac299052d58bad6083cc45f72662d7132c95b16ad889c9c6d981dfd650fb9a.php:213
 #: templates/components/itilobject/timeline/form_task.html.twig:234
 #: templates/components/itilobject/timeline/form_followup.html.twig:143
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig:58
@@ -6291,12 +5979,7 @@ msgstr "Súkromné"
 #: src/KnowbaseItem_Comment.php:40 src/KnowbaseItem_Comment.php:367
 #: src/NotificationTargetCommonITILObject.php:1721
 #: src/Features/PlanningEvent.php:1064 src/ComputerVirtualMachine.php:347
-#: src/ReservationItem.php:566
-#: tests/files/_cache/templates/34/3469b1acf26f7378601172eefa8fb4128d638cb7d1dee721278b4040c8eea96e.php:92
-#: tests/files/_cache/templates/7c/7c19ba03b099dfa7dd9f68a985472e79d2a9a996a4c29b5afb81fa8bf28ce66f.php:92
-#: tests/files/_cache/templates/5a/5a84ecedda1b5fbc7ddad723a88152a58645ed134748fa7a490627286e1de2df.php:96
-#: tests/files/_cache/templates/e9/e955220750f35332778b52613aa24889857e353a96affb37a7c0db2dfcb1dc75.php:92
-#: templates/dropdown_form.html.twig:60
+#: src/ReservationItem.php:566 templates/dropdown_form.html.twig:60
 #: templates/components/itilobject/timeline/form_validation.html.twig:57
 #: templates/components/infocom.html.twig:258
 #: templates/generic_show_form.html.twig:464
@@ -6430,10 +6113,6 @@ msgstr "Priradené ID položky"
 #: src/QueuedNotification.php:364 src/QueuedNotification.php:707
 #: src/Notification.php:169 src/Notification.php:406
 #: src/NotificationEvent.php:236 src/NotificationTemplate.php:64
-#: tests/files/_cache/templates/83/83b1ef2f31126a24a3cc38b618f023d8e0035602bdc22c327955503875e25b09.php:187
-#: tests/files/_cache/templates/f4/f4600da52df28b6e5443b0d1b2e4beb75c3498c24805a6b55b08cbc0b14e3f43.php:184
-#: tests/files/_cache/templates/b5/b5357edd83fdcfd4282fee6862ca237db6286b975add84f02be14f4f0a64d8be.php:184
-#: tests/files/_cache/templates/95/955e7d7757201d693963f6327124278582e1dc846c109918e9871bf5472617f4.php:187
 #: templates/pages/setup/setup_notifications.html.twig:100
 msgid "Notification template"
 msgid_plural "Notification templates"
@@ -6552,10 +6231,6 @@ msgstr[3] "Siete"
 #: src/Certificate.php:276 src/Software.php:449 src/Project.php:730
 #: src/Phone.php:429 src/ProjectTask.php:1142 src/NetworkEquipment.php:465
 #: src/Computer.php:542 src/SoftwareLicense.php:495
-#: tests/files/_cache/templates/54/541698b9965a85a811622d6ec97f91f698891b53db7037b15d5a6e4998539b3e.php:136
-#: tests/files/_cache/templates/53/53b696dfcb43cb837a1f1cc8f2039249617f7ada30ec42cf8fe071b2306ad710.php:136
-#: tests/files/_cache/templates/fc/fcd4bb1c1011c8a257fcdbcb92a74826c1a401c28fde6f060108aa1e473f50d8.php:136
-#: tests/files/_cache/templates/6c/6cb776653e176d86ed5e032cd185be3d7df39dc9dcca4b79a6aeb2c27267a7db.php:139
 #: templates/components/form/header.html.twig:69
 msgid "Template name"
 msgstr "Názov šablony"
@@ -6824,10 +6499,6 @@ msgstr "Priemerný čas"
 #: src/NotificationTargetCommonITILObject.php:1808 src/CommonITILTask.php:764
 #: src/NotificationTargetProjectTask.php:527 src/ProjectTask.php:834
 #: src/CommonITILObject.php:3862 src/Stat.php:601
-#: tests/files/_cache/templates/c9/c9551503c1a965e55c70a545b7eb30a74d88dc7da066cc07ffc932d21dd247cf.php:320
-#: tests/files/_cache/templates/d0/d04302c5e524245f01cbcb00e6a4d8d8178f7dedfab5a3df5fb0d0cca8d55c93.php:320
-#: tests/files/_cache/templates/a3/a3407b290116d75d02ec511bcea4e39d84c3f13b6b7e3f3e37796cd6665a5856.php:320
-#: tests/files/_cache/templates/a8/a8a5045af2f11c67abf82f0901b5cbe2f3e92702a3d5221f0deb986abee3b766.php:328
 #: templates/components/itilobject/fields_panel.html.twig:225
 msgid "Total duration"
 msgstr "Celková doba trvania"
@@ -6881,12 +6552,7 @@ msgstr "Počet"
 #: src/CommonITILCost.php:589 src/Reservation.php:770 src/Contract.php:256
 #: src/Contract.php:517 src/CommonITILTask.php:940 src/CommonITILTask.php:1447
 #: src/ContentTemplates/Parameters/LevelAgreementParameters.php:54
-#: src/ReservationItem.php:475
-#: tests/files/_cache/templates/60/609093cd4b376a0b579fde9a14ec0428cfbfaf3bb561077d76767bf75ba3ef41.php:452
-#: tests/files/_cache/templates/92/92cc4f06f7651dc2e81c0eaee60752041f3587d3702a468fc22e21e9bd7ba289.php:452
-#: tests/files/_cache/templates/fe/feaa6b374d0d0767bdde2f0cd4ae428033e2288edd4b8cdf751364ea94dd0eb5.php:394
-#: tests/files/_cache/templates/78/781d7e174df36a609eaea5a057531a13c804675d5659937378609cbd475dd324.php:463
-#: js/gantt-helper.js:154
+#: src/ReservationItem.php:475 js/gantt-helper.js:154
 #: templates/components/itilobject/timeline/form_task.html.twig:283
 msgid "Duration"
 msgstr "Trvanie"
@@ -6914,11 +6580,6 @@ msgid "End"
 msgstr "Koniec"
 
 #: src/CronTask.php:1443 src/RSSFeed.php:472 src/RSSFeed.php:692
-#: tests/files/_cache/templates/42/427a8f2383fb9a7d8ea6fda1f5225d5c1e6832d595fe8b9f08387fff6e4caba3.php:65
-#: tests/files/_cache/templates/2e/2e4e2ce6f6456e15077ca7f3c04f0b9524c815cad383e040d7d0c490211d18ff.php:65
-#: tests/files/_cache/templates/75/7537adceddd40d018ee4ca912f6dc7276fb2dc01769adc67620e3d8d5f2dd78a.php:68
-#: tests/files/_cache/templates/05/054dc53d4ed1514b7332e18286877a70f36b69584d731eeb23562fd8032aaf33.php:68
-#: tests/files/_cache/templates/6f/6fa19a2016824f7baeea2c99b7f6e00a27a7016c1436b30f0b022e0b74ef4c2f.php:65
 msgid "Error"
 msgstr "Chyba"
 
@@ -7048,10 +6709,6 @@ msgstr "Vytvoriť"
 
 #: src/DisplayPreference.php:317 src/Notification.php:494
 #: src/NetworkPort.php:1016 src/Planning.php:1005 src/CommonDBTM.php:5165
-#: tests/files/_cache/templates/16/16056ed62f8a29f4aa94e376f3535f25a49991d346f14687b73ff34f15208253.php:1256
-#: tests/files/_cache/templates/13/13c4fd574929b6e787673c27e3fd076e90ec58826e9c2aebc4b63b1837271b0e.php:1245
-#: tests/files/_cache/templates/e5/e5eb38847527ec37e0eea700c09c857e33f52c6455c5f9005a30fcc08628550b.php:1279
-#: tests/files/_cache/templates/c3/c31fc71263d37dc197c8e03c9c39e0511131277323e2de603c65abb8f269fba0.php:1256
 #: js/gantt-helper.js:385 js/impact.js:1343 js/planning.js:275
 #: templates/components/form/fields_macros.html.twig:374
 msgid "Delete"
@@ -7093,10 +6750,6 @@ msgid "Search result default display"
 msgstr "Predvolené zobrazenie výsledkov vyhľadávania"
 
 #: src/TaskTemplate.php:50 src/RuleTicket.php:935
-#: tests/files/_cache/templates/60/609093cd4b376a0b579fde9a14ec0428cfbfaf3bb561077d76767bf75ba3ef41.php:324
-#: tests/files/_cache/templates/92/92cc4f06f7651dc2e81c0eaee60752041f3587d3702a468fc22e21e9bd7ba289.php:324
-#: tests/files/_cache/templates/fe/feaa6b374d0d0767bdde2f0cd4ae428033e2288edd4b8cdf751364ea94dd0eb5.php:316
-#: tests/files/_cache/templates/78/781d7e174df36a609eaea5a057531a13c804675d5659937378609cbd475dd324.php:335
 #: templates/components/itilobject/timeline/form_task.html.twig:184
 msgid "Task template"
 msgid_plural "Task templates"
@@ -7249,10 +6902,6 @@ msgid "Recurrent"
 msgstr "Opakovanie"
 
 #: src/ITILSolution.php:56
-#: tests/files/_cache/templates/d9/d9ff0defb7a6902cec90dc43c390b93929de38bace13f1f0cd5aaef94cf91d8c.php:38
-#: tests/files/_cache/templates/45/453aa105311be3868bc59885140445aedd60d69ca06c4b863a6086e8c9ac7c9e.php:41
-#: tests/files/_cache/templates/7a/7ab5a51262ece5562ef47b92f852a73636e0ef3708dc5bc5dac94fb8f532792c.php:38
-#: tests/files/_cache/templates/bf/bff8a29a623919e2b5e4eac46a1a441bfa0667073855b8819448426ea91d8bc4.php:38
 msgid "Solution"
 msgid_plural "Solutions"
 msgstr[0] "Riešenia"
@@ -7271,10 +6920,6 @@ msgid "Refused"
 msgstr "Zamietnuté"
 
 #: src/ITILSolution.php:375
-#: tests/files/_cache/templates/aa/aa3958dc91e53fa205aa57d010768ad473cfa2f71666e8c28919c0736e35113a.php:97
-#: tests/files/_cache/templates/f2/f262bc2f67d5729f1ee98298e1bd3b5fb1523bd23b3301291d60127c4e25f0e7.php:97
-#: tests/files/_cache/templates/65/65a21c01746225e9a16497097984783e3ef9780be4e11cfa24a3369206cbc51d.php:97
-#: tests/files/_cache/templates/52/52c2286f94e588a7071b76e569a876729d0bb8123eb88949b798b933d1b8c090.php:97
 msgid "Accepted"
 msgstr "Akceptované"
 
@@ -7516,12 +7161,7 @@ msgstr "Entita z celého mena"
 msgid "Default entity"
 msgstr "Predvolená entita"
 
-#: src/RuleRight.php:370
-#: tests/files/_cache/templates/8e/8e859b2960bf8fad3ead870e79bc627f7555a08ff3b37e6c4117e593ac19da67.php:161
-#: tests/files/_cache/templates/6e/6e7465bb5b2f3a1dd4659cedbe0b7ec364f0de042e73dfeced89d33c8df4b660.php:161
-#: tests/files/_cache/templates/88/88154961dd43c4088073f1089512a3598eed03da3665603f545beb4de06d7bed.php:164
-#: tests/files/_cache/templates/59/5938cdc4aba8e454c25413d25f7413ba73f73e4e5d2e1a52fdd858f29d00b595.php:161
-#: templates/components/user/info_card.html.twig:87
+#: src/RuleRight.php:370 templates/components/user/info_card.html.twig:87
 msgid "Default group"
 msgstr "Prednastavená skupina"
 
@@ -7714,10 +7354,6 @@ msgstr ""
 #: src/RuleAsset.php:72 src/RuleAsset.php:76 src/Reminder.php:965
 #: src/Reminder.php:966 src/Infocom.php:775 src/RSSFeed.php:1020
 #: src/RSSFeed.php:1021 src/RuleTicket.php:78 src/RuleTicket.php:82
-#: tests/files/_cache/templates/4f/4ffa409ee53884ce4b1299eb701b51fbe66223e2e8b1c8a3c0a35e087e4712f7.php:146
-#: tests/files/_cache/templates/a9/a9d13d629a9446bee91840e40ab5e95762ce69a5b871bffb449966a31d34b496.php:148
-#: tests/files/_cache/templates/8d/8dcfce6117f1dc24fc890bbc11f53889ea55a00dd8d673dc9e14d9d68462e3f8.php:146
-#: tests/files/_cache/templates/5c/5ccc9ea81e433a68011ae1c0caec5b995f8e9dfa236d4258045d33e0db7260b7.php:146
 #: templates/components/itilobject/linked_tickets.html.twig:85
 #: templates/layout/parts/context_links.html.twig:39
 #: templates/layout/parts/context_links.html.twig:41
@@ -7782,8 +7418,7 @@ msgstr "Ďalšia úroveň eskalácie"
 #: src/Ticket.php:3382 src/NotificationTargetTicket.php:591
 #: src/NotificationTargetTicket.php:594 src/NotificationTargetTicket.php:599
 #: src/RuleTicket.php:668 src/RuleTicket.php:679 src/RuleTicket.php:832
-#: src/RuleTicket.php:843 src/SLA.php:53 tests/functionnal/Rule.php:322
-#: tests/functionnal/Rule.php:327
+#: src/RuleTicket.php:843 src/SLA.php:53
 msgid "SLA"
 msgstr "SLA"
 
@@ -8053,10 +7688,6 @@ msgstr "Zobraziť priradené požiadavky"
 
 #. TRANS: short for : Assign a ticket
 #: src/Ticket.php:6372 src/RuleAction.php:418
-#: tests/files/_cache/templates/02/0213af5c2e4d4039275793d38ecce99c96f01753ac0584e9b3d0ffef7d2741c6.php:288
-#: tests/files/_cache/templates/89/899ff0126ba2793b130d2f0c66a39bae2718b3390d8b4bc374d7d648724ff0c8.php:288
-#: tests/files/_cache/templates/79/79fd59d45331bcfaacab15252f7b6ac49ba394c19d681abcbedd3128a503500c.php:291
-#: tests/files/_cache/templates/0f/0fc09a3264c0206fe8c5ff87b715856bc3c279f0d82555bb4cfa80e99ef870d1.php:288
 #: templates/components/itilobject/service_levels.html.twig:193
 msgid "Assign"
 msgstr "Priradiť"
@@ -8105,10 +7736,6 @@ msgstr "Zapísanie požiadavky"
 #: src/Ticket.php:6565 src/Problem.php:614
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:66
 #: src/CommonITILObject.php:3819 src/CommonITILObject.php:5037
-#: tests/files/_cache/templates/c9/c9551503c1a965e55c70a545b7eb30a74d88dc7da066cc07ffc932d21dd247cf.php:144
-#: tests/files/_cache/templates/d0/d04302c5e524245f01cbcb00e6a4d8d8178f7dedfab5a3df5fb0d0cca8d55c93.php:144
-#: tests/files/_cache/templates/a3/a3407b290116d75d02ec511bcea4e39d84c3f13b6b7e3f3e37796cd6665a5856.php:144
-#: tests/files/_cache/templates/a8/a8a5045af2f11c67abf82f0901b5cbe2f3e92702a3d5221f0deb986abee3b766.php:152
 #: templates/components/itilobject/fields_panel.html.twig:111
 msgid "Resolution date"
 msgstr "Dátum vyriešenia"
@@ -8225,20 +7852,7 @@ msgid_plural "Translations"
 msgstr[0] "Preklady"
 
 #: src/KnowbaseItemTranslation.php:89 src/CommonITILValidation.php:963
-#: src/KnowbaseItem.php:269
-#: tests/files/_cache/templates/8e/8e859b2960bf8fad3ead870e79bc627f7555a08ff3b37e6c4117e593ac19da67.php:186
-#: tests/files/_cache/templates/b9/b9e7f5353092ccb93ed960e221189d8bdb75646d78fa7bb0587762e170e012c6.php:67
-#: tests/files/_cache/templates/6e/6e7465bb5b2f3a1dd4659cedbe0b7ec364f0de042e73dfeced89d33c8df4b660.php:186
-#: tests/files/_cache/templates/2a/2a25d254250389b7edca938fd7b391f5d20101d785f62d35c302b1feec75d8bd.php:93
-#: tests/files/_cache/templates/df/dfc641764740defc49cfb9ef99aa7d35a212e56ecd8d307e2eb2bfd9c2080d13.php:68
-#: tests/files/_cache/templates/9b/9bcf0724711cdcfbc3ec1928726831789f157cc5f21f241d7da54175bb43d507.php:90
-#: tests/files/_cache/templates/dc/dcde0f89e6a6222a0438d6647b6b3ac9e657cfc48c32ef004c07a8457f0e6e04.php:90
-#: tests/files/_cache/templates/88/88154961dd43c4088073f1089512a3598eed03da3665603f545beb4de06d7bed.php:189
-#: tests/files/_cache/templates/9a/9ae7eb640ec9b96a0154cf9e2d7539f7c180fb16607ededd189be57abf741f2d.php:67
-#: tests/files/_cache/templates/ac/ac04b4d69b9b3e6646fe85b55addc493dc2098d5fcbed3ef5346d2a5fa22b56d.php:67
-#: tests/files/_cache/templates/1e/1e5f8fe3a26138ae7950d988d912b6494653c07e4a5ead2947805b28aae3d325.php:90
-#: tests/files/_cache/templates/59/5938cdc4aba8e454c25413d25f7413ba73f73e4e5d2e1a52fdd858f29d00b595.php:186
-#: templates/components/user/info_card.html.twig:98
+#: src/KnowbaseItem.php:269 templates/components/user/info_card.html.twig:98
 #: templates/components/itilobject/timeline/main_description.html.twig:63
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig:50
 msgid "Edit"
@@ -8679,8 +8293,6 @@ msgid "Valid license"
 msgstr "Platná licencia"
 
 #: src/Item_SoftwareVersion.php:1507 src/Item_SoftwareLicense.php:996
-#: tests/functionnal/Item_SoftwareLicense.php:223
-#: tests/functionnal/Item_SoftwareLicense.php:228
 msgid "Summary"
 msgstr "Súhrn"
 
@@ -8799,7 +8411,6 @@ msgstr "Viditeľný v požiadavke"
 #: src/CommonITILObject.php:3554 src/CommonITILObject.php:4161
 #: src/CommonITILObject.php:4170 src/CommonITILObject.php:8311
 #: src/RuleTicket.php:608 src/RuleTicket.php:786
-#: tests/functionnal/Rule.php:309
 #: templates/components/itilobject/selfservice.html.twig:195
 #: templates/components/itilobject/selfservice.html.twig:230
 msgid "Watcher"
@@ -9120,40 +8731,7 @@ msgstr ""
 #: src/Config.php:3218 src/Config.php:3460 src/Config.php:3516
 #: src/Entity.php:1462 src/Entity.php:1550 src/Entity.php:1771
 #: src/Entity.php:2225 src/Entity.php:2325 src/Entity.php:2926
-#: src/ReservationItem.php:412
-#: tests/files/_cache/templates/60/609093cd4b376a0b579fde9a14ec0428cfbfaf3bb561077d76767bf75ba3ef41.php:585
-#: tests/files/_cache/templates/d5/d55ebd2978a100583cb2cda10e8b63743f25c06ece28b248a910814b8f7f06fc.php:252
-#: tests/files/_cache/templates/d5/d55ebd2978a100583cb2cda10e8b63743f25c06ece28b248a910814b8f7f06fc.php:257
-#: tests/files/_cache/templates/91/915df68d9d66da8a76354a67f5ee6831097d1009e69d13cc8c115d78e80c6bd2.php:259
-#: tests/files/_cache/templates/91/915df68d9d66da8a76354a67f5ee6831097d1009e69d13cc8c115d78e80c6bd2.php:264
-#: tests/files/_cache/templates/ca/ca1147f88b73f6dd31fbdf36d43efff26ac0773dde7ba8a6ef42661db255028c.php:82
-#: tests/files/_cache/templates/ca/ca1147f88b73f6dd31fbdf36d43efff26ac0773dde7ba8a6ef42661db255028c.php:109
-#: tests/files/_cache/templates/d2/d29ab1811ed2717431f6530a6811185702b5d1e38d4cc87fa93cee70ed937521.php:243
-#: tests/files/_cache/templates/aa/aa3958dc91e53fa205aa57d010768ad473cfa2f71666e8c28919c0736e35113a.php:352
-#: tests/files/_cache/templates/92/92cc4f06f7651dc2e81c0eaee60752041f3587d3702a468fc22e21e9bd7ba289.php:585
-#: tests/files/_cache/templates/34/3469b1acf26f7378601172eefa8fb4128d638cb7d1dee721278b4040c8eea96e.php:242
-#: tests/files/_cache/templates/fe/feaa6b374d0d0767bdde2f0cd4ae428033e2288edd4b8cdf751364ea94dd0eb5.php:528
-#: tests/files/_cache/templates/16/1670adea735a32c8f12d713812f9c81dbbb19f566d2b8ae90da0a14db6099c59.php:252
-#: tests/files/_cache/templates/16/1670adea735a32c8f12d713812f9c81dbbb19f566d2b8ae90da0a14db6099c59.php:257
-#: tests/files/_cache/templates/78/781d7e174df36a609eaea5a057531a13c804675d5659937378609cbd475dd324.php:637
-#: tests/files/_cache/templates/7c/7c19ba03b099dfa7dd9f68a985472e79d2a9a996a4c29b5afb81fa8bf28ce66f.php:242
-#: tests/files/_cache/templates/84/8451440f1e5aba265c66e7a555c4082b15b6fcdf79451988c787bfa5ec237f6e.php:79
-#: tests/files/_cache/templates/84/8451440f1e5aba265c66e7a555c4082b15b6fcdf79451988c787bfa5ec237f6e.php:106
-#: tests/files/_cache/templates/5a/5a84ecedda1b5fbc7ddad723a88152a58645ed134748fa7a490627286e1de2df.php:250
-#: tests/files/_cache/templates/3f/3f1777a642c6a740ef8d3060d3c16522f1f5b960d63147a80fc6b21cbb1b1fc1.php:252
-#: tests/files/_cache/templates/3f/3f1777a642c6a740ef8d3060d3c16522f1f5b960d63147a80fc6b21cbb1b1fc1.php:257
-#: tests/files/_cache/templates/47/475b56c8138b8da82981cd93d900300b439bb7b405db83d27ecf9764ef9e9be8.php:353
-#: tests/files/_cache/templates/cd/cd10fe8567d7c5442eda04afac64a083d37306564baee63feb4fed9779d0989a.php:79
-#: tests/files/_cache/templates/cd/cd10fe8567d7c5442eda04afac64a083d37306564baee63feb4fed9779d0989a.php:106
-#: tests/files/_cache/templates/f2/f262bc2f67d5729f1ee98298e1bd3b5fb1523bd23b3301291d60127c4e25f0e7.php:352
-#: tests/files/_cache/templates/65/65a21c01746225e9a16497097984783e3ef9780be4e11cfa24a3369206cbc51d.php:359
-#: tests/files/_cache/templates/bc/bcc4581ae3e84f6e01a39bb3810e1ddfcbd0ebcab42e895cf567a1ce09c69ba9.php:301
-#: tests/files/_cache/templates/c7/c727dda47fb564b415967f165f3d365b6c7f0bdfccfd22ac4fe5a0322a19753f.php:79
-#: tests/files/_cache/templates/c7/c727dda47fb564b415967f165f3d365b6c7f0bdfccfd22ac4fe5a0322a19753f.php:106
-#: tests/files/_cache/templates/e9/e955220750f35332778b52613aa24889857e353a96affb37a7c0db2dfcb1dc75.php:242
-#: tests/files/_cache/templates/ea/eaac299052d58bad6083cc45f72662d7132c95b16ad889c9c6d981dfd650fb9a.php:301
-#: tests/files/_cache/templates/52/52c2286f94e588a7071b76e569a876729d0bb8123eb88949b798b933d1b8c090.php:352
-#: templates/components/form/buttons.html.twig:52
+#: src/ReservationItem.php:412 templates/components/form/buttons.html.twig:52
 #: templates/components/form/buttons.html.twig:63
 #: templates/components/itilobject/footer.html.twig:117
 #: templates/components/itilobject/footer.html.twig:119
@@ -9626,7 +9204,6 @@ msgstr "Aplikácie"
 
 #: src/Dropdown.php:1132 src/Auth.php:114 src/Dashboard/Grid.php:1369
 #: src/Log.php:930 src/Log.php:952 src/Log.php:1005 src/Log.php:1019
-#: tests/functionnal/Log.php:512
 #: templates/layout/parts/saved_searches.html.twig:75
 msgid "Others"
 msgstr "Ostatné"
@@ -10409,14 +9986,6 @@ msgstr "Výsledky pravidla"
 #: src/NotificationTargetChange.php:312 src/NotificationTargetChange.php:318
 #: src/NotificationTargetChange.php:354 src/Rule.php:2138 src/Rule.php:2159
 #: src/RuleTicket.php:713 src/RuleTicket.php:949
-#: tests/files/_cache/templates/d9/d9ff0defb7a6902cec90dc43c390b93929de38bace13f1f0cd5aaef94cf91d8c.php:38
-#: tests/files/_cache/templates/45/453aa105311be3868bc59885140445aedd60d69ca06c4b863a6086e8c9ac7c9e.php:41
-#: tests/files/_cache/templates/5a/5ad532dbb7e0f1703c7e886e1656b362f893b93de7bf1af058787bbc36bae4aa.php:434
-#: tests/files/_cache/templates/57/57d574eff33e342e65407f9d1e50a7c0e3db26e30e4b8a94179d14c3948f1dfa.php:435
-#: tests/files/_cache/templates/7a/7ab5a51262ece5562ef47b92f852a73636e0ef3708dc5bc5dac94fb8f532792c.php:38
-#: tests/files/_cache/templates/bf/bff8a29a623919e2b5e4eac46a1a441bfa0667073855b8819448426ea91d8bc4.php:38
-#: tests/files/_cache/templates/0b/0bf66f8931a0e42fe5606d956a435a034dbe4971a05c20e27899cdc1053c2a49.php:434
-#: tests/files/_cache/templates/82/82b845299eef77cb8e264c50261291d56a493dc91dae0e71c6f7ae713b86e979.php:434
 #: templates/components/itilobject/timeline/timeline.html.twig:175
 msgid "Validation"
 msgid_plural "Validations"
@@ -10535,20 +10104,7 @@ msgstr "Položka sa nenašla"
 msgid "You don't have permission to perform this action."
 msgstr "Nemáte dostatočné oprávnenie na vykonanie tejto akcie."
 
-#: src/Html.php:739
-#: tests/files/_cache/templates/ba/ba62adaace4defd76bd9a0bcd285ec6db0d4b5cde8bf298be62cc0523e4fcd50.php:50
-#: tests/files/_cache/templates/68/68f60ababbb53debb42b0bb39dcdf2ea337a82aa3a4ad12280fb0843d056464e.php:214
-#: tests/files/_cache/templates/68/68f60ababbb53debb42b0bb39dcdf2ea337a82aa3a4ad12280fb0843d056464e.php:247
-#: tests/files/_cache/templates/86/86657a801e7166a614b1e7b92d38fc64c436cad6583e986226c891c6d1be9d84.php:217
-#: tests/files/_cache/templates/86/86657a801e7166a614b1e7b92d38fc64c436cad6583e986226c891c6d1be9d84.php:250
-#: tests/files/_cache/templates/8d/8dfc4cd2d516a81e62012464c6f20d8c2f082d53e5ded246eb541cbda2dd201c.php:50
-#: tests/files/_cache/templates/f2/f2ae590c50114a8896993372971b34396942bea8143f3757720dfc88e59fa6f1.php:214
-#: tests/files/_cache/templates/f2/f2ae590c50114a8896993372971b34396942bea8143f3757720dfc88e59fa6f1.php:247
-#: tests/files/_cache/templates/80/809acb23bbd9347bd131f1840a28fa29aa8a14d25ae97607748561891aeabc6b.php:50
-#: tests/files/_cache/templates/65/65ebc4d161a6811a15d787b3c72864c63cd569d6731e27f6098a8b5316d07767.php:50
-#: tests/files/_cache/templates/06/06be0bf8f8e53495353bdf5d9ebfa20151a5de5cf303c55c9eb74877022abea3.php:214
-#: tests/files/_cache/templates/06/06be0bf8f8e53495353bdf5d9ebfa20151a5de5cf303c55c9eb74877022abea3.php:247
-#: templates/components/modal.html.twig:36
+#: src/Html.php:739 templates/components/modal.html.twig:36
 #: templates/components/itilobject/actors/main.html.twig:145
 #: templates/components/itilobject/actors/main.html.twig:166
 #: templates/layout/parts/user_header.html.twig:114
@@ -10803,32 +10359,7 @@ msgstr "Naposledy aktualizoval: %1$s  %2$s"
 msgid "Create by %1$s on %2$s"
 msgstr "Vytvoril: %1$s %2$s"
 
-#: src/Notepad.php:375
-#: tests/files/_cache/templates/60/609093cd4b376a0b579fde9a14ec0428cfbfaf3bb561077d76767bf75ba3ef41.php:596
-#: tests/files/_cache/templates/d5/d55ebd2978a100583cb2cda10e8b63743f25c06ece28b248a910814b8f7f06fc.php:201
-#: tests/files/_cache/templates/91/915df68d9d66da8a76354a67f5ee6831097d1009e69d13cc8c115d78e80c6bd2.php:208
-#: tests/files/_cache/templates/ca/ca1147f88b73f6dd31fbdf36d43efff26ac0773dde7ba8a6ef42661db255028c.php:146
-#: tests/files/_cache/templates/ca/ca1147f88b73f6dd31fbdf36d43efff26ac0773dde7ba8a6ef42661db255028c.php:180
-#: tests/files/_cache/templates/d2/d29ab1811ed2717431f6530a6811185702b5d1e38d4cc87fa93cee70ed937521.php:254
-#: tests/files/_cache/templates/92/92cc4f06f7651dc2e81c0eaee60752041f3587d3702a468fc22e21e9bd7ba289.php:596
-#: tests/files/_cache/templates/34/3469b1acf26f7378601172eefa8fb4128d638cb7d1dee721278b4040c8eea96e.php:253
-#: tests/files/_cache/templates/fe/feaa6b374d0d0767bdde2f0cd4ae428033e2288edd4b8cdf751364ea94dd0eb5.php:539
-#: tests/files/_cache/templates/16/1670adea735a32c8f12d713812f9c81dbbb19f566d2b8ae90da0a14db6099c59.php:201
-#: tests/files/_cache/templates/78/781d7e174df36a609eaea5a057531a13c804675d5659937378609cbd475dd324.php:648
-#: tests/files/_cache/templates/7c/7c19ba03b099dfa7dd9f68a985472e79d2a9a996a4c29b5afb81fa8bf28ce66f.php:253
-#: tests/files/_cache/templates/84/8451440f1e5aba265c66e7a555c4082b15b6fcdf79451988c787bfa5ec237f6e.php:141
-#: tests/files/_cache/templates/84/8451440f1e5aba265c66e7a555c4082b15b6fcdf79451988c787bfa5ec237f6e.php:175
-#: tests/files/_cache/templates/5a/5a84ecedda1b5fbc7ddad723a88152a58645ed134748fa7a490627286e1de2df.php:261
-#: tests/files/_cache/templates/3f/3f1777a642c6a740ef8d3060d3c16522f1f5b960d63147a80fc6b21cbb1b1fc1.php:201
-#: tests/files/_cache/templates/47/475b56c8138b8da82981cd93d900300b439bb7b405db83d27ecf9764ef9e9be8.php:364
-#: tests/files/_cache/templates/cd/cd10fe8567d7c5442eda04afac64a083d37306564baee63feb4fed9779d0989a.php:141
-#: tests/files/_cache/templates/cd/cd10fe8567d7c5442eda04afac64a083d37306564baee63feb4fed9779d0989a.php:175
-#: tests/files/_cache/templates/bc/bcc4581ae3e84f6e01a39bb3810e1ddfcbd0ebcab42e895cf567a1ce09c69ba9.php:312
-#: tests/files/_cache/templates/c7/c727dda47fb564b415967f165f3d365b6c7f0bdfccfd22ac4fe5a0322a19753f.php:141
-#: tests/files/_cache/templates/c7/c727dda47fb564b415967f165f3d365b6c7f0bdfccfd22ac4fe5a0322a19753f.php:175
-#: tests/files/_cache/templates/e9/e955220750f35332778b52613aa24889857e353a96affb37a7c0db2dfcb1dc75.php:253
-#: tests/files/_cache/templates/ea/eaac299052d58bad6083cc45f72662d7132c95b16ad889c9c6d981dfd650fb9a.php:312
-#: templates/components/form/buttons.html.twig:81
+#: src/Notepad.php:375 templates/components/form/buttons.html.twig:81
 #: templates/components/form/buttons.html.twig:99
 #: templates/components/itilobject/footer.html.twig:94
 #: templates/components/itilobject/timeline/form_task.html.twig:389
@@ -10838,10 +10369,6 @@ msgid "Confirm the final deletion?"
 msgstr "Potvrdiť nenávratné zmazanie?"
 
 #: src/SolutionTemplate.php:49 src/Profile.php:1820 src/RuleTicket.php:930
-#: tests/files/_cache/templates/aa/aa3958dc91e53fa205aa57d010768ad473cfa2f71666e8c28919c0736e35113a.php:235
-#: tests/files/_cache/templates/f2/f262bc2f67d5729f1ee98298e1bd3b5fb1523bd23b3301291d60127c4e25f0e7.php:235
-#: tests/files/_cache/templates/65/65a21c01746225e9a16497097984783e3ef9780be4e11cfa24a3369206cbc51d.php:239
-#: tests/files/_cache/templates/52/52c2286f94e588a7071b76e569a876729d0bb8123eb88949b798b933d1b8c090.php:235
 #: templates/components/itilobject/timeline/form_solution.html.twig:140
 msgid "Solution template"
 msgid_plural "Solution templates"
@@ -10938,7 +10465,6 @@ msgstr "Technik zodpovedný za požiadavku"
 #: src/NotificationTargetCommonITILObject.php:1728
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:77
 #: src/CommonITILObject.php:4115 src/RuleTicket.php:583 src/RuleTicket.php:753
-#: tests/functionnal/Rule.php:305
 msgid "Requester group"
 msgid_plural "Requester groups"
 msgstr[0] "Skupina žiadateľa"
@@ -10954,7 +10480,6 @@ msgstr "Skupina zodpovedná za požiadavku"
 #: src/NotificationTargetCommonITILObject.php:1732
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:78
 #: src/CommonITILObject.php:4189 src/RuleTicket.php:614 src/RuleTicket.php:795
-#: tests/functionnal/Rule.php:310
 msgid "Watcher group"
 msgid_plural "Watcher groups"
 msgstr[0] "Skupina pozorovateľa"
@@ -10978,14 +10503,6 @@ msgstr "Žiadateľ schválenia"
 #: src/NotificationTargetCommonITILObject.php:859
 #: src/CommonITILValidation.php:916 src/CommonITILValidation.php:1111
 #: src/CommonITILValidation.php:1245 src/NotificationTargetTicket.php:673
-#: tests/files/_cache/templates/34/3469b1acf26f7378601172eefa8fb4128d638cb7d1dee721278b4040c8eea96e.php:153
-#: tests/files/_cache/templates/34/3469b1acf26f7378601172eefa8fb4128d638cb7d1dee721278b4040c8eea96e.php:211
-#: tests/files/_cache/templates/7c/7c19ba03b099dfa7dd9f68a985472e79d2a9a996a4c29b5afb81fa8bf28ce66f.php:153
-#: tests/files/_cache/templates/7c/7c19ba03b099dfa7dd9f68a985472e79d2a9a996a4c29b5afb81fa8bf28ce66f.php:211
-#: tests/files/_cache/templates/5a/5a84ecedda1b5fbc7ddad723a88152a58645ed134748fa7a490627286e1de2df.php:157
-#: tests/files/_cache/templates/5a/5a84ecedda1b5fbc7ddad723a88152a58645ed134748fa7a490627286e1de2df.php:215
-#: tests/files/_cache/templates/e9/e955220750f35332778b52613aa24889857e353a96affb37a7c0db2dfcb1dc75.php:153
-#: tests/files/_cache/templates/e9/e955220750f35332778b52613aa24889857e353a96affb37a7c0db2dfcb1dc75.php:211
 #: templates/components/itilobject/timeline/form_validation.html.twig:105
 #: templates/components/itilobject/timeline/form_validation.html.twig:139
 msgid "Approver"
@@ -11036,7 +10553,6 @@ msgstr "Priradené technikom"
 
 #: src/NotificationTargetCommonITILObject.php:1726
 #: src/CommonITILObject.php:4234 src/RuleTicket.php:602 src/RuleTicket.php:778
-#: tests/functionnal/Rule.php:308
 msgid "Assigned to a supplier"
 msgstr "Priradené dodávateľovi"
 
@@ -11106,10 +10622,6 @@ msgstr "Pozícia"
 #: src/NotificationTargetCommonITILObject.php:1878 src/ITILFollowup.php:76
 #: src/ITILFollowup.php:698 src/Profile.php:758 src/Profile.php:1280
 #: src/Profile.php:1285
-#: tests/files/_cache/templates/d9/d9ff0defb7a6902cec90dc43c390b93929de38bace13f1f0cd5aaef94cf91d8c.php:38
-#: tests/files/_cache/templates/45/453aa105311be3868bc59885140445aedd60d69ca06c4b863a6086e8c9ac7c9e.php:41
-#: tests/files/_cache/templates/7a/7ab5a51262ece5562ef47b92f852a73636e0ef3708dc5bc5dac94fb8f532792c.php:38
-#: tests/files/_cache/templates/bf/bff8a29a623919e2b5e4eac46a1a441bfa0667073855b8819448426ea91d8bc4.php:38
 msgid "Followup"
 msgid_plural "Followups"
 msgstr[0] "Reakcie"
@@ -11167,12 +10679,6 @@ msgid "Test connection to email server"
 msgstr "Testovacie pripojenie k e-mailovému serveru"
 
 #: src/AuthMail.php:233 src/MailCollector.php:259 src/Config.php:2131
-#: tests/functionnal/Session.php:243 tests/functionnal/Session.php:253
-#: tests/files/_cache/templates/8e/8e3c4a4e7d8d3c3fc89ad035ed5a62ade7226d13ba08ec10daa1f5c17d5d6bb0.php:89
-#: tests/files/_cache/templates/36/36eb9015fc68aa6561ad72c485744343fb510c69d629267fc56ad04fde21685e.php:89
-#: tests/files/_cache/templates/10/104080a47a2c862d5b04e8f402eb55a73bed4e4e5b72c3a71eca625314ec69fd.php:89
-#: tests/files/_cache/templates/41/41f85d772a9cb812227556c776936fec56495fa1a3ba6e04d4efbd73dd5d2907.php:89
-#: tests/files/_cache/templates/fd/fdcd2667d3217eb7471a30f03bca7f4bb3066d7166b0bc4a3483e0b92fb6dd89.php:89
 #: templates/components/form/snmpcredential.html.twig:79
 #: templates/components/form/snmpcredential.html.twig:96
 #: templates/pages/login.html.twig:50 templates/password_form.html.twig:54
@@ -11539,10 +11045,6 @@ msgid_plural "Passive device models"
 msgstr[0] "Modely pasívnych zariadení"
 
 #: src/Document.php:54
-#: tests/files/_cache/templates/d9/d9ff0defb7a6902cec90dc43c390b93929de38bace13f1f0cd5aaef94cf91d8c.php:38
-#: tests/files/_cache/templates/45/453aa105311be3868bc59885140445aedd60d69ca06c4b863a6086e8c9ac7c9e.php:41
-#: tests/files/_cache/templates/7a/7ab5a51262ece5562ef47b92f852a73636e0ef3708dc5bc5dac94fb8f532792c.php:38
-#: tests/files/_cache/templates/bf/bff8a29a623919e2b5e4eac46a1a441bfa0667073855b8819448426ea91d8bc4.php:38
 msgid "Document"
 msgid_plural "Documents"
 msgstr[0] "Dokumenty"
@@ -12118,23 +11620,14 @@ msgid "Deleting a problem"
 msgstr "Zmazanie problému"
 
 #: src/NotificationTargetProblem.php:198 src/Problem.php:490
-#: tests/files/_cache/templates/c9/c9551503c1a965e55c70a545b7eb30a74d88dc7da066cc07ffc932d21dd247cf.php:402
-#: tests/files/_cache/templates/d0/d04302c5e524245f01cbcb00e6a4d8d8178f7dedfab5a3df5fb0d0cca8d55c93.php:402
-#: tests/files/_cache/templates/a8/a8a5045af2f11c67abf82f0901b5cbe2f3e92702a3d5221f0deb986abee3b766.php:443
 msgid "Impacts"
 msgstr "Dopady"
 
 #: src/NotificationTargetProblem.php:199 src/Problem.php:499
-#: tests/files/_cache/templates/c9/c9551503c1a965e55c70a545b7eb30a74d88dc7da066cc07ffc932d21dd247cf.php:402
-#: tests/files/_cache/templates/d0/d04302c5e524245f01cbcb00e6a4d8d8178f7dedfab5a3df5fb0d0cca8d55c93.php:402
-#: tests/files/_cache/templates/a8/a8a5045af2f11c67abf82f0901b5cbe2f3e92702a3d5221f0deb986abee3b766.php:443
 msgid "Causes"
 msgstr "Príčiny"
 
 #: src/NotificationTargetProblem.php:200 src/Problem.php:508
-#: tests/files/_cache/templates/c9/c9551503c1a965e55c70a545b7eb30a74d88dc7da066cc07ffc932d21dd247cf.php:402
-#: tests/files/_cache/templates/d0/d04302c5e524245f01cbcb00e6a4d8d8178f7dedfab5a3df5fb0d0cca8d55c93.php:402
-#: tests/files/_cache/templates/a8/a8a5045af2f11c67abf82f0901b5cbe2f3e92702a3d5221f0deb986abee3b766.php:443
 msgid "Symptoms"
 msgstr "Symptómy"
 
@@ -12360,7 +11853,6 @@ msgstr "Zobraziť všetko"
 
 #: src/Dashboard/Filter.php:69 src/CommonITILObject.php:4253
 #: src/RuleTicket.php:595 src/RuleTicket.php:770
-#: tests/functionnal/Rule.php:307
 msgid "Technician group"
 msgstr "Skupina technikov"
 
@@ -12551,8 +12043,6 @@ msgid "Purge"
 msgstr "Vymazať"
 
 #: src/Dashboard/Dashboard.php:339 src/Planning.php:1603 src/Rule.php:3443
-#: tests/functionnal/Planning.php:73
-#: tests/functionnal/Glpi/Dashboard/Dashboard.php:136
 #, php-format
 msgid "Copy of %s"
 msgstr "Kópia %s"
@@ -12582,15 +12072,6 @@ msgid "CalDAV browser interface"
 msgstr "Prehliadač CalDAV"
 
 #: src/Planning.php:232 src/Planning.php:254 src/CommonITILRecurrent.php:104
-#: tests/files/_cache/templates/60/609093cd4b376a0b579fde9a14ec0428cfbfaf3bb561077d76767bf75ba3ef41.php:371
-#: tests/files/_cache/templates/92/92cc4f06f7651dc2e81c0eaee60752041f3587d3702a468fc22e21e9bd7ba289.php:371
-#: tests/files/_cache/templates/fe/feaa6b374d0d0767bdde2f0cd4ae428033e2288edd4b8cdf751364ea94dd0eb5.php:363
-#: tests/files/_cache/templates/78/781d7e174df36a609eaea5a057531a13c804675d5659937378609cbd475dd324.php:382
-#: tests/files/_cache/templates/42/427a8f2383fb9a7d8ea6fda1f5225d5c1e6832d595fe8b9f08387fff6e4caba3.php:83
-#: tests/files/_cache/templates/2e/2e4e2ce6f6456e15077ca7f3c04f0b9524c815cad383e040d7d0c490211d18ff.php:83
-#: tests/files/_cache/templates/75/7537adceddd40d018ee4ca912f6dc7276fb2dc01769adc67620e3d8d5f2dd78a.php:86
-#: tests/files/_cache/templates/05/054dc53d4ed1514b7332e18286877a70f36b69584d731eeb23562fd8032aaf33.php:86
-#: tests/files/_cache/templates/6f/6fa19a2016824f7baeea2c99b7f6e00a27a7016c1436b30f0b022e0b74ef4c2f.php:83
 #: js/misc.js:43
 #: templates/components/itilobject/timeline/form_task.html.twig:223
 msgid "Information"
@@ -12601,18 +12082,6 @@ msgstr[2] "Informácie"
 msgstr[3] "Informácie"
 
 #: src/Planning.php:235 src/Planning.php:255
-#: tests/files/_cache/templates/60/609093cd4b376a0b579fde9a14ec0428cfbfaf3bb561077d76767bf75ba3ef41.php:74
-#: tests/files/_cache/templates/60/609093cd4b376a0b579fde9a14ec0428cfbfaf3bb561077d76767bf75ba3ef41.php:371
-#: tests/files/_cache/templates/92/92cc4f06f7651dc2e81c0eaee60752041f3587d3702a468fc22e21e9bd7ba289.php:74
-#: tests/files/_cache/templates/92/92cc4f06f7651dc2e81c0eaee60752041f3587d3702a468fc22e21e9bd7ba289.php:371
-#: tests/files/_cache/templates/fe/feaa6b374d0d0767bdde2f0cd4ae428033e2288edd4b8cdf751364ea94dd0eb5.php:66
-#: tests/files/_cache/templates/fe/feaa6b374d0d0767bdde2f0cd4ae428033e2288edd4b8cdf751364ea94dd0eb5.php:363
-#: tests/files/_cache/templates/78/781d7e174df36a609eaea5a057531a13c804675d5659937378609cbd475dd324.php:76
-#: tests/files/_cache/templates/78/781d7e174df36a609eaea5a057531a13c804675d5659937378609cbd475dd324.php:382
-#: tests/files/_cache/templates/5a/5ad532dbb7e0f1703c7e886e1656b362f893b93de7bf1af058787bbc36bae4aa.php:248
-#: tests/files/_cache/templates/57/57d574eff33e342e65407f9d1e50a7c0e3db26e30e4b8a94179d14c3948f1dfa.php:249
-#: tests/files/_cache/templates/0b/0bf66f8931a0e42fe5606d956a435a034dbe4971a05c20e27899cdc1053c2a49.php:248
-#: tests/files/_cache/templates/82/82b845299eef77cb8e264c50261291d56a493dc91dae0e71c6f7ae713b86e979.php:248
 #: templates/components/itilobject/timeline/timeline.html.twig:98
 #: templates/components/itilobject/timeline/form_task.html.twig:44
 #: templates/components/itilobject/timeline/form_task.html.twig:224
@@ -12620,18 +12089,6 @@ msgid "To do"
 msgstr "Treba urobiť"
 
 #: src/Planning.php:238 src/Planning.php:256
-#: tests/files/_cache/templates/60/609093cd4b376a0b579fde9a14ec0428cfbfaf3bb561077d76767bf75ba3ef41.php:83
-#: tests/files/_cache/templates/60/609093cd4b376a0b579fde9a14ec0428cfbfaf3bb561077d76767bf75ba3ef41.php:371
-#: tests/files/_cache/templates/92/92cc4f06f7651dc2e81c0eaee60752041f3587d3702a468fc22e21e9bd7ba289.php:83
-#: tests/files/_cache/templates/92/92cc4f06f7651dc2e81c0eaee60752041f3587d3702a468fc22e21e9bd7ba289.php:371
-#: tests/files/_cache/templates/fe/feaa6b374d0d0767bdde2f0cd4ae428033e2288edd4b8cdf751364ea94dd0eb5.php:75
-#: tests/files/_cache/templates/fe/feaa6b374d0d0767bdde2f0cd4ae428033e2288edd4b8cdf751364ea94dd0eb5.php:363
-#: tests/files/_cache/templates/78/781d7e174df36a609eaea5a057531a13c804675d5659937378609cbd475dd324.php:85
-#: tests/files/_cache/templates/78/781d7e174df36a609eaea5a057531a13c804675d5659937378609cbd475dd324.php:382
-#: tests/files/_cache/templates/5a/5ad532dbb7e0f1703c7e886e1656b362f893b93de7bf1af058787bbc36bae4aa.php:257
-#: tests/files/_cache/templates/57/57d574eff33e342e65407f9d1e50a7c0e3db26e30e4b8a94179d14c3948f1dfa.php:258
-#: tests/files/_cache/templates/0b/0bf66f8931a0e42fe5606d956a435a034dbe4971a05c20e27899cdc1053c2a49.php:257
-#: tests/files/_cache/templates/82/82b845299eef77cb8e264c50261291d56a493dc91dae0e71c6f7ae713b86e979.php:257
 #: templates/components/itilobject/timeline/timeline.html.twig:100
 #: templates/components/itilobject/timeline/form_task.html.twig:46
 #: templates/components/itilobject/timeline/form_task.html.twig:225
@@ -12651,7 +12108,7 @@ msgstr "Vysvetlivky"
 msgid "Available"
 msgstr "Voľný"
 
-#: src/Planning.php:610 src/Rule.php:1451 tests/functionnal/Rule.php:294
+#: src/Planning.php:610 src/Rule.php:1451
 msgid "Unavailable"
 msgstr "Obsadený"
 
@@ -12938,12 +12395,7 @@ msgid "Battery type"
 msgid_plural "Battery types"
 msgstr[0] "Typy batérii"
 
-#: src/SLM.php:56
-#: tests/files/_cache/templates/c9/c9551503c1a965e55c70a545b7eb30a74d88dc7da066cc07ffc932d21dd247cf.php:370
-#: tests/files/_cache/templates/d0/d04302c5e524245f01cbcb00e6a4d8d8178f7dedfab5a3df5fb0d0cca8d55c93.php:370
-#: tests/files/_cache/templates/a3/a3407b290116d75d02ec511bcea4e39d84c3f13b6b7e3f3e37796cd6665a5856.php:370
-#: tests/files/_cache/templates/a8/a8a5045af2f11c67abf82f0901b5cbe2f3e92702a3d5221f0deb986abee3b766.php:411
-#: templates/components/itilobject/fields_panel.html.twig:275
+#: src/SLM.php:56 templates/components/itilobject/fields_panel.html.twig:275
 msgid "Service level"
 msgid_plural "Service levels"
 msgstr[0] "Úroveň služieb"
@@ -13779,7 +13231,6 @@ msgid_plural "Line operators"
 msgstr[0] "Telekomunikačný operátori"
 
 #: src/Profile.php:2428 src/RuleTicketCollection.php:68 src/RuleTicket.php:50
-#: tests/functionnal/Rule.php:157
 msgid "Business rules for tickets"
 msgstr "Firemné pravidlá pre požiadavky"
 
@@ -14216,100 +13667,100 @@ msgstr "Aktualizácia poľa"
 msgid "Change %1$s to %2$s"
 msgstr "Zmena %1$s na %2$s"
 
-#: src/Log.php:1008 tests/functionnal/Log.php:508
+#: src/Log.php:1008
 msgid "Update a field"
 msgstr "Aktualizácia poľa"
 
 #: src/Log.php:1048 src/Config.php:3097
-#: src/NotificationTargetFieldUnicity.php:47 tests/functionnal/Log.php:475
+#: src/NotificationTargetFieldUnicity.php:47
 msgid "Add the item"
 msgstr "Pridanie položky"
 
-#: src/Log.php:1052 src/Config.php:3100 tests/functionnal/Log.php:468
+#: src/Log.php:1052 src/Config.php:3100
 msgid "Delete the item"
 msgstr "Odstránenie položky"
 
-#: src/Log.php:1056 tests/functionnal/Log.php:481
+#: src/Log.php:1056
 msgid "Lock the item"
 msgstr "Uzamknutie položky"
 
-#: src/Log.php:1060 tests/functionnal/Log.php:482
+#: src/Log.php:1060
 msgid "Unlock the item"
 msgstr "Odomknutie položky"
 
-#: src/Log.php:1064 src/Config.php:3105 tests/functionnal/Log.php:469
+#: src/Log.php:1064 src/Config.php:3105
 msgid "Restore the item"
 msgstr "Obnovenie položky"
 
-#: src/Log.php:1068 tests/functionnal/Log.php:458
+#: src/Log.php:1068
 msgid "Add a component"
 msgstr "Pridanie komponentu"
 
-#: src/Log.php:1072 tests/functionnal/Log.php:459
+#: src/Log.php:1072
 msgid "Change a component"
 msgstr "Zmena komponentu"
 
-#: src/Log.php:1076 tests/functionnal/Log.php:460
+#: src/Log.php:1076
 msgid "Delete a component"
 msgstr "Zmazanie komponentu"
 
-#: src/Log.php:1080 tests/functionnal/Log.php:465
+#: src/Log.php:1080
 msgid "Lock a component"
 msgstr "Uzamknutie komponentu"
 
-#: src/Log.php:1084 tests/functionnal/Log.php:466
+#: src/Log.php:1084
 msgid "Unlock a component"
 msgstr "Odomknutie komponentu"
 
-#: src/Log.php:1088 tests/functionnal/Log.php:461
+#: src/Log.php:1088
 msgid "Install a software"
 msgstr "Inštalácia softvéru"
 
-#: src/Log.php:1092 tests/functionnal/Log.php:462
+#: src/Log.php:1092
 msgid "Uninstall a software"
 msgstr "Odinštalovanie softvéru"
 
-#: src/Log.php:1096 tests/functionnal/Log.php:463
+#: src/Log.php:1096
 msgid "Disconnect an item"
 msgstr "Odpojenie položky"
 
-#: src/Log.php:1100 src/Computer_Item.php:351 tests/functionnal/Log.php:464
+#: src/Log.php:1100 src/Computer_Item.php:351
 msgid "Connect an item"
 msgstr "Pripojiť položku"
 
-#: src/Log.php:1104 tests/functionnal/Log.php:470
+#: src/Log.php:1104
 msgid "Add a link with an item"
 msgstr "Pridanie spojenia s položkou"
 
-#: src/Log.php:1108 tests/functionnal/Log.php:476
+#: src/Log.php:1108
 msgid "Update a link with an item"
 msgstr "Aktualizácia spojenia s položkou"
 
-#: src/Log.php:1112 tests/functionnal/Log.php:471
+#: src/Log.php:1112
 msgid "Delete a link with an item"
 msgstr "Zmazanie spojenia s položkou"
 
-#: src/Log.php:1116 tests/functionnal/Log.php:477
+#: src/Log.php:1116
 msgid "Lock a link with an item"
 msgstr "Uzamknutie spojenia s položkou"
 
-#: src/Log.php:1120 tests/functionnal/Log.php:479
+#: src/Log.php:1120
 msgid "Unlock a link with an item"
 msgstr "Odomknutie spojenia s položkou"
 
-#: src/Log.php:1128 tests/functionnal/Log.php:473
+#: src/Log.php:1128
 msgid "Update an item"
 msgstr "Aktualizácia položky"
 
-#: src/Log.php:1132 tests/functionnal/Log.php:474
+#: src/Log.php:1132
 msgid "Delete an item"
 msgstr "Odstránenie položky"
 
-#: src/Log.php:1136 tests/functionnal/Log.php:478
+#: src/Log.php:1136
 msgid "Lock an item"
 msgstr "Uzamknutie položky"
 
-#: src/Log.php:1140 tests/functionnal/Log.php:480
+#: src/Log.php:1140
 msgid "Unlock an item"
 msgstr "Odomknutie položky"
 
@@ -15340,9 +14791,6 @@ msgid_plural "Subnet masks"
 msgstr[0] "Masky podsiete"
 
 #: src/Change.php:500 src/Change.php:516 src/NotificationTargetChange.php:272
-#: tests/files/_cache/templates/c9/c9551503c1a965e55c70a545b7eb30a74d88dc7da066cc07ffc932d21dd247cf.php:402
-#: tests/files/_cache/templates/d0/d04302c5e524245f01cbcb00e6a4d8d8178f7dedfab5a3df5fb0d0cca8d55c93.php:402
-#: tests/files/_cache/templates/a8/a8a5045af2f11c67abf82f0901b5cbe2f3e92702a3d5221f0deb986abee3b766.php:443
 msgid "Control list"
 msgstr "Riadiaci zoznam"
 
@@ -15351,23 +14799,14 @@ msgid "Analysis impact"
 msgstr "Analýza dopadov"
 
 #: src/Change.php:525 src/NotificationTargetChange.php:273
-#: tests/files/_cache/templates/c9/c9551503c1a965e55c70a545b7eb30a74d88dc7da066cc07ffc932d21dd247cf.php:489
-#: tests/files/_cache/templates/d0/d04302c5e524245f01cbcb00e6a4d8d8178f7dedfab5a3df5fb0d0cca8d55c93.php:489
-#: tests/files/_cache/templates/a8/a8a5045af2f11c67abf82f0901b5cbe2f3e92702a3d5221f0deb986abee3b766.php:530
 msgid "Deployment plan"
 msgstr "Plán nasadenia"
 
 #: src/Change.php:534 src/NotificationTargetChange.php:274
-#: tests/files/_cache/templates/c9/c9551503c1a965e55c70a545b7eb30a74d88dc7da066cc07ffc932d21dd247cf.php:489
-#: tests/files/_cache/templates/d0/d04302c5e524245f01cbcb00e6a4d8d8178f7dedfab5a3df5fb0d0cca8d55c93.php:489
-#: tests/files/_cache/templates/a8/a8a5045af2f11c67abf82f0901b5cbe2f3e92702a3d5221f0deb986abee3b766.php:530
 msgid "Backup plan"
 msgstr "Plán zálohovania"
 
 #: src/Change.php:543 src/NotificationTargetChange.php:275
-#: tests/files/_cache/templates/c9/c9551503c1a965e55c70a545b7eb30a74d88dc7da066cc07ffc932d21dd247cf.php:489
-#: tests/files/_cache/templates/d0/d04302c5e524245f01cbcb00e6a4d8d8178f7dedfab5a3df5fb0d0cca8d55c93.php:489
-#: tests/files/_cache/templates/a8/a8a5045af2f11c67abf82f0901b5cbe2f3e92702a3d5221f0deb986abee3b766.php:530
 msgid "Checklist"
 msgstr "Kontrolný zoznam"
 
@@ -15767,10 +15206,6 @@ msgid "Confirm"
 msgstr "Potvrdiť"
 
 #: src/CommonDropdown.php:593 src/CommonDropdown.php:627
-#: tests/files/_cache/templates/39/3979fab384dc7b3d40ad0bd29e5552a266336bbae824920aee56a4c0ef2ee85b.php:60
-#: tests/files/_cache/templates/c6/c6507da9b4c57748da13516107d15fe9c5998c67198883808e658c051d5274f3.php:60
-#: tests/files/_cache/templates/f5/f56d14c82db2ef68c59cbbd5507a5ceda1849a7e73aa7b5c34f63ed4b3d9d06e.php:63
-#: tests/files/_cache/templates/de/de08e71fce2457275919fa09dd61dcba489f9cebe994f058b33287c6f55a904b.php:60
 msgctxt "button"
 msgid "Cancel"
 msgstr "Zrušiť"
@@ -15836,10 +15271,6 @@ msgid "Cancel the approval request to %s"
 msgstr "Zrušenie schválenia požiadavky na %s"
 
 #: src/CommonITILValidation.php:525
-#: tests/files/_cache/templates/aa/aa3958dc91e53fa205aa57d010768ad473cfa2f71666e8c28919c0736e35113a.php:97
-#: tests/files/_cache/templates/f2/f262bc2f67d5729f1ee98298e1bd3b5fb1523bd23b3301291d60127c4e25f0e7.php:97
-#: tests/files/_cache/templates/65/65a21c01746225e9a16497097984783e3ef9780be4e11cfa24a3369206cbc51d.php:97
-#: tests/files/_cache/templates/52/52c2286f94e588a7071b76e569a876729d0bb8123eb88949b798b933d1b8c090.php:97
 msgctxt "validation"
 msgid "Refused"
 msgstr "Zamietnuté"
@@ -15862,7 +15293,7 @@ msgid "Global approval status"
 msgstr "Globálny stav schválenia"
 
 #: src/CommonITILValidation.php:864 src/CommonITILValidation.php:1136
-#: src/RuleTicket.php:899 tests/functionnal/Rule.php:343
+#: src/RuleTicket.php:899
 msgid "Minimum validation required"
 msgstr "Požadované minimálne schválenie"
 
@@ -15895,8 +15326,6 @@ msgstr "Schválenia požiadavky"
 
 #: src/CommonITILValidation.php:932 src/RuleTicket.php:874
 #: src/RuleTicket.php:882 src/RuleTicket.php:890 src/RuleTicket.php:898
-#: tests/functionnal/Rule.php:332 tests/functionnal/Rule.php:337
-#: tests/functionnal/Rule.php:342
 msgid "Send an approval request"
 msgstr "Poslať požiadavku na schválenie"
 
@@ -16461,7 +15890,7 @@ msgid "Peripheral type"
 msgid_plural "Peripheral types"
 msgstr[0] "Typy periférií"
 
-#: src/Rule.php:559 tests/functionnal/Rule.php:154
+#: src/Rule.php:559
 msgid "Rules management"
 msgstr "Správa pravidiel"
 
@@ -17234,9 +16663,6 @@ msgid_plural "Problems"
 msgstr[0] "Problémy"
 
 #: src/Problem.php:483
-#: tests/files/_cache/templates/c9/c9551503c1a965e55c70a545b7eb30a74d88dc7da066cc07ffc932d21dd247cf.php:435
-#: tests/files/_cache/templates/d0/d04302c5e524245f01cbcb00e6a4d8d8178f7dedfab5a3df5fb0d0cca8d55c93.php:435
-#: tests/files/_cache/templates/a8/a8a5045af2f11c67abf82f0901b5cbe2f3e92702a3d5221f0deb986abee3b766.php:476
 #: templates/components/itilobject/fields_panel.html.twig:307
 msgid "Analysis"
 msgstr "Analýzy"
@@ -17329,13 +16755,8 @@ msgstr "Kalendár %s"
 msgid "Password expires"
 msgstr "Koniec platnosti hesla"
 
-#: src/NotificationTargetUser.php:41
-#: tests/files/_cache/templates/8e/8e3c4a4e7d8d3c3fc89ad035ed5a62ade7226d13ba08ec10daa1f5c17d5d6bb0.php:103
-#: tests/files/_cache/templates/36/36eb9015fc68aa6561ad72c485744343fb510c69d629267fc56ad04fde21685e.php:103
-#: tests/files/_cache/templates/10/104080a47a2c862d5b04e8f402eb55a73bed4e4e5b72c3a71eca625314ec69fd.php:103
-#: tests/files/_cache/templates/41/41f85d772a9cb812227556c776936fec56495fa1a3ba6e04d4efbd73dd5d2907.php:103
-#: tests/files/_cache/templates/fd/fdcd2667d3217eb7471a30f03bca7f4bb3066d7166b0bc4a3483e0b92fb6dd89.php:103
-#: templates/pages/login.html.twig:55 templates/password_form.html.twig:42
+#: src/NotificationTargetUser.php:41 templates/pages/login.html.twig:55
+#: templates/password_form.html.twig:42
 msgid "Forgotten password?"
 msgstr "Zabudnuté heslo?"
 
@@ -18220,10 +17641,6 @@ msgid "End at %s"
 msgstr "Koniec %s"
 
 #: src/KnowbaseItem.php:699 src/KnowbaseItem.php:722
-#: tests/files/_cache/templates/54/541698b9965a85a811622d6ec97f91f698891b53db7037b15d5a6e4998539b3e.php:151
-#: tests/files/_cache/templates/53/53b696dfcb43cb837a1f1cc8f2039249617f7ada30ec42cf8fe071b2306ad710.php:151
-#: tests/files/_cache/templates/fc/fcd4bb1c1011c8a257fcdbcb92a74826c1a401c28fde6f060108aa1e473f50d8.php:151
-#: tests/files/_cache/templates/6c/6cb776653e176d86ed5e032cd185be3d7df39dc9dcca4b79a6aeb2c27267a7db.php:154
 msgid "New item"
 msgstr "Nová položka"
 
@@ -19394,14 +18811,6 @@ msgid "%s: send cartridge alert failed"
 msgstr "%s: odoslanie upozornenia na náplne zlyhalo"
 
 #: src/Entity.php:164
-#: tests/files/_cache/templates/c9/c9551503c1a965e55c70a545b7eb30a74d88dc7da066cc07ffc932d21dd247cf.php:67
-#: tests/files/_cache/templates/c9/c9551503c1a965e55c70a545b7eb30a74d88dc7da066cc07ffc932d21dd247cf.php:91
-#: tests/files/_cache/templates/d0/d04302c5e524245f01cbcb00e6a4d8d8178f7dedfab5a3df5fb0d0cca8d55c93.php:67
-#: tests/files/_cache/templates/d0/d04302c5e524245f01cbcb00e6a4d8d8178f7dedfab5a3df5fb0d0cca8d55c93.php:91
-#: tests/files/_cache/templates/a3/a3407b290116d75d02ec511bcea4e39d84c3f13b6b7e3f3e37796cd6665a5856.php:67
-#: tests/files/_cache/templates/a3/a3407b290116d75d02ec511bcea4e39d84c3f13b6b7e3f3e37796cd6665a5856.php:91
-#: tests/files/_cache/templates/a8/a8a5045af2f11c67abf82f0901b5cbe2f3e92702a3d5221f0deb986abee3b766.php:75
-#: tests/files/_cache/templates/a8/a8a5045af2f11c67abf82f0901b5cbe2f3e92702a3d5221f0deb986abee3b766.php:99
 #: templates/components/itilobject/fields_panel.html.twig:58
 #: templates/components/itilobject/fields_panel.html.twig:74
 msgid "Entity"
@@ -20787,11 +20196,11 @@ msgstr "Kategória požiadavky z kódu"
 msgid "Responsible of the requester"
 msgstr "Zodpovedná osoba za žiadateľa"
 
-#: src/RuleTicket.php:904 tests/functionnal/Rule.php:345
+#: src/RuleTicket.php:904
 msgid "Approval request to requester group manager"
 msgstr "Požiadavka na schválenie manažérovi skupiny"
 
-#: src/RuleTicket.php:911 tests/functionnal/Rule.php:346
+#: src/RuleTicket.php:911
 msgid "Approval request to technician group manager"
 msgstr "Požiadavka na schválenie manažérovi skupiny technikov"
 
@@ -23588,575 +22997,6 @@ msgstr[0] "Zdroje napájania"
 msgid "ATX"
 msgstr "ATX"
 
-#: tests/files/_cache/templates/60/609093cd4b376a0b579fde9a14ec0428cfbfaf3bb561077d76767bf75ba3ef41.php:208
-#: tests/files/_cache/templates/d2/d29ab1811ed2717431f6530a6811185702b5d1e38d4cc87fa93cee70ed937521.php:83
-#: tests/files/_cache/templates/92/92cc4f06f7651dc2e81c0eaee60752041f3587d3702a468fc22e21e9bd7ba289.php:208
-#: tests/files/_cache/templates/fe/feaa6b374d0d0767bdde2f0cd4ae428033e2288edd4b8cdf751364ea94dd0eb5.php:200
-#: tests/files/_cache/templates/78/781d7e174df36a609eaea5a057531a13c804675d5659937378609cbd475dd324.php:210
-#: tests/files/_cache/templates/47/475b56c8138b8da82981cd93d900300b439bb7b405db83d27ecf9764ef9e9be8.php:93
-#: tests/files/_cache/templates/bc/bcc4581ae3e84f6e01a39bb3810e1ddfcbd0ebcab42e895cf567a1ce09c69ba9.php:91
-#: tests/files/_cache/templates/ea/eaac299052d58bad6083cc45f72662d7132c95b16ad889c9c6d981dfd650fb9a.php:91
-#: templates/components/itilobject/timeline/form_task.html.twig:106
-#: templates/components/itilobject/timeline/form_followup.html.twig:57
-#, php-format
-msgid "Merged from Ticket %1$s"
-msgstr "Zlúčené s požiadavkou č. %1$s"
-
-#: tests/files/_cache/templates/60/609093cd4b376a0b579fde9a14ec0428cfbfaf3bb561077d76767bf75ba3ef41.php:235
-#: tests/files/_cache/templates/d2/d29ab1811ed2717431f6530a6811185702b5d1e38d4cc87fa93cee70ed937521.php:110
-#: tests/files/_cache/templates/92/92cc4f06f7651dc2e81c0eaee60752041f3587d3702a468fc22e21e9bd7ba289.php:235
-#: tests/files/_cache/templates/fe/feaa6b374d0d0767bdde2f0cd4ae428033e2288edd4b8cdf751364ea94dd0eb5.php:227
-#: tests/files/_cache/templates/78/781d7e174df36a609eaea5a057531a13c804675d5659937378609cbd475dd324.php:237
-#: tests/files/_cache/templates/47/475b56c8138b8da82981cd93d900300b439bb7b405db83d27ecf9764ef9e9be8.php:120
-#: tests/files/_cache/templates/bc/bcc4581ae3e84f6e01a39bb3810e1ddfcbd0ebcab42e895cf567a1ce09c69ba9.php:118
-#: tests/files/_cache/templates/ea/eaac299052d58bad6083cc45f72662d7132c95b16ad889c9c6d981dfd650fb9a.php:118
-#: templates/components/itilobject/timeline/form_task.html.twig:118
-#: templates/components/itilobject/timeline/form_followup.html.twig:69
-#, php-format
-msgid "Promoted to Ticket %1$s"
-msgstr "Povýšené na požiadavku č. %1$s"
-
-#: tests/files/_cache/templates/60/609093cd4b376a0b579fde9a14ec0428cfbfaf3bb561077d76767bf75ba3ef41.php:406
-#: tests/files/_cache/templates/aa/aa3958dc91e53fa205aa57d010768ad473cfa2f71666e8c28919c0736e35113a.php:283
-#: tests/files/_cache/templates/92/92cc4f06f7651dc2e81c0eaee60752041f3587d3702a468fc22e21e9bd7ba289.php:406
-#: tests/files/_cache/templates/78/781d7e174df36a609eaea5a057531a13c804675d5659937378609cbd475dd324.php:417
-#: tests/files/_cache/templates/47/475b56c8138b8da82981cd93d900300b439bb7b405db83d27ecf9764ef9e9be8.php:247
-#: tests/files/_cache/templates/f2/f262bc2f67d5729f1ee98298e1bd3b5fb1523bd23b3301291d60127c4e25f0e7.php:283
-#: tests/files/_cache/templates/65/65a21c01746225e9a16497097984783e3ef9780be4e11cfa24a3369206cbc51d.php:287
-#: tests/files/_cache/templates/bc/bcc4581ae3e84f6e01a39bb3810e1ddfcbd0ebcab42e895cf567a1ce09c69ba9.php:236
-#: tests/files/_cache/templates/ea/eaac299052d58bad6083cc45f72662d7132c95b16ad889c9c6d981dfd650fb9a.php:236
-#: tests/files/_cache/templates/52/52c2286f94e588a7071b76e569a876729d0bb8123eb88949b798b933d1b8c090.php:283
-#: templates/components/itilobject/timeline/form_task.html.twig:250
-#: templates/components/itilobject/timeline/form_followup.html.twig:159
-#: templates/components/itilobject/timeline/form_solution.html.twig:178
-msgid "Link to knowledge base entry #%id"
-msgstr "Pripojiť položku databázy znalostí č. %id"
-
-#: tests/files/_cache/templates/60/609093cd4b376a0b579fde9a14ec0428cfbfaf3bb561077d76767bf75ba3ef41.php:552
-#: tests/files/_cache/templates/92/92cc4f06f7651dc2e81c0eaee60752041f3587d3702a468fc22e21e9bd7ba289.php:552
-#: tests/files/_cache/templates/fe/feaa6b374d0d0767bdde2f0cd4ae428033e2288edd4b8cdf751364ea94dd0eb5.php:494
-#: tests/files/_cache/templates/78/781d7e174df36a609eaea5a057531a13c804675d5659937378609cbd475dd324.php:563
-#: templates/components/itilobject/timeline/form_task.html.twig:347
-msgid "Plan this task"
-msgstr "Naplánovať túto úlohu"
-
-#: tests/files/_cache/templates/d5/d55ebd2978a100583cb2cda10e8b63743f25c06ece28b248a910814b8f7f06fc.php:70
-#: tests/files/_cache/templates/91/915df68d9d66da8a76354a67f5ee6831097d1009e69d13cc8c115d78e80c6bd2.php:71
-#: tests/files/_cache/templates/16/1670adea735a32c8f12d713812f9c81dbbb19f566d2b8ae90da0a14db6099c59.php:70
-#: tests/files/_cache/templates/3f/3f1777a642c6a740ef8d3060d3c16522f1f5b960d63147a80fc6b21cbb1b1fc1.php:70
-#: templates/components/itilobject/footer.html.twig:44
-msgid "View other actions"
-msgstr ""
-
-#: tests/files/_cache/templates/d5/d55ebd2978a100583cb2cda10e8b63743f25c06ece28b248a910814b8f7f06fc.php:148
-#: tests/files/_cache/templates/91/915df68d9d66da8a76354a67f5ee6831097d1009e69d13cc8c115d78e80c6bd2.php:155
-#: tests/files/_cache/templates/16/1670adea735a32c8f12d713812f9c81dbbb19f566d2b8ae90da0a14db6099c59.php:148
-#: tests/files/_cache/templates/3f/3f1777a642c6a740ef8d3060d3c16522f1f5b960d63147a80fc6b21cbb1b1fc1.php:148
-#: templates/components/itilobject/footer.html.twig:69
-msgid "Toggle panels width"
-msgstr ""
-
-#: tests/files/_cache/templates/8e/8e3c4a4e7d8d3c3fc89ad035ed5a62ade7226d13ba08ec10daa1f5c17d5d6bb0.php:73
-#: tests/files/_cache/templates/36/36eb9015fc68aa6561ad72c485744343fb510c69d629267fc56ad04fde21685e.php:73
-#: tests/files/_cache/templates/10/104080a47a2c862d5b04e8f402eb55a73bed4e4e5b72c3a71eca625314ec69fd.php:73
-#: tests/files/_cache/templates/41/41f85d772a9cb812227556c776936fec56495fa1a3ba6e04d4efbd73dd5d2907.php:73
-#: tests/files/_cache/templates/fd/fdcd2667d3217eb7471a30f03bca7f4bb3066d7166b0bc4a3483e0b92fb6dd89.php:73
-#: templates/pages/login.html.twig:43
-msgid "Login to your account"
-msgstr ""
-
-#: tests/files/_cache/templates/8e/8e3c4a4e7d8d3c3fc89ad035ed5a62ade7226d13ba08ec10daa1f5c17d5d6bb0.php:142
-#: tests/files/_cache/templates/36/36eb9015fc68aa6561ad72c485744343fb510c69d629267fc56ad04fde21685e.php:142
-#: tests/files/_cache/templates/10/104080a47a2c862d5b04e8f402eb55a73bed4e4e5b72c3a71eca625314ec69fd.php:142
-#: tests/files/_cache/templates/41/41f85d772a9cb812227556c776936fec56495fa1a3ba6e04d4efbd73dd5d2907.php:142
-#: tests/files/_cache/templates/fd/fdcd2667d3217eb7471a30f03bca7f4bb3066d7166b0bc4a3483e0b92fb6dd89.php:142
-#: templates/pages/login.html.twig:72
-msgid "Login source"
-msgstr ""
-
-#: tests/files/_cache/templates/8e/8e3c4a4e7d8d3c3fc89ad035ed5a62ade7226d13ba08ec10daa1f5c17d5d6bb0.php:167
-#: tests/files/_cache/templates/36/36eb9015fc68aa6561ad72c485744343fb510c69d629267fc56ad04fde21685e.php:167
-#: tests/files/_cache/templates/10/104080a47a2c862d5b04e8f402eb55a73bed4e4e5b72c3a71eca625314ec69fd.php:167
-#: tests/files/_cache/templates/41/41f85d772a9cb812227556c776936fec56495fa1a3ba6e04d4efbd73dd5d2907.php:167
-#: tests/files/_cache/templates/fd/fdcd2667d3217eb7471a30f03bca7f4bb3066d7166b0bc4a3483e0b92fb6dd89.php:167
-#: templates/pages/login.html.twig:81
-msgid "Remember me"
-msgstr "Zapamätať si ma"
-
-#: tests/files/_cache/templates/8e/8e3c4a4e7d8d3c3fc89ad035ed5a62ade7226d13ba08ec10daa1f5c17d5d6bb0.php:179
-#: tests/files/_cache/templates/36/36eb9015fc68aa6561ad72c485744343fb510c69d629267fc56ad04fde21685e.php:179
-#: tests/files/_cache/templates/10/104080a47a2c862d5b04e8f402eb55a73bed4e4e5b72c3a71eca625314ec69fd.php:179
-#: tests/files/_cache/templates/41/41f85d772a9cb812227556c776936fec56495fa1a3ba6e04d4efbd73dd5d2907.php:179
-#: tests/files/_cache/templates/fd/fdcd2667d3217eb7471a30f03bca7f4bb3066d7166b0bc4a3483e0b92fb6dd89.php:179
-#: templates/pages/login.html.twig:88
-msgid "Sign in"
-msgstr ""
-
-#: tests/files/_cache/templates/a6/a6c6a097a4d4d66e0baecfcd6661c26a3da2077faaa0dd4fee735230fc93b303.php:82
-#: tests/files/_cache/templates/d2/d28213be07718475fc6f476f82527a6d85dc5ce64cc25b3be84c0205fb2b090d.php:82
-#: tests/files/_cache/templates/f6/f606b1d43e7044bd73f35e7f579a617079451bb66bcb69f2090c2f808e85fba8.php:82
-#: tests/files/_cache/templates/6c/6cc5f93316ab4eaf267dd27bc8033f386c2e4cfc6167f43bf11aca9ff87fdbc7.php:85
-#: templates/components/itilobject/fields/priority_matrix.html.twig:71
-msgid "impact"
-msgstr ""
-
-#: tests/files/_cache/templates/a6/a6c6a097a4d4d66e0baecfcd6661c26a3da2077faaa0dd4fee735230fc93b303.php:105
-#: tests/files/_cache/templates/d2/d28213be07718475fc6f476f82527a6d85dc5ce64cc25b3be84c0205fb2b090d.php:105
-#: tests/files/_cache/templates/f6/f606b1d43e7044bd73f35e7f579a617079451bb66bcb69f2090c2f808e85fba8.php:105
-#: tests/files/_cache/templates/6c/6cc5f93316ab4eaf267dd27bc8033f386c2e4cfc6167f43bf11aca9ff87fdbc7.php:108
-#: templates/components/itilobject/fields/priority_matrix.html.twig:92
-msgid "priority"
-msgstr ""
-
-#: tests/files/_cache/templates/54/541698b9965a85a811622d6ec97f91f698891b53db7037b15d5a6e4998539b3e.php:128
-#: tests/files/_cache/templates/53/53b696dfcb43cb837a1f1cc8f2039249617f7ada30ec42cf8fe071b2306ad710.php:128
-#: tests/files/_cache/templates/fc/fcd4bb1c1011c8a257fcdbcb92a74826c1a401c28fde6f060108aa1e473f50d8.php:128
-#: tests/files/_cache/templates/6c/6cb776653e176d86ed5e032cd185be3d7df39dc9dcca4b79a6aeb2c27267a7db.php:131
-#: templates/components/form/dates.html.twig:53
-#, php-format
-msgid "Created from the template %s"
-msgstr "Vytvorené zo šablóny %s"
-
-#: tests/files/_cache/templates/54/541698b9965a85a811622d6ec97f91f698891b53db7037b15d5a6e4998539b3e.php:257
-#: tests/files/_cache/templates/53/53b696dfcb43cb837a1f1cc8f2039249617f7ada30ec42cf8fe071b2306ad710.php:248
-#: tests/files/_cache/templates/fc/fcd4bb1c1011c8a257fcdbcb92a74826c1a401c28fde6f060108aa1e473f50d8.php:257
-#: tests/files/_cache/templates/6c/6cb776653e176d86ed5e032cd185be3d7df39dc9dcca4b79a6aeb2c27267a7db.php:251
-msgid "Change visibility in child entities."
-msgstr ""
-
-#: tests/files/_cache/templates/54/541698b9965a85a811622d6ec97f91f698891b53db7037b15d5a6e4998539b3e.php:265
-#: tests/files/_cache/templates/53/53b696dfcb43cb837a1f1cc8f2039249617f7ada30ec42cf8fe071b2306ad710.php:256
-#: tests/files/_cache/templates/fc/fcd4bb1c1011c8a257fcdbcb92a74826c1a401c28fde6f060108aa1e473f50d8.php:265
-#: tests/files/_cache/templates/6c/6cb776653e176d86ed5e032cd185be3d7df39dc9dcca4b79a6aeb2c27267a7db.php:259
-msgid "Can՛t change this attribute. It՛s inherited from its parent."
-msgstr ""
-
-#: tests/files/_cache/templates/54/541698b9965a85a811622d6ec97f91f698891b53db7037b15d5a6e4998539b3e.php:279
-#: tests/files/_cache/templates/53/53b696dfcb43cb837a1f1cc8f2039249617f7ada30ec42cf8fe071b2306ad710.php:265
-#: tests/files/_cache/templates/fc/fcd4bb1c1011c8a257fcdbcb92a74826c1a401c28fde6f060108aa1e473f50d8.php:279
-#: tests/files/_cache/templates/6c/6cb776653e176d86ed5e032cd185be3d7df39dc9dcca4b79a6aeb2c27267a7db.php:268
-msgid "You are not allowed to change the visibility flag for child entities."
-msgstr "Nemáte oprávnenie meniť viditeľnosť pre podriadené entity."
-
-#: tests/files/_cache/templates/54/541698b9965a85a811622d6ec97f91f698891b53db7037b15d5a6e4998539b3e.php:293
-#: tests/files/_cache/templates/53/53b696dfcb43cb837a1f1cc8f2039249617f7ada30ec42cf8fe071b2306ad710.php:274
-#: tests/files/_cache/templates/fc/fcd4bb1c1011c8a257fcdbcb92a74826c1a401c28fde6f060108aa1e473f50d8.php:293
-#: tests/files/_cache/templates/6c/6cb776653e176d86ed5e032cd185be3d7df39dc9dcca4b79a6aeb2c27267a7db.php:277
-msgid "Flag change forbidden. Linked items found."
-msgstr "Zmena indikátora zakázaná. Existujú prepojené položky."
-
-#: tests/files/_cache/templates/c2/c27b9c1fd86b306d14771dd9106b7881c1ef0672d9ef70b504d2dd85006a3653.php:174
-#: tests/files/_cache/templates/d2/d23223d7aa38f8b358f274f3c7c8bb4e234bac24be14d3ffa1f55cdf24bd8bea.php:171
-#: tests/files/_cache/templates/0c/0c79af2fcb69fe657552cdcf03e937c27375bb68a332301745ad0334f335b08e.php:171
-#: tests/files/_cache/templates/51/51711915f18c44d74a119387c2754ba53f8fd99c386bd5c8f9b9c05301c929d6.php:171
-#: templates/components/itilobject/actors/field.html.twig:92
-msgid "Direct email"
-msgstr ""
-
-#: tests/files/_cache/templates/c2/c27b9c1fd86b306d14771dd9106b7881c1ef0672d9ef70b504d2dd85006a3653.php:251
-#: tests/files/_cache/templates/d2/d23223d7aa38f8b358f274f3c7c8bb4e234bac24be14d3ffa1f55cdf24bd8bea.php:248
-#: tests/files/_cache/templates/0c/0c79af2fcb69fe657552cdcf03e937c27375bb68a332301745ad0334f335b08e.php:248
-#: tests/files/_cache/templates/51/51711915f18c44d74a119387c2754ba53f8fd99c386bd5c8f9b9c05301c929d6.php:248
-#: templates/components/itilobject/actors/field.html.twig:143
-msgid "Number of tickets already assigned"
-msgstr ""
-
-#: tests/files/_cache/templates/ca/ca1147f88b73f6dd31fbdf36d43efff26ac0773dde7ba8a6ef42661db255028c.php:160
-#: tests/files/_cache/templates/84/8451440f1e5aba265c66e7a555c4082b15b6fcdf79451988c787bfa5ec237f6e.php:155
-#: tests/files/_cache/templates/cd/cd10fe8567d7c5442eda04afac64a083d37306564baee63feb4fed9779d0989a.php:155
-#: tests/files/_cache/templates/c7/c727dda47fb564b415967f165f3d365b6c7f0bdfccfd22ac4fe5a0322a19753f.php:155
-msgid "Check to keep the devices while deleting this item"
-msgstr "Ponechať zariadenia pri odstránení tejto položky"
-
-#: tests/files/_cache/templates/c9/c9551503c1a965e55c70a545b7eb30a74d88dc7da066cc07ffc932d21dd247cf.php:158
-#: tests/files/_cache/templates/d0/d04302c5e524245f01cbcb00e6a4d8d8178f7dedfab5a3df5fb0d0cca8d55c93.php:158
-#: tests/files/_cache/templates/a3/a3407b290116d75d02ec511bcea4e39d84c3f13b6b7e3f3e37796cd6665a5856.php:158
-#: tests/files/_cache/templates/a8/a8a5045af2f11c67abf82f0901b5cbe2f3e92702a3d5221f0deb986abee3b766.php:166
-#: templates/components/itilobject/fields_panel.html.twig:120
-msgid "Close date"
-msgstr "Dátum uzatvorenia"
-
-#: tests/files/_cache/templates/c9/c9551503c1a965e55c70a545b7eb30a74d88dc7da066cc07ffc932d21dd247cf.php:337
-#: tests/files/_cache/templates/d0/d04302c5e524245f01cbcb00e6a4d8d8178f7dedfab5a3df5fb0d0cca8d55c93.php:337
-#: tests/files/_cache/templates/a3/a3407b290116d75d02ec511bcea4e39d84c3f13b6b7e3f3e37796cd6665a5856.php:337
-#: tests/files/_cache/templates/a8/a8a5045af2f11c67abf82f0901b5cbe2f3e92702a3d5221f0deb986abee3b766.php:350
-#: templates/components/itilobject/fields_panel.html.twig:239
-msgid "Actors"
-msgstr ""
-
-#: tests/files/_cache/templates/c9/c9551503c1a965e55c70a545b7eb30a74d88dc7da066cc07ffc932d21dd247cf.php:523
-#: tests/files/_cache/templates/d0/d04302c5e524245f01cbcb00e6a4d8d8178f7dedfab5a3df5fb0d0cca8d55c93.php:523
-#: tests/files/_cache/templates/a8/a8a5045af2f11c67abf82f0901b5cbe2f3e92702a3d5221f0deb986abee3b766.php:564
-#: templates/components/itilobject/fields_panel.html.twig:351
-msgid "Plans"
-msgstr "Plány"
-
-#: tests/files/_cache/templates/c9/c952a7fcb83abef0b2bc3a72dcb14551ff5af6d3703ebfb456397304b79f0507.php:143
-#: templates/components/itilobject/timeline/pending_reasons.html.twig:99
-msgid "Automatic follow-up"
-msgstr ""
-
-#: tests/files/_cache/templates/c9/c952a7fcb83abef0b2bc3a72dcb14551ff5af6d3703ebfb456397304b79f0507.php:166
-#: templates/components/itilobject/timeline/pending_reasons.html.twig:125
-msgid "Automatic resolution"
-msgstr ""
-
-#: tests/files/_cache/templates/d9/d9ff0defb7a6902cec90dc43c390b93929de38bace13f1f0cd5aaef94cf91d8c.php:53
-#: tests/files/_cache/templates/45/453aa105311be3868bc59885140445aedd60d69ca06c4b863a6086e8c9ac7c9e.php:56
-#: tests/files/_cache/templates/7a/7ab5a51262ece5562ef47b92f852a73636e0ef3708dc5bc5dac94fb8f532792c.php:53
-#: tests/files/_cache/templates/bf/bff8a29a623919e2b5e4eac46a1a441bfa0667073855b8819448426ea91d8bc4.php:53
-#: templates/components/itilobject/timeline/filter_timeline.html.twig:83
-msgid "Timeline filter"
-msgstr "Filter časového priebehu"
-
-#: tests/files/_cache/templates/d9/d9ff0defb7a6902cec90dc43c390b93929de38bace13f1f0cd5aaef94cf91d8c.php:122
-#: tests/files/_cache/templates/45/453aa105311be3868bc59885140445aedd60d69ca06c4b863a6086e8c9ac7c9e.php:125
-#: tests/files/_cache/templates/7a/7ab5a51262ece5562ef47b92f852a73636e0ef3708dc5bc5dac94fb8f532792c.php:122
-#: tests/files/_cache/templates/bf/bff8a29a623919e2b5e4eac46a1a441bfa0667073855b8819448426ea91d8bc4.php:122
-#: templates/components/itilobject/timeline/filter_timeline.html.twig:116
-msgid "View TODO list"
-msgstr ""
-
-#: tests/files/_cache/templates/b9/b9e7f5353092ccb93ed960e221189d8bdb75646d78fa7bb0587762e170e012c6.php:113
-#: tests/files/_cache/templates/df/dfc641764740defc49cfb9ef99aa7d35a212e56ecd8d307e2eb2bfd9c2080d13.php:114
-#: tests/files/_cache/templates/9a/9ae7eb640ec9b96a0154cf9e2d7539f7c180fb16607ededd189be57abf741f2d.php:113
-#: tests/files/_cache/templates/ac/ac04b4d69b9b3e6646fe85b55addc493dc2098d5fcbed3ef5346d2a5fa22b56d.php:113
-#: templates/components/itilobject/timeline/timeline_item_header.html.twig:69
-#, php-format
-msgid "%s was already promoted"
-msgstr ""
-
-#: tests/files/_cache/templates/b9/b9e7f5353092ccb93ed960e221189d8bdb75646d78fa7bb0587762e170e012c6.php:151
-#: tests/files/_cache/templates/df/dfc641764740defc49cfb9ef99aa7d35a212e56ecd8d307e2eb2bfd9c2080d13.php:152
-#: tests/files/_cache/templates/9a/9ae7eb640ec9b96a0154cf9e2d7539f7c180fb16607ededd189be57abf741f2d.php:151
-#: tests/files/_cache/templates/ac/ac04b4d69b9b3e6646fe85b55addc493dc2098d5fcbed3ef5346d2a5fa22b56d.php:151
-#: templates/components/itilobject/timeline/timeline_item_header.html.twig:84
-msgid "Promote to Ticket"
-msgstr "Povýšiť na požiadavku"
-
-#: tests/files/_cache/templates/03/0305875c97ff41244fddcf5d2493cf872eb20c5be5aef475a458a76070d2ed9d.php:51
-#: tests/files/_cache/templates/12/121c18e5e34a0ce91ab154d98c041d7787d332c3ebc79154d090640897eba22d.php:51
-#: tests/files/_cache/templates/f5/f54e340465215c91b14d8f3ae44b841adb051e0d60065504b18c6dfbb9939f70.php:51
-#: tests/files/_cache/templates/de/debb998e8bb0e4b433555f461f671173dc1c3cd74fffab620b47d84e7fcc0791.php:51
-#: templates/layout/parts/page_footer.html.twig:39
-msgid "Back to top of the page"
-msgstr "Späť na vrch stránky"
-
-#: tests/files/_cache/templates/03/0305875c97ff41244fddcf5d2493cf872eb20c5be5aef475a458a76070d2ed9d.php:55
-#: tests/files/_cache/templates/12/121c18e5e34a0ce91ab154d98c041d7787d332c3ebc79154d090640897eba22d.php:55
-#: tests/files/_cache/templates/f5/f54e340465215c91b14d8f3ae44b841adb051e0d60065504b18c6dfbb9939f70.php:55
-#: tests/files/_cache/templates/de/debb998e8bb0e4b433555f461f671173dc1c3cd74fffab620b47d84e7fcc0791.php:55
-#: templates/layout/parts/page_footer.html.twig:40
-msgid "Top of the page"
-msgstr ""
-
-#: tests/files/_cache/templates/aa/aa3958dc91e53fa205aa57d010768ad473cfa2f71666e8c28919c0736e35113a.php:100
-#: tests/files/_cache/templates/f2/f262bc2f67d5729f1ee98298e1bd3b5fb1523bd23b3301291d60127c4e25f0e7.php:100
-#: tests/files/_cache/templates/65/65a21c01746225e9a16497097984783e3ef9780be4e11cfa24a3369206cbc51d.php:100
-#: tests/files/_cache/templates/52/52c2286f94e588a7071b76e569a876729d0bb8123eb88949b798b933d1b8c090.php:100
-#: templates/components/itilobject/timeline/form_solution.html.twig:60
-#, php-format
-msgid "%1$s on %2$s by %3$s"
-msgstr "%1$s používateľom %3$s, %2$s"
-
-#: tests/files/_cache/templates/aa/aa3958dc91e53fa205aa57d010768ad473cfa2f71666e8c28919c0736e35113a.php:161
-#: tests/files/_cache/templates/f2/f262bc2f67d5729f1ee98298e1bd3b5fb1523bd23b3301291d60127c4e25f0e7.php:161
-#: tests/files/_cache/templates/65/65a21c01746225e9a16497097984783e3ef9780be4e11cfa24a3369206cbc51d.php:165
-#: tests/files/_cache/templates/52/52c2286f94e588a7071b76e569a876729d0bb8123eb88949b798b933d1b8c090.php:161
-#: templates/components/itilobject/timeline/form_solution.html.twig:89
-msgid ""
-"Warning: non closed children tickets depends on current ticket. Are you sure"
-" you want to close it?"
-msgstr ""
-"Upozornenie: neuzavreté podriadené požiadavky závisia na tejto požiadavke. "
-"Ste si istý, že ju chcete uzavrieť?"
-
-#: tests/files/_cache/templates/aa/aa3958dc91e53fa205aa57d010768ad473cfa2f71666e8c28919c0736e35113a.php:211
-#: tests/files/_cache/templates/f2/f262bc2f67d5729f1ee98298e1bd3b5fb1523bd23b3301291d60127c4e25f0e7.php:211
-#: tests/files/_cache/templates/65/65a21c01746225e9a16497097984783e3ef9780be4e11cfa24a3369206cbc51d.php:215
-#: tests/files/_cache/templates/52/52c2286f94e588a7071b76e569a876729d0bb8123eb88949b798b933d1b8c090.php:211
-#: templates/components/itilobject/timeline/form_solution.html.twig:122
-msgid "Search a solution"
-msgstr "Hľadať riešenie"
-
-#: tests/files/_cache/templates/39/3979fab384dc7b3d40ad0bd29e5552a266336bbae824920aee56a4c0ef2ee85b.php:62
-#: tests/files/_cache/templates/c6/c6507da9b4c57748da13516107d15fe9c5998c67198883808e658c051d5274f3.php:62
-#: tests/files/_cache/templates/f5/f56d14c82db2ef68c59cbbd5507a5ceda1849a7e73aa7b5c34f63ed4b3d9d06e.php:65
-#: tests/files/_cache/templates/de/de08e71fce2457275919fa09dd61dcba489f9cebe994f058b33287c6f55a904b.php:62
-msgctxt "button"
-msgid "Ok"
-msgstr ""
-
-#: tests/files/_cache/templates/39/3979fab384dc7b3d40ad0bd29e5552a266336bbae824920aee56a4c0ef2ee85b.php:120
-#: tests/files/_cache/templates/c6/c6507da9b4c57748da13516107d15fe9c5998c67198883808e658c051d5274f3.php:120
-#: tests/files/_cache/templates/f5/f56d14c82db2ef68c59cbbd5507a5ceda1849a7e73aa7b5c34f63ed4b3d9d06e.php:123
-#: tests/files/_cache/templates/de/de08e71fce2457275919fa09dd61dcba489f9cebe994f058b33287c6f55a904b.php:120
-#: templates/components/form/modals_macros.html.twig:64
-msgctxt "button"
-msgid "Close"
-msgstr "Zatvoriť"
-
-#: tests/files/_cache/templates/20/2028f0929112efb430f191d9a160dae6974ef8e5ed3e312a74d4ce90a79cff13.php:90
-#: tests/files/_cache/templates/0c/0cef44ffc64a1fc1a6529cb2259c2d95ab95e083056370b8ac52d9ba46b20b50.php:95
-#: tests/files/_cache/templates/28/28d7bf537b4388308ce199acc3460b3f629e082dd46cd15bf9a84f569df5df2d.php:90
-#: tests/files/_cache/templates/e0/e075f0a8af50ed856b2ab3bd0b5eb55cae7b5a6209d2978422ec2877ef37f443.php:90
-#: templates/components/itilobject/fields/status.html.twig:57
-msgid "Reopen"
-msgstr "Znovu otvoriť"
-
-#: tests/files/_cache/templates/32/32dc67280adbc21a3adb18de2008d6f8d2fbfc60bb654d9eee02d1d3d079f039.php:79
-#: tests/files/_cache/templates/cd/cd19b1af160be10f646f34ae0062d31253e09263c7f1bc53e2c046fb5e21b9e9.php:79
-#: tests/files/_cache/templates/eb/ebc11dd6d05776f1020d0a443cb5190d7a0397d5f7a5a53acbca1b4e101cdf35.php:82
-#: tests/files/_cache/templates/74/7451aed2e5f95820d3095df35873ac9ee9aa39930e217a029c60a1505e45dad1.php:79
-#: templates/components/itilobject/timeline/approbation_form.html.twig:50
-msgid "Approval of the solution"
-msgstr "Schválenie riešenia"
-
-#: tests/files/_cache/templates/32/32dc67280adbc21a3adb18de2008d6f8d2fbfc60bb654d9eee02d1d3d079f039.php:85
-#: tests/files/_cache/templates/cd/cd19b1af160be10f646f34ae0062d31253e09263c7f1bc53e2c046fb5e21b9e9.php:85
-#: tests/files/_cache/templates/eb/ebc11dd6d05776f1020d0a443cb5190d7a0397d5f7a5a53acbca1b4e101cdf35.php:88
-#: tests/files/_cache/templates/74/7451aed2e5f95820d3095df35873ac9ee9aa39930e217a029c60a1505e45dad1.php:85
-#: templates/components/itilobject/timeline/approbation_form.html.twig:59
-msgid "Optional when approved"
-msgstr "Voliteľne ak je schválené"
-
-#: tests/files/_cache/templates/32/32dc67280adbc21a3adb18de2008d6f8d2fbfc60bb654d9eee02d1d3d079f039.php:95
-#: tests/files/_cache/templates/34/3469b1acf26f7378601172eefa8fb4128d638cb7d1dee721278b4040c8eea96e.php:110
-#: tests/files/_cache/templates/7c/7c19ba03b099dfa7dd9f68a985472e79d2a9a996a4c29b5afb81fa8bf28ce66f.php:110
-#: tests/files/_cache/templates/5a/5a84ecedda1b5fbc7ddad723a88152a58645ed134748fa7a490627286e1de2df.php:114
-#: tests/files/_cache/templates/cd/cd19b1af160be10f646f34ae0062d31253e09263c7f1bc53e2c046fb5e21b9e9.php:95
-#: tests/files/_cache/templates/eb/ebc11dd6d05776f1020d0a443cb5190d7a0397d5f7a5a53acbca1b4e101cdf35.php:98
-#: tests/files/_cache/templates/74/7451aed2e5f95820d3095df35873ac9ee9aa39930e217a029c60a1505e45dad1.php:95
-#: tests/files/_cache/templates/e9/e955220750f35332778b52613aa24889857e353a96affb37a7c0db2dfcb1dc75.php:110
-#: templates/components/itilobject/timeline/form_validation.html.twig:76
-#: templates/components/itilobject/timeline/approbation_form.html.twig:71
-msgid "Refuse"
-msgstr "Zamietnuť"
-
-#: tests/files/_cache/templates/32/32dc67280adbc21a3adb18de2008d6f8d2fbfc60bb654d9eee02d1d3d079f039.php:103
-#: tests/files/_cache/templates/34/3469b1acf26f7378601172eefa8fb4128d638cb7d1dee721278b4040c8eea96e.php:103
-#: tests/files/_cache/templates/7c/7c19ba03b099dfa7dd9f68a985472e79d2a9a996a4c29b5afb81fa8bf28ce66f.php:103
-#: tests/files/_cache/templates/5a/5a84ecedda1b5fbc7ddad723a88152a58645ed134748fa7a490627286e1de2df.php:107
-#: tests/files/_cache/templates/cd/cd19b1af160be10f646f34ae0062d31253e09263c7f1bc53e2c046fb5e21b9e9.php:103
-#: tests/files/_cache/templates/eb/ebc11dd6d05776f1020d0a443cb5190d7a0397d5f7a5a53acbca1b4e101cdf35.php:106
-#: tests/files/_cache/templates/74/7451aed2e5f95820d3095df35873ac9ee9aa39930e217a029c60a1505e45dad1.php:103
-#: tests/files/_cache/templates/e9/e955220750f35332778b52613aa24889857e353a96affb37a7c0db2dfcb1dc75.php:103
-#: templates/components/itilobject/timeline/form_validation.html.twig:72
-#: templates/components/itilobject/timeline/approbation_form.html.twig:76
-msgid "Approve"
-msgstr "Schváliť"
-
-#: tests/files/_cache/templates/f6/f6bce44c24a8926823083df752544c326ec23fc54e31d2b4257d52f6671421c8.php:53
-#: tests/files/_cache/templates/96/96070b270070f7f51028e1f4d06f524f6af3ffa3a8401ef48dd16cf9c135da28.php:52
-#: tests/files/_cache/templates/45/4534c35f47660aa5473be27691b8b276a2f3574cb441319706a23027378df7a7.php:52
-#: tests/files/_cache/templates/dd/dd9d626a8c5989db05ab401e13c71d60bf94b61069992e76a66b3e361be005a7.php:52
-#: templates/components/itilobject/actors/assign_to_me.html.twig:37
-msgid "Associate myself"
-msgstr "Priradiť seba"
-
-#: tests/files/_cache/templates/68/68f60ababbb53debb42b0bb39dcdf2ea337a82aa3a4ad12280fb0843d056464e.php:139
-#: tests/files/_cache/templates/86/86657a801e7166a614b1e7b92d38fc64c436cad6583e986226c891c6d1be9d84.php:142
-#: tests/files/_cache/templates/f2/f2ae590c50114a8896993372971b34396942bea8143f3757720dfc88e59fa6f1.php:139
-#: tests/files/_cache/templates/06/06be0bf8f8e53495353bdf5d9ebfa20151a5de5cf303c55c9eb74877022abea3.php:139
-#: templates/components/itilobject/actors/main.html.twig:96
-msgid "Observer"
-msgstr ""
-
-#: tests/files/_cache/templates/68/68f60ababbb53debb42b0bb39dcdf2ea337a82aa3a4ad12280fb0843d056464e.php:209
-#: tests/files/_cache/templates/86/86657a801e7166a614b1e7b92d38fc64c436cad6583e986226c891c6d1be9d84.php:212
-#: tests/files/_cache/templates/f2/f2ae590c50114a8896993372971b34396942bea8143f3757720dfc88e59fa6f1.php:209
-#: tests/files/_cache/templates/06/06be0bf8f8e53495353bdf5d9ebfa20151a5de5cf303c55c9eb74877022abea3.php:209
-#: templates/components/itilobject/actors/main.html.twig:143
-msgid "Edit notification settings"
-msgstr ""
-
-#: tests/files/_cache/templates/68/68f60ababbb53debb42b0bb39dcdf2ea337a82aa3a4ad12280fb0843d056464e.php:230
-#: tests/files/_cache/templates/86/86657a801e7166a614b1e7b92d38fc64c436cad6583e986226c891c6d1be9d84.php:233
-#: tests/files/_cache/templates/f2/f2ae590c50114a8896993372971b34396942bea8143f3757720dfc88e59fa6f1.php:230
-#: tests/files/_cache/templates/06/06be0bf8f8e53495353bdf5d9ebfa20151a5de5cf303c55c9eb74877022abea3.php:230
-#: templates/components/itilobject/actors/main.html.twig:155
-msgid "Email address"
-msgstr "Emailová adresa"
-
-#: tests/files/_cache/templates/83/83b1ef2f31126a24a3cc38b618f023d8e0035602bdc22c327955503875e25b09.php:56
-#: tests/files/_cache/templates/f4/f4600da52df28b6e5443b0d1b2e4beb75c3498c24805a6b55b08cbc0b14e3f43.php:53
-#: tests/files/_cache/templates/b5/b5357edd83fdcfd4282fee6862ca237db6286b975add84f02be14f4f0a64d8be.php:53
-#: tests/files/_cache/templates/95/955e7d7757201d693963f6327124278582e1dc846c109918e9871bf5472617f4.php:56
-#: templates/pages/setup/setup_notifications.html.twig:39
-msgid "Notifications configuration"
-msgstr "Konfigurácia oznámení"
-
-#: tests/files/_cache/templates/83/83b1ef2f31126a24a3cc38b618f023d8e0035602bdc22c327955503875e25b09.php:68
-#: tests/files/_cache/templates/f4/f4600da52df28b6e5443b0d1b2e4beb75c3498c24805a6b55b08cbc0b14e3f43.php:65
-#: tests/files/_cache/templates/b5/b5357edd83fdcfd4282fee6862ca237db6286b975add84f02be14f4f0a64d8be.php:65
-#: tests/files/_cache/templates/95/955e7d7757201d693963f6327124278582e1dc846c109918e9871bf5472617f4.php:68
-#: templates/pages/setup/setup_notifications.html.twig:45
-msgid "You must enable at least one notification mode."
-msgstr "Musíte povoliť minimálne jeden režim oznámenia."
-
-#: tests/files/_cache/templates/83/83b1ef2f31126a24a3cc38b618f023d8e0035602bdc22c327955503875e25b09.php:88
-#: tests/files/_cache/templates/f4/f4600da52df28b6e5443b0d1b2e4beb75c3498c24805a6b55b08cbc0b14e3f43.php:85
-#: tests/files/_cache/templates/b5/b5357edd83fdcfd4282fee6862ca237db6286b975add84f02be14f4f0a64d8be.php:85
-#: tests/files/_cache/templates/95/955e7d7757201d693963f6327124278582e1dc846c109918e9871bf5472617f4.php:88
-#: templates/pages/setup/setup_notifications.html.twig:57
-msgid "Enable followup"
-msgstr "Zapnúť reakcie"
-
-#: tests/files/_cache/templates/83/83b1ef2f31126a24a3cc38b618f023d8e0035602bdc22c327955503875e25b09.php:215
-#: tests/files/_cache/templates/f4/f4600da52df28b6e5443b0d1b2e4beb75c3498c24805a6b55b08cbc0b14e3f43.php:212
-#: tests/files/_cache/templates/b5/b5357edd83fdcfd4282fee6862ca237db6286b975add84f02be14f4f0a64d8be.php:212
-#: tests/files/_cache/templates/95/955e7d7757201d693963f6327124278582e1dc846c109918e9871bf5472617f4.php:215
-#: templates/pages/setup/setup_notifications.html.twig:113
-msgid ""
-"Unable to configure notifications: please configure at least one followup "
-"type using the above configuration."
-msgstr ""
-"Nepodarilo sa nastaviť oznámenia: prosím nakonfigurujte aspoň jeden typ "
-"sledovania pomocou konfigurácie uvedenej vyššie."
-
-#: tests/files/_cache/templates/02/0213af5c2e4d4039275793d38ecce99c96f01753ac0584e9b3d0ffef7d2741c6.php:50
-#: tests/files/_cache/templates/89/899ff0126ba2793b130d2f0c66a39bae2718b3390d8b4bc374d7d648724ff0c8.php:50
-#: tests/files/_cache/templates/79/79fd59d45331bcfaacab15252f7b6ac49ba394c19d681abcbedd3128a503500c.php:53
-#: tests/files/_cache/templates/0f/0fc09a3264c0206fe8c5ff87b715856bc3c279f0d82555bb4cfa80e99ef870d1.php:50
-msgid "TTO"
-msgstr ""
-
-#: tests/files/_cache/templates/02/0213af5c2e4d4039275793d38ecce99c96f01753ac0584e9b3d0ffef7d2741c6.php:51
-#: tests/files/_cache/templates/89/899ff0126ba2793b130d2f0c66a39bae2718b3390d8b4bc374d7d648724ff0c8.php:51
-#: tests/files/_cache/templates/79/79fd59d45331bcfaacab15252f7b6ac49ba394c19d681abcbedd3128a503500c.php:54
-#: tests/files/_cache/templates/0f/0fc09a3264c0206fe8c5ff87b715856bc3c279f0d82555bb4cfa80e99ef870d1.php:51
-msgid "TTR"
-msgstr ""
-
-#: tests/files/_cache/templates/02/0213af5c2e4d4039275793d38ecce99c96f01753ac0584e9b3d0ffef7d2741c6.php:57
-#: tests/files/_cache/templates/89/899ff0126ba2793b130d2f0c66a39bae2718b3390d8b4bc374d7d648724ff0c8.php:57
-#: tests/files/_cache/templates/79/79fd59d45331bcfaacab15252f7b6ac49ba394c19d681abcbedd3128a503500c.php:60
-#: tests/files/_cache/templates/0f/0fc09a3264c0206fe8c5ff87b715856bc3c279f0d82555bb4cfa80e99ef870d1.php:57
-msgid "Internal TTO"
-msgstr ""
-
-#: tests/files/_cache/templates/02/0213af5c2e4d4039275793d38ecce99c96f01753ac0584e9b3d0ffef7d2741c6.php:57
-#: tests/files/_cache/templates/89/899ff0126ba2793b130d2f0c66a39bae2718b3390d8b4bc374d7d648724ff0c8.php:57
-#: tests/files/_cache/templates/79/79fd59d45331bcfaacab15252f7b6ac49ba394c19d681abcbedd3128a503500c.php:60
-#: tests/files/_cache/templates/0f/0fc09a3264c0206fe8c5ff87b715856bc3c279f0d82555bb4cfa80e99ef870d1.php:57
-msgid "Internal Time to own"
-msgstr ""
-
-#: tests/files/_cache/templates/02/0213af5c2e4d4039275793d38ecce99c96f01753ac0584e9b3d0ffef7d2741c6.php:58
-#: tests/files/_cache/templates/89/899ff0126ba2793b130d2f0c66a39bae2718b3390d8b4bc374d7d648724ff0c8.php:58
-#: tests/files/_cache/templates/79/79fd59d45331bcfaacab15252f7b6ac49ba394c19d681abcbedd3128a503500c.php:61
-#: tests/files/_cache/templates/0f/0fc09a3264c0206fe8c5ff87b715856bc3c279f0d82555bb4cfa80e99ef870d1.php:58
-msgid "Internal TTR"
-msgstr ""
-
-#: tests/files/_cache/templates/02/0213af5c2e4d4039275793d38ecce99c96f01753ac0584e9b3d0ffef7d2741c6.php:58
-#: tests/files/_cache/templates/89/899ff0126ba2793b130d2f0c66a39bae2718b3390d8b4bc374d7d648724ff0c8.php:58
-#: tests/files/_cache/templates/79/79fd59d45331bcfaacab15252f7b6ac49ba394c19d681abcbedd3128a503500c.php:61
-#: tests/files/_cache/templates/0f/0fc09a3264c0206fe8c5ff87b715856bc3c279f0d82555bb4cfa80e99ef870d1.php:58
-msgid "Internal Time to resolve"
-msgstr ""
-
-#: tests/files/_cache/templates/02/0213af5c2e4d4039275793d38ecce99c96f01753ac0584e9b3d0ffef7d2741c6.php:150
-#: tests/files/_cache/templates/89/899ff0126ba2793b130d2f0c66a39bae2718b3390d8b4bc374d7d648724ff0c8.php:150
-#: tests/files/_cache/templates/79/79fd59d45331bcfaacab15252f7b6ac49ba394c19d681abcbedd3128a503500c.php:153
-#: tests/files/_cache/templates/0f/0fc09a3264c0206fe8c5ff87b715856bc3c279f0d82555bb4cfa80e99ef870d1.php:150
-#: templates/components/itilobject/service_levels.html.twig:114
-#, php-format
-msgid "Next escalation: %s"
-msgstr "Ďalšia eskalácia: %s"
-
-#: tests/files/_cache/templates/02/0213af5c2e4d4039275793d38ecce99c96f01753ac0584e9b3d0ffef7d2741c6.php:178
-#: tests/files/_cache/templates/89/899ff0126ba2793b130d2f0c66a39bae2718b3390d8b4bc374d7d648724ff0c8.php:178
-#: tests/files/_cache/templates/79/79fd59d45331bcfaacab15252f7b6ac49ba394c19d681abcbedd3128a503500c.php:181
-#: tests/files/_cache/templates/0f/0fc09a3264c0206fe8c5ff87b715856bc3c279f0d82555bb4cfa80e99ef870d1.php:178
-#: templates/components/itilobject/service_levels.html.twig:128
-msgid "Also delete date?"
-msgstr "Zmazať aj dátum?"
-
-#: tests/files/_cache/templates/02/0213af5c2e4d4039275793d38ecce99c96f01753ac0584e9b3d0ffef7d2741c6.php:279
-#: tests/files/_cache/templates/89/899ff0126ba2793b130d2f0c66a39bae2718b3390d8b4bc374d7d648724ff0c8.php:279
-#: tests/files/_cache/templates/79/79fd59d45331bcfaacab15252f7b6ac49ba394c19d681abcbedd3128a503500c.php:282
-#: tests/files/_cache/templates/0f/0fc09a3264c0206fe8c5ff87b715856bc3c279f0d82555bb4cfa80e99ef870d1.php:279
-#: templates/components/itilobject/service_levels.html.twig:184
-msgid "Assign a SLA"
-msgstr "Priradiť SLA"
-
-#: tests/files/_cache/templates/78/781d7e174df36a609eaea5a057531a13c804675d5659937378609cbd475dd324.php:597
-#: tests/files/_cache/templates/47/475b56c8138b8da82981cd93d900300b439bb7b405db83d27ecf9764ef9e9be8.php:313
-#: templates/components/itilobject/timeline/form_task.html.twig:363
-#: templates/components/itilobject/timeline/form_followup.html.twig:202
-msgid "Set the status to pending"
-msgstr ""
-
-#: tests/files/_cache/templates/53/53d2985795060516fd5883e8fb5120cd80d6bb743e1a22d79d5f330eb2898111.php:51
-#: tests/files/_cache/templates/2f/2f308bdaa3491179d33f82609a68fed95b747800157f532b30922dd5331de445.php:48
-#: tests/files/_cache/templates/05/052cb35d53c99c31102310cb99fb5eac169c0437160ff8f521f8987235ad13fa.php:48
-#: tests/files/_cache/templates/de/de3c4ce033129dc81ddba2c7cfc30c5faba82ca5dffc251d30613515c6f612ff.php:48
-#: templates/components/itilobject/timeline/todo-list-summary.html.twig:38
-#, php-format
-msgid "Total duration: %s"
-msgstr "Celkové trvanie: %s"
-
-#: tests/files/_cache/templates/98/9862498883fb7072ccb562ec27e5367752245bdddc8ee87dede9c0b2ee43cc82.php:75
-#: tests/files/_cache/templates/dd/dd040d599109b8cf0e9e4a764e2187fdc25483e3eb173f909fd4021b2fd32ffe.php:74
-#: tests/files/_cache/templates/58/58787374723f810e3cb38ef603ec9d3d755348fd1e317abc36d0b8dfb05cbdf7.php:74
-#: tests/files/_cache/templates/35/352a619a4ca730e2e207a0e97e5f686296c1961f4857b399f0dfb4864bac4dee.php:74
-#: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig:48
-#, php-format
-msgid "Created: %1$s by %2$s"
-msgstr ""
-
-#: tests/files/_cache/templates/98/9862498883fb7072ccb562ec27e5367752245bdddc8ee87dede9c0b2ee43cc82.php:81
-#: tests/files/_cache/templates/dd/dd040d599109b8cf0e9e4a764e2187fdc25483e3eb173f909fd4021b2fd32ffe.php:80
-#: tests/files/_cache/templates/58/58787374723f810e3cb38ef603ec9d3d755348fd1e317abc36d0b8dfb05cbdf7.php:80
-#: tests/files/_cache/templates/35/352a619a4ca730e2e207a0e97e5f686296c1961f4857b399f0dfb4864bac4dee.php:80
-#: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig:50
-#, php-format
-msgid "Created: %1$s"
-msgstr ""
-
-#: tests/files/_cache/templates/98/9862498883fb7072ccb562ec27e5367752245bdddc8ee87dede9c0b2ee43cc82.php:132
-#: tests/files/_cache/templates/dd/dd040d599109b8cf0e9e4a764e2187fdc25483e3eb173f909fd4021b2fd32ffe.php:131
-#: tests/files/_cache/templates/58/58787374723f810e3cb38ef603ec9d3d755348fd1e317abc36d0b8dfb05cbdf7.php:131
-#: tests/files/_cache/templates/35/352a619a4ca730e2e207a0e97e5f686296c1961f4857b399f0dfb4864bac4dee.php:131
-#: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig:72
-#, php-format
-msgid "Last update: %1$s by %2$s"
-msgstr ""
-
-#: tests/files/_cache/templates/a2/a213d47a9da1f99c75aa7740f924f0a7bc869fc69b2fd2e8eed30e1f6eda98b6.php:97
-#: templates/components/itilobject/add_items.html.twig:51
-#, php-format
-msgid "%1$s item not saved"
-msgid_plural "%1$s items not saved"
-msgstr[0] "%1$s položka sa neuložila"
-msgstr[1] "%1$s položky sa neuložili"
-msgstr[2] "%1$s položiek sa neuložilo"
-msgstr[3] "%1$s položiek sa neuložilo"
-
-#: tests/files/_cache/templates/a2/a213d47a9da1f99c75aa7740f924f0a7bc869fc69b2fd2e8eed30e1f6eda98b6.php:108
-#: templates/components/itilobject/add_items.html.twig:54
-msgid "Display all items"
-msgstr "Zobraziť všetky položky"
-
-#: tests/files/_cache/templates/44/44a1aaf8d3bca8522b3dde630adebadcd42c0cdb8c0a2d7b189ae760bb44b66c.php:57
-#: templates/components/itilobject/timeline/pending_reasons_messages.html.twig:40
-#, php-format
-msgid "Pending: %s"
-msgstr ""
-
-#: tests/files/_cache/templates/44/44a1aaf8d3bca8522b3dde630adebadcd42c0cdb8c0a2d7b189ae760bb44b66c.php:75
-#: templates/components/itilobject/timeline/pending_reasons_messages.html.twig:49
-#, php-format
-msgid "Next automatic follow-up scheduled on %s"
-msgstr ""
-
-#: tests/files/_cache/templates/44/44a1aaf8d3bca8522b3dde630adebadcd42c0cdb8c0a2d7b189ae760bb44b66c.php:90
-#: templates/components/itilobject/timeline/pending_reasons_messages.html.twig:55
-#, php-format
-msgid "Automatic resolution scheduled on %s"
-msgstr ""
-
 #: index.php:73
 msgid "You must accept cookies to reach this application"
 msgstr "Pre spustenie tejto aplikácie musíte povoliť cookies"
@@ -24630,9 +23470,19 @@ msgstr "Nedele a sviatky"
 msgid "Use Sunday"
 msgstr ""
 
+#: templates/components/form/modals_macros.html.twig:64
+msgctxt "button"
+msgid "Close"
+msgstr "Zatvoriť"
+
 #: templates/components/form/buttons.html.twig:89
 msgid "Keep the devices while deleting this item"
 msgstr ""
+
+#: templates/components/form/dates.html.twig:53
+#, php-format
+msgid "Created from the template %s"
+msgstr "Vytvorené zo šablóny %s"
 
 #: templates/components/itilobject/selfservice.html.twig:52
 msgid "There is some tickets awaiting approval"
@@ -24658,14 +23508,218 @@ msgstr "Skontrolujte si svoje osobné informácie"
 msgid "Submit message"
 msgstr "Odoslať správu"
 
+#: templates/components/itilobject/fields/priority_matrix.html.twig:71
+msgid "impact"
+msgstr ""
+
+#: templates/components/itilobject/fields/priority_matrix.html.twig:92
+msgid "priority"
+msgstr ""
+
+#: templates/components/itilobject/fields/status.html.twig:57
+msgid "Reopen"
+msgstr "Znovu otvoriť"
+
+#: templates/components/itilobject/add_items.html.twig:51
+#, php-format
+msgid "%1$s item not saved"
+msgid_plural "%1$s items not saved"
+msgstr[0] "%1$s položka sa neuložila"
+msgstr[1] "%1$s položky sa neuložili"
+msgstr[2] "%1$s položiek sa neuložilo"
+msgstr[3] "%1$s položiek sa neuložilo"
+
+#: templates/components/itilobject/add_items.html.twig:54
+msgid "Display all items"
+msgstr "Zobraziť všetky položky"
+
+#: templates/components/itilobject/footer.html.twig:44
+msgid "View other actions"
+msgstr ""
+
+#: templates/components/itilobject/footer.html.twig:69
+msgid "Toggle panels width"
+msgstr ""
+
+#: templates/components/itilobject/timeline/form_task.html.twig:106
+#: templates/components/itilobject/timeline/form_followup.html.twig:57
+#, php-format
+msgid "Merged from Ticket %1$s"
+msgstr "Zlúčené s požiadavkou č. %1$s"
+
+#: templates/components/itilobject/timeline/form_task.html.twig:118
+#: templates/components/itilobject/timeline/form_followup.html.twig:69
+#, php-format
+msgid "Promoted to Ticket %1$s"
+msgstr "Povýšené na požiadavku č. %1$s"
+
+#: templates/components/itilobject/timeline/form_task.html.twig:250
+#: templates/components/itilobject/timeline/form_followup.html.twig:159
+#: templates/components/itilobject/timeline/form_solution.html.twig:178
+msgid "Link to knowledge base entry #%id"
+msgstr "Pripojiť položku databázy znalostí č. %id"
+
+#: templates/components/itilobject/timeline/form_task.html.twig:347
+msgid "Plan this task"
+msgstr "Naplánovať túto úlohu"
+
+#: templates/components/itilobject/timeline/form_task.html.twig:363
+#: templates/components/itilobject/timeline/form_followup.html.twig:202
+msgid "Set the status to pending"
+msgstr ""
+
+#: templates/components/itilobject/timeline/todo-list-summary.html.twig:38
+#, php-format
+msgid "Total duration: %s"
+msgstr "Celkové trvanie: %s"
+
+#: templates/components/itilobject/timeline/pending_reasons.html.twig:99
+msgid "Automatic follow-up"
+msgstr ""
+
+#: templates/components/itilobject/timeline/pending_reasons.html.twig:125
+msgid "Automatic resolution"
+msgstr ""
+
 #: templates/components/itilobject/timeline/new_form.html.twig:58
 #, php-format
 msgid "%1$s will be added in entity %2$s"
 msgstr "%1$s bude pridané do entity %2$s"
 
+#: templates/components/itilobject/timeline/form_validation.html.twig:72
+#: templates/components/itilobject/timeline/approbation_form.html.twig:76
+msgid "Approve"
+msgstr "Schváliť"
+
+#: templates/components/itilobject/timeline/form_validation.html.twig:76
+#: templates/components/itilobject/timeline/approbation_form.html.twig:71
+msgid "Refuse"
+msgstr "Zamietnuť"
+
 #: templates/components/itilobject/timeline/form_document_item.html.twig:44
 msgid "File extension"
 msgstr ""
+
+#: templates/components/itilobject/timeline/approbation_form.html.twig:50
+msgid "Approval of the solution"
+msgstr "Schválenie riešenia"
+
+#: templates/components/itilobject/timeline/approbation_form.html.twig:59
+msgid "Optional when approved"
+msgstr "Voliteľne ak je schválené"
+
+#: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig:48
+#, php-format
+msgid "Created: %1$s by %2$s"
+msgstr ""
+
+#: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig:50
+#, php-format
+msgid "Created: %1$s"
+msgstr ""
+
+#: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig:72
+#, php-format
+msgid "Last update: %1$s by %2$s"
+msgstr ""
+
+#: templates/components/itilobject/timeline/form_solution.html.twig:60
+#, php-format
+msgid "%1$s on %2$s by %3$s"
+msgstr "%1$s používateľom %3$s, %2$s"
+
+#: templates/components/itilobject/timeline/form_solution.html.twig:89
+msgid ""
+"Warning: non closed children tickets depends on current ticket. Are you sure"
+" you want to close it?"
+msgstr ""
+"Upozornenie: neuzavreté podriadené požiadavky závisia na tejto požiadavke. "
+"Ste si istý, že ju chcete uzavrieť?"
+
+#: templates/components/itilobject/timeline/form_solution.html.twig:122
+msgid "Search a solution"
+msgstr "Hľadať riešenie"
+
+#: templates/components/itilobject/timeline/pending_reasons_messages.html.twig:40
+#, php-format
+msgid "Pending: %s"
+msgstr ""
+
+#: templates/components/itilobject/timeline/pending_reasons_messages.html.twig:49
+#, php-format
+msgid "Next automatic follow-up scheduled on %s"
+msgstr ""
+
+#: templates/components/itilobject/timeline/pending_reasons_messages.html.twig:55
+#, php-format
+msgid "Automatic resolution scheduled on %s"
+msgstr ""
+
+#: templates/components/itilobject/timeline/timeline_item_header.html.twig:69
+#, php-format
+msgid "%s was already promoted"
+msgstr ""
+
+#: templates/components/itilobject/timeline/timeline_item_header.html.twig:84
+msgid "Promote to Ticket"
+msgstr "Povýšiť na požiadavku"
+
+#: templates/components/itilobject/timeline/filter_timeline.html.twig:83
+msgid "Timeline filter"
+msgstr "Filter časového priebehu"
+
+#: templates/components/itilobject/timeline/filter_timeline.html.twig:116
+msgid "View TODO list"
+msgstr ""
+
+#: templates/components/itilobject/service_levels.html.twig:114
+#, php-format
+msgid "Next escalation: %s"
+msgstr "Ďalšia eskalácia: %s"
+
+#: templates/components/itilobject/service_levels.html.twig:128
+msgid "Also delete date?"
+msgstr "Zmazať aj dátum?"
+
+#: templates/components/itilobject/service_levels.html.twig:184
+msgid "Assign a SLA"
+msgstr "Priradiť SLA"
+
+#: templates/components/itilobject/fields_panel.html.twig:120
+msgid "Close date"
+msgstr "Dátum uzatvorenia"
+
+#: templates/components/itilobject/fields_panel.html.twig:239
+msgid "Actors"
+msgstr ""
+
+#: templates/components/itilobject/fields_panel.html.twig:351
+msgid "Plans"
+msgstr "Plány"
+
+#: templates/components/itilobject/actors/field.html.twig:92
+msgid "Direct email"
+msgstr ""
+
+#: templates/components/itilobject/actors/field.html.twig:143
+msgid "Number of tickets already assigned"
+msgstr ""
+
+#: templates/components/itilobject/actors/main.html.twig:96
+msgid "Observer"
+msgstr ""
+
+#: templates/components/itilobject/actors/main.html.twig:143
+msgid "Edit notification settings"
+msgstr ""
+
+#: templates/components/itilobject/actors/main.html.twig:155
+msgid "Email address"
+msgstr "Emailová adresa"
+
+#: templates/components/itilobject/actors/assign_to_me.html.twig:37
+msgid "Associate myself"
+msgstr "Priradiť seba"
 
 #: templates/components/search/controls.html.twig:39
 msgid "Show as map"
@@ -24894,6 +23948,22 @@ msgstr ""
 msgid "Bulk import users from a LDAP directory"
 msgstr "Hromadný import používateľov z LDAP adresára"
 
+#: templates/pages/login.html.twig:43
+msgid "Login to your account"
+msgstr ""
+
+#: templates/pages/login.html.twig:72
+msgid "Login source"
+msgstr ""
+
+#: templates/pages/login.html.twig:81
+msgid "Remember me"
+msgstr "Zapamätať si ma"
+
+#: templates/pages/login.html.twig:88
+msgid "Sign in"
+msgstr ""
+
 #: templates/pages/setup/authentication.html.twig:56
 msgid "The LDAP extension of your PHP parser isn’t installed"
 msgstr ""
@@ -24901,6 +23971,26 @@ msgstr ""
 #: templates/pages/setup/authentication.html.twig:68
 msgid "Others authentication methods"
 msgstr "Iné autentifikačné metódy"
+
+#: templates/pages/setup/setup_notifications.html.twig:39
+msgid "Notifications configuration"
+msgstr "Konfigurácia oznámení"
+
+#: templates/pages/setup/setup_notifications.html.twig:45
+msgid "You must enable at least one notification mode."
+msgstr "Musíte povoliť minimálne jeden režim oznámenia."
+
+#: templates/pages/setup/setup_notifications.html.twig:57
+msgid "Enable followup"
+msgstr "Zapnúť reakcie"
+
+#: templates/pages/setup/setup_notifications.html.twig:113
+msgid ""
+"Unable to configure notifications: please configure at least one followup "
+"type using the above configuration."
+msgstr ""
+"Nepodarilo sa nastaviť oznámenia: prosím nakonfigurujte aspoň jeden typ "
+"sledovania pomocou konfigurácie uvedenej vyššie."
 
 #: templates/pages/setup/dropdowns_list.html.twig:63
 msgid "Dropdown with entity management"
@@ -25035,6 +24125,14 @@ msgstr "Vybrať všetky"
 
 #: templates/layout/parts/profile_selector.html.twig:152
 msgid "No entity found"
+msgstr ""
+
+#: templates/layout/parts/page_footer.html.twig:39
+msgid "Back to top of the page"
+msgstr "Späť na vrch stránky"
+
+#: templates/layout/parts/page_footer.html.twig:40
+msgid "Top of the page"
 msgstr ""
 
 #: templates/layout/parts/global_search_form.html.twig:35
