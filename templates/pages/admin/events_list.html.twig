@@ -81,7 +81,7 @@
                                  <i class="fa-fw text-muted {{ itemtype|itemtype_icon }}"></i>
                                  <span>{{ itemtypes[itemtype] ?? itemtype|itemtype_name }}</span>
                               </td>
-                              <td>{% do call('Event::displayItemLogID', [event['type'], event['items_id']]) %}</td>
+                              <td>{% do call('Glpi\\Event::displayItemLogID', [event['type'], event['items_id']]) %}</td>
                               <td>{{ event['date']|formatted_datetime }}</td>
                               <td>{{ services[event['service']] ?? event['service'] }}</td>
                               <td>{{ event['level'] }}</td>
