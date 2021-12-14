@@ -44,8 +44,4 @@ if (
     $domainrecordtype->getEmpty();
 }
 
-Html::popHeader($domainrecordtype->fields['name']);
-
 $domainrecordtype->showDataAjaxForm($_REQUEST['str_input_id'] ?? '', $_REQUEST['obj_input_id'] ?? '');
-
-Html::popFooter();
