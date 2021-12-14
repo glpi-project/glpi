@@ -80,6 +80,8 @@ if (!$DB->tableExists('glpi_agents')) {
          `threads_networkinventory` int NOT NULL DEFAULT '1' COMMENT 'Number of threads for Network Inventory',
          `timeout_networkdiscovery` int NOT NULL DEFAULT '0' COMMENT 'Network Discovery task timeout (disabled by default)',
          `timeout_networkinventory` int NOT NULL DEFAULT '0' COMMENT 'Network Inventory task timeout (disabled by default)',
+         `ip_binary` varbinary(16) NOT NULL DEFAULT '0',
+         `ip_protocol` varchar(5) DEFAULT NULL,
          PRIMARY KEY (`id`),
          KEY `name` (`name`),
          KEY `entities_id` (`entities_id`),
@@ -87,6 +89,8 @@ if (!$DB->tableExists('glpi_agents')) {
          KEY `item` (`itemtype`,`items_id`),
          UNIQUE KEY `deviceid` (`deviceid`),
          KEY `agenttypes_id` (`agenttypes_id`),
+         KEY `ip_binary` (`ip_binary`),
+         KEY `ip_protocol` (`ip_protocol`),
          CONSTRAINT `agenttypes_id` FOREIGN KEY (`agenttypes_id`) REFERENCES `glpi_agenttypes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->queryOrDie($query, "10.0 add table glpi_agents");
@@ -130,6 +134,19 @@ if (!$DB->tableExists('glpi_agents')) {
          'comment' => 'Network Inventory task timeout (disabled by default)'
         ]
     );
+
+    $migration->addField(
+        'glpi_agents',
+        'ip_binary',
+        "varbinary(16) NOT NULL DEFAULT '0'"
+    );
+
+    $migration->addField(
+        'glpi_agents',
+        'ip_protocol',
+        "varchar(5) DEFAULT NULL"
+    );
+
 }
 $ADDTODISPLAYPREF['Agent'] = [2, 4, 10, 8, 11, 6];
 

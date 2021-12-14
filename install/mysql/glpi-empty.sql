@@ -8718,6 +8718,8 @@ CREATE TABLE `glpi_agents` (
   `threads_networkinventory` int NOT NULL DEFAULT '1' COMMENT 'Number of threads for Network inventory',
   `timeout_networkdiscovery` int NOT NULL DEFAULT '0' COMMENT 'Network Discovery task timeout (disabled by default)',
   `timeout_networkinventory` int NOT NULL DEFAULT '0' COMMENT 'Network Inventory task timeout (disabled by default)',
+  `ip_binary` varbinary(16) NOT NULL DEFAULT '0',
+  `ip_protocol` varchar(5) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `deviceid` (`deviceid`),
   KEY `name` (`name`),
@@ -8725,6 +8727,8 @@ CREATE TABLE `glpi_agents` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `item` (`itemtype`,`items_id`),
+  KEY `ip_binary` (`ip_binary`),
+  KEY `ip_protocol` (`ip_protocol`),
   CONSTRAINT `agenttypes_id` FOREIGN KEY (`agenttypes_id`) REFERENCES `glpi_agenttypes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 

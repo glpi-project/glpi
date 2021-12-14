@@ -60,8 +60,6 @@ class Agent extends CommonDBTM
     public static $rightname = 'computer';
    //static $rightname = 'inventory';
 
-    private static $found_adress = false;
-
     public static function getTypeName($nb = 0)
     {
         return _n('Agent', 'Agents', $nb);
@@ -138,6 +136,14 @@ class Agent extends CommonDBTM
             'field'         => 'port',
             'name'          => _n('Port', 'Ports', 1),
             'datatype'      => 'integer',
+         ], [
+            'id'            => '15',
+            'table'         => $this->getTable(),
+            'field'         => 'ip_binary',
+            'name'          => __('Ip'),
+            'datatype'      => 'specific',
+            'nosearch'      => true,
+            'massiveaction' => false,
          ]
         ];
 
@@ -158,6 +164,22 @@ class Agent extends CommonDBTM
         $this->addStandardTab('Log', $ong, $options);
 
         return $ong;
+    }
+
+    static function getSpecificValueToDisplay($field, $values, array $options = []) 
+    {
+        if (!is_array($values)) {
+           $values = [$field => $values];
+        }
+        switch ($field) {
+           case 'ip_binary':
+              if ($ipadress = inet_ntop($values[$field])) {
+                 return $ipadress;
+              } else {
+                 return __('IP address not properly formatted');
+              }
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
    /**
@@ -332,12 +354,12 @@ class Agent extends CommonDBTM
         $atype->getFromDBByCrit(['name' => 'Core']);
 
         $input = [
-         'deviceid'     => $deviceid,
-         'name'         => $deviceid,
-         'last_contact' => date('Y-m-d H:i:s'),
-         'useragent'    => $_SERVER['HTTP_USER_AGENT'] ?? null,
+         'deviceid'      => $deviceid,
+         'name'          => $deviceid,
+         'last_contact'  => date('Y-m-d H:i:s'),
+         'useragent'     => $_SERVER['HTTP_USER_AGENT'] ?? null,
          'agenttypes_id' => $atype->fields['id'],
-         'itemtype'     => $metadata['itemtype'] ?? 'Computer'
+         'itemtype'      => $metadata['itemtype'] ?? 'Computer'
         ];
 
         if (isset($metadata['provider']['version'])) {
@@ -346,6 +368,24 @@ class Agent extends CommonDBTM
 
         if (isset($metadata['tag'])) {
             $input['tag'] = $metadata['tag'];
+        }
+
+        if (isset($_SERVER['REMOTE_ADDR'])) {
+            if ($ip_binary = inet_pton($_SERVER['REMOTE_ADDR'])) {
+                $input['ip_binary'] = $ip_binary;
+            }
+        }
+
+        if (isset($metadata['httpd-port'])) {
+            $input['port'] = $metadata['httpd-port'];
+        }
+
+        $input['ip_protocol'] = 'http';
+        if (isset($metadata['httpd-plugins']['ssl']['ports'])) {
+            $ssl_ports[] = $metadata['httpd-plugins']['ssl']['ports'];
+            if (in_array("0", $ssl_ports) || (isset($metadata['httpd-port']) && in_array($metadata['httpd-port'], $ssl_ports))) {
+                $input['ip_protocol'] = 'https';
+            }
         }
 
         if ($deviceid === 'foo') {
@@ -408,99 +448,15 @@ class Agent extends CommonDBTM
         return $item;
     }
 
-   /**
-    * Guess possible adresses the agent should answer on
-    *
-    * @return array
+
+    /**
+     * Get agent IP adresse
+     *
+      * @return string
     */
-    public function guessAddresses(): array
+    public function getAddress(): string
     {
-        global $DB;
-
-        $adresses = [];
-
-       //retrieve linked items
-        $item = $this->getLinkedItem();
-        if ((int)$item->getID() > 0) {
-            $item_name = $item->getFriendlyName();
-            $adresses[] = $item_name;
-
-           //deviceid should contains machines name
-            $matches = [];
-            preg_match('/^(\s)+-\d{4}(-\d{2}){5}$/', $this->fields['deviceid'], $matches);
-            if (isset($matches[1])) {
-                if (!in_array($matches[1], $adresses)) {
-                    $adresses[] = $matches[1];
-                }
-            }
-
-           //append linked ips
-            $ports_iterator = $DB->request([
-            'SELECT' => ['ips.name'],
-            'FROM'   => NetworkPort::getTable() . ' AS netports',
-            'WHERE'  => [
-               'netports.itemtype'  => $item->getType(),
-               'netports.items_id'  => $item->getID(),
-               'NOT'       => [
-                  'OR'  => [
-                     'netports.instantiation_type' => 'NetworkPortLocal',
-                     'ips.name'                    => ['127.0.0.1', '::1']
-                  ]
-               ]
-            ],
-            'INNER JOIN'   => [
-               NetworkName::getTable() . ' AS netnames' => [
-                  'ON'  => [
-                     'netnames'  => 'items_id',
-                     'netports'  => 'id', [
-                        'AND' => [
-                           'netnames.itemtype'  => NetworkPort::getType()
-                        ]
-                     ]
-                  ]
-               ],
-               IPAddress::getTable() . ' AS ips' => [
-                  'ON'  => [
-                     'ips'       => 'items_id',
-                     'netnames'  => 'id', [
-                        'AND' => [
-                           'ips.itemtype' => NetworkName::getType()
-                        ]
-                     ]
-                  ]
-               ]
-            ]
-            ]);
-            foreach ($ports_iterator as $row) {
-                if (!in_array($row['name'], $adresses)) {
-                    $adresses[] = $row['name'];
-                }
-            }
-
-           //append linked domains
-            $iterator = $DB->request([
-            'SELECT' => ['d.name'],
-            'FROM'   => Domain_Item::getTable(),
-            'WHERE'  => [
-               'itemtype'  => $item->getType(),
-               'items_id'  => $item->getID()
-            ],
-            'INNER JOIN'   => [
-               Domain::getTable() . ' AS d'  => [
-                  'ON'  => [
-                     Domain_Item::getTable() => Domain::getForeignKeyField(),
-                     'd'                     => 'id'
-                  ]
-               ]
-            ]
-            ]);
-
-            foreach ($iterator as $row) {
-                 $adresses[] = sprintf('%s.%s', $item_name, $row['name']);
-            }
-        }
-
-        return $adresses;
+        return inet_ntop($this->fields['ip_binary']);
     }
 
    /**
@@ -508,28 +464,25 @@ class Agent extends CommonDBTM
     *
     * @return array
     */
-    public function getAgentURLs(): array
+    public function getAgentURL(): string
     {
-        $adresses = $this->guessAddresses();
-        $protocols = ['https', 'http'];
         $port = (int)$this->fields['port'];
         if ($port === 0) {
             $port = self::DEFAULT_PORT;
         }
 
-        $urls = [];
-        foreach ($protocols as $protocol) {
-            foreach ($adresses as $adress) {
-                $urls[] = sprintf(
-                    '%s://%s:%s',
-                    $protocol,
-                    $adress,
-                    $port
-                );
-            }
+        if ($ipaddress = $this->getAddress()) {
+            return sprintf(
+                '%s://%s:%s',
+                $this->fields['ip_protocol'],
+                $ipaddress,
+                $port
+            );
         }
 
-        return $urls;
+        trigger_error(__('Agent IP address not properly formatted'));
+        return false;
+
     }
 
    /**
@@ -539,42 +492,34 @@ class Agent extends CommonDBTM
     *
     * @return Response
     */
-    public function requestAgent($endpoint): Response
+    private function requestAgent($endpoint): Response
     {
         global $CFG_GLPI;
 
-        if (self::$found_adress !== false) {
-            $adresses = [self::$found_adress];
-        } else {
-            $adresses = $this->getAgentURLs();
+        $adress = $this->getAgentURL();
+        $options = [
+           'base_uri'        => sprintf('%s/%s', $adress, $endpoint),
+           'connect_timeout' => self::TIMEOUT,
+        ];
+
+        // add proxy string if configured in glpi
+        if (!empty($CFG_GLPI["proxy_name"])) {
+            $proxy_creds      = !empty($CFG_GLPI["proxy_user"])
+              ? $CFG_GLPI["proxy_user"].":".Toolbox::sodiumDecrypt($CFG_GLPI["proxy_passwd"])."@"
+              : "";
+            $proxy_string     = "http://{$proxy_creds}".$CFG_GLPI['proxy_name'].":".$CFG_GLPI['proxy_port'];
+            $options['proxy'] = $proxy_string;
         }
 
-        foreach ($adresses as $adress) {
-            $options = [
-            'base_uri'        => sprintf('%s/%s', $adress, $endpoint),
-            'connect_timeout' => self::TIMEOUT,
-            ];
-
-           // add proxy string if configured in glpi
-            if (!empty($CFG_GLPI["proxy_name"])) {
-                $proxy_creds      = !empty($CFG_GLPI["proxy_user"])
-                ? $CFG_GLPI["proxy_user"] . ":" . (new GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]) . "@"
-                : "";
-                $proxy_string     = "http://{$proxy_creds}" . $CFG_GLPI['proxy_name'] . ":" . $CFG_GLPI['proxy_port'];
-                $options['proxy'] = $proxy_string;
-            }
-
-           // init guzzle client with base options
-            $httpClient = new Guzzle_Client($options);
-            try {
-                $response = $httpClient->request('GET', $endpoint, []);
-                self::$found_adress = $adress;
-                break;
-            } catch (\GuzzleHttp\Exception\ConnectException $e) {
-               //many adresses will be incorrect
-                $cs = true;
-            }
+        // init guzzle client with base options
+        $httpClient = new Guzzle_Client($options);
+        try {
+            $response = $httpClient->request('GET', $endpoint, []);
+        } catch (\GuzzleHttp\Exception\ConnectException $e) {
+            //many adresses will be incorrect
+            $cs = true;
         }
+
         return $response;
     }
 

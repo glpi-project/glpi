@@ -70,9 +70,18 @@ class Agent extends DbTestCase
 
     public function testAgentFeaturesFromItem()
     {
-       //run an inventory
+
+
+        // Save values and fake REMOTE_ADDR
+        $saveServer = $_SERVER;
+        $_SERVER['REMOTE_ADDR'] = '123.123.123.123';
+
+        //run an inventory
         $json = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
         $inventory = new \Glpi\Inventory\Inventory($json);
+
+        // Restore values
+        $_SERVER = $saveServer;
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -102,6 +111,8 @@ class Agent extends DbTestCase
          ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
          ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
          ->string['version']->isIdenticalTo('2.5.2-1.fc31')
+         ->string['ip_binary']->isIdenticalTo(inet_pton('123.123.123.123'))
+         ->string['ip_protocol']->isIdenticalTo('http')
          ->string['itemtype']->isIdenticalTo('Computer')
          ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
 
@@ -114,54 +125,7 @@ class Agent extends DbTestCase
         $item = $this->testedInstance->getLinkedItem();
         $this->object($item)->isInstanceOf('Computer');
 
-        $this->array($this->testedInstance->guessAddresses())->isIdenticalTo([
-         'glpixps',
-         '192.168.1.142',
-         'fe80::b283:4fa3:d3f2:96b1',
-         '192.168.1.118',
-         'fe80::92a4:26c6:99dd:2d60',
-         '192.168.122.1'
-        ]);
-
-        $this->array($this->testedInstance->getAgentURLs())->isIdenticalTo([
-         'https://glpixps:62354',
-         'https://192.168.1.142:62354',
-         'https://fe80::b283:4fa3:d3f2:96b1:62354',
-         'https://192.168.1.118:62354',
-         'https://fe80::92a4:26c6:99dd:2d60:62354',
-         'https://192.168.122.1:62354',
-         'http://glpixps:62354',
-         'http://192.168.1.142:62354',
-         'http://fe80::b283:4fa3:d3f2:96b1:62354',
-         'http://192.168.1.118:62354',
-         'http://fe80::92a4:26c6:99dd:2d60:62354',
-         'http://192.168.122.1:62354'
-        ]);
-
-       //link a domain to item and see if adresses are still ok
-        $domain = new \Domain();
-        $did = $domain->add([
-         'name'   => 'glpi-project.org'
-        ]);
-        $this->integer($did)->isGreaterThan(0);
-
-        $ditem = new \Domain_Item();
-        $this->integer(
-            $ditem->add([
-            'itemtype'     => $item->getType(),
-            'items_id'     => $item->getID(),
-            'domains_id'   => $did
-            ])
-        )->isGreaterThan(0);
-
-        $this->array($this->testedInstance->guessAddresses())->isIdenticalTo([
-         'glpixps',
-         '192.168.1.142',
-         'fe80::b283:4fa3:d3f2:96b1',
-         '192.168.1.118',
-         'fe80::92a4:26c6:99dd:2d60',
-         '192.168.122.1',
-         'glpixps.glpi-project.org'
-        ]);
+        $this->string($this->testedInstance->getAddress())->isIdenticalTo('123.123.123.123');
+        $this->string($this->testedInstance->getAgentURL())->isIdenticalTo('http://123.123.123.123:62354');
     }
 }
