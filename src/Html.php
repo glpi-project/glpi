@@ -58,7 +58,7 @@ class Html
    **/
     public static function clean($value, $striptags = true, $keep_bad = 2)
     {
-        Toolbox::deprecated('Use Toolbox::stripTags(), Glpi\Toolbox\RichText::getSafeHtml() or Glpi\Toolbox\RichText::getTextFromHtml().');
+        Toolbox::deprecated('Use Toolbox::stripTags(), Glpi\RichText\RichText::getSafeHtml(), Glpi\RichText\RichText::getEnhancedHtml() or Glpi\RichText\RichText::getTextFromHtml().');
 
         $value = Html::entity_decode_deep($value);
 
