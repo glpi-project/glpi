@@ -1233,7 +1233,7 @@ msgstr "Doldurulmamış zorunlu alanlar var!"
 #: front/knowbaseitem_knowbaseitemcategory.form.php:55
 #, php-format
 msgid "%s adds a link with a category"
-msgstr ""
+msgstr "%s bir kategori ile bir bağlantı ekledi"
 
 #: front/itiltemplatefield.form.php:64
 msgid "hidden"
@@ -3593,7 +3593,8 @@ msgstr "Kaç kopya oluşturmak istiyorsunuz?"
 #: src/MassiveAction.php:1035
 msgid "Are you sure you want to add this item to transfer list?"
 msgid_plural "Are you sure you want to add these items to transfer list?"
-msgstr[0] "Bu ögeleri aktarım listesine eklemek istediğinize emin misiniz?"
+msgstr[0] "Bu ögeyi aktarım listesine eklemek istediğinize emin misiniz?"
+msgstr[1] "Bu ögeleri aktarım listesine eklemek istediğinize emin misiniz?"
 
 #: src/MassiveAction.php:1048
 msgid "Amendment to insert"
@@ -3609,7 +3610,7 @@ msgstr "Güncelle"
 
 #: src/MassiveAction.php:1062
 msgid "New Note"
-msgstr "Not Ekle"
+msgstr "Not ekle"
 
 #: src/MassiveAction.php:1240
 msgid ""
@@ -3627,11 +3628,12 @@ msgstr "Bir ya da bir kaç ögede kullanıldığı için bu öge silinemez"
 #: src/DeviceSoundCardModel.php:42
 msgid "Device sound card model"
 msgid_plural "Device sound card models"
-msgstr[0] "Aygıt ses kartı modelleri"
+msgstr[0] "Aygıt ses kartı modeli"
+msgstr[1] "Aygıt ses kartı modelleri"
 
 #: src/NetworkPortDialup.php:41
 msgid "Connection by dial line - Dialup Port"
-msgstr "Çevirmeli bağlantı - Çevirme bağlantı noktası"
+msgstr "Çevirmeli bağlantı - Çevirme bağlantı kapısı"
 
 #: src/NetworkPortDialup.php:53 src/NetworkPortDialup.php:77
 #: src/NetworkPortFiberchannel.php:122 src/NetworkPortFiberchannel.php:142
@@ -3643,22 +3645,26 @@ msgstr "Şuraya bağlı"
 #: src/PrinterType.php:39 src/Rule.php:396
 msgid "Printer type"
 msgid_plural "Printer types"
-msgstr[0] "Yazıcı türleri"
+msgstr[0] "Yazıcı türü"
+msgstr[1] "Yazıcı türleri"
 
 #: src/AutoUpdateSystem.php:38
 msgid "Update Source"
 msgid_plural "Update Sources"
-msgstr[0] "Güncelleme Kaynağı"
+msgstr[0] "Güncelleme kaynağı"
+msgstr[1] "Güncelleme kaynakları"
 
 #: src/ClusterType.php:38
 msgid "Cluster type"
 msgid_plural "Cluster types"
-msgstr[0] "Küme türleri"
+msgstr[0] "Küme türü"
+msgstr[1] "Küme türleri"
 
 #: src/AuthLDAP.php:129
 msgid "LDAP directory"
 msgid_plural "LDAP directories"
 msgstr[0] "LDAP dizini"
+msgstr[1] "LDAP dizinleri"
 
 #: src/AuthLDAP.php:255 src/AuthLDAP.php:467
 msgid "Synchronization field cannot be changed once in use."
@@ -3735,7 +3741,7 @@ msgstr "Sunucu"
 
 #: src/AuthLDAP.php:424
 msgid "Port (default=389)"
-msgstr "Kapı Numarası (varsayılan=389)"
+msgstr "Kapı numarası (varsayılan=389)"
 
 #: src/AuthLDAP.php:428 src/AuthLDAP.php:1030
 msgid "Connection filter"
@@ -3743,11 +3749,11 @@ msgstr "Bağlantı süzgeci"
 
 #: src/AuthLDAP.php:434 src/AuthLDAP.php:1022 src/AuthLDAP.php:3621
 msgid "BaseDN"
-msgstr "Temel Etki Alanı"
+msgstr "Temel etki alanı"
 
 #: src/AuthLDAP.php:439
 msgid "RootDN (for non anonymous binds)"
-msgstr "Kök Etki Alanı (anonim olmayan bağlantılar için)"
+msgstr "Kök etki alanı (anonim olmayan bağlantılar için)"
 
 #: src/AuthLDAP.php:444
 msgid "Use Bind"
@@ -4217,11 +4223,11 @@ msgstr "Devre dışı bırak"
 
 #: src/AuthLDAP.php:3989
 msgid "Do nothing"
-msgstr ""
+msgstr "Hiç bir şey yapılmasın"
 
 #: src/AuthLDAP.php:3990
 msgid "Restore (move out of trashbin)"
-msgstr ""
+msgstr "Geri yükle (çöpten çıkar)"
 
 #: src/AuthLDAP.php:3991 src/Plugin.php:2563 src/Marketplace/View.php:771
 msgid "Enable"
@@ -5754,8 +5760,8 @@ msgstr "Bir proje silindiğinde"
 #: src/Project.php:2588
 msgid "Manager"
 msgid_plural "Managers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Yönetici"
+msgstr[1] "Yöneticiler"
 
 #: src/NotificationTargetProject.php:59 src/NotificationTargetProject.php:638
 #: src/Project.php:650 src/Project.php:1166
@@ -9014,15 +9020,15 @@ msgstr ""
 
 #: src/Inventory/Conf.php:555
 msgid "Virtual network cards"
-msgstr ""
+msgstr "Sanal ağ kartları"
 
 #: src/Inventory/Conf.php:614
 msgid "Network drives"
-msgstr ""
+msgstr "Ağ sürücüleri"
 
 #: src/Inventory/Conf.php:629
 msgid "Removable drives"
-msgstr ""
+msgstr "Çıkarılabilir sürücüler"
 
 #: src/Inventory/Conf.php:686 src/PlanningRecall.php:358
 #: src/Item_Devices.php:734 src/Dashboard/Grid.php:285 src/CommonGLPI.php:1346
@@ -17774,7 +17780,7 @@ msgstr "Ağ aygıtı türleri sözlüğü"
 
 #: src/KnowbaseItem_KnowbaseItemCategory.php:176
 msgid "Add a category"
-msgstr ""
+msgstr "Bir kategori ekle"
 
 #: src/KnowbaseItem_KnowbaseItemCategory.php:226
 msgid "Category name"
@@ -18465,7 +18471,7 @@ msgstr "LDAP dizininden kullanıcı silindiğinde yapılacak işlem"
 
 #: src/Config.php:743
 msgid "Action when a user is restored in the LDAP directory"
-msgstr ""
+msgstr "LDAP dizininden kullanıcı geri yüklendiğinde yapılacak işlem"
 
 #: src/Config.php:748
 msgid "GLPI server time zone"
@@ -19020,7 +19026,7 @@ msgstr "Geliştirme sürümünü kullanıyorsunuz, dikkatli olun!"
 
 #: src/Config.php:3011
 msgid "You are using a pre-release version, be careful!"
-msgstr ""
+msgstr "Yayın öncesi sürümü kullanıyorsunuz, dikkatli olun!"
 
 #: src/Config.php:3018
 msgid "I know I am using a unstable version."
@@ -19502,7 +19508,7 @@ msgstr "Envanterlerde otomatik birim aktarımı modeli"
 
 #: src/Entity.php:1760
 msgid "Agent base URL"
-msgstr ""
+msgstr "Uygulama temelli adres"
 
 #: src/Entity.php:1899
 msgid "Alarms options"
@@ -22123,6 +22129,8 @@ msgstr "Olabilecek değerler:"
 #, php-format
 msgid "Force strategy used for restored users (current configured action: \"%s\")"
 msgstr ""
+"Geri yüklenen kullanıcılar için kullanılan yöntem dayatılsın (geçerli işlem:"
+" \"%s\")"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:218
 msgid "No active LDAP server found."
@@ -22207,7 +22215,7 @@ msgstr "LDAP üzerinden silinmiş"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:425
 msgid "Restored from LDAP"
-msgstr ""
+msgstr "LDAP üzerinden geri yüklendi"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:460
 msgid ""
@@ -23618,14 +23626,14 @@ msgstr "%s kalıbından oluşturuldu"
 #: tests/files/_cache/templates/fc/fcd4bb1c1011c8a257fcdbcb92a74826c1a401c28fde6f060108aa1e473f50d8.php:257
 #: tests/files/_cache/templates/6c/6cb776653e176d86ed5e032cd185be3d7df39dc9dcca4b79a6aeb2c27267a7db.php:251
 msgid "Change visibility in child entities."
-msgstr ""
+msgstr "Alt birimlerin görünürlüğünü değiştir."
 
 #: tests/files/_cache/templates/54/541698b9965a85a811622d6ec97f91f698891b53db7037b15d5a6e4998539b3e.php:265
 #: tests/files/_cache/templates/53/53b696dfcb43cb837a1f1cc8f2039249617f7ada30ec42cf8fe071b2306ad710.php:256
 #: tests/files/_cache/templates/fc/fcd4bb1c1011c8a257fcdbcb92a74826c1a401c28fde6f060108aa1e473f50d8.php:265
 #: tests/files/_cache/templates/6c/6cb776653e176d86ed5e032cd185be3d7df39dc9dcca4b79a6aeb2c27267a7db.php:259
 msgid "Can՛t change this attribute. It՛s inherited from its parent."
-msgstr ""
+msgstr "Üst ögeden devir alındığı için bu öznitelik değiştirilemez."
 
 #: tests/files/_cache/templates/54/541698b9965a85a811622d6ec97f91f698891b53db7037b15d5a6e4998539b3e.php:279
 #: tests/files/_cache/templates/53/53b696dfcb43cb837a1f1cc8f2039249617f7ada30ec42cf8fe071b2306ad710.php:265
@@ -23781,7 +23789,7 @@ msgstr "Çözüm arayın"
 #: tests/files/_cache/templates/de/de08e71fce2457275919fa09dd61dcba489f9cebe994f058b33287c6f55a904b.php:62
 msgctxt "button"
 msgid "Ok"
-msgstr ""
+msgstr "Tamam"
 
 #: tests/files/_cache/templates/39/3979fab384dc7b3d40ad0bd29e5552a266336bbae824920aee56a4c0ef2ee85b.php:120
 #: tests/files/_cache/templates/c6/c6507da9b4c57748da13516107d15fe9c5998c67198883808e658c051d5274f3.php:120
@@ -23915,42 +23923,42 @@ msgstr ""
 #: tests/files/_cache/templates/79/79fd59d45331bcfaacab15252f7b6ac49ba394c19d681abcbedd3128a503500c.php:53
 #: tests/files/_cache/templates/0f/0fc09a3264c0206fe8c5ff87b715856bc3c279f0d82555bb4cfa80e99ef870d1.php:50
 msgid "TTO"
-msgstr ""
+msgstr "ELA"
 
 #: tests/files/_cache/templates/02/0213af5c2e4d4039275793d38ecce99c96f01753ac0584e9b3d0ffef7d2741c6.php:51
 #: tests/files/_cache/templates/89/899ff0126ba2793b130d2f0c66a39bae2718b3390d8b4bc374d7d648724ff0c8.php:51
 #: tests/files/_cache/templates/79/79fd59d45331bcfaacab15252f7b6ac49ba394c19d681abcbedd3128a503500c.php:54
 #: tests/files/_cache/templates/0f/0fc09a3264c0206fe8c5ff87b715856bc3c279f0d82555bb4cfa80e99ef870d1.php:51
 msgid "TTR"
-msgstr ""
+msgstr "ÇÖZ"
 
 #: tests/files/_cache/templates/02/0213af5c2e4d4039275793d38ecce99c96f01753ac0584e9b3d0ffef7d2741c6.php:57
 #: tests/files/_cache/templates/89/899ff0126ba2793b130d2f0c66a39bae2718b3390d8b4bc374d7d648724ff0c8.php:57
 #: tests/files/_cache/templates/79/79fd59d45331bcfaacab15252f7b6ac49ba394c19d681abcbedd3128a503500c.php:60
 #: tests/files/_cache/templates/0f/0fc09a3264c0206fe8c5ff87b715856bc3c279f0d82555bb4cfa80e99ef870d1.php:57
 msgid "Internal TTO"
-msgstr ""
+msgstr "İç ELA"
 
 #: tests/files/_cache/templates/02/0213af5c2e4d4039275793d38ecce99c96f01753ac0584e9b3d0ffef7d2741c6.php:57
 #: tests/files/_cache/templates/89/899ff0126ba2793b130d2f0c66a39bae2718b3390d8b4bc374d7d648724ff0c8.php:57
 #: tests/files/_cache/templates/79/79fd59d45331bcfaacab15252f7b6ac49ba394c19d681abcbedd3128a503500c.php:60
 #: tests/files/_cache/templates/0f/0fc09a3264c0206fe8c5ff87b715856bc3c279f0d82555bb4cfa80e99ef870d1.php:57
 msgid "Internal Time to own"
-msgstr ""
+msgstr "İç ele alınma zamanı"
 
 #: tests/files/_cache/templates/02/0213af5c2e4d4039275793d38ecce99c96f01753ac0584e9b3d0ffef7d2741c6.php:58
 #: tests/files/_cache/templates/89/899ff0126ba2793b130d2f0c66a39bae2718b3390d8b4bc374d7d648724ff0c8.php:58
 #: tests/files/_cache/templates/79/79fd59d45331bcfaacab15252f7b6ac49ba394c19d681abcbedd3128a503500c.php:61
 #: tests/files/_cache/templates/0f/0fc09a3264c0206fe8c5ff87b715856bc3c279f0d82555bb4cfa80e99ef870d1.php:58
 msgid "Internal TTR"
-msgstr ""
+msgstr "İç ÇÖZ"
 
 #: tests/files/_cache/templates/02/0213af5c2e4d4039275793d38ecce99c96f01753ac0584e9b3d0ffef7d2741c6.php:58
 #: tests/files/_cache/templates/89/899ff0126ba2793b130d2f0c66a39bae2718b3390d8b4bc374d7d648724ff0c8.php:58
 #: tests/files/_cache/templates/79/79fd59d45331bcfaacab15252f7b6ac49ba394c19d681abcbedd3128a503500c.php:61
 #: tests/files/_cache/templates/0f/0fc09a3264c0206fe8c5ff87b715856bc3c279f0d82555bb4cfa80e99ef870d1.php:58
 msgid "Internal Time to resolve"
-msgstr ""
+msgstr "İç çözümlenme zamanı"
 
 #: tests/files/_cache/templates/02/0213af5c2e4d4039275793d38ecce99c96f01753ac0584e9b3d0ffef7d2741c6.php:150
 #: tests/files/_cache/templates/89/899ff0126ba2793b130d2f0c66a39bae2718b3390d8b4bc374d7d648724ff0c8.php:150
@@ -24331,7 +24339,7 @@ msgstr "Bir takvim ekle"
 
 #: js/rack.js:87
 msgid "Add PDU"
-msgstr ""
+msgstr "Güç dağıtım birimi ekle"
 
 #: js/reservations.js:120
 msgid "Timeline Week"
@@ -24521,7 +24529,7 @@ msgstr "Pazar kullanılsın"
 
 #: templates/components/form/buttons.html.twig:89
 msgid "Keep the devices while deleting this item"
-msgstr ""
+msgstr "Bu öge silinirken aygıtlar tutulsun"
 
 #: templates/components/itilobject/selfservice.html.twig:52
 msgid "There is some tickets awaiting approval"
@@ -24599,19 +24607,19 @@ msgstr "%s zamanına kadar geçerli"
 
 #: templates/components/kanban/kanban.html.twig:53
 msgid "Role"
-msgstr ""
+msgstr "Rol"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:69
 msgid "Team"
-msgstr ""
+msgstr "Takım"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:94
 msgid "No team members"
-msgstr ""
+msgstr "Herhangi bir takım üyesi yok"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:102
 msgid "Open full form"
-msgstr ""
+msgstr "Tam formu aç"
 
 #: templates/components/logs.html.twig:36
 msgid "No historical"
@@ -24851,7 +24859,7 @@ msgstr "Listeler"
 #: templates/layout/parts/context_links.html.twig:83
 #: templates/layout/parts/context_links.html.twig:85
 msgid "Global GANTT"
-msgstr ""
+msgstr "Genel GANTT"
 
 #: templates/layout/parts/context_links.html.twig:90
 #: templates/layout/parts/context_links.html.twig:92
@@ -24864,7 +24872,7 @@ msgstr "Ctrl+Alt+G"
 
 #: templates/layout/parts/goto_button.html.twig:39
 msgid "Find menu"
-msgstr ""
+msgstr "Menü arama"
 
 #: templates/layout/parts/page_header.html.twig:63
 msgid "Collapse menu"

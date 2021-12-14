@@ -8,15 +8,15 @@
 # Cyril Damas, 2021
 # Steve Hubert <hubertsteve.ga@gmail.com>, 2021
 # Jean-Christophe Pirmolin <jean-christophe@pirmolin.com>, 2021
-# Cédric Anne, 2021
 # DOMBRE Julien <moyo@indepnet.net>, 2021
 # Milan Lefort <milan.lefort@orange.fr>, 2021
 # Tiago Graça, 2021
 # Xavier CAILLAUD <thetsmr@gmail.com>, 2021
 # Pierre <plebel@teclib.com>, 2021
-# Legastelois François <flegastelois@teclib.com>, 2021
 # Johan Cwiklinski <jcwiklinski@teclib.com>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
+# Cédric Anne, 2021
+# Legastelois François <flegastelois@teclib.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -25,7 +25,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-14 11:10+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2021\n"
+"Last-Translator: Legastelois François <flegastelois@teclib.com>, 2021\n"
 "Language-Team: French (France) (https://www.transifex.com/glpi/teams/1637/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1241,7 +1241,7 @@ msgstr "Les champs requis ne sont pas renseignés !"
 #: front/knowbaseitem_knowbaseitemcategory.form.php:55
 #, php-format
 msgid "%s adds a link with a category"
-msgstr ""
+msgstr "%s a ajouté un lien avec une catégorie"
 
 #: front/itiltemplatefield.form.php:64
 msgid "hidden"
@@ -3441,7 +3441,7 @@ msgstr "Aucune action disponible"
 #: src/MassiveAction.php:142 src/MassiveAction.php:151
 #: src/MassiveAction.php:260 src/MassiveAction.php:900
 msgid "Implementation error!"
-msgstr ""
+msgstr "Erreur d'implémentation !"
 
 #: src/MassiveAction.php:253
 msgid "No selected items"
@@ -3603,7 +3603,7 @@ msgstr "ou"
 
 #: src/MassiveAction.php:1009
 msgid "How many copies do you want to create?"
-msgstr ""
+msgstr "Combien de copies voulez-vous créer ?"
 
 #: src/MassiveAction.php:1035
 msgid "Are you sure you want to add this item to transfer list?"
@@ -4241,11 +4241,11 @@ msgstr "Désactiver"
 
 #: src/AuthLDAP.php:3989
 msgid "Do nothing"
-msgstr ""
+msgstr "Ne rien faire"
 
 #: src/AuthLDAP.php:3990
 msgid "Restore (move out of trashbin)"
-msgstr ""
+msgstr "Restaurer (sortir de la corbeille)"
 
 #: src/AuthLDAP.php:3991 src/Plugin.php:2563 src/Marketplace/View.php:771
 msgid "Enable"
@@ -4273,22 +4273,22 @@ msgstr "Désactiver le filtrage par date"
 
 #: src/AuthLDAP.php:4462
 msgid "TLS certificate path is incorrect"
-msgstr ""
+msgstr "Le chemin vers le fichier de certificat TLS est incorrect"
 
 #: src/AuthLDAP.php:4474
 msgid "TLS key file path is incorrect"
-msgstr ""
+msgstr "Le chemin vers le fichier de clé TLS est incorrect"
 
 #: src/SNMPCredential.php:47
 msgid "SNMP credential"
 msgid_plural "SNMP credentials"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Identifiant SNMP"
+msgstr[1] "Identifiants SNMP"
 
 #: src/SNMPCredential.php:58
 #: templates/components/form/snmpcredential.html.twig:56
 msgid "Community"
-msgstr ""
+msgstr "Communauté"
 
 #: src/Profile_User.php:142 src/Profile_User.php:290
 msgid "Add an authorization to a user"
@@ -4785,15 +4785,15 @@ msgstr "Nettoyer"
 
 #: src/Plugin.php:2590 src/Plugin.php:2598
 msgid "This will only affect plugins already installed"
-msgstr ""
+msgstr "Cela n'affectera que les plugins déjà installés"
 
 #: src/Plugin.php:2606
 msgid "This will only affect plugins already enabled"
-msgstr ""
+msgstr "Cela n'affectera que les plugins déjà activés"
 
 #: src/Plugin.php:2614
 msgid "This will only affect plugins ready to be cleaned"
-msgstr ""
+msgstr "Cela n'affectera que les plugins à nettoyer"
 
 #: src/IPNetwork_Vlan.php:131 src/NetworkPort_Vlan.php:132
 #: src/NetworkPort.php:1388
@@ -4876,8 +4876,8 @@ msgstr "Vitesse du port Fibre Channel"
 #: src/NetworkPortInstantiation.php:665 src/NetworkPortEthernet.php:155
 msgid "Network socket"
 msgid_plural "Network sockets"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Connecteur réseau"
+msgstr[1] "Connecteurs réseaux"
 
 #: src/NetworkPortFiberchannel.php:213 src/Blacklist.php:232
 #: src/NetworkPortWifi.php:150 src/RefusedEquipment.php:124
@@ -4889,7 +4889,7 @@ msgstr "MAC"
 
 #: src/NetworkPortFiberchannel.php:241
 msgid "Fiber port type"
-msgstr ""
+msgstr "Type de port fibre"
 
 #. TRANS: %d is the speed
 #: src/NetworkPortFiberchannel.php:263 src/NetworkPortFiberchannel.php:310
@@ -4915,21 +4915,21 @@ msgstr "%d Mbit/s"
 
 #: src/NetworkPortFiberchannel.php:376
 msgid "Network fiber socket"
-msgstr ""
+msgstr "Connecteur réseau fibre"
 
 #: src/PendingReason.php:50
 msgid "Pending reason"
 msgid_plural "Pending reasons"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Raison d'attente"
+msgstr[1] "Raisons d'attentes"
 
 #: src/PendingReason.php:58 src/PendingReason.php:91
 msgid "Automatic follow-up frequency"
-msgstr ""
+msgstr "Fréquence des suivis automatiques"
 
 #: src/PendingReason.php:70 src/PendingReason.php:100
 msgid "Follow-ups before automatic resolution"
-msgstr ""
+msgstr "Suivi avant la résolution automatique"
 
 #: src/PendingReason.php:110
 msgid "Follow-up template"
@@ -6762,7 +6762,8 @@ msgstr "Durée minimale"
 #, php-format
 msgid "%s second"
 msgid_plural "%s seconds"
-msgstr[0] "%s secondes"
+msgstr[0] "%s seconde"
+msgstr[1] "%s secondes"
 
 #: src/CronTask.php:1234
 msgid "Maximal time"
@@ -10466,7 +10467,8 @@ msgstr[0] "%1$s%2$d minutes"
 #, php-format
 msgid "%1$s%2$s second"
 msgid_plural "%1$s%2$s seconds"
-msgstr[0] "%1$s%2$s secondes"
+msgstr[0] "%1$s%2$s seconde"
+msgstr[1] "%1$s%2$s secondes"
 
 #: src/Html.php:593 src/Api/API.php:1943 src/Api/API.php:2056
 #: src/Api/API.php:2621
