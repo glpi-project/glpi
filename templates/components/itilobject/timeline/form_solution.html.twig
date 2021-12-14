@@ -31,6 +31,9 @@
 
 {% extends 'components/itilobject/timeline/form_timeline_item.html.twig' %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set params = {'item': item}|merge(params|default({})) %}
+
 {% set candedit = item.maySolve() %}
 {% set can_read_kb = has_profile_right('knowbase', constant('READ')) or has_profile_right('knowbase', constant('KnowbaseItem::READFAQ')) %}
 {% set can_update_kb = has_profile_right('knowbase', constant('UPDATE')) %}
@@ -81,7 +84,7 @@
             <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
             <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
             <input type="hidden" name="_no_message_link" value="1" />
-            {{ call_plugin_hook('pre_item_form', {"item": subitem}) }}
+            {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
 
             {% if call('Ticket_Ticket::countOpenChildren', [item.fields['id']]) > 0 %}
                <div class="alert alert-important alert-warning">
@@ -210,7 +213,7 @@
             </div>
 
          {% if not noform %}
-               {{ call_plugin_hook('post_item_form', {"item": subitem}) }}
+               {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
                <div class="d-flex card-footer mx-n3 mb-n3">
                   {% if subitem.fields['id'] <= 0 %}
                      <button class="btn btn-primary me-2" type="submit" name="add">

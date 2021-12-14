@@ -31,6 +31,9 @@
 
 {% extends 'components/itilobject/timeline/form_timeline_item.html.twig' %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set params = {'item': item}|merge(params|default({})) %}
+
 {% set candedit = item.maySolve() %}
 {% set can_read_kb = has_profile_right('knowbase', constant('READ')) or has_profile_right('knowbase', constant('KnowbaseItem::READFAQ')) %}
 {% set can_update_kb = has_profile_right('knowbase', constant('UPDATE')) %}
@@ -79,7 +82,7 @@
                action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true" data-submit-once>
             <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
             <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
-            {{ call_plugin_hook('pre_item_form', {"item": subitem}) }}
+            {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
 
             {% set openfollowup = _get['_openfollowup'] ?? false %}
             {% if openfollowup %}
@@ -190,7 +193,7 @@
                </div>
             </div>
 
-            {{ call_plugin_hook('post_item_form', {"item": subitem}) }}
+            {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
             <div class="d-flex card-footer mx-n3 mb-n3">
                {% if subitem.fields['id'] <= 0 %}
                   <div class="input-group">

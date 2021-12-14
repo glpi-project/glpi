@@ -47,7 +47,7 @@
       <div id="ticket-main" class="accordion-collapse collapse show" aria-labelledby="heading-main-ticket">
          <div class="accordion-body row m-0 mt-n2">
 
-            {{ call_plugin_hook('pre_item_form', {"item": item}) }}
+            {{ call_plugin_hook('pre_item_form', {"item": item, 'options': params}) }}
 
             {% if is_multi_entities_mode() %}
                {% if item.isNewItem() %}
@@ -227,7 +227,7 @@
                ) }}
             {% endif %}
 
-            {{ call_plugin_hook('post_item_form', {"item": item}) }}
+            {{ call_plugin_hook('post_item_form', {"item": item, 'options': params}) }}
          </div>
       </div>
    </div>
