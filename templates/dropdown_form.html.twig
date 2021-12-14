@@ -72,9 +72,7 @@
             {% if show_field %}
 
                 {% if field['name'] == 'header' %}
-                    <tr class="tab_bg_1">
-                        <th colspan="2">{{ field['label'] }}</th>
-                    </tr>
+                    {{ fields.largeTitle(field['label']) }}
                 {% elseif field['name'] == 'content' %}
                     {{ fields.textareaField(
                         'content',
