@@ -672,7 +672,7 @@ HTML;
                <button class='modify_plugin'
                      data-action='download_plugin'
                      title='".__s("Download again")."'>
-                  <i class='fas fa-cloud-download-alt'></i>
+                  <i class='ti ti-cloud-download'></i>
                </button>";
          }
       } else if (!$is_available) {
@@ -715,7 +715,7 @@ HTML;
             $buttons .="<button class='modify_plugin'
                                 data-action='download_plugin'
                                 title='".__s("Download")."'>
-               <i class='ti ti-alert-triangle'></i>
+               <i class='ti ti-cloud-download'></i>
             </button>";
          } else if ($can_be_updated) {
             $update_title = sprintf(
