@@ -32,6 +32,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\SocketModel;
 use Glpi\Toolbox\Sanitizer;
 
 class Dropdown
@@ -1088,7 +1089,7 @@ class Dropdown
              __('Cable management') => [
                'CableType' => null,
                'CableStrand' => null,
-               'SocketModel' => null,
+               SocketModel::class => null,
              ],
 
              __('Internet') => [

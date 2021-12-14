@@ -31,6 +31,10 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi;
+
+use CommonDropdown;
+
 /// Class ConnectorModel
 class SocketModel extends CommonDropdown
 {

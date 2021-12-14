@@ -31,6 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\SocketModel;
+
 include('../inc/includes.php');
 
 $dropdown = new SocketModel();

@@ -33,6 +33,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Socket;
+use Glpi\SocketModel;
 
 /// Class Cable
 class Cable extends CommonDBTM
