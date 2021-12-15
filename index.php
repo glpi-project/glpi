@@ -54,7 +54,14 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
     include(GLPI_ROOT . "/inc/includes.php");
     $_SESSION["glpicookietest"] = 'testcookie';
 
-   // For compatibility reason
+    //Try to detect GLPI agent calls
+    $rawdata = file_get_contents("php://input");
+    if (!empty($rawdata) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+        include_once(GLPI_ROOT . '/front/inventory.php');
+        die();
+    }
+
+    // For compatibility reason
     if (isset($_GET["noCAS"])) {
         $_GET["noAUTO"] = $_GET["noCAS"];
     }
