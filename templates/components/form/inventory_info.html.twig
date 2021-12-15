@@ -89,17 +89,15 @@
                {{ __('Agent status') }}
                <i id="update-status" class="fas fa-sync" role="button" title="{{ __('Ask agent about its current status') }}"></i>
             </label>
-            {# TODO status #}
-            <span>{{ __('Unknown') }}</span>
+            <span id='agent_status'>{{ __('Unknown') }}</span>
          </div>
 
          <div class="mb-3 col-12 col-sm-6">
             <label class="form-label" >
                {{ __('Request inventory') }}
-               <i id="update-status" class="fas fa-sync" role="button" title="{{ __('Request agent to proceed an new inventory') }}"></i>
+               <i id="update-inventory" class="fas fa-sync" role="button" title="{{ __('Request agent to proceed an new inventory') }}"></i>
             </label>
-            {# TODO status #}
-            <span>{{ __('Unknown') }}</span>
+            <span id='inventory_status'>{{ __('Unknown') }}</span>
          </div>
       </div>
 
@@ -109,7 +107,7 @@
             var icon = $(this);
             icon.addClass('fa-spin');
             $.ajax({
-               type: 'GET',
+               type: 'POST',
                url: '{{ path('/ajax/agent.php') }}',
                timeout: 3000, //3 seconds timeout
                dataType: 'json',
@@ -125,9 +123,10 @@
          });
 
          $('#update-inventory').on('click', function() {
+            var icon = $(this);
             icon.addClass("fa-spin");
             $.ajax({
-               type: 'GET',
+               type: 'POST',
                url: '{{ path('/ajax/agent.php') }}',
                timeout: 3000, //3 seconds timeout
                dataType: 'json',
