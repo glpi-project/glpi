@@ -87,7 +87,11 @@
                   </div>
                {% endif %}
                <span>
-               {{ nametype }} - {{ friendlyname }}
+               {% if item.id > 0 %}
+                  {{ nametype }} - {{ friendlyname }}
+               {% else %}
+                  {{ nametype }}
+               {% endif %}
                </span>
                {% if header_toolbar %}
                   <div class="d-inline-block toolbar ms-2">

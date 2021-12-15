@@ -321,10 +321,21 @@ JAVASCRIPT;
             $html_tabs = "";
             $html_sele = "";
             $i = 0;
+
+            // Hide tabs if only one single tab on item creation form
+            $display_class = "";
+            if (
+                is_a($type, CommonDBTM::class, true)
+                && $type::isNewId($ID)
+                && count($tabs) == 1
+            ) {
+                $display_class = "d-none";
+            }
+
             foreach ($tabs as $val) {
                 $target = str_replace('\\', '_', $val['id']);
                 $html_tabs .= "<li class='nav-item $navitemml'>
-               <a class='nav-link justify-content-between $navlinkp' data-bs-toggle='tab' title='" . strip_tags($val['title']) . "' ";
+               <a class='nav-link justify-content-between $navlinkp $display_class' data-bs-toggle='tab' title='" . strip_tags($val['title']) . "' ";
                 $html_tabs .= " href='" . $val['url'] . (isset($val['params']) ? '?' . $val['params'] : '') . "' data-bs-target='#{$target}'>";
                 $html_tabs .= $val['title'] . "</a></li>";
 
