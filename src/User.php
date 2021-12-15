@@ -5511,7 +5511,7 @@ JAVASCRIPT;
 
        // check date validity for cookie token
         $outdated = false;
-        if ($field === 'cookie_token') {
+        if ($field === 'cookie_token' && !empty($this->fields[$field . "_date"])) {
             $date_create = new DateTime($this->fields[$field . "_date"]);
             $date_expir  = $date_create->add(new DateInterval('PT' . $CFG_GLPI["login_remember_time"] . 'S'));
 
