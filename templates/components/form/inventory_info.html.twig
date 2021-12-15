@@ -107,7 +107,7 @@
             var icon = $(this);
             icon.addClass('fa-spin');
             $.ajax({
-               type: 'GET',
+               type: 'POST',
                url: '{{ path('/ajax/agent.php') }}',
                timeout: 3000, //3 seconds timeout
                dataType: 'json',
@@ -126,7 +126,7 @@
             var icon = $(this);
             icon.addClass("fa-spin");
             $.ajax({
-               type: 'GET',
+               type: 'POST',
                url: '{{ path('/ajax/agent.php') }}',
                timeout: 3000, //3 seconds timeout
                dataType: 'json',
