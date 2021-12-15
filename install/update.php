@@ -187,7 +187,7 @@ echo Html::script("public/lib/base.js");
 echo Html::script("js/glpi_dialog.js");
 // CSS
 echo Html::css('public/lib/base.css');
-echo Html::scss("css/install");
+echo Html::scss("css/install", [], true);
 echo "</head>";
 echo "<body>";
 echo "<div id='principal'>";
