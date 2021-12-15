@@ -322,9 +322,13 @@ JAVASCRIPT;
             $html_sele = "";
             $i = 0;
 
-            // Hide tabs on item creation
+            // Hide tabs if only one single tab on item creation form
             $display_class = "";
-            if (is_a($type, CommonDBTM::class, true) && $type::isNewId($ID)) {
+            if (
+                is_a($type, CommonDBTM::class, true)
+                && $type::isNewId($ID)
+                && count($tabs) == 1
+            ) {
                 $display_class = "d-none";
             }
 
