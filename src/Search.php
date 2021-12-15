@@ -6029,18 +6029,24 @@ JAVASCRIPT;
                     && ($data[$NAME][0]['status'] != CommonITILObject::WAITING)
                     && ($data[$NAME][0]['name'] < $_SESSION['glpi_currenttime'])
                 ) {
-                    $out = " style=\"background-color: #cf9b9b\" ";
+                    $out = " class=\"shadow-none\" style=\"background-color: #cf9b9b\" ";
                 }
                 break;
 
             case "glpi_projectstates.color":
             case "glpi_cables.color":
-                $out = " style=\"background-color:" . $data[$NAME][0]['name'] . ";\" ";
+                $bg_color = $data[$NAME][0]['name'];
+                if (!empty($bg_color)) {
+                    $out = " class=\"shadow-none\" style=\"background-color: $bg_color;\" ";
+                }
                 break;
 
             case "glpi_projectstates.name":
                 if (array_key_exists('color', $data[$NAME][0])) {
-                    $out = " style=\"background-color:" . $data[$NAME][0]['color'] . ";\" ";
+                    $bg_color = $data[$NAME][0]['color'];
+                    if (!empty($bg_color)) {
+                        $out = " class=\"shadow-none\" style=\"background-color: $bg_color;\" ";
+                    }
                 }
                 break;
         }
