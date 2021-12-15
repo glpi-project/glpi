@@ -32,6 +32,7 @@
  */
 
 use Glpi\Application\ErrorHandler;
+use Glpi\Toolbox\Sanitizer;
 use GuzzleHttp\Client as Guzzle_Client;
 use GuzzleHttp\Psr7\Response;
 
@@ -629,7 +630,7 @@ class Agent extends CommonDBTM
 
         switch ($request) {
             case self::ACTION_STATUS:
-                $data['answer'] = preg_replace('/status: /', '', $raw_content);
+                $data['answer'] = Sanitizer::sanitize(preg_replace('/status: /', '', $raw_content));
                 break;
             case self::ACTION_INVENTORY:
                 $now = new DateTime();
