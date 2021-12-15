@@ -417,14 +417,14 @@ class Impact extends CommonGLPI
          // to apply the animation to each cells content and then remove the
          // padding to get the desired "slide" animation
 
-         public function impactListUp(target) {
+         function impactListUp(target) {
             target.removeClass("fa-caret-down");
             target.addClass("fa-caret-up");
             target.closest("tbody").find(\'tr:gt(0) td\').animate({padding: \'0px\'}, {duration: 400});
             target.closest("tbody").find(\'tr:gt(0) div\').slideUp("400");
          }
 
-         public function impactListDown(target) {
+         function impactListDown(target) {
             target.addClass("fa-caret-down");
             target.removeClass("fa-caret-up");
             target.closest("tbody").find(\'tr:gt(0) td\').animate({padding: \'8px 5px\'}, {duration: 400});
@@ -759,7 +759,7 @@ class Impact extends CommonGLPI
 
        // View selection
         echo Html::scriptBlock("
-         public function showGraphView() {
+         function showGraphView() {
             $('#impact_list_view').hide();
             $('#impact_graph_view').show();
             $('#sviewlist i').removeClass('selected');
@@ -770,7 +770,7 @@ class Impact extends CommonGLPI
             }
          }
 
-         public function showListView() {
+         function showListView() {
             $('#impact_graph_view').hide();
             $('#impact_list_view').show();
             $('#sviewgraph i').removeClass('selected');
