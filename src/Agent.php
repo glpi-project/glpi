@@ -436,7 +436,7 @@ class Agent extends CommonDBTM
 
            //append linked ips
             $ports_iterator = $DB->request([
-            'SELECT' => ['ips.name'],
+            'SELECT' => ['ips.name', 'ips.version'],
             'FROM'   => NetworkPort::getTable() . ' AS netports',
             'WHERE'  => [
                'netports.itemtype'  => $item->getType(),
@@ -473,7 +473,12 @@ class Agent extends CommonDBTM
             ]);
             foreach ($ports_iterator as $row) {
                 if (!in_array($row['name'], $adresses)) {
-                    $adresses[] = $row['name'];
+                    if ($row['version'] == 4){
+                        $adresses[] = $row['name'];
+                    } else {
+                        //surrounds IPV6 with '[' and ']'
+                        $adresses[] = "[" . $row['name'] . "]";
+                    }
                 }
             }
 
@@ -571,7 +576,7 @@ class Agent extends CommonDBTM
                 self::$found_adress = $adress;
                 break;
             } catch (\GuzzleHttp\Exception\ConnectException $e) {
-               //many adresses will be incorrect
+                //many adresses will be incorrect
                 $cs = true;
             }
         }
