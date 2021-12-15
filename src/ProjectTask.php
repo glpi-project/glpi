@@ -601,7 +601,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         echo "<td colspan='2'></td>";
         echo "</tr>";
         echo Html::scriptBlock('
-         public function projecttasktemplate_update(value) {
+         function projecttasktemplate_update(value) {
             $.ajax({
                url: "' . $CFG_GLPI["root_doc"] . '/ajax/projecttask.php",
                type: "POST",

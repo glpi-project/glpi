@@ -174,7 +174,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
 
             $ajax_url = $CFG_GLPI["root_doc"] . "/ajax/planning.php";
             $JS = <<<JAVASCRIPT
-            public function template_update{$rand}(value) {
+            function template_update{$rand}(value) {
                $.ajax({
                   url: '{$ajax_url}',
                   type: "POST",
