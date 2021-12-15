@@ -333,7 +333,6 @@ JAVASCRIPT;
             }
 
             foreach ($tabs as $val) {
-
                 $target = str_replace('\\', '_', $val['id']);
                 $html_tabs .= "<li class='nav-item $navitemml'>
                <a class='nav-link justify-content-between $navlinkp $display_class' data-bs-toggle='tab' title='" . strip_tags($val['title']) . "' ";
