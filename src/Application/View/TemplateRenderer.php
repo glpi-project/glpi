@@ -76,13 +76,24 @@ class TemplateRenderer
             $loader->addPath(Plugin::getPhpDir($plugin_key . '/templates'), $plugin_key);
         }
 
-        $this->environment = new Environment(
-            $loader,
-            [
-            'cache'       => $cachedir . '/templates',
+        $env_params = [
             'debug'       => $_SESSION['glpi_use_mode'] ?? null === Session::DEBUG_MODE,
             'auto_reload' => true, // Force refresh
-            ]
+        ];
+
+        $tpl_cachedir = $cachedir . '/templates';
+        if (
+            (file_exists($tpl_cachedir) && !is_writable($tpl_cachedir))
+            || (!file_exists($tpl_cachedir) && !is_writable($cachedir))
+        ) {
+            trigger_error(sprintf('Cache directory "%s" is not writeable.', $tpl_cachedir), E_USER_WARNING);
+        } else {
+            $env_params['cache'] = $tpl_cachedir;
+        }
+
+        $this->environment = new Environment(
+            $loader,
+            $env_params
         );
        // Vendor extensions
         $this->environment->addExtension(new DebugExtension());
