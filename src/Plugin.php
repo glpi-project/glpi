@@ -1337,10 +1337,13 @@ class Plugin extends CommonDBTM
 
         $blacklist = ['device_types'];
         foreach ($all_types as $att) {
-            if (!in_array($att, $blacklist) && isset($attrib[$att]) && $attrib[$att]) {
-                $CFG_GLPI[$att][] = $itemtype;
-                unset($attrib[$att]);
+            if (in_array($att, $blacklist) || !isset($attrib[$att])) {
+                continue;
             }
+            if ($attrib[$att]) {
+                $CFG_GLPI[$att][] = $itemtype;
+            }
+            unset($attrib[$att]);
         }
 
         if (
