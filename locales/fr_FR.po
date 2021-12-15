@@ -13,10 +13,10 @@
 # Xavier CAILLAUD <thetsmr@gmail.com>, 2021
 # Pierre <plebel@teclib.com>, 2021
 # Johan Cwiklinski <jcwiklinski@teclib.com>, 2021
-# alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
 # Cédric Anne, 2021
 # CupidSG, 2021
 # Legastelois François <flegastelois@teclib.com>, 2021
+# alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -25,7 +25,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-14 12:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Legastelois François <flegastelois@teclib.com>, 2021\n"
+"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2021\n"
 "Language-Team: French (France) (https://www.transifex.com/glpi/teams/1637/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4194,7 +4194,8 @@ msgstr "Dynamique"
 #: src/CommonDBVisible.php:312
 msgid "Profile"
 msgid_plural "Profiles"
-msgstr[0] "Profils"
+msgstr[0] "Profil"
+msgstr[1] "Profils"
 
 #: src/Profile_User.php:1002 src/Profile_User.php:1010
 #: src/Profile_User.php:1015
@@ -4205,7 +4206,8 @@ msgstr "%1$s, %2$s"
 #: src/Profile_User.php:1066
 msgid "Authorization"
 msgid_plural "Authorizations"
-msgstr[0] "Habilitations"
+msgstr[0] "Habilitation"
+msgstr[1] "Habilitations"
 
 #: src/OlaLevel_Ticket.php:44
 msgid "OLA level for Ticket"
@@ -4218,7 +4220,8 @@ msgstr "Action automatique pour les OLAs"
 #: src/NotImportedEmail.php:61
 msgid "Refused email"
 msgid_plural "Refused emails"
-msgstr[0] "Courriels rejetés"
+msgstr[0] "Courriel rejeté"
+msgstr[1] "Courriels rejetés"
 
 #: src/NotImportedEmail.php:76
 msgid "Delete emails"
@@ -4268,7 +4271,8 @@ msgstr "Autorisations insuffisantes"
 #: src/Marketplace/NotificationTargetController.php:101
 msgid "Plugin"
 msgid_plural "Plugins"
-msgstr[0] "Plugins"
+msgstr[0] "Plugin"
+msgstr[1] "Plugins"
 
 #: src/Plugin.php:709
 #, php-format
@@ -4579,14 +4583,16 @@ msgstr "Règles d'affectation d'un élément à une entité"
 #: src/NetworkInterface.php:42
 msgid "Network interface"
 msgid_plural "Network interfaces"
-msgstr[0] "Interfaces réseau"
+msgstr[0] "Interface réseau"
+msgstr[1] "Interfaces réseau"
 
 #. TRANS: first parameter is the template name
 #: src/ITILTemplate.php:150 src/DomainRecord.php:352
 #, php-format
 msgid "%1$s template"
 msgid_plural "%1$s templates"
-msgstr[0] "%1$s gabarits"
+msgstr[0] "%1$s gabarit"
+msgstr[1] "%1$s gabarits"
 
 #: src/ITILTemplate.php:317 src/Ticket.php:2730
 #: templates/components/itilobject/fields/global_validation.html.twig:61
@@ -4748,13 +4754,15 @@ msgstr "Opérateur logique"
 #, php-format
 msgid "+ %d minute"
 msgid_plural "+ %d minutes"
-msgstr[0] "+ %d minutes"
+msgstr[0] "+ %d minute"
+msgstr[1] "+ %d minutes"
 
 #: src/LevelAgreementLevel.php:257 src/Html.php:3190
 #, php-format
 msgid "- %d minute"
 msgid_plural "- %d minutes"
-msgstr[0] "- %d minutes"
+msgstr[0] "- %d minute"
+msgstr[1] "- %d minutes"
 
 #: src/LevelAgreementLevel.php:264 src/Html.php:3231
 #, php-format
@@ -4766,19 +4774,22 @@ msgstr[0] "+ %d heures"
 #, php-format
 msgid "- %d hour"
 msgid_plural "- %d hours"
-msgstr[0] "- %d heures"
+msgstr[0] "- %d heure"
+msgstr[1] "- %d heures"
 
 #: src/LevelAgreementLevel.php:278 src/Html.php:3236
 #, php-format
 msgid "+ %d day"
 msgid_plural "+ %d days"
-msgstr[0] "+ %d jours"
+msgstr[0] "+ %d jour"
+msgstr[1] "+ %d jours"
 
 #: src/LevelAgreementLevel.php:282 src/Html.php:3195
 #, php-format
 msgid "- %d day"
 msgid_plural "- %d days"
-msgstr[0] "- %d jours"
+msgstr[0] "- %d jour"
+msgstr[1] "- %d jours"
 
 #: src/LevelAgreementLevel.php:292 src/Ticket.php:3152 src/Ticket.php:3355
 #: src/Ticket.php:6541 src/OlaLevel.php:184 src/Dashboard/Provider.php:1487
@@ -4805,12 +4816,14 @@ msgstr "TTR"
 #: src/PrinterModel.php:42 src/Rule.php:324 src/CartridgeItem.php:346
 msgid "Printer model"
 msgid_plural "Printer models"
-msgstr[0] "Modèles d'imprimantes"
+msgstr[0] "Modèle d'imprimante"
+msgstr[1] "Modèles d'imprimantes"
 
 #: src/Cluster.php:54
 msgid "Cluster"
 msgid_plural "Clusters"
-msgstr[0] "Clusters"
+msgstr[0] "Cluster"
+msgstr[1] "Clusters"
 
 #: src/Cluster.php:93 src/Blacklist.php:234 src/RefusedEquipment.php:106
 #: src/RefusedEquipment.php:191 src/RuleImportAsset.php:141
@@ -4849,7 +4862,8 @@ msgstr "Groupe technique"
 #: src/Blacklist.php:93 src/RuleCollection.php:2207
 msgid "Blacklist"
 msgid_plural "Blacklists"
-msgstr[0] "Listes noires"
+msgstr[0] "Liste noire"
+msgstr[1] "Listes noires"
 
 #: src/Blacklist.php:231 src/Unmanaged.php:185 src/RefusedEquipment.php:115
 #: src/RuleImportAsset.php:129 src/NetworkName.php:224
@@ -4860,7 +4874,8 @@ msgstr "IP"
 #: src/Blacklist.php:239 src/Manufacturer.php:43 src/Rule.php:276
 msgid "Manufacturer"
 msgid_plural "Manufacturers"
-msgstr[0] "Fabricants"
+msgstr[0] "Fabricant"
+msgstr[1] "Fabricants"
 
 #: src/Alert.php:108 src/Alert.php:146 src/Alert.php:177 src/Contract.php:1580
 #: src/Infocom.php:654 src/Entity.php:810 src/Entity.php:1051
@@ -4998,7 +5013,8 @@ msgstr ""
 #: src/Unmanaged.php:47
 msgid "Unmanaged device"
 msgid_plural "Unmanaged devices"
-msgstr[0] "Équipements non gérés"
+msgstr[0] "Équipement non géré"
+msgstr[1] "Équipements non gérés"
 
 #: src/Unmanaged.php:106
 msgid "Serial Number"
@@ -5023,7 +5039,8 @@ msgstr "Sélectionnez un itemtype :"
 #: src/ProblemTask.php:41
 msgid "Problem task"
 msgid_plural "Problem tasks"
-msgstr[0] "Tâches de problèmes"
+msgstr[0] "Tâche de problème"
+msgstr[1] "Tâches de problèmes"
 
 #: src/PrinterLog.php:55
 msgid "Page counters"
@@ -5170,12 +5187,14 @@ msgstr "Date de début"
 #: src/UserTitle.php:39
 msgid "User title"
 msgid_plural "Users titles"
-msgstr[0] "Titres d'utilisateur"
+msgstr[0] "Titre d'utilisateur"
+msgstr[1] "Titres d'utilisateur"
 
 #: src/MonitorType.php:39 src/Rule.php:384
 msgid "Monitor type"
 msgid_plural "Monitor types"
-msgstr[0] "Types de moniteurs"
+msgstr[0] "Type de moniteur"
+msgstr[1] "Types de moniteurs"
 
 #: src/Ticket_Contract.php:46
 msgid "Tickets / Contracts"
@@ -5226,6 +5245,7 @@ msgstr "Date d'expiration"
 msgid "Event"
 msgid_plural "Events"
 msgstr[0] "Événements"
+msgstr[1] "Événements"
 
 #: src/NetworkPortFiberchannelType.php:39
 msgid "Fiber type"
@@ -5282,7 +5302,8 @@ msgstr "Supprimer définitivement"
 #: src/Cable.php:183 src/Problem.php:467 src/Link_Itemtype.php:170
 msgid "Associated item type"
 msgid_plural "Associated item types"
-msgstr[0] "Types d'élément associé"
+msgstr[0] "Type d'élément associé"
+msgstr[1] "Types d'élément associé"
 
 #. TRANS: %1$s is the Itemtype name and $2$d the ID of the item
 #: src/Item_Ticket.php:1186 src/SavedSearch.php:413 src/CommonGLPI.php:1046
@@ -5303,7 +5324,8 @@ msgstr "Élément mis à la corbeille"
 #: src/SoftwareCategory.php:42
 msgid "Software category"
 msgid_plural "Software categories"
-msgstr[0] "Catégories des logiciels"
+msgstr[0] "Catégorie de logiciel"
+msgstr[1] "Catégories des logiciels"
 
 #: src/ContractCost.php:46 src/ContractCost.php:164 src/ContractCost.php:266
 #: src/ContractCost.php:361 src/NotificationTargetProject.php:724
@@ -5329,7 +5351,8 @@ msgstr[0] "Catégories des logiciels"
 #: src/Contract.php:798 src/Contract.php:811 src/Contract.php:824
 msgid "Cost"
 msgid_plural "Costs"
-msgstr[0] "Coûts"
+msgstr[0] "Coût"
+msgstr[1] "Coûts"
 
 #: src/ContractCost.php:350 src/ProjectCost.php:357 src/CommonITILCost.php:558
 msgid "Add a new cost"
@@ -5391,7 +5414,8 @@ msgstr "Propriétaire du verrou"
 #: src/Item_DeviceSimcard.php:53 src/DeviceSimcard.php:41
 msgid "Simcard"
 msgid_plural "Simcards"
-msgstr[0] "Cartes SIM"
+msgstr[0] "Carte SIM"
+msgstr[1] "Cartes SIM"
 
 #: src/Item_DeviceSimcard.php:63 src/Item_DeviceSimcard.php:64
 msgid "PIN code"
@@ -5428,7 +5452,8 @@ msgstr "Dictionnaire des architectures de système d'exploitation"
 #: src/Agent.php:67
 msgid "Agent"
 msgid_plural "Agents"
-msgstr[0] "Agents"
+msgstr[0] "Agent"
+msgstr[1] "Agents"
 
 #: src/Agent.php:99 src/Agent.php:257
 msgid "Last contact"
@@ -5748,7 +5773,8 @@ msgstr "Nombre de documents"
 #: src/Domain.php:156
 msgid "Associated item"
 msgid_plural "Associated items"
-msgstr[0] "Éléments rattachés"
+msgstr[0] "Élément rattaché"
+msgstr[1] "Éléments rattachés"
 
 #: src/NotificationTargetProject.php:696 src/Printer.php:409
 #: src/Monitor.php:284 src/Peripheral.php:269
@@ -5804,7 +5830,8 @@ msgstr "Nom complet"
 #: src/NotificationTargetProjectTask.php:679
 msgid "Team member"
 msgid_plural "Team members"
-msgstr[0] "Membres de l'équipe"
+msgstr[0] "Membre de l'équipe"
+msgstr[1] "Membres de l'équipe"
 
 #: src/NotificationTargetProject.php:766 src/NotificationTargetProject.php:783
 #: src/Group.php:271 src/NotificationTargetCommonITILObject.php:1879
@@ -5827,7 +5854,8 @@ msgstr[1] "Tâches"
 #: src/NotificationTargetTicket.php:780 src/Stat.php:1717
 msgid "Change"
 msgid_plural "Changes"
-msgstr[0] "Changements"
+msgstr[0] "Changement"
+msgstr[1] "Changements"
 
 #: src/NotificationTargetProject.php:771 src/NotificationTargetProject.php:787
 #: src/Ticket.php:107 src/Html.php:1848 src/NotificationTargetProblem.php:219
@@ -5838,12 +5866,14 @@ msgstr[0] "Changements"
 #: src/NotificationTargetProjectTask.php:678 src/Entity.php:2154
 msgid "Ticket"
 msgid_plural "Tickets"
-msgstr[0] "Tickets"
+msgstr[0] "Ticket"
+msgstr[1] "Tickets"
 
 #: src/NetworkEquipmentType.php:39 src/Rule.php:420
 msgid "Networking equipment type"
 msgid_plural "Networking equipment types"
-msgstr[0] "Types de matériels réseau"
+msgstr[0] "Type de matériel réseau"
+msgstr[1] "Types de matériels réseau"
 
 #: src/CableStrand.php:41 src/CableStrand.php:47 src/Cable.php:144
 msgid "Cable strand"
@@ -5874,7 +5904,8 @@ msgstr "Terminaison A"
 #: src/ProjectTaskType.php:43
 msgid "Project tasks type"
 msgid_plural "Project tasks types"
-msgstr[0] "Types de tâche de projet"
+msgstr[0] "Type de tâche de projet"
+msgstr[1] "Types de tâche de projet"
 
 #: src/AllAssets.php:43 src/Html.php:1364 src/Socket.php:908
 #: src/Dashboard/Grid.php:1164 src/RuleImportAsset.php:120
@@ -5945,7 +5976,7 @@ msgstr "Privé"
 #: templates/generic_show_form.html.twig:464
 msgid "Comment"
 msgid_plural "Comments"
-msgstr[0] "Commentaires"
+msgstr[0] "Commentaire"
 msgstr[1] "Commentaires"
 
 #: src/KnowbaseItem_Comment.php:125
@@ -6105,7 +6136,8 @@ msgstr "Jours de conservation des courriels expédiés"
 #: src/Transfer.php:3907 src/Cartridge.php:1239 src/Rule.php:492
 msgid "Printer"
 msgid_plural "Printers"
-msgstr[0] "Imprimantes"
+msgstr[0] "Imprimante"
+msgstr[1] "Imprimantes"
 
 #: src/Printer.php:333 src/Monitor.php:207 src/Peripheral.php:192
 #: src/Phone.php:212 src/NetworkEquipment.php:272 src/Computer.php:358
@@ -6159,7 +6191,8 @@ msgstr "Compteur de page actuel"
 #: src/CartridgeItem.php:236 src/Entity.php:1903
 msgid "Cartridge"
 msgid_plural "Cartridges"
-msgstr[0] "Cartouches"
+msgstr[0] "Cartouche"
+msgstr[1] "Cartouches"
 
 #: src/Printer.php:538 src/CartridgeItem.php:248
 msgid "Number of used cartridges"
@@ -6210,12 +6243,14 @@ msgstr "Erreurs de connexion"
 #: src/NotificationTargetMailCollector.php:100 src/MailCollector.php:105
 msgid "Receiver"
 msgid_plural "Receivers"
-msgstr[0] "Collecteurs"
+msgstr[0] "Collecteur"
+msgstr[1] "Collecteurs"
 
 #: src/RequestType.php:39
 msgid "Request source"
 msgid_plural "Request sources"
-msgstr[0] "Sources des demandes"
+msgstr[0] "Source des demandes"
+msgstr[1] "Sources des demandes"
 
 #: src/RequestType.php:50 src/RequestType.php:79
 msgid "Default for tickets"
@@ -6275,7 +6310,8 @@ msgstr "Dictionnaire des versions"
 #: src/CronTask.php:82
 msgid "Automatic action"
 msgid_plural "Automatic actions"
-msgstr[0] "Actions automatiques"
+msgstr[0] "Action automatique"
+msgstr[1] "Actions automatiques"
 
 #: src/CronTask.php:205 src/CronTask.php:325
 msgid "Action aborted"
@@ -6409,21 +6445,24 @@ msgstr "Nombre d'exécutions"
 #, php-format
 msgid "%s start"
 msgid_plural "%s starts"
-msgstr[0] "%s lancements"
+msgstr[0] "%s lancement"
+msgstr[1] "%s lancements"
 
 #. TRANS: %s is the number of stops
 #: src/CronTask.php:1189
 #, php-format
 msgid "%s stop"
 msgid_plural "%s stops"
-msgstr[0] "%s arrêts"
+msgstr[0] "%s arrêt"
+msgstr[1] "%s arrêts"
 
 #. TRANS: %s is the number of errors
 #: src/CronTask.php:1192
 #, php-format
 msgid "%s error"
 msgid_plural "%s errors"
-msgstr[0] "%s erreurs"
+msgstr[0] "%s erreur"
+msgstr[1] "%s erreurs"
 
 #: src/CronTask.php:1227
 msgid "Minimal time"
@@ -6468,7 +6507,8 @@ msgstr "Nombre minimum"
 #, php-format
 msgid "%s item"
 msgid_plural "%s items"
-msgstr[0] "%s éléments"
+msgstr[0] "%s élément"
+msgstr[1] "%s éléments"
 
 #: src/CronTask.php:1262
 msgid "Maximal count"
@@ -6555,8 +6595,9 @@ msgstr "Fin de la plage horaire d'exécution"
 #, php-format
 msgid "Clean %1$d session file created since more than %2$s seconds"
 msgid_plural "Clean %1$d session files created since more than %2$s seconds"
-msgstr[0] ""
-"Nettoyer %1$d fichiers de session créés depuis plus de %2$s secondes"
+msgstr[0] "Nettoyer %1$d fichier de session créé depuis plus de %2$s secondes"
+msgstr[1] ""
+"Nettoyer %1$d fichiers de sessions créés depuis plus de %2$s secondes"
 
 #: src/CronTask.php:1798
 #, php-format
@@ -6585,14 +6626,16 @@ msgstr ""
 #, php-format
 msgid "Clean %1$d graph file created since more than %2$s seconds"
 msgid_plural "Clean %1$d graph files created since more than %2$s seconds"
-msgstr[0] ""
+msgstr[0] "Nettoyer %1$d fichier graphique créé depuis plus de %2$s secondes"
+msgstr[1] ""
 "Nettoyer %1$d fichiers graphiques créés depuis plus de %2$s secondes"
 
 #: src/CronTask.php:1929
 #, php-format
 msgid "Clean %1$d temporary file created since more than %2$s seconds"
 msgid_plural "Clean %1$d temporary files created since more than %2$s seconds"
-msgstr[0] ""
+msgstr[0] "Nettoyer %1$d fichier temporaire créé depuis plus de %2$s secondes"
+msgstr[1] ""
 "Nettoyer %1$d fichiers temporaires créés depuis plus de %2$s secondes"
 
 #: src/CronTask.php:2039
@@ -6630,7 +6673,8 @@ msgstr "Nombre de jours de conservation des archives des journaux"
 #: src/Line.php:52
 msgid "Line"
 msgid_plural "Lines"
-msgstr[0] "Lignes"
+msgstr[0] "Ligne"
+msgstr[1] "Lignes"
 
 #: src/Line.php:202 templates/pages/management/line.html.twig:40
 msgid "Caller number"
@@ -6780,13 +6824,15 @@ msgstr "Aucun consommable"
 msgctxt "consumable"
 msgid "New"
 msgid_plural "New"
-msgstr[0] "Neufs"
+msgstr[0] "Neuf"
+msgstr[1] "Neufs"
 
 #: src/Consumable.php:498
 msgctxt "consumable"
 msgid "Used"
 msgid_plural "Used"
-msgstr[0] "Utilisés"
+msgstr[0] "Utilisé"
+msgstr[1] "Utilisés"
 
 #: src/Consumable.php:528
 msgctxt "button"
@@ -6851,7 +6897,8 @@ msgstr "Aucun consommable trouvé"
 #: src/Holiday.php:46 src/Calendar_Holiday.php:199
 msgid "Close time"
 msgid_plural "Close times"
-msgstr[0] "Périodes de fermeture"
+msgstr[0] "Période de fermeture"
+msgstr[1] "Périodes de fermeture"
 
 #: src/Holiday.php:60 src/Holiday.php:89 src/Calendar_Holiday.php:145
 msgid "Recurrent"
@@ -6860,7 +6907,8 @@ msgstr "Récurrent"
 #: src/ITILSolution.php:56
 msgid "Solution"
 msgid_plural "Solutions"
-msgstr[0] "Solutions"
+msgstr[0] "Solution"
+msgstr[1] "Solutions"
 
 #: src/ITILSolution.php:184
 msgid "The item is already solved, did anyone pushed a solution before you?"
@@ -6883,12 +6931,14 @@ msgstr "Accepté"
 #: src/DeviceSensorType.php:41
 msgid "Sensor type"
 msgid_plural "Sensor types"
-msgstr[0] "Types de capteurs"
+msgstr[0] "Type de capteurs"
+msgstr[1] "Types de capteurs"
 
 #: src/DeviceDrive.php:41
 msgid "Drive"
 msgid_plural "Drives"
-msgstr[0] "Lecteurs"
+msgstr[0] "Lecteur"
+msgstr[1] "Lecteurs"
 
 #: src/DeviceDrive.php:51 src/DeviceDrive.php:74 src/DeviceDrive.php:123
 msgid "Writing ability"
@@ -6913,7 +6963,8 @@ msgstr "Règles métier pour les matériels"
 #: src/Appliance.php:62
 msgid "Appliance"
 msgid_plural "Appliances"
-msgstr[0] "Applicatifs"
+msgstr[0] "Applicatif"
+msgstr[1] "Applicatifs"
 
 #: src/Appliance.php:165 src/DomainRecord.php:119 src/DomainRecord.php:452
 #: src/CommonITILTask.php:899 src/Domain_Item.php:517
@@ -6963,11 +7014,13 @@ msgstr "Supprimer d'un applicatif"
 msgid "Field storage of the login in the HTTP request"
 msgid_plural "Fields storage of the login in the HTTP request"
 msgstr[0] "Champ de stockage de l'identifiant dans la requête HTTP"
+msgstr[1] "Champs de stockage de l'identifiant dans la requête HTTP"
 
 #: src/PassiveDCEquipment.php:49
 msgid "Passive device"
 msgid_plural "Passive devices"
-msgstr[0] "Équipements passifs"
+msgstr[0] "Équipement passif"
+msgstr[1] "Équipements passifs"
 
 #: src/RuleDictionnaryPhoneTypeCollection.php:44
 msgid "Dictionnary of phone types"
@@ -6980,7 +7033,8 @@ msgstr "Dictionnaires de modèles d'imprimante"
 #: src/KnowbaseItem_Item.php:55
 msgid "Knowledge base item"
 msgid_plural "Knowledge base items"
-msgstr[0] "Objets de la base de connaissances"
+msgstr[0] "Objet de la base de connaissances"
+msgstr[1] "Objets de la base de connaissances"
 
 #: src/KnowbaseItem_Item.php:148
 msgid "Add a linked item"
@@ -7001,7 +7055,8 @@ msgstr "Aucune entrée de la base de connaissances liée"
 #: src/KnowbaseItem_Item.php:196
 msgid "Linked item"
 msgid_plural "Linked items"
-msgstr[0] "Éléments liés"
+msgstr[0] "Élément lié"
+msgstr[1] "Éléments liés"
 
 #: src/KnowbaseItem_Item.php:225
 msgid "Update date"
@@ -7020,6 +7075,7 @@ msgstr "Lier un article de la base de connaissances"
 msgid "PDU"
 msgid_plural "PDUs"
 msgstr[0] "PDU"
+msgstr[1] "PDU"
 
 #: src/RuleImportComputer.php:51 src/RuleImportComputerCollection.php:60
 msgid "Rules for import and link computers"
@@ -7040,7 +7096,8 @@ msgstr "Sous-réseau"
 #: src/RuleImportComputer.php:95 src/IPAddress.php:108
 msgid "IP address"
 msgid_plural "IP addresses"
-msgstr[0] "Adresses IP"
+msgstr[0] "Adresse IP"
+msgstr[1] "Adresses IP"
 
 #: src/RuleImportComputer.php:97 src/NetworkAlias.php:418
 msgid "Computer's name"
@@ -7138,7 +7195,8 @@ msgstr "Critères LDAP"
 #: src/ContactType.php:39
 msgid "Contact type"
 msgid_plural "Contact types"
-msgstr[0] "Types de contact"
+msgstr[0] "Type de contact"
+msgstr[1] "Types de contact"
 
 #: src/Ticket.php:123
 msgid "Create ticket"
@@ -7409,7 +7467,8 @@ msgstr "Délai de prise en compte"
 #: src/Ticket_Ticket.php:54
 msgid "Linked ticket"
 msgid_plural "Linked tickets"
-msgstr[0] "Tickets liés"
+msgstr[0] "Ticket lié"
+msgstr[1] "Tickets liés"
 
 #: src/Ticket.php:3563
 msgid "All linked tickets"
@@ -7556,7 +7615,8 @@ msgstr "Créer un ticket"
 #, php-format
 msgid "%d new ticket"
 msgid_plural "%d new tickets"
-msgstr[0] "%d nouveaux tickets"
+msgstr[0] "%d nouveau ticket"
+msgstr[1] "%d nouveaux tickets"
 
 #: src/Ticket.php:5534 src/Ticket.php:5769
 #: templates/layout/parts/context_links.html.twig:76
@@ -7585,7 +7645,8 @@ msgstr "Nouveau ticket pour cet élément..."
 #, php-format
 msgid "Last %d ticket"
 msgid_plural "Last %d tickets"
-msgstr[0] "%d derniers tickets"
+msgstr[0] "%d dernier ticket"
+msgstr[1] "%d derniers tickets"
 
 #: src/Ticket.php:5773
 msgid "You don't have right to see all tickets"
@@ -7594,7 +7655,8 @@ msgstr "Vous n'avez pas le droit de voir tous les tickets"
 #: src/Ticket.php:5816
 msgid "Ticket on linked items"
 msgid_plural "Tickets on linked items"
-msgstr[0] "Tickets sur les éléments liés"
+msgstr[0] "Ticket sur les éléments liés"
+msgstr[1] "Tickets sur les éléments liés"
 
 #: src/Ticket.php:5979
 msgid "Assign equipment"
@@ -7776,7 +7838,8 @@ msgstr "Fin du rejoue des règles le %s"
 #: src/Fieldblacklist.php:46
 msgid "Ignored value for the unicity"
 msgid_plural "Ignored values for the unicity"
-msgstr[0] "Valeurs ignorées pour l'unicité"
+msgstr[0] "Valeur ignorée pour l'unicité"
+msgstr[1] "Valeurs ignorées pour l'unicité"
 
 #: src/NotificationTargetReservation.php:41
 msgid "New reservation"
@@ -7807,7 +7870,8 @@ msgstr "Url de l'objet reservé"
 #: src/ReminderTranslation.php:54
 msgid "Translation"
 msgid_plural "Translations"
-msgstr[0] "Traductions"
+msgstr[0] "Traduction"
+msgstr[1] "Traductions"
 
 #: src/KnowbaseItemTranslation.php:89 src/CommonITILValidation.php:963
 #: src/KnowbaseItem.php:269 templates/components/user/info_card.html.twig:98
@@ -7850,7 +7914,8 @@ msgstr "%1$s composants"
 #: src/Profile.php:2039 src/Transfer.php:3897
 msgid "Monitor"
 msgid_plural "Monitors"
-msgstr[0] "Moniteurs"
+msgstr[0] "Moniteur"
+msgstr[1] "Moniteurs"
 
 #: src/Monitor.php:336 src/Database.php:108 src/Database.php:266
 #: src/Database.php:402 src/Item_DeviceMemory.php:55
@@ -7912,12 +7977,14 @@ msgstr "Invités"
 #: src/DeviceGeneric.php:41
 msgid "Generic device"
 msgid_plural "Generic devices"
-msgstr[0] "Composants génériques"
+msgstr[0] "Composant générique"
+msgstr[1] "Composants génériques"
 
 #: src/RackModel.php:41
 msgid "Rack model"
 msgid_plural "Rack models"
-msgstr[0] "Modèles de baies"
+msgstr[0] "Modèle de baies"
+msgstr[1] "Modèles de baies"
 
 #: src/Notification.php:219
 msgid "Allow response"
@@ -7944,7 +8011,8 @@ msgstr "Le champ type d’élément est obligatoire"
 #: src/Peripheral.php:75
 msgid "Device"
 msgid_plural "Devices"
-msgstr[0] "Périphériques"
+msgstr[0] "Périphérique"
+msgstr[1] "Périphériques"
 
 #: src/Peripheral.php:321 src/Phone.php:349
 #: templates/generic_show_form.html.twig:505
@@ -7954,14 +8022,16 @@ msgstr "Marque"
 #: src/ManualLink.php:48
 msgid "Manual link"
 msgid_plural "Manual links"
-msgstr[0] "Liens manuels"
+msgstr[0] "Lien manuel"
+msgstr[1] "Liens manuels"
 
 #: src/ManualLink.php:78
 #: src/ContentTemplates/Parameters/KnowbaseItemParameters.php:69
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:62
 msgid "Link"
 msgid_plural "Links"
-msgstr[0] "Liens"
+msgstr[0] "Lien"
+msgstr[1] "Liens"
 
 #: src/ManualLink.php:134 src/Link.php:179
 msgid "Open in a new window"
@@ -8088,13 +8158,15 @@ msgstr "La notification a été créée !"
 #: src/Plug.php:39
 msgid "Plug"
 msgid_plural "Plugs"
-msgstr[0] "Prises"
+msgstr[0] "Prise"
+msgstr[1] "Prises"
 
 #: src/TicketTemplate.php:48 src/Profile.php:2645 src/Entity.php:1032
 #: src/Entity.php:2489
 msgid "Ticket template"
 msgid_plural "Ticket templates"
-msgstr[0] "Gabarits de tickets"
+msgstr[0] "Gabarit de ticket"
+msgstr[1] "Gabarits de tickets"
 
 #: src/Stat/Data/Location/StatDataSolved.php:49
 #, php-format
@@ -8127,7 +8199,8 @@ msgstr "Fermés %1$s (%2$s)"
 msgctxt "ticket"
 msgid "Opened"
 msgid_plural "Opened"
-msgstr[0] "Ouverts"
+msgstr[0] "Ouvert"
+msgstr[1] "Ouverts"
 
 #: src/Stat/Data/Sglobal/StatDataTicketNumber.php:59
 #: src/Stat/Data/Graph/StatDataTicketAverageTime.php:56
@@ -8135,7 +8208,8 @@ msgstr[0] "Ouverts"
 msgctxt "ticket"
 msgid "Solved"
 msgid_plural "Solved"
-msgstr[0] "Résolus"
+msgstr[0] "Résolu"
+msgstr[1] "Résolus"
 
 #: src/Stat/Data/Sglobal/StatDataTicketNumber.php:62
 #: src/Stat/Data/Graph/StatDataTicketAverageTime.php:59
@@ -8154,14 +8228,16 @@ msgstr "Nombre"
 msgctxt "survey"
 msgid "Opened"
 msgid_plural "Opened"
-msgstr[0] "Ouvertes"
+msgstr[0] "Ouverte"
+msgstr[1] "Ouvertes"
 
 #: src/Stat/Data/Sglobal/StatDataSatisfaction.php:57
 #: src/Stat/Data/Graph/StatDataSatisfactionSurvey.php:54 src/Stat.php:563
 msgctxt "survey"
 msgid "Answered"
 msgid_plural "Answered"
-msgstr[0] "Répondues"
+msgstr[0] "Répondue"
+msgstr[1] "Répondues"
 
 #: src/Stat/Data/Sglobal/StatDataSatisfaction.php:65
 #: src/Stat/Data/Graph/StatDataSatisfactionSurvey.php:62 src/Stat.php:1696
@@ -8191,18 +8267,21 @@ msgstr "Durée réelle"
 #: src/Config.php:1503 src/Config.php:1523
 msgid "Hour"
 msgid_plural "Hours"
-msgstr[0] "Heures"
+msgstr[0] "Heure"
+msgstr[1] "Heures"
 
 #: src/ChangeTask.php:41
 msgid "Change task"
 msgid_plural "Change tasks"
-msgstr[0] "Tâches de changement"
+msgstr[0] "Tâche de changement"
+msgstr[1] "Tâches de changement"
 
 #: src/Item_SoftwareVersion.php:56 src/Software.php:976
 #: src/SoftwareVersion.php:350
 msgid "Installation"
 msgid_plural "Installations"
-msgstr[0] "Installations"
+msgstr[0] "Installation"
+msgstr[1] "Installations"
 
 #: src/Item_SoftwareVersion.php:101 src/Item_SoftwareLicense.php:108
 msgctxt "software"
@@ -8262,7 +8341,8 @@ msgstr "Définir le lieu ici"
 #: src/TicketTask.php:41
 msgid "Ticket task"
 msgid_plural "Ticket tasks"
-msgstr[0] "Tâches d'un ticket"
+msgstr[0] "Tâche d'un ticket"
+msgstr[1] "Tâches d'un ticket"
 
 #: src/TicketTask.php:264 src/ITILFollowup.php:846
 msgid "Update all"
@@ -8283,13 +8363,15 @@ msgstr "Voir les publics"
 #: src/OperatingSystemVersion.php:42
 msgid "Version of the operating system"
 msgid_plural "Versions of the operating systems"
-msgstr[0] "Versions des systèmes d'exploitation"
+msgstr[0] "Version du système d'exploitation"
+msgstr[1] "Versions des systèmes d'exploitation"
 
 #: src/DBConnection.php:74 src/Config.php:781 src/Config.php:2095
 #: src/Config.php:2493
 msgid "SQL replica"
 msgid_plural "SQL replicas"
-msgstr[0] "Réplicats SQL"
+msgstr[0] "Réplicat SQL"
+msgstr[1] "Réplicats SQL"
 
 #: src/DBConnection.php:597
 msgid "Check the SQL replica"
@@ -8325,17 +8407,20 @@ msgstr "Écart entre le maître et l'esclave"
 #: src/DeviceCaseModel.php:42
 msgid "Device case model"
 msgid_plural "Device case models"
-msgstr[0] "Modèles de boîtiers"
+msgstr[0] "Modèle de boitier"
+msgstr[1] "Modèles de boîtiers"
 
 #: src/ApplianceType.php:38
 msgid "Appliance type"
 msgid_plural "Appliance types"
-msgstr[0] "Types d'applicatif"
+msgstr[0] "Type d'applicatif"
+msgstr[1] "Types d'applicatif"
 
 #: src/Group.php:48
 msgid "Group"
 msgid_plural "Groups"
-msgstr[0] "Groupes"
+msgstr[0] "Groupe"
+msgstr[1] "Groupes"
 
 #: src/Group.php:133 src/Group.php:785 src/User.php:250
 msgid "Used items"
@@ -8785,7 +8870,7 @@ msgstr "Aucun port réseau trouvé"
 msgid "Management port"
 msgid_plural "Management ports"
 msgstr[0] "Port de management"
-msgstr[1] "Port de management"
+msgstr[1] "Ports de management"
 
 #. TRANS: list of unit (bps for bytes per second)
 #: src/NetworkPort.php:901
@@ -8844,7 +8929,7 @@ msgstr "%s VLANs liés"
 #: src/NetworkPort.php:1080
 #, php-format
 msgid "%s equipments connected to the hub"
-msgstr ""
+msgstr "%s équipements connectés sur le hub"
 
 #: src/NetworkPort.php:1105 src/NetworkPort.php:1128
 #: src/NetworkPortConnectionLog.php:131
@@ -8868,7 +8953,8 @@ msgstr "Dormant"
 #: src/RuleImportAsset.php:135
 msgid "Port number"
 msgid_plural "Port numbers"
-msgstr[0] "Numéros de port"
+msgstr[0] "Numéro de port"
+msgstr[1] "Numéros de port"
 
 #: src/NetworkPort.php:1320 src/Dropdown.php:1075
 msgid "Networking"
@@ -8905,7 +8991,8 @@ msgstr "Duplex"
 #: src/NetworkPort.php:1571 src/Event.php:167 src/Computer_Item.php:793
 msgid "Connection"
 msgid_plural "Connections"
-msgstr[0] "Connexions"
+msgstr[0] "Connexion"
+msgstr[1] "Connexions"
 
 #: src/NetworkPort.php:1578
 msgid "Last connection"
@@ -8925,7 +9012,8 @@ msgstr "%1$s sur %2$s"
 #: src/Datacenter.php:50 src/Datacenter.php:140
 msgid "Data center"
 msgid_plural "Data centers"
-msgstr[0] "Data centers"
+msgstr[0] "Data center"
+msgstr[1] "Data centers"
 
 #: src/Datacenter.php:150 src/Cable.php:301 src/Cable.php:316
 #: templates/generic_show_form.html.twig:130
@@ -8949,7 +9037,8 @@ msgstr "Activer les notifications navigateur"
 #: src/NotificationAjaxSetting.php:66
 msgid "Browser notification"
 msgid_plural "Browser notifications"
-msgstr[0] "Notifications navigateur"
+msgstr[0] "Notification navigateur"
+msgstr[1] "Notifications navigateur"
 
 #: src/NotificationAjaxSetting.php:71 src/NotificationAjaxSetting.php:72
 #: src/NotificationAjaxSetting.php:73 src/NotificationAjaxSetting.php:74
@@ -8983,7 +9072,8 @@ msgstr "Envoyer une notification navigateur de test"
 #: src/Contact_Supplier.php:47
 msgid "Link Contact/Supplier"
 msgid_plural "Links Contact/Supplier"
-msgstr[0] "Liens Contact/Fournisseur"
+msgstr[0] "Lien Contact/Fournisseur"
+msgstr[1] "Liens Contact/Fournisseur"
 
 #: src/Contact_Supplier.php:131 src/Contract_Supplier.php:272
 msgid "Add a supplier"
@@ -9054,14 +9144,14 @@ msgstr ""
 #: src/DeviceCameraModel.php:40
 msgid "Device camera model"
 msgid_plural "Device camera models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Modèle de caméra"
+msgstr[1] "Modèles de caméra"
 
 #: src/NetworkPortType.php:43
 msgid "Network port type"
 msgid_plural "Network port types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Type de port réseau"
+msgstr[1] "Types de ports réseaux"
 
 #: src/NetworkPortType.php:52 src/NetworkPortType.php:76
 msgid "Decimal"
@@ -9105,7 +9195,8 @@ msgstr "GMT"
 #, php-format
 msgid "%s hour"
 msgid_plural "%s hours"
-msgstr[0] "%s heures"
+msgstr[0] "%s heure"
+msgstr[1] "%s heures"
 
 #: src/Dropdown.php:957
 msgid "Common"
@@ -9114,7 +9205,8 @@ msgstr "Général"
 #: src/Dropdown.php:1043 src/ComputerVirtualMachine.php:560
 msgid "Virtual machine"
 msgid_plural "Virtual machines"
-msgstr[0] "Machines virtuelles"
+msgstr[0] "Machine virtuelle"
+msgstr[1] "Machines virtuelles"
 
 #: src/Dropdown.php:1059 src/SLM.php:122 src/SLM.php:167 src/Profile.php:1825
 #: src/Profile.php:2409 src/CommonITILRecurrent.php:199
@@ -9124,7 +9216,8 @@ msgstr[0] "Machines virtuelles"
 #: src/PlanningExternalEvent.php:318
 msgid "Calendar"
 msgid_plural "Calendars"
-msgstr[0] "Calendriers"
+msgstr[0] "Calendrier"
+msgstr[1] "Calendriers"
 
 #: src/Dropdown.php:1088 src/Profile.php:1079
 msgid "Cable management"
@@ -9162,7 +9255,8 @@ msgstr "Autres"
 #, php-format
 msgid "%s year"
 msgid_plural "%s years"
-msgstr[0] "%s ans"
+msgstr[0] "%s an"
+msgstr[1] "%s ans"
 
 #. TRANS: %s is a number of months
 #: src/Dropdown.php:1689
@@ -9170,27 +9264,31 @@ msgstr[0] "%s ans"
 msgid "%s month"
 msgid_plural "%s months"
 msgstr[0] "%s mois"
+msgstr[1] "%s mois"
 
 #. TRANS: %s is a number of days
 #: src/Dropdown.php:1693
 #, php-format
 msgid "%s day"
 msgid_plural "%s days"
-msgstr[0] "%s jours"
+msgstr[0] "%s jour"
+msgstr[1] "%s jours"
 
 #. TRANS: %s is a number of minutes
 #: src/Dropdown.php:1701
 #, php-format
 msgid "%s minute"
 msgid_plural "%s minutes"
-msgstr[0] "%s minutes"
+msgstr[0] "%s minute"
+msgstr[1] "%s minutes"
 
 #. TRANS: %s is a number of milliseconds
 #: src/Dropdown.php:1709
 #, php-format
 msgid "%s millisecond"
 msgid_plural "%s milliseconds"
-msgstr[0] "%s millisecondes"
+msgstr[0] "%s milliseconde"
+msgstr[1] "%s millisecondes"
 
 #: src/Dropdown.php:1712
 #, php-format
@@ -9208,7 +9306,8 @@ msgstr "%s%%"
 #, php-format
 msgid "%1$d day %2$dh%3$s"
 msgid_plural "%1$d days %2$dh%3$s"
-msgstr[0] "%1$d jours %2$dh%3$s"
+msgstr[0] "%1$d jour %2$dh%3$s"
+msgstr[1] "%1$d jours %2$dh%3$s"
 
 #: src/Dropdown.php:1843 src/Dropdown.php:2195 src/PlanningRecall.php:301
 #: src/CommonITILRecurrent.php:258 src/LevelAgreement.php:717
@@ -9217,7 +9316,8 @@ msgstr[0] "%1$d jours %2$dh%3$s"
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] "%d jours"
+msgstr[0] "%d jour"
+msgstr[1] "%d jours"
 
 #. TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
 #: src/Dropdown.php:1851
@@ -9234,7 +9334,8 @@ msgstr "Autre..."
 #, php-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] "%d minutes"
+msgstr[0] "%d minute"
+msgstr[1] "%d minutes"
 
 #: src/Dropdown.php:2189 src/PlanningRecall.php:297
 #: src/CommonITILRecurrent.php:253 src/LevelAgreement.php:714
@@ -9242,7 +9343,8 @@ msgstr[0] "%d minutes"
 #, php-format
 msgid "%d hour"
 msgid_plural "%d hours"
-msgstr[0] "%d heures"
+msgstr[0] "%d heure"
+msgstr[1] "%d heures"
 
 #: src/Dropdown.php:2244
 msgid "Use unitary management"
@@ -9314,13 +9416,15 @@ msgstr "Déplacer sous"
 #: src/PlanningRecall.php:44
 msgid "Planning reminder"
 msgid_plural "Planning reminders"
-msgstr[0] "Rappels du planning"
+msgstr[0] "Rappel du planning"
+msgstr[1] "Rappels du planning"
 
 #: src/PlanningRecall.php:305
 #, php-format
 msgid "%d week"
 msgid_plural "%d weeks"
-msgstr[0] "%d semaines"
+msgstr[0] "%d semaine"
+msgstr[1] "%d semaines"
 
 #: src/PlanningRecall.php:376
 msgid "Send planning recalls"
@@ -9329,12 +9433,14 @@ msgstr "Envoyer les rappels pour le planning"
 #: src/Itil_Project.php:49
 msgid "Link Project/Itil"
 msgid_plural "Links Project/Itil"
-msgstr[0] "Liens Projets / Itil"
+msgstr[0] "Lien Projet / Itil"
+msgstr[1] "Liens Projets / Itil"
 
 #: src/Itil_Project.php:88
 msgid "Itil item"
 msgid_plural "Itil items"
-msgstr[0] "Objets Itil"
+msgstr[0] "Objet Itil"
+msgstr[1] "Objets Itil"
 
 #: src/Itil_Project.php:183 src/Change_Problem.php:165
 #: src/Change_Ticket.php:405
@@ -9378,7 +9484,8 @@ msgstr "MHz"
 #: src/Link.php:49 src/Link.php:701 src/Profile.php:1835 src/Profile.php:2350
 msgid "External link"
 msgid_plural "External links"
-msgstr[0] "Liens externes"
+msgstr[0] "Lien externe"
+msgstr[1] "Liens externes"
 
 #: src/Link.php:166
 msgid "field name in DB"
@@ -9464,12 +9571,14 @@ msgstr "auto login désactivé"
 #: src/Auth.php:845
 msgid "Connection to LDAP directory failed"
 msgid_plural "Connection to LDAP directories failed"
-msgstr[0] "Échec de connexion aux annuaires LDAP"
+msgstr[0] "Échec de connexion à l'annuaire LDAP"
+msgstr[1] "Échec de connexion aux annuaires LDAP"
 
 #: src/Auth.php:854
 msgid "User not found in LDAP directory"
 msgid_plural "User not found in LDAP directories"
-msgstr[0] "Utilisateur non trouvé dans les annuaires LDAP"
+msgstr[0] "Utilisateur non trouvé dans l'annuaire LDAP"
+msgstr[1] "Utilisateur non trouvé dans les annuaires LDAP"
 
 #: src/Auth.php:865 src/Auth.php:874
 msgid "Empty login or password"
@@ -9628,7 +9737,8 @@ msgstr "Supprimer le domaine des identifiants de la forme identifiant@domaine"
 #: src/PeripheralModel.php:39 src/Rule.php:336
 msgid "Peripheral model"
 msgid_plural "Peripheral models"
-msgstr[0] "Modèles de périphériques"
+msgstr[0] "Modèle de périphérique"
+msgstr[1] "Modèles de périphériques"
 
 #: src/NetworkPortMigration.php:49
 msgid "Network port migration"
@@ -9798,7 +9908,8 @@ msgstr "Altitude"
 #: src/Location.php:120
 msgid "Location"
 msgid_plural "Locations"
-msgstr[0] "Lieux"
+msgstr[0] "Lieu"
+msgstr[1] "Lieux"
 
 #: src/Location.php:203 src/NotificationTargetTicket.php:625
 #: src/NotificationTargetTicket.php:664
@@ -9892,7 +10003,8 @@ msgstr "Critère refusé"
 #: src/RuleCriteria.php:95 src/RuleCriteria.php:647
 msgid "Criterion"
 msgid_plural "Criteria"
-msgstr[0] "Critères"
+msgstr[0] "Critère"
+msgstr[1] "Critères"
 
 #: src/RuleCollection.php:1334 src/Rule.php:1268 src/Rule.php:2136
 #: src/RuleCriteria.php:176
@@ -9950,7 +10062,8 @@ msgstr[1] " Validations"
 #: src/Event.php:159
 msgid "Rule"
 msgid_plural "Rules"
-msgstr[0] "Règles"
+msgstr[0] "Règle"
+msgstr[1] "Règles"
 
 #: src/RuleCollection.php:2103
 #, php-format
@@ -9973,7 +10086,8 @@ msgstr "Dictionnaire général"
 #: src/Pdu_Plug.php:46
 msgid "PDU plug"
 msgid_plural "PDU plugs"
-msgstr[0] "Prises de PDU"
+msgstr[0] "Prise de PDU"
+msgstr[1] "Prises de PDU"
 
 #: src/Pdu_Plug.php:122
 msgid "Add a new plug"
@@ -9993,6 +10107,7 @@ msgstr "Aucune prise trouvée"
 msgid "Log"
 msgid_plural "Logs"
 msgstr[0] "Journaux"
+msgstr[1] "Journaux"
 
 #: src/OlaLevel.php:99 src/SlaLevel.php:93
 msgid "Add an escalation level"
@@ -10038,7 +10153,8 @@ msgstr "%1$s%2$d minutes %3$d secondes"
 #, php-format
 msgid "%1$s%2$d minute"
 msgid_plural "%1$s%2$d minutes"
-msgstr[0] "%1$s%2$d minutes"
+msgstr[0] "%1$s%2$d minute"
+msgstr[1] "%1$s%2$d minutes"
 
 #: src/Html.php:457
 #, php-format
@@ -10083,7 +10199,8 @@ msgstr "Réplicat SQL : lecture seule"
 #: src/Event.php:170 src/Entity.php:2136
 msgid "Reservation"
 msgid_plural "Reservations"
-msgstr[0] "Réservations"
+msgstr[0] "Réservation"
+msgstr[1] "Réservations"
 
 #: src/Html.php:1874 src/Config.php:3123
 msgid "Plugins"
@@ -10162,7 +10279,8 @@ msgstr "samedi dernier"
 #, php-format
 msgid "- %d week"
 msgid_plural "- %d weeks"
-msgstr[0] "- %d semaines"
+msgstr[0] "- %d semaine"
+msgstr[1] "- %d semaines"
 
 #: src/Html.php:3213
 msgid "Beginning of the month"
@@ -10173,6 +10291,7 @@ msgstr "Début du mois"
 msgid "- %d month"
 msgid_plural "- %d months"
 msgstr[0] "- %d mois"
+msgstr[1] "- %d mois"
 
 #: src/Html.php:3221
 msgid "Beginning of the year"
@@ -10182,25 +10301,29 @@ msgstr "Début de l'année"
 #, php-format
 msgid "- %d year"
 msgid_plural "- %d years"
-msgstr[0] "- %d ans"
+msgstr[0] "- %d an"
+msgstr[1] "- %d ans"
 
 #: src/Html.php:3240
 #, php-format
 msgid "+ %d week"
 msgid_plural "+ %d weeks"
-msgstr[0] "+ %d semaines"
+msgstr[0] "+ %d semaine"
+msgstr[1] "+ %d semaines"
 
 #: src/Html.php:3244
 #, php-format
 msgid "+ %d month"
 msgid_plural "+ %d months"
 msgstr[0] "+ %d mois"
+msgstr[1] "+ %d mois"
 
 #: src/Html.php:3248
 #, php-format
 msgid "+ %d year"
 msgid_plural "+ %d years"
-msgstr[0] "+ %d ans"
+msgstr[0] "+ %d an"
+msgstr[1] "+ %d ans"
 
 #: src/Html.php:3843
 msgid "Available variables"
@@ -10296,7 +10419,8 @@ msgstr "mois suivant"
 #: src/Notepad.php:52 src/Notepad.php:184
 msgid "Note"
 msgid_plural "Notes"
-msgstr[0] "Notes"
+msgstr[0] "Note"
+msgstr[1] "Notes"
 
 #: src/Notepad.php:254 src/NotificationTargetCommonITILObject.php:1724
 msgid "Last updater"
@@ -10480,7 +10604,8 @@ msgstr "Lieu du demandeur"
 #: src/Transfer.php:3940 src/Supplier.php:58
 msgid "Supplier"
 msgid_plural "Suppliers"
-msgstr[0] "Fournisseurs"
+msgstr[0] "Fournisseur"
+msgstr[1] "Fournisseurs"
 
 #: src/NotificationTargetCommonITILObject.php:1710
 msgid "Supplier ID"
@@ -10571,7 +10696,8 @@ msgstr "Position"
 #: src/Profile.php:1285
 msgid "Followup"
 msgid_plural "Followups"
-msgstr[0] "Suivis"
+msgstr[0] "Suivi"
+msgstr[1] "Suivis"
 
 #: src/NotificationTargetCommonITILObject.php:1883
 #: src/NotificationTargetCommonITILObject.php:1900
@@ -10584,7 +10710,8 @@ msgstr "Traitement de %1$s"
 #: src/Config.php:1524
 msgid "Day"
 msgid_plural "Days"
-msgstr[0] "Jours"
+msgstr[0] "Jour"
+msgstr[1] "Jours"
 
 #: src/NotificationTargetCommonITILObject.php:1896
 msgid "No defined category"
@@ -10602,7 +10729,8 @@ msgstr "Valeur du statut en base"
 #: src/AuthMail.php:46
 msgid "Mail server"
 msgid_plural "Mail servers"
-msgstr[0] "Serveurs de messagerie"
+msgstr[0] "Serveur de messagerie"
+msgstr[1] "Serveurs de messagerie"
 
 #. TRANS: for mail connection system
 #: src/AuthMail.php:127 src/Toolbox.php:1928 src/MailCollector.php:481
@@ -10662,12 +10790,14 @@ msgstr "Valider un incident"
 #: src/DeviceGenericModel.php:42
 msgid "Device generic model"
 msgid_plural "Device generic models"
-msgstr[0] "Modèles de composants génériques"
+msgstr[0] "Modèle de composant générique"
+msgstr[1] "Modèles de composants génériques"
 
 #: src/SavedSearch_Alert.php:57
 msgid "Saved search alert"
 msgid_plural "Saved searches alerts"
-msgstr[0] "Alertes de recherches sauvegardées"
+msgstr[0] "Alerte de recherches sauvegardées"
+msgstr[1] "Alertes de recherches sauvegardées"
 
 #: src/SavedSearch_Alert.php:156 src/SavedSearch_Alert.php:272
 msgid "Operator"
@@ -10696,7 +10826,8 @@ msgstr "la créer maintenant"
 #: src/SavedSearch_Alert.php:231
 msgid "Notification used:"
 msgid_plural "Notifications used:"
-msgstr[0] "Notifications utilisées :"
+msgstr[0] "Notification utilisée :"
+msgstr[1] "Notifications utilisées :"
 
 #: src/SavedSearch_Alert.php:255
 msgid "Add an alert"
@@ -10742,17 +10873,20 @@ msgstr "Supprimer tous à la fois"
 #: src/LineType.php:38
 msgid "Line type"
 msgid_plural "Line types"
-msgstr[0] "Types de lignes"
+msgstr[0] "Type de ligne"
+msgstr[1] "Types de lignes"
 
 #: src/RuleRightParameter.php:83
 msgid "LDAP criterion"
 msgid_plural "LDAP criteria"
-msgstr[0] "Critères LDAP"
+msgstr[0] "Critère LDAP"
+msgstr[1] "Critères LDAP"
 
 #: src/ContractType.php:39
 msgid "Contract type"
 msgid_plural "Contract types"
-msgstr[0] "Types de contrats"
+msgstr[0] "Type de contrat"
+msgstr[1] "Types de contrats"
 
 #: src/RuleRightCollection.php:85
 msgid "Entities assignment"
@@ -10786,12 +10920,14 @@ msgstr "Remote ID"
 #: src/KnowbaseItemCategory.php:46 src/Profile.php:1805
 msgid "Knowledge base category"
 msgid_plural "Knowledge base categories"
-msgstr[0] "Catégories de la base de connaissances"
+msgstr[0] "Catégorie de la base de connaissances"
+msgstr[1] "Catégories de la base de connaissances"
 
 #: src/DeviceNetworkCard.php:43
 msgid "Network card"
 msgid_plural "Network cards"
-msgstr[0] "Cartes réseau"
+msgstr[0] "Carte réseau"
+msgstr[1] "Cartes réseau"
 
 #: src/DeviceNetworkCard.php:68 src/DeviceNetworkCard.php:97
 msgid "MAC address by default"
@@ -10805,7 +10941,8 @@ msgstr "Débit"
 #: src/Budget.php:58
 msgid "Budget"
 msgid_plural "Budgets"
-msgstr[0] "Budgets"
+msgstr[0] "Budget"
+msgstr[1] "Budgets"
 
 #: src/Budget.php:84 src/User.php:255
 msgid "Main"
@@ -10826,27 +10963,32 @@ msgstr "Total restant sur le budget"
 #: src/PassiveDCEquipmentType.php:39
 msgid "Passive device type"
 msgid_plural "Passive device types"
-msgstr[0] "Types d'équipement passif"
+msgstr[0] "Type d'équipement passif"
+msgstr[1] "Types d'équipement passif"
 
 #: src/PhoneType.php:39 src/Rule.php:432
 msgid "Phone type"
 msgid_plural "Phone types"
-msgstr[0] "Types de téléphones"
+msgstr[0] "Type de téléphone"
+msgstr[1] "Types de téléphones"
 
 #: src/DeviceDriveModel.php:42
 msgid "Device drive model"
 msgid_plural "Device drive models"
-msgstr[0] "Modèles de lecteurs"
+msgstr[0] "Modèle de lecteur"
+msgstr[1] "Modèles de lecteurs"
 
 #: src/DeviceMotherboardModel.php:42
 msgid "System board model"
 msgid_plural "System board models"
-msgstr[0] "Modèles de cartes mères"
+msgstr[0] "Modèle de carte mère"
+msgstr[1] "Modèles de cartes mères"
 
 #: src/Socket.php:320
 msgid "Socket"
 msgid_plural "Sockets"
-msgstr[0] "Connecteurs"
+msgstr[0] "Connecteur"
+msgstr[1] "Connecteurs"
 
 #: src/Socket.php:374 src/Socket.php:436 src/Socket.php:710 src/Socket.php:819
 #: src/Socket.php:854 src/Socket.php:910
@@ -10914,7 +11056,8 @@ msgstr "%1$s de %2$s : %3$s"
 #: src/Item_Devices.php:982 src/KnowbaseItem.php:2087
 msgid "View"
 msgid_plural "Views"
-msgstr[0] "Vues"
+msgstr[0] "Vue"
+msgstr[1] "Vues"
 
 #: src/Item_Devices.php:1023 src/CommonITILValidation.php:1556
 #, php-format
@@ -10950,7 +11093,8 @@ msgstr "Mise à jour de"
 #: src/DeviceSimcardType.php:43
 msgid "Simcard type"
 msgid_plural "Simcard types"
-msgstr[0] "Types de cartes SIM"
+msgstr[0] "Type de carte SIM"
+msgstr[1] "Types de cartes SIM"
 
 #: src/DatabaseInstanceType.php:38
 msgid "Database instance type"
@@ -10967,7 +11111,8 @@ msgstr[1] "Catégories d'instances de base de données"
 #: src/ProjectTaskTeam.php:71
 msgid "Task team"
 msgid_plural "Task teams"
-msgstr[0] "Équipes de tâche"
+msgstr[0] "Équipe de tâche"
+msgstr[1] "Équipes de tâche"
 
 #: src/ProjectTaskTeam.php:169
 msgid "An item type is mandatory"
@@ -10984,12 +11129,14 @@ msgstr "Une tâche de projet est obligatoire"
 #: src/PassiveDCEquipmentModel.php:39
 msgid "Passive device model"
 msgid_plural "Passive device models"
-msgstr[0] "Modèles d'équipement passif"
+msgstr[0] "Modèle d'équipement passif"
+msgstr[1] "Modèles d'équipement passif"
 
 #: src/Document.php:54
 msgid "Document"
 msgid_plural "Documents"
-msgstr[0] "Documents"
+msgstr[0] "Document"
+msgstr[1] "Documents"
 
 #: src/Document.php:181 src/Document.php:1112 src/Document.php:1211
 #: src/Document.php:1310
@@ -11432,7 +11579,8 @@ msgstr "Ajouter un suivi aux tickets (observateur)"
 #: src/PCIVendor.php:44
 msgid "PCI vendor"
 msgid_plural "PCI vendors"
-msgstr[0] "Fournisseurs PCI"
+msgstr[0] "Fournisseur PCI"
+msgstr[1] "Fournisseurs PCI"
 
 #: src/PCIVendor.php:52 src/PCIVendor.php:70 src/USBVendor.php:52
 #: src/USBVendor.php:70
@@ -11447,7 +11595,8 @@ msgstr "ID matériel"
 #: src/ProjectTask_Ticket.php:65
 msgid "Link Ticket/Project task"
 msgid_plural "Links Ticket/Project task"
-msgstr[0] "Liens Ticket/Tâche de projet"
+msgstr[0] "Lien Ticket/Tâche de projet"
+msgstr[1] "Liens Ticket/Tâche de projet"
 
 #: src/ProjectTask_Ticket.php:193
 msgid "Create a ticket from this task"
@@ -11460,7 +11609,8 @@ msgstr "Ajouter une nouvelle tâche de projet"
 #: src/Lock.php:52
 msgid "Lock"
 msgid_plural "Locks"
-msgstr[0] "Verrous"
+msgstr[0] "Verrou"
+msgstr[1] "Verrous"
 
 #: src/Lock.php:87
 msgid "Locked items"
@@ -11477,7 +11627,8 @@ msgstr "Sélectionner le type de l'élément qui doit être déverrouillé"
 #: src/VirtualMachineState.php:39
 msgid "State of the virtual machine"
 msgid_plural "States of the virtual machine"
-msgstr[0] "États des machines virtuelles"
+msgstr[0] "État de machine virtuelle"
+msgstr[1] "États des machines virtuelles"
 
 #: src/Certificate_Item.php:462 src/Certificate.php:223
 #: templates/pages/management/certificate.html.twig:42
@@ -11496,7 +11647,8 @@ msgstr "N'expire pas"
 #: src/ITILTemplatePredefinedField.php:45
 msgid "Predefined field"
 msgid_plural "Predefined fields"
-msgstr[0] "Champs prédéfinis"
+msgstr[0] "Champ prédéfini"
+msgstr[1] "Champs prédéfinis"
 
 #: src/ITILTemplatePredefinedField.php:286
 msgid "Add a predefined field"
@@ -11505,26 +11657,30 @@ msgstr "Ajouter un champ prédéfini"
 #: src/Item_OperatingSystem.php:45
 msgid "Item operating system"
 msgid_plural "Item operating systems"
-msgstr[0] "Systèmes d'exploitation de l'élément"
+msgstr[0] "Système d'exploitation de l'élément"
+msgstr[1] "Systèmes d'exploitation de l'élément"
 
 #: src/Item_OperatingSystem.php:151 src/Item_OperatingSystem.php:326
 #: src/Item_OperatingSystem.php:513 src/Item_OperatingSystem.php:621
 #: src/Software.php:574
 msgid "Architecture"
 msgid_plural "Architectures"
-msgstr[0] "Architectures"
+msgstr[0] "Architecture"
+msgstr[1] "Architectures"
 
 #: src/Item_OperatingSystem.php:338 src/Item_OperatingSystem.php:531
 #: src/OperatingSystemKernel.php:40
 msgid "Kernel"
 msgid_plural "Kernels"
-msgstr[0] "Noyaux"
+msgstr[0] "Noyau"
+msgstr[1] "Noyaux"
 
 #: src/Item_OperatingSystem.php:347 src/Item_OperatingSystem.php:572
 #: src/Item_OperatingSystem.php:624 src/OperatingSystemEdition.php:40
 msgid "Edition"
 msgid_plural "Editions"
-msgstr[0] "Éditions"
+msgstr[0] "Édition"
+msgstr[1] "Éditions"
 
 #: src/Item_OperatingSystem.php:356 src/Item_OperatingSystem.php:413
 #: src/Item_OperatingSystem.php:500
@@ -11538,7 +11694,8 @@ msgstr "Système d'exploitation"
 #: src/Item_OperatingSystem.php:554 src/OperatingSystemKernelVersion.php:40
 msgid "Kernel version"
 msgid_plural "Kernel versions"
-msgstr[0] "Versions des noyaux"
+msgstr[0] "Version de noyau"
+msgstr[1] "Versions des noyaux"
 
 #: src/NotificationTargetProblem.php:47
 msgid "New problem"
@@ -11993,7 +12150,8 @@ msgstr "Copie de %s"
 #: src/RefusedEquipment.php:49
 msgid "Equipment refused by rules log"
 msgid_plural "Equipments refused by rules log"
-msgstr[0] "Historique des équipements refusés"
+msgstr[0] "Historique d'équipement refusé"
+msgstr[1] "Historique des équipements refusés"
 
 #: src/RefusedEquipment.php:133
 msgid "Method"
@@ -12151,7 +12309,8 @@ msgstr "Voir tous les plannings"
 #: src/WifiNetwork.php:47
 msgid "Wifi network"
 msgid_plural "Wifi networks"
-msgstr[0] "Réseaux wifi"
+msgstr[0] "Réseau wifi"
+msgstr[1] "Réseaux wifi"
 
 #: src/WifiNetwork.php:69
 msgid "Ad-hoc"
@@ -12192,7 +12351,8 @@ msgstr "Type de réseau wifi"
 #: src/CommonITILCost.php:571 src/Profile.php:1271 src/Profile.php:2687
 msgid "Ticket cost"
 msgid_plural "Ticket costs"
-msgstr[0] "Coûts des tickets"
+msgstr[0] "Coût du ticket"
+msgstr[1] "Coûts des tickets"
 
 #: src/CommonITILCost.php:574
 msgid "Item duration"
@@ -12201,7 +12361,8 @@ msgstr "Durée de l'élément"
 #: src/DeviceHardDriveModel.php:42
 msgid "Device hard drive model"
 msgid_plural "Device hard drive models"
-msgstr[0] "Modèles de disques durs"
+msgstr[0] "Modèle de disque dur"
+msgstr[1] "Modèles de disques durs"
 
 #: src/Item_DeviceBattery.php:53
 msgid "Manufacturing date"
@@ -12296,7 +12457,8 @@ msgstr "Aucun itemtype défini"
 #: src/PDUModel.php:39
 msgid "PDU model"
 msgid_plural "PDU models"
-msgstr[0] "Modèles de PDU"
+msgstr[0] "Modèle de PDU"
+msgstr[1] "Modèles de PDU"
 
 #: src/NotificationMailing.php:95
 msgid "This is a test email."
@@ -12331,7 +12493,8 @@ msgstr "Un courriel pour %s a été ajouté à la file d'attente"
 #: src/DeviceBatteryType.php:38
 msgid "Battery type"
 msgid_plural "Battery types"
-msgstr[0] "Types de batteries"
+msgstr[0] "Type de batterie"
+msgstr[1] "Types de batteries"
 
 #: src/SLM.php:56 templates/components/itilobject/fields_panel.html.twig:275
 msgid "Service level"
@@ -12596,12 +12759,14 @@ msgstr "Élément déjà défini"
 #: src/CertificateType.php:43
 msgid "Certificate type"
 msgid_plural "Certificate types"
-msgstr[0] "Type de certificats"
+msgstr[0] "Type de certificat"
+msgstr[1] "Types de certificat"
 
 #: src/Enclosure.php:59
 msgid "Enclosure"
 msgid_plural "Enclosures"
 msgstr[0] "Châssis"
+msgstr[1] "Châssis"
 
 #: src/RuleDictionnaryPrinterTypeCollection.php:44
 msgid "Dictionnary of printer types"
@@ -12610,7 +12775,8 @@ msgstr "Dictionnaire des types d'imprimantes"
 #: src/SoftwareLicenseType.php:41
 msgid "License type"
 msgid_plural "License types"
-msgstr[0] "Types de licences"
+msgstr[0] "Type de licences"
+msgstr[1] "Types de licences"
 
 #: src/NotificationAjax.php:92
 msgid "Error inserting browser notification to queue"
@@ -12624,7 +12790,8 @@ msgstr "La notification navigateur %s a été ajoutée à la file d'attente"
 #: src/Change_Problem.php:63
 msgid "Link Problem/Change"
 msgid_plural "Links Problem/Change"
-msgstr[0] "Liens Problème/Changement"
+msgstr[0] "Lien Problème/Changement"
+msgstr[1] "Liens Problème/Changement"
 
 #: src/Change_Problem.php:179
 msgid "Create a change from this problem"
@@ -12634,7 +12801,8 @@ msgstr "Créer un changement à partir de ce problème"
 #: src/Rack.php:63
 msgid "Rack"
 msgid_plural "Racks"
-msgstr[0] "Baies"
+msgstr[0] "Baie"
+msgstr[1] "Baies"
 
 #: src/Rack.php:173 templates/pages/assets/rack.html.twig:101
 msgid "Number of units"
@@ -12849,7 +13017,8 @@ msgstr "Réservations passées"
 #: src/ObjectLock.php:62
 msgid "Object Lock"
 msgid_plural "Object Locks"
-msgstr[0] "Verrous de l'objet"
+msgstr[0] "Verrou de l'objet"
+msgstr[1] "Verrous de l'objet"
 
 #: src/ObjectLock.php:156 src/ObjectLock.php:270
 msgid "Reload page?"
@@ -12997,18 +13166,21 @@ msgstr "Gabarit de problème par défaut"
 #: src/Reminder.php:929 src/Reminder.php:931
 msgid "Public reminder"
 msgid_plural "Public reminders"
-msgstr[0] "Notes publiques"
+msgstr[0] "Note publiques"
+msgstr[1] "Notes publiques"
 
 #: src/Profile.php:904 src/Profile.php:1153 src/Profile.php:2843
 #: src/RSSFeed.php:986 src/RSSFeed.php:988
 msgid "Public RSS feed"
 msgid_plural "Public RSS feeds"
-msgstr[0] "Flux RSS publics"
+msgstr[0] "Flux RSS public"
+msgstr[1] "Flux RSS publics"
 
 #: src/Profile.php:950 src/Profile.php:2025 src/Computer.php:80
 msgid "Computer"
 msgid_plural "Computers"
-msgstr[0] "Ordinateurs"
+msgstr[0] "Ordinateur"
+msgstr[1] "Ordinateurs"
 
 #: src/Profile.php:980
 msgid "Simcard PIN/PUK"
@@ -13017,7 +13189,8 @@ msgstr "PIN/PUK Carte SIM"
 #: src/Profile.php:1038 src/Contact.php:56
 msgid "Contact"
 msgid_plural "Contacts"
-msgstr[0] "Contacts"
+msgstr[0] "Contact"
+msgstr[1] "Contacts"
 
 #: src/Profile.php:1048 src/Profile.php:2212
 msgid "Financial and administratives information"
@@ -13027,12 +13200,14 @@ msgstr "Informations financières et administratives"
 #: src/Entity.php:2103
 msgid "Certificate"
 msgid_plural "Certificates"
-msgstr[0] "Certificats"
+msgstr[0] "Certificat"
+msgstr[1] "Certificats"
 
 #: src/Profile.php:1070 src/Domain.php:66
 msgid "Domain"
 msgid_plural "Domains"
-msgstr[0] "Domaines"
+msgstr[0] "Domaine"
+msgstr[1] "Domaines"
 
 #: src/Profile.php:1089
 msgid "Manageable domain records"
@@ -13041,12 +13216,14 @@ msgstr "Enregistrements de domaine gérés"
 #: src/Profile.php:1156 src/Profile.php:2829
 msgid "Public saved search"
 msgid_plural "Public saved searches"
-msgstr[0] "Recherches publiques sauvegardées"
+msgstr[0] "Recherche publique sauvegardée"
+msgstr[1] "Recherches publiques sauvegardées"
 
 #: src/Profile.php:1159 src/Profile.php:2273 src/Report.php:47
 msgid "Report"
 msgid_plural "Reports"
-msgstr[0] "Rapports"
+msgstr[0] "Rapport"
+msgstr[1] "Rapports"
 
 #: src/Profile.php:1165
 msgid "Administration of reservations"
@@ -13071,12 +13248,14 @@ msgstr "Gabarit de %1$s par défaut"
 #: src/Profile.php:1255 src/Notification_NotificationTemplate.php:60
 msgid "Template"
 msgid_plural "Templates"
-msgstr[0] "Gabarits"
+msgstr[0] "Gabarit"
+msgstr[1] "Gabarits"
 
 #: src/Profile.php:1264
 msgid "ITIL object"
 msgid_plural "ITIL objects"
-msgstr[0] "Objets ITIL"
+msgstr[0] "Objet ITIL"
+msgstr[1] "Objets ITIL"
 
 #: src/Profile.php:1274 src/TicketRecurrent.php:53
 msgid "Recurrent tickets"
@@ -13138,7 +13317,8 @@ msgstr "Affichage des résultats de recherche"
 #: src/Profile.php:1789
 msgid "Global dropdown"
 msgid_plural "Global dropdowns"
-msgstr[0] "Intitulés globaux"
+msgstr[0] "Intitulé global"
+msgstr[1] "Intitulés globaux"
 
 #: src/Profile.php:1792
 msgid "Entity dropdowns"
@@ -13147,17 +13327,20 @@ msgstr "Intitulés de l'entité"
 #: src/Profile.php:1800
 msgid "Ticket category"
 msgid_plural "Ticket categories"
-msgstr[0] "Catégories de ticket"
+msgstr[0] "Catégorie de ticket"
+msgstr[1] "Catégories de ticket"
 
 #: src/Profile.php:1810 src/CommonITILTask.php:728 src/TaskCategory.php:81
 msgid "Task category"
 msgid_plural "Task categories"
-msgstr[0] "Catégories de tâches"
+msgstr[0] "Catégorie de tâches"
+msgstr[1] "Catégories de tâches"
 
 #: src/Profile.php:1815 src/State.php:47
 msgid "Status of items"
 msgid_plural "Statuses of items"
-msgstr[0] "Statuts des éléments"
+msgstr[0] "Statut des éléments"
+msgstr[1] "Statuts des éléments"
 
 #: src/Profile.php:1845 src/LevelAgreement.php:185 src/LevelAgreement.php:680
 msgid "SLM"
@@ -13166,7 +13349,8 @@ msgstr "SLM"
 #: src/Profile.php:1850 src/LineOperator.php:47
 msgid "Line operator"
 msgid_plural "Line operators"
-msgstr[0] "Opérateurs téléphoniques"
+msgstr[0] "Opérateur téléphonique"
+msgstr[1] "Opérateurs téléphoniques"
 
 #: src/Profile.php:2428 src/RuleTicketCollection.php:68 src/RuleTicket.php:50
 msgid "Business rules for tickets"
@@ -13234,17 +13418,20 @@ msgstr[1] "%d mois"
 #: src/Contract_Item.php:86
 msgid "Link Contract/Item"
 msgid_plural "Links Contract/Item"
-msgstr[0] "Liens Contrat/Élément"
+msgstr[0] "Lien Contrat/Élément"
+msgstr[1] "Liens Contrat/Élément"
 
 #: src/Contract_Item.php:391 src/Cartridge.php:900 src/Cartridge.php:903
 msgid "month"
 msgid_plural "months"
 msgstr[0] "mois"
+msgstr[1] "mois"
 
 #: src/SolutionType.php:39
 msgid "Solution type"
 msgid_plural "Solution types"
-msgstr[0] "Types de solutions"
+msgstr[0] "Type de solution"
+msgstr[1] "Types de solutions"
 
 #: src/RecurrentChange.php:48
 msgid "Recurrent changes"
@@ -13304,7 +13491,8 @@ msgstr "Création anticipée"
 #, php-format
 msgid "%d year"
 msgid_plural "%d years"
-msgstr[0] "%d ans"
+msgstr[0] "%d an"
+msgstr[1] "%d ans"
 
 #: src/CommonITILRecurrent.php:348
 #, php-format
@@ -13370,7 +13558,8 @@ msgstr "Alertes par courriel"
 #: src/Contract.php:711 src/Contact.php:348
 msgid "Associated supplier"
 msgid_plural "Associated suppliers"
-msgstr[0] "Fournisseurs associés"
+msgstr[0] "Fournisseur associé"
+msgstr[1] "Fournisseurs associés"
 
 #: src/Contract.php:953
 msgid "Contracts expired in the last 30 days"
@@ -13494,7 +13683,8 @@ msgstr "Envoi de l'alerte sur les certificats échoué"
 #: src/DeviceMemoryModel.php:42
 msgid "Device memory model"
 msgid_plural "Device memory models"
-msgstr[0] "Modèles de mémoire"
+msgstr[0] "Modèle de mémoire"
+msgstr[1] "Modèles de mémoire"
 
 #: src/PurgeLogs.php:40 src/Config.php:2481
 msgid "Logs purge"
@@ -13507,7 +13697,8 @@ msgstr "Purge de l'historique"
 #: src/DeviceGenericType.php:39
 msgid "Generic type"
 msgid_plural "Generic types"
-msgstr[0] "Types génériques"
+msgstr[0] "Type générique"
+msgstr[1] "Types génériques"
 
 #: src/Session.php:177 src/Session.php:185
 msgid "You don't have right to connect"
@@ -13553,7 +13744,8 @@ msgstr "Type de gestion"
 #: src/DCRoom.php:49
 msgid "Server room"
 msgid_plural "Server rooms"
-msgstr[0] "Salles serveurs"
+msgstr[0] "Salle serveur"
+msgstr[1] "Salles serveurs"
 
 #: src/DCRoom.php:135 src/DCRoom.php:281
 msgid "Number of columns"
@@ -13754,7 +13946,8 @@ msgstr "1/4"
 #: src/DeviceFirmwareModel.php:41
 msgid "Device firmware model"
 msgid_plural "Device firmware models"
-msgstr[0] "Modèles de firmware"
+msgstr[0] "Modèle de firmware"
+msgstr[1] "Modèles de firmware"
 
 #: src/Report.php:72
 msgid "Default report"
@@ -13799,7 +13992,8 @@ msgstr "Matériel 2"
 #: src/Report.php:469 src/Report.php:478 src/CommonDeviceType.php:38
 msgid "Device type"
 msgid_plural "Device types"
-msgstr[0] "Types de périphériques"
+msgstr[0] "Type de périphérique"
+msgstr[1] "Types de périphériques"
 
 #: src/Report.php:470 src/Report.php:479
 msgid "Device name"
@@ -13812,18 +14006,21 @@ msgstr "Numéro de port"
 #: src/ComputerModel.php:39 src/Rule.php:300
 msgid "Computer model"
 msgid_plural "Computer models"
-msgstr[0] "Modèles d'ordinateurs"
+msgstr[0] "Modèle d'ordinateur"
+msgstr[1] "Modèles d'ordinateurs"
 
 #: src/ImageResolution.php:40
 msgctxt "image"
 msgid "Resolution"
 msgid_plural "Resolutions"
-msgstr[0] "Résolutions"
+msgstr[0] "Résolution"
+msgstr[1] "Résolutions"
 
 #: src/Change_Ticket.php:61
 msgid "Link Ticket/Change"
 msgid_plural "Links Ticket/Change"
-msgstr[0] "Liens Ticket/Changement"
+msgstr[0] "Lien Ticket/Changement"
+msgstr[1] "Liens Ticket/Changement"
 
 #: src/Change_Ticket.php:299 src/Problem_Ticket.php:329
 msgid "Solve tickets"
@@ -13836,7 +14033,8 @@ msgstr "Créer un changement à partir de ce ticket"
 #: src/Database.php:50 src/Config.php:793
 msgid "Database"
 msgid_plural "Databases"
-msgstr[0] "Bases de données"
+msgstr[0] "Base de données"
+msgstr[1] "Bases de données"
 
 #: src/Database.php:90 src/Database.php:403 src/DatabaseInstance.php:224
 #: templates/generic_show_form.html.twig:75
@@ -13859,7 +14057,7 @@ msgstr "Taille totale"
 
 #: src/Database.php:224 src/Database.php:295
 msgid "Is on backup"
-msgstr ""
+msgstr "Est sauvegardé"
 
 #: src/Database.php:369
 msgid "Add a database"
@@ -13931,7 +14129,8 @@ msgstr "Si les périphériques ne sont plus utilisés"
 #: src/ContentTemplates/Parameters/UserParameters.php:76 src/Phone.php:75
 msgid "Phone"
 msgid_plural "Phones"
-msgstr[0] "Téléphones"
+msgstr[0] "Téléphone"
+msgstr[1] "Téléphones"
 
 #: src/Transfer.php:3931
 msgid "If phones are no longer used"
@@ -13988,7 +14187,8 @@ msgstr "Vider la liste des éléments à transférer"
 #: src/DevicePci.php:43
 msgid "PCI device"
 msgid_plural "PCI devices"
-msgstr[0] "Périphériques PCI"
+msgstr[0] "Périphérique PCI"
+msgstr[1] "Périphériques PCI"
 
 #: src/DevicePci.php:95
 msgid "Other component"
@@ -14010,7 +14210,8 @@ msgstr "Adresse de courriel invalide"
 msgctxt "camera"
 msgid "Resolution"
 msgid_plural "Resolutions"
-msgstr[0] "Résolutions"
+msgstr[0] "Résolution"
+msgstr[1] "Résolutions"
 
 #: src/Item_DeviceCamera_ImageResolution.php:151
 msgid "Is Video"
@@ -14024,12 +14225,14 @@ msgstr "Dynamique"
 #: src/DomainType.php:40
 msgid "Domain type"
 msgid_plural "Domain types"
-msgstr[0] "Types de domaines"
+msgstr[0] "Type de domaine"
+msgstr[1] "Types de domaines"
 
 #: src/DeviceGraphicCardModel.php:42
 msgid "Device graphic card model"
 msgid_plural "Device graphic card models"
-msgstr[0] "Modèles de cartes graphiques"
+msgstr[0] "Modèle de carte graphique"
+msgstr[1] "Modèles de cartes graphiques"
 
 #: src/MailCollector.php:238
 msgid ""
@@ -14266,7 +14469,8 @@ msgstr "D=Dynamique"
 #: src/NetworkName.php:65
 msgid "Network name"
 msgid_plural "Network names"
-msgstr[0] "Noms réseau"
+msgstr[0] "Nom réseau"
+msgstr[1] "Noms réseau"
 
 #: src/NetworkName.php:155
 msgid ""
@@ -14339,7 +14543,8 @@ msgstr ""
 #: src/NotificationTarget.php:381
 msgid "Recipient"
 msgid_plural "Recipients"
-msgstr[0] "Destinataires"
+msgstr[0] "Destinataire"
+msgstr[1] "Destinataires"
 
 #: src/NetworkPortInstantiation.php:85
 msgid "No options available for this port type."
@@ -14521,8 +14726,8 @@ msgstr "Impossible d'affecter de nouveau les éléments donnés"
 msgctxt "camera"
 msgid "Format"
 msgid_plural "Formats"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Format"
+msgstr[1] "Formats"
 
 #: src/DocumentType.php:49 src/DocumentType.php:105
 msgid "Authorized upload"
@@ -14539,7 +14744,8 @@ msgstr "Peut être une expression rationnelle"
 #: src/DocumentType.php:63
 msgid "Document type"
 msgid_plural "Document types"
-msgstr[0] "Types de documents"
+msgstr[0] "Type de document"
+msgstr[1] "Types de documents"
 
 #: src/DocumentType.php:176 src/DocumentType.php:177
 #: templates/layout/parts/user_header.html.twig:79
@@ -14551,6 +14757,7 @@ msgstr "Aide"
 msgid "Antivirus"
 msgid_plural "Antiviruses"
 msgstr[0] "Antivirus"
+msgstr[1] "Antivirus"
 
 #: src/ComputerAntivirus.php:125 src/ComputerAntivirus.php:204
 #: src/ComputerAntivirus.php:290 src/ComputerAntivirus.php:365
@@ -14614,19 +14821,22 @@ msgstr "Désinstallation d'une cartouche"
 msgctxt "cartridge"
 msgid "New"
 msgid_plural "New"
-msgstr[0] "Neuves"
+msgstr[0] "Neuve"
+msgstr[1] "Neuves"
 
 #: src/Cartridge.php:398 src/Cartridge.php:453 src/Cartridge.php:700
 msgctxt "cartridge"
 msgid "Used"
 msgid_plural "Used"
-msgstr[0] "Utilisées"
+msgstr[0] "Utilisée"
+msgstr[1] "Utilisées"
 
 #: src/Cartridge.php:400 src/Cartridge.php:455 src/Cartridge.php:702
 msgctxt "cartridge"
 msgid "Worn"
 msgid_plural "Worn"
-msgstr[0] "Usagées"
+msgstr[0] "Usagée"
+msgstr[1] "Usagées"
 
 #: src/Cartridge.php:406
 #, php-format
@@ -14661,7 +14871,8 @@ msgstr "Compteur imprimante"
 #, php-format
 msgid "%d printed page"
 msgid_plural "%d printed pages"
-msgstr[0] "%d pages imprimées"
+msgstr[0] "%d page imprimée"
+msgstr[1] "%d pages imprimées"
 
 #: src/Cartridge.php:882
 msgid "Counter error"
@@ -14707,12 +14918,14 @@ msgstr "Cartouches utilisées"
 #: src/Cartridge.php:1088 src/Cartridge.php:1245 src/CartridgeItem.php:55
 msgid "Cartridge model"
 msgid_plural "Cartridge models"
-msgstr[0] "Modèles de cartouches"
+msgstr[0] "Modèle de cartouche"
+msgstr[1] "Modèles de cartouches"
 
 #: src/Cartridge.php:1089 src/CartridgeItemType.php:39
 msgid "Cartridge type"
 msgid_plural "Cartridge types"
-msgstr[0] "Types de cartouches"
+msgstr[0] "Type de cartouche"
+msgstr[1] "Types de cartouches"
 
 #: src/Cartridge.php:1095
 msgid "Printed pages"
@@ -14721,7 +14934,8 @@ msgstr "Pages imprimées"
 #: src/IPNetmask.php:71
 msgid "Subnet mask"
 msgid_plural "Subnet masks"
-msgstr[0] "Masques de sous-réseau"
+msgstr[0] "Masque de sous-réseau"
+msgstr[1] "Masques de sous-réseau"
 
 #: src/Change.php:500 src/Change.php:516 src/NotificationTargetChange.php:272
 msgid "Control list"
@@ -14751,7 +14965,8 @@ msgstr "Évaluation"
 #: src/ContentTemplates/Parameters/TicketParameters.php:78
 msgid "Approval"
 msgid_plural "Approvals"
-msgstr[0] "Validations"
+msgstr[0] "Validation"
+msgstr[1] "Validations"
 
 #: src/Change.php:578 src/Problem.php:710
 msgctxt "status"
@@ -14802,7 +15017,8 @@ msgstr "Nouveau changement pour cet élément..."
 #, php-format
 msgid "Last %d change"
 msgid_plural "Last %d changes"
-msgstr[0] "Derniers %d changements"
+msgstr[0] "Dernier %d changement"
+msgstr[1] "Derniers %d changements"
 
 #: src/Change.php:1012 src/Change.php:1059 src/Change.php:1748
 msgid "No change found."
@@ -14857,7 +15073,8 @@ msgstr "Prise Ethernet"
 #: src/DeviceGraphicCard.php:41
 msgid "Graphics card"
 msgid_plural "Graphics cards"
-msgstr[0] "Cartes graphiques"
+msgstr[0] "Carte graphique"
+msgstr[1] "Cartes graphiques"
 
 #: src/DeviceGraphicCard.php:51 src/DeviceGraphicCard.php:84
 #: src/DeviceGraphicCard.php:164 src/DeviceMotherboard.php:51
@@ -14888,7 +15105,8 @@ msgstr "ne correspond pas au CIDR"
 #: src/DevicePciModel.php:42
 msgid "Other component model"
 msgid_plural "Other component models"
-msgstr[0] "Modèles d'autres composants"
+msgstr[0] "Modèle d'autre composant"
+msgstr[1] "Modèles d'autres composants"
 
 #. TRANS: plural for software
 #. TRANS: software in plural
@@ -14910,7 +15128,8 @@ msgstr "Catégories de l'outil d'inventaire"
 #: src/DeviceProcessorModel.php:42
 msgid "Device processor model"
 msgid_plural "Device processor models"
-msgstr[0] "Modèles de processeurs"
+msgstr[0] "Modèle de processeur"
+msgstr[1] "Modèles de processeurs"
 
 #: src/RuleDictionnaryPhoneModelCollection.php:44
 msgid "Dictionnary of phone models"
@@ -14939,12 +15158,14 @@ msgstr "Commander"
 #: src/DomainRecord.php:46
 msgid "Domain record"
 msgid_plural "Domains records"
-msgstr[0] "Enregistrements de domaine"
+msgstr[0] "Enregistrement de domaine"
+msgstr[1] "Enregistrements de domaine"
 
 #: src/DomainRecord.php:53 src/DomainRecord.php:55
 msgid "Record"
 msgid_plural "Records"
-msgstr[0] "Enregistrements"
+msgstr[0] "Enregistrement"
+msgstr[1] "Enregistrements"
 
 #: src/DomainRecord.php:104 src/DomainRecord.php:469 src/DomainRecord.php:605
 msgid "TTL"
@@ -14977,7 +15198,8 @@ msgstr "Lier un enregistrement"
 #: src/Console/Database/UpdateCommand.php:133
 msgid "Target"
 msgid_plural "Targets"
-msgstr[0] "Cibles"
+msgstr[0] "Cible"
+msgstr[1] "Cibles"
 
 #: src/RuleAsset.php:137
 msgid "User location"
@@ -15010,7 +15232,8 @@ msgstr[1] "Criticité"
 #: src/DeviceCaseType.php:39
 msgid "Case type"
 msgid_plural "Case types"
-msgstr[0] "Types de boitiers"
+msgstr[0] "Type de boitier"
+msgstr[1] "Types de boitiers"
 
 #: src/RuleDictionnaryMonitorTypeCollection.php:47
 msgid "Dictionnary of monitor types"
@@ -15059,17 +15282,20 @@ msgstr "Télécharger la VCard de l'utilisateur"
 #: src/VirtualMachineType.php:42
 msgid "Virtualization system"
 msgid_plural "Virtualization systems"
-msgstr[0] "Systèmes de virtualisation"
+msgstr[0] "Système de virtualisation"
+msgstr[1] "Systèmes de virtualisation"
 
 #: src/Reminder.php:69
 msgid "Reminder"
 msgid_plural "Reminders"
-msgstr[0] "Notes"
+msgstr[0] "Note"
+msgstr[1] "Notes"
 
 #: src/Reminder.php:71 src/Reminder.php:904
 msgid "Personal reminder"
 msgid_plural "Personal reminders"
-msgstr[0] "Notes personnelles"
+msgstr[0] "Note personnelle"
+msgstr[1] "Notes personnelles"
 
 #: src/Reminder.php:417 src/KnowbaseItem.php:2096
 msgid "Visibility start date"
@@ -15155,7 +15381,8 @@ msgstr "Remplacer"
 #: src/PlanningEventCategory.php:38
 msgid "Event category"
 msgid_plural "Event categories"
-msgstr[0] "Catégories d'évènements"
+msgstr[0] "Catégorie d'évènement"
+msgstr[1] "Catégories d'évènements"
 
 #: src/PlanningEventCategory.php:46 src/Cable.php:245 src/ProjectState.php:57
 #: src/ProjectState.php:75 templates/pages/assets/cable.html.twig:54
@@ -15166,7 +15393,8 @@ msgstr "Couleur"
 #: src/PDUType.php:39
 msgid "PDU type"
 msgid_plural "PDU types"
-msgstr[0] "Types de PDU"
+msgstr[0] "Type de PDU"
+msgstr[1] "Types de PDU"
 
 #: src/CommonITILValidation.php:346 src/CommonITILValidation.php:502
 #, php-format
@@ -15289,7 +15517,8 @@ msgstr "Voulez-vous vraiment le résoudre ou le clôturer ?"
 #: src/DeviceSoundCard.php:43
 msgid "Soundcard"
 msgid_plural "Soundcards"
-msgstr[0] "Cartes son"
+msgstr[0] "Carte son"
+msgstr[1] "Cartes son"
 
 #: src/IPAddress.php:249
 msgid "Order by item type"
@@ -15306,7 +15535,8 @@ msgstr "Aucune adresse IP trouvée"
 #: src/ImageFormat.php:41
 msgid "Image format"
 msgid_plural "Image formats"
-msgstr[0] "Formats d'image"
+msgstr[0] "Format d'image"
+msgstr[1] "Formats d'image"
 
 #: src/NotificationTargetTicket.php:84
 msgid "To answer by email, write above this line"
@@ -15364,7 +15594,8 @@ msgstr "Réponse à l'enquête de satisfaction"
 msgid "Without a reply, the ticket will be automatically closed after %s day"
 msgid_plural ""
 "Without a reply, the ticket will be automatically closed after %s days"
-msgstr[0] "Sans réponse, le ticket sera automatiquement clos dans %s jours"
+msgstr[0] "Sans réponse, le ticket sera automatiquement clos dans %s jour"
+msgstr[1] "Sans réponse, le ticket sera automatiquement clos dans %s jours"
 
 #: src/NotificationTargetTicket.php:517 src/NotificationTargetChange.php:221
 #, php-format
@@ -15437,7 +15668,8 @@ msgstr "Invitation à remplir l'enquête"
 #: src/DeviceHardDrive.php:41
 msgid "Hard drive"
 msgid_plural "Hard drives"
-msgstr[0] "Disques durs"
+msgstr[0] "Disque dur"
+msgstr[1] "Disques durs"
 
 #: src/DeviceHardDrive.php:51 src/DeviceHardDrive.php:79
 msgid "Capacity by default"
@@ -15663,7 +15895,8 @@ msgstr "Associer un domaine"
 #: src/DeviceProcessor.php:41
 msgid "Processor"
 msgid_plural "Processors"
-msgstr[0] "Processeurs"
+msgstr[0] "Processeur"
+msgstr[1] "Processeurs"
 
 #: src/DeviceProcessor.php:51 src/DeviceProcessor.php:80
 msgid "Frequency by default"
@@ -15684,7 +15917,8 @@ msgstr "Fréquence du processeur"
 #: src/VirtualMachineSystem.php:42
 msgid "Virtualization model"
 msgid_plural "Virtualization models"
-msgstr[0] "Modèles de virtualisation"
+msgstr[0] "Modèle de virtualisation"
+msgstr[1] "Modèles de virtualisation"
 
 #: src/ITILCategory.php:67 src/ITILCategory.php:266 src/RuleTicket.php:530
 msgid "Code representing the ticket category"
@@ -15729,7 +15963,8 @@ msgstr "Gabarit pour un problème"
 #: src/ITILCategory.php:277
 msgid "ITIL category"
 msgid_plural "ITIL categories"
-msgstr[0] "Catégories ITIL"
+msgstr[0] "Catégorie ITIL"
+msgstr[1] "Catégories ITIL"
 
 #: src/ITILCategory.php:340 src/ITILCategory.php:360
 msgid "Code representing the ticket category is already used"
@@ -15738,17 +15973,20 @@ msgstr "Le code représentant la catégorie de tickets est déjà utilisé"
 #: src/PhoneModel.php:42 src/Rule.php:360
 msgid "Phone model"
 msgid_plural "Phone models"
-msgstr[0] "Modèles de téléphones"
+msgstr[0] "Modèle de téléphone"
+msgstr[1] "Modèles de téléphones"
 
 #: src/PlanningExternalEventTemplate.php:53
 msgid "External events template"
 msgid_plural "External events templates"
-msgstr[0] "Gabarits d'évènements externes"
+msgstr[0] "Gabarit d'évènement externe"
+msgstr[1] "Gabarits d'évènements externes"
 
 #: src/Filesystem.php:42
 msgid "File system"
 msgid_plural "File systems"
-msgstr[0] "Systèmes de fichiers"
+msgstr[0] "Système de fichier"
+msgstr[1] "Systèmes de fichiers"
 
 #: src/Software.php:89 src/Software.php:1015
 msgid "Merging"
@@ -15807,22 +16045,26 @@ msgstr "Suppression d'un changement"
 #: src/Rule.php:312 src/MonitorModel.php:39
 msgid "Monitor model"
 msgid_plural "Monitor models"
-msgstr[0] "Modèles de moniteurs"
+msgstr[0] "Modèle de moniteur"
+msgstr[1] "Modèles de moniteurs"
 
 #: src/Rule.php:348 src/NetworkEquipmentModel.php:39
 msgid "Networking equipment model"
 msgid_plural "Networking equipment models"
-msgstr[0] "Modèles de matériels réseau"
+msgstr[0] "Modèle de matériel réseau"
+msgstr[1] "Modèles de matériels réseau"
 
 #: src/Rule.php:372 src/ComputerType.php:39
 msgid "Computer type"
 msgid_plural "Computer types"
-msgstr[0] "Types d'ordinateurs"
+msgstr[0] "Type d'ordinateur"
+msgstr[1] "Types d'ordinateurs"
 
 #: src/Rule.php:408
 msgid "Peripheral type"
 msgid_plural "Peripheral types"
-msgstr[0] "Types de périphérique"
+msgstr[0] "Type de périphérique"
+msgstr[1] "Types de périphérique"
 
 #: src/Rule.php:559
 msgid "Rules management"
@@ -15988,12 +16230,14 @@ msgstr "Créé depuis le gabarit %s"
 #: src/DeviceFirmwareType.php:38
 msgid "Firmware type"
 msgid_plural "Firmware types"
-msgstr[0] "Types de firmwares"
+msgstr[0] "Type de firmware"
+msgstr[1] "Types de firmwares"
 
 #: src/Vlan.php:46
 msgid "VLAN"
 msgid_plural "VLANs"
 msgstr[0] "VLAN"
+msgstr[1] "VLAN"
 
 #: src/Vlan.php:166
 msgid "Untagged"
@@ -16002,17 +16246,20 @@ msgstr "Non tagué"
 #: src/RackType.php:39
 msgid "Rack type"
 msgid_plural "Rack types"
-msgstr[0] "Types de baies"
+msgstr[0] "Type de baie"
+msgstr[1] "Types de baies"
 
 #: src/ProblemTemplate.php:48 src/Entity.php:2545
 msgid "Problem template"
 msgid_plural "Problem templates"
-msgstr[0] "Gabarits de problème"
+msgstr[0] "Gabarit de problème"
+msgstr[1] "Gabarits de problème"
 
 #: src/DeviceControl.php:43
 msgid "Controller"
 msgid_plural "Controllers"
-msgstr[0] "Contrôleurs"
+msgstr[0] "Contrôleur"
+msgstr[1] "Contrôleurs"
 
 #: src/DeviceControl.php:53 src/DeviceControl.php:82
 msgid "RAID"
@@ -16029,7 +16276,8 @@ msgstr "Dupliqué par"
 #: src/UserCategory.php:39
 msgid "User category"
 msgid_plural "User categories"
-msgstr[0] "Catégories d'utilisateur"
+msgstr[0] "Catégorie d'utilisateur"
+msgstr[1] "Catégories d'utilisateur"
 
 #: src/RuleDictionnaryComputerTypeCollection.php:47
 msgid "Dictionnary of computer types"
@@ -16042,12 +16290,14 @@ msgstr "Rappels automatiques pour les SLAs"
 #: src/OperatingSystem.php:42
 msgid "Operating system"
 msgid_plural "Operating systems"
-msgstr[0] "Systèmes d'exploitation"
+msgstr[0] "Système d'exploitation"
+msgstr[1] "Systèmes d'exploitation"
 
 #: src/Item_Disk.php:51 src/Item_Disk.php:434
 msgid "Volume"
 msgid_plural "Volumes"
-msgstr[0] "Volumes"
+msgstr[0] "Volume"
+msgstr[1] "Volumes"
 
 #: src/Item_Disk.php:160 src/Item_Disk.php:290 src/Item_Disk.php:391
 #: src/Item_Disk.php:519
@@ -16154,7 +16404,8 @@ msgstr "Module"
 #: src/DeviceCamera.php:40
 msgid "Camera"
 msgid_plural "Cameras"
-msgstr[0] "Caméras"
+msgstr[0] "Caméra"
+msgstr[1] "Caméras"
 
 #: src/DeviceCamera.php:69 src/DeviceCamera.php:117 src/DeviceCamera.php:180
 msgid "Flashunit"
@@ -16204,11 +16455,13 @@ msgstr "support"
 msgid "RSS feed"
 msgid_plural "RSS feed"
 msgstr[0] "Flux RSS"
+msgstr[1] "Flux RSS"
 
 #: src/RSSFeed.php:84 src/RSSFeed.php:970
 msgid "Personal RSS feed"
 msgid_plural "Personal RSS feed"
-msgstr[0] "Flux RSS personnels"
+msgstr[0] "Flux RSS personnel"
+msgstr[1] "Flux RSS personnels"
 
 #: src/RSSFeed.php:444 src/ProjectTask.php:1060
 msgid "Creator"
@@ -16250,7 +16503,8 @@ msgstr[1] "Câbles"
 #: src/Cable.php:136 src/CableType.php:39
 msgid "Cable type"
 msgid_plural "Cable types"
-msgstr[0] "Types de câble"
+msgstr[0] "Type de câble"
+msgstr[1] "Types de câble"
 
 #: src/LevelAgreement.php:205 src/LevelAgreement.php:398
 msgid "Maximum time"
@@ -16263,12 +16517,14 @@ msgstr "Fin d'un jour ouvré"
 #: src/LevelAgreement.php:258
 msgid "Minute"
 msgid_plural "Minutes"
-msgstr[0] "Minutes"
+msgstr[0] "Minute"
+msgstr[1] "Minutes"
 
 #: src/LevelAgreement.php:261
 msgid "Month"
 msgid_plural "Months"
 msgstr[0] "Mois"
+msgstr[1] "Mois"
 
 #: src/LevelAgreement.php:364
 msgid "Add a new item"
@@ -16296,12 +16552,14 @@ msgstr "Préférences"
 #: src/DeviceBatteryModel.php:42
 msgid "Device battery model"
 msgid_plural "Device batteries models"
-msgstr[0] "Modèles de batteries"
+msgstr[0] "Modèle de batterie"
+msgstr[1] "Modèles de batteries"
 
 #: src/DeviceNetworkCardModel.php:42
 msgid "Network card model"
 msgid_plural "Network card models"
-msgstr[0] "Modèles de cartes réseaux"
+msgstr[0] "Modèle de carte réseau"
+msgstr[1] "Modèles de cartes réseaux"
 
 #: src/Api/API.php:153
 msgid "API disabled"
@@ -16451,13 +16709,14 @@ msgstr "Importer les catégories depuis l'outil d'inventaire"
 #: src/ConsumableItemType.php:39
 msgid "Consumable type"
 msgid_plural "Consumable types"
-msgstr[0] "Types de consommable"
+msgstr[0] "Type de consommable"
+msgstr[1] "Types de consommable"
 
 #: src/DatabaseInstance.php:66
 msgid "Database instance"
 msgid_plural "Database instances"
 msgstr[0] "Instance de base de données"
-msgstr[1] "Instance de base de données"
+msgstr[1] "Instances de base de données"
 
 #: src/DatabaseInstance.php:364 src/Project.php:601
 #: src/NetworkPortConnectionLog.php:114 src/ComputerVirtualMachine.php:351
@@ -16489,7 +16748,8 @@ msgstr "PCI"
 #: src/RegisteredID.php:59
 msgid "Registered ID (issued by PCI-SIG)"
 msgid_plural "Registered IDs (issued by PCI-SIG)"
-msgstr[0] "Registered IDs (délivrés par PCI-SIG)"
+msgstr[0] "Registered ID (délivré par PCI-SIG)"
+msgstr[1] "Registered IDs (délivrés par PCI-SIG)"
 
 #: src/SoftwareVersion.php:310
 msgctxt "button"
@@ -16499,7 +16759,8 @@ msgstr "Ajouter une version"
 #: src/NotificationTemplateTranslation.php:51
 msgid "Template translation"
 msgid_plural "Template translations"
-msgstr[0] "Traductions de modèle"
+msgstr[0] "Traduction de modèle"
+msgstr[1] "Traductions de modèle"
 
 #: src/NotificationTemplateTranslation.php:125
 msgid "Show list of available tags"
@@ -16587,7 +16848,8 @@ msgstr "Ajouter un critère"
 #: src/Problem.php:72
 msgid "Problem"
 msgid_plural "Problems"
-msgstr[0] "Problèmes"
+msgstr[0] "Problème"
+msgstr[1] "Problèmes"
 
 #: src/Problem.php:483
 #: templates/components/itilobject/fields_panel.html.twig:307
@@ -16631,7 +16893,8 @@ msgstr "Nouveau problème pour cet élément..."
 #, php-format
 msgid "Last %d problem"
 msgid_plural "Last %d problems"
-msgstr[0] "%d derniers problèmes"
+msgstr[0] "%d dernier problème"
+msgstr[1] "%d derniers problèmes"
 
 #: src/Problem.php:1649 src/Problem.php:1696
 msgid "No problem found."
@@ -16644,12 +16907,14 @@ msgstr "Problèmes sur les éléments liés"
 #: src/PhonePowerSupply.php:42
 msgid "Phone power supply type"
 msgid_plural "Phone power supply types"
-msgstr[0] "Types d'alimentation de téléphone"
+msgstr[0] "Type d'alimentation de téléphone"
+msgstr[1] "Types d'alimentation de téléphone"
 
 #: src/ITILTemplateMandatoryField.php:45
 msgid "Mandatory field"
 msgid_plural "Mandatory fields"
-msgstr[0] "Champs obligatoires"
+msgstr[0] "Champ obligatoire"
+msgstr[1] "Champs obligatoires"
 
 #: src/ITILTemplateMandatoryField.php:195
 msgid "Add a mandatory field"
@@ -16810,7 +17075,8 @@ msgstr "Ajouter un membre d'équipe"
 #: src/Project.php:1807 src/Project.php:2590 src/ProjectTask.php:1520
 msgid "Member"
 msgid_plural "Members"
-msgstr[0] "Membres"
+msgstr[0] "Membre"
+msgstr[1] "Membres"
 
 #: src/Project.php:2257
 msgid "No status"
@@ -16898,12 +17164,14 @@ msgstr "N'existe plus dans la base de donnée"
 #: src/ProjectTeam.php:71
 msgid "Project team"
 msgid_plural "Project teams"
-msgstr[0] "Équipes projet"
+msgstr[0] "Équipe projet"
+msgstr[1] "Équipes projet"
 
 #: src/DeviceFirmware.php:40 src/Phone.php:365 src/NetworkEquipment.php:401
 msgid "Firmware"
 msgid_plural "Firmware"
 msgstr[0] "Firmware"
+msgstr[1] "Firmware"
 
 #: src/DeviceFirmware.php:57 src/DeviceFirmware.php:83
 #: src/DeviceFirmware.php:131
@@ -16924,11 +17192,15 @@ msgid ""
 "(string, mandatory), placeholder (string, optionnal), quote_value (boolean, "
 "optional), is_fqdn (boolean, optional)."
 msgstr ""
+"Les propriétés de descripteur de champ valides sont : key (chaîne, "
+"obligatoire), label (chaîne, obligatoire), placeholder (chaîne, facultatif),"
+" quote_value (booléen, facultatif), is_fqdn (booléen, facultatif)."
 
 #: src/DomainRecordType.php:347
 msgid "Record type"
 msgid_plural "Records types"
-msgstr[0] "Types d'enregistrements"
+msgstr[0] "Type d'enregistrement"
+msgstr[1] "Types d'enregistrements"
 
 #: src/Telemetry.php:38
 msgid "Telemetry"
@@ -17009,17 +17281,20 @@ msgstr "Référence (# + id)"
 #: src/CommonITILObject.php:8313
 msgid "Assignee"
 msgid_plural "Assignees"
-msgstr[0] "Acteurs attribués"
+msgstr[0] "Acteur attribué"
+msgstr[1] "Acteurs attribués"
 
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:79
 msgid "Assigned group"
 msgid_plural "Assigned groups"
-msgstr[0] "Groupes assignés"
+msgstr[0] "Groupe assigné"
+msgstr[1] "Groupes assignés"
 
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:80
 msgid "Assigned supplier"
 msgid_plural "Assigned suppliers"
-msgstr[0] "Fournisseurs assignés"
+msgstr[0] "Fournisseur assigné"
+msgstr[1] "Fournisseurs assignés"
 
 #: src/ContentTemplates/Parameters/LevelAgreementParameters.php:55
 msgid "Duration unit"
@@ -17098,7 +17373,8 @@ msgstr "Niveau"
 #: src/KnowbaseItem_Revision.php:40 src/KnowbaseItem_Revision.php:130
 msgid "Revision"
 msgid_plural "Revisions"
-msgstr[0] "Révisions"
+msgstr[0] "Révision"
+msgstr[1] "Révisions"
 
 #: src/KnowbaseItem_Revision.php:116
 msgid "No revisions"
@@ -17223,12 +17499,14 @@ msgstr "Modifier le commentaire"
 #: src/DomainRelation.php:56
 msgid "Domain relation"
 msgid_plural "Domains relations"
-msgstr[0] "Relations de domaine"
+msgstr[0] "Relation de domaine"
+msgstr[1] "Relations de domaine"
 
 #: src/SupplierType.php:39
 msgid "Third party type"
 msgid_plural "Third party types"
-msgstr[0] "Types de tiers"
+msgstr[0] "Type de tiers"
+msgstr[1] "Types de tiers"
 
 #: src/Phone.php:297 templates/pages/assets/phone.html.twig:40
 msgctxt "quantity"
@@ -17246,7 +17524,8 @@ msgstr "Haut parleur"
 #: src/CalendarSegment.php:61
 msgid "Time range"
 msgid_plural "Time ranges"
-msgstr[0] "Plages horaires"
+msgstr[0] "Plage horaire"
+msgstr[1] "Plages horaires"
 
 #: src/CalendarSegment.php:79
 msgid "Can not add a range riding an existing period"
@@ -17259,7 +17538,8 @@ msgstr "Ajouter une plage horaire"
 #: src/EnclosureModel.php:39
 msgid "Enclosure model"
 msgid_plural "Enclosure models"
-msgstr[0] "Modèles de châssis"
+msgstr[0] "Modèle de châssis"
+msgstr[1] "Modèles de châssis"
 
 #: src/RuleDictionnaryNetworkEquipmentTypeCollection.php:44
 msgid "Dictionnary of network equipment types"
@@ -17309,7 +17589,8 @@ msgstr "Commentaire de machine virtuelle"
 #: src/CommonDeviceModel.php:39
 msgid "Device model"
 msgid_plural "Device models"
-msgstr[0] "Modèles de périphériques"
+msgstr[0] "Modèle de périphérique"
+msgstr[1] "Modèles de périphériques"
 
 #: src/SocketModel.php:39
 msgid "Socket model"
@@ -17517,7 +17798,8 @@ msgstr "Durée des tickets"
 #: src/ProjectTask.php:73
 msgid "Project task"
 msgid_plural "Project tasks"
-msgstr[0] "Tâches de projet"
+msgstr[0] "Tâche de projet"
+msgstr[1] "Tâches de projet"
 
 #: src/ProjectTask.php:184
 msgid "Update (actor)"
@@ -17530,7 +17812,8 @@ msgstr "Un projet lié est obligatoire"
 #: src/ProjectTask.php:595 src/ProjectTaskTemplate.php:48
 msgid "Project task template"
 msgid_plural "Project task templates"
-msgstr[0] "Gabarits de tâches de projets"
+msgstr[0] "Gabarit de tâche de projet"
+msgstr[1] "Gabarits de tâches de projets"
 
 #: src/ProjectTask.php:743
 msgid ""
@@ -17589,7 +17872,8 @@ msgstr "Cet élément ne fait pas partie de la FAQ"
 #, php-format
 msgid "%d view"
 msgid_plural "%d views"
-msgstr[0] "%d vues"
+msgstr[0] "%d vue"
+msgstr[1] "%d vues"
 
 #: src/KnowbaseItem.php:878
 msgid "Add link"
@@ -17677,7 +17961,8 @@ msgstr "%1$s a rétabli l'élément à la révision %2$s"
 #: src/FQDN.php:47 src/NetworkAlias.php:318
 msgid "Internet domain"
 msgid_plural "Internet domains"
-msgstr[0] "Domaines internet"
+msgstr[0] "Domaine internet"
+msgstr[1] "Domaines internet"
 
 #: src/FQDN.php:55 src/FQDN.php:211
 msgid "FQDN"
@@ -17702,7 +17987,8 @@ msgstr "Le FQDN n'est pas valide"
 #: src/ProjectState.php:43
 msgid "Project state"
 msgid_plural "Project states"
-msgstr[0] "Statuts de projet"
+msgstr[0] "Statut de projet"
+msgstr[1] "Statuts de projet"
 
 #: src/ProjectState.php:61 src/ProjectState.php:83
 msgid "Finished state"
@@ -17716,7 +18002,8 @@ msgstr "Impossible d'envoyer la notification en utilisant  %1$s"
 #: src/Problem_Ticket.php:58
 msgid "Link Ticket/Problem"
 msgid_plural "Links Ticket/Problem"
-msgstr[0] "Liens Ticket/Problème"
+msgstr[0] "Lien Ticket/Problème"
+msgstr[1] "Liens Ticket/Problème"
 
 #: src/Problem_Ticket.php:422
 msgid "Create a problem from this ticket"
@@ -17725,7 +18012,8 @@ msgstr "Créer un problème à partir de ce ticket"
 #: src/OperatingSystemServicePack.php:42
 msgid "Service pack"
 msgid_plural "Service packs"
-msgstr[0] "Service packs"
+msgstr[0] "Service pack"
+msgstr[1] "Service packs"
 
 #: src/Config.php:72
 msgctxt "setup"
@@ -18184,7 +18472,7 @@ msgstr "Utiliser la configuration serveur"
 
 #: src/Config.php:1389
 msgid "Timezone usage has not been activated."
-msgstr "L'utilisation des fuseaux horaires n'a pas été activée."
+msgstr "L'utilisation des fuseaux horaires n'a pas été activé."
 
 #: src/Config.php:1391
 #, php-format
@@ -18619,6 +18907,7 @@ msgstr "Conserver tout"
 msgid "Delete if older than %s month"
 msgid_plural "Delete if older than %s months"
 msgstr[0] "Supprimer si plus ancien que %s mois"
+msgstr[1] "Supprimer si plus ancien que %s mois"
 
 #: src/Config.php:3287
 msgid "Security setup"
@@ -18702,12 +18991,14 @@ msgstr "%1$s doit être unique par niveau !"
 #: src/DocumentCategory.php:42
 msgid "Document heading"
 msgid_plural "Document headings"
-msgstr[0] "Rubriques des documents"
+msgstr[0] "Rubrique des document"
+msgstr[1] "Rubriques des documents"
 
 #: src/ITILTemplateHiddenField.php:45
 msgid "Hidden field"
 msgid_plural "Hidden fields"
-msgstr[0] "Champs masqués"
+msgstr[0] "Champ masqué"
+msgstr[1] "Champs masqués"
 
 #: src/ITILTemplateHiddenField.php:194
 msgid "Add a hidden field"
@@ -18999,7 +19290,7 @@ msgstr "Modèle des inventaires pour le transfert automatique d'entités"
 
 #: src/Entity.php:1760
 msgid "Agent base URL"
-msgstr ""
+msgstr "URL Base pour l'agent"
 
 #: src/Entity.php:1899
 msgid "Alarms options"
@@ -19168,7 +19459,8 @@ msgstr ""
 #: src/BudgetType.php:42
 msgid "Budget type"
 msgid_plural "Budget types"
-msgstr[0] "Types de budgets"
+msgstr[0] "Type de budget"
+msgstr[1] "Types de budgets"
 
 #: src/CommonITILObject.php:1593 src/CommonITILObject.php:1612
 #: src/CommonITILObject.php:1633 src/CommonITILObject.php:1643
@@ -19389,7 +19681,8 @@ msgstr "Courriel pour le suivi"
 #: src/CommonITILObject.php:5052
 msgid "Time"
 msgid_plural "Times"
-msgstr[0] "Délais"
+msgstr[0] "Délai"
+msgstr[1] "Délais"
 
 #: src/CommonITILObject.php:6015
 #, php-format
@@ -19447,7 +19740,8 @@ msgstr "Entrée de journal"
 #: src/APIClient.php:65
 msgid "API client"
 msgid_plural "API clients"
-msgstr[0] "Clients de l'API"
+msgstr[0] "Client de l'API"
+msgstr[1] "Clients de l'API"
 
 #: src/APIClient.php:116 src/APIClient.php:211
 msgid "Log connections"
@@ -19489,7 +19783,8 @@ msgstr "Activer les notifications par courriel"
 #: src/NotificationMailingSetting.php:70
 msgid "Email notification"
 msgid_plural "Email notifications"
-msgstr[0] "Notifications courriel"
+msgstr[0] "Notification courriel"
+msgstr[1] "Notifications courriel"
 
 #: src/NotificationMailingSetting.php:90
 msgid "From email"
@@ -19644,12 +19939,14 @@ msgstr "Administrateur de l'entité"
 #: src/InterfaceType.php:42
 msgid "Interface type (Hard drive...)"
 msgid_plural "Interface types (Hard drive...)"
-msgstr[0] "Types d'interface (disque dur...)"
+msgstr[0] "Type d'interface (disque dur...)"
+msgstr[1] "Types d'interface (disque dur...)"
 
 #: src/ProjectType.php:43
 msgid "Project type"
 msgid_plural "Project types"
-msgstr[0] "Types de projet"
+msgstr[0] "Type de projet"
+msgstr[1] "Types de projet"
 
 #: src/RuleDictionnaryManufacturerCollection.php:47
 msgid "Dictionary of manufacturers"
@@ -19696,7 +19993,8 @@ msgstr "Dictionnaire des modèles de périphériques"
 #: src/ReservationItem.php:66
 msgid "Reservable item"
 msgid_plural "Reservable items"
-msgstr[0] "Éléments réservables"
+msgstr[0] "Élément réservable"
+msgstr[1] "Éléments réservables"
 
 #: src/ReservationItem.php:329
 msgid "Make unavailable"
@@ -19766,7 +20064,8 @@ msgstr "Aucun élément réservable!"
 #: src/DeviceSensorModel.php:44
 msgid "Device sensor model"
 msgid_plural "Device sensor models"
-msgstr[0] "Modèles de capteurs"
+msgstr[0] "Modèle de capteur"
+msgstr[1] "Modèles de capteurs"
 
 #: src/Marketplace/NotificationTargetController.php:57
 #: src/Marketplace/Controller.php:288
@@ -19839,7 +20138,7 @@ msgstr "Votre souscription %1$s a été résilié."
 #: src/Marketplace/View.php:165
 #, php-format
 msgid "Renew it on %1$s."
-msgstr ""
+msgstr "Renouvelez la sur %1$s."
 
 #: src/Marketplace/View.php:330
 #, php-format
@@ -19982,7 +20281,8 @@ msgstr ""
 #, php-format
 msgid "%s plugin"
 msgid_plural "%s plugins"
-msgstr[0] "Plugins %s"
+msgstr[0] "Plugin %s"
+msgstr[1] "Plugins %s"
 
 #: src/Marketplace/View.php:997
 msgid "Switch to marketplace"
@@ -20030,12 +20330,14 @@ msgstr "Ajouter un contact"
 #: src/Supplier.php:275
 msgid "Associated contact"
 msgid_plural "Associated contacts"
-msgstr[0] "Contacts associés"
+msgstr[0] "Contact associé"
+msgstr[1] "Contacts associés"
 
 #: src/Supplier.php:320
 msgid "Associated contract"
 msgid_plural "Associated contracts"
-msgstr[0] "Contrats associés"
+msgstr[0] "Contrat associé"
+msgstr[1] "Contrats associés"
 
 #: src/Supplier.php:371
 msgid "Web"
@@ -20044,7 +20346,8 @@ msgstr "Web"
 #: src/DeviceSensor.php:43
 msgid "Sensor"
 msgid_plural "Sensors"
-msgstr[0] "Capteurs"
+msgstr[0] "Capteur"
+msgstr[1] "Capteurs"
 
 #: src/Domain.php:218
 msgid "Entity-ID"
@@ -20168,7 +20471,8 @@ msgstr "Délai de prise en charge"
 #: src/ApplianceEnvironment.php:38
 msgid "Appliance environment"
 msgid_plural "Appliance environments"
-msgstr[0] "Environnements d'applicatif"
+msgstr[0] "Environnement d'applicatif"
+msgstr[1] "Environnements d'applicatif"
 
 #: src/RuleDictionnaryPeripheralTypeCollection.php:44
 msgid "Dictionnary of device types"
@@ -20258,17 +20562,20 @@ msgstr "Connecter un ordinateur"
 #: src/DeviceMotherboard.php:41
 msgid "System board"
 msgid_plural "System boards"
-msgstr[0] "Cartes mères"
+msgstr[0] "Carte mère"
+msgstr[1] "Cartes mères"
 
 #: src/OperatingSystemArchitecture.php:42
 msgid "Operating system architecture"
 msgid_plural "Operating system architectures"
-msgstr[0] "Architectures du système d'exploitation"
+msgstr[0] "Architecture du système d'exploitation"
+msgstr[1] "Architectures du système d'exploitation"
 
 #: src/IPNetwork.php:53
 msgid "IP network"
 msgid_plural "IP networks"
-msgstr[0] "Réseaux IP"
+msgstr[0] "Réseau IP"
+msgstr[1] "Réseaux IP"
 
 #: src/IPNetwork.php:65
 msgid "IP version"
@@ -20393,7 +20700,8 @@ msgstr "Sélectionnez les statistiques à visualiser"
 #: src/NetworkEquipment.php:76
 msgid "Network device"
 msgid_plural "Network devices"
-msgstr[0] "Matériels réseau"
+msgstr[0] "Matériel réseau"
+msgstr[1] "Matériels réseau"
 
 #: src/Item_DeviceHardDrive.php:49 src/Item_DeviceHardDrive.php:52
 #: src/DeviceBattery.php:56 src/DeviceBattery.php:79 src/DeviceBattery.php:119
@@ -21985,11 +22293,11 @@ msgstr "Installation terminée."
 
 #: src/Console/Database/EnableTimezonesCommand.php:71
 msgid "Enable timezones usage."
-msgstr "Activer l'usage des timezones."
+msgstr "Activer l'usage des fuseaux horaires."
 
 #: src/Console/Database/EnableTimezonesCommand.php:106
 msgid "Timezone usage has been enabled."
-msgstr "L'usage des timezones a été activé."
+msgstr "L'usage des fuseaux horaires a été activé."
 
 #: src/Console/Database/AbstractConfigureCommand.php:110
 #: src/Console/Database/AbstractConfigureCommand.php:437
@@ -22210,7 +22518,8 @@ msgstr "Vérifier le statut du système"
 #: src/ConsumableItem.php:57
 msgid "Consumable model"
 msgid_plural "Consumable models"
-msgstr[0] "Modèles de consommables"
+msgstr[0] "Modèle de consommable"
+msgstr[1] "Modèles de consommables"
 
 #: src/ConsumableItem.php:203
 msgid "Number of used consumables"
@@ -22396,11 +22705,11 @@ msgstr "Courriel par défaut"
 
 #: src/System/Requirement/DbTimezones.php:50
 msgid "DB timezone data"
-msgstr "Données de la base des timezones"
+msgstr "Données de la base des fuseaux horaires"
 
 #: src/System/Requirement/DbTimezones.php:51
 msgid "Enable usage of timezones."
-msgstr "Permet l'usage des timezones"
+msgstr "Permet l'usage des fuseaux horaires"
 
 #: src/System/Requirement/DbTimezones.php:61
 msgid "Access to timezone database (mysql) is not allowed."
@@ -22815,7 +23124,8 @@ msgstr "Active l'installation des plugins à partir du Marketplace."
 #: src/DeviceBattery.php:40
 msgid "Battery"
 msgid_plural "Batteries"
-msgstr[0] "Batteries"
+msgstr[0] "Batterie"
+msgstr[1] "Batteries"
 
 #: src/DeviceBattery.php:58 src/DeviceBattery.php:119
 msgid "mWh"
@@ -22843,17 +23153,20 @@ msgstr "Nouvelle relation"
 #: src/DeviceMemoryType.php:39
 msgid "Memory type"
 msgid_plural "Memory types"
-msgstr[0] "Types de mémoires"
+msgstr[0] "Type de mémoire"
+msgstr[1] "Types de mémoires"
 
 #: src/PeripheralType.php:39
 msgid "Devices type"
 msgid_plural "Devices types"
-msgstr[0] "Types de périphériques"
+msgstr[0] "Type de périphérique"
+msgstr[1] "Types de périphériques"
 
 #: src/DeviceCase.php:41
 msgid "Case"
 msgid_plural "Cases"
-msgstr[0] "Boîtiers"
+msgstr[0] "Boîtier"
+msgstr[1] "Boîtiers"
 
 #: src/DBmysql.php:403 src/DBmysql.php:1204 src/DBmysql.php:1325
 #: src/DBmysql.php:1435 src/DBmysql.php:1484
@@ -22865,12 +23178,14 @@ msgstr ""
 #: src/DevicePowerSupplyModel.php:42
 msgid "Device power supply model"
 msgid_plural "Device power supply models"
-msgstr[0] "Modèles d'alimentations"
+msgstr[0] "Modèle d'alimentation"
+msgstr[1] "Modèles d'alimentations"
 
 #: src/SoftwareLicense.php:62 src/Item_SoftwareLicense.php:87
 msgid "License"
 msgid_plural "Licenses"
-msgstr[0] "Licences"
+msgstr[0] "Licence"
+msgstr[1] "Licences"
 
 #: src/SoftwareLicense.php:90
 msgid "Please select a software for this license"
@@ -22932,7 +23247,8 @@ msgstr "Éléments affectés"
 #: src/PlanningExternalEvent.php:54
 msgid "External event"
 msgid_plural "External events"
-msgstr[0] "Évènements externes"
+msgstr[0] "Évènement externe"
+msgstr[1] "Évènements externes"
 
 #: src/PlanningExternalEvent.php:269
 msgid "Each guest will have a read-only copy of this event"
@@ -22993,12 +23309,14 @@ msgstr "Nombre d'éléments concernés"
 #: src/DeviceControlModel.php:42
 msgid "Device control model"
 msgid_plural "Device control models"
-msgstr[0] "Modèles de contrôleurs"
+msgstr[0] "Modèle de contrôleur"
+msgstr[1] "Modèles de contrôleurs"
 
 #: src/NetworkAlias.php:52
 msgid "Network alias"
 msgid_plural "Network aliases"
 msgstr[0] "Alias réseau"
+msgstr[1] "Alias réseau"
 
 #: src/NetworkAlias.php:293
 msgid "Add a network alias"
@@ -23007,7 +23325,8 @@ msgstr "Ajouter un alias réseau"
 #: src/Lockedfield.php:49
 msgid "Locked field"
 msgid_plural "Locked fields"
-msgstr[0] "Champs verrouillés"
+msgstr[0] "Champ verrouillé"
+msgstr[1] "Champs verrouillés"
 
 #: src/Lockedfield.php:62
 msgid "Field name"
@@ -23041,7 +23360,8 @@ msgstr "Action voulue"
 #: src/DevicePowerSupply.php:41
 msgid "Power supply"
 msgid_plural "Power supplies"
-msgstr[0] "Alimentations"
+msgstr[0] "Alimentation"
+msgstr[1] "Alimentations"
 
 #: src/DevicePowerSupply.php:51 src/DevicePowerSupply.php:71
 msgid "ATX"
@@ -24101,12 +24421,12 @@ msgstr "Décrivez votre problème"
 #: templates/layout/parts/context_links.html.twig:58
 #: templates/layout/parts/context_links.html.twig:60
 msgid "Lists"
-msgstr ""
+msgstr "Listes"
 
 #: templates/layout/parts/context_links.html.twig:83
 #: templates/layout/parts/context_links.html.twig:85
 msgid "Global GANTT"
-msgstr ""
+msgstr "GANTT Global"
 
 #: templates/layout/parts/context_links.html.twig:90
 #: templates/layout/parts/context_links.html.twig:92
@@ -24123,11 +24443,11 @@ msgstr "Chercher dans le menu"
 
 #: templates/layout/parts/page_header.html.twig:63
 msgid "Collapse menu"
-msgstr ""
+msgstr "Réduire le menu"
 
 #: templates/layout/parts/saved_searches_list.html.twig:34
 msgid "You have not recorded any saved searches yet"
-msgstr ""
+msgstr "Vous n'avez pas encore enregistré de recherches sauvegardées"
 
 #: templates/layout/parts/saved_searches_list.html.twig:47
 msgid "Default search"
@@ -24135,23 +24455,23 @@ msgstr "Recherche par défaut"
 
 #: templates/layout/parts/saved_searches_list.html.twig:47
 msgid "mark as default"
-msgstr ""
+msgstr "Définir par défaut"
 
 #: templates/layout/parts/saved_searches_list.html.twig:53
 msgid "private"
-msgstr ""
+msgstr "Privée"
 
 #: templates/layout/parts/saved_searches.html.twig:48
 msgid "Manage all saved searches"
-msgstr ""
+msgstr "Gérer toutes les recherches sauvegardées"
 
 #: templates/layout/parts/saved_searches.html.twig:53
 msgid "Pin this panel for the current page"
-msgstr ""
+msgstr "Épingler ce panneau pour cette page"
 
 #: templates/layout/parts/saved_searches.html.twig:58
 msgid "Close the panel"
-msgstr ""
+msgstr "Fermer le panneau"
 
 #: templates/layout/parts/saved_searches.html.twig:93
 msgid "Filter list"
@@ -24164,15 +24484,15 @@ msgstr "Profils"
 #: templates/layout/parts/profile_selector.html.twig:76
 #, php-format
 msgid "Click on the %s icon to see the entity and its sub-entities"
-msgstr ""
+msgstr "Cliquez sur l'icône %s pour voir l'entité et ses sous-entités"
 
 #: templates/layout/parts/profile_selector.html.twig:83
 msgid "Search entity"
-msgstr ""
+msgstr "Chercher une entité"
 
 #: templates/layout/parts/profile_selector.html.twig:89
 msgid "Clear search"
-msgstr ""
+msgstr "Effacer la recherche"
 
 #: templates/layout/parts/profile_selector.html.twig:93
 msgid "Select all"
@@ -24180,7 +24500,7 @@ msgstr "Sélectionner tout"
 
 #: templates/layout/parts/profile_selector.html.twig:152
 msgid "No entity found"
-msgstr ""
+msgstr "Aucune entité trouvée"
 
 #: templates/layout/parts/page_footer.html.twig:39
 msgid "Back to top of the page"
@@ -24188,12 +24508,12 @@ msgstr "Retour en haut de page"
 
 #: templates/layout/parts/page_footer.html.twig:40
 msgid "Top of the page"
-msgstr ""
+msgstr "Retour en haut de page"
 
 #: templates/layout/parts/global_search_form.html.twig:35
 #: templates/layout/parts/global_search_form.html.twig:37
 msgid "Search…"
-msgstr ""
+msgstr "Rechercher"
 
 #: templates/layout/parts/user_header.html.twig:37
 #: templates/layout/parts/user_header.html.twig:38
