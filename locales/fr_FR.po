@@ -15,6 +15,7 @@
 # Johan Cwiklinski <jcwiklinski@teclib.com>, 2021
 # Cédric Anne, 2021
 # CupidSG, 2021
+# alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
 # Legastelois François <flegastelois@teclib.com>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
 # 
@@ -578,7 +579,7 @@ msgstr "%1$s : %2$s"
 #: templates/generic_show_form.html.twig:248
 msgid "Email"
 msgid_plural "Emails"
-msgstr[0] "Courriel"
+msgstr[0] "Adresse de messagerie"
 msgstr[1] "Adresses de messagerie"
 
 #: ajax/switchdebug.php:47

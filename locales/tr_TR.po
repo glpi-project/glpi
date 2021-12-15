@@ -147,7 +147,7 @@ msgstr "Alt birimler"
 
 #: ajax/private_public.php:73
 msgid "Set personal"
-msgstr "Kişisel yapın"
+msgstr "Kişisel yap"
 
 #: ajax/timeline.php:118 ajax/viewsubitem.php:58 src/Html.php:584
 #: src/Html.php:586 src/Html.php:588 src/Html.php:890 src/Html.php:892
@@ -802,7 +802,7 @@ msgstr "Kopyala"
 #: ajax/dropdownConnectNetworkPort.php:130
 #, php-format
 msgid "%1$s - The port %2$s"
-msgstr "%1$s - Bağlantı noktası %2$s"
+msgstr "%1$s -  %2$s kapısı"
 
 #. TRANS: %1$s is a string (device name - port name...), %2$s is network
 #. outlet name
@@ -1926,7 +1926,7 @@ msgstr "Destek kaydınız alındı. Üzerinde çalışılıyor."
 #: src/ITILCategory.php:476 src/Console/System/CheckRequirementsCommand.php:79
 #: js/glpi_dialog.js:75 templates/install/choose_language.html.twig:39
 msgid "OK"
-msgstr "<Tamam"
+msgstr "Tamam"
 
 #: front/tracking.injector.php:83
 msgid "Thank you for using our automatic helpdesk system."
@@ -1952,7 +1952,7 @@ msgstr "Toplu değişiklik"
 
 #: front/massiveaction.php:67 src/NotImportedEmail.php:248
 msgid "Failed operation"
-msgstr "İşlem başarısız"
+msgstr "İşlem tamamlanamadı"
 
 #: front/massiveaction.php:70
 msgid "Operation performed partially successful"
@@ -1961,7 +1961,7 @@ msgstr "Yürütülen işlem kısmen başarılı oldu"
 #: front/massiveaction.php:73 front/transfer.action.php:49
 #: front/transfer.action.php:56
 msgid "Operation successful"
-msgstr "İşlem başarılı"
+msgstr "İşlem tamamlandı"
 
 #: front/massiveaction.php:78
 #, php-format
@@ -2172,7 +2172,7 @@ msgstr[1] "Model"
 #: front/ipnetwork_vlan.form.php:55 front/networkport_vlan.form.php:55
 #, php-format
 msgid "%s associates a VLAN to a network port"
-msgstr "%s bir sanal ağı bir Bağlantı noktası ile ilişkilendirdi"
+msgstr "%s bir sanal yerel ağı bir kapı ile ilişkilendirdi"
 
 #: front/login.php:94
 msgid "Log in again"
@@ -2203,7 +2203,7 @@ msgstr "Ağ topolojisini yeniden oluştur"
 
 #: front/migrationcleaner.php:72
 msgid "Clean the network port migration errors"
-msgstr "Bağlantı noktası aktarma hatalarını temizle"
+msgstr "Kapı aktarma hatalarını temizle"
 
 #: front/rule.php:47
 msgid "Rule type"
@@ -2285,7 +2285,7 @@ msgstr "%s kopyala"
 
 #: front/dashboard_helpdesk.php:50
 msgid "Helpdesk Dashboard"
-msgstr "Destek Merkezi Panosu"
+msgstr "Destek merkezi panosu"
 
 #: front/knowbaseitem_comment.form.php:65
 #, php-format
@@ -2349,7 +2349,7 @@ msgstr "%s bir uyarıyı güncelledi"
 
 #: front/dashboard_assets.php:50
 msgid "Assets Dashboard"
-msgstr "Varlıklar Panosu"
+msgstr "Varlıklar panosu"
 
 #: front/find_num.php:73
 msgid "Search the ID of your hardware"
@@ -2653,15 +2653,15 @@ msgstr "%s destek kayıtları arasındaki bağlantıyı sildi"
 #: front/networkportmigration.form.php:77
 #, php-format
 msgid "%s deletes several network ports"
-msgstr "%s birkaç Bağlantı noktasını sildi"
+msgstr "%s birkaç ağ kapısını sildi"
 
 #: front/networkportmigration.form.php:95
 msgid "Cannot change a migration network port to an unknown one"
-msgstr "Aktarılan bir Bağlantı noktası bilinmeyen biri ile değiştirilemez"
+msgstr "Aktarılan bir kapı bilinmeyen biri ile değiştirilemez"
 
 #: front/networkportmigration.form.php:98
 msgid "Network port is not available..."
-msgstr "Bağlantı noktası kullanılamıyor..."
+msgstr "Kapı kullanılamıyor..."
 
 #: front/helpdesk.public.php:97 src/Html.php:1828
 #: templates/layout/parts/page_header_empty.html.twig:37
@@ -2670,7 +2670,7 @@ msgstr "Bağlantı noktası kullanılamıyor..."
 #: templates/layout/parts/breadcrumbs.html.twig:34
 #: templates/layout/parts/breadcrumbs.html.twig:36
 msgid "Home"
-msgstr "Ana Sayfa"
+msgstr "Açılış"
 
 #: front/helpdesk.public.php:104 src/Central.php:453
 #, php-format
@@ -3541,7 +3541,7 @@ msgstr "Sunucu"
 
 #: src/AuthLDAP.php:424
 msgid "Port (default=389)"
-msgstr "Kapı numarası (varsayılan=389)"
+msgstr "Kapı (varsayılan=389)"
 
 #: src/AuthLDAP.php:428 src/AuthLDAP.php:1030
 msgid "Connection filter"
@@ -3832,8 +3832,8 @@ msgstr "Birimler için arama süzgeci"
 #: templates/pages/assets/monitor.html.twig:46
 msgid "Port"
 msgid_plural "Ports"
-msgstr[0] "Bağlantı noktası"
-msgstr[1] "Bağlantı noktaları"
+msgstr[0] "Kapı"
+msgstr[1] "Kapılar"
 
 #: src/AuthLDAP.php:1181 src/Cluster.php:118
 #: src/NotificationTargetProject.php:629 src/NotificationTargetProject.php:650
@@ -3889,7 +3889,7 @@ msgstr "Eşitle"
 #: src/RuleCollection.php:1087 templates/pages/admin/rules_list.html.twig:35
 msgctxt "button"
 msgid "Import"
-msgstr "İçe Aktar"
+msgstr "İçe aktar"
 
 #: src/AuthLDAP.php:1693 src/AuthLDAP.php:1752
 msgid "Last update in the LDAP directory"
@@ -3971,7 +3971,7 @@ msgstr "İstediğiniz birimi seçin"
 #: src/ContentTemplates/Parameters/UserParameters.php:73 src/Config.php:2129
 #: templates/pages/login.html.twig:45
 msgid "Login"
-msgstr "Kullanıcı Adı"
+msgstr "Kullanıcı adı"
 
 #: src/AuthLDAP.php:3724
 msgid "Search criteria for users"
@@ -4540,7 +4540,7 @@ msgstr "Bu seçenek yalnız temizlenmeye hazır uygulama eklerini etkiler"
 #: src/IPNetwork_Vlan.php:131 src/NetworkPort_Vlan.php:132
 #: src/NetworkPort.php:1388
 msgid "Associate a VLAN"
-msgstr "Sanal ağ ile ilişkilendir"
+msgstr "Sanal yerel ağ ile ilişkilendir"
 
 #: src/IPNetwork_Vlan.php:136 src/NetworkPort_Vlan.php:140
 #: src/NetworkPort_Vlan.php:374 src/Certificate_Item.php:433
@@ -4553,7 +4553,7 @@ msgstr "İlişkilendir"
 #: src/IPNetwork_Vlan.php:166 src/NetworkPort_Vlan.php:171 src/Vlan.php:54
 #: src/Vlan.php:82 src/Vlan.php:175
 msgid "ID TAG"
-msgstr "Kimlik Etiketi (ID)"
+msgstr "Kimlik etiketi (ID)"
 
 #: src/RuleImportEntityCollection.php:51 src/RuleImportEntity.php:47
 msgid "Rules for assigning an item to an entity"
@@ -4600,17 +4600,17 @@ msgstr "Birleştir"
 
 #: src/NetworkPortFiberchannel.php:45
 msgid "Fiber channel port"
-msgstr "Fiber kanal bağlantı noktası"
+msgstr "Fiber kanal kapısı"
 
 #: src/NetworkPortFiberchannel.php:97 src/NetworkPortFiberchannel.php:153
 #: src/NetworkPortFiberchannel.php:224
 msgid "World Wide Name"
-msgstr "Dünya Çapında Ad"
+msgstr "Dünya çapında ad"
 
 #: src/NetworkPortFiberchannel.php:100 src/NetworkPortFiberchannel.php:152
 #: src/NetworkPortFiberchannel.php:232
 msgid "Fiber channel port speed"
-msgstr "Fiber kanal bağlantı noktası hızı"
+msgstr "Fiber kanal kapı hızı"
 
 #: src/NetworkPortFiberchannel.php:154 src/Socket.php:807 src/Socket.php:838
 #: src/NetworkPortInstantiation.php:665 src/NetworkPortEthernet.php:155
@@ -4629,7 +4629,7 @@ msgstr "MAC"
 
 #: src/NetworkPortFiberchannel.php:241
 msgid "Fiber port type"
-msgstr "Fiber bağlantı türü"
+msgstr "Fiber kapı türü"
 
 #. TRANS: %d is the speed
 #: src/NetworkPortFiberchannel.php:263 src/NetworkPortFiberchannel.php:310
@@ -4996,7 +4996,7 @@ msgstr[1] "Yönetilmeyen aygıtlar"
 
 #: src/Unmanaged.php:106
 msgid "Serial Number"
-msgstr "Seri Numarası"
+msgstr "Seri numarası"
 
 #: src/Unmanaged.php:127 templates/pages/assets/unmanaged.html.twig:41
 msgid "Network hub"
@@ -5904,7 +5904,7 @@ msgstr[1] "Varlıklar"
 
 #: src/NetworkPortLocal.php:44
 msgid "Local loop port"
-msgstr "Yerel çevrim bağlantı noktası"
+msgstr "Yerel çevrim kapısı"
 
 #: src/ITILFollowupTemplate.php:47
 #: templates/components/itilobject/timeline/form_followup.html.twig:110
@@ -6196,7 +6196,7 @@ msgstr[1] "Ağlar"
 #: src/Computer.php:542 src/SoftwareLicense.php:495
 #: templates/components/form/header.html.twig:69
 msgid "Template name"
-msgstr "Kalıp Adı"
+msgstr "Kalıp adı"
 
 #: src/Printer.php:625 src/Monitor.php:456 src/Peripheral.php:377
 #: src/Dropdown.php:2237 src/Dropdown.php:2261 src/Dropdown.php:2272
@@ -7411,7 +7411,7 @@ msgstr "Sonraki yükseltme düzeyi"
 #: src/RuleTicket.php:668 src/RuleTicket.php:679 src/RuleTicket.php:832
 #: src/RuleTicket.php:843 src/SLA.php:53
 msgid "SLA"
-msgstr "Hizmet Düzeyi Sözleşmesi"
+msgstr "Hizmet düzeyi sözleşmesi"
 
 #: src/Ticket.php:3398 src/Ticket.php:3406 src/Ticket.php:3420
 #: src/Ticket.php:3433 src/NotificationTargetTicket.php:604
@@ -8664,7 +8664,7 @@ msgstr ""
 #: src/Inventory/Conf.php:119 src/NetworkPortType.php:57
 #: src/NetworkPortType.php:84
 msgid "Import"
-msgstr "İçe Aktar"
+msgstr "İçe aktar"
 
 #: src/Inventory/Conf.php:171
 msgid "No file to import!"
@@ -8688,7 +8688,7 @@ msgstr "Dosyadan içe aktar"
 
 #: src/Inventory/Conf.php:297
 msgid "Import options"
-msgstr "Seçenekleri İçe Aktar"
+msgstr "Seçenekleri içe aktar"
 
 #: src/Inventory/Conf.php:332
 msgid "Default status"
@@ -8784,8 +8784,8 @@ msgstr "Okuma"
 #: templates/pages/assets/socket.html.twig:80
 msgid "Network port"
 msgid_plural "Network ports"
-msgstr[0] "Ağ bağlantı noktası"
-msgstr[1] "Ağ bağlantı noktaları"
+msgstr[0] "Ağ kapısı"
+msgstr[1] "Ağ kapıları"
 
 #: src/NetworkPort.php:524
 msgid "Global displays"
@@ -8801,11 +8801,11 @@ msgstr "Genel ayarlar"
 
 #: src/NetworkPort.php:645
 msgid "Network port type to be added"
-msgstr "Eklenecek ağ bağlantı noktası türü"
+msgstr "Eklenecek ağ kapısı türü"
 
 #: src/NetworkPort.php:662
 msgid "Add several ports"
-msgstr "Bir kaç bağlantı noktası ekle"
+msgstr "Bir kaç kapı ekle"
 
 #: src/NetworkPort.php:678 src/NetworkPort.php:679 src/NetworkPort.php:689
 #: templates/components/search/controls.html.twig:77
@@ -8831,7 +8831,7 @@ msgstr "Diğer aygıtlar"
 
 #: src/NetworkPort.php:730
 msgid "Aggregated port"
-msgstr "Birleştirilmiş bağlantı noktası"
+msgstr "Birleştirilmiş kapı"
 
 #: src/NetworkPort.php:736 src/NetworkPort.php:810
 #, php-format
@@ -8840,7 +8840,7 @@ msgstr "%s %s"
 
 #: src/NetworkPort.php:762
 msgid "No network port found"
-msgstr "Herhangi bir ağ bağlantı noktası bulunamadı"
+msgstr "Herhangi bir ağ kapısı bulunamadı"
 
 #: src/NetworkPort.php:812
 msgid "Management port"
@@ -8900,7 +8900,7 @@ msgstr "Tam"
 #: src/NetworkPort.php:1005
 #, php-format
 msgid "%s linked VLANs"
-msgstr "%s bağlantılı VLAN"
+msgstr "%s bağlantılı sanal yerel ağ"
 
 #: src/NetworkPort.php:1080
 #, php-format
@@ -8938,7 +8938,7 @@ msgstr "Ağ"
 
 #: src/NetworkPort.php:1389
 msgid "Dissociate a VLAN"
-msgstr "Sanal ağdan ayır"
+msgstr "Sanal yerel ağdan ayır"
 
 #: src/NetworkPort.php:1489
 msgid "MTU"
@@ -9502,7 +9502,7 @@ msgstr "İkincil veritabanı eşitlenmemiş. Fark:"
 
 #: src/NetworkPortWifi.php:41
 msgid "Wifi port"
-msgstr "Wi-Fi bağlantı noktası"
+msgstr "Wi-Fi kapısı"
 
 #: src/NetworkPortWifi.php:63 src/NetworkPortWifi.php:102
 #: src/NetworkPortWifi.php:161
@@ -9714,7 +9714,7 @@ msgstr[1] "Çevre birimi modelleri"
 
 #: src/NetworkPortMigration.php:49
 msgid "Network port migration"
-msgstr "Ağ bağlantı noktası aktarımı"
+msgstr "Ağ kapısı aktarımı"
 
 #: src/NetworkPortMigration.php:111
 msgid "Undefined interface"
@@ -9734,12 +9734,12 @@ msgstr "IP adresi geçersiz"
 
 #: src/NetworkPortMigration.php:202 src/NetworkPortMigration.php:341
 msgid "Transform this network port to"
-msgstr "Bu ağ bağlantı noktası şuna dönüştürülsün"
+msgstr "Bu ağ kapısı şuna dönüştürülsün"
 
 #: src/NetworkPortMigration.php:219
 #, php-format
 msgid "Network port information conflicting with %s"
-msgstr "Ağ bağlantı noktası bilgileri %s ile çakışıyor"
+msgstr "Ağ kapısı bilgileri %s ile çakışıyor"
 
 #: src/NetworkPortMigration.php:222
 msgid "Invalid address or netmask"
@@ -9768,11 +9768,11 @@ msgstr "Ağ ekle"
 
 #: src/NetworkPortMigration.php:257
 msgid "Add a correct IP to the network port"
-msgstr "Ağ bağlantı noktasına doğru bir IP adresi ekle"
+msgstr "Ağ kapısına doğru IP adresini ekle"
 
 #: src/NetworkPortMigration.php:259
 msgid "Unknown network port"
-msgstr "Ağ bağlantı noktası bilinmiyor"
+msgstr "Ağ kapısı bilinmiyor"
 
 #: src/NetworkPortMigration.php:266
 msgid "I don't understand why this migration error is not deleted."
@@ -9788,7 +9788,7 @@ msgstr "Tüm etkinliklerden"
 
 #: src/NetworkPortMigration.php:290
 msgid "Original network port information"
-msgstr "Özgün bağlantı noktası bilgileri"
+msgstr "Özgün kapı bilgileri"
 
 #: src/NetworkPortMigration.php:302 src/NetworkPortMigration.php:453
 msgid "Network address"
@@ -9941,7 +9941,7 @@ msgstr "Sözlük kurallarını yeniden işle"
 #: templates/pages/admin/rules_list.html.twig:39
 msgctxt "button"
 msgid "Export"
-msgstr "Dışa Aktar"
+msgstr "Dışa aktar"
 
 #: src/RuleCollection.php:1084
 msgid "Import rules from a XML file"
@@ -11350,7 +11350,7 @@ msgstr "Gelen e-posta kutusu (isteğe bağlı, genellikle INBOX)"
 #. TRANS: for mail connection system
 #: src/Toolbox.php:1922
 msgid "Port (optional)"
-msgstr "Kapı numarası (isteğe bağlı)"
+msgstr "Kapı (isteğe bağlı)"
 
 #. TRANS: IMAP mail server protocol
 #: src/Toolbox.php:1998
@@ -11697,16 +11697,16 @@ msgstr "Belirtiler"
 
 #: src/NetworkPortAlias.php:41
 msgid "Alias port"
-msgstr "Diğer bağlantı noktası"
+msgstr "Diğer kapı"
 
 #: src/NetworkPortAlias.php:94 src/NetworkPortInstantiation.php:745
 #: src/NetworkPortAggregate.php:96
 msgid "Origin port"
-msgstr "Kaynak bağlantı noktası"
+msgstr "Kaynak kapı"
 
 #: src/NetworkPortMetrics.php:54
 msgid "Network port metrics"
-msgstr "Ağ bağlantı noktası ölçümleri"
+msgstr "Ağ kapı ölçümleri"
 
 #: src/NetworkPortMetrics.php:171
 msgid "Input/Output bytes"
@@ -12359,7 +12359,7 @@ msgstr "Öge adı"
 
 #: src/RuleImportAsset.php:132
 msgid "Port description"
-msgstr "Bağlantı noktası açıklaması"
+msgstr "Kapı açıklaması"
 
 #: src/RuleImportAsset.php:144
 msgid "Device_id"
@@ -12385,7 +12385,7 @@ msgstr "Belirtilen birimde aransın"
 
 #: src/RuleImportAsset.php:189
 msgid "Restrict criteria to same network port"
-msgstr "Ölçüt aynı ağ bağlantı noktası ile kısıtlansın"
+msgstr "Ölçüt aynı ağ kapısı ile kısıtlansın"
 
 #: src/RuleImportAsset.php:194
 msgid "Only criteria of this rule in data"
@@ -13965,7 +13965,7 @@ msgstr "Aygıt adı"
 
 #: src/Report.php:471
 msgid "Port Number"
-msgstr "Kapı Numarası"
+msgstr "Kapı numarası"
 
 #: src/ComputerModel.php:39 src/Rule.php:300
 msgid "Computer model"
@@ -14523,11 +14523,11 @@ msgstr "Karşıt bağlantı"
 
 #: src/NetworkPortInstantiation.php:277
 msgid "Local network port"
-msgstr "Yerel ağ kapı numarası"
+msgstr "Yerel ağ kapısı"
 
 #: src/NetworkPortInstantiation.php:357
 msgid "this port"
-msgstr "bu kapı numarası"
+msgstr "bu kapı"
 
 #: src/NetworkPortInstantiation.php:625
 msgid "No network card available"
@@ -14999,17 +14999,17 @@ msgstr "Değişiklikleriniz yapılıyor"
 
 #: src/NetworkPortEthernet.php:42
 msgid "Ethernet port"
-msgstr "Ethernet bağlantı noktası"
+msgstr "Ethernet kapısı"
 
 #: src/NetworkPortEthernet.php:95 src/NetworkPortEthernet.php:153
 #: src/NetworkPortEthernet.php:228
 msgid "Ethernet port type"
-msgstr "Ethernet bağlantı noktası türü"
+msgstr "Ethernet kapı türü"
 
 #: src/NetworkPortEthernet.php:102 src/NetworkPortEthernet.php:152
 #: src/NetworkPortEthernet.php:237
 msgid "Ethernet port speed"
-msgstr "Ethernet bağlantı noktası hızı"
+msgstr "Ethernet kapı hızı"
 
 #: src/NetworkPortEthernet.php:257
 msgid "Twisted pair (RJ-45)"
@@ -16500,7 +16500,7 @@ msgstr "Zaman"
 
 #: src/NetworkPortAggregate.php:42
 msgid "Aggregation port"
-msgstr "Birleştirilmiş bağlantı noktası "
+msgstr "Birleştirilmiş kapı "
 
 #: src/Preference.php:40 src/Config.php:2468 src/Impact.php:371
 #: src/Impact.php:1058 src/Impact.php:1117
@@ -16882,7 +16882,7 @@ msgstr "Bu kutuya yeni öge ekle..."
 #: src/Item_Enclosure.php:314 src/Item_Cluster.php:292 src/Item_Rack.php:915
 #: src/Appliance_Item.php:397 src/Appliance_Item_Relation.php:114
 msgid "An item type is required"
-msgstr "Öge türünn belirtilmesi zorunludur"
+msgstr "Öge türünün belirtilmesi zorunludur"
 
 #: src/Item_Enclosure.php:320 src/Item_Cluster.php:298 src/Item_Rack.php:921
 #: src/Appliance_Item.php:403 src/Appliance_Item_Relation.php:120
@@ -17102,7 +17102,7 @@ msgstr "Ögenin ekibindeki bir kişi"
 
 #: src/NetworkPortConnectionLog.php:53
 msgid "Port connection history"
-msgstr "Bağlantı noktası bağlantı geçmişi"
+msgstr "Kapı bağlantı geçmişi"
 
 #: src/NetworkPortConnectionLog.php:116
 msgid "Connected item"
@@ -22208,7 +22208,7 @@ msgstr "Veritabanı parolası (seçenek parola olmadan yazıldıysa sorulur)"
 
 #: src/Console/Database/AbstractConfigureCommand.php:133
 msgid "Database port"
-msgstr "Veritabanı kapı numarası"
+msgstr "Veritabanı kapısı"
 
 #: src/Console/Database/AbstractConfigureCommand.php:140
 #: src/Console/Database/AbstractConfigureCommand.php:439
@@ -23089,7 +23089,7 @@ msgstr "Geçerli"
 #: src/SoftwareLicense.php:440
 #: templates/pages/management/softwarelicense.html.twig:97
 msgid "Allow Over-Quota"
-msgstr "Kota Aşılabilsin"
+msgstr "Kota aşılabilsin"
 
 #: src/SoftwareLicense.php:467
 msgid "Technician in charge of the license"
@@ -23578,7 +23578,7 @@ msgstr "Sonuçlar"
 
 #: templates/install/update.html.twig:65 templates/install/step8.html.twig:54
 msgid "Use GLPI"
-msgstr "GLPI Kullanmaya Geç"
+msgstr "GLPI kullanmaya geç"
 
 #: templates/install/step1.html.twig:32
 msgid ""
@@ -23707,7 +23707,7 @@ msgstr "Cumartesi kullanılsın"
 
 #: templates/components/form/support_hours.html.twig:46
 msgid "Sundays and holidays"
-msgstr "Pazar ve Tatiller"
+msgstr "Pazar ve tatiller"
 
 #: templates/components/form/support_hours.html.twig:47
 msgid "Use Sunday"
@@ -23786,13 +23786,13 @@ msgstr "Panoların genişliğini değiştir"
 #: templates/components/itilobject/timeline/form_followup.html.twig:57
 #, php-format
 msgid "Merged from Ticket %1$s"
-msgstr "%1$s Destek Kaydından Birleştirildi"
+msgstr "%1$s destek kaydından birleştirildi"
 
 #: templates/components/itilobject/timeline/form_task.html.twig:118
 #: templates/components/itilobject/timeline/form_followup.html.twig:69
 #, php-format
 msgid "Promoted to Ticket %1$s"
-msgstr "%1$s Destek Kaydına Yükseltildi"
+msgstr "%1$s destek kaydına yükseltildi"
 
 #: templates/components/itilobject/timeline/form_task.html.twig:250
 #: templates/components/itilobject/timeline/form_followup.html.twig:159
@@ -23903,7 +23903,7 @@ msgstr "%s zaten yükseltilmiş"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig:84
 msgid "Promote to Ticket"
-msgstr "Destek Kaydına Yükselt"
+msgstr "Destek kaydına yükselt"
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig:83
 msgid "Timeline filter"
@@ -24070,7 +24070,7 @@ msgstr ""
 
 #: templates/maintenance.html.twig:59
 msgid "Take me home"
-msgstr "Girişe git"
+msgstr "Açılışa git"
 
 #: templates/pages/tools/project/gantt.html.twig:47
 msgid "Zoom"
@@ -24121,7 +24121,7 @@ msgstr "Geçerli"
 #: templates/pages/management/softwarelicense.html.twig:83
 msgctxt "adjective"
 msgid "Valid (Over Quota)"
-msgstr "Geçerli (Kota Aşılmış)"
+msgstr "Geçerli (kota aşılmış)"
 
 #: templates/pages/management/contract.html.twig:93
 msgid "Contract renewal period"
