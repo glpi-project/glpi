@@ -38,7 +38,7 @@
       <h4 class="card-title ps-4">
          {{ __('Inventory information') }}
       </h4>
-      {% set inventory_filename = item is usingtrait('Glpi\\Features\\Inventoriable') ? item.getInventoryFileName() : null %}
+      {% set inventory_filename = item is usingtrait('Glpi\\Features\\Inventoriable') ? item.getInventoryFileName(false) : null %}
       {% if inventory_filename is not null %}
          <a href="{{ path('front/document.send.php?file=_inventory/' ~ inventory_filename) }}"
             class="btn btn-sm btn-secondary ms-auto" target="_blank"
