@@ -473,7 +473,7 @@ class Agent extends CommonDBTM
             ]);
             foreach ($ports_iterator as $row) {
                 if (!in_array($row['name'], $adresses)) {
-                    if ($row['version'] == 4){
+                    if ($row['version'] == 4) {
                         $adresses[] = $row['name'];
                     } else {
                         //surrounds IPV6 with '[' and ']'
