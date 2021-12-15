@@ -152,8 +152,8 @@ h3 {
    color: 000;
 }
 
-.form-control:focus {
-   color: rgb(32, 32, 32);
+.form-control {
+   color: rgb(32, 32, 32) !important;
 }
 
 .popover.validation-messages {
