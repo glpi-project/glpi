@@ -92,7 +92,7 @@ trait MapGeolocation
             map_elt.addControl(osmGeocoder);
             _autoSearch();
 
-            public function onMapClick(e) {
+            function onMapClick(e) {
                var popup = L.popup();
                popup
                   .setLatLng(e.latlng)
