@@ -41,15 +41,15 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 
-if (isset($_POST['action']) && isset($_POST['id'])) {
+if (isset($_GET['action']) && isset($_GET['id'])) {
     $agent = new Agent();
-    if (!$agent->getFromDB($_POST['id'])) {
-        Response::sendError(404, 'Unable to load agent #' . $_POST['id']);
+    if (!$agent->getFromDB($_GET['id'])) {
+        Response::sendError(404, 'Unable to load agent #' . $_GET['id']);
         return;
     };
     $answer = [];
 
-    switch ($_POST['action']) {
+    switch ($_GET['action']) {
         case Agent::ACTION_INVENTORY:
             $answer = $agent->requestInventory();
             break;
