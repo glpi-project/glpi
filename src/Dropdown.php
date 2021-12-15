@@ -76,6 +76,7 @@ class Dropdown
     *                                       the dropdown
     *    - diplay_dc_position   :  Display datacenter position  ? (default false)
     *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
+    *    - readonly             : boolean / return self::getDropdownValue if true (default false)
     *
     * @return boolean : false if error and random id if OK
     *
@@ -118,6 +119,7 @@ class Dropdown
         $params['url']                  = $CFG_GLPI['root_doc'] . "/ajax/getDropdownValue.php";
         $params['display_dc_position']  = false;
         $params['hide_if_no_elements']  = false;
+        $params['readonly']             = false;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -149,6 +151,10 @@ class Dropdown
                 $name    = $tmpname["name"];
                 $comment = $tmpname["comment"];
             }
+        }
+
+        if ($params['readonly']) {
+            return self::getDropdownName($table, $params['value']);
         }
 
        // Manage entity_sons

@@ -4249,6 +4249,7 @@ JAVASCRIPT;
     *                         the dropdown (default /ajax/getDropdownUsers.php)
     *    - inactive_deleted : retreive also inactive or deleted users
     *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
+    *    - readonly         : boolean / return getUserName is true (default false)
     *
     * @return integer|string Random value if displayed, string otherwise
     */
@@ -4283,6 +4284,7 @@ JAVASCRIPT;
          'with_no_right'       => 0,
          'toadd'               => [],
          'hide_if_no_elements' => false,
+         'readonly'            => false,
         ];
 
         if (is_array($options) && count($options)) {
@@ -4315,6 +4317,10 @@ JAVASCRIPT;
 
        // Make a select box with all glpi users
         $user = getUserName($p['value'], 2);
+
+        if ($p['readonly']) {
+            return $user["name"];
+        }
 
         $view_users = self::canView();
 
