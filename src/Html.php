@@ -5251,16 +5251,20 @@ JAVASCRIPT
     *
     * @since 9.4
     *
-    * @param string  $url     File to include (relative to GLPI_ROOT)
-    * @param array   $options Array of HTML attributes
+    * @param string  $url                   File to include (relative to GLPI_ROOT)
+    * @param array   $options               Array of HTML attributes
+    * @param bool    $force_compiled_file   Force usage of compiled file, even in debug mode (usefull for install/update process)
     *
     * @return string CSS link tag
    **/
-    public static function scss($url, $options = [])
+    public static function scss($url, $options = [], bool $force_compiled_file = false)
     {
         $prod_file = self::getScssCompilePath($url);
 
-        if (file_exists($prod_file) && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE) {
+        if (
+            file_exists($prod_file)
+            && ($force_compiled_file || $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE)
+        ) {
             $url = self::getPrefixedUrl(str_replace(GLPI_ROOT, '', $prod_file));
         } else {
             $file = $url;

@@ -76,7 +76,7 @@ function header_html($etape)
 
     // CSS
     echo Html::css('public/lib/base.css');
-    echo Html::scss("css/install");
+    echo Html::scss("css/install", [], true);
     echo "</head>";
     echo "<body>";
     echo "<div id='principal'>";
