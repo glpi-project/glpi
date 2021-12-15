@@ -8,8 +8,8 @@
 # Emil Yakimov <yakimov@engineer.bg>, 2021
 # DOMBRE Julien <moyo@indepnet.net>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
-# Zornitsa Koleva <zkoleva_@abv.bg>, 2021
 # Nikolay Zaynelov <mravunko@yahoo.com>, 2021
+# Zornitsa Koleva <zkoleva_@abv.bg>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-14 12:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Nikolay Zaynelov <mravunko@yahoo.com>, 2021\n"
+"Last-Translator: Zornitsa Koleva <zkoleva_@abv.bg>, 2021\n"
 "Language-Team: Bulgarian (Bulgaria) (https://www.transifex.com/glpi/teams/1637/bg_BG/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3336,7 +3336,7 @@ msgstr "Изтриване завиниги и изтриване на устр�
 #: templates/components/infocom.html.twig:340
 msgctxt "button"
 msgid "Delete permanently"
-msgstr "Изтрии завинаги"
+msgstr "Окончателно изтриване"
 
 #: src/MassiveAction.php:547 templates/components/form/buttons.html.twig:73
 #: templates/components/itilobject/footer.html.twig:87
@@ -3364,7 +3364,7 @@ msgstr ""
 
 #: src/MassiveAction.php:602
 msgid "Amend comment"
-msgstr ""
+msgstr "Добавяне към Забележки"
 
 #: src/MassiveAction.php:607
 msgid "Add note"
@@ -3395,7 +3395,7 @@ msgstr[0] ""
 
 #: src/MassiveAction.php:1048
 msgid "Amendment to insert"
-msgstr ""
+msgstr "Текст за добавяне"
 
 #: src/MassiveAction.php:1054 src/Item_Devices.php:980
 #: src/Dashboard/Grid.php:1389 src/Profile.php:983 src/Profile.php:1767
@@ -5012,7 +5012,7 @@ msgstr "Г-м-д"
 
 #: src/PrinterLog.php:179
 msgid "Total pages"
-msgstr ""
+msgstr "Общо страници"
 
 #: src/PrinterLog.php:181
 msgid "Black & White pages"
@@ -5253,7 +5253,7 @@ msgstr "Включени устройства"
 
 #: src/Item_Ticket.php:1012
 msgid "Delete permanently"
-msgstr "Изтрии завинаги"
+msgstr "Окончателно изтриване"
 
 #: src/Item_Ticket.php:1149 src/Ticket.php:3303 src/Socket.php:348
 #: src/Item_Devices.php:175 src/Change.php:484 src/Cable.php:161
@@ -6826,7 +6826,8 @@ msgstr "Консуматива не е намерен"
 #: src/Holiday.php:46 src/Calendar_Holiday.php:199
 msgid "Close time"
 msgid_plural "Close times"
-msgstr[0] "Затворени периоди"
+msgstr[0] "Затворен период"
+msgstr[1] "Затворени периоди"
 
 #: src/Holiday.php:60 src/Holiday.php:89 src/Calendar_Holiday.php:145
 msgid "Recurrent"
@@ -8809,7 +8810,7 @@ msgstr ""
 #: src/NetworkPort.php:1005
 #, php-format
 msgid "%s linked VLANs"
-msgstr ""
+msgstr "%s свързани VLAN-и"
 
 #: src/NetworkPort.php:1080
 #, php-format
@@ -8966,7 +8967,7 @@ msgstr "Добавяне на контакта"
 
 #: src/Calendar_Holiday.php:114 src/Calendar.php:96
 msgid "Add a close time"
-msgstr "Добавяне на време на затваряне"
+msgstr "Добавяне на затворен период"
 
 #: src/Cache/CacheManager.php:549
 msgid "Memcached"
@@ -9299,14 +9300,14 @@ msgstr ""
 #: src/Itil_Project.php:49
 msgid "Link Project/Itil"
 msgid_plural "Links Project/Itil"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Връзк Проект/Itil"
+msgstr[1] "Връзки Проект/Itil"
 
 #: src/Itil_Project.php:88
 msgid "Itil item"
 msgid_plural "Itil items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Itil елемент"
+msgstr[1] "Itil елементи"
 
 #: src/Itil_Project.php:183 src/Change_Problem.php:165
 #: src/Change_Ticket.php:405
@@ -9594,8 +9595,8 @@ msgstr "Премахване на домейна при  влизане, кат�
 #: src/PeripheralModel.php:39 src/Rule.php:336
 msgid "Peripheral model"
 msgid_plural "Peripheral models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Модел периферия"
+msgstr[1] "Модели периферия"
 
 #: src/NetworkPortMigration.php:49
 msgid "Network port migration"
@@ -10282,7 +10283,7 @@ msgstr "Създаден от %1$s на %2$s"
 #: templates/components/itilobject/timeline/form_followup.html.twig:228
 #: templates/components/itilobject/timeline/form_validation.html.twig:164
 msgid "Confirm the final deletion?"
-msgstr ""
+msgstr "Потвърждавате ли окончателното изтриване?"
 
 #: src/SolutionTemplate.php:49 src/Profile.php:1820 src/RuleTicket.php:930
 #: templates/components/itilobject/timeline/form_solution.html.twig:140
@@ -13560,7 +13561,7 @@ msgstr "Обновяване на полето"
 #: src/Log.php:744
 #, php-format
 msgid "Change %1$s to %2$s"
-msgstr "Промени %1$s на %2$s"
+msgstr "Промяна от %1$s на %2$s"
 
 #: src/Log.php:1008
 msgid "Update a field"
@@ -13862,7 +13863,7 @@ msgstr "Връзки между типове касети и касети"
 
 #: src/Transfer.php:3884
 msgid "Links between consumable types and consumables"
-msgstr ""
+msgstr "Връзки между типове консумативи и консумативи"
 
 #: src/Transfer.php:3888
 msgid "Links between computers and volumes"
@@ -15854,7 +15855,7 @@ msgstr ""
 #: src/CommonDBTM.php:4184
 #, php-format
 msgid "Item successfully added but duplicate record on %s"
-msgstr ""
+msgstr "Елементът е добавен успешно, но дублиран запис на %s"
 
 #: src/CommonDBTM.php:4188
 msgid "Other item exist"
@@ -15928,7 +15929,8 @@ msgstr[0] "Типове фърмуер"
 #: src/Vlan.php:46
 msgid "VLAN"
 msgid_plural "VLANs"
-msgstr[0] "VLAN-подмрежи"
+msgstr[0] "VLAN"
+msgstr[1] "VLAN-и"
 
 #: src/Vlan.php:166
 msgid "Untagged"
@@ -16385,8 +16387,8 @@ msgstr "Импортиране на категория от инструмент
 #: src/ConsumableItemType.php:39
 msgid "Consumable type"
 msgid_plural "Consumable types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Тип консуматив"
+msgstr[1] "Типове консумативи"
 
 #: src/DatabaseInstance.php:66
 msgid "Database instance"
@@ -17180,7 +17182,8 @@ msgstr "Високоговорител"
 #: src/CalendarSegment.php:61
 msgid "Time range"
 msgid_plural "Time ranges"
-msgstr[0] "Времеви обхвати"
+msgstr[0] "Времеви диапазон"
+msgstr[1] "Времеви диапазони"
 
 #: src/CalendarSegment.php:79
 msgid "Can not add a range riding an existing period"
@@ -19071,7 +19074,7 @@ msgstr ""
 #: src/Calendar.php:95 src/Calendar.php:109 src/Domain.php:398
 msgctxt "button"
 msgid "Duplicate"
-msgstr ""
+msgstr "Дублиране"
 
 #: src/RuleDictionnaryPrinterCollection.php:122
 #: src/RuleDictionnarySoftwareCollection.php:164

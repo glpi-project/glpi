@@ -1597,7 +1597,7 @@ msgstr "betik, apache kullanıcısı olarak çalıştırılsın"
 #: front/projecttaskteam.form.php:55 front/projectteam.form.php:55
 #, php-format
 msgid "%s adds a team member"
-msgstr "%s bir takım üyesi ekledi"
+msgstr "%s bir ekip üyesi ekledi"
 
 #: front/plugin.php:50
 msgid "See the catalog of plugins"
@@ -3683,6 +3683,7 @@ msgstr "LDAP dizin kopyaları listesi"
 msgid "Replicate"
 msgid_plural "Replicates"
 msgstr[0] "Kopya"
+msgstr[1] "Kopyalar"
 
 #: src/AuthLDAP.php:684 src/AuthLDAP.php:825 src/AuthLDAP.php:4117
 #: src/RuleCollection.php:1654 src/AuthMail.php:238 src/AuthMail.php:352
@@ -3701,7 +3702,7 @@ msgstr "Gruplarda"
 
 #: src/AuthLDAP.php:742
 msgid "In users and groups"
-msgstr "Kullancı ve gruplarda"
+msgstr "Kullancılarda ve gruplarda"
 
 #: src/AuthLDAP.php:769
 msgid "Belonging to groups"
@@ -4044,7 +4045,8 @@ msgstr "TLS anahtar dosyasının yolu hatalı"
 #: src/SNMPCredential.php:47
 msgid "SNMP credential"
 msgid_plural "SNMP credentials"
-msgstr[0] "SNMP kimlik doğrulama bilgileri"
+msgstr[0] "SMTP kimlik doğrulama bilgisi"
+msgstr[1] "SNMP kimlik doğrulama bilgileri"
 
 #: src/SNMPCredential.php:58
 #: templates/components/form/snmpcredential.html.twig:56
@@ -4175,7 +4177,8 @@ msgstr "Devingen"
 #: src/CommonDBVisible.php:312
 msgid "Profile"
 msgid_plural "Profiles"
-msgstr[0] "Profiller"
+msgstr[0] "Profil"
+msgstr[1] "Profiller"
 
 #: src/Profile_User.php:1002 src/Profile_User.php:1010
 #: src/Profile_User.php:1015
@@ -4186,11 +4189,12 @@ msgstr "%1$s, %2$s"
 #: src/Profile_User.php:1066
 msgid "Authorization"
 msgid_plural "Authorizations"
-msgstr[0] "Yetkilendirmeler"
+msgstr[0] "Yetkilendirme"
+msgstr[1] "Yetkilendirmeler"
 
 #: src/OlaLevel_Ticket.php:44
 msgid "OLA level for Ticket"
-msgstr "Destek Kaydının İşletme Sözleşmesi Düzeyi"
+msgstr "Destek kaydının işletme sözleşmesi düzeyi"
 
 #: src/OlaLevel_Ticket.php:148
 msgid "Automatic actions of OLA"
@@ -4199,7 +4203,8 @@ msgstr "Otomatik işletme sözleşmesi işlemleri"
 #: src/NotImportedEmail.php:61
 msgid "Refused email"
 msgid_plural "Refused emails"
-msgstr[0] "Reddedilen e-postalar"
+msgstr[0] "Reddedilen e-posta"
+msgstr[1] "Reddedilen e-postalar"
 
 #: src/NotImportedEmail.php:76
 msgid "Delete emails"
@@ -4249,7 +4254,8 @@ msgstr "İzinler yetersiz"
 #: src/Marketplace/NotificationTargetController.php:101
 msgid "Plugin"
 msgid_plural "Plugins"
-msgstr[0] "Uygulama ekleri"
+msgstr[0] "Uygulama eki"
+msgstr[1] "Uygulama ekleri"
 
 #: src/Plugin.php:709
 #, php-format
@@ -4397,7 +4403,7 @@ msgstr "Hata / temizlemek için"
 
 #: src/Plugin.php:2184
 msgid "Directory"
-msgstr "Dizin"
+msgstr "Klasör"
 
 #: src/Plugin.php:2194 src/RuleDictionnaryOperatingSystemVersion.php:58
 #: src/RuleDictionnaryOperatingSystemVersion.php:72 src/Agent.php:118
@@ -4556,7 +4562,8 @@ msgstr "Bir ögeyi bir birime atama kuralları"
 #: src/NetworkInterface.php:42
 msgid "Network interface"
 msgid_plural "Network interfaces"
-msgstr[0] "Ağ arayüzleri"
+msgstr[0] "Ağ arayüzü"
+msgstr[1] "Ağ arayüzleri"
 
 #. TRANS: first parameter is the template name
 #: src/ITILTemplate.php:150 src/DomainRecord.php:352
@@ -4564,6 +4571,7 @@ msgstr[0] "Ağ arayüzleri"
 msgid "%1$s template"
 msgid_plural "%1$s templates"
 msgstr[0] "%1$s kalıp"
+msgstr[1] "%1$s kalıp"
 
 #: src/ITILTemplate.php:317 src/Ticket.php:2730
 #: templates/components/itilobject/fields/global_validation.html.twig:61
@@ -4608,7 +4616,8 @@ msgstr "Fiber kanal bağlantı noktası hızı"
 #: src/NetworkPortInstantiation.php:665 src/NetworkPortEthernet.php:155
 msgid "Network socket"
 msgid_plural "Network sockets"
-msgstr[0] "Ağ soketleri"
+msgstr[0] "Ağ soketi"
+msgstr[1] "Ağ soketleri"
 
 #: src/NetworkPortFiberchannel.php:213 src/Blacklist.php:232
 #: src/NetworkPortWifi.php:150 src/RefusedEquipment.php:124
@@ -4651,7 +4660,8 @@ msgstr "Fiber ağ soketi"
 #: src/PendingReason.php:50
 msgid "Pending reason"
 msgid_plural "Pending reasons"
-msgstr[0] "Bekleyen nedenleri"
+msgstr[0] "Bekleme nedeni"
+msgstr[1] "Bekleme nedenleri"
 
 #: src/PendingReason.php:58 src/PendingReason.php:91
 msgid "Automatic follow-up frequency"
@@ -4724,36 +4734,42 @@ msgstr "Mantık işlemi"
 msgid "+ %d minute"
 msgid_plural "+ %d minutes"
 msgstr[0] "+ %d dakika"
+msgstr[1] "+ %d dakika"
 
 #: src/LevelAgreementLevel.php:257 src/Html.php:3190
 #, php-format
 msgid "- %d minute"
 msgid_plural "- %d minutes"
 msgstr[0] "- %d dakika"
+msgstr[1] "- %d dakika"
 
 #: src/LevelAgreementLevel.php:264 src/Html.php:3231
 #, php-format
 msgid "+ %d hour"
 msgid_plural "+ %d hours"
 msgstr[0] "+ %d saat"
+msgstr[1] "+ %d saat"
 
 #: src/LevelAgreementLevel.php:269 src/Html.php:3186
 #, php-format
 msgid "- %d hour"
 msgid_plural "- %d hours"
 msgstr[0] "- %d saat"
+msgstr[1] "- %d saat"
 
 #: src/LevelAgreementLevel.php:278 src/Html.php:3236
 #, php-format
 msgid "+ %d day"
 msgid_plural "+ %d days"
 msgstr[0] "+ %d gün"
+msgstr[1] "+ %d gün"
 
 #: src/LevelAgreementLevel.php:282 src/Html.php:3195
 #, php-format
 msgid "- %d day"
 msgid_plural "- %d days"
 msgstr[0] "- %d gün"
+msgstr[1] "- %d gün"
 
 #: src/LevelAgreementLevel.php:292 src/Ticket.php:3152 src/Ticket.php:3355
 #: src/Ticket.php:6541 src/OlaLevel.php:184 src/Dashboard/Provider.php:1487
@@ -4781,11 +4797,13 @@ msgstr "Çözümlenme süresi"
 msgid "Printer model"
 msgid_plural "Printer models"
 msgstr[0] "Yazıcı modeli"
+msgstr[1] "Yazıcı modelleri"
 
 #: src/Cluster.php:54
 msgid "Cluster"
 msgid_plural "Clusters"
-msgstr[0] "Kümeler"
+msgstr[0] "Küme"
+msgstr[1] "Kümeler"
 
 #: src/Cluster.php:93 src/Blacklist.php:234 src/RefusedEquipment.php:106
 #: src/RefusedEquipment.php:191 src/RuleImportAsset.php:141
@@ -4825,6 +4843,7 @@ msgstr "Donanımdan sorumlu grup"
 msgid "Blacklist"
 msgid_plural "Blacklists"
 msgstr[0] "Kara liste"
+msgstr[1] "Kara listeler"
 
 #: src/Blacklist.php:231 src/Unmanaged.php:185 src/RefusedEquipment.php:115
 #: src/RuleImportAsset.php:129 src/NetworkName.php:224
@@ -4836,6 +4855,7 @@ msgstr "IP"
 msgid "Manufacturer"
 msgid_plural "Manufacturers"
 msgstr[0] "Üretici"
+msgstr[1] "Üreticiler"
 
 #: src/Alert.php:108 src/Alert.php:146 src/Alert.php:177 src/Contract.php:1580
 #: src/Infocom.php:654 src/Entity.php:810 src/Entity.php:1051
@@ -4971,7 +4991,8 @@ msgstr "Aşağıdaki otomatik işlemlerde sorun çıkmış. İlgilenilmesi gerek
 #: src/Unmanaged.php:47
 msgid "Unmanaged device"
 msgid_plural "Unmanaged devices"
-msgstr[0] "Yönetilmeyen aygıtlar"
+msgstr[0] "Yönetilmeyen aygıt"
+msgstr[1] "Yönetilmeyen aygıtlar"
 
 #: src/Unmanaged.php:106
 msgid "Serial Number"
@@ -4996,7 +5017,8 @@ msgstr "Bir öge türü seçin:"
 #: src/ProblemTask.php:41
 msgid "Problem task"
 msgid_plural "Problem tasks"
-msgstr[0] "Sorun görevleri"
+msgstr[0] "Sorun görevi"
+msgstr[1] "Sorun görevleri"
 
 #: src/PrinterLog.php:55
 msgid "Page counters"
@@ -5143,12 +5165,14 @@ msgstr "Başlangıç tarihi"
 #: src/UserTitle.php:39
 msgid "User title"
 msgid_plural "Users titles"
-msgstr[0] "Kullanıcı unvanları"
+msgstr[0] "Kullanıcı unvanı"
+msgstr[1] "Kullanıcı unvanları"
 
 #: src/MonitorType.php:39 src/Rule.php:384
 msgid "Monitor type"
 msgid_plural "Monitor types"
-msgstr[0] "Ekran türleri"
+msgstr[0] "Ekran türü"
+msgstr[1] "Ekran türleri"
 
 #: src/Ticket_Contract.php:46
 msgid "Tickets / Contracts"
@@ -5198,12 +5222,14 @@ msgstr "Sona erme tarihi"
 #: src/NotificationTargetConsumableItem.php:93
 msgid "Event"
 msgid_plural "Events"
-msgstr[0] "Etkinlikler"
+msgstr[0] "Etkinlik"
+msgstr[1] "Etkinlikler"
 
 #: src/NetworkPortFiberchannelType.php:39
 msgid "Fiber type"
 msgid_plural "Fiber types"
-msgstr[0] "Fiber türleri"
+msgstr[0] "Fiber türü"
+msgstr[1] "Fiber türleri"
 
 #: src/NetworkPort_Vlan.php:138 src/NetworkPort_Vlan.php:170
 #: src/NetworkPort_Vlan.php:385 src/Vlan.php:164
@@ -5255,6 +5281,7 @@ msgstr "Kalıcı olarak sil"
 msgid "Associated item type"
 msgid_plural "Associated item types"
 msgstr[0] "Atanmış öge türü"
+msgstr[1] "Atanmış öge türleri"
 
 #. TRANS: %1$s is the Itemtype name and $2$d the ID of the item
 #: src/Item_Ticket.php:1186 src/SavedSearch.php:413 src/CommonGLPI.php:1046
@@ -5275,7 +5302,8 @@ msgstr "Öge silindi"
 #: src/SoftwareCategory.php:42
 msgid "Software category"
 msgid_plural "Software categories"
-msgstr[0] "Yazılım kategorileri"
+msgstr[0] "Yazılım kategorisi"
+msgstr[1] "Yazılım kategorileri"
 
 #: src/ContractCost.php:46 src/ContractCost.php:164 src/ContractCost.php:266
 #: src/ContractCost.php:361 src/NotificationTargetProject.php:724
@@ -5302,6 +5330,7 @@ msgstr[0] "Yazılım kategorileri"
 msgid "Cost"
 msgid_plural "Costs"
 msgstr[0] "Maliyet"
+msgstr[1] "Maliyetler"
 
 #: src/ContractCost.php:350 src/ProjectCost.php:357 src/CommonITILCost.php:558
 msgid "Add a new cost"
@@ -5363,7 +5392,8 @@ msgstr "Kilitleyen Kullanıcı"
 #: src/Item_DeviceSimcard.php:53 src/DeviceSimcard.php:41
 msgid "Simcard"
 msgid_plural "Simcards"
-msgstr[0] "SIM kartları"
+msgstr[0] "SIM kartı"
+msgstr[1] "SIM kartları"
 
 #: src/Item_DeviceSimcard.php:63 src/Item_DeviceSimcard.php:64
 msgid "PIN code"
@@ -5400,7 +5430,8 @@ msgstr "İşletim sistemi mimarileri sözlüğü"
 #: src/Agent.php:67
 msgid "Agent"
 msgid_plural "Agents"
-msgstr[0] "Aracılar"
+msgstr[0] "Aracı"
+msgstr[1] "Aracılar"
 
 #: src/Agent.php:99 src/Agent.php:257
 msgid "Last contact"
@@ -5506,31 +5537,31 @@ msgstr "Yönetici kullanıcılar dışında kalan yönetici grubu"
 
 #: src/NotificationTargetProject.php:65
 msgid "User of project team"
-msgstr "Proje takımının kullanıcısı"
+msgstr "Proje ekibi kullanıcısı"
 
 #: src/NotificationTargetProject.php:66
 msgid "Group of project team"
-msgstr "Proje takımının grubu"
+msgstr "Proje ekibinin grubu"
 
 #: src/NotificationTargetProject.php:67
 #: src/NotificationTargetProjectTask.php:62
 msgid "Manager of group of project team"
-msgstr "Proje takımı grubunun yöneticisi"
+msgstr "Proje ekibi grubunun yöneticisi"
 
 #: src/NotificationTargetProject.php:70
 #: src/NotificationTargetProjectTask.php:65
 msgid "Group of project team except manager users"
-msgstr "Yönetici kullanıcılar dışında kalan proje takımı grubu"
+msgstr "Yönetici kullanıcılar dışında kalan proje ekibi grubu"
 
 #: src/NotificationTargetProject.php:72
 #: src/NotificationTargetProjectTask.php:67
 msgid "Contact of project team"
-msgstr "Proje takımının ilgilisi"
+msgstr "Proje ekibinin ilgilisi"
 
 #: src/NotificationTargetProject.php:73
 #: src/NotificationTargetProjectTask.php:68
 msgid "Supplier of project team"
-msgstr "Proje takımının sağlayıcısı"
+msgstr "Proje ekibinin sağlayıcısı"
 
 #: src/NotificationTargetProject.php:626 src/Project.php:554
 #: src/Project.php:1556
@@ -5628,7 +5659,7 @@ msgstr "Görev sayısı"
 #: src/NotificationTargetProjectTask.php:529
 msgctxt "quantity"
 msgid "Number of team members"
-msgstr "Takım üyesi sayısı"
+msgstr "Ekip üyesi sayısı"
 
 #: src/NotificationTargetProject.php:646 src/Ticket.php:6523
 #: src/NotificationTargetCommonITILObject.php:1695
@@ -5721,6 +5752,7 @@ msgstr "Belge sayısı"
 msgid "Associated item"
 msgid_plural "Associated items"
 msgstr[0] "İlişkili öge"
+msgstr[1] "İlişkili ögeler"
 
 #: src/NotificationTargetProject.php:696 src/Printer.php:409
 #: src/Monitor.php:284 src/Peripheral.php:269
@@ -5776,7 +5808,8 @@ msgstr "Tam ad"
 #: src/NotificationTargetProjectTask.php:679
 msgid "Team member"
 msgid_plural "Team members"
-msgstr[0] "Takım üyeleri"
+msgstr[0] "Ekip üyesi"
+msgstr[1] "Ekip üyeleri"
 
 #: src/NotificationTargetProject.php:766 src/NotificationTargetProject.php:783
 #: src/Group.php:271 src/NotificationTargetCommonITILObject.php:1879
@@ -5800,6 +5833,7 @@ msgstr[1] "Görev"
 msgid "Change"
 msgid_plural "Changes"
 msgstr[0] "Değişiklik"
+msgstr[1] "Değişiklikler"
 
 #: src/NotificationTargetProject.php:771 src/NotificationTargetProject.php:787
 #: src/Ticket.php:107 src/Html.php:1848 src/NotificationTargetProblem.php:219
@@ -5810,17 +5844,20 @@ msgstr[0] "Değişiklik"
 #: src/NotificationTargetProjectTask.php:678 src/Entity.php:2154
 msgid "Ticket"
 msgid_plural "Tickets"
-msgstr[0] "Destek kayıtları"
+msgstr[0] "Destek kaydı"
+msgstr[1] "Destek kayıtları"
 
 #: src/NetworkEquipmentType.php:39 src/Rule.php:420
 msgid "Networking equipment type"
 msgid_plural "Networking equipment types"
-msgstr[0] "Ağ aygıtı türleri"
+msgstr[0] "Ağ aygıtı türü"
+msgstr[1] "Ağ aygıtı türleri"
 
 #: src/CableStrand.php:41 src/CableStrand.php:47 src/Cable.php:144
 msgid "Cable strand"
 msgid_plural "Cable strands"
-msgstr[0] "Kablo demetleri"
+msgstr[0] "Kablo demeti"
+msgstr[1] "Kablo demetleri"
 
 #: src/CableStrand.php:150 src/CableStrand.php:151 src/CableStrand.php:152
 #: src/CableStrand.php:153 src/Cable.php:161 src/Cable.php:172
@@ -5845,7 +5882,8 @@ msgstr "A noktası"
 #: src/ProjectTaskType.php:43
 msgid "Project tasks type"
 msgid_plural "Project tasks types"
-msgstr[0] "Proje görev türleri"
+msgstr[0] "Proje görev türü"
+msgstr[1] "Proje görev türleri"
 
 #: src/AllAssets.php:43 src/Html.php:1364 src/Socket.php:908
 #: src/Dashboard/Grid.php:1164 src/RuleImportAsset.php:120
@@ -6077,6 +6115,7 @@ msgstr "Gönderilmiş e-postaların saklanacağı gün sayısı"
 msgid "Printer"
 msgid_plural "Printers"
 msgstr[0] "Yazıcı"
+msgstr[1] "Yazıcılar"
 
 #: src/Printer.php:333 src/Monitor.php:207 src/Peripheral.php:192
 #: src/Phone.php:212 src/NetworkEquipment.php:272 src/Computer.php:358
@@ -6131,6 +6170,7 @@ msgstr "Güncel sayfa sayacı"
 msgid "Cartridge"
 msgid_plural "Cartridges"
 msgstr[0] "Kartuş"
+msgstr[1] "Kartuşlar"
 
 #: src/Printer.php:538 src/CartridgeItem.php:248
 msgid "Number of used cartridges"
@@ -6181,12 +6221,14 @@ msgstr "Bağlantı hataları"
 #: src/NotificationTargetMailCollector.php:100 src/MailCollector.php:105
 msgid "Receiver"
 msgid_plural "Receivers"
-msgstr[0] "Alıcılar"
+msgstr[0] "Alıcı"
+msgstr[1] "Alıcılar"
 
 #: src/RequestType.php:39
 msgid "Request source"
 msgid_plural "Request sources"
 msgstr[0] "İstek kaynağı"
+msgstr[1] "İstek kaynakları"
 
 #: src/RequestType.php:50 src/RequestType.php:79
 msgid "Default for tickets"
@@ -6247,6 +6289,7 @@ msgstr "İşletim sistemi sürümleri sözlüğü"
 msgid "Automatic action"
 msgid_plural "Automatic actions"
 msgstr[0] "Otomatik işlem"
+msgstr[1] "Otomatik işlemler"
 
 #: src/CronTask.php:205 src/CronTask.php:325
 msgid "Action aborted"
@@ -6380,6 +6423,7 @@ msgstr "Çalışma sayısı"
 msgid "%s start"
 msgid_plural "%s starts"
 msgstr[0] "%s başlatma"
+msgstr[1] "%s başlatma"
 
 #. TRANS: %s is the number of stops
 #: src/CronTask.php:1189
@@ -6387,6 +6431,7 @@ msgstr[0] "%s başlatma"
 msgid "%s stop"
 msgid_plural "%s stops"
 msgstr[0] "%s durma"
+msgstr[1] "%s durma"
 
 #. TRANS: %s is the number of errors
 #: src/CronTask.php:1192
@@ -6394,6 +6439,7 @@ msgstr[0] "%s durma"
 msgid "%s error"
 msgid_plural "%s errors"
 msgstr[0] "%s hata"
+msgstr[1] "%s hata"
 
 #: src/CronTask.php:1227
 msgid "Minimal time"
@@ -6408,6 +6454,7 @@ msgstr "En kısa süre"
 msgid "%s second"
 msgid_plural "%s seconds"
 msgstr[0] "%s saniye"
+msgstr[1] "%s saniye"
 
 #: src/CronTask.php:1234
 msgid "Maximal time"
@@ -6438,6 +6485,7 @@ msgstr "En az sayı"
 msgid "%s item"
 msgid_plural "%s items"
 msgstr[0] "%s öge"
+msgstr[1] "%s öge"
 
 #: src/CronTask.php:1262
 msgid "Maximal count"
@@ -6525,7 +6573,9 @@ msgstr "Vardiya bitiş saati"
 msgid "Clean %1$d session file created since more than %2$s seconds"
 msgid_plural "Clean %1$d session files created since more than %2$s seconds"
 msgstr[0] ""
-"%2$s saniyeden daha uzun süre önce oluşturulmuş %1$d oturum dosyalarını sil"
+"%2$s saniyeden daha uzun süre önce oluşturulmuş %1$d oturum dosyasını sil"
+msgstr[1] ""
+"%2$s saniyeden daha uzun süre önce oluşturulmuş %1$d oturum dosyasını sil"
 
 #: src/CronTask.php:1798
 #, php-format
@@ -6555,12 +6605,14 @@ msgstr ""
 msgid "Clean %1$d graph file created since more than %2$s seconds"
 msgid_plural "Clean %1$d graph files created since more than %2$s seconds"
 msgstr[0] "%2$s saniyeden önce oluşturulmuş %1$d çizelge dosyasını sil"
+msgstr[1] "%2$s saniyeden önce oluşturulmuş %1$d çizelge dosyasını sil"
 
 #: src/CronTask.php:1929
 #, php-format
 msgid "Clean %1$d temporary file created since more than %2$s seconds"
 msgid_plural "Clean %1$d temporary files created since more than %2$s seconds"
 msgstr[0] "%2$s saniyeden önce oluşturulmuş %1$d geçici dosyayı sil"
+msgstr[1] "%2$s saniyeden önce oluşturulmuş %1$d geçici dosyayı sil"
 
 #: src/CronTask.php:2039
 msgid "Check for new updates"
@@ -6597,7 +6649,8 @@ msgstr "Günlük arşivlerinin saklanacağı gün sayısı"
 #: src/Line.php:52
 msgid "Line"
 msgid_plural "Lines"
-msgstr[0] "Hatlar"
+msgstr[0] "Hat"
+msgstr[1] "Hatlar"
 
 #: src/Line.php:202 templates/pages/management/line.html.twig:40
 msgid "Caller number"
@@ -6747,12 +6800,14 @@ msgctxt "consumable"
 msgid "New"
 msgid_plural "New"
 msgstr[0] "Yeni"
+msgstr[1] "Yeni"
 
 #: src/Consumable.php:498
 msgctxt "consumable"
 msgid "Used"
 msgid_plural "Used"
 msgstr[0] "Kullanılmış"
+msgstr[1] "Kullanılmış"
 
 #: src/Consumable.php:528
 msgctxt "button"
@@ -6818,6 +6873,7 @@ msgstr "Sarf malzemesi yok"
 msgid "Close time"
 msgid_plural "Close times"
 msgstr[0] "Kapanış saati"
+msgstr[1] "Kapanış saatleri"
 
 #: src/Holiday.php:60 src/Holiday.php:89 src/Calendar_Holiday.php:145
 msgid "Recurrent"
@@ -6827,6 +6883,7 @@ msgstr "Yinelenen"
 msgid "Solution"
 msgid_plural "Solutions"
 msgstr[0] "Çözüm"
+msgstr[1] "Çözümler"
 
 #: src/ITILSolution.php:184
 msgid "The item is already solved, did anyone pushed a solution before you?"
@@ -6850,12 +6907,14 @@ msgstr "Onaylanmış"
 #: src/DeviceSensorType.php:41
 msgid "Sensor type"
 msgid_plural "Sensor types"
-msgstr[0] "Almaç türleri"
+msgstr[0] "Almaç türü"
+msgstr[1] "Almaç türleri"
 
 #: src/DeviceDrive.php:41
 msgid "Drive"
 msgid_plural "Drives"
-msgstr[0] "Sürücüler"
+msgstr[0] "Sürücü"
+msgstr[1] "Sürücüler"
 
 #: src/DeviceDrive.php:51 src/DeviceDrive.php:74 src/DeviceDrive.php:123
 msgid "Writing ability"
@@ -6880,7 +6939,8 @@ msgstr "Varlık iş kuralları"
 #: src/Appliance.php:62
 msgid "Appliance"
 msgid_plural "Appliances"
-msgstr[0] "Özel aygıtlar"
+msgstr[0] "Özel aygıt"
+msgstr[1] "Özel aygıtlar"
 
 #: src/Appliance.php:165 src/DomainRecord.php:119 src/DomainRecord.php:452
 #: src/CommonITILTask.php:899 src/Domain_Item.php:517
@@ -6929,12 +6989,14 @@ msgstr "Bir aygıttan kaldır"
 #: src/SsoVariable.php:48
 msgid "Field storage of the login in the HTTP request"
 msgid_plural "Fields storage of the login in the HTTP request"
-msgstr[0] "HTTP isteğindeki oturum açma bilgisinin saklanacağı alan"
+msgstr[0] "HTTP isteğinde oturum açma bilgisinin saklanacağı alan"
+msgstr[1] "HTTP isteğinde oturum açma bilgisinin saklanacağı alanlar"
 
 #: src/PassiveDCEquipment.php:49
 msgid "Passive device"
 msgid_plural "Passive devices"
-msgstr[0] "Pasif aygıtlar"
+msgstr[0] "Pasif aygıt"
+msgstr[1] "Pasif aygıtlar"
 
 #: src/RuleDictionnaryPhoneTypeCollection.php:44
 msgid "Dictionnary of phone types"
@@ -6947,7 +7009,8 @@ msgstr "Yazıcı modelleri sözlüğü"
 #: src/KnowbaseItem_Item.php:55
 msgid "Knowledge base item"
 msgid_plural "Knowledge base items"
-msgstr[0] "Bilgi bankası ögeleri"
+msgstr[0] "Bilgi bankası ögesi"
+msgstr[1] "Bilgi bankası ögeleri"
 
 #: src/KnowbaseItem_Item.php:148
 msgid "Add a linked item"
@@ -6968,7 +7031,8 @@ msgstr "Henüz bir bilgi bankası kaydı bağlanmamış"
 #: src/KnowbaseItem_Item.php:196
 msgid "Linked item"
 msgid_plural "Linked items"
-msgstr[0] "Bağlantılı ögeler"
+msgstr[0] "Bağlantılı öge"
+msgstr[1] "Bağlantılı ögeler"
 
 #: src/KnowbaseItem_Item.php:225
 msgid "Update date"
@@ -6986,7 +7050,8 @@ msgstr "Bilgi bankası makalesine bağlantı"
 #: src/PDU.php:57
 msgid "PDU"
 msgid_plural "PDUs"
-msgstr[0] "Güç dağıtıcılar"
+msgstr[0] "Güç dağıtıcı"
+msgstr[1] "Güç dağıtıcılar"
 
 #: src/RuleImportComputer.php:51 src/RuleImportComputerCollection.php:60
 msgid "Rules for import and link computers"
@@ -7007,7 +7072,8 @@ msgstr "Alt ağ"
 #: src/RuleImportComputer.php:95 src/IPAddress.php:108
 msgid "IP address"
 msgid_plural "IP addresses"
-msgstr[0] "IP adresleri"
+msgstr[0] "IP adresi"
+msgstr[1] "IP adresleri"
 
 #: src/RuleImportComputer.php:97 src/NetworkAlias.php:418
 msgid "Computer's name"
@@ -7105,7 +7171,8 @@ msgstr "LDAP ölçütleri"
 #: src/ContactType.php:39
 msgid "Contact type"
 msgid_plural "Contact types"
-msgstr[0] "İlgili türleri"
+msgstr[0] "İlgili türü"
+msgstr[1] "İlgili türleri"
 
 #: src/Ticket.php:123
 msgid "Create ticket"
@@ -7376,7 +7443,8 @@ msgstr "Ele alınma süresi"
 #: src/Ticket_Ticket.php:54
 msgid "Linked ticket"
 msgid_plural "Linked tickets"
-msgstr[0] "Bağlantılı destek kayıtları"
+msgstr[0] "Bağlantılı destek kaydı"
+msgstr[1] "Bağlantılı destek kayıtları"
 
 #: src/Ticket.php:3563
 msgid "All linked tickets"
@@ -7524,6 +7592,7 @@ msgstr "Destek kaydı aç"
 msgid "%d new ticket"
 msgid_plural "%d new tickets"
 msgstr[0] "%d yeni destek kaydı"
+msgstr[1] "%d yeni destek kaydı"
 
 #: src/Ticket.php:5534 src/Ticket.php:5769
 #: templates/layout/parts/context_links.html.twig:76
@@ -7553,6 +7622,7 @@ msgstr "Bu öge için yeni destek kaydı..."
 msgid "Last %d ticket"
 msgid_plural "Last %d tickets"
 msgstr[0] "Son %d destek kaydı"
+msgstr[1] "Son %d destek kaydı"
 
 #: src/Ticket.php:5773
 msgid "You don't have right to see all tickets"
@@ -7561,7 +7631,8 @@ msgstr "Tüm destek kayıtlarını görüntüleme izniniz yok"
 #: src/Ticket.php:5816
 msgid "Ticket on linked items"
 msgid_plural "Tickets on linked items"
-msgstr[0] "Bağlı ögeler üzerine destek kayıtları"
+msgstr[0] "Bağlı ögelerle ilgili destek kaydı"
+msgstr[1] "Bağlı ögelerle ilgili destek kayıtları"
 
 #: src/Ticket.php:5979
 msgid "Assign equipment"
@@ -7744,7 +7815,8 @@ msgstr ""
 #: src/Fieldblacklist.php:46
 msgid "Ignored value for the unicity"
 msgid_plural "Ignored values for the unicity"
-msgstr[0] "Eşsizlik nedeniyle yok sayılan değerler"
+msgstr[0] "Eşsizlik nedeniyle yok sayılan değer"
+msgstr[1] "Eşsizlik nedeniyle yok sayılan değerler"
 
 #: src/NotificationTargetReservation.php:41
 msgid "New reservation"
@@ -7775,7 +7847,8 @@ msgstr "Ayırtılmış ögenin adresi"
 #: src/ReminderTranslation.php:54
 msgid "Translation"
 msgid_plural "Translations"
-msgstr[0] "Çeviriler"
+msgstr[0] "Çeviri"
+msgstr[1] "Çeviriler"
 
 #: src/KnowbaseItemTranslation.php:89 src/CommonITILValidation.php:963
 #: src/KnowbaseItem.php:269 templates/components/user/info_card.html.twig:98
@@ -7819,6 +7892,7 @@ msgstr "%1$s öge"
 msgid "Monitor"
 msgid_plural "Monitors"
 msgstr[0] "Ekran"
+msgstr[1] "Ekranlar"
 
 #: src/Monitor.php:336 src/Database.php:108 src/Database.php:266
 #: src/Database.php:402 src/Item_DeviceMemory.php:55
@@ -7880,12 +7954,14 @@ msgstr "Konuklar"
 #: src/DeviceGeneric.php:41
 msgid "Generic device"
 msgid_plural "Generic devices"
-msgstr[0] "Genel aygıtlar"
+msgstr[0] "Genel aygıt"
+msgstr[1] "Genel aygıtlar"
 
 #: src/RackModel.php:41
 msgid "Rack model"
 msgid_plural "Rack models"
-msgstr[0] "Kabin modelleri"
+msgstr[0] "Kabin modeli"
+msgstr[1] "Kabin modelleri"
 
 #: src/Notification.php:219
 msgid "Allow response"
@@ -7912,7 +7988,8 @@ msgstr "Alan öge türü alanının doldurulması zorunludur"
 #: src/Peripheral.php:75
 msgid "Device"
 msgid_plural "Devices"
-msgstr[0] "Çevre birimleri"
+msgstr[0] "Çevre birimi"
+msgstr[1] "Çevre birimleri"
 
 #: src/Peripheral.php:321 src/Phone.php:349
 #: templates/generic_show_form.html.twig:505
@@ -7922,14 +7999,16 @@ msgstr "Marka"
 #: src/ManualLink.php:48
 msgid "Manual link"
 msgid_plural "Manual links"
-msgstr[0] "El ile bağlantılar"
+msgstr[0] "El ile bağlantı"
+msgstr[1] "El ile bağlantılar"
 
 #: src/ManualLink.php:78
 #: src/ContentTemplates/Parameters/KnowbaseItemParameters.php:69
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:62
 msgid "Link"
 msgid_plural "Links"
-msgstr[0] "Bağlantılar"
+msgstr[0] "Bağlantı"
+msgstr[1] "Bağlantılar"
 
 #: src/ManualLink.php:134 src/Link.php:179
 msgid "Open in a new window"
@@ -8056,13 +8135,15 @@ msgstr "Bildirim oluşturuldu!"
 #: src/Plug.php:39
 msgid "Plug"
 msgid_plural "Plugs"
-msgstr[0] "Fişler"
+msgstr[0] "Fiş"
+msgstr[1] "Fişler"
 
 #: src/TicketTemplate.php:48 src/Profile.php:2645 src/Entity.php:1032
 #: src/Entity.php:2489
 msgid "Ticket template"
 msgid_plural "Ticket templates"
-msgstr[0] "Destek kaydı kalıpları"
+msgstr[0] "Destek kaydı kalıbı"
+msgstr[1] "Destek kaydı kalıpları"
 
 #: src/Stat/Data/Location/StatDataSolved.php:49
 #, php-format
@@ -8095,7 +8176,8 @@ msgstr "Kapanan %1$s (%2$s)"
 msgctxt "ticket"
 msgid "Opened"
 msgid_plural "Opened"
-msgstr[0] "Açılmış"
+msgstr[0] "Açılan"
+msgstr[1] "Açılan"
 
 #: src/Stat/Data/Sglobal/StatDataTicketNumber.php:59
 #: src/Stat/Data/Graph/StatDataTicketAverageTime.php:56
@@ -8103,7 +8185,8 @@ msgstr[0] "Açılmış"
 msgctxt "ticket"
 msgid "Solved"
 msgid_plural "Solved"
-msgstr[0] "Çözümlenmiş"
+msgstr[0] "Çözümlenen"
+msgstr[1] "Çözümlenen"
 
 #: src/Stat/Data/Sglobal/StatDataTicketNumber.php:62
 #: src/Stat/Data/Graph/StatDataTicketAverageTime.php:59
@@ -8123,6 +8206,7 @@ msgctxt "survey"
 msgid "Opened"
 msgid_plural "Opened"
 msgstr[0] "Açılan"
+msgstr[1] "Açılan"
 
 #: src/Stat/Data/Sglobal/StatDataSatisfaction.php:57
 #: src/Stat/Data/Graph/StatDataSatisfactionSurvey.php:54 src/Stat.php:563
@@ -8130,6 +8214,7 @@ msgctxt "survey"
 msgid "Answered"
 msgid_plural "Answered"
 msgstr[0] "Yanıtlanan"
+msgstr[1] "Yanıtlanan"
 
 #: src/Stat/Data/Sglobal/StatDataSatisfaction.php:65
 #: src/Stat/Data/Graph/StatDataSatisfactionSurvey.php:62 src/Stat.php:1696
@@ -8160,17 +8245,20 @@ msgstr "Gerçek süre"
 msgid "Hour"
 msgid_plural "Hours"
 msgstr[0] "Saat"
+msgstr[1] "Saat"
 
 #: src/ChangeTask.php:41
 msgid "Change task"
 msgid_plural "Change tasks"
 msgstr[0] "Değişiklik görevi"
+msgstr[1] "Değişiklik görevleri"
 
 #: src/Item_SoftwareVersion.php:56 src/Software.php:976
 #: src/SoftwareVersion.php:350
 msgid "Installation"
 msgid_plural "Installations"
-msgstr[0] "Kurulumlar"
+msgstr[0] "Kurulum"
+msgstr[1] "Kurulumlar"
 
 #: src/Item_SoftwareVersion.php:101 src/Item_SoftwareLicense.php:108
 msgctxt "software"
@@ -8230,7 +8318,8 @@ msgstr "Konumu buraya ayarla"
 #: src/TicketTask.php:41
 msgid "Ticket task"
 msgid_plural "Ticket tasks"
-msgstr[0] "Destek kaydı görevleri"
+msgstr[0] "Destek kaydı görevi"
+msgstr[1] "Destek kaydı görevleri"
 
 #: src/TicketTask.php:264 src/ITILFollowup.php:846
 msgid "Update all"
@@ -8251,13 +8340,15 @@ msgstr "Herkese açık olanları görüntüle"
 #: src/OperatingSystemVersion.php:42
 msgid "Version of the operating system"
 msgid_plural "Versions of the operating systems"
-msgstr[0] "İşletim sistemi sürümleri"
+msgstr[0] "İşletim sistemi sürümü"
+msgstr[1] "İşletim sistemi sürümleri"
 
 #: src/DBConnection.php:74 src/Config.php:781 src/Config.php:2095
 #: src/Config.php:2493
 msgid "SQL replica"
 msgid_plural "SQL replicas"
 msgstr[0] "SQL kopyası"
+msgstr[1] "SQL kopyaları"
 
 #: src/DBConnection.php:597
 msgid "Check the SQL replica"
@@ -8293,17 +8384,20 @@ msgstr "Birincil ve ikincil arasındaki fark"
 #: src/DeviceCaseModel.php:42
 msgid "Device case model"
 msgid_plural "Device case models"
-msgstr[0] "Aygıt kasa modelleri"
+msgstr[0] "Aygıt kasa modeli"
+msgstr[1] "Aygıt kasa modelleri"
 
 #: src/ApplianceType.php:38
 msgid "Appliance type"
 msgid_plural "Appliance types"
-msgstr[0] "Aygıt türleri"
+msgstr[0] "Özel aygıt türü"
+msgstr[1] "Özel aygıt türleri"
 
 #: src/Group.php:48
 msgid "Group"
 msgid_plural "Groups"
 msgstr[0] "Grup"
+msgstr[1] "Gruplar"
 
 #: src/Group.php:133 src/Group.php:785 src/User.php:250
 msgid "Used items"
@@ -8751,7 +8845,8 @@ msgstr "Herhangi bir ağ bağlantı noktası bulunamadı"
 #: src/NetworkPort.php:812
 msgid "Management port"
 msgid_plural "Management ports"
-msgstr[0] "Yönetim bağlantı noktaları"
+msgstr[0] "Yönetim kapısı"
+msgstr[1] "Yönetim kapıları"
 
 #. TRANS: list of unit (bps for bytes per second)
 #: src/NetworkPort.php:901
@@ -8834,7 +8929,8 @@ msgstr "Uykuda"
 #: src/RuleImportAsset.php:135
 msgid "Port number"
 msgid_plural "Port numbers"
-msgstr[0] "Kapı numaraları"
+msgstr[0] "Kapı numarası"
+msgstr[1] "Kapı numaraları"
 
 #: src/NetworkPort.php:1320 src/Dropdown.php:1075
 msgid "Networking"
@@ -8871,7 +8967,8 @@ msgstr "Çift yönlü"
 #: src/NetworkPort.php:1571 src/Event.php:167 src/Computer_Item.php:793
 msgid "Connection"
 msgid_plural "Connections"
-msgstr[0] "Bağlantılar"
+msgstr[0] "Bağlantı"
+msgstr[1] "Bağlantılar"
 
 #: src/NetworkPort.php:1578
 msgid "Last connection"
@@ -8892,6 +8989,7 @@ msgstr "%1$s üzerine %2$s"
 msgid "Data center"
 msgid_plural "Data centers"
 msgstr[0] "Veri merkezi"
+msgstr[1] "Veri merkezleri"
 
 #: src/Datacenter.php:150 src/Cable.php:301 src/Cable.php:316
 #: templates/generic_show_form.html.twig:130
@@ -8915,7 +9013,8 @@ msgstr "Tarayıcıdan izlemeler kullanılsın"
 #: src/NotificationAjaxSetting.php:66
 msgid "Browser notification"
 msgid_plural "Browser notifications"
-msgstr[0] "Tarayıcı bildirimleri"
+msgstr[0] "Tarayıcı bildirimi"
+msgstr[1] "Tarayıcı bildirimleri"
 
 #: src/NotificationAjaxSetting.php:71 src/NotificationAjaxSetting.php:72
 #: src/NotificationAjaxSetting.php:73 src/NotificationAjaxSetting.php:74
@@ -8949,7 +9048,8 @@ msgstr "Kendinize bir tarayıcı bildirimi denemesi gönderin"
 #: src/Contact_Supplier.php:47
 msgid "Link Contact/Supplier"
 msgid_plural "Links Contact/Supplier"
-msgstr[0] "İlgili/Sağlayıcı Bağlantısı"
+msgstr[0] "İlgili/sağlayıcı bağlantısı"
+msgstr[1] "İlgili/sağlayıcı bağlantıları"
 
 #: src/Contact_Supplier.php:131 src/Contract_Supplier.php:272
 msgid "Add a supplier"
@@ -9020,12 +9120,14 @@ msgstr ""
 #: src/DeviceCameraModel.php:40
 msgid "Device camera model"
 msgid_plural "Device camera models"
-msgstr[0] "Aygıt kamera modelleri"
+msgstr[0] "Aygıt kamera modeli"
+msgstr[1] "Aygıt kamera modelleri"
 
 #: src/NetworkPortType.php:43
 msgid "Network port type"
 msgid_plural "Network port types"
-msgstr[0] "Ağ bağlantı noktası türleri"
+msgstr[0] "Ağ kapısı türü"
+msgstr[1] "Ağ kapısı türleri"
 
 #: src/NetworkPortType.php:52 src/NetworkPortType.php:76
 msgid "Decimal"
@@ -9070,6 +9172,7 @@ msgstr "GMT"
 msgid "%s hour"
 msgid_plural "%s hours"
 msgstr[0] "%s saat"
+msgstr[1] "%s saat"
 
 #: src/Dropdown.php:957
 msgid "Common"
@@ -9079,6 +9182,7 @@ msgstr "Ortak"
 msgid "Virtual machine"
 msgid_plural "Virtual machines"
 msgstr[0] "Sanal makine"
+msgstr[1] "Sanal makineler"
 
 #: src/Dropdown.php:1059 src/SLM.php:122 src/SLM.php:167 src/Profile.php:1825
 #: src/Profile.php:2409 src/CommonITILRecurrent.php:199
@@ -9089,6 +9193,7 @@ msgstr[0] "Sanal makine"
 msgid "Calendar"
 msgid_plural "Calendars"
 msgstr[0] "Takvim"
+msgstr[1] "Takvimler"
 
 #: src/Dropdown.php:1088 src/Profile.php:1079
 msgid "Cable management"
@@ -9127,6 +9232,7 @@ msgstr "Diğerleri"
 msgid "%s year"
 msgid_plural "%s years"
 msgstr[0] "%s yıl"
+msgstr[1] "%s yıl"
 
 #. TRANS: %s is a number of months
 #: src/Dropdown.php:1689
@@ -9134,6 +9240,7 @@ msgstr[0] "%s yıl"
 msgid "%s month"
 msgid_plural "%s months"
 msgstr[0] "%s ay"
+msgstr[1] "%s ay"
 
 #. TRANS: %s is a number of days
 #: src/Dropdown.php:1693
@@ -9141,6 +9248,7 @@ msgstr[0] "%s ay"
 msgid "%s day"
 msgid_plural "%s days"
 msgstr[0] "%s gün"
+msgstr[1] "%s gün"
 
 #. TRANS: %s is a number of minutes
 #: src/Dropdown.php:1701
@@ -9148,6 +9256,7 @@ msgstr[0] "%s gün"
 msgid "%s minute"
 msgid_plural "%s minutes"
 msgstr[0] "%s dakika"
+msgstr[1] "%s dakika"
 
 #. TRANS: %s is a number of milliseconds
 #: src/Dropdown.php:1709
@@ -9155,12 +9264,14 @@ msgstr[0] "%s dakika"
 msgid "%s millisecond"
 msgid_plural "%s milliseconds"
 msgstr[0] "%s milisaniye"
+msgstr[1] "%s milisaniye"
 
 #: src/Dropdown.php:1712
 #, php-format
 msgid "%d unit"
 msgid_plural "%d units"
 msgstr[0] "%d birim"
+msgstr[1] "%d birim"
 
 #: src/Dropdown.php:1718
 #, php-format
@@ -9172,6 +9283,7 @@ msgstr "%s%%"
 msgid "%1$d day %2$dh%3$s"
 msgid_plural "%1$d days %2$dh%3$s"
 msgstr[0] "%1$d gün %2$ds%3$sd"
+msgstr[1] "%1$d gün %2$ds%3$sd"
 
 #: src/Dropdown.php:1843 src/Dropdown.php:2195 src/PlanningRecall.php:301
 #: src/CommonITILRecurrent.php:258 src/LevelAgreement.php:717
@@ -9181,6 +9293,7 @@ msgstr[0] "%1$d gün %2$ds%3$sd"
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d gün"
+msgstr[1] "%d gün"
 
 #. TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
 #: src/Dropdown.php:1851
@@ -9198,6 +9311,7 @@ msgstr "Diğer..."
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d dakika"
+msgstr[1] "%d dakika"
 
 #: src/Dropdown.php:2189 src/PlanningRecall.php:297
 #: src/CommonITILRecurrent.php:253 src/LevelAgreement.php:714
@@ -9206,6 +9320,7 @@ msgstr[0] "%d dakika"
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d saat"
+msgstr[1] "%d saat"
 
 #: src/Dropdown.php:2244
 msgid "Use unitary management"
@@ -9277,13 +9392,15 @@ msgstr "Şunun altına taşı"
 #: src/PlanningRecall.php:44
 msgid "Planning reminder"
 msgid_plural "Planning reminders"
-msgstr[0] "Planlama anımsatıcıları"
+msgstr[0] "Planlama anımsatıcı"
+msgstr[1] "Planlama anımsatıcıları"
 
 #: src/PlanningRecall.php:305
 #, php-format
 msgid "%d week"
 msgid_plural "%d weeks"
 msgstr[0] "%d hafta"
+msgstr[1] "%d hafta"
 
 #: src/PlanningRecall.php:376
 msgid "Send planning recalls"
@@ -9292,12 +9409,14 @@ msgstr "Planlama anımsatıcıları gönderilsin"
 #: src/Itil_Project.php:49
 msgid "Link Project/Itil"
 msgid_plural "Links Project/Itil"
-msgstr[0] "Proje/ITIL Bağlantıları"
+msgstr[0] "Proje/ITIL bağlantısı"
+msgstr[1] "Proje/ITIL bağlantıları"
 
 #: src/Itil_Project.php:88
 msgid "Itil item"
 msgid_plural "Itil items"
-msgstr[0] "ITIL Ögeleri"
+msgstr[0] "ITIL ögesi"
+msgstr[1] "ITIL ögeleri"
 
 #: src/Itil_Project.php:183 src/Change_Problem.php:165
 #: src/Change_Ticket.php:405
@@ -9341,7 +9460,8 @@ msgstr "MHz"
 #: src/Link.php:49 src/Link.php:701 src/Profile.php:1835 src/Profile.php:2350
 msgid "External link"
 msgid_plural "External links"
-msgstr[0] "Dış bağlantılar"
+msgstr[0] "Dış bağlantı"
+msgstr[1] "Dış bağlantılar"
 
 #: src/Link.php:166
 msgid "field name in DB"
@@ -9427,12 +9547,14 @@ msgstr "Otomatik oturum açma devre dışı"
 #: src/Auth.php:845
 msgid "Connection to LDAP directory failed"
 msgid_plural "Connection to LDAP directories failed"
-msgstr[0] "LDAP dizinleri ile bağlantı kurulamadı"
+msgstr[0] "LDAP dizini ile bağlantı kurulamadı"
+msgstr[1] "LDAP dizinleri ile bağlantı kurulamadı"
 
 #: src/Auth.php:854
 msgid "User not found in LDAP directory"
 msgid_plural "User not found in LDAP directories"
-msgstr[0] "Kullanıcı LDAP dizinlerinde bulunamadı"
+msgstr[0] "Kullanıcı LDAP dizininde bulunamadı"
+msgstr[1] "Kullanıcı LDAP dizinlerinde bulunamadı"
 
 #: src/Auth.php:865 src/Auth.php:874
 msgid "Empty login or password"
@@ -9587,7 +9709,8 @@ msgstr "kullanıcıadı@etkialanı gibi oturumları sil"
 #: src/PeripheralModel.php:39 src/Rule.php:336
 msgid "Peripheral model"
 msgid_plural "Peripheral models"
-msgstr[0] "Çevre birimi modelleri"
+msgstr[0] "Çevre birimi modeli"
+msgstr[1] "Çevre birimi modelleri"
 
 #: src/NetworkPortMigration.php:49
 msgid "Network port migration"
@@ -9757,6 +9880,7 @@ msgstr "Yükseklik"
 msgid "Location"
 msgid_plural "Locations"
 msgstr[0] "Konum"
+msgstr[1] "Konumlar"
 
 #: src/Location.php:203 src/NotificationTargetTicket.php:625
 #: src/NotificationTargetTicket.php:664
@@ -9850,7 +9974,8 @@ msgstr "Ölçüt reddedildi"
 #: src/RuleCriteria.php:95 src/RuleCriteria.php:647
 msgid "Criterion"
 msgid_plural "Criteria"
-msgstr[0] "Ölçütler"
+msgstr[0] "Ölçüt"
+msgstr[1] "Ölçütler"
 
 #: src/RuleCollection.php:1334 src/Rule.php:1268 src/Rule.php:2136
 #: src/RuleCriteria.php:176
@@ -9908,7 +10033,8 @@ msgstr[1] "Geçerlilik"
 #: src/Event.php:159
 msgid "Rule"
 msgid_plural "Rules"
-msgstr[0] "Kurallar"
+msgstr[0] "Kural"
+msgstr[1] "Kurallar"
 
 #: src/RuleCollection.php:2103
 #, php-format
@@ -9931,7 +10057,8 @@ msgstr "Genel sözlük"
 #: src/Pdu_Plug.php:46
 msgid "PDU plug"
 msgid_plural "PDU plugs"
-msgstr[0] "Güç Dağıtıcı Fişleri"
+msgstr[0] "Güç dağıtıcı fişi"
+msgstr[1] "Güç dağıtıcı fişleri"
 
 #: src/Pdu_Plug.php:122
 msgid "Add a new plug"
@@ -9950,7 +10077,8 @@ msgstr "Herhangi bir fiş bulunamadı"
 #: src/APIClient.php:317
 msgid "Log"
 msgid_plural "Logs"
-msgstr[0] "Günlükler"
+msgstr[0] "Günlük"
+msgstr[1] "Günlükler"
 
 #: src/OlaLevel.php:99 src/SlaLevel.php:93
 msgid "Add an escalation level"
@@ -9997,12 +10125,14 @@ msgstr "%1$s%2$d dakika %3$d saniye"
 msgid "%1$s%2$d minute"
 msgid_plural "%1$s%2$d minutes"
 msgstr[0] "%1$s%2$d dakika"
+msgstr[1] "%1$s%2$d dakika"
 
 #: src/Html.php:457
 #, php-format
 msgid "%1$s%2$s second"
 msgid_plural "%1$s%2$s seconds"
 msgstr[0] "%1$s%2$s saniye"
+msgstr[1] "%1$s%2$s saniye"
 
 #: src/Html.php:593 src/Api/API.php:1943 src/Api/API.php:2056
 #: src/Api/API.php:2621
@@ -10040,7 +10170,8 @@ msgstr "SQL kopyası: salt okunur"
 #: src/Event.php:170 src/Entity.php:2136
 msgid "Reservation"
 msgid_plural "Reservations"
-msgstr[0] "Ayırtmalar"
+msgstr[0] "Ayırtma"
+msgstr[1] "Ayırtmalar"
 
 #: src/Html.php:1874 src/Config.php:3123
 msgid "Plugins"
@@ -10120,6 +10251,7 @@ msgstr "geçen Cumartesi"
 msgid "- %d week"
 msgid_plural "- %d weeks"
 msgstr[0] "- %d hafta"
+msgstr[1] "- %d hafta"
 
 #: src/Html.php:3213
 msgid "Beginning of the month"
@@ -10130,6 +10262,7 @@ msgstr "Ayın başlangıcı"
 msgid "- %d month"
 msgid_plural "- %d months"
 msgstr[0] "- %d ay"
+msgstr[1] "- %d ay"
 
 #: src/Html.php:3221
 msgid "Beginning of the year"
@@ -10140,24 +10273,28 @@ msgstr "Yılın başlangıcı"
 msgid "- %d year"
 msgid_plural "- %d years"
 msgstr[0] "- %d yıl"
+msgstr[1] "- %d yıl"
 
 #: src/Html.php:3240
 #, php-format
 msgid "+ %d week"
 msgid_plural "+ %d weeks"
 msgstr[0] "+ %d hafta"
+msgstr[1] "+ %d hafta"
 
 #: src/Html.php:3244
 #, php-format
 msgid "+ %d month"
 msgid_plural "+ %d months"
 msgstr[0] "+ %d ay"
+msgstr[1] "+ %d ay"
 
 #: src/Html.php:3248
 #, php-format
 msgid "+ %d year"
 msgid_plural "+ %d years"
 msgstr[0] "+ %d yıl"
+msgstr[1] "+ %d yıl"
 
 #: src/Html.php:3843
 msgid "Available variables"
@@ -10253,7 +10390,8 @@ msgstr "sonraki ay"
 #: src/Notepad.php:52 src/Notepad.php:184
 msgid "Note"
 msgid_plural "Notes"
-msgstr[0] "Notlar"
+msgstr[0] "Not"
+msgstr[1] "Notlar"
 
 #: src/Notepad.php:254 src/NotificationTargetCommonITILObject.php:1724
 msgid "Last updater"
@@ -10438,6 +10576,7 @@ msgstr "İsteyen konumu"
 msgid "Supplier"
 msgid_plural "Suppliers"
 msgstr[0] "Sağlayıcı"
+msgstr[1] "Sağlayıcılar"
 
 #: src/NotificationTargetCommonITILObject.php:1710
 msgid "Supplier ID"
@@ -10529,6 +10668,7 @@ msgstr "Konum"
 msgid "Followup"
 msgid_plural "Followups"
 msgstr[0] "İzleme"
+msgstr[1] "İzlemeler"
 
 #: src/NotificationTargetCommonITILObject.php:1883
 #: src/NotificationTargetCommonITILObject.php:1900
@@ -10542,6 +10682,7 @@ msgstr "İşleniyor %1$s"
 msgid "Day"
 msgid_plural "Days"
 msgstr[0] "Gün"
+msgstr[1] "Gün"
 
 #: src/NotificationTargetCommonITILObject.php:1896
 msgid "No defined category"
@@ -10560,6 +10701,7 @@ msgstr "Veritabanındaki durum değeri"
 msgid "Mail server"
 msgid_plural "Mail servers"
 msgstr[0] "E-posta sunucusu"
+msgstr[1] "E-posta sunucuları"
 
 #. TRANS: for mail connection system
 #: src/AuthMail.php:127 src/Toolbox.php:1928 src/MailCollector.php:481
@@ -10619,12 +10761,14 @@ msgstr "Bir arızayı doğrula"
 #: src/DeviceGenericModel.php:42
 msgid "Device generic model"
 msgid_plural "Device generic models"
-msgstr[0] "Genel aygıt modelleri"
+msgstr[0] "Genel aygıt modeli"
+msgstr[1] "Genel aygıt modelleri"
 
 #: src/SavedSearch_Alert.php:57
 msgid "Saved search alert"
 msgid_plural "Saved searches alerts"
-msgstr[0] "Kaydedilmiş arama uyarıları"
+msgstr[0] "Kaydedilmiş arama uyarısı"
+msgstr[1] "Kaydedilmiş arama uyarıları"
 
 #: src/SavedSearch_Alert.php:156 src/SavedSearch_Alert.php:272
 msgid "Operator"
@@ -10651,7 +10795,8 @@ msgstr "şimdi oluştur"
 #: src/SavedSearch_Alert.php:231
 msgid "Notification used:"
 msgid_plural "Notifications used:"
-msgstr[0] "Kullanılan bildirimler:"
+msgstr[0] "Kullanılan bildirim:"
+msgstr[1] "Kullanılan bildirimler:"
 
 #: src/SavedSearch_Alert.php:255
 msgid "Add an alert"
@@ -10697,17 +10842,20 @@ msgstr "Tümünü bir kerede sil"
 #: src/LineType.php:38
 msgid "Line type"
 msgid_plural "Line types"
-msgstr[0] "Hat türleri"
+msgstr[0] "Hat türü"
+msgstr[1] "Hat türleri"
 
 #: src/RuleRightParameter.php:83
 msgid "LDAP criterion"
 msgid_plural "LDAP criteria"
-msgstr[0] "LDAP ölçütleri"
+msgstr[0] "LDAP ölçütü"
+msgstr[1] "LDAP ölçütleri"
 
 #: src/ContractType.php:39
 msgid "Contract type"
 msgid_plural "Contract types"
-msgstr[0] "Sözleşme türleri"
+msgstr[0] "Sözleşme türü"
+msgstr[1] "Sözleşme türleri"
 
 #: src/RuleRightCollection.php:85
 msgid "Entities assignment"
@@ -10741,12 +10889,14 @@ msgstr "Uzak kodu"
 #: src/KnowbaseItemCategory.php:46 src/Profile.php:1805
 msgid "Knowledge base category"
 msgid_plural "Knowledge base categories"
-msgstr[0] "Bilgi bankası kategorileri"
+msgstr[0] "Bilgi bankası kategorisi"
+msgstr[1] "Bilgi bankası kategorileri"
 
 #: src/DeviceNetworkCard.php:43
 msgid "Network card"
 msgid_plural "Network cards"
-msgstr[0] "Ağ kartları"
+msgstr[0] "Ağ kartı"
+msgstr[1] "Ağ kartları"
 
 #: src/DeviceNetworkCard.php:68 src/DeviceNetworkCard.php:97
 msgid "MAC address by default"
@@ -10761,6 +10911,7 @@ msgstr "Akış"
 msgid "Budget"
 msgid_plural "Budgets"
 msgstr[0] "Bütçe"
+msgstr[1] "Bütçeler"
 
 #: src/Budget.php:84 src/User.php:255
 msgid "Main"
@@ -10781,27 +10932,32 @@ msgstr "Bütçede kalan tutar"
 #: src/PassiveDCEquipmentType.php:39
 msgid "Passive device type"
 msgid_plural "Passive device types"
-msgstr[0] "Pasif aygıt türleri"
+msgstr[0] "Pasif aygıt türü"
+msgstr[1] "Pasif aygıt türleri"
 
 #: src/PhoneType.php:39 src/Rule.php:432
 msgid "Phone type"
 msgid_plural "Phone types"
-msgstr[0] "Telefon türleri"
+msgstr[0] "Telefon türü"
+msgstr[1] "Telefon türleri"
 
 #: src/DeviceDriveModel.php:42
 msgid "Device drive model"
 msgid_plural "Device drive models"
-msgstr[0] "Aygıt sürücü modelleri"
+msgstr[0] "Aygıt sürücü modeli"
+msgstr[1] "Aygıt sürücü modelleri"
 
 #: src/DeviceMotherboardModel.php:42
 msgid "System board model"
 msgid_plural "System board models"
-msgstr[0] "Sistem kartı modelleri"
+msgstr[0] "Sistem kartı modeli"
+msgstr[1] "Sistem kartı modelleri"
 
 #: src/Socket.php:320
 msgid "Socket"
 msgid_plural "Sockets"
-msgstr[0] "Soketler"
+msgstr[0] "Soket"
+msgstr[1] "Soketler"
 
 #: src/Socket.php:374 src/Socket.php:436 src/Socket.php:710 src/Socket.php:819
 #: src/Socket.php:854 src/Socket.php:910
@@ -10869,7 +11025,8 @@ msgstr "%1$s - %2$s: %3$s"
 #: src/Item_Devices.php:982 src/KnowbaseItem.php:2087
 msgid "View"
 msgid_plural "Views"
-msgstr[0] "Görünümler"
+msgstr[0] "Görünüm"
+msgstr[1] "Görünümler"
 
 #: src/Item_Devices.php:1023 src/CommonITILValidation.php:1556
 #, php-format
@@ -10903,22 +11060,26 @@ msgstr "Şunun güncellemesi "
 #: src/DeviceSimcardType.php:43
 msgid "Simcard type"
 msgid_plural "Simcard types"
-msgstr[0] "SIM kart türleri"
+msgstr[0] "SIM kart türü"
+msgstr[1] "SIM kart türleri"
 
 #: src/DatabaseInstanceType.php:38
 msgid "Database instance type"
 msgid_plural "Database instance types"
-msgstr[0] "Veritabanı kopyası türleri"
+msgstr[0] "Veritabanı kopyası türü"
+msgstr[1] "Veritabanı kopyası türleri"
 
 #: src/DatabaseInstanceCategory.php:38
 msgid "Database instance category"
 msgid_plural "Database instance categories"
-msgstr[0] "Veritabanı kopyası kategorileri"
+msgstr[0] "Veritabanı kopyası kategorisi"
+msgstr[1] "Veritabanı kopyası kategorileri"
 
 #: src/ProjectTaskTeam.php:71
 msgid "Task team"
 msgid_plural "Task teams"
-msgstr[0] "Görev takımları"
+msgstr[0] "Görev ekibi"
+msgstr[1] "Görev ekipleri"
 
 #: src/ProjectTaskTeam.php:169
 msgid "An item type is mandatory"
@@ -10935,12 +11096,14 @@ msgstr "Proje görevi alanının doldurulması zorunludur"
 #: src/PassiveDCEquipmentModel.php:39
 msgid "Passive device model"
 msgid_plural "Passive device models"
-msgstr[0] "Pasif aygıt modelleri"
+msgstr[0] "Pasif aygıt modeli"
+msgstr[1] "Pasif aygıt modelleri"
 
 #: src/Document.php:54
 msgid "Document"
 msgid_plural "Documents"
 msgstr[0] "Belge"
+msgstr[1] "Belgeler"
 
 #: src/Document.php:181 src/Document.php:1112 src/Document.php:1211
 #: src/Document.php:1310
@@ -11382,7 +11545,8 @@ msgstr "Destek kayıtlarına izleme ekle (izleyen)"
 #: src/PCIVendor.php:44
 msgid "PCI vendor"
 msgid_plural "PCI vendors"
-msgstr[0] "PCI satıcıları"
+msgstr[0] "PCI üreticisi"
+msgstr[1] "PCI üreticileri"
 
 #: src/PCIVendor.php:52 src/PCIVendor.php:70 src/USBVendor.php:52
 #: src/USBVendor.php:70
@@ -11397,7 +11561,8 @@ msgstr "Aygıt kodu"
 #: src/ProjectTask_Ticket.php:65
 msgid "Link Ticket/Project task"
 msgid_plural "Links Ticket/Project task"
-msgstr[0] "Destek Kaydı/Proje Görevi Bağlantıları"
+msgstr[0] "Destek kaydı/Proje görevi bağlantısı"
+msgstr[1] "Destek kaydı/Proje görevi bağlantıları"
 
 #: src/ProjectTask_Ticket.php:193
 msgid "Create a ticket from this task"
@@ -11410,7 +11575,8 @@ msgstr "Proje görevi ekle"
 #: src/Lock.php:52
 msgid "Lock"
 msgid_plural "Locks"
-msgstr[0] "Kilitler"
+msgstr[0] "Kilit"
+msgstr[1] "Kilitler"
 
 #: src/Lock.php:87
 msgid "Locked items"
@@ -11427,7 +11593,8 @@ msgstr "Kilidinin açılması gereken öge türünü seçin"
 #: src/VirtualMachineState.php:39
 msgid "State of the virtual machine"
 msgid_plural "States of the virtual machine"
-msgstr[0] "Sanal makine durumları"
+msgstr[0] "Sanal makine durumu"
+msgstr[1] "Sanal makine durumları"
 
 #: src/Certificate_Item.php:462 src/Certificate.php:223
 #: templates/pages/management/certificate.html.twig:42
@@ -11446,7 +11613,8 @@ msgstr "Süresi dolmaz"
 #: src/ITILTemplatePredefinedField.php:45
 msgid "Predefined field"
 msgid_plural "Predefined fields"
-msgstr[0] "Hazır alanlar"
+msgstr[0] "Hazır alan"
+msgstr[1] "Hazır alanlar"
 
 #: src/ITILTemplatePredefinedField.php:286
 msgid "Add a predefined field"
@@ -11455,26 +11623,30 @@ msgstr "Hazır alan ekle"
 #: src/Item_OperatingSystem.php:45
 msgid "Item operating system"
 msgid_plural "Item operating systems"
-msgstr[0] "Öge işletim sistemleri"
+msgstr[0] "Öge işletim sistemi"
+msgstr[1] "Öge işletim sistemleri"
 
 #: src/Item_OperatingSystem.php:151 src/Item_OperatingSystem.php:326
 #: src/Item_OperatingSystem.php:513 src/Item_OperatingSystem.php:621
 #: src/Software.php:574
 msgid "Architecture"
 msgid_plural "Architectures"
-msgstr[0] "Mimariler"
+msgstr[0] "Mimari"
+msgstr[1] "Mimariler"
 
 #: src/Item_OperatingSystem.php:338 src/Item_OperatingSystem.php:531
 #: src/OperatingSystemKernel.php:40
 msgid "Kernel"
 msgid_plural "Kernels"
-msgstr[0] "Çekirdekler"
+msgstr[0] "Çekirdek"
+msgstr[1] "Çekirdekler"
 
 #: src/Item_OperatingSystem.php:347 src/Item_OperatingSystem.php:572
 #: src/Item_OperatingSystem.php:624 src/OperatingSystemEdition.php:40
 msgid "Edition"
 msgid_plural "Editions"
-msgstr[0] "Sürümler"
+msgstr[0] "Sürüm"
+msgstr[1] "Sürümler"
 
 #: src/Item_OperatingSystem.php:356 src/Item_OperatingSystem.php:413
 #: src/Item_OperatingSystem.php:500
@@ -11488,7 +11660,8 @@ msgstr "İşletim Sistemi"
 #: src/Item_OperatingSystem.php:554 src/OperatingSystemKernelVersion.php:40
 msgid "Kernel version"
 msgid_plural "Kernel versions"
-msgstr[0] "Çekirdek sürümleri"
+msgstr[0] "Çekirdek sürümü"
+msgstr[1] "Çekirdek sürümleri"
 
 #: src/NotificationTargetProblem.php:47
 msgid "New problem"
@@ -11946,7 +12119,8 @@ msgstr "%s kopyası"
 #: src/RefusedEquipment.php:49
 msgid "Equipment refused by rules log"
 msgid_plural "Equipments refused by rules log"
-msgstr[0] "Kurallar günlüğü tarafından reddedilen aygıtlar"
+msgstr[0] "Kurallar günlüğü tarafından reddedilen aygıt"
+msgstr[1] "Kurallar günlüğü tarafından reddedilen aygıtlar"
 
 #: src/RefusedEquipment.php:133
 msgid "Method"
@@ -12104,7 +12278,8 @@ msgstr "Tüm planlara bakın"
 #: src/WifiNetwork.php:47
 msgid "Wifi network"
 msgid_plural "Wifi networks"
-msgstr[0] "WiFi ağları"
+msgstr[0] "Wi-Fi ağı"
+msgstr[1] "Wi-Fi ağları"
 
 #: src/WifiNetwork.php:69
 msgid "Ad-hoc"
@@ -12146,6 +12321,7 @@ msgstr "Wi-Fi ağı türü"
 msgid "Ticket cost"
 msgid_plural "Ticket costs"
 msgstr[0] "Destek kaydı maliyeti"
+msgstr[1] "Destek kaydı maliyetleri"
 
 #: src/CommonITILCost.php:574
 msgid "Item duration"
@@ -12154,7 +12330,8 @@ msgstr "Öge süresi"
 #: src/DeviceHardDriveModel.php:42
 msgid "Device hard drive model"
 msgid_plural "Device hard drive models"
-msgstr[0] "Aygıt sabit disk modelleri"
+msgstr[0] "Aygıt sabit disk modeli"
+msgstr[1] "Aygıt sabit disk modelleri"
 
 #: src/Item_DeviceBattery.php:53
 msgid "Manufacturing date"
@@ -12249,7 +12426,8 @@ msgstr "Herhangi bir öge türü tanımlanmamış"
 #: src/PDUModel.php:39
 msgid "PDU model"
 msgid_plural "PDU models"
-msgstr[0] "Güç Dağıtıcı Modelleri"
+msgstr[0] "Güç dağıtıcı modeli"
+msgstr[1] "Güç dağıtıcı modelleri"
 
 #: src/NotificationMailing.php:95
 msgid "This is a test email."
@@ -12284,7 +12462,8 @@ msgstr "%s kullanıcısı için kuyruğa bir e-posta eklendi"
 #: src/DeviceBatteryType.php:38
 msgid "Battery type"
 msgid_plural "Battery types"
-msgstr[0] "Pil türleri"
+msgstr[0] "Pil türü"
+msgstr[1] "Pil türleri"
 
 #: src/SLM.php:56 templates/components/itilobject/fields_panel.html.twig:275
 msgid "Service level"
@@ -12547,12 +12726,14 @@ msgstr "Öge zaten tanımlanmış"
 #: src/CertificateType.php:43
 msgid "Certificate type"
 msgid_plural "Certificate types"
-msgstr[0] "Sertifika türleri"
+msgstr[0] "Sertifika türü"
+msgstr[1] "Sertifika türleri"
 
 #: src/Enclosure.php:59
 msgid "Enclosure"
 msgid_plural "Enclosures"
-msgstr[0] "Kutular"
+msgstr[0] "Kutu"
+msgstr[1] "Kutular"
 
 #: src/RuleDictionnaryPrinterTypeCollection.php:44
 msgid "Dictionnary of printer types"
@@ -12561,7 +12742,8 @@ msgstr "Yazıcı türleri sözlüğü"
 #: src/SoftwareLicenseType.php:41
 msgid "License type"
 msgid_plural "License types"
-msgstr[0] "Lisans türleri"
+msgstr[0] "Lisans türü"
+msgstr[1] "Lisans türleri"
 
 #: src/NotificationAjax.php:92
 msgid "Error inserting browser notification to queue"
@@ -12575,7 +12757,8 @@ msgstr "%s tarayıcı bildirimi sorguya eklendi"
 #: src/Change_Problem.php:63
 msgid "Link Problem/Change"
 msgid_plural "Links Problem/Change"
-msgstr[0] "Sorun/Değişiklik Bağlantısı"
+msgstr[0] "Sorun/Değişiklik bağlantısı"
+msgstr[1] "Sorun/Değişiklik bağlantıları"
 
 #: src/Change_Problem.php:179
 msgid "Create a change from this problem"
@@ -12585,7 +12768,8 @@ msgstr "Bu sorun üzerine bir değişiklik oluşturun"
 #: src/Rack.php:63
 msgid "Rack"
 msgid_plural "Racks"
-msgstr[0] "Kabinler"
+msgstr[0] "Kabin"
+msgstr[1] "Kabinler"
 
 #: src/Rack.php:173 templates/pages/assets/rack.html.twig:101
 msgid "Number of units"
@@ -12800,7 +12984,8 @@ msgstr "Geçmiş ayırtmalar"
 #: src/ObjectLock.php:62
 msgid "Object Lock"
 msgid_plural "Object Locks"
-msgstr[0] "Nesne Kilitleri"
+msgstr[0] "Nesne kilidi"
+msgstr[1] "Nesne kilitleri"
 
 #: src/ObjectLock.php:156 src/ObjectLock.php:270
 msgid "Reload page?"
@@ -12948,18 +13133,21 @@ msgstr "Varsayılan sorun kalıbı"
 #: src/Reminder.php:929 src/Reminder.php:931
 msgid "Public reminder"
 msgid_plural "Public reminders"
-msgstr[0] "Herkese açık anımsatıcılar"
+msgstr[0] "Herkese açık anımsatıcı"
+msgstr[1] "Herkese açık anımsatıcılar"
 
 #: src/Profile.php:904 src/Profile.php:1153 src/Profile.php:2843
 #: src/RSSFeed.php:986 src/RSSFeed.php:988
 msgid "Public RSS feed"
 msgid_plural "Public RSS feeds"
-msgstr[0] "Herkese açık RSS akışları"
+msgstr[0] "Herkese açık RSS akışı"
+msgstr[1] "Herkese açık RSS akışları"
 
 #: src/Profile.php:950 src/Profile.php:2025 src/Computer.php:80
 msgid "Computer"
 msgid_plural "Computers"
 msgstr[0] "Bilgisayar"
+msgstr[1] "Bilgisayarlar"
 
 #: src/Profile.php:980
 msgid "Simcard PIN/PUK"
@@ -12969,6 +13157,7 @@ msgstr "SIM kart PIN/PUK"
 msgid "Contact"
 msgid_plural "Contacts"
 msgstr[0] "İlgili"
+msgstr[1] "İlgililer"
 
 #: src/Profile.php:1048 src/Profile.php:2212
 msgid "Financial and administratives information"
@@ -12979,11 +13168,13 @@ msgstr "Mali ve idari bilgiler"
 msgid "Certificate"
 msgid_plural "Certificates"
 msgstr[0] "Sertifika"
+msgstr[1] "Sertifikalar"
 
 #: src/Profile.php:1070 src/Domain.php:66
 msgid "Domain"
 msgid_plural "Domains"
-msgstr[0] "Etki alanları"
+msgstr[0] "Etki alanı"
+msgstr[1] "Etki alanları"
 
 #: src/Profile.php:1089
 msgid "Manageable domain records"
@@ -12992,12 +13183,14 @@ msgstr "Yönetilebilir etki alanı kayıtları"
 #: src/Profile.php:1156 src/Profile.php:2829
 msgid "Public saved search"
 msgid_plural "Public saved searches"
-msgstr[0] "Herkese açık kaydedilmiş aramalar"
+msgstr[0] "Herkese açık kaydedilmiş arama"
+msgstr[1] "Herkese açık kaydedilmiş aramalar"
 
 #: src/Profile.php:1159 src/Profile.php:2273 src/Report.php:47
 msgid "Report"
 msgid_plural "Reports"
-msgstr[0] "Raporlar"
+msgstr[0] "Rapor"
+msgstr[1] "Raporlar"
 
 #: src/Profile.php:1165
 msgid "Administration of reservations"
@@ -13022,12 +13215,14 @@ msgstr "Varsayılan %1$s kalıbı"
 #: src/Profile.php:1255 src/Notification_NotificationTemplate.php:60
 msgid "Template"
 msgid_plural "Templates"
-msgstr[0] "Kalıplar"
+msgstr[0] "Kalıp"
+msgstr[1] "Kalıplar"
 
 #: src/Profile.php:1264
 msgid "ITIL object"
 msgid_plural "ITIL objects"
-msgstr[0] "ITIL nesneleri"
+msgstr[0] "ITIL nesnesi"
+msgstr[1] "ITIL nesneleri"
 
 #: src/Profile.php:1274 src/TicketRecurrent.php:53
 msgid "Recurrent tickets"
@@ -13089,7 +13284,8 @@ msgstr "Arama sonuçları görünümü"
 #: src/Profile.php:1789
 msgid "Global dropdown"
 msgid_plural "Global dropdowns"
-msgstr[0] "Genel açılan kutular"
+msgstr[0] "Genel açılan kutu"
+msgstr[1] "Genel açılan kutular"
 
 #: src/Profile.php:1792
 msgid "Entity dropdowns"
@@ -13098,17 +13294,20 @@ msgstr "Birim açılan kutuları"
 #: src/Profile.php:1800
 msgid "Ticket category"
 msgid_plural "Ticket categories"
-msgstr[0] "Destek kaydı kategorileri"
+msgstr[0] "Destek kaydı kategorisi"
+msgstr[1] "Destek kaydı kategorileri"
 
 #: src/Profile.php:1810 src/CommonITILTask.php:728 src/TaskCategory.php:81
 msgid "Task category"
 msgid_plural "Task categories"
 msgstr[0] "Görev kategorisi"
+msgstr[1] "Görev kategorileri"
 
 #: src/Profile.php:1815 src/State.php:47
 msgid "Status of items"
 msgid_plural "Statuses of items"
-msgstr[0] "Ögelerin durumları"
+msgstr[0] "Ögelerin durumu"
+msgstr[1] "Ögelerin durumları"
 
 #: src/Profile.php:1845 src/LevelAgreement.php:185 src/LevelAgreement.php:680
 msgid "SLM"
@@ -13117,7 +13316,8 @@ msgstr "Hizmet Düzeyi Yönetimi"
 #: src/Profile.php:1850 src/LineOperator.php:47
 msgid "Line operator"
 msgid_plural "Line operators"
-msgstr[0] "Hat işletmecileri"
+msgstr[0] "Hat işletmecisi"
+msgstr[1] "Hat işletmecileri"
 
 #: src/Profile.php:2428 src/RuleTicketCollection.php:68 src/RuleTicket.php:50
 msgid "Business rules for tickets"
@@ -13185,17 +13385,20 @@ msgstr[1] "%d ay"
 #: src/Contract_Item.php:86
 msgid "Link Contract/Item"
 msgid_plural "Links Contract/Item"
-msgstr[0] "İlgili/Öge Bağlantısı"
+msgstr[0] "İlgili/Öge bağlantısı"
+msgstr[1] "İlgili/Öge bağlantıları"
 
 #: src/Contract_Item.php:391 src/Cartridge.php:900 src/Cartridge.php:903
 msgid "month"
 msgid_plural "months"
 msgstr[0] "ay"
+msgstr[1] "ay"
 
 #: src/SolutionType.php:39
 msgid "Solution type"
 msgid_plural "Solution types"
-msgstr[0] "Çözüm türleri"
+msgstr[0] "Çözüm türü"
+msgstr[1] "Çözüm türleri"
 
 #: src/RecurrentChange.php:48
 msgid "Recurrent changes"
@@ -13256,6 +13459,7 @@ msgstr "İlk oluşturma"
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] "%d yıl"
+msgstr[1] "%d yıl"
 
 #: src/CommonITILRecurrent.php:348
 #, php-format
@@ -13321,6 +13525,7 @@ msgstr "E-posta uyarıları"
 msgid "Associated supplier"
 msgid_plural "Associated suppliers"
 msgstr[0] "İlgili sağlayıcı"
+msgstr[1] "İlgili sağlayıcılar"
 
 #: src/Contract.php:953
 msgid "Contracts expired in the last 30 days"
@@ -13444,7 +13649,8 @@ msgstr "Sertifika uyarısı gönderilemedi"
 #: src/DeviceMemoryModel.php:42
 msgid "Device memory model"
 msgid_plural "Device memory models"
-msgstr[0] "Aygıt bellek modelleri"
+msgstr[0] "Aygıt bellek modeli"
+msgstr[1] "Aygıt bellek modelleri"
 
 #: src/PurgeLogs.php:40 src/Config.php:2481
 msgid "Logs purge"
@@ -13457,7 +13663,8 @@ msgstr "Geçmişi temizle"
 #: src/DeviceGenericType.php:39
 msgid "Generic type"
 msgid_plural "Generic types"
-msgstr[0] "Genel türler"
+msgstr[0] "Genel tür"
+msgstr[1] "Genel türler"
 
 #: src/Session.php:177 src/Session.php:185
 msgid "You don't have right to connect"
@@ -13504,6 +13711,7 @@ msgstr "Yönetim türü"
 msgid "Server room"
 msgid_plural "Server rooms"
 msgstr[0] "Sunucu odası"
+msgstr[1] "Sunucu odaları"
 
 #: src/DCRoom.php:135 src/DCRoom.php:281
 msgid "Number of columns"
@@ -13704,7 +13912,8 @@ msgstr "1/4"
 #: src/DeviceFirmwareModel.php:41
 msgid "Device firmware model"
 msgid_plural "Device firmware models"
-msgstr[0] "Aygıt gömülü yazılım modelleri"
+msgstr[0] "Aygıt gömülü yazılım modeli"
+msgstr[1] "Aygıt gömülü yazılım modelleri"
 
 #: src/Report.php:72
 msgid "Default report"
@@ -13747,7 +13956,8 @@ msgstr "2. aygıt"
 #: src/Report.php:469 src/Report.php:478 src/CommonDeviceType.php:38
 msgid "Device type"
 msgid_plural "Device types"
-msgstr[0] "Aygıt türleri"
+msgstr[0] "Aygıt türü"
+msgstr[1] "Aygıt türleri"
 
 #: src/Report.php:470 src/Report.php:479
 msgid "Device name"
@@ -13760,18 +13970,21 @@ msgstr "Kapı Numarası"
 #: src/ComputerModel.php:39 src/Rule.php:300
 msgid "Computer model"
 msgid_plural "Computer models"
-msgstr[0] "Bilgisayar modelleri"
+msgstr[0] "Bilgisayar modeli"
+msgstr[1] "Bilgisayar modelleri"
 
 #: src/ImageResolution.php:40
 msgctxt "image"
 msgid "Resolution"
 msgid_plural "Resolutions"
-msgstr[0] "Çözümler"
+msgstr[0] "Çözüm"
+msgstr[1] "Çözümler"
 
 #: src/Change_Ticket.php:61
 msgid "Link Ticket/Change"
 msgid_plural "Links Ticket/Change"
-msgstr[0] "Destek Kaydı/Değişiklik Bağlantısı"
+msgstr[0] "Destek kaydı/Değişiklik bağlantıları"
+msgstr[1] "Destek kaydı/Değişiklik bağlantıları"
 
 #: src/Change_Ticket.php:299 src/Problem_Ticket.php:329
 msgid "Solve tickets"
@@ -13784,7 +13997,8 @@ msgstr "Bu destek kaydı üzerine bir değişiklik oluşturun"
 #: src/Database.php:50 src/Config.php:793
 msgid "Database"
 msgid_plural "Databases"
-msgstr[0] "Veritabanları"
+msgstr[0] "Veritabanı"
+msgstr[1] "Veritabanları"
 
 #: src/Database.php:90 src/Database.php:403 src/DatabaseInstance.php:224
 #: templates/generic_show_form.html.twig:75
@@ -13880,6 +14094,7 @@ msgstr "Aygıtlar artık kullanılmıyorsa"
 msgid "Phone"
 msgid_plural "Phones"
 msgstr[0] "Telefon"
+msgstr[1] "Telefonlar"
 
 #: src/Transfer.php:3931
 msgid "If phones are no longer used"
@@ -13935,7 +14150,8 @@ msgstr "Aktarılacak ögelerin listesini boşaltmak için"
 #: src/DevicePci.php:43
 msgid "PCI device"
 msgid_plural "PCI devices"
-msgstr[0] "PCI aygıtları"
+msgstr[0] "PCI aygıtı"
+msgstr[1] "PCI aygıtları"
 
 #: src/DevicePci.php:95
 msgid "Other component"
@@ -13957,7 +14173,8 @@ msgstr "E-posta adresi geçersiz"
 msgctxt "camera"
 msgid "Resolution"
 msgid_plural "Resolutions"
-msgstr[0] "Çözümler"
+msgstr[0] "Çözüm"
+msgstr[1] "Çözümler"
 
 #: src/Item_DeviceCamera_ImageResolution.php:151
 msgid "Is Video"
@@ -13971,12 +14188,14 @@ msgstr "Devingen mi?"
 #: src/DomainType.php:40
 msgid "Domain type"
 msgid_plural "Domain types"
-msgstr[0] "Etki alanı türleri"
+msgstr[0] "Etki alanı türü"
+msgstr[1] "Etki alanı türleri"
 
 #: src/DeviceGraphicCardModel.php:42
 msgid "Device graphic card model"
 msgid_plural "Device graphic card models"
-msgstr[0] "Aygıt görüntü kartı modelleri"
+msgstr[0] "Aygıt görüntü kartı modeli"
+msgstr[1] "Aygıt görüntü kartı modelleri"
 
 #: src/MailCollector.php:238
 msgid ""
@@ -14214,7 +14433,8 @@ msgstr "D=Devingen"
 #: src/NetworkName.php:65
 msgid "Network name"
 msgid_plural "Network names"
-msgstr[0] "Ağ adları"
+msgstr[0] "Ağ adı"
+msgstr[1] "Ağ adları"
 
 #: src/NetworkName.php:155
 msgid ""
@@ -14286,7 +14506,8 @@ msgstr ""
 #: src/NotificationTarget.php:381
 msgid "Recipient"
 msgid_plural "Recipients"
-msgstr[0] "Alıcılar"
+msgstr[0] "Alıcı"
+msgstr[1] "Alıcılar"
 
 #: src/NetworkPortInstantiation.php:85
 msgid "No options available for this port type."
@@ -14466,7 +14687,8 @@ msgstr "Belirtilen ögeler yeniden işlenemedi!"
 msgctxt "camera"
 msgid "Format"
 msgid_plural "Formats"
-msgstr[0] "Biçimler"
+msgstr[0] "Biçim"
+msgstr[1] "Biçimler"
 
 #: src/DocumentType.php:49 src/DocumentType.php:105
 msgid "Authorized upload"
@@ -14483,7 +14705,8 @@ msgstr "Bir kurallı ifade olabilir"
 #: src/DocumentType.php:63
 msgid "Document type"
 msgid_plural "Document types"
-msgstr[0] "Belge türleri"
+msgstr[0] "Belge türü"
+msgstr[1] "Belge türleri"
 
 #: src/DocumentType.php:176 src/DocumentType.php:177
 #: templates/layout/parts/user_header.html.twig:79
@@ -14495,6 +14718,7 @@ msgstr "Yardım"
 msgid "Antivirus"
 msgid_plural "Antiviruses"
 msgstr[0] "Antivirüs"
+msgstr[1] "Antivirüsler"
 
 #: src/ComputerAntivirus.php:125 src/ComputerAntivirus.php:204
 #: src/ComputerAntivirus.php:290 src/ComputerAntivirus.php:365
@@ -14555,18 +14779,21 @@ msgctxt "cartridge"
 msgid "New"
 msgid_plural "New"
 msgstr[0] "Yeni"
+msgstr[1] "Yeni"
 
 #: src/Cartridge.php:398 src/Cartridge.php:453 src/Cartridge.php:700
 msgctxt "cartridge"
 msgid "Used"
 msgid_plural "Used"
 msgstr[0] "Kullanılmış"
+msgstr[1] "Kullanılmış"
 
 #: src/Cartridge.php:400 src/Cartridge.php:455 src/Cartridge.php:702
 msgctxt "cartridge"
 msgid "Worn"
 msgid_plural "Worn"
 msgstr[0] "Yıpranmış"
+msgstr[1] "Yıpranmış"
 
 #: src/Cartridge.php:406
 #, php-format
@@ -14602,6 +14829,7 @@ msgstr "Yazıcı sayacı"
 msgid "%d printed page"
 msgid_plural "%d printed pages"
 msgstr[0] "%d basılmış sayfa"
+msgstr[1] "%d basılmış sayfa"
 
 #: src/Cartridge.php:882
 msgid "Counter error"
@@ -14648,11 +14876,13 @@ msgstr "Kullanılmış kartuşlar"
 msgid "Cartridge model"
 msgid_plural "Cartridge models"
 msgstr[0] "Kartuş modeli"
+msgstr[1] "Kartuş modelleri"
 
 #: src/Cartridge.php:1089 src/CartridgeItemType.php:39
 msgid "Cartridge type"
 msgid_plural "Cartridge types"
-msgstr[0] "Kartuş türleri"
+msgstr[0] "Kartuş türü"
+msgstr[1] "Kartuş türleri"
 
 #: src/Cartridge.php:1095
 msgid "Printed pages"
@@ -14661,7 +14891,8 @@ msgstr "Yazdırılmış sayfa"
 #: src/IPNetmask.php:71
 msgid "Subnet mask"
 msgid_plural "Subnet masks"
-msgstr[0] "Alt ağ maskeleri"
+msgstr[0] "Alt ağ maskesi"
+msgstr[1] "Alt ağ maskeleri"
 
 #: src/Change.php:500 src/Change.php:516 src/NotificationTargetChange.php:272
 msgid "Control list"
@@ -14691,7 +14922,8 @@ msgstr "Değerlendirme"
 #: src/ContentTemplates/Parameters/TicketParameters.php:78
 msgid "Approval"
 msgid_plural "Approvals"
-msgstr[0] "Onaylar"
+msgstr[0] "Onay"
+msgstr[1] "Onaylar"
 
 #: src/Change.php:578 src/Problem.php:710
 msgctxt "status"
@@ -14743,6 +14975,7 @@ msgstr "Bu öge için yeni değişiklik..."
 msgid "Last %d change"
 msgid_plural "Last %d changes"
 msgstr[0] "Son %d değişiklik"
+msgstr[1] "Son %d değişiklik"
 
 #: src/Change.php:1012 src/Change.php:1059 src/Change.php:1748
 msgid "No change found."
@@ -14797,7 +15030,8 @@ msgstr "Ethernet soketi"
 #: src/DeviceGraphicCard.php:41
 msgid "Graphics card"
 msgid_plural "Graphics cards"
-msgstr[0] "Grafik kartları"
+msgstr[0] "Grafik kartı"
+msgstr[1] "Grafik kartları"
 
 #: src/DeviceGraphicCard.php:51 src/DeviceGraphicCard.php:84
 #: src/DeviceGraphicCard.php:164 src/DeviceMotherboard.php:51
@@ -14828,7 +15062,8 @@ msgstr "CIDR olmayan"
 #: src/DevicePciModel.php:42
 msgid "Other component model"
 msgid_plural "Other component models"
-msgstr[0] "Diğer bileşen modelleri"
+msgstr[0] "Diğer bileşen modeli"
+msgstr[1] "Diğer bileşen modelleri"
 
 #. TRANS: plural for software
 #. TRANS: software in plural
@@ -14850,7 +15085,8 @@ msgstr "Envanter aracındaki kategori"
 #: src/DeviceProcessorModel.php:42
 msgid "Device processor model"
 msgid_plural "Device processor models"
-msgstr[0] "Aygıt işlemci modelleri"
+msgstr[0] "Aygıt işlemci modeli"
+msgstr[1] "Aygıt işlemci modelleri"
 
 #: src/RuleDictionnaryPhoneModelCollection.php:44
 msgid "Dictionnary of phone models"
@@ -14879,12 +15115,14 @@ msgstr "Sipariş edilecek"
 #: src/DomainRecord.php:46
 msgid "Domain record"
 msgid_plural "Domains records"
-msgstr[0] "Etki alanı kayıtları"
+msgstr[0] "Etki alanı kaydı"
+msgstr[1] "Etki alanı kayıtları"
 
 #: src/DomainRecord.php:53 src/DomainRecord.php:55
 msgid "Record"
 msgid_plural "Records"
-msgstr[0] "Kayıtlar"
+msgstr[0] "Kayıt"
+msgstr[1] "Kayıtlar"
 
 #: src/DomainRecord.php:104 src/DomainRecord.php:469 src/DomainRecord.php:605
 msgid "TTL"
@@ -14917,7 +15155,8 @@ msgstr "Bir kayıt bağlantısı ekle"
 #: src/Console/Database/UpdateCommand.php:133
 msgid "Target"
 msgid_plural "Targets"
-msgstr[0] "Hedefler"
+msgstr[0] "Hedef"
+msgstr[1] "Hedefler"
 
 #: src/RuleAsset.php:137
 msgid "User location"
@@ -14950,7 +15189,8 @@ msgstr[1] "İş kritikliği"
 #: src/DeviceCaseType.php:39
 msgid "Case type"
 msgid_plural "Case types"
-msgstr[0] "Kasa türleri"
+msgstr[0] "Kasa türü"
+msgstr[1] "Kasa türleri"
 
 #: src/RuleDictionnaryMonitorTypeCollection.php:47
 msgid "Dictionnary of monitor types"
@@ -14999,17 +15239,20 @@ msgstr "Kullanıcının Sanal Kartını İndir"
 #: src/VirtualMachineType.php:42
 msgid "Virtualization system"
 msgid_plural "Virtualization systems"
-msgstr[0] "Sanallaştırma sistemleri"
+msgstr[0] "Sanallaştırma sistemi"
+msgstr[1] "Sanallaştırma sistemleri"
 
 #: src/Reminder.php:69
 msgid "Reminder"
 msgid_plural "Reminders"
-msgstr[0] "Anımsatıcılar"
+msgstr[0] "Anımsatıcı"
+msgstr[1] "Anımsatıcılar"
 
 #: src/Reminder.php:71 src/Reminder.php:904
 msgid "Personal reminder"
 msgid_plural "Personal reminders"
-msgstr[0] "Kişisel anımsatıcılar"
+msgstr[0] "Kişisel anımsatıcı"
+msgstr[1] "Kişisel anımsatıcılar"
 
 #: src/Reminder.php:417 src/KnowbaseItem.php:2096
 msgid "Visibility start date"
@@ -15094,7 +15337,8 @@ msgstr "Değiştir"
 #: src/PlanningEventCategory.php:38
 msgid "Event category"
 msgid_plural "Event categories"
-msgstr[0] "Etkinlik kategorileri"
+msgstr[0] "Etkinlik kategorisi"
+msgstr[1] "Etkinlik kategorileri"
 
 #: src/PlanningEventCategory.php:46 src/Cable.php:245 src/ProjectState.php:57
 #: src/ProjectState.php:75 templates/pages/assets/cable.html.twig:54
@@ -15105,7 +15349,8 @@ msgstr "Renk"
 #: src/PDUType.php:39
 msgid "PDU type"
 msgid_plural "PDU types"
-msgstr[0] "Güç dağıtıcı türleri"
+msgstr[0] "Güç dağıtıcı türü"
+msgstr[1] "Güç dağıtıcı türleri"
 
 #: src/CommonITILValidation.php:346 src/CommonITILValidation.php:502
 #, php-format
@@ -15228,7 +15473,8 @@ msgstr "Çözümlemek ya da kapatmak istediğinize emin misiniz?"
 #: src/DeviceSoundCard.php:43
 msgid "Soundcard"
 msgid_plural "Soundcards"
-msgstr[0] "Ses kartları"
+msgstr[0] "Ses kartı"
+msgstr[1] "Ses kartları"
 
 #: src/IPAddress.php:249
 msgid "Order by item type"
@@ -15245,7 +15491,8 @@ msgstr "Herhangi bir IP adresi bulunamadı"
 #: src/ImageFormat.php:41
 msgid "Image format"
 msgid_plural "Image formats"
-msgstr[0] "Görsel biçimleri"
+msgstr[0] "Görsel biçimi"
+msgstr[1] "Görsel biçimleri"
 
 #: src/NotificationTargetTicket.php:84
 msgid "To answer by email, write above this line"
@@ -15304,6 +15551,9 @@ msgid "Without a reply, the ticket will be automatically closed after %s day"
 msgid_plural ""
 "Without a reply, the ticket will be automatically closed after %s days"
 msgstr[0] ""
+"Bir yanıt verilmediğinde, destek kaydı %s gün sonra otomatik olarak "
+"kapatılır"
+msgstr[1] ""
 "Bir yanıt verilmediğinde, destek kaydı %s gün sonra otomatik olarak "
 "kapatılır"
 
@@ -15379,7 +15629,8 @@ msgstr "Anket doldurma çağrısı"
 #: src/DeviceHardDrive.php:41
 msgid "Hard drive"
 msgid_plural "Hard drives"
-msgstr[0] "Sabit diskler"
+msgstr[0] "Sabit disk"
+msgstr[1] "Sabit diskler"
 
 #: src/DeviceHardDrive.php:51 src/DeviceHardDrive.php:79
 msgid "Capacity by default"
@@ -15604,7 +15855,8 @@ msgstr "Etki alanı ilişkilendir"
 #: src/DeviceProcessor.php:41
 msgid "Processor"
 msgid_plural "Processors"
-msgstr[0] "İşlemciler"
+msgstr[0] "İşlemci"
+msgstr[1] "İşlemciler"
 
 #: src/DeviceProcessor.php:51 src/DeviceProcessor.php:80
 msgid "Frequency by default"
@@ -15625,7 +15877,8 @@ msgstr "İşlemci frekansı"
 #: src/VirtualMachineSystem.php:42
 msgid "Virtualization model"
 msgid_plural "Virtualization models"
-msgstr[0] "Sanallaştırma modelleri"
+msgstr[0] "Sanallaştırma modeli"
+msgstr[1] "Sanallaştırma modelleri"
 
 #: src/ITILCategory.php:67 src/ITILCategory.php:266 src/RuleTicket.php:530
 msgid "Code representing the ticket category"
@@ -15670,7 +15923,8 @@ msgstr "Sorun kalıbı"
 #: src/ITILCategory.php:277
 msgid "ITIL category"
 msgid_plural "ITIL categories"
-msgstr[0] "ITIL kategorileri"
+msgstr[0] "ITIL kategorisi"
+msgstr[1] "ITIL kategorileri"
 
 #: src/ITILCategory.php:340 src/ITILCategory.php:360
 msgid "Code representing the ticket category is already used"
@@ -15679,17 +15933,20 @@ msgstr "Bu destek kaydı kategorisi kodu zaten kullanılıyor"
 #: src/PhoneModel.php:42 src/Rule.php:360
 msgid "Phone model"
 msgid_plural "Phone models"
-msgstr[0] "Telefon modelleri"
+msgstr[0] "Telefon modeli"
+msgstr[1] "Telefon modelleri"
 
 #: src/PlanningExternalEventTemplate.php:53
 msgid "External events template"
 msgid_plural "External events templates"
-msgstr[0] "Dış etkinlik kalıpları"
+msgstr[0] "Dış etkinlik kalıbı"
+msgstr[1] "Dış etkinlik kalıpları"
 
 #: src/Filesystem.php:42
 msgid "File system"
 msgid_plural "File systems"
-msgstr[0] "Dosya sistemleri"
+msgstr[0] "Dosya sistemi"
+msgstr[1] "Dosya sistemleri"
 
 #: src/Software.php:89 src/Software.php:1015
 msgid "Merging"
@@ -15748,22 +16005,26 @@ msgstr "Değişikliği silme"
 #: src/Rule.php:312 src/MonitorModel.php:39
 msgid "Monitor model"
 msgid_plural "Monitor models"
-msgstr[0] "Ekran modelleri"
+msgstr[0] "Ekran modeli"
+msgstr[1] "Ekran modelleri"
 
 #: src/Rule.php:348 src/NetworkEquipmentModel.php:39
 msgid "Networking equipment model"
 msgid_plural "Networking equipment models"
-msgstr[0] "Ağ aygıtı modelleri"
+msgstr[0] "Ağ aygıtı modeli"
+msgstr[1] "Ağ aygıtı modelleri"
 
 #: src/Rule.php:372 src/ComputerType.php:39
 msgid "Computer type"
 msgid_plural "Computer types"
-msgstr[0] "Bilgisayar türleri"
+msgstr[0] "Bilgisayar türü"
+msgstr[1] "Bilgisayar türleri"
 
 #: src/Rule.php:408
 msgid "Peripheral type"
 msgid_plural "Peripheral types"
-msgstr[0] "Çevre birimi türleri"
+msgstr[0] "Çevre birimi türü"
+msgstr[1] "Çevre birimi türleri"
 
 #: src/Rule.php:559
 msgid "Rules management"
@@ -15927,12 +16188,14 @@ msgstr "Kalıptan otomatik olarak dolduruldu"
 #: src/DeviceFirmwareType.php:38
 msgid "Firmware type"
 msgid_plural "Firmware types"
-msgstr[0] "Gömülü yazılım türleri"
+msgstr[0] "Gömülü yazılım türü"
+msgstr[1] "Gömülü yazılım türleri"
 
 #: src/Vlan.php:46
 msgid "VLAN"
 msgid_plural "VLANs"
-msgstr[0] "VLAN"
+msgstr[0] "Sanal yerel ağ"
+msgstr[1] "Sanal yerel ağlar"
 
 #: src/Vlan.php:166
 msgid "Untagged"
@@ -15941,17 +16204,20 @@ msgstr "Etiketlenmemiş"
 #: src/RackType.php:39
 msgid "Rack type"
 msgid_plural "Rack types"
-msgstr[0] "Kabin türleri"
+msgstr[0] "Kabin türü"
+msgstr[1] "Kabin türleri"
 
 #: src/ProblemTemplate.php:48 src/Entity.php:2545
 msgid "Problem template"
 msgid_plural "Problem templates"
-msgstr[0] "Sorun kalıpları"
+msgstr[0] "Sorun kalıbı"
+msgstr[1] "Sorun kalıpları"
 
 #: src/DeviceControl.php:43
 msgid "Controller"
 msgid_plural "Controllers"
-msgstr[0] "Denetçiler"
+msgstr[0] "Denetçi"
+msgstr[1] "Denetçiler"
 
 #: src/DeviceControl.php:53 src/DeviceControl.php:82
 msgid "RAID"
@@ -15968,7 +16234,8 @@ msgstr "Kopyalayan"
 #: src/UserCategory.php:39
 msgid "User category"
 msgid_plural "User categories"
-msgstr[0] "Kullanıcı kategorileri"
+msgstr[0] "Kullanıcı kategorisi"
+msgstr[1] "Kullanıcı kategorileri"
 
 #: src/RuleDictionnaryComputerTypeCollection.php:47
 msgid "Dictionnary of computer types"
@@ -15982,11 +16249,13 @@ msgstr "Otomatik hizmet düzeyi sözleşmesi anımsatıcıları"
 msgid "Operating system"
 msgid_plural "Operating systems"
 msgstr[0] "İşletim sistemi"
+msgstr[1] "İşletim sistemleri"
 
 #: src/Item_Disk.php:51 src/Item_Disk.php:434
 msgid "Volume"
 msgid_plural "Volumes"
-msgstr[0] "Depolama birimleri"
+msgstr[0] "Depolama birimi"
+msgstr[1] "Depolama birimleri"
 
 #: src/Item_Disk.php:160 src/Item_Disk.php:290 src/Item_Disk.php:391
 #: src/Item_Disk.php:519
@@ -16093,7 +16362,8 @@ msgstr "Modül"
 #: src/DeviceCamera.php:40
 msgid "Camera"
 msgid_plural "Cameras"
-msgstr[0] "Kameralar"
+msgstr[0] "Kamera"
+msgstr[1] "Kameralar"
 
 #: src/DeviceCamera.php:69 src/DeviceCamera.php:117 src/DeviceCamera.php:180
 msgid "Flashunit"
@@ -16143,11 +16413,13 @@ msgstr "destek"
 msgid "RSS feed"
 msgid_plural "RSS feed"
 msgstr[0] "RSS akışı"
+msgstr[1] "RSS akışları"
 
 #: src/RSSFeed.php:84 src/RSSFeed.php:970
 msgid "Personal RSS feed"
 msgid_plural "Personal RSS feed"
-msgstr[0] "Kişisel RSS akışları"
+msgstr[0] "Kişisel RSS akışı"
+msgstr[1] "Kişisel RSS akışları"
 
 #: src/RSSFeed.php:444 src/ProjectTask.php:1060
 msgid "Creator"
@@ -16183,12 +16455,14 @@ msgstr "Kullan"
 #: src/Cable.php:46
 msgid "Cable"
 msgid_plural "Cables"
-msgstr[0] "Kablolar"
+msgstr[0] "Kablo"
+msgstr[1] "Kablolar"
 
 #: src/Cable.php:136 src/CableType.php:39
 msgid "Cable type"
 msgid_plural "Cable types"
-msgstr[0] "Kablo türleri"
+msgstr[0] "Kablo türü"
+msgstr[1] "Kablo türleri"
 
 #: src/LevelAgreement.php:205 src/LevelAgreement.php:398
 msgid "Maximum time"
@@ -16202,11 +16476,13 @@ msgstr "İş gününün sonu"
 msgid "Minute"
 msgid_plural "Minutes"
 msgstr[0] "Dakika"
+msgstr[1] "Dakika"
 
 #: src/LevelAgreement.php:261
 msgid "Month"
 msgid_plural "Months"
 msgstr[0] "Ay"
+msgstr[1] "Ay"
 
 #: src/LevelAgreement.php:364
 msgid "Add a new item"
@@ -16234,12 +16510,14 @@ msgstr "Ayarlar"
 #: src/DeviceBatteryModel.php:42
 msgid "Device battery model"
 msgid_plural "Device batteries models"
-msgstr[0] "Aygıt pil modelleri"
+msgstr[0] "Aygıt pil modeli"
+msgstr[1] "Aygıt pil modelleri"
 
 #: src/DeviceNetworkCardModel.php:42
 msgid "Network card model"
 msgid_plural "Network card models"
-msgstr[0] "Ağ kartı modelleri"
+msgstr[0] "Ağ kartı modeli"
+msgstr[1] "Ağ kartı modelleri"
 
 #: src/Api/API.php:153
 msgid "API disabled"
@@ -16386,19 +16664,22 @@ msgstr "Envanter aracındaki kategoriyi içe aktar"
 #: src/ConsumableItemType.php:39
 msgid "Consumable type"
 msgid_plural "Consumable types"
-msgstr[0] "Sarf malzemesi türleri"
+msgstr[0] "Sarf malzemesi türü"
+msgstr[1] "Sarf malzemesi türleri"
 
 #: src/DatabaseInstance.php:66
 msgid "Database instance"
 msgid_plural "Database instances"
-msgstr[0] "Veritabanı kopyaları"
+msgstr[0] "Veritabanı kopyası"
+msgstr[1] "Veritabanı kopyaları"
 
 #: src/DatabaseInstance.php:364 src/Project.php:601
 #: src/NetworkPortConnectionLog.php:114 src/ComputerVirtualMachine.php:351
 #: src/ComputerVirtualMachine.php:583
 msgid "State"
 msgid_plural "States"
-msgstr[0] "Durumlar"
+msgstr[0] "Durum"
+msgstr[1] "Durumlar"
 
 #: src/DatabaseInstance.php:398
 msgid "Last boot date"
@@ -16413,6 +16694,7 @@ msgstr "Herhangi bir kopya bulunamadı"
 msgid "%1$d database"
 msgid_plural "%1$d databases"
 msgstr[0] "%1$d veritabanı"
+msgstr[1] "%1$d veritabanları"
 
 #: src/RegisteredID.php:52
 msgid "PCI"
@@ -16421,7 +16703,8 @@ msgstr "PCI"
 #: src/RegisteredID.php:59
 msgid "Registered ID (issued by PCI-SIG)"
 msgid_plural "Registered IDs (issued by PCI-SIG)"
-msgstr[0] "Kayıtlı Kodlar (PCI-SIG tarafından yayınlanan)"
+msgstr[0] "Kayıtlı kod (PCI-SIG tarafından yayınlanan)"
+msgstr[1] "Kayıtlı kodlar (PCI-SIG tarafından yayınlanan)"
 
 #: src/SoftwareVersion.php:310
 msgctxt "button"
@@ -16431,7 +16714,8 @@ msgstr "Sürüm ekle"
 #: src/NotificationTemplateTranslation.php:51
 msgid "Template translation"
 msgid_plural "Template translations"
-msgstr[0] "Kalıp çevirileri"
+msgstr[0] "Kalıp çevirisi"
+msgstr[1] "Kalıp çevirileri"
 
 #: src/NotificationTemplateTranslation.php:125
 msgid "Show list of available tags"
@@ -16519,7 +16803,8 @@ msgstr "Ölçüt ekle"
 #: src/Problem.php:72
 msgid "Problem"
 msgid_plural "Problems"
-msgstr[0] "Sorunlar"
+msgstr[0] "Sorun"
+msgstr[1] "Sorunlar"
 
 #: src/Problem.php:483
 #: templates/components/itilobject/fields_panel.html.twig:307
@@ -16564,6 +16849,7 @@ msgstr "Bu öge için yeni sorun..."
 msgid "Last %d problem"
 msgid_plural "Last %d problems"
 msgstr[0] "Son %d sorun"
+msgstr[1] "Son %d sorun"
 
 #: src/Problem.php:1649 src/Problem.php:1696
 msgid "No problem found."
@@ -16576,12 +16862,14 @@ msgstr "Bağlı ögelerin sorunları"
 #: src/PhonePowerSupply.php:42
 msgid "Phone power supply type"
 msgid_plural "Phone power supply types"
-msgstr[0] "Telefon güç kaynağı türleri"
+msgstr[0] "Telefon güç kaynağı türü"
+msgstr[1] "Telefon güç kaynağı türleri"
 
 #: src/ITILTemplateMandatoryField.php:45
 msgid "Mandatory field"
 msgid_plural "Mandatory fields"
-msgstr[0] "Zorunlu alanlar"
+msgstr[0] "Zorunlu alan"
+msgstr[1] "Zorunlu alanlar"
 
 #: src/ITILTemplateMandatoryField.php:195
 msgid "Add a mandatory field"
@@ -16737,12 +17025,13 @@ msgstr "Görevlerin toplam etkin süresi"
 
 #: src/Project.php:1765 src/ProjectTask.php:1479
 msgid "Add a team member"
-msgstr "Takım üyesi ekle"
+msgstr "Ekip üyesi ekle"
 
 #: src/Project.php:1807 src/Project.php:2590 src/ProjectTask.php:1520
 msgid "Member"
 msgid_plural "Members"
-msgstr[0] "Üyeler"
+msgstr[0] "Üye"
+msgstr[1] "Üyeler"
 
 #: src/Project.php:2257
 msgid "No status"
@@ -16789,27 +17078,27 @@ msgstr "Ögenin içeriği"
 #: src/Project.php:2545 src/CommonITILObject.php:8246
 msgctxt "filters"
 msgid "A team member for the item"
-msgstr "Öge için bir takım üyesi"
+msgstr "Ögenin bir ekip üyesi"
 
 #: src/Project.php:2549 src/CommonITILObject.php:8250
 msgctxt "filters"
 msgid "A user in the team of the item"
-msgstr "Öge için takımdaki bir kullanıcı"
+msgstr "Öge ekibindeki bir kullanıcı"
 
 #: src/Project.php:2553 src/CommonITILObject.php:8254
 msgctxt "filters"
 msgid "A group in the team of the item"
-msgstr "Öge için takımdaki bir grup"
+msgstr "Ögenin ekibindeki bir grup"
 
 #: src/Project.php:2557 src/CommonITILObject.php:8258
 msgctxt "filters"
 msgid "A supplier in the team of the item"
-msgstr "Ögenin takımındaki bir sağlayıcı"
+msgstr "Ögenin ekibindeki bir sağlayıcı"
 
 #: src/Project.php:2561
 msgctxt "filters"
 msgid "A contact in the team of the item"
-msgstr "Ögenin takımındaki bir kişi"
+msgstr "Ögenin ekibindeki bir kişi"
 
 #: src/NetworkPortConnectionLog.php:53
 msgid "Port connection history"
@@ -16830,12 +17119,14 @@ msgstr "Artık veritabanında yok"
 #: src/ProjectTeam.php:71
 msgid "Project team"
 msgid_plural "Project teams"
-msgstr[0] "Proje takımları"
+msgstr[0] "Proje ekibi"
+msgstr[1] "Proje ekipleri"
 
 #: src/DeviceFirmware.php:40 src/Phone.php:365 src/NetworkEquipment.php:401
 msgid "Firmware"
 msgid_plural "Firmware"
-msgstr[0] "Gömülü yazılımlar"
+msgstr[0] "Gömülü yazılım"
+msgstr[1] "Gömülü yazılımlar"
 
 #: src/DeviceFirmware.php:57 src/DeviceFirmware.php:83
 #: src/DeviceFirmware.php:131
@@ -16863,7 +17154,8 @@ msgstr ""
 #: src/DomainRecordType.php:347
 msgid "Record type"
 msgid_plural "Records types"
-msgstr[0] "Kayıt türleri"
+msgstr[0] "Kayıt türü"
+msgstr[1] "Kayıt türleri"
 
 #: src/Telemetry.php:38
 msgid "Telemetry"
@@ -16945,17 +17237,20 @@ msgstr "Referans (no + kod)"
 #: src/CommonITILObject.php:8313
 msgid "Assignee"
 msgid_plural "Assignees"
-msgstr[0] "Atanmışlar"
+msgstr[0] "Atanan"
+msgstr[1] "Atananlar"
 
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:79
 msgid "Assigned group"
 msgid_plural "Assigned groups"
-msgstr[0] "Atanmış "
+msgstr[0] "Atanan grup"
+msgstr[1] "Atanan gruplar"
 
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:80
 msgid "Assigned supplier"
 msgid_plural "Assigned suppliers"
-msgstr[0] "Atanmış sağlayıcılar"
+msgstr[0] "Atanan sağlayıcı"
+msgstr[1] "Atanan sağlayıcılar"
 
 #: src/ContentTemplates/Parameters/LevelAgreementParameters.php:55
 msgid "Duration unit"
@@ -17003,7 +17298,8 @@ msgstr "Uyumlu bir yazıcı modeli ekle"
 #: src/AgentType.php:41
 msgid "Agent type"
 msgid_plural "Agents types"
-msgstr[0] "Aracı türleri"
+msgstr[0] "Aracı türü"
+msgstr[1] "Aracı türleri"
 
 #: src/Event.php:154 src/Config.php:2482
 msgid "System"
@@ -17033,7 +17329,8 @@ msgstr "Düzey"
 #: src/KnowbaseItem_Revision.php:40 src/KnowbaseItem_Revision.php:130
 msgid "Revision"
 msgid_plural "Revisions"
-msgstr[0] "Sürümler"
+msgstr[0] "Değişiklik"
+msgstr[1] "Değişiklikler"
 
 #: src/KnowbaseItem_Revision.php:116
 msgid "No revisions"
@@ -17157,12 +17454,14 @@ msgstr "Açıklamayı değiştir"
 #: src/DomainRelation.php:56
 msgid "Domain relation"
 msgid_plural "Domains relations"
-msgstr[0] "Etki alanı ilişkileri"
+msgstr[0] "Etki alanı ilişkisi"
+msgstr[1] "Etki alanı ilişkileri"
 
 #: src/SupplierType.php:39
 msgid "Third party type"
 msgid_plural "Third party types"
-msgstr[0] "Üçüncü taraf türleri"
+msgstr[0] "Üçüncü taraf türü"
+msgstr[1] "Üçüncü taraf türleri"
 
 #: src/Phone.php:297 templates/pages/assets/phone.html.twig:40
 msgctxt "quantity"
@@ -17181,6 +17480,7 @@ msgstr "Hoparlör"
 msgid "Time range"
 msgid_plural "Time ranges"
 msgstr[0] "Saat aralığı"
+msgstr[1] "Saat aralıkları"
 
 #: src/CalendarSegment.php:79
 msgid "Can not add a range riding an existing period"
@@ -17193,7 +17493,8 @@ msgstr "Zamanlama ekle"
 #: src/EnclosureModel.php:39
 msgid "Enclosure model"
 msgid_plural "Enclosure models"
-msgstr[0] "Kutu modelleri"
+msgstr[0] "Kutu modeli"
+msgstr[1] "Kutu modelleri"
 
 #: src/RuleDictionnaryNetworkEquipmentTypeCollection.php:44
 msgid "Dictionnary of network equipment types"
@@ -17243,12 +17544,14 @@ msgstr "Sanal makine açıklaması"
 #: src/CommonDeviceModel.php:39
 msgid "Device model"
 msgid_plural "Device models"
-msgstr[0] "Aygıt modelleri"
+msgstr[0] "Aygıt modeli"
+msgstr[1] "Aygıt modelleri"
 
 #: src/SocketModel.php:39
 msgid "Socket model"
 msgid_plural "Socket models"
-msgstr[0] "Soket modelleri"
+msgstr[0] "Soket modeli"
+msgstr[1] "Soket modelleri"
 
 #: src/GLPINetwork.php:66
 msgid "Registration"
@@ -17435,11 +17738,11 @@ msgstr "Proje görevi silindiğinde"
 
 #: src/NotificationTargetProjectTask.php:60
 msgid "Project team user"
-msgstr "Proje takımı kullanıcısı"
+msgstr "Proje ekibi kullanıcısı"
 
 #: src/NotificationTargetProjectTask.php:61
 msgid "Project team group"
-msgstr "Proje takımı grubu"
+msgstr "Proje ekibi grubu"
 
 #: src/NotificationTargetProjectTask.php:526 src/ProjectTask.php:828
 msgid "Tickets duration"
@@ -17448,7 +17751,8 @@ msgstr "Destek kayıtlarının süresi"
 #: src/ProjectTask.php:73
 msgid "Project task"
 msgid_plural "Project tasks"
-msgstr[0] "Proje görevleri"
+msgstr[0] "Proje görevi"
+msgstr[1] "Proje görevleri"
 
 #: src/ProjectTask.php:184
 msgid "Update (actor)"
@@ -17461,7 +17765,8 @@ msgstr "Proje bağlantısının belirtilmesi zorunludur"
 #: src/ProjectTask.php:595 src/ProjectTaskTemplate.php:48
 msgid "Project task template"
 msgid_plural "Project task templates"
-msgstr[0] "Proje görev kalıpları"
+msgstr[0] "Proje görevi kalıbı"
+msgstr[1] "Proje görevi kalıpları"
 
 #: src/ProjectTask.php:743
 msgid ""
@@ -17520,7 +17825,8 @@ msgstr "Bu öge SSS bölümünün parçası değil"
 #, php-format
 msgid "%d view"
 msgid_plural "%d views"
-msgstr[0] "%d okunma"
+msgstr[0] "%d görüntüleme"
+msgstr[1] "%d görüntüleme"
 
 #: src/KnowbaseItem.php:878
 msgid "Add link"
@@ -17608,7 +17914,8 @@ msgstr "%1$s ögeyi %2$s sürümüne döndürdü"
 #: src/FQDN.php:47 src/NetworkAlias.php:318
 msgid "Internet domain"
 msgid_plural "Internet domains"
-msgstr[0] "İnternet etki alanları"
+msgstr[0] "İnternet etki alanı"
+msgstr[1] "İnternet etki alanları"
 
 #: src/FQDN.php:55 src/FQDN.php:211
 msgid "FQDN"
@@ -17633,7 +17940,8 @@ msgstr "Tam etki alanı adı geçersiz"
 #: src/ProjectState.php:43
 msgid "Project state"
 msgid_plural "Project states"
-msgstr[0] "Proje durumları"
+msgstr[0] "Proje durumu"
+msgstr[1] "Proje durumları"
 
 #: src/ProjectState.php:61 src/ProjectState.php:83
 msgid "Finished state"
@@ -17647,7 +17955,8 @@ msgstr "%1$s kullanılarak bildirim gönderilemedi"
 #: src/Problem_Ticket.php:58
 msgid "Link Ticket/Problem"
 msgid_plural "Links Ticket/Problem"
-msgstr[0] "Destek Kaydı/Sorun Bağlantıları"
+msgstr[0] "Destek kaydı/Sorun bağlantısı"
+msgstr[1] "Destek kaydı/Sorun bağlantıları"
 
 #: src/Problem_Ticket.php:422
 msgid "Create a problem from this ticket"
@@ -17656,7 +17965,8 @@ msgstr "Bu destek kaydından bir sorun oluştur"
 #: src/OperatingSystemServicePack.php:42
 msgid "Service pack"
 msgid_plural "Service packs"
-msgstr[0] "Hizmet paketleri"
+msgstr[0] "Hizmet paketi"
+msgstr[1] "Hizmet paketleri"
 
 #: src/Config.php:72
 msgctxt "setup"
@@ -18546,6 +18856,7 @@ msgstr "Tümünü koru"
 msgid "Delete if older than %s month"
 msgid_plural "Delete if older than %s months"
 msgstr[0] "%s aydan eski olanları sil"
+msgstr[1] "%s aydan eski olanları sil"
 
 #: src/Config.php:3287
 msgid "Security setup"
@@ -18629,12 +18940,14 @@ msgstr "%1$s her düzey için eşsiz olmalıdır!"
 #: src/DocumentCategory.php:42
 msgid "Document heading"
 msgid_plural "Document headings"
-msgstr[0] "Belge başlıkları"
+msgstr[0] "Belge başlığı"
+msgstr[1] "Belge başlıkları"
 
 #: src/ITILTemplateHiddenField.php:45
 msgid "Hidden field"
 msgid_plural "Hidden fields"
-msgstr[0] "Gizli alanlar"
+msgstr[0] "Gizli alan"
+msgstr[1] "Gizli alanlar"
 
 #: src/ITILTemplateHiddenField.php:194
 msgid "Add a hidden field"
@@ -18970,7 +19283,8 @@ msgstr "Kalıp yapılandırması"
 #: src/Entity.php:2517 src/ChangeTemplate.php:48
 msgid "Change template"
 msgid_plural "Change templates"
-msgstr[0] "Değişiklik kalıpları"
+msgstr[0] "Değişiklik kalıbı"
+msgstr[1] "Değişiklik kalıpları"
 
 #: src/Entity.php:2573
 msgid "Tickets configuration"
@@ -19085,7 +19399,8 @@ msgstr ""
 #: src/BudgetType.php:42
 msgid "Budget type"
 msgid_plural "Budget types"
-msgstr[0] "Bütçe türleri"
+msgstr[0] "Bütçe türü"
+msgstr[1] "Bütçe türleri"
 
 #: src/CommonITILObject.php:1593 src/CommonITILObject.php:1612
 #: src/CommonITILObject.php:1633 src/CommonITILObject.php:1643
@@ -19307,6 +19622,7 @@ msgstr "İzleme e-postası"
 msgid "Time"
 msgid_plural "Times"
 msgstr[0] "Kez"
+msgstr[1] "Kez"
 
 #: src/CommonITILObject.php:6015
 #, php-format
@@ -19365,6 +19681,7 @@ msgstr "Günlük kaydı"
 msgid "API client"
 msgid_plural "API clients"
 msgstr[0] "API istemcisi"
+msgstr[1] "API istemcileri"
 
 #: src/APIClient.php:116 src/APIClient.php:211
 msgid "Log connections"
@@ -19407,7 +19724,8 @@ msgstr "E-posta ile izleme kullanılsın"
 #: src/NotificationMailingSetting.php:70
 msgid "Email notification"
 msgid_plural "Email notifications"
-msgstr[0] "E-posta bildirimleri"
+msgstr[0] "E-posta bildirimi"
+msgstr[1] "E-posta bildirimleri"
 
 #: src/NotificationMailingSetting.php:90
 msgid "From email"
@@ -19561,12 +19879,14 @@ msgstr "Birim yöneticisi"
 #: src/InterfaceType.php:42
 msgid "Interface type (Hard drive...)"
 msgid_plural "Interface types (Hard drive...)"
-msgstr[0] "Arabirim türleri (Sabit disk...)"
+msgstr[0] "Arabirim türü (sabit disk...)"
+msgstr[1] "Arabirim türleri (sabit disk...)"
 
 #: src/ProjectType.php:43
 msgid "Project type"
 msgid_plural "Project types"
-msgstr[0] "Proje türleri"
+msgstr[0] "Proje türü"
+msgstr[1] "Proje türleri"
 
 #: src/RuleDictionnaryManufacturerCollection.php:47
 msgid "Dictionary of manufacturers"
@@ -19613,7 +19933,8 @@ msgstr "Aygıt modelleri sözlüğü"
 #: src/ReservationItem.php:66
 msgid "Reservable item"
 msgid_plural "Reservable items"
-msgstr[0] "Ayırtılabilir ögeler"
+msgstr[0] "Ayırtılabilir öge"
+msgstr[1] "Ayırtılabilir ögeler"
 
 #: src/ReservationItem.php:329
 msgid "Make unavailable"
@@ -19683,7 +20004,8 @@ msgstr "Herhangi bir ayırtılabilecek öge yok!"
 #: src/DeviceSensorModel.php:44
 msgid "Device sensor model"
 msgid_plural "Device sensor models"
-msgstr[0] "Aygıt almaç modelleri"
+msgstr[0] "Aygıt almaç modeli"
+msgstr[1] "Aygıt almaç modelleri"
 
 #: src/Marketplace/NotificationTargetController.php:57
 #: src/Marketplace/Controller.php:288
@@ -19896,6 +20218,7 @@ msgstr "Bu uygulama ekini alabilmek için en az %s aboneliğiniz olmalı"
 msgid "%s plugin"
 msgid_plural "%s plugins"
 msgstr[0] "%s uygulama eki"
+msgstr[1] "%s uygulama eki"
 
 #: src/Marketplace/View.php:997
 msgid "Switch to marketplace"
@@ -19940,12 +20263,14 @@ msgstr "İlgili ekle"
 #: src/Supplier.php:275
 msgid "Associated contact"
 msgid_plural "Associated contacts"
-msgstr[0] "İlgili kişiler"
+msgstr[0] "İlgili kişi"
+msgstr[1] "İlgili kişiler"
 
 #: src/Supplier.php:320
 msgid "Associated contract"
 msgid_plural "Associated contracts"
-msgstr[0] "İlgili sözleşmeler"
+msgstr[0] "İlgili sözleşme"
+msgstr[1] "İlgili sözleşmeler"
 
 #: src/Supplier.php:371
 msgid "Web"
@@ -19954,7 +20279,8 @@ msgstr "Web"
 #: src/DeviceSensor.php:43
 msgid "Sensor"
 msgid_plural "Sensors"
-msgstr[0] "Almaçlar"
+msgstr[0] "Almaç"
+msgstr[1] "Almaçlar"
 
 #: src/Domain.php:218
 msgid "Entity-ID"
@@ -20078,7 +20404,8 @@ msgstr "Gecikme hesabına katılsın"
 #: src/ApplianceEnvironment.php:38
 msgid "Appliance environment"
 msgid_plural "Appliance environments"
-msgstr[0] "Aygıt ortamları"
+msgstr[0] "Aygıt ortamı"
+msgstr[1] "Aygıt ortamları"
 
 #: src/RuleDictionnaryPeripheralTypeCollection.php:44
 msgid "Dictionnary of device types"
@@ -20164,17 +20491,20 @@ msgstr "Bilgisayar bağla"
 #: src/DeviceMotherboard.php:41
 msgid "System board"
 msgid_plural "System boards"
-msgstr[0] "Sistem kartları"
+msgstr[0] "Sistem kartı"
+msgstr[1] "Sistem kartları"
 
 #: src/OperatingSystemArchitecture.php:42
 msgid "Operating system architecture"
 msgid_plural "Operating system architectures"
-msgstr[0] "İşletim sistemi mimarileri"
+msgstr[0] "İşletim sistemi mimarisi"
+msgstr[1] "İşletim sistemi mimarileri"
 
 #: src/IPNetwork.php:53
 msgid "IP network"
 msgid_plural "IP networks"
-msgstr[0] "IP ağları"
+msgstr[0] "IP ağı"
+msgstr[1] "IP ağları"
 
 #: src/IPNetwork.php:65
 msgid "IP version"
@@ -20299,7 +20629,8 @@ msgstr "Görüntülenecek istatistikleri seçin"
 #: src/NetworkEquipment.php:76
 msgid "Network device"
 msgid_plural "Network devices"
-msgstr[0] "Ağ aygıtları"
+msgstr[0] "Ağ aygıtıı"
+msgstr[1] "Ağ aygıtları"
 
 #: src/Item_DeviceHardDrive.php:49 src/Item_DeviceHardDrive.php:52
 #: src/DeviceBattery.php:56 src/DeviceBattery.php:79 src/DeviceBattery.php:119
@@ -20309,7 +20640,8 @@ msgstr "Kapasite"
 #: src/USBVendor.php:44
 msgid "USB vendor"
 msgid_plural "USB vendors"
-msgstr[0] "USB satıcıları"
+msgstr[0] "USB üreticisi"
+msgstr[1] "USB üreticileri"
 
 #: src/RuleDictionnaryOperatingSystemCollection.php:44
 msgid "Dictionnary of operating systems"
@@ -22064,7 +22396,8 @@ msgstr "Sistem durumunu denetle"
 #: src/ConsumableItem.php:57
 msgid "Consumable model"
 msgid_plural "Consumable models"
-msgstr[0] "Sarf malzemesi modelleri"
+msgstr[0] "Sarf malzemesi modeli"
+msgstr[1] "Sarf malzemesi modelleri"
 
 #: src/ConsumableItem.php:203
 msgid "Number of used consumables"
@@ -22669,7 +23002,8 @@ msgstr "Mağazadan uygulama ekleri kurulabilsin."
 #: src/DeviceBattery.php:40
 msgid "Battery"
 msgid_plural "Batteries"
-msgstr[0] "Piller"
+msgstr[0] "Pil"
+msgstr[1] "Piller"
 
 #: src/DeviceBattery.php:58 src/DeviceBattery.php:119
 msgid "mWh"
@@ -22697,17 +23031,20 @@ msgstr "Yeni ilişki"
 #: src/DeviceMemoryType.php:39
 msgid "Memory type"
 msgid_plural "Memory types"
-msgstr[0] "Bellek türleri"
+msgstr[0] "Bellek türü"
+msgstr[1] "Bellek türleri"
 
 #: src/PeripheralType.php:39
 msgid "Devices type"
 msgid_plural "Devices types"
-msgstr[0] "Aygıt türleri"
+msgstr[0] "Aygt türü"
+msgstr[1] "Aygıt türleri"
 
 #: src/DeviceCase.php:41
 msgid "Case"
 msgid_plural "Cases"
-msgstr[0] "Kasalar"
+msgstr[0] "Kasa"
+msgstr[1] "Kasalar"
 
 #: src/DBmysql.php:403 src/DBmysql.php:1204 src/DBmysql.php:1325
 #: src/DBmysql.php:1435 src/DBmysql.php:1484
@@ -22718,12 +23055,14 @@ msgstr "%1$s - Veritabanı sorgulanırken sorun çıktı: %2$s - Hata: %3$s"
 #: src/DevicePowerSupplyModel.php:42
 msgid "Device power supply model"
 msgid_plural "Device power supply models"
-msgstr[0] "Aygıt güç kaynağı modelleri"
+msgstr[0] "Aygıt güç kaynağı modeli"
+msgstr[1] "Aygıt güç kaynağı modelleri"
 
 #: src/SoftwareLicense.php:62 src/Item_SoftwareLicense.php:87
 msgid "License"
 msgid_plural "Licenses"
-msgstr[0] "Lisanslar"
+msgstr[0] "Lisans"
+msgstr[1] "Lisanslar"
 
 #: src/SoftwareLicense.php:90
 msgid "Please select a software for this license"
@@ -22785,7 +23124,8 @@ msgstr "Etkilenen ögeler"
 #: src/PlanningExternalEvent.php:54
 msgid "External event"
 msgid_plural "External events"
-msgstr[0] "Dış etkinlikler"
+msgstr[0] "Dış etkinlik"
+msgstr[1] "Dış etkinlikler"
 
 #: src/PlanningExternalEvent.php:269
 msgid "Each guest will have a read-only copy of this event"
@@ -22847,12 +23187,14 @@ msgstr "Etkilenen öge sayısı"
 #: src/DeviceControlModel.php:42
 msgid "Device control model"
 msgid_plural "Device control models"
-msgstr[0] "Aygıt denetim modelleri"
+msgstr[0] "Aygıt denetim modeli"
+msgstr[1] "Aygıt denetim modelleri"
 
 #: src/NetworkAlias.php:52
 msgid "Network alias"
 msgid_plural "Network aliases"
-msgstr[0] "Ağ kısaltmaları"
+msgstr[0] "Ağ kısaltması"
+msgstr[1] "Ağ kısaltmaları"
 
 #: src/NetworkAlias.php:293
 msgid "Add a network alias"
@@ -22861,7 +23203,8 @@ msgstr "Ağ adı ekle"
 #: src/Lockedfield.php:49
 msgid "Locked field"
 msgid_plural "Locked fields"
-msgstr[0] "Kilitli alanlar"
+msgstr[0] "Kilitli alan"
+msgstr[1] "Kilitli alanlar"
 
 #: src/Lockedfield.php:62
 msgid "Field name"
@@ -22895,7 +23238,8 @@ msgstr "İşlemin amacı"
 #: src/DevicePowerSupply.php:41
 msgid "Power supply"
 msgid_plural "Power supplies"
-msgstr[0] "Güç kaynakları"
+msgstr[0] "Güç kaynağı"
+msgstr[1] "Güç kaynakları"
 
 #: src/DevicePowerSupply.php:51 src/DevicePowerSupply.php:71
 msgid "ATX"
@@ -23665,11 +24009,11 @@ msgstr "Rol"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:69
 msgid "Team"
-msgstr "Takım"
+msgstr "Ekip"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:94
 msgid "No team members"
-msgstr "Herhangi bir takım üyesi yok"
+msgstr "Herhangi bir ekip üyesi yok"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:102
 msgid "Open full form"

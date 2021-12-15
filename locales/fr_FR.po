@@ -4,7 +4,6 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# CupidSG, 2021
 # Cyril Damas, 2021
 # Steve Hubert <hubertsteve.ga@gmail.com>, 2021
 # Jean-Christophe Pirmolin <jean-christophe@pirmolin.com>, 2021
@@ -16,6 +15,7 @@
 # Johan Cwiklinski <jcwiklinski@teclib.com>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
 # Cédric Anne, 2021
+# CupidSG, 2021
 # Legastelois François <flegastelois@teclib.com>, 2021
 # 
 #, fuzzy
@@ -5890,8 +5890,8 @@ msgstr[0] "Types de tâche de projet"
 #: src/Entity.php:1118 templates/pages/assets/cable.html.twig:102
 msgid "Asset"
 msgid_plural "Assets"
-msgstr[0] "Actif"
-msgstr[1] "Actifs"
+msgstr[0] "Parc"
+msgstr[1] "Parc"
 
 #: src/NetworkPortLocal.php:44
 msgid "Local loop port"
@@ -6643,17 +6643,17 @@ msgstr "Nom de l'appelant"
 #: src/Printer_CartridgeInfo.php:72
 msgctxt "Cartridge inventoried information"
 msgid "Cartridge inventoried information"
-msgstr ""
+msgstr "Cartouche - Informations inventoriées"
 
 #: src/Printer_CartridgeInfo.php:101
 msgid "Property"
-msgstr ""
+msgstr "Propriété"
 
 #: src/Printer_CartridgeInfo.php:115
 #, php-format
 msgctxt "%1$s remaining page"
 msgid "%1$s remaining pages"
-msgstr ""
+msgstr "%1$s pages restantes"
 
 #: src/DisplayPreference.php:306
 msgid "No personal criteria. Create personal parameters?"
@@ -6744,7 +6744,7 @@ msgstr "Chargement..."
 
 #: src/Knowbase.php:157
 msgid "No category found"
-msgstr ""
+msgstr "Aucune catégorie trouvée"
 
 #: src/Knowbase.php:336
 msgid "Root category"
@@ -7196,7 +7196,7 @@ msgstr "%s a promu un suivi depuis le ticket %s"
 #: src/Ticket.php:2091
 #, php-format
 msgid "%s promotes a task from ticket %s"
-msgstr ""
+msgstr "%s a promu une tâche depuis le ticket %s"
 
 #: src/Ticket.php:2124
 msgid "Your ticket has been registered."
@@ -7236,7 +7236,7 @@ msgstr "Lier des tickets"
 #: src/Ticket.php:2749
 msgctxt "button"
 msgid "Link project task"
-msgstr ""
+msgstr "Lier une tâche projet"
 
 #: src/Ticket.php:2752
 msgctxt "button"
@@ -7319,7 +7319,7 @@ msgstr "Ajouter"
 
 #: src/Ticket.php:2996
 msgid "Missing input: no Problem selected"
-msgstr ""
+msgstr "Input manquant : aucun Problème sélectionné"
 
 #: src/Ticket.php:3002
 msgid "Selected Problem can't be loaded"
@@ -7339,7 +7339,7 @@ msgstr "TTO + progression"
 
 #: src/Ticket.php:3173
 msgid "Time to own exceeded"
-msgstr ""
+msgstr "TTO dépassé"
 
 #: src/Ticket.php:3183 src/Ticket.php:3420 src/Ticket.php:6549
 #: src/NotificationTargetTicket.php:610
@@ -7352,7 +7352,7 @@ msgstr "TTR interne + progression"
 
 #: src/Ticket.php:3204
 msgid "Internal time to resolve exceeded"
-msgstr ""
+msgstr "TTR interne dépassé"
 
 #: src/Ticket.php:3214 src/Ticket.php:3406 src/Ticket.php:6533
 #: src/NotificationTargetTicket.php:605
@@ -7365,7 +7365,7 @@ msgstr "TTO interne + progression"
 
 #: src/Ticket.php:3235
 msgid "Internal time to own exceeded"
-msgstr ""
+msgstr "TTO interne dépassé"
 
 #: src/Ticket.php:3246
 msgid "Next escalation level"
@@ -8058,12 +8058,12 @@ msgstr "Visibilité"
 
 #: src/SavedSearch.php:500
 msgid "Save as a new search"
-msgstr ""
+msgstr "Enregistrer en tant que nouvelle recherche"
 
 #: src/SavedSearch.php:609
 #, php-format
 msgid "Partial load of the saved search: %s"
-msgstr ""
+msgstr "Chargement partielle de la recherche : %s"
 
 #: src/SavedSearch.php:848
 msgid "Count for this saved search has been disabled."
@@ -8445,39 +8445,39 @@ msgstr "Groupe de support technique"
 
 #: src/Inventory/Asset/Cartridge.php:54
 msgid "Toner"
-msgstr ""
+msgstr "Toner"
 
 #: src/Inventory/Asset/Cartridge.php:55
 msgid "Drum"
-msgstr ""
+msgstr "Tambour"
 
 #: src/Inventory/Asset/Cartridge.php:57
 msgid "Waste bin"
-msgstr ""
+msgstr "Corbeille"
 
 #: src/Inventory/Asset/Cartridge.php:58
 msgid "Maintenance kit"
-msgstr ""
+msgstr "Kit d'entretien"
 
 #: src/Inventory/Asset/Cartridge.php:59
 msgid "Fuser kit"
-msgstr ""
+msgstr "Kit unité de fusion"
 
 #: src/Inventory/Asset/Cartridge.php:60
 msgid "Transfer kit"
-msgstr ""
+msgstr "Kit de transfert"
 
 #: src/Inventory/Asset/Cartridge.php:61
 msgid "Cleaning kit"
-msgstr ""
+msgstr "Kit de nettoyage"
 
 #: src/Inventory/Asset/Cartridge.php:62
 msgid "Developer"
-msgstr ""
+msgstr "Développeur"
 
 #: src/Inventory/Asset/Cartridge.php:63
 msgid "Photoconductor"
-msgstr ""
+msgstr "Photoconducteur"
 
 #: src/Inventory/Asset/Cartridge.php:70
 msgid "Black"
@@ -8513,7 +8513,7 @@ msgstr "Gris foncé"
 
 #: src/Inventory/Asset/Cartridge.php:83
 msgid "Max"
-msgstr ""
+msgstr "Max"
 
 #: src/Inventory/Asset/Cartridge.php:84
 msgid "Used"
@@ -8531,20 +8531,20 @@ msgstr "Photo"
 
 #: src/Inventory/Asset/Cartridge.php:148
 msgid "Matte"
-msgstr ""
+msgstr "Mat"
 
 #: src/Inventory/Asset/Cartridge.php:188
 msgid "Many information grouped"
-msgstr ""
+msgstr "Nombreuses informations regroupées"
 
 #: src/Inventory/Asset/Cartridge.php:191
 msgid "Staples"
-msgstr ""
+msgstr "Agrafes"
 
 #: src/Inventory/Asset/Bios.php:70
 #, php-format
 msgid "%1$s BIOS"
-msgstr ""
+msgstr "%1$s BIOS"
 
 #: src/Inventory/Asset/NetworkEquipment.php:102
 #: src/Inventory/Asset/NetworkEquipment.php:153 src/NetworkPort.php:611
@@ -8558,29 +8558,29 @@ msgstr "Gestion"
 #: src/Inventory/Asset/NetworkEquipment.php:103
 #: src/Inventory/Asset/NetworkEquipment.php:155
 msgid "internal"
-msgstr ""
+msgstr "interne"
 
 #: src/Inventory/Inventory.php:283
 #, php-format
 msgid "Following keys has been ignored during process: %1$s"
-msgstr ""
+msgstr "Les clés suivantes ont été ignorées durant le processus : %1$s"
 
 #: src/Inventory/Inventory.php:772
 msgid "Clean temporary files created from inventories"
-msgstr ""
+msgstr "Nettoyages des fichier temporaires venant des inventaires"
 
 #: src/Inventory/Inventory.php:775
 msgid "Clean inventories orphaned files"
-msgstr ""
+msgstr "Nettoyages des fichiers orphelins venant des inventaires"
 
 #: src/Inventory/Inventory.php:799 src/Inventory/Inventory.php:870
 #, php-format
 msgid "File %1$s has been removed"
-msgstr ""
+msgstr "Fichier %1$s a été supprimé"
 
 #: src/Inventory/Conf.php:102
 msgid "Import inventory file"
-msgstr ""
+msgstr "Importer un fichier d'inventaire"
 
 #: src/Inventory/Conf.php:109
 #, php-format
@@ -8588,12 +8588,16 @@ msgid ""
 "You can use this menu to upload any inventory file. The file must have a "
 "known extension (%1$s).\n"
 msgstr ""
+"Vous pouvez utiliser ce menu pour importer n'importe quel fichier "
+"d'inventaire. Le fichier doit posséder un format connu (%1$s).\n"
 
 #: src/Inventory/Conf.php:112
 msgid ""
 "It is also possible to upload a compressed archive directly with a "
 "collection of inventory files."
 msgstr ""
+"Il est possible d'importer directement une archive compressée avec plusieurs"
+" fichiers d'inventaire."
 
 #: src/Inventory/Conf.php:119 src/NetworkPortType.php:57
 #: src/NetworkPortType.php:84
@@ -8602,15 +8606,15 @@ msgstr "Importer"
 
 #: src/Inventory/Conf.php:171
 msgid "No file to import!"
-msgstr ""
+msgstr "Aucun fichier à importer !"
 
 #: src/Inventory/Conf.php:223
 msgid "File has not been imported:"
-msgstr ""
+msgstr "Le fichier n'a pas été importé:"
 
 #: src/Inventory/Conf.php:229
 msgid "File has been successfully imported!"
-msgstr ""
+msgstr "Le fichier a été importé aves succès !"
 
 #: src/Inventory/Conf.php:252
 msgid "Configuration"
@@ -8618,7 +8622,7 @@ msgstr "Configuration"
 
 #: src/Inventory/Conf.php:253
 msgid "Import from file"
-msgstr ""
+msgstr "Importer depuis un fichier"
 
 #: src/Inventory/Conf.php:297
 msgid "Import options"
@@ -8631,40 +8635,44 @@ msgstr "Statut par défaut"
 #: src/Inventory/Conf.php:363
 msgid "Import monitor on serial partial match"
 msgstr ""
+"Importer un moniteur avec une correspondance partielle du numéro de série"
 
 #: src/Inventory/Conf.php:378
 msgid "Related configurations"
-msgstr ""
+msgstr "Configurations liées"
 
 #: src/Inventory/Conf.php:416
 msgid "Import virtual machines"
-msgstr ""
+msgstr "Importer des machines virtuelles"
 
 #: src/Inventory/Conf.php:446
 msgid "Create computer for virtual machines"
-msgstr ""
+msgstr "Créer un ordinateur pour les machines virtuelles"
 
 #: src/Inventory/Conf.php:458
 msgid "Create components for virtual machines"
-msgstr ""
+msgstr "Créer les composants pour les machines virtuelles"
 
 #: src/Inventory/Conf.php:472
 msgid ""
 "Will attempt to create components from VM information sent from host, do not"
 " use if you plan to inventory any VM directly!"
 msgstr ""
+"Essaiera de créer les composants à partir des informations de la VM envoyées"
+" par l'hôte, ne pas utiliser si vous planifiez d'inventorier les VM "
+"directement !"
 
 #: src/Inventory/Conf.php:555
 msgid "Virtual network cards"
-msgstr ""
+msgstr "Cartes réseaux virtuelles"
 
 #: src/Inventory/Conf.php:614
 msgid "Network drives"
-msgstr ""
+msgstr "Lecteurs réseaux"
 
 #: src/Inventory/Conf.php:629
 msgid "Removable drives"
-msgstr ""
+msgstr "Lecteurs amovibles"
 
 #: src/Inventory/Conf.php:686 src/PlanningRecall.php:358
 #: src/Item_Devices.php:734 src/Dashboard/Grid.php:285 src/CommonGLPI.php:1346
@@ -8697,12 +8705,12 @@ msgstr "Sauvegarder"
 #: src/Inventory/Conf.php:714
 #, php-format
 msgid "Some properties are not known: %1$s"
-msgstr ""
+msgstr "Certaines propriétés ne sont pas connues : %1$s"
 
 #: src/Inventory/Conf.php:753
 #, php-format
 msgid "Property %1$s does not exists!"
-msgstr ""
+msgstr "La propriété%1$s n'existe pas ! "
 
 #: src/Inventory/Conf.php:767 src/Dashboard/Grid.php:1388 src/Profile.php:982
 #: src/Profile.php:1766 src/Profile.php:1905 src/Profile.php:3010
@@ -8746,11 +8754,11 @@ msgstr "Sélectionnez les éléments à afficher par défaut"
 
 #: src/NetworkPort.php:726
 msgid "Connections legend"
-msgstr ""
+msgstr "Légende des connexions"
 
 #: src/NetworkPort.php:727
 msgid "Equipment in trunk or tagged mode"
-msgstr ""
+msgstr "Équipement en mode trunk ou tagué"
 
 #: src/NetworkPort.php:728
 msgid "Hub "
@@ -8758,16 +8766,16 @@ msgstr "Hub "
 
 #: src/NetworkPort.php:729
 msgid "Other equipments"
-msgstr ""
+msgstr "Autres équipements"
 
 #: src/NetworkPort.php:730
 msgid "Aggregated port"
-msgstr ""
+msgstr "Port agrégé"
 
 #: src/NetworkPort.php:736 src/NetworkPort.php:810
 #, php-format
 msgid "%s %s"
-msgstr ""
+msgstr "%s %s"
 
 #: src/NetworkPort.php:762
 msgid "No network port found"
@@ -8776,29 +8784,29 @@ msgstr "Aucun port réseau trouvé"
 #: src/NetworkPort.php:812
 msgid "Management port"
 msgid_plural "Management ports"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Port de management"
+msgstr[1] "Port de management"
 
 #. TRANS: list of unit (bps for bytes per second)
 #: src/NetworkPort.php:901
 msgid "bps"
-msgstr ""
+msgstr "bps"
 
 #: src/NetworkPort.php:901
 msgid "Kbps"
-msgstr ""
+msgstr "Kbps"
 
 #: src/NetworkPort.php:901
 msgid "Mbps"
-msgstr ""
+msgstr "Mbps"
 
 #: src/NetworkPort.php:901
 msgid "Gbps"
-msgstr ""
+msgstr "Gbps"
 
 #: src/NetworkPort.php:901
 msgid "Tbps"
-msgstr ""
+msgstr "Tbps"
 
 #: src/NetworkPort.php:914 src/NetworkPort.php:1117
 #: src/Features/Inventoriable.php:197 src/GLPINetwork.php:113
@@ -8810,11 +8818,11 @@ msgstr "Inconnu"
 
 #: src/NetworkPort.php:918
 msgid "Up"
-msgstr ""
+msgstr "Up"
 
 #: src/NetworkPort.php:922
 msgid "Down"
-msgstr ""
+msgstr "Down"
 
 #: src/NetworkPort.php:926
 msgid "Test"
@@ -8822,16 +8830,16 @@ msgstr "Tester"
 
 #: src/NetworkPort.php:976
 msgid "Half"
-msgstr ""
+msgstr "Half"
 
 #: src/NetworkPort.php:979
 msgid "Full"
-msgstr ""
+msgstr "Full"
 
 #: src/NetworkPort.php:1005
 #, php-format
 msgid "%s linked VLANs"
-msgstr ""
+msgstr "%s VLANs liés"
 
 #: src/NetworkPort.php:1080
 #, php-format
@@ -8841,7 +8849,7 @@ msgstr ""
 #: src/NetworkPort.php:1105 src/NetworkPort.php:1128
 #: src/NetworkPortConnectionLog.php:131
 msgid "Connected"
-msgstr ""
+msgstr "Connecté"
 
 #: src/NetworkPort.php:1109 src/NetworkPortConnectionLog.php:134
 #: src/Computer_Item.php:601
@@ -8854,7 +8862,7 @@ msgstr "En test"
 
 #: src/NetworkPort.php:1121
 msgid "Dormant"
-msgstr ""
+msgstr "Dormant"
 
 #: src/NetworkPort.php:1275 src/NetworkPort.php:1280 src/NetworkPort.php:1427
 #: src/RuleImportAsset.php:135
@@ -8876,19 +8884,19 @@ msgstr "MTU"
 
 #: src/NetworkPort.php:1503
 msgid "Internal status"
-msgstr ""
+msgstr "Statut interne"
 
 #: src/NetworkPort.php:1510
 msgid "Last change"
-msgstr ""
+msgstr "Dernier changement"
 
 #: src/NetworkPort.php:1517
 msgid "Number of I/O bytes"
-msgstr ""
+msgstr "Nombre d'octets I/O"
 
 #: src/NetworkPort.php:1524
 msgid "Number of I/O errors"
-msgstr ""
+msgstr "Nombre d'erreurs I/O"
 
 #: src/NetworkPort.php:1531
 msgid "Duplex"
@@ -8901,7 +8909,7 @@ msgstr[0] "Connexions"
 
 #: src/NetworkPort.php:1578
 msgid "Last connection"
-msgstr ""
+msgstr "Dernière connexion"
 
 #: src/NetworkPort.php:1586
 msgid "Alias"
@@ -9057,11 +9065,11 @@ msgstr[1] ""
 
 #: src/NetworkPortType.php:52 src/NetworkPortType.php:76
 msgid "Decimal"
-msgstr ""
+msgstr "Décimal"
 
 #: src/NetworkPortType.php:61 src/NetworkPortType.php:92
 msgid "Instanciation type"
-msgstr ""
+msgstr "Type d'instanciation"
 
 #: src/Dropdown.php:242
 #, php-format
@@ -9074,7 +9082,7 @@ msgstr "Afficher sur la carte"
 
 #: src/Dropdown.php:303
 msgid "Display on datacenter"
-msgstr ""
+msgstr "Affichage sur le centre de données"
 
 #. TRANS: %s is the store path
 #: src/Dropdown.php:792
@@ -9120,7 +9128,7 @@ msgstr[0] "Calendriers"
 
 #: src/Dropdown.php:1088 src/Profile.php:1079
 msgid "Cable management"
-msgstr ""
+msgstr "Gestion des câbles"
 
 #: src/Dropdown.php:1094 src/Profile.php:977 src/Profile.php:2151
 msgid "Internet"
@@ -9188,8 +9196,8 @@ msgstr[0] "%s millisecondes"
 #, php-format
 msgid "%d unit"
 msgid_plural "%d units"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d unité"
+msgstr[1] "%d unités"
 
 #: src/Dropdown.php:1718
 #, php-format
@@ -9287,7 +9295,7 @@ msgstr "Toutes les pages en CSV"
 
 #: src/Dropdown.php:2371 templates/components/search/controls.html.twig:126
 msgid "Copy names to clipboard"
-msgstr ""
+msgstr "Copier les noms dans le presse-papiers"
 
 #: src/CommonTreeDropdown.php:533
 msgid "New child heading"
@@ -9537,7 +9545,7 @@ msgstr "Forcer la synchronisation"
 
 #: src/Auth.php:1466
 msgid "Clean LDAP fields and force synchronisation"
-msgstr ""
+msgstr "Nettoyer les champs LDAP et forcer la synchronisation"
 
 #: src/Auth.php:1481
 msgid "Change of the authentication method"
@@ -10108,7 +10116,7 @@ msgstr ""
 
 #: src/Html.php:2577
 msgid "Massive actions"
-msgstr ""
+msgstr "Actions massives"
 
 #: src/Html.php:3172 src/Html.php:3404 src/Html.php:6761
 msgid "Now"
@@ -10196,7 +10204,7 @@ msgstr[0] "+ %d ans"
 
 #: src/Html.php:3843
 msgid "Available variables"
-msgstr ""
+msgstr "Variables disponibles"
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
 #: src/Html.php:3946 src/Html.php:4159
@@ -10219,31 +10227,31 @@ msgstr "%1$d sur %2$d"
 
 #: src/Html.php:6766
 msgid "Just now"
-msgstr ""
+msgstr "À l'instant"
 
 #: src/Html.php:6769
 #, php-format
 msgid "%s minutes ago"
-msgstr ""
+msgstr "il y a %s minutes"
 
 #: src/Html.php:6772
 #, php-format
 msgid "%s hours ago"
-msgstr ""
+msgstr "il y a %s heures"
 
 #: src/Html.php:6776
 msgid "Yesterday"
-msgstr ""
+msgstr "Hier"
 
 #: src/Html.php:6779
 #, php-format
 msgid "%s days ago"
-msgstr ""
+msgstr "il y a %s jours"
 
 #: src/Html.php:6782
 #, php-format
 msgid "%s weeks ago"
-msgstr ""
+msgstr "il y a %s semaines"
 
 #: src/Html.php:6785
 msgid "Last month"
@@ -10251,38 +10259,38 @@ msgstr "Le mois dernier"
 
 #: src/Html.php:6794
 msgid "In a minute"
-msgstr ""
+msgstr "Dans la minute"
 
 #: src/Html.php:6797
 #, php-format
 msgid "In %s minutes"
-msgstr ""
+msgstr "Dans %s minutes"
 
 #: src/Html.php:6800
 msgid "In an hour"
-msgstr ""
+msgstr "Dans l'heure"
 
 #: src/Html.php:6803
 #, php-format
 msgid "In %s hours"
-msgstr ""
+msgstr "Dans %s heures"
 
 #: src/Html.php:6807
 msgid "Tomorrow"
-msgstr ""
+msgstr "Demain"
 
 #: src/Html.php:6813
 msgid "next week"
-msgstr ""
+msgstr "semaine suivante"
 
 #: src/Html.php:6816
 #, php-format
 msgid "In %s weeks"
-msgstr ""
+msgstr "Dans %s semaines"
 
 #: src/Html.php:6819
 msgid "next month"
-msgstr ""
+msgstr "mois suivant"
 
 #. TRANS: Always plural
 #: src/Notepad.php:52 src/Notepad.php:184
@@ -10374,11 +10382,11 @@ msgstr "Suppression d'un suivi"
 
 #: src/NotificationTargetCommonITILObject.php:136
 msgid "User mentionned"
-msgstr ""
+msgstr "Utilisateur mentionné"
 
 #: src/NotificationTargetCommonITILObject.php:805
 msgid "Mentionned user"
-msgstr ""
+msgstr "Utilisateur mentionné"
 
 #: src/NotificationTargetCommonITILObject.php:812
 msgid "Former technician in charge of the ticket"
@@ -10547,7 +10555,7 @@ msgstr "Groupe assigné à la tâche"
 
 #: src/NotificationTargetCommonITILObject.php:1862
 msgid "Internal type"
-msgstr ""
+msgstr "Type interne"
 
 #: src/NotificationTargetCommonITILObject.php:1865 src/Socket.php:332
 #: src/Socket.php:708 src/PDU_Rack.php:278 src/PDU_Rack.php:349
@@ -10844,24 +10852,24 @@ msgstr[0] "Connecteurs"
 #: src/Socket.php:854 src/Socket.php:910
 #: templates/pages/assets/socket.html.twig:66
 msgid "Wiring side"
-msgstr ""
+msgstr "Sens de câblage"
 
 #: src/Socket.php:665
 msgid "New socket for this item..."
-msgstr ""
+msgstr "Nouveau connecteur pour cet item..."
 
 #: src/Socket.php:880 src/Socket.php:964
 #, php-format
 msgid "Network sockets for %s"
-msgstr ""
+msgstr "Connecteurs réseaux pour %s"
 
 #: src/Socket.php:907
 msgid "Socket Model"
-msgstr ""
+msgstr "Modèle de connecteur"
 
 #: src/Socket.php:909
 msgid "NetworkPort"
-msgstr ""
+msgstr "Port réseau"
 
 #: src/Item_Devices.php:79
 #, php-format
@@ -10947,14 +10955,14 @@ msgstr[0] "Types de cartes SIM"
 #: src/DatabaseInstanceType.php:38
 msgid "Database instance type"
 msgid_plural "Database instance types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Type d'instance de base de données"
+msgstr[1] "Types d'instances de base de données"
 
 #: src/DatabaseInstanceCategory.php:38
 msgid "Database instance category"
 msgid_plural "Database instance categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Catégorie d'instance de base de données"
+msgstr[1] "Catégories d'instances de base de données"
 
 #: src/ProjectTaskTeam.php:71
 msgid "Task team"
@@ -11415,11 +11423,11 @@ msgstr "Ajouter un suivi aux tickets (demandeur)"
 
 #: src/ITILFollowup.php:857
 msgid "Add followup (watcher)"
-msgstr ""
+msgstr "Ajouter suivi (observateur)"
 
 #: src/ITILFollowup.php:858
 msgid "Add a followup to tickets (watcher)"
-msgstr ""
+msgstr "Ajouter un suivi aux tickets (observateur)"
 
 #: src/PCIVendor.php:44
 msgid "PCI vendor"
@@ -11575,40 +11583,40 @@ msgstr "Port d'origine"
 
 #: src/NetworkPortMetrics.php:54
 msgid "Network port metrics"
-msgstr ""
+msgstr "Métriques"
 
 #: src/NetworkPortMetrics.php:171
 msgid "Input/Output bytes"
-msgstr ""
+msgstr "Input/Output bytes"
 
 #: src/NetworkPortMetrics.php:188
 msgid "Input/Output errors"
-msgstr ""
+msgstr "Input/Output errors"
 
 #: src/NetworkPortMetrics.php:204
 msgid "Input bytes"
-msgstr ""
+msgstr "Input bytes"
 
 #: src/NetworkPortMetrics.php:206
 msgid "Output bytes"
-msgstr ""
+msgstr "Output bytes"
 
 #: src/NetworkPortMetrics.php:208
 msgid "Input errors"
-msgstr ""
+msgstr "Input errors"
 
 #: src/NetworkPortMetrics.php:210
 msgid "Output errors"
-msgstr ""
+msgstr "Output errors"
 
 #: src/PendingReasonCron.php:48
 msgid ""
 "Send automated follow-ups on pending tickets and solve them if necessary"
-msgstr ""
+msgstr "Suivis et résolutions automatiques pour les tickets en attente"
 
 #: src/PendingReasonCron.php:194
 msgid "Automatic followups / resolution"
-msgstr ""
+msgstr "Suivis / Résolutions automatiques"
 
 #: src/Dashboard/Provider.php:256 src/Dashboard/Grid.php:1176
 msgid "Late tickets"
@@ -11616,7 +11624,7 @@ msgstr "Tickets en retard"
 
 #: src/Dashboard/Provider.php:297
 msgid "Tickets waiting for validation"
-msgstr ""
+msgstr "Tickets en attente de votre validation"
 
 #: src/Dashboard/Provider.php:340
 msgid "Incoming tickets"
@@ -11644,11 +11652,11 @@ msgstr "Tickets fermés"
 
 #: src/Dashboard/Provider.php:532 src/Dashboard/Provider.php:676
 msgid "Late own and resolve"
-msgstr ""
+msgstr "Attribués et résolus en retard"
 
 #: src/Dashboard/Provider.php:533 src/Dashboard/Provider.php:677
 msgid "Late resolve"
-msgstr ""
+msgstr "Résolus en retard"
 
 #: src/Dashboard/Provider.php:534 src/Dashboard/Provider.php:678
 msgid "Late own"
@@ -11656,15 +11664,15 @@ msgstr "prise en charge en retard"
 
 #: src/Dashboard/Provider.php:535 src/Dashboard/Provider.php:679
 msgid "On time"
-msgstr ""
+msgstr "Dans les temps"
 
 #: src/Dashboard/Provider.php:572
 msgid "Tickets by SLA status and by technician"
-msgstr ""
+msgstr "Tickets par statut SLA et par technicien"
 
 #: src/Dashboard/Provider.php:716
 msgid "Tickets by SLA status and by technician group"
-msgstr ""
+msgstr "Tickets par statut SLA et pas groupe de techniciens"
 
 #: src/Dashboard/Provider.php:837
 msgid "without"
@@ -11732,7 +11740,7 @@ msgstr "Barres multiples"
 
 #: src/Dashboard/Widget.php:160
 msgid "Multiple horizontal bars"
-msgstr ""
+msgstr "Barres horizontales multiples"
 
 #: src/Dashboard/Widget.php:170
 msgid "Stacked bars"
@@ -11740,7 +11748,7 @@ msgstr "Barres empilées"
 
 #: src/Dashboard/Widget.php:180
 msgid "Horizontal stacked bars"
-msgstr ""
+msgstr "Barres horizontales groupées"
 
 #: src/Dashboard/Widget.php:190
 msgid "Horizontal bars"
@@ -11867,10 +11875,12 @@ msgid ""
 "A personal dashboard is not visible by other administrators unless you share"
 " explicitely the dashboard"
 msgstr ""
+"Un tableau de bord personnel n'est pas visible par les autres "
+"administrateurs sauf si vous partagez explicitement celui-ci"
 
 #: src/Dashboard/Grid.php:886
 msgid "empty card!"
-msgstr ""
+msgstr "carte vide !"
 
 #: src/Dashboard/Grid.php:1127 src/Dashboard/Grid.php:1191
 #, php-format
@@ -11913,11 +11923,11 @@ msgstr "Résumé des tickets"
 
 #: src/Dashboard/Grid.php:1291
 msgid "Number of tickets by SLA status and technician"
-msgstr ""
+msgstr "Nombre de tickets par statut SLA et par technicien"
 
 #: src/Dashboard/Grid.php:1303
 msgid "Number of tickets by SLA status and technician group"
-msgstr ""
+msgstr "Nombre de tickets par statut SLA et par groupe de techniciens"
 
 #: src/Dashboard/Grid.php:1313
 msgid "Top ticket's categories"
@@ -11995,7 +12005,7 @@ msgstr "L'inventaire est toujours refusé."
 
 #: src/RefusedEquipment.php:266
 msgid "Inventory is successful, refused entry log has been removed."
-msgstr ""
+msgstr "Inventaire réalisé avec succès, l'historique de refus a été supprimé."
 
 #: src/Planning.php:133
 msgid "CalDAV browser interface"
@@ -12207,11 +12217,11 @@ msgstr "Capacité réelle"
 
 #: src/RuleImportAsset.php:91
 msgid "Target entity for the asset"
-msgstr ""
+msgstr "Entité de destination pour l'élément"
 
 #: src/RuleImportAsset.php:109
 msgid "Having the status"
-msgstr ""
+msgstr "Statut"
 
 #: src/RuleImportAsset.php:117
 msgid "Item name"
@@ -12223,7 +12233,7 @@ msgstr "Description du port"
 
 #: src/RuleImportAsset.php:144
 msgid "Device_id"
-msgstr ""
+msgstr "Device ID"
 
 #: src/RuleImportAsset.php:147
 msgid "Serial of the operating system"
@@ -12237,27 +12247,27 @@ msgstr "Tag d'inventaire"
 
 #: src/RuleImportAsset.php:179
 msgid "Linked asset"
-msgstr ""
+msgstr "Élément lié"
 
 #: src/RuleImportAsset.php:185
 msgid "Restrict search in defined entity"
-msgstr ""
+msgstr "Restreindre la recherche dans une entité définie"
 
 #: src/RuleImportAsset.php:189
 msgid "Restrict criteria to same network port"
-msgstr ""
+msgstr "Restreindre les critères au même port réseau"
 
 #: src/RuleImportAsset.php:194
 msgid "Only criteria of this rule in data"
-msgstr ""
+msgstr "Uniquement les critères de cette règle dans les données"
 
 #: src/RuleImportAsset.php:199
 msgid "Is partial"
-msgstr ""
+msgstr "Est partiel"
 
 #: src/RuleImportAsset.php:213
 msgid "Inventory link"
-msgstr ""
+msgstr "Lien vers l'inventaire"
 
 #: src/RuleImportAsset.php:217 src/RuleImportEntity.php:353
 msgid "Refuse import"
@@ -12265,7 +12275,7 @@ msgstr "Refuser l'import"
 
 #: src/RuleImportAsset.php:230
 msgid "Import denied (no log)"
-msgstr ""
+msgstr "Import refusé (pas de journaux)"
 
 #: src/RuleImportAsset.php:280
 msgid "is already present"
@@ -12277,11 +12287,11 @@ msgstr "est vide"
 
 #: src/RuleImportAsset.php:994
 msgid "Use values found from an already refused equipment"
-msgstr ""
+msgstr "Utiliser les valeurs trouvées depuis un équipement déjà refusé"
 
 #: src/RuleImportAsset.php:2348
 msgid "No itemtype defined"
-msgstr ""
+msgstr "Aucun itemtype défini"
 
 #: src/PDUModel.php:39
 msgid "PDU model"
@@ -12511,7 +12521,7 @@ msgstr "avec adresse de réponse"
 
 #: src/RuleImportAssetCollection.php:75
 msgid "Rules for import and link equipments"
-msgstr ""
+msgstr "Règles d'import et de liaison des équipements"
 
 #: src/NotificationEventMailing.php:320
 msgid "Error in sending the email"
@@ -12767,7 +12777,7 @@ msgstr "Matériel temporairement indisponible"
 
 #: src/Reservation.php:439
 msgid "View all items"
-msgstr ""
+msgstr "Voir tous les éléments"
 
 #: src/Reservation.php:444
 msgid "All reservable devices"
@@ -12776,12 +12786,12 @@ msgstr "Tous les matériels réservables"
 #: src/Reservation.php:555
 #, php-format
 msgid "Reserved by %s"
-msgstr ""
+msgstr "Réservé par %s"
 
 #: src/Reservation.php:602
 #, php-format
 msgid "%s - %s"
-msgstr ""
+msgstr "%s - %s"
 
 #: src/Reservation.php:688 src/ReservationItem.php:319
 msgid "Reserve an item"
@@ -12817,7 +12827,7 @@ msgstr "Effacer toutes les répétitions"
 
 #: src/Reservation.php:1014
 msgid "Reservations for this item"
-msgstr ""
+msgstr "Réservations pour cet élément"
 
 #: src/Reservation.php:1095
 msgid "Current and future reservations"
@@ -13238,7 +13248,7 @@ msgstr[0] "Types de solutions"
 
 #: src/RecurrentChange.php:48
 msgid "Recurrent changes"
-msgstr ""
+msgstr "Changements récurrents"
 
 #: src/DropdownTranslation.php:101 src/DropdownTranslation.php:116
 msgid "There's already a translation for this field in this language"
@@ -13309,17 +13319,17 @@ msgstr ""
 #: src/CommonITILRecurrent.php:581
 #, php-format
 msgid "%s %d successfully created"
-msgstr ""
+msgstr "%s %d créés avec succès"
 
 #: src/CommonITILRecurrent.php:588
 #, php-format
 msgid "%s creation failed (check mandatory fields)"
-msgstr ""
+msgstr "La création de %s a échoué (vérifier les champs obligatoires)"
 
 #: src/CommonITILRecurrent.php:594
 #, php-format
 msgid "%s creation failed (no template)"
-msgstr ""
+msgstr "La création de %s a échoué (aucun modèle)"
 
 #: src/Contract.php:205
 msgctxt "quantity"
@@ -13440,7 +13450,7 @@ msgstr "Supprimer un contrat"
 
 #: src/Contract.php:1767
 msgid "No item."
-msgstr ""
+msgstr "Aucun élément."
 
 #: src/Certificate.php:146 templates/pages/management/certificate.html.twig:37
 msgid "Self-signed"
@@ -13831,16 +13841,16 @@ msgstr[0] "Bases de données"
 #: src/Database.php:90 src/Database.php:403 src/DatabaseInstance.php:224
 #: templates/generic_show_form.html.twig:75
 msgid "Is active"
-msgstr ""
+msgstr "Est actif"
 
 #: src/Database.php:121 src/Database.php:404 src/DatabaseInstance.php:268
 msgid "Has backup"
-msgstr ""
+msgstr "A une sauvegarde"
 
 #: src/Database.php:125 src/Database.php:232 src/Database.php:309
 #: src/DatabaseInstance.php:272
 msgid "Last backup date"
-msgstr ""
+msgstr "Dernière date de sauvegarde"
 
 #: src/Database.php:197 src/Item_Disk.php:175 src/Item_Disk.php:293
 #: src/Item_Disk.php:410 src/Item_Disk.php:458
@@ -13853,11 +13863,11 @@ msgstr ""
 
 #: src/Database.php:369
 msgid "Add a database"
-msgstr ""
+msgstr "Ajouter une base de données"
 
 #: src/Database.php:397
 msgid "No database"
-msgstr ""
+msgstr "Aucune base de données"
 
 #: src/Transfer.php:3829 src/Transfer.php:3836
 #: src/NetworkPortInstantiation.php:933 src/Computer_Item.php:247
@@ -13949,7 +13959,7 @@ msgstr "Si les contrats ne sont plus utilisés"
 
 #: src/Transfer.php:3984
 msgid "If certificates are no longer used"
-msgstr ""
+msgstr "Si les certificats ne sont plus utilisés"
 
 #: src/Transfer.php:4005
 msgid ""
@@ -14213,7 +14223,7 @@ msgstr "Copier le défaut depuis l'utilisateur"
 
 #: src/RuleAction.php:431
 msgid "Copy first group from user"
-msgstr ""
+msgstr "Copier le premier groupe de l'utilisateur"
 
 #: src/RuleAction.php:432
 msgid "Copy from item"
@@ -14292,12 +14302,12 @@ msgstr "Aucun nom réseau trouvé"
 
 #: src/CommonITILRecurrentCron.php:49
 msgid "Create recurrent tickets and changes"
-msgstr ""
+msgstr "Créer des tickets et changements récurrents"
 
 #: src/CommonITILRecurrentCron.php:96
 #, php-format
 msgid "Failed to create recurrent item %s"
-msgstr ""
+msgstr "Création de l'élément récurrent %s échouée"
 
 #: src/Contact.php:176
 msgid "Vcard"
@@ -14377,7 +14387,7 @@ msgstr "Connecter"
 #: src/Features/DCBreadcrumb.php:172 src/Features/DCBreadcrumb.php:198
 #, php-format
 msgid "(U%1$u)"
-msgstr ""
+msgstr "(U%1$u)"
 
 #: src/Features/PlanningEvent.php:136 src/Features/PlanningEvent.php:196
 #: src/RSSFeed.php:629
@@ -14443,11 +14453,11 @@ msgstr "Informations d'inventaire"
 #: templates/components/form/inventory_info.html.twig:46
 #, php-format
 msgid "Download \"%1$s\" inventory file"
-msgstr ""
+msgstr "Téléchargement du fichier d'inventaire \"%1$s\""
 
 #: src/Features/Inventoriable.php:139
 msgid "Try a reimport from stored inventory file"
-msgstr ""
+msgstr "Importer de nouveau depuis un fichier d'inventaire stocké"
 
 #: src/Features/Inventoriable.php:145
 #: templates/components/form/inventory_info.html.twig:50
@@ -14457,7 +14467,7 @@ msgstr "Fichier d'inventaire manquant"
 
 #: src/Features/Inventoriable.php:154
 msgid "No agent has been linked."
-msgstr ""
+msgstr "Aucun agent n'a été lié."
 
 #: src/Features/Inventoriable.php:189
 #: templates/components/form/inventory_info.html.twig:83
@@ -14472,17 +14482,17 @@ msgstr "Statut de l'agent"
 #: src/Features/Inventoriable.php:195
 #: templates/components/form/inventory_info.html.twig:90
 msgid "Ask agent about its current status"
-msgstr ""
+msgstr "Demander à l'agent son statut actuel"
 
 #: src/Features/Inventoriable.php:198
 #: templates/components/form/inventory_info.html.twig:98
 msgid "Request inventory"
-msgstr ""
+msgstr "Demander un inventaire"
 
 #: src/Features/Inventoriable.php:199
 #: templates/components/form/inventory_info.html.twig:99
 msgid "Request agent to proceed an new inventory"
-msgstr ""
+msgstr "Demande à l'agent de procéder à un nouvel inventaire"
 
 #: src/CommonDBConnexity.php:314
 msgid "Cannot update item: not enough right on the parent(s) item(s)"
@@ -14505,7 +14515,7 @@ msgstr "Sélectionner un pair pour %s :"
 
 #: src/CommonDBConnexity.php:666
 msgid "Unable to reaffect given elements!"
-msgstr ""
+msgstr "Impossible d'affecter de nouveau les éléments donnés"
 
 #: src/Item_DeviceCamera_ImageFormat.php:44
 msgctxt "camera"
@@ -14567,10 +14577,12 @@ msgstr "Ajouter un antivirus"
 msgid ""
 "Remove software versions with no installation and software with no version"
 msgstr ""
+"Supprimer les versions de logiciels sans installation et des logiciels sans "
+"version"
 
 #: src/CleanSoftwareCron.php:62
 msgid "Max items to handle in one execution"
-msgstr ""
+msgstr "Nombre maximum d'éléments à traiter par exécution"
 
 #: src/LineOperator.php:53 src/LineOperator.php:71
 msgid "Mobile Country Code"
@@ -14766,7 +14778,7 @@ msgstr "Revue"
 #: src/Change.php:585
 msgctxt "status"
 msgid "Cancelled"
-msgstr ""
+msgstr "Annulé"
 
 #: src/Change.php:586
 msgctxt "status"
@@ -14802,15 +14814,15 @@ msgstr "Changements sur les éléments liés"
 
 #: src/Change.php:1338 src/Change.php:1387
 msgid "Changes on pending status"
-msgstr ""
+msgstr "Changements en attente"
 
 #: src/Change.php:1354 src/Change.php:1403
 msgid "Changes to be processed"
-msgstr ""
+msgstr "Changements à traiter"
 
 #: src/Change.php:1370 src/Change.php:1419
 msgid "Your changes in progress"
-msgstr ""
+msgstr "Vos changements en cours"
 
 #: src/NetworkPortEthernet.php:42
 msgid "Ethernet port"
@@ -14840,7 +14852,7 @@ msgstr "Fibre optique monomode"
 
 #: src/NetworkPortEthernet.php:405
 msgid "Ethernet socket"
-msgstr ""
+msgstr "Prise Ethernet"
 
 #: src/DeviceGraphicCard.php:41
 msgid "Graphics card"
@@ -14917,12 +14929,12 @@ msgstr "Référence"
 #: src/NotificationTargetCartridgeItem.php:97
 #: src/NotificationTargetConsumableItem.php:97
 msgid "Stock target"
-msgstr ""
+msgstr "Objectif de stock"
 
 #: src/NotificationTargetCartridgeItem.php:98
 #: src/NotificationTargetConsumableItem.php:98
 msgid "To order"
-msgstr ""
+msgstr "Commander"
 
 #: src/DomainRecord.php:46
 msgid "Domain record"
@@ -15264,15 +15276,15 @@ msgid ""
 "it?"
 msgstr ""
 "Cet élément est en attente d'approbation, voulez-vous vraiment le résoudre "
-"ou le fermer?"
+"ou le clôturer ?"
 
 #: src/CommonITILValidation.php:1618
 msgid "This item is waiting for approval."
-msgstr ""
+msgstr "Cet élément est en attente d'approbation"
 
 #: src/CommonITILValidation.php:1619
 msgid "Do you really want to resolve or close it?"
-msgstr ""
+msgstr "Voulez-vous vraiment le résoudre ou le clôturer ?"
 
 #: src/DeviceSoundCard.php:43
 msgid "Soundcard"
@@ -15362,7 +15374,7 @@ msgstr "Une demande de validation a été émise par %s"
 #: src/NotificationTargetTicket.php:523 src/NotificationTargetChange.php:228
 #, php-format
 msgid "An answer to an approval request was produced by %s"
-msgstr ""
+msgstr "%s a apporté une réponse à une demande d'approbation"
 
 #: src/NotificationTargetTicket.php:620
 msgid "Location name"
@@ -16232,8 +16244,8 @@ msgstr "Utiliser"
 #: src/Cable.php:46
 msgid "Cable"
 msgid_plural "Cables"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Câble"
+msgstr[1] "Câbles"
 
 #: src/Cable.php:136 src/CableType.php:39
 msgid "Cable type"
@@ -16444,31 +16456,31 @@ msgstr[0] "Types de consommable"
 #: src/DatabaseInstance.php:66
 msgid "Database instance"
 msgid_plural "Database instances"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Instance de base de données"
+msgstr[1] "Instance de base de données"
 
 #: src/DatabaseInstance.php:364 src/Project.php:601
 #: src/NetworkPortConnectionLog.php:114 src/ComputerVirtualMachine.php:351
 #: src/ComputerVirtualMachine.php:583
 msgid "State"
 msgid_plural "States"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "État"
+msgstr[1] "États"
 
 #: src/DatabaseInstance.php:398
 msgid "Last boot date"
-msgstr ""
+msgstr "Dernière date de démarrage"
 
 #: src/DatabaseInstance.php:516
 msgid "No instance found"
-msgstr ""
+msgstr "Aucune instance trouvée"
 
 #: src/DatabaseInstance.php:532
 #, php-format
 msgid "%1$d database"
 msgid_plural "%1$d databases"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1$d base de données"
+msgstr[1] "%1$d bases de données"
 
 #: src/RegisteredID.php:52
 msgid "PCI"
@@ -16825,55 +16837,55 @@ msgstr "%s / %s tâches complétées"
 #: src/Project.php:2529 src/CommonITILObject.php:8234
 msgctxt "filters"
 msgid "The title of the item"
-msgstr ""
+msgstr "Titre de l'élément"
 
 #: src/Project.php:2533 src/CommonITILObject.php:8238
 msgctxt "filters"
 msgid "The type of the item"
-msgstr ""
+msgstr "Type de l'élément"
 
 #: src/Project.php:2537
 msgctxt "filters"
 msgid "If the item represents a milestone or not"
-msgstr ""
+msgstr "Si l'élément représente une étape importante ou non"
 
 #: src/Project.php:2541 src/CommonITILObject.php:8242
 msgctxt "filters"
 msgid "The content of the item"
-msgstr ""
+msgstr "Le contenu de l'élément"
 
 #: src/Project.php:2545 src/CommonITILObject.php:8246
 msgctxt "filters"
 msgid "A team member for the item"
-msgstr ""
+msgstr "Un membre d'équipe pour l'élément"
 
 #: src/Project.php:2549 src/CommonITILObject.php:8250
 msgctxt "filters"
 msgid "A user in the team of the item"
-msgstr ""
+msgstr "Un utilisateur dans l'équipe pour l'élément"
 
 #: src/Project.php:2553 src/CommonITILObject.php:8254
 msgctxt "filters"
 msgid "A group in the team of the item"
-msgstr ""
+msgstr "Un groupe dans l'équipe pour l'élément"
 
 #: src/Project.php:2557 src/CommonITILObject.php:8258
 msgctxt "filters"
 msgid "A supplier in the team of the item"
-msgstr ""
+msgstr "Un remplaçant dans l'équipe pour l'élément"
 
 #: src/Project.php:2561
 msgctxt "filters"
 msgid "A contact in the team of the item"
-msgstr ""
+msgstr "Un contact dans l'équipe pour l'élément"
 
 #: src/NetworkPortConnectionLog.php:53
 msgid "Port connection history"
-msgstr ""
+msgstr "Historique de connexion du port"
 
 #: src/NetworkPortConnectionLog.php:116
 msgid "Connected item"
-msgstr ""
+msgstr "Elément connecté"
 
 #: src/NetworkPortConnectionLog.php:122
 msgid "No result found"
@@ -16881,7 +16893,7 @@ msgstr "Aucun résultat trouvé"
 
 #: src/NetworkPortConnectionLog.php:161
 msgid "No longer exists in database"
-msgstr ""
+msgstr "N'existe plus dans la base de donnée"
 
 #: src/ProjectTeam.php:71
 msgid "Project team"
@@ -16904,7 +16916,7 @@ msgstr "Champs"
 
 #: src/DomainRecordType.php:290 src/DomainRecordType.php:296
 msgid "Invalid JSON used to define fields."
-msgstr ""
+msgstr "JSON non valide utilisé pour définir les champs."
 
 #: src/DomainRecordType.php:311
 msgid ""
@@ -16974,10 +16986,12 @@ msgid ""
 "Besides, if you appreciate GLPI and its community, please take a minute to "
 "reference your organization by filling %1$s"
 msgstr ""
+"Par ailleurs, si vous appréciez GLPI et sa communauté, prenez une minute "
+"pour référencer votre organisation en remplissant le formulaire suivant %1$s"
 
 #: src/Telemetry.php:453
 msgid "the registration form"
-msgstr ""
+msgstr "Le formulaire d'inscription"
 
 #: src/ContentTemplates/Parameters/UserParameters.php:74
 msgid "Full name"
@@ -17053,8 +17067,8 @@ msgstr "Ajouter un modèle d'imprimante compatible"
 #: src/AgentType.php:41
 msgid "Agent type"
 msgid_plural "Agents types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Type d'agent"
+msgstr[1] "Types d'agents"
 
 #: src/Event.php:154 src/Config.php:2482
 msgid "System"
@@ -17253,7 +17267,7 @@ msgstr "Dictionnaire des types de matériels réseau"
 
 #: src/KnowbaseItem_KnowbaseItemCategory.php:176
 msgid "Add a category"
-msgstr ""
+msgstr "Ajouter une catégorie"
 
 #: src/KnowbaseItem_KnowbaseItemCategory.php:226
 msgid "Category name"
@@ -17300,8 +17314,8 @@ msgstr[0] "Modèles de périphériques"
 #: src/SocketModel.php:39
 msgid "Socket model"
 msgid_plural "Socket models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Modèle de prise"
+msgstr[1] "Modèles de prise"
 
 #: src/GLPINetwork.php:66
 msgid "Registration"
@@ -17358,7 +17372,7 @@ msgstr "La clé d'enregistrement est invalide."
 
 #: src/GLPINetwork.php:246
 msgid "The registration key refers to a terminated subscription."
-msgstr ""
+msgstr "La clé de souscription fait référence à une souscription résiliée."
 
 #: src/GLPINetwork.php:248
 msgid "The registration key is valid."
@@ -17445,7 +17459,7 @@ msgstr "Position horizontale (point de vue de la baie)"
 
 #: src/Item_Rack.php:672
 msgid "Reserved position?"
-msgstr ""
+msgstr "Position réservée?"
 
 #: src/Item_Rack.php:791
 msgid "asset rear side"
@@ -17945,6 +17959,7 @@ msgstr "Action lorsqu'un utilisateur est supprimé de l'annuaire LDAP"
 #: src/Config.php:743
 msgid "Action when a user is restored in the LDAP directory"
 msgstr ""
+"Action à réaliser quand un utilisateur est restauré dans l'annuaire LDAP"
 
 #: src/Config.php:748
 msgid "GLPI server time zone"
@@ -18061,7 +18076,7 @@ msgstr "Autoriser les suivis anonymes (collecteur)"
 
 #: src/Config.php:1005
 msgid "Planning work days"
-msgstr ""
+msgstr "Planification des journées ouvrées"
 
 #: src/Config.php:1030
 msgid "Matrix of calculus for priority"
@@ -18137,27 +18152,27 @@ msgstr "Palette de couleur"
 
 #: src/Config.php:1321
 msgid "Page layout"
-msgstr ""
+msgstr "Mise en page"
 
 #: src/Config.php:1325
 msgid "Horizontal (menu in header)"
-msgstr ""
+msgstr "Horizontal (menu dans l'en-tête)"
 
 #: src/Config.php:1326
 msgid "Vertical (menu in sidebar)"
-msgstr ""
+msgstr "Vertical (menu dans la barre latérale)"
 
 #: src/Config.php:1356
 msgid "Rich text field layout"
-msgstr ""
+msgstr "Disposition des champs de texte riche"
 
 #: src/Config.php:1361
 msgid "Inline (no toolbars)"
-msgstr ""
+msgstr "Inline (sans barre d'outils)"
 
 #: src/Config.php:1362
 msgid "Classic (toolbar on top)"
-msgstr ""
+msgstr "Classique (barre d'outils en haut)"
 
 #: src/Config.php:1371
 msgid "Enable high contrast"
@@ -18169,16 +18184,16 @@ msgstr "Utiliser la configuration serveur"
 
 #: src/Config.php:1389
 msgid "Timezone usage has not been activated."
-msgstr ""
+msgstr "L'utilisation des fuseaux horaires n'a pas été activée."
 
 #: src/Config.php:1391
 #, php-format
 msgid "Run the \"php bin/console %1$s\" command to activate it."
-msgstr ""
+msgstr "Exécutez la commande \"php bin/console %1$s\" pour l'activer."
 
 #: src/Config.php:1394
 msgid "Default central tab"
-msgstr ""
+msgstr "Onglet central par défaut"
 
 #: src/Config.php:1406
 msgid "Private followups by default"
@@ -18394,6 +18409,8 @@ msgid ""
 "You can use \"php bin/console cache:configure\" command to configure cache "
 "system."
 msgstr ""
+"Vous pouvez utiliser la commande \"php bin/console cache:configure\" pour "
+"configurer le système de cache."
 
 #: src/Config.php:1869
 #, php-format
@@ -18464,7 +18481,7 @@ msgstr "Configuration du proxy pour vérifier les mises à jour"
 
 #: src/Config.php:2146
 msgid "Copy system information"
-msgstr ""
+msgstr "Copier les informations du système"
 
 #: src/Config.php:2156
 msgid "Check if a new version is available"
@@ -18499,7 +18516,7 @@ msgstr "Vous utilisez une version de développement, faites attention !"
 
 #: src/Config.php:3011
 msgid "You are using a pre-release version, be careful!"
-msgstr ""
+msgstr "Vous utilisez une version préliminaire, soyez prudent !"
 
 #: src/Config.php:3018
 msgid "I know I am using a unstable version."
@@ -18535,7 +18552,7 @@ msgstr "Installation / désinstallation des logiciels sur les éléments"
 
 #: src/Config.php:3138
 msgid "Installation/uninstallation versions on software"
-msgstr ""
+msgstr "Versions d'installation/désinstallation sur les logiciels"
 
 #: src/Config.php:3147
 msgid "Add/Remove items from software versions"
@@ -18657,11 +18674,11 @@ msgstr "Ne pas désactiver"
 
 #: src/Config.php:3491
 msgid "Documents setup"
-msgstr ""
+msgstr "Configuration des documents"
 
 #: src/Config.php:3496
 msgid "Document files maximum size (Mio)"
-msgstr ""
+msgstr "Taille maximale des documents (Mio)"
 
 #: src/State.php:91
 msgid "Keep status"
@@ -18892,7 +18909,7 @@ msgstr "%s ajoute l'élément"
 
 #: src/Entity.php:1377
 msgid "Administrative Number"
-msgstr ""
+msgstr "Numéro administratif"
 
 #: src/Entity.php:1439
 msgctxt "location"
@@ -18978,7 +18995,7 @@ msgstr "Pas de changement d'entité"
 
 #: src/Entity.php:1743
 msgid "Model for automatic entity transfer on inventories"
-msgstr ""
+msgstr "Modèle des inventaires pour le transfert automatique d'entités"
 
 #: src/Entity.php:1760
 msgid "Agent base URL"
@@ -19035,8 +19052,8 @@ msgstr "Configuration des gabarits"
 #: src/Entity.php:2517 src/ChangeTemplate.php:48
 msgid "Change template"
 msgid_plural "Change templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Modèle de changement"
+msgstr[1] "Modèles de changement"
 
 #: src/Entity.php:2573
 msgid "Tickets configuration"
@@ -19044,7 +19061,7 @@ msgstr "Configuration des tickets"
 
 #: src/Entity.php:2622
 msgid "Automatic assignment of tickets, changes and problems"
-msgstr ""
+msgstr "Assignation automatique des tickets, changements et problèmes"
 
 #: src/Entity.php:2645
 msgid "Mark followup added by a supplier though an email collector as private"
@@ -19058,11 +19075,11 @@ msgstr "Anonymiser les agents de support"
 
 #: src/Entity.php:2695
 msgid "Default contract"
-msgstr ""
+msgstr "Contrat par défaut"
 
 #: src/Entity.php:2701 src/Entity.php:2725
 msgid "Contract in ticket entity"
-msgstr ""
+msgstr "Contrat dans l'entité du ticket"
 
 #: src/Entity.php:2736
 msgid "Automatic closing configuration"
@@ -19106,11 +19123,11 @@ msgstr "Basée sur la catégorie puis sur le matériel"
 
 #: src/Entity.php:3211
 msgid "Replace the agent's name with a generic name"
-msgstr ""
+msgstr "Remplacer le nom de l'agent par un nom générique"
 
 #: src/Entity.php:3212
 msgid "Replace the agent's name with a customisable nickname"
-msgstr ""
+msgstr "Remplacer le nom de l'agent par un surnom personnalisable"
 
 #: src/Entity.php:3543
 msgid "Read parameters"
@@ -19134,7 +19151,7 @@ msgstr "Valeur héritée depuis une entité parente"
 
 #: src/Entity.php:3599
 msgid "First found valid contract in ticket entity"
-msgstr ""
+msgstr "Premier contrat valide trouvé dans l'entité du ticket"
 
 #: src/Calendar.php:95 src/Calendar.php:109 src/Domain.php:398
 msgctxt "button"
@@ -19165,7 +19182,7 @@ msgstr "Vous ne pouvez pas utiliser la description prédéfinie telle quelle"
 
 #: src/CommonITILObject.php:2162
 msgid "Incorrect value for date field."
-msgstr ""
+msgstr "Valeur incorrecte pour le champ date."
 
 #: src/CommonITILObject.php:2831
 msgctxt "priority"
@@ -19343,7 +19360,7 @@ msgstr "TTR + Progression"
 
 #: src/CommonITILObject.php:3809
 msgid "Time to resolve exceeded"
-msgstr ""
+msgstr "Temps de résolution dépassé"
 
 #: src/CommonITILObject.php:3873
 msgid "Last edit by"
@@ -19401,31 +19418,31 @@ msgstr "Planification"
 #: src/CommonITILObject.php:6490
 msgctxt "button"
 msgid "Answer"
-msgstr ""
+msgstr "Réponse"
 
 #: src/CommonITILObject.php:6500
 msgctxt "button"
 msgid "Create a task"
-msgstr ""
+msgstr "Créer une tâche"
 
 #: src/CommonITILObject.php:6510
 msgctxt "button"
 msgid "Add a solution"
-msgstr ""
+msgstr "Ajouter une solution"
 
 #: src/CommonITILObject.php:6520
 msgctxt "button"
 msgid "Ask for validation"
-msgstr ""
+msgstr "Demander une validation"
 
 #: src/CommonITILObject.php:6825
 #, php-format
 msgid "%s: %s"
-msgstr ""
+msgstr "%s: %s"
 
 #: src/CommonITILObject.php:6827
 msgid "Log entry"
-msgstr ""
+msgstr "Entrée de journal"
 
 #: src/APIClient.php:65
 msgid "API client"
@@ -19711,7 +19728,7 @@ msgstr "Voir tous les éléments réservables"
 
 #: src/ReservationItem.php:450
 msgid "View calendar for all items"
-msgstr ""
+msgstr "Voir le calendrier pour tous les éléments"
 
 #: src/ReservationItem.php:455 src/ReservationItem.php:466
 msgid "Find a free item in a specific period"
@@ -19719,16 +19736,16 @@ msgstr "Trouver un élément libre pour une période spécifique"
 
 #: src/ReservationItem.php:570
 msgid "Booking calendar"
-msgstr ""
+msgstr "Calendrier des réservations"
 
 #: src/ReservationItem.php:689
 msgid "Reserve this item"
-msgstr ""
+msgstr "Réserver cet élément"
 
 #: src/ReservationItem.php:703
 msgctxt "button"
 msgid "Book"
-msgstr ""
+msgstr "Réserver"
 
 #: src/ReservationItem.php:792
 msgid "Device reservations expiring today"
@@ -19744,7 +19761,7 @@ msgstr "Faire une réservation"
 
 #: src/ReservationItem.php:1009
 msgid "No reservable item!"
-msgstr ""
+msgstr "Aucun élément réservable!"
 
 #: src/DeviceSensorModel.php:44
 msgid "Device sensor model"
@@ -19817,7 +19834,7 @@ msgstr "renseignez votre clé d'enregistrement dans la configuration."
 #: src/Marketplace/View.php:164
 #, php-format
 msgid "Your %1$s subscription has been terminated."
-msgstr ""
+msgstr "Votre souscription %1$s a été résilié."
 
 #: src/Marketplace/View.php:165
 #, php-format
@@ -19830,6 +19847,8 @@ msgid ""
 "Unable to fetch plugin list due to %s services website unavailability. "
 "Please try again later."
 msgstr ""
+"Impossible de récupérer la liste des plugins en raison de l'indisponibilité "
+"de services %s. Veuillez réessayer plus tard."
 
 #: src/Marketplace/View.php:331
 #, php-format
@@ -19837,6 +19856,8 @@ msgid ""
 "Plugin list may be truncated due to %s services website unavailability. "
 "Please try again later."
 msgstr ""
+"La liste des plugins peut être tronquée en raison de l'indisponibilité de "
+"services %s. Veuillez réessayer plus tard."
 
 #: src/Marketplace/View.php:346
 #, php-format
@@ -19909,11 +19930,11 @@ msgstr "Lisez moi"
 
 #: src/Marketplace/View.php:674
 msgid "Download again"
-msgstr ""
+msgstr "Télécharger à nouveau"
 
 #: src/Marketplace/View.php:683
 msgid "This plugin is not available for your GLPI version."
-msgstr ""
+msgstr "Ce plugin n'est pas disponible pour votre version de GLPI."
 
 #: src/Marketplace/View.php:695
 msgid "The plugin has an available update but its directory is not writable."
@@ -19937,7 +19958,7 @@ msgstr "Téléchargement"
 #: src/Marketplace/View.php:722
 #, php-format
 msgid "A new version (%s) is available, update?"
-msgstr ""
+msgstr "Une nouvelle version (%s) est disponible, mettre à jour ?"
 
 #: src/Marketplace/View.php:735
 #, php-format
@@ -19976,6 +19997,8 @@ msgstr ""
 #: src/Marketplace/View.php:1006
 msgid "Do you want to replace the plugins setup page by the new marketplace?"
 msgstr ""
+"Voulez-vous remplacer la page de configuration des plugins par l'interface "
+"du Marketplace ?"
 
 #: src/Marketplace/View.php:1018
 msgid "Later"
@@ -20380,8 +20403,8 @@ msgstr "Capacité"
 #: src/USBVendor.php:44
 msgid "USB vendor"
 msgid_plural "USB vendors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Fournisseur USB"
+msgstr[1] "Fournisseurs USB"
 
 #: src/RuleDictionnaryOperatingSystemCollection.php:44
 msgid "Dictionnary of operating systems"
@@ -20442,6 +20465,8 @@ msgstr "La migration de la table « %s » a échoué avec le message « (%s) %s�
 #: src/Console/Database/EnableTimezonesCommand.php:101
 msgid "Unable to update DB configuration file."
 msgstr ""
+"Impossible de mettre à jour le fichier de configuration de la base de "
+"données."
 
 #: src/Console/Migration/MyIsamToInnoDbCommand.php:135
 #: src/Console/Migration/BuildMissingTimestampsCommand.php:123
@@ -20513,7 +20538,7 @@ msgstr ""
 #: src/Console/Migration/RacksPluginToCoreCommand.php:226
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:173
 msgid "Do you want to launch migration?"
-msgstr ""
+msgstr "Voulez-vous lancer la migration ?"
 
 #: src/Console/Migration/DomainsPluginToCoreCommand.php:170
 #: src/Console/Migration/RacksPluginToCoreCommand.php:270
@@ -20667,43 +20692,49 @@ msgstr "Aucun élément de domaine trouvé."
 #: src/Console/Migration/Utf8mb4Command.php:85
 msgid "Convert database character set from \"utf8\" to \"utf8mb4\"."
 msgstr ""
+"Convertir le jeu de caractères de la base de données de \"utf8\" à "
+"\"utf8mb4\"."
 
 #: src/Console/Migration/Utf8mb4Command.php:106
 #: src/Console/Database/InstallCommand.php:262
 msgid "Database configuration is not compatible with \"utf8mb4\" usage."
 msgstr ""
+"La configuration de la base de données n'est pas compatible avec "
+"l'utilisation de \"utf8mb4\"."
 
 #: src/Console/Migration/Utf8mb4Command.php:123
 #, php-format
 msgid "%d tables are still using Compact or Redundant row format."
-msgstr ""
+msgstr "%d tables utilisent toujours le format de ligne Compact ou Redondant."
 
 #: src/Console/Migration/Utf8mb4Command.php:155
 #, php-format
 msgid "Found %s table(s) requiring migration to \"utf8mb4\"."
-msgstr ""
+msgstr "%s tables nécessitent une migration vers \"utf8mb4\"."
 
 #: src/Console/Migration/Utf8mb4Command.php:181
 #: src/Console/Migration/DynamicRowFormatCommand.php:144
 #, php-format
 msgid "<error>Error migrating table \"%s\".</error>"
-msgstr ""
+msgstr "<error>Erreur de migration de la table \"%s\".</error>"
 
 #: src/Console/Migration/Utf8mb4Command.php:201
 #: src/Console/Migration/DynamicRowFormatCommand.php:156
 msgid "Errors occured during migration."
-msgstr ""
+msgstr "Des erreurs se sont produites pendant la migration."
 
 #: src/Console/Migration/DynamicRowFormatCommand.php:64
 msgid ""
 "Convert database tables to \"Dynamic\" row format (required for \"utf8mb4\" "
 "character support)."
 msgstr ""
+"Convertir les tables de la base de données au format de ligne \"Dynamic\" "
+"(nécessaire pour le support des caractères \"utf8mb4\")."
 
 #: src/Console/Migration/DynamicRowFormatCommand.php:115
 #, php-format
 msgid "Found %s table(s) requiring a migration to \"ROW_FORMAT=DYNAMIC\"."
-msgstr ""
+msgstr "%s table(s) requièrent une migration vers \"ROW_FORMAT=DYNAMIC\"."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:160
 msgid "Migrate Racks plugin data into GLPI core tables"
@@ -20804,7 +20835,7 @@ msgstr ""
 #: src/Console/Migration/RacksPluginToCoreCommand.php:552
 #, php-format
 msgid "Where do you want to import \"%s\"?"
-msgstr ""
+msgstr "Où souhaitez vous importer \"%s\" ?"
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:560
 msgid "Ignore (default)"
@@ -20997,12 +21028,16 @@ msgstr "Mise à jour de  `%s` échouée avec le message \"(%s) %s\"."
 #: src/Console/Database/AbstractConfigureCommand.php:475
 msgid "Timezones usage cannot be activated due to following errors:"
 msgstr ""
+"L'utilisation des fuseaux horaires ne peut être activée en raison des "
+"erreurs suivantes :"
 
 #: src/Console/Migration/TimestampsCommand.php:226
 #: src/Console/Database/AbstractConfigureCommand.php:485
 #, php-format
 msgid "Fix them and run the \"php bin/console %1$s\" command to enable timezones."
 msgstr ""
+"Corrigez les et exécutez la commande \"php bin/console %1$s\" pour activer "
+"les fuseaux horaires."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:144
 msgid "Migrate Appliances plugin data into GLPI core tables"
@@ -21198,6 +21233,8 @@ msgstr "Le plugin « %1$s » a été installé et peut être activé."
 #: src/Console/Plugin/InstallCommand.php:161
 msgid "Which plugin(s) do you want to install (comma separated values)?"
 msgstr ""
+"Quel(s) plugin(s) voulez-vous installer (valeurs séparées par des virgules) "
+"?"
 
 #: src/Console/Plugin/InstallCommand.php:240
 msgid "User name defined by --username option is invalid."
@@ -21258,6 +21295,7 @@ msgstr "Le plugin « %s » doit être installé et configuré avant d'être acti
 #: src/Console/Plugin/ActivateCommand.php:151
 msgid "Which plugin(s) do you want to activate (comma separated values)?"
 msgstr ""
+"Quel(s) plugin(s) voulez-vous activer (valeurs séparées par des virgules) ?"
 
 #: src/Console/Plugin/DeactivateCommand.php:81
 #, php-format
@@ -21277,6 +21315,8 @@ msgstr "Le plugin « %s » est déjà inactif."
 #: src/Console/Plugin/DeactivateCommand.php:143
 msgid "Which plugin(s) do you want to deactivate (comma separated values)?"
 msgstr ""
+"Quel(s) plugin(s) voulez-vous désactiver (valeurs séparées par des virgules)"
+" ?"
 
 #: src/Console/Plugin/AbstractPluginCommand.php:61
 msgid "Run command on all plugins"
@@ -21375,103 +21415,113 @@ msgid ""
 "Cache context to clear (i.e. 'core' or 'plugin:plugin_name'). All contexts "
 "are cleared by default."
 msgstr ""
+"Contexte du cache à effacer (i.e 'core' ou 'plugin:plugin_name'). Tous les "
+"contextes sont effacés par défaut."
 
 #: src/Console/Cache/ClearCommand.php:90 src/Console/Cache/DebugCommand.php:79
 #: src/Console/Cache/ConfigureCommand.php:134
 #, php-format
 msgid "Invalid cache context: \"%s\"."
-msgstr ""
+msgstr "Contexte de cache invalide \"%s\"."
 
 #: src/Console/Cache/ClearCommand.php:101
 msgid "Failed to clear cache."
-msgstr ""
+msgstr "Nettoyage du cache échoué."
 
 #: src/Console/Cache/ClearCommand.php:107
 msgid "Cache cleared successfully."
-msgstr ""
+msgstr "Cache nettoyé avec succès."
 
 #: src/Console/Cache/SetNamespacePrefixCommand.php:89
 #: src/Console/Cache/ConfigureCommand.php:153
 #: src/Console/Cache/ConfigureCommand.php:193
 msgid "Unable to write cache configuration file."
-msgstr ""
+msgstr "Impossible d'écrire dans le fichier de configuration du cache."
 
 #: src/Console/Cache/SetNamespacePrefixCommand.php:95
 #: src/Console/Cache/ConfigureCommand.php:158
 #: src/Console/Cache/ConfigureCommand.php:199
 msgid "Cache configuration saved successfully."
-msgstr ""
+msgstr "La configuration du cache a été sauvegardée avec succès."
 
 #: src/Console/Cache/DebugCommand.php:58
 msgid "Cache key to debug."
-msgstr ""
+msgstr "Clé de cache pour le débogage."
 
 #: src/Console/Cache/DebugCommand.php:65
 msgid "Cache context to clear (i.e. 'core' or 'plugin:plugin_name')."
-msgstr ""
+msgstr "Contexte du cache à effacer (i.e. 'core' ou 'plugin:plugin_name')."
 
 #: src/Console/Cache/DebugCommand.php:87
 #, php-format
 msgid "Cache key \"%s\" is not set."
-msgstr ""
+msgstr "La clé de cache \"%s\" n'est pas définie."
 
 #: src/Console/Cache/DebugCommand.php:89
 #, php-format
 msgid "Cache key \"%s\" value:"
-msgstr ""
+msgstr "Valeur de la clé de cache \"%s\" :"
 
 #: src/Console/Cache/ConfigureCommand.php:80
 msgid "Cache context (i.e. 'core' or 'plugin:plugin_name')"
-msgstr ""
+msgstr "Contexte du cache (i.e. 'core' ou 'plugin:plugin_name')"
 
 #: src/Console/Cache/ConfigureCommand.php:88
 msgid "Cache system DSN"
-msgstr ""
+msgstr "Système de cache DSN"
 
 #: src/Console/Cache/ConfigureCommand.php:95
 msgid ""
 "Unset cache configuration to use default filesystem cache for given context"
 msgstr ""
+"Annulation de la configuration du cache pour utiliser le cache par défaut du"
+" système de fichiers pour un contexte donné"
 
 #: src/Console/Cache/ConfigureCommand.php:102
 msgid "Skip connection checks"
-msgstr ""
+msgstr "Passer les contrôles de connexion"
 
 #: src/Console/Cache/ConfigureCommand.php:112
 #, php-format
 msgid "Valid cache systems are: %s."
-msgstr ""
+msgstr "Les systèmes de cache valides sont : %s."
 
 #: src/Console/Cache/ConfigureCommand.php:116
 #: src/Console/Cache/ConfigureCommand.php:117
 #: src/Console/Cache/ConfigureCommand.php:118
 #, php-format
 msgid "%s DSN format: %s"
-msgstr ""
+msgstr "%s Format DSN: %s"
 
 #: src/Console/Cache/ConfigureCommand.php:120
 msgid ""
 "Cache namespace can be use to ensure either separation or sharing of "
 "multiple GLPI instances data on same cache system."
 msgstr ""
+"L'espace de noms du cache peut être utilisé pour assurer la séparation ou le"
+" partage des données de plusieurs instances de GLPI sur le même système de "
+"cache."
 
 #: src/Console/Cache/ConfigureCommand.php:140
 msgid "Either --dsn or --use-default options have to be used."
-msgstr ""
+msgstr "Les options --dsn ou --use-default doivent être utilisées."
 
 #: src/Console/Cache/ConfigureCommand.php:144
 msgid "--dsn and --use-default options cannot be used simultaneously."
 msgstr ""
+"Les options --dsn et --use-default ne peuvent pas être utilisées "
+"simultanément."
 
 #: src/Console/Cache/ConfigureCommand.php:171
 #, php-format
 msgid "Invalid cache DSN: \"%s\"."
-msgstr ""
+msgstr "Cache DSN invalide: \"%s\"."
 
 #: src/Console/Cache/ConfigureCommand.php:180
 #, php-format
 msgid "An error occured during connection to cache system: \"%s\""
 msgstr ""
+"Une erreur s'est produite lors de la connexion au système de cache : \"%s\""
 
 #: src/Console/Task/UnlockCommand.php:53
 msgid "Unlock automatic tasks"
@@ -21606,6 +21656,8 @@ msgstr "Les valeurs possibles sont :"
 #, php-format
 msgid "Force strategy used for restored users (current configured action: \"%s\")"
 msgstr ""
+"Forcer la stratégie utilisée pour les utilisateurs restaurés (action "
+"configurée actuellement : \"%s\")"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:218
 msgid "No active LDAP server found."
@@ -21692,7 +21744,7 @@ msgstr "Supprimé du serveur LDAP"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:425
 msgid "Restored from LDAP"
-msgstr ""
+msgstr "Restauré depuis un annuaire LDAP"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:460
 msgid ""
@@ -21719,6 +21771,8 @@ msgid ""
 "Options --begin-date and --end-date can only be used with --only-create-new "
 "or --only-update-existing option."
 msgstr ""
+"Les options --begin-date et --end-date ne peuvent être utilisées qu'avec "
+"l'option --only-create-new ou --only-update-existing."
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:498
 msgid ""
@@ -21740,6 +21794,8 @@ msgstr "Traitement des règles de catégories de logiciels"
 msgid ""
 "Process rule for all software, even those having already a defined category"
 msgstr ""
+"Règle de processus pour tous les logiciels, même ceux ayant déjà une "
+"catégorie définie"
 
 #: src/Console/Rules/ProcessSoftwareCategoryRulesCommand.php:79
 msgid "No software to process."
@@ -21758,7 +21814,7 @@ msgstr "Impossible de charger le logiciel avec l'id \"%s\"."
 #: src/Console/Rules/ProcessSoftwareCategoryRulesCommand.php:126
 #, php-format
 msgid "Number of software processed: %d."
-msgstr ""
+msgstr "Nombre de logiciels traités: %d."
 
 #: src/Console/Rules/ReplayDictionnaryRulesCommand.php:50
 msgid "Replay dictionnary rules on existing items"
@@ -21782,7 +21838,7 @@ msgstr "Actuellement seulement disponible pour le dictionnaire des logiciels."
 
 #: src/Console/Rules/ReplayDictionnaryRulesCommand.php:79
 msgid "Which dictionnary do you want to replay?"
-msgstr ""
+msgstr "Quel dictionnaire voulez-vous rejouer ?"
 
 #: src/Console/Rules/ReplayDictionnaryRulesCommand.php:102
 msgid "Invalid \"dictionnary\" value."
@@ -21805,19 +21861,23 @@ msgstr "Contexte \"%s\" invalide."
 #, php-format
 msgid "Allow usage statistics sending to Telemetry service (%s)"
 msgstr ""
+"Autoriser l'envoi de statistiques d'utilisation au service de télémétrie "
+"(%s)"
 
 #: src/Console/Traits/TelemetryActivationTrait.php:69
 #, php-format
 msgid "Disallow usage statistics sending to Telemetry service (%s)"
 msgstr ""
+"Interdire l'envoi de statistiques d'utilisation au service de télémétrie "
+"(%s)"
 
 #: src/Console/Traits/TelemetryActivationTrait.php:110
 msgid "Do you want to send \"usage statistics\"?"
-msgstr ""
+msgstr "Voulez-vous transmettre vos \"statistiques d'usage\" ?"
 
 #: src/Console/Assets/CleanSoftwareCommand.php:86
 msgid "Option --max must be an integer."
-msgstr ""
+msgstr "L'option --max doit être un entier."
 
 #: src/Console/Maintenance/EnableMaintenanceModeCommand.php:56
 msgid "Enable maintenance mode"
@@ -21877,7 +21937,7 @@ msgstr ""
 
 #: src/Console/Database/InstallCommand.php:141
 msgid "Do you want to reconfigure database?"
-msgstr ""
+msgstr "Voulez-vous reconfigurer la base de données ?"
 
 #: src/Console/Database/InstallCommand.php:167
 #: src/Console/Database/AbstractConfigureCommand.php:220
@@ -21925,11 +21985,11 @@ msgstr "Installation terminée."
 
 #: src/Console/Database/EnableTimezonesCommand.php:71
 msgid "Enable timezones usage."
-msgstr ""
+msgstr "Activer l'usage des timezones."
 
 #: src/Console/Database/EnableTimezonesCommand.php:106
 msgid "Timezone usage has been enabled."
-msgstr ""
+msgstr "L'usage des timezones a été activé."
 
 #: src/Console/Database/AbstractConfigureCommand.php:110
 #: src/Console/Database/AbstractConfigureCommand.php:437
@@ -21971,6 +22031,8 @@ msgstr ""
 msgid ""
 "Indicated if deprecation warnings sent by database server should be logged"
 msgstr ""
+"Indique si les warnings de deprecation envoyés par le serveur de base de "
+"données doivent-être logués"
 
 #: src/Console/Database/AbstractConfigureCommand.php:162
 msgid "Database name:"
@@ -22062,23 +22124,31 @@ msgstr ""
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:76
 msgid "Strict comparison of definitions"
-msgstr ""
+msgstr "Comparaison stricte des définitions"
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:83
 msgid "Do not check tokens related to migration from \"MyISAM\" to \"InnoDB\"."
 msgstr ""
+"Ne pas analyser les tokens relatifs à la migration de \"MyISAM\" vers "
+"\"InnoDB\"."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:90
 msgid "Do not check tokens related to migration from \"datetime\" to \"timestamp\"."
 msgstr ""
+"Ne pas analyser les tokens relatifs à la migration de \"DATETIME\" vers "
+"\"TIMESTAMP\"."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:97
 msgid "Do not check tokens related to migration from \"utf8\" to \"utf8mb4\"."
 msgstr ""
+"Ne pas analyser les tokens relatifs à la migration de \"utf8\" vers "
+"\"utf8mb4\"."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:104
 msgid "Do not check tokens related to \"DYNAMIC\" row format migration."
 msgstr ""
+"Ne pas analyser les tokens relatifs à la migration vers le format de ligne "
+"\"DYNAMIC\"."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:124
 #, php-format
@@ -22097,7 +22167,7 @@ msgstr "Le schéma diffère pour la table \"%s\"."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:164
 msgid "Database schema is OK."
-msgstr ""
+msgstr "Le schéma de la base de données est OK."
 
 #: src/Console/System/CheckRequirementsCommand.php:52
 msgid "Check system requirements"
@@ -22113,7 +22183,7 @@ msgstr "Messages"
 
 #: src/Console/System/CheckRequirementsCommand.php:82
 msgid "INFO"
-msgstr ""
+msgstr "INFO"
 
 #: src/Console/System/CheckRequirementsCommand.php:83
 msgid "ERROR"
@@ -22122,16 +22192,16 @@ msgstr "ERREUR"
 #: src/Console/System/CheckRequirementsCommand.php:87
 #: templates/install/blocks/requirements_table.html.twig:45
 msgid "Suggested"
-msgstr ""
+msgstr "Suggéré"
 
 #: src/Console/System/CheckRequirementsCommand.php:88
 #: templates/install/blocks/requirements_table.html.twig:47
 msgid "Required"
-msgstr ""
+msgstr "Requis"
 
 #: src/Console/System/ListServicesCommand.php:49
 msgid "List system services"
-msgstr ""
+msgstr "Liste les services système"
 
 #: src/Console/System/CheckStatusCommand.php:51
 msgid "Check system status"
@@ -22326,11 +22396,11 @@ msgstr "Courriel par défaut"
 
 #: src/System/Requirement/DbTimezones.php:50
 msgid "DB timezone data"
-msgstr ""
+msgstr "Données de la base des timezones"
 
 #: src/System/Requirement/DbTimezones.php:51
 msgid "Enable usage of timezones."
-msgstr ""
+msgstr "Permet l'usage des timezones"
 
 #: src/System/Requirement/DbTimezones.php:61
 msgid "Access to timezone database (mysql) is not allowed."
@@ -22352,68 +22422,68 @@ msgstr ""
 
 #: src/System/Requirement/DbTimezones.php:91
 msgid "Timezones seems loaded in database."
-msgstr ""
+msgstr "Les fuseaux horaires semblent chargés dans la base de données."
 
 #: src/System/Requirement/DirectoryWriteAccess.php:61
 msgid "Permissions for cache files"
-msgstr ""
+msgstr "Permissions pour les fichiers de cache"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:64
 msgid "Permissions for setting files"
-msgstr ""
+msgstr "Permissions pour les fichiers de configuration"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:67
 msgid "Permissions for automatic actions files"
-msgstr ""
+msgstr "Permissions pour les fichiers des actions automatiques"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:70
 msgid "Permissions for document files"
-msgstr ""
+msgstr "Permissions pour les fichiers des documents"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:73
 msgid "Permissions for dump files"
-msgstr ""
+msgstr "Permissions pour les fichiers de dump"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:76
 msgid "Permissions for graphic files"
-msgstr ""
+msgstr "Permissions pour les fichiers graphiques"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:79
 msgid "Permissions for lock files"
-msgstr ""
+msgstr "Permissions pour les fichiers de lock"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:82
 msgid "Permissions for marketplace directory"
-msgstr ""
+msgstr "Permissions pour le répertoire du marketplace"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:85
 msgid "Permissions for plugins document files"
-msgstr ""
+msgstr "Permissions pour les fichiers des plugins"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:88
 msgid "Permissions for pictures files"
-msgstr ""
+msgstr "Permissions pour les fichiers pictures"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:91
 msgid "Permissions for rss files"
-msgstr ""
+msgstr "Permissions pour les fichiers RSS"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:94
 msgid "Permissions for session files"
-msgstr ""
+msgstr "Permissions pour les fichiers de sessions"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:97
 msgid "Permissions for temporary files"
-msgstr ""
+msgstr "Permissions pour les fichiers temporaires"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:100
 msgid "Permissions for upload files"
-msgstr ""
+msgstr "Permissions pour les fichiers uploadés"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:103
 #, php-format
 msgid "Permissions for directory %s"
-msgstr ""
+msgstr "Permissions pour le répertoire %s"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:117
 #, php-format
@@ -22442,25 +22512,25 @@ msgstr "Le dossier ne peut être créé dans %s."
 
 #: src/System/Requirement/PhpVersion.php:53
 msgid "PHP Parser"
-msgstr ""
+msgstr "Parser PHP"
 
 #: src/System/Requirement/PhpVersion.php:62
 #, php-format
 msgid "PHP version (%s) is supported."
-msgstr ""
+msgstr "PHP version (%s) est supportée."
 
 #: src/System/Requirement/PhpVersion.php:63
 #, php-format
 msgid "PHP version must be at least %s."
-msgstr ""
+msgstr "Version de PHP doit-être au moins %s."
 
 #: src/System/Requirement/SessionsConfiguration.php:43
 msgid "Sessions configuration"
-msgstr ""
+msgstr "Configuration des sessions"
 
 #: src/System/Requirement/SessionsConfiguration.php:51
 msgid "session extension is not installed."
-msgstr ""
+msgstr "L'extension qui gère les sessions n'est pas installée."
 
 #: src/System/Requirement/SessionsConfiguration.php:62
 msgid "\"session.auto_start\" and \"session.use_trans_sid\" must be set to off."
@@ -22481,11 +22551,11 @@ msgstr ""
 
 #: src/System/Requirement/SessionsConfiguration.php:76
 msgid "Sessions configuration is OK."
-msgstr ""
+msgstr "La configuration des sessions est OK."
 
 #: src/System/Requirement/LogsWriteAccess.php:57
 msgid "Permissions for log files"
-msgstr ""
+msgstr "Permissions pour les fichiers de log"
 
 #: src/System/Requirement/LogsWriteAccess.php:66
 msgid "The log file has been created successfully."
@@ -22500,18 +22570,18 @@ msgstr "Le fichier de log n'a pas pu être créé dans %s."
 #: src/System/Requirement/Extension.php:75
 #, php-format
 msgid "%s extension is installed."
-msgstr ""
+msgstr "l'extension %s est installée."
 
 #: src/System/Requirement/MysqliMysqlnd.php:58
 #, php-format
 msgid "%s extension is installed but is not using mysqlnd driver."
-msgstr ""
+msgstr "l'extension %s est installée mais n'utilise pas le pilote mysqlnd"
 
 #: src/System/Requirement/MysqliMysqlnd.php:60
 #: src/System/Requirement/Extension.php:79
 #, php-format
 msgid "%s extension is missing."
-msgstr ""
+msgstr "l'extension %s est absente."
 
 #: src/System/Requirement/MemoryLimit.php:53
 #: src/System/Requirement/MemoryLimit.php:73
@@ -22520,11 +22590,11 @@ msgstr "Mémoire allouée"
 
 #: src/System/Requirement/MemoryLimit.php:69
 msgid "Allocated memory is sufficient."
-msgstr ""
+msgstr "La mémoire allouée est suffisante."
 
 #: src/System/Requirement/MemoryLimit.php:70
 msgid "Allocated memory is unlimited."
-msgstr ""
+msgstr "La mémoire allouée est illimitée."
 
 #: src/System/Requirement/MemoryLimit.php:74
 #, php-format
@@ -22537,52 +22607,53 @@ msgstr "Essayez d'augmenter le paramètre memory_limit dans le fichier php.ini"
 
 #: src/System/Requirement/DbConfiguration.php:52
 msgid "DB configuration"
-msgstr ""
+msgstr "Configuration de la base de données"
 
 #: src/System/Requirement/DbConfiguration.php:72
 msgid "Unable to validate database configuration variables."
 msgstr ""
+"Impossible de valider les variables de configuration de la base de données."
 
 #: src/System/Requirement/DbConfiguration.php:79
 msgid "\"innodb_large_prefix\" must be enabled."
-msgstr ""
+msgstr "La variable \"innodb_large_prefix\" doit-être activée."
 
 #: src/System/Requirement/DbConfiguration.php:89
 msgid "Database configuration is OK."
-msgstr ""
+msgstr "La configuration de la base de données est OK."
 
 #: src/System/Requirement/ExtensionGroup.php:78
 #, php-format
 msgid "Following extensions are installed: %s."
-msgstr ""
+msgstr "Les extensions suivantes sont installées : %s."
 
 #: src/System/Requirement/ExtensionGroup.php:82
 #, php-format
 msgid "Following extensions are not present: %s."
-msgstr ""
+msgstr "Les extensions suivantes ne sont pas présentes : %s."
 
 #: src/System/Requirement/ExtensionGroup.php:84
 #, php-format
 msgid "Following extensions are missing: %s."
-msgstr ""
+msgstr "Les extensions suivantes sont manquantes : %s."
 
 #: src/System/Requirement/DbEngine.php:50
 msgid "DB engine version"
-msgstr ""
+msgstr "Version du moteur de base de données"
 
 #: src/System/Requirement/DbEngine.php:68
 #, php-format
 msgid "Database engine version (%s) is supported."
-msgstr ""
+msgstr "La version du moteur de base de données (%s) est supportée."
 
 #: src/System/Requirement/DbEngine.php:74
 #, php-format
 msgid "Database engine version (%s) is not supported."
-msgstr ""
+msgstr "La version du moteur de base de données (%s) n'est pas supportée."
 
 #: src/System/Requirement/SeLinux.php:43
 msgid "SELinux configuration"
-msgstr ""
+msgstr "Configuration SELinux"
 
 #. TRANS: %s is mode name (Permissive, Enforcing, Disabled or Unknown)
 #: src/System/Requirement/SeLinux.php:83
@@ -22607,13 +22678,15 @@ msgstr "La configuration SELinux est OK."
 
 #: src/System/Requirement/ProtectedWebAccess.php:55
 msgid "Protected access to files directory"
-msgstr ""
+msgstr "Accès protégé au répertoire des fichiers"
 
 #: src/System/Requirement/ProtectedWebAccess.php:56
 msgid ""
 "Web access to GLPI var directories should be disabled to prevent "
 "unauthorized access to them."
 msgstr ""
+"L'accès Web aux répertoires GLPI var doit être désactivé afin d'empêcher "
+"tout accès non autorisé à ceux-ci."
 
 #: src/System/Requirement/ProtectedWebAccess.php:69
 msgid ""
@@ -22659,80 +22732,85 @@ msgstr "fichier de log des erreurs"
 #: src/System/Requirement/Extension.php:55
 #, php-format
 msgid "%s extension"
-msgstr ""
+msgstr "%s extension"
 
 #: src/System/Requirement/Extension.php:77
 #, php-format
 msgid "%s extension is not present."
-msgstr ""
+msgstr "L'extension %s n'est pas présente."
 
 #: src/System/RequirementsManager.php:75
 msgid "PHP core extensions"
-msgstr ""
+msgstr "Extensions du noyau de PHP"
 
 #: src/System/RequirementsManager.php:81
 msgid ""
 "Required for remote access to resources (inventory agent requests, "
 "marketplace, RSS feeds, ...)."
 msgstr ""
+"Requis pour l'accès à distance aux ressources (requêtes des agents "
+"d'inventaire, Marketplace, flux RSS, ...)."
 
 #: src/System/RequirementsManager.php:86
 msgid "Required for images handling."
-msgstr ""
+msgstr "Requis pour le traitement des images."
 
 #: src/System/RequirementsManager.php:91
 msgid "Required for internationalization."
-msgstr ""
+msgstr "Requis pour l'internationalisation."
 
 #: src/System/RequirementsManager.php:96
 msgid "Required for XML handling."
-msgstr ""
+msgstr "Requis pour la gestion XML."
 
 #: src/System/RequirementsManager.php:101
 msgid ""
 "Required for handling of compressed communication with inventory agents, "
 "installation of gzip packages from marketplace and PDF generation."
 msgstr ""
+"Requis pour la gestion de la communication compressée avec les agents "
+"d'inventaire, l'installation de paquets gzip à partir du Marketplace et la "
+"génération de PDF."
 
 #: src/System/RequirementsManager.php:112
 msgid "Permissions for GLPI var directories"
-msgstr ""
+msgstr "Permissions pour le répertoire des données variables"
 
 #: src/System/RequirementsManager.php:130
 msgid "Enhance security on images validation."
-msgstr ""
+msgstr "Renforcer la sécurité de la validation des images."
 
 #: src/System/RequirementsManager.php:135
 msgid "Enable usage of authentication through remote LDAP server."
-msgstr ""
+msgstr "Active l'utilisation de l'authentification à un serveur LDAP distant."
 
 #: src/System/RequirementsManager.php:140
 msgid "Enable email sending using SSL/TLS."
-msgstr ""
+msgstr "Active l'envoi de courriel en utilisant SSL/TLS."
 
 #: src/System/RequirementsManager.php:145
 msgid "Enable installation of zip packages from marketplace."
-msgstr ""
+msgstr "Active l'installation de paquets zip à partir du Marketplace."
 
 #: src/System/RequirementsManager.php:150
 msgid "Enable installation of bz2 packages from marketplace."
-msgstr ""
+msgstr "Active l'installation des paquets bz2 à partir du Marketplace."
 
 #: src/System/RequirementsManager.php:155
 msgid "Enhance PHP engine performances."
-msgstr ""
+msgstr "Améliorer les performances du moteur PHP."
 
 #: src/System/RequirementsManager.php:158
 msgid "PHP emulated extensions"
-msgstr ""
+msgstr "Extensions émulées de PHP"
 
 #: src/System/RequirementsManager.php:161
 msgid "Slightly enhance performances."
-msgstr ""
+msgstr "Améliorer légèrement les performances."
 
 #: src/System/RequirementsManager.php:167
 msgid "Enable installation of plugins from marketplace."
-msgstr ""
+msgstr "Active l'installation des plugins à partir du Marketplace."
 
 #: src/DeviceBattery.php:40
 msgid "Battery"
@@ -22937,7 +23015,7 @@ msgstr "Nom du champ"
 
 #: src/Lockedfield.php:85
 msgid "Last inventoried value"
-msgstr ""
+msgstr "Dernière valeur inventoriée"
 
 #: src/BlacklistedMailContent.php:51
 msgid "Blacklisted mail content"
@@ -23048,28 +23126,28 @@ msgstr "Commentaires"
 
 #: js/gantt-helper.js:152
 msgid "Project / Task"
-msgstr ""
+msgstr "Projet / Tâche"
 
 #: js/gantt-helper.js:202
 #, javascript-format
 msgid "Week #%s"
-msgstr ""
+msgstr "Semaine # %s"
 
 #: js/gantt-helper.js:362
 msgid "Finish to Start: "
-msgstr ""
+msgstr "Fin-Début :"
 
 #: js/gantt-helper.js:365
 msgid "Finish to Finish: "
-msgstr ""
+msgstr "Fin-Fin :"
 
 #: js/gantt-helper.js:368
 msgid "Start to Start: "
-msgstr ""
+msgstr "Début-Début :"
 
 #: js/gantt-helper.js:371
 msgid "Start to Finish: "
-msgstr ""
+msgstr "Début-Fin :"
 
 #: js/gantt-helper.js:507
 msgid "Gantt mode: 'Readonly'"
@@ -23210,8 +23288,8 @@ msgstr "Série"
 #: js/planning.js:358 js/planning.js:475 js/planning.js:518
 msgid "Instance"
 msgid_plural "Instances"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Instance"
+msgstr[1] "Instances"
 
 #: js/planning.js:466
 msgid "Recurring event resized"
@@ -23255,7 +23333,7 @@ msgstr "Ajouter un PDU"
 
 #: js/reservations.js:120
 msgid "Timeline Week"
-msgstr ""
+msgstr "Chronologie de la semaine"
 
 #: js/reservations.js:229
 msgid "Add reservation"
@@ -23267,7 +23345,7 @@ msgstr "Modifier une réservation"
 
 #: templates/dropdown_form.html.twig:206
 msgid "Rack pictures"
-msgstr ""
+msgstr "Images du rack"
 
 #: templates/dropdown_form.html.twig:218
 msgid "Other pictures"
@@ -23325,11 +23403,11 @@ msgstr "Impossible de se connecter à la base de données"
 
 #: templates/install/step3.html.twig:59
 msgid "Database engine is not supported."
-msgstr ""
+msgstr "Le moteur de base de données n'est pas pris en charge."
 
 #: templates/install/step3.html.twig:66
 msgid "Database configuration is not supported."
-msgstr ""
+msgstr "La configuration de la base de données n'est pas prise en charge."
 
 #: templates/install/step3.html.twig:76
 msgid "Please select a database:"
@@ -23337,7 +23415,7 @@ msgstr "Veuillez sélectionner une base de données :"
 
 #: templates/install/step3.html.twig:76
 msgid "Please select a database to update:"
-msgstr ""
+msgstr "Veuillez sélectionner une base de données à mettre à jour :"
 
 #: templates/install/step3.html.twig:88
 msgid "Create a new database or use an existing one:"
@@ -23411,15 +23489,15 @@ msgstr "Limiter le nombre de données"
 
 #: templates/components/form/snmpcredential.html.twig:41
 msgid "SNMP version"
-msgstr ""
+msgstr "Version SNMP"
 
 #: templates/components/form/snmpcredential.html.twig:71
 msgid "Encryption protocol for authentication "
-msgstr ""
+msgstr "Protocole de chiffrement pour l'authentification"
 
 #: templates/components/form/snmpcredential.html.twig:88
 msgid "Encryption protocol for data"
-msgstr ""
+msgstr "Protocole de chiffrement pour les données"
 
 #: templates/components/form/support_hours.html.twig:35
 msgid "Support hours"
@@ -23427,15 +23505,15 @@ msgstr "Heures d'intervention"
 
 #: templates/components/form/support_hours.html.twig:36
 msgid "On week"
-msgstr ""
+msgstr "En semaine"
 
 #: templates/components/form/support_hours.html.twig:41
 msgid "On Saturday"
-msgstr ""
+msgstr "Le samedi"
 
 #: templates/components/form/support_hours.html.twig:42
 msgid "Use Saturday"
-msgstr ""
+msgstr "Utiliser le samedi"
 
 #: templates/components/form/support_hours.html.twig:46
 msgid "Sundays and holidays"
@@ -23443,7 +23521,7 @@ msgstr "Dimanches et fêtes"
 
 #: templates/components/form/support_hours.html.twig:47
 msgid "Use Sunday"
-msgstr ""
+msgstr "Utiliser le dimanche"
 
 #: templates/components/form/modals_macros.html.twig:64
 msgctxt "button"
@@ -23452,7 +23530,7 @@ msgstr "Fermer"
 
 #: templates/components/form/buttons.html.twig:89
 msgid "Keep the devices while deleting this item"
-msgstr ""
+msgstr "Conserver les composants lors de la suppression de l'élément"
 
 #: templates/components/form/dates.html.twig:53
 #, php-format
@@ -23461,11 +23539,11 @@ msgstr "Créé depuis le gabarit %s"
 
 #: templates/components/itilobject/selfservice.html.twig:52
 msgid "There is some tickets awaiting approval"
-msgstr ""
+msgstr "Des tickets sont en attente de votre validation"
 
 #: templates/components/itilobject/selfservice.html.twig:52
 msgid "check it out!"
-msgstr ""
+msgstr "Vérifiez-les !"
 
 #: templates/components/itilobject/selfservice.html.twig:61
 msgid "Describe the incident or request"
@@ -23485,11 +23563,11 @@ msgstr "Soumettre la demande"
 
 #: templates/components/itilobject/fields/priority_matrix.html.twig:71
 msgid "impact"
-msgstr ""
+msgstr "Impact"
 
 #: templates/components/itilobject/fields/priority_matrix.html.twig:92
 msgid "priority"
-msgstr ""
+msgstr "Priorité"
 
 #: templates/components/itilobject/fields/status.html.twig:57
 msgid "Reopen"
@@ -23508,11 +23586,11 @@ msgstr "Voir tous les éléments"
 
 #: templates/components/itilobject/footer.html.twig:44
 msgid "View other actions"
-msgstr ""
+msgstr "Voir les autres actions"
 
 #: templates/components/itilobject/footer.html.twig:69
 msgid "Toggle panels width"
-msgstr ""
+msgstr "Basculer la largeur du panel"
 
 #: templates/components/itilobject/timeline/form_task.html.twig:106
 #: templates/components/itilobject/timeline/form_followup.html.twig:57
@@ -23539,7 +23617,7 @@ msgstr "Planifier cette tâche"
 #: templates/components/itilobject/timeline/form_task.html.twig:363
 #: templates/components/itilobject/timeline/form_followup.html.twig:202
 msgid "Set the status to pending"
-msgstr ""
+msgstr "Mettre en attente"
 
 #: templates/components/itilobject/timeline/todo-list-summary.html.twig:38
 #, php-format
@@ -23548,11 +23626,11 @@ msgstr "Durée totale : %s"
 
 #: templates/components/itilobject/timeline/pending_reasons.html.twig:99
 msgid "Automatic follow-up"
-msgstr ""
+msgstr "Suivis automatiques"
 
 #: templates/components/itilobject/timeline/pending_reasons.html.twig:125
 msgid "Automatic resolution"
-msgstr ""
+msgstr "Résolution automatique"
 
 #: templates/components/itilobject/timeline/new_form.html.twig:58
 #, php-format
@@ -23571,7 +23649,7 @@ msgstr "Refuser"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig:44
 msgid "File extension"
-msgstr ""
+msgstr "Extension du fichier"
 
 #: templates/components/itilobject/timeline/approbation_form.html.twig:50
 msgid "Approval of the solution"
@@ -23584,17 +23662,17 @@ msgstr "Facultatif en cas d'acceptation"
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig:48
 #, php-format
 msgid "Created: %1$s by %2$s"
-msgstr ""
+msgstr "Créé : %1$s par %2$s"
 
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig:50
 #, php-format
 msgid "Created: %1$s"
-msgstr ""
+msgstr "Créé : %1$s"
 
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig:72
 #, php-format
 msgid "Last update: %1$s by %2$s"
-msgstr ""
+msgstr "Dernière mise à jour : %1$s par %2$s"
 
 #: templates/components/itilobject/timeline/form_solution.html.twig:60
 #, php-format
@@ -23616,22 +23694,22 @@ msgstr "Rechercher une solution"
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig:40
 #, php-format
 msgid "Pending: %s"
-msgstr ""
+msgstr "En attente : %s"
 
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig:49
 #, php-format
 msgid "Next automatic follow-up scheduled on %s"
-msgstr ""
+msgstr "Prochain suivi automatique prévu le %s"
 
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig:55
 #, php-format
 msgid "Automatic resolution scheduled on %s"
-msgstr ""
+msgstr "Résolution automatique prévue le %s"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig:69
 #, php-format
 msgid "%s was already promoted"
-msgstr ""
+msgstr "%s a déjà été promu"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig:84
 msgid "Promote to Ticket"
@@ -23643,7 +23721,7 @@ msgstr "Filtrer l'historique"
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig:116
 msgid "View TODO list"
-msgstr ""
+msgstr "Voir la TOTO liste"
 
 #: templates/components/itilobject/service_levels.html.twig:114
 #, php-format
@@ -23672,19 +23750,19 @@ msgstr "Plans"
 
 #: templates/components/itilobject/actors/field.html.twig:92
 msgid "Direct email"
-msgstr ""
+msgstr "Email direct"
 
 #: templates/components/itilobject/actors/field.html.twig:143
 msgid "Number of tickets already assigned"
-msgstr ""
+msgstr "Nombre de tickets déjà attribués"
 
 #: templates/components/itilobject/actors/main.html.twig:96
 msgid "Observer"
-msgstr ""
+msgstr "Observateur"
 
 #: templates/components/itilobject/actors/main.html.twig:143
 msgid "Edit notification settings"
-msgstr ""
+msgstr "Éditer les paramètres de notifications"
 
 #: templates/components/itilobject/actors/main.html.twig:155
 msgid "Email address"
@@ -23704,15 +23782,15 @@ msgstr "Montrer la corbeille"
 
 #: templates/components/search/controls.html.twig:65
 msgid "Toggle search filters"
-msgstr ""
+msgstr "Basculer l'affichage des filtres de recherche"
 
 #: templates/components/search/controls.html.twig:144
 msgid "Close modal"
-msgstr ""
+msgstr "Fermer"
 
 #: templates/components/search/display_data.html.twig:50
 msgid "View all"
-msgstr ""
+msgstr "Voir tous"
 
 #: templates/components/infocom.html.twig:58
 msgid "Asset lifecycle"
@@ -23737,19 +23815,19 @@ msgstr "Expirant le %s"
 
 #: templates/components/kanban/kanban.html.twig:53
 msgid "Role"
-msgstr ""
+msgstr "Rôle"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:69
 msgid "Team"
-msgstr ""
+msgstr "Équipe"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:94
 msgid "No team members"
-msgstr ""
+msgstr "Aucun membre"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:102
 msgid "Open full form"
-msgstr ""
+msgstr "Ouvrir le formulaire complet"
 
 #: templates/components/logs.html.twig:36
 msgid "No historical"
@@ -23777,35 +23855,37 @@ msgstr "Afficher %s entrées"
 #: templates/components/pager.html.twig:74
 #, php-format
 msgid "%s rows / page"
-msgstr ""
+msgstr "%s lignes / page"
 
 #: templates/components/pager.html.twig:80
 #, php-format
 msgid "Showing %s to %s of %s rows"
-msgstr ""
+msgstr "De %s à %s sur %s lignes"
 
 #: templates/components/pager.html.twig:83
 #, php-format
 msgid "%s-%s/%s"
-msgstr ""
+msgstr "%s-%s/%s"
 
 #: templates/maintenance.html.twig:40
 msgid "Temporarily down for maintenance"
-msgstr ""
+msgstr "Temporairement inaccessible pour cause de maintenance"
 
 #: templates/maintenance.html.twig:43
 msgid ""
 "Sorry for the inconvenience but we’re performing some maintenance at the "
 "moment. We’ll be back online shortly!"
 msgstr ""
+"Désolé pour le dérangement, mais nous effectuons actuellement une "
+"maintenance. Nous serons de retour sous peu !"
 
 #: templates/maintenance.html.twig:59
 msgid "Take me home"
-msgstr ""
+msgstr "Retour à l'accueil"
 
 #: templates/pages/tools/project/gantt.html.twig:47
 msgid "Zoom"
-msgstr ""
+msgstr "Zoom"
 
 #: templates/pages/tools/project/gantt.html.twig:51
 msgid "Days"
@@ -23821,7 +23901,7 @@ msgstr "Mois"
 
 #: templates/pages/tools/project/gantt.html.twig:60
 msgid "Quarters"
-msgstr ""
+msgstr "Trimestres"
 
 #: templates/pages/tools/project/gantt.html.twig:63
 msgid "Years"
@@ -23829,7 +23909,7 @@ msgstr "Années"
 
 #: templates/pages/tools/project/gantt.html.twig:73
 msgid "Find"
-msgstr ""
+msgstr "Chercher"
 
 #: templates/pages/tools/project/gantt.html.twig:82
 msgid "by name"
@@ -23871,7 +23951,7 @@ msgstr "Point de terminaison %s"
 #: templates/pages/assets/cartridgeitem.html.twig:41
 msgctxt "quantity"
 msgid "Stock target"
-msgstr ""
+msgstr "Objectif de stock"
 
 #: templates/pages/assets/rack.html.twig:82
 msgid "Position in room"
@@ -23996,11 +24076,11 @@ msgstr ""
 
 #: templates/password_form.html.twig:95
 msgid "Forget it,"
-msgstr ""
+msgstr "Annuler ma demande, "
 
 #: templates/password_form.html.twig:96
 msgid "send me back"
-msgstr "Me le renvoyer"
+msgstr "retour"
 
 #: templates/password_form.html.twig:97
 msgid "to the login screen."
@@ -24035,11 +24115,11 @@ msgstr "Kanban global"
 
 #: templates/layout/parts/goto_button.html.twig:34
 msgid "Ctrl+Alt+G"
-msgstr ""
+msgstr "Ctrl+Alt+G"
 
 #: templates/layout/parts/goto_button.html.twig:39
 msgid "Find menu"
-msgstr ""
+msgstr "Chercher dans le menu"
 
 #: templates/layout/parts/page_header.html.twig:63
 msgid "Collapse menu"
@@ -24136,7 +24216,7 @@ msgstr "Mode débug inactif"
 #: templates/layout/parts/user_header.html.twig:87
 #: templates/layout/parts/user_header.html.twig:113
 msgid "About"
-msgstr ""
+msgstr "À propos"
 
 #: templates/layout/parts/user_header.html.twig:101
 #: templates/layout/parts/user_header.html.twig:103
