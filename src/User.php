@@ -5518,11 +5518,15 @@ JAVASCRIPT;
        // check date validity for cookie token
         $outdated = false;
         if ($field === 'cookie_token') {
-            $date_create = new DateTime($this->fields[$field . "_date"]);
-            $date_expir  = $date_create->add(new DateInterval('PT' . $CFG_GLPI["login_remember_time"] . 'S'));
-
-            if ($date_expir < new DateTime()) {
+            if (empty($this->fields[$field . "_date"])) {
                 $outdated = true;
+            } else {
+                $date_create = new DateTime($this->fields[$field . "_date"]);
+                $date_expir = $date_create->add(new DateInterval('PT' . $CFG_GLPI["login_remember_time"] . 'S'));
+
+                if ($date_expir < new DateTime()) {
+                    $outdated = true;
+                }
             }
         }
 
