@@ -630,7 +630,7 @@ class Agent extends CommonDBTM
 
         switch ($request) {
             case self::ACTION_STATUS:
-                $data['answer'] = Sanitizer::sanitize(preg_replace('/status: /', '', $raw_content));
+                $data['answer'] = Sanitizer::sanitize(preg_replace('/status: /', '', $raw_content), false);
                 break;
             case self::ACTION_INVENTORY:
                 $now = new DateTime();
