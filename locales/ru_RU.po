@@ -26,6 +26,7 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2021
 # Ilya Pavlov <spirkaa@gmail.com>, 2021
+# Drsi Developer, 2021
 # 
 #, fuzzy
 msgid ""
@@ -34,7 +35,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-14 12:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Ilya Pavlov <spirkaa@gmail.com>, 2021\n"
+"Last-Translator: Drsi Developer, 2021\n"
 "Language-Team: Russian (Russia) (https://www.transifex.com/glpi/teams/1637/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2848,7 +2849,7 @@ msgstr "Кэш GPLI успешно сброшен."
 
 #: front/config.form.php:85
 msgid "Translation cache reset successful"
-msgstr ""
+msgstr "Кэш локализации успешно сброшен"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:59
@@ -3275,7 +3276,7 @@ msgstr "Задача завершена."
 
 #: install/update.php:156
 msgid "Missing security key file"
-msgstr ""
+msgstr "Отсутствует файл ключа безопасности"
 
 #: install/update.php:160 src/Console/Database/UpdateCommand.php:161
 #, php-format
@@ -3284,6 +3285,9 @@ msgid ""
 "should retrieve it from your previous installation or encrypted data will be"
 " unreadable."
 msgstr ""
+"Отсутствует файл ключа \"%s\", который был использован для "
+"шифрования/расшифровки конфиденциальных данных. Вам следует вернуть его из "
+"предыдущей установки или зашифрованные данные станут недоступны."
 
 #: install/update.php:164
 msgid "Ignore warning"
@@ -3324,7 +3328,7 @@ msgstr "Нет доступных действий"
 #: src/MassiveAction.php:142 src/MassiveAction.php:151
 #: src/MassiveAction.php:260 src/MassiveAction.php:900
 msgid "Implementation error!"
-msgstr ""
+msgstr "Ошибка выполнения!"
 
 #: src/MassiveAction.php:253
 msgid "No selected items"
@@ -3429,7 +3433,7 @@ msgstr "или"
 
 #: src/MassiveAction.php:1009
 msgid "How many copies do you want to create?"
-msgstr ""
+msgstr "Какое количество копий вы хотите создать?"
 
 #: src/MassiveAction.php:1035
 msgid "Are you sure you want to add this item to transfer list?"
@@ -3596,7 +3600,7 @@ msgstr "rootDN (пользователь для подключения)"
 
 #: src/AuthLDAP.php:444
 msgid "Use Bind"
-msgstr ""
+msgstr "Использовать привязку"
 
 #: src/AuthLDAP.php:450
 msgid "Password (for non-anonymous binds)"
@@ -3691,11 +3695,11 @@ msgstr ""
 
 #: src/AuthLDAP.php:587
 msgid "TLS Certfile"
-msgstr ""
+msgstr "Файл сертификата TLS"
 
 #: src/AuthLDAP.php:590
 msgid "TLS Keyfile"
-msgstr ""
+msgstr "Файл ключа TLS"
 
 #: src/AuthLDAP.php:595 src/AuthLDAP.php:664 src/AuthLDAP.php:1270
 #: src/AuthLdapReplicate.php:93
@@ -3704,7 +3708,7 @@ msgstr "Таймаут"
 
 #: src/AuthLDAP.php:602 src/AuthLDAP.php:1275 src/AuthLdapReplicate.php:103
 msgid "No timeout"
-msgstr ""
+msgstr "Без времени ожидания"
 
 #: src/AuthLDAP.php:606 src/AuthLDAP.php:792 src/AuthLDAP.php:920
 #: src/AuthLDAP.php:956 src/Auth.php:1742 src/Dashboard/Grid.php:855
@@ -3837,10 +3841,10 @@ msgstr "Язык"
 #: templates/generic_show_form.html.twig:523
 msgid "Picture"
 msgid_plural "Pictures"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Изображение"
+msgstr[1] "Изображений"
+msgstr[2] "Изображений"
+msgstr[3] "Изображения"
 
 #: src/AuthLDAP.php:911 src/AuthLDAP.php:1252
 #: src/ContentTemplates/Parameters/UserParameters.php:81
@@ -4054,11 +4058,11 @@ msgstr "Отключить"
 
 #: src/AuthLDAP.php:3989
 msgid "Do nothing"
-msgstr ""
+msgstr "Ничего не делать"
 
 #: src/AuthLDAP.php:3990
 msgid "Restore (move out of trashbin)"
-msgstr ""
+msgstr "Восстановить (вернуть из корзины)"
 
 #: src/AuthLDAP.php:3991 src/Plugin.php:2563 src/Marketplace/View.php:771
 msgid "Enable"
@@ -4086,24 +4090,24 @@ msgstr "Отключить фильтрацию по дате"
 
 #: src/AuthLDAP.php:4462
 msgid "TLS certificate path is incorrect"
-msgstr ""
+msgstr "Неверный путь к файлу сертификата TLS"
 
 #: src/AuthLDAP.php:4474
 msgid "TLS key file path is incorrect"
-msgstr ""
+msgstr "Неверный путь к файлу ключа TLS"
 
 #: src/SNMPCredential.php:47
 msgid "SNMP credential"
 msgid_plural "SNMP credentials"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Учётные данные SNMP"
+msgstr[1] "Учётные данные SNMP"
+msgstr[2] "Учётные данные SNMP"
+msgstr[3] "Учётные данные SNMP"
 
 #: src/SNMPCredential.php:58
 #: templates/components/form/snmpcredential.html.twig:56
 msgid "Community"
-msgstr ""
+msgstr "Сообщество"
 
 #: src/Profile_User.php:142 src/Profile_User.php:290
 msgid "Add an authorization to a user"
@@ -4579,15 +4583,15 @@ msgstr "Очистить"
 
 #: src/Plugin.php:2590 src/Plugin.php:2598
 msgid "This will only affect plugins already installed"
-msgstr ""
+msgstr "Это затронет только установленные плагины"
 
 #: src/Plugin.php:2606
 msgid "This will only affect plugins already enabled"
-msgstr ""
+msgstr "Это затронет только задействованные плагины"
 
 #: src/Plugin.php:2614
 msgid "This will only affect plugins ready to be cleaned"
-msgstr ""
+msgstr "Это затронет только готовые к удалению плагины"
 
 #: src/IPNetwork_Vlan.php:131 src/NetworkPort_Vlan.php:132
 #: src/NetworkPort.php:1388
@@ -4666,10 +4670,10 @@ msgstr "Скорость оптоволоконного канала"
 #: src/NetworkPortInstantiation.php:665 src/NetworkPortEthernet.php:155
 msgid "Network socket"
 msgid_plural "Network sockets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Сетевой сокет"
+msgstr[1] "Сетевых сокетов"
+msgstr[2] "Сетевых сокетов"
+msgstr[3] "Сетевые сокеты"
 
 #: src/NetworkPortFiberchannel.php:213 src/Blacklist.php:232
 #: src/NetworkPortWifi.php:150 src/RefusedEquipment.php:124
@@ -4735,23 +4739,23 @@ msgstr ""
 
 #: src/PendingReason.php:180
 msgid "Every week"
-msgstr ""
+msgstr "Каждую неделю"
 
 #: src/PendingReason.php:181
 msgid "Every two weeks"
-msgstr ""
+msgstr "Каждые две недели"
 
 #: src/PendingReason.php:182
 msgid "Every three weeks"
-msgstr ""
+msgstr "Каждые три недели"
 
 #: src/PendingReason.php:183
 msgid "Every four weeks"
-msgstr ""
+msgstr "Каждые четыре недели"
 
 #: src/PendingReason.php:208
 msgid "Automatic resolution disabled"
-msgstr ""
+msgstr "Автоматическое решение отключено"
 
 #: src/PendingReason.php:237
 msgid "After one follow-up"
@@ -22576,7 +22580,7 @@ msgstr ""
 
 #: src/System/Requirement/SeLinux.php:43
 msgid "SELinux configuration"
-msgstr ""
+msgstr "Конфигурация SELinux"
 
 #. TRANS: %s is mode name (Permissive, Enforcing, Disabled or Unknown)
 #: src/System/Requirement/SeLinux.php:83
@@ -22662,7 +22666,7 @@ msgstr ""
 
 #: src/System/RequirementsManager.php:75
 msgid "PHP core extensions"
-msgstr ""
+msgstr "Базовые расширения PHP"
 
 #: src/System/RequirementsManager.php:81
 msgid ""
@@ -22672,15 +22676,15 @@ msgstr ""
 
 #: src/System/RequirementsManager.php:86
 msgid "Required for images handling."
-msgstr ""
+msgstr "Необходимо для обработки файлов изображений"
 
 #: src/System/RequirementsManager.php:91
 msgid "Required for internationalization."
-msgstr ""
+msgstr "Необходимо для интернационализации сайта"
 
 #: src/System/RequirementsManager.php:96
 msgid "Required for XML handling."
-msgstr ""
+msgstr "Необходимо для обработки файлов XML"
 
 #: src/System/RequirementsManager.php:101
 msgid ""
@@ -23033,11 +23037,11 @@ msgstr ""
 
 #: js/gantt-helper.js:142
 msgid "Description:"
-msgstr ""
+msgstr "Описание:"
 
 #: js/gantt-helper.js:145
 msgid "Comment:"
-msgstr ""
+msgstr "Комментарий:"
 
 #: js/gantt-helper.js:152
 msgid "Project / Task"
@@ -23232,15 +23236,15 @@ msgstr ""
 
 #: js/planning.js:542
 msgid "Edit an event"
-msgstr ""
+msgstr "Изменить событие"
 
 #: js/planning.js:580
 msgid "Add an event"
-msgstr ""
+msgstr "Добавить событие"
 
 #: js/planning.js:681
 msgid "Add a calendar"
-msgstr ""
+msgstr "Добавить календарь"
 
 #: js/rack.js:87
 msgid "Add PDU"
@@ -23264,7 +23268,7 @@ msgstr ""
 
 #: templates/dropdown_form.html.twig:218
 msgid "Other pictures"
-msgstr ""
+msgstr "Другие изображения"
 
 #: templates/install/step7.html.twig:32 templates/install/update.html.twig:34
 msgid "One last thing before starting"
@@ -23315,11 +23319,11 @@ msgstr "Невозможно соединиться с базой данных"
 
 #: templates/install/step3.html.twig:59
 msgid "Database engine is not supported."
-msgstr ""
+msgstr "База данных не поддерживатся"
 
 #: templates/install/step3.html.twig:66
 msgid "Database configuration is not supported."
-msgstr ""
+msgstr "Конфигурация базы данных не поддерживается"
 
 #: templates/install/step3.html.twig:76
 msgid "Please select a database:"
@@ -23327,7 +23331,7 @@ msgstr "Выберите базу данных:"
 
 #: templates/install/step3.html.twig:76
 msgid "Please select a database to update:"
-msgstr ""
+msgstr "Выберите базу данных для обновления:"
 
 #: templates/install/step3.html.twig:88
 msgid "Create a new database or use an existing one:"
@@ -23399,15 +23403,15 @@ msgstr "Ограничить количество данных"
 
 #: templates/components/form/snmpcredential.html.twig:41
 msgid "SNMP version"
-msgstr ""
+msgstr "Версия SNMP"
 
 #: templates/components/form/snmpcredential.html.twig:71
 msgid "Encryption protocol for authentication "
-msgstr ""
+msgstr "Протокол шифрования для аутентификации"
 
 #: templates/components/form/snmpcredential.html.twig:88
 msgid "Encryption protocol for data"
-msgstr ""
+msgstr "Протокол шифрования данных"
 
 #: templates/components/form/support_hours.html.twig:35
 msgid "Support hours"
@@ -23561,7 +23565,7 @@ msgstr "Отказать"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig:44
 msgid "File extension"
-msgstr ""
+msgstr "Расширение файла"
 
 #: templates/components/itilobject/timeline/approbation_form.html.twig:50
 msgid "Approval of the solution"
@@ -23574,12 +23578,12 @@ msgstr "Дополнительно, если принято"
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig:48
 #, php-format
 msgid "Created: %1$s by %2$s"
-msgstr ""
+msgstr "Создано: %1$s %2$s"
 
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig:50
 #, php-format
 msgid "Created: %1$s"
-msgstr ""
+msgstr "Создано: %1$s"
 
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig:72
 #, php-format
@@ -23606,7 +23610,7 @@ msgstr "Искать решение"
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig:40
 #, php-format
 msgid "Pending: %s"
-msgstr ""
+msgstr "Ожидание: %s"
 
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig:49
 #, php-format
@@ -23633,7 +23637,7 @@ msgstr "Фильтр времени"
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig:116
 msgid "View TODO list"
-msgstr ""
+msgstr "Посмотреть список TODO"
 
 #: templates/components/itilobject/service_levels.html.twig:114
 #, php-format
@@ -23666,7 +23670,7 @@ msgstr ""
 
 #: templates/components/itilobject/actors/field.html.twig:143
 msgid "Number of tickets already assigned"
-msgstr ""
+msgstr "Количество назначенных заявок"
 
 #: templates/components/itilobject/actors/main.html.twig:96
 msgid "Observer"
@@ -23674,7 +23678,7 @@ msgstr "Наблюдатель"
 
 #: templates/components/itilobject/actors/main.html.twig:143
 msgid "Edit notification settings"
-msgstr ""
+msgstr "Изменить настройки оповещения"
 
 #: templates/components/itilobject/actors/main.html.twig:155
 msgid "Email address"
@@ -23698,11 +23702,11 @@ msgstr ""
 
 #: templates/components/search/controls.html.twig:144
 msgid "Close modal"
-msgstr ""
+msgstr "Закрыть"
 
 #: templates/components/search/display_data.html.twig:50
 msgid "View all"
-msgstr ""
+msgstr "Посмотреть всё"
 
 #: templates/components/infocom.html.twig:58
 msgid "Asset lifecycle"
@@ -23727,19 +23731,19 @@ msgstr "Действует до %s"
 
 #: templates/components/kanban/kanban.html.twig:53
 msgid "Role"
-msgstr ""
+msgstr "Роль"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:69
 msgid "Team"
-msgstr ""
+msgstr "Команда"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:94
 msgid "No team members"
-msgstr ""
+msgstr "Не найдены участники команды"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig:102
 msgid "Open full form"
-msgstr ""
+msgstr "Открыть всю форму"
 
 #: templates/components/logs.html.twig:36
 msgid "No historical"
@@ -23748,7 +23752,7 @@ msgstr "Нет истории"
 #: templates/components/logs.html.twig:54
 #: templates/pages/tools/project/gantt.html.twig:79
 msgid "Filter"
-msgstr ""
+msgstr "Фильтр"
 
 #: templates/components/logs.html.twig:58
 msgid "Export"
@@ -23767,27 +23771,29 @@ msgstr ""
 #: templates/components/pager.html.twig:74
 #, php-format
 msgid "%s rows / page"
-msgstr ""
+msgstr "%s строк/страниц"
 
 #: templates/components/pager.html.twig:80
 #, php-format
 msgid "Showing %s to %s of %s rows"
-msgstr ""
+msgstr "Отображаются строки с %s по %s из %s"
 
 #: templates/components/pager.html.twig:83
 #, php-format
 msgid "%s-%s/%s"
-msgstr ""
+msgstr "%s-%s/%s"
 
 #: templates/maintenance.html.twig:40
 msgid "Temporarily down for maintenance"
-msgstr ""
+msgstr "Временно остановлен на обслуживание"
 
 #: templates/maintenance.html.twig:43
 msgid ""
 "Sorry for the inconvenience but we’re performing some maintenance at the "
 "moment. We’ll be back online shortly!"
 msgstr ""
+"Извините за неудобства. В данный момент выполняется техническое обслуживание"
+" сайта. В скором времени мы будем доступны. "
 
 #: templates/maintenance.html.twig:59
 msgid "Take me home"
@@ -23795,7 +23801,7 @@ msgstr ""
 
 #: templates/pages/tools/project/gantt.html.twig:47
 msgid "Zoom"
-msgstr ""
+msgstr "Масштаб"
 
 #: templates/pages/tools/project/gantt.html.twig:51
 msgid "Days"
@@ -23819,11 +23825,11 @@ msgstr "Годы"
 
 #: templates/pages/tools/project/gantt.html.twig:73
 msgid "Find"
-msgstr ""
+msgstr "Найти"
 
 #: templates/pages/tools/project/gantt.html.twig:82
 msgid "by name"
-msgstr ""
+msgstr "по имени"
 
 #: templates/pages/management/certificate.html.twig:54
 #: templates/pages/management/softwarelicense.html.twig:100
@@ -23855,7 +23861,7 @@ msgstr "Максимальное число элементов"
 #: templates/pages/assets/cable.html.twig:70
 #, php-format
 msgid "Endpoint %s"
-msgstr ""
+msgstr "Точка подключения %s"
 
 #: templates/pages/assets/consumableitem.html.twig:41
 #: templates/pages/assets/cartridgeitem.html.twig:41
@@ -23905,7 +23911,7 @@ msgstr "Макс.вес"
 
 #: templates/pages/assets/unmanaged.html.twig:39
 msgid "Approved device"
-msgstr ""
+msgstr "Утверждённые устройства"
 
 #: templates/pages/admin/users_ldap.html.twig:37
 msgid "Bulk import users from a LDAP directory"
@@ -23917,7 +23923,7 @@ msgstr ""
 
 #: templates/pages/login.html.twig:72
 msgid "Login source"
-msgstr ""
+msgstr "Источник авторизации"
 
 #: templates/pages/login.html.twig:81
 msgid "Remember me"
@@ -23925,11 +23931,11 @@ msgstr "Запомнить меня"
 
 #: templates/pages/login.html.twig:88
 msgid "Sign in"
-msgstr ""
+msgstr "Зарегистрироваться"
 
 #: templates/pages/setup/authentication.html.twig:56
 msgid "The LDAP extension of your PHP parser isn’t installed"
-msgstr ""
+msgstr "Расширение LDAP для PHP не установлено"
 
 #: templates/pages/setup/authentication.html.twig:68
 msgid "Others authentication methods"
@@ -24009,12 +24015,12 @@ msgstr "Опишите вашу проблему"
 #: templates/layout/parts/context_links.html.twig:58
 #: templates/layout/parts/context_links.html.twig:60
 msgid "Lists"
-msgstr ""
+msgstr "Список"
 
 #: templates/layout/parts/context_links.html.twig:83
 #: templates/layout/parts/context_links.html.twig:85
 msgid "Global GANTT"
-msgstr ""
+msgstr "Общая GANTT-диаграмма"
 
 #: templates/layout/parts/context_links.html.twig:90
 #: templates/layout/parts/context_links.html.twig:92
@@ -24023,7 +24029,7 @@ msgstr "Общий Канбан"
 
 #: templates/layout/parts/goto_button.html.twig:34
 msgid "Ctrl+Alt+G"
-msgstr ""
+msgstr "Ctrl+Alt+G"
 
 #: templates/layout/parts/goto_button.html.twig:39
 msgid "Find menu"
@@ -24031,7 +24037,7 @@ msgstr ""
 
 #: templates/layout/parts/page_header.html.twig:63
 msgid "Collapse menu"
-msgstr ""
+msgstr "Свернуть меню"
 
 #: templates/layout/parts/saved_searches_list.html.twig:34
 msgid "You have not recorded any saved searches yet"
@@ -24080,7 +24086,7 @@ msgstr ""
 
 #: templates/layout/parts/profile_selector.html.twig:89
 msgid "Clear search"
-msgstr ""
+msgstr "Очистить поиск"
 
 #: templates/layout/parts/profile_selector.html.twig:93
 msgid "Select all"
@@ -24096,12 +24102,12 @@ msgstr "Вернуться к началу страницы"
 
 #: templates/layout/parts/page_footer.html.twig:40
 msgid "Top of the page"
-msgstr ""
+msgstr "Начало страницы"
 
 #: templates/layout/parts/global_search_form.html.twig:35
 #: templates/layout/parts/global_search_form.html.twig:37
 msgid "Search…"
-msgstr ""
+msgstr "Поиск..."
 
 #: templates/layout/parts/user_header.html.twig:37
 #: templates/layout/parts/user_header.html.twig:38
