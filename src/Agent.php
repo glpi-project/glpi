@@ -166,18 +166,18 @@ class Agent extends CommonDBTM
         return $ong;
     }
 
-    static function getSpecificValueToDisplay($field, $values, array $options = []) 
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
         if (!is_array($values)) {
-           $values = [$field => $values];
+            $values = [$field => $values];
         }
         switch ($field) {
-           case 'ip_binary':
-              if ($ipadress = inet_ntop($values[$field])) {
-                 return $ipadress;
-              } else {
-                 return __('IP address not properly formatted');
-              }
+            case 'ip_binary':
+                if ($ipadress = inet_ntop($values[$field])) {
+                    return $ipadress;
+                } else {
+                    return __('IP address not properly formatted');
+                }
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -482,7 +482,6 @@ class Agent extends CommonDBTM
 
         trigger_error(__('Agent IP address not properly formatted'));
         return false;
-
     }
 
    /**
@@ -505,9 +504,9 @@ class Agent extends CommonDBTM
         // add proxy string if configured in glpi
         if (!empty($CFG_GLPI["proxy_name"])) {
             $proxy_creds      = !empty($CFG_GLPI["proxy_user"])
-              ? $CFG_GLPI["proxy_user"].":".Toolbox::sodiumDecrypt($CFG_GLPI["proxy_passwd"])."@"
+              ? $CFG_GLPI["proxy_user"] . ":" . Toolbox::sodiumDecrypt($CFG_GLPI["proxy_passwd"]) . "@"
               : "";
-            $proxy_string     = "http://{$proxy_creds}".$CFG_GLPI['proxy_name'].":".$CFG_GLPI['proxy_port'];
+            $proxy_string     = "http://{$proxy_creds}" . $CFG_GLPI['proxy_name'] . ":" . $CFG_GLPI['proxy_port'];
             $options['proxy'] = $proxy_string;
         }
 

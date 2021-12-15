@@ -134,19 +134,16 @@ if (!$DB->tableExists('glpi_agents')) {
          'comment' => 'Network Inventory task timeout (disabled by default)'
         ]
     );
-
     $migration->addField(
         'glpi_agents',
         'ip_binary',
         "varbinary(16) NOT NULL DEFAULT '0'"
     );
-
     $migration->addField(
         'glpi_agents',
         'ip_protocol',
         "varchar(5) DEFAULT NULL"
     );
-
 }
 $ADDTODISPLAYPREF['Agent'] = [2, 4, 10, 8, 11, 6];
 
