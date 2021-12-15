@@ -1429,10 +1429,10 @@ class Item_Devices extends CommonDBRelation
         echo Html::scriptBlock('function showField(item) {
             $("#" + item).prop("type", "text");
          }
-         public function hideField(item) {
+         function hideField(item) {
             $("#" + item).prop("type", "password");
          }
-         public function copyToClipboard(item) {
+         function copyToClipboard(item) {
             showField(item);
             $("#" + item).select();
             try {

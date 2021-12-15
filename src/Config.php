@@ -1295,7 +1295,7 @@ class Config extends CommonDBTM
             ]
         );
         echo Html::scriptBlock("
-         public function formatThemes(theme) {
+         function formatThemes(theme) {
              if (!theme.id) {
                 return theme.text;
              }
@@ -1335,7 +1335,7 @@ class Config extends CommonDBTM
         );
 
         echo Html::scriptBlock("
-         public function formatGlobalLayout(layout) {
+         function formatGlobalLayout(layout) {
              if (!layout.id) {
                 return layout.text;
              }

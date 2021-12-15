@@ -141,8 +141,8 @@ class ObjectLock extends CommonDBTM
         global $CFG_GLPI;
 
         $ret = Html::scriptBlock("
-         public function unlockIt(obj) {
-            public function callUnlock( ) {
+         function unlockIt(obj) {
+            function callUnlock( ) {
                $.post({
                   url: '" . $CFG_GLPI['root_doc'] . "/ajax/unlockobject.php',
                   cache: false,
@@ -235,7 +235,7 @@ class ObjectLock extends CommonDBTM
 
         if ($showAskUnlock) {
             $ret = Html::scriptBlock("
-         public function askUnlock() {
+         function askUnlock() {
             " . Html::jsConfirmCallback(__('Ask for unlock this item?'), $this->itemtypename . " #" . $this->itemid, "function() {
                   $.post({
                      url: '" . $CFG_GLPI['root_doc'] . "/ajax/unlockobject.php',

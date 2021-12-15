@@ -585,7 +585,7 @@ class Item_SoftwareLicense extends CommonDBRelation
            // We have a preselected value, so we want to trigger the item list to show immediately
             $js = <<<JAVASCRIPT
 $(document).ready(function() {
-   public $("#dropdown_itemtype$rand").trigger({
+   $("#dropdown_itemtype$rand").trigger({
       type: 'change'
    });
 });
@@ -602,7 +602,7 @@ JAVASCRIPT;
             $ajax_url = $CFG_GLPI['root_doc'] . '/ajax/dropdownAllItems.php';
             $js = <<<JAVASCRIPT
 function updateItemDropdown(itemtype_el) {
-   public $.ajax({
+   $.ajax({
       method: "POST",
       url: "$ajax_url",
       data: {

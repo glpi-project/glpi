@@ -2855,7 +2855,7 @@ class Ticket extends CommonITILObject
                 echo Html::hidden("_render_twig", ['value' => true]);
 
                 $JS = <<<JAVASCRIPT
-               public function solutiontemplate_update{$rand}(value) {
+               function solutiontemplate_update{$rand}(value) {
                   $.ajax({
                      url: '{$CFG_GLPI['root_doc']}/ajax/solution.php',
                      type: 'POST',

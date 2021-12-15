@@ -605,7 +605,7 @@ class NetworkPortInstantiation extends CommonDBChild
 
               // And add the javascript function that updates the other fields
                 echo "
-   public function updateNetworkPortForm(devID) {
+   function updateNetworkPortForm(devID) {
       for (var fieldName in deviceAttributs[devID]) {
          var field=document.getElementsByName(fieldName)[0];
          if ((field == undefined) || (deviceAttributs[devID][fieldName] == undefined))
