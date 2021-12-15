@@ -117,9 +117,9 @@ class Agent extends DbTestCase
         $this->array($this->testedInstance->guessAddresses())->isIdenticalTo([
          'glpixps',
          '192.168.1.142',
-         'fe80::b283:4fa3:d3f2:96b1',
+         '[fe80::b283:4fa3:d3f2:96b1]',
          '192.168.1.118',
-         'fe80::92a4:26c6:99dd:2d60',
+         '[fe80::92a4:26c6:99dd:2d60]',
          '192.168.122.1'
         ]);
 
