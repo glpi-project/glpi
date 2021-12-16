@@ -3177,6 +3177,16 @@ abstract class CommonITILObject extends CommonDBTM {
                                           $CFG_GLPI["root_doc"].
                                              "/ajax/dropdownMassiveActionAddActor.php",
                                           $paramsmassaction);
+            echo "<script type='text/javascript'>";
+            echo "$(function() {";
+            echo "  var field = ".Html::jsGetElementbyID('show_massiveaction_field').";";
+            echo "  if (field.length && field.parent().length && field.parent().parent().length) {";
+            echo "    var div = field.parent().parent();";
+            echo "    if (div.css('display') == 'none') {";
+            echo "      div.remove();";
+            echo "    }";
+            echo "  }";
+            echo "});</script>";
             echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
             return true;
          case 'update_notif' :
