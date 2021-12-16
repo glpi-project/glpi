@@ -46,8 +46,18 @@
                   {% else %}
                      <span class="badge bg-warning">{{ __('Required') }}</span>
                   {% endif %}
-                  <strong>{{ requirement.getTitle() }}</strong><br />
-                  <em>{{ requirement.getDescription() }}</em>
+                  <strong>{{ requirement.getTitle() }}</strong>
+                  {% set description = requirement.getDescription() %}
+                  {% if description is not empty %}
+                      <br />
+                      <em>{{ requirement.getDescription() }}</em>
+                  {% endif %}
+                  {% if not requirement.isValidated() %}
+                      {% for message in requirement.getValidationMessages() %}
+                          <br />
+                          <strong><em class="{{ not requirement.isOptional() ? 'red' : 'missing' }}">{{ message }}</em></strong>
+                      {% endfor %}
+                  {% endif %}
                </td>
                <td class="{{ requirement.isMissing() and not requirement.isOptional() ? 'red' : '' }}">
                   <span data-bs-toggle="popover"
