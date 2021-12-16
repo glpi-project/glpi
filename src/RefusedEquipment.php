@@ -163,7 +163,7 @@ class RefusedEquipment extends CommonDBTM
 
     public static function getIcon()
     {
-        return "fas fa-times";
+        return "ti ti-x";
     }
 
     public function showForm($ID, array $options = [])
