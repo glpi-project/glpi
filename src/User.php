@@ -2791,7 +2791,7 @@ JAVASCRIPT;
             }
             echo "</td>";
 
-            if (!empty($this->fields["name"])) {
+            if ($this->getID() > 0 && !empty($this->fields["name"])) {
                 echo "<td rowspan='7'>" . _n('Picture', 'Pictures', 1) . "</td>";
                 echo "<td rowspan='7'>";
                 echo self::getPictureForUser($ID);
