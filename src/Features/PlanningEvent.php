@@ -720,7 +720,7 @@ trait PlanningEvent
     {
         $rrule = json_decode($rrule, true) ?? [];
         $defaults = [
-         'freq'       => null,
+         'freq'       => '',
          'interval'   => 1,
          'until'      => null,
          'byday'      => [],
