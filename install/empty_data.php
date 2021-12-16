@@ -8334,7 +8334,7 @@ $tables['glpi_users'] = [
       'password'   => '',
       'language'   => null,
       'list_limit' => null,
-      'authtype'   => null,
+      'authtype'   => 1,
    ],
 ];
 
