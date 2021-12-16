@@ -303,7 +303,7 @@ $default_prefs = [
    // Default size corresponds to the 'upload_max_filesize' directive in Mio (rounded down) or 1 Mio if 'upload_max_filesize' is too low.
    'document_max_size'                       => max(1, floor(Toolbox::return_bytes_from_ini_vars(ini_get('upload_max_filesize')) / 1024 / 1024)),
    'planning_work_days'                      => exportArrayToDB([0, 1, 2, 3, 4, 5, 6]),
-   'system_user'                             => '',
+   'system_user'                             => 6,
 ];
 
 $tables['glpi_configs'] = [];
@@ -8323,6 +8323,10 @@ $tables['glpi_users'] = [
       'language'   => 'en_GB',
       'list_limit' => '20',
       'authtype'   => '1',
+   ], [
+      'id'         => '6',
+      'name'       => 'glpi-system',
+      'realname'   => 'Support',
    ],
 ];
 
