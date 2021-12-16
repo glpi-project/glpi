@@ -605,6 +605,6 @@ abstract class CommonDevice extends CommonDropdown
 
     public static function getIcon()
     {
-        return "far fa-square";
+        return "ti ti-components";
     }
 }
