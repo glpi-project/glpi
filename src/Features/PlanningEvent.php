@@ -720,7 +720,7 @@ trait PlanningEvent
     {
         $rrule = json_decode($rrule, true) ?? [];
         $defaults = [
-         'freq'       => '',
+         'freq'       => null,
          'interval'   => 1,
          'until'      => null,
          'byday'      => [],
@@ -743,7 +743,7 @@ trait PlanningEvent
          'monthly' => __("Each month"),
          'yearly'  => __("Each year"),
         ], [
-         'value'     => strtolower($rrule['freq']),
+         'value'     => strtolower($rrule['freq'] ?? ""),
          'rand'      => $rand,
          'display'   => false,
          'on_change' => "$(\"#toggle_ar\").toggle($(\"#dropdown_rrule_freq_$rand\").val().length > 0)"
