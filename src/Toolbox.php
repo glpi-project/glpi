@@ -2846,7 +2846,7 @@ class Toolbox
     public static function getDateFormat($type)
     {
         $formats = self::getDateFormats($type);
-        $format = $formats[$_SESSION["glpidate_format"]];
+        $format = $formats[$_SESSION["glpidate_format"] ?? 0];
         return $format;
     }
 
