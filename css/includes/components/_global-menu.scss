@@ -269,4 +269,13 @@
          }
       }
    }
+
+   // fix z-index issues on responsive menu
+   .sidebar {
+      z-index: $zindex-fixed;
+
+      & ~ .navbar {
+         z-index: inherit;
+      }
+   }
 }
