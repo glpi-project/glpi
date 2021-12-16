@@ -65,20 +65,39 @@ Config::detectRootDoc();
 
 if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
     Session::loadLanguage('', false);
-   // no translation
+
+    // no translation
+    $title_text        = 'GLPI seems to not be configured properly.';
+    $missing_conf_text = sprintf('Database configuration file "%s" is missing.', GLPI_CONFIG_DIR . '/config_db.php');
+    $hint_text         = 'You have to either restart the install process, either restore this file.';
+
     if (!isCommandLine()) {
-        Html::nullHeader("DB Error", $CFG_GLPI["root_doc"]);
-        echo "<div class='center'>";
-        echo "<p>Error: GLPI seems to not be configured properly.</p>";
-        echo "<p>config_db.php file is missing.</p>";
-        echo "<p>Please restart the install process.</p>";
-        echo "<p><a class='red' href='" . $CFG_GLPI['root_doc'] . "/install/install.php'>Click here to proceed</a></p>";
-        echo "</div>";
+        // Prevent inclusion of debug informations in footer, as they are based on vars that are not initialized here.
+        $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+
+        Html::nullHeader('Missing configuration', $CFG_GLPI["root_doc"]);
+        echo '<div class="container-fluid mb-4">';
+        echo '<div class="row justify-content-center">';
+        echo '<div class="col-xl-6 col-lg-7 col-md-9 col-sm-12">';
+        echo '<h2>' . $title_text . '</h2>';
+        echo '<p class="mt-2 mb-n2 alert alert-warning">';
+        echo $missing_conf_text;
+        echo ' ';
+        echo $hint_text;
+        echo '<br />';
+        echo '<br />';
+        if (file_exists(GLPI_ROOT . '/install/install.php')) {
+            echo '<a class="btn btn-primary" href="' . $CFG_GLPI['root_doc'] . '/install/install.php">Go to install page</a>';
+        }
+        echo '</p>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
         Html::nullFooter();
     } else {
-        echo "Error: GLPI seems to not be configured properly.\n";
-        echo "config_db.php file is missing.\n";
-        echo "Please connect to GLPI web interface to complete the install process.\n";
+        echo $title_text . "\n";
+        echo $missing_conf_text . "\n";
+        echo $hint_text . "\n";
     }
     die(1);
 } else {
@@ -156,18 +175,26 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
             exit();
         }
     }
-   // Check version
-    if (
-        (!isset($CFG_GLPI['dbversion']) || (trim($CFG_GLPI["dbversion"]) != GLPI_SCHEMA_VERSION))
-        && !isset($_GET["donotcheckversion"])
-    ) {
+    // Check version
+    $skip_version_checks = isset($_GET["donotcheckversion"]);
+    $has_known_version   = isset($CFG_GLPI['dbversion']);
+    $can_check_version   = is_readable(GLPI_ROOT . '/install/mysql/glpi-empty.sql');
+    if (!$skip_version_checks && $has_known_version && !$can_check_version) {
+        trigger_error(
+            sprintf(
+                'Databse schema file "%s" is not readable. Cannot check if GLPI installation is up-to-date.',
+                GLPI_ROOT . '/install/mysql/glpi-empty.sql'
+            ),
+            E_USER_WARNING
+        );
+    } elseif (!$skip_version_checks && (!$has_known_version || trim($CFG_GLPI["dbversion"]) != GLPI_SCHEMA_VERSION)) {
         Session::loadLanguage('', false);
 
         if (isCommandLine()) {
             echo __('The version of the database is not compatible with the version of the installed files. An update is necessary.');
             echo "\n";
         } else {
-            Html::nullHeader("UPDATE NEEDED", $CFG_GLPI["root_doc"]);
+            Html::nullHeader(__('Update needed'), $CFG_GLPI["root_doc"]);
             echo "<div class='container-fluid mb-4'>";
             echo "<div class='row justify-content-evenly'>";
             echo "<div class='col-12 col-xxl-6'>";

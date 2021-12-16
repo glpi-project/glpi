@@ -35,7 +35,14 @@ use Glpi\SocketModel;
 
 // Current version of GLPI
 define('GLPI_VERSION', '10.0.0-dev');
-define("GLPI_SCHEMA_VERSION", GLPI_VERSION . '@' . sha1_file(GLPI_ROOT . '/install/mysql/glpi-empty.sql'));
+define(
+    "GLPI_SCHEMA_VERSION",
+    GLPI_VERSION . '@' . (
+        is_readable(GLPI_ROOT . '/install/mysql/glpi-empty.sql')
+        ? sha1_file(GLPI_ROOT . '/install/mysql/glpi-empty.sql')
+        : 'unnown'
+    )
+);
 
 if (!defined('GLPI_MARKETPLACE_PRERELEASES')) {
     define('GLPI_MARKETPLACE_PRERELEASES', preg_match('/-(dev|alpha\d*|beta\d*|rc\d*)$/', GLPI_VERSION) === 1);
