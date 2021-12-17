@@ -179,7 +179,8 @@ class DisplayPreference extends CommonDBTM
 
                 foreach ($searchopt as $key => $val) {
                     if (
-                        is_array($val)
+                        is_int($key)
+                        && is_array($val)
                         && ($key != 1)
                         && !$done
                     ) {
