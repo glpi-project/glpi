@@ -90,6 +90,9 @@ abstract class CommonITILObject extends CommonDBTM
     const TIMELINE_MIDRIGHT = 3;
     const TIMELINE_RIGHT    = 4;
 
+    const TIMELINE_ORDER_NATURAL = 'natural';
+    const TIMELINE_ORDER_REVERSE = 'reverse';
+
     abstract public static function getTaskClass();
 
     public function post_getFromDB()

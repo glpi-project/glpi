@@ -235,6 +235,7 @@ $default_prefs = [
    'fold_menu'                               => '0',
    'fold_search'                             => '0',
    'savedsearches_pinned'                    => '0',
+   'timeline_order'                          => 'natural',
    'richtext_layout'                         => 'inline',
    'lock_use_lock_item'                      => '0',
    'lock_autolock_mode'                      => '1',

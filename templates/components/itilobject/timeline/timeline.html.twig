@@ -29,7 +29,12 @@
  # ---------------------------------------------------------------------
  #}
 
-<div class="itil-timeline d-flex flex-column align-items-start mb-auto">
+{% set timeline_order = "flex-column" %}
+{% if user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
+    {% set timeline_order = "flex-column-reverse" %}
+{% endif %}
+
+<div class="itil-timeline d-flex {{ timeline_order }} align-items-start mb-auto">
    {{ include('components/itilobject/timeline/main_description.html.twig') }}
 
    {% set status_closed = (item.fields['status'] in item.getClosedStatusArray()) %}

@@ -64,3 +64,6 @@ Config::deleteConfigurationValues('core', ['use_ajax_autocompletion']);
 
 $migration->displayMessage('Add LDAP restore action preference');
 Config::setConfigurationValues('core', ['user_restored_ldap' => 0]);
+
+Config::setConfigurationValues('core', ['timeline_order' => 'natural']);
+$migration->addField("glpi_users", "timeline_order", "char(20) DEFAULT NULL", ['after' => 'savedsearches_pinned']);

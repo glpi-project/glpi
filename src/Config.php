@@ -1395,8 +1395,19 @@ class Config extends CommonDBTM
         echo "<td>";
         $central = new Central();
         Dropdown::showFromArray('default_central_tab', $central->getTabNameForItem($central, 0), ['value' => $data['default_central_tab'], 'rand' => $rand]);
-        echo "<tr>";
+        echo "</td>";
+
+        echo "<td><label for='dropdown_default_central_tab$rand'>" . __('Timeline order') . "</label></td>";
         echo "<td>";
+        $central = new Central();
+        Dropdown::showFromArray('timeline_order', [
+            CommonITILObject::TIMELINE_ORDER_NATURAL => __('Natural order (old items on top, recent on bottom)'),
+            CommonITILObject::TIMELINE_ORDER_REVERSE => __('Reverse order (old items on bottom, recent on top'),
+        ], [
+            'value' => $data['timeline_order'],
+            'rand' => $rand
+        ]);
+        echo "</td>";
         echo "</tr>";
 
         if ($oncentral) {
