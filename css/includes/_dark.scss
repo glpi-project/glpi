@@ -141,16 +141,16 @@ body .modal-header {
 }
 
 .navbar-collapsed {
-    #navbar-menu {
-        .nav-item {
-            .nav-link {
-                & + .dropdown-menu {
-                    background-color: $dark !important;
-                    color: $mainmenu-fg !important;
-                }
+   #navbar-menu {
+      .nav-item {
+         .nav-link {
+            & + .dropdown-menu {
+               background-color: $dark !important;
+               color: $mainmenu-fg !important;
             }
-        }
-    }
+         }
+      }
+   }
 }
 
 .page-anonymous {
@@ -165,5 +165,5 @@ body .modal-header {
 }
 
 .toast {
-    background-color: lighten($dark, 5%);
+   background-color: lighten($dark, 5%);
 }
