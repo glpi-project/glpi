@@ -150,3 +150,7 @@ body .modal-header {
    background-color: $dark-mode-lighten !important;
    color: var(--light) !important;
 }
+
+.toast {
+    background-color: lighten($dark, 5%);
+}
