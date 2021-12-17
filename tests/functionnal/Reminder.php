@@ -43,7 +43,7 @@ class Reminder extends DbTestCase
     {
        //first, as a super-admin
         $this->login();
-        $expected = "(`glpi_reminders`.`users_id` = '6' OR `glpi_reminders_users`.`users_id` = '6' OR (`glpi_profiles_reminders`.`profiles_id` = '4' AND (`glpi_profiles_reminders`.`entities_id` < '0' OR ((`glpi_profiles_reminders`.`entities_id` IN ('1', '2', '3') OR (`glpi_profiles_reminders`.`is_recursive` = '1' AND `glpi_profiles_reminders`.`entities_id` IN ('0')))))) OR ((`glpi_entities_reminders`.`entities_id` IN ('1', '2', '3') OR (`glpi_entities_reminders`.`is_recursive` = '1' AND `glpi_entities_reminders`.`entities_id` IN ('0')))))";
+        $expected = "(`glpi_reminders`.`users_id` = '7' OR `glpi_reminders_users`.`users_id` = '7' OR (`glpi_profiles_reminders`.`profiles_id` = '4' AND (`glpi_profiles_reminders`.`entities_id` < '0' OR ((`glpi_profiles_reminders`.`entities_id` IN ('1', '2', '3') OR (`glpi_profiles_reminders`.`is_recursive` = '1' AND `glpi_profiles_reminders`.`entities_id` IN ('0')))))) OR ((`glpi_entities_reminders`.`entities_id` IN ('1', '2', '3') OR (`glpi_entities_reminders`.`is_recursive` = '1' AND `glpi_entities_reminders`.`entities_id` IN ('0')))))";
         $this->string(\Reminder::addVisibilityRestrict())
          ->isIdenticalTo($expected);
 
@@ -54,7 +54,7 @@ class Reminder extends DbTestCase
         $this->login('tech', 'tech');
         $this->string(trim(preg_replace('/\s+/', ' ', \Reminder::addVisibilityRestrict())))
          ->isIdenticalTo(preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '4'  OR `glpi_reminders_users`.`users_id` = '4'  OR (`glpi_profiles_reminders`.`profiles_id`
-                                 = '6'
+                                 = '7'
                             AND (`glpi_profiles_reminders`.`entities_id` < '0'))
                                   OR  (`glpi_entities_reminders`.`entities_id` IN ('0', '1', '2', '3')))"));
 
