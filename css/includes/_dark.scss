@@ -140,6 +140,19 @@ body .modal-header {
    background-color: $dark-mode-lighten;
 }
 
+.navbar-collapsed {
+    #navbar-menu {
+        .nav-item {
+            .nav-link {
+                & + .dropdown-menu {
+                    background-color: $dark !important;
+                    color: $mainmenu-fg !important;
+                }
+            }
+        }
+    }
+}
+
 .page-anonymous {
    .glpi-logo {
       --logo: url(#{$logo-light-login}) !important;
