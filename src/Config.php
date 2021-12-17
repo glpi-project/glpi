@@ -1380,7 +1380,7 @@ class Config extends CommonDBTM
                 'timezone',
                 $timezones,
                 [
-                'value'                 => $data["timezone"],
+                'value'                 => $data["timezone"] ?? "",
                 'display_emptychoice'   => true,
                 'emptylabel'            => __('Use server configuration')
                 ]
