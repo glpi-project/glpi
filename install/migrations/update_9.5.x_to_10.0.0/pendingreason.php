@@ -90,8 +90,12 @@ $config = Config::getConfigurationValues('core');
 if (empty($config['system_user'])) {
     $user = new User();
 
+    $system_user_name = 'glpi-system';
+    if ($user->getFromDBbyName($system_user_name)) {
+        $system_user_name .= '-' . Toolbox::getRandomString(8);
+    }
     $id = $user->add([
-      'name'     => 'glpi-system',
+      'name'     => $system_user_name,
       'realname' => 'Support',
     ]);
 
