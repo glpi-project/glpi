@@ -1399,7 +1399,6 @@ class Config extends CommonDBTM
 
         echo "<td><label for='dropdown_default_central_tab$rand'>" . __('Timeline order') . "</label></td>";
         echo "<td>";
-        $central = new Central();
         Dropdown::showFromArray('timeline_order', [
             CommonITILObject::TIMELINE_ORDER_NATURAL => __('Natural order (old items on top, recent on bottom)'),
             CommonITILObject::TIMELINE_ORDER_REVERSE => __('Reverse order (old items on bottom, recent on top'),
