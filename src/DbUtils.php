@@ -276,10 +276,12 @@ final class DbUtils
            // Then we check again existence of both without allowing the autoloader to be used,
            // in order to find the good class to use.
             if (!class_exists($base_itemtype, false) && !class_exists($namespaced_itemtype, false)) {
-               // Try to trigger loading of base itemtype
+                // Try to trigger loading of base itemtype
                 class_exists($base_itemtype);
-                if (!class_exists($namespaced_itemtype, false) && preg_match('/_/', $table) === 1) {
-                   // Namespace itemtype file will be different from base itemtype file if `_` in table corresponds to a namespace separator.
+                if (!class_exists($namespaced_itemtype, false) && !class_exists($base_itemtype, false)) {
+                    // Namespace itemtype file will not be loaded by call to `class_exists($base_itemtype)`:
+                    // - if namespace has more than one level (i.e. "Glpi\Dashboard\Dashboard")
+                    // - if clanname without namespace already exists (i.e. `Socket` from `sockets` extension, `Event` from `event` extension, ...)
                     class_exists($namespaced_itemtype); // Try to trigger loading of namespaced itemtype
                 }
             }
