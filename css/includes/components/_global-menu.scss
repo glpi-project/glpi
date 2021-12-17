@@ -125,7 +125,7 @@
             .nav-link {
                border-left-color: $primary;
                color: $primary;
-               background-color: lighten($mainmenu-bg, 5%);
+               background-color: rgba($color: #000, $alpha: 10%);
             }
          }
       }
