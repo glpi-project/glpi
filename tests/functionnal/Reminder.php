@@ -54,7 +54,7 @@ class Reminder extends DbTestCase
         $this->login('tech', 'tech');
         $this->string(trim(preg_replace('/\s+/', ' ', \Reminder::addVisibilityRestrict())))
          ->isIdenticalTo(preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '4'  OR `glpi_reminders_users`.`users_id` = '4'  OR (`glpi_profiles_reminders`.`profiles_id`
-                                 = '7'
+                                 = '6'
                             AND (`glpi_profiles_reminders`.`entities_id` < '0'))
                                   OR  (`glpi_entities_reminders`.`entities_id` IN ('0', '1', '2', '3')))"));
 
