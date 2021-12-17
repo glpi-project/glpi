@@ -46,8 +46,8 @@ TARBALL_PATH=/tmp/glpi-$RELEASE.tgz
 
 if [ ! -e $SOURCE_DIR ] || [ ! -e $SOURCE_DIR/.git ]
 then
- echo "$SOURCE_DIR is not a valid Git repository"
- exit
+    echo "$SOURCE_DIR is not a valid Git repository"
+    exit
 fi
 
 read -p "Are translations up to date? [Y/n] " -n 1 -r
@@ -63,6 +63,14 @@ then
     rm -rf $WORKING_DIR
 fi
 git --git-dir="$SOURCE_DIR/.git" checkout-index --all --force --prefix="$WORKING_DIR/glpi/"
+
+
+FOUND_VERSION=$(grep -Po "define\('GLPI_VERSION', '\K.*?(?=')" $WORKING_DIR/glpi//inc/define.php)
+if [[ ! "$RELEASE" = "$FOUND_VERSION" ]]
+then
+    echo "$RELEASE does not match version $FOUND_VERSION declared in inc/define.php"
+    exit
+fi
 
 echo "Building application"
 $WORKING_DIR/glpi/tools/build_glpi.sh
