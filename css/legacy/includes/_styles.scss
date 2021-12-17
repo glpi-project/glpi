@@ -179,44 +179,6 @@
       top: 105px !important;
    }
 
-   #kb_browse {
-     display: flex;
-     align-items: stretch;
-     border: 1px solid #E6E6E6;
-     height: 100%;
-     min-height: 60vh;
-     margin-left: -10px;
-     margin-top: -5px;
-
-     .kb_tree {
-        flex-basis: 250px;
-        flex-shrink: 0;
-        padding-right: 10px;
-        text-align: left;
-        background-color: #F8F8F8;
-     }
-
-     .kb_tree_search {
-        width: 100%;
-        margin: 5px;
-        padding: 10px 5px;
-        border-radius: 0;
-        box-sizing: border-box;
-     }
-
-     .kb_items {
-        width: 100%;
-
-        .tab_cadre_pager {
-           width: 100%;
-        }
-     }
-
-     i.fa.sub_items {
-        color: #787878;
-     }
-   }
-
    .pointer {
       opacity: .7;
 

@@ -39,6 +39,8 @@ use Glpi\Toolbox\Sanitizer;
  **/
 class Document extends CommonDBTM
 {
+    use Glpi\Features\TreeBrowse;
+
    // From CommonDBTM
     public $dohistory                   = true;
 

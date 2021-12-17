@@ -46,6 +46,7 @@ abstract class CommonITILObject extends CommonDBTM
     use \Glpi\Features\Timeline;
     use \Glpi\Features\Kanban;
     use Glpi\Features\Teamwork;
+    use Glpi\Features\TreeBrowse;
 
    /// Users by type
     protected $users       = [];
