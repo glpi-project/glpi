@@ -61,22 +61,30 @@ function update95xto1000()
     foreach ($ADDTODISPLAYPREF as $type => $tab) {
         $rank = 1;
         foreach ($tab as $newval) {
-            $DB->updateOrInsert("glpi_displaypreferences", [
-            'rank'      => $rank++
-            ], [
-            'users_id'  => "0",
-            'itemtype'  => $type,
-            'num'       => $newval,
-            ]);
+            $DB->updateOrInsert(
+                "glpi_displaypreferences",
+                [
+                    'rank'      => $rank++
+                ],
+                Toolbox::addslashes_deep(
+                    [
+                        'users_id'  => "0",
+                        'itemtype'  => $type,
+                        'num'       => $newval,
+                    ]
+                )
+            );
         }
     }
     foreach ($DELFROMDISPLAYPREF as $type => $tab) {
         $DB->delete(
             'glpi_displaypreferences',
-            [
-                'itemtype'  => $type,
-                'num'       => $tab
-            ]
+            Toolbox::addslashes_deep(
+                [
+                    'itemtype'  => $type,
+                    'num'       => $tab
+                ]
+            )
         );
     }
 
