@@ -91,7 +91,7 @@ if (empty($config['system_user'])) {
     $user = new User();
 
     $id = $user->add([
-      'name'     => 'glpi-system-' . Toolbox::getRandomString(8),
+      'name'     => 'glpi-system',
       'realname' => 'Support',
     ]);
 
