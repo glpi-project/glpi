@@ -1397,7 +1397,7 @@ class Config extends CommonDBTM
         Dropdown::showFromArray('default_central_tab', $central->getTabNameForItem($central, 0), ['value' => $data['default_central_tab'], 'rand' => $rand]);
         echo "</td>";
 
-        echo "<td><label for='dropdown_default_central_tab$rand'>" . __('Timeline order') . "</label></td>";
+        echo "<td><label for='dropdown_timeline_order$rand'>" . __('Timeline order') . "</label></td>";
         echo "<td>";
         Dropdown::showFromArray('timeline_order', [
             CommonITILObject::TIMELINE_ORDER_NATURAL => __('Natural order (old items on top, recent on bottom)'),
