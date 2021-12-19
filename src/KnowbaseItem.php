@@ -2206,6 +2206,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     protected function getShowVisibilityDropdownParams()
     {
         $params = parent::getShowVisibilityDropdownParams();
+        $params['right'] = ($this->getField('is_faq') ? 'faq' : 'knowbase');
         $params['allusers'] = 1;
         return $params;
     }
