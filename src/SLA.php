@@ -43,9 +43,9 @@ class SLA extends LevelAgreement
 {
     protected static $prefix            = 'sla';
     protected static $prefixticket      = '';
-    protected static $levelclass        = 'SLALevel';
+    protected static $levelclass        = 'SlaLevel';
     protected static $levelticketclass  = 'SlaLevel_Ticket';
-    protected static $forward_entity_to = ['SLALevel'];
+    protected static $forward_entity_to = ['SlaLevel'];
 
     public static function getTypeName($nb = 0)
     {
