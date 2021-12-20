@@ -58,9 +58,16 @@ class DbEngine extends AbstractRequirement
         $server  = preg_match('/-MariaDB/', $version_string) ? 'MariaDB' : 'MySQL';
         $version = preg_replace('/^((\d+\.?)+).*$/', '$1', $version_string);
 
-        $is_supported = $server === 'MariaDB'
-         ? version_compare($version, '10.2', '>=')
-         : version_compare($version, '5.7', '>=');
+        switch ($server) {
+            case 'MariaDB':
+                $min_version = '10.2';
+                break;
+            case 'MySQL':
+            default:
+                $min_version = '5.7';
+                break;
+        }
+        $is_supported = version_compare($version, $min_version, '>=');
 
         if ($is_supported) {
             $this->validated = true;
@@ -69,11 +76,10 @@ class DbEngine extends AbstractRequirement
                 $version
             );
         } else {
+            $msg = sprintf(__('Database engine version (%s) is not supported.'), $version);
+            $msg .= ' ' . sprintf('Minimum required version is %s %s.', $server, $min_version);
             $this->validated = false;
-            $this->validation_messages[] = sprintf(
-                __('Database engine version (%s) is not supported.'),
-                $version
-            );
+            $this->validation_messages[] = $msg;
         }
     }
 }
