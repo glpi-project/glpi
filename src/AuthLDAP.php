@@ -436,19 +436,30 @@ class AuthLDAP extends CommonDBTM
             echo "<input type='text' id='basedn' name='basedn' size='100' value=\"" . $this->fields["basedn"] . "\" class='form-control'>";
             echo "</td></tr>";
 
-            echo "<tr class='tab_bg_1'><td><label for='rootdn'>" . __('RootDN (for non anonymous binds)') . "</label></td>";
-            echo "<td colspan='3'><input type='text' name='rootdn' id='rootdn' size='100' value=\"" .
-                $this->fields["rootdn"] . "\" class='form-control'>";
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'><td><label for='use_bind'>" . __('Use Bind') . "</label></td>";
+            echo "<tr class='tab_bg_1'><td><label for='use_bind'>";
+            echo __('Use Bind (for non-anonymous binds)') . "</label>&nbsp;";
+            Html::showToolTip(__("Allow to use RootDN and Password for non-anonymous binds."));
+            echo "</td>";
             echo "<td colspan='3'>";
             Dropdown::showYesNo('use_bind', $this->fields["use_bind"]);
             echo "</td></tr>";
 
+            echo "<tr class='tab_bg_1'><td><label for='rootdn'>" . __('RootDN (for non anonymous binds)') . "</label></td>";
+            echo "<td colspan='3'><input type='text' name='rootdn' id='rootdn' size='100' value=\"" .
+                $this->fields["rootdn"] . "\" class='form-control'";
+            if (!$this->fields["use_bind"]) {
+                echo " disabled='disabled'";
+            }
+            echo ">";
+            echo "</td></tr>";
+
             echo "<tr class='tab_bg_1'><td><label for='rootdn_passwd'>" .
             __('Password (for non-anonymous binds)') . "</label></td>";
-            echo "<td><input type='password' id='rootdn_passwd' name='rootdn_passwd' value='' autocomplete='new-password' class='form-control'>";
+            echo "<td><input type='password' id='rootdn_passwd' name='rootdn_passwd' value='' autocomplete='new-password' class='form-control'";
+            if (!$this->fields["use_bind"]) {
+                echo " disabled='disabled'";
+            }
+            echo ">";
             if ($ID) {
                 echo "<input type='checkbox' name='_blank_passwd' id='_blank_passwd'>&nbsp;"
                 . "<label for='_blank_passwd'>" . __('Clear') . "</label>";
