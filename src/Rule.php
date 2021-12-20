@@ -256,7 +256,7 @@ class Rule extends CommonDBTM
             $menu['rule']['options']['transfer']['links']['search'] = "/front/transfer.php";
 
             if (Session::haveRightsOr("transfer", [CREATE, UPDATE])) {
-                $menu['rule']['options']['transfer']['links']['summary']
+                $menu['rule']['options']['transfer']['links']['transfer_list']
                                                                  = "/front/transfer.action.php";
                 $menu['rule']['options']['transfer']['links']['add'] = Transfer::getFormURL(false);
             }
