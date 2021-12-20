@@ -92,6 +92,13 @@
             <span class="d-none d-xxl-block">{{ __('Global Kanban') }}</span>
          </a>
       </li>
+   {% elseif type == 'transfer_list' %}
+      <li class="nav-item">
+         <a href="{{ path(link) }}" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2" title="{{ __('Transfer list') }}">
+            <i class="ti ti-list-check"></i>
+            <span class="d-none d-xxl-block">{{ __('Transfer list') }}</span>
+         </a>
+      </li>
    {% elseif type == 'config' %}
       <li class="nav-item">
          <a href="{{ path(link) }}" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2" title="{{ __('Setup') }}">
