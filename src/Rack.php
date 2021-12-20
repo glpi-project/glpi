@@ -454,7 +454,7 @@ class Rack extends CommonDBTM
             $blueprint = "
             <div class='blueprint'
                  style='background: url({$blueprint_url}) no-repeat top left/100% 100%;
-                        height: " . $grid_h . "px;></div>";
+                        height: " . $grid_h . "px;'></div>";
             $blueprint_ctrl = "<span class='mini_toggle active'
                                   id='toggle_blueprint'>" . __('Blueprint') . "</span>";
         }
