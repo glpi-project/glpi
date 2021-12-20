@@ -33,10 +33,11 @@
 
 <div class="asset">
     {{ include('components/form/header.html.twig') }}
-    {% set rand         = random() %}
-    {% set params       = params ?? [] %}
-    {% set target       = params['target'] ?? item.getFormURL() %}
-    {% set withtemplate = params['withtemplate'] ?? '' %}
+    {% set rand          = random() %}
+    {% set fields_params = fields_params ?? [] %}
+    {% set params        = params ?? [] %}
+    {% set target        = params['target'] ?? item.getFormURL() %}
+    {% set withtemplate  = params['withtemplate'] ?? '' %}
 
     <div class="card-body row">
         {% set picture_fields = ['picture_front', 'picture_rear', 'pictures'] %}
@@ -108,58 +109,58 @@
                     {% set dropdown_itemtype = call('getItemtypeForForeignKeyField', [field['name']]) %}
                     {{ fields.dropdownField(dropdown_itemtype, field['name'], item.fields[field['name']], field['label'], dropdown_params) }}
                 {% elseif type == 'text' %}
-                    {{ fields.autoNameField(field['name'], item, field['label'], withtemplate, params) }}
+                    {{ fields.autoNameField(field['name'], item, field['label'], withtemplate, fields_params) }}
                 {% elseif type == 'textarea' %}
-                    {{ fields.textareaField(field['name'], item.fields[field['name']], field['label'], params) }}
+                    {{ fields.textareaField(field['name'], item.fields[field['name']], field['label'], fields_params) }}
                 {% elseif type == 'integer' %}
-                    {% set params = {
+                    {% set fields_params = {
                         'value': item.fields[field['name']]
                     } %}
                     {% if field['min'] is defined %}
-                        {% set params = params|merge({'min': field['min']}) %}
+                        {% set fields_params = fields_params|merge({'min': field['min']}) %}
                     {% endif %}
                     {% if field['step'] is defined %}
-                        {% set params = params|merge({'step': field['step']}) %}
+                        {% set fields_params = fields_params|merge({'step': field['step']}) %}
                     {% endif %}
                     {% if field['max'] is defined %}
-                        {% set params = params|merge({'max': field['max']}) %}
+                        {% set fields_params = fields_params|merge({'max': field['max']}) %}
                     {% endif %}
 
-                    {% set params = params|merge({'type': 'number'}) %}
-                    {{ fields.numberField(field['name'], item.fields[field['name']], field['label'], params) }}
+                    {% set fields_params = fields_params|merge({'type': 'number'}) %}
+                    {{ fields.numberField(field['name'], item.fields[field['name']], field['label'], fields_params) }}
                 {% elseif type == 'timestamp' %}
-                    {% set params = {'value': item.fields[field['name']]} %}
+                    {% set fields_params = {'value': item.fields[field['name']]} %}
                     {% if field['min'] is defined %}
-                        {% set params = params|merge({'min': field['min']}) %}
+                        {% set fields_params = fields_params|merge({'min': field['min']}) %}
                     {% endif %}
                     {% if field['step'] is defined %}
-                        {% set params = params|merge({'step': field['step']}) %}
+                        {% set fields_params = fields_params|merge({'step': field['step']}) %}
                     {% endif %}
                     {% if field['max'] is defined %}
-                        {% set params = params|merge({'max': field['max']}) %}
+                        {% set fields_params = fields_params|merge({'max': field['max']}) %}
                     {% endif %}
-                    {{ fields.dropdownTimestampField(field['name'], item.fields[field['name']], field['label'], params) }}
+                    {{ fields.dropdownTimestampField(field['name'], item.fields[field['name']], field['label'], fields_params) }}
                 {% elseif type == 'parent' %}
                     {% set restrict = field['name'] == 'entities_id' ? -1 : item.getEntityID() %}
-                    {% set params = params|merge({'entity': restrict}) %}
-                    {% set params = params|merge({'used': (item.fields['id'] > 0 ? call('getSonsOf', [item.getTable(), item.fields['id']]) : [])}) %}
-                    {{ fields.dropdownField(item, field['name'], item.fields[field['name']], field['label'], params) }}
+                    {% set fields_params = fields_params|merge({'entity': restrict}) %}
+                    {% set fields_params = fields_params|merge({'used': (item.fields['id'] > 0 ? call('getSonsOf', [item.getTable(), item.fields['id']]) : [])}) %}
+                    {{ fields.dropdownField(item, field['name'], item.fields[field['name']], field['label'], fields_params) }}
                 {% elseif type == 'icon' %}
-                    {{ fields.dropdownIcons(field['name'], item.fields[field['name']], field['label'], params) }}
+                    {{ fields.dropdownIcons(field['name'], item.fields[field['name']], field['label'], fields_params) }}
                     {% if item.fields[field['name']] is not empty %}
                         <img class="align-middle" alt="" src="{{ config('typedoc_icon_dir') ~ '/' ~ item.fields[field['name']] }}"/>
                     {% endif %}
                 {% elseif type == 'bool' %}
-                    {{ fields.dropdownYesNo(field['name'], item.fields[field['name']], field['label'], params) }}
+                    {{ fields.dropdownYesNo(field['name'], item.fields[field['name']], field['label'], fields_params) }}
                 {% elseif type == 'color' %}
-                    {{ fields.colorField(field['name'], item.fields[field['name']], field['label'], params) }}
+                    {{ fields.colorField(field['name'], item.fields[field['name']], field['label'], fields_params) }}
                 {% elseif type == 'date' %}
-                    {{ fields.dateField(field['name'], item.fields[field['name']], field['label'], params) }}
+                    {{ fields.dateField(field['name'], item.fields[field['name']], field['label'], fields_params) }}
                 {% elseif type == 'datetime' %}
-                    {{ fields.datetimeField(field['name'], item.fields[field['name']], field['label'], params) }}
+                    {{ fields.datetimeField(field['name'], item.fields[field['name']], field['label'], fields_params) }}
                 {% elseif type == 'picture' %}
                     {% if item.fields[field['name']] is not empty %}
-                        {{ fields.imageField(field['name'], item.fields[field['name']]|picture_url, field['label'], params|merge({
+                        {{ fields.imageField(field['name'], item.fields[field['name']]|picture_url, field['label'], fields_params|merge({
                         'clearable': (not item.isNewItem() and item.canUpdateItem())
                     })) }}
                     {% else %}
@@ -173,28 +174,28 @@
                     {% for picture in pictures %}
                         {% set picture_urls = picture_urls|merge([picture|picture_url]) %}
                     {% endfor %}
-                    {{ fields.imageGalleryField(field['name'], picture_urls, field['label'], params|merge({
+                    {{ fields.imageGalleryField(field['name'], picture_urls, field['label'], fields_params|merge({
                     'clearable': (not item.isNewItem() and item.canUpdateItem())
                 })) }}
                 {% elseif type == 'password' %}
-                    {{ fields.passwordField(field['name'], item.fields[field['name']], field['label'], params) }}
+                    {{ fields.passwordField(field['name'], item.fields[field['name']], field['label'], fields_params) }}
                 {% elseif type == 'tinymce' %}
-                    {% set params = params|merge({'enable_richtext': true}) %}
-                    {{ fields.textareaField(field['name'], item.fields[field['name']], field['label'], params) }}
+                    {% set fields_params = fields_params|merge({'enable_richtext': true}) %}
+                    {{ fields.textareaField(field['name'], item.fields[field['name']], field['label'], fields_params) }}
                 {% elseif type == 'duration' %}
                     {% set toadd = [] %}
                     {% for i in 9..100 %}
                         {% set toadd = toadd|merge([i * constant('HOUR_TIMESTAMP')]) %}
                     {% endfor %}
-                    {{ fields.dropdownTimestampField(field['name'], item.fields[field['name']], field['label'], params) }}
+                    {{ fields.dropdownTimestampField(field['name'], item.fields[field['name']], field['label'], fields_params) }}
                 {% elseif type == 'itemtypename' %}
                     {% if field['itemtype_list'] is defined %}
-                        {% set params = params|merge({'types': config(field['itemtype_list'])}) %}
+                        {% set fields_params = fields_params|merge({'types': config(field['itemtype_list'])}) %}
                     {% endif %}
-                    {{ fields.dropdownItemTypes(field['name'], item.fields[field['name']], field['label'], params) }}
+                    {{ fields.dropdownItemTypes(field['name'], item.fields[field['name']], field['label'], fields_params) }}
                 {% else %}
                     {% set field_value %}
-                        {{ item.displaySpecificTypeField(item.fields['id'], field, params) }}
+                        {{ item.displaySpecificTypeField(item.fields['id'], field, fields_params) }}
                     {% endset %}
                     {{ fields.field(field['name'], field_value, field['label']) }}
                 {% endif %}
@@ -215,7 +216,7 @@
                         {{ fields.smallTitle(__('Rack pictures'), 'Rack'|itemtype_icon) }}
                     {% endif %}
                     {% if item.fields[field['name']] is not empty %}
-                        {{ fields.imageField(field['name'], item.fields[field['name']]|picture_url, field['label'], params|merge({
+                        {{ fields.imageField(field['name'], item.fields[field['name']]|picture_url, field['label'], fields_params|merge({
                         'clearable': item.canUpdateItem()
                     })) }}
                     {% else %}
@@ -230,7 +231,7 @@
                     {% for picture in pictures %}
                         {% set picture_urls = picture_urls|merge([picture|picture_url]) %}
                     {% endfor %}
-                    {{ fields.imageGalleryField(field['name'], picture_urls, '', params|merge({
+                    {{ fields.imageGalleryField(field['name'], picture_urls, '', fields_params|merge({
                         'clearable': item.canUpdateItem(),
                         'no_label': true
                     })) }}
