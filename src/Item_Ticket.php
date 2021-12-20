@@ -440,6 +440,7 @@ class Item_Ticket extends CommonItilObject_Item
         $header_end .= "<th>" . __('Name') . "</th>";
         $header_end .= "<th>" . __('Serial number') . "</th>";
         $header_end .= "<th>" . __('Inventory number') . "</th>";
+        $header_end .= "<th>" . __('FAQ item') . "</th>";
         echo "<tr>";
         echo $header_begin . $header_top . $header_end;
 
@@ -491,6 +492,8 @@ class Item_Ticket extends CommonItilObject_Item
                     "</td>";
                     echo "<td class='center'>" .
                       (isset($data["otherserial"]) ? "" . $data["otherserial"] . "" : "-") . "</td>";
+                    $item->getFromDB($data["id"]);
+                    echo "<td class='center'>" . $item->getKBLinks() . "</td>";
                     echo "</tr>";
                 }
                 $totalnb += $nb;
