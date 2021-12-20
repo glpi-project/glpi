@@ -433,11 +433,16 @@ class Inventory
 
     public static function getMenuContent()
     {
+        // Require config update permission globally
+        if (!Session::haveRight('config', UPDATE)) {
+            return false;
+        }
+
         $classes = [
-         Agent::class,
-         Lockedfield::class,
-         RefusedEquipment::class,
-         SNMPCredential::class
+            Agent::class,
+            Lockedfield::class,
+            RefusedEquipment::class,
+            SNMPCredential::class
         ];
         $links = [];
         foreach ($classes as $class) {
@@ -447,41 +452,52 @@ class Inventory
         }
 
         $menu = [
-         'title'  => __('Inventory'),
-         'page'   => '/front/inventory.conf.php',
-         'icon'   => static::getIcon(),
-         'options'   => [
-            'agent' => [
-               'title' => Agent::getTypeName(Session::getPluralNumber()),
-               'page'  => Agent::getSearchURL(false),
-               'links' => [
-                  'add'    => '/front/agent.form.php',
-                  'search' => '/front/agent.php',
-               ] + $links
-               ],
-            'lockedfield' => [
-               'title' => Lockedfield::getTypeName(Session::getPluralNumber()),
-               'page'  => Lockedfield::getSearchURL(false),
-               'links' => $links
-            ],
-            'refusedequipment' => [
-               'title' => RefusedEquipment::getTypeName(Session::getPluralNumber()),
-               'page'  => RefusedEquipment::getSearchURL(false),
-               'links' => $links
-            ],
-            'snmpcredential' => [
-               'title' => SNMPCredential::getTypeName(Session::getPluralNumber()),
-               'page' => SNMPCredential::getSearchURL(false),
-               'links' => [
-                  'add'    => '/front/snmpcredential.form.php',
-                  'search' => '/front/snmpcredential.php',
-               ] + $links
-            ]
-         ],
-         'links' => $links,
+            'title'  => __('Inventory'),
+            'page'   => '/front/inventory.conf.php',
+            'icon'   => static::getIcon(),
+            'options'   => [],
+            'links' => $links,
         ];
 
-        if (count($menu)) {
+        if (Session::haveRight(Agent::$rightname, READ)) {
+            $menu['options']['agent'] = [
+                'title' => Agent::getTypeName(Session::getPluralNumber()),
+                'page'  => Agent::getSearchURL(false),
+                'links' => [
+                    'add'    => '/front/agent.form.php',
+                    'search' => '/front/agent.php',
+                ] + $links
+            ];
+        }
+
+        if (Session::haveRight(Lockedfield::$rightname, READ)) {
+            $menu['options']['lockedfield'] = [
+                'title' => Lockedfield::getTypeName(Session::getPluralNumber()),
+                'page'  => Lockedfield::getSearchURL(false),
+                'links' => $links
+            ];
+        }
+
+        if (Session::haveRight(RefusedEquipment::$rightname, READ)) {
+            $menu['options']['refusedequipment'] = [
+                'title' => RefusedEquipment::getTypeName(Session::getPluralNumber()),
+                'page' => RefusedEquipment::getSearchURL(false),
+                'links' => $links
+            ];
+        }
+
+        if (Session::haveRight(SNMPCredential::$rightname, READ)) {
+            $menu['options']['snmpcredential'] = [
+                'title' => SNMPCredential::getTypeName(Session::getPluralNumber()),
+                'page' => SNMPCredential::getSearchURL(false),
+                'links' => [
+                   'add' => '/front/snmpcredential.form.php',
+                   'search' => '/front/snmpcredential.php',
+                ] + $links
+            ];
+        }
+
+        if (count($menu['options'])) {
             return $menu;
         }
         return false;
