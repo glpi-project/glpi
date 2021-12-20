@@ -164,6 +164,7 @@ class AuthLDAP extends CommonDBTM
         $this->fields['comment_field']               = '';
         $this->fields['title_field']                 = '';
         $this->fields['use_dn']                      = 0;
+        $this->fields['use_bind']                    = 1;
         $this->fields['picture_field']               = '';
         $this->fields['responsible_field']           = '';
     }
