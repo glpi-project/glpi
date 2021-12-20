@@ -309,7 +309,7 @@ JAVASCRIPT;
             $nav_width      = "style='min-width: 200px'";
             if ($orientation == "horizontal") {
                 $flex_container = "flex-column";
-                $flex_tab       = "flex-row d-none d-md-block";
+                $flex_tab       = "flex-row d-none d-md-flex";
                 $border         = "";
                 $navitemml      = "";
                 $navlinkp       = "";
