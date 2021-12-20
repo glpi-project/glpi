@@ -233,7 +233,6 @@ JAVASCRIPT;
                 [
                 'value' => $this->fields['name'],
                 'id'    => "textfield_name$rand",
-                'size'  => '80',
                 ]
             );
         } else {
