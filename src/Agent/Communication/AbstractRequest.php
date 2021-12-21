@@ -72,6 +72,8 @@ abstract class AbstractRequest
 
    //GLPI AGENT TASK
     const INVENT_TASK = 'inventory';
+    const NETDISCOVERY_TASK = 'netdiscovery';
+    const NETINV_TASK = 'netinventory';
 
     const COMPRESS_NONE = 0;
     const COMPRESS_ZLIB = 1;

@@ -114,6 +114,12 @@ class Request extends AbstractRequest
             case self::INVENT_TASK:
                 return $this->handleInventoryTask();
             break;
+            case self::NETDISCOVERY_TASK:
+                return $this->handleNetDiscoveryTask();
+            break;
+            case self::NETINV_TASK:
+                return $this->handleNetInventoryTask();
+            break;
             default:
                 $this->addError("Task '$task' is not supported.", 400);
                 return [];
@@ -346,6 +352,36 @@ class Request extends AbstractRequest
         $params['options']['response'] = [];
         $params['item'] = $this->inventory->getAgent();
         $params = Plugin::doHookFunction("handle_inventory_task", $params);
+
+        return $params['options']['response'];
+    }
+
+   /**
+    * Handle agent netdiscovery task options
+    *
+    * @return array
+    */
+    public function handleNetDiscoveryTask()
+    {
+
+        $params['options']['response'] = [];
+        $params['item'] = $this->inventory->getAgent();
+        $params = Plugin::doHookFunction("handle_netdiscovery_task", $params);
+
+        return $params['options']['response'];
+    }
+
+   /**
+    * Handle agent netinventory task options
+    *
+    * @return array
+    */
+    public function handleNetInventoryTask()
+    {
+
+        $params['options']['response'] = [];
+        $params['item'] = $this->inventory->getAgent();
+        $params = Plugin::doHookFunction("handle_netinventory_task", $params);
 
         return $params['options']['response'];
     }
