@@ -7567,6 +7567,7 @@ CREATE TABLE `glpi_users` (
   `fold_menu` tinyint DEFAULT NULL,
   `fold_search` tinyint DEFAULT NULL,
   `savedsearches_pinned` text,
+  `timeline_order` char(20) DEFAULT NULL,
   `richtext_layout` char(20) DEFAULT NULL,
   `set_default_requester` tinyint DEFAULT NULL,
   `lock_autolock_mode` tinyint DEFAULT NULL,
