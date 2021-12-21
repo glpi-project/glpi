@@ -121,7 +121,6 @@ class Request extends AbstractRequest
                 return $this->handleNetInventoryTask();
             break;
             default:
-                $this->addError("Task '$task' is not supported.", 400);
                 return [];
         }
         return [];

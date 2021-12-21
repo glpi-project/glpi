@@ -46,7 +46,7 @@ if (isset($_GET['refused'])) {
     $refused->getFromDB($_GET['refused']);
     $contents = file_get_contents($refused->getInventoryFileName());
 } else if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-    $inventory_request->addError('Method not allowed');
+    $inventory_request->addError('Method not allowed', 405);
     $handle = false;
 } else {
     $contents = file_get_contents("php://input");

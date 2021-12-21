@@ -314,7 +314,7 @@ abstract class AbstractRequest
     public function addError($message, $code = 500)
     {
         $this->error = true;
-        $this->http_repsonse_code = $code;
+        $this->http_response_code = $code;
         if ($this->headers->hasHeader('GLPI-Agent-ID')) {
             $this->addToResponse([
             'status' => 'error',
