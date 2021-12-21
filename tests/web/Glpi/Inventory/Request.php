@@ -60,7 +60,6 @@ class Request extends \GLPITestCase
     */
     private function checkResponse(GuzzleHttp\Psr7\Response $res, $reply)
     {
-        $this->integer($res->getStatusCode())->isIdenticalTo(200);
         $this->string($res->getHeader('content-type')[0])->isIdenticalTo('application/xml');
         $this->string((string)$res->getBody())
          ->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY>$reply</REPLY>\n");
@@ -68,29 +67,39 @@ class Request extends \GLPITestCase
 
     public function testWrongHttpMethod()
     {
-        $res = $this->http_client->request(
-            'GET',
-            $this->base_uri . 'front/inventory.php',
-            [
-            'headers' => [
-               'Content-Type' => 'application/xml'
-            ]
-            ]
-        );
+        try {
+            $res = $this->http_client->request(
+                'GET',
+                $this->base_uri . 'front/inventory.php',
+                [
+                'headers' => [
+                   'Content-Type' => 'application/xml'
+                ]
+                ]
+            );
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            $res = $e->getResponse();
+        }
+        $this->integer($res->getStatusCode())->isIdenticalTo(405);
         $this->checkResponse($res, '<ERROR>Method not allowed</ERROR>');
     }
 
     public function testRequestInvalidContent()
     {
-        $res = $this->http_client->request(
-            'POST',
-            $this->base_uri . 'front/inventory.php',
-            [
-            'headers' => [
-               'Content-Type' => 'application/xml'
-            ]
-            ]
-        );
+        try {
+            $res = $this->http_client->request(
+                'POST',
+                $this->base_uri . 'front/inventory.php',
+                [
+                'headers' => [
+                   'Content-Type' => 'application/xml'
+                ]
+                ]
+            );
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            $res = $e->getResponse();
+        }
+        $this->integer($res->getStatusCode())->isIdenticalTo(400);
         $this->checkResponse($res, '<ERROR>XML not well formed!</ERROR>');
     }
 
@@ -111,8 +120,6 @@ class Request extends \GLPITestCase
             ]
         );
         $this->integer($res->getStatusCode())->isIdenticalTo(200);
-        $this->string($res->getHeader('content-type')[0])->isIdenticalTo('application/xml');
-        $this->string((string)$res->getBody())
-         ->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE></REPLY>\n");
+        $this->checkResponse($res, '<PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE>');
     }
 }
