@@ -130,7 +130,7 @@ class Domain extends CommonDropdown
         return $fields;
     }
 
-   public function rawSearchOptions()
+    public function rawSearchOptions()
     {
         $tab = [];
 
