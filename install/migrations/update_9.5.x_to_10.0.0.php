@@ -40,8 +40,9 @@ function update95xto1000()
 {
     global $DB, $migration;
 
-    $updateresult     = true;
-    $ADDTODISPLAYPREF = [];
+    $updateresult       = true;
+    $ADDTODISPLAYPREF   = [];
+    $DELFROMDISPLAYPREF = [];
     $update_dir = __DIR__ . '/update_9.5.x_to_10.0.0/';
 
    //TRANS: %s is the number of new version
@@ -60,14 +61,31 @@ function update95xto1000()
     foreach ($ADDTODISPLAYPREF as $type => $tab) {
         $rank = 1;
         foreach ($tab as $newval) {
-            $DB->updateOrInsert("glpi_displaypreferences", [
-            'rank'      => $rank++
-            ], [
-            'users_id'  => "0",
-            'itemtype'  => $type,
-            'num'       => $newval,
-            ]);
+            $DB->updateOrInsert(
+                "glpi_displaypreferences",
+                [
+                    'rank'      => $rank++
+                ],
+                Toolbox::addslashes_deep(
+                    [
+                        'users_id'  => "0",
+                        'itemtype'  => $type,
+                        'num'       => $newval,
+                    ]
+                )
+            );
         }
+    }
+    foreach ($DELFROMDISPLAYPREF as $type => $tab) {
+        $DB->delete(
+            'glpi_displaypreferences',
+            Toolbox::addslashes_deep(
+                [
+                    'itemtype'  => $type,
+                    'num'       => $tab
+                ]
+            )
+        );
     }
 
     $migration->executeMigration();

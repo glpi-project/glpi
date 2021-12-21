@@ -247,7 +247,8 @@ if (!$DB->tableExists('glpi_networkportfiberchanneltypes')) {
 $migration->addField('glpi_networkportfiberchannels', 'networkportfiberchanneltypes_id', 'int', ['after' => 'items_devicenetworkcards_id']);
 $migration->addKey('glpi_networkportfiberchannels', 'networkportfiberchanneltypes_id', 'type');
 
-$ADDTODISPLAYPREF['Socket'] = [5, 6, 9, 8, 7];
+$DELFROMDISPLAYPREF['Socket'] = [5, 6, 9, 8, 7]; // Remove display prefs generated in GLPI 10.0.0-beta1
+$ADDTODISPLAYPREF[Socket::class] = [5, 6, 9, 8, 7];
 $ADDTODISPLAYPREF['Cable'] = [4, 31, 6, 15, 24, 8, 10, 13, 14];
 
 //rename profilerights values ('netpoint' to 'cable_management')

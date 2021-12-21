@@ -33,6 +33,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
+use Glpi\Socket;
 use Glpi\Toolbox\DataExport;
 use Glpi\Toolbox\Sanitizer;
 
@@ -2295,6 +2296,7 @@ class Search
          // 'linkuser_tech_types'  => ['User'], // Cannot handle ambiguity with 'User' from 'linkuser_types'
          'project_asset_types'  => ['Project'],
          'rackable_types'       => ['Enclosure', 'Rack'],
+         'socket_types'         => [Socket::class],
          'ticket_types'         => ['Change', 'Problem', 'Ticket'],
         ];
 
