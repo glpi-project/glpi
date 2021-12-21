@@ -96,7 +96,7 @@ class NotificationMailing extends DbTestCase
             'name'                     => 'Test notification',
             'sender'                   => 'glpi@tests',
             'sendername'               => 'TEST',
-            'recipient'                => '6',
+            'recipient'                => '7',
             'recipientname'            => '',
             'replyto'                  => null,
             'replytoname'              => null,

@@ -2236,7 +2236,7 @@ class User extends CommonDBTM
         }
 
         $config = Config::getConfigurationValues('core');
-        if ($config['system_user'] == $this->getID()) {
+        if ($this->getID() > 0 && $config['system_user'] == $this->getID()) {
             return $this->showSystemUserForm($ID, $options);
         }
 

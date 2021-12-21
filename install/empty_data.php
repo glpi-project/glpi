@@ -304,7 +304,7 @@ $default_prefs = [
    // Default size corresponds to the 'upload_max_filesize' directive in Mio (rounded down) or 1 Mio if 'upload_max_filesize' is too low.
    'document_max_size'                       => max(1, floor(Toolbox::return_bytes_from_ini_vars(ini_get('upload_max_filesize')) / 1024 / 1024)),
    'planning_work_days'                      => exportArrayToDB([0, 1, 2, 3, 4, 5, 6]),
-   'system_user'                             => '',
+   'system_user'                             => 6,
 ];
 
 $tables['glpi_configs'] = [];
@@ -8299,6 +8299,7 @@ $tables['glpi_users'] = [
    [
       'id'         => '2',
       'name'       => 'glpi',
+      'realname'   => null,
       'password'   => '$2y$10$rXXzbc2ShaiCldwkw4AZL.n.9QSH7c0c9XJAyyjrbL9BwmWditAYm',
       'language'   => null,
       'list_limit' => '20',
@@ -8306,6 +8307,7 @@ $tables['glpi_users'] = [
    ], [
       'id'         => '3',
       'name'       => 'post-only',
+      'realname'   => null,
       'password'   => '$2y$10$dTMar1F3ef5X/H1IjX9gYOjQWBR1K4bERGf4/oTPxFtJE/c3vXILm',
       'language'   => 'en_GB',
       'list_limit' => '20',
@@ -8313,6 +8315,7 @@ $tables['glpi_users'] = [
    ], [
       'id'         => '4',
       'name'       => 'tech',
+      'realname'   => null,
       'password'   => '$2y$10$.xEgErizkp6Az0z.DHyoeOoenuh0RcsX4JapBk2JMD6VI17KtB1lO',
       'language'   => 'en_GB',
       'list_limit' => '20',
@@ -8320,10 +8323,19 @@ $tables['glpi_users'] = [
    ], [
       'id'         => '5',
       'name'       => 'normal',
+      'realname'   => null,
       'password'   => '$2y$10$Z6doq4zVHkSPZFbPeXTCluN1Q/r0ryZ3ZsSJncJqkN3.8cRiN0NV.',
       'language'   => 'en_GB',
       'list_limit' => '20',
       'authtype'   => '1',
+   ], [
+      'id'         => '6',
+      'name'       => 'glpi-system',
+      'realname'   => 'Support',
+      'password'   => '',
+      'language'   => null,
+      'list_limit' => null,
+      'authtype'   => 1,
    ],
 ];
 
