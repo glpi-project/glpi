@@ -6051,6 +6051,16 @@ JAVASCRIPT;
                     }
                 }
                 break;
+
+            case "glpi_domains.date_expiration":
+            case "glpi_certificates.date_expiration":
+                if (
+                    !empty($data[$NAME][0]['name'])
+                    && ($data[$NAME][0]['name'] < $_SESSION['glpi_currenttime'])
+                ) {
+                    $out = " class=\"shadow-none\" style=\"background-color: #cf9b9b\" ";
+                }
+                break;
         }
 
         return $out;
