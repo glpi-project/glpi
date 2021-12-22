@@ -1462,6 +1462,9 @@ JAVASCRIPT;
                         KnowbaseItem::getTable()      => 'id'
                     ]
                 ]
+            ],
+            'ORDER' => [
+                KnowbaseItem::getTable()      => 'name'
             ]
         ]);
 
