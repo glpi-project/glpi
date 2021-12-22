@@ -523,7 +523,8 @@
 ul.legacy-timeline-actions {
    padding-left: 5px;
    list-style: none;
-   display: contents;
+   display: inline-flex;
+   margin-bottom: 0;
 
    li {
       display: inline;
