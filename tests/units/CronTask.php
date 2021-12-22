@@ -38,7 +38,7 @@ use RecursiveIteratorIterator;
 
 /* Test for inc/crontask.class.php */
 
-class Crontask extends \GLPITestCase
+class CronTask extends \GLPITestCase
 {
     public function testCronTemp()
     {
