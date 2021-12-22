@@ -65,7 +65,10 @@ fi
 git --git-dir="$SOURCE_DIR/.git" checkout-index --all --force --prefix="$WORKING_DIR/glpi/"
 
 
-FOUND_VERSION=$(grep -Po "define\('GLPI_VERSION', '\K.*?(?=')" $WORKING_DIR/glpi//inc/define.php)
+FOUND_VERSION=$(php -r '
+   require "$WORKING_DIR/glpi/inc/define.php";
+   echo GLPI_VERSION;
+')
 if [[ ! "$RELEASE" = "$FOUND_VERSION" ]]
 then
     echo "$RELEASE does not match version $FOUND_VERSION declared in inc/define.php"
