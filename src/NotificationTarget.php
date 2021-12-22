@@ -1414,6 +1414,10 @@ class NotificationTarget extends CommonDBChild
             if ($p['foreach']) {
                 $tag = "##FOREACH" . $p['tag'] . "## ##ENDFOREACH" . $p['tag'] . "##";
                 $this->tag_descriptions[self::TAG_VALUE][$tag] = $p;
+                $tag = "##FOREACH FIRST &lt;number&gt; " . $p['tag'] . "## ##ENDFOREACH" . $p['tag'] . "##";
+                $this->tag_descriptions[self::TAG_VALUE][$tag] = $p;
+                $tag = "##FOREACH LAST &lt;number&gt; " . $p['tag'] . "## ##ENDFOREACH" . $p['tag'] . "##";
+                $this->tag_descriptions[self::TAG_VALUE][$tag] = $p;
             } else {
                 if ($p['value']) {
                     $tag = "##" . $p['tag'] . "##";
