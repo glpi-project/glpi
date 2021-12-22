@@ -75,21 +75,31 @@
                   {% endif %}
 
                   {% if item.can(id, constant('PURGE')) %}
-                     <span class="border border-danger d-flex align-items-start flex-wrap p-1 px-2 me-2">
+                    {% set item_devices = call('Item_Devices::getConcernedItems') %}
+                    {% set show_keep_devices = item.getType() in item_devices %}
+
+                    {% set span_cls = "" %}
+                    {% if show_keep_devices %}
+                        {% set span_cls = "border border-danger d-flex align-items-start flex-wrap p-1 px-2 me-2" %}
+                    {% endif %}
+
+                     <span class="{{ span_cls }}">
                         <button class="btn btn-danger me-2" type="submit" name="purge"
                               value="1"
                               onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
                            <i class="ti ti-trash"></i>
                            <span>{{ _x('button', 'Delete permanently') }}</span>
                         </button>
-                        <span class="mt-2">
-                           <label class="form-check form-switch">
-                              <input class="form-check-input" type="checkbox" name="keep_devices" value="1" />
-                              <span class="form-check-label text-danger">
-                                 {{ __('Keep the devices while deleting this item') }}
-                              </span>
-                           </label>
-                        </span>
+                        {% if show_keep_devices %}
+                            <span class="mt-2">
+                                <label class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="keep_devices" value="1" />
+                                    <span class="form-check-label text-danger">
+                                        {{ __('Keep the devices while deleting this item') }}
+                                    </span>
+                                </label>
+                            </span>
+                        {% endif %}
                      <span>
                   {% endif %}
                {% else %}
