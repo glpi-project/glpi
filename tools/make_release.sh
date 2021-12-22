@@ -66,7 +66,8 @@ git --git-dir="$SOURCE_DIR/.git" checkout-index --all --force --prefix="$WORKING
 
 
 FOUND_VERSION=$(php -r '
-   require "$WORKING_DIR/glpi/inc/define.php";
+   define("GLPI_ROOT", "./");
+   require "'$WORKING_DIR'/glpi/inc/define.php";
    echo GLPI_VERSION;
 ')
 if [[ ! "$RELEASE" = "$FOUND_VERSION" ]]

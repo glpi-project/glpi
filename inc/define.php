@@ -360,7 +360,7 @@ $CFG_GLPI["contract_types"]               = array_merge(
 
 
 $CFG_GLPI["union_search_type"]            = ['ReservationItem' => "reservation_types",
-                                                  AllAssets::getType()       => "asset_types"];
+                                                  'AllAssets'       => "asset_types"];
 
 $CFG_GLPI["systeminformations_types"]     = ['AuthLDAP', 'DBConnection', 'MailCollector',
                                                   'Plugin'];
@@ -561,22 +561,22 @@ $CFG_GLPI['max_time_for_count'] = 200;
  * Impact itemtypes enabled by default
  */
 $CFG_GLPI["default_impact_asset_types"] = [
-   Appliance::getType()          => "pics/impact/appliance.png",
-   Cluster::getType()            => "pics/impact/cluster.png",
-   Computer::getType()           => "pics/impact/computer.png",
-   Datacenter::getType()         => "pics/impact/datacenter.png",
-   DCRoom::getType()             => "pics/impact/dcroom.png",
-   Domain::getType()             => "pics/impact/domain.png",
-   Enclosure::getType()          => "pics/impact/enclosure.png",
-   Monitor::getType()            => "pics/impact/monitor.png",
-   NetworkEquipment::getType()   => "pics/impact/networkequipment.png",
-   PDU::getType()                => "pics/impact/pdu.png",
-   Peripheral::getType()         => "pics/impact/peripheral.png",
-   Phone::getType()              => "pics/impact/phone.png",
-   Printer::getType()            => "pics/impact/printer.png",
-   Rack::getType()               => "pics/impact/rack.png",
-   Software::getType()           => "pics/impact/software.png",
-   DatabaseInstance::getType()           => "pics/impact/database.png",
+   'Appliance'          => "pics/impact/appliance.png",
+   'Cluster'            => "pics/impact/cluster.png",
+   'Computer'           => "pics/impact/computer.png",
+   'Datacenter'         => "pics/impact/datacenter.png",
+   'DCRoom'             => "pics/impact/dcroom.png",
+   'Domain'             => "pics/impact/domain.png",
+   'Enclosure'          => "pics/impact/enclosure.png",
+   'Monitor'            => "pics/impact/monitor.png",
+   'NetworkEquipment'   => "pics/impact/networkequipment.png",
+   'PDU'                => "pics/impact/pdu.png",
+   'Peripheral'         => "pics/impact/peripheral.png",
+   'Phone'              => "pics/impact/phone.png",
+   'Printer'            => "pics/impact/printer.png",
+   'Rack'               => "pics/impact/rack.png",
+   'Software'           => "pics/impact/software.png",
+   'DatabaseInstance'           => "pics/impact/database.png",
 ];
 
 /**
@@ -584,23 +584,23 @@ $CFG_GLPI["default_impact_asset_types"] = [
  * added in GLPI configuration
  */
 $CFG_GLPI["impact_asset_types"] = $CFG_GLPI["default_impact_asset_types"] + [
-   AuthLDAP::getType()           => "pics/impact/authldap.png",
-   CartridgeItem::getType()      => "pics/impact/cartridgeitem.png",
-   Contract::getType()           => "pics/impact/contract.png",
-   CronTask::getType()           => "pics/impact/crontask.png",
-   DeviceSimcard::getType()      => "pics/impact/devicesimcard.png",
-   Entity::getType()             => "pics/impact/entity.png",
-   Group::getType()              => "pics/impact/group.png",
-   ITILCategory::getType()       => "pics/impact/itilcategory.png",
-   Line::getType()               => "pics/impact/line.png",
-   Location::getType()           => "pics/impact/location.png",
-   MailCollector::getType()      => "pics/impact/mailcollector.png",
-   Notification::getType()       => "pics/impact/notification.png",
-   Profile::getType()            => "pics/impact/profile.png",
-   Project::getType()            => "pics/impact/project.png",
-   Rack::getType()               => "pics/impact/rack.png",
-   SLM::getType()                => "pics/impact/slm.png",
-   SoftwareLicense::getType()    => "pics/impact/softwarelicense.png",
-   Supplier::getType()           => "pics/impact/supplier.png",
-   User::getType()               => "pics/impact/user.png",
+   'AuthLDAP'           => "pics/impact/authldap.png",
+   'CartridgeItem'      => "pics/impact/cartridgeitem.png",
+   'Contract'           => "pics/impact/contract.png",
+   'CronTask'           => "pics/impact/crontask.png",
+   'DeviceSimcard'      => "pics/impact/devicesimcard.png",
+   'Entity'             => "pics/impact/entity.png",
+   'Group'              => "pics/impact/group.png",
+   'ITILCategory'       => "pics/impact/itilcategory.png",
+   'Line'               => "pics/impact/line.png",
+   'Location'           => "pics/impact/location.png",
+   'MailCollector'      => "pics/impact/mailcollector.png",
+   'Notification'       => "pics/impact/notification.png",
+   'Profile'            => "pics/impact/profile.png",
+   'Project'            => "pics/impact/project.png",
+   'Rack'               => "pics/impact/rack.png",
+   'SLM'                => "pics/impact/slm.png",
+   'SoftwareLicense'    => "pics/impact/softwarelicense.png",
+   'Supplier'           => "pics/impact/supplier.png",
+   'User'               => "pics/impact/user.png",
 ];
