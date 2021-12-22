@@ -1966,7 +1966,7 @@ class AuthLDAP extends CommonDBTM
             if ($values['ldap_filter'] == '') {
                 $filter = "(" . $field_for_sync . "=*)";
                 if (!empty($config_ldap->fields['condition'])) {
-                    $filter = "(& $filter " . $config_ldap->fields['condition'] . ")";
+                    $filter = "(& $filter " . Sanitizer::unsanitize($config_ldap->fields['condition']) . ")";
                 }
             } else {
                 $filter = $values['ldap_filter'];
@@ -3323,7 +3323,7 @@ class AuthLDAP extends CommonDBTM
         $filter = "(" . $values['login_field'] . "=" . $filter_value . ")";
 
         if (!empty($values['condition'])) {
-            $filter = "(& $filter " . $values['condition'] . ")";
+            $filter = "(& $filter " . Sanitizer::unsanitize($values['condition']) . ")";
         }
 
         if ($result = @ldap_search($ds, $values['basedn'], $filter, $ldap_parameters)) {
@@ -3835,7 +3835,7 @@ class AuthLDAP extends CommonDBTM
                      && !empty($_SESSION['ldap_import']['end_date'])
                         ? $_SESSION['ldap_import']['end_date'] : null);
         $filter    .= self::addTimestampRestrictions($begin_date, $end_date);
-        $ldap_condition = $authldap->getField('condition');
+        $ldap_condition = Sanitizer::unsanitize($authldap->getField('condition'));
        //Add entity filter and filter filled in directory's configuration form
         return  "(&" . (isset($_SESSION['ldap_import']['entity_filter'])
                     ? $_SESSION['ldap_import']['entity_filter']
