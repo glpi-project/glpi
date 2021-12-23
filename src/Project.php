@@ -2519,12 +2519,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
          'create_card_limited_columns'    => $canmodify_view ? [] : [0]
         ];
 
-        $plugin_filters = [];
-        Plugin::doHook(Hooks::KANBAN_FILTERS, [
-            'itemtype' => static::getType(),
-            'filters' => &$plugin_filters
-        ]);
-
         TemplateRenderer::getInstance()->display('components/kanban/kanban.html.twig', [
             'kanban_id'                   => 'kanban',
             'rights'                      => $rights,
