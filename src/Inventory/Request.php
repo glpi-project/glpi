@@ -328,7 +328,7 @@ class Request extends AbstractRequest
                 $this->addError($error, 500);
             }
         } else {
-            if ($this->headers->hasHeader('GLPI-Agent-ID')) {
+            if ($this->getMode() == self::JSON_MODE) {
                 $response = [
                 'expiration'  => self::DEFAULT_FREQUENCY,
                 'status'     => 'ok'
