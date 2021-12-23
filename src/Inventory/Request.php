@@ -157,7 +157,8 @@ class Request extends AbstractRequest
     */
     public function prolog($data)
     {
-        /*if ($this->headers->hasHeader('GLPI-Agent-ID')) {
+        /* Disable glpi agent native support for now
+        if ($this->headers->hasHeader('GLPI-Agent-ID')) {
             $this->setMode(self::JSON_MODE);
             $response = [
               'expiration'  => self::DEFAULT_FREQUENCY,
