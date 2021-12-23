@@ -2251,7 +2251,10 @@ class GLPIKanbanRights {
             }
          });
 
-         $(self.element).trigger('kanban:filter', self.filters);
+         $(self.element).trigger('kanban:filter', {
+            filters: self.filters,
+            kanban_element: self.element
+         });
 
          // Update column counters
          $(self.element + ' .kanban-column').each(function(i, column) {

@@ -59,6 +59,8 @@ class Hooks
     const MIGRATE_TYPES                 = 'migratetypes';
     const POST_KANBAN_CONTENT           = 'post_kanban_content';
     const PRE_KANBAN_CONTENT            = 'pre_kanban_content';
+    const KANBAN_ITEM_METADATA          = 'kanban_item_metadata';
+    const KANBAN_FILTERS                = 'kanban_filters';
     const REDEFINE_MENUS                = 'redefine_menus';
     const RETRIEVE_MORE_DATA_FROM_LDAP  = 'retrieve_more_data_from_ldap';
     const RETRIEVE_MORE_FIELD_FROM_LDAP = 'retrieve_more_field_from_ldap';

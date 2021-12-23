@@ -33,6 +33,9 @@
 
 namespace Glpi\Features;
 
+use Glpi\Plugin\Hooks;
+use Plugin;
+
 /**
  * Trait Kanban.
  * @since 9.5.0
@@ -137,5 +140,18 @@ trait Kanban
     public function canOrderKanbanCard($ID)
     {
         return true;
+    }
+
+    public static function getKanbanPluginFilters($itemtype)
+    {
+        global $PLUGIN_HOOKS;
+        $filters = [];
+
+        if (isset($PLUGIN_HOOKS[Hooks::KANBAN_FILTERS])) {
+            foreach ($PLUGIN_HOOKS[Hooks::KANBAN_FILTERS] as $plugin => $itemtype_filters) {
+                $filters = array_merge($filters, $itemtype_filters[$itemtype] ?? []);
+            }
+        }
+        return $filters;
     }
 }
