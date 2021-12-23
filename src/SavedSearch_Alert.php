@@ -458,7 +458,7 @@ class SavedSearch_Alert extends CommonDBChild
                             $tr_op = __('greater than');
                             break;
                         default:
-                            throw new \RuntimeException("Unknonw operator '{$row['operator']}'");
+                            throw new \RuntimeException("Unknown operator '{$row['operator']}'");
                     }
 
                     //TRANS : %1$s is the name of the saved search,
