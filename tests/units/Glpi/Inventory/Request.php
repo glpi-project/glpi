@@ -150,8 +150,8 @@ class Request extends \GLPITestCase
 
         $request = new \Glpi\Inventory\Request();
         $request->handleContentType('application/xml');
-       //to test nodes with attributes
-        $request->addError([
+        //to test nodes with attributes
+        $request->addToResponse([
          'OPTION' => [
             'NAME' => 'NETDISCOVERY',
             'PARAM' => [
@@ -203,7 +203,7 @@ class Request extends \GLPITestCase
          ]
         ]);
 
-        $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR><OPTION><NAME>NETDISCOVERY</NAME><PARAM THREADS_DISCOVERY=\"5\" TIMEOUT=\"1\" PID=\"16\"/><RANGEIP ID=\"1\" IPSTART=\"192.168.1.1\" IPEND=\"192.168.1.254\" ENTITY=\"0\"/><AUTHENTICATION ID=\"1\" COMMUNITY=\"public\" VERSION=\"1\" USERNAME=\"\" AUTHPROTOCOL=\"\" AUTHPASSPHRASE=\"\" PRIVPROTOCOL=\"\" PRIVPASSPHRASE=\"\"/><AUTHENTICATION ID=\"2\" COMMUNITY=\"public\" VERSION=\"2c\" USERNAME=\"\" AUTHPROTOCOL=\"\" AUTHPASSPHRASE=\"\" PRIVPROTOCOL=\"\" PRIVPASSPHRASE=\"\"/></OPTION></ERROR></REPLY>\n");
+        $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><OPTION><NAME>NETDISCOVERY</NAME><PARAM THREADS_DISCOVERY=\"5\" TIMEOUT=\"1\" PID=\"16\"/><RANGEIP ID=\"1\" IPSTART=\"192.168.1.1\" IPEND=\"192.168.1.254\" ENTITY=\"0\"/><AUTHENTICATION ID=\"1\" COMMUNITY=\"public\" VERSION=\"1\" USERNAME=\"\" AUTHPROTOCOL=\"\" AUTHPASSPHRASE=\"\" PRIVPROTOCOL=\"\" PRIVPASSPHRASE=\"\"/><AUTHENTICATION ID=\"2\" COMMUNITY=\"public\" VERSION=\"2c\" USERNAME=\"\" AUTHPROTOCOL=\"\" AUTHPASSPHRASE=\"\" PRIVPROTOCOL=\"\" PRIVPASSPHRASE=\"\"/></OPTION></REPLY>\n");
     }
 
     protected function compressionProvider(): array

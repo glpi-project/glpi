@@ -310,7 +310,7 @@ abstract class AbstractRequest
      *
      * @return void
      */
-    public function addError($message, $code = 500)
+    public function addError(string $message, $code = 500)
     {
         $this->error = true;
         $this->http_response_code = $code;
@@ -319,17 +319,15 @@ abstract class AbstractRequest
             '$ref[inventory.schema.json]',
             $message
         );
-        $this->addToResponse(['ERROR' => $message]);
-        /* Disable glpi agent native support for now
-        if ($this->headers->hasHeader('GLPI-Agent-ID')) {
+        if ($this->mode === self::XML_MODE) {
+            $this->addToResponse(['ERROR' => $message]);
+        } else {
             $this->addToResponse([
             'status' => 'error',
             'message' => $message,
             'expiration' => self::DEFAULT_FREQUENCY
             ]);
-        } else {
-            $this->addToResponse(['ERROR' => $message]);
-        }*/
+        }
     }
 
    /**
@@ -339,7 +337,7 @@ abstract class AbstractRequest
     *
     * @return void
     */
-    protected function addToResponse(array $entries)
+    public function addToResponse(array $entries)
     {
         if ($this->mode === self::XML_MODE) {
             $root = $this->response->documentElement;
