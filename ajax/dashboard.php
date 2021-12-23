@@ -44,7 +44,7 @@ $request_data = array_merge($_REQUEST, json_decode($_UREQUEST['data'] ?? '{}', t
 unset($request_data['data']);
 
 if (!isset($request_data['embed']) || !$request_data['embed']) {
-    Session::checkCentralAccess();
+    Session::checkLoginUser();
 } else if (
     !in_array($_REQUEST['action'], [
     'get_dashboard_items',
