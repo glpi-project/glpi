@@ -67,13 +67,13 @@ class PendingReasonCron extends CommonDBTM
         $config = Config::getConfigurationValues('core', ['system_user']);
 
         if (empty($config['system_user'])) {
-            trigger_error("Mising system_user config", E_USER_WARNING);
+            trigger_error("Missing system_user config", E_USER_WARNING);
             return 0;
         }
 
         $user = User::getById($config['system_user']);
         if (!$user) {
-            trigger_error("Mising system_user user", E_USER_WARNING);
+            trigger_error("Missing system_user user", E_USER_WARNING);
             return 0;
         }
 
