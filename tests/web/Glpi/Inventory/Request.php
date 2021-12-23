@@ -68,30 +68,39 @@ class Request extends \GLPITestCase
 
     public function testWrongHttpMethod()
     {
-        $res = $this->http_client->request(
-            'GET',
-            $this->base_uri . 'front/inventory.php',
-            [
-            'headers' => [
-               'Content-Type' => 'application/xml'
-            ]
-            ]
+        $this->exception(
+            function () {
+                $res = $this->http_client->request(
+                    'GET',
+                    $this->base_uri . 'front/inventory.php',
+                    [
+                        'headers' => [
+                            'Content-Type' => 'application/xml'
+                        ]
+                    ]
+                );
+                $this->checkResponse($res, '<ERROR>Method not allowed</ERROR>');
+            }
         );
-        $this->checkResponse($res, '<ERROR>Method not allowed</ERROR>');
+
     }
 
     public function testRequestInvalidContent()
     {
-        $res = $this->http_client->request(
-            'POST',
-            $this->base_uri . 'front/inventory.php',
-            [
-            'headers' => [
-               'Content-Type' => 'application/xml'
-            ]
-            ]
+        $this->exception(
+            function () {
+                $res = $this->http_client->request(
+                    'POST',
+                    $this->base_uri . 'front/inventory.php',
+                    [
+                        'headers' => [
+                            'Content-Type' => 'application/xml'
+                        ]
+                    ]
+                );
+                $this->checkResponse($res, '<ERROR>XML not well formed!</ERROR>');
+            }
         );
-        $this->checkResponse($res, '<ERROR>XML not well formed!</ERROR>');
     }
 
     public function testPrologRequest()
