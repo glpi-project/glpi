@@ -82,7 +82,6 @@ class Request extends \GLPITestCase
                 $this->checkResponse($res, '<ERROR>Method not allowed</ERROR>');
             }
         );
-
     }
 
     public function testRequestInvalidContent()
