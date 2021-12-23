@@ -312,20 +312,23 @@ abstract class AbstractRequest
     public function addError($message, $code = 500)
     {
         $this->error = true;
-        $this->http_repsonse_code = $code;
+        $this->http_response_code = $code;
+        $message = preg_replace(
+            '|\$ref\[file~2//.*/vendor/glpi-project/inventory_format/inventory.schema.json\]|',
+            '$ref[inventory.schema.json]',
+            $message
+        )
+        $this->addToResponse(['ERROR' => $message]);
+        /* Disable glpi agent native support for now
         if ($this->headers->hasHeader('GLPI-Agent-ID')) {
             $this->addToResponse([
             'status' => 'error',
-            'message' => preg_replace(
-                '|\$ref\[file~2//.*/vendor/glpi-project/inventory_format/inventory.schema.json\]|',
-                '$ref[inventory.schema.json]',
-                $message
-            ),
+            'message' => $message,
             'expiration' => self::DEFAULT_FREQUENCY
             ]);
         } else {
             $this->addToResponse(['ERROR' => $message]);
-        }
+        }*/
     }
 
    /**
