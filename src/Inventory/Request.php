@@ -157,7 +157,7 @@ class Request extends AbstractRequest
     */
     public function prolog($data)
     {
-        if ($this->headers->hasHeader('GLPI-Agent-ID')) {
+        /*if ($this->headers->hasHeader('GLPI-Agent-ID')) {
             $this->setMode(self::JSON_MODE);
             $response = [
               'expiration'  => self::DEFAULT_FREQUENCY,
@@ -168,7 +168,12 @@ class Request extends AbstractRequest
             'PROLOG_FREQ'  => self::DEFAULT_FREQUENCY,
             'RESPONSE'     => 'SEND'
             ];
-        }
+        }*/
+        $this->setMode(self::XML_MODE);
+        $response = [
+            'PROLOG_FREQ'  => self::DEFAULT_FREQUENCY,
+            'RESPONSE'     => 'SEND'
+        ];
 
         $hook_params = [
          'mode' => $this->getMode(),

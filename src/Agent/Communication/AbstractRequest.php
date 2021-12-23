@@ -207,6 +207,7 @@ abstract class AbstractRequest
        //load and check data
         switch ($this->mode) {
             case self::XML_MODE:
+            default: //for now, we consider XML as the default
                 return $this->handleXMLRequest($data);
             case self::JSON_MODE:
                 return $this->handleJSONRequest($data);
@@ -317,7 +318,7 @@ abstract class AbstractRequest
             '|\$ref\[file~2//.*/vendor/glpi-project/inventory_format/inventory.schema.json\]|',
             '$ref[inventory.schema.json]',
             $message
-        )
+        );
         $this->addToResponse(['ERROR' => $message]);
         /* Disable glpi agent native support for now
         if ($this->headers->hasHeader('GLPI-Agent-ID')) {
