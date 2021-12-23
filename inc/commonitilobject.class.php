@@ -1825,6 +1825,7 @@ abstract class CommonITILObject extends CommonDBTM {
                'actiontime'                  => $tasktemplate->fields['actiontime'],
                'state'                       => $tasktemplate->fields['state'],
                $this->getForeignKeyField()   => $this->fields['id'],
+               'date'                        => $this->fields['date'],
                'is_private'                  => $tasktemplate->fields['is_private'],
                'users_id_tech'               => $tasktemplate->fields['users_id_tech'],
                'groups_id_tech'              => $tasktemplate->fields['groups_id_tech'],
