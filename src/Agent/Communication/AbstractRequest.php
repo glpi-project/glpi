@@ -314,7 +314,7 @@ abstract class AbstractRequest
     {
         $this->error = true;
         $this->http_response_code = $code;
-        if ($code == 400 && preg_match('/not supported/', $message )) {
+        if ($code == 400 && preg_match('/not supported/', $message)) {
             $this->setMode(self::JSON_MODE);
             $this->addToResponse([
             'status' => 'error',
