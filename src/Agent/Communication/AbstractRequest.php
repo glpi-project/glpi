@@ -305,15 +305,23 @@ abstract class AbstractRequest
     /**
      * Adds an error
      *
-     * @param string $message Error message
+     * @param string  $message Error message
+     * @param integer $code    HTTP response code
      *
      * @return void
      */
     public function addError($message, $code = 500)
     {
         $this->error = true;
-        $this->http_repsonse_code = $code;
-        if ($this->headers->hasHeader('GLPI-Agent-ID')) {
+        $this->http_response_code = $code;
+        if ($code == 400 && preg_match('/not supported/', $message )) {
+            $this->setMode(self::JSON_MODE);
+            $this->addToResponse([
+            'status' => 'error',
+            'message' => $message,
+            'expiration' => self::DEFAULT_FREQUENCY
+            ]);
+        } else if ($this->headers->hasHeader('GLPI-Agent-ID')) {
             $this->addToResponse([
             'status' => 'error',
             'message' => preg_replace(
@@ -323,7 +331,7 @@ abstract class AbstractRequest
             ),
             'expiration' => self::DEFAULT_FREQUENCY
             ]);
-        } else {
+        } else if ($code != 405) { // No need to add content on 405 error
             $this->addToResponse(['ERROR' => $message]);
         }
     }
@@ -429,6 +437,10 @@ abstract class AbstractRequest
     */
     public function getResponse(): string
     {
+        if (!isset($this->response)) {
+            return null;
+        }
+
         if ($this->mode === null) {
             throw new \RuntimeException("Mode has not been set");
         }

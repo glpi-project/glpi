@@ -97,7 +97,6 @@ class Request extends AbstractRequest
             case self::DEPLOY_ACTION:
             case self::WOL_ACTION:
             default:
-                $this->addError("Query '$query' is not supported.", 400);
                 return false;
         }
         return true;
@@ -115,7 +114,6 @@ class Request extends AbstractRequest
                 return $this->handleInventoryTask();
             break;
             default:
-                $this->addError("Task '$task' is not supported.", 400);
                 return [];
         }
         return [];
