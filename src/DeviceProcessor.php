@@ -47,23 +47,38 @@ class DeviceProcessor extends CommonDevice
 
         return array_merge(
             parent::getAdditionalFields(),
-            [['name'  => 'frequency_default',
-                                     'label' => __('Frequency by default'),
-                                     'type'  => 'text',
-                                     'unit'  => __('MHz')],
-                               ['name'  => 'frequence',
-                                     'label' => __('Frequency'),
-                                     'type'  => 'text',
-                                     'unit'  => __('MHz')],
-                               ['name'  => 'nbcores_default',
-                                     'label' => __('Number of cores'),
-                                     'type'  => 'integer'],
-                               ['name'  => 'nbthreads_default',
-                                     'label' => __('Number of threads'),
-                                     'type'  => 'integer'],
-                               ['name'  => 'deviceprocessormodels_id',
-                                     'label' => _n('Model', 'Models', 1),
-                                     'type'  => 'dropdownValue']
+            [
+                [
+                    'name'  => 'frequency_default',
+                    'label' => __('Frequency by default'),
+                    'type'  => 'integer',
+                    'min'   => 0,
+                    'unit'  => __('MHz'),
+                ],
+                [
+                    'name'  => 'frequence',
+                    'label' => __('Frequency'),
+                    'type'  => 'integer',
+                    'min'   => 0,
+                    'unit'  => __('MHz'),
+                ],
+                [
+                    'name'  => 'nbcores_default',
+                    'label' => __('Number of cores'),
+                    'type'  => 'integer',
+                    'min'   => 0,
+                ],
+                [
+                    'name'  => 'nbthreads_default',
+                    'label' => __('Number of threads'),
+                    'type'  => 'integer',
+                    'min'   => 0,
+                ],
+                [
+                    'name'  => 'deviceprocessormodels_id',
+                    'label' => _n('Model', 'Models', 1),
+                    'type'  => 'dropdownValue',
+                ]
             ]
         );
     }

@@ -47,23 +47,36 @@ class DeviceHardDrive extends CommonDevice
 
         return array_merge(
             parent::getAdditionalFields(),
-            [['name'  => 'capacity_default',
-                                     'label' => __('Capacity by default'),
-                                     'type'  => 'text',
-                                     'unit'  => __('Mio')],
-                               ['name'  => 'rpm',
-                                     'label' => __('Rpm'),
-                                     'type'  => 'text'],
-                               ['name'  => 'cache',
-                                     'label' => __('Cache'),
-                                     'type'  => 'text',
-                                     'unit'  => __('Mio')],
-                               ['name'  => 'deviceharddrivemodels_id',
-                                     'label' => _n('Model', 'Models', 1),
-                                     'type'  => 'dropdownValue'],
-                               ['name'  => 'interfacetypes_id',
-                                     'label' => __('Interface'),
-            'type'  => 'dropdownValue']]
+            [
+                [
+                    'name'  => 'capacity_default',
+                    'label' => __('Capacity by default'),
+                    'type'  => 'integer',
+                    'min'   => 0,
+                    'unit'  => __('Mio')
+                ],
+                [
+                    'name'  => 'rpm',
+                    'label' => __('Rpm'),
+                    'type'  => 'text'
+                ],
+                [
+                    'name'  => 'cache',
+                    'label' => __('Cache'),
+                    'type'  => 'text',
+                    'unit'  => __('Mio')
+                ],
+                [
+                    'name'  => 'deviceharddrivemodels_id',
+                    'label' => _n('Model', 'Models', 1),
+                    'type'  => 'dropdownValue'
+                ],
+                [
+                    'name'  => 'interfacetypes_id',
+                    'label' => __('Interface'),
+                    'type'  => 'dropdownValue'
+                ]
+            ]
         );
     }
 
