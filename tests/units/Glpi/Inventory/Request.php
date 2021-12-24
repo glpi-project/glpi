@@ -154,7 +154,7 @@ class Request extends \GLPITestCase
         $request = new \Glpi\Inventory\Request();
         $request->handleContentType('application/xml');
        //to test nodes with attributes
-        $request->addResponse([
+        $request->addToResponse([
          'OPTION' => [
             'NAME' => 'NETDISCOVERY',
             'PARAM' => [
