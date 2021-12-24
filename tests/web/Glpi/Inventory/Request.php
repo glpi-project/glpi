@@ -78,7 +78,7 @@ class Request extends \GLPITestCase
             $res = $e->getResponse();
         }
         $this->integer($res->getStatusCode())->isIdenticalTo(405);
-        $this->integer(intval($res->getHeader('content-length')[0]))->isIdenticalTo(0);
+        $this->integer(strlen($res->getBody())->isIdenticalTo(0);
     }
 
     public function testUnsupportedLegacyRequest()
