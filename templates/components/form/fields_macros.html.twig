@@ -442,6 +442,27 @@
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
 {% endmacro %}
 
+{% macro dropdownLanguageField(name, value, label = '', options = {}) %}
+   {% set options = {'rand': random()}|merge(options) %}
+
+   {% if options.disabled %}
+      {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
+   {% endif %}
+   {% if options.fields_template.isMandatoryField(name) %}
+      {% set options = {'specific_tags': {'required': true}}|merge(options) %}
+   {% endif %}
+
+   {% set field %}
+      {% do call('Dropdown::showLanguages', [name, {
+         'value': value,
+         'rand': rand,
+         'width': '100%',
+      }|merge(options)]) %}
+   {% endset %}
+
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
+{% endmacro %}
+
 {% macro dropdownArrayField(name, value, elements, label = '', options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
 
