@@ -31,6 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 include('../inc/includes.php');
 
 $group = new Group();
@@ -63,10 +65,8 @@ if (isset($_SESSION["ldap_group_filter2"])) {
     unset($_SESSION["ldap_group_filter2"]);
 }
 
-echo "<div class='center'><table class='tab_cadre'>";
-echo "<tr><th>" . __('Bulk import groups from a LDAP directory') . "</th></tr>";
-echo "<tr class='tab_bg_1'><td class='center b'>" .
-     "<a href=\"ldap.group.import.php?next=servers\">" . __('Import of new groups') . "</a></td></tr>";
-echo "</table></div>";
+echo TemplateRenderer::getInstance()->render(
+    'pages/admin/ldap.groups.html.twig'
+);
 
 Html::footer();
