@@ -77,5 +77,7 @@ if (isset($_GET['refused'])) {
     foreach ($headers as $key => $value) {
         header(sprintf('%1$s: %2$s', $key, $value));
     }
-    echo $inventory_request->getResponse();
+    if ($inventory_request->getHttpResponseCode() != 405) {
+        echo $inventory_request->getResponse();
+    }
 }

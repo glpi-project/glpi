@@ -437,10 +437,6 @@ abstract class AbstractRequest
     */
     public function getResponse(): string
     {
-        if (!isset($this->response)) {
-            return null;
-        }
-
         if ($this->mode === null) {
             throw new \RuntimeException("Mode has not been set");
         }

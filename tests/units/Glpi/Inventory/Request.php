@@ -43,7 +43,13 @@ class Request extends \GLPITestCase
        //no mode
         $request = new \Glpi\Inventory\Request();
         $this->variable($request->getMode())->isNull();
-        $this->variable($request->getResponse())->isNull();
+        $this->exception(
+            function () use ($request) {
+                $this->variable($request->getResponse())->isNull();
+            }
+        )
+         ->isInstanceOf('\RuntimeException')
+         ->hasMessage('Mode has not been set');
 
         $this->exception(
             function () use ($request) {
@@ -141,13 +147,10 @@ class Request extends \GLPITestCase
         $request->handleContentType('application/xml');
         $request->addError('Something went wrong.');
         $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR>Something went wrong.</ERROR></REPLY>\n");
-    }
 
-    public function testAddResponse()
-    {
         $request = new \Glpi\Inventory\Request();
         $request->handleContentType('application/xml');
-       //to test nodes with attributes
+       //But test addResponse adding nodes with attributes
         $request->addResponse([
          'OPTION' => [
             'NAME' => 'NETDISCOVERY',
