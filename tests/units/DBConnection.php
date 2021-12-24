@@ -199,7 +199,7 @@ PHP
             'allow_datetime'           => true,
             'expected'                 => <<<'PHP'
 <?php
-class DB extends DBmysql {
+class DBSlave extends DBmysql {
    public $slave = true;
    public $dbhost = 'slave.db.domain.org';
    public $dbuser = 'glpi';
@@ -221,7 +221,7 @@ PHP
             'allow_datetime'           => false,
             'expected'                 => <<<'PHP'
 <?php
-class DB extends DBmysql {
+class DBSlave extends DBmysql {
    public $slave = true;
    public $dbhost = array (
   0 => 'slave1.db.domain.org',
@@ -251,7 +251,7 @@ PHP
             'allow_datetime'           => true,
             'expected'                 => <<<'PHP'
 <?php
-class DB extends DBmysql {
+class DBSlave extends DBmysql {
    public $slave = true;
    public $dbhost = '127.0.0.1';
    public $dbuser = 'root';
@@ -421,7 +421,7 @@ PHP
                ,
                'config_db_slave.php' => <<<PHP
 <?php
-class DB extends DBmysql {
+class DBSlave extends DBmysql {
    public \$dbhost      = 'slave.domain.org';
    public \$dbuser      = 'glpi';
    public \$dbdefault   = 'glpi';
@@ -448,7 +448,7 @@ PHP
                ,
                'config_db_slave.php' => <<<PHP
 <?php
-class DB extends DBmysql {
+class DBSlave extends DBmysql {
    public \$dbhost      = 'slave.domain.org';
    public \$dbuser      = 'glpi';
    public \$dbdefault   = 'glpi';
