@@ -343,7 +343,7 @@ abstract class AbstractRequest
     *
     * @return void
     */
-    protected function addToResponse(array $entries)
+    public function addToResponse(array $entries)
     {
         if ($this->mode === self::XML_MODE) {
             $root = $this->response->documentElement;
