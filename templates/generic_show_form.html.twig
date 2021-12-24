@@ -394,11 +394,23 @@
                      {% endif %}
 
                      {% if item.isField('is_global') %}
+                        {% set management_restrict = 0 %}
+                        {% if item_type == 'Monitor' %}
+                           {% set management_restrict = config('monitors_management_restrict') %}
+                        {% elseif item_type == 'Peripheral' %}
+                           {% set management_restrict = config('peripherals_management_restrict') %}
+                        {% elseif item_type == 'Phone' %}
+                           {% set management_restrict = config('phones_management_restrict') %}
+                        {% elseif item_type == 'Printer' %}
+                           {% set management_restrict = config('printers_management_restrict') %}
+                        {% else %}
+                           {% set management_restrict = 0 %}
+                        {% endif %}
                         {% set dd_globalswitch %}
                            {% do call('Dropdown::showGlobalSwitch', [item.fields['id'], {
                               'withtemplate': withtemplate,
                               'value': item.fields['is_global'],
-                              'management_restrict': config('monitors_management_restrict'),
+                              'management_restrict': management_restrict,
                               'target': target,
                               'width': '100%',
                            }]) %}
