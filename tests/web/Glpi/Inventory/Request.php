@@ -69,22 +69,28 @@ class Request extends \GLPITestCase
 
     public function testUnsupportedHttpMethod()
     {
-        $res = $this->http_client->request(
-            'GET',
-            $this->base_uri . 'front/inventory.php',
-            ]
-        );
+        try {
+            $res = $this->http_client->request(
+                'GET',
+                $this->base_uri . 'front/inventory.php'
+            );
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            $res = $e->getResponse();
+        }
         $this->integer($res->getStatusCode())->isIdenticalTo(405);
         $this->integer($res->getHeader('content-length'))->isIdenticalTo(0);
     }
 
     public function testUnsupportedLegacyRequest()
     {
-        $res = $this->http_client->request(
-            'GET',
-            $this->base_uri . 'front/inventory.php?action=getConfig',
-            ]
-        );
+        try {
+            $res = $this->http_client->request(
+                'GET',
+                $this->base_uri . 'front/inventory.php?action=getConfig'
+            );
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            $res = $e->getResponse();
+        }
         $this->integer($res->getStatusCode())->isIdenticalTo(400);
         $this->string((string)$res->getBody())
          ->isIdenticalTo("{\"status\":\"error\",\"message\":\"Protocol not supported\",\"expiration\":24}");
@@ -92,15 +98,19 @@ class Request extends \GLPITestCase
 
     public function testRequestInvalidContent()
     {
-        $res = $this->http_client->request(
-            'POST',
-            $this->base_uri . 'front/inventory.php',
-            [
-            'headers' => [
-               'Content-Type' => 'application/xml'
-            ]
-            ]
-        );
+        try {
+            $res = $this->http_client->request(
+                'POST',
+                $this->base_uri . 'front/inventory.php',
+                [
+                'headers' => [
+                   'Content-Type' => 'application/xml'
+                ]
+                ]
+            );
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            $res = $e->getResponse();
+        }
         $this->checkXmlResponse($res, '<ERROR>XML not well formed!</ERROR>', 400);
     }
 
