@@ -1513,7 +1513,7 @@ class Item_Devices extends CommonDBRelation
                             $out .= Html::input(
                                 $field,
                                 [
-                                'value' => $this->fields['name'],
+                                'value' => $value,
                                 'id'    => "textfield_$field$rand",
                                 'size'  => $attributs['size'],
                                 ]
