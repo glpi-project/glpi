@@ -1826,14 +1826,15 @@ class Entity extends CommonTreeDropdown
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Administrator reply-to email (if needed)') . "</td>";
+        echo "<td><label for='admin_reply'>" . __('Reply-to address') . "</label></td>";
         echo "<td>";
         echo Html::input('admin_reply', ['value' => $entity->fields['admin_reply']]);
         if (strlen($entity->fields['admin_reply']) == 0) {
             self::inheritedValue(self::getUsedConfig('admin_reply', $ID, '', ''));
         }
         echo "</td>";
-        echo "<td>" . __('Response address (if needed)') . "</td><td>";
+        echo "<td><label for='admin_reply_name'>" . __('Reply-to name') . "</label></td>";
+        echo "<td>";
         echo Html::input('admin_reply_name', ['value' => $entity->fields['admin_reply_name']]);
        // warning, we rely on email field to inherit name field
         if (strlen($entity->fields['admin_reply']) == 0) {
