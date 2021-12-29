@@ -672,7 +672,7 @@
       'mb': 'mb-3',
    }|merge(options) %}
 
-   {% set class = 'col-12 col-sm-6' %}
+   {% set class = options.field_class ?? 'col-12 col-sm-6' %}
    {% if options.full_width %}
       {% set class = 'col-12' %}
    {% endif %}
