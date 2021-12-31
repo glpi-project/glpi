@@ -3150,13 +3150,13 @@ JAVASCRIPT;
             $searchtype_name = "{$fieldname}{$prefix}[$num][searchtype]";
             echo "<div class='col-auto'>";
             $rands = Dropdown::showFromArray($searchtype_name, $actions, [
-            'value' => $request["searchtype"],
+                'value' => $request["searchtype"],
             ]);
             echo "</div>";
             $fieldsearch_id = Html::cleanId("dropdown_$searchtype_name$rands");
         }
 
-        echo "<div class='col-auto' id='$dropdownname'>";
+        echo "<div class='col-auto' id='$dropdownname' data-itemtype='{$request["itemtype"]}' data-fieldname='$fieldname' data-prefix='$prefix' data-num='$num'>";
         $params = [
          'value'       => rawurlencode(stripslashes($request['value'])),
          'searchopt'   => $searchopt,
