@@ -1328,23 +1328,24 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         global $DB;
 
         $criteria = [
-         'SELECT' => [
-            'glpi_knowbaseitems.*',
-            new QueryExpression(
-                'GROUP_CONCAT(DISTINCT ' . $DB->quoteName('glpi_knowbaseitemcategories.completename') . ') AS category'
-            ),
-            new QueryExpression(
-                'COUNT(' . $DB->quoteName('glpi_knowbaseitems_users.id') . ')' .
-                  ' + COUNT(' . $DB->quoteName('glpi_groups_knowbaseitems.id') . ')' .
-                  ' + COUNT(' . $DB->quoteName('glpi_knowbaseitems_profiles.id') . ')' .
-                  ' + COUNT(' . $DB->quoteName('glpi_entities_knowbaseitems.id') . ') AS ' .
-                  $DB->quoteName('visibility_count')
-            )
-         ],
-         'FROM'   => 'glpi_knowbaseitems',
-         'WHERE'     => [], //to be filled
-         'LEFT JOIN' => [], //to be filled
-         'GROUPBY'   => ['glpi_knowbaseitems.id']
+            'SELECT' => [
+                'glpi_knowbaseitems.*',
+                'glpi_knowbaseitems_knowbaseitemcategories.knowbaseitemcategories_id',
+                new QueryExpression(
+                    'GROUP_CONCAT(DISTINCT ' . $DB->quoteName('glpi_knowbaseitemcategories.completename') . ') AS category'
+                ),
+                new QueryExpression(
+                    'COUNT(' . $DB->quoteName('glpi_knowbaseitems_users.id') . ')' .
+                    ' + COUNT(' . $DB->quoteName('glpi_groups_knowbaseitems.id') . ')' .
+                    ' + COUNT(' . $DB->quoteName('glpi_knowbaseitems_profiles.id') . ')' .
+                    ' + COUNT(' . $DB->quoteName('glpi_entities_knowbaseitems.id') . ') AS ' .
+                    $DB->quoteName('visibility_count')
+                )
+            ],
+            'FROM'   => 'glpi_knowbaseitems',
+            'WHERE'     => [], //to be filled
+            'LEFT JOIN' => [], //to be filled
+            'GROUPBY'   => ['glpi_knowbaseitems.id']
         ];
 
        // Lists kb Items
