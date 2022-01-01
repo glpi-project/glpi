@@ -2924,16 +2924,16 @@
         },
         {
             "name": "scssphp/scssphp",
-            "version": "v1.8.1",
+            "version": "v1.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/scssphp/scssphp.git",
-                "reference": "5e37759a63caf54392a4b709358a39ac7425a69f"
+                "reference": "bc8bece4e5e176973a832f3763049ddbba16e6fd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/scssphp/scssphp/zipball/5e37759a63caf54392a4b709358a39ac7425a69f",
-                "reference": "5e37759a63caf54392a4b709358a39ac7425a69f",
+                "url": "https://api.github.com/repos/scssphp/scssphp/zipball/bc8bece4e5e176973a832f3763049ddbba16e6fd",
+                "reference": "bc8bece4e5e176973a832f3763049ddbba16e6fd",
                 "shasum": ""
             },
             "require": {
@@ -2992,9 +2992,9 @@
             ],
             "support": {
                 "issues": "https://github.com/scssphp/scssphp/issues",
-                "source": "https://github.com/scssphp/scssphp/tree/v1.8.1"
+                "source": "https://github.com/scssphp/scssphp/tree/v1.9.0"
             },
-            "time": "2021-09-18T21:20:53+00:00"
+            "time": "2021-12-13T11:55:16+00:00"
         },
         {
             "name": "sebastian/diff",
