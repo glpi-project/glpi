@@ -56,6 +56,13 @@ if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
     Html::header(__('Simplified interface'), '', $_SESSION["glpiname"], "helpdesk", "tracking");
 }
 
+if (isset($_POST['_actors']) && is_string($_POST['_actors'])) {
+    try {
+        $_POST['_actors'] = json_decode(stripslashes($_POST['_actors']), true, 512, JSON_THROW_ON_ERROR);
+    } catch (\JsonException $e) {
+        $_POST['_actors'] = [];
+    }
+}
 if (isset($_POST['add'])) {
     if (!$CFG_GLPI["use_anonymous_helpdesk"]) {
         $track->check(-1, CREATE, $_POST);
