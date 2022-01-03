@@ -4159,13 +4159,13 @@ JAVASCRIPT;
         }
 
         TemplateRenderer::getInstance()->display('components/itilobject/selfservice.html.twig', [
-         'nb_tic_to_validate' => TicketValidation::getNumberToValidate(Session::getLoginUserID()) > 0,
-         'url_validate'       => $url_validate,
-         'selfservice'        => true,
-         'item'               => $this,
-         'params'             => $options,
-         'itiltemplate'       => $tt,
-         'delegating'         => $delegating,
+         'has_tickets_to_validate' => TicketValidation::getNumberToValidate(Session::getLoginUserID()) > 0,
+         'url_validate'            => $url_validate,
+         'selfservice'             => true,
+         'item'                    => $this,
+         'params'                  => $options,
+         'itiltemplate'            => $tt,
+         'delegating'              => $delegating,
         ]);
     }
 

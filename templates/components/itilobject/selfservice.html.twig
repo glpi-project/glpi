@@ -47,9 +47,9 @@
 
 <div class="container-lg">
 
-   {% if nb_tic_to_validate > 0 %}
+   {% if has_tickets_to_validate and not url_validate is empty %}
       <div class="alert alert-warning" role="alert">
-      {{ __('There is some tickets awaiting approval') }} — <a href="{{ url_validate }}" class="alert-link">{{ __('check it out!') }}</a>
+      {{ __('There are some tickets awaiting approval') }} — <a href="{{ url_validate }}" class="alert-link">{{ __('check it out!') }}</a>
       </div>
    {% endif %}
 
