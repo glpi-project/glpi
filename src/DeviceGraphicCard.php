@@ -67,8 +67,8 @@ class DeviceGraphicCard extends CommonDevice
                 ],
                 [
                     'name'  => 'none',
-                    'label' => RegisteredID::getTypeName(Session::getPluralNumber()) . RegisteredID::showAddChildButtonForItemForm(
-                        $this, '_registeredID', null, false),
+                    'label' => RegisteredID::getTypeName(Session::getPluralNumber())
+                        . RegisteredID::showAddChildButtonForItemForm($this, '_registeredID', null, false),
                     'type'  => 'registeredIDChooser'
                 ],
                 [
