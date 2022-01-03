@@ -35,14 +35,21 @@
          <div class="col-md-8 ps-3 timeline-buttons">
             {% set default_action_data = timeline_itemtypes|first %}
             {% if item.isNotSolved() and default_action_data != false %}
-               <div class="btn-group me-2 main-actions" style="{{ load_kb_sol > 0 ? 'display:none;' : '' }}">
+               {% if timeline_itemtypes|length > 1 %}
+                  <div class="btn-group me-2 main-actions" style="{{ load_kb_sol > 0 ? 'display:none;' : '' }}">
+               {% else %}
+                  {# Don't use d-inline-flex class as it add an '!important' tag that mess with our javascript that will hide this div #}
+                  <div class="main-actions" style="display:inline-flex">
+               {% endif %}
                   <button class="btn btn-primary answer-action" data-bs-toggle="collapse" data-bs-target="#new-{{ default_action_data.class }}-block">
                      <i class="{{ default_action_data.icon }}"></i>
                      <span>{{ default_action_data.label }}</span>
                   </button>
-                  <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                     <span class="visually-hidden">{{ __('View other actions') }}</span>
-                  </button>
+                  {% if timeline_itemtypes|length > 1 %}
+                     <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="visually-hidden">{{ __('View other actions') }}</span>
+                     </button>
+                  {% endif %}
                   <ul class="dropdown-menu">
                      {% for action, timeline_itemtype in timeline_itemtypes %}
                         {% if loop.index0 > 0 %}
