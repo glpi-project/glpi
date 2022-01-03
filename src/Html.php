@@ -3744,6 +3744,10 @@ JS;
                         if ($('#$name').val() == '') {
                            alert(__('The description field is mandatory'));
                            e.preventDefault();
+
+                           // Prevent other events to run
+                           // Needed to not break single submit forms
+                           e.stopPropagation();
                         }
                      });
                      editor.on('keyup', function (e) {
@@ -3755,7 +3759,7 @@ JS;
                         }
                      });
                      editor.on('init', function (e) {
-                        if ($('#$name').val() == '') {
+                        if (strip_tags($('#$name').val()) == '') {
                            $(editor.container).addClass('required');
                         }
                      });
