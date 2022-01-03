@@ -1424,3 +1424,14 @@ $(document.body).on('submit', 'form[data-submit-once]', (e) => {
       blockFormSubmit(form, e);
    }
 });
+
+/**
+ * Strip html tags from a string
+ *
+ * @param {String} html_string
+ * @returns {String}
+ */
+function strip_tags(html_string) {
+   var dom = new DOMParser().parseFromString(html_string, 'text/html');
+   return dom.body.textContent;
+}
