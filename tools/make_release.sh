@@ -30,12 +30,36 @@
 #  * ---------------------------------------------------------------------
 # */
 
+# Extract options and args (see https://stackoverflow.com/a/14203146)
+ASSUME_YES=0;
+POSITIONAL_ARGS=()
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -y)
+            ASSUME_YES=1;
+            shift
+            ;;
+        -*|--*)
+            echo "Unknown option $1"
+            exit 1
+            ;;
+        *)
+            POSITIONAL_ARGS+=("$1")
+            shift
+            ;;
+    esac
+done
+set -- "${POSITIONAL_ARGS[@]}"
+
 # Check arguments
 if [ ! "$#" -eq 2 ]
 then
     echo "This script builds a release archive based on Git index of given directory."
     echo ""
-    echo "Usage $0 /path/to/glpi-git-dir release-name"
+    echo "Usage $0 [-y] /path/to/glpi-git-dir release-name"
+    echo ""
+    echo "Options:"
+    echo "y     Automatic yes to prompts; assume "yes" as answer to all prompts and run non-interactively."
     exit
 fi
 
@@ -46,15 +70,18 @@ TARBALL_PATH=/tmp/glpi-$RELEASE.tgz
 
 if [ ! -e $SOURCE_DIR ] || [ ! -e $SOURCE_DIR/.git ]
 then
- echo "$SOURCE_DIR is not a valid Git repository"
- exit
+    echo "$SOURCE_DIR is not a valid Git repository"
+    exit
 fi
 
-read -p "Are translations up to date? [Y/n] " -n 1 -r
-echo # (optional) move to a new line
-if [[ ! $REPLY =~ ^[Yy]$ ]]
+if [[ ! $ASSUME_YES = 1 ]]
 then
-    [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1 # handle exits from shell or function but don't exit interactive shell
+    read -p "Are translations up to date? [Y/n] " -n 1 -r
+    echo # (optional) move to a new line
+    if [[ ! $REPLY =~ ^[Yy]$ ]]
+    then
+        [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1 # handle exits from shell or function but don't exit interactive shell
+    fi
 fi
 
 echo "Copying to $WORKING_DIR directory"
@@ -63,6 +90,20 @@ then
     rm -rf $WORKING_DIR
 fi
 git --git-dir="$SOURCE_DIR/.git" checkout-index --all --force --prefix="$WORKING_DIR/glpi/"
+
+if [[ ! $ASSUME_YES = 1 ]]
+then
+    FOUND_VERSION=$(grep -Eo "define\('GLPI_VERSION', '[^']+'\);" $WORKING_DIR/glpi/inc/define.php | sed "s/define('GLPI_VERSION', '\([^)]*\)');/\1/")
+    if [[ ! "$RELEASE" = "$FOUND_VERSION" ]]
+    then
+        read -p "$RELEASE does not match version $FOUND_VERSION declared in inc/define.php. Do you want to continue? [Y/n] " -n 1 -r
+        echo # (optional) move to a new line
+        if [[ ! $REPLY =~ ^[Yy]$ ]]
+        then
+            [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1 # handle exits from shell or function but don't exit interactive shell
+        fi
+    fi
+fi
 
 echo "Building application"
 $WORKING_DIR/glpi/tools/build_glpi.sh

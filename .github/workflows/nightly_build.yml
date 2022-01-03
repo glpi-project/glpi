@@ -59,7 +59,7 @@ jobs:
       - name: "Build"
         if: ${{ steps.updated.outputs.build == 'yes' }}
         run: |
-          echo "Y" | docker exec --interactive ${{ job.services.app.id }} tools/make_release.sh . ${{ env.release_name }}
+          docker exec --interactive ${{ job.services.app.id }} tools/make_release.sh -y . ${{ env.release_name }}
           docker cp ${{ job.services.app.id }}:/tmp/glpi-${{ env.release_name }}.tgz ${{ github.workspace }}/${{ env.release_name }}.tar.gz
       - uses: actions/checkout@v2
         if: ${{ steps.updated.outputs.build == 'yes' }}
