@@ -46,6 +46,7 @@
       {% endif %}
    {% endset %}
 {% else %}
+   {% set field_options = field_options|merge({'center': true}) %}
    {% set status_field %}
       {{ item.getStatusIcon(item.fields['status'])|raw }}
       {{ item.getStatus(item.fields['status']) }}
