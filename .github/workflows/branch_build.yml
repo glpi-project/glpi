@@ -29,12 +29,12 @@ jobs:
           docker exec ${{ job.services.app.id }} composer install --optimize-autoloader --prefer-dist --no-interaction --no-progress --no-suggest
       - name: "Define release name"
         run: |
-          REF_NAME=$(echo ${{ matrix.branch }} | sed -E 's|/|-|')
+          REF_NAME=$(echo ${{ github.ref_name }} | sed -E 's|/|-|')
           SHA=$(git rev-parse --short HEAD)
           echo "release_name=$REF_NAME.$SHA" >> $GITHUB_ENV
       - name: "Build"
         run: |
-          echo "Y" | docker exec --interactive ${{ job.services.app.id }} tools/make_release.sh . ${{ env.release_name }}
+          docker exec --interactive ${{ job.services.app.id }} tools/make_release.sh -y . ${{ env.release_name }}
           docker cp ${{ job.services.app.id }}:/tmp/glpi-${{ env.release_name }}.tgz ${{ github.workspace }}/${{ env.release_name }}.tar.gz
       - name: "Store archive"
         uses: actions/upload-artifact@v2
