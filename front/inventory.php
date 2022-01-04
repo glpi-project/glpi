@@ -49,11 +49,13 @@ if (isset($_GET['refused'])) {
     if (isset($_GET['action']) && $_GET['action'] == 'getConfig') {
        /**
         * Even if Fusion protocol is not supported for getConfig requests, they
-        * should be handled and answered with a json
+        * should be handled and answered with a json content type
         */
+        $inventory_request->handleContentType('application/json');
         $inventory_request->addError('Protocol not supported', 400);
     } else {
-        $inventory_request->addError('Method not allowed', 405);
+        // Method not allowed answer without content
+        $inventory_request->addError(null, 405);
     }
     $handle = false;
 } else {

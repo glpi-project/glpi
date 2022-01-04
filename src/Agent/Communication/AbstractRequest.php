@@ -314,25 +314,20 @@ abstract class AbstractRequest
     {
         $this->error = true;
         $this->http_response_code = $code;
-        if ($code == 400 && preg_match('/not supported/', $message)) {
-            $this->setMode(self::JSON_MODE);
-            $this->addToResponse([
-            'status' => 'error',
-            'message' => $message,
-            'expiration' => self::DEFAULT_FREQUENCY
-            ]);
-        } else if ($this->headers->hasHeader('GLPI-Agent-ID')) {
-            $this->addToResponse([
-            'status' => 'error',
-            'message' => preg_replace(
-                '|\$ref\[file~2//.*/vendor/glpi-project/inventory_format/inventory.schema.json\]|',
-                '$ref[inventory.schema.json]',
-                $message
-            ),
-            'expiration' => self::DEFAULT_FREQUENCY
-            ]);
-        } else if ($code != 405) { // No need to add content on 405 error
-            $this->addToResponse(['ERROR' => $message]);
+        if (!empty($message)) {
+            if ($this->mode === self::JSON_MODE) {
+                $this->addToResponse([
+                'status' => 'error',
+                'message' => preg_replace(
+                    '|\$ref\[file~2//.*/vendor/glpi-project/inventory_format/inventory.schema.json\]|',
+                    '$ref[inventory.schema.json]',
+                    $message
+                ),
+                'expiration' => self::DEFAULT_FREQUENCY
+                ]);
+            } else {
+                $this->addToResponse(['ERROR' => $message]);
+            }
         }
     }
 
