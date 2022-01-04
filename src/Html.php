@@ -5757,7 +5757,7 @@ JAVASCRIPT
          var lastClicked = null;
          $('input[type=submit], button[type=submit]').click(function(e) {
             e = e || event;
-            lastClicked = e.target || e.srcElement;
+            lastClicked = e.currentTarget || e.srcElement;
          });
 
          $('$selector').on('submit', function(e) {
