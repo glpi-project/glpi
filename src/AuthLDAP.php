@@ -32,6 +32,7 @@
  */
 
 use Glpi\Application\ErrorHandler;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Toolbox\Sanitizer;
 
 /**
@@ -1424,13 +1425,13 @@ class AuthLDAP extends CommonDBTM
             $_SESSION[$filter_var] = $config_ldap->fields[$filter_name1];
         }
 
-        echo "<div class='center'>";
+        echo "<div class='card'>";
         echo "<form method='post' action='$target'>";
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='2'>" . ($users ? __('Search filter for users')
-                                           : __('Filter to search in groups')) . "</th></tr>";
+        echo "<table class='table card-table'>";
+        echo "<tr><td>" . ($users ? __('Search filter for users')
+                                           : __('Filter to search in groups')) . "</td>";
 
-        echo "<tr class='tab_bg_2'><td class='center'>";
+        echo "<td>";
         echo "<input type='text' name='ldap_filter' value='" . $_SESSION[$filter_var] . "' size='70'>";
        //Only display when looking for groups in users AND groups
         if (
@@ -1442,16 +1443,16 @@ class AuthLDAP extends CommonDBTM
             }
             echo "</td></tr>";
 
-            echo "<tr><th colspan='2'>" . __('Search filter for users') . "</th></tr>";
+            echo "<tr><td>" . __('Search filter for users') . "</td";
 
-            echo "<tr class='tab_bg_2'><td class='center'>";
+            echo "<td>";
             echo "<input type='text' name='ldap_filter2' value='" . $_SESSION["ldap_group_filter2"] . "'
                 size='70'></td></tr>";
         }
 
-        echo "<tr class='tab_bg_2'><td class='center'>";
+        echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
         echo "<input class=submit type='submit' name='change_ldap_filter' value=\"" .
-             _sx('button', 'Post') . "\"></td></tr>";
+            _sx('button', 'Search') . "\"></td></tr>";
         echo "</table>";
         Html::closeForm();
         echo "</div>";
@@ -2188,6 +2189,7 @@ class AuthLDAP extends CommonDBTM
             $numrows     = count($ldap_groups);
             $rand        = mt_rand();
             if ($numrows > 0) {
+                echo "<div class='card'>";
                 self::displaySizeLimitWarning($limitexceeded);
                 $parameters = '';
                 Html::printPager($start, $numrows, $target, $parameters);
@@ -2199,23 +2201,29 @@ class AuthLDAP extends CommonDBTM
                     array_splice($ldap_groups, 0, $start);
                 }
 
-                echo "<div class='center'>";
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-                $massiveactionparams
-                = ['num_displayed'
-                           => min($_SESSION['glpilist_limit'], count($ldap_groups)),
-                       'container'
-                           => 'mass' . __CLASS__ . $rand,
-                       'specific_actions'
-                           => [__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'import_group'
-                                       => _sx('button', 'Import')],
-                           'extraparams'
-                           => ['massive_action_fields' => ['dn', 'ldap_import_type',
-                                                                     'ldap_import_entities',
-                                                                     'ldap_import_recursive']]];
+                $massiveactionparams  = [
+                    'num_displayed' => min($_SESSION['glpilist_limit'], count($ldap_groups)),
+                    'container' => 'mass' . __CLASS__ . $rand,
+                    'specific_actions' => [
+                        __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'import_group'
+                                       => _sx('button', 'Import')
+                    ],
+                    'extraparams' => [
+                        'massive_action_fields' => [
+                            'dn',
+                            'ldap_import_type',
+                            'ldap_import_entities',
+                            'ldap_import_recursive'
+                        ]
+                    ]
+                ];
+                echo "<div class='ms-2 ps-1 d-flex mb-2'>";
                 Html::showMassiveActions($massiveactionparams);
+                echo "</div>";
 
-                echo "<table class='tab_cadre_fixe'>";
+                echo "<table class='table table-sm card-table'>";
+                echo "<thead>";
                 echo "<tr>";
                 echo "<th width='10'>";
                 Html::showCheckbox(['criterion' => ['tag_for_massive' => 'select_item']]);
@@ -2238,6 +2246,7 @@ class AuthLDAP extends CommonDBTM
                      echo "</th>";
                 }
                 echo "</tr>";
+                echo "</thead>";
 
                 $dn_index = 0;
                 foreach ($ldap_groups as $groupinfos) {
@@ -2245,7 +2254,7 @@ class AuthLDAP extends CommonDBTM
                     $group_dn    = $groupinfos["dn"];
                     $search_type = $groupinfos["search_type"];
 
-                    echo "<tr class='tab_bg_2 center'>";
+                    echo "<tr>";
                     echo "<td>";
                     echo Html::hidden("dn[$dn_index]", ['value'                 => $group_dn,
                                                         'data-glpicore-ma-tags' => 'common']);
@@ -2278,15 +2287,19 @@ class AuthLDAP extends CommonDBTM
                         echo Html::hidden("ldap_import_recursive[$dn_index]", ['value'                 => 0,
                                                                               'data-glpicore-ma-tags' => 'entities_id']);
                     }
-                    echo "</tr>\n";
+                    echo "</tr>";
                     $dn_index++;
                 }
+                echo "</table>";
 
                 $massiveactionparams['ontop'] = false;
+                echo "<div class='ms-2 ps-1 mt-2 d-flex'>";
                 Html::showMassiveActions($massiveactionparams);
-                Html::closeForm();
                 echo "</div>";
+
+                Html::closeForm();
                 Html::printPager($start, $numrows, $target, $parameters);
+                echo "</div>";
             } else {
                 echo "<div class='center b'>" . __('No group to be imported') . "</div>";
             }
@@ -2619,33 +2632,10 @@ class AuthLDAP extends CommonDBTM
             Html::redirect($_SERVER['PHP_SELF']);
         }
 
-        echo "<div class='center'>";
-        echo "<form action='$target' method=\"post\">";
-        echo "<p>" . __('Please choose LDAP directory to import users and groups from') . "</p>";
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr class='tab_bg_2'><th colspan='2'>" . __('LDAP directory choice') . "</th></tr>";
-
-       //If more than one ldap server
-        if (count($iterator) > 1) {
-            echo "<tr class='tab_bg_2'><td class='center'>" . __('Name') . "</td>";
-            echo "<td class='center'>";
-            AuthLDAP::Dropdown(['name'                => 'ldap_server',
-                             'display_emptychoice' => false,
-                             'comment'             => true,
-                             'condition'           => ['is_active' => 1]]);
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-            echo "<input class='btn btn-primary' type='submit' name='ldap_showusers' value=\"" .
-               _sx('button', 'Post') . "\"></td></tr>";
-        } else {
-           //No ldap server
-            echo "<tr class='tab_bg_2'>" .
-              "<td class='center' colspan='2'>" . __('No LDAP directory defined in GLPI') . "</td></tr>";
-        }
-        echo "</table>";
-        Html::closeForm();
-        echo "</div>";
+        echo TemplateRenderer::getInstance()->render('pages/admin/ldap.choose_directory.html.twig', [
+            'target'          => $target,
+            'nb_ldap_servers' => count($iterator),
+        ]);
     }
 
    /**

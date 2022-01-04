@@ -46,7 +46,7 @@ if (isset($_SESSION["ldap_sortorder"])) {
 AuthLDAP::manageValuesInSession([], true);
 
 echo TemplateRenderer::getInstance()->render(
-    'pages/admin/users_ldap.html.twig'
+    'pages/admin/ldap.users.html.twig'
 );
 
 Html::footer();
