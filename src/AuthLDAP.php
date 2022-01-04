@@ -437,17 +437,40 @@ class AuthLDAP extends CommonDBTM
             echo "<input type='text' id='basedn' name='basedn' size='100' value=\"" . $this->fields["basedn"] . "\" class='form-control'>";
             echo "</td></tr>";
 
-            echo "<tr class='tab_bg_1'><td><label for='rootdn'>" . __('RootDN (for non anonymous binds)') . "</label></td>";
+            echo "<tr class='tab_bg_1'><td><label for='use_bind'>";
+            echo __('Use Bind (for non-anonymous binds)') . "</label>&nbsp;";
+            Html::showToolTip(__("Allow to use RootDN and Password for non-anonymous binds."));
+            echo "</td>";
+            echo "<td colspan='3'>";
+            $rand_use_bind = mt_rand();
+            Dropdown::showYesNo('use_bind', $this->fields["use_bind"], -1, [
+                'rand' => $rand_use_bind
+            ]);
+            echo Html::scriptBlock("$(document).ready(function() {
+                $('#dropdown_use_bind$rand_use_bind').on('select2:select', function() {
+                    if ($(this).val() == 1) {
+                        $('#rootdn_block, #rootdn_passwd_block')
+                            .addClass('d-table-row')
+                            .removeClass('d-none');
+                    } else {
+                        $('#rootdn_block, #rootdn_passwd_block')
+                            .removeClass('d-table-row')
+                            .addClass('d-none');
+                    }
+                });
+            });");
+            echo "</td></tr>";
+
+            $rootdn_class = 'd-none';
+            if ($this->fields["use_bind"]) {
+                $rootdn_class = 'd-table-row';
+            }
+            echo "<tr class='tab_bg_1 $rootdn_class' id='rootdn_block'><td><label for='rootdn'>" . __('RootDN (for non anonymous binds)') . "</label></td>";
             echo "<td colspan='3'><input type='text' name='rootdn' id='rootdn' size='100' value=\"" .
                 $this->fields["rootdn"] . "\" class='form-control'>";
             echo "</td></tr>";
 
-            echo "<tr class='tab_bg_1'><td><label for='use_bind'>" . __('Use Bind') . "</label></td>";
-            echo "<td colspan='3'>";
-            Dropdown::showYesNo('use_bind', $this->fields["use_bind"]);
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'><td><label for='rootdn_passwd'>" .
+            echo "<tr class='tab_bg_1 $rootdn_class' id='rootdn_passwd_block'><td><label for='rootdn_passwd'>" .
             __('Password (for non-anonymous binds)') . "</label></td>";
             echo "<td><input type='password' id='rootdn_passwd' name='rootdn_passwd' value='' autocomplete='new-password' class='form-control'>";
             if ($ID) {
