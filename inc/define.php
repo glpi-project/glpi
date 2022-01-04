@@ -37,10 +37,10 @@ use Glpi\SocketModel;
 define('GLPI_VERSION', '10.0.0-dev');
 define(
     "GLPI_SCHEMA_VERSION",
-    GLPI_VERSION . '@' . (
+    GLPI_VERSION . (
         is_readable(GLPI_ROOT . '/install/mysql/glpi-empty.sql')
-        ? sha1_file(GLPI_ROOT . '/install/mysql/glpi-empty.sql')
-        : 'unnown'
+        ? '@' . sha1_file(GLPI_ROOT . '/install/mysql/glpi-empty.sql')
+        : ''
     )
 );
 

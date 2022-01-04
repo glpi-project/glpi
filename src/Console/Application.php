@@ -54,6 +54,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Toolbox;
+use Update;
 
 class Application extends BaseApplication
 {
@@ -232,25 +233,14 @@ class Application extends BaseApplication
 
         $begin_time = microtime(true);
 
-        if ($command instanceof GlpiCommandInterface && $command->requiresUpToDateDb()) {
-            $has_known_version = array_key_exists('dbversion', $this->config);
-            $can_check_version = is_readable(GLPI_ROOT . '/install/mysql/glpi-empty.sql');
-
-            if ($has_known_version && !$can_check_version) {
-                $msg = sprintf(
-                    'Databse schema file "%s" is not readable. Cannot check if GLPI installation is up-to-date.',
-                    GLPI_ROOT . '/install/mysql/glpi-empty.sql'
-                );
-                $output->writeln('<comment>' . $msg . '</comment>', OutputInterface::VERBOSITY_QUIET);
-            } elseif (!$has_known_version || (trim($this->config['dbversion']) != GLPI_SCHEMA_VERSION)) {
-                $output->writeln(
-                    '<error>'
-                    . __('The version of the database is not compatible with the version of the installed files. An update is necessary.')
-                    . '</error>',
-                    OutputInterface::VERBOSITY_QUIET
-                );
-                return self::ERROR_DB_OUTDATED;
-            }
+        if ($command instanceof GlpiCommandInterface && $command->requiresUpToDateDb() && !Update::isDbUpToDate()) {
+            $output->writeln(
+                '<error>'
+                . __('The version of the database is not compatible with the version of the installed files. An update is necessary.')
+                . '</error>',
+                OutputInterface::VERBOSITY_QUIET
+            );
+            return self::ERROR_DB_OUTDATED;
         }
 
         if (

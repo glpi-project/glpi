@@ -176,18 +176,7 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
         }
     }
     // Check version
-    $skip_version_checks = isset($_GET["donotcheckversion"]);
-    $has_known_version   = isset($CFG_GLPI['dbversion']);
-    $can_check_version   = is_readable(GLPI_ROOT . '/install/mysql/glpi-empty.sql');
-    if (!$skip_version_checks && $has_known_version && !$can_check_version) {
-        trigger_error(
-            sprintf(
-                'Databse schema file "%s" is not readable. Cannot check if GLPI installation is up-to-date.',
-                GLPI_ROOT . '/install/mysql/glpi-empty.sql'
-            ),
-            E_USER_WARNING
-        );
-    } elseif (!$skip_version_checks && (!$has_known_version || trim($CFG_GLPI["dbversion"]) != GLPI_SCHEMA_VERSION)) {
+    if (!isset($_GET["donotcheckversion"]) && !Update::isDbUpToDate()) {
         Session::loadLanguage('', false);
 
         if (isCommandLine()) {
