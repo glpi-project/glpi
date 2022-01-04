@@ -1633,7 +1633,7 @@ HTML;
    **/
     public static function footer($keepDB = false)
     {
-        global $CFG_GLPI, $FOOTER_LOADED, $TIMER_DEBUG, $PLUGIN_HOOKS;
+        global $CFG_GLPI, $FOOTER_LOADED, $PLUGIN_HOOKS;
 
        // If in modal : display popFooter
         if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
@@ -1649,9 +1649,7 @@ HTML;
         echo self::getCoreVariablesForJavascript(true);
 
         $tpl_vars = [
-         'execution_time'      => $TIMER_DEBUG->getTime(),
-         'memory_usage'        => memory_get_usage(),
-         'js_files'            => [],
+         'js_files' => [],
         ];
 
        // On demand scripts
@@ -1726,7 +1724,7 @@ HTML;
 
         self::displayDebugInfos();
 
-        if (!$keepDB) {
+        if (!$keepDB && function_exists('closeDBConnections')) {
             closeDBConnections();
         }
     }

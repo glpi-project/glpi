@@ -54,6 +54,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Toolbox;
+use Update;
 
 class Application extends BaseApplication
 {
@@ -232,14 +233,12 @@ class Application extends BaseApplication
 
         $begin_time = microtime(true);
 
-        if (
-            $command instanceof GlpiCommandInterface && $command->requiresUpToDateDb()
-            && (!array_key_exists('dbversion', $this->config) || (trim($this->config['dbversion']) != GLPI_SCHEMA_VERSION))
-        ) {
+        if ($command instanceof GlpiCommandInterface && $command->requiresUpToDateDb() && !Update::isDbUpToDate()) {
             $output->writeln(
                 '<error>'
                 . __('The version of the database is not compatible with the version of the installed files. An update is necessary.')
-                . '</error>'
+                . '</error>',
+                OutputInterface::VERBOSITY_QUIET
             );
             return self::ERROR_DB_OUTDATED;
         }

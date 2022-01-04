@@ -39,7 +39,7 @@ include('../inc/includes.php');
 header("Content-Type: application/json; charset=UTF-8");
 
 $is_cacheable = !isset($_GET['debug']);
-if (!isset($CFG_GLPI['dbversion']) || trim($CFG_GLPI['dbversion']) != GLPI_SCHEMA_VERSION) {
+if (!Update::isDbUpToDate()) {
    // Make sure to not cache if in the middle of a GLPI update
     $is_cacheable = false;
 }

@@ -1845,7 +1845,7 @@ final class DbUtils
         global $DB;
 
        // Case of not init $DB object
-        if (method_exists($DB, "close")) {
+        if ($DB !== null && method_exists($DB, "close")) {
             $DB->close();
         }
     }

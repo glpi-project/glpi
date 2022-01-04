@@ -138,7 +138,7 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
         $informations->addRow([__('GLPI database version'), $current_db_version, GLPI_SCHEMA_VERSION]);
         $informations->render();
 
-        if (version_compare($current_db_version, GLPI_SCHEMA_VERSION, 'eq') && !$force) {
+        if (Update::isDbUpToDate() && !$force) {
             $output->writeln('<info>' . __('No migration needed.') . '</info>');
             return 0;
         }

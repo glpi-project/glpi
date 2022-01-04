@@ -336,4 +336,30 @@ class Update
 
         return $migrations;
     }
+
+    /**
+     * Check if database is up-to-date.
+     *
+     * @return bool
+     */
+    public static function isDbUpToDate(): bool
+    {
+        global $CFG_GLPI;
+
+        if (!array_key_exists('dbversion', $CFG_GLPI)) {
+            return false; // Considered as outdated if installed version is unknown.
+        }
+
+        $installed_version = trim($CFG_GLPI['dbversion']);
+        $defined_version   = GLPI_SCHEMA_VERSION;
+
+        if (!str_contains($installed_version, '@') || !str_contains($defined_version, '@')) {
+            // Either installed or defined version is not containing schema hash.
+            // Hash is removed from both to do a simple version comparison.
+            $installed_version = preg_replace('/@.+$/', '', $installed_version);
+            $defined_version   = preg_replace('/@.+$/', '', $defined_version);
+        }
+
+        return $installed_version === $defined_version;
+    }
 }
