@@ -32,6 +32,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Plugin\Hooks;
 use Glpi\SocketModel;
 use Glpi\Toolbox\Sanitizer;
 
@@ -3887,7 +3888,7 @@ class Dropdown
                  'title'             => sprintf(__('%1$s - %2$s'), $text, $user['name']),
                  'itemtype'          => "User",
                  'items_id'          => $ID,
-                 'use_notification'  => strlen($user['default_email']) > 0 ? 1 : 0,
+                 'use_notification'  => strlen($user['default_email'] ?? "") > 0 ? 1 : 0,
                  'alternative_email' => $user['default_email'],
                 ];
             }
@@ -3968,6 +3969,14 @@ class Dropdown
                 }
             }
         }
+
+        // permits hooks to alter actors list
+        $hook_results = Plugin::doHookFunction(Hooks::FILTER_ACTORS, [
+            'actors' => $results,
+            'params' => $post,
+        ]);
+
+        $results = $hook_results['actors'] ?? [];
 
         $return = [
          'results' => $results,
