@@ -46,23 +46,25 @@ class DeviceBattery extends CommonDevice
         return array_merge(
             parent::getAdditionalFields(),
             [
-            [
-               'name'  => 'devicebatterytypes_id',
-               'label' => _n('Type', 'Types', 1),
-               'type'  => 'dropdownValue'
-            ],
-            [
-               'name'   => 'capacity',
-               'label'  => __('Capacity'),
-               'type'   => 'text',
-               'unit'   => __('mWh')
-            ],
-            [
-               'name'   => 'voltage',
-               'label'  => __('Voltage'),
-               'type'   => 'text',
-               'unit'   => __('mV')
-            ]
+                [
+                    'name'  => 'devicebatterytypes_id',
+                    'label' => _n('Type', 'Types', 1),
+                    'type'  => 'dropdownValue'
+                ],
+                [
+                    'name'   => 'capacity',
+                    'label'  => __('Capacity'),
+                    'type'   => 'integer',
+                    'min'    => 0,
+                    'unit'   => __('mWh')
+                ],
+                [
+                    'name'   => 'voltage',
+                    'label'  => __('Voltage'),
+                    'type'   => 'integer',
+                    'min'    => 0,
+                    'unit'   => __('mV')
+                ]
             ]
         );
     }

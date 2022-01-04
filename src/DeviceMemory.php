@@ -47,20 +47,31 @@ class DeviceMemory extends CommonDevice
 
         return array_merge(
             parent::getAdditionalFields(),
-            [['name'  => 'size_default',
-                                     'label' => __('Size by default'),
-                                     'type'  => 'text',
-                                     'unit'  => __('Mio')],
-                               ['name'  => 'frequence',
-                                     'label' => __('Frequency'),
-                                     'type'  => 'text',
-                                     'unit'  => __('MHz')],
-                               ['name'  => 'devicememorytypes_id',
-                                     'label' => _n('Type', 'Types', 1),
-                                     'type'  => 'dropdownValue'],
-                               ['name'  => 'devicememorymodels_id',
-                                     'label' => _n('Model', 'Models', 1),
-            'type'  => 'dropdownValue']]
+            [
+                [
+                    'name'  => 'size_default',
+                    'label' => __('Size by default'),
+                    'type'  => 'integer',
+                    'min'   => 0,
+                    'unit'  => __('Mio')
+                ],
+                [
+                    'name'  => 'frequence',
+                    'label' => __('Frequency'),
+                    'type'  => 'text',
+                    'unit'  => __('MHz')
+                ],
+                [
+                    'name'  => 'devicememorytypes_id',
+                    'label' => _n('Type', 'Types', 1),
+                    'type'  => 'dropdownValue'
+                ],
+                [
+                    'name'  => 'devicememorymodels_id',
+                    'label' => _n('Model', 'Models', 1),
+                    'type'  => 'dropdownValue'
+                ]
+            ]
         );
     }
 

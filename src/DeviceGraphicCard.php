@@ -47,28 +47,36 @@ class DeviceGraphicCard extends CommonDevice
 
         return array_merge(
             parent::getAdditionalFields(),
-            [['name'  => 'chipset',
-                                     'label' => __('Chipset'),
-                                     'type'  => 'text'],
-                               ['name'  => 'memory_default',
-                                     'label' => __('Memory by default'),
-                                     'type'  => 'text',
-                                     'unit'  => __('Mio')],
-                               ['name'  => 'interfacetypes_id',
-                                     'label' => __('Interface'),
-                                     'type'  => 'dropdownValue'],
-                               ['name'  => 'none',
-                                     'label' => RegisteredID::getTypeName(Session::getPluralNumber()) .
-                                        RegisteredID::showAddChildButtonForItemForm(
-                                            $this,
-                                            '_registeredID',
-                                            null,
-                                            false
-                                        ),
-                                     'type'  => 'registeredIDChooser'],
-                               ['name'  => 'devicegraphiccardmodels_id',
-                                     'label' => _n('Model', 'Models', 1),
-            'type'  => 'dropdownValue']]
+            [
+                [
+                    'name'  => 'chipset',
+                    'label' => __('Chipset'),
+                    'type'  => 'text'
+                ],
+                [
+                    'name'  => 'memory_default',
+                    'label' => __('Memory by default'),
+                    'type'  => 'integer',
+                    'min'  => 0,
+                    'unit'  => __('Mio')
+                ],
+                [
+                    'name'  => 'interfacetypes_id',
+                    'label' => __('Interface'),
+                    'type'  => 'dropdownValue'
+                ],
+                [
+                    'name'  => 'none',
+                    'label' => RegisteredID::getTypeName(Session::getPluralNumber())
+                        . RegisteredID::showAddChildButtonForItemForm($this, '_registeredID', null, false),
+                    'type'  => 'registeredIDChooser'
+                ],
+                [
+                    'name'  => 'devicegraphiccardmodels_id',
+                    'label' => _n('Model', 'Models', 1),
+                    'type'  => 'dropdownValue'
+                ]
+            ]
         );
     }
 

@@ -47,22 +47,23 @@ class DeviceSimcard extends CommonDevice
         return array_merge(
             parent::getAdditionalFields(),
             [
-            [
-               'name'  => 'devicesimcardtypes_id',
-               'label' => _n('Type', 'Types', 1),
-               'type'  => 'dropdownValue'
-            ],
-            [
-               'name'  => 'voltage',
-               'label' => __('Voltage'),
-               'type'  => 'text',
-               'unit'  => 'mV'
-            ],
-            [
-                  'name'  => 'allow_voip',
-                  'label' => __('Allow VOIP'),
-                  'type'  => 'bool'
-            ],
+                [
+                    'name'  => 'devicesimcardtypes_id',
+                    'label' => _n('Type', 'Types', 1),
+                    'type'  => 'dropdownValue'
+                ],
+                [
+                    'name'  => 'voltage',
+                    'label' => __('Voltage'),
+                    'type'  => 'integer',
+                    'min'   => 0,
+                    'unit'  => 'mV'
+                ],
+                [
+                    'name'  => 'allow_voip',
+                    'label' => __('Allow VOIP'),
+                    'type'  => 'bool'
+                ],
             ]
         );
     }
