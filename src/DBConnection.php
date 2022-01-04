@@ -274,7 +274,7 @@ class DBConnection extends CommonDBTM
             $properties[self::PROPERTY_ALLOW_DATETIME] = false;
         }
 
-        $config_str = '<?php' . "\n" . 'class DB extends DBmysql {' . "\n";
+        $config_str = '<?php' . "\n" . 'class DBSlave extends DBmysql {' . "\n";
         foreach ($properties as $name => $value) {
             $config_str .= sprintf('   public $%s = %s;', $name, var_export($value, true)) . "\n";
         }
