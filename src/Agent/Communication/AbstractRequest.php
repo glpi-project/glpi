@@ -318,11 +318,7 @@ abstract class AbstractRequest
             if ($this->mode === self::JSON_MODE) {
                 $this->addToResponse([
                 'status' => 'error',
-                'message' => preg_replace(
-                    '|\$ref\[file~2//.*/vendor/glpi-project/inventory_format/inventory.schema.json\]|',
-                    '$ref[inventory.schema.json]',
-                    $message
-                ),
+                'message' => $message,
                 'expiration' => self::DEFAULT_FREQUENCY
                 ]);
             } else {

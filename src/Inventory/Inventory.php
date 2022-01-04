@@ -133,7 +133,11 @@ class Inventory
         try {
             $converter->validate($data);
         } catch (\RuntimeException $e) {
-            $this->errors[] = $e->getMessage();
+            $this->errors[] = preg_replace(
+                '|\$ref\[file~2//.*/vendor/glpi-project/inventory_format/inventory.schema.json\]|',
+                '$ref[inventory.schema.json]',
+                $e->getMessage()
+            );
             return false;
         } finally {
             $this->raw_data = $data;
