@@ -3971,10 +3971,12 @@ class Dropdown
         }
 
         // permits hooks to alter actors list
-        $results = Plugin::doHookFunction(Hooks::FILTER_ACTORS, [
+        $hook_results = Plugin::doHookFunction(Hooks::FILTER_ACTORS, [
             'actors' => $results,
-            'params' => $post,
+            'input' => $post,
         ]);
+
+        $results = $hook_results['actors'] ?? [];
 
         $return = [
          'results' => $results,
