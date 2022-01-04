@@ -1821,7 +1821,7 @@ class AuthLDAP extends CommonDBTM
                   ]
                  ]
                 ];
-                $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
+                $sr = ldap_search($ds, $values['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
                 ldap_parse_result($ds, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls);
                 if (isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])) {
                     $cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'];
@@ -1829,7 +1829,7 @@ class AuthLDAP extends CommonDBTM
                     $cookie = '';
                 }
             } else {
-                $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs);
+                $sr = ldap_search($ds, $values['basedn'], $filter, $attrs);
             }
 
             if ($sr) {
@@ -2473,7 +2473,7 @@ class AuthLDAP extends CommonDBTM
                   ]
                 ]
                 ];
-                $sr = @ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
+                $sr = ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
                 ldap_parse_result($ldap_connection, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls);
                 if (isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])) {
                     $cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'];
@@ -2481,7 +2481,7 @@ class AuthLDAP extends CommonDBTM
                     $cookie = '';
                 }
             } else {
-                $sr = @ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter, $attrs);
+                $sr = ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter, $attrs);
             }
 
             if ($sr) {
@@ -3326,7 +3326,7 @@ class AuthLDAP extends CommonDBTM
             $filter = "(& $filter " . Sanitizer::unsanitize($values['condition']) . ")";
         }
 
-        if ($result = @ldap_search($ds, $values['basedn'], $filter, $ldap_parameters)) {
+        if ($result = ldap_search($ds, $values['basedn'], $filter, $ldap_parameters)) {
            //search has been done, let's check for found results
             $info = self::get_entries_clean($ds, $result);
 
