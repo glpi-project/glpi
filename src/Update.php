@@ -358,7 +358,6 @@ class Update
             // Hash is removed from both to do a simple version comparison.
             $installed_version = preg_replace('/@.+$/', '', $installed_version);
             $defined_version   = preg_replace('/@.+$/', '', $defined_version);
-            return version_compare($installed_version, $defined_version, 'eq');
         }
 
         return $installed_version === $defined_version;
