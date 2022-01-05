@@ -113,8 +113,18 @@ class Request extends AbstractRequest
         switch ($task) {
             case self::INVENT_TASK:
                 return $this->handleInventoryTask();
-            break;
+                break;
+            case self::NETDISCOVERY_TASK:
+            case self::NETINV_TASK:
+            case self::ESX_TASK:
+            case self::COLLECT_TASK:
+            case self::DEPLOY_TASK:
+            case self::WOL_TASK:
+            case self::REMOTEINV_TASK:
+               // Nothing to do when an agent is telling it supports these tasks
+                break;
             default:
+                $this->addError("Task '$task' is not supported.", 400);
                 return [];
         }
         return [];
