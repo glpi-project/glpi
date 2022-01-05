@@ -170,7 +170,7 @@ class InstallCommand extends AbstractConfigureCommand
         }
 
         if (!$this->isDbAlreadyConfigured() || $input->getOption('reconfigure')) {
-            $result = $this->configureDatabase($input, $output, false, true, false, false);
+            $result = $this->configureDatabase($input, $output, false, true, false, false, false);
 
             if (self::ABORTED_BY_USER === $result) {
                 return 0; // Considered as success

@@ -298,6 +298,7 @@ function step4($databasename, $newdatabasename)
                 false,
                 true,
                 false,
+                false,
                 false
             );
             if ($success) {
@@ -324,6 +325,7 @@ function step4($databasename, $newdatabasename)
                 false,
                 true,
                 false,
+                false,
                 false
             );
             if ($success) {
@@ -349,6 +351,7 @@ function step4($databasename, $newdatabasename)
                         $timezones_requirement->isValidated(),
                         false,
                         true,
+                        false,
                         false,
                         false
                     );

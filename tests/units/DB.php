@@ -465,96 +465,132 @@ OTHER EXPRESSION;"
     protected function tableOptionProvider(): iterable
     {
         yield [
-         'table_options' => '',
-         'extra_fields'  => '',
-         'db_properties' => [],
-         'warning'       => null,
+            'table_options' => '',
+            'extra_fields' => '',
+            'db_properties' => [],
+            'warning' => null
         ];
 
-       // Warnings related to MyISAM usage
+        // Warnings related to MyISAM usage
         $myisam_declarations = [
-         'engine=MyISAM',  // without ending `;`
-         'engine=MyISAM;', // with ending `;`
-         ' Engine =  myisam ', // mixed case
-         '   ENGINE  =    MYISAM  ', // uppercase with lots of spaces
-         " ENGINE = 'MyISAM'", // surrounded by quotes
-         "ROW_FORMAT=DYNAMIC ENGINE=MyISAM", // preceded by another option
-         "ENGINE=MyISAM ROW_FORMAT=DYNAMIC", // followed by another option
+            'engine=MyISAM', // without ending `;`
+            'engine=MyISAM;', // with ending `;`
+            ' Engine =  myisam ', // mixed case
+            '   ENGINE  =    MYISAM  ', // uppercase with lots of spaces
+            " ENGINE = 'MyISAM'", // surrounded by quotes
+            "ROW_FORMAT=DYNAMIC ENGINE=MyISAM", // preceded by another option
+            "ENGINE=MyISAM ROW_FORMAT=DYNAMIC" // followed by another option
         ];
 
         foreach ($myisam_declarations as $table_options) {
             yield [
-            'table_options' => $table_options,
-            'extra_fields'  => '',
-            'db_properties' => [
-               'allow_myisam' => true,
-            ],
-            'warning'       => null,
+                'table_options' => $table_options,
+                'extra_fields' => '',
+                'db_properties' => [
+                    'allow_myisam' => true
+                ],
+                'warning' => null
             ];
 
             yield [
-            'table_options' => $table_options,
-            'extra_fields'  => '',
-            'db_properties' => [
-               'allow_myisam' => false,
-            ],
-            'warning'       => 'Usage of "MyISAM" engine is discouraged, please use "InnoDB" engine.',
+                'table_options' => $table_options,
+                'extra_fields' => '',
+                'db_properties' => [
+                    'allow_myisam' => false
+                ],
+                'warning' => 'Usage of "MyISAM" engine is discouraged, please use "InnoDB" engine.'
             ];
         }
 
-       // Warnings related to datetime fields
+        // Warnings related to datetime fields
         yield [
-         'table_options' => '',
-         'extra_fields'  => '`date` datetime NOT NULL,',
-         'db_properties' => [
-            'allow_datetime' => true,
-         ],
-         'warning'       => null,
+            'table_options' => '',
+            'extra_fields' => '`date` datetime NOT NULL,',
+            'db_properties' => [
+                'allow_datetime' => true
+            ],
+            'warning' => null
         ];
         yield [
-         'table_options' => '',
-         'extra_fields'  => '`date` datetime NOT NULL,',
-         'db_properties' => [
-            'allow_datetime' => false,
-         ],
-         'warning'       => 'Usage of "DATETIME" fields is discouraged, please use "TIMESTAMP" fields instead.',
-        ];
-
-       // Warnings related to 'utf8mb4' usage when DB not yet migrated to 'utf8mb4'
-        yield [
-         'table_options' => 'ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci',
-         'extra_fields'  => '',
-         'db_properties' => [
-            'use_utf8mb4' => false,
-         ],
-         'warning'       => null,
-        ];
-        yield [
-         'table_options' => 'ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci',
-         'extra_fields'  => '',
-         'db_properties' => [
-            'use_utf8mb4' => false,
-         ],
-         'warning'       => 'Usage of "utf8mb4" charset/collation detected, should be "utf8"',
+            'table_options' => '',
+            'extra_fields' => '`date` datetime NOT NULL,',
+            'db_properties' => [
+                'allow_datetime' => false
+            ],
+            'warning' => 'Usage of "DATETIME" fields is discouraged, please use "TIMESTAMP" fields instead.'
         ];
 
-       // Warnings related to 'utf8' usage when DB has been migrated to 'utf8mb4'
+        // Warnings related to 'utf8mb4' usage when DB not yet migrated to 'utf8mb4'
         yield [
-         'table_options' => 'ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci',
-         'extra_fields'  => '',
-         'db_properties' => [
-            'use_utf8mb4' => true,
-         ],
-         'warning'       => 'Usage of "utf8" charset/collation detected, should be "utf8mb4"',
+            'table_options' => 'ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci',
+            'extra_fields' => '',
+            'db_properties' => [
+                'use_utf8mb4' => false
+            ],
+            'warning' => null
         ];
         yield [
-         'table_options' => 'ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci',
-         'extra_fields'  => '',
-         'db_properties' => [
-            'use_utf8mb4' => true,
-         ],
-         'warning'       => null,
+            'table_options' => 'ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci',
+            'extra_fields' => '',
+            'db_properties' => [
+                'use_utf8mb4' => false
+            ],
+            'warning' => 'Usage of "utf8mb4" charset/collation detected, should be "utf8"'
         ];
+
+        // Warnings related to 'utf8' usage when DB has been migrated to 'utf8mb4'
+        yield [
+            'table_options' => 'ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci',
+            'extra_fields' => '',
+            'db_properties' => [
+                'use_utf8mb4' => true
+            ],
+            'warning' => 'Usage of "utf8" charset/collation detected, should be "utf8mb4"'
+        ];
+        yield [
+            'table_options' => 'ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci',
+            'extra_fields' => '',
+            'db_properties' => [
+                'use_utf8mb4' => true
+            ],
+            'warning' => null
+        ];
+
+        // Warnings related to usage of signed integers in primary/foreign key fields.
+        $int_declarations = [
+            '`id` int NOT NULL AUTO_INCREMENT, PRIMARY KEY (`id`),' => true,
+            '`id` int unsigned NOT NULL AUTO_INCREMENT, PRIMARY KEY (`id`),' => false,
+            '`users_id` int DEFAULT NULL,' => true,
+            '`users_id` int unsigned DEFAULT NULL,' => false,
+            '`users_id_tech` int NOT NULL,' => true,
+            '`users_id_tech` int unsigned NOT NULL,' => false,
+            '`entities_id` int DEFAULT NULL,' => false, // declared in DBmysql::ALLOWED_SIGNED_KEYS
+            '`entities_id_default` int DEFAULT -1,' => false, // declared in DBmysql::ALLOWED_SIGNED_KEYS
+            'id int DEFAULT NULL,' => true, // field name without backticks
+            '`users_id`int         unsigned DEFAULT NULL,' => false, // uncommon whitespaces
+            '`unconventionnalid` int DEFAULT NULL,' => false, // not matching naming conventions
+            '`id_computer` int DEFAULT NULL,' => false, // not matching naming conventions
+        ];
+        foreach ($int_declarations as $int_declaration => $trigger_warning) {
+            yield [
+                'table_options' => '',
+                'extra_fields' => $int_declaration,
+                'db_properties' => [
+                    'allow_signed_keys' => true
+                ],
+                'warning' => null // No warning as we allow signed keys
+            ];
+            yield [
+                'table_options' => '',
+                'extra_fields' => $int_declaration,
+                'db_properties' => [
+                    'allow_signed_keys' => false
+                ],
+                'warning' => $trigger_warning
+                    ? 'Usage of signed integers in primary or foreign keys is discouraged, please use unsigned integers instead.'
+                    : null,
+            ];
+        }
     }
 
    /**
@@ -569,14 +605,12 @@ OTHER EXPRESSION;"
         $db = new \mock\DB();
 
         $create_query_template = <<<SQL
-         CREATE TABLE `%s` (
-            `id` int NOT NULL AUTO_INCREMENT,
-            `itemtype` varchar(100) NOT NULL,
-            `items_id` int NOT NULL DEFAULT '0',
-            %s
-            PRIMARY KEY (`id`)
-         )%s
-SQL;
+            CREATE TABLE `%s` (
+                `nameid` varchar(100) NOT NULL,
+                %s
+                UNIQUE KEY (`nameid`)
+            )%s
+        SQL;
         $drop_query_template = 'DROP TABLE `%s`';
 
         $db->log_deprecation_warnings = false; // Prevent deprecation warning from MySQL server

@@ -497,6 +497,11 @@ class Central extends CommonGLPI
                 . ' '
                 . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:utf8mb4');
             }
+            if (($signed_keys_col_count = $DB->getSignedKeysColumns()->count()) > 0) {
+                $messages['warnings'][] = sprintf(__('%d primary or foreign keys columns are using signed integers.'), $signed_keys_col_count)
+                . ' '
+                . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:unsigned_keys');
+            }
         }
 
         if ($DB->isSlave() && !$DB->first_connection) {

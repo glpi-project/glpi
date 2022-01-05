@@ -175,6 +175,14 @@ class DBmysql
     */
     public $allow_datetime = true;
 
+   /**
+    * Determine if signed integers in primary/foreign keys usage should be allowed for tables creation/altering operations.
+    * Defaults to true to keep backward compatibility with old DB.
+    *
+    * @var bool
+    */
+    public $allow_signed_keys = true;
+
 
    /** Is it a first connection ?
     * Indicates if the first connection attempt is successful or not
@@ -768,7 +776,7 @@ class DBmysql
 
 
     /**
-     * Returns columns that corresponds to signed primary/foreign keys.
+     * Returns columns that uses signed integers for primary/foreign keys.
      *
      * @return DBmysqlIterator
      *
@@ -1950,42 +1958,69 @@ class DBmysql
     */
     private function checkForDeprecatedTableOptions(string $query): void
     {
-        if (preg_match('/(ALTER|CREATE)\s+TABLE\s+/', $query) !== 1) {
+        $table_matches = [];
+        if (preg_match('/(ALTER|CREATE)\s+TABLE\s*(\s|`)(?<table>[^`\s]+)(\s|`)/i', $query, $table_matches) !== 1) {
             return;
         }
 
-       // Wrong UTF8 charset/collation
-        $matches = [];
-        if ($this->use_utf8mb4 && preg_match('/(?<invalid>(utf8(_[^\';\s]+)?))([\';\s]|$)/', $query, $matches)) {
+        // Wrong UTF8 charset/collation
+        $charset_matches = [];
+        if ($this->use_utf8mb4 && preg_match('/(?<invalid>(utf8(_[^\';\s]+)?))([\';\s]|$)/', $query, $charset_matches)) {
             trigger_error(
                 sprintf(
                     'Usage of "%s" charset/collation detected, should be "%s"',
-                    $matches['invalid'],
-                    str_replace('utf8', 'utf8mb4', $matches['invalid'])
+                    $charset_matches['invalid'],
+                    str_replace('utf8', 'utf8mb4', $charset_matches['invalid'])
                 ),
                 E_USER_WARNING
             );
-        } else if (!$this->use_utf8mb4 && preg_match('/(?<invalid>(utf8mb4(_[^\';\s]+)?))([\';\s]|$)/', $query, $matches)) {
+        } else if (!$this->use_utf8mb4 && preg_match('/(?<invalid>(utf8mb4(_[^\';\s]+)?))([\';\s]|$)/', $query, $charset_matches)) {
             trigger_error(
                 sprintf(
                     'Usage of "%s" charset/collation detected, should be "%s"',
-                    $matches['invalid'],
-                    str_replace('utf8mb4', 'utf8', $matches['invalid'])
+                    $charset_matches['invalid'],
+                    str_replace('utf8mb4', 'utf8', $charset_matches['invalid'])
                 ),
                 E_USER_WARNING
             );
         }
 
-       // Usage of MyISAM
-        $matches = [];
-        if (!$this->allow_myisam && preg_match('/[)\s]engine\s*=\s*\'?myisam([\';\s]|$)/i', $query, $matches)) {
+        // Usage of MyISAM
+        if (!$this->allow_myisam && preg_match('/[)\s]engine\s*=\s*\'?myisam([\';\s]|$)/i', $query)) {
             trigger_error('Usage of "MyISAM" engine is discouraged, please use "InnoDB" engine.', E_USER_WARNING);
         }
 
-       // Usage of datetime
-        $matches = [];
-        if (!$this->allow_datetime && preg_match('/ datetime /i', $query, $matches)) {
+        // Usage of datetime
+        if (!$this->allow_datetime && preg_match('/ datetime /i', $query)) {
             trigger_error('Usage of "DATETIME" fields is discouraged, please use "TIMESTAMP" fields instead.', E_USER_WARNING);
+        }
+
+        // Usage of signed integers in primary/foreign keys
+        $pattern = '/'
+            . '(\s|`)(?<field>id|[^`\s]+_id|[^`\s]+_id_[^`\s]+)(\s|`)' // `id`, `xxx_id` or `xxx_id_yyy` field
+            . '\s*'
+            . '(tiny|small|medium|big)?int' // with int type
+            . '(?!\s+unsigned)' // not unsigned
+            . '/i';
+        $field_matches = [];
+        if (!$this->allow_signed_keys && preg_match($pattern, $query, $field_matches)) {
+            $table = $table_matches['table'];
+            $field = $field_matches['field'];
+            $is_allowed = false;
+            foreach (self::ALLOWED_SIGNED_KEYS as $allowed_signed_key) {
+                list($excluded_table, $excluded_field) = explode('.', $allowed_signed_key);
+                $excluded_fkey = getForeignKeyFieldForTable($excluded_table);
+                if (
+                    ($table === $excluded_table && $field === $excluded_field)
+                    || preg_match('/' . $excluded_fkey . '(_.+)?/', $field)
+                ) {
+                    $is_allowed = true;
+                    break;
+                }
+            }
+            if (!$is_allowed) {
+                trigger_error('Usage of signed integers in primary or foreign keys is discouraged, please use unsigned integers instead.', E_USER_WARNING);
+            }
         }
     }
 
@@ -2017,6 +2052,11 @@ class DBmysql
         if ($this->getMyIsamTables(true)->count() === 0) {
            // Disallow MyISAM if there is no core table still using this engine.
             $config_flags[DBConnection::PROPERTY_ALLOW_MYISAM] = false;
+        }
+
+        if ($this->getSignedKeysColumns(true)->count() === 0) {
+           // Disallow MyISAM if there is no core table still using this engine.
+            $config_flags[DBConnection::PROPERTY_ALLOW_SIGNED_KEYS] = false;
         }
 
         return $config_flags;
