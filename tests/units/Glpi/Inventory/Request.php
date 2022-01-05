@@ -119,11 +119,11 @@ class Request extends \GLPITestCase
         return [
          ['query' => 'register'], //Request::REGISTER_ACTION
          ['query' => 'configuration'], //Request::CONFIG_ACTION
-         ['query' => 'ESX'], //Request::ESX_ACTION
-         ['query' => 'COLLECT'], //Request::COLLECT_ACTION
-         ['query' => 'DEPLOY'], //Request:: DEPLOY_ACTION
+         ['query' => 'esx'], //Request::ESX_ACTION
+         ['query' => 'collect'], //Request::COLLECT_ACTION
+         ['query' => 'deploy'], //Request:: DEPLOY_ACTION
          ['query' => 'wakeonlan'], //Request::WOL_ACTION
-         ['query' => 'UNKNOWN'],
+         ['query' => 'unknown'],
         ];
     }
 
