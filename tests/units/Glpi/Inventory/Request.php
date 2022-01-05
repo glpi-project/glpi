@@ -138,7 +138,8 @@ class Request extends \GLPITestCase
         $request = new \Glpi\Inventory\Request();
         $request->handleContentType('application/xml');
         $request->handleRequest($data);
-        $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY/>\n");
+        $this->integer($request->getStatusCode())->isIdenticalTo(501);
+        $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR>Query '$query' is not supported.</ERROR>\n");
     }
 
     public function testAddError()
