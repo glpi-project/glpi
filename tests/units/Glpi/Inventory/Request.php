@@ -139,7 +139,7 @@ class Request extends \GLPITestCase
         $request->handleContentType('application/xml');
         $request->handleRequest($data);
         $this->integer($request->getHttpResponseCode())->isIdenticalTo(501);
-        $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR>Query '$query' is not supported.</ERROR>\n");
+        $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR>Query '$query' is not supported.</ERROR></REPLY>\n");
     }
 
     public function testAddError()
