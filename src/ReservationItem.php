@@ -676,9 +676,13 @@ class ReservationItem extends CommonDBChild
                         );
                     }
                 }
-                echo "<td><a href='" . $itemtype::getFormURLWithId($row['items_id']) . "&forcetab=Reservation$1'>" .
-                sprintf(__('%1$s - %2$s'), $typename, $row["name"]) .
-                "</a></td>";
+                $item_link = sprintf(__('%1$s - %2$s'), $typename, $row["name"]);
+                if ($itemtype::canView()) {
+                    $item_link = "<a href='" . $itemtype::getFormURLWithId($row['items_id']) . "&forcetab=Reservation$1'>" .
+                        $item_link .
+                        "</a>";
+                }
+                echo "<td>$item_link</td>";
                 echo "<td>" . Dropdown::getDropdownName("glpi_locations", $row["location"]) . "</td>";
                 echo "<td>" . nl2br(($row["comment"] ?? "")) . "</td>";
                 if ($showentity) {
