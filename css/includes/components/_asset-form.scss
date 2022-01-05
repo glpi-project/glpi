@@ -67,3 +67,7 @@
       overflow-y: auto;
    }
 }
+
+#page > .asset {
+   margin-top: 15px; // Fix top of form when embedded in iframe (Usually positioned properly because of .tab-content)
+}
