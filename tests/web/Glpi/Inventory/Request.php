@@ -69,31 +69,26 @@ class Request extends \GLPITestCase
 
     public function testUnsupportedHttpMethod()
     {
-        try {
-            $res = $this->http_client->request(
-                'GET',
-                $this->base_uri . 'front/inventory.php'
-            );
-        } catch (\GuzzleHttp\Exception\RequestException $e) {
-            $res = $e->getResponse();
-        }
-        $this->integer($res->getStatusCode())->isIdenticalTo(405);
-        $this->integer(strlen($res->getBody()))->isIdenticalTo(0);
+        $this->exception(
+            function () {
+                $res = $this->http_client->request(
+                    'GET',
+                    $this->base_uri . 'front/inventory.php'
+                );
+            }
+        )->hasCode(405)->message->contains('405 Method Not Allowed');
     }
 
     public function testUnsupportedLegacyRequest()
     {
-        try {
-            $res = $this->http_client->request(
-                'GET',
-                $this->base_uri . 'front/inventory.php?action=getConfig'
-            );
-        } catch (\GuzzleHttp\Exception\RequestException $e) {
-            $res = $e->getResponse();
-        }
-        $this->integer($res->getStatusCode())->isIdenticalTo(400);
-        $this->string((string)$res->getBody())
-         ->isIdenticalTo("{\"status\":\"error\",\"message\":\"Protocol not supported\",\"expiration\":24}");
+        $this->exception(
+            function () {
+                $res = $this->http_client->request(
+                    'GET',
+                    $this->base_uri . 'front/inventory.php?action=getConfig'
+                );
+            }
+        )->hasCode(400)->message->contains('{"status":"error","message":"Protocol not supported","expiration":24}');
     }
 
     public function testRequestInvalidContent()
