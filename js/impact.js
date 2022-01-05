@@ -2659,7 +2659,7 @@ var GLPIImpact = {
             hit = true;
 
             if (trigger) {
-               var target = badgeHitboxDetails.target + "?is_deleted=0&as_map=0&search=Search&itemtype=Ticket";
+               var target = badgeHitboxDetails.target;
 
                // Add items_id criteria
                target += "&criteria[0][link]=AND&criteria[0][field]=13&criteria[0][searchtype]=contains&criteria[0][value]=" + badgeHitboxDetails.id;
