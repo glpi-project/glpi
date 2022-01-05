@@ -60,6 +60,16 @@ function update956to957() {
    }
    /* /Fix null `date` in ITIL tables */
 
+   /** Replace -1 values for glpi_events.items_id field */
+   $migration->addPostQuery(
+       $DB->buildUpdate(
+           'glpi_events',
+           ['items_id' => '0'],
+           ['items_id' => '-1', 'type' => 'system']
+       )
+   );
+   /** /Replace -1 values for items_id field */
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
