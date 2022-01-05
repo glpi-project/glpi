@@ -86,13 +86,13 @@ if (!$DB->tableExists('glpi_agents')) {
          KEY `is_recursive` (`is_recursive`),
          KEY `item` (`itemtype`,`items_id`),
          UNIQUE KEY `deviceid` (`deviceid`),
-         KEY `agenttypes_id` (`agenttypes_id`),
-         CONSTRAINT `agenttypes_id` FOREIGN KEY (`agenttypes_id`) REFERENCES `glpi_agenttypes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+         KEY `agenttypes_id` (`agenttypes_id`)
    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->queryOrDie($query, "10.0 add table glpi_agents");
 } else {
     $migration->dropKey('glpi_agents', 'items_id');
     $migration->dropKey('glpi_agents', 'itemtype');
+    $migration->dropForeignKeyContraint('glpi_agents', 'agenttypes_id');
     $migration->migrationOneTable('glpi_agents');
     $migration->addKey('glpi_agents', 'agenttypes_id');
     $migration->addKey('glpi_agents', 'entities_id');

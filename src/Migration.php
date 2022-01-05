@@ -621,6 +621,23 @@ class Migration
 
 
    /**
+    * Drop foreign key for migration
+    *
+    * @param string $table
+    * @param string $keyname
+    *
+    * @return void
+   **/
+    public function dropForeignKeyContraint($table, $keyname)
+    {
+
+        if (isForeignKeyContraint($table, $keyname)) {
+            $this->change[$table][] = "DROP FOREIGN KEY `$keyname`";
+        }
+    }
+
+
+   /**
     * Rename table for migration
     *
     * @param string $oldtable Old table name
