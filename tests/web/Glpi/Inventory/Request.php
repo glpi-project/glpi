@@ -98,20 +98,19 @@ class Request extends \GLPITestCase
 
     public function testRequestInvalidContent()
     {
-        try {
-            $res = $this->http_client->request(
-                'POST',
-                $this->base_uri . 'front/inventory.php',
-                [
-                'headers' => [
-                   'Content-Type' => 'application/xml'
-                ]
-                ]
-            );
-        } catch (\GuzzleHttp\Exception\RequestException $e) {
-            $res = $e->getResponse();
-        }
-        $this->checkXmlResponse($res, '<ERROR>XML not well formed!</ERROR>', 400);
+        $this->exception(
+            function () {
+                $res = $this->http_client->request(
+                    'POST',
+                    $this->base_uri . 'front/inventory.php',
+                    [
+                        'headers' => [
+                            'Content-Type' => 'application/xml'
+                        ]
+                    ]
+                );
+            }
+        )->hasCode(400)->message->contains('<ERROR>XML not well formed!</ERROR>');
     }
 
     public function testPrologRequest()
