@@ -1305,13 +1305,28 @@ class Impact extends CommonGLPI
             $new_node['link'] = $item->getLinkURL();
         }
 
-       // Set incident badge if needed
-        if (count($new_node['ITILObjects']['incidents'])) {
+        // Set incident badge if needed
+        $nb_incidents = count($new_node['ITILObjects']['incidents']);
+        $nb_problems = count($new_node['ITILObjects']['problems']);
+        if ($nb_incidents + $nb_problems > 0) {
             $priority = 0;
             foreach ($new_node['ITILObjects']['incidents'] as $incident) {
                 if ($priority < $incident['priority']) {
                     $priority = $incident['priority'];
                 }
+            }
+            foreach ($new_node['ITILObjects']['problems'] as $problem) {
+                if ($priority < $problem['priority']) {
+                    $priority = $problem['priority'];
+                }
+            }
+
+            if ($nb_problems && !$nb_incidents) {
+                // If at least one problems and zero incidents, link to problems search
+                $target = Problem::getSearchURL() . "?is_deleted=0&as_map=0&search=Search&itemtype=Problem";
+            } else {
+                // Link to tickets search
+                $target = Ticket::getSearchURL() . "?is_deleted=0&as_map=0&search=Search&itemtype=Ticket";
             }
 
             $user = new User();
@@ -1319,12 +1334,12 @@ class Impact extends CommonGLPI
             $user->computePreferences();
             $new_node['badge'] = [
             'color'  => $user->fields["priority_$priority"],
-            'count'  => count($new_node['ITILObjects']['incidents']),
-            'target' => Ticket::getSearchURL(),
+            'count'  => $nb_incidents + $nb_problems,
+            'target' => $target,
             ];
         }
 
-       // Alter the label if we found some linked ITILObjects
+        // Alter the label if we found some linked ITILObjects
         $itil_tickets_count = $new_node['ITILObjects']['count'];
         if ($itil_tickets_count > 0) {
             $new_node['label'] .= " ($itil_tickets_count)";
