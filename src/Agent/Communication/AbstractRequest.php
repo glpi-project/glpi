@@ -352,6 +352,8 @@ abstract class AbstractRequest
             foreach ($entries as $name => $content) {
                 if ($name == "message" && isset($this->response[$name])) {
                     $this->response[$name] .= ";$content";
+                } else if ($name == "disabled") {
+                    $this->response[$name][] = $content;
                 } else {
                     $this->response[$name] = $content;
                 }
