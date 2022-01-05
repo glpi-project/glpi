@@ -815,6 +815,120 @@ SQL
 DIFF
          ],
 
+         // signed/unsigned on primary/foreign keys should be ignored when using ignore_unsigned_keys_migration flag.
+         [
+            'proper_sql'     => <<<SQL
+CREATE TABLE `table` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `users_id` int unsigned NOT NULL,
+  `groups_id_tech` int unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL
+            ,
+            'effective_sql'  => <<<SQL
+CREATE TABLE `table` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `users_id` int NOT NULL,
+  `groups_id_tech` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL
+            ,
+            'version_string' => '10.2.36-MariaDB',
+            'args'           => [
+               'ignore_unsigned_keys_migration' => true,
+            ],
+            'expected_has'   => false,
+            'expected_diff'  => '',
+         ],
+         // signed/unsigned on primary/foreign keys should NOT be ignored when NOT using ignore_unsigned_keys_migration flag.
+         [
+            'proper_sql'     => <<<SQL
+CREATE TABLE `table` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `users_id` int unsigned NOT NULL,
+  `groups_id_tech` int unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL
+            ,
+            'effective_sql'  => <<<SQL
+CREATE TABLE `table` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `users_id` int NOT NULL,
+  `groups_id_tech` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL
+            ,
+            'version_string' => '10.2.36-MariaDB',
+            'args'           => [
+               'ignore_unsigned_keys_migration' => false,
+            ],
+            'expected_has'   => true,
+            'expected_diff'  => <<<DIFF
+--- Original
++++ New
+@@ @@
+ CREATE TABLE `table` (
+-  `id` int NOT NULL AUTO_INCREMENT,
++  `id` int unsigned NOT NULL AUTO_INCREMENT,
+   `name` varchar(255) NOT NULL,
+-  `users_id` int unsigned NOT NULL,
+-  `groups_id_tech` int unsigned DEFAULT NULL,
++  `users_id` int NOT NULL,
++  `groups_id_tech` int DEFAULT NULL,
+   PRIMARY KEY (`id`)
+ ) ENGINE=InnoDB
+
+DIFF,
+         ],
+
+         // signed/unsigned on something else than primary/foreign keys should NEVER be ignored.
+         [
+            'proper_sql'     => <<<SQL
+CREATE TABLE `table` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `uid` int unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL
+            ,
+            'effective_sql'  => <<<SQL
+CREATE TABLE `table` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `uid` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL
+            ,
+            'version_string' => '10.2.36-MariaDB',
+            'args'           => [
+               'ignore_unsigned_keys_migration' => true,
+            ],
+            'expected_has'   => true,
+            'expected_diff'  => <<<DIFF
+--- Original
++++ New
+@@ @@
+ CREATE TABLE `table` (
+   `id` int NOT NULL AUTO_INCREMENT,
+   `name` varchar(255) NOT NULL,
+-  `uid` int unsigned NOT NULL,
++  `uid` int NOT NULL,
+   PRIMARY KEY (`id`)
+ ) ENGINE=InnoDB
+
+DIFF,
+         ],
+
          // DB on MariaDB 10.2+ resuls should be normalized by:
          // - surrounding default numeric values by quotes;
          // - replacing current_timestamp() by CURRENT_TIMESTAMP;
@@ -883,7 +997,8 @@ SQL
             $args['ignore_innodb_migration'] ?? false,
             $args['ignore_timestamps_migration'] ?? false,
             $args['ignore_utf8mb4_migration'] ?? false,
-            $args['ignore_dynamic_row_format_migration'] ?? false
+            $args['ignore_dynamic_row_format_migration'] ?? false,
+            $args['ignore_unsigned_keys_migration'] ?? false
         );
 
         $this->boolean($this->testedInstance->hasDifferences('table', $proper_sql))->isEqualTo($expected_has);

@@ -43,7 +43,7 @@ $default_collation = DBConnection::getDefaultCollation();
 
 if (!$DB->tableExists('glpi_cabletypes')) {
     $query = "CREATE TABLE `glpi_cabletypes` (
-      `id` int NOT NULL AUTO_INCREMENT,
+      `id` int unsigned NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
       `comment` text,
       `date_mod` timestamp NULL DEFAULT NULL,
@@ -58,7 +58,7 @@ if (!$DB->tableExists('glpi_cabletypes')) {
 
 if (!$DB->tableExists('glpi_cablestrands')) {
     $query = "CREATE TABLE `glpi_cablestrands` (
-      `id` int NOT NULL AUTO_INCREMENT,
+      `id` int unsigned NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
       `comment` text,
       `date_mod` timestamp NULL DEFAULT NULL,
@@ -73,7 +73,7 @@ if (!$DB->tableExists('glpi_cablestrands')) {
 
 if (!$DB->tableExists('glpi_socketmodels')) {
     $query = "CREATE TABLE `glpi_socketmodels` (
-      `id` int NOT NULL AUTO_INCREMENT,
+      `id` int unsigned NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
       `comment` text,
       `date_mod` timestamp NULL DEFAULT NULL,
@@ -88,24 +88,24 @@ if (!$DB->tableExists('glpi_socketmodels')) {
 
 if (!$DB->tableExists('glpi_cables')) {
     $query = "CREATE TABLE `glpi_cables` (
-      `id` int NOT NULL AUTO_INCREMENT,
+      `id` int unsigned NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
       `entities_id` int NOT NULL DEFAULT '0',
       `is_recursive` tinyint NOT NULL DEFAULT '0',
       `itemtype_endpoint_a` varchar(255) DEFAULT NULL,
       `itemtype_endpoint_b` varchar(255) DEFAULT NULL,
-      `items_id_endpoint_a` int NOT NULL DEFAULT '0',
-      `items_id_endpoint_b` int NOT NULL DEFAULT '0',
-      `socketmodels_id_endpoint_a` int NOT NULL DEFAULT '0',
-      `socketmodels_id_endpoint_b` int NOT NULL DEFAULT '0',
-      `sockets_id_endpoint_a` int NOT NULL DEFAULT '0',
-      `sockets_id_endpoint_b` int NOT NULL DEFAULT '0',
-      `cablestrands_id` int NOT NULL DEFAULT '0',
+      `items_id_endpoint_a` int unsigned NOT NULL DEFAULT '0',
+      `items_id_endpoint_b` int unsigned NOT NULL DEFAULT '0',
+      `socketmodels_id_endpoint_a` int unsigned NOT NULL DEFAULT '0',
+      `socketmodels_id_endpoint_b` int unsigned NOT NULL DEFAULT '0',
+      `sockets_id_endpoint_a` int unsigned NOT NULL DEFAULT '0',
+      `sockets_id_endpoint_b` int unsigned NOT NULL DEFAULT '0',
+      `cablestrands_id` int unsigned NOT NULL DEFAULT '0',
       `color` varchar(255) DEFAULT NULL,
       `otherserial` varchar(255) DEFAULT NULL,
-      `states_id` int NOT NULL DEFAULT '0',
-      `users_id_tech` int NOT NULL DEFAULT '0',
-      `cabletypes_id` int NOT NULL DEFAULT '0',
+      `states_id` int unsigned NOT NULL DEFAULT '0',
+      `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+      `cabletypes_id` int unsigned NOT NULL DEFAULT '0',
       `comment` text,
       `date_mod` timestamp NULL DEFAULT NULL,
       `date_creation` timestamp NULL DEFAULT NULL,
@@ -140,15 +140,15 @@ if (!$DB->tableExists('glpi_cables')) {
 if (!$DB->tableExists('glpi_sockets')) {
    //create socket table
     $query = "CREATE TABLE `glpi_sockets` (
-      `id` int NOT NULL AUTO_INCREMENT,
+      `id` int unsigned NOT NULL AUTO_INCREMENT,
       `position` int NOT NULL DEFAULT '0',
-      `locations_id` int NOT NULL DEFAULT '0',
+      `locations_id` int unsigned NOT NULL DEFAULT '0',
       `name` varchar(255) DEFAULT NULL,
-      `socketmodels_id` int NOT NULL DEFAULT '0',
+      `socketmodels_id` int unsigned NOT NULL DEFAULT '0',
       `wiring_side` tinyint DEFAULT '1',
       `itemtype` varchar(255) DEFAULT NULL,
-      `items_id` int NOT NULL DEFAULT '0',
-      `networkports_id` int NOT NULL DEFAULT '0',
+      `items_id` int unsigned NOT NULL DEFAULT '0',
+      `networkports_id` int unsigned NOT NULL DEFAULT '0',
       `comment` text,
       `date_mod` timestamp NULL DEFAULT NULL,
       `date_creation` timestamp NULL DEFAULT NULL,
@@ -231,7 +231,7 @@ $migration->dropTable('glpi_netpoints');
 
 if (!$DB->tableExists('glpi_networkportfiberchanneltypes')) {
     $query = "CREATE TABLE `glpi_networkportfiberchanneltypes` (
-      `id` int NOT NULL AUTO_INCREMENT,
+      `id` int unsigned NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
       `comment` text,
       `date_mod` timestamp NULL DEFAULT NULL,
@@ -244,7 +244,7 @@ if (!$DB->tableExists('glpi_networkportfiberchanneltypes')) {
     $DB->queryOrDie($query, "10.0 add table glpi_networkportfiberchanneltypes");
 }
 
-$migration->addField('glpi_networkportfiberchannels', 'networkportfiberchanneltypes_id', 'int', ['after' => 'items_devicenetworkcards_id']);
+$migration->addField('glpi_networkportfiberchannels', 'networkportfiberchanneltypes_id', "int unsigned NOT NULL DEFAULT '0'", ['after' => 'items_devicenetworkcards_id']);
 $migration->addKey('glpi_networkportfiberchannels', 'networkportfiberchanneltypes_id', 'type');
 
 $DELFROMDISPLAYPREF['Socket'] = [5, 6, 9, 8, 7]; // Remove display prefs generated in GLPI 10.0.0-beta1

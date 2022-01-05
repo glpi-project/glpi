@@ -41,87 +41,97 @@ use SebastianBergmann\Diff\Differ;
  */
 class DatabaseSchemaIntegrityChecker
 {
-   /**
-    * DB instance.
-    *
-    * @var DBmysql
-    */
+    /**
+     * DB instance.
+     *
+     * @var DBmysql
+     */
     protected $db;
 
-   /**
-    * Do not check tokens related to "DYNAMIC" row format migration.
-    *
-    * @var bool
-    */
+    /**
+     * Do not check tokens related to "DYNAMIC" row format migration.
+     *
+     * @var bool
+     */
     protected $ignore_dynamic_row_format_migration;
 
-   /**
-    * Do not check tokens related to migration from "MyISAM" to "InnoDB".
-    *
-    * @var bool
-    */
+    /**
+     * Do not check tokens related to migration from "MyISAM" to "InnoDB".
+     *
+     * @var bool
+     */
     protected $ignore_innodb_migration;
 
-   /**
-    * Do not check tokens related to migration from "datetime" to "timestamp".
-    *
-    * @var bool
-    */
+    /**
+     * Do not check tokens related to migration from "datetime" to "timestamp".
+     *
+     * @var bool
+     */
     protected $ignore_timestamps_migration;
 
-   /**
-    * Do not check tokens related to migration from "utf8" to "utf8mb4".
-    *
-    * @var bool
-    */
+    /**
+     * Do not check tokens related to migration from signed to unsigned integers in primary/foreign keys.
+     *
+     * @var bool
+     */
+    protected $ignore_unsigned_keys_migration;
+
+    /**
+     * Do not check tokens related to migration from "utf8" to "utf8mb4".
+     *
+     * @var bool
+     */
     protected $ignore_utf8mb4_migration;
 
-   /**
-    * Ignore differences that has no effect on application (columns and keys order for instance).
-    *
-    * @var bool
-    */
+    /**
+     * Ignore differences that has no effect on application (columns and keys order for instance).
+     *
+     * @var bool
+     */
     protected $strict;
 
-   /**
-    * Local cache for normalized SQL.
-    *
-    * @var array
-    */
+    /**
+     * Local cache for normalized SQL.
+     *
+     * @var array
+     */
     private $normalized = [];
 
-   /**
-    * @param DBmysql $db                                 DB instance.
-    * @param bool $strict                                Ignore differences that has no effect on application (columns and keys order for instance).
-    * @param bool $ignore_innodb_migration               Do not check tokens related to migration from "MyISAM" to "InnoDB".
-    * @param bool $ignore_timestamps_migration           Do not check tokens related to migration from "datetime" to "timestamp".
-    * @param bool $ignore_utf8mb4_migration              Do not check tokens related to migration from "utf8" to "utf8mb4".
-    * @param bool $ignore_dynamic_row_format_migration   Do not check tokens related to "DYNAMIC" row format migration.
-    */
+    /**
+     * @param DBmysql $db                                 DB instance.
+     * @param bool $strict                                Ignore differences that has no effect on application (columns and keys order for instance).
+     * @param bool $ignore_innodb_migration               Do not check tokens related to migration from "MyISAM" to "InnoDB".
+     * @param bool $ignore_timestamps_migration           Do not check tokens related to migration from "datetime" to "timestamp".
+     * @param bool $ignore_utf8mb4_migration              Do not check tokens related to migration from "utf8" to "utf8mb4".
+     * @param bool $ignore_dynamic_row_format_migration   Do not check tokens related to "DYNAMIC" row format migration.
+     * @param bool $ignore_unsigned_keys_migration        Do not check tokens related to migration from signed to unsigned integers in primary/foreign keys.
+     */
     public function __construct(
         DBmysql $db,
         bool $strict = true,
         bool $ignore_innodb_migration = false,
         bool $ignore_timestamps_migration = false,
         bool $ignore_utf8mb4_migration = false,
-        bool $ignore_dynamic_row_format_migration = false
+        bool $ignore_dynamic_row_format_migration = false,
+        bool $ignore_unsigned_keys_migration = false
     ) {
         $this->db = $db;
         $this->strict = $strict;
         $this->ignore_dynamic_row_format_migration = $ignore_dynamic_row_format_migration;
         $this->ignore_innodb_migration = $ignore_innodb_migration;
         $this->ignore_timestamps_migration = $ignore_timestamps_migration;
+        $this->ignore_unsigned_keys_migration = $ignore_unsigned_keys_migration;
         $this->ignore_utf8mb4_migration = $ignore_utf8mb4_migration;
     }
 
-   /**
-    * Check is there is differences between effective table structure and proper structure contained in "CREATE TABLE" sql query.
-    *
-    * @param string $table_name
-    * @param string $proper_create_table_sql
-    *
-    * @return bool
-    */
+    /**
+     * Check is there is differences between effective table structure and proper structure contained in "CREATE TABLE" sql query.
+     *
+     * @param string $table_name
+     * @param string $proper_create_table_sql
+     *
+     * @return bool
+     */
     public function hasDifferences(string $table_name, string $proper_create_table_sql): bool
     {
         $effective_create_table_sql = $this->getEffectiveCreateTableSql($table_name);
@@ -132,14 +142,14 @@ class DatabaseSchemaIntegrityChecker
         return $proper_create_table_sql !== $effective_create_table_sql;
     }
 
-   /**
-    * Get diff between effective table structure and proper structure contained in "CREATE TABLE" sql query.
-    *
-    * @param string $table
-    * @param string $proper_create_table_sql
-    *
-    * @return string
-    */
+    /**
+     * Get diff between effective table structure and proper structure contained in "CREATE TABLE" sql query.
+     *
+     * @param string $table
+     * @param string $proper_create_table_sql
+     *
+     * @return string
+     */
     public function getDiff(string $table_name, string $proper_create_table_sql): string
     {
         $effective_create_table_sql = $this->getEffectiveCreateTableSql($table_name);
@@ -158,13 +168,13 @@ class DatabaseSchemaIntegrityChecker
         );
     }
 
-   /**
-    * Returns "CREATE TABLE" SQL returned by DB itself.
-    *
-    * @param string $table_name
-    *
-    * @return string
-    */
+    /**
+     * Returns "CREATE TABLE" SQL returned by DB itself.
+     *
+     * @param string $table_name
+     *
+     * @return string
+     */
     protected function getEffectiveCreateTableSql(string $table_name): string
     {
         if (($create_table_res = $this->db->query('SHOW CREATE TABLE ' . $this->db->quoteName($table_name))) === false) {
@@ -176,14 +186,14 @@ class DatabaseSchemaIntegrityChecker
         return $create_table_res->fetch_assoc()['Create Table'];
     }
 
-   /**
-    * Returns normalized SQL.
-    * Normalization replace/remove tokens that can reveal differences we do not want to see.
-    *
-    * @param string $create_table_sql
-    *
-    * @return string
-    */
+    /**
+     * Returns normalized SQL.
+     * Normalization replace/remove tokens that can reveal differences we do not want to see.
+     *
+     * @param string $create_table_sql
+     *
+     * @return string
+     */
     protected function getNomalizedSql(string $create_table_sql): string
     {
         $cache_key = md5($create_table_sql);
@@ -219,51 +229,54 @@ class DatabaseSchemaIntegrityChecker
         $db_server  = preg_match('/-MariaDB/', $db_version_string) ? 'MariaDB' : 'MySQL';
         $db_version = preg_replace('/^((\d+\.?)+).*$/', '$1', $db_version_string);
 
-       // Normalize columns definitions
+        // Normalize columns definitions
         if (!$this->strict) {
             sort($columns);
         }
         $column_replacements = [
-         // Remove comments
-         '/ COMMENT \'.+\'/i' => '',
-         // Remove integer display width
-         '/( (tiny|small|medium|big)?int)\(\d+\)/i' => '$1',
+            // Remove comments
+            '/ COMMENT \'.+\'/i' => '',
+            // Remove integer display width
+            '/( (tiny|small|medium|big)?int)\(\d+\)/i' => '$1',
         ];
         if ($db_server === 'MariaDB' && version_compare($db_version, '10.2', '>=')) {
-           // Add surrounding quotes on default numeric values (MySQL has quotes while MariaDB 10.2+ has not)
+            // Add surrounding quotes on default numeric values (MySQL has quotes while MariaDB 10.2+ has not)
             $column_replacements['/(DEFAULT) ([-|+]?\d+(\.\d+)?)/i'] = '$1 \'$2\'';
-           // Replace function current_timestamp() by CURRENT_TIMESTAMP (MySQL uses constant while MariaDB 10.2+ uses function)
+            // Replace function current_timestamp() by CURRENT_TIMESTAMP (MySQL uses constant while MariaDB 10.2+ uses function)
             $column_replacements['/current_timestamp\(\)/i'] = 'CURRENT_TIMESTAMP';
-           // Remove DEFAULT NULL on text fields (MySQL has not while MariaDB 10.2+ has)
+            // Remove DEFAULT NULL on text fields (MySQL has not while MariaDB 10.2+ has)
             $column_replacements['/( (medium|long)?(blob|text)[^,]*) DEFAULT NULL/i'] = '$1';
         }
         if ($this->ignore_timestamps_migration) {
             $column_replacements['/ timestamp( NULL)?/i'] = ' datetime';
         }
-       // Normalize utf8mb3 to utf8
+        // Normalize utf8mb3 to utf8
         $column_replacements['/utf8mb3/i'] = 'utf8';
         if ($this->ignore_utf8mb4_migration) {
             $column_replacements['/( CHARACTER SET (utf8|utf8mb4))? COLLATE (utf8_unicode_ci|utf8mb4_unicode_ci)/i'] = '';
         }
         if ($this->db->use_utf8mb4) {
-           // Remove default charset / collate
+            // Remove default charset / collate
             $column_replacements['/( CHARACTER SET utf8mb4)? COLLATE utf8mb4_unicode_ci/i'] = '';
-           // "text" fields were replaced by larger type during utf8mb4 migration.
-           // As is it not really possible to know if checked database has been modified by utf8mb4 migration
-           // or not, we normalize "mediumtext" and "longtext" fields to "text".
+            // "text" fields were replaced by larger type during utf8mb4 migration.
+            // As is it not really possible to know if checked database has been modified by utf8mb4 migration
+            // or not, we normalize "mediumtext" and "longtext" fields to "text".
             $column_replacements['/(medium|long)text/i'] = 'text';
         } else {
-           // Remove default charset / collate
+            // Remove default charset / collate
             $column_replacements['/( CHARACTER SET utf8)? COLLATE utf8_unicode_ci/i'] = '';
+        }
+        if ($this->ignore_unsigned_keys_migration) {
+            $column_replacements['/(`id`|`.+_id(_.+)?`) int unsigned/i'] = '$1 int';
         }
         $columns = preg_replace(array_keys($column_replacements), array_values($column_replacements), $columns);
 
-       // Normalize indexes definitions
+        // Normalize indexes definitions
         if (!$this->strict) {
             sort($indexes);
         }
 
-       // Normalize properties
+        // Normalize properties
         unset($properties['AUTO_INCREMENT']);
         unset($properties['COMMENT']);
         if ($this->ignore_dynamic_row_format_migration) {
@@ -276,14 +289,14 @@ class DatabaseSchemaIntegrityChecker
             || ($db_server === 'MariaDB' && version_compare($db_version, '10.2', '>='))
             )
         ) {
-           // MySQL 5.7+ and MariaDB 10.2+ does not ouput ROW_FORMAT when ROW_FORMAT has not been specified in creation query
-           // and so uses default value.
+            // MySQL 5.7+ and MariaDB 10.2+ does not ouput ROW_FORMAT when ROW_FORMAT has not been specified in creation query
+            // and so uses default value.
             unset($properties['ROW_FORMAT']);
         }
         if ($this->ignore_innodb_migration) {
             unset($properties['ENGINE']);
         }
-       // Normalize utf8mb3 to utf8
+        // Normalize utf8mb3 to utf8
         if (array_key_exists('DEFAULT CHARSET', $properties)) {
             $properties['DEFAULT CHARSET'] = str_replace('utf8mb3', 'utf8', $properties['DEFAULT CHARSET']);
         }
@@ -291,7 +304,7 @@ class DatabaseSchemaIntegrityChecker
             $properties['COLLATE'] = str_replace('utf8mb3', 'utf8', $properties['COLLATE']);
         }
         if ($this->ignore_utf8mb4_migration) {
-           // Remove non specific character set / collate
+            // Remove non specific character set / collate
             if (in_array($properties['DEFAULT CHARSET'] ?? '', ['utf8', 'utf8mb4'])) {
                 unset($properties['DEFAULT CHARSET']);
             }
@@ -301,7 +314,7 @@ class DatabaseSchemaIntegrityChecker
         }
         ksort($properties);
 
-       // Rebuild SQL
+        // Rebuild SQL
         $normalized_sql = "CREATE TABLE `{$table_name}` (\n";
         $definitions = array_merge($columns, $indexes);
         foreach ($definitions as $i => $definition) {
@@ -312,7 +325,7 @@ class DatabaseSchemaIntegrityChecker
             $normalized_sql .= ' ' . trim($key) . '=' . trim($value);
         }
 
-       // Store in local cache
+        // Store in local cache
         $this->normalized[$cache_key] = $normalized_sql;
 
         return $normalized_sql;

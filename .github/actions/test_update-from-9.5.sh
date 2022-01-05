@@ -15,8 +15,7 @@ bin/console glpi:migration:dynamic_row_format --config-dir=./tests/config --ansi
 
 # Execute update
 ## First run should do the migration (with no warnings).
-## TODO Remove the --force option when schema version will be updated in define.php
-bin/console glpi:database:update --config-dir=./tests/config --ansi --no-interaction --allow-unstable --force | tee $LOG_FILE
+bin/console glpi:database:update --config-dir=./tests/config --ansi --no-interaction --allow-unstable | tee $LOG_FILE
 if [[ -n $(grep "Warning\|No migration needed." $LOG_FILE) ]];
   then echo "bin/console glpi:database:update command FAILED" && exit 1;
 fi
@@ -26,7 +25,10 @@ if [[ -z $(grep "No migration needed." $LOG_FILE) ]];
   then echo "bin/console glpi:database:update command FAILED" && exit 1;
 fi
 ## Check DB
-bin/console glpi:database:check_schema_integrity --config-dir=./tests/config --ansi --no-interaction --ignore-utf8mb4-migration
+bin/console glpi:database:check_schema_integrity \
+  --config-dir=./tests/config --ansi --no-interaction \
+  --ignore-utf8mb4-migration \
+  --ignore-unsigned-keys-migration
 
 # Execute myisam_to_innodb migration
 ## First run should do nothing.
@@ -52,6 +54,22 @@ fi
 bin/console glpi:migration:utf8mb4 --config-dir=./tests/config --ansi --no-interaction | tee $LOG_FILE
 if [[ -z $(grep "No migration needed." $LOG_FILE) ]];
   then echo "bin/console glpi:migration:utf8mb4 command FAILED" && exit 1;
+fi
+# Check DB
+bin/console glpi:database:check_schema_integrity \
+  --config-dir=./tests/config --ansi --no-interaction \
+  --ignore-unsigned-keys-migration
+
+# Execute unsigned keys migration
+## First run should do the migration (with no warnings).
+bin/console glpi:migration:unsigned_keys --config-dir=./tests/config --ansi --no-interaction | tee $LOG_FILE
+if [[ -n $(grep "Warning\|No migration needed." $LOG_FILE) ]];
+  then echo "bin/console glpi:migration:unsigned_keys command FAILED" && exit 1;
+fi
+## Second run should do nothing.
+bin/console glpi:migration:unsigned_keys --config-dir=./tests/config --ansi --no-interaction | tee $LOG_FILE
+if [[ -z $(grep "No migration needed." $LOG_FILE) ]];
+  then echo "bin/console glpi:migration:unsigned_keys command FAILED" && exit 1;
 fi
 # Check DB
 bin/console glpi:database:check_schema_integrity --config-dir=./tests/config --ansi --no-interaction

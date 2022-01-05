@@ -42,6 +42,6 @@ if (!defined('GLPI_ROOT')) {
 
  /* Add `sourceof_items_id` to some glpi_tickettasks */
 if (!$DB->fieldExists('glpi_tickettasks', 'sourceof_items_id')) {
-    $migration->addField('glpi_tickettasks', 'sourceof_items_id', 'int', ['value' => 0]);
+    $migration->addField('glpi_tickettasks', 'sourceof_items_id', "int unsigned NOT NULL DEFAULT '0'", ['value' => 0]);
     $migration->addKey('glpi_tickettasks', 'sourceof_items_id');
 }

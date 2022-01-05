@@ -22,7 +22,11 @@ fi
 ## Check DB
 bin/console glpi:database:check_schema_integrity \
   --config-dir=./tests/config --ansi --no-interaction \
-  --ignore-innodb-migration --ignore-timestamps-migration --ignore-dynamic-row-format-migration --ignore-utf8mb4-migration
+  --ignore-innodb-migration \
+  --ignore-timestamps-migration \
+  --ignore-dynamic-row-format-migration \
+  --ignore-utf8mb4-migration \
+  --ignore-unsigned-keys-migration
 
 # Execute myisam_to_innodb migration
 ## First run should do the migration (with no warnings).
@@ -38,7 +42,10 @@ fi
 ## Check DB
 bin/console glpi:database:check_schema_integrity \
   --config-dir=./tests/config --ansi --no-interaction \
-  --ignore-timestamps-migration --ignore-dynamic-row-format-migration --ignore-utf8mb4-migration
+  --ignore-timestamps-migration \
+  --ignore-dynamic-row-format-migration \
+  --ignore-utf8mb4-migration \
+  --ignore-unsigned-keys-migration
 
 # Execute timestamps migration
 ## First run should do the migration (with no warnings).
@@ -54,13 +61,18 @@ fi
 ## Check DB
 bin/console glpi:database:check_schema_integrity \
   --config-dir=./tests/config --ansi --no-interaction \
-  --ignore-dynamic-row-format-migration --ignore-utf8mb4-migration
+  --ignore-dynamic-row-format-migration \
+  --ignore-utf8mb4-migration \
+  --ignore-unsigned-keys-migration
 
 # Execute dynamic_row_format migration
 ## Result will depend on DB server/version, we just expect that command will not fail.
 bin/console glpi:migration:dynamic_row_format --config-dir=./tests/config --ansi --no-interaction
 ## Check DB
-bin/console glpi:database:check_schema_integrity --config-dir=./tests/config --ansi --no-interaction --ignore-utf8mb4-migration
+bin/console glpi:database:check_schema_integrity \
+  --config-dir=./tests/config --ansi --no-interaction \
+  --ignore-utf8mb4-migration \
+  --ignore-unsigned-keys-migration
 
 # Execute utf8mb4 migration
 ## First run should do the migration (with no warnings).
@@ -74,6 +86,22 @@ if [[ -z $(grep "No migration needed." $LOG_FILE) ]];
   then echo "bin/console glpi:migration:utf8mb4 command FAILED" && exit 1;
 fi
 ## Check DB
+bin/console glpi:database:check_schema_integrity \
+  --config-dir=./tests/config --ansi --no-interaction \
+  --ignore-unsigned-keys-migration
+
+# Execute unsigned keys migration
+## First run should do the migration (with no warnings).
+bin/console glpi:migration:unsigned_keys --config-dir=./tests/config --ansi --no-interaction | tee $LOG_FILE
+if [[ -n $(grep "Warning\|No migration needed." $LOG_FILE) ]];
+  then echo "bin/console glpi:migration:unsigned_keys command FAILED" && exit 1;
+fi
+## Second run should do nothing.
+bin/console glpi:migration:unsigned_keys --config-dir=./tests/config --ansi --no-interaction | tee $LOG_FILE
+if [[ -z $(grep "No migration needed." $LOG_FILE) ]];
+  then echo "bin/console glpi:migration:unsigned_keys command FAILED" && exit 1;
+fi
+# Check DB
 bin/console glpi:database:check_schema_integrity --config-dir=./tests/config --ansi --no-interaction
 
 # Check updated data

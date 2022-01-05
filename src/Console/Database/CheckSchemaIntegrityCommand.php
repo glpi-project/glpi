@@ -103,6 +103,13 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
             InputOption::VALUE_NONE,
             __('Do not check tokens related to "DYNAMIC" row format migration.')
         );
+
+        $this->addOption(
+            'ignore-unsigned-keys-migration',
+            null,
+            InputOption::VALUE_NONE,
+            __('Do not check tokens related to migration from signed to unsigned integers in primary/foreign keys.')
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -114,7 +121,8 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
             $input->getOption('ignore-innodb-migration'),
             $input->getOption('ignore-timestamps-migration'),
             $input->getOption('ignore-utf8mb4-migration'),
-            $input->getOption('ignore-dynamic-row-format-migration')
+            $input->getOption('ignore-dynamic-row-format-migration'),
+            $input->getOption('ignore-unsigned-keys-migration')
         );
 
         if (

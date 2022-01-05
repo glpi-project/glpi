@@ -45,8 +45,8 @@ $default_collation = DBConnection::getDefaultCollation();
 
 if (!$DB->tableExists('glpi_tickets_contracts')) {
     $query = "CREATE TABLE `glpi_tickets_contracts` (
-      `id` int NOT NULL AUTO_INCREMENT,
-      `tickets_id` int NOT NULL DEFAULT '0',
+      `id` int unsigned NOT NULL AUTO_INCREMENT,
+      `tickets_id` int unsigned NOT NULL DEFAULT '0',
       `contracts_id` int NOT NULL DEFAULT '0',
       PRIMARY KEY (`id`),
       UNIQUE KEY `unicity` (`tickets_id`,`contracts_id`),
