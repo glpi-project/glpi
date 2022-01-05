@@ -79,9 +79,8 @@ class Request extends \GLPITestCase
                         ]
                     ]
                 );
-                $this->checkResponse($res, '<ERROR>Method not allowed</ERROR>');
             }
-        );
+        )->hasCode(405)->message->contains('<REPLY><ERROR>Method not allowed</ERROR></REPLY>');
     }
 
     public function testRequestInvalidContent()
@@ -97,9 +96,8 @@ class Request extends \GLPITestCase
                         ]
                     ]
                 );
-                $this->checkResponse($res, '<ERROR>XML not well formed!</ERROR>');
             }
-        );
+        )->hasCode(400)->message->contains('<ERROR>XML not well formed!</ERROR>');
     }
 
     public function testPrologRequest()
