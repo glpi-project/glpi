@@ -121,7 +121,8 @@ class Request extends AbstractRequest
             case self::DEPLOY_TASK:
             case self::WOL_TASK:
             case self::REMOTEINV_TASK:
-               // Nothing to do when an agent is telling it supports these tasks
+               // Task is not supported, just put information as message in response
+                $this->addToResponse(["message" => "$task task not supported"]);
                 break;
             default:
                 $this->addError("Task '$task' is not supported.", 400);

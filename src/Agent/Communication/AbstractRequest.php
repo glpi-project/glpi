@@ -349,7 +349,13 @@ abstract class AbstractRequest
                 $this->addNode($root, $name, $content);
             }
         } else {
-            $this->response = $entries;
+            foreach ($entries as $name => $content) {
+                if ($name == "message" && isset($this->response[$name])) {
+                    $this->response[$name] .= ";$content";
+                } else {
+                    $this->response[$name] = $content;
+                }
+            }
         }
     }
 
