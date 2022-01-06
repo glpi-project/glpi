@@ -264,21 +264,30 @@ class Agent extends CommonDBTM
             echo "<tr class='tab_bg_1'>";
             echo "<td>" . __('Network discovery threads') . "</td>";
             echo "<td>";
+            $general = __('General setup');
+            if (isset($CFG_GLPI['threads_networkdiscovery'])) {
+                $general .= sprintf(' (%1$s)', $CFG_GLPI['threads_networkdiscovery']);
+            }
             Dropdown::showNumber(
                 'threads_networkdiscovery',
                 [
-                'value' => $this->fields['threads_networkdiscovery'],
-                'toadd' => [__('General setup')]
+                    'value' => $this->fields['threads_networkdiscovery'],
+                    'toadd' => [$general],
+                    'min' => 1
                 ]
             );
             echo "</td>";
             echo "<td>" . __('Network discovery timeout') . "</td>";
             echo "<td>";
+            $general = __('General setup');
+            if (isset($CFG_GLPI['timeout_networkdiscovery'])) {
+                $general .= sprintf(' (%1$s)', $CFG_GLPI['timeout_networkdiscovery']);
+            }
             Dropdown::showNumber(
                 'timeout_networkdiscovery',
                 [
-                'value' => $this->fields['timeout_networkdiscovery'],
-                'toadd' => [__('General setup')]
+                    'value' => $this->fields['timeout_networkdiscovery'],
+                    'toadd' => [$general]
                 ]
             );
             echo "</td>";
@@ -287,21 +296,30 @@ class Agent extends CommonDBTM
             echo "<tr class='tab_bg_1'>";
             echo "<td>" . __('Network inventory threads') . "</td>";
             echo "<td>";
+            $general = __('General setup');
+            if (isset($CFG_GLPI['threads_networkinventory'])) {
+                $general .= sprintf(' (%1$s)', $CFG_GLPI['threads_networkinventory']);
+            }
             Dropdown::showNumber(
                 'threads_networkinventory',
                 [
-                'value' => $this->fields['threads_networkinventory'],
-                'toadd' => [__('General setup')]
+                    'value' => $this->fields['threads_networkinventory'],
+                    'toadd' => [$general],
+                    'min' => 1
                 ]
             );
             echo "</td>";
             echo "<td>" . __('Network inventory timeout') . "</td>";
             echo "<td>";
+            $general = __('General setup');
+            if (isset($CFG_GLPI['timeout_networkinventory'])) {
+                $general .= sprintf(' (%1$s)', $CFG_GLPI['timeout_networkinventory']);
+            }
             Dropdown::showNumber(
                 'timeout_networkinventory',
                 [
-                'value' => $this->fields['timeout_networkinventory'],
-                'toadd' => [__('General setup')]
+                    'value' => $this->fields['timeout_networkinventory'],
+                    'toadd' => [-1 => $general]
                 ]
             );
             echo "</td>";
@@ -351,8 +369,8 @@ class Agent extends CommonDBTM
 
         if ($deviceid === 'foo') {
             $input += [
-            'items_id' => 0,
-            'id' => 0
+                'items_id' => 0,
+                'id' => 0
             ];
             $this->fields = $input;
             return 0;
@@ -388,6 +406,19 @@ class Agent extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+        if (isset($CFG_GLPI['threads_networkdiscovery']) && !isset($input['threads_networkdiscovery'])) {
+            $input['threads_networkdiscovery'] = $CFG_GLPI['threads_networkdiscovery'];
+        }
+        if (isset($CFG_GLPI['threads_networkinventory']) && !isset($input['threads_networkinventory'])) {
+            $input['threads_networkinventory'] = $CFG_GLPI['threads_networkinventory'];
+        }
+        if (isset($CFG_GLPI['timeout_networkdiscovery']) && !isset($input['timeout_networkdiscovery'])) {
+            $input['timeout_networkdiscovery'] = $CFG_GLPI['timeout_networkdiscovery'];
+        }
+        if (isset($CFG_GLPI['timeout_networkinventory']) && !isset($input['timeout_networkinventory'])) {
+            $input['timeout_networkinventory'] = $CFG_GLPI['timeout_networkinventory'];
+        }
+
         return $this->prepareInputs($input);
     }
 
@@ -525,11 +556,11 @@ class Agent extends CommonDBTM
 
         $urls = [];
         foreach ($protocols as $protocol) {
-            foreach ($adresses as $adress) {
+            foreach ($adresses as $address) {
                 $urls[] = sprintf(
                     '%s://%s:%s',
                     $protocol,
-                    $adress,
+                    $address,
                     $port
                 );
             }
