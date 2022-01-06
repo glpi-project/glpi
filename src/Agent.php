@@ -266,7 +266,7 @@ class Agent extends CommonDBTM
             echo "<td>";
             $general = __('General setup');
             if (isset($CFG_GLPI['threads_networkdiscovery'])) {
-                $general .= sprintf(' (%1$s)', $CFG_GLPI['threads_networkdiscovery']);
+                $general = sprintf('%1$s (%2$s)', $general, $CFG_GLPI['threads_networkdiscovery']);
             }
             Dropdown::showNumber(
                 'threads_networkdiscovery',
@@ -281,7 +281,7 @@ class Agent extends CommonDBTM
             echo "<td>";
             $general = __('General setup');
             if (isset($CFG_GLPI['timeout_networkdiscovery'])) {
-                $general .= sprintf(' (%1$s)', $CFG_GLPI['timeout_networkdiscovery']);
+                $general = sprintf('%1$s (%2$s)', $general, $CFG_GLPI['timeout_networkdiscovery']);
             }
             Dropdown::showNumber(
                 'timeout_networkdiscovery',
@@ -298,7 +298,7 @@ class Agent extends CommonDBTM
             echo "<td>";
             $general = __('General setup');
             if (isset($CFG_GLPI['threads_networkinventory'])) {
-                $general .= sprintf(' (%1$s)', $CFG_GLPI['threads_networkinventory']);
+                $general = sprintf('%1$s (%2$s)', $general, $CFG_GLPI['threads_networkinventory']);
             }
             Dropdown::showNumber(
                 'threads_networkinventory',
@@ -313,7 +313,7 @@ class Agent extends CommonDBTM
             echo "<td>";
             $general = __('General setup');
             if (isset($CFG_GLPI['timeout_networkinventory'])) {
-                $general .= sprintf(' (%1$s)', $CFG_GLPI['timeout_networkinventory']);
+                $general = sprintf('%1$s (%2$s)', $general, $CFG_GLPI['timeout_networkinventory']);
             }
             Dropdown::showNumber(
                 'timeout_networkinventory',
