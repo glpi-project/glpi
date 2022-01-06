@@ -565,7 +565,7 @@ function loadDataset()
             'items_id'              => '_test_pc21',
             'itemtype'              => 'Computer',
          ]
-      ], 'devicesimcard' => [
+      ], 'DeviceSimcard' => [
          [
             'designation'         => '_test_simcard_1',
             'entities_id'         => '_test_root_entity',
