@@ -345,6 +345,11 @@
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
 
+{% macro emailField(name, value, label = '', options = {}) %}
+   {% set options = {'type': 'email'}|merge(options) %}
+   {{ _self.textField(name, value, label, options) }}
+{% endmacro %}
+
 {% macro fileField(name, value, label = '', options = {}) %}
    {% set options = {
       'rand': random(),
