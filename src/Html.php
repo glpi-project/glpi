@@ -1360,8 +1360,8 @@ HTML;
         global $CFG_GLPI;
 
         $can_read_dashboard      = Session::haveRight('dashboard', READ);
-        $default_asset_dashboard = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('assets');
-        $default_asset_helpdesk  = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('helpdesk');
+        $default_asset_dashboard = defined('TU_USER') ? "" : Glpi\Dashboard\Grid::getDefaultDashboardForMenu('assets');
+        $default_asset_helpdesk  = defined('TU_USER') ? "" : Glpi\Dashboard\Grid::getDefaultDashboardForMenu('helpdesk');
 
         $menu = [
             'assets' => [
