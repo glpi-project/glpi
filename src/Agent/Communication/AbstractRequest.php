@@ -319,7 +319,9 @@ abstract class AbstractRequest
      */
     public function addError($message, $code = 500)
     {
-        $this->error = true;
+        if ($code >= 400) {
+            $this->error = true;
+        }
         $this->http_response_code = $code;
         if (!empty($message)) {
             if ($this->mode === self::JSON_MODE) {
