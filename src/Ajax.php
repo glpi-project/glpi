@@ -326,7 +326,6 @@ JAVASCRIPT;
             $display_class = "";
             if (
                 is_a($type, CommonDBTM::class, true)
-                && $type::isNewId($ID)
                 && count($tabs) == 1
             ) {
                 $display_class = "d-none";
