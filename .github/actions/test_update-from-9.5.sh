@@ -6,12 +6,7 @@ mkdir -p $(dirname "$LOG_FILE")
 bin/console glpi:database:configure \
   --config-dir=./tests/config --no-interaction --ansi \
   --reconfigure --db-name=glpitest-9.5.3 --db-host=db --db-user=root \
-  --log-deprecation-warnings
-
-# Force ROW_FORMAT=DYNAMIC to prevent tests MySQL 5.6 and MariaDB 10.1 databases
-# failure on indexes creation for varchar(255) fields.
-## Result will depend on DB server/version, we just expect that command will not fail.
-bin/console glpi:migration:dynamic_row_format --config-dir=./tests/config --ansi --no-interaction
+  --strict-configuration
 
 # Execute update
 ## First run should do the migration (with no warnings).
@@ -27,6 +22,7 @@ fi
 ## Check DB
 bin/console glpi:database:check_schema_integrity \
   --config-dir=./tests/config --ansi --no-interaction \
+  --ignore-dynamic-row-format-migration \
   --ignore-utf8mb4-migration \
   --ignore-unsigned-keys-migration
 
@@ -43,6 +39,15 @@ bin/console glpi:migration:timestamps --config-dir=./tests/config --ansi --no-in
 if [[ -z $(grep "No migration needed." $LOG_FILE) ]];
   then echo "bin/console glpi:migration:timestamps command FAILED" && exit 1;
 fi
+
+# Execute dynamic_row_format migration
+## Result will depend on DB server/version, we just expect that command will not fail.
+bin/console glpi:migration:dynamic_row_format --config-dir=./tests/config --ansi --no-interaction
+## Check DB
+bin/console glpi:database:check_schema_integrity \
+  --config-dir=./tests/config --ansi --no-interaction \
+  --ignore-utf8mb4-migration \
+  --ignore-unsigned-keys-migration
 
 # Execute utf8mb4 migration
 ## First run should do the migration (with no warnings).
@@ -78,6 +83,6 @@ bin/console glpi:database:check_schema_integrity --config-dir=./tests/config --a
 bin/console glpi:database:configure \
   --config-dir=./tests/config --no-interaction --ansi \
   --reconfigure --db-name=glpi --db-host=db --db-user=root \
-  --log-deprecation-warnings
+  --strict-configuration
 mkdir -p ./tests/files/_cache
 tests/bin/test-updated-data --host=db --user=root --fresh-db=glpi --updated-db=glpitest-9.5.3 --ansi --no-interaction

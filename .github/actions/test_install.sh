@@ -8,7 +8,7 @@ bin/console glpi:database:install \
   --config-dir=./tests/config --ansi --no-interaction \
   --force \
   --reconfigure --db-name=glpi --db-host=db --db-user=root \
-  --log-deprecation-warnings \
+  --strict-configuration \
   | tee $LOG_FILE
 if [[ -n $(grep "Warning" $LOG_FILE) ]];
   then echo "glpi:database:install command FAILED" && exit 1;

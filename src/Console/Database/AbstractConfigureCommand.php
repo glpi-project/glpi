@@ -148,10 +148,10 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
         );
 
         $this->addOption(
-            'log-deprecation-warnings',
+            'strict-configuration',
             null,
             InputOption::VALUE_NONE,
-            __('Indicated if deprecation warnings sent by database server should be logged')
+            __('Use strict configuration, to enforce warnings triggering on deprecated or discouraged usages')
         );
     }
 
@@ -186,11 +186,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
      *
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @param bool $auto_config_flags
-     * @param bool $use_utf8mb4
-     * @param bool $allow_myisam
-     * @param bool $allow_datetime
-     * @param bool $allow_signed_keys
+     * @param bool $compute_flags_from_db
      *
      * @throws InvalidArgumentException
      *
@@ -199,11 +195,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
     protected function configureDatabase(
         InputInterface $input,
         OutputInterface $output,
-        bool $auto_config_flags = true,
-        bool $use_utf8mb4 = false,
-        bool $allow_myisam = true,
-        bool $allow_datetime = true,
-        bool $allow_signed_keys = true
+        bool $compute_flags_from_db = true
     ) {
 
         $db_pass     = $input->getOption('db-password');
@@ -213,8 +205,8 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
         $db_user     = $input->getOption('db-user');
         $db_hostport = $db_host . (!empty($db_port) ? ':' . $db_port : '');
 
-        $reconfigure    = $input->getOption('reconfigure');
-        $log_deprecation_warnings = $input->getOption('log-deprecation-warnings');
+        $reconfigure = $input->getOption('reconfigure');
+        $strict_configuration = $input->getOption('strict-configuration');
 
         if (file_exists(GLPI_CONFIG_DIR . '/config_db.php') && !$reconfigure) {
             // Prevent overriding of existing DB
@@ -269,7 +261,13 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
             return self::ERROR_DB_ENGINE_UNSUPPORTED;
         }
 
-        if ($auto_config_flags) {
+        if ($strict_configuration || !$compute_flags_from_db) {
+            // Force strict configuration
+            $use_utf8mb4 = true;
+            $allow_myisam = false;
+            $allow_datetime = false;
+            $allow_signed_keys = false;
+        } else {
             // Instanciate DB to be able to compute boolean properties flags.
             $db = new class ($db_hostport, $db_user, $db_pass, $db_name) extends DBmysql {
                 public function __construct($dbhost, $dbuser, $dbpassword, $dbdefault)
@@ -282,11 +280,12 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
                 }
             };
             $config_flags = $db->getComputedConfigBooleanFlags();
-            $use_utf8mb4 = $config_flags[DBConnection::PROPERTY_USE_UTF8MB4] ?? $use_utf8mb4;
-            $allow_myisam = $config_flags[DBConnection::PROPERTY_ALLOW_MYISAM] ?? $allow_myisam;
-            $allow_datetime = $config_flags[DBConnection::PROPERTY_ALLOW_DATETIME] ?? $allow_datetime;
-            $allow_signed_keys = $config_flags[DBConnection::PROPERTY_ALLOW_SIGNED_KEYS] ?? $allow_signed_keys;
+            $use_utf8mb4 = $config_flags[DBConnection::PROPERTY_USE_UTF8MB4] ?? false;
+            $allow_myisam = $config_flags[DBConnection::PROPERTY_ALLOW_MYISAM] ?? true;
+            $allow_datetime = $config_flags[DBConnection::PROPERTY_ALLOW_DATETIME] ?? true;
+            $allow_signed_keys = $config_flags[DBConnection::PROPERTY_ALLOW_SIGNED_KEYS] ?? true;
         }
+        $log_deprecation_warnings = $strict_configuration;
 
         DBConnection::setConnectionCharset($mysqli, $use_utf8mb4);
 
