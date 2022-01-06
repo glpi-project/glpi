@@ -1361,7 +1361,7 @@ HTML;
 
         $can_read_dashboard      = Session::haveRight('dashboard', READ);
         $default_asset_dashboard = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('assets');
-        $default_asset_helpdesk  = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('assets');
+        $default_asset_helpdesk  = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('helpdesk');
 
         $menu = [
             'assets' => [
@@ -1380,7 +1380,7 @@ HTML;
             $menu['assets']['default_dashboard'] = '/front/dashboard_assets.php';
         }
 
-        $menu+= [
+        $menu += [
             'helpdesk' => [
                 'title' => __('Assistance'),
                 'types' => [
@@ -1395,7 +1395,7 @@ HTML;
             $menu['helpdesk']['default_dashboard'] = '/front/dashboard_assets.php';
         }
 
-        $menu+= [
+        $menu += [
             'management' => [
                 'title' => __('Management'),
                 'types' => [
