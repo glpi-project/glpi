@@ -91,7 +91,7 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } else if (isset($_GET['_in_modal'])) {
-      Html::popHeader(Cable::getTypeName(1), $_SERVER['PHP_SELF']);
+      Html::popHeader(Cable::getTypeName(1), $_SERVER['PHP_SELF'], true);
       $cable->showForm($_GET["id"], ['withtemplate' => $_GET["withtemplate"]]);
       Html::popFooter();
 } else {

@@ -2015,7 +2015,7 @@ HTML;
         $HEADER_LOADED = true;
 
         self::includeHeader($title, $sector, $item, $option); // Body
-        echo "<body class='" . ($iframed ? "iframed" : "") . "'>";
+        echo "<body class='" . ($iframed ? "iframed overflow-hidden" : "") . "'>";
         self::displayMessageAfterRedirect();
         echo "<div id='page'>"; // Force legacy styles for now
     }
