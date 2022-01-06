@@ -102,7 +102,7 @@
                {% endif %}
             </h3>
 
-            {% if is_multi_entities_mode() and item is not instanceof('Entity') %}
+            {% if item.isEntityAssign() and is_multi_entities_mode() and item is not instanceof('Entity') %}
                <span class="badge entity-name mx-1 px-2 py-3 ms-auto" title="{{ entity_name }}">
                   <i class="ti ti-stack me-2"></i>
                   {{ entity_name }}
