@@ -564,14 +564,7 @@
    {{ include('components/form/buttons.html.twig') }}
    {{ include('components/form/inventory_info.html.twig') }}
 
-
    {% if params['formfooter'] is null or params['formfooter'] == true %}
-      {% set show_formfooter = true %}
-   {% else %}
-      {% set show_formfooter = false %}
-   {% endif %}
-
-   {% if show_formfooter %}
       <div class="card-footer mx-n2 mb-n2 mt-4">
          {{ include('components/form/dates.html.twig') }}
       </div>
