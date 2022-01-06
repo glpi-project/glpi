@@ -276,7 +276,10 @@
             locale: getFlatPickerLocale("{{ locale['language'] }}", "{{ locale['region'] }}"),
             onClose(dates, currentdatestring, picker) {
                picker.setDate(picker.altInput.value, true, picker.config.altFormat)
-            }
+            },
+            plugins: [
+               CustomFlatpickrButtons()
+            ]
          });
       });
       </script>
@@ -306,7 +309,10 @@
             locale: getFlatPickerLocale('{{ locale['language'] }}', '{{ locale['region'] }}'),
             onClose(dates, currentdatestring, picker) {
                picker.setDate(picker.altInput.value, true, picker.config.altFormat)
-            }
+            },
+            plugins: [
+               CustomFlatpickrButtons()
+            ]
          });
       });
       </script>
