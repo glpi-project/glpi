@@ -6727,7 +6727,7 @@ abstract class CommonITILObject extends CommonDBTM
                  'item' => [
                   'id'        => $validations_id,
                   'date'      => $validation['submission_date'],
-                  'content'   => __('Validation request')." <i class='ti ti-arrow-right'></i><i class='ti ti-user text-muted me-1'></i>" . $user->getlink(),
+                  'content'   => __('Validation request') . " <i class='ti ti-arrow-right'></i><i class='ti ti-user text-muted me-1'></i>" . $user->getlink(),
                   'comment_submission' => $validation['comment_submission'],
                   'users_id'  => $validation['users_id'],
                   'can_edit'  => $canedit,
@@ -6749,7 +6749,7 @@ abstract class CommonITILObject extends CommonDBTM
                         'id'        => $validations_id,
                         'date'      => $validation['validation_date'],
                         'content'   => __('Validation request answer') . " : " .
-                            _sx('status',ucfirst($validation_class::getStatus($validation['status']))),
+                            _sx('status', ucfirst($validation_class::getStatus($validation['status']))),
                         'comment_validation' => $validation['comment_validation'],
                         'users_id'  => $validation['users_id_validate'],
                         'status'    => "status_" . $validation['status'],
