@@ -299,6 +299,10 @@ class ITILSolution extends CommonDBChild
             return false;
         }
 
+        if (isset($input['update']) && ($uid = Session::getLoginUserID())) {
+            $input["users_id_editor"] = $uid;
+        }
+
         return $input;
     }
 

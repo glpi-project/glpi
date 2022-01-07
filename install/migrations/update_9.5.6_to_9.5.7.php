@@ -62,6 +62,38 @@ function update956to957()
     }
    /* /Fix null `date` in ITIL tables */
 
+    /** Replace -1 values for glpi_events.items_id field */
+    $migration->addPostQuery(
+        $DB->buildUpdate(
+            'glpi_events',
+            ['items_id' => '0'],
+            ['items_id' => '-1', 'type' => 'system']
+        )
+    );
+    /** /Replace -1 values for glpi_events.items_id field */
+
+    /** Replace -1 values for glpi_networkportaliases.networkports_id_alias field */
+    $migration->addPostQuery(
+        $DB->buildUpdate(
+            'glpi_networkportaliases',
+            ['networkports_id_alias' => '0'],
+            ['networkports_id_alias' => '-1']
+        )
+    );
+    /** /Replace -1 values for glpi_networkportaliases.networkports_id_alias field */
+
+    /** Replace -1 values for glpi_items_operatingsystems table foreign key fields */
+    foreach (['operatingsystems_id', 'operatingsystemversions_id', 'operatingsystemservicepacks_id'] as $item_os_fkey) {
+        $migration->addPostQuery(
+            $DB->buildUpdate(
+                'glpi_items_operatingsystems',
+                [$item_os_fkey => '0'],
+                [$item_os_fkey => '-1']
+            )
+        );
+    }
+    /** /Replace -1 values for glpi_items_operatingsystems table foreign key fields */
+
    // ************ Keep it at the end **************
     $migration->executeMigration();
 

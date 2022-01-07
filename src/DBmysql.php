@@ -39,6 +39,33 @@ use Glpi\System\Requirement\DbTimezones;
 **/
 class DBmysql
 {
+
+    /**
+     * List of keys that are allowed to use signed integers.
+     *
+     * Elements contained in this list have to be fixed before being able to globally use foreign key contraints.
+     *
+     * @var array
+     */
+    private const ALLOWED_SIGNED_KEYS = [
+        // FIXME Entity preference `glpi_entities.calendars_id` inherit/never strategy should be stored in another field.
+        'glpi_calendars.id',
+        // FIXME Entity preference `glpi_entities.changetemplates_id` inherit/never strategy should be stored in another field.
+        'glpi_changetemplates.id',
+        // FIXME Entity preference `glpi_entities.contracts_id_default` inherit/never strategy should be stored in another field.
+        'glpi_contracts.id',
+        // FIXME root entity uses "-1" value for its parent (`glpi_entities.entities_id`), should be null
+        // FIXME some entities_id foreign keys are using "-1" as default value, should be null
+        // FIXME Entity preference `glpi_entities.entities_id_software` inherit/never strategy should be stored in another field.
+        'glpi_entities.id',
+        // FIXME Entity preference `glpi_entities.problemtemplates_id` inherit/never strategy should be stored in another field.
+        'glpi_problemtemplates.id',
+        // FIXME Entity preference `glpi_entities.tickettemplates_id` inherit/never strategy should be stored in another field.
+        'glpi_tickettemplates.id',
+        // FIXME Entity preference `glpi_entities.transfers_id` inherit/never strategy should be stored in another field.
+        'glpi_transfers.id'
+    ];
+
    //! Database Host - string or Array of string (round robin)
     public $dbhost             = "";
    //! Database User
@@ -734,6 +761,109 @@ class DBmysql
         if ($exclude_plugins) {
             $query['WHERE'][] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'glpi\_plugin\_%']]];
         }
+
+        $iterator = $this->request($query);
+
+        return $iterator;
+    }
+
+
+    /**
+     * Returns columns that corresponds to signed primary/foreign keys.
+     *
+     * @return DBmysqlIterator
+     *
+     * @since 9.5.7
+     */
+    public function getSignedKeysColumns()
+    {
+        $query = [
+            'SELECT'       => [
+                'information_schema.columns.table_name as TABLE_NAME',
+                'information_schema.columns.column_name as COLUMN_NAME',
+                'information_schema.columns.data_type as DATA_TYPE',
+                'information_schema.columns.column_default as COLUMN_DEFAULT',
+                'information_schema.columns.is_nullable as IS_NULLABLE',
+                'information_schema.columns.extra as EXTRA',
+            ],
+            'FROM'         => 'information_schema.columns',
+            'INNER JOIN'   => [
+                'information_schema.tables' => [
+                    'FKEY' => [
+                        'information_schema.tables'  => 'table_name',
+                        'information_schema.columns' => 'table_name',
+                        [
+                            'AND' => [
+                                'information_schema.tables.table_schema' => new QueryExpression(
+                                    $this->quoteName('information_schema.columns.table_schema')
+                                ),
+                            ]
+                        ],
+                    ]
+                ]
+            ],
+            'WHERE'       => [
+                'information_schema.tables.table_schema'  => $this->dbdefault,
+                'information_schema.tables.table_name'    => ['LIKE', 'glpi\_%'],
+                'information_schema.tables.table_type'    => 'BASE TABLE',
+                [
+                    'OR' => [
+                        ['information_schema.columns.column_name' => 'id'],
+                        ['information_schema.columns.column_name' => ['LIKE', '%\_id']],
+                        ['information_schema.columns.column_name' => ['LIKE', '%\_id\_%']],
+                    ],
+                ],
+                'information_schema.columns.data_type' => ['tinyint', 'smallint', 'mediumint', 'int', 'bigint'],
+                ['NOT' => ['information_schema.columns.column_type' => ['LIKE', '%unsigned%']]],
+            ],
+            'ORDER'       => ['TABLE_NAME']
+        ];
+        foreach (self::ALLOWED_SIGNED_KEYS as $allowed_signed_key) {
+            list($excluded_table, $excluded_field) = explode('.', $allowed_signed_key);
+            $excluded_fkey = getForeignKeyFieldForTable($excluded_table);
+            $query['WHERE'][] = [
+                [
+                    'NOT' => [
+                        'information_schema.tables.table_name'   => $excluded_table,
+                        'information_schema.columns.column_name' => $excluded_field
+                    ]
+                ],
+                ['NOT' => ['information_schema.columns.column_name' => $excluded_fkey]],
+                ['NOT' => ['information_schema.columns.column_name' => ['LIKE', str_replace('_', '\_', $excluded_fkey . '_%')]]],
+            ];
+        }
+
+        $iterator = $this->request($query);
+
+        return $iterator;
+    }
+
+    /**
+     * Returns foreign keys constraints.
+     *
+     * @return DBmysqlIterator
+     *
+     * @since 9.5.7
+     */
+    public function getForeignKeysContraints()
+    {
+        $query = [
+            'SELECT' => [
+                'table_schema as TABLE_SCHEMA',
+                'table_name as TABLE_NAME',
+                'column_name as COLUMN_NAME',
+                'constraint_name as CONSTRAINT_NAME',
+                'referenced_table_name as REFERENCED_TABLE_NAME',
+                'referenced_column_name as REFERENCED_COLUMN_NAME',
+                'ordinal_position as ORDINAL_POSITION',
+            ],
+            'FROM'   => 'information_schema.key_column_usage',
+            'WHERE'  => [
+                'referenced_table_schema' => $this->dbdefault,
+                'referenced_table_name'   => ['LIKE', 'glpi\_%'],
+            ],
+            'ORDER'  => ['TABLE_NAME']
+        ];
 
         $iterator = $this->request($query);
 

@@ -1632,7 +1632,7 @@ class Session
 
         $_SESSION['impersonator_id'] = $impersonator_id;
 
-        Event::log(-1, "system", 3, "Impersonate", sprintf(
+        Event::log(0, "system", 3, "Impersonate", sprintf(
             __('%1$s starts impersonating user %2$s'),
             $impersonator,
             $user->fields['name']
@@ -1666,7 +1666,7 @@ class Session
         $auth->user = $user;
         Session::init($auth);
 
-        Event::log(-1, "system", 3, "Impersonate", sprintf(
+        Event::log(0, "system", 3, "Impersonate", sprintf(
             __('%1$s stops impersonating user %2$s'),
             $user->fields['name'],
             $impersonate_user

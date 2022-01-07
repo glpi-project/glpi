@@ -994,10 +994,10 @@ class Auth extends CommonGLPI
             if ($this->auth_succeded) {
                 if (GLPI_DEMO_MODE) {
                     // not translation in GLPI_DEMO_MODE
-                    Event::log(-1, "system", 3, "login", $login_name . " log in from " . $ip);
+                    Event::log(0, "system", 3, "login", $login_name . " log in from " . $ip);
                 } else {
                    //TRANS: %1$s is the login of the user and %2$s its IP address
-                    Event::log(-1, "system", 3, "login", sprintf(
+                    Event::log(0, "system", 3, "login", sprintf(
                         __('%1$s log in from IP %2$s'),
                         $login_name,
                         $ip
@@ -1006,7 +1006,7 @@ class Auth extends CommonGLPI
             } else {
                 if (GLPI_DEMO_MODE) {
                     Event::log(
-                        -1,
+                        0,
                         "system",
                         3,
                         "login",
@@ -1015,7 +1015,7 @@ class Auth extends CommonGLPI
                     );
                 } else {
                    //TRANS: %1$s is the login of the user and %2$s its IP address
-                    Event::log(-1, "system", 3, "login", sprintf(
+                    Event::log(0, "system", 3, "login", sprintf(
                         __('Failed login for %1$s from IP %2$s'),
                         $login_name,
                         $ip

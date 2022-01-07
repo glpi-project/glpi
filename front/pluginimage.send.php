@@ -46,7 +46,7 @@ include('../inc/includes.php');
 
 if (!isset($_GET["name"]) || !isset($_GET["plugin"]) || !Plugin::isPluginActive($_GET["plugin"])) {
     Event::log(
-        "-1",
+        0,
         "system",
         2,
         "security",
@@ -66,7 +66,7 @@ if (
     || !Document::isImage($filepath)
 ) {
     Event::log(
-        "-1",
+        0,
         "system",
         1,
         "security",
