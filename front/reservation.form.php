@@ -33,6 +33,11 @@
 
 use Glpi\Event;
 
+// avoid reloading js libs
+if (isset($_GET['ajax']) && $_GET['ajax']) {
+    $AJAX_INCLUDE = true;
+}
+
 include('../inc/includes.php');
 
 Session::checkRight("reservation", ReservationItem::RESERVEANITEM);
@@ -142,6 +147,19 @@ if (isset($_POST["update"])) {
                                 $_SESSION["glpiname"],
                                 $newID,
                                 $reservationitems_id
+                            )
+                        );
+
+                        $rri = new ReservationItem();
+                        $rri->getFromDB($reservationitems_id);
+                        $item = new $rri->fields["itemtype"]();
+                        $item->getFromDB($rri->fields["items_id"]);
+
+                        Session::addMessageAfterRedirect(
+                            sprintf(
+                                __('Reservation added for item %s at %s'),
+                                $item->getLink(),
+                                Html::convDateTime($input['begin'])
                             )
                         );
                     }

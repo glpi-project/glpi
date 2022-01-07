@@ -118,21 +118,23 @@ var glpi_html_dialog = function({
    // create new one
    $(appendTo).append(modal);
 
+   var myModalEl = document.getElementById(id);
+   var myModal = new bootstrap.Modal(myModalEl, {});
+
    // show modal
    if (autoShow) {
-      $('#'+id).modal('show');
+      myModal.show();
    }
 
    // create global events
-   var myModal = document.getElementById(id);
-   myModal.addEventListener('shown.bs.modal', function(event) {
+   myModalEl.addEventListener('shown.bs.modal', function(event) {
       // focus first element in modal
       $('#'+id).find("input, textearea, select").first().trigger("focus");
 
       // call show event
       show(event);
    });
-   myModal.addEventListener('hidden.bs.modal', function(event) {
+   myModalEl.addEventListener('hidden.bs.modal', function(event) {
       // call close event
       close(event);
 
@@ -301,10 +303,13 @@ var glpi_confirm = function({
 
 
 /**
- * Close and remode from dom all opened glpi dialog
+ * Close and remove from dom all opened glpi dialog
  */
 var glpi_close_all_dialogs = function() {
-   $('.modal.show').modal('hide').remove();
+   document.querySelectorAll('.modal').forEach(function(modalElem) {
+      const myModal = new bootstrap.Modal(modalElem);
+      myModal.hide();
+   });
 };
 
 var toast_id = 0;
