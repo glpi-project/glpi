@@ -91,6 +91,7 @@
              name="{{ name }}" value="{{ value|verbatim_value }}"
              {{ options.readonly ? 'readonly' : '' }}
              {{ options.disabled ? 'disabled' : '' }}
+             {{ options.multiple ? 'multiple' : '' }} {# Only for emailField #}
              {{ options.required ? 'required' : '' }} />
    {% endset %}
 
