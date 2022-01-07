@@ -406,17 +406,19 @@ class Agent extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+        global $CFG_GLPI;
+
         if (isset($CFG_GLPI['threads_networkdiscovery']) && !isset($input['threads_networkdiscovery'])) {
-            $input['threads_networkdiscovery'] = $CFG_GLPI['threads_networkdiscovery'];
+            $input['threads_networkdiscovery'] = 0;
         }
         if (isset($CFG_GLPI['threads_networkinventory']) && !isset($input['threads_networkinventory'])) {
-            $input['threads_networkinventory'] = $CFG_GLPI['threads_networkinventory'];
+            $input['threads_networkinventory'] = 0;
         }
         if (isset($CFG_GLPI['timeout_networkdiscovery']) && !isset($input['timeout_networkdiscovery'])) {
-            $input['timeout_networkdiscovery'] = $CFG_GLPI['timeout_networkdiscovery'];
+            $input['timeout_networkdiscovery'] = -1;
         }
         if (isset($CFG_GLPI['timeout_networkinventory']) && !isset($input['timeout_networkinventory'])) {
-            $input['timeout_networkinventory'] = $CFG_GLPI['timeout_networkinventory'];
+            $input['timeout_networkinventory'] = -1;
         }
 
         return $this->prepareInputs($input);

@@ -68,7 +68,8 @@ abstract class InventoryAsset
    /**
     * Constructor
     *
-    * @param array $data Data part, optional
+    * @param CommonDBTM $item Item instance
+    * @param array|null $data Data part, optional
     */
     public function __construct(CommonDBTM $item, array $data = null)
     {
@@ -327,7 +328,7 @@ abstract class InventoryAsset
    /**
     * Set inventory item
     *
-    * @param InventoryAsset $mainitem Main inventory asset instance
+    * @param InventoryAsset $mainasset Main inventory asset instance
     *
     * @return InventoryAsset
     */
