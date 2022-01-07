@@ -68,7 +68,17 @@ function update956to957() {
            ['items_id' => '-1', 'type' => 'system']
        )
    );
-   /** /Replace -1 values for items_id field */
+   /** /Replace -1 values for glpi_events.items_id field */
+
+   /** Replace -1 values for glpi_networkportaliases.networkports_id_alias field */
+   $migration->addPostQuery(
+       $DB->buildUpdate(
+           'glpi_networkportaliases',
+           ['networkports_id_alias' => '0'],
+           ['networkports_id_alias' => '-1']
+       )
+   );
+   /** /Replace -1 values for glpi_networkportaliases.networkports_id_alias field */
 
    // ************ Keep it at the end **************
    $migration->executeMigration();
