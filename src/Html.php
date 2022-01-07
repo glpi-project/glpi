@@ -6399,12 +6399,13 @@ JAVASCRIPT
     {
         switch ($action) {
             case 'getHtml':
-                $parser = new UserAgentParser();
-                $ua = $parser->parse();
-
                 $shortcut = "<kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>G</kbd>";
-                if ($ua->platform() === Platforms::MACINTOSH) {
-                    $shortcut = "<kbd>⌥ (option)</kbd> + <kbd>⌘ (command)</kbd> + <kbd>G</kbd>";
+                if (!defined('TU_USER')) {
+                    $parser = new UserAgentParser();
+                    $ua = $parser->parse();
+                    if ($ua->platform() === Platforms::MACINTOSH) {
+                        $shortcut = "<kbd>⌥ (option)</kbd> + <kbd>⌘ (command)</kbd> + <kbd>G</kbd>";
+                    }
                 }
 
                 $modal_header = __("Go to menu");
