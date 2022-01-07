@@ -29,12 +29,12 @@
  * ---------------------------------------------------------------------
  */
 
-/* global fuzzy */
+/* global hotkeys, fuzzy */
 
 $(function() {
    var list = [];
 
-   // prepapre options for fuzzy lib
+   // prepare options for fuzzy lib
    var fuzzy_options = {
       pre: "<b>",
       post: "</b>",
@@ -44,7 +44,7 @@ $(function() {
    };
 
    // when the shortcut for fuzzy is called
-   $(document).on('keyup', null, 'alt+ctrl+g', function() {
+   hotkeys('ctrl+alt+g, option+command+g', function() {
       trigger_fuzzy();
    });
 
