@@ -445,39 +445,45 @@ abstract class AbstractRequest
     */
     public function getResponse(): string
     {
-        if ($this->mode === null) {
-            throw new \RuntimeException("Mode has not been set");
-        }
+        // Default to return empty response on no response set
+        $data = "";
+        if ($this->response !== null) {
+            if ($this->mode === null) {
+                throw new \RuntimeException("Mode has not been set");
+            }
 
-        $data = null;
-        switch ($this->mode) {
-            case self::XML_MODE:
-                $data = $this->response->saveXML();
-                break;
-            case self::JSON_MODE:
-                $data = json_encode($this->response);
-                break;
-            default:
-                throw new \RuntimeException("Unknown mode " . $this->mode);
-            break;
-        }
-
-        if ($this->compression !== self::COMPRESS_NONE) {
-            switch ($this->compression) {
-                case self::COMPRESS_ZLIB:
-                    $data = gzcompress($data);
+            switch ($this->mode) {
+                case self::XML_MODE:
+                    $data = $this->response->saveXML();
                     break;
-                case self::COMPRESS_GZIP:
-                    $data = gzencode($data);
-                    break;
-                case self::COMPRESS_BR:
-                    $data = brotli_compress($data);
-                    break;
-                case self::COMPRESS_DEFLATE:
-                    $data = gzdeflate($data);
+                case self::JSON_MODE:
+                    $data = json_encode($this->response);
                     break;
                 default:
-                    throw new \UnexpectedValueException("Unknown compression mode" . $this->compression);
+                    throw new \UnexpectedValueException("Unknown mode " . $this->mode);
+            }
+
+            if ($this->compression === null) {
+                throw new \RuntimeException("Compression has not been set");
+            }
+
+            if ($this->compression !== self::COMPRESS_NONE) {
+                switch ($this->compression) {
+                    case self::COMPRESS_ZLIB:
+                        $data = gzcompress($data);
+                        break;
+                    case self::COMPRESS_GZIP:
+                        $data = gzencode($data);
+                        break;
+                    case self::COMPRESS_BR:
+                        $data = brotli_compress($data);
+                        break;
+                    case self::COMPRESS_DEFLATE:
+                        $data = gzdeflate($data);
+                        break;
+                    default:
+                        throw new \UnexpectedValueException("Unknown compression mode" . $this->compression);
+                }
             }
         }
 

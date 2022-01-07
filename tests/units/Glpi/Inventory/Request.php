@@ -40,9 +40,13 @@ class Request extends \GLPITestCase
 {
     public function testConstructor()
     {
-       //no mode
+       //no mode without content
         $request = new \Glpi\Inventory\Request();
         $this->variable($request->getMode())->isNull();
+        $this->variable($request->getResponse())->isIdenticalTo("");
+
+       //no mode with content
+        $request->addToResponse(["something" => "some content"]);
         $this->exception(
             function () use ($request) {
                 $this->variable($request->getResponse())->isNull();
