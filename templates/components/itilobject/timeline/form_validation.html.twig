@@ -36,11 +36,35 @@
 
 {% block timeline_card %}
    {% if form_mode == 'view' %}
-      <div class="read-only-content">
-         {{ entry_i['content']|enhanced_html({
-            'user_mentions': true,
-            'images_gallery': true
-         }) }}
+      <div class="read-only-content w-100">
+         {{ entry_i['content']|raw }}
+
+         {% if entry_i['comment_submission']|length %}
+            <div class='alert alert-info mt-2'>
+                <div class='d-flex'>
+                    <div><i class='ti ti-quote me-2'></i></div>
+                    <div>
+                        {{ entry_i['comment_submission']|enhanced_html({
+                            'user_mentions': true,
+                            'images_gallery': true
+                        }) }}
+                    </div>
+                </div>
+            </div>
+         {% endif %}
+         {% if entry_i['comment_validation']|length %}
+            <div class='alert alert-info mt-2'>
+                <div class='d-flex'>
+                    <div><i class='ti ti-quote me-2'></i></div>
+                    <div>
+                        {{ entry_i['comment_validation']|enhanced_html({
+                            'user_mentions': true,
+                            'images_gallery': true
+                        }) }}
+                    </div>
+                </div>
+            </div>
+         {% endif %}
 
          {% if entry_i['can_answer'] %}
             <hr class="my-2" />
@@ -144,6 +168,19 @@
                         }
                      ) }}
                   {% endif %}
+
+                  {{ fields.textareaField(
+                     'comment_submission',
+                     subitem.fields['comment_submission'],
+                     _n('Comment', 'Comments', 1),
+                     {
+                        'full_width': true,
+                        'enable_richtext': true,
+                        'enable_fileupload': true,
+                        'enable_mentions': true,
+                        'rand': rand,
+                     }
+                  ) }}
                </div>
             </div>
 
