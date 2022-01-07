@@ -80,6 +80,18 @@ function update956to957() {
    );
    /** /Replace -1 values for glpi_networkportaliases.networkports_id_alias field */
 
+   /** Replace -1 values for glpi_items_operatingsystems table foreign key fields */
+   foreach (['operatingsystems_id', 'operatingsystemversions_id', 'operatingsystemservicepacks_id'] as $item_os_fkey) {
+      $migration->addPostQuery(
+          $DB->buildUpdate(
+              'glpi_items_operatingsystems',
+              [$item_os_fkey => '0'],
+              [$item_os_fkey => '-1']
+          )
+      );
+   }
+   /** /Replace -1 values for glpi_items_operatingsystems table foreign key fields */
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
