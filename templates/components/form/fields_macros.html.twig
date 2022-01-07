@@ -91,6 +91,7 @@
              name="{{ name }}" value="{{ value|verbatim_value }}"
              {{ options.readonly ? 'readonly' : '' }}
              {{ options.disabled ? 'disabled' : '' }}
+             {{ options.multiple ? 'multiple' : '' }} {# Only for emailField #}
              {{ options.required ? 'required' : '' }} />
    {% endset %}
 
@@ -343,6 +344,11 @@
          {{ options.required ? 'required' : '' }} />
    {% endset %}
    {{ _self.field(name, field, label, options) }}
+{% endmacro %}
+
+{% macro emailField(name, value, label = '', options = {}) %}
+   {% set options = {'type': 'email'}|merge(options) %}
+   {{ _self.textField(name, value, label, options) }}
 {% endmacro %}
 
 {% macro fileField(name, value, label = '', options = {}) %}
