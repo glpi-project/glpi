@@ -1924,15 +1924,19 @@ HTML;
 
         $user = Session::getLoginUserID() !== false ? User::getById(Session::getLoginUserID()) : null;
 
-        $parser = new UserAgentParser();
-        $ua = $parser->parse();
+        $plateform = "";
+        if (!defined('TU_USER')) {
+            $parser = new UserAgentParser();
+            $ua = $parser->parse();
+            $plateform = $ua->platform();
+        }
 
         return [
          'is_debug_active'       => $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE,
          'is_impersonate_active' => Session::isImpersonateActive(),
          'founded_new_version'   => $founded_new_version,
          'user'                  => $user instanceof User ? $user : null,
-         'platform'              => $ua->platform(),
+         'platform'              => $plateform,
         ];
     }
 
