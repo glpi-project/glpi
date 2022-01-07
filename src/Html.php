@@ -1924,11 +1924,11 @@ HTML;
 
         $user = Session::getLoginUserID() !== false ? User::getById(Session::getLoginUserID()) : null;
 
-        $plateform = "";
+        $platform = "";
         if (!defined('TU_USER')) {
             $parser = new UserAgentParser();
             $ua = $parser->parse();
-            $plateform = $ua->platform();
+            $platform = $ua->platform();
         }
 
         return [
@@ -1936,7 +1936,7 @@ HTML;
          'is_impersonate_active' => Session::isImpersonateActive(),
          'founded_new_version'   => $founded_new_version,
          'user'                  => $user instanceof User ? $user : null,
-         'platform'              => $plateform,
+         'platform'              => $platform,
         ];
     }
 
