@@ -39,7 +39,6 @@ use Glpi\System\Requirement\DbTimezones;
 **/
 class DBmysql
 {
-
     /**
      * List of keys that are allowed to use signed integers.
      *
