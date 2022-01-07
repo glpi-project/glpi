@@ -37,17 +37,17 @@
 {% block timeline_card %}
    {% if form_mode == 'view' %}
       <div class="read-only-content w-100">
-         {{ entry_i['content']|enhanced_html({
-            'user_mentions': true,
-            'images_gallery': true
-         }) }}
+         {{ entry_i['content']|raw }}
 
          {% if entry_i['comment_submission']|length %}
             <div class='alert alert-info mt-2'>
                 <div class='d-flex'>
                     <div><i class='ti ti-quote me-2'></i></div>
                     <div>
-                        {{ entry_i['comment_submission']|safe_html }}
+                        {{ entry_i['comment_submission']|enhanced_html({
+                            'user_mentions': true,
+                            'images_gallery': true
+                        }) }}
                     </div>
                 </div>
             </div>
@@ -57,7 +57,10 @@
                 <div class='d-flex'>
                     <div><i class='ti ti-quote me-2'></i></div>
                     <div>
-                        {{ entry_i['comment_validation']|safe_html }}
+                        {{ entry_i['comment_validation']|enhanced_html({
+                            'user_mentions': true,
+                            'images_gallery': true
+                        }) }}
                     </div>
                 </div>
             </div>
