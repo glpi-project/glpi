@@ -633,7 +633,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
    **/
     public function canCreateItem()
     {
-
         return $this->canRelationItem(
             'canUpdateItem',
             'canUpdate',
@@ -2118,5 +2117,34 @@ abstract class CommonDBRelation extends CommonDBConnexity
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'clone';
         return $forbidden;
+    }
+
+    /**
+     * Check if the given class match $itemtype_1 or $itemtype_2
+     *
+     * @param string $class
+     *
+     * @return int 0 (not a part of the relation), 1 ($itemtype_1) or 2 ($itemtype_2)
+     */
+    public static function getMemberPosition(string $class): int
+    {
+        if ($class == static::$itemtype_1) {
+            return 1;
+        } elseif ($class == static::$itemtype_2) {
+            return 2;
+        } elseif (
+            preg_match('/^itemtype/', static::$itemtype_1) === 1
+            && preg_match('/^itemtype/', static::$itemtype_2) === 0
+        ) {
+            return 1;
+        } elseif (
+            preg_match('/^itemtype/', static::$itemtype_2) === 1
+            && preg_match('/^itemtype/', static::$itemtype_1) === 0
+        ) {
+            return 2;
+        } else {
+            // Not a member of this relation
+            return 0;
+        }
     }
 }

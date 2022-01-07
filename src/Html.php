@@ -4664,6 +4664,7 @@ JAVASCRIPT
             'display_emptychoice' => false,
             'specific_tags'       => [],
             'parent_id_field'     => null,
+            'multiple'            => false,
         ];
         $params = array_merge($default_options, $params);
 
@@ -4672,6 +4673,7 @@ JAVASCRIPT
         $valuename = $params['valuename'];
         $on_change = $params["on_change"];
         $placeholder = $params['placeholder'] ?? '';
+        $multiple = $params['multiple'];
         unset($params["on_change"]);
         unset($params["width"]);
 
@@ -4728,6 +4730,7 @@ JAVASCRIPT
 
          const select2_el = $('#$field_id').select2({
             width: '$width',
+            multiple: '$multiple',
             placeholder: '$placeholder',
             allowClear: $allowclear,
             minimumInputLength: 0,

@@ -123,6 +123,7 @@ class Dropdown
         $params['hide_if_no_elements']  = false;
         $params['readonly']             = false;
         $params['parent_id_field']      = null;
+        $params['multiple']             = false;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -133,20 +134,27 @@ class Dropdown
         $name         = $params['emptylabel'];
         $comment      = "";
 
+        if ($params['multiple']) {
+            $params['display_emptychoice'] = false;
+            $params['values'] = $params['value'] ?? [];
+            $params['comments'] = false;
+            unset($params['value']);
+        }
+
        // Check default value for dropdown : need to be a numeric (or null)
         if (
-            $params['value'] !== null
+            isset($params['value'])
             && ((strlen($params['value']) == 0) || !is_numeric($params['value']) && $params['value'] != 'mygroups')
         ) {
             $params['value'] = 0;
         }
 
-        if (isset($params['toadd'][$params['value']])) {
+        if (!$params['multiple'] && isset($params['toadd'][$params['value']])) {
             $name = $params['toadd'][$params['value']];
         } else if (
-            ($params['value'] > 0)
-                 || (($itemtype == "Entity")
-                     && ($params['value'] >= 0))
+            !$params['multiple']
+            && $params['value'] > 0
+            || ($itemtype == "Entity" && $params['value'] >= 0)
         ) {
             $tmpname = self::getDropdownName($table, $params['value'], 1);
 
@@ -154,10 +162,27 @@ class Dropdown
                 $name    = $tmpname["name"];
                 $comment = $tmpname["comment"];
             }
+        } else if ($params['multiple']) {
+            $names = [];
+
+            foreach ($params['values'] as $value) {
+                if (isset($params['toadd'][$value])) {
+                    // Specific case, value added by the "toadd" param
+                    $names[] = $params['toadd'][$value];
+                } else {
+                    $names[] = self::getDropdownName($table, $value);
+                }
+            }
         }
 
         if ($params['readonly']) {
-            return self::getDropdownName($table, $params['value']);
+            if ($params['multiple']) {
+                // Multiple values, print the names separated by commas
+                return implode(", ", $names);
+            } else {
+                // Single value, print the matching name
+                return $name;
+            }
         }
 
        // Manage entity_sons
@@ -183,10 +208,13 @@ class Dropdown
         }
 
         if (!$item instanceof CommonTreeDropdown) {
-            $name = Sanitizer::unsanitize($name);
+            if ($params['multiple']) {
+                $names = Sanitizer::unsanitize($names);
+            } else {
+                $name = Sanitizer::unsanitize($name);
+            }
         }
-        $p = ['value'                => $params['value'],
-            'valuename'            => $name,
+        $p = [
             'width'                => $params['width'],
             'itemtype'             => $itemtype,
             'display_emptychoice'  => $params['display_emptychoice'],
@@ -206,7 +234,16 @@ class Dropdown
             ]),
             'order'                => $params['order'] ?? null,
             'parent_id_field'      => $params['parent_id_field'],
+            'multiple'             => $params['multiple'] ?? false,
         ];
+
+        if ($params['multiple']) {
+            $p['values'] = $params['values'];
+            $p['valuesnames'] = $names;
+        } else {
+            $p['value'] = $params['value'];
+            $p['valuename'] = $name;
+        }
 
         if ($params['hide_if_no_elements']) {
             $result = self::getDropdownValue(
