@@ -150,9 +150,9 @@ if (isset($_POST["update"])) {
                             )
                         );
 
-                        $rri = new ReservationItem;
+                        $rri = new ReservationItem();
                         $rri->getFromDB($reservationitems_id);
-                        $item = new $rri->fields["itemtype"];
+                        $item = new $rri->fields["itemtype"]();
                         $item->getFromDB($rri->fields["items_id"]);
 
                         Session::addMessageAfterRedirect(
