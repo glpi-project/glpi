@@ -268,8 +268,8 @@ class MailCollector extends CommonDBTM
             echo "<td>";
             echo "<div class='btn-group btn-group-sm'>";
             echo "<input size='30' class='form-control' type='text' id='accepted_folder' name='accepted' value=\"" . $this->fields['accepted'] . "\">";
-            echo "<div class='btn btn-outline-secondary'>";
-            echo "<i class='fa fa-list pointer get-imap-folder'></i>";
+            echo "<div class='btn btn-outline-secondary get-imap-folder'>";
+            echo "<i class='fa fa-list pointer'></i>";
             echo "</div>";
             echo "</div></td></tr>\n";
 
@@ -277,8 +277,8 @@ class MailCollector extends CommonDBTM
             echo "<td>";
             echo "<div class='btn-group btn-group-sm'>";
             echo "<input size='30' class='form-control' type='text' id='refused_folder' name='refused' value=\"" . $this->fields['refused'] . "\">";
-            echo "<div class='btn btn-outline-secondary'>";
-            echo "<i class='fa fa-list pointer get-imap-folder'></i>";
+            echo "<div class='btn btn-outline-secondary get-imap-folder'>";
+            echo "<i class='fa fa-list pointer'></i>";
             echo "</div>";
             echo "</div></td></tr>\n";
         }
@@ -341,7 +341,7 @@ class MailCollector extends CommonDBTM
                   title: __('Select a folder'),
                   url: '" . $CFG_GLPI['root_doc'] . "/ajax/mailcollector.php',
                   params: data,
-                  id: 'imap-folder'
+                  id: input.attr('id') + '_modal'
                });
             });
 
@@ -360,7 +360,10 @@ class MailCollector extends CommonDBTM
                _label += folder;
 
                $('#'+input_id).val(_label);
-               $('#imap-folder + .modal-backdrop, #imap-folder').remove();
+
+               var modalEl = $('#'+input_id+'_modal')[0];
+               var modal = bootstrap.Modal.getInstance(modalEl);
+               modal.hide();
             })
          });");
         }

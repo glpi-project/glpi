@@ -1912,8 +1912,8 @@ class Toolbox
             echo "<td>";
             echo "<div class='btn-group btn-group-sm'>";
             echo "<input size='30' class='form-control' type='text' id='server_mailbox' name='server_mailbox' value=\"" . $tab['mailbox'] . "\" >";
-            echo "<div class='btn btn-outline-secondary'>";
-            echo "<i class='fa fa-list pointer get-imap-folder'></i>";
+            echo "<div class='btn btn-outline-secondary get-imap-folder'>";
+            echo "<i class='fa fa-list pointer'></i>";
             echo "</div>";
             echo "</div></td></tr>\n";
         }
