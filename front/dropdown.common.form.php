@@ -157,7 +157,7 @@ if (isset($_POST["add"])) {
     Html::popHeader(
         $dropdown->getTypeName(1),
         $_SERVER['PHP_SELF'],
-        false,
+        true,
         $dropdown->first_level_menu,
         $dropdown->second_level_menu,
         $dropdown->getType()
