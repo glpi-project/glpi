@@ -272,7 +272,7 @@ class Agent extends CommonDBTM
                 'threads_networkdiscovery',
                 [
                     'value' => $this->fields['threads_networkdiscovery'],
-                    'toadd' => [$general],
+                    'toadd' => [0 => $general],
                     'min' => 1
                 ]
             );
@@ -287,7 +287,8 @@ class Agent extends CommonDBTM
                 'timeout_networkdiscovery',
                 [
                     'value' => $this->fields['timeout_networkdiscovery'],
-                    'toadd' => [$general]
+                    'toadd' => [0 => $general],
+                    'min' => 1
                 ]
             );
             echo "</td>";
@@ -304,7 +305,7 @@ class Agent extends CommonDBTM
                 'threads_networkinventory',
                 [
                     'value' => $this->fields['threads_networkinventory'],
-                    'toadd' => [$general],
+                    'toadd' => [0 => $general],
                     'min' => 1
                 ]
             );
@@ -319,7 +320,8 @@ class Agent extends CommonDBTM
                 'timeout_networkinventory',
                 [
                     'value' => $this->fields['timeout_networkinventory'],
-                    'toadd' => [-1 => $general]
+                    'toadd' => [0 => $general],
+                    'min' => 1
                 ]
             );
             echo "</td>";
@@ -415,10 +417,10 @@ class Agent extends CommonDBTM
             $input['threads_networkinventory'] = 0;
         }
         if (isset($CFG_GLPI['timeout_networkdiscovery']) && !isset($input['timeout_networkdiscovery'])) {
-            $input['timeout_networkdiscovery'] = -1;
+            $input['timeout_networkdiscovery'] = 0;
         }
         if (isset($CFG_GLPI['timeout_networkinventory']) && !isset($input['timeout_networkinventory'])) {
-            $input['timeout_networkinventory'] = -1;
+            $input['timeout_networkinventory'] = 0;
         }
 
         return $this->prepareInputs($input);
