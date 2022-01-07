@@ -1356,75 +1356,91 @@ HTML;
     {
         global $CFG_GLPI;
 
-        $menu = [
-         'assets' => [
-            'title' => _n('Asset', 'Assets', Session::getPluralNumber()),
-            'types' => array_merge([
-               'Computer', 'Monitor', 'Software',
-               'NetworkEquipment', 'Peripheral', 'Printer',
-               'CartridgeItem', 'ConsumableItem', 'Phone',
-               'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment', 'Unmanaged', 'Cable'
-            ], $CFG_GLPI['devices_in_menu']),
-            'default_dashboard' => '/front/dashboard_assets.php',
-            'icon'    => 'ti ti-package'
-         ],
-         'helpdesk' => [
-            'title' => __('Assistance'),
-            'types' => [
-               'Ticket', 'Problem', 'Change',
-               'Planning', 'Stat', 'TicketRecurrent', 'RecurrentChange'
-            ],
-            'default_dashboard' => '/front/dashboard_helpdesk.php',
-            'icon'    => 'ti ti-headset'
-         ],
-         'management' => [
-            'title' => __('Management'),
-            'types' => [
-               'SoftwareLicense','Budget', 'Supplier', 'Contact', 'Contract',
-               'Document', 'Line', 'Certificate', 'Datacenter', 'Cluster', 'Domain',
-               'Appliance', 'Database'
-            ],
-            'icon'  => 'ti ti-wallet'
-         ],
-         'tools' => [
-            'title' => __('Tools'),
-            'types' => [
-               'Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
-               'ReservationItem', 'Report', 'MigrationCleaner',
-               'SavedSearch', 'Impact'
-            ],
-            'icon' => 'ti ti-briefcase'
-         ],
-         'plugins' => [
-            'title' => _n('Plugin', 'Plugins', Session::getPluralNumber()),
-            'types' => [],
-            'icon'  => 'ti ti-puzzle'
-         ],
-         'admin' => [
-            'title' => __('Administration'),
-            'types' => [
-               'User', 'Group', 'Entity', 'Rule',
-               'Profile', 'QueuedNotification', 'Glpi\\Event', 'Glpi\Inventory\Inventory'
-            ],
-            'icon'  => 'ti ti-shield-check'
-         ],
-         'config' => [
-            'title' => __('Setup'),
-            'types' => [
-               'CommonDropdown', 'CommonDevice', 'Notification',
-               'SLM', 'Config', 'FieldUnicity', 'CronTask', 'Auth',
-               'MailCollector', 'Link', 'Plugin'
-            ],
-            'icon'  => 'ti ti-settings'
-         ],
+        $can_read_dashboard      = Session::haveRight('dashboard', READ);
+        $default_asset_dashboard = defined('TU_USER') ? "" : Glpi\Dashboard\Grid::getDefaultDashboardForMenu('assets');
+        $default_asset_helpdesk  = defined('TU_USER') ? "" : Glpi\Dashboard\Grid::getDefaultDashboardForMenu('helpdesk');
 
-         // special items
-         'preference' => [
-            'title'   => __('My settings'),
-            'default' => '/front/preference.php',
-            'icon'    => 'fas fa-user-cog',
-            'display' => false,
-         ],
+        $menu = [
+            'assets' => [
+                'title' => _n('Asset', 'Assets', Session::getPluralNumber()),
+                'types' => array_merge([
+                    'Computer', 'Monitor', 'Software',
+                    'NetworkEquipment', 'Peripheral', 'Printer',
+                    'CartridgeItem', 'ConsumableItem', 'Phone',
+                    'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment', 'Unmanaged', 'Cable'
+                    ], $CFG_GLPI['devices_in_menu']),
+                'icon'    => 'ti ti-package'
+            ],
+        ];
+
+        if ($can_read_dashboard && strlen($default_asset_dashboard) > 0) {
+            $menu['assets']['default_dashboard'] = '/front/dashboard_assets.php';
+        }
+
+        $menu += [
+            'helpdesk' => [
+                'title' => __('Assistance'),
+                'types' => [
+                    'Ticket', 'Problem', 'Change',
+                    'Planning', 'Stat', 'TicketRecurrent', 'RecurrentChange'
+                ],
+                'icon'    => 'ti ti-headset'
+            ]
+        ];
+
+        if ($can_read_dashboard && strlen($default_asset_helpdesk) > 0) {
+            $menu['helpdesk']['default_dashboard'] = '/front/dashboard_assets.php';
+        }
+
+        $menu += [
+            'management' => [
+                'title' => __('Management'),
+                'types' => [
+                    'SoftwareLicense', 'Budget', 'Supplier', 'Contact', 'Contract',
+                    'Document', 'Line', 'Certificate', 'Datacenter', 'Cluster', 'Domain',
+                    'Appliance', 'Database'
+                ],
+                'icon'  => 'ti ti-wallet'
+            ],
+            'tools' => [
+                'title' => __('Tools'),
+                'types' => [
+                    'Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
+                    'ReservationItem', 'Report', 'MigrationCleaner',
+                    'SavedSearch', 'Impact'
+                ],
+                'icon' => 'ti ti-briefcase'
+            ],
+            'plugins' => [
+                'title' => _n('Plugin', 'Plugins', Session::getPluralNumber()),
+                'types' => [],
+                'icon'  => 'ti ti-puzzle'
+            ],
+            'admin' => [
+                'title' => __('Administration'),
+                'types' => [
+                    'User', 'Group', 'Entity', 'Rule',
+                    'Profile', 'QueuedNotification', 'Glpi\\Event', 'Glpi\Inventory\Inventory'
+                ],
+                'icon'  => 'ti ti-shield-check'
+            ],
+            'config' => [
+                'title' => __('Setup'),
+                'types' => [
+                    'CommonDropdown', 'CommonDevice', 'Notification',
+                    'SLM', 'Config', 'FieldUnicity', 'CronTask', 'Auth',
+                    'MailCollector', 'Link', 'Plugin'
+                ],
+                'icon'  => 'ti ti-settings'
+            ],
+
+            // special items
+            'preference' => [
+                'title'   => __('My settings'),
+                'default' => '/front/preference.php',
+                'icon'    => 'fas fa-user-cog',
+                'display' => false,
+            ],
         ];
 
         return $menu;
