@@ -1191,11 +1191,8 @@ HTML;
         Html::requireJs('leaflet');
 
         $tpl_vars['css_files'][] = 'public/lib/flatpickr.css';
-        if ($theme != "darker") {
-            $tpl_vars['css_files'][] = 'public/lib/flatpickr/themes/light.css';
-        } else {
-            $tpl_vars['css_files'][] = 'public/lib/flatpickr/themes/dark.css';
-        }
+        // Include dark theme as base (may be cleaner look than light; colors overriden by GLPI's stylesheet)
+        $tpl_vars['css_files'][] = 'public/lib/flatpickr/themes/dark.css';
         Html::requireJs('flatpickr');
 
         $tpl_vars['css_files'][] = 'public/lib/photoswipe.css';
