@@ -6727,8 +6727,8 @@ abstract class CommonITILObject extends CommonDBTM
                  'item' => [
                   'id'        => $validations_id,
                   'date'      => $validation['submission_date'],
-                  'content'   => __('Validation request') . " => <i class='ti ti-user text-muted me-1'></i>" . $user->getlink() .
-                                                 "<br>" . $validation['comment_submission'],
+                  'content'   => __('Validation request')." <i class='ti ti-arrow-right'></i><i class='ti ti-user text-muted me-1'></i>" . $user->getlink(),
+                  'comment_submission' => $validation['comment_submission'],
                   'users_id'  => $validation['users_id'],
                   'can_edit'  => $canedit,
                   'can_answer'   => $cananswer,
@@ -6746,17 +6746,15 @@ abstract class CommonITILObject extends CommonDBTM
                     $timeline["CommonITILValidation_" . $validations_id] = [
                     'type' => $validation_class,
                     'item' => [
-                     'id'        => $validations_id,
-                     'date'      => $validation['validation_date'],
-                     'content'   => __('Validation request answer') . " : " . _sx(
-                         'status',
-                         ucfirst($validation_class::getStatus($validation['status']))
-                     )
-                                                   . "<br>" . $validation['comment_validation'],
-                       'users_id'  => $validation['users_id_validate'],
-                       'status'    => "status_" . $validation['status'],
-                       'can_edit'  => $canedit,
-                       'timeline_position' => $validation['timeline_position'],
+                        'id'        => $validations_id,
+                        'date'      => $validation['validation_date'],
+                        'content'   => __('Validation request answer') . " : " .
+                            _sx('status',ucfirst($validation_class::getStatus($validation['status']))),
+                        'comment_validation' => $validation['comment_validation'],
+                        'users_id'  => $validation['users_id_validate'],
+                        'status'    => "status_" . $validation['status'],
+                        'can_edit'  => $canedit,
+                        'timeline_position' => $validation['timeline_position'],
                     ],
                     'class'    => 'validation-answer',
                     'itiltype' => 'Validation'
