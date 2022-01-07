@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "346e036092a1202e097221e5f102d42b",
+    "content-hash": "863d57ce7cd98da370f4e5f0ba3efa94",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -166,6 +166,74 @@
             },
             "abandoned": "psr/container",
             "time": "2017-02-14T19:40:03+00:00"
+        },
+        {
+            "name": "donatj/phpuseragentparser",
+            "version": "v1.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/donatj/PhpUserAgent.git",
+                "reference": "cc9d872cddfc180c52d084d0dff1e4aad653d37f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/donatj/PhpUserAgent/zipball/cc9d872cddfc180c52d084d0dff1e4aad653d37f",
+                "reference": "cc9d872cddfc180c52d084d0dff1e4aad653d37f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "camspiers/json-pretty": "~1.0",
+                "donatj/drop": "*",
+                "phpunit/phpunit": "~4.8|~9"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/UserAgentParser.php"
+                ],
+                "psr-4": {
+                    "donatj\\UserAgent\\": "src/UserAgent"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jesse G. Donat",
+                    "email": "donatj@gmail.com",
+                    "homepage": "https://donatstudios.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Lightning fast, minimalist PHP UserAgent string parser.",
+            "homepage": "https://donatstudios.com/PHP-Parser-HTTP_USER_AGENT",
+            "keywords": [
+                "browser",
+                "browser detection",
+                "parser",
+                "user agent",
+                "useragent"
+            ],
+            "support": {
+                "issues": "https://github.com/donatj/PhpUserAgent/issues",
+                "source": "https://github.com/donatj/PhpUserAgent/tree/v1.5.0"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.me/donatj/5",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/donatj",
+                    "type": "github"
+                }
+            ],
+            "time": "2021-09-16T17:05:03+00:00"
         },
         {
             "name": "elvanto/litemoji",
@@ -5664,5 +5732,5 @@
     "platform-overrides": {
         "php": "7.4.0"
     },
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.1.0"
 }

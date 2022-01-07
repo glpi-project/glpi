@@ -30,8 +30,13 @@
  #}
 
 {% if get_current_interface() == 'central' %}
+    {% set shortcut = __('Ctrl+Alt+G') %}
+    {% if platform == constant("donatj\\UserAgent\\Platforms::MACINTOSH") %}
+        {% set shortcut = __('Option+Command+G') %}
+    {% endif %}
+
    <button class="btn btn-icon btn-sm btn-ghost-secondary trigger-fuzzy justify-content-start mb-md-2 ps-1"
-           title="{{ __('Ctrl+Alt+G') }}"
+           title="{{ shortcut }}"
            data-bs-toggle="tooltip"
            data-bs-placement="right">
       <i class="ti ti-arrow-big-right me-1"></i>

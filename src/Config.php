@@ -2243,6 +2243,8 @@ HTML;
                  'check'   => 'Monolog\\Logger' ],
                [ 'name'    => 'sebastian/diff',
                  'check'   => 'SebastianBergmann\\Diff\\Diff' ],
+               [ 'name'    => 'donatj/phpuseragentparser',
+                 'check'   => 'donatj\\UserAgent\\UserAgentParser' ],
                [ 'name'    => 'elvanto/litemoji',
                  'check'   => 'LitEmoji\\LitEmoji' ],
                [ 'name'    => 'symfony/console',

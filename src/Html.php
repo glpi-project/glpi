@@ -31,6 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
+use donatj\UserAgent\UserAgentParser;
+use donatj\UserAgent\Platforms;
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Console\Application;
@@ -1935,11 +1937,19 @@ HTML;
 
         $user = Session::getLoginUserID() !== false ? User::getById(Session::getLoginUserID()) : null;
 
+        $platform = "";
+        if (!defined('TU_USER')) {
+            $parser = new UserAgentParser();
+            $ua = $parser->parse();
+            $platform = $ua->platform();
+        }
+
         return [
          'is_debug_active'       => $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE,
          'is_impersonate_active' => Session::isImpersonateActive(),
          'founded_new_version'   => $founded_new_version,
          'user'                  => $user instanceof User ? $user : null,
+         'platform'              => $platform,
         ];
     }
 
@@ -6402,11 +6412,20 @@ JAVASCRIPT
     {
         switch ($action) {
             case 'getHtml':
+                $shortcut = "<kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>G</kbd>";
+                if (!defined('TU_USER')) {
+                    $parser = new UserAgentParser();
+                    $ua = $parser->parse();
+                    if ($ua->platform() === Platforms::MACINTOSH) {
+                        $shortcut = "<kbd>⌥ (option)</kbd> + <kbd>⌘ (command)</kbd> + <kbd>G</kbd>";
+                    }
+                }
+
                 $modal_header = __("Go to menu");
                 $placeholder  = __("Start typing to find a menu");
                 $alert        = sprintf(
                     __("Tip: You can call this modal with %s keys combination"),
-                    "<kbd><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>G</kbd></kbd>"
+                    "<kbd>$shortcut</kbd>"
                 );
 
                 $html = <<<HTML
