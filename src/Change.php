@@ -1077,45 +1077,46 @@ class Change extends CommonITILObject
     {
         $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $_SESSION['glpiactive_entity'], '', 1);
         return [
-         '_users_id_requester'        => Session::getLoginUserID(),
-         '_users_id_requester_notif'  => [
-            'use_notification'  => $default_use_notif,
-            'alternative_email' => ''
-         ],
-         '_groups_id_requester'       => 0,
-         '_users_id_assign'           => 0,
-         '_users_id_assign_notif'     => [
-            'use_notification'  => $default_use_notif,
-            'alternative_email' => ''],
-         '_groups_id_assign'          => 0,
-         '_users_id_observer'         => 0,
-         '_users_id_observer_notif'   => [
-            'use_notification'  => $default_use_notif,
-            'alternative_email' => ''
-         ],
-         '_suppliers_id_assign_notif' => [
-            'use_notification'  => $default_use_notif,
-            'alternative_email' => ''
-         ],
-         '_groups_id_observer'        => 0,
-         '_suppliers_id_assign'       => 0,
-         'priority'                   => 3,
-         'urgency'                    => 3,
-         'impact'                     => 3,
-         'content'                    => '',
-         'entities_id'                => $_SESSION['glpiactive_entity'],
-         'name'                       => '',
-         'itilcategories_id'          => 0,
-         'actiontime'                 => 0,
-         '_add_validation'            => 0,
-         'users_id_validate'          => [],
-         '_tasktemplates_id'          => [],
-         'controlistcontent'          => '',
-         'impactcontent'              => '',
-         'rolloutplancontent'         => '',
-         'backoutplancontent'         => '',
-         'checklistcontent'           => '',
-         'items_id'                   => 0,
+            '_users_id_requester'        => Session::getLoginUserID(),
+            '_users_id_requester_notif'  => [
+                'use_notification'  => $default_use_notif,
+                'alternative_email' => ''
+            ],
+            '_groups_id_requester'       => 0,
+            '_users_id_assign'           => 0,
+            '_users_id_assign_notif'     => [
+                'use_notification'  => $default_use_notif,
+                'alternative_email' => ''],
+            '_groups_id_assign'          => 0,
+            '_users_id_observer'         => 0,
+            '_users_id_observer_notif'   => [
+                'use_notification'  => $default_use_notif,
+                'alternative_email' => ''
+            ],
+            '_suppliers_id_assign_notif' => [
+                'use_notification'  => $default_use_notif,
+                'alternative_email' => ''
+            ],
+            '_groups_id_observer'        => 0,
+             '_suppliers_id_assign'       => 0,
+             'priority'                   => 3,
+             'urgency'                    => 3,
+             'impact'                     => 3,
+             'content'                    => '',
+             'entities_id'                => $_SESSION['glpiactive_entity'],
+             'name'                       => '',
+             'itilcategories_id'          => 0,
+             'actiontime'                 => 0,
+             '_add_validation'            => 0,
+             'users_id_validate'          => [],
+             '_tasktemplates_id'          => [],
+             'controlistcontent'          => '',
+             'impactcontent'              => '',
+             'rolloutplancontent'         => '',
+             'backoutplancontent'         => '',
+             'checklistcontent'           => '',
+             'items_id'                   => 0,
+            '_actors'                     => [],
         ];
     }
 

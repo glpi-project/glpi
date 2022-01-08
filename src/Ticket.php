@@ -4327,7 +4327,9 @@ JAVASCRIPT;
                '_content'                  => [],
                '_tag_content'              => [],
                '_filename'                 => [],
-               '_tag_filename'             => []];
+               '_tag_filename'             => [],
+               '_actors'                   => [],
+            ];
     }
 
 
