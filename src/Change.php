@@ -1116,7 +1116,7 @@ class Change extends CommonITILObject
              'backoutplancontent'         => '',
              'checklistcontent'           => '',
              'items_id'                   => 0,
-            '_actors'                     => [],
+             '_actors'                     => [],
         ];
     }
 

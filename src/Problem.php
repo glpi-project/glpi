@@ -1755,7 +1755,7 @@ class Problem extends CommonITILObject
              'users_id_validate'          => [],
              '_tasktemplates_id'          => [],
              'items_id'                   => 0,
-            '_actors'                     => [],
+             '_actors'                     => [],
         ];
     }
 
