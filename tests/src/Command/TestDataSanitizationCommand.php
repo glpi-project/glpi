@@ -103,9 +103,6 @@ class TestDataSanitizationCommand extends Command
             '*' => [
                 'completename', // completename `>` separator is never encoded
             ],
-            'glpi_logs' => [
-                'new_value', // e.g. "Asset > Network port > MACexistsYes (33)"
-            ],
         ];
         return array_merge(
             $excluded_fields['*'],

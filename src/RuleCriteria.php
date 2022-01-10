@@ -99,7 +99,7 @@ class RuleCriteria extends CommonDBChild
     {
 
         if ($rule = getItemForItemtype(static::$itemtype)) {
-            return Toolbox::stripTags($rule->getMinimalCriteriaText($this->fields));
+            return preg_replace(['/<td[^>]*>/', '/<\/td>/'], [' ', ''], $rule->getMinimalCriteriaText($this->fields));
         }
         return '';
     }
