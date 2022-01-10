@@ -37,13 +37,13 @@
 class Database extends CommonDBChild
 {
    // From CommonDBTM
-    public $auto_message_on_action   = true;
-    public static $rightname                = 'database';
-    public static $mustBeAttached    = false;
+    public $auto_message_on_action = true;
+    public static $rightname       = 'database';
+    public static $mustBeAttached  = false;
 
    // From CommonDBChild
-    public static $itemtype       = 'DatabaseInstance';
-    public static $items_id       = 'databaseinstances_id';
+    public static $itemtype = 'DatabaseInstance';
+    public static $items_id = 'databaseinstances_id';
 
     public static function getTypeName($nb = 0)
     {
@@ -74,8 +74,6 @@ class Database extends CommonDBChild
         $this->showFormHeader($options);
 
         echo "<tr class='tab_bg_1'>";
-
-        $tplmark = $this->getAutofillMark('name', $options);
 
         echo "<td><label for='textfield_name$rand'>" . __('Name') . "</label></td>";
         echo "<td>";

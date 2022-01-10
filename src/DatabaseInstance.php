@@ -38,8 +38,9 @@ class DatabaseInstance extends CommonDBTM
 
    // From CommonDBTM
     public $dohistory                   = true;
-    public static $rightname                   = 'database';
+    public static $rightname            = 'database';
     protected $usenotepad               = true;
+    protected static $forward_entity_to = ['Database'];
 
     public function getCloneRelations(): array
     {
