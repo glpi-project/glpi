@@ -291,7 +291,7 @@ class Rule extends DbTestCase
     {
         $ruleTicket = new \RuleTicket();
         $this->string($ruleTicket->getCriteriaName('locations_id'))->isIdenticalTo('Ticket location');
-        $this->string($ruleTicket->getCriteriaName('location'))->isIdenticalTo(__('Unavailable') . "&nbsp;");
+        $this->string($ruleTicket->getCriteriaName('location'))->isIdenticalTo(__('Unavailable'));
     }
 
     protected function actionsNamesProvider()
@@ -445,7 +445,7 @@ class Rule extends DbTestCase
                   ];
        //The criterion doesn't exists
         $result   = $rule->getMinimalCriteriaText($input);
-        $expected = "<td >Unavailable&nbsp;</td><td >contains</td><td >_loc</td>";
+        $expected = "<td >Unavailable</td><td >contains</td><td >_loc</td>";
         $this->string($result)->isIdenticalTo($expected);
 
         $input['criteria'] = '_locations_id_of_requester';

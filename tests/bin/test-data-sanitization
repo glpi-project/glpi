@@ -48,9 +48,9 @@ include_once(GLPI_ROOT . '/inc/based_config.php');
 
 include_once(GLPI_ROOT . '/inc/includes.php');
 
-$command = new \Glpi\Tests\Command\TestUpdatedDataCommand();
+$command = new \Glpi\Tests\Command\TestDataSanitizationCommand();
 
-$app = new \Symfony\Component\Console\Application('Test updated data against fresh install', GLPI_VERSION);
+$app = new \Symfony\Component\Console\Application('Test installed/updated data sanitization', GLPI_VERSION);
 $app->add($command);
 $app->setDefaultCommand($command->getName(), true);
 $app->run();

@@ -1448,7 +1448,7 @@ class Rule extends CommonDBTM
         if (isset($criteria['name'])) {
             return $criteria['name'];
         }
-        return __('Unavailable') . "&nbsp;";
+        return __('Unavailable');
     }
 
 
@@ -2242,17 +2242,17 @@ class Rule extends CommonDBTM
     public function getMinimalCriteriaText($fields, $addtotd = '')
     {
 
-        $text  = "<td $addtotd>" . $this->getCriteriaName($fields["criteria"]) . "</td>";
-        $text .= "<td $addtotd>" . RuleCriteria::getConditionByID(
+        $text  = "<td $addtotd>" . Html::entities_deep($this->getCriteriaName($fields["criteria"])) . "</td>";
+        $text .= "<td $addtotd>" . Html::entities_deep(RuleCriteria::getConditionByID(
             $fields["condition"],
             get_class($this),
             $fields["criteria"]
-        ) . "</td>";
-        $text .= "<td $addtotd>" . $this->getCriteriaDisplayPattern(
+        )) . "</td>";
+        $text .= "<td $addtotd>" . Html::entities_deep($this->getCriteriaDisplayPattern(
             $fields["criteria"],
             $fields["condition"],
             $fields["pattern"]
-        ) . "</td>";
+        )) . "</td>";
         return $text;
     }
 

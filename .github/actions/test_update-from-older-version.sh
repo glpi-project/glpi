@@ -103,6 +103,7 @@ if [[ -z $(grep "No migration needed." $LOG_FILE) ]];
 fi
 # Check DB
 bin/console glpi:database:check_schema_integrity --config-dir=./tests/config --ansi --no-interaction
+tests/bin/test-data-sanitization --ansi --no-interaction
 
 # Check updated data
 bin/console glpi:database:configure \
