@@ -1448,7 +1448,7 @@ class Rule extends CommonDBTM
         if (isset($criteria['name'])) {
             return $criteria['name'];
         }
-        return __('Unavailable') . "&nbsp;";
+        return __('Unavailable');
     }
 
 
