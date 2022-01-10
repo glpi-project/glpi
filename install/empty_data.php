@@ -32,6 +32,7 @@
  */
 
 use Glpi\Socket;
+use Glpi\Toolbox\Sanitizer;
 
 $tables = [];
 
@@ -4168,8 +4169,8 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 ##IFticket.authors## ##ticket.authors##
 ##ENDIFticket.authors##
 ##ELSEticket.authors##--##ENDELSEticket.authors##
-&lt;span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;&#160
-;&lt;/span&gt;&lt;br /&gt; &lt;span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt; &lt;/span&gt;
+&lt;span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
+&lt;/span&gt;&lt;br /&gt; &lt;span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt; &lt;/span&gt;
 ##IFticket.category##&lt;span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 ##lang.ticket.category## &lt;/span&gt;&#160;:##ticket.category##
 ##ENDIFticket.category## ##ELSEticket.category##
@@ -8356,9 +8357,9 @@ $tables['glpi_devicefirmwaretypes'] = [
    ],
 ];
 
-$tables[DomainRecordType::getTable()] = DomainRecordType::getDefaults();
-$tables[DomainRelation::getTable()] = DomainRelation::getDefaults();
-$tables[NetworkPortType::getTable()] = NetworkPortType::getDefaults();
+$tables[DomainRecordType::getTable()] = Sanitizer::sanitize(DomainRecordType::getDefaults());
+$tables[DomainRelation::getTable()] = Sanitizer::sanitize(DomainRelation::getDefaults());
+$tables[NetworkPortType::getTable()] = Sanitizer::sanitize(NetworkPortType::getDefaults());
 
 $tables['glpi_agenttypes'] = [
    [
@@ -8367,7 +8368,7 @@ $tables['glpi_agenttypes'] = [
    ]
 ];
 
-$table[SNMPCredential::getTable()] = [
+$tables[SNMPCredential::getTable()] = [
    [
       'id' => 1,
       'name' => 'Public community v1',
