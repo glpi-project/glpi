@@ -1435,3 +1435,29 @@ function strip_tags(html_string) {
    var dom = new DOMParser().parseFromString(html_string, 'text/html');
    return dom.body.textContent;
 }
+
+/*
+ * Handle checkboxes that requires to send a "0" value to server when they are unchecked.
+ */
+$(document.body).on(
+   'submit',
+   'form',
+   (evt) => {
+      const form = $(evt.target).closest('form');
+      form.find('input[type="checkbox"][data-glpicore-cb-zero-on-empty="1"]:not(:checked)').each(
+         function(){
+            // If the checkbox is not validated, we add a hidden field with '0' as value
+            if ($(this).attr('name')) {
+               const input = $('<input>').attr(
+                  {
+                     type: 'hidden',
+                     name: $(this).attr('name'),
+                     value: '0'
+                  }
+               );
+               input.insertAfter($(this));
+            }
+         }
+      );
+   }
+);
