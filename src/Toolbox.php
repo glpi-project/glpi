@@ -2965,19 +2965,15 @@ class Toolbox
     *
     * @since 10.0.0
     *
-    * @param string  $str              String to strip tags on
-    * @param boolean $sanitized_input  Indicates whether the input has been transformed by GLPI sanitize process
+    * @param string  $str
     *
     * @return string
     *
     * @TODO Unit test
     */
-    public static function stripTags(string $str, bool $sanitized_input = false): string
+    public static function stripTags(string $str): string
     {
-
-        if ($sanitized_input) {
-            $str = Sanitizer::unsanitize($str);
-        }
+        $str = Sanitizer::getVerbatimValue($str);
 
         return strip_tags($str);
     }
