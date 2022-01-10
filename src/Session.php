@@ -1508,7 +1508,7 @@ class Session
             };
 
             // Check also unsanitized data, as sanitizing process may alter expected data.
-            $unsanitized_data = Sanitizer::getVerbatimValue($data);
+            $unsanitized_data = Sanitizer::unsanitize($data);
 
             return $match_expected($idor_data, $data) || $match_expected($idor_data, $unsanitized_data);
         }
