@@ -31,10 +31,6 @@
 
 window.CustomFlatpickrButtons = (config = {}) => {
 
-   if (config.buttons !== undefined && !Array.isArray(config.buttons)) {
-      config.buttons = [config.buttons];
-   }
-
    return (fp) => {
       let wrapper;
 
@@ -52,7 +48,7 @@ window.CustomFlatpickrButtons = (config = {}) => {
 
       return {
          onReady: () => {
-            wrapper = `<div class="flatpickr-custom-buttons pb-1"><div class="buttons-container">`;
+            wrapper = `<div class="flatpickr-custom-buttons pb-1 text-start"><div class="buttons-container">`;
 
             (config.buttons).forEach((b, index) => {
                const button = document.createElement('button');
@@ -92,20 +88,6 @@ window.CustomFlatpickrButtons = (config = {}) => {
                }
 
                click_handler(e, fp);
-            });
-
-            $(fp.calendarContainer).on('keydown', '.flatpickr-custom-buttons', (e) => {
-               const target = e.target;
-               if (target.tagName.toLowerCase() !== 'button') {
-                  return;
-               }
-
-               if (e.key === 'Tab') {
-                  if ((e.shiftKey && !target.previousSibling) || (!e.shiftKey && !target.nextSibling)) {
-                     e.preventDefault();
-                     fp.element.focus();
-                  }
-               }
             });
          },
 
