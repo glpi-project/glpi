@@ -2754,7 +2754,10 @@ HTML;
             allowInput: true,
             onClose(dates, currentdatestring, picker){
                picker.setDate(picker.altInput.value, true, picker.config.altFormat)
-            }
+            },
+            plugins: [
+               CustomFlatpickrButtons()
+            ]
          });
       });
 JS;
@@ -2932,7 +2935,10 @@ HTML;
             allowInput: true,
             onClose(dates, currentdatestring, picker){
                picker.setDate(picker.altInput.value, true, picker.config.altFormat)
-            }
+            },
+            plugins: [
+               CustomFlatpickrButtons()
+            ]
          });
       });
 JS;
@@ -6074,6 +6080,7 @@ JAVASCRIPT
                 break;
             case 'flatpickr':
                 $_SESSION['glpi_js_toload'][$name][] = 'public/lib/flatpickr.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'js/flatpickr_buttons_plugin.js';
                 if (isset($_SESSION['glpilanguage'])) {
                     $filename = "public/lib/flatpickr/l10n/" .
                     strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]) . ".js";
