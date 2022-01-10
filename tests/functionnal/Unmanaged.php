@@ -39,7 +39,6 @@ use DbTestCase;
 
 class Unmanaged extends DbTestCase
 {
-
     /**
      * When a switch is inventoried with an unknown linked mac address that belongs in reality to a computer,
      * it creates an Unmanaged device.
@@ -183,7 +182,10 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
 
         $networkports = $networkPort->find(['mac' => 'cc:f9:54:a1:03:35']);
 
-        $this->integer(count($networkports))->isIdenticalTo(1 , "The MAC address cc:f9:54:a1:03:35 must be tied to only one port");
+        $this->integer(count($networkports))->isIdenticalTo(
+            1,
+            "The MAC address cc:f9:54:a1:03:35 must be tied to only one port"
+        );
 
         $a_networkport = current($networkports);
         $this->integer($a_networkport['id'])->isIdenticalTo(
