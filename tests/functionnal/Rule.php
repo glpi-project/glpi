@@ -291,7 +291,7 @@ class Rule extends DbTestCase
     {
         $ruleTicket = new \RuleTicket();
         $this->string($ruleTicket->getCriteriaName('locations_id'))->isIdenticalTo('Ticket location');
-        $this->string($ruleTicket->getCriteriaName('location'))->isIdenticalTo(__('Unavailable') . "&nbsp;");
+        $this->string($ruleTicket->getCriteriaName('location'))->isIdenticalTo(__('Unavailable'));
     }
 
     protected function actionsNamesProvider()
