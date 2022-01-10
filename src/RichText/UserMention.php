@@ -86,14 +86,14 @@ final class UserMention
             if ($new_value !== null) {
                 $mentionned_actors_ids = array_merge(
                     $mentionned_actors_ids,
-                    self::getUserIdsFromUserMentions($new_value, true)
+                    self::getUserIdsFromUserMentions($new_value)
                 );
             }
 
             if ($previous_value !== null) {
                 $previously_mentionned_actors_ids = array_merge(
                     $previously_mentionned_actors_ids,
-                    self::getUserIdsFromUserMentions($previous_value, true)
+                    self::getUserIdsFromUserMentions($previous_value)
                 );
             }
         }
@@ -179,18 +179,15 @@ final class UserMention
     * Extract ids of mentioned users.
     *
     * @param string $content
-    * @param bool $sanitized
     *
     * @return int[]
     */
-    public static function getUserIdsFromUserMentions(string $content, bool $sanitized = false)
+    public static function getUserIdsFromUserMentions(string $content)
     {
         $ids = [];
 
         try {
-            if ($sanitized) {
-                $content = Sanitizer::unsanitize($content, true);
-            }
+            $content = Sanitizer::getVerbatimValue($content);
             libxml_use_internal_errors(true);
             $content_as_xml = new SimpleXMLElement('<div>' . $content . '</div>');
         } catch (\Throwable $e) {

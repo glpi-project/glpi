@@ -64,7 +64,7 @@ abstract class StatDataLocation extends StatData
 
         foreach ($data[$data_key] as $key => $val) {
             if ($val > 0) {
-                $newkey = Toolbox::stripTags($key, true);
+                $newkey = Toolbox::stripTags($key);
                 $this->labels[] = $newkey;
                 $this->series[] = ['name' => $newkey, 'data' => $val];
                 $this->total += $val;
