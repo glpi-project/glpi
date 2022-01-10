@@ -621,6 +621,23 @@ class Migration
 
 
    /**
+    * Drop foreign key for migration
+    *
+    * @param string $table
+    * @param string $keyname
+    *
+    * @return void
+   **/
+    public function dropForeignKeyContraint($table, $keyname)
+    {
+
+        if (isForeignKeyContraint($table, $keyname)) {
+            $this->change[$table][] = "DROP FOREIGN KEY `$keyname`";
+        }
+    }
+
+
+   /**
     * Rename table for migration
     *
     * @param string $oldtable Old table name
@@ -1415,7 +1432,7 @@ class Migration
                     $fkey_table,
                     $fkey_oldname,
                     $fkey_newname,
-                    'integer' // assume that foreign key always uses integer type
+                    "int unsigned NOT NULL DEFAULT '0'" // assume that foreign key always uses GLPI conventions
                 );
             }
         }

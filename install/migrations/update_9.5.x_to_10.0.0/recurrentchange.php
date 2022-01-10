@@ -57,7 +57,7 @@ $DB->updateOrDie(
 $recurrent_change_table = 'glpi_recurrentchanges';
 if (!$DB->tableExists($recurrent_change_table)) {
     $DB->queryOrDie("CREATE TABLE `$recurrent_change_table` (
-         `id` int NOT NULL AUTO_INCREMENT,
+         `id` int unsigned NOT NULL AUTO_INCREMENT,
          `name` varchar(255) DEFAULT NULL,
          `comment` text,
          `entities_id` int NOT NULL DEFAULT '0',

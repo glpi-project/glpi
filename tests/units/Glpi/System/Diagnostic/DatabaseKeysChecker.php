@@ -42,7 +42,7 @@ class DatabaseKeysChecker extends \GLPITestCase
             // Uncommon is_ flags and dates may have no entry in index
             'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `content` text NOT NULL,
   `externalid` int NOT NULL,
@@ -60,11 +60,11 @@ SQL
             // All these fields (except name) have NOT expected corresponding key
             'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `entities_id` int NOT NULL,
+  `entities_id` int unsigned NOT NULL,
   `is_recursive` tinyint NOT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
   `is_active` tinyint NOT NULL,
   `is_deleted` tinyint NOT NULL,
@@ -94,11 +94,11 @@ SQL
             // All these fields (except name) have expected corresponding key
             'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `entities_id` int NOT NULL,
+  `entities_id` int unsigned NOT NULL,
   `is_recursive` tinyint NOT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
   `is_active` tinyint NOT NULL,
   `is_deleted` tinyint NOT NULL,
@@ -127,12 +127,12 @@ SQL
             // Fields be indexed in a key that contains other keys, but only if they are at first position
             'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `computers_id` int NOT NULL,
-  `items_id_1` int NOT NULL DEFAULT '0',
+  `computers_id` int unsigned NOT NULL,
+  `items_id_1` int unsigned NOT NULL DEFAULT '0',
   `itemtype_1` varchar(100) NOT NULL,
-  `items_id_2` int NOT NULL DEFAULT '0',
+  `items_id_2` int unsigned NOT NULL DEFAULT '0',
   `itemtype_2` varchar(100) NOT NULL,
   `is_active` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -152,9 +152,9 @@ SQL
             // Key should match field name when key corresponds to a unique field
             'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `computers_id` int NOT NULL,
+  `computers_id` int unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `some_key` (`computers_id`)
 ) ENGINE=InnoDB
@@ -170,11 +170,11 @@ SQL
             // Key should match `item(_suffix)?` pattern when key corresponds to a itemtype/items_id couple
             'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
-  `items_id_blablabla` int NOT NULL DEFAULT '0',
+  `items_id_blablabla` int unsigned NOT NULL DEFAULT '0',
   `itemtype_blablabla` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `mainitem` (`itemtype`, `items_id`),
@@ -193,10 +193,10 @@ SQL
             // Keys are useless if included in larger keys
             'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `computers_id` int NOT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
+  `computers_id` int unsigned NOT NULL,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
   `items_linktype` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
@@ -218,7 +218,7 @@ SQL
             // Keys are NOT useless if included in FULLTEXT larger keys
             'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `content` text,
   PRIMARY KEY (`id`),
@@ -235,7 +235,7 @@ SQL
             // name field should be indexed (default name field)
             'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB
@@ -253,7 +253,7 @@ SQL
             // name field should be indexed (custom name field)
             'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `test` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
@@ -293,7 +293,7 @@ SQL
             // name field cannot be indexed if it is a text field
             'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB

@@ -470,6 +470,21 @@ function isIndex($table, $field)
 
 
 /**
+ * Determine if a foreign key exists in database
+ *
+ * @param string $table
+ * @param string $keyname
+ *
+ * @return boolean
+ */
+function isForeignKeyContraint($table, $keyname)
+{
+    $dbu = new DbUtils();
+    return $dbu->isForeignKeyContraint($table, $keyname);
+}
+
+
+/**
  * Create a new name using a autoname field defined in a template
  *
  * @param string  $objectName  autoname template

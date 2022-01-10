@@ -609,6 +609,32 @@ final class DbUtils
         return false;
     }
 
+    /**
+     * Determine if a foreign key exists in database
+     *
+     * @param string $table
+     * @param string $keyname
+     *
+     * @return boolean
+     */
+    public function isForeignKeyContraint($table, $keyname)
+    {
+        global $DB;
+
+        $query = [
+            'FROM'   => 'information_schema.key_column_usage',
+            'WHERE'  => [
+                'constraint_schema' => $DB->dbdefault,
+                'table_name'        => $table,
+                'constraint_name'   => $keyname,
+            ]
+        ];
+
+        $iterator = $DB->request($query);
+
+        return $iterator->count() > 0;
+    }
+
    /**
     * Get SQL request to restrict to current entities of the user
     *

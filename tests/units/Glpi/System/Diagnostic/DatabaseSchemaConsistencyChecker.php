@@ -41,7 +41,7 @@ class DatabaseSchemaConsistencyChecker extends \GLPITestCase
         yield [
          'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -55,7 +55,7 @@ SQL
         yield [
          'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -69,7 +69,7 @@ SQL
         yield [
          'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,

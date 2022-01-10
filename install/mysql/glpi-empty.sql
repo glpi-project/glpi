@@ -35,9 +35,9 @@ SET FOREIGN_KEY_CHECKS=0;
 
 DROP TABLE IF EXISTS `glpi_alerts`;
 CREATE TABLE `glpi_alerts` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(100) NOT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `type` int NOT NULL DEFAULT '0' COMMENT 'see define.php ALERT_* constant',
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -51,8 +51,8 @@ CREATE TABLE `glpi_alerts` (
 
 DROP TABLE IF EXISTS `glpi_authldapreplicates`;
 CREATE TABLE `glpi_authldapreplicates` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `authldaps_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `authldaps_id` int unsigned NOT NULL DEFAULT '0',
   `host` varchar(255) DEFAULT NULL,
   `port` int NOT NULL DEFAULT '389',
   `name` varchar(255) DEFAULT NULL,
@@ -67,7 +67,7 @@ CREATE TABLE `glpi_authldapreplicates` (
 
 DROP TABLE IF EXISTS `glpi_authldaps`;
 CREATE TABLE `glpi_authldaps` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `host` varchar(255) DEFAULT NULL,
   `basedn` varchar(255) DEFAULT NULL,
@@ -131,7 +131,7 @@ CREATE TABLE `glpi_authldaps` (
 
 DROP TABLE IF EXISTS `glpi_authmails`;
 CREATE TABLE `glpi_authmails` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `connect_string` varchar(255) DEFAULT NULL,
   `host` varchar(255) DEFAULT NULL,
@@ -150,7 +150,7 @@ CREATE TABLE `glpi_authmails` (
 
 DROP TABLE IF EXISTS `glpi_apiclients`;
 CREATE TABLE `glpi_apiclients` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
@@ -178,7 +178,7 @@ CREATE TABLE `glpi_apiclients` (
 
 DROP TABLE IF EXISTS `glpi_autoupdatesystems`;
 CREATE TABLE `glpi_autoupdatesystems` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   PRIMARY KEY (`id`),
@@ -190,7 +190,7 @@ CREATE TABLE `glpi_autoupdatesystems` (
 
 DROP TABLE IF EXISTS `glpi_blacklistedmailcontents`;
 CREATE TABLE `glpi_blacklistedmailcontents` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `content` text,
   `comment` text,
@@ -207,7 +207,7 @@ CREATE TABLE `glpi_blacklistedmailcontents` (
 
 DROP TABLE IF EXISTS `glpi_blacklists`;
 CREATE TABLE `glpi_blacklists` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `type` int NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `value` varchar(255) DEFAULT NULL,
@@ -226,11 +226,11 @@ CREATE TABLE `glpi_blacklists` (
 
 DROP TABLE IF EXISTS `glpi_savedsearches`;
 CREATE TABLE `glpi_savedsearches` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `type` int NOT NULL DEFAULT '0' COMMENT 'see SavedSearch:: constants',
   `itemtype` varchar(100) NOT NULL,
-  `users_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   `is_private` tinyint NOT NULL DEFAULT '1',
   `entities_id` int NOT NULL DEFAULT '-1',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -257,10 +257,10 @@ CREATE TABLE `glpi_savedsearches` (
 
 DROP TABLE IF EXISTS `glpi_savedsearches_users`;
 CREATE TABLE `glpi_savedsearches_users` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `users_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
-  `savedsearches_id` int NOT NULL DEFAULT '0',
+  `savedsearches_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`users_id`,`itemtype`),
   KEY `savedsearches_id` (`savedsearches_id`)
@@ -271,8 +271,8 @@ CREATE TABLE `glpi_savedsearches_users` (
 
 DROP TABLE IF EXISTS `glpi_savedsearches_alerts`;
 CREATE TABLE `glpi_savedsearches_alerts` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `savedsearches_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `savedsearches_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `is_active` tinyint NOT NULL DEFAULT '0',
   `operator` tinyint NOT NULL,
@@ -293,7 +293,7 @@ CREATE TABLE `glpi_savedsearches_alerts` (
 
 DROP TABLE IF EXISTS `glpi_budgets`;
 CREATE TABLE `glpi_budgets` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -306,8 +306,8 @@ CREATE TABLE `glpi_budgets` (
   `template_name` varchar(255) DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `budgettypes_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `budgettypes_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_recursive` (`is_recursive`),
@@ -327,7 +327,7 @@ CREATE TABLE `glpi_budgets` (
 
 DROP TABLE IF EXISTS `glpi_budgettypes`;
 CREATE TABLE `glpi_budgettypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -342,14 +342,14 @@ CREATE TABLE `glpi_budgettypes` (
 
 DROP TABLE IF EXISTS `glpi_businesscriticities`;
 CREATE TABLE `glpi_businesscriticities` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
-  `businesscriticities_id` int NOT NULL DEFAULT '0',
+  `businesscriticities_id` int unsigned NOT NULL DEFAULT '0',
   `completename` text,
   `level` int NOT NULL DEFAULT '0',
   `ancestors_cache` longtext,
@@ -389,9 +389,9 @@ CREATE TABLE `glpi_calendars` (
 
 DROP TABLE IF EXISTS `glpi_calendars_holidays`;
 CREATE TABLE `glpi_calendars_holidays` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `calendars_id` int NOT NULL DEFAULT '0',
-  `holidays_id` int NOT NULL DEFAULT '0',
+  `holidays_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`calendars_id`,`holidays_id`),
   KEY `holidays_id` (`holidays_id`)
@@ -402,7 +402,7 @@ CREATE TABLE `glpi_calendars_holidays` (
 
 DROP TABLE IF EXISTS `glpi_calendarsegments`;
 CREATE TABLE `glpi_calendarsegments` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `calendars_id` int NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -421,16 +421,16 @@ CREATE TABLE `glpi_calendarsegments` (
 
 DROP TABLE IF EXISTS `glpi_cartridgeitems`;
 CREATE TABLE `glpi_cartridgeitems` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `ref` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `cartridgeitemtypes_id` int NOT NULL DEFAULT '0',
-  `manufacturers_id` int NOT NULL DEFAULT '0',
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `cartridgeitemtypes_id` int unsigned NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `comment` text,
   `alarm_threshold` int NOT NULL DEFAULT '10',
@@ -455,8 +455,8 @@ CREATE TABLE `glpi_cartridgeitems` (
 
 DROP TABLE IF EXISTS `glpi_printers_cartridgeinfos`;
 CREATE TABLE `glpi_printers_cartridgeinfos` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `printers_id` int NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `printers_id` int unsigned NOT NULL,
   `property` varchar(255) NOT NULL,
   `value` varchar(255) NOT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -471,9 +471,9 @@ CREATE TABLE `glpi_printers_cartridgeinfos` (
 
 DROP TABLE IF EXISTS `glpi_cartridgeitems_printermodels`;
 CREATE TABLE `glpi_cartridgeitems_printermodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `cartridgeitems_id` int NOT NULL DEFAULT '0',
-  `printermodels_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `cartridgeitems_id` int unsigned NOT NULL DEFAULT '0',
+  `printermodels_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`printermodels_id`,`cartridgeitems_id`),
   KEY `cartridgeitems_id` (`cartridgeitems_id`)
@@ -484,7 +484,7 @@ CREATE TABLE `glpi_cartridgeitems_printermodels` (
 
 DROP TABLE IF EXISTS `glpi_cartridgeitemtypes`;
 CREATE TABLE `glpi_cartridgeitemtypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -500,10 +500,10 @@ CREATE TABLE `glpi_cartridgeitemtypes` (
 
 DROP TABLE IF EXISTS `glpi_cartridges`;
 CREATE TABLE `glpi_cartridges` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
-  `cartridgeitems_id` int NOT NULL DEFAULT '0',
-  `printers_id` int NOT NULL DEFAULT '0',
+  `cartridgeitems_id` int unsigned NOT NULL DEFAULT '0',
+  `printers_id` int unsigned NOT NULL DEFAULT '0',
   `date_in` date DEFAULT NULL,
   `date_use` date DEFAULT NULL,
   `date_out` date DEFAULT NULL,
@@ -523,7 +523,7 @@ CREATE TABLE `glpi_cartridges` (
 
 DROP TABLE IF EXISTS `glpi_certificates`;
 CREATE TABLE `glpi_certificates` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
@@ -533,20 +533,20 @@ CREATE TABLE `glpi_certificates` (
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
-  `certificatetypes_id` int NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_certificatetypes (id)',
+  `certificatetypes_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_certificatetypes (id)',
   `dns_name` varchar(255) DEFAULT NULL,
   `dns_suffix` varchar(255) DEFAULT NULL,
-  `users_id_tech` int NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_users (id)',
-  `groups_id_tech` int NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_groups (id)',
-  `locations_id` int NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_locations (id)',
-  `manufacturers_id` int NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_manufacturers (id)',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_users (id)',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_groups (id)',
+  `locations_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_locations (id)',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_manufacturers (id)',
   `contact` varchar(255) DEFAULT NULL,
   `contact_num` varchar(255) DEFAULT NULL,
-  `users_id` int NOT NULL DEFAULT '0',
-  `groups_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
   `is_autosign` tinyint NOT NULL DEFAULT '0',
   `date_expiration` date DEFAULT NULL,
-  `states_id` int NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
+  `states_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
   `command` text,
   `certificate_request` text,
   `certificate_item` text,
@@ -575,9 +575,9 @@ CREATE TABLE `glpi_certificates` (
 
 DROP TABLE IF EXISTS `glpi_certificates_items`;
 CREATE TABLE `glpi_certificates_items` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `certificates_id` int NOT NULL DEFAULT '0',
-  `items_id` int NOT NULL DEFAULT '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `certificates_id` int unsigned NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
   `itemtype` varchar(100) NOT NULL COMMENT 'see .class.php file',
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -593,7 +593,7 @@ CREATE TABLE `glpi_certificates_items` (
 
 DROP TABLE IF EXISTS `glpi_certificatetypes`;
 CREATE TABLE `glpi_certificatetypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
@@ -613,8 +613,8 @@ CREATE TABLE `glpi_certificatetypes` (
 
 DROP TABLE IF EXISTS `glpi_changecosts`;
 CREATE TABLE `glpi_changecosts` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `changes_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `changes_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `begin_date` date DEFAULT NULL,
@@ -623,7 +623,7 @@ CREATE TABLE `glpi_changecosts` (
   `cost_time` decimal(20,4) NOT NULL DEFAULT '0.0000',
   `cost_fixed` decimal(20,4) NOT NULL DEFAULT '0.0000',
   `cost_material` decimal(20,4) NOT NULL DEFAULT '0.0000',
-  `budgets_id` int NOT NULL DEFAULT '0',
+  `budgets_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -641,7 +641,7 @@ CREATE TABLE `glpi_changecosts` (
 
 DROP TABLE IF EXISTS `glpi_changes`;
 CREATE TABLE `glpi_changes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -653,12 +653,12 @@ CREATE TABLE `glpi_changes` (
   `solvedate` timestamp NULL DEFAULT NULL,
   `closedate` timestamp NULL DEFAULT NULL,
   `time_to_resolve` timestamp NULL DEFAULT NULL,
-  `users_id_recipient` int NOT NULL DEFAULT '0',
-  `users_id_lastupdater` int NOT NULL DEFAULT '0',
+  `users_id_recipient` int unsigned NOT NULL DEFAULT '0',
+  `users_id_lastupdater` int unsigned NOT NULL DEFAULT '0',
   `urgency` int NOT NULL DEFAULT '1',
   `impact` int NOT NULL DEFAULT '1',
   `priority` int NOT NULL DEFAULT '1',
-  `itilcategories_id` int NOT NULL DEFAULT '0',
+  `itilcategories_id` int unsigned NOT NULL DEFAULT '0',
   `impactcontent` longtext,
   `controlistcontent` longtext,
   `rolloutplancontent` longtext,
@@ -698,9 +698,9 @@ CREATE TABLE `glpi_changes` (
 
 DROP TABLE IF EXISTS `glpi_changes_groups`;
 CREATE TABLE `glpi_changes_groups` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `changes_id` int NOT NULL DEFAULT '0',
-  `groups_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `changes_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
   `type` int NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`changes_id`,`type`,`groups_id`),
@@ -712,10 +712,10 @@ CREATE TABLE `glpi_changes_groups` (
 
 DROP TABLE IF EXISTS `glpi_changes_items`;
 CREATE TABLE `glpi_changes_items` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `changes_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `changes_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) DEFAULT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`changes_id`,`itemtype`,`items_id`),
   KEY `item` (`itemtype`,`items_id`)
@@ -726,9 +726,9 @@ CREATE TABLE `glpi_changes_items` (
 
 DROP TABLE IF EXISTS `glpi_changes_problems`;
 CREATE TABLE `glpi_changes_problems` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `changes_id` int NOT NULL DEFAULT '0',
-  `problems_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `changes_id` int unsigned NOT NULL DEFAULT '0',
+  `problems_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`changes_id`,`problems_id`),
   KEY `problems_id` (`problems_id`)
@@ -739,9 +739,9 @@ CREATE TABLE `glpi_changes_problems` (
 
 DROP TABLE IF EXISTS `glpi_changes_suppliers`;
 CREATE TABLE `glpi_changes_suppliers` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `changes_id` int NOT NULL DEFAULT '0',
-  `suppliers_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `changes_id` int unsigned NOT NULL DEFAULT '0',
+  `suppliers_id` int unsigned NOT NULL DEFAULT '0',
   `type` int NOT NULL DEFAULT '1',
   `use_notification` tinyint NOT NULL DEFAULT '0',
   `alternative_email` varchar(255) DEFAULT NULL,
@@ -755,9 +755,9 @@ CREATE TABLE `glpi_changes_suppliers` (
 
 DROP TABLE IF EXISTS `glpi_changes_tickets`;
 CREATE TABLE `glpi_changes_tickets` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `changes_id` int NOT NULL DEFAULT '0',
-  `tickets_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `changes_id` int unsigned NOT NULL DEFAULT '0',
+  `tickets_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`changes_id`,`tickets_id`),
   KEY `tickets_id` (`tickets_id`)
@@ -768,9 +768,9 @@ CREATE TABLE `glpi_changes_tickets` (
 
 DROP TABLE IF EXISTS `glpi_changes_users`;
 CREATE TABLE `glpi_changes_users` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `changes_id` int NOT NULL DEFAULT '0',
-  `users_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `changes_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   `type` int NOT NULL DEFAULT '1',
   `use_notification` tinyint NOT NULL DEFAULT '0',
   `alternative_email` varchar(255) DEFAULT NULL,
@@ -784,23 +784,23 @@ CREATE TABLE `glpi_changes_users` (
 
 DROP TABLE IF EXISTS `glpi_changetasks`;
 CREATE TABLE `glpi_changetasks` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `uuid` varchar(255) DEFAULT NULL,
-  `changes_id` int NOT NULL DEFAULT '0',
-  `taskcategories_id` int NOT NULL DEFAULT '0',
+  `changes_id` int unsigned NOT NULL DEFAULT '0',
+  `taskcategories_id` int unsigned NOT NULL DEFAULT '0',
   `state` int NOT NULL DEFAULT '0',
   `date` timestamp NULL DEFAULT NULL,
   `begin` timestamp NULL DEFAULT NULL,
   `end` timestamp NULL DEFAULT NULL,
-  `users_id` int NOT NULL DEFAULT '0',
-  `users_id_editor` int NOT NULL DEFAULT '0',
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_editor` int unsigned NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `content` longtext,
   `actiontime` int NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
-  `tasktemplates_id` int NOT NULL DEFAULT '0',
+  `tasktemplates_id` int unsigned NOT NULL DEFAULT '0',
   `timeline_position` tinyint NOT NULL DEFAULT '0',
   `is_private` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -826,12 +826,12 @@ CREATE TABLE `glpi_changetasks` (
 
 DROP TABLE IF EXISTS `glpi_changevalidations`;
 CREATE TABLE `glpi_changevalidations` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `users_id` int NOT NULL DEFAULT '0',
-  `changes_id` int NOT NULL DEFAULT '0',
-  `users_id_validate` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `changes_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_validate` int unsigned NOT NULL DEFAULT '0',
   `comment_submission` text,
   `comment_validation` text,
   `status` int NOT NULL DEFAULT '2',
@@ -854,10 +854,10 @@ CREATE TABLE `glpi_changevalidations` (
 
 DROP TABLE IF EXISTS `glpi_computerantiviruses`;
 CREATE TABLE `glpi_computerantiviruses` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `computers_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `computers_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `antivirus_version` varchar(255) DEFAULT NULL,
   `signature_version` varchar(255) DEFAULT NULL,
   `is_active` tinyint NOT NULL DEFAULT '0',
@@ -887,14 +887,14 @@ CREATE TABLE `glpi_computerantiviruses` (
 
 DROP TABLE IF EXISTS `glpi_items_disks`;
 CREATE TABLE `glpi_items_disks` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `itemtype` varchar(255) DEFAULT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `device` varchar(255) DEFAULT NULL,
   `mountpoint` varchar(255) DEFAULT NULL,
-  `filesystems_id` int NOT NULL DEFAULT '0',
+  `filesystems_id` int unsigned NOT NULL DEFAULT '0',
   `totalsize` int NOT NULL DEFAULT '0',
   `freesize` int NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
@@ -925,7 +925,7 @@ CREATE TABLE `glpi_items_disks` (
 
 DROP TABLE IF EXISTS `glpi_computermodels`;
 CREATE TABLE `glpi_computermodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -952,30 +952,30 @@ CREATE TABLE `glpi_computermodels` (
 
 DROP TABLE IF EXISTS `glpi_computers`;
 CREATE TABLE `glpi_computers` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
   `contact` varchar(255) DEFAULT NULL,
   `contact_num` varchar(255) DEFAULT NULL,
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
-  `autoupdatesystems_id` int NOT NULL DEFAULT '0',
-  `locations_id` int NOT NULL DEFAULT '0',
-  `networks_id` int NOT NULL DEFAULT '0',
-  `computermodels_id` int NOT NULL DEFAULT '0',
-  `computertypes_id` int NOT NULL DEFAULT '0',
+  `autoupdatesystems_id` int unsigned NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `networks_id` int unsigned NOT NULL DEFAULT '0',
+  `computermodels_id` int unsigned NOT NULL DEFAULT '0',
+  `computertypes_id` int unsigned NOT NULL DEFAULT '0',
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
-  `users_id` int NOT NULL DEFAULT '0',
-  `groups_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
   `uuid` varchar(255) DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
@@ -1010,9 +1010,9 @@ CREATE TABLE `glpi_computers` (
 
 DROP TABLE IF EXISTS `glpi_computers_items`;
 CREATE TABLE `glpi_computers_items` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0' COMMENT 'RELATION to various table, according to itemtype (ID)',
-  `computers_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to various table, according to itemtype (ID)',
+  `computers_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
@@ -1029,10 +1029,10 @@ CREATE TABLE `glpi_computers_items` (
 
 DROP TABLE IF EXISTS `glpi_items_softwarelicenses`;
 CREATE TABLE `glpi_items_softwarelicenses` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
-  `softwarelicenses_id` int NOT NULL DEFAULT '0',
+  `softwarelicenses_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -1047,10 +1047,10 @@ CREATE TABLE `glpi_items_softwarelicenses` (
 
 DROP TABLE IF EXISTS `glpi_items_softwareversions`;
 CREATE TABLE `glpi_items_softwareversions` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
-  `softwareversions_id` int NOT NULL DEFAULT '0',
+  `softwareversions_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted_item` tinyint NOT NULL DEFAULT '0',
   `is_template_item` tinyint NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
@@ -1073,7 +1073,7 @@ CREATE TABLE `glpi_items_softwareversions` (
 
 DROP TABLE IF EXISTS `glpi_computertypes`;
 CREATE TABLE `glpi_computertypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -1089,13 +1089,13 @@ CREATE TABLE `glpi_computertypes` (
 
 DROP TABLE IF EXISTS `glpi_computervirtualmachines`;
 CREATE TABLE `glpi_computervirtualmachines` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
-  `computers_id` int NOT NULL DEFAULT '0',
+  `computers_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) NOT NULL DEFAULT '',
-  `virtualmachinestates_id` int NOT NULL DEFAULT '0',
-  `virtualmachinesystems_id` int NOT NULL DEFAULT '0',
-  `virtualmachinetypes_id` int NOT NULL DEFAULT '0',
+  `virtualmachinestates_id` int unsigned NOT NULL DEFAULT '0',
+  `virtualmachinesystems_id` int unsigned NOT NULL DEFAULT '0',
+  `virtualmachinetypes_id` int unsigned NOT NULL DEFAULT '0',
   `uuid` varchar(255) NOT NULL DEFAULT '',
   `vcpu` int NOT NULL DEFAULT '0',
   `ram` varchar(255) NOT NULL DEFAULT '',
@@ -1125,17 +1125,17 @@ CREATE TABLE `glpi_computervirtualmachines` (
 
 DROP TABLE IF EXISTS `glpi_items_operatingsystems`;
 CREATE TABLE `glpi_items_operatingsystems` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(255) DEFAULT NULL,
-  `operatingsystems_id` int NOT NULL DEFAULT '0',
-  `operatingsystemversions_id` int NOT NULL DEFAULT '0',
-  `operatingsystemservicepacks_id` int NOT NULL DEFAULT '0',
-  `operatingsystemarchitectures_id` int NOT NULL DEFAULT '0',
-  `operatingsystemkernelversions_id` int NOT NULL DEFAULT '0',
+  `operatingsystems_id` int unsigned NOT NULL DEFAULT '0',
+  `operatingsystemversions_id` int unsigned NOT NULL DEFAULT '0',
+  `operatingsystemservicepacks_id` int unsigned NOT NULL DEFAULT '0',
+  `operatingsystemarchitectures_id` int unsigned NOT NULL DEFAULT '0',
+  `operatingsystemkernelversions_id` int unsigned NOT NULL DEFAULT '0',
   `license_number` varchar(255) DEFAULT NULL,
   `licenseid` varchar(255) DEFAULT NULL,
-  `operatingsystemeditions_id` int NOT NULL DEFAULT '0',
+  `operatingsystemeditions_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
@@ -1164,7 +1164,7 @@ CREATE TABLE `glpi_items_operatingsystems` (
 
 DROP TABLE IF EXISTS `glpi_operatingsystemkernels`;
 CREATE TABLE `glpi_operatingsystemkernels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -1180,8 +1180,8 @@ CREATE TABLE `glpi_operatingsystemkernels` (
 
 DROP TABLE IF EXISTS `glpi_operatingsystemkernelversions`;
 CREATE TABLE `glpi_operatingsystemkernelversions` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `operatingsystemkernels_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `operatingsystemkernels_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -1197,7 +1197,7 @@ CREATE TABLE `glpi_operatingsystemkernelversions` (
 
 DROP TABLE IF EXISTS `glpi_operatingsystemeditions`;
 CREATE TABLE `glpi_operatingsystemeditions` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -1212,7 +1212,7 @@ CREATE TABLE `glpi_operatingsystemeditions` (
 
 DROP TABLE IF EXISTS `glpi_configs`;
 CREATE TABLE `glpi_configs` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `context` varchar(150) DEFAULT NULL,
   `name` varchar(150) DEFAULT NULL,
   `value` text,
@@ -1225,11 +1225,11 @@ CREATE TABLE `glpi_configs` (
 
 DROP TABLE IF EXISTS `glpi_impactrelations`;
 CREATE TABLE `glpi_impactrelations` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype_source` varchar(255) NOT NULL DEFAULT '',
-  `items_id_source` int NOT NULL DEFAULT '0',
+  `items_id_source` int unsigned NOT NULL DEFAULT '0',
   `itemtype_impacted` varchar(255) NOT NULL DEFAULT '',
-  `items_id_impacted` int NOT NULL DEFAULT '0',
+  `items_id_impacted` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype_source`,`items_id_source`,`itemtype_impacted`,`items_id_impacted`),
   KEY `impacted_asset` (`itemtype_impacted`,`items_id_impacted`)
@@ -1240,7 +1240,7 @@ CREATE TABLE `glpi_impactrelations` (
 
 DROP TABLE IF EXISTS `glpi_impactcompounds`;
 CREATE TABLE `glpi_impactcompounds` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT '',
   `color` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
@@ -1252,11 +1252,11 @@ CREATE TABLE `glpi_impactcompounds` (
 
 DROP TABLE IF EXISTS `glpi_impactitems`;
 CREATE TABLE `glpi_impactitems` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(255) NOT NULL DEFAULT '',
-  `items_id` int NOT NULL DEFAULT '0',
-  `parent_id` int NOT NULL DEFAULT '0',
-  `impactcontexts_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
+  `parent_id` int unsigned NOT NULL DEFAULT '0',
+  `impactcontexts_id` int unsigned NOT NULL DEFAULT '0',
   `is_slave` tinyint NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`),
@@ -1269,7 +1269,7 @@ CREATE TABLE `glpi_impactitems` (
 
 DROP TABLE IF EXISTS `glpi_impactcontexts`;
 CREATE TABLE `glpi_impactcontexts` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `positions` mediumtext NOT NULL,
   `zoom` float NOT NULL DEFAULT '0',
   `pan_x` float NOT NULL DEFAULT '0',
@@ -1287,16 +1287,16 @@ CREATE TABLE `glpi_impactcontexts` (
 
 DROP TABLE IF EXISTS `glpi_consumableitems`;
 CREATE TABLE `glpi_consumableitems` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `ref` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `consumableitemtypes_id` int NOT NULL DEFAULT '0',
-  `manufacturers_id` int NOT NULL DEFAULT '0',
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `consumableitemtypes_id` int unsigned NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `comment` text,
   `alarm_threshold` int NOT NULL DEFAULT '10',
@@ -1326,7 +1326,7 @@ CREATE TABLE `glpi_consumableitems` (
 
 DROP TABLE IF EXISTS `glpi_consumableitemtypes`;
 CREATE TABLE `glpi_consumableitemtypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -1342,13 +1342,13 @@ CREATE TABLE `glpi_consumableitemtypes` (
 
 DROP TABLE IF EXISTS `glpi_consumables`;
 CREATE TABLE `glpi_consumables` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
-  `consumableitems_id` int NOT NULL DEFAULT '0',
+  `consumableitems_id` int unsigned NOT NULL DEFAULT '0',
   `date_in` date DEFAULT NULL,
   `date_out` date DEFAULT NULL,
   `itemtype` varchar(100) DEFAULT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1366,7 +1366,7 @@ CREATE TABLE `glpi_consumables` (
 
 DROP TABLE IF EXISTS `glpi_contacts`;
 CREATE TABLE `glpi_contacts` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
@@ -1377,10 +1377,10 @@ CREATE TABLE `glpi_contacts` (
   `mobile` varchar(255) DEFAULT NULL,
   `fax` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
-  `contacttypes_id` int NOT NULL DEFAULT '0',
+  `contacttypes_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
-  `usertitles_id` int NOT NULL DEFAULT '0',
+  `usertitles_id` int unsigned NOT NULL DEFAULT '0',
   `address` text,
   `postcode` varchar(255) DEFAULT NULL,
   `town` varchar(255) DEFAULT NULL,
@@ -1405,9 +1405,9 @@ CREATE TABLE `glpi_contacts` (
 
 DROP TABLE IF EXISTS `glpi_contacts_suppliers`;
 CREATE TABLE `glpi_contacts_suppliers` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `suppliers_id` int NOT NULL DEFAULT '0',
-  `contacts_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `suppliers_id` int unsigned NOT NULL DEFAULT '0',
+  `contacts_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`suppliers_id`,`contacts_id`),
   KEY `contacts_id` (`contacts_id`)
@@ -1418,7 +1418,7 @@ CREATE TABLE `glpi_contacts_suppliers` (
 
 DROP TABLE IF EXISTS `glpi_contacttypes`;
 CREATE TABLE `glpi_contacttypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -1434,14 +1434,14 @@ CREATE TABLE `glpi_contacttypes` (
 
 DROP TABLE IF EXISTS `glpi_contractcosts`;
 CREATE TABLE `glpi_contractcosts` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `contracts_id` int NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `begin_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL,
   `cost` decimal(20,4) NOT NULL DEFAULT '0.0000',
-  `budgets_id` int NOT NULL DEFAULT '0',
+  `budgets_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -1464,7 +1464,7 @@ CREATE TABLE `glpi_contracts` (
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `num` varchar(255) DEFAULT NULL,
-  `contracttypes_id` int NOT NULL DEFAULT '0',
+  `contracttypes_id` int unsigned NOT NULL DEFAULT '0',
   `begin_date` date DEFAULT NULL,
   `duration` int NOT NULL DEFAULT '0',
   `notice` int NOT NULL DEFAULT '0',
@@ -1486,7 +1486,7 @@ CREATE TABLE `glpi_contracts` (
   `renewal` int NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
   `is_template` tinyint NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1510,9 +1510,9 @@ CREATE TABLE `glpi_contracts` (
 
 DROP TABLE IF EXISTS `glpi_contracts_items`;
 CREATE TABLE `glpi_contracts_items` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `contracts_id` int NOT NULL DEFAULT '0',
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`contracts_id`,`itemtype`,`items_id`),
@@ -1524,8 +1524,8 @@ CREATE TABLE `glpi_contracts_items` (
 
 DROP TABLE IF EXISTS `glpi_contracts_suppliers`;
 CREATE TABLE `glpi_contracts_suppliers` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `suppliers_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `suppliers_id` int unsigned NOT NULL DEFAULT '0',
   `contracts_id` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`suppliers_id`,`contracts_id`),
@@ -1537,7 +1537,7 @@ CREATE TABLE `glpi_contracts_suppliers` (
 
 DROP TABLE IF EXISTS `glpi_contracttypes`;
 CREATE TABLE `glpi_contracttypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -1553,9 +1553,9 @@ CREATE TABLE `glpi_contracttypes` (
 
 DROP TABLE IF EXISTS `glpi_crontasklogs`;
 CREATE TABLE `glpi_crontasklogs` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `crontasks_id` int NOT NULL,
-  `crontasklogs_id` int NOT NULL COMMENT 'id of ''start'' event',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `crontasks_id` int unsigned NOT NULL,
+  `crontasklogs_id` int unsigned NOT NULL COMMENT 'id of ''start'' event',
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `state` int NOT NULL COMMENT '0:start, 1:run, 2:stop',
   `elapsed` float NOT NULL COMMENT 'time elapsed since start',
@@ -1572,7 +1572,7 @@ CREATE TABLE `glpi_crontasklogs` (
 
 DROP TABLE IF EXISTS `glpi_crontasks`;
 CREATE TABLE `glpi_crontasks` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(100) NOT NULL,
   `name` varchar(150) NOT NULL COMMENT 'task name',
   `frequency` int NOT NULL COMMENT 'second between launch',
@@ -1600,11 +1600,11 @@ CREATE TABLE `glpi_crontasks` (
 
 DROP TABLE IF EXISTS `glpi_dashboards_dashboards`;
 CREATE TABLE `glpi_dashboards_dashboards` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `key` varchar(100) NOT NULL,
   `name` varchar(100) NOT NULL,
   `context` varchar(100) NOT NULL DEFAULT 'core',
-  `users_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `key` (`key`),
   KEY `name` (`name`),
@@ -1615,9 +1615,9 @@ CREATE TABLE `glpi_dashboards_dashboards` (
 
 DROP TABLE IF EXISTS `glpi_dashboards_filters`;
 CREATE TABLE `glpi_dashboards_filters` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `dashboards_dashboards_id` int NOT NULL DEFAULT '0',
-  `users_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `dashboards_dashboards_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   `filter` longtext,
   PRIMARY KEY (`id`),
   KEY `dashboards_dashboards_id` (`dashboards_dashboards_id`),
@@ -1628,8 +1628,8 @@ CREATE TABLE `glpi_dashboards_filters` (
 
 DROP TABLE IF EXISTS `glpi_dashboards_items`;
 CREATE TABLE `glpi_dashboards_items` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `dashboards_dashboards_id` int NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `dashboards_dashboards_id` int unsigned NOT NULL,
   `gridstack_id` varchar(100) NOT NULL,
   `card_id` varchar(100) NOT NULL,
   `x` int DEFAULT NULL,
@@ -1645,10 +1645,10 @@ CREATE TABLE `glpi_dashboards_items` (
 
 DROP TABLE IF EXISTS `glpi_dashboards_rights`;
 CREATE TABLE `glpi_dashboards_rights` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `dashboards_dashboards_id` int NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `dashboards_dashboards_id` int unsigned NOT NULL,
   `itemtype` varchar(100) NOT NULL,
-  `items_id` int NOT NULL,
+  `items_id` int unsigned NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`dashboards_dashboards_id`,`itemtype`,`items_id`),
   KEY `item` (`itemtype`,`items_id`)
@@ -1658,7 +1658,7 @@ CREATE TABLE `glpi_dashboards_rights` (
 
 DROP TABLE IF EXISTS `glpi_devicecasemodels`;
 CREATE TABLE `glpi_devicecasemodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -1671,14 +1671,14 @@ CREATE TABLE `glpi_devicecasemodels` (
 
 DROP TABLE IF EXISTS `glpi_devicecases`;
 CREATE TABLE `glpi_devicecases` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(255) DEFAULT NULL,
-  `devicecasetypes_id` int NOT NULL DEFAULT '0',
+  `devicecasetypes_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `devicecasemodels_id` int DEFAULT NULL,
+  `devicecasemodels_id` int unsigned DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1697,7 +1697,7 @@ CREATE TABLE `glpi_devicecases` (
 
 DROP TABLE IF EXISTS `glpi_devicecasetypes`;
 CREATE TABLE `glpi_devicecasetypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -1713,7 +1713,7 @@ CREATE TABLE `glpi_devicecasetypes` (
 
 DROP TABLE IF EXISTS `glpi_devicecontrolmodels`;
 CREATE TABLE `glpi_devicecontrolmodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -1726,15 +1726,15 @@ CREATE TABLE `glpi_devicecontrolmodels` (
 
 DROP TABLE IF EXISTS `glpi_devicecontrols`;
 CREATE TABLE `glpi_devicecontrols` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(255) DEFAULT NULL,
   `is_raid` tinyint NOT NULL DEFAULT '0',
   `comment` text,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
-  `interfacetypes_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
+  `interfacetypes_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `devicecontrolmodels_id` int DEFAULT NULL,
+  `devicecontrolmodels_id` int unsigned DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1753,7 +1753,7 @@ CREATE TABLE `glpi_devicecontrols` (
 
 DROP TABLE IF EXISTS `glpi_devicedrivemodels`;
 CREATE TABLE `glpi_devicedrivemodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -1766,16 +1766,16 @@ CREATE TABLE `glpi_devicedrivemodels` (
 
 DROP TABLE IF EXISTS `glpi_devicedrives`;
 CREATE TABLE `glpi_devicedrives` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(255) DEFAULT NULL,
   `is_writer` tinyint NOT NULL DEFAULT '1',
   `speed` varchar(255) DEFAULT NULL,
   `comment` text,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
-  `interfacetypes_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
+  `interfacetypes_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `devicedrivemodels_id` int DEFAULT NULL,
+  `devicedrivemodels_id` int unsigned DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1794,7 +1794,7 @@ CREATE TABLE `glpi_devicedrives` (
 
 DROP TABLE IF EXISTS `glpi_devicegenericmodels`;
 CREATE TABLE `glpi_devicegenericmodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -1808,16 +1808,16 @@ CREATE TABLE `glpi_devicegenericmodels` (
 
 DROP TABLE IF EXISTS `glpi_devicegenerics`;
 CREATE TABLE `glpi_devicegenerics` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(255) DEFAULT NULL,
-  `devicegenerictypes_id` int NOT NULL DEFAULT '0',
+  `devicegenerictypes_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `locations_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
-  `devicegenericmodels_id` int DEFAULT NULL,
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
+  `devicegenericmodels_id` int unsigned DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1838,7 +1838,7 @@ CREATE TABLE `glpi_devicegenerics` (
 
 DROP TABLE IF EXISTS `glpi_devicegenerictypes`;
 CREATE TABLE `glpi_devicegenerictypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   PRIMARY KEY (`id`),
@@ -1850,7 +1850,7 @@ CREATE TABLE `glpi_devicegenerictypes` (
 
 DROP TABLE IF EXISTS `glpi_devicegraphiccardmodels`;
 CREATE TABLE `glpi_devicegraphiccardmodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -1863,15 +1863,15 @@ CREATE TABLE `glpi_devicegraphiccardmodels` (
 
 DROP TABLE IF EXISTS `glpi_devicegraphiccards`;
 CREATE TABLE `glpi_devicegraphiccards` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(255) DEFAULT NULL,
-  `interfacetypes_id` int NOT NULL DEFAULT '0',
+  `interfacetypes_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `memory_default` int NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `devicegraphiccardmodels_id` int DEFAULT NULL,
+  `devicegraphiccardmodels_id` int unsigned DEFAULT NULL,
   `chipset` varchar(255) DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
@@ -1892,7 +1892,7 @@ CREATE TABLE `glpi_devicegraphiccards` (
 
 DROP TABLE IF EXISTS `glpi_deviceharddrivemodels`;
 CREATE TABLE `glpi_deviceharddrivemodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -1905,17 +1905,17 @@ CREATE TABLE `glpi_deviceharddrivemodels` (
 
 DROP TABLE IF EXISTS `glpi_deviceharddrives`;
 CREATE TABLE `glpi_deviceharddrives` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(255) DEFAULT NULL,
   `rpm` varchar(255) DEFAULT NULL,
-  `interfacetypes_id` int NOT NULL DEFAULT '0',
+  `interfacetypes_id` int unsigned NOT NULL DEFAULT '0',
   `cache` varchar(255) DEFAULT NULL,
   `comment` text,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `capacity_default` int NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `deviceharddrivemodels_id` int DEFAULT NULL,
+  `deviceharddrivemodels_id` int unsigned DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1934,7 +1934,7 @@ CREATE TABLE `glpi_deviceharddrives` (
 
 DROP TABLE IF EXISTS `glpi_devicecameras`;
 CREATE TABLE `glpi_devicecameras` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(255) DEFAULT NULL,
   `flashunit` tinyint NOT NULL DEFAULT '0',
   `lensfacing` varchar(255) DEFAULT NULL,
@@ -1942,10 +1942,10 @@ CREATE TABLE `glpi_devicecameras` (
   `focallength` varchar(255) DEFAULT NULL,
   `sensorsize` varchar(255) DEFAULT NULL,
   `comment` text,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `devicecameramodels_id` int DEFAULT NULL,
+  `devicecameramodels_id` int unsigned DEFAULT NULL,
   `support` varchar(255) DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
@@ -1963,10 +1963,10 @@ CREATE TABLE `glpi_devicecameras` (
 
 DROP TABLE IF EXISTS `glpi_items_devicecameras`;
 CREATE TABLE `glpi_items_devicecameras` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(255) DEFAULT NULL,
-  `devicecameras_id` int NOT NULL DEFAULT '0',
+  `devicecameras_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
@@ -1986,7 +1986,7 @@ CREATE TABLE `glpi_items_devicecameras` (
 
 DROP TABLE IF EXISTS `glpi_devicecameramodels`;
 CREATE TABLE `glpi_devicecameramodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -2000,7 +2000,7 @@ CREATE TABLE `glpi_devicecameramodels` (
 
 DROP TABLE IF EXISTS `glpi_imageformats`;
 CREATE TABLE `glpi_imageformats` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `comment` text,
@@ -2020,7 +2020,7 @@ CREATE TABLE `glpi_imageformats` (
 
 DROP TABLE IF EXISTS `glpi_imageresolutions`;
 CREATE TABLE `glpi_imageresolutions` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `is_video` tinyint NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -2040,9 +2040,9 @@ CREATE TABLE `glpi_imageresolutions` (
 
 DROP TABLE IF EXISTS `glpi_items_devicecameras_imageformats`;
 CREATE TABLE `glpi_items_devicecameras_imageformats` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `item_devicecameras_id` int NOT NULL DEFAULT '0',
-  `imageformats_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `item_devicecameras_id` int unsigned NOT NULL DEFAULT '0',
+  `imageformats_id` int unsigned NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `item_devicecameras_id` (`item_devicecameras_id`),
@@ -2052,9 +2052,9 @@ CREATE TABLE `glpi_items_devicecameras_imageformats` (
 
 DROP TABLE IF EXISTS `glpi_items_devicecameras_imageresolutions`;
 CREATE TABLE `glpi_items_devicecameras_imageresolutions` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `item_devicecameras_id` int NOT NULL DEFAULT '0',
-  `imageresolutions_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `item_devicecameras_id` int unsigned NOT NULL DEFAULT '0',
+  `imageresolutions_id` int unsigned NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `item_devicecameras_id` (`item_devicecameras_id`),
@@ -2067,7 +2067,7 @@ CREATE TABLE `glpi_items_devicecameras_imageresolutions` (
 
 DROP TABLE IF EXISTS `glpi_devicememorymodels`;
 CREATE TABLE `glpi_devicememorymodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -2081,16 +2081,16 @@ CREATE TABLE `glpi_devicememorymodels` (
 
 DROP TABLE IF EXISTS `glpi_devicememories`;
 CREATE TABLE `glpi_devicememories` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(255) DEFAULT NULL,
   `frequence` varchar(255) DEFAULT NULL,
   `comment` text,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `size_default` int NOT NULL DEFAULT '0',
-  `devicememorytypes_id` int NOT NULL DEFAULT '0',
+  `devicememorytypes_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `devicememorymodels_id` int DEFAULT NULL,
+  `devicememorymodels_id` int unsigned DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2109,7 +2109,7 @@ CREATE TABLE `glpi_devicememories` (
 
 DROP TABLE IF EXISTS `glpi_devicememorytypes`;
 CREATE TABLE `glpi_devicememorytypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -2125,7 +2125,7 @@ CREATE TABLE `glpi_devicememorytypes` (
 
 DROP TABLE IF EXISTS `glpi_devicemotherboardmodels`;
 CREATE TABLE `glpi_devicemotherboardmodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -2138,14 +2138,14 @@ CREATE TABLE `glpi_devicemotherboardmodels` (
 
 DROP TABLE IF EXISTS `glpi_devicemotherboards`;
 CREATE TABLE `glpi_devicemotherboards` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(255) DEFAULT NULL,
   `chipset` varchar(255) DEFAULT NULL,
   `comment` text,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `devicemotherboardmodels_id` int DEFAULT NULL,
+  `devicemotherboardmodels_id` int unsigned DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2163,7 +2163,7 @@ CREATE TABLE `glpi_devicemotherboards` (
 
 DROP TABLE IF EXISTS `glpi_devicenetworkcardmodels`;
 CREATE TABLE `glpi_devicenetworkcardmodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -2176,15 +2176,15 @@ CREATE TABLE `glpi_devicenetworkcardmodels` (
 
 DROP TABLE IF EXISTS `glpi_devicenetworkcards`;
 CREATE TABLE `glpi_devicenetworkcards` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(255) DEFAULT NULL,
   `bandwidth` varchar(255) DEFAULT NULL,
   `comment` text,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `mac_default` varchar(255) DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `devicenetworkcardmodels_id` int DEFAULT NULL,
+  `devicenetworkcardmodels_id` int unsigned DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2202,7 +2202,7 @@ CREATE TABLE `glpi_devicenetworkcards` (
 
 DROP TABLE IF EXISTS `glpi_devicepcimodels`;
 CREATE TABLE `glpi_devicepcimodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -2215,14 +2215,14 @@ CREATE TABLE `glpi_devicepcimodels` (
 
 DROP TABLE IF EXISTS `glpi_devicepcis`;
 CREATE TABLE `glpi_devicepcis` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(255) DEFAULT NULL,
   `comment` text,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
-  `devicenetworkcardmodels_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
+  `devicenetworkcardmodels_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `devicepcimodels_id` int DEFAULT NULL,
+  `devicepcimodels_id` int unsigned DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2241,7 +2241,7 @@ CREATE TABLE `glpi_devicepcis` (
 
 DROP TABLE IF EXISTS `glpi_devicepowersupplymodels`;
 CREATE TABLE `glpi_devicepowersupplymodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -2255,15 +2255,15 @@ CREATE TABLE `glpi_devicepowersupplymodels` (
 
 DROP TABLE IF EXISTS `glpi_devicepowersupplies`;
 CREATE TABLE `glpi_devicepowersupplies` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(255) DEFAULT NULL,
   `power` varchar(255) DEFAULT NULL,
   `is_atx` tinyint NOT NULL DEFAULT '1',
   `comment` text,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `devicepowersupplymodels_id` int DEFAULT NULL,
+  `devicepowersupplymodels_id` int unsigned DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2281,7 +2281,7 @@ CREATE TABLE `glpi_devicepowersupplies` (
 
 DROP TABLE IF EXISTS `glpi_deviceprocessormodels`;
 CREATE TABLE `glpi_deviceprocessormodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -2294,17 +2294,17 @@ CREATE TABLE `glpi_deviceprocessormodels` (
 
 DROP TABLE IF EXISTS `glpi_deviceprocessors`;
 CREATE TABLE `glpi_deviceprocessors` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(255) DEFAULT NULL,
   `frequence` int NOT NULL DEFAULT '0',
   `comment` text,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `frequency_default` int NOT NULL DEFAULT '0',
   `nbcores_default` int DEFAULT NULL,
   `nbthreads_default` int DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `deviceprocessormodels_id` int DEFAULT NULL,
+  `deviceprocessormodels_id` int unsigned DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2322,16 +2322,16 @@ CREATE TABLE `glpi_deviceprocessors` (
 
 DROP TABLE IF EXISTS `glpi_devicesensors`;
 CREATE TABLE `glpi_devicesensors` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(255) DEFAULT NULL,
-  `devicesensortypes_id` int NOT NULL DEFAULT '0',
-  `devicesensormodels_id` int NOT NULL DEFAULT '0',
+  `devicesensortypes_id` int unsigned NOT NULL DEFAULT '0',
+  `devicesensormodels_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `locations_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2352,7 +2352,7 @@ CREATE TABLE `glpi_devicesensors` (
 
 DROP TABLE IF EXISTS `glpi_devicesensormodels`;
 CREATE TABLE `glpi_devicesensormodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -2366,7 +2366,7 @@ CREATE TABLE `glpi_devicesensormodels` (
 
 DROP TABLE IF EXISTS `glpi_devicesensortypes`;
 CREATE TABLE `glpi_devicesensortypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   PRIMARY KEY (`id`),
@@ -2378,14 +2378,14 @@ CREATE TABLE `glpi_devicesensortypes` (
 
 DROP TABLE IF EXISTS `glpi_devicesimcards`;
 CREATE TABLE `glpi_devicesimcards` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(255) DEFAULT NULL,
   `comment` text,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `voltage` int DEFAULT NULL,
-  `devicesimcardtypes_id` int NOT NULL DEFAULT '0',
+  `devicesimcardtypes_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `allow_voip` tinyint NOT NULL DEFAULT '0',
@@ -2404,21 +2404,21 @@ CREATE TABLE `glpi_devicesimcards` (
 
 DROP TABLE IF EXISTS `glpi_items_devicesimcards`;
 CREATE TABLE `glpi_items_devicesimcards` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0' COMMENT 'RELATION to various table, according to itemtype (id)',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to various table, according to itemtype (id)',
   `itemtype` varchar(100) NOT NULL,
-  `devicesimcards_id` int NOT NULL DEFAULT '0',
+  `devicesimcards_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `states_id` int NOT NULL DEFAULT '0',
-  `locations_id` int NOT NULL DEFAULT '0',
-  `lines_id` int NOT NULL DEFAULT '0',
-  `users_id` int NOT NULL DEFAULT '0',
-  `groups_id` int NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `lines_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
   `pin` varchar(255) NOT NULL DEFAULT '',
   `pin2` varchar(255) NOT NULL DEFAULT '',
   `puk` varchar(255) NOT NULL DEFAULT '',
@@ -2445,7 +2445,7 @@ CREATE TABLE `glpi_items_devicesimcards` (
 
 DROP TABLE IF EXISTS `glpi_devicesimcardtypes`;
 CREATE TABLE `glpi_devicesimcardtypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -2461,7 +2461,7 @@ CREATE TABLE `glpi_devicesimcardtypes` (
 
 DROP TABLE IF EXISTS `glpi_devicesoundcardmodels`;
 CREATE TABLE `glpi_devicesoundcardmodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -2475,14 +2475,14 @@ CREATE TABLE `glpi_devicesoundcardmodels` (
 
 DROP TABLE IF EXISTS `glpi_devicesoundcards`;
 CREATE TABLE `glpi_devicesoundcards` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(255) DEFAULT NULL,
   `type` varchar(255) DEFAULT NULL,
   `comment` text,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `devicesoundcardmodels_id` int DEFAULT NULL,
+  `devicesoundcardmodels_id` int unsigned DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2500,11 +2500,11 @@ CREATE TABLE `glpi_devicesoundcards` (
 
 DROP TABLE IF EXISTS `glpi_displaypreferences`;
 CREATE TABLE `glpi_displaypreferences` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(100) NOT NULL,
   `num` int NOT NULL DEFAULT '0',
   `rank` int NOT NULL DEFAULT '0',
-  `users_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`users_id`,`itemtype`,`num`),
   KEY `rank` (`rank`),
@@ -2517,10 +2517,10 @@ CREATE TABLE `glpi_displaypreferences` (
 
 DROP TABLE IF EXISTS `glpi_documentcategories`;
 CREATE TABLE `glpi_documentcategories` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
-  `documentcategories_id` int NOT NULL DEFAULT '0',
+  `documentcategories_id` int unsigned NOT NULL DEFAULT '0',
   `completename` text,
   `level` int NOT NULL DEFAULT '0',
   `ancestors_cache` longtext,
@@ -2539,20 +2539,20 @@ CREATE TABLE `glpi_documentcategories` (
 
 DROP TABLE IF EXISTS `glpi_documents`;
 CREATE TABLE `glpi_documents` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `filename` varchar(255) DEFAULT NULL COMMENT 'for display and transfert',
   `filepath` varchar(255) DEFAULT NULL COMMENT 'file storage path',
-  `documentcategories_id` int NOT NULL DEFAULT '0',
+  `documentcategories_id` int unsigned NOT NULL DEFAULT '0',
   `mime` varchar(255) DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `comment` text,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `link` varchar(255) DEFAULT NULL,
-  `users_id` int NOT NULL DEFAULT '0',
-  `tickets_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `tickets_id` int unsigned NOT NULL DEFAULT '0',
   `sha1sum` char(40) DEFAULT NULL,
   `is_blacklisted` tinyint NOT NULL DEFAULT '0',
   `tag` varchar(255) DEFAULT NULL,
@@ -2576,14 +2576,14 @@ CREATE TABLE `glpi_documents` (
 
 DROP TABLE IF EXISTS `glpi_documents_items`;
 CREATE TABLE `glpi_documents_items` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `documents_id` int NOT NULL DEFAULT '0',
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `documents_id` int unsigned NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
-  `users_id` int DEFAULT '0',
+  `users_id` int unsigned DEFAULT '0',
   `timeline_position` tinyint NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   `date` timestamp NULL DEFAULT NULL,
@@ -2603,7 +2603,7 @@ CREATE TABLE `glpi_documents_items` (
 
 DROP TABLE IF EXISTS `glpi_documenttypes`;
 CREATE TABLE `glpi_documenttypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `ext` varchar(255) DEFAULT NULL,
   `icon` varchar(255) DEFAULT NULL,
@@ -2625,15 +2625,15 @@ CREATE TABLE `glpi_documenttypes` (
 
 DROP TABLE IF EXISTS `glpi_domains`;
 CREATE TABLE `glpi_domains` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `domaintypes_id` int NOT NULL DEFAULT '0',
+  `domaintypes_id` int unsigned NOT NULL DEFAULT '0',
   `date_expiration` timestamp NULL DEFAULT NULL,
   `date_domaincreation` timestamp NULL DEFAULT NULL,
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `comment` text,
   `is_template` tinyint NOT NULL DEFAULT '0',
@@ -2662,8 +2662,8 @@ CREATE TABLE `glpi_domains` (
 
 DROP TABLE IF EXISTS `glpi_dropdowntranslations`;
 CREATE TABLE `glpi_dropdowntranslations` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) DEFAULT NULL,
   `language` varchar(10) DEFAULT NULL,
   `field` varchar(100) DEFAULT NULL,
@@ -2704,7 +2704,7 @@ CREATE TABLE `glpi_entities` (
   `notification_subject_tag` varchar(255) DEFAULT NULL,
   `ldap_dn` varchar(255) DEFAULT NULL,
   `tag` varchar(255) DEFAULT NULL,
-  `authldaps_id` int NOT NULL DEFAULT '0',
+  `authldaps_id` int unsigned NOT NULL DEFAULT '0',
   `mail_domain` varchar(255) DEFAULT NULL,
   `entity_ldapfilter` text,
   `mailing_signature` text,
@@ -2782,8 +2782,8 @@ CREATE TABLE `glpi_entities` (
 
 DROP TABLE IF EXISTS `glpi_entities_knowbaseitems`;
 CREATE TABLE `glpi_entities_knowbaseitems` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `knowbaseitems_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `knowbaseitems_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -2797,8 +2797,8 @@ CREATE TABLE `glpi_entities_knowbaseitems` (
 
 DROP TABLE IF EXISTS `glpi_entities_reminders`;
 CREATE TABLE `glpi_entities_reminders` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `reminders_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `reminders_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -2812,8 +2812,8 @@ CREATE TABLE `glpi_entities_reminders` (
 
 DROP TABLE IF EXISTS `glpi_entities_rssfeeds`;
 CREATE TABLE `glpi_entities_rssfeeds` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `rssfeeds_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `rssfeeds_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -2827,8 +2827,8 @@ CREATE TABLE `glpi_entities_rssfeeds` (
 
 DROP TABLE IF EXISTS `glpi_events`;
 CREATE TABLE `glpi_events` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `type` varchar(255) DEFAULT NULL,
   `date` timestamp NULL DEFAULT NULL,
   `service` varchar(255) DEFAULT NULL,
@@ -2845,7 +2845,7 @@ CREATE TABLE `glpi_events` (
 
 DROP TABLE IF EXISTS `glpi_fieldblacklists`;
 CREATE TABLE `glpi_fieldblacklists` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
   `field` varchar(255) NOT NULL DEFAULT '',
   `value` varchar(255) NOT NULL DEFAULT '',
@@ -2868,7 +2868,7 @@ CREATE TABLE `glpi_fieldblacklists` (
 
 DROP TABLE IF EXISTS `glpi_fieldunicities`;
 CREATE TABLE `glpi_fieldunicities` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `itemtype` varchar(255) NOT NULL DEFAULT '',
@@ -2894,7 +2894,7 @@ CREATE TABLE `glpi_fieldunicities` (
 
 DROP TABLE IF EXISTS `glpi_filesystems`;
 CREATE TABLE `glpi_filesystems` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -2910,7 +2910,7 @@ CREATE TABLE `glpi_filesystems` (
 
 DROP TABLE IF EXISTS `glpi_fqdns`;
 CREATE TABLE `glpi_fqdns` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
@@ -2932,7 +2932,7 @@ CREATE TABLE `glpi_fqdns` (
 
 DROP TABLE IF EXISTS `glpi_groups`;
 CREATE TABLE `glpi_groups` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
@@ -2941,7 +2941,7 @@ CREATE TABLE `glpi_groups` (
   `ldap_value` text,
   `ldap_group_dn` text,
   `date_mod` timestamp NULL DEFAULT NULL,
-  `groups_id` int NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
   `completename` text,
   `level` int NOT NULL DEFAULT '0',
   `ancestors_cache` longtext,
@@ -2979,9 +2979,9 @@ CREATE TABLE `glpi_groups` (
 
 DROP TABLE IF EXISTS `glpi_groups_knowbaseitems`;
 CREATE TABLE `glpi_groups_knowbaseitems` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `knowbaseitems_id` int NOT NULL DEFAULT '0',
-  `groups_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `knowbaseitems_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '-1',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -2996,9 +2996,9 @@ CREATE TABLE `glpi_groups_knowbaseitems` (
 
 DROP TABLE IF EXISTS `glpi_groups_problems`;
 CREATE TABLE `glpi_groups_problems` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `problems_id` int NOT NULL DEFAULT '0',
-  `groups_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `problems_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
   `type` int NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`problems_id`,`type`,`groups_id`),
@@ -3010,9 +3010,9 @@ CREATE TABLE `glpi_groups_problems` (
 
 DROP TABLE IF EXISTS `glpi_groups_reminders`;
 CREATE TABLE `glpi_groups_reminders` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `reminders_id` int NOT NULL DEFAULT '0',
-  `groups_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `reminders_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '-1',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -3027,9 +3027,9 @@ CREATE TABLE `glpi_groups_reminders` (
 
 DROP TABLE IF EXISTS `glpi_groups_rssfeeds`;
 CREATE TABLE `glpi_groups_rssfeeds` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `rssfeeds_id` int NOT NULL DEFAULT '0',
-  `groups_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `rssfeeds_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '-1',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -3044,9 +3044,9 @@ CREATE TABLE `glpi_groups_rssfeeds` (
 
 DROP TABLE IF EXISTS `glpi_groups_tickets`;
 CREATE TABLE `glpi_groups_tickets` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `tickets_id` int NOT NULL DEFAULT '0',
-  `groups_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tickets_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
   `type` int NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickets_id`,`type`,`groups_id`),
@@ -3058,9 +3058,9 @@ CREATE TABLE `glpi_groups_tickets` (
 
 DROP TABLE IF EXISTS `glpi_groups_users`;
 CREATE TABLE `glpi_groups_users` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `users_id` int NOT NULL DEFAULT '0',
-  `groups_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `is_manager` tinyint NOT NULL DEFAULT '0',
   `is_userdelegate` tinyint NOT NULL DEFAULT '0',
@@ -3077,7 +3077,7 @@ CREATE TABLE `glpi_groups_users` (
 
 DROP TABLE IF EXISTS `glpi_holidays`;
 CREATE TABLE `glpi_holidays` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -3103,8 +3103,8 @@ CREATE TABLE `glpi_holidays` (
 
 DROP TABLE IF EXISTS `glpi_infocoms`;
 CREATE TABLE `glpi_infocoms` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -3112,7 +3112,7 @@ CREATE TABLE `glpi_infocoms` (
   `use_date` date DEFAULT NULL,
   `warranty_duration` int NOT NULL DEFAULT '0',
   `warranty_info` varchar(255) DEFAULT NULL,
-  `suppliers_id` int NOT NULL DEFAULT '0',
+  `suppliers_id` int unsigned NOT NULL DEFAULT '0',
   `order_number` varchar(255) DEFAULT NULL,
   `delivery_number` varchar(255) DEFAULT NULL,
   `immo_number` varchar(255) DEFAULT NULL,
@@ -3123,7 +3123,7 @@ CREATE TABLE `glpi_infocoms` (
   `sink_coeff` float NOT NULL DEFAULT '0',
   `comment` text,
   `bill` varchar(255) DEFAULT NULL,
-  `budgets_id` int NOT NULL DEFAULT '0',
+  `budgets_id` int unsigned NOT NULL DEFAULT '0',
   `alert` int NOT NULL DEFAULT '0',
   `order_date` date DEFAULT NULL,
   `delivery_date` date DEFAULT NULL,
@@ -3132,7 +3132,7 @@ CREATE TABLE `glpi_infocoms` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `decommission_date` timestamp NULL DEFAULT NULL,
-  `businesscriticities_id` int NOT NULL DEFAULT '0',
+  `businesscriticities_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`),
   KEY `buy_date` (`buy_date`),
@@ -3151,7 +3151,7 @@ CREATE TABLE `glpi_infocoms` (
 
 DROP TABLE IF EXISTS `glpi_interfacetypes`;
 CREATE TABLE `glpi_interfacetypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -3167,9 +3167,9 @@ CREATE TABLE `glpi_interfacetypes` (
 
 DROP TABLE IF EXISTS `glpi_ipaddresses`;
 CREATE TABLE `glpi_ipaddresses` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
   `version` tinyint unsigned DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
@@ -3179,7 +3179,7 @@ CREATE TABLE `glpi_ipaddresses` (
   `binary_3` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
-  `mainitems_id` int NOT NULL DEFAULT '0',
+  `mainitems_id` int unsigned NOT NULL DEFAULT '0',
   `mainitemtype` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
@@ -3196,9 +3196,9 @@ CREATE TABLE `glpi_ipaddresses` (
 
 DROP TABLE IF EXISTS `glpi_ipaddresses_ipnetworks`;
 CREATE TABLE `glpi_ipaddresses_ipnetworks` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `ipaddresses_id` int NOT NULL DEFAULT '0',
-  `ipnetworks_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `ipaddresses_id` int unsigned NOT NULL DEFAULT '0',
+  `ipnetworks_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`ipaddresses_id`,`ipnetworks_id`),
   KEY `ipnetworks_id` (`ipnetworks_id`)
@@ -3209,10 +3209,10 @@ CREATE TABLE `glpi_ipaddresses_ipnetworks` (
 
 DROP TABLE IF EXISTS `glpi_ipnetworks`;
 CREATE TABLE `glpi_ipnetworks` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `ipnetworks_id` int NOT NULL DEFAULT '0',
+  `ipnetworks_id` int unsigned NOT NULL DEFAULT '0',
   `completename` text,
   `level` int NOT NULL DEFAULT '0',
   `ancestors_cache` longtext,
@@ -3255,9 +3255,9 @@ CREATE TABLE `glpi_ipnetworks` (
 
 DROP TABLE IF EXISTS `glpi_ipnetworks_vlans`;
 CREATE TABLE `glpi_ipnetworks_vlans` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `ipnetworks_id` int NOT NULL DEFAULT '0',
-  `vlans_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `ipnetworks_id` int unsigned NOT NULL DEFAULT '0',
+  `vlans_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `link` (`ipnetworks_id`,`vlans_id`),
   KEY `vlans_id` (`vlans_id`)
@@ -3268,18 +3268,18 @@ CREATE TABLE `glpi_ipnetworks_vlans` (
 
 DROP TABLE IF EXISTS `glpi_items_devicecases`;
 CREATE TABLE `glpi_items_devicecases` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(255) DEFAULT NULL,
-  `devicecases_id` int NOT NULL DEFAULT '0',
+  `devicecases_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `devicecases_id` (`devicecases_id`),
   KEY `is_deleted` (`is_deleted`),
@@ -3298,10 +3298,10 @@ CREATE TABLE `glpi_items_devicecases` (
 
 DROP TABLE IF EXISTS `glpi_items_devicecontrols`;
 CREATE TABLE `glpi_items_devicecontrols` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(255) DEFAULT NULL,
-  `devicecontrols_id` int NOT NULL DEFAULT '0',
+  `devicecontrols_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
@@ -3309,8 +3309,8 @@ CREATE TABLE `glpi_items_devicecontrols` (
   `serial` varchar(255) DEFAULT NULL,
   `busID` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `devicecontrols_id` (`devicecontrols_id`),
   KEY `is_deleted` (`is_deleted`),
@@ -3330,10 +3330,10 @@ CREATE TABLE `glpi_items_devicecontrols` (
 
 DROP TABLE IF EXISTS `glpi_items_devicedrives`;
 CREATE TABLE `glpi_items_devicedrives` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(255) DEFAULT NULL,
-  `devicedrives_id` int NOT NULL DEFAULT '0',
+  `devicedrives_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
@@ -3341,8 +3341,8 @@ CREATE TABLE `glpi_items_devicedrives` (
   `serial` varchar(255) DEFAULT NULL,
   `busID` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `devicedrives_id` (`devicedrives_id`),
   KEY `is_deleted` (`is_deleted`),
@@ -3362,18 +3362,18 @@ CREATE TABLE `glpi_items_devicedrives` (
 
 DROP TABLE IF EXISTS `glpi_items_devicegenerics`;
 CREATE TABLE `glpi_items_devicegenerics` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(255) DEFAULT NULL,
-  `devicegenerics_id` int NOT NULL DEFAULT '0',
+  `devicegenerics_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `devicegenerics_id` (`devicegenerics_id`),
   KEY `is_deleted` (`is_deleted`),
@@ -3392,10 +3392,10 @@ CREATE TABLE `glpi_items_devicegenerics` (
 
 DROP TABLE IF EXISTS `glpi_items_devicegraphiccards`;
 CREATE TABLE `glpi_items_devicegraphiccards` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(255) DEFAULT NULL,
-  `devicegraphiccards_id` int NOT NULL DEFAULT '0',
+  `devicegraphiccards_id` int unsigned NOT NULL DEFAULT '0',
   `memory` int NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
@@ -3404,8 +3404,8 @@ CREATE TABLE `glpi_items_devicegraphiccards` (
   `serial` varchar(255) DEFAULT NULL,
   `busID` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `devicegraphiccards_id` (`devicegraphiccards_id`),
   KEY `specificity` (`memory`),
@@ -3426,10 +3426,10 @@ CREATE TABLE `glpi_items_devicegraphiccards` (
 
 DROP TABLE IF EXISTS `glpi_items_deviceharddrives`;
 CREATE TABLE `glpi_items_deviceharddrives` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(255) DEFAULT NULL,
-  `deviceharddrives_id` int NOT NULL DEFAULT '0',
+  `deviceharddrives_id` int unsigned NOT NULL DEFAULT '0',
   `capacity` int NOT NULL DEFAULT '0',
   `serial` varchar(255) DEFAULT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
@@ -3438,8 +3438,8 @@ CREATE TABLE `glpi_items_deviceharddrives` (
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `busID` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `deviceharddrives_id` (`deviceharddrives_id`),
   KEY `specificity` (`capacity`),
@@ -3460,10 +3460,10 @@ CREATE TABLE `glpi_items_deviceharddrives` (
 
 DROP TABLE IF EXISTS `glpi_items_devicememories`;
 CREATE TABLE `glpi_items_devicememories` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(255) DEFAULT NULL,
-  `devicememories_id` int NOT NULL DEFAULT '0',
+  `devicememories_id` int unsigned NOT NULL DEFAULT '0',
   `size` int NOT NULL DEFAULT '0',
   `serial` varchar(255) DEFAULT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
@@ -3472,8 +3472,8 @@ CREATE TABLE `glpi_items_devicememories` (
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `busID` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `devicememories_id` (`devicememories_id`),
   KEY `specificity` (`size`),
@@ -3494,18 +3494,18 @@ CREATE TABLE `glpi_items_devicememories` (
 
 DROP TABLE IF EXISTS `glpi_items_devicemotherboards`;
 CREATE TABLE `glpi_items_devicemotherboards` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(255) DEFAULT NULL,
-  `devicemotherboards_id` int NOT NULL DEFAULT '0',
+  `devicemotherboards_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `devicemotherboards_id` (`devicemotherboards_id`),
   KEY `is_deleted` (`is_deleted`),
@@ -3524,10 +3524,10 @@ CREATE TABLE `glpi_items_devicemotherboards` (
 
 DROP TABLE IF EXISTS `glpi_items_devicenetworkcards`;
 CREATE TABLE `glpi_items_devicenetworkcards` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(255) DEFAULT NULL,
-  `devicenetworkcards_id` int NOT NULL DEFAULT '0',
+  `devicenetworkcards_id` int unsigned NOT NULL DEFAULT '0',
   `mac` varchar(255) DEFAULT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
@@ -3536,8 +3536,8 @@ CREATE TABLE `glpi_items_devicenetworkcards` (
   `serial` varchar(255) DEFAULT NULL,
   `busID` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `devicenetworkcards_id` (`devicenetworkcards_id`),
   KEY `specificity` (`mac`),
@@ -3558,10 +3558,10 @@ CREATE TABLE `glpi_items_devicenetworkcards` (
 
 DROP TABLE IF EXISTS `glpi_items_devicepcis`;
 CREATE TABLE `glpi_items_devicepcis` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(255) DEFAULT NULL,
-  `devicepcis_id` int NOT NULL DEFAULT '0',
+  `devicepcis_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
@@ -3569,8 +3569,8 @@ CREATE TABLE `glpi_items_devicepcis` (
   `serial` varchar(255) DEFAULT NULL,
   `busID` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `devicepcis_id` (`devicepcis_id`),
   KEY `is_deleted` (`is_deleted`),
@@ -3590,18 +3590,18 @@ CREATE TABLE `glpi_items_devicepcis` (
 
 DROP TABLE IF EXISTS `glpi_items_devicepowersupplies`;
 CREATE TABLE `glpi_items_devicepowersupplies` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(255) DEFAULT NULL,
-  `devicepowersupplies_id` int NOT NULL DEFAULT '0',
+  `devicepowersupplies_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `devicepowersupplies_id` (`devicepowersupplies_id`),
   KEY `is_deleted` (`is_deleted`),
@@ -3620,10 +3620,10 @@ CREATE TABLE `glpi_items_devicepowersupplies` (
 
 DROP TABLE IF EXISTS `glpi_items_deviceprocessors`;
 CREATE TABLE `glpi_items_deviceprocessors` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(255) DEFAULT NULL,
-  `deviceprocessors_id` int NOT NULL DEFAULT '0',
+  `deviceprocessors_id` int unsigned NOT NULL DEFAULT '0',
   `frequency` int NOT NULL DEFAULT '0',
   `serial` varchar(255) DEFAULT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
@@ -3634,8 +3634,8 @@ CREATE TABLE `glpi_items_deviceprocessors` (
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `busID` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `deviceprocessors_id` (`deviceprocessors_id`),
   KEY `specificity` (`frequency`),
@@ -3658,18 +3658,18 @@ CREATE TABLE `glpi_items_deviceprocessors` (
 
 DROP TABLE IF EXISTS `glpi_items_devicesensors`;
 CREATE TABLE `glpi_items_devicesensors` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(255) DEFAULT NULL,
-  `devicesensors_id` int NOT NULL DEFAULT '0',
+  `devicesensors_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `devicesensors_id` (`devicesensors_id`),
   KEY `is_deleted` (`is_deleted`),
@@ -3688,10 +3688,10 @@ CREATE TABLE `glpi_items_devicesensors` (
 
 DROP TABLE IF EXISTS `glpi_items_devicesoundcards`;
 CREATE TABLE `glpi_items_devicesoundcards` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(255) DEFAULT NULL,
-  `devicesoundcards_id` int NOT NULL DEFAULT '0',
+  `devicesoundcards_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
@@ -3699,8 +3699,8 @@ CREATE TABLE `glpi_items_devicesoundcards` (
   `serial` varchar(255) DEFAULT NULL,
   `busID` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `devicesoundcards_id` (`devicesoundcards_id`),
   KEY `is_deleted` (`is_deleted`),
@@ -3720,10 +3720,10 @@ CREATE TABLE `glpi_items_devicesoundcards` (
 
 DROP TABLE IF EXISTS `glpi_items_problems`;
 CREATE TABLE `glpi_items_problems` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `problems_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `problems_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) DEFAULT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`problems_id`,`itemtype`,`items_id`),
   KEY `item` (`itemtype`,`items_id`)
@@ -3734,10 +3734,10 @@ CREATE TABLE `glpi_items_problems` (
 
 DROP TABLE IF EXISTS `glpi_items_projects`;
 CREATE TABLE `glpi_items_projects` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `projects_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `projects_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) DEFAULT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`projects_id`,`itemtype`,`items_id`),
   KEY `item` (`itemtype`,`items_id`)
@@ -3748,10 +3748,10 @@ CREATE TABLE `glpi_items_projects` (
 
 DROP TABLE IF EXISTS `glpi_items_tickets`;
 CREATE TABLE `glpi_items_tickets` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(255) DEFAULT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
-  `tickets_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
+  `tickets_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`,`tickets_id`),
   KEY `tickets_id` (`tickets_id`)
@@ -3762,17 +3762,17 @@ CREATE TABLE `glpi_items_tickets` (
 
 DROP TABLE IF EXISTS `glpi_itilcategories`;
 CREATE TABLE `glpi_itilcategories` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `itilcategories_id` int NOT NULL DEFAULT '0',
+  `itilcategories_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `completename` text,
   `comment` text,
   `level` int NOT NULL DEFAULT '0',
-  `knowbaseitemcategories_id` int NOT NULL DEFAULT '0',
-  `users_id` int NOT NULL DEFAULT '0',
-  `groups_id` int NOT NULL DEFAULT '0',
+  `knowbaseitemcategories_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
   `code` varchar(255) DEFAULT NULL,
   `ancestors_cache` longtext,
   `sons_cache` longtext,
@@ -3813,10 +3813,10 @@ CREATE TABLE `glpi_itilcategories` (
 
 DROP TABLE IF EXISTS `glpi_itils_projects`;
 CREATE TABLE `glpi_itils_projects` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(100) NOT NULL DEFAULT '',
-  `items_id` int NOT NULL DEFAULT '0',
-  `projects_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
+  `projects_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`,`projects_id`),
   KEY `projects_id` (`projects_id`)
@@ -3827,10 +3827,10 @@ CREATE TABLE `glpi_itils_projects` (
 
 DROP TABLE IF EXISTS `glpi_knowbaseitemcategories`;
 CREATE TABLE `glpi_knowbaseitemcategories` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `knowbaseitemcategories_id` int NOT NULL DEFAULT '0',
+  `knowbaseitemcategories_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `completename` text,
   `comment` text,
@@ -3853,11 +3853,11 @@ CREATE TABLE `glpi_knowbaseitemcategories` (
 
 DROP TABLE IF EXISTS `glpi_knowbaseitems`;
 CREATE TABLE `glpi_knowbaseitems` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` text,
   `answer` longtext,
   `is_faq` tinyint NOT NULL DEFAULT '0',
-  `users_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   `view` int NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -3880,9 +3880,9 @@ CREATE TABLE `glpi_knowbaseitems` (
 
 DROP TABLE IF EXISTS `glpi_knowbaseitems_knowbaseitemcategories`;
 CREATE TABLE `glpi_knowbaseitems_knowbaseitemcategories` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `knowbaseitems_id` int NOT NULL DEFAULT '0',
-  `knowbaseitemcategories_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `knowbaseitems_id` int unsigned NOT NULL DEFAULT '0',
+  `knowbaseitemcategories_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `knowbaseitems_id` (`knowbaseitems_id`),
   KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`)
@@ -3893,9 +3893,9 @@ CREATE TABLE `glpi_knowbaseitems_knowbaseitemcategories` (
 
 DROP TABLE IF EXISTS `glpi_knowbaseitems_profiles`;
 CREATE TABLE `glpi_knowbaseitems_profiles` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `knowbaseitems_id` int NOT NULL DEFAULT '0',
-  `profiles_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `knowbaseitems_id` int unsigned NOT NULL DEFAULT '0',
+  `profiles_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '-1',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -3910,9 +3910,9 @@ CREATE TABLE `glpi_knowbaseitems_profiles` (
 
 DROP TABLE IF EXISTS `glpi_knowbaseitems_users`;
 CREATE TABLE `glpi_knowbaseitems_users` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `knowbaseitems_id` int NOT NULL DEFAULT '0',
-  `users_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `knowbaseitems_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `knowbaseitems_id` (`knowbaseitems_id`),
   KEY `users_id` (`users_id`)
@@ -3923,12 +3923,12 @@ CREATE TABLE `glpi_knowbaseitems_users` (
 
 DROP TABLE IF EXISTS `glpi_knowbaseitemtranslations`;
 CREATE TABLE `glpi_knowbaseitemtranslations` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `knowbaseitems_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `knowbaseitems_id` int unsigned NOT NULL DEFAULT '0',
   `language` varchar(10) DEFAULT NULL,
   `name` text,
   `answer` longtext,
-  `users_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -3946,19 +3946,19 @@ CREATE TABLE `glpi_knowbaseitemtranslations` (
 
 DROP TABLE IF EXISTS `glpi_lines`;
 CREATE TABLE `glpi_lines` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `caller_num` varchar(255) NOT NULL DEFAULT '',
   `caller_name` varchar(255) NOT NULL DEFAULT '',
-  `users_id` int NOT NULL DEFAULT '0',
-  `groups_id` int NOT NULL DEFAULT '0',
-  `lineoperators_id` int NOT NULL DEFAULT '0',
-  `locations_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
-  `linetypes_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
+  `lineoperators_id` int unsigned NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
+  `linetypes_id` int unsigned NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `comment` text,
@@ -3982,7 +3982,7 @@ CREATE TABLE `glpi_lines` (
 
 DROP TABLE IF EXISTS `glpi_lineoperators`;
 CREATE TABLE `glpi_lineoperators` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
   `comment` text,
   `mcc` int DEFAULT NULL,
@@ -4003,7 +4003,7 @@ CREATE TABLE `glpi_lineoperators` (
 
 DROP TABLE IF EXISTS `glpi_linetypes`;
 CREATE TABLE `glpi_linetypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -4018,7 +4018,7 @@ CREATE TABLE `glpi_linetypes` (
 
 DROP TABLE IF EXISTS `glpi_links`;
 CREATE TABLE `glpi_links` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '1',
   `name` varchar(255) DEFAULT NULL,
@@ -4040,8 +4040,8 @@ CREATE TABLE `glpi_links` (
 
 DROP TABLE IF EXISTS `glpi_links_itemtypes`;
 CREATE TABLE `glpi_links_itemtypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `links_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `links_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`links_id`),
@@ -4053,11 +4053,11 @@ CREATE TABLE `glpi_links_itemtypes` (
 
 DROP TABLE IF EXISTS `glpi_locations`;
 CREATE TABLE `glpi_locations` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
   `completename` text,
   `comment` text,
   `level` int NOT NULL DEFAULT '0',
@@ -4089,9 +4089,9 @@ CREATE TABLE `glpi_locations` (
 
 DROP TABLE IF EXISTS `glpi_logs`;
 CREATE TABLE `glpi_logs` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(100) NOT NULL DEFAULT '',
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype_link` varchar(100) NOT NULL DEFAULT '',
   `linked_action` int NOT NULL DEFAULT '0' COMMENT 'see define.php HISTORY_* constant',
   `user_name` varchar(255) DEFAULT NULL,
@@ -4111,7 +4111,7 @@ CREATE TABLE `glpi_logs` (
 
 DROP TABLE IF EXISTS `glpi_mailcollectors`;
 CREATE TABLE `glpi_mailcollectors` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `host` varchar(255) DEFAULT NULL,
   `login` varchar(255) DEFAULT NULL,
@@ -4140,7 +4140,7 @@ CREATE TABLE `glpi_mailcollectors` (
 
 DROP TABLE IF EXISTS `glpi_manufacturers`;
 CREATE TABLE `glpi_manufacturers` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -4156,7 +4156,7 @@ CREATE TABLE `glpi_manufacturers` (
 
 DROP TABLE IF EXISTS `glpi_monitormodels`;
 CREATE TABLE `glpi_monitormodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -4183,14 +4183,14 @@ CREATE TABLE `glpi_monitormodels` (
 
 DROP TABLE IF EXISTS `glpi_monitors`;
 CREATE TABLE `glpi_monitors` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `contact` varchar(255) DEFAULT NULL,
   `contact_num` varchar(255) DEFAULT NULL,
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
@@ -4203,17 +4203,17 @@ CREATE TABLE `glpi_monitors` (
   `have_pivot` tinyint NOT NULL DEFAULT '0',
   `have_hdmi` tinyint NOT NULL DEFAULT '0',
   `have_displayport` tinyint NOT NULL DEFAULT '0',
-  `locations_id` int NOT NULL DEFAULT '0',
-  `monitortypes_id` int NOT NULL DEFAULT '0',
-  `monitormodels_id` int NOT NULL DEFAULT '0',
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `monitortypes_id` int unsigned NOT NULL DEFAULT '0',
+  `monitormodels_id` int unsigned NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `is_global` tinyint NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
-  `users_id` int NOT NULL DEFAULT '0',
-  `groups_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `uuid` varchar(255) DEFAULT NULL,
@@ -4248,7 +4248,7 @@ CREATE TABLE `glpi_monitors` (
 
 DROP TABLE IF EXISTS `glpi_monitortypes`;
 CREATE TABLE `glpi_monitortypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -4264,15 +4264,15 @@ CREATE TABLE `glpi_monitortypes` (
 
 DROP TABLE IF EXISTS `glpi_sockets`;
 CREATE TABLE `glpi_sockets` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `position` int NOT NULL DEFAULT '0',
-  `locations_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
-  `socketmodels_id` int NOT NULL DEFAULT '0',
+  `socketmodels_id` int unsigned NOT NULL DEFAULT '0',
   `wiring_side` tinyint DEFAULT '1',
   `itemtype` varchar(255) DEFAULT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
-  `networkports_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
+  `networkports_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
@@ -4292,24 +4292,24 @@ CREATE TABLE `glpi_sockets` (
 
 DROP TABLE IF EXISTS `glpi_cables`;
 CREATE TABLE `glpi_cables` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `itemtype_endpoint_a` varchar(255) DEFAULT NULL,
   `itemtype_endpoint_b` varchar(255) DEFAULT NULL,
-  `items_id_endpoint_a` int NOT NULL DEFAULT '0',
-  `items_id_endpoint_b` int NOT NULL DEFAULT '0',
-  `socketmodels_id_endpoint_a` int NOT NULL DEFAULT '0',
-  `socketmodels_id_endpoint_b` int NOT NULL DEFAULT '0',
-  `sockets_id_endpoint_a` int NOT NULL DEFAULT '0',
-  `sockets_id_endpoint_b` int NOT NULL DEFAULT '0',
-  `cablestrands_id` int NOT NULL DEFAULT '0',
+  `items_id_endpoint_a` int unsigned NOT NULL DEFAULT '0',
+  `items_id_endpoint_b` int unsigned NOT NULL DEFAULT '0',
+  `socketmodels_id_endpoint_a` int unsigned NOT NULL DEFAULT '0',
+  `socketmodels_id_endpoint_b` int unsigned NOT NULL DEFAULT '0',
+  `sockets_id_endpoint_a` int unsigned NOT NULL DEFAULT '0',
+  `sockets_id_endpoint_b` int unsigned NOT NULL DEFAULT '0',
+  `cablestrands_id` int unsigned NOT NULL DEFAULT '0',
   `color` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `states_id` int NOT NULL DEFAULT '0',
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `cabletypes_id` int NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `cabletypes_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
@@ -4338,7 +4338,7 @@ CREATE TABLE `glpi_cables` (
 
 DROP TABLE IF EXISTS `glpi_cabletypes`;
 CREATE TABLE `glpi_cabletypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -4354,7 +4354,7 @@ CREATE TABLE `glpi_cabletypes` (
 
 DROP TABLE IF EXISTS `glpi_cablestrands`;
 CREATE TABLE `glpi_cablestrands` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -4369,7 +4369,7 @@ CREATE TABLE `glpi_cablestrands` (
 
 DROP TABLE IF EXISTS `glpi_socketmodels`;
 CREATE TABLE `glpi_socketmodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -4385,11 +4385,11 @@ CREATE TABLE `glpi_socketmodels` (
 
 DROP TABLE IF EXISTS `glpi_networkaliases`;
 CREATE TABLE `glpi_networkaliases` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
-  `networknames_id` int NOT NULL DEFAULT '0',
+  `networknames_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
-  `fqdns_id` int NOT NULL DEFAULT '0',
+  `fqdns_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
   PRIMARY KEY (`id`),
   KEY `entities_id` (`entities_id`),
@@ -4403,7 +4403,7 @@ CREATE TABLE `glpi_networkaliases` (
 
 DROP TABLE IF EXISTS `glpi_networkequipmentmodels`;
 CREATE TABLE `glpi_networkequipmentmodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -4430,7 +4430,7 @@ CREATE TABLE `glpi_networkequipmentmodels` (
 
 DROP TABLE IF EXISTS `glpi_networkequipments`;
 CREATE TABLE `glpi_networkequipments` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
@@ -4439,31 +4439,31 @@ CREATE TABLE `glpi_networkequipments` (
   `otherserial` varchar(255) DEFAULT NULL,
   `contact` varchar(255) DEFAULT NULL,
   `contact_num` varchar(255) DEFAULT NULL,
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `comment` text,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `networks_id` int NOT NULL DEFAULT '0',
-  `networkequipmenttypes_id` int NOT NULL DEFAULT '0',
-  `networkequipmentmodels_id` int NOT NULL DEFAULT '0',
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `networks_id` int unsigned NOT NULL DEFAULT '0',
+  `networkequipmenttypes_id` int unsigned NOT NULL DEFAULT '0',
+  `networkequipmentmodels_id` int unsigned NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
-  `users_id` int NOT NULL DEFAULT '0',
-  `groups_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `uuid` varchar(255) DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
-  `autoupdatesystems_id` int NOT NULL DEFAULT '0',
+  `autoupdatesystems_id` int unsigned NOT NULL DEFAULT '0',
   `sysdescr` text,
   `cpu` int NOT NULL DEFAULT '0',
   `uptime` varchar(255) NOT NULL DEFAULT '0',
   `last_inventory_update` timestamp NULL DEFAULT NULL,
-  `snmpcredentials_id` int NOT NULL DEFAULT '0',
+  `snmpcredentials_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -4495,7 +4495,7 @@ CREATE TABLE `glpi_networkequipments` (
 
 DROP TABLE IF EXISTS `glpi_networkequipmenttypes`;
 CREATE TABLE `glpi_networkequipmenttypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -4511,7 +4511,7 @@ CREATE TABLE `glpi_networkequipmenttypes` (
 
 DROP TABLE IF EXISTS `glpi_networkinterfaces`;
 CREATE TABLE `glpi_networkinterfaces` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   PRIMARY KEY (`id`),
@@ -4523,14 +4523,14 @@ CREATE TABLE `glpi_networkinterfaces` (
 
 DROP TABLE IF EXISTS `glpi_networknames`;
 CREATE TABLE `glpi_networknames` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
-  `fqdns_id` int NOT NULL DEFAULT '0',
-  `ipnetworks_id` int NOT NULL DEFAULT '0',
+  `fqdns_id` int unsigned NOT NULL DEFAULT '0',
+  `ipnetworks_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -4552,8 +4552,8 @@ CREATE TABLE `glpi_networknames` (
 
 DROP TABLE IF EXISTS `glpi_networkportaggregates`;
 CREATE TABLE `glpi_networkportaggregates` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `networkports_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `networkports_id` int unsigned NOT NULL DEFAULT '0',
   `networkports_id_list` text COMMENT 'array of associated networkports_id',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
@@ -4568,9 +4568,9 @@ CREATE TABLE `glpi_networkportaggregates` (
 
 DROP TABLE IF EXISTS `glpi_networkportaliases`;
 CREATE TABLE `glpi_networkportaliases` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `networkports_id` int NOT NULL DEFAULT '0',
-  `networkports_id_alias` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `networkports_id` int unsigned NOT NULL DEFAULT '0',
+  `networkports_id_alias` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -4585,8 +4585,8 @@ CREATE TABLE `glpi_networkportaliases` (
 
 DROP TABLE IF EXISTS `glpi_networkportdialups`;
 CREATE TABLE `glpi_networkportdialups` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `networkports_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `networkports_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -4600,9 +4600,9 @@ CREATE TABLE `glpi_networkportdialups` (
 
 DROP TABLE IF EXISTS `glpi_networkportethernets`;
 CREATE TABLE `glpi_networkportethernets` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `networkports_id` int NOT NULL DEFAULT '0',
-  `items_devicenetworkcards_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `networkports_id` int unsigned NOT NULL DEFAULT '0',
+  `items_devicenetworkcards_id` int unsigned NOT NULL DEFAULT '0',
   `type` varchar(10) DEFAULT '' COMMENT 'T, LX, SX',
   `speed` int NOT NULL DEFAULT '10' COMMENT 'Mbit/s: 10, 100, 1000, 10000',
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -4621,7 +4621,7 @@ CREATE TABLE `glpi_networkportethernets` (
 
 DROP TABLE IF EXISTS `glpi_networkportfiberchanneltypes`;
 CREATE TABLE `glpi_networkportfiberchanneltypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -4637,10 +4637,10 @@ CREATE TABLE `glpi_networkportfiberchanneltypes` (
 
 DROP TABLE IF EXISTS `glpi_networkportfiberchannels`;
 CREATE TABLE `glpi_networkportfiberchannels` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `networkports_id` int NOT NULL DEFAULT '0',
-  `items_devicenetworkcards_id` int NOT NULL DEFAULT '0',
-  `networkportfiberchanneltypes_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `networkports_id` int unsigned NOT NULL DEFAULT '0',
+  `items_devicenetworkcards_id` int unsigned NOT NULL DEFAULT '0',
+  `networkportfiberchanneltypes_id` int unsigned NOT NULL DEFAULT '0',
   `wwn` varchar(16) DEFAULT '',
   `speed` int NOT NULL DEFAULT '10' COMMENT 'Mbit/s: 10, 100, 1000, 10000',
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -4660,8 +4660,8 @@ CREATE TABLE `glpi_networkportfiberchannels` (
 
 DROP TABLE IF EXISTS `glpi_networkportlocals`;
 CREATE TABLE `glpi_networkportlocals` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `networkports_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `networkports_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -4675,8 +4675,8 @@ CREATE TABLE `glpi_networkportlocals` (
 
 DROP TABLE IF EXISTS `glpi_networkports`;
 CREATE TABLE `glpi_networkports` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -4721,9 +4721,9 @@ CREATE TABLE `glpi_networkports` (
 
 DROP TABLE IF EXISTS `glpi_networkports_networkports`;
 CREATE TABLE `glpi_networkports_networkports` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `networkports_id_1` int NOT NULL DEFAULT '0',
-  `networkports_id_2` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `networkports_id_1` int unsigned NOT NULL DEFAULT '0',
+  `networkports_id_2` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`networkports_id_1`,`networkports_id_2`),
   KEY `networkports_id_2` (`networkports_id_2`)
@@ -4734,9 +4734,9 @@ CREATE TABLE `glpi_networkports_networkports` (
 
 DROP TABLE IF EXISTS `glpi_networkports_vlans`;
 CREATE TABLE `glpi_networkports_vlans` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `networkports_id` int NOT NULL DEFAULT '0',
-  `vlans_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `networkports_id` int unsigned NOT NULL DEFAULT '0',
+  `vlans_id` int unsigned NOT NULL DEFAULT '0',
   `tagged` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`networkports_id`,`vlans_id`),
@@ -4748,11 +4748,11 @@ CREATE TABLE `glpi_networkports_vlans` (
 
 DROP TABLE IF EXISTS `glpi_networkportwifis`;
 CREATE TABLE `glpi_networkportwifis` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `networkports_id` int NOT NULL DEFAULT '0',
-  `items_devicenetworkcards_id` int NOT NULL DEFAULT '0',
-  `wifinetworks_id` int NOT NULL DEFAULT '0',
-  `networkportwifis_id` int NOT NULL DEFAULT '0' COMMENT 'only useful in case of Managed node',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `networkports_id` int unsigned NOT NULL DEFAULT '0',
+  `items_devicenetworkcards_id` int unsigned NOT NULL DEFAULT '0',
+  `wifinetworks_id` int unsigned NOT NULL DEFAULT '0',
+  `networkportwifis_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'only useful in case of Managed node',
   `version` varchar(20) DEFAULT NULL COMMENT 'a, a/b, a/b/g, a/b/g/n, a/b/g/n/y',
   `mode` varchar(20) DEFAULT NULL COMMENT 'ad-hoc, managed, master, repeater, secondary, monitor, auto',
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -4773,7 +4773,7 @@ CREATE TABLE `glpi_networkportwifis` (
 
 DROP TABLE IF EXISTS `glpi_networks`;
 CREATE TABLE `glpi_networks` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -4789,13 +4789,13 @@ CREATE TABLE `glpi_networks` (
 
 DROP TABLE IF EXISTS `glpi_notepads`;
 CREATE TABLE `glpi_notepads` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(100) DEFAULT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
-  `users_id` int NOT NULL DEFAULT '0',
-  `users_id_lastupdater` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_lastupdater` int unsigned NOT NULL DEFAULT '0',
   `content` longtext,
   PRIMARY KEY (`id`),
   KEY `item` (`itemtype`,`items_id`),
@@ -4810,7 +4810,7 @@ CREATE TABLE `glpi_notepads` (
 
 DROP TABLE IF EXISTS `glpi_notifications`;
 CREATE TABLE `glpi_notifications` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
@@ -4837,10 +4837,10 @@ CREATE TABLE `glpi_notifications` (
 
 DROP TABLE IF EXISTS `glpi_notifications_notificationtemplates`;
 CREATE TABLE `glpi_notifications_notificationtemplates` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `notifications_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `notifications_id` int unsigned NOT NULL DEFAULT '0',
   `mode` varchar(20) NOT NULL COMMENT 'See Notification_NotificationTemplate::MODE_* constants',
-  `notificationtemplates_id` int NOT NULL DEFAULT '0',
+  `notificationtemplates_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`notifications_id`,`mode`,`notificationtemplates_id`),
   KEY `notificationtemplates_id` (`notificationtemplates_id`),
@@ -4853,10 +4853,10 @@ CREATE TABLE `glpi_notifications_notificationtemplates` (
 
 DROP TABLE IF EXISTS `glpi_notificationtargets`;
 CREATE TABLE `glpi_notificationtargets` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `type` int NOT NULL DEFAULT '0',
-  `notifications_id` int NOT NULL DEFAULT '0',
+  `notifications_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `items` (`type`,`items_id`),
   KEY `notifications_id` (`notifications_id`)
@@ -4867,7 +4867,7 @@ CREATE TABLE `glpi_notificationtargets` (
 
 DROP TABLE IF EXISTS `glpi_notificationtemplates`;
 CREATE TABLE `glpi_notificationtemplates` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `itemtype` varchar(100) NOT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -4886,8 +4886,8 @@ CREATE TABLE `glpi_notificationtemplates` (
 
 DROP TABLE IF EXISTS `glpi_notificationtemplatetranslations`;
 CREATE TABLE `glpi_notificationtemplatetranslations` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `notificationtemplates_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `notificationtemplates_id` int unsigned NOT NULL DEFAULT '0',
   `language` varchar(10) NOT NULL DEFAULT '',
   `subject` varchar(255) NOT NULL,
   `content_text` text,
@@ -4901,15 +4901,15 @@ CREATE TABLE `glpi_notificationtemplatetranslations` (
 
 DROP TABLE IF EXISTS `glpi_notimportedemails`;
 CREATE TABLE `glpi_notimportedemails` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `from` varchar(255) NOT NULL,
   `to` varchar(255) NOT NULL,
-  `mailcollectors_id` int NOT NULL DEFAULT '0',
+  `mailcollectors_id` int unsigned NOT NULL DEFAULT '0',
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `subject` text,
   `messageid` varchar(255) NOT NULL,
   `reason` int NOT NULL DEFAULT '0',
-  `users_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `users_id` (`users_id`),
   KEY `mailcollectors_id` (`mailcollectors_id`)
@@ -4920,10 +4920,10 @@ CREATE TABLE `glpi_notimportedemails` (
 
 DROP TABLE IF EXISTS `glpi_objectlocks`;
 CREATE TABLE `glpi_objectlocks` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(100) NOT NULL COMMENT 'Type of locked object',
-  `items_id` int NOT NULL COMMENT 'RELATION to various tables, according to itemtype (ID)',
-  `users_id` int NOT NULL COMMENT 'id of the locker',
+  `items_id` int unsigned NOT NULL COMMENT 'RELATION to various tables, according to itemtype (ID)',
+  `users_id` int unsigned NOT NULL COMMENT 'id of the locker',
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `item` (`itemtype`,`items_id`),
@@ -4936,7 +4936,7 @@ CREATE TABLE `glpi_objectlocks` (
 
 DROP TABLE IF EXISTS `glpi_operatingsystemarchitectures`;
 CREATE TABLE `glpi_operatingsystemarchitectures` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -4952,7 +4952,7 @@ CREATE TABLE `glpi_operatingsystemarchitectures` (
 
 DROP TABLE IF EXISTS `glpi_operatingsystems`;
 CREATE TABLE `glpi_operatingsystems` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -4968,7 +4968,7 @@ CREATE TABLE `glpi_operatingsystems` (
 
 DROP TABLE IF EXISTS `glpi_operatingsystemservicepacks`;
 CREATE TABLE `glpi_operatingsystemservicepacks` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -4984,7 +4984,7 @@ CREATE TABLE `glpi_operatingsystemservicepacks` (
 
 DROP TABLE IF EXISTS `glpi_operatingsystemversions`;
 CREATE TABLE `glpi_operatingsystemversions` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -5000,23 +5000,23 @@ CREATE TABLE `glpi_operatingsystemversions` (
 
 DROP TABLE IF EXISTS `glpi_passivedcequipments`;
 CREATE TABLE `glpi_passivedcequipments` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `locations_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `passivedcequipmentmodels_id` int DEFAULT NULL,
-  `passivedcequipmenttypes_id` int NOT NULL DEFAULT '0',
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
+  `passivedcequipmentmodels_id` int unsigned DEFAULT NULL,
+  `passivedcequipmenttypes_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
+  `states_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
   `comment` text,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -5041,7 +5041,7 @@ CREATE TABLE `glpi_passivedcequipments` (
 
 DROP TABLE IF EXISTS `glpi_passivedcequipmentmodels`;
 CREATE TABLE `glpi_passivedcequipmentmodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -5070,7 +5070,7 @@ CREATE TABLE `glpi_passivedcequipmentmodels` (
 
 DROP TABLE IF EXISTS `glpi_passivedcequipmenttypes`;
 CREATE TABLE `glpi_passivedcequipmenttypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -5084,7 +5084,7 @@ CREATE TABLE `glpi_passivedcequipmenttypes` (
 
 DROP TABLE IF EXISTS `glpi_peripheralmodels`;
 CREATE TABLE `glpi_peripheralmodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -5111,29 +5111,29 @@ CREATE TABLE `glpi_peripheralmodels` (
 
 DROP TABLE IF EXISTS `glpi_peripherals`;
 CREATE TABLE `glpi_peripherals` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `contact` varchar(255) DEFAULT NULL,
   `contact_num` varchar(255) DEFAULT NULL,
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `peripheraltypes_id` int NOT NULL DEFAULT '0',
-  `peripheralmodels_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `peripheraltypes_id` int unsigned NOT NULL DEFAULT '0',
+  `peripheralmodels_id` int unsigned NOT NULL DEFAULT '0',
   `brand` varchar(255) DEFAULT NULL,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `is_global` tinyint NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
-  `users_id` int NOT NULL DEFAULT '0',
-  `groups_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `uuid` varchar(255) DEFAULT NULL,
@@ -5168,7 +5168,7 @@ CREATE TABLE `glpi_peripherals` (
 
 DROP TABLE IF EXISTS `glpi_peripheraltypes`;
 CREATE TABLE `glpi_peripheraltypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -5184,7 +5184,7 @@ CREATE TABLE `glpi_peripheraltypes` (
 
 DROP TABLE IF EXISTS `glpi_phonemodels`;
 CREATE TABLE `glpi_phonemodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -5205,7 +5205,7 @@ CREATE TABLE `glpi_phonemodels` (
 
 DROP TABLE IF EXISTS `glpi_phonepowersupplies`;
 CREATE TABLE `glpi_phonepowersupplies` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -5221,33 +5221,33 @@ CREATE TABLE `glpi_phonepowersupplies` (
 
 DROP TABLE IF EXISTS `glpi_phones`;
 CREATE TABLE `glpi_phones` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `contact` varchar(255) DEFAULT NULL,
   `contact_num` varchar(255) DEFAULT NULL,
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `phonetypes_id` int NOT NULL DEFAULT '0',
-  `phonemodels_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `phonetypes_id` int unsigned NOT NULL DEFAULT '0',
+  `phonemodels_id` int unsigned NOT NULL DEFAULT '0',
   `brand` varchar(255) DEFAULT NULL,
-  `phonepowersupplies_id` int NOT NULL DEFAULT '0',
+  `phonepowersupplies_id` int unsigned NOT NULL DEFAULT '0',
   `number_line` varchar(255) DEFAULT NULL,
   `have_headset` tinyint NOT NULL DEFAULT '0',
   `have_hp` tinyint NOT NULL DEFAULT '0',
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `is_global` tinyint NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
-  `users_id` int NOT NULL DEFAULT '0',
-  `groups_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `uuid` varchar(255) DEFAULT NULL,
@@ -5283,7 +5283,7 @@ CREATE TABLE `glpi_phones` (
 
 DROP TABLE IF EXISTS `glpi_phonetypes`;
 CREATE TABLE `glpi_phonetypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -5299,10 +5299,10 @@ CREATE TABLE `glpi_phonetypes` (
 
 DROP TABLE IF EXISTS `glpi_planningrecalls`;
 CREATE TABLE `glpi_planningrecalls` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
-  `users_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   `before_time` int NOT NULL DEFAULT '-10',
   `when` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -5317,7 +5317,7 @@ CREATE TABLE `glpi_planningrecalls` (
 
 DROP TABLE IF EXISTS `glpi_plugins`;
 CREATE TABLE `glpi_plugins` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `directory` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `version` varchar(255) NOT NULL,
@@ -5336,7 +5336,7 @@ CREATE TABLE `glpi_plugins` (
 
 DROP TABLE IF EXISTS `glpi_printermodels`;
 CREATE TABLE `glpi_printermodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -5357,15 +5357,15 @@ CREATE TABLE `glpi_printermodels` (
 
 DROP TABLE IF EXISTS `glpi_printers`;
 CREATE TABLE `glpi_printers` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `contact` varchar(255) DEFAULT NULL,
   `contact_num` varchar(255) DEFAULT NULL,
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
   `have_serial` tinyint NOT NULL DEFAULT '0',
@@ -5375,28 +5375,28 @@ CREATE TABLE `glpi_printers` (
   `have_ethernet` tinyint NOT NULL DEFAULT '0',
   `comment` text,
   `memory_size` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `networks_id` int NOT NULL DEFAULT '0',
-  `printertypes_id` int NOT NULL DEFAULT '0',
-  `printermodels_id` int NOT NULL DEFAULT '0',
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `networks_id` int unsigned NOT NULL DEFAULT '0',
+  `printertypes_id` int unsigned NOT NULL DEFAULT '0',
+  `printermodels_id` int unsigned NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `is_global` tinyint NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
   `init_pages_counter` int NOT NULL DEFAULT '0',
   `last_pages_counter` int NOT NULL DEFAULT '0',
-  `users_id` int NOT NULL DEFAULT '0',
-  `groups_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `uuid` varchar(255) DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `sysdescr` text,
   `last_inventory_update` timestamp NULL DEFAULT NULL,
-  `snmpcredentials_id` int NOT NULL DEFAULT '0',
-  `autoupdatesystems_id` int NOT NULL DEFAULT '0',
+  `snmpcredentials_id` int unsigned NOT NULL DEFAULT '0',
+  `autoupdatesystems_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -5430,7 +5430,7 @@ CREATE TABLE `glpi_printers` (
 
 DROP TABLE IF EXISTS `glpi_printertypes`;
 CREATE TABLE `glpi_printertypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -5446,8 +5446,8 @@ CREATE TABLE `glpi_printertypes` (
 
 DROP TABLE IF EXISTS `glpi_problemcosts`;
 CREATE TABLE `glpi_problemcosts` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `problems_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `problems_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `begin_date` date DEFAULT NULL,
@@ -5456,7 +5456,7 @@ CREATE TABLE `glpi_problemcosts` (
   `cost_time` decimal(20,4) NOT NULL DEFAULT '0.0000',
   `cost_fixed` decimal(20,4) NOT NULL DEFAULT '0.0000',
   `cost_material` decimal(20,4) NOT NULL DEFAULT '0.0000',
-  `budgets_id` int NOT NULL DEFAULT '0',
+  `budgets_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
@@ -5472,7 +5472,7 @@ CREATE TABLE `glpi_problemcosts` (
 
 DROP TABLE IF EXISTS `glpi_problems`;
 CREATE TABLE `glpi_problems` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -5484,12 +5484,12 @@ CREATE TABLE `glpi_problems` (
   `solvedate` timestamp NULL DEFAULT NULL,
   `closedate` timestamp NULL DEFAULT NULL,
   `time_to_resolve` timestamp NULL DEFAULT NULL,
-  `users_id_recipient` int NOT NULL DEFAULT '0',
-  `users_id_lastupdater` int NOT NULL DEFAULT '0',
+  `users_id_recipient` int unsigned NOT NULL DEFAULT '0',
+  `users_id_lastupdater` int unsigned NOT NULL DEFAULT '0',
   `urgency` int NOT NULL DEFAULT '1',
   `impact` int NOT NULL DEFAULT '1',
   `priority` int NOT NULL DEFAULT '1',
-  `itilcategories_id` int NOT NULL DEFAULT '0',
+  `itilcategories_id` int unsigned NOT NULL DEFAULT '0',
   `impactcontent` longtext,
   `causecontent` longtext,
   `symptomcontent` longtext,
@@ -5524,9 +5524,9 @@ CREATE TABLE `glpi_problems` (
 
 DROP TABLE IF EXISTS `glpi_problems_suppliers`;
 CREATE TABLE `glpi_problems_suppliers` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `problems_id` int NOT NULL DEFAULT '0',
-  `suppliers_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `problems_id` int unsigned NOT NULL DEFAULT '0',
+  `suppliers_id` int unsigned NOT NULL DEFAULT '0',
   `type` int NOT NULL DEFAULT '1',
   `use_notification` tinyint NOT NULL DEFAULT '0',
   `alternative_email` varchar(255) DEFAULT NULL,
@@ -5540,9 +5540,9 @@ CREATE TABLE `glpi_problems_suppliers` (
 
 DROP TABLE IF EXISTS `glpi_problems_tickets`;
 CREATE TABLE `glpi_problems_tickets` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `problems_id` int NOT NULL DEFAULT '0',
-  `tickets_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `problems_id` int unsigned NOT NULL DEFAULT '0',
+  `tickets_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`problems_id`,`tickets_id`),
   KEY `tickets_id` (`tickets_id`)
@@ -5553,9 +5553,9 @@ CREATE TABLE `glpi_problems_tickets` (
 
 DROP TABLE IF EXISTS `glpi_problems_users`;
 CREATE TABLE `glpi_problems_users` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `problems_id` int NOT NULL DEFAULT '0',
-  `users_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `problems_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   `type` int NOT NULL DEFAULT '1',
   `use_notification` tinyint NOT NULL DEFAULT '0',
   `alternative_email` varchar(255) DEFAULT NULL,
@@ -5569,23 +5569,23 @@ CREATE TABLE `glpi_problems_users` (
 
 DROP TABLE IF EXISTS `glpi_problemtasks`;
 CREATE TABLE `glpi_problemtasks` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `uuid` varchar(255) DEFAULT NULL,
-  `problems_id` int NOT NULL DEFAULT '0',
-  `taskcategories_id` int NOT NULL DEFAULT '0',
+  `problems_id` int unsigned NOT NULL DEFAULT '0',
+  `taskcategories_id` int unsigned NOT NULL DEFAULT '0',
   `date` timestamp NULL DEFAULT NULL,
   `begin` timestamp NULL DEFAULT NULL,
   `end` timestamp NULL DEFAULT NULL,
-  `users_id` int NOT NULL DEFAULT '0',
-  `users_id_editor` int NOT NULL DEFAULT '0',
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_editor` int unsigned NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `content` longtext,
   `actiontime` int NOT NULL DEFAULT '0',
   `state` int NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
-  `tasktemplates_id` int NOT NULL DEFAULT '0',
+  `tasktemplates_id` int unsigned NOT NULL DEFAULT '0',
   `timeline_position` tinyint NOT NULL DEFAULT '0',
   `is_private` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -5611,8 +5611,8 @@ CREATE TABLE `glpi_problemtasks` (
 
 DROP TABLE IF EXISTS `glpi_profilerights`;
 CREATE TABLE `glpi_profilerights` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `profiles_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `profiles_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `rights` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -5624,7 +5624,7 @@ CREATE TABLE `glpi_profilerights` (
 
 DROP TABLE IF EXISTS `glpi_profiles`;
 CREATE TABLE `glpi_profiles` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `interface` varchar(255) DEFAULT 'helpdesk',
   `is_default` tinyint NOT NULL DEFAULT '0',
@@ -5657,9 +5657,9 @@ CREATE TABLE `glpi_profiles` (
 
 DROP TABLE IF EXISTS `glpi_profiles_reminders`;
 CREATE TABLE `glpi_profiles_reminders` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `reminders_id` int NOT NULL DEFAULT '0',
-  `profiles_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `reminders_id` int unsigned NOT NULL DEFAULT '0',
+  `profiles_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '-1',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -5674,9 +5674,9 @@ CREATE TABLE `glpi_profiles_reminders` (
 
 DROP TABLE IF EXISTS `glpi_profiles_rssfeeds`;
 CREATE TABLE `glpi_profiles_rssfeeds` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `rssfeeds_id` int NOT NULL DEFAULT '0',
-  `profiles_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `rssfeeds_id` int unsigned NOT NULL DEFAULT '0',
+  `profiles_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '-1',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -5691,9 +5691,9 @@ CREATE TABLE `glpi_profiles_rssfeeds` (
 
 DROP TABLE IF EXISTS `glpi_profiles_users`;
 CREATE TABLE `glpi_profiles_users` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `users_id` int NOT NULL DEFAULT '0',
-  `profiles_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `profiles_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '1',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
@@ -5711,14 +5711,14 @@ CREATE TABLE `glpi_profiles_users` (
 
 DROP TABLE IF EXISTS `glpi_projectcosts`;
 CREATE TABLE `glpi_projectcosts` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `projects_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `projects_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `begin_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL,
   `cost` decimal(20,4) NOT NULL DEFAULT '0.0000',
-  `budgets_id` int NOT NULL DEFAULT '0',
+  `budgets_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -5736,19 +5736,19 @@ CREATE TABLE `glpi_projectcosts` (
 
 DROP TABLE IF EXISTS `glpi_projects`;
 CREATE TABLE `glpi_projects` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `code` varchar(255) DEFAULT NULL,
   `priority` int NOT NULL DEFAULT '1',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `projects_id` int NOT NULL DEFAULT '0',
-  `projectstates_id` int NOT NULL DEFAULT '0',
-  `projecttypes_id` int NOT NULL DEFAULT '0',
+  `projects_id` int unsigned NOT NULL DEFAULT '0',
+  `projectstates_id` int unsigned NOT NULL DEFAULT '0',
+  `projecttypes_id` int unsigned NOT NULL DEFAULT '0',
   `date` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
-  `users_id` int NOT NULL DEFAULT '0',
-  `groups_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
   `plan_start_date` timestamp NULL DEFAULT NULL,
   `plan_end_date` timestamp NULL DEFAULT NULL,
   `real_start_date` timestamp NULL DEFAULT NULL,
@@ -5760,7 +5760,7 @@ CREATE TABLE `glpi_projects` (
   `comment` longtext,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
-  `projecttemplates_id` int NOT NULL DEFAULT '0',
+  `projecttemplates_id` int unsigned NOT NULL DEFAULT '0',
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -5793,7 +5793,7 @@ CREATE TABLE `glpi_projects` (
 
 DROP TABLE IF EXISTS `glpi_projectstates`;
 CREATE TABLE `glpi_projectstates` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `color` varchar(255) DEFAULT NULL,
@@ -5812,15 +5812,15 @@ CREATE TABLE `glpi_projectstates` (
 
 DROP TABLE IF EXISTS `glpi_projecttasks`;
 CREATE TABLE `glpi_projecttasks` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `uuid` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `content` longtext,
   `comment` longtext,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `projects_id` int NOT NULL DEFAULT '0',
-  `projecttasks_id` int NOT NULL DEFAULT '0',
+  `projects_id` int unsigned NOT NULL DEFAULT '0',
+  `projecttasks_id` int unsigned NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `plan_start_date` timestamp NULL DEFAULT NULL,
@@ -5829,13 +5829,13 @@ CREATE TABLE `glpi_projecttasks` (
   `real_end_date` timestamp NULL DEFAULT NULL,
   `planned_duration` int NOT NULL DEFAULT '0',
   `effective_duration` int NOT NULL DEFAULT '0',
-  `projectstates_id` int NOT NULL DEFAULT '0',
-  `projecttasktypes_id` int NOT NULL DEFAULT '0',
-  `users_id` int NOT NULL DEFAULT '0',
+  `projectstates_id` int unsigned NOT NULL DEFAULT '0',
+  `projecttasktypes_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   `percent_done` int NOT NULL DEFAULT '0',
   `auto_percent_done` tinyint NOT NULL DEFAULT '0',
   `is_milestone` tinyint NOT NULL DEFAULT '0',
-  `projecttasktemplates_id` int NOT NULL DEFAULT '0',
+  `projecttasktemplates_id` int unsigned NOT NULL DEFAULT '0',
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -5865,10 +5865,10 @@ CREATE TABLE `glpi_projecttasks` (
 
 DROP TABLE IF EXISTS `glpi_projecttasklinks`;
 CREATE TABLE `glpi_projecttasklinks` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `projecttasks_id_source` int NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `projecttasks_id_source` int unsigned NOT NULL,
   `source_uuid` varchar(255) NOT NULL,
-  `projecttasks_id_target` int NOT NULL,
+  `projecttasks_id_target` int unsigned NOT NULL,
   `target_uuid` varchar(255) NOT NULL,
   `type` tinyint NOT NULL DEFAULT '0',
   `lag` smallint DEFAULT '0',
@@ -5882,23 +5882,23 @@ CREATE TABLE `glpi_projecttasklinks` (
 
 DROP TABLE IF EXISTS `glpi_projecttasktemplates`;
 CREATE TABLE `glpi_projecttasktemplates` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `description` longtext,
   `comment` longtext,
-  `projects_id` int NOT NULL DEFAULT '0',
-  `projecttasks_id` int NOT NULL DEFAULT '0',
+  `projects_id` int unsigned NOT NULL DEFAULT '0',
+  `projecttasks_id` int unsigned NOT NULL DEFAULT '0',
   `plan_start_date` timestamp NULL DEFAULT NULL,
   `plan_end_date` timestamp NULL DEFAULT NULL,
   `real_start_date` timestamp NULL DEFAULT NULL,
   `real_end_date` timestamp NULL DEFAULT NULL,
   `planned_duration` int NOT NULL DEFAULT '0',
   `effective_duration` int NOT NULL DEFAULT '0',
-  `projectstates_id` int NOT NULL DEFAULT '0',
-  `projecttasktypes_id` int NOT NULL DEFAULT '0',
-  `users_id` int NOT NULL DEFAULT '0',
+  `projectstates_id` int unsigned NOT NULL DEFAULT '0',
+  `projecttasktypes_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   `percent_done` int NOT NULL DEFAULT '0',
   `is_milestone` tinyint NOT NULL DEFAULT '0',
   `comments` text,
@@ -5928,9 +5928,9 @@ CREATE TABLE `glpi_projecttasktemplates` (
 
 DROP TABLE IF EXISTS `glpi_projecttasks_tickets`;
 CREATE TABLE `glpi_projecttasks_tickets` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `tickets_id` int NOT NULL DEFAULT '0',
-  `projecttasks_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tickets_id` int unsigned NOT NULL DEFAULT '0',
+  `projecttasks_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickets_id`,`projecttasks_id`),
   KEY `projects_id` (`projecttasks_id`)
@@ -5941,10 +5941,10 @@ CREATE TABLE `glpi_projecttasks_tickets` (
 
 DROP TABLE IF EXISTS `glpi_projecttaskteams`;
 CREATE TABLE `glpi_projecttaskteams` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `projecttasks_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `projecttasks_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) DEFAULT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`projecttasks_id`,`itemtype`,`items_id`),
   KEY `item` (`itemtype`,`items_id`)
@@ -5955,7 +5955,7 @@ CREATE TABLE `glpi_projecttaskteams` (
 
 DROP TABLE IF EXISTS `glpi_projecttasktypes`;
 CREATE TABLE `glpi_projecttasktypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -5971,10 +5971,10 @@ CREATE TABLE `glpi_projecttasktypes` (
 
 DROP TABLE IF EXISTS `glpi_projectteams`;
 CREATE TABLE `glpi_projectteams` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `projects_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `projects_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) DEFAULT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`projects_id`,`itemtype`,`items_id`),
   KEY `item` (`itemtype`,`items_id`)
@@ -5985,7 +5985,7 @@ CREATE TABLE `glpi_projectteams` (
 
 DROP TABLE IF EXISTS `glpi_projecttypes`;
 CREATE TABLE `glpi_projecttypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -6001,10 +6001,10 @@ CREATE TABLE `glpi_projecttypes` (
 
 DROP TABLE IF EXISTS `glpi_queuednotifications`;
 CREATE TABLE `glpi_queuednotifications` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(100) DEFAULT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
-  `notificationtemplates_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
+  `notificationtemplates_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `sent_try` int NOT NULL DEFAULT '0',
@@ -6041,9 +6041,9 @@ CREATE TABLE `glpi_queuednotifications` (
 
 DROP TABLE IF EXISTS `glpi_registeredids`;
 CREATE TABLE `glpi_registeredids` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
   `device_type` varchar(100) NOT NULL COMMENT 'USB, PCI ...',
   PRIMARY KEY (`id`),
@@ -6057,10 +6057,10 @@ CREATE TABLE `glpi_registeredids` (
 
 DROP TABLE IF EXISTS `glpi_reminders`;
 CREATE TABLE `glpi_reminders` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `uuid` varchar(255) DEFAULT NULL,
   `date` timestamp NULL DEFAULT NULL,
-  `users_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `text` text,
   `begin` timestamp NULL DEFAULT NULL,
@@ -6088,12 +6088,12 @@ CREATE TABLE `glpi_reminders` (
 
 DROP TABLE IF EXISTS `glpi_remindertranslations`;
 CREATE TABLE `glpi_remindertranslations` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `reminders_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `reminders_id` int unsigned NOT NULL DEFAULT '0',
   `language` varchar(5) DEFAULT NULL,
   `name` text,
   `text` longtext,
-  `users_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -6107,9 +6107,9 @@ CREATE TABLE `glpi_remindertranslations` (
 
 DROP TABLE IF EXISTS `glpi_reminders_users`;
 CREATE TABLE `glpi_reminders_users` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `reminders_id` int NOT NULL DEFAULT '0',
-  `users_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `reminders_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `reminders_id` (`reminders_id`),
   KEY `users_id` (`users_id`)
@@ -6120,7 +6120,7 @@ CREATE TABLE `glpi_reminders_users` (
 
 DROP TABLE IF EXISTS `glpi_requesttypes`;
 CREATE TABLE `glpi_requesttypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `is_helpdesk_default` tinyint NOT NULL DEFAULT '0',
   `is_followup_default` tinyint NOT NULL DEFAULT '0',
@@ -6150,11 +6150,11 @@ CREATE TABLE `glpi_requesttypes` (
 
 DROP TABLE IF EXISTS `glpi_reservationitems`;
 CREATE TABLE `glpi_reservationitems` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(100) NOT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
   `is_active` tinyint NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
@@ -6170,11 +6170,11 @@ CREATE TABLE `glpi_reservationitems` (
 
 DROP TABLE IF EXISTS `glpi_reservations`;
 CREATE TABLE `glpi_reservations` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `reservationitems_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `reservationitems_id` int unsigned NOT NULL DEFAULT '0',
   `begin` timestamp NULL DEFAULT NULL,
   `end` timestamp NULL DEFAULT NULL,
-  `users_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
   `group` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -6189,9 +6189,9 @@ CREATE TABLE `glpi_reservations` (
 
 DROP TABLE IF EXISTS `glpi_rssfeeds`;
 CREATE TABLE `glpi_rssfeeds` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
-  `users_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
   `url` text,
   `refresh_rate` int NOT NULL DEFAULT '86400',
@@ -6214,9 +6214,9 @@ CREATE TABLE `glpi_rssfeeds` (
 
 DROP TABLE IF EXISTS `glpi_rssfeeds_users`;
 CREATE TABLE `glpi_rssfeeds_users` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `rssfeeds_id` int NOT NULL DEFAULT '0',
-  `users_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `rssfeeds_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `rssfeeds_id` (`rssfeeds_id`),
   KEY `users_id` (`users_id`)
@@ -6227,8 +6227,8 @@ CREATE TABLE `glpi_rssfeeds_users` (
 
 DROP TABLE IF EXISTS `glpi_ruleactions`;
 CREATE TABLE `glpi_ruleactions` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `rules_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `rules_id` int unsigned NOT NULL DEFAULT '0',
   `action_type` varchar(255) DEFAULT NULL COMMENT 'VALUE IN (assign, regex_result, append_regex_result, affectbyip, affectbyfqdn, affectbymac)',
   `field` varchar(255) DEFAULT NULL,
   `value` varchar(255) DEFAULT NULL,
@@ -6242,8 +6242,8 @@ CREATE TABLE `glpi_ruleactions` (
 
 DROP TABLE IF EXISTS `glpi_rulecriterias`;
 CREATE TABLE `glpi_rulecriterias` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `rules_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `rules_id` int unsigned NOT NULL DEFAULT '0',
   `criteria` varchar(255) DEFAULT NULL,
   `condition` int NOT NULL DEFAULT '0' COMMENT 'see define.php PATTERN_* and REGEX_* constant',
   `pattern` text,
@@ -6257,7 +6257,7 @@ CREATE TABLE `glpi_rulecriterias` (
 
 DROP TABLE IF EXISTS `glpi_rulerightparameters`;
 CREATE TABLE `glpi_rulerightparameters` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `value` varchar(255) DEFAULT NULL,
   `comment` text,
@@ -6274,7 +6274,7 @@ CREATE TABLE `glpi_rulerightparameters` (
 
 DROP TABLE IF EXISTS `glpi_rules`;
 CREATE TABLE `glpi_rules` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `sub_type` varchar(255) NOT NULL DEFAULT '',
   `ranking` int NOT NULL DEFAULT '0',
@@ -6304,8 +6304,8 @@ CREATE TABLE `glpi_rules` (
 
 DROP TABLE IF EXISTS `glpi_slalevelactions`;
 CREATE TABLE `glpi_slalevelactions` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `slalevels_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `slalevels_id` int unsigned NOT NULL DEFAULT '0',
   `action_type` varchar(255) DEFAULT NULL,
   `field` varchar(255) DEFAULT NULL,
   `value` varchar(255) DEFAULT NULL,
@@ -6318,8 +6318,8 @@ CREATE TABLE `glpi_slalevelactions` (
 
 DROP TABLE IF EXISTS `glpi_slalevelcriterias`;
 CREATE TABLE `glpi_slalevelcriterias` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `slalevels_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `slalevels_id` int unsigned NOT NULL DEFAULT '0',
   `criteria` varchar(255) DEFAULT NULL,
   `condition` int NOT NULL DEFAULT '0' COMMENT 'see define.php PATTERN_* and REGEX_* constant',
   `pattern` varchar(255) DEFAULT NULL,
@@ -6333,9 +6333,9 @@ CREATE TABLE `glpi_slalevelcriterias` (
 
 DROP TABLE IF EXISTS `glpi_slalevels`;
 CREATE TABLE `glpi_slalevels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
-  `slas_id` int NOT NULL DEFAULT '0',
+  `slas_id` int unsigned NOT NULL DEFAULT '0',
   `execution_time` int NOT NULL,
   `is_active` tinyint NOT NULL DEFAULT '1',
   `entities_id` int NOT NULL DEFAULT '0',
@@ -6355,9 +6355,9 @@ CREATE TABLE `glpi_slalevels` (
 
 DROP TABLE IF EXISTS `glpi_slalevels_tickets`;
 CREATE TABLE `glpi_slalevels_tickets` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `tickets_id` int NOT NULL DEFAULT '0',
-  `slalevels_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tickets_id` int unsigned NOT NULL DEFAULT '0',
+  `slalevels_id` int unsigned NOT NULL DEFAULT '0',
   `date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickets_id`,`slalevels_id`),
@@ -6368,8 +6368,8 @@ CREATE TABLE `glpi_slalevels_tickets` (
 
 DROP TABLE IF EXISTS `glpi_olalevelactions`;
 CREATE TABLE `glpi_olalevelactions` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `olalevels_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `olalevels_id` int unsigned NOT NULL DEFAULT '0',
   `action_type` varchar(255) DEFAULT NULL,
   `field` varchar(255) DEFAULT NULL,
   `value` varchar(255) DEFAULT NULL,
@@ -6382,8 +6382,8 @@ CREATE TABLE `glpi_olalevelactions` (
 
 DROP TABLE IF EXISTS `glpi_olalevelcriterias`;
 CREATE TABLE `glpi_olalevelcriterias` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `olalevels_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `olalevels_id` int unsigned NOT NULL DEFAULT '0',
   `criteria` varchar(255) DEFAULT NULL,
   `condition` int NOT NULL DEFAULT '0' COMMENT 'see define.php PATTERN_* and REGEX_* constant',
   `pattern` varchar(255) DEFAULT NULL,
@@ -6397,9 +6397,9 @@ CREATE TABLE `glpi_olalevelcriterias` (
 
 DROP TABLE IF EXISTS `glpi_olalevels`;
 CREATE TABLE `glpi_olalevels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
-  `olas_id` int NOT NULL DEFAULT '0',
+  `olas_id` int unsigned NOT NULL DEFAULT '0',
   `execution_time` int NOT NULL,
   `is_active` tinyint NOT NULL DEFAULT '1',
   `entities_id` int NOT NULL DEFAULT '0',
@@ -6419,9 +6419,9 @@ CREATE TABLE `glpi_olalevels` (
 
 DROP TABLE IF EXISTS `glpi_olalevels_tickets`;
 CREATE TABLE `glpi_olalevels_tickets` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `tickets_id` int NOT NULL DEFAULT '0',
-  `olalevels_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tickets_id` int unsigned NOT NULL DEFAULT '0',
+  `olalevels_id` int unsigned NOT NULL DEFAULT '0',
   `date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickets_id`,`olalevels_id`),
@@ -6432,7 +6432,7 @@ CREATE TABLE `glpi_olalevels_tickets` (
 
 DROP TABLE IF EXISTS `glpi_slms`;
 CREATE TABLE `glpi_slms` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -6453,7 +6453,7 @@ CREATE TABLE `glpi_slms` (
 
 DROP TABLE IF EXISTS `glpi_slas`;
 CREATE TABLE `glpi_slas` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -6465,7 +6465,7 @@ CREATE TABLE `glpi_slas` (
   `definition_time` varchar(255) DEFAULT NULL,
   `end_of_working_day` tinyint NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
-  `slms_id` int NOT NULL DEFAULT '0',
+  `slms_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -6480,7 +6480,7 @@ CREATE TABLE `glpi_slas` (
 
 DROP TABLE IF EXISTS `glpi_olas`;
 CREATE TABLE `glpi_olas` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -6492,7 +6492,7 @@ CREATE TABLE `glpi_olas` (
   `definition_time` varchar(255) DEFAULT NULL,
   `end_of_working_day` tinyint NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
-  `slms_id` int NOT NULL DEFAULT '0',
+  `slms_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -6507,10 +6507,10 @@ CREATE TABLE `glpi_olas` (
 
 DROP TABLE IF EXISTS `glpi_softwarecategories`;
 CREATE TABLE `glpi_softwarecategories` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
-  `softwarecategories_id` int NOT NULL DEFAULT '0',
+  `softwarecategories_id` int unsigned NOT NULL DEFAULT '0',
   `completename` text,
   `level` int NOT NULL DEFAULT '0',
   `ancestors_cache` longtext,
@@ -6525,36 +6525,36 @@ CREATE TABLE `glpi_softwarecategories` (
 
 DROP TABLE IF EXISTS `glpi_softwarelicenses`;
 CREATE TABLE `glpi_softwarelicenses` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `softwares_id` int NOT NULL DEFAULT '0',
-  `softwarelicenses_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `softwares_id` int unsigned NOT NULL DEFAULT '0',
+  `softwarelicenses_id` int unsigned NOT NULL DEFAULT '0',
   `completename` text,
   `level` int NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `number` int NOT NULL DEFAULT '0',
-  `softwarelicensetypes_id` int NOT NULL DEFAULT '0',
+  `softwarelicensetypes_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `softwareversions_id_buy` int NOT NULL DEFAULT '0',
-  `softwareversions_id_use` int NOT NULL DEFAULT '0',
+  `softwareversions_id_buy` int unsigned NOT NULL DEFAULT '0',
+  `softwareversions_id_use` int unsigned NOT NULL DEFAULT '0',
   `expire` date DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `is_valid` tinyint NOT NULL DEFAULT '1',
   `date_creation` timestamp NULL DEFAULT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
-  `locations_id` int NOT NULL DEFAULT '0',
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `users_id` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
   `is_helpdesk_visible` tinyint NOT NULL DEFAULT '0',
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
-  `states_id` int NOT NULL DEFAULT '0',
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `contact` varchar(255) DEFAULT NULL,
   `contact_num` varchar(255) DEFAULT NULL,
   `allow_overquota` tinyint NOT NULL DEFAULT '0',
@@ -6591,12 +6591,12 @@ CREATE TABLE `glpi_softwarelicenses` (
 
 DROP TABLE IF EXISTS `glpi_softwarelicensetypes`;
 CREATE TABLE `glpi_softwarelicensetypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
-  `softwarelicensetypes_id` int NOT NULL DEFAULT '0',
+  `softwarelicensetypes_id` int unsigned NOT NULL DEFAULT '0',
   `level` int NOT NULL DEFAULT '0',
   `ancestors_cache` longtext,
   `sons_cache` longtext,
@@ -6617,26 +6617,26 @@ CREATE TABLE `glpi_softwarelicensetypes` (
 
 DROP TABLE IF EXISTS `glpi_softwares`;
 CREATE TABLE `glpi_softwares` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `is_update` tinyint NOT NULL DEFAULT '0',
-  `softwares_id` int NOT NULL DEFAULT '0',
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `softwares_id` int unsigned NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
-  `users_id` int NOT NULL DEFAULT '0',
-  `groups_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
   `is_helpdesk_visible` tinyint NOT NULL DEFAULT '1',
-  `softwarecategories_id` int NOT NULL DEFAULT '0',
+  `softwarecategories_id` int unsigned NOT NULL DEFAULT '0',
   `is_valid` tinyint NOT NULL DEFAULT '1',
   `date_creation` timestamp NULL DEFAULT NULL,
   `pictures` text,
@@ -6665,15 +6665,15 @@ CREATE TABLE `glpi_softwares` (
 
 DROP TABLE IF EXISTS `glpi_softwareversions`;
 CREATE TABLE `glpi_softwareversions` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `softwares_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `softwares_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `arch` varchar(255) DEFAULT NULL,
   `comment` text,
-  `operatingsystems_id` int NOT NULL DEFAULT '0',
+  `operatingsystems_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -6693,12 +6693,12 @@ CREATE TABLE `glpi_softwareversions` (
 
 DROP TABLE IF EXISTS `glpi_solutiontemplates`;
 CREATE TABLE `glpi_solutiontemplates` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `content` text,
-  `solutiontypes_id` int NOT NULL DEFAULT '0',
+  `solutiontypes_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
@@ -6716,7 +6716,7 @@ CREATE TABLE `glpi_solutiontemplates` (
 
 DROP TABLE IF EXISTS `glpi_solutiontypes`;
 CREATE TABLE `glpi_solutiontypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `entities_id` int NOT NULL DEFAULT '0',
@@ -6735,22 +6735,22 @@ CREATE TABLE `glpi_solutiontypes` (
 ### Dump table glpi_itilsolutions
 DROP TABLE IF EXISTS `glpi_itilsolutions`;
 CREATE TABLE `glpi_itilsolutions` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(100) NOT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
-  `solutiontypes_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
+  `solutiontypes_id` int unsigned NOT NULL DEFAULT '0',
   `solutiontype_name` varchar(255) DEFAULT NULL,
   `content` longtext,
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_approval` timestamp NULL DEFAULT NULL,
-  `users_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   `user_name` varchar(255) DEFAULT NULL,
-  `users_id_editor` int NOT NULL DEFAULT '0',
-  `users_id_approval` int NOT NULL DEFAULT '0',
+  `users_id_editor` int unsigned NOT NULL DEFAULT '0',
+  `users_id_approval` int unsigned NOT NULL DEFAULT '0',
   `user_name_approval` varchar(255) DEFAULT NULL,
   `status` int NOT NULL DEFAULT '1',
-  `itilfollowups_id` int DEFAULT NULL COMMENT 'Followup reference on reject or approve a solution',
+  `itilfollowups_id` int unsigned DEFAULT NULL COMMENT 'Followup reference on reject or approve a solution',
   PRIMARY KEY (`id`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `solutiontypes_id` (`solutiontypes_id`),
@@ -6768,7 +6768,7 @@ CREATE TABLE `glpi_itilsolutions` (
 
 DROP TABLE IF EXISTS `glpi_ssovariables`;
 CREATE TABLE `glpi_ssovariables` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -6784,12 +6784,12 @@ CREATE TABLE `glpi_ssovariables` (
 
 DROP TABLE IF EXISTS `glpi_states`;
 CREATE TABLE `glpi_states` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `comment` text,
-  `states_id` int NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   `completename` text,
   `level` int NOT NULL DEFAULT '0',
   `ancestors_cache` longtext,
@@ -6848,11 +6848,11 @@ CREATE TABLE `glpi_states` (
 
 DROP TABLE IF EXISTS `glpi_suppliers`;
 CREATE TABLE `glpi_suppliers` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
-  `suppliertypes_id` int NOT NULL DEFAULT '0',
+  `suppliertypes_id` int unsigned NOT NULL DEFAULT '0',
   `registration_number` varchar(255) DEFAULT NULL,
   `address` text,
   `postcode` varchar(255) DEFAULT NULL,
@@ -6885,9 +6885,9 @@ CREATE TABLE `glpi_suppliers` (
 
 DROP TABLE IF EXISTS `glpi_suppliers_tickets`;
 CREATE TABLE `glpi_suppliers_tickets` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `tickets_id` int NOT NULL DEFAULT '0',
-  `suppliers_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tickets_id` int unsigned NOT NULL DEFAULT '0',
+  `suppliers_id` int unsigned NOT NULL DEFAULT '0',
   `type` int NOT NULL DEFAULT '1',
   `use_notification` tinyint NOT NULL DEFAULT '1',
   `alternative_email` varchar(255) DEFAULT NULL,
@@ -6901,7 +6901,7 @@ CREATE TABLE `glpi_suppliers_tickets` (
 
 DROP TABLE IF EXISTS `glpi_suppliertypes`;
 CREATE TABLE `glpi_suppliertypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -6917,10 +6917,10 @@ CREATE TABLE `glpi_suppliertypes` (
 
 DROP TABLE IF EXISTS `glpi_taskcategories`;
 CREATE TABLE `glpi_taskcategories` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `taskcategories_id` int NOT NULL DEFAULT '0',
+  `taskcategories_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `completename` text,
   `comment` text,
@@ -6931,7 +6931,7 @@ CREATE TABLE `glpi_taskcategories` (
   `is_helpdeskvisible` tinyint NOT NULL DEFAULT '1',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
-  `knowbaseitemcategories_id` int NOT NULL DEFAULT '0',
+  `knowbaseitemcategories_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `taskcategories_id` (`taskcategories_id`),
@@ -6949,20 +6949,20 @@ CREATE TABLE `glpi_taskcategories` (
 
 DROP TABLE IF EXISTS `glpi_tasktemplates`;
 CREATE TABLE `glpi_tasktemplates` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `content` text,
-  `taskcategories_id` int NOT NULL DEFAULT '0',
+  `taskcategories_id` int unsigned NOT NULL DEFAULT '0',
   `actiontime` int NOT NULL DEFAULT '0',
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `state` int NOT NULL DEFAULT '0',
   `is_private` tinyint NOT NULL DEFAULT '0',
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_recursive` (`is_recursive`),
@@ -6980,8 +6980,8 @@ CREATE TABLE `glpi_tasktemplates` (
 
 DROP TABLE IF EXISTS `glpi_ticketcosts`;
 CREATE TABLE `glpi_ticketcosts` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `tickets_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tickets_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `begin_date` date DEFAULT NULL,
@@ -6990,7 +6990,7 @@ CREATE TABLE `glpi_ticketcosts` (
   `cost_time` decimal(20,4) NOT NULL DEFAULT '0.0000',
   `cost_fixed` decimal(20,4) NOT NULL DEFAULT '0.0000',
   `cost_material` decimal(20,4) NOT NULL DEFAULT '0.0000',
-  `budgets_id` int NOT NULL DEFAULT '0',
+  `budgets_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
@@ -7006,7 +7006,7 @@ CREATE TABLE `glpi_ticketcosts` (
 
 DROP TABLE IF EXISTS `glpi_ticketrecurrents`;
 CREATE TABLE `glpi_ticketrecurrents` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `entities_id` int NOT NULL DEFAULT '0',
@@ -7034,7 +7034,7 @@ CREATE TABLE `glpi_ticketrecurrents` (
 
 DROP TABLE IF EXISTS `glpi_recurrentchanges`;
 CREATE TABLE `glpi_recurrentchanges` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `entities_id` int NOT NULL DEFAULT '0',
@@ -7061,35 +7061,35 @@ CREATE TABLE `glpi_recurrentchanges` (
 
 DROP TABLE IF EXISTS `glpi_tickets`;
 CREATE TABLE `glpi_tickets` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `date` timestamp NULL DEFAULT NULL,
   `closedate` timestamp NULL DEFAULT NULL,
   `solvedate` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
-  `users_id_lastupdater` int NOT NULL DEFAULT '0',
+  `users_id_lastupdater` int unsigned NOT NULL DEFAULT '0',
   `status` int NOT NULL DEFAULT '1',
-  `users_id_recipient` int NOT NULL DEFAULT '0',
-  `requesttypes_id` int NOT NULL DEFAULT '0',
+  `users_id_recipient` int unsigned NOT NULL DEFAULT '0',
+  `requesttypes_id` int unsigned NOT NULL DEFAULT '0',
   `content` longtext,
   `urgency` int NOT NULL DEFAULT '1',
   `impact` int NOT NULL DEFAULT '1',
   `priority` int NOT NULL DEFAULT '1',
-  `itilcategories_id` int NOT NULL DEFAULT '0',
+  `itilcategories_id` int unsigned NOT NULL DEFAULT '0',
   `type` int NOT NULL DEFAULT '1',
   `global_validation` int NOT NULL DEFAULT '1',
-  `slas_id_ttr` int NOT NULL DEFAULT '0',
-  `slas_id_tto` int NOT NULL DEFAULT '0',
-  `slalevels_id_ttr` int NOT NULL DEFAULT '0',
+  `slas_id_ttr` int unsigned NOT NULL DEFAULT '0',
+  `slas_id_tto` int unsigned NOT NULL DEFAULT '0',
+  `slalevels_id_ttr` int unsigned NOT NULL DEFAULT '0',
   `time_to_resolve` timestamp NULL DEFAULT NULL,
   `time_to_own` timestamp NULL DEFAULT NULL,
   `begin_waiting_date` timestamp NULL DEFAULT NULL,
   `sla_waiting_duration` int NOT NULL DEFAULT '0',
   `ola_waiting_duration` int NOT NULL DEFAULT '0',
-  `olas_id_tto` int NOT NULL DEFAULT '0',
-  `olas_id_ttr` int NOT NULL DEFAULT '0',
-  `olalevels_id_ttr` int NOT NULL DEFAULT '0',
+  `olas_id_tto` int unsigned NOT NULL DEFAULT '0',
+  `olas_id_ttr` int unsigned NOT NULL DEFAULT '0',
+  `olalevels_id_ttr` int unsigned NOT NULL DEFAULT '0',
   `ola_ttr_begin_date` timestamp NULL DEFAULT NULL,
   `internal_time_to_resolve` timestamp NULL DEFAULT NULL,
   `internal_time_to_own` timestamp NULL DEFAULT NULL,
@@ -7099,7 +7099,7 @@ CREATE TABLE `glpi_tickets` (
   `takeintoaccount_delay_stat` int NOT NULL DEFAULT '0',
   `actiontime` int NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
-  `locations_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
   `validation_percent` int NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -7140,9 +7140,9 @@ CREATE TABLE `glpi_tickets` (
 
 DROP TABLE IF EXISTS `glpi_tickets_tickets`;
 CREATE TABLE `glpi_tickets_tickets` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `tickets_id_1` int NOT NULL DEFAULT '0',
-  `tickets_id_2` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tickets_id_1` int unsigned NOT NULL DEFAULT '0',
+  `tickets_id_2` int unsigned NOT NULL DEFAULT '0',
   `link` int NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickets_id_1`,`tickets_id_2`),
@@ -7154,9 +7154,9 @@ CREATE TABLE `glpi_tickets_tickets` (
 
 DROP TABLE IF EXISTS `glpi_tickets_users`;
 CREATE TABLE `glpi_tickets_users` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `tickets_id` int NOT NULL DEFAULT '0',
-  `users_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tickets_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   `type` int NOT NULL DEFAULT '1',
   `use_notification` tinyint NOT NULL DEFAULT '1',
   `alternative_email` varchar(255) DEFAULT NULL,
@@ -7170,8 +7170,8 @@ CREATE TABLE `glpi_tickets_users` (
 
 DROP TABLE IF EXISTS `glpi_ticketsatisfactions`;
 CREATE TABLE `glpi_ticketsatisfactions` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `tickets_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tickets_id` int unsigned NOT NULL DEFAULT '0',
   `type` int NOT NULL DEFAULT '1',
   `date_begin` timestamp NULL DEFAULT NULL,
   `date_answered` timestamp NULL DEFAULT NULL,
@@ -7186,27 +7186,27 @@ CREATE TABLE `glpi_ticketsatisfactions` (
 
 DROP TABLE IF EXISTS `glpi_tickettasks`;
 CREATE TABLE `glpi_tickettasks` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `uuid` varchar(255) DEFAULT NULL,
-  `tickets_id` int NOT NULL DEFAULT '0',
-  `taskcategories_id` int NOT NULL DEFAULT '0',
+  `tickets_id` int unsigned NOT NULL DEFAULT '0',
+  `taskcategories_id` int unsigned NOT NULL DEFAULT '0',
   `date` timestamp NULL DEFAULT NULL,
-  `users_id` int NOT NULL DEFAULT '0',
-  `users_id_editor` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_editor` int unsigned NOT NULL DEFAULT '0',
   `content` longtext,
   `is_private` tinyint NOT NULL DEFAULT '0',
   `actiontime` int NOT NULL DEFAULT '0',
   `begin` timestamp NULL DEFAULT NULL,
   `end` timestamp NULL DEFAULT NULL,
   `state` int NOT NULL DEFAULT '1',
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
-  `tasktemplates_id` int NOT NULL DEFAULT '0',
+  `tasktemplates_id` int unsigned NOT NULL DEFAULT '0',
   `timeline_position` tinyint NOT NULL DEFAULT '0',
-  `sourceitems_id` int NOT NULL DEFAULT '0',
-  `sourceof_items_id` int NOT NULL DEFAULT '0',
+  `sourceitems_id` int unsigned NOT NULL DEFAULT '0',
+  `sourceof_items_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `date` (`date`),
@@ -7232,7 +7232,7 @@ CREATE TABLE `glpi_tickettasks` (
 
 DROP TABLE IF EXISTS `glpi_tickettemplatehiddenfields`;
 CREATE TABLE `glpi_tickettemplatehiddenfields` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `tickettemplates_id` int NOT NULL DEFAULT '0',
   `num` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -7243,7 +7243,7 @@ CREATE TABLE `glpi_tickettemplatehiddenfields` (
 
 DROP TABLE IF EXISTS `glpi_changetemplatehiddenfields`;
 CREATE TABLE `glpi_changetemplatehiddenfields` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `changetemplates_id` int NOT NULL DEFAULT '0',
   `num` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -7254,7 +7254,7 @@ CREATE TABLE `glpi_changetemplatehiddenfields` (
 
 DROP TABLE IF EXISTS `glpi_problemtemplatehiddenfields`;
 CREATE TABLE `glpi_problemtemplatehiddenfields` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `problemtemplates_id` int NOT NULL DEFAULT '0',
   `num` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -7265,7 +7265,7 @@ CREATE TABLE `glpi_problemtemplatehiddenfields` (
 
 DROP TABLE IF EXISTS `glpi_tickettemplatemandatoryfields`;
 CREATE TABLE `glpi_tickettemplatemandatoryfields` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `tickettemplates_id` int NOT NULL DEFAULT '0',
   `num` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -7277,7 +7277,7 @@ CREATE TABLE `glpi_tickettemplatemandatoryfields` (
 
 DROP TABLE IF EXISTS `glpi_changetemplatemandatoryfields`;
 CREATE TABLE `glpi_changetemplatemandatoryfields` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `changetemplates_id` int NOT NULL DEFAULT '0',
   `num` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -7288,7 +7288,7 @@ CREATE TABLE `glpi_changetemplatemandatoryfields` (
 
 DROP TABLE IF EXISTS `glpi_problemtemplatemandatoryfields`;
 CREATE TABLE `glpi_problemtemplatemandatoryfields` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `problemtemplates_id` int NOT NULL DEFAULT '0',
   `num` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -7299,7 +7299,7 @@ CREATE TABLE `glpi_problemtemplatemandatoryfields` (
 
 DROP TABLE IF EXISTS `glpi_tickettemplatepredefinedfields`;
 CREATE TABLE `glpi_tickettemplatepredefinedfields` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `tickettemplates_id` int NOT NULL DEFAULT '0',
   `num` int NOT NULL DEFAULT '0',
   `value` text,
@@ -7311,7 +7311,7 @@ CREATE TABLE `glpi_tickettemplatepredefinedfields` (
 
 DROP TABLE IF EXISTS `glpi_changetemplatepredefinedfields`;
 CREATE TABLE `glpi_changetemplatepredefinedfields` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `changetemplates_id` int NOT NULL DEFAULT '0',
   `num` int NOT NULL DEFAULT '0',
   `value` text,
@@ -7323,7 +7323,7 @@ CREATE TABLE `glpi_changetemplatepredefinedfields` (
 
 DROP TABLE IF EXISTS `glpi_problemtemplatepredefinedfields`;
 CREATE TABLE `glpi_problemtemplatepredefinedfields` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `problemtemplates_id` int NOT NULL DEFAULT '0',
   `num` int NOT NULL DEFAULT '0',
   `value` text,
@@ -7383,11 +7383,11 @@ CREATE TABLE `glpi_problemtemplates` (
 
 DROP TABLE IF EXISTS `glpi_ticketvalidations`;
 CREATE TABLE `glpi_ticketvalidations` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
-  `users_id` int NOT NULL DEFAULT '0',
-  `tickets_id` int NOT NULL DEFAULT '0',
-  `users_id_validate` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `tickets_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_validate` int unsigned NOT NULL DEFAULT '0',
   `comment_submission` text,
   `comment_validation` text,
   `status` int NOT NULL DEFAULT '2',
@@ -7456,7 +7456,7 @@ CREATE TABLE `glpi_transfers` (
 
 DROP TABLE IF EXISTS `glpi_usercategories`;
 CREATE TABLE `glpi_usercategories` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -7472,8 +7472,8 @@ CREATE TABLE `glpi_usercategories` (
 
 DROP TABLE IF EXISTS `glpi_useremails`;
 CREATE TABLE `glpi_useremails` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `users_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   `is_default` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `email` varchar(255) DEFAULT NULL,
@@ -7489,7 +7489,7 @@ CREATE TABLE `glpi_useremails` (
 
 DROP TABLE IF EXISTS `glpi_users`;
 CREATE TABLE `glpi_users` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `password_last_update` timestamp NULL DEFAULT NULL,
@@ -7498,22 +7498,22 @@ CREATE TABLE `glpi_users` (
   `mobile` varchar(255) DEFAULT NULL,
   `realname` varchar(255) DEFAULT NULL,
   `firstname` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
   `language` char(10) DEFAULT NULL COMMENT 'see define.php CFG_GLPI[language] array',
   `use_mode` int NOT NULL DEFAULT '0',
   `list_limit` int DEFAULT NULL,
   `is_active` tinyint NOT NULL DEFAULT '1',
   `comment` text,
-  `auths_id` int NOT NULL DEFAULT '0',
+  `auths_id` int unsigned NOT NULL DEFAULT '0',
   `authtype` int NOT NULL DEFAULT '0',
   `last_login` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_sync` timestamp NULL DEFAULT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
-  `profiles_id` int NOT NULL DEFAULT '0',
+  `profiles_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
-  `usertitles_id` int NOT NULL DEFAULT '0',
-  `usercategories_id` int NOT NULL DEFAULT '0',
+  `usertitles_id` int unsigned NOT NULL DEFAULT '0',
+  `usercategories_id` int unsigned NOT NULL DEFAULT '0',
   `date_format` int DEFAULT NULL,
   `number_format` int DEFAULT NULL,
   `names_format` int DEFAULT NULL,
@@ -7529,7 +7529,7 @@ CREATE TABLE `glpi_users` (
   `priority_6` char(20) DEFAULT NULL,
   `followup_private` tinyint DEFAULT NULL,
   `task_private` tinyint DEFAULT NULL,
-  `default_requesttypes_id` int DEFAULT NULL,
+  `default_requesttypes_id` int unsigned DEFAULT NULL,
   `password_forget_token` char(40) DEFAULT NULL,
   `password_forget_token_date` timestamp NULL DEFAULT NULL,
   `user_dn` text,
@@ -7576,8 +7576,8 @@ CREATE TABLE `glpi_users` (
   `highcontrast_css` tinyint DEFAULT '0',
   `plannings` text,
   `sync_field` varchar(255) DEFAULT NULL,
-  `groups_id` int NOT NULL DEFAULT '0',
-  `users_id_supervisor` int NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_supervisor` int unsigned NOT NULL DEFAULT '0',
   `timezone` varchar(50) DEFAULT NULL,
   `default_dashboard_central` varchar(100) DEFAULT NULL,
   `default_dashboard_assets` varchar(100) DEFAULT NULL,
@@ -7614,7 +7614,7 @@ CREATE TABLE `glpi_users` (
 
 DROP TABLE IF EXISTS `glpi_usertitles`;
 CREATE TABLE `glpi_usertitles` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -7630,7 +7630,7 @@ CREATE TABLE `glpi_usertitles` (
 
 DROP TABLE IF EXISTS `glpi_virtualmachinestates`;
 CREATE TABLE `glpi_virtualmachinestates` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -7646,7 +7646,7 @@ CREATE TABLE `glpi_virtualmachinestates` (
 
 DROP TABLE IF EXISTS `glpi_virtualmachinesystems`;
 CREATE TABLE `glpi_virtualmachinesystems` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -7662,7 +7662,7 @@ CREATE TABLE `glpi_virtualmachinesystems` (
 
 DROP TABLE IF EXISTS `glpi_virtualmachinetypes`;
 CREATE TABLE `glpi_virtualmachinetypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -7678,7 +7678,7 @@ CREATE TABLE `glpi_virtualmachinetypes` (
 
 DROP TABLE IF EXISTS `glpi_vlans`;
 CREATE TABLE `glpi_vlans` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
@@ -7700,7 +7700,7 @@ CREATE TABLE `glpi_vlans` (
 
 DROP TABLE IF EXISTS `glpi_wifinetworks`;
 CREATE TABLE `glpi_wifinetworks` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
@@ -7722,10 +7722,10 @@ CREATE TABLE `glpi_wifinetworks` (
 
 DROP TABLE IF EXISTS `glpi_knowbaseitems_items`;
 CREATE TABLE `glpi_knowbaseitems_items` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `knowbaseitems_id` int NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `knowbaseitems_id` int unsigned NOT NULL,
   `itemtype` varchar(100) NOT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -7739,13 +7739,13 @@ CREATE TABLE `glpi_knowbaseitems_items` (
 
 DROP TABLE IF EXISTS `glpi_knowbaseitems_revisions`;
 CREATE TABLE `glpi_knowbaseitems_revisions` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `knowbaseitems_id` int NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `knowbaseitems_id` int unsigned NOT NULL,
   `revision` int NOT NULL,
   `name` text,
   `answer` longtext,
   `language` varchar(10) DEFAULT NULL,
-  `users_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   `date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`knowbaseitems_id`,`revision`,`language`),
@@ -7758,12 +7758,12 @@ CREATE TABLE `glpi_knowbaseitems_revisions` (
 
 DROP TABLE IF EXISTS `glpi_knowbaseitems_comments`;
 CREATE TABLE `glpi_knowbaseitems_comments` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `knowbaseitems_id` int NOT NULL,
-  `users_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `knowbaseitems_id` int unsigned NOT NULL,
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   `language` varchar(10) DEFAULT NULL,
   `comment` text,
-  `parent_comment_id` int DEFAULT NULL,
+  `parent_comment_id` int unsigned DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -7778,7 +7778,7 @@ CREATE TABLE `glpi_knowbaseitems_comments` (
 
 DROP TABLE IF EXISTS `glpi_devicebatterymodels`;
 CREATE TABLE `glpi_devicebatterymodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -7791,16 +7791,16 @@ CREATE TABLE `glpi_devicebatterymodels` (
 
 DROP TABLE IF EXISTS `glpi_devicebatteries`;
 CREATE TABLE `glpi_devicebatteries` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(255) DEFAULT NULL,
   `comment` text,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `voltage` int DEFAULT NULL,
   `capacity` int DEFAULT NULL,
-  `devicebatterytypes_id` int NOT NULL DEFAULT '0',
+  `devicebatterytypes_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `devicebatterymodels_id` int DEFAULT NULL,
+  `devicebatterymodels_id` int unsigned DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -7818,10 +7818,10 @@ CREATE TABLE `glpi_devicebatteries` (
 
 DROP TABLE IF EXISTS `glpi_items_devicebatteries`;
 CREATE TABLE `glpi_items_devicebatteries` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(255) DEFAULT NULL,
-  `devicebatteries_id` int NOT NULL DEFAULT '0',
+  `devicebatteries_id` int unsigned NOT NULL DEFAULT '0',
   `manufacturing_date` date DEFAULT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
@@ -7829,8 +7829,8 @@ CREATE TABLE `glpi_items_devicebatteries` (
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   `real_capacity` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `devicebatteries_id` (`devicebatteries_id`),
@@ -7847,7 +7847,7 @@ CREATE TABLE `glpi_items_devicebatteries` (
 
 DROP TABLE IF EXISTS `glpi_devicebatterytypes`;
 CREATE TABLE `glpi_devicebatterytypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -7862,7 +7862,7 @@ CREATE TABLE `glpi_devicebatterytypes` (
 
 DROP TABLE IF EXISTS `glpi_devicefirmwaremodels`;
 CREATE TABLE `glpi_devicefirmwaremodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -7875,16 +7875,16 @@ CREATE TABLE `glpi_devicefirmwaremodels` (
 
 DROP TABLE IF EXISTS `glpi_devicefirmwares`;
 CREATE TABLE `glpi_devicefirmwares` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `designation` varchar(255) DEFAULT NULL,
   `comment` text,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `date` date DEFAULT NULL,
   `version` varchar(255) DEFAULT NULL,
-  `devicefirmwaretypes_id` int NOT NULL DEFAULT '0',
+  `devicefirmwaretypes_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `devicefirmwaremodels_id` int DEFAULT NULL,
+  `devicefirmwaremodels_id` int unsigned DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -7902,18 +7902,18 @@ CREATE TABLE `glpi_devicefirmwares` (
 
 DROP TABLE IF EXISTS `glpi_items_devicefirmwares`;
 CREATE TABLE `glpi_items_devicefirmwares` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(255) DEFAULT NULL,
-  `devicefirmwares_id` int NOT NULL DEFAULT '0',
+  `devicefirmwares_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `devicefirmwares_id` (`devicefirmwares_id`),
   KEY `is_deleted` (`is_deleted`),
@@ -7929,7 +7929,7 @@ CREATE TABLE `glpi_items_devicefirmwares` (
 
 DROP TABLE IF EXISTS `glpi_devicefirmwaretypes`;
 CREATE TABLE `glpi_devicefirmwaretypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -7945,11 +7945,11 @@ CREATE TABLE `glpi_devicefirmwaretypes` (
 
 DROP TABLE IF EXISTS `glpi_datacenters`;
 CREATE TABLE `glpi_datacenters` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `locations_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
@@ -7966,15 +7966,15 @@ CREATE TABLE `glpi_datacenters` (
 
 DROP TABLE IF EXISTS `glpi_dcrooms`;
 CREATE TABLE `glpi_dcrooms` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `locations_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
   `vis_cols` int DEFAULT NULL,
   `vis_rows` int DEFAULT NULL,
   `blueprint` text,
-  `datacenters_id` int NOT NULL DEFAULT '0',
+  `datacenters_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
@@ -7991,7 +7991,7 @@ CREATE TABLE `glpi_dcrooms` (
 
 DROP TABLE IF EXISTS `glpi_rackmodels`;
 CREATE TABLE `glpi_rackmodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -8007,7 +8007,7 @@ CREATE TABLE `glpi_rackmodels` (
 
 DROP TABLE IF EXISTS `glpi_racktypes`;
 CREATE TABLE `glpi_racktypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
@@ -8024,20 +8024,20 @@ CREATE TABLE `glpi_racktypes` (
 
 DROP TABLE IF EXISTS `glpi_racks`;
 CREATE TABLE `glpi_racks` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `locations_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `rackmodels_id` int DEFAULT NULL,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
-  `racktypes_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
+  `rackmodels_id` int unsigned DEFAULT NULL,
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
+  `racktypes_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `width` int DEFAULT NULL,
   `height` int DEFAULT NULL,
   `depth` int DEFAULT NULL,
@@ -8045,7 +8045,7 @@ CREATE TABLE `glpi_racks` (
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
-  `dcrooms_id` int NOT NULL DEFAULT '0',
+  `dcrooms_id` int unsigned NOT NULL DEFAULT '0',
   `room_orientation` int NOT NULL DEFAULT '0',
   `position` varchar(50) DEFAULT NULL,
   `bgcolor` varchar(7) DEFAULT NULL,
@@ -8074,10 +8074,10 @@ CREATE TABLE `glpi_racks` (
 
 DROP TABLE IF EXISTS `glpi_items_racks`;
 CREATE TABLE `glpi_items_racks` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `racks_id` int NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `racks_id` int unsigned NOT NULL,
   `itemtype` varchar(255) NOT NULL,
-  `items_id` int NOT NULL,
+  `items_id` int unsigned NOT NULL,
   `position` int NOT NULL,
   `orientation` tinyint DEFAULT NULL,
   `bgcolor` varchar(7) DEFAULT NULL,
@@ -8090,7 +8090,7 @@ CREATE TABLE `glpi_items_racks` (
 
 DROP TABLE IF EXISTS `glpi_enclosuremodels`;
 CREATE TABLE `glpi_enclosuremodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -8114,24 +8114,24 @@ CREATE TABLE `glpi_enclosuremodels` (
 
 DROP TABLE IF EXISTS `glpi_enclosures`;
 CREATE TABLE `glpi_enclosures` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `locations_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `enclosuremodels_id` int DEFAULT NULL,
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
+  `enclosuremodels_id` int unsigned DEFAULT NULL,
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `orientation` tinyint DEFAULT NULL,
   `power_supplies` tinyint NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
+  `states_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
   `comment` text,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -8152,10 +8152,10 @@ CREATE TABLE `glpi_enclosures` (
 
 DROP TABLE IF EXISTS `glpi_items_enclosures`;
 CREATE TABLE `glpi_items_enclosures` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `enclosures_id` int NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `enclosures_id` int unsigned NOT NULL,
   `itemtype` varchar(255) NOT NULL,
-  `items_id` int NOT NULL,
+  `items_id` int unsigned NOT NULL,
   `position` int NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `item` (`itemtype`,`items_id`),
@@ -8164,7 +8164,7 @@ CREATE TABLE `glpi_items_enclosures` (
 
 DROP TABLE IF EXISTS `glpi_pdumodels`;
 CREATE TABLE `glpi_pdumodels` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
@@ -8190,7 +8190,7 @@ CREATE TABLE `glpi_pdumodels` (
 
 DROP TABLE IF EXISTS `glpi_pdutypes`;
 CREATE TABLE `glpi_pdutypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
@@ -8208,23 +8208,23 @@ CREATE TABLE `glpi_pdutypes` (
 
 DROP TABLE IF EXISTS `glpi_pdus`;
 CREATE TABLE `glpi_pdus` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `locations_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
-  `pdumodels_id` int DEFAULT NULL,
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
+  `pdumodels_id` int unsigned DEFAULT NULL,
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
+  `states_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
   `comment` text,
-  `manufacturers_id` int NOT NULL DEFAULT '0',
-  `pdutypes_id` int NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
+  `pdutypes_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -8246,7 +8246,7 @@ CREATE TABLE `glpi_pdus` (
 
 DROP TABLE IF EXISTS `glpi_plugs`;
 CREATE TABLE `glpi_plugs` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -8259,9 +8259,9 @@ CREATE TABLE `glpi_plugs` (
 
 DROP TABLE IF EXISTS `glpi_pdus_plugs`;
 CREATE TABLE `glpi_pdus_plugs` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `plugs_id` int NOT NULL DEFAULT '0',
-  `pdus_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `plugs_id` int unsigned NOT NULL DEFAULT '0',
+  `pdus_id` int unsigned NOT NULL DEFAULT '0',
   `number_plugs` int DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
@@ -8274,9 +8274,9 @@ CREATE TABLE `glpi_pdus_plugs` (
 
 DROP TABLE IF EXISTS `glpi_pdus_racks`;
 CREATE TABLE `glpi_pdus_racks` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `racks_id` int NOT NULL DEFAULT '0',
-  `pdus_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `racks_id` int unsigned NOT NULL DEFAULT '0',
+  `pdus_id` int unsigned NOT NULL DEFAULT '0',
   `side` int DEFAULT '0',
   `position` int NOT NULL,
   `bgcolor` varchar(7) DEFAULT NULL,
@@ -8292,14 +8292,14 @@ CREATE TABLE `glpi_pdus_racks` (
 
 DROP TABLE IF EXISTS `glpi_itilfollowuptemplates`;
 CREATE TABLE `glpi_itilfollowuptemplates` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `content` text,
-  `requesttypes_id` int NOT NULL DEFAULT '0',
+  `requesttypes_id` int unsigned NOT NULL DEFAULT '0',
   `is_private` tinyint NOT NULL DEFAULT '0',
   `comment` text,
   PRIMARY KEY (`id`),
@@ -8314,20 +8314,20 @@ CREATE TABLE `glpi_itilfollowuptemplates` (
 
 DROP TABLE IF EXISTS `glpi_itilfollowups`;
 CREATE TABLE `glpi_itilfollowups` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(100) NOT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `date` timestamp NULL DEFAULT NULL,
-  `users_id` int NOT NULL DEFAULT '0',
-  `users_id_editor` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_editor` int unsigned NOT NULL DEFAULT '0',
   `content` longtext,
   `is_private` tinyint NOT NULL DEFAULT '0',
-  `requesttypes_id` int NOT NULL DEFAULT '0',
+  `requesttypes_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `timeline_position` tinyint NOT NULL DEFAULT '0',
-  `sourceitems_id` int NOT NULL DEFAULT '0',
-  `sourceof_items_id` int NOT NULL DEFAULT '0',
+  `sourceitems_id` int unsigned NOT NULL DEFAULT '0',
+  `sourceof_items_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `date` (`date`),
@@ -8343,7 +8343,7 @@ CREATE TABLE `glpi_itilfollowups` (
 
 DROP TABLE IF EXISTS `glpi_clustertypes`;
 CREATE TABLE `glpi_clustertypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
@@ -8360,19 +8360,19 @@ CREATE TABLE `glpi_clustertypes` (
 
 DROP TABLE IF EXISTS `glpi_clusters`;
 CREATE TABLE `glpi_clusters` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `uuid` varchar(255) DEFAULT NULL,
   `version` varchar(255) DEFAULT NULL,
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
+  `states_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
   `comment` text,
-  `clustertypes_id` int NOT NULL DEFAULT '0',
-  `autoupdatesystems_id` int NOT NULL DEFAULT '0',
+  `clustertypes_id` int unsigned NOT NULL DEFAULT '0',
+  `autoupdatesystems_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -8391,10 +8391,10 @@ CREATE TABLE `glpi_clusters` (
 
 DROP TABLE IF EXISTS `glpi_items_clusters`;
 CREATE TABLE `glpi_items_clusters` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `clusters_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `clusters_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) DEFAULT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`clusters_id`,`itemtype`,`items_id`),
   KEY `item` (`itemtype`,`items_id`)
@@ -8404,22 +8404,22 @@ CREATE TABLE `glpi_items_clusters` (
 
 DROP TABLE IF EXISTS `glpi_planningexternalevents`;
 CREATE TABLE `glpi_planningexternalevents` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `uuid` varchar(255) DEFAULT NULL,
-  `planningexternaleventtemplates_id` int NOT NULL DEFAULT '0',
+  `planningexternaleventtemplates_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '1',
   `date` timestamp NULL DEFAULT NULL,
-  `users_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
   `users_id_guests` text,
-  `groups_id` int NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `text` text,
   `begin` timestamp NULL DEFAULT NULL,
   `end` timestamp NULL DEFAULT NULL,
   `rrule` text,
   `state` int NOT NULL DEFAULT '0',
-  `planningeventcategories_id` int NOT NULL DEFAULT '0',
+  `planningeventcategories_id` int unsigned NOT NULL DEFAULT '0',
   `background` tinyint NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
@@ -8444,7 +8444,7 @@ CREATE TABLE `glpi_planningexternalevents` (
 
 DROP TABLE IF EXISTS `glpi_planningexternaleventtemplates`;
 CREATE TABLE `glpi_planningexternaleventtemplates` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `text` text,
@@ -8453,7 +8453,7 @@ CREATE TABLE `glpi_planningexternaleventtemplates` (
   `before_time` int NOT NULL DEFAULT '0',
   `rrule` text,
   `state` int NOT NULL DEFAULT '0',
-  `planningeventcategories_id` int NOT NULL DEFAULT '0',
+  `planningeventcategories_id` int unsigned NOT NULL DEFAULT '0',
   `background` tinyint NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
@@ -8470,7 +8470,7 @@ CREATE TABLE `glpi_planningexternaleventtemplates` (
 
 DROP TABLE IF EXISTS `glpi_planningeventcategories`;
 CREATE TABLE `glpi_planningeventcategories` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `color` varchar(255) DEFAULT NULL,
   `comment` text,
@@ -8486,10 +8486,10 @@ CREATE TABLE `glpi_planningeventcategories` (
 
 DROP TABLE IF EXISTS `glpi_items_kanbans`;
 CREATE TABLE `glpi_items_kanbans` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(100) NOT NULL,
-  `items_id` int DEFAULT NULL,
-  `users_id` int NOT NULL,
+  `items_id` int unsigned DEFAULT NULL,
+  `users_id` int unsigned NOT NULL,
   `state` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
@@ -8504,9 +8504,9 @@ CREATE TABLE `glpi_items_kanbans` (
 
 DROP TABLE IF EXISTS `glpi_vobjects`;
 CREATE TABLE `glpi_vobjects` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(100) DEFAULT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `data` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
@@ -8519,7 +8519,7 @@ CREATE TABLE `glpi_vobjects` (
 
 DROP TABLE IF EXISTS `glpi_domaintypes`;
 CREATE TABLE `glpi_domaintypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -8532,7 +8532,7 @@ CREATE TABLE `glpi_domaintypes` (
 
 DROP TABLE IF EXISTS `glpi_domainrelations`;
 CREATE TABLE `glpi_domainrelations` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -8545,11 +8545,11 @@ CREATE TABLE `glpi_domainrelations` (
 
 DROP TABLE IF EXISTS `glpi_domains_items`;
 CREATE TABLE `glpi_domains_items` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `domains_id` int NOT NULL DEFAULT '0',
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `domains_id` int unsigned NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
-  `domainrelations_id` int NOT NULL DEFAULT '0',
+  `domainrelations_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`domains_id`,`itemtype`,`items_id`),
   KEY `domainrelations_id` (`domainrelations_id`),
@@ -8558,7 +8558,7 @@ CREATE TABLE `glpi_domains_items` (
 
 DROP TABLE IF EXISTS `glpi_domainrecordtypes`;
 CREATE TABLE `glpi_domainrecordtypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `fields` text,
   `entities_id` int NOT NULL DEFAULT '0',
@@ -8572,17 +8572,17 @@ CREATE TABLE `glpi_domainrecordtypes` (
 
 DROP TABLE IF EXISTS `glpi_domainrecords`;
 CREATE TABLE `glpi_domainrecords` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `data` text,
   `data_obj` text,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `domains_id` int NOT NULL DEFAULT '0',
-  `domainrecordtypes_id` int NOT NULL DEFAULT '0',
+  `domains_id` int unsigned NOT NULL DEFAULT '0',
+  `domainrecordtypes_id` int unsigned NOT NULL DEFAULT '0',
   `ttl` int NOT NULL,
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -8602,23 +8602,23 @@ CREATE TABLE `glpi_domainrecords` (
 
 DROP TABLE IF EXISTS `glpi_appliances`;
 CREATE TABLE `glpi_appliances` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) NOT NULL DEFAULT '',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
-  `appliancetypes_id` int NOT NULL DEFAULT '0',
+  `appliancetypes_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `manufacturers_id` int NOT NULL DEFAULT '0',
-  `applianceenvironments_id` int NOT NULL DEFAULT '0',
-  `users_id` int NOT NULL DEFAULT '0',
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
+  `applianceenvironments_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
-  `states_id` int NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   `externalidentifier` varchar(255) DEFAULT NULL,
   `serial` varchar(255) DEFAULT NULL,
   `otherserial` varchar(255) DEFAULT NULL,
@@ -8647,9 +8647,9 @@ CREATE TABLE `glpi_appliances` (
 
 DROP TABLE IF EXISTS `glpi_appliances_items`;
 CREATE TABLE `glpi_appliances_items` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `appliances_id` int NOT NULL DEFAULT '0',
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `appliances_id` int unsigned NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`appliances_id`,`items_id`,`itemtype`),
@@ -8658,7 +8658,7 @@ CREATE TABLE `glpi_appliances_items` (
 
 DROP TABLE IF EXISTS `glpi_appliancetypes`;
 CREATE TABLE `glpi_appliancetypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) NOT NULL DEFAULT '',
@@ -8673,7 +8673,7 @@ CREATE TABLE `glpi_appliancetypes` (
 
 DROP TABLE IF EXISTS `glpi_applianceenvironments`;
 CREATE TABLE `glpi_applianceenvironments` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   PRIMARY KEY (`id`),
@@ -8682,10 +8682,10 @@ CREATE TABLE `glpi_applianceenvironments` (
 
 DROP TABLE IF EXISTS `glpi_appliances_items_relations`;
 CREATE TABLE `glpi_appliances_items_relations` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `appliances_items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `appliances_items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `appliances_items_id` (`appliances_items_id`),
   KEY `item` (`itemtype`,`items_id`)
@@ -8693,7 +8693,7 @@ CREATE TABLE `glpi_appliances_items_relations` (
 
 DROP TABLE IF EXISTS `glpi_agenttypes`;
 CREATE TABLE `glpi_agenttypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
@@ -8701,17 +8701,17 @@ CREATE TABLE `glpi_agenttypes` (
 
 DROP TABLE IF EXISTS `glpi_agents`;
 CREATE TABLE `glpi_agents` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `deviceid` varchar(255) NOT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
-  `agenttypes_id` int NOT NULL,
+  `agenttypes_id` int unsigned NOT NULL,
   `last_contact` timestamp NULL DEFAULT NULL,
   `version` varchar(255) DEFAULT NULL,
   `locked` tinyint NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
-  `items_id` int NOT NULL,
+  `items_id` int unsigned NOT NULL,
   `useragent` varchar(255) DEFAULT NULL,
   `tag` varchar(255) DEFAULT NULL,
   `port` varchar(6) DEFAULT NULL,
@@ -8725,18 +8725,17 @@ CREATE TABLE `glpi_agents` (
   KEY `agenttypes_id` (`agenttypes_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
-  KEY `item` (`itemtype`,`items_id`),
-  CONSTRAINT `agenttypes_id` FOREIGN KEY (`agenttypes_id`) REFERENCES `glpi_agenttypes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `item` (`itemtype`,`items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_rulematchedlogs`;
 CREATE TABLE `glpi_rulematchedlogs` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `date` timestamp NULL DEFAULT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) DEFAULT NULL,
-  `rules_id` int DEFAULT NULL,
-  `agents_id` int NOT NULL DEFAULT '0',
+  `rules_id` int unsigned DEFAULT NULL,
+  `agents_id` int unsigned NOT NULL DEFAULT '0',
   `method` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `agents_id` (`agents_id`),
@@ -8746,9 +8745,9 @@ CREATE TABLE `glpi_rulematchedlogs` (
 
 DROP TABLE IF EXISTS `glpi_lockedfields`;
 CREATE TABLE `glpi_lockedfields` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(100) DEFAULT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `field` varchar(50) NOT NULL,
   `value` varchar(255) DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -8761,7 +8760,7 @@ CREATE TABLE `glpi_lockedfields` (
 
 DROP TABLE IF EXISTS `glpi_unmanageds`;
 CREATE TABLE `glpi_unmanageds` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
@@ -8771,24 +8770,24 @@ CREATE TABLE `glpi_unmanageds` (
   `contact_num` varchar(255) DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `comment` text,
-  `locations_id` int NOT NULL DEFAULT '0',
-  `networks_id` int NOT NULL DEFAULT '0',
-  `manufacturers_id` int NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `networks_id` int unsigned NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
-  `users_id` int NOT NULL DEFAULT '0',
-  `groups_id` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
-  `autoupdatesystems_id` int NOT NULL DEFAULT '0',
+  `autoupdatesystems_id` int unsigned NOT NULL DEFAULT '0',
   `sysdescr` text,
-  `domains_id` int NOT NULL DEFAULT '0',
-  `agents_id` int NOT NULL DEFAULT '0',
+  `domains_id` int unsigned NOT NULL DEFAULT '0',
+  `agents_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) DEFAULT NULL,
   `accepted` tinyint NOT NULL DEFAULT '0',
   `hub` tinyint NOT NULL DEFAULT '0',
   `ip` varchar(255) DEFAULT NULL,
-  `snmpcredentials_id` int NOT NULL DEFAULT '0',
+  `snmpcredentials_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -8813,7 +8812,7 @@ CREATE TABLE `glpi_unmanageds` (
 
 DROP TABLE IF EXISTS `glpi_networkporttypes`;
 CREATE TABLE `glpi_networkporttypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `value_decimal` int NOT NULL,
@@ -8836,8 +8835,8 @@ CREATE TABLE `glpi_networkporttypes` (
 
 DROP TABLE IF EXISTS `glpi_printerlogs`;
 CREATE TABLE `glpi_printerlogs` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `printers_id` int NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `printers_id` int unsigned NOT NULL,
   `total_pages` int NOT NULL DEFAULT '0',
   `bw_pages` int NOT NULL DEFAULT '0',
   `color_pages` int NOT NULL DEFAULT '0',
@@ -8859,11 +8858,11 @@ CREATE TABLE `glpi_printerlogs` (
 
 DROP TABLE IF EXISTS `glpi_networkportconnectionlogs`;
 CREATE TABLE `glpi_networkportconnectionlogs` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `date` timestamp NULL DEFAULT NULL,
   `connected` tinyint NOT NULL DEFAULT '0',
-  `networkports_id_source` int NOT NULL DEFAULT '0',
-  `networkports_id_destination` int NOT NULL DEFAULT '0',
+  `networkports_id_source` int unsigned NOT NULL DEFAULT '0',
+  `networkports_id_destination` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `date` (`date`),
   KEY `networkports_id_source` (`networkports_id_source`),
@@ -8873,13 +8872,13 @@ CREATE TABLE `glpi_networkportconnectionlogs` (
 
 DROP TABLE IF EXISTS `glpi_networkportmetrics`;
 CREATE TABLE `glpi_networkportmetrics` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `date` timestamp NULL DEFAULT NULL,
   `ifinbytes` bigint NOT NULL DEFAULT '0',
   `ifinerrors` bigint NOT NULL DEFAULT '0',
   `ifoutbytes` bigint NOT NULL DEFAULT '0',
   `ifouterrors` bigint NOT NULL DEFAULT '0',
-  `networkports_id` int NOT NULL DEFAULT '0',
+  `networkports_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `date` (`date`),
   KEY `networkports_id` (`networkports_id`)
@@ -8887,18 +8886,18 @@ CREATE TABLE `glpi_networkportmetrics` (
 
 DROP TABLE IF EXISTS `glpi_refusedequipments`;
 CREATE TABLE `glpi_refusedequipments` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `itemtype` varchar(100) DEFAULT NULL,
   `entities_id` int NOT NULL DEFAULT '0',
   `ip` varchar(255) DEFAULT NULL,
   `mac` varchar(255) DEFAULT NULL,
-  `rules_id` int NOT NULL DEFAULT '0',
+  `rules_id` int unsigned NOT NULL DEFAULT '0',
   `method` varchar(255) DEFAULT NULL,
   `serial` varchar(255) DEFAULT NULL,
   `uuid` varchar(255) DEFAULT NULL,
-  `agents_id` int NOT NULL DEFAULT '0',
-  `autoupdatesystems_id` int NOT NULL DEFAULT '0',
+  `agents_id` int unsigned NOT NULL DEFAULT '0',
+  `autoupdatesystems_id` int unsigned NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -8913,7 +8912,7 @@ CREATE TABLE `glpi_refusedequipments` (
 
 DROP TABLE IF EXISTS `glpi_usbvendors`;
 CREATE TABLE `glpi_usbvendors` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `vendorid` varchar(4) NOT NULL,
@@ -8934,7 +8933,7 @@ CREATE TABLE `glpi_usbvendors` (
 
 DROP TABLE IF EXISTS `glpi_pcivendors`;
 CREATE TABLE `glpi_pcivendors` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `vendorid` varchar(4) NOT NULL,
@@ -8955,9 +8954,9 @@ CREATE TABLE `glpi_pcivendors` (
 
 DROP TABLE IF EXISTS `glpi_items_remotemanagements`;
 CREATE TABLE `glpi_items_remotemanagements` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(100) DEFAULT NULL,
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `remoteid` varchar(255) DEFAULT NULL,
   `type` varchar(255) DEFAULT NULL,
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
@@ -8968,14 +8967,14 @@ CREATE TABLE `glpi_items_remotemanagements` (
 
 DROP TABLE IF EXISTS `glpi_pendingreasons`;
 CREATE TABLE `glpi_pendingreasons` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `followup_frequency` int NOT NULL DEFAULT '0',
   `followups_before_resolution` int NOT NULL DEFAULT '0',
-  `itilfollowuptemplates_id` int NOT NULL DEFAULT '0',
-  `solutiontemplates_id` int NOT NULL DEFAULT '0',
+  `itilfollowuptemplates_id` int unsigned NOT NULL DEFAULT '0',
+  `solutiontemplates_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
@@ -8987,9 +8986,9 @@ CREATE TABLE `glpi_pendingreasons` (
 
 DROP TABLE IF EXISTS `glpi_pendingreasons_items`;
 CREATE TABLE `glpi_pendingreasons_items` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `pendingreasons_id` int NOT NULL DEFAULT '0',
-  `items_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `pendingreasons_id` int unsigned NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL DEFAULT '',
   `followup_frequency` int NOT NULL DEFAULT '0',
   `followups_before_resolution` int NOT NULL DEFAULT '0',
@@ -9003,13 +9002,13 @@ CREATE TABLE `glpi_pendingreasons_items` (
 
 DROP TABLE IF EXISTS `glpi_manuallinks`;
 CREATE TABLE `glpi_manuallinks` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `url` varchar(8096) NOT NULL,
   `open_window` tinyint NOT NULL DEFAULT '1',
   `icon` varchar(255) DEFAULT NULL,
   `comment` text,
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(255) DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -9023,8 +9022,8 @@ CREATE TABLE `glpi_manuallinks` (
 
 DROP TABLE IF EXISTS `glpi_tickets_contracts`;
 CREATE TABLE `glpi_tickets_contracts` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `tickets_id` int NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tickets_id` int unsigned NOT NULL DEFAULT '0',
   `contracts_id` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickets_id`,`contracts_id`),
@@ -9033,7 +9032,7 @@ CREATE TABLE `glpi_tickets_contracts` (
 
 DROP TABLE IF EXISTS `glpi_databaseinstancetypes`;
 CREATE TABLE `glpi_databaseinstancetypes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -9046,7 +9045,7 @@ CREATE TABLE `glpi_databaseinstancetypes` (
 
 DROP TABLE IF EXISTS `glpi_databaseinstancecategories`;
 CREATE TABLE `glpi_databaseinstancecategories` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -9060,7 +9059,7 @@ CREATE TABLE `glpi_databaseinstancecategories` (
 
 DROP TABLE IF EXISTS `glpi_databaseinstances`;
 CREATE TABLE `glpi_databaseinstances` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) NOT NULL DEFAULT '',
@@ -9068,15 +9067,15 @@ CREATE TABLE `glpi_databaseinstances` (
   `port` varchar(10) NOT NULL DEFAULT '',
   `path` varchar(255) NOT NULL DEFAULT '',
   `size` int NOT NULL DEFAULT '0',
-  `databaseinstancetypes_id` int NOT NULL DEFAULT '0',
-  `databaseinstancecategories_id` int NOT NULL DEFAULT '0',
-  `locations_id` int NOT NULL DEFAULT '0',
-  `manufacturers_id` int NOT NULL DEFAULT '0',
-  `users_id_tech` int NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
-  `states_id` int NOT NULL DEFAULT '0',
+  `databaseinstancetypes_id` int unsigned NOT NULL DEFAULT '0',
+  `databaseinstancecategories_id` int unsigned NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL DEFAULT '',
-  `items_id` int NOT NULL DEFAULT '0',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `is_onbackup` tinyint NOT NULL DEFAULT '0',
   `is_active` tinyint NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
@@ -9109,12 +9108,12 @@ CREATE TABLE `glpi_databaseinstances` (
 
 DROP TABLE IF EXISTS `glpi_databases`;
 CREATE TABLE `glpi_databases` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) NOT NULL DEFAULT '',
   `size` int NOT NULL DEFAULT '0',
-  `databaseinstances_id` int NOT NULL DEFAULT '0',
+  `databaseinstances_id` int unsigned NOT NULL DEFAULT '0',
   `is_onbackup` tinyint NOT NULL DEFAULT '0',
   `is_active` tinyint NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
@@ -9136,7 +9135,7 @@ CREATE TABLE `glpi_databases` (
 
 DROP TABLE IF EXISTS `glpi_snmpcredentials`;
 CREATE TABLE `glpi_snmpcredentials` (
-   `id` int NOT NULL AUTO_INCREMENT,
+   `id` int unsigned NOT NULL AUTO_INCREMENT,
    `name` varchar(64) DEFAULT NULL,
    `snmpversion` varchar(8) NOT NULL DEFAULT '1',
    `community` varchar(255) DEFAULT NULL,

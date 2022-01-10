@@ -87,6 +87,7 @@ class DBConnection extends \GLPITestCase
             'use_utf8mb4'              => false,
             'allow_myisam'             => true,
             'allow_datetime'           => true,
+            'allow_signed_keys'        => true,
             'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
@@ -108,6 +109,7 @@ PHP
             'use_utf8mb4'              => true,
             'allow_myisam'             => false,
             'allow_datetime'           => false,
+            'allow_signed_keys'        => false,
             'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
@@ -119,6 +121,7 @@ class DB extends DBmysql {
    public $use_utf8mb4 = true;
    public $allow_myisam = false;
    public $allow_datetime = false;
+   public $allow_signed_keys = false;
 }
 
 PHP
@@ -133,6 +136,7 @@ PHP
             'use_utf8mb4'              => false,
             'allow_myisam'             => true,
             'allow_datetime'           => true,
+            'allow_signed_keys'        => true,
             'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
@@ -161,6 +165,7 @@ PHP
         bool $use_utf8mb4,
         bool $allow_myisam,
         bool $allow_datetime,
+        bool $allow_signed_keys,
         string $expected
     ): void {
         vfsStream::setup('config-dir', null, []);
@@ -175,6 +180,7 @@ PHP
             $use_utf8mb4,
             $allow_myisam,
             $allow_datetime,
+            $allow_signed_keys,
             vfsStream::url('config-dir')
         );
         $this->boolean($result)->isTrue();
@@ -197,6 +203,7 @@ PHP
             'use_utf8mb4'              => false,
             'allow_myisam'             => true,
             'allow_datetime'           => true,
+            'allow_signed_keys'        => true,
             'expected'                 => <<<'PHP'
 <?php
 class DBSlave extends DBmysql {
@@ -219,6 +226,7 @@ PHP
             'use_utf8mb4'              => true,
             'allow_myisam'             => false,
             'allow_datetime'           => false,
+            'allow_signed_keys'        => false,
             'expected'                 => <<<'PHP'
 <?php
 class DBSlave extends DBmysql {
@@ -235,6 +243,7 @@ class DBSlave extends DBmysql {
    public $use_utf8mb4 = true;
    public $allow_myisam = false;
    public $allow_datetime = false;
+   public $allow_signed_keys = false;
 }
 
 PHP
@@ -249,6 +258,7 @@ PHP
             'use_utf8mb4'              => false,
             'allow_myisam'             => true,
             'allow_datetime'           => true,
+            'allow_signed_keys'        => true,
             'expected'                 => <<<'PHP'
 <?php
 class DBSlave extends DBmysql {
@@ -278,6 +288,7 @@ PHP
         bool $use_utf8mb4,
         bool $allow_myisam,
         bool $allow_datetime,
+        bool $allow_signed_keys,
         string $expected
     ): void {
         vfsStream::setup('config-dir', null, []);
@@ -292,6 +303,7 @@ PHP
             $use_utf8mb4,
             $allow_myisam,
             $allow_datetime,
+            $allow_signed_keys,
             vfsStream::url('config-dir')
         );
         $this->boolean($result)->isTrue();

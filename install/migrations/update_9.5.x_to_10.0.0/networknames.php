@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-$migration->addField('glpi_networknames', 'ipnetworks_id', 'int', [
+$migration->addField('glpi_networknames', 'ipnetworks_id', "int unsigned NOT NULL DEFAULT '0'", [
    'after' => 'fqdns_id'
 ]);
 $migration->addKey('glpi_networknames', 'ipnetworks_id', 'ipnetworks_id');

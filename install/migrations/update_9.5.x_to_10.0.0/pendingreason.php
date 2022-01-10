@@ -42,14 +42,14 @@ $default_collation = DBConnection::getDefaultCollation();
 // Add pending reason table
 if (!$DB->tableExists('glpi_pendingreasons')) {
     $query = "CREATE TABLE `glpi_pendingreasons` (
-         `id` int NOT NULL AUTO_INCREMENT,
+         `id` int unsigned NOT NULL AUTO_INCREMENT,
          `entities_id` int NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
          `name` varchar(255) DEFAULT NULL,
          `followup_frequency` int NOT NULL DEFAULT '0',
          `followups_before_resolution` int NOT NULL DEFAULT '0',
-         `itilfollowuptemplates_id` int NOT NULL DEFAULT '0',
-         `solutiontemplates_id` int NOT NULL DEFAULT '0',
+         `itilfollowuptemplates_id` int unsigned NOT NULL DEFAULT '0',
+         `solutiontemplates_id` int unsigned NOT NULL DEFAULT '0',
          `comment` text,
          PRIMARY KEY (`id`),
          KEY `name` (`name`),
@@ -64,9 +64,9 @@ if (!$DB->tableExists('glpi_pendingreasons')) {
 // Add pending reason items table
 if (!$DB->tableExists('glpi_pendingreasons_items')) {
     $query = "CREATE TABLE `glpi_pendingreasons_items` (
-         `id` int NOT NULL AUTO_INCREMENT,
-         `pendingreasons_id` int NOT NULL DEFAULT '0',
-         `items_id` int NOT NULL DEFAULT '0',
+         `id` int unsigned NOT NULL AUTO_INCREMENT,
+         `pendingreasons_id` int unsigned NOT NULL DEFAULT '0',
+         `items_id` int unsigned NOT NULL DEFAULT '0',
          `itemtype` varchar(100) NOT NULL DEFAULT '',
          `followup_frequency` int NOT NULL DEFAULT '0',
          `followups_before_resolution` int NOT NULL DEFAULT '0',

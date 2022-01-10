@@ -41,9 +41,9 @@ $default_collation = DBConnection::getDefaultCollation();
 /* Update link KB_item-category from 1-1 to 1-n */
 if (!$DB->tableExists('glpi_knowbaseitems_knowbaseitemcategories')) {
     $query = "CREATE TABLE `glpi_knowbaseitems_knowbaseitemcategories` (
-      `id` int NOT NULL AUTO_INCREMENT,
-      `knowbaseitems_id` int NOT NULL DEFAULT '0',
-      `knowbaseitemcategories_id` int NOT NULL DEFAULT '0',
+      `id` int unsigned NOT NULL AUTO_INCREMENT,
+      `knowbaseitems_id` int unsigned NOT NULL DEFAULT '0',
+      `knowbaseitemcategories_id` int unsigned NOT NULL DEFAULT '0',
       PRIMARY KEY (`id`),
       KEY `knowbaseitems_id` (`knowbaseitems_id`),
       KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`)

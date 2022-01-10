@@ -31,26 +31,24 @@
  * ---------------------------------------------------------------------
  */
 
+if (!defined('GLPI_ROOT')) {
+    die("Sorry. You can't access this file directly");
+}
+
 /**
  * @var DB $DB
  * @var Migration $migration
- * @var array $ADDTODISPLAYPREF
  */
 
-$default_charset = DBConnection::getDefaultCharset();
-$default_collation = DBConnection::getDefaultCollation();
-
-if (!$DB->tableExists('glpi_items_remotemanagements')) {
-    $query = "CREATE TABLE `glpi_items_remotemanagements` (
-         `id` int unsigned NOT NULL AUTO_INCREMENT,
-         `itemtype` varchar(100) DEFAULT NULL,
-         `items_id` int unsigned NOT NULL DEFAULT '0',
-         `remoteid` varchar(255) DEFAULT NULL,
-         `type` varchar(255) DEFAULT NULL,
-         `is_dynamic` tinyint NOT NULL DEFAULT '0',
-         PRIMARY KEY (`id`),
-         KEY `is_dynamic` (`is_dynamic`),
-         KEY `item` (`itemtype`,`items_id`)
-      ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->queryOrDie($query, "10.0 add table glpi_items_remotemanagements");
+/** Replace -1 values for glpi_items_operatingsystems table foreign key fields */
+// Migration may have been missed if user installed 10.x version before 9.5.7 release date.
+foreach (['operatingsystems_id', 'operatingsystemversions_id', 'operatingsystemservicepacks_id'] as $item_os_fkey) {
+    $migration->addPostQuery(
+        $DB->buildUpdate(
+            'glpi_items_operatingsystems',
+            [$item_os_fkey => '0'],
+            [$item_os_fkey => '-1']
+        )
+    );
 }
+/** /Replace -1 values for glpi_items_operatingsystems table foreign key fields */

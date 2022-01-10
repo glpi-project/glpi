@@ -42,10 +42,10 @@ $default_collation = DBConnection::getDefaultCollation();
 // Create table for project task links
 if (!$DB->tableExists('glpi_projecttasklinks')) {
     $query = "CREATE TABLE `glpi_projecttasklinks` (
-       `id` int NOT NULL AUTO_INCREMENT,
-       `projecttasks_id_source` int NOT NULL,
+       `id` int unsigned NOT NULL AUTO_INCREMENT,
+       `projecttasks_id_source` int unsigned NOT NULL,
        `source_uuid` varchar(255) NOT NULL,
-       `projecttasks_id_target` int NOT NULL,
+       `projecttasks_id_target` int unsigned NOT NULL,
        `target_uuid` varchar(255) NOT NULL,
        `type` tinyint NOT NULL DEFAULT '0',
        `lag` smallint DEFAULT '0',

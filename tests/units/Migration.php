@@ -864,9 +864,9 @@ class Migration extends \GLPITestCase
 
         $this->array($this->queries)->isIdenticalTo([
          "RENAME TABLE `glpi_someoldtypes` TO `glpi_newnames`",
-         "ALTER TABLE `glpi_oneitem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` INT NOT NULL DEFAULT '0'   ",
-         "ALTER TABLE `glpi_anotheritem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` INT NOT NULL DEFAULT '0'   ,\n"
-         . "CHANGE `someoldtypes_id_tech` `newnames_id_tech` INT NOT NULL DEFAULT '0'   ",
+         "ALTER TABLE `glpi_oneitem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` int unsigned NOT NULL DEFAULT '0'   ",
+         "ALTER TABLE `glpi_anotheritem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` int unsigned NOT NULL DEFAULT '0'   ,\n"
+         . "CHANGE `someoldtypes_id_tech` `newnames_id_tech` int unsigned NOT NULL DEFAULT '0'   ",
          "UPDATE `glpi_computers` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
          "UPDATE `glpi_users` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
          "UPDATE `glpi_stuffs` SET `itemtype_source` = 'NewName' WHERE `itemtype_source` = 'SomeOldType'",

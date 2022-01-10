@@ -45,7 +45,7 @@ class Item_DeviceSimcard extends DbTestCase
        // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $this->object($computer)->isInstanceOf('\Computer');
-        $deviceSimcard = getItemForItemtype('DeviceSimcard', '_test_simcard_1');
+        $deviceSimcard = getItemByTypeName('DeviceSimcard', '_test_simcard_1');
         $this->object($deviceSimcard)->isInstanceOf('\DeviceSimcard');
         $in = [
             'itemtype'           => 'Computer',
@@ -72,7 +72,7 @@ class Item_DeviceSimcard extends DbTestCase
        // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $this->object($computer)->isInstanceOf('\Computer');
-        $deviceSimcard = getItemForItemtype('DeviceSimcard', '_test_simcard_1');
+        $deviceSimcard = getItemByTypeName('DeviceSimcard', '_test_simcard_1');
         $this->object($deviceSimcard)->isInstanceOf('\DeviceSimcard');
         $id = $obj->add([
             'itemtype'           => 'Computer',
@@ -130,7 +130,7 @@ class Item_DeviceSimcard extends DbTestCase
        // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $this->object($computer)->isInstanceOf('\Computer');
-        $deviceSimcard = getItemForItemtype('DeviceSimcard', '_test_simcard_1');
+        $deviceSimcard = getItemByTypeName('DeviceSimcard', '_test_simcard_1');
         $this->object($deviceSimcard)->isInstanceOf('\DeviceSimcard');
         $id = $obj->add([
             'itemtype'           => 'Computer',
@@ -172,7 +172,7 @@ class Item_DeviceSimcard extends DbTestCase
        // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $this->object($computer)->isInstanceOf('\Computer');
-        $deviceSimcard = getItemForItemtype('DeviceSimcard', '_test_simcard_1');
+        $deviceSimcard = getItemByTypeName('DeviceSimcard', '_test_simcard_1');
         $this->object($deviceSimcard)->isInstanceOf('\DeviceSimcard');
         $id = $obj->add([
             'itemtype'           => 'Computer',

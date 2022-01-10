@@ -50,46 +50,46 @@ use Symfony\Component\Console\Question\Question;
 
 abstract class AbstractConfigureCommand extends AbstractCommand implements ForceNoPluginsOptionCommandInterface
 {
-   /**
-    * Error code returned if DB configuration is aborted by user.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned if DB configuration is aborted by user.
+     *
+     * @var integer
+     */
     const ABORTED_BY_USER = -1;
 
-   /**
-    * Error code returned if DB configuration succeed.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned if DB configuration succeed.
+     *
+     * @var integer
+     */
     const SUCCESS = 0;
 
-   /**
-    * Error code returned if DB connection initialization fails.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned if DB connection initialization fails.
+     *
+     * @var integer
+     */
     const ERROR_DB_CONNECTION_FAILED = 1;
 
-   /**
-    * Error code returned if DB engine is unsupported.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned if DB engine is unsupported.
+     *
+     * @var integer
+     */
     const ERROR_DB_ENGINE_UNSUPPORTED = 2;
 
-   /**
-    * Error code returned when trying to configure and having a DB config already set.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned when trying to configure and having a DB config already set.
+     *
+     * @var integer
+     */
     const ERROR_DB_CONFIG_ALREADY_SET = 3;
 
-   /**
-    * Error code returned when failing to save database configuration file.
-    *
-    * @var integer
-    */
+    /**
+     * Error code returned when failing to save database configuration file.
+     *
+     * @var integer
+     */
     const ERROR_DB_CONFIG_FILE_NOT_SAVED = 4;
 
     protected $requires_db_up_to_date = false;
@@ -148,10 +148,10 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
         );
 
         $this->addOption(
-            'log-deprecation-warnings',
+            'strict-configuration',
             null,
             InputOption::VALUE_NONE,
-            __('Indicated if deprecation warnings sent by database server should be logged')
+            __('Use strict configuration, to enforce warnings triggering on deprecated or discouraged usages')
         );
     }
 
@@ -181,27 +181,21 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
         return; // Prevent DB connection
     }
 
-   /**
-    * Save database configuration file.
-    *
-    * @param InputInterface $input
-    * @param OutputInterface $output
-    * @param bool $auto_config_flags
-    * @param bool $use_utf8mb4
-    * @param bool $allow_myisam
-    * @param bool $allow_datetime
-    *
-    * @throws InvalidArgumentException
-    *
-    * @return string
-    */
+    /**
+     * Save database configuration file.
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @param bool $compute_flags_from_db
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return string
+     */
     protected function configureDatabase(
         InputInterface $input,
         OutputInterface $output,
-        bool $auto_config_flags = true,
-        bool $use_utf8mb4 = false,
-        bool $allow_myisam = true,
-        bool $allow_datetime = true
+        bool $compute_flags_from_db = true
     ) {
 
         $db_pass     = $input->getOption('db-password');
@@ -211,11 +205,11 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
         $db_user     = $input->getOption('db-user');
         $db_hostport = $db_host . (!empty($db_port) ? ':' . $db_port : '');
 
-        $reconfigure    = $input->getOption('reconfigure');
-        $log_deprecation_warnings = $input->getOption('log-deprecation-warnings');
+        $reconfigure = $input->getOption('reconfigure');
+        $strict_configuration = $input->getOption('strict-configuration');
 
         if (file_exists(GLPI_CONFIG_DIR . '/config_db.php') && !$reconfigure) {
-           // Prevent overriding of existing DB
+            // Prevent overriding of existing DB
             $output->writeln(
                 '<error>' . __('Database configuration already exists. Use --reconfigure option to override existing configuration.') . '</error>'
             );
@@ -241,10 +235,10 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
 
         $mysqli = new mysqli();
         if (intval($db_port) > 0) {
-           // Network port
+            // Network port
             @$mysqli->connect($db_host, $db_user, $db_pass, null, $db_port);
         } else {
-           // Unix Domain Socket
+            // Unix Domain Socket
             @$mysqli->connect($db_host, $db_user, $db_pass, null, 0, $db_port);
         }
 
@@ -267,8 +261,14 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
             return self::ERROR_DB_ENGINE_UNSUPPORTED;
         }
 
-        if ($auto_config_flags) {
-           // Instanciate DB to be able to compute boolean properties flags.
+        if ($strict_configuration || !$compute_flags_from_db) {
+            // Force strict configuration
+            $use_utf8mb4 = true;
+            $allow_myisam = false;
+            $allow_datetime = false;
+            $allow_signed_keys = false;
+        } else {
+            // Instanciate DB to be able to compute boolean properties flags.
             $db = new class ($db_hostport, $db_user, $db_pass, $db_name) extends DBmysql {
                 public function __construct($dbhost, $dbuser, $dbpassword, $dbdefault)
                 {
@@ -280,10 +280,12 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
                 }
             };
             $config_flags = $db->getComputedConfigBooleanFlags();
-            $use_utf8mb4 = $config_flags[DBConnection::PROPERTY_USE_UTF8MB4] ?? $use_utf8mb4;
-            $allow_myisam = $config_flags[DBConnection::PROPERTY_ALLOW_MYISAM] ?? $allow_myisam;
-            $allow_datetime = $config_flags[DBConnection::PROPERTY_ALLOW_DATETIME] ?? $allow_datetime;
+            $use_utf8mb4 = $config_flags[DBConnection::PROPERTY_USE_UTF8MB4] ?? false;
+            $allow_myisam = $config_flags[DBConnection::PROPERTY_ALLOW_MYISAM] ?? true;
+            $allow_datetime = $config_flags[DBConnection::PROPERTY_ALLOW_DATETIME] ?? true;
+            $allow_signed_keys = $config_flags[DBConnection::PROPERTY_ALLOW_SIGNED_KEYS] ?? true;
         }
+        $log_deprecation_warnings = $strict_configuration;
 
         DBConnection::setConnectionCharset($mysqli, $use_utf8mb4);
 
@@ -305,7 +307,8 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
             $log_deprecation_warnings,
             $use_utf8mb4,
             $allow_myisam,
-            $allow_datetime
+            $allow_datetime,
+            $allow_signed_keys
         );
         if (!$result) {
             $message = sprintf(
@@ -319,7 +322,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
             return self::ERROR_DB_CONFIG_FILE_NOT_SAVED;
         }
 
-       // Set $db instance to use new connection properties
+        // Set $db instance to use new connection properties
         $this->db = new class (
             $db_hostport,
             $db_user,
@@ -329,7 +332,8 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
             $log_deprecation_warnings,
             $use_utf8mb4,
             $allow_myisam,
-            $allow_datetime
+            $allow_datetime,
+            $allow_signed_keys
         ) extends DBmysql {
             public function __construct(
                 $dbhost,
@@ -340,17 +344,19 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
                 $log_deprecation_warnings,
                 $use_utf8mb4,
                 $allow_myisam,
-                $allow_datetime
+                $allow_datetime,
+                $allow_signed_keys
             ) {
                   $this->dbhost     = $dbhost;
                   $this->dbuser     = $dbuser;
                   $this->dbpassword = $dbpassword;
                   $this->dbdefault  = $dbdefault;
 
-                  $this->use_timezones  = $use_timezones;
-                  $this->use_utf8mb4    = $use_utf8mb4;
-                  $this->allow_myisam   = $allow_myisam;
-                  $this->allow_datetime = $allow_datetime;
+                  $this->use_timezones     = $use_timezones;
+                  $this->use_utf8mb4       = $use_utf8mb4;
+                  $this->allow_myisam      = $allow_myisam;
+                  $this->allow_datetime    = $allow_datetime;
+                  $this->allow_signed_keys = $allow_signed_keys;
 
                   $this->log_deprecation_warnings = $log_deprecation_warnings;
 
@@ -369,24 +375,24 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
         return true;
     }
 
-   /**
-    * Check if DB is already configured.
-    *
-    * @return boolean
-    */
+    /**
+     * Check if DB is already configured.
+     *
+     * @return boolean
+     */
     protected function isDbAlreadyConfigured()
     {
 
         return file_exists(GLPI_CONFIG_DIR . '/config_db.php');
     }
 
-   /**
-    * Validate configuration variables from input.
-    *
-    * @param InputInterface $input
-    *
-    * @throws InvalidArgumentException
-    */
+    /**
+     * Validate configuration variables from input.
+     *
+     * @param InputInterface $input
+     *
+     * @throws InvalidArgumentException
+     */
     protected function validateConfigInput(InputInterface $input)
     {
 
@@ -407,24 +413,24 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
         }
 
         if (null === $db_pass) {
-           // Will be null if option used without value and without interaction
+            // Will be null if option used without value and without interaction
             throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
                 __('--db-password option value cannot be null.')
             );
         }
     }
 
-   /**
-    * Ask user to confirm DB configuration.
-    *
-    * @param InputInterface $input
-    * @param OutputInterface $output
-    * @param string $db_hostport DB host and port
-    * @param string $db_name DB name
-    * @param string $db_user DB username
-    *
-    * @return boolean
-    */
+    /**
+     * Ask user to confirm DB configuration.
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @param string $db_hostport DB host and port
+     * @param string $db_name DB name
+     * @param string $db_user DB username
+     *
+     * @return boolean
+     */
     protected function askForDbConfigConfirmation(
         InputInterface $input,
         OutputInterface $output,
@@ -440,11 +446,11 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
         $informations->render();
 
         if ($input->getOption('no-interaction')) {
-           // Consider that config is validated if user require no interaction
+            // Consider that config is validated if user require no interaction
             return true;
         }
 
-       /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
+        /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
         $question_helper = $this->getHelper('question');
         return $question_helper->ask(
             $input,
@@ -453,13 +459,13 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
         );
     }
 
-   /**
-    * Check timezones availability and return availability state.
-    *
-    * @param mysqli $mysqli
-    *
-    * @return bool
-    */
+    /**
+     * Check timezones availability and return availability state.
+     *
+     * @param mysqli $mysqli
+     *
+     * @return bool
+     */
     private function checkTimezonesAvailability(mysqli $mysqli): bool
     {
 

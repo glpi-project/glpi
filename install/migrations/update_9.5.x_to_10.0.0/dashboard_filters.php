@@ -40,13 +40,13 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 
 if (!$DB->tableExists('glpi_dashboards_filters')) {
-    $migration->addField('glpi_dashboards_dashboards', 'users_id', 'integer', ['after' => 'context']);
+    $migration->addField('glpi_dashboards_dashboards', 'users_id', "int unsigned NOT NULL DEFAULT '0'", ['after' => 'context']);
     $migration->addKey('glpi_dashboards_dashboards', 'users_id');
 
     $query = "CREATE TABLE `glpi_dashboards_filters` (
-         `id` int NOT NULL AUTO_INCREMENT,
-         `dashboards_dashboards_id` int NOT NULL DEFAULT '0',
-         `users_id` int NOT NULL DEFAULT '0',
+         `id` int unsigned NOT NULL AUTO_INCREMENT,
+         `dashboards_dashboards_id` int unsigned NOT NULL DEFAULT '0',
+         `users_id` int unsigned NOT NULL DEFAULT '0',
          `filter` longtext,
          PRIMARY KEY (`id`),
          KEY `dashboards_dashboards_id` (`dashboards_dashboards_id`),
