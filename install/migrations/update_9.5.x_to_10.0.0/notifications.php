@@ -1,5 +1,4 @@
 <?php
-
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,6 +29,8 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * @var DB $DB
@@ -81,3 +82,22 @@ if (!$notification_exists) {
     );
 }
 /** /User mention notification */
+
+/** Fix non encoded notifications */
+$notifications = getAllDataFromTable('glpi_notificationtemplatetranslations');
+foreach ($notifications as $notification) {
+    if ($notification['content_html'] !== null && preg_match('/(<|>|(&(?!#?[a-z0-9]+;)))/i', $notification['content_html']) === 1) {
+        $migration->addPostQuery(
+            $DB->buildUpdate(
+                'glpi_notificationtemplatetranslations',
+                [
+                    'content_html' => Sanitizer::sanitize($notification['content_html']),
+                ],
+                [
+                    'id' => $notification['id'],
+                ]
+            )
+        );
+    }
+}
+/** Fix non encoded notifications */

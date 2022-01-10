@@ -31,6 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
+
 /**
  * @var DB $DB
  * @var Migration $migration
@@ -398,7 +400,7 @@ if (!$DB->tableExists('glpi_networkporttypes') || countElementsInTable(NetworkPo
     if (!$DB->tableExists('glpi_networkporttypes')) {
         $migration->migrationOneTable(NetworkPortType::getTable());
     }
-    $default_types = NetworkPortType::getDefaults();
+    $default_types = Sanitizer::sanitize(NetworkPortType::getDefaults(), false);
     $reference = array_replace(
         $default_types[0],
         array_fill_keys(
@@ -645,6 +647,28 @@ if (!$DB->tableExists('glpi_snmpcredentials')) {
          KEY `is_deleted` (`is_deleted`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->queryOrDie($query, "10.0 add table glpi_snmpcredentials");
+}
+if (countElementsInTable('glpi_snmpcredentials') === 0) {
+    $migration->addPostQuery(
+        $DB->buildInsert(
+            'glpi_snmpcredentials',
+            [
+                'name'          => 'Public community v1',
+                'snmpversion'   => 1,
+                'community'     => 'public'
+            ]
+        )
+    );
+    $migration->addPostQuery(
+        $DB->buildInsert(
+            'glpi_snmpcredentials',
+            [
+                'name'          => 'Public community v2c',
+                'snmpversion'   => 2,
+                'community'     => 'public'
+            ]
+        )
+    );
 }
 
 $cred_tables = ['glpi_printers', 'glpi_networkequipments', 'glpi_unmanageds'];

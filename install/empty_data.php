@@ -8357,9 +8357,9 @@ $tables['glpi_devicefirmwaretypes'] = [
    ],
 ];
 
-$tables[DomainRecordType::getTable()] = Sanitizer::sanitize(DomainRecordType::getDefaults());
-$tables[DomainRelation::getTable()] = Sanitizer::sanitize(DomainRelation::getDefaults());
-$tables[NetworkPortType::getTable()] = Sanitizer::sanitize(NetworkPortType::getDefaults());
+$tables[DomainRecordType::getTable()] = DomainRecordType::getDefaults();
+$tables[DomainRelation::getTable()] = DomainRelation::getDefaults();
+$tables[NetworkPortType::getTable()] = Sanitizer::sanitize(NetworkPortType::getDefaults(), false);
 
 $tables['glpi_agenttypes'] = [
    [
