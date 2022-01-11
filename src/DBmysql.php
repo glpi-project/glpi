@@ -53,7 +53,6 @@ class DBmysql
         'glpi_changetemplates.id',
         // FIXME Entity preference `glpi_entities.contracts_id_default` inherit/never strategy should be stored in another field.
         'glpi_contracts.id',
-        // FIXME root entity uses "-1" value for its parent (`glpi_entities.entities_id`), should be null
         // FIXME Entity preference `glpi_entities.entities_id_software` inherit/never strategy should be stored in another field.
         'glpi_entities.id',
         // FIXME Entity preference `glpi_entities.problemtemplates_id` inherit/never strategy should be stored in another field.

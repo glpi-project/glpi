@@ -332,9 +332,9 @@ class Entity extends CommonTreeDropdown
             $input['max_closedate'] = $_SESSION["glpi_currenttime"];
         }
 
-       // Force entities_id = -1 for root entity
+       // Force entities_id = NULL for root entity
         if ($input['id'] == 0) {
-            $input['entities_id'] = -1;
+            $input['entities_id'] = 'NULL';
             $input['level']       = 1;
         }
         if (!Session::isCron()) { // Filter input for connected

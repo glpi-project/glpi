@@ -2681,7 +2681,7 @@ DROP TABLE IF EXISTS `glpi_entities`;
 CREATE TABLE `glpi_entities` (
   `id` int NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
-  `entities_id` int NOT NULL DEFAULT '0',
+  `entities_id` int DEFAULT '0',
   `completename` text,
   `comment` text,
   `level` int NOT NULL DEFAULT '0',
