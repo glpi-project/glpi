@@ -40,9 +40,13 @@ class Request extends \GLPITestCase
 {
     public function testConstructor()
     {
-       //no mode
+       //no mode without content
         $request = new \Glpi\Inventory\Request();
         $this->variable($request->getMode())->isNull();
+        $this->variable($request->getResponse())->isIdenticalTo("");
+
+       //no mode with content
+        $request->addToResponse(["something" => "some content"]);
         $this->exception(
             function () use ($request) {
                 $this->variable($request->getResponse())->isNull();
@@ -119,11 +123,11 @@ class Request extends \GLPITestCase
         return [
          ['query' => 'register'], //Request::REGISTER_ACTION
          ['query' => 'configuration'], //Request::CONFIG_ACTION
-         ['query' => 'ESX'], //Request::ESX_ACTION
-         ['query' => 'COLLECT'], //Request::COLLECT_ACTION
-         ['query' => 'DEPLOY'], //Request:: DEPLOY_ACTION
+         ['query' => 'esx'], //Request::ESX_ACTION
+         ['query' => 'collect'], //Request::COLLECT_ACTION
+         ['query' => 'deploy'], //Request:: DEPLOY_ACTION
          ['query' => 'wakeonlan'], //Request::WOL_ACTION
-         ['query' => 'UNKNOWN'],
+         ['query' => 'unknown'],
         ];
     }
 
@@ -138,7 +142,8 @@ class Request extends \GLPITestCase
         $request = new \Glpi\Inventory\Request();
         $request->handleContentType('application/xml');
         $request->handleRequest($data);
-        $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR>Query '" . strtolower($query) . "' is not supported.</ERROR></REPLY>\n");
+        $this->integer($request->getHttpResponseCode())->isIdenticalTo(501);
+        $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR>Query '$query' is not supported.</ERROR></REPLY>\n");
     }
 
     public function testAddError()
@@ -147,11 +152,14 @@ class Request extends \GLPITestCase
         $request->handleContentType('application/xml');
         $request->addError('Something went wrong.');
         $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR>Something went wrong.</ERROR></REPLY>\n");
+    }
 
+    public function testAddResponse()
+    {
         $request = new \Glpi\Inventory\Request();
         $request->handleContentType('application/xml');
        //to test nodes with attributes
-        $request->addError([
+        $request->addToResponse([
          'OPTION' => [
             'NAME' => 'NETDISCOVERY',
             'PARAM' => [
@@ -203,7 +211,7 @@ class Request extends \GLPITestCase
          ]
         ]);
 
-        $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR><OPTION><NAME>NETDISCOVERY</NAME><PARAM THREADS_DISCOVERY=\"5\" TIMEOUT=\"1\" PID=\"16\"/><RANGEIP ID=\"1\" IPSTART=\"192.168.1.1\" IPEND=\"192.168.1.254\" ENTITY=\"0\"/><AUTHENTICATION ID=\"1\" COMMUNITY=\"public\" VERSION=\"1\" USERNAME=\"\" AUTHPROTOCOL=\"\" AUTHPASSPHRASE=\"\" PRIVPROTOCOL=\"\" PRIVPASSPHRASE=\"\"/><AUTHENTICATION ID=\"2\" COMMUNITY=\"public\" VERSION=\"2c\" USERNAME=\"\" AUTHPROTOCOL=\"\" AUTHPASSPHRASE=\"\" PRIVPROTOCOL=\"\" PRIVPASSPHRASE=\"\"/></OPTION></ERROR></REPLY>\n");
+        $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><OPTION><NAME>NETDISCOVERY</NAME><PARAM THREADS_DISCOVERY=\"5\" TIMEOUT=\"1\" PID=\"16\"/><RANGEIP ID=\"1\" IPSTART=\"192.168.1.1\" IPEND=\"192.168.1.254\" ENTITY=\"0\"/><AUTHENTICATION ID=\"1\" COMMUNITY=\"public\" VERSION=\"1\" USERNAME=\"\" AUTHPROTOCOL=\"\" AUTHPASSPHRASE=\"\" PRIVPROTOCOL=\"\" PRIVPASSPHRASE=\"\"/><AUTHENTICATION ID=\"2\" COMMUNITY=\"public\" VERSION=\"2c\" USERNAME=\"\" AUTHPROTOCOL=\"\" AUTHPASSPHRASE=\"\" PRIVPROTOCOL=\"\" PRIVPASSPHRASE=\"\"/></OPTION></REPLY>\n");
     }
 
     protected function compressionProvider(): array

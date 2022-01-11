@@ -72,6 +72,13 @@ abstract class AbstractRequest
 
    //GLPI AGENT TASK
     const INVENT_TASK = 'inventory';
+    const NETDISCOVERY_TASK = 'netdiscovery';
+    const NETINV_TASK = 'netinventory';
+    const ESX_TASK = 'esx';
+    const COLLECT_TASK = 'collect';
+    const DEPLOY_TASK = 'deploy';
+    const WOL_TASK = 'wakeonlan';
+    const REMOTEINV_TASK = 'remoteinventory';
 
     const COMPRESS_NONE = 0;
     const COMPRESS_ZLIB = 1;
@@ -305,26 +312,27 @@ abstract class AbstractRequest
     /**
      * Adds an error
      *
-     * @param string $message Error message
+     * @param string  $message Error message
+     * @param integer $code    HTTP response code
      *
      * @return void
      */
     public function addError($message, $code = 500)
     {
-        $this->error = true;
-        $this->http_repsonse_code = $code;
-        if ($this->headers->hasHeader('GLPI-Agent-ID')) {
-            $this->addToResponse([
-            'status' => 'error',
-            'message' => preg_replace(
-                '|\$ref\[file~2//.*/vendor/glpi-project/inventory_format/inventory.schema.json\]|',
-                '$ref[inventory.schema.json]',
-                $message
-            ),
-            'expiration' => self::DEFAULT_FREQUENCY
-            ]);
-        } else {
-            $this->addToResponse(['ERROR' => $message]);
+        if ($code >= 400) {
+            $this->error = true;
+        }
+        $this->http_response_code = $code;
+        if (!empty($message)) {
+            if ($this->mode === self::JSON_MODE) {
+                $this->addToResponse([
+                'status' => 'error',
+                'message' => $message,
+                'expiration' => self::DEFAULT_FREQUENCY
+                ]);
+            } else {
+                $this->addToResponse(['ERROR' => $message]);
+            }
         }
     }
 
@@ -335,7 +343,7 @@ abstract class AbstractRequest
     *
     * @return void
     */
-    protected function addToResponse(array $entries)
+    public function addToResponse(array $entries)
     {
         if ($this->mode === self::XML_MODE) {
             $root = $this->response->documentElement;
@@ -343,7 +351,15 @@ abstract class AbstractRequest
                 $this->addNode($root, $name, $content);
             }
         } else {
-            $this->response = $entries;
+            foreach ($entries as $name => $content) {
+                if ($name == "message" && isset($this->response[$name])) {
+                    $this->response[$name] .= ";$content";
+                } else if ($name == "disabled") {
+                    $this->response[$name][] = $content;
+                } else {
+                    $this->response[$name] = $content;
+                }
+            }
         }
     }
 
@@ -429,39 +445,45 @@ abstract class AbstractRequest
     */
     public function getResponse(): string
     {
-        if ($this->mode === null) {
-            throw new \RuntimeException("Mode has not been set");
-        }
+        // Default to return empty response on no response set
+        $data = "";
+        if ($this->response !== null) {
+            if ($this->mode === null) {
+                throw new \RuntimeException("Mode has not been set");
+            }
 
-        $data = null;
-        switch ($this->mode) {
-            case self::XML_MODE:
-                $data = $this->response->saveXML();
-                break;
-            case self::JSON_MODE:
-                $data = json_encode($this->response);
-                break;
-            default:
-                throw new \RuntimeException("Unknown mode " . $this->mode);
-            break;
-        }
-
-        if ($this->compression !== self::COMPRESS_NONE) {
-            switch ($this->compression) {
-                case self::COMPRESS_ZLIB:
-                    $data = gzcompress($data);
+            switch ($this->mode) {
+                case self::XML_MODE:
+                    $data = $this->response->saveXML();
                     break;
-                case self::COMPRESS_GZIP:
-                    $data = gzencode($data);
-                    break;
-                case self::COMPRESS_BR:
-                    $data = brotli_compress($data);
-                    break;
-                case self::COMPRESS_DEFLATE:
-                    $data = gzdeflate($data);
+                case self::JSON_MODE:
+                    $data = json_encode($this->response);
                     break;
                 default:
-                    throw new \UnexpectedValueException("Unknown compression mode" . $this->compression);
+                    throw new \UnexpectedValueException("Unknown mode " . $this->mode);
+            }
+
+            if ($this->compression === null) {
+                throw new \RuntimeException("Compression has not been set");
+            }
+
+            if ($this->compression !== self::COMPRESS_NONE) {
+                switch ($this->compression) {
+                    case self::COMPRESS_ZLIB:
+                        $data = gzcompress($data);
+                        break;
+                    case self::COMPRESS_GZIP:
+                        $data = gzencode($data);
+                        break;
+                    case self::COMPRESS_BR:
+                        $data = brotli_compress($data);
+                        break;
+                    case self::COMPRESS_DEFLATE:
+                        $data = gzdeflate($data);
+                        break;
+                    default:
+                        throw new \UnexpectedValueException("Unknown compression mode" . $this->compression);
+                }
             }
         }
 

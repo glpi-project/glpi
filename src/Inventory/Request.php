@@ -97,7 +97,7 @@ class Request extends AbstractRequest
             case self::DEPLOY_ACTION:
             case self::WOL_ACTION:
             default:
-                $this->addError("Query '$query' is not supported.", 400);
+                $this->addError("Query '$query' is not supported.", 501);
                 return false;
         }
         return true;
@@ -113,7 +113,20 @@ class Request extends AbstractRequest
         switch ($task) {
             case self::INVENT_TASK:
                 return $this->handleInventoryTask();
-            break;
+                break;
+            case self::NETDISCOVERY_TASK:
+            case self::NETINV_TASK:
+            case self::ESX_TASK:
+            case self::COLLECT_TASK:
+            case self::DEPLOY_TASK:
+            case self::WOL_TASK:
+            case self::REMOTEINV_TASK:
+               // Task is not supported, disable it and add unsupported message in response
+                $this->addToResponse([
+                    "message" => "$task task not supported",
+                    "disabled" => $task
+                ]);
+                break;
             default:
                 $this->addError("Task '$task' is not supported.", 400);
                 return [];
