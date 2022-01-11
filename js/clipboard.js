@@ -1,7 +1,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -28,6 +28,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
 $(function() {
    // set a function to track drag hover event
    $(document).on("click", ".copy_to_clipboard_wrapper", function(event) {
