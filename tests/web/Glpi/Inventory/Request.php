@@ -134,7 +134,6 @@ class Request extends \GLPITestCase
                             'GLPI-Agent-ID' => 'a31ff7b5-4d8d-4e39-891e-0cca91d9df13'
                         ],
                         'body'   => gzcompress('{ bad content')
-                        ]
                     ]
                 );
             }
