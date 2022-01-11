@@ -148,8 +148,7 @@ abstract class AbstractRequest
     */
     private function guessMode($contents)
     {
-        json_decode($contents);
-        if (json_last_error() === JSON_ERROR_NONE) {
+        if ($this->headers->hasHeader('GLPI-Agent-ID') && preg_match('/^{/', $contents)) {
             $this->setMode(self::JSON_MODE);
         } else {
            //defaults to XML; whose validity is checked later.
@@ -288,6 +287,12 @@ abstract class AbstractRequest
     public function handleJSONRequest($data): bool
     {
         $jdata = json_decode($data);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $this->addError('JSON not well formed!', 400);
+            return false;
+        }
+
         $this->deviceid = $jdata->deviceid;
         $action = self::INVENT_ACTION;
         if (property_exists($jdata, 'action')) {
