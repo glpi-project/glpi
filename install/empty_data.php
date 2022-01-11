@@ -2134,7 +2134,7 @@ $tables['glpi_entities'] = [
    [
       'id'                                   => 0,
       'name'                                 => __('Root entity'),
-      'entities_id'                          => -1,
+      'entities_id'                          => null,
       'completename'                         => __('Root entity'),
       'comment'                              => null,
       'level'                                => 1,

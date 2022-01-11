@@ -43,6 +43,7 @@ if (!defined('GLPI_ROOT')) {
 $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 
+/** Create registration_number field */
 if (!$DB->fieldExists("glpi_entities", "registration_number")) {
     $migration->addField(
         "glpi_entities",
@@ -53,3 +54,15 @@ if (!$DB->fieldExists("glpi_entities", "registration_number")) {
         ]
     );
 }
+/** /Create registration_number field */
+
+/** Replace -1 value for entities_id field */
+$migration->changeField('glpi_entities', 'entities_id', 'entities_id', "int DEFAULT '0'"); // allow null value
+$migration->addPostQuery(
+    $DB->buildUpdate(
+        'glpi_entities',
+        ['entities_id' => 'NULL'],
+        ['entities_id' => '-1']
+    )
+);
+/** /Replace -1 value for entities_id field */
