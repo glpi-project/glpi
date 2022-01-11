@@ -253,10 +253,13 @@ class Unmanaged extends CommonDBTM
         }
     }
 
-   /**
-    * Convert to a managed asset
-    */
-    public function convert($items_id, $itemtype)
+    /**
+     * Convert to a managed asset
+     *
+     * @param int         $items_id ID of Unmanaged equipment
+     * @param string|null $itemtype Item type to convert to. Will take Unmanaged value if null
+     */
+    public function convert(int $items_id, string $itemtype = null)
     {
         global $DB;
 
@@ -281,9 +284,9 @@ class Unmanaged extends CommonDBTM
          'name'          => $this->fields['name'],
          'entities_id'   => $this->fields['entities_id'],
          'serial'        => $this->fields['serial'],
-         'uuid'          => $this->fields['uuid'],
+         'uuid'          => $this->fields['uuid'] ?? null,
          'is_dynamic'    => 1
-        ];
+        ] + $this->fields;
         $assets_id = $asset->add(Toolbox::addslashes_deep($asset_data));
 
         foreach ($iterator as $row) {
