@@ -366,7 +366,7 @@ class Migration
 
            // for plugins
             case 'autoincrement':
-                $format = "INT NOT NULL AUTO_INCREMENT";
+                $format = "INT unsigned NOT NULL AUTO_INCREMENT";
                 break;
 
             default:
