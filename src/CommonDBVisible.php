@@ -243,7 +243,7 @@ abstract class CommonDBVisible extends CommonDBTM
                         $names["name"],
                         Html::showToolTip($names["comment"], ['display' => false])
                     );
-                    if ($data['entities_id'] >= 0) {
+                    if ($data['entities_id'] !== null) {
                         $entname = sprintf(
                             __('%1$s / %2$s'),
                             $entname,
@@ -314,7 +314,7 @@ abstract class CommonDBVisible extends CommonDBTM
                     $names   = Dropdown::getDropdownName('glpi_profiles', $data['profiles_id'], 1);
                     $tooltip = Html::showToolTip($names["comment"], ['display' => false]);
                     $entname = sprintf(__('%1$s %2$s'), $names["name"], $tooltip);
-                    if ($data['entities_id'] >= 0) {
+                    if ($data['entities_id'] !== null) {
                         $entname = sprintf(
                             __('%1$s / %2$s'),
                             $entname,

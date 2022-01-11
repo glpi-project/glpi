@@ -312,7 +312,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                                                       ? $_SESSION["glpigroups"]
                                                       : [-1],
             'OR' => [
-               'glpi_groups_rssfeeds.entities_id' => ['<', '0'],
+               'glpi_groups_rssfeeds.no_entity_restriction' => 1,
             ] + $restrict
             ];
         }
@@ -337,7 +337,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                 $restrict = [true];
             }
             $ors = [
-            'glpi_profiles_rssfeeds.entities_id' => ['<', '0'],
+            'glpi_profiles_rssfeeds.no_entity_restriction' => 1,
             $restrict
             ];
 

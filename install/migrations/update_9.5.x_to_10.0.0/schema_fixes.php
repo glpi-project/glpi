@@ -735,3 +735,26 @@ foreach ($tables as $table) {
         $migration->addKey($table, 'date');
     }
 }
+
+// Replace -1 default values on entities_id foreign keys (visibility tables)
+$tables = [
+    'glpi_groups_knowbaseitems',
+    'glpi_groups_reminders',
+    'glpi_groups_rssfeeds',
+    'glpi_knowbaseitems_profiles',
+    'glpi_profiles_reminders',
+    'glpi_profiles_rssfeeds',
+];
+foreach ($tables as $table) {
+    $migration->addField($table, 'no_entity_restriction', 'boolean', ['update' => 0]);
+    $migration->changeField($table, 'entities_id', 'entities_id', 'int DEFAULT NULL'); // keep sign for now, but allow null
+    $migration->migrationOneTable($table);
+    $migration->addPreQuery(
+        $DB->buildUpdate(
+            $table,
+            ['entities_id' => 'NULL', 'no_entity_restriction' => 1],
+            ['entities_id' => '-1']
+        )
+    );
+    $migration->changeField($table, 'entities_id', 'entities_id', 'int unsigned DEFAULT NULL');
+}
