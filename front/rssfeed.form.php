@@ -91,6 +91,11 @@ if (isset($_POST["add"])) {
         isset($_POST["_type"]) && !empty($_POST["_type"])
         && isset($_POST["rssfeeds_id"]) && $_POST["rssfeeds_id"]
     ) {
+        if ($_POST['entities_id'] == -1) {
+            // "No restriction" value selected
+            $_POST['entities_id'] = 'NULL';
+            $_POST['no_entity_restriction'] = 1;
+        }
         $item = null;
         switch ($_POST["_type"]) {
             case 'User':
