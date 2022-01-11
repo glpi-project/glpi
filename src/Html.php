@@ -2293,6 +2293,11 @@ HTML;
         }
 
         $out = "";
+
+        if ($params['zero_on_empty']) {
+            $out .= '<input type="hidden" name="' . $params['name'] . '" value="0" />';
+        }
+
         $out .= "<input type='checkbox' class='form-check-input' title=\"" . $params['title'] . "\" ";
         if (isset($params['onclick'])) {
             $params['onclick'] = htmlspecialchars($params['onclick'], ENT_QUOTES);
@@ -2308,11 +2313,6 @@ HTML;
         $criterion = self::getCriterionForMassiveCheckboxes($params['criterion']);
         if (!empty($criterion)) {
             $out .= " onClick='massiveUpdateCheckbox(\"$criterion\", this)'";
-        }
-
-        if ($params['zero_on_empty']) {
-            $out                               .= " data-glpicore-cb-zero-on-empty='1'";
-            $CFG_GLPI['checkbox-zero-on-empty'] = true;
         }
 
         if (!empty($params['massive_tags'])) {
@@ -4392,31 +4392,13 @@ JAVASCRIPT
    **/
     public static function closeForm($display = true)
     {
-        global $CFG_GLPI;
+        $out = '';
 
-        $out = "\n";
         if (GLPI_USE_CSRF_CHECK) {
-            $out .= Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]) . "\n";
+            $out .= Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
         }
 
-        if (isset($CFG_GLPI['checkbox-zero-on-empty']) && $CFG_GLPI['checkbox-zero-on-empty']) {
-            $js = "   $('form').submit(function() {
-         $('input[type=\"checkbox\"][data-glpicore-cb-zero-on-empty=\"1\"]:not(:checked)').each(function(index){
-            // If the checkbox is not validated, we add a hidden field with '0' as value
-            if ($(this).attr('name')) {
-               $('<input>').attr({
-                  type: 'hidden',
-                  name: $(this).attr('name'),
-                  value: '0'
-               }).insertAfter($(this));
-            }
-         });
-      });";
-            $out .= Html::scriptBlock($js) . "\n";
-            unset($CFG_GLPI['checkbox-zero-on-empty']);
-        }
-
-        $out .= "</form>\n";
+        $out .= "</form>";
         if ($display) {
             echo $out;
             return true;
