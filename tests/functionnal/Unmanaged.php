@@ -195,4 +195,150 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
 
         $this->string($a_networkport['itemtype'])->isIdenticalTo('Computer');
     }
+
+    /**
+     * Convert an Unmanaged device into a NetworkEquipment
+     * @return void
+     */
+    public function testConvert()
+    {
+        //Add Unmanaged network equipment, its network ports, name and IP.
+        $unmanaged = new \Unmanaged();
+        $unmanageds_id = $unmanaged->add([
+            'name'        => 'switch',
+            'entities_id' => 0,
+            'itemtype' => 'NetworkEquipment',
+            'sysdescr' => 'Any Cisco equipment',
+            'locations_id' => 0,
+            'is_dynamic' => 1,
+            'serial' => 'XXS6BEF3',
+            'comment' => 'with a comment'
+        ]);
+        $this->integer($unmanageds_id)->isGreaterThan(0);
+
+        // * Add networkport
+        $netport = new \NetworkPort();
+        $networkports_id = $netport->add([
+            'itemtype' => $unmanaged->getType(),
+            'items_id' => $unmanageds_id,
+            'instantiation_type' => 'NetworkPortEthernet',
+            'name' => 'general',
+            'mac' => '00:00:00:43:ae:0f',
+            'is_dynamic' => 1
+        ]);
+        $this->integer($networkports_id)->isGreaterThan(0);
+
+        $netname = new \NetworkName();
+        $networknames_id = $netname->add([
+            'itemtype' => $netport->getType(),
+            'items_id' => $networkports_id,
+            'name' => '',
+            'is_dynamic' => 1
+        ]);
+        $this->integer($networknames_id)->isGreaterThan(0);
+
+        $ip = new \IPAddress();
+        $this->integer(
+            $ip->add([
+                'entities_id' => 0,
+                'itemtype' => $netname->getType(),
+                'items_id' => $networknames_id,
+                'name' => '192.168.20.1',
+                'is_dynamic' => 1
+            ])
+        )->isGreaterThan(0);
+
+        //convert to NetworkEquipment
+        $unmanaged->convert($unmanageds_id);
+
+        $this->integer(
+            countElementsInTable(\NetworkEquipment::getTable(), ['NOT' => ['name' => ['LIKE', '_test_%']]]),
+            'No NetworkEquipment added'
+        )->isIdenticalTo(1);
+
+        $this->integer(
+            countElementsInTable(\Unmanaged::getTable(), ['NOT' => ['name' => ['LIKE', '_test_%']]]),
+            'Unmanaged has not been deleted'
+        )->isIdenticalTo(0);
+
+        $neteq = new \NetworkEquipment();
+        $this->boolean($neteq->getFromDBByCrit(['name' => 'switch']))->isTrue();
+
+        $this->string($neteq->fields['serial'])->isIdenticalTo('XXS6BEF3');
+        $this->integer($neteq->fields['is_dynamic'])->isIdenticalTo(1);
+        $this->string($neteq->fields['comment'])->isIdenticalTo('with a comment');
+        $this->string($neteq->fields['sysdescr'])->isIdenticalTo('Any Cisco equipment');
+
+        $netport->getFromDBByCrit([]);
+        unset($netport->fields['date_mod']);
+        unset($netport->fields['date_creation']);
+        $networkports_id = $netport->fields['id'];
+        unset($netport->fields['id']);
+        $expected = [
+            'name'                 => 'general',
+            'items_id'             => $neteq->fields['id'],
+            'itemtype'             => 'NetworkEquipment',
+            'entities_id'          => 0,
+            'is_recursive'         => 0,
+            'logical_number'       => 0,
+            'instantiation_type'   => 'NetworkPortEthernet',
+            'mac'                  => '00:00:00:43:ae:0f',
+            'comment'              => null,
+            'is_deleted'           => 0,
+            'is_dynamic'           => 1,
+            'ifmtu' => 0,
+            'ifspeed' => 0,
+            'ifinternalstatus' => null,
+            'ifconnectionstatus' => 0,
+            'iflastchange' => null,
+            'ifinbytes' => 0,
+            'ifinerrors' => 0,
+            'ifoutbytes' => 0,
+            'ifouterrors' => 0,
+            'ifstatus' => null,
+            'ifdescr' => null,
+            'ifalias' => null,
+            'portduplex' => null,
+            'trunk' => 0,
+            'lastup' => null
+        ];
+        $this->array($netport->fields)->isEqualTo($expected);
+
+        $netname->getFromDBByCrit(['items_id' => $networkports_id]);
+        unset($netname->fields['date_mod']);
+        unset($netname->fields['date_creation']);
+        $networknames_id = $netname->fields['id'];
+        unset($netname->fields['id']);
+        $expected = [
+            'entities_id' => 0,
+            'items_id'    => $networkports_id,
+            'itemtype'    => 'NetworkPort',
+            'name'        => '',
+            'comment'     => null,
+            'fqdns_id'    => 0,
+            'ipnetworks_id' => 0,
+            'is_deleted'  => 0,
+            'is_dynamic'  => 1,
+        ];
+        $this->array($netname->fields)->isEqualTo($expected);
+
+        $ip->getFromDBByCrit(['name' => '192.168.20.1']);
+        $expected = [
+            'name'        => '192.168.20.1',
+            'entities_id' => 0,
+            'items_id'    => $networknames_id,
+            'itemtype'    => 'NetworkName',
+            'version'     => 4,
+            'binary_0'    => 0,
+            'binary_1'    => 0,
+            'binary_2'    => 65535,
+            'binary_3'    => 3232240641,
+            'is_deleted'  => 0,
+            'is_dynamic'  => 1,
+            'mainitems_id'  => $neteq->fields['id'],
+            'mainitemtype'  => 'NetworkEquipment'
+        ];
+        unset($ip->fields['id']);
+        $this->array($ip->fields)->isEqualTo($expected);
+    }
 }
