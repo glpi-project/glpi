@@ -2019,7 +2019,14 @@ class DBmysql
                 }
             }
             if (!$is_allowed) {
-                trigger_error('Usage of signed integers in primary or foreign keys is discouraged, please use unsigned integers instead.', E_USER_WARNING);
+                trigger_error(
+                    sprintf(
+                        'Usage of signed integers in primary or foreign keys is discouraged, please use unsigned integers instead in `%s`.`%s`.',
+                        $table,
+                        $field
+                    ),
+                    E_USER_WARNING
+                );
             }
         }
     }

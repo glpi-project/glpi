@@ -558,20 +558,20 @@ OTHER EXPRESSION;"
 
         // Warnings related to usage of signed integers in primary/foreign key fields.
         $int_declarations = [
-            '`id` int NOT NULL AUTO_INCREMENT, PRIMARY KEY (`id`),' => true,
-            '`id` int unsigned NOT NULL AUTO_INCREMENT, PRIMARY KEY (`id`),' => false,
-            '`users_id` int DEFAULT NULL,' => true,
-            '`users_id` int unsigned DEFAULT NULL,' => false,
-            '`users_id_tech` int NOT NULL,' => true,
-            '`users_id_tech` int unsigned NOT NULL,' => false,
-            '`entities_id` int DEFAULT NULL,' => false, // declared in DBmysql::ALLOWED_SIGNED_KEYS
-            '`entities_id_default` int DEFAULT -1,' => false, // declared in DBmysql::ALLOWED_SIGNED_KEYS
-            'id int DEFAULT NULL,' => true, // field name without backticks
-            '`users_id`int         unsigned DEFAULT NULL,' => false, // uncommon whitespaces
-            '`unconventionnalid` int DEFAULT NULL,' => false, // not matching naming conventions
-            '`id_computer` int DEFAULT NULL,' => false, // not matching naming conventions
+            '`id` int NOT NULL AUTO_INCREMENT, PRIMARY KEY (`id`),' => 'id',
+            '`id` int unsigned NOT NULL AUTO_INCREMENT, PRIMARY KEY (`id`),' => null,
+            '`users_id` int DEFAULT NULL,' => 'users_id',
+            '`users_id` int unsigned DEFAULT NULL,' => null,
+            '`users_id_tech` int NOT NULL,' => 'users_id_tech',
+            '`users_id_tech` int unsigned NOT NULL,' => null,
+            '`entities_id` int DEFAULT NULL,' => null, // declared in DBmysql::ALLOWED_SIGNED_KEYS
+            '`entities_id_default` int DEFAULT -1,' => null, // declared in DBmysql::ALLOWED_SIGNED_KEYS
+            'id int DEFAULT NULL,' => 'id', // field name without backticks
+            '`users_id`int         unsigned DEFAULT NULL,' => null, // uncommon whitespaces
+            '`unconventionnalid` int DEFAULT NULL,' => null, // not matching naming conventions
+            '`id_computer` int DEFAULT NULL,' => null, // not matching naming conventions
         ];
-        foreach ($int_declarations as $int_declaration => $trigger_warning) {
+        foreach ($int_declarations as $int_declaration => $warning_field) {
             yield [
                 'table_options' => '',
                 'extra_fields' => $int_declaration,
@@ -586,8 +586,8 @@ OTHER EXPRESSION;"
                 'db_properties' => [
                     'allow_signed_keys' => false
                 ],
-                'warning' => $trigger_warning
-                    ? 'Usage of signed integers in primary or foreign keys is discouraged, please use unsigned integers instead.'
+                'warning' => $warning_field !== null
+                    ? sprintf('Usage of signed integers in primary or foreign keys is discouraged, please use unsigned integers instead in `{$table}`.`%s`.', $warning_field)
                     : null,
             ];
         }
@@ -620,16 +620,16 @@ OTHER EXPRESSION;"
 
         $asserter = $warning === null ? 'notExists' : 'exists';
 
+        $table = sprintf('glpitests_%s', uniqid());
         $this->when(
-            function () use ($db, $create_query_template, $drop_query_template, $extra_fields, $table_options) {
-                $table = sprintf('glpitests_%s', uniqid());
+            function () use ($db, $create_query_template, $drop_query_template, $table, $extra_fields, $table_options) {
                 $db->query(sprintf($create_query_template, $table, $extra_fields, $table_options));
                 $db->query(sprintf($drop_query_template, $table));
             }
         )->error()
-         ->withType(E_USER_WARNING)
-         ->withMessage($warning)
-         ->$asserter();
+            ->withType(E_USER_WARNING)
+            ->withMessage(str_replace(['{$table}'], [$table], $warning ?? ''))
+            ->$asserter();
     }
 
     public function testSavepoints()
