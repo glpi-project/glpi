@@ -480,10 +480,10 @@ class Migration extends \GLPITestCase
             'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'A long text'   ",
          ], [
             'table'     => 'my_table',
-            'field'     => 'my_field',
+            'field'     => 'id',
             'format'    => 'autoincrement',
             'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL AUTO_INCREMENT   "
+            'sql'       => "ALTER TABLE `my_table` ADD `id` INT unsigned NOT NULL AUTO_INCREMENT   "
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
