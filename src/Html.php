@@ -2293,6 +2293,11 @@ HTML;
         }
 
         $out = "";
+
+        if ($params['zero_on_empty']) {
+            $out .= '<input type="hidden" name="' . $params['name'] . '" value="0" />';
+        }
+
         $out .= "<input type='checkbox' class='form-check-input' title=\"" . $params['title'] . "\" ";
         if (isset($params['onclick'])) {
             $params['onclick'] = htmlspecialchars($params['onclick'], ENT_QUOTES);
@@ -2308,10 +2313,6 @@ HTML;
         $criterion = self::getCriterionForMassiveCheckboxes($params['criterion']);
         if (!empty($criterion)) {
             $out .= " onClick='massiveUpdateCheckbox(\"$criterion\", this)'";
-        }
-
-        if ($params['zero_on_empty']) {
-            $out .= " data-glpicore-cb-zero-on-empty='1'";
         }
 
         if (!empty($params['massive_tags'])) {
