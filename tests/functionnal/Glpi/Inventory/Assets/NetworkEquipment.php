@@ -546,6 +546,421 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->integer(count($unmanageds))->isIdenticalTo(1, 'May have 1 new unmanaged device');
     }
 
+    /**
+     * @test
+     */
+    public function testCisco1Switch()
+    {
+        //Cisco switch
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <MAC>00:24:b5:bd:c8:01</MAC>
+        <NAME>cisco1</NAME>
+        <SERIAL>cisco1</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>GigabitEthernet0/10</IFDESCR>
+              <IP>192.168.200.124</IP>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFDESCR>mgmt0</IFDESCR>
+          <IFNAME>mgmt0</IFNAME>
+          <IFNUMBER>22</IFNUMBER>
+          <IFTYPE>6</IFTYPE>
+          <MAC>00:24:b5:bd:c8:02</MAC>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>4.1</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        $networkEquipment       = new \NetworkEquipment();
+        $networkport            = new \NetworkPort();
+        $networkName            = new \NetworkName();
+        $iPAddress              = new \IPAddress();
+
+        // Another switch
+        $networkequipments_other_id = $networkEquipment->add([
+            'name'        => 'otherswitch',
+            'entities_id' => 0
+        ]);
+        $this->integer($networkequipments_other_id)->isGreaterThan(0);
+
+        // Management port
+        $managementports_id = $networkport->add([
+            'itemtype'          => 'NetworkEquipment',
+            'instantiation_type' => 'NetworkPortAggregate',
+            'items_id'          => $networkequipments_other_id,
+            'entities_id'       => 0
+        ]);
+        $this->integer($managementports_id)->isGreaterThan(0);
+
+        $networknames_id = $networkName->add([
+            'entities_id' => 0,
+            'itemtype'    => 'NetworkPort',
+            'items_id'    => $managementports_id
+        ]);
+        $this->integer($networknames_id)->isGreaterThan(0);
+
+        $ipaddress_id = $iPAddress->add([
+            'entities_id' => 0,
+            'itemtype' => 'NetworkName',
+            'items_id' => $networknames_id,
+            'name' => '192.168.200.124'
+        ]);
+        $this->integer($ipaddress_id)->isGreaterThan(0);
+
+        // Port GigabitEthernet0/10
+        $networkports_other_id = $networkport->add([
+            'itemtype'       => 'NetworkEquipment',
+            'items_id'       => $networkequipments_other_id,
+            'entities_id'    => 0,
+            'mac'            => '00:24:b5:bd:c8:01',
+            'logical_number' => 22,
+            'ifdescr' => 'GigabitEthernet0/10'
+        ]);
+        $this->integer($networkports_other_id)->isGreaterThan(0);
+
+        // Import the switch into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml_source);
+        //$json = json_decode($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isIdenticalTo([]);
+
+        $a_portslinks = getAllDataFromTable('glpi_networkports_networkports');
+        $this->integer(count($a_portslinks))->isIdenticalTo(1, sprintf('May have 1 connection between 2 network ports, %s found', count($a_portslinks)));
+
+        $a_networkports = getAllDataFromTable('glpi_networkports');
+        $this->integer(count($a_networkports))->isIdenticalTo(3, 'May have 3 network ports (' . print_r($a_networkports, true) . ')');
+
+        $portLink = current($a_portslinks);
+        $this->integer($portLink['networkports_id_2'])->isIdenticalTo($networkports_other_id);
+    }
+
+    /**
+     * It find unknown device, but may add the port with this ifdescr
+     *
+     * FIXME: does not work :'(
+     */
+    public function testCisco1Unmanaged()
+    {
+        //Cisco switch
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <MAC>00:24:b5:bd:c8:01</MAC>
+        <NAME>cisco1</NAME>
+        <SERIAL>cisco1</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>GigabitEthernet0/10</IFDESCR>
+              <IP>192.168.200.124</IP>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFDESCR>mgmt0</IFDESCR>
+          <IFNAME>mgmt0</IFNAME>
+          <IFNUMBER>22</IFNUMBER>
+          <IFTYPE>6</IFTYPE>
+          <MAC>00:24:b5:bd:c8:02</MAC>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>4.1</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        $networkport            = new \NetworkPort();
+        $networkName            = new \NetworkName();
+        $iPAddress              = new \IPAddress();
+        $unmanaged              = new \Unmanaged();
+
+        // Unmanaged
+        $unmanageds_id = $unmanaged->add([
+            'name'        => 'otherswitch',
+            'entities_id' => 0
+        ]);
+        $this->integer($unmanageds_id)->isGreaterThan(0);
+
+        $networkports_unknown_id = $networkport->add([
+            'itemtype'       => 'Unmanaged',
+            'items_id'       => $unmanageds_id,
+            'entities_id'    => 0
+        ]);
+        $this->integer($networkports_unknown_id)->isGreaterThan(0);
+
+        $networknames_id = $networkName->add([
+            'entities_id' => 0,
+            'itemtype'    => 'NetworkPort',
+            'items_id'    => $networkports_unknown_id
+        ]);
+        $this->integer($networknames_id)->isGreaterThan(0);
+
+        $ipaddress_id = $iPAddress->add([
+            'entities_id' => 0,
+            'itemtype' => 'NetworkName',
+            'items_id' => $networknames_id,
+            'name' => '192.168.200.124'
+        ]);
+        $this->integer($ipaddress_id)->isGreaterThan(0);
+
+        // Import the switch into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml_source);
+        //$json = json_decode($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isIdenticalTo([]);
+
+        $a_portslinks = getAllDataFromTable('glpi_networkports_networkports');
+        $this->integer(count($a_portslinks))->isIdenticalTo(1, 'May have 1 connection between 2 network ports');
+
+        $a_networkports = getAllDataFromTable('glpi_networkports');
+        $this->integer(count($a_networkports))->isIdenticalTo(3, 'May have 3 network ports (' . print_r($a_networkports, true) . ')');
+
+        //FIXME: does not work :'(
+        //$a_unknowns = getAllDataFromTable('glpi_unmanageds');
+        //$this->integer(count($a_unknowns))->isIdenticalTo(1, 'May have only one unknown device (' . print_r($a_unknowns, true) . ')');
+
+        $a_networkport_ref = [
+            'items_id'           => $unmanageds_id,
+            'itemtype'           => 'Unmanaged',
+            'entities_id'        => 0,
+            'is_recursive'       => 0,
+            'logical_number'     => 0,
+            'name'               => 'GigabitEthernet0/10',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'mac'                => null,
+            'comment'            => null,
+            'is_deleted'         => 0,
+            'is_dynamic'         => 0,
+            'ifmtu' => 0,
+            'ifspeed' => 0,
+            'ifinternalstatus' => null,
+            'ifconnectionstatus' => 0,
+            'iflastchange' => null,
+            'ifinbytes' => 0,
+            'ifinerrors' => 0,
+            'ifoutbytes' => 0,
+            'ifouterrors' => 0,
+            'ifstatus' => null,
+            'ifdescr' => null,
+            'ifalias' => null,
+            'portduplex' => null,
+            'trunk' => 0,
+            'lastup' => null
+        ];
+        $networkport = new \NetworkPort();
+        $this->boolean($networkport->getFromDBByCrit(['name' => 'GigabitEthernet0/10']))->isTrue();
+        unset(
+            $networkport->fields['id'],
+            $networkport->fields['date_mod'],
+            $networkport->fields['date_creation']
+        );
+
+        //FIXME: does not work :'(
+        /*$this->array($networkport->fields)->isEqualTo($a_networkport_ref, 'New unknown port created');
+
+        $portLink = current($a_portslinks);
+        $this->integer($a_portslinks['networkports_id_2'])->isIdenticalTo($networkports_unknown_id);*/
+    }
+
+    public function testCisco1Nodevice()
+    {
+        //Cisco switch
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <MAC>00:24:b5:bd:c8:01</MAC>
+        <NAME>cisco1</NAME>
+        <SERIAL>cisco1</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>GigabitEthernet0/10</IFDESCR>
+              <IP>192.168.200.124</IP>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFDESCR>mgmt0</IFDESCR>
+          <IFNAME>mgmt0</IFNAME>
+          <IFNUMBER>22</IFNUMBER>
+          <IFTYPE>6</IFTYPE>
+          <MAC>00:24:b5:bd:c8:02</MAC>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>4.1</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        // Import the switch into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml_source);
+        //$json = json_decode($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isIdenticalTo([]);
+
+        $a_portslinks = getAllDataFromTable('glpi_networkports_networkports');
+        $this->integer(count($a_portslinks))->isIdenticalTo(1, 'May have 1 connection between 2 network ports');
+
+        $a_networkports = getAllDataFromTable('glpi_networkports');
+        $this->integer(count($a_networkports))->isIdenticalTo(2, 'May have 2 network ports (' . print_r($a_networkports, true) . ')');
+
+        $networkPort = new \NetworkPort();
+        $networkPort->getFromDBByCrit(['name' => 'GigabitEthernet0/10']);
+
+        $portLink = current($a_portslinks);
+        $this->integer($portLink['networkports_id_2'])->isIdenticalTo($networkPort->fields['id']);
+    }
+
+    /**
+     * //FIXME: does not work :'(
+     */
+    public function testCisco2Switch()
+    {
+        //Cisco switch
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <MAC>00:24:b5:bd:c8:01</MAC>
+        <NAME>cisco2</NAME>
+        <SERIAL>cisco2</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>ge-0/0/1.0</IFDESCR>
+              <IFNUMBER>504</IFNUMBER>
+              <SYSDESCR>Juniper Networks, Inc. ex2200-24t-4g , version 10.1R1.8 Build date: 2010-02-12 16:59:31 UTC </SYSDESCR>
+              <SYSMAC>2c:6b:f5:98:f9:70</SYSMAC>
+              <SYSNAME>juniperswitch3</SYSNAME>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFDESCR>mgmt0</IFDESCR>
+          <IFNAME>mgmt0</IFNAME>
+          <IFNUMBER>22</IFNUMBER>
+          <IFTYPE>6</IFTYPE>
+          <MAC>00:24:b5:bd:c8:02</MAC>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>4.1</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        $networkEquipment = new \NetworkEquipment();
+        $networkport = new \NetworkPort();
+
+        // Another switch
+        $networkequipments_other_id = $networkEquipment->add([
+            'name'        => 'juniperswitch3',
+            'entities_id' => 0
+        ]);
+        $this->integer($networkequipments_other_id)->isGreaterThan(0);
+
+        // Port ge-0/0/1.0
+        $networkports_other_id = $networkport->add([
+            'itemtype'       => 'NetworkEquipment',
+            'items_id'       => $networkequipments_other_id,
+            'entities_id'    => 0,
+            'mac'            => '2c:6b:f5:98:f9:70',
+            'logical_number' => 504,
+            'ifdescr' => 'ge-0/0/1.0'
+        ]);
+        $this->integer($networkports_other_id)->isGreaterThan(0);
+
+        // Import the switch into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml_source);
+        //$json = json_decode($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isIdenticalTo([]);
+
+        $a_portslinks = getAllDataFromTable('glpi_networkports_networkports');
+        $this->integer(count($a_portslinks))->isIdenticalTo(1, 'May have 1 connection between 2 network ports');
+
+        $a_networkports = getAllDataFromTable('glpi_networkports');
+        $this->integer(count($a_networkports))->isIdenticalTo(2, 'May have 2 network ports (' . print_r($a_networkports, true) . ')');
+
+        //FIXME: does not work :'(
+        /*$portLink = current($a_portslinks);
+        $this->integer($portLink['networkports_id_2'])->isIdenticalTo($networkequipments_other_id);*/
+    }
+
     public function testSwitchLldpImport()
     {
         $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
