@@ -307,4 +307,931 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $main->handle();
         $this->boolean($main->areLinksHandled())->isTrue();
     }
+
+    public function testSwitchLldpImport()
+    {
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <TYPE>NETWORKING</TYPE>
+        <MANUFACTURER>Hewlett-Packard</MANUFACTURER>
+        <MODEL>J9085A</MODEL>
+        <DESCRIPTION>ProCurve J9085A</DESCRIPTION>
+        <NAME>FR-SW01</NAME>
+        <LOCATION>BAT A - Niv 3</LOCATION>
+        <CONTACT>Admin</CONTACT>
+        <SERIAL>CN536H7J</SERIAL>
+        <FIRMWARE>R.10.06 R.11.60</FIRMWARE>
+        <UPTIME>8 days, 01:48:57.95</UPTIME>
+        <MAC>b4:39:d6:3a:7f:00</MAC>
+        <ID>0</ID>
+        <IPS>
+          <IP>192.168.1.56</IP>
+          <IP>192.168.10.56</IP>
+        </IPS>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>ge-0/0/1.0</IFDESCR>
+              <IFNUMBER>504</IFNUMBER>
+              <SYSDESCR>Juniper Networks, Inc. ex2200-24t-4g , version 10.1R1.8 Build date: 2010-02-12 16:59:31 UTC </SYSDESCR>
+              <SYSMAC>2c:6b:f5:98:f9:70</SYSMAC>
+              <SYSNAME>juniperswitch3</SYSNAME>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFDESCR>3</IFDESCR>
+          <IFNAME>3</IFNAME>
+          <IFNUMBER>3</IFNUMBER>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFPORTDUPLEX>2</IFPORTDUPLEX>
+          <IFTYPE>6</IFTYPE>
+          <MAC>b4:39:d6:3b:22:bd</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN160</NAME>
+              <NUMBER>160</NUMBER>
+            </VLAN>
+          </VLANS>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>3.0</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        $networkEquipment        = new \NetworkEquipment();
+        $networkPort             = new \NetworkPort();
+        $networkPort_NetworkPort = new \NetworkPort_NetworkPort();
+
+        $networkEquipments_id = $networkEquipment->add([
+            'entities_id' => 0,
+            'name'        => 'juniperswitch3',
+        ]);
+        $this->integer($networkEquipments_id)->isGreaterThan(0);
+
+        // Add management port
+        // 2c:6b:f5:98:f9:70
+        $mngtports_id = $networkPort->add([
+            'mac'                => '2c:6b:f5:98:f9:70',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'instantiation_type' => 'NetworkPortAggregate',
+            'name'               => 'general',
+        ]);
+        $this->integer($mngtports_id)->isGreaterThan(0);
+
+        $ports_id = $networkPort->add([
+            'mac'                => '2c:6b:f5:98:f9:71',
+            'name'               => 'ge-0/0/1.0',
+            'logical_number'     => '504',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'ifdescr'         => 'ge-0/0/1.0',
+        ]);
+        $this->integer($ports_id)->isGreaterThan(0);
+
+        // Import the switch into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml_source);
+        //$json = json_decode($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isIdenticalTo([]);
+
+        // check port
+        $this->boolean($networkPort->getFromDBByCrit(['mac' => 'b4:39:d6:3b:22:bd']))->isTrue();
+        $this->boolean($networkPort_NetworkPort->getFromDBForNetworkPort($networkPort->fields['id']))->isTrue();
+    }
+
+    /**
+     * case 1 : IP on management port of the switch
+     */
+    public function testSwitchLLDPImport_ifdescr_ip_case1()
+    {
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <TYPE>NETWORKING</TYPE>
+        <MANUFACTURER>Hewlett-Packard</MANUFACTURER>
+        <MODEL>J9085A</MODEL>
+        <DESCRIPTION>ProCurve J9085A</DESCRIPTION>
+        <NAME>FR-SW01</NAME>
+        <LOCATION>BAT A - Niv 3</LOCATION>
+        <CONTACT>Admin</CONTACT>
+        <SERIAL>CN536H7J</SERIAL>
+        <FIRMWARE>R.10.06 R.11.60</FIRMWARE>
+        <UPTIME>8 days, 01:48:57.95</UPTIME>
+        <MAC>b4:39:d6:3a:7f:00</MAC>
+        <ID>0</ID>
+        <IPS>
+          <IP>192.168.1.56</IP>
+          <IP>192.168.10.56</IP>
+        </IPS>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>28</IFDESCR>
+              <IP>10.226.164.55</IP>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFDESCR>3</IFDESCR>
+          <IFNAME>3</IFNAME>
+          <IFNUMBER>3</IFNUMBER>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFPORTDUPLEX>2</IFPORTDUPLEX>
+          <IFTYPE>6</IFTYPE>
+          <MAC>b4:39:d6:3b:22:bd</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN160</NAME>
+              <NUMBER>160</NUMBER>
+            </VLAN>
+          </VLANS>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>3.0</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        $networkEquipment        = new \NetworkEquipment();
+        $networkPort             = new \NetworkPort();
+        $networkPort_NetworkPort = new \NetworkPort_NetworkPort();
+
+        $networkEquipments_id = $networkEquipment->add([
+            'entities_id' => 0,
+            'name'        => 'sw10',
+        ]);
+        $this->integer($networkEquipments_id)->isGreaterThan(0);
+
+        // Add management port
+        $mngtports_id = $networkPort->add([
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'instantiation_type' => 'NetworkPortAggregate',
+            'name'               => 'general',
+            '_create_children'   => 1,
+            'NetworkName_name'   => '',
+            'NetworkName_fqdns_id' => 0,
+            'NetworkName__ipaddresses' => [
+                '-1' => '10.226.164.55'
+            ],
+
+        ]);
+        $this->integer($mngtports_id)->isGreaterThan(0);
+
+        // Add a port that will not be used, but needed for the test
+        $ports_id = $networkPort->add([
+            'mac'                => '00:6b:03:98:f9:70',
+            'name'               => 'port27',
+            'logical_number'     => '28',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'ifdescr'         => '27',
+        ]);
+        $this->integer($ports_id)->isGreaterThan(0);
+
+        // Add the second port right
+        $ports_id = $networkPort->add([
+            'mac'                => '00:6b:03:98:f9:71',
+            'name'               => 'port28',
+            'logical_number'     => '30',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'ifdescr'         => '28',
+        ]);
+        $this->integer($ports_id)->isGreaterThan(0);
+
+        // Add another port that will not be used, but needed for the test
+        $ports_id = $networkPort->add([
+            'mac'                => '00:6b:03:98:f9:72',
+            'name'               => 'port29',
+            'logical_number'     => '29',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'ifdescr'         => '29',
+        ]);
+        $this->integer($ports_id)->isGreaterThan(0);
+
+        // Import the switch into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml_source);
+        //$json = json_decode($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isIdenticalTo([]);
+
+        // check port
+        $this->boolean($networkPort->getFromDBByCrit(['name' => 'port28']));
+        $this->boolean($networkPort_NetworkPort->getFromDBForNetworkPort($networkPort->fields['id']))->isTrue();
+    }
+
+    /**
+     * case 2 : IP on the port of the switch
+     */
+    public function testSwitchLLDPImport_ifdescr_ip_case2()
+    {
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <TYPE>NETWORKING</TYPE>
+        <MANUFACTURER>Hewlett-Packard</MANUFACTURER>
+        <MODEL>J9085A</MODEL>
+        <DESCRIPTION>ProCurve J9085A</DESCRIPTION>
+        <NAME>FR-SW01</NAME>
+        <LOCATION>BAT A - Niv 3</LOCATION>
+        <CONTACT>Admin</CONTACT>
+        <SERIAL>CN536H7J</SERIAL>
+        <FIRMWARE>R.10.06 R.11.60</FIRMWARE>
+        <UPTIME>8 days, 01:48:57.95</UPTIME>
+        <MAC>b4:39:d6:3a:7f:00</MAC>
+        <ID>0</ID>
+        <IPS>
+          <IP>192.168.1.56</IP>
+          <IP>192.168.10.56</IP>
+        </IPS>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>28</IFDESCR>
+              <IP>10.226.164.55</IP>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFDESCR>3</IFDESCR>
+          <IFNAME>3</IFNAME>
+          <IFNUMBER>3</IFNUMBER>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFPORTDUPLEX>2</IFPORTDUPLEX>
+          <IFTYPE>6</IFTYPE>
+          <MAC>b4:39:d6:3b:22:bd</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN160</NAME>
+              <NUMBER>160</NUMBER>
+            </VLAN>
+          </VLANS>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>3.0</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        $networkEquipment        = new \NetworkEquipment();
+        $networkPort             = new \NetworkPort();
+        $networkPort_NetworkPort = new \NetworkPort_NetworkPort();
+
+        $networkEquipments_id = $networkEquipment->add([
+            'entities_id' => 0,
+            'name'        => 'sw10',
+        ]);
+        $this->integer($networkEquipments_id)->isGreaterThan(0);
+
+        // Add a port that will not be used, but needed for the test
+        $ports_id = $networkPort->add([
+            'mac'                => '00:6b:03:98:f9:70',
+            'name'               => 'port27',
+            'logical_number'     => '28',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            '_create_children'   => 1,
+            'NetworkName_name'   => '',
+            'NetworkName_fqdns_id' => 0,
+            'NetworkName__ipaddresses' => [
+                '-1' => '10.226.164.55'
+            ],
+            'ifdescr'         => '27',
+        ]);
+        $this->integer($ports_id)->isGreaterThan(0);
+
+        // Add the second port right
+        $ports_id = $networkPort->add([
+            'mac'                => '00:6b:03:98:f9:71',
+            'name'               => 'port28',
+            'logical_number'     => '30',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            '_create_children'   => 1,
+            'NetworkName_name'   => '',
+            'NetworkName_fqdns_id' => 0,
+            'NetworkName__ipaddresses' => [
+                '-1' => '10.226.164.55'
+            ],
+            'ifdescr'         => '28',
+        ]);
+        $this->integer($ports_id)->isGreaterThan(0);
+
+        // Add another port that will not be used, but needed for the test
+        $ports_id = $networkPort->add([
+            'mac'                => '00:6b:03:98:f9:72',
+            'name'               => 'port29',
+            'logical_number'     => '31',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            '_create_children'   => 1,
+            'NetworkName_name'   => '',
+            'NetworkName_fqdns_id' => 0,
+            'NetworkName__ipaddresses' => [
+                '-1' => '10.226.164.55'
+            ],
+            'ifdescr'         => '29',
+        ]);
+        $this->integer($ports_id)->isGreaterThan(0);
+
+        // Import the switch into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml_source);
+        //$json = json_decode($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isIdenticalTo([]);
+
+        // check port
+        $this->boolean($networkPort->getFromDBByCrit(['name' => 'port28']));
+        $this->boolean($networkPort_NetworkPort->getFromDBForNetworkPort($networkPort->fields['id']))->isTrue();
+    }
+
+    /**
+     * case 1 : mac on management port
+     */
+    public function testSwitchLLDPImport_ifnumber_mac_case1()
+    {
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <TYPE>NETWORKING</TYPE>
+        <MANUFACTURER>Hewlett-Packard</MANUFACTURER>
+        <MODEL>J9085A</MODEL>
+        <DESCRIPTION>ProCurve J9085A</DESCRIPTION>
+        <NAME>FR-SW01</NAME>
+        <LOCATION>BAT A - Niv 3</LOCATION>
+        <CONTACT>Admin</CONTACT>
+        <SERIAL>CN536H7J</SERIAL>
+        <FIRMWARE>R.10.06 R.11.60</FIRMWARE>
+        <UPTIME>8 days, 01:48:57.95</UPTIME>
+        <MAC>b4:39:d6:3a:7f:00</MAC>
+        <ID>0</ID>
+        <IPS>
+          <IP>192.168.1.56</IP>
+          <IP>192.168.10.56</IP>
+        </IPS>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFNUMBER>21</IFNUMBER>
+              <SYSMAC>00:24:b5:bd:c8:01</SYSMAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFDESCR>3</IFDESCR>
+          <IFNAME>3</IFNAME>
+          <IFNUMBER>3</IFNUMBER>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFPORTDUPLEX>2</IFPORTDUPLEX>
+          <IFTYPE>6</IFTYPE>
+          <MAC>b4:39:d6:3b:22:bd</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN160</NAME>
+              <NUMBER>160</NUMBER>
+            </VLAN>
+          </VLANS>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>3.0</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        $networkEquipment        = new \NetworkEquipment();
+        $networkPort             = new \NetworkPort();
+        $networkPort_NetworkPort = new \NetworkPort_NetworkPort();
+
+        $networkEquipments_id = $networkEquipment->add([
+            'entities_id' => 0,
+            'name'        => 'sw10',
+        ]);
+        $this->integer($networkEquipments_id)->isGreaterThan(0);
+
+        // Add management port
+        $mngtports_id = $networkPort->add([
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'instantiation_type' => 'NetworkPortAggregate',
+            'name'               => 'general',
+            'mac'                => '00:24:b5:bd:c8:01',
+        ]);
+        $this->integer($mngtports_id)->isGreaterThan(0);
+
+        // Add a port that will not be used, but needed for the test
+        $ports_id = $networkPort->add([
+            'name'               => 'port20',
+            'logical_number'     => '20',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'ifdescr'         => '20',
+        ]);
+        $this->integer($ports_id)->isGreaterThan(0);
+
+        // Add the second port right
+        $ports_id = $networkPort->add([
+            'name'               => 'port21',
+            'logical_number'     => '21',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'ifdescr'         => '21',
+        ]);
+        $this->integer($ports_id)->isGreaterThan(0);
+
+        // Add another port that will not be used, but needed for the test
+        $ports_id = $networkPort->add([
+            'name'               => 'port22',
+            'logical_number'     => '22',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'ifdescr'         => '22',
+        ]);
+        $this->integer($ports_id)->isGreaterThan(0);
+
+        // Import the switch into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml_source);
+        //$json = json_decode($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isIdenticalTo([]);
+
+        // check port
+        $this->boolean($networkPort->getFromDBByCrit(['name' => 'port21']));
+        $this->boolean($networkPort_NetworkPort->getFromDBForNetworkPort($networkPort->fields['id']))->isTrue();
+    }
+
+    /**
+     * case 2 : mac on the right port
+     */
+    public function testSwitchLLDPImport_ifnumber_mac_case2()
+    {
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <TYPE>NETWORKING</TYPE>
+        <MANUFACTURER>Hewlett-Packard</MANUFACTURER>
+        <MODEL>J9085A</MODEL>
+        <DESCRIPTION>ProCurve J9085A</DESCRIPTION>
+        <NAME>FR-SW01</NAME>
+        <LOCATION>BAT A - Niv 3</LOCATION>
+        <CONTACT>Admin</CONTACT>
+        <SERIAL>CN536H7J</SERIAL>
+        <FIRMWARE>R.10.06 R.11.60</FIRMWARE>
+        <UPTIME>8 days, 01:48:57.95</UPTIME>
+        <MAC>b4:39:d6:3a:7f:00</MAC>
+        <ID>0</ID>
+        <IPS>
+          <IP>192.168.1.56</IP>
+          <IP>192.168.10.56</IP>
+        </IPS>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFNUMBER>21</IFNUMBER>
+              <SYSMAC>00:24:b5:bd:c8:01</SYSMAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFDESCR>3</IFDESCR>
+          <IFNAME>3</IFNAME>
+          <IFNUMBER>3</IFNUMBER>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFPORTDUPLEX>2</IFPORTDUPLEX>
+          <IFTYPE>6</IFTYPE>
+          <MAC>b4:39:d6:3b:22:bd</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN160</NAME>
+              <NUMBER>160</NUMBER>
+            </VLAN>
+          </VLANS>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>3.0</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        $networkEquipment        = new \NetworkEquipment();
+        $networkPort             = new \NetworkPort();
+        $networkPort_NetworkPort = new \NetworkPort_NetworkPort();
+
+        $networkEquipments_id = $networkEquipment->add([
+            'entities_id' => 0,
+            'name'        => 'sw10',
+        ]);
+        $this->integer($networkEquipments_id)->isGreaterThan(0);
+
+        // Add a port that will not be used, but needed for the test
+        $ports_id = $networkPort->add([
+            'mac'                => '00:24:b5:bd:c8:00',
+            'name'               => 'port20',
+            'logical_number'     => '20',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'ifdescr'         => '20',
+        ]);
+        $this->integer($ports_id)->isGreaterThan(0);
+
+        // Add the second port right
+        $ports_id = $networkPort->add([
+            'mac'                => '00:24:b5:bd:c8:01',
+            'name'               => 'port21',
+            'logical_number'     => '21',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'ifdescr'         => '21',
+        ]);
+        $this->integer($ports_id)->isGreaterThan(0);
+
+        // Add another port that will not be used, but needed for the test
+        $ports_id = $networkPort->add([
+            'mac'                => '00:24:b5:bd:c8:02',
+            'name'               => 'port22',
+            'logical_number'     => '22',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'ifdescr'         => '22',
+        ]);
+        $this->integer($ports_id)->isGreaterThan(0);
+
+        // Import the switch into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml_source);
+        //$json = json_decode($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isIdenticalTo([]);
+
+        // check port
+        $this->boolean($networkPort->getFromDBByCrit(['name' => 'port21']));
+        $this->boolean($networkPort_NetworkPort->getFromDBForNetworkPort($networkPort->fields['id']))->isTrue();
+    }
+
+    /**
+     * case 3 : same mac on all ports
+     */
+    public function testSwitchLLDPImport_ifnumber_mac_case3()
+    {
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <TYPE>NETWORKING</TYPE>
+        <MANUFACTURER>Hewlett-Packard</MANUFACTURER>
+        <MODEL>J9085A</MODEL>
+        <DESCRIPTION>ProCurve J9085A</DESCRIPTION>
+        <NAME>FR-SW01</NAME>
+        <LOCATION>BAT A - Niv 3</LOCATION>
+        <CONTACT>Admin</CONTACT>
+        <SERIAL>CN536H7J</SERIAL>
+        <FIRMWARE>R.10.06 R.11.60</FIRMWARE>
+        <UPTIME>8 days, 01:48:57.95</UPTIME>
+        <MAC>b4:39:d6:3a:7f:00</MAC>
+        <ID>0</ID>
+        <IPS>
+          <IP>192.168.1.56</IP>
+          <IP>192.168.10.56</IP>
+        </IPS>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFNUMBER>21</IFNUMBER>
+              <SYSMAC>00:24:b5:bd:c8:01</SYSMAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFDESCR>3</IFDESCR>
+          <IFNAME>3</IFNAME>
+          <IFNUMBER>3</IFNUMBER>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFPORTDUPLEX>2</IFPORTDUPLEX>
+          <IFTYPE>6</IFTYPE>
+          <MAC>b4:39:d6:3b:22:bd</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN160</NAME>
+              <NUMBER>160</NUMBER>
+            </VLAN>
+          </VLANS>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>3.0</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        $networkEquipment        = new \NetworkEquipment();
+        $networkPort             = new \NetworkPort();
+        $networkPort_NetworkPort = new \NetworkPort_NetworkPort();
+
+        $networkEquipments_id = $networkEquipment->add([
+            'entities_id' => 0,
+            'name'        => 'sw10',
+        ]);
+        $this->integer($networkEquipments_id)->isGreaterThan(0);
+
+        // Add a port that will not be used, but needed for the test
+        $ports_id = $networkPort->add([
+            'mac'                => '00:24:b5:bd:c8:01',
+            'name'               => 'port20',
+            'logical_number'     => '20',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'ifdescr'         => '20',
+        ]);
+        $this->integer($ports_id)->isGreaterThan(0);
+
+        // Add the second port right
+        $ports_id = $networkPort->add([
+            'mac'                => '00:24:b5:bd:c8:01',
+            'name'               => 'port21',
+            'logical_number'     => '21',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'ifdescr'         => '21',
+        ]);
+        $this->integer($ports_id)->isGreaterThan(0);
+
+        // Add another port that will not be used, but needed for the test
+        $ports_id = $networkPort->add([
+            'mac'                => '00:24:b5:bd:c8:01',
+            'name'               => 'port22',
+            'logical_number'     => '22',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'ifdescr'         => '22',
+        ]);
+        $this->integer($ports_id)->isGreaterThan(0);
+
+        // Import the switch into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml_source);
+        //$json = json_decode($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isIdenticalTo([]);
+
+        // check port
+        $this->boolean($networkPort->getFromDBByCrit(['name' => 'port21']));
+        $this->boolean($networkPort_NetworkPort->getFromDBForNetworkPort($networkPort->fields['id']))->isTrue();
+    }
+
+    public function testSwitchLLDPImport_othercase1()
+    {
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <TYPE>NETWORKING</TYPE>
+        <MANUFACTURER>Hewlett-Packard</MANUFACTURER>
+        <MODEL>J9085A</MODEL>
+        <DESCRIPTION>ProCurve J9085A</DESCRIPTION>
+        <NAME>FR-SW01</NAME>
+        <LOCATION>BAT A - Niv 3</LOCATION>
+        <CONTACT>Admin</CONTACT>
+        <SERIAL>CN536H7J</SERIAL>
+        <FIRMWARE>R.10.06 R.11.60</FIRMWARE>
+        <UPTIME>8 days, 01:48:57.95</UPTIME>
+        <MAC>b4:39:d6:3a:7f:00</MAC>
+        <ID>0</ID>
+        <IPS>
+          <IP>192.168.1.56</IP>
+          <IP>192.168.10.56</IP>
+        </IPS>
+      </INFO>
+      <PORTS>
+        <PORT>
+         <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>48</IFDESCR>
+              <IP>172.16.100.252</IP>
+              <MODEL>ProCurve J9148A 2910al-48G-PoE Switch, revision W.14.49, ROM W.14.04 (/sw/code/build/sbm(t4a))</MODEL>
+              <SYSDESCR>ProCurve J9148A 2910al-48G-PoE Switch, revision W.14.49, ROM W.14.04 (/sw/code/build/sbm(t4a))</SYSDESCR>
+              <SYSNAME>0x78acc0146cc0</SYSNAME>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFDESCR>3</IFDESCR>
+          <IFNAME>3</IFNAME>
+          <IFNUMBER>3</IFNUMBER>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFPORTDUPLEX>2</IFPORTDUPLEX>
+          <IFTYPE>6</IFTYPE>
+          <MAC>b4:39:d6:3b:22:bd</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN160</NAME>
+              <NUMBER>160</NUMBER>
+            </VLAN>
+          </VLANS>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>3.0</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        $networkEquipment        = new \NetworkEquipment();
+        $networkPort             = new \NetworkPort();
+        $networkPort_NetworkPort = new \NetworkPort_NetworkPort();
+
+        $networkEquipments_id = $networkEquipment->add([
+            'entities_id' => 0,
+            'name'        => 'sw001',
+        ]);
+        $this->integer($networkEquipments_id)->isGreaterThan(0);
+
+        // Add management port
+        $mngtports_id = $networkPort->add([
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'instantiation_type' => 'NetworkPortAggregate',
+            'name'               => 'general',
+            '_create_children'   => 1,
+            'NetworkName_name'   => '',
+            'NetworkName_fqdns_id' => 0,
+            'NetworkName__ipaddresses' => [
+                '-1' => '172.16.100.252'
+            ],
+        ]);
+        $this->integer($mngtports_id)->isGreaterThan(0);
+
+        // Add a port that will not be used, but needed for the test
+        $ports_id = $networkPort->add([
+            'name'               => 'port47',
+            'logical_number'     => '47',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'ifdescr'         => '47',
+        ]);
+        $this->integer($ports_id)->isGreaterThan(0);
+
+        // Add the second port right
+        $ports_id = $networkPort->add([
+            'name'               => 'port48',
+            'logical_number'     => '48',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'ifdescr'         => '48',
+        ]);
+        $this->integer($ports_id)->isGreaterThan(0);
+
+        // Add another port that will not be used, but needed for the test
+        $ports_id = $networkPort->add([
+            'name'               => 'port49',
+            'logical_number'     => '49',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'ifdescr'         => '49',
+        ]);
+        $this->integer($ports_id)->isGreaterThan(0);
+
+        // Import the switch into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml_source);
+        //$json = json_decode($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isIdenticalTo([]);
+
+        // check port
+        $this->boolean($networkPort->getFromDBByCrit(['name' => 'port48']));
+        $this->boolean($networkPort_NetworkPort->getFromDBForNetworkPort($networkPort->fields['id']))->isTrue();
+    }
 }
