@@ -532,15 +532,15 @@ abstract class MainAsset extends InventoryAsset
     protected function addRefused(array $input)
     {
         $refused_input = [
-        'name'         => $input['name'],
-        'itemtype'     => $input['itemtype'],
-        'serial'       => $input['serial'] ?? '',
-        'ip'           => $input['ip'] ?? '',
-        'mac'          => $input['mac'] ?? '',
-        'uuid'         => $input['uuid'] ?? '',
-        'rules_id'     => $input['rules_id'],
-        'entities_id'  => $input['entities_id'],
-        'autoupdatesystems_id' => $input['autoupdatesystems_id']
+            'name'         => $input['name'],
+            'itemtype'     => $input['itemtype'],
+            'serial'       => $input['serial'] ?? '',
+            'ip'           => $input['ip'] ?? '',
+            'mac'          => $input['mac'] ?? '',
+            'uuid'         => $input['uuid'] ?? '',
+            'rules_id'     => $input['rules_id'],
+            'entities_id'  => $input['entities_id'],
+            'autoupdatesystems_id' => $input['autoupdatesystems_id']
         ];
 
         foreach (['ip', 'mac'] as $array) {
