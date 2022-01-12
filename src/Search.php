@@ -6555,12 +6555,13 @@ JAVASCRIPT;
                             );
                         } else {
                             $calendars_id = Entity::getUsedConfig(
+                                'calendars_strategy',
+                                $item->fields['entities_id'],
                                 'calendars_id',
-                                $item->fields['entities_id']
+                                0
                             );
-                            if ($calendars_id != 0) { // Ticket entity have calendar
-                                $calendar = new Calendar();
-                                $calendar->getFromDB($calendars_id);
+                            $calendar = new Calendar();
+                            if ($calendars_id > 0 && $calendar->getFromDB($calendars_id)) { // Ticket entity have calendar
                                 $currenttime = $calendar->getActiveTimeBetween(
                                     $item->fields['date'],
                                     date('Y-m-d H:i:s')

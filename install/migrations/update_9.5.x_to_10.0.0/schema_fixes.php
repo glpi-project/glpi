@@ -747,16 +747,19 @@ $tables = [
 ];
 foreach ($tables as $table) {
     $migration->addField($table, 'no_entity_restriction', 'boolean', ['update' => 0]);
-    $migration->changeField($table, 'entities_id', 'entities_id', 'int DEFAULT NULL'); // keep sign for now, but allow null
-    $migration->migrationOneTable($table);
-    $migration->addPreQuery(
-        $DB->buildUpdate(
-            $table,
-            ['entities_id' => 'NULL', 'no_entity_restriction' => 1],
-            ['entities_id' => '-1']
-        )
+    $migration->migrationOneTable($table); // Ensure 'no_entity_restriction' is created
+    $DB->updateOrDie(
+        $table,
+        ['entities_id' => 0, 'no_entity_restriction' => 1],
+        ['entities_id' => -1]
     );
     $migration->changeField($table, 'entities_id', 'entities_id', 'int unsigned DEFAULT NULL');
+    $migration->migrationOneTable($table); // Ensure 'entities_id' is nullable
+    $DB->updateOrDie(
+        $table,
+        ['entities_id' => 'NULL'],
+        ['no_entity_restriction' => 1]
+    );
 }
 
 // Replace unused -1 default values on entities_id foreign keys
@@ -765,5 +768,5 @@ $tables = [
     'glpi_savedsearches',
 ];
 foreach ($tables as $table) {
-    $migration->changeField($table, 'entities_id', 'entities_id', 'int NOT NULL DEFAULT 0');
+    $migration->changeField($table, 'entities_id', 'entities_id', 'int unsigned NOT NULL DEFAULT 0');
 }

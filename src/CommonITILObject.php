@@ -6387,7 +6387,12 @@ abstract class CommonITILObject extends CommonDBTM
     **/
     public function getCalendar()
     {
-        return Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
+        return Entity::getUsedConfig(
+            'calendars_strategy',
+            $this->fields['entities_id'],
+            'calendars_id',
+            0
+        );
     }
 
 
@@ -7207,11 +7212,14 @@ abstract class CommonITILObject extends CommonDBTM
             && ($entities_id >= 0)
         ) {
            // load default entity one if not already loaded
-            if ($template_id = Entity::getUsedConfig(strtolower($this->getType()) . 'templates_id', $entities_id)) {
-               // with type and categ
-                if ($tt->getFromDBWithData($template_id, true)) {
-                    $template_loaded = true;
-                }
+            $template_id = Entity::getUsedConfig(
+                strtolower($this->getType()) . 'templates_strategy',
+                $entities_id,
+                strtolower($this->getType()) . 'templates_id',
+                0
+            );
+            if ($template_id > 0 && $tt->getFromDBWithData($template_id, true)) {
+                $template_loaded = true;
             }
         }
 

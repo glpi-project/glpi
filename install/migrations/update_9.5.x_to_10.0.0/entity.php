@@ -57,12 +57,56 @@ if (!$DB->fieldExists("glpi_entities", "registration_number")) {
 /** /Create registration_number field */
 
 /** Replace -1 value for entities_id field */
-$migration->changeField('glpi_entities', 'entities_id', 'entities_id', "int DEFAULT '0'"); // allow null value
-$migration->addPostQuery(
-    $DB->buildUpdate(
-        'glpi_entities',
-        ['entities_id' => 'NULL'],
-        ['entities_id' => '-1']
-    )
-);
+$DB->updateOrDie('glpi_entities', ['entities_id' => '0'], ['id' => '0']); // Replace -1 value for root entity to be able to change type to unsigned
+$migration->changeField('glpi_entities', 'entities_id', 'entities_id', "int unsigned DEFAULT '0'");
+$migration->migrationOneTable('glpi_entities'); // Ensure 'entities_id' is nullable.
+$DB->updateOrDie('glpi_entities', ['entities_id' => 'NULL'], ['id' => '0']);
 /** /Replace -1 value for entities_id field */
+
+/** Replace negative values for config foreign keys */
+$fkey_config_fields = [
+    'calendars_id',
+    'changetemplates_id',
+    'contracts_id_default',
+    'entities_id_software',
+    'problemtemplates_id',
+    'tickettemplates_id',
+    'transfers_id',
+];
+$migration->migrationOneTable('glpi_entities');
+foreach ($fkey_config_fields as $fkey_config_field) {
+    $strategy_field = str_replace('_id', '_strategy', $fkey_config_field);
+    if (!$DB->fieldExists('glpi_entities', $strategy_field)) {
+        $migration->addField(
+            'glpi_entities',
+            str_replace('_id', '_strategy', $fkey_config_field),
+            'tinyint NOT NULL DEFAULT -2'
+        );
+        $migration->migrationOneTable('glpi_entities'); // Ensure strategy field is created to be able to fill it
+
+        if ($DB->fieldExists('glpi_entities', $fkey_config_field)) {
+            // 'contracts_id_default' and 'transfers_id' fields will only exist if a previous dev install exists
+            $DB->updateOrDie(
+                'glpi_entities',
+                [
+                    // Put negative values (-10[never]/ -2[inherit]/ -1[auto]) in strategy field
+                    // or 0 if an id was selected to indicate that value is not inherited.
+                    str_replace('_id', '_strategy', $fkey_config_field) => new QueryExpression(
+                        sprintf('LEAST(%s, 0)', $DB->quoteName($fkey_config_field))
+                    ),
+                    // Keep only positive (or 0) values in id field
+                    $fkey_config_field => new QueryExpression(
+                        sprintf('GREATEST(%s, 0)', $DB->quoteName($fkey_config_field))
+                    ),
+                ],
+                ['1'] // Update all entities
+            );
+        }
+    }
+
+    if ($DB->fieldExists('glpi_entities', $fkey_config_field)) {
+        // 'contracts_id_default' and 'transfers_id' fields will only exist if a previous dev install exists
+        $migration->changeField('glpi_entities', $fkey_config_field, $fkey_config_field, 'int unsigned NOT NULL DEFAULT 0');
+    }
+}
+/** /Replace negative values for config foreign keys */

@@ -501,11 +501,6 @@ class ITILTemplate extends DbTestCase
         $this->boolean($tt->isNewItem())
            ->isFalse('Not template expected');
         $this->integer((int)$tt->fields['id'])->isIdenticalTo($category_tpl_id);
-
-       //reset entities and profiles to default, for next entry in dataProvider
-        $this->login();
-        $this->boolean($entity->update(['id' => $entity->fields['id'], $field => -2]))->isTrue();
-        $this->boolean($profile->update(['id' => $profile->fields['id'], $field => -2]))->isTrue();
     }
 
     private function createTemplate($itiltype)
