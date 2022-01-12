@@ -308,6 +308,244 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->boolean($main->areLinksHandled())->isTrue();
     }
 
+    /**
+     * Test connection with an existing Switch
+     */
+    public function testNortelSwitch()
+    {
+        //Nortel switch
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <MAC>8c:60:4f:8d:ae:fc</MAC>
+        <NAME>nortel</NAME>
+        <SERIAL>notrel3456</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFNUMBER>22</IFNUMBER>
+              <SYSMAC>00:24:b5:bd:c8:01</SYSMAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFDESCR>mgmt0</IFDESCR>
+          <IFNAME>mgmt0</IFNAME>
+          <IFNUMBER>22</IFNUMBER>
+          <IFTYPE>6</IFTYPE>
+          <MAC>8c:60:4f:8d:ae:a1</MAC>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>4.1</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        $networkEquipment       = new \NetworkEquipment();
+        $networkport            = new \NetworkPort();
+
+        // Another switch
+        $networkequipments_other_id = $networkEquipment->add([
+            'name'        => 'otherswitch',
+            'entities_id' => 0
+        ]);
+        $this->integer($networkequipments_other_id)->isGreaterThan(0);
+
+        $networkports_other_id = $networkport->add([
+            'itemtype'       => 'NetworkEquipment',
+            'items_id'       => $networkequipments_other_id,
+            'entities_id'    => 0,
+            'mac'            => '00:24:b5:bd:c8:01',
+            'logical_number' => 22
+        ]);
+        $this->integer($networkports_other_id)->isGreaterThan(0);
+
+        // Import the switch into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml_source);
+        //$json = json_decode($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isIdenticalTo([]);
+
+        $links = getAllDataFromTable('glpi_networkports_networkports');
+        $this->integer(count($links))->isIdenticalTo(1, 'May have 1 connection between 2 network ports');
+        $link = current($links);
+        $this->integer($link['networkports_id_2'])->isIdenticalTo($networkports_other_id, 'Must be linked to otherswitch port');
+
+        $a_networkports = getAllDataFromTable('glpi_networkports');
+        $this->integer(count($a_networkports))->isIdenticalTo(2, 'May have 2 network ports (' . print_r($a_networkports, true) . ')');
+    }
+
+    /**
+     * Test connection between an existing Unmanaged device and a Switch
+     */
+    public function testNortelUnmanaged()
+    {
+        //Nortel switch
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <MAC>8c:60:4f:8d:ae:fc</MAC>
+        <NAME>nortel</NAME>
+        <SERIAL>notrel3456</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFNUMBER>22</IFNUMBER>
+              <SYSMAC>00:24:b5:bd:c8:01</SYSMAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFDESCR>mgmt0</IFDESCR>
+          <IFNAME>mgmt0</IFNAME>
+          <IFNUMBER>22</IFNUMBER>
+          <IFTYPE>6</IFTYPE>
+          <MAC>8c:60:4f:8d:ae:a1</MAC>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>4.1</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        $unmanaged = new \Unmanaged();
+        $networkport = new \NetworkPort();
+
+        // Unmanaged device
+        $unmanageds_id = $unmanaged->add([
+            'name'        => 'Unmanaged device',
+            'entities_id' => 0
+        ]);
+        $this->integer($unmanageds_id)->isGreaterThan(0);
+
+        $unmanaged_networkports_id = $networkport->add([
+            'itemtype'       => 'Unmanaged',
+            'items_id'       => $unmanageds_id,
+            'entities_id'    => 0,
+            'mac'            => '00:24:b5:bd:c8:01',
+            'logical_number' => 22
+        ]);
+        $this->integer($unmanaged_networkports_id)->isGreaterThan(0);
+
+        // Import the switch into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml_source);
+        //$json = json_decode($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isIdenticalTo([]);
+
+        $links = getAllDataFromTable('glpi_networkports_networkports');
+        $this->integer(count($links))->isIdenticalTo(1, 'May have 1 connection between 2 network ports');
+        $link = current($links);
+        $this->integer($link['networkports_id_2'])->isIdenticalTo($unmanaged_networkports_id, 'Must be linked to Unmanaged device port');
+
+        $a_networkports = getAllDataFromTable('glpi_networkports');
+        $this->integer(count($a_networkports))->isIdenticalTo(2, 'May have 2 network ports (' . print_r($a_networkports, true) . ')');
+    }
+
+    /**
+     * Test connection with no existing device
+     */
+    public function testNortelNodevice()
+    {
+        //Nortel switch
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <MAC>8c:60:4f:8d:ae:fc</MAC>
+        <NAME>nortel</NAME>
+        <SERIAL>notrel3456</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFNUMBER>22</IFNUMBER>
+              <SYSMAC>00:24:b5:bd:c8:01</SYSMAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFDESCR>mgmt0</IFDESCR>
+          <IFNAME>mgmt0</IFNAME>
+          <IFNUMBER>22</IFNUMBER>
+          <IFTYPE>6</IFTYPE>
+          <MAC>8c:60:4f:8d:ae:a1</MAC>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>4.1</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        // Import the switch into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml_source);
+        //$json = json_decode($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isIdenticalTo([]);
+
+        $links = getAllDataFromTable('glpi_networkports_networkports');
+        $this->integer(count($links))->isIdenticalTo(1, 'May have 1 connection between 2 network ports');
+        $link = current($links);
+        $netport = new \NetworkPort();
+        $this->boolean($netport->getFromDBByCrit(['mac' => '00:24:b5:bd:c8:01']))->isTrue();
+        $this->integer($link['networkports_id_2'])->isIdenticalTo($netport->fields['id'], 'Must be linked to new Unmanaged device port');
+
+        $a_networkports = getAllDataFromTable('glpi_networkports');
+        $this->integer(count($a_networkports))->isIdenticalTo(2, 'May have 2 network ports (' . print_r($a_networkports, true) . ')');
+
+        $unmanageds = getAllDataFromTable(\Unmanaged::getTable());
+        $this->integer(count($unmanageds))->isIdenticalTo(1, 'May have 1 new unmanaged device');
+    }
+
     public function testSwitchLldpImport()
     {
         $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
