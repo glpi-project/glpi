@@ -6552,21 +6552,12 @@ abstract class CommonITILObject extends CommonDBTM
 
         $legacy_actions = '';
 
-        if (isset($PLUGIN_HOOKS[Hooks::TIMELINE_ACTIONS])) {
-            foreach ($PLUGIN_HOOKS[Hooks::TIMELINE_ACTIONS] as $plugin => $callback) {
-                if (!Plugin::isPluginActive($plugin)) {
-                    continue;
-                }
-                if (is_callable($callback)) {
-                    ob_start();
-                    $callback([
-                    'rand'   => mt_rand(),
-                    'item'   => $this
-                    ]);
-                    $legacy_actions .= ob_get_clean() ?? '';
-                }
-            }
-        }
+        ob_start();
+        Plugin::doHook(Hooks::TIMELINE_ACTIONS, [
+            'rand'   => mt_rand(),
+            'item'   => $this
+        ]);
+        $legacy_actions .= ob_get_clean() ?? '';
 
         return $legacy_actions;
     }
