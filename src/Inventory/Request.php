@@ -148,13 +148,18 @@ class Request extends AbstractRequest
         $this->inventory->contact($data);
 
         $response = [
-         'expiration'  => self::DEFAULT_FREQUENCY,
-         'status'     => 'ok',
+            'expiration' => self::DEFAULT_FREQUENCY,
+            'status'     => 'ok'
         ];
 
-        $params['options']['content'] = $data;
-        $params['options']['response'] = $response;
-        $params['item'] = $this->inventory->getAgent();
+        $params = [
+           'options' => [
+                'content' => $data,
+                'response' => $response
+            ],
+            'item' => $this->inventory->getAgent()
+        ];
+
         $params = Plugin::doHookFunction("inventory_get_params", $params);
 
         $this->addToResponse($params['options']['response']);
