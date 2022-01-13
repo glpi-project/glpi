@@ -122,6 +122,7 @@ class Hooks
     const HANDLE_COLLECT_TASK      = 'handle_collect_task';
     const HANDLE_DEPLOY_TASK       = 'handle_deploy_task';
     const HANDLE_WAKEONLAN_TASK    = 'handle_wakeonlan_task';
+    const HANDLE_REMOTEINV_TASK    = 'handle_remoteinventory_task';
 
    // Debug / Development hooks
     const DEBUG_TABS = 'debug_tabs';
