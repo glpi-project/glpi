@@ -174,7 +174,7 @@ class GLPIKey
 
        // Fetch old key before generating the new one (but only if DB exists and there is something to migrate)
         $previous_key = null;
-        if ($DB instanceof DBmysql) {
+        if ($DB instanceof DBmysql && $DB->connected) {
             if ($this->keyExists()) {
                 $previous_key = $this->get();
                 if ($previous_key === null) {
@@ -192,7 +192,7 @@ class GLPIKey
             return false;
         }
 
-        if ($DB instanceof DBmysql) {
+        if ($DB instanceof DBmysql && $DB->connected) {
             if (!$this->migrateFieldsInDb($previous_key) || !$this->migrateConfigsInDb($previous_key)) {
                 trigger_error('Error during encrypted data update in database.', E_USER_WARNING);
                 return false;

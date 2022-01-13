@@ -172,6 +172,10 @@ class InstallCommand extends AbstractConfigureCommand
         if (!$this->isDbAlreadyConfigured() || $input->getOption('reconfigure')) {
             $result = $this->configureDatabase($input, $output, false, true, false, false, false);
 
+            // Ensure global $DB is updated (used by GLPIKey)
+            global $DB;
+            $DB = $this->db;
+
             if (self::ABORTED_BY_USER === $result) {
                 return 0; // Considered as success
             } else if (self::SUCCESS !== $result) {
@@ -310,6 +314,7 @@ class InstallCommand extends AbstractConfigureCommand
         );
        // TODO Get rid of output buffering
         ob_start();
+        $this->db->connect(); // Reconnect DB to ensure it uses update configuration (see `self::configureDatabase()`)
         Toolbox::createSchema($default_language, $this->db);
         $message = ob_get_clean();
         if (!empty($message)) {
