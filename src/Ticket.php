@@ -1708,7 +1708,7 @@ class Ticket extends CommonITILObject
        // We condition the check with a bool flag set in front/tracking.injector.php (self-service ticket controller).
        // This to avoid plugins having their process broken.
         if (
-            isset($input['check_delegatee'])
+            isset($input['check_delegatee'], $input['_users_id_requester'])
             && $input['check_delegatee']
             && !self::canDelegateeCreateTicket($input['_users_id_requester'], ($input['entities_id'] ?? -2))
         ) {
