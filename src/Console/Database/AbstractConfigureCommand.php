@@ -233,6 +233,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
             return self::ABORTED_BY_USER;
         }
 
+        mysqli_report(MYSQLI_REPORT_OFF);
         $mysqli = new mysqli();
         if (intval($db_port) > 0) {
             // Network port
@@ -252,6 +253,8 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
             return self::ERROR_DB_CONNECTION_FAILED;
         }
 
+        $db_exists = @$mysqli->select_db($db_name);
+
         ob_start();
         $db_version_data = $mysqli->query('SELECT version()')->fetch_array();
         $checkdb = Config::displayCheckDbEngine(false, $db_version_data[0]);
@@ -261,7 +264,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
             return self::ERROR_DB_ENGINE_UNSUPPORTED;
         }
 
-        if ($strict_configuration || !$compute_flags_from_db) {
+        if (!$db_exists || $strict_configuration || !$compute_flags_from_db) {
             // Force strict configuration
             $use_utf8mb4 = true;
             $allow_myisam = false;
@@ -361,8 +364,6 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
                   $this->log_deprecation_warnings = $log_deprecation_warnings;
 
                   $this->clearSchemaCache();
-
-                  parent::__construct();
             }
         };
 
