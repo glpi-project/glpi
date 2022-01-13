@@ -64,6 +64,10 @@
    }
 
    function itemAction{{ rand }}(action, itemtype, items_id) {
+      if (itemtype === undefined || items_id === undefined) {
+         glpi_toast_error(__('Please select an item to add'));
+         return;
+      }
       $.ajax({
          url: CFG_GLPI.root_doc + '/ajax/itemTicket.php',
          dataType: 'html',
