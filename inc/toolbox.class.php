@@ -1335,7 +1335,7 @@ class Toolbox {
                $new_height = $max_size;
             } else {
                $new_width  = $max_size;
-               $new_height = $max_size / $source_aspect_ratio;
+               $new_height = ceil($max_size / $source_aspect_ratio);
             }
          }
       }
