@@ -148,7 +148,8 @@ abstract class AbstractRequest
     */
     private function guessMode($contents)
     {
-        if ($this->headers->hasHeader('GLPI-Agent-ID') && preg_match('/^{/', $contents)) {
+       // In the case handleContentType() didn't set mode, just check $contents first char
+        if ($contents[0] === '{') {
             $this->setMode(self::JSON_MODE);
         } else {
            //defaults to XML; whose validity is checked later.
