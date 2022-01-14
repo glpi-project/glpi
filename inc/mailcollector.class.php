@@ -1066,6 +1066,7 @@ class MailCollector  extends CommonDBTM {
       $tkt['_auto_import']           = 1;
       // For followup : do not check users_id = login user
       $tkt['_do_not_check_users_id'] = 1;
+      $tkt['_head'] = $headers;
       $body                          = $this->getBody($message);
 
       try {
