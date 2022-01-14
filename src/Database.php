@@ -231,6 +231,15 @@ class Database extends CommonDBChild
          'datatype'           => 'date'
         ];
 
+        $tab[] = [
+            'id'                 => '11',
+            'table'              => DatabaseInstance::getTable(),
+            'field'              => 'name',
+            'linkfield'          => '',
+            'name'               => DatabaseInstance::getTypeName(1),
+            'datatype'           => 'dropdown'
+        ];
+
         return $tab;
     }
 
