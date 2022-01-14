@@ -1957,7 +1957,14 @@ class DBmysql
     private function checkForDeprecatedTableOptions(string $query): void
     {
         $table_matches = [];
-        if (preg_match('/(ALTER|CREATE)\s+TABLE\s*(\s|`)(?<table>[^`\s]+)(\s|`)/i', $query, $table_matches) !== 1) {
+        $table_pattern = '/'
+            . '(ALTER|CREATE)'
+            . '(\s+TEMPORARY)?'
+            . '\s+TABLE'
+            . '(\s+IF\s+NOT\s+EXISTS)?'
+            . '\s*(\s|`)(?<table>[^`\s]+)(\s|`)'
+            . '/i';
+        if (preg_match($table_pattern, $query, $table_matches) !== 1) {
             return;
         }
 
