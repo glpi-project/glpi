@@ -465,8 +465,12 @@ OTHER EXPRESSION;"
     protected function tableOptionProvider(): iterable
     {
         yield [
-            'table_options' => '',
-            'extra_fields' => '',
+            'sql' => <<<SQL
+                CREATE TABLE `%s` (
+                    `nameid` varchar(100) NOT NULL,
+                    UNIQUE KEY (`nameid`)
+                )
+            SQL,
             'db_properties' => [],
             'warning' => null
         ];
@@ -484,8 +488,12 @@ OTHER EXPRESSION;"
 
         foreach ($myisam_declarations as $table_options) {
             yield [
-                'table_options' => $table_options,
-                'extra_fields' => '',
+                'sql' => <<<SQL
+                    CREATE TABLE `%s` (
+                        `nameid` varchar(100) NOT NULL,
+                        UNIQUE KEY (`nameid`)
+                    ){$table_options}
+                SQL,
                 'db_properties' => [
                     'allow_myisam' => true
                 ],
@@ -493,8 +501,12 @@ OTHER EXPRESSION;"
             ];
 
             yield [
-                'table_options' => $table_options,
-                'extra_fields' => '',
+                'sql' => <<<SQL
+                    CREATE TABLE `%s` (
+                        `nameid` varchar(100) NOT NULL,
+                        UNIQUE KEY (`nameid`)
+                    ){$table_options}
+                SQL,
                 'db_properties' => [
                     'allow_myisam' => false
                 ],
@@ -504,16 +516,26 @@ OTHER EXPRESSION;"
 
         // Warnings related to datetime fields
         yield [
-            'table_options' => '',
-            'extra_fields' => '`date` datetime NOT NULL,',
+            'sql' => <<<SQL
+                CREATE TABLE `%s` (
+                    `nameid` varchar(100) NOT NULL,
+                    `date` datetime NOT NULL,
+                    UNIQUE KEY (`nameid`)
+                )
+            SQL,
             'db_properties' => [
                 'allow_datetime' => true
             ],
             'warning' => null
         ];
         yield [
-            'table_options' => '',
-            'extra_fields' => '`date` datetime NOT NULL,',
+            'sql' => <<<SQL
+                CREATE TABLE `%s` (
+                    `nameid` varchar(100) NOT NULL,
+                    `date` datetime NOT NULL,
+                    UNIQUE KEY (`nameid`)
+                )
+            SQL,
             'db_properties' => [
                 'allow_datetime' => false
             ],
@@ -522,16 +544,24 @@ OTHER EXPRESSION;"
 
         // Warnings related to 'utf8mb4' usage when DB not yet migrated to 'utf8mb4'
         yield [
-            'table_options' => 'ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci',
-            'extra_fields' => '',
+            'sql' => <<<SQL
+                CREATE TABLE `%s` (
+                    `nameid` varchar(100) NOT NULL,
+                    UNIQUE KEY (`nameid`)
+                ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci
+            SQL,
             'db_properties' => [
                 'use_utf8mb4' => false
             ],
             'warning' => null
         ];
         yield [
-            'table_options' => 'ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci',
-            'extra_fields' => '',
+            'sql' => <<<SQL
+                CREATE TABLE `%s` (
+                    `nameid` varchar(100) NOT NULL,
+                    UNIQUE KEY (`nameid`)
+                ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci
+            SQL,
             'db_properties' => [
                 'use_utf8mb4' => false
             ],
@@ -540,16 +570,24 @@ OTHER EXPRESSION;"
 
         // Warnings related to 'utf8' usage when DB has been migrated to 'utf8mb4'
         yield [
-            'table_options' => 'ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci',
-            'extra_fields' => '',
+            'sql' => <<<SQL
+                CREATE TABLE `%s` (
+                    `nameid` varchar(100) NOT NULL,
+                    UNIQUE KEY (`nameid`)
+                ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci
+            SQL,
             'db_properties' => [
                 'use_utf8mb4' => true
             ],
             'warning' => 'Usage of "utf8" charset/collation detected, should be "utf8mb4"'
         ];
         yield [
-            'table_options' => 'ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci',
-            'extra_fields' => '',
+            'sql' => <<<SQL
+                CREATE TABLE `%s` (
+                    `nameid` varchar(100) NOT NULL,
+                    UNIQUE KEY (`nameid`)
+                ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci
+            SQL,
             'db_properties' => [
                 'use_utf8mb4' => true
             ],
@@ -573,16 +611,26 @@ OTHER EXPRESSION;"
         ];
         foreach ($int_declarations as $int_declaration => $warning_field) {
             yield [
-                'table_options' => '',
-                'extra_fields' => $int_declaration,
+                'sql' => <<<SQL
+                    CREATE TABLE `%s` (
+                        `nameid` varchar(100) NOT NULL,
+                        {$int_declaration}
+                        UNIQUE KEY (`nameid`)
+                    )
+                SQL,
                 'db_properties' => [
                     'allow_signed_keys' => true
                 ],
                 'warning' => null // No warning as we allow signed keys
             ];
             yield [
-                'table_options' => '',
-                'extra_fields' => $int_declaration,
+                'sql' => <<<SQL
+                    CREATE TABLE `%s` (
+                        `nameid` varchar(100) NOT NULL,
+                        {$int_declaration}
+                        UNIQUE KEY (`nameid`)
+                    )
+                SQL,
                 'db_properties' => [
                     'allow_signed_keys' => false
                 ],
@@ -591,26 +639,42 @@ OTHER EXPRESSION;"
                     : null,
             ];
         }
+
+        // Check table name extracted in warnings
+        $table_declarations = [
+            'CREATE TEMPORARY TABLE `%s`', // temporary table
+            'CREATE TABLE IF NOT EXISTS `%s`', // if not exists
+            'CREATE TABLE`%s`', // no space before table name
+            'CREATE TABLE %s', // no quotes
+            'CREATE   TEMPORARY  TABLE      IF   NOT    EXISTS`%s`', // random spacing
+        ];
+        foreach ($table_declarations as $table_declaration) {
+            yield [
+                'sql' => <<<SQL
+                    {$table_declaration} (
+                        `id` int NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                    )
+                SQL,
+                'db_properties' => [
+                    'allow_signed_keys' => false
+                ],
+                'warning' => sprintf('Usage of signed integers in primary or foreign keys is discouraged, please use unsigned integers instead in `{$table}`.`id`.'),
+            ];
+        }
     }
 
    /**
     * @dataProvider tableOptionProvider
     */
     public function testAlterOrCreateTableWarnings(
-        string $table_options,
-        string $extra_fields,
+        string $sql,
         array $db_properties,
         ?string $warning = null
     ) {
         $db = new \mock\DB();
 
-        $create_query_template = <<<SQL
-            CREATE TABLE `%s` (
-                `nameid` varchar(100) NOT NULL,
-                %s
-                UNIQUE KEY (`nameid`)
-            )%s
-        SQL;
+        $create_query_template = $sql;
         $drop_query_template = 'DROP TABLE `%s`';
 
         $db->log_deprecation_warnings = false; // Prevent deprecation warning from MySQL server
@@ -622,8 +686,8 @@ OTHER EXPRESSION;"
 
         $table = sprintf('glpitests_%s', uniqid());
         $this->when(
-            function () use ($db, $create_query_template, $drop_query_template, $table, $extra_fields, $table_options) {
-                $db->query(sprintf($create_query_template, $table, $extra_fields, $table_options));
+            function () use ($db, $create_query_template, $drop_query_template, $table) {
+                $db->query(sprintf($create_query_template, $table));
                 $db->query(sprintf($drop_query_template, $table));
             }
         )->error()
