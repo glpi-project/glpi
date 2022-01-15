@@ -890,7 +890,7 @@ class RuleTicket extends DbTestCase {
 
        $crit_id = $rulecrit->add($crit_input = [
           'rules_id'  => $ruletid,
-          'criteria'  => 'x-priority',
+          'criteria'  => '_x-priority',
           'condition' => \Rule::PATTERN_IS,
           'pattern'   => '1',
        ]);
