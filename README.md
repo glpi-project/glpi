@@ -56,8 +56,8 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
 * MariaDB >= 10.2 or MySQL >= 5.7
 * PHP 7.4 or higher
 * Mandatory PHP extensions:
-    - dom, fileinfo, json, session, simplexml (these are defaultly enabled in PHP)
-    - curl (access to remote resoueces, like inventory agents, marketplace API, RSS feeds, ...)
+    - dom, fileinfo, json, session, simplexml (these are enabled in PHP by default)
+    - curl (access to remote resources, like inventory agents, marketplace API, RSS feeds, ...)
     - gd (pictures handling)
     - intl (internationalization)
     - libxml (XML handling)
