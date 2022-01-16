@@ -70,6 +70,6 @@ class PhpVersion extends AbstractRequirement
 
         $this->validation_messages[] = $this->validated
          ? sprintf(__('PHP version (%s) is supported.'), PHP_VERSION)
-         : sprintf(__('PHP version must be between %s and %s (exclusive)'), $this->min_version, $this->max_version);
+         : sprintf(__('PHP version must be between %s and %s (exclusive).'), $this->min_version, $this->max_version);
     }
 }

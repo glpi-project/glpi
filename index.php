@@ -36,9 +36,11 @@
 if (version_compare(PHP_VERSION, '7.4.0') < 0) {
     die('PHP >= 7.4.0 required');
 }
-if (version_compare(PHP_VERSION, '7.4.0', '<') ||
-    version_compare(PHP_VERSION, '8.2.0', '>=')) {
-   die('PHP 7.4.0 - 8.2.0 (exclusive) required');
+if (
+    version_compare(PHP_VERSION, '7.4.0', '<') ||
+    version_compare(PHP_VERSION, '8.2.0', '>=')
+) {
+    die('PHP 7.4.0 - 8.2.0 (exclusive) required');
 }
 
 use Glpi\Application\View\TemplateRenderer;
