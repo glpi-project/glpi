@@ -422,6 +422,20 @@ class ITILFollowup extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
+        //Handle template
+        if (isset($input['_itilfollowuptemplates_id'])) {
+            $fuptemplate = new ITILFollowupTemplate();
+            $fuptemplate->getFromDB($input['_itilfollowuptemplates_id']);
+            $template_fields = $fuptemplate->fields;
+            unset($template_fields['id']);
+            if (isset($template_fields['content'])) {
+                $parent_item = new $input['itemtype'];
+                $parent_item->getFromDB($input['items_id']);
+                $template_fields['content'] = $fuptemplate->getRenderedContent($parent_item);
+            }
+            $input = array_replace($template_fields, $input);
+        }
+
         $input["_job"] = new $input['itemtype']();
 
         if (

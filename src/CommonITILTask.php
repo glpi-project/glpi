@@ -470,6 +470,20 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         $itemtype = $this->getItilObjectItemType();
 
+        // Handle template
+        if (isset($input['_tasktemplates_id'])) {
+            $tasktemplate = new TaskTemplate;
+            $tasktemplate->getFromDB($input['_tasktemplates_id']);
+            $template_fields = $tasktemplate->fields;
+            unset($template_fields['id']);
+            if (isset($template_fields['content'])) {
+                $parent_item = new $itemtype;
+                $parent_item->getFromDB($input[$parent_item->getForeignKeyField()]);
+                $template_fields['content'] = $tasktemplate->getRenderedContent($parent_item);
+            }
+            $input = array_replace($template_fields, $input);
+        }
+
         if (empty($input['content'])) {
             Session::addMessageAfterRedirect(
                 __("You can't add a task without description."),
