@@ -45,21 +45,31 @@ class PhpVersion extends AbstractRequirement
     */
     private $min_version;
 
+    /**
+     * Maximum required PHP version (exclusive).
+     *
+     * @var string
+     */
+    private $max_version;
+
    /**
     * @param string $min_version  Minimal required PHP version
+    * @param string $max_version  Maximum required PHP version (exclusive)
     */
-    public function __construct(string $min_version)
+    public function __construct(string $min_version, string $max_version)
     {
         $this->title = __('PHP Parser');
         $this->min_version = $min_version;
+        $this->max_version = $max_version;
     }
 
     protected function check()
     {
-        $this->validated = version_compare(PHP_VERSION, $this->min_version, '>=');
+        $this->validated = version_compare(PHP_VERSION, $this->min_version, '>=')
+            && version_compare(PHP_VERSION, $this->max_version, '<');
 
         $this->validation_messages[] = $this->validated
          ? sprintf(__('PHP version (%s) is supported.'), PHP_VERSION)
-         : sprintf(__('PHP version must be at least %s.'), $this->min_version);
+         : sprintf(__('PHP version must be between %s and %s (exclusive)'), $this->min_version, $this->max_version);
     }
 }
