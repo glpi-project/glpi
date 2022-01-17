@@ -619,21 +619,14 @@ abstract class MainAsset extends InventoryAsset
         }
 
         //check for any old agent to remove
-        $iterator = $DB->request([
-            'SELECT' => 'id',
-            'FROM' => $this->agent->getTable(),
-            'WHERE' => [
-                'itemtype' => $this->item->getType(),
-                'items_id' => $items_id,
-                'NOT' => [
-                    'id' => $this->agent->fields['id']
-                ]
+        $agent = new \Agent();
+        $agent->deleteByCriteria([
+            'itemtype' => $this->item->getType(),
+            'items_id' => $items_id,
+            'NOT' => [
+                'id' => $this->agent->fields['id']
             ]
         ]);
-        foreach ($iterator as $old_agent) {
-            $agent = new \Agent();
-            $agent->delete(['id' => $old_agent['id']], true);
-        }
 
         $val->id = $this->item->fields['id'];
 
