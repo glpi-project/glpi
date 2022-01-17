@@ -391,7 +391,7 @@ class Agent extends CommonDBTM
     }
 
    /**
-    * Preapre input for add and update
+    * Prepare input for add and update
     *
     * @param array $input Input
     *

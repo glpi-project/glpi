@@ -1140,7 +1140,6 @@ class RuleImportAsset extends Rule
          'action'    => '_link'
         ];
 
-       //Above commented rules are related to SNMP inventory
         $rules[] = [
          'name'      => 'Device update (by ip+ifdescr restricted port)',
          'match'     => 'AND',
