@@ -371,11 +371,16 @@ class Ticket extends CommonITILObject
 
         list($dateField, $slaField) = SLA::getFieldNames($type);
 
-        $calendars_id = Entity::getUsedConfig('calendars_id', $entities_id);
         $data         = [];
 
         $sla = new SLA();
         if ($sla->getFromDB($slas_id)) {
+            $calendars_id = Entity::getUsedConfig(
+                'calendars_strategy',
+                $entities_id,
+                'calendars_id',
+                0
+            );
             $sla->setTicketCalendar($calendars_id);
             if ($sla->fields['type'] == SLM::TTR) {
                 $data["slalevels_id_ttr"] = SlaLevel::getFirstSlaLevel($slas_id);
@@ -408,11 +413,16 @@ class Ticket extends CommonITILObject
 
         list($dateField, $olaField) = OLA::getFieldNames($type);
 
-        $calendars_id = Entity::getUsedConfig('calendars_id', $entities_id);
         $data         = [];
 
         $ola = new OLA();
         if ($ola->getFromDB($olas_id)) {
+            $calendars_id = Entity::getUsedConfig(
+                'calendars_strategy',
+                $entities_id,
+                'calendars_id',
+                0
+            );
             $ola->setTicketCalendar($calendars_id);
             if ($ola->fields['type'] == SLM::TTR) {
                 $data["olalevels_id_ttr"] = OlaLevel::getFirstOlaLevel($olas_id);
@@ -1462,12 +1472,17 @@ class Ticket extends CommonITILObject
     public function manageSlaLevel($slas_id)
     {
 
-        $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
        // Add first level in working table
         $slalevels_id = SlaLevel::getFirstSlaLevel($slas_id);
 
         $sla = new SLA();
         if ($sla->getFromDB($slas_id)) {
+            $calendars_id = Entity::getUsedConfig(
+                'calendars_strategy',
+                $this->fields['entities_id'],
+                'calendars_id',
+                0
+            );
             $sla->setTicketCalendar($calendars_id);
             $sla->addLevelToDo($this, $slalevels_id);
         }
@@ -1484,12 +1499,17 @@ class Ticket extends CommonITILObject
     public function manageOlaLevel($slas_id)
     {
 
-        $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
        // Add first level in working table
         $olalevels_id = OlaLevel::getFirstOlaLevel($slas_id);
 
         $ola = new OLA();
         if ($ola->getFromDB($slas_id)) {
+            $calendars_id = Entity::getUsedConfig(
+                'calendars_strategy',
+                $this->fields['entities_id'],
+                'calendars_id',
+                0
+            );
             $ola->setTicketCalendar($calendars_id);
             $ola->addLevelToDo($this, $olalevels_id);
         }
@@ -6055,9 +6075,14 @@ JAVASCRIPT;
                 ];
 
                 if ($delay > 0) {
-                    $calendars_id = Entity::getUsedConfig('calendars_id', $entity['id']);
+                    $calendars_id = Entity::getUsedConfig(
+                        'calendars_strategy',
+                        $entity['id'],
+                        'calendars_id',
+                        0
+                    );
                     $calendar = new Calendar();
-                    if ($calendars_id && $calendar->getFromDB($calendars_id) && $calendar->hasAWorkingDay()) {
+                    if ($calendars_id > 0 && $calendar->getFromDB($calendars_id) && $calendar->hasAWorkingDay()) {
                         $end_date = $calendar->computeEndDate(
                             date('Y-m-d H:i:s'),
                             - $delay * DAY_TIMESTAMP,

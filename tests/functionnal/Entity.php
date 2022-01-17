@@ -340,64 +340,209 @@ class Entity extends DbTestCase
         $this->boolean($profile_user->getFromDB($profile_user_id))->isFalse();
     }
 
-    protected function inheritanceProvider()
+    protected function getUsedConfigProvider(): iterable
     {
-        return [
-         ['admin_email', "username+admin@domain.tld"],
-         ['admin_email_name', "Username admin"],
-         ['admin_reply', "username+admin+reply@domain.tld"],
-         ['admin_reply_name', "Username admin reply"],
+        $root_id       = getItemByTypeName('Entity', 'Root entity', true);
+        $child_id      = getItemByTypeName('Entity', '_test_root_entity', true);
+        $grandchild_id = getItemByTypeName('Entity', '_test_child_1', true);
+
+        // String value case
+        yield [
+            'root_values'       => ['admin_email' => 'admin+root@domain.tld'],
+            'child_values'      => ['admin_email' => ''],
+            'grandchild_values' => ['admin_email' => ''],
+            'params'            => ['admin_email', $root_id, '', ''],
+            'expected_result'   => 'admin+root@domain.tld', // self value
+        ];
+        yield [
+            'root_values'       => ['admin_email' => 'admin+root@domain.tld'],
+            'child_values'      => ['admin_email' => ''],
+            'grandchild_values' => ['admin_email' => ''],
+            'params'            => ['admin_email', $child_id, '', ''],
+            'expected_result'   => 'admin+root@domain.tld', // inherit from root
+        ];
+        yield [
+            'root_values'       => ['admin_email' => 'admin+root@domain.tld'],
+            'child_values'      => ['admin_email' => 'admin+child@domain.tld'],
+            'grandchild_values' => ['admin_email' => ''],
+            'params'            => ['admin_email', $child_id, '', ''],
+            'expected_result'   => 'admin+child@domain.tld', // self value
+        ];
+        yield [
+            'root_values'       => ['admin_email' => 'admin+root@domain.tld'],
+            'child_values'      => ['admin_email' => ''],
+            'grandchild_values' => ['admin_email' => ''],
+            'params'            => ['admin_email', $grandchild_id, '', ''],
+            'expected_result'   => 'admin+root@domain.tld', // inherit from root
+        ];
+        yield [
+            'root_values'       => ['admin_email' => 'admin+root@domain.tld'],
+            'child_values'      => ['admin_email' => 'admin+child@domain.tld'],
+            'grandchild_values' => ['admin_email' => ''],
+            'params'            => ['admin_email', $grandchild_id, '', ''],
+            'expected_result'   => 'admin+child@domain.tld', // inherit from parent
+        ];
+        yield [
+            'root_values'       => ['admin_email' => 'admin+root@domain.tld'],
+            'child_values'      => ['admin_email' => ''],
+            'grandchild_values' => ['admin_email' => 'admin+grandchild@domain.tld'],
+            'params'            => ['admin_email', $grandchild_id, '', ''],
+            'expected_result'   => 'admin+grandchild@domain.tld', // self value
+        ];
+
+        // Inheritable value case
+        yield [
+            'root_values'       => ['use_domains_alert' => 1],
+            'child_values'      => ['use_domains_alert' => -2],
+            'grandchild_values' => ['use_domains_alert' => -2],
+            'params'            => ['use_domains_alert', $root_id],
+            'expected_result'   => 1, // self value
+        ];
+        yield [
+            'root_values'       => ['use_domains_alert' => 1],
+            'child_values'      => ['use_domains_alert' => -2],
+            'grandchild_values' => ['use_domains_alert' => -2],
+            'params'            => ['use_domains_alert', $child_id],
+            'expected_result'   => 1, // inherit from root
+        ];
+        yield [
+            'root_values'       => ['use_domains_alert' => 1],
+            'child_values'      => ['use_domains_alert' => 0],
+            'grandchild_values' => ['use_domains_alert' => -2],
+            'params'            => ['use_domains_alert', $child_id],
+            'expected_result'   => 0, // self value
+        ];
+        yield [
+            'root_values'       => ['use_domains_alert' => 1],
+            'child_values'      => ['use_domains_alert' => -2],
+            'grandchild_values' => ['use_domains_alert' => -2],
+            'params'            => ['use_domains_alert', $grandchild_id],
+            'expected_result'   => 1, // inherit from root
+        ];
+        yield [
+            'root_values'       => ['use_domains_alert' => 1],
+            'child_values'      => ['use_domains_alert' => 0],
+            'grandchild_values' => ['use_domains_alert' => -2],
+            'params'            => ['use_domains_alert', $grandchild_id],
+            'expected_result'   => 0, // inherit from parent
+        ];
+        yield [
+            'root_values'       => ['use_domains_alert' => 1],
+            'child_values'      => ['use_domains_alert' => -2],
+            'grandchild_values' => ['use_domains_alert' => 0],
+            'params'            => ['use_domains_alert', $grandchild_id],
+            'expected_result'   => 0, // self value
+        ];
+
+        // Using strategy from another field case
+        yield [
+            'root_values'       => ['contracts_strategy_default' => -1, 'contracts_id_default' => 0],
+            'child_values'      => ['contracts_strategy_default' => -2, 'contracts_id_default' => 0],
+            'grandchild_values' => ['contracts_strategy_default' => -2, 'contracts_id_default' => 0],
+            'params'            => ['contracts_strategy_default', $root_id],
+            'expected_result'   => -1, // self strategy
+        ];
+        yield [
+            'root_values'       => ['contracts_strategy_default' => 0, 'contracts_id_default' => 10],
+            'child_values'      => ['contracts_strategy_default' => -2, 'contracts_id_default' => 0],
+            'grandchild_values' => ['contracts_strategy_default' => -2, 'contracts_id_default' => 0],
+            'params'            => ['contracts_strategy_default', $root_id, 'contracts_id_default', 0],
+            'expected_result'   => 10, // self value
+        ];
+        yield [
+            'root_values'       => ['contracts_strategy_default' => -1, 'contracts_id_default' => 0],
+            'child_values'      => ['contracts_strategy_default' => -2, 'contracts_id_default' => 0],
+            'grandchild_values' => ['contracts_strategy_default' => -2, 'contracts_id_default' => 0],
+            'params'            => ['contracts_strategy_default', $child_id],
+            'expected_result'   => -1, // inherit strategy from root
+        ];
+        yield [
+            'root_values'       => ['contracts_strategy_default' => 0, 'contracts_id_default' => 10],
+            'child_values'      => ['contracts_strategy_default' => -2, 'contracts_id_default' => 0],
+            'grandchild_values' => ['contracts_strategy_default' => -2, 'contracts_id_default' => 0],
+            'params'            => ['contracts_strategy_default', $child_id, 'contracts_id_default', 0],
+            'expected_result'   => 10, // inherit value from root
+        ];
+        yield [
+            'root_values'       => ['contracts_strategy_default' => 0, 'contracts_id_default' => 0],
+            'child_values'      => ['contracts_strategy_default' => -1, 'contracts_id_default' => 0],
+            'grandchild_values' => ['contracts_strategy_default' => -2, 'contracts_id_default' => 0],
+            'params'            => ['contracts_strategy_default', $child_id],
+            'expected_result'   => -1, // self strategy
+        ];
+        yield [
+            'root_values'       => ['contracts_strategy_default' => 0, 'contracts_id_default' => 10],
+            'child_values'      => ['contracts_strategy_default' => 0, 'contracts_id_default' => 12],
+            'grandchild_values' => ['contracts_strategy_default' => -2, 'contracts_id_default' => 0],
+            'params'            => ['contracts_strategy_default', $child_id, 'contracts_id_default', 0],
+            'expected_result'   => 12, // self value
+        ];
+        yield [
+            'root_values'       => ['contracts_strategy_default' => -1, 'contracts_id_default' => 0],
+            'child_values'      => ['contracts_strategy_default' => -2, 'contracts_id_default' => 0],
+            'grandchild_values' => ['contracts_strategy_default' => -2, 'contracts_id_default' => 0],
+            'params'            => ['contracts_strategy_default', $grandchild_id],
+            'expected_result'   => -1, // inherit strategy from root
+        ];
+        yield [
+            'root_values'       => ['contracts_strategy_default' => 0, 'contracts_id_default' => 10],
+            'child_values'      => ['contracts_strategy_default' => -2, 'contracts_id_default' => 0],
+            'grandchild_values' => ['contracts_strategy_default' => -2, 'contracts_id_default' => 0],
+            'params'            => ['contracts_strategy_default', $grandchild_id, 'contracts_id_default', 0],
+            'expected_result'   => 10, // inherit value from root
+        ];
+        yield [
+            'root_values'       => ['contracts_strategy_default' => 0, 'contracts_id_default' => 10],
+            'child_values'      => ['contracts_strategy_default' => -1, 'contracts_id_default' => 0],
+            'grandchild_values' => ['contracts_strategy_default' => -2, 'contracts_id_default' => 0],
+            'params'            => ['contracts_strategy_default', $grandchild_id],
+            'expected_result'   => -1, // inherit strategy from parent
+        ];
+        yield [
+            'root_values'       => ['contracts_strategy_default' => 0, 'contracts_id_default' => 10],
+            'child_values'      => ['contracts_strategy_default' => 0, 'contracts_id_default' => 15],
+            'grandchild_values' => ['contracts_strategy_default' => -2, 'contracts_id_default' => 0],
+            'params'            => ['contracts_strategy_default', $grandchild_id, 'contracts_id_default', 0],
+            'expected_result'   => 15, // inherit value from parent
+        ];
+        yield [
+            'root_values'       => ['contracts_strategy_default' => 0, 'contracts_id_default' => 10],
+            'child_values'      => ['contracts_strategy_default' => -2, 'contracts_id_default' => 0],
+            'grandchild_values' => ['contracts_strategy_default' => -1, 'contracts_id_default' => 0],
+            'params'            => ['contracts_strategy_default', $grandchild_id],
+            'expected_result'   => -1, // self strategy
+        ];
+        yield [
+            'root_values'       => ['contracts_strategy_default' => 0, 'contracts_id_default' => 10],
+            'child_values'      => ['contracts_strategy_default' => -2, 'contracts_id_default' => 0],
+            'grandchild_values' => ['contracts_strategy_default' => 0, 'contracts_id_default' => 23],
+            'params'            => ['contracts_strategy_default', $grandchild_id, 'contracts_id_default', 0],
+            'expected_result'   => 23, // self value
         ];
     }
 
    /**
-    * @dataProvider inheritanceProvider
+    * @dataProvider getUsedConfigProvider
     */
-    public function testGetUsedConfig(string $field, $value)
-    {
+    public function testGetUsedConfig(
+        array $root_values,
+        array $child_values,
+        array $grandchild_values,
+        array $params,
+        $expected_result
+    ) {
         $this->login();
 
-        $root    = getItemByTypeName('Entity', 'Root entity', true);
-        $parent  = getItemByTypeName('Entity', '_test_root_entity', true);
-        $child_1 = getItemByTypeName('Entity', '_test_child_1', true);
-        $child_2 = getItemByTypeName('Entity', '_test_child_2', true);
+        $root_id       = getItemByTypeName('Entity', 'Root entity', true);
+        $child_id      = getItemByTypeName('Entity', '_test_root_entity', true);
+        $grandchild_id = getItemByTypeName('Entity', '_test_child_1', true);
 
         $entity = new \Entity();
-        $this->boolean($entity->update([
-         'id'   => $root,
-         $field => $value . "_root",
-        ]));
+        $this->boolean($entity->update(['id' => $root_id] + $root_values))->isTrue();
+        $this->boolean($entity->update(['id' => $child_id] + $child_values))->isTrue();
+        $this->boolean($entity->update(['id' => $grandchild_id] + $grandchild_values))->isTrue();
 
-        $this->string(\Entity::getUsedConfig($field, $parent))->isEqualTo($value . "_root");
-        $this->string(\Entity::getUsedConfig($field, $child_1))->isEqualTo($value . "_root");
-        $this->string(\Entity::getUsedConfig($field, $child_2))->isEqualTo($value . "_root");
-
-        $this->boolean($entity->update([
-         'id'   => $parent,
-         $field => $value . "_parent",
-        ]));
-
-        $this->string(\Entity::getUsedConfig($field, $parent))->isEqualTo($value . "_parent");
-        $this->string(\Entity::getUsedConfig($field, $child_1))->isEqualTo($value . "_parent");
-        $this->string(\Entity::getUsedConfig($field, $child_2))->isEqualTo($value . "_parent");
-
-        $this->boolean($entity->update([
-         'id'   => $child_1,
-         $field => $value . "_child_1",
-        ]));
-
-        $this->string(\Entity::getUsedConfig($field, $parent))->isEqualTo($value . "_parent");
-        $this->string(\Entity::getUsedConfig($field, $child_1))->isEqualTo($value . "_child_1");
-        $this->string(\Entity::getUsedConfig($field, $child_2))->isEqualTo($value . "_parent");
-
-        $this->boolean($entity->update([
-         'id'   => $child_2,
-         $field => $value . "_child_2",
-        ]));
-
-        $this->string(\Entity::getUsedConfig($field, $parent))->isEqualTo($value . "_parent");
-        $this->string(\Entity::getUsedConfig($field, $child_1))->isEqualTo($value . "_child_1");
-        $this->string(\Entity::getUsedConfig($field, $child_2))->isEqualTo($value . "_child_2");
+        $this->variable(call_user_func_array([\Entity::class, 'getUsedConfig'], $params))->isEqualTo($expected_result);
     }
 
 

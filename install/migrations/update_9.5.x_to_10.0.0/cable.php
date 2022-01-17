@@ -90,7 +90,7 @@ if (!$DB->tableExists('glpi_cables')) {
     $query = "CREATE TABLE `glpi_cables` (
       `id` int unsigned NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
-      `entities_id` int NOT NULL DEFAULT '0',
+      `entities_id` int unsigned NOT NULL DEFAULT '0',
       `is_recursive` tinyint NOT NULL DEFAULT '0',
       `itemtype_endpoint_a` varchar(255) DEFAULT NULL,
       `itemtype_endpoint_b` varchar(255) DEFAULT NULL,

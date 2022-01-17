@@ -72,8 +72,9 @@ class Software extends InventoryAsset
        //Get the default entity for software, as defined in entity configuration
         $entities_id = $this->entities_id;
         $entities_id_software = Entity::getUsedConfig(
-            'entities_id_software',
-            $entities_id
+            'entities_strategy_software',
+            $entities_id,
+            'entities_id_software'
         );
 
        //By default a software is not recursive

@@ -39,30 +39,6 @@ use Glpi\System\Requirement\DbTimezones;
 **/
 class DBmysql
 {
-    /**
-     * List of keys that are allowed to use signed integers.
-     *
-     * Elements contained in this list have to be fixed before being able to globally use foreign key contraints.
-     *
-     * @var array
-     */
-    private const ALLOWED_SIGNED_KEYS = [
-        // FIXME Entity preference `glpi_entities.calendars_id` inherit/never strategy should be stored in another field.
-        'glpi_calendars.id',
-        // FIXME Entity preference `glpi_entities.changetemplates_id` inherit/never strategy should be stored in another field.
-        'glpi_changetemplates.id',
-        // FIXME Entity preference `glpi_entities.contracts_id_default` inherit/never strategy should be stored in another field.
-        'glpi_contracts.id',
-        // FIXME Entity preference `glpi_entities.entities_id_software` inherit/never strategy should be stored in another field.
-        'glpi_entities.id',
-        // FIXME Entity preference `glpi_entities.problemtemplates_id` inherit/never strategy should be stored in another field.
-        'glpi_problemtemplates.id',
-        // FIXME Entity preference `glpi_entities.tickettemplates_id` inherit/never strategy should be stored in another field.
-        'glpi_tickettemplates.id',
-        // FIXME Entity preference `glpi_entities.transfers_id` inherit/never strategy should be stored in another field.
-        'glpi_transfers.id'
-    ];
-
    //! Database Host - string or Array of string (round robin)
     public $dbhost             = "";
    //! Database User
@@ -823,20 +799,6 @@ class DBmysql
             ],
             'ORDER'       => ['TABLE_NAME']
         ];
-        foreach (self::ALLOWED_SIGNED_KEYS as $allowed_signed_key) {
-            list($excluded_table, $excluded_field) = explode('.', $allowed_signed_key);
-            $excluded_fkey = getForeignKeyFieldForTable($excluded_table);
-            $query['WHERE'][] = [
-                [
-                    'NOT' => [
-                        'information_schema.tables.table_name'   => $excluded_table,
-                        'information_schema.columns.column_name' => $excluded_field
-                    ]
-                ],
-                ['NOT' => ['information_schema.columns.column_name' => $excluded_fkey]],
-                ['NOT' => ['information_schema.columns.column_name' => ['LIKE', str_replace('_', '\_', $excluded_fkey . '_%')]]],
-            ];
-        }
 
         $iterator = $this->request($query);
 
@@ -2009,30 +1971,14 @@ class DBmysql
             . '/i';
         $field_matches = [];
         if (!$this->allow_signed_keys && preg_match($pattern, $query, $field_matches)) {
-            $table = $table_matches['table'];
-            $field = $field_matches['field'];
-            $is_allowed = false;
-            foreach (self::ALLOWED_SIGNED_KEYS as $allowed_signed_key) {
-                list($excluded_table, $excluded_field) = explode('.', $allowed_signed_key);
-                $excluded_fkey = getForeignKeyFieldForTable($excluded_table);
-                if (
-                    ($table === $excluded_table && $field === $excluded_field)
-                    || preg_match('/' . $excluded_fkey . '(_.+)?/', $field)
-                ) {
-                    $is_allowed = true;
-                    break;
-                }
-            }
-            if (!$is_allowed) {
-                trigger_error(
-                    sprintf(
-                        'Usage of signed integers in primary or foreign keys is discouraged, please use unsigned integers instead in `%s`.`%s`.',
-                        $table,
-                        $field
-                    ),
-                    E_USER_WARNING
-                );
-            }
+            trigger_error(
+                sprintf(
+                    'Usage of signed integers in primary or foreign keys is discouraged, please use unsigned integers instead in `%s`.`%s`.',
+                    $table_matches['table'],
+                    $field_matches['field']
+                ),
+                E_USER_WARNING
+            );
         }
     }
 

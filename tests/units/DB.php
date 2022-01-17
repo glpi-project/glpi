@@ -602,8 +602,6 @@ OTHER EXPRESSION;"
             '`users_id` int unsigned DEFAULT NULL,' => null,
             '`users_id_tech` int NOT NULL,' => 'users_id_tech',
             '`users_id_tech` int unsigned NOT NULL,' => null,
-            '`entities_id` int DEFAULT NULL,' => null, // declared in DBmysql::ALLOWED_SIGNED_KEYS
-            '`entities_id_default` int DEFAULT -1,' => null, // declared in DBmysql::ALLOWED_SIGNED_KEYS
             'id int DEFAULT NULL,' => 'id', // field name without backticks
             '`users_id`int         unsigned DEFAULT NULL,' => null, // uncommon whitespaces
             '`unconventionnalid` int DEFAULT NULL,' => null, // not matching naming conventions

@@ -319,7 +319,12 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 [$this->getType() => [$input["id"]]]
             );
 
-            $calendars_id = Entity::getUsedConfig('calendars_id', $input["_job"]->fields['entities_id']);
+            $calendars_id = Entity::getUsedConfig(
+                'calendars_strategy',
+                $input["_job"]->fields['entities_id'],
+                'calendars_id',
+                0
+            );
             $calendar     = new Calendar();
 
            // Using calendar
@@ -554,7 +559,12 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 [$this->getType() => [$this->fields["id"]]]
             );
 
-            $calendars_id = Entity::getUsedConfig('calendars_id', $this->input["_job"]->fields['entities_id']);
+            $calendars_id = Entity::getUsedConfig(
+                'calendars_strategy',
+                $this->input["_job"]->fields['entities_id'],
+                'calendars_id',
+                0
+            );
             $calendar     = new Calendar();
 
            // Using calendar

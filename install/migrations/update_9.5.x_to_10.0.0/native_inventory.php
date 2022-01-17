@@ -66,7 +66,7 @@ if (!$DB->tableExists('glpi_agents')) {
     $query = "CREATE TABLE `glpi_agents` (
          `id` int unsigned NOT NULL AUTO_INCREMENT,
          `deviceid` VARCHAR(255) NOT NULL,
-         `entities_id` int NOT NULL DEFAULT '0',
+         `entities_id` int unsigned NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
          `name` varchar(255) DEFAULT NULL,
          `agenttypes_id` int unsigned NOT NULL,
@@ -189,9 +189,12 @@ if (!$DB->fieldExists('glpi_entities', 'transfers_id')) {
     $migration->addField(
         'glpi_entities',
         'transfers_id',
-        'int',
+        'int unsigned NOT NULL DEFAULT 0',
         [
-         'value' => -2,
+            'value'     => -2,
+            // 0 value for root entity
+            'update'    => '0',
+            'condition' => 'WHERE `id` = 0'
         ]
     );
     $migration->addKey('glpi_entities', 'transfers_id');
@@ -314,7 +317,7 @@ foreach ($netport_fields as $netport_field => $definition) {
 if (!$DB->tableExists('glpi_unmanageds')) {
     $query = "CREATE TABLE `glpi_unmanageds` (
          `id` int unsigned NOT NULL AUTO_INCREMENT,
-         `entities_id` int NOT NULL DEFAULT '0',
+         `entities_id` int unsigned NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
          `name` varchar(255) DEFAULT NULL,
          `serial` varchar(255) DEFAULT NULL,
@@ -371,7 +374,7 @@ $ADDTODISPLAYPREF['Unmanaged'] = [2, 4, 3, 5, 7, 10, 18, 14, 15, 9];
 if (!$DB->tableExists('glpi_networkporttypes')) {
     $query = "CREATE TABLE `glpi_networkporttypes` (
          `id` int unsigned NOT NULL AUTO_INCREMENT,
-         `entities_id` int NOT NULL DEFAULT '0',
+         `entities_id` int unsigned NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
          `value_decimal` int NOT NULL,
          `name` varchar(255) DEFAULT NULL,
@@ -513,7 +516,7 @@ if (!$DB->tableExists('glpi_refusedequipments')) {
          `id` int unsigned NOT NULL AUTO_INCREMENT,
          `name` varchar(255) DEFAULT NULL,
          `itemtype` varchar(100) DEFAULT NULL,
-         `entities_id` int NOT NULL DEFAULT '0',
+         `entities_id` int unsigned NOT NULL DEFAULT '0',
          `ip` varchar(255) DEFAULT NULL,
          `mac` varchar(255) DEFAULT NULL,
          `rules_id` int unsigned NOT NULL DEFAULT '0',
@@ -576,7 +579,7 @@ CronTask::Register(
 if (!$DB->tableExists('glpi_usbvendors')) {
     $query = "CREATE TABLE `glpi_usbvendors` (
          `id` int unsigned NOT NULL AUTO_INCREMENT,
-         `entities_id` int NOT NULL DEFAULT '0',
+         `entities_id` int unsigned NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
          `vendorid` varchar(4) NOT NULL,
          `deviceid` varchar(4) DEFAULT NULL,
@@ -604,7 +607,7 @@ $ADDTODISPLAYPREF['USBVendor'] = [10, 11];
 if (!$DB->tableExists('glpi_pcivendors')) {
     $query = "CREATE TABLE `glpi_pcivendors` (
          `id` int unsigned NOT NULL AUTO_INCREMENT,
-         `entities_id` int NOT NULL DEFAULT '0',
+         `entities_id` int unsigned NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
          `vendorid` varchar(4) NOT NULL,
          `deviceid` varchar(4) DEFAULT NULL,

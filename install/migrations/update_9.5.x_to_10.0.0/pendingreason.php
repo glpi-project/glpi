@@ -43,7 +43,7 @@ $default_collation = DBConnection::getDefaultCollation();
 if (!$DB->tableExists('glpi_pendingreasons')) {
     $query = "CREATE TABLE `glpi_pendingreasons` (
          `id` int unsigned NOT NULL AUTO_INCREMENT,
-         `entities_id` int NOT NULL DEFAULT '0',
+         `entities_id` int unsigned NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
          `name` varchar(255) DEFAULT NULL,
          `followup_frequency` int NOT NULL DEFAULT '0',

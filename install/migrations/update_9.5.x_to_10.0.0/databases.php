@@ -73,7 +73,7 @@ if (!$DB->tableExists('glpi_databaseinstancecategories')) {
 if (!$DB->tableExists('glpi_databaseinstances')) {
     $query = "CREATE TABLE `glpi_databaseinstances` (
          `id` int unsigned NOT NULL AUTO_INCREMENT,
-         `entities_id` int NOT NULL DEFAULT '0',
+         `entities_id` int unsigned NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
          `name` varchar(255) NOT NULL DEFAULT '',
          `version` varchar(255) NOT NULL DEFAULT '',
@@ -141,7 +141,7 @@ if ($DB->tableExists('glpi_databaseinstances_items')) {
 if (!$DB->tableExists('glpi_databases')) {
     $query = "CREATE TABLE `glpi_databases` (
          `id` int unsigned NOT NULL AUTO_INCREMENT,
-         `entities_id` int NOT NULL DEFAULT '0',
+         `entities_id` int unsigned NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
          `name` varchar(255) NOT NULL DEFAULT '',
          `size` int NOT NULL DEFAULT '0',
