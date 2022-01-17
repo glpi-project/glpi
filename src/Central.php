@@ -115,7 +115,9 @@ class Central extends CommonGLPI
         Plugin::doHook(Hooks::DISPLAY_CENTRAL);
         echo "</table>";
 
-        self::showMessages();
+        if (GLPI_CENTRAL_WARNINGS) {
+            self::showMessages();
+        }
 
         $default   = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('central');
         $dashboard = new Glpi\Dashboard\Grid($default);
