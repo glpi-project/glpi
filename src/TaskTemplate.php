@@ -186,7 +186,7 @@ class TaskTemplate extends AbstractITILChildTemplate
 
         switch ($field['type']) {
             case 'state':
-                Planning::dropdownState("state", $this->fields["state"], false, [
+                Planning::dropdownState("state", $this->fields["state"], true, [
                  'width'     => '100%',
                 ]);
                 break;
