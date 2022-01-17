@@ -36,6 +36,8 @@ namespace tests\units;
 use DbTestCase;
 use Glpi\Socket;
 use Glpi\Toolbox\Sanitizer;
+use Session;
+use State;
 
 /* Test for inc/dropdown.class.php */
 
@@ -1365,5 +1367,198 @@ class Dropdown extends DbTestCase
             $idor_add_params['entity_restrict'] = $params['entity_restrict'];
         }
         return \Session::getNewIDORToken(($params['itemtype'] ?? ''), $idor_add_params);
+    }
+
+    public function testDropdownParent()
+    {
+        // Create tree
+        $state = new State();
+        $state_1_id = $state->add(
+            [
+                'name'      => 'State 1',
+                'states_id' => 0,
+            ]
+        );
+        $this->integer($state_1_id)->isGreaterThan(0);
+
+        $state = new State();
+        $state_1_1_id = $state->add(
+            [
+                'name'      => 'State 1.1',
+                'states_id' => $state_1_id,
+            ]
+        );
+        $this->integer($state_1_1_id)->isGreaterThan(0);
+
+        $state = new State();
+        $state_1_1_1_id = $state->add(
+            [
+                'name'      => 'State 1.1.1',
+                'states_id' => $state_1_1_id,
+            ]
+        );
+        $this->integer($state_1_1_1_id)->isGreaterThan(0);
+
+        $state = new State();
+        $state_1_2_id = $state->add(
+            [
+                'name'      => 'State 1.2',
+                'states_id' => $state_1_id,
+            ]
+        );
+        $this->integer($state_1_2_id)->isGreaterThan(0);
+
+        $state_2_id = $state->add(
+            [
+                'name'      => 'State 2',
+                'states_id' => 0,
+            ]
+        );
+        $this->integer($state_2_id)->isGreaterThan(0);
+
+        $state_2_1_id = $state->add(
+            [
+                'name'      => 'State 2.1',
+                'states_id' => $state_2_id,
+            ]
+        );
+        $this->integer($state_2_1_id)->isGreaterThan(0);
+
+        // Check filtering on "State 1"
+        $tree_1 = \Dropdown::getDropdownValue(
+            [
+                'itemtype'            => $state->getType(),
+                'parent_id'           => $state_1_id,
+                'display_emptychoice' => false,
+                'entity_restrict'     => 0,
+                '_idor_token'         => Session::getNewIDORToken($state->getType())
+            ],
+            false
+        );
+
+        $this->array($tree_1)->isEqualTo(
+            [
+                'results' => [
+                    [
+                        'text' => 'Root entity',
+                        'children' => [
+                            [
+                                'id'             => $state_1_id,
+                                'text'           => 'State 1',
+                                'level'          => 1,
+                                'disabled'       => true,
+                            ],
+                            [
+                                'id'             => $state_1_1_id,
+                                'text'           => 'State 1.1',
+                                'level'          => 2,
+                                'title'          => 'State 1 > State 1.1',
+                                'selection_text' => 'State 1 > State 1.1',
+                            ],
+                            [
+                                'id'             => $state_1_1_1_id,
+                                'text'           => 'State 1.1.1',
+                                'level'          => 3,
+                                'title'          => 'State 1 > State 1.1 > State 1.1.1',
+                                'selection_text' => 'State 1 > State 1.1 > State 1.1.1',
+                            ],
+                            [
+                                'id'             => $state_1_2_id,
+                                'text'           => 'State 1.2',
+                                'level'          => 2,
+                                'title'          => 'State 1 > State 1.2',
+                                'selection_text' => 'State 1 > State 1.2',
+                            ],
+                        ],
+                        'itemtype' => 'Entity',
+                    ],
+                ],
+                'count' => 3,
+            ]
+        );
+
+        // Check filtering on "State 1.1"
+        $tree_1 = \Dropdown::getDropdownValue(
+            [
+                'itemtype'            => $state->getType(),
+                'parent_id'           => $state_1_1_id,
+                'display_emptychoice' => false,
+                'entity_restrict'     => 0,
+                '_idor_token'         => Session::getNewIDORToken($state->getType())
+            ],
+            false
+        );
+
+        $this->array($tree_1)->isEqualTo(
+            [
+                'results' => [
+                    [
+                        'text' => 'Root entity',
+                        'children' => [
+                            [
+                                'id'             => $state_1_id,
+                                'text'           => 'State 1',
+                                'level'          => 1,
+                                'disabled'       => true,
+                            ],
+                            [
+                                'id'             => $state_1_1_id,
+                                'text'           => 'State 1.1',
+                                'level'          => 2,
+                                'disabled'       => true,
+                            ],
+                            [
+                                'id'             => $state_1_1_1_id,
+                                'text'           => 'State 1.1.1',
+                                'level'          => 3,
+                                'title'          => 'State 1 > State 1.1 > State 1.1.1',
+                                'selection_text' => 'State 1 > State 1.1 > State 1.1.1',
+                            ],
+                        ],
+                        'itemtype' => 'Entity',
+                    ],
+                ],
+                'count' => 1,
+            ]
+        );
+
+        // Check filtering on "State 2"
+        $tree_1 = \Dropdown::getDropdownValue(
+            [
+                'itemtype'            => $state->getType(),
+                'parent_id'           => $state_2_id,
+                'display_emptychoice' => false,
+                'entity_restrict'     => 0,
+                '_idor_token'         => Session::getNewIDORToken($state->getType())
+            ],
+            false
+        );
+
+        $this->array($tree_1)->isEqualTo(
+            [
+                'results' => [
+                    [
+                        'text' => 'Root entity',
+                        'children' => [
+                            [
+                                'id'             => $state_2_id,
+                                'text'           => 'State 2',
+                                'level'          => 1,
+                                'disabled'       => true,
+                            ],
+                            [
+                                'id'             => $state_2_1_id,
+                                'text'           => 'State 2.1',
+                                'level'          => 2,
+                                'title'          => 'State 2 > State 2.1',
+                                'selection_text' => 'State 2 > State 2.1',
+                            ],
+                        ],
+                        'itemtype' => 'Entity',
+                    ],
+                ],
+                'count' => 1,
+            ]
+        );
     }
 }
