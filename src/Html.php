@@ -4653,16 +4653,17 @@ JAVASCRIPT
         global $CFG_GLPI;
 
         $default_options = [
-         'value'               => 0,
-         'valuename'           => Dropdown::EMPTY_VALUE,
-         'multiple'            => false,
-         'values'              => [],
-         'valuesnames'         => [],
-         'on_change'           => '',
-         'width'               => '80%',
-         'placeholder'         => '',
-         'display_emptychoice' => false,
-         'specific_tags'       => [],
+            'value'               => 0,
+            'valuename'           => Dropdown::EMPTY_VALUE,
+            'multiple'            => false,
+            'values'              => [],
+            'valuesnames'         => [],
+            'on_change'           => '',
+            'width'               => '80%',
+            'placeholder'         => '',
+            'display_emptychoice' => false,
+            'specific_tags'       => [],
+            'parent_id_field'     => null,
         ];
         $params = array_merge($default_options, $params);
 
@@ -4697,10 +4698,12 @@ JAVASCRIPT
                 $values = ["$value" => $valuename];
             }
         }
+        $parent_id_field = $params['parent_id_field'];
 
         unset($params['placeholder']);
         unset($params['value']);
         unset($params['valuename']);
+        unset($params['parent_id_field']);
 
         foreach ($params['specific_tags'] as $tag => $val) {
             if (is_array($val)) {
@@ -4739,7 +4742,13 @@ JAVASCRIPT
                data: function (params) {
                   query = params;
                   return $.extend({}, params_$field_id, {
-                     searchText: params.term,
+                     searchText: params.term,";
+
+        if ($parent_id_field !== null) {
+            $js .= "
+                     parent_id : document.getElementById('" . $parent_id_field . "').value,";
+        }
+        $js .= "
                      page_limit: " . $CFG_GLPI['dropdown_max'] . ", // page size
                      page: params.page || 1, // page number
                   });

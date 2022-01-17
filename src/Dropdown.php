@@ -78,6 +78,7 @@ class Dropdown
     *    - diplay_dc_position   :  Display datacenter position  ? (default false)
     *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
     *    - readonly             : boolean / return self::getDropdownValue if true (default false)
+    *    - parent_id_field      : field used to compute parent id (to filter available values inside the dropdown tree)
     *
     * @return boolean : false if error and random id if OK
     *
@@ -121,6 +122,7 @@ class Dropdown
         $params['display_dc_position']  = false;
         $params['hide_if_no_elements']  = false;
         $params['readonly']             = false;
+        $params['parent_id_field']      = null;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -203,6 +205,7 @@ class Dropdown
                'entity_restrict' => $entity_restrict,
             ]),
             'order'                => $params['order'] ?? null,
+            'parent_id_field'      => $params['parent_id_field'],
         ];
 
         if ($params['hide_if_no_elements']) {
@@ -2557,6 +2560,13 @@ class Dropdown
        // Count real items returned
         $count = 0;
         if ($item instanceof CommonTreeDropdown) {
+            if (isset($post['parent_id']) && $post['parent_id'] != '') {
+                $sons = getSonsOf($table, $post['parent_id']);
+                $where[] = [
+                    ["$table.id" => $sons],
+                    ["NOT" => ["$table.id" => $post['parent_id']]],
+                ];
+            }
             if ($one_item >= 0) {
                 $where["$table.id"] = $one_item;
             } else {
