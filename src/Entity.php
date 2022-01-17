@@ -531,6 +531,28 @@ class Entity extends CommonTreeDropdown
         return true;
     }
 
+    public function post_getFromDB()
+    {
+        // Copy config "strategy" fields in corresponding "id" field.
+        if ($this->fields['calendars_strategy'] < 0) {
+            $this->fields['calendars_id'] = $this->fields['calendars_strategy'];
+        }
+        if ($this->fields['changetemplates_strategy'] < 0) {
+            $this->fields['changetemplates_id'] = $this->fields['changetemplates_strategy'];
+        }
+        if ($this->fields['contracts_strategy_default'] < 0) {
+            $this->fields['contracts_id_default'] = $this->fields['contracts_strategy_default'];
+        }
+        if ($this->fields['entities_strategy_software'] < 0) {
+            $this->fields['entities_id_software'] = $this->fields['entities_strategy_software'];
+        }
+        if ($this->fields['problemtemplates_strategy'] < 0) {
+            $this->fields['problemtemplates_id'] = $this->fields['problemtemplates_strategy'];
+        }
+        if ($this->fields['tickettemplates_strategy'] < 0) {
+            $this->fields['tickettemplates_id'] = $this->fields['tickettemplates_strategy'];
+        }
+    }
 
     public function post_addItem()
     {
@@ -1762,16 +1784,13 @@ class Entity extends CommonTreeDropdown
             }
         }
 
-        $entities_strategy_software = $entity->fields['entities_strategy_software'];
-        self::dropdown([
-            'name'     => 'entities_id_software',
-            'value'    => $entities_strategy_software < 0 ? $entities_strategy_software : $entity->fields['entities_id_software'],
-            'toadd'    => $toadd,
-            'entity'   => $entities,
-            'comments' => false,
-        ]);
+        self::dropdown(['name'     => 'entities_id_software',
+                           'value'    => $entity->fields['entities_id_software'],
+                           'toadd'    => $toadd,
+                           'entity'   => $entities,
+                           'comments' => false]);
 
-        if ($entities_strategy_software == self::CONFIG_PARENT) {
+        if ($entity->fields['entities_id_software'] == self::CONFIG_PARENT) {
             $inherited_value = self::getUsedConfig('entities_strategy_software', $entity->fields['entities_id'], 'entities_id_software');
             self::inheritedValue(self::getSpecificValueToDisplay('entities_id_software', $inherited_value));
         }
@@ -1783,11 +1802,9 @@ class Entity extends CommonTreeDropdown
         echo __('Model for automatic entity transfer on inventories');
         echo "</td>";
         echo "<td>";
-
-        $transfers_strategy = $entity->fields['transfers_strategy'];
         $params = [
           'name'       => 'transfers_id',
-          'value'      => $transfers_strategy < 0 ? $transfers_strategy : $entity->fields['transfers_id'],
+          'value'      => $entity->fields['transfers_id'],
           'emptylabel' => __('No automatic transfer')
         ];
         if ($entity->fields['id'] > 0) {
@@ -2537,16 +2554,16 @@ class Entity extends CommonTreeDropdown
             $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
         }
 
-        $tickettemplates_strategy = $entity->fields['tickettemplates_strategy'];
-        $options = [
-            'value'  => $tickettemplates_strategy < 0 ? $tickettemplates_strategy : $entity->fields["tickettemplates_id"],
-            'entity' => $ID,
-            'toadd'  => $toadd
-        ];
+        $options = ['value'  => $entity->fields["tickettemplates_id"],
+                       'entity' => $ID,
+                       'toadd'  => $toadd];
 
         TicketTemplate::dropdown($options);
 
-        if ($tickettemplates_strategy == self::CONFIG_PARENT && $ID != 0) {
+        if (
+            ($entity->fields["tickettemplates_id"] == self::CONFIG_PARENT)
+            && ($ID != 0)
+        ) {
             $tt  = new TicketTemplate();
             $tid = self::getUsedConfig('tickettemplates_strategy', $ID, 'tickettemplates_id', 0);
             if (!$tid) {
@@ -2565,16 +2582,16 @@ class Entity extends CommonTreeDropdown
             $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
         }
 
-        $changetemplates_strategy = $entity->fields['changetemplates_strategy'];
-        $options = [
-            'value'  => $changetemplates_strategy < 0 ? $changetemplates_strategy : $entity->fields["changetemplates_id"],
-            'entity' => $ID,
-            'toadd'  => $toadd
-        ];
+        $options = ['value'  => $entity->fields["changetemplates_id"],
+                       'entity' => $ID,
+                       'toadd'  => $toadd];
 
         ChangeTemplate::dropdown($options);
 
-        if ($changetemplates_strategy == self::CONFIG_PARENT && $ID != 0) {
+        if (
+            ($entity->fields["changetemplates_id"] == self::CONFIG_PARENT)
+            && ($ID != 0)
+        ) {
             $tt  = new ChangeTemplate();
             $tid = self::getUsedConfig('changetemplates_strategy', $ID, 'changetemplates_id', 0);
             if (!$tid) {
@@ -2593,15 +2610,16 @@ class Entity extends CommonTreeDropdown
             $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
         }
 
-        $problemtemplates_strategy = $entity->fields['problemtemplates_strategy'];
-        $options = [
-            'value'  => $problemtemplates_strategy < 0 ? $problemtemplates_strategy : $entity->fields["problemtemplates_id"],
-            'entity' => $ID,
-            'toadd'  => $toadd
-        ];
+        $options = ['value'  => $entity->fields["problemtemplates_id"],
+                       'entity' => $ID,
+                       'toadd'  => $toadd];
+
         ProblemTemplate::dropdown($options);
 
-        if ($problemtemplates_strategy == self::CONFIG_PARENT && $ID != 0) {
+        if (
+            ($entity->fields["problemtemplates_id"] == self::CONFIG_PARENT)
+            && ($ID != 0)
+        ) {
             $tt  = new ProblemTemplate();
             $tid = self::getUsedConfig('problemtemplates_strategy', $ID, 'problemtemplates_id', 0);
             if (!$tid) {
@@ -2616,18 +2634,18 @@ class Entity extends CommonTreeDropdown
 
         echo "<tr class='tab_bg_1'><td colspan='2'>" . _n('Calendar', 'Calendars', 1) . "</td>";
         echo "<td colspan='2'>";
-        $calendars_strategy = $entity->fields['calendars_strategy'];
-        $options = [
-            'value'      => $calendars_strategy < 0 ? $calendars_strategy : $entity->fields["calendars_id"],
-            'emptylabel' => __('24/7')
-        ];
+        $options = ['value'      => $entity->fields["calendars_id"],
+                       'emptylabel' => __('24/7')];
 
         if ($ID != 0) {
             $options['toadd'] = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
         }
         Calendar::dropdown($options);
 
-        if ($calendars_strategy == self::CONFIG_PARENT && $ID != 0) {
+        if (
+            ($entity->fields["calendars_id"] == self::CONFIG_PARENT)
+            && ($ID != 0)
+        ) {
             $calendar = new Calendar();
             $cid = self::getUsedConfig('calendars_strategy', $ID, 'calendars_id', 0);
             if (!$cid) {
@@ -2736,7 +2754,7 @@ class Entity extends CommonTreeDropdown
 
         echo "<tr class='tab_bg_1'><td  colspan='2'>" . __('Default contract') . "</td>";
         echo "<td colspan='2'>";
-        $current_default_contract_strategy = $entity->fields['contracts_strategy_default'];
+        $current_default_contract_value = $entity->fields['contracts_id_default'];
 
         $toadd = [
             self::CONFIG_PARENT => __('Inheritance of the parent entity'),
@@ -2748,17 +2766,15 @@ class Entity extends CommonTreeDropdown
         }
 
         Contract::dropdown([
-            'name'      => 'contracts_id_default',
-            'condition' => Contract::getExpiredCriteria(),
-            'entity'    => $entity->getID(),
-            'toadd'     => $toadd,
-            'value'     => $current_default_contract_strategy == 0
-                ? $entity->fields['contracts_id_default']
-                : $current_default_contract_strategy,
+         'name'      => 'contracts_id_default',
+         'condition' => Contract::getExpiredCriteria(),
+         'entity'    => $entity->getID(),
+         'toadd'     => $toadd,
+         'value'     => $current_default_contract_value,
         ]);
 
         // If the entity is using it's parent value, print it
-        if ($current_default_contract_strategy == self::CONFIG_PARENT) {
+        if ($current_default_contract_value == self::CONFIG_PARENT && $ID != 0) {
             $inherited_default_contract_strategy = self::getUsedConfig(
                 'contracts_strategy_default',
                 $entity->fields['entities_id']
@@ -3460,7 +3476,7 @@ class Entity extends CommonTreeDropdown
                 return Infocom::getAlertName($values[$field]);
 
             case 'entities_id_software':
-                $strategy = $values['entities_strategy_software'] ?? 0;
+                $strategy = $values['entities_strategy_software'] ?? $values[$field];
                 if ($strategy == self::CONFIG_NEVER) {
                     return __('No change of entity');
                 }
@@ -3470,14 +3486,14 @@ class Entity extends CommonTreeDropdown
                 return Dropdown::getDropdownName('glpi_entities', $values[$field]);
 
             case 'tickettemplates_id':
-                $strategy = $values['tickettemplates_strategy'] ?? 0;
+                $strategy = $values['tickettemplates_strategy'] ?? $values[$field];
                 if ($values['tickettemplates_strategy'] == self::CONFIG_PARENT) {
                     return __('Inheritance of the parent entity');
                 }
                 return Dropdown::getDropdownName(TicketTemplate::getTable(), $values[$field]);
 
             case 'calendars_id':
-                $strategy = $values['calendars_strategy'] ?? 0;
+                $strategy = $values['calendars_strategy'] ?? $values[$field];
                 if ($strategy == self::CONFIG_PARENT) {
                     return __('Inheritance of the parent entity');
                 } elseif ($values[$field] == 0) {
