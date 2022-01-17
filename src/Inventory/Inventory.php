@@ -416,6 +416,21 @@ class Inventory
     }
 
    /**
+    * Clenup temporary file
+    *
+    * @return void
+    */
+    public function cleanTempFile()
+    {
+        $ext = (Request::XML_MODE === $this->inventory_format ? 'xml' : 'json');
+        $tmpfile = sprintf('%s/%s.%s', GLPI_INVENTORY_DIR, $this->inventory_id, $ext);
+
+        if (file_exists($tmpfile)) {
+            unlink($tmpfile);
+        }
+    }
+
+   /**
     * Get error
     *
     * @return array
