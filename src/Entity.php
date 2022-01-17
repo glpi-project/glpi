@@ -534,22 +534,22 @@ class Entity extends CommonTreeDropdown
     public function post_getFromDB()
     {
         // Copy config "strategy" fields in corresponding "id" field.
-        if ($this->fields['calendars_strategy'] < 0) {
+        if (($this->fields['calendars_strategy'] ?? 0) < 0) {
             $this->fields['calendars_id'] = $this->fields['calendars_strategy'];
         }
-        if ($this->fields['changetemplates_strategy'] < 0) {
+        if (($this->fields['changetemplates_strategy'] ?? 0) < 0) {
             $this->fields['changetemplates_id'] = $this->fields['changetemplates_strategy'];
         }
-        if ($this->fields['contracts_strategy_default'] < 0) {
+        if (($this->fields['contracts_strategy_default'] ?? 0) < 0) {
             $this->fields['contracts_id_default'] = $this->fields['contracts_strategy_default'];
         }
-        if ($this->fields['entities_strategy_software'] < 0) {
+        if (($this->fields['entities_strategy_software'] ?? 0) < 0) {
             $this->fields['entities_id_software'] = $this->fields['entities_strategy_software'];
         }
-        if ($this->fields['problemtemplates_strategy'] < 0) {
+        if (($this->fields['problemtemplates_strategy'] ?? 0) < 0) {
             $this->fields['problemtemplates_id'] = $this->fields['problemtemplates_strategy'];
         }
-        if ($this->fields['tickettemplates_strategy'] < 0) {
+        if (($this->fields['tickettemplates_strategy'] ?? 0) < 0) {
             $this->fields['tickettemplates_id'] = $this->fields['tickettemplates_strategy'];
         }
     }
