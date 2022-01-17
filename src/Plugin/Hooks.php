@@ -112,6 +112,17 @@ class Hooks
     const PROLOG_RESPONSE = 'prolog_response';
     const NETWORK_DISCOVERY = 'network_discovery';
     const NETWORK_INVENTORY = 'network_inventory';
+    const INVENTORY_GET_PARAMS = 'inventory_get_params';
+
+   // Agent contact request related hooks
+    const HANDLE_INVENTORY_TASK    = 'handle_inventory_task';
+    const HANDLE_NETDISCOVERY_TASK = 'handle_netdiscovery_task';
+    const HANDLE_NETINVENTORY_TASK = 'handle_netinventory_task';
+    const HANDLE_ESX_TASK          = 'handle_esx_task';
+    const HANDLE_COLLECT_TASK      = 'handle_collect_task';
+    const HANDLE_DEPLOY_TASK       = 'handle_deploy_task';
+    const HANDLE_WAKEONLAN_TASK    = 'handle_wakeonlan_task';
+    const HANDLE_REMOTEINV_TASK    = 'handle_remoteinventory_task';
 
    // Debug / Development hooks
     const DEBUG_TABS = 'debug_tabs';

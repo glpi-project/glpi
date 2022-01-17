@@ -105,27 +105,43 @@ class Request extends AbstractRequest
 
    /**
      * Handle Task
+     *
      * @param string $task  Task (one of self::*_TASK)
+     *
      * @return array
      */
     protected function handleTask($task): array
     {
+        $params = [
+           'options' => [
+               'response' => []
+           ],
+           'item' => $this->inventory->getAgent(),
+        ];
         switch ($task) {
             case self::INVENT_TASK:
-                return $this->handleInventoryTask();
+                return $this->handleInventoryTask($params);
                 break;
             case self::NETDISCOVERY_TASK:
+                return $this->handleNetDiscoveryTask($params);
+                break;
             case self::NETINV_TASK:
+                return $this->handleNetInventoryTask($params);
+                break;
             case self::ESX_TASK:
+                return $this->handleESXTask($params);
+                break;
             case self::COLLECT_TASK:
+                return $this->handleCollectTask($params);
+                break;
             case self::DEPLOY_TASK:
+                return $this->handleDeployTask($params);
+                break;
             case self::WOL_TASK:
+                return $this->handleWakeOnLanTask($params);
+                break;
             case self::REMOTEINV_TASK:
-               // Task is not supported, disable it and add unsupported message in response
-                $this->addToResponse([
-                    "message" => "$task task not supported",
-                    "disabled" => $task
-                ]);
+                return $this->handleRemoteInventoryTask($params);
                 break;
             default:
                 $this->addError("Task '$task' is not supported.", 400);
@@ -160,7 +176,7 @@ class Request extends AbstractRequest
             'item' => $this->inventory->getAgent()
         ];
 
-        $params = Plugin::doHookFunction("inventory_get_params", $params);
+        $params = Plugin::doHookFunction(Hooks::INVENTORY_GET_PARAMS, $params);
 
         $this->addToResponse($params['options']['response']);
     }
@@ -310,8 +326,16 @@ class Request extends AbstractRequest
        //For the moment it's the Agent who informs us about the active tasks
         if (property_exists($this->inventory->getRawData(), 'enabled-tasks')) {
             foreach ($this->inventory->getRawData()->{'enabled-tasks'} as $task) {
-                if ((!empty($handle = $this->handleTask($task)))) {
-                    $response['tasks'] = $handle;
+                $handle = $this->handleTask($task);
+                if (is_array($handle) && count($handle)) {
+                   // Insert related task information under tasks list property
+                    $response['tasks'][$task] = $handle;
+                } else {
+                   // Task is not supported, disable it and add unsupported message in response
+                    $this->addToResponse([
+                        "message" => "$task task not supported",
+                        "disabled" => $task
+                    ]);
                 }
             }
         }
@@ -354,18 +378,121 @@ class Request extends AbstractRequest
     }
 
    /**
-    * Handle agent inventory task request
+    * Handle agent enabled inventory task support on contact request
+    *
+    * @param array $params Required hooks params
     *
     * @return array
     */
-    public function handleInventoryTask()
+    public function handleInventoryTask(array $params): array
     {
+       // Preset response as glpi supports native inventory by default
+        $params['options']['response'][self::INVENT_TASK] = [
+            'server' => 'glpi',
+            'version' => GLPI_VERSION
+        ];
+        $params = Plugin::doHookFunction(Hooks::HANDLE_INVENTORY_TASK, $params);
 
-        $params['options']['response'] = [];
-        $params['item'] = $this->inventory->getAgent();
-        $params = Plugin::doHookFunction("handle_inventory_task", $params);
+       // Return inventory task support
+        return $params['options']['response'][self::INVENT_TASK] ?? [];
+    }
 
-        return $params['options']['response'];
+   /**
+    * Handle agent enabled netdiscovery task support on contact request
+    *
+    * @param array $params Required hooks params
+    *
+    * @return array
+    */
+    public function handleNetDiscoveryTask(array $params): array
+    {
+        $params = Plugin::doHookFunction(Hooks::HANDLE_NETDISCOVERY_TASK, $params);
+
+        return $params['options']['response'][self::NETDISCOVERY_TASK] ?? [];
+    }
+
+   /**
+    * Handle agent enabled netinventory task support on contact request
+    *
+    * @param array $params Required hooks params
+    *
+    * @return array
+    */
+    public function handleNetInventoryTask(array $params): array
+    {
+        $params = Plugin::doHookFunction(Hooks::HANDLE_NETINVENTORY_TASK, $params);
+
+        return $params['options']['response'][self::NETINV_TASK] ?? [];
+    }
+
+   /**
+    * Handle agent enabled ESX task support on contact request
+    *
+    * @param array $params Required hooks params
+    *
+    * @return array
+    */
+    public function handleESXTask(array $params): array
+    {
+        $params = Plugin::doHookFunction(Hooks::HANDLE_ESX_TASK, $params);
+
+        return $params['options']['response'][self::ESX_TASK] ?? [];
+    }
+
+   /**
+    * Handle agent enabled collect task support on contact request
+    *
+    * @param array $params Required hooks params
+    *
+    * @return array
+    */
+    public function handleCollectTask(array $params): array
+    {
+        $params = Plugin::doHookFunction(Hooks::HANDLE_COLLECT_TASK, $params);
+
+        return $params['options']['response'][self::COLLECT_TASK] ?? [];
+    }
+
+   /**
+    * Handle agent enabled deploy task support on contact request
+    *
+    * @param array $params Required hooks params
+    *
+    * @return array
+    */
+    public function handleDeployTask(array $params): array
+    {
+        $params = Plugin::doHookFunction(Hooks::HANDLE_DEPLOY_TASK, $params);
+
+        return $params['options']['response'][self::DEPLOY_TASK] ?? [];
+    }
+
+   /**
+    * Handle agent enabled wakeonlan task support on contact request
+    *
+    * @param array $params Required hooks params
+    *
+    * @return array
+    */
+    public function handleWakeOnLanTask(array $params): array
+    {
+        $params = Plugin::doHookFunction(Hooks::HANDLE_WAKEONLAN_TASK, $params);
+
+        return $params['options']['response'][self::WAKEONLAN_TASK] ?? [];
+    }
+
+   /**
+    * Handle agent enabled remoteinventory task support on contact request
+    *
+    * @param array $params Required hooks params
+    *
+    * @return array
+    */
+    public function handleRemoteInventoryTask(array $params): array
+    {
+        $params = Plugin::doHookFunction(Hooks::HANDLE_REMOTEINV_TASK, $params);
+
+        return $params['options']['response'][self::REMOTEINV_TASK] ?? [];
     }
 
    /**
