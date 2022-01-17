@@ -201,7 +201,7 @@ class Agent extends DbTestCase
             ->string['version']->isIdenticalTo('2.5.2-1.fc31')
             ->string['itemtype']->isIdenticalTo('Computer')
             ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
-        $old_agents_id =$agent['id'];
+        $old_agents_id = $agent['id'];
 
         $this
             ->given($this->newTestedInstance)
