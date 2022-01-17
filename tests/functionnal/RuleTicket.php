@@ -870,4 +870,66 @@ class RuleTicket extends DbTestCase {
       $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
       $this->integer($ticket->fields['impact'])->isNotEqualTo(1);
    }
+
+   public function testHeaderCriteria(): void {
+       $this->login();
+
+       $ruleticket = new \RuleTicket();
+       $rulecrit   = new \RuleCriteria();
+       $ruleaction = new \RuleAction();
+
+       $ruletid = $ruleticket->add($ruletinput = [
+          'name'         => 'test x-priority',
+          'match'        => 'AND',
+          'is_active'    => 1,
+          'sub_type'     => 'RuleTicket',
+          'condition'    => \RuleTicket::ONADD,
+          'is_recursive' => 1,
+       ]);
+       $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+       $crit_id = $rulecrit->add($crit_input = [
+          'rules_id'  => $ruletid,
+          'criteria'  => '_x-priority',
+          'condition' => \Rule::PATTERN_IS,
+          'pattern'   => '1',
+       ]);
+       $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+       // Create action to put priority to very high
+       $action_id = $ruleaction->add($action_input = [
+          'rules_id'    => $ruletid,
+          'action_type' => 'assign',
+          'field'       => 'priority',
+          'value'       => 5,
+       ]);
+       $this->checkInput($ruleaction, $action_id, $action_input);
+
+       // Create ticket with "x-priority" = 1 in "_head" property
+       $ticket = new \Ticket();
+       $tickets_id = $ticket->add([
+          'name'              => 'test x-priority header',
+          'content'           => 'test x-priority header',
+          '_head'             => [
+             'x-priority' => '1'
+          ]
+       ]);
+
+       // Verify ticket has priority 5
+       $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+       $this->integer($ticket->fields['priority'])->isEqualTo(5);
+
+       // Retest ticket with different x-priority
+       $tickets_id = $ticket->add([
+          'name'              => 'test x-priority header',
+          'content'           => 'test x-priority header',
+          '_head'             => [
+             'x-priority' => '2'
+          ]
+       ]);
+
+       // Verify ticket does not have priority 5
+       $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+       $this->integer($ticket->fields['priority'])->isNotEqualTo(5);
+   }
 }
