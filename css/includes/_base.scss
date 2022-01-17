@@ -29,32 +29,6 @@
  * ---------------------------------------------------------------------
  */
 
-$info: #80abe4;
-$enable-negative-margins: true;
-$link-hover-decoration: none;
-$logo-light: "../pics/logos/logo-GLPI-100-white.png" !default;
-$logo-light-reduced: "../pics/logos/logo-G-100-white.png" !default;
-$logo-dark: "../pics/logos/logo-GLPI-100-black.png" !default;
-$logo-dark-reduced: "../pics/logos/logo-G-100-black.png" !default;
-$logo-dark-login: "../pics/logos/logo-GLPI-250-black.png" !default;
-$logo-light-login: "../pics/logos/logo-GLPI-250-white.png" !default;
-$logo: $logo-light;
-$logo_reduced: $logo-light-reduced;
-
-@import "fonts";
-
-$font-family-sans-serif: inter, -apple-system, blinkmacsystemfont, san francisco, segoe ui, roboto, helvetica neue, sans-serif !default;
-
-@if $is-dark {
-   @import "dark";
-} @else {
-   @import "~@tabler/core/src/scss/tabler";
-}
-
-$ti-font-path: "../css/lib/tabler/icons/iconfont/fonts";
-
-@import "~@tabler/icons/iconfont/tabler-icons";
-
 $mainmenu_bg: $dark !default;
 $mainmenu_fg: $light !default;
 $search_bg: transparentize($mainmenu_bg, 0.95) !default;

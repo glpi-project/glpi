@@ -29,6 +29,9 @@
  * ---------------------------------------------------------------------
  */
 
+$info: #80abe4;
+$enable-negative-margins: true;
+$link-hover-decoration: none;
 $table_header_bg: $dark !default;
 $input-bg: darken($dark, 2%) !default;
 $input-color: $light !default;
@@ -63,7 +66,9 @@ $toast-header-background-color: $gray-400;
 $toast-header-color: $light;
 $btn-close-color: $light;
 
+@import "fonts";
 @import "~@tabler/core/src/scss/tabler";
+@import "logos";
 
 @mixin dark-mode {
    $selector: &;
@@ -167,3 +172,5 @@ body .modal-header {
 .toast {
    background-color: lighten($dark, 5%);
 }
+
+@import "includes";
