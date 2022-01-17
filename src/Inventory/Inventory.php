@@ -333,6 +333,7 @@ class Inventory
             }
         } catch (\Exception $e) {
             $DB->rollback();
+            $this->cleanTempFile();
             throw $e;
         } finally {
             unset($_SESSION['glpiinventoryuserrunning']);
