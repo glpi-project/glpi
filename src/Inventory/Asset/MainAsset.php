@@ -580,7 +580,7 @@ abstract class MainAsset extends InventoryAsset
     */
     public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = 0)
     {
-        global $CFG_GLPI;
+        global $DB;
 
         $key = $this->current_key;
         $val = &$this->data[$key];
@@ -616,6 +616,23 @@ abstract class MainAsset extends InventoryAsset
             if (($this->agent->fields['items_id'] ?? 0) != $items_id) {
                 $this->agent->update(['id' => $this->agent->fields['id'], 'items_id' => $items_id, 'entities_id' => $entities_id]);
             }
+        }
+
+        //check for any old agent to remove
+        $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM' => $this->agent->getTable(),
+            'WHERE' => [
+                'itemtype' => $this->item->getType(),
+                'items_id' => $items_id,
+                'NOT' => [
+                    'id' => $this->agent->fields['id']
+                ]
+            ]
+        ]);
+        foreach ($iterator as $old_agent) {
+            $agent = new \Agent();
+            $agent->delete(['id' => $old_agent['id']], true);
         }
 
         $val->id = $this->item->fields['id'];
