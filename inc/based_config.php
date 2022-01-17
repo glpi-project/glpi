@@ -99,7 +99,7 @@ include_once(GLPI_ROOT . "/inc/autoload.function.php");
       'GLPI_AJAX_DASHBOARD'         => '1',
       'GLPI_CALDAV_IMPORT_STATE'    => 0, // external events created from a caldav client will take this state by default (0 = Planning::INFO)
       'GLPI_DEMO_MODE'              => '0',
-      'GLPI_CENTRAL_WARNING'        => '1',
+      'GLPI_CENTRAL_WARNINGS'       => '1', // display (1), or not (0), warnings on GLPI Central page
     ];
 
    // Define constants values based on server env variables (i.e. defined using apache SetEnv directive)

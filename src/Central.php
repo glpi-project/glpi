@@ -115,7 +115,7 @@ class Central extends CommonGLPI
         Plugin::doHook(Hooks::DISPLAY_CENTRAL);
         echo "</table>";
 
-        if (GLPI_CENTRAL_WARNING) {
+        if (GLPI_CENTRAL_WARNINGS) {
             self::showMessages();
         }
 
