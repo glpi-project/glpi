@@ -38,7 +38,7 @@ class PhpVersion extends \GLPITestCase
     public function testCheckWithUpToDateVersion()
     {
 
-        $this->newTestedInstance(GLPI_MIN_PHP);
+        $this->newTestedInstance(GLPI_MIN_PHP, GLPI_MAX_PHP);
         $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
         $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(['PHP version (' . PHP_VERSION . ') is supported.']);
@@ -47,12 +47,12 @@ class PhpVersion extends \GLPITestCase
     public function testCheckOutdatedVersion()
     {
 
-        $this->newTestedInstance('20.7');
+        $this->newTestedInstance('20.7', '20.8');
         $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
         $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(
              [
-               'PHP version must be at least 20.7.'
+               'PHP version must be between 20.7 and 20.8 (exclusive).'
              ]
          );
     }

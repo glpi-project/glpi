@@ -54,7 +54,13 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
 
 * A web server (Apache, Nginx, IIS, etc.)
 * MariaDB >= 10.2 or MySQL >= 5.7
-* PHP 7.4 or higher
+* PHP (See compatibility matrix below)
+
+    | GLPI Version | Minimum PHP | Maximum PHP |
+    | ------------ | ----------- | ----------- |
+    | 9.4.X        | 5.6         | 7.4         |
+    | 9.5.X        | 7.2         | 8.0         |
+    | 10.0.X       | 7.4         | 8.1         |
 * Mandatory PHP extensions:
     - dom, fileinfo, json, session, simplexml (these are enabled in PHP by default)
     - curl (access to remote resources, like inventory agents, marketplace API, RSS feeds, ...)

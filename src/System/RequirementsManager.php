@@ -63,7 +63,7 @@ class RequirementsManager
     {
         $requirements = [];
 
-        $requirements[] = new PhpVersion(GLPI_MIN_PHP);
+        $requirements[] = new PhpVersion(GLPI_MIN_PHP, GLPI_MAX_PHP);
 
         $requirements[] = new SessionsConfiguration();
 
