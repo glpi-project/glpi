@@ -43,10 +43,11 @@ $migration->addConfig(\Glpi\Inventory\Conf::$defaults, 'inventory');
 
 $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 if (!$DB->tableExists('glpi_agenttypes')) {
     $query = "CREATE TABLE `glpi_agenttypes` (
-         `id` int unsigned NOT NULL AUTO_INCREMENT,
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `name` varchar(255) DEFAULT NULL,
          PRIMARY KEY (`id`),
          KEY `name` (`name`)
@@ -64,17 +65,17 @@ if (!$DB->tableExists('glpi_agenttypes')) {
 }
 if (!$DB->tableExists('glpi_agents')) {
     $query = "CREATE TABLE `glpi_agents` (
-         `id` int unsigned NOT NULL AUTO_INCREMENT,
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `deviceid` VARCHAR(255) NOT NULL,
-         `entities_id` int unsigned NOT NULL DEFAULT '0',
+         `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
          `name` varchar(255) DEFAULT NULL,
-         `agenttypes_id` int unsigned NOT NULL,
+         `agenttypes_id` int {$default_key_sign} NOT NULL,
          `last_contact` timestamp NULL DEFAULT NULL,
          `version` varchar(255) DEFAULT NULL,
          `locked` tinyint NOT NULL DEFAULT '0',
          `itemtype` varchar(100) NOT NULL,
-         `items_id` int unsigned NOT NULL,
+         `items_id` int {$default_key_sign} NOT NULL,
          `useragent` varchar(255) DEFAULT NULL,
          `tag` varchar(255) DEFAULT NULL,
          `port` varchar(6) DEFAULT NULL,
@@ -137,12 +138,12 @@ $ADDTODISPLAYPREF['Agent'] = [2, 4, 10, 8, 11, 6];
 
 if (!$DB->tableExists('glpi_rulematchedlogs')) {
     $query = "CREATE TABLE `glpi_rulematchedlogs` (
-         `id` int unsigned NOT NULL AUTO_INCREMENT,
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `date` timestamp NULL DEFAULT NULL,
-         `items_id` int unsigned NOT NULL DEFAULT '0',
+         `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `itemtype` varchar(100) DEFAULT NULL,
-         `rules_id` int unsigned NULL DEFAULT NULL,
-         `agents_id` int unsigned NOT NULL DEFAULT '0',
+         `rules_id` int {$default_key_sign} NULL DEFAULT NULL,
+         `agents_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `method` varchar(255) DEFAULT NULL,
          PRIMARY KEY (`id`),
          KEY `item` (`itemtype`,`items_id`),
@@ -164,9 +165,9 @@ if (countElementsInTable(Rule::getTable(), ['sub_type' => 'RuleImportAsset']) ==
 //locked fields
 if (!$DB->tableExists('glpi_lockedfields')) {
     $query = "CREATE TABLE `glpi_lockedfields` (
-         `id` int unsigned NOT NULL AUTO_INCREMENT,
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `itemtype` varchar(100) DEFAULT NULL,
-         `items_id` int unsigned NOT NULL DEFAULT '0',
+         `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `field` varchar(50) NOT NULL,
          `value` varchar(255) DEFAULT NULL,
          `date_creation` timestamp NULL DEFAULT NULL,
@@ -189,7 +190,7 @@ if (!$DB->fieldExists('glpi_entities', 'transfers_id')) {
     $migration->addField(
         'glpi_entities',
         'transfers_id',
-        'int unsigned NOT NULL DEFAULT 0',
+        "int {$default_key_sign} NOT NULL DEFAULT 0",
         [
             'value'     => -2,
             // 0 value for root entity
@@ -214,7 +215,7 @@ if (!$DB->fieldExists('glpi_networkequipments', 'autoupdatesystems_id')) {
     $migration->addField(
         'glpi_networkequipments',
         'autoupdatesystems_id',
-        "int unsigned NOT NULL DEFAULT '0'",
+        "int {$default_key_sign} NOT NULL DEFAULT '0'",
         [
          'after' => 'date_creation',
         ]
@@ -316,8 +317,8 @@ foreach ($netport_fields as $netport_field => $definition) {
 
 if (!$DB->tableExists('glpi_unmanageds')) {
     $query = "CREATE TABLE `glpi_unmanageds` (
-         `id` int unsigned NOT NULL AUTO_INCREMENT,
-         `entities_id` int unsigned NOT NULL DEFAULT '0',
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+         `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
          `name` varchar(255) DEFAULT NULL,
          `serial` varchar(255) DEFAULT NULL,
@@ -326,24 +327,24 @@ if (!$DB->tableExists('glpi_unmanageds')) {
          `contact_num` varchar(255) DEFAULT NULL,
          `date_mod` timestamp NULL DEFAULT NULL,
          `comment` text,
-         `locations_id` int unsigned NOT NULL DEFAULT '0',
-         `networks_id` int unsigned NOT NULL DEFAULT '0',
-         `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
+         `locations_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+         `networks_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+         `manufacturers_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_deleted` tinyint NOT NULL DEFAULT '0',
-         `users_id` int unsigned NOT NULL DEFAULT '0',
-         `groups_id` int unsigned NOT NULL DEFAULT '0',
-         `states_id` int unsigned NOT NULL DEFAULT '0',
+         `users_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+         `groups_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+         `states_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_dynamic` tinyint NOT NULL DEFAULT '0',
          `date_creation` timestamp NULL DEFAULT NULL,
-         `autoupdatesystems_id` int unsigned NOT NULL DEFAULT '0',
+         `autoupdatesystems_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `sysdescr` text,
-         `domains_id` int unsigned NOT NULL DEFAULT '0',
-         `agents_id` int unsigned NOT NULL DEFAULT '0',
+         `domains_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+         `agents_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `itemtype` varchar(100) NULL DEFAULT NULL,
          `accepted` tinyint NOT NULL DEFAULT '0',
          `hub` tinyint NOT NULL DEFAULT '0',
          `ip` varchar(255) DEFAULT NULL,
-         `snmpcredentials_id` int unsigned NOT NULL DEFAULT '0',
+         `snmpcredentials_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          PRIMARY KEY (`id`),
          KEY `name` (`name`),
          KEY `entities_id` (`entities_id`),
@@ -373,8 +374,8 @@ $ADDTODISPLAYPREF['Unmanaged'] = [2, 4, 3, 5, 7, 10, 18, 14, 15, 9];
 
 if (!$DB->tableExists('glpi_networkporttypes')) {
     $query = "CREATE TABLE `glpi_networkporttypes` (
-         `id` int unsigned NOT NULL AUTO_INCREMENT,
-         `entities_id` int unsigned NOT NULL DEFAULT '0',
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+         `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
          `value_decimal` int NOT NULL,
          `name` varchar(255) DEFAULT NULL,
@@ -439,8 +440,8 @@ $ADDTODISPLAYPREF['NetworkPort'] = [3, 30, 31, 32, 33, 34, 35, 36, 38, 39, 40];
 
 if (!$DB->tableExists('glpi_printers_cartridgeinfos')) {
     $query = "CREATE TABLE `glpi_printers_cartridgeinfos` (
-         `id` int unsigned NOT NULL AUTO_INCREMENT,
-         `printers_id` int unsigned NOT NULL,
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+         `printers_id` int {$default_key_sign} NOT NULL,
          `property` varchar(255)  NOT NULL,
          `value` varchar(255)  NOT NULL,
          `date_mod` timestamp NULL DEFAULT NULL,
@@ -455,8 +456,8 @@ if (!$DB->tableExists('glpi_printers_cartridgeinfos')) {
 
 if (!$DB->tableExists('glpi_printerlogs')) {
     $query = "CREATE TABLE `glpi_printerlogs` (
-         `id` int unsigned NOT NULL AUTO_INCREMENT,
-         `printers_id` int unsigned NOT NULL,
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+         `printers_id` int {$default_key_sign} NOT NULL,
          `total_pages` int NOT NULL DEFAULT '0',
          `bw_pages` int NOT NULL DEFAULT '0',
          `color_pages` int NOT NULL DEFAULT '0',
@@ -479,11 +480,11 @@ if (!$DB->tableExists('glpi_printerlogs')) {
 
 if (!$DB->tableExists('glpi_networkportconnectionlogs')) {
     $query = "CREATE TABLE `glpi_networkportconnectionlogs` (
-         `id` int unsigned NOT NULL AUTO_INCREMENT,
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `date` timestamp NULL DEFAULT NULL,
          `connected` tinyint NOT NULL DEFAULT '0',
-         `networkports_id_source` int unsigned NOT NULL DEFAULT '0',
-         `networkports_id_destination` int unsigned NOT NULL DEFAULT '0',
+         `networkports_id_source` int {$default_key_sign} NOT NULL DEFAULT '0',
+         `networkports_id_destination` int {$default_key_sign} NOT NULL DEFAULT '0',
          PRIMARY KEY (`id`),
          KEY `date` (`date`),
          KEY `networkports_id_destination` (`networkports_id_destination`),
@@ -497,13 +498,13 @@ if (!$DB->tableExists('glpi_networkportconnectionlogs')) {
 
 if (!$DB->tableExists('glpi_networkportmetrics')) {
     $query = "CREATE TABLE `glpi_networkportmetrics` (
-         `id` int unsigned NOT NULL AUTO_INCREMENT,
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `date` timestamp NULL DEFAULT NULL,
          `ifinbytes` bigint NOT NULL DEFAULT '0',
          `ifinerrors` bigint NOT NULL DEFAULT '0',
          `ifoutbytes` bigint NOT NULL DEFAULT '0',
          `ifouterrors` bigint NOT NULL DEFAULT '0',
-         `networkports_id` int unsigned NOT NULL DEFAULT '0',
+         `networkports_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          PRIMARY KEY (`id`),
          KEY `date` (`date`),
          KEY `networkports_id` (`networkports_id`)
@@ -513,18 +514,18 @@ if (!$DB->tableExists('glpi_networkportmetrics')) {
 
 if (!$DB->tableExists('glpi_refusedequipments')) {
     $query = "CREATE TABLE `glpi_refusedequipments` (
-         `id` int unsigned NOT NULL AUTO_INCREMENT,
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `name` varchar(255) DEFAULT NULL,
          `itemtype` varchar(100) DEFAULT NULL,
-         `entities_id` int unsigned NOT NULL DEFAULT '0',
+         `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `ip` varchar(255) DEFAULT NULL,
          `mac` varchar(255) DEFAULT NULL,
-         `rules_id` int unsigned NOT NULL DEFAULT '0',
+         `rules_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `method` varchar(255) DEFAULT NULL,
          `serial` varchar(255) DEFAULT NULL,
          `uuid` varchar(255) DEFAULT NULL,
-         `agents_id` int unsigned NOT NULL DEFAULT '0',
-         `autoupdatesystems_id` int unsigned NOT NULL DEFAULT '0',
+         `agents_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+         `autoupdatesystems_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `date_creation` timestamp NULL DEFAULT NULL,
          `date_mod` timestamp NULL DEFAULT NULL,
          PRIMARY KEY (`id`),
@@ -546,7 +547,7 @@ if (!$DB->tableExists('glpi_refusedequipments')) {
         $migration->addField(
             'glpi_networkequipments',
             'autoupdatesystems_id',
-            "int unsigned NOT NULL DEFAULT '0'",
+            "int {$default_key_sign} NOT NULL DEFAULT '0'",
             [
             'after' => 'agents_id'
             ]
@@ -578,8 +579,8 @@ CronTask::Register(
 
 if (!$DB->tableExists('glpi_usbvendors')) {
     $query = "CREATE TABLE `glpi_usbvendors` (
-         `id` int unsigned NOT NULL AUTO_INCREMENT,
-         `entities_id` int unsigned NOT NULL DEFAULT '0',
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+         `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
          `vendorid` varchar(4) NOT NULL,
          `deviceid` varchar(4) DEFAULT NULL,
@@ -606,8 +607,8 @@ $ADDTODISPLAYPREF['USBVendor'] = [10, 11];
 
 if (!$DB->tableExists('glpi_pcivendors')) {
     $query = "CREATE TABLE `glpi_pcivendors` (
-         `id` int unsigned NOT NULL AUTO_INCREMENT,
-         `entities_id` int unsigned NOT NULL DEFAULT '0',
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+         `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
          `vendorid` varchar(4) NOT NULL,
          `deviceid` varchar(4) DEFAULT NULL,
@@ -634,7 +635,7 @@ $ADDTODISPLAYPREF['PCIVendor'] = [10, 11];
 
 if (!$DB->tableExists('glpi_snmpcredentials')) {
     $query = "CREATE TABLE `glpi_snmpcredentials` (
-         `id` int unsigned NOT NULL AUTO_INCREMENT,
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `name` varchar(64) DEFAULT NULL,
          `snmpversion` varchar(8) NOT NULL DEFAULT '1',
          `community` varchar(255) DEFAULT NULL,
@@ -680,7 +681,7 @@ foreach ($cred_tables as $cred_table) {
         $migration->addField(
             $cred_table,
             'snmpcredentials_id',
-            "int unsigned NOT NULL DEFAULT '0'"
+            "int {$default_key_sign} NOT NULL DEFAULT '0'"
         );
         $migration->addKey($cred_table, 'snmpcredentials_id');
     }
@@ -690,7 +691,7 @@ if (!$DB->fieldExists('glpi_printers', 'autoupdatesystems_id')) {
     $migration->addField(
         'glpi_printers',
         'autoupdatesystems_id',
-        "int unsigned NOT NULL DEFAULT '0'",
+        "int {$default_key_sign} NOT NULL DEFAULT '0'",
         [
          'after' => 'snmpcredentials_id',
         ]

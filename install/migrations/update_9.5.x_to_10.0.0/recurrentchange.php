@@ -40,6 +40,7 @@ $migration->displayMessage("Adding recurrent changes");
 
 $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 $DB->updateOrDie(
     'glpi_crontasks',
@@ -57,18 +58,18 @@ $DB->updateOrDie(
 $recurrent_change_table = 'glpi_recurrentchanges';
 if (!$DB->tableExists($recurrent_change_table)) {
     $DB->queryOrDie("CREATE TABLE `$recurrent_change_table` (
-         `id` int unsigned NOT NULL AUTO_INCREMENT,
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `name` varchar(255) DEFAULT NULL,
          `comment` text,
-         `entities_id` int unsigned NOT NULL DEFAULT '0',
+         `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
          `is_active` tinyint NOT NULL DEFAULT '0',
-         `changetemplates_id` int unsigned NOT NULL DEFAULT '0',
+         `changetemplates_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `begin_date` timestamp NULL DEFAULT NULL,
          `periodicity` varchar(255) DEFAULT NULL,
          `create_before` int NOT NULL DEFAULT '0',
          `next_creation_date` timestamp NULL DEFAULT NULL,
-         `calendars_id` int unsigned NOT NULL DEFAULT '0',
+         `calendars_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `end_date` timestamp NULL DEFAULT NULL,
          PRIMARY KEY (`id`),
          KEY `entities_id` (`entities_id`),

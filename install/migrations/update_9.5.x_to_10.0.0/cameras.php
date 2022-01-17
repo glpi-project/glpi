@@ -31,12 +31,18 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
+
 $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 if (!$DB->tableExists('glpi_devicecameras')) {
     $query = "CREATE TABLE `glpi_devicecameras` (
-      `id` int unsigned NOT NULL AUTO_INCREMENT,
+      `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `designation` varchar(255) DEFAULT NULL,
       `flashunit` tinyint NOT NULL DEFAULT '0',
       `lensfacing` varchar(255) DEFAULT NULL,
@@ -44,10 +50,10 @@ if (!$DB->tableExists('glpi_devicecameras')) {
       `focallength` varchar(255) DEFAULT NULL,
       `sensorsize` varchar(255) DEFAULT NULL,
       `comment` text,
-      `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
-      `entities_id` int unsigned NOT NULL DEFAULT '0',
+      `manufacturers_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+      `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
       `is_recursive` tinyint NOT NULL DEFAULT '0',
-      `devicecameramodels_id` int unsigned DEFAULT NULL,
+      `devicecameramodels_id` int {$default_key_sign} DEFAULT NULL,
       `support` varchar(255) DEFAULT NULL,
       `date_mod` timestamp NULL DEFAULT NULL,
       `date_creation` timestamp NULL DEFAULT NULL,
@@ -68,7 +74,7 @@ if (!$DB->tableExists('glpi_devicecameras')) {
 
 if (!$DB->tableExists('glpi_devicecameramodels')) {
     $query = "CREATE TABLE `glpi_devicecameramodels` (
-      `id` int unsigned NOT NULL AUTO_INCREMENT,
+      `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
       `comment` text,
       `product_number` varchar(255) DEFAULT NULL,
@@ -81,12 +87,12 @@ if (!$DB->tableExists('glpi_devicecameramodels')) {
 
 if (!$DB->tableExists('glpi_imageformats')) {
     $query = "CREATE TABLE `glpi_imageformats` (
-      `id` int unsigned NOT NULL AUTO_INCREMENT,
+      `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
       `date_mod` timestamp NULL DEFAULT NULL,
       `comment` text,
       `date_creation` timestamp NULL DEFAULT NULL,
-      `entities_id` int unsigned NOT NULL DEFAULT '0',
+      `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
       `is_recursive` tinyint NOT NULL DEFAULT '0',
       PRIMARY KEY (`id`),
       UNIQUE KEY `unicity` (`name`),
@@ -100,13 +106,13 @@ if (!$DB->tableExists('glpi_imageformats')) {
 
 if (!$DB->tableExists('glpi_imageresolutions')) {
     $query = "CREATE TABLE `glpi_imageresolutions` (
-      `id` int unsigned NOT NULL AUTO_INCREMENT,
+      `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
       `is_video` tinyint NOT NULL DEFAULT '0',
       `date_mod` timestamp NULL DEFAULT NULL,
       `comment` text,
       `date_creation` timestamp NULL DEFAULT NULL,
-      `entities_id` int unsigned NOT NULL DEFAULT '0',
+      `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
       `is_recursive` tinyint NOT NULL DEFAULT '0',
       PRIMARY KEY (`id`),
       UNIQUE KEY `unicity` (`name`),
@@ -121,13 +127,13 @@ if (!$DB->tableExists('glpi_imageresolutions')) {
 
 if (!$DB->tableExists('glpi_items_devicecameras')) {
     $query = "CREATE TABLE `glpi_items_devicecameras` (
-      `id` int unsigned NOT NULL AUTO_INCREMENT,
-      `items_id` int unsigned NOT NULL DEFAULT '0',
+      `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+      `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
       `itemtype` varchar(255) DEFAULT NULL,
-      `devicecameras_id` int unsigned NOT NULL DEFAULT '0',
+      `devicecameras_id` int {$default_key_sign} NOT NULL DEFAULT '0',
       `is_deleted` tinyint NOT NULL DEFAULT '0',
       `is_dynamic` tinyint NOT NULL DEFAULT '0',
-      `entities_id` int unsigned NOT NULL DEFAULT '0',
+      `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
       `is_recursive` tinyint NOT NULL DEFAULT '0',
       PRIMARY KEY (`id`),
       KEY `items_id` (`items_id`),
@@ -143,9 +149,9 @@ if (!$DB->tableExists('glpi_items_devicecameras')) {
 
 if (!$DB->tableExists('glpi_items_devicecameras_imageformats')) {
     $query = "CREATE TABLE `glpi_items_devicecameras_imageformats` (
-      `id` int unsigned NOT NULL AUTO_INCREMENT,
-      `item_devicecameras_id` int unsigned NOT NULL DEFAULT '0',
-      `imageformats_id` int unsigned NOT NULL DEFAULT '0',
+      `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+      `item_devicecameras_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+      `imageformats_id` int {$default_key_sign} NOT NULL DEFAULT '0',
       `is_dynamic` tinyint NOT NULL DEFAULT '0',
       PRIMARY KEY (`id`),
       KEY `item_devicecameras_id` (`item_devicecameras_id`),
@@ -157,9 +163,9 @@ if (!$DB->tableExists('glpi_items_devicecameras_imageformats')) {
 
 if (!$DB->tableExists('glpi_items_devicecameras_imageresolutions')) {
     $query = "CREATE TABLE `glpi_items_devicecameras_imageresolutions` (
-      `id` int unsigned NOT NULL AUTO_INCREMENT,
-      `item_devicecameras_id` int unsigned NOT NULL DEFAULT '0',
-      `imageresolutions_id` int unsigned NOT NULL DEFAULT '0',
+      `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+      `item_devicecameras_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+      `imageresolutions_id` int {$default_key_sign} NOT NULL DEFAULT '0',
       `is_dynamic` tinyint NOT NULL DEFAULT '0',
       PRIMARY KEY (`id`),
       KEY `item_devicecameras_id` (`item_devicecameras_id`),

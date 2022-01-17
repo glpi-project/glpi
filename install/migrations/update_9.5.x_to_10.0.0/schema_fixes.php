@@ -36,6 +36,8 @@
  * @var Migration $migration
  */
 
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
 // Remove the `NOT NULL` flag of comment fields and fix collation
 $tables = [
    'glpi_apiclients',
@@ -753,7 +755,7 @@ foreach ($tables as $table) {
         ['entities_id' => 0, 'no_entity_restriction' => 1],
         ['entities_id' => -1]
     );
-    $migration->changeField($table, 'entities_id', 'entities_id', 'int unsigned DEFAULT NULL');
+    $migration->changeField($table, 'entities_id', 'entities_id', "int {$default_key_sign} DEFAULT NULL");
     $migration->migrationOneTable($table); // Ensure 'entities_id' is nullable
     $DB->updateOrDie(
         $table,
@@ -768,5 +770,5 @@ $tables = [
     'glpi_savedsearches',
 ];
 foreach ($tables as $table) {
-    $migration->changeField($table, 'entities_id', 'entities_id', 'int unsigned NOT NULL DEFAULT 0');
+    $migration->changeField($table, 'entities_id', 'entities_id', "int {$default_key_sign} NOT NULL DEFAULT 0");
 }

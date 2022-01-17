@@ -39,10 +39,11 @@
 
 $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 if (!$DB->tableExists('glpi_databaseinstancetypes')) {
     $query = "CREATE TABLE `glpi_databaseinstancetypes` (
-         `id` int unsigned NOT NULL AUTO_INCREMENT,
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `name` varchar(255) DEFAULT NULL,
          `comment` text,
          `date_mod` timestamp NULL DEFAULT NULL,
@@ -57,7 +58,7 @@ if (!$DB->tableExists('glpi_databaseinstancetypes')) {
 
 if (!$DB->tableExists('glpi_databaseinstancecategories')) {
     $query = "CREATE TABLE `glpi_databaseinstancecategories` (
-         `id` int unsigned NOT NULL AUTO_INCREMENT,
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `name` varchar(255) DEFAULT NULL,
          `comment` text,
          `date_mod` timestamp NULL DEFAULT NULL,
@@ -72,23 +73,23 @@ if (!$DB->tableExists('glpi_databaseinstancecategories')) {
 
 if (!$DB->tableExists('glpi_databaseinstances')) {
     $query = "CREATE TABLE `glpi_databaseinstances` (
-         `id` int unsigned NOT NULL AUTO_INCREMENT,
-         `entities_id` int unsigned NOT NULL DEFAULT '0',
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+         `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
          `name` varchar(255) NOT NULL DEFAULT '',
          `version` varchar(255) NOT NULL DEFAULT '',
          `port` varchar(10) NOT NULL DEFAULT '',
          `path` varchar(255) NOT NULL DEFAULT '',
          `size` int NOT NULL DEFAULT '0',
-         `databaseinstancetypes_id` int unsigned NOT NULL DEFAULT '0',
-         `databaseinstancecategories_id` int unsigned NOT NULL DEFAULT '0',
-         `locations_id` int unsigned NOT NULL DEFAULT '0',
-         `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
-         `users_id_tech` int unsigned NOT NULL DEFAULT '0',
-         `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
-         `states_id` int unsigned NOT NULL DEFAULT '0',
+         `databaseinstancetypes_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+         `databaseinstancecategories_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+         `locations_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+         `manufacturers_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+         `users_id_tech` int {$default_key_sign} NOT NULL DEFAULT '0',
+         `groups_id_tech` int {$default_key_sign} NOT NULL DEFAULT '0',
+         `states_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `itemtype` varchar(100) NOT NULL DEFAULT '',
-         `items_id` int unsigned NOT NULL DEFAULT '0',
+         `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_onbackup` tinyint NOT NULL DEFAULT '0',
          `is_active` tinyint NOT NULL DEFAULT '0',
          `is_deleted` tinyint NOT NULL DEFAULT '0',
@@ -127,7 +128,7 @@ if (!$DB->fieldExists('glpi_databaseinstances', 'itemtype') || !$DB->fieldExists
     $migration->addField('glpi_databaseinstances', 'itemtype', 'string', [
       'after' => 'states_id'
     ]);
-    $migration->addField('glpi_databaseinstances', 'items_id', "int unsigned NOT NULL DEFAULT '0'", [
+    $migration->addField('glpi_databaseinstances', 'items_id', "int {$default_key_sign} NOT NULL DEFAULT '0'", [
       'after' => 'itemtype'
     ]);
     $migration->addKey('glpi_databaseinstances', ['itemtype', 'items_id'], 'item');
@@ -140,12 +141,12 @@ if ($DB->tableExists('glpi_databaseinstances_items')) {
 
 if (!$DB->tableExists('glpi_databases')) {
     $query = "CREATE TABLE `glpi_databases` (
-         `id` int unsigned NOT NULL AUTO_INCREMENT,
-         `entities_id` int unsigned NOT NULL DEFAULT '0',
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+         `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
          `name` varchar(255) NOT NULL DEFAULT '',
          `size` int NOT NULL DEFAULT '0',
-         `databaseinstances_id` int unsigned NOT NULL DEFAULT '0',
+         `databaseinstances_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_onbackup` tinyint NOT NULL DEFAULT '0',
          `is_active` tinyint NOT NULL DEFAULT '0',
          `is_deleted` tinyint NOT NULL DEFAULT '0',

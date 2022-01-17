@@ -366,7 +366,7 @@ class Migration
 
            // for plugins
             case 'autoincrement':
-                $format = "INT unsigned NOT NULL AUTO_INCREMENT";
+                $format = "INT " . DBConnection::getDefaultPrimaryKeySignOption() . " NOT NULL AUTO_INCREMENT";
                 break;
 
             default:
@@ -1432,7 +1432,7 @@ class Migration
                     $fkey_table,
                     $fkey_oldname,
                     $fkey_newname,
-                    "int unsigned NOT NULL DEFAULT '0'" // assume that foreign key always uses GLPI conventions
+                    "int " . DBConnection::getDefaultPrimaryKeySignOption() . " NOT NULL DEFAULT '0'" // assume that foreign key always uses GLPI conventions
                 );
             }
         }

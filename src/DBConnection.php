@@ -810,4 +810,22 @@ class DBConnection extends CommonDBTM
 
         return 'utf8mb4_unicode_ci';
     }
+
+   /**
+    * Return default sign option to use for primary (and foreign) key fields.
+    *
+    * @return string
+    *
+    * @since 10.0.0
+    */
+    public static function getDefaultPrimaryKeySignOption(): string
+    {
+        global $DB;
+
+        if ($DB instanceof DBmysql && $DB->allow_signed_keys) {
+            return '';
+        }
+
+        return 'unsigned';
+    }
 }
