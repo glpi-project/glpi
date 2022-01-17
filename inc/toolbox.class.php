@@ -1331,11 +1331,11 @@ class Toolbox {
             || ($img_height > $max_size)) {
             $source_aspect_ratio = $img_width / $img_height;
             if ($source_aspect_ratio < 1) {
-               $new_width  = $max_size * $source_aspect_ratio;
+               $new_width  = ceil($max_size * $source_aspect_ratio);
                $new_height = $max_size;
             } else {
                $new_width  = $max_size;
-               $new_height = $max_size / $source_aspect_ratio;
+               $new_height = ceil($max_size / $source_aspect_ratio);
             }
          }
       }
