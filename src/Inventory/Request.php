@@ -259,6 +259,7 @@ class Request extends AbstractRequest
                //nothing expected happens; this is an error
                 $this->addError("Query '" . $this->query . "' is not supported.", 400);
             }
+            $this->inventory->cleanTempFile();
         }
     }
 
@@ -302,6 +303,7 @@ class Request extends AbstractRequest
                //nothing expected happens; this is an error
                 $this->addError("Query '" . $this->query . "' is not supported.", 400);
             }
+            $this->inventory->cleanTempFile();
         }
     }
 
