@@ -344,26 +344,36 @@ class Migration extends \GLPITestCase
             'format'    => 'string',
             'options'   => [],
             'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8_unicode_ci DEFAULT NULL   ",
-            'utf8mb4'   => false,
+            'db_properties' => [
+                'use_utf8mb4' => false,
+            ],
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'string',
             'options'   => [],
             'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL   ",
+            'db_properties' => [
+                'use_utf8mb4' => true,
+            ],
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'string',
             'options'   => ['value' => 'a string'],
             'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'a string'   ",
-            'utf8mb4'   => false,
+            'db_properties' => [
+                'use_utf8mb4' => false,
+            ],
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'string',
             'options'   => ['value' => 'a string'],
             'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'a string'   ",
+            'db_properties' => [
+                'use_utf8mb4' => true,
+            ],
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
@@ -406,84 +416,126 @@ class Migration extends \GLPITestCase
             'format'    => 'text',
             'options'   => [],
             'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8_unicode_ci DEFAULT NULL   ",
-            'utf8mb4'   => false,
+            'db_properties' => [
+                'use_utf8mb4' => false,
+            ],
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'text',
             'options'   => [],
             'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8mb4_unicode_ci DEFAULT NULL   ",
+            'db_properties' => [
+                'use_utf8mb4' => true,
+            ],
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'text',
             'options'   => ['value' => 'A text'],
             'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A text'   ",
-            'utf8mb4'   => false,
+            'db_properties' => [
+                'use_utf8mb4' => false,
+            ],
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'text',
             'options'   => ['value' => 'A text'],
             'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'A text'   ",
+            'db_properties' => [
+                'use_utf8mb4' => true,
+            ],
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'mediumtext',
             'options'   => [],
             'sql'       => "ALTER TABLE `my_table` ADD `my_field` MEDIUMTEXT COLLATE utf8_unicode_ci DEFAULT NULL   ",
-            'utf8mb4'   => false,
+            'db_properties' => [
+                'use_utf8mb4' => false,
+            ],
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'mediumtext',
             'options'   => [],
             'sql'       => "ALTER TABLE `my_table` ADD `my_field` MEDIUMTEXT COLLATE utf8mb4_unicode_ci DEFAULT NULL   ",
+            'db_properties' => [
+                'use_utf8mb4' => true,
+            ],
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'mediumtext',
             'options'   => ['value' => 'A medium text'],
             'sql'       => "ALTER TABLE `my_table` ADD `my_field` MEDIUMTEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A medium text'   ",
-            'utf8mb4'   => false,
+            'db_properties' => [
+                'use_utf8mb4' => false,
+            ],
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'mediumtext',
             'options'   => ['value' => 'A medium text'],
             'sql'       => "ALTER TABLE `my_table` ADD `my_field` MEDIUMTEXT COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'A medium text'   ",
+            'db_properties' => [
+                'use_utf8mb4' => true,
+            ],
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'longtext',
             'options'   => [],
             'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8_unicode_ci DEFAULT NULL   ",
-            'utf8mb4'   => false,
+            'db_properties' => [
+                'use_utf8mb4' => false,
+            ],
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'longtext',
             'options'   => [],
             'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8mb4_unicode_ci DEFAULT NULL   ",
+            'db_properties' => [
+                'use_utf8mb4' => true,
+            ],
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'longtext',
             'options'   => ['value' => 'A long text'],
             'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A long text'   ",
-            'utf8mb4'   => false,
+            'db_properties' => [
+                'use_utf8mb4' => false,
+            ],
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
             'format'    => 'longtext',
             'options'   => ['value' => 'A long text'],
             'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'A long text'   ",
+            'db_properties' => [
+                'use_utf8mb4' => true,
+            ],
          ], [
             'table'     => 'my_table',
             'field'     => 'id',
             'format'    => 'autoincrement',
             'options'   => [],
-            'sql'       => "ALTER TABLE `my_table` ADD `id` INT unsigned NOT NULL AUTO_INCREMENT   "
+            'sql'       => "ALTER TABLE `my_table` ADD `id` INT  NOT NULL AUTO_INCREMENT   ",
+            'db_properties' => [
+                'allow_signed_keys' => true,
+            ],
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'id',
+            'format'    => 'autoincrement',
+            'options'   => [],
+            'sql'       => "ALTER TABLE `my_table` ADD `id` INT unsigned NOT NULL AUTO_INCREMENT   ",
+            'db_properties' => [
+                'allow_signed_keys' => false,
+            ],
          ], [
             'table'     => 'my_table',
             'field'     => 'my_field',
@@ -525,11 +577,13 @@ class Migration extends \GLPITestCase
    /**
     * @dataProvider fieldsFormatsProvider
     */
-    public function testAddField($table, $field, $format, $options, $sql, bool $utf8mb4 = true)
+    public function testAddField($table, $field, $format, $options, $sql, array $db_properties = [])
     {
         global $DB;
         $DB = $this->db;
-        $DB->use_utf8mb4 = $utf8mb4;
+        foreach ($db_properties as $db_property => $value) {
+            $DB->$db_property = $value;
+        }
         $this->calling($this->db)->fieldExists = false;
         $this->queries = [];
 
@@ -807,6 +861,7 @@ class Migration extends \GLPITestCase
     {
         global $DB;
         $DB = $this->db;
+        $DB->allow_signed_keys = false;
 
         $this->calling($this->db)->tableExists = function ($table) {
             return $table === 'glpi_someoldtypes';

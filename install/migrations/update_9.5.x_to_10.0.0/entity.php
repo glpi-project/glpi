@@ -40,8 +40,7 @@ if (!defined('GLPI_ROOT')) {
  * @var Migration $migration
  */
 
-$default_charset = DBConnection::getDefaultCharset();
-$default_collation = DBConnection::getDefaultCollation();
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 /** Create registration_number field */
 if (!$DB->fieldExists("glpi_entities", "registration_number")) {
@@ -58,7 +57,7 @@ if (!$DB->fieldExists("glpi_entities", "registration_number")) {
 
 /** Replace -1 value for entities_id field */
 $DB->updateOrDie('glpi_entities', ['entities_id' => '0'], ['id' => '0']); // Replace -1 value for root entity to be able to change type to unsigned
-$migration->changeField('glpi_entities', 'entities_id', 'entities_id', "int unsigned DEFAULT '0'");
+$migration->changeField('glpi_entities', 'entities_id', 'entities_id', "int {$default_key_sign} DEFAULT '0'");
 $migration->migrationOneTable('glpi_entities'); // Ensure 'entities_id' is nullable.
 $DB->updateOrDie('glpi_entities', ['entities_id' => 'NULL'], ['id' => '0']);
 /** /Replace -1 value for entities_id field */
@@ -106,7 +105,7 @@ foreach ($fkey_config_fields as $fkey_config_field) {
 
     if ($DB->fieldExists('glpi_entities', $fkey_config_field)) {
         // 'contracts_id_default' and 'transfers_id' fields will only exist if a previous dev install exists
-        $migration->changeField('glpi_entities', $fkey_config_field, $fkey_config_field, 'int unsigned NOT NULL DEFAULT 0');
+        $migration->changeField('glpi_entities', $fkey_config_field, $fkey_config_field, "int {$default_key_sign} NOT NULL DEFAULT 0");
     }
 }
 /** /Replace negative values for config foreign keys */

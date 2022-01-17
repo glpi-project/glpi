@@ -42,12 +42,13 @@ if (!defined('GLPI_ROOT')) {
 
 $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 if (!$DB->tableExists('glpi_tickets_contracts')) {
     $query = "CREATE TABLE `glpi_tickets_contracts` (
-      `id` int unsigned NOT NULL AUTO_INCREMENT,
-      `tickets_id` int unsigned NOT NULL DEFAULT '0',
-      `contracts_id` int unsigned NOT NULL DEFAULT '0',
+      `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+      `tickets_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+      `contracts_id` int {$default_key_sign} NOT NULL DEFAULT '0',
       PRIMARY KEY (`id`),
       UNIQUE KEY `unicity` (`tickets_id`,`contracts_id`),
       KEY `contracts_id` (`contracts_id`)
@@ -59,7 +60,7 @@ if (!$DB->fieldExists("glpi_entities", "contracts_id_default")) {
     $migration->addField(
         "glpi_entities",
         "contracts_id_default",
-        "int unsigned NOT NULL DEFAULT 0",
+        "int {$default_key_sign} NOT NULL DEFAULT 0",
         [
          'after'     => "anonymize_support_agents",
          'value'     => -2,               // Inherit as default value
