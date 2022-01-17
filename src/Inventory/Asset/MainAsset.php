@@ -580,7 +580,7 @@ abstract class MainAsset extends InventoryAsset
     */
     public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = 0)
     {
-        global $CFG_GLPI;
+        global $DB;
 
         $key = $this->current_key;
         $val = &$this->data[$key];
@@ -595,12 +595,12 @@ abstract class MainAsset extends InventoryAsset
         $orig_glpiactiveentities = $_SESSION['glpiactiveentities'] ?? null;
         $orig_glpiactiveentities_string = $_SESSION['glpiactiveentities_string'] ?? null;
 
-       //set entity in session
+        //set entity in session
         $_SESSION['glpiactiveentities']        = [$entities_id];
         $_SESSION['glpiactiveentities_string'] = $entities_id;
         $_SESSION['glpiactive_entity']         = $entities_id;
 
-       //handleLinks relies on $this->data; update it before the call
+        //handleLinks relies on $this->data; update it before the call
         $this->handleLinks();
 
         if ($items_id == 0) {
@@ -618,6 +618,16 @@ abstract class MainAsset extends InventoryAsset
             }
         }
 
+        //check for any old agent to remove
+        $agent = new \Agent();
+        $agent->deleteByCriteria([
+            'itemtype' => $this->item->getType(),
+            'items_id' => $items_id,
+            'NOT' => [
+                'id' => $this->agent->fields['id']
+            ]
+        ]);
+
         $val->id = $this->item->fields['id'];
 
         if ($entities_id == -1) {
@@ -626,7 +636,7 @@ abstract class MainAsset extends InventoryAsset
         $val->entities_id = $entities_id;
 
         if ($entities_id != $this->item->fields['entities_id']) {
-           //asset entity has changed in rules; do transfer
+            //asset entity has changed in rules; do transfer
             $doTransfer = \Entity::getUsedConfig('transfers_id', $this->item->fields['entities_id']);
             if ($doTransfer) {
                 $transfer = new Transfer();
@@ -635,13 +645,13 @@ abstract class MainAsset extends InventoryAsset
                 $transfer->moveItems($item_to_transfer, $entities_id, $transfer->fields);
             }
 
-           //and set new entity in session
+            //and set new entity in session
             $_SESSION['glpiactiveentities']        = [$entities_id];
             $_SESSION['glpiactiveentities_string'] = $entities_id;
             $_SESSION['glpiactive_entity']         = $entities_id;
         }
 
-       //Ports are handled a different way on network equipments
+        //Ports are handled a different way on network equipments
         if ($this->item->getType() != 'NetworkEquipment') {
             $this->handlePorts();
         }
@@ -684,12 +694,12 @@ abstract class MainAsset extends InventoryAsset
         $rulesmatched->add($inputrulelog, [], false);
         $rulesmatched->cleanOlddata($items_id, $itemtype);
 
-       //keep trace of inventoried assets, but not APs.
+        //keep trace of inventoried assets, but not APs.
         if (!$this->isAccessPoint($val)) {
             $this->inventoried[] = clone $this->item;
         }
 
-       //Restore entities in session
+        //Restore entities in session
         if ($orig_glpiactive_entity !== null) {
             $_SESSION['glpiactive_entity'] = $orig_glpiactive_entity;
         }

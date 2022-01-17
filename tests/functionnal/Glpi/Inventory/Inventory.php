@@ -1100,13 +1100,13 @@ class Inventory extends InventoryTestCase
          ->string['itemtype']->isIdenticalTo('Computer')
          ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
 
-       //check created computer
+        //check created computer
         $computer = $this->checkComputer1($agent['items_id']);
         $this->checkComputer1Volumes($computer);
         $this->checkComputer1Softwares($computer);
         $this->checkComputer1Batteries($computer);
 
-       //check matchedlogs
+        //check matchedlogs
         $mlogs = new \RuleMatchedLog();
         $found = $mlogs->find();
         $this->array($found)->hasSize(3);
@@ -1154,7 +1154,7 @@ class Inventory extends InventoryTestCase
 
         $inventory = $this->doInventory($json);
 
-       //check inventory metadata
+        //check inventory metadata
         $metadata = $inventory->getMetadata();
         $this->array($metadata)->hasSize(6)
          ->string['deviceid']->isIdenticalTo('LF014-2017-02-20-12-19-56')
@@ -1163,7 +1163,7 @@ class Inventory extends InventoryTestCase
          ->string['tag']->isIdenticalTo('000005');
         $this->array($metadata['provider'])->hasSize(9);
 
-       //check created agent
+        //check created agent
         $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
         $agents = $DB->request(['FROM' => \Agent::getTable()]);
         $this->integer(count($agents))->isIdenticalTo(1);
@@ -1175,7 +1175,7 @@ class Inventory extends InventoryTestCase
          ->string['itemtype']->isIdenticalTo('Computer')
          ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
 
-       //check matchedlogs
+        //check matchedlogs
         $mlogs = new \RuleMatchedLog();
         $mrules_found = $mlogs->find();
         $this->array($mrules_found)->hasSize(2);
@@ -1208,7 +1208,7 @@ class Inventory extends InventoryTestCase
         $this->integer($iterator->current()['items_id'])->isIdenticalTo($agent['items_id']);
         $this->string($iterator->current()['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
 
-       //get computer models, manufacturer, ...
+        //get computer models, manufacturer, ...
         $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
         $this->array($autoupdatesystems);
         $autoupdatesystems_id = $autoupdatesystems['id'];
@@ -1225,7 +1225,7 @@ class Inventory extends InventoryTestCase
         $this->array($cmanuf);
         $manufacturers_id = $cmanuf['id'];
 
-       //check created computer
+        //check created computer
         $computers_id = $agent['items_id'];
         $this->integer($computers_id)->isGreaterThan(0);
         $computer = new \Computer();
@@ -1263,7 +1263,7 @@ class Inventory extends InventoryTestCase
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
-       //operating system
+        //operating system
         $ios = new \Item_OperatingSystem();
         $iterator = $ios->getFromItem($computer);
         $record = $iterator->current();
@@ -1277,7 +1277,7 @@ class Inventory extends InventoryTestCase
         ];
         $this->array($record)->isIdenticalTo($expected);
 
-       //volumes
+        //volumes
         $idisks = new \Item_Disk();
         $iterator = $idisks->getFromItem($computer);
         $this->integer(count($iterator))->isIdenticalTo(3);
@@ -1343,7 +1343,7 @@ class Inventory extends InventoryTestCase
             ++$i;
         }
 
-       //connections
+        //connections
         $iterator = \Computer_Item::getTypeItems($computers_id, 'Monitor');
         $this->integer(count($iterator))->isIdenticalTo(1);
 
@@ -1357,7 +1357,7 @@ class Inventory extends InventoryTestCase
         ]);
         $this->integer(count($iterator))->isIdenticalTo(4);
 
-       //check for components
+        //check for components
         $components = [];
         $allcount = 0;
         foreach (\Item_Devices::getItemAffinities('Computer') as $link_type) {
@@ -1397,7 +1397,7 @@ class Inventory extends InventoryTestCase
             $this->integer(count($components[$type]))->isIdenticalTo($count, "$type " . count($components[$type]));
         }
 
-       //check memory
+        //check memory
         $this->array($components['Item_DeviceMemory'])->hasSize(2);
         $mem_component1 = array_pop($components['Item_DeviceMemory']);
         $mem_component2 = array_pop($components['Item_DeviceMemory']);
@@ -1421,12 +1421,12 @@ class Inventory extends InventoryTestCase
         $expected_mem_component['busID'] = "1";
         $this->array($mem_component2)->isIdenticalTo($expected_mem_component);
 
-       //softwares
+        //softwares
         $isoft = new \Item_SoftwareVersion();
         $iterator = $isoft->getFromItem($computer);
         $this->integer(count($iterator))->isIdenticalTo(3033);
 
-       //check for expected logs
+        //check for expected logs
         $nblogsnow = countElementsInTable(\Log::getTable());
         $logs = $DB->request([
          'FROM' => \Log::getTable(),
@@ -1453,7 +1453,7 @@ class Inventory extends InventoryTestCase
 
         $this->array($types_count)->isIdenticalTo($expected_types_count);
 
-       //fake computer update (nothing has changed)
+        //fake computer update (nothing has changed)
         $json = file_get_contents(self::INV_FIXTURES . 'computer_3.json');
         $this->boolean($computer->getFromDB($computers_id))->isTrue();
 
@@ -1489,7 +1489,7 @@ class Inventory extends InventoryTestCase
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
-       //operating system
+        //operating system
         $ios = new \Item_OperatingSystem();
         $iterator = $ios->getFromItem($computer);
         $record = $iterator->current();
@@ -1503,7 +1503,7 @@ class Inventory extends InventoryTestCase
         ];
         $this->array($record)->isIdenticalTo($expected);
 
-       //volumes
+        //volumes
         $idisks = new \Item_Disk();
         $iterator = $idisks->getFromItem($computer);
         $this->integer(count($iterator))->isIdenticalTo(3);
@@ -1525,7 +1525,7 @@ class Inventory extends InventoryTestCase
             ++$i;
         }
 
-       //connections
+        //connections
         $iterator = \Computer_Item::getTypeItems($computers_id, 'Monitor');
         $this->integer(count($iterator))->isIdenticalTo(1);
 
@@ -1539,7 +1539,7 @@ class Inventory extends InventoryTestCase
         ]);
         $this->integer(count($iterator))->isIdenticalTo(4);
 
-       //check for components
+        //check for components
         $components = [];
         $allcount = 0;
         foreach (\Item_Devices::getItemAffinities('Computer') as $link_type) {
@@ -1559,7 +1559,7 @@ class Inventory extends InventoryTestCase
             $this->integer(count($components[$type]))->isIdenticalTo($count, "$type " . count($components[$type]));
         }
 
-       //check memory
+        //check memory
         $this->array($components['Item_DeviceMemory'])->hasSize(2);
         $mem_component1 = array_pop($components['Item_DeviceMemory']);
         $mem_component2 = array_pop($components['Item_DeviceMemory']);
@@ -1569,12 +1569,12 @@ class Inventory extends InventoryTestCase
         $expected_mem_component['busID'] = "1";
         $this->array($mem_component2)->isIdenticalTo($expected_mem_component);
 
-       //softwares
+        //softwares
         $isoft = new \Item_SoftwareVersion();
         $iterator = $isoft->getFromItem($computer);
         $this->integer(count($iterator))->isIdenticalTo(3033);
 
-       //check for expected logs
+        //check for expected logs
         $nblogsnow = countElementsInTable(\Log::getTable());
         $logs = $DB->request([
          'FROM' => \Log::getTable(),
@@ -1596,12 +1596,12 @@ class Inventory extends InventoryTestCase
 
         $inventory = $this->doInventory($json);
 
-       //real computer update
+        //real computer update
         $json = file_get_contents(self::INV_FIXTURES . 'computer_3_updated.json');
 
         $inventory = $this->doInventory($json);
 
-       //check inventory metadata
+        //check inventory metadata
         $metadata = $inventory->getMetadata();
         $this->array($metadata)->hasSize(6)
          ->string['deviceid']->isIdenticalTo('LF014-2017-02-20-12-19-56')
@@ -1612,7 +1612,7 @@ class Inventory extends InventoryTestCase
         ;
         $this->array($metadata['provider'])->hasSize(9);
 
-       //check created agent
+        //check created agent
         $agents = $DB->request(['FROM' => \Agent::getTable()]);
         $this->integer(count($agents))->isIdenticalTo(1);
         $agent = $agents->current();
@@ -1659,7 +1659,7 @@ class Inventory extends InventoryTestCase
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
-       //operating system
+        //operating system
         $ios = new \Item_OperatingSystem();
         $iterator = $ios->getFromItem($computer);
         $record = $iterator->current();
@@ -1673,12 +1673,12 @@ class Inventory extends InventoryTestCase
         ];
         $this->array($record)->isIdenticalTo($expected);
 
-       //volumes
+        //volumes
         $idisks = new \Item_Disk();
         $iterator = $idisks->getFromItem($computer);
         $this->integer(count($iterator))->isIdenticalTo(3);
 
-       //update fs values
+        //update fs values
         $expecteds_fs[0]['totalsize'] = 150268;
         $expecteds_fs[0]['freesize'] = 7914;
         $expecteds_fs[1]['freesize'] = 277;
@@ -1701,7 +1701,7 @@ class Inventory extends InventoryTestCase
             ++$i;
         }
 
-       //connections
+        //connections
         $iterator = \Computer_Item::getTypeItems($computers_id, 'Monitor');
         $this->integer(count($iterator))->isIdenticalTo(0);
 
@@ -1715,7 +1715,7 @@ class Inventory extends InventoryTestCase
         ]);
         $this->integer(count($iterator))->isIdenticalTo(7);
 
-       //check for components
+        //check for components
         $components = [];
         $allcount = 0;
         foreach (\Item_Devices::getItemAffinities('Computer') as $link_type) {
@@ -1735,7 +1735,7 @@ class Inventory extends InventoryTestCase
             $this->integer(count($components[$type]))->isIdenticalTo($count, "$type " . count($components[$type]));
         }
 
-       //check memory
+        //check memory
         $this->array($components['Item_DeviceMemory'])->hasSize(2);
         $mem_component1 = array_pop($components['Item_DeviceMemory']);
         $mem_component2 = array_pop($components['Item_DeviceMemory']);
@@ -1758,12 +1758,12 @@ class Inventory extends InventoryTestCase
         $expected_mem_component['busID'] = "1";
         $this->array($mem_component2)->isIdenticalTo($expected_mem_component);
 
-       //softwares
+        //softwares
         $isoft = new \Item_SoftwareVersion();
         $iterator = $isoft->getFromItem($computer);
         $this->integer(count($iterator))->isIdenticalTo(3184);
 
-       //check for expected logs after update
+        //check for expected logs after update
         $logs = $DB->request([
          'FROM' => \Log::getTable(),
          'LIMIT' => countElementsInTable(\Log::getTable()),
@@ -1794,7 +1794,7 @@ class Inventory extends InventoryTestCase
 
         $this->array($types_count)->isEqualTo($expected_types_count);
 
-       //check matchedlogs
+        //check matchedlogs
         $mlogs = new \RuleMatchedLog();
         $found = $mlogs->find(['NOT' => ['id' => array_keys($mrules_found)]]);
         $mrules_criteria['WHERE'] = ['NOT' => [\RuleMatchedLog::getTable() . '.id' => array_keys($mrules_found)]];
@@ -1827,7 +1827,7 @@ class Inventory extends InventoryTestCase
         $_SESSION['glpi_currenttime'] = $date_now;
         $inventory = $this->doInventory($json);
 
-       //check inventory metadata
+        //check inventory metadata
         $metadata = $inventory->getMetadata();
 
         $this->array($metadata)->hasSize(5)
@@ -4045,7 +4045,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         )->isTrue();
         $rules_id_toaccept = $rule->fields['id'];
 
-       //move rule to refuse computer inventory
+        //move rule to refuse computer inventory
         $rulecollection = new \RuleImportAssetCollection();
         $this->boolean(
             $rulecollection->moveRule(
@@ -4055,11 +4055,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             )
         )->isTrue();
 
-       //do inventory
+        //do inventory
         $json = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
         $inventory = $this->doInventory($json);
 
-       //move rule back to accept computer inventory
+        //move rule back to accept computer inventory
         $this->boolean(
             $rulecollection->moveRule(
                 $rules_id_refuse,
@@ -4068,7 +4068,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             )
         )->isTrue();
 
-       //check inventory metadata
+        //check inventory metadata
         $metadata = $inventory->getMetadata();
         $this->array($metadata)->hasSize(6)
          ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
@@ -4079,7 +4079,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->array($metadata['provider'])->hasSize(10);
 
         global $DB;
-       //check created agent
+        //check created agent
         $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
         $agents = $DB->request(['FROM' => \Agent::getTable()]);
         $this->integer(count($agents))->isIdenticalTo(1);
@@ -4119,12 +4119,12 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         $this->array($result)->isEqualTo($expected);
 
-       //check no matchedlogs
+        //check no matchedlogs
         $mlogs = new \RuleMatchedLog();
         $found = $mlogs->find();
         $this->array($found)->hasSize(0);
 
-       //test inventory from refused equipment, will be accepted since rules has been reset ;)
+        //test inventory from refused equipment, will be accepted since rules has been reset ;)
         $refused = new \RefusedEquipment();
         $this->boolean($refused->getFromDB($result['id']))->isTrue();
 
@@ -4141,13 +4141,13 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ]
         );
 
-       //refused equipment has been removed
+        //refused equipment has been removed
         $iterator = $DB->request([
          'FROM'   => \RefusedEquipment::getTable(),
         ]);
         $this->integer(count($iterator))->isIdenticalTo(0);
 
-       //but a linked computer
+        //but a linked computer
         $gagent = new \Agent();
         $this->boolean($gagent->getFromDB($agent['id']))->isTrue();
 
@@ -4155,7 +4155,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->boolean($computer->getFromDB($gagent->fields['items_id']))->isTrue();
         $this->string($computer->fields['name'])->isIdenticalTo('glpixps');
 
-       //check no matchedlogs
+        //check no matchedlogs
         $mlogs = new \RuleMatchedLog();
         $found = $mlogs->find();
         $this->array($found)->hasSize(3);
@@ -4211,7 +4211,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $rules_id = $rule->add($input);
         $this->integer($rules_id)->isGreaterThan(0);
 
-       // Add criteria
+        // Add criteria
         $rulecriteria = new \RuleCriteria();
         $this->integer(
             $rulecriteria->add([
@@ -4222,7 +4222,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ])
         )->isGreaterThan(0);
 
-       // Add action
+        // Add action
         $ruleaction = new \RuleAction();
         $this->integer(
             $ruleaction->add([
@@ -4240,7 +4240,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $json = json_encode($data);
         $inventory = $this->doInventory($json);
 
-       //check inventory metadata
+        //check inventory metadata
         $metadata = $inventory->getMetadata();
         $this->array($metadata)->hasSize(6)
          ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
@@ -4251,7 +4251,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->array($metadata['provider'])->hasSize(10);
 
         global $DB;
-       //check created agent
+        //check created agent
         $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
         $agents = $DB->request(['FROM' => \Agent::getTable()]);
         $this->integer(count($agents))->isIdenticalTo(1);
@@ -4317,7 +4317,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ]
         );
 
-       //1 computer and 1 printer has been inventoried
+        //1 computer and 1 printer has been inventoried
         $nbcomputers++;
         $nbprinters++;
 
@@ -4361,7 +4361,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ]
         );
 
-       //1 computer 2 printers and a network equipment has been inventoried
+        //1 computer 2 printers and a network equipment has been inventoried
         $nbcomputers++;
         $nbprinters += 2;
         $nbnetequps++;
@@ -4384,45 +4384,45 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $nb_computers = countElementsInTable(\Computer::getTable());
         $inventory = $this->doInventory($json);
 
-       //check inventory metadata
+        //check inventory metadata
         $metadata = $inventory->getMetadata();
         $this->array($metadata)->hasSize(5)
          ->string['deviceid']->isIdenticalTo('acomputer-2021-01-26-14-32-36')
          ->string['itemtype']->isIdenticalTo('Computer')
          ->string['action']->isIdenticalTo('inventory');
 
-       //check we add only one computer
+        //check we add only one computer
         ++$nb_computers;
         $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers);
-       //check created vms
+        //check created vms
         $nb_vms += $count_vms;
         $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
 
-       //change config to import vms as computers
+        //change config to import vms as computers
         $this->login();
         $conf = new \Glpi\Inventory\Conf();
         $this->boolean($conf->saveConf(['vm_as_computer' => 1]))->isTrue();
 
         $inventory = $this->doInventory($json);
 
-       //check inventory metadata
+        //check inventory metadata
         $metadata = $inventory->getMetadata();
         $this->array($metadata)->hasSize(5)
          ->string['deviceid']->isIdenticalTo('acomputer-2021-01-26-14-32-36')
          ->string['itemtype']->isIdenticalTo('Computer')
          ->string['action']->isIdenticalTo('inventory');
 
-       //check we add main computer and one computer per vm
-       //one does not have an uuid, so no computer is created.
+        //check we add main computer and one computer per vm
+        //one does not have an uuid, so no computer is created.
         $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
-       //check created vms
+        //check created vms
         $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
 
-       //partial inventory: postgres vm has been stopped
+        //partial inventory: postgres vm has been stopped
         $json = file_get_contents(self::INV_FIXTURES . 'computer_2_partial_vms.json');
         $inventory = $this->doInventory($json);
 
-       //check nothing has changed
+        //check nothing has changed
         $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
         $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
 
@@ -4448,10 +4448,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         ]);
         $this->integer(count($iterator))->isIdenticalTo(1);
 
-       //partial inventory: add databases
+        //partial inventory: add databases
         global $DB;
 
-       //IMPORT rule
+        //IMPORT rule
         $criteria = [
          [
             'condition' => 0,
@@ -4483,7 +4483,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->integer($rules_id)->isGreaterThan(0);
         $this->boolean($collection->moveRule($rules_id, 0, $collection::MOVE_BEFORE))->isTrue();
 
-       // Add criteria
+        // Add criteria
         foreach ($criteria as $crit) {
             $input = [
             'rules_id'  => $rules_id,
@@ -4494,7 +4494,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $this->integer((int)$rulecriteria->add($input))->isGreaterThan(0);
         }
 
-       // Add action
+        // Add action
         $ruleaction = new \RuleAction();
         $input = [
          'rules_id'    => $rules_id,
@@ -4504,7 +4504,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         ];
         $this->integer((int)$ruleaction->add($input))->isGreaterThan(0);
 
-       //UPDATE rule
+        //UPDATE rule
         $criteria = [
          [
             'condition' => 0,
@@ -4541,7 +4541,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->integer($rules_id)->isGreaterThan(0);
         $this->boolean($collection->moveRule($rules_id, $prev_rules_id, $collection::MOVE_BEFORE))->isTrue();
 
-       // Add criteria
+        // Add criteria
         foreach ($criteria as $crit) {
             $input = [
             'rules_id'  => $rules_id,
@@ -4552,7 +4552,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $this->integer((int)$rulecriteria->add($input))->isGreaterThan(0);
         }
 
-       // Add action
+        // Add action
         $ruleaction = new \RuleAction();
         $input = [
          'rules_id'    => $rules_id,
@@ -4565,30 +4565,30 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $json = file_get_contents(self::INV_FIXTURES . 'computer_2_partial_dbs.json');
         $inventory = $this->doInventory($json);
 
-       //check nothing has changed
+        //check nothing has changed
         $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
 
-       //check created databases & instances
+        //check created databases & instances
         $this->integer(countElementsInTable(\DatabaseInstance::getTable()))->isIdenticalTo(2);
         $this->integer(countElementsInTable(\DatabaseInstance::getTable(), ['is_dynamic' => 1]))->isIdenticalTo(2);
         $this->integer(countElementsInTable(\Database::getTable()))->isIdenticalTo(3);
 
-       //play an update - nothing should have changed
+        //play an update - nothing should have changed
         $inventory = $this->doInventory($json);
 
-       //check nothing has changed
+        //check nothing has changed
         $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
 
-       //check created databases & instances
+        //check created databases & instances
         $this->integer(countElementsInTable(\DatabaseInstance::getTable()))->isIdenticalTo(2);
         $this->integer(countElementsInTable(\Database::getTable()))->isIdenticalTo(3);
 
-       //play an update with changes
+        //play an update with changes
         $json = json_decode($json);
 
-       //keep only mysql
+        //keep only mysql
         $mysql = $json->content->databases_services[0];
-       //update version
+        //update version
         $mysql->version = 'Ver 15.1 Distrib 10.5.10-MariaDB-modified';
         $dbs = $mysql->databases;
 
@@ -4605,16 +4605,16 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         $inventory = $this->doInventory(json_encode($json));
 
-       //check created databases & instances
+        //check created databases & instances
         $this->integer(countElementsInTable(\DatabaseInstance::getTable(), ['is_deleted' => 0]))->isIdenticalTo(1);
         $this->integer(countElementsInTable(\DatabaseInstance::getTable(), ['is_deleted' => 1]))->isIdenticalTo(1);
 
-       //ensure database version has been updated
+        //ensure database version has been updated
         $database = new \DatabaseInstance();
         $this->boolean($database->getFromDBByCrit(['name' => 'MariaDB']))->isTrue();
         $this->string($database->fields['version'])->isIdenticalTo('Ver 15.1 Distrib 10.5.10-MariaDB-modified');
 
-       //- ensure existing instances has been updated
+        //- ensure existing instances has been updated
         $databases = $database->getDatabases();
         $this->array($databases)->hasSize(2);
         $this->array(array_pop($databases))
