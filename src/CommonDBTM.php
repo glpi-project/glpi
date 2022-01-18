@@ -5948,7 +5948,7 @@ class CommonDBTM extends CommonGLPI
             $item_1_id = $this->getID();
             $item_2_fk = $commondb_relation::$items_id_1;
         } else {
-            $error = static::class . " is not part of the " . $commondb_relation::class . " relation";
+            $error = static::class . " is not part of the " . get_class($commondb_relation) . " relation";
             throw new InvalidArgumentException($error);
         }
 
@@ -6061,7 +6061,7 @@ class CommonDBTM extends CommonGLPI
             $item_1_id = $this->getID();
             $item_2_fk = $commondb_relation::$items_id_1;
         } else {
-            $error = static::class . " is not part of the " . $commondb_relation::class . " relation";
+            $error = static::class . " is not part of the " . get_class($commondb_relation) . " relation";
             throw new InvalidArgumentException($error);
         }
 
