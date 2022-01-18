@@ -116,6 +116,13 @@ class ErrorHandler
     private $output_disabled = false;
 
    /**
+    * Indicates wether output is suspended (temporarly disabled).
+    *
+    * @var bool
+    */
+    private $output_suspended = false;
+
+   /**
     * Output handler to use. If not set, output will be directly echoed on a format depending on
     * execution context (Web VS CLI).
     *
@@ -173,6 +180,26 @@ class ErrorHandler
     public function disableOutput(): void
     {
         $this->output_disabled = true;
+    }
+
+    /**
+     * Suspend output.
+     *
+     * @return void
+     */
+    public function suspendOutput(): void
+    {
+        $this->output_suspended = true;
+    }
+
+    /**
+     * Take away output suspension.
+     *
+     * @return void
+     */
+    public function unsuspendOutput(): void
+    {
+        $this->output_suspended = false;
     }
 
    /**
@@ -455,7 +482,7 @@ class ErrorHandler
     private function outputDebugMessage(string $error_type, string $message, string $log_level, bool $force = false): void
     {
 
-        if ($this->output_disabled) {
+        if ($this->output_disabled || $this->output_suspended) {
             return;
         }
 

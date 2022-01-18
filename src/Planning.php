@@ -31,6 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\ErrorHandler;
 use Glpi\RichText\RichText;
 use RRule\RRule;
 use Sabre\VObject\Component\VCalendar;
@@ -2109,6 +2110,8 @@ class Planning extends CommonGLPI
     */
     private static function getExternalCalendarRawEvents(string $limit_begin, string $limit_end): array
     {
+        ErrorHandler::getInstance()->suspendOutput(); // Suspend error output to prevent warnings to corrupr JSON output
+
         $raw_events = [];
 
         foreach ($_SESSION['glpi_plannings']['plannings'] as $planning_id => $planning_params) {
@@ -2180,6 +2183,8 @@ class Planning extends CommonGLPI
                 ];
             }
         }
+
+        ErrorHandler::getInstance()->unsuspendOutput(); // Restore error output state
 
         return $raw_events;
     }
