@@ -1898,6 +1898,14 @@ class AuthLDAP extends DbTestCase {
 
        $auth = $this->login('brazil5', 'password', false, false);
 
+       // Restore original port
+       $this->boolean(
+           $this->ldap->update([
+               'id'     => $this->ldap->getID(),
+               'port'   => $original_port,
+           ])
+       )->isTrue();
+
        $user->getFromDBbyName('brazil5');
        // Verify trying to log in while LDAP unavailable does not disable user's GLPI account
        $this->integer($user->fields['is_active'])->isEqualTo(1);
