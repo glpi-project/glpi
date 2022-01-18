@@ -2180,6 +2180,7 @@ $tables['glpi_entities'] = [
       'enable_custom_css'                    => 0,
       'anonymize_support_agents'             => 0,
       'contracts_strategy_default'           => 0,
+      'transfers_strategy'                   => 0,
    ],
 ];
 
