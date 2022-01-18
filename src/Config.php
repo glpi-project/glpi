@@ -636,24 +636,6 @@ class Config extends CommonDBTM
 
         echo "</table>";
 
-        if (
-            Session::haveRightsOr("transfer", [CREATE, UPDATE])
-            && Session::isMultiEntitiesMode()
-        ) {
-            echo "<br><table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='2'>" . __('Automatic transfer of computers') . "</th></tr>";
-            echo "<tr class='tab_bg_2'>";
-            echo "<td><label for='dropdown_transfers_id_auto$rand'>" . __('Template for the automatic transfer of computers in another entity') .
-              "</label></td><td>";
-            Transfer::dropdown(['value'      => $CFG_GLPI["transfers_id_auto"],
-                'name'       => "transfers_id_auto",
-                'emptylabel' => __('No automatic transfer'),
-                'rand'       => $rand
-            ]);
-            echo "</td></tr>";
-            echo "</table>";
-        }
-
         echo "<br><table class='tab_cadre_fixe'>";
         echo "<tr>";
         echo "<th colspan='4'>" . __('Automatically update of the elements related to the computers');

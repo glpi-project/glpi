@@ -552,10 +552,6 @@ class Config extends DbTestCase
                 'key'      => 'ssovariables_id',
                 'itemtype' => 'SsoVariable',
             ],
-            [
-                'key'      => 'transfers_id_auto',
-                'itemtype' => 'Transfer',
-            ],
         ];
     }
 

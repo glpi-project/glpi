@@ -183,7 +183,6 @@ $default_prefs = [
     'use_slave_for_search'                    => '0',
     'proxy_passwd'                            => '',
     'smtp_passwd'                             => '',
-    'transfers_id_auto'                       => '0',
     'show_count_on_tabs'                      => '1',
     'refresh_views'                           => '0',
     'set_default_tech'                        => '1',

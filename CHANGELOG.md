@@ -92,6 +92,7 @@ The present file will list all changes made to the project; according to the
 - Usage of `GLPI_PREVER` constant
 - Support of `doc_types`, `helpdesk_types` and `netport_types` keys in `Plugin::registerClass()`
 - `$CFG_GLPI['layout_excluded_pages']` entry
+- `$CFG_GLPI['transfers_id_auto']` entry
 - `$CFG_GLPI['use_ajax_autocompletion']` entry
 - `$DEBUG_AUTOLOAD` global variable
 - `$LOADED_PLUGINS` global variable
