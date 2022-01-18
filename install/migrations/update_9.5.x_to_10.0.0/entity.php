@@ -79,7 +79,12 @@ foreach ($fkey_config_fields as $fkey_config_field) {
         $migration->addField(
             'glpi_entities',
             str_replace('_id', '_strategy', $fkey_config_field),
-            'tinyint NOT NULL DEFAULT -2'
+            'tinyint NOT NULL DEFAULT -2',
+            [
+                // 0 value for root entity
+                'update'    => '0',
+                'condition' => 'WHERE `id` = 0'
+            ]
         );
         $migration->migrationOneTable('glpi_entities'); // Ensure strategy field is created to be able to fill it
 
