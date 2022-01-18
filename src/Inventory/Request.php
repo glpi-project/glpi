@@ -247,7 +247,7 @@ class Request extends AbstractRequest
         );
 
         if ($hook_response == $hook_params) {
-           //no hook, use native capabilities
+            //no hook, use native capabilities
             $this->inventory($data);
         } else {
            //try to use hook response

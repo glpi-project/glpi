@@ -113,7 +113,7 @@ class Inventory
     public function setData($data, $format = Request::JSON_MODE): bool
     {
 
-       // Write inventory file
+        // Write inventory file
         $dir = GLPI_INVENTORY_DIR . '/';
         if (!is_dir($dir)) {
             mkdir($dir);
@@ -164,7 +164,7 @@ class Inventory
     */
     public function extractMetadata(): array
     {
-       //check
+        //check
         if ($this->inError()) {
             throw new \RuntimeException(print_r($this->getErrors(), true));
         }
@@ -219,7 +219,7 @@ class Inventory
         }
 
         try {
-           //bench
+            //bench
             $main_start = microtime(true);
             if (!$DB->inTransaction()) {
                 $DB->beginTransaction();
@@ -240,7 +240,7 @@ class Inventory
             $all_props = get_object_vars($contents);
 
             $data = [];
-           //parse schema properties and handle if it exists in raw_data
+            //parse schema properties and handle if it exists in raw_data
             foreach ($properties as $property) {
                 if (property_exists($contents, $property)) {
                     $this->metadata['provider'] = [];
@@ -298,7 +298,7 @@ class Inventory
 
             $this->data = $data;
 
-           //create/load agent
+            //create/load agent
             $this->agent = new Agent();
             $this->agent->handleAgent($this->metadata);
 
@@ -531,7 +531,7 @@ class Inventory
     */
     final public function processInventoryData()
     {
-       //map existing keys in inventory format to their respective Inventory\Asset class if needed.
+        //map existing keys in inventory format to their respective Inventory\Asset class if needed.
         foreach ($this->data as $key => &$value) {
             $assettype = false;
 
@@ -675,7 +675,7 @@ class Inventory
     */
     public function handleItem()
     {
-       //inject converted assets
+        //inject converted assets
         $this->mainasset->setExtraData($this->data);
         $this->mainasset->setAssets($this->assets);
         $this->mainasset->checkConf($this->conf);
@@ -710,12 +710,11 @@ class Inventory
     {
         $exec_time = round(microtime(true) - $start, 5);
         $this->benchs[$asset][$type] = [
-         'exectime'  => $exec_time,
-         'mem'       => memory_get_usage(),
-         'mem_real'  => memory_get_usage(true),
-         'mem_peak'  => memory_get_peak_usage(),
-         'extra'     => $extra
-
+            'exectime'  => $exec_time,
+            'mem'       => memory_get_usage(),
+            'mem_real'  => memory_get_usage(true),
+            'mem_peak'  => memory_get_peak_usage(),
+            'extra'     => $extra
         ];
     }
 
@@ -818,7 +817,7 @@ class Inventory
 
         $time_limit = 60 * 60 * 12;//12 hours
         foreach ($temp_files as $temp_file) {
-           //drop only inventory files that have been created more than 12 hours ago
+            //drop only inventory files that have been created more than 12 hours ago
             if (time() - filemtime($temp_file) >= $time_limit) {
                 unlink($temp_file);
                 $message = sprintf(__('File %1$s has been removed'), $temp_file);
@@ -854,7 +853,6 @@ class Inventory
 
         foreach ($existing_types as $existing_type) {
             $itemtype = str_replace(GLPI_INVENTORY_DIR . '/', '', $existing_type);
-           //$invnetoryfiles = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('path/to/folder'));
             $inventory_files = new \RegexIterator(
                 new \RecursiveIteratorIterator(
                     new \RecursiveDirectoryIterator($existing_type)
@@ -883,7 +881,7 @@ class Inventory
                  return;
             }
 
-           //find missing assets
+            //find missing assets
             $orphans = array_diff(
                 array_keys($ids),
                 array_keys(iterator_to_array($iterator))
