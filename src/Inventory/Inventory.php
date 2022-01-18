@@ -208,8 +208,9 @@ class Inventory
     {
         global $DB;
 
-       //check
+        //check
         if ($this->inError()) {
+            $this->handleInventoryFile();
             throw new \RuntimeException(print_r($this->getErrors(), true));
         }
 
@@ -362,6 +363,10 @@ class Inventory
     */
     public function getItems(): array
     {
+        if (!$this->mainasset) {
+            return [];
+        }
+
         $items = $this->mainasset->getInventoried();
 
         foreach ($this->mainasset->getRefused() as $refused) {
