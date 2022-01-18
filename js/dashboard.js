@@ -109,7 +109,8 @@ var Dashboard = {
 
       // init filters from storage
       Dashboard.initFilters();
-
+      Dashboard.refreshDashboard();
+      
       // retieve cards content by ajax
       if (Dashboard.ajax_cards) {
          Dashboard.getCardsAjax();
