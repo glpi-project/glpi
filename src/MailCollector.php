@@ -981,6 +981,7 @@ class MailCollector extends CommonDBTM
        // For RuleTickets
         $tkt['_mailgate']    = $options['mailgates_id'];
         $tkt['_uid']         = $uid;
+        $tkt['_head']        = $headers;
 
        // Use mail date if it's defined
         if ($this->fields['use_mail_date'] && isset($headers['date'])) {
