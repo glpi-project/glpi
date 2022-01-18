@@ -1873,8 +1873,7 @@ class AuthLDAP extends DbTestCase {
       $this->array($gus)->hasSize(1);
    }
 
-   public function testLdapUnavailable()
-   {
+   public function testLdapUnavailable() {
        //Import user that doesn't exist yet
        $auth = $this->login('brazil5', 'password', false);
 
@@ -1892,7 +1891,8 @@ class AuthLDAP extends DbTestCase {
        // Update LDAP to have inaccessible server
        $this->boolean(
            $this->ldap->update([
-               'port' => '1234',
+               'id'     => $this->ldap->getID(),
+               'port'   => '1234',
            ])
        )->isTrue();
 
