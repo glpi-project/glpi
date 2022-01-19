@@ -306,7 +306,7 @@ var glpi_confirm = function({
  * Remove from dom all opened glpi dialog
  */
 var glpi_close_all_dialogs = function() {
-   $('.modal.show, .modal-backdrop.show').remove();
+   $('.modal.show').modal('hide').remove();
 };
 
 var toast_id = 0;
