@@ -143,7 +143,7 @@ class Utf8mb4Command extends AbstractCommand
             $tables[] = $table_data['TABLE_NAME'];
         }
 
-        $errors = 0;
+        $errors = false;
 
         if (count($tables) === 0) {
             $this->output->writeln('<info>' . __('No migration needed.') . '</info>');
@@ -163,7 +163,6 @@ class Utf8mb4Command extends AbstractCommand
             $this->db->use_utf8mb4 = true;
 
             $progress_bar = new ProgressBar($this->output);
-            $errors = 0;
 
             foreach ($progress_bar->iterate($tables) as $table) {
                 $this->writelnOutputWithProgressBar(
@@ -177,12 +176,12 @@ class Utf8mb4Command extends AbstractCommand
                 );
 
                 if (!$result) {
-                     $this->writelnOutputWithProgressBar(
-                         sprintf(__('<error>Error migrating table "%s".</error>'), $table),
-                         $progress_bar,
-                         OutputInterface::VERBOSITY_QUIET
-                     );
-                       $errors++;
+                    $this->writelnOutputWithProgressBar(
+                        sprintf(__('<error>Error migrating table "%s".</error>'), $table),
+                        $progress_bar,
+                        OutputInterface::VERBOSITY_QUIET
+                    );
+                    $errors = true;
                 }
             }
 

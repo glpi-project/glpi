@@ -71,6 +71,8 @@ class UnsignedKeysCommand extends AbstractCommand
             )
         );
 
+        $errors = false;
+
         if ($columns->count() === 0) {
             $output->writeln('<info>' . __('No migration needed.') . '</info>');
         } else {
@@ -95,7 +97,6 @@ class UnsignedKeysCommand extends AbstractCommand
             $foreign_keys = $this->db->getForeignKeysContraints();
 
             $progress_bar = new ProgressBar($output);
-            $errors = 0;
 
             foreach ($progress_bar->iterate($columns) as $column) {
                 $table_name  = $column['TABLE_NAME'];
@@ -120,7 +121,7 @@ class UnsignedKeysCommand extends AbstractCommand
                         $progress_bar,
                         OutputInterface::VERBOSITY_QUIET
                     );
-                    $errors++;
+                    $errors = true;
                     continue; // Do not migrate this column
                 }
 
@@ -143,7 +144,7 @@ class UnsignedKeysCommand extends AbstractCommand
                             $progress_bar,
                             OutputInterface::VERBOSITY_QUIET
                         );
-                        $errors++;
+                        $errors = true;
                         continue 2; // Non blocking error, it should not prevent migration of other fields
                     }
                 }
@@ -179,25 +180,25 @@ class UnsignedKeysCommand extends AbstractCommand
                         $progress_bar,
                         OutputInterface::VERBOSITY_QUIET
                     );
-                    $errors++;
+                    $errors = true;
                     continue; // Go to next column
                 }
             }
 
             $this->output->write(PHP_EOL);
-
-            if ($errors) {
-                throw new \Glpi\Console\Exception\EarlyExitException(
-                    '<error>' . __('Errors occured during migration.') . '</error>',
-                    self::ERROR_COLUMN_MIGRATION_FAILED
-                );
-            }
         }
 
         if (!DBConnection::updateConfigProperty(DBConnection::PROPERTY_ALLOW_SIGNED_KEYS, false)) {
             throw new \Glpi\Console\Exception\EarlyExitException(
                 '<error>' . __('Unable to update DB configuration file.') . '</error>',
                 self::ERROR_UNABLE_TO_UPDATE_CONFIG
+            );
+        }
+
+        if ($errors) {
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<error>' . __('Errors occured during migration.') . '</error>',
+                self::ERROR_COLUMN_MIGRATION_FAILED
             );
         }
 
