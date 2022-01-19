@@ -318,7 +318,7 @@ class Ticket_Ticket extends CommonDBRelation {
       $t->updateDateMod($this->fields['tickets_id_2']);
       parent::post_deleteFromDB();
 
-      $donotif = !isset($this->input['_disablenotif']) && !isset($this->input['_no_notif']) && $CFG_GLPI["use_notifications"];
+      $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
       if ($donotif) {
          $t->getFromDB($this->fields['tickets_id_1']);
          NotificationEvent::raiseEvent("update", $t);
