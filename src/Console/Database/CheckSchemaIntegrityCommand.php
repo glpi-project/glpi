@@ -125,11 +125,11 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
         $checker = new DatabaseSchemaIntegrityChecker(
             $this->db,
             $input->getOption('strict'),
-            !$input->getOption('check-innodb-migration'),
-            !$input->getOption('check-timestamps-migration'),
-            !$input->getOption('check-utf8mb4-migration'),
-            !$input->getOption('check-dynamic-row-format-migration'),
-            !$input->getOption('check-unsigned-keys-migration')
+            !$input->getOption('check-all-migrations') && !$input->getOption('check-innodb-migration'),
+            !$input->getOption('check-all-migrations') && !$input->getOption('check-timestamps-migration'),
+            !$input->getOption('check-all-migrations') && !$input->getOption('check-utf8mb4-migration'),
+            !$input->getOption('check-all-migrations') && !$input->getOption('check-dynamic-row-format-migration'),
+            !$input->getOption('check-all-migrations') && !$input->getOption('check-unsigned-keys-migration')
         );
 
         if (
