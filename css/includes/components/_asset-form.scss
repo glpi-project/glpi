@@ -39,10 +39,18 @@
          border-top: 1px solid $header-border-color;
       }
 
-      .badge.entity-name {
-         background-color: $header-badge-bg;
-         color: $header-badge-fg;
+      .badge {
+        font-size: 0.625rem;
+        height: 1.25rem;
+        display: inline-flex;
+
+        &.entity-name {
+            background-color: $header-badge-bg;
+            color: $header-badge-fg;
+        }
       }
+
+      .badge
 
       .ribbon {
          left: 0.5rem;
