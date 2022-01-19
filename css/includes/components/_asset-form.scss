@@ -40,9 +40,7 @@
         }
 
         .badge {
-            font-size: 0.625rem;
-            height: 1.25rem;
-            display: inline-flex;
+            @include tabler-badge-fix;
 
             &.entity-name {
                 background-color: $header-badge-bg;
