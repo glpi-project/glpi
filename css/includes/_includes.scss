@@ -32,7 +32,7 @@
 $is-dark: false !default;
 
 @import "base";
-@import "mixins/_badges_fixes";
+@import "mixins/badges_fixes";
 @import "global-variables";
 @import "highcontrast";
 @import "components/asset-form";
